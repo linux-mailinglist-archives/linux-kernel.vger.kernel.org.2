@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0DE3B0C0A
+	by mail.lfdr.de (Postfix) with ESMTP id B51BF3B0C0B
 	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232773AbhFVSBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:01:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37712 "EHLO
+        id S232789AbhFVSBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:01:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232587AbhFVSAy (ORCPT
+        with ESMTP id S232633AbhFVSA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:00:54 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F92C0613A3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:58:27 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id t131-20020a37aa890000b02903a9f6c1e8bfso19021562qke.10
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:58:26 -0700 (PDT)
+        Tue, 22 Jun 2021 14:00:57 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16237C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:58:29 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id v134-20020a37618c0000b02902fa5329f2b4so4592629qkb.18
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:58:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=ZVQPmrwIO1jLx03fsUYY+unjOucbiEXlPfNgj7m+k/Q=;
-        b=TLCaZriIZLxqUOGqBFW+2bxITVCMWf2aZbVzomfs8xmn4CKpqFQxG6voZh1f8ao7jJ
-         gRSpgY88aisFMUt8/yqAw+6GxwXTMyHwRdbYznJHY1IkbS6/CN3o9KcyV0DXeZabwf0W
-         ZR/iD/K+Xf1LfgdDb2QEE2H4vUEIun0rHj/ZjZEHSRVOXIukg7aBUIMb4dCTZVqrnwT6
-         p+E1Q8CGAo9cisd88M7YLozW1C3VPNpF5BeYcq+MhO1sSqUvFjXyboGyvjNsW6fMf9KU
-         rPYr4O5a0jmcIPakG7ou28FStARJGrtT/n1PAmX8V8xOnejx+XMD6eOO2qZNO3MIQRAe
-         T0iQ==
+        bh=uTc90HlRvNxV1/4nXHcBOYKgMxpy+5jWYh9NNDOLUD8=;
+        b=d+4QRZf2vjtSjIFvpLRxJyq+dSUFgq6Q8H3Ui2TPuYfKcaQ4aO/f8HzfxE1XLHpECC
+         RVLzWUw9ClVb1VymCJcIDfXB0aAHSz2Hh4MYq8HH4wO/32Ja0wDmwv/N4vf/CqPjRnbF
+         MNwJ58W59X7x9Bs7iIX5xY7dHkHdw0adBZt9QO1CrZA10I8shjlrn4qUiBMxTyfKXtSH
+         U5Vz1y4jHLB6ETlMlq3gGjQSkMNo/tvEjhEBu0zno2JlILBXGhQ7ycfY2UhxvvI/7EBN
+         yFpOqz/76Pp0KqtTavVjUFuGCN2rW96/Lrl5KzBIRg2X4H9MGtfjCRq1y38XPev8F6qT
+         l5LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=ZVQPmrwIO1jLx03fsUYY+unjOucbiEXlPfNgj7m+k/Q=;
-        b=Vq/1a0dc3ol3imZ10hx2s5KF5TEfuT/Zjx589p4bmadT9ZLuAzL96uUPotEtrUceWE
-         3+I+2ZC16wPdCkbNhhLKDv5Fe1z8ErwgtVjeDSIpNojswKg80MZCa1oAWJhAAVrgtSXa
-         UJ/vDXHrerI/pmgrrIdELUibnAXCXcLCb9Yf++dME9uEaaWXMUiG55y1LvJ5ZP0mXqJa
-         2IAtBTvXOWEE5zizSFxyyghnxlhbvym33zHQ3KigV9QMyjqBKdd9ItoKIGnz4LRkB+NO
-         4OOmdauSEuNqV+O4Mini8YYXDIzC64FcCNZnFX5id70c2M7DDoy719KfChoBIhaatL3V
-         fpHg==
-X-Gm-Message-State: AOAM533mS3sIKPj+ChZM+eccWrYWGaHuV0hHOwa4pQfvezQLookde7xs
-        d6LzM+aI/bjQbaVVag3t82fQYbVeVZ0=
-X-Google-Smtp-Source: ABdhPJxCk4WUMsvLagMH83wIjfOEjv3rLY5xkwQoaxVvsirwDlm46lLgIwGiZKST1D9A22U/zM4VccK8gMM=
+        bh=uTc90HlRvNxV1/4nXHcBOYKgMxpy+5jWYh9NNDOLUD8=;
+        b=t2KUsce3tkY9cgNFG2OzcWgR9ruAZYh7YhPyzOek0Ss/ZIoYo6/xFCJU3RCu51W6YV
+         7O1Y4UNT9om9+DVC2lT4k6PwNaS4XFzeiIOl4CJSYQ4g4F+E1g8laKscrcZhamIVWOis
+         TyXE5WlwVYyVmTxX0eFMyJ2vMsziFtOV6A7pnOaTRXMHUOHIWbfmHkQkhPP2EqrvH4Ah
+         hCb3H7WEsky/JO4csABKP+gDuksPOMER7m7+cjtq5Qu1AooftNBKBsjkZrcZMWmua8rJ
+         CGT4lyRzgLQtVmGogNVYKBGAwiphV183UuTMR0vdWNFFcu1bo71qqiGLix1+3Eph5YaX
+         WcJA==
+X-Gm-Message-State: AOAM532/tN6IzzZqlPjSXZZt2C8r6h6hnlfuGYEwu9ETa4/oAUtht78+
+        eBlT98yrjoBmCozDghsDIIz2qN2OgBs=
+X-Google-Smtp-Source: ABdhPJz2LE0P39MT7JrSChNHGeZB/3WIosyg/xkSg5rQgJuK+6VHqX2zw2HqTGfq4giguLjPphzSkycR2Ac=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:5722:92ce:361f:3832])
- (user=seanjc job=sendgmr) by 2002:a25:f449:: with SMTP id p9mr6413791ybe.259.1624384706126;
- Tue, 22 Jun 2021 10:58:26 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:11c2:: with SMTP id 185mr6652606ybr.101.1624384708229;
+ Tue, 22 Jun 2021 10:58:28 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 22 Jun 2021 10:56:58 -0700
+Date:   Tue, 22 Jun 2021 10:56:59 -0700
 In-Reply-To: <20210622175739.3610207-1-seanjc@google.com>
-Message-Id: <20210622175739.3610207-14-seanjc@google.com>
+Message-Id: <20210622175739.3610207-15-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210622175739.3610207-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 13/54] KVM: x86/mmu: Rename unsync helper and update related comments
+Subject: [PATCH 14/54] KVM: x86: Fix sizes used to pass around CR0, CR4, and EFER
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -68,134 +68,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename mmu_need_write_protect() to mmu_try_to_unsync_pages() and update
-a variety of related, stale comments.  Add several new comments to call
-out subtle details, e.g. that upper-level shadow pages are write-tracked,
-and that can_unsync is false iff KVM is in the process of synchronizing
-pages.
+When configuring KVM's MMU, pass CR0 and CR4 as unsigned longs, and EFER
+as a u64 in various flows (mostly MMU).  Passing the params as u32s is
+functionally ok since all of the affected registers reserve bits 63:32 to
+zero (enforced by KVM), but it's technically wrong.
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c          | 34 ++++++++++++++++++++++++---------
- arch/x86/kvm/mmu/mmu_internal.h |  3 +--
- arch/x86/kvm/mmu/spte.c         | 10 ++++++++--
- 3 files changed, 34 insertions(+), 13 deletions(-)
+ arch/x86/kvm/mmu.h        |  4 ++--
+ arch/x86/kvm/mmu/mmu.c    | 11 ++++++-----
+ arch/x86/kvm/svm/nested.c |  2 +-
+ arch/x86/kvm/x86.c        |  2 +-
+ 4 files changed, 10 insertions(+), 9 deletions(-)
 
+diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+index bc11402df83b..47131b92b990 100644
+--- a/arch/x86/kvm/mmu.h
++++ b/arch/x86/kvm/mmu.h
+@@ -66,8 +66,8 @@ void
+ reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context);
+ 
+ void kvm_init_mmu(struct kvm_vcpu *vcpu);
+-void kvm_init_shadow_npt_mmu(struct kvm_vcpu *vcpu, u32 cr0, u32 cr4, u32 efer,
+-			     gpa_t nested_cr3);
++void kvm_init_shadow_npt_mmu(struct kvm_vcpu *vcpu, unsigned long cr0,
++			     unsigned long cr4, u64 efer, gpa_t nested_cr3);
+ void kvm_init_shadow_ept_mmu(struct kvm_vcpu *vcpu, bool execonly,
+ 			     bool accessed_dirty, gpa_t new_eptp);
+ bool kvm_can_do_async_pf(struct kvm_vcpu *vcpu);
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 77296ce6215f..0171c245ecc7 100644
+index 0171c245ecc7..96c16a6e0044 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2458,17 +2458,33 @@ static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
- 	kvm_mmu_mark_parents_unsync(sp);
+@@ -4659,8 +4659,8 @@ kvm_calc_shadow_mmu_root_page_role(struct kvm_vcpu *vcpu, bool base_only)
  }
  
--bool mmu_need_write_protect(struct kvm_vcpu *vcpu, gfn_t gfn,
--			    bool can_unsync)
-+/*
-+ * Attempt to unsync any shadow pages that can be reached by the specified gfn,
-+ * KVM is creating a writable mapping for said gfn.  Returns 0 if all pages
-+ * were marked unsync (or if there is no shadow page), -EPERM if the SPTE must
-+ * be write-protected.
-+ */
-+int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
+ static void shadow_mmu_init_context(struct kvm_vcpu *vcpu, struct kvm_mmu *context,
+-				    u32 cr0, u32 cr4, u32 efer,
+-				    union kvm_mmu_role new_role)
++				    unsigned long cr0, unsigned long cr4,
++				    u64 efer, union kvm_mmu_role new_role)
  {
- 	struct kvm_mmu_page *sp;
- 
-+	/*
-+	 * Force write-protection if the page is being tracked.  Note, the page
-+	 * track machinery is used to write-protect upper-level shadow pages,
-+	 * i.e. this guards the role.level == 4K assertion below!
-+	 */
- 	if (kvm_page_track_is_active(vcpu, gfn, KVM_PAGE_TRACK_WRITE))
--		return true;
-+		return -EPERM;
- 
-+	/*
-+	 * The page is not write-tracked, mark existing shadow pages unsync
-+	 * unless KVM is synchronizing an unsync SP (can_unsync = false).  In
-+	 * that case, KVM must complete emulation of the guest TLB flush before
-+	 * allowing shadow pages to become unsync (writable by the guest).
-+	 */
- 	for_each_gfn_indirect_valid_sp(vcpu->kvm, sp, gfn) {
- 		if (!can_unsync)
--			return true;
-+			return -EPERM;
- 
- 		if (sp->unsync)
- 			continue;
-@@ -2499,8 +2515,8 @@ bool mmu_need_write_protect(struct kvm_vcpu *vcpu, gfn_t gfn,
- 	 *                      2.2 Guest issues TLB flush.
- 	 *                          That causes a VM Exit.
- 	 *
--	 *                      2.3 kvm_mmu_sync_pages() reads sp->unsync.
--	 *                          Since it is false, so it just returns.
-+	 *                      2.3 Walking of unsync pages sees sp->unsync is
-+	 *                          false and skips the page.
- 	 *
- 	 *                      2.4 Guest accesses GVA X.
- 	 *                          Since the mapping in the SP was not updated,
-@@ -2516,7 +2532,7 @@ bool mmu_need_write_protect(struct kvm_vcpu *vcpu, gfn_t gfn,
- 	 */
- 	smp_wmb();
- 
--	return false;
-+	return 0;
+ 	if (!(cr0 & X86_CR0_PG))
+ 		nonpaging_init_context(vcpu, context);
+@@ -4675,7 +4675,8 @@ static void shadow_mmu_init_context(struct kvm_vcpu *vcpu, struct kvm_mmu *conte
+ 	reset_shadow_zero_bits_mask(vcpu, context);
  }
  
- static int set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
-@@ -3461,8 +3477,8 @@ void kvm_mmu_sync_roots(struct kvm_vcpu *vcpu)
- 		 * flush strictly after those changes are made. We only need to
- 		 * ensure that the other CPU sets these flags before any actual
- 		 * changes to the page tables are made. The comments in
--		 * mmu_need_write_protect() describe what could go wrong if this
--		 * requirement isn't satisfied.
-+		 * mmu_try_to_unsync_pages() describe what could go wrong if
-+		 * this requirement isn't satisfied.
- 		 */
- 		if (!smp_load_acquire(&sp->unsync) &&
- 		    !smp_load_acquire(&sp->unsync_children))
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index 18be103df9d5..35567293c1fd 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -122,8 +122,7 @@ static inline bool is_nx_huge_page_enabled(void)
- 	return READ_ONCE(nx_huge_pages);
+-static void kvm_init_shadow_mmu(struct kvm_vcpu *vcpu, u32 cr0, u32 cr4, u32 efer)
++static void kvm_init_shadow_mmu(struct kvm_vcpu *vcpu, unsigned long cr0,
++				unsigned long cr4, u64 efer)
+ {
+ 	struct kvm_mmu *context = &vcpu->arch.root_mmu;
+ 	union kvm_mmu_role new_role =
+@@ -4697,8 +4698,8 @@ kvm_calc_shadow_npt_root_page_role(struct kvm_vcpu *vcpu)
+ 	return role;
  }
  
--bool mmu_need_write_protect(struct kvm_vcpu *vcpu, gfn_t gfn,
--			    bool can_unsync);
-+int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync);
+-void kvm_init_shadow_npt_mmu(struct kvm_vcpu *vcpu, u32 cr0, u32 cr4, u32 efer,
+-			     gpa_t nested_cr3)
++void kvm_init_shadow_npt_mmu(struct kvm_vcpu *vcpu, unsigned long cr0,
++			     unsigned long cr4, u64 efer, gpa_t nested_cr3)
+ {
+ 	struct kvm_mmu *context = &vcpu->arch.guest_mmu;
+ 	union kvm_mmu_role new_role = kvm_calc_shadow_npt_root_page_role(vcpu);
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index dca20f949b63..9f0e7ed672b2 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -1244,8 +1244,8 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+ 		&user_kvm_nested_state->data.svm[0];
+ 	struct vmcb_control_area *ctl;
+ 	struct vmcb_save_area *save;
++	unsigned long cr0;
+ 	int ret;
+-	u32 cr0;
  
- void kvm_mmu_gfn_disallow_lpage(struct kvm_memory_slot *slot, gfn_t gfn);
- void kvm_mmu_gfn_allow_lpage(struct kvm_memory_slot *slot, gfn_t gfn);
-diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-index 8e8e8da740a0..246e61e0771e 100644
---- a/arch/x86/kvm/mmu/spte.c
-+++ b/arch/x86/kvm/mmu/spte.c
-@@ -147,13 +147,19 @@ int make_spte(struct kvm_vcpu *vcpu, unsigned int pte_access, int level,
- 		/*
- 		 * Optimization: for pte sync, if spte was writable the hash
- 		 * lookup is unnecessary (and expensive). Write protection
--		 * is responsibility of mmu_get_page / kvm_sync_page.
-+		 * is responsibility of kvm_mmu_get_page / kvm_mmu_sync_roots.
- 		 * Same reasoning can be applied to dirty page accounting.
- 		 */
- 		if (!can_unsync && is_writable_pte(old_spte))
- 			goto out;
+ 	BUILD_BUG_ON(sizeof(struct vmcb_control_area) + sizeof(struct vmcb_save_area) >
+ 		     KVM_STATE_NESTED_SVM_VMCB_SIZE);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 92b4a9305651..2d3b9f10b14a 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9076,8 +9076,8 @@ static void enter_smm(struct kvm_vcpu *vcpu)
+ {
+ 	struct kvm_segment cs, ds;
+ 	struct desc_ptr dt;
++	unsigned long cr0;
+ 	char buf[512];
+-	u32 cr0;
  
--		if (mmu_need_write_protect(vcpu, gfn, can_unsync)) {
-+		/*
-+		 * Unsync shadow pages that are reachable by the new, writable
-+		 * SPTE.  Write-protect the SPTE if the page can't be unsync'd,
-+		 * e.g. it's write-tracked (upper-level SPs) or has one or more
-+		 * shadow pages and unsync'ing pages is not allowed.
-+		 */
-+		if (mmu_try_to_unsync_pages(vcpu, gfn, can_unsync)) {
- 			pgprintk("%s: found shadow page for %llx, marking ro\n",
- 				 __func__, gfn);
- 			ret |= SET_SPTE_WRITE_PROTECTED_PT;
+ 	memset(buf, 0, 512);
+ #ifdef CONFIG_X86_64
 -- 
 2.32.0.288.g62a8d224e6-goog
 
