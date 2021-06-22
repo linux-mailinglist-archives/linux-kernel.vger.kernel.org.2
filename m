@@ -2,107 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5329D3B0305
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97863B032F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhFVLnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 07:43:18 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54012 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230330AbhFVLnR (ORCPT
+        id S230318AbhFVLuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 07:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230302AbhFVLui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 07:43:17 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15MBdqu2082037;
-        Tue, 22 Jun 2021 07:40:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=w9YFt1TV0R+YHglCKyHGhELI4DE/9Y1DZN4tzptcFxw=;
- b=AlLSjN2w7jdiERff7QJvfYLJsX9fiTWWAfC+QX+MkG0aU7hp4WZ1dzvhyXh57J7XPDxt
- Uqypa0a1fXbDyWDCDh0xhJ2HOh72mqEWivvg8tzFnAoFGNXbVhoJL4X7Kv6PgVrQs/tD
- UVuqPcV2eXqjgnpTdsetj7wEra1+iKqlcPSEQeJhjGa9lg4LfC52gPwX/J5Jp7aO7CXD
- TlEKLzXGohUjWq5kDYtk4rNJKNusn4HNBD+uXd5CatXP6vyK0NTlOVSvbnkNuOx3vHKq
- Aw7BemvkFMO4jFbe2CTH+l0zmXG1dATNIhE/JbVgAZQ8aiuhRZ3Rk6TXFPFlYV0liD+M 4A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39bcm3513q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 07:40:59 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15MBe3k0082846;
-        Tue, 22 Jun 2021 07:40:59 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39bcm35131-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 07:40:59 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15MBXvnD019176;
-        Tue, 22 Jun 2021 11:40:57 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 3997uh9dt8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 11:40:56 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15MBes8531654366
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Jun 2021 11:40:54 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A4673A4055;
-        Tue, 22 Jun 2021 11:40:54 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BD5C7A404D;
-        Tue, 22 Jun 2021 11:40:53 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.23.17])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 22 Jun 2021 11:40:53 +0000 (GMT)
-Message-ID: <c8306569f880021bae853caf9f347e7c806ffaaa.camel@linux.ibm.com>
-Subject: Re: [syzbot] possible deadlock in ovl_maybe_copy_up
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+c18f2f6a7b08c51e3025@syzkaller.appspotmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Date:   Tue, 22 Jun 2021 07:40:53 -0400
-In-Reply-To: <CAOQ4uxjYJTG3p2ALXAWnAY+6Kmoi_L0=Z42okT6R+ovzQ7dQoQ@mail.gmail.com>
-References: <000000000000c5b77105b4c3546e@google.com>
-         <000000000000df47be05bf165394@google.com>
-         <20210618040135.950-1-hdanton@sina.com>
-         <23ba225593be391c384109af527bd0f3cb122a0d.camel@linux.ibm.com>
-         <CAOQ4uxjYJTG3p2ALXAWnAY+6Kmoi_L0=Z42okT6R+ovzQ7dQoQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: _tXHvbzhpUTDBZoW8qlSvgBxGotnSMQX
-X-Proofpoint-GUID: Lbl2dTPsK2-W5IZZjoM6OWbM4cYjk_zE
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-22_06:2021-06-21,2021-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- adultscore=0 bulkscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- impostorscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106220073
+        Tue, 22 Jun 2021 07:50:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70FCDC061574;
+        Tue, 22 Jun 2021 04:48:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=5Mv5hdASTb6Ku+l6s7Ur4WdHNNxEw6oKKMr1RnOamKM=; b=gK5gZKH6BR9f+oWvX4Tyg0Q6UE
+        u/BA38MCP2dpt6zzeQlpXSCQDvjo1YzBEA9CQDcxkxpGdtmDTK7UPp215MwtRpHwgDHqOWedPI0JT
+        HjhGxMiEiTZ8R5KF/pO9ry5NhHx0V6X2rWsblPjR66kwZI77nH7L5RtbcFxK3IRjJKVPOz3NSdYPX
+        IXFGRoDmQMxYASf54+fTFud9Vf30ML78SkPTl2RohiDoKle/wuEjBfspxkEvExSTTtWB0HX+0/BJk
+        swaqjmWxHU6bUHVFtuQSC1GVYGnTqzX9bORvilDLZwTxmcqpkz+z/TIPz4nbGZVfvm6as+0x/3FpI
+        W6jFDDzQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvert-00EDpt-9K; Tue, 22 Jun 2021 11:47:09 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     akpm@linux-foundation.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        David Howells <dhowells@redhat.com>
+Subject: [PATCH v12 08/33] mm: Add folio_get()
+Date:   Tue, 22 Jun 2021 12:40:53 +0100
+Message-Id: <20210622114118.3388190-9-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210622114118.3388190-1-willy@infradead.org>
+References: <20210622114118.3388190-1-willy@infradead.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Should annotating the iint be limited to files on overlay filesystems?
-> >
-> 
-> Not to overlay files specifically but to files on stacked fs,
-> i.e. (inode->i_sb->s_stack_depth > 0)
-> Assuming that this patch is tested(?), how come it did not hit the
-> WARN_ON_ONCE(depth < 0... above?
+If we know we have a folio, we can call folio_get() instead
+of get_page() and save the overhead of calling compound_head().
+No change to generated code.
 
-Thanks, Amir!
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Zi Yan <ziy@nvidia.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Jeff Layton <jlayton@kernel.org>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+Reviewed-by: David Howells <dhowells@redhat.com>
+---
+ include/linux/mm.h | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
-As per the overlayfs comment, the depth can never be 0.  It sounds like
-in this case we only want to annotate the iint mutex for regular files,
-if the stacking depth is greater than 0, but less than the max depth.
-
-(I'm still trying to reproduce the lockdep.)
-
-Mimi
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 08a80e2eb292..54f7f7eb6c3f 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1224,18 +1224,26 @@ static inline bool is_pci_p2pdma_page(const struct page *page)
+ }
+ 
+ /* 127: arbitrary random number, small enough to assemble well */
+-#define page_ref_zero_or_close_to_overflow(page) \
+-	((unsigned int) page_ref_count(page) + 127u <= 127u)
++#define folio_ref_zero_or_close_to_overflow(folio) \
++	((unsigned int) folio_ref_count(folio) + 127u <= 127u)
++
++/**
++ * folio_get - Increment the reference count on a folio.
++ * @folio: The folio.
++ *
++ * Context: May be called in any context, as long as you know that
++ * you have a refcount on the folio.  If you do not already have one,
++ * folio_try_get() may be the right interface for you to use.
++ */
++static inline void folio_get(struct folio *folio)
++{
++	VM_BUG_ON_FOLIO(folio_ref_zero_or_close_to_overflow(folio), folio);
++	folio_ref_inc(folio);
++}
+ 
+ static inline void get_page(struct page *page)
+ {
+-	page = compound_head(page);
+-	/*
+-	 * Getting a normal page or the head of a compound page
+-	 * requires to already have an elevated page->_refcount.
+-	 */
+-	VM_BUG_ON_PAGE(page_ref_zero_or_close_to_overflow(page), page);
+-	page_ref_inc(page);
++	folio_get(page_folio(page));
+ }
+ 
+ bool __must_check try_grab_page(struct page *page, unsigned int flags);
+-- 
+2.30.2
 
