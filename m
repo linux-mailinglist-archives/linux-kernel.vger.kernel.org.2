@@ -2,150 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD8E3B0FB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E0D3B0FC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 00:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhFVWAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 18:00:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhFVWAg (ORCPT
+        id S230273AbhFVWDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 18:03:03 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:48778 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230292AbhFVWC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 18:00:36 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6906EC061574;
-        Tue, 22 Jun 2021 14:58:18 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id q64so134022qke.7;
-        Tue, 22 Jun 2021 14:58:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=An1CO7YkpX2LBRNnkvDhYRhDtsz5fNak0K0KltYMWHE=;
-        b=G9hBpWsQA2qNJz6g8CmPS+fbzFFLh6rh7G15fLU4ZxcRyaU3QSU29x7NyPYmR8Ia/D
-         n2B54HijZUbq2DwnXWIWTFpUjhpze+X82aSP8/LcdWVkRmYDlQxoRlHKyIo+qqE8FP9Q
-         bZJ9oAe/6/gP2bUYJ5ZFFroBuXxolJekjgy3qddtVuXERWKt1Jcy1EIQjqWkw0C51ysM
-         haXf2JVkp1uwcRw012LkgvKNWWUzIMpmOT1ctB0SsxOitZmrdQ5OIq+Lf5VI1fWUL5+I
-         R8kn030r+rgR07DGG1Tpi11b0k3Is/XKRw94yDYcdtEwn5ozVyEdHEmcFv6vnQqH4GC8
-         /eug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=An1CO7YkpX2LBRNnkvDhYRhDtsz5fNak0K0KltYMWHE=;
-        b=cPSWQUPKae+7A9FpH4a/gbGtdFxDau0C8/9rqp0Hdg0T7fiO+tFDTqwv4RBUpAtQ7A
-         TD8dlNhiSGLe5upvWJh0dXsYjluO/x9fGN5dVjTabS2TxaMoC3kLrtHAhVQwkVwjtzf3
-         r45a02ZGSmei8wiIacDr8fza5jvwNJJphWCGBgeMjM6kTYwFvIhw+fRkEnT61hYMLu8g
-         UYLYQqKStAJIGO9fKYTyjyUIAM6njXAS2QgvcVx3Zk78DQIKX3yfwa0i9vysixZL6+a9
-         +17pRCDO4hvauWql1doGOfU0jVed2gXJBEUeBPJqscI3TGSKSJNE761lB9m4eJg01Wq2
-         IHAQ==
-X-Gm-Message-State: AOAM53173WPW7j8JHTGHtQm40WPciy2QDp6N9bVxPiiXk+Bkti1+RCoR
-        7t6yR0/3MvgVGogEnhLOBTyfqfVkmuaWWg==
-X-Google-Smtp-Source: ABdhPJxrJylyDE4d1u5hNmra4JCUXIlB65RCzJZS6mL8q5Nn7+pP3O583qQWV0u07LTl8dOSRnF9RA==
-X-Received: by 2002:a05:620a:4509:: with SMTP id t9mr6703948qkp.403.1624399097540;
-        Tue, 22 Jun 2021 14:58:17 -0700 (PDT)
-Received: from fedora ([130.44.160.152])
-        by smtp.gmail.com with ESMTPSA id 85sm12802577qkl.46.2021.06.22.14.58.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 14:58:16 -0700 (PDT)
-Sender: Konrad Rzeszutek Wilk <konrad.r.wilk@gmail.com>
-Date:   Tue, 22 Jun 2021 17:58:14 -0400
-From:   Konrad Rzeszutek Wilk <konrad@darnok.org>
-To:     'Dominique MARTINET' <dominique.martinet@atmark-techno.com>
-Cc:     Chanho Park <chanho61.park@samsung.com>,
-        'Jianxiong Gao' <jxgao@google.com>,
-        'Christoph Hellwig' <hch@lst.de>,
-        'Konrad Rzeszutek Wilk' <konrad.wilk@oracle.com>,
-        'Linus Torvalds' <torvalds@linux-foundation.org>,
-        'Horia =?utf-8?Q?Geant=C4=83'?= <horia.geanta@nxp.com>,
-        linux-kernel@vger.kernel.org, 'Lukas Hartmann' <lukas@mntmn.com>,
-        'Aymen Sghaier' <aymen.sghaier@nxp.com>,
-        'Herbert Xu' <herbert@gondor.apana.org.au>,
-        "'David S. Miller'" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, iommu@lists.linux-foundation.org,
-        'Marc Orr' <marcorr@google.com>,
-        'Erdem Aktas' <erdemaktas@google.com>,
-        'Peter Gonda' <pgonda@google.com>,
-        'Bumyong Lee' <bumyong.lee@samsung.com>
-Subject: Re: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb)
- stable/for-linus-5.12)
-Message-ID: <YNJc9qxeIjy6VuLt@fedora>
-References: <YMqZswFnSNKk4Z7B@atmark-techno.com>
- <20210617051232.GB27192@lst.de>
- <YMrfWBLsJxCRhX5U@atmark-techno.com>
- <CAMGD6P0=9RE1-q1WHkwR1jymK5jyvN6QgypQ2KgdvBQn0CUTHw@mail.gmail.com>
- <CGME20210621020328epcas2p207e9fa2df119730ceb993543621437d8@epcas2p2.samsung.com>
- <YM/zWyZlk1bzHWgI@atmark-techno.com>
- <2038148563.21624247281621.JavaMail.epsvc@epcpadp4>
- <YNASOEGsDxhFC8qJ@atmark-techno.com>
- <YNCROxI328u7IKdQ@fedora>
- <YNGVyOyD+CAMmPos@atmark-techno.com>
+        Tue, 22 Jun 2021 18:02:59 -0400
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+        by linux.microsoft.com (Postfix) with ESMTPSA id A6A9B20B83F5;
+        Tue, 22 Jun 2021 15:00:42 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A6A9B20B83F5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1624399242;
+        bh=t0zy+aEJbbWfr+b93GwBhrR1JhR/zUqTNz5gXaWTwg0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SthROkxDDu/QhydPs+YRpFqCj5N7QPI564vrNLrGm2nU8AvseLaV1Hpft4Ul4nWkb
+         jU9o73zefEx59IGK6yNySyKHHfaJtm+q76mAUOd4OS9rKIUBo8HEinBp76qGvYa+qL
+         8ntS0oZORP+7/XTu1pGZr7lINneFoErlFY+KFfCg=
+Received: by mail-pl1-f180.google.com with SMTP id m17so11425plx.7;
+        Tue, 22 Jun 2021 15:00:42 -0700 (PDT)
+X-Gm-Message-State: AOAM5339bJcHDNBiW42PW5sybvHNYF2YGI8Ad1wtBJOj5YGQQqPURx1I
+        Mlc03melbrjL+UoPejPhJXjQrcjG6n/2nXu8LkE=
+X-Google-Smtp-Source: ABdhPJyv1SBZhrTityd2+MnaNiG0YScqu6u6GGO+94AaR/jITunJ/1zxDMO/c+aBvN9vVivCQaTUKtAo1Zcegix/+ug=
+X-Received: by 2002:a17:902:e9d5:b029:124:926:7971 with SMTP id
+ 21-20020a170902e9d5b029012409267971mr13690483plk.19.1624399242143; Tue, 22
+ Jun 2021 15:00:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNGVyOyD+CAMmPos@atmark-techno.com>
+References: <20210617152754.17960-1-mcroce@linux.microsoft.com>
+ <20210617152754.17960-2-mcroce@linux.microsoft.com> <YNChl0tkofSGzvIX@infradead.org>
+In-Reply-To: <YNChl0tkofSGzvIX@infradead.org>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Wed, 23 Jun 2021 00:00:06 +0200
+X-Gmail-Original-Message-ID: <CAFnufp2UaAEq8FCxSeX5xCOZYu4wJ783gy35RZF-D626XiF8MQ@mail.gmail.com>
+Message-ID: <CAFnufp2UaAEq8FCxSeX5xCOZYu4wJ783gy35RZF-D626XiF8MQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] riscv: optimized memcpy
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Bin Meng <bmeng.cn@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Guo Ren <guoren@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 04:48:24PM +0900, 'Dominique MARTINET' wrote:
-> Konrad Rzeszutek Wilk wrote on Mon, Jun 21, 2021 at 09:16:43AM -0400:
-> > The beaty of 'devel' and 'linux-next' is that they can be reshuffled and
-> > mangled. I pushed them original patch from Bumyong there and will let
-> > it sit for a day and then create a stable branch and give it to Linus.
-> 
-> Thanks, that should be good.
-> 
-> Do you want me to send a follow-up patch with the two extra checks
-> (tlb_addr & (IO_TLB_SIZE -1)) > swiotlb_align_offset(dev, orig_addr)
-> tlb_offset < alloc_size
-> 
-> or are we certain this can't ever happen?
+On Mon, Jun 21, 2021 at 4:26 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Thu, Jun 17, 2021 at 05:27:52PM +0200, Matteo Croce wrote:
+> > +extern void *memcpy(void *dest, const void *src, size_t count);
+> > +extern void *__memcpy(void *dest, const void *src, size_t count);
+>
+> No need for externs.
+>
 
-I would love more patches and I saw the previous one you posted.
+Right.
 
-But we only got two (or one) weeks before the next merge window opens
-so I am sending to Linus the one that was tested with NVMe and crypto
-(see above).
+> > +++ b/arch/riscv/lib/string.c
+>
+> Nothing in her looks RISC-V specific.  Why doesn't this go into lib/ so
+> that other architectures can use it as well.
+>
 
-That is the
-https://git.kernel.org/pub/scm/linux/kernel/git/konrad/swiotlb.git/commit/?h=stable/for-linus-5.14
+Technically it could go into lib/ and be generic.
+If you think it's worth it, I have just to handle the different
+left/right shift because of endianness.
 
-And then after Linus releases the 5.14 - I would love to take your
-cleanup on top of that and test it?
+> > +#include <linux/module.h>
+>
+> I think you only need export.h.
+>
 
-> (I didn't see any hit in dmesg when I ran with these, but my opinion is
-> better safe than sorry...)
-> 
-> 
-> > Then I need to expand the test-regression bucket so that this does not
-> > happen again. Dominique, how easy would it be to purchase one of those
-> > devices?
-> 
-> My company is making such a device, but it's not on the market yet
-> (was planned for august, with some delay in approvisionning it'll
-> probably be a bit late), and would mean buying from Japan so I'm not
-> sure how convenient that would be...
-> 
-> These are originally NXP devices so I assume Horia would have better
-> suggestions, if you would?
-> 
-> 
-> > I was originally thinking to create a crypto device in QEMU to simulate
-> > this but that may take longer to write than just getting the real thing.
-> > 
-> > Or I could create some fake devices with weird offsets and write a driver
-> > for it to exercise this.. like this one I had done some time ago that
-> > needs some brushing off.
-> 
-> Just a fake device with fake offsets as a test is probably good enough,
-> ideally would need to exerce both failures we've seen (offset in
-> dma_sync_single_for_device like caam does and in the original mapping (I
-> assume?) like the NVMe driver does), but that sounds possible :)
+Nice.
 
-Yup. Working on that now.
-> 
-> 
-> Thanks again!
-> -- 
-> Dominique
+> > +void *__memcpy(void *dest, const void *src, size_t count)
+> > +{
+> > +     const int bytes_long = BITS_PER_LONG / 8;
+> > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > +     const int mask = bytes_long - 1;
+> > +     const int distance = (src - dest) & mask;
+> > +#endif
+> > +     union const_types s = { .u8 = src };
+> > +     union types d = { .u8 = dest };
+> > +
+> > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > +     if (count < MIN_THRESHOLD)
+>
+> Using IS_ENABLED we can avoid a lot of the mess in this
+> function.
+>
+>         int distance = 0;
+>
+>         if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS)) {
+>                 if (count < MIN_THRESHOLD)
+>                         goto copy_remainder;
+>
+>                 /* copy a byte at time until destination is aligned */
+>                 for (; count && d.uptr & mask; count--)
+>                         *d.u8++ = *s.u8++;
+>                 distance = (src - dest) & mask;
+>         }
+>
+
+Cool. What about putting this check in the very start:
+
+        if (count < MIN_THRESHOLD)
+                goto copy_remainder;
+
+And since count is at least twice bytes_long, remove count from the check below?
+Also, setting distance after d is aligned is as simple as getting the
+lower bits of s:
+
+        if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS)) {
+                /* Copy a byte at time until destination is aligned. */
+                for (; d.uptr & mask; count--)
+                        *d.u8++ = *s.u8++;
+
+                distance = s.uptr & mask;
+        }
+
+>         if (distance) {
+>                 ...
+>
+> > +             /* 32/64 bit wide copy from s to d.
+> > +              * d is aligned now but s is not, so read s alignment wise,
+> > +              * and do proper shift to get the right value.
+> > +              * Works only on Little Endian machines.
+> > +              */
+>
+> Normal kernel comment style always start with a:
+>
+
+Right, I was used to netdev ones :)
+
+>                 /*
+>
+>
+> > +             for (next = s.ulong[0]; count >= bytes_long + mask; count -= bytes_long) {
+>
+> Please avoid the pointlessly overlong line.  And (just as a matter of
+> personal preference) I find for loop that don't actually use a single
+> iterator rather confusing.  Wjy not simply:
+>
+>                 next = s.ulong[0];
+>                 while (count >= bytes_long + mask) {
+>                         ...
+>                         count -= bytes_long;
+>                 }
+
+My fault, in a previous version it was:
+
+    next = s.ulong[0];
+    for (; count >= bytes_long + mask; count -= bytes_long) {
+
+So to have a single `count` counter for the loop.
+
+Regards,
+-- 
+per aspera ad upstream
