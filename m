@@ -2,63 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D933B0BED
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CFF43B0BF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232440AbhFVR7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 13:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37302 "EHLO
+        id S232524AbhFVSAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhFVR7F (ORCPT
+        with ESMTP id S232480AbhFVSAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 13:59:05 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA16C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:56:48 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id i5so7433558eds.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:56:48 -0700 (PDT)
+        Tue, 22 Jun 2021 14:00:17 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6E7C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:58:01 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id ea18-20020ad458b20000b0290215c367b5d3so219582qvb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:58:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=QSD81DruHkn8K7QzcU1rgYpPC1VfVIfS22gyJVAiA+I=;
-        b=pDxEhRyfIUmuwWB+4BxEFw2yTk2XNKZAD47ULYduFjEXW/SFYPb97EaPiT/zEuRDou
-         59NGJea21h+v0Zpvqp/RIWyuZl5V6GFBTbREePZpybYNaWJ4SpQk+QLd+kioficMP3m+
-         pFNqdqTpqysPXeRuyoG3ojvrpbRVd+1R3SIR3OeCbGw3peiepbCGC0rcg69ROmWWgoqT
-         fofl0qkyihzEcf3eY5DcrK/Yot0XvuFLtRzctd5MDkEXU6S5Ki82fT1ZSozTk17AEIIS
-         P/m9GCV67/2pHnNNzcMQ/fXjahOTqCyDBBiyNY6rPb969J5RkSQH9zVPNYiV19pOtqQz
-         ZVXg==
+        d=google.com; s=20161025;
+        h=reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=b8Wsppq/GlcuesoRfm0KDojivDbmhCEZ9n9fv6tGG5k=;
+        b=AWYu9f26z3jKRqUE7jiaFlhFDSjABP4CPw3I3Vzhe+qwtHtjccPXgq8r8NmgoqAu7m
+         OqHWPQKBUtkaepQAkat0UJXKQTO20t8/6H84ef+60CgVRMRra8M/rpPf3rArZRcRYPqD
+         8QwPeGIb7zKHiO0yNOG4PLo4Bq/5NRpKHPjqe6WfoVXV0zMHcGIYEavgVq8vKya0IuuZ
+         hBaSENEPjArSrATfe7GuFq86FYXPaoBbZaDvZuHVigF+zdH/K3l5FMVNe8NAy1yNAjK1
+         nrykdz3nbzOZ2lGYWmUNrmm7uwJTl0mqVkm7d1pXhPjOnBdTceEd8XkW3IeUD7tm7044
+         UyxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=QSD81DruHkn8K7QzcU1rgYpPC1VfVIfS22gyJVAiA+I=;
-        b=KuMWZyQ+ULA3mxlkXjs/QMYlBcMtwx0gclJMgqFSSQ3Q8FxQZnO+6jpqtUzcsLVe7X
-         5Ivz++IPZ2s9vNmMWFbgANvBPi1VQ/m900HwNX2cmzfpVRxy1QN5PV+EHFVC2g7TmK+4
-         sO9UP3m/C42nKbbW+t2w++oU2eRWGKiBY42Aa6MeyzKxYuZhNbFIIINAsqfbeu2HXSFL
-         vjQvnvlY4kxRJiI3QufAKpC8LA/+iHSA/f3fCz6tffRrDB8gOA8rdzLZGue1owAjF9jE
-         plpNEaGYf193qZTp81HGtyz1vgHexMQIVp8h51kGSED+p1Hji5iUeZYENkGCxCvzt0ZV
-         NohQ==
-X-Gm-Message-State: AOAM532gD02b0PwH0U7Swe7xREztdgI9nBJoAnMiYB8EaVVJv8ROkqiI
-        BqK510oZNH4njGMTYXTOAuxMXJp7nbLniOfd868=
-X-Google-Smtp-Source: ABdhPJxjIq/t6sZbCq9FnYxMLzq5YA6yHKEhIb7e4QYypd8CiE7ph0iFH6HrTIPnsUXVsoAyWOd9KXmZfynhZePAFpg=
-X-Received: by 2002:aa7:dccb:: with SMTP id w11mr6670598edu.96.1624384607174;
- Tue, 22 Jun 2021 10:56:47 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a05:6402:34c1:0:0:0:0 with HTTP; Tue, 22 Jun 2021 10:56:46
- -0700 (PDT)
-Reply-To: alexandermorganmorgan238@gmail.com
-From:   alexander morgan <marinavanessa534@gmail.com>
-Date:   Tue, 22 Jun 2021 10:56:46 -0700
-Message-ID: <CAAPyjrv59nz9bfWtQDnT289dWUDUa8QCatyuYdRnkoopWLL4hA@mail.gmail.com>
-Subject: hi
-To:     undisclosed-recipients:;
+        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=b8Wsppq/GlcuesoRfm0KDojivDbmhCEZ9n9fv6tGG5k=;
+        b=Y5IRrDz9W+Om/yCCCatWYkbI1UDuFglcIQhAwzSWuNypsFDxgxTINzBj9X+GRskv1H
+         C83BwPgt1IKd5XN+O/8cqDVflygYICtCH6HMYHJLei0aRFy0vtAWfGVh//sdfCRIrSop
+         jhaRVUjzHz3oJWo81z48WvF5IqezYwfo7MpWP7xTrIWdYW5b6aDaEJcmi1Gk+wM4PN5w
+         za+QmtkTmOUEHZQDsmERCrbkyueTv0EvH9+Sg7WaNBbSLd3UnxaemJY4lshlPXiE7G5B
+         MxUn64sKji8HIAewnN53Eco0K6GCXg+WsSZ95Wq56Vlm27ArIYSnaDKLW3tdGgNOnX8s
+         52tA==
+X-Gm-Message-State: AOAM533Tq7rj3jDu1l6USlQHVOuo8Qy7IGrLBlm1Cs5UZRCXFRQJiXoa
+        OGJ85nzmebCN+GAkgbLJRFbLEaNGVss=
+X-Google-Smtp-Source: ABdhPJyUTlf/be84pRPgY61j10K1EzMREnMDny0lC0z2MBJhCHlWp1zgredc417gfI5VsuJUaj8X+7ULyKI=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:5722:92ce:361f:3832])
+ (user=seanjc job=sendgmr) by 2002:a25:cac4:: with SMTP id a187mr6161796ybg.423.1624384680514;
+ Tue, 22 Jun 2021 10:58:00 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue, 22 Jun 2021 10:56:47 -0700
+In-Reply-To: <20210622175739.3610207-1-seanjc@google.com>
+Message-Id: <20210622175739.3610207-3-seanjc@google.com>
+Mime-Version: 1.0
+References: <20210622175739.3610207-1-seanjc@google.com>
+X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
+Subject: [PATCH 02/54] KVM: x86/mmu: Treat NX as used (not reserved) for all
+ !TDP shadow MMUs
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-7JWI64WV7ZWY7IS47JqULA0KDQoNCiDslYjsoITtlZjquLgg67CU652864KY7JqUPw0KDQoNCg0K
-IOygnCDsnbTsoIQg66mU7Iuc7KeA66W8IOuwm+yVmOyKteuLiOq5jD8NCg0KDQog7Lmc7KCI7ZWY
-6rKMIOyVjOugpOyjvOyEuOyalC4NCg0KDQog6rCQ7IKsDQo=
+Mark NX as being used for all non-nested shadow MMUs, as KVM will set the
+NX bit for huge SPTEs if the iTLB mutli-hit mitigation is enabled.
+Checking the mitigation itself is not sufficient as it can be toggled on
+at any time and KVM doesn't reset MMU contexts when that happens.  KVM
+could reset the contexts, but that would require purging all SPTEs in all
+MMUs, for no real benefit.  And, KVM already forces EFER.NX=1 when TDP is
+disabled (for WP=0, SMEP=1, NX=0), so technically NX is never reserved
+for shadow MMUs.
+
+Fixes: b8e8c8303ff2 ("kvm: mmu: ITLB_MULTIHIT mitigation")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/mmu/mmu.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 84d48a33e38b..0db12f461c9d 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4221,7 +4221,15 @@ static inline u64 reserved_hpa_bits(void)
+ void
+ reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context)
+ {
+-	bool uses_nx = context->nx ||
++	/*
++	 * KVM uses NX when TDP is disabled to handle a variety of scenarios,
++	 * notably for huge SPTEs if iTLB multi-hit mitigation is enabled and
++	 * to generate correct permissions for CR0.WP=0/CR4.SMEP=1/EFER.NX=0.
++	 * The iTLB multi-hit workaround can be toggled at any time, so assume
++	 * NX can be used by any non-nested shadow MMU to avoid having to reset
++	 * MMU contexts.  Note, KVM forces EFER.NX=1 when TDP is disabled.
++	 */
++	bool uses_nx = context->nx || !tdp_enabled ||
+ 		context->mmu_role.base.smep_andnot_wp;
+ 	struct rsvd_bits_validate *shadow_zero_check;
+ 	int i;
+-- 
+2.32.0.288.g62a8d224e6-goog
+
