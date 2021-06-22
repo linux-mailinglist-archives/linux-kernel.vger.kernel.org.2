@@ -2,93 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3EC3AFD0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 08:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B973AFD10
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 08:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhFVG0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 02:26:10 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:56208 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhFVG0I (ORCPT
+        id S229803AbhFVGcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 02:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhFVGcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 02:26:08 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15M6Ngw2049717;
-        Tue, 22 Jun 2021 01:23:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1624343022;
-        bh=16dyKQhx2LAbfWpFqCWteOP+DDKt943mCwSHZR5zwMw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=x+87vCL18em4bUsUjIxqnIjO2vclOGUTYxrxV+lVwk6BF8a6YX2qNUC1X/9waozE7
-         JVC+t+d2VtzSFdFLUJwJDvebnAACbnFremHSWMbGjE87Ctd1NGhaKRb5lNc9k/JDjQ
-         PGpI7425JTWoCtQ5D9jB7cNQjfH4PZ40lrCYNbYM=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15M6NgQk039767
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Jun 2021 01:23:42 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 22
- Jun 2021 01:23:42 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 22 Jun 2021 01:23:41 -0500
-Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15M6NdKD077534;
-        Tue, 22 Jun 2021 01:23:39 -0500
-Subject: Re: [PATCH] serial: 8250: 8250_omap: Fix possible interrupt storm
-To:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Jiri Slaby <jirislaby@kernel.org>, <linux-serial@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210511151955.28071-1-vigneshr@ti.com>
- <YJ008MjjewRUTn9Z@kroah.com> <YLCCJzkkB4N7LTQS@atomide.com>
- <e5b35370-bf2d-7295-e2fd-9aee5bbc3296@ti.com>
- <0ad948ac-f669-3d6d-5eca-4ca48d47d6a3@siemens.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <56c5d73f-741c-2643-1c79-6dc13ebb05c7@ti.com>
-Date:   Tue, 22 Jun 2021 11:53:38 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 22 Jun 2021 02:32:03 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAF2C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 23:29:48 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id t40so22649104oiw.8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 23:29:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DdJQdJIkwKIMOS7tXTygX0MjjffX2z749Iv2g2FNLaM=;
+        b=UrVEk0jf/IzOFwQMXPDO127VY5YwqNQ4swugWt7AJ+KpEOfNz4B6QPPfkcjSoNVeDE
+         zCGMwhZyrXPkG/9WobFGEdxOr8Nwm2NfNU4eKFjr1NhPQf3FvJJMzjqP2h6DLot4Jcgt
+         QO6lvFzJQd/l0gx1RDBP3wHVlwcyEyykgc1N5lb4FgbfZKYcJexX+4iekbJYnfijwXjG
+         h0sIUlQAzlq0L+r2D7c48wlQiZcawlI+AZGY26ZAlQ9TtFD8MQED04LKA6esv1kJ5Cq0
+         tOif9qkjCNgu/Di3aIg9uukSqFdbZ85eJ41N7PuFGCDxb8yioHqE65kgTsILJcXCP1Zq
+         gG6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DdJQdJIkwKIMOS7tXTygX0MjjffX2z749Iv2g2FNLaM=;
+        b=JCjAF3xwIWi7Igl2germikhwhP32s8j7ERdqVF+m2rF+PbSuZBwqm0OqlRUa2ZWavn
+         ruaqbtV2K48HM0uCfn7kEJVGmXdwXdgsLx76zZk6Oc+PGyD1VgY8KRRF8jqzN8Gzorag
+         3FeMHn6s7ISSfSBvyVT9MzWMdH6veaGeqrDTbj9nxRJBeiPOLpRVnF6NHrDcEZ4Bv/l6
+         1YtdSrXqV9pvYjN8yYK3YPAbmhakx902iB8VeWKCnX5lcLEzntxh15+SKZ/YlRH9D8Y6
+         lhAEJWRB1rXWW4pFcPcpqspXUzZfnHqnI6Ak9MbrCr37oARXdNClLsH5Wembr4zKfeuF
+         C8jA==
+X-Gm-Message-State: AOAM532ZMAZOvO4eUL+4C9q7QMNxtjCm0o3HHpsU3slO1m/cm6+25gju
+        0xTlBHxMufA04kKHXFPhm1B2q82Fn+nm25Jm15JBbA==
+X-Google-Smtp-Source: ABdhPJwvZRvadrsFUY7LeFwYdZ4g/xPYH8e9+Y+K5nCU3Vxl1hLCW2UyZ2WXNbrpkPpqZ7rPkFVy16Ii+hWRGhDX7QI=
+X-Received: by 2002:a05:6808:251:: with SMTP id m17mr1218383oie.77.1624343387678;
+ Mon, 21 Jun 2021 23:29:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0ad948ac-f669-3d6d-5eca-4ca48d47d6a3@siemens.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210621103310.186334-1-jhp@endlessos.org> <YNCPcmEPuwdwoLto@lunn.ch>
+ <35f4baae-a6e1-c87d-279c-74f8c18bb5d1@gmail.com> <CALeDE9MjRLjTQ1R2nw_rnXsCXKHLMx8XqvG881xgqKz2aJRGfA@mail.gmail.com>
+ <9c0ae9ad-0162-42d9-c4f8-f98f6333b45a@i2se.com> <745e7a21-d189-39d7-504a-bdae58cfb8ad@gmail.com>
+In-Reply-To: <745e7a21-d189-39d7-504a-bdae58cfb8ad@gmail.com>
+From:   Jian-Hong Pan <jhp@endlessos.org>
+Date:   Tue, 22 Jun 2021 14:29:04 +0800
+Message-ID: <CAPpJ_ed+8fP8y_t983pb0LMHK9pfVtGdh7fQopedqGZJCrRxvQ@mail.gmail.com>
+Subject: Re: [PATCH] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Stefan Wahren <stefan.wahren@i2se.com>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Doug Berger <opendmb@gmail.com>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        linux@endlessos.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Florian Fainelli <f.fainelli@gmail.com> =E6=96=BC 2021=E5=B9=B46=E6=9C=8822=
+=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=885:47=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> On 6/21/21 1:15 PM, Stefan Wahren wrote:
+> > Am 21.06.21 um 18:56 schrieb Peter Robinson:
+> >> On Mon, Jun 21, 2021 at 5:39 PM Florian Fainelli <f.fainelli@gmail.com=
+> wrote:
+> >>> On 6/21/21 6:09 AM, Andrew Lunn wrote:
+> >>>> On Mon, Jun 21, 2021 at 06:33:11PM +0800, Jian-Hong Pan wrote:
+> >>>>> The Broadcom UniMAC MDIO bus comes too late. So, GENET cannot find =
+the
+> >>>>> ethernet PHY on UniMAC MDIO bus. This leads GENET fail to attach th=
+e
+> >>>>> PHY.
+> >>>>>
+> >>>>> bcmgenet fd580000.ethernet: GENET 5.0 EPHY: 0x0000
+> >>>>> ...
+> >>>>> could not attach to PHY
+> >>>>> bcmgenet fd580000.ethernet eth0: failed to connect to PHY
+> >>>>> uart-pl011 fe201000.serial: no DMA platform data
+> >>>>> libphy: bcmgenet MII bus: probed
+> >>>>> ...
+> >>>>> unimac-mdio unimac-mdio.-19: Broadcom UniMAC MDIO bus
+> >>>>>
+> >>>>> This patch makes GENET try to connect the PHY up to 3 times. Also, =
+waits
+> >>>>> a while between each time for mdio-bcm-unimac module's loading and
+> >>>>> probing.
+> >>>> Don't loop. Return -EPROBE_DEFER. The driver core will then probed t=
+he
+> >>>> driver again later, by which time, the MDIO bus driver should of
+> >>>> probed.
+> >>> This is unlikely to work because GENET register the mdio-bcm-unimac
+> >>> platform device so we will likely run into a chicken and egg problem,
+> >>> though surprisingly I have not seen this on STB platforms where GENET=
+ is
+> >>> used, I will try building everything as a module like you do. Can you
+> >>> see if the following helps:
+> >> For reference we have mdio_bcm_unimac/genet both built as modules in
+> >> Fedora and I've not seen this issue reported using vanilla upstream
+> >> kernels if that's a useful reference point.
+> >
+> > I was also unable to reproduce this issue, but it seems to be a known
+> > issue [1], [2].
+> >
+> > Jian-Hong opened an issue in my Github repo [3], but before the issue
+> > was narrowed down, he decided to send this workaround.
+>
+> The comment about changing the phy-mode property is not quite making
+> sense to me, except if that means that in one case the Broadcom PHY
+> driver is used and in the other case the Generic PHY driver is used.
+>
+> What is not clear to me from the debugging that has been done so far is
+> whether the mdio-bcm-unimac MDIO controller was not loaded at the time
+> of_phy_connect() was trying to identify the PHY device.
 
+MODULE_SOFTDEP("pre: mdio-bcm-unimac")  mentioned in the comment [1]
+solves this issue.
 
-On 6/22/21 11:45 AM, Jan Kiszka wrote:
->>> Vignesh, it seems this quirk needs some soc specific flag added to
->>> it maybe? Or maybe UART_OMAP_RX_LVL register is not available for
->>> all the SoCs?
->>>
->> Yes indeed :(
->>
->>> I think it's best to drop this patch until the issues are resolved,
->>> also there are some open comments above that might be answered by
->>> limiting this quirk to a specific range of SoCs :)
->>>
->> Oops, I did test patch AM33xx assuming its equivalent to OMAP3, but UART
->> IP is quite different. I will respin the patch making sure, workaround
->> applies only to AM65x and K3 SoCs.
->>
->> Regards
->> Vignesh
->>
-> What's the status here for AM65x? The issue remains present on that
-> platform, and I was hoping to see a quick follow up that limit the fix
-> to that target.
-> 
+Tracing the code by following the debug message in comment #2 [2], I
+learned the path bcmgenet_mii_probe()'s of_phy_connect() ->
+of_phy_find_device() -> of_mdio_find_device() ->
+bus_find_device_by_of_node().  And, bus_find_device_by_of_node()
+cannot find the device on the mdio bus.
 
-Sorry for the delay, I am trying to find which other TI SoCs are
-affected by this issue. But that exercise will need a bit more time.
-Will send a fix to address K3 SoCs like AM65x today/tomo.
+So, I traced bcm2711-rpi-4-b's device tree to find out which one is
+the mdio device and why it has not been prepared ready on the mdio bus
+for genet.
+Then, I found out it is mdio-bcm-unimac module as mentioned in comment
+#4 [3].  Also, noticed "unimac-mdio unimac-mdio.-19: Broadcom UniMAC
+MDIO bus" comes after "bcmgenet fd580000.ethernet eth0: failed to
+connect to PHY" in the log.
+
+With these findings, I try to re-modprobe genet module again.  The
+ethernet on RPi 4B works correctly!  Also, noticed mdio-bcm-unimac
+module is loaded before I re-modprobe genet module.
+Therefore, I try to make mdio-bcm-unimac built in kernel image,
+instead of a module.  Then, genet always can find the mdio device on
+the bus and the ethernet works as well.
+
+Consequently, the idea, loading mdio-bcm-unimac module earlier than
+genet module comes in my head!  However, I don't know the key word
+"MODULE_SOFTDEP" until Florian's guide.  That is why I have a loop to
+connect the PHY in the original patch.  But, I understand
+MODULE_SOFTDEP is a better solution now!
+
+I think this is like the module loading order situation mentioned in
+commit 11287b693d03 ("r8169: load Realtek PHY driver module before
+r8169") [4].
+
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=3D213485#c6
+[2] https://bugzilla.kernel.org/show_bug.cgi?id=3D213485#c2
+[3] https://bugzilla.kernel.org/show_bug.cgi?id=3D213485#c4
+[4] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
+it/?id=3D11287b693d03830010356339e4ceddf47dee34fa
+
+Jian-Hong Pan
