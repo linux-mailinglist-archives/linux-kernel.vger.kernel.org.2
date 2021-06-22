@@ -2,78 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953BF3AFF62
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0F13AFF55
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhFVIju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 04:39:50 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:39338 "EHLO honk.sigxcpu.org"
+        id S230419AbhFVIeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 04:34:08 -0400
+Received: from mga02.intel.com ([134.134.136.20]:9523 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229628AbhFVIjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 04:39:48 -0400
-X-Greylist: delayed 618 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Jun 2021 04:39:48 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 3A432FB03;
-        Tue, 22 Jun 2021 10:27:13 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id fPibtmydCwzb; Tue, 22 Jun 2021 10:27:11 +0200 (CEST)
-Date:   Tue, 22 Jun 2021 10:27:09 +0200
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: simple-card: Fill in driver name
-Message-ID: <YNGe3akAntQi8qJD@qwark.sigxcpu.org>
+        id S229628AbhFVIeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 04:34:07 -0400
+IronPort-SDR: IPThxi2VB99ay812jsrB0XPHj1OqaMIBqIE8AXIZ6zb+imGGk96xbv26aOG4YJW3IYRwX0CwQB
+ g/Skx8YTnTZg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="194150643"
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="194150643"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 01:31:34 -0700
+IronPort-SDR: JWFZFk1oPOMYrDwszmAKBB9hfqFqn3B9kATAqjc1YYWnE9dSSmT4N2lIRkf0QjbGCJ635WjV49
+ 1d5ilXF2yhqw==
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="452528472"
+Received: from unknown (HELO [10.185.169.18]) ([10.185.169.18])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 01:31:31 -0700
+Subject: Re: [Intel-wired-lan] [PATCH] e1000e: Fix an error handling path in
+ 'e1000_probe()'
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, kuba@kernel.org,
+        "Edri, Michael" <michael.edri@intel.com>
+Cc:     netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
+        "Neftin, Sasha" <sasha.neftin@intel.com>
+References: <2651bb1778490c45d963122619fe3403fdf6b9de.1623819901.git.christophe.jaillet@wanadoo.fr>
+From:   "Neftin, Sasha" <sasha.neftin@intel.com>
+Message-ID: <9622d773-323a-3022-e447-0586defd3732@intel.com>
+Date:   Tue, 22 Jun 2021 11:31:29 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <2651bb1778490c45d963122619fe3403fdf6b9de.1623819901.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-alsa-ucm groups by driver name so fill that in as well. Otherwise the
-presented information is redundant and doesn't reflect the used
-driver. We can't just use 'asoc-simple-card' since the driver name is
-restricted to 15 characters.
-
-Before:
-
- # cat /proc/asound/cards
- 0 [Devkit         ]: Librem_5_Devkit - Librem 5 Devkit
-                      Librem 5 Devkit
-After:
-
- 0 [Devkit         ]: simple-card - Librem 5 Devkit
-                      Librem 5 Devkit
-
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
----
-This came out of a discussion about adding alsa-ucm profiles for the
-Librem 5 Devkit at https://github.com/alsa-project/alsa-ucm-conf/pull/102
-
- sound/soc/generic/simple-card.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 0015f534d42d..a3a7990b5cb6 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -621,6 +621,7 @@ static int asoc_simple_probe(struct platform_device *pdev)
- 	card->owner		= THIS_MODULE;
- 	card->dev		= dev;
- 	card->probe		= simple_soc_probe;
-+	card->driver_name       = "simple-card";
- 
- 	li = devm_kzalloc(dev, sizeof(*li), GFP_KERNEL);
- 	if (!li)
--- 
-2.30.2
+On 6/16/2021 08:05, Christophe JAILLET wrote:
+> If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
+> must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
+> call, as already done in the remove function.
+> 
+> Fixes: 111b9dc5c981 ("e1000e: add aer support")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>   drivers/net/ethernet/intel/e1000e/netdev.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+> index 5435606149b0..c8aa69fd0405 100644
+> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
+> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+> @@ -7662,6 +7662,7 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>   err_ioremap:
+>   	free_netdev(netdev);
+>   err_alloc_etherdev:
+> +	pci_disable_pcie_error_reporting(pdev);
+>   	pci_release_mem_regions(pdev);
+>   err_pci_reg:
+>   err_dma:
+> 
+Acked-by: Sasha Neftin <sasha.neftin@intel.com>
