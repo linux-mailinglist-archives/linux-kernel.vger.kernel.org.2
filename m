@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EBF3B0BA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71FB33B0BA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232380AbhFVRpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 13:45:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48314 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232301AbhFVRpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 13:45:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FEBD60720;
-        Tue, 22 Jun 2021 17:42:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624383771;
-        bh=AdNNC8o9THyCPkVQW5qscu3FI9w1HH+6jr1PCtqb1Q0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BuUaok2S0pfxbCbyv4kUBId+/dPCEvf8XmanC4CYP9caxpRBxb7U7CZWgF+9tHVIc
-         /CBf5C1EAcICRWycYEE006yhknN5fpaQCIK5NCbwpBjbjJ86IrM7aM2ns/jtWT+s4v
-         k9b7Y6coVds0foRMwQzZ+Byo6XaELtC9i8okUwT+UQf3+sn20sspTchLQ1JV+vk6Jm
-         0uzVB2bBnhMjdhVaX2qu7vWTa3NkKaUHRQb6DQ5J+HACxg/CTQ6PfTDYW21NPSNQPM
-         AjLqY8atsh1QaGc8uXbKMGTGzZtLi2UMLZr48cTarxfngM8ZHOrcRXB9rS+sGnwJ2o
-         ezkC1+mRKY5Iw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id EF15640B1A; Tue, 22 Jun 2021 14:42:47 -0300 (-03)
-Date:   Tue, 22 Jun 2021 14:42:47 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     John Garry <john.garry@huawei.com>, Jiri Olsa <jolsa@redhat.com>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: Re: perf tool: About tests debug level
-Message-ID: <YNIhF2ncHTE8uEoo@kernel.org>
-References: <ecd941b3-2fd5-61d8-93a1-76a3a3ee4138@huawei.com>
- <CAP-5=fUxQZ+rxLEn6jeRNVMf48BaPNdaUdoMs8LY4P-GROiOnw@mail.gmail.com>
- <cd501541-deb5-f2f5-e086-cca44b40c87d@huawei.com>
- <CAP-5=fU05k62d57pbWquqv3Z1RFzWMOB1d3OFEcEax5btEWEzg@mail.gmail.com>
+        id S232377AbhFVRpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 13:45:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49799 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231726AbhFVRpS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 13:45:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624383781;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Li6M8eB7WFoY4AUKWeE2vP5iJVKbyiAFbNV5HezuJLI=;
+        b=cdCM9zmjyEgRgHbbd7PuCO0S5nzI07EifNr+g0fL1wo+pFtmuwEQmZf+IdqloAXwEDCETy
+        oPx4FWbJfYQMUgIz2mO3n+Ygg8KLIXCGEJyUSqbee+/Kt1sLjoFckIGdal8tsEJ0RDMGGK
+        4ACwWTuNSJ3KmppVC4STc1n92uLRipY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-341-8d0j3GcTNg-b1n2SO9CYgA-1; Tue, 22 Jun 2021 13:43:00 -0400
+X-MC-Unique: 8d0j3GcTNg-b1n2SO9CYgA-1
+Received: by mail-wr1-f72.google.com with SMTP id d8-20020adfef880000b029011a9391927aso3726859wro.22
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:42:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Li6M8eB7WFoY4AUKWeE2vP5iJVKbyiAFbNV5HezuJLI=;
+        b=SHVOWwrVH4u/EcLEjA+RPxIMJnyttOukxSLjBN2m15ggbmeC2TBfDvY4g9wW5tGopX
+         fWnBR4Z3g6/wUr8O+X4g+OwN856rM81vJWSFno658uE0DM2JInXu5HQy+uCvirIrwegW
+         LVt+/3qHEvO69Z7crkhcPJiLi/ml0kyah5cNgMsXCbxSOvwNGsQg4aSSBVwVgQxxf/09
+         JrVPK4etvbl+fS5AGkoTKuhb8ik/ImSWVfqwrF/TvzMm/LivgYEG80K2BFXQAXHCNln2
+         +pU7CqMDjjTptn2HjsWt4AzPiazBVpgC3vtG3f88WO7YImAxvDIn25ja7rFmWNlOtEOU
+         5Lsw==
+X-Gm-Message-State: AOAM532USuui+sE5cDjQBkipLNPhrjti4UOUDs+gj1Qunui3UvBc0A3K
+        noM+kDP5dIfAlVdC3riumPP7ZF1rRZVPm8DzmM69t/FAqWditeAsNs+U/hSpaT/+h6Psvva68yf
+        oV1HaUDZjUHmsXzOgcK8GSmZ8
+X-Received: by 2002:a1c:ed14:: with SMTP id l20mr5850609wmh.20.1624383778945;
+        Tue, 22 Jun 2021 10:42:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzbRc0bStZfinicCTWvb1Utq2odV+ee26gaS8OLQrldd250i3h7Tfqzr6WyZCM+YumzDFhIsA==
+X-Received: by 2002:a1c:ed14:: with SMTP id l20mr5850596wmh.20.1624383778839;
+        Tue, 22 Jun 2021 10:42:58 -0700 (PDT)
+Received: from krava ([5.171.242.79])
+        by smtp.gmail.com with ESMTPSA id e15sm32960wrm.60.2021.06.22.10.42.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 10:42:58 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 19:42:54 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        linux-rt-users@vger.kernel.org, frederic@kernel.org,
+        mtosatti@redhat.com, LKML <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [RFC 2/2] timers: Make sure irq_work is handled when no pending
+ timers
+Message-ID: <YNIhHmAekp2sUBCN@krava>
+References: <20210610125945.558872-1-nsaenzju@redhat.com>
+ <20210610125945.558872-2-nsaenzju@redhat.com>
+ <87mtrmeqon.ffs@nanos.tec.linutronix.de>
+ <YNHpN1h5hEZdt+Au@hirez.programming.kicks-ass.net>
+ <YNIe38WaY0lOTEAZ@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP-5=fU05k62d57pbWquqv3Z1RFzWMOB1d3OFEcEax5btEWEzg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <YNIe38WaY0lOTEAZ@krava>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jun 22, 2021 at 09:00:31AM -0700, Ian Rogers escreveu:
-> On Tue, Jun 22, 2021 at 4:58 AM John Garry <john.garry@huawei.com> wrote:
-> >
-> > On 22/06/2021 06:04, Ian Rogers wrote:
-> > >> ---- end ----
-> > >> Parse and process metrics: FAILED!
-> > >>
-> > >> Note that the "FAILED" messages from the test code come from pr_debug().
-> > >>
-> > >> In a way, I feel that pr_debug()/err from the test is more important
-> > >> than pr_debug() from the core code (when running a test).
-> > >>
-> > >> Any opinion on this or how to improve (if anyone agrees with me)? Or am
-> > >> I missing something? Or is it not so important?
-> > > Hi John,
-> > >
-> >
-> > Hi Ian,
-> >
-> > > I think the issue is that in the parsing you don't know it's broken
-> > > until something goes wrong. Putting everything on pr_err would cause
-> > > spam in the not broken case.
-> >
-> > Right, I would not suggest using pr_err everywhere.
-> >
-> > > Improving the parsing error handling is a
-> > > big task with lex and yacc to some extent getting in the way. Perhaps
-> > > a middle way is to have a parameter to the parser that logs more, and
-> > > recursively call this in the parser when parsing fails. I guess there
-> > > is also a danger of a performance hit.
-> >
-> > So I am thinking that for running a test, -v means different levels logs
-> > for test code and for core (non-test code). For example, -v prints
-> > pr_warn() and higher for test logs, but nothing for core logs. And then
-> > -vv for running a test gives pr_debug and above for test logs, and
-> > pr_warn and above for core logs. Or something like that.
-> >
-> > Maybe that is not a good idea. But I'm just saying that it's hard to
-> > debug currently at -v for tests.
-> >
-> > Thanks,
-> > John
+On Tue, Jun 22, 2021 at 07:33:23PM +0200, Jiri Olsa wrote:
+> On Tue, Jun 22, 2021 at 03:44:23PM +0200, Peter Zijlstra wrote:
+> > On Sat, Jun 19, 2021 at 12:47:04AM +0200, Thomas Gleixner wrote:
+> > > There are two solutions:
+> > > 
+> > >   1) Create a IRQ_WORK softirq and raise that
+> > > 
+> > >   2) Simply delegate it to a workqueue
+> > 
+> > IIRC someone was looking to stick the whole thing in a kthread_worker.
+> > Jiri, was that you?
+> > 
 > 
-> I think this sounds good. It'd be nice also to have verbose output in
-> the shell tests following the same convention. There's currently no
-> verbose logging in shell tests but I propose it here:
-> https://lore.kernel.org/lkml/20210621215648.2991319-1-irogers@google.com/
-> By their nature some of the shell tests launch perf, perhaps there can
-> be some convention on passing the verbose flag through in those cases.
+> yep, I still plan on doing that
 
-Hey, there is even a v2 for that one, lemme process it :-)
+hum, IIRC that was actually perf specific change we discussed some
+time ago I should have read the whole thread before answering
 
-- Arnaldo
+I'll check what was my plan to do and get back ;-)
+
+jirka
+
