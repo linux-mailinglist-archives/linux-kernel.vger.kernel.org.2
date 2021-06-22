@@ -2,115 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9E43B05E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB95D3B05F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhFVNig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 09:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbhFVNif (ORCPT
+        id S231286AbhFVNm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 09:42:29 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:38923 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230103AbhFVNm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 09:38:35 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C64B0C061574;
-        Tue, 22 Jun 2021 06:36:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZMVUEa2ftu4FuJfVBY24GiGS9yAP+xLlFfBh5dASAjQ=; b=Y15Sro6mF/ZIERWCYj4rfBGnD9
-        pXk15J5EwKJaUdT5xwRI6kPHj26CgJU4wYy6MH/7Doq9VkHC3clV5941/G11jeXHxa85wD7+E+6a9
-        vj1MAaTq/uBQ2fbwh49bFJLC2uooJjgArmm35T3+Y/7f3p487EfIGnzgeWFFHrKYsS85PKFY8mv7X
-        p/WxLe+dWA2oFov5QPXUcFuVUrsfbuppAAfAJjffWKycnTvTBNx7UesBiU8F5jEi+Kax2yGJVf1TU
-        ZI5iTcntKeHZCNjLvAor1U2mRC1EwVvERSC0zjVdYMT7oN6Q88f4ZBkDWzhNCGN1rfd5NxA777mOo
-        wpKiDJqQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvgZL-00Abs3-77; Tue, 22 Jun 2021 13:36:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BA75830021A;
-        Tue, 22 Jun 2021 15:36:03 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9C9572C733666; Tue, 22 Jun 2021 15:36:03 +0200 (CEST)
-Date:   Tue, 22 Jun 2021 15:36:03 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH] perf/x86/intel: Fix PEBS-via-PT reload base value
- for Extended PEBS
-Message-ID: <YNHnQzECTcFGOoHO@hirez.programming.kicks-ass.net>
-References: <20210621034710.31107-1-likexu@tencent.com>
+        Tue, 22 Jun 2021 09:42:26 -0400
+Received: from mail-wm1-f53.google.com ([209.85.128.53]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MnJQq-1lWDlt0aCi-00jLNb; Tue, 22 Jun 2021 15:40:09 +0200
+Received: by mail-wm1-f53.google.com with SMTP id o33-20020a05600c5121b02901e360c98c08so52403wms.5;
+        Tue, 22 Jun 2021 06:40:08 -0700 (PDT)
+X-Gm-Message-State: AOAM532it2aS9Qjt1PnQd80roy7wyWxH9watKGIujFJwxKz0DvZbfEFh
+        z5+UM4D817EArgTdUAF+3H/9JgOlRptY1tCRm0I=
+X-Google-Smtp-Source: ABdhPJzm6xLY1LzxfJVjzpAuWWJivt4Xrbgr6yE13SVhdl1IZ1z4VN1BG5wxOqSc2yODn79ksNUEMWlvOjfXWZqlOWM=
+X-Received: by 2002:a1c:a5ce:: with SMTP id o197mr4680368wme.84.1624369208699;
+ Tue, 22 Jun 2021 06:40:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621034710.31107-1-likexu@tencent.com>
+References: <20210621175359.126729-6-sebastian.reichel@collabora.com> <202106222109.fdao9FF0-lkp@intel.com>
+In-Reply-To: <202106222109.fdao9FF0-lkp@intel.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 22 Jun 2021 15:37:49 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2CmYnE=S8RqxM-3bKYH+VvYxOpA2-jzBLYwftvvA614Q@mail.gmail.com>
+Message-ID: <CAK8P3a2CmYnE=S8RqxM-3bKYH+VvYxOpA2-jzBLYwftvvA614Q@mail.gmail.com>
+Subject: Re: [PATCHv5 5/5] misc: gehc-achc: new driver
+To:     kernel test robot <lkp@intel.com>
+Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, kbuild-all@lists.01.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>, Ian Ray <ian.ray@ge.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:gCjwuv+558bexIlYzz+G1/iGaLKRIZ6JocYPKCPq2a8q0IhszNG
+ Fza6HhuWHyZU/IWNV0/W2t0bkZjlZZN4BBLW8GX6u/0DVwWzAszOsCzxi6y6tidZ1rajIS5
+ jzhqPLDsqP3hxBcm9hbXSytnWUpIAyiL03hwuSsZHNEAz3l4yMDvvJXfUjFiFWN/GmGySnj
+ Q67mFWFnT67acoBrX1ooQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:tK6VT9/1axY=:QzpiVIigh9cMEQjRf0C+1n
+ +rxOQkRMPnGvPNCVIVv+MWD5pGldThRDLUlDACrtek7CVHc1SdL/jc+4/1dxJNpn7MqY19NPk
+ 9WVj/EgytxCx3ZEtIWJatDzKmbUnf65OzS+MLkAKDN4kyzLgjmwo3CauAvi3CRGYFRmS6hm9j
+ aG02U5qk1O57Y2Rls0L3zrInO680Xqyt97Hd66CfaGBqTA4wB1Em8Wqi6V4SRzv2AwxIKR1Y5
+ hfQvr18/9HvUoBG9nr2eB69w8Hgh71FkhxBRhmUCPfZoyZPxWAXYJg4z8cjSJUWJBS2gH85fw
+ LsXIyKjqj2VyLpbvG40tvJnZW4c/WpcvLhbQIAUxMcpQ3gKEL7/Pq9OOpwgflITGJKbjbPa2C
+ qhgZ3PJetrlWc4dGkwwEZ/yUFFrPWHFPaYoVXqhhKYoD6MXxe89uVPUxDd9KWRwHX/zg3myp1
+ uR0+MnnDhq1/HLZcCY0PSWUbjCijuWpZ2QXJeZX4KLd8sQeKc/3f/IHb0a25vXhChzTowTFf+
+ CwpVVzxOy1RDrvqnAvYees=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 11:47:10AM +0800, Like Xu wrote:
-> If we use the "PEBS-via-PT" feature on a platform that supports
-> extended PBES, like this:
-> 
->     perf record -c 10000 \
->     -e '{intel_pt/branch=0/,branch-instructions/aux-output/p}' uname
-> 
-> we will encounter the following call trace:
-> 
-> [  250.906542] unchecked MSR access error: WRMSR to 0x14e1 (tried to write
-> 0x0000000000000000) at rIP: 0xffffffff88073624 (native_write_msr+0x4/0x20)
-> [  250.920779] Call Trace:
-> [  250.923508]  intel_pmu_pebs_enable+0x12c/0x190
-> [  250.928359]  intel_pmu_enable_event+0x346/0x390
-> [  250.933300]  x86_pmu_start+0x64/0x80
-> [  250.937231]  x86_pmu_enable+0x16a/0x2f0
-> [  250.941434]  perf_event_exec+0x144/0x4c0
-> [  250.945731]  begin_new_exec+0x650/0xbf0
-> [  250.949933]  load_elf_binary+0x13e/0x1700
-> [  250.954321]  ? lock_acquire+0xc2/0x390
-> [  250.958430]  ? bprm_execve+0x34f/0x8a0
-> [  250.962544]  ? lock_is_held_type+0xa7/0x120
-> [  250.967118]  ? find_held_lock+0x32/0x90
-> [  250.971321]  ? sched_clock_cpu+0xc/0xb0
-> [  250.975527]  bprm_execve+0x33d/0x8a0
-> [  250.979452]  do_execveat_common.isra.0+0x161/0x1d0
-> [  250.984673]  __x64_sys_execve+0x33/0x40
-> [  250.988877]  do_syscall_64+0x3d/0x80
-> [  250.992806]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  250.998302] RIP: 0033:0x7fbc971d82fb
-> [  251.002235] Code: Unable to access opcode bytes at RIP 0x7fbc971d82d1.
-> [  251.009303] RSP: 002b:00007fffb8aed808 EFLAGS: 00000202 ORIG_RAX: 000000000000003b
-> [  251.017478] RAX: ffffffffffffffda RBX: 00007fffb8af2f00 RCX: 00007fbc971d82fb
-> [  251.025187] RDX: 00005574792aac50 RSI: 00007fffb8af2f00 RDI: 00007fffb8aed810
-> [  251.032901] RBP: 00007fffb8aed970 R08: 0000000000000020 R09: 00007fbc9725c8b0
-> [  251.040613] R10: 6d6c61632f6d6f63 R11: 0000000000000202 R12: 00005574792aac50
-> [  251.048327] R13: 00007fffb8af35f0 R14: 00005574792aafdf R15: 00005574792aafe7
-> 
-> This is because the target reload msr address is calculated
-> based on the wrong base msr and the target reload msr value
-> is accessed from ds->pebs_event_reset[] with the wrong offset.
-> 
-> According to Intel SDM Table 2-14, for extended PBES feature,
-> the reload msr for MSR_IA32_FIXED_CTRx should be based on
-> MSR_RELOAD_FIXED_CTRx.
-> 
-> For fixed counters, let's fix it by overriding the reload msr
-> address and its value, thus avoiding out-of-bounds access.
-> 
-> Fixes: 42880f726c66("perf/x86/intel: Support PEBS output to PT")
-> Signed-off-by: Like Xu <likexu@tencent.com>
+On Tue, Jun 22, 2021 at 3:30 PM kernel test robot <lkp@intel.com> wrote:
+>
+>
+> ERROR: modpost: missing MODULE_LICENSE() in drivers/misc/nxp-ezport.o
+> >> ERROR: modpost: "ezport_flash" [drivers/misc/gehc-achc.ko] undefined!
+> >> ERROR: modpost: "ezport_reset" [drivers/misc/gehc-achc.ko] undefined!
 
-Thanks!
+It looks like this was only tested as a built-in driver. The easiest way would
+be to change the Makefile to link both files into a combined driver module,
+such as
+
+obj-$(CONFIG_GEHC_ACHC)           += gehc-achc-mod.o
+gehc-achc-mod.o                                += gehc-achc.o nxp-ezport.o
+
+       Arnd
