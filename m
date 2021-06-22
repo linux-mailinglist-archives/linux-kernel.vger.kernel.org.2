@@ -2,146 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9919C3B0D2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14A33B0D31
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232674AbhFVSsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:48:16 -0400
-Received: from mail-dm6nam12on2076.outbound.protection.outlook.com ([40.107.243.76]:17376
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232638AbhFVSsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:48:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NKltZSoOeCB25y+hWd0GN/sJ93LEllqbqvWqV9ndnflBNNjlnyIOaXVIi5q9HoQDWvvA4LscJyrw17u584IMPOYhy+A3PgTI7fIX6WNc+P+mLf+WNNWRNOFc8w5PFZ/8g/Qe1Qi68lC6QFDwchuS9sqGpZkaHN1MopUyHe/otppFP6qkyLB6SY0oOPtYl1wM/Ni+q/UHO0odweep1DfPrsIM14IsE6opTRNM2peQSgkG3lK41Ff7hAhj/d0P0LZEr3X2c7beQvsArLLLKMsCktAexgNXdnqy438WGFfmYzAkm/nBi/MkGWDvdsipFbAmbc882+QxAn665kAL2Sf5fw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KMGZiI9byiiNt/jwj3RKb0biAafqOxsDIRUVTzOQItk=;
- b=G4c1S2lC2qtiFkgXwnglLk1OEU2Dwe1/DBeIpaxZaXx823H4ErobfxkkfaI3jJLkzIPeaxT/9W2MdMO45qzQ8tJZomcNbDmBenO2mXnW0NHvXSmX/eD2B0tKrv8eUrGw+djNIL3r7OLqFw6Q79/lVSc3yHO7rC6buFQqmokiakxjyr/Vg9o80NLiCp2tnw+6PzMTdWOxakgSywnT4zd/mBJ2yqQFugRfKKwJIoZQ+tnCIhU/6Mjy/udSLgZOJlJAPRmmxEt4/xqjJkvnR3Mdd2Lw0bv/sIZPAj+cVFnASzTk6wr/ukuJ+Hcolt9nC+SqcuERiveqFIWEOopC3NUUzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KMGZiI9byiiNt/jwj3RKb0biAafqOxsDIRUVTzOQItk=;
- b=k7qzBTibV1HC3byk9tbGSiF7bgwIokFMrAw1eOxfzBURSz51KVj4YCaF+K8CZB1Tt+gZum8smzg3kj6tDpsG333T4puY0uaXVCQ6/Ny7HCDhMI7Du7qaD+CgYjjoPB8MrjuSfb7rGsJ8TNf7Am3AUEvg/MZfVEpVfL7yMER50b2syp2WtkcSxpMsQ/3BpnJkhoMPScLJUZ4S+/lhvYOJYNqsRq9U1XBYP97zz3MZxOQXQ47pzsQjBAZXPITXjgFTN8QLqYVeg7KLXjQwEYw8akcGFosiTHDlxOaQ20hQXiYohwAcqhQFR02DnlxuIKf+Uh4JgMuf7LgwHDXIJoGZlA==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5205.namprd12.prod.outlook.com (2603:10b6:208:308::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Tue, 22 Jun
- 2021 18:45:57 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4264.018; Tue, 22 Jun 2021
- 18:45:57 +0000
-Date:   Tue, 22 Jun 2021 15:45:56 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Lior Nahmanson <liorna@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Meir Lichtinger <meirl@nvidia.com>, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH rdma-next v1 2/3] RDMA/mlx5: Separate DCI QP creation
- logic
-Message-ID: <20210622184556.GA2596427@nvidia.com>
-References: <cover.1624258894.git.leonro@nvidia.com>
- <b4530bdd999349c59691224f016ff1efb5dc3b92.1624258894.git.leonro@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b4530bdd999349c59691224f016ff1efb5dc3b92.1624258894.git.leonro@nvidia.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0268.namprd13.prod.outlook.com
- (2603:10b6:208:2ba::33) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S232587AbhFVSvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230338AbhFVSvG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 14:51:06 -0400
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69008C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:48:49 -0700 (PDT)
+Received: by mail-ua1-x929.google.com with SMTP id e20so8019623ual.9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:48:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=+D9GL/a0tUI3plKrlEmSJ7OI5JyRd5f1tadWzbi57fk=;
+        b=GUUyxFYHHOnxOgj5lrM6+zLRG+BoYVCdWuKIFX4WqaDpjMZPqtDhv/3vW3hxxwtGSz
+         M+VYCOCfb9pePtQUaxBQh85HD5R9lGCNvQv3sHJxZu4A4iWLit34ZePWvIYz1rQhPG8g
+         wZ8d2vGElpPRCCDEDYxWvHz7VLA1L9PCDwqxeU9IB0GZ7+p+J6c+KnF0gyV0AB+JiU/M
+         eyAKT2WBw7T942vp6NzNIGaIM1s6SkcXFUhXOA/LrYSlyHvonNX4qywaLmrOszApDmAy
+         M681hp6ac3d6R1v6CHoBXwemKmh7/AOvl66nzP7B4TusPVDIiJY94JeF9YDu8IYoN7wG
+         JtfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=+D9GL/a0tUI3plKrlEmSJ7OI5JyRd5f1tadWzbi57fk=;
+        b=Mrbc96EmkP/HlI6/LP3CHVgz/LCo2xo0ZGuhZZ52d2l2f71oo0QbOLuuaCksh4R49w
+         YrDc+vrQVBmQ5t9kx2iQJkO9WxtIbYPeFul5qkRbYp1kCwuMTVRX111GKh1DmBrQRoBG
+         BUOiAjaCpVGx3wvUZVEWDkS+meCmWey/mZl3uYKyR7+ur3UhX0TGSzKuspOyCh5NPhW/
+         9EaaWr7ZuypDY7D6jnIn4w1GlmIlmGXZMoJ6pzx4Ri45H1DME5Yybp1Ne061E2GTGZKZ
+         iHK2ld4gxbl3zbOWezYJu5b2OmmJTXit2RHFPFLg4xip5DU3oSVPSa9Figw5L94qhXRl
+         8PMg==
+X-Gm-Message-State: AOAM530pEj3HM+b55ZYKewyigr1sAHOXLBbyjUugQ5+sISqFN0hjpM5p
+        BuyEVxQxH1z0RJgY/HEaqBCyUUB8T8AxKMUqsKg=
+X-Google-Smtp-Source: ABdhPJzeLgNQxZA+wrhGcPtmM6fR8BdNEDlJYdpzO1GdFjLnc6xPvzadLx3H1r6wm+9sdiNk2y4eMXbzK7jzx4p9dA4=
+X-Received: by 2002:ab0:45e5:: with SMTP id u92mr307663uau.23.1624387728510;
+ Tue, 22 Jun 2021 11:48:48 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0268.namprd13.prod.outlook.com (2603:10b6:208:2ba::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.9 via Frontend Transport; Tue, 22 Jun 2021 18:45:57 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lvlPI-00AtWJ-CR; Tue, 22 Jun 2021 15:45:56 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ae6b796f-3527-4576-e49b-08d935adf8f1
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5205:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB52059AE28AD1F483A8BF6818C2099@BL1PR12MB5205.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: P6K8mpFipdyQkibNGNyRFeJOyHcJ7gFPkGQkQY9SrAQWKHO5TZ0dbgcS6dfBDVKBzrmOK+SLHXNZbva8CGzjrKTQq+0WDl/xjXbQJVhGgpHHYKTsbftepG8/pyicxaoNjiET6MHH9iEVI7VWc6lSI9P04GvANBl6mi0ghjxf0e70Fvuo5Veuka9q1JWJDQFUWafECKSNhSniETujSUHVmN9CvHoLNuy7Gb+i9oeXUIpJ9Ano6bqyzBt2A05pFxlZJDqGPnTNPqcw40LG8gbHaz1aDjT5Pncr1gNYT/0ge0ROs4fkv7xVqtJiHdPupRaxmUx8b9etAUp5LrXhX7dFT9oR3QLQFyrdelYa3Ylvnw3WP3l9MG+E3rkcJISJ8RK/wc5oC4eOjWHO688RkdSORCNaDNjyLCafvbR9x/ODjNpG+nsvkHe4SBV8t+Fm7drLVfu9TdfRamv0UNsKUmAj0644zrilpVfK2th/z859PrblBU4u7RjGAbCbiaUaq4u6FL+sgRii2Q0nzENL4gMv4PgMHxjwbhCPa3MIJL6TlA9v4DxqABcFYL1nTHpy+lwU9Y7oX5WwV1AxLGWF5fcAVPTAhEteNDrmG7e0ZtkplFM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(366004)(346002)(396003)(136003)(36756003)(66946007)(2616005)(66476007)(66556008)(9786002)(9746002)(426003)(8936002)(2906002)(8676002)(316002)(54906003)(5660300002)(86362001)(186003)(33656002)(26005)(1076003)(38100700002)(107886003)(4326008)(478600001)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QjHZjnZZNJ0wI7DF715He9r2YqCG7xRpRRPUlooA1lYvZDjLp3QbKAEKLcDK?=
- =?us-ascii?Q?RermJqFmUD5BrU5ifS+adIG0owZjudkJAbkUYG+f94gvaBtRZhXsCpRmBTmg?=
- =?us-ascii?Q?1D4snAZ5z/u1yN+g/HpihqshqUgHWKcvRBJ82f+JIzEYflLxKGshqRSeTd6O?=
- =?us-ascii?Q?ftrob6psfguvGfWk21/N/tnDPV/cnn1jhOS/+aEyq/qUvnXzt5QvVXUlj5JW?=
- =?us-ascii?Q?kriRZ+i/5Q/fbM4f3pwF8TSGtWUDvsxC/Ys2WCcoiKl7J5kyQ3+3EaTQyMT2?=
- =?us-ascii?Q?Ws9IRMB6rcJanf2ZPCoL+6g0dBlXLWFhD8XPg7LvbO+eucYK6MUkOQghWT60?=
- =?us-ascii?Q?w/EVnNRTqJAYyT4KDxx2GinAh56ncX18r26AS6lnvNqn+fIPiFibMtiYiZYZ?=
- =?us-ascii?Q?QouOiVK6xgTTHTQuHNoqJ1PuAx24kzCsYu4U/B/p5UCaO7gWz4yTgZPJnhOp?=
- =?us-ascii?Q?c5TpdzFm7PoJ8tRgy5esNiXNVj8PxC5xCJrXITEBdAacdEedndeflENRiid/?=
- =?us-ascii?Q?FxmufhErXJfBAg/OLH1YvTrnm30iOTrBiTcdoVEz0DekzlwuXcfbmGjJabe8?=
- =?us-ascii?Q?fnsqCcDeQh0soexMaBtHK79/VJM5LKZhHYlw/wYuz/OhorMbQCcoxurmGZqT?=
- =?us-ascii?Q?m6CWuEX7xo931hbaW/fzaSQ98mc4lb7GcolgXA0nUheHmtOz1Hn+Ec/zvO84?=
- =?us-ascii?Q?bcYFxTL/kipaSWzua4skCKJa5OleG/K4HaDJrXfd3ATP+9ZeoF0Dt70zYELB?=
- =?us-ascii?Q?Li6d8Na8yrbIX0sqpADDGEUQUOIe61kt+MBWazTIxxTRyW6bJjsEryMjjOnv?=
- =?us-ascii?Q?dg/DMB4Y/Mtxr4TBq/scxeGXISRAnPbiHZpI9NvDpy64Y3MMUGY2aPghcVPM?=
- =?us-ascii?Q?4/DWmr7L8ceKUxPrp61zvJD3YyuvIningV5iHKeQixdb2IOu+ofrs8VuQVVN?=
- =?us-ascii?Q?cJ21FhaEpbEAd1wma8rnnNORYVsu3ezR5jSpiXWrsmkMA7x54OaHJQmBEYie?=
- =?us-ascii?Q?zQNYCFR/CrDktheAfQMJrZnsBnkeHCrxjUSTvXmJGgDXHP5nCLRNqyCha/tF?=
- =?us-ascii?Q?/6e+u8N265icqtCNrCLuSPTyPULkA8dvbvoVXjKiGJFEYgrG6a5xAE60NPJT?=
- =?us-ascii?Q?X7rxmDqnIxjGC9prFWrO1qYvNt2YpBfDQ8me5iANuaxZs282nAJQv7nVLbFo?=
- =?us-ascii?Q?SwI5EJpx8OMZAGb+LPvnsRMkUoEomNg+VGhuznbGV0gngWviRni6Szxi9AKe?=
- =?us-ascii?Q?D6zPE52mRFPeoRyC1AvmNQLtg85Ykay/j9vCKZGOYpktoSnKSFEjr1duj3VF?=
- =?us-ascii?Q?cYZ0MfsIeu+35ALJTL/9pzi8?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae6b796f-3527-4576-e49b-08d935adf8f1
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 18:45:57.3335
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sxLsGpByaApBFYANBkeaYOL8BNU7ZOLrtqPt7oMe8uqUxLU4FYyaoHFkk+9f6vNR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5205
+From:   jim.cromie@gmail.com
+Date:   Tue, 22 Jun 2021 12:48:22 -0600
+Message-ID: <CAJfuBxwfODtFYbP6cJnq4fU94AtK0oe2hGbKg-vOApb2ERk1eQ@mail.gmail.com>
+Subject: BUG: KCSAN: data-race in vring_interrupt+
+To:     virtualization@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 10:06:15AM +0300, Leon Romanovsky wrote:
-> From: Lior Nahmanson <liorna@nvidia.com>
-> 
-> This patch isolates DCI QP creation logic to separate function, so this
-> change will reduce complexity when adding new features to DCI QP without
-> interfering with other QP types.
-> 
-> The code was copied from create_user_qp() while taking only DCI relevant bits.
-> 
-> Reviewed-by: Meir Lichtinger <meirl@nvidia.com>
-> Signed-off-by: Lior Nahmanson <liorna@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
->  drivers/infiniband/hw/mlx5/qp.c | 157 ++++++++++++++++++++++++++++++++
->  1 file changed, 157 insertions(+)
-> 
-> diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-> index 7a5f1eba60e3..65a380543f5a 100644
-> +++ b/drivers/infiniband/hw/mlx5/qp.c
-> @@ -1974,6 +1974,160 @@ static int create_xrc_tgt_qp(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
->  	return 0;
->  }
->  
-> +static int create_dci(struct mlx5_ib_dev *dev, struct ib_pd *pd,
-> +		      struct mlx5_ib_qp *qp,
-> +		      struct mlx5_create_qp_params *params)
-> +{
+I got this on rc7 + myhacks
+Im testing on virtme ( kvm + qemu + 9p )
 
-This is a huge amount of copying just to add 4 lines, why?
+lemme know if I can test something.
 
-There must be a better way to do this qp stuff.
-
-Why not put more stuff in _create_user_qp()?
-
-Jason
+[   18.081278] virtme-init: starting udevd
+Starting version v248.3-1.fc34
+[   18.763364] virtme-init: triggering udev coldplug
+[   18.893238] ==================================================================
+[   18.894240] BUG: KCSAN: data-race in vring_interrupt+0xf7/0x130
+[   18.895108]
+[   18.895334] race at unknown origin, with read to 0xffff888005ca5942
+of 2 bytes by interrupt on cpu 0:
+[   18.896791]  vring_interrupt+0xf7/0x130
+[   18.897389]  __handle_irq_event_percpu+0x64/0x260
+[   18.898218]  handle_irq_event+0x93/0x120
+[   18.898883]  handle_edge_irq+0x123/0x400
+[   18.899550]  __common_interrupt+0x3e/0xa0
+[   18.900204]  common_interrupt+0x7e/0xa0
+[   18.900844]  asm_common_interrupt+0x1e/0x40
+[   18.901625]  native_safe_halt+0xe/0x10
+[   18.902180]  default_idle+0xa/0x10
+[   18.902808]  default_idle_call+0x38/0xc0
+[   18.903439]  do_idle+0x1e7/0x270
+[   18.903972]  cpu_startup_entry+0x19/0x20
+[   18.904717]  rest_init+0xd0/0xd2
+[   18.905443]  arch_call_rest_init+0xa/0x11
+[   18.906125]  start_kernel+0xacb/0xadd
+[   18.906681]  secondary_startup_64_no_verify+0xc2/0xcb
+[   18.907392]
+[   18.907624] Reported by Kernel Concurrency Sanitizer on:
+[   18.908440] CPU: 0 PID: 0 Comm: swapper/0 Not tainted
+5.13.0-rc7-dd7i-00038-g4e27591489f1-dirty #124
+[   18.910025] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS 1.14.0-3.fc34 04/01/2014
+[   18.911392] ==================================================================
