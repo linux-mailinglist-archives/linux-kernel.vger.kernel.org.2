@@ -2,206 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50623AFB0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1903AFB04
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhFVCaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 22:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbhFVCaJ (ORCPT
+        id S231358AbhFVCYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 22:24:04 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:24759 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230338AbhFVCYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 22:30:09 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4358BC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 19:27:54 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id d19so22153513oic.7
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 19:27:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jyUspRD+QDz3dTkk8iQ2AHNGE8vCC+sPnnlJZQaUVNU=;
-        b=NahmYXEAl3imcVSMEaXGAItj5kWOjRMMtzQgzSIAfXOsNH2nEPmi6zyqLPSiZtPkmL
-         gBhVHpTqsxoK9GggntJXeOPsk1N983cV43v5OAYYZKUeWlKcjrfyAguoVsAKlTdIYIWX
-         kg7U0zCYbpyJZamf1j5XvWSbfSGdM8DB2zvatgUsVa59ed9lEvSRSnGnMd/TCVcWeQHm
-         AjB09seVk02kV9N+w+B0q7U/Y6r3MVc7EPxsB5oOvctcZmHrhwoi0eGiDHDdNC5LmRXb
-         eDnrUWjdPjPFCvWK5CgUs8Zl/Rhc+G6sGaSnDL8YBGDb2c87k3jbFrIFa2jTl/LiqJ/N
-         hvcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jyUspRD+QDz3dTkk8iQ2AHNGE8vCC+sPnnlJZQaUVNU=;
-        b=bGaYszGELh54tUHUYyp/MV3vRDi5oP9FmJEpAXHIXH05MhaUOnWQHxXuZi83JJ9Nk4
-         9pS8mOn+4N2bmPEIAzc1DDn64oKQcvY46kZ8DxrW/0gC6wP5qKMg1MZaimFLS16eZWaC
-         kP2NkcRzQBRaJ1cdfwxOnPXLEhxqzHbcG4MLzk0XNH3znLyvNuOd2IO7Bepx0klfimGX
-         aloUhdtbTr5b7LepO5l/2dxNJwp8MD1nfu6nYJsdmJMjt3oSTCOiWcjZIjJIO4XcgloK
-         79kLcBQ3I+9Wz2/b8DEfGknIn6jrWv87yV93B1/WlKiJacfQk/R/xf69DhCWK5PKJL5r
-         Gffg==
-X-Gm-Message-State: AOAM533H/KwOX+vKULVFvbA9N2s9pFZAaTgiBqAFD3pnsbcLxArKt7Fi
-        i43LwKwpWDQVnr/h6mc7bsmdDw==
-X-Google-Smtp-Source: ABdhPJyoOtZiG1tG11RZjBU0AJ3ADLcZ61RQbIwDWPXfbOgr3HIJWltcW+02sOd2B6Wc+vfX//WlMg==
-X-Received: by 2002:a05:6808:8e6:: with SMTP id d6mr1176092oic.147.1624328873562;
-        Mon, 21 Jun 2021 19:27:53 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id r7sm2127807ota.59.2021.06.21.19.27.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 19:27:52 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 21:27:50 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Jassi Brar <jassisinghbrar@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V3 3/3] mailbox: qcom-apcs: Add SM6125 compatible
-Message-ID: <YNFKpvhXyZbs8RE1@yoga>
-References: <20210612094631.89980-1-martin.botka@somainline.org>
- <20210612094631.89980-3-martin.botka@somainline.org>
- <CABb+yY3BYYC2na8EFunEeu0XCfLXrUQon=hF3q5p=+FUoigoyw@mail.gmail.com>
- <CAL_JsqLWqtAtqLRF-MAnq80NMfD0a+CfWPv8JWjjNTJFgMjCxg@mail.gmail.com>
- <CABb+yY0sdSinTm788pMFrqEZ6QMC2OwCP7Kkto+pG9h1aGMzwQ@mail.gmail.com>
- <CAL_JsqKdoMwpL_tYC7VQRAG2AC5nR4diShMQCgDseObcgU+egQ@mail.gmail.com>
- <YNEiUMBqGAx1zLVX@yoga>
- <CABb+yY2wy4iSKjn+SihQ=FE=YwcEzUNOpGw_CV22Anzgbba8hA@mail.gmail.com>
+        Mon, 21 Jun 2021 22:24:01 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210622022144epoutp01d94b9eee39bb988704013c0093fee44b~Kxis9nWNi2754127541epoutp01b
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:21:44 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210622022144epoutp01d94b9eee39bb988704013c0093fee44b~Kxis9nWNi2754127541epoutp01b
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1624328504;
+        bh=OufSI/cmAgUVLiWBpodEp8Btf9kgcVioiryEmA2vw2Q=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=ZmCOzMqDy2qTSQkeSi8GZId+qTTkJc3iRJiW4Z+buqQnu4a00w65aWl76Bic7HA3z
+         zEfuVyZ/9o7SMdzX2EI+ep2YOZnSkgMcShX2Q46N3+lr1c4O1ck7i0NmmNkYOBLvxm
+         lOqbvzMguNgYswTii6WyAaN80lW9+ytP7jD+pt+E=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20210622022144epcas1p463c09e6b9b911a50de64e33350347f6e~Kxish8SBF2712727127epcas1p4Q;
+        Tue, 22 Jun 2021 02:21:44 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.153]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4G89BX62SJz4x9Q1; Tue, 22 Jun
+        2021 02:21:40 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        35.DA.10119.43941D06; Tue, 22 Jun 2021 11:21:40 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210622022138epcas1p121cfd8f377ebda53fceaeb99ceaf08cd~KxinrNoOR2010120101epcas1p1G;
+        Tue, 22 Jun 2021 02:21:38 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210622022138epsmtrp240b9039f693949c0cfbb2e95f43c7bb7~KxinqfdbP0163501635epsmtrp2x;
+        Tue, 22 Jun 2021 02:21:38 +0000 (GMT)
+X-AuditID: b6c32a38-965ff70000002787-7f-60d14934af53
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        5D.93.08289.23941D06; Tue, 22 Jun 2021 11:21:38 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210622022138epsmtip1ad5ee47b412ceeb52e34d3900f62d008~Kxineta_31343113431epsmtip1V;
+        Tue, 22 Jun 2021 02:21:38 +0000 (GMT)
+Subject: Re: [PATCH 1/2] clocksource/drivers/exynos_mct: Prioritise Arm arch
+ timer on arm64
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <d3e55130-ccfc-4bbc-3c82-91db4ce5113f@samsung.com>
+Date:   Tue, 22 Jun 2021 11:40:50 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABb+yY2wy4iSKjn+SihQ=FE=YwcEzUNOpGw_CV22Anzgbba8hA@mail.gmail.com>
+In-Reply-To: <3ba202d9-a679-834a-685f-12c6f9eb9c38@linaro.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCJsWRmVeSWpSXmKPExsWy7bCmga6J58UEg/f/9CzmfZa1OH9+A7vF
+        xrc/mCw2Pb7GanF51xw2i7VH7rJbbN40ldmi5Y6pA4fHrIZeNo9NqzrZPO5c28Pm8e7cOXaP
+        zUvqPfq2rGL0+LxJLoA9KtsmIzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE3
+        1VbJxSdA1y0zB+gkJYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6BZYFecWJucWle
+        ul5yfq6VoYGBkSlQYUJ2xuLToQWbOSr+LF/N1sB4ha2LkZNDQsBEYurlpSxdjFwcQgI7GCUO
+        nLgG5XxilHh27js7hPOZUeLhuncsMC0fzx+GqtrFKPFz1XIo5z2jxLHzL5m7GDk4hAViJa4v
+        VQZpEBHwl5jddhBsErPAf0aJj68/s4Mk2AS0JPa/uAF2CL+AosTVH48ZQWxeATuJFUvvMIPY
+        LAKqEttW3QSrFxUIkzi5rQWqRlDi5MwnYBdxAtWfmN4OVsMsIC5x68l8JghbXmL72znMIIsl
+        BNZySDRueMAK8YKLRNeCRiYIW1ji1fEt7BC2lMTnd3uhIVMtsfLkETaI5g5GiS37L0A1G0vs
+        XzqZCeRLZgFNifW79CHCihI7f89lhFjMJ/Huaw8rSImEAK9ER5sQRImyxOUHd6HWSkosbu9k
+        m8CoNAvJO7OQvDALyQuzEJYtYGRZxSiWWlCcm55abFhgghzbmxjByVXLYgfj3Lcf9A4xMnEw
+        HmKU4GBWEuG9mXIhQYg3JbGyKrUoP76oNCe1+BCjKTCAJzJLiSbnA9N7Xkm8oamRsbGxhYmh
+        mamhoZI47062QwlCAumJJanZqakFqUUwfUwcnFINTJPuL1gx48Zc742rX/9/JBckLPFI5mp4
+        uEjDle6TZy6+LQytzmiRuWbVYJTW3LvY1MAx5sDvwKYJLZlMa8V6Cp5Y7okT6MlfwFF8j+Ws
+        4a9Tf1UvnF7F8S/VpmZ/Qeruw59YD+1/e29/mn2ZxHa/f5tvOi/78cWFUe6lQk7pQocFexVv
+        fIyzmdLP+fZ8vGjfsQ9ZUtIrHp0U/LbQcy5H8T5D6/jFixU+G4h07V0ewjtLpe6KLp/1tr+F
+        ay83rfMx+KseIbjBS3nv39Dvk5+tUeR9/0juaN2zZTZTPH5oCGg9OylksLMngWtGQojqh96J
+        rRO2ik1wrzkj9eDpnEux72On+h0qEc/8nXbncPUzrz9KLMUZiYZazEXFiQDou4JWNwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjkeLIzCtJLcpLzFFi42LZdlhJTtfI82KCwaHpZhbzPstanD+/gd1i
+        49sfTBabHl9jtbi8aw6bxdojd9ktNm+aymzRcsfUgcNjVkMvm8emVZ1sHneu7WHzeHfuHLvH
+        5iX1Hn1bVjF6fN4kF8AexWWTkpqTWZZapG+XwJWx+HRowWaOij/LV7M1MF5h62Lk5JAQMJH4
+        eP4wSxcjF4eQwA5Gia8TjzFDJCQlpl08CmRzANnCEocPF0PUvGWUuHD5JwtIXFggVuL6UmWQ
+        chEBX4n/D66xg9QwCzQySTxfOIEdomEii8SuS89ZQKrYBLQk9r+4AbaZX0BR4uqPx4wgNq+A
+        ncSKpXfAFrMIqEpsW3WTHcQWFQiT2LnkMRNEjaDEyZlPwOZwAtWfmN4OVsMsoC7xZ94lZghb
+        XOLWk/lMELa8xPa3c5gnMArPQtI+C0nLLCQts5C0LGBkWcUomVpQnJueW2xYYJSXWq5XnJhb
+        XJqXrpecn7uJERxlWlo7GPes+qB3iJGJg/EQowQHs5II782UCwlCvCmJlVWpRfnxRaU5qcWH
+        GKU5WJTEeS90nYwXEkhPLEnNTk0tSC2CyTJxcEo1MAWnGMYXtIQHWx5rvLE3o+TptT9WG7a7
+        1VhMybfeyxpzPmdXYdlew3uf97pceO1+pVvZ5a3i0ZPuHJJ8P/Z9mGus86R45UYJFqkdPKLS
+        sUl7Dhw54a3D5vc9vmLDzT06q5Jr3ZxcboUv23HB6UaWtB7j80WZMm21qpdWXPe6kKz12rPP
+        JezvOsfLfKunqh3wqz/lp96lvnsn4/KzO+c4aLS+WXvJ1KNtPV/y3bsbWe40zJY7dnTTs5WW
+        XacX9K57tr/b50iVTc7C7nvedatv3pvRs63NdYGXs4nZ2h/CTZlJkvcu+AneD17tOWvH/JrP
+        B653aWXv+71BnF9lYVbeVYfdhxdt/ruvNk7XeHbfnVlKLMUZiYZazEXFiQBTgXOsIQMAAA==
+X-CMS-MailID: 20210622022138epcas1p121cfd8f377ebda53fceaeb99ceaf08cd
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210608154400epcas1p1b22fd50629611a9475cb4d2b8dd9442d
+References: <20210608154341.10794-1-will@kernel.org>
+        <CGME20210608154400epcas1p1b22fd50629611a9475cb4d2b8dd9442d@epcas1p1.samsung.com>
+        <20210608154341.10794-2-will@kernel.org>
+        <466bfc19-2260-87c6-c458-b43cf23617e3@samsung.com>
+        <2a0181ea-a26e-65e9-16f6-cc233b6b296f@linaro.org>
+        <fbcd234d-3ea0-d609-1f1d-b557ea329c37@samsung.com>
+        <20210617214748.GC25403@willie-the-truck>
+        <d79ebd58-1c4e-834c-fc06-482f25f6f3de@linaro.org>
+        <20210621101058.GB28788@willie-the-truck>
+        <3ba202d9-a679-834a-685f-12c6f9eb9c38@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 21 Jun 20:00 CDT 2021, Jassi Brar wrote:
-
-> On Mon, Jun 21, 2021 at 6:35 PM Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
-> >
-> > On Mon 21 Jun 18:19 CDT 2021, Rob Herring wrote:
-> >
-> > > On Mon, Jun 21, 2021 at 5:10 PM Jassi Brar <jassisinghbrar@gmail.com> wrote:
-> > > >
-> > > > On Mon, Jun 21, 2021 at 2:46 PM Rob Herring <robh+dt@kernel.org> wrote:
-> > > > >
-> > > > > On Sun, Jun 20, 2021 at 10:03 PM Jassi Brar <jassisinghbrar@gmail.com> wrote:
-> > > > > >
-> > > > > > On Sat, Jun 12, 2021 at 4:46 AM Martin Botka
-> > > > > > <martin.botka@somainline.org> wrote:
-> > > > > > >
-> > > > > > > This commit adds compatible for the SM6125 SoC
-> > > > > > >
-> > > > > > > Signed-off-by: Martin Botka <martin.botka@somainline.org>
-> > > > > > > ---
-> > > > > > > Changes in V2:
-> > > > > > > None
-> > > > > > > Changes in V3:
-> > > > > > > Change compatible to apcs-hmss-global
-> > > > > > >  drivers/mailbox/qcom-apcs-ipc-mailbox.c | 5 +++++
-> > > > > > >  1 file changed, 5 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/drivers/mailbox/qcom-apcs-ipc-mailbox.c b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-> > > > > > > index f25324d03842..f24c5ad8d658 100644
-> > > > > > > --- a/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-> > > > > > > +++ b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-> > > > > > > @@ -57,6 +57,10 @@ static const struct qcom_apcs_ipc_data sdm660_apcs_data = {
-> > > > > > >         .offset = 8, .clk_name = NULL
-> > > > > > >  };
-> > > > > > >
-> > > > > > > +static const struct qcom_apcs_ipc_data sm6125_apcs_data = {
-> > > > > > > +       .offset = 8, .clk_name = NULL
-> > > > > > > +};
-> > > > > > > +
-> > > > > > >  static const struct qcom_apcs_ipc_data apps_shared_apcs_data = {
-> > > > > > >         .offset = 12, .clk_name = NULL
-> > > > > > >  };
-> > > > > > > @@ -166,6 +170,7 @@ static const struct of_device_id qcom_apcs_ipc_of_match[] = {
-> > > > > > >         { .compatible = "qcom,sc8180x-apss-shared", .data = &apps_shared_apcs_data },
-> > > > > > >         { .compatible = "qcom,sdm660-apcs-hmss-global", .data = &sdm660_apcs_data },
-> > > > > > >         { .compatible = "qcom,sdm845-apss-shared", .data = &apps_shared_apcs_data },
-> > > > > > > +       { .compatible = "qcom,sm6125-apcs-hmss-global", .data = &sm6125_apcs_data },
-> > > > > > >         { .compatible = "qcom,sm8150-apss-shared", .data = &apps_shared_apcs_data },
-> > > > > > >         { .compatible = "qcom,sdx55-apcs-gcc", .data = &sdx55_apcs_data },
-> > > > > > >         {}
-> > > > > > >
-> > > > > > These all are basically different names for the same controller.
-> > > > > > The 'offset' is a configuration parameter and the 'clock', when NULL,
-> > > > > > is basically some "always-on" clock.
-> > > > > > I am sure we wouldn't be doing it, if the controller was third-party.
-> > > > >
-> > > > > If newer implementations are 'the same', then they should have a
-> > > > > fallback compatible to the existing one that is the same and no driver
-> > > > > change is needed. If the differences are board or instance (within an
-> > > > > SoC) specific, then a DT property would be appropriate.
-> > > > >
-> > > > The controllers (13 now) only differ by the 'offset' where the
-> > > > registers are mapped. Clock-name is a pure s/w artifact.
-> > > > So, maybe we could push all these in DT.
-> > >
-> > > Why is 'reg' not used for the offset?
-> > >
-> >
-> > The DT node and its "reg" describes the whole IP block.
-> >
-> > The particular register that we care of has, as you can see, moved
-> > around during the various platforms and some incarnations of this IP
-> > block provides controls for CPU-related clocks as well.
-> >
-> > We can certainly have the multiple compatible points to the same
-> > apcs_data, but I'm not able to spot a reasonable "catch-all compatible"
-> > given that I don't see any natural groupings.
-> >
-> Any platform that comes later may reuse the already available compatible.
-> For example drop this patch and reuse "qcom,sdm660-apcs-hmss-global" ?
+On 6/21/21 7:18 PM, Daniel Lezcano wrote:
+> On 21/06/2021 12:10, Will Deacon wrote:
 > 
-
-The problem is that this would change the meaning of
-"qcom,sdm660-apcs-hmss-global" from meaning "The apcs hmss global block
-_in_ sdm660" to "any random apcs block with the mailbox register at
-offset 8".
-
-Using a compatible that actually describes the specific IP block allows
-us to add more implementation details to the existing binding after the
-fact, like we had to do in c815d769b598 ("mailbox: qcom: Create APCS
-child device for clock controller")
-
-
-So what we typically do between Qualcomm platforms is to come up with
-some common compatible that really states the equivalent of "a generic
-apcs with mailbox register at offset 8", we specify both the specific
-and the generic in DT and we implement only the generic - until the day
-when we need the specific.
-
-But we need to figure out what the common descriptor is for these
-various groups of apcs blocks for that to work out.
-
-> > > In any case, we can't really get rid of the first 13 instances though...
-> > >
-> >
-> > Right, we have the problem that we have DTBs out there that relies on
-> > these compatibles, but as Jassi requests we'd have to start describing
-> > the internal register layout in DT - which this binding purposefully
-> > avoids.
-> >
-> Not these strings, but 'offset' and 'clock-name' as optional
-> properties that new platforms can use.
+> [ ... ]
 > 
+>>>> exynos4_mct_frc_start() is called unconditionally from probe via
+>>>> exynos4_clocksource_init() so as long as the mct probes first, then the
+>>>> arch timer should work, no? The rating shouldn't affect that.
+>>>
+>>> How do you ensure the exynos mct is probed before the arch timer ?
+>>>
+>>> The Makefile provides the right order, but the dependency is implicit.
+>>
+>> Currently, I think it's done by the order of the CPU hotplug notifiers (
+>> see the hunk of 6282edb72bed which touches cpuhotplug.h).
+> 
+> Ah, right. Indeed whatever the DT order, the cpuhotplug order solves the
+> dependency.
+> 
+> Chanwoo, are fine with this change ?
 
-Relying on completely generic compatibles to match the driver and then
-distinguish each platform using additional properties is exactly what
-Qualcomm does downstream.  The community has clarified countless times
-that this is not the way to write DT bindings.
+OK about the order.
 
-That said, I certainly dislike the current situation, because bringing a
-new Qualcomm platform upstream means adding a couple of drivers (clocks,
-pinctl etc) and then it's a large amount of oneliners throughout the
-various drivers just adding compatibles in the right palces.
+Actually, I have not fully tested the arch timer on Exynos5433 64bit
+because of the dependency between arch timer and MCT as we knew.
 
-Regards,
-Bjorn
+If the Krzysztof and Marek have no any objection,
+I have no any objection anymore. Thanks.
+
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
