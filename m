@@ -2,174 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD56A3B0189
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17DB93B018D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhFVKja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 06:39:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbhFVKj1 (ORCPT
+        id S229917AbhFVKk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 06:40:28 -0400
+Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:10404 "EHLO
+        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229628AbhFVKk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 06:39:27 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC97C06175F;
-        Tue, 22 Jun 2021 03:37:11 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id hz1so11197560ejc.1;
-        Tue, 22 Jun 2021 03:37:11 -0700 (PDT)
+        Tue, 22 Jun 2021 06:40:27 -0400
+Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15MAbBSX006275;
+        Tue, 22 Jun 2021 10:37:26 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2175.outbound.protection.outlook.com [104.47.57.175])
+        by mx0a-0064b401.pphosted.com with ESMTP id 39bdsc80j8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Jun 2021 10:37:26 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bA92U03ikkhd9l7dtpkQPEuksfqake8WNpa5O85JOwhPhRRtA45B9kG6obQa+wy5HZiePmFldCAjZc4YDxAD6FfrO3PgqoUeSMhDbNEVab4OUKcHdFQM9OnkD3GOLI4MMNxyvLWNJZIIW+fhFqx0JedoMdq2nYPnJjuMSgPh2Xc2ggw9q2JuECMS3h3I4MsY0EiiBc8raOB/Ei3vPCcsqa7jWORB6HoCoN8ssUesDlpjAsGoz1y3SU05dWofABtYTqdLmnnOwg1x7pT2vwC4qZAIf5CFKvVEtybKLingwt5UjMXYtkBveKTwIO9j9AX3EYlECZG3KJCnNDiB8Kuk4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yhXqIUW1qqJYfPNMMYDG6p/EnQmdMj2GGe1XBubAB8Q=;
+ b=SMa/YqtLWjz5WEWf/pNHBM6VR2yEb52mA8he5WgdvqN+P1wG8NS3maMbzRi0aIac5+qPcPevpdls7t9ABJI5W9T0pYjII4PQPW27xQ58oLeHmU4tsTtmxFqChdUChthImUMdzxy7iyVrj7ggHu/Q/OFE7TJOgWlbpDcBn0IlFbe/3vzTQpTHBknFS7QiPW/RfX5Ikf2/kcLQzf9NSmYlkPbQpz84K9qmGj0sC5hHd1iRz4HUaaWyg8ZO673woIlKVVJpLvugcT14/4PdaM2GgiMansDYmol7mAglpX2kVZ23j1KDjIjmpC2dbhoncfJ7OvFKftK9ZmyTuh20NIC9tQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/gZ/LS6jWKdbaM5oP4IgUeK3B1HtaRtMGGO5GuusjNg=;
-        b=I4G89gstIc6F4n1q1VgS4P7X41iPjadoInVjmd+FwIiYDUPqRFCC4ATKncvmRVj1jL
-         rSmsAgBJ9TBmioXY/Hj4FmASTj2hAM50tL48IbROmprGXfhnsaLXjyDuLWAiiepGkpPD
-         s+XY1CAHVTe9atHoou/HGoGmBDVQkuMd9hZi2lhNGfAObpkTbBiILPf8JzSFMdALiYSc
-         59v7+PhQD6GNrcxMzd/xLQ0MpKWY47SpaVxyGZmyJOvRM0+39NYqSe/C9ULXGBPFDsd7
-         KsCJKKAr92T7GvP5C4VDhLHM/qMk2bkH+iljttwxOni2OTnrQ1buxbEp3QO1jMEKxUnS
-         q8Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/gZ/LS6jWKdbaM5oP4IgUeK3B1HtaRtMGGO5GuusjNg=;
-        b=U/7k9/sTqIYrE3TerPc0kHM0VHJWZIoh4sWlmSe8frrx2DJwfWXLrVBg/JevAdoY/i
-         T+zvGvooe+xC7YfdNtlzjaXL/rNhk3DaEfByHtEUrckvaCtCq1eCnVtQOAkyQ2+k5n+A
-         De0oNN8ki7iwO/DqyM2Pm9wL1K9vc0N+Yufd/lHLA4utCvMXsAoN6lW/mC7EiAxGS0gh
-         UpJsPyDA/vlzzHH5lC55AbFd7Hz1As/pkYi9CgdN0ixEBtBz/FgnXPkE3oD9kjow0fDS
-         bXJUKd3VRz3VKdnONz71jczJXqcXXoeytKMJIxn8DN/b0ewCuH4IXvK9oOEiumHbv4aX
-         atlw==
-X-Gm-Message-State: AOAM533Tr1UtbZg7eOX1F1tW1pIKILLLYV3H0jAHDvEU8OKzb2Mr/hKW
-        MQQw2/pi7Kyi8KKC0AAzQuiQTy9sYXBQ2A==
-X-Google-Smtp-Source: ABdhPJxlnR4rNgFyoUxyrHeDp6ZOw1eK2zdP3R7GGxTrcENQmMPjFHsqvd0zZwZy9tYkIJz0Ac9KSg==
-X-Received: by 2002:a17:906:dbdc:: with SMTP id yc28mr3267131ejb.444.1624358229781;
-        Tue, 22 Jun 2021 03:37:09 -0700 (PDT)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id dd15sm4961621edb.45.2021.06.22.03.37.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 03:37:09 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-Subject: Re: [PATCH v5 3/4] arm64: dts: rockchip: add core dtsi for RK3568 SoC
-To:     cl@rock-chips.com, heiko@sntech.de
-Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
-        uwe@kleine-koenig.org, mail@david-bauer.net,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
-        cnsztl@gmail.com, devicetree@vger.kernel.org,
-        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
-        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
-        zhangqing@rock-chips.com, huangtao@rock-chips.com,
-        wim@linux-watchdog.org, linux@roeck-us.net, jamie@jamieiles.com,
-        linux-watchdog@vger.kernel.org, maz@kernel.org
-References: <20210622020517.13100-1-cl@rock-chips.com>
- <20210622020517.13100-4-cl@rock-chips.com>
-Message-ID: <9515154d-f521-217c-af61-7cda089fbf15@gmail.com>
-Date:   Tue, 22 Jun 2021 12:37:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yhXqIUW1qqJYfPNMMYDG6p/EnQmdMj2GGe1XBubAB8Q=;
+ b=jdhmi/8kt2+LK2YVpIozJrC5k4kFNf6PFBw8hVcN9ExOMcx7o9FV+0iqdNrm0wSP1qS/XoMtzEBY0BhhqoYgQH19AT6yf2j1GzO8XXk3ySEZs445CEoErWpmR+CK0LhKPqXY6BM52XwNTI944PiR+fCjhZwFTn1KkuBO+u+qfLc=
+Authentication-Results: stgolabs.net; dkim=none (message not signed)
+ header.d=none;stgolabs.net; dmarc=none action=none header.from=windriver.com;
+Received: from SN6PR11MB3309.namprd11.prod.outlook.com (2603:10b6:805:bd::14)
+ by SA2PR11MB5036.namprd11.prod.outlook.com (2603:10b6:806:114::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Tue, 22 Jun
+ 2021 10:37:23 +0000
+Received: from SN6PR11MB3309.namprd11.prod.outlook.com
+ ([fe80::a170:9c84:bd22:f77c]) by SN6PR11MB3309.namprd11.prod.outlook.com
+ ([fe80::a170:9c84:bd22:f77c%6]) with mapi id 15.20.4242.023; Tue, 22 Jun 2021
+ 10:37:23 +0000
+From:   "Jiangong.Han" <jiangong.han@windriver.com>
+To:     dave@stgolabs.net, paulmck@kernel.org, josh@joshtriplett.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        "Jiangong.Han" <jiangong.han@windriver.com>
+Subject: [PATCH] rcu-scale: rcu-scale returns one less than the real number of gps in the dmesg report.
+Date:   Tue, 22 Jun 2021 18:37:08 +0800
+Message-Id: <20210622103708.16814-1-jiangong.han@windriver.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HKAPR03CA0016.apcprd03.prod.outlook.com
+ (2603:1096:203:c8::21) To SN6PR11MB3309.namprd11.prod.outlook.com
+ (2603:10b6:805:bd::14)
 MIME-Version: 1.0
-In-Reply-To: <20210622020517.13100-4-cl@rock-chips.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-jhan2-d1.wrs.com (60.247.85.82) by HKAPR03CA0016.apcprd03.prod.outlook.com (2603:1096:203:c8::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.7 via Frontend Transport; Tue, 22 Jun 2021 10:37:20 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a3c0be7b-67b2-4a57-46bc-08d93569b88d
+X-MS-TrafficTypeDiagnostic: SA2PR11MB5036:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA2PR11MB5036DB7553CEF936C5FFF0AA9F099@SA2PR11MB5036.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:115;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: h70tneiGcymFCgs7POaEwSXHJf0L9g8sqhGQf3OLwSLBi6o910QIIomz5jAzSKTcv52YEuy4MgDdmr3SfXldpdlZxHskK5/i1BvWkPiCwreGnOTOgZ+jjGECu8o3p59CDEGTDSm3Re05OsbZgs4CCNbkwgDTXHqHKD27HsS14dgG9jDDuxdNhxc0q9YK6/52lIwA7xuHTkOibaja1/NEyQlXFUTmtk1DovbD5QjALfBXvfT8YBsA+UpL6/OSEJsX3C+w+DzAFiH2DIZZ7iuLj3ClRjpd4vCB6kEpDgqtH2nydSbNe3lTl5AJvNYQLrQmFn9w9O8lylZHC/751tHuCg9GEsVoF2soYp+Qc59nbvgKJ14x18mDdJuJc3k9KRujkwhIjCrMQSJjICA21U9BMishusVAsq5agDv8U0vXKZbqfaGmZ8FpX2yMzt9tKNxuGtIU7Qwt1Ix3eL9G5yclTK/wHrdMVH2iAQr9IIMbB60ly9NDQZSGZT4SzQJDN38ztUyflFYGrwSyuh6PQJIqlVSnCXmIZ1hdYvRt+rWtpHwnYHI4bobvuse4iH0MWdfcAEpqfZYS8QUvn8DN1tHShXrmlkk30efDbf9cUXxM8wk7U+Up2pzIhtdHltVkHFhcW6yYx+ii2wJtfWcDmF/hs+I4bU3Kwr0/XZFIBpBg/PM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3309.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(346002)(376002)(39850400004)(86362001)(107886003)(66556008)(2616005)(6506007)(16526019)(66946007)(2906002)(1076003)(4326008)(6666004)(956004)(36756003)(66476007)(26005)(38350700002)(83380400001)(38100700002)(186003)(6486002)(8676002)(6512007)(52116002)(316002)(5660300002)(478600001)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8cn1Hx9of/Tl24/Bw8YrdKQ1CuaRYMA6wDUp8pD1hlfDSjdwwhevOc62oO+l?=
+ =?us-ascii?Q?MeOsvqK0sUzPihoDrJZ0evHjNGLMkst+9pW0L9NPl8vlLqaRieX26vBmtuq/?=
+ =?us-ascii?Q?ZB2VW+f/7rzeFYNnjjb28rC4oKXpj940P2Esr0ZUzGDEgeBSi25me4THkNYN?=
+ =?us-ascii?Q?1jgX+/UQP3QBPIadbVpR8FxPA65/fW2hRSRr6BwSPZ/gSdFIjabMFA7882Gw?=
+ =?us-ascii?Q?nDl5vjKArILEjij2as4rf8u/p3bwzoJzJkeumEqKGa7Co9vmnGmbu2EqVA9V?=
+ =?us-ascii?Q?zJb6zjIqBtos498fYb5PDhhHFNFLTik03iUWmkW0Na9o65vY2jNzTv0Ck4Ds?=
+ =?us-ascii?Q?Xl/DKLTrphQoe0eC5EJI2uUUMfDSKtwAemgs4g0dPc5BUdBHqXyJ+P1sZlxI?=
+ =?us-ascii?Q?Z7tuT/mMuMTWL4gSmXNTYD00HAeNs+TWgUXu9fQ0o6mJBDMFz70mKO7pmYkR?=
+ =?us-ascii?Q?Cs/QZ5o7xMfAuslCiEjVs7fDqPn8yrFBqXyl86AUMlTmyuFwdmYYj4o/aYGr?=
+ =?us-ascii?Q?kM8IegsN37BDLsw8fue+6bQSm6G+UsPhLgYkYouQwMWK2yWhXjb5j8P+3yfR?=
+ =?us-ascii?Q?LH4UyovoenOuwHiphvoB4M1ZUHEsjZdpatNcRZfSjqnapCkDcu3Fc3INBp9q?=
+ =?us-ascii?Q?Wd3DzZYNsrnRZP0MTSJsZJISnWur34KZ5iQ/qmgXwGC21JliKWVTdWC6eg2n?=
+ =?us-ascii?Q?YqFtTUKGGy0IKBLxCXZDliqDb1TjA0kqrYw6t2JivwJIiTMaDbvrlJOpnj6a?=
+ =?us-ascii?Q?3iQ34o2XGuEu+igVg6HWH5RaqF8E8ahf3JuORB1pLsmUyFVbbZUJ4dqBYqW2?=
+ =?us-ascii?Q?E3JRYGvIJfyic6nbmQw5lZkA70DXixFvJETkDmz7kO6bpHC0fDxbGQbvYXpu?=
+ =?us-ascii?Q?nDjIKonsaiyDMWf58TPGhVMgeLqJ9xlyH04ywntMdcPOAWnlJf1astieee8L?=
+ =?us-ascii?Q?SgZXq17osI+5smIRDwrUnYejwj9bGizb0AH+XSsQZM1no1aSxp2ZG4KJhzW5?=
+ =?us-ascii?Q?bN7W7EEeXmodeZ6cjKqKoFCU5afmKlDQ3FvpSCs2Yzi5qMcMt6Apsk3Z7Jsb?=
+ =?us-ascii?Q?JnA2cRsPIfqex7HQQbq64n3GBst3PsjcTMEARePphESfqHt1NBfTu1V+c4dY?=
+ =?us-ascii?Q?K8n+/3rr1hCxDYcOEjhBc/XCixuIAOd8jXaduwi9GKdAICnEeFLint+xWyFb?=
+ =?us-ascii?Q?uMHXaYN9kDHlneLpdutCdXAnOkH49Mr6huP0nvYJm6GD7bHxKxiYkaFNej1e?=
+ =?us-ascii?Q?tug+CtT4tU9Uf2KhJz9nFwjbeZQLtEGObR/AlD9V0VSJaxy3o2A6NSHLJxmG?=
+ =?us-ascii?Q?DzXDS3ddczSb3fyLYOXCjf8I?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3c0be7b-67b2-4a57-46bc-08d93569b88d
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3309.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 10:37:23.5139
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: x07QYKio7EO1peiXL/oXUpg8Doj1WS062e6I9dbhhrSIm/7bjDMSmNTgq4OSgCjPyI1SVkY8yalUFiwrY0fjQr/8z0YISH+3JxszyVd/MlM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5036
+X-Proofpoint-ORIG-GUID: A0Ys-P9AVq4m5hYJKtAEhQx_ycxC125C
+X-Proofpoint-GUID: A0Ys-P9AVq4m5hYJKtAEhQx_ycxC125C
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-22_05:2021-06-21,2021-06-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=970 mlxscore=0
+ lowpriorityscore=0 malwarescore=0 spamscore=0 impostorscore=0 phishscore=0
+ clxscore=1011 priorityscore=1501 suspectscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106220067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chris, Heiko,
+The dmesg report on rcu-scale shows there are N grace periods, and gps
+are listed from 0 to N.
+This commit make writer_n_durations stores the counts of gps,
+and shows there are N+1 gps, change the listed gps index begin from 0 to N.
 
-On 6/22/21 4:05 AM, cl@rock-chips.com wrote:
-> From: Liang Chen <cl@rock-chips.com>
-> 
-> RK3568 is a high-performance and low power quad-core application processor
-> designed for personal mobile internet device and AIoT equipment. This patch
-> add basic core dtsi file for it.
-> 
-> We use scmi_clk for cortex-a55 instead of standard ARMCLK, so that
-> kernel/uboot/rtos can change cpu clk with the same code in ATF, and we will
-> enalbe a special high-performance PLL when high frequency is required. The
-> smci_clk code is in ATF, and clkid for cpu is 0, as below:
-> 
->     cpu0: cpu@0 {
->         device_type = "cpu";
->         compatible = "arm,cortex-a55";
->         reg = <0x0 0x0>;
->         clocks = <&scmi_clk 0>;
->     };
-> 
-> Signed-off-by: Liang Chen <cl@rock-chips.com>
-> ---
->  .../boot/dts/rockchip/rk3568-pinctrl.dtsi     | 3111 +++++++++++++++++
->  arch/arm64/boot/dts/rockchip/rk3568.dtsi      |  777 ++++
->  2 files changed, 3888 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
->  create mode 100644 arch/arm64/boot/dts/rockchip/rk3568.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi b/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
-> new file mode 100644
-> index 000000000000..a588ca95ace2
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
-> @@ -0,0 +1,3111 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (c) 2021 Rockchip Electronics Co., Ltd.
-> + */
-> +
-> +#include <dt-bindings/pinctrl/rockchip.h>
+From
+    [ 8306.087880] rcu-scale: writer 0 gps: 133
+    ......
+    [ 8307.864630] rcu-scale:    0 writer-duration:     0 44003961
+    [ 8307.935711] rcu-scale:    0 writer-duration:     1 32003582
+    ......
+    [ 8316.472860] rcu-scale:    0 writer-duration:   132 28004391
+    [ 8316.538498] rcu-scale:    0 writer-duration:   133 27996410
 
-> +#include "rockchip-pinconf.dtsi"
+to
+    [ 8306.087880] rcu-scale: writer 0 gps: 134
+    ......
+    [ 8307.864630] rcu-scale:    0 writer-duration:     0 44003961
+    [ 8307.935711] rcu-scale:    0 writer-duration:     1 32003582
+    ......
+    [ 8316.472860] rcu-scale:    0 writer-duration:   132 28004391
+    [ 8316.538498] rcu-scale:    0 writer-duration:   133 27996410
 
-Question for Heiko:
+Signed-off-by: Jiangong.Han <jiangong.han@windriver.com>
+---
+ kernel/rcu/rcuscale.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-This file is put in the arm64 directory.
-Is it useful for ARM as well?
-Should the ARM directory have it's own or use a long include?
+diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+index dca51fe9c73f..2cc34a22a506 100644
+--- a/kernel/rcu/rcuscale.c
++++ b/kernel/rcu/rcuscale.c
+@@ -487,7 +487,7 @@ rcu_scale_writer(void *arg)
+ 	if (gp_async) {
+ 		cur_ops->gp_barrier();
+ 	}
+-	writer_n_durations[me] = i_max;
++	writer_n_durations[me] = i_max + 1;
+ 	torture_kthread_stopping("rcu_scale_writer");
+ 	return 0;
+ }
+@@ -561,7 +561,7 @@ rcu_scale_cleanup(void)
+ 			wdpp = writer_durations[i];
+ 			if (!wdpp)
+ 				continue;
+-			for (j = 0; j <= writer_n_durations[i]; j++) {
++			for (j = 0; j < writer_n_durations[i]; j++) {
+ 				wdp = &wdpp[j];
+ 				pr_alert("%s%s %4d writer-duration: %5d %llu\n",
+ 					scale_type, SCALE_FLAG,
+-- 
+2.17.1
 
-ARM:
-#include "../../../arm64/boot/dts/rockchip/rockchip-pinconf.dtsi"
-
-arm64:
-#include "rockchip-pinconf.dtsi"
-
-Is it complete or does it need more items?
-(Who's going to change that?)
-
-arch/arm/boot/dts/rk3066a.dtsi:373.23-375.6: ERROR (phandle_references):
-/pinctrl/emmc/emmc-clk: Reference to non-existent node or label
-"pcfg_pull_default"
-
-arch/arm/boot/dts/rv1108.dtsi:645.25-654.6: ERROR (phandle_references):
-/pinctrl/emmc/emmc-bus8: Reference to non-existent node or label
-"pcfg_pull_up_drv_8ma"
-
-arch/arm64/boot/dts/rockchip/px30.dtsi:1470.23-1473.6: ERROR
-(phandle_references): /pinctrl/spi0/spi0-clk: Reference to non-existent
-node or label "pcfg_pull_up_4ma"
-
-arch/arm64/boot/dts/rockchip/px30.dtsi:1490.29-1493.6: ERROR
-(phandle_references): /pinctrl/spi0/spi0-clk-hs: Reference to
-non-existent node or label "pcfg_pull_up_8ma"
-
-arch/arm64/boot/dts/rockchip/px30.dtsi:1589.39-1592.6: ERROR
-(phandle_references): /pinctrl/pdm/pdm-clk0m0-sleep: Reference to
-non-existent node or label "pcfg_input_high"
-
-arch/arm64/boot/dts/rockchip/px30.dtsi:1903.49-1906.6: ERROR
-(phandle_references): /pinctrl/lcdc/lcdc-rgb-m0-hsync-pin: Reference to
-non-existent node or label "pcfg_pull_none_12ma"
-
-etc..
-
-> +
-> +/*
-> + * This file is auto generated by pin2dts tool, please keep these code
-> + * by adding changes at end of this file.
-> + */
-> +&pinctrl {
-
-[..]
