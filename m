@@ -2,138 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CAB3B0639
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE39E3B063C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231370AbhFVNy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 09:54:29 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:43876 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhFVNy0 (ORCPT
+        id S231132AbhFVNz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 09:55:57 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:36424 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229786AbhFVNz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 09:54:26 -0400
-Received: by mail-ot1-f44.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso21248164otu.10;
-        Tue, 22 Jun 2021 06:52:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OE2Mk9QdTDme3m1WozqakgyokZ60Oww1ipgpJqvrp3c=;
-        b=qwp14xglvFmTj+3RWJbaj2jXN3u8nPFSWUy6zGAQ6H+p83oNP2lzZZL4RTuRz1mCe6
-         yBHsUAtGwuT78D818xb5NSriHZh8zcKBzLQ97nComMJsU/qt4/NQwoIxV+6eKExbRCJK
-         4qguz9QHDEtONeh4xSSc0Iw690EZj6XQ57z1vOjhEJQMEijbZIoKbarPlTvIjZGNGAR9
-         +86H2JTjOHlv0ewhiRutARZNeT63LgBC6kJp7ca/4f8FLoITYy+uwg8jOmTgWksYLSRj
-         ZrWU7nDSn74tH/gBJ15RbyKJmYLV3hWQexeV6r2GmLiMB37+QYJNZnr8ZR8cTMAmU1dU
-         5LDg==
-X-Gm-Message-State: AOAM532KDn9KFz8y70mNkAbjQ7gfKn031ffojvaBqBLqM91D0mtYhzSr
-        8dFbtb0btwEwPOsnyuhwfRwTPV6exJfaSaF9HYdSelvJ
-X-Google-Smtp-Source: ABdhPJzRCtCGsPR6RmcfGaTG8OMcUVbw+kvFvbbHq9GlIsjJFxzKY5QtacJd/A0kc9ODZfW720T9G4vHtaJodE9sb9I=
-X-Received: by 2002:a9d:674b:: with SMTP id w11mr3220982otm.260.1624369929664;
- Tue, 22 Jun 2021 06:52:09 -0700 (PDT)
+        Tue, 22 Jun 2021 09:55:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1624370020; x=1655906020;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=N+sS5iWqomWqs35o/HzwmRYlU0AVuRGn1OIuvMkrR0w=;
+  b=kDtPrTJD/qXXchy82z3zYTqZ3rEbwnM4rStWS5w0rLWz7mScN5e+oGqn
+   0N8DAD2UvTzXyVq05kKQ5nnbLZIVUf/rlcfVyOmBVz8ofm2ko3FVPrJ0J
+   ak1hJB/JCSACANtA4NiPvZ5rRo5mbaXw+5Hsbw5UylVfwIJfdfMTPPdL1
+   nrT5RLf3Pd7644nac4fA1y1VdqbQqvCwjhK1wj8+GU/Rzm5PKEefFA6TU
+   PRkAu3frpecISuxqMYjMbSW2UIuHlFveWLJiKYRqrRdWuBjEzjiP9OvwX
+   o/HitMUCqtU+QXbh/8z2nkblJRW8vsEaNmM0hXg9fn767fqTk7ZtfJjWb
+   Q==;
+IronPort-SDR: xOwIE68OalmjixTRvD/jNNVt1J4e+XBTrI4QdB7hrVFK6nL+LiELAWwHjBvxuvqw8x/YzeFIoS
+ atspCSmkG+IfRkkqqDD3aNcC/NXGbiH/T5kMJ6gTeb1IALoAQZXGb4J/Vxn2chaYP/mAZHREe5
+ aljW01qHXb2aaZW9AdTTAywyo3sf6Dwtf0vMrN5Yjg3A1JiGKeCEG568MRht5Phz7TLGM7fEvW
+ SwMsTYZfpnaNuQh9BuVH0jckJrHQYcnol8LVmFzsKUsdVNFuHIC80IJTE3YXHei8OmL5IDKZyF
+ jUU=
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="126209312"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Jun 2021 06:53:40 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 22 Jun 2021 06:53:40 -0700
+Received: from [10.171.246.67] (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Tue, 22 Jun 2021 06:53:38 -0700
+Subject: Re: [PATCH] ARM: dts: at91: sama5d4_xplained: Mark optional
+ AT25DF321A as disabled
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
+CC:     <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210622134222.107806-1-tudor.ambarus@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <4d631b4c-7d0c-3a04-5ab6-00d09c792438@microchip.com>
+Date:   Tue, 22 Jun 2021 15:53:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210622075925.16189-1-lukasz.luba@arm.com> <20210622075925.16189-4-lukasz.luba@arm.com>
- <CAJZ5v0iVwpn0_wCZOh43DOeR2mudWYJyseMdtMsZGR-sjQ1X9Q@mail.gmail.com> <4e5476a6-fa9f-a9ef-ff26-8fa1b4bb90c0@arm.com>
-In-Reply-To: <4e5476a6-fa9f-a9ef-ff26-8fa1b4bb90c0@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 22 Jun 2021 15:51:58 +0200
-Message-ID: <CAJZ5v0i0KQwTWzbEPbs=0B-j7MkE6C1XP=mZaU1hhQm9HyZGJg@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/4] cpufreq: Add Active Stats calls tracking
- frequency changes
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Chris Redpath <Chris.Redpath@arm.com>, Beata.Michalska@arm.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Amit Kachhap <amit.kachhap@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210622134222.107806-1-tudor.ambarus@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 3:42 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
->
->
-> On 6/22/21 1:28 PM, Rafael J. Wysocki wrote:
-> > On Tue, Jun 22, 2021 at 9:59 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
-> >>
-> >> The Active Stats framework tracks and accounts the activity of the CPU
-> >> for each performance level. It accounts the real residency, when the CPU
-> >> was not idle, at a given performance level. This patch adds needed calls
-> >> which provide the CPU frequency transition events to the Active Stats
-> >> framework.
-> >>
-> >> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> >> ---
-> >>   drivers/cpufreq/cpufreq.c | 5 +++++
-> >>   1 file changed, 5 insertions(+)
-> >>
-> >> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> >> index 802abc925b2a..d79cb9310572 100644
-> >> --- a/drivers/cpufreq/cpufreq.c
-> >> +++ b/drivers/cpufreq/cpufreq.c
-> >> @@ -14,6 +14,7 @@
-> >>
-> >>   #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> >>
-> >> +#include <linux/active_stats.h>
-> >>   #include <linux/cpu.h>
-> >>   #include <linux/cpufreq.h>
-> >>   #include <linux/cpu_cooling.h>
-> >> @@ -387,6 +388,8 @@ static void cpufreq_notify_transition(struct cpufreq_policy *policy,
-> >>
-> >>                  cpufreq_stats_record_transition(policy, freqs->new);
-> >>                  policy->cur = freqs->new;
-> >> +
-> >> +               active_stats_cpu_freq_change(policy->cpu, freqs->new);
-> >>          }
-> >>   }
-> >>
-> >> @@ -2085,6 +2088,8 @@ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
-> >>                              policy->cpuinfo.max_freq);
-> >>          cpufreq_stats_record_transition(policy, freq);
-> >>
-> >> +       active_stats_cpu_freq_fast_change(policy->cpu, freq);
-> >> +
-> >
-> > This is quite a bit of overhead and so why is it needed in addition to
-> > the code below?
->
-> The code below is tracing, which is good for post-processing. We use in
-> our tool LISA, when we analyze the EAS decision, based on captured
-> trace data.
->
-> This new code is present at run time, so subsystems like our thermal
-> governor IPA can use it and get better estimation about CPU used power
-> for any arbitrary period, e.g. 50ms, 100ms, 300ms, ...
+Hi Tudor,
 
-So can it be made not run when the IPA is not using it?
+On 22/06/2021 at 15:42, Tudor Ambarus wrote:
+> sama5d4_xplained has an optional on-board serial DataFlash (AT25DF321A),
+> which does not come populated on board by default. Mark it as disabled
+> to avoid the following probe error:
+> spi-nor spi0.0: unrecognized JEDEC id bytes: 00 00 00 00 00 00
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>   arch/arm/boot/dts/at91-sama5d4_xplained.dts | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/boot/dts/at91-sama5d4_xplained.dts b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
+> index 0b3ad1b580b8..f397e2a68e5c 100644
+> --- a/arch/arm/boot/dts/at91-sama5d4_xplained.dts
+> +++ b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
+> @@ -40,7 +40,7 @@ uart0: serial@f8004000 {
+>   
+>   			spi0: spi@f8010000 {
+>   				cs-gpios = <&pioC 3 0>, <0>, <0>, <0>;
+> -				status = "okay";
+> +				status = "disabled";
+>   				m25p80@0 {
+>   					compatible = "atmel,at25df321a";
+>   					spi-max-frequency = <50000000>;
 
-> >
-> > And pretty much the same goes for the idle loop change.  There is
-> > quite a bit of instrumentation in that code already and it avoids
-> > adding new locking for a reason.  Why is it a good idea to add more
-> > locking to that code?
->
-> This active_stats_cpu_freq_fast_change() doesn't use the locking, it
-> relies on schedutil lock in [1].
+What about keeping SPI enabled and just having the status of m25p80 as 
+disabled: honestly, I don't know if it works and if it's desirable, but 
+might be closer to reality.
 
-Ah, OK.
+Tell me what you think.
 
-But it still adds overhead AFAICS.
+Regards,
+   Nicolas
 
-> >
-> >>          if (trace_cpu_frequency_enabled()) {
-> >>                  for_each_cpu(cpu, policy->cpus)
-> >>                          trace_cpu_frequency(freq, cpu);
-> >> --
->
->
-> [1]
-> https://elixir.bootlin.com/linux/latest/source/kernel/sched/cpufreq_schedutil.c#L447
+
+-- 
+Nicolas Ferre
