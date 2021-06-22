@@ -2,104 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22343AFABA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 03:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04CC13AFAAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 03:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhFVBzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 21:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhFVBzk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 21:55:40 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9E2C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 18:53:23 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id m15so2604546qvc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 18:53:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1QTuaNj1iCRevxIVn07f/kyH2pwUNv2dSDLfnl7sJyA=;
-        b=oJNrVUa2XPX5TJqSmRrTkm0n3hiPddmWMVfa017B9LAUrPBpxAncFYkrkGZSDEXRBh
-         AuBhSk3qcrWUlGNDCJjmssf0Vk2JApDxtoHkB8G5ja/M6VeMZY+8N/ION8pueo4oDD8o
-         rmTqTefG1n90ow3ol+EgjrvPq7onL/saU9cSB/67IW4CvtGGZslQVe83NKXOUyVoAArx
-         qvfF42EXyE1DH2ZONycGLVvneo844q60/iV+zKH6trXGym0Fj+myF39tCVrVHtk5aBCg
-         O+F7XqYFobhmmUUI7+t1OQcOIgxsRytAJWE4aLtt42PXe8tEqlbq+o5xzwE0pQXi6Q6u
-         g/tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1QTuaNj1iCRevxIVn07f/kyH2pwUNv2dSDLfnl7sJyA=;
-        b=KovSxQ2Ni3yq3jQ00jFQIBAfRVow2sup9eWCUYIMkpxFEx7M/XDEqfvkXiB8YIaMWx
-         DiG/s1ciCZ6SNppbJMINUm+7/rchHOE80oRB7Uomon3wMWxcYXRLJ8vcBjrB3Ux7CROo
-         NCwlk4QG0Ugx28r+kSUHEZw9x8TaG1v/3UsqXX5z3jmK08tCDo6ENg2TCibNCH9Usxf/
-         oh7LPpvoDwbNg57aFtnByLOdI32jdh2RrDyYzyipP6MeN6Hbr12aIxzaEmAMJ9p+1YFA
-         mqff5Urqq+zR5bPWjwrb5+SvKeg1j7850vzmthyvXi+uJWxpnL4NBcMn04CWrUbH/KNK
-         1VfA==
-X-Gm-Message-State: AOAM533eChNjU0wKUdyAiQa2wIJVRgHM/A3ZAPJLUjqip9l2dr3z5VJ7
-        23KThnj75dFqJRgG9/WqGxkUih0MILrJrZrZbE8=
-X-Google-Smtp-Source: ABdhPJyK+ME4U390q9Mvxhn4yyQjnyEwb5J4Pk64Y4liLe7WtySvGp22/bO45BpXK3lsvidSxjOvxgDpVOZE5wPUYJE=
-X-Received: by 2002:ad4:4bc9:: with SMTP id l9mr9578935qvw.36.1624326801992;
- Mon, 21 Jun 2021 18:53:21 -0700 (PDT)
+        id S230327AbhFVBpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 21:45:45 -0400
+Received: from mga04.intel.com ([192.55.52.120]:51601 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229663AbhFVBpp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 21:45:45 -0400
+IronPort-SDR: D6GrgZUTWyVCHD88mDeUWcyy4ALzXjDCSW9NxuIA9dzBNJheG0hGKdUdggqQik1Vb3Y+LpTGkn
+ OzhP6F286mIw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="205139619"
+X-IronPort-AV: E=Sophos;i="5.83,290,1616482800"; 
+   d="scan'208";a="205139619"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 18:43:30 -0700
+IronPort-SDR: M4LbRyUdsW/Smz7CkhYeLlA+20dwSZf0+6/KL714AmSS6tp7QyRkZ22Sct6TByeFgSqneUMYEc
+ pOLErqIA8qZA==
+X-IronPort-AV: E=Sophos;i="5.83,290,1616482800"; 
+   d="scan'208";a="486715732"
+Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.41])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 18:43:25 -0700
+Date:   Tue, 22 Jun 2021 09:59:37 +0800
+From:   Oliver Sang <oliver.sang@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        "Li, Aubrey" <aubrey.li@intel.com>,
+        "Xing, Zhengjun" <zhengjun.xing@linux.intel.com>,
+        "Tang, Feng" <feng.tang@intel.com>,
+        "Liu, Yujie" <yujie.liu@intel.com>,
+        "Si, Beibei" <beibei.si@intel.com>,
+        "Li, Philip" <philip.li@intel.com>,
+        "Du, Julie" <julie.du@intel.com>
+Subject: Re: [patch V3 00/66] x86/fpu: Spring cleaning and PKRU sanitizing
+Message-ID: <20210622015937.GB687@xsang-OptiPlex-9020>
+References: <20210618141823.161158090@linutronix.de>
 MIME-Version: 1.0
-References: <1624324395-7260-1-git-send-email-shengjiu.wang@nxp.com> <CAOMZO5Bh6J8=E=P1btDdgkYm9bvBN1ituRHLLOtW1cFsheQBdg@mail.gmail.com>
-In-Reply-To: <CAOMZO5Bh6J8=E=P1btDdgkYm9bvBN1ituRHLLOtW1cFsheQBdg@mail.gmail.com>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Tue, 22 Jun 2021 09:53:11 +0800
-Message-ID: <CAA+D8AN4Nch5FMjCDN8vs2+Nqs88k8jvMEBZwQuUdG+9pt1yZA@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2] ASoC: fsl-asoc-card: change dev_err to
- dev_err_probe for defer probe
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618141823.161158090@linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 9:45 AM Fabio Estevam <festevam@gmail.com> wrote:
->
-> Hi Shengjiu,
->
-> On Mon, Jun 21, 2021 at 10:31 PM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
-> >
-> > Don't need to print error message for defer probe
-> >
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > ---
-> > changes in v2:
-> > - use dev_err_probe instead of dev_dbg
-> >
-> >  sound/soc/fsl/fsl-asoc-card.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-> > index 121e08c2af2a..24c890d76da0 100644
-> > --- a/sound/soc/fsl/fsl-asoc-card.c
-> > +++ b/sound/soc/fsl/fsl-asoc-card.c
-> > @@ -708,8 +708,8 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
-> >         of_node_put(framemaster);
-> >
-> >         if (!fsl_asoc_card_is_ac97(priv) && !codec_dev) {
-> > -               dev_err(&pdev->dev, "failed to find codec device\n");
-> >                 ret = -EPROBE_DEFER;
-> > +               dev_err_probe(&pdev->dev, ret, "failed to find codec device\n");
->
-> I know I suggested dev_err_probe() before, but looking at this again, I realized
-> that the error message will never be printed.
->
-> Maybe the error message could just be deleted?
+Hi Thomas,
 
-so I think we can use the v1 one,  use dev_dbg instead.
+On Fri, Jun 18, 2021 at 10:18:23PM +0800, Thomas Gleixner wrote:
+> The main parts of this series are:
+> 
+>   - Yet more bug fixes
+> 
+>   - Simplification and removal/replacement of redundant and/or
+>     overengineered code.
+> 
+>   - Name space cleanup as the existing names were just a permanent source
+>     of confusion.
+> 
+>   - Clear seperation of user ABI and kernel internal state handling.
+> 
+>   - Removal of PKRU from being XSTATE managed in the kernel because PKRU
+>     has to be eagerly restored on context switch and keeping it in sync
+>     in the xstate buffer is just pointless overhead and fragile.
+> 
+>     The kernel still XSAVEs PKRU on context switch but the value in the
+>     buffer is not longer used and never restored from the buffer.
+> 
+>     This still needs to be cleaned up, but the series is already 40+
+>     patches large and the cleanup of this is not a functional problem.
+> 
+>     The functional issues of PKRU management are fully addressed with the
+>     series as is.
+> 
+>   - Cleanup of fpu signal restore
+> 
+>     - Make the fast path self contained. Handle #PF directly and skip
+>       the slow path on any other exception as that will just end up
+>       with the same result that the frame is invalid. This allows
+>       the compiler to optimize the slow path out for 64bit kernels
+>       w/o ia32 emulation.
+> 
+>     - Reduce code duplication and unnecessary operations
+> 
+> 
+> It applies on top of
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+> 
+> and is also available via git:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/fpu
 
-best regards
-wang shengjiu
+0-Day kernel CI tested this branch from performance view,
+choosing some sub-tests from will-it-scale (detail as below), since we
+thought if the branch has the impact of fpu ops, will-it-scale should be
+able to catch it.
+we also plan to add stress-ng for new round test.
+could you suggest if any other suitable test suites? and what's the most
+proper sub-tests in will-it-scale and stress-ng?
+
+Test Summary
+============
+no obvious will-it-scale performance changes found so far
+
+Test Environment
+================
+https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git/log/?h=x86/fpu
+* 0619677ee36c3 (tglx-devel/x86/fpu) x86/fpu/signal: Let xrstor handle the features to init   <----- the tip we tested
+* a114fd9946c28 x86/fpu/signal: Handle #PF in the direct restore path
+* 73e26fdd0cf1c x86/fpu: Return proper error codes from user access functions
+...
+* 63bf804bfa6b0 x86/fpu: Make init_fpstate correct with optimized XSAVE
+* 6db8e02d5e932 x86/fpu: x86/fpu: Preserve supervisor states in sanitize_restored_user_xstate()
+*   4fe93c2272dbb Merge branch 'x86/fpu' of ../tip into x86/fpu    <----- the base we compared
+|\
+| * b7c11876d24bd (tip/x86/fpu, peterz-queue/x86/fpu) selftests/x86: Test signal frame XSTATE header corruption handling
+
+64bit kernel testing, upon below platform:
+model: Cascade Lake
+Intel(R) Xeon(R) Gold 6238M CPU @ 2.10GHz
+nr_node: 2
+nr_cpu: 88
+memory: 128G
+
+
+32bit kernel testing, upon below platform:
+Intel(R) Core(TM) i7-3770K CPU @ 3.50GHz
+model: Ivy Bridge
+nr_node: 1
+nr_cpu: 8
+memory: 16G
+
+
+tested below test suites:
+will-it-scale-performance-context_switch1
+will-it-scale-performance-page_fault1
+will-it-scale-performance-poll1
+will-it-scale-performance-pthread_mutex1
+will-it-scale-performance-writeseek1
+
+
+
+> 
+> This is a follow up to V2 which can be found here:
+> 
+>      https://lore.kernel.org/r/20210614154408.673478623@linutronix.de
+> 
+> Changes vs. V2:
+> 
+>   - Fixed the testing fallout (Dave, Kan)
+> 
+>   - Fixed a few issues found by myself when going through the lot
+>     with a fine comb, especially MXCSR handling
+> 
+>   - Drop the FNSAVE optimizations
+> 
+>   - Cleanup of signal restore
+> 
+>   - Addressed review comments, mostly comments and a hopefully better
+>     naming scheme which now just uses the instruction names and
+>     consolidates everything else on save/restore so it's close to the way
+>     how the hardware works.
+> 
+>   - A few cleanups and simplifications on the way (mostly regset related).
+> 
+>   - Picked up tags
+> 
+> With the above I'm not intending to do any further surgery on that
+> code at the moment, though there is still room for improvement which
+> can and has to be worked on when new bits are added.
+> 
+> Thanks,
+> 
+>         tglx
+> ---
+>  arch/x86/events/intel/lbr.c          |    6
+>  arch/x86/include/asm/fpu/internal.h  |  211 +++-------
+>  arch/x86/include/asm/fpu/xstate.h    |   70 ++-
+>  arch/x86/include/asm/pgtable.h       |   57 --
+>  arch/x86/include/asm/pkeys.h         |    9
+>  arch/x86/include/asm/pkru.h          |   62 +++
+>  arch/x86/include/asm/processor.h     |    9
+>  arch/x86/include/asm/special_insns.h |   14
+>  arch/x86/kernel/cpu/common.c         |   34 -
+>  arch/x86/kernel/fpu/core.c           |  276 +++++++------
+>  arch/x86/kernel/fpu/init.c           |   15
+>  arch/x86/kernel/fpu/regset.c         |  220 ++++++-----
+>  arch/x86/kernel/fpu/signal.c         |  423 +++++++++------------
+>  arch/x86/kernel/fpu/xstate.c         |  693 ++++++++++++++---------------------
+>  arch/x86/kernel/process.c            |   22 -
+>  arch/x86/kernel/process_64.c         |   28 +
+>  arch/x86/kernel/traps.c              |    5
+>  arch/x86/kvm/svm/sev.c               |    1
+>  arch/x86/kvm/x86.c                   |   56 +-
+>  arch/x86/mm/extable.c                |    2
+>  arch/x86/mm/fault.c                  |    2
+>  arch/x86/mm/pkeys.c                  |   22 -
+>  include/linux/pkeys.h                |    4
+>  23 files changed, 1060 insertions(+), 1181 deletions(-)
+> 
+> 
