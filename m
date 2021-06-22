@@ -2,129 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F063AFBA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 06:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F5E3AFBAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 06:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbhFVERf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 00:17:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46526 "EHLO
+        id S229704AbhFVEUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 00:20:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhFVERc (ORCPT
+        with ESMTP id S229628AbhFVET7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 00:17:32 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6673FC061574;
-        Mon, 21 Jun 2021 21:15:17 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8CjY3rRCz9sf9;
-        Tue, 22 Jun 2021 14:15:13 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624335313;
-        bh=BAyiH3irj6S2V0XajwdYLnZLNH4rqbdH3cdLjCBB3dQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nmv3kJJDfQSRQ8y+rSTZGGz8i9tU/f6N+iQ/3Wkn5TCRKtI1tNmeZd7jMRC3sQn+z
-         um2KZgSxSJs0O67QHJjB8d7dB1vCZAHtBRZkQAC5LgE0JytMDYnHm5tF7MRMBD6Tyo
-         XNZuRgjCm/mauCd3XKgMEYdBsobWJA0H+WW1gHAiT8MuSUXr8dB90/Q4O9aJ02jb+r
-         IPvy9rwCFI+P5H5GvG30EAvR9kVp6ytUzHADz6MFKkGMLq0JgDzR9PgO3r2dvkVE1Q
-         WtE2lKB5yomM4PotZp8ZdR3+rkxnyZo8xNZ5l9F0Tk8g2yh3/TmvAWPBJXGb3cYbKh
-         0FL1X8xQy5kmA==
-Date:   Tue, 22 Jun 2021 14:15:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marc Zyngier <maz@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Haren Myneni <haren@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the irqchip tree
-Message-ID: <20210622141512.621fb2e4@canb.auug.org.au>
+        Tue, 22 Jun 2021 00:19:59 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0002C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 21:17:43 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id pf4-20020a17090b1d84b029016f6699c3f2so981538pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 21:17:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=igel-co-jp.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JZM6Q8vJXHp7Mr1v3JiA0bDju7mUR1U5h794eAQV5aw=;
+        b=UIPqOBjy1eyoYO72vBZ6igOUbFKMBwnRVkLoQ6pVvLam5Nl79QNxK6nzpixJPNGvNY
+         3uw1tqkaLkGzEfG/t3E2jN9Sa5BBQSbtly4Yp9c90RDfOFPpgx2kTr3dhSO4BROEN9Pj
+         LV4XWmOdkkekB27C+bQ/HfSY+nHSB5mvAoaV+kU29/bvJnYv4QqC/ybjNKJrIuuC3uqG
+         /tMawnBWXdOZ0deoNLqEJx6i7Xxfkr5/S0zolacngmc684FZzBIIa5qLx52IIF9gmjuA
+         tENo/tzcDNMpMyh7xRFR4BZy2mVTYjXAXU4hHg2uRAHL3vHG0LLxaTZ7uzMgirlVfN/D
+         l/fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JZM6Q8vJXHp7Mr1v3JiA0bDju7mUR1U5h794eAQV5aw=;
+        b=eNPiDU+Dx/Nce1WM2OImw3YVZtChftWKRQV/ysyy/bz6EfWG/ePrWG4LKT5Y4CXLYX
+         +RgFZ3GZCnGF4IoErJ0VurUT7LCUC4+G84RNsq664ghNz/4/fi27DJ83DGoz8l0TcWLb
+         uVDD2SFm9AVxrTb9VM5PvhY2qvVbz62vodX+d0TWsBlgurf/I0OYDKbJX/UuIihCJ5xP
+         yi8B18hdRtePjEdBKn2s1UQ3yARX8M51M9znE3Znjs+qF+PGTTwFKOQlyt1/mojjUXY5
+         hvF0IECaeWeqMXr4nD1EmWyxYml66ooegKlM5lqv9B56Zzs+7/1vkkJowDmQC3p9EJRZ
+         YxIA==
+X-Gm-Message-State: AOAM531HxaraeGbtRDMdqeiufP3dGjplkjM04PJS2wse0PeYkGEuyTWL
+        klLlMYccyjFIgS+dqE69jfeskQ==
+X-Google-Smtp-Source: ABdhPJx84ffi7OI821n8zjaouu0FzA1+OoHfQ1z9QSqm0sGmqVyWEP/1AWzlHUSwFLQayzu+7vys2A==
+X-Received: by 2002:a17:90a:4d86:: with SMTP id m6mr1645984pjh.44.1624335463047;
+        Mon, 21 Jun 2021 21:17:43 -0700 (PDT)
+Received: from ?IPv6:240b:10:c9a0:ca00:5192:32ad:e5be:23cd? ([240b:10:c9a0:ca00:5192:32ad:e5be:23cd])
+        by smtp.gmail.com with ESMTPSA id u1sm18863425pgh.80.2021.06.21.21.17.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 21:17:42 -0700 (PDT)
+Subject: Re: [PATH 3/4] dt-bindings: display: Add virtual DRM
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
+        Takanari Hayama <taki@igel.co.jp>
+References: <20210621064403.26663-1-etom@igel.co.jp>
+ <20210621064403.26663-4-etom@igel.co.jp>
+ <1624297202.341994.1161630.nullmailer@robh.at.kernel.org>
+From:   Esaki Tomohito <etom@igel.co.jp>
+Message-ID: <d722105a-44f6-1b9c-d91c-d140b926f7c5@igel.co.jp>
+Date:   Tue, 22 Jun 2021 13:17:38 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/oLJOXe9TctyAeiGjvescI=V";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <1624297202.341994.1161630.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/oLJOXe9TctyAeiGjvescI=V
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi, Rob
 
-Hi all,
+Thank you for the error report and advice.
+I will recheck DT binding.
 
-After merging the irqchip tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+Best regards
+Tomohito Esaki
 
-arch/powerpc/platforms/pseries/vas.c: In function 'allocate_setup_window':
-arch/powerpc/platforms/pseries/vas.c:219:22: error: implicit declaration of=
- function 'irq_create_mapping' [-Werror=3Dimplicit-function-declaration]
-  219 |  txwin->fault_virq =3D irq_create_mapping(NULL, txwin->fault_irq);
-      |                      ^~~~~~~~~~~~~~~~~~
-arch/powerpc/platforms/pseries/vas.c:248:2: error: implicit declaration of =
-function 'irq_dispose_mapping' [-Werror=3Dimplicit-function-declaration]
-  248 |  irq_dispose_mapping(txwin->fault_virq);
-      |  ^~~~~~~~~~~~~~~~~~~
-
-Caused by commit
-
-  582f5aa1dbb3 ("powerpc: Drop dependency between asm/irq.h and linux/irqdo=
-main.h")
-
-interacting with commit
-
-  6d0aaf5e0de0 ("powerpc/pseries/vas: Setup IRQ and fault handling")
-
-from the powerpc tree
-
-I have applied the following merge fix patch for today.  This could, of
-course, be applied directly to the powerpc tree ...
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 22 Jun 2021 14:10:44 +1000
-Subject: [PATCH] powerpc: fix up for "Drop dependency between asm/irq.h and=
- linux/irqdomain.h"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- arch/powerpc/platforms/pseries/vas.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/powerpc/platforms/pseries/vas.c b/arch/powerpc/platforms/=
-pseries/vas.c
-index 3385b5400cc6..b5c1cf1bc64d 100644
---- a/arch/powerpc/platforms/pseries/vas.c
-+++ b/arch/powerpc/platforms/pseries/vas.c
-@@ -12,6 +12,7 @@
- #include <linux/delay.h>
- #include <linux/slab.h>
- #include <linux/interrupt.h>
-+#include <linux/irqdomain.h>
- #include <asm/machdep.h>
- #include <asm/hvcall.h>
- #include <asm/plpar_wrappers.h>
---=20
-2.30.2
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/oLJOXe9TctyAeiGjvescI=V
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDRY9AACgkQAVBC80lX
-0Gyw5wgAn2+gY7AKNPwlW+xAcyZESj0NL6m8VParKhuPVhf7rByIK2ldHRbi8k/y
-S50tGifBa5t4h7yK4F3HfNDvJBnwlLL+L1AENxyKcDT3riOtxUjKRByqzMDKD7eC
-30pdFedDxUpiEIri55QvWVrXSdYvNTiGhywWz46ubnCoovb3dPvT7xeoDuJRrNWF
-UaEt4QMvPR9+y+FX94A7oCo1nMFUdU5UEnZs8VtlFDnqObyL4U6xfx57GyFgby1V
-jjI/kRtAf8BwNrgzNiNIeNQyMhVCpTUqBqsD3SSi4AZo9HZ2VtO1k5aYbvXv1Swl
-F4sAsHevDuAbZJlhOnoWe1c9eMXJKA==
-=jfq5
------END PGP SIGNATURE-----
-
---Sig_/oLJOXe9TctyAeiGjvescI=V--
+On 2021/06/22 2:40, Rob Herring wrote:
+> On Mon, 21 Jun 2021 15:44:02 +0900, Tomohito Esaki wrote:
+>> Add device tree bindings documentation for virtual DRM.
+>>
+>> Signed-off-by: Tomohito Esaki <etom@igel.co.jp>
+>> ---
+>>  .../devicetree/bindings/display/vdrm.yaml     | 67 +++++++++++++++++++
+>>  1 file changed, 67 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/display/vdrm.yaml
+>>
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> ./Documentation/devicetree/bindings/display/vdrm.yaml:39:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
+> 
+> dtschema/dtc warnings/errors:
+> make[1]: *** Deleting file 'Documentation/devicetree/bindings/display/vdrm.example.dts'
+> Traceback (most recent call last):
+>   File "/usr/local/bin/dt-extract-example", line 45, in <module>
+>     binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+>   File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
+>     return constructor.get_single_data()
+>   File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 120, in get_single_data
+>     node = self.composer.get_single_node()
+>   File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+>   File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+>   File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+>   File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+>   File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+>   File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+>   File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+>   File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+>   File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+>   File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+>   File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+>   File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+>   File "_ruamel_yaml.pyx", line 731, in _ruamel_yaml.CParser._compose_node
+>   File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+> ruamel.yaml.scanner.ScannerError: while scanning a plain scalar
+>   in "<unicode string>", line 38, column 15
+> found a tab character that violates indentation
+>   in "<unicode string>", line 39, column 1
+> make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/display/vdrm.example.dts] Error 1
+> make[1]: *** Waiting for unfinished jobs....
+> ./Documentation/devicetree/bindings/display/vdrm.yaml:  while scanning a plain scalar
+>   in "<unicode string>", line 38, column 15
+> found a tab character that violates indentation
+>   in "<unicode string>", line 39, column 1
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/vdrm.yaml: ignoring, error parsing file
+> warning: no schema found in file: ./Documentation/devicetree/bindings/display/vdrm.yaml
+> make: *** [Makefile:1416: dt_binding_check] Error 2
+> \ndoc reference errors (make refcheckdocs):
+> 
+> See https://patchwork.ozlabs.org/patch/1494913
+> 
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit.
+> 
