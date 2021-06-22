@@ -2,60 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667373AFE1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6703AFE1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhFVHnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:43:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33960 "EHLO mail.kernel.org"
+        id S230170AbhFVHoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:44:07 -0400
+Received: from verein.lst.de ([213.95.11.211]:45481 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229574AbhFVHnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:43:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04E506113D;
-        Tue, 22 Jun 2021 07:41:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624347685;
-        bh=cXqANP3NFVa6yYTARGTcMaDW/gT6xyATnR047Rh4aE8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s7IXLenUWR3EkWDbA3UNQv9xpNKg8nG+wLfMwoIuNpXLfIhrSJV6UXegTZ0ZM2M01
-         4HwUOkiDvQ+Uyh+GkgGGZjHiKrE+b7ok+gP3/UtnOwtRbGel4bqJFIKN+qIa0fgVbB
-         WLtE/0XHF3XBm4Ofr5UefpCZ9DjUgKd/X/g5ZHyM=
-Date:   Tue, 22 Jun 2021 09:41:23 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     minchan@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
-        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
-        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
-        peterz@infradead.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] zram: fix deadlock with sysfs attribute usage and
- driver removal
-Message-ID: <YNGUIzh7aR3C/Hoz@kroah.com>
-References: <20210621233013.562641-1-mcgrof@kernel.org>
- <20210621233634.595649-1-mcgrof@kernel.org>
+        id S229574AbhFVHoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 03:44:06 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id B8FFD67373; Tue, 22 Jun 2021 09:41:48 +0200 (CEST)
+Date:   Tue, 22 Jun 2021 09:41:48 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Hamza Mahfooz <someguy@effective-light.com>
+Cc:     linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH] dma debug: report -EEXIST errors in add_dma_entry
+Message-ID: <20210622074148.GA601@lst.de>
+References: <20210518125443.34148-1-someguy@effective-light.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210621233634.595649-1-mcgrof@kernel.org>
+In-Reply-To: <20210518125443.34148-1-someguy@effective-light.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 04:36:34PM -0700, Luis Chamberlain wrote:
-> +	ssize_t __ret; \
-> +	if (!try_module_get(THIS_MODULE)) \
+Thanks,
 
-try_module_get(THIS_MODULE) is always racy and probably does not do what
-you want it to do.  You always want to get/put module references from
-code that is NOT the code calling these functions.
-
-> +		return -ENODEV; \
-> +	__ret = _name ## _store(dev, attr, buf, len); \
-> +	module_put(THIS_MODULE); \
-
-This too is going to be racy.
-
-While fun to poke at, I still think this is pointless.
-
-greg k-h
+applied to the dma-mapping tree.
