@@ -2,261 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6082B3B00D6
+	by mail.lfdr.de (Postfix) with ESMTP id A974B3B00D7
 	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbhFVKAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 06:00:16 -0400
-Received: from srv6.fidu.org ([159.69.62.71]:48454 "EHLO srv6.fidu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhFVKAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 06:00:14 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id 96BC1C8009D;
-        Tue, 22 Jun 2021 11:57:57 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id 0amXZ27R54Tn; Tue, 22 Jun 2021 11:57:57 +0200 (CEST)
-Received: from [IPv6:2003:e3:7f39:4900:2847:eb91:7f60:5216] (p200300E37F3949002847eb917F605216.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:4900:2847:eb91:7f60:5216])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPSA id BC5F8C8009B;
-        Tue, 22 Jun 2021 11:57:54 +0200 (CEST)
-Subject: Re: [PATCH v4 15/17] drm/uAPI: Move "Broadcast RGB" property from
- driver specific to general context
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-Cc:     amd-gfx@lists.freedesktop.org, tzimmermann@suse.de,
-        intel-gfx@lists.freedesktop.org, sunpeng.li@amd.com,
-        dri-devel@lists.freedesktop.org, joonas.lahtinen@linux.intel.com,
-        maarten.lankhorst@linux.intel.com, linux-kernel@vger.kernel.org,
-        mripard@kernel.org, airlied@linux.ie, jani.nikula@linux.intel.com,
-        daniel@ffwll.ch, rodrigo.vivi@intel.com, alexander.deucher@amd.com,
-        harry.wentland@amd.com, christian.koenig@amd.com
-References: <20210618091116.14428-1-wse@tuxedocomputers.com>
- <20210618091116.14428-16-wse@tuxedocomputers.com>
- <20210622102529.5266e87b@eldfell>
-From:   Werner Sembach <wse@tuxedocomputers.com>
-Message-ID: <70d89fe2-4e45-7ea9-2509-15257ef222f8@tuxedocomputers.com>
-Date:   Tue, 22 Jun 2021 11:57:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229849AbhFVKAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 06:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhFVKAR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 06:00:17 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8B9C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:58:01 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id h11so5411983wrx.5
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:58:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XGm5a/Fe5N5jRf7hJWwEELPPpr6Kdx/ELnvMfUGOCzM=;
+        b=KnOYTGoqCw3yaoYvo6WJY/UiRv5L8oNDkJMj3qqXhtSJC835E+qd6HXIB3rnAMslG3
+         FlJpyUZu60Z/+0jhexM/YXJPwtu5aYO7Asi5ExTZnWujKsutCzN15EN3Ore2qHi1b4tx
+         lhGjv/I1H69Vie0p2xnUX+GmE4FqwivQOUxPVX65ZYiQBgMag8JKa9XxdkduVElUYOuV
+         dMumUbCSxr9Nq4IzKk9X8yr0ko06dB52YhTAb7A+t5tMyccXmDsMUlTFDqlOUrSNp3Md
+         0IptmioZF3w+PnZVEofJLqr1bSiTHTyRx4oOiOyEjJ1tMSUTh4C9JReJiM6m53eU0oRA
+         WdMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XGm5a/Fe5N5jRf7hJWwEELPPpr6Kdx/ELnvMfUGOCzM=;
+        b=V5XT66E+XkC7FCuSetlpE2zrBzghcABpw93wXNPc6qoTMQj4vstY2isVRowKDGLNHF
+         lqNC6rAhvqa1Tb7Hmt8zHZo4bP2BNAQLBHF1lMQjtb6hCzY/hRW+EjQcAiQuWmAS9O30
+         pO2gD3At63pW/5uWGZ8/i+qFp81+o29G05mpOCGcogHT28GWroD9IQ9HRoEu4k3hRnIa
+         rqNwj94ry8z62rfuVTr5xD24I+epd23KC25CznbFtTZK4Wj6S6x/7PnQo8D1Qeed1xka
+         Uqg5mHcqy83jD7N0dPdcgE3uIaE+BoJRBuSjEGCzZTFqFhVytNpEW6eB5Og7ts4XtHHu
+         Vs8Q==
+X-Gm-Message-State: AOAM532K06Kn4gWS7Z1nCpXUhFTxpkaiJLWCG/0gpRH+DKa2WwJdRdiJ
+        e3fENht9XxSNaHwNvfBVBNOazQ2jG0IaVA==
+X-Google-Smtp-Source: ABdhPJxKxy5rTDAIOoB35xJ/WuhJV0nmoikd+B5VMZ3tQEvzlCfODC2nIz+tWU0Yr5YpQv+yJ34l0A==
+X-Received: by 2002:a5d:6a8b:: with SMTP id s11mr3645664wru.88.1624355880057;
+        Tue, 22 Jun 2021 02:58:00 -0700 (PDT)
+Received: from agape.jhs ([5.171.72.34])
+        by smtp.gmail.com with ESMTPSA id m184sm1875029wmm.26.2021.06.22.02.57.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 02:57:59 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 11:57:57 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 12/18] staging: rtl8723bs: remove VHT dead code
+Message-ID: <20210622095757.GB1426@agape.jhs>
+References: <cover.1624099125.git.fabioaiuto83@gmail.com>
+ <d3f79570088ad339bd80fe9d6b24604ac91ea8d3.1624099126.git.fabioaiuto83@gmail.com>
+ <dd0332d7-5d9f-49e5-3fc6-8ae3e623f29c@redhat.com>
+ <20210622091602.GA1426@agape.jhs>
+ <4f128bd2-b84b-132e-c75f-0030701a8a9b@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210622102529.5266e87b@eldfell>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Content-Language: de-DE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4f128bd2-b84b-132e-c75f-0030701a8a9b@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 22.06.21 um 09:25 schrieb Pekka Paalanen:
-> On Fri, 18 Jun 2021 11:11:14 +0200
-> Werner Sembach <wse@tuxedocomputers.com> wrote:
->
->> Add "Broadcast RGB" to general drm context so that more drivers besides
->> i915 and gma500 can implement it without duplicating code.
->>
->> Userspace can use this property to tell the graphic driver to use full or
->> limited color range for a given connector, overwriting the default
->> behaviour/automatic detection.
->>
->> Possible options are:
->>     - Automatic (default/current behaviour)
->>     - Full
->>     - Limited 16:235
->>
->> In theory the driver should be able to automatically detect the monitors
->> capabilities, but because of flawed standard implementations in Monitors,
->> this might fail. In this case a manual overwrite is required to not have
->> washed out colors or lose details in very dark or bright scenes.
->>
->> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
->> ---
->>  drivers/gpu/drm/drm_atomic_helper.c |  4 +++
->>  drivers/gpu/drm/drm_atomic_uapi.c   |  4 +++
->>  drivers/gpu/drm/drm_connector.c     | 43 +++++++++++++++++++++++++++++
->>  include/drm/drm_connector.h         | 16 +++++++++++
->>  4 files changed, 67 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
->> index 90d62f305257..0c89d32efbd0 100644
->> --- a/drivers/gpu/drm/drm_atomic_helper.c
->> +++ b/drivers/gpu/drm/drm_atomic_helper.c
->> @@ -691,6 +691,10 @@ drm_atomic_helper_check_modeset(struct drm_device *dev,
->>  			if (old_connector_state->preferred_color_format !=
->>  			    new_connector_state->preferred_color_format)
->>  				new_crtc_state->connectors_changed = true;
->> +
->> +			if (old_connector_state->preferred_color_range !=
->> +			    new_connector_state->preferred_color_range)
->> +				new_crtc_state->connectors_changed = true;
->>  		}
->>  
->>  		if (funcs->atomic_check)
->> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
->> index c536f5e22016..c589bb1a8163 100644
->> --- a/drivers/gpu/drm/drm_atomic_uapi.c
->> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
->> @@ -798,6 +798,8 @@ static int drm_atomic_connector_set_property(struct drm_connector *connector,
->>  		state->max_requested_bpc = val;
->>  	} else if (property == connector->preferred_color_format_property) {
->>  		state->preferred_color_format = val;
->> +	} else if (property == connector->preferred_color_range_property) {
->> +		state->preferred_color_range = val;
->>  	} else if (connector->funcs->atomic_set_property) {
->>  		return connector->funcs->atomic_set_property(connector,
->>  				state, property, val);
->> @@ -877,6 +879,8 @@ drm_atomic_connector_get_property(struct drm_connector *connector,
->>  		*val = state->max_requested_bpc;
->>  	} else if (property == connector->preferred_color_format_property) {
->>  		*val = state->preferred_color_format;
->> +	} else if (property == connector->preferred_color_range_property) {
->> +		*val = state->preferred_color_range;
->>  	} else if (connector->funcs->atomic_get_property) {
->>  		return connector->funcs->atomic_get_property(connector,
->>  				state, property, val);
->> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
->> index aea03dd02e33..9bc596638613 100644
->> --- a/drivers/gpu/drm/drm_connector.c
->> +++ b/drivers/gpu/drm/drm_connector.c
->> @@ -905,6 +905,12 @@ static const struct drm_prop_enum_list drm_active_color_format_enum_list[] = {
->>  	{ DRM_COLOR_FORMAT_YCRCB420, "ycbcr420" },
->>  };
->>  
->> +static const struct drm_prop_enum_list drm_preferred_color_range_enum_list[] = {
->> +	{ DRM_MODE_COLOR_RANGE_UNSET, "Automatic" },
->> +	{ DRM_MODE_COLOR_RANGE_FULL, "Full" },
->> +	{ DRM_MODE_COLOR_RANGE_LIMITED_16_235, "Limited 16:235" },
-> Hi,
->
-> the same question here about these numbers as I asked on the "active
-> color range" property.
->
->> +};
->> +
->>  static const struct drm_prop_enum_list drm_active_color_range_enum_list[] = {
->>  	{ DRM_MODE_COLOR_RANGE_UNSET, "Unknown" },
->>  	{ DRM_MODE_COLOR_RANGE_FULL, "Full" },
->> @@ -1243,6 +1249,13 @@ static const struct drm_prop_enum_list dp_colorspaces[] = {
->>   *	drm_connector_attach_active_color_format_property() to install this
->>   *	property.
->>   *
->> + * Broadcast RGB:
->> + *	This property is used by userspace to change the used color range. When
->> + *	used the driver will use the selected range if valid for the current
->> + *	color format. Drivers to use the function
->> + *	drm_connector_attach_preferred_color_format_property() to create and
->> + *	attach the property to the connector during initialization.
-> An important detail to document here is: does userspace need to
-> take care that pixel data at the connector will already match the set
-> range, or will the driver program the hardware to produce the set range?
-Since until now, the userspace didn't even know for sure if RGB or YCbCr and therefore which full/limited format was
-used I guess it's all kernel space conversion.
->
-> If the former, then I'm afraid the preference/active property pair
-> design does not work. Userspace needs to make sure the content is in
-> the right range, so the driver cannot second-guess that afterwards.
->
-> If the latter, then what does the driver assume about color range just
-> before the automatic conversion to the final color range, and does the
-> range conversion happen as the final step in the color pipeline?
->
-> If I remember the discussion about Intel right, then the driver does
-> the latter and assume that userspace programs KMS to always produce
-> full range pixels. There is no provision for userspace to produce
-> limited range pixels, IIRC.
-I think I remember this too from an answer to one of the revisions of this patchset.
->
->
-> Thanks,
-> pq
->
->> + *
->>   * active color range:
->>   *	This read-only property tells userspace the color range actually used by
->>   *	the hardware display engine on "the cable" on a connector. The chosen
->> @@ -2324,6 +2337,36 @@ void drm_connector_set_active_color_format_property(struct drm_connector *connec
->>  }
->>  EXPORT_SYMBOL(drm_connector_set_active_color_format_property);
->>  
->> +/**
->> + * drm_connector_attach_preferred_color_range_property - attach "Broadcast RGB" property
->> + * @connector: connector to attach preferred color range property on.
->> + *
->> + * This is used to add support for selecting a color range on a connector.
->> + *
->> + * Returns:
->> + * Zero on success, negative errno on failure.
->> + */
->> +int drm_connector_attach_preferred_color_range_property(struct drm_connector *connector)
->> +{
->> +	struct drm_device *dev = connector->dev;
->> +	struct drm_property *prop;
->> +
->> +	if (!connector->preferred_color_range_property) {
->> +		prop = drm_property_create_enum(dev, 0, "Broadcast RGB",
->> +						drm_preferred_color_range_enum_list,
->> +						ARRAY_SIZE(drm_preferred_color_range_enum_list));
->> +		if (!prop)
->> +			return -ENOMEM;
->> +
->> +		connector->preferred_color_range_property = prop;
->> +		drm_object_attach_property(&connector->base, prop, DRM_MODE_COLOR_RANGE_UNSET);
->> +		connector->state->preferred_color_range = DRM_MODE_COLOR_RANGE_UNSET;
->> +	}
->> +
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL(drm_connector_attach_preferred_color_range_property);
->> +
->>  /**
->>   * drm_connector_attach_active_color_range_property - attach "active color range" property
->>   * @connector: connector to attach active color range property on.
->> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
->> index 7b85407ba45c..b319760d4a8c 100644
->> --- a/include/drm/drm_connector.h
->> +++ b/include/drm/drm_connector.h
->> @@ -809,6 +809,15 @@ struct drm_connector_state {
->>  	 */
->>  	u32 preferred_color_format;
->>  
->> +	/**
->> +	 * preferred_color_range: Property set by userspace via "Broadcast RGB"
->> +	 * property to tell the GPU driver which color range to use. It
->> +	 * overwrites existing automatic detection mechanisms, if set and valid
->> +	 * for the current color format. Userspace can check for (un-)successful
->> +	 * application via the "active color range" property.
->> +	 */
->> +	enum drm_mode_color_range preferred_color_range;
->> +
->>  	/**
->>  	 * @hdr_output_metadata:
->>  	 * DRM blob property for HDR output metadata
->> @@ -1426,6 +1435,12 @@ struct drm_connector {
->>  	 */
->>  	struct drm_property *active_color_format_property;
->>  
->> +	/**
->> +	 * @preferred_color_range_property: Default connector property for the
->> +	 * preferred color range to be driven out of the connector.
->> +	 */
->> +	struct drm_property *preferred_color_range_property;
->> +
->>  	/**
->>  	 * @active_color_range_property: Default connector property for the
->>  	 * active color range to be driven out of the connector.
->> @@ -1760,6 +1775,7 @@ int drm_connector_attach_preferred_color_format_property(struct drm_connector *c
->>  int drm_connector_attach_active_color_format_property(struct drm_connector *connector);
->>  void drm_connector_set_active_color_format_property(struct drm_connector *connector,
->>  						    u32 active_color_format);
->> +int drm_connector_attach_preferred_color_range_property(struct drm_connector *connector);
->>  int drm_connector_attach_active_color_range_property(struct drm_connector *connector);
->>  void drm_connector_set_active_color_range_property(struct drm_connector *connector,
->>  						   enum drm_mode_color_range active_color_range);
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+On Tue, Jun 22, 2021 at 11:19:36AM +0200, Hans de Goede wrote:
+
+Hi Hans,
+
+> Hi Fabio,
+> 
+> > Moreover I have been quite conservative, for I left untouched HT indexes above
+> > 7 which rtl8723bs doesn't support.
+> > 
+> > So IMO I think this patch is fine as is...
+> >> Perhaps this entire block can never be executed ?
+> > 
+> > the block is executed but there's no register write happening. Just
+> > updating of values which will never be fetched.
+> 
+> Ack, my bad I was under the impression that phy_SetTxPowerByRateBase()
+> would actually do a register write, but I checked and it just updates
+> some unused table values, so dropping this code is fine and you can
+> keep this patch for v2 of the patch set.
+> 
+> Regards,
+> 
+> Hans
+> 
+
+thank you, what do you think about what I replied about patch 1, shall
+I remove the '> 14 if block' or leave it as is? Do you think is necessary
+to keep the conditions inside the block and pack them?
+
+I would leave as is but is my opinion...
+
+regards,
+
+fabio
