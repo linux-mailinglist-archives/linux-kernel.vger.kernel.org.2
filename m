@@ -2,245 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB7F3AFD97
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0ECE3AFD98
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhFVHLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:11:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhFVHLC (ORCPT
+        id S230047AbhFVHLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:11:45 -0400
+Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:62788 "EHLO
+        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229629AbhFVHLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:11:02 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF4FC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:08:46 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id n20so22215464edv.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:08:46 -0700 (PDT)
+        Tue, 22 Jun 2021 03:11:36 -0400
+Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15M79IXq017937;
+        Tue, 22 Jun 2021 07:09:18 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2106.outbound.protection.outlook.com [104.47.58.106])
+        by mx0a-0064b401.pphosted.com with ESMTP id 39av710hwq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Jun 2021 07:09:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B5o/PAib+lSgKRANMWaxhh52icNy/QovK9aQ2uS588kRH1HiP/2Xlbm3NGTI4eDZp/SJQ6stV2UT/8fOnPeJMxx3RMEwB/LnIoaQRHkMmcI59yKcqQs02qkLCqQu8H4lRmx4u8FNCmNn1lVRjf2XnaHnk+WuT5jz6WwUQupMjnzqS9iBtgGaVvjCPDt4H0XDjpr7/LClJfmUmQX1GbB/MWzF26aPhmum4TC8zOSNzMHPJA4oa32s0B+zVjEhIAzVaSzxtX4TeKYgWOM1MLJp6a3co7MokjJ542U+DDD9wPLEVbi8bpLCN0JbOjwxS+MIjk0y97WBM6/jIfIE3NpWcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wKSojNmXt83yBg6VNFo36Ty5vt61ITsh9aF3aMCooA4=;
+ b=bHnWsto/1iJHLHA5l0PDCT5EeHPlRo9WnKo2uOK/gU8KUuh5UAbtUUzhkRX7ilxpXyT1JWfPHc2HAIbpCnzlREnBCi5JrnSdBMsSlUCfNjV+XsZ4r39SqPQNdPAzFtvZHBX1sT9/Krl5PjEbEI5/cwWUFS1rOZO+ZHJPR4Fd6A/BMQsbGddRxM1XEozSXidT25M8cC8OuJPnB8A+AcAUuer6caTiX3bV4vd1hgSo4b1LfktpZNUo6LkEf2WOzePlP5vU8xE8kM5wBW4+uVpXZLjAvHyoZr9AbCCkebCyiwBJh0+C7dzB+ATZSFwvNEt9RcppTnYtuFsm8Lvb8LeZOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=ouoLlOX37fOnMdmhy/nvOY3q7XIh3oXIRronn/3MsjY=;
-        b=zh9ca6MgxtzYxeLBDTVnja3YfYMjS/8KEto6OOACTGLnOWu1hz/t0f+ZuhXkiSPfr6
-         mVWtg2Ii5Bh8de+A9444FYKfGXeOpZriIVD3bNo16UiEMavbK7fgGvfzxuXQvxzeK1He
-         HEOcyPYK0z0OC5bRbH0sbrVIVjafqK/bkmBgHSZvSnJjDrB4lktsM/UzUjJCqUo6us0K
-         hr+eEItCXB0pRd2GyuB6VDbtsGuCOemrQWUecOCxRgeq/AvHd5EJx+lpB+hUSib/CX6c
-         ydZJWPSNOfogFBkU7XDuOckOcGnInaPKxmDPzLcu4HSbYSryy6Nlq9hjkV+7mNdEWB3r
-         kXzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=ouoLlOX37fOnMdmhy/nvOY3q7XIh3oXIRronn/3MsjY=;
-        b=gEHyFoP05oGZt0FSJNs8dgsSTL0WP3Rpv7DNRWrWwmis6Tw7t4QYWGaDz3puHrBvnb
-         BHMjhFrta8GKJxajSrmQg8Rb/Hv3BmR3slTt+OevTr1vw80oX+jW4TK4I8uunaeCUirp
-         A2ojclkCBqQhlDQVIc7yY++SIhIYv49j1Xm67mnbNjyb+P5dHKxaqXdijEWeEnOEZ01w
-         FcLRfa9s1WMy7XvDYysAdhczZFJN7z5GXxQlrYkjxNJ/xlTJIHnIr9V/qttcKWzCw2r6
-         sxr71clEQaDaUtkXGfww7XPLQrTGtomxRk6tIG9d4QBTasangOltn4DlgEmsAWiWB2nb
-         sVgw==
-X-Gm-Message-State: AOAM5300VA8OKQ8d8SKaq8ljRxdJ5Eti5Xh7PI1U55wIgC0ffimDlbYP
-        uqAjlJJ5yqit8P30yt29r4+Vqw==
-X-Google-Smtp-Source: ABdhPJwqOTz+onUGGxsjYuoWrnecMlmXlInaI3F81PKHVBujT8cqjGxoBn4HTfndSLYcXhF11UR24Q==
-X-Received: by 2002:aa7:d853:: with SMTP id f19mr2944976eds.1.1624345725131;
-        Tue, 22 Jun 2021 00:08:45 -0700 (PDT)
-Received: from ?IPv6:2a00:6020:440d:e400:95b3:cd1a:4cd9:d43f? ([2a00:6020:440d:e400:95b3:cd1a:4cd9:d43f])
-        by smtp.gmail.com with ESMTPSA id s18sm5826731ejh.12.2021.06.22.00.08.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 22 Jun 2021 00:08:44 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH FIXES/IMPROVEMENTS 0/7] block, bfq: preserve control,
- boost throughput, fix bugs
-From:   Paolo Valente <paolo.valente@linaro.org>
-In-Reply-To: <3533087.dJKXTdksHR@spock>
-Date:   Tue, 22 Jun 2021 09:08:43 +0200
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luca Mariotti <mariottiluca1@hotmail.it>,
-        =?utf-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>,
-        Pietro Pedroni <pedroni.pietro.96@gmail.com>,
-        Piotr Gorski <lucjan.lucjanov@gmail.com>,
-        Khazhy Kumykov <khazhy@google.com>, Jan Kara <jack@suse.cz>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2CDC43F9-9CD9-4F7F-BD36-CCEB168B5245@linaro.org>
-References: <20210619140948.98712-1-paolo.valente@linaro.org>
- <3533087.dJKXTdksHR@spock>
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>
-X-Mailer: Apple Mail (2.3445.104.11)
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wKSojNmXt83yBg6VNFo36Ty5vt61ITsh9aF3aMCooA4=;
+ b=mETg0s0tEm9lGGGbcy7ZZBSbNAFnN4xjmiMERXJqurPhEc9b+a8DDX3K2yFx/kcxkCrMkSYjmY2F8C22DLD9pDxvafPEE4PmgcFo2qmJkbSHnHmPBuVO0wyToTiFbENYk581buf5wKzRxpt1f2hguaylR4Gmi3QcdeUT5soDD/A=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
+Received: from BL1PR11MB5478.namprd11.prod.outlook.com (2603:10b6:208:31d::12)
+ by MN2PR11MB4237.namprd11.prod.outlook.com (2603:10b6:208:195::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Tue, 22 Jun
+ 2021 07:09:16 +0000
+Received: from BL1PR11MB5478.namprd11.prod.outlook.com
+ ([fe80::9967:5190:1cd4:bb93]) by BL1PR11MB5478.namprd11.prod.outlook.com
+ ([fe80::9967:5190:1cd4:bb93%6]) with mapi id 15.20.4242.023; Tue, 22 Jun 2021
+ 07:09:16 +0000
+From:   qiang.zhang@windriver.com
+To:     jiangshanlai@gmail.com, tj@kernel.org, akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] workqueue: set the rescuer worker that belong to freezable wq is freezable
+Date:   Tue, 22 Jun 2021 15:08:59 +0800
+Message-Id: <20210622070859.4942-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2PR02CA0130.apcprd02.prod.outlook.com
+ (2603:1096:202:16::14) To BL1PR11MB5478.namprd11.prod.outlook.com
+ (2603:10b6:208:31d::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-qzhang2-d1.wrs.com (60.247.85.82) by HK2PR02CA0130.apcprd02.prod.outlook.com (2603:1096:202:16::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Tue, 22 Jun 2021 07:09:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a2f5a357-d839-4fb0-18fe-08d9354ca553
+X-MS-TrafficTypeDiagnostic: MN2PR11MB4237:
+X-Microsoft-Antispam-PRVS: <MN2PR11MB423707FBADC711E5B2C7BB48FF099@MN2PR11MB4237.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: k9k712VVYl3EYE/tXG9qN9TDQk+XP+36L1EdLS5AmXRVfKQJY/atg62Vdaz6qn5CgCZQqynf2FE1O9ulss4dCBnsxbIfWt7efXwlawo1tYL/coPWpevLGrd4T6mOH4SSEz21Z+OxrWWQCkce54XtsGkzQV4pyXAxIXlh0JqZrSRaaFPH2VpFuHZmy1rGeeiWrDo8sfxhzKvaPmKhQfbp8vlnKOsPg+IvULksDltju8qNnqrk2CkxubnPRjFTKymGit7zKJkvQtZGy7JQMYJfP/r5nG+y28Fo9nJgw6BWIk+GlVsgibScDc+OxCBvazQUXpu5tX+XA1S1OV8n1b82YS9UC5k9xY884FJEhWuSWByVNRZ7APMaEIxWMJ4HkZ84zclUNn2YPa4jToeoh4UGooyQlWL00uWID8godcRODnCKDLZ0u4OrQUfoqKzZJOjDbQfcjy5ISiQHQkoGWLSX7zWMjOZxpvmPQvpul3CtdSHT3aRQdjIdJv3YZM5sz/527zUkqk1mHQefUgHXkwkBCO99Pw+CgusHyoPdmXg+7GCHk00xw4xo6sW4cBuqPZbgQOrTzfAH6HmipqVHRRTRIfsHSRj4olHRIDl+H19Eyt/jO3s/8o7EO0keH7HLgQULsAPTPZC+7OI0MWaVSPShsw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5478.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(366004)(376002)(39830400003)(4744005)(8936002)(66476007)(66556008)(66946007)(6666004)(2616005)(956004)(8676002)(316002)(478600001)(52116002)(83380400001)(9686003)(2906002)(38350700002)(6506007)(6486002)(1076003)(38100700002)(186003)(86362001)(6512007)(16526019)(4326008)(36756003)(5660300002)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vma4w+HJykZc6s4Q2L2QN9aD3NcQbCBvqdUy3Vizx7cG9PmcA5xnMJysOCI2?=
+ =?us-ascii?Q?7+ug1FLYK9Sm/baGRroATpCtPo+aKXZYr5D77ZsYfQGt9nn3c8ybX2ZeYBkk?=
+ =?us-ascii?Q?7LP8sQUF0/pK2mozBZQv65l97LxN2GPDBd5oJaA7PQlpbp0TlYb70dzIcwuD?=
+ =?us-ascii?Q?c3vEBCpNptr1M72LvABBx3IRQWMKWUx9vqbVu9GahILxRLGlSiJPvmxxwGO3?=
+ =?us-ascii?Q?pTtVDkE1ObhbGV8/EcBd4tC+f9Nlqnv/rUFmNTESWbrJfv6NE2UZ/NxbswKO?=
+ =?us-ascii?Q?X4T2umLI6If+l3JLAccZ6KbfMd08NhyBqm0jBI8nsn7sqiqu9IfsVqpRNBVn?=
+ =?us-ascii?Q?PlIAVQGK/KoHMmccWEdxU5qL15onMutfOICrVrxrn/4D1lawcAC0990WVqYR?=
+ =?us-ascii?Q?lOJqS1z38SyICfMJyDCzKiBINye6ACJCcXaHCSvjpMTDX/GuYZoV+kGeIY5C?=
+ =?us-ascii?Q?3Y/ZIs7foLAHXpNrpNYYqL0MXDAqAFBPs06/rY5CEz7LkJo9RUoMy6T2b22i?=
+ =?us-ascii?Q?nRVtwN6eHOotz4LhqtR4MCaloh1w6p8J7ShF0Ep0QNvtCB4d79oXYD2tUvkI?=
+ =?us-ascii?Q?z9Pdvl//8uWXkoHzI3znmGyPKHSF85Qh7eJe3zFhkCpsAHlb+MAqsrFyE8qL?=
+ =?us-ascii?Q?bP/Z8PPhUZkVTm8syIHAUyVZDKKDSr70BSymdEVPHZ5G4YVcUZAmsASBlmKg?=
+ =?us-ascii?Q?lq7X7nNiJoA9hHumZtSB1v+4K07QxBH/MIGkWs66Auwy4+H01pL6l9QtXdcg?=
+ =?us-ascii?Q?2CQOo0q6n9WbNBqCkYu7S15y2SzR5mDjL6BIEGjuTBUSBApo0hqV8DPQnRLp?=
+ =?us-ascii?Q?PpHH5QlFhcx7L8pn3PBhq9liKTY/EKKVCtK4YfRmrUIC7vJn9GkjE8LfILQy?=
+ =?us-ascii?Q?196zn3P0AAx0dqU9Tw0QG+Mkr/hyLImbTKLS1BWP/WmldP8byzdMeMOdGdks?=
+ =?us-ascii?Q?xOEzmyERsy+Y/5t5jJmFsZK2qnWCSW2Zs82v9scsqqyigwC3iFO8BTc4UFco?=
+ =?us-ascii?Q?jNzpzIi5WzNlAf5CTFpocUAsFZPkPyeVbAo+8gV+AmEdxm8OTxMj0GfkwaIR?=
+ =?us-ascii?Q?m36UdLVDOX3hClOTzsqULO68EuC2qzPoGKbQtkCkD9YGRsCnlipqnM9dFND2?=
+ =?us-ascii?Q?btWscMK0CncmwwpneiNDNQp9YN/hR5JSJHGiCzfaSVile7nnB7uDgoy6ewgK?=
+ =?us-ascii?Q?0dk/IV3XjHFikPz25JtIFyV/U0gYmSl2ifW0m0A1QLLleNcAeA67IZha7mrf?=
+ =?us-ascii?Q?c2/5HErPCDP/YzoYNlKb98ihfG36FY5NmrD8WWpo5KPbLDUzWk+KtuRDHpeK?=
+ =?us-ascii?Q?XOmImnzPYgAkCg+4qrN+Lb1l?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a2f5a357-d839-4fb0-18fe-08d9354ca553
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5478.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 07:09:16.1300
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jRvrF/IT1RD5+QyU2mfK9eLw4UIkBPpkSYkl5a2LrMEukBHiGObEcaDPavmICCKjbPS7MbXbsijThDNzELqmLq8Ey7qMTm5i9yEd3OpOLBQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4237
+X-Proofpoint-ORIG-GUID: 1lOv_V018nLpv8exsIbsa0gSRwNhIYg8
+X-Proofpoint-GUID: 1lOv_V018nLpv8exsIbsa0gSRwNhIYg8
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-22_04:2021-06-21,2021-06-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
+ bulkscore=0 adultscore=0 mlxlogscore=578 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 impostorscore=0 spamscore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106220044
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-CCing also Jan and Khazhy, because in your commit log I see also the
-commit on bfq_requests_merged().
+From: Zqiang <qiang.zhang@windriver.com>
 
-Is this OOPS reproducible for you?
+If the rescuer worker belong to freezable wq, when this wq is
+frozen, the rescuer also need to be frozen.
 
-Thanks,
-Paolo
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+---
+ kernel/workqueue.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-
-> Il giorno 21 giu 2021, alle ore 21:55, Oleksandr Natalenko =
-<oleksandr@natalenko.name> ha scritto:
->=20
-> Hello.
->=20
-> On sobota 19. =C4=8Dervna 2021 16:09:41 CEST Paolo Valente wrote:
->> Hi Jens,
->> this series contains an already proposed patch by Luca, plus six new
->> patches. The goals of these patches are summarized in the subject of
->> this cover letter. I'm including Luca's patch here, because it =
-enabled
->> the actual use of stable merge, and, as such, triggered an otherwise
->> silent bug. This series contains also the fix for that bug ("block,
->> bfq: avoid delayed merge of async queues"), tested by Holger [1].
->>=20
->> Thanks,
->> Paolo
->>=20
->> [1] https://lkml.org/lkml/2021/5/18/384
->>=20
->> Luca Mariotti (1):
->>  block, bfq: fix delayed stable merge check
->>=20
->> Paolo Valente (5):
->>  block, bfq: let also stably merged queues enjoy weight raising
->>  block, bfq: consider also creation time in delayed stable merge
->>  block, bfq: avoid delayed merge of async queues
->>  block, bfq: check waker only for queues with no in-flight I/O
->>  block, bfq: reset waker pointer with shared queues
->>=20
->> Pietro Pedroni (1):
->>  block, bfq: boost throughput by extending queue-merging times
->>=20
->> block/bfq-iosched.c | 68 =
-+++++++++++++++++++++++++++++++++++----------
->> 1 file changed, 53 insertions(+), 15 deletions(-)
->>=20
->> --
->> 2.20.1
->=20
-> Not sure everything goes fine here. After applying this series on top =
-of the=20
-> latest stable 5.12 kernel I got this:
->=20
-> ```
-> [16730.963248] kernel BUG at block/elevator.c:236!
-> [16730.963254] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
-> [16730.963257] CPU: 11 PID: 109170 Comm: kworker/u64:5 Tainted: G      =
-  W        =20
-> 5.12.0-pf7 #1
-> [16730.963260] Hardware name: ASUS System Product Name/Pro WS =
-X570-ACE, BIOS=20
-> 3601 05/26/2021
-> [16730.963263] Workqueue: dm-thin do_worker [dm_thin_pool]
-> [16730.963270] RIP: 0010:elv_rqhash_find+0xcc/0xd0
-> [16730.963274] Code: 41 89 f0 81 e2 00 40 06 00 41 81 e0 1a 00 04 00 =
-44 09 c2=20
-> 75 a9 be 09 00 00 00 c4 e2 4b f7 50 28 48 03 50 30 48 39 fa 75 c6 c3 =
-<0f> 0b=20
-> 66 90 0f 1f 44 00 00 41 56 41 55 41 54 55 53 48 8b 47 68 48
-> [16730.963276] RSP: 0018:ffffa558d13b7af8 EFLAGS: 00010046
-> [16730.963279] RAX: ffff8a0007782d00 RBX: ffff8a0014b93000 RCX: =
-ffffa558d13b7b78
-> [16730.963281] RDX: ffff8a0014b93000 RSI: 0000000000063082 RDI: =
-000000001e0fdc00
-> [16730.963283] RBP: ffff8a000731c770 R08: ffff8a000731c770 R09: =
-fffffff0ffffddfb
-> [16730.963284] R10: 0000000000000000 R11: 0000000000000400 R12: =
-ffff8a0330365c00
-> [16730.963286] R13: ffffa558d13b7b30 R14: 0000000000000000 R15: =
-ffff8a0212fc4000
-> [16730.963288] FS:  0000000000000000(0000) GS:ffff8a070ecc0000(0000) =
-knlGS:
-> 0000000000000000
-> [16730.963290] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [16730.963292] CR2: 00007f1514d90f4c CR3: 0000000315952000 CR4:=20
-> 0000000000350ee0
-> [16730.963294] Call Trace:
-> [16730.963297]  elv_merge+0x96/0x120
-> [16730.963300]  blk_mq_sched_try_merge+0x3e/0x370
-> [16730.963303]  bfq_bio_merge+0xd3/0x130
-> [16730.963306]  blk_mq_submit_bio+0x11e/0x6c0
-> [16730.963309]  submit_bio_noacct+0x457/0x530
-> [16730.963312]  raid10_unplug+0x13f/0x1a0 [raid10]
-> [16730.963316]  blk_flush_plug_list+0xa9/0x110
-> [16730.963319]  blk_finish_plug+0x21/0x30
-> [16730.963322]  process_prepared_discard_passdown_pt1+0x204/0x2d0=20
-> [dm_thin_pool]
-> [16730.963327]  do_worker+0x18e/0xce0 [dm_thin_pool]
-> [16730.963335]  process_one_work+0x217/0x3e0
-> [16730.963338]  worker_thread+0x4d/0x470
-> [16730.963343]  kthread+0x182/0x1b0
-> [16730.963349]  ret_from_fork+0x22/0x30
-> =E2=80=A6
-> [16730.963419] ---[ end trace dd7e037f2028257b ]---
-> [16730.963524] RIP: 0010:elv_rqhash_find+0xcc/0xd0
-> =E2=80=A6
-> [16730.963547] note: kworker/u64:5[109170] exited with preempt_count 1
-> [16747.948467] [drm:amdgpu_dm_atomic_commit_tail [amdgpu]] *ERROR* =
-Waiting for=20
-> fences timed out!
-> ```
->=20
-> Which is:
->=20
-> ```
-> 229 struct request *elv_rqhash_find(struct request_queue *q, sector_t =
-offset)
-> 230 {
-> =E2=80=A6
-> 235     hash_for_each_possible_safe(e->hash, rq, next, hash, offset) {
-> 236         BUG_ON(!ELV_ON_HASH(rq));
-> =E2=80=A6
-> ```
->=20
-> Yes, I carry some extra patches besides this series (the list is =
-against v5.12=20
-> GA):
->=20
-> ```
-> block, bfq: reset waker pointer with shared queues
-> block, bfq: check waker only for queues with no in-flight I/O
-> block, bfq: avoid delayed merge of async queues
-> block, bfq: boost throughput by extending queue-merging times
-> block, bfq: consider also creation time in delayed stable merge
-> block, bfq: fix delayed stable merge check
-> block, bfq: let also stably merged queues enjoy weight raising
-> block: Do not pull requests from the scheduler when we cannot dispatch =
-them
-> blk: Fix lock inversion between ioc lock and bfqd lock
-> bfq: Remove merged request already in bfq_requests_merged()
-> block, bfq: avoid circular stable merges
-> bfq: remove unnecessary BFQ_DEFAULT_GRP_IOPRIO
-> bfq: reset entity->prio_changed in bfq_init_entity()
-> bfq: optimize the calculation of bfq_weight_to_ioprio()
-> bfq: remove unnecessary initialization logic
-> bfq: keep the minimun bandwidth for CLASS_BE
-> bfq: limit the IO depth of CLASS_IDLE to 1
-> bfq: convert the type of bfq_group.bfqd to bfq_data*
-> bfq: introduce bfq_entity_to_bfqg helper method
-> bfq/mq-deadline: remove redundant check for passthrough request
-> blk-mq: bypass IO scheduler's limit_depth for passthrough request
-> block,bfq: fix the timeout calculation in bfq_bfqq_charge_time
-> block, bfq: merge bursts of newly-created queues
-> block, bfq: keep shared queues out of the waker mechanism
-> block, bfq: fix weight-raising resume with !low_latency
-> block, bfq: make shared queues inherit wakers
-> block, bfq: put reqs of waker and woken in dispatch list
-> block, bfq: always inject I/O of queues blocked by wakers
-> ```
->=20
-> but nothing from there triggered this for quite some time.
->=20
-> Paolo, what do you think?
->=20
-> --=20
-> Oleksandr Natalenko (post-factum)
->=20
->=20
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 104e3ef04e33..ccd6ee8f3dc6 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -2476,6 +2476,9 @@ static int rescuer_thread(void *__rescuer)
+ 	 * doesn't participate in concurrency management.
+ 	 */
+ 	set_pf_worker(true);
++
++	if (wq->flags & WQ_FREEZABLE)
++		set_freezable();
+ repeat:
+ 	set_current_state(TASK_IDLE);
+ 
+@@ -2504,6 +2507,9 @@ static int rescuer_thread(void *__rescuer)
+ 
+ 		raw_spin_unlock_irq(&wq_mayday_lock);
+ 
++		if (!kthread_should_stop())
++			try_to_freeze();
++
+ 		worker_attach_to_pool(rescuer, pool);
+ 
+ 		raw_spin_lock_irq(&pool->lock);
+-- 
+2.17.1
 
