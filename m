@@ -2,253 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB433AFE9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E488F3AFEA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbhFVICL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 04:02:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:44146 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230087AbhFVICC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 04:02:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D06BEED1;
-        Tue, 22 Jun 2021 00:59:46 -0700 (PDT)
-Received: from e123648.arm.com (unknown [10.57.9.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A2A1D3F718;
-        Tue, 22 Jun 2021 00:59:44 -0700 (PDT)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org
-Cc:     linux-pm@vger.kernel.org, amitk@kernel.org, rui.zhang@intel.com,
-        lukasz.luba@arm.com, dietmar.eggemann@arm.com,
-        Chris.Redpath@arm.com, Beata.Michalska@arm.com,
-        viresh.kumar@linaro.org, rjw@rjwysocki.net, amit.kachhap@gmail.com
-Subject: [RFC PATCH 4/4] thermal: cpufreq_cooling: Improve power estimation based on Active Stats framework
-Date:   Tue, 22 Jun 2021 08:59:25 +0100
-Message-Id: <20210622075925.16189-5-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210622075925.16189-1-lukasz.luba@arm.com>
-References: <20210622075925.16189-1-lukasz.luba@arm.com>
+        id S230087AbhFVIEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 04:04:12 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:11230 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229677AbhFVIEJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 04:04:09 -0400
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210622075241epoutp04d192f2dd8efb0f56961bb96319c332b7~K2DqAAmrc1791617916epoutp04p
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 07:52:41 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210622075241epoutp04d192f2dd8efb0f56961bb96319c332b7~K2DqAAmrc1791617916epoutp04p
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1624348361;
+        bh=b2T6MY1kZ9SohFnqiNwSCGWC99b+qKgTnX9g0ikzxy4=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=SaagilmJU04NfgT1p9x30kLtXqAbRHn/vrcoutfK+Y+s8srA/7yFkj6lN8wkKWy2p
+         6XM5omcWH8cn2kgEkUudWgfMl3WCJRqeLZ9S8Ll0/pcL5v5NOr0uUXvIbnCbmu1mqC
+         wTjpk7DxjlHcJiXpnmrvmWnB4SYr3cquwsg6roek=
+Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20210622075240epcas5p3df72ffba15fb235adbb38455a18cf33b~K2DpMu8Tr2865028650epcas5p3g;
+        Tue, 22 Jun 2021 07:52:40 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        04.F6.09476.8C691D06; Tue, 22 Jun 2021 16:52:40 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210622075225epcas5p13270a3a17544fa110af21aaff82ceb84~K2Dbc4heu2192421924epcas5p11;
+        Tue, 22 Jun 2021 07:52:25 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210622075225epsmtrp2e0157be39c97fe9c09a7116858b0408f~K2DbcFLR52613926139epsmtrp2a;
+        Tue, 22 Jun 2021 07:52:25 +0000 (GMT)
+X-AuditID: b6c32a49-6a1ff70000002504-6f-60d196c8341a
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D4.DB.08394.9B691D06; Tue, 22 Jun 2021 16:52:25 +0900 (KST)
+Received: from mshams01 (unknown [107.122.12.94]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210622075224epsmtip123273eb378191cff03467278d9b125f7~K2DZ49-Lm1537015370epsmtip1o;
+        Tue, 22 Jun 2021 07:52:23 +0000 (GMT)
+From:   "M Tamseel Shams" <m.shams@samsung.com>
+To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@canonical.com>,
+        <kgene@kernel.org>, <gregkh@linuxfoundation.org>, <jslaby@suse.com>
+Cc:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alim.akhtar@samsung.com>, <ajaykumar.rs@samsung.com>
+In-Reply-To: <4b2576c1-c986-a4d8-d6cf-661ca056ecee@canonical.com>
+Subject: RE: [PATCH] serial: samsung: use dma_ops of DMA if attached
+Date:   Tue, 22 Jun 2021 13:22:22 +0530
+Message-ID: <007901d7673b$8a758d10$9f60a730$@samsung.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQGDfL5lNG5rzFQPe+FwbDp9GpLyVQGDsg9dAbmelg0Cc6DxagIMN/A2q4mTjPA=
+Content-Language: en-us
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFKsWRmVeSWpSXmKPExsWy7bCmpu6JaRcTDHo3S1kceH+QxeLBvG1s
+        Fs2L17NZTNnwgcmi//FrZouNb38wWWx6fI3V4vKuOWwWM87vY7I4s7iX3YHLY1ZDL5vHplWd
+        bB77565h99i8pN6jb8sqRo/1W66yeHzeJBfAHsVlk5Kak1mWWqRvl8CVcfTORdaCDXYVcx6c
+        Y2pg3GXUxcjJISFgIrFqw2SWLkYuDiGB3YwSzXcOsUM4nxglGvadYoNwvjFKfLrwlQWmZd/F
+        d4wQib2MEo86nkI5zxglfj5ZyQhSxSagKzHpYBszSEJEoI1RYnpDBxOIwyxwhlHi8eLJTCBV
+        nAKOEo++dgDN5eAQFnCRuDXDGyTMIqAqseznNLB1vAKWEqf/vGSGsAUlTs58AhZnFtCWWLbw
+        NTPESQoSP58uYwWxRQT8JH7/vc8OUSMu8fLoEbCHJAQOcEjsmHiFFaLBRaJhdQsbhC0s8er4
+        FnYIW0ri87u9UPF8ifnzVkEtqJBYeeENlG0vceDKHLCbmQU0Jdbv0ocIy0pMPbWOCWIvn0Tv
+        7ydMEHFeiR3zYGxFif+7+6FWiUu8WzGFdQKj0iwkr81C8tosJC/MQti2gJFlFaNkakFxbnpq
+        sWmBYV5quV5xYm5xaV66XnJ+7iZGcPLS8tzBePfBB71DjEwcjIcYJTiYlUR4X2RfTBDiTUms
+        rEotyo8vKs1JLT7EKM3BoiTOu5T9UIKQQHpiSWp2ampBahFMlomDU6qBybgwVF+s6/Fr73s6
+        Mc8nd9rb+ihvva+jUNxRvTIuP5Fjms2iWQsdv+QlFZ1J3C0ecWud28cu4anfXlV5/prVNP+u
+        yE6Xc3LKJiu6tVSfPkk2/bT5xq70HT8vpPrfkZp7Y+eN5leKjvWG2oIzeQ+r1HHv3yUoyCf1
+        iG+3QQ/j5YAPHE/lqprnbArnL1683OSh5aejbtX1TL8kJZ7vuiTBtbFHaXXdpOkLVtt9XMhw
+        keHC6tWv52axhK1bPE3i0D1lrdOZc7teTWvK6Mt+IhXfKRnE0bbb4Y7FhMSnVlbr38b6Vmy+
+        wOi16N3T20yr5N5s/3g8z0O+5vnKRcIfeZLV9/3TnO/D4X3vY9tZIe4WDiWW4oxEQy3mouJE
+        AKIOTsTNAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsWy7bCSnO7OaRcTDO5MVrU48P4gi8WDedvY
+        LJoXr2ezmLLhA5NF/+PXzBYb3/5gstj0+BqrxeVdc9gsZpzfx2RxZnEvuwOXx6yGXjaPTas6
+        2Tz2z13D7rF5Sb1H35ZVjB7rt1xl8fi8SS6APYrLJiU1J7MstUjfLoEr4+6NCUwFV2wrrqy9
+        zdLAeMmwi5GTQ0LARGLfxXeMXYxcHEICuxklepddZ4VIiEtM+7WfEcIWllj57zk7RNETRom7
+        x3ezgyTYBHQlJh1sYwZJiAh0MUqsvXoCbBSzwAVGie6jN6BaFjFJ3F24jRmkhVPAUeLR1w6W
+        LkYODmEBF4lbM7xBwiwCqhLLfk5jAbF5BSwlTv95yQxhC0qcnPkELM4soC3R+7CVEcZetvA1
+        M8R5ChI/ny4DO1tEwE/i99/77BA14hIvjx5hn8AoPAvJqFlIRs1CMmoWkpYFjCyrGCVTC4pz
+        03OLDQsM81LL9YoTc4tL89L1kvNzNzGCY1BLcwfj9lUf9A4xMnEwHmKU4GBWEuF9kX0xQYg3
+        JbGyKrUoP76oNCe1+BCjNAeLkjjvha6T8UIC6YklqdmpqQWpRTBZJg5OqQYmP403+9Mq6zvl
+        1UrWCTNJ3ljplP5h741bsTqRXfKuZ9w72xS3LHB6mOR8+ugJMbbnx723sUys4z5art4karfO
+        R7332KqmBYIvWn9tmcx+ZPvF2acfJbc9ddj83X3Bp4aasDt2/3k/35juwLg6yaSNz2VD8eeJ
+        oe8V/Yo7f11z7Vd8+vpc6Z57ObEsm/tu/32wRn3ZrK3r188Je1C22O3inlbBNW1MnK8nafqV
+        NW7d2FwcZKfy/bXEDK+OE1e2iQvG6PE3rzw64aDUJrsQMe6ZTjOerTx05+7rNZabXlc+2mSd
+        JPjw1hqnW5HTdXenJ+TPDLPf+cHF4fi7TaaRrhO3Sbe/nyNaKLX3rFeSsNPpTCWW4oxEQy3m
+        ouJEACewtQUwAwAA
+X-CMS-MailID: 20210622075225epcas5p13270a3a17544fa110af21aaff82ceb84
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20210621044517epcas5p187affa518a18a3d019deb0c189cd8396
+References: <CGME20210621044517epcas5p187affa518a18a3d019deb0c189cd8396@epcas5p1.samsung.com>
+        <20210621044916.41564-1-m.shams@samsung.com>
+        <8935a448-04b7-91ce-203a-9f0d7e377052@canonical.com>
+        <004f01d766a0$567b9860$0372c920$@samsung.com>
+        <4b2576c1-c986-a4d8-d6cf-661ca056ecee@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cpufreq_cooling has dedicated APIs for thermal governor called
-Intelligent Power Allocation (IPA). IPA needs the CPUs power used by the
-devices in the past.  Based on this, IPA tries to estimate the power
-budget, allocate new budget and split it across cooling devices for the
-next period (keeping the system in the thermal envelope).  When the input
-power estimated value has big error, the whole mechanism does not work
-properly. The current power estimation assumes constant frequency during
-the whole IPA period (e.g. 100ms). This can cause big error in the power
-estimation, especially when SchedUtil governor is used and frequency is
-often adjusted to the current need. This can be visible in periodic
-workloads, when the frequency oscillates between two OPPs and IPA samples
-the lower frequency.
+> > Hi,
+> >
+> >>
+> >> Hi,
+> >>
+> >> Thanks for the patch.
+> >>
+> >> On 21/06/2021 06:49, Tamseel Shams wrote:
+> >>> When DMA is used for TX and RX by serial driver, it should pass the
+> >>> DMA device pointer to DMA API instead of UART device pointer.
+> >>
+> >> Hmmm, but why DMA device pointer should be used?
+> >>
+> >>>
+> >>> This patch is necessary to fix the SMMU page faults which is
+> >>> observed when a DMA(with SMMU enabled) is attached to UART for
+> transfer.
+> >>>
+> >>> Signed-off-by: Tamseel Shams <m.shams=40samsung.com>
+> >>> Signed-off-by: Ajay Kumar <ajaykumar.rs=40samsung.com>
+> >>> ---
+> >>>  drivers/tty/serial/samsung_tty.c =7C 60
+> >>> +++++++++++++++++++++++++-------
+> >>>  1 file changed, 48 insertions(+), 12 deletions(-)
+> >>>
+> >>> diff --git a/drivers/tty/serial/samsung_tty.c
+> >>> b/drivers/tty/serial/samsung_tty.c
+> >>> index b923683e6a25..5bdc7dd2a5e2 100644
+> >>> --- a/drivers/tty/serial/samsung_tty.c
+> >>> +++ b/drivers/tty/serial/samsung_tty.c
+> >>> =40=40 -284,8 +284,13 =40=40 static void s3c24xx_serial_stop_tx(struc=
+t
+> >>> uart_port
+> >> *port)
+> >>>  	struct s3c24xx_uart_dma *dma =3D ourport->dma;
+> >>>  	struct circ_buf *xmit =3D &port->state->xmit;
+> >>>  	struct dma_tx_state state;
+> >>> +	struct device *dma_map_ops_dev =3D ourport->port.dev;
+> >>>  	int count;
+> >>>
+> >>> +	/* Pick dma_ops of DMA device if DMA device is attached */
+> >>
+> >> You mention here and further comments =22dma_ops=22. I don't see you
+> >> changing the DMA ops, but the device. It's quite confusing. I think
+> >> you meant a DMA device shall be passed to DMA API?
+> >>
+> > Yes, DMA device should be used for DMA API because only the DMA device
+> > is aware of how the device connects to the memory. There might be an
+> > extra level of address translation due to a SMMU attached to the DMA
+> > device. When serial device pointer device is used for DMA API, the DMA =
+API
+> will have no clue of the SMMU attached to the DMA device.
+>=20
+> Thanks, this should be in commit msg.
+>=20
+Sure, will add this in commit msg.
+> >
+> >> Second question: you write that DMA devices should be used if DMA is
+> >> attached and in the code you follow such pattern a lot:
+> >>
+> >>> +	if (dma && dma->tx_chan)
+> >>> +		dma_map_ops_dev =3D dma->tx_chan->device->dev;
+> >>> +
+> >>
+> >> Are you trying to say that if DMA is not attached, UART device should
+> >> be used? If DMA is not attached, how are the DMA operations used then?
+> >>
+> > If DMA is not attached, this part of code related to dma_engine or DMA
+> > API do not get called. There will not be any DMA operations at all.
+>=20
+> Now I get it. The =22When=22 in your description followed by multiple com=
+ments =22if
+> DMA device is attached=22 confused me that you expect to use UART device =
+for
+> DMA operations if DMA is not attached...
+>=20
+I will change the comments, to avoid this confusion.
+> >
+> >>>  	if (=21ourport->tx_enabled)
+> >>>  		return;
+> >>>
+> >>> =40=40 -298,7 +303,7 =40=40 static void s3c24xx_serial_stop_tx(struct
+> >>> uart_port
+> >> *port)
+> >>>  		dmaengine_pause(dma->tx_chan);
+> >>>  		dmaengine_tx_status(dma->tx_chan, dma->tx_cookie, &state);
+> >>>  		dmaengine_terminate_all(dma->tx_chan);
+> >>> -		dma_sync_single_for_cpu(ourport->port.dev,
+> >>> +		dma_sync_single_for_cpu(dma_map_ops_dev,
+> >>>  			dma->tx_transfer_addr, dma->tx_size,
+> >> DMA_TO_DEVICE);
+> >>>  		async_tx_ack(dma->tx_desc);
+> >>>  		count =3D dma->tx_bytes_requested - state.residue; =40=40 -324,15
+> >> +329,19
+> >>> =40=40 static void s3c24xx_serial_tx_dma_complete(void *args)
+> >>>  	struct circ_buf *xmit =3D &port->state->xmit;
+> >>>  	struct s3c24xx_uart_dma *dma =3D ourport->dma;
+> >>>  	struct dma_tx_state state;
+> >>> +	struct device *dma_map_ops_dev =3D ourport->port.dev;
+> >>>  	unsigned long flags;
+> >>>  	int count;
+> >>>
+> >>> +	/* Pick dma_ops of DMA device if DMA device is attached */
+> >>> +	if (dma && dma->tx_chan)
+> >>> +		dma_map_ops_dev =3D dma->tx_chan->device->dev;
+>=20
+> Example is this one - you use here =22if=22 suggesting there is =22else=
+=22. So what is the
+> else condition? There is none...
+>=20
+> >>>
+> >>>  	dmaengine_tx_status(dma->tx_chan, dma->tx_cookie, &state);
+> >>>  	count =3D dma->tx_bytes_requested - state.residue;
+> >>>  	async_tx_ack(dma->tx_desc);
+> >>>
+> >>> -	dma_sync_single_for_cpu(ourport->port.dev, dma->tx_transfer_addr,
+> >>> +	dma_sync_single_for_cpu(dma_map_ops_dev, dma->tx_transfer_addr,
+> >>>  				dma->tx_size, DMA_TO_DEVICE);
+> >>>
+> >>>  	spin_lock_irqsave(&port->lock, flags); =40=40 -408,7 +417,11 =40=40=
+ static
+> >>> int s3c24xx_serial_start_tx_dma(struct s3c24xx_uart_port *ourport,
+> >>>  	struct uart_port *port =3D &ourport->port;
+> >>>  	struct circ_buf *xmit =3D &port->state->xmit;
+> >>>  	struct s3c24xx_uart_dma *dma =3D ourport->dma;
+> >>> +	struct device *dma_map_ops_dev =3D ourport->port.dev;
+> >>>
+> >>> +	/* Pick dma_ops of DMA device if DMA device is attached */
+> >>> +	if (dma && dma->tx_chan)
+> >>> +		dma_map_ops_dev =3D dma->tx_chan->device->dev;
+> >>>
+> >>>  	if (ourport->tx_mode =21=3D S3C24XX_TX_DMA)
+> >>>  		enable_tx_dma(ourport);
+> >>> =40=40 -416,7 +429,7 =40=40 static int s3c24xx_serial_start_tx_dma(st=
+ruct
+> >> s3c24xx_uart_port *ourport,
+> >>>  	dma->tx_size =3D count & =7E(dma_get_cache_alignment() - 1);
+> >>>  	dma->tx_transfer_addr =3D dma->tx_addr + xmit->tail;
+> >>>
+> >>> -	dma_sync_single_for_device(ourport->port.dev, dma-
+> >>> tx_transfer_addr,
+> >>> +	dma_sync_single_for_device(dma_map_ops_dev, dma-
+> >>> tx_transfer_addr,
+> >>>  				dma->tx_size, DMA_TO_DEVICE);
+> >>>
+> >>>  	dma->tx_desc =3D dmaengine_prep_slave_single(dma->tx_chan,
+> >>> =40=40 -483,12 +496,17 =40=40 static void s3c24xx_uart_copy_rx_to_tty=
+(struct
+> >> s3c24xx_uart_port *ourport,
+> >>>  		struct tty_port *tty, int count)
+> >>>  =7B
+> >>>  	struct s3c24xx_uart_dma *dma =3D ourport->dma;
+> >>> +	struct device *dma_map_ops_dev =3D ourport->port.dev;
+> >>>  	int copied;
+> >>>
+> >>> +	/* Pick dma_ops of DMA device if DMA device is attached */
+> >>> +	if (dma && dma->rx_chan)
+> >>> +		dma_map_ops_dev =3D dma->rx_chan->device->dev;
+> >>> +
+> >>>  	if (=21count)
+> >>>  		return;
+> >>>
+> >>> -	dma_sync_single_for_cpu(ourport->port.dev, dma->rx_addr,
+> >>> +	dma_sync_single_for_cpu(dma_map_ops_dev, dma->rx_addr,
+> >>>  				dma->rx_size, DMA_FROM_DEVICE);
+> >>>
+> >>>  	ourport->port.icount.rx +=3D count;
+> >>> =40=40 -600,8 +618,13 =40=40 static void s3c24xx_serial_rx_dma_comple=
+te(void
+> >>> *args)  static void s3c64xx_start_rx_dma(struct s3c24xx_uart_port
+> >>> *ourport)  =7B
+> >>>  	struct s3c24xx_uart_dma *dma =3D ourport->dma;
+> >>> +	struct device *dma_map_ops_dev =3D ourport->port.dev;
+> >>>
+> >>> -	dma_sync_single_for_device(ourport->port.dev, dma->rx_addr,
+> >>> +	/* Pick dma_ops of DMA device if DMA device is attached */
+> >>> +	if (dma && dma->rx_chan)
+> >>> +		dma_map_ops_dev =3D dma->rx_chan->device->dev;
+> >>> +
+> >>> +	dma_sync_single_for_device(dma_map_ops_dev, dma->rx_addr,
+> >>>  				dma->rx_size, DMA_FROM_DEVICE);
+> >>>
+> >>>  	dma->rx_desc =3D dmaengine_prep_slave_single(dma->rx_chan,
+> >>> =40=40 -983,6 +1006,7 =40=40 static int s3c24xx_serial_request_dma(st=
+ruct
+> >>> s3c24xx_uart_port *p)
+> >>
+> >> Offset of hunks looks here significantly different than mainline. The
+> >> patch should be based and tested mainline tree. Which one did you choo=
+se as
+> base?
+> >>
+> >> Using my email address not from get_maintainers.pl also suggests that
+> >> you don't use anything recent as a base.
+> >>
+> > I used =22master=22 branch of main linux-next tree as the base.
+> > I will rebase on =22tty-next=22 branch of TTY tree and post again.
+> >
+> > Thanks & Regards,
+> > Tamseel Shams
+> >
+>=20
+>=20
+> Best regards,
+> Krzysztof
 
-This patch introduces a new mechanism which solves this frequency
-sampling problem. It uses Active Stats framework to track and account
-the CPU power used for a given IPA period.
-
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
----
- drivers/thermal/cpufreq_cooling.c | 120 +++++++++++++++++++++++++++++-
- 1 file changed, 119 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
-index eeb4e4b76c0b..c4a14391db6e 100644
---- a/drivers/thermal/cpufreq_cooling.c
-+++ b/drivers/thermal/cpufreq_cooling.c
-@@ -10,6 +10,7 @@
-  *		Viresh Kumar <viresh.kumar@linaro.org>
-  *
-  */
-+#include <linux/active_stats.h>
- #include <linux/cpu.h>
- #include <linux/cpufreq.h>
- #include <linux/cpu_cooling.h>
-@@ -61,6 +62,7 @@ struct time_in_idle {
-  * @policy: cpufreq policy.
-  * @idle_time: idle time stats
-  * @qos_req: PM QoS contraint to apply
-+ * @ast_mon: Active Stats Monitor array of pointers
-  *
-  * This structure is required for keeping information of each registered
-  * cpufreq_cooling_device.
-@@ -75,6 +77,9 @@ struct cpufreq_cooling_device {
- 	struct time_in_idle *idle_time;
- #endif
- 	struct freq_qos_request qos_req;
-+#ifdef CONFIG_ACTIVE_STATS
-+	struct active_stats_monitor **ast_mon;
-+#endif
- };
- 
- #ifdef CONFIG_THERMAL_GOV_POWER_ALLOCATOR
-@@ -124,6 +129,99 @@ static u32 cpu_power_to_freq(struct cpufreq_cooling_device *cpufreq_cdev,
- 	return cpufreq_cdev->em->table[i].frequency;
- }
- 
-+#ifdef CONFIG_ACTIVE_STATS
-+static u32 account_cpu_power(struct active_stats_monitor *ast_mon,
-+			     struct em_perf_domain *em)
-+{
-+	u64 single_power, residency, total_time;
-+	u32 power = 0;
-+	int i;
-+
-+	mutex_lock(&ast_mon->lock);
-+
-+	total_time = ast_mon->local_period;
-+
-+	for (i = 0; i < ast_mon->states_count; i++) {
-+		residency = ast_mon->local->residency[i];
-+		single_power = em->table[i].power * residency;
-+		single_power = div64_u64(single_power, total_time);
-+		power += (u32)single_power;
-+	}
-+
-+	mutex_unlock(&ast_mon->lock);
-+
-+	return power;
-+}
-+
-+static u32 get_power_est(struct cpufreq_cooling_device *cdev)
-+{
-+	int num_cpus, ret, i;
-+	u32 total_power = 0;
-+
-+	num_cpus = cpumask_weight(cdev->policy->related_cpus);
-+
-+	for (i = 0; i < num_cpus; i++) {
-+		ret = active_stats_cpu_update_monitor(cdev->ast_mon[i]);
-+		if (ret)
-+			return 0;
-+
-+		total_power += account_cpu_power(cdev->ast_mon[i], cdev->em);
-+	}
-+
-+	return total_power;
-+}
-+
-+static int cpufreq_get_requested_power(struct thermal_cooling_device *cdev,
-+				       u32 *power)
-+{
-+	struct cpufreq_cooling_device *cpufreq_cdev = cdev->devdata;
-+	struct cpufreq_policy *policy = cpufreq_cdev->policy;
-+
-+	*power = get_power_est(cpufreq_cdev);
-+
-+	trace_thermal_power_cpu_get_power(policy->related_cpus, 0, 0, 0,
-+					  *power);
-+
-+	return 0;
-+}
-+
-+static void clean_cpu_monitoring(struct cpufreq_cooling_device *cdev)
-+{
-+	int num_cpus, i;
-+
-+	num_cpus = cpumask_weight(cdev->policy->related_cpus);
-+
-+	for (i = 0; i < num_cpus; i++)
-+		active_stats_cpu_free_monitor(cdev->ast_mon[i++]);
-+
-+	kfree(cdev->ast_mon);
-+}
-+
-+static int setup_cpu_monitoring(struct cpufreq_cooling_device *cdev)
-+{
-+	int cpu, cpus, i = 0;
-+
-+	cpus = cpumask_weight(cdev->policy->related_cpus);
-+
-+	cdev->ast_mon = kcalloc(cpus, sizeof(struct active_stats_monitor *),
-+				GFP_KERNEL);
-+	if (!cdev->ast_mon)
-+		return -ENOMEM;
-+
-+	for_each_cpu(cpu, cdev->policy->related_cpus) {
-+		cdev->ast_mon[i] = active_stats_cpu_setup_monitor(cpu);
-+		if (IS_ERR_OR_NULL(cdev->ast_mon[i++]))
-+			goto cleanup;
-+	}
-+
-+	return 0;
-+
-+cleanup:
-+	clean_cpu_monitoring(cdev);
-+	return -EINVAL;
-+}
-+#else
-+
- /**
-  * get_load() - get load for a cpu
-  * @cpufreq_cdev: struct cpufreq_cooling_device for the cpu
-@@ -184,6 +282,15 @@ static u32 get_dynamic_power(struct cpufreq_cooling_device *cpufreq_cdev,
- 	return (raw_cpu_power * cpufreq_cdev->last_load) / 100;
- }
- 
-+static void clean_cpu_monitoring(struct cpufreq_cooling_device *cpufreq_cdev)
-+{
-+}
-+
-+static int setup_cpu_monitoring(struct cpufreq_cooling_device *cpufreq_cdev)
-+{
-+	return 0;
-+}
-+
- /**
-  * cpufreq_get_requested_power() - get the current power
-  * @cdev:	&thermal_cooling_device pointer
-@@ -252,6 +359,7 @@ static int cpufreq_get_requested_power(struct thermal_cooling_device *cdev,
- 
- 	return 0;
- }
-+#endif
- 
- /**
-  * cpufreq_state2power() - convert a cpu cdev state to power consumed
-@@ -566,6 +674,13 @@ __cpufreq_cooling_register(struct device_node *np,
- 		cooling_ops->get_requested_power = cpufreq_get_requested_power;
- 		cooling_ops->state2power = cpufreq_state2power;
- 		cooling_ops->power2state = cpufreq_power2state;
-+
-+		ret = setup_cpu_monitoring(cpufreq_cdev);
-+		if (ret) {
-+			pr_err("%s: failed to alloc active_stats\n", __func__);
-+			cdev = ERR_PTR(-EINVAL);
-+			goto free_cdev;
-+		}
- 	} else
- #endif
- 	if (policy->freq_table_sorted == CPUFREQ_TABLE_UNSORTED) {
-@@ -582,7 +697,7 @@ __cpufreq_cooling_register(struct device_node *np,
- 		pr_err("%s: Failed to add freq constraint (%d)\n", __func__,
- 		       ret);
- 		cdev = ERR_PTR(ret);
--		goto free_idle_time;
-+		goto remove_active_stats;
- 	}
- 
- 	cdev = ERR_PTR(-ENOMEM);
-@@ -601,6 +716,8 @@ __cpufreq_cooling_register(struct device_node *np,
- 
- remove_qos_req:
- 	freq_qos_remove_request(&cpufreq_cdev->qos_req);
-+remove_active_stats:
-+	clean_cpu_monitoring(cpufreq_cdev);
- free_idle_time:
- 	free_idle_time(cpufreq_cdev);
- free_cdev:
-@@ -690,6 +807,7 @@ void cpufreq_cooling_unregister(struct thermal_cooling_device *cdev)
- 
- 	thermal_cooling_device_unregister(cdev);
- 	freq_qos_remove_request(&cpufreq_cdev->qos_req);
-+	clean_cpu_monitoring(cpufreq_cdev);
- 	free_idle_time(cpufreq_cdev);
- 	kfree(cpufreq_cdev);
- }
--- 
-2.17.1
+Thanks & Regards,
+Tamseel Shams
 
