@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7DC3B004F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577633B0051
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbhFVJfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 05:35:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229682AbhFVJfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 05:35:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1058A61352;
-        Tue, 22 Jun 2021 09:32:44 +0000 (UTC)
-Date:   Tue, 22 Jun 2021 10:32:42 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Bill Wendling <wcw@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Martin Liska <mliska@suse.cz>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Fangrui Song <maskray@google.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        linux-toolchains@vger.kernel.org, Marco Elver <elver@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
-Subject: Re: [PATCH 2/2] Kconfig: CC_HAS_NO_PROFILE_FN_ATTR, depend on for
- GCOV and PGO
-Message-ID: <20210622093241.GC3555@arm.com>
-References: <20210618233023.1360185-1-ndesaulniers@google.com>
- <20210618233023.1360185-3-ndesaulniers@google.com>
- <CANpmjNNK-iYXucjz7Degh1kJPF_Z_=8+2vNLtUW17x0UnfgtPg@mail.gmail.com>
- <CAKwvOdmxGt6nAj+dDZEPdQtXNbYb8N6y3XwoCvCD+Qazskh7zw@mail.gmail.com>
- <CAGG=3QXeAxaf0AhKsg8P1-j2uHOoXne2KCOCEhq9SKa-e2dnag@mail.gmail.com>
- <CAKwvOd=9oAGPeuQmWnAMOxZn2ii_CRmyWnheoyXGcd09-U_CwA@mail.gmail.com>
- <20210622092533.GB3555@arm.com>
- <20210622092937.GB67232@C02TD0UTHF1T.local>
+        id S229896AbhFVJfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 05:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229775AbhFVJfS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 05:35:18 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F54C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:33:01 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id d12so2043124pgd.9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:33:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=etnsU5WMrk2eYTrw8AJr6Gy45eyigJqTyP2EI9j6NRI=;
+        b=q7ybZSyhWpolvlawOMGvj2+cnQod8Lfwq5BUr/MkS2GGoFoH36PNv7yIl1D2ahlI8V
+         8lnOAyo4oyRcOif+mEM2Ft5Jh/BTYW1PO5SFAwGgbezuMw7S8mRmZvMOkrOm41qDzYKc
+         jNtRIbAXHCJKuS01xnYOXi5xmE41EqHPUF6pW+xAsYX3UHeC/YSBrztG/r55I7kFSa1o
+         qnWZ7U5bkWqSR0ALwxf2RqrdVbQrdMnNw6+3jqMJuIVXW/QkF2Tt+RIzKRmYW8KOl1jV
+         pIObDrP7fGgVEToQtgwT/2vfr0yXElSqdszPdAiWOlXYVrsOyz71hv2eOyPdAIZuVXF8
+         nZ9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=etnsU5WMrk2eYTrw8AJr6Gy45eyigJqTyP2EI9j6NRI=;
+        b=f+yPLxJamo8O7XI4eoz2qhjWcqhP6rNjoPY+HIHEofQR97mjfcX+sFkGxIDMeh4gRB
+         4tr2GlEqgAUj2ymhlN5E/o+Lu4OSHI4HwlZ/IN4JMGUe6TdlkV4FaqGvnDJWkijAW9Xk
+         oS/MO9VW0xLs+yScUnW6uCqrQS57MVLqU2w9q7ALXY7IbRx06C9PtP+VVeiKQtYIjmOz
+         OpphZ7w0HNoJ4SU6TEhtZrq2+1rAgG7U8ySEljeZgOja5bvqaS48S/eg78iR13UNc05v
+         pWoVu+fmNrt8OfRzax4tidSeyXCjUDT2u5e3JddnKcYsrJv3xkAXQVwbT3SSUtALZ6pP
+         nyNg==
+X-Gm-Message-State: AOAM5328Gg7YIwwfDfl532E8C8AVUa+GRiZpqobwfWBDxHhiIMEX76HN
+        JYWkhA7FvtVQsChFI4lH2zEKwA==
+X-Google-Smtp-Source: ABdhPJw1z3mob2ePXHn9liFxZvwvCXq1NULY9pjBiHXtjfneurroJYHNoVcxsI07SB0HzPwx6uKDkQ==
+X-Received: by 2002:a63:ec15:: with SMTP id j21mr2915948pgh.54.1624354381203;
+        Tue, 22 Jun 2021 02:33:01 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id u7sm1953648pjd.55.2021.06.22.02.33.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 02:33:00 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 15:02:58 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
+        linux-pm@vger.kernel.org, amitk@kernel.org, rui.zhang@intel.com,
+        dietmar.eggemann@arm.com, Chris.Redpath@arm.com,
+        Beata.Michalska@arm.com, rjw@rjwysocki.net, amit.kachhap@gmail.com
+Subject: Re: [RFC PATCH 3/4] cpufreq: Add Active Stats calls tracking
+ frequency changes
+Message-ID: <20210622093258.lddlznwsndpw5mju@vireshk-i7>
+References: <20210622075925.16189-1-lukasz.luba@arm.com>
+ <20210622075925.16189-4-lukasz.luba@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210622092937.GB67232@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210622075925.16189-4-lukasz.luba@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 10:29:37AM +0100, Mark Rutland wrote:
-> On Tue, Jun 22, 2021 at 10:25:34AM +0100, Catalin Marinas wrote:
-> > On Mon, Jun 21, 2021 at 01:43:54PM -0700, Nick Desaulniers wrote:
-> > > We need to be able to express via Kconfig "GCOV should not be enabled
-> > > for architectures that use noinstr when the toolchain does not support
-> > > __attribute__((no_profile_instrument_function))."
-> > > 
-> > > Where "architectures that use noinstr" are currently arm64, s390, and
-> > > x86.  So I guess we could do:
-> > > 
-> > > + depends on !ARM64 || !S390 || !X86 || CC_HAS_NO_PROFILE_FN_ATTR
-> > 
-> > I think you want:
-> > 
-> >   depends on !(ARM64 || S390 || X86) || CC_HAS_NO_PROFILE_FN_ATTR
-> > 
-> > > (We could add a Kconfig for ARCH_WANTS_NO_INSTR, which might be more
-> > > informative than listed out architectures which might be non-obvious
-> > > to passers-by).
-> > 
-> > That would probably look better.
-> 
-> It does; see:
-> 
-> https://lore.kernel.org/r/20210621231822.2848305-1-ndesaulniers@google.com
+Not commenting on the idea itself but just the code changes here.
 
-I'm getting there, eventually ;).
+On 22-06-21, 08:59, Lukasz Luba wrote:
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 802abc925b2a..d79cb9310572 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -14,6 +14,7 @@
+>  
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>  
+> +#include <linux/active_stats.h>
+>  #include <linux/cpu.h>
+>  #include <linux/cpufreq.h>
+>  #include <linux/cpu_cooling.h>
+> @@ -387,6 +388,8 @@ static void cpufreq_notify_transition(struct cpufreq_policy *policy,
+>  
+>  		cpufreq_stats_record_transition(policy, freqs->new);
+>  		policy->cur = freqs->new;
+> +
+> +		active_stats_cpu_freq_change(policy->cpu, freqs->new);
+>  	}
+>  }
+>  
+> @@ -2085,6 +2088,8 @@ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
+>  			    policy->cpuinfo.max_freq);
+>  	cpufreq_stats_record_transition(policy, freq);
+>  
+> +	active_stats_cpu_freq_fast_change(policy->cpu, freq);
+> +
+
+It would have been better if you would have modified
+cpufreq_stats_record_transition() instead, since that is there for
+similar kind of stats.
+
+Plus don't you need to record this for all policy->cpus instead of
+just policy->cpu ?
 
 -- 
-Catalin
+viresh
