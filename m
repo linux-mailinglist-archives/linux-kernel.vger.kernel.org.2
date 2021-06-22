@@ -2,196 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6F73AFC30
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 06:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B6E3AFC35
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 06:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbhFVEuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 00:50:18 -0400
-Received: from ozlabs.org ([203.11.71.1]:59603 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229574AbhFVEuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 00:50:17 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8DRL3tQdz9sXk;
-        Tue, 22 Jun 2021 14:47:58 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624337280;
-        bh=feyUlm2lPr6OPTDxyZobtFU9Com7RjHlMIUgTOXfRwo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=eXlVyVXR9QTrh/dr6Khl3fp1Uf6QVEmWdawn0M4u3+MliE4nS9/43VqW0iK+HWOvt
-         Nsi7fchqxUpM/WWgtVx7K0BFOypnWqtpcjZk7SP4EOJhF5YpZA1bW9BS4gMvmbgrku
-         JqIVLzViwkC4LVjBGOLOsyGiYVulVPcfwDiAZnlSI3MxJgybzjDbjspGBqb+pw8f28
-         eEVIvTsY3qXvHwQmE1nBvsbn3iu/YI8mN3fE4qYk03dIq5DkaFuxN5Zv0vbgsvu6EG
-         owQ30cFNkENDHHih24BHRWG8IzhUsHXwjBoDCNqdbCLhSv4fk+4+mZuNxx2ZXoDoSu
-         xeDp5UmPplmaA==
-Date:   Tue, 22 Jun 2021 14:47:57 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the rcu tree with the tip tree
-Message-ID: <20210622144757.055a4137@canb.auug.org.au>
+        id S229840AbhFVEvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 00:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhFVEvk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 00:51:40 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D044BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 21:49:23 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id a13so205908wrf.10
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 21:49:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LZDUAnqEXjRVZWh1a1xJ1KodfKynosGX+MGHfcnE+kU=;
+        b=bH4f1th7fB3/XSYd6w/iVmgPpxVgsJ3aJmbLqWedYwp9i75zoJ/imdZCICERT9g3fF
+         YULFqKNz6F/epgqr5mdJIh8/upyxVLtWGUfYbRCK/VCu95PPVKJPY4c6VsKfGmpqKBSt
+         fln5qvXh9p+ilYo7R3rYscL4zn+fiFxs6ol9N82k4JbR0NeYyqMJ573O18CNCM+YGeoN
+         xADdUH/x4BzN63KiLgP5XXLurHCsRxXwOPZEwIUXZeyVOQUewlaS2srVZxhuWXsz/28o
+         ENV3xIu69pdHqngak3AEYJSHE07V/kUTq+c8mhLcDhI25noNGdNYh/sJLGE9WQeawOhQ
+         WU7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LZDUAnqEXjRVZWh1a1xJ1KodfKynosGX+MGHfcnE+kU=;
+        b=WBmwXf/RC9xNqrf9k4acC7LlMzzpTW7NXNKAmnMhm3DelYL+RVsJ0quJ+lGP7PKnjz
+         8rvgkxD/NTVDzasMftfCmwU38I73eLrygMnkCcURp6tICvTsKSFO8jO3t2oZz/vp1NHG
+         PhJ82N7atedsKsdU0LAOzPbpdpqLFgQ38fUcXq6NfCFxZoZl+eHOhxekrS1EBEn29bcJ
+         8yDC5gjDyzdyox7G7BfX6pPI+iWCo5vAEi3kkuuV97brFDUaE7bs3R4mFoHhiDO2TfoJ
+         bXdCI0ETfQi0gUn4LGLl6eMnc3Q5SBEqpyZqzHm36nr/oMvXjt9GCiW77w4QKprckPta
+         Y6uQ==
+X-Gm-Message-State: AOAM533//6x/Q07evgTfSOi30LiyQgKivTN5cs3A+iqGFWrWZsMqrgqR
+        kzOve/BJ2umrD1c5EvxatY14XWjCIN6+dpYoP+nheA==
+X-Google-Smtp-Source: ABdhPJwH28VdMClZV5cXRWjOAW5ajVp3FB9zxBUuvaVaxTUHQtU/5jIhNmSJ1wgDKuI5HeKx8JSfTJqVrJOC3H7w8IY=
+X-Received: by 2002:a5d:6e81:: with SMTP id k1mr2226740wrz.144.1624337362425;
+ Mon, 21 Jun 2021 21:49:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/0pli+SemqieRD8tXE_QHrwJ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210610052221.39958-1-anup.patel@wdc.com>
+In-Reply-To: <20210610052221.39958-1-anup.patel@wdc.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 22 Jun 2021 10:19:11 +0530
+Message-ID: <CAAhSdy00KAqg37PCAGwNXt_2HTpxGY68yTPNHDEbrSwdiLa2jw@mail.gmail.com>
+Subject: Re: [PATCH v7 0/8] RISC-V CPU Idle Support
+To:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Sandeep Tripathy <milun.tripathy@gmail.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Liush <liush@allwinnertech.com>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/0pli+SemqieRD8tXE_QHrwJ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Palmer,
 
-Hi all,
+On Thu, Jun 10, 2021 at 10:52 AM Anup Patel <anup.patel@wdc.com> wrote:
+>
+> This series adds RISC-V CPU Idle support using SBI HSM suspend function.
+> The RISC-V SBI CPU idle driver added by this series is highly inspired
+> from the ARM PSCI CPU idle driver.
+>
+> At high-level, this series includes the following changes:
+> 1) Preparatory arch/riscv patches (Patches 1 to 3)
+> 2) Defines for RISC-V SBI HSM suspend (Patch 4)
+> 3) Preparatory patch to share code between RISC-V SBI CPU idle driver
+>    and ARM PSCI CPU idle driver (Patch 5)
+> 4) RISC-V SBI CPU idle driver and related DT bindings (Patches 6 to 7)
+>
+> These patches can be found in riscv_sbi_hsm_suspend_v7 branch at
+> https://github.com/avpatel/linux
+>
+> Special thanks Sandeep Tripathy for providing early feeback on SBI HSM
+> support in all above projects (RISC-V SBI specification, OpenSBI, and
+> Linux RISC-V).
+>
+> Changes since v6:
+>  - Fixed error reported by "make DT_CHECKER_FLAGS=-m dt_binding_check"
+>
+> Changes since v5:
+>  - Rebased on Linux-5.13-rc5
+>  - Removed unnecessary exports from PATCH5
+>  - Removed stray ";" from PATCH5
+>  - Moved sbi_cpuidle_pd_power_off() under "#ifdef CONFIG_DT_IDLE_GENPD"
+>    in PATCH6
+>
+> Changes since v4:
+>  - Rebased on Linux-5.13-rc2
+>  - Renamed all dt_idle_genpd functions to have "dt_idle_" prefix
+>  - Added MAINTAINERS file entry for dt_idle_genpd
+>
+> Changes since v3:
+>  - Rebased on Linux-5.13-rc2
+>  - Fixed __cpu_resume_enter() which was broken due to XIP kernel support
+>  - Removed "struct dt_idle_genpd_ops" abstraction which simplifies code
+>    sharing between ARM PSCI and RISC-V SBI drivers in PATCH5
+>
+> Changes since v2:
+>  - Rebased on Linux-5.12-rc3
+>  - Updated PATCH7 to add common DT bindings for both ARM and RISC-V
+>    idle states
+>  - Added "additionalProperties = false" for both idle-states node and
+>    child nodes in PATCH7
+>
+> Changes since v1:
+>  - Fixex minor typo in PATCH1
+>  - Use just "idle-states" as DT node name for CPU idle states
+>  - Added documentation for "cpu-idle-states" DT property in
+>    devicetree/bindings/riscv/cpus.yaml
+>  - Added documentation for "riscv,sbi-suspend-param" DT property in
+>    devicetree/bindings/riscv/idle-states.yaml
+>
+> Anup Patel (8):
+>   RISC-V: Enable CPU_IDLE drivers
+>   RISC-V: Rename relocate() and make it global
+>   RISC-V: Add arch functions for non-retentive suspend entry/exit
+>   RISC-V: Add SBI HSM suspend related defines
+>   cpuidle: Factor-out power domain related code from PSCI domain driver
+>   cpuidle: Add RISC-V SBI CPU idle driver
+>   dt-bindings: Add common bindings for ARM and RISC-V idle states
+>   RISC-V: Enable RISC-V SBI CPU Idle driver for QEMU virt machine
 
-Today's linux-next merge of the rcu tree got a conflict in:
+Can you please review this series ?
 
-  kernel/rcu/tree_stall.h
+It would be nice to consider this series for Linux-5.14.
 
-between commit:
+Regards,
+Anup
 
-  2f064a59a11f ("sched: Change task_struct::state")
-
-from the tip tree and commit:
-
-  367455053a76 ("rcu: Mark accesses in tree_stall.h")
-
-from the rcu tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc kernel/rcu/tree_stall.h
-index acb2288063b5,24065f1acb8b..000000000000
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@@ -460,12 -462,13 +462,13 @@@ static void rcu_check_gp_kthread_starva
- =20
-  	if (rcu_is_gp_kthread_starving(&j)) {
-  		cpu =3D gpk ? task_cpu(gpk) : -1;
- -		pr_err("%s kthread starved for %ld jiffies! g%ld f%#x %s(%d) ->state=3D=
-%#lx ->cpu=3D%d\n",
- +		pr_err("%s kthread starved for %ld jiffies! g%ld f%#x %s(%d) ->state=3D=
-%#x ->cpu=3D%d\n",
-  		       rcu_state.name, j,
-  		       (long)rcu_seq_current(&rcu_state.gp_seq),
-- 		       data_race(rcu_state.gp_flags),
-- 		       gp_state_getname(rcu_state.gp_state), rcu_state.gp_state,
-- 		       gpk ? gpk->__state : ~0, cpu);
-+ 		       data_race(READ_ONCE(rcu_state.gp_flags)),
-+ 		       gp_state_getname(rcu_state.gp_state),
-+ 		       data_race(READ_ONCE(rcu_state.gp_state)),
- -		       gpk ? data_race(READ_ONCE(gpk->state)) : ~0, cpu);
-++		       gpk ? data_race(READ_ONCE(gpk->__state)) : ~0, cpu);
-  		if (gpk) {
-  			pr_err("\tUnless %s kthread gets sufficient CPU time, OOM is now expec=
-ted behavior.\n", rcu_state.name);
-  			pr_err("RCU grace-period kthread stack dump:\n");
-@@@ -508,7 -511,7 +511,7 @@@ static void rcu_check_gp_kthread_expire
-  		       (long)rcu_seq_current(&rcu_state.gp_seq),
-  		       data_race(rcu_state.gp_flags),
-  		       gp_state_getname(RCU_GP_WAIT_FQS), RCU_GP_WAIT_FQS,
-- 		       gpk->__state);
- -		       data_race(READ_ONCE(gpk->state)));
-++		       data_race(READ_ONCE(gpk->__state)));
-  		pr_err("\tPossible timer handling issue on cpu=3D%d timer-softirq=3D%u\=
-n",
-  		       cpu, kstat_softirqs_cpu(TIMER_SOFTIRQ, cpu));
-  	}
-@@@ -732,23 -816,34 +816,34 @@@ void show_rcu_gp_kthreads(void
-  	struct task_struct *t =3D READ_ONCE(rcu_state.gp_kthread);
- =20
-  	j =3D jiffies;
-- 	ja =3D j - data_race(rcu_state.gp_activity);
-- 	jr =3D j - data_race(rcu_state.gp_req_activity);
-- 	jw =3D j - data_race(rcu_state.gp_wake_time);
-- 	pr_info("%s: wait state: %s(%d) ->state: %#x delta ->gp_activity %lu ->g=
-p_req_activity %lu ->gp_wake_time %lu ->gp_wake_seq %ld ->gp_seq %ld ->gp_s=
-eq_needed %ld ->gp_flags %#x\n",
-+ 	ja =3D j - data_race(READ_ONCE(rcu_state.gp_activity));
-+ 	jr =3D j - data_race(READ_ONCE(rcu_state.gp_req_activity));
-+ 	js =3D j - data_race(READ_ONCE(rcu_state.gp_start));
-+ 	jw =3D j - data_race(READ_ONCE(rcu_state.gp_wake_time));
- -	pr_info("%s: wait state: %s(%d) ->state: %#lx ->rt_priority %u delta ->g=
-p_start %lu ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp=
-_wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_max %lu ->gp_flags %#x\=
-n",
-++	pr_info("%s: wait state: %s(%d) ->state: %#x ->rt_priority %u delta ->gp=
-_start %lu ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp_=
-wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_max %lu ->gp_flags %#x\n=
-",
-  		rcu_state.name, gp_state_getname(rcu_state.gp_state),
-- 		rcu_state.gp_state, t ? t->__state : 0x1ffff,
-- 		ja, jr, jw, (long)data_race(rcu_state.gp_wake_seq),
-- 		(long)data_race(rcu_state.gp_seq),
-- 		(long)data_race(rcu_get_root()->gp_seq_needed),
-- 		data_race(rcu_state.gp_flags));
-+ 		data_race(READ_ONCE(rcu_state.gp_state)),
- -		t ? data_race(READ_ONCE(t->state)) : 0x1ffffL, t ? t->rt_priority : 0xf=
-fU,
-++		t ? data_race(READ_ONCE(t->__state)) : 0x1ffffL, t ? t->rt_priority : 0=
-xffU,
-+ 		js, ja, jr, jw, (long)data_race(READ_ONCE(rcu_state.gp_wake_seq)),
-+ 		(long)data_race(READ_ONCE(rcu_state.gp_seq)),
-+ 		(long)data_race(READ_ONCE(rcu_get_root()->gp_seq_needed)),
-+ 		data_race(READ_ONCE(rcu_state.gp_max)),
-+ 		data_race(READ_ONCE(rcu_state.gp_flags)));
-  	rcu_for_each_node_breadth_first(rnp) {
-- 		if (ULONG_CMP_GE(READ_ONCE(rcu_state.gp_seq),
-- 				 READ_ONCE(rnp->gp_seq_needed)))
-+ 		if (ULONG_CMP_GE(READ_ONCE(rcu_state.gp_seq), READ_ONCE(rnp->gp_seq_nee=
-ded)) &&
-+ 		    !data_race(READ_ONCE(rnp->qsmask)) && !data_race(READ_ONCE(rnp->boo=
-st_tasks)) &&
-+ 		    !data_race(READ_ONCE(rnp->exp_tasks)) && !data_race(READ_ONCE(rnp->=
-gp_tasks)))
-  			continue;
-- 		pr_info("\trcu_node %d:%d ->gp_seq %ld ->gp_seq_needed %ld\n",
-- 			rnp->grplo, rnp->grphi, (long)data_race(rnp->gp_seq),
-- 			(long)data_race(rnp->gp_seq_needed));
-+ 		pr_info("\trcu_node %d:%d ->gp_seq %ld ->gp_seq_needed %ld ->qsmask %#l=
-x %c%c%c%c ->n_boosts %ld\n",
-+ 			rnp->grplo, rnp->grphi,
-+ 			(long)data_race(READ_ONCE(rnp->gp_seq)),
-+ 			(long)data_race(READ_ONCE(rnp->gp_seq_needed)),
-+ 			data_race(READ_ONCE(rnp->qsmask)),
-+ 			".b"[!!data_race(READ_ONCE(rnp->boost_kthread_task))],
-+ 			".B"[!!data_race(READ_ONCE(rnp->boost_tasks))],
-+ 			".E"[!!data_race(READ_ONCE(rnp->exp_tasks))],
-+ 			".G"[!!data_race(READ_ONCE(rnp->gp_tasks))],
-+ 			data_race(READ_ONCE(rnp->n_boosts)));
-  		if (!rcu_is_leaf_node(rnp))
-  			continue;
-  		for_each_leaf_node_possible_cpu(rnp, cpu) {
-
---Sig_/0pli+SemqieRD8tXE_QHrwJ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDRa30ACgkQAVBC80lX
-0GzKMQf9E56ZA22IgAD67IFMcvCjmal1DY4h3qPonHIziTgMXzSdW6wu0itzPbyT
-eQP2K7JQ1vCKUG1AoauS+jXxuh5KzxXu79vNjWsS8AsfeKgqaFoFqoK/F/mpjf/J
-2e8DnFJ1m9GfhLTvGjfEUEkGdYRZr4vtCMMXRl9YYv2sDc9jlPanAvwsHKa7Fi/o
-pJzVsX9NkMhDcHiZGlAV3omHdztS+/ENWtuMSPvlZNRJkp2nutqCHkx/AnCAk1Pj
-ha4iMQjQlgHPIQxEIXFIc4Jeba/jF1vr7TtAgWJ9OYmg+DOVjqcqKZDVn50pLaLP
-E7yIS93WUwwBV6wizMnfDc2dv8Crsw==
-=htPc
------END PGP SIGNATURE-----
-
---Sig_/0pli+SemqieRD8tXE_QHrwJ--
+>
+>  .../bindings/arm/msm/qcom,idle-state.txt      |   2 +-
+>  .../devicetree/bindings/arm/psci.yaml         |   2 +-
+>  .../bindings/{arm => cpu}/idle-states.yaml    | 228 ++++++-
+>  .../devicetree/bindings/riscv/cpus.yaml       |   6 +
+>  MAINTAINERS                                   |  14 +
+>  arch/riscv/Kconfig                            |   7 +
+>  arch/riscv/Kconfig.socs                       |   3 +
+>  arch/riscv/configs/defconfig                  |  13 +-
+>  arch/riscv/configs/rv32_defconfig             |   6 +-
+>  arch/riscv/include/asm/asm.h                  |  17 +
+>  arch/riscv/include/asm/cpuidle.h              |  24 +
+>  arch/riscv/include/asm/sbi.h                  |  27 +-
+>  arch/riscv/include/asm/suspend.h              |  35 +
+>  arch/riscv/kernel/Makefile                    |   2 +
+>  arch/riscv/kernel/asm-offsets.c               |   3 +
+>  arch/riscv/kernel/cpu_ops_sbi.c               |   2 +-
+>  arch/riscv/kernel/head.S                      |  18 +-
+>  arch/riscv/kernel/process.c                   |   3 +-
+>  arch/riscv/kernel/suspend.c                   |  86 +++
+>  arch/riscv/kernel/suspend_entry.S             | 123 ++++
+>  drivers/cpuidle/Kconfig                       |   9 +
+>  drivers/cpuidle/Kconfig.arm                   |   1 +
+>  drivers/cpuidle/Kconfig.riscv                 |  15 +
+>  drivers/cpuidle/Makefile                      |   5 +
+>  drivers/cpuidle/cpuidle-psci-domain.c         | 138 +---
+>  drivers/cpuidle/cpuidle-psci.h                |  15 +-
+>  drivers/cpuidle/cpuidle-sbi.c                 | 626 ++++++++++++++++++
+>  drivers/cpuidle/dt_idle_genpd.c               | 177 +++++
+>  drivers/cpuidle/dt_idle_genpd.h               |  50 ++
+>  29 files changed, 1472 insertions(+), 185 deletions(-)
+>  rename Documentation/devicetree/bindings/{arm => cpu}/idle-states.yaml (74%)
+>  create mode 100644 arch/riscv/include/asm/cpuidle.h
+>  create mode 100644 arch/riscv/include/asm/suspend.h
+>  create mode 100644 arch/riscv/kernel/suspend.c
+>  create mode 100644 arch/riscv/kernel/suspend_entry.S
+>  create mode 100644 drivers/cpuidle/Kconfig.riscv
+>  create mode 100644 drivers/cpuidle/cpuidle-sbi.c
+>  create mode 100644 drivers/cpuidle/dt_idle_genpd.c
+>  create mode 100644 drivers/cpuidle/dt_idle_genpd.h
+>
+> --
+> 2.25.1
+>
