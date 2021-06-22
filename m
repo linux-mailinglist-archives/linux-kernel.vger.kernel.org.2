@@ -2,77 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90A73B07A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2541E3B07A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbhFVOoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 10:44:01 -0400
-Received: from mga07.intel.com ([134.134.136.100]:21429 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231964AbhFVOn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:43:56 -0400
-IronPort-SDR: 4q8jBg3OzPoi6SDV5nlefjbb7iIUucBBE3t1EVMsxeaHVMyYnbsmNexzz/R5C3UheK2MgICuPo
- WswDY/VSsROA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="270912498"
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="270912498"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 07:41:39 -0700
-IronPort-SDR: D0TgOxHz7vjeNIF82vRPSn4mBD8aa7i11oQRY+c3CiLeKlwJRI9SwkqpZI+twzK4Mjt8abRRdM
- REl5eNYH5Qrg==
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="406347546"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 07:41:33 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lvhai-004Uof-Q5; Tue, 22 Jun 2021 17:41:28 +0300
-Date:   Tue, 22 Jun 2021 17:41:28 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jia He <justin.he@arm.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>, nd@arm.com
-Subject: Re: [PATCH v5 4/4] lib/test_printf.c: add test cases for '%pD'
-Message-ID: <YNH2mDwgsd5r+1Xs@smile.fi.intel.com>
-References: <20210622140634.2436-1-justin.he@arm.com>
- <20210622140634.2436-5-justin.he@arm.com>
+        id S231986AbhFVOoF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Jun 2021 10:44:05 -0400
+Received: from out28-75.mail.aliyun.com ([115.124.28.75]:56975 "EHLO
+        out28-75.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230510AbhFVOoE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 10:44:04 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07639962|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.203167-0.00545665-0.791376;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047199;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.KWJToea_1624372904;
+Received: from zhouyanjie-virtual-machine(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KWJToea_1624372904)
+          by smtp.aliyun-inc.com(10.147.44.129);
+          Tue, 22 Jun 2021 22:41:45 +0800
+Date:   Tue, 22 Jun 2021 22:41:43 +0800
+From:   =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+To:     Paul Cercueil <paul@opendingux.net>
+Cc:     tsbogend@alpha.franken.de, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com
+Subject: Re: [PATCH 3/4] MIPS: GCW0: Adjust pinctrl related code in device
+ tree.
+Message-ID: <20210622224143.72d063dc@zhouyanjie-virtual-machine>
+In-Reply-To: <1HW3VQ.OQVPDYR5D5RR1@opendingux.net>
+References: <1624347445-88070-1-git-send-email-zhouyanjie@wanyeetech.com>
+        <1624347445-88070-4-git-send-email-zhouyanjie@wanyeetech.com>
+        <9US3VQ.SK89X0OFZC2Z2@opendingux.net>
+        <20210622215119.18a49cf9@zhouyanjie-virtual-machine>
+        <1HW3VQ.OQVPDYR5D5RR1@opendingux.net>
+X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622140634.2436-5-justin.he@arm.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 10:06:34PM +0800, Jia He wrote:
-> After the behaviour of specifier '%pD' is changed to print the full path
-> of struct file, the related test cases are also updated.
+Hi Paul,
+
+于 Tue, 22 Jun 2021 15:05:25 +0100
+Paul Cercueil <paul@opendingux.net> 写道:
+
+> Hi Zhou,
 > 
-> Given the full path string of '%pD' is prepended from the end of the scratch
-> buffer, the check of "wrote beyond the nul-terminator" should be skipped
-> for '%pD'.
+> Le mar., juin 22 2021 at 21:51:19 +0800, 周琰杰 
+> <zhouyanjie@wanyeetech.com> a écrit :
+> > Hi Paul,
+> > 
+> > 于 Tue, 22 Jun 2021 13:46:57 +0100
+> > Paul Cercueil <paul@opendingux.net> 写道:
+> >   
+> >>  Hi Zhou,
+> >> 
+> >>  Le mar., juin 22 2021 at 15:37:24 +0800, 周琰杰 (Zhou Yanjie)
+> >>  <zhouyanjie@wanyeetech.com> a écrit :  
+> >>  > Change the "lcd-24bit" in the pinctrl groups to "lcd-8bit",
+> >>  > "lcd-16bit", "lcd-18bit", "lcd-24bit", since the pinctrl
+> >>  > driver has done the necessary splitting of the lcd group,
+> >>  > and it is convenient to further streamline the lcd-24bit
+> >>  > group in the subsequent pinctrl driver.
+> >>  >
+> >>  > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> >>  > ---
+> >>  >  arch/mips/boot/dts/ingenic/gcw0.dts | 2 +-
+> >>  >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>  >
+> >>  > diff --git a/arch/mips/boot/dts/ingenic/gcw0.dts
+> >>  > b/arch/mips/boot/dts/ingenic/gcw0.dts
+> >>  > index f4c04f2..dec3ba6f 100644
+> >>  > --- a/arch/mips/boot/dts/ingenic/gcw0.dts
+> >>  > +++ b/arch/mips/boot/dts/ingenic/gcw0.dts
+> >>  > @@ -393,7 +393,7 @@
+> >>  >  &pinctrl {
+> >>  >  	pins_lcd: lcd {
+> >>  >  		function = "lcd";
+> >>  > -		groups = "lcd-24bit";
+> >>  > +		groups = "lcd-8bit", "lcd-16bit", "lcd-18bit",
+> >>  > "lcd-24bit";  
+> >> 
+> >>  No, I'm pretty sure this won't work, since "lcd-24bit" contains
+> >> pins that are also contained by the other groups.
+> >>   
+> > 
+> > Sure, it seems that we should modify the pinctrl first, then modify 
+> > the
+> > dts, and then put them in the same series, so as to ensure that
+> > they do
+> > not cause damage.  
 > 
-> Parameterize the new using_scratch_space in __test, do_test to skip the
+> No, the "lcd-24bit" group is ABI now. We can't change it...
+> 
 
-__test()
+Sure.
 
-> test case mentioned above,
+Thanks and best regards!
 
--- 
-With Best Regards,
-Andy Shevchenko
-
+> -Paul
+> 
+> > 
+> > Thanks and best regards!
+> >   
+> >>  -Paul
+> >>   
+> >>  >  	};
+> >>  >
+> >>  >  	pins_uart2: uart2 {
+> >>  > --
+> >>  > 2.7.4
+> >>  >  
+> >>   
+> >   
+> 
 
