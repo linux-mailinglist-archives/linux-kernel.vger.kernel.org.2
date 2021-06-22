@@ -2,118 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF0E3AFC93
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 07:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6E33AFC99
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 07:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhFVF2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 01:28:05 -0400
-Received: from ozlabs.org ([203.11.71.1]:46219 "EHLO ozlabs.org"
+        id S230032AbhFVF3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 01:29:45 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:35330 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229921AbhFVF2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 01:28:03 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S229955AbhFVF3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 01:29:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624339648; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=kX/KWqvomt6ymo0vZ4ejVIxk4DjhHljAq6y2gDsHnm0=; b=EOpgb4WB2stGxLxte3MUpoXNgx34QFidqozSoDB/anVc5zWIFR5JTG8lB+nXmIRgnwqpBeqn
+ VXXLouXJ+wet6l6kqEz3z75I1z6KtkWlNd2puZpQD6/MHPgSkQNF1GCi+N4fWoL1HYwDGxK8
+ 0iDBbSCDz62XNq8smYpA0z+WfKE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60d174ad2eaeb98b5ee5818f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Jun 2021 05:27:09
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 65C7AC4360C; Tue, 22 Jun 2021 05:27:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.90.136] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8FGx3vFKz9sj5;
-        Tue, 22 Jun 2021 15:25:45 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624339546;
-        bh=Sq6dz+nfRdjOkjGoPUI8aR0Wa8pNNFXqY2fU4CY0d5Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Hp998rrx7QvgHJUjVLmrN+hGm4Jxg9LU+Y54xkaFndF6qrvN+/wWH6CaQ7GYYH1+E
-         eWUB89b0x/kPhue8Piig9OgME87RuK6nDIB5k6jr0V+hedSn4zuM3P6uYQX8XOjLLS
-         pxdk5Idh7v14gzpePwJFxdf4BWce7wCBuxZX70/6z6PVGLINqt2/Q/ZejbmRQJmgau
-         xN3CrmKYWUwbMT//6YQY4xyzNtmhLIrAHT7Q8sJsVllA1wGpi3K4lGnjcsjs6XOwss
-         FQYWBr7Q3KQR8n6UJQvBqfvLu580JEZpdBkGiCpD7esDVUW0MCG3iUxdsQTgqzPyz1
-         vpBHnoAQxKn0Q==
-Date:   Tue, 22 Jun 2021 15:25:44 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Ashish Kalra <ashish.kalra@amd.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: linux-next: manual merge of the kvm tree with the powerpc tree
-Message-ID: <20210622152544.74e01567@canb.auug.org.au>
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3255DC433F1;
+        Tue, 22 Jun 2021 05:27:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3255DC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v10 1/6] usb: gadget: udc: core: Introduce check_config to
+ verify USB configuration
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     balbi@kernel.org, robh+dt@kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, frowand.list@gmail.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        jackp@codeaurora.org, fntoth@gmail.com,
+        heikki.krogerus@linux.intel.com, andy.shevchenko@gmail.com
+References: <1623923899-16759-1-git-send-email-wcheng@codeaurora.org>
+ <1623923899-16759-2-git-send-email-wcheng@codeaurora.org>
+ <YMstVXuwAQm5Cea/@kroah.com>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <241aeca7-3c24-29be-c9db-7e8da0b65baa@codeaurora.org>
+Date:   Mon, 21 Jun 2021 22:27:06 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/v4K.dbaPwQgah4cZkfiBlVg";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <YMstVXuwAQm5Cea/@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/v4K.dbaPwQgah4cZkfiBlVg
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the kvm tree got a conflict in:
+On 6/17/2021 4:09 AM, Greg KH wrote:
+> On Thu, Jun 17, 2021 at 02:58:14AM -0700, Wesley Cheng wrote:
+>> Some UDCs may have constraints on how many high bandwidth endpoints it can
+>> support in a certain configuration.  This API allows for the composite
+>> driver to pass down the total number of endpoints to the UDC so it can verify
+>> it has the required resources to support the configuration.
+>>
+>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>> ---
+>>  drivers/usb/gadget/udc/core.c | 25 +++++++++++++++++++++++++
+>>  include/linux/usb/gadget.h    |  5 +++++
+>>  2 files changed, 30 insertions(+)
+>>
+>> diff --git a/drivers/usb/gadget/udc/core.c b/drivers/usb/gadget/udc/core.c
+>> index b7f0b1e..e33ae2d 100644
+>> --- a/drivers/usb/gadget/udc/core.c
+>> +++ b/drivers/usb/gadget/udc/core.c
+>> @@ -1003,6 +1003,31 @@ int usb_gadget_ep_match_desc(struct usb_gadget *gadget,
+>>  }
+>>  EXPORT_SYMBOL_GPL(usb_gadget_ep_match_desc);
+>>  
+>> +/**
+>> + * usb_gadget_check_config - checks if the UDC can support the number of eps
+>> + * @gadget: controller to check the USB configuration
+>> + * @ep_map: bitmap of endpoints being requested by a USB configuration
 
-  include/uapi/linux/kvm.h
+Hi Greg,
 
-between commit:
+> 
+> Will a u64 really hold all of the possible endpoints?
+> 
 
-  9bb4a6f38fd4 ("KVM: PPC: Book3S HV: Add KVM_CAP_PPC_RPT_INVALIDATE capabi=
-lity")
+Ah, should be a u32 bitmap, and that is enough as USB spec only allows
+32 EPs (IN+OUT eps) total.  That hasn't changed since USB2, so I assume
+that will stay the same moving forward.  I can fix that.
 
-from the powerpc tree and commits:
+> Why make it odd like this, why not just provide a list like we do in the
+> USB core with the structure that USB drivers use?  What can a driver do
+> with a bitmap only?
+> 
 
-  644f706719f0 ("KVM: x86: hyper-v: Introduce KVM_CAP_HYPERV_ENFORCE_CPUID")
-  6dba94035203 ("KVM: x86: Introduce KVM_GET_SREGS2 / KVM_SET_SREGS2")
-  0dbb11230437 ("KVM: X86: Introduce KVM_HC_MAP_GPA_RANGE hypercall")
+I didn't want the ep bookeeping here to be too complicated.  For
+example, in the TXFIFO resize situation, just knowing the number of
+endpoints used can help determine if we have enough internal controller
+memory to allocate per endpoint. (at minimum 1 FIFO per EP)  If the USB
+configuration is going to be requesting more endpoints than FIFO memory
+it has (unlikely), then it will fail the config bind.  Otherwise, we'd
+end up enumerating w/ the host w/ the interfaces that were starved of
+FIFO memory to be broken/non-functional.  This was one of the concerns
+that Felipe had in our initial discussions.
 
-from the kvm tree.
+In addition, at the time of function driver binding, the amount of
+information we have is minimal per endpoint, as most of it is populated
+once the host places the device into the CONFIGURED state. (ie when the
+device knows which configuration is being enabled, hence which EPs are
+being used)
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+Thanks
+Wesley Cheng
 
---=20
-Cheers,
-Stephen Rothwell
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-diff --cc include/uapi/linux/kvm.h
-index 9016e96de971,9febe1412f7a..000000000000
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@@ -1083,7 -1083,9 +1083,10 @@@ struct kvm_ppc_resize_hpt=20
-  #define KVM_CAP_SGX_ATTRIBUTE 196
-  #define KVM_CAP_VM_COPY_ENC_CONTEXT_FROM 197
-  #define KVM_CAP_PTP_KVM 198
-- #define KVM_CAP_PPC_RPT_INVALIDATE 199
-+ #define KVM_CAP_HYPERV_ENFORCE_CPUID 199
-+ #define KVM_CAP_SREGS2 200
-+ #define KVM_CAP_EXIT_HYPERCALL 201
-++#define KVM_CAP_PPC_RPT_INVALIDATE 202
- =20
-  #ifdef KVM_CAP_IRQ_ROUTING
- =20
-
---Sig_/v4K.dbaPwQgah4cZkfiBlVg
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDRdFgACgkQAVBC80lX
-0Gx63Qf/VMvHp3tPL8/SVslFfCtK/PtYT7bGb8jxd/AehS36tMv8pt2uG7/J/pN7
-kdXqVl1Pduyo+OSEI3A6aQDcqlq14hf10PIrNfcRBFmz7LnIj9ZxH75DD+bMIFay
-l/Q79DQnbt1UyGQUcoShB8kIlAQoQtKg3MyPuIvY4Qkz22o21v6BaUpLusSrtKBV
-j9gU0mW1zieTs8Rp5unCHjsOdP56McZxVa54a+hCAMt8Y9fvkbe0NxlPsz1cAgDA
-XffvQi4iiY0IpuGhQvU/O/h+qghRcotzTL5H0G63viYfddyWE/feEHqMl25VqdKG
-ndgIq21Ld2LDzGxRPnvaG9BeScHNHA==
-=OEVB
------END PGP SIGNATURE-----
-
---Sig_/v4K.dbaPwQgah4cZkfiBlVg--
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
