@@ -2,95 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732AA3B019F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE00E3B01A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhFVKou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 06:44:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:46596 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229612AbhFVKot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 06:44:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3FC0C11D4;
-        Tue, 22 Jun 2021 03:42:33 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF26B3F694;
-        Tue, 22 Jun 2021 03:42:31 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 11:42:10 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        thierry.reding@gmail.com
-Cc:     robh@kernel.org, bhelgaas@google.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        vidyas@nvidia.com
-Subject: Re: [PATCH 1/3] PCI: tegra: Fix OF node reference leak
-Message-ID: <20210622104145.GA24565@lpieralisi>
-References: <55b11e9a7fa2987fbc0869d68ae59888954d65e2.1620148539.git.christophe.jaillet@wanadoo.fr>
+        id S229915AbhFVKq0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Jun 2021 06:46:26 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:63997 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhFVKqY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 06:46:24 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 861B940012;
+        Tue, 22 Jun 2021 10:44:06 +0000 (UTC)
+Date:   Tue, 22 Jun 2021 12:44:05 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Keguang Zhang <keguang.zhang@gmail.com>
+Cc:     linux-mtd@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Subject: Re: [PATCH V5 RESEND] mtd: rawnand: Add Loongson1 NAND driver
+Message-ID: <20210622124405.43bb5461@xps13>
+In-Reply-To: <20210520224213.7907-1-keguang.zhang@gmail.com>
+References: <20210520224213.7907-1-keguang.zhang@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55b11e9a7fa2987fbc0869d68ae59888954d65e2.1620148539.git.christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 07:17:42PM +0200, Christophe JAILLET wrote:
-> Commit 9e38e690ace3 ("PCI: tegra: Fix OF node reference leak") has fixed
-> some node reference leaks in this function but missed some of them.
-> 
-> In fact, having 'port' referenced in the 'rp' structure is not enough to
-> prevent the leak, until 'rp' is actually added in the 'pcie->ports' list.
-> 
-> Add the missing 'goto err_node_put' accordingly.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/pci/controller/pci-tegra.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
+Hi Keguang,
 
-Thierry, Jon, Vidya,
+Keguang Zhang <keguang.zhang@gmail.com> wrote on Fri, 21 May 2021
+06:42:13 +0800:
 
-please review this series when you have time, thanks.
-
-Lorenzo
-
-> diff --git a/drivers/pci/controller/pci-tegra.c b/drivers/pci/controller/pci-tegra.c
-> index 8069bd9232d4..006bf0346dec 100644
-> --- a/drivers/pci/controller/pci-tegra.c
-> +++ b/drivers/pci/controller/pci-tegra.c
-> @@ -2193,13 +2193,15 @@ static int tegra_pcie_parse_dt(struct tegra_pcie *pcie)
->  		rp->np = port;
->  
->  		rp->base = devm_pci_remap_cfg_resource(dev, &rp->regs);
-> -		if (IS_ERR(rp->base))
-> -			return PTR_ERR(rp->base);
-> +		if (IS_ERR(rp->base)) {
-> +			err = PTR_ERR(rp->base);
-> +			goto err_node_put;
-> +		}
->  
->  		label = devm_kasprintf(dev, GFP_KERNEL, "pex-reset-%u", index);
->  		if (!label) {
-> -			dev_err(dev, "failed to create reset GPIO label\n");
-> -			return -ENOMEM;
-> +			err = -ENOMEM;
-> +			goto err_node_put;
->  		}
->  
->  		/*
-> @@ -2217,7 +2219,8 @@ static int tegra_pcie_parse_dt(struct tegra_pcie *pcie)
->  			} else {
->  				dev_err(dev, "failed to get reset GPIO: %ld\n",
->  					PTR_ERR(rp->reset_gpio));
-> -				return PTR_ERR(rp->reset_gpio);
-> +				err = PTR_ERR(rp->reset_gpio);
-> +				goto err_node_put;
->  			}
->  		}
->  
-> -- 
-> 2.30.2
+> From: Kelvin Cheung <keguang.zhang@gmail.com>
 > 
+> This patch adds NAND driver for Loongson1B.
+> 
+> Signed-off-by: Kelvin Cheung <keguang.zhang@gmail.com>
+
+Sorry for the delay, I really need to focus an hour on this driver, I
+didn't take the time to do so, this is still in my todo-list.
+
+Thanks,
+Miquèl
