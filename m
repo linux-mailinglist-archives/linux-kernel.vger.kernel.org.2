@@ -2,159 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C65F3B05FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8B63B0606
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231365AbhFVNme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 09:42:34 -0400
-Received: from mail-oo1-f42.google.com ([209.85.161.42]:40594 "EHLO
-        mail-oo1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbhFVNmc (ORCPT
+        id S231196AbhFVNoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 09:44:44 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:9749 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230234AbhFVNom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 09:42:32 -0400
-Received: by mail-oo1-f42.google.com with SMTP id k1-20020a0568200161b029024bef8a628bso57095ood.7;
-        Tue, 22 Jun 2021 06:40:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q4vbd9vVe1kJjDnrVB6nT7MJLsjNMvtXc5i6FfjWChM=;
-        b=ZajxaPqvgOSa6Wq05Fy6mKfAIt5wxYsIw8elGmRoeNWvbQjln/29iPMSteQD2mrnQL
-         sFJR0OCDuWrMiq2fr/Lh5tEihNYM6bbM5qTXpxWPQE72/QA2yEtiBhEDnrFPUyu3mpFv
-         VouEZJizg6eLyvdMN34a50TMzrrI6xT1AqmCb+HT+I/T2QuT/8tlgaYvJG8elb/ZP6WR
-         FwyqzqWJTwITD+s9oUDMUgJD0f2ltC2zOGitq28VRDp8IfT6/FHxetsMs9MaOstpxd6B
-         1MstLRyCtdkPlALJ3FurihFYyew5SkPK//5FEEgth8TzHAjAcejpYXqhcUQfuR2/X6wE
-         OpPA==
-X-Gm-Message-State: AOAM5310SwC4efvxN2G6lufYTJCaSOP9ACwPWfNAt+pRvRCuPAyNyDkV
-        UEayny/ZnLOV3PQ0YqXQtTH6Uis6fqDcCb6r6A4=
-X-Google-Smtp-Source: ABdhPJyn01MjcWRQU6eyKA3kZgTfXdHZ8rlLBAMe5PBnS2ARnqsj0gqiz9/Db/7oBN6VslYJhYjVmR5I1CMDaPL7pwM=
-X-Received: by 2002:a4a:5dc6:: with SMTP id w189mr3387528ooa.1.1624369216749;
- Tue, 22 Jun 2021 06:40:16 -0700 (PDT)
+        Tue, 22 Jun 2021 09:44:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1624369347; x=1655905347;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=GP082JeyVvXq8STGW5/q34uKMupdVUFzrzpUOT2trvQ=;
+  b=IG0N+YL7lDJppLwxraDNBy5VZFRBOKX2jHHvj6jNpPQaKBHNrnGc4KtM
+   VZhM/DkAiFnfQXs+IK5ubcQFGX3a0tmtOxFBkBqx3uqneG3LIDSLlUYCM
+   j+Bv6uzH9XpebfD/3Dg6Znrcfx/BCWFbDUiDSaitet2G1zw9LRZjTGAaF
+   odgvea7U0Ey69aYbxzXxUOVUOcieoyOC9Cf5F7aOHoiUkBrltl2rt5WSO
+   +PY5uRjtADKcmJAOxAeV1EvOycQy3zvefLAOSgw5X+67cAhchYVzPLwpO
+   EgAoCWxl8KdNBvQF1BYKoj7k2zmoXCotqadZP5EeoSXKkcrfMSDmuBAkt
+   w==;
+IronPort-SDR: 632sqRxxv25qpLLxIq5urZuNTFvYgNlHT02NNxehoICgDgRO39aotsCLQy8XGOSfqbYj2dve0V
+ 8X1yBWtKVRNv5nzlczj/PufQTrbxUjreFvrXTzxC3UD55L/7jBlhm/+tgI1BtFENgoWiZz+ty8
+ OF6Fs3z3v/iKWJczzhx/Bp57UZrYDvNhonzDcKDkqAN8fBLuBxuJiD5SO1rJwZU1p5nYyqjINH
+ zPFSDs5QehD9VFjvblKxmbv+orzZZLcPyxRViTH5v8orUKfYhavjG78Me3K9hfPFtfX0C/MnUH
+ HSc=
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="133007379"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Jun 2021 06:42:26 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 22 Jun 2021 06:42:26 -0700
+Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Tue, 22 Jun 2021 06:42:24 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>
+CC:     <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Tudor Ambarus" <tudor.ambarus@microchip.com>
+Subject: [PATCH] ARM: dts: at91: sama5d4_xplained: Mark optional AT25DF321A as disabled
+Date:   Tue, 22 Jun 2021 16:42:22 +0300
+Message-ID: <20210622134222.107806-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <YNEQjAzq6iWNgnBc@google.com>
-In-Reply-To: <YNEQjAzq6iWNgnBc@google.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 22 Jun 2021 15:40:05 +0200
-Message-ID: <CAJZ5v0jVzFWfNX-ujOz=A8SXyWGv_HC+YSVEzowSN+aU5aGiYw@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: PM: postpone bringing devices to D0 unless we need them
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 12:20 AM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
->
-> Currently ACPI power domain brings devices into D0 state in the "resume
-> early" phase. Normally this does not cause any issues, as powering up
-> happens quickly. However there are peripherals that have certain timing
-> requirements for powering on, for example some models of Elan
-> touchscreens need 300msec after powering up/releasing reset line before
-> they can accept commands from the host. Such devices will dominate
-> the time spent in early resume phase and cause increase in overall
-> resume time as we wait for early resume to complete before we can
-> proceed to the normal resume stage.
->
-> There are ways for a driver to indicate that it can tolerate device
-> being in the low power mode and that it knows how to power the device
-> back up when resuming, bit that requires changes to individual drivers
-> that may not really care about details of ACPI controlled power
-> management.
->
-> This change attempts to solve this issue at ACPI power domain level, by
-> postponing powering up device until we get to the normal resume stage,
-> unless there is early resume handler defined for the device, or device
-> does not declare any resume handlers, in which case we continue powering
-> up such devices early. This allows us to shave off several hundred
-> milliseconds of resume time on affected systems.
->
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> ---
->  drivers/acpi/device_pm.c | 46 +++++++++++++++++++++++++++++++++++-----
->  1 file changed, 41 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
-> index 096153761ebc..00b412ccb2e0 100644
-> --- a/drivers/acpi/device_pm.c
-> +++ b/drivers/acpi/device_pm.c
-> @@ -1131,17 +1131,52 @@ static int acpi_subsys_resume_noirq(struct device *dev)
->   *
->   * Use ACPI to put the given device into the full-power state and carry out the
->   * generic early resume procedure for it during system transition into the
-> - * working state.
-> + * working state, but only do that if device either defines early resume
-> + * handler, or does not define power operations at all. Otherwise powering up
-> + * of the device is postponed to the normal resume phase.
->   */
->  static int acpi_subsys_resume_early(struct device *dev)
->  {
-> +       const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
-> +       struct acpi_device *adev = ACPI_COMPANION(dev);
->         int ret;
->
-> -       if (dev_pm_skip_resume(dev))
-> -               return 0;
+sama5d4_xplained has an optional on-board serial DataFlash (AT25DF321A),
+which does not come populated on board by default. Mark it as disabled
+to avoid the following probe error:
+spi-nor spi0.0: unrecognized JEDEC id bytes: 00 00 00 00 00 00
 
-The above doesn't need to be changed AFAICS.
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+---
+ arch/arm/boot/dts/at91-sama5d4_xplained.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +       if (dev_pm_skip_resume(dev)) {
-> +               ret = 0;
-> +       } else if (!pm || pm->resume_early) {
+diff --git a/arch/arm/boot/dts/at91-sama5d4_xplained.dts b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
+index 0b3ad1b580b8..f397e2a68e5c 100644
+--- a/arch/arm/boot/dts/at91-sama5d4_xplained.dts
++++ b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
+@@ -40,7 +40,7 @@ uart0: serial@f8004000 {
+ 
+ 			spi0: spi@f8010000 {
+ 				cs-gpios = <&pioC 3 0>, <0>, <0>, <0>;
+-				status = "okay";
++				status = "disabled";
+ 				m25p80@0 {
+ 					compatible = "atmel,at25df321a";
+ 					spi-max-frequency = <50000000>;
+-- 
+2.25.1
 
-This is rather tricky, but I don't see a particular reason why it wouldn't work.
-
-> +               ret = acpi_dev_resume(dev);
-> +               if (!ret)
-> +                       ret = pm_generic_resume_early(dev);
-> +       } else {
-> +               if (adev)
-> +                       acpi_device_wakeup_disable(adev);
-
-This isn't necessary here.
-
-> +
-> +               dev_dbg(dev, "postponing D0 transition to normal resume stage\n");
-> +               ret = 0;
-> +       }
-> +
-> +       return ret;
-> +}
-> +
-> +/**
-> + * acpi_subsys_resume - Resume device using ACPI.
-> + * @dev: Device to Resume.
-> + *
-> + * Use ACPI to put the given device into the full-power state if it has not been
-> + * powered up during early resume phase, and carry out the generic resume
-> + * procedure for it during system transition into the working state.
-> + */
-> +static int acpi_subsys_resume(struct device *dev)
-> +{
-> +       const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
-> +       int ret = 0;
-> +
-> +       if (!dev_pm_skip_resume(dev) && pm && !pm->resume_early) {
-> +               dev_dbg(dev, "executing postponed D0 transition\n");
-> +               ret = acpi_dev_resume(dev);
-> +       }
->
-> -       ret = acpi_dev_resume(dev);
-> -       return ret ? ret : pm_generic_resume_early(dev);
-> +       return ret ? ret : pm_generic_resume(dev);
->  }
->
->  /**
-> @@ -1236,6 +1271,7 @@ static struct dev_pm_domain acpi_general_pm_domain = {
->                 .prepare = acpi_subsys_prepare,
->                 .complete = acpi_subsys_complete,
->                 .suspend = acpi_subsys_suspend,
-> +               .resume = acpi_subsys_resume,
->                 .suspend_late = acpi_subsys_suspend_late,
->                 .suspend_noirq = acpi_subsys_suspend_noirq,
->                 .resume_noirq = acpi_subsys_resume_noirq,
-> --
