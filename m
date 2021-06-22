@@ -2,142 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495A53B09E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7699C3B09EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhFVQH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 12:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40058 "EHLO
+        id S229886AbhFVQIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 12:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbhFVQH5 (ORCPT
+        with ESMTP id S229758AbhFVQIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:07:57 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B30C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:05:40 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id x21so7242063qtq.9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:05:40 -0700 (PDT)
+        Tue, 22 Jun 2021 12:08:46 -0400
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4143AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:06:29 -0700 (PDT)
+Received: by mail-vs1-xe35.google.com with SMTP id x12so4412907vsp.4
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:06:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=DZ3pXIZRpSkwolJsuMb/jDRoPgB3Tr5Ed0gJwqNhEn0=;
-        b=bPcDo+rlbwvx6J+BbENOrwkAhwr/ApYX6dANLjI5IldJpUZEty9WP/A+WSRSkVnfVp
-         fd2e4y/tXjqXDkPAhIKeQEV9eOqRiGPykVl6hBy9OPbjguGQbCXYh8BSABRpZ+0/loeK
-         k5B7tYHxXO+OYAqc2XDEiodfylo30HXpiBw3o5xdgwyyFytUxxOswWBt61pJyEvA82JG
-         jeswvAaYdQ80zAeU2QU/ihXizpJ995HOOdf81AhQWyQIhwQZLacM2brku76mBW2AwSnt
-         rLC2zGxEtGcdZECkACvvAcUZ2O3xmGuKK/Qrbfiv04IEijyo0iWQN51AxkzmtGCV9rNa
-         dlIg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=27TVSpBBxDt2V9AC2sSKfX2OLzeZI7qCt0FynkFE4h0=;
+        b=Ynk7wRsFyvpT95XM0xfR8pPSpaKhc1aGG9sYY9vD7q+6CkrKHU8tOKYrBk2Q7Mp6fp
+         s+4/Zq5HmwR0VVKGBrsD6IR7wLEr/+QSn8/UfoMPBQ8Ntd0mFmKDAI7KWYZWyagDWtNr
+         yMdORTYYlNaLpAKRj+yBSDhNYdhBiorvwkJUc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=DZ3pXIZRpSkwolJsuMb/jDRoPgB3Tr5Ed0gJwqNhEn0=;
-        b=dsVdyS5pyCX1uA3TpP5Yv+1fvlAxwqCgJpkfinWQag4gRK0WyAcJLa9VOAHKrFshvQ
-         GuK5rAPXXjymtEpkFbUo0n8YwTACna2kjPBjzEp9W+ILo60oXuebDoGR9MDqZVHvQKo1
-         eX3yK0YOaYLGavWa5gJ+ZmcbhtyIi7IFPLbguNnrf/Q6nTxemBYKFdvPlQL+GhuhisdC
-         LbXECVWtZ5SQJPKxxc2Qar9OxRyROHieqBRl09hXbzGkwlBnbCeKSNoVATXozRpdrTBy
-         DGVlDELGuz5R/+ii0c865BV7Z63DuDFZ+djAwi6/BfpmJdzB89T1cYTd724gyei54llL
-         EB1A==
-X-Gm-Message-State: AOAM533R2qEi+6biPq+m6g+hi8KqZ0zZ+AGwAohzo0AmRD2/CfdDxPkn
-        oxScvrH9X0a34JshSqGbpcC+uw==
-X-Google-Smtp-Source: ABdhPJwsZvQD0cl9e1oHhoP7iCcZiW+TSb8cEQVE7Z3CfQWJtDN54cMi/qDxEpHPFsGzcH9l1+8wSg==
-X-Received: by 2002:a05:622a:13cd:: with SMTP id p13mr4098685qtk.235.1624377939521;
-        Tue, 22 Jun 2021 09:05:39 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id j7sm13254363qkd.21.2021.06.22.09.05.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 09:05:38 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lviuA-00ADrH-BE; Tue, 22 Jun 2021 13:05:38 -0300
-Date:   Tue, 22 Jun 2021 13:05:38 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Tomer Tayar <ttayar@habana.ai>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
- FD for DMA-BUF
-Message-ID: <20210622160538.GT1096940@ziepe.ca>
-References: <CAFCwf11jOnewkbLuxUESswCJpyo7C0ovZj80UrnwUOZkPv2JYQ@mail.gmail.com>
- <20210621232912.GK1096940@ziepe.ca>
- <d358c740-fd3a-9ecd-7001-676e2cb44ec9@gmail.com>
- <CAFCwf11h_Nj_GEdCdeTzO5jgr-Y9em+W-v_pYUfz64i5Ac25yg@mail.gmail.com>
- <20210622120142.GL1096940@ziepe.ca>
- <d497b0a2-897e-adff-295c-cf0f4ff93cb4@amd.com>
- <20210622152343.GO1096940@ziepe.ca>
- <3fabe8b7-7174-bf49-5ffe-26db30968a27@amd.com>
- <20210622154027.GS1096940@ziepe.ca>
- <09df4a03-d99c-3949-05b2-8b49c71a109e@amd.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=27TVSpBBxDt2V9AC2sSKfX2OLzeZI7qCt0FynkFE4h0=;
+        b=ter7Dzm4wCB+50a6YZEHaQzC8r/XlJ9ez15oCCQJUHVK+l3a1AjCDOGN6TfA46tbCj
+         ClqgyvgUxRSEViZub2kDd4JDVoKcZv9VM8TCqymgza9jRbYJCgPUJXjHwEvoEfn+FTi8
+         r8wOqNRu4uNM1XeRf8+Z77z6za47YVDUOc+qI8DBj+7sclGXgnVFrzgbC000lLpMkw10
+         kJdpRORZqifo9wCdzoVq6UKgmBLBvUFJghidLMjteId/yJ2jMavmriqxELF6D57Oh6wg
+         CL/VJm2bEfLSlDN1v73A7vo19gM0qmwMUUZ6whJymRqKb6h0ZN/KCQSxkSbU18LpVOQp
+         2TrA==
+X-Gm-Message-State: AOAM532cWGRLAhWFj+gqPdnYmIi7h+w9tScYXHCL+OOOXmLScrQvHjFS
+        u4igpzd5uI16rjG98iP4y6OYa8x8yIxmkA==
+X-Google-Smtp-Source: ABdhPJyNJBcn5mUuQxVpNKirxrluE6uhf/KOKxsAfWF64T4gqsTw4sWto1AIqXnBLDYzGNaG4WK7iQ==
+X-Received: by 2002:a67:cf0d:: with SMTP id y13mr23913851vsl.1.1624377988174;
+        Tue, 22 Jun 2021 09:06:28 -0700 (PDT)
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com. [209.85.222.54])
+        by smtp.gmail.com with ESMTPSA id 12sm410492vkw.1.2021.06.22.09.06.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 09:06:26 -0700 (PDT)
+Received: by mail-ua1-f54.google.com with SMTP id r9so6496340ual.7
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:06:26 -0700 (PDT)
+X-Received: by 2002:a25:2405:: with SMTP id k5mr5576344ybk.405.1624377975055;
+ Tue, 22 Jun 2021 09:06:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <09df4a03-d99c-3949-05b2-8b49c71a109e@amd.com>
+References: <20210621235248.2521620-1-dianders@chromium.org> <067dd86d-da7f-ac83-6ce6-b8fd5aba0b6f@arm.com>
+In-Reply-To: <067dd86d-da7f-ac83-6ce6-b8fd5aba0b6f@arm.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 22 Jun 2021 09:06:02 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Vg7kqhgxZppHXwMPMc0xATZ+MqbrXx-FB0eg7pHhNE8w@mail.gmail.com>
+Message-ID: <CAD=FV=Vg7kqhgxZppHXwMPMc0xATZ+MqbrXx-FB0eg7pHhNE8w@mail.gmail.com>
+Subject: Re: [PATCH 0/6] iommu: Enable devices to request non-strict DMA,
+ starting with QCom SD/MMC
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-pci@vger.kernel.org, quic_c_gdjako@quicinc.com,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Sonny Rao <sonnyrao@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Rajat Jain <rajatja@google.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andy Gross <agross@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 05:48:10PM +0200, Christian König wrote:
-> Am 22.06.21 um 17:40 schrieb Jason Gunthorpe:
-> > On Tue, Jun 22, 2021 at 05:29:01PM +0200, Christian König wrote:
-> > > [SNIP]
-> > > No absolutely not. NVidia GPUs work exactly the same way.
-> > > 
-> > > And you have tons of similar cases in embedded and SoC systems where
-> > > intermediate memory between devices isn't directly addressable with the CPU.
-> > None of that is PCI P2P.
-> > 
-> > It is all some specialty direct transfer.
-> > 
-> > You can't reasonably call dma_map_resource() on non CPU mapped memory
-> > for instance, what address would you pass?
-> > 
-> > Do not confuse "I am doing transfers between two HW blocks" with PCI
-> > Peer to Peer DMA transfers - the latter is a very narrow subcase.
-> > 
-> > > No, just using the dma_map_resource() interface.
-> > Ik, but yes that does "work". Logan's series is better.
+Hi,
+
+On Tue, Jun 22, 2021 at 4:35 AM Robin Murphy <robin.murphy@arm.com> wrote:
 >
-> No it isn't. It makes devices depend on allocating struct pages for their
-> BARs which is not necessary nor desired.
+> Hi Doug,
+>
+> On 2021-06-22 00:52, Douglas Anderson wrote:
+> >
+> > This patch attempts to put forward a proposal for enabling non-strict
+> > DMA on a device-by-device basis. The patch series requests non-strict
+> > DMA for the Qualcomm SDHCI controller as a first device to enable,
+> > getting a nice bump in performance with what's believed to be a very
+> > small drop in security / safety (see the patch for the full argument).
+> >
+> > As part of this patch series I am end up slightly cleaning up some of
+> > the interactions between the PCI subsystem and the IOMMU subsystem but
+> > I don't go all the way to fully remove all the tentacles. Specifically
+> > this patch series only concerns itself with a single aspect: strict
+> > vs. non-strict mode for the IOMMU. I'm hoping that this will be easier
+> > to talk about / reason about for more subsystems compared to overall
+> > deciding what it means for a device to be "external" or "untrusted".
+> >
+> > If something like this patch series ends up being landable, it will
+> > undoubtedly need coordination between many maintainers to land. I
+> > believe it's fully bisectable but later patches in the series
+> > definitely depend on earlier ones. Sorry for the long CC list. :(
+>
+> Unfortunately, this doesn't work. In normal operation, the default
+> domains should be established long before individual drivers are even
+> loaded (if they are modules), let alone anywhere near probing. The fact
+> that iommu_probe_device() sometimes gets called far too late off the
+> back of driver probe is an unfortunate artefact of the original
+> probe-deferral scheme, and causes other problems like potentially
+> malformed groups - I've been forming a plan to fix that for a while now,
+> so I for one really can't condone anything trying to rely on it.
+> Non-deterministic behaviour based on driver probe order for multi-device
+> groups is part of the existing problem, and your proposal seems equally
+> vulnerable to that too.
 
-Which dramatically reduces the cost of establishing DMA mappings, a
-loop of dma_map_resource() is very expensive.
- 
-> How do you prevent direct I/O on those pages for example?
+Doh! :( I definitely can't say I understand the iommu subsystem
+amazingly well. It was working for me, but I could believe that I was
+somehow violating a rule somewhere.
 
-GUP fails.
+I'm having a bit of a hard time understanding where the problem is
+though. Is there any chance that you missed the part of my series
+where I introduced a "pre_probe" step? Specifically, I see this:
 
-> Allocating a struct pages has their use case, for example for exposing VRAM
-> as memory for HMM. But that is something very specific and should not limit
-> PCIe P2P DMA in general.
+* really_probe() is called w/ a driver and a device.
+* -> calls dev->bus->dma_configure() w/ a "struct device *"
+* -> eventually calls iommu_probe_device() w/ the device.
+* -> calls iommu_alloc_default_domain() w/ the device
+* -> calls iommu_group_alloc_default_domain()
+* -> always allocates a new domain
 
-Sure, but that is an ideal we are far from obtaining, and nobody wants
-to work on it prefering to do hacky hacky like this.
+...so we always have a "struct device" when a domain is allocated if
+that domain is going to be associated with a device.
 
-If you believe in this then remove the scatter list from dmabuf, add a
-new set of dma_map* APIs to work on physical addresses and all the
-other stuff needed.
+I will agree that iommu_probe_device() is called before the driver
+probe, but unless I missed something it's after the device driver is
+loaded.  ...and assuming something like patch #1 in this series looks
+OK then iommu_probe_device() will be called after "pre_probe".
 
-Otherwise, we have what we have and drivers don't get to opt out. This
-is why the stuff in AMDGPU was NAK'd.
+So assuming I'm not missing something, I'm not actually relying the
+IOMMU getting init off the back of driver probe.
 
-Jason
+
+> FWIW we already have a go-faster knob for people who want to tweak the
+> security/performance compromise for specific devices, namely the sysfs
+> interface for changing a group's domain type before binding the relevant
+> driver(s). Is that something you could use in your application, say from
+> an initramfs script?
+
+We've never had an initramfs script in Chrome OS. I don't know all the
+history of why (I'm trying to check), but I'm nearly certain it was a
+conscious decision. Probably it has to do with the fact that we're not
+trying to build a generic distribution where a single boot source can
+boot a huge variety of hardware. We generally have one kernel for a
+class of devices. I believe avoiding the initramfs just keeps things
+simpler.
+
+I think trying to revamp Chrome OS to switch to an initramfs type
+system would be a pretty big undertaking since (as I understand it)
+you can't just run a little command and then return to the normal boot
+flow. Once you switch to initramfs you're committing to finding /
+setting up the rootfs yourself and on Chrome OS I believe that means a
+whole bunch of dm-verity work.
+
+
+...so probably the initramfs is a no-go for me, but I'm still crossing
+my fingers that the pre_probe() might be legit if you take a second
+look at it?
+
+-Doug
