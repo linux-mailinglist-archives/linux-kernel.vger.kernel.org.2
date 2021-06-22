@@ -2,86 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEFB3B0914
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A8D3B0912
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbhFVPcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:32:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232392AbhFVPbg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:31:36 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0421C061787
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:29:19 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id n12so8628607pgs.13
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:29:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4ZLZP6SLEvIJeycmW3JhlHuN2dQQJzCXGQZn2s6TLB4=;
-        b=RYJB9JUXHW7xXPq+dMRozgFH87tS0IUdoLh7RH0SUo9y89FI3Ue27pcpi15xDHpBvo
-         eU3Tu+La9+6r889uvnKAWHTj60zBSjds5/ujKo2C4afCa82aIIeDt6vBZSX4GxMh6SFR
-         vNsR18Kz8MOyQwDmsNwE0pG8K/i0zcZ9q7Lr9OThw6MTzKTjo81Gp5HG4QVPZ6nTl3Mo
-         vO2rUncIkXKcJWGYB2Uf4Xt566ySCBAx/8SNec7PMwJMyKo5FnfkWMlUeM1Fy//5pneO
-         2eMwmTuO6DFKQ/4K0uARRv99oafBtkTRiCZKwTG+CeMfxV2vP1+pKez84O1uox5tN4Q5
-         UIYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4ZLZP6SLEvIJeycmW3JhlHuN2dQQJzCXGQZn2s6TLB4=;
-        b=rw2+3ap+qmiHNcNzwYFcUYMkzROgg/pc/XfBLLjeZw9eY3eFtUytDoNnv+MatYBobj
-         ldGnLYxlt0cPUnuk/acAHxJN88L2Ct7JtmxNs6SUCbAsLaEzNCtb31E3iqoS5ukQiMUB
-         Z2T5jHuAl2Yzq33dOlQvYhGvQ6pyEKJq0AW2A4AKU0DlfXEqNxY3gq1Djqtw9wcQrz6O
-         BH663KYP2SWqL37RGfFuN5NcekujbUeWq0Deefz3P+GmbQw0d5AjU2wd5oAKJtldjy8p
-         JqbA/asVR1m4mxUMEHiRt651PyKcFugtLx9fvuWQd68rAUsDnofhjxKRvduaqRWOUWxL
-         ogaQ==
-X-Gm-Message-State: AOAM532CRkviUkwVoWkvgsyN4X58et1FEpRNM9hBSZt9E1Z1DPQfdn61
-        UUqfYWLCrdme3oGWQ5xRgh2UR4fhryYLnMxGAyQ=
-X-Google-Smtp-Source: ABdhPJwkPGv9EyB/moqSzq2pvKN77usgX4g31HeXSLU9Agxr77HbcxJOZz3aHbN5CleB2+3KAt2q03VPO/8N1+6NxTE=
-X-Received: by 2002:a63:b00d:: with SMTP id h13mr4312110pgf.74.1624375759398;
- Tue, 22 Jun 2021 08:29:19 -0700 (PDT)
+        id S232374AbhFVPbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:31:33 -0400
+Received: from mail-dm6nam11on2064.outbound.protection.outlook.com ([40.107.223.64]:57057
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232179AbhFVPbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 11:31:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ElPPwxi0R5Q+6c2XAjso2Y1dllFwiTXaRqcVr8zwJ+0OxDVtuHnRKJDkVdO3SDdf31RyUvwM7xOlfTbbXlMdR1AzuzWdBEDlQ2NR3OyxQ7fDqA1AEqBS19JV6Dgb+6KUmz5XvBDJ4zeRtDoZL6ShCnQX56LO6niGg2JAD4dx8NXGrQbkewd8qGkUOZy/Tb6OIXiF9vt/Ii8glsT1iv3C+1r8mOpbei5mBVnyWM8n1XXVaQNHdx4TTQnuJfOCrDvXpPMO6CO5Ja82rSLQdooRNz0Cs/unwCC9SXyREQB0ZLbToFoJOJBWu9drrEhqGZhDciVb4WDUdrGy4ZMfBQoS6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=knjqMiy9X5NYSpNKZ3d+soIwHzNGU/oF0zuTMPQMTmo=;
+ b=gpZUHURkkbvvWKihwxt0To61Fl21FMSHR6MOZgI/0BD9EcIE+lXP9bxq39HGr3H27xZNY+8FVkX9l5CAOGlb3fHZUWZAU24c6tjt1uqJWmmBAUqhdqxy2xvQgTiOCyMf9yzCV1/p9/pWReGTZex6l2OwX7Jro3cHKdxPlipekpEPH2xx1LF01ATAmz2/rY57+xfd30c+5WElOPXa4wznoe4+OKJTFIQxHjfuXPt2Y9U8iIvxWifEkDfGsQSenkn6RgD4JY67cTu5Lm7Y9iG2t8EYBQEM3Zr2WY3SuUuDUVtvU74wpHSEThYp5flgj1LLzuRGZL5BUEc6CjIgkwXczQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=knjqMiy9X5NYSpNKZ3d+soIwHzNGU/oF0zuTMPQMTmo=;
+ b=Jc+TOv0C5BjyJ+7tvwLSrFy0rn3sjqtZBIV0UT+fVJC7o68XEr2J7z3pHor0pk1aD7nsFZ2ItD0Z1KTjhlrQpNiuHQSqt3E5UANiFebPdv9mSDcUW1YbJ7WNBKEK+Kj04mwXuGbIcgAPPc8qODAYMB3H13BZrBIHvuer3j6mGF4=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4237.namprd12.prod.outlook.com (2603:10b6:208:1d6::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Tue, 22 Jun
+ 2021 15:29:07 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::6c9e:1e08:7617:f756]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::6c9e:1e08:7617:f756%5]) with mapi id 15.20.4242.024; Tue, 22 Jun 2021
+ 15:29:07 +0000
+Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
+ FD for DMA-BUF
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Tomer Tayar <ttayar@habana.ai>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+References: <20210621141217.GE1096940@ziepe.ca>
+ <CAFCwf10KvCh0zfHEHqYR-Na6KJh4j+9i-6+==QaMdHHpLH1yEA@mail.gmail.com>
+ <20210621175511.GI1096940@ziepe.ca>
+ <CAKMK7uEO1_B59DtM7N2g7kkH7pYtLM_WAkn+0f3FU3ps=XEjZQ@mail.gmail.com>
+ <CAFCwf11jOnewkbLuxUESswCJpyo7C0ovZj80UrnwUOZkPv2JYQ@mail.gmail.com>
+ <20210621232912.GK1096940@ziepe.ca>
+ <d358c740-fd3a-9ecd-7001-676e2cb44ec9@gmail.com>
+ <CAFCwf11h_Nj_GEdCdeTzO5jgr-Y9em+W-v_pYUfz64i5Ac25yg@mail.gmail.com>
+ <20210622120142.GL1096940@ziepe.ca>
+ <d497b0a2-897e-adff-295c-cf0f4ff93cb4@amd.com>
+ <20210622152343.GO1096940@ziepe.ca>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <3fabe8b7-7174-bf49-5ffe-26db30968a27@amd.com>
+Date:   Tue, 22 Jun 2021 17:29:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210622152343.GO1096940@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:9dfd:8ca7:7f8d:67e4]
+X-ClientProxiedBy: AM0PR06CA0104.eurprd06.prod.outlook.com
+ (2603:10a6:208:fa::45) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-References: <CAHp75VfP2h_aLVR9cgfXWHmqNbUZg-KZj2UwMs6dAkbS5eSghg@mail.gmail.com>
- <YM8rY5hi+zuAekg+@owl.dominikbrodowski.net> <CAHp75VdSyM7JdGDhdo5t+FbmouEA7ZSOwGAtSwSRD8vTwTc+LA@mail.gmail.com>
- <CAHp75Ve=j+u-9TF0az3o82wOyzixCezkgOm=yUHh37JS_Awiig@mail.gmail.com>
- <YNBU3Jjme1lQ3MdV@owl.dominikbrodowski.net> <YNBjJnxrXaWmfUqo@smile.fi.intel.com>
- <YNBsB6zIo4A4vD4w@kuha.fi.intel.com> <YNCw5k9vwdQiS0u4@owl.dominikbrodowski.net>
- <YNGa021IIj+C8H7h@kuha.fi.intel.com> <YNHvZGLE9lgS/FRe@kuha.fi.intel.com> <YNH1bo6BesNGY3gu@owl.dominikbrodowski.net>
-In-Reply-To: <YNH1bo6BesNGY3gu@owl.dominikbrodowski.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 22 Jun 2021 18:28:41 +0300
-Message-ID: <CAHp75VffvF0R4qmunbDKpaQpTj900Pv6KK31KNkEfuDuvUSN-A@mail.gmail.com>
-Subject: Re: v5.13-rcX regression - NULL pointer dereference - MFD and
- software node API
-To:     Dominik Brodowski <linux@dominikbrodowski.net>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:9dfd:8ca7:7f8d:67e4] (2a02:908:1252:fb60:9dfd:8ca7:7f8d:67e4) by AM0PR06CA0104.eurprd06.prod.outlook.com (2603:10a6:208:fa::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Tue, 22 Jun 2021 15:29:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 457a4ebd-ca5a-46e4-6e2e-08d93592797e
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4237:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4237B65BACC81CA72B04FAA683099@MN2PR12MB4237.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9hxBR8zSqFRP15CeAapWHmg4ugt3PSfU1WBl5rClu1bgoUtndC/9QNMJ5X+HwSw234Ubw8nnUr59u8aHcFC9VK7wVBvdqH7CNM8gPHDgvHckDOCtpLaJ8o7M6vUvctaYbAqLuo52GlDayPrBYW3M5Hhhd4YTFMvo8W1RnH9UN9w7PcAtJJ6JvQ7JyJSQcr51+ElSJYHhnNJNdITnl7ChtA0fy4flm1IXV7SZsW4X//JJCyPJPenVtssAxhnm1shHp9amVv43F6bTNtUfhGCOai1f8/6OXFe5W6FFZ9TD4uxqzsAlhxNfHHzOkO8DJPcwMerqb70fYAIDa1xQ3DjRmtwAhy04A1hWYdG3IpEyeOMSVnnFhfkOQ9b8NWMmEHUNIPJ3lxiDFVgy/i1VJvR/6gT0uMoC1CxoXxp5kJBryFNNzeLQr/5HVJn8wQIbNuaI4kRv5A2t2+dqxjV08B+y1Prm+n8/qxK6yeJH5UEVKO35KHJRnKUv1PkDJe5pYVSfOsfUISFAuynC/BqBoj/gGnggBfW3WRBVO9luAgiNIszav/pHhFpt2KT9rKd2pzVbkPqTMrhZIXJR/Sild2J/vcbuvha4Wmz4JQ7rDeY7/R4pEDbwqh//qycHcsWrM/+UP6D209Hbqwso8YKnjRh/7sGotLpTRaj09dc6BTQvsZv0BpT0ipkWvqMNT9vJSXqd
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(366004)(346002)(39860400002)(376002)(66946007)(53546011)(16526019)(7416002)(66476007)(66556008)(186003)(83380400001)(8676002)(31686004)(86362001)(316002)(54906003)(6666004)(8936002)(478600001)(36756003)(6486002)(6916009)(2616005)(2906002)(31696002)(66574015)(38100700002)(5660300002)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bUxMbFhYMUNaRE1CTllXdG9WdVhBdnVLNXVkRWR4dUNGWHI5aUY1bE1taUV0?=
+ =?utf-8?B?eWJHZUtkYXJGMGd0ejB0NCtiL0NCT1NoZnpZeHdaWER4TUl1SjZSZlpWMUV2?=
+ =?utf-8?B?QkhYRk9VU0N2NzJGQ3c4WUJOV2ljMXlJMm1JejR6TXl6bThYT2tORFdpYWZW?=
+ =?utf-8?B?RlBoa3lwbStvK3dGMGRaaW5uM2pYTUhHVHVnaWdheUlxbzV5Q2lxRW5rZUF3?=
+ =?utf-8?B?ODlLeUNaeldxdlpjU3UvamRTblZtK1ZHU0tWTTJlRWlOQm9mWm5vN1ZyTkY4?=
+ =?utf-8?B?OXRkTTZzLzJ3OURpNnZGUUpVdTJNeFJtOGhGOGVLZW9LNEJNNGlKMWcxN3pn?=
+ =?utf-8?B?V2xGWGVkNEVSYzZTY0o0REpjUUN5ZlAyTUQrdWJ5V2xaUGcvK0tiV0U2UjQz?=
+ =?utf-8?B?K3Y2blVyN0trY0NURTdFMGw1Z2RXV0N3NTNEdEYwdTBrMXB2SHpRT2k0VGFU?=
+ =?utf-8?B?Umc5eFBNWlFTZW1ST1V2L2k1RnRvMnlzeGdkUTRvc0xaZXgrQUZOSkt1OTFs?=
+ =?utf-8?B?UGZpdS9wM01lTVgvcGlqNUJZL2RPbkFDYzlQWENNZVZmOGVGOENlQ2RKLzk4?=
+ =?utf-8?B?UXFwbjBIQVBvUlJJNjkvZXNEZHlTNldVeU9VS0JGMnhoeGZ0QWhFWng1NElu?=
+ =?utf-8?B?VkRDUGsvd1pUblMrRnhFUVR2MDY1SEFacjFILzZFVnV0eE01OGNzSFBka096?=
+ =?utf-8?B?ZjI0bWdnSWRUVzBnUWZCMDNsa2tzMnRScXFWLzZVYWs2eTdwVldjOEFkakVZ?=
+ =?utf-8?B?RXNkUkZydVh3QmZxcjUzaEQ2UlpTVm1GQWhWVkIyTUcxY3VzQWp0RG0xcEpW?=
+ =?utf-8?B?MUl5aHNLSWlrano3UjBLaHlTYUdnYVNmSVd5djgvMHJlYWd5Zm56VDY3NkMz?=
+ =?utf-8?B?Nkg0WDByR25pS1NnMlpmcmFMYllFcnNNZFVtRVZwSjBwWmY5d0VWL3BxR3hi?=
+ =?utf-8?B?QzNBN3pUNDJxZFBPQWFSbWE1N1JwUHNzaVRPTGovY2gzSG5KU3BIbVp6cXQv?=
+ =?utf-8?B?RHloUmlnS2pRSFk2NUdrcjBoKzM1NnFyZm8vZkhOMmp0SkFqQ0tKakRLRUhp?=
+ =?utf-8?B?c1JrV3o1bEszZmFLdk5pTmxtL2lHYWFqWXZ6ODBvUXdnS3F4bmZIbjJESThS?=
+ =?utf-8?B?dXl2VzJDRjBaTTEzVHd1R2NjMmxtMlIrdGQ1S1pTckYybjhYdmdmNGNCbUhk?=
+ =?utf-8?B?RSsraWkvejl0d09lTWU0eGNhS1Fud0pGREtHeUZKQkVVeTErTTcxTkhCV0Fo?=
+ =?utf-8?B?anJMbzNUTnhrNWtuVjkxbFUrOVpSejFhZ0FKaHNOb2t5WnQvTnc4dzFUdGdB?=
+ =?utf-8?B?Lzd1bDVxVFE3YVMzWWFjN3JUcXJtdk1lWDRPc0hjUGNnZytmVVI5UnVNWnpn?=
+ =?utf-8?B?Ukt6UGFRWjJ0UnFjak01bHhFQ3FyYWdKckx6SzFxaHpXRmQzbjV4NjZmdVYz?=
+ =?utf-8?B?K3N0UjRwcUt0Ym55YzRaVkVSY3E0amYrOVFGV1Uydy9zZGl5cUk4MU10Ukx6?=
+ =?utf-8?B?cVRSU0hodnFDNVFKM3Q3eXZGdmVscE1ITDFWOWdObnZZZnlGUHB1QW9RK3pY?=
+ =?utf-8?B?eTNSMzRiU2U4aXQ3dVFkbU5vdHVYU3NnVmtOZ205MnIxcnc5enJOaWVrdGdH?=
+ =?utf-8?B?N2xWdjZwWmFiLy9JUkd5eGU0NXpBeTdBUXVhTGI3K1BBdE94MThyT1c3cEdt?=
+ =?utf-8?B?NkxJOWhNN2VTWUoxcFQwd2dVZVBlc1JrNGVMT1MxZml6SVZUN3MxUGFPNzg4?=
+ =?utf-8?B?VmR5TDhQVzVTOU1yUUw1amlJSFR1b0lCbTNlRzU3bWdrZXJ3NzVBbC85cDVD?=
+ =?utf-8?B?Y0RQdlMzMk5ObWQrK0NKalNWWlFjZ3JqM1hvZ2cybjdTcEo2Y2hwaWJMOWFY?=
+ =?utf-8?Q?/9QjJDBsCmygP?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 457a4ebd-ca5a-46e4-6e2e-08d93592797e
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 15:29:07.1370
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gydCSsQr8MUAcX4Y9s8pY9s3oZXDEl5phA3m7Cpx3mLZKPUe4oLpICM3QR0zDd5J
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4237
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 5:37 PM Dominik Brodowski
-<linux@dominikbrodowski.net> wrote:
-> Am Tue, Jun 22, 2021 at 05:10:44PM +0300 schrieb Heikki Krogerus:
-> > On Tue, Jun 22, 2021 at 11:09:58AM +0300, Heikki Krogerus wrote:
+Am 22.06.21 um 17:23 schrieb Jason Gunthorpe:
+> On Tue, Jun 22, 2021 at 02:23:03PM +0200, Christian König wrote:
+>> Am 22.06.21 um 14:01 schrieb Jason Gunthorpe:
+>>> On Tue, Jun 22, 2021 at 11:42:27AM +0300, Oded Gabbay wrote:
+>>>> On Tue, Jun 22, 2021 at 9:37 AM Christian König
+>>>> <ckoenig.leichtzumerken@gmail.com> wrote:
+>>>>> Am 22.06.21 um 01:29 schrieb Jason Gunthorpe:
+>>>>>> On Mon, Jun 21, 2021 at 10:24:16PM +0300, Oded Gabbay wrote:
+>>>>>>
+>>>>>>> Another thing I want to emphasize is that we are doing p2p only
+>>>>>>> through the export/import of the FD. We do *not* allow the user to
+>>>>>>> mmap the dma-buf as we do not support direct IO. So there is no access
+>>>>>>> to these pages through the userspace.
+>>>>>> Arguably mmaping the memory is a better choice, and is the direction
+>>>>>> that Logan's series goes in. Here the use of DMABUF was specifically
+>>>>>> designed to allow hitless revokation of the memory, which this isn't
+>>>>>> even using.
+>>>>> The major problem with this approach is that DMA-buf is also used for
+>>>>> memory which isn't CPU accessible.
+>>> That isn't an issue here because the memory is only intended to be
+>>> used with P2P transfers so it must be CPU accessible.
+>> No, especially P2P is often done on memory resources which are not even
+>> remotely CPU accessible.
+> That is a special AMD thing, P2P here is PCI P2P and all PCI memory is
+> CPU accessible.
 
-...
+No absolutely not. NVidia GPUs work exactly the same way.
 
-> > Before I send the patch to Rafael and Greg, can you confirm that the
-> > appropriate API (device_is_registered()) also works? I'm attaching
-> > patch that should be the final version (if it works).
+And you have tons of similar cases in embedded and SoC systems where 
+intermediate memory between devices isn't directly addressable with the CPU.
+
+>>>>>> So you are taking the hit of very limited hardware support and reduced
+>>>>>> performance just to squeeze into DMABUF..
+>>> You still have the issue that this patch is doing all of this P2P
+>>> stuff wrong - following the already NAK'd AMD approach.
+>> Well that stuff was NAKed because we still use sg_tables, not because we
+>> don't want to allocate struct pages.
+> sg lists in general.
+>   
+>> The plan is to push this forward since DEVICE_PRIVATE clearly can't handle
+>> all of our use cases and is not really a good fit to be honest.
+>>
+>> IOMMU is now working as well, so as far as I can see we are all good here.
+> How? Is that more AMD special stuff?
+
+No, just using the dma_map_resource() interface.
+
+We have that working on tons of IOMMU enabled systems.
+
+> This patch series never calls to the iommu driver, AFAICT.
 >
-> Heikki, that works perfectly. Many thanks, especially for the speedy
-> development of the bugfix!
+>>>> I'll go and read Logan's patch-set to see if that will work for us in
+>>>> the future. Please remember, as Daniel said, we don't have struct page
+>>>> backing our device memory, so if that is a requirement to connect to
+>>>> Logan's work, then I don't think we will want to do it at this point.
+>>> It is trivial to get the struct page for a PCI BAR.
+>> Yeah, but it doesn't make much sense. Why should we create a struct page for
+>> something that isn't even memory in a lot of cases?
+> Because the iommu and other places need this handle to setup their
+> stuff. Nobody has yet been brave enough to try to change those flows
+> to be able to use a physical CPU address.
 
-May we transform this to the Tested-by tag?
+Well that is certainly not true. I'm just not sure if that works with 
+all IOMMU drivers thought.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Would need to ping Felix when the support for this was merged.
+
+Regards,
+Christian.
+
+>
+> This is why we have a special struct page type just for PCI BAR
+> memory.
+>
+> Jason
+
