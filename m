@@ -2,1201 +2,478 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40353AFDC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2920A3AFDC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhFVHYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhFVHYg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:24:36 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD83C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:22:19 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id nd37so32950455ejc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:22:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gLom4lP2hibA/zirOs75HpOQiLkyphvf9WwSZgUj8y4=;
-        b=rZBYgIQ6eaQoJrR7/aULlx9tHfvP2U7yxchPCrKLCrDU8W2OjwYDQc4dlaDK7rwmEh
-         t/MSfYdryYIRV6GqOkE5Pl+AlwNSIbD534x8uD5inNtL3X0rcDaJskmnwtJ0NM4rfQ/g
-         kEeKUtbSW8CPlC37Wuu1JSc4VcQH3EUhO85OSN7cUEv8GpGpxC82WDFPRp01f9B0DgIJ
-         m3Q621+iidL8cgVBnEkFMWzlSgoT36riwgEyhGZiuyTs+T9rJC3En+Pd1Y8P0IjeObhd
-         M5AeHhKOnPBvgRKWfVMQuiY+90lsjrjyE0fRsZQNapLK/40+W8G/hsPzLaiP42OM41m3
-         D2aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gLom4lP2hibA/zirOs75HpOQiLkyphvf9WwSZgUj8y4=;
-        b=So55OQPKC77yAaOXRlMXBG3x5BQkt6oc2JmAq2CGxhCwcumEtUgOPelm6Ks1yZSF0q
-         kMlytIWawp28IK97YbzitCaHyqEe3dGQO9mTtl2aq+xj3uS7DHNeMj5hzF3ExCNjIHAk
-         ud287crHZe0NoQFWSs5n5tWKFNCaT8+1pxLbm4HbWRFv1t/8fFyfzUnmsy6OI5sbYqPr
-         Fa48c0cFP//CmED3ZxbNr+qMG3AFD3bw2i9aaVGhDB0uEapr1wIyUSUoEsriYbl4ddJC
-         6e6xObOcTYQLG5j9LxNZXZ1WbWru32QIxy8YL+hD+uGMJB95Pv1sMgPBnq795EGyghMk
-         K8CQ==
-X-Gm-Message-State: AOAM530XMmUI6zdEkFeiMDrLBkwb9GPnL1csN/6hJSIm1VaeH/lsYwF1
-        5nhJbiBWLGOMQcdj4uwD9NtoLzG6GeTNZbgRP8N3
-X-Google-Smtp-Source: ABdhPJxChMepMHmwcjDcpaa0xcreEesoNRhNDDJguXaRU2cc/7WY7PBM6Sc1eEidlncBPzdp7VKgwyXRxV1Wwk4Tym4=
-X-Received: by 2002:a17:906:3c4a:: with SMTP id i10mr2432624ejg.372.1624346537905;
- Tue, 22 Jun 2021 00:22:17 -0700 (PDT)
+        id S230092AbhFVH0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:26:25 -0400
+Received: from mga18.intel.com ([134.134.136.126]:9089 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229844AbhFVH0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 03:26:24 -0400
+IronPort-SDR: X0NeYOT+lGvXh6XI2XX74t0DpWhXiAerdp/oOpbYyt1JrXzEXCGF0Zjdpg+wQnlm/YduVB/Ryx
+ CHDWKqH5E5CA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="194311494"
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="gz'50?scan'50,208,50";a="194311494"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 00:24:08 -0700
+IronPort-SDR: 8Cdb3ryDefWHZQNToPdA/amwuJG6dOWR/G3uKHxdTNdANT7m+A0XxN/wUprooPQpR13qPHGzKl
+ N2TJLRSbq1dw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="gz'50?scan'50,208,50";a="486805196"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 22 Jun 2021 00:24:03 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lvalN-00051w-TN; Tue, 22 Jun 2021 07:24:01 +0000
+Date:   Tue, 22 Jun 2021 15:23:02 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: {standard input}:4140: Error: operands mismatch -- statement `eorl
+ 44(%sp),%d7' ignored
+Message-ID: <202106221555.GFcUqBqk-lkp@intel.com>
 MIME-Version: 1.0
-References: <20210615141331.407-1-xieyongji@bytedance.com> <20210615141331.407-10-xieyongji@bytedance.com>
- <adfb2be9-9ed9-ca37-ac37-4cd00bdff349@redhat.com> <CACycT3tAON+-qZev+9EqyL2XbgH5HDspOqNt3ohQLQ8GqVK=EA@mail.gmail.com>
- <1bba439f-ffc8-c20e-e8a4-ac73e890c592@redhat.com>
-In-Reply-To: <1bba439f-ffc8-c20e-e8a4-ac73e890c592@redhat.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Tue, 22 Jun 2021 15:22:06 +0800
-Message-ID: <CACycT3uzMJS7vw6MVMOgY4rb=SPfT2srV+8DPdwUVeELEiJgbA@mail.gmail.com>
-Subject: Re: Re: [PATCH v8 09/10] vduse: Introduce VDUSE - vDPA Device in Userspace
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="9jxsPFA5p3P2qPhR"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-.On Tue, Jun 22, 2021 at 1:07 PM Jason Wang <jasowang@redhat.com> wrote:
->
->
-> =E5=9C=A8 2021/6/21 =E4=B8=8B=E5=8D=886:41, Yongji Xie =E5=86=99=E9=81=93=
-:
-> > On Mon, Jun 21, 2021 at 5:14 PM Jason Wang <jasowang@redhat.com> wrote:
-> >>
-> >> =E5=9C=A8 2021/6/15 =E4=B8=8B=E5=8D=8810:13, Xie Yongji =E5=86=99=E9=
-=81=93:
-> >>> This VDUSE driver enables implementing vDPA devices in userspace.
-> >>> The vDPA device's control path is handled in kernel and the data
-> >>> path is handled in userspace.
-> >>>
-> >>> A message mechnism is used by VDUSE driver to forward some control
-> >>> messages such as starting/stopping datapath to userspace. Userspace
-> >>> can use read()/write() to receive/reply those control messages.
-> >>>
-> >>> And some ioctls are introduced to help userspace to implement the
-> >>> data path. VDUSE_IOTLB_GET_FD ioctl can be used to get the file
-> >>> descriptors referring to vDPA device's iova regions. Then userspace
-> >>> can use mmap() to access those iova regions. VDUSE_DEV_GET_FEATURES
-> >>> and VDUSE_VQ_GET_INFO ioctls are used to get the negotiated features
-> >>> and metadata of virtqueues. VDUSE_INJECT_VQ_IRQ and VDUSE_VQ_SETUP_KI=
-CKFD
-> >>> ioctls can be used to inject interrupt and setup the kickfd for
-> >>> virtqueues. VDUSE_DEV_UPDATE_CONFIG ioctl is used to update the
-> >>> configuration space and inject a config interrupt.
-> >>>
-> >>> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> >>> ---
-> >>>    Documentation/userspace-api/ioctl/ioctl-number.rst |    1 +
-> >>>    drivers/vdpa/Kconfig                               |   10 +
-> >>>    drivers/vdpa/Makefile                              |    1 +
-> >>>    drivers/vdpa/vdpa_user/Makefile                    |    5 +
-> >>>    drivers/vdpa/vdpa_user/vduse_dev.c                 | 1453 ++++++++=
-++++++++++++
-> >>>    include/uapi/linux/vduse.h                         |  143 ++
-> >>>    6 files changed, 1613 insertions(+)
-> >>>    create mode 100644 drivers/vdpa/vdpa_user/Makefile
-> >>>    create mode 100644 drivers/vdpa/vdpa_user/vduse_dev.c
-> >>>    create mode 100644 include/uapi/linux/vduse.h
-> >>>
-> >>> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Doc=
-umentation/userspace-api/ioctl/ioctl-number.rst
-> >>> index 9bfc2b510c64..acd95e9dcfe7 100644
-> >>> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-> >>> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> >>> @@ -300,6 +300,7 @@ Code  Seq#    Include File                       =
-                    Comments
-> >>>    'z'   10-4F  drivers/s390/crypto/zcrypt_api.h                     =
-   conflict!
-> >>>    '|'   00-7F  linux/media.h
-> >>>    0x80  00-1F  linux/fb.h
-> >>> +0x81  00-1F  linux/vduse.h
-> >>>    0x89  00-06  arch/x86/include/asm/sockios.h
-> >>>    0x89  0B-DF  linux/sockios.h
-> >>>    0x89  E0-EF  linux/sockios.h                                      =
-   SIOCPROTOPRIVATE range
-> >>> diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
-> >>> index a503c1b2bfd9..6e23bce6433a 100644
-> >>> --- a/drivers/vdpa/Kconfig
-> >>> +++ b/drivers/vdpa/Kconfig
-> >>> @@ -33,6 +33,16 @@ config VDPA_SIM_BLOCK
-> >>>          vDPA block device simulator which terminates IO request in a
-> >>>          memory buffer.
-> >>>
-> >>> +config VDPA_USER
-> >>> +     tristate "VDUSE (vDPA Device in Userspace) support"
-> >>> +     depends on EVENTFD && MMU && HAS_DMA
-> >>> +     select DMA_OPS
-> >>> +     select VHOST_IOTLB
-> >>> +     select IOMMU_IOVA
-> >>> +     help
-> >>> +       With VDUSE it is possible to emulate a vDPA Device
-> >>> +       in a userspace program.
-> >>> +
-> >>>    config IFCVF
-> >>>        tristate "Intel IFC VF vDPA driver"
-> >>>        depends on PCI_MSI
-> >>> diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
-> >>> index 67fe7f3d6943..f02ebed33f19 100644
-> >>> --- a/drivers/vdpa/Makefile
-> >>> +++ b/drivers/vdpa/Makefile
-> >>> @@ -1,6 +1,7 @@
-> >>>    # SPDX-License-Identifier: GPL-2.0
-> >>>    obj-$(CONFIG_VDPA) +=3D vdpa.o
-> >>>    obj-$(CONFIG_VDPA_SIM) +=3D vdpa_sim/
-> >>> +obj-$(CONFIG_VDPA_USER) +=3D vdpa_user/
-> >>>    obj-$(CONFIG_IFCVF)    +=3D ifcvf/
-> >>>    obj-$(CONFIG_MLX5_VDPA) +=3D mlx5/
-> >>>    obj-$(CONFIG_VP_VDPA)    +=3D virtio_pci/
-> >>> diff --git a/drivers/vdpa/vdpa_user/Makefile b/drivers/vdpa/vdpa_user=
-/Makefile
-> >>> new file mode 100644
-> >>> index 000000000000..260e0b26af99
-> >>> --- /dev/null
-> >>> +++ b/drivers/vdpa/vdpa_user/Makefile
-> >>> @@ -0,0 +1,5 @@
-> >>> +# SPDX-License-Identifier: GPL-2.0
-> >>> +
-> >>> +vduse-y :=3D vduse_dev.o iova_domain.o
-> >>> +
-> >>> +obj-$(CONFIG_VDPA_USER) +=3D vduse.o
-> >>> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_u=
-ser/vduse_dev.c
-> >>> new file mode 100644
-> >>> index 000000000000..5271cbd15e28
-> >>> --- /dev/null
-> >>> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> >>> @@ -0,0 +1,1453 @@
-> >>> +// SPDX-License-Identifier: GPL-2.0-only
-> >>> +/*
-> >>> + * VDUSE: vDPA Device in Userspace
-> >>> + *
-> >>> + * Copyright (C) 2020-2021 Bytedance Inc. and/or its affiliates. All=
- rights reserved.
-> >>> + *
-> >>> + * Author: Xie Yongji <xieyongji@bytedance.com>
-> >>> + *
-> >>> + */
-> >>> +
-> >>> +#include <linux/init.h>
-> >>> +#include <linux/module.h>
-> >>> +#include <linux/cdev.h>
-> >>> +#include <linux/device.h>
-> >>> +#include <linux/eventfd.h>
-> >>> +#include <linux/slab.h>
-> >>> +#include <linux/wait.h>
-> >>> +#include <linux/dma-map-ops.h>
-> >>> +#include <linux/poll.h>
-> >>> +#include <linux/file.h>
-> >>> +#include <linux/uio.h>
-> >>> +#include <linux/vdpa.h>
-> >>> +#include <linux/nospec.h>
-> >>> +#include <uapi/linux/vduse.h>
-> >>> +#include <uapi/linux/vdpa.h>
-> >>> +#include <uapi/linux/virtio_config.h>
-> >>> +#include <uapi/linux/virtio_ids.h>
-> >>> +#include <uapi/linux/virtio_blk.h>
-> >>> +#include <linux/mod_devicetable.h>
-> >>> +
-> >>> +#include "iova_domain.h"
-> >>> +
-> >>> +#define DRV_AUTHOR   "Yongji Xie <xieyongji@bytedance.com>"
-> >>> +#define DRV_DESC     "vDPA Device in Userspace"
-> >>> +#define DRV_LICENSE  "GPL v2"
-> >>> +
-> >>> +#define VDUSE_DEV_MAX (1U << MINORBITS)
-> >>> +#define VDUSE_MAX_BOUNCE_SIZE (64 * 1024 * 1024)
-> >>> +#define VDUSE_IOVA_SIZE (128 * 1024 * 1024)
-> >>> +#define VDUSE_REQUEST_TIMEOUT 30
-> >>> +
-> >>> +struct vduse_virtqueue {
-> >>> +     u16 index;
-> >>> +     u32 num;
-> >>> +     u32 avail_idx;
-> >>> +     u64 desc_addr;
-> >>> +     u64 driver_addr;
-> >>> +     u64 device_addr;
-> >>> +     bool ready;
-> >>> +     bool kicked;
-> >>> +     spinlock_t kick_lock;
-> >>> +     spinlock_t irq_lock;
-> >>> +     struct eventfd_ctx *kickfd;
-> >>> +     struct vdpa_callback cb;
-> >>> +     struct work_struct inject;
-> >>> +};
-> >>> +
-> >>> +struct vduse_dev;
-> >>> +
-> >>> +struct vduse_vdpa {
-> >>> +     struct vdpa_device vdpa;
-> >>> +     struct vduse_dev *dev;
-> >>> +};
-> >>> +
-> >>> +struct vduse_dev {
-> >>> +     struct vduse_vdpa *vdev;
-> >>> +     struct device *dev;
-> >>> +     struct vduse_virtqueue *vqs;
-> >>> +     struct vduse_iova_domain *domain;
-> >>> +     char *name;
-> >>> +     struct mutex lock;
-> >>> +     spinlock_t msg_lock;
-> >>> +     u64 msg_unique;
-> >>> +     wait_queue_head_t waitq;
-> >>> +     struct list_head send_list;
-> >>> +     struct list_head recv_list;
-> >>> +     struct vdpa_callback config_cb;
-> >>> +     struct work_struct inject;
-> >>> +     spinlock_t irq_lock;
-> >>> +     int minor;
-> >>> +     bool connected;
-> >>> +     bool started;
-> >>> +     u64 api_version;
-> >>> +     u64 user_features;
-> >>
-> >> Let's use device_features.
-> >>
-> > OK.
-> >
-> >>> +     u64 features;
-> >>
-> >> And driver features.
-> >>
-> > OK.
-> >
-> >>> +     u32 device_id;
-> >>> +     u32 vendor_id;
-> >>> +     u32 generation;
-> >>> +     u32 config_size;
-> >>> +     void *config;
-> >>> +     u8 status;
-> >>> +     u16 vq_size_max;
-> >>> +     u32 vq_num;
-> >>> +     u32 vq_align;
-> >>> +};
-> >>> +
-> >>> +struct vduse_dev_msg {
-> >>> +     struct vduse_dev_request req;
-> >>> +     struct vduse_dev_response resp;
-> >>> +     struct list_head list;
-> >>> +     wait_queue_head_t waitq;
-> >>> +     bool completed;
-> >>> +};
-> >>> +
-> >>> +struct vduse_control {
-> >>> +     u64 api_version;
-> >>> +};
-> >>> +
-> >>> +static DEFINE_MUTEX(vduse_lock);
-> >>> +static DEFINE_IDR(vduse_idr);
-> >>> +
-> >>> +static dev_t vduse_major;
-> >>> +static struct class *vduse_class;
-> >>> +static struct cdev vduse_ctrl_cdev;
-> >>> +static struct cdev vduse_cdev;
-> >>> +static struct workqueue_struct *vduse_irq_wq;
-> >>> +
-> >>> +static u32 allowed_device_id[] =3D {
-> >>> +     VIRTIO_ID_BLOCK,
-> >>> +};
-> >>> +
-> >>> +static inline struct vduse_dev *vdpa_to_vduse(struct vdpa_device *vd=
-pa)
-> >>> +{
-> >>> +     struct vduse_vdpa *vdev =3D container_of(vdpa, struct vduse_vdp=
-a, vdpa);
-> >>> +
-> >>> +     return vdev->dev;
-> >>> +}
-> >>> +
-> >>> +static inline struct vduse_dev *dev_to_vduse(struct device *dev)
-> >>> +{
-> >>> +     struct vdpa_device *vdpa =3D dev_to_vdpa(dev);
-> >>> +
-> >>> +     return vdpa_to_vduse(vdpa);
-> >>> +}
-> >>> +
-> >>> +static struct vduse_dev_msg *vduse_find_msg(struct list_head *head,
-> >>> +                                         uint32_t request_id)
-> >>> +{
-> >>> +     struct vduse_dev_msg *msg;
-> >>> +
-> >>> +     list_for_each_entry(msg, head, list) {
-> >>> +             if (msg->req.request_id =3D=3D request_id) {
-> >>> +                     list_del(&msg->list);
-> >>> +                     return msg;
-> >>> +             }
-> >>> +     }
-> >>> +
-> >>> +     return NULL;
-> >>> +}
-> >>> +
-> >>> +static struct vduse_dev_msg *vduse_dequeue_msg(struct list_head *hea=
-d)
-> >>> +{
-> >>> +     struct vduse_dev_msg *msg =3D NULL;
-> >>> +
-> >>> +     if (!list_empty(head)) {
-> >>> +             msg =3D list_first_entry(head, struct vduse_dev_msg, li=
-st);
-> >>> +             list_del(&msg->list);
-> >>> +     }
-> >>> +
-> >>> +     return msg;
-> >>> +}
-> >>> +
-> >>> +static void vduse_enqueue_msg(struct list_head *head,
-> >>> +                           struct vduse_dev_msg *msg)
-> >>> +{
-> >>> +     list_add_tail(&msg->list, head);
-> >>> +}
-> >>> +
-> >>> +static int vduse_dev_msg_send(struct vduse_dev *dev,
-> >>> +                           struct vduse_dev_msg *msg, bool no_reply)
-> >>> +{
-> >>
-> >> It looks to me the only user for no_reply=3Dtrue is the dataplane star=
-t. I
-> >> wonder no_reply is really needed consider we have switched to use
-> >> wait_event_killable_timeout().
-> >>
-> > Do we need to handle the error in this case if we remove the no_reply
-> > flag. Print a warning message?
->
->
-> See below.
->
->
-> >
-> >> In another way, no_reply is false for vq state synchronization and IOT=
-LB
-> >> updating. I wonder if we can simply use no_reply =3D true for them.
-> >>
-> > Looks like we can't, e.g. we need to get a reply from userspace for vq =
-state.
->
->
-> Right.
->
->
-> >
-> >>> +     init_waitqueue_head(&msg->waitq);
-> >>> +     spin_lock(&dev->msg_lock);
-> >>> +     msg->req.request_id =3D dev->msg_unique++;
-> >>> +     vduse_enqueue_msg(&dev->send_list, msg);
-> >>> +     wake_up(&dev->waitq);
-> >>> +     spin_unlock(&dev->msg_lock);
-> >>> +     if (no_reply)
-> >>> +             return 0;
-> >>> +
-> >>> +     wait_event_killable_timeout(msg->waitq, msg->completed,
-> >>> +                                 VDUSE_REQUEST_TIMEOUT * HZ);
-> >>> +     spin_lock(&dev->msg_lock);
-> >>> +     if (!msg->completed) {
-> >>> +             list_del(&msg->list);
-> >>> +             msg->resp.result =3D VDUSE_REQ_RESULT_FAILED;
-> >>> +     }
-> >>> +     spin_unlock(&dev->msg_lock);
-> >>> +
-> >>> +     return (msg->resp.result =3D=3D VDUSE_REQ_RESULT_OK) ? 0 : -EIO=
-;
-> >>
-> >> Do we need to serialize the check by protecting it with the spinlock a=
-bove?
-> >>
-> > Good point.
-> >
-> >>> +}
-> >>> +
-> >>> +static void vduse_dev_msg_cleanup(struct vduse_dev *dev)
-> >>> +{
-> >>> +     struct vduse_dev_msg *msg;
-> >>> +
-> >>> +     spin_lock(&dev->msg_lock);
-> >>> +     while ((msg =3D vduse_dequeue_msg(&dev->send_list))) {
-> >>> +             if (msg->req.flags & VDUSE_REQ_FLAGS_NO_REPLY)
-> >>> +                     kfree(msg);
-> >>> +             else
-> >>> +                     vduse_enqueue_msg(&dev->recv_list, msg);
-> >>> +     }
-> >>> +     while ((msg =3D vduse_dequeue_msg(&dev->recv_list))) {
-> >>> +             msg->resp.result =3D VDUSE_REQ_RESULT_FAILED;
-> >>> +             msg->completed =3D 1;
-> >>> +             wake_up(&msg->waitq);
-> >>> +     }
-> >>> +     spin_unlock(&dev->msg_lock);
-> >>> +}
-> >>> +
-> >>> +static void vduse_dev_start_dataplane(struct vduse_dev *dev)
-> >>> +{
-> >>> +     struct vduse_dev_msg *msg =3D kzalloc(sizeof(*msg),
-> >>> +                                         GFP_KERNEL | __GFP_NOFAIL);
-> >>> +
-> >>> +     msg->req.type =3D VDUSE_START_DATAPLANE;
-> >>> +     msg->req.flags |=3D VDUSE_REQ_FLAGS_NO_REPLY;
-> >>> +     vduse_dev_msg_send(dev, msg, true);
-> >>> +}
-> >>> +
-> >>> +static void vduse_dev_stop_dataplane(struct vduse_dev *dev)
-> >>> +{
-> >>> +     struct vduse_dev_msg *msg =3D kzalloc(sizeof(*msg),
-> >>> +                                         GFP_KERNEL | __GFP_NOFAIL);
-> >>> +
-> >>> +     msg->req.type =3D VDUSE_STOP_DATAPLANE;
-> >>> +     msg->req.flags |=3D VDUSE_REQ_FLAGS_NO_REPLY;
-> >>
-> >> Can we simply use this flag instead of introducing a new parameter
-> >> (no_reply) in vduse_dev_msg_send()?
-> >>
-> > Looks good to me.
-> >
-> >>> +     vduse_dev_msg_send(dev, msg, true);
-> >>> +}
-> >>> +
-> >>> +static int vduse_dev_get_vq_state(struct vduse_dev *dev,
-> >>> +                               struct vduse_virtqueue *vq,
-> >>> +                               struct vdpa_vq_state *state)
-> >>> +{
-> >>> +     struct vduse_dev_msg msg =3D { 0 };
-> >>> +     int ret;
-> >>
-> >> Note that I post a series that implement the packed virtqueue support:
-> >>
-> >> https://lists.linuxfoundation.org/pipermail/virtualization/2021-June/0=
-54501.html
-> >>
-> >> So this patch needs to be updated as well.
-> >>
-> > Will do it.
-> >
-> >>> +
-> >>> +     msg.req.type =3D VDUSE_GET_VQ_STATE;
-> >>> +     msg.req.vq_state.index =3D vq->index;
-> >>> +
-> >>> +     ret =3D vduse_dev_msg_send(dev, &msg, false);
-> >>> +     if (ret)
-> >>> +             return ret;
-> >>> +
-> >>> +     state->avail_index =3D msg.resp.vq_state.avail_idx;
-> >>> +     return 0;
-> >>> +}
-> >>> +
-> >>> +static int vduse_dev_update_iotlb(struct vduse_dev *dev,
-> >>> +                             u64 start, u64 last)
-> >>> +{
-> >>> +     struct vduse_dev_msg msg =3D { 0 };
-> >>> +
-> >>> +     if (last < start)
-> >>> +             return -EINVAL;
-> >>> +
-> >>> +     msg.req.type =3D VDUSE_UPDATE_IOTLB;
-> >>> +     msg.req.iova.start =3D start;
-> >>> +     msg.req.iova.last =3D last;
-> >>> +
-> >>> +     return vduse_dev_msg_send(dev, &msg, false);
-> >>> +}
-> >>> +
-> >>> +static ssize_t vduse_dev_read_iter(struct kiocb *iocb, struct iov_it=
-er *to)
-> >>> +{
-> >>> +     struct file *file =3D iocb->ki_filp;
-> >>> +     struct vduse_dev *dev =3D file->private_data;
-> >>> +     struct vduse_dev_msg *msg;
-> >>> +     int size =3D sizeof(struct vduse_dev_request);
-> >>> +     ssize_t ret;
-> >>> +
-> >>> +     if (iov_iter_count(to) < size)
-> >>> +             return -EINVAL;
-> >>> +
-> >>> +     spin_lock(&dev->msg_lock);
-> >>> +     while (1) {
-> >>> +             msg =3D vduse_dequeue_msg(&dev->send_list);
-> >>> +             if (msg)
-> >>> +                     break;
-> >>> +
-> >>> +             ret =3D -EAGAIN;
-> >>> +             if (file->f_flags & O_NONBLOCK)
-> >>> +                     goto unlock;
-> >>> +
-> >>> +             spin_unlock(&dev->msg_lock);
-> >>> +             ret =3D wait_event_interruptible_exclusive(dev->waitq,
-> >>> +                                     !list_empty(&dev->send_list));
-> >>> +             if (ret)
-> >>> +                     return ret;
-> >>> +
-> >>> +             spin_lock(&dev->msg_lock);
-> >>> +     }
-> >>> +     spin_unlock(&dev->msg_lock);
-> >>> +     ret =3D copy_to_iter(&msg->req, size, to);
-> >>> +     spin_lock(&dev->msg_lock);
-> >>> +     if (ret !=3D size) {
-> >>> +             ret =3D -EFAULT;
-> >>> +             vduse_enqueue_msg(&dev->send_list, msg);
-> >>> +             goto unlock;
-> >>> +     }
-> >>> +     if (msg->req.flags & VDUSE_REQ_FLAGS_NO_REPLY)
-> >>> +             kfree(msg);
-> >>> +     else
-> >>> +             vduse_enqueue_msg(&dev->recv_list, msg);
-> >>> +unlock:
-> >>> +     spin_unlock(&dev->msg_lock);
-> >>> +
-> >>> +     return ret;
-> >>> +}
-> >>> +
-> >>> +static ssize_t vduse_dev_write_iter(struct kiocb *iocb, struct iov_i=
-ter *from)
-> >>> +{
-> >>> +     struct file *file =3D iocb->ki_filp;
-> >>> +     struct vduse_dev *dev =3D file->private_data;
-> >>> +     struct vduse_dev_response resp;
-> >>> +     struct vduse_dev_msg *msg;
-> >>> +     size_t ret;
-> >>> +
-> >>> +     ret =3D copy_from_iter(&resp, sizeof(resp), from);
-> >>> +     if (ret !=3D sizeof(resp))
-> >>> +             return -EINVAL;
-> >>> +
-> >>> +     spin_lock(&dev->msg_lock);
-> >>> +     msg =3D vduse_find_msg(&dev->recv_list, resp.request_id);
-> >>> +     if (!msg) {
-> >>> +             ret =3D -ENOENT;
-> >>> +             goto unlock;
-> >>> +     }
-> >>> +
-> >>> +     memcpy(&msg->resp, &resp, sizeof(resp));
-> >>> +     msg->completed =3D 1;
-> >>> +     wake_up(&msg->waitq);
-> >>> +unlock:
-> >>> +     spin_unlock(&dev->msg_lock);
-> >>> +
-> >>> +     return ret;
-> >>> +}
-> >>> +
-> >>> +static __poll_t vduse_dev_poll(struct file *file, poll_table *wait)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D file->private_data;
-> >>> +     __poll_t mask =3D 0;
-> >>> +
-> >>> +     poll_wait(file, &dev->waitq, wait);
-> >>> +
-> >>> +     if (!list_empty(&dev->send_list))
-> >>> +             mask |=3D EPOLLIN | EPOLLRDNORM;
-> >>> +     if (!list_empty(&dev->recv_list))
-> >>> +             mask |=3D EPOLLOUT | EPOLLWRNORM;
-> >>> +
-> >>> +     return mask;
-> >>> +}
-> >>> +
-> >>> +static void vduse_dev_reset(struct vduse_dev *dev)
-> >>> +{
-> >>> +     int i;
-> >>> +     struct vduse_iova_domain *domain =3D dev->domain;
-> >>> +
-> >>> +     /* The coherent mappings are handled in vduse_dev_free_coherent=
-() */
-> >>> +     if (domain->bounce_map)
-> >>> +             vduse_domain_reset_bounce_map(domain);
-> >>> +
-> >>> +     dev->features =3D 0;
-> >>> +     dev->generation++;
-> >>> +     spin_lock(&dev->irq_lock);
-> >>> +     dev->config_cb.callback =3D NULL;
-> >>> +     dev->config_cb.private =3D NULL;
-> >>> +     spin_unlock(&dev->irq_lock);
-> >>> +
-> >>> +     for (i =3D 0; i < dev->vq_num; i++) {
-> >>> +             struct vduse_virtqueue *vq =3D &dev->vqs[i];
-> >>> +
-> >>> +             vq->ready =3D false;
-> >>> +             vq->desc_addr =3D 0;
-> >>> +             vq->driver_addr =3D 0;
-> >>> +             vq->device_addr =3D 0;
-> >>> +             vq->avail_idx =3D 0;
-> >>> +             vq->num =3D 0;
-> >>> +
-> >>> +             spin_lock(&vq->kick_lock);
-> >>> +             vq->kicked =3D false;
-> >>> +             if (vq->kickfd)
-> >>> +                     eventfd_ctx_put(vq->kickfd);
-> >>> +             vq->kickfd =3D NULL;
-> >>> +             spin_unlock(&vq->kick_lock);
-> >>> +
-> >>> +             spin_lock(&vq->irq_lock);
-> >>> +             vq->cb.callback =3D NULL;
-> >>> +             vq->cb.private =3D NULL;
-> >>> +             spin_unlock(&vq->irq_lock);
-> >>> +     }
-> >>> +}
-> >>> +
-> >>> +static int vduse_vdpa_set_vq_address(struct vdpa_device *vdpa, u16 i=
-dx,
-> >>> +                             u64 desc_area, u64 driver_area,
-> >>> +                             u64 device_area)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +     struct vduse_virtqueue *vq =3D &dev->vqs[idx];
-> >>> +
-> >>> +     vq->desc_addr =3D desc_area;
-> >>> +     vq->driver_addr =3D driver_area;
-> >>> +     vq->device_addr =3D device_area;
-> >>> +
-> >>> +     return 0;
-> >>> +}
-> >>> +
-> >>> +static void vduse_vdpa_kick_vq(struct vdpa_device *vdpa, u16 idx)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +     struct vduse_virtqueue *vq =3D &dev->vqs[idx];
-> >>> +
-> >>> +     spin_lock(&vq->kick_lock);
-> >>> +     if (!vq->ready)
-> >>> +             goto unlock;
-> >>> +
-> >>> +     if (vq->kickfd)
-> >>> +             eventfd_signal(vq->kickfd, 1);
-> >>> +     else
-> >>> +             vq->kicked =3D true;
-> >>> +unlock:
-> >>> +     spin_unlock(&vq->kick_lock);
-> >>> +}
-> >>> +
-> >>> +static void vduse_vdpa_set_vq_cb(struct vdpa_device *vdpa, u16 idx,
-> >>> +                           struct vdpa_callback *cb)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +     struct vduse_virtqueue *vq =3D &dev->vqs[idx];
-> >>> +
-> >>> +     spin_lock(&vq->irq_lock);
-> >>> +     vq->cb.callback =3D cb->callback;
-> >>> +     vq->cb.private =3D cb->private;
-> >>> +     spin_unlock(&vq->irq_lock);
-> >>> +}
-> >>> +
-> >>> +static void vduse_vdpa_set_vq_num(struct vdpa_device *vdpa, u16 idx,=
- u32 num)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +     struct vduse_virtqueue *vq =3D &dev->vqs[idx];
-> >>> +
-> >>> +     vq->num =3D num;
-> >>> +}
-> >>> +
-> >>> +static void vduse_vdpa_set_vq_ready(struct vdpa_device *vdpa,
-> >>> +                                     u16 idx, bool ready)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +     struct vduse_virtqueue *vq =3D &dev->vqs[idx];
-> >>> +
-> >>> +     vq->ready =3D ready;
-> >>> +}
-> >>> +
-> >>> +static bool vduse_vdpa_get_vq_ready(struct vdpa_device *vdpa, u16 id=
-x)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +     struct vduse_virtqueue *vq =3D &dev->vqs[idx];
-> >>> +
-> >>> +     return vq->ready;
-> >>> +}
-> >>> +
-> >>> +static int vduse_vdpa_set_vq_state(struct vdpa_device *vdpa, u16 idx=
-,
-> >>> +                             const struct vdpa_vq_state *state)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +     struct vduse_virtqueue *vq =3D &dev->vqs[idx];
-> >>> +
-> >>> +     vq->avail_idx =3D state->avail_index;
-> >>> +     return 0;
-> >>> +}
-> >>> +
-> >>> +static int vduse_vdpa_get_vq_state(struct vdpa_device *vdpa, u16 idx=
-,
-> >>> +                             struct vdpa_vq_state *state)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +     struct vduse_virtqueue *vq =3D &dev->vqs[idx];
-> >>> +
-> >>> +     return vduse_dev_get_vq_state(dev, vq, state);
-> >>> +}
-> >>> +
-> >>> +static u32 vduse_vdpa_get_vq_align(struct vdpa_device *vdpa)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +
-> >>> +     return dev->vq_align;
-> >>> +}
-> >>> +
-> >>> +static u64 vduse_vdpa_get_features(struct vdpa_device *vdpa)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +
-> >>> +     return dev->user_features;
-> >>> +}
-> >>> +
-> >>> +static int vduse_vdpa_set_features(struct vdpa_device *vdpa, u64 fea=
-tures)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +
-> >>> +     dev->features =3D features;
-> >>> +     return 0;
-> >>> +}
-> >>> +
-> >>> +static void vduse_vdpa_set_config_cb(struct vdpa_device *vdpa,
-> >>> +                               struct vdpa_callback *cb)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +
-> >>> +     spin_lock(&dev->irq_lock);
-> >>> +     dev->config_cb.callback =3D cb->callback;
-> >>> +     dev->config_cb.private =3D cb->private;
-> >>> +     spin_unlock(&dev->irq_lock);
-> >>> +}
-> >>> +
-> >>> +static u16 vduse_vdpa_get_vq_num_max(struct vdpa_device *vdpa)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +
-> >>> +     return dev->vq_size_max;
-> >>> +}
-> >>> +
-> >>> +static u32 vduse_vdpa_get_device_id(struct vdpa_device *vdpa)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +
-> >>> +     return dev->device_id;
-> >>> +}
-> >>> +
-> >>> +static u32 vduse_vdpa_get_vendor_id(struct vdpa_device *vdpa)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +
-> >>> +     return dev->vendor_id;
-> >>> +}
-> >>> +
-> >>> +static u8 vduse_vdpa_get_status(struct vdpa_device *vdpa)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +
-> >>> +     return dev->status;
-> >>> +}
-> >>> +
-> >>> +static void vduse_vdpa_set_status(struct vdpa_device *vdpa, u8 statu=
-s)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +     bool started =3D !!(status & VIRTIO_CONFIG_S_DRIVER_OK);
-> >>> +
-> >>> +     dev->status =3D status;
-> >>> +
-> >>> +     if (dev->started =3D=3D started)
-> >>> +             return;
-> >>
-> >> If we check dev->status =3D=3D status, (or only check the DRIVER_OK bi=
-t)
-> >> then there's no need to introduce an extra dev->started.
-> >>
-> > Will do it.
-> >
-> >>> +
-> >>> +     dev->started =3D started;
-> >>> +     if (dev->started) {
-> >>> +             vduse_dev_start_dataplane(dev);
-> >>> +     } else {
-> >>> +             vduse_dev_reset(dev);
-> >>> +             vduse_dev_stop_dataplane(dev);
-> >>
-> >> I wonder if no_reply work for the case of vhost-vdpa. For virtio-vDPA,
-> >> we have bouncing buffers so it's harmless if usersapce dataplane keeps
-> >> performing read/write. For vhost-vDPA we don't have such stuffs.
-> >>
-> > OK. So it still needs to be synchronized here. If so, how to handle
-> > the error? Looks like printing a warning message should be enough.
->
->
-> We need fix a way to propagate the error to the userspace.
->
-> E.g if we want to stop the deivce, we will delay the status reset until
-> we get respose from the userspace?
->
 
-I didn't get how to delay the status reset. And should it be a DoS
-that we want to fix if the userspace doesn't give a response forever?
+--9jxsPFA5p3P2qPhR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
-> >
-> >>> +     }
-> >>> +}
-> >>> +
-> >>> +static size_t vduse_vdpa_get_config_size(struct vdpa_device *vdpa)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +
-> >>> +     return dev->config_size;
-> >>> +}
-> >>> +
-> >>> +static void vduse_vdpa_get_config(struct vdpa_device *vdpa, unsigned=
- int offset,
-> >>> +                               void *buf, unsigned int len)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +
-> >>> +     memcpy(buf, dev->config + offset, len);
-> >>> +}
-> >>> +
-> >>> +static void vduse_vdpa_set_config(struct vdpa_device *vdpa, unsigned=
- int offset,
-> >>> +                     const void *buf, unsigned int len)
-> >>> +{
-> >>> +     /* Now we only support read-only configuration space */
-> >>> +}
-> >>> +
-> >>> +static u32 vduse_vdpa_get_generation(struct vdpa_device *vdpa)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +
-> >>> +     return dev->generation;
-> >>> +}
-> >>> +
-> >>> +static int vduse_vdpa_set_map(struct vdpa_device *vdpa,
-> >>> +                             struct vhost_iotlb *iotlb)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +     int ret;
-> >>> +
-> >>> +     ret =3D vduse_domain_set_map(dev->domain, iotlb);
-> >>> +     if (ret)
-> >>> +             return ret;
-> >>> +
-> >>> +     ret =3D vduse_dev_update_iotlb(dev, 0ULL, ULLONG_MAX);
-> >>> +     if (ret) {
-> >>> +             vduse_domain_clear_map(dev->domain, iotlb);
-> >>> +             return ret;
-> >>> +     }
-> >>> +
-> >>> +     return 0;
-> >>> +}
-> >>> +
-> >>> +static void vduse_vdpa_free(struct vdpa_device *vdpa)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D vdpa_to_vduse(vdpa);
-> >>> +
-> >>> +     dev->vdev =3D NULL;
-> >>> +}
-> >>> +
-> >>> +static const struct vdpa_config_ops vduse_vdpa_config_ops =3D {
-> >>> +     .set_vq_address         =3D vduse_vdpa_set_vq_address,
-> >>> +     .kick_vq                =3D vduse_vdpa_kick_vq,
-> >>> +     .set_vq_cb              =3D vduse_vdpa_set_vq_cb,
-> >>> +     .set_vq_num             =3D vduse_vdpa_set_vq_num,
-> >>> +     .set_vq_ready           =3D vduse_vdpa_set_vq_ready,
-> >>> +     .get_vq_ready           =3D vduse_vdpa_get_vq_ready,
-> >>> +     .set_vq_state           =3D vduse_vdpa_set_vq_state,
-> >>> +     .get_vq_state           =3D vduse_vdpa_get_vq_state,
-> >>> +     .get_vq_align           =3D vduse_vdpa_get_vq_align,
-> >>> +     .get_features           =3D vduse_vdpa_get_features,
-> >>> +     .set_features           =3D vduse_vdpa_set_features,
-> >>> +     .set_config_cb          =3D vduse_vdpa_set_config_cb,
-> >>> +     .get_vq_num_max         =3D vduse_vdpa_get_vq_num_max,
-> >>> +     .get_device_id          =3D vduse_vdpa_get_device_id,
-> >>> +     .get_vendor_id          =3D vduse_vdpa_get_vendor_id,
-> >>> +     .get_status             =3D vduse_vdpa_get_status,
-> >>> +     .set_status             =3D vduse_vdpa_set_status,
-> >>> +     .get_config_size        =3D vduse_vdpa_get_config_size,
-> >>> +     .get_config             =3D vduse_vdpa_get_config,
-> >>> +     .set_config             =3D vduse_vdpa_set_config,
-> >>> +     .get_generation         =3D vduse_vdpa_get_generation,
-> >>> +     .set_map                =3D vduse_vdpa_set_map,
-> >>> +     .free                   =3D vduse_vdpa_free,
-> >>> +};
-> >>> +
-> >>> +static dma_addr_t vduse_dev_map_page(struct device *dev, struct page=
- *page,
-> >>> +                                  unsigned long offset, size_t size,
-> >>> +                                  enum dma_data_direction dir,
-> >>> +                                  unsigned long attrs)
-> >>> +{
-> >>> +     struct vduse_dev *vdev =3D dev_to_vduse(dev);
-> >>> +     struct vduse_iova_domain *domain =3D vdev->domain;
-> >>> +
-> >>> +     return vduse_domain_map_page(domain, page, offset, size, dir, a=
-ttrs);
-> >>> +}
-> >>> +
-> >>> +static void vduse_dev_unmap_page(struct device *dev, dma_addr_t dma_=
-addr,
-> >>> +                             size_t size, enum dma_data_direction di=
-r,
-> >>> +                             unsigned long attrs)
-> >>> +{
-> >>> +     struct vduse_dev *vdev =3D dev_to_vduse(dev);
-> >>> +     struct vduse_iova_domain *domain =3D vdev->domain;
-> >>> +
-> >>> +     return vduse_domain_unmap_page(domain, dma_addr, size, dir, att=
-rs);
-> >>> +}
-> >>> +
-> >>> +static void *vduse_dev_alloc_coherent(struct device *dev, size_t siz=
-e,
-> >>> +                                     dma_addr_t *dma_addr, gfp_t fla=
-g,
-> >>> +                                     unsigned long attrs)
-> >>> +{
-> >>> +     struct vduse_dev *vdev =3D dev_to_vduse(dev);
-> >>> +     struct vduse_iova_domain *domain =3D vdev->domain;
-> >>> +     unsigned long iova;
-> >>> +     void *addr;
-> >>> +
-> >>> +     *dma_addr =3D DMA_MAPPING_ERROR;
-> >>> +     addr =3D vduse_domain_alloc_coherent(domain, size,
-> >>> +                             (dma_addr_t *)&iova, flag, attrs);
-> >>> +     if (!addr)
-> >>> +             return NULL;
-> >>> +
-> >>> +     *dma_addr =3D (dma_addr_t)iova;
-> >>> +
-> >>> +     return addr;
-> >>> +}
-> >>> +
-> >>> +static void vduse_dev_free_coherent(struct device *dev, size_t size,
-> >>> +                                     void *vaddr, dma_addr_t dma_add=
-r,
-> >>> +                                     unsigned long attrs)
-> >>> +{
-> >>> +     struct vduse_dev *vdev =3D dev_to_vduse(dev);
-> >>> +     struct vduse_iova_domain *domain =3D vdev->domain;
-> >>> +
-> >>> +     vduse_domain_free_coherent(domain, size, vaddr, dma_addr, attrs=
-);
-> >>> +}
-> >>> +
-> >>> +static size_t vduse_dev_max_mapping_size(struct device *dev)
-> >>> +{
-> >>> +     struct vduse_dev *vdev =3D dev_to_vduse(dev);
-> >>> +     struct vduse_iova_domain *domain =3D vdev->domain;
-> >>> +
-> >>> +     return domain->bounce_size;
-> >>> +}
-> >>> +
-> >>> +static const struct dma_map_ops vduse_dev_dma_ops =3D {
-> >>> +     .map_page =3D vduse_dev_map_page,
-> >>> +     .unmap_page =3D vduse_dev_unmap_page,
-> >>> +     .alloc =3D vduse_dev_alloc_coherent,
-> >>> +     .free =3D vduse_dev_free_coherent,
-> >>> +     .max_mapping_size =3D vduse_dev_max_mapping_size,
-> >>> +};
-> >>> +
-> >>> +static unsigned int perm_to_file_flags(u8 perm)
-> >>> +{
-> >>> +     unsigned int flags =3D 0;
-> >>> +
-> >>> +     switch (perm) {
-> >>> +     case VDUSE_ACCESS_WO:
-> >>> +             flags |=3D O_WRONLY;
-> >>> +             break;
-> >>> +     case VDUSE_ACCESS_RO:
-> >>> +             flags |=3D O_RDONLY;
-> >>> +             break;
-> >>> +     case VDUSE_ACCESS_RW:
-> >>> +             flags |=3D O_RDWR;
-> >>> +             break;
-> >>> +     default:
-> >>> +             WARN(1, "invalidate vhost IOTLB permission\n");
-> >>> +             break;
-> >>> +     }
-> >>> +
-> >>> +     return flags;
-> >>> +}
-> >>> +
-> >>> +static int vduse_kickfd_setup(struct vduse_dev *dev,
-> >>> +                     struct vduse_vq_eventfd *eventfd)
-> >>> +{
-> >>> +     struct eventfd_ctx *ctx =3D NULL;
-> >>> +     struct vduse_virtqueue *vq;
-> >>> +     u32 index;
-> >>> +
-> >>> +     if (eventfd->index >=3D dev->vq_num)
-> >>> +             return -EINVAL;
-> >>> +
-> >>> +     index =3D array_index_nospec(eventfd->index, dev->vq_num);
-> >>> +     vq =3D &dev->vqs[index];
-> >>> +     if (eventfd->fd >=3D 0) {
-> >>> +             ctx =3D eventfd_ctx_fdget(eventfd->fd);
-> >>> +             if (IS_ERR(ctx))
-> >>> +                     return PTR_ERR(ctx);
-> >>> +     } else if (eventfd->fd !=3D VDUSE_EVENTFD_DEASSIGN)
-> >>> +             return 0;
-> >>> +
-> >>> +     spin_lock(&vq->kick_lock);
-> >>> +     if (vq->kickfd)
-> >>> +             eventfd_ctx_put(vq->kickfd);
-> >>> +     vq->kickfd =3D ctx;
-> >>> +     if (vq->ready && vq->kicked && vq->kickfd) {
-> >>> +             eventfd_signal(vq->kickfd, 1);
-> >>> +             vq->kicked =3D false;
-> >>> +     }
-> >>> +     spin_unlock(&vq->kick_lock);
-> >>> +
-> >>> +     return 0;
-> >>> +}
-> >>> +
-> >>> +static void vduse_dev_irq_inject(struct work_struct *work)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D container_of(work, struct vduse_dev, =
-inject);
-> >>> +
-> >>> +     spin_lock_irq(&dev->irq_lock);
-> >>> +     if (dev->config_cb.callback)
-> >>> +             dev->config_cb.callback(dev->config_cb.private);
-> >>> +     spin_unlock_irq(&dev->irq_lock);
-> >>> +}
-> >>> +
-> >>> +static void vduse_vq_irq_inject(struct work_struct *work)
-> >>> +{
-> >>> +     struct vduse_virtqueue *vq =3D container_of(work,
-> >>> +                                     struct vduse_virtqueue, inject)=
-;
-> >>> +
-> >>> +     spin_lock_irq(&vq->irq_lock);
-> >>> +     if (vq->ready && vq->cb.callback)
-> >>> +             vq->cb.callback(vq->cb.private);
-> >>> +     spin_unlock_irq(&vq->irq_lock);
-> >>> +}
-> >>> +
-> >>> +static long vduse_dev_ioctl(struct file *file, unsigned int cmd,
-> >>> +                         unsigned long arg)
-> >>> +{
-> >>> +     struct vduse_dev *dev =3D file->private_data;
-> >>> +     void __user *argp =3D (void __user *)arg;
-> >>> +     int ret;
-> >>> +
-> >>> +     switch (cmd) {
-> >>> +     case VDUSE_IOTLB_GET_FD: {
-> >>> +             struct vduse_iotlb_entry entry;
-> >>> +             struct vhost_iotlb_map *map;
-> >>> +             struct vdpa_map_file *map_file;
-> >>> +             struct vduse_iova_domain *domain =3D dev->domain;
-> >>> +             struct file *f =3D NULL;
-> >>> +
-> >>> +             ret =3D -EFAULT;
-> >>> +             if (copy_from_user(&entry, argp, sizeof(entry)))
-> >>> +                     break;
-> >>> +
-> >>> +             ret =3D -EINVAL;
-> >>> +             if (entry.start > entry.last)
-> >>> +                     break;
-> >>> +
-> >>> +             spin_lock(&domain->iotlb_lock);
-> >>> +             map =3D vhost_iotlb_itree_first(domain->iotlb,
-> >>> +                                           entry.start, entry.last);
-> >>> +             if (map) {
-> >>> +                     map_file =3D (struct vdpa_map_file *)map->opaqu=
-e;
-> >>> +                     f =3D get_file(map_file->file);
-> >>> +                     entry.offset =3D map_file->offset;
-> >>> +                     entry.start =3D map->start;
-> >>> +                     entry.last =3D map->last;
-> >>> +                     entry.perm =3D map->perm;
-> >>> +             }
-> >>> +             spin_unlock(&domain->iotlb_lock);
-> >>> +             ret =3D -EINVAL;
-> >>> +             if (!f)
-> >>> +                     break;
-> >>> +
-> >>> +             ret =3D -EFAULT;
-> >>> +             if (copy_to_user(argp, &entry, sizeof(entry))) {
-> >>> +                     fput(f);
-> >>> +                     break;
-> >>> +             }
-> >>> +             ret =3D receive_fd(f, perm_to_file_flags(entry.perm));
-> >>> +             fput(f);
-> >>> +             break;
-> >>> +     }
-> >>> +     case VDUSE_DEV_GET_FEATURES:
-> >>> +             ret =3D put_user(dev->features, (u64 __user *)argp);
-> >>> +             break;
-> >>> +     case VDUSE_DEV_UPDATE_CONFIG: {
-> >>> +             struct vduse_config_update config;
-> >>> +             unsigned long size =3D offsetof(struct vduse_config_upd=
-ate,
-> >>> +                                           buffer);
-> >>> +
-> >>> +             ret =3D -EFAULT;
-> >>> +             if (copy_from_user(&config, argp, size))
-> >>> +                     break;
-> >>> +
-> >>> +             ret =3D -EINVAL;
-> >>> +             if (config.length =3D=3D 0 ||
-> >>> +                 config.length > dev->config_size - config.offset)
-> >>> +                     break;
-> >>> +
-> >>> +             ret =3D -EFAULT;
-> >>> +             if (copy_from_user(dev->config + config.offset, argp + =
-size,
-> >>> +                                config.length))
-> >>> +                     break;
-> >>> +
-> >>> +             ret =3D 0;
-> >>> +             queue_work(vduse_irq_wq, &dev->inject);
-> >>
-> >> I wonder if it's better to separate config interrupt out of config
-> >> update or we need document this.
-> >>
-> > I have documented it in the docs. Looks like a config update should be
-> > always followed by a config interrupt. I didn't find a case that uses
-> > them separately.
->
->
-> The uAPI doesn't prevent us from the following scenario:
->
-> update_config(mac[0], ..);
-> update_config(max[1], ..);
->
-> So it looks to me it's better to separate the config interrupt from the
-> config updating.
->
+Hi Brendan,
 
-Fine.
+FYI, the error/warning still remains.
 
->
-> >
-> >>> +             break;
-> >>> +     }
-> >>> +     case VDUSE_VQ_GET_INFO: {
-> >>
-> >> Do we need to limit this only when DRIVER_OK is set?
-> >>
-> > Any reason to add this limitation?
->
->
-> Otherwise the vq is not fully initialized, e.g the desc_addr might not
-> be correct.
->
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   a96bfed64c8986d6404e553f18203cae1f5ac7e6
+commit: 981f94c3e92146705baf97fb417a5ed1ab1a79a5 bpf: Add bitwise atomic instructions
+date:   5 months ago
+config: m68k-randconfig-r013-20210622 (attached as .config)
+compiler: m68k-linux-gcc (GCC) 9.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=981f94c3e92146705baf97fb417a5ed1ab1a79a5
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 981f94c3e92146705baf97fb417a5ed1ab1a79a5
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=m68k 
 
-The vq_info->ready can be used to tell userspace whether the vq is
-initialized or not.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Thanks,
-Yongji
+All errors (new ones prefixed by >>):
+
+   kernel/bpf/core.c:1350:12: warning: no previous prototype for 'bpf_probe_read_kernel' [-Wmissing-prototypes]
+    1350 | u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
+         |            ^~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/core.c:1751:6: warning: no previous prototype for 'bpf_patch_call_args' [-Wmissing-prototypes]
+    1751 | void bpf_patch_call_args(struct bpf_insn *insn, u32 stack_depth)
+         |      ^~~~~~~~~~~~~~~~~~~
+   {standard input}: Assembler messages:
+>> {standard input}:4140: Error: operands mismatch -- statement `eorl 44(%sp),%d7' ignored
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for ATARI_KBD_CORE
+   Depends on !UML && INPUT && INPUT_KEYBOARD
+   Selected by
+   - MOUSE_ATARI && !UML && INPUT && INPUT_MOUSE && ATARI
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--9jxsPFA5p3P2qPhR
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+
+--9jxsPFA5p3P2qPhR--
