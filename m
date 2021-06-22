@@ -2,265 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41AF93B0247
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104753B0249
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhFVLGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 07:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbhFVLGV (ORCPT
+        id S230180AbhFVLGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 07:06:33 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:46254 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230151AbhFVLGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 07:06:21 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF8EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 04:04:04 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id m15-20020a17090a5a4fb029016f385ffad0so2059272pji.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 04:04:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=/JvZf7jTZBk8zsPbhxzWMuOv03TiJWX1A731dqbNvBU=;
-        b=I1O3SL9rx0A4o4hW/vlGFwNh5x3ad8Kv6lZBx1U/P4w5s7JMVbSaHMUPGr4e78E9yy
-         YGdu9B1Gi6ju4f7lDAoXXbVkdPzFlMSajZ367J/XMsJy4gpZVEy08QqisboU5xGJfZBJ
-         /LzDbZeBf5PiiZiXmxutZE25oC9P+vaXSjvyHfIc5+2m1uhmVepjHa14TXqIfgvpwfVL
-         JjaETKg/EZcsqLyNbJ+aS0Eea8xTB2Mf2tn7K9TU+oVSzQaDY7kauvjC8L2Y7mJQzP22
-         VWZzl/X7W2DHREKRUnbfX9Pu2k657VvGAHwvP4kUWYpPi51dntBfYFg2Ze6q735c/EaZ
-         bXsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/JvZf7jTZBk8zsPbhxzWMuOv03TiJWX1A731dqbNvBU=;
-        b=DVvn2se33UlTXK/E+PkLB25KOdLH3JIjxRuqSF7pCvemig8aWDyGkGsC6qWHxQpyDR
-         SlxXUFS7/Wm5+dneMXGdfPyYc5kF1lCUzy5FWSCeUqdnvsnpuuHASAPDs10i2SHKEZ5C
-         74v2ieV9LtxF6vkTMhumYE1IdDBlFrPADO7AOGNfgot9qLB6HpSDod2XuzjPIAaKnBqO
-         d4piJm26xK40Bz77fo5ij5KUm5jCj/ZApPlomzm/0AdKVGOKU2Jz3LH4lYE6CWE+F3hf
-         cAkgwaM512BFwWWroPDE0Pvsm6N16YOdKZFXllnFAJCBDRqTV1286ES0U7MLw71i2Umy
-         1eqg==
-X-Gm-Message-State: AOAM531arSLmXoVhJVDJup7YvDDmJ1FbigXQMfjHv2HZ/O++aRiWWe39
-        5KwbTjATENeeOZkRNCDGGNQ=
-X-Google-Smtp-Source: ABdhPJyygRNpHjbGfiNg1fs0lwx3vh3I/tWK0zpe4yJTYR95HMs0KrmuVTEjGeOglGgoIkoR3QSHuw==
-X-Received: by 2002:a17:902:8484:b029:101:7016:fb7b with SMTP id c4-20020a1709028484b02901017016fb7bmr22017440plo.23.1624359844071;
-        Tue, 22 Jun 2021 04:04:04 -0700 (PDT)
-Received: from localhost.lan ([2400:4070:175b:7500::7a7])
-        by smtp.gmail.com with ESMTPSA id o14sm19010043pgk.82.2021.06.22.04.04.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 04:04:03 -0700 (PDT)
-Received: from x2.lan (localhost [127.0.0.1])
-        by localhost.lan (Postfix) with ESMTPSA id 9B38A902A9B;
-        Tue, 22 Jun 2021 11:04:01 +0000 (GMT)
-From:   Vincent Pelletier <plr.vincent@gmail.com>
-To:     Support Opensource <support.opensource@diasemi.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        David Abdurachmanov <david.abdurachmanov@sifive.com>
-Subject: [PATCH v2 2/2] regulator: da9063: Add support for full-current mode.
-Date:   Tue, 22 Jun 2021 11:03:56 +0000
-Message-Id: <43ed1ed9032d15077928bd04bec69d7b8ab46cb0.1624359253.git.plr.vincent@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <b04c90a1a1a489d980bf8c524288f71b8f0a6982.1624359253.git.plr.vincent@gmail.com>
-References: <b04c90a1a1a489d980bf8c524288f71b8f0a6982.1624359253.git.plr.vincent@gmail.com>
+        Tue, 22 Jun 2021 07:06:32 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 793BE1FD36;
+        Tue, 22 Jun 2021 11:04:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624359855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+n3t6AUp5TS1LSvBcGc6EusYr8I4k6PmN6LeGwwd17I=;
+        b=TY5MY4Dw3cPZNj+44gw3Fp/9lHNfVHd6rQoU47fKxPLADKuYk3fBw0SxqVWvFspk6BqfQd
+        dVaU8uM0LemFv9kFHsIl3HBEM+XMQTmPJCli/+sEGi6aaH/FNSNYkUOBOcX+j58ULmXpah
+        nECMhENcEEjfz9pEbV3doBD7SNV5lI8=
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 49B15118DD;
+        Tue, 22 Jun 2021 11:04:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624359855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+n3t6AUp5TS1LSvBcGc6EusYr8I4k6PmN6LeGwwd17I=;
+        b=TY5MY4Dw3cPZNj+44gw3Fp/9lHNfVHd6rQoU47fKxPLADKuYk3fBw0SxqVWvFspk6BqfQd
+        dVaU8uM0LemFv9kFHsIl3HBEM+XMQTmPJCli/+sEGi6aaH/FNSNYkUOBOcX+j58ULmXpah
+        nECMhENcEEjfz9pEbV3doBD7SNV5lI8=
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id zYjUEK/D0WC+YQAALh3uQQ
+        (envelope-from <jgross@suse.com>); Tue, 22 Jun 2021 11:04:15 +0000
+To:     Julien Grall <julien@xen.org>
+Cc:     "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        linux-kernel@vger.kernel.org, mheyne@amazon.de
+References: <6552fc66-ba19-2c77-7928-b0272d3e1622@xen.org>
+From:   Juergen Gross <jgross@suse.com>
+Subject: Re: Interrupt for port 19, but apparently not enabled; per-user
+ 000000004af23acc
+Message-ID: <4d8a7ba7-a9f6-2999-8750-bfe2b85f064e@suse.com>
+Date:   Tue, 22 Jun 2021 13:04:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <6552fc66-ba19-2c77-7928-b0272d3e1622@xen.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="5bfnwLbfxXmISXkyLk2SYmzVPwvAKlta3"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In addition to the ability of merging some power outputs, this chip has
-an overdrive/full-current mode.
-BCORE1, BCORE2 and BPRO have this ability, in which case the legal
-current draw is increased from 2 amps to 2.5 amps (at the expense of
-a quiescent current increase), and the configurable current limits
-are doubled.
-So add configuration alternatives for these new combinations, with their
-updated current limits.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--5bfnwLbfxXmISXkyLk2SYmzVPwvAKlta3
+Content-Type: multipart/mixed; boundary="E1JyQPrHo0Y9ofROyUJLoka3jMCPwQIMz";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Julien Grall <julien@xen.org>
+Cc: "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+ linux-kernel@vger.kernel.org, mheyne@amazon.de
+Message-ID: <4d8a7ba7-a9f6-2999-8750-bfe2b85f064e@suse.com>
+Subject: Re: Interrupt for port 19, but apparently not enabled; per-user
+ 000000004af23acc
+References: <6552fc66-ba19-2c77-7928-b0272d3e1622@xen.org>
+In-Reply-To: <6552fc66-ba19-2c77-7928-b0272d3e1622@xen.org>
 
-Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
----
-V1 -> V2:
-- skip DA9063_ID_BCORES_MERGED_OD when not full-current, and vice-versa
-- cc linux-kernel ML
-- fix subject prefix
+--E1JyQPrHo0Y9ofROyUJLoka3jMCPwQIMz
+Content-Type: multipart/mixed;
+ boundary="------------E9CE6572C601B995D9AE67C0"
+Content-Language: en-US
 
- drivers/regulator/da9063-regulator.c | 70 ++++++++++++++++++++++++++--
- 1 file changed, 66 insertions(+), 4 deletions(-)
+This is a multi-part message in MIME format.
+--------------E9CE6572C601B995D9AE67C0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/regulator/da9063-regulator.c b/drivers/regulator/da9063-regulator.c
-index 21f4ddb37b09..1193b2eb8c07 100644
---- a/drivers/regulator/da9063-regulator.c
-+++ b/drivers/regulator/da9063-regulator.c
-@@ -31,14 +31,19 @@
- enum {
- 	/* BUCKs */
- 	DA9063_ID_BCORE1,
-+	DA9063_ID_BCORE1_OD,
- 	DA9063_ID_BCORE2,
-+	DA9063_ID_BCORE2_OD,
- 	DA9063_ID_BPRO,
-+	DA9063_ID_BPRO_OD,
- 	DA9063_ID_BMEM,
- 	DA9063_ID_BIO,
- 	DA9063_ID_BPERI,
- 
- 	/* BCORE1 and BCORE2 in merged mode */
- 	DA9063_ID_BCORES_MERGED,
-+	/* BCORE1 and BCORE2 in merged and full-current mode */
-+	DA9063_ID_BCORES_MERGED_OD,
- 	/* BMEM and BIO in merged mode */
- 	DA9063_ID_BMEM_BIO_MERGED,
- 	/* When two BUCKs are merged, they cannot be reused separately */
-@@ -186,7 +191,8 @@ static const unsigned int da9063_buck_b_limits[] = {
- };
- 
- /*
-- * Current limits array (in uA) for merged BCORE1 and BCORE2.
-+ * Current limits array (in uA) for merged BCORE1 and BCORE2, or
-+ * BCORE1, BCORE2, BPRO in fullcurrent mode.
-  * Entry indexes corresponds to register values.
-  */
- static const unsigned int da9063_bcores_merged_limits[] = {
-@@ -203,6 +209,16 @@ static const unsigned int da9063_bmem_bio_merged_limits[] = {
- 	4600000, 4800000, 5000000, 5200000, 5400000, 5600000, 5800000, 6000000
- };
- 
-+/*
-+ * Current limits array (in uA) for merged BCORE
-+ * in full-current mode.
-+ * Entry indexes corresponds to register values.
-+ */
-+static const unsigned int da9063_bcores_merged_fullcurrent_limits[] = {
-+	2000000, 2400000, 2800000, 3200000, 3600000, 4000000, 4400000, 4800000,
-+	5200000, 5600000, 6000000, 6400000, 6800000, 7200000, 7600000, 8000000
-+};
-+
- static int da9063_buck_set_mode(struct regulator_dev *rdev, unsigned int mode)
- {
- 	struct da9063_regulator *regl = rdev_get_drvdata(rdev);
-@@ -454,18 +470,36 @@ static const struct da9063_regulator_info da9063_regulator_info[] = {
- 			    DA9063_REG_BUCK_ILIM_C, DA9063_BCORE1_ILIM_MASK),
- 		DA9063_BUCK_COMMON_FIELDS(BCORE1),
- 	},
-+	{
-+		DA9063_BUCK(DA9063, BCORE1_OD, 300, 10, 1570,
-+			    da9063_bcores_merged_limits,
-+			    DA9063_REG_BUCK_ILIM_C, DA9063_BCORE1_ILIM_MASK),
-+		DA9063_BUCK_COMMON_FIELDS(BCORE1),
-+	},
- 	{
- 		DA9063_BUCK(DA9063, BCORE2, 300, 10, 1570,
- 			    da9063_buck_a_limits,
- 			    DA9063_REG_BUCK_ILIM_C, DA9063_BCORE2_ILIM_MASK),
- 		DA9063_BUCK_COMMON_FIELDS(BCORE2),
- 	},
-+	{
-+		DA9063_BUCK(DA9063, BCORE2_OD, 300, 10, 1570,
-+			    da9063_bcores_merged_limits,
-+			    DA9063_REG_BUCK_ILIM_C, DA9063_BCORE2_ILIM_MASK),
-+		DA9063_BUCK_COMMON_FIELDS(BCORE2),
-+	},
- 	{
- 		DA9063_BUCK(DA9063, BPRO, 530, 10, 1800,
- 			    da9063_buck_a_limits,
- 			    DA9063_REG_BUCK_ILIM_B, DA9063_BPRO_ILIM_MASK),
- 		DA9063_BUCK_COMMON_FIELDS(BPRO),
- 	},
-+	{
-+		DA9063_BUCK(DA9063, BPRO_OD, 530, 10, 1800,
-+			    da9063_bcores_merged_limits,
-+			    DA9063_REG_BUCK_ILIM_B, DA9063_BPRO_ILIM_MASK),
-+		DA9063_BUCK_COMMON_FIELDS(BPRO),
-+	},
- 	{
- 		DA9063_BUCK(DA9063, BMEM, 800, 20, 3340,
- 			    da9063_buck_b_limits,
-@@ -491,6 +525,13 @@ static const struct da9063_regulator_info da9063_regulator_info[] = {
- 		/* BCORES_MERGED uses the same register fields as BCORE1 */
- 		DA9063_BUCK_COMMON_FIELDS(BCORE1),
- 	},
-+	{
-+		DA9063_BUCK(DA9063, BCORES_MERGED_OD, 300, 10, 1570,
-+			    da9063_bcores_merged_fullcurrent_limits,
-+			    DA9063_REG_BUCK_ILIM_C, DA9063_BCORE1_ILIM_MASK),
-+		/* BCORES_MERGED uses the same register fields as BCORE1 */
-+		DA9063_BUCK_COMMON_FIELDS(BCORE1),
-+	},
- 	{
- 		DA9063_BUCK(DA9063, BMEM_BIO_MERGED, 800, 20, 3340,
- 			    da9063_bmem_bio_merged_limits,
-@@ -545,12 +586,12 @@ static const struct da9063_regulator_info da9063_regulator_info[] = {
- static struct da9063_dev_model regulators_models[] = {
- 	{
- 		.regulator_info = da9063_regulator_info,
--		.n_regulators = ARRAY_SIZE(da9063_regulator_info),
-+		.n_regulators = ARRAY_SIZE(da9063_regulator_info) - 4,
- 		.type = PMIC_TYPE_DA9063,
- 	},
- 	{
- 		.regulator_info = da9063_regulator_info,
--		.n_regulators = ARRAY_SIZE(da9063_regulator_info) - 6,
-+		.n_regulators = ARRAY_SIZE(da9063_regulator_info) - 4 - 6,
- 		.type = PMIC_TYPE_DA9063L,
- 	},
- 	{ }
-@@ -600,12 +641,16 @@ static const struct regulator_init_data *da9063_get_regulator_initdata(
- 
- static struct of_regulator_match da9063_matches[] = {
- 	[DA9063_ID_BCORE1]           = { .name = "bcore1"           },
-+	[DA9063_ID_BCORE1_OD]        = { .name = "bcore1-od"        },
- 	[DA9063_ID_BCORE2]           = { .name = "bcore2"           },
-+	[DA9063_ID_BCORE2_OD]        = { .name = "bcore2-od"        },
- 	[DA9063_ID_BPRO]             = { .name = "bpro",            },
-+	[DA9063_ID_BPRO_OD]          = { .name = "bpro-od",         },
- 	[DA9063_ID_BMEM]             = { .name = "bmem",            },
- 	[DA9063_ID_BIO]              = { .name = "bio",             },
- 	[DA9063_ID_BPERI]            = { .name = "bperi",           },
- 	[DA9063_ID_BCORES_MERGED]    = { .name = "bcores-merged"    },
-+	[DA9063_ID_BCORES_MERGED_OD] = { .name = "bcores-merged-od" },
- 	[DA9063_ID_BMEM_BIO_MERGED]  = { .name = "bmem-bio-merged", },
- 	[DA9063_ID_LDO3]             = { .name = "ldo3",            },
- 	[DA9063_ID_LDO7]             = { .name = "ldo7",            },
-@@ -685,7 +730,7 @@ static int da9063_regulator_probe(struct platform_device *pdev)
- 	struct da9063_regulators *regulators;
- 	struct da9063_regulator *regl;
- 	struct regulator_config config;
--	bool bcores_merged, bmem_bio_merged;
-+	bool bcores_merged, bmem_bio_merged, bcore1_od, bcore2_od, bpro_od;
- 	int id, irq, n, n_regulators, ret, val;
- 
- 	regl_pdata = da9063_parse_regulators_dt(pdev, &da9063_reg_matches);
-@@ -714,6 +759,9 @@ static int da9063_regulator_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 	bcores_merged = val & DA9063_BCORE_MERGE;
-+	bpro_od = val & DA9063_BPRO_OD;
-+	bcore2_od = val & DA9063_BCORE2_OD;
-+	bcore1_od = val & DA9063_BCORE1_OD;
- 	bmem_bio_merged = val & DA9063_BUCK_MERGE;
- 
- 	n_regulators = model->n_regulators;
-@@ -768,6 +816,20 @@ static int da9063_regulator_probe(struct platform_device *pdev)
- 			}
- 			break;
- 		}
-+		if (
-+			(id == DA9063_ID_BCORE1    &&  bcore1_od) ||
-+			(id == DA9063_ID_BCORE1_OD && !bcore1_od) ||
-+			/* BCORES_MERGED uses the same fullcurrent bit as BCORE1 */
-+			(id == DA9063_ID_BCORES_MERGED    &&  bcore1_od) ||
-+			(id == DA9063_ID_BCORES_MERGED_OD && !bcore1_od) ||
-+			(id == DA9063_ID_BCORE2    &&  bcore2_od) ||
-+			(id == DA9063_ID_BCORE2_OD && !bcore2_od) ||
-+			(id == DA9063_ID_BPRO    &&  bpro_od) ||
-+			(id == DA9063_ID_BPRO_OD && !bpro_od)
-+		) {
-+			id++;
-+			continue;
-+		}
- 
- 		/* Initialise regulator structure */
- 		regl = &regulators->regulator[n];
--- 
-2.32.0
+On 22.06.21 12:24, Julien Grall wrote:
+> Hi Juergen,
+>=20
+> As discussed on IRC yesterday, we noticed a couple of splat in 5.13-rc6=20
 
+> (and stable 5.4) in the evtchn driver:
+>=20
+> [=C2=A0=C2=A0=C2=A0 7.581000] ------------[ cut here ]------------
+> [=C2=A0=C2=A0=C2=A0 7.581899] Interrupt for port 19, but apparently not=20
+enabled;=20
+> per-user 000000004af23acc
+> [=C2=A0=C2=A0=C2=A0 7.583401] WARNING: CPU: 0 PID: 467 at=20
+> /home/ANT.AMAZON.COM/jgrall/works/oss/linux/drivers/xen/evtchn.c:169=20
+> evtchn_interrupt+0xd5/0x100
+> [=C2=A0=C2=A0=C2=A0 7.585583] Modules linked in:
+> [=C2=A0=C2=A0=C2=A0 7.586188] CPU: 0 PID: 467 Comm: xenstore-read Not t=
+ainted=20
+> 5.13.0-rc6 #240
+> [=C2=A0=C2=A0=C2=A0 7.587462] Hardware name: QEMU Standard PC (Q35 + IC=
+H9, 2009), BIOS=20
+> rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+> [=C2=A0=C2=A0=C2=A0 7.589462] RIP: e030:evtchn_interrupt+0xd5/0x100
+> [=C2=A0=C2=A0=C2=A0 7.590361] Code: 48 8d bb d8 01 00 00 ba 01 00 00 00=20
+be 1d 00 00 00=20
+> e8 5f 72 c4 ff eb b2 8b 75 20 48 89 da 48 c7 c7 a8 03 5f 82 e8 6b 2d 96=20
+
+> ff <0f> 0b e9 4d ff ff ff 41 0f b6 f4 48 c7 c7 80 da a2 82 e8 f0
+> [=C2=A0=C2=A0=C2=A0 7.593662] RSP: e02b:ffffc90040003e60 EFLAGS: 000100=
+82
+> [=C2=A0=C2=A0=C2=A0 7.594636] RAX: 0000000000000000 RBX: ffff888102328c=
+00 RCX:=20
+> 0000000000000027
+> [=C2=A0=C2=A0=C2=A0 7.595924] RDX: 0000000000000000 RSI: ffff88817fe18a=
+d0 RDI:=20
+> ffff88817fe18ad8
+> [=C2=A0=C2=A0=C2=A0 7.597216] RBP: ffff888108ef8140 R08: 00000000000000=
+00 R09:=20
+> 0000000000000001
+> [=C2=A0=C2=A0=C2=A0 7.598522] R10: 0000000000000000 R11: 7075727265746e=
+49 R12:=20
+> 0000000000000000
+> [=C2=A0=C2=A0=C2=A0 7.599810] R13: ffffc90040003ec4 R14: ffff8881001b80=
+00 R15:=20
+> ffff888109b36f80
+> [=C2=A0=C2=A0=C2=A0 7.601113] FS:=C2=A0 0000000000000000(0000) GS:ffff8=
+8817fe00000(0000)=20
+> knlGS:0000000000000000
+> [=C2=A0=C2=A0=C2=A0 7.602570] CS:=C2=A0 10000e030 DS: 0000 ES: 0000 CR0=
+: 0000000080050033
+> [=C2=A0=C2=A0=C2=A0 7.603700] CR2: 00007f15b390e368 CR3: 000000010bb040=
+00 CR4:=20
+> 0000000000050660
+> [=C2=A0=C2=A0=C2=A0 7.604993] Call Trace:
+> [=C2=A0=C2=A0=C2=A0 7.605501]=C2=A0 <IRQ>
+> [=C2=A0=C2=A0=C2=A0 7.605929]=C2=A0 __handle_irq_event_percpu+0x4c/0x33=
+0
+> [=C2=A0=C2=A0=C2=A0 7.606817]=C2=A0 handle_irq_event_percpu+0x32/0xa0
+> [=C2=A0=C2=A0=C2=A0 7.607670]=C2=A0 handle_irq_event+0x3a/0x60
+> [=C2=A0=C2=A0=C2=A0 7.608416]=C2=A0 handle_edge_irq+0x9b/0x1f0
+> [=C2=A0=C2=A0=C2=A0 7.609154]=C2=A0 generic_handle_irq+0x4f/0x60
+> [=C2=A0=C2=A0=C2=A0 7.609918]=C2=A0 __evtchn_fifo_handle_events+0x195/0=
+x3a0
+> [=C2=A0=C2=A0=C2=A0 7.610864]=C2=A0 __xen_evtchn_do_upcall+0x66/0xb0
+> [=C2=A0=C2=A0=C2=A0 7.611693]=C2=A0 __xen_pv_evtchn_do_upcall+0x1d/0x30=
+
+> [=C2=A0=C2=A0=C2=A0 7.612582]=C2=A0 xen_pv_evtchn_do_upcall+0x9d/0xc0
+> [=C2=A0=C2=A0=C2=A0 7.613439]=C2=A0 </IRQ>
+> [=C2=A0=C2=A0=C2=A0 7.613882]=C2=A0 exc_xen_hypervisor_callback+0x8/0x1=
+0
+>=20
+> This is quite similar to the problem I reported a few months ago (see=20
+> [1]) but this time this is happening with fifo rather than 2L.
+>=20
+> I haven't been able to reproduced it reliably so far. But looking at th=
+e=20
+> code, I think I have found another potential race after commit
+>=20
+> commit b6622798bc50b625a1e62f82c7190df40c1f5b21
+> Author: Juergen Gross <jgross@suse.com>
+> Date:=C2=A0=C2=A0 Sat Mar 6 17:18:33 2021 +0100
+>  =C2=A0=C2=A0 xen/events: avoid handling the same event on two cpus at =
+the same time
+>  =C2=A0=C2=A0 When changing the cpu affinity of an event it can happen =
+today that
+>  =C2=A0=C2=A0 (with some unlucky timing) the same event will be handled=20
+on the old
+>  =C2=A0=C2=A0 and the new cpu at the same time.
+>  =C2=A0=C2=A0 Avoid that by adding an "event active" flag to the per-ev=
+ent data and
+>  =C2=A0=C2=A0 call the handler only if this flag isn't set.
+>  =C2=A0=C2=A0 Cc: stable@vger.kernel.org
+>  =C2=A0=C2=A0 Reported-by: Julien Grall <julien@xen.org>
+>  =C2=A0=C2=A0 Signed-off-by: Juergen Gross <jgross@suse.com>
+>  =C2=A0=C2=A0 Reviewed-by: Julien Grall <jgrall@amazon.com>
+>  =C2=A0=C2=A0 Link: https://lore.kernel.org/r/20210306161833.4552-4-jgr=
+oss@suse.com
+>  =C2=A0=C2=A0 Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.co=
+m>
+>=20
+> The evtchn driver will use the lateeoi handlers. So the code to ack=20
+> looks like:
+>=20
+> do_mask(..., EVT_MASK_REASON_EOI_PENDING)
+> smp_store_release(&info->is_active, 0);
+> clear_evtchn(info->evtchn);
+>=20
+> The code to handle an interrupts look like:
+>=20
+> clear_link(...)
+> if ( evtchn_fifo_is_pending(port) && !evtchn_fifo_is_mask()) {
+>  =C2=A0 if (xchg_acquire(&info->is_active, 1)
+>  =C2=A0=C2=A0=C2=A0 return;
+>  =C2=A0 generic_handle_irq();
+> }
+>=20
+> After changing the affinity, an interrupt may be received once on the=20
+> previous vCPU. So, I think the following can happen:
+>=20
+> vCPU0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 | vCPU1
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
+>  =C2=A0Receive event=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | change affinity to vCPU1
+>  =C2=A0clear_link()=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 |
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 /* The interrupt is re-raised */
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | receive event
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | /* The interrupt is not masked */
+>  =C2=A0info->is_active =3D 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 |
+>  =C2=A0do_mask(...)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 |
+>  =C2=A0info->is_active =3D 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 |
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | info->is_active =3D 1
+>  =C2=A0clear_evtchn(...)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | do_mask(...)
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | info->is_active =3D 0
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | clear_evtchn(...)
+>=20
+> Does this look plausible to you?
+
+Yes, it does.
+
+Thanks for the analysis.
+
+So I guess for lateeoi events we need to clear is_active only in
+xen_irq_lateeoi()? At a first glance this should fix the issue.
+
+What do you think?
+
+
+Juergen
+
+--------------E9CE6572C601B995D9AE67C0
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------E9CE6572C601B995D9AE67C0--
+
+--E1JyQPrHo0Y9ofROyUJLoka3jMCPwQIMz--
+
+--5bfnwLbfxXmISXkyLk2SYmzVPwvAKlta3
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmDRw64FAwAAAAAACgkQsN6d1ii/Ey/O
+Mwf/Y+kgGXEKVGb54GFE2yOWsGqbJvcT5wgtmHvYffxdIfeprxwByYqx4Jw8/c+lRATGViEg5cN6
+U6GUY7J6FEG8dGLuFo8ErlCWCg5eRHnNy6TQUVP/qPk7OUyyB3LhfBJY0Zn9yJf29VatqjL7OLy0
+95vOMAOWJomZqPlGaNbCCbqckeysyyhK6tDqunuaEss6BQcxyTob82fIoV2FBBGqk0qFs2jYw9NJ
+o97RuPkMAF7kAebnyK3pgKdZFUcD2Bp2uhB80DSRydjD8E/hwDLF6lFWndbtYuh7Z96IpltPg0mF
+Yg68M4rp6OsKtjVj674wamXDQyHfCyF/yHSG3yxRug==
+=xyiD
+-----END PGP SIGNATURE-----
+
+--5bfnwLbfxXmISXkyLk2SYmzVPwvAKlta3--
