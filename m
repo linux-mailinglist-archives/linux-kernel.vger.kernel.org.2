@@ -2,73 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8323B0BE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DC43B0BF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232396AbhFVR56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 13:57:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50657 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229501AbhFVR55 (ORCPT
+        id S232450AbhFVSAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:00:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232334AbhFVSAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 13:57:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624384541;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vPJfqiVwirjPo+JOKJqBMtufCCULee1n+PUuD036/84=;
-        b=LNqYMMEwTzFgxZ6GjgX3C1gCk3cMfkbAvole+GFYP5cQJr46uQZRZHazF6/3GW9syLNXrX
-        Fwx3VJhSbDctkJhrPSRdtN1ibsZhN9gsTGJ8dLJPuzXBYICXpiFyuU6cJc5HWaJ1gbwQE+
-        gPRAVHUcy9bBeaedRtdXwNgpJmlJHSg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-yQ7dfMfDPMONm30mH858Aw-1; Tue, 22 Jun 2021 13:55:39 -0400
-X-MC-Unique: yQ7dfMfDPMONm30mH858Aw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BB440804140;
-        Tue, 22 Jun 2021 17:55:37 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ABF055D9CA;
-        Tue, 22 Jun 2021 17:55:34 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAHk-=wh=YxjEtTpYyhgypKmPJQ8eVLJ4qowmwbnG1bOU06_4Bg@mail.gmail.com>
-References: <CAHk-=wh=YxjEtTpYyhgypKmPJQ8eVLJ4qowmwbnG1bOU06_4Bg@mail.gmail.com> <3221175.1624375240@warthog.procyon.org.uk> <YNIBb5WPrk8nnKKn@zeniv-ca.linux.org.uk> <YNIDdgn0m8d2a0P3@zeniv-ca.linux.org.uk> <YNIdJaKrNj5GoT7w@casper.infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, "Ted Ts'o" <tytso@mit.edu>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Do we need to unrevert "fs: do not prefault sys_write() user buffer pages"?
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3231149.1624384533.1@warthog.procyon.org.uk>
-Date:   Tue, 22 Jun 2021 18:55:33 +0100
-Message-ID: <3231150.1624384533@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        Tue, 22 Jun 2021 14:00:13 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECB4C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:57:56 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id h10-20020ac87d4a0000b029024eccb9d079so114049qtb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:57:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=DkA0/jjoZwGMjmbN6Z4o2+YRGAWzKiVbZXoVPGRw3Go=;
+        b=j3qgTaBd7ka6QYw6L4nf8svemOY7KqfCNEubLU+sYze3HXT3in6+N0QxU02KdWKC0/
+         rW+MgcUwawYwDZSBQqzkEt+OO/EFLDkB6D7U/TZ/WdxkRb7U1GWT1YTKTu3Dhpkx4WpH
+         96tEw0Sx4c+8LhMY3L2SpSZJ6Cp8d9saEbG3MV90hSm/oUZ+4D9BFqETnwsXA/SzNJKO
+         I0pf9/dxdpXh548MzrxW0KT6IPNCSsoj5mB/349pskeFKJGzwtq0Ik42OXem+ira9ceb
+         /to1YFMOLHiWW7Xs1xSFTXGiYI+1OD20yxnhTTZAjYa10cbugSGxPwZWTMMn8Iv386aX
+         lQog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=DkA0/jjoZwGMjmbN6Z4o2+YRGAWzKiVbZXoVPGRw3Go=;
+        b=SD32hX13gX2uzCkE+GPQlT8DQgtwzr3X/K0kO27KD35rk9ND0SXarbRbL/Cvr7y0hd
+         kFiGGUwbnDFa137h8o+8pIoI4cNxsvek5xJqswduqbyBBgspin/lBmQ7A3hpH7gIT+lU
+         s+1NAGHnxuLLY8lZa6NJ2JgBI4EWZJlD0HjnDPpmDcJycN/bMFmalnuyMUDdgLJQT4Qp
+         XD+s+kczeDJp5JevNPK3G0fm/6mE9WtUXfiVWG9F3jk1vgC/BzbQgCruRlV0xZMbZWH+
+         PHkcco+dXaLqei7fL3vyMYz5CLsk0BCUqsK6jL+Us+IJmEw3UgxdK/5f/tkSauXxIsKY
+         ydXQ==
+X-Gm-Message-State: AOAM5307CHtmPr8DATnThqEUZsj84wrRT9v9hwI39+96T0uRoI8gfgjL
+        r1y9PtYyNm8xYl/5foBmfshESkXaRpg=
+X-Google-Smtp-Source: ABdhPJxWXMMj/yMTy2L31o20RZzUl4OsCCw4V/TvAxiXoaSmSxLKFfl7gIcLnLVDO24zwIUIBDNKMF2JPi0=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:5722:92ce:361f:3832])
+ (user=seanjc job=sendgmr) by 2002:a25:7287:: with SMTP id n129mr4835609ybc.99.1624384675786;
+ Tue, 22 Jun 2021 10:57:55 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue, 22 Jun 2021 10:56:45 -0700
+Message-Id: <20210622175739.3610207-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
+Subject: [PATCH 00/54] KVM: x86/mmu: Bug fixes and summer cleaning
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+I missed spring by a few days...
 
-> End result: doing the fault_in_readable "unnecessarily" at the
-> beginning is likely the better optimization. It's basically free when
-> it's not necessary, and it avoids an extra fault (and extra
-> lock/unlock and retry) when it does end up faulting pages in.
+This gigantic snowball got rolling when I hit the WARN that guards against
+setting bits 63:32 in SPTEs on 32-bit builds (patch 01).  The WARN is a
+boneheaded mistake on my part as the whole point of EPT is to avoid the
+mess that is IA32 paging.
 
-It may also cause the read in to happen in the background whilst write_begin
-is being done.
+I added a better variant to WARN if KVM attempts to set _any_ reserved bits
+in its SPTEs (patch 48).  Unfortunately, the WARN worked too well and fired
+on variety of configurations.  The patches in between are a mix of bug fixes,
+cleanups, and documentation updates to get KVM to the point where the WARN
+can be added without causing explosions, and to fix/document the numerous
+issues/gotchas I found along the way.
 
-David
+The meat of this series is big refactoring of the MMU configuration code to
+fix nested NPT, which I discovered after writing a test to exercise the
+new reserved bit WARN.   With nested NPT, vCPU state is not guaranteed to
+reflect vmcb01 state (though in practice the bug is limited to
+KVM_SET_NESTED_STATE, i.e. live migration).  KVM passes in the L1 CR0, CR4,
+and EFER values, which the MMU takes into consideration for the mmu_role
+and then promptly ignores for all other calculations, e.g. reserved bits.
+
+The approach for solving the nested NPT mess, and a variety of other minor
+bugs of similar nature, is to take "all" state from the MMU context itself
+instead of the vCPU.  None of the refactoring patches are particularly
+interesting, there's just a lot of them because so much code uses the vCPU
+instead of the correct state.
+
+I have kvm-unit-tests for the SMEP, NX, and LA57 (my personal favorite) bugs
+that I'll post separately.  Ditto for a selftest for recomputing the mmu_role
+on CPUID updates.
+
+I don't have a standalone test for nested NPT mmu_role changes; adding a
+meaningful test mixed with KVM_SET_NESTED_STATE is a bigger lift.  To test
+that mess, I randomized vCPU state prior to initializing the nested NPT MMU
+and ran kvm-unit-tests.  E.g. Without the mmu_role changes this causes a
+number of unit test failures:
+
+	vcpu->arch.cr0 = get_random_long();
+	vcpu->arch.cr4 = get_random_long();
+	vcpu->arch.efer = get_random_long();
+
+        kvm_init_shadow_npt_mmu(vcpu, X86_CR0_PG, svm->vmcb01.ptr->save.cr4,
+                                svm->vmcb01.ptr->save.efer,
+                                svm->nested.ctl.nested_cr3);
+
+
+Patch 01 is the only patch that is remotely 5.13 worthy, and even then
+only because it's about as safe as a patch can be.  Everything else is far
+from urgent as these bugs have existed for quite some time.
+
+I labeled the "sections" of this mess in the shortlog below.
+
+P.S. Does anyone know how PKRU interacts with NPT?  I assume/hope NPT
+     accesses, which are always "user", ignore PKRU, but the APM doesn't
+     say a thing.  If PKRU is ignored, KVM has some fixing to do.  If PKRU
+     isn't ignored, AMD has some fixing to do :-)
+
+P.S.S. This series pulled in one patch from my vCPU RESET/INIT series,
+       "Properly reset MMU context at vCPU RESET/INIT", as that was needed
+       to fix a root_level bug on VMX.  My goal is to get the RESET/INIT
+       series refreshed later this week and thoroughly bombard everyone.
+
+
+Sean Christopherson (54):
+
+ -- bug fixes --
+  KVM: x86/mmu: Remove broken WARN that fires on 32-bit KVM w/ nested
+    EPT
+  KVM: x86/mmu: Treat NX as used (not reserved) for all !TDP shadow MMUs
+  KVM: x86: Properly reset MMU context at vCPU RESET/INIT
+  KVM: x86/mmu: Use MMU's role to detect CR4.SMEP value in nested NPT
+    walk
+  Revert "KVM: x86/mmu: Drop kvm_mmu_extended_role.cr4_la57 hack"
+  KVM: x86: Force all MMUs to reinitialize if guest CPUID is modified
+  KVM: x86: Alert userspace that KVM_SET_CPUID{,2} after KVM_RUN is
+    broken
+  Revert "KVM: MMU: record maximum physical address width in
+    kvm_mmu_extended_role"
+  KVM: x86/mmu: Unconditionally zap unsync SPs when creating >4k SP at
+    GFN
+
+ -- cleanups --
+  KVM: x86/mmu: Replace EPT shadow page shenanigans with simpler check
+  KVM: x86/mmu: WARN and zap SP when sync'ing if MMU role mismatches
+  KVM: x86/mmu: Drop the intermediate "transient" __kvm_sync_page()
+  KVM: x86/mmu: Rename unsync helper and update related comments
+
+ -- bug fixes --
+  KVM: x86: Fix sizes used to pass around CR0, CR4, and EFER
+  KVM: nSVM: Add a comment to document why nNPT uses vmcb01, not vCPU
+    state
+  KVM: x86/mmu: Drop smep_andnot_wp check from "uses NX" for shadow MMUs
+  KVM: x86: Read and pass all CR0/CR4 role bits to shadow MMU helper
+
+ -- nested NPT / mmu_role refactoring --
+  KVM: x86/mmu: Move nested NPT reserved bit calculation into MMU proper
+  KVM: x86/mmu: Grab shadow root level from mmu_role for shadow MMUs
+  KVM: x86/mmu: Add struct and helpers to retrieve MMU role bits from
+    regs
+  KVM: x86/mmu: Consolidate misc updates into shadow_mmu_init_context()
+  KVM: x86/mmu: Ignore CR0 and CR4 bits in nested EPT MMU role
+  KVM: x86/mmu: Use MMU's role_regs, not vCPU state, to compute mmu_role
+  KVM: x86/mmu: Rename "nxe" role bit to "efer_nx" for macro shenanigans
+  KVM: x86/mmu: Add helpers to query mmu_role bits
+  KVM: x86/mmu: Do not set paging-related bits in MMU role if CR0.PG=0
+  KVM: x86/mmu: Set CR4.PKE/LA57 in MMU role iff long mode is active
+  KVM: x86/mmu: Always Set new mmu_role immediately after checking old
+    role
+  KVM: x86/mmu: Don't grab CR4.PSE for calculating shadow reserved bits
+  KVM: x86/mmu: Use MMU's role to get CR4.PSE for computing rsvd bits
+  KVM: x86/mmu: Drop vCPU param from reserved bits calculator
+  KVM: x86/mmu: Use MMU's role to compute permission bitmask
+  KVM: x86/mmu: Use MMU's role to compute PKRU bitmask
+  KVM: x86/mmu: Use MMU's roles to compute last non-leaf level
+  KVM: x86/mmu: Use MMU's role to detect EFER.NX in guest page walk
+  KVM: x86/mmu: Use MMU's role/role_regs to compute context's metadata
+  KVM: x86/mmu: Use MMU's role to get EFER.NX during MMU configuration
+  KVM: x86/mmu: Drop "nx" from MMU context now that there are no readers
+  KVM: x86/mmu: Get nested MMU's root level from the MMU's role
+  KVM: x86/mmu: Use MMU role_regs to get LA57, and drop vCPU LA57 helper
+  KVM: x86/mmu: Consolidate reset_rsvds_bits_mask() calls
+  KVM: x86/mmu: Don't update nested guest's paging bitmasks if CR0.PG=0
+  KVM: x86/mmu: Add helper to update paging metadata
+  KVM: x86/mmu: Add a helper to calculate root from role_regs
+  KVM: x86/mmu: Collapse 32-bit PAE and 64-bit statements for helpers
+  KVM: x86/mmu: Use MMU's role to determine PTTYPE
+
+ -- finally, the new WARN!
+  KVM: x86/mmu: Add helpers to do full reserved SPTE checks w/ generic
+    MMU
+  KVM: x86/mmu: WARN on any reserved SPTE value when making a valid SPTE
+
+ -- more cleanups --
+  KVM: x86: Enhance comments for MMU roles and nested transition
+    trickiness
+  KVM: x86/mmu: Optimize and clean up so called "last nonleaf level"
+    logic
+  KVM: x86/mmu: Drop redundant rsvd bits reset for nested NPT
+  KVM: x86/mmu: Get CR0.WP from MMU, not vCPU, in shadow page fault
+  KVM: x86/mmu: Get CR4.SMEP from MMU, not vCPU, in shadow page fault
+
+ -- RFC-ish "fix" --
+  KVM: x86/mmu: Let guest use GBPAGES if supported in hardware and TDP
+    is on
+
+
+Sean Christopherson (54):
+  KVM: x86/mmu: Remove broken WARN that fires on 32-bit KVM w/ nested
+    EPT
+  KVM: x86/mmu: Treat NX as used (not reserved) for all !TDP shadow MMUs
+  KVM: x86: Properly reset MMU context at vCPU RESET/INIT
+  KVM: x86/mmu: Use MMU's role to detect CR4.SMEP value in nested NPT
+    walk
+  Revert "KVM: x86/mmu: Drop kvm_mmu_extended_role.cr4_la57 hack"
+  KVM: x86: Force all MMUs to reinitialize if guest CPUID is modified
+  KVM: x86: Alert userspace that KVM_SET_CPUID{,2} after KVM_RUN is
+    broken
+  Revert "KVM: MMU: record maximum physical address width in
+    kvm_mmu_extended_role"
+  KVM: x86/mmu: Unconditionally zap unsync SPs when creating >4k SP at
+    GFN
+  KVM: x86/mmu: Replace EPT shadow page shenanigans with simpler check
+  KVM: x86/mmu: WARN and zap SP when sync'ing if MMU role mismatches
+  KVM: x86/mmu: Drop the intermediate "transient" __kvm_sync_page()
+  KVM: x86/mmu: Rename unsync helper and update related comments
+  KVM: x86: Fix sizes used to pass around CR0, CR4, and EFER
+  KVM: nSVM: Add a comment to document why nNPT uses vmcb01, not vCPU
+    state
+  KVM: x86/mmu: Drop smep_andnot_wp check from "uses NX" for shadow MMUs
+  KVM: x86: Read and pass all CR0/CR4 role bits to shadow MMU helper
+  KVM: x86/mmu: Move nested NPT reserved bit calculation into MMU proper
+  KVM: x86/mmu: Grab shadow root level from mmu_role for shadow MMUs
+  KVM: x86/mmu: Add struct and helpers to retrieve MMU role bits from
+    regs
+  KVM: x86/mmu: Consolidate misc updates into shadow_mmu_init_context()
+  KVM: x86/mmu: Ignore CR0 and CR4 bits in nested EPT MMU role
+  KVM: x86/mmu: Use MMU's role_regs, not vCPU state, to compute mmu_role
+  KVM: x86/mmu: Rename "nxe" role bit to "efer_nx" for macro shenanigans
+  KVM: x86/mmu: Add helpers to query mmu_role bits
+  KVM: x86/mmu: Do not set paging-related bits in MMU role if CR0.PG=0
+  KVM: x86/mmu: Set CR4.PKE/LA57 in MMU role iff long mode is active
+  KVM: x86/mmu: Always Set new mmu_role immediately after checking old
+    role
+  KVM: x86/mmu: Don't grab CR4.PSE for calculating shadow reserved bits
+  KVM: x86/mmu: Use MMU's role to get CR4.PSE for computing rsvd bits
+  KVM: x86/mmu: Drop vCPU param from reserved bits calculator
+  KVM: x86/mmu: Use MMU's role to compute permission bitmask
+  KVM: x86/mmu: Use MMU's role to compute PKRU bitmask
+  KVM: x86/mmu: Use MMU's roles to compute last non-leaf level
+  KVM: x86/mmu: Use MMU's role to detect EFER.NX in guest page walk
+  KVM: x86/mmu: Use MMU's role/role_regs to compute context's metadata
+  KVM: x86/mmu: Use MMU's role to get EFER.NX during MMU configuration
+  KVM: x86/mmu: Drop "nx" from MMU context now that there are no readers
+  KVM: x86/mmu: Get nested MMU's root level from the MMU's role
+  KVM: x86/mmu: Use MMU role_regs to get LA57, and drop vCPU LA57 helper
+  KVM: x86/mmu: Consolidate reset_rsvds_bits_mask() calls
+  KVM: x86/mmu: Don't update nested guest's paging bitmasks if CR0.PG=0
+  KVM: x86/mmu: Add helper to update paging metadata
+  KVM: x86/mmu: Add a helper to calculate root from role_regs
+  KVM: x86/mmu: Collapse 32-bit PAE and 64-bit statements for helpers
+  KVM: x86/mmu: Use MMU's role to determine PTTYPE
+  KVM: x86/mmu: Add helpers to do full reserved SPTE checks w/ generic
+    MMU
+  KVM: x86/mmu: WARN on any reserved SPTE value when making a valid SPTE
+  KVM: x86: Enhance comments for MMU roles and nested transition
+    trickiness
+  KVM: x86/mmu: Optimize and clean up so called "last nonleaf level"
+    logic
+  KVM: x86/mmu: Drop redundant rsvd bits reset for nested NPT
+  KVM: x86/mmu: Get CR0.WP from MMU, not vCPU, in shadow page fault
+  KVM: x86/mmu: Get CR4.SMEP from MMU, not vCPU, in shadow page fault
+  KVM: x86/mmu: Let guest use GBPAGES if supported in hardware and TDP
+    is on
+
+ Documentation/virt/kvm/api.rst            |  11 +-
+ Documentation/virt/kvm/mmu.rst            |   7 +-
+ arch/x86/include/asm/kvm_host.h           |  71 ++-
+ arch/x86/kvm/cpuid.c                      |   6 +-
+ arch/x86/kvm/mmu.h                        |  18 +-
+ arch/x86/kvm/mmu/mmu.c                    | 648 +++++++++++-----------
+ arch/x86/kvm/mmu/mmu_internal.h           |   3 +-
+ arch/x86/kvm/mmu/mmutrace.h               |   2 +-
+ arch/x86/kvm/mmu/paging_tmpl.h            |  68 ++-
+ arch/x86/kvm/mmu/spte.c                   |  22 +-
+ arch/x86/kvm/mmu/spte.h                   |  32 ++
+ arch/x86/kvm/svm/nested.c                 |  10 +-
+ arch/x86/kvm/vmx/nested.c                 |   1 +
+ arch/x86/kvm/x86.c                        |  26 +-
+ arch/x86/kvm/x86.h                        |  10 -
+ tools/lib/traceevent/plugins/plugin_kvm.c |   4 +-
+ 16 files changed, 530 insertions(+), 409 deletions(-)
+
+-- 
+2.32.0.288.g62a8d224e6-goog
 
