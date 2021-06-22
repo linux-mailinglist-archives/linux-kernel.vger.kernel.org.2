@@ -2,70 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0483AFD2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 08:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 271143AFD37
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 08:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbhFVGrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 02:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51256 "EHLO
+        id S229955AbhFVGtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 02:49:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhFVGrQ (ORCPT
+        with ESMTP id S229702AbhFVGtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 02:47:16 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA7FC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 23:45:01 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id d13so28511397ljg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 23:45:01 -0700 (PDT)
+        Tue, 22 Jun 2021 02:49:08 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B630C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 23:46:52 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id a16so7065357ljq.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 23:46:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=SZOgkFHV45vlq/J3+K4vilC0CJEAXKrK5Ld1uca4j/c=;
-        b=jxARlqlPVLjPKc5KhEi5TNFNKFBo4dCeS7j5HHydZdTB0+LtKQ4jYzARDhOy4tsjN3
-         iPb4SgoOQVEz4cuiRkul75uvHb4N9jrU9zwZcqbxTrSCf/dXcOjfqpbkb0LuzvPZKZAU
-         H4H6n4RwPLiCt+xSMRGHr0sYTfUY9y4WMCkLpNKtAIDZ59J87GHcJylAg2igCdZi3GOp
-         BRaQxQMg8VDhShhUDvAzi3MqfjwVwAVT63pnwjeTwgvbp73kSxXilagp7f7JyinA3i+Q
-         +ncf2acPU/YSg6rTGcCEgj8DJe0bZ16lS1vDC2hdsBJwWCyEaaIFc3tiGmhn+EmzbUyQ
-         0/cg==
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=5qnWo/SzLWfySyvC7Oz1YEdmg8IJi0qS1OM10gavIVM=;
+        b=qGOTF9ANdk9jqKq5x7XngP9yQf1BKuIkfVRzBYSYS5hJiOFL5O92U9pRYalQKJuJgu
+         kpM8d53zaRFQ59zEF5mJIbuDAcnRilSR0o23nMwA9e+qCMYFQU3Ta+L+lzN5I1mzc9Wt
+         UZ5madbcX7Avcr3Yk2+VWAw66Yzvb1Xy2FD7ad6A1zZamYs5qp0Km2uhFxZaYEwemkv7
+         in46kB4yCHhILncBQzG1lAWNlsrmQjA8913muxB9+Sa/842sFDcYKbeOJOGXmBNfNGkg
+         E81gX0B3lIjZwqBY/91/QxaTMDixTHaEGg0HQ8CF0oEzuAN68Hq9n31l5KStk/n6ZNp6
+         fK7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=SZOgkFHV45vlq/J3+K4vilC0CJEAXKrK5Ld1uca4j/c=;
-        b=gQhiSh1qeE9Z7v+TFcid3gWKBrMEPMgOI5dNP9+r+BckNtp7JtfB+idI7bXkl1rlxv
-         DARhY+zb7V6kKqPdnoYGDQ5LZpGtPiqlRDdnNJNBxGgWzZpaHlyfKYOuHD8gatt14DDY
-         6Kp+Tj2doe2utxrI8HpeVdfErJLKpJZEXTKpbFtux4JbWlE1n9HM3QMdWwah5TC0Z6TM
-         0NJi3sGluGLT46u/Z9DWw67BGoEpo8Z42MZecNqZ/1srjLq9U1YfSC1+1/03VN/9aNi0
-         dIJMBDcfm7yN+W9Ipa83pIL3PEfrzoa0LhT2SVvyk9vFuSb0+SYbY/4S3O4S8sdXtYJj
-         bbIQ==
-X-Gm-Message-State: AOAM533KL3Nxe0SRCsGT1EhPXq16Vi0LORrrE/eefR2CYZ3MFuj2/tH1
-        nSf18Vvyl696/H/igE0GRrGYzCtjnuWU1Ena4ntF60HjvWnDLZ9z
-X-Google-Smtp-Source: ABdhPJxMc4vKACNQ0ZppjB0M3j2Ie45Be3PXy6NL5adlT87Mgd1cLtvnEIsqSVhB8PwdVzzN6Lcft25V5eDTtZ2knwM=
-X-Received: by 2002:a2e:a373:: with SMTP id i19mr1894432ljn.394.1624344299452;
- Mon, 21 Jun 2021 23:44:59 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=5qnWo/SzLWfySyvC7Oz1YEdmg8IJi0qS1OM10gavIVM=;
+        b=b9m4LxASHAR4DMEgA4kaOEobtKToNfqwcJYovA9yOfUEwXki/UCMM+AEfNImbfrujb
+         qvNfz928TFKSy4rG36EhjTChiE19SeVSngRtLGbDgXAiecKoGU4rbjzGP4SxOiEC5y23
+         24Xyab9NDBQha6ibpa7CXKBbnrd8yo6bEz7D90Uu/PO/Gzwr71irK4PzsYHq+DreSmMM
+         R0+OegPl60zaVKAevDQdgWuekj//auAVvQUJ5VzV1u+LrQdVZpdUTXREsbUu8F6vCZhs
+         cHxDpCYzu73Kpicp7u4JxrCa6V+M82WqQ898/mXOqy4NlkDVUnnADGkeYD++KB2n0yRI
+         A6/g==
+X-Gm-Message-State: AOAM532B01+VbATMxSiCQpLOMI99Yeg2WCL7B+ZJTZV0qGV/mg+s+7vs
+        B7gy8/HhBD1LpYSSK6fjSeg=
+X-Google-Smtp-Source: ABdhPJxt+x9fRCrxtpDUQmq8RAr+FIHUZ04aUI4+siOs7ZLczFPO/DuJWRh0z501SLJ1DSLjFL+zgA==
+X-Received: by 2002:a2e:9f45:: with SMTP id v5mr1826207ljk.171.1624344410861;
+        Mon, 21 Jun 2021 23:46:50 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id t7sm2101366lfe.172.2021.06.21.23.46.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 23:46:50 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 09:46:39 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     harry.wentland@amd.com, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
+Subject: Re: [PATCH v4 03/17] drm/uAPI: Add "active bpc" as feedback channel
+ for "max bpc" drm property
+Message-ID: <20210622094639.4f41003b@eldfell>
+In-Reply-To: <20210618091116.14428-4-wse@tuxedocomputers.com>
+References: <20210618091116.14428-1-wse@tuxedocomputers.com>
+        <20210618091116.14428-4-wse@tuxedocomputers.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Reply-To: tomcrist373@gmail.com
-Sender: anitamason903@gmail.com
-Received: by 2002:a05:6520:2de4:b029:10a:dc9c:911 with HTTP; Mon, 21 Jun 2021
- 23:44:59 -0700 (PDT)
-From:   tom crist <tomcrist373@gmail.com>
-Date:   Mon, 21 Jun 2021 23:44:59 -0700
-X-Google-Sender-Auth: 1pDRm6O0vb5ETV7kxmp_GLnFbUw
-Message-ID: <CAFb-CQZyM+Ty3HwF6Zw-1PmTzWrHtL6ojWnfCeaDvMGQcFEfOw@mail.gmail.com>
-Subject: RE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/9B79vWVpJMlAP_qOfW3sima"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Tom Crist, de Canadese man die een loterijprijs van $ 40 miljoen heeft
-gewonnen, schrijft u om u te informeren dat Google in samenwerking met
-Facebook uw e-mailadres heeft ingediend om =E2=82=AC 4.800.000,00 euro van =
-mij
-te ontvangen, aangezien ik heb besloten een deel van mijn winst weg te
-geven aan goede doelen, individuen en organisaties. neem voor meer
-informatie contact met mij op via tomcrist373@gmail.com
+--Sig_/9B79vWVpJMlAP_qOfW3sima
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, 18 Jun 2021 11:11:02 +0200
+Werner Sembach <wse@tuxedocomputers.com> wrote:
+
+> Add a new general drm property "active bpc" which can be used by graphic
+> drivers to report the applied bit depth per pixel back to userspace.
+>=20
+> While "max bpc" can be used to change the color depth, there was no way to
+> check which one actually got used. While in theory the driver chooses the
+> best/highest color depth within the max bpc setting a user might not be
+> fully aware what his hardware is or isn't capable off. This is meant as a
+> quick way to double check the setup.
+>=20
+> In the future, automatic color calibration for screens might also depend =
+on
+> this information being available.
+>=20
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> ---
+>  drivers/gpu/drm/drm_connector.c | 51 +++++++++++++++++++++++++++++++++
+>  include/drm/drm_connector.h     |  8 ++++++
+>  2 files changed, 59 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connec=
+tor.c
+> index da39e7ff6965..943f6b61053b 100644
+> --- a/drivers/gpu/drm/drm_connector.c
+> +++ b/drivers/gpu/drm/drm_connector.c
+> @@ -1197,6 +1197,14 @@ static const struct drm_prop_enum_list dp_colorspa=
+ces[] =3D {
+>   *	drm_connector_attach_max_bpc_property() to create and attach the
+>   *	property to the connector during initialization.
+>   *
+> + * active bpc:
+> + *	This read-only range property tells userspace the pixel color bit dep=
+th
+> + *	actually used by the hardware display engine on "the cable" on a
+> + *	connector. The chosen value depends on hardware capabilities, both
+> + *	display engine and connected monitor, and the "max bpc" property.
+> + *	Drivers shall use drm_connector_attach_active_bpc_property() to insta=
+ll
+> + *	this property.
+> + *
+>   * Connectors also have one standardized atomic property:
+>   *
+>   * CRTC_ID:
+> @@ -2152,6 +2160,49 @@ int drm_connector_attach_max_bpc_property(struct d=
+rm_connector *connector,
+>  }
+>  EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
+> =20
+> +/**
+> + * drm_connector_attach_active_bpc_property - attach "active bpc" proper=
+ty
+> + * @connector: connector to attach active bpc property on.
+> + * @min: The minimum bit depth supported by the connector.
+> + * @max: The maximum bit depth supported by the connector.
+> + *
+> + * This is used to check the applied bit depth on a connector.
+> + *
+> + * Returns:
+> + * Zero on success, negative errno on failure.
+> + */
+> +int drm_connector_attach_active_bpc_property(struct drm_connector *conne=
+ctor, int min, int max)
+> +{
+> +	struct drm_device *dev =3D connector->dev;
+> +	struct drm_property *prop;
+> +
+> +	if (!connector->active_bpc_property) {
+> +		prop =3D drm_property_create_range(dev, DRM_MODE_PROP_IMMUTABLE, "acti=
+ve bpc",
+> +						 min, max);
+> +		if (!prop)
+> +			return -ENOMEM;
+> +
+> +		connector->active_bpc_property =3D prop;
+> +		drm_object_attach_property(&connector->base, prop, 0);
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(drm_connector_attach_active_bpc_property);
+> +
+> +/**
+> + * drm_connector_set_active_bpc_property - sets the active bits per colo=
+r property for a connector
+> + * @connector: drm connector
+> + * @active_bpc: bits per color for the connector currently active on "th=
+e cable"
+> + *
+> + * Should be used by atomic drivers to update the active bits per color =
+over a connector.
+> + */
+> +void drm_connector_set_active_bpc_property(struct drm_connector *connect=
+or, int active_bpc)
+> +{
+> +	drm_object_property_set_value(&connector->base, connector->active_bpc_p=
+roperty, active_bpc);
+> +}
+> +EXPORT_SYMBOL(drm_connector_set_active_bpc_property);
+> +
+>  /**
+>   * drm_connector_attach_hdr_output_metadata_property - attach "HDR_OUTPU=
+T_METADA" property
+>   * @connector: connector to attach the property on.
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index 714d1a01c065..eee86de62a5f 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -1380,6 +1380,12 @@ struct drm_connector {
+>  	 */
+>  	struct drm_property *max_bpc_property;
+> =20
+> +	/**
+> +	 * @active_bpc_property: Default connector property for the active bpc
+> +	 * to be driven out of the connector.
+> +	 */
+> +	struct drm_property *active_bpc_property;
+> +
+>  #define DRM_CONNECTOR_POLL_HPD (1 << 0)
+>  #define DRM_CONNECTOR_POLL_CONNECT (1 << 1)
+>  #define DRM_CONNECTOR_POLL_DISCONNECT (1 << 2)
+> @@ -1702,6 +1708,8 @@ int drm_connector_set_panel_orientation_with_quirk(
+>  	int width, int height);
+>  int drm_connector_attach_max_bpc_property(struct drm_connector *connecto=
+r,
+>  					  int min, int max);
+> +int drm_connector_attach_active_bpc_property(struct drm_connector *conne=
+ctor, int min, int max);
+> +void drm_connector_set_active_bpc_property(struct drm_connector *connect=
+or, int active_bpc);
+> =20
+>  /**
+>   * struct drm_tile_group - Tile group metadata
+
+Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+
+
+Thanks,
+pq
+
+--Sig_/9B79vWVpJMlAP_qOfW3sima
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmDRh08ACgkQI1/ltBGq
+qqefDxAAnTLRWiJXKt324iuUjpCGVbdJKhpZM0IKnG4RtItTZyLGLQgUzh95qRiN
+g3YnCGoMa3pxgSgMtq3j+PidIdjquAEfJs351qFJtIxuPjNrfWM0GBRmUQFQdauq
+2xyUju8k8LaqBiasR8ulgGGZYbOWfqgcZh6GamzsSU/39wec6Pmlx7Ehoa2cYjBp
+sL9fc7aemSh2igjWhIOdB53hB1r5DUAaDWqLxVuSQrKZnDlheDlbydbcVxfy6hG/
+J71k/4sPopKcVzi0/o3wRs8jRIulvQC9f3+PVm84XeVuOWwsgR7euepL/ZImBmiw
+1UwvLB4Q50ZAbKa4bi3VxC6E9taIjnc3LTvyM1wlMFyb3mWBgd549rMImyVdQfHf
+/Sol9zzE3BY81fo61KJ+4QIU/6S2uE2KIIpYBDKQm0k7CRscwRUXvnSOgGlY1uSZ
+uAkOck8vbxbUfZl5AGRKIA5ybHrtC6TqQJQ9fLS2naCo4s2zN8U30od21Gt0s7tC
+5uLTqGoKMUSb/8UigJyIZGz3enuTegtUf+LcANyzZstCjGj1IIbN/HbvgWFIC3cz
+L+EcnH9b9unBCpndvaMt0CzSGkEZmIXVCpCQYmr4OIV3xpngl5liayo6+BvhWUWt
+ok+4G8SrDoVM59h9MrEiTpOcFScFQB1dB+zThRWUd1r27nxZGnM=
+=nxUW
+-----END PGP SIGNATURE-----
+
+--Sig_/9B79vWVpJMlAP_qOfW3sima--
