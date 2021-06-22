@@ -2,97 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBDC3B057E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B793B0580
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhFVNLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 09:11:33 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:18576 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229786AbhFVNLc (ORCPT
+        id S230302AbhFVNMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 09:12:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229913AbhFVNMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 09:11:32 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15MD7YWJ016699;
-        Tue, 22 Jun 2021 13:09:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=nNGhc4wVJo2amK5VSNy7N7O6Kcp1UZjvj4FvRgNDlDU=;
- b=gVzJ8fnTUgU5WtWYj6Ff099RIDwila0KKyhfLqNc0q2DxEM5eXGFyfV01TY58zsX8C7N
- PLAV44lfsC2D7j5ODt1/pFd7vFDvl02RG7JAoi47mpP1jCmNbxgYTCVo+wVSkXev2+mX
- 5AU2MZgPQNthPjnlISpg7QC/SKmohKsbZY2mGJ14mVw3EoiuCnK9KIUoP2MiLR66Mhxk
- s4IniOrM4ZiK3F9QB/XAManTAV6vs3m9U/EalzyCCjH4RtzZ2ZmH2W6rXPIDpyqHcUUo
- OgE2nyDXZY/jIvMA9aTLtW82nOtccJsOP3dtnA9gi8rt1EogPTNqehKZeqFRdlUY3mdy YQ== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39ap66k9va-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Jun 2021 13:09:02 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15MD67RX147909;
-        Tue, 22 Jun 2021 13:09:01 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 3998d7e3ax-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Jun 2021 13:09:01 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15MD71pv151810;
-        Tue, 22 Jun 2021 13:09:00 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 3998d7e3a8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Jun 2021 13:09:00 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15MD8xKO009280;
-        Tue, 22 Jun 2021 13:08:59 GMT
-Received: from mwanda (/102.222.70.252)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 22 Jun 2021 06:08:59 -0700
-Date:   Tue, 22 Jun 2021 16:08:52 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jassi Brar <jassisinghbrar@gmail.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] mailbox: mtk-cmdq: Fix uninitialized variable in
- cmdq_mbox_flush()
-Message-ID: <YNHg5NuJILrrBIZ/@mwanda>
+        Tue, 22 Jun 2021 09:12:21 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 299B0C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 06:10:05 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id f16-20020a05600c1550b02901b00c1be4abso1732153wmg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 06:10:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YUoML3AWQ6rW3EG1Dkf3W8mbHaca+rbwXPvZi93toVY=;
+        b=h9i6POkix//G+hnkTHZqeCf68v9yd7LTvSnYMHTfrpPOr310ClJiKfQvqa0q4WAMx/
+         gPd2Ii5J78LuwhiGIh5Po7mOLR2Xgh11Jf9cd1RBADGV0Xh6gQFJ4auPcfySzuzDxFIl
+         YArgjEFxmPIRfk9YTGPXztLkcwUCAZbV48Lc7ObqYyH5cZKrGv12/D60ndgQcKTvSb4V
+         nyv03t8+yHcKEkfbz0KSVN1eu6yze7y2M9VIy5r4eJkMrHErtmEGK6vsnmHtfoGPDcWo
+         NS0xHglpZpbO2gYqnj1b+r7C0ax0tottKfMjspe18qsrca4QddjrWlkAzcOionYvn6ph
+         TMcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YUoML3AWQ6rW3EG1Dkf3W8mbHaca+rbwXPvZi93toVY=;
+        b=YghNlbZ9sN1ScIP5QiJPiqeeCs2tTBbuofp/ZMx8+ztgTTq4EcQUXTSpxhCc0/IXPk
+         Zpto34rLisOsx6Zci3rHUJ9rtry3QIUkZXj+02UnubBNN3L57MUtYkim/092W3VJgHtg
+         NoorriPLFGO1Nsc+FFwEAPOEq9YhoA8WOcyICaD+27wRwLHUgZE3DxTRsHG1zTD5rvXI
+         lFbBflg/lrXro4l+32i1SvTjb4seNvHm/HL9Dn/bDSoWKK23wNJnwZyM8OTV7noWHW2Y
+         QX9JbbumbaEiEBcxdZyIhn7vlYzJHhEoQwR+5fE/wnDJnds9/C8iQEtsGd672H8tWzS5
+         /KhQ==
+X-Gm-Message-State: AOAM530yAEvuOyTs7HLrUvVbBEU+gH4nL4esMBNoYUXO+PXrQvL5A3yp
+        Zh5cgdOC1z8u3KpLkUZuF7A=
+X-Google-Smtp-Source: ABdhPJzaMq/VeYYFTH3p68Cx/qIvC4zpm12tEvnNrYg1q5K1HpKmro4dusxDtzyet4piB9qLBQo4SA==
+X-Received: by 2002:a7b:cd94:: with SMTP id y20mr4135543wmj.145.1624367403797;
+        Tue, 22 Jun 2021 06:10:03 -0700 (PDT)
+Received: from agape ([5.171.73.108])
+        by smtp.gmail.com with ESMTPSA id m6sm26112843wrw.9.2021.06.22.06.10.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 06:10:03 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Fabio Auto <fabioaiuto83@gmail.com>
+Subject: [PATCH v3 00/17] staging: rtl8723bs: remove 5Ghz code
+Date:   Tue, 22 Jun 2021 15:09:44 +0200
+Message-Id: <cover.1624367071.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-ORIG-GUID: 8p3wwlkN12fs7dM7rr5b_8Wf51qeErBx
-X-Proofpoint-GUID: 8p3wwlkN12fs7dM7rr5b_8Wf51qeErBx
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "cb" pointer needs to be initialized before can assign
-"data.data = cb->data;".
+This patch series removes all occurences of 5Ghz code over the
+driver as required from driver's TODO list:
 
-Fixes: 4a3cb0303984 ("mailbox: mtk-cmdq: Use mailbox rx_callback")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/mailbox/mtk-cmdq-mailbox.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+        - find and remove remaining code valid only for 5 GHz.
+          most of the obvious one have been removed, but things
+          like channel > 14 still exist.
 
-diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
-index 301e65b9527a..67a42b514429 100644
---- a/drivers/mailbox/mtk-cmdq-mailbox.c
-+++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-@@ -455,10 +455,10 @@ static int cmdq_mbox_flush(struct mbox_chan *chan, unsigned long timeout)
- 
- 	list_for_each_entry_safe(task, tmp, &thread->task_busy_list,
- 				 list_entry) {
-+		cb = &task->pkt->async_cb;
- 		data.sta = -ECONNABORTED;
- 		data.data = cb->data;
- 		data.pkt = task->pkt;
--		cb = &task->pkt->async_cb;
- 		if (cb->cb)
- 			cb->cb(data);
- 
+rtl8723bs work on 2.4Ghz band and supports 802.11bgn standards.
+So all code related to 802.11a/ac standard is removed, as well
+as code related to channel numbers above 14.
+
+VHT code is deleted as well, for it's related to 802.11ac.
+
+Comments are fixed accordingly and many unused variables are
+deleted.
+
+Every single patch of this series has been tested on a
+Lenovo Ideapad MIIX 300-10IBY except for the last one,
+for obvious reason (it deletes just the TODO item).
+So:
+
+Tested-by: Fabio Auto <fabioaiuto83@gmail.com>
+------------------------------------------------
+Changes in v3:
+	- delete a condition in patch 1 as pointed out by
+	  Hans
+	- fix in 'Changes in v2' text (pointed out).
+Changes in v2:
+        - drop v1 15/18 patch, for it deliberately
+          does register writes as pointed out by Hans.
+
+Fabio Aiuto (17):
+  staging: rtl8723bs: remove all 5Ghz network types
+  staging: rtl8723bs: remove code related to unsupported channel
+    bandwidth
+  staging: rtl8723bs: remove unused enum items related to channel
+    bonding
+  staging: rtl8723bs: rename enum items related to channel bonding
+  staging: rtl8723bs: remove 5Ghz field in struct registry_priv
+  staging: rtl8723bs: remove struct rt_channel_plan_5g
+  staging: rtl8723bs: remove all branchings between 2.4Ghz and 5Ghz band
+    types
+  staging: rtl8723bs: beautify prototypes in include/hal_com_phycfg.h
+  staging: rtl8723bs: remove 5Ghz code related to channel plan
+    definition
+  staging: rtl8723bs: remove some unused 5Ghz macro definitions
+  staging: rtl8723bs: remove 5Ghz code related to RF power calibration
+  staging: rtl8723bs: remove VHT dead code
+  staging: rtl8723bs: remove unused ODM_CMNINFO_BOARD_TYPE enum item
+  staging: rtl8723bs: fix macro value for 2.4Ghz only device
+  staging: rtl8723bs: remove obsolete 5Ghz comments
+  staging: rtl8723bs: fix check allowing 5Ghz settings
+  staging: rtl8723bs: remove item from TODO list
+
+ drivers/staging/rtl8723bs/TODO                |    2 -
+ drivers/staging/rtl8723bs/core/rtw_ap.c       |   11 +-
+ .../staging/rtl8723bs/core/rtw_ieee80211.c    |   22 +-
+ drivers/staging/rtl8723bs/core/rtw_mlme.c     |   10 -
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c |  328 ++---
+ .../staging/rtl8723bs/core/rtw_wlan_util.c    |   29 +-
+ drivers/staging/rtl8723bs/core/rtw_xmit.c     |    5 +-
+ .../staging/rtl8723bs/hal/HalBtc8723b1Ant.c   |    4 +-
+ .../staging/rtl8723bs/hal/HalBtc8723b2Ant.c   |    5 +-
+ drivers/staging/rtl8723bs/hal/HalBtcOutSrc.h  |    1 -
+ .../staging/rtl8723bs/hal/HalHWImg8723B_BB.c  |   17 +-
+ .../staging/rtl8723bs/hal/HalHWImg8723B_RF.c  |  595 ++++-----
+ .../staging/rtl8723bs/hal/HalPhyRf_8723B.c    |   19 +-
+ drivers/staging/rtl8723bs/hal/hal_btcoex.c    |    4 -
+ drivers/staging/rtl8723bs/hal/hal_com.c       |  241 ----
+ .../staging/rtl8723bs/hal/hal_com_phycfg.c    | 1059 +++--------------
+ drivers/staging/rtl8723bs/hal/odm.c           |   50 -
+ drivers/staging/rtl8723bs/hal/odm.h           |   42 +-
+ drivers/staging/rtl8723bs/hal/odm_DIG.c       |    2 -
+ .../rtl8723bs/hal/odm_EdcaTurboCheck.c        |    4 +-
+ .../rtl8723bs/hal/odm_RegConfig8723B.c        |    5 +-
+ .../rtl8723bs/hal/odm_RegConfig8723B.h        |    2 -
+ drivers/staging/rtl8723bs/hal/rtl8723b_dm.c   |    1 -
+ .../staging/rtl8723bs/hal/rtl8723b_hal_init.c |   41 +-
+ .../staging/rtl8723bs/hal/rtl8723b_phycfg.c   |   43 +-
+ drivers/staging/rtl8723bs/hal/sdio_halinit.c  |    5 -
+ .../rtl8723bs/include/Hal8192CPhyReg.h        |    2 -
+ drivers/staging/rtl8723bs/include/drv_types.h |   10 +-
+ drivers/staging/rtl8723bs/include/hal_com.h   |   62 +-
+ .../rtl8723bs/include/hal_com_phycfg.h        |  198 +--
+ .../staging/rtl8723bs/include/hal_com_reg.h   |    1 -
+ drivers/staging/rtl8723bs/include/hal_data.h  |   40 +-
+ drivers/staging/rtl8723bs/include/hal_pg.h    |    2 -
+ drivers/staging/rtl8723bs/include/hal_phy.h   |   10 -
+ drivers/staging/rtl8723bs/include/ieee80211.h |   67 +-
+ .../staging/rtl8723bs/include/rtl8723b_xmit.h |   21 -
+ drivers/staging/rtl8723bs/include/rtw_ht.h    |    4 -
+ .../staging/rtl8723bs/include/rtw_mlme_ext.h  |   52 +-
+ drivers/staging/rtl8723bs/include/rtw_rf.h    |   33 +-
+ drivers/staging/rtl8723bs/include/wifi.h      |    1 -
+ .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c |    4 -
+ .../staging/rtl8723bs/os_dep/ioctl_linux.c    |    8 +-
+ drivers/staging/rtl8723bs/os_dep/os_intfs.c   |   13 +-
+ drivers/staging/rtl8723bs/os_dep/wifi_regd.c  |    4 -
+ 44 files changed, 640 insertions(+), 2439 deletions(-)
+
 -- 
-2.30.2
+2.20.1
 
