@@ -2,91 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A323B09FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE58F3B09FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhFVQMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 12:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbhFVQMn (ORCPT
+        id S230232AbhFVQMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 12:12:52 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56250 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229913AbhFVQMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:12:43 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9879CC061574;
-        Tue, 22 Jun 2021 09:10:26 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id t19-20020a17090ae513b029016f66a73701so2011813pjy.3;
-        Tue, 22 Jun 2021 09:10:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i+pKtokUfHb9UEDL49Cs/ADaX0vnVkh3TA5MqGHAFU0=;
-        b=dSOqXku68l3KNrDrATiu7AmcidU75ZovkEJ+m1Oaj7CVzeF8GVlh+HUpKBitX9YXiV
-         UCBZ0eNURtnp3raaEammg6fMZsgUPdRDWOp8swppEbWB3zTeil4gjTWBCF1s1uCbEDhs
-         upF+1O2kCw2iG9jwzdaempVXjIoYxWBJ1vQmBk8sKy7NCuUyMjZraSPmWVqgzDdodmY6
-         aQWdhJo3YArme+oAWXcrnV2GT9qlMow9MZeAtWRjQtlqnauQiOTCx6Ithz4vVV0eXVp4
-         DP2kVa9NEHCkiLWK2EfPr2XSwpSDNxepvjFDfuXqDCZBJ3zWVNTHMt2FhLKqsSB7AYjX
-         dVWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i+pKtokUfHb9UEDL49Cs/ADaX0vnVkh3TA5MqGHAFU0=;
-        b=FMun6Evh7wRd/kdgJnp9sGdDyOWQjK0Z3lsKjRrjSV1geq2F3nhJkXyPQ7WyBheX+U
-         cQ3qu7KVoL3W07uqmvbN2MM/ok8sy1up2ip0PBUZMNwniQ1lYT/TZj2GaZAv4Xst//Py
-         mbSV0Aedtx4CtOpMauTBgIY0vYB4wzRhU/+b2k782/o8QQBTbvs/OOATHR2DUSQA0iqC
-         6TEu2aH7vF86ZB3S7Wza1lQZE3x3XwtfCR2GRtHN47S5/rZ4FVTtoiEiM/EpuncmlMxF
-         l/hYk2oYpCBgk4aTvQdQpDOunFnGXd4AfqhvyDQvEbg2JiHUmV0n29SWUbLWKH3O7awl
-         IkUw==
-X-Gm-Message-State: AOAM532wN2FVGZzvsh/h3+mw4Wwv4zhPSWn0FIWlGnV/X9eai0S8qGdf
-        zVGKt6W7WI0BsA8WRHcVm5Q=
-X-Google-Smtp-Source: ABdhPJy//gOo6kHUp4EzVtkFahzZ82HvTWE90I5viKpK0fG/qiqurwFIJnos1XfOMWRc+b/89ySp+w==
-X-Received: by 2002:a17:90b:1bc4:: with SMTP id oa4mr4724360pjb.18.1624378226122;
-        Tue, 22 Jun 2021 09:10:26 -0700 (PDT)
-Received: from fedora.. ([2405:201:6008:6d7c:6bfd:dac8:eafe:7bde])
-        by smtp.googlemail.com with ESMTPSA id ml5sm2780135pjb.3.2021.06.22.09.10.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 09:10:25 -0700 (PDT)
-From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-To:     axboe@kernel.dk
-Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+cf89d662483d6a1a0790@syzkaller.appspotmail.com
-Subject: [PATCH] loop: fix setting arbitrarily large block size
-Date:   Tue, 22 Jun 2021 21:40:19 +0530
-Message-Id: <20210622161019.130090-1-chouhan.shreyansh630@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 22 Jun 2021 12:12:48 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BB9A12196C;
+        Tue, 22 Jun 2021 16:10:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624378231; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OBsiPuL7h3qkYc/fzzIiZgnMwkZnm2LoFEaxuYiK7oU=;
+        b=0qpUDOz/k6ZY3yfuY681vkq6Y0DDYra8sUKngniDbHSZA9WWr9yeh44EWcnKBHyuIBHw6/
+        NtJe7XPyzDkthNliUvKxwF62SZ0S32+VeHg+aRcW3STKsNJQOhpuFqlUxAF8MxtPSLqZEh
+        KHgVsPxZoVqmWgU/MEZXlJGEP1jBhDw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624378231;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OBsiPuL7h3qkYc/fzzIiZgnMwkZnm2LoFEaxuYiK7oU=;
+        b=XtIutccXexZz64VEqwafXQ1xCTbg+rpiSuXnTbnMgzb57ucrRTsLr9bpveTi/D68k2aWHK
+        7xz2JtekQXzhPTBg==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 7861111A97;
+        Tue, 22 Jun 2021 16:10:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624378231; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OBsiPuL7h3qkYc/fzzIiZgnMwkZnm2LoFEaxuYiK7oU=;
+        b=0qpUDOz/k6ZY3yfuY681vkq6Y0DDYra8sUKngniDbHSZA9WWr9yeh44EWcnKBHyuIBHw6/
+        NtJe7XPyzDkthNliUvKxwF62SZ0S32+VeHg+aRcW3STKsNJQOhpuFqlUxAF8MxtPSLqZEh
+        KHgVsPxZoVqmWgU/MEZXlJGEP1jBhDw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624378231;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OBsiPuL7h3qkYc/fzzIiZgnMwkZnm2LoFEaxuYiK7oU=;
+        b=XtIutccXexZz64VEqwafXQ1xCTbg+rpiSuXnTbnMgzb57ucrRTsLr9bpveTi/D68k2aWHK
+        7xz2JtekQXzhPTBg==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id dotLC3QL0mDIHgAALh3uQQ
+        (envelope-from <colyli@suse.de>); Tue, 22 Jun 2021 16:10:28 +0000
+Subject: Re: [PATCH] md: use BLK_STS_OK instead of hardcode
+To:     Xianting Tian <xianting_tian@126.com>
+Cc:     linux-bcache@vger.kernel.org, agk@redhat.com, snitzer@redhat.com,
+        kent.overstreet@gmail.com, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org,
+        Xianting Tian <xianting.tian@linux.alibaba.com>,
+        song@kernel.org, dm-devel@redhat.com
+References: <1624377241-8642-1-git-send-email-xianting_tian@126.com>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <930e7a23-a22e-409f-e058-0b1576c5d9d0@suse.de>
+Date:   Wed, 23 Jun 2021 00:10:23 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <1624377241-8642-1-git-send-email-xianting_tian@126.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-loop_validate_block_size took an unsigned short argument. Passing an
-argument with size greater than the size of unsigned short would cause
-an overflow and could potentially render the upper bound check on the
-block size useless, allowing to set an arbitrarily large block size.
+On 6/22/21 11:54 PM, Xianting Tian wrote:
+> When setting io status, sometimes it uses BLK_STS_*, sometimes,
+> it uses hardcode 0.
+> Use the macro to replace hardcode in multiple places.
+>
+> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+> ---
+>  drivers/md/bcache/request.c  | 2 +-
+>  drivers/md/dm-clone-target.c | 2 +-
+>  drivers/md/dm-integrity.c    | 2 +-
+>  drivers/md/dm-mpath.c        | 2 +-
+>  drivers/md/dm-raid1.c        | 2 +-
+>  drivers/md/dm.c              | 2 +-
+>  drivers/md/raid1.c           | 4 ++--
+>  drivers/md/raid10.c          | 2 +-
+>  8 files changed, 9 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/md/bcache/request.c b/drivers/md/bcache/request.c
+> index 6d1de88..73ba5a6 100644
+> --- a/drivers/md/bcache/request.c
+> +++ b/drivers/md/bcache/request.c
+> @@ -790,7 +790,7 @@ static void cached_dev_read_error(struct closure *cl)
+>  		/* Retry from the backing device: */
+>  		trace_bcache_read_retry(s->orig_bio);
+>  
+> -		s->iop.status = 0;
+> +		s->iop.status = BLK_STS_OK;
+>  		do_bio_hook(s, s->orig_bio, backing_request_endio);
+>  
+>  		/* XXX: invalidate cache */
 
-Reproted-by: syzbot+cf89d662483d6a1a0790@syzkaller.appspotmail.com
-Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
----
- drivers/block/loop.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Xianting,
 
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index 9a758cf66507..635baff0dd66 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -236,7 +236,7 @@ static void __loop_update_dio(struct loop_device *lo, bool dio)
-  * @bsize: size to validate
-  */
- static int
--loop_validate_block_size(unsigned short bsize)
-+loop_validate_block_size(unsigned long bsize)
- {
- 	if (bsize < 512 || bsize > PAGE_SIZE || !is_power_of_2(bsize))
- 		return -EINVAL;
--- 
-2.31.1
+NACK for bcache part.
 
+The change is incomplete, if you want to replace 0 by BLK_STS_OK, you
+should check all locations
+where s->iop.status is checked and replace with BLK_STS_OK when necessary.
+
+One but not the only one example is,
+871         if (s->iop.status)
+872                 continue_at_nobarrier(cl, cached_dev_read_error,
+bcache_wq);
+Maybe you should change to
+        if (s->iop.status != BLK_STS_OK)
+                    continue_at_nobarrier(cl, cached_dev_read_error,
+bcache_wq);
+
+
+Just FYI.
+
+Coly Li
