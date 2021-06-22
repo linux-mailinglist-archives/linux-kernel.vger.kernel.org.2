@@ -2,112 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17DFE3B0EE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36BE93B0ED2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbhFVUfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 16:35:36 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:47049 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhFVUff (ORCPT
+        id S230018AbhFVUfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 16:35:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229629AbhFVUfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 16:35:35 -0400
-Received: from mail-wr1-f46.google.com ([209.85.221.46]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1Mqrs9-1lRSM03R1V-00mrbw; Tue, 22 Jun 2021 22:33:17 +0200
-Received: by mail-wr1-f46.google.com with SMTP id m18so133528wrv.2;
-        Tue, 22 Jun 2021 13:33:17 -0700 (PDT)
-X-Gm-Message-State: AOAM532uPd44LJIKfFzGpLjTCnJEot8IKsQp2+R0J2No2wyfqRGCzWh4
-        V6IJVaLdllkpXYPF17LjcmRSVTNkD+/VNP36FqQ=
-X-Google-Smtp-Source: ABdhPJxIxO/xXDmBL9CuTqUfJPeIqUNEO8k6TjCUhFN3xY3HAWWytEGfglJh+8bqyJP/NPuAFwnum684HVLDv6sIonM=
-X-Received: by 2002:a5d:5905:: with SMTP id v5mr7302490wrd.361.1624393997509;
- Tue, 22 Jun 2021 13:33:17 -0700 (PDT)
+        Tue, 22 Jun 2021 16:35:03 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3716CC061574;
+        Tue, 22 Jun 2021 13:32:46 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id s6so467409edu.10;
+        Tue, 22 Jun 2021 13:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hJ3e9mokzvcYFf2RFFI+m+L0p65e4PGAuykS5ZlYTVY=;
+        b=u/0Zrba8rWZh50fzgKbTkUXafR/0mXWtFhGYU2DfzdVhVCRggN6ZN8VO1b81bPOSrZ
+         KNMvxDfFWVJ/KLZvGVNQ8tB+I5KtQBxAj+E/1jGsi94qTD8smxxBQfkmri96oeoI2WCF
+         uZo9D6BaP20sZBZLTwau5gZqOuZazqWgfXRlhbGq7Y/mVPxLMWxNizLQIwF2uwT+NPE3
+         +ETaVtqLeTyo1YBeY9vaLP45lfhcTkdK4kTfyNbLFG2ltm0PXXprqvXGF4RKJrUK3jMx
+         PfRXNJHF7uTEexXaJZsXv95UeNxtcZ/Kqona3HvlNoM7LDOqoLAbH+cRclh+WA4+GlQ6
+         SD/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hJ3e9mokzvcYFf2RFFI+m+L0p65e4PGAuykS5ZlYTVY=;
+        b=ZUFKZf0+Ktgqc5UjmiawGXLl3PfZaz3vA8cWnmnLlAFx05YpO7w66A3KMEq7vmE36T
+         uqMwdGznG7O66d/Dpb6iye3Qi6HSM8IfveHiK++Yv64PhewBuXhEVyOjIum3x45JaQPO
+         jUtDOvdV3QdndM1iZigbdjwtSG4mfeKtIKRBbIyRW7O2TTI6XS63oBe7AH+/OrIaYqz5
+         Y/mScRgVRGy33ZHx3iaLUZo2+GsVoK4KVXeVUWtpORWZly1h0onVeSZuwGoxDJjTSBtK
+         idx3MwoF6xl7QAid+fzaA7b7HNXDe+g0qDmbURXJe3Sq1EjH/2irETTr+HvI2bfmFjLF
+         yFcQ==
+X-Gm-Message-State: AOAM531zVfxc2dhpLzeXu4KvQk8uiizNbZIEau1tKnYpl4akkTpo5Q1j
+        HGGW1UoAgPxJPqY4pPkeyeccBVdZoSI9Tw==
+X-Google-Smtp-Source: ABdhPJxA445qpE2sE2EuJP9nMCYUDNR/+2aGTVa7n4kX0JBTcgRaJwkHQWqgcV/oFmgYlIPOdnAOyA==
+X-Received: by 2002:aa7:db03:: with SMTP id t3mr7590601eds.153.1624393964833;
+        Tue, 22 Jun 2021 13:32:44 -0700 (PDT)
+Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
+        by smtp.gmail.com with ESMTPSA id o5sm732979edt.44.2021.06.22.13.32.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 13:32:44 -0700 (PDT)
+From:   Iskren Chernev <iskren.chernev@gmail.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, linux-usb@vger.kernel.org,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Iskren Chernev <iskren.chernev@gmail.com>
+Subject: [PATCH v1 0/3] Add USB HS support for SM4250/6115
+Date:   Tue, 22 Jun 2021 23:32:37 +0300
+Message-Id: <20210622203240.559979-1-iskren.chernev@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210622202345.795578-1-jernej.skrabec@gmail.com>
-In-Reply-To: <20210622202345.795578-1-jernej.skrabec@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 22 Jun 2021 22:30:58 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1mvRTTFHtxqREmcbgJS+e94BHajCtAU_fzBhNNKjJBcg@mail.gmail.com>
-Message-ID: <CAK8P3a1mvRTTFHtxqREmcbgJS+e94BHajCtAU_fzBhNNKjJBcg@mail.gmail.com>
-Subject: Re: [RFC PATCH] cw1200: use kmalloc() allocation instead of stack
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     pizza@shaftnet.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:UDwhB0AIeFYw8fWlG1HJDe/qGwXmYMz69G8vpsnra2CQVSh8lgt
- pbGHN8cMNCDDd8FKbV87kDqsN3VuEryRhvAAXrV2vSRBetLS//TQOipgc3YbZwzZOEIKSPW
- +9hJMSmXD1ehSw5HB2+0QQA92U8q0cDGjPrABSxJ4MeqT3Nxb0iGy87eADLY3+9IWOXHsaS
- XIfzjmWcJYg6w0r08gEKA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mXPUlyWGewU=:qsP5JBu1opz816nEqKxwqX
- LgV2UsCLyCttOFmeWt98zf7GQmQUZLw/Nk91XuZkOiEWEu38PZWJ9mY4syOhYqR8egyoW15bC
- HtCt3cyRYhwUKDRFY73ADtY+Rb/A2Ysg0ymgQ4yhE2h/UeKrm84UzGUo9Q7N7DHwJVonxg+20
- YgSWhXW5mXA+B0nN5B72KoQxXUFLhbPbUkEcyToPsrd66Zh4AeN0BOoLaPjhC5Aap8Jo6S51C
- QOwKmGMgQ0MLbtrTaS7uGqFMXL8GkrC+wPFyxr+bmcI7Hsg0yUj1JNgysO2r/G5XL5J732SGU
- nRoP8H+20ZwwwRtwtpR+CRivE7Ew77kkdbzMURH11Ocxfz0ker+WATZkcCU8njFBRoX9FedYe
- bqf78CbgJhz2063dPV2aajScT6RGNgQM8Aw/C+N9y8qA5wdukMOEHpxBxXoA+5a0QEMSWW9Ru
- XtKC0eEqCZtpbyItnxwhLwNPk4QxTX8gZxjCh8TkoGjt2YCStniJxbIbaTLzDvzAdKupVYb21
- 1Ev1kTozJcz4ZgRYstm9xY=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 10:24 PM Jernej Skrabec
-<jernej.skrabec@gmail.com> wrote:
->
-> It turns out that if CONFIG_VMAP_STACK is enabled and src or dst is
-> memory allocated on stack, SDIO operations fail due to invalid memory
-> address conversion:
+The USB controller found on SM4250/6115 is dwc3 (phy v1), very similar to
+existing supported phys (like msm8996), with slighly different tune seq.
 
-Thank you for sending this!
+Iskren Chernev (3):
+  dt-bindings: usb: qcom,dwc3: Add bindings for sm6115/4250
+  dt-bindings: phy: qcom,qusb2: document sm4250/6115 compatible
+  phy: qcom-qusb2: Add configuration for SM4250 and SM6115
 
-It's worth pointing out that even without CONFIG_VMAP_STACK, using
-dma_map_sg() on a stack variable is broken, though it will appear to
-work most of the time but rarely cause a stack data corruption when
-the cache management goes wrong.
+ .../bindings/phy/qcom,qusb2-phy.yaml          |  2 ++
+ .../devicetree/bindings/usb/qcom,dwc3.yaml    |  2 ++
+ drivers/phy/qualcomm/phy-qcom-qusb2.c         | 34 +++++++++++++++++++
+ 3 files changed, 38 insertions(+)
 
-This clearly needs to be fixed somewhere, if not with your patch, then
-a similar one.
 
-> diff --git a/drivers/net/wireless/st/cw1200/hwio.c b/drivers/net/wireless/st/cw1200/hwio.c
-> index 3ba462de8e91..5521cb7f2233 100644
-> --- a/drivers/net/wireless/st/cw1200/hwio.c
-> +++ b/drivers/net/wireless/st/cw1200/hwio.c
-> @@ -66,33 +66,65 @@ static int __cw1200_reg_write(struct cw1200_common *priv, u16 addr,
->  static inline int __cw1200_reg_read_32(struct cw1200_common *priv,
->                                         u16 addr, u32 *val)
->  {
-> -       __le32 tmp;
-> -       int i = __cw1200_reg_read(priv, addr, &tmp, sizeof(tmp), 0);
-> -       *val = le32_to_cpu(tmp);
-> +       __le32 *tmp;
-> +       int i;
-> +
-> +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-> +       if (!tmp)
-> +               return -ENOMEM;
-> +
-> +       i = __cw1200_reg_read(priv, addr, tmp, sizeof(*tmp), 0);
-> +       *val = le32_to_cpu(*tmp);
-> +       kfree(tmp);
->         return i;
->  }
+base-commit: e71e3a48a7e89fa71fb70bf4602367528864d2ff
+--
+2.31.1
 
-There is a possible problem here when the function gets called from
-atomic context, so it might need to use GFP_ATOMIC instead of
-GFP_KERNEL. If it's never called from atomic context, then this patch
-looks correct to me.
-
-The alternative would be to add a bounce buffer check based on
-is_vmalloc_or_module_addr() in sdio_io_rw_ext_helper(), which would
-add a small bit of complexity there but solve the problem for
-all drivers at once. In this case, it would probably have to use
-GFP_ATOMIC regardless of whether __cw1200_reg_read_32()
-is allowed to sleep, since other callers might not.
-
-      Arnd
