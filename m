@@ -2,170 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7163B3B0B8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF103B0B96
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232331AbhFVRmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 13:42:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229501AbhFVRmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 13:42:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E8B661027;
-        Tue, 22 Jun 2021 17:39:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624383586;
-        bh=iqEeZ7CPEap/56zfR94TKJmZKDW+jujrktATGKQ2DXM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X63mlsbrg+iZs6+g5yg5JcgkN659oYEpUvB/AgBxNORs52o/EChSGUaxZWfqswa77
-         3HEEE+AmMSae9LEguHf7wFACXlDH8h3sPmOIsuEZX69m7VZq3+c8HVobodNnRN3AXP
-         e6e8F9AUV662a8buNfuUfDhlv542rIVyLKFPIbIY1P8L+cBhB2Kwfaw9g4FY2VSBWK
-         IZAUU7hHzUdFhrmyMb/YAorpPCP6Y3C+tN/m/VX1K12YKrmWOLpOld3cEGDAzuSGwQ
-         zNv0CIZIzKsVtPP2ywv461SQB1RrhF6+z0WU2kSeUR7NqePRAbRslns5C+wbC3b9xm
-         eQZ/LJZjzdzhg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BBAF840B1A; Tue, 22 Jun 2021 14:39:42 -0300 (-03)
-Date:   Tue, 22 Jun 2021 14:39:42 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [RFC 00/10] perf: Add build id parsing fault detection/fix
-Message-ID: <YNIgXkH1xaF7H3Tr@kernel.org>
-References: <20210622153918.688500-1-jolsa@kernel.org>
+        id S232187AbhFVRm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 13:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232363AbhFVRmX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 13:42:23 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABB7C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:40:06 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id k8so31105755lja.4
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:40:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=66ra9JcEZ0eBr3diwYDmK55iDML4YsZIlomivlL4MkM=;
+        b=BN8pfadh6kxcRjOo7eBRIxfB3TqOIMMpU5w6SViYi3IbWgrX9pxyb+0MIPuTThh/Uk
+         UI374oOHBtqpQVOc5/7Wjq62OSZlw+Cs0ZJ9RtNvwUC7DVtrhmo38JY5T8rAYwai72SJ
+         tm4pt9J7lEO2DOp7XU52ViFjgfM4TXiIVDMsU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=66ra9JcEZ0eBr3diwYDmK55iDML4YsZIlomivlL4MkM=;
+        b=WVsMqbG6x8s8R+aYCvx8q/be5MQZMtGfa3c3Q0en5F9+2iQHH3JVB+io4DdzENk+hA
+         JTN3Qg7ALevhxblEyaQSNUUnoUzIxcwZEGMRMUY6FONtst0dEpVPjas/9jfp/jkuz7At
+         9XwGQpOUTxou7wa9aKO8XH1oxiO0jqjCiZiUI6/GeTuhCRXpK98yL8wmhBwkwF3f7izy
+         yPMaxSWnpEw0kli2gA2nH3UTaP4oXdYAZsqMR4atXkhXp1SHvSKCJByOP7WKSY0Vfpgl
+         C3RcFXHA2Tp85Euxx9FXan9vP3eubV0a7gTwUP/L0YqOiH41i9RtsHRZ3EGgZOc407EH
+         2wkA==
+X-Gm-Message-State: AOAM5324xMJwi4S5pxVivX/5QPOHtD6eBeOO6h5ZS+QyYOiT5AN41Qlz
+        V4gAp6bLg9jc5/jMXOM3hWk+wTL/n3ByReMS7Dc=
+X-Google-Smtp-Source: ABdhPJzO+rn4VwhwesFgTU0DNDQqgZUGXwCrb8Us4CinX3A5+8pvM/zHTQ1QoSgPEBi793O1Ub+nNA==
+X-Received: by 2002:a2e:b815:: with SMTP id u21mr4270431ljo.422.1624383604549;
+        Tue, 22 Jun 2021 10:40:04 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id m18sm1631ljg.105.2021.06.22.10.40.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 10:40:03 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id a21so6146326ljj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:40:03 -0700 (PDT)
+X-Received: by 2002:a2e:7813:: with SMTP id t19mr4167347ljc.411.1624383601833;
+ Tue, 22 Jun 2021 10:40:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622153918.688500-1-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <3221175.1624375240@warthog.procyon.org.uk> <YNIBb5WPrk8nnKKn@zeniv-ca.linux.org.uk>
+ <YNIDdgn0m8d2a0P3@zeniv-ca.linux.org.uk> <YNIdJaKrNj5GoT7w@casper.infradead.org>
+In-Reply-To: <YNIdJaKrNj5GoT7w@casper.infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 22 Jun 2021 10:39:46 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh=YxjEtTpYyhgypKmPJQ8eVLJ4qowmwbnG1bOU06_4Bg@mail.gmail.com>
+Message-ID: <CAHk-=wh=YxjEtTpYyhgypKmPJQ8eVLJ4qowmwbnG1bOU06_4Bg@mail.gmail.com>
+Subject: Re: Do we need to unrevert "fs: do not prefault sys_write() user
+ buffer pages"?
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        "Ted Ts'o" <tytso@mit.edu>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jun 22, 2021 at 05:39:08PM +0200, Jiri Olsa escreveu:
-> hi,
-> this *RFC* patchset adds support to detect faults during
-> mmap2's build id parsing and a way to fix such maps in
-> generated perf.data.
-> 
-> It adds support to record build id faults count for session
-> and store it in perf.data and perf inject support to find
-> these maps and reads build ids for them in user space.
- 
-> It's probably best explained by the workflow:
-> 
->   Record data with --buildid-mmap option:
-> 
->     # perf record --buildid-mmap ...
->     ...
->     [ perf record: Woken up 1 times to write data ]
->     [ perf record: Failed to parse 4 build ids]
->     [ perf record: Captured and wrote 0.008 MB perf.data ]
-> 
->   Check if there's any build id fault reported:
-> 
->     # perf report --header-only
->     ...
->     # build id mmap stats: FAULTS 4, LOST 0, NOT FIXED
-> 
->   There is, check the stats:
-> 
->     # perf report --stat
-> 
->     Aggregated stats:
->              TOTAL events:        104
->                       ....
->            BUILD_ID fails:          4  (14.3%)
-> 
->   Yep, let's fix it:
-> 
->     # perf inject --buildid-mmap2 -i perf.data -o perf-fixed.data
+On Tue, Jun 22, 2021 at 10:26 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Tue, Jun 22, 2021 at 03:36:22PM +0000, Al Viro wrote:
+> >
+> > Note that the revert you propose is going to do fault-in anyway; we really can't
+> > avoid it.  The only thing it does is optimistically trying without that the
+> > first time around, which is going to be an overall loss exactly in "slow
+> > write_begin" case.  If source pages are absent, you'll get copyin fail;
+> > iov_iter_copy_from_user_atomic() (or its replacement) is disabling pagefaults
+> > itself.
+>
+> Let's not overstate the case.  I think for the vast majority of write()
+> calls, the data being written has recently been accessed.  So this
+> userspace access is unnecessary.
 
-Can we make it possible to automate this with --fixup-buildids or a
-perfconfig 'record' knob?
+Note that the fault_in_readable is very much necessary - the only
+question is whether it happens before the actual access, or after it
+in the "oh, it failed, need to retry" case.
 
-This would entail requesting that build-ids that _fail_ be sent to the
-side-band thread we have in 'perf record', this way we wouldn't have to
-traverse the whole perf.data file, be it with 'perf-record' at the end
-of a session with faulty build ids, or in a similar fashion using 'perf
-inject' as you suggest.
+There are two cases:
 
-I even think that we can have all these modes and let the user to decide
-how important is this for them and how convenient they want the whole
-process to be.
+ (a) the user page is there and accessible, and fault_in_readable
+isn't necessary
 
-- Arnaldo
- 
->   And verify:
-> 
->     # perf report -i perf-fixed.data --stats
-> 
->     Aggregated stats:
->                TOTAL events:        104
->                         ....
-> 
->   Good, let's see how many we fixed:
-> 
->     # perf report --header-only -i perf-fixed.data
->     ...
->     # build id mmap stats: FAULTS 4, LOST 0, FIXED(4)
-> 
-> 
-> I don't have a good way to test it, just by artificially
-> adding the faults in kernel code, but Ian and Namhyung
-> might have setup that could generate that.. would be great
-> to have a perf test for this.
-> 
-> Also available in here:
->   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
->   perf/buildid_stats
-> 
-> thoughts?
-> 
-> thanks,
-> jirka
-> 
-> 
-> ---
-> Jiri Olsa (10):
->       perf: Track build id faults for mmap2 event
->       perf: Move build_id_parse to check only regular files
->       perf: Add new read_format bit to read build id faults
->       perf: Add new read_format bit to read lost events
->       tools: Sync perf_event.h uapi
->       libperf: Do not allow PERF_FORMAT_GROUP in perf_evsel__read
->       perf record: Add support to read build id fails
->       perf record: Add new HEADER_BUILD_ID_MMAP feature
->       perf report: Display build id fails stats
->       perf inject: Add --buildid-mmap2 option to fix failed build ids
-> 
->  include/linux/perf_event.h                         |  2 ++
->  include/uapi/linux/perf_event.h                    | 20 +++++++++++++-------
->  kernel/events/core.c                               | 49 +++++++++++++++++++++++++++++++++++++++++++------
->  kernel/events/ring_buffer.c                        |  3 +++
->  tools/include/uapi/linux/perf_event.h              | 20 +++++++++++++-------
->  tools/lib/perf/evsel.c                             | 10 ++++++++++
->  tools/lib/perf/include/perf/evsel.h                | 11 ++++++++++-
->  tools/perf/Documentation/perf-inject.txt           |  3 +++
->  tools/perf/Documentation/perf.data-file-format.txt | 19 +++++++++++++++++++
->  tools/perf/builtin-inject.c                        | 45 +++++++++++++++++++++++++++++++++++++++++++--
->  tools/perf/builtin-record.c                        | 97 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  tools/perf/builtin-report.c                        | 35 +++++++++++++++++++++++++++++++++++
->  tools/perf/util/env.h                              |  6 ++++++
->  tools/perf/util/evsel.c                            | 12 ++++++++++++
->  tools/perf/util/header.c                           | 80 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  tools/perf/util/header.h                           |  1 +
->  tools/perf/util/map.h                              | 15 +++++++++++++++
->  tools/perf/util/perf_event_attr_fprintf.c          |  3 ++-
->  18 files changed, 407 insertions(+), 24 deletions(-)
-> 
+ (b) not
 
--- 
+and as you say, case (a) is generally the common one by far, although
+it will depend on the exact load (iow, (b) *could* be the common case:
+you can have situations where you mmap() things only to then write the
+mapping out, and then accesses will fault a lot).
 
-- Arnaldo
+But if it's case (a), then the fault_in_readable is going to be pretty
+cheap. We're talking "tens of CPU cycles", unlikely to really be an
+issue.
+
+If the case is (b), then the cost is not actually the access at all,
+it's the *fault* and the retry. Now we're talking easily thousands of
+cycles.
+
+And that's where it matters whether the fault_in_readable is before or
+after. If it's before the actual access, then you'll have just _one_
+fault, and it will handle the fault.
+
+If the fault_in_readable is only done in the allegedly unlikely
+faulting case and is _after_ the actual user space atomic access,
+you'll have *two* faults. First the copy_from_user_atomic() will
+fault, and return a partial result. But the page won't actually be
+populated, so then the fault_in_readable will have to fault _again_,
+in order to finally populate the page. And then we retry
+(successfully, except for the unbelievably rare case of racing with
+pageout) the actual copy_from_user_atomic().
+
+End result: doing the fault_in_readable "unnecessarily" at the
+beginning is likely the better optimization. It's basically free when
+it's not necessary, and it avoids an extra fault (and extra
+lock/unlock and retry) when it does end up faulting pages in.
+
+               Linus
