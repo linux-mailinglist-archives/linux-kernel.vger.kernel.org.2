@@ -2,119 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2B73B02C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3EA3B02CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhFVLbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 07:31:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48042 "EHLO mail.kernel.org"
+        id S230188AbhFVLbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 07:31:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229668AbhFVLbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 07:31:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3E7161369;
-        Tue, 22 Jun 2021 11:29:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624361346;
-        bh=O63HMcCcWtEueNvIeLFcow7esesD5gVu8wMOrXI9q2w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WIUt193jhMx+MlBXaUMUutP8+/nyDaP4lOVTDH+hC3sgHeuiPDoFpd8sybKkOqLtj
-         sU7P3yytonzfgctuwuezAa0+jmQqlyTK9NwW2xwcM21xiJiyXXIQncSV611/5kjodP
-         O5mEyv36RZVJ1W+tiBzL6OM2EenuvwtWYyirkq5p6MNaqjoRLlTiTeYB92WQLYDgfC
-         HGJdrukzxKyBpWO+bCVTesyi0C78q5gU9k6Z2I/jOdXgD+esb8kBDKH3vXI8yYDTEk
-         UiUYsKnCt0KFncqdsRG2IPsUWQV5x8wbi4xvEiVbF19M5mefcq9nTC1WICUo+F5ILt
-         AFuUro0BQeNeg==
-Date:   Tue, 22 Jun 2021 12:28:43 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-arm-msm@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org
-Subject: Re: [PATCH v3 2/7] regulator: qca6390: add support for QCA639x
- powerup sequence
-Message-ID: <20210622112843.GB4574@sirena.org.uk>
-References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
- <20210621223141.1638189-3-dmitry.baryshkov@linaro.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="O5XBE6gyVG5Rl6Rj"
-Content-Disposition: inline
-In-Reply-To: <20210621223141.1638189-3-dmitry.baryshkov@linaro.org>
-X-Cookie: fortune: not found
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S229668AbhFVLbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 07:31:46 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6375661369;
+        Tue, 22 Jun 2021 11:29:30 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lveau-0095OU-C0; Tue, 22 Jun 2021 12:29:28 +0100
+Date:   Tue, 22 Jun 2021 12:29:27 +0100
+Message-ID: <8735tacf3c.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Fuad Tabba <tabba@google.com>, Steven Price <steven.price@arm.com>
+Cc:     Steven Price <steven.price@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        qemu-devel@nongnu.org, Dave Martin <Dave.Martin@arm.com>,
+        Juan Quintela <quintela@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v17 2/6] KVM: arm64: Introduce MTE VM feature
+In-Reply-To: <CA+EHjTxgR3LraZ1gyXjwc5YoE5dVOtCfhjELYFH35KzJSuo6EQ@mail.gmail.com>
+References: <20210621111716.37157-1-steven.price@arm.com>
+        <20210621111716.37157-3-steven.price@arm.com>
+        <CA+EHjTxgR3LraZ1gyXjwc5YoE5dVOtCfhjELYFH35KzJSuo6EQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: tabba@google.com, steven.price@arm.com, steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, dgilbert@redhat.com, qemu-devel@nongnu.org, Dave.Martin@arm.com, quintela@redhat.com, richard.henderson@linaro.org, linux-kernel@vger.kernel.org, tglx@linutronix.de, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 21 Jun 2021 18:00:20 +0100,
+Fuad Tabba <tabba@google.com> wrote:
+> 
+> Hi,
+> 
+> On Mon, Jun 21, 2021 at 12:18 PM Steven Price <steven.price@arm.com> wrote:
+> >
+> > Add a new VM feature 'KVM_ARM_CAP_MTE' which enables memory tagging
+> > for a VM. This will expose the feature to the guest and automatically
+> > tag memory pages touched by the VM as PG_mte_tagged (and clear the tag
+> > storage) to ensure that the guest cannot see stale tags, and so that
+> > the tags are correctly saved/restored across swap.
+> >
+> > Actually exposing the new capability to user space happens in a later
+> > patch.
+> >
+> > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> > Signed-off-by: Steven Price <steven.price@arm.com>
+> > ---
+> >  arch/arm64/include/asm/kvm_emulate.h |  3 ++
+> >  arch/arm64/include/asm/kvm_host.h    |  3 ++
+> >  arch/arm64/kvm/hyp/exception.c       |  3 +-
+> >  arch/arm64/kvm/mmu.c                 | 64 +++++++++++++++++++++++++++-
+> >  arch/arm64/kvm/sys_regs.c            |  7 +++
+> >  include/uapi/linux/kvm.h             |  1 +
+> >  6 files changed, 79 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
+> > index 01b9857757f2..fd418955e31e 100644
+> > --- a/arch/arm64/include/asm/kvm_emulate.h
+> > +++ b/arch/arm64/include/asm/kvm_emulate.h
+> > @@ -84,6 +84,9 @@ static inline void vcpu_reset_hcr(struct kvm_vcpu *vcpu)
+> >         if (cpus_have_const_cap(ARM64_MISMATCHED_CACHE_TYPE) ||
+> >             vcpu_el1_is_32bit(vcpu))
+> >                 vcpu->arch.hcr_el2 |= HCR_TID2;
+> > +
+> > +       if (kvm_has_mte(vcpu->kvm))
+> > +               vcpu->arch.hcr_el2 |= HCR_ATA;
+> >  }
+> >
+> >  static inline unsigned long *vcpu_hcr(struct kvm_vcpu *vcpu)
+> > diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> > index 7cd7d5c8c4bc..afaa5333f0e4 100644
+> > --- a/arch/arm64/include/asm/kvm_host.h
+> > +++ b/arch/arm64/include/asm/kvm_host.h
+> > @@ -132,6 +132,8 @@ struct kvm_arch {
+> >
+> >         u8 pfr0_csv2;
+> >         u8 pfr0_csv3;
+> > +       /* Memory Tagging Extension enabled for the guest */
+> > +       bool mte_enabled;
+> >  };
+> 
+> nit: newline before the comment/new member
+> 
+> >
+> >  struct kvm_vcpu_fault_info {
+> > @@ -769,6 +771,7 @@ bool kvm_arm_vcpu_is_finalized(struct kvm_vcpu *vcpu);
+> >  #define kvm_arm_vcpu_sve_finalized(vcpu) \
+> >         ((vcpu)->arch.flags & KVM_ARM64_VCPU_SVE_FINALIZED)
+> >
+> > +#define kvm_has_mte(kvm) (system_supports_mte() && (kvm)->arch.mte_enabled)
+> >  #define kvm_vcpu_has_pmu(vcpu)                                 \
+> >         (test_bit(KVM_ARM_VCPU_PMU_V3, (vcpu)->arch.features))
+> >
+> > diff --git a/arch/arm64/kvm/hyp/exception.c b/arch/arm64/kvm/hyp/exception.c
+> > index 11541b94b328..0418399e0a20 100644
+> > --- a/arch/arm64/kvm/hyp/exception.c
+> > +++ b/arch/arm64/kvm/hyp/exception.c
+> > @@ -112,7 +112,8 @@ static void enter_exception64(struct kvm_vcpu *vcpu, unsigned long target_mode,
+> >         new |= (old & PSR_C_BIT);
+> >         new |= (old & PSR_V_BIT);
+> >
+> > -       // TODO: TCO (if/when ARMv8.5-MemTag is exposed to guests)
+> > +       if (kvm_has_mte(vcpu->kvm))
+> > +               new |= PSR_TCO_BIT;
+> >
+> >         new |= (old & PSR_DIT_BIT);
+> >
+> > diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> > index c10207fed2f3..52326b739357 100644
+> > --- a/arch/arm64/kvm/mmu.c
+> > +++ b/arch/arm64/kvm/mmu.c
+> > @@ -822,6 +822,45 @@ transparent_hugepage_adjust(struct kvm_memory_slot *memslot,
+> >         return PAGE_SIZE;
+> >  }
+> >
+> > +/*
+> > + * The page will be mapped in stage 2 as Normal Cacheable, so the VM will be
+> > + * able to see the page's tags and therefore they must be initialised first. If
+> > + * PG_mte_tagged is set, tags have already been initialised.
+> > + *
+> > + * The race in the test/set of the PG_mte_tagged flag is handled by:
+> > + * - preventing VM_SHARED mappings in a memslot with MTE preventing two VMs
+> > + *   racing to santise the same page
+> > + * - mmap_lock protects between a VM faulting a page in and the VMM performing
+> > + *   an mprotect() to add VM_MTE
+> > + */
+> > +static int sanitise_mte_tags(struct kvm *kvm, kvm_pfn_t pfn,
+> > +                            unsigned long size)
+> > +{
+> > +       unsigned long i, nr_pages = size >> PAGE_SHIFT;
+> > +       struct page *page;
+> > +
+> > +       if (!kvm_has_mte(kvm))
+> > +               return 0;
+> > +
+> > +       /*
+> > +        * pfn_to_online_page() is used to reject ZONE_DEVICE pages
+> > +        * that may not support tags.
+> > +        */
+> > +       page = pfn_to_online_page(pfn);
+> > +
+> > +       if (!page)
+> > +               return -EFAULT;
+> > +
+> > +       for (i = 0; i < nr_pages; i++, page++) {
+> > +               if (!test_bit(PG_mte_tagged, &page->flags)) {
+> > +                       mte_clear_page_tags(page_address(page));
+> > +                       set_bit(PG_mte_tagged, &page->flags);
+> > +               }
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+> > +
+> >  static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+> >                           struct kvm_memory_slot *memslot, unsigned long hva,
+> >                           unsigned long fault_status)
+> > @@ -971,8 +1010,18 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+> >         if (writable)
+> >                 prot |= KVM_PGTABLE_PROT_W;
+> >
+> > -       if (fault_status != FSC_PERM && !device)
+> > +       if (fault_status != FSC_PERM && !device) {
+> > +               /* Check the VMM hasn't introduced a new VM_SHARED VMA */
+> > +               if (kvm_has_mte(kvm) && vma->vm_flags & VM_SHARED) {
+> > +                       ret = -EFAULT;
+> > +                       goto out_unlock;
+> > +               }
+> > +               ret = sanitise_mte_tags(kvm, pfn, vma_pagesize);
+> > +               if (ret)
+> > +                       goto out_unlock;
+> > +
+> 
+> nit: Would it make sense to bring in sanitise_mte_tags under the
+> kvm_has_mte. I know that a check is done in kvm_has_mte as well, but
+> since you're already checking, it might make the code a bit clearer.
 
---O5XBE6gyVG5Rl6Rj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I think it makes more sense once merged with -next, as the CMO has
+been moved into the PT code. I came up with the following resolution:
 
-On Tue, Jun 22, 2021 at 01:31:36AM +0300, Dmitry Baryshkov wrote:
+	if (vma_pagesize == PAGE_SIZE && !(force_pte || device))
+		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
+							   &pfn, &fault_ipa);
 
-> Qualcomm QCA6390/1 is a family of WiFi + Bluetooth SoCs, with BT part
-> being controlled through the UART and WiFi being present on PCIe
-> bus. Both blocks share common power sources. Add device driver handling
-> power sequencing of QCA6390/1.
+	if (fault_status != FSC_PERM && !device && kvm_has_mte(kvm)) {
+		/* Check the VMM hasn't introduced a new VM_SHARED VMA */
+		if (!(vma->vm_flags & VM_SHARED))
+			ret = sanitise_mte_tags(kvm, pfn, vma_pagesize);
+		else
+			ret = -EFAULT;
+		if (ret)
+			goto out_unlock;
+	}
 
-Are you sure this is a regulator and not a MFD?  It appears to be a
-consumer driver that turns on and off a bunch of regulators en masse
-which for some reason exposes that on/off control as a single supply.
-This looks like it'd be much more appropriate to implement as a MFD or
-possibly power domain with the subdevices using runtime PM, it's clearly
-not a regulator.
+	if (writable)
+		prot |= KVM_PGTABLE_PROT_W;
 
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2021, Linaro Limited
-> + */
 
-Please make the entire comment a C++ one so things look more
-intentional.
+However, there is a more annoying issue here, which is that the vma is
+accessed outside of the mm lock. I *think* we're safe because if an
+unmap happens in parallel, the MMU notifier will kick and we will be
+in one of two cases:
 
-> +static int qca6390_enable(struct regulator_dev *rdev)
-> +{
-> +	struct qca6390_data *data = rdev_get_drvdata(rdev);
-> +	int ret;
-> +
-> +	ret = regulator_bulk_enable(data->num_vregs, data->regulators);
-> +	if (ret) {
-> +		dev_err(data->dev, "Failed to enable regulators");
-> +		return ret;
-> +	}
+- the unmap occurs before we take the kvm->mmu_lock, and the mmu
+  notifier seq_lock is want saves us (we will drop everything and take
+  the fault again),
 
-The regulator API is *not* recursive, I am astonished this works.
+- it occurs once we hold the lock, and this blocks the unmap.
 
-> +	/* Wait for 1ms before toggling enable pins. */
-> +	usleep_range(1000, 2000);
+Either way, I'd be more confident if the shared state was sampled
+inside the locked section.
 
-There's core support for delays after power on, better to use it.
+Thoughts?
 
-> +	data->enable_counter++;
+	M.
 
-You shouldn't assume that enable and disable calls are matched.
-
---O5XBE6gyVG5Rl6Rj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDRyWoACgkQJNaLcl1U
-h9Avhgf8DH8yAQTnnRzSSpHRKE5XpuOSXrGEKhggWkn6wpBkg/LNUERaMFDf2LRM
-ws7VUbElGDdECoiy18JOCdgYpZkIx5I13OUS3PyroAnRpmzp5bPa9lwneI/icl3n
-wT16PP28Ta2VaOb66njp/4ESWY+UuAvHH0JXwo8v0jPc61GpYOXketQCX0xk4j4G
-Ps8HahDYAJ3wT3UrVi6EbXvLRLvj3i1CU9kkvfxt9mj5/bj4WS4VO+4cJmIqMXZc
-FhkdtDBOfhtfetDO1jhxBz8Wg8Ww88udy6HqiQuzkeON094p4qtU/LU3/IEcgJAH
-w1PXR5PlM4oV3w/nDGtGZ1EWe+Bqfg==
-=7i/2
------END PGP SIGNATURE-----
-
---O5XBE6gyVG5Rl6Rj--
+-- 
+Without deviation from the norm, progress is not possible.
