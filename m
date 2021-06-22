@@ -2,137 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C6A3AFDA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE7F3AFDA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhFVHOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57452 "EHLO
+        id S230161AbhFVHOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbhFVHOj (ORCPT
+        with ESMTP id S230028AbhFVHOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:14:39 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37063C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:12:24 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id t13so4507537pgu.11
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:12:24 -0700 (PDT)
+        Tue, 22 Jun 2021 03:14:41 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606D3C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:12:25 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id 69so9968683plc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:12:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=3/sIHwJYhbBDupt7I2q95bUQGJfnSsX7iETKC6YWdHo=;
-        b=mbqVA/6UEPdHcJQb/cYKOJReXkiIcbjEHFD6LxnuIH2cEA2H0SIqDgtJb6oJ5dWwGU
-         XafWPaHDos4sPe02Gx/w7+IeIRd+wVJAqJONeXynuEgF40xVUzVS+zAtm48ZfkvwLHf3
-         pEpJfhrAMBfl+7BtE1oBcTpbpDe+pWL0zgCv/HCWfJ8DNzU8Lc+Re8Vt3VA3KscfOC3Y
-         gPsBpDO+MuyAVItVR6/ZKXhbfQmFoch6ipb/3nh1xE/EH4lf++5/XF5T/v5N+HRFZyMt
-         4kMaNKGyH11HGPtsd2HRm6LQKg9LdAc0ltLsEm+mVMTlEu3qz6t+KW27ygMQxdk1d8Ws
-         e7RA==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8CHnIOoOchHKbn6wHelTyIsKK9z9NRZQu44egYJzsoQ=;
+        b=dGmTBKEG0a3s6/p1EvvF6wu85kPREP+5Mn0yWIrHJ2qJ5yXIYd6Y3LSyJT3Iv5WKaV
+         ufE4+qTyZI7nGPJcmz/D9zoWcdbqAiV5ZKpyNzNzHcTzVd0NK/mLmWKTfXWqRhmROJvp
+         TVMsRGziv+pZ/HD/un1+uhXE1hug/zD/m6VrKXUwC3ntq0SNvjW796hTczbVPq33bd42
+         WNHgJWciuGuPUKIys/ZYWZMciO7+7yBwRx0hNEX9IQJaNhAqoA2pPhGc2b7HP3eD0xbo
+         OUWtQunXDkrQWtzHZEMZjiIfjwPmWZ2Fp88LC4oYujl3J3qh/UNhcy5fA3G9ORP+RKj+
+         Qgqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=3/sIHwJYhbBDupt7I2q95bUQGJfnSsX7iETKC6YWdHo=;
-        b=daOxoMBgGwOIO+c6CNxZh8bGDismrUScUtpwCEroJHXoAwDQgsuGjhAhcfi6y2NCo+
-         5PXzh5R9x3UIHMz1IRQTrb6wIgUIN5wtf5wMvqkHa8cNBW4NwvWQvk82qCwYIttyaImb
-         pHeI0U7Q88dITmu0jC0qQwnuX1IK9xoNeZ2kk1HP27LeEa3wJx8SPbovkF8trGQ4rvAP
-         t9/DGTIE8RHS1wBaMf0lTZGu4AxwBSwmSC+3AoEmVTDgjxwFjyxqqPDqRgdJnRVmKDps
-         xG8BsYAkU/6TsSb3vfhZ6vZRcXKHC4RcvRQPvRD4wYiSRkR59sCLEVEWQRMJOy4izzfk
-         tI7w==
-X-Gm-Message-State: AOAM530OsxAzlq59klsknHN0ILokuNikLubbQO78+OETbFMP9Ki5YOiZ
-        RjGoYH8p+MPo5DLqq8N9PA==
-X-Google-Smtp-Source: ABdhPJzEmM/IKDRy37Jj2wZu7z2dCPSpDHR8zs/JfgT0d7qskIHfydT3u99OCS2kDoPRbZ5aEVw8cA==
-X-Received: by 2002:a05:6a00:998:b029:305:a6bf:f8eb with SMTP id u24-20020a056a000998b0290305a6bff8ebmr737129pfg.60.1624345943746;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=8CHnIOoOchHKbn6wHelTyIsKK9z9NRZQu44egYJzsoQ=;
+        b=bKTf8jOvFkwtaAGH6KLL3NDMnMEDwCB3pMKvfCYD8CLtArmgwoiYZS4wbZ2skqOXBU
+         dLkFwElhSbeO90Aktjy5A0oKbpxXOwV80GMCNGi6Jnu9CoNzajASTRewTGj9plXqkwQM
+         dcCGfoSSzRI6310zUkNL/tXbS2zkN7+e8gJlqOEAqinpaByU3s6DbTiZ1mgKAx7lB2od
+         mPvzAKwswFRX0gcfDA5WvnGo4xNPiRrYMuLIHVEmoBWX2T9Y9UGApKFkPhGxFLPOJo/A
+         P0P53vNZnNiRW4oq4jPQgRsHgnj8p8hXzh383x0RtNufA8Qq1eSes4id+gXd57ocRUKv
+         7qCA==
+X-Gm-Message-State: AOAM532uTUNE7x/L7+oupHJdf6QP3L5xi6DPCpxwGBfXfCkhHSD+Z0BR
+        mDPyn0Rbh8WiDAHnl+cJmE8=
+X-Google-Smtp-Source: ABdhPJwi5pvFoeD5Q2ZmQsyxY4cKqkbEhaDrYO8TfbpPgIq1WMhor7cJ9/WBlXH7Rfoy2nXR3mnGgQ==
+X-Received: by 2002:a17:902:e00e:b029:ef:5f1c:18a8 with SMTP id o14-20020a170902e00eb02900ef5f1c18a8mr21637625plo.38.1624345944574;
+        Tue, 22 Jun 2021 00:12:24 -0700 (PDT)
+Received: from balhae.hsd1.ca.comcast.net ([2601:647:4801:c8d0:62e3:ad14:6151:62fa])
+        by smtp.gmail.com with ESMTPSA id j4sm16449129pfj.111.2021.06.22.00.12.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 22 Jun 2021 00:12:23 -0700 (PDT)
-Received: from vultr.guest ([107.191.53.97])
-        by smtp.gmail.com with ESMTPSA id n8sm1373798pjo.1.2021.06.22.00.12.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 22 Jun 2021 00:12:22 -0700 (PDT)
-From:   Zheyu Ma <zheyuma97@gmail.com>
-To:     linux@dominikbrodowski.net
-Cc:     linux-kernel@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>
-Subject: [PATCH] pcmcia: i82092: fix a null pointer dereference bug
-Date:   Tue, 22 Jun 2021 07:11:31 +0000
-Message-Id: <1624345891-4215-1-git-send-email-zheyuma97@gmail.com>
-X-Mailer: git-send-email 2.7.4
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCHSET v3 0/3] perf stat: Enable BPF counters with --for-each-cgroup
+Date:   Tue, 22 Jun 2021 00:12:18 -0700
+Message-Id: <20210622071221.128271-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During the driver loading process, the 'dev' field was not assigned, but
-the 'dev' field was referenced in the subsequent 'i82092aa_set_mem_map'
-function.
+Hello,
 
-This log reveals it:
+This is to add BPF support for --for-each-cgroup to handle many cgroup
+events on big machines.  You can use the --bpf-counters to enable the
+new behavior.
 
-[    3.928168] BUG: kernel NULL pointer dereference, address: 0000000000000010
-[    3.928678] #PF: supervisor read access in kernel mode
-[    3.929054] #PF: error_code(0x0000) - not-present page
-[    3.929428] PGD 0 P4D 0
-[    3.929617] Oops: 0000 [#1] PREEMPT SMP PTI
-[    3.929923] CPU: 3 PID: 4409 Comm: pccardd Not tainted 5.13.0-rc7-next-20210621 #1
-[    3.930468] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-[    3.931277] RIP: 0010:i82092aa_set_mem_map+0x45/0x2c0
-[    3.931649] Code: 28 65 48 8b 04 25 28 00 00 00 48 89 45 d0 31 c0 e8 f0 44 8f fd 49 8b 84 24 28 09 00 00 48 8b 53 18 48 8d 75 c0 45 8b 6c 24 f0 <48> 8b 78 10 e8 92 05 2f fe 44 0f b6 33 41 80 fe 04 0f 87 16 02 00
-[    3.932973] RSP: 0000:ffffc9000a6bfdb8 EFLAGS: 00010293
-[    3.933351] RAX: 0000000000000000 RBX: ffffc9000a6bfe30 RCX: 0000000000000000
-[    3.933859] RDX: ffffc9000a6bfe50 RSI: ffffc9000a6bfdc8 RDI: ffffffff88457bb0
-[    3.934370] RBP: ffffc9000a6bfe08 R08: 0000000000000001 R09: 0000000000000001
-[    3.934876] R10: 0000000000000001 R11: 0000000000000000 R12: ffffffff88457bb0
-[    3.935385] R13: 0000000000000000 R14: ffffffff839f7b80 R15: ffffffff88457bb0
-[    3.935891] FS:  0000000000000000(0000) GS:ffff88817aa00000(0000) knlGS:0000000000000000
-[    3.936467] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    3.936877] CR2: 0000000000000010 CR3: 0000000006c32000 CR4: 00000000000006e0
-[    3.937391] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[    3.937896] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[    3.938082] Call Trace:
-[    3.938082]  ? pcmcia_parse_uevents+0xa0/0xa0
-[    3.938082]  i82092aa_init+0xb8/0xf0
-[    3.938082]  pccardd+0x64/0x590
-[    3.938082]  ? __kthread_parkme+0xba/0xe0
-[    3.938082]  ? pcmcia_parse_uevents+0xa0/0xa0
-[    3.938082]  kthread+0x19a/0x1e0
-[    3.938082]  ? set_kthread_struct+0x60/0x60
-[    3.938082]  ret_from_fork+0x1f/0x30
-[    3.938082] Modules linked in:
-[    3.938082] Dumping ftrace buffer:
-[    3.938082]    (ftrace buffer empty)
-[    3.938082] CR2: 0000000000000010
-[    3.938082] ---[ end trace f4f9ca1497f3c8b2 ]---
-[    3.938082] RIP: 0010:i82092aa_set_mem_map+0x45/0x2c0
-[    3.938082] Code: 28 65 48 8b 04 25 28 00 00 00 48 89 45 d0 31 c0 e8 f0 44 8f fd 49 8b 84 24 28 09 00 00 48 8b 53 18 48 8d 75 c0 45 8b 6c 24 f0 <48> 8b 78 10 e8 92 05 2f fe 44 0f b6 33 41 80 fe 04 0f 87 16 02 00
-[    3.938082] RSP: 0000:ffffc9000a6bfdb8 EFLAGS: 00010293
-[    3.938082] RAX: 0000000000000000 RBX: ffffc9000a6bfe30 RCX: 0000000000000000
-[    3.938082] RDX: ffffc9000a6bfe50 RSI: ffffc9000a6bfdc8 RDI: ffffffff88457bb0
-[    3.938082] RBP: ffffc9000a6bfe08 R08: 0000000000000001 R09: 0000000000000001
-[    3.938082] R10: 0000000000000001 R11: 0000000000000000 R12: ffffffff88457bb0
-[    3.938082] R13: 0000000000000000 R14: ffffffff839f7b80 R15: ffffffff88457bb0
-[    3.938082] FS:  0000000000000000(0000) GS:ffff88817aa00000(0000) knlGS:0000000000000000
-    3.938082] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    3.938082] CR2: 0000000000000010 CR3: 0000000006c32000 CR4: 00000000000006e0
-[    3.938082] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[    3.938082] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[    3.938082] Kernel panic - not syncing: Fatal exception
-[    3.938082] Dumping ftrace buffer:
-[    3.938082]    (ftrace buffer empty)
-[    3.938082] Kernel Offset: disabled
-[    3.938082] Rebooting in 1 seconds..
+ * changes in v3
+  - support cgroup hierarchy with ancestor ids
+  - add and trigger raw_tp BPF program
+  - add a build rule for vmlinux.h
 
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
----
- drivers/pcmcia/i82092.c | 1 +
- 1 file changed, 1 insertion(+)
+ * changes in v2
+  - remove incorrect use of BPF_F_PRESERVE_ELEMS
+  - add missing map elements after lookup
+  - handle cgroup v1
 
-diff --git a/drivers/pcmcia/i82092.c b/drivers/pcmcia/i82092.c
-index 85887d885b5f..192c9049d654 100644
---- a/drivers/pcmcia/i82092.c
-+++ b/drivers/pcmcia/i82092.c
-@@ -112,6 +112,7 @@ static int i82092aa_pci_probe(struct pci_dev *dev,
- 	for (i = 0; i < socket_count; i++) {
- 		sockets[i].card_state = 1; /* 1 = present but empty */
- 		sockets[i].io_base = pci_resource_start(dev, 0);
-+		sockets[i].dev = dev;
- 		sockets[i].socket.features |= SS_CAP_PCCARD;
- 		sockets[i].socket.map_size = 0x1000;
- 		sockets[i].socket.irq_mask = 0;
+Basic idea is to use a single set of per-cpu events to count
+interested events and aggregate them to each cgroup.  I used bperf
+mechanism to use a BPF program for cgroup-switches and save the
+results in a matching map element for given cgroups.
+
+Without this, we need to have separate events for cgroups, and it
+creates unnecessary multiplexing overhead (and PMU programming) when
+tasks in different cgroups are switched.  I saw this makes a big
+difference on 256 cpu machines with hundreds of cgroups.
+
+Actually this is what I wanted to do it in the kernel [1], but we can
+do the job using BPF!
+
+
+Thanks,
+Namhyung
+
+
+[1] https://lore.kernel.org/lkml/20210413155337.644993-1-namhyung@kernel.org/
+
+
+Namhyung Kim (3):
+  perf tools: Add read_cgroup_id() function
+  perf tools: Add cgroup_is_v2() helper
+  perf stat: Enable BPF counter with --for-each-cgroup
+
+ tools/perf/Makefile.perf                    |   7 +-
+ tools/perf/util/Build                       |   1 +
+ tools/perf/util/bpf_counter.c               |   5 +
+ tools/perf/util/bpf_counter_cgroup.c        | 337 ++++++++++++++++++++
+ tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 207 ++++++++++++
+ tools/perf/util/cgroup.c                    |  46 +++
+ tools/perf/util/cgroup.h                    |  12 +
+ 7 files changed, 614 insertions(+), 1 deletion(-)
+ create mode 100644 tools/perf/util/bpf_counter_cgroup.c
+ create mode 100644 tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+
 -- 
-2.17.6
+2.32.0.288.g62a8d224e6-goog
 
