@@ -2,143 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528D73B08A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2044E3B08EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232224AbhFVPXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:23:09 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:36913 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232087AbhFVPXI (ORCPT
+        id S232344AbhFVP2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:28:18 -0400
+Received: from p3plsmtpa06-04.prod.phx3.secureserver.net ([173.201.192.105]:39185
+        "EHLO p3plsmtpa06-04.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231815AbhFVP2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:23:08 -0400
-Received: from mail-wm1-f49.google.com ([209.85.128.49]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1Mdvyo-1lO1HY1hzS-00azLe; Tue, 22 Jun 2021 17:20:50 +0200
-Received: by mail-wm1-f49.google.com with SMTP id m3so13074721wms.4;
-        Tue, 22 Jun 2021 08:20:50 -0700 (PDT)
-X-Gm-Message-State: AOAM532muqXB2+FeUvqK7kiC6sypaar83CR9sGO3csSxZ0TMzQF+Hzai
-        CIEWo95FA2Id+JyxtDKfgXXChKOP6rr5wOOXX7Y=
-X-Google-Smtp-Source: ABdhPJxnVRrZWU3JVswJ2QZq2pjCpSgY1JUazfWhbU6JSQfwjFgSvYmHDdjApi4t3KGHf+NqzVz/wr3QCt1/VR7iGng=
-X-Received: by 2002:a1c:98d5:: with SMTP id a204mr4879216wme.43.1624375249974;
- Tue, 22 Jun 2021 08:20:49 -0700 (PDT)
+        Tue, 22 Jun 2021 11:28:16 -0400
+Received: from [192.168.0.100] ([96.237.161.203])
+        by :SMTPAUTH: with ESMTPSA
+        id viAjleA5hyubKviAklUeJx; Tue, 22 Jun 2021 08:18:42 -0700
+X-CMAE-Analysis: v=2.4 cv=avN3tQVV c=1 sm=1 tr=0 ts=60d1ff52
+ a=Pd5wr8UCr3ug+LLuBLYm7w==:117 a=Pd5wr8UCr3ug+LLuBLYm7w==:17
+ a=IkcTkHD0fZMA:10 a=yMhMjlubAAAA:8 a=SEc3moZ4AAAA:8 a=WtrXtaRitKTu45twBd0A:9
+ a=QEXdDO2ut3YA:10 a=5oRCH6oROnRZc2VpWJZ3:22
+X-SECURESERVER-ACCT: tom@talpey.com
+Subject: Re: [SMBDIRECT][PATCH] missing rc checks while waiting for SMB3 over
+ RDMA events
+To:     Steve French <smfrench@gmail.com>, Long Li <longli@microsoft.com>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <CAH2r5msOSLaZT42-jFMjJrB1YiYTZBzdM18ieqQY2v=YwXzcrA@mail.gmail.com>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <1241844c-c9ab-2055-a363-80db63a4dd22@talpey.com>
+Date:   Tue, 22 Jun 2021 11:18:42 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <20210509184519.15816-1-alex.nemirovsky@cortina-access.com>
- <20210509184519.15816-2-alex.nemirovsky@cortina-access.com>
- <YMiUpK/+PjsoCU1W@kroah.com> <CFD14D63-4537-4A91-861C-71B74E2CFAE6@cortina-access.com>
- <YMi1jOL6y+eUK3Df@kroah.com> <B71C5D02-EDBE-4AAD-AF1B-2FD467BE075A@cortina-access.com>
- <CAL_JsqKDf9W-1KHUoFFCoLareLKf0CAVMU6CXR22xW3hWM_8yg@mail.gmail.com>
- <9937DB34-7757-4A54-BCC6-AF5514FD7F1D@cortina-access.com> <CAL_JsqLHdi29Du1F=e1N471tnsziWpH7TPO_caDF3SrjvHS-iw@mail.gmail.com>
- <CAMuHMdXA9-ajoAza2JAW5879ECieMm1dbBbKHgJhDa7=3kWu3w@mail.gmail.com>
-In-Reply-To: <CAMuHMdXA9-ajoAza2JAW5879ECieMm1dbBbKHgJhDa7=3kWu3w@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 22 Jun 2021 17:18:30 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3Zh37WwM5rRugJgm_b8f-fBcTm_pHZz439HMe8w-odPw@mail.gmail.com>
-Message-ID: <CAK8P3a3Zh37WwM5rRugJgm_b8f-fBcTm_pHZz439HMe8w-odPw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] dt-bindings: serial: Convert Cortina-Access UART
- to json-schema
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Alex Nemirovsky <Alex.Nemirovsky@cortina-access.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Li <jason.li@cortina-access.com>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Olof Johansson <olof@lixom.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:tOie7vWrEnexv0CRNGItMAUz9wQ0Ofa0PTa6xbTtiUTZQ3T8or4
- SiynUPlqei6d/gdefigWSaHhJxZhhKNBGUH/O5Cehp0HQiiWXon7s3qKygV8FNW0iMTm4pV
- xeG1ZXmMkDEInmQ0ZkpXKTeZRfWjLN+Yb8n5TnNYq9xtso0bByh/zm2+cw6fe2eWbwFu+Jh
- fjyw4mOBAuhq7b7SqG7Gg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+CN8r0Y3zoI=:Cu1IqOczSpgr0i3z2CFCMA
- sD8hgr9pyIh7wPJ/dLI+HmHpmzD/6xf/e//OMoR2MnZVhwHWWMUcHJmywHtQa0+AZBpRGzah2
- 4Ih6kz/7vuqFLVLqBl8a8IcZmgH2by9RSWX/p8QO5/UaKhtjrTbL/vDpS8McvPLzObKNTJQVp
- P4EGMUWGqbjcGROqtk44XXaAMo1sG7CqRUafDDm9HgOP9HDTxgQ0ToeqCcGzCzTyXPyFkhiUL
- IVUZBGhVJdF9qvp4dS5HGB8g29JszrwoEwHJ0n1Ba6VJefjbTpmPCvFQOEzaFvX+3LXLkXNSv
- 4KYLLZDjc2+lfX5I8/ZFbSLCvFURqDtkBAO+kaHGOjrsPjl+1fPdvRNp3VR92JjdGMVizFWC1
- z2v2gr0Bx+rOZhywJD+mXFBQo9VkDvac/npmYsVKNaIyppVPERqd4x7O6TTJ5OlfHMv6HDeBd
- bf19sVYofBmVwAna2BJKcVGIAw7JHa+zSOgjC94PneKtmK6GcTYlD30a37+RDM30xHjQw+ljA
- vPPzim+kdnLxg0WKigZWb0=
+In-Reply-To: <CAH2r5msOSLaZT42-jFMjJrB1YiYTZBzdM18ieqQY2v=YwXzcrA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfHuI+aivFMuuZGehMwo60U0hMxx4SRlZRovOfkVEQV+DSNr7Xsgr24M1GrRqkHKlEcIEK+uWkTiIMKBUCjvZ58HFuk8/Dd/oXj4kDTj8r+LIbJTT9Wgw
+ uCxr9bQrLlMcs9Gi98JmKYOsxS7kwHj5xyQKsK+BbVYVRkoyp96CPTa6hGbejTDjrtsLWkRg0yQ/8trMfUgSgZyhFdcx1CoroewBJRQsFS4yT1Zld/TuvfBs
+ bZ6vADug7cS7eXqCfY/CXUStivJNypo3m9iBNrrE/DmlV7ezTzfNA55513B31uhc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 1:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Tue, Jun 15, 2021 at 6:21 PM Rob Herring <robh+dt@kernel.org> wrote:
-> > On Tue, Jun 15, 2021 at 10:06 AM Alex Nemirovsky <Alex.Nemirovsky@cortina-access.com> wrote:
-> > > It sounds like you are find with patch 2/3 from a DT point of view.  Could we review the rest from the DT point of view
-> > > to get either feedback for changes or ACK these, so we can unblock this series?
-> >
-> > Can't say I've seen it as I only see replies in my mail. Did this
-> > originally go to the DT list? If not, it's never in my queue[1].
->
-> None of the patches in this series ended up on a mailing list or on
-> lore, so no one could comment on them, except for people CCed directly.
+On 6/21/2021 5:32 PM, Steve French wrote:
+>      There were two places where we weren't checking for error
+>      (e.g. ERESTARTSYS) while waiting for rdma resolution.
+> 
+>      Addresses-Coverity: 1462165 ("Unchecked return value")
+>     Signed-off-by: Steve French <stfrench@microsoft.com>
+> 
+> diff --git a/fs/cifs/smbdirect.c b/fs/cifs/smbdirect.c
+> index 10dfe5006792..ae07732f750f 100644
+> --- a/fs/cifs/smbdirect.c
+> +++ b/fs/cifs/smbdirect.c
+> @@ -572,8 +572,11 @@ static struct rdma_cm_id *smbd_create_id(
+>                  log_rdma_event(ERR, "rdma_resolve_addr() failed %i\n", rc);
+>                  goto out;
+>          }
+> -       wait_for_completion_interruptible_timeout(
+> +       rc = wait_for_completion_interruptible_timeout(
+>                  &info->ri_done, msecs_to_jiffies(RDMA_RESOLVE_TIMEOUT));
+> +       /* -ERESTARTSYS, returned when interrupted, is the only rc mentioned */
 
-Right, in fact every email I see from @cortina-access.com at
-https://lore.kernel.org/lkml/?q=cortina-access.com is a reply, but the
-original mails are all missing, not just this series.
+Suggest the same comment text as the one below, this one seems uncertain.
 
-It appears that there is a problem between the mail servers of cortina-access
-and kernel.org. Alex and Jason, please double-check if you find
-anything in
+> +       if (rc < 0)
+> +               goto out;
+>          rc = info->ri_rc;
+>          if (rc) {
+>                  log_rdma_event(ERR, "rdma_resolve_addr() completed %i\n", rc);
+> @@ -586,8 +589,10 @@ static struct rdma_cm_id *smbd_create_id(
+>                  log_rdma_event(ERR, "rdma_resolve_route() failed %i\n", rc);
+>                  goto out;
+>          }
+> -       wait_for_completion_interruptible_timeout(
+> +       rc = wait_for_completion_interruptible_timeout(
+>                  &info->ri_done, msecs_to_jiffies(RDMA_RESOLVE_TIMEOUT));
+> +       if (rc < 0)  /* e.g. if interrupted and returns -ERESTARTSYS */
 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html
-https://www.kernel.org/doc/html/latest/process/email-clients.html
+delete "and"?
 
-that may have caused this on your end, or otherwise contact
-postmaster@vger.kernel.org for help.
+> +               goto out
 
-> The driver has been accepted in tty-next, commit b61c8bf4694b5115
-> ("tty: serial: Add UART driver for Cortina-Access platform").  From a
-> quick glance, it could have used some review.
->
-> The driver is using the compatible value "cortina-access,serial", so I
-> guess the binding patch added "cortina-access" to vendor-prefixes.yaml.
+Missing a semicolon.     ^^^
 
-Ah right. That patch has not made it in because of the issue, but right
-away I can tell that the binding is not great because the compatible
-string is way too generic: it implies that cortina-access only uses a single
-serial port type in every past, present or future SoC, which is clearly
-not the case.
+>          rc = info->ri_rc;
+>          if (rc) {
+>                  log_rdma_event(ERR, "rdma_resolve_route() completed %i\n", rc);
+> 
+> 
 
-It's obviously up to Greg to decide whether to revert the patch, but
-I'd suggest we don't treat the driver as conforming to the binding until
-it has been reviewed, and assume that changes will be made.
+One meta-comment. There's no message logged for these ERESTARTSYS cases.
+That might be confusing in the log, if they lead to failure.
 
-> The SERIAL_CORTINA_ACCESS symbol doesn't depend on anything, so
-> it will show up on everyone's oldconfig radar soon, regardless of
-> building a kernel for a Cortina Access system or not.
-> I wanted to change it to something like:
->
->      config SERIAL_CORTINA_ACCESS
->             tristate "Cortina-Access serial port support"
->     +       depends on FIXME || COMPILE_TEST
->             select SERIAL_CORE
->             help
->               This driver is for Cortina-Access SoC's UART. If you
-> have a machine
->               based on the Cortina-Access SoC and wish to use the serial port,
->               say 'Y' here. Otherwise, say 'N'.
->
-> but given there is no evidence of patches to add support for the
-> CAXXXX line of SoCs, there's no symbol to depend on...
+Reviewed-By: Tom Talpey <tom@talpey.com>
 
-Assuming this is a SoC based on an Arm CPU core, it's clear that
-nothing from cortina-access.com ever made it through the
-linux-arm-kernel@lists.infradead.org mailing list either, if anything
-was sent at all.
-
-Alex, please try to contact me off-list about merging the full SoC
-support, I should be able to help you come up with a plan for
-submitting the rest as soon as the email troubles are resolved.
-
-For new Arm based SoC platforms, arch/{arm,arm64} patches
-should go through the soc tree and be picked up by Olof (on Cc)
-or me. The exact process is not well documented, but please
-contact us by email, or on irc://irc.libera.chat/#armlinux if you
-have questions.
-
-       Arnd
+Tom.
