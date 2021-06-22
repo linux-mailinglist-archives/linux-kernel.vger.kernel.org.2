@@ -2,224 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA77E3AFA5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 02:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A803AFA5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 02:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231298AbhFVA5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 20:57:39 -0400
-Received: from mga03.intel.com ([134.134.136.65]:2221 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231127AbhFVA5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 20:57:38 -0400
-IronPort-SDR: +Q5U9qzgDuzdN1pEUnOzi64vnugbB2vgh8uKTnH4EmG6XW3cfw2mV0Tj9FDaMzdGvh6+pjmHDi
- lYzSZ/NnrEnQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="207000739"
-X-IronPort-AV: E=Sophos;i="5.83,290,1616482800"; 
-   d="scan'208";a="207000739"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 17:55:23 -0700
-IronPort-SDR: mUggc9ePv/v55XF4K8RrJjPDx7y/v5/71SjTI2s55xRsFIw6mpTUN8xGGB60P9hX/wB4ZpDN3W
- fwxo5/yZc+DA==
-X-IronPort-AV: E=Sophos;i="5.83,290,1616482800"; 
-   d="scan'208";a="454075302"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 17:55:20 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Zi Yan <ziy@nvidia.com>, Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@suse.com>, Wei Xu <weixugc@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        osalvador <osalvador@suse.de>
-Subject: Re: [PATCH -V8 02/10] mm/numa: automatically generate node
- migration order
-References: <20210618061537.434999-1-ying.huang@intel.com>
-        <20210618061537.434999-3-ying.huang@intel.com>
-        <79397FE3-4B08-4DE5-8468-C5CAE36A3E39@nvidia.com>
-        <87v96anu6o.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <CAHbLzkoVfj9bhDv7RE5rB_8h0O6Wgdoqe5fYJ1rUOHA=AR5uJQ@mail.gmail.com>
-Date:   Tue, 22 Jun 2021 08:55:18 +0800
-In-Reply-To: <CAHbLzkoVfj9bhDv7RE5rB_8h0O6Wgdoqe5fYJ1rUOHA=AR5uJQ@mail.gmail.com>
-        (Yang Shi's message of "Mon, 21 Jun 2021 12:51:30 -0700")
-Message-ID: <87wnqmn2fd.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S231390AbhFVA57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 20:57:59 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:38533 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230175AbhFVA55 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 20:57:57 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 74D8358095D;
+        Mon, 21 Jun 2021 20:55:42 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Mon, 21 Jun 2021 20:55:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        joshtriplett.org; h=date:from:to:cc:subject:message-id
+        :references:mime-version:content-type:in-reply-to; s=fm1; bh=xpq
+        QD/uU3ejT/3OZLcI9rvtXSr/O76UqcmLAQ1OQrBY=; b=iYQbFqr9pvB1OP1oqpU
+        98n6GxRau6AUpj5jKVgnkB+5U1gVpzwO1k/51bOHme4mZ+1PmSKJ6msi9Z09a6uW
+        YB5iXNsCgvz3nQfgnfjaEweAyovRikk3aDRkoTQSp2DhthKWegTTCQI2GvIu2AQ5
+        ejD+tsYiFUHuOMLavzYxfArNiQQWkfkIh5TZTRtkcv3vXg/W5WdSPHujLVB82m+V
+        fiO1EFSZd+z9RSmC7XsyIZrmtYM11IGANlBLG9MaGONCKCoqzkPMk1WrCC08eLkF
+        HDyK7sl0PmcRaE7NY8t0hg62gYsm7GSFIBx1kQjRraROMAWQHGgfhPO6Woo1x/2w
+        WPA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=xpqQD/
+        uU3ejT/3OZLcI9rvtXSr/O76UqcmLAQ1OQrBY=; b=Z7sIZbhvpLekDmIRooBJew
+        W+fcNp9v2SC/TLgo1tyezyFKIOjQPyYjS6jE/Ju26ENxF/NtMCv6O+qdgwBYxY4A
+        H9kLXkCeZPeOMy0C9B5Zk7OO5nBViVrXHCu0bvzizAdKnRbB7OljziHRK/yM80ZU
+        lJIWjQY9BbeaBRNeWpQl4+JsUAsLknBRCvAD57EMfmFL3NNIlTjhTCgnXFXiaoI6
+        ipMIRHNlNhtnAYzz7rNJMzg92zLLdrOsEoAYnBA5gPWyH1QFIZG1UYe4zi9+RlA6
+        hECrdFUu7pYS/qMphqNfvUw54LnuG+zVp59dCGYXxkQ/VjbdOiZ+CKiBGYI/NC2Q
+        ==
+X-ME-Sender: <xms:DTXRYIDWSNCbVJIInv3Z2PZj-IDrq8Qb0FPwyguLSn0p0TTLRqyFEg>
+    <xme:DTXRYKhwsCU-cH_UOkkgfQOTiy28Gh96MKsdsClg6qwQRcNBBZrA0jA8zgHviTG4d
+    ijte6JuDtTZamPkFJk>
+X-ME-Received: <xmr:DTXRYLk_lxM9cwP1R9YJxdGDXY_Zp6wTYQDgmCtLJ6sN7jpo2ES-Q9yO6zY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeegtddggeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeflohhshhcu
+    vfhrihhplhgvthhtuceojhhoshhhsehjohhshhhtrhhiphhlvghtthdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepgeeihfduleeivefgudffjeffheehkeeiieetueevkeelhffgiedv
+    fffhveffleelnecuffhomhgrihhnpehmrghrtgdrihhnfhhonecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhoshhhsehjohhshhhtrhhiphhl
+    vghtthdrohhrgh
+X-ME-Proxy: <xmx:DTXRYOzDFazI8PamQ54A4eCR6kwqZmdmjHb912gBRU3KC1ggViSVFA>
+    <xmx:DTXRYNQ3HlX_l_3sc_32viOu5U_VuGcQ92b1gpnDT7WK7NMZLM5ZOQ>
+    <xmx:DTXRYJbZXDQGsipDVAA0MBBDHeed7Rfk6U8ELTfILw83PckqeN-P7g>
+    <xmx:DTXRYLPxM-SGfJ0wCRLGBJ7GzjVK_Quo4tyZgmJ4G9vcp_mf1gqQONEB3RI>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 21 Jun 2021 20:55:40 -0400 (EDT)
+Date:   Mon, 21 Jun 2021 17:55:39 -0700
+From:   Josh Triplett <josh@joshtriplett.org>
+To:     Wang Jianchao <jianchao.wan9@gmail.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lishujin@kuaishou.com
+Subject: Re: [PATCH V2 7/7] ext4: get discard out of jbd2 commit kthread
+ contex
+Message-ID: <YNE1C3NpFvILu4KS@localhost>
+References: <164ffa3b-c4d5-6967-feba-b972995a6dfb@gmail.com>
+ <a602a6ba-2073-8384-4c8f-d669ee25c065@gmail.com>
+ <49382052-6238-f1fb-40d1-b6b801b39ff7@gmail.com>
+ <48e33dea-d15e-f211-0191-e01bd3eb17b3@gmail.com>
+ <67eeb65a-d413-c4f9-c06f-d5dcceca0e4f@gmail.com>
+ <0b7915bc-193a-137b-4e52-8aaef8d6fef3@gmail.com>
+ <a4e350a9-ef27-dc82-f610-0d3a0588afdf@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a4e350a9-ef27-dc82-f610-0d3a0588afdf@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yang Shi <shy828301@gmail.com> writes:
+On Wed, May 26, 2021 at 04:44:06PM +0800, Wang Jianchao wrote:
+> Right now, discard is issued and waited to be completed in jbd2
+> commit kthread context after the logs are committed. When large
+> amount of files are deleted and discard is flooding, jbd2 commit
+> kthread can be blocked for long time. Then all of the metadata
+> operations can be blocked to wait the log space.
+> 
+> One case is the page fault path with read mm->mmap_sem held, which
+> wants to update the file time but has to wait for the log space.
+> When other threads in the task wants to do mmap, then write mmap_sem
+> is blocked. Finally all of the following read mmap_sem requirements
+> are blocked, even the ps command which need to read the /proc/pid/
+> -cmdline. Our monitor service which needs to read /proc/pid/cmdline
+> used to be blocked for 5 mins.
+> 
+> This patch frees the blocks back to buddy after commit and then do
+> discard in a async kworker context in fstrim fashion, namely,
+>  - mark blocks to be discarded as used if they have not been allocated
+>  - do discard
+>  - mark them free
+> After this, jbd2 commit kthread won't be blocked any more by discard
+> and we won't get NOSPC even if the discard is slow or throttled.
+> 
+> Link: https://marc.info/?l=linux-kernel&m=162143690731901&w=2
+> Suggested-by: Theodore Ts'o <tytso@mit.edu>
+> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
 
-> On Sat, Jun 19, 2021 at 1:19 AM Huang, Ying <ying.huang@intel.com> wrote:
->>
->> Zi Yan <ziy@nvidia.com> writes:
->>
->> > On 18 Jun 2021, at 2:15, Huang Ying wrote:
->> >
->> >> From: Dave Hansen <dave.hansen@linux.intel.com>
->> >>
->> >> When memory fills up on a node, memory contents can be
->> >> automatically migrated to another node.  The biggest problems are
->> >> knowing when to migrate and to where the migration should be
->> >> targeted.
->> >>
->> >> The most straightforward way to generate the "to where" list would
->> >> be to follow the page allocator fallback lists.  Those lists
->> >> already tell us if memory is full where to look next.  It would
->> >> also be logical to move memory in that order.
->> >>
->> >> But, the allocator fallback lists have a fatal flaw: most nodes
->> >> appear in all the lists.  This would potentially lead to migration
->> >> cycles (A->B, B->A, A->B, ...).
->> >>
->> >> Instead of using the allocator fallback lists directly, keep a
->> >> separate node migration ordering.  But, reuse the same data used
->> >> to generate page allocator fallback in the first place:
->> >> find_next_best_node().
->> >>
->> >> This means that the firmware data used to populate node distances
->> >> essentially dictates the ordering for now.  It should also be
->> >> architecture-neutral since all NUMA architectures have a working
->> >> find_next_best_node().
->> >>
->> >> The protocol for node_demotion[] access and writing is not
->> >> standard.  It has no specific locking and is intended to be read
->> >> locklessly.  Readers must take care to avoid observing changes
->> >> that appear incoherent.  This was done so that node_demotion[]
->> >> locking has no chance of becoming a bottleneck on large systems
->> >> with lots of CPUs in direct reclaim.
->> >>
->> >> This code is unused for now.  It will be called later in the
->> >> series.
->> >>
->> >> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
->> >> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
->> >> Reviewed-by: Yang Shi <shy828301@gmail.com>
->> >> Cc: Michal Hocko <mhocko@suse.com>
->> >> Cc: Wei Xu <weixugc@google.com>
->> >> Cc: David Rientjes <rientjes@google.com>
->> >> Cc: Dan Williams <dan.j.williams@intel.com>
->> >> Cc: David Hildenbrand <david@redhat.com>
->> >> Cc: osalvador <osalvador@suse.de>
->> >>
->> >> --
->> >>
->> >> Changes from 20200122:
->> >>  * Add big node_demotion[] comment
->> >> Changes from 20210302:
->> >>  * Fix typo in node_demotion[] comment
->> >> ---
->> >>  mm/internal.h   |   5 ++
->> >>  mm/migrate.c    | 175 +++++++++++++++++++++++++++++++++++++++++++++++-
->> >>  mm/page_alloc.c |   2 +-
->> >>  3 files changed, 180 insertions(+), 2 deletions(-)
->> >>
->> >> diff --git a/mm/internal.h b/mm/internal.h
->> >> index 2f1182948aa6..0344cd78e170 100644
->> >> --- a/mm/internal.h
->> >> +++ b/mm/internal.h
->> >> @@ -522,12 +522,17 @@ static inline void mminit_validate_memmodel_limits(unsigned long *start_pfn,
->> >>
->> >>  #ifdef CONFIG_NUMA
->> >>  extern int node_reclaim(struct pglist_data *, gfp_t, unsigned int);
->> >> +extern int find_next_best_node(int node, nodemask_t *used_node_mask);
->> >>  #else
->> >>  static inline int node_reclaim(struct pglist_data *pgdat, gfp_t mask,
->> >>                              unsigned int order)
->> >>  {
->> >>      return NODE_RECLAIM_NOSCAN;
->> >>  }
->> >> +static inline int find_next_best_node(int node, nodemask_t *used_node_mask)
->> >> +{
->> >> +    return NUMA_NO_NODE;
->> >> +}
->> >>  #endif
->> >>
->> >>  extern int hwpoison_filter(struct page *p);
->> >> diff --git a/mm/migrate.c b/mm/migrate.c
->> >> index 6cab668132f9..111f8565f75d 100644
->> >> --- a/mm/migrate.c
->> >> +++ b/mm/migrate.c
->> >> @@ -1136,6 +1136,44 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
->> >>      return rc;
->> >>  }
->> >>
->> >> +
->> >> +/*
->> >> + * node_demotion[] example:
->> >> + *
->> >> + * Consider a system with two sockets.  Each socket has
->> >> + * three classes of memory attached: fast, medium and slow.
->> >> + * Each memory class is placed in its own NUMA node.  The
->> >> + * CPUs are placed in the node with the "fast" memory.  The
->> >> + * 6 NUMA nodes (0-5) might be split among the sockets like
->> >> + * this:
->> >> + *
->> >> + *  Socket A: 0, 1, 2
->> >> + *  Socket B: 3, 4, 5
->> >> + *
->> >> + * When Node 0 fills up, its memory should be migrated to
->> >> + * Node 1.  When Node 1 fills up, it should be migrated to
->> >> + * Node 2.  The migration path start on the nodes with the
->> >> + * processors (since allocations default to this node) and
->> >> + * fast memory, progress through medium and end with the
->> >> + * slow memory:
->> >> + *
->> >> + *  0 -> 1 -> 2 -> stop
->> >> + *  3 -> 4 -> 5 -> stop
->> >> + *
->> >> + * This is represented in the node_demotion[] like this:
->> >> + *
->> >> + *  {  1, // Node 0 migrates to 1
->> >> + *     2, // Node 1 migrates to 2
->> >> + *    -1, // Node 2 does not migrate
->> >> + *     4, // Node 3 migrates to 4
->> >> + *     5, // Node 4 migrates to 5
->> >> + *    -1} // Node 5 does not migrate
->> >> + */
->> >> +
->> >> +/*
->> >> + * Writes to this array occur without locking.  READ_ONCE()
->> >> + * is recommended for readers to ensure consistent reads.
->> >> + */
->> >>  static int node_demotion[MAX_NUMNODES] __read_mostly =
->> >>      {[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
->> >>
->> >> @@ -1150,7 +1188,13 @@ static int node_demotion[MAX_NUMNODES] __read_mostly =
->> >>   */
->> >>  int next_demotion_node(int node)
->> >>  {
->> >> -    return node_demotion[node];
->> >> +    /*
->> >> +     * node_demotion[] is updated without excluding
->> >> +     * this function from running.  READ_ONCE() avoids
->> >> +     * reading multiple, inconsistent 'node' values
->> >> +     * during an update.
->> >> +     */
->> >> +    return READ_ONCE(node_demotion[node]);
->> >>  }
->> >
->> > Is it necessary to have two separate patches to add node_demotion and
->> > next_demotion_node() then modify it immediately? Maybe merge Patch 1 into 2?
->> >
->> > Hmm, I just checked Patch 3 and it changes node_demotion again and uses RCU.
->> > I guess it might be much simpler to just introduce node_demotion with RCU
->> > in this patch and Patch 3 only takes care of hotplug events.
->>
->> Hi, Dave,
->>
->> What do you think about this?
->
-> Squashing patch #1 and #2 had been mentioned in the previous review
-> and it seems Dave agreed.
-> https://lore.kernel.org/linux-mm/4573cb9a-31ca-3b3d-96bc-5d94876b9709@intel.com/
+I tested this patch series atop 5.13.0-rc7 (which took a bit of
+rebasing), and it works quite well. I tested ext4 on dm-crypt on a
+laptop NVME drive, using this test case:
 
-Thanks a lot for your information!
+$ mkdir testdir
+$ time python3 -c 'for i in range(1000000): open(f"testdir/{i}", "wb").write(b"test data")'
+$ time rm -r testdir
 
-Best Regards,
-Huang, Ying
+I tried this with and without discard enabled.
 
-[snip]
+Without this patch, if discard is enabled, the rm takes many minutes,
+and stalls out the rest of the system.
+
+With this patch, the rm takes the same amount of time (~17s) whether
+discard is enabled or disabled, and the rest of the system continues to
+function.
+
+Tested-by: Josh Triplett <josh@joshtriplett.org>
