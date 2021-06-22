@@ -2,240 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4C93AFAFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 693453AFAFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbhFVCTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 22:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231164AbhFVCTI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 22:19:08 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E481C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 19:16:52 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id c7so20598391edn.6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 19:16:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zI/tuew0SqY1Sk4dcTKsfP7TId2zVm49aO1S/T8Zrm4=;
-        b=NckrPLhhnNLGPjf2lwGQz9xapzKs4j6rQU+1goVD+VABRqT7OUgQfRmIBVzY9ZA2Oa
-         c8lZtBx41B8KO8PgE6HM0Cak5PVZJU/Oha5HpkjN8Oo31nTOf3OB58iqART9PUWnSCQL
-         UaxVC53E3k16mq5eikwhYGMATO+KPVC4l+Alrx2YZpaK9v5k/jdHxJnFO6DUgVAwoPNP
-         NHWRjg0rgGIXmspqq8pJm+ST6rMXirgu+xo7Da5ILyuCceS+WfYiu1E+3x8mniBUx07t
-         MUGFv5HV8zC1o88Nog5Zuf1z4y0oTHDtRDTmZ0IyraLvvHQ/UhObKnCrlUGHdan1Lh++
-         TX9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zI/tuew0SqY1Sk4dcTKsfP7TId2zVm49aO1S/T8Zrm4=;
-        b=Af+F53dVTQhifs4ce4eaOmqSgpfwk1yo8E4cEd8e3MWJwpBTtnsDMWjezKapuDnEYj
-         4RDlC0zYHQAH9NFGKcbEtJFFCd/F8BO2Zlg/62L88DWy1lILXueC4zEbsY1ub2F2q5q2
-         NJIRjytn1qRiQ7NBHali1we9BJsz5GXZ0pO3WxSUCzxr18WUzO3gg1VGPOCLa1eK8oJ2
-         MDD+wwBkYJNS16qlJSZRccG7xRnfvpykOp89dTyBXJHVO4/I363cGaQP8nq/tiF1ijSX
-         K29Ts4T4MxQi1MwGm3ecOEmnyiUI/xb7yaqqtgcMiqeTCIKFEn2WQGaHs97F34mYU+Z/
-         jwAA==
-X-Gm-Message-State: AOAM5323AE2If1o3Ra1q8mINAGkKp+p20pSLRf5o4sfMKHcGdbNV3/hU
-        65dOvASn3r9ekRvZSAqoBdBssFFimYl28XXXFYypSw==
-X-Google-Smtp-Source: ABdhPJzapohHdUZoXnftwa+7XHDYhStu9rfrjFoyv++xM5eJwVck1qvhCOV6/gNhiI6CY4nfQRSrXCu+Rbp/hBUU+88=
-X-Received: by 2002:a05:6402:402:: with SMTP id q2mr1659694edv.239.1624328210991;
- Mon, 21 Jun 2021 19:16:50 -0700 (PDT)
+        id S231516AbhFVCTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 22:19:49 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:48240 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231164AbhFVCTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 22:19:48 -0400
+Received: from [10.130.0.191] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxQOIqSNFgap8VAA--.27352S3;
+        Tue, 22 Jun 2021 10:17:14 +0800 (CST)
+Subject: Re: stmmac: pci: Add dwmac support for Loongson
+To:     Colin Ian King <colin.king@canonical.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+References: <37057fe8-f7d1-7ee0-01c7-916577526b5b@canonical.com>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   zhangqing <zhangqing@loongson.cn>
+Message-ID: <8f142063-5db7-58b4-d4b1-381760921eb1@loongson.cn>
+Date:   Tue, 22 Jun 2021 10:17:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-References: <20210621154921.212599475@linuxfoundation.org>
-In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 22 Jun 2021 07:46:39 +0530
-Message-ID: <CA+G9fYuKqcerm-njG9Su7d=CvAG_f9d1h4CRpqdEHzO8CZbKhQ@mail.gmail.com>
-Subject: Re: [PATCH 5.12 000/178] 5.12.13-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <37057fe8-f7d1-7ee0-01c7-916577526b5b@canonical.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9BxQOIqSNFgap8VAA--.27352S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7ArW3GFyDtr4DCFWkGw4fAFb_yoW8Zry7p3
+        y5Kas8tr9xGrZayFWrJF4UJ3W8urW3Kr4xCFW2yFW7GF15JFZxXw1UK3y2ya97uFykCay5
+        Wr4jqa1vqa4kCw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Kb7Iv0xC_Cr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
+        wI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I
+        8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AK
+        xVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcV
+        AFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8I
+        cIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
+        v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUzxhLUUUUU
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Jun 2021 at 21:58, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+
+
+On 06/21/2021 11:51 PM, Colin Ian King wrote:
+> Hi,
 >
-> This is the start of the stable review cycle for the 5.12.13 release.
-> There are 178 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Static analysis by Coverity on today's linux-next has found an issue in
+> function loongson_dwmac_probe with the following commit:
 >
-> Responses should be made by Wed, 23 Jun 2021 15:48:46 +0000.
-> Anything received after that time might be too late.
+> commit 30bba69d7db40e732d6c0aa6d4890c60d717e314
+> Author: Qing Zhang <zhangqing@loongson.cn>
+> Date:   Fri Jun 18 10:53:34 2021 +0800
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.12.13-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.12.y
-> and the diffstat can be found below.
+>      stmmac: pci: Add dwmac support for Loongson
 >
-> thanks,
+> The analysis is as follows:
 >
-> greg k-h
+> 110        plat->phy_interface = device_get_phy_mode(&pdev->dev);
+>
+> Enum compared against 0
+> (NO_EFFECT)
+> unsigned_compare: This less-than-zero comparison of an
+> unsigned value is never true. plat->phy_interface < 0U.
+>
+> 111        if (plat->phy_interface < 0)
+> 112                dev_err(&pdev->dev, "phy_mode not found\n");
+>
+> Enum plat->phy_interface is unsigned, so can't be negative and so the
+> comparison will always be false.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Hi，Colin
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Thanks for your advice,
 
-## Build
-* kernel: 5.12.13-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.12.y
-* git commit: 88a915cf22fcd20d2323dff7a4b0f70909cf4099
-* git describe: v5.12.12-179-g88a915cf22fc
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.12.y/build/v5.12=
-.12-179-g88a915cf22fc
+I see this judgment in stmmac_platform.c:
 
-## No regressions (compared to v5.12.11-49-g3197a891c08a)
+plat->phy_interface = device_get_phy_mode(&pdev->dev);
+if (plat->phy_interface < 0)
+return ERR_PTR(plat->phy_interface);
+
+plat->interface = stmmac_of_get_mac_mode(np);
+if (plat->interface < 0)
+
+>
+> A possible fix is to use int variable ret for the assignment and check:
+>
+>
+>          ret = device_get_phy_mode(&pdev->dev);
+>          if (ret < 0)
+>                  dev_err(&pdev->dev, "phy_mode not found\n");
+>          plat->phy_interface = ret;
+>
+> ..however, I think the dev_err may need handling too, e.g.
+>
+>          ret = device_get_phy_mode(&pdev->dev);
+>          if (ret < 0) {
+>                  dev_err(&pdev->dev, "phy_mode not found\n");
+> 		ret = -ENODEV;
+> 		goto cleanup;		/* needs to be written */
+> 	}
+>          plat->phy_interface = ret;
+>
+> Colin
+looks ok, but can be written to use of_get_phy_mode() , like this:
+
+phy_interface_t interface;
+ret = of_get_phy_mode(pdev->dev->of_node, &interface);
+if (ret)
+        return -EINVAL;
 
 
-## No fixes (compared to v5.12.11-49-g3197a891c08a)
+plat_dat->interface = interface;
+if(!plat->interface)
+dev_err(&pdev->dev, "Unsupported interface mode: %s",
+         phy_modes(plat->interface));
 
+Thanks
 
-## Test result summary
- total: 92709, pass: 74966, fail: 3757, skip: 13183, xfail: 803,
+-Qing
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 2 total, 2 passed, 0 failed
-* hi6220-hikey: 2 total, 2 passed, 0 failed
-* i386: 27 total, 27 passed, 0 failed
-* juno-r2: 2 total, 2 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 2 total, 0 passed, 2 failed
-* x86: 2 total, 2 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
