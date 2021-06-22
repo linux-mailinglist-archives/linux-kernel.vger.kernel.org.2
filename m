@@ -2,83 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D873B3AFAA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 03:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134F53AFAB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 03:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231129AbhFVBeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 21:34:31 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:39711 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230059AbhFVBe3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 21:34:29 -0400
-X-Greylist: delayed 303 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Jun 2021 21:34:28 EDT
-X-UUID: c27ddc43ccc34fe0a8d1eaad25cd91df-20210622
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ZLVdaGmik40Ze2v/CYmLtbOEykgp/qCj3I8UybRZ4Vs=;
-        b=YZOeNfpEG6upWTdbl3Rac5oYxNHiTVt88w2Y7MPl+hJyG6Sp48ZOJjyKI6ziTu3HbNj8B+lRbmmG8M81N6CZzSSucTmFqKxgQrroz+xdqIqrj5bynpYd4Mmc8mg6whZID7gfqXU3mfKAM7oIAcULJGW7nYlpfBvmRlt6A6IPMWM=;
-X-UUID: c27ddc43ccc34fe0a8d1eaad25cd91df-20210622
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <ed.tsai@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1410397488; Tue, 22 Jun 2021 09:27:07 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 22 Jun 2021 09:27:05 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Tue, 22 Jun 2021 09:27:05 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 22 Jun 2021 09:27:05 +0800
-Message-ID: <9bbe52d3f21b91eadf7ba30be5054cf64ba47739.camel@mediatek.com>
-Subject: Re: [PATCH] scsi: remove reduntant assignment when alloc sdev
-From:   Ed Tsai <ed.tsai@mediatek.com>
-To:     Bart Van Assche <bvanassche@acm.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Tue, 22 Jun 2021 09:27:05 +0800
-In-Reply-To: <9e1d5f1f-b51e-8f1a-d052-d6debed116e6@acm.org>
-References: <20210621034555.4039-1-ed.tsai@mediatek.com>
-         <9e1d5f1f-b51e-8f1a-d052-d6debed116e6@acm.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S230433AbhFVBtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 21:49:42 -0400
+Received: from m12-13.163.com ([220.181.12.13]:57871 "EHLO m12-13.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229663AbhFVBtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 21:49:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=9Q6ls
+        poD2ETFi68K/VjbQNPwU6gZk0VWJ8lasQA1a0A=; b=bftKK8avXOGJmE6frsYPa
+        e6hf3Io55uWN4ePX/hSLgmyg6lQGYgwWHmfzQ4ot8XhLzh04tJSoOjftE7qlFHHo
+        /sQrQugi8ImmIP/StyHiAYlSI6/Nzl3z2rb7hVzcHckcta3orRpjpEBmJ9m3+2qa
+        cUkyCmlI//CmS0ZAm8K/EU=
+Received: from localhost (unknown [218.17.89.111])
+        by smtp9 (Coremail) with SMTP id DcCowACHwLRdPdFgb61RHg--.9664S2;
+        Tue, 22 Jun 2021 09:31:11 +0800 (CST)
+Date:   Tue, 22 Jun 2021 09:31:09 +0800
+From:   Chunyou Tang <tangchunyou@163.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     tomeu.vizoso@collabora.com, airlied@linux.ie,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        alyssa.rosenzweig@collabora.com,
+        ChunyouTang <tangchunyou@icubecorp.cn>
+Subject: Re: [PATCH] drm/panfrost:modify 'break' to 'continue' to traverse
+ the circulation
+Message-ID: <20210622093109.00005e08@163.com>
+In-Reply-To: <eb036b84-ebb7-1f2d-3abd-7de13479fa3c@arm.com>
+References: <20210617080414.1940-1-tangchunyou@163.com>
+        <4d289eed-59f2-161a-40d1-2a434a1955c2@arm.com>
+        <20210619110923.00001c64@163.com>
+        <eb036b84-ebb7-1f2d-3abd-7de13479fa3c@arm.com>
+Organization: icube
+X-Mailer: Claws Mail 3.10.1 (GTK+ 2.16.6; i586-pc-mingw32msvc)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GB18030
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DcCowACHwLRdPdFgb61RHg--.9664S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxXry3ZFW8KryDJw1DXr15XFb_yoWrXF1UpF
+        WUGF1YyrW8X3Wrt3929a4IkF1jv3y0qry5WF98AwsxZrsIqF1DXF48C3W8ur98uF45KF48
+        twnrKasru340ywUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jNa9-UUUUU=
+X-Originating-IP: [218.17.89.111]
+X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/xtbBRQC5UVPAMmUbqwAAsZ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTA2LTIyIGF0IDAxOjIxICswODAwLCBCYXJ0IFZhbiBBc3NjaGUgd3JvdGU6
-DQo+IE9uIDYvMjAvMjEgODo0NSBQTSwgRWQgVHNhaSB3cm90ZToNCj4gPiBzZGV2LT5yZXFldXN0
-X3F1ZXVlIGFuZCBpdHMgcXVldWVkYXRhIGhhdmUgYmVlbiBzZXQgdXAgaW4NCj4gPiBzY3NpX21x
-X2FsbG9jX3F1ZXVlKCkuIE5vIG5lZWQgdG8gZG8gdGhhdCBhZ2Fpbi4NCj4gPiANCj4gPiBTaWdu
-ZWQtb2ZmLWJ5OiBFZCBUc2FpIDxlZC50c2FpQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAg
-ZHJpdmVycy9zY3NpL3Njc2lfc2Nhbi5jIHwgNCArLS0tDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAx
-IGluc2VydGlvbigrKSwgMyBkZWxldGlvbnMoLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9zY3NpL3Njc2lfc2Nhbi5jIGIvZHJpdmVycy9zY3NpL3Njc2lfc2Nhbi5jDQo+ID4gaW5k
-ZXggMTJmNTQ1NzFiODNlLi44MmMxNzkyZjFkZTIgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9z
-Y3NpL3Njc2lfc2Nhbi5jDQo+ID4gKysrIGIvZHJpdmVycy9zY3NpL3Njc2lfc2Nhbi5jDQo+ID4g
-QEAgLTI2Niw4ICsyNjYsNyBAQCBzdGF0aWMgc3RydWN0IHNjc2lfZGV2aWNlDQo+ID4gKnNjc2lf
-YWxsb2Nfc2RldihzdHJ1Y3Qgc2NzaV90YXJnZXQgKnN0YXJnZXQsDQo+ID4gIAkgKi8NCj4gPiAg
-CXNkZXYtPmJvcmtlbiA9IDE7DQo+ID4gIA0KPiA+IC0Jc2Rldi0+cmVxdWVzdF9xdWV1ZSA9IHNj
-c2lfbXFfYWxsb2NfcXVldWUoc2Rldik7DQo+ID4gLQlpZiAoIXNkZXYtPnJlcXVlc3RfcXVldWUp
-IHsNCj4gPiArCWlmICghc2NzaV9tcV9hbGxvY19xdWV1ZShzZGV2KSkgew0KPiA+ICAJCS8qIHJl
-bGVhc2UgZm4gaXMgc2V0IHVwIGluDQo+ID4gc2NzaV9zeXNmc19kZXZpY2VfaW5pdGlhbGlzZSwg
-c28NCj4gPiAgCQkgKiBoYXZlIHRvIGZyZWUgYW5kIHB1dCBtYW51YWxseSBoZXJlICovDQo+ID4g
-IAkJcHV0X2RldmljZSgmc3RhcmdldC0+ZGV2KTsNCj4gPiBAQCAtMjc1LDcgKzI3NCw2IEBAIHN0
-YXRpYyBzdHJ1Y3Qgc2NzaV9kZXZpY2UNCj4gPiAqc2NzaV9hbGxvY19zZGV2KHN0cnVjdCBzY3Np
-X3RhcmdldCAqc3RhcmdldCwNCj4gPiAgCQlnb3RvIG91dDsNCj4gPiAgCX0NCj4gPiAgCVdBUk5f
-T05fT05DRSghYmxrX2dldF9xdWV1ZShzZGV2LT5yZXF1ZXN0X3F1ZXVlKSk7DQo+ID4gLQlzZGV2
-LT5yZXF1ZXN0X3F1ZXVlLT5xdWV1ZWRhdGEgPSBzZGV2Ow0KPiA+ICANCj4gPiAgCWRlcHRoID0g
-c2Rldi0+aG9zdC0+Y21kX3Blcl9sdW4gPzogMTsNCj4gDQo+IFNpbmNlIHNjc2lfbXFfYWxsb2Nf
-cXVldWUoKSBvbmx5IGhhcyBvbmUgY2FsbGVyLCBwbGVhc2UgaW5saW5lDQo+IHNjc2lfbXFfYWxs
-b2NfcXVldWUoKSBpbnN0ZWFkIG9mIG1ha2luZyB0aGlzIGNoYW5nZS4gU2VlIGFsc28NCj4gDQpo
-dHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1zY3NpLzIwMjAxMTIzMDMxNzQ5LjE0OTEyLTUt
-YnZhbmFzc2NoZUBhY20ub3JnLw0KPiANCj4gVGhhbmtzLA0KPiANCj4gQmFydC4NCg0KaGF2ZSBw
-bGFubmVkIHRvIHJlLXN1Ym1pdCBpdD8NCg==
+Hi Steve,
+	I make a mistake about the code branch,I will test it later,
+thinks for your reply.
+
+Chunyou
+
+于 Mon, 21 Jun 2021 11:45:18 +0100
+Steven Price <steven.price@arm.com> 写道:
+
+> On 19/06/2021 04:09, Chunyou Tang wrote:
+> > Hi Steve,
+> > 	1,
+> > from
+> > https://lore.kernel.org/lkml/31644881-134a-2d6e-dddf-e658a3a8176b@arm.com/
+> > I can see what your sent,I used a wrong email address,Now it
+> > correct. 2,
+> >>> Unless I'm mistaken the situation where some mappings may be NULL
+> >>> is caused by the loop in panfrost_lookup_bos() not completing
+> >>> successfully
+> >>> (panfrost_gem_mapping_get() returning NULL). In this case if
+> >>> mappings[i]
+> >>> is NULL then all following mappings must also be NULL. So 'break'
+> >>> allows
+> >>> us to skip the later ones. Admittedly the performance here isn't
+> >>> important so I'm not sure it's worth the optimisation, but AIUI
+> >>> this code isn't actually wrong.
+> > 
+> > from panfrost_lookup_bos(),you can see:
+> >         for (i = 0; i < job->bo_count; i++) {
+> >                 struct panfrost_gem_mapping *mapping;
+> > 
+> >                 bo = to_panfrost_bo(job->bos[i]);
+> >                 ICUBE_DEBUG_PRINTK("panfrost bo gem handle=0x%x
+> >                 is_dumb=%d\n", bo->gem_handle, bo->is_dumb);
+> >                 if (!bo->is_dumb) {
+> >                        mapping = panfrost_gem_mapping_get(bo, priv);
+> >                        if (!mapping) {
+> >                                 ret = -EINVAL;
+> >                                 break;
+> >                        }
+> > 
+> >                         atomic_inc(&bo->gpu_usecount);
+> >                         job->mappings[i] = mapping;
+> >                 } else {
+> >                         atomic_inc(&bo->gpu_usecount);
+> >                         job->mappings[i] = NULL;
+> >                 }
+> >         }
+> 
+> This code isn't upstream - in drm-misc/drm-misc-next (and all mainline
+> kernels from what I can tell) this doesn't have any "is_dumb" test.
+> Which branch are you using?
+> 
+> > if bo->is_dumb is TRUE,the job->mappings[i] will set to NULL,and the
+> > while will be continue,so if job->mappings[i] is NULL,the following
+> > can not be NULL.
+> 
+> I agree that with the above code the panfrost_job_cleanup() would need
+> changing. But we don't (currently) have this code upstream, so this
+> change doesn't make sense upstream.
+> 
+> Thanks,
+> 
+> Steve
+> 
+> > 	3,
+> > I've had this problem in our project,the value of is_dumb like
+> > these: 0
+> > 0
+> > 0
+> > 1
+> > 0
+> > 0
+> > 0
+> > so,when job->mappings[i] is NULL,we can not break the while in 
+> > panfrost_job_cleanup().
+> > 
+> > thanks
+> > Chunyou
+> > 
+> > 于 Fri, 18 Jun 2021 13:43:25 +0100
+> > Steven Price <steven.price@arm.com> 写道:
+> > 
+> >> On 17/06/2021 09:04, ChunyouTang wrote:
+> >>> From: ChunyouTang <tangchunyou@icubecorp.cn>
+> >>>
+> >>> The 'break' can cause 'Memory manager not clean during takedown'
+> >>>
+> >>> It cannot use break to finish the circulation,it should use
+> >>>
+> >>> continue to traverse the circulation.it should put every mapping
+> >>>
+> >>> which is not NULL.
+> >>
+> >> You don't appear to have answered my question about whether you've
+> >> actually seen this happen (and ideally what circumstances). In my
+> >> previous email[1] I explained why I don't think this is needed. You
+> >> need to convince me that I've overlooked something.
+> >>
+> >> Thanks,
+> >>
+> >> Steve
+> >>
+> >> [1]
+> >> https://lore.kernel.org/r/31644881-134a-2d6e-dddf-e658a3a8176b%40arm.com
+> >>
+> >>> Signed-off-by: ChunyouTang <tangchunyou@icubecorp.cn>
+> >>> ---
+> >>>  drivers/gpu/drm/panfrost/panfrost_job.c | 2 +-
+> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c
+> >>> b/drivers/gpu/drm/panfrost/panfrost_job.c index
+> >>> 6003cfeb1322..52bccc1d2d42 100644 ---
+> >>> a/drivers/gpu/drm/panfrost/panfrost_job.c +++
+> >>> b/drivers/gpu/drm/panfrost/panfrost_job.c @@ -281,7 +281,7 @@
+> >>> static void panfrost_job_cleanup(struct kref *ref) if
+> >>> (job->mappings) { for (i = 0; i < job->bo_count; i++) {
+> >>>  			if (!job->mappings[i])
+> >>> -				break;
+> >>> +				continue;
+> >>>  
+> >>>  			atomic_dec(&job->mappings[i]->obj->gpu_usecount);
+> >>>  			panfrost_gem_mapping_put(job->mappings[i]);
+> >>>
+> > 
+> > 
+
 
