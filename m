@@ -2,146 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0FF3B0B5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E679E3B0B5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbhFVRZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 13:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbhFVRZG (ORCPT
+        id S232001AbhFVR0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 13:26:42 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:43796 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231352AbhFVR0l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 13:25:06 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF46BC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:22:49 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id c17-20020ac87d910000b029024ee21abd54so2197400qtd.19
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:22:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=ENrInjqfBgGswxYmQAYCwFI8IQ/aaKE4ZAV8dzRip1g=;
-        b=np4ZqLtwF7u+QAnrxEOF1NWIc3J6Kh/WhZPFkgj8BCi4BuzZL4t+3CfIPKXvDUX5iz
-         2iBSc04cBpmxSwdW3irsx41325u7MkZQ5+dlJRFr2hrhxRYn0ipaW+eF5xhU+ZWTdqck
-         33sfKgl3dIDw4lGaHKf6BdPU4dB+iGy8ZHQTb0wbE4irZpfxuEIr2oeosrI0yzEoGUwy
-         MepDvBSM+dA2UC04sFzwwq7Tnr6FxTmTQdDKdcvaDkJZLGQnBGLrAYPiEpnOx+JXlGTP
-         HHmwxzDrvmBDvWjiBVsbSe8tofAiJVhtqsK8vvSVX3JSDi22uMTg/U/cXDsdqeBwJdkO
-         7t2Q==
+        Tue, 22 Jun 2021 13:26:41 -0400
+Received: by mail-io1-f71.google.com with SMTP id p7-20020a5d8d070000b02904c0978ed194so11801914ioj.10
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:24:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=ENrInjqfBgGswxYmQAYCwFI8IQ/aaKE4ZAV8dzRip1g=;
-        b=PGikc69MGhfcI7lybTM3ezJ7qqPxFPAoRkmY3cxVTf4XY0x6YnZGGgnlQ8JWu6shOR
-         Qar7lHt9a22/WRJ9hhkSBegquwApl4m2y6oFwhb+R/Ze1hmT2x4HlcJCHB11PaGyUdcy
-         NIZpRe7ipzM6/THIbI7GhmlqdoqpgMyNUy4vgu8b4bNzUv9rJHzsF51w2gyXkbgyPB3o
-         dgK2LvBuLbqlAjZxCQ327ztxAMJefMsjwG9NLgOG21D1SEvHKDrs+6g+TJNv+Ax27UQK
-         2HCmlQhlaRJ3nsva2c2FQBvglYwmKcyUU6tkctEJV9VTguhqCo3/4bVjJyh9rIZZoMds
-         4LLw==
-X-Gm-Message-State: AOAM531ByAS58gCouo/Pf2j4CVpFwiG6qvTlls2TS1r+ax1iNQNpLeFv
-        PJ6/VT9CFpkmb2qe+x6umcZYMgMGPFQ=
-X-Google-Smtp-Source: ABdhPJzh2TG/Fvp81ZJNv0tzkTiSRn791SPJNeuwFH7m5wQ9IOyCdICuM/1VKbvQ52dORRbywXXo2xX6IVc=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:5722:92ce:361f:3832])
- (user=seanjc job=sendgmr) by 2002:a0c:a362:: with SMTP id u89mr9499408qvu.50.1624382567896;
- Tue, 22 Jun 2021 10:22:47 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 22 Jun 2021 10:22:44 -0700
-Message-Id: <20210622172244.3561540-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH] KVM: nVMX: Handle split-lock #AC exceptions that happen in L2
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=TWUiO1YZGpvaS76ZHhe+JSwwIrerDvGwOdhWfmTH2VY=;
+        b=k9mA/Xeh0k9KhyHHdy0M3n5XPjAHfmqATLcQ2+XX1f+7mqzGqGtiwiuj6KzQdpBdfh
+         pC4fy3TkyWB7NZNBqr6cgTYxZlsJKYjeeSeCtLLMaqzbEnj1GdGEtXEs64YXOl8xjNgX
+         3yfFSPP4fyhSKjaDtO087/wBoMbPZ0KpbgWlLaKGW5vDKBkkE3wIXrtzFU3Vr87D+TtW
+         oAGokm/Uws4FvwZaU3bhwfoGABPwH8JAqpltWqFr9GRjA4k2Z6RpCfI7bM69q9KZouNq
+         NgjcaRvOZEQpGKgkQsvx7HUIuXDm5ExZhEBhNn+EbBivNgZmoouemuMH7bgxmh9Anq/Y
+         8XYw==
+X-Gm-Message-State: AOAM531IkuCwRb+L7hRXjP07Dgu5/ofl0vzzJDa93q1en3HIs7NWvTh7
+        FRbl+c95ETnZLqCd5SmnbsUtLezWcQ3vCsLZV0O+C7bLMg9I
+X-Google-Smtp-Source: ABdhPJwFf6BqLXzzPmMy2MUlHAhXeH9dt1YUXkmsVOD/qRbLygvTTvI14qNET7Y6ajo8lVrNpxZbJMQ71IVqr8dzTzuf9N1hKGoW
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:20e4:: with SMTP id q4mr3175014ilv.50.1624382664849;
+ Tue, 22 Jun 2021 10:24:24 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 10:24:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b7bee505c55e0f20@google.com>
+Subject: [syzbot] memory leak in j1939_xtp_rx_rts
+From:   syzbot <syzbot+d56eaa979f1a3d6e2e2e@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kernel@pengutronix.de, kuba@kernel.org,
+        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org,
+        robin@protonic.nl, socketcan@hartkopp.net,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark #ACs that won't be reinjected to the guest as wanted by L0 so that
-KVM handles split-lock #AC from L2 instead of forwarding the exception to
-L1.  Split-lock #AC isn't yet virtualized, i.e. L1 will treat it like a
-regular #AC and do the wrong thing, e.g. reinject it into L2.
+Hello,
 
-Fixes: e6f8b6c12f03 ("KVM: VMX: Extend VMXs #AC interceptor to handle split lock #AC in guest")
-Cc: Xiaoyao Li <xiaoyao.li@intel.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+syzbot found the following issue on:
+
+HEAD commit:    fd0aa1a4 Merge tag 'for-linus' of git://git.kernel.org/pub..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=155c8d10300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6ec2526c74098317
+dashboard link: https://syzkaller.appspot.com/bug?extid=d56eaa979f1a3d6e2e2e
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110912a4300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d56eaa979f1a3d6e2e2e@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff888126b3d500 (size 232):
+  comm "softirq", pid 0, jiffies 4294974634 (age 13.120s)
+  hex dump (first 32 bytes):
+    68 16 14 26 81 88 ff ff 68 16 14 26 81 88 ff ff  h..&....h..&....
+    00 80 5d 22 81 88 ff ff 00 00 00 00 00 00 00 00  ..]"............
+  backtrace:
+    [<ffffffff836a0d5f>] __alloc_skb+0x20f/0x280 net/core/skbuff.c:413
+    [<ffffffff83c599e1>] alloc_skb include/linux/skbuff.h:1107 [inline]
+    [<ffffffff83c599e1>] j1939_session_fresh_new net/can/j1939/transport.c:1484 [inline]
+    [<ffffffff83c599e1>] j1939_xtp_rx_rts_session_new net/can/j1939/transport.c:1578 [inline]
+    [<ffffffff83c599e1>] j1939_xtp_rx_rts+0x451/0xac0 net/can/j1939/transport.c:1679
+    [<ffffffff83c5a7eb>] j1939_tp_cmd_recv net/can/j1939/transport.c:1986 [inline]
+    [<ffffffff83c5a7eb>] j1939_tp_recv+0x44b/0x640 net/can/j1939/transport.c:2067
+    [<ffffffff83c515dc>] j1939_can_recv+0x2bc/0x420 net/can/j1939/main.c:101
+    [<ffffffff83c43d98>] deliver net/can/af_can.c:574 [inline]
+    [<ffffffff83c43d98>] can_rcv_filter+0xd8/0x290 net/can/af_can.c:608
+    [<ffffffff83c44360>] can_receive+0xf0/0x140 net/can/af_can.c:665
+    [<ffffffff83c4442d>] can_rcv+0x7d/0xf0 net/can/af_can.c:696
+    [<ffffffff836d2e1a>] __netif_receive_skb_one_core+0x6a/0xa0 net/core/dev.c:5459
+    [<ffffffff836d2ea7>] __netif_receive_skb+0x27/0xa0 net/core/dev.c:5573
+    [<ffffffff836d3234>] process_backlog+0xb4/0x1a0 net/core/dev.c:6437
+    [<ffffffff836d54fd>] __napi_poll+0x3d/0x2a0 net/core/dev.c:6985
+    [<ffffffff836d5cea>] napi_poll net/core/dev.c:7052 [inline]
+    [<ffffffff836d5cea>] net_rx_action+0x32a/0x410 net/core/dev.c:7139
+    [<ffffffff846000bf>] __do_softirq+0xbf/0x2ab kernel/softirq.c:559
+    [<ffffffff81238a0c>] do_softirq kernel/softirq.c:460 [inline]
+    [<ffffffff81238a0c>] do_softirq+0x5c/0x80 kernel/softirq.c:447
+    [<ffffffff81238a81>] __local_bh_enable_ip+0x51/0x60 kernel/softirq.c:384
+    [<ffffffff840bf0cd>] spin_unlock_bh include/linux/spinlock.h:399 [inline]
+    [<ffffffff840bf0cd>] batadv_nc_purge_paths+0x19d/0x1f0 net/batman-adv/network-coding.c:467
+
+BUG: memory leak
+unreferenced object 0xffff888126141600 (size 512):
+  comm "softirq", pid 0, jiffies 4294974634 (age 13.120s)
+  hex dump (first 32 bytes):
+    00 e0 9f 2a 81 88 ff ff 08 16 14 26 81 88 ff ff  ...*.......&....
+    08 16 14 26 81 88 ff ff 18 16 14 26 81 88 ff ff  ...&.......&....
+  backtrace:
+    [<ffffffff83c552eb>] kmalloc include/linux/slab.h:556 [inline]
+    [<ffffffff83c552eb>] kzalloc include/linux/slab.h:686 [inline]
+    [<ffffffff83c552eb>] j1939_session_new+0x5b/0x160 net/can/j1939/transport.c:1443
+    [<ffffffff83c59a78>] j1939_session_fresh_new net/can/j1939/transport.c:1495 [inline]
+    [<ffffffff83c59a78>] j1939_xtp_rx_rts_session_new net/can/j1939/transport.c:1578 [inline]
+    [<ffffffff83c59a78>] j1939_xtp_rx_rts+0x4e8/0xac0 net/can/j1939/transport.c:1679
+    [<ffffffff83c5a7eb>] j1939_tp_cmd_recv net/can/j1939/transport.c:1986 [inline]
+    [<ffffffff83c5a7eb>] j1939_tp_recv+0x44b/0x640 net/can/j1939/transport.c:2067
+    [<ffffffff83c515dc>] j1939_can_recv+0x2bc/0x420 net/can/j1939/main.c:101
+    [<ffffffff83c43d98>] deliver net/can/af_can.c:574 [inline]
+    [<ffffffff83c43d98>] can_rcv_filter+0xd8/0x290 net/can/af_can.c:608
+    [<ffffffff83c44360>] can_receive+0xf0/0x140 net/can/af_can.c:665
+    [<ffffffff83c4442d>] can_rcv+0x7d/0xf0 net/can/af_can.c:696
+    [<ffffffff836d2e1a>] __netif_receive_skb_one_core+0x6a/0xa0 net/core/dev.c:5459
+    [<ffffffff836d2ea7>] __netif_receive_skb+0x27/0xa0 net/core/dev.c:5573
+    [<ffffffff836d3234>] process_backlog+0xb4/0x1a0 net/core/dev.c:6437
+    [<ffffffff836d54fd>] __napi_poll+0x3d/0x2a0 net/core/dev.c:6985
+    [<ffffffff836d5cea>] napi_poll net/core/dev.c:7052 [inline]
+    [<ffffffff836d5cea>] net_rx_action+0x32a/0x410 net/core/dev.c:7139
+    [<ffffffff846000bf>] __do_softirq+0xbf/0x2ab kernel/softirq.c:559
+    [<ffffffff81238a0c>] do_softirq kernel/softirq.c:460 [inline]
+    [<ffffffff81238a0c>] do_softirq+0x5c/0x80 kernel/softirq.c:447
+    [<ffffffff81238a81>] __local_bh_enable_ip+0x51/0x60 kernel/softirq.c:384
+    [<ffffffff840bf0cd>] spin_unlock_bh include/linux/spinlock.h:399 [inline]
+    [<ffffffff840bf0cd>] batadv_nc_purge_paths+0x19d/0x1f0 net/batman-adv/network-coding.c:467
+
+BUG: memory leak
+unreferenced object 0xffff888126b3d300 (size 232):
+  comm "softirq", pid 0, jiffies 4294974634 (age 13.120s)
+  hex dump (first 32 bytes):
+    68 08 05 27 81 88 ff ff 68 08 05 27 81 88 ff ff  h..'....h..'....
+    00 00 0b 22 81 88 ff ff 00 00 00 00 00 00 00 00  ..."............
+  backtrace:
+    [<ffffffff836a0d5f>] __alloc_skb+0x20f/0x280 net/core/skbuff.c:413
+    [<ffffffff83c599e1>] alloc_skb include/linux/skbuff.h:1107 [inline]
+    [<ffffffff83c599e1>] j1939_session_fresh_new net/can/j1939/transport.c:1484 [inline]
+    [<ffffffff83c599e1>] j1939_xtp_rx_rts_session_new net/can/j1939/transport.c:1578 [inline]
+    [<ffffffff83c599e1>] j1939_xtp_rx_rts+0x451/0xac0 net/can/j1939/transport.c:1679
+    [<ffffffff83c5a7eb>] j1939_tp_cmd_recv net/can/j1939/transport.c:1986 [inline]
+    [<ffffffff83c5a7eb>] j1939_tp_recv+0x44b/0x640 net/can/j1939/transport.c:2067
+    [<ffffffff83c515dc>] j1939_can_recv+0x2bc/0x420 net/can/j1939/main.c:101
+    [<ffffffff83c43d98>] deliver net/can/af_can.c:574 [inline]
+    [<ffffffff83c43d98>] can_rcv_filter+0xd8/0x290 net/can/af_can.c:608
+    [<ffffffff83c44360>] can_receive+0xf0/0x140 net/can/af_can.c:665
+    [<ffffffff83c4442d>] can_rcv+0x7d/0xf0 net/can/af_can.c:696
+    [<ffffffff836d2e1a>] __netif_receive_skb_one_core+0x6a/0xa0 net/core/dev.c:5459
+    [<ffffffff836d2ea7>] __netif_receive_skb+0x27/0xa0 net/core/dev.c:5573
+    [<ffffffff836d3234>] process_backlog+0xb4/0x1a0 net/core/dev.c:6437
+    [<ffffffff836d54fd>] __napi_poll+0x3d/0x2a0 net/core/dev.c:6985
+    [<ffffffff836d5cea>] napi_poll net/core/dev.c:7052 [inline]
+    [<ffffffff836d5cea>] net_rx_action+0x32a/0x410 net/core/dev.c:7139
+    [<ffffffff846000bf>] __do_softirq+0xbf/0x2ab kernel/softirq.c:559
+    [<ffffffff81238a0c>] do_softirq kernel/softirq.c:460 [inline]
+    [<ffffffff81238a0c>] do_softirq+0x5c/0x80 kernel/softirq.c:447
+    [<ffffffff81238a81>] __local_bh_enable_ip+0x51/0x60 kernel/softirq.c:384
+    [<ffffffff840bf0cd>] spin_unlock_bh include/linux/spinlock.h:399 [inline]
+    [<ffffffff840bf0cd>] batadv_nc_purge_paths+0x19d/0x1f0 net/batman-adv/network-coding.c:467
+
+
+
 ---
- arch/x86/kvm/vmx/nested.c | 3 +++
- arch/x86/kvm/vmx/vmcs.h   | 5 +++++
- arch/x86/kvm/vmx/vmx.c    | 4 ++--
- arch/x86/kvm/vmx/vmx.h    | 1 +
- 4 files changed, 11 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 183fd9d62fc5..fa3f50f0a3fa 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -5833,6 +5833,9 @@ static bool nested_vmx_l0_wants_exit(struct kvm_vcpu *vcpu,
- 		else if (is_breakpoint(intr_info) &&
- 			 vcpu->guest_debug & KVM_GUESTDBG_USE_SW_BP)
- 			return true;
-+		else if (is_alignment_check(intr_info) &&
-+			 !vmx_guest_inject_ac(vcpu))
-+			return true;
- 		return false;
- 	case EXIT_REASON_EXTERNAL_INTERRUPT:
- 		return true;
-diff --git a/arch/x86/kvm/vmx/vmcs.h b/arch/x86/kvm/vmx/vmcs.h
-index de3b04d4b587..4b9957e2bf5b 100644
---- a/arch/x86/kvm/vmx/vmcs.h
-+++ b/arch/x86/kvm/vmx/vmcs.h
-@@ -117,6 +117,11 @@ static inline bool is_gp_fault(u32 intr_info)
- 	return is_exception_n(intr_info, GP_VECTOR);
- }
- 
-+static inline bool is_alignment_check(u32 intr_info)
-+{
-+	return is_exception_n(intr_info, AC_VECTOR);
-+}
-+
- static inline bool is_machine_check(u32 intr_info)
- {
- 	return is_exception_n(intr_info, MC_VECTOR);
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index ab6f682645d7..46d9ce39249d 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -4743,7 +4743,7 @@ static int handle_machine_check(struct kvm_vcpu *vcpu)
-  *  - Guest has #AC detection enabled in CR0
-  *  - Guest EFLAGS has AC bit set
-  */
--static inline bool guest_inject_ac(struct kvm_vcpu *vcpu)
-+bool vmx_guest_inject_ac(struct kvm_vcpu *vcpu)
- {
- 	if (!boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT))
- 		return true;
-@@ -4851,7 +4851,7 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
- 		kvm_run->debug.arch.exception = ex_no;
- 		break;
- 	case AC_VECTOR:
--		if (guest_inject_ac(vcpu)) {
-+		if (vmx_guest_inject_ac(vcpu)) {
- 			kvm_queue_exception_e(vcpu, AC_VECTOR, error_code);
- 			return 1;
- 		}
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index 5740f8e2aa23..3979a947933a 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -376,6 +376,7 @@ void vmx_get_segment(struct kvm_vcpu *vcpu, struct kvm_segment *var, int seg);
- void vmx_set_segment(struct kvm_vcpu *vcpu, struct kvm_segment *var, int seg);
- u64 construct_eptp(struct kvm_vcpu *vcpu, hpa_t root_hpa, int root_level);
- 
-+bool vmx_guest_inject_ac(struct kvm_vcpu *vcpu);
- void vmx_update_exception_bitmap(struct kvm_vcpu *vcpu);
- void vmx_update_msr_bitmap(struct kvm_vcpu *vcpu);
- bool vmx_nmi_blocked(struct kvm_vcpu *vcpu);
--- 
-2.32.0.288.g62a8d224e6-goog
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
