@@ -2,189 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E39BF3B0417
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE253B041C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231442AbhFVMT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:19:58 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:34348 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230422AbhFVMT5 (ORCPT
+        id S231349AbhFVMUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:20:42 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:35331 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231265AbhFVMUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:19:57 -0400
-Received: from [173.237.58.148] (port=33324 helo=localhost)
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1lvfLY-0003l2-O3; Tue, 22 Jun 2021 08:17:40 -0400
-Date:   Tue, 22 Jun 2021 05:17:39 -0700
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Olivier Langlois <olivier@trillion01.com>
-Message-Id: <9e8441419bb1b8f3c3fcc607b2713efecdef2136.1624364038.git.olivier@trillion01.com>
-Subject: [PATCH v4] io_uring: reduce latency by reissueing the operation
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+        Tue, 22 Jun 2021 08:20:36 -0400
+Received: by mail-ot1-f48.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so21005961oti.2;
+        Tue, 22 Jun 2021 05:18:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uyGLESs05JBNBouImqwDAtnN7LMuKKuMfeXqPSqQHIY=;
+        b=BnMXavBt2ehHoAFPl/ptmiiFpSush1l7jF3BT0drbzGSW9XWwZ5J2hlhae+EpoisKx
+         kC4RcwIh3mnzgv8TBa8Nto7E93XIvcV24nWhcrBiSGV7yRZZrMjBqkWd5jBGeAcV5MTl
+         hHQTU194cMlbGaGQkeu/wr7wSxOepSLVe8uHSEk0VksbMAsA7tvInPc4GxpcdYNFx5yD
+         sEDnVe7yQVaR++WPJ/mhytomnFYb1g9UCYIQo9aD5lG3WOB2hvgZRDWzf3X27ZXnnc6y
+         7l1/76eqWEjUDJvLGn5pt/HtMFHm20QAlc/ys9u/+8XRVAAKRws8NKX1JZnK+W7Prg9X
+         faKQ==
+X-Gm-Message-State: AOAM533f78lnNRCBXekLTlHK+mhFlSukhSaFCoDvpZvSzuagzBD0wT3B
+        bLH22pt3YMEY6sVqn52pXJ9XkibwInfklE2fFqQ=
+X-Google-Smtp-Source: ABdhPJy4Kb98MnI+cyD4CBoQNQ3pHx0Jd7TPk3EjUxTjcYyXFQczMuJtpDTuGVtK/1DF9HlOz1QE6wAGrW5OP/gfuK0=
+X-Received: by 2002:a9d:67cb:: with SMTP id c11mr2861432otn.321.1624364300661;
+ Tue, 22 Jun 2021 05:18:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <11788436.O9o76ZdvQC@kreacher> <20210622062052.jo2by44djlyjpn5w@vireshk-i7>
+In-Reply-To: <20210622062052.jo2by44djlyjpn5w@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 22 Jun 2021 14:18:08 +0200
+Message-ID: <CAJZ5v0jn0W2yG-Ty0NruC-o-V-t9fEjJ=DkzKT1YgZcD3yuJnA@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: Make cpufreq_online() call driver->offline() on errors
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is quite frequent that when an operation fails and returns EAGAIN,
-the data becomes available between that failure and the call to
-vfs_poll() done by io_arm_poll_handler().
+On Tue, Jun 22, 2021 at 8:20 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 21-06-21, 19:26, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > In the CPU removal path the ->offline() callback provided by the
+> > driver is always invoked before ->exit(),
+>
+> Note that exit() doesn't get called if offline() is present in the CPU
+> removal path. We call exit() _only_ when the cpufreq driver gets
+> unregistered.
 
-Detecting the situation and reissuing the operation is much faster
-than going ahead and push the operation to the io-wq.
+True, but that doesn't contradict what I said.
 
-Performance improvement testing has been performed with:
-Single thread, 1 TCP connection receiving a 5 Mbps stream, no sqpoll.
+> > but in the cpufreq_online()
+> > error path it is not, so ->exit() is somehow expected to know the
+> > context in which it has been called and act accordingly.
+>
+> I agree, it isn't very clear.
+>
+> > That is less than straightforward, so make cpufreq_online() invoke
+> > the driver's ->offline() callback before ->exit() too.
+> >
+> > This only potentially affects intel_pstate at this point.
+> >
+> > Fixes: 91a12e91dc39 ("cpufreq: Allow light-weight tear down and bring up of CPUs")
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >  drivers/cpufreq/cpufreq.c |    3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > Index: linux-pm/drivers/cpufreq/cpufreq.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/cpufreq/cpufreq.c
+> > +++ linux-pm/drivers/cpufreq/cpufreq.c
+> > @@ -1516,6 +1516,9 @@ out_destroy_policy:
+> >       up_write(&policy->rwsem);
+> >
+> >  out_exit_policy:
+> > +     if (cpufreq_driver->offline)
+> > +             cpufreq_driver->offline(policy);
+> > +
+> >       if (cpufreq_driver->exit)
+> >               cpufreq_driver->exit(policy);
+>
+> If we want to go down this path, then we better do more and make it
+> very explicit that ->offline() follows a previous invocation of
+> ->online().
+>
+> Otherwise, with above we will end up calling ->offline() for two separate
+> states, ->online() failed (i.e. two calls to offline() one after the other
+> here) and other generic failures after ->init() passed.
 
-4 measurements have been taken:
-1. The time it takes to process a read request when data is already available
-2. The time it takes to process by calling twice io_issue_sqe() after vfs_poll() indicated that data was available
-3. The time it takes to execute io_queue_async_work()
-4. The time it takes to complete a read request asynchronously
+Good point.
 
-2.25% of all the read operations did use the new path.
+> So, better make it clear that online/offline are paired like
+> init/exit.
+>
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 1d1b563cea4b..0ce48dcb2e8a 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -1347,14 +1347,11 @@ static int cpufreq_online(unsigned int cpu)
+>         }
+>
+>         if (!new_policy && cpufreq_driver->online) {
+> -               ret = cpufreq_driver->online(policy);
+> -               if (ret) {
+> -                       pr_debug("%s: %d: initialization failed\n", __func__,
+> -                                __LINE__);
+> -                       goto out_exit_policy;
+> -               }
+> -
+> -               /* Recover policy->cpus using related_cpus */
+> +               /*
+> +                * We did light-weight tear down earlier, don't need to do heavy
+> +                * initialization here. Just recover policy->cpus using
+> +                * related_cpus.
+> +                */
+>                 cpumask_copy(policy->cpus, policy->related_cpus);
+>         } else {
+>                 cpumask_copy(policy->cpus, cpumask_of(cpu));
+> @@ -1378,6 +1375,13 @@ static int cpufreq_online(unsigned int cpu)
+>                 cpumask_copy(policy->related_cpus, policy->cpus);
+>         }
+>
+> +       ret = cpufreq_driver->online(policy);
 
-ready data (baseline)
-avg	3657.94182918628
-min	580
-max	20098
-stddev	1213.15975908162
+But I wouldn't make this change, because that would require reworking
+->init() in the driver too.
 
-reissue	completion
-average	7882.67567567568
-min	2316
-max	28811
-stddev	1982.79172973284
+Let's continue assuming that ->init() will do ->online() if successful
+and so ->offline() is needed after a successful ->init() as well as
+after a successful ->online().
 
-insert io-wq time
-average	8983.82276995305
-min	3324
-max	87816
-stddev	2551.60056552038
+> +       if (ret) {
+> +               pr_debug("%s: %d: %d: ->online() failed\n", __func__, __LINE__,
+> +                        ret);
+> +               goto out_exit_policy;
+> +       }
+> +
+>         down_write(&policy->rwsem);
+>         /*
+>          * affected cpus must always be the one, which are online. We aren't
+> @@ -1518,6 +1522,9 @@ static int cpufreq_online(unsigned int cpu)
+>
+>         up_write(&policy->rwsem);
+>
 
-async time completion
-average	24670.4758861127
-min	10758
-max	102612
-stddev	3483.92416873804
+So I think that a new label is needed here to avoid running
+->offline() after a failing ->online().
 
-Conclusion:
-On average reissuing the sqe with the patch code is 1.1uSec faster and
-in the worse case scenario 59uSec faster than placing the request on
-io-wq
+Let me update the patch accordingly.
 
-On average completion time by reissuing the sqe with the patch code is
-16.79uSec faster and in the worse case scenario 73.8uSec faster than
-async completion.
-
-Signed-off-by: Olivier Langlois <olivier@trillion01.com>
----
- fs/io_uring.c | 31 ++++++++++++++++++++++---------
- 1 file changed, 22 insertions(+), 9 deletions(-)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index fc8637f591a6..5efa67c2f974 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -5152,7 +5152,13 @@ static __poll_t __io_arm_poll_handler(struct io_kiocb *req,
- 	return mask;
- }
- 
--static bool io_arm_poll_handler(struct io_kiocb *req)
-+enum {
-+	IO_APOLL_OK,
-+	IO_APOLL_ABORTED,
-+	IO_APOLL_READY
-+};
-+
-+static int io_arm_poll_handler(struct io_kiocb *req)
- {
- 	const struct io_op_def *def = &io_op_defs[req->opcode];
- 	struct io_ring_ctx *ctx = req->ctx;
-@@ -5162,22 +5168,22 @@ static bool io_arm_poll_handler(struct io_kiocb *req)
- 	int rw;
- 
- 	if (!req->file || !file_can_poll(req->file))
--		return false;
-+		return IO_APOLL_ABORTED;
- 	if (req->flags & REQ_F_POLLED)
--		return false;
-+		return IO_APOLL_ABORTED;
- 	if (def->pollin)
- 		rw = READ;
- 	else if (def->pollout)
- 		rw = WRITE;
- 	else
--		return false;
-+		return IO_APOLL_ABORTED;
- 	/* if we can't nonblock try, then no point in arming a poll handler */
- 	if (!io_file_supports_async(req, rw))
--		return false;
-+		return IO_APOLL_ABORTED;
- 
- 	apoll = kmalloc(sizeof(*apoll), GFP_ATOMIC);
- 	if (unlikely(!apoll))
--		return false;
-+		return IO_APOLL_ABORTED;
- 	apoll->double_poll = NULL;
- 
- 	req->flags |= REQ_F_POLLED;
-@@ -5203,12 +5209,14 @@ static bool io_arm_poll_handler(struct io_kiocb *req)
- 	if (ret || ipt.error) {
- 		io_poll_remove_double(req);
- 		spin_unlock_irq(&ctx->completion_lock);
--		return false;
-+		if (ret)
-+			return IO_APOLL_READY;
-+		return IO_APOLL_ABORTED;
- 	}
- 	spin_unlock_irq(&ctx->completion_lock);
- 	trace_io_uring_poll_arm(ctx, req, req->opcode, req->user_data,
- 				mask, apoll->poll.events);
--	return true;
-+	return IO_APOLL_OK;
- }
- 
- static bool __io_poll_remove_one(struct io_kiocb *req,
-@@ -6437,6 +6445,7 @@ static void __io_queue_sqe(struct io_kiocb *req)
- 	struct io_kiocb *linked_timeout = io_prep_linked_timeout(req);
- 	int ret;
- 
-+issue_sqe:
- 	ret = io_issue_sqe(req, IO_URING_F_NONBLOCK|IO_URING_F_COMPLETE_DEFER);
- 
- 	/*
-@@ -6456,12 +6465,16 @@ static void __io_queue_sqe(struct io_kiocb *req)
- 			io_put_req(req);
- 		}
- 	} else if (ret == -EAGAIN && !(req->flags & REQ_F_NOWAIT)) {
--		if (!io_arm_poll_handler(req)) {
-+		switch (io_arm_poll_handler(req)) {
-+		case IO_APOLL_READY:
-+			goto issue_sqe;
-+		case IO_APOLL_ABORTED:
- 			/*
- 			 * Queued up for async execution, worker will release
- 			 * submit reference when the iocb is actually submitted.
- 			 */
- 			io_queue_async_work(req);
-+			break;
- 		}
- 	} else {
- 		io_req_complete_failed(req, ret);
--- 
-2.32.0
-
+> +       if (cpufreq_driver->offline)
+> +               cpufreq_driver->offline(policy);
+> +
+>  out_exit_policy:
+>         if (cpufreq_driver->exit)
+>                 cpufreq_driver->exit(policy);
