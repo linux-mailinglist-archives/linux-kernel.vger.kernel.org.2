@@ -2,137 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79C53B0EA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9C63B0EAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhFVUZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 16:25:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42296 "EHLO
+        id S230122AbhFVU0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 16:26:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhFVUZY (ORCPT
+        with ESMTP id S229667AbhFVU0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 16:25:24 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C8DC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:23:06 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id o5-20020a4a2c050000b0290245d6c7b555so165747ooo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:23:06 -0700 (PDT)
+        Tue, 22 Jun 2021 16:26:08 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8A2C061574;
+        Tue, 22 Jun 2021 13:23:51 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id e22so112479wrc.1;
+        Tue, 22 Jun 2021 13:23:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=Ggw6fsmku27vHRmfMQszrNre4+RfK7j3PrPkaoOAI5s=;
-        b=LJm/LbiFVvPJuS0y9W0doPgLlkncwZmOFafIU9v/PAm8m/8KHPwJT3Y5cbnkV4BXJu
-         pibvHYmUPrUE/wlr8jvGDlSstXPVAb7sWUjUQ4VBX8iMDC18VCuC4nu1eYJFnvVrDNar
-         z2oeL/qVTksu5CgRvcn+b9dGIc1UkJ/B/CICM=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=86O3Q6DG70rY1uZMDvMI5OoC90pTmj89Bu051GHFOrY=;
+        b=MKDG29332LDSoXTFutQYCdm2rDvpET2y4VkTQLSXaOcAkuDG5NVfwCdJIta5Kz4Iq8
+         r16IYbqn/7UNWmC/AypxlTJsJw+9PYC5mAKwCLHXulXKP4uaIX0/LMp+0moBlHQSRSRN
+         xFx7vssXVJykFani5lEoCAwGUTCQmnfY/l7CzVWxFRrzstY2MP0JtBH5yXw4PJdLEFjP
+         HZjm09jNP0sCW+ugua8x7t+8qP9L/AJHb+01nvkU87rKeVuc3D0peoAsrRFVhHBOzs/8
+         wXjZaDltkLtGeUXHE1kmg4l/1QSVBVhugt+8QPlE0EAyCJr7EQT7neuvamfn4eKHWxti
+         A5bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=Ggw6fsmku27vHRmfMQszrNre4+RfK7j3PrPkaoOAI5s=;
-        b=T50GBeSs3MTDNIKl14Dx1t7l2mkikNOkAnQ+GIW0EGCdXFoTiguN2qoDci5Bzs9nL8
-         lbidm+jg3zy8DSojuMF7GxnLoha8K+NxTLqFMxL/DNLosHV24WMDGXQ1qhWa+0GjRrlq
-         L2GmSOsfz8YNOwnBkc6xaD+oWg5IJm8xLmK2zdo3PlqB+u+78uEw79N0LeXsLUaorrM0
-         bmD94tGNE4IOUcwF5gPmG6CqrWope3lt3Gd/wdbuKt9TbDfhlcU3j4250ST8Zi3woUTO
-         g5nod3bKT39EsvXRETQt61cHFjIWbwd2XfVRP5ixA8GxFylMlxM5plEyhUHCIJSx6CNe
-         0e6Q==
-X-Gm-Message-State: AOAM532f89jx4h78yi+8vU+vblzmOn7jQr+7qQFwWnp1BpLvtSfaOzt/
-        D+3nCIfxsglOIrl3cqvDoiOK2Ow5KfH4VULIFdq7lQ==
-X-Google-Smtp-Source: ABdhPJy5r3CCQB5ei2dsC6e+iDjGtLoVXl+JauwqFRFFC7KOLNaQ916rDZGbyoUW22i3iQ7L95AFS3Jj4//ujS57zu4=
-X-Received: by 2002:a4a:e2d0:: with SMTP id l16mr4771864oot.80.1624393384760;
- Tue, 22 Jun 2021 13:23:04 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 22 Jun 2021 13:23:04 -0700
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=86O3Q6DG70rY1uZMDvMI5OoC90pTmj89Bu051GHFOrY=;
+        b=W2mh6gbnGo1VV/pKvYY5pVQ4Vwfml80L3yEe9uu+LrQZz3IScJF6lC0WdF/Ps7+AUX
+         70xtaYXC9tZRHY4OWubWVeniThjtARroczOoLwntD/MB8ywqk7vd0ekkityN9E1yN3Ya
+         +GSnAQMi6edDBAT1PXoN42/BAoGJKesN2zDBqF5NXu9gNClp25qy8B26WpcDYE8iAorb
+         884JhPEqwxE06hG1xz9BhCF35dr190curWT9X6qEf1hjQSp0Nzq/jXRmyEQbqsgvbMru
+         4pPdtCIRyUeE4cgtu//yFsJTkdgLXx0tvbii3x81sBUdLKV/zGfr9fD8hp2nI+SoIyg5
+         Cfig==
+X-Gm-Message-State: AOAM531LFeCmvKjXR+W//ahJ80+k1BjXm0ZLJIW/VmDdZtVMVt0QaJ2X
+        WDOnCU3y1cT495XvMIhsPKg=
+X-Google-Smtp-Source: ABdhPJxj2hZDz0aLZEYLXSZtPvpOS7b/OxL0ct1AL1iAEw1IKSU690T/1p11JhSnctrNh2B6zMghQw==
+X-Received: by 2002:a5d:4cd1:: with SMTP id c17mr7114655wrt.295.1624393430001;
+        Tue, 22 Jun 2021 13:23:50 -0700 (PDT)
+Received: from kista.localdomain (cpe1-4-249.cable.triera.net. [213.161.4.249])
+        by smtp.gmail.com with ESMTPSA id e3sm452989wro.26.2021.06.22.13.23.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 13:23:49 -0700 (PDT)
+From:   Jernej Skrabec <jernej.skrabec@gmail.com>
+To:     pizza@shaftnet.org
+Cc:     ulf.hansson@linaro.org, arnd@arndb.de, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Subject: [RFC PATCH] cw1200: use kmalloc() allocation instead of stack
+Date:   Tue, 22 Jun 2021 22:23:45 +0200
+Message-Id: <20210622202345.795578-1-jernej.skrabec@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <YM0THrlJlv7ADW8w@builder.lan>
-References: <ef1879fa7ecfefaf0c70c7a4782240a9@codeaurora.org>
- <CAE-0n50-X03sMyJdsw7s=Ue0dWXBo=iHOc0HxDQm5yh2J-uS3A@mail.gmail.com>
- <YL/uj+t+BFkII1Fh@yoga> <CAE-0n50WP25kRQkWMVdDZGsZWBXwfbVSTFKyBLF7f8Mp3x2Wfg@mail.gmail.com>
- <YL/wWdRs6e/eECiC@yoga> <CAE-0n51GM65rZVJgXuHy6FerJorHeHKf2W31GijG8sDEhaX_KQ@mail.gmail.com>
- <YL/41hWz8xB+jSeO@yoga> <21dc5c9fc2efdc1a0ba924354bfd9d75@codeaurora.org>
- <CAE-0n52J_mLsmXLS+skZn2u3k9dhn+GcHeXi0B2BeQyQxEUL9A@mail.gmail.com> <YM0THrlJlv7ADW8w@builder.lan>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 22 Jun 2021 13:23:04 -0700
-Message-ID: <CAE-0n53Zr-w5m-eFhLM2BVmphcYb_M4=s5je3Y7Lg6=onNo=uA@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64/dts/qcom/sc7180: Add Display Port dt node
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     khsieh@codeaurora.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org, agross@kernel.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-06-18 14:41:50)
-> On Fri 18 Jun 15:49 CDT 2021, Stephen Boyd wrote:
->
-> > Quoting khsieh@codeaurora.org (2021-06-10 09:54:05)
-> > > On 2021-06-08 16:10, Bjorn Andersson wrote:
-> > > > On Tue 08 Jun 17:44 CDT 2021, Stephen Boyd wrote:
-> > > >
-> > > >> Honestly I suspect the DP PHY is _not_ in the CX domain as CX is for
-> > > >> digital logic. Probably the PLL is the hardware that has some minimum
-> > > >> CX
-> > > >> requirement, and that flows down into the various display clks like
-> > > >> the
-> > > >> link clk that actually clock the DP controller hardware. The mdss_gdsc
-> > > >> probably gates CX for the display subsystem (mdss) so if we had proper
-> > > >> corner aggregation logic we could indicate that mdss_gdsc is a child
-> > > >> of
-> > > >> the CX domain and then make requests from the DP driver for particular
-> > > >> link frequencies on the mdss_gdsc and then have that bubble up to CX
-> > > >> appropriately. I don't think any of that sort of code is in place
-> > > >> though, right?
-> > > >
-> > > > I haven't checked sc7180, but I'm guessing that it's following the
-> > > > other
-> > > > modern platforms, where all the MDSS related pieces (including e.g.
-> > > > dispcc) lives in the MMCX domain, which is separate from CX.
-> > > >
-> > > > So the parent of MDSS_GDSC should be MMCX, while Kuogee's answer (and
-> > > > the dp-opp-table) tells us that the PLL lives in the CX domain.
-> >
-> > Isn't MMCX a "child" of CX? At least my understanding is that MMCX is
-> > basically a GDSC that clamps all of multimedia hardware block power
-> > logic so that the leakage is minimized when multimedia isn't in use,
-> > i.e. the device is suspended. In terms of bumping up the voltage we have
-> > to pin that on CX though as far as I know because that's the only power
-> > domain that can actually change voltage, while MMCX merely gates that
-> > voltage for multimedia.
-> >
->
-> No, MMCX is a separate rail from CX, which powers the display blocks and
-> is parent of MDSS_GDSC. But I see in rpmhpd that sc7180 is not one of
-> these platforms, so I presume this means that the displayport controller
-> thereby sits in MDSS_GDSC parented by CX.
->
-> But in line with what you're saying, the naming of the supplies to the
-> QMP indicates that the power for the PLLs is static. As such the only
-> moving things would be the clock rates in the DP controller and as such
-> that's what needs to scale the voltage.
->
-> So if the resources we're scaling is the clocks in the DP controller
-> then the gist of the patch is correct. The only details I see is that
-> the DP controller actually sits in MDSS_GDSC - while it should control
-> the level of its parent (CX). Not sure if we can describe that in a
-> simple way.
+It turns out that if CONFIG_VMAP_STACK is enabled and src or dst is
+memory allocated on stack, SDIO operations fail due to invalid memory
+address conversion:
 
-Right. I'm not sure things could be described any better right now. If
-we need to change this to be MDSS_GDSC power domain and control the
-level of the parent then I suppose we'll have to make some sort of DT
-change and pair that with a driver change. Maybe if that happens we can
-just pick a new compatible and leave the old code in place.
+cw1200_wlan_sdio: Probe called
+sunxi-mmc 4021000.mmc: DMA addr 0x0000800051eab954+4 overflow (mask ffffffff, bus limit 0).
+WARNING: CPU: 2 PID: 152 at kernel/dma/direct.h:97 dma_direct_map_sg+0x26c/0x28c
+CPU: 2 PID: 152 Comm: kworker/2:2 Not tainted 5.13.0-rc1-00026-g84114ef026b9-dirty #85
+Hardware name: X96 Mate (DT)
+Workqueue: events_freezable mmc_rescan
+pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+pc : dma_direct_map_sg+0x26c/0x28c
+lr : dma_direct_map_sg+0x26c/0x28c
+sp : ffff800011eab540
+x29: ffff800011eab540 x28: ffff800011eab738 x27: 0000000000000000
+x26: ffff000001daf010 x25: 0000000000000000 x24: 0000000000000000
+x23: 0000000000000002 x22: fffffc0000000000 x21: ffff8000113b0ab0
+x20: ffff80001181abb0 x19: 0000000000000001 x18: ffffffffffffffff
+x17: 00000000fa97f83f x16: 00000000d2e01bf8 x15: ffff8000117ffb1d
+x14: ffffffffffffffff x13: ffff8000117ffb18 x12: fffffffffffc593f
+x11: ffff800011676ad0 x10: fffffffffffe0000 x9 : ffff800011eab540
+x8 : 206b73616d282077 x7 : 000000000000000f x6 : 000000000000000c
+x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
+x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff00000283b800
+Call trace:
+ dma_direct_map_sg+0x26c/0x28c
+ dma_map_sg_attrs+0x2c/0x60
+ sunxi_mmc_request+0x70/0x420
+ __mmc_start_request+0x68/0x134
+ mmc_start_request+0x84/0xac
+ mmc_wait_for_req+0x70/0x100
+ mmc_io_rw_extended+0x1cc/0x2c0
+ sdio_io_rw_ext_helper+0x194/0x240
+ sdio_memcpy_fromio+0x20/0x2c
+ cw1200_sdio_memcpy_fromio+0x20/0x2c
+ __cw1200_reg_read+0x34/0x60
+ cw1200_reg_read+0x48/0x70
+ cw1200_load_firmware+0x38/0x5d0
+ cw1200_core_probe+0x794/0x970
+ cw1200_sdio_probe+0x124/0x22c
+ sdio_bus_probe+0xe8/0x1d0
+ really_probe+0xe4/0x504
+ driver_probe_device+0x64/0xcc
+ __device_attach_driver+0xd0/0x14c
+ bus_for_each_drv+0x78/0xd0
+ __device_attach+0xdc/0x184
+ device_initial_probe+0x14/0x20
+ bus_probe_device+0x9c/0xa4
+ device_add+0x350/0x83c
+ sdio_add_func+0x6c/0x90
+ mmc_attach_sdio+0x1b0/0x430
+ mmc_rescan+0x254/0x2e0
+ process_one_work+0x1d0/0x34c
+ worker_thread+0x13c/0x470
+ kthread+0x154/0x160
+ ret_from_fork+0x10/0x34
+sunxi-mmc 4021000.mmc: dma_map_sg failed
+sunxi-mmc 4021000.mmc: map DMA failed
+Can't read config register.
 
-Are you happy enough with this current patch?
+Fix that by using kmalloc() allocated memory for read/write 16/32
+funtions.
 
->
->
-> PS. Why does the node name of the opp-table have to be globally unique?
+Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+---
+ drivers/net/wireless/st/cw1200/hwio.c | 52 +++++++++++++++++++++------
+ drivers/net/wireless/st/cw1200/hwio.h | 51 ++++++++++++++++++++------
+ 2 files changed, 83 insertions(+), 20 deletions(-)
 
-Presumably the opp table node name can be 'opp-table' as long as it
-lives under the node that's using it. If the opp table is at / or /soc
-then it will need to be unique. I'd prefer just 'opp-table' if possible.
+diff --git a/drivers/net/wireless/st/cw1200/hwio.c b/drivers/net/wireless/st/cw1200/hwio.c
+index 3ba462de8e91..5521cb7f2233 100644
+--- a/drivers/net/wireless/st/cw1200/hwio.c
++++ b/drivers/net/wireless/st/cw1200/hwio.c
+@@ -66,33 +66,65 @@ static int __cw1200_reg_write(struct cw1200_common *priv, u16 addr,
+ static inline int __cw1200_reg_read_32(struct cw1200_common *priv,
+ 					u16 addr, u32 *val)
+ {
+-	__le32 tmp;
+-	int i = __cw1200_reg_read(priv, addr, &tmp, sizeof(tmp), 0);
+-	*val = le32_to_cpu(tmp);
++	__le32 *tmp;
++	int i;
++
++	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
++	if (!tmp)
++		return -ENOMEM;
++
++	i = __cw1200_reg_read(priv, addr, tmp, sizeof(*tmp), 0);
++	*val = le32_to_cpu(*tmp);
++	kfree(tmp);
+ 	return i;
+ }
+ 
+ static inline int __cw1200_reg_write_32(struct cw1200_common *priv,
+ 					u16 addr, u32 val)
+ {
+-	__le32 tmp = cpu_to_le32(val);
+-	return __cw1200_reg_write(priv, addr, &tmp, sizeof(tmp), 0);
++	__le32 *tmp;
++	int i;
++
++	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
++	if (!tmp)
++		return -ENOMEM;
++
++	*tmp = cpu_to_le32(val);
++	i = __cw1200_reg_write(priv, addr, tmp, sizeof(*tmp), 0);
++	kfree(tmp);
++	return i;
+ }
+ 
+ static inline int __cw1200_reg_read_16(struct cw1200_common *priv,
+ 					u16 addr, u16 *val)
+ {
+-	__le16 tmp;
+-	int i = __cw1200_reg_read(priv, addr, &tmp, sizeof(tmp), 0);
+-	*val = le16_to_cpu(tmp);
++	__le16 *tmp;
++	int i;
++
++	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
++	if (!tmp)
++		return -ENOMEM;
++
++	i = __cw1200_reg_read(priv, addr, tmp, sizeof(*tmp), 0);
++	*val = le16_to_cpu(*tmp);
++	kfree(tmp);
+ 	return i;
+ }
+ 
+ static inline int __cw1200_reg_write_16(struct cw1200_common *priv,
+ 					u16 addr, u16 val)
+ {
+-	__le16 tmp = cpu_to_le16(val);
+-	return __cw1200_reg_write(priv, addr, &tmp, sizeof(tmp), 0);
++	__le16 *tmp;
++	int i;
++
++	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
++	if (!tmp)
++		return -ENOMEM;
++
++	*tmp = cpu_to_le16(val);
++	i = __cw1200_reg_write(priv, addr, tmp, sizeof(*tmp), 0);
++	kfree(tmp);
++	return i;
+ }
+ 
+ int cw1200_reg_read(struct cw1200_common *priv, u16 addr, void *buf,
+diff --git a/drivers/net/wireless/st/cw1200/hwio.h b/drivers/net/wireless/st/cw1200/hwio.h
+index d1e629a566c2..088d2a1bacc0 100644
+--- a/drivers/net/wireless/st/cw1200/hwio.h
++++ b/drivers/net/wireless/st/cw1200/hwio.h
+@@ -166,34 +166,65 @@ int cw1200_reg_write(struct cw1200_common *priv, u16 addr,
+ static inline int cw1200_reg_read_16(struct cw1200_common *priv,
+ 				     u16 addr, u16 *val)
+ {
+-	__le32 tmp;
++	__le32 *tmp;
+ 	int i;
+-	i = cw1200_reg_read(priv, addr, &tmp, sizeof(tmp));
+-	*val = le32_to_cpu(tmp) & 0xfffff;
++
++	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
++	if (!tmp)
++		return -ENOMEM;
++
++	i = cw1200_reg_read(priv, addr, tmp, sizeof(*tmp));
++	*val = le32_to_cpu(*tmp) & 0xfffff;
++	kfree(tmp);
+ 	return i;
+ }
+ 
+ static inline int cw1200_reg_write_16(struct cw1200_common *priv,
+ 				      u16 addr, u16 val)
+ {
+-	__le32 tmp = cpu_to_le32((u32)val);
+-	return cw1200_reg_write(priv, addr, &tmp, sizeof(tmp));
++	__le32 *tmp;
++	int i;
++
++	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
++	if (!tmp)
++		return -ENOMEM;
++
++	*tmp = cpu_to_le32((u32)val);
++	i = cw1200_reg_write(priv, addr, tmp, sizeof(*tmp));
++	kfree(tmp);
++	return i;
+ }
+ 
+ static inline int cw1200_reg_read_32(struct cw1200_common *priv,
+ 				     u16 addr, u32 *val)
+ {
+-	__le32 tmp;
+-	int i = cw1200_reg_read(priv, addr, &tmp, sizeof(tmp));
+-	*val = le32_to_cpu(tmp);
++	__le32 *tmp;
++	int i;
++
++	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
++	if (!tmp)
++		return -ENOMEM;
++
++	i = cw1200_reg_read(priv, addr, tmp, sizeof(*tmp));
++	*val = le32_to_cpu(*tmp);
++	kfree(tmp);
+ 	return i;
+ }
+ 
+ static inline int cw1200_reg_write_32(struct cw1200_common *priv,
+ 				      u16 addr, u32 val)
+ {
+-	__le32 tmp = cpu_to_le32(val);
+-	return cw1200_reg_write(priv, addr, &tmp, sizeof(val));
++	__le32 *tmp;
++	int i;
++
++	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
++	if (!tmp)
++		return -ENOMEM;
++
++	*tmp = cpu_to_le32(val);
++	i = cw1200_reg_write(priv, addr, tmp, sizeof(val));
++	kfree(tmp);
++	return i;
+ }
+ 
+ int cw1200_indirect_read(struct cw1200_common *priv, u32 addr, void *buf,
+-- 
+2.32.0
+
