@@ -2,134 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6326C3B0068
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1703B006A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhFVJiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 05:38:22 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23226 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229656AbhFVJiV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 05:38:21 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15M9XiCf123200;
-        Tue, 22 Jun 2021 05:35:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=WC0tkA+LfSmIpYeI2CWlCZEalhUSsowt3maCuijtwfU=;
- b=Llm1esQEzn4NvOpnWxW9C1ZWzunY/St0iU1Ct7LiQ8x2RtEx0ZR6hIth3PfNu0xz6Tyd
- thCk4rtuTIKwx1Z5iqIIO6/84Aw/Vkd/7jA4Gra8bMLsi8aJAvlLJvEnKl14TzSei0xq
- Zb5TpkRBdMvENz58Gavofp5T+h/A9L5PMidd9FMIZkMrEpk+PRaMTFB9NwVnQzVSTfEF
- Omwkrlc9Z1ZkyJuw3h65I4dXTZa5hbXx018vkN0NBSeWcgjxfB3M6K0lsJrB7UBruET+
- 9mkAP0KEU61AxroxHjve0dXJgAUbmdT9MSSvG4jz4P1nxMO05FpU3+cr1xC4r/OtPn/5 xA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39bahpcshc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 05:35:44 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15M9Xlwq123665;
-        Tue, 22 Jun 2021 05:35:43 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39bahpcsgf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 05:35:43 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15M9RJYx013348;
-        Tue, 22 Jun 2021 09:35:41 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 3997uh9bck-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 09:35:40 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15M9ZbLQ8126910
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Jun 2021 09:35:38 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DF92852050;
-        Tue, 22 Jun 2021 09:35:37 +0000 (GMT)
-Received: from [9.145.95.76] (unknown [9.145.95.76])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id EBB7252067;
-        Tue, 22 Jun 2021 09:35:36 +0000 (GMT)
-Subject: Re: [PATCH v2 3/3] Kconfig: add
- ARCH_WANTS_NO_INSTR+CC_HAS_NO_PROFILE_FN_ATTR, depend on for GCOV and PGO
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Bill Wendling <wcw@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        Martin Liska <mliska@suse.cz>, Marco Elver <elver@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Fangrui Song <maskray@google.com>, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        johannes.berg@intel.com, linux-toolchains@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>
-References: <20210621231822.2848305-1-ndesaulniers@google.com>
- <20210621231822.2848305-4-ndesaulniers@google.com>
-From:   Peter Oberparleiter <oberpar@linux.ibm.com>
-Message-ID: <78555de2-a5f7-5341-a4a0-0f39d0439939@linux.ibm.com>
-Date:   Tue, 22 Jun 2021 11:35:37 +0200
-In-Reply-To: <20210621231822.2848305-4-ndesaulniers@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: YrLh_3Usz6N0IB0tfVCnbg5tdhsi_6et
-X-Proofpoint-GUID: eIjjVl3RwxBbX08ofQ_FmyMMr_8wTQZt
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S229837AbhFVJir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 05:38:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229490AbhFVJiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 05:38:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 665F561353;
+        Tue, 22 Jun 2021 09:36:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624354591;
+        bh=Z4l/GS7hvjNNjhOF6XI9MfhUs7GP86J5MN8QrYJq7CE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eKtYxDW3I6w82NgT5nVO3ouo/damrVv4OFyoHVs/MjrUQsxtv6KgDs44ngV67eBsz
+         qXRA8e8qWBU6sKs5Y79PbcuuH0mjjP22VpFQ9M1oMJ4IcfJgcdOqldw0P9z+pU9M0q
+         b8h4z5MpXuvs+pqVCOkEiFbKsfTXsgbdSEPqO4iKnul8AjW5IPJ7Xy0uE7kKZ5iR70
+         Wq7TRuF5R+NCSXY2UG5RD4S7kQ0W5X8aTh51Z+Waj1a8X6NKNa2p5SduAvQlIRPnyV
+         fNoxGAs8Qk2OEkulovQrMHaV3PeFtpX05q90YkU6nEZe2DOd8JzOzv157c3yM5zfW0
+         k0lsdRIATn3EA==
+Date:   Tue, 22 Jun 2021 12:36:27 +0300
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [git pull] habanalabs pull request for kernel 5.14
+Message-ID: <20210622093627.GA4857@CORE.localdomain>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-22_05:2021-06-21,2021-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- malwarescore=0 impostorscore=0 mlxscore=0 clxscore=1011 spamscore=0
- mlxlogscore=791 phishscore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106220061
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.06.2021 01:18, Nick Desaulniers wrote:
-> We don't want compiler instrumentation to touch noinstr functions, which
-> are annotated with the no_profile_instrument_function function
-> attribute. Add a Kconfig test for this and make PGO and GCOV depend on
-> it.
-> 
-> If an architecture is using noinstr, it should denote that via this
-> Kconfig value. That makes Kconfigs that depend on noinstr able to
-> express dependencies in an architecturally agnostic way.
-> 
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
-> Link: https://lore.kernel.org/lkml/YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net/
-> Link: https://lore.kernel.org/lkml/YMcssV%2Fn5IBGv4f0@hirez.programming.kicks-ass.net/
-> Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Hi Greg,
 
-Looks good to me - thanks for resolving this problem!
+This is habanalabs pull request for the merge window of kernel 5.14.
+The bulk of the commits relate to improvements of the communication
+between the driver and the firmware that is running inside the ASIC.
 
-Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
+There are also many small changes, new debug features, improvements, etc.
+Details are in the tag.
 
+Thanks,
+Oded
 
-Regards,
-  Peter
+The following changes since commit 91812dd0937cc6457e85f7733813c701ee971da5:
 
--- 
-Peter Oberparleiter
-Linux on Z Development - IBM Germany
+  bus: fsl-mc: mc-io: Correct misdocumentation of 'dpmcp_dev' param (2021-06-17 13:44:33 +0200)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-next-2021-06-22
+
+for you to fetch changes up to b7a71fddc0ddfdd66cdefcf5bf1f59a0f0bdea57:
+
+  habanalabs/gaudi: refactor hard-reset related code (2021-06-21 10:21:51 +0300)
+
+----------------------------------------------------------------
+This tag contains habanalabs driver changes for v5.14:
+
+- Change communication protocol with f/w. The new protocl allows better
+  backward compatibility between different f/w versions and is more
+  stable.
+- Send hard-reset cause to f/w after a hard-reset has happened.
+- Move to indirection when generating interrupts to f/w.
+- Better progress and error messages during the f/w load stage.
+- Recognize that f/w is with enabled security according to device ID.
+- Add validity check to event queue mechanism.
+- Add new event from f/w that will indicate a daemon has been terminated
+  inside the f/w.
+
+- Move to TLB cache range invalidation in the device's MMU.
+- Disable memory scrubbing by default for performance.
+
+- Many fixes for sparse/smatch reported errors.
+- Enable by default stop-on-err in the ASIC.
+- Move to ASYNC device probing to speedup loading of driver in server
+  with multiple devices.
+- Fix to stop using disabled NIC ports when doing collective operation.
+- Use standard error codes instead of positive values.
+- Add support for resetting device after user has finished using it.
+- Add debugfs option to avoid reset when a CS has got stuck.
+- Add print of the last 8 CS pointers in case of error in QMANs.
+- Add statistics on opening of the FD of a device.
+
+----------------------------------------------------------------
+Alon Mizrahi (1):
+      habanalabs: use mmu cache range invalidation
+
+Bharat Jauhari (1):
+      habanalabs: enable dram scramble before linux f/w
+
+Christophe JAILLET (1):
+      habanalabs: Fix an error handling path in 'hl_pci_probe()'
+
+Guy Nisan (1):
+      habanalabs: modify progress status messages
+
+Koby Elbaz (15):
+      habanalabs/gaudi: use scratchpad regs instead of GIC controller
+      habanalabs/gaudi: send hard reset cause to preboot
+      habanalabs/gaudi: read GIC sts after FW is loaded
+      habanalabs: read preboot status bits in an earlier stage
+      habanalabs/gaudi: disable GIC usage if security is enabled
+      habanalabs/gaudi: use COMMS to reset device / halt CPU
+      habanalabs/gaudi: set the correct cpu_id on MME2_QM failure
+      habanalabs: small code refactoring
+      habanalabs: zero complex structures using memset
+      habanalabs: set rc as 'valid' in case of intentional func exit
+      habanalabs: remove node from list before freeing the node
+      habanalabs/gaudi: set the correct rc in case of err
+      habanalabs/goya: add '__force' attribute to suppress false alarm
+      habanalabs: get lower/upper 32 bits via masking
+      habanalabs/gaudi: refactor hard-reset related code
+
+Moti Haimovski (1):
+      habanalabs: increase ELBI reset timeout for PLDM
+
+Oded Gabbay (15):
+      habanalabs: update firmware files to latest
+      habanalabs: update to latest f/w headers
+      habanalabs: use dev_dbg upon hint address failure
+      habanalabs: ignore device unusable status
+      habanalabs: better error print for pin failure
+      habanalabs: notify before f/w loading
+      habanalabs: set memory scrubbing to disabled by default
+      habanalabs: check running index in eqe control
+      habanalabs/gaudi: refactor reset code
+      habanalabs/gaudi: don't use nic_ports_mask in compute
+      habanalabs: prefer ASYNC device probing
+      habanalabs/gaudi: update to latest f/w specs
+      habanalabs/gaudi: use standard error codes
+      habanalabs: print firmware versions
+      habanalabs: remove a rogue #ifdef
+
+Ofir Bitton (10):
+      habanalabs: give FW a grace time for configuring iATU
+      habanalabs/gaudi: do not move HBM bar if iATU done by FW
+      habanalabs/gaudi: split host irq interfaces towards FW
+      habanalabs/gaudi: don't use disabled ports in collective wait
+      habanalabs/gaudi: add FW alive event support
+      habanalabs: reset device upon FD close if not idle
+      habanalabs: enable stop on error for all QMANs and engines
+      habanalabs/gaudi: correct driver events numbering
+      habanalabs: allow reset upon device release
+      habanalabs/gaudi: add support for NIC DERR
+
+Ohad Sharabi (17):
+      habanalabs: prepare preboot stage to dynamic f/w load
+      habanalabs: request f/w in separate function
+      habanalabs: refactor init device cpu code
+      habanalabs: use common fw_version read
+      habanalabs: dynamic fw load reset protocol
+      habanalabs: expose ASIC specific PCI info to common code
+      habanalabs: load boot fit to device
+      habanalabs: load linux image to device
+      habanalabs: set dma mask from fw once fw done iatu config
+      habanalabs: avoid using uninitialized pointer
+      habanalabs: read f/w's 2-nd sts and err registers
+      habanalabs: check if asic secured with asic type
+      habanalabs: track security status using positive logic
+      habanalabs: skip valid test for boot_dev_sts regs
+      habanalabs: fix mask to obtain page offset
+      habanalabs: report EQ fault during heartbeat
+      habanalabs/gaudi: print last QM PQEs on error
+
+Omer Shpigelman (2):
+      habanalabs: add missing space after casting
+      habanalabs: add hard reset timeout for PLDM
+
+Tal Albo (1):
+      habanalabs/gaudi: update coresight configuration
+
+Tomer Tayar (2):
+      habanalabs/gaudi: add ARB to QM stop on error masks
+      habanalabs: print more info when failing to pin user memory
+
+Yuri Nudelman (3):
+      habanalabs: add debug flag to prevent failure on timeout
+      habanalabs: added open_stats info ioctl
+      debugfs: add skip_reset_on_timeout option
+
+Zvika Yehudai (1):
+      habanalabs: fix typo
+
+farah kassabri (1):
+      habanalabs: add validity check for signal cs
+
+ .../ABI/testing/debugfs-driver-habanalabs          |    8 +
+ .../misc/habanalabs/common/command_submission.c    |   81 +-
+ drivers/misc/habanalabs/common/context.c           |    9 -
+ drivers/misc/habanalabs/common/debugfs.c           |    5 +
+ drivers/misc/habanalabs/common/device.c            |   82 +-
+ drivers/misc/habanalabs/common/firmware_if.c       | 1806 ++++++++++++++++++--
+ drivers/misc/habanalabs/common/habanalabs.h        |  280 ++-
+ drivers/misc/habanalabs/common/habanalabs_drv.c    |   24 +-
+ drivers/misc/habanalabs/common/habanalabs_ioctl.c  |   23 +-
+ drivers/misc/habanalabs/common/hw_queue.c          |   42 +-
+ drivers/misc/habanalabs/common/irq.c               |   24 +-
+ drivers/misc/habanalabs/common/memory.c            |   22 +-
+ drivers/misc/habanalabs/common/mmu/mmu.c           |   14 +-
+ drivers/misc/habanalabs/common/pci/pci.c           |   34 +-
+ drivers/misc/habanalabs/common/sysfs.c             |    2 +-
+ drivers/misc/habanalabs/gaudi/gaudi.c              | 1010 ++++++-----
+ drivers/misc/habanalabs/gaudi/gaudiP.h             |    1 +
+ drivers/misc/habanalabs/gaudi/gaudi_coresight.c    |    6 +-
+ drivers/misc/habanalabs/gaudi/gaudi_security.c     |   15 +-
+ drivers/misc/habanalabs/goya/goya.c                |  251 +--
+ drivers/misc/habanalabs/goya/goyaP.h               |    2 +-
+ drivers/misc/habanalabs/goya/goya_coresight.c      |    2 +-
+ drivers/misc/habanalabs/include/common/cpucp_if.h  |   45 +-
+ .../misc/habanalabs/include/common/hl_boot_if.h    |  184 +-
+ .../habanalabs/include/gaudi/gaudi_async_events.h  |   14 +-
+ .../include/gaudi/gaudi_async_ids_map_extended.h   |   31 +-
+ .../misc/habanalabs/include/gaudi/gaudi_fw_if.h    |   46 +
+ .../misc/habanalabs/include/gaudi/gaudi_masks.h    |   15 +-
+ .../misc/habanalabs/include/gaudi/gaudi_reg_map.h  |   10 +
+ include/uapi/misc/habanalabs.h                     |   13 +
+ 30 files changed, 3216 insertions(+), 885 deletions(-)
