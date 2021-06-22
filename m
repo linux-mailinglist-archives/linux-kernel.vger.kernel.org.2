@@ -2,86 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 786F13B08A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E35603B08A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232094AbhFVPWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231936AbhFVPWt (ORCPT
+        id S232172AbhFVPXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:23:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53021 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232116AbhFVPXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:22:49 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4405EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:20:32 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id j2so36601722lfg.9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:20:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bpqGkk/JGVe/MnPyoETv0p8uKc3pSJj4YexxopDDd2U=;
-        b=WLtAFBCczgLWoAx5u/xKxcRWJO0HNR6yVqDk+l8R3m+JsOWedfC6dxPJ0mhagcz+5K
-         pzjeCg9kaBJUrpA2ySWvC5cu6MfVaxmxHmNjq2FNGbWzWw4/7Y2IKQXHnAR0CtM0spvG
-         6ql5tmTlMHQNAGJ2lOmr7QKkejf+ZwcjpfhlvwZVgToxzbfSrYren053WLBLciXXr7AS
-         bvggn8Kiz0A3YCR9fNo1hIfKyk/0ei3k7nRWo1Y0j944cFgoxzbUwTWlnLMtJre4oqZN
-         znE/RpQ6dhr/I20sFxQDyiV2Txk8sOqA7IFz0r2LCkuZYgmWccid1xu5pOCRtWPLnUaO
-         bWmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bpqGkk/JGVe/MnPyoETv0p8uKc3pSJj4YexxopDDd2U=;
-        b=kUG3h7FKzTDohS8YTgd7Ip81UiGPxL5artGg73lCKx8/SGx3Vcr3YPI1moY83vxYZn
-         2xWuoBtR6fAa3usHz3z/mQfmHURTJZVqVcu3ZHBLMLLUl/J4sG7tPWLsLnDQ6zEQeHNm
-         B+rlThDY/r5clsuvya7+oRR3LjuOLXphXYE9oBEOotn9LtHiQRXy9XJdr1WTbwso5jqG
-         qrRpcGX34Mpq6f6//8PRpMb6jeksb+NfVKwR+e+GZm8nG9lsV2k85MGq9GHrh+PRt/H8
-         Iqgh6uMgQKFI2+Lmc44W7+ZGXprTrTzfei49UeSdhSBxSkkhZYToiOGvEHECJf4zvGT+
-         2eig==
-X-Gm-Message-State: AOAM533mFLSFaLnFqlR47bkplg5XPGNNWkDteNAx+6i/vycKlzHW9IJW
-        d1W1j+xKnzRjKQZ7+N4K1oc1I5ErLwmnDzC3BoM=
-X-Google-Smtp-Source: ABdhPJzlzy1eLbw1J5ldiP+ql0q+z9KvG3TP9jztXX37rcURHYnYtIPG00PB5rkr0m28KIYSpdRMxVt50kjP3cde070=
-X-Received: by 2002:ac2:4d25:: with SMTP id h5mr3257357lfk.583.1624375230527;
- Tue, 22 Jun 2021 08:20:30 -0700 (PDT)
+        Tue, 22 Jun 2021 11:23:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624375246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=d4qG1BgL83jc2NobbBwa+FD372Pv9PnyTc1bHAkSk00=;
+        b=TjTxmHDVwzk7RIfacZ7ckcXGivFZbToCxyD74hqPqQHtLvO4kt03CbUmKwJWUbeqr8puyG
+        I6TKm5Nh1MsW3sUu5ARNRhLMAOp5fU6qPzlldiOfNFm/uI5NoXYNRgs/h3Tf3OjodfLVAH
+        BkTIFe2Uu5jEWKMZ3ICKrnVdvUg4X7I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-148-_VBSvZdPObOO47vKxdHgvA-1; Tue, 22 Jun 2021 11:20:45 -0400
+X-MC-Unique: _VBSvZdPObOO47vKxdHgvA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7718591271;
+        Tue, 22 Jun 2021 15:20:43 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 64F19100F49F;
+        Tue, 22 Jun 2021 15:20:41 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+cc:     dhowells@redhat.com, Ted Ts'o <tytso@mit.edu>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org,
+        viro@zeniv.linux.org.uk, linux-mm@kvack.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Do we need to unrevert "fs: do not prefault sys_write() user buffer pages"?
 MIME-Version: 1.0
-References: <1624365084-7934-1-git-send-email-shengjiu.wang@nxp.com>
-In-Reply-To: <1624365084-7934-1-git-send-email-shengjiu.wang@nxp.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 22 Jun 2021 12:20:19 -0300
-Message-ID: <CAOMZO5A_0KncwCgfZ6LSAO-LA01U9LS4=Hopn-_9qj8cv1Qhmg@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_spdif: Fix unexpected interrupt after suspend
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3221174.1624375240.1@warthog.procyon.org.uk>
+Date:   Tue, 22 Jun 2021 16:20:40 +0100
+Message-ID: <3221175.1624375240@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 9:50 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
->
-> When system enter suspend, the machine driver suspend callback
-> function will be called, then the cpu driver trigger callback
-> (SNDRV_PCM_TRIGGER_SUSPEND) be called, it would disable the
-> interrupt.
->
-> But the machine driver suspend and cpu dai driver suspend order
-> maybe changed, the cpu dai driver's suspend callback is called before
-> machine driver's suppend callback, then the interrupt is not cleared
-> successfully in trigger callback.
->
-> So need to clear interrupts in cpu dai driver's suspend callback
-> to avoid such issue.
->
-> Fixes: 9cb2b3796e08 ("ASoC: fsl_spdif: Add pm runtime function")
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Hi Linus,
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+I've been looking at generic_perform_write() with an eye to adapting a version
+for network filesystems in general.  I'm wondering if it's actually safe or
+whether it needs 00a3d660cbac05af34cca149cb80fb611e916935 reverting, which is
+itself a revert of 998ef75ddb5709bbea0bf1506cd2717348a3c647.
+
+Anyway, I was looking at this bit:
+
+	bytes = min_t(unsigned long, PAGE_SIZE - offset,
+					iov_iter_count(i));
+	...
+	if (unlikely(iov_iter_fault_in_readable(i, bytes))) {
+		status = -EFAULT;
+		break;
+	}
+
+	if (fatal_signal_pending(current)) {
+		status = -EINTR;
+		break;
+	}
+
+	status = a_ops->write_begin(file, mapping, pos, bytes, flags,
+					&page, &fsdata);
+	if (unlikely(status < 0))
+		break;
+
+	if (mapping_writably_mapped(mapping))
+		flush_dcache_page(page);
+
+	copied = iov_iter_copy_from_user_atomic(page, i, offset, bytes);
+
+
+and wondering if the iov_iter_fault_in_readable() is actually effective.  Yes,
+it can make sure that the page we're intending to modify is dragged into the
+pagecache and marked uptodate so that it can be read from, but is it possible
+for the page to then get reclaimed before we get to
+iov_iter_copy_from_user_atomic()?  a_ops->write_begin() could potentially take
+a long time, say if it has to go and get a lock/lease from a server.
+
+Also, I've been thinking about Willy's folio/THP stuff that allows bunches of
+pages to be glued together into single objects for efficiency.  This is
+problematic with the above code because the faultahead is limited to a maximum
+of PAGE_SIZE, but we might be wanting to modify a larger object than that.
+
+David
+
