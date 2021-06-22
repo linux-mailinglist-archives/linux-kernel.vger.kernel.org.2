@@ -2,171 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0791F3AFCFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 08:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7623AFD07
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 08:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhFVGXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 02:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhFVGXL (ORCPT
+        id S229904AbhFVGZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 02:25:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46234 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229702AbhFVGZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 02:23:11 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD55C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 23:20:55 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso1627441pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 23:20:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kSF9aTgYhrI1FCuFAOepwOfOP7U6F/CAMgLAI89bsVc=;
-        b=L1kbkDcOHG4cyIe5ixNxwOwyBuJlKE086ZC+yInArWVMn/f66ZhNdVffAah8xi/oFD
-         7wyQUGyc/Znjarf/mjkZoXsZO9bDoz5quPg8oswf2gyFJKVMjTERmPXzFwJ+eR8o4+SH
-         MRVSxyrXCl+ooWxdJgd31Bjbgby41C1+PgVnYLl/MYbr2q1dRhw+rJoSxGmMS0YqLgt7
-         semDm9hTtE1mMI28CD0+78taxQb9eS1VXDCicJGMYerztnyFm34txMk2gsuWzsaUP+Q+
-         d3pW1PgMfAowG9nQKJfhXP2xMNX8fuSBm6VHdZMrc8HT+MPms9CSUrOExCKYjR+um3At
-         airQ==
+        Tue, 22 Jun 2021 02:25:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624343009;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aQqfkvCtBb6g17+HqN0uwZioUK6+vGsvOXTdTvz9LIc=;
+        b=fZbAp+kY9Oq/YcndHYZ02y2K9/mDYZvIsJ1pA++0V7SNbrwRzWWf3De51W4uTxu7IbGfQn
+        awtaSu6T8DEMJs6H8CYaJP4jjIm6p0iRe8FYbVtjEDNiy55g/qPya7r6sbQGQXl7FfRiLD
+        kQmN9PanN+ampm7TuUyBSOrm6XiVArA=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-482-C6QwW_PGN6K_vAxv8Pwf6Q-1; Tue, 22 Jun 2021 02:23:28 -0400
+X-MC-Unique: C6QwW_PGN6K_vAxv8Pwf6Q-1
+Received: by mail-wr1-f70.google.com with SMTP id p2-20020a5d63820000b029011a9ecaf55dso137994wru.19
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 23:23:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kSF9aTgYhrI1FCuFAOepwOfOP7U6F/CAMgLAI89bsVc=;
-        b=Wgfyppb0N4FXxRAkwuW6mnjvHpKhQK5AibtWrPV0a2v3DWlAZJv82Nj5xaPAnLAyQb
-         f3Ue9PnIQljwB7wpbMb+3kHul5aQ/oGVFv+Dr5yBIisrf9F1usv/dGT9F6RzczgNMAdJ
-         HqZ9knMBnYTxsKfsgLlu1MY2N0zpY/+8/jlgJXVbdJwzmhFodmJ7Htn2UaqqQZq9Efgy
-         F/gWqcBprxNWAGGhzchgvDUZAVTZbJuPDFlhDD64k3xwHf6Rc+Ql2A81Jz5F2rouY2m3
-         rIP/ycO3/fwSwOXRz8AajY0o+yntIl3RDdmG5ZCJs8xtI9lLICGvf0/NPOcvZb31+Luh
-         sixw==
-X-Gm-Message-State: AOAM530xN5V4MHjTsVgiPDgb2qGuPIPRkKXdVvFMwJLX+1rwhbRzKQbu
-        Mc/kcIX2bO0kbzbwA66M1YdWQzWhA8btxA==
-X-Google-Smtp-Source: ABdhPJxyoFN6nWGRwCn89Qx1yaTeCqnUTwlwSDExyVkJdPdnEXzNXyXKgWRrmTC4c4DBwWexuyOa1Q==
-X-Received: by 2002:a17:90a:740a:: with SMTP id a10mr2320010pjg.162.1624342855419;
-        Mon, 21 Jun 2021 23:20:55 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id v67sm17120931pfb.193.2021.06.21.23.20.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 23:20:54 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 11:50:52 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] cpufreq: Make cpufreq_online() call driver->offline() on
- errors
-Message-ID: <20210622062052.jo2by44djlyjpn5w@vireshk-i7>
-References: <11788436.O9o76ZdvQC@kreacher>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aQqfkvCtBb6g17+HqN0uwZioUK6+vGsvOXTdTvz9LIc=;
+        b=Y8CA3+vcJW4Vt7TEoZjOYFa3CiOuIvUnWD9sG3QAtGfz1w78tbZbxbwpf61qsVYP2h
+         vaoqZDZgoITRyss1PV25jnewVCszxL4BDkS7tYxt941Hlfl4vLvzeDyiU1yO4bgN0aps
+         woKlfFb+/Nw5G720FyiL1Ty2qgpfFZYMTOfDmAZUVk6jCTbPwkMmsszW+l2PJGXrjKra
+         6h8qbm2zWPU+65n1V6ifGrEAKTzB10hUhoGg+kBKyBYlJHg+EarqmLCG4TMzJIB3LrjQ
+         bB0xH7mIVbPKvXdv//bpbbn4OX3889cjvn3isTf+PvB2yw7UTb05niM7zrZuq9OMYsxL
+         e8iA==
+X-Gm-Message-State: AOAM532cbzxKeudoh2gSf6feq9Vl5XYm6GZy9c6Ug/XiMujw96UGHWCT
+        QisWcVT8AEToMlNYC05PkCyOWdXileB6EONBHxUe0l7IYpIHd2AoEHIV3p1PfINMwE4nXf20va4
+        Pijt+Fwr1PfmtlpxmwPq/fS2d
+X-Received: by 2002:a5d:44d2:: with SMTP id z18mr2678879wrr.358.1624343006180;
+        Mon, 21 Jun 2021 23:23:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyH/4w8wmlBb+QUv5p9+m3hdd4Lh4ZTIRS504JjrKAX2ybZM9tGHk+qPRypejrUSPVJj6nMOg==
+X-Received: by 2002:a5d:44d2:: with SMTP id z18mr2678861wrr.358.1624343006005;
+        Mon, 21 Jun 2021 23:23:26 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id a1sm26072095wra.63.2021.06.21.23.23.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 23:23:25 -0700 (PDT)
+Subject: Re: linux-next: manual merge of the kvm tree with the powerpc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>, KVM <kvm@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Ashish Kalra <ashish.kalra@amd.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+References: <20210622152544.74e01567@canb.auug.org.au>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <9c2dbe56-4c64-0032-0acb-2e2925c7a2ab@redhat.com>
+Date:   Tue, 22 Jun 2021 08:23:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <11788436.O9o76ZdvQC@kreacher>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210622152544.74e01567@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-06-21, 19:26, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 22/06/21 07:25, Stephen Rothwell wrote:
+> Hi all,
 > 
-> In the CPU removal path the ->offline() callback provided by the
-> driver is always invoked before ->exit(),
-
-Note that exit() doesn't get called if offline() is present in the CPU
-removal path. We call exit() _only_ when the cpufreq driver gets
-unregistered.
-
-> but in the cpufreq_online()
-> error path it is not, so ->exit() is somehow expected to know the
-> context in which it has been called and act accordingly.
-
-I agree, it isn't very clear.
-
-> That is less than straightforward, so make cpufreq_online() invoke
-> the driver's ->offline() callback before ->exit() too.
+> Today's linux-next merge of the kvm tree got a conflict in:
 > 
-> This only potentially affects intel_pstate at this point.
+>    include/uapi/linux/kvm.h
 > 
-> Fixes: 91a12e91dc39 ("cpufreq: Allow light-weight tear down and bring up of CPUs")
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
->  drivers/cpufreq/cpufreq.c |    3 +++
->  1 file changed, 3 insertions(+)
+> between commit:
 > 
-> Index: linux-pm/drivers/cpufreq/cpufreq.c
-> ===================================================================
-> --- linux-pm.orig/drivers/cpufreq/cpufreq.c
-> +++ linux-pm/drivers/cpufreq/cpufreq.c
-> @@ -1516,6 +1516,9 @@ out_destroy_policy:
->  	up_write(&policy->rwsem);
->  
->  out_exit_policy:
-> +	if (cpufreq_driver->offline)
-> +		cpufreq_driver->offline(policy);
-> +
->  	if (cpufreq_driver->exit)
->  		cpufreq_driver->exit(policy);
+>    9bb4a6f38fd4 ("KVM: PPC: Book3S HV: Add KVM_CAP_PPC_RPT_INVALIDATE capability")
+> 
+> from the powerpc tree and commits:
+> 
+>    644f706719f0 ("KVM: x86: hyper-v: Introduce KVM_CAP_HYPERV_ENFORCE_CPUID")
+>    6dba94035203 ("KVM: x86: Introduce KVM_GET_SREGS2 / KVM_SET_SREGS2")
+>    0dbb11230437 ("KVM: X86: Introduce KVM_HC_MAP_GPA_RANGE hypercall")
+> 
+> from the kvm tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
 
-If we want to go down this path, then we better do more and make it
-very explicit that ->offline() follows a previous invocation of
-->online().
+What are the dependencies of these KVM patches on patches from the bare 
+metal trees, and can you guys *please* start using topic branches?
 
-Otherwise, with above we will end up calling ->offline() for two separate
-states, ->online() failed (i.e. two calls to offline() one after the other
-here) and other generic failures after ->init() passed.
+I've been asking you for literally years, but this is the first time I 
+remember that Linus will have to resolve conflicts in uAPI changes and 
+it is *not* acceptable.
 
-So, better make it clear that online/offline are paired like
-init/exit.
+Please drop the patches at 
+https://www.spinics.net/lists/kvm-ppc/msg18666.html from the powerpc 
+tree, and merge them through either the kvm-powerpc or kvm trees.
 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 1d1b563cea4b..0ce48dcb2e8a 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -1347,14 +1347,11 @@ static int cpufreq_online(unsigned int cpu)
-        }
- 
-        if (!new_policy && cpufreq_driver->online) {
--               ret = cpufreq_driver->online(policy);
--               if (ret) {
--                       pr_debug("%s: %d: initialization failed\n", __func__,
--                                __LINE__);
--                       goto out_exit_policy;
--               }
--
--               /* Recover policy->cpus using related_cpus */
-+               /*
-+                * We did light-weight tear down earlier, don't need to do heavy
-+                * initialization here. Just recover policy->cpus using
-+                * related_cpus.
-+                */
-                cpumask_copy(policy->cpus, policy->related_cpus);
-        } else {
-                cpumask_copy(policy->cpus, cpumask_of(cpu));
-@@ -1378,6 +1375,13 @@ static int cpufreq_online(unsigned int cpu)
-                cpumask_copy(policy->related_cpus, policy->cpus);
-        }
- 
-+       ret = cpufreq_driver->online(policy);
-+       if (ret) {
-+               pr_debug("%s: %d: %d: ->online() failed\n", __func__, __LINE__,
-+                        ret);
-+               goto out_exit_policy;
-+       }
-+
-        down_write(&policy->rwsem);
-        /*
-         * affected cpus must always be the one, which are online. We aren't
-@@ -1518,6 +1522,9 @@ static int cpufreq_online(unsigned int cpu)
- 
-        up_write(&policy->rwsem);
- 
-+       if (cpufreq_driver->offline)
-+               cpufreq_driver->offline(policy);
-+
- out_exit_policy:
-        if (cpufreq_driver->exit)
-                cpufreq_driver->exit(policy);
+Paolo
 
-
--- 
-viresh
