@@ -2,116 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7983AFA4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 02:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229EF3AFA59
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 02:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbhFVAsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 20:48:40 -0400
-Received: from mailgate.ics.forth.gr ([139.91.1.2]:56473 "EHLO
-        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbhFVAsj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 20:48:39 -0400
-Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
-        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 15M0kNwb035486
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 03:46:23 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
-        q=dns/txt; i=@ics.forth.gr; t=1624322777; x=1626914777;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=0TIRxIkkteAzwssAi+Hquy4jV1LNAzUACaNk/lpu6ew=;
-        b=o0fdKLodMohtHshXDEq8hARatX0xabreVNwHrHMQWImCnCFn6ep0idKk/EOR4NXv
-        /FQKsPndB+8o4mbmcwBPNpepmlZ9r3x6BsRyrSNJxxMSgH0ce6UNNx7efv6yMFqq
-        wp/v2TdlOCgFY2p09yGgMivS3YxdQWYB8AUuVLZKbvq+1wN6mHGuG8CHrcyWMRvk
-        gFKiVMe1ZkJj+wPWBUmxK3Xq7OsFRdZCv0jIjsoUHUpuSgF8HI+lQKCBibpTXW2N
-        qhkliIkVjFHoLLY6D9K5rOr7qz2QRXLbvL/xUeVDwEKLTyMn2ZSSMvFUSBSKNE3S
-        UFfITKPcba/Ia5+02Q/oFQ==;
-X-AuditID: 8b5b014d-962f1700000067b6-be-60d132d912be
-Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
-        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 51.60.26550.9D231D06; Tue, 22 Jun 2021 03:46:17 +0300 (EEST)
-X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
+        id S230515AbhFVA4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 20:56:55 -0400
+Received: from mga18.intel.com ([134.134.136.126]:15928 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230028AbhFVA4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 20:56:54 -0400
+IronPort-SDR: VFAY2GOxrxxU5KGUJllSoy/Clf4jhLFpfla+duGHRLMwLSCGqczBF7KOlJfcCd1sz9c/ca0zQb
+ 6Thr0xVXbW9g==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="194271685"
+X-IronPort-AV: E=Sophos;i="5.83,290,1616482800"; 
+   d="scan'208";a="194271685"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 17:54:39 -0700
+IronPort-SDR: bylm2WP4+0gdOJ5pDwrKkr0wmM4h8aMa4HvR8Qy0HkfoFJJCv4aIkVMdEvkdFLEQKOq1VtsfMN
+ SkxY4Pzxeuog==
+X-IronPort-AV: E=Sophos;i="5.83,290,1616482800"; 
+   d="scan'208";a="486705746"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 17:54:36 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Zi Yan <ziy@nvidia.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Wei Xu <weixugc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        osalvador <osalvador@suse.de>
+Subject: Re: [PATCH -V8 02/10] mm/numa: automatically generate node
+ migration order
+References: <20210618061537.434999-1-ying.huang@intel.com>
+        <20210618061537.434999-3-ying.huang@intel.com>
+        <79397FE3-4B08-4DE5-8468-C5CAE36A3E39@nvidia.com>
+        <87v96anu6o.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <36307d7a-6e39-b1dd-64e8-95ec59f16867@intel.com>
+Date:   Tue, 22 Jun 2021 08:54:34 +0800
+In-Reply-To: <36307d7a-6e39-b1dd-64e8-95ec59f16867@intel.com> (Dave Hansen's
+        message of "Mon, 21 Jun 2021 12:53:04 -0700")
+Message-ID: <871r8uoh11.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 22 Jun 2021 03:46:16 +0300
-From:   Nick Kossifidis <mick@ics.forth.gr>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v3 2/3] riscv: optimized memmove
-Organization: FORTH
-In-Reply-To: <20210617152754.17960-3-mcroce@linux.microsoft.com>
-References: <20210617152754.17960-1-mcroce@linux.microsoft.com>
- <20210617152754.17960-3-mcroce@linux.microsoft.com>
-Message-ID: <3a71b234ec05b6ce842a3d6da552ba30@mailhost.ics.forth.gr>
-X-Sender: mick@mailhost.ics.forth.gr
-User-Agent: Roundcube Webmail/1.3.16
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprGIsWRmVeSWpSXmKPExsXSHT1dWfem0cUEg+etphbb3l1lsdj6exa7
-        xaIV31kspvbEW+xYupnJ4t6KZewWL/Y2slg8WTOT0aJj11cWi8u75rBZbPvcwmZx8dd8RouX
-        l3uYLdpm8TvwefTPnsLm8e73MkaPNy9fsngc7vjC7tHR94/FY+esu+wem1Z1snn82n6UyWPz
-        knqPS83X2T0+b5LzaD/QzRTAE8Vlk5Kak1mWWqRvl8CV8e/mJ/aC2VwVb7p6mRsYv7J3MXJy
-        SAiYSDx+9JG1i5GLQ0jgKKPEpXnnoRKmErP3djKC2LwCghInZz5hAbGZBSwkpl7Zzwhhy0s0
-        b53NDGKzCKhKbJi9CyzOJqApMf/SQbB6EQFdiYsfDrODLGAWmM4i8at3NxtIQhhoc/Pm32DL
-        +AWEJT7dvcgKYnMKOEh8fHUUaCgH0EWlEt+mSIOYvAIuElfvMkOcpiLx4fcDdpCwKJC9ea7S
-        BEbBWUgOnYXk0FlIDl3AyLyKUSCxzFgvM7lYLy2/qCRDL71oEyM46hh9dzDe3vxW7xAjEwfj
-        IUYJDmYlEd6bKRcShHhTEiurUovy44tKc1KLDzFKc7AoifPy6k2IFxJITyxJzU5NLUgtgsky
-        cXBKNTCtTvvKU9XsfPFo3RE1d42rAq0v93HvCIsxPZrR3HmNo4rlLG/p8TjzdVwFIsX5jvce
-        rKn+WSJ/OkK4pNy67NXmjtYG5TYDptLLXFp3N+9cnfTqkGmileeTAP/AxBT35fHnTFoKU1p/
-        l1ndjP5+3lW3fer6VaYOzdpr9LNbFyVdydj02G9V3Y4PIodjvmbFKUgH1bJGWq97s+xTWIPP
-        nBmixyvU3z/6s1e0+8jbGasn1C/vOsb1gTGhIrXVsl7/iHf1h/lKJzt5l3x9WPk6KnV+scCF
-        1E3hh8Xzvk065R8a/F1jVtC0x0ujQ1Y3n/zz9Otfmzl57/3sdgkZyN5K+1iUmKF+/JfYT2G+
-        Kp35vkosxRmJhlrMRcWJAEYP1ZkpAwAA
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Στις 2021-06-17 18:27, Matteo Croce έγραψε:
-> +
-> +/*
-> + * Simply check if the buffer overlaps an call memcpy() in case,
-> + * otherwise do a simple one byte at time backward copy.
-> + */
-> +void *__memmove(void *dest, const void *src, size_t count)
-> +{
-> +	if (dest < src || src + count <= dest)
-> +		return memcpy(dest, src, count);
-> +
-> +	if (dest > src) {
-> +		const char *s = src + count;
-> +		char *tmp = dest + count;
-> +
-> +		while (count--)
-> +			*--tmp = *--s;
-> +	}
-> +	return dest;
-> +}
-> +EXPORT_SYMBOL(__memmove);
-> +
+Dave Hansen <dave.hansen@intel.com> writes:
 
-Copying backwards byte-per-byte is suboptimal, I understand this is not 
-a very common scenario but you could at least check if they are both 
-word-aligned e.g. (((src + len) | (dst + len)) & mask), or missaligned 
-by the same offset e.g. (((src + len) ^ (dst + len)) & mask) and still 
-end up doing word-by-word copying. Ideally it would be great if you 
-re-used the same technique you used for forwards copying on your memcpy.
+> On 6/19/21 1:18 AM, Huang, Ying wrote:
+>>>>  int next_demotion_node(int node)
+>>>>  {
+>>>> -	return node_demotion[node];
+>>>> +	/*
+>>>> +	 * node_demotion[] is updated without excluding
+>>>> +	 * this function from running.  READ_ONCE() avoids
+>>>> +	 * reading multiple, inconsistent 'node' values
+>>>> +	 * during an update.
+>>>> +	 */
+>>>> +	return READ_ONCE(node_demotion[node]);
+>>>>  }
+>>> Is it necessary to have two separate patches to add node_demotion and
+>>> next_demotion_node() then modify it immediately? Maybe merge Patch 1 into 2?
+>>>
+>>> Hmm, I just checked Patch 3 and it changes node_demotion again and uses RCU.
+>>> I guess it might be much simpler to just introduce node_demotion with RCU
+>>> in this patch and Patch 3 only takes care of hotplug events.
+>> Hi, Dave,
+>> 
+>> What do you think about this?
+>> 
+>
+> Squashing them seems like a good idea to me.
 
-> +void *memmove(void *dest, const void *src, size_t count) __weak
-> __alias(__memmove);
-> +EXPORT_SYMBOL(memmove);
+Sure.  Will do that.  How about move RCU from 3/10 to the squashed one?
 
-As I mentioned on your memcpy patch, if you implement memmove, you can 
-just alias memcpy to memmove and we won't have to worry about memcpy 
-being used on overlapping regions.
+Best Regards,
+Huang, Ying
