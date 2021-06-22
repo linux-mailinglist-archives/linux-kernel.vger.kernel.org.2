@@ -2,117 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D746F3B0A8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D5D3B0A93
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhFVQpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 12:45:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32019 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230438AbhFVQpj (ORCPT
+        id S231279AbhFVQqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 12:46:23 -0400
+Received: from mail-pf1-f176.google.com ([209.85.210.176]:35765 "EHLO
+        mail-pf1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229791AbhFVQqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:45:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624380202;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vqggAYJUg6fHbEAdVvsWBfgBtGxc+6Jb/H8dZhUKvv8=;
-        b=N4CUTBlsW7+6wpiWr6d/RNzJHr0Zl90TncirN4t4lYyMK4kH0tOlQQVLck4sv7vazNVNGq
-        Sr7U714ifZnFMVQQKMGHLgZpVVyc8oCYpK1L54CDBDN9g+f9rSAo3UQw+9kSdbvt9/wjn/
-        v60X/kPGATtuxEsy9cOazjAk5cKCtss=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-253-tBRwnV_pPQCIuW36zKrbKA-1; Tue, 22 Jun 2021 12:43:21 -0400
-X-MC-Unique: tBRwnV_pPQCIuW36zKrbKA-1
-Received: by mail-wr1-f72.google.com with SMTP id d8-20020adfef880000b029011a9391927aso3669427wro.22
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:43:21 -0700 (PDT)
+        Tue, 22 Jun 2021 12:46:22 -0400
+Received: by mail-pf1-f176.google.com with SMTP id t32so35601pfg.2;
+        Tue, 22 Jun 2021 09:44:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vqggAYJUg6fHbEAdVvsWBfgBtGxc+6Jb/H8dZhUKvv8=;
-        b=V7E+B9rS4kfv1A/1sAhddVfVnLyDg2U9a8+yVP2b5vOUabL4jULFcpRDCJn5ArFWyI
-         JaX1lv50XONVHz1LPZIsyxitwT5NUU/Ki6XSoz0wlJolINM2tWaikHX11nOjytN+iBSz
-         GK1Z9aLy+B8/NLi06jcab4yjiwx4Kelqu9c4tLQ70XcxMgJKHCBizxTjy+ECvIWEwAlA
-         NlIwixpbPPLyU7ZnD6ZcoIBAtdvKVAGK+jU4VPZOL5zY2Ligtu/BU/b4NikYVuR+30tQ
-         DyJdA3h1ozR+R01iMQYbT3B82rMtf/OzK4pkhiadw15KzGcAIWhq5IGmq4ykFFtcidR5
-         rEMA==
-X-Gm-Message-State: AOAM530o85Y8ox6ssDzAnXFT9uX8JsrInv9YkY0lVs3oVn/Y/yYEupmh
-        5plauV2tjhVdzRnoVHfJ47EuUsOLK/SJiu6LTNz/tDIRM8imGZnnfHpWzbAt154p4XERMHMT0gn
-        hFp+334oRoJsd6cthb4pKROENHcHw6vtxecgyKVHja2my0SQVrVMWJtbxZhzYCrma3xOFMnP1S1
-        0T
-X-Received: by 2002:a5d:59ae:: with SMTP id p14mr5846249wrr.188.1624380199427;
-        Tue, 22 Jun 2021 09:43:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwxnu8M4DnxUd81kSwud6iw4Qb+iSUsFgoPTMed1pHs74o/m6tG3gCAKZjSKtKUt82B1iJw/Q==
-X-Received: by 2002:a5d:59ae:: with SMTP id p14mr5846216wrr.188.1624380199230;
-        Tue, 22 Jun 2021 09:43:19 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id 2sm2868252wmk.24.2021.06.22.09.43.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 09:43:18 -0700 (PDT)
-Subject: Re: [PATCH][next] KVM: x86/mmu: Fix uninitialized boolean variable
- flush
-To:     Colin King <colin.king@canonical.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Ben Gardon <bgardon@google.com>, kvm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210622150912.23429-1-colin.king@canonical.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <7a8f9ef7-03f7-08e3-61b2-548aa54328e3@redhat.com>
-Date:   Tue, 22 Jun 2021 18:43:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=x799InAcoDjDt4DQpoZBoNM42r4xX5n0kOF7AEe4YKo=;
+        b=t5vcqXMs6Fj8CClxbgQVcBIMI7OC3nl+e31v6VC/yE0Jq9PNLYuFkopRMKyCbOAJk5
+         9Pyj+fqYcxqfbZtMicNecxQgYr0C5n3QjKKntzLPPgm4Ov4MamO57K3HGCmVH4WClpV7
+         lD88vnzmJ+QjVtPUrUX4O4uZIAd5GIbgKQrQY7cwN2FK1uF1U8EAjcLAmbfjydoRbi/t
+         PqnrmcxvSCTqTzQmS/RuLJJWZv/fO+MIezs3A2fYkzjma7HGCrb5qba2XEnj0JN6L26z
+         vCTe1lWlz+Mibg1uUYBe0SXowSsv2krcBabfRYodV+2Mgykd0cTjX9o4zDtLxxUETmgw
+         EL8A==
+X-Gm-Message-State: AOAM5319jhP52QDGhYtYGEkG0klyeSmL1nVTCoBw/8d1v676ohdconO+
+        htPCMH+fV7UJ2byoONG+Stk=
+X-Google-Smtp-Source: ABdhPJx9G3hGxhRz77cNIDM5qxm3q3evv6WM4wgToHfnSXhofD0b6jAgePysM/sIh8RPdFGtSfDqEw==
+X-Received: by 2002:a62:820a:0:b029:2fd:5aa9:549b with SMTP id w10-20020a62820a0000b02902fd5aa9549bmr4463646pfd.77.1624380245551;
+        Tue, 22 Jun 2021 09:44:05 -0700 (PDT)
+Received: from garbanzo ([173.239.198.97])
+        by smtp.gmail.com with ESMTPSA id o9sm2778772pjp.19.2021.06.22.09.44.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 09:44:04 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 09:44:02 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     minchan@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
+        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
+        peterz@infradead.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] drivers/base/core: refcount kobject and bus on
+ device attribute read / store
+Message-ID: <20210622164402.d62je6pajcplkfuy@garbanzo>
+References: <20210621233013.562641-1-mcgrof@kernel.org>
+ <20210621233651.597220-1-mcgrof@kernel.org>
+ <YNGVUk18pmTFZqAB@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210622150912.23429-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNGVUk18pmTFZqAB@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/06/21 17:09, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Tue, Jun 22, 2021 at 09:46:26AM +0200, Greg KH wrote:
+> On Mon, Jun 21, 2021 at 04:36:51PM -0700, Luis Chamberlain wrote:
+> > It's possible today to have a device attribute read or store
+> > race against device removal. When this happens there is a small
+> > chance that the derefence for the private data area of the driver
+> > is NULL.
+> > 
+> > Let's consider the zram driver as an example. Its possible to run into
+> > a race where a sysfs knob is being used, we get preempted, and a zram
+> > device is removed before we complete use of the sysfs knob. This can happen
+> > for instance on block devices, where for instance the zram block devices
+> > just part of the private data of the block device.
+> > 
+> > For instance this can happen in the following two situations
+> > as examples to illustrate this better:
+> > 
+> >         CPU 1                            CPU 2
+> > destroy_devices
+> > ...
+> >                                  compact_store()
+> >                                  zram = dev_to_zram(dev);
+> > idr_for_each(zram_remove_cb
+> >   zram_remove
+> >   ...
+> >   kfree(zram)
+> >                                  down_read(&zram->init_lock);
+> > 
+> >         CPU 1                            CPU 2
+> > hot_remove_store
+> >                                  compact_store()
+> >                                  zram = dev_to_zram(dev);
+> >   zram_remove
+> >     kfree(zram)
+> >                                  down_read(&zram->init_lock);
+> > 
+> > To ensure the private data pointer is valid we could use bdget() / bdput()
+> > in between access, however that would mean doing that in all sysfs
+> > reads/stores on the driver. Instead a generic solution for all drivers
+> > is to ensure the device kobject is still valid and also the bus, if
+> > a bus is present.
+> > 
+> > This issue does not fix a known crash, however this race was
+> > spotted by Minchan Kim through code inspection upon code review
+> > of another zram patch.
+> > 
+> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > ---
+> >  drivers/base/base.h |  2 ++
+> >  drivers/base/bus.c  |  4 ++--
+> >  drivers/base/core.c | 42 ++++++++++++++++++++++++++++++++++++++----
+> >  3 files changed, 42 insertions(+), 6 deletions(-)
 > 
-> In the case where kvm_memslots_have_rmaps(kvm) is false the boolean
-> variable flush is not set and is uninitialized.  If is_tdp_mmu_enabled(kvm)
-> is true then the call to kvm_tdp_mmu_zap_collapsible_sptes passes the
-> uninitialized value of flush into the call. Fix this by initializing
-> flush to false.
-> 
-> Addresses-Coverity: ("Uninitialized scalar variable")
-> Fixes: e2209710ccc5 ("KVM: x86/mmu: Skip rmap operations if rmaps not allocated")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->   arch/x86/kvm/mmu/mmu.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index ed24e97c1549..b8d20f139729 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5689,7 +5689,7 @@ void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
->   {
->   	/* FIXME: const-ify all uses of struct kvm_memory_slot.  */
->   	struct kvm_memory_slot *slot = (struct kvm_memory_slot *)memslot;
-> -	bool flush;
-> +	bool flush = false;
->   
->   	if (kvm_memslots_have_rmaps(kvm)) {
->   		write_lock(&kvm->mmu_lock);
-> 
+> Please make this an independent patch of the zram mess  and I will be
+> glad to consider it for the driver core tree then.
 
-Queued, thanks.
+What do you mean by making it independent?
 
-Paolo
+The patch does not depend on the zram changes, and so, this can
+be merged separately as-is.
 
+If you mean that I should not mention zram on the commit log, please
+let me know. I however think a concrete example is useful.
+
+Or do you just mean that I should resend this out as a new patch
+without it being attached to the zram thread?
+
+ Luis
