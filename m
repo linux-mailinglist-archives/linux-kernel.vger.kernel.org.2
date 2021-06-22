@@ -2,104 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84643AFF48
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF683AFF4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230318AbhFVIcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 04:32:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229747AbhFVIcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 04:32:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02A5760C3E;
-        Tue, 22 Jun 2021 08:29:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624350593;
-        bh=COzimfgMz1afj8XdLcr3vdgxvcJ0o12svjbRCymcLjs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pSDN5ID0mABoH5DVe6bJVNEEOoGxe+cIgxlb9ec8CQe+Vo07LEeKL48SbF27+KHoY
-         v+9QNlP6hxUPbx/kcuQUAuC0JdcMz1qgzX3j1bw2lrzVODrWubj4iGhDN/yIAQ0Czv
-         6vYxPFQG6g1HhlH9L/KjxnAVWNLbXNGpqEPsiDDnFEZTCAZf7pTkKaQHh+bS6LruJ9
-         xZ8q4mCNS0Ao4TPx/9gcJo9v9S//RkogZ+tQVkUodhvmqpLLG9m1S1xq5BP39tQzII
-         lAIBKRWnGURJNPgqJOo8QCa7U0Ge6ppxGV0m+cXitsplbUHumMgY1jiTVX/WcjWgat
-         /lgJrGVwC8HNA==
-Date:   Tue, 22 Jun 2021 10:29:48 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: uvc: limit max bandwidth for HDMI capture
-Message-ID: <20210622102948.47b86fbe@coco.lan>
-In-Reply-To: <YNDY4iesZGF+7Cr0@pendragon.ideasonboard.com>
-References: <b791d5874c83663505cbd4f74907ac38d00bb727.1612206534.git.mchehab+huawei@kernel.org>
-        <YNDY4iesZGF+7Cr0@pendragon.ideasonboard.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S230384AbhFVIct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 04:32:49 -0400
+Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:38916 "EHLO
+        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229747AbhFVIcq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 04:32:46 -0400
+Received: from cpc152649-stkp13-2-0-cust121.10-2.cable.virginm.net ([86.15.83.122] helo=[192.168.0.18])
+        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1lvbng-0006ij-CB; Tue, 22 Jun 2021 09:30:28 +0100
+Subject: Re: [PATCH v2 0/5] riscv: improving uaccess with logs from network
+ bench
+To:     Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+References: <5a5c07ac-8c11-79d3-46a3-a255d4148f76@gmail.com>
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+Organization: Codethink Limited.
+Message-ID: <e7d5f98b-5e0d-19b3-08f5-a7b49d542a85@codethink.co.uk>
+Date:   Tue, 22 Jun 2021 09:30:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <5a5c07ac-8c11-79d3-46a3-a255d4148f76@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 21 Jun 2021 21:22:26 +0300
-Laurent Pinchart <laurent.pinchart@ideasonboard.com> escreveu:
-
-> Hi Mauro,
+On 19/06/2021 12:21, Akira Tsukamoto wrote:
+> Optimizing copy_to_user and copy_from_user.
 > 
-> Thank you for the patch.
-
-Thanks for reviewing it!
-
+> I rewrote the functions in v2, heavily influenced by Garry's memcpy
+> function [1].
+> The functions must be written in assembler to handle page faults manually
+> inside the function.
 > 
-> On Mon, Feb 01, 2021 at 08:08:59PM +0100, Mauro Carvalho Chehab wrote:
-> > This device:
-> >         534d:2109 MacroSilicon
-> > 
-> > Announces that it supports several frame intervals for
-> > their resolutions for MJPEG compression:
-> > 
-> >         VideoStreaming Interface Descriptor:
-> >         bLength                            46
-> >         bDescriptorType                    36
-> >         bDescriptorSubtype                  7 (FRAME_MJPEG)
-> >         bFrameIndex                         1
-> >         bmCapabilities                   0x00
-> >           Still image unsupported
-> >         wWidth                           1920
-> >         wHeight                          1080
-> >         dwMinBitRate                   768000
-> >         dwMaxBitRate                196608000
-> >         dwMaxVideoFrameBufferSize     4147200
-> >         dwDefaultFrameInterval         166666
-> >         bFrameIntervalType                  5
-> >         dwFrameInterval( 0)            166666
-> >         dwFrameInterval( 1)            333333
-> >         dwFrameInterval( 2)            400000
-> >         dwFrameInterval( 3)            500000
-> >         dwFrameInterval( 4)           1000000
-> > 
-> > However, the highest frame interval (166666), which means 60 fps
-> > is not supported. For such resolution, the maximum interval
-> > is, instead 333333 (30 fps).  
+> With the changes, improves in the percentage usage and some performance
+> of network speed in UDP packets.
+> Only patching copy_user. Using the original memcpy.
 > 
-> What happens if you try to select it ?
+> All results are from the same base kernel, same rootfs and same
+> BeagleV beta board.
+> 
+> Comparison by "perf top -Ue task-clock" while running iperf3.
 
-Basically, URBs get lost: they cause apps like qv4l2 to crash
-sometimes, with:
+I did a quick test on a SiFive Unmatched with IO to an NVME.
 
-	v4l-convert: libjpeg error: Corrupt JPEG data: premature end of data segment
+before: cached-reads=172.47MB/sec, buffered-reads=135.8MB/sec
+with-patch: cached-read=s177.54Mb/sec, buffered-reads=137.79MB/sec
 
-The image keeps blinking, and part of the image is replaced by
-white noise.
+That was just one test run, so there was a small improvement. I am
+sort of surprised we didn't get more of a win from this.
 
-Clearly, it tries to send more data than the maximum available bandwidth
-on this chipset.
+perf record on hdparm shows that it spends approx 15% cpu time in
+asm_copy_to_user. Does anyone have a benchmark for this which just
+looks at copy/to user? if not should we create one?
 
+-- 
+Ben Dooks				http://www.codethink.co.uk/
+Senior Engineer				Codethink - Providing Genius
 
-Sent a v2 addressing the issues you pointed.
-
-
-Thanks,
-Mauro
+https://www.codethink.co.uk/privacy.html
