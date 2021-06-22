@@ -2,317 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8A43B1059
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1875C3B1050
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhFVXJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 19:09:47 -0400
-Received: from gateway20.websitewelcome.com ([192.185.61.9]:42840 "EHLO
-        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229675AbhFVXJq (ORCPT
+        id S229746AbhFVXFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 19:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229853AbhFVXFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 19:09:46 -0400
-X-Greylist: delayed 1355 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Jun 2021 19:09:46 EDT
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway20.websitewelcome.com (Postfix) with ESMTP id DA741400F3B5E
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 17:30:39 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id vp8Ylwqhrhbxpvp8YlZYUq; Tue, 22 Jun 2021 17:44:54 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=OJUkMfA+JgaB80nhxjaqKdAAwKPsyK2LZa1fEH8Nw5s=; b=UkTaRtw+7uscS7vpYWGhKYBUxi
-        Ryh4QO8h29fQZjybia8sDUAR5CtE2Dv4upNLEYjUyuxOJ2zCVLRfZ7Q4Cl7dkRK6/kLDNFoTjEng3
-        SyTvo23qRKXZdjhsn6DMfvqqjnlXdTI99sFxooC4M2BCzSSsIr+mQ+mq/XrBw5AgWCv58eu59lgsf
-        UpeGMCIDhTqaudQysNfSgO6qn49I++KSy3ImQuYGUtshiebs9loB1vPlIQ20J3p506dUvwNKIaKOB
-        TnAB7MtjEjPrtAoR9Pl5zvU54ZruH3zdJQNjnJlfG6T9Hx0H5qaNRy9sw+bLK8Yu0jOyvSUsHjgnO
-        3cGVbTtA==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:45646 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lvp8U-002vwe-TR; Tue, 22 Jun 2021 17:44:51 -0500
-Subject: Re: linux-next: build warning after merge of the kspp-gustavo tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        David Sterba <dsterba@suse.cz>
-References: <20210623083901.1d49d19d@canb.auug.org.au>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <a6770d54-7d40-5c21-2d21-f2e25cc5756e@embeddedor.com>
-Date:   Tue, 22 Jun 2021 17:46:25 -0500
+        Tue, 22 Jun 2021 19:05:44 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC54C061574;
+        Tue, 22 Jun 2021 16:03:27 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id a11so425124wrt.13;
+        Tue, 22 Jun 2021 16:03:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:references:from:subject:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=XVYxcHVzt+iAuoqfNZVohTGFnRlGMfbTT5NEuJe+pr8=;
+        b=WgEzmwQiDWFMuGYxdip6AR6E/ELKH+rcNOkf6NEqoodXMynYxKBv7TVWMzFm2wzFEB
+         6aHyRpgazRiPEedFYYYGGH3pEjpmgvaKsx7NTYmpR5Poa0Ra8RrvCzCHEoLLXoV/8X3w
+         OdDvs1sBOMb7+JOC7ibSxAqaqp3ic+pL5VeMPwc4RATQ7ecvDIR4lBcpnKSO9K2C0Pqo
+         Vi1dYPH/NpFbcxWwswJvDyh7zXFdPJ+twV6IyqOyvGq2fENPuEGIm79FZtRjzeG33A1Z
+         4mvt4eQg3iAR61bhQLDzaChmOk/h+Hmx4ibcl/Hpd6032pHV8MPlENE2Ij2Vi7/6Ka97
+         6lEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XVYxcHVzt+iAuoqfNZVohTGFnRlGMfbTT5NEuJe+pr8=;
+        b=uGQ3PWYhxfSL+BShxPFwe7Vo6dmO1uaRRZ8IGxe15dxV/aJTA/6qlTV3pV7G5Q7Agf
+         noKKpOt8HEGqEFTEYUG1X3eJO+dOekMj3EiVVgVKstogh4Fqdq7tuidBhS4Yvenoajwv
+         qYGTDNbq19KK9F5o9B9W84VMGN9p5zymkyl2xFSeZxWU/Lgo9cIBmh3W2r+RkMCCgyLY
+         v+mjqbmiWTA1jID+9g+nQfw7Zyqz3Mq4Pewu59Ssv31Yt5/xBG1zKk5NqkoAA9ikSLKe
+         LCsUvMjpEgfcO75Z07c4o/i06JVcxqyacIhty4PPsO2LNcJvagXDYCg4mxUJtxWzrRCD
+         RAGg==
+X-Gm-Message-State: AOAM532njhmfBvClNCQT2RZxfvW5IcGgA/xFy6CKBfNn6PEg7ovEbPiL
+        fprOvWUeMftPw+WOMDLukkgJk9LoIJZv01vy
+X-Google-Smtp-Source: ABdhPJzqetf9JyitNVT8f1LtagVRS71lv34mGeA2VWLlJnKJe5fAleilOdyE3vFgmVq4CSKp9Sjkag==
+X-Received: by 2002:adf:cd88:: with SMTP id q8mr7836908wrj.181.1624403005589;
+        Tue, 22 Jun 2021 16:03:25 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.132.93])
+        by smtp.gmail.com with ESMTPSA id x18sm769703wrw.19.2021.06.22.16.03.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 16:03:25 -0700 (PDT)
+To:     Olivier Langlois <olivier@trillion01.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <67c806d0bcf2e096c1b0c7e87bd5926c37231b87.1624387080.git.olivier@trillion01.com>
+ <60d23218.1c69fb81.79e86.f345SMTPIN_ADDED_MISSING@mx.google.com>
+ <dcc24da6-33d6-ce71-8c87-f0ef4e7f8006@gmail.com>
+ <b00eb9407276f54e94ec80e6d80af128de97f10c.camel@trillion01.com>
+ <169899caad96c3214d6e380ac7686d054eed3b12.camel@trillion01.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH 1/2 v2] io_uring: Fix race condition when sqp thread goes
+ to sleep
+Message-ID: <2603ffd4-c318-66ed-9807-173159536f6a@gmail.com>
+Date:   Wed, 23 Jun 2021 00:03:11 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210623083901.1d49d19d@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <169899caad96c3214d6e380ac7686d054eed3b12.camel@trillion01.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lvp8U-002vwe-TR
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:45646
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 16
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On 6/22/21 11:42 PM, Olivier Langlois wrote:
+> On Tue, 2021-06-22 at 18:37 -0400, Olivier Langlois wrote:
+>> On Tue, 2021-06-22 at 21:45 +0100, Pavel Begunkov wrote:
+>>> On 6/22/21 7:55 PM, Olivier Langlois wrote:
+>>>> If an asynchronous completion happens before the task is
+>>>> preparing
+>>>> itself to wait and set its state to TASK_INTERRUPTIBLE, the
+>>>> completion
+>>>> will not wake up the sqp thread.
+>>>>
+>>>> Signed-off-by: Olivier Langlois <olivier@trillion01.com>
+>>>> ---
+>>>>  fs/io_uring.c | 2 +-
+>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/io_uring.c b/fs/io_uring.c
+>>>> index fc8637f591a6..02f789e07d4c 100644
+>>>> --- a/fs/io_uring.c
+>>>> +++ b/fs/io_uring.c
+>>>> @@ -6902,7 +6902,7 @@ static int io_sq_thread(void *data)
+>>>>                 }
+>>>>  
+>>>>                 prepare_to_wait(&sqd->wait, &wait,
+>>>> TASK_INTERRUPTIBLE);
+>>>> -               if (!io_sqd_events_pending(sqd)) {
+>>>> +               if (!io_sqd_events_pending(sqd) && !current-
+>>>>> task_works) {
+>>>
+>>> Agree that it should be here, but we also lack a good enough
+>>> task_work_run() around, and that may send the task burn CPU
+>>> for a while in some cases. Let's do
+>>>
+>>> if (!io_sqd_events_pending(sqd) && !io_run_task_work())
+>>>    ...
+>>
+>> I can do that if you want but considering that the function is inline
+>> and the race condition is a relatively rare occurence, is the cost
+>> coming with inline expansion really worth it in this case?
+>>>
+> On hand, there is the inline expansion concern.
+> 
+> OTOH, the benefit of going with your suggestion is that completions
+> generally precedes new submissions so yes, it might be better that way.
+> 
+> I'm really unsure about this. I'm just raising the concern and I'll let
+> you make the final decision...
 
-I will remove that commit and work on fixing those issues before
-trying again.
+It seems it may actually loop infinitely until it gets a signal,
+so yes. And even if not, rare stalls are nasty, they will ruin
+some 9s of latency and hard to catch.
 
-Thanks for the report!
---
-Gustavo
+That part is quite cold anyway, would generate some extra cold
+instructions, meh
 
-On 6/22/21 17:39, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the kspp-gustavo tree, today's linux-next build (powerpc
-> ppc64_defconfig) produced this warning:
-> 
-> In file included from fs/btrfs/ctree.h:9,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/struct-funcs.c: In function 'btrfs_get_token_16':
-> fs/btrfs/struct-funcs.c:80:46: warning: array subscript 1 is above array bounds of 'struct page *[1]' [-Warray-bounds]
->    80 |  token->kaddr = page_address(token->eb->pages[idx + 1]);  \
->       |                              ~~~~~~~~~~~~~~~~^~~~~~~~~
-> include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
->  1627 | #define page_address(page) lowmem_page_address(page)
->       |                                                ^~~~
-> fs/btrfs/struct-funcs.c:161:1: note: in expansion of macro 'DEFINE_BTRFS_SETGET_BITS'
->   161 | DEFINE_BTRFS_SETGET_BITS(16)
->       | ^~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from fs/btrfs/ctree.h:32,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
->    97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->       |               ^~~~~
-> In file included from fs/btrfs/ctree.h:9,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/struct-funcs.c: In function 'btrfs_get_16':
-> fs/btrfs/struct-funcs.c:101:32: warning: array subscript 1 is above array bounds of 'struct page * const[1]' [-Warray-bounds]
->   101 |  kaddr = page_address(eb->pages[idx + 1]);   \
->       |                       ~~~~~~~~~^~~~~~~~~
-> include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
->  1627 | #define page_address(page) lowmem_page_address(page)
->       |                                                ^~~~
-> fs/btrfs/struct-funcs.c:161:1: note: in expansion of macro 'DEFINE_BTRFS_SETGET_BITS'
->   161 | DEFINE_BTRFS_SETGET_BITS(16)
->       | ^~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from fs/btrfs/ctree.h:32,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
->    97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->       |               ^~~~~
-> In file included from fs/btrfs/ctree.h:9,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/struct-funcs.c: In function 'btrfs_set_token_16':
-> fs/btrfs/struct-funcs.c:133:46: warning: array subscript 1 is above array bounds of 'struct page *[1]' [-Warray-bounds]
->   133 |  token->kaddr = page_address(token->eb->pages[idx + 1]);  \
->       |                              ~~~~~~~~~~~~~~~~^~~~~~~~~
-> include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
->  1627 | #define page_address(page) lowmem_page_address(page)
->       |                                                ^~~~
-> fs/btrfs/struct-funcs.c:161:1: note: in expansion of macro 'DEFINE_BTRFS_SETGET_BITS'
->   161 | DEFINE_BTRFS_SETGET_BITS(16)
->       | ^~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from fs/btrfs/ctree.h:32,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
->    97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->       |               ^~~~~
-> In file included from fs/btrfs/ctree.h:9,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/struct-funcs.c: In function 'btrfs_set_16':
-> fs/btrfs/struct-funcs.c:156:32: warning: array subscript 1 is above array bounds of 'struct page * const[1]' [-Warray-bounds]
->   156 |  kaddr = page_address(eb->pages[idx + 1]);   \
->       |                       ~~~~~~~~~^~~~~~~~~
-> include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
->  1627 | #define page_address(page) lowmem_page_address(page)
->       |                                                ^~~~
-> fs/btrfs/struct-funcs.c:161:1: note: in expansion of macro 'DEFINE_BTRFS_SETGET_BITS'
->   161 | DEFINE_BTRFS_SETGET_BITS(16)
->       | ^~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from fs/btrfs/ctree.h:32,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
->    97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->       |               ^~~~~
-> In file included from fs/btrfs/ctree.h:9,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/struct-funcs.c: In function 'btrfs_get_token_32':
-> fs/btrfs/struct-funcs.c:80:46: warning: array subscript 1 is above array bounds of 'struct page *[1]' [-Warray-bounds]
->    80 |  token->kaddr = page_address(token->eb->pages[idx + 1]);  \
->       |                              ~~~~~~~~~~~~~~~~^~~~~~~~~
-> include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
->  1627 | #define page_address(page) lowmem_page_address(page)
->       |                                                ^~~~
-> fs/btrfs/struct-funcs.c:162:1: note: in expansion of macro 'DEFINE_BTRFS_SETGET_BITS'
->   162 | DEFINE_BTRFS_SETGET_BITS(32)
->       | ^~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from fs/btrfs/ctree.h:32,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
->    97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->       |               ^~~~~
-> In file included from fs/btrfs/ctree.h:9,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/struct-funcs.c: In function 'btrfs_get_32':
-> fs/btrfs/struct-funcs.c:101:32: warning: array subscript 1 is above array bounds of 'struct page * const[1]' [-Warray-bounds]
->   101 |  kaddr = page_address(eb->pages[idx + 1]);   \
->       |                       ~~~~~~~~~^~~~~~~~~
-> include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
->  1627 | #define page_address(page) lowmem_page_address(page)
->       |                                                ^~~~
-> fs/btrfs/struct-funcs.c:162:1: note: in expansion of macro 'DEFINE_BTRFS_SETGET_BITS'
->   162 | DEFINE_BTRFS_SETGET_BITS(32)
->       | ^~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from fs/btrfs/ctree.h:32,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
->    97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->       |               ^~~~~
-> In file included from fs/btrfs/ctree.h:9,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/struct-funcs.c: In function 'btrfs_set_token_32':
-> fs/btrfs/struct-funcs.c:133:46: warning: array subscript 1 is above array bounds of 'struct page *[1]' [-Warray-bounds]
->   133 |  token->kaddr = page_address(token->eb->pages[idx + 1]);  \
->       |                              ~~~~~~~~~~~~~~~~^~~~~~~~~
-> include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
->  1627 | #define page_address(page) lowmem_page_address(page)
->       |                                                ^~~~
-> fs/btrfs/struct-funcs.c:162:1: note: in expansion of macro 'DEFINE_BTRFS_SETGET_BITS'
->   162 | DEFINE_BTRFS_SETGET_BITS(32)
->       | ^~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from fs/btrfs/ctree.h:32,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
->    97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->       |               ^~~~~
-> In file included from fs/btrfs/ctree.h:9,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/struct-funcs.c: In function 'btrfs_set_32':
-> fs/btrfs/struct-funcs.c:156:32: warning: array subscript 1 is above array bounds of 'struct page * const[1]' [-Warray-bounds]
->   156 |  kaddr = page_address(eb->pages[idx + 1]);   \
->       |                       ~~~~~~~~~^~~~~~~~~
-> include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
->  1627 | #define page_address(page) lowmem_page_address(page)
->       |                                                ^~~~
-> fs/btrfs/struct-funcs.c:162:1: note: in expansion of macro 'DEFINE_BTRFS_SETGET_BITS'
->   162 | DEFINE_BTRFS_SETGET_BITS(32)
->       | ^~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from fs/btrfs/ctree.h:32,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
->    97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->       |               ^~~~~
-> In file included from fs/btrfs/ctree.h:9,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/struct-funcs.c: In function 'btrfs_get_token_64':
-> fs/btrfs/struct-funcs.c:80:46: warning: array subscript 1 is above array bounds of 'struct page *[1]' [-Warray-bounds]
->    80 |  token->kaddr = page_address(token->eb->pages[idx + 1]);  \
->       |                              ~~~~~~~~~~~~~~~~^~~~~~~~~
-> include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
->  1627 | #define page_address(page) lowmem_page_address(page)
->       |                                                ^~~~
-> fs/btrfs/struct-funcs.c:163:1: note: in expansion of macro 'DEFINE_BTRFS_SETGET_BITS'
->   163 | DEFINE_BTRFS_SETGET_BITS(64)
->       | ^~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from fs/btrfs/ctree.h:32,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
->    97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->       |               ^~~~~
-> In file included from fs/btrfs/ctree.h:9,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/struct-funcs.c: In function 'btrfs_get_64':
-> fs/btrfs/struct-funcs.c:101:32: warning: array subscript 1 is above array bounds of 'struct page * const[1]' [-Warray-bounds]
->   101 |  kaddr = page_address(eb->pages[idx + 1]);   \
->       |                       ~~~~~~~~~^~~~~~~~~
-> include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
->  1627 | #define page_address(page) lowmem_page_address(page)
->       |                                                ^~~~
-> fs/btrfs/struct-funcs.c:163:1: note: in expansion of macro 'DEFINE_BTRFS_SETGET_BITS'
->   163 | DEFINE_BTRFS_SETGET_BITS(64)
->       | ^~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from fs/btrfs/ctree.h:32,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
->    97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->       |               ^~~~~
-> In file included from fs/btrfs/ctree.h:9,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/struct-funcs.c: In function 'btrfs_set_token_64':
-> fs/btrfs/struct-funcs.c:133:46: warning: array subscript 1 is above array bounds of 'struct page *[1]' [-Warray-bounds]
->   133 |  token->kaddr = page_address(token->eb->pages[idx + 1]);  \
->       |                              ~~~~~~~~~~~~~~~~^~~~~~~~~
-> include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
->  1627 | #define page_address(page) lowmem_page_address(page)
->       |                                                ^~~~
-> fs/btrfs/struct-funcs.c:163:1: note: in expansion of macro 'DEFINE_BTRFS_SETGET_BITS'
->   163 | DEFINE_BTRFS_SETGET_BITS(64)
->       | ^~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from fs/btrfs/ctree.h:32,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
->    97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->       |               ^~~~~
-> In file included from fs/btrfs/ctree.h:9,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/struct-funcs.c: In function 'btrfs_set_64':
-> fs/btrfs/struct-funcs.c:156:32: warning: array subscript 1 is above array bounds of 'struct page * const[1]' [-Warray-bounds]
->   156 |  kaddr = page_address(eb->pages[idx + 1]);   \
->       |                       ~~~~~~~~~^~~~~~~~~
-> include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
->  1627 | #define page_address(page) lowmem_page_address(page)
->       |                                                ^~~~
-> fs/btrfs/struct-funcs.c:163:1: note: in expansion of macro 'DEFINE_BTRFS_SETGET_BITS'
->   163 | DEFINE_BTRFS_SETGET_BITS(64)
->       | ^~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from fs/btrfs/ctree.h:32,
->                  from fs/btrfs/struct-funcs.c:8:
-> fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
->    97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->       |               ^~~~~
-> In file included from include/linux/bvec.h:14,
->                  from include/linux/blk_types.h:10,
->                  from include/linux/genhd.h:19,
->                  from include/linux/blkdev.h:8,
->                  from fs/btrfs/disk-io.c:7:
-> fs/btrfs/disk-io.c: In function 'csum_tree_block':
-> fs/btrfs/disk-io.c:225:34: warning: array subscript 1 is above array bounds of 'struct page *[1]' [-Warray-bounds]
->   225 |   kaddr = page_address(buf->pages[i]);
->       |                        ~~~~~~~~~~^~~
-> include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
->  1627 | #define page_address(page) lowmem_page_address(page)
->       |                                                ^~~~
-> In file included from fs/btrfs/ctree.h:32,
->                  from fs/btrfs/disk-io.c:22:
-> fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
->    97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->       |               ^~~~~
-> 
-> Introduced by commit
-> 
->   8d7900f545f1 ("Makefile: Enable -Warray-bounds")
-> 
+-- 
+Pavel Begunkov
