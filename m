@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2093AFC22
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 06:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 382433AFC24
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 06:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhFVEqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 00:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52808 "EHLO
+        id S229825AbhFVEqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 00:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhFVEqD (ORCPT
+        with ESMTP id S229787AbhFVEqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 00:46:03 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB3D6C061574;
-        Mon, 21 Jun 2021 21:43:46 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id e22so9868099pgv.10;
-        Mon, 21 Jun 2021 21:43:46 -0700 (PDT)
+        Tue, 22 Jun 2021 00:46:08 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A69C061574;
+        Mon, 21 Jun 2021 21:43:52 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id i4so6082726plt.12;
+        Mon, 21 Jun 2021 21:43:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c6/Tm5shpqw/9OS5+/PUErLb83Yh9LzqaMHRoOepMhM=;
-        b=J+NRlZnKzxJOmLmfXB5MYj8stHZsG87W4lKtFNjzvrU6veKVqX8ZDvu9OIvEg9qiB8
-         legNgyX2G/i3yExo63yyypkJRpzonN1n8I+6PLrYt8MBsFBfhgKPsaLV86m4W05F2dkD
-         ccklSEay4G7sRcvBRwm5pvn1r09g0mZ5MnDdQ6AoKOS+R1ZiI5s5LAUiWpfZsjtPYaYU
-         VEBr9xNKaiWoBmf5Pi+pQsW5vRAYpTaKI1oCqAdimbBvSeOi1smZiD4kaNZCUncz+MdD
-         OozH9PkadyqiXZenSpCqKqx2yi7wWEb98/NFSgZ3gsUquMNdOuZyZn7Z1rr/CwgcKEtf
-         dkcw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=caIQJ1mUw/Qq9RPSpDxrIHGCVaQe3qBahSzrBXQocF8=;
+        b=c69jBUXPH5lSnMFPSZ5QtjVkOFfoGLO8g/NWjmEelanP4ibDUGn+jSqsroEJYY/Qhs
+         Y59eNY1NqkJkZT/28WGjOdpDkq0bcK2GzCeMdopf8dKGlRT+QivU2rXT5NJyMf74G+Vp
+         txh4hs0fD0Om5jC2rTqswlTxrbkpgxPNmO6fklMcd5Dez4QP45awQ83ABmwIujAKQe4n
+         0RNop3pp2jxZK/Iaxnp96ABBalq15M0uB0onZDNCtDYuIYaULlSXItszFz4ic4YWiJN0
+         UrIgus6i5KmV73rZF5Vnt+ah9JNU1HBszWDC7sWzEGTNFm8nqZJMeopD7MgwQ0dUUE6I
+         xDvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c6/Tm5shpqw/9OS5+/PUErLb83Yh9LzqaMHRoOepMhM=;
-        b=OyGTv2cKXH8kzhTEYtx3jmodLrMLASHcCeHIgIGF2Hi1QpaBlALsmsWOF8f5UbmLuQ
-         +4RD2Uu2/ys3RF4RJK5pLPxSR0bsGHDX23pnqxJ6K1bc168ylq0FlN1d4/LcDe+0JBxY
-         vXm7me3tCua8mGeNX/kgNchNvxs84tS5ERH1k0aJ9NaGzBuxV0kP3a4d3X+xqG4bhxTa
-         QcdhzVfMmVqHV7lVoeOtiPpZSC6TL9laWabU3XjAzZ0L5IldD4tambMcqRI+kEDS95jE
-         Xb0Sr4n6ThwO4RXjidYPtBkbUTfN48iGy5+OGARVC3cLBFm5pzPTI0AbLIkIe3b+Y+qo
-         ElkQ==
-X-Gm-Message-State: AOAM531zuxH0CgVXmPUdEuiBINkYwhPoVgu5faRyZeaBoYWn0i7X6cpR
-        rgPtDuABz0MwLAGFukpvljQ=
-X-Google-Smtp-Source: ABdhPJzm53iKSRmJ2/x99PM4SPNOkyqKGBe0icyCehyexTfDoHU3tyewXM+7y7bT5e8IbcGb5JpOeA==
-X-Received: by 2002:a63:e04c:: with SMTP id n12mr1888835pgj.239.1624337026407;
-        Mon, 21 Jun 2021 21:43:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=caIQJ1mUw/Qq9RPSpDxrIHGCVaQe3qBahSzrBXQocF8=;
+        b=cGtAM5TrnvoxdAtoTxdQdW5pc7PrDrlYnPFsC1ytn+9+NI5Nvr/lWB8eYjkdqJSzxW
+         wOgX4T0ED1FNgrU5uif7QGpA5wB+Jp6PCDJVKQys5qyULqZfZOnrhGUVwpeFqX9WYPaF
+         VYecFURPEtpphnRbldTj3eUfq2s/RjO7uBQynuwH4d8C3W9RrI/66o72uwOBxDO2GMu8
+         2+sS6sIXIZN6CRcNb5ym45LaEeI/2toUyv2QGVvlqReiOxZNvwHul8Pd97rsJ3nCVw4o
+         aa5g55PxzO33fhEw+9V3aDAFJsbnAkcEY9xiAqYk1WgYiA6G/FeqMEoUJsnwzp7X+8GN
+         4qUQ==
+X-Gm-Message-State: AOAM531n4NaRbKc6RtQKa52pL36yEzXt9yJeuckXiv6CWTydvPFYrrgR
+        jt/2Kg6VIvlad6gHjh/p9nA=
+X-Google-Smtp-Source: ABdhPJwpqKeV1sZnIB2l/74DjTgWY6b5ubBtObEhV4nqB0CGPBqdzBr+reFoiW+7mBQeMDudq9qLIA==
+X-Received: by 2002:a17:90a:66cc:: with SMTP id z12mr1940520pjl.93.1624337032080;
+        Mon, 21 Jun 2021 21:43:52 -0700 (PDT)
 Received: from localhost.localdomain (104.194.74.249.16clouds.com. [104.194.74.249])
-        by smtp.gmail.com with ESMTPSA id v129sm8686909pfc.31.2021.06.21.21.43.40
+        by smtp.gmail.com with ESMTPSA id v129sm8686909pfc.31.2021.06.21.21.43.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 21:43:45 -0700 (PDT)
+        Mon, 21 Jun 2021 21:43:51 -0700 (PDT)
 From:   Artem Lapkin <email2tema@gmail.com>
 X-Google-Original-From: Artem Lapkin <art@khadas.com>
 To:     narmstrong@baylibre.com
@@ -56,39 +56,43 @@ Cc:     khilman@baylibre.com, robh+dt@kernel.org, jbrunet@baylibre.com,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
         art@khadas.com, nick@khadas.com, gouwa@khadas.com
-Subject: [PATCH 1/2] arm64: dts: meson: improve gxl-s905x-khadas-vim wifi
-Date:   Tue, 22 Jun 2021 12:43:33 +0800
-Message-Id: <20210622044334.769791-1-art@khadas.com>
+Subject: [PATCH 2/2] arm64: dts: meson: improve gxm-khadas-vim2 wifi
+Date:   Tue, 22 Jun 2021 12:43:34 +0800
+Message-Id: <20210622044334.769791-2-art@khadas.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210622044334.769791-1-art@khadas.com>
+References: <20210622044334.769791-1-art@khadas.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Improve gxl-s905x-khadas-vim wifi performance
+Improve gxm-khadas-vim2 wifi performance
 * change freq from 60Mhz to 100Mhz
+* add cap-sd-highspeed param
 
 100Mhz works well same as in meson-khadas-vim3.dtsi
 
 Signed-off-by: Artem Lapkin <art@khadas.com>
 ---
- arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
-index 60feac0179c0..6ab1cc125b96 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
-@@ -218,6 +218,8 @@ &pwm_ef {
- };
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index 18a4b7a6c5df..86bdc0baf032 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -307,7 +307,8 @@ &sd_emmc_a {
+ 	#size-cells = <0>;
  
- &sd_emmc_a {
+ 	bus-width = <4>;
+-	max-frequency = <60000000>;
++	cap-sd-highspeed;
 +	max-frequency = <100000000>;
-+
- 	brcmf: wifi@1 {
- 		reg = <1>;
- 		compatible = "brcm,bcm4329-fmac";
+ 
+ 	non-removable;
+ 	disable-wp;
 -- 
 2.25.1
 
