@@ -2,187 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBCE63AFAE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7B83AFAE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbhFVCId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 22:08:33 -0400
-Received: from lucky1.263xmail.com ([211.157.147.130]:38266 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231464AbhFVCI3 (ORCPT
+        id S231128AbhFVCJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 22:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230006AbhFVCJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 22:08:29 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 7AFBCD31F5;
-        Tue, 22 Jun 2021 10:06:11 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P14866T140098544858880S1624327520607083_;
-        Tue, 22 Jun 2021 10:05:34 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <92165e3b04c47fd725e2744e8f5757b0>
-X-RL-SENDER: cl@rock-chips.com
-X-SENDER: cl@rock-chips.com
-X-LOGIN-NAME: cl@rock-chips.com
-X-FST-TO: heiko@sntech.de
-X-RCPT-COUNT: 30
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   <cl@rock-chips.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
-        uwe@kleine-koenig.org, mail@david-bauer.net, jbx6244@gmail.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
-        cnsztl@gmail.com, devicetree@vger.kernel.org,
-        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
-        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
-        zhangqing@rock-chips.com, huangtao@rock-chips.com,
-        cl@rock-chips.com, wim@linux-watchdog.org, linux@roeck-us.net,
-        jamie@jamieiles.com, linux-watchdog@vger.kernel.org, maz@kernel.org
-Subject: [PATCH v5 4/4] arm64: dts: rockchip: add basic dts for RK3568 EVB
-Date:   Tue, 22 Jun 2021 10:05:17 +0800
-Message-Id: <20210622020517.13100-5-cl@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210622020517.13100-1-cl@rock-chips.com>
-References: <20210622020517.13100-1-cl@rock-chips.com>
+        Mon, 21 Jun 2021 22:09:17 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E45C061574;
+        Mon, 21 Jun 2021 19:07:02 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id 21so230344pfp.3;
+        Mon, 21 Jun 2021 19:07:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+eNaqCSw1GzSakghPgObAofSfAD7TV7alaYIjcbBA2A=;
+        b=KxDCCUv7Vj7vpHfKF27pYRTONtQTFyirFW2wO3NDnloHcIxMUL1P/jY+APL679aP4w
+         tHWWoXymUFayTyjA5Hsyo8P8LUhaJugSA68VMfYOggVwKaDAKxW7iUbv+nGeG7GwPtYU
+         e5AnOXcPPmHAXV6PuYvx+Gl7fO00EXk9KmhCs0NMYrbmmlqnYuxsiuvhnfj5KnW/ZTC3
+         JDpS6Aa7wQbaHZnAhNMg/Ff33RPT83K/SLyz8kGUnnWeiQSeiW9DeYSFpZmgl4sz4wFK
+         A8Xhd1+aQ0tqOpROyHtXhN3lfiq4LvAu3r0s0w59qan/bKcCVcLMyF6073kDMy632Xo9
+         HClg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+eNaqCSw1GzSakghPgObAofSfAD7TV7alaYIjcbBA2A=;
+        b=ZlKlH+nOfOgsFAw683zhDIOVf+eIZtyh4mI8hZtrkcpCjuwV35Y8tnD9r+EMm52kYd
+         VYpZ/Ljc8X26RSKmAnkK7aUZhUWonzhkaq9nhs1BWXOdaIDw5raIRtJ7DDw3wIh4PxmW
+         pTgnKevPz4iEwapZwLgMMFdOmTeIspg+ZqY2cwbVbCXkWLX8DYSc5gzbFm0MDKUQzqim
+         NZz3A2ILRHoZkCqubFTL1/Uo7ypgjD2ktkhzBRRpDxgEYIxXdcfSQvjEJeoXztTeJg5x
+         q43MhoEeMIQLLvmQ2z/a2jPG4ZQK2w8KMcMEPS/uxQPITlzF7BaAU0l8pkz+dY4h9KZe
+         w73w==
+X-Gm-Message-State: AOAM530ykOWY+yoXxHVHV/6pgtHZQFXUJ2Zg9WUc8mvPO8fgcHehDUIz
+        0pLzvjLf3RI44UIPipHQ99EP42+DYTb6JA==
+X-Google-Smtp-Source: ABdhPJyZW0bGP+Wu6o4Bss/FwiNDBI6lImCMMTlmIO/ZPmYm03OLZl9V62hwcz82mUj7fyuvXmi9ZQ==
+X-Received: by 2002:a63:1453:: with SMTP id 19mr1413031pgu.270.1624327621789;
+        Mon, 21 Jun 2021 19:07:01 -0700 (PDT)
+Received: from sol (106-69-169-160.dyn.iinet.net.au. [106.69.169.160])
+        by smtp.gmail.com with ESMTPSA id b1sm425924pjk.51.2021.06.21.19.06.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 19:07:01 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 10:06:55 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Gabriel Knezek <gabeknez@linux.microsoft.com>,
+        bgolaszewski@baylibre.com
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linus.walleij@linaro.org, andy.shevchenko@gmail.com
+Subject: Re: [PATCH v3] gpiolib: cdev: zero padding during conversion to
+ gpioline_info_changed
+Message-ID: <20210622020655.GA8794@sol>
+References: <1624314539-17396-1-git-send-email-gabeknez@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1624314539-17396-1-git-send-email-gabeknez@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liang Chen <cl@rock-chips.com>
+On Mon, Jun 21, 2021 at 03:28:59PM -0700, Gabriel Knezek wrote:
+> When userspace requests a GPIO v1 line info changed event,
+> lineinfo_watch_read() populates and returns the gpioline_info_changed
+> structure. It contains 5 words of padding at the end which are not
+> initialized before being returned to userspace.
+> 
+> Zero the structure in gpio_v2_line_info_change_to_v1() before populating
+> its contents.
+> 
+> Fixes: aad955842d1c ("gpiolib: cdev: support GPIO_V2_GET_LINEINFO_IOCTL and
+> GPIO_V2_GET_LINEINFO_WATCH_IOCTL")
+> Signed-off-by: Gabriel Knezek <gabeknez@linux.microsoft.com>
+> ---
+> Changes in v3:
+>   - Include the Fixes tag referencing the code being fixed and properly
+>     version the patch.
+> 
+> Changes in v2:
+>   - Update commit message and subject with suggestions about clarity.
+>   - Patch series at https://www.spinics.net/lists/linux-gpio/msg62163.html
+> 
+> v1:
+>   - Initial patch
+>   - Patch series at https://www.spinics.net/lists/linux-gpio/msg62084.html
+> 
+>  drivers/gpio/gpiolib-cdev.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+> index ee5903aac497..af68532835fe 100644
+> --- a/drivers/gpio/gpiolib-cdev.c
+> +++ b/drivers/gpio/gpiolib-cdev.c
+> @@ -1865,6 +1865,7 @@ static void gpio_v2_line_info_changed_to_v1(
+>  		struct gpio_v2_line_info_changed *lic_v2,
+>  		struct gpioline_info_changed *lic_v1)
+>  {
+> +	memset(lic_v1, 0, sizeof(*lic_v1));
+>  	gpio_v2_line_info_to_v1(&lic_v2->info, &lic_v1->info);
+>  	lic_v1->timestamp = lic_v2->timestamp_ns;
+>  	lic_v1->event_type = lic_v2->event_type;
+> -- 
+> 2.25.1
+> 
 
-This patch add rk3568-evb1-v10.dts for RK3568 evaluation board.
-add uart/emmc/i2c/rk809 node for basic function.
+<sigh> The joe.reviewer@hotmail.com in the git send-email example that I
+provided off list was just that - an example that you were supposed to
+replace with the actual reviewers :|.
 
-Signed-off-by: Liang Chen <cl@rock-chips.com>
----
- .../devicetree/bindings/arm/rockchip.yaml     |  5 ++
- arch/arm64/boot/dts/rockchip/Makefile         |  1 +
- .../boot/dts/rockchip/rk3568-evb1-v10.dts     | 79 +++++++++++++++++++
- 3 files changed, 85 insertions(+)
- create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+I wouldn't generally bother with the links to the previous patch
+versions, though it might be helpful given the rename and version
+issues of the previous patches in this case.  If you are going to
+provide links, use reference style with all the links at the bottom of
+the mail.
 
-diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
-index 4a6f772c1043..6546b015fc62 100644
---- a/Documentation/devicetree/bindings/arm/rockchip.yaml
-+++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
-@@ -600,6 +600,11 @@ properties:
-           - const: zkmagic,a95x-z2
-           - const: rockchip,rk3318
- 
-+      - description: Rockchip RK3568 Evaluation board
-+        items:
-+          - const: rockchip,rk3568-evb1-v10
-+          - const: rockchip,rk3568
-+
- additionalProperties: true
- 
- ...
-diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-index c3e00c0e2db7..7fdb41de01ec 100644
---- a/arch/arm64/boot/dts/rockchip/Makefile
-+++ b/arch/arm64/boot/dts/rockchip/Makefile
-@@ -51,3 +51,4 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rockpro64.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-sapphire.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-sapphire-excavator.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399pro-rock-pi-n10.dtb
-+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-evb1-v10.dtb
-diff --git a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-new file mode 100644
-index 000000000000..69786557093d
---- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-@@ -0,0 +1,79 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2021 Rockchip Electronics Co., Ltd.
-+ *
-+ */
-+
-+/dts-v1/;
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/pinctrl/rockchip.h>
-+#include "rk3568.dtsi"
-+
-+/ {
-+	model = "Rockchip RK3568 EVB1 DDR4 V10 Board";
-+	compatible = "rockchip,rk3568-evb1-v10", "rockchip,rk3568";
-+
-+	chosen: chosen {
-+		stdout-path = "serial2:1500000n8";
-+	};
-+
-+	dc_12v: dc-12v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "dc_12v";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <12000000>;
-+		regulator-max-microvolt = <12000000>;
-+	};
-+
-+	vcc3v3_sys: vcc3v3-sys {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc3v3_sys";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&dc_12v>;
-+	};
-+
-+	vcc5v0_sys: vcc5v0-sys {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc5v0_sys";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&dc_12v>;
-+	};
-+
-+	vcc3v3_lcd0_n: vcc3v3-lcd0-n {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc3v3_lcd0_n";
-+		regulator-boot-on;
-+
-+		regulator-state-mem {
-+			regulator-off-in-suspend;
-+		};
-+	};
-+
-+	vcc3v3_lcd1_n: vcc3v3-lcd1-n {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc3v3_lcd1_n";
-+		regulator-boot-on;
-+
-+		regulator-state-mem {
-+			regulator-off-in-suspend;
-+		};
-+	};
-+};
-+
-+&sdhci {
-+	bus-width = <8>;
-+	max-frequency = <200000000>;
-+	non-removable;
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	status = "okay";
-+};
--- 
-2.17.1
+Other than that, the only problem I have is that the Fixes tag line
+shouldn't wrap - it is an exception to the rule.
+Bart, are you ok with fixing that on the way in - assuming there are no
+other objections?
 
-
+Cheers,
+Kent.
 
