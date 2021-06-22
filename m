@@ -2,44 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1543B086B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773673B086C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232035AbhFVPQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:16:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37594 "EHLO mail.kernel.org"
+        id S232164AbhFVPRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:17:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232107AbhFVPQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:16:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 864BE600D3;
-        Tue, 22 Jun 2021 15:14:38 +0000 (UTC)
+        id S232156AbhFVPQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 11:16:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5970B61289;
+        Tue, 22 Jun 2021 15:14:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624374879;
-        bh=tq5W3HglBF9jy+mJvlAU7lrMCvmo4pvk0yjiPuf4/xk=;
+        s=k20201202; t=1624374881;
+        bh=3we7Q+7oup/k3bH7oBPacMDKI+UoeT+oMJOH2NAnA1U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XL3S/7xbkKgf1TrgRLc11BaBRHJ1nsarxcrvBseoyoZN6FtUM90Eh4mD2gCbdS+th
-         SfLvRws8xd8LydAe0yOkyrcNYseRW460yO5xSpUfFu2Jz01guOeNeO1UD61L8aayBi
-         n1OQY97sXsY/1Zc7hHDcTAS6m/IS7QjaElauE/L/JuCo/a+H3pWMa45yc2XYAu2P+v
-         ztDpx+p4aktwtT/LARiSyQTIlVs40j/+lORZzl9ZAHXtJ1QO2Yml4nxAuD1xRwIZPB
-         SoZN5nouq5Su4diURilLDobNThZCwARFE7hz11rgqBssLqmLi3QFrBdjno1Iu6HJ3o
-         16CBVm8czFFog==
+        b=a/rZhZb6KlhJka/XnPA9DRrd8wfTm16TgdD2lazvGqxdhP/5iuEPGivLCU7hnVJQj
+         jz3a1tH6Co83YUcbYsXlsi9I2s8z1611ere2zxOjjCAws0sm7qSgavZq0o9v8ljybR
+         jU17FAJrIdUx7ukqhTx6TI81XLmNoJV6MG32UvdG2znTs+XNhhGZ/KTgCZEKtLDlfV
+         YO0l3ifu1/QQ6FfF32jfptbEh71CTgnvqgZoJQnp5gESk0UgOonEpbDKs6pZmULSng
+         ILX+HInKPpZrqQje5U/OaSWBrbrqwZaqLwgLpzotPbwXvT7o8nb2mDRhcFiCre091x
+         k0oF4ub6SPTgA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Stephan Gerhold <stephan@gerhold.net>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Thierry Reding <treding@nvidia.com>,
-        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org,
-        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: simple-card: Fill in driver name
-Date:   Tue, 22 Jun 2021 16:14:04 +0100
-Message-Id: <162437355278.1773.13469789646711861169.b4-ty@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Mark Brown <broonie@kernel.org>, kernel test robot <lkp@intel.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com
+Subject: Re: [PATCH 1/2] ASoC: codecs: wcd938x: fix unused variable warning
+Date:   Tue, 22 Jun 2021 16:14:05 +0100
+Message-Id: <162437355277.1773.9681249031887965233.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <YNGe3akAntQi8qJD@qwark.sigxcpu.org>
-References: <YNGe3akAntQi8qJD@qwark.sigxcpu.org>
+In-Reply-To: <20210621134502.19537-1-srinivas.kandagatla@linaro.org>
+References: <20210621134502.19537-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,15 +41,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Jun 2021 10:27:09 +0200, Guido Günther wrote:
-> alsa-ucm groups by driver name so fill that in as well. Otherwise the
-> presented information is redundant and doesn't reflect the used
-> driver. We can't just use 'asoc-simple-card' since the driver name is
-> restricted to 15 characters.
+On Mon, 21 Jun 2021 14:45:01 +0100, Srinivas Kandagatla wrote:
+> This patch fixes below
 > 
-> Before:
+> 	warning: unused variable wcd938x_dt_match
 > 
-> [...]
+> by placing device match table under CONFIG_OF
 
 Applied to
 
@@ -63,8 +54,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: simple-card: Fill in driver name
-      commit: 907f0a3051869a61499905377212500155bd28ec
+[1/2] ASoC: codecs: wcd938x: fix unused variable warning
+      commit: 8c4863c261c812a1088b0f8c6b66386d885390e1
+[2/2] ASoC: codecs: wcd938x: fix uninitialized symbol warnings
+      commit: d245fff1013cb7456ea9ca3f7b858e438c6bbf79
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
