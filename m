@@ -2,156 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1903AFB04
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437633AFAF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbhFVCYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 22:24:04 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:24759 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbhFVCYB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 22:24:01 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210622022144epoutp01d94b9eee39bb988704013c0093fee44b~Kxis9nWNi2754127541epoutp01b
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:21:44 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210622022144epoutp01d94b9eee39bb988704013c0093fee44b~Kxis9nWNi2754127541epoutp01b
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624328504;
-        bh=OufSI/cmAgUVLiWBpodEp8Btf9kgcVioiryEmA2vw2Q=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=ZmCOzMqDy2qTSQkeSi8GZId+qTTkJc3iRJiW4Z+buqQnu4a00w65aWl76Bic7HA3z
-         zEfuVyZ/9o7SMdzX2EI+ep2YOZnSkgMcShX2Q46N3+lr1c4O1ck7i0NmmNkYOBLvxm
-         lOqbvzMguNgYswTii6WyAaN80lW9+ytP7jD+pt+E=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20210622022144epcas1p463c09e6b9b911a50de64e33350347f6e~Kxish8SBF2712727127epcas1p4Q;
-        Tue, 22 Jun 2021 02:21:44 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.153]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4G89BX62SJz4x9Q1; Tue, 22 Jun
-        2021 02:21:40 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        35.DA.10119.43941D06; Tue, 22 Jun 2021 11:21:40 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210622022138epcas1p121cfd8f377ebda53fceaeb99ceaf08cd~KxinrNoOR2010120101epcas1p1G;
-        Tue, 22 Jun 2021 02:21:38 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210622022138epsmtrp240b9039f693949c0cfbb2e95f43c7bb7~KxinqfdbP0163501635epsmtrp2x;
-        Tue, 22 Jun 2021 02:21:38 +0000 (GMT)
-X-AuditID: b6c32a38-965ff70000002787-7f-60d14934af53
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        5D.93.08289.23941D06; Tue, 22 Jun 2021 11:21:38 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210622022138epsmtip1ad5ee47b412ceeb52e34d3900f62d008~Kxineta_31343113431epsmtip1V;
-        Tue, 22 Jun 2021 02:21:38 +0000 (GMT)
-Subject: Re: [PATCH 1/2] clocksource/drivers/exynos_mct: Prioritise Arm arch
- timer on arm64
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <d3e55130-ccfc-4bbc-3c82-91db4ce5113f@samsung.com>
-Date:   Tue, 22 Jun 2021 11:40:50 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        id S231332AbhFVCR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 22:17:56 -0400
+Received: from mail-dm6nam10on2131.outbound.protection.outlook.com ([40.107.93.131]:39108
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231252AbhFVCRz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 22:17:55 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DvxrrBhn0oAg381DGfRhSsouxQFwiHwo7oVX625fYIByKE8FiINXj+ih5XxlkGK4DmpM6rQ/loyj5dcFvYpjocxt8iT7RzmgYwjkZlYBG7cVWRVFbOnlbmJQvjinkbowsAHglEZcDkeUiEPDDcFNlRbIblfMwK+KUNRjX63Yf75SDTEi/ny6LQdpyY9WzLFfrOnN+nSlfV7lcMFk4REoxJJTJOXZF89lOIDupaQBfwkMk7CnQufDb9gd/nS/k/qqxxPKe99IgSgtBV0G/CxYr0VqTQEPk6nW7OMcYjDc/9BL2pLvunaHjLR5gVQyB1kn6RWMioOE9cyaFXIsgNFr0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KrkyDw9xbcuOO8xxlunuQ2pa8s+7ssS00WCGH4WyPMA=;
+ b=Gws2UHyxUMVpfhXlULSmoT1DEKw+UrOjt4n0MQ8+bboGLLBWrk0K+HZefuJQ0k+2GwRCOgWPq9Q3b6sCQ9D45aLGB6b0zI0ycHoT1Io2cF8ps83xqSHNkB4WCo6bWiKwvQWX741/TgUeY/pC/JMRRf9zYHrrX4UHGoEX7oDDBq6rd8zz3kL6s05mqDgj7Xe1uzZDZGOlMcxkxRdmgmsKCZO5beSOqMy5HRcNJj5BZgf+ql/nggaskTDkzxqWlBFbDyRbYedzNox5OaftyN6vZzISvatToSTbxJjkqDjBK8QlmGbhs1Ac4UX0Hh43zddIOSNZGnEzayRxoY918WNCGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KrkyDw9xbcuOO8xxlunuQ2pa8s+7ssS00WCGH4WyPMA=;
+ b=uky+lr1uzgJPQ1tXuT1Na1LnJLc7zaa0Rmpe+chPF4+OTnHuVzIUdXUVwMSEyh9HcpxHYwWUkAcsv1XyAb5ZThqbvv0AgEks/MTmIlfU1fxFTERHA5FTfBuppQyUi+3G7dRF6SnTt1xmHOwVZWB1fVdHmM9qy1GAzLMjElGWIjc=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from MWHPR0101MB3165.prod.exchangelabs.com (2603:10b6:301:2f::19) by
+ MW2PR0102MB3530.prod.exchangelabs.com (2603:10b6:302:12::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4242.22; Tue, 22 Jun 2021 02:15:33 +0000
+Received: from MWHPR0101MB3165.prod.exchangelabs.com
+ ([fe80::921:cd21:94b0:c87b]) by MWHPR0101MB3165.prod.exchangelabs.com
+ ([fe80::921:cd21:94b0:c87b%6]) with mapi id 15.20.4242.023; Tue, 22 Jun 2021
+ 02:15:33 +0000
+Date:   Tue, 22 Jun 2021 10:14:38 +0000
+From:   Huang Shijie <shijie@os.amperecomputing.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Catalin Marinas <catalin.marinas@arm.com>, tabba@google.com,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, patches@amperecomputing.com,
+        zwang@amperecomputing.com
+Subject: Re: [PATCH] arm64: kexec: flush log to console in nmi_panic()
+Message-ID: <YNG4DgMPluU9T9+R@hsj>
+References: <20210617125023.7288-1-shijie@os.amperecomputing.com>
+ <20210617175211.GE24813@willie-the-truck>
+ <CA+CK2bC5XW_AjnieWZ-ro8iqr0Jb7cz5Ss5549tJTq3Zm4GYiQ@mail.gmail.com>
+ <20210617175822.GG24813@willie-the-truck>
+ <YMxhXkdqU+MVJW33@hsj>
+ <20210621100836.GA28788@willie-the-truck>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621100836.GA28788@willie-the-truck>
+X-Originating-IP: [180.167.209.74]
+X-ClientProxiedBy: CY4PR06CA0043.namprd06.prod.outlook.com
+ (2603:10b6:903:77::29) To MWHPR0101MB3165.prod.exchangelabs.com
+ (2603:10b6:301:2f::19)
 MIME-Version: 1.0
-In-Reply-To: <3ba202d9-a679-834a-685f-12c6f9eb9c38@linaro.org>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCJsWRmVeSWpSXmKPExsWy7bCmga6J58UEg/f/9CzmfZa1OH9+A7vF
-        xrc/mCw2Pb7GanF51xw2i7VH7rJbbN40ldmi5Y6pA4fHrIZeNo9NqzrZPO5c28Pm8e7cOXaP
-        zUvqPfq2rGL0+LxJLoA9KtsmIzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE3
-        1VbJxSdA1y0zB+gkJYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6BZYFecWJucWle
-        ul5yfq6VoYGBkSlQYUJ2xuLToQWbOSr+LF/N1sB4ha2LkZNDQsBEYurlpSxdjFwcQgI7GCUO
-        nLgG5XxilHh27js7hPOZUeLhuncsMC0fzx+GqtrFKPFz1XIo5z2jxLHzL5m7GDk4hAViJa4v
-        VQZpEBHwl5jddhBsErPAf0aJj68/s4Mk2AS0JPa/uAF2CL+AosTVH48ZQWxeATuJFUvvMIPY
-        LAKqEttW3QSrFxUIkzi5rQWqRlDi5MwnYBdxAtWfmN4OVsMsIC5x68l8JghbXmL72znMIIsl
-        BNZySDRueMAK8YKLRNeCRiYIW1ji1fEt7BC2lMTnd3uhIVMtsfLkETaI5g5GiS37L0A1G0vs
-        XzqZCeRLZgFNifW79CHCihI7f89lhFjMJ/Huaw8rSImEAK9ER5sQRImyxOUHd6HWSkosbu9k
-        m8CoNAvJO7OQvDALyQuzEJYtYGRZxSiWWlCcm55abFhgghzbmxjByVXLYgfj3Lcf9A4xMnEw
-        HmKU4GBWEuG9mXIhQYg3JbGyKrUoP76oNCe1+BCjKTCAJzJLiSbnA9N7Xkm8oamRsbGxhYmh
-        mamhoZI47062QwlCAumJJanZqakFqUUwfUwcnFINTJPuL1gx48Zc742rX/9/JBckLPFI5mp4
-        uEjDle6TZy6+LQytzmiRuWbVYJTW3LvY1MAx5sDvwKYJLZlMa8V6Cp5Y7okT6MlfwFF8j+Ws
-        4a9Tf1UvnF7F8S/VpmZ/Qeruw59YD+1/e29/mn2ZxHa/f5tvOi/78cWFUe6lQk7pQocFexVv
-        fIyzmdLP+fZ8vGjfsQ9ZUtIrHp0U/LbQcy5H8T5D6/jFixU+G4h07V0ewjtLpe6KLp/1tr+F
-        ay83rfMx+KseIbjBS3nv39Dvk5+tUeR9/0juaN2zZTZTPH5oCGg9OylksLMngWtGQojqh96J
-        rRO2ik1wrzkj9eDpnEux72On+h0qEc/8nXbncPUzrz9KLMUZiYZazEXFiQDou4JWNwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjkeLIzCtJLcpLzFFi42LZdlhJTtfI82KCwaHpZhbzPstanD+/gd1i
-        49sfTBabHl9jtbi8aw6bxdojd9ktNm+aymzRcsfUgcNjVkMvm8emVZ1sHneu7WHzeHfuHLvH
-        5iX1Hn1bVjF6fN4kF8AexWWTkpqTWZZapG+XwJWx+HRowWaOij/LV7M1MF5h62Lk5JAQMJH4
-        eP4wSxcjF4eQwA5Gia8TjzFDJCQlpl08CmRzANnCEocPF0PUvGWUuHD5JwtIXFggVuL6UmWQ
-        chEBX4n/D66xg9QwCzQySTxfOIEdomEii8SuS89ZQKrYBLQk9r+4AbaZX0BR4uqPx4wgNq+A
-        ncSKpXfAFrMIqEpsW3WTHcQWFQiT2LnkMRNEjaDEyZlPwOZwAtWfmN4OVsMsoC7xZ94lZghb
-        XOLWk/lMELa8xPa3c5gnMArPQtI+C0nLLCQts5C0LGBkWcUomVpQnJueW2xYYJSXWq5XnJhb
-        XJqXrpecn7uJERxlWlo7GPes+qB3iJGJg/EQowQHs5II782UCwlCvCmJlVWpRfnxRaU5qcWH
-        GKU5WJTEeS90nYwXEkhPLEnNTk0tSC2CyTJxcEo1MAWnGMYXtIQHWx5rvLE3o+TptT9WG7a7
-        1VhMybfeyxpzPmdXYdlew3uf97pceO1+pVvZ5a3i0ZPuHJJ8P/Z9mGus86R45UYJFqkdPKLS
-        sUl7Dhw54a3D5vc9vmLDzT06q5Jr3ZxcboUv23HB6UaWtB7j80WZMm21qpdWXPe6kKz12rPP
-        JezvOsfLfKunqh3wqz/lp96lvnsn4/KzO+c4aLS+WXvJ1KNtPV/y3bsbWe40zJY7dnTTs5WW
-        XacX9K57tr/b50iVTc7C7nvedatv3pvRs63NdYGXs4nZ2h/CTZlJkvcu+AneD17tOWvH/JrP
-        B653aWXv+71BnF9lYVbeVYfdhxdt/ruvNk7XeHbfnVlKLMUZiYZazEXFiQBTgXOsIQMAAA==
-X-CMS-MailID: 20210622022138epcas1p121cfd8f377ebda53fceaeb99ceaf08cd
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210608154400epcas1p1b22fd50629611a9475cb4d2b8dd9442d
-References: <20210608154341.10794-1-will@kernel.org>
-        <CGME20210608154400epcas1p1b22fd50629611a9475cb4d2b8dd9442d@epcas1p1.samsung.com>
-        <20210608154341.10794-2-will@kernel.org>
-        <466bfc19-2260-87c6-c458-b43cf23617e3@samsung.com>
-        <2a0181ea-a26e-65e9-16f6-cc233b6b296f@linaro.org>
-        <fbcd234d-3ea0-d609-1f1d-b557ea329c37@samsung.com>
-        <20210617214748.GC25403@willie-the-truck>
-        <d79ebd58-1c4e-834c-fc06-482f25f6f3de@linaro.org>
-        <20210621101058.GB28788@willie-the-truck>
-        <3ba202d9-a679-834a-685f-12c6f9eb9c38@linaro.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from hsj (180.167.209.74) by CY4PR06CA0043.namprd06.prod.outlook.com (2603:10b6:903:77::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19 via Frontend Transport; Tue, 22 Jun 2021 02:15:30 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 608ab9f2-cc93-45da-e935-08d935239d72
+X-MS-TrafficTypeDiagnostic: MW2PR0102MB3530:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW2PR0102MB3530B3F66E071BFD204A02CCED099@MW2PR0102MB3530.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lXfJYWNvtBixFru2kh/NFkyuu7P4ak1EZMtNhv48M+3zwAgvQeTbP5jLmj3TRwJ7rLavFL+8EKw6uAx2QuvLqknakPntYyPJvW0OhEohTk1ltml0luL15YSVcSiajcYgtIX+aI8Rj9EeLXcTFkk0wBTDDwvL6dIzFfF9bzF/aKp7FODsWQp27TaXBqp98UYioho0KxMloIOJJewXW7/Z//m4d66k1ulUplzIxlsNZz2BLkIHCnMLVICiNVd/tu6nzw8FWkYc89by253gO31yB39oKlNMB8WoSbbPkv9if93gJWASGtiSMOKoKnT+Rq6BIUFY61xJlfgxj+JvkSOPol9YbsJtTaxSB9/8/hOX+L4zXMpm2XfHYOSADh++Tl1AVhI32iGQ8bEw+HIyebPw/a33YQ36RiZUIl+Y5zRxNsd0hxsPl8gfRp+kgN3A0F+GmLbDSbExFrFO+W+IWDmPiaYlHxN3BXcpoyBn8ySoRUSlz0dulmR8gp2b03y0T0Lp0yxdNgWMn1D/zBOhg+vfTdq7oUx2oT30MPWNd+zrLPRtzMLfHuBQfS02p2JCj2Fpii8GALreHK/pKOJ4E5Vyi0mEmj0yMMlo4cwm1rTMPkQHvcOFZVrSV0MILP87enLKjrqyVriEqaZ6bVixnPqKKj94Gq9ROjpOjKahhyG3fYpNZGdwRkyV42f/I1iN7ShY
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR0101MB3165.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(39840400004)(376002)(136003)(366004)(16526019)(26005)(186003)(33716001)(956004)(8936002)(9576002)(8676002)(316002)(6916009)(52116002)(6496006)(2906002)(9686003)(54906003)(38100700002)(86362001)(55016002)(107886003)(66946007)(66556008)(38350700002)(83380400001)(5660300002)(4326008)(66476007)(478600001)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4rBlZ6+KtdnKHHvB0lXZ0dzWQ66axspSCtikZdd4evFlATARwsI8NiUG7aG4?=
+ =?us-ascii?Q?CM3H0Jo75HiZ45hkVp4NCx64S0MqeZEV6XHVMb1PXbqvA3dFF1e7bWhsaic4?=
+ =?us-ascii?Q?+0ne+Y+wEdtWiXBVvms7PrqDvoPk6JSv35gEgwgrWyhC1AGTb8RCEjK6Gl4a?=
+ =?us-ascii?Q?4wsqoBFlOc0MNdpBc+PxUuUHjlSnVjcnXiWvCvPasNajE3HmGcVtoh1xCUX2?=
+ =?us-ascii?Q?/XWHZQthnvlsASltH6VkuLjcMZ1nxJu9qwJn2FqfSosLBcLT+k/kinz5nbcz?=
+ =?us-ascii?Q?U25P5urLWNqZrJxK3o7IrHu6gUK1z5A9++1VpxmbbIWiXzt9EU8OZzaJYdat?=
+ =?us-ascii?Q?lxrQ604yHCe9WqK3KiWbKT7pjQKJS59hVffOWjqmeTPT67ZdFY2lmDpGythF?=
+ =?us-ascii?Q?6k/oKOIGSlC/bgoUP2XLxXpaMQJJ/klgeNSswkailI3k8zL4d7x6M04642tB?=
+ =?us-ascii?Q?VCnkcYQuQkX0mN39wZgkb4GXKcx2UEp4w4BXdJXQgh8+R8B9BAisyId86IyT?=
+ =?us-ascii?Q?fpj/ceTFjF8SViyzV6oiSpK/+yAIPyTZbhRdmmqrg5a1u2cn3xt/ZRfIDx9D?=
+ =?us-ascii?Q?VUDw0Dnj6OkIQVX4+VTpF0MD7XQoOB/hNpKYmh4cLROxIthUry+nvoPpMksS?=
+ =?us-ascii?Q?br/bV7EI+VuvuAmZI1zMkHnniiyrgFKslWr5a3R9pv15W5PG99VHGYsSp24+?=
+ =?us-ascii?Q?cuxAX4Ddp/ml9+hTi9PIcqu13zTsFe3MjnLd0Aov16igzc7Kv1fjIm6rq/bJ?=
+ =?us-ascii?Q?+4oPr8R79hffaxzN02yVcUFNrEttDlDAyB8e4gvu4waeQgU5H1aLWsqvtuZ6?=
+ =?us-ascii?Q?PkOu/bfBOq6yorjkTIVt7vext6QNUJMm0eaLSOCJGDIONUGlCn6bjOh0sDCD?=
+ =?us-ascii?Q?/1B7vnPX0xwJs3WGyU00Ii98gX5CX8PYDNXhheh6vylnMmXtPbzlAxa5VREb?=
+ =?us-ascii?Q?/ROMYC8Th6ApH+LbrBa57v4fvREm8NFXY65b9AFcua41hQFc3nNQf7rRLKX7?=
+ =?us-ascii?Q?Wo1ds7blk/fvIfWMb/QmeZQQXcHCPfy7/lFG5QigUIarBnWIdFWdEmOiF5sZ?=
+ =?us-ascii?Q?lH+0277gdaVHoMQN/E1F3s5F+Gx3znR7cFRl5R0H3ecra4nHwKW0/NDKB/5l?=
+ =?us-ascii?Q?zN7obU7Femf+zFqdX1TkwNetSwxCuYrmWM5ZgL9D2be1+U4pxWD3vquzitSr?=
+ =?us-ascii?Q?xKlORMWcof4Li+uYRz9PJos90J77KBS/U418spCzKllMyGRX3iLeRSUoUe9z?=
+ =?us-ascii?Q?nbXkNNucMisOWy4vKTe2r68eCk260TaJCYxTrZwoUaF3X9doOo9zBU/X2k/3?=
+ =?us-ascii?Q?eyoVksxZkOrnlCB9ZPAEdXeL?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 608ab9f2-cc93-45da-e935-08d935239d72
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR0101MB3165.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 02:15:33.4984
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 417a74yPlk6JRivEt+J+tJT1Io8GzSAf8bZXVy2ZtoHQDlQz0VdTjw3qIDNyWnPEtlSAQpQlUONCLo29lGOOn51+PL74LHIiKHfAY1C/3tJVoXN22uPq42ci4s5BvX3H
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR0102MB3530
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/21/21 7:18 PM, Daniel Lezcano wrote:
-> On 21/06/2021 12:10, Will Deacon wrote:
+Hi Will,
+On Mon, Jun 21, 2021 at 11:08:37AM +0100, Will Deacon wrote:
+> > > That sounds like something which should be done in the core code, rather
+> > > than the in the architecture backend (and looks like panic() might do this
+> > > already?)
+> > In the non-kdump code path, the core code will take care of it, please read the
+> > code in panic().
+> > 
+> > But in the kdump code path, the architecture code should take care of it.
 > 
-> [ ... ]
-> 
->>>> exynos4_mct_frc_start() is called unconditionally from probe via
->>>> exynos4_clocksource_init() so as long as the mct probes first, then the
->>>> arch timer should work, no? The rating shouldn't affect that.
->>>
->>> How do you ensure the exynos mct is probed before the arch timer ?
->>>
->>> The Makefile provides the right order, but the dependency is implicit.
->>
->> Currently, I think it's done by the order of the CPU hotplug notifiers (
->> see the hunk of 6282edb72bed which touches cpuhotplug.h).
-> 
-> Ah, right. Indeed whatever the DT order, the cpuhotplug order solves the
-> dependency.
-> 
-> Chanwoo, are fine with this change ?
+> Why the discrepancy? Wouldn't it make more sense to do this in panic() for
+> both cases, if the prints that we want to display are coming from panic()
+> itself?
 
-OK about the order.
+In the kdump code path, code call like this:
+	panic() -->__crash_kexec() --> machine_kexec();
 
-Actually, I have not fully tested the arch timer on Exynos5433 64bit
-because of the dependency between arch timer and MCT as we knew.
+When we reach arm64's machine_kexec(), it means we can __NOT__ return to the panic(), we will run
+to the kdump linux kernel by cpu_soft_restart().
 
-If the Krzysztof and Marek have no any objection,
-I have no any objection anymore. Thanks.
+So we can not depend the panic() to print the log. :)
+	
+By the way, I quote part of the arm64 log after we enter __crash_kexec() in NMI context:
+	1.) the log in machine_crash_shutdown()
+	      ..............
+		pr_crit("SMP: stopping secondary CPUs\n");
+	      ..............
+		pr_info("Starting crashdump kernel...\n");
+	      ..............
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+        2.) the log in machine_kexec()
+
+	      ..............
+		WARN(in_kexec_crash && (stuck_cpus || smp_crash_stop_failed()),
+			"Some CPUs may be stale, kdump will be unreliable.\n");
+	      ..............
+		the logs in kexec_segment_flush(kimage);
+	      ..............
+		pr_info("Bye!\n");
+
+
+We cannot remove them all, and need to flush all the logs above to console in the NMI context.		
+
+
+Thanks
+Huang Shijie
