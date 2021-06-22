@@ -2,249 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A293B0181
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD56A3B0189
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhFVKjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 06:39:18 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:42200 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229702AbhFVKjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 06:39:15 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lvdm7-00034a-L9; Tue, 22 Jun 2021 12:36:59 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     cl@rock-chips.com
-Cc:     linux-arm-kernel@lists.infradead.org,
+        id S229975AbhFVKja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 06:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229940AbhFVKj1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 06:39:27 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC97C06175F;
+        Tue, 22 Jun 2021 03:37:11 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id hz1so11197560ejc.1;
+        Tue, 22 Jun 2021 03:37:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/gZ/LS6jWKdbaM5oP4IgUeK3B1HtaRtMGGO5GuusjNg=;
+        b=I4G89gstIc6F4n1q1VgS4P7X41iPjadoInVjmd+FwIiYDUPqRFCC4ATKncvmRVj1jL
+         rSmsAgBJ9TBmioXY/Hj4FmASTj2hAM50tL48IbROmprGXfhnsaLXjyDuLWAiiepGkpPD
+         s+XY1CAHVTe9atHoou/HGoGmBDVQkuMd9hZi2lhNGfAObpkTbBiILPf8JzSFMdALiYSc
+         59v7+PhQD6GNrcxMzd/xLQ0MpKWY47SpaVxyGZmyJOvRM0+39NYqSe/C9ULXGBPFDsd7
+         KsCJKKAr92T7GvP5C4VDhLHM/qMk2bkH+iljttwxOni2OTnrQ1buxbEp3QO1jMEKxUnS
+         q8Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/gZ/LS6jWKdbaM5oP4IgUeK3B1HtaRtMGGO5GuusjNg=;
+        b=U/7k9/sTqIYrE3TerPc0kHM0VHJWZIoh4sWlmSe8frrx2DJwfWXLrVBg/JevAdoY/i
+         T+zvGvooe+xC7YfdNtlzjaXL/rNhk3DaEfByHtEUrckvaCtCq1eCnVtQOAkyQ2+k5n+A
+         De0oNN8ki7iwO/DqyM2Pm9wL1K9vc0N+Yufd/lHLA4utCvMXsAoN6lW/mC7EiAxGS0gh
+         UpJsPyDA/vlzzHH5lC55AbFd7Hz1As/pkYi9CgdN0ixEBtBz/FgnXPkE3oD9kjow0fDS
+         bXJUKd3VRz3VKdnONz71jczJXqcXXoeytKMJIxn8DN/b0ewCuH4IXvK9oOEiumHbv4aX
+         atlw==
+X-Gm-Message-State: AOAM533Tr1UtbZg7eOX1F1tW1pIKILLLYV3H0jAHDvEU8OKzb2Mr/hKW
+        MQQw2/pi7Kyi8KKC0AAzQuiQTy9sYXBQ2A==
+X-Google-Smtp-Source: ABdhPJxlnR4rNgFyoUxyrHeDp6ZOw1eK2zdP3R7GGxTrcENQmMPjFHsqvd0zZwZy9tYkIJz0Ac9KSg==
+X-Received: by 2002:a17:906:dbdc:: with SMTP id yc28mr3267131ejb.444.1624358229781;
+        Tue, 22 Jun 2021 03:37:09 -0700 (PDT)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id dd15sm4961621edb.45.2021.06.22.03.37.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 03:37:09 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+Subject: Re: [PATCH v5 3/4] arm64: dts: rockchip: add core dtsi for RK3568 SoC
+To:     cl@rock-chips.com, heiko@sntech.de
+Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
+        uwe@kleine-koenig.org, mail@david-bauer.net,
+        linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kever.yang@rock-chips.com
-Subject: Re: [PATCH 09/10] arm64: dts: rockchip: add pwm nodes for rk3568
-Date:   Tue, 22 Jun 2021 12:36:59 +0200
-Message-ID: <4401172.xlVK0Xs8nM@diego>
-In-Reply-To: <20210622102907.99242-1-heiko@sntech.de>
-References: <20210622102907.99242-1-heiko@sntech.de>
+        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
+        cnsztl@gmail.com, devicetree@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        wim@linux-watchdog.org, linux@roeck-us.net, jamie@jamieiles.com,
+        linux-watchdog@vger.kernel.org, maz@kernel.org
+References: <20210622020517.13100-1-cl@rock-chips.com>
+ <20210622020517.13100-4-cl@rock-chips.com>
+Message-ID: <9515154d-f521-217c-af61-7cda089fbf15@gmail.com>
+Date:   Tue, 22 Jun 2021 12:37:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20210622020517.13100-4-cl@rock-chips.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, 22. Juni 2021, 12:29:06 CEST schrieb Heiko Stuebner:
+Hi Chris, Heiko,
+
+On 6/22/21 4:05 AM, cl@rock-chips.com wrote:
 > From: Liang Chen <cl@rock-chips.com>
 > 
-> Add the pwm controller nodes to the core rk3568 dtsi.
+> RK3568 is a high-performance and low power quad-core application processor
+> designed for personal mobile internet device and AIoT equipment. This patch
+> add basic core dtsi file for it.
+> 
+> We use scmi_clk for cortex-a55 instead of standard ARMCLK, so that
+> kernel/uboot/rtos can change cpu clk with the same code in ATF, and we will
+> enalbe a special high-performance PLL when high frequency is required. The
+> smci_clk code is in ATF, and clkid for cpu is 0, as below:
+> 
+>     cpu0: cpu@0 {
+>         device_type = "cpu";
+>         compatible = "arm,cortex-a55";
+>         reg = <0x0 0x0>;
+>         clocks = <&scmi_clk 0>;
+>     };
 > 
 > Signed-off-by: Liang Chen <cl@rock-chips.com>
-> Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-
-please ignore the numbering, as they should be
-09/10 -> 1/2
-10/10 -> 2/2
-
 > ---
->  arch/arm64/boot/dts/rockchip/rk3568.dtsi | 176 +++++++++++++++++++++++
->  1 file changed, 176 insertions(+)
+>  .../boot/dts/rockchip/rk3568-pinctrl.dtsi     | 3111 +++++++++++++++++
+>  arch/arm64/boot/dts/rockchip/rk3568.dtsi      |  777 ++++
+>  2 files changed, 3888 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+>  create mode 100644 arch/arm64/boot/dts/rockchip/rk3568.dtsi
 > 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3568.dtsi b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-> index d225e6a45d5c..33db226b46cb 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-> @@ -257,6 +257,50 @@ uart0: serial@fdd50000 {
->  		status = "disabled";
->  	};
->  
-> +	pwm0: pwm@fdd70000 {
-> +		compatible = "rockchip,rk3568-pwm", "rockchip,rk3328-pwm";
-> +		reg = <0x0 0xfdd70000 0x0 0x10>;
-> +		clocks = <&pmucru CLK_PWM0>, <&pmucru PCLK_PWM0>;
-> +		clock-names = "pwm", "pclk";
-> +		pinctrl-0 = <&pwm0m0_pins>;
-> +		pinctrl-names = "active";
-> +		#pwm-cells = <3>;
-> +		status = "disabled";
-> +	};
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi b/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+> new file mode 100644
+> index 000000000000..a588ca95ace2
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+> @@ -0,0 +1,3111 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright (c) 2021 Rockchip Electronics Co., Ltd.
+> + */
 > +
-> +	pwm1: pwm@fdd70010 {
-> +		compatible = "rockchip,rk3568-pwm", "rockchip,rk3328-pwm";
-> +		reg = <0x0 0xfdd70010 0x0 0x10>;
-> +		clocks = <&pmucru CLK_PWM0>, <&pmucru PCLK_PWM0>;
-> +		clock-names = "pwm", "pclk";
-> +		pinctrl-0 = <&pwm1m0_pins>;
-> +		pinctrl-names = "active";
-> +		#pwm-cells = <3>;
-> +		status = "disabled";
-> +	};
-> +
-> +	pwm2: pwm@fdd70020 {
-> +		compatible = "rockchip,rk3568-pwm", "rockchip,rk3328-pwm";
-> +		reg = <0x0 0xfdd70020 0x0 0x10>;
-> +		clocks = <&pmucru CLK_PWM0>, <&pmucru PCLK_PWM0>;
-> +		clock-names = "pwm", "pclk";
-> +		pinctrl-0 = <&pwm2m0_pins>;
-> +		pinctrl-names = "active";
-> +		#pwm-cells = <3>;
-> +		status = "disabled";
-> +	};
-> +
-> +	pwm3: pwm@fdd70030 {
-> +		compatible = "rockchip,rk3568-pwm", "rockchip,rk3328-pwm";
-> +		reg = <0x0 0xfdd70030 0x0 0x10>;
-> +		clocks = <&pmucru CLK_PWM0>, <&pmucru PCLK_PWM0>;
-> +		clock-names = "pwm", "pclk";
-> +		pinctrl-0 = <&pwm3_pins>;
-> +		pinctrl-names = "active";
-> +		#pwm-cells = <3>;
-> +		status = "disabled";
-> +	};
-> +
->  	sdmmc2: mmc@fe000000 {
->  		compatible = "rockchip,rk3568-dw-mshc", "rockchip,rk3288-dw-mshc";
->  		reg = <0x0 0xfe000000 0x0 0x4000>;
-> @@ -525,6 +569,138 @@ uart9: serial@fe6d0000 {
->  		status = "disabled";
->  	};
->  
-> +	pwm4: pwm@fe6e0000 {
-> +		compatible = "rockchip,rk3568-pwm", "rockchip,rk3328-pwm";
-> +		reg = <0x0 0xfe6e0000 0x0 0x10>;
-> +		clocks = <&cru CLK_PWM1>, <&cru PCLK_PWM1>;
-> +		clock-names = "pwm", "pclk";
-> +		pinctrl-0 = <&pwm4_pins>;
-> +		pinctrl-names = "active";
-> +		#pwm-cells = <3>;
-> +		status = "disabled";
-> +	};
-> +
-> +	pwm5: pwm@fe6e0010 {
-> +		compatible = "rockchip,rk3568-pwm", "rockchip,rk3328-pwm";
-> +		reg = <0x0 0xfe6e0010 0x0 0x10>;
-> +		clocks = <&cru CLK_PWM1>, <&cru PCLK_PWM1>;
-> +		clock-names = "pwm", "pclk";
-> +		pinctrl-0 = <&pwm5_pins>;
-> +		pinctrl-names = "active";
-> +		#pwm-cells = <3>;
-> +		status = "disabled";
-> +	};
-> +
-> +	pwm6: pwm@fe6e0020 {
-> +		compatible = "rockchip,rk3568-pwm", "rockchip,rk3328-pwm";
-> +		reg = <0x0 0xfe6e0020 0x0 0x10>;
-> +		clocks = <&cru CLK_PWM1>, <&cru PCLK_PWM1>;
-> +		clock-names = "pwm", "pclk";
-> +		pinctrl-0 = <&pwm6_pins>;
-> +		pinctrl-names = "active";
-> +		#pwm-cells = <3>;
-> +		status = "disabled";
-> +	};
-> +
-> +	pwm7: pwm@fe6e0030 {
-> +		compatible = "rockchip,rk3568-pwm", "rockchip,rk3328-pwm";
-> +		reg = <0x0 0xfe6e0030 0x0 0x10>;
-> +		clocks = <&cru CLK_PWM1>, <&cru PCLK_PWM1>;
-> +		clock-names = "pwm", "pclk";
-> +		pinctrl-0 = <&pwm7_pins>;
-> +		pinctrl-names = "active";
-> +		#pwm-cells = <3>;
-> +		status = "disabled";
-> +	};
-> +
-> +	pwm8: pwm@fe6f0000 {
-> +		compatible = "rockchip,rk3568-pwm", "rockchip,rk3328-pwm";
-> +		reg = <0x0 0xfe6f0000 0x0 0x10>;
-> +		clocks = <&cru CLK_PWM2>, <&cru PCLK_PWM2>;
-> +		clock-names = "pwm", "pclk";
-> +		pinctrl-0 = <&pwm8m0_pins>;
-> +		pinctrl-names = "active";
-> +		#pwm-cells = <3>;
-> +		status = "disabled";
-> +	};
-> +
-> +	pwm9: pwm@fe6f0010 {
-> +		compatible = "rockchip,rk3568-pwm", "rockchip,rk3328-pwm";
-> +		reg = <0x0 0xfe6f0010 0x0 0x10>;
-> +		clocks = <&cru CLK_PWM2>, <&cru PCLK_PWM2>;
-> +		clock-names = "pwm", "pclk";
-> +		pinctrl-0 = <&pwm9m0_pins>;
-> +		pinctrl-names = "active";
-> +		#pwm-cells = <3>;
-> +		status = "disabled";
-> +	};
-> +
-> +	pwm10: pwm@fe6f0020 {
-> +		compatible = "rockchip,rk3568-pwm", "rockchip,rk3328-pwm";
-> +		reg = <0x0 0xfe6f0020 0x0 0x10>;
-> +		clocks = <&cru CLK_PWM2>, <&cru PCLK_PWM2>;
-> +		clock-names = "pwm", "pclk";
-> +		pinctrl-0 = <&pwm10m0_pins>;
-> +		pinctrl-names = "active";
-> +		#pwm-cells = <3>;
-> +		status = "disabled";
-> +	};
-> +
-> +	pwm11: pwm@fe6f0030 {
-> +		compatible = "rockchip,rk3568-pwm", "rockchip,rk3328-pwm";
-> +		reg = <0x0 0xfe6f0030 0x0 0x10>;
-> +		clocks = <&cru CLK_PWM2>, <&cru PCLK_PWM2>;
-> +		clock-names = "pwm", "pclk";
-> +		pinctrl-0 = <&pwm11m0_pins>;
-> +		pinctrl-names = "active";
-> +		#pwm-cells = <3>;
-> +		status = "disabled";
-> +	};
-> +
-> +	pwm12: pwm@fe700000 {
-> +		compatible = "rockchip,rk3568-pwm", "rockchip,rk3328-pwm";
-> +		reg = <0x0 0xfe700000 0x0 0x10>;
-> +		clocks = <&cru CLK_PWM3>, <&cru PCLK_PWM3>;
-> +		clock-names = "pwm", "pclk";
-> +		pinctrl-0 = <&pwm12m0_pins>;
-> +		pinctrl-names = "active";
-> +		#pwm-cells = <3>;
-> +		status = "disabled";
-> +	};
-> +
-> +	pwm13: pwm@fe700010 {
-> +		compatible = "rockchip,rk3568-pwm", "rockchip,rk3328-pwm";
-> +		reg = <0x0 0xfe700010 0x0 0x10>;
-> +		clocks = <&cru CLK_PWM3>, <&cru PCLK_PWM3>;
-> +		clock-names = "pwm", "pclk";
-> +		pinctrl-0 = <&pwm13m0_pins>;
-> +		pinctrl-names = "active";
-> +		#pwm-cells = <3>;
-> +		status = "disabled";
-> +	};
-> +
-> +	pwm14: pwm@fe700020 {
-> +		compatible = "rockchip,rk3568-pwm", "rockchip,rk3328-pwm";
-> +		reg = <0x0 0xfe700020 0x0 0x10>;
-> +		clocks = <&cru CLK_PWM3>, <&cru PCLK_PWM3>;
-> +		clock-names = "pwm", "pclk";
-> +		pinctrl-0 = <&pwm14m0_pins>;
-> +		pinctrl-names = "active";
-> +		#pwm-cells = <3>;
-> +		status = "disabled";
-> +	};
-> +
-> +	pwm15: pwm@fe700030 {
-> +		compatible = "rockchip,rk3568-pwm", "rockchip,rk3328-pwm";
-> +		reg = <0x0 0xfe700030 0x0 0x10>;
-> +		clocks = <&cru CLK_PWM3>, <&cru PCLK_PWM3>;
-> +		clock-names = "pwm", "pclk";
-> +		pinctrl-0 = <&pwm15m0_pins>;
-> +		pinctrl-names = "active";
-> +		#pwm-cells = <3>;
-> +		status = "disabled";
-> +	};
-> +
->  	pinctrl: pinctrl {
->  		compatible = "rockchip,rk3568-pinctrl";
->  		rockchip,grf = <&grf>;
-> 
+> +#include <dt-bindings/pinctrl/rockchip.h>
 
+> +#include "rockchip-pinconf.dtsi"
 
+Question for Heiko:
 
+This file is put in the arm64 directory.
+Is it useful for ARM as well?
+Should the ARM directory have it's own or use a long include?
 
+ARM:
+#include "../../../arm64/boot/dts/rockchip/rockchip-pinconf.dtsi"
+
+arm64:
+#include "rockchip-pinconf.dtsi"
+
+Is it complete or does it need more items?
+(Who's going to change that?)
+
+arch/arm/boot/dts/rk3066a.dtsi:373.23-375.6: ERROR (phandle_references):
+/pinctrl/emmc/emmc-clk: Reference to non-existent node or label
+"pcfg_pull_default"
+
+arch/arm/boot/dts/rv1108.dtsi:645.25-654.6: ERROR (phandle_references):
+/pinctrl/emmc/emmc-bus8: Reference to non-existent node or label
+"pcfg_pull_up_drv_8ma"
+
+arch/arm64/boot/dts/rockchip/px30.dtsi:1470.23-1473.6: ERROR
+(phandle_references): /pinctrl/spi0/spi0-clk: Reference to non-existent
+node or label "pcfg_pull_up_4ma"
+
+arch/arm64/boot/dts/rockchip/px30.dtsi:1490.29-1493.6: ERROR
+(phandle_references): /pinctrl/spi0/spi0-clk-hs: Reference to
+non-existent node or label "pcfg_pull_up_8ma"
+
+arch/arm64/boot/dts/rockchip/px30.dtsi:1589.39-1592.6: ERROR
+(phandle_references): /pinctrl/pdm/pdm-clk0m0-sleep: Reference to
+non-existent node or label "pcfg_input_high"
+
+arch/arm64/boot/dts/rockchip/px30.dtsi:1903.49-1906.6: ERROR
+(phandle_references): /pinctrl/lcdc/lcdc-rgb-m0-hsync-pin: Reference to
+non-existent node or label "pcfg_pull_none_12ma"
+
+etc..
+
+> +
+> +/*
+> + * This file is auto generated by pin2dts tool, please keep these code
+> + * by adding changes at end of this file.
+> + */
+> +&pinctrl {
+
+[..]
