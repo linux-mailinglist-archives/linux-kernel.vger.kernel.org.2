@@ -2,80 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2C13B05B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FAC3B05C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhFVNWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 09:22:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59348 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229907AbhFVNWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 09:22:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58EF561002;
-        Tue, 22 Jun 2021 13:19:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624367989;
-        bh=aNJwvphEwnfCtNAE71J4L94BMKp7pifcEHe8Gw+0fTE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Eq6lqzQX1Z33N5mBc4qYQawgdwCsxDQHfMUzAwbYN9bld1rySQKR/CbSNHPxhhjme
-         RDISXluPPbXGUAXbb7RZXWo3YK6BfhHlOp95xEQFryq1hFh2oH+CP/C3qiWmgEcdWq
-         +rhwqWXwls2/vbfx7iA7CyEm6zAoXCzHS2/Chi5U=
-Date:   Tue, 22 Jun 2021 15:19:46 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     pingshuo <pingshuo@uniontech.com>
-Cc:     rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hibernation:stop resume screen during hibernation
-Message-ID: <YNHjcuSwxb4713gK@kroah.com>
-References: <20210622124547.28317-1-pingshuo@uniontech.com>
+        id S230251AbhFVN2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 09:28:31 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7502 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229907AbhFVN21 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 09:28:27 -0400
+Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G8Rsm5554zZkhh;
+        Tue, 22 Jun 2021 21:23:08 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 22 Jun 2021 21:26:08 +0800
+From:   chenxiang <chenxiang66@hisilicon.com>
+To:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <vincent.guittot@linaro.org>, <dietmar.eggemann@arm.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        Xiang Chen <chenxiang66@hisilicon.com>
+Subject: [PATCH] sched/fair: Fix a comment of function rebalance_domains()
+Date:   Tue, 22 Jun 2021 21:21:36 +0800
+Message-ID: <1624368096-29024-1-git-send-email-chenxiang66@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622124547.28317-1-pingshuo@uniontech.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme756-chm.china.huawei.com (10.3.19.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 08:45:47PM +0800, pingshuo wrote:
-> The display will be woken up during hibernation.
-> if the computer equipment is poor, it will cause the screen to flicker.
-> Skip to reusme the display devices in "thaw".
-> 
-> Signed-off-by: pingshuo <pingshuo@uniontech.com>
-> ---
->  drivers/base/power/main.c | 43 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 43 insertions(+)
-> 
-> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-> index f893c3c5af07..f3e92ac7b4b3 100644
-> --- a/drivers/base/power/main.c
-> +++ b/drivers/base/power/main.c
-> @@ -35,11 +35,14 @@
->  #include <linux/cpuidle.h>
->  #include <linux/devfreq.h>
->  #include <linux/timer.h>
-> +#include <linux/pci.h>
+From: Xiang Chen <chenxiang66@hisilicon.com>
 
-That right there is a clue that perhaps this is not the place to be
-making this change.
+Use sched_init_domains instead of init_sched_domains which is not existed
+in kernel.
 
-Please do this in the driver for the specific device, you do not want to
-do this in the driver core for every individual device type.
+Signed-off-by: Xiang Chen <chenxiang66@hisilicon.com>
+---
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Also be more careful, your change here:
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 161b92a..3021f28 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10026,7 +10026,7 @@ void update_max_interval(void)
+  * It checks each scheduling domain to see if it is due to be balanced,
+  * and initiates a balancing operation if so.
+  *
+- * Balancing parameters are set up in init_sched_domains.
++ * Balancing parameters are set up in sched_init_domains.
+  */
+ static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
+ {
+-- 
+2.8.1
 
-> @@ -737,6 +778,8 @@ static void dpm_noirq_resume_devices(pm_message_t state)
->  	trace_suspend_resume(TPS("dpm_resume_noirq"), state.event, false);
->  }
->  
-> +
-> +
->  /**
->   * dpm_resume_noirq - Execute "noirq resume" callbacks for all devices.
->   * @state: PM transition of the system being carried out.
-
-Was not needed at all.
-
-thanks,
-
-greg k-h
