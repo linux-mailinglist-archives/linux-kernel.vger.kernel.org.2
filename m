@@ -2,181 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E70C3B1022
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 00:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 904103B1027
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 00:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbhFVWfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 18:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230354AbhFVWfl (ORCPT
+        id S230299AbhFVWje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 18:39:34 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:36352 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229800AbhFVWjd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 18:35:41 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60400C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 15:33:24 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id u2so759025ilk.7
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 15:33:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wnmRkYKboAH8zJCZrdHT+Gn/DKgpUQ6lVnKyPQDk2e0=;
-        b=AR49a0Vnv4dm3JSBho21CVzLTpAw6AKYpkMLlF0NkD583G7YZ5+wtgml5dypSZYMud
-         2hfVQyG1d5bTuI2+7TuzCftNECNvg3nMDkkcS0jnB8f2TmWBOjU2CGLh4fNOy9Ya+Pg/
-         2GtHu1wBydy6jnwS6C8nQCjyYL+cINkYFKqTM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wnmRkYKboAH8zJCZrdHT+Gn/DKgpUQ6lVnKyPQDk2e0=;
-        b=ROsLrtZ4XE17spN6oB+GUmqZSc41vBmH/7yZ+DM69A/zRboJTAOVVECX9mx+My57gG
-         a9XtY/pcVWkFussSOOjroM2SGcidwPI9qthXMO9Qvn9JsL/2LYtw8OdkSerzSWy70B3+
-         GCwkjvqj1osOjOS374X9LE/bWSKSvZ9igrLHqZOeYqJATH4D9KcWTRYHFtNwO6vof+EB
-         LDWmfU4DhXPDaR8HXfkeLGLRrxitEhOK664MbxxwVn4YARA/VOOfzvb1MkcghELUuzHT
-         1VB7HGWewkuQE6dBphDkrsasMx8BZncApBhab/+HepnmFLf1u363/6BrdBqH0geGV3cT
-         rU7Q==
-X-Gm-Message-State: AOAM531IafhSzqhxUKX8YqCUjIXbptICzsccE+p8zNc/6OSEmdkOc/Ew
-        s5jTxt/Ax/1OQjleMe0SyqsiAg==
-X-Google-Smtp-Source: ABdhPJxN9TU0oJIL6ix/vNDlgeb3nGygOZZkb/SbcRaq0bOTovZyipADlOgJDT4QhLMrlnkFt38wbw==
-X-Received: by 2002:a92:1310:: with SMTP id 16mr672327ilt.60.1624401203750;
-        Tue, 22 Jun 2021 15:33:23 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id j12sm8587753ilk.26.2021.06.22.15.33.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 15:33:23 -0700 (PDT)
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        David Hildenbrand <david@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>,
-        Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <YIx7R6tmcRRCl/az@mit.edu>
- <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
- <YK+esqGjKaPb+b/Q@kroah.com>
- <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
- <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com>
- <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
- <20210610182318.jrxe3avfhkqq7xqn@nitro.local>
- <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
- <20210610152633.7e4a7304@oasis.local.home>
- <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
- <YMyjryXiAfKgS6BY@pendragon.ideasonboard.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <ae51f636-8fb5-20b7-bbc5-37e22edb9a02@linuxfoundation.org>
-Date:   Tue, 22 Jun 2021 16:33:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 22 Jun 2021 18:39:33 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:33484 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lvp19-0002q8-Ul; Tue, 22 Jun 2021 18:37:15 -0400
+Message-ID: <b00eb9407276f54e94ec80e6d80af128de97f10c.camel@trillion01.com>
+Subject: Re: [PATCH 1/2 v2] io_uring: Fix race condition when sqp thread
+ goes to sleep
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 22 Jun 2021 18:37:15 -0400
+In-Reply-To: <dcc24da6-33d6-ce71-8c87-f0ef4e7f8006@gmail.com>
+References: <67c806d0bcf2e096c1b0c7e87bd5926c37231b87.1624387080.git.olivier@trillion01.com>
+         <60d23218.1c69fb81.79e86.f345SMTPIN_ADDED_MISSING@mx.google.com>
+         <dcc24da6-33d6-ce71-8c87-f0ef4e7f8006@gmail.com>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-In-Reply-To: <YMyjryXiAfKgS6BY@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/18/21 7:46 AM, Laurent Pinchart wrote:
-> Hi Shuah,
+On Tue, 2021-06-22 at 21:45 +0100, Pavel Begunkov wrote:
+> On 6/22/21 7:55 PM, Olivier Langlois wrote:
+> > If an asynchronous completion happens before the task is preparing
+> > itself to wait and set its state to TASK_INTERRUPTIBLE, the
+> > completion
+> > will not wake up the sqp thread.
+> > 
+> > Signed-off-by: Olivier Langlois <olivier@trillion01.com>
+> > ---
+> >  fs/io_uring.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/io_uring.c b/fs/io_uring.c
+> > index fc8637f591a6..02f789e07d4c 100644
+> > --- a/fs/io_uring.c
+> > +++ b/fs/io_uring.c
+> > @@ -6902,7 +6902,7 @@ static int io_sq_thread(void *data)
+> >                 }
+> >  
+> >                 prepare_to_wait(&sqd->wait, &wait,
+> > TASK_INTERRUPTIBLE);
+> > -               if (!io_sqd_events_pending(sqd)) {
+> > +               if (!io_sqd_events_pending(sqd) && !current-
+> > >task_works) {
 > 
-> On Thu, Jun 10, 2021 at 01:55:23PM -0600, Shuah Khan wrote:
->> On 6/10/21 1:26 PM, Steven Rostedt wrote:
->>> On Thu, 10 Jun 2021 21:39:49 +0300 Laurent Pinchart wrote:
->>>
->>>> There will always be more informal discussions between on-site
->>>> participants. After all, this is one of the benefits of conferences, by
->>>> being all together we can easily organize ad-hoc discussions. This is
->>>> traditionally done by finding a not too noisy corner in the conference
->>>> center, would it be useful to have more break-out rooms with A/V
->>>> equipment than usual ?
->>>
->>> I've been giving this quite some thought too, and I've come to the
->>> understanding (and sure I can be wrong, but I don't think that I am),
->>> is that when doing a hybrid event, the remote people will always be
->>> "second class citizens" with respect to the communication that is going
->>> on. Saying that we can make it the same is not going to happen unless
->>> you start restricting what people can do that are present, and that
->>> will just destroy the conference IMO.
->>>
->>> That said, I think we should add more to make the communication better
->>> for those that are not present. Maybe an idea is to have break outs
->>> followed by the presentation and evening events that include remote
->>> attendees to discuss with those that are there about what they might
->>> have missed. Have incentives at these break outs (free stacks and
->>> beer?) to encourage the live attendees to attend and have a discussion
->>> with the remote attendees.
->>>
->>> The presentations would have remote access, where remote attendees can
->>> at the very least write in some chat their questions or comments. If
->>> video and connectivity is good enough, perhaps have a screen where they
->>> can show up and talk, but that may have logistical limitations.
->>>
->>
->> You are absolutely right that the remote people will have a hard time
->> participating and keeping up with in-person participants. I have a
->> couple of ideas on how we might be able to improve remote experience
->> without restricting in-person experience.
->>
->> - Have one or two moderators per session to watch chat and Q&A to enable
->>     remote participants to chime in and participate.
->> - Moderators can make sure remote participation doesn't go unnoticed and
->>     enable taking turns for remote vs. people participating in person.
->>
->> It will be change in the way we interact in all in-person sessions for
->> sure, however it might enhance the experience for remote attendees.
+> Agree that it should be here, but we also lack a good enough
+> task_work_run() around, and that may send the task burn CPU
+> for a while in some cases. Let's do
 > 
-> A moderator to watch online chat and relay questions is I believe very
-> good for presentations, it's hard for a presenter to keep an eye on a
-> screen while having to manage the interaction with the audience in the
-> room (there's the usual joke of the difference between an introvert and
-> an extrovert open-source developer is that the extrovert looks at *your*
-> shoes when talking to you, but in many presentations the speaker
-> nowadays does a fairly good job as watching the audience, at least from
-> time to time :-)).
+> if (!io_sqd_events_pending(sqd) && !io_run_task_work())
+>    ...
+
+I can do that if you want but considering that the function is inline
+and the race condition is a relatively rare occurence, is the cost
+coming with inline expansion really worth it in this case?
 > 
-> For workshop or brainstorming types of sessions, the highest barrier to
-> participation for remote attendees is local attendees not speaking in
-> microphones. That's the number one rule that moderators would need to
-> enforce, I think all the rest depends on it. This may require a larger
-> number of microphones in the room than usual.
+> fwiw, no need to worry about TASK_INTERRUPTIBLE as
+> io_run_task_work() sets it to TASK_RUNNING.
+
+I wasn't worried about that as I believe that finish_wait() is taking
+care the state as well.
+
+What I wasn't sure about was if the patch was sufficient to totally
+eliminate the race condition.
+
+I had to educate myself about how schedule() works to appreciate its
+design and convince myself that the patch was good.
 > 
-
-Absolutely. Moderator has to make sure the following things happen for
-this to be effective:
-
-- Watch chat and Q&A, Raise hand from remote participants
-- Enforce some kind of taking turns to allow fairness in
-   participation
-- Have the speaker repeat questions asked in the room (we do that now
-   in some talks - both remote and in-person - chat and Q&A needs
-   reading out for recording)
-- Explore live Transcription features available in the virtual conf.
-   platform. You still need humans watching the transcription.
-- Have a running session notes combined with transcription.
-
-Any of these options aren't sustainable when large number of people
-are participating remotely or in-person. In general a small number of
-people participate either in person or remote in any case, based on
-my observation in remote and in-person settings.
-
-Maybe we can experiment with one or two workshops this time around
-and see how it works out. If we can figure an effective way, it would
-be beneficial for people that can't travel for one reason or the
-other.
-
-thanks,
--- Shuah
-
-
-
+> >                         needs_sched = true;
+> >                         list_for_each_entry(ctx, &sqd->ctx_list,
+> > sqd_list) {
+> >                                 io_ring_set_wakeup_flag(ctx);
+> > 
+> 
 
 
