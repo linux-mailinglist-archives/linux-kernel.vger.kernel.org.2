@@ -2,120 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5141E3B07F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075A43B081C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbhFVOy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 10:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50880 "EHLO
+        id S230304AbhFVPCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231857AbhFVOyW (ORCPT
+        with ESMTP id S232087AbhFVPB7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:54:22 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39E9C061574;
-        Tue, 22 Jun 2021 07:52:05 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8TrK4rByz9sRf;
-        Wed, 23 Jun 2021 00:52:01 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1624373522;
-        bh=SVtmLGZR9lhjmGlAVYs+m0Yd4tc3JZtrT8YuTPZ2oug=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ic+xiL7PNffQ36MhT6Lr8b/XgkLIRK9sXhatVB2LOw6PL7QxwFiVCXXRDLsbtQWdj
-         q7iu0HUGdMtXDmTHCRgtPC5kv357aqsqhsKmgYXk9u7JGci4w8hX1x0Bef6GB67R2p
-         fwkeUi8TMPN0+nj+vbsaQetK7FnaV7oADCrES01nowucP9yMgHjazZw5O4x52doq+m
-         bsgMRSYkyuTWpAJPDnGZFAgECe2K+aILH4UW+rwKOIqLLBS/TQxxRXDqwXbf8Y97MG
-         OqxvPil8LEWM6m+FguQdNnsQIO041ZfkHDPbZUXcT5PSgPVl9/Dhyifwno5nyLzq3e
-         IMVhPgGBU/nHQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        KVM <kvm@vger.kernel.org>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Ashish Kalra <ashish.kalra@amd.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: linux-next: manual merge of the kvm tree with the powerpc tree
-In-Reply-To: <9c2dbe56-4c64-0032-0acb-2e2925c7a2ab@redhat.com>
-References: <20210622152544.74e01567@canb.auug.org.au>
- <9c2dbe56-4c64-0032-0acb-2e2925c7a2ab@redhat.com>
-Date:   Wed, 23 Jun 2021 00:51:58 +1000
-Message-ID: <871r8u2bqp.fsf@mpe.ellerman.id.au>
+        Tue, 22 Jun 2021 11:01:59 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2103BC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 07:59:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=aR8G01IJ+UceVFDgRJW6BYPthEX2HmXBea
+        Q0eDZtDvc=; b=rN9/qI/+KZUTwcPnMglDwR/DmH325OzAcRRpUGkBv94ONCmds6
+        6g2xr9YsPWvYuurbncwEpXiKTKACK+TnKPMBNCA0Ok2hGSDkI6FR0a9222czloFq
+        l3LGBjEqQPdQ9N2gdyCsZ5AKE+woSn8YaXAJ6arwFC3vIiszvc3M+frqY=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCHjoql+tFgLsMbAQ--.20215S2;
+        Tue, 22 Jun 2021 22:58:45 +0800 (CST)
+Date:   Tue, 22 Jun 2021 22:53:04 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Alexandre Ghiti <alex@ghiti.fr>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 1/2] riscv: Introduce set_kernel_memory helper
+Message-ID: <20210622225304.53d94c0b@xhacker>
+In-Reply-To: <20210622082134.2404162-2-alex@ghiti.fr>
+References: <20210622082134.2404162-1-alex@ghiti.fr>
+        <20210622082134.2404162-2-alex@ghiti.fr>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygCHjoql+tFgLsMbAQ--.20215S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw17uFy3ZrWDXry3Zw4DXFb_yoW5XFy5pF
+        48Jw4DCrWagF9rGFWI9ryq9w1xJwn5Gw1jyrW3A34DuF47XrWUCw15tw1DJr1kGFyqgF4q
+        kay5C34Duanxt3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkqb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8489tUUUUU==
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo Bonzini <pbonzini@redhat.com> writes:
-> On 22/06/21 07:25, Stephen Rothwell wrote:
->> Hi all,
->> 
->> Today's linux-next merge of the kvm tree got a conflict in:
->> 
->>    include/uapi/linux/kvm.h
->> 
->> between commit:
->> 
->>    9bb4a6f38fd4 ("KVM: PPC: Book3S HV: Add KVM_CAP_PPC_RPT_INVALIDATE capability")
->> 
->> from the powerpc tree and commits:
->> 
->>    644f706719f0 ("KVM: x86: hyper-v: Introduce KVM_CAP_HYPERV_ENFORCE_CPUID")
->>    6dba94035203 ("KVM: x86: Introduce KVM_GET_SREGS2 / KVM_SET_SREGS2")
->>    0dbb11230437 ("KVM: X86: Introduce KVM_HC_MAP_GPA_RANGE hypercall")
->> 
->> from the kvm tree.
->> 
->> I fixed it up (see below) and can carry the fix as necessary. This
->> is now fixed as far as linux-next is concerned, but any non trivial
->> conflicts should be mentioned to your upstream maintainer when your tree
->> is submitted for merging.  You may also want to consider cooperating
->> with the maintainer of the conflicting tree to minimise any particularly
->> complex conflicts.
->> 
->
-> What are the dependencies of these KVM patches on patches from the bare 
-> metal trees,
+Hi Alex,
 
-I don't think there's actually a semantic dependency on my tree, but
-there's multiple textual conflicts with my tree. That series has to go
-via both trees, or there will be conflicts.
+On Tue, 22 Jun 2021 10:21:33 +0200
+Alexandre Ghiti <alex@ghiti.fr> wrote:
 
-> ... and can you guys *please* start using topic branches?
->
-> I've been asking you for literally years, but this is the first time I 
-> remember that Linus will have to resolve conflicts in uAPI changes and 
-> it is *not* acceptable.
+> This helper should be used for setting permissions to the kernel
+> mapping as it takes pointers as arguments and then avoids explicit cast
+> to unsigned long needed for the set_memory_* API.
+> 
+> Suggested-by: Christoph Hellwig <hch@infradead.org>
+> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> Reviewed-by: Anup Patel <anup@brainfault.org>
+> ---
+>  arch/riscv/include/asm/set_memory.h |  8 ++++++++
+>  arch/riscv/mm/pageattr.c            | 11 +++++++++++
+>  2 files changed, 19 insertions(+)
+> 
+> diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
+> index 9d4d455726d4..4f9fc54d1806 100644
+> --- a/arch/riscv/include/asm/set_memory.h
+> +++ b/arch/riscv/include/asm/set_memory.h
+> @@ -16,6 +16,8 @@ int set_memory_rw(unsigned long addr, int numpages);
+>  int set_memory_x(unsigned long addr, int numpages);
+>  int set_memory_nx(unsigned long addr, int numpages);
+>  int set_memory_rw_nx(unsigned long addr, int numpages);
+> +int set_kernel_memory(char *start, char *end,
+> +		      int (*set_memory)(unsigned long start, int num_pages));
+>  void protect_kernel_text_data(void);
+>  #else
+>  static inline int set_memory_ro(unsigned long addr, int numpages) { return 0; }
+> @@ -24,6 +26,12 @@ static inline int set_memory_x(unsigned long addr, int numpages) { return 0; }
+>  static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
+>  static inline void protect_kernel_text_data(void) {}
+>  static inline int set_memory_rw_nx(unsigned long addr, int numpages) { return 0; }
+> +static inline int set_kernel_memory(char *start, char *end,
+> +				    int (*set_memory)(unsigned long start,
+> +						      int num_pages))
+> +{
+> +	return 0;
+> +}
+>  #endif
+>  
+>  #if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
+> diff --git a/arch/riscv/mm/pageattr.c b/arch/riscv/mm/pageattr.c
+> index 5e49e4b4a4cc..11d0b0f4c65d 100644
+> --- a/arch/riscv/mm/pageattr.c
+> +++ b/arch/riscv/mm/pageattr.c
+> @@ -156,6 +156,17 @@ int set_memory_nx(unsigned long addr, int numpages)
+>  	return __set_memory(addr, numpages, __pgprot(0), __pgprot(_PAGE_EXEC));
+>  }
+>  
+> +__always_inline int set_kernel_memory(char *startp, char *endp,
 
-The patches are in a topic branch, which I will ask you to pull before
-the merge window, in order to resolve any conflicts.
+If __always_inline, can it be moved to set_memory.h?
 
-> Please drop the patches at 
-> https://www.spinics.net/lists/kvm-ppc/msg18666.html from the powerpc 
-> tree, and merge them through either the kvm-powerpc or kvm trees.
+Thanks
 
-The kvm-ppc tree is not taking patches at the moment.
+> +				      int (*set_memory)(unsigned long start,
+> +							int num_pages))
+> +{
+> +	unsigned long start = (unsigned long)startp;
+> +	unsigned long end = (unsigned long)endp;
+> +	int num_pages = PAGE_ALIGN(end - start) >> PAGE_SHIFT;
+> +
+> +	return set_memory(start, num_pages);
+> +}
+> +
+>  int set_direct_map_invalid_noflush(struct page *page)
+>  {
+>  	int ret;
 
-But it doesn't matter anyway, this series needs to be merged into my
-tree and the KVM tree regardless.
 
-The topic branch is here:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git/log/?h=topic/ppc-kvm
-
-
-The commit Stephen mentioned has been rebased since to squash in a fix.
-But what is in the topic branch is now final, I won't rebase what's
-there.
-
-cheers
