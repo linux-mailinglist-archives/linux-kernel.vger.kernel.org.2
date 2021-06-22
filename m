@@ -2,96 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 409EA3AFF69
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E409B3AFF64
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbhFVIlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 04:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbhFVIlS (ORCPT
+        id S230380AbhFVIlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 04:41:11 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:28679 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229807AbhFVIlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 04:41:18 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF78C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 01:39:02 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id f16-20020a05600c1550b02901b00c1be4abso1174855wmg.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 01:39:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jV7xM4UeXPGra9fEGKKebmdmh3N+ItfUcbO9UyyrYEE=;
-        b=n+alZiEEbuuw+BpP53M/jkx7mnTHQsRogCW15Dr73vB9J+XWj809iUxJnysenIYWS6
-         m+N4hlSc8jxml4gOpiyyelsIEVsMaQkvxq7+hntlWhPleGghWD3G746U/XmPMWzwr1uW
-         shtGoJlSXcD+gvss/Q2BGBBy6DFas7oMPCiDoo/iRIl3YM27JlkSloFjL5HhG/R6MFJR
-         8COHBDBINw4EhON+2QFMHfrLETOepJvJN5DK1pevyHF0kQthfuCzku/T6AP7+oDpgjNg
-         pOkFXUTZXxJWsoo8qhqjszzb2+BtNYQ0MI0/OShC4NIOim5jTRragjRa5kk5sS6g7C3x
-         LcEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jV7xM4UeXPGra9fEGKKebmdmh3N+ItfUcbO9UyyrYEE=;
-        b=FRxmRvi9+h2EVnZ0W5doWkozHGsC3iBjg5lrnqdZOE1D/2ItkBn+e7XpPq/Fzt1VkE
-         Fo9GxABoRCbxDcZmhTWyh7SYpyTI4gSeyQ5PsBdYy7kzZxqbsiwR+tW1X9Tkzi7/tew4
-         +HTlAgK+CHrLqF/gM+MBYZHR13PisECPWzOtmWi/1jIW2cVcYtfFW43Kz0ke9W46Q8vO
-         BFjKrXeOmfYIzwTOh21kytVcz2yM63FuMu2th8YVQ8qZniPJOLreaLJFDXu55oTSdp37
-         0UwOAgCYOu2VQBNVYyydk4H9CfuiAF1eenVpWPCCq92LSEwxxPpSGvFxLRw4t8Govl0K
-         WMRg==
-X-Gm-Message-State: AOAM531BsgFDmx5ZpJZuWzSyVvbM76gWoQSIJ5ZfhKXv2+NJBFqubI6o
-        cTK+M6LfWW32oIV0WGnvdbsG1uDFZQarltadKISBFg==
-X-Google-Smtp-Source: ABdhPJzKtexF0P+VJ7c9wHUpGUZczJq7Htcy/RvAharmfy7LBnPyBlae8uKyHH+QZ/Rl4F4Vsa2QHnBs2UrQ3u1M9AU=
-X-Received: by 2002:a7b:ce82:: with SMTP id q2mr3140770wmj.60.1624351140844;
- Tue, 22 Jun 2021 01:39:00 -0700 (PDT)
+        Tue, 22 Jun 2021 04:41:09 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id uk-mta-1-aRG45FtSMtWCXO1T3F07Vw-1;
+ Tue, 22 Jun 2021 09:38:51 +0100
+X-MC-Unique: aRG45FtSMtWCXO1T3F07Vw-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 22 Jun
+ 2021 09:38:50 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Tue, 22 Jun 2021 09:38:50 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Nick Kossifidis' <mick@ics.forth.gr>,
+        Matteo Croce <mcroce@linux.microsoft.com>
+CC:     "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        "Emil Renner Berthing" <kernel@esmil.dk>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Bin Meng <bmeng.cn@gmail.com>, Guo Ren <guoren@kernel.org>
+Subject: RE: [PATCH v3 3/3] riscv: optimized memset
+Thread-Topic: [PATCH v3 3/3] riscv: optimized memset
+Thread-Index: AQHXZwMJWYnk4yvoiESUZuZXhHkP6qsfsYlg
+Date:   Tue, 22 Jun 2021 08:38:50 +0000
+Message-ID: <d0f11655f21243ad983bd24381cdc245@AcuMS.aculab.com>
+References: <20210617152754.17960-1-mcroce@linux.microsoft.com>
+ <20210617152754.17960-4-mcroce@linux.microsoft.com>
+ <17cd289430f08f2b75b7f04242c646f6@mailhost.ics.forth.gr>
+In-Reply-To: <17cd289430f08f2b75b7f04242c646f6@mailhost.ics.forth.gr>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20210616103649.2662395-1-jens.wiklander@linaro.org>
- <20210616103649.2662395-3-jens.wiklander@linaro.org> <20210616160514.GA3472903@robh.at.kernel.org>
-In-Reply-To: <20210616160514.GA3472903@robh.at.kernel.org>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Tue, 22 Jun 2021 10:38:50 +0200
-Message-ID: <CAHUa44Gg6+1JWyfVg1Em=kgCVpHav5jXc48a7K8D+t7L8S1pDQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] dt-bindings: arm: Convert optee binding to json-schema
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jerome Forissier <jerome@forissier.org>,
-        Etienne Carriere <etienne.carriere@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>, Nishanth Menon <nm@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 6:05 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, Jun 16, 2021 at 12:36:44PM +0200, Jens Wiklander wrote:
-> > Converts the optee binding to use DT schema format.
-> >
-> > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > ---
-> >  .../bindings/arm/firmware/linaro,optee-tz.txt | 31 ------------
-> >  .../arm/firmware/linaro,optee-tz.yaml         | 49 +++++++++++++++++++
-> >  2 files changed, 49 insertions(+), 31 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt
-> >  create mode 100644 Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
->
-> Other than the indentation,
->
-> Reviewed-by: Rob Herring <robh@kernel.org>
+RnJvbTogTmljayBLb3NzaWZpZGlzDQo+IFNlbnQ6IDIyIEp1bmUgMjAyMSAwMjowOA0KPiANCj4g
+zqPPhM65z4IgMjAyMS0wNi0xNyAxODoyNywgTWF0dGVvIENyb2NlIM6tzrPPgc6xz4jOtToNCj4g
+PiArDQo+ID4gK3ZvaWQgKl9fbWVtc2V0KHZvaWQgKnMsIGludCBjLCBzaXplX3QgY291bnQpDQo+
+ID4gK3sNCj4gPiArCXVuaW9uIHR5cGVzIGRlc3QgPSB7IC51OCA9IHMgfTsNCj4gPiArDQo+ID4g
+KwlpZiAoY291bnQgPj0gTUlOX1RIUkVTSE9MRCkgew0KPiA+ICsJCWNvbnN0IGludCBieXRlc19s
+b25nID0gQklUU19QRVJfTE9ORyAvIDg7DQo+IA0KPiBZb3UgY291bGQgbWFrZSAnY29uc3QgaW50
+IGJ5dGVzX2xvbmcgPSBCSVRTX1BFUl9MT05HIC8gODsnDQoNCldoYXQgaXMgd3Jvbmcgd2l0aCBz
+aXplb2YgKGxvbmcpID8NCi4uLg0KPiA+ICsJCXVuc2lnbmVkIGxvbmcgY3UgPSAodW5zaWduZWQg
+bG9uZyljOw0KPiA+ICsNCj4gPiArCQkvKiBDb21wb3NlIGFuIHVsb25nIHdpdGggJ2MnIHJlcGVh
+dGVkIDQvOCB0aW1lcyAqLw0KPiA+ICsJCWN1IHw9IGN1IDw8IDg7DQo+ID4gKwkJY3UgfD0gY3Ug
+PDwgMTY7DQo+ID4gKyNpZiBCSVRTX1BFUl9MT05HID09IDY0DQo+ID4gKwkJY3UgfD0gY3UgPDwg
+MzI7DQo+ID4gKyNlbmRpZg0KPiA+ICsNCj4gDQo+IFlvdSBkb24ndCBoYXZlIHRvIGNyZWF0ZSBj
+dSBoZXJlLCB5b3UnbGwgZmlsbCBkZXN0IGJ1ZmZlciB3aXRoICdjJw0KPiBhbnl3YXkgc28gYWZ0
+ZXIgZmlsbGluZyB1cCBlbm91Z2ggJ2MncyB0byBiZSBhYmxlIHRvIGdyYWIgYW4gYWxpZ25lZA0K
+PiB3b3JkIGZ1bGwgb2YgdGhlbSBmcm9tIGRlc3QsIHlvdSBjYW4ganVzdCBncmFiIHRoYXQgd29y
+ZCBhbmQga2VlcA0KPiBmaWxsaW5nIHVwIGRlc3Qgd2l0aCBpdC4NCg0KVGhhdCB3aWxsIGJlIGEg
+bG90IHNsb3dlciAtIGVzcGVjaWFsbHkgaWYgcnVuIG9uIHNvbWV0aGluZyBsaWtlIHg4Ni4NCkEg
+d3JpdGUtcmVhZCBvZiB0aGUgc2FtZSBzaXplIGlzIG9wdGltaXNlZCBieSB0aGUgc3RvcmUtbG9h
+ZCBmb3J3YXJkZXIuDQpCdXQgdGhlIGJ5dGUgd3JpdGUsIHdvcmQgcmVhZCB3aWxsIGhhdmUgdG8g
+Z28gdmlhIHRoZSBjYWNoZS4NCg0KWW91IGNhbiBqdXN0IHdyaXRlOg0KCWN1ID0gKHVuc2lnbmVk
+IGxvbmcpYyAqIDB4MDEwMTAxMDEwMTAxMDEwMXVsbDsNCmFuZCBsZXQgdGhlIGNvbXBpbGVyIHNv
+cnQgb3V0IHRoZSBiZXN0IHdheSB0byBnZW5lcmF0ZSB0aGUgY29uc3RhbnQuDQoNCj4gDQo+ID4g
+KyNpZm5kZWYgQ09ORklHX0hBVkVfRUZGSUNJRU5UX1VOQUxJR05FRF9BQ0NFU1MNCj4gPiArCQkv
+KiBGaWxsIHRoZSBidWZmZXIgb25lIGJ5dGUgYXQgdGltZSB1bnRpbCB0aGUgZGVzdGluYXRpb24N
+Cj4gPiArCQkgKiBpcyBhbGlnbmVkIG9uIGEgMzIvNjQgYml0IGJvdW5kYXJ5Lg0KPiA+ICsJCSAq
+Lw0KPiA+ICsJCWZvciAoOyBjb3VudCAmJiBkZXN0LnVwdHIgJSBieXRlc19sb25nOyBjb3VudC0t
+KQ0KPiANCj4gWW91IGNvdWxkIHJldXNlICYgbWFzayBoZXJlIGluc3RlYWQgb2YgJSBieXRlc19s
+b25nLg0KPiANCj4gPiArCQkJKmRlc3QudTgrKyA9IGM7DQo+ID4gKyNlbmRpZg0KPiANCj4gSSBu
+b3RpY2VkIHlvdSBhbHNvIHVzZWQgQ09ORklHX0hBVkVfRUZGSUNJRU5UX1VOQUxJR05FRF9BQ0NF
+U1Mgb24geW91cg0KPiBtZW1jcHkgcGF0Y2gsIGlzIGl0IHdvcnRoIGl0IGhlcmUgPyBUbyBiZWdp
+biB3aXRoIHJpc2N2IGRvZXNuJ3Qgc2V0IGl0DQo+IGFuZCBldmVuIGlmIGl0IGRpZCB3ZSBhcmUg
+dGFsa2luZyBhYm91dCBhIGxvb3AgdGhhdCB3aWxsIHJ1biBqdXN0IGEgZmV3DQo+IHRpbWVzIHRv
+IHJlYWNoIHRoZSBhbGlnbm1lbnQgYm91bmRhcnkgKHdvcnN0IGNhc2Ugc2NlbmFyaW8gaXQnbGwg
+cnVuIDcNCj4gdGltZXMpLCBJIGRvbid0IHRoaW5rIHdlIGdhaW4gbXVjaCBoZXJlLCBldmVuIGZv
+ciBhcmNocyB0aGF0IGhhdmUNCj4gZWZmaWNpZW50IHVuYWxpZ25lZCBhY2Nlc3MuDQoNCldpdGgg
+Q09ORklHX0hBVkVfRUZGSUNJRU5UX1VOQUxJR05FRF9BQ0NFU1MgaXQgcHJvYmFibHkgaXNuJ3Qg
+d29ydGgNCmV2ZW4gY2hlY2tpbmcgdGhlIGFsaWdubWVudC4NCldoaWxlIGFsaWduaW5nIHRoZSBj
+b3B5IHdpbGwgYmUgcXVpY2tlciBmb3IgYW4gdW5hbGlnbmVkIGJ1ZmZlciB0aGV5DQphbG1vc3Qg
+Y2VydGFpbmx5IGRvbid0IGhhcHBlbiBvZnRlbiBlbm91Z2ggdG8gd29ycnkgYWJvdXQuDQpJbiBh
+bnkgY2FzZSB5b3UnZCB3YW50IHRvIGRvIGEgbWlzYWxpZ25lZCB3b3JkIHdyaXRlIHRvIHRoZSBz
+dGFydA0Kb2YgdGhlIGJ1ZmZlciAtIG5vdCBzZXBhcmF0ZSBieXRlIHdyaXRlcy4NClByb3ZpZGVk
+IHRoZSBidWZmZXIgaXMgbG9uZyBlbm91Z2ggeW91IGNhbiBhbHNvIGRvIGEgbWlzYWxpZ25lZCB3
+cml0ZQ0KdG8gdGhlIGVuZCBvZiB0aGUgYnVmZmVyIGJlZm9yZSBmaWxsaW5nIGZyb20gdGhlIHN0
+YXJ0Lg0KDQpJIHN1c3BlY3QgeW91IG1heSBuZWVkIGVpdGhlciBiYXJyaWVyKCkgb3IgdXNlIGEg
+cHRyIHRvIHBhY2tlZA0KdG8gYXZvaWQgdGhlIHBlcnZlcnRlZCAndW5kZWZpbmVkIGJlaGF2aW91
+cicgZnViYXIuJw0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBC
+cmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdp
+c3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-Thanks Rob. Nishanth reminded me of
-https://lore.kernel.org/linux-arm-kernel/20210503191327.GA2217487@robh.at.kernel.org/,
-aka be78329717e4 ("dt-bindings: arm: firmware: Convert linaro,optee-tz
-to json schema") in linux-next. I'll wait for that one to land
-upstream instead.
-
-Cheers,
-Jens
