@@ -2,135 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE58F3B09FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377033B0A20
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhFVQMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 12:12:52 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56250 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhFVQMs (ORCPT
+        id S230094AbhFVQUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 12:20:01 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59249 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229704AbhFVQUA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:12:48 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BB9A12196C;
-        Tue, 22 Jun 2021 16:10:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624378231; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OBsiPuL7h3qkYc/fzzIiZgnMwkZnm2LoFEaxuYiK7oU=;
-        b=0qpUDOz/k6ZY3yfuY681vkq6Y0DDYra8sUKngniDbHSZA9WWr9yeh44EWcnKBHyuIBHw6/
-        NtJe7XPyzDkthNliUvKxwF62SZ0S32+VeHg+aRcW3STKsNJQOhpuFqlUxAF8MxtPSLqZEh
-        KHgVsPxZoVqmWgU/MEZXlJGEP1jBhDw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624378231;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OBsiPuL7h3qkYc/fzzIiZgnMwkZnm2LoFEaxuYiK7oU=;
-        b=XtIutccXexZz64VEqwafXQ1xCTbg+rpiSuXnTbnMgzb57ucrRTsLr9bpveTi/D68k2aWHK
-        7xz2JtekQXzhPTBg==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 7861111A97;
-        Tue, 22 Jun 2021 16:10:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624378231; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OBsiPuL7h3qkYc/fzzIiZgnMwkZnm2LoFEaxuYiK7oU=;
-        b=0qpUDOz/k6ZY3yfuY681vkq6Y0DDYra8sUKngniDbHSZA9WWr9yeh44EWcnKBHyuIBHw6/
-        NtJe7XPyzDkthNliUvKxwF62SZ0S32+VeHg+aRcW3STKsNJQOhpuFqlUxAF8MxtPSLqZEh
-        KHgVsPxZoVqmWgU/MEZXlJGEP1jBhDw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624378231;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OBsiPuL7h3qkYc/fzzIiZgnMwkZnm2LoFEaxuYiK7oU=;
-        b=XtIutccXexZz64VEqwafXQ1xCTbg+rpiSuXnTbnMgzb57ucrRTsLr9bpveTi/D68k2aWHK
-        7xz2JtekQXzhPTBg==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id dotLC3QL0mDIHgAALh3uQQ
-        (envelope-from <colyli@suse.de>); Tue, 22 Jun 2021 16:10:28 +0000
-Subject: Re: [PATCH] md: use BLK_STS_OK instead of hardcode
-To:     Xianting Tian <xianting_tian@126.com>
-Cc:     linux-bcache@vger.kernel.org, agk@redhat.com, snitzer@redhat.com,
-        kent.overstreet@gmail.com, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org,
-        Xianting Tian <xianting.tian@linux.alibaba.com>,
-        song@kernel.org, dm-devel@redhat.com
-References: <1624377241-8642-1-git-send-email-xianting_tian@126.com>
-From:   Coly Li <colyli@suse.de>
-Message-ID: <930e7a23-a22e-409f-e058-0b1576c5d9d0@suse.de>
-Date:   Wed, 23 Jun 2021 00:10:23 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Tue, 22 Jun 2021 12:20:00 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lvj5q-0006Bm-RA; Tue, 22 Jun 2021 16:17:42 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] block/mq-deadline: remove redundant assignment of variable ret
+Date:   Tue, 22 Jun 2021 17:17:42 +0100
+Message-Id: <20210622161742.25194-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <1624377241-8642-1-git-send-email-xianting_tian@126.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/21 11:54 PM, Xianting Tian wrote:
-> When setting io status, sometimes it uses BLK_STS_*, sometimes,
-> it uses hardcode 0.
-> Use the macro to replace hardcode in multiple places.
->
-> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
-> ---
->  drivers/md/bcache/request.c  | 2 +-
->  drivers/md/dm-clone-target.c | 2 +-
->  drivers/md/dm-integrity.c    | 2 +-
->  drivers/md/dm-mpath.c        | 2 +-
->  drivers/md/dm-raid1.c        | 2 +-
->  drivers/md/dm.c              | 2 +-
->  drivers/md/raid1.c           | 4 ++--
->  drivers/md/raid10.c          | 2 +-
->  8 files changed, 9 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/md/bcache/request.c b/drivers/md/bcache/request.c
-> index 6d1de88..73ba5a6 100644
-> --- a/drivers/md/bcache/request.c
-> +++ b/drivers/md/bcache/request.c
-> @@ -790,7 +790,7 @@ static void cached_dev_read_error(struct closure *cl)
->  		/* Retry from the backing device: */
->  		trace_bcache_read_retry(s->orig_bio);
->  
-> -		s->iop.status = 0;
-> +		s->iop.status = BLK_STS_OK;
->  		do_bio_hook(s, s->orig_bio, backing_request_endio);
->  
->  		/* XXX: invalidate cache */
+From: Colin Ian King <colin.king@canonical.com>
 
-Hi Xianting,
+Variable ret is being assigned a value at the end of the function
+and the value is never read. The assignment is redundant and can
+be removed.
 
-NACK for bcache part.
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ block/mq-deadline-main.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-The change is incomplete, if you want to replace 0 by BLK_STS_OK, you
-should check all locations
-where s->iop.status is checked and replace with BLK_STS_OK when necessary.
+diff --git a/block/mq-deadline-main.c b/block/mq-deadline-main.c
+index 4815e536091f..e3091d922ba2 100644
+--- a/block/mq-deadline-main.c
++++ b/block/mq-deadline-main.c
+@@ -639,7 +639,6 @@ static int dd_init_sched(struct request_queue *q, struct elevator_type *e)
+ 	if (ret)
+ 		goto free_stats;
+ 
+-	ret = 0;
+ 	q->elevator = eq;
+ 	return 0;
+ 
+-- 
+2.31.1
 
-One but not the only one example is,
-871         if (s->iop.status)
-872                 continue_at_nobarrier(cl, cached_dev_read_error,
-bcache_wq);
-Maybe you should change to
-        if (s->iop.status != BLK_STS_OK)
-                    continue_at_nobarrier(cl, cached_dev_read_error,
-bcache_wq);
-
-
-Just FYI.
-
-Coly Li
