@@ -2,205 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75C43B10D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3A43B10DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbhFWAAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 20:00:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33716 "EHLO
+        id S229999AbhFWAAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 20:00:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbhFVX7e (ORCPT
+        with ESMTP id S230006AbhFWAAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 19:59:34 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093DEC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 16:57:14 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id v22-20020a0568301416b029044e2d8e855eso197734otp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 16:57:14 -0700 (PDT)
+        Tue, 22 Jun 2021 20:00:22 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B37C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 16:58:05 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id w1so1290631oie.13
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 16:58:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=D7+Up0CAAEZefc0Jamt+N5dptYxDIjwoUqn3slEq9v8=;
-        b=Uy8cIxxtYAZbCKj3TUvARfA/lfKk6q1FwvIaBsuekhRHoCalqRzIIN6LHT5Nc5z0wh
-         JMsCO4WSbgq5Xdc0HmW+Zi/GoSdjBPho9KVkVNdsmgE5Nwm1l6QnXtHkv3fCJ7tE7TeO
-         ttFafoyBn2N/F0Q42Nd1ZT5/kcE5iNDJTwbog=
+        bh=RmipAmOn4dFo13X7TIOaez3PL8Zy1f7IqUA+zl075H8=;
+        b=hCXPbwDO3S4aC9We9uHHPlDq1mx31D5964KHXiMB1MpGg2RjxqCfmDG0aFKSxscdnr
+         8tQpPDWfSP9NhIpjXEnv26T3Gn91OtGCV9lYmv5jSPHibG3fFLuJpYhJMiAX/Z/kLIOL
+         NoO3cV4P4pp4g69tcr8+d9Zpi2e3n9uUncFZo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=D7+Up0CAAEZefc0Jamt+N5dptYxDIjwoUqn3slEq9v8=;
-        b=eolefE4ouSxgJrmV/fFMYJXM+gXonTdPUTrI7mnQmXZ+5qc+xZVNfo3GXr2L4rjsuH
-         TWpqz+UqbyFtOukChnKrHzRBfauN8MhMjDKkz6qPdDB4wwc19IVIRVZlStNBcNJxoBWt
-         BS/Vp0mndv68T32GzpSLJZVaIbK66zKP10zaXMKAHGwsramdUt+bKOGBzUZ7d0agFups
-         jRBeXIGrKvamol3AXumSXilP+RPyO1fxFKgyxXZrNxCvgScx8Ix4UFijSQ5c4PA1Yy/Q
-         r0n5ojyTMQdZdL7xLn4si3DEo7/mfh9uMtA/jGi/WL/YuPNhbP/jn6cnfWJ9BR6vcbCy
-         ctjA==
-X-Gm-Message-State: AOAM531U9YgW2JC5PIgVGU2pQhu95QV4d8mcsbbuAgQ99fZYq3fG8NAn
-        6UFU40NHvtRaN2V15PmTUl6pPw==
-X-Google-Smtp-Source: ABdhPJxo0abcmkMh0h846zDctUjCWzZmT87/FjmvbdhTt7cXD01Nv+hfcB0Y5TTvGRv9BDiZnkMR9A==
-X-Received: by 2002:a9d:585:: with SMTP id 5mr5446428otd.12.1624406233379;
-        Tue, 22 Jun 2021 16:57:13 -0700 (PDT)
+        bh=RmipAmOn4dFo13X7TIOaez3PL8Zy1f7IqUA+zl075H8=;
+        b=ChPoIAHExNbXTrwqddLwJuSDTHFhxXrLDWwiT/hsegFKtMEftPd4ur7Hhyf/WodlDc
+         fHcQCwpRJBVLgPINiT86oJMUdE5542TvbMwvpdxcE0yQBikmyeklXNm8erJA0kkF2sPA
+         pmOQT6VWOMn/SxuQCJtxgRL5XwKTh0oo5ZsjMAomd89sb6+tC4jSKgwNSIKg9AttFoYU
+         9h+zFPZFyMs6RtAvsaOmDmAG2WR9dKP/DcfSVBcZOjXMDxd57MNhl7e4G9YxTVZqtL62
+         /unq8DB5qISZKRkPvCPOBh+bQ/uD7SoO76nd5zkjhJMruJUn/C9Uc+8nCUfeJd0/EWDM
+         HkRA==
+X-Gm-Message-State: AOAM532H3vKSWbRIAm3sD0UEtyZBd4OusCw5NuAg5T/akLX/nd3A7Ikw
+        bfTmJKGpN7SL/9Pnfh99+FU0xQ==
+X-Google-Smtp-Source: ABdhPJycSGNgB5ca7a/uXeFM9eKo8FIDGqkLipas8fxfng3/5bBRc3QzEot4tZm1XU1qEFOQK3HKRA==
+X-Received: by 2002:aca:170a:: with SMTP id j10mr1048263oii.23.1624406284938;
+        Tue, 22 Jun 2021 16:58:04 -0700 (PDT)
 Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id r14sm4544855oie.43.2021.06.22.16.57.12
+        by smtp.gmail.com with ESMTPSA id 59sm188281oto.3.2021.06.22.16.58.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 16:57:13 -0700 (PDT)
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        David Hildenbrand <david@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>,
-        Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Tue, 22 Jun 2021 16:58:04 -0700 (PDT)
+Subject: Re: [PATCH 5.12 000/178] 5.12.13-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
         Shuah Khan <skhan@linuxfoundation.org>
-References: <YK+esqGjKaPb+b/Q@kroah.com>
- <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
- <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com>
- <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
- <20210610182318.jrxe3avfhkqq7xqn@nitro.local>
- <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
- <20210610152633.7e4a7304@oasis.local.home>
- <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
- <YMyjryXiAfKgS6BY@pendragon.ideasonboard.com>
- <ae51f636-8fb5-20b7-bbc5-37e22edb9a02@linuxfoundation.org>
- <YNJrZIMs7RvqRBSG@pendragon.ideasonboard.com>
- <3bfbe45c-2356-6db0-e1b8-11b7e37ae858@linuxfoundation.org>
+References: <20210621154921.212599475@linuxfoundation.org>
 From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <66fce207-2602-6452-9216-01ebde656bcd@linuxfoundation.org>
-Date:   Tue, 22 Jun 2021 17:57:11 -0600
+Message-ID: <e1e2114f-f5ef-4441-ce82-a0c2fa1a89df@linuxfoundation.org>
+Date:   Tue, 22 Jun 2021 17:58:03 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <3bfbe45c-2356-6db0-e1b8-11b7e37ae858@linuxfoundation.org>
+In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/21 5:33 PM, Shuah Khan wrote:
-> On 6/22/21 4:59 PM, Laurent Pinchart wrote:
->> Hi Shuah,
->>
->> On Tue, Jun 22, 2021 at 04:33:22PM -0600, Shuah Khan wrote:
->>> On 6/18/21 7:46 AM, Laurent Pinchart wrote:
->>>> On Thu, Jun 10, 2021 at 01:55:23PM -0600, Shuah Khan wrote:
->>>>> On 6/10/21 1:26 PM, Steven Rostedt wrote:
->>>>>> On Thu, 10 Jun 2021 21:39:49 +0300 Laurent Pinchart wrote:
->>>>>>
->>>>>>> There will always be more informal discussions between on-site
->>>>>>> participants. After all, this is one of the benefits of 
->>>>>>> conferences, by
->>>>>>> being all together we can easily organize ad-hoc discussions. 
->>>>>>> This is
->>>>>>> traditionally done by finding a not too noisy corner in the 
->>>>>>> conference
->>>>>>> center, would it be useful to have more break-out rooms with A/V
->>>>>>> equipment than usual ?
->>>>>>
->>>>>> I've been giving this quite some thought too, and I've come to the
->>>>>> understanding (and sure I can be wrong, but I don't think that I am),
->>>>>> is that when doing a hybrid event, the remote people will always be
->>>>>> "second class citizens" with respect to the communication that is 
->>>>>> going
->>>>>> on. Saying that we can make it the same is not going to happen unless
->>>>>> you start restricting what people can do that are present, and that
->>>>>> will just destroy the conference IMO.
->>>>>>
->>>>>> That said, I think we should add more to make the communication 
->>>>>> better
->>>>>> for those that are not present. Maybe an idea is to have break outs
->>>>>> followed by the presentation and evening events that include remote
->>>>>> attendees to discuss with those that are there about what they might
->>>>>> have missed. Have incentives at these break outs (free stacks and
->>>>>> beer?) to encourage the live attendees to attend and have a 
->>>>>> discussion
->>>>>> with the remote attendees.
->>>>>>
->>>>>> The presentations would have remote access, where remote attendees 
->>>>>> can
->>>>>> at the very least write in some chat their questions or comments. If
->>>>>> video and connectivity is good enough, perhaps have a screen where 
->>>>>> they
->>>>>> can show up and talk, but that may have logistical limitations.
->>>>>>
->>>>>
->>>>> You are absolutely right that the remote people will have a hard time
->>>>> participating and keeping up with in-person participants. I have a
->>>>> couple of ideas on how we might be able to improve remote experience
->>>>> without restricting in-person experience.
->>>>>
->>>>> - Have one or two moderators per session to watch chat and Q&A to 
->>>>> enable
->>>>>      remote participants to chime in and participate.
->>>>> - Moderators can make sure remote participation doesn't go 
->>>>> unnoticed and
->>>>>      enable taking turns for remote vs. people participating in 
->>>>> person.
->>>>>
->>>>> It will be change in the way we interact in all in-person sessions for
->>>>> sure, however it might enhance the experience for remote attendees.
->>>>
->>>> A moderator to watch online chat and relay questions is I believe very
->>>> good for presentations, it's hard for a presenter to keep an eye on a
->>>> screen while having to manage the interaction with the audience in the
->>>> room (there's the usual joke of the difference between an introvert and
->>>> an extrovert open-source developer is that the extrovert looks at 
->>>> *your*
->>>> shoes when talking to you, but in many presentations the speaker
->>>> nowadays does a fairly good job as watching the audience, at least from
->>>> time to time :-)).
->>>>
->>>> For workshop or brainstorming types of sessions, the highest barrier to
->>>> participation for remote attendees is local attendees not speaking in
->>>> microphones. That's the number one rule that moderators would need to
->>>> enforce, I think all the rest depends on it. This may require a larger
->>>> number of microphones in the room than usual.
->>>>
->>>
->>> Absolutely. Moderator has to make sure the following things happen for
->>> this to be effective:
->>>
->>> - Watch chat and Q&A, Raise hand from remote participants
->>> - Enforce some kind of taking turns to allow fairness in
->>>     participation
->>> - Have the speaker repeat questions asked in the room (we do that now
->>>     in some talks - both remote and in-person - chat and Q&A needs
->>>     reading out for recording)
->>> - Explore live Transcription features available in the virtual conf.
->>>     platform. You still need humans watching the transcription.
->>> - Have a running session notes combined with transcription.
->>>
->>> Any of these options aren't sustainable when large number of people
->>> are participating remotely or in-person. In general a small number of
->>> people participate either in person or remote in any case, based on
->>> my observation in remote and in-person settings.
->>>
->>> Maybe we can experiment with one or two workshops this time around
->>> and see how it works out. If we can figure an effective way, it would
->>> be beneficial for people that can't travel for one reason or the
->>> other.
->>
->> Can we nominate moderators ahead of time ? For workshop-style
->> discussions, they need to be a person who won't participate actively in
->> the discussions, as it's impossible to both contribute and moderate at
->> the same time.
->>
+On 6/21/21 10:13 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.13 release.
+> There are 178 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Correct. It will be impossible to participate and moderate in workshop
-> setting. We have to ask for volunteers and nominate moderators ahead of
-> time.
+> Responses should be made by Wed, 23 Jun 2021 15:48:46 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.13-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 > 
 
-Subsystems could seek volunteers from other subsystems perhaps ...
+Compiled and booted on my test system. No dmesg regressions.
+
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
 thanks,
 -- Shuah
