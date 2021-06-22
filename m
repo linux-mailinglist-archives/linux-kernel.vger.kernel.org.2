@@ -2,101 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1115C3B0F54
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F7A3B0F5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229794AbhFVVT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 17:19:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54846 "EHLO mail.kernel.org"
+        id S229913AbhFVVVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 17:21:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229612AbhFVVT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 17:19:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EA186108E;
-        Tue, 22 Jun 2021 21:17:40 +0000 (UTC)
+        id S229625AbhFVVVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 17:21:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69B046100B;
+        Tue, 22 Jun 2021 21:19:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624396660;
-        bh=4hqUaho/Ab0/b89LGZN2tYhoZu25lf6YRdYhZjsELBM=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=LjYDkXgEZA9X7z80M6zL0i+zZYfGkiNfZmr+qC4qsKsW0309YkVLC8WvOfRjo9u0j
-         JwVA5e1hckatuWjsSV2P1WNlx1HRdD5Eq9Roa86w5sUmlL8oxhPAKAlMUqfeUa4304
-         jb78aSUAo917vTEdemhQhUX8dMl4jbybkIsvZXYixfaJdKC63HI8Nsl5NxA2IrX+y/
-         +vdf3vWKObq8mZPhxc1XgjypzDjCDPBkYW457ZA4PujIKph60LUNOD4wDnqaBj1f2T
-         O/DdXGgXSKbIx1MHJ8kp4Gc+IjuMxhqGtwO7A/UqSnZ21AbAG109eePfNDPX8WYvI3
-         xOL/C4R3LDFTA==
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1624396744;
+        bh=wxUHik84ldYD/auBhIavJdnvC5fjR684L6Uva3QzIjU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k7PEAHiHrV+Lo/ZKTjWaEzSK6awbWey7qv/Staf0X2F5/euuw//slWdnxlHf/JE5v
+         Wu/cLwNTvXvDMuaT8Kc1YTjYq8LU7ckxBxluVsK2JxW2LXJwFoOO5zDEgwBzAq6r57
+         BdCNJWyzoV1m62LHV/eWJcekHxjkLyin2zXRJsNMNcOucgSLGnGV8XQcsrcVb2EBrO
+         f4C1StY3ThHmaqojoAooL3e3LAi8sFE8NJkqLOuxIlsMCjHy57v+K5NbLrYHJSryOm
+         buZmCmx5UWHNfiZaUfkdhGGkDrf1i3GGqPFFG/1+qgkA5YDU7UiZ9MyEegns08itWT
+         mO6hXiPoG62kA==
+Received: by pali.im (Postfix)
+        id EBC1E889; Tue, 22 Jun 2021 23:19:01 +0200 (CEST)
+Date:   Tue, 22 Jun 2021 23:19:01 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linus.walleij@linaro.org, linux-pci@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
+Message-ID: <20210622211901.ikulpy32d6qlr4yw@pali>
+References: <9fdbada4-4902-cec1-f283-0d12e1d4ac64@ti.com>
+ <20210531162242.jm73yzntzmilsvbg@pali>
+ <8207a53c-4de9-d0e5-295a-c165e7237e36@lucaceresoli.net>
+ <20210622110627.aqzxxtf2j3uxfeyl@pali>
+ <20210622115604.GA25503@lpieralisi>
+ <20210622121649.ouiaecdvwutgdyy5@pali>
+ <18a104a9-2cb8-7535-a5b2-f5f049adff47@lucaceresoli.net>
+ <4d4c0d4d-41b4-4756-5189-bffa15f88406@ti.com>
+ <20210622205220.ypu22tuxhpdn2jwz@pali>
+ <2873969e-ac56-a41f-0cc9-38e387542aa1@lucaceresoli.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAFBinCBpkci-BeqLSN+BNbrcAE9sLKM8Hs0BB09AM1GKmtU9_g@mail.gmail.com>
-References: <20210524103733.554878-1-martin.blumenstingl@googlemail.com> <CAFBinCDn_0TeyLG9b9uB+4-4PdeNXgja11wf2CGcQ99tUNjkyQ@mail.gmail.com> <1jr1heqhoy.fsf@starbuckisacylon.baylibre.com> <CAFBinCBpkci-BeqLSN+BNbrcAE9sLKM8Hs0BB09AM1GKmtU9_g@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] clk: meson: rounding for fast clocks on 32-bit SoCs
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>, mturquette@baylibre.com,
-        khilman@baylibre.com, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Tue, 22 Jun 2021 14:17:39 -0700
-Message-ID: <162439665901.1026800.14766697980134538910@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2873969e-ac56-a41f-0cc9-38e387542aa1@lucaceresoli.net>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Martin Blumenstingl (2021-06-22 14:04:55)
-> Hi Stephen,
->=20
-> On Mon, Jun 7, 2021 at 9:04 AM Jerome Brunet <jbrunet@baylibre.com> wrote:
-> >
-> >
-> > On Fri 04 Jun 2021 at 19:18, Martin Blumenstingl <martin.blumenstingl@g=
-ooglemail.com> wrote:
-> >
-> > > Hi Jerome, Hi Stephen,
-> > >
-> > > On Mon, May 24, 2021 at 12:37 PM Martin Blumenstingl
-> > > <martin.blumenstingl@googlemail.com> wrote:
-> > >>
-> > >> On the 32-bit Amlogic Meson8/8b/8m2 SoCs we run into a problem with =
-the
-> > >> fast HDMI PLL and it's OD (post-dividers). This clock tree can run at
-> > >> up to approx. 3GHz.
-> > >> This however causes a problem, because these rates require BIT(31) to
-> > >> be usable. Unfortunately this is not the case with clk_ops.round_rate
-> > >> on 32-bit systems. BIT(31) is reserved for the sign (+ or -).
-> > >>
-> > >> clk_ops.determine_rate does not suffer from this limitation. It uses
-> > >> an int to signal any errors and can then take all availble 32 bits f=
-or
-> > >> the clock rate.
-> > >>
-> > >> Changes since v1 from [0]:
-> > >> - reworked the first patch so the the existing
-> > >>   divider_{ro_}round_rate_parent implementations are using the new
-> > >>   divider_{ro_}determine_rate implementations to avoid code duplicat=
-ion
-> > >>   (thanks Jerome for the suggestion)
-> > >> - added a patch to switch the default clk_divider_{ro_}ops to use
-> > >>   .determine_rate instead of .round_rate as suggested by Jerome
-> > >>   (thanks)
-> > >> - dropped a patch for the Meson PLL ops as these are independent from
-> > >>   the divider patches and Jerome has applied that one directly (than=
-ks)
-> > >> - added Jerome's Reviewed-by to the meson clk-regmap patch (thanks!)
-> > >> - dropped the RFC prefix
-> > > please let me know what you think about this v2
-> > > I am asking because clk-divider is widely used, so I'd appreciate if
-> > > this gets some time in linux-next (so for example Kernel CI can test
-> > > this and report issues if there are any).
-> Do you have any comments on this series?
-> I am fine with it skipping 5.14 as it's a change which affects
-> multiple platforms.
-> So I would like to use the time until the trees are opening for
-> patches targeting 5.15 to iron out code-review comments.
->=20
-> > Looks good to me
-> > Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
-> Thanks Jerome - I'll add it to v3 once I send it (assuming nothing
-> major changes)
+On Tuesday 22 June 2021 23:08:07 Luca Ceresoli wrote:
+> On 22/06/21 22:52, Pali Rohár wrote:
+> > On Tuesday 22 June 2021 19:27:37 Kishon Vijay Abraham I wrote:
+> >> Hi Luca, Pali,
+> >>
+> >> On 22/06/21 7:01 pm, Luca Ceresoli wrote:
+> >>> Hi,
+> >>>
+> >>> On 22/06/21 14:16, Pali Rohár wrote:
+> >>>> On Tuesday 22 June 2021 12:56:04 Lorenzo Pieralisi wrote:
+> >>>>> [Adding Linus for GPIO discussion, thread:
+> >>>>> https://lore.kernel.org/linux-pci/20210531090540.2663171-1-luca@lucaceresoli.net]
+> >>>>>
+> >>>>> On Tue, Jun 22, 2021 at 01:06:27PM +0200, Pali Rohár wrote:
+> >>>>>> Hello!
+> >>>>>>
+> >>>>>> On Tuesday 22 June 2021 12:57:22 Luca Ceresoli wrote:
+> >>>>>>> Nothing happened after a few weeks... I understand that knowing the
+> >>>>>>> correct reset timings is relevant, but unfortunately I cannot help much
+> >>>>>>> in finding out the correct values.
+> >>>>>>>
+> >>>>>>> However I'm wondering what should happen to this patch. It *does* fix a
+> >>>>>>> real bug, but potentially with an incorrect or non-optimal usleep range.
+> >>>>>>> Do we really want to ignore a bugfix because we are not sure about how
+> >>>>>>> long this delay should be?
+> >>>>>>
+> >>>>>> As there is no better solution right now, I'm fine with your patch. But
+> >>>>>> patch needs to be approved by Lorenzo, so please wait for his final
+> >>>>>> answer.
+> >>>>>
+> >>>>> I am not a GPIO expert and I have a feeling this is platform specific
+> >>>>> beyond what the PCI specification can actually define architecturally.
+> >>>>
+> >>>> In my opinion timeout is not platform specific as I wrote in email:
+> >>>> https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
+> >>>>
+> >>>> My experiments already proved that some PCIe cards needs to be in reset
+> >>>> state for some minimal time otherwise they cannot be enumerated. And it
+> >>>> does not matter to which platform you connect those (endpoint) cards.
+> >>>>
+> >>>> I do not think that timeout itself is platform specific. GPIO controls
+> >>>> PERST# pin and therefore specified sleep value directly drives how long
+> >>>> is card on the other end of PCIe slot in Warm Reset state. PCIe CEM spec
+> >>>> directly says that PERST# signal controls PCIe Warm Reset.
+> >>>>
+> >>>> What is here platform specific thing is that PERST# signal is controlled
+> >>>> by GPIO. But value of signal (high / low) and how long is in signal in
+> >>>> which state for me sounds like not an platform specific thing, but as
+> >>>> PCIe / CEM related.
+> >>>
+> >>> That's exactly my understanding of this matter. At least for the dra7xx
+> >>> controller it works exactly like this, PERSTn# is nothing but a GPIO
+> >>> output from the SoC that drives the PERSTn# input of the external chip
+> >>> without affecting the controller directly.
+> >>>
+> >>
+> >> While the patch itself is correct, this kind-of changes the behavior on
+> >> already upstreamed platforms. Previously the driver expected #PERST to
+> >> be asserted be external means (or default power-up state) and only takes
+> >> care of de-asserting the #PERST line.
+> >>
+> >> There are 2 platforms that will be impacted due to this change
+> >> 1) arch/arm/boot/dts/am57xx-beagle-x15-common.dtsi (has an inverter on
+> >> GPIO line)
+> >> 2) arch/arm/boot/dts/am571x-idk.dts (directly connected to #PERST)
+> >>
+> >> For 1), gpiod_set_value(reset, 0) will assert the PERST line due to the
+> >> inverter (and GPIO_ACTIVE_LOW)
+> >> For 2), gpiod_set_value(reset, 0) will assert the PERST line because we
+> >> have GPIO_ACTIVE_HIGH
+> > 
+> > Ou! This is a problem in DT. It needs to be defined in a way that state
+> > is same for every DTS device which uses this driver.
+> 
+> Why?
 
-Looks ok to me. Will you resend?
+I'm starting to be confused by triple or more negations (asserting,
+signal inverter, active low)...
+
+In your patch is GPIO set value to 0 and Kishon wrote that GPIO set
+value to 0 for those two boards assert PERST# line. Asserting PERST#
+line cause endpoint PCIe card to be in reset state. And in pci-dra7xx.c
+driver there is no other code which de-asserts PERST# line.
+
+So based on all this information I deduced that your patch will cause
+putting PCIe cards into reset state (forever) and therefore they would
+not work.
+
+Or do I have here some mistake?
+
+> These are different boards and each specifies its own polarity.
+> They are already opposite to each other right now:
+> 
+> https://elixir.bootlin.com/linux/v5.13-rc7/source/arch/arm/boot/dts/am57xx-beagle-x15-common.dtsi#L602
+> 
+> https://elixir.bootlin.com/linux/v5.13-rc7/source/arch/arm/boot/dts/am571x-idk.dts#L196
+> 
+> -- 
+> Luca
+> 
