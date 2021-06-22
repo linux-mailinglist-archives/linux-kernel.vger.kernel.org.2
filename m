@@ -2,131 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FE53B0D74
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 21:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F1D3B0D76
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 21:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232724AbhFVTKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 15:10:12 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:48239 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbhFVTKL (ORCPT
+        id S232734AbhFVTKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 15:10:17 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:59542 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232726AbhFVTKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 15:10:11 -0400
-Received: (Authenticated sender: i.maximets@ovn.org)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id C16ED200002;
-        Tue, 22 Jun 2021 19:07:51 +0000 (UTC)
-Subject: Re: [PATCH] docs: af_xdp: consistent indentation in examples
-To:     Ilya Maximets <i.maximets@ovn.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        Tue, 22 Jun 2021 15:10:13 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:33444 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lvlka-0003JN-8N; Tue, 22 Jun 2021 15:07:56 -0400
+Message-ID: <cb33d013afae9cd3e2c245230cdbc39ba4679b13.camel@trillion01.com>
+Subject: Re: [PATCH 1/2] io_uring: Fix race condition when sqp thread goes
+ to sleep
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210622185647.3705104-1-i.maximets@ovn.org>
-From:   Ilya Maximets <i.maximets@ovn.org>
-Message-ID: <b871fd9c-897c-26ca-f4fd-7d81b3489379@ovn.org>
-Date:   Tue, 22 Jun 2021 21:07:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Date:   Tue, 22 Jun 2021 15:07:55 -0400
+In-Reply-To: <d9d9527c-6d2e-b840-15dd-057618de7864@gmail.com>
+References: <cover.1624387080.git.olivier@trillion01.com>
+         <67c806d0bcf2e096c1b0c7e87bd5926c37231b87.1624387080.git.olivier@trillion01.com>
+         <b056b26aec5abad8e4e06aae84bd9a5bfe5f43da.camel@trillion01.com>
+         <d9d9527c-6d2e-b840-15dd-057618de7864@gmail.com>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-In-Reply-To: <20210622185647.3705104-1-i.maximets@ovn.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/21 8:56 PM, Ilya Maximets wrote:
-> Examples in this document use all kinds of indentation from 3 to 5
-> spaces and even mixed with tabs.  Making them all even and equal to
-> 4 spaces.
+On Tue, 2021-06-22 at 19:55 +0100, Pavel Begunkov wrote:
+> On 6/22/21 7:53 PM, Olivier Langlois wrote:
+> > On Tue, 2021-06-22 at 11:45 -0700, Olivier Langlois wrote:
+> > > If an asynchronous completion happens before the task is
+> > > preparing
+> > > itself to wait and set its state to TASK_INTERRUPTABLE, the
+> > > completion
+> > > will not wake up the sqp thread.
+> > > 
+> > I have just noticed that I made a typo in the description. I will
+> > send
+> > a v2 of that patch.
+> > 
+> > Sorry about that. I was too excited to share my discovery...
 > 
-> Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
-> ---
+> git format-patch --cover-letter --thread=shallow ...
+> 
+> would be even better, but the fix looks right
+> 
+You are too good... I thought that I could get away from hacking
+manually the patch file for such a minor change...
 
-Ugh.  Sorry, meant to send for bpf-next, but lost the subject prefix
-somewhere...  Can re-send if needed.
+It seems that I got caught...
 
->  Documentation/networking/af_xdp.rst | 32 ++++++++++++++---------------
->  1 file changed, 16 insertions(+), 16 deletions(-)
-> 
-> diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networking/af_xdp.rst
-> index 2ccc5644cc98..42576880aa4a 100644
-> --- a/Documentation/networking/af_xdp.rst
-> +++ b/Documentation/networking/af_xdp.rst
-> @@ -290,19 +290,19 @@ round-robin example of distributing packets is shown below:
->     #define MAX_SOCKS 16
->  
->     struct {
-> -        __uint(type, BPF_MAP_TYPE_XSKMAP);
-> -        __uint(max_entries, MAX_SOCKS);
-> -        __uint(key_size, sizeof(int));
-> -        __uint(value_size, sizeof(int));
-> +       __uint(type, BPF_MAP_TYPE_XSKMAP);
-> +       __uint(max_entries, MAX_SOCKS);
-> +       __uint(key_size, sizeof(int));
-> +       __uint(value_size, sizeof(int));
->     } xsks_map SEC(".maps");
->  
->     static unsigned int rr;
->  
->     SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
->     {
-> -	rr = (rr + 1) & (MAX_SOCKS - 1);
-> +       rr = (rr + 1) & (MAX_SOCKS - 1);
->  
-> -	return bpf_redirect_map(&xsks_map, rr, XDP_DROP);
-> +       return bpf_redirect_map(&xsks_map, rr, XDP_DROP);
->     }
->  
->  Note, that since there is only a single set of FILL and COMPLETION
-> @@ -379,7 +379,7 @@ would look like this for the TX path:
->  .. code-block:: c
->  
->     if (xsk_ring_prod__needs_wakeup(&my_tx_ring))
-> -      sendto(xsk_socket__fd(xsk_handle), NULL, 0, MSG_DONTWAIT, NULL, 0);
-> +       sendto(xsk_socket__fd(xsk_handle), NULL, 0, MSG_DONTWAIT, NULL, 0);
->  
->  I.e., only use the syscall if the flag is set.
->  
-> @@ -442,9 +442,9 @@ purposes. The supported statistics are shown below:
->  .. code-block:: c
->  
->     struct xdp_statistics {
-> -	  __u64 rx_dropped; /* Dropped for reasons other than invalid desc */
-> -	  __u64 rx_invalid_descs; /* Dropped due to invalid descriptor */
-> -	  __u64 tx_invalid_descs; /* Dropped due to invalid descriptor */
-> +       __u64 rx_dropped; /* Dropped for reasons other than invalid desc */
-> +       __u64 rx_invalid_descs; /* Dropped due to invalid descriptor */
-> +       __u64 tx_invalid_descs; /* Dropped due to invalid descriptor */
->     };
->  
->  XDP_OPTIONS getsockopt
-> @@ -483,15 +483,15 @@ like this:
->  .. code-block:: c
->  
->      // struct xdp_rxtx_ring {
-> -    // 	__u32 *producer;
-> -    // 	__u32 *consumer;
-> -    // 	struct xdp_desc *desc;
-> +    //     __u32 *producer;
-> +    //     __u32 *consumer;
-> +    //     struct xdp_desc *desc;
->      // };
->  
->      // struct xdp_umem_ring {
-> -    // 	__u32 *producer;
-> -    // 	__u32 *consumer;
-> -    // 	__u64 *desc;
-> +    //     __u32 *producer;
-> +    //     __u32 *consumer;
-> +    //     __u64 *desc;
->      // };
->  
->      // typedef struct xdp_rxtx_ring RING;
-> 
+Let me know if you need me to redo it the right way...
+
 
