@@ -2,169 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FB23B10CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F44C3B10D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhFVXv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 19:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60266 "EHLO
+        id S229952AbhFVX5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 19:57:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhFVXvz (ORCPT
+        with ESMTP id S229747AbhFVX5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 19:51:55 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3363C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 16:49:38 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id a2so148178pgi.6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 16:49:38 -0700 (PDT)
+        Tue, 22 Jun 2021 19:57:52 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08542C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 16:55:34 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id b7so1163919ioq.12
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 16:55:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BoYhYJcoyESGzBZwFcvog/ZaPEUbImqWttNrXwz9hqM=;
-        b=E5M8VEzJlXeHS5fRl8ycOg6lcDdG3ieqKqbtfUXOUrNEAJS61ptU3v24wmF2DULJ97
-         uNLEYzGC8oLDmHCQKL8x/Y/fV8NpLDJkhNetjmD0DhodgsNm61nEVgvYE6exI905qQIF
-         pb4r4+29+jgRh+o7NRyQWnECnYngQiO34iU74=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KUWFjpT6YBkCLpvFT4HlZ6tYk9tWHjZGUxJiYySq8UQ=;
+        b=tJW+1cmKXb+HRi7bCn0UUwncLAc6B7cb2Rw5rhQqmAzgfCl2EiZOlnMpxyOkTiBdGr
+         UGvkc+bRKGT3mGJCwHtxTk7bsFGCpC8dWzHobRvz4ot4LrCTweU8HXsK1bHpzrHjzlQQ
+         4hGtBH1007HFOjQKfB2GCO5aTSWJdk55eZ1DT0JxIqQsiemxl2YSYA9p8pk7UXPT4qiR
+         rpxMqUJSC8HdayjX2whg8n5stLkBzEiEGN9wOQqkoj70sfy30WriYATJGGWMfNLJLRAK
+         JkhaGRBVGJt6ER19bkkB++FkbRTo665/fpLZpgig0fifr8eu3TkL/ZsbDV3M4BNEId9r
+         /INg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BoYhYJcoyESGzBZwFcvog/ZaPEUbImqWttNrXwz9hqM=;
-        b=pcHBtrTBZ+JinijHvT9F4H9iv88RyjPLpTRwcOOQesYoe4iA/h0ChlJKdjM44hB2vU
-         6qiVEZNqf1BgmmzK1dd052hb5ikUt7JQ4Ixd67GvJs99yIMvmCeXCGkM42h8wRW+8LT6
-         h6LA+k1F4acjhzpAXRtvSHKk7TpS7RHpenUbrMbO3JWbRe54NlZWLLE52/teChNKfgqc
-         ZR2vCPTZrDZbUVLrofh98NQlObVByuwM2NZxlppt02s1XgCpM+rqHqJ97YRWyr84+Q4k
-         NUfKKNYyguM5tfq9j/ZKClUljpCdKlwSJUAJAF2IvJnVTg0Io4JaSRbdEbLaHsxP+/6o
-         db8w==
-X-Gm-Message-State: AOAM531t5Eld7CSMxLZLZiOLRnykDKQIsw93zUbRil31afNWSOtyPj8o
-        z9McGjdtSr2v5/9JWocdxK/zSw==
-X-Google-Smtp-Source: ABdhPJyM+4uG3YUoJSW1N4ZCJHbEb4TeNqR+HMzw8RInxKM7qsctzHDqKc86TsM2hAfIobORJquliQ==
-X-Received: by 2002:a65:4689:: with SMTP id h9mr1046233pgr.347.1624405778177;
-        Tue, 22 Jun 2021 16:49:38 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:dc21:8b6f:f8cd:9070])
-        by smtp.gmail.com with UTF8SMTPSA id jz10sm3362167pjb.4.2021.06.22.16.49.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 16:49:37 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 16:49:36 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: Re: Looking for help with Kconfig dependencies
-Message-ID: <YNJ3EBDSbqfT/sAk@google.com>
-References: <YMzSbDL+XvpLPaTb@google.com>
- <CAK7LNARta+3nakY9hiDVqTjD4XFhw+eBmXPOZkHb96wR1f_+bg@mail.gmail.com>
- <YNCoYnurpk64+jlF@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KUWFjpT6YBkCLpvFT4HlZ6tYk9tWHjZGUxJiYySq8UQ=;
+        b=Ze9nz2Azn99Qn0/boQ7YMrX3CNV8pEw+vnwgVRbvOafpQ23podfZT7xDzDH0zI6vWh
+         98oc1CO8lfI8JruyPPmIfUEc4xvt47E1y4Z3sKu7oFtHjwJ3+Yqh68HsWrjyx+KLug2V
+         p3sC/JWCMY4Dw2NM43nZK0CO97DuZX4XnArYtNLTMbek/mHJtvg24yVPZZx/WsK27c0O
+         A+hZLB8gpqDhwj13iQvkGkIKszLiYkNWdyvIKLnG1U+O7XrIbRqPlsPTIWDnVMWeC/sY
+         oMUfH1JAK7X6AWPBPGJAzAeBylnRQLPqzv0MKqk1ezKQisdoR96qi/bn+lkjDeRi1ilk
+         1J9w==
+X-Gm-Message-State: AOAM532YVCsnzm3pk1LipU2fWg1RMcvEKbpEC/sufP4t5nXecEw1fRnn
+        eXIzTdQpVhCiwk1xqC25JRsogOHnYPvKB1DS98Zz+A==
+X-Google-Smtp-Source: ABdhPJw754OL9sHKekBMhtUG4nG4roseEc/8AHs1V3pNEL5tlhRzCdZMjH0uDo5MWjBzZHWtyVfKT4mWfhWspHUUnrI=
+X-Received: by 2002:a05:6638:110e:: with SMTP id n14mr6247711jal.4.1624406133636;
+ Tue, 22 Jun 2021 16:55:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YNCoYnurpk64+jlF@google.com>
+References: <20210617073937.16281-1-sjpark@amazon.de> <20210617074638.16583-1-sjpark@amazon.de>
+ <CAGS_qxofnnP7Ju15iaZ_Szr+aqmHNxU51Kiv723bkd8w9g+Jkg@mail.gmail.com>
+In-Reply-To: <CAGS_qxofnnP7Ju15iaZ_Szr+aqmHNxU51Kiv723bkd8w9g+Jkg@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Tue, 22 Jun 2021 16:55:21 -0700
+Message-ID: <CAGS_qxoPq1f+dcaf43xyjbDhW-ASG3gZez-b0Pv_s17JU3hePw@mail.gmail.com>
+Subject: Re: [PATCH v2] kunit: tool: Assert the version requirement
+To:     SeongJae Park <sj38.park@gmail.com>
+Cc:     brendanhiggins@google.com, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        SeongJae Park <sjpark@amazon.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 07:55:30AM -0700, Matthias Kaehlcke wrote:
-> On Sat, Jun 19, 2021 at 10:30:22AM +0900, Masahiro Yamada wrote:
-> > On Sat, Jun 19, 2021 at 2:05 AM Matthias Kaehlcke <mka@chromium.org> wrote:
-> > >
-> > > Hi,
-> > >
-> > > I'm adding a new driver and have an issue with Kconfig dependencies
-> > > that I coulnd't sort out so far.
-> > >
-> > > Patch https://lore.kernel.org/patchwork/patch/1444212/ adds the new
-> > > onboard_usb_hub driver which exports two functions,
-> > > onboard_hub_create_pdevs() and onboard_hub_destroy_pdevs(). It also
-> > > provides stubs for these functions which are used when the driver
-> > > is not selected (CONFIG_USB_ONBOARD_HUB=n).
-> > >
-> > > The new exported functions are called by the xhci-plat driver
-> > > (https://lore.kernel.org/patchwork/patch/1444215/). Since xhci-plat
-> > > now depends on symbols from the onboard_hub_driver the following
-> > > dependency was added to its Kconfig entry:
-> > >
-> > >   config USB_XHCI_PLATFORM
-> > >     tristate "Generic xHCI driver for a platform device"
-> > >     select USB_XHCI_RCAR if ARCH_RENESAS
-> > >  +  depends on USB_ONBOARD_HUB || !USB_ONBOARD_HUB
-> > >
-> > > This generally seems to work, however when USB_XHCI_PLATFORM is
-> > > forced to be builtin by another driver that depends on it (e.g.
-> > > USB_DWC3) it is still possible to build the onboard_hub driver
-> > > as a module, which results in unresolved symbols:
-> > >
-> > > aarch64-linux-gnu-ld: drivers/usb/host/xhci-plat.o: in function
-> > > `xhci_plat_remove':
-> > > drivers/usb/host/xhci-plat.c:427: undefined reference to
-> > > `onboard_hub_destroy_pdevs'
-> > > drivers/usb/host/xhci-plat.c:427:(.text+0x82c): relocation truncated
-> > > to fit: R_AARCH64_CALL26 against undefined symbol
-> > > `onboard_hub_destroy_pdevs'
-> > > aarch64-linux-gnu-ld: drivers/usb/host/xhci-plat.o: in function
-> > > `xhci_plat_probe':
-> > > drivers/usb/host/xhci-plat.c:379: undefined reference to
-> > > `onboard_hub_create_pdevs'
-> > > drivers/usb/host/xhci-plat.c:379:(.text+0x131c): relocation truncated
-> > > to fit: R_AARCH64_CALL26 against undefined symbol
-> > > `onboard_hub_create_pdevs'
-> > >
-> > > Kconfig generates the following warning with this configuration:
-> > >
-> > > WARNING: unmet direct dependencies detected for USB_XHCI_PLATFORM
-> > >   Depends on [m]: USB_SUPPORT [=y] && USB [=y] && USB_XHCI_HCD [=y] && (USB_ONBOARD_HUB [=m] || !USB_ONBOARD_HUB [=m])
-> > >   Selected by [y]:
-> > >   - USB_DWC3 [=y] && USB_SUPPORT [=y] && (USB [=y] || USB_GADGET [=y]) && HAS_DMA [=y] && USB_XHCI_HCD [=y]
-> > >   Selected by [m]:
-> > >   - USB_CDNS_SUPPORT [=m] && USB_SUPPORT [=y] && (USB [=y] || USB_GADGET [=y]) && HAS_DMA [=y] && USB_XHCI_HCD [=y]
-> > >   - USB_BRCMSTB [=m] && USB_SUPPORT [=y] && USB [=y] && (ARCH_BRCMSTB [=y] && PHY_BRCM_USB [=m] || COMPILE_TEST [=y]) && USB_XHCI_HCD [=y]
-> > >   - USB_XHCI_MVEBU [=m] && USB_SUPPORT [=y] && USB [=y] && USB_XHCI_HCD [=y] && HAS_IOMEM [=y] && (ARCH_MVEBU [=y] || COMPILE_TEST [=y])
-> > >
-> > > I read through kconfig-language.rst and experimented a fair bit,
-> > > but haven't found a working solution. Any advice would be
-> > > appreciated.
-> > >
-> > > Thanks
-> > >
-> > > Matthias
-> > 
-> > 
-> > 
-> > This issue should be discussed in the USB ML,
-> 
-> That's where it was initially brought up, but it didn't get the attention
-> of anyone in the position to give advice. Since the issue is more about
-> kbuild dependencies than USB specifically I brought it up here. The driver
-> already landed in the USB tree but was reverted due to this issue, I'm
-> stuck on this problem and really don't want the driver to die on the
-> finish line.
-> 
-> A workaround could be to make the driver 'bool' rather than 'tristate',
-> but I'm not sure if that would be acceptable.
-> 
-> > but probably 'depends on USB_XHCI_PLATFORM' should be used everywhere instead of
-> > 'depends on USB_XHCI_PLATFORM'.
-> 
-> Did you mean 'select USB_XHCI_PLATFORM' rather than 'depends on
-> USB_XHCI_PLATFORM'? In general that sounds reasonable, since the drivers don't
-> actually depend on USB_XHCI_PLATFORM from a build perspective, and it's what
-> some drivers actually do. However it doesn't fix the problem, apparently a
-> 'select X' from CONFIG_Y still results in CONFIG_X being 'y' if CONFIG_Y is
-> 'y' (see the USB_DWC3 case above).
+On Tue, Jun 22, 2021 at 4:28 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> On Thu, Jun 17, 2021 at 12:46 AM SeongJae Park <sj38.park@gmail.com> wrote:
+> >
+> > Commit 87c9c1631788 ("kunit: tool: add support for QEMU") on the 'next'
+> > tree adds 'from __future__ import annotations' in 'kunit_kernel.py'.
+> > Because it is supported on only >=3.7 Python, people using older Python
+> > will get below error:
+> >
+> >     Traceback (most recent call last):
+> >       File "./tools/testing/kunit/kunit.py", line 20, in <module>
+> >         import kunit_kernel
+> >       File "/home/sjpark/linux/tools/testing/kunit/kunit_kernel.py", line 9
+> >         from __future__ import annotations
+>
+> Chatted offline with David about this.
+> He was thinking if we could instead drop the minimal version back to 3.6.
+>
+> I think we can do so, see below.
+> Perhaps we should drop the import and then chain this patch on top of
+> that, specifying a minimum version of 3.6?
 
-After some more experimentation it looks like the opposite fixes the conflict,
-i.e. changing all instances of 'select USB_XHCI_PLATFORM' to 'depends on
-USB_XHCI_PLATFORM'.
+Actually, now I've gotten python3.6 installed on my machine, I see we
+have another issue.
 
-That's also in line with the recommendation to limit the use of 'select' to
-certain use cases:
+We pass text=true to subprocess.
+That didn't exist back in 3.6, see
+https://docs.python.org/3.6/library/subprocess.html
 
-  select should be used with care. select will force a symbol to a value without
-  visiting the dependencies. By abusing select you are able to select a symbol
-  FOO even if FOO depends on BAR that is not set. In general use select only
-  for non-visible symbols (no prompts anywhere) and for symbols with no
-  dependencies. That will limit the usefulness but on the other hand avoid the
-  illegal configurations all over.
+We can workaround that, but there's more chance of subtle bugs that
+I'd rather we don't touch it.
 
-  https://www.kernel.org/doc/html/latest/kbuild/kconfig-language.html
+>
+> Checking out https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/?h=kunit-fixes
+>
+> The offending "annotations" import is related to type annotations.
+> Specifically https://www.python.org/dev/peps/pep-0563/
+>
+> So let's see how the two most popular typecheckers fare.
+>
+> pytype is happy with or without import.
+> mypy has the same issues with or without the import.
+>
+> $ mypy tools/testing/kunit/*.py
+> tools/testing/kunit/kunit_kernel.py:227: error: Item "_Loader" of
+> "Optional[_Loader]" has no attribute "exec_module"
+> tools/testing/kunit/kunit_kernel.py:227: error: Item "None" of
+> "Optional[_Loader]" has no attribute "exec_module"
+> tools/testing/kunit/kunit_kernel.py:228: error: Module has no
+> attribute "QEMU_ARCH"
+> tools/testing/kunit/kunit_kernel.py:229: error: Module has no
+> attribute "QEMU_ARCH"
+>
+> So clearly it's not doing anything for them.
+>
+> Taking a look over 87c9c1631788 ("kunit: tool: add support for QEMU")
+> next then...
+> I don't see anything that would warrant the import, so we should
+> probably drop it.
+
+Also, using 3.6 now I have it installed, I found what it was added for.
+But it doesn't need to be there.
+
+This patch drops it and makes things work, afaict:
+diff --git a/tools/testing/kunit/kunit_kernel.py
+b/tools/testing/kunit/kunit_kernel.py
+index e1951fa60027..5987d5b1b874 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -6,15 +6,13 @@
+ # Author: Felix Guo <felixguoxiuping@gmail.com>
+ # Author: Brendan Higgins <brendanhiggins@google.com>
+
+-from __future__ import annotations
+ import importlib.util
+ import logging
+ import subprocess
+ import os
+ import shutil
+ import signal
+-from typing import Iterator
+-from typing import Optional
++from typing import Iterator, Optional, Tuple
+
+ from contextlib import ExitStack
+
+@@ -208,7 +206,7 @@ def get_source_tree_ops(arch: str, cross_compile:
+Optional[str]) -> LinuxSourceT
+                raise ConfigError(arch + ' is not a valid arch')
+
+ def get_source_tree_ops_from_qemu_config(config_path: str,
+-                                        cross_compile: Optional[str]) -> tuple[
++                                        cross_compile: Optional[str]) -> Tuple[
+                                                         str,
+LinuxSourceTreeOperations]:
+        # The module name/path has very little to do with where the actual file
+        # exists (I learned this through experimentation and could not find it
+
+>
+> In that case, the minimum supported version should drop back down to 3.6.
+> We use enum.auto, which is from 3.6
+> https://docs.python.org/3/library/enum.html#enum.auto
+>
+> We could consider stopping using that, and I think we might be then
+> 3.5-compatible.
+> Maybe we have a chain of 3 patches then, drop the import, drop auto,
+> and then add in a >=3.5 version check?
+>
+> >         ^
+> >     SyntaxError: future feature annotations is not defined
+> >
+> > This commit adds a version assertion in 'kunit.py', so that people get
+> > more explicit error message like below:
+> >
+> >     Traceback (most recent call last):
+> >       File "./tools/testing/kunit/kunit.py", line 15, in <module>
+> >         assert sys.version_info >= (3, 7), "Python version is too old"
+> >     AssertionError: Python version is too old
+> >
+> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > Acked-by: Daniel Latypov <dlatypov@google.com>
+
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
+
+As mentioned above, we do actually need 3.7, and not just for the extra import.
+Now I know that, I feel more strongly that this patch should go in, as-is.
+
+> > ---
+> >
+> > Changes from v1
+> > - Add assertion failure message (Daniel Latypov)
+> > - Add Acked-by: Daniel Latypov <dlatypov@google.com>
+> >
+> >  tools/testing/kunit/kunit.py | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+> > index be8d8d4a4e08..6276ce0c0196 100755
+> > --- a/tools/testing/kunit/kunit.py
+> > +++ b/tools/testing/kunit/kunit.py
+> > @@ -12,6 +12,8 @@ import sys
+> >  import os
+> >  import time
+> >
+> > +assert sys.version_info >= (3, 7), "Python version is too old"
+> > +
+> >  from collections import namedtuple
+> >  from enum import Enum, auto
+> >
+> > --
+> > 2.17.1
+> >
