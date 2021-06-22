@@ -2,163 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437633AFAF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBBC3AFB18
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbhFVCR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 22:17:56 -0400
-Received: from mail-dm6nam10on2131.outbound.protection.outlook.com ([40.107.93.131]:39108
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231252AbhFVCRz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 22:17:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DvxrrBhn0oAg381DGfRhSsouxQFwiHwo7oVX625fYIByKE8FiINXj+ih5XxlkGK4DmpM6rQ/loyj5dcFvYpjocxt8iT7RzmgYwjkZlYBG7cVWRVFbOnlbmJQvjinkbowsAHglEZcDkeUiEPDDcFNlRbIblfMwK+KUNRjX63Yf75SDTEi/ny6LQdpyY9WzLFfrOnN+nSlfV7lcMFk4REoxJJTJOXZF89lOIDupaQBfwkMk7CnQufDb9gd/nS/k/qqxxPKe99IgSgtBV0G/CxYr0VqTQEPk6nW7OMcYjDc/9BL2pLvunaHjLR5gVQyB1kn6RWMioOE9cyaFXIsgNFr0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KrkyDw9xbcuOO8xxlunuQ2pa8s+7ssS00WCGH4WyPMA=;
- b=Gws2UHyxUMVpfhXlULSmoT1DEKw+UrOjt4n0MQ8+bboGLLBWrk0K+HZefuJQ0k+2GwRCOgWPq9Q3b6sCQ9D45aLGB6b0zI0ycHoT1Io2cF8ps83xqSHNkB4WCo6bWiKwvQWX741/TgUeY/pC/JMRRf9zYHrrX4UHGoEX7oDDBq6rd8zz3kL6s05mqDgj7Xe1uzZDZGOlMcxkxRdmgmsKCZO5beSOqMy5HRcNJj5BZgf+ql/nggaskTDkzxqWlBFbDyRbYedzNox5OaftyN6vZzISvatToSTbxJjkqDjBK8QlmGbhs1Ac4UX0Hh43zddIOSNZGnEzayRxoY918WNCGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KrkyDw9xbcuOO8xxlunuQ2pa8s+7ssS00WCGH4WyPMA=;
- b=uky+lr1uzgJPQ1tXuT1Na1LnJLc7zaa0Rmpe+chPF4+OTnHuVzIUdXUVwMSEyh9HcpxHYwWUkAcsv1XyAb5ZThqbvv0AgEks/MTmIlfU1fxFTERHA5FTfBuppQyUi+3G7dRF6SnTt1xmHOwVZWB1fVdHmM9qy1GAzLMjElGWIjc=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none
- header.from=os.amperecomputing.com;
-Received: from MWHPR0101MB3165.prod.exchangelabs.com (2603:10b6:301:2f::19) by
- MW2PR0102MB3530.prod.exchangelabs.com (2603:10b6:302:12::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4242.22; Tue, 22 Jun 2021 02:15:33 +0000
-Received: from MWHPR0101MB3165.prod.exchangelabs.com
- ([fe80::921:cd21:94b0:c87b]) by MWHPR0101MB3165.prod.exchangelabs.com
- ([fe80::921:cd21:94b0:c87b%6]) with mapi id 15.20.4242.023; Tue, 22 Jun 2021
- 02:15:33 +0000
-Date:   Tue, 22 Jun 2021 10:14:38 +0000
-From:   Huang Shijie <shijie@os.amperecomputing.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Catalin Marinas <catalin.marinas@arm.com>, tabba@google.com,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, patches@amperecomputing.com,
-        zwang@amperecomputing.com
-Subject: Re: [PATCH] arm64: kexec: flush log to console in nmi_panic()
-Message-ID: <YNG4DgMPluU9T9+R@hsj>
-References: <20210617125023.7288-1-shijie@os.amperecomputing.com>
- <20210617175211.GE24813@willie-the-truck>
- <CA+CK2bC5XW_AjnieWZ-ro8iqr0Jb7cz5Ss5549tJTq3Zm4GYiQ@mail.gmail.com>
- <20210617175822.GG24813@willie-the-truck>
- <YMxhXkdqU+MVJW33@hsj>
- <20210621100836.GA28788@willie-the-truck>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621100836.GA28788@willie-the-truck>
-X-Originating-IP: [180.167.209.74]
-X-ClientProxiedBy: CY4PR06CA0043.namprd06.prod.outlook.com
- (2603:10b6:903:77::29) To MWHPR0101MB3165.prod.exchangelabs.com
- (2603:10b6:301:2f::19)
+        id S231357AbhFVCfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 22:35:02 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1242 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230495AbhFVCfA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 22:35:00 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15M23fUB001225;
+        Mon, 21 Jun 2021 22:32:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=UFayZbd9WlmTDZiFZqDnGH3n+msIlPrhjA53xrOdM8w=;
+ b=JovEFKAbphiLlsbT9D40tIKu7u4hincNvvDL0bKlgC8OoJxzDfLPXmOoXC8qVxSNECdO
+ vphZQi9/rBNfSJNTslZh7TZicTtpuRA/jlBaRUdt8kLcAXDkrQRL3gV2Ngqy3QyQyrM7
+ 2nk1TXzcf0PXMbwgBNjlqVwtk/s6JiXyHdCcAQSrX7sHfRi2kpegnfIA7gfS+WaJAiFA
+ LIJ4aFOk6xYuLnzaIpb0gwx/y1RknAHDTruYGPJbPINj1lMX4u92IDq1PHxmulh44qoy
+ qcdkejdEI0DdGGbUp0alc2wtHxVjfmYxu6LJjFuL0ZdkXTbiuOc2wfcqKtSol58MN/0Z kw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39b25j6y0w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 22:32:35 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15M24j17013000;
+        Mon, 21 Jun 2021 22:32:35 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39b25j6y0d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 22:32:35 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15M2HcCn005242;
+        Tue, 22 Jun 2021 02:32:33 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 39987895x3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Jun 2021 02:32:33 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15M2WVwE35586446
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Jun 2021 02:32:31 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 063C94C046;
+        Tue, 22 Jun 2021 02:32:31 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 954444C044;
+        Tue, 22 Jun 2021 02:32:29 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.3.166])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 22 Jun 2021 02:32:29 +0000 (GMT)
+Message-ID: <23ba225593be391c384109af527bd0f3cb122a0d.camel@linux.ibm.com>
+Subject: Re: [syzbot] possible deadlock in ovl_maybe_copy_up
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        syzbot <syzbot+c18f2f6a7b08c51e3025@syzkaller.appspotmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Date:   Mon, 21 Jun 2021 22:32:28 -0400
+In-Reply-To: <20210618040135.950-1-hdanton@sina.com>
+References: <000000000000c5b77105b4c3546e@google.com>
+         <000000000000df47be05bf165394@google.com>
+         <20210618040135.950-1-hdanton@sina.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: l1mX-gFlBAwI6bueINRDax1gSeUZ7Sr8
+X-Proofpoint-ORIG-GUID: 5l9Py41iJhIxh_Zd5SZomjbWYoecmhf-
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from hsj (180.167.209.74) by CY4PR06CA0043.namprd06.prod.outlook.com (2603:10b6:903:77::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19 via Frontend Transport; Tue, 22 Jun 2021 02:15:30 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 608ab9f2-cc93-45da-e935-08d935239d72
-X-MS-TrafficTypeDiagnostic: MW2PR0102MB3530:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW2PR0102MB3530B3F66E071BFD204A02CCED099@MW2PR0102MB3530.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lXfJYWNvtBixFru2kh/NFkyuu7P4ak1EZMtNhv48M+3zwAgvQeTbP5jLmj3TRwJ7rLavFL+8EKw6uAx2QuvLqknakPntYyPJvW0OhEohTk1ltml0luL15YSVcSiajcYgtIX+aI8Rj9EeLXcTFkk0wBTDDwvL6dIzFfF9bzF/aKp7FODsWQp27TaXBqp98UYioho0KxMloIOJJewXW7/Z//m4d66k1ulUplzIxlsNZz2BLkIHCnMLVICiNVd/tu6nzw8FWkYc89by253gO31yB39oKlNMB8WoSbbPkv9if93gJWASGtiSMOKoKnT+Rq6BIUFY61xJlfgxj+JvkSOPol9YbsJtTaxSB9/8/hOX+L4zXMpm2XfHYOSADh++Tl1AVhI32iGQ8bEw+HIyebPw/a33YQ36RiZUIl+Y5zRxNsd0hxsPl8gfRp+kgN3A0F+GmLbDSbExFrFO+W+IWDmPiaYlHxN3BXcpoyBn8ySoRUSlz0dulmR8gp2b03y0T0Lp0yxdNgWMn1D/zBOhg+vfTdq7oUx2oT30MPWNd+zrLPRtzMLfHuBQfS02p2JCj2Fpii8GALreHK/pKOJ4E5Vyi0mEmj0yMMlo4cwm1rTMPkQHvcOFZVrSV0MILP87enLKjrqyVriEqaZ6bVixnPqKKj94Gq9ROjpOjKahhyG3fYpNZGdwRkyV42f/I1iN7ShY
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR0101MB3165.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(39840400004)(376002)(136003)(366004)(16526019)(26005)(186003)(33716001)(956004)(8936002)(9576002)(8676002)(316002)(6916009)(52116002)(6496006)(2906002)(9686003)(54906003)(38100700002)(86362001)(55016002)(107886003)(66946007)(66556008)(38350700002)(83380400001)(5660300002)(4326008)(66476007)(478600001)(67856001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4rBlZ6+KtdnKHHvB0lXZ0dzWQ66axspSCtikZdd4evFlATARwsI8NiUG7aG4?=
- =?us-ascii?Q?CM3H0Jo75HiZ45hkVp4NCx64S0MqeZEV6XHVMb1PXbqvA3dFF1e7bWhsaic4?=
- =?us-ascii?Q?+0ne+Y+wEdtWiXBVvms7PrqDvoPk6JSv35gEgwgrWyhC1AGTb8RCEjK6Gl4a?=
- =?us-ascii?Q?4wsqoBFlOc0MNdpBc+PxUuUHjlSnVjcnXiWvCvPasNajE3HmGcVtoh1xCUX2?=
- =?us-ascii?Q?/XWHZQthnvlsASltH6VkuLjcMZ1nxJu9qwJn2FqfSosLBcLT+k/kinz5nbcz?=
- =?us-ascii?Q?U25P5urLWNqZrJxK3o7IrHu6gUK1z5A9++1VpxmbbIWiXzt9EU8OZzaJYdat?=
- =?us-ascii?Q?lxrQ604yHCe9WqK3KiWbKT7pjQKJS59hVffOWjqmeTPT67ZdFY2lmDpGythF?=
- =?us-ascii?Q?6k/oKOIGSlC/bgoUP2XLxXpaMQJJ/klgeNSswkailI3k8zL4d7x6M04642tB?=
- =?us-ascii?Q?VCnkcYQuQkX0mN39wZgkb4GXKcx2UEp4w4BXdJXQgh8+R8B9BAisyId86IyT?=
- =?us-ascii?Q?fpj/ceTFjF8SViyzV6oiSpK/+yAIPyTZbhRdmmqrg5a1u2cn3xt/ZRfIDx9D?=
- =?us-ascii?Q?VUDw0Dnj6OkIQVX4+VTpF0MD7XQoOB/hNpKYmh4cLROxIthUry+nvoPpMksS?=
- =?us-ascii?Q?br/bV7EI+VuvuAmZI1zMkHnniiyrgFKslWr5a3R9pv15W5PG99VHGYsSp24+?=
- =?us-ascii?Q?cuxAX4Ddp/ml9+hTi9PIcqu13zTsFe3MjnLd0Aov16igzc7Kv1fjIm6rq/bJ?=
- =?us-ascii?Q?+4oPr8R79hffaxzN02yVcUFNrEttDlDAyB8e4gvu4waeQgU5H1aLWsqvtuZ6?=
- =?us-ascii?Q?PkOu/bfBOq6yorjkTIVt7vext6QNUJMm0eaLSOCJGDIONUGlCn6bjOh0sDCD?=
- =?us-ascii?Q?/1B7vnPX0xwJs3WGyU00Ii98gX5CX8PYDNXhheh6vylnMmXtPbzlAxa5VREb?=
- =?us-ascii?Q?/ROMYC8Th6ApH+LbrBa57v4fvREm8NFXY65b9AFcua41hQFc3nNQf7rRLKX7?=
- =?us-ascii?Q?Wo1ds7blk/fvIfWMb/QmeZQQXcHCPfy7/lFG5QigUIarBnWIdFWdEmOiF5sZ?=
- =?us-ascii?Q?lH+0277gdaVHoMQN/E1F3s5F+Gx3znR7cFRl5R0H3ecra4nHwKW0/NDKB/5l?=
- =?us-ascii?Q?zN7obU7Femf+zFqdX1TkwNetSwxCuYrmWM5ZgL9D2be1+U4pxWD3vquzitSr?=
- =?us-ascii?Q?xKlORMWcof4Li+uYRz9PJos90J77KBS/U418spCzKllMyGRX3iLeRSUoUe9z?=
- =?us-ascii?Q?nbXkNNucMisOWy4vKTe2r68eCk260TaJCYxTrZwoUaF3X9doOo9zBU/X2k/3?=
- =?us-ascii?Q?eyoVksxZkOrnlCB9ZPAEdXeL?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 608ab9f2-cc93-45da-e935-08d935239d72
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR0101MB3165.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 02:15:33.4984
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 417a74yPlk6JRivEt+J+tJT1Io8GzSAf8bZXVy2ZtoHQDlQz0VdTjw3qIDNyWnPEtlSAQpQlUONCLo29lGOOn51+PL74LHIiKHfAY1C/3tJVoXN22uPq42ci4s5BvX3H
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR0102MB3530
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-21_14:2021-06-21,2021-06-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 clxscore=1011 bulkscore=0 adultscore=0
+ malwarescore=0 mlxscore=0 impostorscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106220011
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
-On Mon, Jun 21, 2021 at 11:08:37AM +0100, Will Deacon wrote:
-> > > That sounds like something which should be done in the core code, rather
-> > > than the in the architecture backend (and looks like panic() might do this
-> > > already?)
-> > In the non-kdump code path, the core code will take care of it, please read the
-> > code in panic().
-> > 
-> > But in the kdump code path, the architecture code should take care of it.
+On Fri, 2021-06-18 at 12:01 +0800, Hillf Danton wrote:
+> On Sun, 4 Apr 2021 11:10:48 +0300 Amir Goldstein wrote:
+> >On Sat, Apr 3, 2021 at 10:18 PM syzbot wrote:
+> >>
+> >> syzbot has found a reproducer for the following issue on:
+> >>
+> >> HEAD commit:    454c576c Add linux-next specific files for 20210401
+> >> git tree:       linux-next
+> >> console output: https://syzkaller.appspot.com/x/log.txt?x=1616e07ed00000
+> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=920cc274cae812a5
+> >> dashboard link: https://syzkaller.appspot.com/bug?extid=c18f2f6a7b08c51e3025
+> >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13da365ed00000
+> >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13ca9d16d00000
+> >>
+> >> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> >> Reported-by: syzbot+c18f2f6a7b08c51e3025@syzkaller.appspotmail.com
+> >>
+> >> ======================================================
+> >> WARNING: possible circular locking dependency detected
+> >> 5.12.0-rc5-next-20210401-syzkaller #0 Not tainted
+> >> ------------------------------------------------------
+> >> syz-executor144/9166 is trying to acquire lock:
+> >> ffff888144cf0460 (sb_writers#5){.+.+}-{0:0}, at: ovl_maybe_copy_up+0x11f/0x190 fs/overlayfs/copy_up.c:995
+> >>
+> >> but task is already holding lock:
+> >> ffff8880256d42c0 (&iint->mutex){+.+.}-{3:3}, at: process_measurement+0x3a8/0x17e0 security/integrity/ima/ima_main.c:253
+> >>
+> >> which lock already depends on the new lock.
+> >>
+> >>
+> >> the existing dependency chain (in reverse order) is:
+> >>
+> >> -> #1 (&iint->mutex){+.+.}-{3:3}:
+> >>        __mutex_lock_common kernel/locking/mutex.c:949 [inline]
+> >>        __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
+> >>        process_measurement+0x3a8/0x17e0 security/integrity/ima/ima_main.c:253
+> >>        ima_file_check+0xb9/0x100 security/integrity/ima/ima_main.c:499
+> >>        do_open fs/namei.c:3361 [inline]
+> >>        path_openat+0x15b5/0x27e0 fs/namei.c:3492
+> >>        do_filp_open+0x17e/0x3c0 fs/namei.c:3519
+> >>        do_sys_openat2+0x16d/0x420 fs/open.c:1187
+> >>        do_sys_open fs/open.c:1203 [inline]
+> >>        __do_sys_open fs/open.c:1211 [inline]
+> >>        __se_sys_open fs/open.c:1207 [inline]
+> >>        __x64_sys_open+0x119/0x1c0 fs/open.c:1207
+> >>        do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >>        entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >>
+> >> -> #0 (sb_writers#5){.+.+}-{0:0}:
+> >>        check_prev_add kernel/locking/lockdep.c:2938 [inline]
+> >>        check_prevs_add kernel/locking/lockdep.c:3061 [inline]
+> >>        validate_chain kernel/locking/lockdep.c:3676 [inline]
+> >>        __lock_acquire+0x2a17/0x5230 kernel/locking/lockdep.c:4902
+> >>        lock_acquire kernel/locking/lockdep.c:5512 [inline]
+> >>        lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
+> >>        percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+> >>        __sb_start_write include/linux/fs.h:1758 [inline]
+> >>        sb_start_write include/linux/fs.h:1828 [inline]
+> >>        mnt_want_write+0x6e/0x3e0 fs/namespace.c:375
+> >>        ovl_maybe_copy_up+0x11f/0x190 fs/overlayfs/copy_up.c:995
+> >>        ovl_open+0xba/0x270 fs/overlayfs/file.c:149
+> >>        do_dentry_open+0x4b9/0x11b0 fs/open.c:826
+> >>        vfs_open fs/open.c:940 [inline]
+> >>        dentry_open+0x132/0x1d0 fs/open.c:956
+> >>        ima_calc_file_hash+0x2d2/0x4b0 security/integrity/ima/ima_crypto.c:557
+> >>        ima_collect_measurement+0x4ca/0x570 security/integrity/ima/ima_api.c:252
+> >>        process_measurement+0xd1c/0x17e0 security/integrity/ima/ima_main.c:330
+> >>        ima_file_check+0xb9/0x100 security/integrity/ima/ima_main.c:499
+> >>        do_open fs/namei.c:3361 [inline]
+> >>        path_openat+0x15b5/0x27e0 fs/namei.c:3492
+> >>        do_filp_open+0x17e/0x3c0 fs/namei.c:3519
+> >>        do_sys_openat2+0x16d/0x420 fs/open.c:1187
+> >>        do_sys_open fs/open.c:1203 [inline]
+> >>        __do_sys_open fs/open.c:1211 [inline]
+> >>        __se_sys_open fs/open.c:1207 [inline]
+> >>        __x64_sys_open+0x119/0x1c0 fs/open.c:1207
+> >>        do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >>        entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >>
+> >> other info that might help us debug this:
+> >>
+> >>  Possible unsafe locking scenario:
+> >>
+> >>        CPU0                    CPU1
+> >>        ----                    ----
+> >>   lock(&iint->mutex);
+> >>                                lock(sb_writers#5);
+> >>                                lock(&iint->mutex);
+> >>   lock(sb_writers#5);
+> >>
+> >>  *** DEADLOCK ***
+> >>
+> >> 1 lock held by syz-executor144/9166:
+> >>  #0: ffff8880256d42c0 (&iint->mutex){+.+.}-{3:3}, at: process_measurement+0x3a8/0x17e0 security/integrity/ima/ima_main.c:253
+> >>
 > 
-> Why the discrepancy? Wouldn't it make more sense to do this in panic() for
-> both cases, if the prints that we want to display are coming from panic()
-> itself?
+> It is reported again.
+>   https://lore.kernel.org/lkml/00000000000067d24205c4d0e599@google.com/
+> >
+> >It's a false positive lockdep warning due to missing annotation of
+> >stacking layer on iint->mutex in IMA code.
+> 
+> Add it by copying what's created for ovl, see below.
+> >
+> >To fix it properly, iint->mutex, which can be taken in any of the
+> >stacking fs layers, should be annotated with stacking depth like
+> >ovl_lockdep_annotate_inode_mutex_key()
+> >
+> >I think it's the same root cause as:
+> >https://syzkaller.appspot.com/bug?extid=18a1619cceea30ed45af
+> >https://syzkaller.appspot.com/bug?extid=ae82084b07d0297e566b
+> >
+> >I think both of the above were marked "fixed" by a paper over.
+> >The latter was marked "fixed" by "ovl: detect overlapping layers"
+> >but if you look at the repro, the fact that 'workdir' overlaps with
+> >'lowerdir' has nothing to do with the lockdep warning, so said
+> >"fix" just papered over the IMA lockdep warning.
+> >
+> >Thanks,
+> >Amir.
+> 
+> +++ x/security/integrity/iint.c
+> @@ -85,6 +85,45 @@ static void iint_free(struct integrity_i
+>  	kmem_cache_free(iint_cache, iint);
+>  }
+>  
+> +/*
+> + * a copy from ovl_lockdep_annotate_inode_mutex_key() in a bit to fix
+> +
+> +   Possible unsafe locking scenario:
+> +
+> +	CPU0                    CPU1
+> +       ----                    ----
+> +     lock(&iint->mutex);
+> +                               lock(sb_writers#5);
+> +                               lock(&iint->mutex);
+> +     lock(sb_writers#5);
+> +
+> +     *** DEADLOCK ***
+> +
+> +It's a false positive lockdep warning due to missing annotation of
+> +stacking layer on iint->mutex in IMA code. [1]
+> +
+> +[1] https://lore.kernel.org/linux-unionfs/CAOQ4uxjk4XYuwz5HCmN-Ge=Ld=tM1f7ZxVrd5U1AC2Wisc9MTA@mail.gmail.com/
+> +*/
+> +static void iint_annotate_mutex_key(struct integrity_iint_cache *iint,
+> +					struct inode *inode)
+> +{
+> +#ifdef CONFIG_LOCKDEP
+> +	static struct lock_class_key
+> +		iint_mutex_key[FILESYSTEM_MAX_STACK_DEPTH],
+> +		iint_mutex_dir_key[FILESYSTEM_MAX_STACK_DEPTH];
+> +
+> +	int depth = inode->i_sb->s_stack_depth - 1;
+> +
+> +	if (WARN_ON_ONCE(depth < 0 || depth >= FILESYSTEM_MAX_STACK_DEPTH))
+> +		depth = 0;
+> +
+> +	if (S_ISDIR(inode->i_mode))
+> +		lockdep_set_class(&iint->mutex, &iint_mutex_dir_key[depth]);
+> +	else
+> +		lockdep_set_class(&iint->mutex, &iint_mutex_key[depth]);
+> +#endif
+> +}
 
-In the kdump code path, code call like this:
-	panic() -->__crash_kexec() --> machine_kexec();
+The iint cache is only for regular files.
 
-When we reach arm64's machine_kexec(), it means we can __NOT__ return to the panic(), we will run
-to the kdump linux kernel by cpu_soft_restart().
+> +
+>  /**
+>   * integrity_inode_get - find or allocate an iint associated with an inode
+>   * @inode: pointer to the inode
+> @@ -113,6 +152,7 @@ struct integrity_iint_cache *integrity_i
+>  	iint = kmem_cache_alloc(iint_cache, GFP_NOFS);
+>  	if (!iint)
+>  		return NULL;
+> +	iint_annotate_mutex_key(iint, inode);
+>  
+>  	write_lock(&integrity_iint_lock);
 
-So we can not depend the panic() to print the log. :)
-	
-By the way, I quote part of the arm64 log after we enter __crash_kexec() in NMI context:
-	1.) the log in machine_crash_shutdown()
-	      ..............
-		pr_crit("SMP: stopping secondary CPUs\n");
-	      ..............
-		pr_info("Starting crashdump kernel...\n");
-	      ..............
+Should annotating the iint be limited to files on overlay filesystems?
 
-        2.) the log in machine_kexec()
+thanks,
 
-	      ..............
-		WARN(in_kexec_crash && (stuck_cpus || smp_crash_stop_failed()),
-			"Some CPUs may be stale, kdump will be unreliable.\n");
-	      ..............
-		the logs in kexec_segment_flush(kimage);
-	      ..............
-		pr_info("Bye!\n");
+Mimi
 
 
-We cannot remove them all, and need to flush all the logs above to console in the NMI context.		
-
-
-Thanks
-Huang Shijie
