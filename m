@@ -2,121 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA1E3B0CB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE2D3B0CB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232521AbhFVSTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:19:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbhFVSTw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:19:52 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42057C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:17:35 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id h11so7263522wrx.5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:17:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dUjNFgJbMc3n/4UpR024/4xgXFRMOO3TLXFoCvUi2LM=;
-        b=ZCaB6t+mhREkhR2OvNFoApIE1ei48vRy96ybHQvvpa0MUrNGm/D8CtXEAmf2AckYqc
-         +8phSg2DOhfIRbX6xyLwluGh2a3zgUgofsBBEpCEXFq71BRAvUNhHnNqz2y2K45pjodr
-         vSZiL6w+/RuM2lVCluoiuATe1Evwl+5YPqOSpYAipU+eVTaiZFd11jVOiAarRbPybAKQ
-         FOJndxr8aMZYOiCaGRsiSRWSWRQYHHwbPpM3an9YVhxoUtvr9cf9WXbCR6LofyEhQ9qo
-         Y7vzKUv20I87Pv5KGp0y9ZO5TEZarChFNwgw9ZrLTo8aA/PEWFFi7qT4zSno74UaNHZR
-         G+5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dUjNFgJbMc3n/4UpR024/4xgXFRMOO3TLXFoCvUi2LM=;
-        b=jQXtTbXVrjXhuKu6chTI7Oz7t8zwvIaKrdOpbTnBBqzgOfP7m/Xz8CaP/cb3tuJoO5
-         Yu4IuK/+jpcus6CBW8T+jSmxELRtEFqql6Ti7yv/Ra9gDkpmQHlr3XnzlyoF/ncC8NK0
-         nsBQZJ7D695j57io15RHWxxD4JWvuOCtY1ROIpMDqsl/lDDFlHMAk/7LlOv5cLfBntns
-         ChFaTRfIuu+Ab+NhLCx3Lhrw3K7/7oQoqHsDJRfE/7/CwulZVU+rGpQOtZe/NGD/0lfA
-         tuLSz3rJnA+vx0YYDMpuPFT8qD0wha8hkEk21Do81zdGHPSlcZ40st0yre5+mShXM7/y
-         MF7g==
-X-Gm-Message-State: AOAM532grB8RFjUzyYTZuFg4GjrLarWTNE9jY0HKnStIgYaEPFKmX8CZ
-        n82mFVQpsAFoXMVey2Ssk/KtXTGTYoAk9V7VmtazSQ==
-X-Google-Smtp-Source: ABdhPJyyD07iHLTvYxa9U4h3OlVZ8XIGjNQEW31my+3kcgwEcINQJUt+bKV/AuDvHglyJgtyk90UVOSS0U0MHI7/gOQ=
-X-Received: by 2002:adf:f30d:: with SMTP id i13mr6318395wro.119.1624385853745;
- Tue, 22 Jun 2021 11:17:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210621215648.2991319-1-irogers@google.com> <YNIhzyKPqfFvvoYs@kernel.org>
- <YNIjtOSoj+aWnQns@kernel.org>
-In-Reply-To: <YNIjtOSoj+aWnQns@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 22 Jun 2021 11:17:21 -0700
-Message-ID: <CAP-5=fUtE_9=dYaazUJYzDGz2+nGcWjJoCxGb6b5oSbU6Z02AQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] perf test: Pass the verbose option to shell tests
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+        id S232544AbhFVSU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:20:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229612AbhFVSU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 14:20:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D08B561289;
+        Tue, 22 Jun 2021 18:18:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624385891;
+        bh=nowAttDsd1UFqodzF+KPbGwA+rzpnVvqAQ3tPN3oORI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Knw6GktxjsXNuN2X2pwhGQD2zkXq428IfsTVA+Up4fBcgkd/5ulVoQ6LWc+42uXB/
+         Wnj9QwEunTi/AHTaSXBvLm1cTFZ5NNhDtHtlADwznkMEDh1RzM4agbiQ4jJOMln4mn
+         Yl8IiNeQ1zfRcSt20+Z2ZhYcpmv9m0IcMEx5J1BSn9DFT3Q+2Nvi+cOtxWUkod7XaT
+         xzQOhRi8RaZcFLrJ3T6dCgpqmz9Hmnykyal9FBNXp2p7pr5ccF6DsfLaqH4dxPYQxh
+         0lLchL/arPPqN2NW4RvoqnCEI2+72Eke/Ob7/tzcE0nEYT8OCV/YsC+FUOzhTcQ24u
+         1oBe036IZG2Lg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 99BD240B1A; Tue, 22 Jun 2021 15:18:08 -0300 (-03)
+Date:   Tue, 22 Jun 2021 15:18:08 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Leo Yan <leo.yan@linaro.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 02/11] perf script: Move filtering before scripting
+Message-ID: <YNIpYNS0xlZguJIA@kernel.org>
+References: <20210621150514.32159-1-adrian.hunter@intel.com>
+ <20210621150514.32159-3-adrian.hunter@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621150514.32159-3-adrian.hunter@intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 10:54 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Tue, Jun 22, 2021 at 02:45:51PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Mon, Jun 21, 2021 at 02:56:46PM -0700, Ian Rogers escreveu:
-> > > Having a verbose option will allow shell tests to provide extra failure
-> > > details when the fail or skip.
-> > >
-> > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > ---
-> > >  tools/perf/tests/builtin-test.c | 7 +++++--
-> > >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-> > > index cbbfe48ab802..e1ed60567b2f 100644
-> > > --- a/tools/perf/tests/builtin-test.c
-> > > +++ b/tools/perf/tests/builtin-test.c
-> > > @@ -577,10 +577,13 @@ struct shell_test {
-> > >  static int shell_test__run(struct test *test, int subdir __maybe_unused)
-> > >  {
-> > >     int err;
-> > > -   char script[PATH_MAX];
-> > > +   char script[PATH_MAX + 3];
-> >
-> > This looks strange, i.e. if it is a _path_ _MAX_, why add 3 chars past
-> > that max when generating a _path_? I'll drop the above hunk and keep the
-> > rest, ok?
->
-> Oh well, its not a path after all, its something that is passed to
-> system(), the use of PATH_MAX seems arbitrary, so your patch wasn't
-> wrong, but since it is arbitrary, I'll keep it at PATH_MAX and reduce
-> the patch size 8-)
->
-> - Arnaldo
+Em Mon, Jun 21, 2021 at 06:05:05PM +0300, Adrian Hunter escreveu:
+> To make it possible to use filtering with scripts, move filtering before
+> scripting.
 
-Works for me. Thanks,
 
-Ian
+Thanks, applied.
 
-> > >     struct shell_test *st = test->priv;
-> > >
-> > > -   path__join(script, sizeof(script), st->dir, st->file);
-> > > +   path__join(script, sizeof(script) - 3, st->dir, st->file);
-> > > +
-> > > +   if (verbose)
-> > > +           strncat(script, " -v", sizeof(script) - strlen(script) - 1);
-> > >
-> > >     err = system(script);
-> > >     if (!err)
->
-> --
->
-> - Arnaldo
+- Arnaldo
+
+ 
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> ---
+>  tools/perf/builtin-script.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+> index 08a2b5d51018..ff7b43899f2e 100644
+> --- a/tools/perf/builtin-script.c
+> +++ b/tools/perf/builtin-script.c
+> @@ -1984,12 +1984,6 @@ static void process_event(struct perf_script *script,
+>  	if (output[type].fields == 0)
+>  		return;
+>  
+> -	if (!show_event(sample, evsel, thread, al))
+> -		return;
+> -
+> -	if (evswitch__discard(&script->evswitch, evsel))
+> -		return;
+> -
+>  	++es->samples;
+>  
+>  	perf_sample__fprintf_start(script, sample, thread, evsel,
+> @@ -2203,6 +2197,12 @@ static int process_sample_event(struct perf_tool *tool,
+>  	if (al.filtered)
+>  		goto out_put;
+>  
+> +	if (!show_event(sample, evsel, al.thread, &al))
+> +		goto out_put;
+> +
+> +	if (evswitch__discard(&scr->evswitch, evsel))
+> +		goto out_put;
+> +
+>  	if (scripting_ops) {
+>  		struct addr_location *addr_al_ptr = NULL;
+>  		struct addr_location addr_al;
+> -- 
+> 2.17.1
+> 
+
+-- 
+
+- Arnaldo
