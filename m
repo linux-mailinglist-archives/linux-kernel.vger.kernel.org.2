@@ -2,96 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47023B092B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B23413B0936
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbhFVPfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:35:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60652 "EHLO
+        id S232176AbhFVPgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:36:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232101AbhFVPfI (ORCPT
+        with ESMTP id S231964AbhFVPgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:35:08 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E070CC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:32:52 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id d2so30765851ljj.11
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:32:52 -0700 (PDT)
+        Tue, 22 Jun 2021 11:36:40 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14704C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:34:24 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id o6so5194177qkh.4
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:34:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hmjRNaRTsIzZ03uK9rRt/2A93U0PY9kbbj4A/XRT2RE=;
-        b=B6yWARmK6avEL61zEXxkktz5rMZ9fVIMLFKMWeX9LV0Sfcd5VNigl3pqQdvVOnT5fc
-         wmXE3hK9zOlTCkZFZLMF/QUQ+0cmNYbS2oB34FCfw6eCV15UfYIvGJflzAjcMTMrjE3J
-         gE/yWAYAxnnXGInGBg5PdjmBrZOcNgYDrgWts=
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XCGRlJxrxMvSvElmb3McFTndCdFsvf+0ulpFzwibisU=;
+        b=RZ37oQ4xjDFsBnFcY5FzSe7ryg7I2xkkjLJIDG9pWBVE471HjG5oj7ZH9zwFfLGJjb
+         isU5xI2gWvwgcxsSpN4N9oPCNXRQB2asF0okQeuH8sD+dvROpQfY4AHwM98x79x0O5xl
+         ZpXizLnL5TT0sIZB14l2AEL6+cxTu/0iS8e2gKRKGAIznR6ADAbYKgLWRotpG3swQzzG
+         sPAUUbB3nr22lLL4hUjaGnONeGbpSNdzAvtGoWJPME5FmLK3lnJIOmJMwP/op2rBS2Lj
+         4wFM18A4nUtQ3yo7pekqZd2V3XFmCRuhVmjSEIT1tizi0WIzn3FvnpWdH0taoX8FMvhl
+         NVvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hmjRNaRTsIzZ03uK9rRt/2A93U0PY9kbbj4A/XRT2RE=;
-        b=PTmTaB2bZRbwpMgpPgPNCwqdIw6MvPDQKBqX322DRUXvSX4B0MI7u2c0m7oJ0Wuhwi
-         bfiJX69RCn7c5Ac9NVNfx/gIbH2iTp/7u5GII0HRWxbi+5clM7Dkg3KP5gta35sJyB1F
-         MlKFtl896esrKXkZYADqpskBHacIb/em4zjhY6UmY/1y/DjoDg6gEknzynTw468zph1B
-         9AOOMe6io+li+z9K1dMf6FUBnSm//wM/cNldFQEK9B2ktmqvUE6w+i1qx3d06wikbyBG
-         4b5GcbgcIj/yF2xM5sDRzKkrrv6WOCk1OCet5qnCkVcHQWnNW7vSjGaSU61QhknjTAXJ
-         jP+A==
-X-Gm-Message-State: AOAM533l5/MFXUQWB2K2Q/5R4YpJ8QStXwAjCO0xtHWKBbk8C09SmYtQ
-        jIjvHGqmcmh7RK/8r4sT5HguBqvcEdGdFRe7bYk=
-X-Google-Smtp-Source: ABdhPJzrAWsma8B6dHyWFCJ1a4CESj8+iPImp3+zi7X3JPYN6V/Bo+ms3ZL80gRLAvmVUdn6yJEpVg==
-X-Received: by 2002:a2e:8584:: with SMTP id b4mr2393948lji.107.1624375971124;
-        Tue, 22 Jun 2021 08:32:51 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id b4sm2173285lfp.223.2021.06.22.08.32.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 08:32:48 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id d13so30665059ljg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:32:47 -0700 (PDT)
-X-Received: by 2002:a2e:7813:: with SMTP id t19mr3700308ljc.411.1624375967597;
- Tue, 22 Jun 2021 08:32:47 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XCGRlJxrxMvSvElmb3McFTndCdFsvf+0ulpFzwibisU=;
+        b=cSb+LPr8ysyor8/SoeGwKlC3rbhduO8+8RB4Nk9f6Q0/QkPisfwljIpddqayLp/arB
+         pdSdgrnco1fPWwjmOVgOMK913QuSJCTjX0/XkGLzVbPsp7mNpLm3kHBfxwu6PZ6Ea5gu
+         M3vZjPJtPa/75ClkuiM5WZbZgpi2zp9CEoRJSAvOG8x4H+piq25IZCkhqRaDyjnmWpxC
+         nB0pE+pQZWARd6lUtBK/GFUyyaX+S52MF04A0ZQHLhaJnCwleIuUiNqtf3fcBXEJaET1
+         XZO+L6F3gbiJCd9v3UTFpKqoWHrxcDIVqtmCU8qC+NkkweMa9eSie/flAce1AXuc8qHH
+         sJoA==
+X-Gm-Message-State: AOAM53287dOolARwoWXcvuw0TXWHwrPnsyJZ9Zsu/w3Q70Jg4JnBYJo7
+        1syP1aqhQxUSjE8r3V0xoCq3HA==
+X-Google-Smtp-Source: ABdhPJwJRNWHrciXJvuIph1nNbis29uOgjU1s215LhOPous5t6/XyNtN7A0DRMo5coyKAYPFIA6QuA==
+X-Received: by 2002:a37:a8c1:: with SMTP id r184mr4898379qke.129.1624376063270;
+        Tue, 22 Jun 2021 08:34:23 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id bk38sm7882443qkb.28.2021.06.22.08.34.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 08:34:22 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lviPu-00ADQh-9q; Tue, 22 Jun 2021 12:34:22 -0300
+Date:   Tue, 22 Jun 2021 12:34:22 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Tomer Tayar <ttayar@habana.ai>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
+ FD for DMA-BUF
+Message-ID: <20210622153422.GR1096940@ziepe.ca>
+References: <CAFCwf11jOnewkbLuxUESswCJpyo7C0ovZj80UrnwUOZkPv2JYQ@mail.gmail.com>
+ <20210621232912.GK1096940@ziepe.ca>
+ <d358c740-fd3a-9ecd-7001-676e2cb44ec9@gmail.com>
+ <CAFCwf11h_Nj_GEdCdeTzO5jgr-Y9em+W-v_pYUfz64i5Ac25yg@mail.gmail.com>
+ <20210622120142.GL1096940@ziepe.ca>
+ <CAFCwf10GmBjeJAFp0uJsMLiv-8HWAR==RqV9ZdMQz+iW9XWdTA@mail.gmail.com>
+ <20210622121546.GN1096940@ziepe.ca>
+ <CAFCwf13BuS+U3Pko_62hFPuvZPG26HQXuu-cxPmcADNPO22g9g@mail.gmail.com>
+ <20210622151142.GA2431880@ziepe.ca>
+ <CAFCwf1361iVGeGtcc8WsQeFmHMWY+J6UNkzJnrodFrsOh9zgqQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <3221175.1624375240@warthog.procyon.org.uk>
-In-Reply-To: <3221175.1624375240@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 22 Jun 2021 08:32:31 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgM0ZMqY9fuYx0H6UninvbZjMyJeL=7Zz4=AmtO98QncA@mail.gmail.com>
-Message-ID: <CAHk-=wgM0ZMqY9fuYx0H6UninvbZjMyJeL=7Zz4=AmtO98QncA@mail.gmail.com>
-Subject: Re: Do we need to unrevert "fs: do not prefault sys_write() user
- buffer pages"?
-To:     David Howells <dhowells@redhat.com>
-Cc:     "Ted Ts'o" <tytso@mit.edu>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux-MM <linux-mm@kvack.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf1361iVGeGtcc8WsQeFmHMWY+J6UNkzJnrodFrsOh9zgqQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Note this part:
+On Tue, Jun 22, 2021 at 06:24:28PM +0300, Oded Gabbay wrote:
+> On Tue, Jun 22, 2021 at 6:11 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Tue, Jun 22, 2021 at 04:12:26PM +0300, Oded Gabbay wrote:
+> >
+> > > > 1) Setting sg_page to NULL
+> > > > 2) 'mapping' pages for P2P DMA without going through the iommu
+> > > > 3) Allowing P2P DMA without using the p2p dma API to validate that it
+> > > >    can work at all in the first place.
+> > > >
+> > > > All of these result in functional bugs in certain system
+> > > > configurations.
+> > > >
+> > > > Jason
+> > >
+> > > Hi Jason,
+> > > Thanks for the feedback.
+> > > Regarding point 1, why is that a problem if we disable the option to
+> > > mmap the dma-buf from user-space ?
+> >
+> > Userspace has nothing to do with needing struct pages or not
+> >
+> > Point 1 and 2 mostly go together, you supporting the iommu is not nice
+> > if you dont have struct pages.
+> >
+> > You should study Logan's patches I pointed you at as they are solving
+> > exactly this problem.
 
-On Tue, Jun 22, 2021 at 8:20 AM David Howells <dhowells@redhat.com> wrote:
+> Yes, I do need to study them. I agree with you here. It appears I
+> have a hole in my understanding.  I'm missing the connection between
+> iommu support (which I must have of course) and struct pages.
+
+Chistian explained what the AMD driver is doing by calling
+dma_map_resource().
+
+Which is a hacky and slow way of achieving what Logan's series is
+doing.
+
+> > No, the design of the dmabuf requires the exporter to do the dma maps
+> > and so it is only the exporter that is wrong to omit all the iommu and
+> > p2p logic.
+> >
+> > RDMA is OK today only because nobody has implemented dma buf support
+> > in rxe/si - mainly because the only implementations of exporters don't
 >
->         copied = iov_iter_copy_from_user_atomic(page, i, offset, bytes);
+> Can you please educate me, what is rxe/si ?
 
-The "atomic" is the key thing.
+Sorry, rxe/siw - these are the all-software implementations of RDMA
+and they require the struct page to do a SW memory copy. They can't
+implement dmabuf without it.
 
-The fault_in_readable is just an optimistic "let's make things be mapped".
+> ok...
+> so how come that patch-set was merged into 5.12 if it's buggy ?
 
-But yes, it could get unmapped again before the actual copy happens
-with the lock held. But that's why the copy is using that atomic
-version, so if that happens, we'll end up repeating.
+We only implemented true dma devices for RDMA DMABUF support, so it is
+isn't buggy right now.
 
-Honestly, the first part comment above the
-iov_iter_fault_in_readable() is a bit misleading (the deadlock would
-be real _except_ for the atomic part), and it would logically make
-sense to only do this for when the actual atomic copy_from_user_atomic
-fails. But then you'd have to fault things twice if you do fault.
+> Yes, that's what I expect to see. But I want to see it with my own
+> eyes and then figure out how to solve this.
 
-            Linus
+It might be tricky to test because you have to ensure the iommu is
+turned on and has a non-idenity page table. Basically if it doesn't
+trigger a IOMMU failure then the IOMMU isn't setup properly.
+
+Jason
