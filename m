@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6150C3B0C0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD4D3B0C11
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232573AbhFVSBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:01:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37652 "EHLO
+        id S232742AbhFVSBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:01:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232661AbhFVSBG (ORCPT
+        with ESMTP id S232392AbhFVSBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:01:06 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBA0C0611BD
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:58:31 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id b6-20020a05620a1266b02903b10c5cfa93so841054qkl.13
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:58:31 -0700 (PDT)
+        Tue, 22 Jun 2021 14:01:16 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A187CC061146
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:58:33 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id f11-20020a056214164bb029026bc7adaae8so12450104qvw.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:58:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=gKgtnO0li3XctR1LlcZ0sfmT/BtRonO0rdROZiYa21Q=;
-        b=Sex7lUeipn7tR+V0xF1ACQQZL4w0FGipBVhvq6RwEVTjOP3LMZ2SwGQeCkBG51CTy7
-         J9seSG7oKa6S5aBAg+yP9LAAz0n8y0YYm1xzGnfCyGheGzdGzfkDHR4BVLfvgN9x5zg9
-         I9VtGIP+0i3VJqaw7QDgV7feV49meyBvHZNcDAb4iG3oZnS1qh/xNl88MqnwQLrrQnj7
-         M2K0KZSQmGA4zHYDfEkX2SUnKHmwKcULBMcyzKop+9KmdLUlvEMGaN07XrFJlZKPDJFe
-         Bt1DmrpQr1goRbZh30CBFX7VtgM7JiJpvJg+fvHTp0AfaGhU3igcdKLznJ2hnwkWr/uU
-         h+tg==
+        bh=Y3DE/+nhI8hKRcsxwDWqTYPTqmeZA0ewM302/K5Or18=;
+        b=RriloTVjS0q2o8MofR6Z5JpZFWZqk9SNDGq+/q+gYKgWnUcyxLds9wPSZMEe6q2Zv6
+         ItgXMx8wuuMFTdlxLX72BVxjjGua+jUQpPnsKAwRLXWvICPby/Iq4zR+NcuFzC7GORFv
+         rpCtVtBbCdQ+kf5leTycfLI6hKmJXwgpAg07Xd2oTJ3fUtvAHuYFstzyOaOv2DjDFzqu
+         T7m4LfJ0MVQRPHM8YPv813/6aRfBQzUbvaIrVN5gGl7J1ioeYUGoL/JIvbnjGx1+Iols
+         YMv0+QjLxr4LtHsCtxSxEdFYnf1QEaRgcLoebJYBz6pg3FZMhVBIRHArW2XZxBpU5KOO
+         td3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=gKgtnO0li3XctR1LlcZ0sfmT/BtRonO0rdROZiYa21Q=;
-        b=i5X+zX8l55XTYZIlFScwLKMJ52Vwk8NPCSsDq8LwHUtxdFgDQqgQwIq9YZlhWw0PcY
-         X4WN9v+jWMZhF4qzHP/bUXM5g1vGfGw9oSk6y3gGAbu1ng4QiV0n9vyeRJW8+HtP60rD
-         lqu1ZfbTFbZlkjNcCgyzM43Dzn+5cfoPjcz6C1GJrU/BK4uoTlgdF52qrobDgkouFk4Y
-         9td+NNN7PxwXNlMV64yjVjWjiUvmHy0WIJhl4+P1AXRh2GgWndhIsVgUbJnGn3Aol3HQ
-         YnYAm04anikR0k430cqYQ+NgMrv0NsIBhMYAv2byZUgao+EpTpFfdBkiw3eJuMcdxSPG
-         Ayag==
-X-Gm-Message-State: AOAM530e65O9Jcyw8MjylT+ymwELS7iTbGzysmPE4JGe5pMS+mziIfpJ
-        12GduYN8NayuRuKcR1OXByQOQsW1qWw=
-X-Google-Smtp-Source: ABdhPJys+z26QeE5bNgr2NIiKY0ZWi/vGDPdyD4gOQRKlwQlOW+EMsJ9CEtp6QFg4/Uf9yZ6iWKymivS3iI=
+        bh=Y3DE/+nhI8hKRcsxwDWqTYPTqmeZA0ewM302/K5Or18=;
+        b=rjulVIlOwyAWnR5ys4IRixDg32rap9eNcHRgzdr4prfpcEiZs1Ezr6Iewq3MmoPmFO
+         Jl4HbmRrEKfb8suKGgWu/LvbEIiOuBblnm3tD9XlfcvHq8P7LbQcZy0GLRWL40MKIYXr
+         4Ls4ZJ53PpG35KeypTEWPMGY5oRnzJDIY7UpWomrVmLkqYHV0dmgyds8+xbqGrR/tVG8
+         HnORtWDBmDIwOMQUbY1a7rR9K1IGQ4hq5WK3a9w46KJiZi8wH6XlRrBsh0J9MTf7AqPO
+         EAKbed5b1muk9Q6+QNJnlyodgWgAuTS7U8UN2tslx2hVsAa6JPxhOW/rA96aEYGXtClY
+         L7cA==
+X-Gm-Message-State: AOAM531lMOZUAMwePQtQg//BEiD5ycYDSLJDbQAfVR1P0oGd0029vDBV
+        LQzbrroUwcf4+60SJcydTaMl4xmnIsc=
+X-Google-Smtp-Source: ABdhPJxcVCQqF7FQn2ehTESyLdt547B54miRpQMhwIhU+T5Ne0xJSZ3XwmqlpeJZUZNic62udaw/IBdvjM4=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:5722:92ce:361f:3832])
- (user=seanjc job=sendgmr) by 2002:a25:2fd4:: with SMTP id v203mr5378244ybv.434.1624384710554;
- Tue, 22 Jun 2021 10:58:30 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a5b:c:: with SMTP id a12mr6524009ybp.123.1624384712819;
+ Tue, 22 Jun 2021 10:58:32 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 22 Jun 2021 10:57:00 -0700
+Date:   Tue, 22 Jun 2021 10:57:01 -0700
 In-Reply-To: <20210622175739.3610207-1-seanjc@google.com>
-Message-Id: <20210622175739.3610207-16-seanjc@google.com>
+Message-Id: <20210622175739.3610207-17-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210622175739.3610207-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 15/54] KVM: nSVM: Add a comment to document why nNPT uses
- vmcb01, not vCPU state
+Subject: [PATCH 16/54] KVM: x86/mmu: Drop smep_andnot_wp check from "uses NX"
+ for shadow MMUs
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -69,37 +69,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a comment in the nested NPT initialization flow to call out that it
-intentionally uses vmcb01 instead current vCPU state to get the effective
-hCR4 and hEFER for L1's NPT context.
+Drop the smep_andnot_wp role check from the "uses NX" calculation now
+that all non-nested shadow MMUs treat NX as used via the !TDP check.
 
-Note, despite nSVM's efforts to handle the case where vCPU state doesn't
-reflect L1 state, the MMU may still do the wrong thing due to pulling
-state from the vCPU instead of the passed in CR0/CR4/EFER values.  This
-will be addressed in future commits.
+The shadow MMU for nested NPT, which shares the helper, does not need to
+deal with SMEP (or WP) as NPT walks are always "user" accesses and WP is
+explicitly noted as being ignored:
+
+  Table walks for guest page tables are always treated as user writes at
+  the nested page table level.
+
+  A table walk for the guest page itself is always treated as a user
+  access at the nested page table level
+
+  The host hCR0.WP bit is ignored under nested paging.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/nested.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/x86/kvm/mmu/mmu.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 9f0e7ed672b2..33b2f9337e26 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -98,6 +98,12 @@ static void nested_svm_init_mmu_context(struct kvm_vcpu *vcpu)
- 	WARN_ON(mmu_is_nested(vcpu));
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 96c16a6e0044..ca7680d1ea24 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4223,8 +4223,7 @@ reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context)
+ 	 * NX can be used by any non-nested shadow MMU to avoid having to reset
+ 	 * MMU contexts.  Note, KVM forces EFER.NX=1 when TDP is disabled.
+ 	 */
+-	bool uses_nx = context->nx || !tdp_enabled ||
+-		context->mmu_role.base.smep_andnot_wp;
++	bool uses_nx = context->nx || !tdp_enabled;
+ 	struct rsvd_bits_validate *shadow_zero_check;
+ 	int i;
  
- 	vcpu->arch.mmu = &vcpu->arch.guest_mmu;
-+
-+	/*
-+	 * L1's CR4 and EFER are stuffed into vmcb01 by the caller.  Note, when
-+	 * called via KVM_SET_NESTED_STATE, that state may _not_ match current
-+	 * vCPU state.  CR0.WP is explicitly ignored, while CR0.PG is required.
-+	 */
- 	kvm_init_shadow_npt_mmu(vcpu, X86_CR0_PG, svm->vmcb01.ptr->save.cr4,
- 				svm->vmcb01.ptr->save.efer,
- 				svm->nested.ctl.nested_cr3);
 -- 
 2.32.0.288.g62a8d224e6-goog
 
