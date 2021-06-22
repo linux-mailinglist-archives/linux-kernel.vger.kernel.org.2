@@ -2,100 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF773B0043
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5F03B0046
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbhFVJcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 05:32:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:45192 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhFVJcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 05:32:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6DFD46D;
-        Tue, 22 Jun 2021 02:29:47 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.10.229])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9C2B03F718;
-        Tue, 22 Jun 2021 02:29:40 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 10:29:37 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
+        id S229739AbhFVJdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 05:33:47 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:37924 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhFVJdp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 05:33:45 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7F9CB1FD5D;
+        Tue, 22 Jun 2021 09:31:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624354289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=i9Bbmz47N10UG8giHvgOwdYprrSOjH5wrgszJlkF4zE=;
+        b=blZz11mG7cAAkIkROne1d9pYKpLiOw+VxblhAA8HcgbZ3NhfqZ9iuQmJ7r6cW3c7SlxBu5
+        TbYpVVUQDYDxr1mhw4ppC0TZISSsGXu+/BACrN2wuNqjdBQ8uw/CKqLj9zaRh2X+poyE9D
+        6vHFDjxXEPJ6QeMF67G7sL5kESxkdlE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624354289;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=i9Bbmz47N10UG8giHvgOwdYprrSOjH5wrgszJlkF4zE=;
+        b=6eD/VlGbCndHXirXcbGgF56xQw1r3dAJEg57OF2A8icvK7mRurShEVZ2kUB+ceh4AmsJGp
+        YqpWa/eoedbuHqBA==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 60225118DD;
+        Tue, 22 Jun 2021 09:31:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624354289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=i9Bbmz47N10UG8giHvgOwdYprrSOjH5wrgszJlkF4zE=;
+        b=blZz11mG7cAAkIkROne1d9pYKpLiOw+VxblhAA8HcgbZ3NhfqZ9iuQmJ7r6cW3c7SlxBu5
+        TbYpVVUQDYDxr1mhw4ppC0TZISSsGXu+/BACrN2wuNqjdBQ8uw/CKqLj9zaRh2X+poyE9D
+        6vHFDjxXEPJ6QeMF67G7sL5kESxkdlE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624354289;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=i9Bbmz47N10UG8giHvgOwdYprrSOjH5wrgszJlkF4zE=;
+        b=6eD/VlGbCndHXirXcbGgF56xQw1r3dAJEg57OF2A8icvK7mRurShEVZ2kUB+ceh4AmsJGp
+        YqpWa/eoedbuHqBA==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id PSr1FvGt0WDGLQAALh3uQQ
+        (envelope-from <bp@suse.de>); Tue, 22 Jun 2021 09:31:29 +0000
+Date:   Tue, 22 Jun 2021 11:31:17 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Bill Wendling <wcw@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Martin Liska <mliska@suse.cz>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Fangrui Song <maskray@google.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        linux-toolchains@vger.kernel.org, Marco Elver <elver@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
-Subject: Re: [PATCH 2/2] Kconfig: CC_HAS_NO_PROFILE_FN_ATTR, depend on for
- GCOV and PGO
-Message-ID: <20210622092937.GB67232@C02TD0UTHF1T.local>
-References: <20210618233023.1360185-1-ndesaulniers@google.com>
- <20210618233023.1360185-3-ndesaulniers@google.com>
- <CANpmjNNK-iYXucjz7Degh1kJPF_Z_=8+2vNLtUW17x0UnfgtPg@mail.gmail.com>
- <CAKwvOdmxGt6nAj+dDZEPdQtXNbYb8N6y3XwoCvCD+Qazskh7zw@mail.gmail.com>
- <CAGG=3QXeAxaf0AhKsg8P1-j2uHOoXne2KCOCEhq9SKa-e2dnag@mail.gmail.com>
- <CAKwvOd=9oAGPeuQmWnAMOxZn2ii_CRmyWnheoyXGcd09-U_CwA@mail.gmail.com>
- <20210622092533.GB3555@arm.com>
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V3 30/66] x86/fpu: Rename fregs related copy functions
+Message-ID: <YNGt5ZKCjlWTA9r7@zn.tnic>
+References: <20210618141823.161158090@linutronix.de>
+ <20210618143447.780873283@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210622092533.GB3555@arm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618143447.780873283@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 10:25:34AM +0100, Catalin Marinas wrote:
-> On Mon, Jun 21, 2021 at 01:43:54PM -0700, Nick Desaulniers wrote:
-> > We need to be able to express via Kconfig "GCOV should not be enabled
-> > for architectures that use noinstr when the toolchain does not support
-> > __attribute__((no_profile_instrument_function))."
-> > 
-> > Where "architectures that use noinstr" are currently arm64, s390, and
-> > x86.  So I guess we could do:
-> > 
-> > + depends on !ARM64 || !S390 || !X86 || CC_HAS_NO_PROFILE_FN_ATTR
+On Fri, Jun 18, 2021 at 04:18:53PM +0200, Thomas Gleixner wrote:
+> The function names for fnsave/fnrstor operations are horribly named and
+> a permanent source of confusion.
 > 
-> I think you want:
+> Rename:
+> 	copy_fregs_to_kernel() to fnsave()
+
+That first one is not existant.
+
+> 	copy_kernel_to_fregs() to fnrstor()
+
+				frstor() - no "n"
+
+> 	copy_fregs_to_user()   to fnsave_to_user_sigframe()
+> 	copy_user_to_fregs()   to fnrstor_from_user_sigframe()
 > 
->   depends on !(ARM64 || S390 || X86) || CC_HAS_NO_PROFILE_FN_ATTR
+> so it's clear what these are doing. All these functions are really low
+> level wrappers around the equaly named instructions, so mapping to the
+> documentation is just natural.
 > 
-> > (We could add a Kconfig for ARCH_WANTS_NO_INSTR, which might be more
-> > informative than listed out architectures which might be non-obvious
-> > to passers-by).
+> No functional change.
 > 
-> That would probably look better.
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+> V3: Rename (Boris)
+> ---
+>  arch/x86/include/asm/fpu/internal.h |   10 +++++-----
+>  arch/x86/kernel/fpu/core.c          |    2 +-
+>  arch/x86/kernel/fpu/signal.c        |    6 +++---
+>  3 files changed, 9 insertions(+), 9 deletions(-)
 
-It does; see:
+Regardless, above is just nitpicks.
 
-https://lore.kernel.org/r/20210621231822.2848305-1-ndesaulniers@google.com
+Reviewed-by: Borislav Petkov <bp@suse.de>
 
-:)
+-- 
+Regards/Gruss,
+    Boris.
 
-Thanks,
-Mark.
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
