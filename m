@@ -2,200 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 859FB3B0EFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F013B0EFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhFVUvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 16:51:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229501AbhFVUvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 16:51:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6056961076;
-        Tue, 22 Jun 2021 20:48:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624394929;
-        bh=mwEideQxjVVmirB+NlDLXy5czZ2ulbfVRBw3HaAWPes=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MT5l0Zt/WsnpST7TYlcC5RUySdzRS6tznzlG7nMFIk9eKR36GimJ272LE6iEUfOon
-         MjW4LeY7F3TdMrfx78KL/bhC2X6/iUsHNqw2HNwJysQNp6Waj97FbMeoALf9zNraUL
-         iq1GSu4NR0HL0X39IIYDVikKoR9Vg0U13l36vy92lig16mtPN4Sd2X2urPopuz1HI6
-         aTuQo8V6hCKxvxhgnhoPCHmU6g0NZi/h24nhyVzXb+w63tCoLQV2fdKzVED9njVniH
-         uVVk1GuXaRRXlOJV67+w/maj4Aig/9tjTlyTkrCQoCJIyZ2X/jhkOcTYRN5DTkkWXB
-         VSPb8RAUUzeAA==
-Received: by pali.im (Postfix)
-        id CF724889; Tue, 22 Jun 2021 22:48:46 +0200 (CEST)
-Date:   Tue, 22 Jun 2021 22:48:46 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     linus.walleij@linaro.org, kishon@ti.com,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        linux-pci@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
-Message-ID: <20210622204846.s5z2brzhgkrsxs4f@pali>
-References: <20210531090540.2663171-1-luca@lucaceresoli.net>
- <20210531133211.llyiq3jcfy25tmz4@pali>
- <8ff1c54f-bb29-1e40-8342-905e34361e1c@lucaceresoli.net>
- <9fdbada4-4902-cec1-f283-0d12e1d4ac64@ti.com>
- <20210531162242.jm73yzntzmilsvbg@pali>
- <8207a53c-4de9-d0e5-295a-c165e7237e36@lucaceresoli.net>
- <20210622110627.aqzxxtf2j3uxfeyl@pali>
- <20210622115604.GA25503@lpieralisi>
- <20210622121649.ouiaecdvwutgdyy5@pali>
- <20210622142325.GA27099@lpieralisi>
+        id S229900AbhFVUyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 16:54:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhFVUx7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 16:53:59 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85184C061574;
+        Tue, 22 Jun 2021 13:51:43 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id m18so179263wrv.2;
+        Tue, 22 Jun 2021 13:51:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:references:from:subject:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=DgOLw28e+RF+tP0cv3IOtjcn7zPRzgkIPJom+SKiGLI=;
+        b=PB/2RHjRbZ0ATGIzOOKkLzEQqvqfI6ZXKQRR6ucewyFed+jCitpouOO6XZhaMUf18g
+         IlCXJs64GBPoOp1Ov1gtGMQw+rkxIhGsiOb5WVy7wYJBKtDgGu6bl2TGFBN0cC3m0duj
+         cZfIDTRidRFsXJnSQjHCOcZIeGLY0QGSFQAP3mjwi0ZbTBRKaQX7WYa3VV9938vmfd+T
+         3cfpu8yHFiQlmlYUvul+JJOX4ush4Q/PGqu3qrK5Oqk7cHOWul09A3IyhgT7rsUmx/JO
+         qZVltQVxGY1AdnNUkyQYReeYel9W6/zpUGQiGDX+KeJ0fz6xIjGGIyZDvtwp7d9yDSPZ
+         dqMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DgOLw28e+RF+tP0cv3IOtjcn7zPRzgkIPJom+SKiGLI=;
+        b=nixCZhSUn+2D+jaIoKhAKsDurNdf1zOd39qY6CHG6XEypKQO1h8mgJ+I9Q1+hhX+n8
+         8GVslz18QNsO2LoKWB9apDbMfPPz9fb9uElV/W0YVFWLv6iwUrcQBAG2PAYHajvX8KdT
+         CcvrS2yRGzAa+Wqj3CJs01EeTD3Xu3IKSp1tLR2QXhzsZsZzSCkEZh8Cb1M85OmgM5yG
+         xNFZodDGzN+KRoM6r9DOsCIqjFgk28UglgexHVu5TpvdgEQGniRDpNOkxc/q7ydWDhNA
+         1Zi1OcP/eQPFf2OspMP8vP2yrrYPYkk8pgJqfgrW24tWEEB05yTCFHbpN3/y8cY4PH7y
+         jPlg==
+X-Gm-Message-State: AOAM533vdXbXhTWNPnFrQU00S1JKwOCWmuuZtm8sShZOE7F6Tla6eBJS
+        RzCOh/EyILiQCk4r+phoIcPjfSxeQSuT2n37
+X-Google-Smtp-Source: ABdhPJxhpytYem6NUvri3WoqqTfba47IEEXW9a6EEzKXzPyGwJfwXaKP0jj8O8OJCkkphXe3bOELzA==
+X-Received: by 2002:a5d:4904:: with SMTP id x4mr7075961wrq.202.1624395102003;
+        Tue, 22 Jun 2021 13:51:42 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.132.93])
+        by smtp.gmail.com with ESMTPSA id e15sm461965wrm.60.2021.06.22.13.51.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 13:51:41 -0700 (PDT)
+To:     Olivier Langlois <olivier@trillion01.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <9e8441419bb1b8f3c3fcc607b2713efecdef2136.1624364038.git.olivier@trillion01.com>
+ <678deb93-c4a5-5a14-9687-9e44f0f00b5a@gmail.com>
+ <7c47078a-9e2d-badf-a47d-1ca78e1a3253@gmail.com>
+ <32495917a028e9c70b75357029a87ca593378dde.camel@trillion01.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH v4] io_uring: reduce latency by reissueing the operation
+Message-ID: <1a6a8eba-96e3-0afb-0357-3ac3b08cba36@gmail.com>
+Date:   Tue, 22 Jun 2021 21:51:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <32495917a028e9c70b75357029a87ca593378dde.camel@trillion01.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210622142325.GA27099@lpieralisi>
-User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 22 June 2021 15:23:25 Lorenzo Pieralisi wrote:
-> On Tue, Jun 22, 2021 at 02:16:49PM +0200, Pali Rohár wrote:
-> > On Tuesday 22 June 2021 12:56:04 Lorenzo Pieralisi wrote:
-> > > [Adding Linus for GPIO discussion, thread:
-> > > https://lore.kernel.org/linux-pci/20210531090540.2663171-1-luca@lucaceresoli.net]
-> > > 
-> > > On Tue, Jun 22, 2021 at 01:06:27PM +0200, Pali Rohár wrote:
-> > > > Hello!
-> > > > 
-> > > > On Tuesday 22 June 2021 12:57:22 Luca Ceresoli wrote:
-> > > > > Nothing happened after a few weeks... I understand that knowing the
-> > > > > correct reset timings is relevant, but unfortunately I cannot help much
-> > > > > in finding out the correct values.
-> > > > > 
-> > > > > However I'm wondering what should happen to this patch. It *does* fix a
-> > > > > real bug, but potentially with an incorrect or non-optimal usleep range.
-> > > > > Do we really want to ignore a bugfix because we are not sure about how
-> > > > > long this delay should be?
-> > > > 
-> > > > As there is no better solution right now, I'm fine with your patch. But
-> > > > patch needs to be approved by Lorenzo, so please wait for his final
-> > > > answer.
-> > > 
-> > > I am not a GPIO expert and I have a feeling this is platform specific
-> > > beyond what the PCI specification can actually define architecturally.
-> > 
-> > In my opinion timeout is not platform specific as I wrote in email:
-> > https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
-> > 
-> > My experiments already proved that some PCIe cards needs to be in reset
-> > state for some minimal time otherwise they cannot be enumerated. And it
-> > does not matter to which platform you connect those (endpoint) cards.
-> > 
-> > I do not think that timeout itself is platform specific. GPIO controls
-> > PERST# pin and therefore specified sleep value directly drives how long
-> > is card on the other end of PCIe slot in Warm Reset state. PCIe CEM spec
-> > directly says that PERST# signal controls PCIe Warm Reset.
+On 6/22/21 8:05 PM, Olivier Langlois wrote:
+> On Tue, 2021-06-22 at 19:01 +0100, Pavel Begunkov wrote:
+>> On 6/22/21 6:54 PM, Pavel Begunkov wrote:
+>>> On 6/22/21 1:17 PM, Olivier Langlois wrote:
+>>>>
+>>>
+>>>>  static bool __io_poll_remove_one(struct io_kiocb *req,
+>>>> @@ -6437,6 +6445,7 @@ static void __io_queue_sqe(struct io_kiocb
+>>>> *req)
+>>>>         struct io_kiocb *linked_timeout =
+>>>> io_prep_linked_timeout(req);
+>>>>         int ret;
+>>>>  
+>>>> +issue_sqe:
+>>>>         ret = io_issue_sqe(req,
+>>>> IO_URING_F_NONBLOCK|IO_URING_F_COMPLETE_DEFER);
+>>>>  
+>>>>         /*
+>>>> @@ -6456,12 +6465,16 @@ static void __io_queue_sqe(struct
+>>>> io_kiocb *req)
+>>>>                         io_put_req(req);
+>>>>                 }
+>>>>         } else if (ret == -EAGAIN && !(req->flags &
+>>>> REQ_F_NOWAIT)) {
+>>>> -               if (!io_arm_poll_handler(req)) {
+>>>> +               switch (io_arm_poll_handler(req)) {
+>>>> +               case IO_APOLL_READY:
+>>>> +                       goto issue_sqe;
+>>>> +               case IO_APOLL_ABORTED:
+>>>>                         /*
+>>>>                          * Queued up for async execution, worker
+>>>> will release
+>>>>                          * submit reference when the iocb is
+>>>> actually submitted.
+>>>>                          */
+>>>>                         io_queue_async_work(req);
+>>>> +                       break;
+>>>
+>>> Hmm, why there is a new break here? It will miscount
+>>> @linked_timeout
+>>> if you do that. Every io_prep_linked_timeout() should be matched
+>>> with
+>>> io_queue_linked_timeout().
+>>
+>> Never mind, I said some nonsense and apparently need some coffee
 > 
-> Point taken but regardless this deviates from the PCI electromechanical
-> specifications (ie T-PERST-CLK), does not it ?
+> but this is a pertinant question, imho. I guess that you could get away
 
-Well, I was not able to understand and decode PCIe base and PCIe CEM
-specs to figure out which timeout value should be used. You wrote about
-T-PERST-CLK but I'm really not sure if it is this one... Therefore I
-cannot say if something deviates from spec or not.
+It appeared to me that it doesn't go down to the end of the function
+but returns or so, that's the nonsense part.
 
-> I misused "platform" to
-> define something that apparently is not contemplated by the PCI
-> specifications (and I would like to understand why).
->  
-> I guess on ACPI systems (ie where the PERST# handling is implemented in
-> FW) this is handled in BIOS/UEFI
+> without it since it is the last case of the switch statement... I am
+> not sure what kernel coding standard says about that.
 
-PCIe base spec does not define any standard interface for controlling
-PCIe Warm Reset and PCIe CEM spec does not define any SW interface for
-PERST# pin. So every board / computer with PCIe slot may connect PERST#
-pin in different way to CPU. Some ARM boards connect all PERST# pins to
-just one GPIO, and so via SW you can reset all PCIe cards at the same
-time. No granularity to reset just one card. Some other connects all
-PERST# pin to CPU reset output pin, so when CPU / board resets it cause
-also reset of all PCIe cards.
-
-I read that some server machines have some dedicated device connected to
-CPU via i2c/smbus, which controls PERST# pins for each PCIe slot
-individually. And on these machines people use userspace i2cset
-application to control PERST# and therefore can reset cards manually.
-
-If ACPI / BIOS / UEFI system has some kind of PCIe support && PERST# is
-controller by software then for sure it needs to reset PCIe card (at
-least putting it from reset state to normal) prior trying to read PCI
-device/vendor ID from config space.
-
-> need to peruse the code to check how
-> PERST# is handled and whether the delay is per host controller driver.
-
-Are there any open source implementations? Or we are just limited to
-dump ACPI bytecode or BIOS / UEFI firmware and start reverse engineering
-it? Because this would not be simple.
-
-And major problems with PCIe Warm Reset / PERST# signal I saw only on
-boards where there is no BIOS / UEFI / ACPI; just native PCIe controller
-drivers which talks directly to HW.
-
-I was not able to find any way how to control PERST# on any my x86
-laptop (standard setup with UEFI and ACPI). So I'm even not sure if on
-x86 laptops is PERST# controllable by SW. I can imagine that this PIN
-may be connected to some reset circuit from Embedded Controller which
-may take full control of resetting card when it is needed at correct
-time.
-
-So it is possible that code which controls PERST# on x86 does not have
-to run on CPU and may be "burned" as part of other hardware...
-
-> > 
-> > What is here platform specific thing is that PERST# signal is controlled
-> > by GPIO. But value of signal (high / low) and how long is in signal in
-> > which state for me sounds like not an platform specific thing, but as
-> > PCIe / CEM related.
+breaks are preferable, and falling through should be explicitly
+marked with fallthrough;
+ 
+> However, I can tell you that there was also a break statement at the
+> end of the case for IO_APOLL_READY and checkpatch.pl did complain about
+> it saying that it was useless since it was following a goto statement.
+> Therefore, I did remove that one.
 > 
-> There are two different things to agree on this patch
-> 1) how GPIO drives PERST#
+> checkpatch.pl did remain silent about the other remaining break. Hence
+> this is why I left it there.
 
-I'm not sure what do you mean by this 1). GPIO is set to output
-direction and can be either in low or high state. One of this states
-represents RESET state on PERST# pin and which it is (low or high) is
-defined by DTS (reset-gpio).
-
-So setting GPIO with output direction to value 1 (active) always puts
-card into reset state and setting GPIO to value 0 (inactive) puts card
-into normal state.
-
-> 2) the PERST# de-assertion delay.
-
-This is open question.
-
-> I appreciate they are related and that Luca had to handle them together
-> but logically they are separated "issues", it'd be great if we manage
-> to nail down how they should be handled before we merge this code.
-> 
-> Lorenzo
-> 
-> > 
-> > > There are two things I'd like to see:
-> > > 
-> > > 1) If Linus can have a look at the GPIO bits in this thread that would
-> > >    definitely help clarify any pending controversy
-> > > 2) Kishon to test on *existing* platforms and confirm there are no
-> > >    regressions triggered
-> > > 
-> > > > I would suggest to add a comment for call "usleep_range(1000, 2000);"
-> > > > that you have chosen some "random" values which worked fine on your
-> > > > setup and that they fix mentioned bug. Comment just to mark this sleep
-> > > > code that is suboptimal / not-so-correct and to prevent other people to
-> > > > copy+paste this code into other (new) drivers...
-> > > 
-> > > Yes a comment would help but as I say above I am afraid this is
-> > > a platform specific set-up, ie that delay is somewhat tied to
-> > > a platform, not sure there is anything we can do.
-> > > 
-> > > If Linus and Kishon are happy with the approach we can merge this
-> > > patch.
-> > > 
-> > > Lorenzo
+-- 
+Pavel Begunkov
