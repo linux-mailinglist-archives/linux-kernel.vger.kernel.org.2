@@ -2,125 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7BD13B0FA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9493B0FAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbhFVV5c convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Jun 2021 17:57:32 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:29059 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229922AbhFVV5a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 17:57:30 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-86-sl1tZ6CBMP-L3jncOw6psA-1; Tue, 22 Jun 2021 22:55:10 +0100
-X-MC-Unique: sl1tZ6CBMP-L3jncOw6psA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 22 Jun
- 2021 22:55:10 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Tue, 22 Jun 2021 22:55:10 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'David Howells' <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-CC:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        Ted Ts'o <tytso@mit.edu>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: Do we need to unrevert "fs: do not prefault sys_write() user
- buffer pages"?
-Thread-Topic: Do we need to unrevert "fs: do not prefault sys_write() user
- buffer pages"?
-Thread-Index: AQHXZ4N03eCp9KNCtEagRX54mD94w6sgkJXg
-Date:   Tue, 22 Jun 2021 21:55:09 +0000
-Message-ID: <7a6d8c55749d46d09f6f6e27a99fde36@AcuMS.aculab.com>
-References: <YNIBb5WPrk8nnKKn@zeniv-ca.linux.org.uk>
- <3221175.1624375240@warthog.procyon.org.uk>
- <3225322.1624379221@warthog.procyon.org.uk>
-In-Reply-To: <3225322.1624379221@warthog.procyon.org.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S230102AbhFVV67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 17:58:59 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:46549 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229612AbhFVV65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 17:58:57 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8gGG5gZ4z9sTD;
+        Wed, 23 Jun 2021 07:56:38 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624399000;
+        bh=sdelsaa0Tm9RJuY2VzVpRHVJ8f04e4vJx4mec+AZ8UY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JffhasMKw9JJ1Q7sd+V0e5YYPcnvB2tozLImegYRDBglkQ44tEhw6HPgFM5WLwO8s
+         Iyp1C1eWy+mawuZ2vno30HXizrVOj1LaOKClPyUZq0eArVBfNkw/2JVMeAgX9+G4xW
+         NZP4w8c2BDZRD3basvxyegPIP3IQyTbZoEGV0obVoVJ6HjSf25hpPErn5/yILKrvTS
+         w0AfoXjLR0FInxAAIcZFRQS7fmwRmEn61ALjv8/2LI+pjeeKQZ1J2A6Vq2CsCROwjf
+         AFlwkaNr/jbVOnMeGRWaKHF1xkk8fYcGdQYds9uMtg1PIHOPqxJnlb6vMr8IxYRnje
+         CGhMPn5JGxMZA==
+Date:   Wed, 23 Jun 2021 07:56:38 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Steven Whitehouse <swhiteho@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the gfs2 tree with the vfs tree
+Message-ID: <20210623075638.0b491899@canb.auug.org.au>
+In-Reply-To: <CAHc6FU5QKTVNos5x2uWZ8oCaMu6CEkqpan_zS6i1U2XqRpWyKQ@mail.gmail.com>
+References: <20210611111231.7750bb60@canb.auug.org.au>
+        <20210622113835.58589c3d@canb.auug.org.au>
+        <CAHc6FU5QKTVNos5x2uWZ8oCaMu6CEkqpan_zS6i1U2XqRpWyKQ@mail.gmail.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; boundary="Sig_/X0WNVuJSL1Qya7vi/focG=G";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells
-> Sent: 22 June 2021 17:27
-> 
-> Al Viro <viro@zeniv.linux.org.uk> wrote:
-> 
-> > On Tue, Jun 22, 2021 at 04:20:40PM +0100, David Howells wrote:
-> >
-> > > and wondering if the iov_iter_fault_in_readable() is actually effective.
-> > > Yes, it can make sure that the page we're intending to modify is dragged
-> > > into the pagecache and marked uptodate so that it can be read from, but is
-> > > it possible for the page to then get reclaimed before we get to
-> > > iov_iter_copy_from_user_atomic()?  a_ops->write_begin() could potentially
-> > > take a long time, say if it has to go and get a lock/lease from a server.
-> >
-> > Yes, it is.  So what?  We'll just retry.  You *can't* take faults while
-> > holding some pages locked; not without shitloads of deadlocks.
-> 
-> In that case, can we amend the comment immediately above
-> iov_iter_fault_in_readable()?
-> 
-> 	/*
-> 	 * Bring in the user page that we will copy from _first_.
-> 	 * Otherwise there's a nasty deadlock on copying from the
-> 	 * same page as we're writing to, without it being marked
-> 	 * up-to-date.
-> 	 *
-> 	 * Not only is this an optimisation, but it is also required
-> 	 * to check that the address is actually valid, when atomic
-> 	 * usercopies are used, below.
-> 	 */
-> 	if (unlikely(iov_iter_fault_in_readable(i, bytes))) {
-> 
-> The first part suggests this is for deadlock avoidance.  If that's not true,
-> then this should perhaps be changed.
+--Sig_/X0WNVuJSL1Qya7vi/focG=G
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I'd say something like:
-	/*
-	 * The actual copy_from_user() is done with a lock held
-	 * so cannot fault in missing pages.
-	 * So fault in the pages first.
-	 * If they get paged out the inatomic usercopy will fail
-	 * and the whole operation is retried.
-	 *
-	 * Hopefully there are enough memory pages available to
-	 * stop this looping forever.
-	 */
+Hi Andreas,
 
-It is perfectly possible for another application thread to
-invalidate one of the buffer fragments after iov_iter_fault_in_readable()
-return success - so it will then fail on the second pass.
+On Tue, 22 Jun 2021 08:48:32 +0200 Andreas Gruenbacher <agruenba@redhat.com=
+> wrote:
+>
+> Done.
 
-The maximum number of pages required is twice the maximum number
-of iov fragments.
-If the system is crawling along with no available memory pages
-the same physical page could get used for two user pages.
+Thanks.
 
-	David
+--=20
+Cheers,
+Stephen Rothwell
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+--Sig_/X0WNVuJSL1Qya7vi/focG=G
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDSXJYACgkQAVBC80lX
+0GylhAgAjn2jrq3USbckjDfi8k4i2ImLdNlVElIiVWUW20KxrJrlf3USsvgnNPo7
+phEhsUFTG4Pfoy+jIsMfHEfSs6j8aNXnluiwp6MYyb9w5g1w7zPBYiXgkAy9C6Z7
+HayrOdb5LwpAB5eE6MEYM+BcBZ2PU39loBrP5+a+xwK0TF9XxJq56n9VDT43A51Z
+F8r4D8UhdBg+LCLsSSCIEAUrtgCjOMScxPIwnmtq+s1oP6moRmbKlnrdtO7kagHg
+XmXy/cnIErCktVNIzjtI2FC8iuv11luJJL4L4aQYbaqhJBzgmObXSZbKRAKKv9k+
+BkT9Nk9hs4PBhxeNdi+uObG9KbeDcQ==
+=P4dP
+-----END PGP SIGNATURE-----
+
+--Sig_/X0WNVuJSL1Qya7vi/focG=G--
