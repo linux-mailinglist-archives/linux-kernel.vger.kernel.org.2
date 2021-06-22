@@ -2,83 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF7F3AFAC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 261653AFADC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhFVCHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 22:07:40 -0400
-Received: from mga11.intel.com ([192.55.52.93]:14707 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229663AbhFVCHj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 22:07:39 -0400
-IronPort-SDR: wF2sSkZm2jhURPSwsRDwOzpzOr9gVndzTI0IbcnUOMnAaxiGVrS2isLLs7SwAmczZHbHUPl7Ws
- 9IBGZogY3Rhw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="203955518"
-X-IronPort-AV: E=Sophos;i="5.83,290,1616482800"; 
-   d="scan'208";a="203955518"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 19:05:24 -0700
-IronPort-SDR: dLdw0mYa572hkEWgSGeMhCBpF7mlTIUXdEFSv85ioGGyeb0SniKyr3vmVizlAGg4dgBU+dFXJA
- S/uIZjF15L1w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,290,1616482800"; 
-   d="scan'208";a="490101021"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
-  by fmsmga002.fm.intel.com with ESMTP; 21 Jun 2021 19:05:18 -0700
-Cc:     baolu.lu@linux.intel.com, robdclark@chromium.org,
-        linux-kernel@vger.kernel.org, saravanak@google.com,
-        linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
-        quic_c_gdjako@quicinc.com, iommu@lists.linux-foundation.org,
-        linux-pci@vger.kernel.org, joel@joelfernandes.org,
-        rajatja@google.com, sonnyrao@chromium.org, vbadigan@codeaurora.org
-Subject: Re: [PATCH 4/6] iommu: Combine device strictness requests with the
- global default
-To:     Douglas Anderson <dianders@chromium.org>,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        rafael.j.wysocki@intel.com, will@kernel.org, robin.murphy@arm.com,
-        joro@8bytes.org, bjorn.andersson@linaro.org,
-        ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        bhelgaas@google.com
-References: <20210621235248.2521620-1-dianders@chromium.org>
- <20210621165230.4.Id84a954e705fcad3fdb35beb2bc372e4bf2108c7@changeid>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <a86c2f9c-f66a-3a12-cf80-6e3fc6dafda4@linux.intel.com>
-Date:   Tue, 22 Jun 2021 10:03:45 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210621165230.4.Id84a954e705fcad3fdb35beb2bc372e4bf2108c7@changeid>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S231348AbhFVCIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 22:08:15 -0400
+Received: from lucky1.263xmail.com ([211.157.147.134]:49806 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230429AbhFVCIN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 22:08:13 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id EB7FFCBBE5;
+        Tue, 22 Jun 2021 10:05:56 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P14866T140098544858880S1624327520607083_;
+        Tue, 22 Jun 2021 10:05:22 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <144f441584d62bcc554eeba1fed39432>
+X-RL-SENDER: cl@rock-chips.com
+X-SENDER: cl@rock-chips.com
+X-LOGIN-NAME: cl@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-RCPT-COUNT: 30
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   <cl@rock-chips.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
+        uwe@kleine-koenig.org, mail@david-bauer.net, jbx6244@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
+        cnsztl@gmail.com, devicetree@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        cl@rock-chips.com, wim@linux-watchdog.org, linux@roeck-us.net,
+        jamie@jamieiles.com, linux-watchdog@vger.kernel.org, maz@kernel.org
+Subject: [PATCH v5 0/4] arm64: dts: rockchip: add basic dtsi/dts files for RK3568 SoC
+Date:   Tue, 22 Jun 2021 10:05:13 +0800
+Message-Id: <20210622020517.13100-1-cl@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/21 7:52 AM, Douglas Anderson wrote:
-> @@ -1519,7 +1542,8 @@ static int iommu_get_def_domain_type(struct device *dev)
->   
->   static int iommu_group_alloc_default_domain(struct bus_type *bus,
->   					    struct iommu_group *group,
-> -					    unsigned int type)
-> +					    unsigned int type,
-> +					    struct device *dev)
->   {
->   	struct iommu_domain *dom;
->   
-> @@ -1534,6 +1558,12 @@ static int iommu_group_alloc_default_domain(struct bus_type *bus,
->   	if (!dom)
->   		return -ENOMEM;
->   
-> +	/* Save the strictness requests from the device */
-> +	if (dev && type == IOMMU_DOMAIN_DMA) {
-> +		dom->request_non_strict = dev->request_non_strict_iommu;
-> +		dom->force_strict = dev->force_strict_iommu;
-> +	}
-> +
+From: Liang Chen <cl@rock-chips.com>
 
-An iommu default domain might be used by multiple devices which might
-have different "strict" attributions. Then who could override who?
+v1:
+1. add some dt-bindings for RK3568 devices.
+2. add core dtsi for RK3568 SoC.
+3. add basic dts for RK3568 EVB
 
-Best regards,
-baolu
+v2:
+1. sort device nodes by some rules.
+
+v3:
+1. make ARCH=arm64 dtbs_check, then fix some errors and add some documents.
+
+v4:
+1. make ARCH=arm64 dt_binding_check, then fix grf.yaml.
+2. correct gic node.
+
+v5:
+1. remove some patchs already applied.
+
+Liang Chen (4):
+  dt-bindings: pwm: rockchip: add description for rk3568
+  arm64: dts: rockchip: add generic pinconfig settings used by most
+    Rockchip socs
+  arm64: dts: rockchip: add core dtsi for RK3568 SoC
+  arm64: dts: rockchip: add basic dts for RK3568 EVB
+
+ .../devicetree/bindings/arm/rockchip.yaml     |    5 +
+ .../devicetree/bindings/pwm/pwm-rockchip.yaml |    1 +
+ arch/arm64/boot/dts/rockchip/Makefile         |    1 +
+ .../boot/dts/rockchip/rk3568-evb1-v10.dts     |   79 +
+ .../boot/dts/rockchip/rk3568-pinctrl.dtsi     | 3111 +++++++++++++++++
+ arch/arm64/boot/dts/rockchip/rk3568.dtsi      |  777 ++++
+ .../boot/dts/rockchip/rockchip-pinconf.dtsi   |  344 ++
+ 7 files changed, 4318 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3568.dtsi
+ create mode 100644 arch/arm64/boot/dts/rockchip/rockchip-pinconf.dtsi
+
+-- 
+2.17.1
+
+
+
