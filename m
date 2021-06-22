@@ -2,426 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0983B0F7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605A63B0F7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhFVVij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 17:38:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhFVVii (ORCPT
+        id S230082AbhFVVi6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Jun 2021 17:38:58 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:35949 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229501AbhFVVi5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 17:38:38 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C0BC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 14:36:22 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id a5-20020a7bc1c50000b02901e3bbe0939bso29611wmj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 14:36:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O0ZEVvjuHzd2ACo/dIcrBaloN44ChLz98dWzTFd7BC4=;
-        b=Hrg7q7XrOU/ZiC3OQPncaOVpH4LaHdnzfqQ9Cdxha1N+e692kwi1CVSztk9ebBahbV
-         RtvacJzWioG5DvHYKcQIAuj4HicAAVaWb6prX9W78RQq89MKcHfn3UazoyRShnZjOeCJ
-         ijmGi1Gtt4uYeT1S2LQV1vALJcNSqcNk1NsgkSOI2c3X2JbWdWwvm+xCCVT66g5yDWn+
-         ySlJqB8NhXHwuxWXFtJDVMnv6CeP3JBTAHig/OwV+Ow+wAd2h4hTUCp/KtxBRGdJ0GvY
-         u1nMJo1oaQDI69ietfG4mVNcbzGjSMvUh2XHvPMtMXeLUKwxIgzad2u1nEJrRMHV0i6c
-         dAdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O0ZEVvjuHzd2ACo/dIcrBaloN44ChLz98dWzTFd7BC4=;
-        b=qkxq4p6Q1+eNGTbMWKDXI/QpaASXNXhh72EltKxCb5VEU4onDDoxM/RLt0khfpobKD
-         bsl9Bcde6dKvGZhUtOzvLG/YzFaomTlaLYE/ASrTDQGoUG0u+Cy12OaxTC7TO0n7ef9b
-         XEen1v5ps6WweJ/saxOKnKmEvkgjRZPIcxI8XouuThrDlOH8RDGKrgMbvoss7L5v9nGy
-         XMuo9hrDLpoTvW4yhp4BbfjP+tF5GtBNgZd6lkTuxa+BcybQ7Vw0v7Rg2Ur9A3mVs4g3
-         HGI/WZXBIX00kGKKEcoJm5Yg53mIHRFJ/8HQ3fZPzbluv9sTeenMC+ilsllumoih5QVo
-         xIlw==
-X-Gm-Message-State: AOAM531C6DJvS1Km6Ghn2hdN4GVdF0W8eA3yKE1uO4nLDUGswvoQMjnz
-        J3PK2PMU71ZTGYajoill8lE=
-X-Google-Smtp-Source: ABdhPJzto5h2P9HzwtqCQw0gLvshXrIkRZiRp8+BgKsObGa2M3NHrK0wCv9HpZxImEmNmax01sp8uw==
-X-Received: by 2002:a7b:c202:: with SMTP id x2mr6950193wmi.157.1624397780817;
-        Tue, 22 Jun 2021 14:36:20 -0700 (PDT)
-Received: from othello.cust.communityfibre.co.uk ([2a02:6b64:80a9:0:1be:22d4:3c1d:bcad])
-        by smtp.gmail.com with ESMTPSA id f5sm622264wrf.22.2021.06.22.14.36.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 14:36:20 -0700 (PDT)
-From:   Cassio Neri <cassio.neri@gmail.com>
-To:     john.stultz@linaro.org, tglx@linutronix.de
-Cc:     sboyd@kernel.org, linux-kernel@vger.kernel.org,
-        Cassio Neri <cassio.neri@gmail.com>
-Subject: [PATCH v4] time: Improve performance of time64_to_tm(). Add tests.
-Date:   Tue, 22 Jun 2021 22:36:16 +0100
-Message-Id: <20210622213616.313046-1-cassio.neri@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 22 Jun 2021 17:38:57 -0400
+Received: from [77.244.183.192] (port=62534 helo=[192.168.178.41])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1lvo4V-000FUy-JW; Tue, 22 Jun 2021 23:36:39 +0200
+Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linus.walleij@linaro.org, linux-pci@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+References: <9fdbada4-4902-cec1-f283-0d12e1d4ac64@ti.com>
+ <20210531162242.jm73yzntzmilsvbg@pali>
+ <8207a53c-4de9-d0e5-295a-c165e7237e36@lucaceresoli.net>
+ <20210622110627.aqzxxtf2j3uxfeyl@pali> <20210622115604.GA25503@lpieralisi>
+ <20210622121649.ouiaecdvwutgdyy5@pali>
+ <18a104a9-2cb8-7535-a5b2-f5f049adff47@lucaceresoli.net>
+ <4d4c0d4d-41b4-4756-5189-bffa15f88406@ti.com>
+ <20210622205220.ypu22tuxhpdn2jwz@pali>
+ <2873969e-ac56-a41f-0cc9-38e387542aa1@lucaceresoli.net>
+ <20210622211901.ikulpy32d6qlr4yw@pali>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <588741e4-b085-8ae2-3311-27037c040a57@lucaceresoli.net>
+Date:   Tue, 22 Jun 2021 23:36:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210622211901.ikulpy32d6qlr4yw@pali>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8BIT
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cassio Neri <cassio.neri@gmail.com>
+Hi Pali,
 
-The current implementation of time64_to_tm() contains unnecessary loops,
-branches and look-up tables. The new one uses an arithmetic-based algorithm
-appeared in [1] and is approximately 3x faster (YMMV).
+On 22/06/21 23:19, Pali Rohár wrote:
+> On Tuesday 22 June 2021 23:08:07 Luca Ceresoli wrote:
+>> On 22/06/21 22:52, Pali Rohár wrote:
+>>> On Tuesday 22 June 2021 19:27:37 Kishon Vijay Abraham I wrote:
+>>>> Hi Luca, Pali,
+>>>>
+>>>> On 22/06/21 7:01 pm, Luca Ceresoli wrote:
+>>>>> Hi,
+>>>>>
+>>>>> On 22/06/21 14:16, Pali Rohár wrote:
+>>>>>> On Tuesday 22 June 2021 12:56:04 Lorenzo Pieralisi wrote:
+>>>>>>> [Adding Linus for GPIO discussion, thread:
+>>>>>>> https://lore.kernel.org/linux-pci/20210531090540.2663171-1-luca@lucaceresoli.net]
+>>>>>>>
+>>>>>>> On Tue, Jun 22, 2021 at 01:06:27PM +0200, Pali Rohár wrote:
+>>>>>>>> Hello!
+>>>>>>>>
+>>>>>>>> On Tuesday 22 June 2021 12:57:22 Luca Ceresoli wrote:
+>>>>>>>>> Nothing happened after a few weeks... I understand that knowing the
+>>>>>>>>> correct reset timings is relevant, but unfortunately I cannot help much
+>>>>>>>>> in finding out the correct values.
+>>>>>>>>>
+>>>>>>>>> However I'm wondering what should happen to this patch. It *does* fix a
+>>>>>>>>> real bug, but potentially with an incorrect or non-optimal usleep range.
+>>>>>>>>> Do we really want to ignore a bugfix because we are not sure about how
+>>>>>>>>> long this delay should be?
+>>>>>>>>
+>>>>>>>> As there is no better solution right now, I'm fine with your patch. But
+>>>>>>>> patch needs to be approved by Lorenzo, so please wait for his final
+>>>>>>>> answer.
+>>>>>>>
+>>>>>>> I am not a GPIO expert and I have a feeling this is platform specific
+>>>>>>> beyond what the PCI specification can actually define architecturally.
+>>>>>>
+>>>>>> In my opinion timeout is not platform specific as I wrote in email:
+>>>>>> https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
+>>>>>>
+>>>>>> My experiments already proved that some PCIe cards needs to be in reset
+>>>>>> state for some minimal time otherwise they cannot be enumerated. And it
+>>>>>> does not matter to which platform you connect those (endpoint) cards.
+>>>>>>
+>>>>>> I do not think that timeout itself is platform specific. GPIO controls
+>>>>>> PERST# pin and therefore specified sleep value directly drives how long
+>>>>>> is card on the other end of PCIe slot in Warm Reset state. PCIe CEM spec
+>>>>>> directly says that PERST# signal controls PCIe Warm Reset.
+>>>>>>
+>>>>>> What is here platform specific thing is that PERST# signal is controlled
+>>>>>> by GPIO. But value of signal (high / low) and how long is in signal in
+>>>>>> which state for me sounds like not an platform specific thing, but as
+>>>>>> PCIe / CEM related.
+>>>>>
+>>>>> That's exactly my understanding of this matter. At least for the dra7xx
+>>>>> controller it works exactly like this, PERSTn# is nothing but a GPIO
+>>>>> output from the SoC that drives the PERSTn# input of the external chip
+>>>>> without affecting the controller directly.
+>>>>>
+>>>>
+>>>> While the patch itself is correct, this kind-of changes the behavior on
+>>>> already upstreamed platforms. Previously the driver expected #PERST to
+>>>> be asserted be external means (or default power-up state) and only takes
+>>>> care of de-asserting the #PERST line.
+>>>>
+>>>> There are 2 platforms that will be impacted due to this change
+>>>> 1) arch/arm/boot/dts/am57xx-beagle-x15-common.dtsi (has an inverter on
+>>>> GPIO line)
+>>>> 2) arch/arm/boot/dts/am571x-idk.dts (directly connected to #PERST)
+>>>>
+>>>> For 1), gpiod_set_value(reset, 0) will assert the PERST line due to the
+>>>> inverter (and GPIO_ACTIVE_LOW)
+>>>> For 2), gpiod_set_value(reset, 0) will assert the PERST line because we
+>>>> have GPIO_ACTIVE_HIGH
+>>>
+>>> Ou! This is a problem in DT. It needs to be defined in a way that state
+>>> is same for every DTS device which uses this driver.
+>>
+>> Why?
+> 
+> I'm starting to be confused by triple or more negations (asserting,
+> signal inverter, active low)...
+> 
+> In your patch is GPIO set value to 0 and Kishon wrote that GPIO set
+> value to 0 for those two boards assert PERST# line. Asserting PERST#
+> line cause endpoint PCIe card to be in reset state. And in pci-dra7xx.c
+> driver there is no other code which de-asserts PERST# line.
+> 
+> So based on all this information I deduced that your patch will cause
+> putting PCIe cards into reset state (forever) and therefore they would
+> not work.
+> 
+> Or do I have here some mistake?
 
-The drawback is that the new code isn't intuitive and contains many 'magic
-numbers' (not unusual for this type of algorithm). However, [1] justifies
-all those numbers and, given this function's history, the code is unlikely
-to need much maintenance, if any at all.
+Uhm, at time time in the night I'm not sure I can do much more than
+adding a few notes on top of the commit message. I hope it helps anyway.
 
-Add a KUnit test for it which checks every day in a 160,000 years interval
-centered at 1970-01-01 against the expected result.
+The PCIe PERSTn reset pin is active low and should be asserted, then
+deasserted.
 
-[1] Neri, Schneider, "Euclidean Affine Functions and Applications to
-Calendar Algorithms". https://arxiv.org/abs/2102.06959
+The current implementation only drives the pin once in "HIGH" position,
+thus presumably it was intended to deassert the pin. This has two problems:
 
-Signed-off-by: Cassio Neri <cassio.neri@gmail.com>
+  1) it assumes the pin was asserted by other means before loading the
+     driver [Note: Kishon confirmed so far]
+  2) it has the wrong polarity, since "HIGH" means "active", and the pin is
+     presumably configured as active low coherently with the PCIe
+     convention, thus it is driven physically to 0, keeping the device
+     under reset unless the pin is configured as active high.
+     [Note: the curren 2 DTS files pointed to by Kishon have different
+      polarities]
 
----
+Fix both problems by:
 
-* Disclaimer: I'm an author of [1].
+  1) keeping devm_gpiod_get_optional(dev, NULL, GPIOD_OUT_HIGH) as is, but
+     assuming the pin is correctly configured as "active low" this now
+     becomes a reset assertion
+  2) adding gpiod_set_value(reset, 0) after a delay to deassert reset
+[Note: this is exactly the current idea, but with the additional need to
+fix (=invert) the current polarities in DT]
 
-* Test evidence: Same test implemented by time_test.c, compiler switches
-are close to kernel's, and it's possible to run this test on 32 and 64
-bits:
-
-    https://godbolt.org/z/chcoee8o9
-
-* Benchmarks: Measures the time taken by each implementation to process
-65,536 pseudo-random numbers (time64_t) drawn under the uniform
-distribution on the interval corresponding to dates spanning 800 years
-centered at 1970-01-01:
-
-    https://quick-bench.com/q/bPV45fKpIgB7Q6QXZ7I1a-Y9AGw
-
-(Apologies that the benchmark is in C++ but results in C should be close.
-Results need to be taken with a pinch of salt since compiler switches are
-not the same as the kernel's.)
-
-* Disasembly: Compiler switches are close to kernel's and shows, in
-particular, reduction in code size:
-
-    https://godbolt.org/z/6rq7jvcfz
-
-* History:
-
-  v4 Address Thomas Gleixner's comments: changelog text, reverse variable
-     declarations, fix tabulation and changed expression of is_leap_year.
-  v3 Address Joe Perches' comments: rename variable, change some types and
-     use upper_32_bits and lower_32_bits.
-  v2 Address Joe Perches's comments: more descriptive variable names, use
-     ULL markers and other smaller changes.
-  v1 Original implementation.
-
-* Many thanks to reviewers.
-
----
- kernel/time/Kconfig     |   9 +++
- kernel/time/Makefile    |   1 +
- kernel/time/time_test.c |  98 ++++++++++++++++++++++++++++++
- kernel/time/timeconv.c  | 128 ++++++++++++++++++++++------------------
- 4 files changed, 178 insertions(+), 58 deletions(-)
- create mode 100644 kernel/time/time_test.c
-
-diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
-index 83e158d016ba..3610b1bef142 100644
---- a/kernel/time/Kconfig
-+++ b/kernel/time/Kconfig
-@@ -64,6 +64,15 @@ config LEGACY_TIMER_TICK
- 	  lack support for the generic clockevent framework.
- 	  New platforms should use generic clockevents instead.
- 
-+config TIME_KUNIT_TEST
-+	tristate "KUnit test for kernel/time functions" if !KUNIT_ALL_TESTS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  Enable this option to test RTC library functions.
-+
-+	  If unsure, say N.
-+
- if GENERIC_CLOCKEVENTS
- menu "Timers subsystem"
- 
-diff --git a/kernel/time/Makefile b/kernel/time/Makefile
-index 1fb1c1ef6a19..b733d09a6e4d 100644
---- a/kernel/time/Makefile
-+++ b/kernel/time/Makefile
-@@ -21,3 +21,4 @@ obj-$(CONFIG_HAVE_GENERIC_VDSO)			+= vsyscall.o
- obj-$(CONFIG_DEBUG_FS)				+= timekeeping_debug.o
- obj-$(CONFIG_TEST_UDELAY)			+= test_udelay.o
- obj-$(CONFIG_TIME_NS)				+= namespace.o
-+obj-$(CONFIG_TIME_KUNIT_TEST)			+= time_test.o
-diff --git a/kernel/time/time_test.c b/kernel/time/time_test.c
-new file mode 100644
-index 000000000000..341ebfad5e99
---- /dev/null
-+++ b/kernel/time/time_test.c
-@@ -0,0 +1,98 @@
-+// SPDX-License-Identifier: LGPL-2.1+
-+
-+#include <kunit/test.h>
-+#include <linux/time.h>
-+
-+/*
-+ * Traditional implementation of leap year evaluation.
-+ */
-+static bool is_leap(long year)
-+{
-+	return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
-+}
-+
-+/*
-+ * Gets the last day of a month.
-+ */
-+static int last_day_of_month(long year, int month)
-+{
-+	if (month == 2)
-+		return 28 + is_leap(year);
-+	if (month == 4 || month == 6 || month == 9 || month == 11)
-+		return 30;
-+	return 31;
-+}
-+
-+/*
-+ * Advances a date by one day.
-+ */
-+static void advance_date(long *year, int *month, int *mday, int *yday)
-+{
-+	if (*mday != last_day_of_month(*year, *month)) {
-+		++*mday;
-+		++*yday;
-+		return;
-+	}
-+
-+	*mday = 1;
-+	if (*month != 12) {
-+		++*month;
-+		++*yday;
-+		return;
-+	}
-+
-+	*month = 1;
-+	*yday  = 0;
-+	++*year;
-+}
-+
-+/*
-+ * Checks every day in a 160000 years interval centered at 1970-01-01
-+ * against the expected result.
-+ */
-+static void time64_to_tm_test_date_range(struct kunit *test)
-+{
-+	/*
-+	 * 80000 years	= (80000 / 400) * 400 years
-+	 *		= (80000 / 400) * 146097 days
-+	 *		= (80000 / 400) * 146097 * 86400 seconds
-+	 */
-+	time64_t total_secs = ((time64_t) 80000) / 400 * 146097 * 86400;
-+	long year = 1970 - 80000;
-+	int month = 1;
-+	int mdday = 1;
-+	int yday = 0;
-+
-+	struct tm result;
-+	time64_t secs;
-+	s64 days;
-+
-+	for (secs = -total_secs; secs <= total_secs; secs += 86400) {
-+
-+		time64_to_tm(secs, 0, &result);
-+
-+		days = div_s64(secs, 86400);
-+
-+		#define FAIL_MSG "%05ld/%02d/%02d (%2d) : %ld", \
-+			year, month, mdday, yday, days
-+
-+		KUNIT_ASSERT_EQ_MSG(test, year - 1900, result.tm_year, FAIL_MSG);
-+		KUNIT_ASSERT_EQ_MSG(test, month - 1, result.tm_mon, FAIL_MSG);
-+		KUNIT_ASSERT_EQ_MSG(test, mdday, result.tm_mday, FAIL_MSG);
-+		KUNIT_ASSERT_EQ_MSG(test, yday, result.tm_yday, FAIL_MSG);
-+
-+		advance_date(&year, &month, &mdday, &yday);
-+	}
-+}
-+
-+static struct kunit_case time_test_cases[] = {
-+	KUNIT_CASE(time64_to_tm_test_date_range),
-+	{}
-+};
-+
-+static struct kunit_suite time_test_suite = {
-+	.name = "time_test_cases",
-+	.test_cases = time_test_cases,
-+};
-+
-+kunit_test_suite(time_test_suite);
-diff --git a/kernel/time/timeconv.c b/kernel/time/timeconv.c
-index 62e3b46717a6..f876218427a3 100644
---- a/kernel/time/timeconv.c
-+++ b/kernel/time/timeconv.c
-@@ -22,47 +22,16 @@
- 
- /*
-  * Converts the calendar time to broken-down time representation
-- * Based on code from glibc-2.6
-  *
-  * 2009-7-14:
-  *   Moved from glibc-2.6 to kernel by Zhaolei<zhaolei@cn.fujitsu.com>
-+ * 2021-06-02:
-+ *   Partially reimplemented by Cassio Neri <cassio.neri@gmail.com>
-  */
- 
- #include <linux/time.h>
- #include <linux/module.h>
--
--/*
-- * Nonzero if YEAR is a leap year (every 4 years,
-- * except every 100th isn't, and every 400th is).
-- */
--static int __isleap(long year)
--{
--	return (year) % 4 == 0 && ((year) % 100 != 0 || (year) % 400 == 0);
--}
--
--/* do a mathdiv for long type */
--static long math_div(long a, long b)
--{
--	return a / b - (a % b < 0);
--}
--
--/* How many leap years between y1 and y2, y1 must less or equal to y2 */
--static long leaps_between(long y1, long y2)
--{
--	long leaps1 = math_div(y1 - 1, 4) - math_div(y1 - 1, 100)
--		+ math_div(y1 - 1, 400);
--	long leaps2 = math_div(y2 - 1, 4) - math_div(y2 - 1, 100)
--		+ math_div(y2 - 1, 400);
--	return leaps2 - leaps1;
--}
--
--/* How many days come before each month (0-12). */
--static const unsigned short __mon_yday[2][13] = {
--	/* Normal years. */
--	{0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365},
--	/* Leap years. */
--	{0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366}
--};
-+#include <linux/kernel.h>
- 
- #define SECS_PER_HOUR	(60 * 60)
- #define SECS_PER_DAY	(SECS_PER_HOUR * 24)
-@@ -77,9 +46,11 @@ static const unsigned short __mon_yday[2][13] = {
-  */
- void time64_to_tm(time64_t totalsecs, int offset, struct tm *result)
- {
--	long days, rem, y;
-+	u64 u64tmp, udays, century, year;
-+	u32 u32tmp, day_of_century, year_of_century, day_of_year, month, day;
-+	bool is_Jan_or_Feb, is_leap_year;
-+	long days, rem;
- 	int remainder;
--	const unsigned short *ip;
- 
- 	days = div_s64_rem(totalsecs, SECS_PER_DAY, &remainder);
- 	rem = remainder;
-@@ -103,27 +74,68 @@ void time64_to_tm(time64_t totalsecs, int offset, struct tm *result)
- 	if (result->tm_wday < 0)
- 		result->tm_wday += 7;
- 
--	y = 1970;
--
--	while (days < 0 || days >= (__isleap(y) ? 366 : 365)) {
--		/* Guess a corrected year, assuming 365 days per year. */
--		long yg = y + math_div(days, 365);
--
--		/* Adjust DAYS and Y to match the guessed year. */
--		days -= (yg - y) * 365 + leaps_between(y, yg);
--		y = yg;
--	}
--
--	result->tm_year = y - 1900;
--
--	result->tm_yday = days;
--
--	ip = __mon_yday[__isleap(y)];
--	for (y = 11; days < ip[y]; y--)
--		continue;
--	days -= ip[y];
--
--	result->tm_mon = y;
--	result->tm_mday = days + 1;
-+	/*
-+	 * The following algorithm is, basically, Proposition 6.3 of Neri
-+	 * and Schneider [1]. In a few words: it works on the computational
-+	 * (fictitious) calendar where the year starts in March, month = 2
-+	 * (*), and finishes in February, month = 13. This calendar is
-+	 * mathematically convenient because the day of the year does not
-+	 * depend on whether the year is leap or not. For instance:
-+	 *
-+	 * March 1st		0-th day of the year;
-+	 * ...
-+	 * April 1st		31-st day of the year;
-+	 * ...
-+	 * January 1st		306-th day of the year; (Important!)
-+	 * ...
-+	 * February 28th	364-th day of the year;
-+	 * February 29th	365-th day of the year (if it exists).
-+	 *
-+	 * After having worked out the date in the computational calendar
-+	 * (using just arithmetics) it's easy to convert it to the
-+	 * corresponding date in the Gregorian calendar.
-+	 *
-+	 * [1] "Euclidean Affine Functions and Applications to Calendar
-+	 * Algorithms". https://arxiv.org/abs/2102.06959
-+	 *
-+	 * (*) The numbering of months follows tm more closely and thus,
-+	 * is slightly different from [1].
-+	 */
-+
-+	udays	= ((u64) days) + 2305843009213814918ULL;
-+
-+	u64tmp		= 4 * udays + 3;
-+	century		= div64_u64_rem(u64tmp, 146097, &u64tmp);
-+	day_of_century	= (u32) (u64tmp / 4);
-+
-+	u32tmp		= 4 * day_of_century + 3;
-+	u64tmp		= 2939745ULL * u32tmp;
-+	year_of_century	= upper_32_bits(u64tmp);
-+	day_of_year	= lower_32_bits(u64tmp) / 2939745 / 4;
-+
-+	year		= 100 * century + year_of_century;
-+	is_leap_year	= year_of_century ? !(year_of_century % 4) : !(century % 4);
-+
-+	u32tmp		= 2141 * day_of_year + 132377;
-+	month		= u32tmp >> 16;
-+	day		= ((u16) u32tmp) / 2141;
-+
-+	/*
-+	 * Recall that January 1st is the 306-th day of the year in the
-+	 * computational (not Gregorian) calendar.
-+	 */
-+	is_Jan_or_Feb	= day_of_year >= 306;
-+
-+	/* Converts to the Gregorian calendar and adjusts to Unix time. */
-+	year		= year + is_Jan_or_Feb - 6313183731940000ULL;
-+	month		= is_Jan_or_Feb ? month - 12 : month;
-+	day		= day + 1;
-+	day_of_year	+= is_Jan_or_Feb ? -306 : 31 + 28 + is_leap_year;
-+
-+	/* Converts to tm's format. */
-+	result->tm_year = (long) (year - 1900);
-+	result->tm_mon  = (int) month;
-+	result->tm_mday = (int) day;
-+	result->tm_yday = (int) day_of_year;
- }
- EXPORT_SYMBOL(time64_to_tm);
-
-base-commit: 245a057fee18be08d6ac12357463579d06bea077
 -- 
-2.32.0
+Luca
 
