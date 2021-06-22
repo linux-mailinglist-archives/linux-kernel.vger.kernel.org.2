@@ -2,281 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D99253AFDAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8B23AFDAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhFVHQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:16:54 -0400
-Received: from mx0a-0064b401.pphosted.com ([205.220.166.238]:13736 "EHLO
-        mx0a-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229490AbhFVHQx (ORCPT
+        id S230039AbhFVHRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhFVHRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:16:53 -0400
-Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15M7DAuc024574;
-        Tue, 22 Jun 2021 00:14:23 -0700
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2105.outbound.protection.outlook.com [104.47.70.105])
-        by mx0a-0064b401.pphosted.com with ESMTP id 39b47h86tb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 00:14:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q1/wGO8STeQ7ahSeiGRytB9ZAfK0z48nhsBrMtwxlGMh2xKXPFQ2o39IhRcOP5yq8CVkY2UzlbVeK5P6zpyXd8ZvuFBpKfThbsHdsFWVhcKoXGckXjXJu3TsJcT1vNl6IFsZts5ffAuqbsJ7ZsC1xWaN93tDyr8SwAGNSbxeTH2JJWRzA5Y7bgwWsNSJbO6Amho/b+/4fPJKTL0hjMQunHEa098D0MVC1DwZ88r1Rzp5xCniRl5vit1VrWXPnew7F+yoYOaojP1rsh8ekDK2uom1wMIrI6mnlBt6pDWr/Kl8kR21+wRs9WZfQKz29utIcqtM9BneePrE1YaxovPnyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wnyiOUTN27qCLp1aUm8KLk/Lt0Lbl+f50lhM7gkMFvk=;
- b=FjWJu+Rj3UP0tWyE9821o7Z99X8dUDiJVUkJJRXSAxxndi3tAmoJMyPSOpMeIZfb+VASj1cXbHbWVrioF4Bst/BGjVUqPxWIVToOp7LVDFeu6tY0SmuPsNoOB0sXv6CF5Hzc0/HrHji9bCz2zfBluMXYwWKmF3CqJADQn/0jd90nkmkpaY/hL7kWVH91iAx8qbe3oCdFXOseVI6F3QgkoR/0CmoJYGul5AOvHkQjijO9sUx1y/f2XSxynq+dRf1We8MgFrPxtaF15YdsQoAXwG8XZVY0KY/1rf5g6QmOdjqadtB9vq1bXG7RRK06ick1wJL/33mF1PoacfUddrsiPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        Tue, 22 Jun 2021 03:17:38 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE39C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:15:22 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id p7so34137739lfg.4
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:15:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wnyiOUTN27qCLp1aUm8KLk/Lt0Lbl+f50lhM7gkMFvk=;
- b=NqS69aBaFYEwgDbygL23SHzT68su4w3unMzFhY2scmFofLrVaJwYsqcXomQN0qujZhvtBXHkv66IRfMy7aGLTJr+ACBVcn+Pp25rW0ACAmtaN71IGsv/NbqnZqarJamrfVHL89N8Q/8Edg/9V3TsEQcpu/anmQePbj3V7veMAgA=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
- by CY4PR11MB1830.namprd11.prod.outlook.com (2603:10b6:903:125::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Tue, 22 Jun
- 2021 07:14:19 +0000
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::40e4:b9:53a1:de74]) by CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::40e4:b9:53a1:de74%6]) with mapi id 15.20.4242.023; Tue, 22 Jun 2021
- 07:14:19 +0000
-Subject: Re: [PATCH v2] clk: zynqmp: fix compile testing without
- ZYNQMP_FIRMWARE
-To:     Michal Simek <michal.simek@xilinx.com>,
-        linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org
-References: <fdee3a286defb103aa07b5493b805d1987885165.1624281224.git.michal.simek@xilinx.com>
-From:   "quanyang.wang" <quanyang.wang@windriver.com>
-Message-ID: <81e67a24-0076-cbbb-4af4-04dc9f3edfc9@windriver.com>
-Date:   Tue, 22 Jun 2021 15:12:46 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <fdee3a286defb103aa07b5493b805d1987885165.1624281224.git.michal.simek@xilinx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HKAPR03CA0020.apcprd03.prod.outlook.com
- (2603:1096:203:c9::7) To CY4PR11MB0071.namprd11.prod.outlook.com
- (2603:10b6:910:7a::30)
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=AMV40G0WQa5rwDidNF4QOHohhlYu3g3xNBvCqr6xBv8=;
+        b=E6/t0xdALJK9dIvK4kmzxlmOWJyuGnCuZ4D/84T0z35Zxv76HBjGW3pfaDpm1iBgfC
+         o6tNIk7w9cTD3d/PdHlXv3HBjjaNTBiqsDB3f+x/snE6MEMshMNeeudTioO9LUxPLd6k
+         tgv/TtEX0qTYYhwE0AwZ251DtuE7fPdg2N9lni37XwLbiP8XzXjZgM8czgD9Gr+PHUby
+         2mR98U7ihOTUpC3JeL9NLyizR1d9v5/7vh+pCTrf5mpZnf2z8KbwArxDNwZcxvSH6mmN
+         XCYg2ib8biu/EGeyaprfgh94roWkEt2GqxN19DG4Z0mJdLeyxaz7wDF7hCrVwCFyOTZH
+         9PIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=AMV40G0WQa5rwDidNF4QOHohhlYu3g3xNBvCqr6xBv8=;
+        b=tvw54qB8PzTmGcr2v+d2TPn83J7aJZdZhnykXEd3qa/UZ6PHMRu2BkYm97Jvk+FwXD
+         ELrBPnz79jJJ8XCSgpLMtJUmnmBjZ4aIhukV1m30Sk5wAuAIDXYbyakXhkv+Ny9i0H9A
+         z92hO0BzAOv4wwwr7VOuUkDCDDD3iDh2uwtVQVqiYGf+BJHvRMMuOQ0yJkcF7XYhPI5T
+         +h4kp9CiYJiXdqER9tyhiGXIs7AV8f6Mn4InZS1AyoB+11sGuKelV8hei4Z5JidmTxZW
+         8pB3TVJGq9tlouTYFTGbmXHyIGLghkVRhFC7AeKLocJ4PnzHLXHzaa1q2CoT2CZD01bH
+         K5AQ==
+X-Gm-Message-State: AOAM531PAK9IuqcuIAlCMaH2XdJFYn7eo4FoX0ok0NYkwLJuw8eCzhsM
+        KbSctiUWryQ9+ZU9XXa8qos=
+X-Google-Smtp-Source: ABdhPJzLfb1Rd3xykruv5WU9C0lgkMrLGGzzsAjV4xlo6WpWcaAmawp7H+WicXTM5o6ujr6gBbxSSw==
+X-Received: by 2002:ac2:5233:: with SMTP id i19mr1708498lfl.575.1624346120610;
+        Tue, 22 Jun 2021 00:15:20 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id x14sm389743ljp.11.2021.06.22.00.15.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 00:15:20 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 10:15:16 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     harry.wentland@amd.com, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
+Subject: Re: [PATCH v4 12/17] drm/uAPI: Add "preferred color format" drm
+ property as setting for userspace
+Message-ID: <20210622101516.6a53831c@eldfell>
+In-Reply-To: <20210618091116.14428-13-wse@tuxedocomputers.com>
+References: <20210618091116.14428-1-wse@tuxedocomputers.com>
+        <20210618091116.14428-13-wse@tuxedocomputers.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.199] (60.247.85.82) by HKAPR03CA0020.apcprd03.prod.outlook.com (2603:1096:203:c9::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.7 via Frontend Transport; Tue, 22 Jun 2021 07:14:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 73eef260-eaf5-42a8-6f31-08d9354d5920
-X-MS-TrafficTypeDiagnostic: CY4PR11MB1830:
-X-Microsoft-Antispam-PRVS: <CY4PR11MB1830A5F754DC7370A1615652F0099@CY4PR11MB1830.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1169;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dR7tXDMsjHg9Y7oTj1zyfj2UQJtEuuPxfFdYhsil1W2/WYTiWm00ZE7kwU4f5IpCJPNdQ7hozcjQ4lhSi7ydFC6zUH8JOrnJwDuv9bOWNB6Fpi1K6tfKMOwOjayxpYdUZBMqMpVM0yTLBzV+NS25speKPx9zSv2keShos7xBlD18HE2hLgz1OGOZpRo+e0UZN/QFrFNb+3DtS3Rmbr3qvMa4v+BIubL1qa7vWMyp0ZGT+qU6V9GJNiMqKPDY38f7c9tmZyXo0fI/zC11kQbLC5PFRRNR1PmyfckQmaifzZj7kcMAtPyzjIySXPW6wKGUcI2GgqNGW/QPt5yklcZUdnUzyVgXYl+XITY4su7IKAgOvOdwx+fUVcxPLtWOYmfxb4EYRHjG0bbvlQuD2PBCMVTW9a/JzOw0vMbDq6w787eFW/ZL3dZkLHfYr8hP/+qW5Nu0P9pQacxuuJr6836f0cf1Tq4A0aOFThNwTopYfF3a3E0u1KjoPxIVAyQwmyLyLD0GHfpXTKjXaOu0wz4NXCTiELkbKCllvJSxBaiPbiXWLko+6meU2L4exRS6i589anC3r196AHOxZpnxDdcfFxxj/GYDVTmRJmCmdA4FCVkW0jgQwhkRRct7DslorxgVJIAybnbCy2KDjZDJCAM67KMXHBawVlayp8yff4WBCW4VT8DQ/+XcWKPddjkyXCWSJYDcpDrpWNgPt6Al4a7VPQ4N+fyfOm0e5O6VmJNzVO9NAE6F1pYRjBmgc9FiBvSa9m/DaX6XuvIX96JbDH8ZONkSZs9Y8A/mqfqYIaWqA/PyofwadxI2QWfmaCt3sIRlMZtD1aOPAHe33urJ6E/cdZhaX1JHNuFS1IobM4Sk0Q4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(39850400004)(366004)(396003)(6486002)(83380400001)(186003)(66946007)(26005)(38350700002)(16526019)(478600001)(7416002)(38100700002)(36756003)(86362001)(8676002)(956004)(4326008)(2616005)(66476007)(16576012)(66556008)(52116002)(6666004)(5660300002)(54906003)(966005)(8936002)(31686004)(31696002)(6706004)(53546011)(316002)(2906002)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dG5RMEQ3UklraUZpTm5VbTN2OFJ4WEFSTTIwaUI5Z0lRU1pBVkQrcDhRVFFj?=
- =?utf-8?B?SkYrZGFOd2JBVVpBSW02UDBPa0w3ck9kL2VtRCt5TW5hcnNaTmp4VWZzQjlt?=
- =?utf-8?B?WWRaZlFNcVZjZ1IwZzh1TERQeU1aWFVQQ1AzZWZEeE9HNmM2dWNVN0Y5QWFX?=
- =?utf-8?B?MzhHY1YyZms5VFFOajNDRVNlcVRLRURRQjNDTUs1cm9sUm5pdzlnZjh1SkJK?=
- =?utf-8?B?T01XTWQwUVZSb01rSFZBK0JXOFpOQy9DVW1nR2xvZnFObHRjOCtwSlptZExh?=
- =?utf-8?B?c2ZvMzZrOVFWZkZtUUV5cTFrUGxrS3c3ZFRlYnlnby9QREZLYlVQb0RBQVlQ?=
- =?utf-8?B?RXUxWG9xL2VpZVN6THkveWgvY0ozYmYvYXMycHRKTXc5UzQ0S0FQTzBqVnl6?=
- =?utf-8?B?eEtZZzNYZm1GVEZVN016b0hOdGFzRjRJaGxQWURzSm5adTFYbHRkeVEzWmQv?=
- =?utf-8?B?Z3g5d1gvM2dwSW4vRks1MHNqaHlQb0xIalFaNzNMYmRKbkxFd21VRkZmMWtU?=
- =?utf-8?B?OC9vSElLNnBTb3ArbXAwcHp0TW1JQzc1VW1LOHpvc1ZtWFJXS29PQ2RlY29o?=
- =?utf-8?B?K3lWcTVDM3hmdGQwT05HU095dFFNVE8wQWEzSXlyWlRXVXh3NTZSQXRwcE5O?=
- =?utf-8?B?VkgxMWFUazQzczdOcVBRdEdSMmI0U0JvWGVZdUhiM2FjQ0VxU2J5TWJjL3ky?=
- =?utf-8?B?dVJUaFFFK2pWNHFmb0kwanNYZW9LVUFVcUN5R1FkUnp4ZWRhNzRDRmtqUWNa?=
- =?utf-8?B?TDdzYXdBck92aVZUaFVHMHdpREdKbkFhUllrOXFSOVN6dEJhUnNkQUJBR09s?=
- =?utf-8?B?Z0s1WG9BdUkxcm1ZRjNiQTlaTlNLaGVzTlh0Ymp0dDVUNDloRlZpbElZdmxI?=
- =?utf-8?B?NjgzR1ZRSkVZNmpWUVVYMmh2M1lsUytrOXRBTzIxZUVoOTNBZ0Y1RDg1VWgw?=
- =?utf-8?B?UGY4T01vL3RqdHJDcVMxNS9VR0RDekVEVXI4MElkZnpzMFVQQ2lyV2RncEM5?=
- =?utf-8?B?ZGhkdnUyNHUwd3UxNU1oQmRWUWl0UDUyb3FmUXcvVTB2SFA3RG9Hb3pIVWZX?=
- =?utf-8?B?blkzdmpCdDdDQnQ4NFREalNxaGpxWkJGcEliTnNQL3FQOVZ2TEVxMlFxZkFy?=
- =?utf-8?B?eDhiSEltbDgycWxJQzNuNVZDSXhEWG1VSnlvalYwTDFDMklBczR4M29KTmFy?=
- =?utf-8?B?VjBQNjBpZXhhL1JDSThreHIyalBBS3hwNk8rZ2M2bHl5OGcrQ0NhNGdqQ05S?=
- =?utf-8?B?MERrbnBZR3UrV1JJTExaZlJBNmFvOVY4cWVxUnJpWnB5TGpsMmQzdHdaczEv?=
- =?utf-8?B?T1ZUdjdGTUx4b0VicEZIQTNXRlJnNUcweVFqR2VUYm5DVy9nN3BFR3hKVnZQ?=
- =?utf-8?B?VEJJMk9JSkRRcjR3aTBhdXZmWGN5THJDQjdpSjU4TmtvcUo3MXZhUG9rVWhD?=
- =?utf-8?B?YnV2U0JwZ0JjODdlT0g0ZVJycjJSZ20rd0lNRlVvaXdQRVpyZ1hCTDlVMjB6?=
- =?utf-8?B?YXYxWjZuWWF5U3cwdENOZXl3RE1PKzRVdjJiR2hwNEgvamQ1d01JZGhFZVVu?=
- =?utf-8?B?NlhJelR3VkQ2cVNybFF4WU9rODZCbUJtYld6UUpTeHliZ2x6RnRYK3pNdGo1?=
- =?utf-8?B?Ui9sTW5zVHZRNWVZRnpHRkpQTjlPckczWEFIS1BJOWVjQXZxcnVKMm1NNnRV?=
- =?utf-8?B?cjVlbzQ1NmRrTWRwc0tOdEJ0SkhreWdmSElkRjRkUUR6Q2NmNEtLVFUrdUY0?=
- =?utf-8?Q?LCGVMBwr3+jrBBz/RPA2m8l9VNsBFKr3no9meEU?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 73eef260-eaf5-42a8-6f31-08d9354d5920
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 07:14:19.3905
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mYKJgrTiuE8iuJvTflqo6NJsgoWb0tUiI7GE2jiMUNN45UGpXHcoWdbj6HF8Z4JqT2e/EL78O5PVTs9StA5tBiplSl5smptq99wLqPvI1v8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1830
-X-Proofpoint-GUID: 6rr7es3CinAuO4qJI3-18h39PgFemc4P
-X-Proofpoint-ORIG-GUID: 6rr7es3CinAuO4qJI3-18h39PgFemc4P
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-22_04:2021-06-21,2021-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 bulkscore=0 mlxscore=0 suspectscore=0 adultscore=0
- impostorscore=0 spamscore=0 mlxlogscore=999 clxscore=1011 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106220045
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/L.D.0v0v3EndnJnEeMysKiT"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal & Arnd,
+--Sig_/L.D.0v0v3EndnJnEeMysKiT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 6/21/21 9:13 PM, Michal Simek wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When the firmware code is disabled, the incomplete error handling
-> in the clk driver causes compile-time warnings:
-> 
-> drivers/clk/zynqmp/pll.c: In function 'zynqmp_pll_recalc_rate':
-> drivers/clk/zynqmp/pll.c:147:29: error: 'fbdiv' is used uninitialized [-Werror=uninitialized]
->    147 |         rate =  parent_rate * fbdiv;
->        |                 ~~~~~~~~~~~~^~~~~~~
-> In function 'zynqmp_pll_get_mode',
->      inlined from 'zynqmp_pll_recalc_rate' at drivers/clk/zynqmp/pll.c:148:6:
-> drivers/clk/zynqmp/pll.c:61:27: error: 'ret_payload' is used uninitialized [-Werror=uninitialized]
->     61 |         return ret_payload[1];
->        |                ~~~~~~~~~~~^~~
-> drivers/clk/zynqmp/pll.c: In function 'zynqmp_pll_recalc_rate':
-> drivers/clk/zynqmp/pll.c:53:13: note: 'ret_payload' declared here
->     53 |         u32 ret_payload[PAYLOAD_ARG_CNT];
->        |             ^~~~~~~~~~~
-> drivers/clk/zynqmp/clk-mux-zynqmp.c: In function 'zynqmp_clk_mux_get_parent':
-> drivers/clk/zynqmp/clk-mux-zynqmp.c:57:16: error: 'val' is used uninitialized [-Werror=uninitialized]
->     57 |         return val;
->        |                ^~~
-> 
-> As it was apparently intentional to support this for compile testing
-> purposes, change the code to have just enough error handling for the
-> compiler to not notice the remaining bugs.
-> 
-> Fixes: 21f237534661 ("clk: zynqmp: Drop dependency on ARCH_ZYNQMP")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+On Fri, 18 Jun 2021 11:11:11 +0200
+Werner Sembach <wse@tuxedocomputers.com> wrote:
+
+> Add a new general drm property "preferred color format" which can be used
+> by userspace to tell the graphic drivers to which color format to use.
+>=20
+> Possible options are:
+>     - auto (default/current behaviour)
+>     - rgb
+>     - ycbcr444
+>     - ycbcr422 (not supported by both amdgpu and i915)
+>     - ycbcr420
+>=20
+> In theory the auto option should choose the best available option for the
+> current setup, but because of bad internal conversion some monitors look
+> better with rgb and some with ycbcr444.
+>=20
+> Also, because of bad shielded connectors and/or cables, it might be
+> preferable to use the less bandwidth heavy ycbcr422 and ycbcr420 formats
+> for a signal that is less deceptible to interference.
+>=20
+> In the future, automatic color calibration for screens might also depend =
+on
+> this option being available.
+>=20
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
 > ---
-> 
-> Changes in v2:
-> Based on discussion here
-> Link: https://lore.kernel.org/r/20210421134844.3297838-1-arnd@kernel.org
-> I have updated error return value which I got from clock core based on
-> error cases.
-> 
-> zynqmp_clk_mux_get_parent() should return num_parents() as error defined in
-> clk_core_get_parent_by_index() where num_parents is incorrect index.
-> 
-> Extend zynqmp_pll_get_mode() with PLL_MODE_ERROR to handle error case.
-> 
-> zynqmp_pll_recalc_rate() returns 0 because __clk_core_init() consider 0 as
-> default rate. But maybe -1ul which was used by Arnd is also good option.
-> 
-> ---
->   drivers/clk/zynqmp/clk-mux-zynqmp.c | 10 ++++++++--
->   drivers/clk/zynqmp/pll.c            | 15 ++++++++++-----
->   2 files changed, 18 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/clk/zynqmp/clk-mux-zynqmp.c b/drivers/clk/zynqmp/clk-mux-zynqmp.c
-> index 06194149be83..d576c900dee0 100644
-> --- a/drivers/clk/zynqmp/clk-mux-zynqmp.c
-> +++ b/drivers/clk/zynqmp/clk-mux-zynqmp.c
-> @@ -38,7 +38,7 @@ struct zynqmp_clk_mux {
->    * zynqmp_clk_mux_get_parent() - Get parent of clock
->    * @hw:		handle between common and hardware-specific interfaces
->    *
-> - * Return: Parent index
-> + * Return: Parent index on success or number of parents in case of error
->    */
->   static u8 zynqmp_clk_mux_get_parent(struct clk_hw *hw)
->   {
-> @@ -50,9 +50,15 @@ static u8 zynqmp_clk_mux_get_parent(struct clk_hw *hw)
->   
->   	ret = zynqmp_pm_clock_getparent(clk_id, &val);
->   
-> -	if (ret)
-> +	if (ret) {
->   		pr_warn_once("%s() getparent failed for clock: %s, ret = %d\n",
->   			     __func__, clk_name, ret);
-> +		/*
-> +		 * clk_core_get_parent_by_index() takes num_parents as incorrect
-> +		 * index which is exactly what I want to return here
-> +		 */
-> +		return clk_hw_get_num_parents(hw);
+>  drivers/gpu/drm/drm_atomic_helper.c |  4 +++
+>  drivers/gpu/drm/drm_atomic_uapi.c   |  4 +++
+>  drivers/gpu/drm/drm_connector.c     | 48 ++++++++++++++++++++++++++++-
+>  include/drm/drm_connector.h         | 17 ++++++++++
+>  4 files changed, 72 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_at=
+omic_helper.c
+> index bc3487964fb5..90d62f305257 100644
+> --- a/drivers/gpu/drm/drm_atomic_helper.c
+> +++ b/drivers/gpu/drm/drm_atomic_helper.c
+> @@ -687,6 +687,10 @@ drm_atomic_helper_check_modeset(struct drm_device *d=
+ev,
+>  			if (old_connector_state->max_requested_bpc !=3D
+>  			    new_connector_state->max_requested_bpc)
+>  				new_crtc_state->connectors_changed =3D true;
+> +
+> +			if (old_connector_state->preferred_color_format !=3D
+> +			    new_connector_state->preferred_color_format)
+> +				new_crtc_state->connectors_changed =3D true;
+>  		}
+> =20
+>  		if (funcs->atomic_check)
+> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atom=
+ic_uapi.c
+> index 438e9585b225..c536f5e22016 100644
+> --- a/drivers/gpu/drm/drm_atomic_uapi.c
+> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
+> @@ -796,6 +796,8 @@ static int drm_atomic_connector_set_property(struct d=
+rm_connector *connector,
+>  						   fence_ptr);
+>  	} else if (property =3D=3D connector->max_bpc_property) {
+>  		state->max_requested_bpc =3D val;
+> +	} else if (property =3D=3D connector->preferred_color_format_property) {
+> +		state->preferred_color_format =3D val;
+>  	} else if (connector->funcs->atomic_set_property) {
+>  		return connector->funcs->atomic_set_property(connector,
+>  				state, property, val);
+> @@ -873,6 +875,8 @@ drm_atomic_connector_get_property(struct drm_connecto=
+r *connector,
+>  		*val =3D 0;
+>  	} else if (property =3D=3D connector->max_bpc_property) {
+>  		*val =3D state->max_requested_bpc;
+> +	} else if (property =3D=3D connector->preferred_color_format_property) {
+> +		*val =3D state->preferred_color_format;
+>  	} else if (connector->funcs->atomic_get_property) {
+>  		return connector->funcs->atomic_get_property(connector,
+>  				state, property, val);
+> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connec=
+tor.c
+> index 818de58d972f..aea03dd02e33 100644
+> --- a/drivers/gpu/drm/drm_connector.c
+> +++ b/drivers/gpu/drm/drm_connector.c
+> @@ -889,6 +889,14 @@ static const struct drm_prop_enum_list drm_dp_subcon=
+nector_enum_list[] =3D {
+>  	{ DRM_MODE_SUBCONNECTOR_Native,	     "Native"    }, /* DP */
+>  };
+> =20
+> +static const struct drm_prop_enum_list drm_preferred_color_format_enum_l=
+ist[] =3D {
+> +	{ 0, "auto" },
+> +	{ DRM_COLOR_FORMAT_RGB444, "rgb" },
+> +	{ DRM_COLOR_FORMAT_YCRCB444, "ycbcr444" },
+> +	{ DRM_COLOR_FORMAT_YCRCB422, "ycbcr422" },
+> +	{ DRM_COLOR_FORMAT_YCRCB420, "ycbcr420" },
+> +};
+> +
+>  static const struct drm_prop_enum_list drm_active_color_format_enum_list=
+[] =3D {
+>  	{ 0, "unknown" },
+>  	{ DRM_COLOR_FORMAT_RGB444, "rgb" },
+> @@ -1219,11 +1227,19 @@ static const struct drm_prop_enum_list dp_colorsp=
+aces[] =3D {
+>   *	Drivers shall use drm_connector_attach_active_bpc_property() to insta=
+ll
+>   *	this property.
+>   *
+> + * preferred color format:
+> + *	This property is used by userspace to change the used color format. W=
+hen
+> + *	used the driver will use the selected format if valid for the hardwar=
+e,
+> + *	sink, and current resolution and refresh rate combination. Drivers to
+> + *	use the function drm_connector_attach_preferred_color_format_property=
+()
+> + *	to create and attach the property to the connector during
+> + *	initialization.
+> + *
+>   * active color format:
+>   *	This read-only property tells userspace the color format actually used
+>   *	by the hardware display engine on "the cable" on a connector. The cho=
+sen
+>   *	value depends on hardware capabilities, both display engine and
+> - *	connected monitor. Drivers shall use
+> + *	connected monitor, and the "preferred color format". Drivers shall use
+>   *	drm_connector_attach_active_color_format_property() to install this
+>   *	property.
+>   *
+> @@ -2233,6 +2249,36 @@ void drm_connector_set_active_bpc_property(struct =
+drm_connector *connector, int
+>  }
+>  EXPORT_SYMBOL(drm_connector_set_active_bpc_property);
+> =20
+> +/**
+> + * drm_connector_attach_preferred_color_format_property - attach "prefer=
+red color format" property
+> + * @connector: connector to attach active color format property on.
+> + *
+> + * This is used to add support for selecting a color format on a connect=
+or.
+> + *
+> + * Returns:
+> + * Zero on success, negative errno on failure.
+> + */
+> +int drm_connector_attach_preferred_color_format_property(struct drm_conn=
+ector *connector)
+> +{
+> +	struct drm_device *dev =3D connector->dev;
+> +	struct drm_property *prop;
+> +
+> +	if (!connector->preferred_color_format_property) {
+> +		prop =3D drm_property_create_enum(dev, 0, "preferred color format",
+> +						drm_preferred_color_format_enum_list,
+> +						ARRAY_SIZE(drm_preferred_color_format_enum_list));
+> +		if (!prop)
+> +			return -ENOMEM;
+> +
+> +		connector->preferred_color_format_property =3D prop;
+> +		drm_object_attach_property(&connector->base, prop, 0);
+> +		connector->state->preferred_color_format =3D 0;
 > +	}
->   
->   	return val;
->   }
-> diff --git a/drivers/clk/zynqmp/pll.c b/drivers/clk/zynqmp/pll.c
-> index abe6afbf3407..3fe4d21227d0 100644
-> --- a/drivers/clk/zynqmp/pll.c
-> +++ b/drivers/clk/zynqmp/pll.c
-> @@ -31,8 +31,9 @@ struct zynqmp_pll {
->   #define PS_PLL_VCO_MAX 3000000000UL
->   
->   enum pll_mode {
-> -	PLL_MODE_INT,
-> -	PLL_MODE_FRAC,
-> +	PLL_MODE_INT = 0,
-> +	PLL_MODE_FRAC = 1,
-> +	PLL_MODE_ERROR = 2,
->   };
->   
->   #define FRAC_OFFSET 0x8
-> @@ -54,9 +55,11 @@ static inline enum pll_mode zynqmp_pll_get_mode(struct clk_hw *hw)
->   	int ret;
->   
->   	ret = zynqmp_pm_get_pll_frac_mode(clk_id, ret_payload);
-> -	if (ret)
-> +	if (ret) {
->   		pr_warn_once("%s() PLL get frac mode failed for %s, ret = %d\n",
->   			     __func__, clk_name, ret);
-> +		return PLL_MODE_ERROR;
-> +	}
->   
->   	return ret_payload[1];
->   }
-> @@ -126,7 +129,7 @@ static long zynqmp_pll_round_rate(struct clk_hw *hw, unsigned long rate,
->    * @hw:			Handle between common and hardware-specific interfaces
->    * @parent_rate:	Clock frequency of parent clock
->    *
-> - * Return: Current clock frequency
-> + * Return: Current clock frequency or 0 in case of error
->    */
->   static unsigned long zynqmp_pll_recalc_rate(struct clk_hw *hw,
->   					    unsigned long parent_rate)
-> @@ -140,9 +143,11 @@ static unsigned long zynqmp_pll_recalc_rate(struct clk_hw *hw,
->   	int ret;
->   
->   	ret = zynqmp_pm_clock_getdivider(clk_id, &fbdiv);
-> -	if (ret)
-> +	if (ret) {
->   		pr_warn_once("%s() get divider failed for %s, ret = %d\n",
->   			     __func__, clk_name, ret);
-> +		return 0ul;
-> +	}
->   
-Since zynqmp_pll_get_mode may return err now, maybe here should add a 
-condition check for PLL_MODE_ERR:
-	if (zynqmp_pll_get_mode(hw) == PLL_MODE_ERR)
-		return 0ul;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(drm_connector_attach_preferred_color_format_property);
+> +
+>  /**
+>   * drm_connector_attach_active_color_format_property - attach "active co=
+lor format" property
+>   * @connector: connector to attach active color format property on.
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index 9fb7119b7a02..7b85407ba45c 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -799,6 +799,16 @@ struct drm_connector_state {
+>  	 */
+>  	u8 max_bpc;
+> =20
+> +	/**
+> +	 * preferred_color_format: Property set by userspace to tell the GPU
+> +	 * driver which color format to use. It only gets applied if hardware,
+> +	 * meaning both the computer and the monitor, and the driver support the
+> +	 * given format at the current resolution and refresh rate. Userspace
+> +	 * can check for (un-)successful application via the active_color_format
+> +	 * property.
+> +	 */
+> +	u32 preferred_color_format;
+
+Hi,
+
+yes, I think this makes sense, even if it is a property that one can't
+tell for sure what it does before hand.
+
+Using a pair of properties, preference and active, to ask for something
+and then check what actually worked is good for reducing the
+combinatorial explosion caused by needing to "atomic TEST_ONLY commit"
+test different KMS configurations. Userspace has a better chance of
+finding a configuration that is possible.
+
+OTOH, this has the problem than in UI one cannot tell the user in
+advance which options are truly possible. Given that KMS properties are
+rarely completely independent, and in this case known to depend on
+several other KMS properties, I think it is good enough to know after
+the fact.
+
+If a driver does not use what userspace prefers, there is no way to
+understand why, or what else to change to make it happen. That problem
+exists anyway, because TEST_ONLY commits do not give useful feedback
+but only a yes/no.
+
+Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+
 
 Thanks,
-Quanyang
->   	rate =  parent_rate * fbdiv;
->   	if (zynqmp_pll_get_mode(hw) == PLL_MODE_FRAC) {
-> 
+pq
+
+
+> +
+>  	/**
+>  	 * @hdr_output_metadata:
+>  	 * DRM blob property for HDR output metadata
+> @@ -1404,6 +1414,12 @@ struct drm_connector {
+>  	 */
+>  	struct drm_property *active_bpc_property;
+> =20
+> +	/**
+> +	 * @preferred_color_format_property: Default connector property for the
+> +	 * preferred color format to be driven out of the connector.
+> +	 */
+> +	struct drm_property *preferred_color_format_property;
+> +
+>  	/**
+>  	 * @active_color_format_property: Default connector property for the
+>  	 * active color format to be driven out of the connector.
+> @@ -1740,6 +1756,7 @@ int drm_connector_attach_max_bpc_property(struct dr=
+m_connector *connector,
+>  					  int min, int max);
+>  int drm_connector_attach_active_bpc_property(struct drm_connector *conne=
+ctor, int min, int max);
+>  void drm_connector_set_active_bpc_property(struct drm_connector *connect=
+or, int active_bpc);
+> +int drm_connector_attach_preferred_color_format_property(struct drm_conn=
+ector *connector);
+>  int drm_connector_attach_active_color_format_property(struct drm_connect=
+or *connector);
+>  void drm_connector_set_active_color_format_property(struct drm_connector=
+ *connector,
+>  						    u32 active_color_format);
+
+
+--Sig_/L.D.0v0v3EndnJnEeMysKiT
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmDRjgQACgkQI1/ltBGq
+qqdhwhAAhoDfObqfEZQNeibtIpwNqkHY055dii6/SWOwJBDNzZg36s84Xzgjbhds
+8Bt35uYgr7WCvI82yqfzKDu9gd7pJiiLKQ42A6tgpu+tpjD1/pRUDpn/Ufzbuaj9
+VF1Rq+qKGJs7X5MY4X2JLT6aLnykS0KUUKJcTw8X74j7OaMjZqEtMaiPGW04UQcE
+2WWxRaVi1R8yaRspb9HTDBcEhLZgWWVg9S92rysVFsBoEUHnbWrC02R/wyEz+CZx
+PPgW+X5Skzrk1TFgCgqL40Wc9QZnSyEbmBy5J1riNlGvcfQP74qhcNYyPyT+ORaw
+UtEDcBfUFigGX3JaiXYvDT1aGAHefncPc1TFt+u7uBxl6Efza6ClZDw3FKWBRVnk
+jjJG7arN/6MNXrTODz+ZW5H+FFU3NgPJYAanBTGtqKB44/eF+AgAUBrMVDRlhSM9
+b3oO0ft2wnf2HDfVVP0OQDvWpZ/I0MIwqctQJli8Do7bAJv2n5WgAPW5AxqBXsPN
+iOcoWJ9XUbHWOgCSVLfeN5kPLCMMBdBt+5GpJWqycofVvf5tWZObC+a7Zm0qujxI
+gneewTb1OfzvKMbWfZen4MFa6A1eYRxKgm8FMqUWRVU4dylUmS9uaxtbF4JARF6W
+OW+RzKlkePz/L1nqRCgpRlK3qXDSE+XVhVOPWUxGvJ2UZC1tky4=
+=k/cp
+-----END PGP SIGNATURE-----
+
+--Sig_/L.D.0v0v3EndnJnEeMysKiT--
