@@ -2,93 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9FC33B0BC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1254B3B0BC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbhFVRsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 13:48:14 -0400
-Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:58636 "EHLO
-        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232536AbhFVRr6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 13:47:58 -0400
-Received: from cpc152649-stkp13-2-0-cust121.10-2.cable.virginm.net ([86.15.83.122] helo=[192.168.0.18])
-        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1lvkSw-0000OM-AE; Tue, 22 Jun 2021 18:45:38 +0100
-Subject: Re: [PATCH v2 0/5] riscv: improving uaccess with logs from network
- bench
-To:     Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-References: <5a5c07ac-8c11-79d3-46a3-a255d4148f76@gmail.com>
- <e7d5f98b-5e0d-19b3-08f5-a7b49d542a85@codethink.co.uk>
- <f54ec904-2bf5-0c29-d467-7465993d5d6b@gmail.com>
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <a222f892-a2bc-c531-d17e-3ec2c8708fcd@codethink.co.uk>
-Date:   Tue, 22 Jun 2021 18:45:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S232543AbhFVRsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 13:48:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232523AbhFVRsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 13:48:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EC1F60720;
+        Tue, 22 Jun 2021 17:45:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624383954;
+        bh=KYdzhVdFqcr+mEgygSRn+EYzmtQszmTzzU/stbjWEHc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aIRNL91loyTVbyaokWbLXKeDr5gkxubHgZ6zn8SIjxfVF/TYN46qw6OfIbz9rn8dn
+         7zh0ks3O4wlNMJp5IYy1IETc5NZR95llRjrpvHFXuphMkHYnK3YmPFAk1DN9oBbB4S
+         FdcOOlL0KNV8o9GlzbS0Lv/2K2JTOqyQZF4jjnZFDcKo7hp9KdVEZU9TtzqOgzP4KY
+         VWDD4Qf9eY+h8ojBNxfmamja8rpP2vBKmz3sYHLf0M9yDs5VHGfZ1rg/YhIpEAsiAm
+         pmqhMwXQyWo55qEpCTIBRn1pKraUAAP1P4VbHS4z+K1HxOi0nHQDA5rmX22158tOtg
+         260SPyPqeaWvQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id B578040B1A; Tue, 22 Jun 2021 14:45:51 -0300 (-03)
+Date:   Tue, 22 Jun 2021 14:45:51 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] perf test: Pass the verbose option to shell tests
+Message-ID: <YNIhzyKPqfFvvoYs@kernel.org>
+References: <20210621215648.2991319-1-irogers@google.com>
 MIME-Version: 1.0
-In-Reply-To: <f54ec904-2bf5-0c29-d467-7465993d5d6b@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621215648.2991319-1-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/06/2021 13:05, Akira Tsukamoto wrote:
-> On 6/22/2021 5:30 PM, Ben Dooks wrote:
->> On 19/06/2021 12:21, Akira Tsukamoto wrote:
->>> Optimizing copy_to_user and copy_from_user.
->>>
->>> I rewrote the functions in v2, heavily influenced by Garry's memcpy
->>> function [1].
->>> The functions must be written in assembler to handle page faults manually
->>> inside the function.
->>>
->>> With the changes, improves in the percentage usage and some performance
->>> of network speed in UDP packets.
->>> Only patching copy_user. Using the original memcpy.
->>>
->>> All results are from the same base kernel, same rootfs and same
->>> BeagleV beta board.
->>>
->>> Comparison by "perf top -Ue task-clock" while running iperf3.
->>
->> I did a quick test on a SiFive Unmatched with IO to an NVME.
->>
->> before: cached-reads=172.47MB/sec, buffered-reads=135.8MB/sec
->> with-patch: cached-read=s177.54Mb/sec, buffered-reads=137.79MB/sec
->>
->> That was just one test run, so there was a small improvement. I am
->> sort of surprised we didn't get more of a win from this.
->>
->> perf record on hdparm shows that it spends approx 15% cpu time in
->> asm_copy_to_user. Does anyone have a benchmark for this which just
->> looks at copy/to user? if not should we create one?
+Em Mon, Jun 21, 2021 at 02:56:46PM -0700, Ian Rogers escreveu:
+> Having a verbose option will allow shell tests to provide extra failure
+> details when the fail or skip.
 > 
-> Thanks for the result on the Unmatched with hdparm. Have you tried
-> iperf3?
-
-I will see if there is iperf3 installed. I've not done much other than
-try booting it and then try booting it with a kernel i've built from
-upstream.
-
-> The 15% is high, is it before or with-patch?
-
-Can't remember, I did this more to find out if the copy to/from user
-was going to show up in the times for hdparm.
-
-> Akira
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/tests/builtin-test.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
+> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+> index cbbfe48ab802..e1ed60567b2f 100644
+> --- a/tools/perf/tests/builtin-test.c
+> +++ b/tools/perf/tests/builtin-test.c
+> @@ -577,10 +577,13 @@ struct shell_test {
+>  static int shell_test__run(struct test *test, int subdir __maybe_unused)
+>  {
+>  	int err;
+> -	char script[PATH_MAX];
+> +	char script[PATH_MAX + 3];
 
+This looks strange, i.e. if it is a _path_ _MAX_, why add 3 chars past
+that max when generating a _path_? I'll drop the above hunk and keep the
+rest, ok?
 
--- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
+- Arnaldo
 
-https://www.codethink.co.uk/privacy.html
+>  	struct shell_test *st = test->priv;
+>  
+> -	path__join(script, sizeof(script), st->dir, st->file);
+> +	path__join(script, sizeof(script) - 3, st->dir, st->file);
+> +
+> +	if (verbose)
+> +		strncat(script, " -v", sizeof(script) - strlen(script) - 1);
+>  
+>  	err = system(script);
+>  	if (!err)
