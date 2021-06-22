@@ -2,126 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D5D3B0A93
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092CC3B0A96
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231279AbhFVQqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 12:46:23 -0400
-Received: from mail-pf1-f176.google.com ([209.85.210.176]:35765 "EHLO
-        mail-pf1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbhFVQqW (ORCPT
+        id S231272AbhFVQsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 12:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhFVQsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:46:22 -0400
-Received: by mail-pf1-f176.google.com with SMTP id t32so35601pfg.2;
-        Tue, 22 Jun 2021 09:44:06 -0700 (PDT)
+        Tue, 22 Jun 2021 12:48:36 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2825C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:46:20 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id h10so1498819qvz.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:46:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cX1+N3znKheAWMZ/uIaQ9Wu1I4c8xfSCdEid5XXgYUU=;
+        b=YOPMkgmgYEaJx78lKXGLKjEtNH7hC+lgi844pNliJkG4ti5vrqjMc+oYAqOQD7H2jS
+         2qqrRzjl9eiZPl3/CUfCvP3bVN4outKo6a1WsV8JSRjLD6PAeSIZDztM7Khj3cxdCfUR
+         p4PY5N5SmT98GRvCrjoWP2IhcR9X54oRBzFtZo7yU7KpcGXTDGBCgT8U5Q8nDCvkcL4f
+         6GbkWOcfKD4uaLMwk1sYQhUHbquWuh76GcYII+D/ew4UZBKFK7T3YXQcj7bP5hirphRr
+         woN0x87w5h9RppF3feOaRx2qlmXznUkTQwOi6hGFBXBK1pENgf1bTy7VU2Y8rcRZSYMs
+         TeVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x799InAcoDjDt4DQpoZBoNM42r4xX5n0kOF7AEe4YKo=;
-        b=t5vcqXMs6Fj8CClxbgQVcBIMI7OC3nl+e31v6VC/yE0Jq9PNLYuFkopRMKyCbOAJk5
-         9Pyj+fqYcxqfbZtMicNecxQgYr0C5n3QjKKntzLPPgm4Ov4MamO57K3HGCmVH4WClpV7
-         lD88vnzmJ+QjVtPUrUX4O4uZIAd5GIbgKQrQY7cwN2FK1uF1U8EAjcLAmbfjydoRbi/t
-         PqnrmcxvSCTqTzQmS/RuLJJWZv/fO+MIezs3A2fYkzjma7HGCrb5qba2XEnj0JN6L26z
-         vCTe1lWlz+Mibg1uUYBe0SXowSsv2krcBabfRYodV+2Mgykd0cTjX9o4zDtLxxUETmgw
-         EL8A==
-X-Gm-Message-State: AOAM5319jhP52QDGhYtYGEkG0klyeSmL1nVTCoBw/8d1v676ohdconO+
-        htPCMH+fV7UJ2byoONG+Stk=
-X-Google-Smtp-Source: ABdhPJx9G3hGxhRz77cNIDM5qxm3q3evv6WM4wgToHfnSXhofD0b6jAgePysM/sIh8RPdFGtSfDqEw==
-X-Received: by 2002:a62:820a:0:b029:2fd:5aa9:549b with SMTP id w10-20020a62820a0000b02902fd5aa9549bmr4463646pfd.77.1624380245551;
-        Tue, 22 Jun 2021 09:44:05 -0700 (PDT)
-Received: from garbanzo ([173.239.198.97])
-        by smtp.gmail.com with ESMTPSA id o9sm2778772pjp.19.2021.06.22.09.44.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 09:44:04 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 09:44:02 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     minchan@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
-        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
-        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
-        peterz@infradead.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] drivers/base/core: refcount kobject and bus on
- device attribute read / store
-Message-ID: <20210622164402.d62je6pajcplkfuy@garbanzo>
-References: <20210621233013.562641-1-mcgrof@kernel.org>
- <20210621233651.597220-1-mcgrof@kernel.org>
- <YNGVUk18pmTFZqAB@kroah.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cX1+N3znKheAWMZ/uIaQ9Wu1I4c8xfSCdEid5XXgYUU=;
+        b=C8hQnF6KVJ5YqyKcK43maurtE28mKWwaoimwM9Jxfo3BcnUz1N3WUHwFh+LTY5gMPo
+         7OeuvjiaW7Y29SYnBOM8w2fOp1cpofaqrfvNrt/YKx8de4euwMy9JM0B18ey72OksKoy
+         9oU+tsEP84heb/C6DKA2KCeFEWLuvcaFb4hrjUbGfEPnT8seOXgBUcimzsrXU8l1RQ7h
+         1a77qTbYyd/6DzLmr/gUuZqJV4CEFIXzWzkf1TegaiiAFpf9xUITNRI8ZXc2QEnkz5l0
+         QyWosYj0Pb4Fx4LTjrBITr/y2jwU9wOVZYSNTgzUnqX6khOGvMvalGBS1KeCfkj9BgGN
+         BPNQ==
+X-Gm-Message-State: AOAM530/J6WEg34+f6DF/WWl1CeOKfbkkeOH8uGMUsBTVt0G0dToLx3U
+        1kg+iSX6YaNrqwMdy7Xf3HsmX8U0vk6Nti4apiKbWg==
+X-Google-Smtp-Source: ABdhPJzISR/1moqz9T2VFK0No/teqAwV9c5ubfc0VsheSSZ5WjW1a7WkGDxsHNNpv4HDu3/B1wo2UFlinPyOenYwBYo=
+X-Received: by 2002:ad4:55eb:: with SMTP id bu11mr26378298qvb.2.1624380379836;
+ Tue, 22 Jun 2021 09:46:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNGVUk18pmTFZqAB@kroah.com>
+References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
+ <20210621223141.1638189-3-dmitry.baryshkov@linaro.org> <20210622112843.GB4574@sirena.org.uk>
+ <CAA8EJpoTdg3O6dzpTaNS5fJRbtb1Fndv0mEuO+e4b6XCmuvzhQ@mail.gmail.com> <20210622143812.GE4574@sirena.org.uk>
+In-Reply-To: <20210622143812.GE4574@sirena.org.uk>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 22 Jun 2021 19:46:08 +0300
+Message-ID: <CAA8EJpoeYUOPLKca5oJNKdyOvOmoLX6FvsTbdmC7W9mLsyyVmw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/7] regulator: qca6390: add support for QCA639x
+ powerup sequence
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-bluetooth@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 09:46:26AM +0200, Greg KH wrote:
-> On Mon, Jun 21, 2021 at 04:36:51PM -0700, Luis Chamberlain wrote:
-> > It's possible today to have a device attribute read or store
-> > race against device removal. When this happens there is a small
-> > chance that the derefence for the private data area of the driver
-> > is NULL.
-> > 
-> > Let's consider the zram driver as an example. Its possible to run into
-> > a race where a sysfs knob is being used, we get preempted, and a zram
-> > device is removed before we complete use of the sysfs knob. This can happen
-> > for instance on block devices, where for instance the zram block devices
-> > just part of the private data of the block device.
-> > 
-> > For instance this can happen in the following two situations
-> > as examples to illustrate this better:
-> > 
-> >         CPU 1                            CPU 2
-> > destroy_devices
-> > ...
-> >                                  compact_store()
-> >                                  zram = dev_to_zram(dev);
-> > idr_for_each(zram_remove_cb
-> >   zram_remove
-> >   ...
-> >   kfree(zram)
-> >                                  down_read(&zram->init_lock);
-> > 
-> >         CPU 1                            CPU 2
-> > hot_remove_store
-> >                                  compact_store()
-> >                                  zram = dev_to_zram(dev);
-> >   zram_remove
-> >     kfree(zram)
-> >                                  down_read(&zram->init_lock);
-> > 
-> > To ensure the private data pointer is valid we could use bdget() / bdput()
-> > in between access, however that would mean doing that in all sysfs
-> > reads/stores on the driver. Instead a generic solution for all drivers
-> > is to ensure the device kobject is still valid and also the bus, if
-> > a bus is present.
-> > 
-> > This issue does not fix a known crash, however this race was
-> > spotted by Minchan Kim through code inspection upon code review
-> > of another zram patch.
-> > 
-> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> > ---
-> >  drivers/base/base.h |  2 ++
-> >  drivers/base/bus.c  |  4 ++--
-> >  drivers/base/core.c | 42 ++++++++++++++++++++++++++++++++++++++----
-> >  3 files changed, 42 insertions(+), 6 deletions(-)
-> 
-> Please make this an independent patch of the zram mess  and I will be
-> glad to consider it for the driver core tree then.
+On Tue, 22 Jun 2021 at 17:38, Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, Jun 22, 2021 at 05:17:28PM +0300, Dmitry Baryshkov wrote:
+> > On Tue, 22 Jun 2021 at 14:29, Mark Brown <broonie@kernel.org> wrote:
+> > > On Tue, Jun 22, 2021 at 01:31:36AM +0300, Dmitry Baryshkov wrote:
+>
+> > > > Qualcomm QCA6390/1 is a family of WiFi + Bluetooth SoCs, with BT part
+> > > > being controlled through the UART and WiFi being present on PCIe
+> > > > bus. Both blocks share common power sources. Add device driver handling
+> > > > power sequencing of QCA6390/1.
+>
+> > > Are you sure this is a regulator and not a MFD?  It appears to be a
+> > > consumer driver that turns on and off a bunch of regulators en masse
+> > > which for some reason exposes that on/off control as a single supply.
+> > > This looks like it'd be much more appropriate to implement as a MFD or
+> > > possibly power domain with the subdevices using runtime PM, it's clearly
+> > > not a regulator.
+>
+> > First attempt was designed to be an MFD. And Lee clearly stated that
+> > this is wrong:
+> > "This is not an MFD, since it utilised neither the MFD API nor
+> > of_platform_populate() to register child devices." [1]
+>
+> Well, perhaps it should do one of those things then?
 
-What do you mean by making it independent?
+I don't think so. BT part is just a serdev sitting on top of UART,
+WiFi is PCIe device (for qca6390). So using MFD API (which primarily
+targets platform devices) does not seem logical and feasible.
 
-The patch does not depend on the zram changes, and so, this can
-be merged separately as-is.
+> Like I say this is
+> very clearly not a regulator, it looks like a consumer of some kind.
+> The regulator API isn't there just to absorb things that need reference
+> counting, it's there to represent things providing supplies.  This seems
+> to be very clearly not a supply given that it's grouping together a
+> bunch of other supplies and switching them on and off together without
+> providing a clear output supply.
 
-If you mean that I should not mention zram on the commit log, please
-let me know. I however think a concrete example is useful.
+Ack.
 
-Or do you just mean that I should resend this out as a new patch
-without it being attached to the zram thread?
+> > I've tried following Rob's suggestions on implementing things clearly,
+> > but doing so results in too big restructure just for a single device.
+>
+> I don't know what that suggestion was?  If there's only one device that
+> uses this why is it not implemented as part of that device?
 
- Luis
+One device = qca6390 (or 91). Because it is still a device sitting on
+a PCI bus which is typically discoverable, while adding power
+sequencer to the device driver would demand making the bus fully
+descibiable (like PCI bus is on Spark).
+
+> > > > +static int qca6390_enable(struct regulator_dev *rdev)
+> > > > +{
+> > > > +     struct qca6390_data *data = rdev_get_drvdata(rdev);
+> > > > +     int ret;
+>
+> > > > +     ret = regulator_bulk_enable(data->num_vregs, data->regulators);
+> > > > +     if (ret) {
+> > > > +             dev_err(data->dev, "Failed to enable regulators");
+> > > > +             return ret;
+> > > > +     }
+>
+> > > The regulator API is *not* recursive, I am astonished this works.
+>
+> > It does, even with lockdep enabled. Moreover BT regularly does disable
+> > and enable this regulator, so both enable and disable paths were well
+> > tested.
+> > Should I change this into some internal call to remove API recursiveness?
+>
+> You should not be implementing this as a regulator at all.
+
+Ack
+
+-- 
+With best wishes
+Dmitry
