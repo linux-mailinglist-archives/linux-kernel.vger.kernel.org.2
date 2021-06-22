@@ -2,131 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F943B0C64
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7ED33B0C70
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233015AbhFVSH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38886 "EHLO
+        id S232539AbhFVSK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:10:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbhFVSG7 (ORCPT
+        with ESMTP id S232501AbhFVSKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:06:59 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806D5C03540E
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:00:00 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id a12-20020ac8108c0000b029023c90fba3dcso96298qtj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:00:00 -0700 (PDT)
+        Tue, 22 Jun 2021 14:10:17 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A373C061D73;
+        Tue, 22 Jun 2021 11:02:15 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id m14so8206680edp.9;
+        Tue, 22 Jun 2021 11:02:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=IqH/coxPh0ByAAe8tc78x3ztmN8TTOQkDLtNWwfe75w=;
-        b=DZs+osiJDshw77pcrc5vq2d1EvY10o5PpgQ80tI2x4sJk3l67+x33t6zY4B/q2ah3T
-         6FzcG+++e9Scl8IAVpYAsFQSiEgLoeS8Dj0RQbfreQ1j5lF/jGl0GIs/tde7hvZZJn/w
-         Z5KOR/RHhRkCuKSc4gwR9d7E0gHMclLI19VWY8NOnd4co/3Wl5ESvIiLKMt2E7ZsJzyh
-         s9tFz7fOAUk5Clxao2Sd2f1ochsswYBo5tNkKKkTOhr5o/jEjD/+Zmw8RVUHMLh/0egd
-         hfmMQaa3KlGUyhZy3szAxfwNoGoBNzNy3/Wm7iOOX/fE5CqTHJcmKtWposnQ0oynuCNK
-         zshw==
+        d=gmail.com; s=20161025;
+        h=subject:from:to:references:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=qBI1JkDBHmE5U6gDX1UQMWanis3g+dXmcFngb016voY=;
+        b=VrP/79qKyI1WcSDq3xBYfBlD8p1DVwzkezRJheMSMVGmGv9frGy0GfcK00e37zws65
+         VxVOR6Iobsm5qKO84Ddegfr/XcE9JxS8RdAjFJ3+OKqPtqqy0EH9sjZRucNzRhwzq818
+         s+4nAtFixTmV8BeBbfoJmtXb/gq5MjPC1fc1KUYPXZenmgzfcHNkRhBxaDIA6OdZYChg
+         E6fsBE/82UP2H3pUFQzZuo2NSVGievn3uX6pyW9F8/gOSpCGArUOXOs9kJ4mCSrgPi2s
+         Fiw787nEdUbxJDSi3xCTBRymLYgsaW3yP2vFaVzPIJ6hZqRY4sPfiFDUJ+Nei77FdW/o
+         2KFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=IqH/coxPh0ByAAe8tc78x3ztmN8TTOQkDLtNWwfe75w=;
-        b=nRgYEtxxNMY/jFSYPh7Jp0G58fuMS/Vj6zIB4lsCYoHJLlxKKY+mBN23OPp7v5wqcy
-         vCiI6gEuOWUwmBwQmOXfpmxV/dgDGYJ7pdBQTAV64Q4OdCbm2bMRdm3aHTfG5ROPwhrm
-         igeB6E/0F3uWiaF6rHO8UN5Dmk9YufF3usE9mDDitkXVzeZT9MQn48qySIfs6r7EGbFW
-         r7dnrrpwx1LAq7AJtsnxeUMCykfxr7Y+qcbw5NjfaaYrT5RVI1wTt4kzMCttmRAnb0H2
-         +z/wr+VQPuAfG2vQ6x7Ux+ZJOM/II6BDVWe3OEveHb6uKWK8U+boSXP/3z9tGtyqlF0r
-         Ln5A==
-X-Gm-Message-State: AOAM532W3DAfI7UVuvFXTbKgb2R9J87byiOarXWrJpdQ9px1YAfJDYeh
-        yMM80j/xbXwS7Nh59C8FSC9UX/WRnbM=
-X-Google-Smtp-Source: ABdhPJwP4Zh3alZPREoZIcweWAzgk0DTf86jxxhCnxkCnpRIQOV32EVth3C48VrQ1ng8hVQ2RwJSEKi9nK0=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:5722:92ce:361f:3832])
- (user=seanjc job=sendgmr) by 2002:a25:cf92:: with SMTP id f140mr5867665ybg.38.1624384799659;
- Tue, 22 Jun 2021 10:59:59 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 22 Jun 2021 10:57:39 -0700
-In-Reply-To: <20210622175739.3610207-1-seanjc@google.com>
-Message-Id: <20210622175739.3610207-55-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210622175739.3610207-1-seanjc@google.com>
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 54/54] KVM: x86/mmu: Let guest use GBPAGES if supported in
- hardware and TDP is on
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:from:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qBI1JkDBHmE5U6gDX1UQMWanis3g+dXmcFngb016voY=;
+        b=YFuUmiGhIXDpas5FFEcGEq0iMUAQUQmM2Yz6v5F7IxWcbDbgWSqYbsMifbqEpxvMay
+         mcsfXyEveMrO5lnzZtdVIykvYvtWOCjN+CQHjejCZRQqvI63Rr3UGLIF7z5OY07rZduR
+         s+5kMX8w8aVzyzF7JWTuZ04N8yaHbyk6RsLjwNBiQir9RPDdy4PX1741w0WkgNWMB3nN
+         bCyQoxmheLAlSEmqDFmkhsRe/9uXRMQjQH83rTeixa3jqsJLsnooSbKl0Pdxk5gZHMUN
+         WJTaibG425bFM/mG83C+XPhygqr3Picbo4s9ZEUwHV1Mmsho8WAWlkaegkFmgEJ4ffIv
+         DIDw==
+X-Gm-Message-State: AOAM532xJYyNGqK8xiK0buncJSXYdCkd52DVyrxeOBh7Z3MH3b79hJA1
+        ZGql5CcM28vvR33qNOHd2BP2vk/aEb+YcHfT
+X-Google-Smtp-Source: ABdhPJxkjM9/PfEOaXDUG/U8iVWS8Ax0RkfwGKxHJyDN0b2LV/FkN3t5qQZtTGfEkowOz7n7jgeGHQ==
+X-Received: by 2002:a05:6402:49:: with SMTP id f9mr6776435edu.178.1624384933767;
+        Tue, 22 Jun 2021 11:02:13 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c096:310::2410? ([2620:10d:c093:600::2:9d6e])
+        by smtp.gmail.com with ESMTPSA id ar14sm4521104ejc.108.2021.06.22.11.02.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 11:02:13 -0700 (PDT)
+Subject: Re: [PATCH v4] io_uring: reduce latency by reissueing the operation
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Olivier Langlois <olivier@trillion01.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <9e8441419bb1b8f3c3fcc607b2713efecdef2136.1624364038.git.olivier@trillion01.com>
+ <678deb93-c4a5-5a14-9687-9e44f0f00b5a@gmail.com>
+Message-ID: <7c47078a-9e2d-badf-a47d-1ca78e1a3253@gmail.com>
+Date:   Tue, 22 Jun 2021 19:01:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <678deb93-c4a5-5a14-9687-9e44f0f00b5a@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let the guest use 1g hugepages if TDP is enabled and the host supports
-GBPAGES, KVM can't actively prevent the guest from using 1g pages in this
-case since they can't be disabled in the hardware page walker.  While
-injecting a page fault if a bogus 1g page is encountered during a
-software page walk is perfectly reasonable since KVM is simply honoring
-userspace's vCPU model, doing so arguably doesn't provide any meaningful
-value, and at worst will be horribly confusing as the guest will see
-inconsistent behavior and seemingly spurious page faults.
+On 6/22/21 6:54 PM, Pavel Begunkov wrote:
+> On 6/22/21 1:17 PM, Olivier Langlois wrote:
+>> It is quite frequent that when an operation fails and returns EAGAIN,
+>> the data becomes available between that failure and the call to
+>> vfs_poll() done by io_arm_poll_handler().
+>>
+>> Detecting the situation and reissuing the operation is much faster
+>> than going ahead and push the operation to the io-wq.
+>>
+>> Performance improvement testing has been performed with:
+>> Single thread, 1 TCP connection receiving a 5 Mbps stream, no sqpoll.
+>>
+>> 4 measurements have been taken:
+>> 1. The time it takes to process a read request when data is already available
+>> 2. The time it takes to process by calling twice io_issue_sqe() after vfs_poll() indicated that data was available
+>> 3. The time it takes to execute io_queue_async_work()
+>> 4. The time it takes to complete a read request asynchronously
+>>
+>> 2.25% of all the read operations did use the new path.
+>>
+>> ready data (baseline)
+>> avg	3657.94182918628
+>> min	580
+>> max	20098
+>> stddev	1213.15975908162
+>>
+>> reissue	completion
+>> average	7882.67567567568
+>> min	2316
+>> max	28811
+>> stddev	1982.79172973284
+>>
+>> insert io-wq time
+>> average	8983.82276995305
+>> min	3324
+>> max	87816
+>> stddev	2551.60056552038
+>>
+>> async time completion
+>> average	24670.4758861127
+>> min	10758
+>> max	102612
+>> stddev	3483.92416873804
+>>
+>> Conclusion:
+>> On average reissuing the sqe with the patch code is 1.1uSec faster and
+>> in the worse case scenario 59uSec faster than placing the request on
+>> io-wq
+>>
+>> On average completion time by reissuing the sqe with the patch code is
+>> 16.79uSec faster and in the worse case scenario 73.8uSec faster than
+>> async completion.
+>>
+>> Signed-off-by: Olivier Langlois <olivier@trillion01.com>
+>> ---
+>>  fs/io_uring.c | 31 ++++++++++++++++++++++---------
+>>  1 file changed, 22 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/fs/io_uring.c b/fs/io_uring.c
+>> index fc8637f591a6..5efa67c2f974 100644
+>> --- a/fs/io_uring.c
+>> +++ b/fs/io_uring.c
+> 
+> [...]
+> 
+>>  static bool __io_poll_remove_one(struct io_kiocb *req,
+>> @@ -6437,6 +6445,7 @@ static void __io_queue_sqe(struct io_kiocb *req)
+>>  	struct io_kiocb *linked_timeout = io_prep_linked_timeout(req);
+>>  	int ret;
+>>  
+>> +issue_sqe:
+>>  	ret = io_issue_sqe(req, IO_URING_F_NONBLOCK|IO_URING_F_COMPLETE_DEFER);
+>>  
+>>  	/*
+>> @@ -6456,12 +6465,16 @@ static void __io_queue_sqe(struct io_kiocb *req)
+>>  			io_put_req(req);
+>>  		}
+>>  	} else if (ret == -EAGAIN && !(req->flags & REQ_F_NOWAIT)) {
+>> -		if (!io_arm_poll_handler(req)) {
+>> +		switch (io_arm_poll_handler(req)) {
+>> +		case IO_APOLL_READY:
+>> +			goto issue_sqe;
+>> +		case IO_APOLL_ABORTED:
+>>  			/*
+>>  			 * Queued up for async execution, worker will release
+>>  			 * submit reference when the iocb is actually submitted.
+>>  			 */
+>>  			io_queue_async_work(req);
+>> +			break;
+> 
+> Hmm, why there is a new break here? It will miscount @linked_timeout
+> if you do that. Every io_prep_linked_timeout() should be matched with
+> io_queue_linked_timeout().
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu/mmu.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+Never mind, I said some nonsense and apparently need some coffee
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index d4969ac98a4b..684255defb33 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4174,13 +4174,28 @@ __reset_rsvds_bits_mask(struct rsvd_bits_validate *rsvd_check,
- 	}
- }
- 
-+static bool guest_can_use_gbpages(struct kvm_vcpu *vcpu)
-+{
-+	/*
-+	 * If TDP is enabled, let the guest use GBPAGES if they're supported in
-+	 * hardware.  The hardware page walker doesn't let KVM disable GBPAGES,
-+	 * i.e. won't treat them as reserved, and KVM doesn't redo the GVA->GPA
-+	 * walk for performance and complexity reasons.  Not to mention KVM
-+	 * _can't_ solve the problem because GVA->GPA walks aren't visible to
-+	 * KVM once a TDP translation is installed.  Mimic hardware behavior so
-+	 * that KVM's is at least consistent, i.e. doesn't randomly inject #PF.
-+	 */
-+	return tdp_enabled ? boot_cpu_has(X86_FEATURE_GBPAGES) :
-+			     guest_cpuid_has(vcpu, X86_FEATURE_GBPAGES);
-+}
-+
- static void reset_rsvds_bits_mask(struct kvm_vcpu *vcpu,
- 				  struct kvm_mmu *context)
- {
- 	__reset_rsvds_bits_mask(&context->guest_rsvd_check,
- 				vcpu->arch.reserved_gpa_bits,
- 				context->root_level, is_efer_nx(context),
--				guest_cpuid_has(vcpu, X86_FEATURE_GBPAGES),
-+				guest_can_use_gbpages(vcpu),
- 				is_cr4_pse(context),
- 				guest_cpuid_is_amd_or_hygon(vcpu));
- }
-@@ -4259,8 +4274,7 @@ static void reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu,
- 	shadow_zero_check = &context->shadow_zero_check;
- 	__reset_rsvds_bits_mask(shadow_zero_check, reserved_hpa_bits(),
- 				context->shadow_root_level, uses_nx,
--				guest_cpuid_has(vcpu, X86_FEATURE_GBPAGES),
--				is_pse, is_amd);
-+				guest_can_use_gbpages(vcpu), is_pse, is_amd);
- 
- 	if (!shadow_me_mask)
- 		return;
+
+>>  		}
+>>  	} else {
+>>  		io_req_complete_failed(req, ret);
+>>
+> 
+
 -- 
-2.32.0.288.g62a8d224e6-goog
-
+Pavel Begunkov
