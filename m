@@ -2,173 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F2B3AFE54
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 280503AFE56
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbhFVHwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:52:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37884 "EHLO
+        id S230235AbhFVHwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229807AbhFVHwA (ORCPT
+        with ESMTP id S229807AbhFVHwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:52:00 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B10EDC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:49:44 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id u11so17867303ljh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:49:44 -0700 (PDT)
+        Tue, 22 Jun 2021 03:52:12 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D1BC061574;
+        Tue, 22 Jun 2021 00:49:56 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso1284361pjp.5;
+        Tue, 22 Jun 2021 00:49:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wOPEtWORSkQBvaG3lQj4bBkhxW56uNEUy6C8BsqWuFQ=;
-        b=jQZNEO1AwlhsUqEwo5PX+i4dyZjplXX1aoREJE01/pbr6tgKwdX9vOhpB3bNGf461m
-         GFwkwAn4ZRPfmaB+uRJrVP/ET3Mo7/zGwUX+fGIzNmMg/mzRYV9NlXNgrbey8ib7x2N8
-         eueFb7yKfUGrw+DcR1xU8kI66tzeIBg9t3NLIYLkVGhZkum1Yus6UdP5mFI2OuGjZ9qy
-         e/7rZa+Q/VZIOnBijMjF9p2zT9ar4aRvcireDYv/AXbNXCjm7TVrBxFwF82MNH9J3KZu
-         BXHGmotkTJOpKmmubVRoVTZck6XYvmnARVBUraI31tdy+gjiEfgpLs2ADIDqnMI/WvEE
-         1CLQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wjwJ0rnNQMFJ61cELhija7bj4Ok9LpvWfDHNn8zGRYE=;
+        b=t8bDAzy2g5kYmm/gs1pVc39k78Hjrj+C9JWk5L95AZX2RUaWoad53f0cOIqnQogD9G
+         cNGl1k13rcXvxLb4S/K+ivR16akcN4ulYqFmW2EtrTqcyqdEt9nD0vWw4Ck2mc4CtTVj
+         xbP8/qrHEMb7uere8q40RznKvRN8A6IGbkb5dScWg6hESbFIHkdktWUQGNV2RcMMzUF6
+         YO3ouGtMaN/p5hZmAKOqUKP22BbxWB4s9oNg/gPUNDtaLe69/O5ONgCFk3+955yfdKf9
+         KLpCTFKtvojviELv2P2zTdFg0GRQC7E0dr7PwIfaCy6y2ZPALVhnzqmSaBg3E7C6+PLf
+         ymWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wOPEtWORSkQBvaG3lQj4bBkhxW56uNEUy6C8BsqWuFQ=;
-        b=W9e1gxY/lLuUmGjcSRg9p9UHG1ELcEtj4MZ5FzbgqZLE/I55wRwcoGI6MLn19yzVUY
-         4vRmQJemN8iDXcWETL643jEyS9Ga2FzmoxxKaRJAFOsdD9EoNe5WNW+I1HwxWcJnpEOH
-         HxkBQt29HE+q8aYr/uNdilg+g6mbxfh7zKX9bk1HNaheOk3PMY4eZRvmOI1BZgs63PQk
-         zaFucUj9ZlNws3GT3f7h8efELPN6wOfEkJmG/esitHNaIh8BvlD6ixgVhID7VStlOoIw
-         La7Cbqcxmh6wUS3ERqrWXOjVSyw+e01P0W8NI377jhguOx2LcUZwvmn2diAnzbhnV18N
-         O8BQ==
-X-Gm-Message-State: AOAM530VW6ZdLIGSZ8UofHGRhzX8dWxq2vmEfdivFGHIOpyJ+0etM6B3
-        wvKpMl4KL3dzKfcQ5yhtq/oLkfnP8I9c1V3c8KliJg==
-X-Google-Smtp-Source: ABdhPJxZpIePfRvFDfeRql605aaJ6XXRsf7f2DOLTSExXnQTQxy9TXBz1HGS1e1QHH77+oPwqd6H6VwgHjvE1GpGCRc=
-X-Received: by 2002:a2e:90ca:: with SMTP id o10mr2013324ljg.299.1624348182997;
- Tue, 22 Jun 2021 00:49:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wjwJ0rnNQMFJ61cELhija7bj4Ok9LpvWfDHNn8zGRYE=;
+        b=tFMQNTRXatQRH7620bYuN24LhQ/4l2Jar/0eNjh8BBqIEEwrJnsRQv/hhijQnTKd7W
+         F6jFIE0ZD2nEF6mtKRzIBL+eW+CHitQPketDlC43wVvnXHbI19zK9pQbdvygNN5gt5Ub
+         DDkuXUGHwbm6JYbwZQwpycPhBwT+WU1a+5zdIJDnWvsfwoXca6hq1O/DTyG+7CBRMU53
+         G76xFCOU44/aFLgC2qM5yFBBezPY0ga9DySsQWFtzGX72Xv/johBOcuZGov4lGSpoJFm
+         Valvpk5ae9+V3NB5Btwb4i+FHjEdC2QD6uZ+u+dgG5SutZy8f1m5BHXalaETj+2GxfCx
+         SoTQ==
+X-Gm-Message-State: AOAM532+ONTN9dogXVlq3z7p0dNZeqVBeisuF7Z3MA1t12bylZtduRJx
+        uEFkzm/daEhd7NsS4l34bFw=
+X-Google-Smtp-Source: ABdhPJwMkJFdb3JyaXaaWZ6U3HPeZDZS4J5HyG6XqS/k1ubCT8uc0wyi0Yuw7THNVwKpDdNLWlSrYQ==
+X-Received: by 2002:a17:90a:7381:: with SMTP id j1mr2613177pjg.29.1624348196159;
+        Tue, 22 Jun 2021 00:49:56 -0700 (PDT)
+Received: from d3 ([2405:6580:97e0:3100:ae94:2ee7:59a:4846])
+        by smtp.gmail.com with ESMTPSA id p29sm10985201pfq.55.2021.06.22.00.49.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 00:49:55 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 16:49:51 +0900
+From:   Benjamin Poirier <benjamin.poirier@gmail.com>
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     linux-staging@lists.linux.dev, netdev@vger.kernel.org,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC 06/19] staging: qlge: disable flow control by default
+Message-ID: <YNGWHxYF5UkPk2U5@d3>
+References: <20210621134902.83587-1-coiby.xu@gmail.com>
+ <20210621134902.83587-7-coiby.xu@gmail.com>
 MIME-Version: 1.0
-References: <2ED1BDF5-BC0C-47CD-8F33-9A46C738F8CF@linux.vnet.ibm.com>
-In-Reply-To: <2ED1BDF5-BC0C-47CD-8F33-9A46C738F8CF@linux.vnet.ibm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 22 Jun 2021 09:49:31 +0200
-Message-ID: <CAKfTPtDrHv4OOfPvwOE2DMNoucXQJ=yvvEpTVKrXghSdKEnZcA@mail.gmail.com>
-Subject: Re: [powerpc][next-20210621] WARNING at kernel/sched/fair.c:3277
- during boot
-To:     Sachin Sant <sachinp@linux.vnet.ibm.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, Odin Ugedal <odin@uged.al>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621134902.83587-7-coiby.xu@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sachin,
+On 2021-06-21 21:48 +0800, Coiby Xu wrote:
+> According to the TODO item,
+> > * the flow control implementation in firmware is buggy (sends a flood of pause
+> >   frames, resets the link, device and driver buffer queues become
+> >   desynchronized), disable it by default
+> 
+> Currently, qlge_mpi_port_cfg_work calls qlge_mb_get_port_cfg which gets
+> the link config from the firmware and saves it to qdev->link_config. By
+> default, flow control is enabled. This commit writes the
+> save the pause parameter of qdev->link_config and don't let it
+> overwritten by link settings of current port. Since qdev->link_config=0
+> when qdev is initialized, this could disable flow control by default and
+> the pause parameter value could also survive MPI resetting,
+>     $ ethtool -a enp94s0f0
+>     Pause parameters for enp94s0f0:
+>     Autonegotiate:  off
+>     RX:             off
+>     TX:             off
+> 
+> The follow control can be enabled manually,
+> 
+>     $ ethtool -A enp94s0f0 rx on tx on
+>     $ ethtool -a enp94s0f0
+>     Pause parameters for enp94s0f0:
+>     Autonegotiate:  off
+>     RX:             on
+>     TX:             on
+> 
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+> ---
+>  drivers/staging/qlge/TODO       |  3 ---
+>  drivers/staging/qlge/qlge_mpi.c | 11 ++++++++++-
+>  2 files changed, 10 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/staging/qlge/TODO b/drivers/staging/qlge/TODO
+> index b7a60425fcd2..8c84160b5993 100644
+> --- a/drivers/staging/qlge/TODO
+> +++ b/drivers/staging/qlge/TODO
+> @@ -4,9 +4,6 @@
+>    ql_build_rx_skb(). That function is now used exclusively to handle packets
+>    that underwent header splitting but it still contains code to handle non
+>    split cases.
+> -* the flow control implementation in firmware is buggy (sends a flood of pause
+> -  frames, resets the link, device and driver buffer queues become
+> -  desynchronized), disable it by default
+>  * some structures are initialized redundantly (ex. memset 0 after
+>    alloc_etherdev())
+>  * the driver has a habit of using runtime checks where compile time checks are
+> diff --git a/drivers/staging/qlge/qlge_mpi.c b/drivers/staging/qlge/qlge_mpi.c
+> index 2630ebf50341..0f1c7da80413 100644
+> --- a/drivers/staging/qlge/qlge_mpi.c
+> +++ b/drivers/staging/qlge/qlge_mpi.c
+> @@ -806,6 +806,7 @@ int qlge_mb_get_port_cfg(struct qlge_adapter *qdev)
+>  {
+>  	struct mbox_params mbc;
+>  	struct mbox_params *mbcp = &mbc;
+> +	u32 saved_pause_link_config = 0;
 
-On Tue, 22 Jun 2021 at 09:39, Sachin Sant <sachinp@linux.vnet.ibm.com> wrot=
-e:
->
-> While booting 5.13.0-rc7-next-20210621 on a PowerVM LPAR following warnin=
-g
-> is seen
->
-> [   30.922154] ------------[ cut here ]------------
-> [   30.922201] cfs_rq->avg.load_avg || cfs_rq->avg.util_avg || cfs_rq->av=
-g.runnable_avg
-> [   30.922219] WARNING: CPU: 6 PID: 762 at kernel/sched/fair.c:3277 updat=
-e_blocked_averages+0x758/0x780
-> [   30.922259] Modules linked in: pseries_rng xts vmx_crypto uio_pdrv_gen=
-irq uio sch_fq_codel ip_tables sd_mod t10_pi sg fuse
-> [   30.922309] CPU: 6 PID: 762 Comm: augenrules Not tainted 5.13.0-rc7-ne=
-xt-20210621 #1
-> [   30.922329] NIP:  c0000000001b27e8 LR: c0000000001b27e4 CTR: c00000000=
-07cfda0
-> [   30.922344] REGS: c000000023fcb660 TRAP: 0700   Not tainted  (5.13.0-r=
-c7-next-20210621)
-> [   30.922359] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 4848822=
-4  XER: 00000005
-> [   30.922394] CFAR: c00000000014d120 IRQMASK: 1
->                GPR00: c0000000001b27e4 c000000023fcb900 c000000002a08400 =
-0000000000000048
->                GPR04: 00000000ffff7fff c000000023fcb5c0 0000000000000027 =
-c000000f6fdd7e18
->                GPR08: 0000000000000023 0000000000000001 0000000000000027 =
-c0000000028a6650
->                GPR12: 0000000000008000 c000000f6fff7680 c000000f6fe62600 =
-0000000000000032
->                GPR16: 00000007331a989a c000000f6fe62600 c0000000238a6800 =
-0000000000000001
->                GPR20: 0000000000000000 c000000002a4dfe0 0000000000000000 =
-0000000000000006
->                GPR24: 0000000000000000 c000000f6fe63010 0000000000000001 =
-c000000f6fe62680
->                GPR28: 0000000000000006 c0000000238a69c0 0000000000000000 =
-c000000f6fe62600
-> [   30.922569] NIP [c0000000001b27e8] update_blocked_averages+0x758/0x780
-> [   30.922599] LR [c0000000001b27e4] update_blocked_averages+0x754/0x780
-> [   30.922624] Call Trace:
-> [   30.922631] [c000000023fcb900] [c0000000001b27e4] update_blocked_avera=
-ges+0x754/0x780 (unreliable)
-> [   30.922653] [c000000023fcba20] [c0000000001bd668] newidle_balance+0x25=
-8/0x5c0
-> [   30.922674] [c000000023fcbab0] [c0000000001bdaac] pick_next_task_fair+=
-0x7c/0x4d0
-> [   30.922692] [c000000023fcbb10] [c000000000dcd31c] __schedule+0x15c/0x1=
-780
-> [   30.922708] [c000000023fcbc50] [c0000000001a5a04] do_task_dead+0x64/0x=
-70
-> [   30.922726] [c000000023fcbc80] [c000000000156338] do_exit+0x848/0xcc0
-> [   30.922743] [c000000023fcbd50] [c000000000156884] do_group_exit+0x64/0=
-xe0
-> [   30.922758] [c000000023fcbd90] [c000000000156924] sys_exit_group+0x24/=
-0x30
-> [   30.922774] [c000000023fcbdb0] [c0000000000310c0] system_call_exceptio=
-n+0x150/0x2d0
-> [   30.922792] [c000000023fcbe10] [c00000000000cc5c] system_call_common+0=
-xec/0x278
-> [   30.922808] --- interrupt: c00 at 0x7fffb3acddcc
-> [   30.922821] NIP:  00007fffb3acddcc LR: 00007fffb3a27f04 CTR: 000000000=
-0000000
-> [   30.922833] REGS: c000000023fcbe80 TRAP: 0c00   Not tainted  (5.13.0-r=
-c7-next-20210621)
-> [   30.922847] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE=
->  CR: 28444202  XER: 00000000
-> [   30.922882] IRQMASK: 0
->                GPR00: 00000000000000ea 00007fffc8f21780 00007fffb3bf7100 =
-0000000000000000
->                GPR04: 0000000000000000 0000000155f142f0 0000000000000000 =
-00007fffb3d23740
->                GPR08: fffffffffbad2a87 0000000000000000 0000000000000000 =
-0000000000000000
->                GPR12: 0000000000000000 00007fffb3d2aeb0 0000000116be95e0 =
-0000000000000032
->                GPR16: 0000000000000000 00007fffc8f21cd8 000000000000002d =
-0000000000000024
->                GPR20: 00007fffc8f21cd4 00007fffb3bf4f98 0000000000000001 =
-0000000000000001
->                GPR24: 00007fffb3bf0950 0000000000000000 0000000000000000 =
-0000000000000001
->                GPR28: 0000000000000000 0000000000000000 00007fffb3d23ec0 =
-0000000000000000
-> [   30.923023] NIP [00007fffb3acddcc] 0x7fffb3acddcc
-> [   30.923035] LR [00007fffb3a27f04] 0x7fffb3a27f04
-> [   30.923045] --- interrupt: c00
-> [   30.923052] Instruction dump:
-> [   30.923061] 3863be48 9be97ae6 4bf9a8f9 60000000 0fe00000 4bfff980 e921=
-0070 e8610088
-> [   30.923088] 39400001 99490003 4bf9a8d9 60000000 <0fe00000> 4bfffc24 3d=
-22fff5 89297ae3
-> [   30.923113] ---[ end trace ed07974d2149c499 ]=E2=80=94
->
-> This warning was introduced with commit 9e077b52d86a
-> sched/pelt: Check that *_avg are null when *_sum are
+Initialization is not needed given the code below, in fact the
+declaration can be moved to the block below.
 
-Yes. That was exactly the purpose of the patch. There is one last
-remaining part which could generate this. I'm going to prepare a patch
+>  	int status = 0;
+>  
+>  	memset(mbcp, 0, sizeof(struct mbox_params));
+> @@ -826,7 +827,15 @@ int qlge_mb_get_port_cfg(struct qlge_adapter *qdev)
+>  	} else	{
+>  		netif_printk(qdev, drv, KERN_DEBUG, qdev->ndev,
+>  			     "Passed Get Port Configuration.\n");
+> -		qdev->link_config = mbcp->mbox_out[1];
+> +		/*
+> +		 * Don't let the pause parameter be overwritten by
+> +		 *
+> +		 * In this way, follow control can be disabled by default
+> +		 * and the setting could also survive the MPI reset
+> +		 */
 
-Thanks
+It seems this comment is incomplete. Also, it's "flow control", not
+"follow control".
 
->
-> next-20210618 was good.
->
-> Thanks
-> -Sachin
+> +		saved_pause_link_config = qdev->link_config & CFG_PAUSE_STD;
+> +		qdev->link_config = ~CFG_PAUSE_STD & mbcp->mbox_out[1];
+> +		qdev->link_config |= saved_pause_link_config;
+>  		qdev->max_frame_size = mbcp->mbox_out[2];
+>  	}
+>  	return status;
+> -- 
+> 2.32.0
+> 
