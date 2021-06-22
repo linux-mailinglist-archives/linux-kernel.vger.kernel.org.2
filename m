@@ -2,97 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382433AFC24
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 06:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B8A3AFC2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 06:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbhFVEqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 00:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52834 "EHLO
+        id S229787AbhFVEtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 00:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhFVEqI (ORCPT
+        with ESMTP id S229574AbhFVEtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 00:46:08 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A69C061574;
-        Mon, 21 Jun 2021 21:43:52 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id i4so6082726plt.12;
-        Mon, 21 Jun 2021 21:43:52 -0700 (PDT)
+        Tue, 22 Jun 2021 00:49:15 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E833C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 21:46:59 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id j1so4767827wrn.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 21:46:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=caIQJ1mUw/Qq9RPSpDxrIHGCVaQe3qBahSzrBXQocF8=;
-        b=c69jBUXPH5lSnMFPSZ5QtjVkOFfoGLO8g/NWjmEelanP4ibDUGn+jSqsroEJYY/Qhs
-         Y59eNY1NqkJkZT/28WGjOdpDkq0bcK2GzCeMdopf8dKGlRT+QivU2rXT5NJyMf74G+Vp
-         txh4hs0fD0Om5jC2rTqswlTxrbkpgxPNmO6fklMcd5Dez4QP45awQ83ABmwIujAKQe4n
-         0RNop3pp2jxZK/Iaxnp96ABBalq15M0uB0onZDNCtDYuIYaULlSXItszFz4ic4YWiJN0
-         UrIgus6i5KmV73rZF5Vnt+ah9JNU1HBszWDC7sWzEGTNFm8nqZJMeopD7MgwQ0dUUE6I
-         xDvg==
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=09Mfm1QM7/L+YWTPoynwJ162O0xIkLcgOUTr2j77MJE=;
+        b=eciAZMzp8OuK9xwqbf2bWae+j4AomXEqEH8ws5wJB4X2J8QHdnN8n+ttl0n3Zhc2w5
+         aJawqO1XzErTC2bTG7IHEiJ43uOodfx86Auc9W5gLEVzj5zTZ+gxHjV/43XeP+25Gcqq
+         qSxDMzos4RE1lKIrK8numyVqt5mUG0gKX/4i2w1nYpV8MhMz49v3A7qY9YBAnqADmA56
+         et3XJbq3RBHQoJOjJSibanCuwaul4i5U0uo8pdit5/7wEoM3IEuTNveYwBp/4XQK8TRR
+         PgJLLnkH6wE1rHqFLRrHCMUBjPsj05eiAksJ4AZsMT86tx66KAuJwT5bwwYcleyg3VOM
+         mKxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=caIQJ1mUw/Qq9RPSpDxrIHGCVaQe3qBahSzrBXQocF8=;
-        b=cGtAM5TrnvoxdAtoTxdQdW5pc7PrDrlYnPFsC1ytn+9+NI5Nvr/lWB8eYjkdqJSzxW
-         wOgX4T0ED1FNgrU5uif7QGpA5wB+Jp6PCDJVKQys5qyULqZfZOnrhGUVwpeFqX9WYPaF
-         VYecFURPEtpphnRbldTj3eUfq2s/RjO7uBQynuwH4d8C3W9RrI/66o72uwOBxDO2GMu8
-         2+sS6sIXIZN6CRcNb5ym45LaEeI/2toUyv2QGVvlqReiOxZNvwHul8Pd97rsJ3nCVw4o
-         aa5g55PxzO33fhEw+9V3aDAFJsbnAkcEY9xiAqYk1WgYiA6G/FeqMEoUJsnwzp7X+8GN
-         4qUQ==
-X-Gm-Message-State: AOAM531n4NaRbKc6RtQKa52pL36yEzXt9yJeuckXiv6CWTydvPFYrrgR
-        jt/2Kg6VIvlad6gHjh/p9nA=
-X-Google-Smtp-Source: ABdhPJwpqKeV1sZnIB2l/74DjTgWY6b5ubBtObEhV4nqB0CGPBqdzBr+reFoiW+7mBQeMDudq9qLIA==
-X-Received: by 2002:a17:90a:66cc:: with SMTP id z12mr1940520pjl.93.1624337032080;
-        Mon, 21 Jun 2021 21:43:52 -0700 (PDT)
-Received: from localhost.localdomain (104.194.74.249.16clouds.com. [104.194.74.249])
-        by smtp.gmail.com with ESMTPSA id v129sm8686909pfc.31.2021.06.21.21.43.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 21:43:51 -0700 (PDT)
-From:   Artem Lapkin <email2tema@gmail.com>
-X-Google-Original-From: Artem Lapkin <art@khadas.com>
-To:     narmstrong@baylibre.com
-Cc:     khilman@baylibre.com, robh+dt@kernel.org, jbrunet@baylibre.com,
-        christianshewitt@gmail.com, martin.blumenstingl@googlemail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        art@khadas.com, nick@khadas.com, gouwa@khadas.com
-Subject: [PATCH 2/2] arm64: dts: meson: improve gxm-khadas-vim2 wifi
-Date:   Tue, 22 Jun 2021 12:43:34 +0800
-Message-Id: <20210622044334.769791-2-art@khadas.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210622044334.769791-1-art@khadas.com>
-References: <20210622044334.769791-1-art@khadas.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=09Mfm1QM7/L+YWTPoynwJ162O0xIkLcgOUTr2j77MJE=;
+        b=Q90dmXQaujYyB0a1CQpALeUNdh51cla6WTR5EwjmG2Gn/K/tUO73q6Iv+NoiLRdGez
+         pORvRnLPYGnO+rlLjxEZoJENQcrrZ/JU9O9op1i2mPs5vzhDiP4xpKTvAS92X60Tgr2w
+         olbJhDsUitzUeii/F4AvXGPaV+VzcqHuSBQaOBceOxc1lKDmA+3hZM5BV3aEjTZfPuK5
+         AXOu+1mVDXwxId+awyOSxnR53r6bdPKY1j38RjiZm1VoysrBvFUEIM54rXQIa3799PnP
+         luwZsOPo2McIsas9tikvci5tHXAFdd2uORUMfaGTVGcVVLO4wPLbG45JAXaXNPxFpD+O
+         1JXg==
+X-Gm-Message-State: AOAM532Noqc1rnPQKLxfXVy4Pql80shalT3ycrc84IpBYshujWHMNbsd
+        SSBClYqRAiVn312JzyZ9ErTIKeckUNSLjkrucjIB4A==
+X-Google-Smtp-Source: ABdhPJz878r0AELnDsJ1BHAGAJffJ+yGk/L69nROJ/0UgWAZrPJmL9WkN4lZ/FB3rLHeilxbAHF6R0vAz9+VXZnW4Ms=
+X-Received: by 2002:a5d:4a49:: with SMTP id v9mr2220857wrs.128.1624337217873;
+ Mon, 21 Jun 2021 21:46:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210609121322.3058-1-anup.patel@wdc.com> <20210609121322.3058-2-anup.patel@wdc.com>
+In-Reply-To: <20210609121322.3058-2-anup.patel@wdc.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 22 Jun 2021 10:16:46 +0530
+Message-ID: <CAAhSdy0=XANwm4Vr5qbpvJdqwYNCfDRNTDf3cyAOGp-NuqF_Ag@mail.gmail.com>
+Subject: Re: [PATCH v7 1/1] RISC-V: Use SBI SRST extension when available
+To:     Anup Patel <anup.patel@wdc.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Improve gxm-khadas-vim2 wifi performance
-* change freq from 60Mhz to 100Mhz
-* add cap-sd-highspeed param
+Hi Palmer,
 
-100Mhz works well same as in meson-khadas-vim3.dtsi
+On Wed, Jun 9, 2021 at 5:43 PM Anup Patel <anup.patel@wdc.com> wrote:
+>
+> The SBI SRST extension provides a standard way to poweroff and
+> reboot the system irrespective to whether Linux RISC-V S-mode
+> is running natively (HS-mode) or inside Guest/VM (VS-mode).
+>
+> The SBI SRST extension is available in the SBI v0.3 specification.
+> (Refer, https://github.com/riscv/riscv-sbi-doc/releases/tag/v0.3.0-rc1)
 
-Signed-off-by: Artem Lapkin <art@khadas.com>
----
- arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Can you please consider this patch for Linux-5.14-rc1 ?
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-index 18a4b7a6c5df..86bdc0baf032 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-@@ -307,7 +307,8 @@ &sd_emmc_a {
- 	#size-cells = <0>;
- 
- 	bus-width = <4>;
--	max-frequency = <60000000>;
-+	cap-sd-highspeed;
-+	max-frequency = <100000000>;
- 
- 	non-removable;
- 	disable-wp;
--- 
-2.25.1
+The SBI v0.3 spec is already frozen and this patch has been
+floating on LKML for quite a few months now.
 
+Regards,
+Anup
+
+>
+> This patch extends Linux RISC-V SBI implementation to detect
+> and use SBI SRST extension.
+>
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> Reviewed-by: Atish Patra <atish.patra@wdc.com>
+> ---
+>  arch/riscv/include/asm/sbi.h | 24 ++++++++++++++++++++++++
+>  arch/riscv/kernel/sbi.c      | 35 +++++++++++++++++++++++++++++++++++
+>  2 files changed, 59 insertions(+)
+>
+> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+> index 0d42693cb65e..289621da4a2a 100644
+> --- a/arch/riscv/include/asm/sbi.h
+> +++ b/arch/riscv/include/asm/sbi.h
+> @@ -27,6 +27,7 @@ enum sbi_ext_id {
+>         SBI_EXT_IPI = 0x735049,
+>         SBI_EXT_RFENCE = 0x52464E43,
+>         SBI_EXT_HSM = 0x48534D,
+> +       SBI_EXT_SRST = 0x53525354,
+>  };
+>
+>  enum sbi_ext_base_fid {
+> @@ -70,6 +71,21 @@ enum sbi_hsm_hart_status {
+>         SBI_HSM_HART_STATUS_STOP_PENDING,
+>  };
+>
+> +enum sbi_ext_srst_fid {
+> +       SBI_EXT_SRST_RESET = 0,
+> +};
+> +
+> +enum sbi_srst_reset_type {
+> +       SBI_SRST_RESET_TYPE_SHUTDOWN = 0,
+> +       SBI_SRST_RESET_TYPE_COLD_REBOOT,
+> +       SBI_SRST_RESET_TYPE_WARM_REBOOT,
+> +};
+> +
+> +enum sbi_srst_reset_reason {
+> +       SBI_SRST_RESET_REASON_NONE = 0,
+> +       SBI_SRST_RESET_REASON_SYS_FAILURE,
+> +};
+> +
+>  #define SBI_SPEC_VERSION_DEFAULT       0x1
+>  #define SBI_SPEC_VERSION_MAJOR_SHIFT   24
+>  #define SBI_SPEC_VERSION_MAJOR_MASK    0x7f
+> @@ -148,6 +164,14 @@ static inline unsigned long sbi_minor_version(void)
+>         return sbi_spec_version & SBI_SPEC_VERSION_MINOR_MASK;
+>  }
+>
+> +/* Make SBI version */
+> +static inline unsigned long sbi_mk_version(unsigned long major,
+> +                                           unsigned long minor)
+> +{
+> +       return ((major & SBI_SPEC_VERSION_MAJOR_MASK) <<
+> +               SBI_SPEC_VERSION_MAJOR_SHIFT) | minor;
+> +}
+> +
+>  int sbi_err_map_linux_errno(int err);
+>  #else /* CONFIG_RISCV_SBI */
+>  static inline int sbi_remote_fence_i(const unsigned long *hart_mask) { return -1; }
+> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+> index 7402a417f38e..9a84f0cb5175 100644
+> --- a/arch/riscv/kernel/sbi.c
+> +++ b/arch/riscv/kernel/sbi.c
+> @@ -7,6 +7,7 @@
+>
+>  #include <linux/init.h>
+>  #include <linux/pm.h>
+> +#include <linux/reboot.h>
+>  #include <asm/sbi.h>
+>  #include <asm/smp.h>
+>
+> @@ -501,6 +502,32 @@ int sbi_remote_hfence_vvma_asid(const unsigned long *hart_mask,
+>  }
+>  EXPORT_SYMBOL(sbi_remote_hfence_vvma_asid);
+>
+> +static void sbi_srst_reset(unsigned long type, unsigned long reason)
+> +{
+> +       sbi_ecall(SBI_EXT_SRST, SBI_EXT_SRST_RESET, type, reason,
+> +                 0, 0, 0, 0);
+> +       pr_warn("%s: type=0x%lx reason=0x%lx failed\n",
+> +               __func__, type, reason);
+> +}
+> +
+> +static int sbi_srst_reboot(struct notifier_block *this,
+> +                          unsigned long mode, void *cmd)
+> +{
+> +       sbi_srst_reset((mode == REBOOT_WARM || mode == REBOOT_SOFT) ?
+> +                      SBI_SRST_RESET_TYPE_WARM_REBOOT :
+> +                      SBI_SRST_RESET_TYPE_COLD_REBOOT,
+> +                      SBI_SRST_RESET_REASON_NONE);
+> +       return NOTIFY_DONE;
+> +}
+> +
+> +static struct notifier_block sbi_srst_reboot_nb;
+> +
+> +static void sbi_srst_power_off(void)
+> +{
+> +       sbi_srst_reset(SBI_SRST_RESET_TYPE_SHUTDOWN,
+> +                      SBI_SRST_RESET_REASON_NONE);
+> +}
+> +
+>  /**
+>   * sbi_probe_extension() - Check if an SBI extension ID is supported or not.
+>   * @extid: The extension ID to be probed.
+> @@ -608,6 +635,14 @@ void __init sbi_init(void)
+>                 } else {
+>                         __sbi_rfence    = __sbi_rfence_v01;
+>                 }
+> +               if ((sbi_spec_version >= sbi_mk_version(0, 3)) &&
+> +                   (sbi_probe_extension(SBI_EXT_SRST) > 0)) {
+> +                       pr_info("SBI SRST extension detected\n");
+> +                       pm_power_off = sbi_srst_power_off;
+> +                       sbi_srst_reboot_nb.notifier_call = sbi_srst_reboot;
+> +                       sbi_srst_reboot_nb.priority = 192;
+> +                       register_restart_handler(&sbi_srst_reboot_nb);
+> +               }
+>         } else {
+>                 __sbi_set_timer = __sbi_set_timer_v01;
+>                 __sbi_send_ipi  = __sbi_send_ipi_v01;
+> --
+> 2.25.1
+>
