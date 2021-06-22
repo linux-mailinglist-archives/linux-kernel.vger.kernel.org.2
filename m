@@ -2,287 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8725D3B0E50
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D68FA3B0E55
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233180AbhFVUJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 16:09:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
+        id S233086AbhFVUJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 16:09:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233143AbhFVUJC (ORCPT
+        with ESMTP id S233134AbhFVUJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 16:09:02 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9956FC061150
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:06:22 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id p12-20020a0cf68c0000b029027a35feac45so280112qvn.19
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:06:22 -0700 (PDT)
+        Tue, 22 Jun 2021 16:09:19 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBD8C0611DD
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:06:32 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id bl4so6882045qkb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:06:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=QyEwXRXT2urLsHLGo2cN5dFnw8/WVT3cYfJ0isgbfF0=;
-        b=PlFbL8vxU+sOB44yCowC4K/Jlcj32kbZEcyIo5LSpS0eA7SJi70wwN67NJZLWUQXHM
-         72g9+CpyRo2anQtOUVWt2SaCNkeFNWvRmXvj8TIJT/3kIFA17SU6Zb0zAlH6BwT3V43J
-         CeiLEJ3MDnIszFIHc1GHRLUult8sRn1Bcu9va7WCzqF7YzLNcrp+oV2DeFbGIG3Qn6ul
-         Moi2oOQwg377orU2tCt0yUcXeASn6QBziXwibuj+J/hTBn5q5iE9k46oDAiV/r/5f13S
-         GqBV5yQ3ADD4nwMj99MNu2L9wbtjorkvbcYT9jmy5RScQnPbthJb+CWL/iz7i+RSgko3
-         6i5Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vFcGA/y37DyPbCA16zXcaXhlM22oPoQGg4ooUNJCkAo=;
+        b=oE70xO3DZnhRS9D0CKfrI5YQLEhrR7v66Yym0RkSj6xNG+HAKLJcuW5poY76Ikj1m3
+         izn/UO02g39+emV4Srav7XrCyr7lyK38LGwCo4bFfY7GFuLXhAumopaixv/gyHh0QE92
+         WJdPx8N8/fXlatfvX+CjN5W5ZdTPjS8OsP/hQdiyMgsfRByf5F7GYMu4wok+ZLpWy7Go
+         VwPB2Gl8gaJN2+Eiy5dEVP+RngrjMEVoQ345F20TCtAUY1HXDlkCesirVpkNcH1nQhU9
+         xIoBnzRQueZgHpVHm0loRAMptrTdXBfsEm2q8KuRcKkEAeAkA1zvrNa10Uqbd3GsgRhS
+         kiQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=QyEwXRXT2urLsHLGo2cN5dFnw8/WVT3cYfJ0isgbfF0=;
-        b=WenX2uC6IBrAtEmvlC0CsRZwyKyBR7LHlrMEm0N9qj0VB06AHtuAF3dLmvP08FPpO9
-         Ye4mWDgwP+DEePgBQFAlW8z4HJYwtia9dKEPCvfbdNrjkWaGC3Yp6r8zVQctCgTBt28S
-         pYvmVP6/YwhYM58H70qXh0s/7s7tuvsEbTV8348zz2oIPMiR8A8bVf/aFjCQJdk333+k
-         g/Dum8y0RIMFl4w5Q1he4b6hcU9jWQGIfA16rG//5BPGPZ/DGxNZKC4urzNUlaL8qDu7
-         i3/KwLq1AU5hUPVqBlIoj23Xe7TzmoiZIEXH/acLwkWsez//HPiDTfSKB1E2OlaZzGCp
-         VT2Q==
-X-Gm-Message-State: AOAM530ZpLEDaHuCbvJ0hP2RefHRm/RHTI/s2FfHkHTgNQNZyZ2Zlu9J
-        9ozuMOHfuDEt5ELC0oiCvmmHhTI8Xz4=
-X-Google-Smtp-Source: ABdhPJyCCOJQejZcAY35znCE45kL8yJlqS1sf7Sh9SYUamUWLhhxukO5zKwzXvgEhYuuz49tt2Dlm6PDEHM=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:7d90:4528:3c45:18fb])
- (user=seanjc job=sendgmr) by 2002:a0c:f704:: with SMTP id w4mr558674qvn.50.1624392381729;
- Tue, 22 Jun 2021 13:06:21 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 22 Jun 2021 13:05:29 -0700
-In-Reply-To: <20210622200529.3650424-1-seanjc@google.com>
-Message-Id: <20210622200529.3650424-20-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210622200529.3650424-1-seanjc@google.com>
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 19/19] KVM: sefltests: Add x86-64 test to verify MMU reacts to
- CPUID updates
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vFcGA/y37DyPbCA16zXcaXhlM22oPoQGg4ooUNJCkAo=;
+        b=oQ7Zz2cYiysL+Lh07tFnsINZCsLVcqSweFnaLWLkv7mp1JJpBNH9Tavqpd5sVRNFWx
+         z5JeAg0/aWA0qs7Cm85HHVo8OQ7+R9wtP6K23MC/wyYZ0UUQtHr0XVw6pOC3YqvhIEjp
+         mA7RwfUJeBBwiI1XPyCO9QtjIM25RbPsdkdxb5bj+dBgUzkfSO+cScgeHOpQ2T4t08ZL
+         5DCS3BNv8wFMKlh9f6Zs44p5GpOL7nHBMg6QJCBhgQxNcbdKh+emEWm4P6zpr6xqGB/r
+         CeGBxjz8syEk4KRkTbd9stZfnePoU+hm4gL3S/teVp2+hpmaI72bYAPpp1kdT5ZGlFLo
+         vcuQ==
+X-Gm-Message-State: AOAM531tLQW5Emwva8Zf5EE/1z4w87SB66aOg2zLmMslBXX+Nu+y/oE3
+        9IApa0IoQmOiVacrv4yppX4rnjSLJlPgDuzBiWjoWA==
+X-Google-Smtp-Source: ABdhPJwancDB4ysHtZ3UshEMyFDmCd7rFxYJq2frEz/W+UiMsBDDnOPFY6v+z4No4rWO4LesJMIAed8JJfH7yL+cobo=
+X-Received: by 2002:a25:4c42:: with SMTP id z63mr7100722yba.20.1624392391257;
+ Tue, 22 Jun 2021 13:06:31 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210621235248.2521620-1-dianders@chromium.org>
+ <067dd86d-da7f-ac83-6ce6-b8fd5aba0b6f@arm.com> <CAD=FV=Vg7kqhgxZppHXwMPMc0xATZ+MqbrXx-FB0eg7pHhNE8w@mail.gmail.com>
+ <20210622200219.GA28722@robh.at.kernel.org>
+In-Reply-To: <20210622200219.GA28722@robh.at.kernel.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 22 Jun 2021 13:05:55 -0700
+Message-ID: <CAGETcx8Cpjvsr2K6f2oDNJDcGiu2T1fEf3D_2S4THduH4cPzKQ@mail.gmail.com>
+Subject: Re: [PATCH 0/6] iommu: Enable devices to request non-strict DMA,
+ starting with QCom SD/MMC
+To:     Rob Herring <robh@kernel.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-pci@vger.kernel.org, quic_c_gdjako@quicinc.com,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Sonny Rao <sonnyrao@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Rajat Jain <rajatja@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andy Gross <agross@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an x86-only test to verify that x86's MMU reacts to CPUID updates
-that impact the MMU.  KVM has had multiple bugs where it fails to
-reconfigure the MMU after the guest's vCPU model changes.
+On Tue, Jun 22, 2021 at 1:02 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Tue, Jun 22, 2021 at 09:06:02AM -0700, Doug Anderson wrote:
+> > Hi,
+> >
+> > On Tue, Jun 22, 2021 at 4:35 AM Robin Murphy <robin.murphy@arm.com> wrote:
+> > >
+> > > Hi Doug,
+> > >
+> > > On 2021-06-22 00:52, Douglas Anderson wrote:
+> > > >
+> > > > This patch attempts to put forward a proposal for enabling non-strict
+> > > > DMA on a device-by-device basis. The patch series requests non-strict
+> > > > DMA for the Qualcomm SDHCI controller as a first device to enable,
+> > > > getting a nice bump in performance with what's believed to be a very
+> > > > small drop in security / safety (see the patch for the full argument).
+> > > >
+> > > > As part of this patch series I am end up slightly cleaning up some of
+> > > > the interactions between the PCI subsystem and the IOMMU subsystem but
+> > > > I don't go all the way to fully remove all the tentacles. Specifically
+> > > > this patch series only concerns itself with a single aspect: strict
+> > > > vs. non-strict mode for the IOMMU. I'm hoping that this will be easier
+> > > > to talk about / reason about for more subsystems compared to overall
+> > > > deciding what it means for a device to be "external" or "untrusted".
+> > > >
+> > > > If something like this patch series ends up being landable, it will
+> > > > undoubtedly need coordination between many maintainers to land. I
+> > > > believe it's fully bisectable but later patches in the series
+> > > > definitely depend on earlier ones. Sorry for the long CC list. :(
+> > >
+> > > Unfortunately, this doesn't work. In normal operation, the default
+> > > domains should be established long before individual drivers are even
+> > > loaded (if they are modules), let alone anywhere near probing. The fact
+> > > that iommu_probe_device() sometimes gets called far too late off the
+> > > back of driver probe is an unfortunate artefact of the original
+> > > probe-deferral scheme, and causes other problems like potentially
+> > > malformed groups - I've been forming a plan to fix that for a while now,
+> > > so I for one really can't condone anything trying to rely on it.
+> > > Non-deterministic behaviour based on driver probe order for multi-device
+> > > groups is part of the existing problem, and your proposal seems equally
+> > > vulnerable to that too.
+> >
+> > Doh! :( I definitely can't say I understand the iommu subsystem
+> > amazingly well. It was working for me, but I could believe that I was
+> > somehow violating a rule somewhere.
+> >
+> > I'm having a bit of a hard time understanding where the problem is
+> > though. Is there any chance that you missed the part of my series
+> > where I introduced a "pre_probe" step? Specifically, I see this:
+> >
+> > * really_probe() is called w/ a driver and a device.
+> > * -> calls dev->bus->dma_configure() w/ a "struct device *"
+> > * -> eventually calls iommu_probe_device() w/ the device.
+> > * -> calls iommu_alloc_default_domain() w/ the device
+> > * -> calls iommu_group_alloc_default_domain()
+> > * -> always allocates a new domain
+> >
+> > ...so we always have a "struct device" when a domain is allocated if
+> > that domain is going to be associated with a device.
+> >
+> > I will agree that iommu_probe_device() is called before the driver
+> > probe, but unless I missed something it's after the device driver is
+> > loaded.  ...and assuming something like patch #1 in this series looks
+> > OK then iommu_probe_device() will be called after "pre_probe".
+> >
+> > So assuming I'm not missing something, I'm not actually relying the
+> > IOMMU getting init off the back of driver probe.
+> >
+> >
+> > > FWIW we already have a go-faster knob for people who want to tweak the
+> > > security/performance compromise for specific devices, namely the sysfs
+> > > interface for changing a group's domain type before binding the relevant
+> > > driver(s). Is that something you could use in your application, say from
+> > > an initramfs script?
+> >
+> > We've never had an initramfs script in Chrome OS. I don't know all the
+> > history of why (I'm trying to check), but I'm nearly certain it was a
+> > conscious decision. Probably it has to do with the fact that we're not
+> > trying to build a generic distribution where a single boot source can
+> > boot a huge variety of hardware. We generally have one kernel for a
+> > class of devices. I believe avoiding the initramfs just keeps things
+> > simpler.
+> >
+> > I think trying to revamp Chrome OS to switch to an initramfs type
+> > system would be a pretty big undertaking since (as I understand it)
+> > you can't just run a little command and then return to the normal boot
+> > flow. Once you switch to initramfs you're committing to finding /
+> > setting up the rootfs yourself and on Chrome OS I believe that means a
+> > whole bunch of dm-verity work.
+> >
+> >
+> > ...so probably the initramfs is a no-go for me, but I'm still crossing
+> > my fingers that the pre_probe() might be legit if you take a second
+> > look at it?
+>
+> Couldn't you have a driver flag that has the same effect as twiddling
+> sysfs? At the being of probe, check the flag and go set the underlying
+> sysfs setting in the device.
 
-Sadly, this test is effectively limited to shadow paging because the
-hardware page walk handler doesn't support software disabling of GBPAGES
-support, and KVM doesn't manually walk the GVA->GPA on faults for
-performance reasons (doing so would large defeat the benefits of TDP).
+My understanding of what Robin is saying is that we'd need this info
+well before the driver is even available. The pre_probe() is
+effectively doing the same thing you are suggesting.
 
-Don't require !TDP for the tests as there is still value in running the
-tests with TDP, even though the tests will fail (barring KVM hacks).
-E.g. KVM should not completely explode if MAXPHYADDR results in KVM using
-4-level vs. 5-level paging for the guest.
+> Though you may want this to be per device, not per driver. To do that
+> early, I think you'd need a DT property. I wouldn't be totally opposed
+> to that and I appreciate you not starting there. :)
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- tools/testing/selftests/kvm/.gitignore        |   1 +
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../selftests/kvm/include/x86_64/processor.h  |   3 +
- .../selftests/kvm/x86_64/mmu_role_test.c      | 147 ++++++++++++++++++
- 4 files changed, 152 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/x86_64/mmu_role_test.c
+Which is what I'm suggest elsewhere in the thread:
 
-diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
-index e0e14150744e..6ead3403eca6 100644
---- a/tools/testing/selftests/kvm/.gitignore
-+++ b/tools/testing/selftests/kvm/.gitignore
-@@ -15,6 +15,7 @@
- /x86_64/hyperv_cpuid
- /x86_64/hyperv_features
- /x86_64/mmio_warning_test
-+/x86_64/mmu_role_test
- /x86_64/platform_info_test
- /x86_64/set_boot_cpu_id
- /x86_64/set_sregs_test
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index 61e2accd080d..8dc007bac0fe 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -47,6 +47,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/hyperv_cpuid
- TEST_GEN_PROGS_x86_64 += x86_64/hyperv_features
- TEST_GEN_PROGS_x86_64 += x86_64/kvm_pv_test
- TEST_GEN_PROGS_x86_64 += x86_64/mmio_warning_test
-+TEST_GEN_PROGS_x86_64 += x86_64/mmu_role_test
- TEST_GEN_PROGS_x86_64 += x86_64/platform_info_test
- TEST_GEN_PROGS_x86_64 += x86_64/set_boot_cpu_id
- TEST_GEN_PROGS_x86_64 += x86_64/set_sregs_test
-diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
-index f21126941f19..914b0d16929c 100644
---- a/tools/testing/selftests/kvm/include/x86_64/processor.h
-+++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
-@@ -55,6 +55,9 @@
- #define CPUID_PKU		(1ul << 3)
- #define CPUID_LA57		(1ul << 16)
- 
-+/* CPUID.0x8000_0001.EDX */
-+#define CPUID_GBPAGES		(1ul << 26)
-+
- #define UNEXPECTED_VECTOR_PORT 0xfff0u
- 
- /* General Registers in 64-Bit Mode */
-diff --git a/tools/testing/selftests/kvm/x86_64/mmu_role_test.c b/tools/testing/selftests/kvm/x86_64/mmu_role_test.c
-new file mode 100644
-index 000000000000..523371cf8e8f
---- /dev/null
-+++ b/tools/testing/selftests/kvm/x86_64/mmu_role_test.c
-@@ -0,0 +1,147 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "kvm_util.h"
-+#include "processor.h"
-+
-+#define VCPU_ID			1
-+
-+#define MMIO_GPA	0x100000000ull
-+
-+static void guest_code(void)
-+{
-+	(void)READ_ONCE(*((uint64_t *)MMIO_GPA));
-+	(void)READ_ONCE(*((uint64_t *)MMIO_GPA));
-+
-+	GUEST_ASSERT(0);
-+}
-+
-+static void guest_pf_handler(struct ex_regs *regs)
-+{
-+	/* PFEC == RSVD | PRESENT (read, kernel). */
-+	GUEST_ASSERT(regs->error_code == 0x9);
-+	GUEST_DONE();
-+}
-+
-+static void mmu_role_test(u32 *cpuid_reg, u32 evil_cpuid_val)
-+{
-+	u32 good_cpuid_val = *cpuid_reg;
-+	struct kvm_run *run;
-+	struct kvm_vm *vm;
-+	uint64_t cmd;
-+	int r;
-+
-+	/* Create VM */
-+	vm = vm_create_default(VCPU_ID, 0, guest_code);
-+	run = vcpu_state(vm, VCPU_ID);
-+
-+	/* Map 1gb page without a backing memlot. */
-+	__virt_pg_map(vm, MMIO_GPA, MMIO_GPA, X86_PAGE_SIZE_1G);
-+
-+	r = _vcpu_run(vm, VCPU_ID);
-+
-+	/* Guest access to the 1gb page should trigger MMIO. */
-+	TEST_ASSERT(r == 0, "vcpu_run failed: %d\n", r);
-+	TEST_ASSERT(run->exit_reason == KVM_EXIT_MMIO,
-+		    "Unexpected exit reason: %u (%s), expected MMIO exit (1gb page w/o memslot)\n",
-+		    run->exit_reason, exit_reason_str(run->exit_reason));
-+
-+	TEST_ASSERT(run->mmio.len == 8, "Unexpected exit mmio size = %u", run->mmio.len);
-+
-+	TEST_ASSERT(run->mmio.phys_addr == MMIO_GPA,
-+		    "Unexpected exit mmio address = 0x%llx", run->mmio.phys_addr);
-+
-+	/*
-+	 * Effect the CPUID change for the guest and re-enter the guest.  Its
-+	 * access should now #PF due to the PAGE_SIZE bit being reserved or
-+	 * the resulting GPA being invalid.  Note, kvm_get_supported_cpuid()
-+	 * returns the struct that contains the entry being modified.  Eww.
-+	 */
-+	*cpuid_reg = evil_cpuid_val;
-+	vcpu_set_cpuid(vm, VCPU_ID, kvm_get_supported_cpuid());
-+
-+	/*
-+	 * Add a dummy memslot to coerce KVM into bumping the MMIO generation.
-+	 * KVM does not "officially" support mucking with CPUID after KVM_RUN,
-+	 * and will incorrectly reuse MMIO SPTEs.  Don't delete the memslot!
-+	 * KVM x86 zaps all shadow pages on memslot deletion.
-+	 */
-+	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
-+				    MMIO_GPA << 1, 10, 1, 0);
-+
-+	/* Set up a #PF handler to eat the RSVD #PF and signal all done! */
-+	vm_init_descriptor_tables(vm);
-+	vcpu_init_descriptor_tables(vm, VCPU_ID);
-+	vm_handle_exception(vm, PF_VECTOR, guest_pf_handler);
-+
-+	r = _vcpu_run(vm, VCPU_ID);
-+	TEST_ASSERT(r == 0, "vcpu_run failed: %d\n", r);
-+
-+	cmd = get_ucall(vm, VCPU_ID, NULL);
-+	TEST_ASSERT(cmd == UCALL_DONE,
-+		    "Unexpected guest exit, exit_reason=%s, ucall.cmd = %lu\n",
-+		    exit_reason_str(run->exit_reason), cmd);
-+
-+	/*
-+	 * Restore the happy CPUID value for the next test.  Yes, changes are
-+	 * indeed persistent across VM destruction.
-+	 */
-+	*cpuid_reg = good_cpuid_val;
-+
-+	kvm_vm_free(vm);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	struct kvm_cpuid_entry2 *entry;
-+	int opt;
-+
-+	/*
-+	 * All tests are opt-in because TDP doesn't play nice with reserved #PF
-+	 * in the GVA->GPA translation.  The hardware page walker doesn't let
-+	 * software change GBPAGES or MAXPHYADDR, and KVM doesn't manually walk
-+	 * the GVA on fault for performance reasons.
-+	 */
-+	bool do_gbpages = false;
-+	bool do_maxphyaddr = false;
-+
-+	setbuf(stdout, NULL);
-+
-+	while ((opt = getopt(argc, argv, "gm")) != -1) {
-+		switch (opt) {
-+		case 'g':
-+			do_gbpages = true;
-+			break;
-+		case 'm':
-+			do_maxphyaddr = true;
-+			break;
-+		case 'h':
-+		default:
-+			printf("usage: %s [-g (GBPAGES)] [-m (MAXPHYADDR)]\n", argv[0]);
-+			break;
-+		}
-+	}
-+
-+	if (!do_gbpages && !do_maxphyaddr) {
-+		print_skip("No sub-tests selected");
-+		return 0;
-+	}
-+
-+	entry = kvm_get_supported_cpuid_entry(0x80000001);
-+	if (!(entry->edx & CPUID_GBPAGES)) {
-+		print_skip("1gb hugepages not supported");
-+		return 0;
-+	}
-+
-+	if (do_gbpages) {
-+		pr_info("Test MMIO after toggling CPUID.GBPAGES\n\n");
-+		mmu_role_test(&entry->edx, entry->edx & ~CPUID_GBPAGES);
-+	}
-+
-+	if (do_maxphyaddr) {
-+		pr_info("Test MMIO after changing CPUID.MAXPHYADDR\n\n");
-+		entry = kvm_get_supported_cpuid_entry(0x80000008);
-+		mmu_role_test(&entry->eax, (entry->eax & ~0xff) | 0x20);
-+	}
-+
-+	return 0;
-+}
--- 
-2.32.0.288.g62a8d224e6-goog
+https://lore.kernel.org/lkml/CAGETcx83qCZF5JN5cqXxdSFiEgfc4jYESJg-RepL2wJXJv0Eww@mail.gmail.com/
 
+-Saravana
