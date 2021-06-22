@@ -2,166 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B0B3B0B32
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 672303B0B37
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231476AbhFVRM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 13:12:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230102AbhFVRMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 13:12:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7DB361166;
-        Tue, 22 Jun 2021 17:10:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624381837;
-        bh=a+PLuKVymxA0COwEw81AAw1JqR/VCb63zv7i5UvWhFs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=MkB7NIb/w7T/L65z6FzGzuSS+gkOzprtBiodbApGpVnqXYxfj5Q/0dxlp11hx8YzU
-         v3YBrANh4Zt7+fkXVtRBKhxDCObKp6hvwxpd4rovoAQpBDZOA5difyz4MeNVeyrCpR
-         BEhYOzSG+kLU1/Y40m/WM8oMSxc8YmmkoZO4vgpInYD9B4SCXA0/RpRjM4Frez+wZw
-         Czq6JAVn8Fc8bqI9JHCx3bOQUCJxQSKl74a1rbPY9lI1vCjeXNSCptfVXxetYrya2l
-         FkfBZlfO3X0D9PGpghYrDET6/pn5EPjmu9UXVPer6uWia6n4sbXzxsef+d9Zq/Btw2
-         n8HJjCK8rEFxA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8E41B5C017F; Tue, 22 Jun 2021 10:10:37 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 10:10:37 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the rcu tree with the tip tree
-Message-ID: <20210622171037.GB4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210622144757.055a4137@canb.auug.org.au>
+        id S231326AbhFVRPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 13:15:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230076AbhFVRPd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 13:15:33 -0400
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53494C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:13:17 -0700 (PDT)
+Received: by nautica.notk.org (Postfix, from userid 108)
+        id A053FC01C; Tue, 22 Jun 2021 19:13:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1624381993; bh=tdLraN26AJmikOf9cCVnkJCdq/46SM04tSpwRtDPI0E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pPD0vIhjEgIK/7VLyfIEKk+KgzZcyvhboSKraCCTRRI0u5zXjARYCd7mfzzMxXiCM
+         ZbuZh+1dbGSLpxLQKkRRdBHoC3TEcjaPDD5bHT04KSY112Qu3NSAWOC7ai5M73PCVZ
+         ZX/Nz9kcn1A92OV7Vj1PjLRhEzjwgetsxBJNZRKiBiSnROivuXq5xHmFf1CTdvQNDz
+         0Om35vyKwALuIqFJnBDsdkjT3+OSoroUEFnXqlG8BxYZDN24vo4YJoKawBC8qzbY8c
+         K70kFLKCQ0X5QTv9Le7g93jruuzp1sh72eic1o08ARNTmsY8x3CSRCED8S+KH0Fvoh
+         NeBWH8oXbFgLw==
+X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
+        autolearn=unavailable version=3.3.2
+Received: from odin.codewreck.org (localhost [127.0.0.1])
+        by nautica.notk.org (Postfix) with ESMTPS id B4B08C009;
+        Tue, 22 Jun 2021 19:13:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1624381993; bh=tdLraN26AJmikOf9cCVnkJCdq/46SM04tSpwRtDPI0E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pPD0vIhjEgIK/7VLyfIEKk+KgzZcyvhboSKraCCTRRI0u5zXjARYCd7mfzzMxXiCM
+         ZbuZh+1dbGSLpxLQKkRRdBHoC3TEcjaPDD5bHT04KSY112Qu3NSAWOC7ai5M73PCVZ
+         ZX/Nz9kcn1A92OV7Vj1PjLRhEzjwgetsxBJNZRKiBiSnROivuXq5xHmFf1CTdvQNDz
+         0Om35vyKwALuIqFJnBDsdkjT3+OSoroUEFnXqlG8BxYZDN24vo4YJoKawBC8qzbY8c
+         K70kFLKCQ0X5QTv9Le7g93jruuzp1sh72eic1o08ARNTmsY8x3CSRCED8S+KH0Fvoh
+         NeBWH8oXbFgLw==
+Received: from localhost (odin.codewreck.org [local])
+        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 5de002b9;
+        Tue, 22 Jun 2021 17:13:09 +0000 (UTC)
+Date:   Wed, 23 Jun 2021 02:12:54 +0900
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     jim.cromie@gmail.com
+Cc:     kasan-dev@googlegroups.com, v9fs-developer@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [V9fs-developer] KCSAN BUG report on p9_client_cb / p9_client_rpc
+Message-ID: <YNIaFnfnZPGVd1t3@codewreck.org>
+References: <CAJfuBxxH9KVgJ7k0P5LX3fTSa4Pumcmu2NMC4P=TrGDVXE2ktQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="6SucSdJFMdQFulNL"
 Content-Disposition: inline
-In-Reply-To: <20210622144757.055a4137@canb.auug.org.au>
+In-Reply-To: <CAJfuBxxH9KVgJ7k0P5LX3fTSa4Pumcmu2NMC4P=TrGDVXE2ktQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 02:47:57PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the rcu tree got a conflict in:
-> 
->   kernel/rcu/tree_stall.h
-> 
-> between commit:
-> 
->   2f064a59a11f ("sched: Change task_struct::state")
-> 
-> from the tip tree and commit:
-> 
->   367455053a76 ("rcu: Mark accesses in tree_stall.h")
-> 
-> from the rcu tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
 
-I have moved this RCU commit out of my -next pile.  I will put it back
-at v5.14-rc1 time.  The other conflict looks quite straightforward,
-so I am leaving that one be.
+--6SucSdJFMdQFulNL
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-							Thanx, Paul
+jim.cromie@gmail.com wrote on Tue, Jun 22, 2021 at 10:42:58AM -0600:
+> I got this on rc7 + my hacks ( not near p9 )
+> ISTM someone here will know what it means.
+> If theres anything else i can do to help,
+> (configs, drop my patches and retry)
+>  please let me know
 
-> -- 
-> Cheers,
-> Stephen Rothwell
-> 
-> diff --cc kernel/rcu/tree_stall.h
-> index acb2288063b5,24065f1acb8b..000000000000
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@@ -460,12 -462,13 +462,13 @@@ static void rcu_check_gp_kthread_starva
->   
->   	if (rcu_is_gp_kthread_starving(&j)) {
->   		cpu = gpk ? task_cpu(gpk) : -1;
->  -		pr_err("%s kthread starved for %ld jiffies! g%ld f%#x %s(%d) ->state=%#lx ->cpu=%d\n",
->  +		pr_err("%s kthread starved for %ld jiffies! g%ld f%#x %s(%d) ->state=%#x ->cpu=%d\n",
->   		       rcu_state.name, j,
->   		       (long)rcu_seq_current(&rcu_state.gp_seq),
-> - 		       data_race(rcu_state.gp_flags),
-> - 		       gp_state_getname(rcu_state.gp_state), rcu_state.gp_state,
-> - 		       gpk ? gpk->__state : ~0, cpu);
-> + 		       data_race(READ_ONCE(rcu_state.gp_flags)),
-> + 		       gp_state_getname(rcu_state.gp_state),
-> + 		       data_race(READ_ONCE(rcu_state.gp_state)),
->  -		       gpk ? data_race(READ_ONCE(gpk->state)) : ~0, cpu);
-> ++		       gpk ? data_race(READ_ONCE(gpk->__state)) : ~0, cpu);
->   		if (gpk) {
->   			pr_err("\tUnless %s kthread gets sufficient CPU time, OOM is now expected behavior.\n", rcu_state.name);
->   			pr_err("RCU grace-period kthread stack dump:\n");
-> @@@ -508,7 -511,7 +511,7 @@@ static void rcu_check_gp_kthread_expire
->   		       (long)rcu_seq_current(&rcu_state.gp_seq),
->   		       data_race(rcu_state.gp_flags),
->   		       gp_state_getname(RCU_GP_WAIT_FQS), RCU_GP_WAIT_FQS,
-> - 		       gpk->__state);
->  -		       data_race(READ_ONCE(gpk->state)));
-> ++		       data_race(READ_ONCE(gpk->__state)));
->   		pr_err("\tPossible timer handling issue on cpu=%d timer-softirq=%u\n",
->   		       cpu, kstat_softirqs_cpu(TIMER_SOFTIRQ, cpu));
->   	}
-> @@@ -732,23 -816,34 +816,34 @@@ void show_rcu_gp_kthreads(void
->   	struct task_struct *t = READ_ONCE(rcu_state.gp_kthread);
->   
->   	j = jiffies;
-> - 	ja = j - data_race(rcu_state.gp_activity);
-> - 	jr = j - data_race(rcu_state.gp_req_activity);
-> - 	jw = j - data_race(rcu_state.gp_wake_time);
-> - 	pr_info("%s: wait state: %s(%d) ->state: %#x delta ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp_wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_flags %#x\n",
-> + 	ja = j - data_race(READ_ONCE(rcu_state.gp_activity));
-> + 	jr = j - data_race(READ_ONCE(rcu_state.gp_req_activity));
-> + 	js = j - data_race(READ_ONCE(rcu_state.gp_start));
-> + 	jw = j - data_race(READ_ONCE(rcu_state.gp_wake_time));
->  -	pr_info("%s: wait state: %s(%d) ->state: %#lx ->rt_priority %u delta ->gp_start %lu ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp_wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_max %lu ->gp_flags %#x\n",
-> ++	pr_info("%s: wait state: %s(%d) ->state: %#x ->rt_priority %u delta ->gp_start %lu ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp_wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_max %lu ->gp_flags %#x\n",
->   		rcu_state.name, gp_state_getname(rcu_state.gp_state),
-> - 		rcu_state.gp_state, t ? t->__state : 0x1ffff,
-> - 		ja, jr, jw, (long)data_race(rcu_state.gp_wake_seq),
-> - 		(long)data_race(rcu_state.gp_seq),
-> - 		(long)data_race(rcu_get_root()->gp_seq_needed),
-> - 		data_race(rcu_state.gp_flags));
-> + 		data_race(READ_ONCE(rcu_state.gp_state)),
->  -		t ? data_race(READ_ONCE(t->state)) : 0x1ffffL, t ? t->rt_priority : 0xffU,
-> ++		t ? data_race(READ_ONCE(t->__state)) : 0x1ffffL, t ? t->rt_priority : 0xffU,
-> + 		js, ja, jr, jw, (long)data_race(READ_ONCE(rcu_state.gp_wake_seq)),
-> + 		(long)data_race(READ_ONCE(rcu_state.gp_seq)),
-> + 		(long)data_race(READ_ONCE(rcu_get_root()->gp_seq_needed)),
-> + 		data_race(READ_ONCE(rcu_state.gp_max)),
-> + 		data_race(READ_ONCE(rcu_state.gp_flags)));
->   	rcu_for_each_node_breadth_first(rnp) {
-> - 		if (ULONG_CMP_GE(READ_ONCE(rcu_state.gp_seq),
-> - 				 READ_ONCE(rnp->gp_seq_needed)))
-> + 		if (ULONG_CMP_GE(READ_ONCE(rcu_state.gp_seq), READ_ONCE(rnp->gp_seq_needed)) &&
-> + 		    !data_race(READ_ONCE(rnp->qsmask)) && !data_race(READ_ONCE(rnp->boost_tasks)) &&
-> + 		    !data_race(READ_ONCE(rnp->exp_tasks)) && !data_race(READ_ONCE(rnp->gp_tasks)))
->   			continue;
-> - 		pr_info("\trcu_node %d:%d ->gp_seq %ld ->gp_seq_needed %ld\n",
-> - 			rnp->grplo, rnp->grphi, (long)data_race(rnp->gp_seq),
-> - 			(long)data_race(rnp->gp_seq_needed));
-> + 		pr_info("\trcu_node %d:%d ->gp_seq %ld ->gp_seq_needed %ld ->qsmask %#lx %c%c%c%c ->n_boosts %ld\n",
-> + 			rnp->grplo, rnp->grphi,
-> + 			(long)data_race(READ_ONCE(rnp->gp_seq)),
-> + 			(long)data_race(READ_ONCE(rnp->gp_seq_needed)),
-> + 			data_race(READ_ONCE(rnp->qsmask)),
-> + 			".b"[!!data_race(READ_ONCE(rnp->boost_kthread_task))],
-> + 			".B"[!!data_race(READ_ONCE(rnp->boost_tasks))],
-> + 			".E"[!!data_race(READ_ONCE(rnp->exp_tasks))],
-> + 			".G"[!!data_race(READ_ONCE(rnp->gp_tasks))],
-> + 			data_race(READ_ONCE(rnp->n_boosts)));
->   		if (!rcu_is_leaf_node(rnp))
->   			continue;
->   		for_each_leaf_node_possible_cpu(rnp, cpu) {
+Thanks for the report!
+
+> [   14.904783] ==================================================================
+> [   14.905848] BUG: KCSAN: data-race in p9_client_cb / p9_client_rpc
+
+hm, this code hasn't changed in ages (unless someone merged code behind
+my back :D)
+
+I had assumed the p9_req_put() in p9_client_cb would protect the tag,
+but that doesn't appear to be true -- could you try this patch if this
+is reproductible to you?
+
+The tag is actually reclaimed in the woken up p9_client_rpc thread so
+that would be a good match (reset in the other thread vs. read here),
+caching the value is good enough but that is definitely not obvious...
+
+-- 
+Dominique
+
+--6SucSdJFMdQFulNL
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment;
+	filename="0001-9p-net-cache-tag-in-p9_client_cb.patch"
+
+From 1135d60baa5d743e8a123812428a342b101e290e Mon Sep 17 00:00:00 2001
+From: Dominique Martinet <asmadeus@codewreck.org>
+Date: Wed, 23 Jun 2021 02:12:20 +0900
+Subject: [PATCH] 9p net: cache tag in p9_client_cb
+
+req->tc.tag is not safe to access after status has been set,
+because tag is reclaimed by p9_client_rpc and not by the p9_req_put
+below as one might think.
+
+Reported-by: jim.cromie@gmail.com
+Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
+---
+ net/9p/client.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/net/9p/client.c b/net/9p/client.c
+index b7b958f61faf..3e95a56ead80 100644
+--- a/net/9p/client.c
++++ b/net/9p/client.c
+@@ -419,7 +419,8 @@ static void p9_tag_cleanup(struct p9_client *c)
+  */
+ void p9_client_cb(struct p9_client *c, struct p9_req_t *req, int status)
+ {
+-	p9_debug(P9_DEBUG_MUX, " tag %d\n", req->tc.tag);
++	u16 tag = req->tc.tag;
++	p9_debug(P9_DEBUG_MUX, " tag %d\n", tag);
+ 
+ 	/*
+ 	 * This barrier is needed to make sure any change made to req before
+@@ -429,7 +430,8 @@ void p9_client_cb(struct p9_client *c, struct p9_req_t *req, int status)
+ 	req->status = status;
+ 
+ 	wake_up(&req->wq);
+-	p9_debug(P9_DEBUG_MUX, "wakeup: %d\n", req->tc.tag);
++	/* req->tc.tag is not safe to access after status has been set */
++	p9_debug(P9_DEBUG_MUX, "wakeup: %d\n", tag);
+ 	p9_req_put(req);
+ }
+ EXPORT_SYMBOL(p9_client_cb);
+-- 
+2.31.1
 
 
+--6SucSdJFMdQFulNL--
