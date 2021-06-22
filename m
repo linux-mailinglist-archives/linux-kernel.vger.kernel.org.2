@@ -2,88 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DAC3B1096
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB573B1099
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhFVX3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 19:29:37 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:55230 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhFVX3e (ORCPT
+        id S229844AbhFVXbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 19:31:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhFVXbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 19:29:34 -0400
-Received: from Monstersaurus.local (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 95FBFBB0;
-        Wed, 23 Jun 2021 01:27:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1624404436;
-        bh=F96kJcXg5MDZNRxtRyxTyBx7NhtVXXdOczgtpqetwGg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N49aWNSAjVYB1qsftkUQCZDTgY+jhmYBXNti9aKhSmVkPA6kZZex5rClvomGnJPTB
-         npylel3EzopVQszQn++aqc/AJDkkqDX31S6/FJYP61zO85fzqAQKwSbFC0mtJ5d6Wu
-         V/bqceEy52c/QqWjH4MhhRSUGnNfZ18N8ERUJcok=
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-To:     Geert Uytterhoeven <geert@glider.be>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        linux-renesas-soc@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] clk: renesas: r8a779a0: Add the DSI clocks
-Date:   Wed, 23 Jun 2021 00:27:11 +0100
-Message-Id: <20210622232711.3219697-3-kieran.bingham@ideasonboard.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210622232711.3219697-1-kieran.bingham@ideasonboard.com>
-References: <20210622232711.3219697-1-kieran.bingham@ideasonboard.com>
+        Tue, 22 Jun 2021 19:31:04 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08518C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 16:28:47 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id a6so1232080ioe.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 16:28:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BPkqmTODcvr4WgFhtXMV/bmKQtzCPSOCAM1LvuXyGzk=;
+        b=YO7c5TAaCCqEuN7liNrVb7535wuDyHh9HyLjpzAmgohl8XMPL6t0tYIj9kM+x6+aU5
+         p+KcSx2cvKS714uc9vbJpcGpLhf/DIUjmPFzeFoWE5T0j73vaBlFwb7UzF3MyeKRGbNE
+         Bo6vGFotf935bp+brvd0+fSloz20P3/oiRBrFlQqUMJLQiCTeRDXe4oI6FaMpqZpI1+B
+         PipCMqI9pSGAF27kjAduurWT+Nxtybbh07bs4YTV0Uawnd/ubjogggBehxmI/TGwF6Mf
+         uimddpvRmPZA6GKh2u2rfVKlpORkfJ8yFCsNgzjSJXo3hyw6h9lJwPcv735uLBnYBpbo
+         ETFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BPkqmTODcvr4WgFhtXMV/bmKQtzCPSOCAM1LvuXyGzk=;
+        b=syxKsr7ceEHPDwHNgCOOVpQWyGO5ofTppZIa2GJ8qbGHN4SIRAkJAZaGOc4v4jk1hc
+         kLOydOQAXsHLomI15+oAeh53zdB21P4YLNq+Dh5GTFm7irinU09HwAo24Ap6zJJgglXU
+         yx3lmhDZnxK8HabLhDHqfePCDWQp2MkUad94WUxA/YS69v79WfYi0SyIcXvHbTPJy3/D
+         bXJPVzSi4bzphYxPnp3f2iLijesqC47qJ7EzJ0iw7DASX1xO6oSyVigfHPla/TQthMDK
+         YKsdvXPDbbgcps3cpqQo9R8ccyqYUizoH0rxpqIQJjQIwO/zmHlqgst4XznTy3bVrSEe
+         aXKA==
+X-Gm-Message-State: AOAM532ttwLUxKnC4hUgYTKx859k+taPjGoLWjFpR9+p7mTCi8BkHtfv
+        zyogG2llRF2c4pnTzjdRvxXd6O1UB5zz1rEQ5pu76g==
+X-Google-Smtp-Source: ABdhPJw1MAtabJ70l1o+6QIv09JoWg8EQ6BBbTs521uGPuBhKD3di5bQmok1rs820Qb1QlIm5tggrkOXvFnxH0cLoBI=
+X-Received: by 2002:a5d:9d55:: with SMTP id k21mr4649098iok.57.1624404526263;
+ Tue, 22 Jun 2021 16:28:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210617073937.16281-1-sjpark@amazon.de> <20210617074638.16583-1-sjpark@amazon.de>
+In-Reply-To: <20210617074638.16583-1-sjpark@amazon.de>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Tue, 22 Jun 2021 16:28:34 -0700
+Message-ID: <CAGS_qxofnnP7Ju15iaZ_Szr+aqmHNxU51Kiv723bkd8w9g+Jkg@mail.gmail.com>
+Subject: Re: [PATCH v2] kunit: tool: Assert the version requirement
+To:     SeongJae Park <sj38.park@gmail.com>
+Cc:     brendanhiggins@google.com, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        SeongJae Park <sjpark@amazon.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DSI clock is incorrectly defined as a fixed clock. This
-demonstrates itself as the dsi-encoders failing to correctly enable and
-start their PPI and HS clocks internally, and causes failures.
+On Thu, Jun 17, 2021 at 12:46 AM SeongJae Park <sj38.park@gmail.com> wrote:
+>
+> Commit 87c9c1631788 ("kunit: tool: add support for QEMU") on the 'next'
+> tree adds 'from __future__ import annotations' in 'kunit_kernel.py'.
+> Because it is supported on only >=3.7 Python, people using older Python
+> will get below error:
+>
+>     Traceback (most recent call last):
+>       File "./tools/testing/kunit/kunit.py", line 20, in <module>
+>         import kunit_kernel
+>       File "/home/sjpark/linux/tools/testing/kunit/kunit_kernel.py", line 9
+>         from __future__ import annotations
 
-Move the DSI parent clock to match the updates in the BSP, which
-resolves the initialisation procedures.
+Chatted offline with David about this.
+He was thinking if we could instead drop the minimal version back to 3.6.
 
-Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
----
- drivers/clk/renesas/r8a779a0-cpg-mssr.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+I think we can do so, see below.
+Perhaps we should drop the import and then chain this patch on top of
+that, specifying a minimum version of 3.6?
 
-diff --git a/drivers/clk/renesas/r8a779a0-cpg-mssr.c b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
-index a1bd158defb5..f16d125ca009 100644
---- a/drivers/clk/renesas/r8a779a0-cpg-mssr.c
-+++ b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
-@@ -135,7 +135,6 @@ static const struct cpg_core_clk r8a779a0_core_clks[] __initconst = {
- 	DEF_FIXED("zt",		R8A779A0_CLK_ZT,	CLK_PLL1_DIV2,	2, 1),
- 	DEF_FIXED("ztr",	R8A779A0_CLK_ZTR,	CLK_PLL1_DIV2,	2, 1),
- 	DEF_FIXED("zr",		R8A779A0_CLK_ZR,	CLK_PLL1_DIV2,	1, 1),
--	DEF_FIXED("dsi",	R8A779A0_CLK_DSI,	CLK_PLL5_DIV4,	1, 1),
- 	DEF_FIXED("cnndsp",	R8A779A0_CLK_CNNDSP,	CLK_PLL5_DIV4,	1, 1),
- 	DEF_FIXED("vip",	R8A779A0_CLK_VIP,	CLK_PLL5,	5, 1),
- 	DEF_FIXED("adgh",	R8A779A0_CLK_ADGH,	CLK_PLL5_DIV4,	1, 1),
-@@ -151,6 +150,7 @@ static const struct cpg_core_clk r8a779a0_core_clks[] __initconst = {
- 	DEF_DIV6P1("mso",	R8A779A0_CLK_MSO,	CLK_PLL5_DIV4,	0x87c),
- 	DEF_DIV6P1("canfd",	R8A779A0_CLK_CANFD,	CLK_PLL5_DIV4,	0x878),
- 	DEF_DIV6P1("csi0",	R8A779A0_CLK_CSI0,	CLK_PLL5_DIV4,	0x880),
-+	DEF_DIV6P1("dsi",	R8A779A0_CLK_DSI,	CLK_PLL5_DIV4,	0x884),
- 
- 	DEF_OSC("osc",		R8A779A0_CLK_OSC,	CLK_EXTAL,	8),
- 	DEF_MDSEL("r",		R8A779A0_CLK_R, 29, CLK_EXTALR, 1, CLK_OCO, 1),
-@@ -168,6 +168,8 @@ static const struct mssr_mod_clk r8a779a0_mod_clks[] __initconst = {
- 	DEF_MOD("csi42",	401,	R8A779A0_CLK_CSI0),
- 	DEF_MOD("csi43",	402,	R8A779A0_CLK_CSI0),
- 	DEF_MOD("du",		411,	R8A779A0_CLK_S3D1),
-+	DEF_MOD("dsi0",		415,	R8A779A0_CLK_DSI),
-+	DEF_MOD("dsi1",		416,	R8A779A0_CLK_DSI),
- 	DEF_MOD("fcpvd0",	508,	R8A779A0_CLK_S3D1),
- 	DEF_MOD("fcpvd1",	509,	R8A779A0_CLK_S3D1),
- 	DEF_MOD("hscif0",	514,	R8A779A0_CLK_S1D2),
--- 
-2.30.2
+Checking out https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/?h=kunit-fixes
 
+The offending "annotations" import is related to type annotations.
+Specifically https://www.python.org/dev/peps/pep-0563/
+
+So let's see how the two most popular typecheckers fare.
+
+pytype is happy with or without import.
+mypy has the same issues with or without the import.
+
+$ mypy tools/testing/kunit/*.py
+tools/testing/kunit/kunit_kernel.py:227: error: Item "_Loader" of
+"Optional[_Loader]" has no attribute "exec_module"
+tools/testing/kunit/kunit_kernel.py:227: error: Item "None" of
+"Optional[_Loader]" has no attribute "exec_module"
+tools/testing/kunit/kunit_kernel.py:228: error: Module has no
+attribute "QEMU_ARCH"
+tools/testing/kunit/kunit_kernel.py:229: error: Module has no
+attribute "QEMU_ARCH"
+
+So clearly it's not doing anything for them.
+
+Taking a look over 87c9c1631788 ("kunit: tool: add support for QEMU")
+next then...
+I don't see anything that would warrant the import, so we should
+probably drop it.
+
+In that case, the minimum supported version should drop back down to 3.6.
+We use enum.auto, which is from 3.6
+https://docs.python.org/3/library/enum.html#enum.auto
+
+We could consider stopping using that, and I think we might be then
+3.5-compatible.
+Maybe we have a chain of 3 patches then, drop the import, drop auto,
+and then add in a >=3.5 version check?
+
+>         ^
+>     SyntaxError: future feature annotations is not defined
+>
+> This commit adds a version assertion in 'kunit.py', so that people get
+> more explicit error message like below:
+>
+>     Traceback (most recent call last):
+>       File "./tools/testing/kunit/kunit.py", line 15, in <module>
+>         assert sys.version_info >= (3, 7), "Python version is too old"
+>     AssertionError: Python version is too old
+>
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> Acked-by: Daniel Latypov <dlatypov@google.com>
+> ---
+>
+> Changes from v1
+> - Add assertion failure message (Daniel Latypov)
+> - Add Acked-by: Daniel Latypov <dlatypov@google.com>
+>
+>  tools/testing/kunit/kunit.py | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+> index be8d8d4a4e08..6276ce0c0196 100755
+> --- a/tools/testing/kunit/kunit.py
+> +++ b/tools/testing/kunit/kunit.py
+> @@ -12,6 +12,8 @@ import sys
+>  import os
+>  import time
+>
+> +assert sys.version_info >= (3, 7), "Python version is too old"
+> +
+>  from collections import namedtuple
+>  from enum import Enum, auto
+>
+> --
+> 2.17.1
+>
