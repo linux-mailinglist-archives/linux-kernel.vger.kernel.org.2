@@ -2,127 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 082313B0489
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB703B0490
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbhFVMeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:34:02 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:36325 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231705AbhFVMeB (ORCPT
+        id S231881AbhFVMe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:34:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50487 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231958AbhFVMeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:34:01 -0400
-Received: (Authenticated sender: paul@opendingux.net)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id E5FED20008;
-        Tue, 22 Jun 2021 12:31:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opendingux.net;
-        s=gm1; t=1624365104;
+        Tue, 22 Jun 2021 08:34:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624365122;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=s/GMOf1oB8qT1ja252nzze92eIctPyBWlbSh/8bSPZk=;
-        b=Ek7U8wI+r9OUh85pSCS8MlyLuZBUfm7L6tUIZbGZgzEsrVqlhKk7ZqQPVYHHmPQ6EG4AEz
-        z62Sf3hQcfYlgrcdZ0IE9hddY88RLzSPuCYPD8XSIZp2/2pTNmLiN/azkNxCi4CqUrFHWx
-        OSqjb9li6OawNaNhG10AqdAAM1BPYG+GAgHcW4oi/7E5lfHOxoPwStrZ792adHd+q5xik1
-        9zaNboVVRXngs0EEwx4bZFgmp2nSobsJTrrkpjSy5caEqnL2DNgxQ89CgBosP51frvdmIr
-        WbxPhObhZb8U4ut/Qy7hTlPoH+LguYMuQ2BP3kxL9PmJkWx2l2mXjrT1+3J/wA==
-Date:   Tue, 22 Jun 2021 13:31:33 +0100
-From:   Paul Cercueil <paul@opendingux.net>
-Subject: Re: [PATCH 2/4] MIPS: Ingenic: Add MAC syscon nodes for Ingenic SoCs.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     tsbogend@alpha.franken.de, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com
-Message-Id: <L4S3VQ.7YL97HPASWY21@opendingux.net>
-In-Reply-To: <1624347445-88070-3-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1624347445-88070-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1624347445-88070-3-git-send-email-zhouyanjie@wanyeetech.com>
-X-Mailer: geary/40.0
+        bh=vP7JF6KY1/ahu18Tz6/GObDLrGSrV/SofAI1KrpMPF4=;
+        b=AA+F5ILI95fQR5WCMROFXT3L+UISvkKHtqoShKsHXj89miH6K6NJLwtyu8ZGhbA3YfOBI8
+        nAOqoiVMMUtZv8GJMa7ohZn8EhVaFtqPfKVW7ep2Am0kwaC7L5+hk+X8WPwnn0GAabqO6W
+        G8GYT/D8rv1X2A8Liev11ZnJHSGAz0o=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-345-Nai4dBLbNm-syoz9CCRPIA-1; Tue, 22 Jun 2021 08:32:01 -0400
+X-MC-Unique: Nai4dBLbNm-syoz9CCRPIA-1
+Received: by mail-oo1-f72.google.com with SMTP id z1-20020a4ab8810000b029024abe096a35so13207573ooo.12
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:32:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=vP7JF6KY1/ahu18Tz6/GObDLrGSrV/SofAI1KrpMPF4=;
+        b=i5YSFkJFp2+nP38V410illfKN4o16FDSnqgl8aocciOSVgbeyKOWj/l1jbdMnJ1Gah
+         WlaJQ/X5+nlJRdPR1KJmO06Yjv16pM8kSryomcHlio/tU/9R+rbyRJuqjYy67fw3nwbN
+         HxGH7XHaoThUBN3y1oYvBfz2+TRPsBX2aAfkgEZ7H3LyNM8R2nEBf6FN14bR5ADmYxq4
+         6mdVYOv5b0+BP4AAatsYCuZgYTvdx0y8vYQAoAcqeIRtHoqgT2jyosI086Ny+BCHAt7A
+         uaF9czNuSEQtwzrn9+Nn3PguEZjVS/fSY8Uc3mtb9KT/2Amf5W29ukrGpYhk4THuRChf
+         R/cg==
+X-Gm-Message-State: AOAM5315YJerHrV7F9cKLed3M3A1JcH38vYYg6YSTx7SRONSJGM91CC3
+        b36kBh/nIMgzUrqK7FUIvvdNV35qoALtITHd0FdSXR995RkUmQWx359XECD4BXn0sq19USUfwTM
+        c6jz5t4zWMEKripNncQ+s53rI
+X-Received: by 2002:a54:4694:: with SMTP id k20mr3030302oic.134.1624365120366;
+        Tue, 22 Jun 2021 05:32:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx8IUtPHHs01259DCSqd8l9v2KUFLEpzLtTrLK2iyrtXZYfJpqcLl9xh2coGZ1Y7YXxQNxOVQ==
+X-Received: by 2002:a54:4694:: with SMTP id k20mr3030276oic.134.1624365120167;
+        Tue, 22 Jun 2021 05:32:00 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id b2sm2613572oic.56.2021.06.22.05.31.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 05:31:59 -0700 (PDT)
+Subject: Re: [PATCH 2/4] fpga: dfl: Move DFH header register macros to
+ linux/dfl.h
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>,
+        Wu Hao <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@geanix.com>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org,
+        Debarati Biswas <debaratix.biswas@intel.com>,
+        Russ Weight <russell.h.weight@intel.com>
+References: <20210621070621.431482-1-mhu@silicom.dk>
+ <20210621070621.431482-3-mhu@silicom.dk>
+ <81975a85-e9d6-bd4b-7666-56d1d1d581bc@redhat.com>
+ <20210622045613.GA27046@yilunxu-OptiPlex-7050>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <d74f6e17-0fe2-bd18-de53-18181424db82@redhat.com>
+Date:   Tue, 22 Jun 2021 05:31:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210622045613.GA27046@yilunxu-OptiPlex-7050>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Le mar., juin 22 2021 at 15:37:23 +0800, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou =
-Yanjie)=20
-<zhouyanjie@wanyeetech.com> a =C3=A9crit :
-> Add MAC syscon nodes for X1000 SoC and X1830 SoC from Ingenic.
->=20
-> Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wany=
-eetech.com>
+On 6/21/21 9:56 PM, Xu Yilun wrote:
+> On Mon, Jun 21, 2021 at 06:56:28AM -0700, Tom Rix wrote:
+>> On 6/21/21 12:06 AM, Martin Hundebøll wrote:
+>>> From: Debarati Biswas <debaratix.biswas@intel.com>
+>>>
+>>> Device Feature List (DFL) drivers may be defined in subdirectories other
+>>> than drivers/fpga, and each DFL driver should have access to the Device
+>>> Feature Header (DFH) register, which contains revision and type
+>>> information. This change moves the macros specific to the DFH register
+>>> from drivers/fpga/dfl.h to include/linux/dfl.h.
+>>>
+>>> Signed-off-by: Debarati Biswas <debaratix.biswas@intel.com>
+>>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+>>> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
+>>> ---
+>>>    drivers/fpga/dfl.h  | 48 +----------------------------------------
+>>>    include/linux/dfl.h | 52 +++++++++++++++++++++++++++++++++++++++++++++
+>>>    2 files changed, 53 insertions(+), 47 deletions(-)
+>>>
+>>> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
+>>> index 2b82c96ba56c..6ed0353e9a99 100644
+>>> --- a/drivers/fpga/dfl.h
+>>> +++ b/drivers/fpga/dfl.h
+>>> @@ -17,6 +17,7 @@
+>>>    #include <linux/bitfield.h>
+>> bitfield.h was added to linux/dfl.h
+>>
+>> Likely both aren't needed, try removing this one.
+> The DFL register definitions are in dfl.h, and Source files which include
+> dfl.h are likely to use bitfield ops for DFL register access, so could we
+> keep it here?
 
-Acked-by: Paul Cercueil <paul@crapouillou.net>
+Not sure which dfl.h you mean.
 
-Cheers,
--Paul
+It looks like you are copying header includes in both files and 
+including the one file in the other.
 
-> ---
->  arch/mips/boot/dts/ingenic/x1000.dtsi | 7 +++++++
->  arch/mips/boot/dts/ingenic/x1830.dtsi | 7 +++++++
->  2 files changed, 14 insertions(+)
->=20
-> diff --git a/arch/mips/boot/dts/ingenic/x1000.dtsi=20
-> b/arch/mips/boot/dts/ingenic/x1000.dtsi
-> index aac9ded..dec7909 100644
-> --- a/arch/mips/boot/dts/ingenic/x1000.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/x1000.dtsi
-> @@ -80,6 +80,11 @@
->=20
->  			status =3D "disabled";
->  		};
-> +
-> +		mac_phy_ctrl: mac-phy-ctrl@e8 {
-> +			compatible =3D "syscon";
-> +			reg =3D <0xe8 0x4>;
-> +		};
->  	};
->=20
->  	ost: timer@12000000 {
-> @@ -347,6 +352,8 @@
->  		clocks =3D <&cgu X1000_CLK_MAC>;
->  		clock-names =3D "stmmaceth";
->=20
-> +		mode-reg =3D <&mac_phy_ctrl>;
-> +
->  		status =3D "disabled";
->=20
->  		mdio: mdio {
-> diff --git a/arch/mips/boot/dts/ingenic/x1830.dtsi=20
-> b/arch/mips/boot/dts/ingenic/x1830.dtsi
-> index 59ca3a8..215257f 100644
-> --- a/arch/mips/boot/dts/ingenic/x1830.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/x1830.dtsi
-> @@ -73,6 +73,11 @@
->=20
->  			status =3D "disabled";
->  		};
-> +
-> +		mac_phy_ctrl: mac-phy-ctrl@e8 {
-> +			compatible =3D "syscon";
-> +			reg =3D <0xe8 0x4>;
-> +		};
->  	};
->=20
->  	ost: timer@12000000 {
-> @@ -336,6 +341,8 @@
->  		clocks =3D <&cgu X1830_CLK_MAC>;
->  		clock-names =3D "stmmaceth";
->=20
-> +		mode-reg =3D <&mac_phy_ctrl>;
-> +
->  		status =3D "disabled";
->=20
->  		mdio: mdio {
-> --
-> 2.7.4
->=20
+So it is likely you are including headers you don't need.
 
+Tom
+
+>
+> Thanks,
+> Yilun
+>
+>> Tom
+>>
+>>>    #include <linux/cdev.h>
+>>>    #include <linux/delay.h>
+>>> +#include <linux/dfl.h>
+>>>    #include <linux/eventfd.h>
+>>>    #include <linux/fs.h>
+>>>    #include <linux/interrupt.h>
+>>> @@ -53,32 +54,6 @@
+>>>    #define PORT_FEATURE_ID_UINT		0x12
+>>>    #define PORT_FEATURE_ID_STP		0x13
+>>> -/*
+>>> - * Device Feature Header Register Set
+>>> - *
+>>> - * For FIUs, they all have DFH + GUID + NEXT_AFU as common header registers.
+>>> - * For AFUs, they have DFH + GUID as common header registers.
+>>> - * For private features, they only have DFH register as common header.
+>>> - */
+>>> -#define DFH			0x0
+>>> -#define GUID_L			0x8
+>>> -#define GUID_H			0x10
+>>> -#define NEXT_AFU		0x18
+>>> -
+>>> -#define DFH_SIZE		0x8
+>>> -
+>>> -/* Device Feature Header Register Bitfield */
+>>> -#define DFH_ID			GENMASK_ULL(11, 0)	/* Feature ID */
+>>> -#define DFH_ID_FIU_FME		0
+>>> -#define DFH_ID_FIU_PORT		1
+>>> -#define DFH_REVISION		GENMASK_ULL(15, 12)	/* Feature revision */
+>>> -#define DFH_NEXT_HDR_OFST	GENMASK_ULL(39, 16)	/* Offset to next DFH */
+>>> -#define DFH_EOL			BIT_ULL(40)		/* End of list */
+>>> -#define DFH_TYPE		GENMASK_ULL(63, 60)	/* Feature type */
+>>> -#define DFH_TYPE_AFU		1
+>>> -#define DFH_TYPE_PRIVATE	3
+>>> -#define DFH_TYPE_FIU		4
+>>> -
+>>>    /* Next AFU Register Bitfield */
+>>>    #define NEXT_AFU_NEXT_DFH_OFST	GENMASK_ULL(23, 0)	/* Offset to next AFU */
+>>> @@ -403,27 +378,6 @@ struct device *dfl_fpga_pdata_to_parent(struct dfl_feature_platform_data *pdata)
+>>>    	return pdata->dev->dev.parent->parent;
+>>>    }
+>>> -static inline bool dfl_feature_is_fme(void __iomem *base)
+>>> -{
+>>> -	u64 v = readq(base + DFH);
+>>> -
+>>> -	return (FIELD_GET(DFH_TYPE, v) == DFH_TYPE_FIU) &&
+>>> -		(FIELD_GET(DFH_ID, v) == DFH_ID_FIU_FME);
+>>> -}
+>>> -
+>>> -static inline bool dfl_feature_is_port(void __iomem *base)
+>>> -{
+>>> -	u64 v = readq(base + DFH);
+>>> -
+>>> -	return (FIELD_GET(DFH_TYPE, v) == DFH_TYPE_FIU) &&
+>>> -		(FIELD_GET(DFH_ID, v) == DFH_ID_FIU_PORT);
+>>> -}
+>>> -
+>>> -static inline u8 dfl_feature_revision(void __iomem *base)
+>>> -{
+>>> -	return (u8)FIELD_GET(DFH_REVISION, readq(base + DFH));
+>>> -}
+>>> -
+>>>    /**
+>>>     * struct dfl_fpga_enum_info - DFL FPGA enumeration information
+>>>     *
+>>> diff --git a/include/linux/dfl.h b/include/linux/dfl.h
+>>> index 6cc10982351a..1cd86b2e7cb1 100644
+>>> --- a/include/linux/dfl.h
+>>> +++ b/include/linux/dfl.h
+>>> @@ -8,7 +8,9 @@
+>>>    #ifndef __LINUX_DFL_H
+>>>    #define __LINUX_DFL_H
+>>> +#include <linux/bitfield.h>
+>>>    #include <linux/device.h>
+>>> +#include <linux/io.h>
+>>>    #include <linux/mod_devicetable.h>
+>>>    /**
+>>> @@ -83,4 +85,54 @@ void dfl_driver_unregister(struct dfl_driver *dfl_drv);
+>>>    	module_driver(__dfl_driver, dfl_driver_register, \
+>>>    		      dfl_driver_unregister)
+>>> +/*
+>>> + * Device Feature Header Register Set
+>>> + *
+>>> + * For FIUs, they all have DFH + GUID + NEXT_AFU as common header registers.
+>>> + * For AFUs, they have DFH + GUID as common header registers.
+>>> + * For private features, they only have DFH register as common header.
+>>> + */
+>>> +#define DFH                     0x0
+>>> +#define GUID_L                  0x8
+>>> +#define GUID_H                  0x10
+>>> +#define NEXT_AFU                0x18
+>>> +
+>>> +#define DFH_SIZE                0x8
+>>> +
+>>> +/* Device Feature Header Register Bitfield */
+>>> +#define DFH_ID                  GENMASK_ULL(11, 0)      /* Feature ID */
+>>> +#define DFH_ID_FIU_FME          0
+>>> +#define DFH_ID_FIU_PORT         1
+>>> +#define DFH_REVISION            GENMASK_ULL(15, 12)
+>>> +#define DFH_NEXT_HDR_OFST       GENMASK_ULL(39, 16)     /* Offset to next DFH */
+>>> +#define DFH_EOL                 BIT_ULL(40)             /* End of list */
+>>> +#define DFH_TYPE                GENMASK_ULL(63, 60)     /* Feature type */
+>>> +#define DFH_TYPE_AFU            1
+>>> +#define DFH_TYPE_PRIVATE        3
+>>> +#define DFH_TYPE_FIU            4
+>>> +
+>>> +/* Function to read from DFH and check if the Feature type is FME */
+>>> +static inline bool dfl_feature_is_fme(void __iomem *base)
+>>> +{
+>>> +	u64 v = readq(base + DFH);
+>>> +
+>>> +	return (FIELD_GET(DFH_TYPE, v) == DFH_TYPE_FIU) &&
+>>> +		(FIELD_GET(DFH_ID, v) == DFH_ID_FIU_FME);
+>>> +}
+>>> +
+>>> +/* Function to read from DFH and check if the Feature type is port*/
+>>> +static inline bool dfl_feature_is_port(void __iomem *base)
+>>> +{
+>>> +	u64 v = readq(base + DFH);
+>>> +
+>>> +	return (FIELD_GET(DFH_TYPE, v) == DFH_TYPE_FIU) &&
+>>> +		 (FIELD_GET(DFH_ID, v) == DFH_ID_FIU_PORT);
+>>> +}
+>>> +
+>>> +/* Function to read feature revision from DFH */
+>>> +static inline u8 dfl_feature_revision(void __iomem *base)
+>>> +{
+>>> +	return (u8)FIELD_GET(DFH_REVISION, readq(base + DFH));
+>>> +}
+>>> +
+>>>    #endif /* __LINUX_DFL_H */
 
