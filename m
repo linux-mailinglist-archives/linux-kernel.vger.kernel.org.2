@@ -2,114 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25143AFB5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 05:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2B73AFB5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 05:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbhFVDXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 23:23:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34786 "EHLO
+        id S230082AbhFVDXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 23:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbhFVDXx (ORCPT
+        with ESMTP id S229546AbhFVDXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 23:23:53 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B9CC061574;
-        Mon, 21 Jun 2021 20:21:37 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id j12so620235qtv.11;
-        Mon, 21 Jun 2021 20:21:36 -0700 (PDT)
+        Mon, 21 Jun 2021 23:23:02 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0515C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 20:20:46 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id c7so20730981edn.6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 20:20:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tg/j861/b54HVSOeClLT8QfFckb9TmiVSdubGvNwtSU=;
-        b=ORSfYcN8IwFmo9qTvMX0yuoION5QXuA82EV0y7lz2XatYKNee5Ri/dLT93GaApKIg7
-         gSUSw05+KUpFtGUu0rLkzrpXeQa45tZDlIZYbeDUd99ZrkRpq3yIn5vH6iHnPaXtiqjC
-         2AxJh2fmF6epsjtdxA3WZvPiCEZeDtD/SIBwxhJrsBbYbOQjof/iLI1+X1qCTcBjAdCl
-         WAd9bQ7HqxYRUuQKcpdVaxcdrlzxm4HXSj1Eibel7cGvbENtHMSnM5fDBXQloOlYpz3q
-         Rj6cxh/QdEM89xg8vRszWSoCuKLloRXrLWJrOiML8a4mjniL2mI+scx1WiHWkdbRziPQ
-         lEVg==
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=2Y3kxYWIW4quvbRBWVIa4fOTtu3njJrE0ioG5Cnm9xw=;
+        b=HPi7X8T9CasaITW/jUJjxLRhkWdwkQNQrBfN1vAqPMjdru+JLx+Rw8E/JaR13H5Q67
+         52bAG/0AGgve29yQcp8/F5qb3LyLfA6dC8qjBJjyCkSaEjHp0kxw51yuevwku/LYGM6K
+         cV8g9Ozrwjt/G23a7G47fSoAotklzYM/A/gXtO6D79HnYznPD2yu8u7c7K0Yvcuto60B
+         GT3pBa8uqSxbE/uvrYVTYZQOgMA0fgiMJwnYpDt69RPM/w+v6MiHGGmB1ByALf+yFhgX
+         RW+ValM3O2h9YY7AFOLLHno/noK1vIDi4JmRiFhLo7uGd2nAEZuwUl1Ko2EbA7AxaUYp
+         HTLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tg/j861/b54HVSOeClLT8QfFckb9TmiVSdubGvNwtSU=;
-        b=eUUdLIctOpn1gDDj1wUXel1SdpUftmzjIzxTzu+hYAYlg2S1Y4YTfJaxaClccW87RQ
-         l00EfzPycXMO2Mr0CSuv3fytQBqnymzECg7NmSZrChw2FFAHJ6kd4LPwMM9IcytT5D5T
-         Ygl+XkRJMqo3aCmnN7g0hCM6Fv/O8fzwmSVHETrQRYmtgAgrDtAfWHIRSIh0kfE066yH
-         YsRQ3kd+W7x2NQokOyFpRskYez9bppMzSxnoLYaf9XLCFC9+Shf/8YUap0p0LS1bbeaJ
-         9BhbS+HycnBxhBV3swP9KEs29B2Fit96BJgnqf32ewjYR1l0OizapgPztdohk0NOZoZL
-         yQ1Q==
-X-Gm-Message-State: AOAM530VXf5VOF7hkUExzhf5pdTF35BlCXdBG3z1hlhxfMK90U17PWVm
-        amy8RbfdhSjU52ng1yakNQ==
-X-Google-Smtp-Source: ABdhPJwulfis05xxcZtcUkeFIlRp7hYtaS+/X+LDIPdtaCiZP0jTKb2VehoBHn+N+oXpzvJvM2nXjQ==
-X-Received: by 2002:a05:622a:c1:: with SMTP id p1mr1649816qtw.231.1624332096237;
-        Mon, 21 Jun 2021 20:21:36 -0700 (PDT)
-Received: from localhost.localdomain ([209.94.140.245])
-        by smtp.gmail.com with ESMTPSA id o15sm791308qtw.5.2021.06.21.20.21.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 20:21:35 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Zefang Han <hanzefang@gmail.com>,
-        Wei Lin Chang <r09922117@csie.ntu.edu.tw>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Peilin Ye <yepeilin.cs@gmail.com>
-Subject: [PATCH] docs: x86: Remove obsolete information about x86_64 vmalloc() faulting
-Date:   Mon, 21 Jun 2021 23:19:10 -0400
-Message-Id: <20210622031910.141262-1-yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=2Y3kxYWIW4quvbRBWVIa4fOTtu3njJrE0ioG5Cnm9xw=;
+        b=GlCij9ZkvDrmeFmWWnAfr6rX++4zwPmtLZr6bopNXej188RYhycO65clX60C/vJVkc
+         aV2jLbzAThDYeT283iOoxqpDlpqE7n3kvOw1QNIcy0q2Qh5kdf5KEjg67y5ka8HJU3KF
+         gBeUVEIcAG6eg9VeEh7+hXQo7QNFwdL07exxtX/mv5or8Lt5XoF5TwfZEbRlFEiHO3BS
+         hIafeMjYKaw7Z1UkTWu0W6UO4kzNpSiRA9WiLBiYk+yvTIC6UNmZumWdH3P1faBSX/Uu
+         z0qHV4AOxbKvBDOdXR26JuUE27Qr90cOTYxNVi769jcKZ70pjttiJnARbysV69YePIQ5
+         5qSA==
+X-Gm-Message-State: AOAM532A/9rIxeh8mF/sgqosrIih/OG4v6mpb044Wq9cVdbZQPI/soKn
+        0eO4oKwohm6ZiJf+ZNZL2bI7mIHqrL8B27b3EVOXFA==
+X-Google-Smtp-Source: ABdhPJxexFGiesaUIzw789uWimHXBM+EirSkbrzXS9xxVRdsot99ivsgjTBpP4uF4ttrCTRKVS4osvetmloDXc3JIzw=
+X-Received: by 2002:a05:6402:1a47:: with SMTP id bf7mr1940303edb.236.1624332044744;
+ Mon, 21 Jun 2021 20:20:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Axel Lin <axel.lin@ingics.com>
+Date:   Tue, 22 Jun 2021 11:20:08 +0800
+Message-ID: <CAFRkauDjKaEmtEoUH94wkT0Xd9-XL3NOYyvB3haYVT+BrAK-Dw@mail.gmail.com>
+Subject: regulator: mt6358 vdram2_idx/vsel_mask/ vsel_shift setting seems wrong
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-x86_64 vmalloc() mappings are no longer "lazily synchronized" among page
-tables via page fault handling since commit 7f0a002b5a21 ("x86/mm: remove
-vmalloc faulting").  Subsequently, commit 6eb82f994026 ("x86/mm:
-Pre-allocate P4D/PUD pages for vmalloc area") rendered it unnecessary to
-synchronize, whether lazily or not, x86_64 vmalloc() mappings at runtime,
-since the corresponding P4D or PUD pages are now preallocated during
-system initialization by preallocate_vmalloc_pages().  Drop the "lazily
-synchronized" description for less confusion.
+Hi Hsin-Hsiung,
 
-It is worth noting, however, that there is still a slight complication for
-x86_32; see commit 4819e15f740e ("x86/mm/32: Bring back vmalloc faulting
-on x86_32") for details.
+In drivers/regulator/mt6358-regulator.c:
 
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
----
-Hi all,
+static const u32 vdram2_idx[] = {
+        0, 12,
+};
 
-I was trying to understand vmalloc() when I saw this "lazily synchronized"
-statement, which confused me for a while.  Please correct me if my
-understanding is wrong or out of date.
+MT6358_LDO("ldo_vdram2", VDRAM2, vdram2_voltages, vdram2_idx,
+           MT6358_LDO_VDRAM2_CON0, 0, MT6358_LDO_VDRAM2_ELR0, 0x10, 0),
 
-Thank you,
-Peilin Ye
+With current setting the vsel_mask does not match the vsel_shift setting
+   So in set_voltage_sel, it will call regmap_update_bits with
+   mask = 0x10
+   val = idx << 0
+   No matter idx is 0 (pvol[0]) or 12 (pvol[1]), it will clear vsel_mask bits
 
- Documentation/x86/x86_64/mm.rst | 4 ----
- 1 file changed, 4 deletions(-)
+I don't have the datasheet to check, so please help to double check the
+vdram2_idx, vsel_mask and vsel_shift settings for ldo_vdram2.
+I think at least one of the settings is wrong.
 
-diff --git a/Documentation/x86/x86_64/mm.rst b/Documentation/x86/x86_64/mm.rst
-index ede1875719fb..9798676bb0bf 100644
---- a/Documentation/x86/x86_64/mm.rst
-+++ b/Documentation/x86/x86_64/mm.rst
-@@ -140,10 +140,6 @@ The direct mapping covers all memory in the system up to the highest
- memory address (this means in some cases it can also include PCI memory
- holes).
- 
--vmalloc space is lazily synchronized into the different PML4/PML5 pages of
--the processes using the page fault handler, with init_top_pgt as
--reference.
--
- We map EFI runtime services in the 'efi_pgd' PGD in a 64Gb large virtual
- memory window (this size is arbitrary, it can be raised later if needed).
- The mappings are not part of any other kernel PGD and are only available
--- 
-2.25.1
-
+Regards,
+Axel
