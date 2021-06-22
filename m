@@ -2,95 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD343B0378
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D7B3B0359
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhFVMAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:00:52 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3300 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhFVMAr (ORCPT
+        id S230490AbhFVLzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 07:55:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhFVLzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:00:47 -0400
-Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G8PmY70gwz6H71c;
-        Tue, 22 Jun 2021 19:48:29 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 22 Jun 2021 13:58:29 +0200
-Received: from [10.47.89.126] (10.47.89.126) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 22 Jun
- 2021 12:58:28 +0100
-Subject: Re: perf tool: About tests debug level
-To:     Ian Rogers <irogers@google.com>
-CC:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Jin Yao" <yao.jin@linux.intel.com>
-References: <ecd941b3-2fd5-61d8-93a1-76a3a3ee4138@huawei.com>
- <CAP-5=fUxQZ+rxLEn6jeRNVMf48BaPNdaUdoMs8LY4P-GROiOnw@mail.gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <cd501541-deb5-f2f5-e086-cca44b40c87d@huawei.com>
-Date:   Tue, 22 Jun 2021 12:52:01 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Tue, 22 Jun 2021 07:55:48 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00927C061574;
+        Tue, 22 Jun 2021 04:53:32 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id k5so4551221ilv.8;
+        Tue, 22 Jun 2021 04:53:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aEO6IsSb/vSQr97ckfCz5XZnU7Vfp5IGu1nUSLuT5l4=;
+        b=RvthV7XkZyLt3MdCSxQARYM/1IxDbMDd52DXZoNCb8myUKUX2HdJDMmj8ajmImESE+
+         1YhiPL7AkmUy9+cBVfun0eIl1owNe2aPEEEMINQAkV/wn2VNgqp/sK86ySxe3xwpHREk
+         yXwonpUnHvIGiVOijHM/Ns8B1Tpq7AbuS/ZAvy+QyxD97NPr2DBZZamMBTTFvhLyehfw
+         PnmgP0tLyMQ3YO67sn8pxq4f3nvYw/+OhecRAOZdDVmERQZkPBuYFjosGBsK0/8eVIpL
+         a2TIDp6j8FX6XAf7BpLZ+bUJup8HX7d6/ysP7xhCu/oCENW4U/Vpr9UgIdyHMVpiZESP
+         rE4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aEO6IsSb/vSQr97ckfCz5XZnU7Vfp5IGu1nUSLuT5l4=;
+        b=iGQFirNFSAYkt+4rZZ+2sAlr85eM+uBO4HUPAbMW50Sxxi9hqhLrUqlk3pQNnsnKBM
+         xT81rODcxHnKW1oM7Fj3JnlcJDccwyWvucF/5jt57ILVPKXjk0yRZGwYfNMBmpmtkKua
+         /+sN7Yl6NlWVaeFyhIBNELVeEY+OVIgj1H2YawUEJFVf2NiucHD6+3VMrMk58UD9Jd2+
+         Y7P6UxTm98CyQ0BvxESwfQH484BVR+sJwTRyDa4c7f4+u4lTTUK7dfRw1dzBDCpMN3NF
+         /B0XzXSL96kmNtHaA9bg0qAFBYI8k5li6THc1Ez2odrCqppTGSh0FoMQeTsX34ApRVnf
+         hhcA==
+X-Gm-Message-State: AOAM530Whe3SjUptdc7CoFXy4JKuz7I3LPxphaWfE1ScJcJdQl5NOOtd
+        S3jiEljbvvx1ALCAm6FMGokTvoPICf3mp5G3ifQ=
+X-Google-Smtp-Source: ABdhPJzeeyDHHT1XJPI850M+JNrR7YAXKf3+LUFD9db7XL/PT7RSo6wi5mgvgSt1imENq+oFdTPc7FRVNKKaO43oYBg=
+X-Received: by 2002:a92:7b0f:: with SMTP id w15mr2458228ilc.150.1624362812494;
+ Tue, 22 Jun 2021 04:53:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fUxQZ+rxLEn6jeRNVMf48BaPNdaUdoMs8LY4P-GROiOnw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.89.126]
-X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20210622095639.1280774-1-art@khadas.com> <bfa12322-bc49-2337-2988-199e87e34b87@baylibre.com>
+In-Reply-To: <bfa12322-bc49-2337-2988-199e87e34b87@baylibre.com>
+From:   Art Nikpal <email2tema@gmail.com>
+Date:   Tue, 22 Jun 2021 19:53:21 +0800
+Message-ID: <CAKaHn9JpH2Yh-1njO6jEnFeu-GMhbonftN=-VXdbvjdug16qHA@mail.gmail.com>
+Subject: Re: [PATCH] watchdog: meson_gxbb_wdt: improve
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     wim@linux-watchdog.org, linux@roeck-us.net,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        linux-kernel@vger.kernel.org, Artem Lapkin <art@khadas.com>,
+        Nick Xie <nick@khadas.com>, Gouwa Wang <gouwa@khadas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/06/2021 06:04, Ian Rogers wrote:
->> ---- end ----
->> Parse and process metrics: FAILED!
->>
->> Note that the "FAILED" messages from the test code come from pr_debug().
->>
->> In a way, I feel that pr_debug()/err from the test is more important
->> than pr_debug() from the core code (when running a test).
->>
->> Any opinion on this or how to improve (if anyone agrees with me)? Or am
->> I missing something? Or is it not so important?
-> Hi John,
-> 
+> Neil
+> Can you split the patch in 4 distinct changes ?
 
-Hi Ian,
+yes  no problem i can try to do it tomorrow !
+maybe somebody have other ideas, suggestion, comments ...
 
-> I think the issue is that in the parsing you don't know it's broken
-> until something goes wrong. Putting everything on pr_err would cause
-> spam in the not broken case.
 
-Right, I would not suggest using pr_err everywhere.
-
-> Improving the parsing error handling is a
-> big task with lex and yacc to some extent getting in the way. Perhaps
-> a middle way is to have a parameter to the parser that logs more, and
-> recursively call this in the parser when parsing fails. I guess there
-> is also a danger of a performance hit.
-
-So I am thinking that for running a test, -v means different levels logs 
-for test code and for core (non-test code). For example, -v prints 
-pr_warn() and higher for test logs, but nothing for core logs. And then 
--vv for running a test gives pr_debug and above for test logs, and 
-pr_warn and above for core logs. Or something like that.
-
-Maybe that is not a good idea. But I'm just saying that it's hard to 
-debug currently at -v for tests.
-
-Thanks,
-John
+On Tue, Jun 22, 2021 at 7:08 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
+>
+> Hi Art,
+>
+> On 22/06/2021 11:56, Artem Lapkin wrote:
+> > Improve meson_gxbb_wdt watchdog driver
+> > 1) added module param timeout and nowayout same as other modules
+> > 2) print watchdog driver start status
+> > 3) add watchdog_stop_on_unregister
+> > 4) remove watchdog_stop_on_reboot ( still can be activated by
+> > watchdog.stop_on_reboot=1 ) i think this driver configuration more useful
+> > becouse we can get reboot waranty for abnormal situations on shutdown stage
+>
+> Can you split the patch in 4 distinct changes ?
+>
+> Neil
+>
+> >
+> > Signed-off-by: Artem Lapkin <art@khadas.com>
+> > ---
+> >  drivers/watchdog/meson_gxbb_wdt.c | 20 ++++++++++++++++++--
+> >  1 file changed, 18 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/watchdog/meson_gxbb_wdt.c b/drivers/watchdog/meson_gxbb_wdt.c
+> > index 5a9ca10fbcfa..15c889932c13 100644
+> > --- a/drivers/watchdog/meson_gxbb_wdt.c
+> > +++ b/drivers/watchdog/meson_gxbb_wdt.c
+> > @@ -35,6 +35,17 @@ struct meson_gxbb_wdt {
+> >       struct clk *clk;
+> >  };
+> >
+> > +static bool nowayout = WATCHDOG_NOWAYOUT;
+> > +static unsigned int timeout = DEFAULT_TIMEOUT;
+> > +
+> > +module_param(nowayout, bool, 0);
+> > +MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started default="
+> > +                     __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
+> > +
+> > +module_param(timeout, uint, 0);
+> > +MODULE_PARM_DESC(timeout, "Watchdog heartbeat in seconds="
+> > +                     __MODULE_STRING(DEFAULT_TIMEOUT) ")");
+> > +
+> >  static int meson_gxbb_wdt_start(struct watchdog_device *wdt_dev)
+> >  {
+> >       struct meson_gxbb_wdt *data = watchdog_get_drvdata(wdt_dev);
+> > @@ -174,7 +185,7 @@ static int meson_gxbb_wdt_probe(struct platform_device *pdev)
+> >       data->wdt_dev.ops = &meson_gxbb_wdt_ops;
+> >       data->wdt_dev.max_hw_heartbeat_ms = GXBB_WDT_TCNT_SETUP_MASK;
+> >       data->wdt_dev.min_timeout = 1;
+> > -     data->wdt_dev.timeout = DEFAULT_TIMEOUT;
+> > +     data->wdt_dev.timeout = timeout;
+> >       watchdog_set_drvdata(&data->wdt_dev, data);
+> >
+> >       /* Setup with 1ms timebase */
+> > @@ -186,7 +197,12 @@ static int meson_gxbb_wdt_probe(struct platform_device *pdev)
+> >
+> >       meson_gxbb_wdt_set_timeout(&data->wdt_dev, data->wdt_dev.timeout);
+> >
+> > -     watchdog_stop_on_reboot(&data->wdt_dev);
+> > +     watchdog_set_nowayout(&data->wdt_dev, nowayout);
+> > +     watchdog_stop_on_unregister(&data->wdt_dev);
+> > +
+> > +     dev_info(dev, "Watchdog enabled (timeout=%d sec, nowayout=%d)",
+> > +             data->wdt_dev.timeout, nowayout);
+> > +
+> >       return devm_watchdog_register_device(dev, &data->wdt_dev);
+> >  }
+> >
+> >
+>
