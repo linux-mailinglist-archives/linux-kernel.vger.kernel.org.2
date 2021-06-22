@@ -2,175 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7ED33B0C70
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B6C3B0C94
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232539AbhFVSK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:10:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38880 "EHLO
+        id S232831AbhFVSLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232501AbhFVSKR (ORCPT
+        with ESMTP id S232630AbhFVSLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:10:17 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A373C061D73;
-        Tue, 22 Jun 2021 11:02:15 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id m14so8206680edp.9;
-        Tue, 22 Jun 2021 11:02:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=qBI1JkDBHmE5U6gDX1UQMWanis3g+dXmcFngb016voY=;
-        b=VrP/79qKyI1WcSDq3xBYfBlD8p1DVwzkezRJheMSMVGmGv9frGy0GfcK00e37zws65
-         VxVOR6Iobsm5qKO84Ddegfr/XcE9JxS8RdAjFJ3+OKqPtqqy0EH9sjZRucNzRhwzq818
-         s+4nAtFixTmV8BeBbfoJmtXb/gq5MjPC1fc1KUYPXZenmgzfcHNkRhBxaDIA6OdZYChg
-         E6fsBE/82UP2H3pUFQzZuo2NSVGievn3uX6pyW9F8/gOSpCGArUOXOs9kJ4mCSrgPi2s
-         Fiw787nEdUbxJDSi3xCTBRymLYgsaW3yP2vFaVzPIJ6hZqRY4sPfiFDUJ+Nei77FdW/o
-         2KFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qBI1JkDBHmE5U6gDX1UQMWanis3g+dXmcFngb016voY=;
-        b=YFuUmiGhIXDpas5FFEcGEq0iMUAQUQmM2Yz6v5F7IxWcbDbgWSqYbsMifbqEpxvMay
-         mcsfXyEveMrO5lnzZtdVIykvYvtWOCjN+CQHjejCZRQqvI63Rr3UGLIF7z5OY07rZduR
-         s+5kMX8w8aVzyzF7JWTuZ04N8yaHbyk6RsLjwNBiQir9RPDdy4PX1741w0WkgNWMB3nN
-         bCyQoxmheLAlSEmqDFmkhsRe/9uXRMQjQH83rTeixa3jqsJLsnooSbKl0Pdxk5gZHMUN
-         WJTaibG425bFM/mG83C+XPhygqr3Picbo4s9ZEUwHV1Mmsho8WAWlkaegkFmgEJ4ffIv
-         DIDw==
-X-Gm-Message-State: AOAM532xJYyNGqK8xiK0buncJSXYdCkd52DVyrxeOBh7Z3MH3b79hJA1
-        ZGql5CcM28vvR33qNOHd2BP2vk/aEb+YcHfT
-X-Google-Smtp-Source: ABdhPJxkjM9/PfEOaXDUG/U8iVWS8Ax0RkfwGKxHJyDN0b2LV/FkN3t5qQZtTGfEkowOz7n7jgeGHQ==
-X-Received: by 2002:a05:6402:49:: with SMTP id f9mr6776435edu.178.1624384933767;
-        Tue, 22 Jun 2021 11:02:13 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c096:310::2410? ([2620:10d:c093:600::2:9d6e])
-        by smtp.gmail.com with ESMTPSA id ar14sm4521104ejc.108.2021.06.22.11.02.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 11:02:13 -0700 (PDT)
-Subject: Re: [PATCH v4] io_uring: reduce latency by reissueing the operation
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <9e8441419bb1b8f3c3fcc607b2713efecdef2136.1624364038.git.olivier@trillion01.com>
- <678deb93-c4a5-5a14-9687-9e44f0f00b5a@gmail.com>
-Message-ID: <7c47078a-9e2d-badf-a47d-1ca78e1a3253@gmail.com>
-Date:   Tue, 22 Jun 2021 19:01:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 22 Jun 2021 14:11:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A45C06114F;
+        Tue, 22 Jun 2021 11:06:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4u1NCyaAJJ8fxeYpU8Gk6l5XhQlmfpxfNSoBL7x9hjU=; b=aJ7Lp27qSS9eU0YVfkFs/6IM+l
+        vOm9pcgy0M/v1BWlSBTFWibCJsqiIsGsH2Ikhl8ZZw18gUkZAT+TqJjWv6rWzGyB9kKoRihWKBFuE
+        YON+ElnCJqFLFsFWHpf16nUklwXeXQaaEIrhxVJXUdCNKfXCf/1t3/V55teOiZMhGZBHaKGv+vZOm
+        G6vMCqeL4lpnDdWmPsTdyeTODow4zPRM28Rvm3cUCNXEm2U+K9RprOiDEr9bK+gpGqNoFmzDYQHCn
+        ne9RPTW7I0nHh3L6B3BftRe5xspS9jEKwG2DCx/j3F2RKbrNTEtwvmCV8uglJSefFA5siLrRs45t9
+        UeMqdmuw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvkkk-00EasQ-G3; Tue, 22 Jun 2021 18:04:26 +0000
+Date:   Tue, 22 Jun 2021 19:04:02 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, Ted Ts'o <tytso@mit.edu>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Do we need to unrevert "fs: do not prefault sys_write() user
+ buffer pages"?
+Message-ID: <YNImEkqizzuStW72@casper.infradead.org>
+References: <CAHk-=wh=YxjEtTpYyhgypKmPJQ8eVLJ4qowmwbnG1bOU06_4Bg@mail.gmail.com>
+ <3221175.1624375240@warthog.procyon.org.uk>
+ <YNIBb5WPrk8nnKKn@zeniv-ca.linux.org.uk>
+ <YNIDdgn0m8d2a0P3@zeniv-ca.linux.org.uk>
+ <YNIdJaKrNj5GoT7w@casper.infradead.org>
+ <3231150.1624384533@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <678deb93-c4a5-5a14-9687-9e44f0f00b5a@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3231150.1624384533@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/21 6:54 PM, Pavel Begunkov wrote:
-> On 6/22/21 1:17 PM, Olivier Langlois wrote:
->> It is quite frequent that when an operation fails and returns EAGAIN,
->> the data becomes available between that failure and the call to
->> vfs_poll() done by io_arm_poll_handler().
->>
->> Detecting the situation and reissuing the operation is much faster
->> than going ahead and push the operation to the io-wq.
->>
->> Performance improvement testing has been performed with:
->> Single thread, 1 TCP connection receiving a 5 Mbps stream, no sqpoll.
->>
->> 4 measurements have been taken:
->> 1. The time it takes to process a read request when data is already available
->> 2. The time it takes to process by calling twice io_issue_sqe() after vfs_poll() indicated that data was available
->> 3. The time it takes to execute io_queue_async_work()
->> 4. The time it takes to complete a read request asynchronously
->>
->> 2.25% of all the read operations did use the new path.
->>
->> ready data (baseline)
->> avg	3657.94182918628
->> min	580
->> max	20098
->> stddev	1213.15975908162
->>
->> reissue	completion
->> average	7882.67567567568
->> min	2316
->> max	28811
->> stddev	1982.79172973284
->>
->> insert io-wq time
->> average	8983.82276995305
->> min	3324
->> max	87816
->> stddev	2551.60056552038
->>
->> async time completion
->> average	24670.4758861127
->> min	10758
->> max	102612
->> stddev	3483.92416873804
->>
->> Conclusion:
->> On average reissuing the sqe with the patch code is 1.1uSec faster and
->> in the worse case scenario 59uSec faster than placing the request on
->> io-wq
->>
->> On average completion time by reissuing the sqe with the patch code is
->> 16.79uSec faster and in the worse case scenario 73.8uSec faster than
->> async completion.
->>
->> Signed-off-by: Olivier Langlois <olivier@trillion01.com>
->> ---
->>  fs/io_uring.c | 31 ++++++++++++++++++++++---------
->>  1 file changed, 22 insertions(+), 9 deletions(-)
->>
->> diff --git a/fs/io_uring.c b/fs/io_uring.c
->> index fc8637f591a6..5efa67c2f974 100644
->> --- a/fs/io_uring.c
->> +++ b/fs/io_uring.c
+On Tue, Jun 22, 2021 at 06:55:33PM +0100, David Howells wrote:
+> Linus Torvalds <torvalds@linux-foundation.org> wrote:
 > 
-> [...]
+> > End result: doing the fault_in_readable "unnecessarily" at the
+> > beginning is likely the better optimization. It's basically free when
+> > it's not necessary, and it avoids an extra fault (and extra
+> > lock/unlock and retry) when it does end up faulting pages in.
 > 
->>  static bool __io_poll_remove_one(struct io_kiocb *req,
->> @@ -6437,6 +6445,7 @@ static void __io_queue_sqe(struct io_kiocb *req)
->>  	struct io_kiocb *linked_timeout = io_prep_linked_timeout(req);
->>  	int ret;
->>  
->> +issue_sqe:
->>  	ret = io_issue_sqe(req, IO_URING_F_NONBLOCK|IO_URING_F_COMPLETE_DEFER);
->>  
->>  	/*
->> @@ -6456,12 +6465,16 @@ static void __io_queue_sqe(struct io_kiocb *req)
->>  			io_put_req(req);
->>  		}
->>  	} else if (ret == -EAGAIN && !(req->flags & REQ_F_NOWAIT)) {
->> -		if (!io_arm_poll_handler(req)) {
->> +		switch (io_arm_poll_handler(req)) {
->> +		case IO_APOLL_READY:
->> +			goto issue_sqe;
->> +		case IO_APOLL_ABORTED:
->>  			/*
->>  			 * Queued up for async execution, worker will release
->>  			 * submit reference when the iocb is actually submitted.
->>  			 */
->>  			io_queue_async_work(req);
->> +			break;
-> 
-> Hmm, why there is a new break here? It will miscount @linked_timeout
-> if you do that. Every io_prep_linked_timeout() should be matched with
-> io_queue_linked_timeout().
+> It may also cause the read in to happen in the background whilst write_begin
+> is being done.
 
-Never mind, I said some nonsense and apparently need some coffee
-
-
->>  		}
->>  	} else {
->>  		io_req_complete_failed(req, ret);
->>
-> 
-
--- 
-Pavel Begunkov
+Huh?  Last I checked, the fault_in_readable actually read a byte from
+the page.  It has to wait for the read to complete before that can
+happen.
