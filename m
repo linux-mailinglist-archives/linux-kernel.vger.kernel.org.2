@@ -2,181 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634953B0D87
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 21:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5BBF3B0D9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 21:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232686AbhFVTPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 15:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54696 "EHLO
+        id S232695AbhFVTY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 15:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhFVTPN (ORCPT
+        with ESMTP id S232415AbhFVTYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 15:15:13 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13DB4C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 12:12:57 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id d19so524932oic.7
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 12:12:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w+PkCKWzFX6ch68xMO5vdAGxWd4TzqP1oTkPZJt/SU8=;
-        b=ekUmPFB2M5VXXbkvlmuIKKlnSZHE29amdGhmgguDVqbcLNLaIs1QogG56KPe2c/vyH
-         47uJ2q9OZDaYEG6CEUo7/rardPggTELJZvSoOfm61uUlH+6CfCG34FrFSWa9h55lCXn0
-         VhP3FsAkxvxFYJIxZtygDVHH2mDIhjNb+GaYA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w+PkCKWzFX6ch68xMO5vdAGxWd4TzqP1oTkPZJt/SU8=;
-        b=Eng/foVJiYOPBJHHGbT2ba1IkoyXKgfZbA1sjClVxS39Wz5L8E21MA5VhDOpZOf7PI
-         en3owZHmtetlvStY5BAaYSJQdX9BUNpNcpqLAsGru+2ga+qv3koD2/9m25ZhKcXzPixo
-         T9CU4nW3PSgMeSS2aCsB1runPm1/SE7GKh+kM/9+KGcLrk/07kqr8nSipLbnN1QprS2r
-         fwtXYQ6R2lXwID0iRwfTwpqVI/dyYKefJOZGVvxlx2WWoCKm5vnwF8GmYnefMGQz+TjO
-         l9EIs+RO04C4JE0jVpEgdBAc8eL9EzGpHlJaSViXo2tW8Wh1NcWfLgB1Q1pUY21gd4e9
-         fzmg==
-X-Gm-Message-State: AOAM530u3cM9Hznjn9F1k4A3c/wAOGT/k5gvamB1nqfgoeahzbReAW/h
-        vs0e87xCm07i8ZGhd3iivQ1V7PeXy5cAfbfngFAx6Q==
-X-Google-Smtp-Source: ABdhPJz/k3FiF0tgCVxa1om8nqMYiaOhW6/mWSjaPKKrNyT19R2NPRvfMrw2F8iAAUjfxj0wnpihMIckW3pT3vGMqhU=
-X-Received: by 2002:aca:1a0c:: with SMTP id a12mr253218oia.14.1624389176394;
- Tue, 22 Jun 2021 12:12:56 -0700 (PDT)
+        Tue, 22 Jun 2021 15:24:24 -0400
+Received: from proxima.lasnet.de (proxima.lasnet.de [IPv6:2a01:4f8:121:31eb:3::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3FBBC061574;
+        Tue, 22 Jun 2021 12:21:49 -0700 (PDT)
+Received: from [IPv6:2003:e9:d741:e18f:a31e:1420:3e5f:861e] (p200300e9d741e18fa31e14203e5f861e.dip0.t-ipconnect.de [IPv6:2003:e9:d741:e18f:a31e:1420:3e5f:861e])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: stefan@datenfreihafen.org)
+        by proxima.lasnet.de (Postfix) with ESMTPSA id F2572C0122;
+        Tue, 22 Jun 2021 21:21:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=datenfreihafen.org;
+        s=2021; t=1624389704;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vDxaktJ+Hh7ra+obApcSLKVeXPUw+MBOxIRGYg22n6Q=;
+        b=KjxR93EbICpNf4PNGWI6LxiM2xhcvdkMSvvQD9y9Ix2uTV+0N1INV9R5R4DWN51d1U+/RB
+        NTxZgoOqzz9AMC8dTvO7cT5ss4HDDK3HgoRDRADi+Se/yQhGSO0aVAHqYK6/36tcP263Ux
+        syyDEqldP8rClxC3vFKtAZy/7eil1q79dfZquF76GcoaNglb7tA/03AVzblulxXdkPDxvy
+        pU9llNt/RUjtoMvM4IxTG9e6iFFh0hMntKHZanQr3DDNNyOafn14MuWnTdfup3fG1tB4J7
+        QYCnt8zZNYMmiBZk7dsFEPfEiA0wqsQfebdLLfgi+zMwODFXXZQT7O5md1jcSA==
+Subject: Re: [PATCH v2] ieee802154: hwsim: Fix memory leak in hwsim_add_one
+To:     Alexander Aring <alex.aring@gmail.com>,
+        Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wpan - ML <linux-wpan@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        syzbot+b80c9959009a9325cdff@syzkaller.appspotmail.com
+References: <20210616020901.2759466-1-mudongliangabcd@gmail.com>
+ <CAB_54W51MxDwN5oPxBqioaNhq-eB1QfXNMyUpmNZOWNDM3MmnA@mail.gmail.com>
+From:   Stefan Schmidt <stefan@datenfreihafen.org>
+Message-ID: <4d08846a-118f-261b-9760-7953c1d4547f@datenfreihafen.org>
+Date:   Tue, 22 Jun 2021 21:21:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210621062742.26073-1-etom@igel.co.jp> <7cde82a9-c60c-e527-eeac-eaad0c5842a1@metux.net>
- <1cfab5f9-f275-aa53-00de-5da3fcea71c5@igel.co.jp> <20210622111239.73aa87aa@eldfell>
-In-Reply-To: <20210622111239.73aa87aa@eldfell>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Tue, 22 Jun 2021 21:12:45 +0200
-Message-ID: <CAKMK7uGhx0O4yFESWxoN1nDnEFH24cC6pRRDEBYDWHrnci_j+Q@mail.gmail.com>
-Subject: Re: [PATH 0/4] [RFC] Support virtual DRM
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-Cc:     Esaki Tomohito <etom@igel.co.jp>,
-        devicetree <devicetree@vger.kernel.org>,
-        Takanari Hayama <taki@igel.co.jp>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:DRM DRIVERS FOR RENESAS" 
-        <linux-renesas-soc@vger.kernel.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Damian Hobson-Garcia <dhobsong@igel.co.jp>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAB_54W51MxDwN5oPxBqioaNhq-eB1QfXNMyUpmNZOWNDM3MmnA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 10:12 AM Pekka Paalanen <ppaalanen@gmail.com> wrote:
->
-> On Tue, 22 Jun 2021 13:03:39 +0900
-> Esaki Tomohito <etom@igel.co.jp> wrote:
->
-> > Hi, Enrico Weigelt
-> > Thank you for reply.
-> >
-> > On 2021/06/22 1:05, Enrico Weigelt, metux IT consult wrote:
-> > > On 21.06.21 08:27, Tomohito Esaki wrote:
-> > >
-> > > Hi,
-> > >
-> > >> Virtual DRM splits the overlay planes of a display controller into multiple
-> > >> virtual devices to allow each plane to be accessed by each process.
-> > >>
-> > >> This makes it possible to overlay images output from multiple processes on a
-> > >> display. For example, one process displays the camera image without compositor
-> > >> while another process overlays the UI.
-> > >
-> > > Are you attempting to create an simple in-kernel compositor ?
-> >
-> > I think the basic idea is the same as DRMlease.
->
+Hello.
+
+On 22.06.21 20:29, Alexander Aring wrote:
 > Hi,
->
-> indeed. Why not use DRM leases instead?
->
-> > We want to separate the resources from the master in units of planes,
-> > so we proposed virtual DRM.
-> > I think the advantage of vDRM is that you can use general DRM APIs
-> > in userland.
->
-> You do that with DRM leases too.
->
-> > > I don't think that's not the way to go, at least not by touching each
-> > > single display driver, and not hardcoding the planes in DT.
-> >
-> > Thank you for comment. I will reconsider about DT.
-> >
-> > > What's the actual use case you're doing that for ? Why not using some
-> > > userland compositor ?
-> >
-> > I think when latency is important (e.g., AR, VR, for displaying camera
-> > images in IVI systems), there may be use cases where the compositor
-> > cannot be used.
-> > Normally, when the image is passed through the compositor, it is
-> > displayed after 2 VSYNC at most, because the compositor combines the
-> > image with VSYNC synchronization. On the other hand, if we use vDRM, the
-> > image will be displayed at the next VSYNC, so it will be displayed after
-> > 1 VSYNC at most.
->
-> As I said in my other email, this is false in the general sense.
->
-> > Also, since the compositor is a single point of failure, we may not want
-> > to make it dependent on it.
->
-> This... I'm not quite sure I buy it. If any of all the programs using
-> virtual KMS crashes, you still lose some crucial components from your
-> display. Maybe that program, while crashing, uploads such a bad state
-> to its very own KMS plane, that it causes other KMS planes to
-> malfunction. Then you need to detect this situation and still restart
-> everything, not just the crashed program.
+> 
+> On Tue, 15 Jun 2021 at 22:09, Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+>>
+>> No matter from hwsim_remove or hwsim_del_radio_nl, hwsim_del fails to
+>> remove the entry in the edges list. Take the example below, phy0, phy1
+>> and e0 will be deleted, resulting in e1 not freed and accessed in the
+>> future.
+>>
+>>                hwsim_phys
+>>                    |
+>>      ------------------------------
+>>      |                            |
+>> phy0 (edges)                 phy1 (edges)
+>>     ----> e1 (idx = 1)             ----> e0 (idx = 0)
+>>
+>> Fix this by deleting and freeing all the entries in the edges list
+>> between hwsim_edge_unsubscribe_me and list_del(&phy->list).
+>>
+>> Reported-by: syzbot+b80c9959009a9325cdff@syzkaller.appspotmail.com
+>> Fixes: 1c9f4a3fce77 ("ieee802154: hwsim: fix rcu handling")
+>> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> 
+> Acked-by: Alexander Aring <aahringo@redhat.com>
+> 
+> Thanks!
 
-This, a hundred times. At least in general it's impossible to
-guarantee resource isolation between different parts of a kms device -
-everything is shared at least in some driver in funny ways.
 
-The only thing we try to guarantee is that if you keep flipping the
-same plane with same pixel format, stride, offset, absolutely
-everything except the memory block unchanged, then that's guaranteed
-to work. Everything else is off the table.
+This patch has been applied to the wpan tree and will be
+part of the next pull request to net. Thanks!
 
-This is why the drm-lease design ended up with revoke support, because
-if something goes wrong a superior instance (the compositor, the
-kernel can't decide that for userspace) needs to decide whom to shoot
-and revoke their access.
-
-> I would think a userspace compositor approach is actually more
-> reliable. You write the compositor to be extremely robust. Exactly
-> because the compositor is in control of the complete display device and
-> not just little pieces of it, it can see what is happening and it can
-> mitigate problems. If you have more unreliable components needing
-> access to display, make those clients to the compositor, so they can
-> crash and malfunction on their own without potentially killing the
-> whole display device. If you are as concerned about latency as XR
-> people are, then use DRM leases.
->
-> Also, what if your virtual KMS driver has a bug? Restarting the kernel
-> is much harder that restarting a userspace compositor that hands out
-> DRM leases.
->
-> The userspace compositor could even be such that it does nothing more
-> than handing out DRM leases. However, DRM leases have the problem that
-> there is no single entity responsible for keeping the display device
-> working, but that responsibility is split between several processes and
-> none of them sees the whole picture.
-
-Yeah I think a compositor for this use-case, written in Rust and
-heavily audited/proofed is probably a lot more reliable than cobbling
-ill-defined kernel driver code on top of barely-defined hw semantics
-in resource-sharing cases.
-
-> Btw. VKMS is an existing DRM driver, so your name choice is conflicting.
-
-Yeah that too :-)
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+regards
+Stefan Schmidt
