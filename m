@@ -2,155 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5080F3B0CA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5EE43B0CAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232493AbhFVSQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232347AbhFVSQG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:16:06 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C33AAC061574;
-        Tue, 22 Jun 2021 11:13:50 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so2222708pjs.2;
-        Tue, 22 Jun 2021 11:13:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oGjXQCSsFX/bTDreTeHfa9QhPldXdsTmOBFvpzMwJwI=;
-        b=T1gPw4wkkUEy43nZnbxpBX6eXW1O0aJwAvLHgT9PLC6aGAaVZkbYgKOyHH0omio3Yx
-         10OaUTd+gef8r6q0Ft2XXwdfJ4LhS8N8ZhpojGNRxHEV/LI8L6NsZiiwb2IKdRu6yydg
-         xS13NElIZygZjL8OWtvWpNxPUYm5hgHONaVfgiLNW4urgYOJI6PnUAhdpBJwn4UgUjv8
-         hFJ62bb9CZ2xiXdGnDSeY/ZDlbTVMd/+XTXQ31BT6lL4Ujz/ZhB7I4dm0GHNjMRmZOdu
-         YU/t2s264X74Oxx8bWPvtLiOwrj+eeg1+9w8RU1VanOAfMom8teQmnkwLz+A5zoGY3kh
-         8nZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oGjXQCSsFX/bTDreTeHfa9QhPldXdsTmOBFvpzMwJwI=;
-        b=OcBf0hxupKm2FXqmyAYbLUEKlfO7ZAd2Rm283QT1QVOjmzaERN5MOVlUn8Ne5v+L1z
-         +A9Gp2IwkVB0bIGwnQVqE3h46RgnwKZx+kKXutnz6EtxjujYx7hJTjKegtvUqI/9gCa2
-         hj2cbX5RBtsXx43juFpzuW/yncse0P3jS96jv0ffrStckUoOTg5GIT17bdehPp2YUBMh
-         K8HAmcZZm06G9qUEuYSowDsAyL/QjhiGP5Vqkl/zxvZQVjjd2NaGZj5WEHG5V0elkdA9
-         GooUdokJRj0lc5RlW3/n7aQ7Y/DdJRnM8FZcmw4yBGcNzJzAC/iJoQ2R3iLBBUyeetQr
-         /thw==
-X-Gm-Message-State: AOAM531oS2i2T+5CbWK6HN044anN2bWB5we0Vzd3JS7RB24nSa3q2OLS
-        1QqEJOm9ZXfghkoZLtn7i7c=
-X-Google-Smtp-Source: ABdhPJzgX8Ii4ePkWIxYzldKImg5WJx+/nUumQhoswu0zGkWdNKRe/5eoa8vsRVxs8mrrFv1CYdIhw==
-X-Received: by 2002:a17:903:1c1:b029:125:b183:7989 with SMTP id e1-20020a17090301c1b0290125b1837989mr7711058plh.57.1624385629844;
-        Tue, 22 Jun 2021 11:13:49 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:b7e7:569c:6adc:f5e8])
-        by smtp.gmail.com with ESMTPSA id c9sm36084pfb.82.2021.06.22.11.13.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 11:13:49 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 11:13:46 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ACPI: PM: postpone bringing devices to D0 unless we need
- them
-Message-ID: <YNIoWrR8W5Uow7kk@google.com>
-References: <YNEQjAzq6iWNgnBc@google.com>
- <CAJZ5v0jVzFWfNX-ujOz=A8SXyWGv_HC+YSVEzowSN+aU5aGiYw@mail.gmail.com>
+        id S232515AbhFVSQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:16:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230146AbhFVSQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 14:16:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFE11611CE;
+        Tue, 22 Jun 2021 18:14:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624385647;
+        bh=676RC019GjS9XgxQ7vv06C7exyVcH75BlpJ3nHEJqBw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Yv2enXP5dGxiNmQ4MCoBz6W0NVZlvSi6wafUxU1yxJZxNEP+l5XuPpX+WwckKKH7i
+         nDmj0U3oGjHZQfJz5MyS6m/3GmuBpA3m7+auMWpUv81dNyOX3RJugPpMpqdyyjErxw
+         bMTaf0OSmwLF2imbORcbPQOLZ2mD8YwbBcF2t4ZP5UIT2gdmxjtvcZmVMrZJNsxpTm
+         tg2DIKMKVIf3k8fCaXnYGvBhVpHB2gF1G1m/y2iVRjjNIelZ+k+YC4EVGCZ62QyLEo
+         frpKZSgEpnkoNHm47EDWTPKyxs9eas78K9vrjxpHbFm0WjQpGHDbKWxu2LtvgVloj5
+         Bcq+bS0i++zaQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5593140B1A; Tue, 22 Jun 2021 15:14:04 -0300 (-03)
+Date:   Tue, 22 Jun 2021 15:14:04 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>, rickyman7@gmail.com
+Subject: Re: [RFC 00/10] perf: Add build id parsing fault detection/fix
+Message-ID: <YNIobHgfVbiiNscn@kernel.org>
+References: <20210622153918.688500-1-jolsa@kernel.org>
+ <YNIgXkH1xaF7H3Tr@kernel.org>
+ <CAP-5=fU=AAJ0_s1orsF=OCO0=bSmr9BhAmtN251bU_pf0ZFJ6Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAJZ5v0jVzFWfNX-ujOz=A8SXyWGv_HC+YSVEzowSN+aU5aGiYw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fU=AAJ0_s1orsF=OCO0=bSmr9BhAmtN251bU_pf0ZFJ6Q@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
-
-On Tue, Jun 22, 2021 at 03:40:05PM +0200, Rafael J. Wysocki wrote:
-> On Tue, Jun 22, 2021 at 12:20 AM Dmitry Torokhov
-> <dmitry.torokhov@gmail.com> wrote:
+Em Tue, Jun 22, 2021 at 10:47:54AM -0700, Ian Rogers escreveu:
+> On Tue, Jun 22, 2021 at 10:39 AM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
 > >
-> > Currently ACPI power domain brings devices into D0 state in the "resume
-> > early" phase. Normally this does not cause any issues, as powering up
-> > happens quickly. However there are peripherals that have certain timing
-> > requirements for powering on, for example some models of Elan
-> > touchscreens need 300msec after powering up/releasing reset line before
-> > they can accept commands from the host. Such devices will dominate
-> > the time spent in early resume phase and cause increase in overall
-> > resume time as we wait for early resume to complete before we can
-> > proceed to the normal resume stage.
+> > Em Tue, Jun 22, 2021 at 05:39:08PM +0200, Jiri Olsa escreveu:
+> > > hi,
+> > > this *RFC* patchset adds support to detect faults during
+> > > mmap2's build id parsing and a way to fix such maps in
+> > > generated perf.data.
+> > >
+> > > It adds support to record build id faults count for session
+> > > and store it in perf.data and perf inject support to find
+> > > these maps and reads build ids for them in user space.
 > >
-> > There are ways for a driver to indicate that it can tolerate device
-> > being in the low power mode and that it knows how to power the device
-> > back up when resuming, bit that requires changes to individual drivers
-> > that may not really care about details of ACPI controlled power
-> > management.
+> > > It's probably best explained by the workflow:
+> > >
+> > >   Record data with --buildid-mmap option:
+> > >
+> > >     # perf record --buildid-mmap ...
+> > >     ...
+> > >     [ perf record: Woken up 1 times to write data ]
+> > >     [ perf record: Failed to parse 4 build ids]
+> > >     [ perf record: Captured and wrote 0.008 MB perf.data ]
+> > >
+> > >   Check if there's any build id fault reported:
+> > >
+> > >     # perf report --header-only
+> > >     ...
+> > >     # build id mmap stats: FAULTS 4, LOST 0, NOT FIXED
+> > >
+> > >   There is, check the stats:
+> > >
+> > >     # perf report --stat
+> > >
+> > >     Aggregated stats:
+> > >              TOTAL events:        104
+> > >                       ....
+> > >            BUILD_ID fails:          4  (14.3%)
+> > >
+> > >   Yep, let's fix it:
+> > >
+> > >     # perf inject --buildid-mmap2 -i perf.data -o perf-fixed.data
 > >
-> > This change attempts to solve this issue at ACPI power domain level, by
-> > postponing powering up device until we get to the normal resume stage,
-> > unless there is early resume handler defined for the device, or device
-> > does not declare any resume handlers, in which case we continue powering
-> > up such devices early. This allows us to shave off several hundred
-> > milliseconds of resume time on affected systems.
+> > Can we make it possible to automate this with --fixup-buildids or a
+> > perfconfig 'record' knob?
 > >
-> > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > ---
-> >  drivers/acpi/device_pm.c | 46 +++++++++++++++++++++++++++++++++++-----
-> >  1 file changed, 41 insertions(+), 5 deletions(-)
+> > This would entail requesting that build-ids that _fail_ be sent to the
+> > side-band thread we have in 'perf record', this way we wouldn't have to
+> > traverse the whole perf.data file, be it with 'perf-record' at the end
+> > of a session with faulty build ids, or in a similar fashion using 'perf
+> > inject' as you suggest.
 > >
-> > diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
-> > index 096153761ebc..00b412ccb2e0 100644
-> > --- a/drivers/acpi/device_pm.c
-> > +++ b/drivers/acpi/device_pm.c
-> > @@ -1131,17 +1131,52 @@ static int acpi_subsys_resume_noirq(struct device *dev)
-> >   *
-> >   * Use ACPI to put the given device into the full-power state and carry out the
-> >   * generic early resume procedure for it during system transition into the
-> > - * working state.
-> > + * working state, but only do that if device either defines early resume
-> > + * handler, or does not define power operations at all. Otherwise powering up
-> > + * of the device is postponed to the normal resume phase.
-> >   */
-> >  static int acpi_subsys_resume_early(struct device *dev)
-> >  {
-> > +       const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
-> > +       struct acpi_device *adev = ACPI_COMPANION(dev);
-> >         int ret;
-> >
-> > -       if (dev_pm_skip_resume(dev))
-> > -               return 0;
+> > I even think that we can have all these modes and let the user to decide
+> > how important is this for them and how convenient they want the whole
+> > process to be.
 > 
-> The above doesn't need to be changed AFAICS.
+> Firstly thanks for the patches! To Arnaldo's sideband idea, I wonder
+> if we have a thread doing sideband buildid generation whether the same
+> thread or threads could also be doing the synthesis job. Perhaps such
+> work could be postponed until when the session closes, like with tail
 
-I was trying to have if string if/else if/else, but I can keep it as it
-was.
+I didn't suggest synthesizing the failed build-ids in the sideband
+thread, just receiving the MMAP2 records for the build-ids that
+faulted.
 
-> 
-> > +       if (dev_pm_skip_resume(dev)) {
-> > +               ret = 0;
-> > +       } else if (!pm || pm->resume_early) {
-> 
-> This is rather tricky, but I don't see a particular reason why it wouldn't work.
-> 
-> > +               ret = acpi_dev_resume(dev);
-> > +               if (!ret)
-> > +                       ret = pm_generic_resume_early(dev);
-> > +       } else {
-> > +               if (adev)
-> > +                       acpi_device_wakeup_disable(adev);
-> 
-> This isn't necessary here.
+It may be interesting to do it right away, to avoid building up a
+potentially large number of entries to do at the end, but if this is
+something uncommon, with just a few entries, then leaving it for after
+the workload finishes may be a good idea.
 
-Just to confirm - you are saying that disabling the device as a wakeup
-source can be safely postponed till the normal resume stage? I was
-trying to keep as much of the original behavior as possible and this is
-a part of acpi_dev_resume() that we are now postponing.
+Or perhaps this needs to be a knob, since for long running sessions such
+as with 'perf daemon' the "workload" may never end, so we better flush
+these things as the files where we'll get it from may go away.
 
-Thanks.
+> synthesis. It's a particular shame with tail synthesis that we
+> synthesize mmap events for processes with no samples.
+
+Sure, but it is also very costly to process a potentially large
+perf.data file for looking at what MMAPs have samples. That is the
+raison d'être for PERF_RECORD_MMAP2 to carry build-ids :-)
+
+I.e. there are pros and cons for tail synthesis, for looking at all
+samples to generate only build-ids for MMAPs with hits, for synthesizing
+it in the sideband thread immediately, for leaving this generation to
+be done at the end by traversing the list of MMAP records without
+build-ids, etc.
+
+- Arnaldo
+ 
+> Thanks,
+> Ian
+> 
+> > - Arnaldo
+> >
+> > >   And verify:
+> > >
+> > >     # perf report -i perf-fixed.data --stats
+> > >
+> > >     Aggregated stats:
+> > >                TOTAL events:        104
+> > >                         ....
+> > >
+> > >   Good, let's see how many we fixed:
+> > >
+> > >     # perf report --header-only -i perf-fixed.data
+> > >     ...
+> > >     # build id mmap stats: FAULTS 4, LOST 0, FIXED(4)
+> > >
+> > >
+> > > I don't have a good way to test it, just by artificially
+> > > adding the faults in kernel code, but Ian and Namhyung
+> > > might have setup that could generate that.. would be great
+> > > to have a perf test for this.
+> > >
+> > > Also available in here:
+> > >   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+> > >   perf/buildid_stats
+> > >
+> > > thoughts?
+> > >
+> > > thanks,
+> > > jirka
+> > >
+> > >
+> > > ---
+> > > Jiri Olsa (10):
+> > >       perf: Track build id faults for mmap2 event
+> > >       perf: Move build_id_parse to check only regular files
+> > >       perf: Add new read_format bit to read build id faults
+> > >       perf: Add new read_format bit to read lost events
+> > >       tools: Sync perf_event.h uapi
+> > >       libperf: Do not allow PERF_FORMAT_GROUP in perf_evsel__read
+> > >       perf record: Add support to read build id fails
+> > >       perf record: Add new HEADER_BUILD_ID_MMAP feature
+> > >       perf report: Display build id fails stats
+> > >       perf inject: Add --buildid-mmap2 option to fix failed build ids
+> > >
+> > >  include/linux/perf_event.h                         |  2 ++
+> > >  include/uapi/linux/perf_event.h                    | 20 +++++++++++++-------
+> > >  kernel/events/core.c                               | 49 +++++++++++++++++++++++++++++++++++++++++++------
+> > >  kernel/events/ring_buffer.c                        |  3 +++
+> > >  tools/include/uapi/linux/perf_event.h              | 20 +++++++++++++-------
+> > >  tools/lib/perf/evsel.c                             | 10 ++++++++++
+> > >  tools/lib/perf/include/perf/evsel.h                | 11 ++++++++++-
+> > >  tools/perf/Documentation/perf-inject.txt           |  3 +++
+> > >  tools/perf/Documentation/perf.data-file-format.txt | 19 +++++++++++++++++++
+> > >  tools/perf/builtin-inject.c                        | 45 +++++++++++++++++++++++++++++++++++++++++++--
+> > >  tools/perf/builtin-record.c                        | 97 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+> > >  tools/perf/builtin-report.c                        | 35 +++++++++++++++++++++++++++++++++++
+> > >  tools/perf/util/env.h                              |  6 ++++++
+> > >  tools/perf/util/evsel.c                            | 12 ++++++++++++
+> > >  tools/perf/util/header.c                           | 80 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+> > >  tools/perf/util/header.h                           |  1 +
+> > >  tools/perf/util/map.h                              | 15 +++++++++++++++
+> > >  tools/perf/util/perf_event_attr_fprintf.c          |  3 ++-
+> > >  18 files changed, 407 insertions(+), 24 deletions(-)
+> > >
+> >
+> > --
+> >
+> > - Arnaldo
 
 -- 
-Dmitry
+
+- Arnaldo
