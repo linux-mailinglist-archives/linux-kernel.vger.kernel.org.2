@@ -2,200 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB293AFB6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 05:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7523AFB6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 05:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhFVDhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 23:37:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbhFVDhF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 23:37:05 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B85C061574;
-        Mon, 21 Jun 2021 20:34:49 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id p66so18275889iod.8;
-        Mon, 21 Jun 2021 20:34:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M2NaquTKuiz0EtWzypNaQWZLSls8Yk6MZXai61lQt+Y=;
-        b=tVs4bSO38oyllXMEsSD4z//Kvx65zApEFUUuE4gaZglS2+FmvD2LeAeNP+Z4xtuyVx
-         WHe1lxMJxjRkmG4TV4T2Db5PROvx5L00a214fTJsOKdRZQl5J4qvPbhCEqySCj/wrwks
-         Tm9MFY6PHtCpvisKgjaRp49leBoI20s1pfHc4aAb7SZz5H2Izk+j5GCLm3xyAEwTJoKf
-         lRje1is95bqB1wr/avUu1zYnwIJ2TJzONDhh/iapJcxOMOF8j/aGKvtcjbGgxJOhCyMk
-         VXJ+X+flZa6Rp9QxuTCo/VC6X1Lakpo2X0eGEFDiaS9s0AGr79YXYn8+ZfwUEQ9Sxsbu
-         S4cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M2NaquTKuiz0EtWzypNaQWZLSls8Yk6MZXai61lQt+Y=;
-        b=cX36VIaGTg9PkGwZXk42W7RLG0/C3qtNZbOWYUEOCUe2cSWxTjEpDLAQo5IxdeLsoE
-         UU+qGwnqqajC7Yr216SncI0zt17OeN5pv4Eqjq8hHn4SAoe6vbsNFN8pSHQePtfqCjAa
-         tTQM7D3JsbGtF5izLVIIkwnExbl7qEDWBU9E4NicdkVsP6LVnx0DEm7wxJwBnTcKM37u
-         QOn5gmbqJz1EZYN7TKMmfaKe/CiJroQfL0TAfNm2Ptj1eG1ZKYOVqVpBGrpvD9myV1r2
-         rwk9QRqcmz4ho7KqEOKwPd/txPW27jI1hBWig0xDV/1kV6HrhPqs+88X2diOBMZAVQ+g
-         ecPA==
-X-Gm-Message-State: AOAM530JHMeNcJd3xiSOGZrtQnUA54BMOWQ+1mSdxP97lEFHHNJQPCFK
-        QVLlHkOznzdw+eHaJVfv+ohVnQqj4nH+4nMNiGY=
-X-Google-Smtp-Source: ABdhPJwK1JnYPVa04262EkEXiWjBJ62p+pdNYhvd2eNBJAeN6n5OAE8nuYsjtVAO/UMPx0bNFhsDxmTVFvDH8l7RAec=
-X-Received: by 2002:a02:7348:: with SMTP id a8mr1742382jae.116.1624332888844;
- Mon, 21 Jun 2021 20:34:48 -0700 (PDT)
+        id S230296AbhFVDiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 23:38:05 -0400
+Received: from mga05.intel.com ([192.55.52.43]:64199 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230032AbhFVDiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 23:38:04 -0400
+IronPort-SDR: F5/rm5OaKKlUanKe6nGHreJLWDIOBmlA3VedAx0L7NGGXpUPHuvzIUUdaK5SCHRhmImqGYz1S7
+ J2Ajvka6aZnQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="292605885"
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="292605885"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 20:35:49 -0700
+IronPort-SDR: z1K4w+EKsdP8zUCoBkd5u3XP5+UXtD7ug09XfMhgHM4dASSgvNTWR1iilH4aKB1JTimQaj6kQi
+ 3JQRBIoQX7SA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="423167342"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 21 Jun 2021 20:35:47 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lvXCV-0004vP-71; Tue, 22 Jun 2021 03:35:47 +0000
+Date:   Tue, 22 Jun 2021 11:34:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/sev] BUILD SUCCESS
+ be1a5408868af341f61f93c191b5e346ee88c82a
+Message-ID: <60d15a5a.0XuhvCLgIS3lbcFY%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210612094631.89980-1-martin.botka@somainline.org>
- <20210612094631.89980-3-martin.botka@somainline.org> <CABb+yY3BYYC2na8EFunEeu0XCfLXrUQon=hF3q5p=+FUoigoyw@mail.gmail.com>
- <CAL_JsqLWqtAtqLRF-MAnq80NMfD0a+CfWPv8JWjjNTJFgMjCxg@mail.gmail.com>
- <CABb+yY0sdSinTm788pMFrqEZ6QMC2OwCP7Kkto+pG9h1aGMzwQ@mail.gmail.com>
- <CAL_JsqKdoMwpL_tYC7VQRAG2AC5nR4diShMQCgDseObcgU+egQ@mail.gmail.com>
- <YNEiUMBqGAx1zLVX@yoga> <CABb+yY2wy4iSKjn+SihQ=FE=YwcEzUNOpGw_CV22Anzgbba8hA@mail.gmail.com>
- <YNFKpvhXyZbs8RE1@yoga>
-In-Reply-To: <YNFKpvhXyZbs8RE1@yoga>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Mon, 21 Jun 2021 22:34:37 -0500
-Message-ID: <CABb+yY3RpQYvNBHvpwZearpBPph0uj8YQwX2qu=TX=QAO6OFBw@mail.gmail.com>
-Subject: Re: [PATCH V3 3/3] mailbox: qcom-apcs: Add SM6125 compatible
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 9:27 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Mon 21 Jun 20:00 CDT 2021, Jassi Brar wrote:
->
-> > On Mon, Jun 21, 2021 at 6:35 PM Bjorn Andersson
-> > <bjorn.andersson@linaro.org> wrote:
-> > >
-> > > On Mon 21 Jun 18:19 CDT 2021, Rob Herring wrote:
-> > >
-> > > > On Mon, Jun 21, 2021 at 5:10 PM Jassi Brar <jassisinghbrar@gmail.com> wrote:
-> > > > >
-> > > > > On Mon, Jun 21, 2021 at 2:46 PM Rob Herring <robh+dt@kernel.org> wrote:
-> > > > > >
-> > > > > > On Sun, Jun 20, 2021 at 10:03 PM Jassi Brar <jassisinghbrar@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Sat, Jun 12, 2021 at 4:46 AM Martin Botka
-> > > > > > > <martin.botka@somainline.org> wrote:
-> > > > > > > >
-> > > > > > > > This commit adds compatible for the SM6125 SoC
-> > > > > > > >
-> > > > > > > > Signed-off-by: Martin Botka <martin.botka@somainline.org>
-> > > > > > > > ---
-> > > > > > > > Changes in V2:
-> > > > > > > > None
-> > > > > > > > Changes in V3:
-> > > > > > > > Change compatible to apcs-hmss-global
-> > > > > > > >  drivers/mailbox/qcom-apcs-ipc-mailbox.c | 5 +++++
-> > > > > > > >  1 file changed, 5 insertions(+)
-> > > > > > > >
-> > > > > > > > diff --git a/drivers/mailbox/qcom-apcs-ipc-mailbox.c b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-> > > > > > > > index f25324d03842..f24c5ad8d658 100644
-> > > > > > > > --- a/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-> > > > > > > > +++ b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-> > > > > > > > @@ -57,6 +57,10 @@ static const struct qcom_apcs_ipc_data sdm660_apcs_data = {
-> > > > > > > >         .offset = 8, .clk_name = NULL
-> > > > > > > >  };
-> > > > > > > >
-> > > > > > > > +static const struct qcom_apcs_ipc_data sm6125_apcs_data = {
-> > > > > > > > +       .offset = 8, .clk_name = NULL
-> > > > > > > > +};
-> > > > > > > > +
-> > > > > > > >  static const struct qcom_apcs_ipc_data apps_shared_apcs_data = {
-> > > > > > > >         .offset = 12, .clk_name = NULL
-> > > > > > > >  };
-> > > > > > > > @@ -166,6 +170,7 @@ static const struct of_device_id qcom_apcs_ipc_of_match[] = {
-> > > > > > > >         { .compatible = "qcom,sc8180x-apss-shared", .data = &apps_shared_apcs_data },
-> > > > > > > >         { .compatible = "qcom,sdm660-apcs-hmss-global", .data = &sdm660_apcs_data },
-> > > > > > > >         { .compatible = "qcom,sdm845-apss-shared", .data = &apps_shared_apcs_data },
-> > > > > > > > +       { .compatible = "qcom,sm6125-apcs-hmss-global", .data = &sm6125_apcs_data },
-> > > > > > > >         { .compatible = "qcom,sm8150-apss-shared", .data = &apps_shared_apcs_data },
-> > > > > > > >         { .compatible = "qcom,sdx55-apcs-gcc", .data = &sdx55_apcs_data },
-> > > > > > > >         {}
-> > > > > > > >
-> > > > > > > These all are basically different names for the same controller.
-> > > > > > > The 'offset' is a configuration parameter and the 'clock', when NULL,
-> > > > > > > is basically some "always-on" clock.
-> > > > > > > I am sure we wouldn't be doing it, if the controller was third-party.
-> > > > > >
-> > > > > > If newer implementations are 'the same', then they should have a
-> > > > > > fallback compatible to the existing one that is the same and no driver
-> > > > > > change is needed. If the differences are board or instance (within an
-> > > > > > SoC) specific, then a DT property would be appropriate.
-> > > > > >
-> > > > > The controllers (13 now) only differ by the 'offset' where the
-> > > > > registers are mapped. Clock-name is a pure s/w artifact.
-> > > > > So, maybe we could push all these in DT.
-> > > >
-> > > > Why is 'reg' not used for the offset?
-> > > >
-> > >
-> > > The DT node and its "reg" describes the whole IP block.
-> > >
-> > > The particular register that we care of has, as you can see, moved
-> > > around during the various platforms and some incarnations of this IP
-> > > block provides controls for CPU-related clocks as well.
-> > >
-> > > We can certainly have the multiple compatible points to the same
-> > > apcs_data, but I'm not able to spot a reasonable "catch-all compatible"
-> > > given that I don't see any natural groupings.
-> > >
-> > Any platform that comes later may reuse the already available compatible.
-> > For example drop this patch and reuse "qcom,sdm660-apcs-hmss-global" ?
-> >
->
-> The problem is that this would change the meaning of
-> "qcom,sdm660-apcs-hmss-global" from meaning "The apcs hmss global block
-> _in_ sdm660" to "any random apcs block with the mailbox register at
-> offset 8".
->
-To me, the deeper problem seems to be naming a controller "The apcs
-hmss global block _in_ sdm660" just because the h/w manual hasn't
-given a name to it.  But that is okay too, if we name the subsequent
-controllers as "the same as one in sdm660" and provide the h/w
-configuration 'offset' via a DT property.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/sev
+branch HEAD: be1a5408868af341f61f93c191b5e346ee88c82a  x86/sev: Split up runtime #VC handler for correct state tracking
 
-> > > > In any case, we can't really get rid of the first 13 instances though...
-> > > >
-> > >
-> > > Right, we have the problem that we have DTBs out there that relies on
-> > > these compatibles, but as Jassi requests we'd have to start describing
-> > > the internal register layout in DT - which this binding purposefully
-> > > avoids.
-> > >
-> > Not these strings, but 'offset' and 'clock-name' as optional
-> > properties that new platforms can use.
-> >
->
-> Relying on completely generic compatibles to match the driver and then
-> distinguish each platform using additional properties is exactly what
-> Qualcomm does downstream.  The community has clarified countless times
-> that this is not the way to write DT bindings.
->
-Yes, and I don't suggest it otherwise. For h/w quirks and
-extra/missing features, it does make sense to have different
-compatibles.
+elapsed time: 727m
 
-However, for _trivial_ variations let us get that value from DT.
-'offset' is anyway a h/w property.
-That way we won't be distinguishing platforms using dt properties, but
-only support different platforms seamlessly.
+configs tested: 128
+configs skipped: 67
 
-On second thought, we have grown from 2 to 13 aliases in 4 yrs. I only
-have to ignore 3 times/annum to lead a peaceful life ;)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-thnx.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                    sam440ep_defconfig
+powerpc                 mpc8540_ads_defconfig
+powerpc                    socrates_defconfig
+m68k                            mac_defconfig
+riscv                               defconfig
+um                               alldefconfig
+arm                        spear6xx_defconfig
+powerpc                 mpc8313_rdb_defconfig
+powerpc                      ppc6xx_defconfig
+arm                      pxa255-idp_defconfig
+arm                      integrator_defconfig
+arc                              allyesconfig
+nios2                         10m50_defconfig
+arm                             mxs_defconfig
+powerpc                     sequoia_defconfig
+arm                          badge4_defconfig
+mips                          ath79_defconfig
+h8300                       h8s-sim_defconfig
+sh                         ap325rxa_defconfig
+arm                           h5000_defconfig
+ia64                             alldefconfig
+powerpc                     asp8347_defconfig
+mips                        jmr3927_defconfig
+riscv                    nommu_virt_defconfig
+powerpc                     taishan_defconfig
+h8300                            alldefconfig
+sh                 kfr2r09-romimage_defconfig
+mips                             allyesconfig
+sh                ecovec24-romimage_defconfig
+ia64                        generic_defconfig
+powerpc                      ppc44x_defconfig
+powerpc                   motionpro_defconfig
+mips                malta_qemu_32r6_defconfig
+parisc                generic-64bit_defconfig
+powerpc                      acadia_defconfig
+sh                            shmin_defconfig
+powerpc                  mpc866_ads_defconfig
+h8300                     edosk2674_defconfig
+powerpc                   lite5200b_defconfig
+powerpc                       eiger_defconfig
+mips                        vocore2_defconfig
+powerpc                      katmai_defconfig
+mips                  decstation_64_defconfig
+m68k                        m5272c3_defconfig
+sh                         ecovec24_defconfig
+arm                          collie_defconfig
+s390                                defconfig
+arm                       cns3420vb_defconfig
+mips                       bmips_be_defconfig
+m68k                           sun3_defconfig
+riscv                            allmodconfig
+sh                           se7724_defconfig
+mips                             allmodconfig
+mips                        bcm47xx_defconfig
+powerpc                 canyonlands_defconfig
+sh                        sh7785lcr_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20210621
+x86_64               randconfig-a001-20210621
+x86_64               randconfig-a005-20210621
+x86_64               randconfig-a003-20210621
+x86_64               randconfig-a004-20210621
+x86_64               randconfig-a006-20210621
+i386                 randconfig-a002-20210621
+i386                 randconfig-a001-20210621
+i386                 randconfig-a003-20210621
+i386                 randconfig-a006-20210621
+i386                 randconfig-a005-20210621
+i386                 randconfig-a004-20210621
+i386                 randconfig-a011-20210621
+i386                 randconfig-a014-20210621
+i386                 randconfig-a013-20210621
+i386                 randconfig-a015-20210621
+i386                 randconfig-a012-20210621
+i386                 randconfig-a016-20210621
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210621
+x86_64               randconfig-a012-20210621
+x86_64               randconfig-a016-20210621
+x86_64               randconfig-a015-20210621
+x86_64               randconfig-a014-20210621
+x86_64               randconfig-a013-20210621
+x86_64               randconfig-a011-20210621
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
