@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591223B0593
+	by mail.lfdr.de (Postfix) with ESMTP id A24193B0594
 	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbhFVNNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 09:13:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55766 "EHLO
+        id S231952AbhFVNNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 09:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231454AbhFVNMo (ORCPT
+        with ESMTP id S231521AbhFVNMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 09:12:44 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0008C0613A4
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 06:10:28 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id h21-20020a1ccc150000b02901d4d33c5ca0so2222200wmb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 06:10:28 -0700 (PDT)
+        Tue, 22 Jun 2021 09:12:49 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBD8C061768
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 06:10:29 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id f16-20020a05600c1550b02901b00c1be4abso1733243wmg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 06:10:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gNOemOTras9F985BUt7jkfUSz/FQKfSLHckmy+4u2+Q=;
-        b=r8zjWNsHJfYUG4XaG7ALHwWZMS/mKG9J1P3WEpUSGpX5FACY+XGFb3AEYmdK5jgmAD
-         u/NvpBC5WHno0T3q4+LtfD8Qo7NVyS8dzEgtxqOhgOLwetITuqPKS4B+pUv5PRMaPpd3
-         fPwjXVy0j9weYjUHE2IIkePjkQba2DtbXzWNo/84NDJ2BNqvsGfwGUBsy0eV0613iGKV
-         FT/GfRTxIcaDu6fgOojFdoUMEgPSxVAxpS38PHfRMy4QoUtsoY4ZonIRN+861DdgYRUD
-         kj8UJQoTqlWpDHBd0N6C7//4N08iPRYJCa1Nq+GYKFgY078nqARmdfIhGEoiqZId3Q7S
-         x6IQ==
+        bh=LTkyAehf8YDMFLVUk7PThGVVorkKOg4GbKlGuTWT6o8=;
+        b=AK+v2MjgD4vvZAWM3SVsEeYwGJ9WR9AntYcuKmyrUeuTrJDlgT6QTLkRZbsLsE9udW
+         wsHbhpmVJ+Hd1sZ343AMUtqa4C5/YtFS/R51bKgNsoGu0P2njmUxAxoAI0GfsHtoMlSb
+         yCTvrOA9UbxJZYM9GAOoT/ZDdwgCLzDCso1g6XlMUJzh/yRBFJM0QYe3SyRRqdam7pEN
+         KkLLmty4c8mI/XiqzOE7DVKysPy5ZOexmnkmbGnASkO13Dmjdr2TEPh1KFWV5z4uKpn4
+         lDqiylRpLK/bEz5escG4DKi+hTrn/7O/PSgnJhqyb6hSgEo2i+gxJZEZNnvX1YG/nMwC
+         /oMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gNOemOTras9F985BUt7jkfUSz/FQKfSLHckmy+4u2+Q=;
-        b=bigJ9VnGQH0SISQsX0SLFkt2Wd7koaMSbQ6PoKqCDlnwkVkUv7Mt80U8k6g+DFeMmo
-         reA2mmVDPSw9ktDrLMwiyaVYdOWDX105kQFQrw1g3MaYLhn0tIg9k1i7cMMA9IzarDxG
-         ebjWqGHdNiib0Mw1Ahlak3gAEwAHxVT8TJTT4GGiYUqQ5S2QiIPiqKBA9Nf90iSu89Qq
-         ll+hfZ+wp3Dz5ArmYTmiwsVUmydv47L9EBaO2P0RxjI82nHz14WT0Qi6er8zk47nNAp6
-         qQml75mtgE7GNjpzs1TFFnsKE+5TfX/+iOTnSIU2tsSkwWZXm35A+7U5vvr3Yhv0spaV
-         ksig==
-X-Gm-Message-State: AOAM5334BoJFcRWLSdPv+Kv4xaVYKpoYn6KZIOEbYng13HC+sAXkrB8f
-        rTA/fGcz9dvszalrFtj14Zg7+pCwrjvH5Q==
-X-Google-Smtp-Source: ABdhPJy4kfR2MSJThX/eqf8Vo8Iwo3WLxSsS4tIhf+wA84PFtB0S328inGr01cwVQnA52yLXGpuPTA==
-X-Received: by 2002:a05:600c:354d:: with SMTP id i13mr4253325wmq.67.1624367427221;
-        Tue, 22 Jun 2021 06:10:27 -0700 (PDT)
+        bh=LTkyAehf8YDMFLVUk7PThGVVorkKOg4GbKlGuTWT6o8=;
+        b=CoIkiRiQ1ZjR/weu0Yj0xPFhGXUCrAUsaGpRih6igyT1d9uNpjw3DpEDZhlGh6dosS
+         Q0GLjNm4j8dUHnQuCwDbhde6BKKweO6j0HxNDEDeDz08X0K7MC21OEKjiszhEPNvzXC+
+         dIKo73dWljnWRJsKROh3HJWJSV0t9VCTda7TGV/GcXOM12+qApbqSs2w0GwCzs4muFsc
+         jjA1t+APjT1jqE0KW0XPUYGRuekjooYitu3XLV2n1m9OgliGJgB1eJ0dq9Jb6w9E+pDr
+         U7KRNoPsd2tv0HCMvLV40KYNX2bUGZV0oDfuqK9YdON+8BI+mGoilAQuEUtWik20ZVF1
+         pHww==
+X-Gm-Message-State: AOAM530h6Cmoc3sqs2LKYrzoDYERuYw37Ek8DPYdeSjS1eu/UgExW37x
+        uXzOEBCj9BM6lhsAQ1HkYRhkXc+yfMFgbg==
+X-Google-Smtp-Source: ABdhPJz7SSl1WNw82uGnS83f/NmIfznu+v4X9cIFsFGZ/Ztz/03ROqdl0+PxK4gVN3mVEjY8wMl3pA==
+X-Received: by 2002:a1c:5f87:: with SMTP id t129mr4174601wmb.86.1624367428521;
+        Tue, 22 Jun 2021 06:10:28 -0700 (PDT)
 Received: from agape ([5.171.73.108])
-        by smtp.gmail.com with ESMTPSA id e3sm11234726wro.26.2021.06.22.06.10.26
+        by smtp.gmail.com with ESMTPSA id x3sm2314112wmi.42.2021.06.22.06.10.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 06:10:27 -0700 (PDT)
+        Tue, 22 Jun 2021 06:10:28 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 16/17] staging: rtl8723bs: fix check allowing 5Ghz settings
-Date:   Tue, 22 Jun 2021 15:10:00 +0200
-Message-Id: <df7d0ecc02ac7a27e568768523dd7b3f34acd551.1624367072.git.fabioaiuto83@gmail.com>
+Subject: [PATCH v3 17/17] staging: rtl8723bs: remove item from TODO list
+Date:   Tue, 22 Jun 2021 15:10:01 +0200
+Message-Id: <842b5ce0623be738d611d883433a8bf2aa895e90.1624367072.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1624367071.git.fabioaiuto83@gmail.com>
 References: <cover.1624367071.git.fabioaiuto83@gmail.com>
@@ -64,33 +64,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix check allowing 5Ghz settings, only disabled and
-2.4Ghz enabled states are allowed. Fix comment
-accordingly.
+remove item related to 5Ghz code deletion from
+driver's TODO list.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/os_dep/ioctl_linux.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/staging/rtl8723bs/TODO | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-index afefc2c8a2ac..e73fb13f8968 100644
---- a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-+++ b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-@@ -2572,10 +2572,9 @@ static int rtw_dbg_port(struct net_device *dev,
- 				case 0x12: /* set rx_stbc */
- 				{
- 					struct registry_priv *pregpriv = &padapter->registrypriv;
--					/*  0: disable, bit(0):enable 2.4g, bit(1):enable 5g, 0x3: enable both 2.4g and 5g */
--					/* default is set to enable 2.4GHZ for IOT issue with bufflao's AP at 5GHZ */
--					if (extra_arg == 0 || extra_arg == 1 ||
--					    extra_arg == 2 || extra_arg == 3)
-+					/*  0: disable, bit(0):enable 2.4g */
-+					/* default is set to enable 2.4GHZ */
-+					if (extra_arg == 0 || extra_arg == 1)
- 						pregpriv->rx_stbc = extra_arg;
- 				}
- 				break;
+diff --git a/drivers/staging/rtl8723bs/TODO b/drivers/staging/rtl8723bs/TODO
+index afa620ceb2d8..3d8f5a634a10 100644
+--- a/drivers/staging/rtl8723bs/TODO
++++ b/drivers/staging/rtl8723bs/TODO
+@@ -1,6 +1,4 @@
+ TODO:
+-- find and remove remaining code valid only for 5 GHz. Most of the obvious
+-  ones have been removed, but things like channel > 14 still exist.
+ - find and remove any code for other chips that is left over
+ - convert any remaining unusual variable types
+ - find codes that can use %pM and %Nph formatting
 -- 
 2.20.1
 
