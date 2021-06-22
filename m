@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD0D3AFF7C
+	by mail.lfdr.de (Postfix) with ESMTP id E0FA93AFF7E
 	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbhFVIpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 04:45:12 -0400
+        id S231127AbhFVIpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 04:45:15 -0400
 Received: from mga05.intel.com ([192.55.52.43]:57595 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231148AbhFVIpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 04:45:07 -0400
-IronPort-SDR: 9CJ0LUpH5Ig1ySdMRpl/cPQHThLsswPzu/ciD+nRb/1HmvxzVmjfVdH5j/7xf5YKJieuPURF+0
- jFVTNQ/vSc9g==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="292641546"
+        id S231144AbhFVIpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 04:45:10 -0400
+IronPort-SDR: K3Pnhi59Cclv0AR51GwsiQKQUVOtBIpDb7MIsA3UHNhCxdQTzgbg5uE+lVt5s1ECmdKbZUFrYK
+ Bz0eiQCzUIlQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="292641558"
 X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="292641546"
+   d="scan'208";a="292641558"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 01:42:52 -0700
-IronPort-SDR: f5BYqzl6vGfZ2vNx919zFUHdC5oJwClscrvZXG9E6aCT6RmfgT1ZfcluXHUci+Ak6TcuD7uy78
- H3m4swijkuWg==
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 01:42:55 -0700
+IronPort-SDR: rQuMm0ai15rlHRxiA0/Vff3EAaBFK4CQR80MGUe0/hlXtDdtLX4SR/zxyWKl1tnXEleyv5y8+7
+ aIfi2ahGE9bg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="417332517"
+   d="scan'208";a="417332531"
 Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
-  by fmsmga007.fm.intel.com with ESMTP; 22 Jun 2021 01:42:49 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 22 Jun 2021 01:42:52 -0700
 From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
@@ -37,9 +37,9 @@ Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
         Alexander Antonov <alexander.antonov@linux.intel.com>,
         Alexei Budankov <abudankov@huawei.com>,
         Riccardo Mancini <rickyman7@gmail.com>
-Subject: [PATCH v7 06/20] perf record: Introduce data file at mmap buffer object
-Date:   Tue, 22 Jun 2021 11:42:15 +0300
-Message-Id: <da5559c32baade1f980b0e692f6fc92a8614d0e1.1624350588.git.alexey.v.bayduraev@linux.intel.com>
+Subject: [PATCH v7 07/20] perf record: Introduce data transferred and compressed stats
+Date:   Tue, 22 Jun 2021 11:42:16 +0300
+Message-Id: <138f94642ae93f526249f6320abdc41ab90b467b.1624350588.git.alexey.v.bayduraev@linux.intel.com>
 X-Mailer: git-send-email 2.19.0
 In-Reply-To: <cover.1624350588.git.alexey.v.bayduraev@linux.intel.com>
 References: <cover.1624350588.git.alexey.v.bayduraev@linux.intel.com>
@@ -49,76 +49,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce data file and compressor objects into mmap object so
-they could be used to process and store data stream from the
-corresponding kernel data buffer. Make use of the introduced
-per mmap file and compressor when they are initialized and
-available.
+Introduce bytes_transferred and bytes_compressed stats so they
+would capture statistics for the related data buffer transfers.
 
 Acked-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 ---
- tools/perf/builtin-record.c | 3 +++
- tools/perf/util/mmap.c      | 6 ++++++
- tools/perf/util/mmap.h      | 3 +++
- 3 files changed, 12 insertions(+)
+ tools/perf/builtin-record.c | 64 +++++++++++++++++++++++++++++--------
+ tools/perf/util/mmap.h      |  3 ++
+ 2 files changed, 54 insertions(+), 13 deletions(-)
 
 diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index b02d97507fcb..38bb5afbb359 100644
+index 38bb5afbb359..c9fd31211600 100644
 --- a/tools/perf/builtin-record.c
 +++ b/tools/perf/builtin-record.c
-@@ -190,6 +190,9 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
- {
- 	struct perf_data_file *file = &rec->session->data->file;
- 
-+	if (map && map->file)
-+		file = map->file;
-+
- 	if (perf_data_file__write(file, bf, size) < 0) {
- 		pr_err("failed to write perf data, error: %m\n");
+@@ -198,6 +198,11 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
  		return -1;
-diff --git a/tools/perf/util/mmap.c b/tools/perf/util/mmap.c
-index ab7108d22428..a2c5e4237592 100644
---- a/tools/perf/util/mmap.c
-+++ b/tools/perf/util/mmap.c
-@@ -230,6 +230,8 @@ void mmap__munmap(struct mmap *map)
- {
- 	bitmap_free(map->affinity_mask.bits);
+ 	}
  
-+	zstd_fini(&map->zstd_data);
-+
- 	perf_mmap__aio_munmap(map);
- 	if (map->data != NULL) {
- 		munmap(map->data, mmap__mmap_len(map));
-@@ -291,6 +293,10 @@ int mmap__mmap(struct mmap *map, struct mmap_params *mp, int fd, int cpu)
- 	map->core.flush = mp->flush;
- 
- 	map->comp_level = mp->comp_level;
-+	if (zstd_init(&map->zstd_data, map->comp_level)) {
-+		pr_debug2("failed to init mmap commpressor, error %d\n", errno);
-+		return -1;
++	if (map && map->file) {
++		map->bytes_written += size;
++		return 0;
 +	}
++
+ 	rec->bytes_written += size;
  
- 	if (map->comp_level && !perf_mmap__aio_enabled(map)) {
- 		map->data = mmap(NULL, mmap__mmap_len(map), PROT_READ|PROT_WRITE,
+ 	if (record__output_max_size_exceeded(rec) && !done) {
+@@ -215,8 +220,8 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
+ 
+ static int record__aio_enabled(struct record *rec);
+ static int record__comp_enabled(struct record *rec);
+-static size_t zstd_compress(struct perf_session *session, void *dst, size_t dst_size,
+-			    void *src, size_t src_size);
++static size_t zstd_compress(struct zstd_data *data,
++			    void *dst, size_t dst_size, void *src, size_t src_size);
+ 
+ #ifdef HAVE_AIO_SUPPORT
+ static int record__aio_write(struct aiocb *cblock, int trace_fd,
+@@ -350,9 +355,13 @@ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size
+ 	 */
+ 
+ 	if (record__comp_enabled(aio->rec)) {
+-		size = zstd_compress(aio->rec->session, aio->data + aio->size,
+-				     mmap__mmap_len(map) - aio->size,
++		struct zstd_data *zstd_data = &aio->rec->session->zstd_data;
++
++		aio->rec->session->bytes_transferred += size;
++		size = zstd_compress(zstd_data,
++				     aio->data + aio->size, mmap__mmap_len(map) - aio->size,
+ 				     buf, size);
++		aio->rec->session->bytes_compressed += size;
+ 	} else {
+ 		memcpy(aio->data + aio->size, buf, size);
+ 	}
+@@ -577,8 +586,22 @@ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
+ 	struct record *rec = to;
+ 
+ 	if (record__comp_enabled(rec)) {
+-		size = zstd_compress(rec->session, map->data, mmap__mmap_len(map), bf, size);
++		struct zstd_data *zstd_data = &rec->session->zstd_data;
++
++		if (map->file) {
++			zstd_data = &map->zstd_data;
++			map->bytes_transferred += size;
++		} else {
++			rec->session->bytes_transferred += size;
++		}
++
++		size = zstd_compress(zstd_data, map->data, mmap__mmap_len(map), bf, size);
+ 		bf   = map->data;
++
++		if (map->file)
++			map->bytes_compressed += size;
++		else
++			rec->session->bytes_compressed += size;
+ 	}
+ 
+ 	thread->samples++;
+@@ -1311,18 +1334,15 @@ static size_t process_comp_header(void *record, size_t increment)
+ 	return size;
+ }
+ 
+-static size_t zstd_compress(struct perf_session *session, void *dst, size_t dst_size,
++static size_t zstd_compress(struct zstd_data *zstd_data, void *dst, size_t dst_size,
+ 			    void *src, size_t src_size)
+ {
+ 	size_t compressed;
+ 	size_t max_record_size = PERF_SAMPLE_MAX_SIZE - sizeof(struct perf_record_compressed) - 1;
+ 
+-	compressed = zstd_compress_stream_to_records(&session->zstd_data, dst, dst_size, src, src_size,
++	compressed = zstd_compress_stream_to_records(zstd_data, dst, dst_size, src, src_size,
+ 						     max_record_size, process_comp_header);
+ 
+-	session->bytes_transferred += src_size;
+-	session->bytes_compressed  += compressed;
+-
+ 	return compressed;
+ }
+ 
+@@ -2006,8 +2026,10 @@ static int record__start_threads(struct record *rec)
+ 
+ static int record__stop_threads(struct record *rec, unsigned long *waking)
+ {
+-	int t;
++	int t, tm;
++	struct mmap *map, *overwrite_map;
+ 	struct thread_data *thread_data = rec->thread_data;
++	u64 bytes_written = 0, bytes_transferred = 0, bytes_compressed = 0;
+ 
+ 	for (t = 1; t < rec->nr_threads; t++)
+ 		record__terminate_thread(&thread_data[t]);
+@@ -2015,9 +2037,25 @@ static int record__stop_threads(struct record *rec, unsigned long *waking)
+ 	for (t = 0; t < rec->nr_threads; t++) {
+ 		rec->samples += thread_data[t].samples;
+ 		*waking += thread_data[t].waking;
+-		pr_debug("threads[%d]: samples=%lld, wakes=%ld, trasferred=%ld, compressed=%ld\n",
++		for (tm = 0; tm < thread_data[t].nr_mmaps; tm++) {
++			if (thread_data[t].maps) {
++				map = thread_data[t].maps[tm];
++				bytes_transferred += map->bytes_transferred;
++				bytes_compressed += map->bytes_compressed;
++				bytes_written += map->bytes_written;
++			}
++			if (thread_data[t].overwrite_maps) {
++				overwrite_map = thread_data[t].overwrite_maps[tm];
++				bytes_transferred += overwrite_map->bytes_transferred;
++				bytes_compressed += overwrite_map->bytes_compressed;
++				bytes_written += overwrite_map->bytes_written;
++			}
++		}
++		rec->session->bytes_transferred += bytes_transferred;
++		rec->session->bytes_compressed += bytes_compressed;
++		pr_debug("threads[%d]: samples=%lld, wakes=%ld, trasferred=%ld, compressed=%ld, written=%ld\n",
+ 			 thread_data[t].tid, thread_data[t].samples, thread_data[t].waking,
+-			 rec->session->bytes_transferred, rec->session->bytes_compressed);
++			 bytes_transferred, bytes_compressed, bytes_written);
+ 	}
+ 
+ 	return 0;
 diff --git a/tools/perf/util/mmap.h b/tools/perf/util/mmap.h
-index 9d5f589f02ae..c4aed6e89549 100644
+index c4aed6e89549..c04ca4b5adf5 100644
 --- a/tools/perf/util/mmap.h
 +++ b/tools/perf/util/mmap.h
-@@ -13,6 +13,7 @@
- #endif
- #include "auxtrace.h"
- #include "event.h"
-+#include "util/compress.h"
- 
- struct aiocb;
- 
-@@ -43,6 +44,8 @@ struct mmap {
- 	struct mmap_cpu_mask	affinity_mask;
- 	void		*data;
+@@ -46,6 +46,9 @@ struct mmap {
  	int		comp_level;
-+	struct perf_data_file *file;
-+	struct zstd_data      zstd_data;
+ 	struct perf_data_file *file;
+ 	struct zstd_data      zstd_data;
++	u64		      bytes_transferred;
++	u64		      bytes_compressed;
++	u64		      bytes_written;
  };
  
  struct mmap_params {
