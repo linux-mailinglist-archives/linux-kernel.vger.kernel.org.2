@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEDF33B1011
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 00:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0BC3B1012
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 00:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhFVW2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 18:28:13 -0400
-Received: from mga18.intel.com ([134.134.136.126]:18293 "EHLO mga18.intel.com"
+        id S230480AbhFVW2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 18:28:15 -0400
+Received: from mga18.intel.com ([134.134.136.126]:18298 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230411AbhFVW2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 18:28:06 -0400
-IronPort-SDR: gDRJFseJ/DIWHZVBXAhLPY7kuQXWAYx69zS2+ICLRHfHCkfuesRyjhH4zu2tjptoUFSLjXtnQl
- /6eA10nKqrLw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="194459939"
+        id S230427AbhFVW2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 18:28:08 -0400
+IronPort-SDR: oqycNp9X+xkFfmXQAKnyHauukT9+Y2wmgN9ymsgw2JPZO2pqvj+d+gNS6S93M2aTEpU6NisocY
+ o1sQmoHUljyA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="194459949"
 X-IronPort-AV: E=Sophos;i="5.83,292,1616482800"; 
-   d="scan'208";a="194459939"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 15:25:49 -0700
-IronPort-SDR: JbEyR7KJ/ldBklaL0PzCOkqiGNzYB5CUx4zRF5B5cbrxvRjFKnHGlLv6Pr0+9J0jlrj51QaGC6
- RosnMYr0Z0XA==
+   d="scan'208";a="194459949"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 15:25:51 -0700
+IronPort-SDR: 8h1ivEevCcvcvKasuE7E3vjioywbSQBgHnl3WN/kInbDe+bfu7cl3ImusDRpE/WuXGKVzyG1zG
+ jirLmmK4LayQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,292,1616482800"; 
-   d="scan'208";a="555930353"
+   d="scan'208";a="480949400"
 Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by orsmga004.jf.intel.com with ESMTP; 22 Jun 2021 15:25:49 -0700
-Subject: [RFC][PATCH 5/8] x86/fpu: XSAVE buffer access routine rename
+  by FMSMGA003.fm.intel.com with ESMTP; 22 Jun 2021 15:25:51 -0700
+Subject: [RFC][PATCH 6/8] x86/fpu: update xstate size calculations for non-XSAVE-managed features
 To:     linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org,
         Dave Hansen <dave.hansen@linux.intel.com>, tglx@linutronix.de,
         mingo@redhat.com, bp@alien8.de, x86@kernel.org, luto@kernel.org
 From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Tue, 22 Jun 2021 15:25:04 -0700
+Date:   Tue, 22 Jun 2021 15:25:06 -0700
 References: <20210622222455.E901B5AC@viggo.jf.intel.com>
 In-Reply-To: <20210622222455.E901B5AC@viggo.jf.intel.com>
-Message-Id: <20210622222504.E8874E6D@viggo.jf.intel.com>
+Message-Id: <20210622222506.487B6DF3@viggo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -42,13 +42,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dave Hansen <dave.hansen@linux.intel.com>
 
-get_xsave_addr() sounds like it works on generic XSAVE buffers.  It
-does not.  It only works on kernel XSAVE buffers which are part of the
-FPU fpstate.
+Now that PKRU will no longer be XSAVE-managed, it needs to be removed
+from the XSAVE size calculations.  get_xsaves_size_no_independent()
+currently masks independent supervisor features out of XSS, but PKRU
+must be masked out of XCR0 instead.
 
-Give it a better name: get_fpstate_addr().  Also add warnings to it in
-case non-fpstate features are requested (NULL should be returned for
-these, but WARN() anyway).
+Also, instead of recalculating XSS (and XCR0), just save and restore
+them.  This will be more durable in case there are any future changes
+to how they are calculated.  The way it is now, the values must be
+recalculated exactly in two separate places.
+
+The save/restore approach also makes the code more obvious.  For
+instance, the old code does:
+
+	/* Disable independent features. */
+	wrmsrl(MSR_IA32_XSS, xfeatures_mask_supervisor());
+
+but the new code does:
+
+	/* Disable independent features. */
+	wrmsrl(MSR_IA32_XSS, old_xss & ~xfeatures_mask_independent());
+
+The second is much more obviously correct and the comment could
+probably even be removed; it's basically self-documenting.
+
+There is a minor, temporary hack in here.  PKRU is currently not in
+xfeatures_mask_fpstate(), even though it is allocated in the fpstate.
+To avoid size mismatch warnings, hack it into XCR0 for the size
+calculation.
 
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
@@ -58,98 +79,53 @@ Cc: x86@kernel.org
 Cc: Andy Lutomirski <luto@kernel.org>
 ---
 
- b/arch/x86/include/asm/fpu/xstate.h |    2 +-
- b/arch/x86/kernel/fpu/xstate.c      |   11 ++++++-----
- b/arch/x86/kvm/x86.c                |    8 ++++----
- 3 files changed, 11 insertions(+), 10 deletions(-)
+ b/arch/x86/kernel/fpu/xstate.c |   25 +++++++++++++++++++------
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
-diff -puN arch/x86/include/asm/fpu/xstate.h~get_xsave_addr-warning arch/x86/include/asm/fpu/xstate.h
---- a/arch/x86/include/asm/fpu/xstate.h~get_xsave_addr-warning	2021-06-22 14:49:11.268051751 -0700
-+++ b/arch/x86/include/asm/fpu/xstate.h	2021-06-22 14:49:11.279051751 -0700
-@@ -134,7 +134,7 @@ extern u64 xstate_fx_sw_bytes[USER_XSTAT
- extern void __init update_regset_xstate_info(unsigned int size,
- 					     u64 xstate_mask);
- 
--void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr);
-+void *get_fpstate_addr(struct xregs_state *xsave, int xfeature_nr);
- int xfeature_size(int xfeature_nr);
- int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf);
- int copy_sigframe_from_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf);
-diff -puN arch/x86/kernel/fpu/xstate.c~get_xsave_addr-warning arch/x86/kernel/fpu/xstate.c
---- a/arch/x86/kernel/fpu/xstate.c~get_xsave_addr-warning	2021-06-22 14:49:11.270051751 -0700
-+++ b/arch/x86/kernel/fpu/xstate.c	2021-06-22 14:49:11.279051751 -0700
-@@ -878,7 +878,8 @@ static void *__raw_xsave_addr(struct xre
- }
- /*
-  * Given the xsave area and a state inside, this function returns the
-- * address of the state.
-+ * address of the state.  This only works on kernel fpstate, not on
-+ * generic buffers created with XSAVE*.
-  *
-  * This is the API that is called to get xstate address in either
-  * standard format or compacted format of xsave area.
-@@ -894,7 +895,7 @@ static void *__raw_xsave_addr(struct xre
-  *	address of the state in the xsave area, or NULL if the
-  *	field is not present in the xsave buffer.
+diff -puN arch/x86/kernel/fpu/xstate.c~xsave-checks arch/x86/kernel/fpu/xstate.c
+--- a/arch/x86/kernel/fpu/xstate.c~xsave-checks	2021-06-22 14:49:12.547051748 -0700
++++ b/arch/x86/kernel/fpu/xstate.c	2021-06-22 14:49:12.556051748 -0700
+@@ -643,14 +643,26 @@ static unsigned int __init get_xsaves_si
   */
--void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr)
-+void *get_fpstate_addr(struct xregs_state *xsave, int xfeature_nr)
+ static unsigned int __init get_xsaves_size_no_independent(void)
  {
+-	u64 mask = xfeatures_mask_independent();
+ 	unsigned int size;
++	u64 xfeatures_in_xcr0;
++	u64 old_xss;
++	u64 old_xcr0;
+ 
+-	if (!mask)
+-		return get_xsaves_size();
++	/* Stash the old XSAVE control register values: */
++	rdmsrl(MSR_IA32_XSS, old_xss);
++	old_xcr0 = xgetbv(0);
+ 
+ 	/* Disable independent features. */
+-	wrmsrl(MSR_IA32_XSS, xfeatures_mask_supervisor());
++	wrmsrl(MSR_IA32_XSS, old_xss & ~xfeatures_mask_independent());
++
++	/*
++	 * *Temporarily* (to be removed in a later patch), ennsure there
++	 * is still space for PKRU in the fpstate buffer even though it's
++	 * essentially unused.
++	 */
++	xfeatures_in_xcr0 = xfeatures_mask_fpstate() | XFEATURE_MASK_PKRU;
++	/* Disable user features which are not kept in the fpstate: */
++	xsetbv(XCR_XFEATURE_ENABLED_MASK, old_xcr0 & xfeatures_in_xcr0);
+ 
  	/*
- 	 * Do we even *have* xsave state?
-@@ -906,8 +907,8 @@ void *get_xsave_addr(struct xregs_state
- 	 * We should not ever be requesting features that we
- 	 * have not enabled.
+ 	 * Ask the hardware what size is required of the buffer.
+@@ -658,8 +670,9 @@ static unsigned int __init get_xsaves_si
  	 */
--	WARN_ONCE(!(xfeatures_mask_all & BIT_ULL(xfeature_nr)),
--		  "get of unsupported state");
-+	WARN_ONCE(!(xfeatures_mask_fpstate() & BIT_ULL(xfeature_nr)),
-+		  "get of unsupported fpstate");
- 	/*
- 	 * This assumes the last 'xsave*' instruction to
- 	 * have requested that 'xfeature_nr' be saved.
-@@ -924,7 +925,7 @@ void *get_xsave_addr(struct xregs_state
+ 	size = get_xsaves_size();
  
- 	return __raw_xsave_addr(xsave, xfeature_nr);
+-	/* Re-enable independent features so XSAVES will work on them again. */
+-	wrmsrl(MSR_IA32_XSS, xfeatures_mask_supervisor() | mask);
++	/* Re-enable original features so XSAVES will work on them again. */
++	wrmsrl(MSR_IA32_XSS, old_xss);
++	xsetbv(XCR_XFEATURE_ENABLED_MASK, old_xcr0);
+ 
+ 	return size;
  }
--EXPORT_SYMBOL_GPL(get_xsave_addr);
-+EXPORT_SYMBOL_GPL(get_fpstate_addr);
- 
- #ifdef CONFIG_ARCH_HAS_PKEYS
- 
-diff -puN arch/x86/kvm/x86.c~get_xsave_addr-warning arch/x86/kvm/x86.c
---- a/arch/x86/kvm/x86.c~get_xsave_addr-warning	2021-06-22 14:49:11.274051751 -0700
-+++ b/arch/x86/kvm/x86.c	2021-06-22 14:49:11.284051751 -0700
-@@ -4602,7 +4602,7 @@ static void fill_xsave(u8 *dest, struct
- 			memcpy(dest + offset, &vcpu->arch.pkru,
- 			       sizeof(vcpu->arch.pkru));
- 		} else {
--			src = get_xsave_addr(xsave, xfeature_nr);
-+			src = get_fpstate_addr(xsave, xfeature_nr);
- 			if (src)
- 				memcpy(dest + offset, src, size);
- 		}
-@@ -4645,7 +4645,7 @@ static void load_xsave(struct kvm_vcpu *
- 			memcpy(&vcpu->arch.pkru, src + offset,
- 			       sizeof(vcpu->arch.pkru));
- 		} else {
--			void *dest = get_xsave_addr(xsave, xfeature_nr);
-+			void *dest = get_fpstate_addr(xsave, xfeature_nr);
- 
- 			if (dest)
- 				memcpy(dest, src + offset, size);
-@@ -10479,11 +10479,11 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcp
- 		 */
- 		if (init_event)
- 			kvm_put_guest_fpu(vcpu);
--		mpx_state_buffer = get_xsave_addr(&vcpu->arch.guest_fpu->state.xsave,
-+		mpx_state_buffer = get_fpstate_addr(&vcpu->arch.guest_fpu->state.xsave,
- 					XFEATURE_BNDREGS);
- 		if (mpx_state_buffer)
- 			memset(mpx_state_buffer, 0, sizeof(struct mpx_bndreg_state));
--		mpx_state_buffer = get_xsave_addr(&vcpu->arch.guest_fpu->state.xsave,
-+		mpx_state_buffer = get_fpstate_addr(&vcpu->arch.guest_fpu->state.xsave,
- 					XFEATURE_BNDCSR);
- 		if (mpx_state_buffer)
- 			memset(mpx_state_buffer, 0, sizeof(struct mpx_bndcsr));
 _
