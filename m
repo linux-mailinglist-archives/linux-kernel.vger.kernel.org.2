@@ -2,75 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB95D3B05F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C65F3B05FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhFVNm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 09:42:29 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:38923 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhFVNm0 (ORCPT
+        id S231365AbhFVNme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 09:42:34 -0400
+Received: from mail-oo1-f42.google.com ([209.85.161.42]:40594 "EHLO
+        mail-oo1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231334AbhFVNmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 09:42:26 -0400
-Received: from mail-wm1-f53.google.com ([209.85.128.53]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MnJQq-1lWDlt0aCi-00jLNb; Tue, 22 Jun 2021 15:40:09 +0200
-Received: by mail-wm1-f53.google.com with SMTP id o33-20020a05600c5121b02901e360c98c08so52403wms.5;
-        Tue, 22 Jun 2021 06:40:08 -0700 (PDT)
-X-Gm-Message-State: AOAM532it2aS9Qjt1PnQd80roy7wyWxH9watKGIujFJwxKz0DvZbfEFh
-        z5+UM4D817EArgTdUAF+3H/9JgOlRptY1tCRm0I=
-X-Google-Smtp-Source: ABdhPJzm6xLY1LzxfJVjzpAuWWJivt4Xrbgr6yE13SVhdl1IZ1z4VN1BG5wxOqSc2yODn79ksNUEMWlvOjfXWZqlOWM=
-X-Received: by 2002:a1c:a5ce:: with SMTP id o197mr4680368wme.84.1624369208699;
- Tue, 22 Jun 2021 06:40:08 -0700 (PDT)
+        Tue, 22 Jun 2021 09:42:32 -0400
+Received: by mail-oo1-f42.google.com with SMTP id k1-20020a0568200161b029024bef8a628bso57095ood.7;
+        Tue, 22 Jun 2021 06:40:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q4vbd9vVe1kJjDnrVB6nT7MJLsjNMvtXc5i6FfjWChM=;
+        b=ZajxaPqvgOSa6Wq05Fy6mKfAIt5wxYsIw8elGmRoeNWvbQjln/29iPMSteQD2mrnQL
+         sFJR0OCDuWrMiq2fr/Lh5tEihNYM6bbM5qTXpxWPQE72/QA2yEtiBhEDnrFPUyu3mpFv
+         VouEZJizg6eLyvdMN34a50TMzrrI6xT1AqmCb+HT+I/T2QuT/8tlgaYvJG8elb/ZP6WR
+         FwyqzqWJTwITD+s9oUDMUgJD0f2ltC2zOGitq28VRDp8IfT6/FHxetsMs9MaOstpxd6B
+         1MstLRyCtdkPlALJ3FurihFYyew5SkPK//5FEEgth8TzHAjAcejpYXqhcUQfuR2/X6wE
+         OpPA==
+X-Gm-Message-State: AOAM5310SwC4efvxN2G6lufYTJCaSOP9ACwPWfNAt+pRvRCuPAyNyDkV
+        UEayny/ZnLOV3PQ0YqXQtTH6Uis6fqDcCb6r6A4=
+X-Google-Smtp-Source: ABdhPJyn01MjcWRQU6eyKA3kZgTfXdHZ8rlLBAMe5PBnS2ARnqsj0gqiz9/Db/7oBN6VslYJhYjVmR5I1CMDaPL7pwM=
+X-Received: by 2002:a4a:5dc6:: with SMTP id w189mr3387528ooa.1.1624369216749;
+ Tue, 22 Jun 2021 06:40:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210621175359.126729-6-sebastian.reichel@collabora.com> <202106222109.fdao9FF0-lkp@intel.com>
-In-Reply-To: <202106222109.fdao9FF0-lkp@intel.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 22 Jun 2021 15:37:49 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2CmYnE=S8RqxM-3bKYH+VvYxOpA2-jzBLYwftvvA614Q@mail.gmail.com>
-Message-ID: <CAK8P3a2CmYnE=S8RqxM-3bKYH+VvYxOpA2-jzBLYwftvvA614Q@mail.gmail.com>
-Subject: Re: [PATCHv5 5/5] misc: gehc-achc: new driver
-To:     kernel test robot <lkp@intel.com>
-Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, kbuild-all@lists.01.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>, Ian Ray <ian.ray@ge.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>
+References: <YNEQjAzq6iWNgnBc@google.com>
+In-Reply-To: <YNEQjAzq6iWNgnBc@google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 22 Jun 2021 15:40:05 +0200
+Message-ID: <CAJZ5v0jVzFWfNX-ujOz=A8SXyWGv_HC+YSVEzowSN+aU5aGiYw@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: PM: postpone bringing devices to D0 unless we need them
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:gCjwuv+558bexIlYzz+G1/iGaLKRIZ6JocYPKCPq2a8q0IhszNG
- Fza6HhuWHyZU/IWNV0/W2t0bkZjlZZN4BBLW8GX6u/0DVwWzAszOsCzxi6y6tidZ1rajIS5
- jzhqPLDsqP3hxBcm9hbXSytnWUpIAyiL03hwuSsZHNEAz3l4yMDvvJXfUjFiFWN/GmGySnj
- Q67mFWFnT67acoBrX1ooQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:tK6VT9/1axY=:QzpiVIigh9cMEQjRf0C+1n
- +rxOQkRMPnGvPNCVIVv+MWD5pGldThRDLUlDACrtek7CVHc1SdL/jc+4/1dxJNpn7MqY19NPk
- 9WVj/EgytxCx3ZEtIWJatDzKmbUnf65OzS+MLkAKDN4kyzLgjmwo3CauAvi3CRGYFRmS6hm9j
- aG02U5qk1O57Y2Rls0L3zrInO680Xqyt97Hd66CfaGBqTA4wB1Em8Wqi6V4SRzv2AwxIKR1Y5
- hfQvr18/9HvUoBG9nr2eB69w8Hgh71FkhxBRhmUCPfZoyZPxWAXYJg4z8cjSJUWJBS2gH85fw
- LsXIyKjqj2VyLpbvG40tvJnZW4c/WpcvLhbQIAUxMcpQ3gKEL7/Pq9OOpwgflITGJKbjbPa2C
- qhgZ3PJetrlWc4dGkwwEZ/yUFFrPWHFPaYoVXqhhKYoD6MXxe89uVPUxDd9KWRwHX/zg3myp1
- uR0+MnnDhq1/HLZcCY0PSWUbjCijuWpZ2QXJeZX4KLd8sQeKc/3f/IHb0a25vXhChzTowTFf+
- CwpVVzxOy1RDrvqnAvYees=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 3:30 PM kernel test robot <lkp@intel.com> wrote:
+On Tue, Jun 22, 2021 at 12:20 AM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
 >
+> Currently ACPI power domain brings devices into D0 state in the "resume
+> early" phase. Normally this does not cause any issues, as powering up
+> happens quickly. However there are peripherals that have certain timing
+> requirements for powering on, for example some models of Elan
+> touchscreens need 300msec after powering up/releasing reset line before
+> they can accept commands from the host. Such devices will dominate
+> the time spent in early resume phase and cause increase in overall
+> resume time as we wait for early resume to complete before we can
+> proceed to the normal resume stage.
 >
-> ERROR: modpost: missing MODULE_LICENSE() in drivers/misc/nxp-ezport.o
-> >> ERROR: modpost: "ezport_flash" [drivers/misc/gehc-achc.ko] undefined!
-> >> ERROR: modpost: "ezport_reset" [drivers/misc/gehc-achc.ko] undefined!
+> There are ways for a driver to indicate that it can tolerate device
+> being in the low power mode and that it knows how to power the device
+> back up when resuming, bit that requires changes to individual drivers
+> that may not really care about details of ACPI controlled power
+> management.
+>
+> This change attempts to solve this issue at ACPI power domain level, by
+> postponing powering up device until we get to the normal resume stage,
+> unless there is early resume handler defined for the device, or device
+> does not declare any resume handlers, in which case we continue powering
+> up such devices early. This allows us to shave off several hundred
+> milliseconds of resume time on affected systems.
+>
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> ---
+>  drivers/acpi/device_pm.c | 46 +++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 41 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
+> index 096153761ebc..00b412ccb2e0 100644
+> --- a/drivers/acpi/device_pm.c
+> +++ b/drivers/acpi/device_pm.c
+> @@ -1131,17 +1131,52 @@ static int acpi_subsys_resume_noirq(struct device *dev)
+>   *
+>   * Use ACPI to put the given device into the full-power state and carry out the
+>   * generic early resume procedure for it during system transition into the
+> - * working state.
+> + * working state, but only do that if device either defines early resume
+> + * handler, or does not define power operations at all. Otherwise powering up
+> + * of the device is postponed to the normal resume phase.
+>   */
+>  static int acpi_subsys_resume_early(struct device *dev)
+>  {
+> +       const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+> +       struct acpi_device *adev = ACPI_COMPANION(dev);
+>         int ret;
+>
+> -       if (dev_pm_skip_resume(dev))
+> -               return 0;
 
-It looks like this was only tested as a built-in driver. The easiest way would
-be to change the Makefile to link both files into a combined driver module,
-such as
+The above doesn't need to be changed AFAICS.
 
-obj-$(CONFIG_GEHC_ACHC)           += gehc-achc-mod.o
-gehc-achc-mod.o                                += gehc-achc.o nxp-ezport.o
+> +       if (dev_pm_skip_resume(dev)) {
+> +               ret = 0;
+> +       } else if (!pm || pm->resume_early) {
 
-       Arnd
+This is rather tricky, but I don't see a particular reason why it wouldn't work.
+
+> +               ret = acpi_dev_resume(dev);
+> +               if (!ret)
+> +                       ret = pm_generic_resume_early(dev);
+> +       } else {
+> +               if (adev)
+> +                       acpi_device_wakeup_disable(adev);
+
+This isn't necessary here.
+
+> +
+> +               dev_dbg(dev, "postponing D0 transition to normal resume stage\n");
+> +               ret = 0;
+> +       }
+> +
+> +       return ret;
+> +}
+> +
+> +/**
+> + * acpi_subsys_resume - Resume device using ACPI.
+> + * @dev: Device to Resume.
+> + *
+> + * Use ACPI to put the given device into the full-power state if it has not been
+> + * powered up during early resume phase, and carry out the generic resume
+> + * procedure for it during system transition into the working state.
+> + */
+> +static int acpi_subsys_resume(struct device *dev)
+> +{
+> +       const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+> +       int ret = 0;
+> +
+> +       if (!dev_pm_skip_resume(dev) && pm && !pm->resume_early) {
+> +               dev_dbg(dev, "executing postponed D0 transition\n");
+> +               ret = acpi_dev_resume(dev);
+> +       }
+>
+> -       ret = acpi_dev_resume(dev);
+> -       return ret ? ret : pm_generic_resume_early(dev);
+> +       return ret ? ret : pm_generic_resume(dev);
+>  }
+>
+>  /**
+> @@ -1236,6 +1271,7 @@ static struct dev_pm_domain acpi_general_pm_domain = {
+>                 .prepare = acpi_subsys_prepare,
+>                 .complete = acpi_subsys_complete,
+>                 .suspend = acpi_subsys_suspend,
+> +               .resume = acpi_subsys_resume,
+>                 .suspend_late = acpi_subsys_suspend_late,
+>                 .suspend_noirq = acpi_subsys_suspend_noirq,
+>                 .resume_noirq = acpi_subsys_resume_noirq,
+> --
