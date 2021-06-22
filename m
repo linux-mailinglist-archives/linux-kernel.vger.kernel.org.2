@@ -2,116 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D9B3B0F14
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C79F3B0F2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhFVVBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 17:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhFVVBF (ORCPT
+        id S229800AbhFVVFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 17:05:17 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:46740 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhFVVFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 17:01:05 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF3AC061574;
-        Tue, 22 Jun 2021 13:58:48 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso2624213wmh.4;
-        Tue, 22 Jun 2021 13:58:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:references:from:subject:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=6jHGy9hLjOpE8MKb9arulD/So2xoWxY8Pk/5qNqlwmg=;
-        b=k24XzHvyVCEVHLQQkR11sf0rgnk+X6J/BG2oEoJ2cMimQv6dbgsqQJYKL7Zbt9i/S9
-         fXmDkaT4/EssoHMue2f36HUgHWyKm+ZqPEyCVFjCttTNvnhLbMhcKlon8oWqAI0XxXER
-         PF7xQrMS7mMvK4wvBU6p3F/MPcc31oRZW7jEbUHk0ALnF9si2o9SatdxVpKt/uRVt+Ne
-         y9+XCkVJBo/ZhoY3LjMZq1wCz3KQKh02pHNM/1ZkKcrT4LUETqdrnUBprEwkJ0+vL9Dh
-         OQAom9f8ekZ5QDEJNbdoGJFNk0uVKDSsiclXfRCnHrED7yjW2CL5NUZ0AcXgAg6NvjKw
-         HLug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6jHGy9hLjOpE8MKb9arulD/So2xoWxY8Pk/5qNqlwmg=;
-        b=OZzIwtHVMiu9xiTUB3wGv2kw5SjrxxDfwUmvQ/1yDg8qH1CrICYJlrtF6R99txRulx
-         p9BvUUYvueh8hzXRVRXIX0bLyoDKBe41VZT/Rtn4sJDw1Lr7m1RzBTFgxqJ2ccEBvBJS
-         gpn+mYTqjq9LqFFETRngjJsjQlUbsenIO0H/bQvMtzi0BCipTyBXRQjNJLlM9CUFfvge
-         buCw918L0HoPPcJhdV9GTkdLCy1WBqUNEMrSAN7oUz3Sn8LHCTIiwe2UuipVcztDOmzU
-         WTzkkPo+x4WeNxbEgcd+fFEs2kpmt+1U3mxyZMRaRC7M7MUkOBND90WZY38+OvtUqS3N
-         uFJA==
-X-Gm-Message-State: AOAM531Ya4LUgrCBtQCppbmxb+BZeNt8iUUEmHMij5X4Hm2HEFIeriud
-        MhvnNDh5842cpIGDWeAm9PobrrRgqYGnLXbZ
-X-Google-Smtp-Source: ABdhPJySV6KwpvbNc3jcqxn1AacRlD+KJFAdtp15YF1PHtlXawD/IReR8zVwDzA5HKRKvLlNMUtICg==
-X-Received: by 2002:a7b:c097:: with SMTP id r23mr6505032wmh.63.1624395526790;
-        Tue, 22 Jun 2021 13:58:46 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.132.93])
-        by smtp.gmail.com with ESMTPSA id n4sm521048wrw.21.2021.06.22.13.58.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 13:58:46 -0700 (PDT)
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1624387080.git.olivier@trillion01.com>
- <c05f957a5b5675a0b401e211065e08255014232c.1624387080.git.olivier@trillion01.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [PATCH 2/2] io_uring: Create define to modify a SQPOLL parameter
-Message-ID: <985f8f73-ad30-855c-39d5-1d3841b43c10@gmail.com>
-Date:   Tue, 22 Jun 2021 21:58:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 22 Jun 2021 17:05:14 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lvnXs-0044vo-6k; Tue, 22 Jun 2021 15:02:56 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lvnXq-00Gefl-Rt; Tue, 22 Jun 2021 15:02:55 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+References: <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+        <87eed4v2dc.fsf@disp2133>
+        <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+        <87fsxjorgs.fsf@disp2133>
+        <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+        <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+        <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+        <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+        <YNDsYk6kbisbNy3I@zeniv-ca.linux.org.uk>
+        <CAHk-=wh82uJ5Poqby3brn-D7xWbCMnGv-JnwfO0tuRfCvsVgXA@mail.gmail.com>
+        <YNEfXhi80e/VXgc9@zeniv-ca.linux.org.uk>
+        <CAHk-=wjtagi3g5thA-T8ooM8AXcy3brdHzugCPU0itdbpDYH_A@mail.gmail.com>
+Date:   Tue, 22 Jun 2021 16:02:46 -0500
+In-Reply-To: <CAHk-=wjtagi3g5thA-T8ooM8AXcy3brdHzugCPU0itdbpDYH_A@mail.gmail.com>
+        (Linus Torvalds's message of "Mon, 21 Jun 2021 16:36:33 -0700")
+Message-ID: <87h7hpbojt.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <c05f957a5b5675a0b401e211065e08255014232c.1624387080.git.olivier@trillion01.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1lvnXq-00Gefl-Rt;;;mid=<87h7hpbojt.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19uEzD4RxF7EsGUMi05fkwCV4KqKwu700c=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.7 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XM_B_SpammyWords
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 545 ms - load_scoreonly_sql: 0.13 (0.0%),
+        signal_user_changed: 12 (2.1%), b_tie_ro: 10 (1.8%), parse: 1.06
+        (0.2%), extract_message_metadata: 15 (2.8%), get_uri_detail_list: 1.46
+        (0.3%), tests_pri_-1000: 20 (3.6%), tests_pri_-950: 1.37 (0.3%),
+        tests_pri_-900: 1.07 (0.2%), tests_pri_-90: 164 (30.1%), check_bayes:
+        161 (29.5%), b_tokenize: 8 (1.5%), b_tok_get_all: 24 (4.4%),
+        b_comp_prob: 2.8 (0.5%), b_tok_touch_all: 122 (22.3%), b_finish: 0.95
+        (0.2%), tests_pri_0: 315 (57.8%), check_dkim_signature: 0.91 (0.2%),
+        check_dkim_adsp: 4.0 (0.7%), poll_dns_idle: 0.90 (0.2%), tests_pri_10:
+        2.1 (0.4%), tests_pri_500: 10 (1.9%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/21 7:45 PM, Olivier Langlois wrote:
-> The magic number used to cap the number of entries extracted from an
-> io_uring instance SQ before moving to the other instances is an
-> interesting parameter to experiment with.
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-Not particularly related to this patch, but the problem with this
-capping is that there is no reliable way to do request linking
-using shared sqpoll. It may break a link in half (or in N parts for
-long links) and submit them separately and in parallel.
+> On Mon, Jun 21, 2021 at 4:23 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>>
+>>         How would it help e.g. oopsen on the way out of timer interrupts?
+>> IMO we simply shouldn't allow ptrace access if the tracee is in that kind
+>> of state, on any architecture...
+>
+> Yeah no, we can't do the "wait for ptrace" when the exit is due to an
+> oops. Although honestly, we have other cases like that where do_exit()
+> isn't 100% robust if you kill something in an interrupt. Like all the
+> locks it leaves locked etc.
+>
+> So do_exit() from a timer interrupt is going to cause problems
+> regardless. I agree it's probably a good idea to try to avoid causing
+> even more with the odd ptrace thing, but I don't think ptrace_event is
+> some really "fundamental" problem at that point - it's just one detail
+> among many many.
+>
+> So I was more thinking of the debug patch for m68k to catch all the
+> _regular_ cases, and all the other random cases of ptrace_event() or
+> ptrace_notify().
+>
+> Although maybe we've really caught them all. The exit case was clearly
+> missing, and the thread fork case was scrogged. There are patches for
+> the known problems. The patches I really don't like are the
+> verification ones to find any unknown ones..
 
+We still have nios2 which copied the m68k logic at some point.  I think
+that is a processor that is still ``shipping'' and that people might
+still be using in new designs.
 
-> A define has been created to make it easy to change its value from a
-> single location.
-> 
-> Signed-off-by: Olivier Langlois <olivier@trillion01.com>
-> ---
->  fs/io_uring.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index 02f789e07d4c..3f271bd7726b 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -89,6 +89,7 @@
->  
->  #define IORING_MAX_ENTRIES	32768
->  #define IORING_MAX_CQ_ENTRIES	(2 * IORING_MAX_ENTRIES)
-> +#define IORING_SQPOLL_CAP_ENTRIES_VALUE 8
->  
->  /*
->   * Shift of 9 is 512 entries, or exactly one page on 64-bit archs
-> @@ -6797,8 +6798,8 @@ static int __io_sq_thread(struct io_ring_ctx *ctx, bool cap_entries)
->  
->  	to_submit = io_sqring_entries(ctx);
->  	/* if we're handling multiple rings, cap submit size for fairness */
-> -	if (cap_entries && to_submit > 8)
-> -		to_submit = 8;
-> +	if (cap_entries && to_submit > IORING_SQPOLL_CAP_ENTRIES_VALUE)
-> +		to_submit = IORING_SQPOLL_CAP_ENTRIES_VALUE;
->  
->  	if (!list_empty(&ctx->iopoll_list) || to_submit) {
->  		unsigned nr_events = 0;
-> 
+I haven't looked closely enough to see what the other architectures with
+caller saved registers are doing.
 
--- 
-Pavel Begunkov
+The challenging ones are /proc/pid/syscall and seccomp which want to see
+all of the system call arguments.  I think every architecture always
+saves the system call arguments unconditionally, so those cases are
+probably not as interesting.  But they certain look like they could be
+trouble.
+
+Eric
+
