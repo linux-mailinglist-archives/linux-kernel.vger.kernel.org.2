@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E193B0C67
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B213B0C68
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232657AbhFVSI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:08:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58838 "EHLO mail.kernel.org"
+        id S232730AbhFVSIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:08:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232938AbhFVSHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:07:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30D1A611CE;
-        Tue, 22 Jun 2021 18:05:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624385114;
-        bh=hj2bshCn9HBakp2MkmnYVsO61MtgN57iW/F3DQnoags=;
+        id S232649AbhFVSHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 14:07:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9CE361002;
+        Tue, 22 Jun 2021 18:05:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624385116;
+        bh=M7SN4cyE6lxKrJXsUW54uqcvWeAJ7zpSgHeOVCwz/Dw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cf9pRhYlwSRCPu89O5QR+6/xOtfPpeBSjR3NYitaLjaIyOcLmYpY3h7eFLEXYlHFF
-         t18IzywdZk/Y7NEAtnJA+0LPKuZDil+Uv0SmPiAo33L7xft3EI4/TIVEdKZ4zBHUNj
-         bpizRuiPTnNfmS3LdYCLMg/8UXeKUW1Qr7YzoOpU=
-Date:   Tue, 22 Jun 2021 20:05:12 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     minchan@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
-        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
-        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
-        peterz@infradead.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] zram: fix deadlock with sysfs attribute usage and
- driver removal
-Message-ID: <YNImWFPbVDrpTFQP@kroah.com>
-References: <20210621233013.562641-1-mcgrof@kernel.org>
- <20210621233634.595649-1-mcgrof@kernel.org>
- <YNGVI/vKSBAM8dlh@kroah.com>
- <20210622163208.epx4lf3pv2x2d5b4@garbanzo>
- <YNIa8tym7TmZFWaZ@kroah.com>
- <20210622172712.3bdlxnsghmbn6nry@garbanzo>
+        b=BJ8F5u1A/4DRyluQ5RnCIPhyE4eD+Ny8LaEoU+VcF/RnOrbi21oZcfq7LFHpGkA7Z
+         seOKSs784LpdxoBPlLJ06k17CzwZgFX9vYq+YE/bgiRqJ24Fc5+dR3AcTjQaatavls
+         Yye33XMvlCGyekm+4DuEaU5a0vg3sS50ztoJzAdzi1t/CjJVqD6BY7nUfKCKToW94n
+         4Ib+YZnGfV9UgkEj09A9riDH/lSqsZduFBQ0wLpslcG1JIdlv7OYtl8Qj3sDUYZlbZ
+         VOPO7w4ytBwVW+34dZYJhPx4aEKG3dTdjPEzQoyEewKDwe3kbtD8d1e2SnHTcCFu8i
+         ObmctWPVIOWMg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id CE9B440B1A; Tue, 22 Jun 2021 15:05:12 -0300 (-03)
+Date:   Tue, 22 Jun 2021 15:05:12 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] perf test: Make stat bpf counters test more robust
+Message-ID: <YNImWAy+mprxwNjt@kernel.org>
+References: <20210621215648.2991319-1-irogers@google.com>
+ <20210621215648.2991319-3-irogers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210622172712.3bdlxnsghmbn6nry@garbanzo>
+In-Reply-To: <20210621215648.2991319-3-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 10:27:12AM -0700, Luis Chamberlain wrote:
-> On Tue, Jun 22, 2021 at 07:16:34PM +0200, Greg KH wrote:
-> > On Tue, Jun 22, 2021 at 09:32:08AM -0700, Luis Chamberlain wrote:
-> > > On Tue, Jun 22, 2021 at 09:45:39AM +0200, Greg KH wrote:
-> > > > On Mon, Jun 21, 2021 at 04:36:34PM -0700, Luis Chamberlain wrote:
-> > > > > @@ -2048,13 +2048,19 @@ static ssize_t hot_add_show(struct class *class,
-> > > > >  {
-> > > > >  	int ret;
-> > > > >  
-> > > > > +	if (!try_module_get(THIS_MODULE))
-> > > > > +		return -ENODEV;
-> > > > > +
-> > > > 
-> > > > You can not increment/decrement your own module's reference count and
-> > > > expect it to work properly, as it is still a race.
-> > > 
-> > > The goal here is to prevent an rmmod call if this succeeds. If it
-> > > succeeds then any subsequent rmmod will fail. Can you explain how
-> > > this is still racy?
-> > 
-> > {sigh}
-> > 
-> > What happens if the driver core is just about to call hot_add_show() and
-> > the module is removed from the system.  It then calls to the memory
-> > location that hot_add_show() was previously at, but now that is not a
-> > valid pointer to code, and boom.
+Em Mon, Jun 21, 2021 at 02:56:48PM -0700, Ian Rogers escreveu:
+> If the test is run on a hypervisor then the cycles event may not be
+> counted, skip the test in this situation. Fail the test if cycles are
+> not counted in the subsequent bpf counter run.
+
+This one was already in,
+
+- Arnaldo
+ 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/tests/shell/stat_bpf_counters.sh | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
-> The new kobject_get() on patch 3/3 ensures that the device will be up
-> throughout the entire life of the store call, and thus prevent the
-> code being executed being removed, no?
+> diff --git a/tools/perf/tests/shell/stat_bpf_counters.sh b/tools/perf/tests/shell/stat_bpf_counters.sh
+> index 85eb689fe202..6b156dd85469 100755
+> --- a/tools/perf/tests/shell/stat_bpf_counters.sh
+> +++ b/tools/perf/tests/shell/stat_bpf_counters.sh
+> @@ -31,7 +31,15 @@ if ! perf stat --bpf-counters true > /dev/null 2>&1; then
+>  fi
+>  
+>  base_cycles=$(perf stat --no-big-num -e cycles -- perf bench sched messaging -g 1 -l 100 -t 2>&1 | awk '/cycles/ {print $1}')
+> +if [ "$base_cycles" == "<not" ]; then
+> +	echo "Skipping: cycles event not counted"
+> +	exit 2
+> +fi
+>  bpf_cycles=$(perf stat --no-big-num --bpf-counters -e cycles -- perf bench sched messaging -g 1 -l 100 -t 2>&1 | awk '/cycles/ {print $1}')
+> +if [ "$bpf_cycles" == "<not" ]; then
+> +	echo "Failed: cycles not counted with --bpf-counters"
+> +	exit 1
+> +fi
+>  
+>  compare_number $base_cycles $bpf_cycles
+>  exit 0
+> -- 
+> 2.32.0.288.g62a8d224e6-goog
+> 
 
-I do not know, I no longer remember what is in that patch at the moment
-as it is long-gone from my queue.
+-- 
 
-Also, if the device will be "up" for the whole lifetime, why do you need
-to increment the module reference count?
-
-thanks,
-
-greg k-h
+- Arnaldo
