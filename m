@@ -2,86 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337253B0730
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC133B0731
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhFVOSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 10:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230410AbhFVOR7 (ORCPT
+        id S231555AbhFVOSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 10:18:15 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:35538 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230410AbhFVOSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:17:59 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDFEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 07:15:43 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id b3so2863228plg.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 07:15:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oprAVs1wiobkVIzLVu52IdLo4/dGcuOXZp3bCELfRwA=;
-        b=YKGs+JcjJrWJq+doKxDgjeoV5+bT1T5Tus6gTKd534/Ae8tlyYPAZDQt7AEMelosoD
-         I5Ai1OKs8UlDvUlhV+gmgQzzQvi/wyPv2pBQ2lZTgZGF1yLHFDdsUToY40SNmBkQRiap
-         iqWNH1YbDwpeu+WAqtG3L54WB/cgO7QvqMrnacl5F/j9kFVfKclGYCm6UrdHIRovhbdW
-         dlKAVKxQ4471Y8+a3gr9Cy2gojSW9j+2X4yy472X8SqY+F1b5Ivi4UVspUxfZ8/MmYI/
-         zeVBDDNxq01gxfmv7g5euRUzQPrfcJCwMtZvVVyobw0cV1juaNLhCP5chS4wOJJQpoDn
-         +5/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oprAVs1wiobkVIzLVu52IdLo4/dGcuOXZp3bCELfRwA=;
-        b=aPmlhDFbEVUJB7p52mtkCOK/kYNrsmc4B5Qlxj/4cP6n5GiwOHryvWA4N3CApWhHVq
-         ClXUFEoo8rzJBzRlBJxKkSnW1czzd6TRTWh8edYUc+i6mDaFyz7hFUCEqUCsNQyWAu4f
-         rgWTDDxbA8HYTqAFnOevWwotfle46h815OeuoyMdG/MJ7Cqx1Nzbj2X89SHAKDYEVn7x
-         wFs7ImFizxIxB1ziyJMHPwHp/+MtsbTc+ZB3y3YPU8a9m9D/wU6eeckUzPdBzMtOgIqi
-         YVW5E3aslp9bLbzbbFs2RZOA7ackDG57dQKs1cOcZU2tEcQ30IJrxSKj+Xs32EA5Blpf
-         UB4Q==
-X-Gm-Message-State: AOAM532Aw+xebrgIOkT1DA/gaciYWyxaJxI8dFWhFxZwlJvZZIdp3zqw
-        5aX5GfRd64KiiTeKlaHff/s2Dw==
-X-Google-Smtp-Source: ABdhPJyYtCJl8GsI5UBKjL75kOaLoo6c8QkTVksrJoW9GUjZG4Slc8W6euEfjj0QUYjjy1DTiMao9Q==
-X-Received: by 2002:a17:90a:bb97:: with SMTP id v23mr4338195pjr.146.1624371342833;
-        Tue, 22 Jun 2021 07:15:42 -0700 (PDT)
-Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
-        by smtp.gmail.com with ESMTPSA id y20sm21351086pfb.207.2021.06.22.07.15.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 07:15:42 -0700 (PDT)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Sergey Larin <cerg2010cerg2010@mail.ru>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] regulator: max8893: Select REGMAP_I2C to fix build error
-Date:   Tue, 22 Jun 2021 22:15:26 +0800
-Message-Id: <20210622141526.472175-1-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 22 Jun 2021 10:18:13 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 514F91FD70;
+        Tue, 22 Jun 2021 14:15:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624371357; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hSk6L6EfS4DnLkbkOUtJsHjkN6XrF8OPZUwspwtC5aE=;
+        b=EC9RKglWV6+UMwS4y0ewvhdD3hEkOGIT7BZWIXdR1OHQGaxaJFc7rSeIY22iW3izp/dpiP
+        tOGCrwBuDwVoU6HU9iW/j6DE0l1fEQe8wPZhx3kDwHI6PG01VhgYndfO1Zgf9DlPotQd2F
+        Df62vswARR6ysV79X7OmBQtAkfwQb9c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624371357;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hSk6L6EfS4DnLkbkOUtJsHjkN6XrF8OPZUwspwtC5aE=;
+        b=sg2863oBJgYMVgA55nliuIDn5f075U4ekmj0R8zI0edndp5genInmpuV+jyt1dBh6SUslF
+        WbIMP9mnqMDg/CDw==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 39DA3118DD;
+        Tue, 22 Jun 2021 14:15:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624371357; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hSk6L6EfS4DnLkbkOUtJsHjkN6XrF8OPZUwspwtC5aE=;
+        b=EC9RKglWV6+UMwS4y0ewvhdD3hEkOGIT7BZWIXdR1OHQGaxaJFc7rSeIY22iW3izp/dpiP
+        tOGCrwBuDwVoU6HU9iW/j6DE0l1fEQe8wPZhx3kDwHI6PG01VhgYndfO1Zgf9DlPotQd2F
+        Df62vswARR6ysV79X7OmBQtAkfwQb9c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624371357;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hSk6L6EfS4DnLkbkOUtJsHjkN6XrF8OPZUwspwtC5aE=;
+        b=sg2863oBJgYMVgA55nliuIDn5f075U4ekmj0R8zI0edndp5genInmpuV+jyt1dBh6SUslF
+        WbIMP9mnqMDg/CDw==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id gJZjDZ3w0WBUVAAALh3uQQ
+        (envelope-from <bp@suse.de>); Tue, 22 Jun 2021 14:15:57 +0000
+Date:   Tue, 22 Jun 2021 16:15:47 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V3 41/66] x86/cpu: Sanitize X86_FEATURE_OSPKE
+Message-ID: <YNHwk774s1/RI2/q@zn.tnic>
+References: <20210618141823.161158090@linutronix.de>
+ <20210618143449.052887078@linutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618143449.052887078@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix build error if REGMAP_I2C is not set.
+On Fri, Jun 18, 2021 at 04:19:04PM +0200, Thomas Gleixner wrote:
+> X86_FEATURE_OSPKE is enabled first on the boot CPU and the feature flag is
+> set. Secondary CPUs have to enable CR4.PKE as well and set their per CPU
+> feature flag. That's ineffective because all call sites have checks for
+> boot_cpu_data.
+> 
+> Make it smarter and force the feature flag when PKU is enabled on the boot
+> cpu which allows then to use cpu_feature_enabled(X86_FEATURE_OSPKE) all
+> over the place. That either compiles the code out when PKEY support is
+> disabled in Kconfig or uses a static_cpu_has() for the feature check which
+> makes a significant difference in hotpathes, e.g. context switch.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- drivers/regulator/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+"hotpaths"
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 55148dd7c6f1..24ce9a17ab4f 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -581,6 +581,7 @@ config REGULATOR_MAX8660
- config REGULATOR_MAX8893
- 	tristate "Maxim 8893 voltage regulator"
- 	depends on I2C
-+	select REGMAP_I2C
- 	help
- 	  This driver controls a Maxim 8893 voltage output
- 	  regulator via I2C bus.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/include/asm/pkeys.h |    8 ++++----
+>  arch/x86/include/asm/pkru.h  |    4 ++--
+>  arch/x86/kernel/cpu/common.c |   24 +++++++++++-------------
+>  arch/x86/kernel/fpu/core.c   |    2 +-
+>  arch/x86/kernel/fpu/xstate.c |    2 +-
+>  arch/x86/kernel/process_64.c |    2 +-
+>  arch/x86/mm/fault.c          |    2 +-
+>  7 files changed, 21 insertions(+), 23 deletions(-)
+
+Other than that:
+
+Reviewed-by: Borislav Petkov <bp@suse.de>
+
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
