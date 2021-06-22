@@ -2,177 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22BE3AFE15
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DC93AFE18
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhFVHl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S229888AbhFVHmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:42:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230206AbhFVHl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 22 Jun 2021 03:41:59 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:52758 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230107AbhFVHlv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:41:51 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15M7XelO016992;
-        Tue, 22 Jun 2021 03:39:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : content-type :
- content-transfer-encoding : mime-version : subject : message-id : date :
- cc : to; s=pp1; bh=ps+MxyIj04uVEqtlFH1SnSoPVeb9c0uCF51LMtYCfdI=;
- b=ZzIKOpELz4RZgla9tKGfmSOb+2QU2jwfVwefybrV12IRGruCFz4gbtHGRavmjaINa3AG
- n+W+p1t34pVT7dbq4anectJ3TMXnbOYcpZO6R5Gln8+jmPUwrUZdXnMa7i+i98ivRagm
- J5/vL3398VZY7MXoNylv2K/FysZDbzl1fuROipHgBDEeyWNHxt/10/1IQ6GU+re+bw7I
- 0osDLJIObg9gYBcsz60J8ViEsbpb3ow9rQov9j04fncxqraERj2GlvlUGCPaJZJ7S2bw
- hvGX5mHwaVGC+za3/HdbBk2Cu3KNEWBsUbxuhi7vtZ/j9r8+pzqjXsTQelsDxMT5tWwh Yg== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39bahp9nsh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 03:39:30 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15M7XI3V016244;
-        Tue, 22 Jun 2021 07:39:27 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 3997uh999r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 07:39:27 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15M7c8Ms36503936
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Jun 2021 07:38:08 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8417611C052;
-        Tue, 22 Jun 2021 07:39:25 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8B42211C054;
-        Tue, 22 Jun 2021 07:39:24 +0000 (GMT)
-Received: from smtpclient.apple (unknown [9.85.86.62])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 22 Jun 2021 07:39:24 +0000 (GMT)
-From:   Sachin Sant <sachinp@linux.vnet.ibm.com>
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: [powerpc][next-20210621] WARNING at kernel/sched/fair.c:3277 during
- boot
-Message-Id: <2ED1BDF5-BC0C-47CD-8F33-9A46C738F8CF@linux.vnet.ibm.com>
-Date:   Tue, 22 Jun 2021 13:09:23 +0530
-Cc:     linuxppc-dev@lists.ozlabs.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Odin Ugedal <odin@uged.al>
-To:     open list <linux-kernel@vger.kernel.org>,
-        linux-next@vger.kernel.org
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 10l99-e5z4-sKwoUIQuEsdcHfNcJ0eg8
-X-Proofpoint-GUID: 10l99-e5z4-sKwoUIQuEsdcHfNcJ0eg8
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-22_04:2021-06-21,2021-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- malwarescore=0 impostorscore=0 mlxscore=0 clxscore=1015 spamscore=0
- mlxlogscore=978 phishscore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106220046
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 168796112D;
+        Tue, 22 Jun 2021 07:39:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624347583;
+        bh=QbJE9LxmdhH3eGRXPQXb6I6KsPkDdvUnyB3gNvMxX6E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r6hSAG4BlxdJfUn4N91g/X57wM8ZFg5HqcCvG8Un9wkkZPiSBWY2KU3nMttBXTGll
+         hBQZh307GMno/CnX/amQ4H48GcCnjAsZstAm9q4TBxhba/2U/E7E1JbNNv9LPwiQGm
+         Hgpzu2WjfLoj/KWqmnMSjbUCyIR0XxtqJXe9/3uU=
+Date:   Tue, 22 Jun 2021 09:39:40 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     minchan@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
+        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
+        peterz@infradead.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] zram: fix crashes due to use of cpu hotplug
+ multistate
+Message-ID: <YNGTvN2cVOPr+duH@kroah.com>
+References: <20210621233013.562641-1-mcgrof@kernel.org>
+ <20210621233013.562641-2-mcgrof@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621233013.562641-2-mcgrof@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While booting 5.13.0-rc7-next-20210621 on a PowerVM LPAR following =
-warning
-is seen
+On Mon, Jun 21, 2021 at 04:30:11PM -0700, Luis Chamberlain wrote:
+> Provide a simple state machine to fix races with driver exit where we
+> remove the CPU multistate callbacks and re-initialization / creation of
+> new per CPU instances which should be managed by these callbacks.
+> 
+> The zram driver makes use of cpu hotplug multistate support, whereby it
+> associates a struct zcomp per CPU. Each struct zcomp represents a
+> compression algorithm in charge of managing compression streams per CPU.
+> Although a compiled zram driver only supports a fixed set of compression
+> algorithms, each zram device gets a struct zcomp allocated per CPU. The
+> "multi" in CPU hotplug multstate refers to these per cpu struct zcomp
+> instances. Each of these will have the CPU hotplug callback called for
+> it on CPU plug / unplug. The kernel's CPU hotplug multistate keeps a
+> linked list of these different structures so that it will iterate over
+> them on CPU transitions.
+> 
+> By default at driver initialization we will create just one zram device
+> (num_devices=1) and a zcomp structure then set for the now default
+> lzo-rle comrpession algorithm. At driver removal we first remove each
+> zram device, and so we destroy the associated struct zcomp per CPU. But
+> since we expose sysfs attributes to create new devices or reset / initialize
+> existing zram devices, we can easily end up re-initializing a struct zcomp
+> for a zram device before the exit routine of the module removes the cpu
+> hotplug callback. When this happens the kernel's CPU hotplug will detect
+> that at least one instance (struct zcomp for us) exists. This can happen
+> in the following situation:
+> 
+> CPU 1                            CPU 2
+> 
+> class_unregister(...);
 
-[   30.922154] ------------[ cut here ]------------
-[   30.922201] cfs_rq->avg.load_avg || cfs_rq->avg.util_avg || =
-cfs_rq->avg.runnable_avg
-[   30.922219] WARNING: CPU: 6 PID: 762 at kernel/sched/fair.c:3277 =
-update_blocked_averages+0x758/0x780
-[   30.922259] Modules linked in: pseries_rng xts vmx_crypto =
-uio_pdrv_genirq uio sch_fq_codel ip_tables sd_mod t10_pi sg fuse
-[   30.922309] CPU: 6 PID: 762 Comm: augenrules Not tainted =
-5.13.0-rc7-next-20210621 #1
-[   30.922329] NIP:  c0000000001b27e8 LR: c0000000001b27e4 CTR: =
-c0000000007cfda0
-[   30.922344] REGS: c000000023fcb660 TRAP: 0700   Not tainted  =
-(5.13.0-rc7-next-20210621)
-[   30.922359] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: =
-48488224  XER: 00000005
-[   30.922394] CFAR: c00000000014d120 IRQMASK: 1=20
-               GPR00: c0000000001b27e4 c000000023fcb900 c000000002a08400 =
-0000000000000048=20
-               GPR04: 00000000ffff7fff c000000023fcb5c0 0000000000000027 =
-c000000f6fdd7e18=20
-               GPR08: 0000000000000023 0000000000000001 0000000000000027 =
-c0000000028a6650=20
-               GPR12: 0000000000008000 c000000f6fff7680 c000000f6fe62600 =
-0000000000000032=20
-               GPR16: 00000007331a989a c000000f6fe62600 c0000000238a6800 =
-0000000000000001=20
-               GPR20: 0000000000000000 c000000002a4dfe0 0000000000000000 =
-0000000000000006=20
-               GPR24: 0000000000000000 c000000f6fe63010 0000000000000001 =
-c000000f6fe62680=20
-               GPR28: 0000000000000006 c0000000238a69c0 0000000000000000 =
-c000000f6fe62600=20
-[   30.922569] NIP [c0000000001b27e8] =
-update_blocked_averages+0x758/0x780
-[   30.922599] LR [c0000000001b27e4] update_blocked_averages+0x754/0x780
-[   30.922624] Call Trace:
-[   30.922631] [c000000023fcb900] [c0000000001b27e4] =
-update_blocked_averages+0x754/0x780 (unreliable)
-[   30.922653] [c000000023fcba20] [c0000000001bd668] =
-newidle_balance+0x258/0x5c0
-[   30.922674] [c000000023fcbab0] [c0000000001bdaac] =
-pick_next_task_fair+0x7c/0x4d0
-[   30.922692] [c000000023fcbb10] [c000000000dcd31c] =
-__schedule+0x15c/0x1780
-[   30.922708] [c000000023fcbc50] [c0000000001a5a04] =
-do_task_dead+0x64/0x70
-[   30.922726] [c000000023fcbc80] [c000000000156338] do_exit+0x848/0xcc0
-[   30.922743] [c000000023fcbd50] [c000000000156884] =
-do_group_exit+0x64/0xe0
-[   30.922758] [c000000023fcbd90] [c000000000156924] =
-sys_exit_group+0x24/0x30
-[   30.922774] [c000000023fcbdb0] [c0000000000310c0] =
-system_call_exception+0x150/0x2d0
-[   30.922792] [c000000023fcbe10] [c00000000000cc5c] =
-system_call_common+0xec/0x278
-[   30.922808] --- interrupt: c00 at 0x7fffb3acddcc
-[   30.922821] NIP:  00007fffb3acddcc LR: 00007fffb3a27f04 CTR: =
-0000000000000000
-[   30.922833] REGS: c000000023fcbe80 TRAP: 0c00   Not tainted  =
-(5.13.0-rc7-next-20210621)
-[   30.922847] MSR:  800000000280f033 =
-<SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 28444202  XER: 00000000
-[   30.922882] IRQMASK: 0=20
-               GPR00: 00000000000000ea 00007fffc8f21780 00007fffb3bf7100 =
-0000000000000000=20
-               GPR04: 0000000000000000 0000000155f142f0 0000000000000000 =
-00007fffb3d23740=20
-               GPR08: fffffffffbad2a87 0000000000000000 0000000000000000 =
-0000000000000000=20
-               GPR12: 0000000000000000 00007fffb3d2aeb0 0000000116be95e0 =
-0000000000000032=20
-               GPR16: 0000000000000000 00007fffc8f21cd8 000000000000002d =
-0000000000000024=20
-               GPR20: 00007fffc8f21cd4 00007fffb3bf4f98 0000000000000001 =
-0000000000000001=20
-               GPR24: 00007fffb3bf0950 0000000000000000 0000000000000000 =
-0000000000000001=20
-               GPR28: 0000000000000000 0000000000000000 00007fffb3d23ec0 =
-0000000000000000=20
-[   30.923023] NIP [00007fffb3acddcc] 0x7fffb3acddcc
-[   30.923035] LR [00007fffb3a27f04] 0x7fffb3a27f04
-[   30.923045] --- interrupt: c00
-[   30.923052] Instruction dump:
-[   30.923061] 3863be48 9be97ae6 4bf9a8f9 60000000 0fe00000 4bfff980 =
-e9210070 e8610088=20
-[   30.923088] 39400001 99490003 4bf9a8d9 60000000 <0fe00000> 4bfffc24 =
-3d22fff5 89297ae3=20
-[   30.923113] ---[ end trace ed07974d2149c499 ]=E2=80=94
+Now the sysfs files are removed and invalidated for all devices
+associated with that class.
 
-This warning was introduced with commit 9e077b52d86a
-sched/pelt: Check that *_avg are null when *_sum are
+> idr_for_each(...);
+> zram_debugfs_destroy();
+>                                 disksize_store(...);
 
-next-20210618 was good.
+How will this call into the kobject's store function if
+class_unregister() has already happened?
 
-Thanks
--Sachin=
+> idr_destroy(...);
+> unregister_blkdev(...);
+
+Ah, it's a block device's store function you are worried about, not the
+class one?
+
+> cpuhp_remove_multi_state(...);
+> 
+> The warning comes up on cpuhp_remove_multi_state() when it sees that the
+> state for CPUHP_ZCOMP_PREPARE does not have an empty instance linked list.
+> In this case, that a struct zcom still exists, the driver allowed its
+> creation per CPU even though we could have just freed them per CPU
+> though a call on another CPU, and we are then later trying to remove the
+> hotplug callback.
+> 
+> Fix all this by providing a zram initialization boolean
+> protected the the shared in the driver zram_index_mutex,
+> which we can use to annotate when sysfs attributes are
+> safe to use or not -- once the driver is properly initialized.
+> When the driver is going down we also are sure to not let
+> userspace muck with attributes which may affect each per cpu
+> struct zcomp.
+> 
+> This also fixes a series of possible memory leaks. The
+> crashes and memory leaks can easily be caused by issuing
+> the zram02.sh script from the LTP project [0] in a loop
+> in two separate windows:
+> 
+>   cd testcases/kernel/device-drivers/zram
+>   while true; do PATH=$PATH:$PWD:$PWD/../../../lib/ ./zram02.sh; done
+> 
+> You end up with a splat as follows:
+> 
+> kernel: zram: Removed device: zram0
+> kernel: zram: Added device: zram0
+> kernel: zram0: detected capacity change from 0 to 209715200
+> kernel: Adding 104857596k swap on /dev/zram0.  Priority:-2 extents:1 across:104857596k SSFS
+> kernel: zram0: detected capacitky change from 209715200 to 0
+> kernel: zram0: detected capacity change from 0 to 209715200
+> kernel: ------------[ cut here ]------------
+> kernel: Error: Removing state 63 which has instances left.
+> kernel: WARNING: CPU: 7 PID: 70457 at kernel/cpu.c:2069 __cpuhp_remove_state_cpuslocked+0xf9/0x100
+> kernel: Modules linked in: zram(E-) zsmalloc(E) <etc>
+> kernel: CPU: 7 PID: 70457 Comm: rmmod Tainted: G            E     5.12.0-rc1-next-20210304 #3
+> kernel: Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+> kernel: RIP: 0010:__cpuhp_remove_state_cpuslocked+0xf9/0x100
+> kernel: Code: <etc>
+> kernel: RSP: 0018:ffffa800c139be98 EFLAGS: 00010282
+> kernel: RAX: 0000000000000000 RBX: ffffffff9083db58 RCX: ffff9609f7dd86d8
+> kernel: RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: ffff9609f7dd86d0
+> kernel: RBP: 0000000000000000i R08: 0000000000000000 R09: ffffa800c139bcb8
+> kernel: R10: ffffa800c139bcb0 R11: ffffffff908bea40 R12: 000000000000003f
+> kernel: R13: 00000000000009d8 R14: 0000000000000000 R15: 0000000000000000
+> kernel: FS: 00007f1b075a7540(0000) GS:ffff9609f7dc0000(0000) knlGS:0000000000000000
+> kernel: CS:  0010 DS: 0000 ES 0000 CR0: 0000000080050033
+> kernel: CR2: 00007f1b07610490 CR3: 00000001bd04e000 CR4: 0000000000350ee0
+> kernel: Call Trace:
+> kernel: __cpuhp_remove_state+0x2e/0x80
+> kernel: __do_sys_delete_module+0x190/0x2a0
+> kernel:  do_syscall_64+0x33/0x80
+> kernel: entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> The "Error: Removing state 63 which has instances left" refers
+> to the zram per CPU struc zcomp instances left.
+> 
+> [0] https://github.com/linux-test-project/ltp.git
+> 
+> Acked-by: Minchan Kim <minchan@kernel.org>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  drivers/block/zram/zram_drv.c | 63 ++++++++++++++++++++++++++++++-----
+>  1 file changed, 55 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> index cf8deecc39ef..431b60cd85c1 100644
+> --- a/drivers/block/zram/zram_drv.c
+> +++ b/drivers/block/zram/zram_drv.c
+> @@ -44,6 +44,8 @@ static DEFINE_MUTEX(zram_index_mutex);
+>  static int zram_major;
+>  static const char *default_compressor = CONFIG_ZRAM_DEF_COMP;
+>  
+> +bool zram_up;
+
+static?
+
+> +
+>  /* Module params (documentation at end) */
+>  static unsigned int num_devices = 1;
+>  /*
+> @@ -1704,6 +1706,7 @@ static void zram_reset_device(struct zram *zram)
+>  	comp = zram->comp;
+>  	disksize = zram->disksize;
+>  	zram->disksize = 0;
+> +	zram->comp = NULL;
+
+Is this a new change?
+
+Other than these two things, seems reasonable, if not total overkill :)
+
+thanks,
+
+greg k-h
