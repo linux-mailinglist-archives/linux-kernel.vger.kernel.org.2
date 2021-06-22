@@ -2,101 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7DF3AFA8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 03:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 956773AFA95
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 03:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbhFVBVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 21:21:46 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:33754 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229663AbhFVBVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 21:21:45 -0400
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxP0OZOtFgIJoVAA--.3536S3;
-        Tue, 22 Jun 2021 09:19:22 +0800 (CST)
-Subject: Re: [RFC PATCH 1/2] ftrace: Introduce cmdline argument
- ftrace_disabled
-To:     Steven Rostedt <rostedt@goodmis.org>
-References: <1624084160-3342-1-git-send-email-yangtiezhu@loongson.cn>
- <1624084160-3342-2-git-send-email-yangtiezhu@loongson.cn>
- <20210619112202.0a2c7196@gandalf.local.home>
- <6847bf76-698d-a314-0825-803b48cb8740@loongson.cn>
- <20210621100004.7c1505be@oasis.local.home>
-Cc:     Ingo Molnar <mingo@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <db070d1c-9320-378e-52b5-a7d551e0f1a6@loongson.cn>
-Date:   Tue, 22 Jun 2021 09:19:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S230288AbhFVB2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 21:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhFVB2D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 21:28:03 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D25C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 18:25:47 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id he7so31731773ejc.13
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 18:25:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=ZlKw0013uorKryADb55HN9rTy0tjw3V0rmdOcaqrhGA=;
+        b=FWRgwKy5/BxbTlves0tGJKSmfrLZ/OswIpgT2iybBE+/lVi2cSyDABOJbkyTJGN08I
+         0/4lxo5HzfxxysiHfg6Pch2NxaaC7dsR7HyByrRsx4vXHwIQ4veTL+aoJbqGWwuK7ckh
+         GfbAPMo5QONTGT23KsO/GxwBLXFRcWbs6+gOWDTm8GqXkkxByORQ4GtKM696S0Ka2+8A
+         k5Cn1RkVptbzJxE3YKWC2EkyYT/JCZ0MYlrwF1UWpluhxv4vD/QoV0dg/zZDZeocR3gJ
+         s3OTycZoAtlojyidJCtFl2ilima6kY9+2GSB2jcSsauDOH75GG5eIk/sa9Kx7H62OYnV
+         z4QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=ZlKw0013uorKryADb55HN9rTy0tjw3V0rmdOcaqrhGA=;
+        b=adHiIo2f5sKZBYfphYaYJvjiO6zj44N/O1dQ8R9NZ9k/eeIp6+2Ha50Fn2ByRBAgEV
+         /gKStYbmYsaGq+zt1jdLZd4bTdf0ox00QbfOt8M846PxRHN8RRbRaFFcbJZO0HmKFC58
+         Gy/Y2R+C2jHmBkoGgbAk0KVXkqUYDn8BI/AtDCEk9QcSP40uCoggPXM3eALAHDBBNX7B
+         SQvU6cCdfcqn5ccjC3WnTd44C06pruJj40Ql5Z1empJr7x4tP/3HVmk1fpefP0rK+vyo
+         uYwEUCh4VrZ9CP36+/Sl4+cCBWW+XAWce6yCAM7yD0+9gi9Sxtnv3wIa0m7QiYVUNJvl
+         E4bA==
+X-Gm-Message-State: AOAM532hil1hIMxbxOJJJiGr1Yga/RQXi0Xn7vuHwydEwWFCvgOE51hq
+        CTgGXgbcNJth/Qh7z+AakIXnJf2kL8Yc0uDvUqA=
+X-Google-Smtp-Source: ABdhPJw1UbbxHFOFuA2jLsn1Xg3iKRycCputxY74FyCqyfDlv1D7IFwEjxem3/xj+7q10d/zNp0lhHxh9fqQCMaNKXA=
+X-Received: by 2002:a17:907:62a5:: with SMTP id nd37mr1063517ejc.148.1624325146382;
+ Mon, 21 Jun 2021 18:25:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210621100004.7c1505be@oasis.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9DxP0OZOtFgIJoVAA--.3536S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFW8Kw1xtw4DAF4DXrW5Wrg_yoW8Zr1Upa
-        9rtw1ayFZ7Xan0va13Zr48J34aya1kXrZ3AF1jkrW0vws8Gr4fXrWktw42gasrJ34Igrya
-        v3W0y34UZFs8Zw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-        Yx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
-        WUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07Al
-        zVAYIcxG8wCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
-        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa
-        73UjIFyTuYvjfUFVyIUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Reply-To: evelynbintaa01@gmail.com
+Sender: reverendhenrymarshall11@gmail.com
+Received: by 2002:a50:7091:0:0:0:0:0 with HTTP; Mon, 21 Jun 2021 18:25:46
+ -0700 (PDT)
+From:   Evelyn Binta <evelynbintaa01@gmail.com>
+Date:   Tue, 22 Jun 2021 02:25:46 +0100
+X-Google-Sender-Auth: n8c0P45Mne6Z08PrVG_2aG1uzmo
+Message-ID: <CALBRqJ_TYaEq-EgD_VzwyYPTWLn9kWDh5uGnHTvs_FV=QHPx-w@mail.gmail.com>
+Subject: Greetings
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/21/2021 10:00 PM, Steven Rostedt wrote:
-> On Mon, 21 Jun 2021 09:21:31 +0800
-> Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->
->>> You have no rationale for this change. What's the purpose of this?
->> The "System Benchmarks Index Score" of UnixBench under FUNCTION_TRACER
->> is lower than !FUNCTION_TRACER, I want to use this new cmdline argument
->> ftrace_disabled to test it, this is the original intention.
->>
->> I see the following help info of "config FUNCTION_TRACER":
->>
->> [If it's runtime disabled (the bootup default), then the overhead of the
->> instructions is very small and not measurable even in micro-benchmarks.]
-> Those benchmarks were done a long time ago, and they may be measurable today :-/
->
->> I am not quite understand the above description, could you tell me how to
->> avoid the runtime performance overhead under FUNCTION_TRACER?
-> Anyway, your patch wont do anything to change the benchmarks.
->
-> When CONFIG_FUNCTION_TRACER is enabled, on x86_64, most functions will
-> start with a call to fentry. At boot up, these functions will be
-> converted over to become a nop. And thinking about it, "ftrace_disable"
-> stops all conversions, so if you add that to the kernel command line,
-> those calls to fentry, wont be converted to nops, and you'll make
-> things much worse!
->
-> Now, some versions of gcc (and perhaps clang) can do the conversion to
-> nops at compile time (in which case, your patch would keep the nops and
-> not the calls to fentry).
->
-> The overhead that FUNCTION_TRACER adds is the 5 byte nop at the start
-> of most functions. This causes a slight hit to instruction cache, and a
-> minuscule amount of time in the instruction pipeline of the CPU. This
-> is the "overhead" that is talked about. Your patch doesn't do anything
-> to address it. The only way to remove that overhead is to compile the
-> kernel without CONFIG_FUNCTION_TRACER.
->
-> -- Steve
+My Dear, Please do not be surprised to my message, i desperately need
+your friendly assistance there in your country. I am making
+preparations to relocate with my children there and i have some
+capital which i wanted to invest there to be able to take care of my
+kids and i want you by my side to plan the investment and decide the
+best city for us to reside by indicating your interest i will send you
+the full details,so that you will understand properly the reason why i
+contacted you. Please i will be waiting for your response.
 
-OK, I see, thank you very much.
-
-Thanks,
-Tiezhu
-
+Mrs.Evelyn
