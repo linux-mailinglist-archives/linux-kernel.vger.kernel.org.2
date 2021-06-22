@@ -2,119 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37B13B0A32
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466A33B0A4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbhFVQX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 12:23:27 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:35478 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbhFVQX0 (ORCPT
+        id S230291AbhFVQ2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 12:28:50 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:55386 "EHLO
+        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhFVQ2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:23:26 -0400
-Received: by mail-il1-f198.google.com with SMTP id v3-20020a056e0213c3b02901ee210f4218so7892928ilj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:21:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=S0Tp5XpSZKTuxJJ0tsXd8pwi+RpOy4/AcJ5oSiTyOak=;
-        b=ruCa03zsMX5kFC+dlspU1XMnKIJFSU7cKtVkWXxoQx5yZO7fYpIN1V24lzFIep97b4
-         Q3PL3RrE9IfT0xt61AFTYYjAtZ3UfJJ2EE70yi7m6Z4MBLg/W/3lkzTdBwNYGW+7M+66
-         nO6uvXr1IJnap1VqTPHoNX3f8kAvlNAE8ZSqC7sQIH/1xZZLdNicBPIUQmSzR+dd2T9i
-         RDPaek4KGQrscSezXiLJhJKHsp+Ynh8qDoUNARu1iozwVCsL3gzR5C9Ik0KM6OEZO7UC
-         rTUWTOMrWJj/+DA13Y4oPHQruK2TwBh0mPRCn6UwrRle0dy+WdThzDm7kGbirjIgmmCP
-         IYyQ==
-X-Gm-Message-State: AOAM532JMYO/N0k1GIDlnxI7ff9nVzrJ0Yxz7HawNpMgQMf2WU6xSPjR
-        WPV5IMkU1kWUbkZLrjEw+etzdLCQMxkHynuj73tRHkJ0JUMC
-X-Google-Smtp-Source: ABdhPJwWxSGPNIzNCWkUmGwlT2fCur8b24ojEAV03WwffUjlKpl2FKkZ77Ch8nhAw1lRoGpmXNS7EG8HwLp5hoCDv5aKnwnLUpu1
+        Tue, 22 Jun 2021 12:28:49 -0400
+Date:   Tue, 22 Jun 2021 16:25:49 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1624379159;
+        bh=5b5dUwQT3nm9vu4Z3kg4cBfPOPJyMZz55OI5e2pxiEg=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=tpLS3aUQkHNX0XV5iX9zFy97XNlUyLT0tTfhachW5i0/9bYe4OoCaPbn+aqUgK2f0
+         ZidOezViprnDRdjVbfCeU6pQwHYvCKNjlF2VpO0AATLFfp8SC9hakbTnLfN2TbrvCz
+         n75rSTbzAGGT7wz/85S+C/G64t3FlcxshMp0tbnY=
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+From:   Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
+Subject: [PATCH] media: dt-bindings: media: venus: Add firmware-name
+Message-ID: <g0d8gVNl7d2Tg4YiBAGKcaAGTSdNE4gZ0OJYXnkfE@cp3-web-016.plabs.ch>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:89d0:: with SMTP id a16mr3521165iot.76.1624378870348;
- Tue, 22 Jun 2021 09:21:10 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 09:21:10 -0700
-In-Reply-To: <20210622190701.653d94ca@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008c408b05c55d2d50@google.com>
-Subject: Re: [syzbot] INFO: task hung in port100_probe
-From:   syzbot <syzbot+abd2e0dafb481b621869@syzkaller.appspotmail.com>
-To:     krzysztof.kozlowski@canonical.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, paskripkin@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Support for parsing the firmware-name property was added a while ago [1],
+but the dt-bindings were never updated with the new property. This patch
+adds it to all venus dt-bindings.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING: ODEBUG bug in release_nodes
+Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
 
-------------[ cut here ]------------
-ODEBUG: free active (active state 0) object type: work_struct hint: port100_wq_cmd_complete+0x0/0x3b0 drivers/nfc/port100.c:1174
-WARNING: CPU: 1 PID: 10270 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-Modules linked in:
-CPU: 1 PID: 10270 Comm: kworker/1:8 Not tainted 5.13.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd a0 f6 c2 89 4c 89 ee 48 c7 c7 a0 ea c2 89 e8 2d ee 01 05 <0f> 0b 83 05 25 2d 76 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
-RSP: 0018:ffffc9000af76fc8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
-RDX: ffff888017f11c40 RSI: ffffffff815ce3a5 RDI: fffff520015eedeb
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815c820e R11: 0000000000000000 R12: ffffffff896ae040
-R13: ffffffff89c2f0e0 R14: ffffffff814a7730 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb6ceabf000 CR3: 000000001cbec000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __debug_check_no_obj_freed lib/debugobjects.c:987 [inline]
- debug_check_no_obj_freed+0x301/0x420 lib/debugobjects.c:1018
- slab_free_hook mm/slub.c:1558 [inline]
- slab_free_freelist_hook+0x174/0x240 mm/slub.c:1608
- slab_free mm/slub.c:3168 [inline]
- kfree+0xe5/0x7f0 mm/slub.c:4212
- release_nodes+0x4a3/0x8f0 drivers/base/devres.c:524
- devres_release_all+0x74/0xd0 drivers/base/devres.c:545
- really_probe+0x557/0xf60 drivers/base/dd.c:644
- driver_probe_device+0x298/0x410 drivers/base/dd.c:763
- __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4b0 drivers/base/dd.c:938
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbe0/0x2100 drivers/base/core.c:3324
- usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2164
- usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
- usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
- really_probe+0x291/0xf60 drivers/base/dd.c:576
- driver_probe_device+0x298/0x410 drivers/base/dd.c:763
- __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4b0 drivers/base/dd.c:938
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbe0/0x2100 drivers/base/core.c:3324
- usb_new_device.cold+0x721/0x1058 drivers/usb/core/hub.c:2558
- hub_port_connect drivers/usb/core/hub.c:5278 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5418 [inline]
- port_event drivers/usb/core/hub.c:5564 [inline]
- hub_event+0x2357/0x4330 drivers/usb/core/hub.c:5646
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2276
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2422
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+[1]: https://lore.kernel.org/linux-arm-msm/20210126084252.238078-1-stanimir=
+.varbanov@linaro.org/
+---
+ .../devicetree/bindings/media/qcom,msm8916-venus.yaml        | 5 +++++
+ .../devicetree/bindings/media/qcom,msm8996-venus.yaml        | 5 +++++
+ .../devicetree/bindings/media/qcom,sc7180-venus.yaml         | 5 +++++
+ .../devicetree/bindings/media/qcom,sdm845-venus-v2.yaml      | 5 +++++
+ .../devicetree/bindings/media/qcom,sdm845-venus.yaml         | 5 +++++
+ 5 files changed, 25 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/media/qcom,msm8916-venus.yam=
+l b/Documentation/devicetree/bindings/media/qcom,msm8916-venus.yaml
+index 59ab16ad12f1..cb1b866d9c37 100644
+--- a/Documentation/devicetree/bindings/media/qcom,msm8916-venus.yaml
++++ b/Documentation/devicetree/bindings/media/qcom,msm8916-venus.yaml
+@@ -80,6 +80,11 @@ properties:
+     required:
+       - iommus
+=20
++  firmware-name:
++    maxItems: 1
++    description: |
++      Relative firmware image path for venus.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/media/qcom,msm8996-venus.yam=
+l b/Documentation/devicetree/bindings/media/qcom,msm8996-venus.yaml
+index 199f45217b4a..b8809325138f 100644
+--- a/Documentation/devicetree/bindings/media/qcom,msm8996-venus.yaml
++++ b/Documentation/devicetree/bindings/media/qcom,msm8996-venus.yaml
+@@ -107,6 +107,11 @@ properties:
+     required:
+       - iommus
+=20
++  firmware-name:
++    maxItems: 1
++    description: |
++      Relative firmware image path for venus.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/media/qcom,sc7180-venus.yaml=
+ b/Documentation/devicetree/bindings/media/qcom,sc7180-venus.yaml
+index 04013e5dd044..ffd3e2850366 100644
+--- a/Documentation/devicetree/bindings/media/qcom,sc7180-venus.yaml
++++ b/Documentation/devicetree/bindings/media/qcom,sc7180-venus.yaml
+@@ -99,6 +99,11 @@ properties:
+     required:
+       - iommus
+=20
++  firmware-name:
++    maxItems: 1
++    description: |
++      Relative firmware image path for venus.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.y=
+aml b/Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.yaml
+index 04b9af4db191..cd7a5e1374ce 100644
+--- a/Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.yaml
++++ b/Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.yaml
+@@ -94,6 +94,11 @@ properties:
+     required:
+       - iommus
+=20
++  firmware-name:
++    maxItems: 1
++    description: |
++      Relative firmware image path for venus.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/media/qcom,sdm845-venus.yaml=
+ b/Documentation/devicetree/bindings/media/qcom,sdm845-venus.yaml
+index 680f37726fdf..ae256238a637 100644
+--- a/Documentation/devicetree/bindings/media/qcom,sdm845-venus.yaml
++++ b/Documentation/devicetree/bindings/media/qcom,sdm845-venus.yaml
+@@ -108,6 +108,11 @@ properties:
+     required:
+       - iommus
+=20
++  firmware-name:
++    maxItems: 1
++    description: |
++      Relative firmware image path for venus.
++
+ required:
+   - compatible
+   - reg
+--=20
+2.32.0
 
-Tested on:
-
-commit:         a96bfed6 Merge tag 'for-linus' of git://git.armlinux.org.u..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12448400300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3932cedd2c2d4a69
-dashboard link: https://syzkaller.appspot.com/bug?extid=abd2e0dafb481b621869
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15683230300000
 
