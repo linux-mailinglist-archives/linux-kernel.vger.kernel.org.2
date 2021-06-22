@@ -2,139 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D523AFFEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 798733AFFF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbhFVJLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 05:11:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229668AbhFVJLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 05:11:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0BBF61042;
-        Tue, 22 Jun 2021 09:09:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624352962;
-        bh=kXlr3NuFZIiS6C2/Tvp2HisngAJr5CpIbQqdUwUbGpw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FH4ZF3iUBsshRcftok0BQOBtvLORl0itit5jig7WmqTpL5jTv4zzMIgRGRHV06CIE
-         ONTty12WVNKHZnccwgCbf98KeDzios4M79WQr3YWeM30Gz/qNRqJm1z+vxeUgXBKQa
-         PDZPf1VoFZoiEmxrznTPKHKOVdVyLbKwB3NFUbtZHmYl+/JdkDq3y27/b00AtXh1IJ
-         f+11/lOeyfcjKvu9pm/RJNEhOnBrpz8vawaVQWZtC5Ukop6CCZO0b4l7GjOZ6RuQpF
-         uBI0KA5A0gEmN9EREOmmfW1McU5iqZuPqJ6XQkwSL3wujteDw2r5qL9nlU7WVSjYxW
-         OHo+DfQgAQ59g==
-Date:   Tue, 22 Jun 2021 11:09:17 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] media: uvc: limit max bandwidth for HDMI capture
-Message-ID: <20210622110917.11c737fc@coco.lan>
-In-Reply-To: <YNGmXmxMIXpq7I83@pendragon.ideasonboard.com>
-References: <b791d5874c83663505cbd4f74907ac38d00bb727.1612206534.git.mchehab+huawei@kernel.org>
-        <YNDY4iesZGF+7Cr0@pendragon.ideasonboard.com>
-        <20210622102948.47b86fbe@coco.lan>
-        <CAPY8ntAkb_57Nk_8UR-d_uR+juPigLKWwCAxoFzuCSKwETYpQg@mail.gmail.com>
-        <YNGmXmxMIXpq7I83@pendragon.ideasonboard.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S229922AbhFVJM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 05:12:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229690AbhFVJMw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 05:12:52 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 428FDC061574;
+        Tue, 22 Jun 2021 02:10:37 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id c7so21695179edn.6;
+        Tue, 22 Jun 2021 02:10:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+VJZUPUQz88r9uBZtHaEykoyTdoX0rU4WajJbPzDto8=;
+        b=htCdfqf6WMu0K1wO2niZdTlgugniSnEEAR2KlkxfcLtT+NQkjtCi7DJXKi1FPKBW5l
+         QzgpLCS4ZhSgJQxPaVxdlSzV4bLf0rdvZclDamQToTPqEHtmifkz+sQGsAHH1epna+e8
+         yQHr3btvwIIApK/e86+V+e1beuFDAei6Hr2ia1MdKzxUgXpkKoQ8TDHFzWJGaIUzpqXm
+         q6sY2iY8CDBaIVJ6XMygEqk2CCWQTNQxb7yt3AJH9fEjTFmeWkAkrN4LBNStvtWeAFzS
+         9Dn9nlBjjXempWsylxeVS72rTSX6cErCVptL5Ti128wGHGByiVkosPY5CZcZtMRp+Fed
+         9Sog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+VJZUPUQz88r9uBZtHaEykoyTdoX0rU4WajJbPzDto8=;
+        b=nDMkkZP/tQO+1p8r0CQEgWWXTlpSHYccf9Gal5zxFkLnWQDf4Lvis6ZoguyJ92JKb0
+         S+52+MuGGkqhV7tEj/3ZbWKrQJP7WKWikk8l2Q+iBAgNSB2k4l2G7VrwsABCOay6cMcu
+         bN8m7lCHS27e1K597EkwAJOUxU7tzz4EXLQ3Suxj1pYxGWLi+CgV8BhoRUU2D//mOghc
+         obDOF0Q9N09tzm6mnLU/qA62A/4ilpwFilEKFfAcz5dqANLIGoe4+rIs6QIEK52n5DxU
+         A6nD7flHSHufHRnQSMOXyEK7Xo7qE+bmHy56o1uh0rgX+Nrp8u6SBFXxPlrOvCsVgPKF
+         Kfjg==
+X-Gm-Message-State: AOAM530uCsKDX2wzmPp/RHtxL/bRx/+i2fV88OQPrU8R2ftT6tQvymDn
+        CFFnsjJ+jn3CojoC+ABDOgdI+JSRFsRr2Vhh1vc=
+X-Google-Smtp-Source: ABdhPJxSPQWOmNrW1JkuIl00eMsxzS7DPdnbALvUH5tX1L+65pon2hWT8qyEUKCQCmzd6uNzLt6ZfKNYM0eI2jqQOD4=
+X-Received: by 2002:a50:d943:: with SMTP id u3mr3646718edj.175.1624353035898;
+ Tue, 22 Jun 2021 02:10:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <60cb0586.1c69fb81.8015b.37a1@mx.google.com> <YNCwJqtKKCskB2Au@kroah.com>
+In-Reply-To: <YNCwJqtKKCskB2Au@kroah.com>
+From:   Amit Klein <aksecurity@gmail.com>
+Date:   Tue, 22 Jun 2021 12:10:25 +0300
+Message-ID: <CANEQ_++HfmyfOzjqS2b_XPvAedzy=zCvDXP_=cfuowZUBJ8JjQ@mail.gmail.com>
+Subject: Re: [PATCH 4.19] inet: use bigger hash table for IP ID generation
+ (backported to 4.19)
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Eric Dumazet <edumazet@google.com>, Willy Tarreau <w@1wt.eu>,
+        "David S . Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 22 Jun 2021 11:59:10 +0300
-Laurent Pinchart <laurent.pinchart@ideasonboard.com> escreveu:
+On Mon, Jun 21, 2021 at 6:28 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Jun 17, 2021 at 01:19:18AM -0700, Amit Klein wrote:
+> > Subject: inet: use bigger hash table for IP ID generation (backported to 4.19)
+> > From: Amit Klein <aksecurity@gmail.com>
+[...]
+>
+> I've queued this, and the 4.14 version up.  Can you create a 4.4.y and
+> 4.9.y version as well?
+>
 
-> On Tue, Jun 22, 2021 at 09:50:37AM +0100, Dave Stevenson wrote:
-> > On Tue, 22 Jun 2021 at 09:29, Mauro Carvalho Chehab wrote:  
-> > > Em Mon, 21 Jun 2021 21:22:26 +0300 Laurent Pinchart escreveu:
-> > >  
-> > > > Hi Mauro,
-> > > >
-> > > > Thank you for the patch.  
-> > >
-> > > Thanks for reviewing it!
-> > >  
-> > > >
-> > > > On Mon, Feb 01, 2021 at 08:08:59PM +0100, Mauro Carvalho Chehab wrote:  
-> > > > > This device:
-> > > > >         534d:2109 MacroSilicon
-> > > > >
-> > > > > Announces that it supports several frame intervals for
-> > > > > their resolutions for MJPEG compression:
-> > > > >
-> > > > >         VideoStreaming Interface Descriptor:
-> > > > >         bLength                            46
-> > > > >         bDescriptorType                    36
-> > > > >         bDescriptorSubtype                  7 (FRAME_MJPEG)
-> > > > >         bFrameIndex                         1
-> > > > >         bmCapabilities                   0x00
-> > > > >           Still image unsupported
-> > > > >         wWidth                           1920
-> > > > >         wHeight                          1080
-> > > > >         dwMinBitRate                   768000
-> > > > >         dwMaxBitRate                196608000
-> > > > >         dwMaxVideoFrameBufferSize     4147200
-> > > > >         dwDefaultFrameInterval         166666
-> > > > >         bFrameIntervalType                  5
-> > > > >         dwFrameInterval( 0)            166666
-> > > > >         dwFrameInterval( 1)            333333
-> > > > >         dwFrameInterval( 2)            400000
-> > > > >         dwFrameInterval( 3)            500000
-> > > > >         dwFrameInterval( 4)           1000000
-> > > > >
-> > > > > However, the highest frame interval (166666), which means 60 fps
-> > > > > is not supported. For such resolution, the maximum interval
-> > > > > is, instead 333333 (30 fps).  
-> > > >
-> > > > What happens if you try to select it ?  
-> > >
-> > > Basically, URBs get lost: they cause apps like qv4l2 to crash
-> > > sometimes, with:
-> > >
-> > >         v4l-convert: libjpeg error: Corrupt JPEG data: premature end of data segment
-> > >
-> > > The image keeps blinking, and part of the image is replaced by
-> > > white noise.
-> > >
-> > > Clearly, it tries to send more data than the maximum available bandwidth
-> > > on this chipset.  
-> > 
-> > What platform are you running this on?
-> > I've previously encountered a USB3 camera module where the datastream
-> > was VERY bursty. The memcpy of the data from URB to V4L2 buffer took
-> > long enough that sometimes the module didn't have an URB to fill at
-> > the appropriate moment, and it dropped data. I seem to recall
-> > increasing UVC_URBS from the default of 5 to 10 to handle the peak
-> > data rate without loss, but it may have been higher still. This was on
-> > a ~1.5GHz Atom processor, so not lacking in performance.
-> > 
-> > I wonder if the same is true in your case. If it's MJPEG compressed
-> > then the peak rate may again be high. Just a thought.  
-> 
-> It's worth investigating indeed. How often are URBs dropped ? Does it
-> occur for every frame, or once in a while ?
+Done and submitted (a few minutes ago). Note the subject line has
+"[PATCH 4.9]" but it also fixes 4.4 (I didn't know what convention to
+use for this case).
 
-It occurs on every frame. Monitoring the traffic with usbtop shows
-that about the same amount of data is shown when selecting 30 or 60
-fps.
-
-Btw, the manual of the device clearly says that it supports only 30
-fps at the maximum resolution.
-
-What's happening is that the USB descriptors are not correct.
-
-Btw, this is the device:
-
-	https://www.amazon.de/-/en/gp/product/B088NWWSKN
-
-I'm basically using it (together with a Logitech nano receiver) as
-a cheap KVM device :-)
-
-Thanks,
-Mauro
+Best,
+-Amit
