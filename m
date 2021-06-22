@@ -2,52 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE00E3B01A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD993B01AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhFVKq0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Jun 2021 06:46:26 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:63997 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhFVKqY (ORCPT
+        id S229920AbhFVKs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 06:48:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229567AbhFVKsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 06:46:24 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 861B940012;
-        Tue, 22 Jun 2021 10:44:06 +0000 (UTC)
-Date:   Tue, 22 Jun 2021 12:44:05 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     linux-mtd@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH V5 RESEND] mtd: rawnand: Add Loongson1 NAND driver
-Message-ID: <20210622124405.43bb5461@xps13>
-In-Reply-To: <20210520224213.7907-1-keguang.zhang@gmail.com>
-References: <20210520224213.7907-1-keguang.zhang@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 22 Jun 2021 06:48:20 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBBAC061574;
+        Tue, 22 Jun 2021 03:46:04 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id n23so12500813wms.2;
+        Tue, 22 Jun 2021 03:46:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qMOGwsWYKHTZb8UYmFMCPsWfqOqd5Vu+RMIfnWvpSec=;
+        b=R0y96Yw4atCjm/+Ea/MEQx3JB+nRlqH5w4lyV9sm7lJABArNr1gBiOcnjC1SVjUL3g
+         RsRIv/sXqiwvxrG8vg3+nVNDOgjJePVL5DoPDLVBnXW/102FbWyMXz86A6oYORhD6eUx
+         AxTHtGeAY8UIC46wpgo34Rhi61XbNLU5vi0rxvqFeOTqE7hlir2A65BIbCfZSk3og5gF
+         TOl+g6rSL4AVgFh6SqHl4qn93Hmlc2k556mM50PHYfCHVPLKRjCbuNoLBv1GpHq6j6Ma
+         iNIR5wI16Tl2Ypi2ChyC2GmImj4JtPzvdLCVXP2WbqzA237XW58qThEAe3Wh2mmz5RRZ
+         nxgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qMOGwsWYKHTZb8UYmFMCPsWfqOqd5Vu+RMIfnWvpSec=;
+        b=Po3+2/riBjrcCc9XNsPZAd3fkt94JPDUyaBkA0KL1EXjaQ4UKh5zihNBzBrZl61w7J
+         UF+7TColAyWPzAQx1WulUeRbrg6QEh6pjWBEa3Ashcy5sD0ST7ik/G06bCFflUQNrxgZ
+         Xt8vGsZa1yRkd1bOiOQG0fAFKAoxj2ZwhSHB//Df46n67sgMKo1w3ChAATxWc2qnm3nY
+         lDO7MYQ8+ECpMMHpY+fJ/JpBQTJ0ko4DfdfZSv8bxupyHFlM05mpSOgo/QZTDwQo1EmH
+         XhzBMkIugacnn+1edJSZO9yLTiy5b/hvYg8zr2Md2lHHFQlDHLzLGcdg8F6+mz0mSGzz
+         ZvqA==
+X-Gm-Message-State: AOAM530ugtnoYW/Ifb5qEbYvpMPbkOg3p0NKihsw9Z7AfRxI1bDNTLzZ
+        aALmPKsKU8lhMr2LjCRAvZg=
+X-Google-Smtp-Source: ABdhPJxJ5vGzRo1V9Cp8vXwaCUciNyAZUk9oCAPNkyR+rJfg+SrwSFr/juwhLDFEv5mwADNcsZO2JQ==
+X-Received: by 2002:a05:600c:22cf:: with SMTP id 15mr753586wmg.177.1624358761437;
+        Tue, 22 Jun 2021 03:46:01 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id u20sm1870325wmq.24.2021.06.22.03.46.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 03:46:01 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 11:45:59 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 00/90] 5.4.128-rc1 review
+Message-ID: <YNG/Z19ODMtK9BVg@debian>
+References: <20210621154904.159672728@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Keguang,
+Hi Greg,
 
-Keguang Zhang <keguang.zhang@gmail.com> wrote on Fri, 21 May 2021
-06:42:13 +0800:
-
-> From: Kelvin Cheung <keguang.zhang@gmail.com>
+On Mon, Jun 21, 2021 at 06:14:35PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.128 release.
+> There are 90 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> This patch adds NAND driver for Loongson1B.
-> 
-> Signed-off-by: Kelvin Cheung <keguang.zhang@gmail.com>
+> Responses should be made by Wed, 23 Jun 2021 15:48:46 +0000.
+> Anything received after that time might be too late.
 
-Sorry for the delay, I really need to focus an hour on this driver, I
-didn't take the time to do so, this is still in my todo-list.
+Build test:
+mips (gcc version 11.1.1 20210615): 65 configs -> no failure
+arm (gcc version 11.1.1 20210615): 107 configs -> no new failure
+arm64 (gcc version 11.1.1 20210615): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
-Thanks,
-Miquèl
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
+
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
