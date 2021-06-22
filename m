@@ -2,246 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DC83B0951
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88AD13B095A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbhFVPmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:42:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48085 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232324AbhFVPmB (ORCPT
+        id S232420AbhFVPnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:43:01 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:59406 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232360AbhFVPmk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:42:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624376385;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=U/wFXoBcn9iO6fPUOkqFiUXQLnfuBmGcAVxGMEB2Nh4=;
-        b=PaCyz4EhR5y3LVd//dP/Yorfd+UzBsDoiFrY1fFXRYS4a9hU0AeTdTBdE11ImS/WAGO4b6
-        ZVA8l5WWeCDO8WlM/2VaANezM1ny3Zw0m4bkQwCyLYIS+HUdPy5wvouWK1PaQPp452bkXw
-        VGrZa7vEBVqUVrLafyvaQFwLo78fsxA=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-575-eahE40MfPVGzeAA_MVr2yA-1; Tue, 22 Jun 2021 11:39:44 -0400
-X-MC-Unique: eahE40MfPVGzeAA_MVr2yA-1
-Received: by mail-wm1-f70.google.com with SMTP id f11-20020a05600c154bb02901e0210617aaso823274wmg.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:39:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=U/wFXoBcn9iO6fPUOkqFiUXQLnfuBmGcAVxGMEB2Nh4=;
-        b=KzhIGNw5ye3KO+f9ty9SaY6/oA7AdcCYiJ+P+TFTYu2WYb9ZhDGfHtGCLfdfCWGbQD
-         3Vw4NSWspjRIzFUQN3NqlNj9lxU4pQRDbdcGMGeF69gTyYtbfZGXd6ZtbJblws7Bu6a2
-         OyEHObfRPSFs/Tg7BJ+Xe1I4WC6Di6WTPQMLCpx42Vx95KbZyq699PwLAMKPEs27XIhw
-         QJ7CCwovxZVno8hsIhCXCZReNG9bUmhD78fhJZkA3lmdP3+9QWJceNz0woKKiDkECNE+
-         4pUNiw4AJxvuCc8u6iXZJpUOXTaisU9pBWleX/lKCPbnN+N0HRYMH8XiQLbdQnSjwVJC
-         G6Mg==
-X-Gm-Message-State: AOAM5309Z30d4ZHHzeLvKrLM4/G5U3xLIDzZgiDJg7IyjNhHncpVk4Ok
-        6FMNRfa0lAfQTnVxDjcErfiTi3bzaTs855TYolfZxniTCzPIHxTO30WoQ1V6NuMoJUc2Ln7vBm2
-        1Ad3djgG852m8E0QQMq97jcTo
-X-Received: by 2002:a1c:ed10:: with SMTP id l16mr5205917wmh.8.1624376382872;
-        Tue, 22 Jun 2021 08:39:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwrLI/X468Tt11nt92sTn98VX3c4isJ2DeClv5DufyyIiUCl/I6GMUgL7hHXVw8XQrBFnAf6Q==
-X-Received: by 2002:a1c:ed10:: with SMTP id l16mr5205907wmh.8.1624376382690;
-        Tue, 22 Jun 2021 08:39:42 -0700 (PDT)
-Received: from krava.redhat.com ([5.171.243.0])
-        by smtp.gmail.com with ESMTPSA id e3sm11647962wro.26.2021.06.22.08.39.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 08:39:42 -0700 (PDT)
-From:   Jiri Olsa <jolsa@redhat.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH 10/10] perf inject: Add --buildid-mmap2 option to fix failed build ids
-Date:   Tue, 22 Jun 2021 17:39:18 +0200
-Message-Id: <20210622153918.688500-11-jolsa@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210622153918.688500-1-jolsa@kernel.org>
-References: <20210622153918.688500-1-jolsa@kernel.org>
+        Tue, 22 Jun 2021 11:42:40 -0400
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15MFWP9v031503;
+        Tue, 22 Jun 2021 08:39:58 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=BE2RYMDGJC8Y6xT1glzNsBqr+Yil0S6Ql/uv4EUjuQ4=;
+ b=EfbgmRuXp2WDba+wjs+4F56yFuGv3y45A7g9OA1lC3FHlc1jfUAlIEtlK8sdwEb6uTnW
+ T+EXq9BKO3/Vz8LW5YygvMhxp4jt/2hD17o8ul2p0hohyLIYZZn+kdbdL0BlgNOtP7Sv
+ TPteQyY6vSEW7dfZvQM/DKxr41o3ISl0U2Bh9JaonbLuXjMJJ90cNJDB7qWn8b0d0sCg
+ U3p3dTXvvODuFYH9swMFXuUpIYRkV7REErNNpufMlfO2zC8dw6ZLsmKoGfLz3AbvU88E
+ As3UFAkIej+Nev/ENLaKBP6HcPYWz7zl1DU+/lO9kWH9NOGxYRWrCp4EwgO8TaiBNIMe OA== 
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2105.outbound.protection.outlook.com [104.47.70.105])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 39apms59tt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Jun 2021 08:39:58 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WJYAzJdq7KhVppQFwJlPomEp7fV+Zn3qY8vUUVZydmBWbqKu3qJEp97qoVst47PHE/pHElV8+3Nj1zrf0wWNdpmIXoFzseTwTG3m8/fWfedgdKz1CuvOh994sv4I8FlXbi2aBMrOZTJzPUbCFQ02dqvQi9uT+yIoosxELnBJoRA3PxVFA4SmZqId8tMIiAIAm0Lo7wQIGjFS3VGd25vRT7ncaYRJZClI4Fr5D96b/HpDHRuxW+vKH3vFWEdwxkWVg0I3y+DWuBxPMHhvozj3wbdOZs7NW1Yv3q4a3nQolvNlIrLXH2ytAiPAPPErEVFYEn2cW9Hu3nmQKtQ9RMBXlw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BE2RYMDGJC8Y6xT1glzNsBqr+Yil0S6Ql/uv4EUjuQ4=;
+ b=Dgl2Gn7jRALc0hdFMtwBiXa3Il7agC+G57xJHSMAJq1TOJ/AOuISKRCDczUlnGkcrTS8RbBaJgHosYEu9bfdEKW3BK7FRrlma8P5IBthkU6T0a48FR1XxBzr0Qp3SzvkpU3qEJnEMBuA/nZ3ZPKrJLItpOh2P07aqiCz+zCYdDEtjsku9B/9rsWQDe/+N/Xz49wfOGiUDUv1BPO03nd0rP3h+GpI8AkicVDLPamxExftU86YZimKPCMAtCPfhJNcFH8t+uwm4WhK0awpc9kj7sZnhoCpbmAq7cJ7jh9GAehyxBTkSGZ9rykVEo2oD2SjQWfAgvdNi42j/MsSsNmXpg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 64.207.220.244) smtp.rcpttodomain=pengutronix.de smtp.mailfrom=cadence.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BE2RYMDGJC8Y6xT1glzNsBqr+Yil0S6Ql/uv4EUjuQ4=;
+ b=lsrV0yQPbn8ev0/IDN0TU6JymNNG8WSWtLYEu9a6KioyiBfIrfWI1uH8QQI6RbrqG5TKyl69UpUOdaVUMSj+PSgdcTjoKVZdlpHtnvt+nN8Lx3Z5BrMk6bveWwin8J/IBJfd2I88Dq2d6YEaPICQCfziCIn3aYUHTqX7u+NJMbA=
+Received: from MW4PR04CA0148.namprd04.prod.outlook.com (2603:10b6:303:84::33)
+ by SN6PR07MB5488.namprd07.prod.outlook.com (2603:10b6:805:df::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Tue, 22 Jun
+ 2021 15:39:55 +0000
+Received: from MW2NAM12FT006.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:303:84:cafe::a9) by MW4PR04CA0148.outlook.office365.com
+ (2603:10b6:303:84::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21 via Frontend
+ Transport; Tue, 22 Jun 2021 15:39:55 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 64.207.220.244)
+ smtp.mailfrom=cadence.com; pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=pass action=none header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 64.207.220.244 as permitted sender) receiver=protection.outlook.com;
+ client-ip=64.207.220.244; helo=wcmailrelayl01.cadence.com;
+Received: from wcmailrelayl01.cadence.com (64.207.220.244) by
+ MW2NAM12FT006.mail.protection.outlook.com (10.13.180.73) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4264.10 via Frontend Transport; Tue, 22 Jun 2021 15:39:54 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+        by wcmailrelayl01.cadence.com (8.14.7/8.14.4) with ESMTP id 15MFdpjB219509
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=OK);
+        Tue, 22 Jun 2021 08:39:52 -0700
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 22 Jun 2021 17:39:51 +0200
+Received: from vleu-orange.cadence.com (10.160.88.83) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Tue, 22 Jun 2021 17:39:51 +0200
+Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 15MFdoWK002298;
+        Tue, 22 Jun 2021 17:39:50 +0200
+Received: (from sjakhade@localhost)
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 15MFdnCv002296;
+        Tue, 22 Jun 2021 17:39:49 +0200
+From:   Swapnil Jakhade <sjakhade@cadence.com>
+To:     <vkoul@kernel.org>, <kishon@ti.com>, <p.zabel@pengutronix.de>,
+        <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     <mparab@cadence.com>, <sjakhade@cadence.com>, <lokeshvutla@ti.com>
+Subject: [PATCH v2 0/9] PHY: Prepare Cadence Torrent PHY driver to support multilink DP
+Date:   Tue, 22 Jun 2021 17:39:40 +0200
+Message-ID: <20210622153949.2215-1-sjakhade@cadence.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ac337e9e-ee72-4d98-f0c9-08d93593fb55
+X-MS-TrafficTypeDiagnostic: SN6PR07MB5488:
+X-Microsoft-Antispam-PRVS: <SN6PR07MB5488E2600C25966244B4DC68C5099@SN6PR07MB5488.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xAafXbLii+e4nrsmVtBtWf5Qw28daO9E1tGdfhoFxhLuxlaOfi/kCt2mut2fw5cJYv56gDq95dSpES/Cwddtl+oWWt1CdHvvUycz5yK+11FqO7D+UvKfxHQarbyzvhnrjq27KPq4Xvqe6m0hV2xt3e758NqYAb/n1MJjbpOk6rMYfz7V5k1dSWt4VW6DMGRLXvy+0/GKO837cImDTz7Eh073bkYl26ulwgZkWlliEGuTttXAHkXhQc+zU8MxgldlNnuqJjdtaKTLhduauQyW0kQku0zWYrDH9KDV4LY3geZoXlwmIvj7IQCmj+7BvotVxAqCxaEh9GrGt712xBpe0DnmsyVDnepSzP5nlnlk69CNC5D/MKiZ8tvjfuuXli5mA6PzPtq8Q3cgJu3QGCbXsSfDLR6H9oVqm23fSK74K+jbrCAKWW+FPAGvzH6hrpr6Qn75iXAOSYD7MDk4zKPECUKLRiUIMCxITD9dbnocLXJDitmBY+veQKupEABZAR3d0XGH4kyg9dFrdgwcHq89J/sWh6R4LME/VyrdbxmJt2lRe6GZGI6ax10MQwiYUbPdoWAUuhQJkVAmShrmT/iC0MW4vbIp1yF8MGN8GyZlVYKkVS3zfM7PtMb2WQkW8ObKUJSMvECPiN0pI056MOvGszqYKE5ajpdyRGIPc7iStqBmGxzYFbKFiN3TXOKCaFEBOo5+C0oO/UK00p9mZn3ueoTkHvNZ3Va6qW6sFi9FdNSNJAXb4CaqqNlfD0pQpVGnaOkMuAjQzo6qjc4jcBc/sdLqGgjXdMbfoEGducbkuwYhKgWt/UfZUeiurEYVHloOawJTpqhZKgMH+GzWus7SJYjcEYAUXRVvR3cL3D/6PBs=
+X-Forefront-Antispam-Report: CIP:64.207.220.244;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:wcmailrelayl01.cadence.com;PTR:ErrorRetry;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(136003)(376002)(36092001)(46966006)(36840700001)(54906003)(86362001)(110136005)(2906002)(70586007)(70206006)(42186006)(36860700001)(336012)(5660300002)(316002)(6666004)(1076003)(2616005)(478600001)(26005)(186003)(47076005)(82310400003)(8676002)(426003)(966005)(8936002)(81166007)(82740400003)(83380400001)(356005)(36756003)(4326008)(2101003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 15:39:54.2284
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ac337e9e-ee72-4d98-f0c9-08d93593fb55
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[64.207.220.244];Helo=[wcmailrelayl01.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: MW2NAM12FT006.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR07MB5488
+X-Proofpoint-ORIG-GUID: YFoErwN3gBdviFXPMYyKXnmyoe4kX18g
+X-Proofpoint-GUID: YFoErwN3gBdviFXPMYyKXnmyoe4kX18g
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-22_08:2021-06-22,2021-06-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 suspectscore=0
+ mlxlogscore=849 phishscore=0 lowpriorityscore=0 spamscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 bulkscore=0 mlxscore=0
+ clxscore=1011 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106220097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding --buildid-mmap2 option that tried to fix failed build ids
-in mmap2 events.
+This patch series enables Torrent PHY driver to support different input
+reference clock frequencies. It also does the basic cleanup in order to
+add support for multilink DP configurations. The multilink DP series at
+[1] will be split in 2 parts and sent separately. This is part 1 of the
+series.
 
-Record data with --buildid-mmap option:
+Support for DP multilink configurations with register sequences will be
+added in part 2 as a separate patch series after validation.
 
-  # perf record --buildid-mmap ...
-  ...
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Failed to parse 4 build ids]
-  [ perf record: Captured and wrote 0.008 MB perf.data ]
+[1] https://lore.kernel.org/patchwork/cover/1410252/
 
-Check if there's only build id fault reported:
+Version History:
 
-  # perf report --header-only
-  ...
-  # build id mmap stats: FAULTS 4, LOST 0, NOT FIXED
+v2:
+   - Removed multilink DP support and register configuration patches
+   - Fixed v1 review comments
+   - Added Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com> to patches
+     1/9, 3/9 and 7/9
 
-There is, check the stats:
+Swapnil Jakhade (9):
+  phy: cadence-torrent: Remove use of CamelCase to fix checkpatch CHECK
+    message
+  phy: cadence-torrent: Reorder few functions to remove function
+    declarations
+  phy: cadence-torrent: Add enum for supported input reference clock
+    frequencies
+  phy: cadence-torrent: Configure PHY registers as a function of input
+    reference clock rate
+  phy: cadence-torrent: Add PHY registers for DP in array format
+  phy: cadence-torrent: Add PHY configuration for DP with 100MHz ref
+    clock
+  phy: cadence-torrent: Add separate functions for reusable code
+  phy: cadence-torrent: Add debug information for PHY configuration
+  phy: cadence-torrent: Check PIPE mode PHY status to be ready for
+    operation
 
-  # perf report --stat
+ drivers/phy/cadence/phy-cadence-torrent.c | 3181 ++++++++++++---------
+ 1 file changed, 1750 insertions(+), 1431 deletions(-)
 
-  Aggregated stats:
-           TOTAL events:        104
-                    ....
-         BUILD_ID fails:          4  (14.3%)
-
-Yep, let's fix it:
-
-  # perf inject --buildid-mmap2 -i perf.data -o perf-fixed.data
-
-And verify:
-
-  # perf report -i perf-fixed.data --stats
-
-  Aggregated stats:
-             TOTAL events:        104
-                      ....
-
-Good, let's see how many we fixed:
-
-  # perf report --header-only -i perf-fixed.data
-  ...
-  # build id mmap stats: FAULTS 4, LOST 0, FIXED(4)
-
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/perf/Documentation/perf-inject.txt |  3 ++
- tools/perf/builtin-inject.c              | 45 ++++++++++++++++++++++--
- 2 files changed, 46 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/Documentation/perf-inject.txt b/tools/perf/Documentation/perf-inject.txt
-index 91108fe3ad5f..172d6942ca68 100644
---- a/tools/perf/Documentation/perf-inject.txt
-+++ b/tools/perf/Documentation/perf-inject.txt
-@@ -30,6 +30,9 @@ OPTIONS
- --buildid-all:
- 	Inject build-ids of all DSOs into the output stream
- 
-+--buildid-mmap2:
-+	Resolve failed buildids in MMAP2 events.
-+
- -v::
- --verbose::
- 	Be more verbose.
-diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-index 5d6f583e2cd3..5c6c37c581ca 100644
---- a/tools/perf/builtin-inject.c
-+++ b/tools/perf/builtin-inject.c
-@@ -40,6 +40,7 @@ struct perf_inject {
- 	struct perf_session	*session;
- 	bool			build_ids;
- 	bool			build_id_all;
-+	bool			build_id_mmap2;
- 	bool			sched_stat;
- 	bool			have_auxtrace;
- 	bool			strip;
-@@ -389,13 +390,43 @@ static int perf_event__repipe_buildid_mmap(struct perf_tool *tool,
- 	return perf_event__repipe(tool, event, sample, machine);
- }
- 
-+static bool mmap2_fix_buildid(union perf_event *event, struct build_id *bid)
-+{
-+	struct perf_record_mmap2 *mmap2 = &event->mmap2;
-+
-+	/*
-+	 * Filter maps that should have build id, but do not carry one.
-+	 */
-+	if (!is_buildid_memory(mmap2->filename) ||
-+	    mmap2->header.misc & PERF_RECORD_MISC_MMAP_BUILD_ID)
-+		return false;
-+
-+	return filename__read_build_id(mmap2->filename, bid) > 0 ? true : false;
-+}
-+
- static int perf_event__repipe_mmap2(struct perf_tool *tool,
- 				   union perf_event *event,
- 				   struct perf_sample *sample,
- 				   struct machine *machine)
- {
-+	struct perf_inject *inject = container_of(tool, struct perf_inject, tool);
-+	union perf_event *tmp = NULL;
-+	struct build_id bid;
- 	int err;
- 
-+	if (inject->build_id_mmap2 && mmap2_fix_buildid(event, &bid)) {
-+		tmp = memdup(event, event->header.size);
-+		if (!tmp)
-+			return -ENOMEM;
-+		memcpy(tmp->mmap2.build_id, bid.data, sizeof(bid.data));
-+		tmp->header.misc |= PERF_RECORD_MISC_MMAP_BUILD_ID;
-+		tmp->mmap2.build_id_size = (u8) bid.size;
-+		tmp->mmap2.__reserved_1 = 0;
-+		tmp->mmap2.__reserved_2 = 0;
-+		event = tmp;
-+		inject->session->header.env.build_id_mmap.fixed++;
-+	}
-+
- 	err = perf_event__process_mmap2(tool, event, sample, machine);
- 	perf_event__repipe(tool, event, sample, machine);
- 
-@@ -411,6 +442,7 @@ static int perf_event__repipe_mmap2(struct perf_tool *tool,
- 		dso__put(dso);
- 	}
- 
-+	free(tmp);
- 	return err;
- }
- 
-@@ -764,7 +796,8 @@ static int __cmd_inject(struct perf_inject *inject)
- 	signal(SIGINT, sig_handler);
- 
- 	if (inject->build_ids || inject->sched_stat ||
--	    inject->itrace_synth_opts.set || inject->build_id_all) {
-+	    inject->itrace_synth_opts.set || inject->build_id_all ||
-+	    inject->build_id_mmap2) {
- 		inject->tool.mmap	  = perf_event__repipe_mmap;
- 		inject->tool.mmap2	  = perf_event__repipe_mmap2;
- 		inject->tool.fork	  = perf_event__repipe_fork;
-@@ -916,13 +949,15 @@ int cmd_inject(int argc, const char **argv)
- 		.mode = PERF_DATA_MODE_READ,
- 		.use_stdio = true,
- 	};
--	int ret;
-+	int ret = -1;
- 
- 	struct option options[] = {
- 		OPT_BOOLEAN('b', "build-ids", &inject.build_ids,
- 			    "Inject build-ids into the output stream"),
- 		OPT_BOOLEAN(0, "buildid-all", &inject.build_id_all,
- 			    "Inject build-ids of all DSOs into the output stream"),
-+		OPT_BOOLEAN(0, "buildid-mmap2", &inject.build_id_mmap2,
-+			    "Resolve failed buildids in MMAP2 events"),
- 		OPT_STRING('i', "input", &inject.input_name, "file",
- 			   "input file name"),
- 		OPT_STRING('o', "output", &inject.output.path, "file",
-@@ -995,6 +1030,12 @@ int cmd_inject(int argc, const char **argv)
- 	if (IS_ERR(inject.session))
- 		return PTR_ERR(inject.session);
- 
-+	if (inject.build_id_mmap2 &&
-+	    !perf_header__has_feat(&inject.session->header, HEADER_BUILD_ID_MMAP)) {
-+		pr_err("The data does not have HEADER_BUILD_ID_MMAP, exiting..\n");
-+		goto out_delete;
-+	}
-+
- 	if (zstd_init(&(inject.session->zstd_data), 0) < 0)
- 		pr_warning("Decompression initialization failed.\n");
- 
 -- 
-2.31.1
+2.26.1
 
