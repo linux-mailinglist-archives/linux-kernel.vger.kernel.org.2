@@ -2,135 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FDF33AFF92
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 615773AFFC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbhFVIth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 04:49:37 -0400
-Received: from mga17.intel.com ([192.55.52.151]:36958 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhFVItf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 04:49:35 -0400
-IronPort-SDR: icvnJynfx3cRjCCMThGggg5xTGuVe2f+Obakbd8+bvzh7FzdP4gfUyeEdDL5jbJoX7kOk8Cl4s
- FZ4FkSn/6fXA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="187394152"
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="187394152"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 01:47:15 -0700
-IronPort-SDR: ukPvfoQOa44oqWOVGcyyHYwYOtkxKNyKOuVVvXOs9sLN5Iv3/3rhYIL8pjFx3zTSDDT6zPtHbY
- JD+12BxKULpQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="486827427"
-Received: from michael-optiplex-9020.sh.intel.com (HELO localhost) ([10.239.159.182])
-  by orsmga001.jf.intel.com with ESMTP; 22 Jun 2021 01:47:11 -0700
-Date:   Tue, 22 Jun 2021 17:01:52 +0800
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     pbonzini@redhat.com
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
-        wei.w.wang@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH v4 00/10] KVM: x86/pmu: Guest Architectural LBR
- Enabling
-Message-ID: <20210622090152.GA13141@intel.com>
-References: <20210510081535.94184-1-like.xu@linux.intel.com>
+        id S229775AbhFVJDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 05:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229628AbhFVJDu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 05:03:50 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B26C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:01:33 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so20596376otl.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:01:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E3vujFtQzQ6HHb36nCRkPnI6sILbeapGxmxAb4EfnkI=;
+        b=CB752prxx4dAwLiJh978X4UEniRLciLoj78ygr06BhzO9Zg7gd4UEFbVgZXdlVMHDt
+         p2vaKWQ1OJcHnvkvP5Tu45vm8+XZy0OhLLxui1fAfHsP5/d4JeU6Idj+wyDXEF93AVl6
+         SUMEwVJYMziAOsHVQ9vDsGCZHT873ntwOguGUK2ALiLzW6WBKUyUDKWOrMmyiu0C17s5
+         RP8HZEa2qe1olyrZy6gNVC1IJ3jJ58ILo6TsaqFcAlBXYK6PmUJPOyIpNV8Jpwvgvlut
+         xYAdLL+t/fKOXk9CaBN/ZTnLpMInTCxfXCSoqiVG3oc34ZJ6Q5DFL97vyZEHdqRQCBpJ
+         kOuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E3vujFtQzQ6HHb36nCRkPnI6sILbeapGxmxAb4EfnkI=;
+        b=l/26PRj2m9M3EgKJbTzbeENqvTeNM5DUXsV0uQ9JtGl+9mgs24s16viHn5uGeym3X3
+         nKq2EgA9pSMWo40tHxtEnkQAIusAwkIOhsBwXMmo4iZ4yWFnv16dB3Nr6uRfMmDnyOTx
+         JMHWevFAS3k67RNCXo7osfmtTe0BwCW2+8OYxSgBce2+6p0EAqwLg3K9+ZcQ5CYBJJmw
+         /9Hmd7VmBMNe6tnJy6o7ukLeFqPiMV8hzEYPtoe+0F+6F5dp5SDoxI4RUYVBe/ZRnxBt
+         3s6CD6ldNQrD7poLK3bECYflmqYwPXWWsLMNlM9YP+pPgJC1XjoHpPjfn8qE1wfriziE
+         7sUg==
+X-Gm-Message-State: AOAM532jBSV3vb8n9SAhqnUQ39nnSUH3sbUtb2F4i17aqyMmrPSph8MC
+        dbhXBObAW5I9Bm13qzAQ7G47DFZEUMwB0coqwaaNJw==
+X-Google-Smtp-Source: ABdhPJz6x9ikQTihlpl50ySejohRlYsuuYzk1020DWbzWFDGxvVI6FgPvghPiE/lufEm9zK+hYyHAKWDluvyY14hCZw=
+X-Received: by 2002:a05:6830:1bcb:: with SMTP id v11mr2292496ota.251.1624352492722;
+ Tue, 22 Jun 2021 02:01:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210510081535.94184-1-like.xu@linux.intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20210622084723.27637-1-yee.lee@mediatek.com>
+In-Reply-To: <20210622084723.27637-1-yee.lee@mediatek.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 22 Jun 2021 11:01:21 +0200
+Message-ID: <CANpmjNPyP2-oULXuO9ZdC=yj_XSiC2TWKNBp0RL_h3k-XvpFsA@mail.gmail.com>
+Subject: Re: [PATCH] kasan: [v2]unpoison use memzero to init unaligned object
+To:     yee.lee@mediatek.com
+Cc:     andreyknvl@gmail.com, wsd_upstream@mediatek.com,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:KASAN" <kasan-dev@googlegroups.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 22 Jun 2021 at 10:48, <yee.lee@mediatek.com> wrote:
+>
+> From: Yee Lee <yee.lee@mediatek.com>
+>
+> Follows the discussion: https://patchwork.kernel.org/project/linux-mediatek/list/?series=504439
 
-Hello, maintainers,
+The info about the percentage of how frequent this is could have been
+provided as a simple reply to the discussion.
 
-I took over the work from Like and will carry it forward. Here I'd like to
-get your valuable comments on this patch series before I post next version.
+> This patch Add memzero_explict to initialize unaligned object.
 
-Thanks a lot!
+This patch does not apply to anything (I see it depends on the previous patch).
 
-> Hi geniuses,
-> 
-> A new kernel cycle has begun, and this version looks promising. 
-> 
-> >From the end user's point of view, the usage of Arch LBR is the same as
-> the legacy LBR we have merged in the mainline, but it is much faster.
-> 
-> The Architectural Last Branch Records (LBRs) is published 
-> in the 319433-040 release of Intel Architecture Instruction
-> Set Extensions and Future Features Programming Reference[0].
-> 
-> The main advantages for the Arch LBR users are [1]:
-> - Faster context switching due to XSAVES support and faster reset of
->   LBR MSRs via the new DEPTH MSR
-> - Faster LBR read for a non-PEBS event due to XSAVES support, which
->   lowers the overhead of the NMI handler.
-> - Linux kernel can support the LBR features without knowing the model
->   number of the current CPU.
-> 
-> Please check more details in each commit and feel free to comment.
-> 
-> [0] https://software.intel.com/content/www/us/en/develop/download/
-> intel-architecture-instruction-set-extensions-and-future-features-programming-reference.html
-> [1] https://lore.kernel.org/lkml/1593780569-62993-1-git-send-email-kan.liang@linux.intel.com/
-> 
+What you need to do is modify the original patch, and then send a
+[PATCH v2] (git helps with that by passing --reroll-count or -v) that
+applies cleanly to your base kernel tree.
+
+The commit message will usually end with '---' and then briefly denote
+what changed since the last version.
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#the-canonical-patch-format
+
+> Based on the integrateion of initialization in kasan_unpoison(). The hwtag instructions, constrained with its granularity, has to overwrite the data btyes in unaligned objects. This would cause issue when it works with SLUB debug redzoning.
+>
+> In this patch, an additional initalizaing path is added for the unaligned objects. It contains memzero_explict() to clear out the data and disables its init flag for the following hwtag actions.
+>
+> In lab test, this path is executed about 1.1%(941/80854) within the overall kasan_unpoison during a non-debug booting process.
+
+Nice, thanks for the data. If it is somehow doable, however, I'd still
+recommend to additionally guard the new code path by a check if
+debug-support was requested. Ideally with an IS_ENABLED() config check
+so that if it's a production kernel the branch is simply optimized out
+by the compiler.
+
+> Lab test: QEMU5.2 (+mte) / linux kernel 5.13-rc7
+>
+> Signed-off-by: Yee Lee <yee.lee@mediatek.com>
 > ---
-> v13->v13 RESEND Changelog:
-> - Rebase to kvm/queue tree tag: kvm-5.13-2;
-> - Includes two XSS dependency patches from kvm/intel tree;
-> 
-> v3->v4 Changelog:
-> - Add one more host patch to reuse ARCH_LBR_CTL_MASK;
-> - Add reserve_lbr_buffers() instead of using GFP_ATOMIC;
-> - Fia a bug in the arch_lbr_depth_is_valid();
-> - Add LBR_CTL_EN to unify DEBUGCTLMSR_LBR and ARCH_LBR_CTL_LBREN;
-> - Add vmx->host_lbrctlmsr to save/restore host values;
-> - Add KVM_SUPPORTED_XSS to refactoring supported_xss;
-> - Clear Arch_LBR ans its XSS bit if it's not supported;
-> - Add negative testing to the related kvm-unit-tests;
-> - Refine code and commit messages;
-> 
-> Previous:
-> v4: https://lore.kernel.org/kvm/20210314155225.206661-1-like.xu@linux.intel.com/
-> v3: https://lore.kernel.org/kvm/20210303135756.1546253-1-like.xu@linux.intel.com/
-> 
-> Like Xu (8):
->   perf/x86/intel: Fix the comment about guest LBR support on KVM
->   perf/x86/lbr: Simplify the exposure check for the LBR_INFO registers
->   KVM: vmx/pmu: Add MSR_ARCH_LBR_DEPTH emulation for Arch LBR
->   KVM: vmx/pmu: Add MSR_ARCH_LBR_CTL emulation for Arch LBR
->   KVM: vmx/pmu: Add Arch LBR emulation and its VMCS field
->   KVM: x86: Expose Architectural LBR CPUID leaf
->   KVM: x86: Refine the matching and clearing logic for supported_xss
->   KVM: x86: Add XSAVE Support for Architectural LBRs
-> 
-> Sean Christopherson (1):
->   KVM: x86: Report XSS as an MSR to be saved if there are supported
->     features
-> 
-> Yang Weijiang (1):
->   KVM: x86: Refresh CPUID on writes to MSR_IA32_XSS
-> 
->  arch/x86/events/intel/core.c     |   3 +-
->  arch/x86/events/intel/lbr.c      |   6 +-
->  arch/x86/include/asm/kvm_host.h  |   1 +
->  arch/x86/include/asm/msr-index.h |   1 +
->  arch/x86/include/asm/vmx.h       |   4 ++
->  arch/x86/kvm/cpuid.c             |  46 ++++++++++++--
->  arch/x86/kvm/vmx/capabilities.h  |  25 +++++---
->  arch/x86/kvm/vmx/pmu_intel.c     | 103 ++++++++++++++++++++++++++++---
->  arch/x86/kvm/vmx/vmx.c           |  50 +++++++++++++--
->  arch/x86/kvm/vmx/vmx.h           |   4 ++
->  arch/x86/kvm/x86.c               |  19 +++++-
->  11 files changed, 226 insertions(+), 36 deletions(-)
-> 
-> -- 
-> 2.31.1
+>  mm/kasan/kasan.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index d8faa64614b7..edc11bcc3ff3 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -389,7 +389,7 @@ static inline void kasan_unpoison(const void *addr, size_t size, bool init)
+>                 return;
+>         if (init && ((unsigned long)size & KASAN_GRANULE_MASK)) {
+>                 init = false;
+> -               memset((void *)addr, 0, size);
+> +               memzero_explicit((void *)addr, size);
+>         }
+>         size = round_up(size, KASAN_GRANULE_SIZE);
+>         hw_set_mem_tag_range((void *)addr, size, tag, init);
+> 2.18.0
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20210622084723.27637-1-yee.lee%40mediatek.com.
