@@ -2,78 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C4C3AFDF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6A43AFDFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhFVHf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:35:27 -0400
-Received: from verein.lst.de ([213.95.11.211]:45444 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229628AbhFVHf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:35:26 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A866167373; Tue, 22 Jun 2021 09:33:08 +0200 (CEST)
-Date:   Tue, 22 Jun 2021 09:33:08 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCHv2 8/8] videobuf2: handle non-contiguous DMA allocations
-Message-ID: <20210622073308.GA32231@lst.de>
-References: <10a0903a-e295-5cba-683a-1eb89a0804ed@xs4all.nl> <YMsAIVs7G2hUDR2F@google.com> <20210617080107.GA1422@lst.de> <CAAFQd5DiPstn-s+yQM3iMd=G9oaag39qCyX483a7-Jrn=gxWCA@mail.gmail.com> <20210617085233.GA4702@lst.de> <CAAFQd5DqK2gSTGjfo-vahXwMzzO9gv26cY=vV6urn3viDLPE7g@mail.gmail.com> <20210617100656.GA11107@lst.de> <CAAFQd5CgLDkJ3t1aU2PRcGu6cGFjLXOnvMqDg62Z7Zuc8ABVHg@mail.gmail.com> <20210618042526.GA17794@lst.de> <CAAFQd5Bt9TJ87Yk5ZpqTqrX9rmP0Uq8VNwx_rwFHakWP850Axw@mail.gmail.com>
+        id S230056AbhFVHh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:37:26 -0400
+Received: from vulcan.natalenko.name ([104.207.131.136]:59530 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhFVHhZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 03:37:25 -0400
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 6D68AAF0331;
+        Tue, 22 Jun 2021 09:35:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1624347308;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VQY43XfF1eGOpJRIeL+dJv5ARRW165CgSB5vjpwXo2s=;
+        b=Gec3eyTte4Wcs6813cr1LrK6cr43dH8FrYi9m8eETh9PynloTYNjLcYsBFtXLYkyWxtJX9
+        XjtbKl2fykFNFJLxeZTUfG4uhZZ19mBilGu86xwpkVlxj4/cH9v/qrbdd3Nslib4sPP+7R
+        9nYnQvhDI83w3vzHBlDoFiJl6H+SWa4=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Paolo Valente <paolo.valente@linaro.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luca Mariotti <mariottiluca1@hotmail.it>,
+        Holger =?ISO-8859-1?Q?Hoffst=E4tte?= 
+        <holger@applied-asynchrony.com>,
+        Pietro Pedroni <pedroni.pietro.96@gmail.com>,
+        Piotr Gorski <lucjan.lucjanov@gmail.com>,
+        Khazhy Kumykov <khazhy@google.com>, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH FIXES/IMPROVEMENTS 0/7] block, bfq: preserve control, boost throughput, fix bugs
+Date:   Tue, 22 Jun 2021 09:35:05 +0200
+Message-ID: <8003699.Qy64SzLKsf@spock>
+In-Reply-To: <2CDC43F9-9CD9-4F7F-BD36-CCEB168B5245@linaro.org>
+References: <20210619140948.98712-1-paolo.valente@linaro.org> <3533087.dJKXTdksHR@spock> <2CDC43F9-9CD9-4F7F-BD36-CCEB168B5245@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAFQd5Bt9TJ87Yk5ZpqTqrX9rmP0Uq8VNwx_rwFHakWP850Axw@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 01:44:08PM +0900, Tomasz Figa wrote:
-> > Well, dma_alloc_coherent users want a non-cached mapping.  And while
-> > some architectures provide that using a vmap with "uncached" bits in the
-> > PTE to provide that, this:
-> >
-> >  a) is not possibly everywhere
-> >  b) even where possible is not always the best idea as it creates mappings
-> >     with differnet cachability bets
-> 
-> I think this could be addressed by having a dma_vmap() helper that
-> does the right thing, whether it's vmap() or dma_common_pages_remap()
-> as appropriate. Or would be this still insufficient for some
-> architectures?
+Hello.
 
-It can't always do the right thing.  E.g. for the case where uncached
-memory needs to be allocated from a special boot time fixed pool.
+On =C3=BAter=C3=BD 22. =C4=8Dervna 2021 9:08:43 CEST Paolo Valente wrote:
+> CCing also Jan and Khazhy, because in your commit log I see also the
+> commit on bfq_requests_merged().
+>=20
+> Is this OOPS reproducible for you?
 
-> > And even without that dma_alloc_noncoherent causes less overhead than
-> > dma_alloc_noncontigious if you only need a single contiguous range.
-> >
-> 
-> Given that behind the scenes dma_alloc_noncontiguous() would also just
-> call __dma_alloc_pages() for devices that need contiguous pages, would
-> the overhead be basically the creation of a single-entry sgtable?
+No, I haven't found a reproducer, at least yet. It took half a day of uptim=
+e=20
+to hit this, so might not be that easy.
 
-In the best case: yes.
+=2D-=20
+Oleksandr Natalenko (post-factum)
 
-> > So while I'm happy we have something useful for more complex drivers like
-> > v4l I think the simple dma_alloc_coherent API, including some of the less
-> > crazy flags for dma_alloc_attrs is the right thing to use for more than
-> > 90% of the use cases.
-> 
-> One thing to take into account here is that many drivers use the
-> existing "simple" way, just because there wasn't a viable alternative
-> to do something better. Agreed, though, that we shouldn't optimize for
-> the rare cases.
 
-While that might be true for a few drivers, it is absolutely not true
-for the wide majority.  I think you media people are a little special,
-with only the GPU folks contending for "specialness" :)  (although
-media handles it way better, gpu folks just create local hacks that
-can't work portably).
