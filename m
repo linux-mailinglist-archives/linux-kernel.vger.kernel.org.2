@@ -2,182 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213373B0689
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3783C3B0679
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231831AbhFVOJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 10:09:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:49902 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231704AbhFVOJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:09:35 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4CD371424;
-        Tue, 22 Jun 2021 07:07:19 -0700 (PDT)
-Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2253F3F694;
-        Tue, 22 Jun 2021 07:07:13 -0700 (PDT)
-From:   Jia He <justin.he@arm.com>
-To:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>, nd@arm.com,
-        Jia He <justin.he@arm.com>
-Subject: [PATCH v5 4/4] lib/test_printf.c: add test cases for '%pD'
-Date:   Tue, 22 Jun 2021 22:06:34 +0800
-Message-Id: <20210622140634.2436-5-justin.he@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210622140634.2436-1-justin.he@arm.com>
-References: <20210622140634.2436-1-justin.he@arm.com>
+        id S231618AbhFVOJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 10:09:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231597AbhFVOJI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 10:09:08 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C20AC061574;
+        Tue, 22 Jun 2021 07:06:52 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id hz1so12179186ejc.1;
+        Tue, 22 Jun 2021 07:06:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lp53Y0gTyDe3jcN5tHsholxiEow8xex6nP+9fTMsVuw=;
+        b=TPe5aCgDJqRdLqihIk7FWGHy+EQ0p8K06/88hnNL5HjOXaw+W3Wt5hm/d327/bEFW3
+         pH2lZF8M0YgCtDKuN4XLUaWCRlbhFf6qVqv/gGObrmMCcXXTYOcpwF3aYb1ZPQNzdZF9
+         zYDIhcfDv5wMpT37ZW9ySP+ZVtQ33yHfaeoA8/w69v/twpJsErvQ9lkKqZ4jAPd3Otxn
+         so9rsFNZCR6jP2sPAEpfb5vBxOwe1NaGEXPMq26z2fBeSqp8Vi09ODrKlGLTjArub4W+
+         PxWFaEV5fzLiBQI6LuS1VnjgHEg6d0xN6+gj+wcb2CQ38UuiaRY1wWKs2ayclQKOJiQe
+         AtZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lp53Y0gTyDe3jcN5tHsholxiEow8xex6nP+9fTMsVuw=;
+        b=AjPAyzDJwm+hzw1zeM1oucgAtp5axFK5RfaYiUhUbyX10I99R7sCwib5zYUHeZLHaw
+         EGB2HXs+fcyooK5CLTxwFt/CfbMx80akTAecSZgL/6UmyuOujngyFvfI2Lj3OMSg/IzQ
+         HuelD/vODONec5cXdESj4BKDdxatPRu1R8cwMSLrBubGdGga8aNaZOUm8qEuD3unkJpX
+         mow+8AGxVtkd4eaNimNPfP9kplKlWRjP9JntJYfAWZHLVVjutFyTaQ6L8/mGlImwQR5W
+         QUySIdDSMWiUp0naFvFJ4ue8FqhHbrKa6FYhqOCa1+HDRQpFPCGqLp1+TJrqz7ZH1Iu9
+         0pAQ==
+X-Gm-Message-State: AOAM5305FFTzKTQsKezazWdcmaVFL9ZRNoBU98I7ujkIK+XeTyPRbFTR
+        +y4CuzVzGYO30JPfQl91iFY=
+X-Google-Smtp-Source: ABdhPJwv8yq6Ze0RcRPGoACjstEosenX/SS5aFRiXKeQh+SdY0jGjk70OiXGvqJO1PsBz1I1zsuiKw==
+X-Received: by 2002:a17:906:498b:: with SMTP id p11mr4264067eju.295.1624370810644;
+        Tue, 22 Jun 2021 07:06:50 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id a2sm6164232ejp.1.2021.06.22.07.06.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 07:06:49 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 16:08:48 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Jiajun Cao <jjcao20@fudan.edu.cn>
+Cc:     yuanxzhang@fudan.edu.cn, Xin Tan <tanxin.ctf@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Mohan Kumar <mkumard@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>, alsa-devel@alsa-project.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pci: hda: Add IRQ check for platform_get_irq()
+Message-ID: <YNHu8GxbzYStfj4W@orome.fritz.box>
+References: <20210622131947.94346-1-jjcao20@fudan.edu.cn>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="h2zYJyMj+3v5Om+m"
+Content-Disposition: inline
+In-Reply-To: <20210622131947.94346-1-jjcao20@fudan.edu.cn>
+User-Agent: Mutt/2.0.7 (481f3800) (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the behaviour of specifier '%pD' is changed to print the full path
-of struct file, the related test cases are also updated.
 
-Given the full path string of '%pD' is prepended from the end of the scratch
-buffer, the check of "wrote beyond the nul-terminator" should be skipped
-for '%pD'.
+--h2zYJyMj+3v5Om+m
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Parameterize the new using_scratch_space in __test, do_test to skip the
-test case mentioned above,
+On Tue, Jun 22, 2021 at 09:19:42PM +0800, Jiajun Cao wrote:
+> The function hda_tegra_first_init() neglects to check the return
+> value after executing platform_get_irq().
+>=20
+> hda_tegra_first_init() should check the return value (if negative
+> error number) for errors so as to not pass a negative value to
+> the devm_request_irq().
+>=20
+> Fix it by adding a check for the return value irq_id.
+>=20
+> Signed-off-by: Jiajun Cao <jjcao20@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+> ---
+>  sound/pci/hda/hda_tegra.c | 3 +++
+>  1 file changed, 3 insertions(+)
 
-Signed-off-by: Jia He <justin.he@arm.com>
----
- lib/test_printf.c | 49 +++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 39 insertions(+), 10 deletions(-)
+The original code is probably harmless because it looks like the call to
+request_irq() would return -EINVAL if irq_id was a negative error code.
 
-diff --git a/lib/test_printf.c b/lib/test_printf.c
-index d1d2f898ebae..f48da88bc77b 100644
---- a/lib/test_printf.c
-+++ b/lib/test_printf.c
-@@ -16,6 +16,7 @@
- 
- #include <linux/bitmap.h>
- #include <linux/dcache.h>
-+#include <linux/fs.h>
- #include <linux/socket.h>
- #include <linux/in.h>
- 
-@@ -37,8 +38,8 @@ static char *alloced_buffer __initdata;
- 
- extern bool no_hash_pointers;
- 
--static int __printf(4, 0) __init
--do_test(int bufsize, const char *expect, int elen,
-+static int __printf(5, 0) __init
-+do_test(int bufsize, const char *expect, int elen, bool using_scratch_space,
- 	const char *fmt, va_list ap)
- {
- 	va_list aq;
-@@ -78,7 +79,7 @@ do_test(int bufsize, const char *expect, int elen,
- 		return 1;
- 	}
- 
--	if (memchr_inv(test_buffer + written + 1, FILL_CHAR, bufsize - (written + 1))) {
-+	if (!using_scratch_space && memchr_inv(test_buffer + written + 1, FILL_CHAR, bufsize - (written + 1))) {
- 		pr_warn("vsnprintf(buf, %d, \"%s\", ...) wrote beyond the nul-terminator\n",
- 			bufsize, fmt);
- 		return 1;
-@@ -97,8 +98,9 @@ do_test(int bufsize, const char *expect, int elen,
- 	return 0;
- }
- 
--static void __printf(3, 4) __init
--__test(const char *expect, int elen, const char *fmt, ...)
-+static void __printf(4, 5) __init
-+__test(const char *expect, int elen, bool using_scratch_space,
-+	const char *fmt, ...)
- {
- 	va_list ap;
- 	int rand;
-@@ -119,11 +121,11 @@ __test(const char *expect, int elen, const char *fmt, ...)
- 	 * enough and 0), and then we also test that kvasprintf would
- 	 * be able to print it as expected.
- 	 */
--	failed_tests += do_test(BUF_SIZE, expect, elen, fmt, ap);
-+	failed_tests += do_test(BUF_SIZE, expect, elen, using_scratch_space, fmt, ap);
- 	rand = 1 + prandom_u32_max(elen+1);
- 	/* Since elen < BUF_SIZE, we have 1 <= rand <= BUF_SIZE. */
--	failed_tests += do_test(rand, expect, elen, fmt, ap);
--	failed_tests += do_test(0, expect, elen, fmt, ap);
-+	failed_tests += do_test(rand, expect, elen, using_scratch_space, fmt, ap);
-+	failed_tests += do_test(0, expect, elen, using_scratch_space, fmt, ap);
- 
- 	p = kvasprintf(GFP_KERNEL, fmt, ap);
- 	if (p) {
-@@ -138,8 +140,15 @@ __test(const char *expect, int elen, const char *fmt, ...)
- 	va_end(ap);
- }
- 
-+/*
-+ * More relaxed test for non-standard formats that are using the provided buffer
-+ * as a scratch space and write beyond the trailing '\0'.
-+ */
-+#define test_using_scratch_space(expect, fmt, ...)			\
-+	__test(expect, strlen(expect), true, fmt, ##__VA_ARGS__)
-+
- #define test(expect, fmt, ...)					\
--	__test(expect, strlen(expect), fmt, ##__VA_ARGS__)
-+	__test(expect, strlen(expect), false, fmt, ##__VA_ARGS__)
- 
- static void __init
- test_basic(void)
-@@ -150,7 +159,7 @@ test_basic(void)
- 	test("", &nul);
- 	test("100%", "100%%");
- 	test("xxx%yyy", "xxx%cyyy", '%');
--	__test("xxx\0yyy", 7, "xxx%cyyy", '\0');
-+	__test("xxx\0yyy", 7, false, "xxx%cyyy", '\0');
- }
- 
- static void __init
-@@ -501,6 +510,25 @@ dentry(void)
- 	test("  bravo/alfa|  bravo/alfa", "%12pd2|%*pd2", &test_dentry[2], 12, &test_dentry[2]);
- }
- 
-+static struct vfsmount test_vfsmnt __initdata = {};
-+
-+static struct file test_file __initdata = {
-+	.f_path = { .dentry = &test_dentry[2],
-+		    .mnt = &test_vfsmnt,
-+	},
-+};
-+
-+static void __init
-+f_d_path(void)
-+{
-+	test("(null)", "%pD", NULL);
-+	test("(efault)", "%pD", PTR_INVALID);
-+
-+	test_using_scratch_space("/bravo/alfa   |/bravo/alfa   ", "%-14pD|%*pD", &test_file, -14, &test_file);
-+	test_using_scratch_space("   /bravo/alfa|   /bravo/alfa", "%14pD|%*pD", &test_file, 14, &test_file);
-+	test_using_scratch_space("   /bravo/alfa|/bravo/alfa   ", "%14pD|%-14pD", &test_file, &test_file);
-+}
-+
- static void __init
- struct_va_format(void)
- {
-@@ -784,6 +812,7 @@ test_pointer(void)
- 	ip();
- 	uuid();
- 	dentry();
-+	f_d_path();
- 	struct_va_format();
- 	time_and_date();
- 	struct_clk();
--- 
-2.17.1
+But checking the return value is still a good idea, so:
 
+Reviewed-by: Thierry Reding <treding@nvidia.com>
+
+--h2zYJyMj+3v5Om+m
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmDR7vAACgkQ3SOs138+
+s6EXFg/9GSl5j8r97IeAHv15Y7wlUZPx43jh/E8tpLotlfxlkQkYJAwI/4JKfU7l
+4/AHaUQN3nJfx1ShlhMRSozHp5d/gTwmKOFYihWe7up8uUkVFtZgv1YxyGdW5JL9
+rR31Mgf3GYYz+w0HN4KxMd29qosCeCWWPLv62LTn5vh2KkMOxlawTNn4ArNAc6iz
+qKv1QAg/HSmHuX0a0g3udOB93avUJkoM53aDhxi7pp7GeR4abWgBUzzV37cD1Y3p
+HbjOZScoye0gKVifvHtIwiMuMadXTApO1dByN76hxLVYSo13DQWIsjYFQPXoTwZ9
+aqkojGAyFYpYpvuxzOy+qUK6ENAKcKKIm7agsMRWUEGR1mJfFlQciwsUXw7aaLmP
+7q5/eLiMydGyfbfG4aNTty13Wu8XNjzNTWs7f+UFbToSJZ7FxYVQIqTc+tzDeowz
+fqcduM7ECuQhCq0/RNYVtD4gAK9W9LuRutv69qifi6iUXFC/TDOZ5wg41r66BGxc
+5eB821Ttk2Qkc+aHupdOqfWiPZoUmdhXseGdWAwQ878gy8k9l9mvZhj8vrEh4NzI
+m/OdiDKd0pJkzqNH/1AtlpFD3zoq6QKXuivtyM4BtQJeoJqUqbVD60gx5fmyaBU7
+PV7QNRerp8KRGfOxOiqo3DjEeOFzpSCCnAbkVJzlwppwSKJbGyE=
+=1SPN
+-----END PGP SIGNATURE-----
+
+--h2zYJyMj+3v5Om+m--
