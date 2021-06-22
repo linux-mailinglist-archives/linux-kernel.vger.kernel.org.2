@@ -2,161 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF4F3B0FB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD8E3B0FB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhFVWBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 18:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35706 "EHLO
+        id S230205AbhFVWAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 18:00:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbhFVWBP (ORCPT
+        with ESMTP id S229900AbhFVWAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 18:01:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40C8C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 14:58:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=INWpsc1UVjms1eLYsvuvGZc0zD9LX7V0xGiQqg6km1o=; b=e7r9sbUnAb7gN7BztF5Nm75xsK
-        cWpyUXRPWmVUSimdR6iL03cJaLBr1u9OQczRskBllHFSi+GLUa66pqpPPm057WMR+XePc3B91ZGCZ
-        S1Y+1tc7b7CmqotwQnaTFC2Iabs5ZFExciQnZJkytuhtJYuBaK2hctXqyzzWiYudxG6qPJfEIJMjQ
-        /kJd6RBzAwYy1wAHg401NGgJEel0m+Y71xpkbdug3dYUhzVYO+JWfKiLQ2U5gIbbPiJeWlfkqj0ac
-        kEB676HDG2h3ENilpBMO5o5/A2vTzm8artM24Y+XWK1WQb+8U5bk9Fn5wEHiNZtAYVXmWnQbaXIBJ
-        MuRaCCTQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvoPA-00EnBm-NH; Tue, 22 Jun 2021 21:58:11 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Christoph Lameter <cl@linux.com>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [PATCH v2] mm: Move kvmalloc-related functions to slab.h
-Date:   Tue, 22 Jun 2021 22:57:57 +0100
-Message-Id: <20210622215757.3525604-1-willy@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Tue, 22 Jun 2021 18:00:36 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6906EC061574;
+        Tue, 22 Jun 2021 14:58:18 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id q64so134022qke.7;
+        Tue, 22 Jun 2021 14:58:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=An1CO7YkpX2LBRNnkvDhYRhDtsz5fNak0K0KltYMWHE=;
+        b=G9hBpWsQA2qNJz6g8CmPS+fbzFFLh6rh7G15fLU4ZxcRyaU3QSU29x7NyPYmR8Ia/D
+         n2B54HijZUbq2DwnXWIWTFpUjhpze+X82aSP8/LcdWVkRmYDlQxoRlHKyIo+qqE8FP9Q
+         bZJ9oAe/6/gP2bUYJ5ZFFroBuXxolJekjgy3qddtVuXERWKt1Jcy1EIQjqWkw0C51ysM
+         haXf2JVkp1uwcRw012LkgvKNWWUzIMpmOT1ctB0SsxOitZmrdQ5OIq+Lf5VI1fWUL5+I
+         R8kn030r+rgR07DGG1Tpi11b0k3Is/XKRw94yDYcdtEwn5ozVyEdHEmcFv6vnQqH4GC8
+         /eug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=An1CO7YkpX2LBRNnkvDhYRhDtsz5fNak0K0KltYMWHE=;
+        b=cPSWQUPKae+7A9FpH4a/gbGtdFxDau0C8/9rqp0Hdg0T7fiO+tFDTqwv4RBUpAtQ7A
+         TD8dlNhiSGLe5upvWJh0dXsYjluO/x9fGN5dVjTabS2TxaMoC3kLrtHAhVQwkVwjtzf3
+         r45a02ZGSmei8wiIacDr8fza5jvwNJJphWCGBgeMjM6kTYwFvIhw+fRkEnT61hYMLu8g
+         UYLYQqKStAJIGO9fKYTyjyUIAM6njXAS2QgvcVx3Zk78DQIKX3yfwa0i9vysixZL6+a9
+         +17pRCDO4hvauWql1doGOfU0jVed2gXJBEUeBPJqscI3TGSKSJNE761lB9m4eJg01Wq2
+         IHAQ==
+X-Gm-Message-State: AOAM53173WPW7j8JHTGHtQm40WPciy2QDp6N9bVxPiiXk+Bkti1+RCoR
+        7t6yR0/3MvgVGogEnhLOBTyfqfVkmuaWWg==
+X-Google-Smtp-Source: ABdhPJxrJylyDE4d1u5hNmra4JCUXIlB65RCzJZS6mL8q5Nn7+pP3O583qQWV0u07LTl8dOSRnF9RA==
+X-Received: by 2002:a05:620a:4509:: with SMTP id t9mr6703948qkp.403.1624399097540;
+        Tue, 22 Jun 2021 14:58:17 -0700 (PDT)
+Received: from fedora ([130.44.160.152])
+        by smtp.gmail.com with ESMTPSA id 85sm12802577qkl.46.2021.06.22.14.58.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 14:58:16 -0700 (PDT)
+Sender: Konrad Rzeszutek Wilk <konrad.r.wilk@gmail.com>
+Date:   Tue, 22 Jun 2021 17:58:14 -0400
+From:   Konrad Rzeszutek Wilk <konrad@darnok.org>
+To:     'Dominique MARTINET' <dominique.martinet@atmark-techno.com>
+Cc:     Chanho Park <chanho61.park@samsung.com>,
+        'Jianxiong Gao' <jxgao@google.com>,
+        'Christoph Hellwig' <hch@lst.de>,
+        'Konrad Rzeszutek Wilk' <konrad.wilk@oracle.com>,
+        'Linus Torvalds' <torvalds@linux-foundation.org>,
+        'Horia =?utf-8?Q?Geant=C4=83'?= <horia.geanta@nxp.com>,
+        linux-kernel@vger.kernel.org, 'Lukas Hartmann' <lukas@mntmn.com>,
+        'Aymen Sghaier' <aymen.sghaier@nxp.com>,
+        'Herbert Xu' <herbert@gondor.apana.org.au>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, iommu@lists.linux-foundation.org,
+        'Marc Orr' <marcorr@google.com>,
+        'Erdem Aktas' <erdemaktas@google.com>,
+        'Peter Gonda' <pgonda@google.com>,
+        'Bumyong Lee' <bumyong.lee@samsung.com>
+Subject: Re: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb)
+ stable/for-linus-5.12)
+Message-ID: <YNJc9qxeIjy6VuLt@fedora>
+References: <YMqZswFnSNKk4Z7B@atmark-techno.com>
+ <20210617051232.GB27192@lst.de>
+ <YMrfWBLsJxCRhX5U@atmark-techno.com>
+ <CAMGD6P0=9RE1-q1WHkwR1jymK5jyvN6QgypQ2KgdvBQn0CUTHw@mail.gmail.com>
+ <CGME20210621020328epcas2p207e9fa2df119730ceb993543621437d8@epcas2p2.samsung.com>
+ <YM/zWyZlk1bzHWgI@atmark-techno.com>
+ <2038148563.21624247281621.JavaMail.epsvc@epcpadp4>
+ <YNASOEGsDxhFC8qJ@atmark-techno.com>
+ <YNCROxI328u7IKdQ@fedora>
+ <YNGVyOyD+CAMmPos@atmark-techno.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNGVyOyD+CAMmPos@atmark-techno.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 22, 2021 at 04:48:24PM +0900, 'Dominique MARTINET' wrote:
+> Konrad Rzeszutek Wilk wrote on Mon, Jun 21, 2021 at 09:16:43AM -0400:
+> > The beaty of 'devel' and 'linux-next' is that they can be reshuffled and
+> > mangled. I pushed them original patch from Bumyong there and will let
+> > it sit for a day and then create a stable branch and give it to Linus.
+> 
+> Thanks, that should be good.
+> 
+> Do you want me to send a follow-up patch with the two extra checks
+> (tlb_addr & (IO_TLB_SIZE -1)) > swiotlb_align_offset(dev, orig_addr)
+> tlb_offset < alloc_size
+> 
+> or are we certain this can't ever happen?
 
-Not all files in the kernel should include mm.h.  Migrating callers from
-kmalloc to kvmalloc is easier if the kvmalloc functions are in slab.h.
+I would love more patches and I saw the previous one you posted.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
-v2: allmodconfig revealed someone calling kvmalloc without slab.h.  It
-doesn't include mm.h either, but clearly it's being included through
-some indirect path.
- drivers/of/kexec.c   |  1 +
- include/linux/mm.h   | 32 --------------------------------
- include/linux/slab.h | 32 ++++++++++++++++++++++++++++++++
- 3 files changed, 33 insertions(+), 32 deletions(-)
+But we only got two (or one) weeks before the next merge window opens
+so I am sending to Linus the one that was tested with NVMe and crypto
+(see above).
 
-diff --git a/drivers/of/kexec.c b/drivers/of/kexec.c
-index f335d941a716..b90660c05f30 100644
---- a/drivers/of/kexec.c
-+++ b/drivers/of/kexec.c
-@@ -16,6 +16,7 @@
- #include <linux/of.h>
- #include <linux/of_fdt.h>
- #include <linux/random.h>
-+#include <linux/slab.h>
- #include <linux/types.h>
- 
- /* relevant device tree properties */
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 8ae31622deef..750a6f227ec7 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -798,38 +798,6 @@ static inline int is_vmalloc_or_module_addr(const void *x)
- }
- #endif
- 
--extern void *kvmalloc_node(size_t size, gfp_t flags, int node);
--static inline void *kvmalloc(size_t size, gfp_t flags)
--{
--	return kvmalloc_node(size, flags, NUMA_NO_NODE);
--}
--static inline void *kvzalloc_node(size_t size, gfp_t flags, int node)
--{
--	return kvmalloc_node(size, flags | __GFP_ZERO, node);
--}
--static inline void *kvzalloc(size_t size, gfp_t flags)
--{
--	return kvmalloc(size, flags | __GFP_ZERO);
--}
--
--static inline void *kvmalloc_array(size_t n, size_t size, gfp_t flags)
--{
--	size_t bytes;
--
--	if (unlikely(check_mul_overflow(n, size, &bytes)))
--		return NULL;
--
--	return kvmalloc(bytes, flags);
--}
--
--static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
--{
--	return kvmalloc_array(n, size, flags | __GFP_ZERO);
--}
--
--extern void kvfree(const void *addr);
--extern void kvfree_sensitive(const void *addr, size_t len);
--
- static inline int head_compound_mapcount(struct page *head)
- {
- 	return atomic_read(compound_mapcount_ptr(head)) + 1;
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index 0c97d788762c..ee676de68afe 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -697,6 +697,38 @@ static inline void *kzalloc_node(size_t size, gfp_t flags, int node)
- 	return kmalloc_node(size, flags | __GFP_ZERO, node);
- }
- 
-+void *kvmalloc_node(size_t size, gfp_t flags, int node);
-+static inline void *kvmalloc(size_t size, gfp_t flags)
-+{
-+	return kvmalloc_node(size, flags, NUMA_NO_NODE);
-+}
-+static inline void *kvzalloc_node(size_t size, gfp_t flags, int node)
-+{
-+	return kvmalloc_node(size, flags | __GFP_ZERO, node);
-+}
-+static inline void *kvzalloc(size_t size, gfp_t flags)
-+{
-+	return kvmalloc(size, flags | __GFP_ZERO);
-+}
-+
-+static inline void *kvmalloc_array(size_t n, size_t size, gfp_t flags)
-+{
-+	size_t bytes;
-+
-+	if (unlikely(check_mul_overflow(n, size, &bytes)))
-+		return NULL;
-+
-+	return kvmalloc(bytes, flags);
-+}
-+
-+static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
-+{
-+	return kvmalloc_array(n, size, flags | __GFP_ZERO);
-+}
-+
-+void kvfree(const void *addr);
-+void kvfree_sensitive(const void *addr, size_t len);
-+
- unsigned int kmem_cache_size(struct kmem_cache *s);
- void __init kmem_cache_init_late(void);
- 
--- 
-2.30.2
+That is the
+https://git.kernel.org/pub/scm/linux/kernel/git/konrad/swiotlb.git/commit/?h=stable/for-linus-5.14
 
+And then after Linus releases the 5.14 - I would love to take your
+cleanup on top of that and test it?
+
+> (I didn't see any hit in dmesg when I ran with these, but my opinion is
+> better safe than sorry...)
+> 
+> 
+> > Then I need to expand the test-regression bucket so that this does not
+> > happen again. Dominique, how easy would it be to purchase one of those
+> > devices?
+> 
+> My company is making such a device, but it's not on the market yet
+> (was planned for august, with some delay in approvisionning it'll
+> probably be a bit late), and would mean buying from Japan so I'm not
+> sure how convenient that would be...
+> 
+> These are originally NXP devices so I assume Horia would have better
+> suggestions, if you would?
+> 
+> 
+> > I was originally thinking to create a crypto device in QEMU to simulate
+> > this but that may take longer to write than just getting the real thing.
+> > 
+> > Or I could create some fake devices with weird offsets and write a driver
+> > for it to exercise this.. like this one I had done some time ago that
+> > needs some brushing off.
+> 
+> Just a fake device with fake offsets as a test is probably good enough,
+> ideally would need to exerce both failures we've seen (offset in
+> dma_sync_single_for_device like caam does and in the original mapping (I
+> assume?) like the NVMe driver does), but that sounds possible :)
+
+Yup. Working on that now.
+> 
+> 
+> Thanks again!
+> -- 
+> Dominique
