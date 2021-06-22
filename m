@@ -2,398 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8F23B043F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2803B0454
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231625AbhFVMZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:25:40 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:54654 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231597AbhFVMZd (ORCPT
+        id S231512AbhFVM32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230393AbhFVM3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:25:33 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3CD032196D;
-        Tue, 22 Jun 2021 12:23:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624364597; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Tue, 22 Jun 2021 08:29:24 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C257C061574;
+        Tue, 22 Jun 2021 05:27:09 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 12:27:07 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624364827;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aIIzQ0v9nG6I6oy8FGefgn9agrr42ubns73HDhdxzRQ=;
-        b=d7zxMFyycD3VL6IuXR5GGObn1Bg4LSATrgFDPTtfk5s9KqS1++FQ2+HTxzUR4Lmbxmdjrj
-        KonZv5mZ9UkbUmWjqSEivGFQlL5MFr8X8fLc3bnDHk0GwnA6d6zTGR60k1WPPrJfviCSaZ
-        iid2W8qTeLCYqf1t2Qh1EAO+3HLXiqk=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 04F75118DD;
-        Tue, 22 Jun 2021 12:23:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624364597; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        bh=xmz7W3Dq/LHDUZVEcrLlEE86oqgcmEHLeB5q4ysiw/8=;
+        b=KcEkwpoWVi5Rt35RD0NaXhQyy/ejLu/abykfOZYlEZRLYqWsdvINWQm6gXNXB/xoA+UrWy
+        PqJVhH5XRzqwXvIc6/XmpT003TAbcW6b4AMlknA9XTNzf05HGLHq+SX7tP6IjX1e+RhCn1
+        3pcsaYkmJtGsvPPH3kwjwe+F+r4BSjwKYGm/ixn28Lo3i7poVv3Sh6QjwiTWn1yCC+H5/X
+        VpGZU1F7ucFTNW6yli4xSy5vbLJCpo5jcvuQ4RQ0kccltvHgyfgzMh4YuEytN+rUF6e9dr
+        uveuTgkGA18WlH7yZRqh6Nf53ybs59hArKFzipUeVhnegXx0lwZHpGjDKwzXKQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624364827;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aIIzQ0v9nG6I6oy8FGefgn9agrr42ubns73HDhdxzRQ=;
-        b=d7zxMFyycD3VL6IuXR5GGObn1Bg4LSATrgFDPTtfk5s9KqS1++FQ2+HTxzUR4Lmbxmdjrj
-        KonZv5mZ9UkbUmWjqSEivGFQlL5MFr8X8fLc3bnDHk0GwnA6d6zTGR60k1WPPrJfviCSaZ
-        iid2W8qTeLCYqf1t2Qh1EAO+3HLXiqk=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id 9hi+OjTW0WCLEAAALh3uQQ
-        (envelope-from <jgross@suse.com>); Tue, 22 Jun 2021 12:23:16 +0000
-Subject: Re: Interrupt for port 19, but apparently not enabled; per-user
- 000000004af23acc
-To:     Julien Grall <julien@xen.org>
-Cc:     "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        linux-kernel@vger.kernel.org, mheyne@amazon.de
-References: <6552fc66-ba19-2c77-7928-b0272d3e1622@xen.org>
- <4d8a7ba7-a9f6-2999-8750-bfe2b85f064e@suse.com>
- <9a08bbf2-ba6a-6e49-3bcb-bfe2beb32b99@xen.org>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <8dd2aa85-e3d3-2fe1-86dc-145bbadf921b@suse.com>
-Date:   Tue, 22 Jun 2021 14:23:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        bh=xmz7W3Dq/LHDUZVEcrLlEE86oqgcmEHLeB5q4ysiw/8=;
+        b=vsAU2wBPU5w/w1N5mx5RxZ1CEwfI2Dkb74WxMYsMYb/qd9Hr+HP4IVQ2SEairrOi6zuW3X
+        Y3XwTtXXmflo1LBg==
+From:   "tip-bot2 for Rik van Riel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/urgent] sched/fair: Ensure that the CFS parent is added
+ after unthrottling
+Cc:     Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rik van Riel <riel@surriel.com>,
+        Ingo Molnar <mingo@kernel.org>, Odin Ugedal <odin@uged.al>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210621174330.11258-1-vincent.guittot@linaro.org>
+References: <20210621174330.11258-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <9a08bbf2-ba6a-6e49-3bcb-bfe2beb32b99@xen.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="Bf2ph7ybTNBsMgYU5NfRTZjCxgZxGn4K3"
+Message-ID: <162436482704.395.4620107137029173552.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Bf2ph7ybTNBsMgYU5NfRTZjCxgZxGn4K3
-Content-Type: multipart/mixed; boundary="ieGDTbGIV81r0dLyI4LUjpigFd7g1moSf";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Julien Grall <julien@xen.org>
-Cc: "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
- linux-kernel@vger.kernel.org, mheyne@amazon.de
-Message-ID: <8dd2aa85-e3d3-2fe1-86dc-145bbadf921b@suse.com>
-Subject: Re: Interrupt for port 19, but apparently not enabled; per-user
- 000000004af23acc
-References: <6552fc66-ba19-2c77-7928-b0272d3e1622@xen.org>
- <4d8a7ba7-a9f6-2999-8750-bfe2b85f064e@suse.com>
- <9a08bbf2-ba6a-6e49-3bcb-bfe2beb32b99@xen.org>
-In-Reply-To: <9a08bbf2-ba6a-6e49-3bcb-bfe2beb32b99@xen.org>
+The following commit has been merged into the sched/urgent branch of tip:
 
---ieGDTbGIV81r0dLyI4LUjpigFd7g1moSf
-Content-Type: multipart/mixed;
- boundary="------------975C2C0ACCBF84BF28806F70"
-Content-Language: en-US
+Commit-ID:     fdaba61ef8a268d4136d0a113d153f7a89eb9984
+Gitweb:        https://git.kernel.org/tip/fdaba61ef8a268d4136d0a113d153f7a89eb9984
+Author:        Rik van Riel <riel@surriel.com>
+AuthorDate:    Mon, 21 Jun 2021 19:43:30 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 22 Jun 2021 14:06:57 +02:00
 
-This is a multi-part message in MIME format.
---------------975C2C0ACCBF84BF28806F70
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+sched/fair: Ensure that the CFS parent is added after unthrottling
 
-On 22.06.21 14:21, Julien Grall wrote:
-> Hi Juergen,
->=20
-> On 22/06/2021 13:04, Juergen Gross wrote:
->> On 22.06.21 12:24, Julien Grall wrote:
->>> Hi Juergen,
->>>
->>> As discussed on IRC yesterday, we noticed a couple of splat in 5.13-r=
-c6=20
->>
->>> (and stable 5.4) in the evtchn driver:
->>>
->>> [=C2=A0=C2=A0=C2=A0 7.581000] ------------[ cut here ]------------
->>> [=C2=A0=C2=A0=C2=A0 7.581899] Interrupt for port 19, but apparently n=
-ot=20
->> enabled;
->>> per-user 000000004af23acc
->>> [=C2=A0=C2=A0=C2=A0 7.583401] WARNING: CPU: 0 PID: 467 at=20
->>> /home/ANT.AMAZON.COM/jgrall/works/oss/linux/drivers/xen/evtchn.c:169 =
+Ensure that a CFS parent will be in the list whenever one of its children is also
+in the list.
 
->>> evtchn_interrupt+0xd5/0x100
->>> [=C2=A0=C2=A0=C2=A0 7.585583] Modules linked in:
->>> [=C2=A0=C2=A0=C2=A0 7.586188] CPU: 0 PID: 467 Comm: xenstore-read Not=20
-tainted=20
->>> 5.13.0-rc6 #240
->>> [=C2=A0=C2=A0=C2=A0 7.587462] Hardware name: QEMU Standard PC (Q35 + =
-ICH9, 2009),=20
->>> BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
->>> [=C2=A0=C2=A0=C2=A0 7.589462] RIP: e030:evtchn_interrupt+0xd5/0x100
->>> [=C2=A0=C2=A0=C2=A0 7.590361] Code: 48 8d bb d8 01 00 00 ba 01 00 00 =
-00=20
->> be 1d 00 00 00
->>> e8 5f 72 c4 ff eb b2 8b 75 20 48 89 da 48 c7 c7 a8 03 5f 82 e8 6b 2d =
-96=20
->>
->>> ff <0f> 0b e9 4d ff ff ff 41 0f b6 f4 48 c7 c7 80 da a2 82 e8 f0
->>> [=C2=A0=C2=A0=C2=A0 7.593662] RSP: e02b:ffffc90040003e60 EFLAGS: 0001=
-0082
->>> [=C2=A0=C2=A0=C2=A0 7.594636] RAX: 0000000000000000 RBX: ffff88810232=
-8c00 RCX:=20
->>> 0000000000000027
->>> [=C2=A0=C2=A0=C2=A0 7.595924] RDX: 0000000000000000 RSI: ffff88817fe1=
-8ad0 RDI:=20
->>> ffff88817fe18ad8
->>> [=C2=A0=C2=A0=C2=A0 7.597216] RBP: ffff888108ef8140 R08: 000000000000=
-0000 R09:=20
->>> 0000000000000001
->>> [=C2=A0=C2=A0=C2=A0 7.598522] R10: 0000000000000000 R11: 707572726574=
-6e49 R12:=20
->>> 0000000000000000
->>> [=C2=A0=C2=A0=C2=A0 7.599810] R13: ffffc90040003ec4 R14: ffff8881001b=
-8000 R15:=20
->>> ffff888109b36f80
->>> [=C2=A0=C2=A0=C2=A0 7.601113] FS:=C2=A0 0000000000000000(0000) GS:fff=
-f88817fe00000(0000)=20
->>> knlGS:0000000000000000
->>> [=C2=A0=C2=A0=C2=A0 7.602570] CS:=C2=A0 10000e030 DS: 0000 ES: 0000 C=
-R0:0000000080050033
->>> [=C2=A0=C2=A0=C2=A0 7.603700] CR2: 00007f15b390e368 CR3: 000000010bb0=
-4000 CR4:=20
->>> 0000000000050660
->>> [=C2=A0=C2=A0=C2=A0 7.604993] Call Trace:
->>> [=C2=A0=C2=A0=C2=A0 7.605501]=C2=A0 <IRQ>
->>> [=C2=A0=C2=A0=C2=A0 7.605929]=C2=A0 __handle_irq_event_percpu+0x4c/0x=
-330
->>> [=C2=A0=C2=A0=C2=A0 7.606817]=C2=A0 handle_irq_event_percpu+0x32/0xa0=
+A warning on rq->tmp_alone_branch != &rq->leaf_cfs_rq_list has been
+reported while running LTP test cfs_bandwidth01.
 
->>> [=C2=A0=C2=A0=C2=A0 7.607670]=C2=A0 handle_irq_event+0x3a/0x60
->>> [=C2=A0=C2=A0=C2=A0 7.608416]=C2=A0 handle_edge_irq+0x9b/0x1f0
->>> [=C2=A0=C2=A0=C2=A0 7.609154]=C2=A0 generic_handle_irq+0x4f/0x60
->>> [=C2=A0=C2=A0=C2=A0 7.609918]=C2=A0 __evtchn_fifo_handle_events+0x195=
-/0x3a0
->>> [=C2=A0=C2=A0=C2=A0 7.610864]=C2=A0 __xen_evtchn_do_upcall+0x66/0xb0
->>> [=C2=A0=C2=A0=C2=A0 7.611693]=C2=A0 __xen_pv_evtchn_do_upcall+0x1d/0x=
-30
->>> [=C2=A0=C2=A0=C2=A0 7.612582]=C2=A0 xen_pv_evtchn_do_upcall+0x9d/0xc0=
+Odin Ugedal found the root cause:
 
->>> [=C2=A0=C2=A0=C2=A0 7.613439]=C2=A0 </IRQ>
->>> [=C2=A0=C2=A0=C2=A0 7.613882]=C2=A0 exc_xen_hypervisor_callback+0x8/0=
-x10
->>>
->>> This is quite similar to the problem I reported a few months ago (see=20
+	$ tree /sys/fs/cgroup/ltp/ -d --charset=ascii
+	/sys/fs/cgroup/ltp/
+	|-- drain
+	`-- test-6851
+	    `-- level2
+		|-- level3a
+		|   |-- worker1
+		|   `-- worker2
+		`-- level3b
+		    `-- worker3
 
->>> [1]) but this time this is happening with fifo rather than 2L.
->>>
->>> I haven't been able to reproduced it reliably so far. But looking at =
+Timeline (ish):
+- worker3 gets throttled
+- level3b is decayed, since it has no more load
+- level2 get throttled
+- worker3 get unthrottled
+- level2 get unthrottled
+  - worker3 is added to list
+  - level3b is not added to list, since nr_running==0 and is decayed
 
->>> the code, I think I have found another potential race after commit
->>>
->>> commit b6622798bc50b625a1e62f82c7190df40c1f5b21
->>> Author: Juergen Gross <jgross@suse.com>
->>> Date:=C2=A0=C2=A0 Sat Mar 6 17:18:33 2021 +0100
->>> =C2=A0=C2=A0=C2=A0 xen/events: avoid handling the same event on two c=
-pusat the same=20
->>> time
->>> =C2=A0=C2=A0=C2=A0 When changing the cpu affinity of an event it can =
-happen today that
->>> =C2=A0=C2=A0=C2=A0 (with some unlucky timing) the same event will be =
-handled=20
->> on the old
->>> =C2=A0=C2=A0=C2=A0 and the new cpu at the same time.
->>> =C2=A0=C2=A0=C2=A0 Avoid that by adding an "event active" flag to the=20
-per-event data=20
->>> and
->>> =C2=A0=C2=A0=C2=A0 call the handler only if this flag isn't set.
->>> =C2=A0=C2=A0=C2=A0 Cc: stable@vger.kernel.org
->>> =C2=A0=C2=A0=C2=A0 Reported-by: Julien Grall <julien@xen.org>
->>> =C2=A0=C2=A0=C2=A0 Signed-off-by: Juergen Gross <jgross@suse.com>
->>> =C2=A0=C2=A0=C2=A0 Reviewed-by: Julien Grall <jgrall@amazon.com>
->>> =C2=A0=C2=A0=C2=A0 Link:=20
->>> https://lore.kernel.org/r/20210306161833.4552-4-jgross@suse.com
->>> =C2=A0=C2=A0=C2=A0 Signed-off-by: Boris Ostrovsky <boris.ostrovsky@or=
-acle.com>
->>>
->>> The evtchn driver will use the lateeoi handlers. So the code to ack=20
->>> looks like:
->>>
->>> do_mask(..., EVT_MASK_REASON_EOI_PENDING)
->>> smp_store_release(&info->is_active, 0);
->>> clear_evtchn(info->evtchn);
->>>
->>> The code to handle an interrupts look like:
->>>
->>> clear_link(...)
->>> if ( evtchn_fifo_is_pending(port) && !evtchn_fifo_is_mask()) {
->>> =C2=A0=C2=A0 if (xchg_acquire(&info->is_active, 1)
->>> =C2=A0=C2=A0=C2=A0=C2=A0 return;
->>> =C2=A0=C2=A0 generic_handle_irq();
->>> }
->>>
->>> After changing the affinity, an interrupt may be received once on the=20
+ [ Vincent Guittot: Rebased and updated to fix for the reported warning. ]
 
->>> previous vCPU. So, I think the following can happen:
->>>
->>> vCPU0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 | vCPU1
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->>> =C2=A0=C2=A0Receive event=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | change affinity to vCPU1
->>> =C2=A0=C2=A0clear_link()=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 /* The interrupt is re-raised */
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | receive event
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | /* The interrupt is not masked =
-*/
->>> =C2=A0=C2=A0info->is_active =3D 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 |
->>> =C2=A0=C2=A0do_mask(...)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->>> =C2=A0=C2=A0info->is_active =3D 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | info->is_active =3D 1
->>> =C2=A0=C2=A0clear_evtchn(...)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | do_mask(...)
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | info->is_active =
-=3D 0
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | clear_evtchn(...)
->>>
->>> Does this look plausible to you?
->>
->> Yes, it does.
->>
->> Thanks for the analysis.
->>
->> So I guess for lateeoi events we need to clear is_active only in
->> xen_irq_lateeoi()? At a first glance this should fix the issue.
->=20
-> It should work and would be quite neat. But, I believe clear_evtchn()=20
-> would have to stick in the ack helper to avoid losing interrupts.
+Fixes: a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to list on unthrottle")
+Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Rik van Riel <riel@surriel.com>
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+Acked-by: Odin Ugedal <odin@uged.al>
+Link: https://lore.kernel.org/r/20210621174330.11258-1-vincent.guittot@linaro.org
+---
+ kernel/sched/fair.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-I agree.
-
-Preparing a patch ...
-
-
-Juergen
-
-
---------------975C2C0ACCBF84BF28806F70
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------975C2C0ACCBF84BF28806F70--
-
---ieGDTbGIV81r0dLyI4LUjpigFd7g1moSf--
-
---Bf2ph7ybTNBsMgYU5NfRTZjCxgZxGn4K3
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmDR1jQFAwAAAAAACgkQsN6d1ii/Ey8d
-dQgAjloi4X5EXiWIATOsp2GOOBKyT69h1TcxcQD2N/VSpTDR6cjhptnQf8la1ei/dg/oiqBc/1Us
-WyCr97FqVEIYPdwHvOwyl+dIlls81ymOxjFTBk56Nq+XLKW66SB3Y3QgFXuUhw84mNAm3yG8M6ND
-+XphS1K04D18jaVgB+38mnbdW1Zmjma0hXJVpd3J6fuasq79zM4qp0m889GZkECEa/nn+PnvqxwK
-9VwGs4fFqhdI3LkconOyyZNlJYtgctyTLZPPUNps8Upz1iy9asGwCsXv8wWji/AfTO7CyMrzqPWh
-LGyDCwp3l3t642b8c/RWmv8PrTp7pxlhuBbTCqYY2w==
-=AXI/
------END PGP SIGNATURE-----
-
---Bf2ph7ybTNBsMgYU5NfRTZjCxgZxGn4K3--
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index bfaa6e1..2366331 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3298,6 +3298,31 @@ static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
+ 
+ #ifdef CONFIG_SMP
+ #ifdef CONFIG_FAIR_GROUP_SCHED
++/*
++ * Because list_add_leaf_cfs_rq always places a child cfs_rq on the list
++ * immediately before a parent cfs_rq, and cfs_rqs are removed from the list
++ * bottom-up, we only have to test whether the cfs_rq before us on the list
++ * is our child.
++ * If cfs_rq is not on the list, test whether a child needs its to be added to
++ * connect a branch to the tree  * (see list_add_leaf_cfs_rq() for details).
++ */
++static inline bool child_cfs_rq_on_list(struct cfs_rq *cfs_rq)
++{
++	struct cfs_rq *prev_cfs_rq;
++	struct list_head *prev;
++
++	if (cfs_rq->on_list) {
++		prev = cfs_rq->leaf_cfs_rq_list.prev;
++	} else {
++		struct rq *rq = rq_of(cfs_rq);
++
++		prev = rq->tmp_alone_branch;
++	}
++
++	prev_cfs_rq = container_of(prev, struct cfs_rq, leaf_cfs_rq_list);
++
++	return (prev_cfs_rq->tg->parent == cfs_rq->tg);
++}
+ 
+ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+ {
+@@ -3313,6 +3338,9 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+ 	if (cfs_rq->avg.runnable_sum)
+ 		return false;
+ 
++	if (child_cfs_rq_on_list(cfs_rq))
++		return false;
++
+ 	return true;
+ }
+ 
