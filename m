@@ -2,63 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF6D3B07D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F543B07DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhFVOtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 10:49:50 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56338 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbhFVOtt (ORCPT
+        id S231920AbhFVOug convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Jun 2021 10:50:36 -0400
+Received: from out28-2.mail.aliyun.com ([115.124.28.2]:44388 "EHLO
+        out28-2.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230185AbhFVOuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:49:49 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lvhgZ-0007Qr-5Q; Tue, 22 Jun 2021 14:47:31 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-power@fi.rohmeurope.com
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] regulator: bd9576: Fix uninitializes variable may_have_irqs
-Date:   Tue, 22 Jun 2021 15:47:30 +0100
-Message-Id: <20210622144730.22821-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 22 Jun 2021 10:50:35 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.439722|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00839472-0.000267861-0.991337;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.KWJick0_1624373295;
+Received: from zhouyanjie-virtual-machine(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KWJick0_1624373295)
+          by smtp.aliyun-inc.com(10.147.40.26);
+          Tue, 22 Jun 2021 22:48:15 +0800
+Date:   Tue, 22 Jun 2021 22:48:14 +0800
+From:   =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, list@opendingux.net
+Subject: Re: [PATCH v2 0/6] clk: Ingenic JZ4760(B) support
+Message-ID: <20210622224814.288587ac@zhouyanjie-virtual-machine>
+In-Reply-To: <20210530164923.18134-1-paul@crapouillou.net>
+References: <20210530164923.18134-1-paul@crapouillou.net>
+X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi,
 
-The boolean variable may_have_irqs is not ininitialized and is
-only being set to true in the case where chip is ROHM_CHIP_TYPE_BD9576.
-Fix this by ininitialized may_have_irqs to false.
+A gentle ping :)
 
-Addresses-Coverity: ("Uninitialized scalar variable")
-Fixes: e7bf1fa58c46 ("regulator: bd9576: Support error reporting")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/regulator/bd9576-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Here are some new patches that need to be based on this series.
 
-diff --git a/drivers/regulator/bd9576-regulator.c b/drivers/regulator/bd9576-regulator.c
-index 8b54d88827be..e16c3727db7a 100644
---- a/drivers/regulator/bd9576-regulator.c
-+++ b/drivers/regulator/bd9576-regulator.c
-@@ -897,7 +897,7 @@ static int bd957x_probe(struct platform_device *pdev)
- {
- 	int i;
- 	unsigned int num_reg_data;
--	bool vout_mode, ddr_sel, may_have_irqs;
-+	bool vout_mode, ddr_sel, may_have_irqs = false;
- 	struct regmap *regmap;
- 	struct bd957x_data *ic_data;
- 	struct regulator_config config = { 0 };
--- 
-2.31.1
+Thanks and best regards!
+
+于 Sun, 30 May 2021 17:49:17 +0100
+Paul Cercueil <paul@crapouillou.net> 写道:
+
+> Hi,
+> 
+> Here is (finally) my v2 of the JZ4760(B) patchset.
+> 
+> Patches 1-5 are the exact same as in v1.
+> 
+> Patch 6's algorithm was updated with Zhou's feedback.
+> 
+> Cheers,
+> -Paul
+> 
+> Paul Cercueil (6):
+>   dt-bindings: clock: ingenic: Add ingenic,jz4760{,b}-cgu compatibles
+>   clk: Support bypassing dividers
+>   clk: ingenic: Read bypass register only when there is one
+>   clk: ingenic: Remove pll_info.no_bypass_bit
+>   clk: ingenic: Support overriding PLLs M/N/OD calc algorithm
+>   clk: ingenic: Add support for the JZ4760
+> 
+>  .../bindings/clock/ingenic,cgu.yaml           |   4 +
+>  drivers/clk/ingenic/Kconfig                   |  10 +
+>  drivers/clk/ingenic/Makefile                  |   1 +
+>  drivers/clk/ingenic/cgu.c                     |  92 ++--
+>  drivers/clk/ingenic/cgu.h                     |  12 +-
+>  drivers/clk/ingenic/jz4725b-cgu.c             |  12 +-
+>  drivers/clk/ingenic/jz4740-cgu.c              |  12 +-
+>  drivers/clk/ingenic/jz4760-cgu.c              | 428
+> ++++++++++++++++++ drivers/clk/ingenic/jz4770-cgu.c              |
+> 15 +- drivers/clk/ingenic/tcu.c                     |   2 +
+>  include/dt-bindings/clock/jz4760-cgu.h        |  54 +++
+>  11 files changed, 586 insertions(+), 56 deletions(-)
+>  create mode 100644 drivers/clk/ingenic/jz4760-cgu.c
+>  create mode 100644 include/dt-bindings/clock/jz4760-cgu.h
+> 
 
