@@ -2,64 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4030C3AFEE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 434F13AFEE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbhFVIRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 04:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
+        id S230273AbhFVIRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 04:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhFVIRD (ORCPT
+        with ESMTP id S230122AbhFVIRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 04:17:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 575BCC061574;
-        Tue, 22 Jun 2021 01:14:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CJeA0+MEt1zElZXSqf4pwES0ZCFoCyVJFjupde8Xr4w=; b=OjR+ufqxV8O1RtS05VwozlyVXX
-        hQRgmWESL+3o1aESP0duhCGlBQ7Sy5UPRpN5EXeOhpaxYkBX0JCRz13MqGQTLeiocyssy1I9aUu8D
-        Y/OSMjLgBxveHcZvW1LXBGLCNBGtGJ0nqAOR68+jkopdRMqOWYrt9FH0jUzavalm+dlt0GlF99exS
-        91tm5VarRfkLBllzAg36Kb2v0GRMOyZ6wC73IYw6ZPuz2pEqwZHxoGqnW6TwSJvwp3d3Qcy3s/SYH
-        IzbyfECIi5sD8FFVizPeCd7Pvvc1PA+JgRQxno7NoNnqQrLlEE3t2WsCySFXj8xzUGtt1b5YMyRtA
-        And6scOw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvbXw-00E2pk-HK; Tue, 22 Jun 2021 08:14:19 +0000
-Date:   Tue, 22 Jun 2021 09:14:12 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     linux-block <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mtd@lists.infradead.org, Jens Axboe <axboe@kernel.dk>,
-        yukuai3@huawei.com, chengzhihao1@huawei.com,
-        alexander.sverdlin@nokia.com,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: WARNING: at block/genhd.c:491 __device_add_disk
-Message-ID: <YNGb1CFGWljoKmsU@infradead.org>
-References: <CA+G9fYtbNfqqM6Hs9XpweFjYALHGTJ9yo3xkg8O3=Lq2grFDSQ@mail.gmail.com>
+        Tue, 22 Jun 2021 04:17:23 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C75C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 01:15:06 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id my49so33029453ejc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 01:15:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YVCp8xiBvtUwUFNttbUN5nSyQGNG3BOtMHGI4CyjTHQ=;
+        b=o28htubtbLEiarTQcM4helMW63ggtrRYD6odB80RYrMKlzXBuBNkg6jqk7xSk51aaf
+         O28DIRNwUv88sKL7YBwXuvCLNoIBLB+qyueDzvX1XAPAF+lP7b6r00JG0ydO3mbfBvjj
+         MITBvN5IFEf9VgWqwbQ5cTBOQbN005m0gdSrZ4UFZ5PhJfMcLeyIImvlDYQppBZOLOIs
+         wivfY/Yy9LtygR+8wILj+pUcRikwSCVZB5LjievWPsu4MJMdYRsp3p46J9zcNoF3btSf
+         hqfnJys8BLX9k98ZfHt7+Ao5s4RN54hEJpzwW0KS+1cLQ67k5xAElsfeANuN+ySwxymS
+         gCeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YVCp8xiBvtUwUFNttbUN5nSyQGNG3BOtMHGI4CyjTHQ=;
+        b=jTWjPObcn2WaEa1brEAWorODGpVmBx0QWy5EhJiM69Ko9HSqFR+dj0HeVC5iX7HRwE
+         C/c+FVcUaVTptBUVJcIpXkqUxSeoZtmQ9DHfy8qUE5Iwqjn17Z51QJlZM2UBsVqcj1Lg
+         EivTy2dyOo4nNWHpWBXmq6VVhI0W2e5WDjWFJRSRuV08H58KP/bf/aLQHXFODQAIyv6Q
+         okG+pnheqsKNNWEI4P3mIUsJZWmaGVgcamfTV/KFAp9Vzu/aVCW2FNIAKMtp8bswOjL/
+         Zgew9OfuPWsGiMv3HyaU7KWHXBHqb5CJzpPYc6z1sAEBoxhnPqaEzAcbYg02PNVwK203
+         AVyQ==
+X-Gm-Message-State: AOAM532VD7rKgzioNjKFlZg1/USVGDtQZ/oSde0xWQeBJcAKtIkk1AaJ
+        kBcZtcOvIzCafjGR7mkB6tt4hZyq+eVqK1QwwYY8
+X-Google-Smtp-Source: ABdhPJypM7pjKQ3KkOxcIFLDNBXVrECsVU1ZZT8FKvu2e7Av799B1KikoicL0OhYmYSH0T8F/YyLCEgy2EG+tm9UOts=
+X-Received: by 2002:a17:907:1b11:: with SMTP id mp17mr2736493ejc.1.1624349704564;
+ Tue, 22 Jun 2021 01:15:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYtbNfqqM6Hs9XpweFjYALHGTJ9yo3xkg8O3=Lq2grFDSQ@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210615141331.407-1-xieyongji@bytedance.com> <20210615141331.407-10-xieyongji@bytedance.com>
+ <adfb2be9-9ed9-ca37-ac37-4cd00bdff349@redhat.com> <CACycT3tAON+-qZev+9EqyL2XbgH5HDspOqNt3ohQLQ8GqVK=EA@mail.gmail.com>
+ <1bba439f-ffc8-c20e-e8a4-ac73e890c592@redhat.com> <CACycT3uzMJS7vw6MVMOgY4rb=SPfT2srV+8DPdwUVeELEiJgbA@mail.gmail.com>
+ <0aeb7cb7-58e5-1a95-d830-68edd7e8ec2e@redhat.com>
+In-Reply-To: <0aeb7cb7-58e5-1a95-d830-68edd7e8ec2e@redhat.com>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Tue, 22 Jun 2021 16:14:53 +0800
+Message-ID: <CACycT3uuooKLNnpPHewGZ=q46Fap2P4XCFirdxxn=FxK+X1ECg@mail.gmail.com>
+Subject: Re: Re: [PATCH v8 09/10] vduse: Introduce VDUSE - vDPA Device in Userspace
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 01:34:25PM +0530, Naresh Kamboju wrote:
-> [Please ignore if is already reported]
-> 
-> Regression found,
-> 
-> The following kernel warnings reported on Linux next 20210621 while booting
-> arm64 hikey and db410c and arm BeagleBoard-X15 devices.
-> 
-> This crash is always reproducible on these devices while booting with the
-> provided config link.
+On Tue, Jun 22, 2021 at 3:50 PM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> =E5=9C=A8 2021/6/22 =E4=B8=8B=E5=8D=883:22, Yongji Xie =E5=86=99=E9=81=93=
+:
+> >> We need fix a way to propagate the error to the userspace.
+> >>
+> >> E.g if we want to stop the deivce, we will delay the status reset unti=
+l
+> >> we get respose from the userspace?
+> >>
+> > I didn't get how to delay the status reset. And should it be a DoS
+> > that we want to fix if the userspace doesn't give a response forever?
+>
+>
+> You're right. So let's make set_status() can fail first, then propagate
+> its failure via VHOST_VDPA_SET_STATUS.
+>
 
-https://git.kernel.dk/cgit/linux-block/commit/?h=for-5.14/drivers-late&id=7059d7cf150a1387ee72403976b81c2bf10af015
+OK. So we only need to propagate the failure in the vhost-vdpa case, right?
+
+Thanks,
+Yongji
