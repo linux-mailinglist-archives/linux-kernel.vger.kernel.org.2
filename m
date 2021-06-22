@@ -2,93 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E643B0F2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB6A3B0F37
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbhFVVFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 17:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhFVVFl (ORCPT
+        id S230008AbhFVVGz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Jun 2021 17:06:55 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:58058 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229746AbhFVVGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 17:05:41 -0400
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04EA3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 14:03:24 -0700 (PDT)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 91D30C01B; Tue, 22 Jun 2021 23:03:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1624395802; bh=HMR4unNIvosEkM7YP6TmchXmd0KH3uqdRi9sNvieci0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TXisU0e1ptgLwIoro3Scw6OGxd8eKu3UrK6nfJ+4GoKc1GFCzMUMPtBveeVIlq05U
-         7vusR6f3ccsqDwh5tHrehqgallNGnVCvIljpFK1lykePFnrsVAswJ91T7ZJ70OPDdI
-         7F5gpDuXvzqRGF2RbGhoJDk+s+6p/+4munKzfpVTrL04XZjsSU3by2xPn7vFdlSm6H
-         yD+covM9C2PhSVI5u/FbnuE/yfXr1E596QlYOFAA3yNQ706mMZyehNdZ3MyAxvYKwd
-         m0sFJc/XeQ6IhbHdZ73jIRbFo5Vm5yVks5Vqodm22+SJx8emzEn3lkDrhKa2SDrw68
-         +2iVp9zq95yEQ==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.2
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id C7643C009;
-        Tue, 22 Jun 2021 23:03:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1624395802; bh=HMR4unNIvosEkM7YP6TmchXmd0KH3uqdRi9sNvieci0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TXisU0e1ptgLwIoro3Scw6OGxd8eKu3UrK6nfJ+4GoKc1GFCzMUMPtBveeVIlq05U
-         7vusR6f3ccsqDwh5tHrehqgallNGnVCvIljpFK1lykePFnrsVAswJ91T7ZJ70OPDdI
-         7F5gpDuXvzqRGF2RbGhoJDk+s+6p/+4munKzfpVTrL04XZjsSU3by2xPn7vFdlSm6H
-         yD+covM9C2PhSVI5u/FbnuE/yfXr1E596QlYOFAA3yNQ706mMZyehNdZ3MyAxvYKwd
-         m0sFJc/XeQ6IhbHdZ73jIRbFo5Vm5yVks5Vqodm22+SJx8emzEn3lkDrhKa2SDrw68
-         +2iVp9zq95yEQ==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 963b3b99;
-        Tue, 22 Jun 2021 21:03:16 +0000 (UTC)
-Date:   Wed, 23 Jun 2021 06:03:01 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     jim.cromie@gmail.com
-Cc:     kasan-dev@googlegroups.com, v9fs-developer@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [V9fs-developer] KCSAN BUG report on p9_client_cb / p9_client_rpc
-Message-ID: <YNJQBc4dawzwMrhn@codewreck.org>
-References: <CAJfuBxxH9KVgJ7k0P5LX3fTSa4Pumcmu2NMC4P=TrGDVXE2ktQ@mail.gmail.com>
- <YNIaFnfnZPGVd1t3@codewreck.org>
- <CAJfuBxywD3QrsoGszMnVbF2RYcCF7r3h7sCOg6hK7K60E+4qKA@mail.gmail.com>
- <CAJfuBxw-JUpnENT9zNgTq2wdHqH-77pAjNuthoZYbtiCud4T=g@mail.gmail.com>
- <CAJfuBxxsye593-vWtXz5As0vBCYEMm_R9r+JL=YMuD6fg+QGNA@mail.gmail.com>
+        Tue, 22 Jun 2021 17:06:54 -0400
+Received: from [77.244.183.192] (port=62208 helo=[192.168.178.41])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1lvnZU-0002Jx-61; Tue, 22 Jun 2021 23:04:36 +0200
+Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     linus.walleij@linaro.org, linux-pci@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+References: <20210531090540.2663171-1-luca@lucaceresoli.net>
+ <20210531133211.llyiq3jcfy25tmz4@pali>
+ <8ff1c54f-bb29-1e40-8342-905e34361e1c@lucaceresoli.net>
+ <9fdbada4-4902-cec1-f283-0d12e1d4ac64@ti.com>
+ <20210531162242.jm73yzntzmilsvbg@pali>
+ <8207a53c-4de9-d0e5-295a-c165e7237e36@lucaceresoli.net>
+ <20210622110627.aqzxxtf2j3uxfeyl@pali> <20210622115604.GA25503@lpieralisi>
+ <20210622121649.ouiaecdvwutgdyy5@pali>
+ <18a104a9-2cb8-7535-a5b2-f5f049adff47@lucaceresoli.net>
+ <4d4c0d4d-41b4-4756-5189-bffa15f88406@ti.com>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <b20bae1d-cd6b-864b-8357-0da365c8406f@lucaceresoli.net>
+Date:   Tue, 22 Jun 2021 23:04:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <4d4c0d4d-41b4-4756-5189-bffa15f88406@ti.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJfuBxxsye593-vWtXz5As0vBCYEMm_R9r+JL=YMuD6fg+QGNA@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8BIT
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Kishon,
 
-let's keep the lists in Cc :)
+On 22/06/21 15:57, Kishon Vijay Abraham I wrote:
+> Hi Luca, Pali,
+> 
+> On 22/06/21 7:01 pm, Luca Ceresoli wrote:
+>> Hi,
+>>
+>> On 22/06/21 14:16, Pali Rohár wrote:
+>>> On Tuesday 22 June 2021 12:56:04 Lorenzo Pieralisi wrote:
+>>>> [Adding Linus for GPIO discussion, thread:
+>>>> https://lore.kernel.org/linux-pci/20210531090540.2663171-1-luca@lucaceresoli.net]
+>>>>
+>>>> On Tue, Jun 22, 2021 at 01:06:27PM +0200, Pali Rohár wrote:
+>>>>> Hello!
+>>>>>
+>>>>> On Tuesday 22 June 2021 12:57:22 Luca Ceresoli wrote:
+>>>>>> Nothing happened after a few weeks... I understand that knowing the
+>>>>>> correct reset timings is relevant, but unfortunately I cannot help much
+>>>>>> in finding out the correct values.
+>>>>>>
+>>>>>> However I'm wondering what should happen to this patch. It *does* fix a
+>>>>>> real bug, but potentially with an incorrect or non-optimal usleep range.
+>>>>>> Do we really want to ignore a bugfix because we are not sure about how
+>>>>>> long this delay should be?
+>>>>>
+>>>>> As there is no better solution right now, I'm fine with your patch. But
+>>>>> patch needs to be approved by Lorenzo, so please wait for his final
+>>>>> answer.
+>>>>
+>>>> I am not a GPIO expert and I have a feeling this is platform specific
+>>>> beyond what the PCI specification can actually define architecturally.
+>>>
+>>> In my opinion timeout is not platform specific as I wrote in email:
+>>> https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
+>>>
+>>> My experiments already proved that some PCIe cards needs to be in reset
+>>> state for some minimal time otherwise they cannot be enumerated. And it
+>>> does not matter to which platform you connect those (endpoint) cards.
+>>>
+>>> I do not think that timeout itself is platform specific. GPIO controls
+>>> PERST# pin and therefore specified sleep value directly drives how long
+>>> is card on the other end of PCIe slot in Warm Reset state. PCIe CEM spec
+>>> directly says that PERST# signal controls PCIe Warm Reset.
+>>>
+>>> What is here platform specific thing is that PERST# signal is controlled
+>>> by GPIO. But value of signal (high / low) and how long is in signal in
+>>> which state for me sounds like not an platform specific thing, but as
+>>> PCIe / CEM related.
+>>
+>> That's exactly my understanding of this matter. At least for the dra7xx
+>> controller it works exactly like this, PERSTn# is nothing but a GPIO
+>> output from the SoC that drives the PERSTn# input of the external chip
+>> without affecting the controller directly.
+>>
+> 
+> While the patch itself is correct, this kind-of changes the behavior on
+> already upstreamed platforms. Previously the driver expected #PERST to
+> be asserted be external means (or default power-up state) and only takes
+> care of de-asserting the #PERST line.
+> 
+> There are 2 platforms that will be impacted due to this change
+> 1) arch/arm/boot/dts/am57xx-beagle-x15-common.dtsi (has an inverter on
+> GPIO line)
+> 2) arch/arm/boot/dts/am571x-idk.dts (directly connected to #PERST)
+> For 1), gpiod_set_value(reset, 0) will assert the PERST line due to the
+> inverter (and GPIO_ACTIVE_LOW)
+> For 2), gpiod_set_value(reset, 0) will assert the PERST line because we
+> have GPIO_ACTIVE_HIGH
+> 
+> So this patch should have to be accompanied with DT changes (and this
+> patch also breaks old DT compatibility).
 
-jim.cromie@gmail.com wrote on Tue, Jun 22, 2021 at 02:55:19PM -0600:
-> heres a fuller report - Im seeing some new stuff here.
+Thanks for researching and reporting which platforms are affected. I can
+certainly take care of changing these two DTs in the next patch
+iteration but I have no way to test them: I have access to an X15 but
+without any expansion boards, and no IDK.
 
-Thanks, the one two should be the same as p9_client_cb / p9_client_rpc
-and p9_client_cb / p9_virtio_zc_request are very similar, and also the
-same to the first you had, so the patch didn't really work.
-
-I thought after sending it that it probably needs to be tag =
-READ_ONCE(req->tc.tag) instead of just assigning it... Would you mind
-trying that?
-
-> Im running in a vm, using virtme, which uses 9p to share host filesystems
-> since 1st report to you, Ive added --smp 2 to my testing, it seems to
-> have increased reporting
-
-I'm ashamed to say I've just never tried KCSAN... I can give it a try over
-the next few weeks* if that patch + READ_ONCE doesn't cut it
-
-(*sorry)
-
-Thanks,
 -- 
-Dominique
+Luca
+
