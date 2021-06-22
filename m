@@ -2,225 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9D23AFC53
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 07:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD533AFC5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 07:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbhFVFDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 01:03:44 -0400
-Received: from mga05.intel.com ([192.55.52.43]:64130 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229574AbhFVFDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 01:03:43 -0400
-IronPort-SDR: qgUW0q/nbFwDy6bzBGbdyjMuT4vvVf3W+ewHMsJCSzN9h35WtspVhpe8g7O+F8PVCQGDnPK46K
- 0VgGmfWoXJiw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="292613738"
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="292613738"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 22:01:28 -0700
-IronPort-SDR: mCKdZRLs24tuDHga2SekjGIxPKx/yBaACQ/9sqj0089hKaRxhPpzbOTVSMmH882+B239h/XgQs
- MG+PhLI7BpcA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="556493720"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by fmsmga001.fm.intel.com with ESMTP; 21 Jun 2021 22:01:24 -0700
-Date:   Tue, 22 Jun 2021 12:56:13 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>,
-        Wu Hao <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@geanix.com>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org,
-        Debarati Biswas <debaratix.biswas@intel.com>,
-        Russ Weight <russell.h.weight@intel.com>
-Subject: Re: [PATCH 2/4] fpga: dfl: Move DFH header register macros to
-  linux/dfl.h
-Message-ID: <20210622045613.GA27046@yilunxu-OptiPlex-7050>
-References: <20210621070621.431482-1-mhu@silicom.dk>
- <20210621070621.431482-3-mhu@silicom.dk>
- <81975a85-e9d6-bd4b-7666-56d1d1d581bc@redhat.com>
+        id S229920AbhFVFEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 01:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229752AbhFVFEe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 01:04:34 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B34C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 22:02:18 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id m137so22473436oig.6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 22:02:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2VziDaVw7AQP16cHBrR18mCTRK6FsXt1uYtJ2gwusbU=;
+        b=pPGuVJF76xVB2bzNF7+KpG9ySpQ63uqucA2lIyaIxOejbovl2hflHS5j6x2m+1wks3
+         xsKrSo/G/P+967X1zeBjzyYxSgFvywqj2H6T0xmFxOoO0gMYi3YLpWAK+inV8On9kHce
+         G55hlDLU9DK/joos5kXBICqjTCKFBpWNrhPHxjWyW4VAXeRbZQKLg3BwUr5yj8joDdw1
+         Vz4CV9BZOW6IreB8f+TGRPz+36Y2MYMbFFtTPlubiysqlbXl7EXkKYwATrx0zJBH4bJh
+         XaN0slhvVz7t9f69vAEpxJZM2Rt7LT0dhSuKOajLW0JX+isc9wR+tbdi256Iu/b6c04q
+         oyrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2VziDaVw7AQP16cHBrR18mCTRK6FsXt1uYtJ2gwusbU=;
+        b=iCL6dozAIeN3X5thdA9lFiIi4dRrtSO+moszfFW4Bd/5KwTZs7KMIPWjYu6ivuBOko
+         ZTNfJhs7YgdkYNwO7rfxfeeveaCGLkLtZ1fOlTG0LmpYKHzOBTuBFU2rZONYPlka3rr8
+         CrdiIe4HjHU6W6cPl+e4NzGegnRq4IAA6GQPUki7lV50JHro/pMQFvFbqWE0lmbz8Eek
+         8CG62cf8yG4PzCLXyWodkmOc5/K1UaeAFz9jbKh8TyHfArPczCGNsA6d8gEubYCnowyl
+         1tegvYkslrvezQTVjy+zT7huP9Sdj/dMLQ4sq2+JDNJCVY6jjXalPheE3rvxnr28xdVP
+         b3tQ==
+X-Gm-Message-State: AOAM531hbZw4f66ZMubi3eRepWCsg1Q1nsvd17nar8CRIHufnK2BpcGC
+        i0svhG9iDPvGUJKuQ6cksZf/NA==
+X-Google-Smtp-Source: ABdhPJzVyxUHTq5HYCviGIxsaNDPDKjrHra6qqs2ESHXRX2xZuPTTs7Iq+GsticursNOjejx4Dxocw==
+X-Received: by 2002:aca:5a04:: with SMTP id o4mr1710761oib.33.1624338137650;
+        Mon, 21 Jun 2021 22:02:17 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id r1sm4467744oth.19.2021.06.21.22.02.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 22:02:17 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>
+Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pwm@vger.kernel.org,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Yassine Oudjana <y.oudjana@protonmail.com>,
+        Luca Weiss <luca@z3ntu.xyz>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+Subject: [PATCH v8 1/2] dt-bindings: leds: Add Qualcomm Light Pulse Generator binding
+Date:   Mon, 21 Jun 2021 22:01:11 -0700
+Message-Id: <20210622050113.231902-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <81975a85-e9d6-bd4b-7666-56d1d1d581bc@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 06:56:28AM -0700, Tom Rix wrote:
-> 
-> On 6/21/21 12:06 AM, Martin Hundebøll wrote:
-> > From: Debarati Biswas <debaratix.biswas@intel.com>
-> > 
-> > Device Feature List (DFL) drivers may be defined in subdirectories other
-> > than drivers/fpga, and each DFL driver should have access to the Device
-> > Feature Header (DFH) register, which contains revision and type
-> > information. This change moves the macros specific to the DFH register
-> > from drivers/fpga/dfl.h to include/linux/dfl.h.
-> > 
-> > Signed-off-by: Debarati Biswas <debaratix.biswas@intel.com>
-> > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
-> > ---
-> >   drivers/fpga/dfl.h  | 48 +----------------------------------------
-> >   include/linux/dfl.h | 52 +++++++++++++++++++++++++++++++++++++++++++++
-> >   2 files changed, 53 insertions(+), 47 deletions(-)
-> > 
-> > diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
-> > index 2b82c96ba56c..6ed0353e9a99 100644
-> > --- a/drivers/fpga/dfl.h
-> > +++ b/drivers/fpga/dfl.h
-> > @@ -17,6 +17,7 @@
-> >   #include <linux/bitfield.h>
-> 
-> bitfield.h was added to linux/dfl.h
-> 
-> Likely both aren't needed, try removing this one.
+This adds the binding document describing the three hardware blocks
+related to the Light Pulse Generator found in a wide range of Qualcomm
+PMICs.
 
-The DFL register definitions are in dfl.h, and Source files which include
-dfl.h are likely to use bitfield ops for DFL register access, so could we
-keep it here?
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
 
-Thanks,
-Yilun
+Changes since v7:
+- Added qcom,pmc8180c-lpg
+- Defined constraints for qcom,power-source
+- Changes qcom,dtest to matrix and added constraints
+- Changed example from LED_COLOR_ID_MULTI to LED_COLOR_ID_RGB
 
-> 
-> Tom
-> 
-> >   #include <linux/cdev.h>
-> >   #include <linux/delay.h>
-> > +#include <linux/dfl.h>
-> >   #include <linux/eventfd.h>
-> >   #include <linux/fs.h>
-> >   #include <linux/interrupt.h>
-> > @@ -53,32 +54,6 @@
-> >   #define PORT_FEATURE_ID_UINT		0x12
-> >   #define PORT_FEATURE_ID_STP		0x13
-> > -/*
-> > - * Device Feature Header Register Set
-> > - *
-> > - * For FIUs, they all have DFH + GUID + NEXT_AFU as common header registers.
-> > - * For AFUs, they have DFH + GUID as common header registers.
-> > - * For private features, they only have DFH register as common header.
-> > - */
-> > -#define DFH			0x0
-> > -#define GUID_L			0x8
-> > -#define GUID_H			0x10
-> > -#define NEXT_AFU		0x18
-> > -
-> > -#define DFH_SIZE		0x8
-> > -
-> > -/* Device Feature Header Register Bitfield */
-> > -#define DFH_ID			GENMASK_ULL(11, 0)	/* Feature ID */
-> > -#define DFH_ID_FIU_FME		0
-> > -#define DFH_ID_FIU_PORT		1
-> > -#define DFH_REVISION		GENMASK_ULL(15, 12)	/* Feature revision */
-> > -#define DFH_NEXT_HDR_OFST	GENMASK_ULL(39, 16)	/* Offset to next DFH */
-> > -#define DFH_EOL			BIT_ULL(40)		/* End of list */
-> > -#define DFH_TYPE		GENMASK_ULL(63, 60)	/* Feature type */
-> > -#define DFH_TYPE_AFU		1
-> > -#define DFH_TYPE_PRIVATE	3
-> > -#define DFH_TYPE_FIU		4
-> > -
-> >   /* Next AFU Register Bitfield */
-> >   #define NEXT_AFU_NEXT_DFH_OFST	GENMASK_ULL(23, 0)	/* Offset to next AFU */
-> > @@ -403,27 +378,6 @@ struct device *dfl_fpga_pdata_to_parent(struct dfl_feature_platform_data *pdata)
-> >   	return pdata->dev->dev.parent->parent;
-> >   }
-> > -static inline bool dfl_feature_is_fme(void __iomem *base)
-> > -{
-> > -	u64 v = readq(base + DFH);
-> > -
-> > -	return (FIELD_GET(DFH_TYPE, v) == DFH_TYPE_FIU) &&
-> > -		(FIELD_GET(DFH_ID, v) == DFH_ID_FIU_FME);
-> > -}
-> > -
-> > -static inline bool dfl_feature_is_port(void __iomem *base)
-> > -{
-> > -	u64 v = readq(base + DFH);
-> > -
-> > -	return (FIELD_GET(DFH_TYPE, v) == DFH_TYPE_FIU) &&
-> > -		(FIELD_GET(DFH_ID, v) == DFH_ID_FIU_PORT);
-> > -}
-> > -
-> > -static inline u8 dfl_feature_revision(void __iomem *base)
-> > -{
-> > -	return (u8)FIELD_GET(DFH_REVISION, readq(base + DFH));
-> > -}
-> > -
-> >   /**
-> >    * struct dfl_fpga_enum_info - DFL FPGA enumeration information
-> >    *
-> > diff --git a/include/linux/dfl.h b/include/linux/dfl.h
-> > index 6cc10982351a..1cd86b2e7cb1 100644
-> > --- a/include/linux/dfl.h
-> > +++ b/include/linux/dfl.h
-> > @@ -8,7 +8,9 @@
-> >   #ifndef __LINUX_DFL_H
-> >   #define __LINUX_DFL_H
-> > +#include <linux/bitfield.h>
-> >   #include <linux/device.h>
-> > +#include <linux/io.h>
-> >   #include <linux/mod_devicetable.h>
-> >   /**
-> > @@ -83,4 +85,54 @@ void dfl_driver_unregister(struct dfl_driver *dfl_drv);
-> >   	module_driver(__dfl_driver, dfl_driver_register, \
-> >   		      dfl_driver_unregister)
-> > +/*
-> > + * Device Feature Header Register Set
-> > + *
-> > + * For FIUs, they all have DFH + GUID + NEXT_AFU as common header registers.
-> > + * For AFUs, they have DFH + GUID as common header registers.
-> > + * For private features, they only have DFH register as common header.
-> > + */
-> > +#define DFH                     0x0
-> > +#define GUID_L                  0x8
-> > +#define GUID_H                  0x10
-> > +#define NEXT_AFU                0x18
-> > +
-> > +#define DFH_SIZE                0x8
-> > +
-> > +/* Device Feature Header Register Bitfield */
-> > +#define DFH_ID                  GENMASK_ULL(11, 0)      /* Feature ID */
-> > +#define DFH_ID_FIU_FME          0
-> > +#define DFH_ID_FIU_PORT         1
-> > +#define DFH_REVISION            GENMASK_ULL(15, 12)
-> > +#define DFH_NEXT_HDR_OFST       GENMASK_ULL(39, 16)     /* Offset to next DFH */
-> > +#define DFH_EOL                 BIT_ULL(40)             /* End of list */
-> > +#define DFH_TYPE                GENMASK_ULL(63, 60)     /* Feature type */
-> > +#define DFH_TYPE_AFU            1
-> > +#define DFH_TYPE_PRIVATE        3
-> > +#define DFH_TYPE_FIU            4
-> > +
-> > +/* Function to read from DFH and check if the Feature type is FME */
-> > +static inline bool dfl_feature_is_fme(void __iomem *base)
-> > +{
-> > +	u64 v = readq(base + DFH);
-> > +
-> > +	return (FIELD_GET(DFH_TYPE, v) == DFH_TYPE_FIU) &&
-> > +		(FIELD_GET(DFH_ID, v) == DFH_ID_FIU_FME);
-> > +}
-> > +
-> > +/* Function to read from DFH and check if the Feature type is port*/
-> > +static inline bool dfl_feature_is_port(void __iomem *base)
-> > +{
-> > +	u64 v = readq(base + DFH);
-> > +
-> > +	return (FIELD_GET(DFH_TYPE, v) == DFH_TYPE_FIU) &&
-> > +		 (FIELD_GET(DFH_ID, v) == DFH_ID_FIU_PORT);
-> > +}
-> > +
-> > +/* Function to read feature revision from DFH */
-> > +static inline u8 dfl_feature_revision(void __iomem *base)
-> > +{
-> > +	return (u8)FIELD_GET(DFH_REVISION, readq(base + DFH));
-> > +}
-> > +
-> >   #endif /* __LINUX_DFL_H */
+ .../bindings/leds/leds-qcom-lpg.yaml          | 164 ++++++++++++++++++
+ 1 file changed, 164 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+
+diff --git a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+new file mode 100644
+index 000000000000..10aee61a7ffc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+@@ -0,0 +1,164 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/leds/leds-qcom-lpg.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Light Pulse Generator
++
++maintainers:
++  - Bjorn Andersson <bjorn.andersson@linaro.org>
++
++description: >
++  The Qualcomm Light Pulse Generator consists of three different hardware blocks;
++  a ramp generator with lookup table, the light pulse generator and a three
++  channel current sink. These blocks are found in a wide range of Qualcomm PMICs.
++
++properties:
++  compatible:
++    enum:
++      - qcom,pm8150b-lpg
++      - qcom,pm8150l-lpg
++      - qcom,pm8916-pwm
++      - qcom,pm8941-lpg
++      - qcom,pm8994-lpg
++      - qcom,pmc8180c-lpg
++      - qcom,pmi8994-lpg
++      - qcom,pmi8998-lpg
++
++  "#pwm-cells":
++    const: 2
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++  qcom,power-source:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      power-source used to drive the output, as defined in the datasheet.
++      Should be specified if the TRILED block is present
++    enum: [0, 1, 3]
++
++  qcom,dtest:
++    $ref: /schemas/types.yaml#/definitions/uint32-matrix
++    description: >
++      A list of integer pairs, where each pair represent the dtest line the
++      particular channel should be connected to and the flags denoting how the
++      value should be outputed, as defined in the datasheet. The number of
++      pairs should be the same as the number of channels.
++    items:
++      items:
++        - description: dtest line to attach
++        - description: flags for the attachment
++
++  multi-led:
++    type: object
++    $ref: leds-class-multicolor.yaml#
++    properties:
++      "#address-cells":
++        const: 1
++
++      "#size-cells":
++        const: 0
++
++      "^led@[0-9a-f]$":
++        type: object
++        $ref: common.yaml#
++
++patternProperties:
++  "^led@[0-9a-f]$":
++    type: object
++    $ref: common.yaml#
++
++    properties:
++      reg: true
++
++    required:
++      - reg
++
++required:
++  - compatible
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/leds/common.h>
++
++    lpg {
++      compatible = "qcom,pmi8994-lpg";
++
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      qcom,power-source = <1>;
++
++      qcom,dtest = <0 0>,
++                   <0 0>,
++                   <0 0>,
++                   <4 1>;
++
++      led@1 {
++        reg = <1>;
++        label = "green:user1";
++      };
++
++      led@2 {
++        reg = <2>;
++        label = "green:user0";
++        default-state = "on";
++      };
++
++      led@3 {
++        reg = <3>;
++        label = "green:user2";
++      };
++
++      led@4 {
++        reg = <4>;
++        label = "green:user3";
++      };
++    };
++  - |
++    #include <dt-bindings/leds/common.h>
++
++    lpg {
++      compatible = "qcom,pmi8994-lpg";
++
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      qcom,power-source = <1>;
++
++      multi-led {
++        color = <LED_COLOR_ID_RGB>;
++        function = LED_FUNCTION_STATUS;
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        led@1 {
++          reg = <1>;
++          color = <LED_COLOR_ID_RED>;
++        };
++
++        led@2 {
++          reg = <2>;
++          color = <LED_COLOR_ID_GREEN>;
++        };
++
++        led@3 {
++          reg = <3>;
++          color = <LED_COLOR_ID_BLUE>;
++        };
++      };
++    };
++  - |
++    lpg {
++      compatible = "qcom,pm8916-pwm";
++      #pwm-cells = <2>;
++    };
++...
+-- 
+2.29.2
+
