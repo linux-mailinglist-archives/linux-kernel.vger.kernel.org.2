@@ -2,137 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075A43B081C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2EE3B07FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbhFVPCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:02:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232087AbhFVPB7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:01:59 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2103BC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 07:59:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=aR8G01IJ+UceVFDgRJW6BYPthEX2HmXBea
-        Q0eDZtDvc=; b=rN9/qI/+KZUTwcPnMglDwR/DmH325OzAcRRpUGkBv94ONCmds6
-        6g2xr9YsPWvYuurbncwEpXiKTKACK+TnKPMBNCA0Ok2hGSDkI6FR0a9222czloFq
-        l3LGBjEqQPdQ9N2gdyCsZ5AKE+woSn8YaXAJ6arwFC3vIiszvc3M+frqY=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCHjoql+tFgLsMbAQ--.20215S2;
-        Tue, 22 Jun 2021 22:58:45 +0800 (CST)
-Date:   Tue, 22 Jun 2021 22:53:04 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Alexandre Ghiti <alex@ghiti.fr>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 1/2] riscv: Introduce set_kernel_memory helper
-Message-ID: <20210622225304.53d94c0b@xhacker>
-In-Reply-To: <20210622082134.2404162-2-alex@ghiti.fr>
-References: <20210622082134.2404162-1-alex@ghiti.fr>
-        <20210622082134.2404162-2-alex@ghiti.fr>
+        id S231857AbhFVPAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:00:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230185AbhFVPAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 11:00:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71BE760FEA;
+        Tue, 22 Jun 2021 14:57:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624373879;
+        bh=VwMIe4cYe/W3nLlDB3Fbw/+ECa70qefUiyNfPw6sEP4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=JmOlbsDiK3T2O385xlYkCENWOmuHB7ZpPYZhlhAmDXqQ+o0HANIXCII8YnvhMerWS
+         saTgOUOP1tFtfjUl6uRuQHQ6gqzOLM8TyEWZv0RWXAXeMzpIbgUY2p7k6AM3n0NNll
+         SU58NY8wjl1MJfkkspKDe9r0eC7ZZ/lDLIVeJS+eqSrj9bEJ2qLP/lX3UrA2SQ3PfT
+         bi03/lXYjDDjERiTtwz3uitGUIELqRQAshhbaoz+p6VYXWg+l5JqP/hRAd8N1MDhSx
+         PJdWX3svLEawxIdaJx8mROYD6JKSpedlem4hehcAx2+rLTAs1F7rqOlmBJA2dtNA2r
+         aSdSyJQv6nIcQ==
+Date:   Tue, 22 Jun 2021 09:57:58 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     bhelgaas@google.com, alex.williamson@redhat.com, cohuck@redhat.com,
+        jgg@ziepe.ca, kevin.tian@intel.com, eric.auger@redhat.com,
+        giovanni.cabiddu@intel.com, mjrosato@linux.ibm.com,
+        jannh@google.com, kvm@vger.kernel.org, linux-pci@vger.kernel.org,
+        minchan@kernel.org, gregkh@linuxfoundation.org, jeyu@kernel.org,
+        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
+        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
+        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
+        rostedt@goodmis.org, peterz@infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] pci: export pci_dev_unlock() and the respective
+ unlock
+Message-ID: <20210622145758.GA3336253@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygCHjoql+tFgLsMbAQ--.20215S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw17uFy3ZrWDXry3Zw4DXFb_yoW5XFy5pF
-        48Jw4DCrWagF9rGFWI9ryq9w1xJwn5Gw1jyrW3A34DuF47XrWUCw15tw1DJr1kGFyqgF4q
-        kay5C34Duanxt3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkqb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8489tUUUUU==
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622000310.728294-1-mcgrof@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+Please update the subject line to match the convention:
 
-On Tue, 22 Jun 2021 10:21:33 +0200
-Alexandre Ghiti <alex@ghiti.fr> wrote:
+  PCI: Export pci_dev_trylock() and pci_dev_unlock()
 
-> This helper should be used for setting permissions to the kernel
-> mapping as it takes pointers as arguments and then avoids explicit cast
-> to unsigned long needed for the set_memory_* API.
+On Mon, Jun 21, 2021 at 05:03:09PM -0700, Luis Chamberlain wrote:
+> Other places in the kernel use this form, and so just
+> provide a common path for it.
 > 
-> Suggested-by: Christoph Hellwig <hch@infradead.org>
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> Reviewed-by: Anup Patel <anup@brainfault.org>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+
+With tweaks mentioned here:
+
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+
 > ---
->  arch/riscv/include/asm/set_memory.h |  8 ++++++++
->  arch/riscv/mm/pageattr.c            | 11 +++++++++++
->  2 files changed, 19 insertions(+)
+>  drivers/pci/pci.c   | 6 ++++--
+>  include/linux/pci.h | 3 +++
+>  2 files changed, 7 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
-> index 9d4d455726d4..4f9fc54d1806 100644
-> --- a/arch/riscv/include/asm/set_memory.h
-> +++ b/arch/riscv/include/asm/set_memory.h
-> @@ -16,6 +16,8 @@ int set_memory_rw(unsigned long addr, int numpages);
->  int set_memory_x(unsigned long addr, int numpages);
->  int set_memory_nx(unsigned long addr, int numpages);
->  int set_memory_rw_nx(unsigned long addr, int numpages);
-> +int set_kernel_memory(char *start, char *end,
-> +		      int (*set_memory)(unsigned long start, int num_pages));
->  void protect_kernel_text_data(void);
->  #else
->  static inline int set_memory_ro(unsigned long addr, int numpages) { return 0; }
-> @@ -24,6 +26,12 @@ static inline int set_memory_x(unsigned long addr, int numpages) { return 0; }
->  static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
->  static inline void protect_kernel_text_data(void) {}
->  static inline int set_memory_rw_nx(unsigned long addr, int numpages) { return 0; }
-> +static inline int set_kernel_memory(char *start, char *end,
-> +				    int (*set_memory)(unsigned long start,
-> +						      int num_pages))
-> +{
-> +	return 0;
-> +}
->  #endif
->  
->  #if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
-> diff --git a/arch/riscv/mm/pageattr.c b/arch/riscv/mm/pageattr.c
-> index 5e49e4b4a4cc..11d0b0f4c65d 100644
-> --- a/arch/riscv/mm/pageattr.c
-> +++ b/arch/riscv/mm/pageattr.c
-> @@ -156,6 +156,17 @@ int set_memory_nx(unsigned long addr, int numpages)
->  	return __set_memory(addr, numpages, __pgprot(0), __pgprot(_PAGE_EXEC));
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index f09821af1d2e..b1d9bb3f5ae2 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -5027,7 +5027,7 @@ static void pci_dev_lock(struct pci_dev *dev)
 >  }
 >  
-> +__always_inline int set_kernel_memory(char *startp, char *endp,
-
-If __always_inline, can it be moved to set_memory.h?
-
-Thanks
-
-> +				      int (*set_memory)(unsigned long start,
-> +							int num_pages))
-> +{
-> +	unsigned long start = (unsigned long)startp;
-> +	unsigned long end = (unsigned long)endp;
-> +	int num_pages = PAGE_ALIGN(end - start) >> PAGE_SHIFT;
-> +
-> +	return set_memory(start, num_pages);
-> +}
-> +
->  int set_direct_map_invalid_noflush(struct page *page)
+>  /* Return 1 on successful lock, 0 on contention */
+> -static int pci_dev_trylock(struct pci_dev *dev)
+> +int pci_dev_trylock(struct pci_dev *dev)
 >  {
->  	int ret;
+>  	if (pci_cfg_access_trylock(dev)) {
+>  		if (device_trylock(&dev->dev))
+> @@ -5037,12 +5037,14 @@ static int pci_dev_trylock(struct pci_dev *dev)
+>  
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL_GPL(pci_dev_trylock);
+>  
+> -static void pci_dev_unlock(struct pci_dev *dev)
+> +void pci_dev_unlock(struct pci_dev *dev)
+>  {
+>  	device_unlock(&dev->dev);
+>  	pci_cfg_access_unlock(dev);
+>  }
+> +EXPORT_SYMBOL_GPL(pci_dev_unlock);
+>  
+>  static void pci_dev_save_and_disable(struct pci_dev *dev)
+>  {
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 6248e044dd29..c55368f58965 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -1353,6 +1353,9 @@ int devm_request_pci_bus_resources(struct device *dev,
+>  /* Temporary until new and working PCI SBR API in place */
+>  int pci_bridge_secondary_bus_reset(struct pci_dev *dev);
+>  
+> +int pci_dev_trylock(struct pci_dev *dev);
+> +void pci_dev_unlock(struct pci_dev *dev);
 
+Move next to pci_cfg_access_lock(), which seems a little more related.
 
+>  #define pci_bus_for_each_resource(bus, res, i)				\
+>  	for (i = 0;							\
+>  	    (res = pci_bus_resource_n(bus, i)) || i < PCI_BRIDGE_RESOURCE_NUM; \
+> -- 
+> 2.30.2
+> 
