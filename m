@@ -2,106 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8FE03B0A8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D746F3B0A8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbhFVQpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 12:45:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhFVQpm (ORCPT
+        id S231348AbhFVQpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 12:45:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32019 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230438AbhFVQpj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:45:42 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9740C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:43:25 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id c26so2659796vso.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:43:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=vxFrkh6PfJNY2iqd2AHDe5xeAdZHifSt7a5NfrAQdks=;
-        b=Umxe35UwNjjAj+hJrhbXSFm925lsc4u1dcC9gWmt/oNuXPcZf6IMOfyqWba1dlU7XR
-         X4j1bnaCLRyZsrXH/XeRxFnDgPsmtS4xkAIG3JnBz2UXpEKN2FBe/RzmEu415j5XWea1
-         oK4DVief2uEtFwqgktetSFFwgGh0IrziVEbNxLAZMJ5fooSbie2dHEF061ZIXRxb4BDN
-         +JTEHPLyTkDSd3VisOkuY6f/10X/crO0vmAYvGuSFVdHRLJL6yH0j/BlSgUoAEjTOpLD
-         8cGuKiMcvnZkaJcd1YtGQEEauTsE5Wn4dj+AsKrzRxXlF7OsL1U+4PFvfNmSX5FTjl99
-         wZ6Q==
+        Tue, 22 Jun 2021 12:45:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624380202;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vqggAYJUg6fHbEAdVvsWBfgBtGxc+6Jb/H8dZhUKvv8=;
+        b=N4CUTBlsW7+6wpiWr6d/RNzJHr0Zl90TncirN4t4lYyMK4kH0tOlQQVLck4sv7vazNVNGq
+        Sr7U714ifZnFMVQQKMGHLgZpVVyc8oCYpK1L54CDBDN9g+f9rSAo3UQw+9kSdbvt9/wjn/
+        v60X/kPGATtuxEsy9cOazjAk5cKCtss=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-253-tBRwnV_pPQCIuW36zKrbKA-1; Tue, 22 Jun 2021 12:43:21 -0400
+X-MC-Unique: tBRwnV_pPQCIuW36zKrbKA-1
+Received: by mail-wr1-f72.google.com with SMTP id d8-20020adfef880000b029011a9391927aso3669427wro.22
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:43:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=vxFrkh6PfJNY2iqd2AHDe5xeAdZHifSt7a5NfrAQdks=;
-        b=iYQVogH9++n9uDlJXxybkW6ss7/Peg12KgqkDgiaRV/W+gnIEoMGsThegP42zC8kDa
-         5T3lIkgfC6DEFKpAstXbto87K6rkpeoAWKWfCIC/nk/mId7KvEJ27ybLNXGto8Gn58I7
-         pCW1x+lzdrlEFkIz9ViWDtbKSZEdeM+eogb9IXuQDqPwvL2LSXJd3jW38Ux9eDVv3K4N
-         HsKHYbsbYBT9Zgob61trga2DBmk6FNqLVHqp0eIotZoHee4ir78EYGDQZUqepspZTjMH
-         a2ppIpSNqY6tYQjxRcnBtJ3bvUXCldZqdocTRtHSEXrsLchexhN3BIGNOZgiK4npNNGN
-         HC/Q==
-X-Gm-Message-State: AOAM533N9xak6b9sWlx266txvzWwJcGFeh+39j04Y4TE9qddnn/mwcB5
-        IstB71YCqNDwMcY1v1smHH3g2GnWPEAaFCS0eXw=
-X-Google-Smtp-Source: ABdhPJwWLkaCAb7h1X1XLmSqxGwnF3HXSwVDTLJg6WxGQusSIoHDNyvkJfDpkK3Yi9UK8mDI+q7uEu0/oTSyBYU2Ax8=
-X-Received: by 2002:a05:6102:ed6:: with SMTP id m22mr10980416vst.60.1624380204705;
- Tue, 22 Jun 2021 09:43:24 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vqggAYJUg6fHbEAdVvsWBfgBtGxc+6Jb/H8dZhUKvv8=;
+        b=V7E+B9rS4kfv1A/1sAhddVfVnLyDg2U9a8+yVP2b5vOUabL4jULFcpRDCJn5ArFWyI
+         JaX1lv50XONVHz1LPZIsyxitwT5NUU/Ki6XSoz0wlJolINM2tWaikHX11nOjytN+iBSz
+         GK1Z9aLy+B8/NLi06jcab4yjiwx4Kelqu9c4tLQ70XcxMgJKHCBizxTjy+ECvIWEwAlA
+         NlIwixpbPPLyU7ZnD6ZcoIBAtdvKVAGK+jU4VPZOL5zY2Ligtu/BU/b4NikYVuR+30tQ
+         DyJdA3h1ozR+R01iMQYbT3B82rMtf/OzK4pkhiadw15KzGcAIWhq5IGmq4ykFFtcidR5
+         rEMA==
+X-Gm-Message-State: AOAM530o85Y8ox6ssDzAnXFT9uX8JsrInv9YkY0lVs3oVn/Y/yYEupmh
+        5plauV2tjhVdzRnoVHfJ47EuUsOLK/SJiu6LTNz/tDIRM8imGZnnfHpWzbAt154p4XERMHMT0gn
+        hFp+334oRoJsd6cthb4pKROENHcHw6vtxecgyKVHja2my0SQVrVMWJtbxZhzYCrma3xOFMnP1S1
+        0T
+X-Received: by 2002:a5d:59ae:: with SMTP id p14mr5846249wrr.188.1624380199427;
+        Tue, 22 Jun 2021 09:43:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwxnu8M4DnxUd81kSwud6iw4Qb+iSUsFgoPTMed1pHs74o/m6tG3gCAKZjSKtKUt82B1iJw/Q==
+X-Received: by 2002:a5d:59ae:: with SMTP id p14mr5846216wrr.188.1624380199230;
+        Tue, 22 Jun 2021 09:43:19 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id 2sm2868252wmk.24.2021.06.22.09.43.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 09:43:18 -0700 (PDT)
+Subject: Re: [PATCH][next] KVM: x86/mmu: Fix uninitialized boolean variable
+ flush
+To:     Colin King <colin.king@canonical.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Ben Gardon <bgardon@google.com>, kvm@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210622150912.23429-1-colin.king@canonical.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <7a8f9ef7-03f7-08e3-61b2-548aa54328e3@redhat.com>
+Date:   Tue, 22 Jun 2021 18:43:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-From:   jim.cromie@gmail.com
-Date:   Tue, 22 Jun 2021 10:42:58 -0600
-Message-ID: <CAJfuBxxH9KVgJ7k0P5LX3fTSa4Pumcmu2NMC4P=TrGDVXE2ktQ@mail.gmail.com>
-Subject: KCSAN BUG report on p9_client_cb / p9_client_rpc
-To:     kasan-dev@googlegroups.com, v9fs-developer@lists.sourceforge.net
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210622150912.23429-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got this on rc7 + my hacks ( not near p9 )
-ISTM someone here will know what it means.
-If theres anything else i can do to help,
-(configs, drop my patches and retry)
- please let me know
+On 22/06/21 17:09, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> In the case where kvm_memslots_have_rmaps(kvm) is false the boolean
+> variable flush is not set and is uninitialized.  If is_tdp_mmu_enabled(kvm)
+> is true then the call to kvm_tdp_mmu_zap_collapsible_sptes passes the
+> uninitialized value of flush into the call. Fix this by initializing
+> flush to false.
+> 
+> Addresses-Coverity: ("Uninitialized scalar variable")
+> Fixes: e2209710ccc5 ("KVM: x86/mmu: Skip rmap operations if rmaps not allocated")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>   arch/x86/kvm/mmu/mmu.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index ed24e97c1549..b8d20f139729 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -5689,7 +5689,7 @@ void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
+>   {
+>   	/* FIXME: const-ify all uses of struct kvm_memory_slot.  */
+>   	struct kvm_memory_slot *slot = (struct kvm_memory_slot *)memslot;
+> -	bool flush;
+> +	bool flush = false;
+>   
+>   	if (kvm_memslots_have_rmaps(kvm)) {
+>   		write_lock(&kvm->mmu_lock);
+> 
 
+Queued, thanks.
 
+Paolo
 
-[   14.904783] ==================================================================
-[   14.905848] BUG: KCSAN: data-race in p9_client_cb / p9_client_rpc
-[   14.906769]
-[   14.907040] write to 0xffff888005eb0360 of 4 bytes by interrupt on cpu 0:
-[   14.907989]  p9_client_cb+0x1a/0x100
-[   14.908485]  req_done+0xd3/0x130
-[   14.908931]  vring_interrupt+0xac/0x130
-[   14.909460]  __handle_irq_event_percpu+0x64/0x260
-[   14.910095]  handle_irq_event+0x93/0x120
-[   14.910637]  handle_edge_irq+0x123/0x400
-[   14.911156]  __common_interrupt+0x3e/0xa0
-[   14.911723]  common_interrupt+0x7e/0xa0
-[   14.912270]  asm_common_interrupt+0x1e/0x40
-[   14.912816]  native_safe_halt+0xe/0x10
-[   14.913350]  default_idle+0xa/0x10
-[   14.913801]  default_idle_call+0x38/0xc0
-[   14.914361]  do_idle+0x1e7/0x270
-[   14.914840]  cpu_startup_entry+0x19/0x20
-[   14.915436]  rest_init+0xd0/0xd2
-[   14.915878]  arch_call_rest_init+0xa/0x11
-[   14.916428]  start_kernel+0xacb/0xadd
-[   14.916927]  secondary_startup_64_no_verify+0xc2/0xcb
-[   14.917613]
-[   14.917819] read to 0xffff888005eb0360 of 4 bytes by task 261 on cpu 1:
-[   14.918764]  p9_client_rpc+0x1cf/0x860
-[   14.919340]  p9_client_walk+0xcf/0x350
-[   14.919857]  v9fs_file_open+0x16c/0x340
-[   14.920411]  do_dentry_open+0x298/0x6a0
-[   14.920980]  vfs_open+0x58/0x60
-[   14.921475]  path_openat+0x1130/0x1860
-[   14.922126]  do_filp_open+0x116/0x1f0
-[   14.922731]  do_sys_openat2+0x91/0x190
-[   14.923267]  __x64_sys_openat+0x9b/0xd0
-[   14.923790]  do_syscall_64+0x42/0x80
-[   14.924295]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[   14.924955]
-[   14.925159] Reported by Kernel Concurrency Sanitizer on:
-[   14.925899] CPU: 1 PID: 261 Comm: ip Not tainted
-5.13.0-rc7-dd7i-00036-gb82eaba47adf-dirty #121
-[   14.927094] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS 1.14.0-3.fc34 04/01/2014
-[   14.928292] ==================================================================
-virtme-init: console is ttyS0
