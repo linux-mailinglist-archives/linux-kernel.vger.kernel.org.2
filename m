@@ -2,118 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2776F3B0BCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D173B0B92
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbhFVRsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 13:48:52 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3301 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232454AbhFVRsi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 13:48:38 -0400
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G8YTv621Sz6H7Gp;
-        Wed, 23 Jun 2021 01:36:19 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 22 Jun 2021 19:46:19 +0200
-Received: from [10.47.89.126] (10.47.89.126) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 22 Jun
- 2021 18:46:18 +0100
-Subject: Re: [PATCH 0/6] iommu: Enable devices to request non-strict DMA,
- starting with QCom SD/MMC
-To:     Douglas Anderson <dianders@chromium.org>,
-        <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
-        <rafael.j.wysocki@intel.com>, <will@kernel.org>,
-        <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <bjorn.andersson@linaro.org>, <ulf.hansson@linaro.org>,
-        <adrian.hunter@intel.com>, <bhelgaas@google.com>
-CC:     <robdclark@chromium.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <quic_c_gdjako@quicinc.com>,
-        <iommu@lists.linux-foundation.org>, <sonnyrao@chromium.org>,
-        <saiprakash.ranjan@codeaurora.org>, <linux-mmc@vger.kernel.org>,
-        <vbadigan@codeaurora.org>, <rajatja@google.com>,
-        <saravanak@google.com>, <joel@joelfernandes.org>,
-        Andy Gross <agross@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210621235248.2521620-1-dianders@chromium.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <f3078ff2-97a6-6029-b584-1589ed184579@huawei.com>
-Date:   Tue, 22 Jun 2021 18:39:50 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S232358AbhFVRmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 13:42:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232258AbhFVRmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 13:42:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 348AE613AB;
+        Tue, 22 Jun 2021 17:40:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624383605;
+        bh=lo/kyg3/kqqRc5+03g0g99YevdWouogd9RgriEtqcec=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=SPEhcjwbo6RS+hQkZ/unAe/kvssVvK3eE+WOWLVPzckg7OiGqAwNWEY/07aAdpRTX
+         b40fbFdWY7XrbW49HsyNfAwhR6f7xtwsoofvTy7NSkNKMLJPwe9CFEEOE0mTdSala/
+         2RR4ESOIIsAQWLbBYVI3AgaLEnfWkSfCsgngvPI7+5OHpu+coNgvnNxlOSMKGR95R+
+         SxadzbpFmR15I5BtXK1ASyOFolev3RAwPJMt/CCUVOukumkVJVdjHnoFxA6SPxo+qo
+         jD6Mm9fz6KXAfqBgfClnnePzEv0uMry4Y/N4FWlIUizcn/wqn2MN0VBV3VfnUqvlmK
+         jnrHQmAR7ykjA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2F1E060A6C;
+        Tue, 22 Jun 2021 17:40:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210621235248.2521620-1-dianders@chromium.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.89.126]
-X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] bridge: cfm: remove redundant return
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162438360518.26881.9422562633513835121.git-patchwork-notify@kernel.org>
+Date:   Tue, 22 Jun 2021 17:40:05 +0000
+References: <20210622060519.318930-1-13145886936@163.com>
+In-Reply-To: <20210622060519.318930-1-13145886936@163.com>
+To:     None <13145886936@163.com>
+Cc:     roopa@nvidia.com, nikolay@nvidia.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gushengxian@yulong.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/06/2021 00:52, Douglas Anderson wrote:
-> 
-> This patch attempts to put forward a proposal for enabling non-strict
-> DMA on a device-by-device basis. The patch series requests non-strict
-> DMA for the Qualcomm SDHCI controller as a first device to enable,
-> getting a nice bump in performance with what's believed to be a very
-> small drop in security / safety (see the patch for the full argument).
-> 
-> As part of this patch series I am end up slightly cleaning up some of
-> the interactions between the PCI subsystem and the IOMMU subsystem but
-> I don't go all the way to fully remove all the tentacles. Specifically
-> this patch series only concerns itself with a single aspect: strict
-> vs. non-strict mode for the IOMMU. I'm hoping that this will be easier
-> to talk about / reason about for more subsystems compared to overall
-> deciding what it means for a device to be "external" or "untrusted".
-> 
-> If something like this patch series ends up being landable, it will
-> undoubtedly need coordination between many maintainers to land. I
-> believe it's fully bisectable but later patches in the series
-> definitely depend on earlier ones. Sorry for the long CC list. :(
-> 
+Hello:
 
-JFYI, In case to missed it, and I know it's not the same thing as you 
-want, above, but the following series will allow you to build the kernel 
-to default to lazy mode:
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-https://lore.kernel.org/linux-iommu/1624016058-189713-1-git-send-email-john.garry@huawei.com/T/#m21bc07b9353b3ba85f2a40557645c2bcc13cbb3e
-
-So iommu.strict=0 would be no longer always required for arm64.
-
-Thanks,
-John
-
-
+On Mon, 21 Jun 2021 23:05:19 -0700 you wrote:
+> From: gushengxian <gushengxian@yulong.com>
 > 
-> Douglas Anderson (6):
->    drivers: base: Add the concept of "pre_probe" to drivers
->    drivers: base: Add bits to struct device to control iommu strictness
->    PCI: Indicate that we want to force strict DMA for untrusted devices
->    iommu: Combine device strictness requests with the global default
->    iommu: Stop reaching into PCIe devices to decide strict vs. non-strict
->    mmc: sdhci-msm: Request non-strict IOMMU mode
+> Return statements are not needed in Void function.
 > 
->   drivers/base/dd.c             | 10 +++++--
->   drivers/iommu/dma-iommu.c     |  2 +-
->   drivers/iommu/iommu.c         | 56 +++++++++++++++++++++++++++--------
->   drivers/mmc/host/sdhci-msm.c  |  8 +++++
->   drivers/pci/probe.c           |  4 ++-
->   include/linux/device.h        | 11 +++++++
->   include/linux/device/driver.h |  9 ++++++
->   include/linux/iommu.h         |  2 ++
->   8 files changed, 85 insertions(+), 17 deletions(-)
-> 
+> Signed-off-by: gushengxian <gushengxian@yulong.com>
+> ---
+>  net/bridge/br_cfm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Here is the summary with links:
+  - bridge: cfm: remove redundant return
+    https://git.kernel.org/netdev/net-next/c/98534fce52ef
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
