@@ -2,149 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 005EB3AFFF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D523AFFEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhFVJML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 05:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhFVJMK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 05:12:10 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0AFC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:09:53 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id x22so8575417pll.11
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:09:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ydvc8Rl7wiGHkzj56eR2KVXaD0RfaW+A51LSajQqcq4=;
-        b=g1rAp2Bihui++TbOWNROj8o+aLubfPXZ3PUScW959ZG5twVElrZwvWaluQCF4Est7y
-         Vl/ixHVWoiJlMyCH/KSt/31oz/Z9vHSLsxLaAuUPhRGEzqXOwmCVxO3Uh3GdvhvyfrcI
-         vq/RWS8s+QlIxCq8iN9kjVBU6qAOJcWgRth+FUYtS+iGm0r6hf50yqUHlWHJC/fQeP5u
-         Wh992mbKoH1/dKpHm4BBzJRn7kmVtpVNGKlP67c9+9Ch8Zj7VL+a28aodxdL5ufCVsnR
-         PBHRdMGZabz0DXgbrSONevPohFugavyglw4frfBWxJXYkwMaRKz1uygu72Z9oRDuRb2k
-         1uIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ydvc8Rl7wiGHkzj56eR2KVXaD0RfaW+A51LSajQqcq4=;
-        b=q0mWAP+aolJ/867vx8ls7gmr/9ISchK/J/TwF9MuMCjyon48/Tx99SprLiCcoHuvqp
-         6sbpnz8lEq6iYfDlFx/KMwdB+FVwniUrjJaJ8eiM3xmBTdZZVdFuSmAzIztMNCqGDKnQ
-         qJ9toiY5H7UiICH/eNkqANGRf+UiK1zitwEMLQCwM9a1YTUmqkb/i/VxTr5Qf9KOGsNF
-         UzGmH7xbWh3IPcTy+qsHepy3+qj228Qul+kvysyjD0kJVypLRwny0fPyDa+MDqNY8d+E
-         NejZMRW8qaJC01gi6NKpMuMrTyUdFeuyMmDMoS9k1pEGlQB9Ty4WHr41hF/EcPH1vTsy
-         IfAg==
-X-Gm-Message-State: AOAM531RSjNkwjGQhvkxv8bD9x2vk3uvVhh5u+8rHsJdwQ/TfSC6XN7/
-        GzA5u2t7AXYJugBS4+yGA6cAAAijA2J4z02JCV1/Tw==
-X-Google-Smtp-Source: ABdhPJxbCIlOoOQgk5yDdp1DjFNkdWnsRIDQST6UuhHQt6UWX5eK79Z59CtP9V6JBOhqTGG4aWUPuHW+BgXT81YTIxI=
-X-Received: by 2002:a17:90b:4c8c:: with SMTP id my12mr2891403pjb.13.1624352993336;
- Tue, 22 Jun 2021 02:09:53 -0700 (PDT)
+        id S229880AbhFVJLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 05:11:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229668AbhFVJLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 05:11:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0BBF61042;
+        Tue, 22 Jun 2021 09:09:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624352962;
+        bh=kXlr3NuFZIiS6C2/Tvp2HisngAJr5CpIbQqdUwUbGpw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FH4ZF3iUBsshRcftok0BQOBtvLORl0itit5jig7WmqTpL5jTv4zzMIgRGRHV06CIE
+         ONTty12WVNKHZnccwgCbf98KeDzios4M79WQr3YWeM30Gz/qNRqJm1z+vxeUgXBKQa
+         PDZPf1VoFZoiEmxrznTPKHKOVdVyLbKwB3NFUbtZHmYl+/JdkDq3y27/b00AtXh1IJ
+         f+11/lOeyfcjKvu9pm/RJNEhOnBrpz8vawaVQWZtC5Ukop6CCZO0b4l7GjOZ6RuQpF
+         uBI0KA5A0gEmN9EREOmmfW1McU5iqZuPqJ6XQkwSL3wujteDw2r5qL9nlU7WVSjYxW
+         OHo+DfQgAQ59g==
+Date:   Tue, 22 Jun 2021 11:09:17 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] media: uvc: limit max bandwidth for HDMI capture
+Message-ID: <20210622110917.11c737fc@coco.lan>
+In-Reply-To: <YNGmXmxMIXpq7I83@pendragon.ideasonboard.com>
+References: <b791d5874c83663505cbd4f74907ac38d00bb727.1612206534.git.mchehab+huawei@kernel.org>
+        <YNDY4iesZGF+7Cr0@pendragon.ideasonboard.com>
+        <20210622102948.47b86fbe@coco.lan>
+        <CAPY8ntAkb_57Nk_8UR-d_uR+juPigLKWwCAxoFzuCSKwETYpQg@mail.gmail.com>
+        <YNGmXmxMIXpq7I83@pendragon.ideasonboard.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210622021423.154662-1-mike.kravetz@oracle.com> <20210622021423.154662-2-mike.kravetz@oracle.com>
-In-Reply-To: <20210622021423.154662-2-mike.kravetz@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 22 Jun 2021 17:09:14 +0800
-Message-ID: <CAMZfGtVqJjVVgG+sd33er8Eg-MieF7V=nVExvQZTFhbxteaCGQ@mail.gmail.com>
-Subject: Re: [External] [PATCH 1/2] hugetlb: remove prep_compound_huge_page cleanup
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Youquan Song <youquan.song@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jan Kara <jack@suse.cz>, John Hubbard <jhubbard@nvidia.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 10:15 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> The routine prep_compound_huge_page is a simple wrapper to call either
-> prep_compound_gigantic_page or prep_compound_page.  However, it is only
-> called from gather_bootmem_prealloc which only processes gigantic pages.
-> Eliminate the routine and call prep_compound_gigantic_page directly.
->
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Em Tue, 22 Jun 2021 11:59:10 +0300
+Laurent Pinchart <laurent.pinchart@ideasonboard.com> escreveu:
 
-Nice clean-up. Thanks.
+> On Tue, Jun 22, 2021 at 09:50:37AM +0100, Dave Stevenson wrote:
+> > On Tue, 22 Jun 2021 at 09:29, Mauro Carvalho Chehab wrote:  
+> > > Em Mon, 21 Jun 2021 21:22:26 +0300 Laurent Pinchart escreveu:
+> > >  
+> > > > Hi Mauro,
+> > > >
+> > > > Thank you for the patch.  
+> > >
+> > > Thanks for reviewing it!
+> > >  
+> > > >
+> > > > On Mon, Feb 01, 2021 at 08:08:59PM +0100, Mauro Carvalho Chehab wrote:  
+> > > > > This device:
+> > > > >         534d:2109 MacroSilicon
+> > > > >
+> > > > > Announces that it supports several frame intervals for
+> > > > > their resolutions for MJPEG compression:
+> > > > >
+> > > > >         VideoStreaming Interface Descriptor:
+> > > > >         bLength                            46
+> > > > >         bDescriptorType                    36
+> > > > >         bDescriptorSubtype                  7 (FRAME_MJPEG)
+> > > > >         bFrameIndex                         1
+> > > > >         bmCapabilities                   0x00
+> > > > >           Still image unsupported
+> > > > >         wWidth                           1920
+> > > > >         wHeight                          1080
+> > > > >         dwMinBitRate                   768000
+> > > > >         dwMaxBitRate                196608000
+> > > > >         dwMaxVideoFrameBufferSize     4147200
+> > > > >         dwDefaultFrameInterval         166666
+> > > > >         bFrameIntervalType                  5
+> > > > >         dwFrameInterval( 0)            166666
+> > > > >         dwFrameInterval( 1)            333333
+> > > > >         dwFrameInterval( 2)            400000
+> > > > >         dwFrameInterval( 3)            500000
+> > > > >         dwFrameInterval( 4)           1000000
+> > > > >
+> > > > > However, the highest frame interval (166666), which means 60 fps
+> > > > > is not supported. For such resolution, the maximum interval
+> > > > > is, instead 333333 (30 fps).  
+> > > >
+> > > > What happens if you try to select it ?  
+> > >
+> > > Basically, URBs get lost: they cause apps like qv4l2 to crash
+> > > sometimes, with:
+> > >
+> > >         v4l-convert: libjpeg error: Corrupt JPEG data: premature end of data segment
+> > >
+> > > The image keeps blinking, and part of the image is replaced by
+> > > white noise.
+> > >
+> > > Clearly, it tries to send more data than the maximum available bandwidth
+> > > on this chipset.  
+> > 
+> > What platform are you running this on?
+> > I've previously encountered a USB3 camera module where the datastream
+> > was VERY bursty. The memcpy of the data from URB to V4L2 buffer took
+> > long enough that sometimes the module didn't have an URB to fill at
+> > the appropriate moment, and it dropped data. I seem to recall
+> > increasing UVC_URBS from the default of 5 to 10 to handle the peak
+> > data rate without loss, but it may have been higher still. This was on
+> > a ~1.5GHz Atom processor, so not lacking in performance.
+> > 
+> > I wonder if the same is true in your case. If it's MJPEG compressed
+> > then the peak rate may again be high. Just a thought.  
+> 
+> It's worth investigating indeed. How often are URBs dropped ? Does it
+> occur for every frame, or once in a while ?
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+It occurs on every frame. Monitoring the traffic with usbtop shows
+that about the same amount of data is shown when selecting 30 or 60
+fps.
 
-> ---
->  mm/hugetlb.c | 29 ++++++++++-------------------
->  1 file changed, 10 insertions(+), 19 deletions(-)
->
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 760b5fb836b8..50596b7d6da9 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1320,8 +1320,6 @@ static struct page *alloc_gigantic_page(struct hstate *h, gfp_t gfp_mask,
->         return alloc_contig_pages(nr_pages, gfp_mask, nid, nodemask);
->  }
->
-> -static void prep_new_huge_page(struct hstate *h, struct page *page, int nid);
-> -static void prep_compound_gigantic_page(struct page *page, unsigned int order);
->  #else /* !CONFIG_CONTIG_ALLOC */
->  static struct page *alloc_gigantic_page(struct hstate *h, gfp_t gfp_mask,
->                                         int nid, nodemask_t *nodemask)
-> @@ -2759,16 +2757,10 @@ int __alloc_bootmem_huge_page(struct hstate *h)
->         return 1;
->  }
->
-> -static void __init prep_compound_huge_page(struct page *page,
-> -               unsigned int order)
-> -{
-> -       if (unlikely(order > (MAX_ORDER - 1)))
-> -               prep_compound_gigantic_page(page, order);
-> -       else
-> -               prep_compound_page(page, order);
-> -}
-> -
-> -/* Put bootmem huge pages into the standard lists after mem_map is up */
-> +/*
-> + * Put bootmem huge pages into the standard lists after mem_map is up.
-> + * Note: This only applies to gigantic (order > MAX_ORDER) pages.
-> + */
->  static void __init gather_bootmem_prealloc(void)
->  {
->         struct huge_bootmem_page *m;
-> @@ -2777,20 +2769,19 @@ static void __init gather_bootmem_prealloc(void)
->                 struct page *page = virt_to_page(m);
->                 struct hstate *h = m->hstate;
->
-> +               VM_BUG_ON(!hstate_is_gigantic(h));
->                 WARN_ON(page_count(page) != 1);
-> -               prep_compound_huge_page(page, huge_page_order(h));
-> +               prep_compound_gigantic_page(page, huge_page_order(h));
->                 WARN_ON(PageReserved(page));
->                 prep_new_huge_page(h, page, page_to_nid(page));
->                 put_page(page); /* free it into the hugepage allocator */
->
->                 /*
-> -                * If we had gigantic hugepages allocated at boot time, we need
-> -                * to restore the 'stolen' pages to totalram_pages in order to
-> -                * fix confusing memory reports from free(1) and another
-> -                * side-effects, like CommitLimit going negative.
-> +                * We need to restore the 'stolen' pages to totalram_pages
-> +                * in order to fix confusing memory reports from free(1) and
-> +                * other side-effects, like CommitLimit going negative.
->                  */
-> -               if (hstate_is_gigantic(h))
-> -                       adjust_managed_page_count(page, pages_per_huge_page(h));
-> +               adjust_managed_page_count(page, pages_per_huge_page(h));
->                 cond_resched();
->         }
->  }
-> --
-> 2.31.1
->
+Btw, the manual of the device clearly says that it supports only 30
+fps at the maximum resolution.
+
+What's happening is that the USB descriptors are not correct.
+
+Btw, this is the device:
+
+	https://www.amazon.de/-/en/gp/product/B088NWWSKN
+
+I'm basically using it (together with a Logitech nano receiver) as
+a cheap KVM device :-)
+
+Thanks,
+Mauro
