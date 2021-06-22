@@ -2,137 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360BF3B0775
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D403B077D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231661AbhFVOgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 10:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbhFVOgK (ORCPT
+        id S231249AbhFVOhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 10:37:35 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57510 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230047AbhFVOhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:36:10 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A06ADC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 07:33:53 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id f15so8498904wro.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 07:33:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fWQ9fv5n80k6I/97HJjFfzjbazsp/7d3XmYJL594Tuo=;
-        b=kQ8Mq8vXoY5Wmg2K7CVYjaod8o1tM5193Jbi18CO9v4H+tjVRS0HLtqpZII7go+mUD
-         9SXZWCgiDl1rBpMhAn3PmhcEj3fsE/2VTu0h2agBqhfp68gxOryG/h9398VqDOBembyp
-         eBRXVbk2t1VfboHZpiLpVX5y4VXCxcm6NjArJXvqcKoD5YB+jxYF4sgZRnYkkaZW0md/
-         Y4QQ6XFpSTNyHy/7KVrR00xw6dK5lvIdvNjXMjeDPEpANcMzM1Etm1ReruPpk6j6Fam2
-         1emOkBTLSjgZlVJqCRldXECbgHaAjzX+RfE7qNI/NIdyZO2NgXIr5oVrrIZqVoOt0s7j
-         lBNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fWQ9fv5n80k6I/97HJjFfzjbazsp/7d3XmYJL594Tuo=;
-        b=Ve1wGbS3Uc9wdHh/R9F1zFWgqBKGvaoRmyRKCsFBwYHxLFinHrAP/DIoKm2EIJTp5e
-         aesu8WrF2EG/OI4n8PykqyegR3qr4kCgPbyRu8nTFkTFxYU/W3Z8n4Dr2c8IOTGYhZsf
-         oKdEuKdE0L9KJxlP9Por+EEih53BO3rekyMIsVUb8hAd38YuiMLqCHFkzpvJ+CuWLb8m
-         BAIDEVlgmOw90sokSAtIYmrsooyTvDc8stmINRRXDN8W+kRe0OroURL6h3lsNLQrZVXX
-         omdeOZukewHp2F7JlXcEb7zlSsgUL+5ccmwt73Mc70q2/kJtDj7XCUUu/tMmRi2hADKf
-         eO3w==
-X-Gm-Message-State: AOAM532YeqCwDC92xm2gc15Agyf7wyDxvbLfEzn3eUjAkAh+x2ZFko3b
-        AQN4497FPqOOJ5YS86zvYZcIqo0eNJXX1A+X
-X-Google-Smtp-Source: ABdhPJxF8bAye5rjfV2vTT0yPF1VC4aRo9R8QbKPDnaMP+xQgz3fphd7jzFg/k0FQX3/ChUT67M8/A==
-X-Received: by 2002:a5d:64c3:: with SMTP id f3mr5270596wri.263.1624372431967;
-        Tue, 22 Jun 2021 07:33:51 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id z25sm3007714wmf.23.2021.06.22.07.33.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 07:33:51 -0700 (PDT)
-From:   Dmitry Safonov <dima@arista.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Dmitry Safonov <dima@arista.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH] printk: Add CONFIG_CONSOLE_LOGLEVEL_PANIC
-Date:   Tue, 22 Jun 2021 15:33:50 +0100
-Message-Id: <20210622143350.1105701-1-dima@arista.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 22 Jun 2021 10:37:33 -0400
+Date:   Tue, 22 Jun 2021 14:35:16 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624372517;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gEO/XqhA3bJBZQnTpM4woRDvvOEN5K6LbPEYoYQF/P4=;
+        b=y6ECdLFKE7MKUsF4cPldYVCu7oyuGqvDvF/V3Z+VLqIup9y0Ze0VvUjB1qISap4Si7rSkl
+        3FxYNV7PjHM3YHfbhkUZS5kpU+/0YPWUdT34Zj+exjfmIVf0SxinhreFQZgsDr2Oc9A5xv
+        TvZ+LEi6qU3GlfE4e7eaeh4QnRdd4rj6xHF4OpgFMZeR9GvMwsEomNAt3qXVQW5rYms36I
+        kgAmceQsKxPG4RwQYqZmzL0eqV8aGsrzUx8Ac4zdoaw5+rpbkYn8AmZ2bYrB5QpUZoqIN0
+        FYiJcjffa8ipGeNk6K2UYV3a5f/TUCLOm7ymV5/e1j5WCNLIEBjGx+4ORCjOCQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624372517;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gEO/XqhA3bJBZQnTpM4woRDvvOEN5K6LbPEYoYQF/P4=;
+        b=5FF92xN051tn3OgR/vEWdyFvRlT0VxOmZr2e13+tmm663l8S+Z89E8FnCkK8WlDQh1dzTk
+        Xe+KNnLo/U83bKDw==
+From:   "tip-bot2 for Baokun Li" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] clockevents: Add missing parameter documentation
+Cc:     Baokun Li <libaokun1@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210608024305.2750999-1-libaokun1@huawei.com>
+References: <20210608024305.2750999-1-libaokun1@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <162437251630.395.14333436881714840214.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-console_verbose() increases console loglevel to CONSOLE_LOGLEVEL_MOTORMOUTH,
-which provides more information to debug a panic/oops.
+The following commit has been merged into the timers/core branch of tip:
 
-Unfortunately, in Arista we maintain some DUTs (Device Under Test) that
-are configured to have 9600 baud rate. While verbose console messages
-have their value to post-analyze crashes, on such setup they:
-- may prevent panic/oops messages being printed
-- take too long to flush on console resulting in watchdog reboot
+Commit-ID:     64ab7071254c178e81a6d0203354aad6521258ea
+Gitweb:        https://git.kernel.org/tip/64ab7071254c178e81a6d0203354aad6521258ea
+Author:        Baokun Li <libaokun1@huawei.com>
+AuthorDate:    Tue, 08 Jun 2021 10:43:05 +08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 22 Jun 2021 16:33:16 +02:00
 
-In all our setups we use kdump which saves dmesg buffer after panic,
-so in reality those extra messages on console provide no additional value,
-but rather add risk of not getting to __crash_kexec().
+clockevents: Add missing parameter documentation
 
-Provide CONFIG_CONSOLE_LOGLEVEL_PANIC, which allows to choose how
-verbose the kernel must be on oops/panic.
+Add the missing documentation for the @cpu parameter of
+tick_cleanup_dead_cpu().
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: John Ogness <john.ogness@linutronix.de>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Dmitry Safonov <dima@arista.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210608024305.2750999-1-libaokun1@huawei.com
+
 ---
- include/linux/printk.h |  4 ++--
- lib/Kconfig.debug      | 13 +++++++++++++
- 2 files changed, 15 insertions(+), 2 deletions(-)
+ kernel/time/clockevents.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index fe7eb2351610..5a65a719f917 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -76,8 +76,8 @@ static inline void console_silent(void)
+diff --git a/kernel/time/clockevents.c b/kernel/time/clockevents.c
+index 0056d2b..bb9d2fe 100644
+--- a/kernel/time/clockevents.c
++++ b/kernel/time/clockevents.c
+@@ -629,6 +629,7 @@ void tick_offline_cpu(unsigned int cpu)
  
- static inline void console_verbose(void)
+ /**
+  * tick_cleanup_dead_cpu - Cleanup the tick and clockevents of a dead cpu
++ * @cpu:	The dead CPU
+  */
+ void tick_cleanup_dead_cpu(int cpu)
  {
--	if (console_loglevel)
--		console_loglevel = CONSOLE_LOGLEVEL_MOTORMOUTH;
-+	if (console_loglevel && (CONFIG_CONSOLE_LOGLEVEL_PANIC > 0))
-+		console_loglevel = CONFIG_CONSOLE_LOGLEVEL_PANIC;
- }
- 
- /* strlen("ratelimit") + 1 */
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 678c13967580..0c12cafd9d8b 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -61,6 +61,19 @@ config CONSOLE_LOGLEVEL_QUIET
- 	  will be used as the loglevel. IOW passing "quiet" will be the
- 	  equivalent of passing "loglevel=<CONSOLE_LOGLEVEL_QUIET>"
- 
-+config CONSOLE_LOGLEVEL_PANIC
-+	int "panic console loglevel (1-15)"
-+	range 0 15
-+	default "15"
-+	help
-+	  loglevel to use in kernel panic or oopses.
-+
-+	  Usually in order to provide more debug information on console upon
-+	  panic, one wants to see everything being printed (loglevel = 15).
-+	  With an exception to setups with low baudrate on serial console,
-+	  keeping this value high is a good choice.
-+	  0 value is to keep the loglevel during panic/oops unchanged.
-+
- config MESSAGE_LOGLEVEL_DEFAULT
- 	int "Default message log level (1-7)"
- 	range 1 7
--- 
-2.31.1
-
