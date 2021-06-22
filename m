@@ -2,387 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D1A3AFE13
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22BE3AFE15
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbhFVHlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:41:45 -0400
-Received: from mga03.intel.com ([134.134.136.65]:22896 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229628AbhFVHln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:41:43 -0400
-IronPort-SDR: TOEUdz2aeGVNwqYHUGD5kBrwErNNpetkf42BMVE5BNUONQL3SBSlJsHFKW1YPFwuUeNSKQoEhw
- gc/1Rt/F9xlg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="207044503"
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="207044503"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 00:39:26 -0700
-IronPort-SDR: p9zWSDH1KHSWc+jSCUTgakK/l9/L/DsmRS6l5gGPWJZJUTXvzRoizCBwlic63HizHZXZZBz+ZO
- EmFnNlpaH43g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="486809788"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga001.jf.intel.com with ESMTP; 22 Jun 2021 00:39:25 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Tue, 22 Jun 2021 00:39:24 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
- via Frontend Transport; Tue, 22 Jun 2021 00:39:24 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.173)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.4; Tue, 22 Jun 2021 00:39:19 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i0EUV8oIJGEf6OAlNhIAsYJvx6qyRv7x6Px0w12ltr+UquvU2SdWmTDlLXgtAKPPBfRkYCpKfywPFgtf4O5dBj/Y3Qm9iv14l25qJPD+ALvKUuzChQKW5u+yVtyMvrbhrGwSKUEELp7dWZPv19KYnJu00PuYOTAnCqsuqe/06SrHocm7SQHIp/zrgGnPCj+wgacbAbVXmQ9ASzh0zgC23OVt1/IGCuuHCb9WUno7VpBMZI/03uU7eoJeWfrQZp+mRidh7CdvOqjds0Hms1Y0PsgwDkqvpIFFsnymmYeabLV++Lp+0JFluCZ0GqbNLinw2u3BBGrp6S1tfgsCg7tp/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=caqlvAkt5mpCSo8mQsVvtFf4yR5NsMjpazcSR5yygSA=;
- b=m/3/cZvm/FeDy2332RUwOS7JVhs+l41PMelXvl+XSjsXvVwWDKCcNSsNYSgwSxiCSSbC1extRU1TK43f43fSdz0JTRqpwWTdy88aD2WSA5dTa9Vls9RrivS97g371v8OWd6HcHyMvNt8N+WBjnsj1KeXZusN+ggRl+NZw2tAYPOOGGw3uPcjG0heMTdnD0sVsTW4cBuh8/T2mgHNNLubxSBoSXa4bBnJKIryLcGlraY/HoF+GgUQqZn0FnWERWZ7MI9aE1lvkfiH5vinDJggUujf1/4P7WmQItq0xTpGL1Ij5JCPFQgaMAExTu8cwVXmEEK5MG8Mesp/nkeRnd9Y7w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=caqlvAkt5mpCSo8mQsVvtFf4yR5NsMjpazcSR5yygSA=;
- b=oKK5pa2CL9nh/grT6K4Unp/I6gNC2Yh3VFArYk2iIlz6jXVyOfIUZXhdA4iqKbQN+zqjJKGD1ptQB/ezzI+SnXm9ipGYQ0HSgjryjGq6mOi2QWU31XsNUcllh2bLDLYwIGM8nISeiM614uqbYmR3aEMT8qiCVdfDQB0tksrVYag=
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
- by DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Tue, 22 Jun
- 2021 07:39:06 +0000
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::3dc3:868b:cec3:513b]) by DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::3dc3:868b:cec3:513b%6]) with mapi id 15.20.4242.023; Tue, 22 Jun 2021
- 07:39:06 +0000
-From:   "Wu, Hao" <hao.wu@intel.com>
-To:     "Xu, Yilun" <yilun.xu@intel.com>
-CC:     =?iso-8859-1?Q?Martin_Hundeb=F8ll?= <mhu@silicom.dk>,
-        Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        =?iso-8859-1?Q?Martin_Hundeb=F8ll?= <mhu@geanix.com>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        Debarati Biswas <debaratix.biswas@intel.com>,
-        "Weight, Russell H" <russell.h.weight@intel.com>
-Subject: RE: [PATCH 2/4] fpga: dfl: Move DFH header register macros to
-  linux/dfl.h
-Thread-Topic: [PATCH 2/4] fpga: dfl: Move DFH header register macros to
-  linux/dfl.h
-Thread-Index: AQHXZydJs2OCmI4FX0OnnJ1fEYvt4qsfnJNg
-Date:   Tue, 22 Jun 2021 07:39:05 +0000
-Message-ID: <DM6PR11MB3819B9B2F357B9B03F7707B685099@DM6PR11MB3819.namprd11.prod.outlook.com>
-References: <20210621070621.431482-1-mhu@silicom.dk>
- <20210621070621.431482-3-mhu@silicom.dk>
- <DM6PR11MB3819FE54D2C399DDBBC38FBA850A9@DM6PR11MB3819.namprd11.prod.outlook.com>
- <20210622052205.GB27046@yilunxu-OptiPlex-7050>
-In-Reply-To: <20210622052205.GB27046@yilunxu-OptiPlex-7050>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.55.46.52]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c2c9a001-1684-4fd0-da51-08d93550d075
-x-ms-traffictypediagnostic: DM6PR11MB3819:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB3819D77DB2658D32A10CC5B385099@DM6PR11MB3819.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zbhxBXAnYC7M5PvzT+PnZ5XmJbNGFP2ZRpSGyH1YrASTQXxKu3ZtOPoABshd32XUqbtRBSwTVOWtwasNTJpXApGQFflNtGAPlqy6aEc15NDZ9c7/GoVTVdNB8JluYvjD9X/KO+i24T0B8avg33BSGFjooJJvsPLsqgU7tk0ejimLwJU78MqYmT+D4jdkUZ//0JGwwwNKBPXgPTKMunlFbJPCrH8AxfJDOQfwdeEFfTJeaIqvz0VKWB5xgdGXqIzzMovVKMV2LiBwBrrFnBe6EDuY5l8VBnHSOyv3cq13Wb1Z3DhC+So0Dp2gQIPHC49gQII7ncjIR/Lc4TXI4LxZeqnNOFroqCpHxVn3Qv8ppymknjM4rrFu31mxrHHmckyE0Ypw3cC+Xws5FE2O1zg+5JJyXCtCxj5Zy/c4Y/WM86675oDcemGQCP5KDjMfi9MWosdVESeb5j8bz0ruBCct2ilpFTda6fAW+ijCoHgWbKvwmn39xc92KsY7OyICnkLKPVHWDvSCHWygkT2iE4YoWc+IFft/155wUR5ei8/kZ5Tz/M6HOOe8sXxFebC04fKw/0pYNWUxVsuR0pAH57oupLKxFiQU1E6j9NqaxichCRw=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(396003)(376002)(39850400004)(346002)(8676002)(478600001)(33656002)(4326008)(6862004)(107886003)(71200400001)(83380400001)(2906002)(186003)(7696005)(8936002)(66574015)(7416002)(26005)(316002)(55016002)(9686003)(6506007)(76116006)(66946007)(5660300002)(52536014)(38100700002)(6636002)(54906003)(66476007)(66556008)(86362001)(64756008)(122000001)(66446008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?N6VJo0FbWX0v/H4e/NGLs88UbN6aeAs2lCxdDf+4q19YlQrmtVqwTuDJ8t?=
- =?iso-8859-1?Q?J/d3f3SMZYhKhmJ61puAloyq3/8BiaeDGqborkVxGJEe17nP1D1ew1+OgU?=
- =?iso-8859-1?Q?Ph1jvz+wTaTt0NSKlBYft3yuwUlmInrI5O8pcPC/9GuZii6O8HXxPuLzO/?=
- =?iso-8859-1?Q?06VN7fe0FRjmBcYMoYwWmtUNFiSN6FCI7wupjPIYuJRn8mnTAy5Ti3mnaw?=
- =?iso-8859-1?Q?iNzIaf5Fr9LJVlEtViGdKJZ0h5fUBW0CVFFzIxqSuSSKEk2ZQWeOaONm/q?=
- =?iso-8859-1?Q?NrlwT0U6X4DLjWmr0K/ZBmrKT65rW04fCU3RsF71y3V4Wen64G8px7+Du9?=
- =?iso-8859-1?Q?WtwH8OnSfsOVXs09EP73c+jMnIpxM31ualgHb43vIBiorlXKTUUBYLbuzj?=
- =?iso-8859-1?Q?2lNd6ceXsLXTzmBAfbYcJoZSxqHapXI37F3Re4j21dijdXYMiJKsr0OxXw?=
- =?iso-8859-1?Q?zdHN2mSpj5bXQlovOXMYGhDe/iNuKFNTOLQJWoRJIAzyB+axHJKn+KNL6j?=
- =?iso-8859-1?Q?uyNqoAw5qqFgv+2mqcih12SPXbGaa9ieMU51MxtTvSxegbA0roVZuUv8jb?=
- =?iso-8859-1?Q?V1OLDb4GtEHIFYcXFJZ036cewLEaj7rp2p80y0UZAVtFEX547Mn19b6fid?=
- =?iso-8859-1?Q?vMSRHs5ApIbPYT6aaU7sZcPbcmLsavTCuke1PkioyhumaUMC1S3qEVqo4u?=
- =?iso-8859-1?Q?7D1aRoboLHsRX/N/HmMAsq7al3QtJx8HNqykIxpEMrCzDI/mUFctNqaola?=
- =?iso-8859-1?Q?M191y8bH5ejDW81CZVUWanBbj0Jt6QMhXXd3Gudyyzr8k9vCv0tyC2gf1R?=
- =?iso-8859-1?Q?oZDXy3JryCV6ZANnUgSaW6DBTL3XWN9Vi40+cvTnRJAbbVl/dHpZgkIxpG?=
- =?iso-8859-1?Q?U49aCVaEpUFmVnwWfNXJ5IH3F4CwvPMPKlxQVhBfx6Wu6XSJUDmL3W2HMv?=
- =?iso-8859-1?Q?2Qu0Eg34r4OFsjEgZ08wMzmNuC7rqSs99WwYRQ3x/yQ4qNFWuCXF22CWaK?=
- =?iso-8859-1?Q?AD+AE+DJbX3DHwAn3h1ipaCvN5nMuYjWrsXip3YfMnCRgSuz3xZVIAWz20?=
- =?iso-8859-1?Q?ZFsz+LAjYh1svm+oB400TFw0XyQAsQARfXS9qQ9OiYHu0ABfOca2NJsoMe?=
- =?iso-8859-1?Q?JC8A3HBPejOqJ32ugqqAatYd04J6AhdAs6n9Qwm5bx/jyjilDuMrBIMEUo?=
- =?iso-8859-1?Q?DO0ZpGsVUGlMHCWcgrgnWevHR11wfiVhj8xe1jz/xhemQJPtmSXIfbdxQ0?=
- =?iso-8859-1?Q?JYRaUoaWzzaI/tCQLgqBD6shGdpg2uXIwhi4UxBeSM5aPXAHYXx7xV8aFE?=
- =?iso-8859-1?Q?b4kthzqmvQ/OAOqVRyTuURlM0lfI504ZzSY7o9bnCTHG57M=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
+        id S230212AbhFVHl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:41:59 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:52758 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230107AbhFVHlv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 03:41:51 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15M7XelO016992;
+        Tue, 22 Jun 2021 03:39:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : content-type :
+ content-transfer-encoding : mime-version : subject : message-id : date :
+ cc : to; s=pp1; bh=ps+MxyIj04uVEqtlFH1SnSoPVeb9c0uCF51LMtYCfdI=;
+ b=ZzIKOpELz4RZgla9tKGfmSOb+2QU2jwfVwefybrV12IRGruCFz4gbtHGRavmjaINa3AG
+ n+W+p1t34pVT7dbq4anectJ3TMXnbOYcpZO6R5Gln8+jmPUwrUZdXnMa7i+i98ivRagm
+ J5/vL3398VZY7MXoNylv2K/FysZDbzl1fuROipHgBDEeyWNHxt/10/1IQ6GU+re+bw7I
+ 0osDLJIObg9gYBcsz60J8ViEsbpb3ow9rQov9j04fncxqraERj2GlvlUGCPaJZJ7S2bw
+ hvGX5mHwaVGC+za3/HdbBk2Cu3KNEWBsUbxuhi7vtZ/j9r8+pzqjXsTQelsDxMT5tWwh Yg== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39bahp9nsh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Jun 2021 03:39:30 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15M7XI3V016244;
+        Tue, 22 Jun 2021 07:39:27 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 3997uh999r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Jun 2021 07:39:27 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15M7c8Ms36503936
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Jun 2021 07:38:08 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8417611C052;
+        Tue, 22 Jun 2021 07:39:25 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8B42211C054;
+        Tue, 22 Jun 2021 07:39:24 +0000 (GMT)
+Received: from smtpclient.apple (unknown [9.85.86.62])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 22 Jun 2021 07:39:24 +0000 (GMT)
+From:   Sachin Sant <sachinp@linux.vnet.ibm.com>
+Content-Type: text/plain;
+        charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3819.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2c9a001-1684-4fd0-da51-08d93550d075
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jun 2021 07:39:05.9506
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: j5+tvaQ6N10rGJfQJEPwM4WEGTSz25ynN6fVK7gUzDiwz8b+S3+jyc4z4Gpcm2ujHeynercnLut4I75ZyUowig==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3819
-X-OriginatorOrg: intel.com
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: [powerpc][next-20210621] WARNING at kernel/sched/fair.c:3277 during
+ boot
+Message-Id: <2ED1BDF5-BC0C-47CD-8F33-9A46C738F8CF@linux.vnet.ibm.com>
+Date:   Tue, 22 Jun 2021 13:09:23 +0530
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Odin Ugedal <odin@uged.al>
+To:     open list <linux-kernel@vger.kernel.org>,
+        linux-next@vger.kernel.org
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 10l99-e5z4-sKwoUIQuEsdcHfNcJ0eg8
+X-Proofpoint-GUID: 10l99-e5z4-sKwoUIQuEsdcHfNcJ0eg8
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-22_04:2021-06-21,2021-06-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ malwarescore=0 impostorscore=0 mlxscore=0 clxscore=1015 spamscore=0
+ mlxlogscore=978 phishscore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106220046
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, Jun 21, 2021 at 06:19:15PM +0800, Wu, Hao wrote:
-> > > Subject: [PATCH 2/4] fpga: dfl: Move DFH header register macros to
-> linux/dfl.h
-> > >
-> > > From: Debarati Biswas <debaratix.biswas@intel.com>
-> > >
-> > > Device Feature List (DFL) drivers may be defined in subdirectories ot=
-her
-> > > than drivers/fpga, and each DFL driver should have access to the Devi=
-ce
-> > > Feature Header (DFH) register, which contains revision and type
-> > > information. This change moves the macros specific to the DFH registe=
-r
-> > > from drivers/fpga/dfl.h to include/linux/dfl.h.
-> >
-> > Looks like it requires to access the revision info in the next patch, b=
-ecause
-> > current dfl_device doesn't expose related information.
-> >
-> > @Yilun, do you have any concern to expose those info via dfl_device?
->=20
-> Exposing these header register definitions are good to me. These register=
-s
-> are in DFL device's MMIO region, so it is good to share these info with
-> all DFL drivers.
+While booting 5.13.0-rc7-next-20210621 on a PowerVM LPAR following =
+warning
+is seen
 
-I mean expose revision via dfl_device, as dfl core already reads the DFL
-header, it sounds duplicate read in each dfl device driver. And if we
-consider this as a common need from dfl device driver, then the code
-can be moved to a common place as well.
+[   30.922154] ------------[ cut here ]------------
+[   30.922201] cfs_rq->avg.load_avg || cfs_rq->avg.util_avg || =
+cfs_rq->avg.runnable_avg
+[   30.922219] WARNING: CPU: 6 PID: 762 at kernel/sched/fair.c:3277 =
+update_blocked_averages+0x758/0x780
+[   30.922259] Modules linked in: pseries_rng xts vmx_crypto =
+uio_pdrv_genirq uio sch_fq_codel ip_tables sd_mod t10_pi sg fuse
+[   30.922309] CPU: 6 PID: 762 Comm: augenrules Not tainted =
+5.13.0-rc7-next-20210621 #1
+[   30.922329] NIP:  c0000000001b27e8 LR: c0000000001b27e4 CTR: =
+c0000000007cfda0
+[   30.922344] REGS: c000000023fcb660 TRAP: 0700   Not tainted  =
+(5.13.0-rc7-next-20210621)
+[   30.922359] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: =
+48488224  XER: 00000005
+[   30.922394] CFAR: c00000000014d120 IRQMASK: 1=20
+               GPR00: c0000000001b27e4 c000000023fcb900 c000000002a08400 =
+0000000000000048=20
+               GPR04: 00000000ffff7fff c000000023fcb5c0 0000000000000027 =
+c000000f6fdd7e18=20
+               GPR08: 0000000000000023 0000000000000001 0000000000000027 =
+c0000000028a6650=20
+               GPR12: 0000000000008000 c000000f6fff7680 c000000f6fe62600 =
+0000000000000032=20
+               GPR16: 00000007331a989a c000000f6fe62600 c0000000238a6800 =
+0000000000000001=20
+               GPR20: 0000000000000000 c000000002a4dfe0 0000000000000000 =
+0000000000000006=20
+               GPR24: 0000000000000000 c000000f6fe63010 0000000000000001 =
+c000000f6fe62680=20
+               GPR28: 0000000000000006 c0000000238a69c0 0000000000000000 =
+c000000f6fe62600=20
+[   30.922569] NIP [c0000000001b27e8] =
+update_blocked_averages+0x758/0x780
+[   30.922599] LR [c0000000001b27e4] update_blocked_averages+0x754/0x780
+[   30.922624] Call Trace:
+[   30.922631] [c000000023fcb900] [c0000000001b27e4] =
+update_blocked_averages+0x754/0x780 (unreliable)
+[   30.922653] [c000000023fcba20] [c0000000001bd668] =
+newidle_balance+0x258/0x5c0
+[   30.922674] [c000000023fcbab0] [c0000000001bdaac] =
+pick_next_task_fair+0x7c/0x4d0
+[   30.922692] [c000000023fcbb10] [c000000000dcd31c] =
+__schedule+0x15c/0x1780
+[   30.922708] [c000000023fcbc50] [c0000000001a5a04] =
+do_task_dead+0x64/0x70
+[   30.922726] [c000000023fcbc80] [c000000000156338] do_exit+0x848/0xcc0
+[   30.922743] [c000000023fcbd50] [c000000000156884] =
+do_group_exit+0x64/0xe0
+[   30.922758] [c000000023fcbd90] [c000000000156924] =
+sys_exit_group+0x24/0x30
+[   30.922774] [c000000023fcbdb0] [c0000000000310c0] =
+system_call_exception+0x150/0x2d0
+[   30.922792] [c000000023fcbe10] [c00000000000cc5c] =
+system_call_common+0xec/0x278
+[   30.922808] --- interrupt: c00 at 0x7fffb3acddcc
+[   30.922821] NIP:  00007fffb3acddcc LR: 00007fffb3a27f04 CTR: =
+0000000000000000
+[   30.922833] REGS: c000000023fcbe80 TRAP: 0c00   Not tainted  =
+(5.13.0-rc7-next-20210621)
+[   30.922847] MSR:  800000000280f033 =
+<SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 28444202  XER: 00000000
+[   30.922882] IRQMASK: 0=20
+               GPR00: 00000000000000ea 00007fffc8f21780 00007fffb3bf7100 =
+0000000000000000=20
+               GPR04: 0000000000000000 0000000155f142f0 0000000000000000 =
+00007fffb3d23740=20
+               GPR08: fffffffffbad2a87 0000000000000000 0000000000000000 =
+0000000000000000=20
+               GPR12: 0000000000000000 00007fffb3d2aeb0 0000000116be95e0 =
+0000000000000032=20
+               GPR16: 0000000000000000 00007fffc8f21cd8 000000000000002d =
+0000000000000024=20
+               GPR20: 00007fffc8f21cd4 00007fffb3bf4f98 0000000000000001 =
+0000000000000001=20
+               GPR24: 00007fffb3bf0950 0000000000000000 0000000000000000 =
+0000000000000001=20
+               GPR28: 0000000000000000 0000000000000000 00007fffb3d23ec0 =
+0000000000000000=20
+[   30.923023] NIP [00007fffb3acddcc] 0x7fffb3acddcc
+[   30.923035] LR [00007fffb3a27f04] 0x7fffb3a27f04
+[   30.923045] --- interrupt: c00
+[   30.923052] Instruction dump:
+[   30.923061] 3863be48 9be97ae6 4bf9a8f9 60000000 0fe00000 4bfff980 =
+e9210070 e8610088=20
+[   30.923088] 39400001 99490003 4bf9a8d9 60000000 <0fe00000> 4bfffc24 =
+3d22fff5 89297ae3=20
+[   30.923113] ---[ end trace ed07974d2149c499 ]=E2=80=94
 
-I hope from dfl device driver side, it doesn't need to know details of
-how DFH register is defined, only simple way from dfl device data
-structure or some simple helper function, then dfl device driver could
-know all common information from DFH.
+This warning was introduced with commit 9e077b52d86a
+sched/pelt: Check that *_avg are null when *_sum are
 
-How do you think?
+next-20210618 was good.
 
 Thanks
-Hao
-
->=20
-> Thanks,
-> Yilun
->=20
-> >
-> > Thanks
-> > Hao
-> >
-> > >
-> > > Signed-off-by: Debarati Biswas <debaratix.biswas@intel.com>
-> > > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > > Signed-off-by: Martin Hundeb=F8ll <mhu@silicom.dk>
-> > > ---
-> > >  drivers/fpga/dfl.h  | 48 +----------------------------------------
-> > >  include/linux/dfl.h | 52
-> +++++++++++++++++++++++++++++++++++++++++++++
-> > >  2 files changed, 53 insertions(+), 47 deletions(-)
-> > >
-> > > diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
-> > > index 2b82c96ba56c..6ed0353e9a99 100644
-> > > --- a/drivers/fpga/dfl.h
-> > > +++ b/drivers/fpga/dfl.h
-> > > @@ -17,6 +17,7 @@
-> > >  #include <linux/bitfield.h>
-> > >  #include <linux/cdev.h>
-> > >  #include <linux/delay.h>
-> > > +#include <linux/dfl.h>
-> > >  #include <linux/eventfd.h>
-> > >  #include <linux/fs.h>
-> > >  #include <linux/interrupt.h>
-> > > @@ -53,32 +54,6 @@
-> > >  #define PORT_FEATURE_ID_UINT         0x12
-> > >  #define PORT_FEATURE_ID_STP          0x13
-> > >
-> > > -/*
-> > > - * Device Feature Header Register Set
-> > > - *
-> > > - * For FIUs, they all have DFH + GUID + NEXT_AFU as common header
-> registers.
-> > > - * For AFUs, they have DFH + GUID as common header registers.
-> > > - * For private features, they only have DFH register as common heade=
-r.
-> > > - */
-> > > -#define DFH                  0x0
-> > > -#define GUID_L                       0x8
-> > > -#define GUID_H                       0x10
-> > > -#define NEXT_AFU             0x18
-> > > -
-> > > -#define DFH_SIZE             0x8
-> > > -
-> > > -/* Device Feature Header Register Bitfield */
-> > > -#define DFH_ID                       GENMASK_ULL(11, 0)      /* Feat=
-ure ID
-> > > */
-> > > -#define DFH_ID_FIU_FME               0
-> > > -#define DFH_ID_FIU_PORT              1
-> > > -#define DFH_REVISION         GENMASK_ULL(15, 12)     /* Feature revi=
-sion */
-> > > -#define DFH_NEXT_HDR_OFST    GENMASK_ULL(39, 16)     /* Offset to ne=
-xt
-> DFH
-> > > */
-> > > -#define DFH_EOL                      BIT_ULL(40)             /* End =
-of list
-> > > */
-> > > -#define DFH_TYPE             GENMASK_ULL(63, 60)     /* Feature type=
- */
-> > > -#define DFH_TYPE_AFU         1
-> > > -#define DFH_TYPE_PRIVATE     3
-> > > -#define DFH_TYPE_FIU         4
-> > > -
-> > >  /* Next AFU Register Bitfield */
-> > >  #define NEXT_AFU_NEXT_DFH_OFST       GENMASK_ULL(23, 0)      /* Offs=
-et
-> to
-> > > next AFU */
-> > >
-> > > @@ -403,27 +378,6 @@ struct device *dfl_fpga_pdata_to_parent(struct
-> > > dfl_feature_platform_data *pdata)
-> > >       return pdata->dev->dev.parent->parent;
-> > >  }
-> > >
-> > > -static inline bool dfl_feature_is_fme(void __iomem *base)
-> > > -{
-> > > -     u64 v =3D readq(base + DFH);
-> > > -
-> > > -     return (FIELD_GET(DFH_TYPE, v) =3D=3D DFH_TYPE_FIU) &&
-> > > -             (FIELD_GET(DFH_ID, v) =3D=3D DFH_ID_FIU_FME);
-> > > -}
-> > > -
-> > > -static inline bool dfl_feature_is_port(void __iomem *base)
-> > > -{
-> > > -     u64 v =3D readq(base + DFH);
-> > > -
-> > > -     return (FIELD_GET(DFH_TYPE, v) =3D=3D DFH_TYPE_FIU) &&
-> > > -             (FIELD_GET(DFH_ID, v) =3D=3D DFH_ID_FIU_PORT);
-> > > -}
-> > > -
-> > > -static inline u8 dfl_feature_revision(void __iomem *base)
-> > > -{
-> > > -     return (u8)FIELD_GET(DFH_REVISION, readq(base + DFH));
-> > > -}
-> > > -
-> > >  /**
-> > >   * struct dfl_fpga_enum_info - DFL FPGA enumeration information
-> > >   *
-> > > diff --git a/include/linux/dfl.h b/include/linux/dfl.h
-> > > index 6cc10982351a..1cd86b2e7cb1 100644
-> > > --- a/include/linux/dfl.h
-> > > +++ b/include/linux/dfl.h
-> > > @@ -8,7 +8,9 @@
-> > >  #ifndef __LINUX_DFL_H
-> > >  #define __LINUX_DFL_H
-> > >
-> > > +#include <linux/bitfield.h>
-> > >  #include <linux/device.h>
-> > > +#include <linux/io.h>
-> > >  #include <linux/mod_devicetable.h>
->=20
-> The <linux/io-64-nonatomic-lo-hi.h> is needed here, or readq/writeq
-> definitions may be missing on some platform, as the kernel test robot
-> says.
->=20
-> Thanks,
-> Yilun
->=20
-> > >
-> > >  /**
-> > > @@ -83,4 +85,54 @@ void dfl_driver_unregister(struct dfl_driver *dfl_=
-drv);
-> > >       module_driver(__dfl_driver, dfl_driver_register, \
-> > >                     dfl_driver_unregister)
-> > >
-> > > +/*
-> > > + * Device Feature Header Register Set
-> > > + *
-> > > + * For FIUs, they all have DFH + GUID + NEXT_AFU as common header
-> registers.
-> > > + * For AFUs, they have DFH + GUID as common header registers.
-> > > + * For private features, they only have DFH register as common heade=
-r.
-> > > + */
-> > > +#define DFH                     0x0
-> > > +#define GUID_L                  0x8
-> > > +#define GUID_H                  0x10
-> > > +#define NEXT_AFU                0x18
-> > > +
-> > > +#define DFH_SIZE                0x8
-> > > +
-> > > +/* Device Feature Header Register Bitfield */
-> > > +#define DFH_ID                  GENMASK_ULL(11, 0)      /* Feature I=
-D */
-> > > +#define DFH_ID_FIU_FME          0
-> > > +#define DFH_ID_FIU_PORT         1
-> > > +#define DFH_REVISION            GENMASK_ULL(15, 12)
-> > > +#define DFH_NEXT_HDR_OFST       GENMASK_ULL(39, 16)     /* Offset to
-> next
-> > > DFH */
-> > > +#define DFH_EOL                 BIT_ULL(40)             /* End of li=
-st */
-> > > +#define DFH_TYPE                GENMASK_ULL(63, 60)     /* Feature t=
-ype */
-> > > +#define DFH_TYPE_AFU            1
-> > > +#define DFH_TYPE_PRIVATE        3
-> > > +#define DFH_TYPE_FIU            4
-> > > +
-> > > +/* Function to read from DFH and check if the Feature type is FME */
-> > > +static inline bool dfl_feature_is_fme(void __iomem *base)
-> > > +{
-> > > +     u64 v =3D readq(base + DFH);
-> > > +
-> > > +     return (FIELD_GET(DFH_TYPE, v) =3D=3D DFH_TYPE_FIU) &&
-> > > +             (FIELD_GET(DFH_ID, v) =3D=3D DFH_ID_FIU_FME);
-> > > +}
-> > > +
-> > > +/* Function to read from DFH and check if the Feature type is port*/
-> > > +static inline bool dfl_feature_is_port(void __iomem *base)
-> > > +{
-> > > +     u64 v =3D readq(base + DFH);
-> > > +
-> > > +     return (FIELD_GET(DFH_TYPE, v) =3D=3D DFH_TYPE_FIU) &&
-> > > +              (FIELD_GET(DFH_ID, v) =3D=3D DFH_ID_FIU_PORT);
-> > > +}
-> > > +
-> > > +/* Function to read feature revision from DFH */
-> > > +static inline u8 dfl_feature_revision(void __iomem *base)
-> > > +{
-> > > +     return (u8)FIELD_GET(DFH_REVISION, readq(base + DFH));
-> > > +}
-> > > +
-> > >  #endif /* __LINUX_DFL_H */
-> > > --
-> > > 2.31.0
-> >
+-Sachin=
