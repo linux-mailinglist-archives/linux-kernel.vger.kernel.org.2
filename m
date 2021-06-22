@@ -2,134 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A8F3AFC8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 07:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF0E3AFC93
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 07:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhFVFZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 01:25:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47116 "EHLO mail.kernel.org"
+        id S229934AbhFVF2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 01:28:05 -0400
+Received: from ozlabs.org ([203.11.71.1]:46219 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229853AbhFVFZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 01:25:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5FD8608FE;
-        Tue, 22 Jun 2021 05:23:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624339397;
-        bh=E4NMCA4W3dnltbMakIr6/XVxBoznsmXbNirNwbydmKM=;
+        id S229921AbhFVF2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 01:28:03 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8FGx3vFKz9sj5;
+        Tue, 22 Jun 2021 15:25:45 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624339546;
+        bh=Sq6dz+nfRdjOkjGoPUI8aR0Wa8pNNFXqY2fU4CY0d5Y=;
         h=Date:From:To:Cc:Subject:From;
-        b=IlwzFUkaCR9LqeQU9HWRqbdqD6xyCwQ+SocHoOpT669kKCUeLfFDYslmKd9Yiigo5
-         MvXCoRCDmxpw+Nk5x/Lj3Ud6x08YtMFXS9kVfu3oA/ytiZPJQVXDt8MG+T8YxHM0Ur
-         l9n3J7qUrlsUvPmXYQ+SaZbodSBHkEuNjyTq8Aa/blW8RhupdfVdQ+krv5V8liXztl
-         MT4Yyc9oA9DrfS8Aj794L6Bj+9BQo3bGG6+EkHKhvFxt/l42XdFlWf2NG/ckuxsyrA
-         hQGgPOEGc1iDYxvUWX8UVdZGpAEq2Kl3l/chbX52p1f2ItTMEswFOJddJoIpMpyDgI
-         rvc0mLX+rt3EA==
-Date:   Tue, 22 Jun 2021 10:53:14 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL]: soundwire updates for v5.14-rc1
-Message-ID: <YNFzwibyyESNJx9w@vkoul-mobl>
+        b=Hp998rrx7QvgHJUjVLmrN+hGm4Jxg9LU+Y54xkaFndF6qrvN+/wWH6CaQ7GYYH1+E
+         eWUB89b0x/kPhue8Piig9OgME87RuK6nDIB5k6jr0V+hedSn4zuM3P6uYQX8XOjLLS
+         pxdk5Idh7v14gzpePwJFxdf4BWce7wCBuxZX70/6z6PVGLINqt2/Q/ZejbmRQJmgau
+         xN3CrmKYWUwbMT//6YQY4xyzNtmhLIrAHT7Q8sJsVllA1wGpi3K4lGnjcsjs6XOwss
+         FQYWBr7Q3KQR8n6UJQvBqfvLu580JEZpdBkGiCpD7esDVUW0MCG3iUxdsQTgqzPyz1
+         vpBHnoAQxKn0Q==
+Date:   Tue, 22 Jun 2021 15:25:44 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Ashish Kalra <ashish.kalra@amd.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: linux-next: manual merge of the kvm tree with the powerpc tree
+Message-ID: <20210622152544.74e01567@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6L/MhWVvpJdSV+Y+"
-Content-Disposition: inline
+Content-Type: multipart/signed; boundary="Sig_/v4K.dbaPwQgah4cZkfiBlVg";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---6L/MhWVvpJdSV+Y+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/v4K.dbaPwQgah4cZkfiBlVg
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hello Greg,
+Hi all,
 
-Please pull to receive the soundwire subsystem updates for this cycle.
+Today's linux-next merge of the kvm tree got a conflict in:
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+  include/uapi/linux/kvm.h
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+between commit:
 
-are available in the Git repository at:
+  9bb4a6f38fd4 ("KVM: PPC: Book3S HV: Add KVM_CAP_PPC_RPT_INVALIDATE capabi=
+lity")
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/so=
-undwire-5.14-rc1
+from the powerpc tree and commits:
 
-for you to fetch changes up to 3d3e88e336338834086278236d42039f3cde50e1:
+  644f706719f0 ("KVM: x86: hyper-v: Introduce KVM_CAP_HYPERV_ENFORCE_CPUID")
+  6dba94035203 ("KVM: x86: Introduce KVM_GET_SREGS2 / KVM_SET_SREGS2")
+  0dbb11230437 ("KVM: X86: Introduce KVM_HC_MAP_GPA_RANGE hypercall")
 
-  soundwire: stream: Fix test for DP prepare complete (2021-06-20 16:46:18 =
-+0530)
+from the kvm tree.
 
-----------------------------------------------------------------
-soundwire updates for 5.14-rc1
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-Updates for v5.14-rc1 are:
-
-- Core has odd updates including improving clock stop codes, write api,
-  handling ENODATA etc
-
- - Drivers has Big move of Intel driver to be aux dev and minor updates
-   to Intel/cadence driver
-
-----------------------------------------------------------------
-Pierre-Louis Bossart (9):
-      soundwire/ASoC: add leading zeroes in peripheral device name
-      soundwire: bandwidth allocation: improve error messages
-      soundwire: bus: only use CLOCK_STOP_MODE0 and fix confusions
-      soundwire: add missing kernel-doc description
-      soundwire: bus: handle -ENODATA errors in clock stop/start sequences
-      soundwire: bus: add missing \n in dynamic debug
-      soundwire: cadence_master: always set CMD_ACCEPT
-      soundwire: dmi-quirks: remove duplicate initialization
-      soundwire: intel: move to auxiliary bus
-
-Richard Fitzgerald (2):
-      soundwire: bus: Make sdw_nwrite() data pointer argument const
-      soundwire: stream: Fix test for DP prepare complete
-
-Shaokun Zhang (1):
-      soundwire: cadence: remove the repeated declaration
-
- drivers/soundwire/Kconfig                        |   1 +
- drivers/soundwire/bus.c                          | 163 +++++++---------
- drivers/soundwire/cadence_master.c               |  21 +-
- drivers/soundwire/cadence_master.h               |   3 -
- drivers/soundwire/dmi-quirks.c                   |   2 +-
- drivers/soundwire/generic_bandwidth_allocation.c |  14 +-
- drivers/soundwire/intel.c                        |  56 +++---
- drivers/soundwire/intel.h                        |  14 +-
- drivers/soundwire/intel_init.c                   | 232 +++++++++++++++----=
-----
- drivers/soundwire/slave.c                        |   4 +-
- drivers/soundwire/stream.c                       |  13 +-
- include/linux/soundwire/sdw.h                    |   5 +-
- include/linux/soundwire/sdw_intel.h              |   6 +-
- sound/soc/intel/boards/sof_sdw.c                 |   4 +-
- 14 files changed, 299 insertions(+), 239 deletions(-)
-
-Thanks
 --=20
-~Vinod
+Cheers,
+Stephen Rothwell
 
---6L/MhWVvpJdSV+Y+
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --cc include/uapi/linux/kvm.h
+index 9016e96de971,9febe1412f7a..000000000000
+--- a/include/uapi/linux/kvm.h
++++ b/include/uapi/linux/kvm.h
+@@@ -1083,7 -1083,9 +1083,10 @@@ struct kvm_ppc_resize_hpt=20
+  #define KVM_CAP_SGX_ATTRIBUTE 196
+  #define KVM_CAP_VM_COPY_ENC_CONTEXT_FROM 197
+  #define KVM_CAP_PTP_KVM 198
+- #define KVM_CAP_PPC_RPT_INVALIDATE 199
++ #define KVM_CAP_HYPERV_ENFORCE_CPUID 199
++ #define KVM_CAP_SREGS2 200
++ #define KVM_CAP_EXIT_HYPERCALL 201
+++#define KVM_CAP_PPC_RPT_INVALIDATE 202
+ =20
+  #ifdef KVM_CAP_IRQ_ROUTING
+ =20
+
+--Sig_/v4K.dbaPwQgah4cZkfiBlVg
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmDRc8EACgkQfBQHDyUj
-g0eqWA//Z8GedgYo2EN5nypzL7TXVhSk70i87VOAXEjyqrsxcxeb8Q1zb6cJ1deB
-3uSMbkHFW20zPrW6i+5gcHngX+j5py9lsuCSDIENoCrXgRHeUrXjNkgYPldOwzfY
-ysccgSs5X4+rTBGQ76pYMFb4qHdvDrJrT/b0ho+3N1S9H5hyH4Xd3ulfw7Y+PqH8
-NwQwDUeQ/xmO+YgZTMafwrGBPXC0ZmY3dEW76iPlz4PbdJiV2KU4j2HIiu2Thdi5
-RZ6TbV2CP5JprldWTIKKguCH9mLxGY4brLyU9aVJNGiElFsTPk/qwZpIhYFxXvp0
-m9yOmardK1OZloHA7ql8BVX6zZ5vLZc32vjG1XautQen0gKq+qpZx+9gVtgh5Eae
-73/UqOh1mciyW5gEYOLabpexNQdD2JWHlRFKQN0EaeVRMdocRo1Yidj8d05kvzIg
-9WZZyznXJMENgJSS7dqvILtHcI5jc/Jtg6+4QKNWc2763mk8OJLIbk3j73SMRs7i
-xHfYWAmTIUGUT4jZNp7L5FHllU0MJdRom4BAf4jlLwvxKCDlV8QB84JwhkRH6ojV
-KTUX8DjTv3d30DPxv4a2LbuFvIyZMECv7viPkED45kS8AruLbJyYivERXJNrBFWc
-QMjc5/B0hmh+ogEJF/vvWbmrZ7H50ODFI+ok9UjEXnXfuCWC1qg=
-=wVg8
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDRdFgACgkQAVBC80lX
+0Gx63Qf/VMvHp3tPL8/SVslFfCtK/PtYT7bGb8jxd/AehS36tMv8pt2uG7/J/pN7
+kdXqVl1Pduyo+OSEI3A6aQDcqlq14hf10PIrNfcRBFmz7LnIj9ZxH75DD+bMIFay
+l/Q79DQnbt1UyGQUcoShB8kIlAQoQtKg3MyPuIvY4Qkz22o21v6BaUpLusSrtKBV
+j9gU0mW1zieTs8Rp5unCHjsOdP56McZxVa54a+hCAMt8Y9fvkbe0NxlPsz1cAgDA
+XffvQi4iiY0IpuGhQvU/O/h+qghRcotzTL5H0G63viYfddyWE/feEHqMl25VqdKG
+ndgIq21Ld2LDzGxRPnvaG9BeScHNHA==
+=OEVB
 -----END PGP SIGNATURE-----
 
---6L/MhWVvpJdSV+Y+--
+--Sig_/v4K.dbaPwQgah4cZkfiBlVg--
