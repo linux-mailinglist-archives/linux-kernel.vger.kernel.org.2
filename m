@@ -2,205 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C074A3B0F3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2998C3B0F42
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhFVVJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 17:09:25 -0400
-Received: from mail-pj1-f51.google.com ([209.85.216.51]:51718 "EHLO
-        mail-pj1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhFVVJX (ORCPT
+        id S230138AbhFVVK0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Jun 2021 17:10:26 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:38778 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229629AbhFVVKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 17:09:23 -0400
-Received: by mail-pj1-f51.google.com with SMTP id k5so188354pjj.1;
-        Tue, 22 Jun 2021 14:07:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Z0iF3ntSSNNKhG4jtipS972P1ucIxrjARKk0osGLruI=;
-        b=EaDeiUC5mgEi8hWju9Mb4sSegNly63zi54olifzISBdqWAJRHxtJ6uKiHBtqMlhs/R
-         xRwPdC76Uh4VIH2ATfXC/y4R/0E01JRqSVF63KtEfeKP49XDj+jRmTZoVbQi+Xj2itwv
-         gZ9Wxh5U2bn6h+8qnPHrLx40I9CwK2oOw31jdpX0GGqFRSQSOUwonq0j8SpzYvMllRQc
-         G+7Agu1ZqcOA4eT6f4pwL0fEW5B9koREeLwlfXjI0YUSu8V3gHkojCsmjWKPflVhQWY/
-         4JGHwgx4yQSw/GNZrViVWGC0f2mWXxEx23uBgC75kt2Cp7xmd1HqI2GER84BSLkZ66EU
-         Czwg==
-X-Gm-Message-State: AOAM531hks19oR6PIrg/t3DTkJzfVAciOSfLoPm93wVKKxNHztbo53CT
-        bz872P3imyv4sZ+c7uveNiYskgek7Q8=
-X-Google-Smtp-Source: ABdhPJy34SU4Bd5QukOxXys8evC97YP66yzcrRplCMR4oU3Y0PuVwjTpOQnDx1PSGXx2F1MYKcbiFw==
-X-Received: by 2002:a17:90a:9f81:: with SMTP id o1mr5785112pjp.96.1624396026843;
-        Tue, 22 Jun 2021 14:07:06 -0700 (PDT)
-Received: from localhost ([173.239.198.97])
-        by smtp.gmail.com with ESMTPSA id y1sm7938704pgr.70.2021.06.22.14.07.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 14:07:05 -0700 (PDT)
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org
-Cc:     jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
-        mcgrof@kernel.org, axboe@kernel.dk, mbenes@suse.com,
-        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
-        jikos@kernel.org, rostedt@goodmis.org, peterz@infradead.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers/base/core: refcount kobject and bus on device attribute read / store
-Date:   Tue, 22 Jun 2021 14:06:59 -0700
-Message-Id: <20210622210659.3708231-1-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        Tue, 22 Jun 2021 17:10:25 -0400
+Received: from [77.244.183.192] (port=62262 helo=[192.168.178.41])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1lvncu-0003cS-4G; Tue, 22 Jun 2021 23:08:08 +0200
+Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linus.walleij@linaro.org, linux-pci@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+References: <20210531133211.llyiq3jcfy25tmz4@pali>
+ <8ff1c54f-bb29-1e40-8342-905e34361e1c@lucaceresoli.net>
+ <9fdbada4-4902-cec1-f283-0d12e1d4ac64@ti.com>
+ <20210531162242.jm73yzntzmilsvbg@pali>
+ <8207a53c-4de9-d0e5-295a-c165e7237e36@lucaceresoli.net>
+ <20210622110627.aqzxxtf2j3uxfeyl@pali> <20210622115604.GA25503@lpieralisi>
+ <20210622121649.ouiaecdvwutgdyy5@pali>
+ <18a104a9-2cb8-7535-a5b2-f5f049adff47@lucaceresoli.net>
+ <4d4c0d4d-41b4-4756-5189-bffa15f88406@ti.com>
+ <20210622205220.ypu22tuxhpdn2jwz@pali>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <2873969e-ac56-a41f-0cc9-38e387542aa1@lucaceresoli.net>
+Date:   Tue, 22 Jun 2021 23:08:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210622205220.ypu22tuxhpdn2jwz@pali>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8BIT
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's possible today to have a device attribute read or store
-race against device removal. When this happens there is a small
-chance that the derefence for the private data area of the driver
-is NULL.
+On 22/06/21 22:52, Pali Rohár wrote:
+> On Tuesday 22 June 2021 19:27:37 Kishon Vijay Abraham I wrote:
+>> Hi Luca, Pali,
+>>
+>> On 22/06/21 7:01 pm, Luca Ceresoli wrote:
+>>> Hi,
+>>>
+>>> On 22/06/21 14:16, Pali Rohár wrote:
+>>>> On Tuesday 22 June 2021 12:56:04 Lorenzo Pieralisi wrote:
+>>>>> [Adding Linus for GPIO discussion, thread:
+>>>>> https://lore.kernel.org/linux-pci/20210531090540.2663171-1-luca@lucaceresoli.net]
+>>>>>
+>>>>> On Tue, Jun 22, 2021 at 01:06:27PM +0200, Pali Rohár wrote:
+>>>>>> Hello!
+>>>>>>
+>>>>>> On Tuesday 22 June 2021 12:57:22 Luca Ceresoli wrote:
+>>>>>>> Nothing happened after a few weeks... I understand that knowing the
+>>>>>>> correct reset timings is relevant, but unfortunately I cannot help much
+>>>>>>> in finding out the correct values.
+>>>>>>>
+>>>>>>> However I'm wondering what should happen to this patch. It *does* fix a
+>>>>>>> real bug, but potentially with an incorrect or non-optimal usleep range.
+>>>>>>> Do we really want to ignore a bugfix because we are not sure about how
+>>>>>>> long this delay should be?
+>>>>>>
+>>>>>> As there is no better solution right now, I'm fine with your patch. But
+>>>>>> patch needs to be approved by Lorenzo, so please wait for his final
+>>>>>> answer.
+>>>>>
+>>>>> I am not a GPIO expert and I have a feeling this is platform specific
+>>>>> beyond what the PCI specification can actually define architecturally.
+>>>>
+>>>> In my opinion timeout is not platform specific as I wrote in email:
+>>>> https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
+>>>>
+>>>> My experiments already proved that some PCIe cards needs to be in reset
+>>>> state for some minimal time otherwise they cannot be enumerated. And it
+>>>> does not matter to which platform you connect those (endpoint) cards.
+>>>>
+>>>> I do not think that timeout itself is platform specific. GPIO controls
+>>>> PERST# pin and therefore specified sleep value directly drives how long
+>>>> is card on the other end of PCIe slot in Warm Reset state. PCIe CEM spec
+>>>> directly says that PERST# signal controls PCIe Warm Reset.
+>>>>
+>>>> What is here platform specific thing is that PERST# signal is controlled
+>>>> by GPIO. But value of signal (high / low) and how long is in signal in
+>>>> which state for me sounds like not an platform specific thing, but as
+>>>> PCIe / CEM related.
+>>>
+>>> That's exactly my understanding of this matter. At least for the dra7xx
+>>> controller it works exactly like this, PERSTn# is nothing but a GPIO
+>>> output from the SoC that drives the PERSTn# input of the external chip
+>>> without affecting the controller directly.
+>>>
+>>
+>> While the patch itself is correct, this kind-of changes the behavior on
+>> already upstreamed platforms. Previously the driver expected #PERST to
+>> be asserted be external means (or default power-up state) and only takes
+>> care of de-asserting the #PERST line.
+>>
+>> There are 2 platforms that will be impacted due to this change
+>> 1) arch/arm/boot/dts/am57xx-beagle-x15-common.dtsi (has an inverter on
+>> GPIO line)
+>> 2) arch/arm/boot/dts/am571x-idk.dts (directly connected to #PERST)
+>>
+>> For 1), gpiod_set_value(reset, 0) will assert the PERST line due to the
+>> inverter (and GPIO_ACTIVE_LOW)
+>> For 2), gpiod_set_value(reset, 0) will assert the PERST line because we
+>> have GPIO_ACTIVE_HIGH
+> 
+> Ou! This is a problem in DT. It needs to be defined in a way that state
+> is same for every DTS device which uses this driver.
 
-Let's consider the zram driver as an example. Its possible to run into
-a race where a sysfs knob is being used, we get preempted, and a zram
-device is removed before we complete use of the sysfs knob. This can happen
-for instance on block devices, where for instance the zram block devices
-just part of the private data of the block device.
+Why? These are different boards and each specifies its own polarity.
+They are already opposite to each other right now:
 
-For instance this can happen in the following two situations
-as examples to illustrate this better:
+https://elixir.bootlin.com/linux/v5.13-rc7/source/arch/arm/boot/dts/am57xx-beagle-x15-common.dtsi#L602
 
-        CPU 1                            CPU 2
-destroy_devices
-...
-                                 compact_store()
-                                 zram = dev_to_zram(dev);
-idr_for_each(zram_remove_cb
-  zram_remove
-  ...
-  kfree(zram)
-                                 down_read(&zram->init_lock);
+https://elixir.bootlin.com/linux/v5.13-rc7/source/arch/arm/boot/dts/am571x-idk.dts#L196
 
-        CPU 1                            CPU 2
-hot_remove_store
-                                 compact_store()
-                                 zram = dev_to_zram(dev);
-  zram_remove
-    kfree(zram)
-                                 down_read(&zram->init_lock);
-
-To ensure the private data pointer is valid we could use bdget() / bdput()
-in between access, however that would mean doing that in all sysfs
-reads/stores on the driver. Instead a generic solution for all drivers
-is to ensure the device kobject is still valid and also the bus, if
-a bus is present.
-
-This issue does not fix a known crash, however this race was
-spotted by Minchan Kim through code inspection upon code review
-of another zram patch.
-
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/base/bus.c  |  4 ++--
- drivers/base/core.c | 45 +++++++++++++++++++++++++++++++++++++++++----
- 2 files changed, 43 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/base/bus.c b/drivers/base/bus.c
-index 36d0c654ea61..21c80d7d6433 100644
---- a/drivers/base/bus.c
-+++ b/drivers/base/bus.c
-@@ -39,7 +39,7 @@ static struct kset *system_kset;
- static int __must_check bus_rescan_devices_helper(struct device *dev,
- 						void *data);
- 
--static struct bus_type *bus_get(struct bus_type *bus)
-+struct bus_type *bus_get(struct bus_type *bus)
- {
- 	if (bus) {
- 		kset_get(&bus->p->subsys);
-@@ -48,7 +48,7 @@ static struct bus_type *bus_get(struct bus_type *bus)
- 	return NULL;
- }
- 
--static void bus_put(struct bus_type *bus)
-+void bus_put(struct bus_type *bus)
- {
- 	if (bus)
- 		kset_put(&bus->p->subsys);
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 4a8bf8cda52b..109bbc5b6976 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -2039,31 +2039,68 @@ EXPORT_SYMBOL(dev_driver_string);
- 
- #define to_dev_attr(_attr) container_of(_attr, struct device_attribute, attr)
- 
-+struct bus_type *bus_get(struct bus_type *bus);
-+void bus_put(struct bus_type *bus);
-+
- static ssize_t dev_attr_show(struct kobject *kobj, struct attribute *attr,
- 			     char *buf)
- {
--	struct device_attribute *dev_attr = to_dev_attr(attr);
--	struct device *dev = kobj_to_dev(kobj);
-+	struct device_attribute *dev_attr;
-+	struct device *dev;
-+	struct bus_type *bus = NULL;
- 	ssize_t ret = -EIO;
- 
-+	dev = get_device(kobj_to_dev(kobj));
-+	if (!dev)
-+		return ret;
-+
-+	if (dev->bus) {
-+		bus = bus_get(dev->bus);
-+		if (!bus)
-+			goto out;
-+	}
-+
-+	dev_attr = to_dev_attr(attr);
- 	if (dev_attr->show)
- 		ret = dev_attr->show(dev, dev_attr, buf);
- 	if (ret >= (ssize_t)PAGE_SIZE) {
- 		printk("dev_attr_show: %pS returned bad count\n",
- 				dev_attr->show);
- 	}
-+
-+	bus_put(bus);
-+out:
-+	put_device(dev);
-+
- 	return ret;
- }
- 
- static ssize_t dev_attr_store(struct kobject *kobj, struct attribute *attr,
- 			      const char *buf, size_t count)
- {
--	struct device_attribute *dev_attr = to_dev_attr(attr);
--	struct device *dev = kobj_to_dev(kobj);
-+	struct device_attribute *dev_attr;
-+	struct device *dev;
-+	struct bus_type *bus = NULL;
- 	ssize_t ret = -EIO;
- 
-+	dev = get_device(kobj_to_dev(kobj));
-+	if (!dev)
-+		return ret;
-+
-+	if (dev->bus) {
-+		bus = bus_get(dev->bus);
-+		if (!bus)
-+			goto out;
-+	}
-+
-+	dev_attr = to_dev_attr(attr);
- 	if (dev_attr->store)
- 		ret = dev_attr->store(dev, dev_attr, buf, count);
-+
-+	bus_put(bus);
-+out:
-+	put_device(dev);
-+
- 	return ret;
- }
- 
 -- 
-2.27.0
+Luca
 
