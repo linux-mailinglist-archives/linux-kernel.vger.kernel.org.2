@@ -2,119 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFCA3AFAAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 03:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9C93AFAAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 03:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhFVBp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 21:45:58 -0400
-Received: from mail-lf1-f46.google.com ([209.85.167.46]:37800 "EHLO
-        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhFVBp5 (ORCPT
+        id S230518AbhFVBq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 21:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhFVBq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 21:45:57 -0400
-Received: by mail-lf1-f46.google.com with SMTP id p7so33112175lfg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 18:43:41 -0700 (PDT)
+        Mon, 21 Jun 2021 21:46:56 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78EACC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 18:44:40 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id p7so33114727lfg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 18:44:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2T+4u9U452MLDrV2sYabqwjNLxExFpoXzhYGSkfV/Ws=;
+        b=eRVgBkLkEobSTUu2RowLHRnirDS2+IwYWobxfQcL1BQgaljFpmhjb4Nq7LOUQ+Hj3M
+         s4W6phGuKaUSejFuFkfCQ4U9v3NjqK4FOKXIomQNR81jfOE//up36OIDU7Mnx3DX4qpF
+         l2cY4IJK/9UAsJPc6Nu/AETIeST4OORcrqv75/Seg1CHIvvQvQwe7iXiAz1dgNtUnBcG
+         DgCCoGbUjaPkgkzK5U0tufNBgh54zK8J7B2+UnH6aXqk04V4W4S73ISaRvv9kqG8brSA
+         n6TnhwiWH1Rk99hHEuAwK9kMtmxRFbKyGkRfUZqJk36daIK2zyCxk4SzQqKiRu4dDBb1
+         U2HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TXDqLolP621pCqjqM6Wu4NTyyMVGI6nrVZk8yNegMN8=;
-        b=LvN/YkCzJ9kZbsDy6BxLeb9dTFVkBqYpoax+Y6U+IIAs5ZCM+zj1c0YL+iBoVviXqm
-         85BkB1wfrRVqllACFv4XSGmNHADro+ld4HGUQn6nPDq077kby2/h2DY7sJDUsTPnzwfK
-         Q7W1DHOchmhVbtyFasVyWlkB0ASP9HrNOZvjMzJCXyXe6qmncmvgQ1s5KI5UhXS7U7uf
-         WPA47p0goccF+eR6KW07yos1It5g52BOiDfVHAZezgBSpqVJnKNTDalTyqBwBQN3oikC
-         pr1eFbvZUkoa7PenQyAUeXz0G4rkoOEGugeywEZM5YV5lDGpH5YhFyGmU00RNQL3sBu0
-         KBgQ==
-X-Gm-Message-State: AOAM5311y0anLQJ56v4+o6nji9Hp9ABSmmMXY3nSv7JOkwzZIOBBMblF
-        zK84S4/5lVk0aygfiJcttcK/b+Xwhp87iAfAHAI=
-X-Google-Smtp-Source: ABdhPJwmBsVQ/H5BTNqDMDSz+5SCuBH4TL7EiBjtv1beHiPPkXInI/6UkPCV4WucpbJDcp2kGbai8Uwd/S89Li1YE/w=
-X-Received: by 2002:a19:7b1c:: with SMTP id w28mr876566lfc.509.1624326220592;
- Mon, 21 Jun 2021 18:43:40 -0700 (PDT)
+        bh=2T+4u9U452MLDrV2sYabqwjNLxExFpoXzhYGSkfV/Ws=;
+        b=sP6qNG5i5+ZSJzpOuLyIx1Krm9R8fznmo1/mSnJcVWeICbI8mowb8lYcdBov9yfje/
+         tDWi6/EEFewTaBPPjlZEkLxNY/BbPkbkAbEh5jc4dHbdHnJ4WI0qqsbHz4Gh8EqOJnA9
+         XuOdim5gfr+TwutuP08y0N6q7tM3J5UMP1bIsC39hZRVOYcuTVPvo/46i7Cr9tMUstN8
+         Mq5DH/dW4aqDO/banoKji31aN6FpstWynR8Im7fUyqM7QiXJbYw9SxHaZJEtDEaeBRUu
+         QBqAp+JXgPkNlzG/T77gbawqRIB9xPoGdYg9CkYuQUrwheFV72r8XZuFOmizFs17aRt2
+         tXww==
+X-Gm-Message-State: AOAM531HPOFBluedQffK39qi3srA3B718U1KF3Obz+JmxP5laQj8wopv
+        XLZAdu1+zk27r3j9qO9w9B+zHZWxZ1qwXm+/LXA=
+X-Google-Smtp-Source: ABdhPJyQXRfM5h/ViEgeFaxz2ca/NMheg2Er/toj2fzJ2zsb2j4LEy+PdmZbxxtQc2bwjuQGToAOvFBERb0c4+GEbxw=
+X-Received: by 2002:a05:6512:1583:: with SMTP id bp3mr864286lfb.500.1624326278809;
+ Mon, 21 Jun 2021 18:44:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210615011724.672612-1-namhyung@kernel.org> <YMoVOp4+TIUViBb7@hirez.programming.kicks-ass.net>
- <CAM9d7cj2UhQsd2vx8_C8C_CEW2QQbzs741jCn7f7g-e0i9OiOg@mail.gmail.com>
- <20210616223212.GE4272@worktop.programming.kicks-ass.net> <55A8ECB0-0299-4A07-B285-E9F0D611E822@fb.com>
-In-Reply-To: <55A8ECB0-0299-4A07-B285-E9F0D611E822@fb.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 21 Jun 2021 18:43:29 -0700
-Message-ID: <CAM9d7cibDFdua2=SXBL2yNBFD7dYGs0H+ZOL_rhEzzjrP5ReLQ@mail.gmail.com>
-Subject: Re: [PATCHSET v2 0/3] perf stat: Enable BPF counters with --for-each-cgroup
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>
+References: <1624324395-7260-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1624324395-7260-1-git-send-email-shengjiu.wang@nxp.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 21 Jun 2021 22:44:27 -0300
+Message-ID: <CAOMZO5Bh6J8=E=P1btDdgkYm9bvBN1ituRHLLOtW1cFsheQBdg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2] ASoC: fsl-asoc-card: change dev_err to
+ dev_err_probe for defer probe
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Song,
+Hi Shengjiu,
 
-On Wed, Jun 16, 2021 at 11:33 PM Song Liu <songliubraving@fb.com> wrote:
+On Mon, Jun 21, 2021 at 10:31 PM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
 >
+> Don't need to print error message for defer probe
 >
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+> changes in v2:
+> - use dev_err_probe instead of dev_dbg
 >
-> > On Jun 16, 2021, at 3:32 PM, Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Wed, Jun 16, 2021 at 09:33:42AM -0700, Namhyung Kim wrote:
-> >
-> >>> That seems unfortunate; there's no bpf helper to iterate cgroup
-> >>> hierarchy?
-> >>
-> >> I couldn't find one..
-> >
-> > Song, is that something that would make sense to have?
+>  sound/soc/fsl/fsl-asoc-card.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> I think we can solve this with bpf_get_current_ancestor_cgroup_id and
-> a bounded loop. Like:
+> diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+> index 121e08c2af2a..24c890d76da0 100644
+> --- a/sound/soc/fsl/fsl-asoc-card.c
+> +++ b/sound/soc/fsl/fsl-asoc-card.c
+> @@ -708,8 +708,8 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+>         of_node_put(framemaster);
 >
->         /* get diff_reading, which is reading - prev_reading */
->
->         for (i = 0; i < 10 /* at most 10 levels */; i++) {
->                 __u64 cgroup_id = bpf_get_current_ancestor_cgroup_id(i);
->                 if (!cgroup_id)
->                         break;
->                 /* add diff_reading to cgroup_id */
->         }
+>         if (!fsl_asoc_card_is_ac97(priv) && !codec_dev) {
+> -               dev_err(&pdev->dev, "failed to find codec device\n");
+>                 ret = -EPROBE_DEFER;
+> +               dev_err_probe(&pdev->dev, ret, "failed to find codec device\n");
 
-OK, but I'm not sure 0 id is guaranteed.
+I know I suggested dev_err_probe() before, but looking at this again, I realized
+that the error message will never be printed.
 
->
-> >
-> >>>> * there's no reliable way to trigger running the BPF program
-> >>>
-> >>> You can't attach to the PERF_COUNT_SW_CGROUP_SWITCHES event?
-> >>
-> >> I did it.  But the BPF test run seems not to work with perf_event.
-> >> So it needs to trigger a cgroup switch manually..
-> >
-> > AFAICT it should be possible to set a bpf prog on a software event.
-> > perf_event_set_bpf_prog() will take the first branch
-> > (!perf_event_is_tracing()) and call perf_event_set_bpf_handler().
-> >
-> > That should then result in running the bpf program every time the event
-> > would generate a sample.
-> >
-> > So if you configure the event to sample on every single event, it should
-> > then run your program every time.
-> >
-> > This is all from looking at the code, because I really can't operate any
-> > of that for real. I suspect Song can help out.
-> >
-> > The alternative is to attach a BPF program to the sched_switch
-> > tracepoint and do the cgroup filter in BPF.
->
-> We can create a raw_tp BPF program just for BPF_PROG_TEST_RUN (now also called
-> BPF_PROG_RUN). The program should be the same as current on_switch program.
-> We don't have to attach the program, just use BPF_PROG_RUN to trigger it.
->
-> Would something like this work?
-
-Oh, I think it'd work.  Thanks for the suggestion!
-
-Thanks,
-Namhyung
+Maybe the error message could just be deleted?
