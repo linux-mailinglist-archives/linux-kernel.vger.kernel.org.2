@@ -2,142 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD803B04A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134423B04A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbhFVMgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:36:04 -0400
-Received: from mailout2.secunet.com ([62.96.220.49]:54906 "EHLO
-        mailout2.secunet.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbhFVMgC (ORCPT
+        id S231709AbhFVMgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:36:31 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:43599 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231441AbhFVMg3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:36:02 -0400
-Received: from cas-essen-02.secunet.de (unknown [10.53.40.202])
-        by mailout2.secunet.com (Postfix) with ESMTP id 823C5800057;
-        Tue, 22 Jun 2021 14:33:44 +0200 (CEST)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 22 Jun 2021 14:33:44 +0200
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 22 Jun
- 2021 14:33:44 +0200
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id D1B3A318045C; Tue, 22 Jun 2021 14:33:43 +0200 (CEST)
-Date:   Tue, 22 Jun 2021 14:33:43 +0200
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-CC:     Varad Gautam <varad.gautam@suse.com>,
-        <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        <netdev@vger.kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Florian Westphal <fw@strlen.de>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        <stable@vger.kernel.org>
-Subject: Re: [PATCH] xfrm: policy: Restructure RCU-read locking in
- xfrm_sk_policy_lookup
-Message-ID: <20210622123343.GD40979@gauss3.secunet.de>
-References: <20210618141101.18168-1-varad.gautam@suse.com>
- <20210621082949.GX40979@gauss3.secunet.de>
- <f41d40cc-e474-1324-be0a-7beaf580c292@suse.com>
- <20210621110528.GZ40979@gauss3.secunet.de>
- <20210622112159.GC40979@gauss3.secunet.de>
- <20210622115124.GA109262@lothringen>
+        Tue, 22 Jun 2021 08:36:29 -0400
+Received: by mail-ot1-f48.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso21015720otu.10;
+        Tue, 22 Jun 2021 05:34:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ukJopPdTpEa+ImpsHAnJSt0S+hgCvfwUVOz1LgzX7Ks=;
+        b=K/7ZJ+xVxHIh76wAuC5/E5xXT4cvEDgPhODNxJpdA/RBfGGUnL2OCMju5JU3rmPZCn
+         OAMhLJrOKx3upnK11ag29dtHQSh2WCpMFztKtWCg1sn48G9jz3vddUTEzS4mSsqWRAjz
+         tdeDHnNCPRf1L5KlcCGdeRCuUYdeNippnsftEbPdiujN0cLOLjQiTtq7+aiS1XpG5rGX
+         2KT15siAlXHdiYC+3pp8uYNFvQURtV7j3ahxKu7lCFdxftVIONcA7WA0/Su6PHSQPAMw
+         D7dBXOlhnl5YQVAMTmReXHKlYLtep9j4Xri177JJKSAk6kPLKHJ41Y880V6ZdUoouFZw
+         LhhA==
+X-Gm-Message-State: AOAM530IWdfAlGAXZITdB7zEB0MYwDxy81m8tt4I0F4huymkYHqweXi9
+        i5yNdbdb6UR+yCrBn/jaxW1d+ifAoOtg8mixVfk=
+X-Google-Smtp-Source: ABdhPJwPPzStcvS1Yu9sCQdl1M15jPrR6uHAm1d+c55oKiM4yG4Hm1H62+4vxR8Lmsrsa+zw938u7IdW/ZJGppFC2hA=
+X-Received: by 2002:a9d:674b:: with SMTP id w11mr2928120otm.260.1624365252125;
+ Tue, 22 Jun 2021 05:34:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210622115124.GA109262@lothringen>
-X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+References: <20210622075925.16189-1-lukasz.luba@arm.com> <20210622075925.16189-3-lukasz.luba@arm.com>
+In-Reply-To: <20210622075925.16189-3-lukasz.luba@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 22 Jun 2021 14:33:59 +0200
+Message-ID: <CAJZ5v0iGv_1d3BT0HowLgecOfhNHNQdOwH6Kef5WE4-zeBbp2Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/4] cpuidle: Add Active Stats calls tracking idle entry/exit
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Chris Redpath <Chris.Redpath@arm.com>, Beata.Michalska@arm.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Amit Kachhap <amit.kachhap@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 01:51:24PM +0200, Frederic Weisbecker wrote:
-> On Tue, Jun 22, 2021 at 01:21:59PM +0200, Steffen Klassert wrote:
-> > On Mon, Jun 21, 2021 at 01:05:28PM +0200, Steffen Klassert wrote:
-> > > On Mon, Jun 21, 2021 at 11:11:18AM +0200, Varad Gautam wrote:
-> > > > 
-> > > > Right, I misread the call chain - security_xfrm_policy_lookup does not reach
-> > > > xfrm_policy_lookup, making this patch unnecessary. The bug I have is:
-> > > > 
-> > > > T1, holding hash_resize_mutex and sleeping inside synchronize_rcu:
-> > > > 
-> > > > __schedule
-> > > > schedule
-> > > > schedule_timeout
-> > > > wait_for_completion
-> > > > __wait_rcu_gp
-> > > > synchronize_rcu
-> > > > xfrm_hash_resize
-> > > > 
-> > > > And T2 producing RCU-stalls since it blocked on the mutex:
-> > > > 
-> > > > __schedule
-> > > > schedule
-> > > > __rt_mutex_slowlock
-> > > > rt_mutex_slowlock_locked
-> > > > rt_mutex_slowlock
-> > > > xfrm_policy_lookup_bytype.constprop.77
-> > > 
-> > > Ugh, why does xfrm_policy_lookup_bytype use a mutex? This is called
-> > > in the receive path inside a sofirq.
-> > > 
-> > > The bug was introduced by: 
-> > > 
-> > > commit 77cc278f7b202e4f16f8596837219d02cb090b96
-> > > Author: Ahmed S. Darwish <a.darwish@linutronix.de>
-> > > Date:   Mon Jul 20 17:55:22 2020 +0200
-> > > 
-> > >     xfrm: policy: Use sequence counters with associated lock
-> > > 
-> > >     A sequence counter write side critical section must be protected by some
-> > >     form of locking to serialize writers. If the serialization primitive is
-> > >     not disabling preemption implicitly, preemption has to be explicitly
-> > >     disabled before entering the sequence counter write side critical
-> > >     section.
-> > > 
-> > >     A plain seqcount_t does not contain the information of which lock must
-> > >     be held when entering a write side critical section.
-> > > 
-> > >     Use the new seqcount_spinlock_t and seqcount_mutex_t data types instead,
-> > >     which allow to associate a lock with the sequence counter. This enables
-> > >     lockdep to verify that the lock used for writer serialization is held
-> > >     when the write side critical section is entered.
-> > > 
-> > >     If lockdep is disabled this lock association is compiled out and has
-> > >     neither storage size nor runtime overhead.
-> > > 
-> > >     Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-> > >     Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > >     Link: https://lkml.kernel.org/r/20200720155530.1173732-17-a.darwish@linutronix.de
-> > > 
-> > > This uses a seqcount_mutex_t for xfrm_policy_hash_generation, that's
-> > > wrong.
-> > 
-> > Varad, can you try to replace the seqcount_mutex_t for xfrm_policy_hash_generation
-> > by a seqcount_spinlock_t? I'm not familiar with that seqcount changes,
-> > but we should not end up with using a mutex in this codepath.
-> 
-> Something like this? (beware, untested, also I don't know if the read side
-> should then disable bh, doesn't look necessary for PREEMPT_RT, but I may be
-> missing something...)
+On Tue, Jun 22, 2021 at 9:59 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+> The Active Stats framework tracks and accounts the activity of the CPU
+> for each performance level. It accounts the real residency,
 
-Looking a bit deeper into this it seems that the problem is that
-xfrm_policy_hash_generation and hash_resize_mutex do not protect
-the same thing.
+No, it doesn't.  It just measures the time between the entry and exit
+and that's not the real residency (because it doesn't take the exit
+latency into account, for example).
 
-hash_resize_mutex protects user configuration against a worker thread
-that rebalances the hash buckets. xfrm_policy_hash_generation protects
-user configuration against the data path that runs in softirq.
+> when the CPU was not idle, at a given performance level. This patch adds needed calls
+> which provide the CPU idle entry/exit events to the Active Stats
+> framework.
 
-Finally the following line from xfrm_init() relates these two:
+And it adds overhead to overhead-sensitive code.
 
-seqcount_mutex_init(&xfrm_policy_hash_generation, &hash_resize_mutex);
+AFAICS, some users of that code will not really get the benefit, so
+adding the overhead to it is questionable.
 
-That looks a bit odd. This line was also introduced with the above
-mentioned patch.
+First, why is the existing instrumentation in the idle loop insufficient?
+
+Second, why do you need to add locking to this code?
+
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  drivers/cpuidle/cpuidle.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/cpuidle/cpuidle.c b/drivers/cpuidle/cpuidle.c
+> index ef2ea1b12cd8..24a33c6c4a62 100644
+> --- a/drivers/cpuidle/cpuidle.c
+> +++ b/drivers/cpuidle/cpuidle.c
+> @@ -8,6 +8,7 @@
+>   * This code is licenced under the GPL.
+>   */
+>
+> +#include <linux/active_stats.h>
+>  #include <linux/clockchips.h>
+>  #include <linux/kernel.h>
+>  #include <linux/mutex.h>
+> @@ -231,6 +232,8 @@ int cpuidle_enter_state(struct cpuidle_device *dev, struct cpuidle_driver *drv,
+>         trace_cpu_idle(index, dev->cpu);
+>         time_start = ns_to_ktime(local_clock());
+>
+> +       active_stats_cpu_idle_enter(time_start);
+> +
+>         stop_critical_timings();
+>         if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
+>                 rcu_idle_enter();
+> @@ -243,6 +246,8 @@ int cpuidle_enter_state(struct cpuidle_device *dev, struct cpuidle_driver *drv,
+>         time_end = ns_to_ktime(local_clock());
+>         trace_cpu_idle(PWR_EVENT_EXIT, dev->cpu);
+>
+> +       active_stats_cpu_idle_exit(time_end);
+> +
+>         /* The cpu is no longer idle or about to enter idle. */
+>         sched_idle_set_state(NULL);
+>
+> --
+> 2.17.1
+>
