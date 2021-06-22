@@ -2,110 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD383B08FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60EB3B0900
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbhFVP3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:29:55 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:57599 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232241AbhFVP3w (ORCPT
+        id S232316AbhFVPaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231936AbhFVPaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:29:52 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lviJK-00027K-ME; Tue, 22 Jun 2021 15:27:34 +0000
-To:     Curtis Klein <curtis.klein@hpe.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: re: watchdog: Add hrtimer-based pretimeout feature
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <244ef2f1-9dfb-6ac3-3ab8-f8f0cabda93f@canonical.com>
-Date:   Tue, 22 Jun 2021 16:27:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 22 Jun 2021 11:30:18 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F80DC061574;
+        Tue, 22 Jun 2021 08:28:02 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lviJT-00BEGJ-Qu; Tue, 22 Jun 2021 15:27:43 +0000
+Date:   Tue, 22 Jun 2021 15:27:43 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     David Howells <dhowells@redhat.com>
+Cc:     torvalds@linux-foundation.org, Ted Ts'o <tytso@mit.edu>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org,
+        linux-mm@kvack.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Do we need to unrevert "fs: do not prefault sys_write() user
+ buffer pages"?
+Message-ID: <YNIBb5WPrk8nnKKn@zeniv-ca.linux.org.uk>
+References: <3221175.1624375240@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3221175.1624375240@warthog.procyon.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Jun 22, 2021 at 04:20:40PM +0100, David Howells wrote:
 
-Static analysis using Coverity on linux-next has found an issue in
-function watchdog_cdev_unregister in source
-drivers/watchdog/watchdog_dev.c with the following commit:
+> and wondering if the iov_iter_fault_in_readable() is actually effective.  Yes,
+> it can make sure that the page we're intending to modify is dragged into the
+> pagecache and marked uptodate so that it can be read from, but is it possible
+> for the page to then get reclaimed before we get to
+> iov_iter_copy_from_user_atomic()?  a_ops->write_begin() could potentially take
+> a long time, say if it has to go and get a lock/lease from a server.
 
-commit 7b7d2fdc8c3e3f9fdb3558d674e1eeddc16c7d9e
-Author: Curtis Klein <curtis.klein@hpe.com>
-Date:   Wed Feb 3 12:11:30 2021 -0800
-
-    watchdog: Add hrtimer-based pretimeout feature
-
-The analysis is as follows:
-
-1084 static void (struct watchdog_device *wdd)
-1085 {
-1086        struct watchdog_core_data *wd_data = wdd->wd_data;
-1087
-1088        cdev_device_del(&wd_data->cdev, &wd_data->dev);
-
-    1. Condition wdd->id == 0, taking true branch.
-
-1089        if (wdd->id == 0) {
-1090                misc_deregister(&watchdog_miscdev);
-1091                old_wd_data = NULL;
-1092        }
-1093
-
-    2. Condition watchdog_active(wdd), taking true branch.
-    3. Condition test_bit(4, &wdd->status), taking true branch.
-
-1094        if (watchdog_active(wdd) &&
-1095            test_bit(WDOG_STOP_ON_UNREGISTER, &wdd->status)) {
-1096                watchdog_stop(wdd);
-1097        }
-1098
-1099        mutex_lock(&wd_data->lock);
-1100        wd_data->wdd = NULL;
-
-    4. assign_zero: Assigning: wdd->wd_data = NULL.
-
-1101        wdd->wd_data = NULL;
-1102        mutex_unlock(&wd_data->lock);
-1103
-1104        hrtimer_cancel(&wd_data->timer);
-1105        kthread_cancel_work_sync(&wd_data->work);
-
-Explicit null dereferenced (FORWARD_NULL)
-
-    5. var_deref_model: Passing wdd to watchdog_hrtimer_pretimeout_stop,
-which dereferences null wdd->wd_data.
-
-1106        watchdog_hrtimer_pretimeout_stop(wdd);
-1107
-1108        put_device(&wd_data->dev);
-1109 }
-
-The call to watchdog_hrtimer_pretimeout_stop dereferences wdd as follows:
-
-41 void watchdog_hrtimer_pretimeout_stop(struct watchdog_device *wdd)
-42 {
-
-  1. deref_parm_field_in_call: Function hrtimer_cancel dereferences an
-offset off wdd->wd_data.
-
-43        hrtimer_cancel(&wdd->wd_data->pretimeout_timer);
-44 }
-
-Since wdd->wd_data is set to NULL on line 1101, the call to
-watchdog_hrtimer_pretimeout_stop will always trip a null pointer
-dereference.  Shall we just remove that call?
-
-Colin
+Yes, it is.  So what?  We'll just retry.  You *can't* take faults while holding
+some pages locked; not without shitloads of deadlocks.
