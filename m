@@ -2,121 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE8D3B0371
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A863B0385
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbhFVL7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 07:59:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38142 "EHLO
+        id S230500AbhFVMD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhFVL7W (ORCPT
+        with ESMTP id S229913AbhFVMD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 07:59:22 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6422AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 04:57:06 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 4E2422224B;
-        Tue, 22 Jun 2021 13:57:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1624363022;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cW9h5DpBp2GZE/dsC+UBUW7ysGWDsL3QGU2yDtMlmus=;
-        b=SLcnPRPI/Opz8E0XbrxIDkbvtIafbj1EBQPzY8au0k8lMxdichOhxwNUB5PRA8h9DQ70/P
-        3iHryxJZioyWa7Fwx3srHBjbFezv0en/11Ee04M8QHJ/624mLet6VnvhygnofN3PRUwZ64
-        KpHWCxYf5cKQOndY1yeanQWEzXKyWBE=
+        Tue, 22 Jun 2021 08:03:57 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04EBC061574;
+        Tue, 22 Jun 2021 05:01:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=X4kpbH+DaZTOhPBGpDawX0SAzOKgY7hBQYLbNj8DCm8=; b=F73bKqCFpG7YQifoWVVhWhhsOD
+        Da/ylTe3x+HwWLcF76glD43UOs8Zt5zYyNMpjsRrXmHZfU6AVaYqs145n5wlbQ5C0brYtLBv1CsAP
+        kAhQ/2gOKI2pkeZHB5RbPWzZ8FiKLhxGkQtlsozc5a2E12VnrNIGAcAK6/aoHIgu2Jk5+XENcagXz
+        4kG/IHSeCoxq+v0pr8x2a9lwowaP/nzR6ToAU//q+JyajU7dTCHqnK4IaEpYNHg9+Kon21oaUlmgo
+        R2qHYJCeitCPh8yfr7mzdcNE8p7ySyorKVcBh1txS1N52CX9+GYQPyab4BHyzm7Zb1zHndYeCJFi3
+        xQdO0EDw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvf4d-00EEqH-Sf; Tue, 22 Jun 2021 12:00:28 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     akpm@linux-foundation.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        David Howells <dhowells@redhat.com>
+Subject: [PATCH v12 22/33] mm/filemap: Add folio_wait_locked()
+Date:   Tue, 22 Jun 2021 12:41:07 +0100
+Message-Id: <20210622114118.3388190-23-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210622114118.3388190-1-willy@infradead.org>
+References: <20210622114118.3388190-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 22 Jun 2021 13:57:00 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     linux-mtd@lists.infradead.org,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>, linux-kernel@vger.kernel.org,
-        Esben Haabendal <esben@geanix.com>,
-        Zhengxun Li <zhengxunli@mxic.com.tw>,
-        Jaime Liao <jaimeliao@mxic.com.tw>, masonccyang@mxic.com.tw,
-        ycllin@mxic.com.tw
-Subject: Re: [RFC 2/3] mtd: spi-nor: core: compare JEDEC bytes to already
- found flash_info
-In-Reply-To: <20210621152320.3811194-3-linux@rasmusvillemoes.dk>
-References: <20210621152320.3811194-1-linux@rasmusvillemoes.dk>
- <20210621152320.3811194-3-linux@rasmusvillemoes.dk>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <223232ecd0865e819477f17cd464ab08@walle.cc>
-X-Sender: michael@walle.cc
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+ some people from MXIC as they are ones who posted to the ML
-lately. Feel free to forward this mail to the corresponding people.]
+Also add folio_wait_locked_killable().  Turn wait_on_page_locked() and
+wait_on_page_locked_killable() into wrappers.  This eliminates a call
+to compound_head() from each call-site, reducing text size by 193 bytes
+for me.
 
-Am 2021-06-21 17:23, schrieb Rasmus Villemoes:
-> Macronix engineers, in their infinite wisdom, have a habit of reusing
-> JEDEC ids for different chips. There's already one
-> workaround (MX25L25635F v MX25L25635E), but the same problem exists
-> for MX25L3205D v MX25L3233F, the latter of which is not currently
-> supported by linux.
-> 
-> AFAICT, that case cannot really be handled with any of the ->fixup
-> machinery: The correct entry for the MX25L3233F would read
-> 
->         { "mx25l3233f",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K |
-> SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ ) },
-> 
-> while the existing one is
-> 
-> 	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
-> 
-> So in spi_nor_init_params(), we won't even try reading the sfdp
-> info (i.e. call spi_nor_sfdp_init_params), and hence
-> spi_nor_post_sfdp_fixups() has no way of distinguishing the
-> chips.
-> 
-> Replacing the existing entry with the mx25l3233f one to coerce the
-> core into issuing the SPINOR_OP_RDSFDP is also not really an option,
-> because the data sheet for the mx25l3205d explicitly says not to issue
-> any commands not listed ("It is not recommended to adopt any other
-> code not in the command definition table, which will potentially enter
-> the hidden mode.", whatever that means).
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Jeff Layton <jlayton@kernel.org>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+Reviewed-by: David Howells <dhowells@redhat.com>
+---
+ include/linux/pagemap.h | 26 ++++++++++++++++++--------
+ mm/filemap.c            |  4 ++--
+ 2 files changed, 20 insertions(+), 10 deletions(-)
 
-Maybe we should ask Macronix if it is safe to send the RDSFDP command.
-Can anyone from MXIC comment this?
-This is also interesting because we are discussing reading the SFDP
-without reading the ID first.
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index 86c784572eeb..6f28eb6fb681 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -732,23 +732,33 @@ extern void wait_on_page_bit(struct page *page, int bit_nr);
+ extern int wait_on_page_bit_killable(struct page *page, int bit_nr);
+ 
+ /* 
+- * Wait for a page to be unlocked.
++ * Wait for a folio to be unlocked.
+  *
+- * This must be called with the caller "holding" the page,
+- * ie with increased "page->count" so that the page won't
++ * This must be called with the caller "holding" the folio,
++ * ie with increased "page->count" so that the folio won't
+  * go away during the wait..
+  */
++static inline void folio_wait_locked(struct folio *folio)
++{
++	if (folio_locked(folio))
++		wait_on_page_bit(&folio->page, PG_locked);
++}
++
++static inline int folio_wait_locked_killable(struct folio *folio)
++{
++	if (!folio_locked(folio))
++		return 0;
++	return wait_on_page_bit_killable(&folio->page, PG_locked);
++}
++
+ static inline void wait_on_page_locked(struct page *page)
+ {
+-	if (PageLocked(page))
+-		wait_on_page_bit(compound_head(page), PG_locked);
++	folio_wait_locked(page_folio(page));
+ }
+ 
+ static inline int wait_on_page_locked_killable(struct page *page)
+ {
+-	if (!PageLocked(page))
+-		return 0;
+-	return wait_on_page_bit_killable(compound_head(page), PG_locked);
++	return folio_wait_locked_killable(page_folio(page));
+ }
+ 
+ int put_and_wait_on_page_locked(struct page *page, int state);
+diff --git a/mm/filemap.c b/mm/filemap.c
+index a8177324c393..1b76230d4345 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -1649,9 +1649,9 @@ int __lock_page_or_retry(struct page *page, struct mm_struct *mm,
+ 
+ 		mmap_read_unlock(mm);
+ 		if (flags & FAULT_FLAG_KILLABLE)
+-			wait_on_page_locked_killable(page);
++			folio_wait_locked_killable(folio);
+ 		else
+-			wait_on_page_locked(page);
++			folio_wait_locked(folio);
+ 		return 0;
+ 	}
+ 	if (flags & FAULT_FLAG_KILLABLE) {
+-- 
+2.30.2
 
-Of course this will not save us from two different devices sharing
-the same ID and both having no RDSFDP support.
-
-> In order to support such cases, extend the logic in spi_nor_read_id()
-> a little so that if we already have a struct flash_info* from the name
-> in device tree, check the JEDEC bytes against that, and if it is a
-> match, accept that (device tree compatible + matching JEDEC bytes) is
-> stronger than merely matching JEDEC bytes.
-
-This won't help much without a proper dt schema. No in-tree devicetree
-could use is because the DT validation would complain. So if this will
-go in (and the maintainers are rather hesitant to add it, I tried
-it myself [1]), you'd also need to add it to jedec,spi-nor.yaml and
-get an ack from Rob.
-
-> This also makes initialization slightly faster in the common case
-> where the flash_info was found from the name and the JEDEC bytes do
-> match - it avoids a second linear search over all known chips.
-> 
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-
--michael
-
-[1] 
-https://lore.kernel.org/linux-mtd/20200103223423.14025-1-michael@walle.cc/
