@@ -2,71 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4863B239C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD113B23A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhFWWcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 18:32:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229688AbhFWWce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:32:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFB1C611C1;
-        Wed, 23 Jun 2021 22:30:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624487416;
-        bh=DhcHWMyjMVjNVHNhiFtI532fMsfdsNNY2V6a4zXHM+M=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=nZnhPuzcl63ZvhrCRydY4ZN7qmXjTsEzw4AlE7ZNZioNN/n28hh9idGLsqv9nWYSL
-         1rFdrLPR4Sk7CMPVxuz3rYiv3mm7Qp6nSpvwWO80Qh7g+n9RHZQwf1Y/txr0iH79/j
-         ZwiTYSyMowQS9jPzI6ED/GxNvT1ZeWBwReF6LFqxHIUI04+SM79eFTSMgUyfsUpWkT
-         Ke2Mmi9wOepE3owm4QxKbIuoTSmsdgjgziXNhG9f77ht1SbDw/47XjWcZ5MYPf+YBL
-         aUc+RKHRyOLrfIFJICj/ZsqnHAsyTvMkH18JoCr8n4c2L7F/v2SLl4xCDfOzInysAB
-         PIWkR80jSndvA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6359E5C08D8; Wed, 23 Jun 2021 15:30:15 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 15:30:15 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     aneesh.kumar@linux.ibm.com
-Cc:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        sfr@canb.auug.org.au, elver@google.com, ndesaulniers@google.com
-Subject: Build failure in -next
-Message-ID: <20210623223015.GA315292@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        id S229831AbhFWWn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 18:43:56 -0400
+Received: from mail-pl1-f173.google.com ([209.85.214.173]:43695 "EHLO
+        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229758AbhFWWnz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 18:43:55 -0400
+Received: by mail-pl1-f173.google.com with SMTP id v12so1909494plo.10;
+        Wed, 23 Jun 2021 15:41:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5O5xNxcANEBivHk9zm1gSgKOACRuoRtqCAHhhwLRszM=;
+        b=RuApEn+vj0C4k6AJLolNaifapjyUACiGtQxP0EjDzJcaULCMwPl1QPhdsad2O+X2Oh
+         wGr7xDz1KpEn6RD3Pmxa4pIGwjPwcZTgVQFAsIWh7HcJQJUhUSDIvupRu8IFIpaUwLcu
+         wvOMpTUeck9zIFfzhhvCllNRUeUoPcnp2JFOT+8cOFvMWlTBdrYESjjKMuslcymgWwdz
+         6X4oDVwofYWQHVPa60iL28pyn9mFwYmHKb8LmSWsRitmGC8mYKNyB+aL9gV90HeEAD7B
+         2lqu2HDMxybi4ir56uqVKzDhB3BkPrf/pIRAI98bPlasuWREyC7D39qEoVNlElenQIqj
+         wRtA==
+X-Gm-Message-State: AOAM530T79ATp2lUJHOCKGqWyRSRz7LwrDx+I+VDTGqyFbAcatK2vxXh
+        1Iurwub6lGl1cWzmxNhQyarv9a0LXpX+9Q==
+X-Google-Smtp-Source: ABdhPJxpAhi0VXu1cQO0rXJS617rgaA7KTySsnIS5Qjqee5bXYu6O5vtr73k9ly0SRC/iQSWUMjUHg==
+X-Received: by 2002:a17:90b:1946:: with SMTP id nk6mr1987445pjb.86.1624488095627;
+        Wed, 23 Jun 2021 15:41:35 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id o72sm860706pfg.102.2021.06.23.15.41.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 15:41:34 -0700 (PDT)
+Subject: Re: [PATCH v4 01/10] scsi: ufs: Rename flags pm_op_in_progress and
+ is_sys_suspended
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Can Guo <cang@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Andy Gross <agross@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
+ <1624433711-9339-2-git-send-email-cang@codeaurora.org>
+ <YNOctRTGYZaSe6lw@yoga>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <b8d08321-b965-8273-408d-3987b8d88f9d@acm.org>
+Date:   Wed, 23 Jun 2021 15:41:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <YNOctRTGYZaSe6lw@yoga>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Aneesh!
+On 6/23/21 1:42 PM, Bjorn Andersson wrote:
+> On Wed 23 Jun 02:35 CDT 2021, Can Guo wrote:
+>> Rename pm_op_in_progress and is_sys_suspended to wlu_pm_op_in_progress and
+>> is_wlu_sys_suspended accordingly.
+> 
+> This reflects what the change does, but the commit message is supposed
+> to capture "why".
 
-Yesterday evening's next-20210622 testing gave me the following
-kernel-build error:
+What's even better is to describe both: what has been changed and also
+why a change has been made. See also
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes.
 
-ld: mm/mremap.o: in function `move_huge_pud':
-/home/git/linux-next/mm/mremap.c:372: undefined reference to `__compiletime_assert_395'
+Thanks,
 
-Bisection landed on this commit:
-
-257121c5aabe ("mm/mremap: convert huge PUD move to separate helper")
-
-I have no idea how this commit relates to that error message, but
-reverting this commit on top of next-20210622 really does get rid of
-the problem.
-
-The following reproducer provokes this error:
-
-tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --torture lock --configs LOCK07 --build-only --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y" --kmake-arg "CC=clang-11"
-
-Run the above command in the top-level directory of your -next source
-tree, and using this compiler:
-
-$ clang-11 -v
-Ubuntu clang version 11.1.0-++20210428103817+1fdec59bffc1-1~exp1~20210428204431.166
-Target: x86_64-pc-linux-gnu
-
-Thoughts?
-
-							Thanx, Paul
+Bart.
