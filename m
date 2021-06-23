@@ -2,74 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E762F3B1144
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 03:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6423B1159
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 03:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhFWBPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 21:15:17 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5066 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbhFWBPQ (ORCPT
+        id S230039AbhFWBet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 21:34:49 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:53306 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229774AbhFWBes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 21:15:16 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G8lVr0wx4zXk7B;
-        Wed, 23 Jun 2021 09:07:48 +0800 (CST)
-Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 23 Jun 2021 09:12:58 +0800
-Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
- (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 23
- Jun 2021 09:12:57 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <richard@nod.at>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <dan.carpenter@oracle.com>, <chengzhihao1@huawei.com>,
-        <yukuai3@huawei.com>
-Subject: [PATCH -next] ubifs: ubifs_gc_start_commit: Fix error check for lp pointer
-Date:   Wed, 23 Jun 2021 09:21:46 +0800
-Message-ID: <20210623012146.1418360-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 22 Jun 2021 21:34:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624411951; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=CrrnpDfUdPHc9/5MJchBP5+uWYdhn9UchGZ0bYOLPvE=;
+ b=pceLZNVh+i1THUD5Q6uVTNF0ASnsbu4Ia+L7Fi9I8mG6O0n5KzOglC8R6fmRc1IfLp9YQDYX
+ Na6ynYcQLlGlryymaU1uYNkpDbAQ3yWyoIF+KG4LpEqg3M3xSvuzCEXFluMW/y9X7IHGDqLS
+ 132pTLnZ4TVr24eJjw745A3n3JQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60d28f2e0090905e16b5b8e2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Jun 2021 01:32:30
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 03357C43143; Wed, 23 Jun 2021 01:32:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1CE66C433F1;
+        Wed, 23 Jun 2021 01:32:28 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema761-chm.china.huawei.com (10.1.198.203)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 23 Jun 2021 09:32:28 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/9] scsi: ufs: Differentiate status between hba pm ops
+ and wl pm ops
+In-Reply-To: <a5804465-2ad4-f122-0458-dcdd75f39310@acm.org>
+References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
+ <1623300218-9454-2-git-send-email-cang@codeaurora.org>
+ <a5804465-2ad4-f122-0458-dcdd75f39310@acm.org>
+Message-ID: <d3a80cdc7435238a26315c0631df2862@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Treating the NULL pointer returned from ubifs_fast_find_frdi_idx() as
-ENOMEM will make ubifs_gc_start_commit() fails, which could make ubifs
-read-only. Actually a returned NULL pointer is the termination
-condition in while-loop in ubifs_gc_start_commit().
+Hi Bart,
 
-Fixes: c770cd5190ba ("ubifs: fix an IS_ERR() vs NULL check")
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- fs/ubifs/gc.c | 4 ----
- 1 file changed, 4 deletions(-)
+On 2021-06-17 01:50, Bart Van Assche wrote:
+> On 6/9/21 9:43 PM, Can Guo wrote:
+>> @@ -8784,7 +8786,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba 
+>> *hba, enum ufs_pm_op pm_op)
+>>  	enum ufs_dev_pwr_mode req_dev_pwr_mode;
+>>  	enum uic_link_state req_link_state;
+>> 
+>> -	hba->pm_op_in_progress = true;
+>> +	hba->wl_pm_op_in_progress = true;
+>>  	if (pm_op != UFS_SHUTDOWN_PM) {
+>>  		pm_lvl = pm_op == UFS_RUNTIME_PM ?
+>>  			 hba->rpm_lvl : hba->spm_lvl;
+>> @@ -8919,7 +8921,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba 
+>> *hba, enum ufs_pm_op pm_op)
+>>  		hba->clk_gating.is_suspended = false;
+>>  		ufshcd_release(hba);
+>>  	}
+>> -	hba->pm_op_in_progress = false;
+>> +	hba->wl_pm_op_in_progress = false;
+>>  	return ret;
+>>  }
+> 
+> Are the __ufshcd_wl_suspend() calls serialized in any way? If not, will
+> the value of wl_pm_op_in_progress be incorrect if multiple kernel
+> threads run __ufshcd_wl_suspend() concurrently and one of the
+> __ufshcd_wl_suspend() instances returns earlier than the other?
+> 
 
-diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index 7cc22d7317ea..b1f276599b04 100644
---- a/fs/ubifs/gc.c
-+++ b/fs/ubifs/gc.c
-@@ -895,10 +895,6 @@ int ubifs_gc_start_commit(struct ubifs_info *c)
- 	/* Record index freeable LEBs for unmapping after commit */
- 	while (1) {
- 		lp = ubifs_fast_find_frdi_idx(c);
--		if (!lp) {
--			err = -ENOMEM;
--			goto out;
--		}
- 		if (!lp)
- 			break;
- 		idx_gc = kmalloc(sizeof(struct ubifs_gced_idx_leb), GFP_NOFS);
--- 
-2.31.1
+Sorry for getting back late on this... I was stuck by some urgent 
+issues.
 
+Yes, __ufshcd_wl_suspend() calls are serilized, because it is called by
+either runtime suspend or system suspend, and runtime suspend and system
+suspend are serialized - Rafael J. Wysocki has put a lot of efforts on 
+it,
+see also 1e2ef05bb8cf8 ("PM: Limit race conditions between runtime PM 
+and
+system sleep (v2)")).
+
+> Thanks,
+> 
+> Bart.
