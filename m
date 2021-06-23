@@ -2,112 +2,515 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8033B1CFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B744A3B1D15
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbhFWPBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 11:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWPBn (ORCPT
+        id S231331AbhFWPFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 11:05:35 -0400
+Received: from pbmsgap02.intersil.com ([192.157.179.202]:56660 "EHLO
+        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhFWPFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 11:01:43 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A61C061574;
-        Wed, 23 Jun 2021 07:59:24 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id i94so3016312wri.4;
-        Wed, 23 Jun 2021 07:59:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Rgspf46aiQviRMOC9Q3QVjuGGzAywfUO2vjWnpCd7FM=;
-        b=doLMYYZf9Ic92WHKcXaYf1NRPdNMdNPlRNtYsrkKRXUsb9N5j+OWX5PkjkobwXrTJ1
-         GqSdwKT1Qxs0GewjFzMCqwxFRIPRM1focjsEIJQD6fxxWd0z0slO+JgL8Va8CiCRNgyr
-         5mgXVg5TYOMzDouFQtq90066lOY6OXtreD7QCU2V8+lI9GcU7A5eKFnOaI7ghV6uN/4N
-         gPbVIslOhRf74uFcAURC/b8gdNOEFjLqpcAn/nHFDXr3w4tKqvLNJBeupvhAxLu1LhYy
-         QoG+dT9yj4pP60Ui5nfO6lZ66C9XLOWcPuuaAhPpTUbKxPVHw/d6ngOcjRG9rAjqZpCR
-         qOJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Rgspf46aiQviRMOC9Q3QVjuGGzAywfUO2vjWnpCd7FM=;
-        b=bmMTU9NWtnJ44EjwtwNujGfxPIqxvv8la6NlQfl8nWUBiD7RRcm9i5YEw6iwdIMAmv
-         8zMx6EBypBRRQuz+h61i9ff5IYwTVWvT8rJpnWm0f343aLcimtDUvDN2aDuPiiTyPXAF
-         izKHGIQMHOCkp4hB1xZxlu8d9k+3VAYsTM9w4fwOYJ4kP2lJIquy9UM0LXQIuRG69rYu
-         RrKtapfPG0PEivnsNIUC5EueCKs6i2S+CSIBoxUjCGVQwgqgnKJOkXhqmHOIeztzUo0J
-         XEbiA+CLkVj45pIOQszFKFnQnYK9Nkw5IMd0SxqYgQ1HqZgqA8yZcO2i8npCk6E6e3Sb
-         zjAQ==
-X-Gm-Message-State: AOAM531bBJeCFZNRdI8p4pvQsgg9HvROtd8Wjgm0Ky3kvF09FRMhwSPq
-        pQIrUxcgAEe9uEIDtGJ0pQ==
-X-Google-Smtp-Source: ABdhPJwNwSw2Bc/LOuSVHV1AObnhRNMS8wUppy0twDkW+2tOffI8MC+j9MxQsJ/8sBnjU1u/dl1shg==
-X-Received: by 2002:a5d:50ce:: with SMTP id f14mr466201wrt.259.1624460363556;
-        Wed, 23 Jun 2021 07:59:23 -0700 (PDT)
-Received: from localhost.localdomain (ip5b434b8b.dynamic.kabel-deutschland.de. [91.67.75.139])
-        by smtp.googlemail.com with ESMTPSA id n4sm301012wrw.21.2021.06.23.07.59.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 07:59:23 -0700 (PDT)
-From:   Alex Bee <knaerzche@gmail.com>
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Johan Jonker <jbx6244@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
-        Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH v2] arm64: dts: rockchip: Add sdmmc_ext for RK3328
-Date:   Wed, 23 Jun 2021 16:59:18 +0200
-Message-Id: <20210623145918.187018-1-knaerzche@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210623120001.164920-1-knaerzche@gmail.com>
-References: <20210623120001.164920-1-knaerzche@gmail.com>
+        Wed, 23 Jun 2021 11:05:34 -0400
+X-Greylist: delayed 1000 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Jun 2021 11:05:33 EDT
+Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
+        by pbmsgap02.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 15NEhQs1009643;
+        Wed, 23 Jun 2021 10:46:33 -0400
+Received: from pbmxdp02.intersil.corp (pbmxdp02.pb.intersil.com [132.158.200.223])
+        by pbmsgap02.intersil.com with ESMTP id 399arh9djd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 23 Jun 2021 10:46:33 -0400
+Received: from pbmxdp03.intersil.corp (132.158.200.224) by
+ pbmxdp02.intersil.corp (132.158.200.223) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.2242.4; Wed, 23 Jun 2021 10:46:31 -0400
+Received: from localhost (132.158.202.109) by pbmxdp03.intersil.corp
+ (132.158.200.224) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Wed, 23 Jun 2021 10:46:31 -0400
+From:   <min.li.xe@renesas.com>
+To:     <richardcochran@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Min Li <min.li.xe@renesas.com>
+Subject: [PATCH net 1/2] ptp: idt82p33: optimize idt82p33_adjtime
+Date:   Wed, 23 Jun 2021 10:46:24 -0400
+Message-ID: <1624459585-31233-1-git-send-email-min.li.xe@renesas.com>
+X-Mailer: git-send-email 2.7.4
+X-TM-AS-MML: disable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: gUW7qffzc-U_7-7DBXsehvlQOeFj3Ls0
+X-Proofpoint-ORIG-GUID: gUW7qffzc-U_7-7DBXsehvlQOeFj3Ls0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-23_09:2021-06-23,2021-06-23 signatures=0
+X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 malwarescore=0 mlxlogscore=999
+ adultscore=0 bulkscore=0 phishscore=0 mlxscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106230084
+X-Proofpoint-Spam-Reason: mlx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RK3328 SoC has a fourth mmc controller called SDMMC_EXT. Some
-boards have sdio wifi connected to it. In order to use it
-one would have to add the pinctrls from sdmmc0ext group which
-is done on board level.
+From: Min Li <min.li.xe@renesas.com>
 
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
+The current adjtime implementation is read-modify-write and immediately
+triggered, which is not accurate due to slow i2c bus access. Therefore,
+we will use internally generated 1 PPS pulse as trigger, which will
+improve adjtime accuracy significantly. On the other hand, the new trigger
+will not change TOD immediately but delay it to the next 1 PPS pulse.
+
+Signed-off-by: Min Li <min.li.xe@renesas.com>
 ---
+ drivers/ptp/ptp_idt82p33.c | 221 ++++++++++++++++++++++++++++++---------------
+ drivers/ptp/ptp_idt82p33.h |  28 +++---
+ 2 files changed, 165 insertions(+), 84 deletions(-)
 
- Changes in v2:
- - fixed node name in accordance to DT bindings (Johan)
- - seperated patch which adds reset controls for the
-   other mmc controllers (Chen-Yu)
-
- arch/arm64/boot/dts/rockchip/rk3328.dtsi | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-index da84be6f4715..aa11bce576a4 100644
---- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-@@ -980,6 +980,20 @@ usb_host0_ohci: usb@ff5d0000 {
- 		status = "disabled";
- 	};
+diff --git a/drivers/ptp/ptp_idt82p33.c b/drivers/ptp/ptp_idt82p33.c
+index c1c959f..abe628c 100644
+--- a/drivers/ptp/ptp_idt82p33.c
++++ b/drivers/ptp/ptp_idt82p33.c
+@@ -24,15 +24,10 @@ MODULE_LICENSE("GPL");
+ MODULE_FIRMWARE(FW_FILENAME);
  
-+	sdmmc_ext: mmc@ff5f0000 {
-+		compatible = "rockchip,rk3328-dw-mshc", "rockchip,rk3288-dw-mshc";
-+		reg = <0x0 0xff5f0000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru HCLK_SDMMC_EXT>, <&cru SCLK_SDMMC_EXT>,
-+			 <&cru SCLK_SDMMC_EXT_DRV>, <&cru SCLK_SDMMC_EXT_SAMPLE>;
-+		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
-+		fifo-depth = <0x100>;
-+		max-frequency = <150000000>;
-+		resets = <&cru SRST_SDMMCEXT>;
-+		reset-names = "reset";
-+		status = "disabled";
-+	};
+ /* Module Parameters */
+-static u32 sync_tod_timeout = SYNC_TOD_TIMEOUT_SEC;
+-module_param(sync_tod_timeout, uint, 0);
+-MODULE_PARM_DESC(sync_tod_timeout,
+-"duration in second to keep SYNC_TOD on (set to 0 to keep it always on)");
+-
+ static u32 phase_snap_threshold = SNAP_THRESHOLD_NS;
+ module_param(phase_snap_threshold, uint, 0);
+ MODULE_PARM_DESC(phase_snap_threshold,
+-"threshold (150000ns by default) below which adjtime would ignore");
++"threshold (1000ns by default) below which adjtime would ignore");
+ 
+ static void idt82p33_byte_array_to_timespec(struct timespec64 *ts,
+ 					    u8 buf[TOD_BYTE_COUNT])
+@@ -206,26 +201,47 @@ static int idt82p33_dpll_set_mode(struct idt82p33_channel *channel,
+ 	if (err)
+ 		return err;
+ 
+-	channel->pll_mode = dpll_mode;
++	channel->pll_mode = mode;
+ 
+ 	return 0;
+ }
+ 
+-static int _idt82p33_gettime(struct idt82p33_channel *channel,
+-			     struct timespec64 *ts)
++static int idt82p33_set_tod_trigger(struct idt82p33_channel *channel,
++				    u8 trigger, bool write)
+ {
+ 	struct idt82p33 *idt82p33 = channel->idt82p33;
+-	u8 buf[TOD_BYTE_COUNT];
+-	u8 trigger;
+ 	int err;
++	u8 cfg;
+ 
+-	trigger = TOD_TRIGGER(HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG,
+-			      HW_TOD_RD_TRIG_SEL_LSB_TOD_STS);
++	if (trigger > WR_TRIG_SEL_MAX)
++		return -EINVAL;
+ 
++	err = idt82p33_read(idt82p33, channel->dpll_tod_trigger,
++			    &cfg, sizeof(cfg));
+ 
+-	err = idt82p33_write(idt82p33, channel->dpll_tod_trigger,
+-			     &trigger, sizeof(trigger));
++	if (err)
++		return err;
 +
- 	usbdrd3: usb@ff600000 {
- 		compatible = "rockchip,rk3328-dwc3", "snps,dwc3";
- 		reg = <0x0 0xff600000 0x0 0x100000>;
++	if (write == true)
++		trigger = (trigger << WRITE_TRIGGER_SHIFT) |
++			  (cfg & READ_TRIGGER_MASK);
++	else
++		trigger = (trigger << READ_TRIGGER_SHIFT) |
++			  (cfg & WRITE_TRIGGER_MASK);
++
++	return idt82p33_write(idt82p33, channel->dpll_tod_trigger,
++			      &trigger, sizeof(trigger));
++}
++
++static int _idt82p33_gettime(struct idt82p33_channel *channel,
++			     struct timespec64 *ts)
++{
++	struct idt82p33 *idt82p33 = channel->idt82p33;
++	u8 buf[TOD_BYTE_COUNT];
++	int err;
+ 
++	err = idt82p33_set_tod_trigger(channel, HW_TOD_RD_TRIG_SEL_LSB_TOD_STS,
++				       false);
+ 	if (err)
+ 		return err;
+ 
+@@ -255,16 +271,11 @@ static int _idt82p33_settime(struct idt82p33_channel *channel,
+ 	struct timespec64 local_ts = *ts;
+ 	char buf[TOD_BYTE_COUNT];
+ 	s64 dynamic_overhead_ns;
+-	unsigned char trigger;
+ 	int err;
+ 	u8 i;
+ 
+-	trigger = TOD_TRIGGER(HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG,
+-			      HW_TOD_RD_TRIG_SEL_LSB_TOD_STS);
+-
+-	err = idt82p33_write(idt82p33, channel->dpll_tod_trigger,
+-			&trigger, sizeof(trigger));
+-
++	err = idt82p33_set_tod_trigger(channel, HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG,
++				       true);
+ 	if (err)
+ 		return err;
+ 
+@@ -292,7 +303,8 @@ static int _idt82p33_settime(struct idt82p33_channel *channel,
+ 	return err;
+ }
+ 
+-static int _idt82p33_adjtime(struct idt82p33_channel *channel, s64 delta_ns)
++static int _idt82p33_adjtime_immediate(struct idt82p33_channel *channel,
++				       s64 delta_ns)
+ {
+ 	struct idt82p33 *idt82p33 = channel->idt82p33;
+ 	struct timespec64 ts;
+@@ -316,6 +328,60 @@ static int _idt82p33_adjtime(struct idt82p33_channel *channel, s64 delta_ns)
+ 	return err;
+ }
+ 
++static int _idt82p33_adjtime_internal_triggered(struct idt82p33_channel *channel,
++						s64 delta_ns)
++{
++	struct idt82p33 *idt82p33 = channel->idt82p33;
++	char buf[TOD_BYTE_COUNT];
++	struct timespec64 ts;
++	const u8 delay_ns = 32;
++	s32 delay_ns_remainder;
++	s64 ns;
++	int err;
++
++	err = _idt82p33_gettime(channel, &ts);
++
++	if (err)
++		return err;
++
++	if (ts.tv_nsec > (NSEC_PER_SEC - 5 * NSEC_PER_MSEC)) {
++		/*  Too close to miss next trigger, so skip it */
++		mdelay(6);
++		ns = (ts.tv_sec + 2) * NSEC_PER_SEC + delta_ns + delay_ns;
++	} else
++		ns = (ts.tv_sec + 1) * NSEC_PER_SEC + delta_ns + delay_ns;
++
++	ts = ns_to_timespec64(ns);
++	idt82p33_timespec_to_byte_array(&ts, buf);
++
++	/*
++	 * Store the new time value.
++	 */
++	err = idt82p33_write(idt82p33, channel->dpll_tod_cnfg, buf, sizeof(buf));
++	if (err)
++		return err;
++
++	/* Schedule to implement the workaround in one second */
++	div_s64_rem(delta_ns, NSEC_PER_SEC, &delay_ns_remainder);
++	if (delay_ns_remainder)
++		schedule_delayed_work(&channel->adjtime_work, HZ);
++
++	return idt82p33_set_tod_trigger(channel, HW_TOD_TRIG_SEL_TOD_PPS, true);
++}
++
++static void idt82p33_adjtime_workaround(struct work_struct *work)
++{
++	struct idt82p33_channel *channel = container_of(work,
++							struct idt82p33_channel,
++							adjtime_work.work);
++	struct idt82p33 *idt82p33 = channel->idt82p33;
++
++	mutex_lock(&idt82p33->reg_lock);
++	/* Workaround for TOD-to-output alignment issue */
++	_idt82p33_adjtime_internal_triggered(channel, 0);
++	mutex_unlock(&idt82p33->reg_lock);
++}
++
+ static int _idt82p33_adjfine(struct idt82p33_channel *channel, long scaled_ppm)
+ {
+ 	struct idt82p33 *idt82p33 = channel->idt82p33;
+@@ -397,6 +463,39 @@ static int idt82p33_measure_one_byte_write_overhead(
+ 	return err;
+ }
+ 
++static int idt82p33_measure_one_byte_read_overhead(
++		struct idt82p33_channel *channel, s64 *overhead_ns)
++{
++	struct idt82p33 *idt82p33 = channel->idt82p33;
++	ktime_t start, stop;
++	u8 trigger = 0;
++	s64 total_ns;
++	int err;
++	u8 i;
++
++	total_ns = 0;
++	*overhead_ns = 0;
++
++	for (i = 0; i < MAX_MEASURMENT_COUNT; i++) {
++
++		start = ktime_get_raw();
++
++		err = idt82p33_read(idt82p33, channel->dpll_tod_trigger,
++				    &trigger, sizeof(trigger));
++
++		stop = ktime_get_raw();
++
++		if (err)
++			return err;
++
++		total_ns += ktime_to_ns(stop) - ktime_to_ns(start);
++	}
++
++	*overhead_ns = div_s64(total_ns, MAX_MEASURMENT_COUNT);
++
++	return err;
++}
++
+ static int idt82p33_measure_tod_write_9_byte_overhead(
+ 			struct idt82p33_channel *channel)
+ {
+@@ -458,7 +557,7 @@ static int idt82p33_measure_settime_gettime_gap_overhead(
+ 
+ static int idt82p33_measure_tod_write_overhead(struct idt82p33_channel *channel)
+ {
+-	s64 trailing_overhead_ns, one_byte_write_ns, gap_ns;
++	s64 trailing_overhead_ns, one_byte_write_ns, gap_ns, one_byte_read_ns;
+ 	struct idt82p33 *idt82p33 = channel->idt82p33;
+ 	int err;
+ 
+@@ -478,12 +577,19 @@ static int idt82p33_measure_tod_write_overhead(struct idt82p33_channel *channel)
+ 	if (err)
+ 		return err;
+ 
++	err = idt82p33_measure_one_byte_read_overhead(channel,
++						      &one_byte_read_ns);
++
++	if (err)
++		return err;
++
+ 	err = idt82p33_measure_tod_write_9_byte_overhead(channel);
+ 
+ 	if (err)
+ 		return err;
+ 
+-	trailing_overhead_ns = gap_ns - (2 * one_byte_write_ns);
++	trailing_overhead_ns = gap_ns - 2 * one_byte_write_ns
++			       - one_byte_read_ns;
+ 
+ 	idt82p33->tod_write_overhead_ns -= trailing_overhead_ns;
+ 
+@@ -500,7 +606,7 @@ static int idt82p33_check_and_set_masks(struct idt82p33 *idt82p33,
+ 	if (page == PLLMASK_ADDR_HI && offset == PLLMASK_ADDR_LO) {
+ 		if ((val & 0xfc) || !(val & 0x3)) {
+ 			dev_err(&idt82p33->client->dev,
+-				"Invalid PLL mask 0x%hhx\n", val);
++				"Invalid PLL mask 0x%02x\n", val);
+ 			err = -EINVAL;
+ 		} else {
+ 			idt82p33->pll_mask = val;
+@@ -539,11 +645,6 @@ static int idt82p33_sync_tod(struct idt82p33_channel *channel, bool enable)
+ 	u8 sync_cnfg;
+ 	int err;
+ 
+-	/* Turn it off after sync_tod_timeout seconds */
+-	if (enable && sync_tod_timeout)
+-		ptp_schedule_worker(channel->ptp_clock,
+-				    sync_tod_timeout * HZ);
+-
+ 	err = idt82p33_read(idt82p33, channel->dpll_sync_cnfg,
+ 			    &sync_cnfg, sizeof(sync_cnfg));
+ 	if (err)
+@@ -557,22 +658,6 @@ static int idt82p33_sync_tod(struct idt82p33_channel *channel, bool enable)
+ 			      &sync_cnfg, sizeof(sync_cnfg));
+ }
+ 
+-static long idt82p33_sync_tod_work_handler(struct ptp_clock_info *ptp)
+-{
+-	struct idt82p33_channel *channel =
+-			container_of(ptp, struct idt82p33_channel, caps);
+-	struct idt82p33 *idt82p33 = channel->idt82p33;
+-
+-	mutex_lock(&idt82p33->reg_lock);
+-
+-	(void)idt82p33_sync_tod(channel, false);
+-
+-	mutex_unlock(&idt82p33->reg_lock);
+-
+-	/* Return a negative value here to not reschedule */
+-	return -1;
+-}
+-
+ static int idt82p33_output_enable(struct idt82p33_channel *channel,
+ 				  bool enable, unsigned int outn)
+ {
+@@ -634,13 +719,6 @@ static int idt82p33_enable_tod(struct idt82p33_channel *channel)
+ 	struct idt82p33 *idt82p33 = channel->idt82p33;
+ 	struct timespec64 ts = {0, 0};
+ 	int err;
+-	u8 val;
+-
+-	val = 0;
+-	err = idt82p33_write(idt82p33, channel->dpll_input_mode_cnfg,
+-			     &val, sizeof(val));
+-	if (err)
+-		return err;
+ 
+ 	err = idt82p33_measure_tod_write_overhead(channel);
+ 
+@@ -664,11 +742,12 @@ static void idt82p33_ptp_clock_unregister_all(struct idt82p33 *idt82p33)
+ 	u8 i;
+ 
+ 	for (i = 0; i < MAX_PHC_PLL; i++) {
+-
+ 		channel = &idt82p33->channel[i];
+ 
+-		if (channel->ptp_clock)
++		if (channel->ptp_clock) {
++			channel = &idt82p33->channel[i];
+ 			ptp_clock_unregister(channel->ptp_clock);
++		}
+ 	}
+ }
+ 
+@@ -753,10 +832,11 @@ static int idt82p33_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
+ 
+ 	mutex_lock(&idt82p33->reg_lock);
+ 	err = _idt82p33_adjfine(channel, scaled_ppm);
++	mutex_unlock(&idt82p33->reg_lock);
++
+ 	if (err)
+ 		dev_err(&idt82p33->client->dev,
+ 			"Failed in %s with err %d!\n", __func__, err);
+-	mutex_unlock(&idt82p33->reg_lock);
+ 
+ 	return err;
+ }
+@@ -775,21 +855,16 @@ static int idt82p33_adjtime(struct ptp_clock_info *ptp, s64 delta_ns)
+ 		return 0;
+ 	}
+ 
+-	err = _idt82p33_adjtime(channel, delta_ns);
++	/* Use more accurate internal 1pps triggered write first */
++	err = _idt82p33_adjtime_internal_triggered(channel, delta_ns);
++	if (err && delta_ns > IMMEDIATE_SNAP_THRESHOLD_NS)
++		err = _idt82p33_adjtime_immediate(channel, delta_ns);
+ 
+-	if (err) {
+-		mutex_unlock(&idt82p33->reg_lock);
+-		dev_err(&idt82p33->client->dev,
+-			"Adjtime failed in %s with err %d!\n", __func__, err);
+-		return err;
+-	}
++	mutex_unlock(&idt82p33->reg_lock);
+ 
+-	err = idt82p33_sync_tod(channel, true);
+ 	if (err)
+ 		dev_err(&idt82p33->client->dev,
+-			"Sync_tod failed in %s with err %d!\n", __func__, err);
+-
+-	mutex_unlock(&idt82p33->reg_lock);
++			"Adjtime failed in %s with err %d!\n", __func__, err);
+ 
+ 	return err;
+ }
+@@ -803,10 +878,11 @@ static int idt82p33_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
+ 
+ 	mutex_lock(&idt82p33->reg_lock);
+ 	err = _idt82p33_gettime(channel, ts);
++	mutex_unlock(&idt82p33->reg_lock);
++
+ 	if (err)
+ 		dev_err(&idt82p33->client->dev,
+ 			"Failed in %s with err %d!\n", __func__, err);
+-	mutex_unlock(&idt82p33->reg_lock);
+ 
+ 	return err;
+ }
+@@ -821,11 +897,11 @@ static int idt82p33_settime(struct ptp_clock_info *ptp,
+ 
+ 	mutex_lock(&idt82p33->reg_lock);
+ 	err = _idt82p33_settime(channel, ts);
++	mutex_unlock(&idt82p33->reg_lock);
++
+ 	if (err)
+ 		dev_err(&idt82p33->client->dev,
+ 			"Failed in %s with err %d!\n", __func__, err);
+-	mutex_unlock(&idt82p33->reg_lock);
+-
+ 	return err;
+ }
+ 
+@@ -872,7 +948,6 @@ static void idt82p33_caps_init(struct ptp_clock_info *caps)
+ 	caps->gettime64 = idt82p33_gettime;
+ 	caps->settime64 = idt82p33_settime;
+ 	caps->enable = idt82p33_enable;
+-	caps->do_aux_work = idt82p33_sync_tod_work_handler;
+ }
+ 
+ static int idt82p33_enable_channel(struct idt82p33 *idt82p33, u32 index)
+@@ -895,6 +970,8 @@ static int idt82p33_enable_channel(struct idt82p33 *idt82p33, u32 index)
+ 
+ 	channel->idt82p33 = idt82p33;
+ 
++	INIT_DELAYED_WORK(&channel->adjtime_work, idt82p33_adjtime_workaround);
++
+ 	idt82p33_caps_init(&channel->caps);
+ 	snprintf(channel->caps.name, sizeof(channel->caps.name),
+ 		 "IDT 82P33 PLL%u", index);
+diff --git a/drivers/ptp/ptp_idt82p33.h b/drivers/ptp/ptp_idt82p33.h
+index 1c7a0f0..a8b0923 100644
+--- a/drivers/ptp/ptp_idt82p33.h
++++ b/drivers/ptp/ptp_idt82p33.h
+@@ -89,13 +89,13 @@ enum hw_tod_trig_sel {
+ };
+ 
+ /* Register bit definitions end */
+-#define FW_FILENAME	"idt82p33xxx.bin"
+-#define MAX_PHC_PLL (2)
+-#define TOD_BYTE_COUNT (10)
+-#define MAX_MEASURMENT_COUNT (5)
+-#define SNAP_THRESHOLD_NS (150000)
+-#define SYNC_TOD_TIMEOUT_SEC (5)
+-#define IDT82P33_MAX_WRITE_COUNT (512)
++#define FW_FILENAME			"idt82p33xxx.bin"
++#define MAX_PHC_PLL			(2)
++#define TOD_BYTE_COUNT			(10)
++#define MAX_MEASURMENT_COUNT		(5)
++#define SNAP_THRESHOLD_NS		(10000)
++#define IMMEDIATE_SNAP_THRESHOLD_NS	(50000)
++#define IDT82P33_MAX_WRITE_COUNT	(512)
+ 
+ #define PLLMASK_ADDR_HI	0xFF
+ #define PLLMASK_ADDR_LO	0xA5
+@@ -116,15 +116,19 @@ enum hw_tod_trig_sel {
+ #define DEFAULT_OUTPUT_MASK_PLL0	(0xc0)
+ #define DEFAULT_OUTPUT_MASK_PLL1	DEFAULT_OUTPUT_MASK_PLL0
+ 
++/* Bit definitions for DPLL_TOD_TRIGGER register */
++#define READ_TRIGGER_MASK	(0xF)
++#define READ_TRIGGER_SHIFT	(0x0)
++#define WRITE_TRIGGER_MASK	(0xF0)
++#define WRITE_TRIGGER_SHIFT	(0x4)
++
+ /* PTP Hardware Clock interface */
+ struct idt82p33_channel {
+ 	struct ptp_clock_info	caps;
+ 	struct ptp_clock	*ptp_clock;
+-	struct idt82p33	*idt82p33;
+-	enum pll_mode	pll_mode;
+-	/* task to turn off SYNC_TOD bit after pps sync */
+-	struct delayed_work	sync_tod_work;
+-	bool			sync_tod_on;
++	struct idt82p33		*idt82p33;
++	enum pll_mode		pll_mode;
++	struct delayed_work	adjtime_work;
+ 	s32			current_freq_ppb;
+ 	u8			output_mask;
+ 	u16			dpll_tod_cnfg;
 -- 
-2.27.0
+2.7.4
 
