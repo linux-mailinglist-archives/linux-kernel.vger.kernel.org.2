@@ -2,134 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B77A3B17CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 12:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D50FE3B17D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 12:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhFWKJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 06:09:57 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:36014 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230031AbhFWKJz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 06:09:55 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15NA6wKJ015075;
-        Wed, 23 Jun 2021 10:07:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=ewkNgiDCeist8wg1hpa5RS49GBeyP6cC/nbwp3IopYM=;
- b=kctPgj5jAElYGXM6Uk5dCVI7VoDOSn/KV/Nhi5+JfWWyJiJErGy48HCiLht+HA0XcHpj
- 9Lut1b3H4E8Vj72Wlj5NLOPywmYW4PvsttEdDIYQy4VcjptD/2ATsX8wSzmHwNqv13eo
- Qij2jopoW0UAbfTpw1C46SyD7HZzk5f9pqoQdGpe8aZ8g8pZvAOcMs7Ua0WH3gH8cB9a
- D05WKgDKj7hknKx3Am2Z1O0OMF0TXH5fLT0O0q8dJR+M0zt3RumCV3UhY80NCJGfOmJg
- /h+DWyolSMmOn7srl2AXdRxxkOLsBIGnkMr3OzR9DIMQt7frxyqyaVubY/0Q7dljW+LO ag== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39c2wng033-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Jun 2021 10:07:34 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15NA5T7k017908;
-        Wed, 23 Jun 2021 10:07:33 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 3998d8wm2v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Jun 2021 10:07:33 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15NA7XK1023670;
-        Wed, 23 Jun 2021 10:07:33 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 3998d8wm2g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Jun 2021 10:07:33 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15NA7T6m028890;
-        Wed, 23 Jun 2021 10:07:29 GMT
-Received: from kadam (/102.222.70.252)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 23 Jun 2021 03:07:29 -0700
-Date:   Wed, 23 Jun 2021 13:07:22 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Chuck Lever <chuck.lever@oracle.com>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: net/sunrpc/xprtrdma/frwr_ops.c:647 frwr_unmap_async() error:
- potentially dereferencing uninitialized 'last'.
-Message-ID: <202106231840.ECkPJRDx-lkp@intel.com>
+        id S230123AbhFWKMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 06:12:36 -0400
+Received: from srv6.fidu.org ([159.69.62.71]:40690 "EHLO srv6.fidu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229833AbhFWKMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 06:12:34 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 33232C800AA;
+        Wed, 23 Jun 2021 12:10:15 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id hBdQUpMP2XHn; Wed, 23 Jun 2021 12:10:14 +0200 (CEST)
+Received: from [IPv6:2003:e3:7f39:4900:3156:839d:aed8:6ea6] (p200300e37f3949003156839Daed86eA6.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:4900:3156:839d:aed8:6ea6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id 9CBDDC8009D;
+        Wed, 23 Jun 2021 12:10:14 +0200 (CEST)
+Subject: Re: [PATCH v4 15/17] drm/uAPI: Move "Broadcast RGB" property from
+ driver specific to general context
+To:     Pekka Paalanen <ppaalanen@gmail.com>
+Cc:     sunpeng.li@amd.com, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        airlied@linux.ie, amd-gfx@lists.freedesktop.org,
+        tzimmermann@suse.de, rodrigo.vivi@intel.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com
+References: <20210618091116.14428-1-wse@tuxedocomputers.com>
+ <20210618091116.14428-16-wse@tuxedocomputers.com>
+ <20210622102529.5266e87b@eldfell>
+ <70d89fe2-4e45-7ea9-2509-15257ef222f8@tuxedocomputers.com>
+ <20210623104836.77734bad@eldfell>
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Message-ID: <2fc0547c-2968-1f52-4c07-82be58a41ef8@tuxedocomputers.com>
+Date:   Wed, 23 Jun 2021 12:10:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: PLs-kkyNdMCUuNXmL-EoJGgKFuJ8YN9N
-X-Proofpoint-ORIG-GUID: PLs-kkyNdMCUuNXmL-EoJGgKFuJ8YN9N
+In-Reply-To: <20210623104836.77734bad@eldfell>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0c18f29aae7ce3dadd26d8ee3505d07cc982df75
-commit: e10fa96d347488d1fd278e84f52ba7b25067cc71 xprtrdma: Move cqe to struct rpcrdma_mr
-config: x86_64-randconfig-m001-20210622 (attached as .config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+Am 23.06.21 um 09:48 schrieb Pekka Paalanen:
+> On Tue, 22 Jun 2021 11:57:53 +0200
+> Werner Sembach <wse@tuxedocomputers.com> wrote:
+>
+>> Am 22.06.21 um 09:25 schrieb Pekka Paalanen:
+>>> On Fri, 18 Jun 2021 11:11:14 +0200
+>>> Werner Sembach <wse@tuxedocomputers.com> wrote:
+>>>  
+>>>> Add "Broadcast RGB" to general drm context so that more drivers besides
+>>>> i915 and gma500 can implement it without duplicating code.
+>>>>
+>>>> Userspace can use this property to tell the graphic driver to use full or
+>>>> limited color range for a given connector, overwriting the default
+>>>> behaviour/automatic detection.
+>>>>
+>>>> Possible options are:
+>>>>     - Automatic (default/current behaviour)
+>>>>     - Full
+>>>>     - Limited 16:235
+>>>>
+>>>> In theory the driver should be able to automatically detect the monitors
+>>>> capabilities, but because of flawed standard implementations in Monitors,
+>>>> this might fail. In this case a manual overwrite is required to not have
+>>>> washed out colors or lose details in very dark or bright scenes.
+>>>>
+>>>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+>>>> ---
+>>>>  drivers/gpu/drm/drm_atomic_helper.c |  4 +++
+>>>>  drivers/gpu/drm/drm_atomic_uapi.c   |  4 +++
+>>>>  drivers/gpu/drm/drm_connector.c     | 43 +++++++++++++++++++++++++++++
+>>>>  include/drm/drm_connector.h         | 16 +++++++++++
+>>>>  4 files changed, 67 insertions(+)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+>>>> index 90d62f305257..0c89d32efbd0 100644
+>>>> --- a/drivers/gpu/drm/drm_atomic_helper.c
+>>>> +++ b/drivers/gpu/drm/drm_atomic_helper.c
+>>>> @@ -691,6 +691,10 @@ drm_atomic_helper_check_modeset(struct drm_device *dev,
+>>>>  			if (old_connector_state->preferred_color_format !=
+>>>>  			    new_connector_state->preferred_color_format)
+>>>>  				new_crtc_state->connectors_changed = true;
+>>>> +
+>>>> +			if (old_connector_state->preferred_color_range !=
+>>>> +			    new_connector_state->preferred_color_range)
+>>>> +				new_crtc_state->connectors_changed = true;
+>>>>  		}
+>>>>  
+>>>>  		if (funcs->atomic_check)
+>>>> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
+>>>> index c536f5e22016..c589bb1a8163 100644
+>>>> --- a/drivers/gpu/drm/drm_atomic_uapi.c
+>>>> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
+>>>> @@ -798,6 +798,8 @@ static int drm_atomic_connector_set_property(struct drm_connector *connector,
+>>>>  		state->max_requested_bpc = val;
+>>>>  	} else if (property == connector->preferred_color_format_property) {
+>>>>  		state->preferred_color_format = val;
+>>>> +	} else if (property == connector->preferred_color_range_property) {
+>>>> +		state->preferred_color_range = val;
+>>>>  	} else if (connector->funcs->atomic_set_property) {
+>>>>  		return connector->funcs->atomic_set_property(connector,
+>>>>  				state, property, val);
+>>>> @@ -877,6 +879,8 @@ drm_atomic_connector_get_property(struct drm_connector *connector,
+>>>>  		*val = state->max_requested_bpc;
+>>>>  	} else if (property == connector->preferred_color_format_property) {
+>>>>  		*val = state->preferred_color_format;
+>>>> +	} else if (property == connector->preferred_color_range_property) {
+>>>> +		*val = state->preferred_color_range;
+>>>>  	} else if (connector->funcs->atomic_get_property) {
+>>>>  		return connector->funcs->atomic_get_property(connector,
+>>>>  				state, property, val);
+>>>> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+>>>> index aea03dd02e33..9bc596638613 100644
+>>>> --- a/drivers/gpu/drm/drm_connector.c
+>>>> +++ b/drivers/gpu/drm/drm_connector.c
+>>>> @@ -905,6 +905,12 @@ static const struct drm_prop_enum_list drm_active_color_format_enum_list[] = {
+>>>>  	{ DRM_COLOR_FORMAT_YCRCB420, "ycbcr420" },
+>>>>  };
+>>>>  
+>>>> +static const struct drm_prop_enum_list drm_preferred_color_range_enum_list[] = {
+>>>> +	{ DRM_MODE_COLOR_RANGE_UNSET, "Automatic" },
+>>>> +	{ DRM_MODE_COLOR_RANGE_FULL, "Full" },
+>>>> +	{ DRM_MODE_COLOR_RANGE_LIMITED_16_235, "Limited 16:235" },  
+>>> Hi,
+>>>
+>>> the same question here about these numbers as I asked on the "active
+>>> color range" property.
+>>>  
+>>>> +};
+>>>> +
+>>>>  static const struct drm_prop_enum_list drm_active_color_range_enum_list[] = {
+>>>>  	{ DRM_MODE_COLOR_RANGE_UNSET, "Unknown" },
+>>>>  	{ DRM_MODE_COLOR_RANGE_FULL, "Full" },
+>>>> @@ -1243,6 +1249,13 @@ static const struct drm_prop_enum_list dp_colorspaces[] = {
+>>>>   *	drm_connector_attach_active_color_format_property() to install this
+>>>>   *	property.
+>>>>   *
+>>>> + * Broadcast RGB:
+>>>> + *	This property is used by userspace to change the used color range. When
+>>>> + *	used the driver will use the selected range if valid for the current
+>>>> + *	color format. Drivers to use the function
+>>>> + *	drm_connector_attach_preferred_color_format_property() to create and
+>>>> + *	attach the property to the connector during initialization.  
+>>> An important detail to document here is: does userspace need to
+>>> take care that pixel data at the connector will already match the set
+>>> range, or will the driver program the hardware to produce the set range?  
+>> Since until now, the userspace didn't even know for sure if RGB or YCbCr and therefore which full/limited format was
+>> used I guess it's all kernel space conversion.
+>>> If the former, then I'm afraid the preference/active property pair
+>>> design does not work. Userspace needs to make sure the content is in
+>>> the right range, so the driver cannot second-guess that afterwards.
+>>>
+>>> If the latter, then what does the driver assume about color range just
+>>> before the automatic conversion to the final color range, and does the
+>>> range conversion happen as the final step in the color pipeline?
+>>>
+>>> If I remember the discussion about Intel right, then the driver does
+>>> the latter and assume that userspace programs KMS to always produce
+>>> full range pixels. There is no provision for userspace to produce
+>>> limited range pixels, IIRC.  
+>> I think I remember this too from an answer to one of the revisions of this patchset.
+> As long as you keep the old KMS property as is, just moving code so it
+> is used by more drivers, this is fine and one can't do otherwise anyway.
+>
+> (The rest of this email is merely pondering the future, so not about
+> this patch in particular.)
+>
+>
+> But if we had a new, more general property for the range reported to
+> monitors via infoframes, then it would be worth to re-visit the design.
+> The HDR properties only set the infoframe and expect userspace to make
+> sure that the pixels actually correspond to what the infoframes tell
+> the monitor. One can't do HDR tone mapping automatically in the kernel,
+> so in that sense the HDR property behaviour is obvious. But which
+> behaviour would fit range property or others better, I'm not sure.
+>
+> Generally there seems to be two approaches to designing KMS properties:
+>
+> - Let userspace describe what data it has and what data should be sent
+>   to a monitor, and let the kernel driver magically come up with a
+>   conversion.
+>
+> - Only userspace understands how the pixel data is encoded, and
+>   programs the transformations (DEGAMMA/CTM/GAMMA etc.) such, that the
+>   result is what a monitor expects based on e.g. infoframes.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Why not both?
 
-New smatch warnings:
-net/sunrpc/xprtrdma/frwr_ops.c:647 frwr_unmap_async() error: potentially dereferencing uninitialized 'last'.
+This patchset is thought to control what's happening "on the cable", so if the input data is in a different format, the
+kernel has to convert it.
 
-Old smatch warnings:
-net/sunrpc/xprtrdma/frwr_ops.c:546 frwr_unmap_sync() error: potentially dereferencing uninitialized 'last'.
+Maybe in the future there could be an additional set of "input-" properties. aka "input bpc", "input color format", and
+"input color range". With an additional constraint that if "input-" property == "active-" property the kernel is not
+allowed to do any conversion regarding this aspect, giving userspace full control if wanted.
 
-vim +/last +647 net/sunrpc/xprtrdma/frwr_ops.c
-
-d8099feda4833b Chuck Lever 2019-06-19  608  void frwr_unmap_async(struct rpcrdma_xprt *r_xprt, struct rpcrdma_req *req)
-d8099feda4833b Chuck Lever 2019-06-19  609  {
-d8099feda4833b Chuck Lever 2019-06-19  610  	struct ib_send_wr *first, *last, **prev;
-5ecef9c8436695 Chuck Lever 2020-11-09  611  	struct rpcrdma_ep *ep = r_xprt->rx_ep;
-d8099feda4833b Chuck Lever 2019-06-19  612  	struct rpcrdma_frwr *frwr;
-d8099feda4833b Chuck Lever 2019-06-19  613  	struct rpcrdma_mr *mr;
-d8099feda4833b Chuck Lever 2019-06-19  614  	int rc;
-d8099feda4833b Chuck Lever 2019-06-19  615  
-d8099feda4833b Chuck Lever 2019-06-19  616  	/* Chain the LOCAL_INV Work Requests and post them with
-d8099feda4833b Chuck Lever 2019-06-19  617  	 * a single ib_post_send() call.
-d8099feda4833b Chuck Lever 2019-06-19  618  	 */
-d8099feda4833b Chuck Lever 2019-06-19  619  	frwr = NULL;
-d8099feda4833b Chuck Lever 2019-06-19  620  	prev = &first;
-265a38d4611360 Chuck Lever 2019-08-19  621  	while ((mr = rpcrdma_mr_pop(&req->rl_registered))) {
-
-Is it possible for the ->rl_registered list to be empty?  If not, then
-just ignore this email.
-
-d8099feda4833b Chuck Lever 2019-06-19  622  
-d8099feda4833b Chuck Lever 2019-06-19  623  		trace_xprtrdma_mr_localinv(mr);
-d8099feda4833b Chuck Lever 2019-06-19  624  		r_xprt->rx_stats.local_inv_needed++;
-d8099feda4833b Chuck Lever 2019-06-19  625  
-d8099feda4833b Chuck Lever 2019-06-19  626  		frwr = &mr->frwr;
-d8099feda4833b Chuck Lever 2019-06-19  627  		last = &frwr->fr_invwr;
-d8099feda4833b Chuck Lever 2019-06-19  628  		last->next = NULL;
-e10fa96d347488 Chuck Lever 2021-04-19  629  		last->wr_cqe = &mr->mr_cqe;
-d8099feda4833b Chuck Lever 2019-06-19  630  		last->sg_list = NULL;
-d8099feda4833b Chuck Lever 2019-06-19  631  		last->num_sge = 0;
-d8099feda4833b Chuck Lever 2019-06-19  632  		last->opcode = IB_WR_LOCAL_INV;
-d8099feda4833b Chuck Lever 2019-06-19  633  		last->send_flags = IB_SEND_SIGNALED;
-d8099feda4833b Chuck Lever 2019-06-19  634  		last->ex.invalidate_rkey = mr->mr_handle;
-d8099feda4833b Chuck Lever 2019-06-19  635  
-e10fa96d347488 Chuck Lever 2021-04-19  636  		last->wr_cqe->done = frwr_wc_localinv;
-e10fa96d347488 Chuck Lever 2021-04-19  637  
-d8099feda4833b Chuck Lever 2019-06-19  638  		*prev = last;
-d8099feda4833b Chuck Lever 2019-06-19  639  		prev = &last->next;
-d8099feda4833b Chuck Lever 2019-06-19  640  	}
-d8099feda4833b Chuck Lever 2019-06-19  641  
-d8099feda4833b Chuck Lever 2019-06-19  642  	/* Strong send queue ordering guarantees that when the
-d8099feda4833b Chuck Lever 2019-06-19  643  	 * last WR in the chain completes, all WRs in the chain
-d8099feda4833b Chuck Lever 2019-06-19  644  	 * are complete. The last completion will wake up the
-d8099feda4833b Chuck Lever 2019-06-19  645  	 * RPC waiter.
-d8099feda4833b Chuck Lever 2019-06-19  646  	 */
-e10fa96d347488 Chuck Lever 2021-04-19 @647  	last->wr_cqe->done = frwr_wc_localinv_done;
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
+>
+> Doing the former requires policy in the kernel. If there is a
+> specification that uniquely defines what the conversion is, this is
+> good. But if not or if there are artistic decisions to be made, like
+> with HDR tone mapping, then it doesn't work.
+>
+> OTOH, the former approach allows the driver to use any and all hardware
+> features it has to realize the conversion, perhaps taking advantage of
+> even fixed-function hardware blocks. The latter approach is much harder
+> to map to hardware features.
+>
+> This dilemma has been discussed in length in
+> https://lists.freedesktop.org/archives/dri-devel/2021-June/311689.html
+>
+>
+> Thanks,
+> pq
