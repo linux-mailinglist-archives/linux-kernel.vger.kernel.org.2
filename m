@@ -2,101 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3683B1A6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4243B1A72
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbhFWMsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhFWMsP (ORCPT
+        id S230312AbhFWMtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:49:10 -0400
+Received: from mail-wr1-f44.google.com ([209.85.221.44]:46054 "EHLO
+        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230019AbhFWMtJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:48:15 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03507C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:45:57 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id a2so1685685pgi.6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:45:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=6XzMiumB4ycSFXZaaWbXgxSbMB9qisO++ZHH1gQyycU=;
-        b=Jz6P4EU9EXNmpLjKYwCZp9M2cd+kZ72FWsG1SwC5ormTx4R3EYJVD9L6rfjDOrlTH7
-         4XKjCObQUEpmP6HigR6L61a72M+i28bHpuVm85mRBQ/sYetlCXmjX+kEZk+Nvj2DHLJv
-         Du4JvqTe+w9LUlnTtzIUcBYpFEBiVHg5iT1B8PMrDBDGAvny7+dnGz5U5LLHFFWbPI+a
-         8/7RbzVFxFLENUZmzYBvhUiDSuQjOS1Bl1MWiU7jFDu6oxB2x+5bcrtvjWqT2Y+ANkTN
-         vl9S5ZFAOd4rjOcvfR8LThbWmLCur6me4BD16O8B9nJ4dTrAWFK67RmKKA10/Xk7wSVs
-         XT5A==
+        Wed, 23 Jun 2021 08:49:09 -0400
+Received: by mail-wr1-f44.google.com with SMTP id j2so2480783wrs.12;
+        Wed, 23 Jun 2021 05:46:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=6XzMiumB4ycSFXZaaWbXgxSbMB9qisO++ZHH1gQyycU=;
-        b=DKNZcxaYb9EcGRviwGCS8SNvjuRq0lgf05aBmPIXt6S0tFqjceq5b1xf4PsK0lUh25
-         APlVCjFdqnja3Q+WUHNuxQgM4gsHSTVG8FcI7jv6OybFbHryvHDPItugLJyqS5qyle8Q
-         xihS7mV5t2sfkHnnhjV6tT+P0pMj2M5+Yne3FKeFayUGx035ThCiDk0CHa2TXYfgILCW
-         s1vy+caFigPG3TNdfxYnG5bGj+VVYWEqP6FYbh2e9Zrvc52uwgQE5qy6SydwBWdI9jFz
-         51506ltMk0j13epe9JFEV6BC6APybxxi1rOsqfsTmd+Lfo1cvwPW9/frb/TcG9GFYD2N
-         noLw==
-X-Gm-Message-State: AOAM531/P1DXjE8t8qDU0rKSCoLGDPL+9igeTq5uo4rxMvKem46XwVwZ
-        O94nYQu5mEAg9QFS+kF1ZnQwcDgJ/7b+bW8Y
-X-Google-Smtp-Source: ABdhPJzIJqgPpZPk64KsRvH0sKjyRMzsLaT0sQhf1I1v7XTqCKQ3/5sslagC9RJi5Iu+e/HEVhgbew==
-X-Received: by 2002:a63:e309:: with SMTP id f9mr3719049pgh.443.1624452357089;
-        Wed, 23 Jun 2021 05:45:57 -0700 (PDT)
-Received: from [192.168.1.153] (163.128.178.217.shared.user.transix.jp. [217.178.128.163])
-        by smtp.gmail.com with ESMTPSA id j19sm22777753pgm.44.2021.06.23.05.45.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 05:45:56 -0700 (PDT)
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Sagar Shrikant Kadam <sagar.kadam@sifive.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
-Subject: [RFC PATCH 0/1] Adding jh7100 SoC to defconfig
-Message-ID: <f22f6d7e-97ab-85db-5448-c2bcef0ea0e7@gmail.com>
-Date:   Wed, 23 Jun 2021 21:45:52 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version;
+        bh=XOmIPJRzFakO/w4XtkertpgFPMyFgjY86X1TO7dNDw0=;
+        b=pL3LHzVCpLmFfrrj3Aeqvm/N6M24GFlC/mHho83Fpto3pl4/CYKNK4wrRWgRnM/UFF
+         oQCuEv6rhoNlI9kuONdfEo/UEL0wt6KEBvfskhufBm6m1fZitL/eSgU/KhpMNphbW5Ra
+         sehYr/MeyortaeQytuKrW6a45jvNC5zhTS8WebQ0Ix/oilXWsDrhgx4BKBMI4KdM7tNj
+         gwhtf31ab6Jm5jaPMOkNzRgqkhXHxQ0xrE7vQA6Q3WzMJN5nMZqCL5hRnLdZ9EQspzsg
+         k4vBrmLY5GyFMfDD58ToVxz/7HJRhOLYUcDCCPi5DZyqRQdDSLgA3nxQVhNU5RYS6rd3
+         ZsVQ==
+X-Gm-Message-State: AOAM530LN1Y6OIji1K3bi3LBIfRyZEEkdy6oPC/Uie7UF2nTozJ1SKKP
+        /7kl7bgATUcOy27tUpWYSzU=
+X-Google-Smtp-Source: ABdhPJxx8aaV8qjN7hGJFoqGJB5GJgItepkdKJ0B8XDDzEJkL3WD1H4tDQdxmiclFkDQtwxCuXg02g==
+X-Received: by 2002:a05:6000:8b:: with SMTP id m11mr11075087wrx.22.1624452410585;
+        Wed, 23 Jun 2021 05:46:50 -0700 (PDT)
+Received: from localhost ([137.220.125.106])
+        by smtp.gmail.com with ESMTPSA id x1sm2971082wrv.49.2021.06.23.05.46.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 05:46:49 -0700 (PDT)
+Message-ID: <aa0ed29d1d15d06fc125bee1af0c40425bd5c6f4.camel@debian.org>
+Subject: Re: [PATCH v3 0/6] block: add a sequence number to disks
+From:   Luca Boccassi <bluca@debian.org>
+To:     Hannes Reinecke <hare@suse.de>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org,
+        Lennart Poettering <lennart@poettering.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tejun Heo <tj@kernel.org>,
+        Javier =?ISO-8859-1?Q?Gonz=E1lez?= <javier@javigon.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        JeffleXu <jefflexu@linux.alibaba.com>
+Date:   Wed, 23 Jun 2021 13:46:48 +0100
+In-Reply-To: <bfdd6f56-ce2b-ef74-27b1-83b922e5f7d9@suse.de>
+References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
+         <bfdd6f56-ce2b-ef74-27b1-83b922e5f7d9@suse.de>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-siui0wSAomKlfQSo0RJc"
+User-Agent: Evolution 3.30.5-1.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Would like to have comments for adding jh7100 SoC to defconfig.
+--=-siui0wSAomKlfQSo0RJc
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-To make the upstream friendly, try to add as minimum as possible in
-arch/riscv/configs/defconfig required for beaglev-beta against the
-upstream defconfig. I might have added too much configs.
+On Wed, 2021-06-23 at 14:03 +0200, Hannes Reinecke wrote:
+> On 6/23/21 12:58 PM, Matteo Croce wrote:
+> > From: Matteo Croce <mcroce@microsoft.com>
+> >=20
+> > With this series a monotonically increasing number is added to disks,
+> > precisely in the genhd struct, and it's exported in sysfs and uevent.
+> >=20
+> > This helps the userspace correlate events for devices that reuse the
+> > same device, like loop.
+> >=20
+> I'm failing to see the point here.
+> Apparently you are assuming that there is a userspace tool tracking=20
+> events, and has a need to correlate events related to different=20
+> instances of the disk.
+> But if you have an userspace application tracking events, why can't the=
+=20
+> same application track the 'add' and 'remove' events to track the=20
+> lifetime of the devices, and implement its own numbering based on that?
+>=20
+> Why do we need to burden the kernel with this?
+>=20
+> Cheers,
+>=20
+> Hannes
 
-Then the distro vendors could use:
-make defconfig beablev-fedora.config
-or
-make defconfig beablev-debian.config
+Hi,
 
-while distro vendors keeping beablev-fedora.config and
-beablev-debian.config in their own repositories to make one binary kernel
-which boots for all riscv boards.
+It is not an assumption, such tool does exist, and manually tracking
+does not work because of the impossibility of reliably correlating
+events to devices (we've tried, again and again and again), which is
+the purpose of this series - to solve this long standing issue, which
+has been causing problems both in testing and production for a long
+time now, despite our best efforts to add workaround after workaround.
 
-Probably, it is not good practice to add a different defconfig file under
-arch/riscv/configs/ when each new riscv board comes out.
+For more info please see the discussion on the v1:
 
-Akira Tsukamoto (1):
-  config: Enable jh7100 SoC
+https://lore.kernel.org/linux-fsdevel/20210315201331.GA2577561@casper.infra=
+dead.org/t/#m5b03e48013de14b4a080c90afdc4a8b8c94c30d4
 
- arch/riscv/configs/defconfig | 105 +++++++++++++++++++++++++++++++++++
- 1 file changed, 105 insertions(+)
+and the bug linked in the cover letter:
 
--- 
-2.17.1
+https://github.com/systemd/systemd/issues/17469#issuecomment-762919781
 
+--=20
+Kind regards,
+Luca Boccassi
+
+--=-siui0wSAomKlfQSo0RJc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEErCSqx93EIPGOymuRKGv37813JB4FAmDTLTgACgkQKGv37813
+JB6A6Q//Z3SDBBRi6Ukl05ygOgOcNyIVCHNpxCzx+wViA4Q7RUCXnc7Q+oQwaib4
+sz7IGa0rauYCgdr1y1PF5VAqqqxZpB7iWt+qDekOY5E0q+GQfjAuKJclS/C1J4JT
+pXhvELaWFISS+OhS1HhETcEzxXBQ9htOUjKMeilFKPetv5NPZTbvITK5vtIu+Toh
++wT1OW0WU2OE1oIALmTgouqHyrhPjgVPS1oL32E7yYmsuTbbN4GrJP57NkLKx5xZ
+oF718/1sgwXeGMuk53GQ1ntjGfze4E4eBPJxuVXsJpSLOSiW0gSAK65ZcGP03C4G
+m6bcMWFxLCSlWpZ+diGgJgJuygvglv0sU2WVY+S0gifrZXSwm/Op8N38XorZFQ/L
+5dYO+DkbyhSul1rPfG2W7OW7YYze/Xg+Gl1qqoy/vcc4Zfl0uJyxRuPHtsXd0AQs
+kpu4jtuY5BUmoM+SoULx9Bm+DpvgNbgR6kOLHBWrBvt87rppJlReFhBS0jTG85H4
+uwl8EzLCNePGRij/UzmLjTdblJSxiOlpws55A1GgGELp2sjMlyXmo5TkS97F7I70
+mK/LjFaiK3mSoE9Yl6xoj2b4PSf67PNDxCl7DGsLGkXk13NePGLcfynO8LkXUZwH
+Eas6LnpxQeuovYdmxx0ZHYJ3LoLPGwAWRdprWvcPu87hOTIs+Do=
+=z3th
+-----END PGP SIGNATURE-----
+
+--=-siui0wSAomKlfQSo0RJc--
