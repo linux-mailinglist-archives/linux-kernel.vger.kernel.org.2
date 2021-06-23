@@ -2,131 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73203B20A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410D13B20A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbhFWSxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 14:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34082 "EHLO
+        id S230062AbhFWSxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 14:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFWSxE (ORCPT
+        with ESMTP id S229794AbhFWSxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Jun 2021 14:53:04 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719A1C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:50:46 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id t9so2541935pgn.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:50:46 -0700 (PDT)
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C889C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:50:47 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id bj15so7752187qkb.11
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:50:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ir9jY3nBe5iS3sggziqw4z6Vtt5ZPYlyAkE3Eq8Re1w=;
-        b=Teg+shfiHdgmBiXQ/OBYwrl4Fmbf5gjlvU8VtroATqbWuwqWiGSyqG8afpfUeM+40E
-         Gz2q5WHQAgY+tVj6xLTPC60S1LvckR/JcRY5Kmp9KzHKoiuQ2s5l6jCI/BOxQiXvqn8V
-         tWS+S7+VujtLyuhP5Pg344KpfdowpUB9Rw6ecJNSYwtdQ4S/88QMZduV817RoNX9Rj22
-         P/FFM8VghAqHklAxTnUpqD8+mBIiFEjFVvvjjZTqbUNBCeN4Samd7LGc5chMaIydGo0K
-         sNf9fFXjRG4lm/iTXw9H9yxmr4jS0/iVwX2kHDtPjME9w6OL3I7vEFv8VfP0O+kAXBld
-         OdmA==
+        bh=A9I072mZJre1TS+IQKbZNgSu5AaMK7P2E0lmk7a57z4=;
+        b=b5e3Vs0J8hbfUScY+Wtfo2QnoFw5zQRvSxFua4X+zv6sZmqniXxjtckK2oI0DJ0jKp
+         +FpDq4XgR5FvYz5KhFDvESo6/vvn5bGvgGZWSgiYdS8/PfbLxpaqI3o9lhVUAZxmPK5T
+         nDlzhXlXLqlvJVTPQVPebRcUOY8aDMfSl2n44EWIYFP7pJbCLgzg7CgH7naHE97q6TC2
+         fZXUfMee0Dfy9rvfoVtazaR6R+Q7ESYAYIdPD2TcTnMWbmqWi3fqt48BxyEAqBINSR6Y
+         /GKjFQQmTzpnkbtvp/1Ez+q16SM92SVKit9WzRj/wJHNz3K/lD3bYob3W0EWe1zfdvXM
+         mlxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ir9jY3nBe5iS3sggziqw4z6Vtt5ZPYlyAkE3Eq8Re1w=;
-        b=RIeynonBUolkxWyIDjqWrtfz7ryrFC/emriv5v5aU0GrTAOzJ6fdcJfPz+C+iMlSf6
-         YBOoqMrr6Q+AW0zbygDr621b7XasarcCs5hsVB8qANbt7wymBzkcFprbSH2HxXzyiHpu
-         waL+g+N4wvWfMjGoABNYZ6rKhf1AFRKPQj1VLqvkEkJdX1AcGSoY72j7nyrHTPLWkgKE
-         ilsQphY69U10RJMFY5K+Hm6kbLhtkGR0ogTCDSD/qPWsDy+6pzprz+Xkk91hHaoePsZG
-         mDav4PlknMs5E2qcGCKghPXS6ftGkRzgSrKVo6KEvRj3nBRsl6h8wnSPkWU7sXNDgfcO
-         /lhg==
-X-Gm-Message-State: AOAM532q+ozTmzA+bldqbUx/4Nsi6FPTtckikrkw5njZGapYus7G3s3c
-        czMnXcUPGO7CfwXr8f9QJ+cLiQ==
-X-Google-Smtp-Source: ABdhPJxCZMfCsSZ78Yj+voU+e+Y4Ki+GbrOGOAxXaLbA72duG/o6cTs5ZO7Bof7AHV928WS8Ll9sKQ==
-X-Received: by 2002:a05:6a00:d4d:b029:307:78ef:d767 with SMTP id n13-20020a056a000d4db029030778efd767mr1115704pfv.12.1624474245873;
-        Wed, 23 Jun 2021 11:50:45 -0700 (PDT)
-Received: from x1 ([174.127.163.79])
-        by smtp.gmail.com with ESMTPSA id s4sm309782pjn.31.2021.06.23.11.50.44
+        bh=A9I072mZJre1TS+IQKbZNgSu5AaMK7P2E0lmk7a57z4=;
+        b=GCBSHXL258ldut8Ky5oT1MN4Q121dt3ed4cCBsw0NSDxgRiLUVkYRzuiyYq/C9U8sh
+         C5B6KlVW6KpdqiQR34DbFE5Z5uHYq/AWvdig/jhoOTcykUriLDlXhWllUSwlMIc8a48q
+         U0Ki670DVmMP/nj+eUdSgU0sg+FCnmilk8cfEtqu4egei1j1wG4ZU4dRiu0voFsaO3AH
+         e8wIt3Z1x8n7tSnsTx3vm3ONEbgT7nQa/3+ldGuzstUfU7m45uabUAnMKodpEj3E0k4K
+         1jPONm8yDUPm8/T+4PP8+Vsb0rNHj/f/XXmjgtkC7RQXsVQa3vUZ/lX7TqUxbXSPsTmF
+         gFSQ==
+X-Gm-Message-State: AOAM531RoOlegCYCY5TbmR94P2pagTJQTKAoW9OVwyrijLSyUvm0a9yp
+        JL+BJ77kGMQ2tNzHoeZvQ9c26Q==
+X-Google-Smtp-Source: ABdhPJy26aLIQNDGYzv9yUWJkE1S7Ng46xlnu9FBhglctMci0BMRl57bB82kjnJJ4TuniXpuKS76ig==
+X-Received: by 2002:a37:5cc6:: with SMTP id q189mr1519218qkb.305.1624474246361;
+        Wed, 23 Jun 2021 11:50:46 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id y18sm503840qtx.6.2021.06.23.11.50.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 23 Jun 2021 11:50:45 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 11:50:43 -0700
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Akira Tsukamoto <akira.tsukamoto@gmail.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Sagar Shrikant Kadam <sagar.kadam@sifive.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/1] Adding jh7100 SoC to defconfig
-Message-ID: <20210623185043.GA493015@x1>
-References: <f22f6d7e-97ab-85db-5448-c2bcef0ea0e7@gmail.com>
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lw7xV-00Blq0-8k; Wed, 23 Jun 2021 15:50:45 -0300
+Date:   Wed, 23 Jun 2021 15:50:45 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Tomer Tayar <ttayar@habana.ai>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
+ FD for DMA-BUF
+Message-ID: <20210623185045.GY1096940@ziepe.ca>
+References: <20210622120142.GL1096940@ziepe.ca>
+ <d497b0a2-897e-adff-295c-cf0f4ff93cb4@amd.com>
+ <20210622152343.GO1096940@ziepe.ca>
+ <3fabe8b7-7174-bf49-5ffe-26db30968a27@amd.com>
+ <20210622154027.GS1096940@ziepe.ca>
+ <09df4a03-d99c-3949-05b2-8b49c71a109e@amd.com>
+ <20210622160538.GT1096940@ziepe.ca>
+ <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com>
+ <20210623182435.GX1096940@ziepe.ca>
+ <CAFCwf111O0_YB_tixzEUmaKpGAHMNvMaOes2AfMD4x68Am4Yyg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f22f6d7e-97ab-85db-5448-c2bcef0ea0e7@gmail.com>
+In-Reply-To: <CAFCwf111O0_YB_tixzEUmaKpGAHMNvMaOes2AfMD4x68Am4Yyg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 09:45:52PM +0900, Akira Tsukamoto wrote:
-> 
-> Would like to have comments for adding jh7100 SoC to defconfig.
+On Wed, Jun 23, 2021 at 09:43:04PM +0300, Oded Gabbay wrote:
 
-Thanks for preparing this defconfig.
+> Can you please explain why it is so important to (allow) access them
+> through the CPU ?
 
-Let's refer to the SoC as StarFive JH7100 SoC [1] which is used in the
-BeagleV Starlight JH7100 board [2].
+It is not so much important, as it reflects significant design choices
+that are already tightly baked into alot of our stacks. 
 
-> To make the upstream friendly, try to add as minimum as possible in
-> arch/riscv/configs/defconfig required for beaglev-beta against the
+A SGL is CPU accessible by design - that is baked into this thing and
+places all over the place assume it. Even in RDMA we have
+RXE/SWI/HFI1/qib that might want to use the CPU side (grep for sg_page
+to see)
 
-Please use "BeagleV Starlight JH7100" instead of beaglev-beta.
+So, the thing at the top of the stack - in this case the gaudi driver
+- simply can't assume what the rest of the stack is going to do and
+omit the CPU side. It breaks everything.
 
-> upstream defconfig. I might have added too much configs.
-> 
-> Then the distro vendors could use:
-> make defconfig beablev-fedora.config
-> or
-> make defconfig beablev-debian.config
-> 
-> while distro vendors keeping beablev-fedora.config and
-> beablev-debian.config in their own repositories to make one binary kernel
-> which boots for all riscv boards.
+Logan's patch series is the most fully developed way out of this
+predicament so far.
 
-Note about naming, BeagleV refers to any RISC-V board produced by
-BeagleBoard.org and likely in the future will include other SoC
-families.
+> The whole purpose is that the other device accesses my device,
+> bypassing the CPU.
 
-> 
-> Probably, it is not good practice to add a different defconfig file under
-> arch/riscv/configs/ when each new riscv board comes out.
+Sure, but you don't know that will happen, or if it is even possible
+in any given system configuration. The purpose is to allow for that
+optimization when possible, not exclude CPU based approaches.
 
-We currently have:
-
-  defconfig
-  nommu_k210_defconfig
-  nommu_k210_sdcard_defconfig
-  nommu_virt_defconfig
-  rv32_defconfig
-
-It seems like 'defconfig' supports the SiFive Unleashed board which
-makes sense as it was the only board for a longtime:
-
-  $ git grep -i sifive
-  defconfig:CONFIG_SOC_SIFIVE=y
-  defconfig:CONFIG_SPI_SIFIVE=y
-  defconfig:CONFIG_GPIO_SIFIVE=y
-
-I suppose the kconfig options needed for BeagleV Starlight JH7100 could
-be added to 'defconfig' as long as there were no incompatibilities.  I
-assume the k210 versions were added because that is a rather odd SoC
-that has a non-supported MMU and thus runs in m-mode.
-
-Thanks,
-Drew
-
-[1] https://github.com/starfive-tech/beaglev_doc/
-[2] https://github.com/beagleboard/beaglev-starlight
+Jason
