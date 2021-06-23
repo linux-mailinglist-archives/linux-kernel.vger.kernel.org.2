@@ -2,176 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3885D3B190B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 13:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B09AD3B190F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 13:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhFWLhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 07:37:40 -0400
-Received: from mga18.intel.com ([134.134.136.126]:58136 "EHLO mga18.intel.com"
+        id S230222AbhFWLiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 07:38:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230031AbhFWLhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 07:37:38 -0400
-IronPort-SDR: Xfb2wf/lplcc9oxDmwSKKXy+HZxjZQtyUNphaqKYWtO1GQwPCQV8NxnUeNG5UoqkgkULxQ0fiv
- FLV+TroGuKQA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="194548918"
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="194548918"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 04:35:20 -0700
-IronPort-SDR: hg4K3zgdHKQhKz6mC7jGCYp6qWs6zsvZAN/rhbDKPU8QhhrC1uTytJrizgWSq61RwfNRb+nGWY
- BxtDqXKVWEoQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="453005582"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 23 Jun 2021 04:35:19 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lw1A6-0005uN-LX; Wed, 23 Jun 2021 11:35:18 +0000
-Date:   Wed, 23 Jun 2021 19:35:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:for-next/kspp] BUILD SUCCESS
- a73bbfba991f8bb5d1814affcf1f7642ca0cdd35
-Message-ID: <60d31c6f.szfq32JQhZ0r5Cx7%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230031AbhFWLiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 07:38:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC5E76102A;
+        Wed, 23 Jun 2021 11:35:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624448159;
+        bh=ULWB5KI+zjDyMD0EzoZpOHi/DdRro5AI6tgZ+h/zzr4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JFYjYfsPgBYnn1bWADVLquINtLQ7FoXgseSi7z3HTLd4K4CDj+iL8tSv/mQJrTaws
+         yKSow+w65tKtGKLQ8LrPzMS/TVpeS8CzW8TSpZkekpRaTvw4TdT/OVbDymMUJLES+4
+         s7Kwy6tcihIqEsuGy4wlGrZxVYKM9svzywvhaSRY=
+Date:   Wed, 23 Jun 2021 13:35:56 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     balbi@kernel.org, robh+dt@kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, frowand.list@gmail.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        jackp@codeaurora.org, fntoth@gmail.com,
+        heikki.krogerus@linux.intel.com, andy.shevchenko@gmail.com
+Subject: Re: [PATCH v10 2/6] usb: gadget: configfs: Check USB configuration
+ before adding
+Message-ID: <YNMcnISDv2e7bze1@kroah.com>
+References: <1623923899-16759-1-git-send-email-wcheng@codeaurora.org>
+ <1623923899-16759-3-git-send-email-wcheng@codeaurora.org>
+ <YMss5tFFBjokk1k6@kroah.com>
+ <012b0264-107a-5596-d73f-3a2fd20470cf@codeaurora.org>
+ <YNF9kv0kWAz6Pp00@kroah.com>
+ <afe0c718-1c16-1b20-4b0c-d8592a13af42@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <afe0c718-1c16-1b20-4b0c-d8592a13af42@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp
-branch HEAD: a73bbfba991f8bb5d1814affcf1f7642ca0cdd35  media: siano: Fix out-of-bounds warnings in smscore_load_firmware_family2()
+On Wed, Jun 23, 2021 at 02:38:55AM -0700, Wesley Cheng wrote:
+> 
+> 
+> On 6/21/2021 11:05 PM, Greg KH wrote:
+> > On Mon, Jun 21, 2021 at 10:27:09PM -0700, Wesley Cheng wrote:
+> >>
+> >>
+> >> On 6/17/2021 4:07 AM, Greg KH wrote:
+> >>> On Thu, Jun 17, 2021 at 02:58:15AM -0700, Wesley Cheng wrote:
+> >>>> Ensure that the USB gadget is able to support the configuration being
+> >>>> added based on the number of endpoints required from all interfaces.  This
+> >>>> is for accounting for any bandwidth or space limitations.
+> >>>>
+> >>>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+> >>>> ---
+> >>>>  drivers/usb/gadget/configfs.c | 22 ++++++++++++++++++++++
+> >>>>  1 file changed, 22 insertions(+)
+> >>>>
+> >>>> diff --git a/drivers/usb/gadget/configfs.c b/drivers/usb/gadget/configfs.c
+> >>>> index 15a607c..76b9983 100644
+> >>>> --- a/drivers/usb/gadget/configfs.c
+> >>>> +++ b/drivers/usb/gadget/configfs.c
+> >>>> @@ -1374,6 +1374,7 @@ static int configfs_composite_bind(struct usb_gadget *gadget,
+> >>>>  		struct usb_function *f;
+> >>>>  		struct usb_function *tmp;
+> >>>>  		struct gadget_config_name *cn;
+> >>>> +		unsigned long ep_map = 0;
+> >>>>  
+> >>>>  		if (gadget_is_otg(gadget))
+> >>>>  			c->descriptors = otg_desc;
+> >>>> @@ -1403,7 +1404,28 @@ static int configfs_composite_bind(struct usb_gadget *gadget,
+> >>>>  				list_add(&f->list, &cfg->func_list);
+> >>>>  				goto err_purge_funcs;
+> >>>>  			}
+> >>>> +			if (f->fs_descriptors) {
+> >>>> +				struct usb_descriptor_header **d;
+> >>>> +
+> >>>> +				d = f->fs_descriptors;
+> >>>> +				for (; *d; ++d) {
+> >>
+> >> Hi Greg,
+> >>
+> >> Thanks for the review and feedback.
+> >>
+> >>>
+> >>> With this check, there really is not a need to check for
+> >>> f->fs_descriptors above in the if statement, right?
+> >>>
+> >>
+> >> f->fs_descriptor will carry the table of descriptors that a particular
+> >> function driver has assigned to it.  The for loop here, will dereference
+> >> the individual descriptors within that descriptor array, so we need to
+> >> first ensure the descriptor array is present before traversing through
+> >> the individual entries/elements.
+> > 
+> > Ah, it's a dereference of an array element.  Subtle.  Tricky.  Messy :(
+> > 
+> >>>> +					struct usb_endpoint_descriptor *ep;
+> >>>> +					int addr;
+> >>>> +
+> >>>> +					if ((*d)->bDescriptorType != USB_DT_ENDPOINT)
+> >>>> +						continue;
+> >>>> +
+> >>>> +					ep = (struct usb_endpoint_descriptor *)*d;
+> >>>> +					addr = ((ep->bEndpointAddress & 0x80) >> 3) |
+> >>>> +						(ep->bEndpointAddress & 0x0f);
+> >>>
+> >>> Don't we have direction macros for this type of check?
+> >>>
+> >>
+> >> I don't believe we have a macro which would be able to convert the
+> >> bEndpointAddress field into the bit which needs to be set, assuming that
+> >> the 32bit ep_map has the lower 16bits carrying OUT EPs, and the upper
+> >> 16bits carrying the IN EPs.
+> 
+> Hi Greg,
+> 
+> > 
+> > We have macros to tell if an endpoint is IN or OUT, please use those.
+> > 
+> > And this "cram the whole thing into 64 bits" is not obvious at all.
+> > Just pass around the original pointer to the descriptors if someone
+> > wants to use it or not, don't make up yet-another-data-structure here
+> > for no good reason.  We aren't so memory constrained we need to pack
+> > stuff into bits here.
+> > 
+> 
+> Hmm ok, what I can do is to move this logic into the check_config()
+> callback itself, which is implemented by the UDC driver.  So now, the
+> DWC3 will have to do something similar to what is done here, ie loop the
+> EP descriptors for each function to determine the number of IN endpoints
+> being used.
 
-elapsed time: 757m
+We have common USB core functions for this, why can't you just use them?
 
-configs tested: 114
-configs skipped: 2
+Please do not take data that we already have in one format, and convert
+it to another one just for a single driver to consume.  That's
+pointless.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+thanks,
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                           h3600_defconfig
-powerpc                    klondike_defconfig
-arm                       imx_v6_v7_defconfig
-powerpc                      arches_defconfig
-arm                             rpc_defconfig
-arm                            lart_defconfig
-powerpc                        fsp2_defconfig
-sparc64                             defconfig
-mips                         mpc30x_defconfig
-arm                        multi_v7_defconfig
-powerpc                 mpc8315_rdb_defconfig
-nds32                            alldefconfig
-powerpc                       maple_defconfig
-arm                           corgi_defconfig
-arc                    vdk_hs38_smp_defconfig
-mips                   sb1250_swarm_defconfig
-powerpc                    sam440ep_defconfig
-sh                           se7705_defconfig
-powerpc               mpc834x_itxgp_defconfig
-mips                          malta_defconfig
-xtensa                           alldefconfig
-powerpc                      makalu_defconfig
-m68k                        mvme16x_defconfig
-arm                        realview_defconfig
-riscv                               defconfig
-mips                         bigsur_defconfig
-powerpc                      katmai_defconfig
-mips                        nlm_xlr_defconfig
-powerpc                     ppa8548_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210623
-x86_64               randconfig-a001-20210623
-x86_64               randconfig-a005-20210623
-x86_64               randconfig-a003-20210623
-x86_64               randconfig-a004-20210623
-x86_64               randconfig-a006-20210623
-i386                 randconfig-a001-20210622
-i386                 randconfig-a002-20210622
-i386                 randconfig-a003-20210622
-i386                 randconfig-a006-20210622
-i386                 randconfig-a005-20210622
-i386                 randconfig-a004-20210622
-x86_64               randconfig-a012-20210622
-x86_64               randconfig-a016-20210622
-x86_64               randconfig-a015-20210622
-x86_64               randconfig-a014-20210622
-x86_64               randconfig-a013-20210622
-x86_64               randconfig-a011-20210622
-i386                 randconfig-a011-20210622
-i386                 randconfig-a014-20210622
-i386                 randconfig-a013-20210622
-i386                 randconfig-a015-20210622
-i386                 randconfig-a012-20210622
-i386                 randconfig-a016-20210622
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210622
-x86_64               randconfig-b001-20210623
-x86_64               randconfig-a002-20210622
-x86_64               randconfig-a001-20210622
-x86_64               randconfig-a005-20210622
-x86_64               randconfig-a003-20210622
-x86_64               randconfig-a004-20210622
-x86_64               randconfig-a006-20210622
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+greg k-h
