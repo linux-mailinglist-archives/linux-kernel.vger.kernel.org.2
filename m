@@ -2,133 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9ACD3B1ADE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEC43B1AE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhFWNP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:15:58 -0400
-Received: from mail-wr1-f43.google.com ([209.85.221.43]:43682 "EHLO
-        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbhFWNPw (ORCPT
+        id S230513AbhFWNQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:16:08 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52954 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230206AbhFWNQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:15:52 -0400
-Received: by mail-wr1-f43.google.com with SMTP id a13so2589196wrf.10;
-        Wed, 23 Jun 2021 06:13:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version;
-        bh=6aAYleE/LhnzZ0Wq/X+zwnDBTwA+HUGZwD3I6d4qoTk=;
-        b=fhpAjaaGfa72r4otxDFn79NVgaAPX+79cdVPqgEQ9XXEheEy7Onv5qV6R7EHcH6Pbi
-         n4Psu32cJ/PuZkuTrDBMIWQ2aQHB8lQSoJr6FlAKze+3v8INQ9ZKAMI/zn4g7h1A2QIT
-         mEpf9vHSCkE3sM+Lemm2xE2oDbnBtfUUmePeHjezgOqyNCgKTpTIASnR0wKiRh7vwpCP
-         yDU/7oBNX3ayNV3ozc3Jvl3nrK10J3FhrdazPaxZ84y15uDcVN8QPPnRt9Bkp6ykilcF
-         +OosMJTwOuGCKw/vJQevkL189y+wgNY4sUds4qq+iJsfFBODBEjRcALGT7xJiWc8WvC1
-         YlKQ==
-X-Gm-Message-State: AOAM530aHqzKpdPGzOkT4IXnAfpNPY5qjksCJ9Azq3cHAdlFE+JuF4Q5
-        DIuod4y2d4CIaVYVHaTf3a4=
-X-Google-Smtp-Source: ABdhPJzy9a+URsFwwYb7Q3/kcbKTsWPhlFX7NG1Po9O5JEWl97JZ+AcsMcr6N0j7pUdmG6sWxAH26A==
-X-Received: by 2002:adf:db42:: with SMTP id f2mr11413828wrj.410.1624454008140;
-        Wed, 23 Jun 2021 06:13:28 -0700 (PDT)
-Received: from localhost ([137.220.125.106])
-        by smtp.gmail.com with ESMTPSA id o2sm2887007wrp.53.2021.06.23.06.13.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 06:13:27 -0700 (PDT)
-Message-ID: <bbd3d100ee997431b2905838575eb4bdec820ad3.camel@debian.org>
-Subject: Re: [PATCH v3 6/6] loop: increment sequence number
-From:   Luca Boccassi <bluca@debian.org>
-To:     Christoph Hellwig <hch@infradead.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        Lennart Poettering <lennart@poettering.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        Javier Gonz??lez <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>
-Date:   Wed, 23 Jun 2021 14:13:25 +0100
-In-Reply-To: <YNMhwLMr7DiNdqC/@infradead.org>
-References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
-         <20210623105858.6978-7-mcroce@linux.microsoft.com>
-         <YNMhwLMr7DiNdqC/@infradead.org>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-mxAzQuzzUw5nnkmWVfyT"
-User-Agent: Evolution 3.30.5-1.2 
+        Wed, 23 Jun 2021 09:16:07 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 15NDDg0Y022614
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Jun 2021 09:13:43 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 4420315C3CD6; Wed, 23 Jun 2021 09:13:42 -0400 (EDT)
+Date:   Wed, 23 Jun 2021 09:13:42 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Wang Jianchao <jianchao.wan9@gmail.com>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lishujin@kuaishou.com
+Subject: Re: [PATCH V2 1/7] ext4: remove the 'group' parameter of
+ ext4_trim_extent
+Message-ID: <YNMzhm2gIM2oQfjs@mit.edu>
+References: <164ffa3b-c4d5-6967-feba-b972995a6dfb@gmail.com>
+ <61eceb4c-6e5f-34d0-9317-a833d7c63b6f@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <61eceb4c-6e5f-34d0-9317-a833d7c63b6f@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jianchao, 
 
---=-mxAzQuzzUw5nnkmWVfyT
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+FYI, this patch series has confliects with these patches, which landed
+in 5.13-rc1:
 
-On Wed, 2021-06-23 at 12:57 +0100, Christoph Hellwig wrote:
-> On Wed, Jun 23, 2021 at 12:58:58PM +0200, Matteo Croce wrote:
-> > From: Matteo Croce <mcroce@microsoft.com>
-> >=20
-> > On a very loaded system, if there are many events queued up from multip=
-le
-> > attach/detach cycles, it's impossible to match them up with the
-> > LOOP_CONFIGURE or LOOP_SET_FD call, since we don't know where the posit=
-ion
-> > of our own association in the queue is[1].
-> > Not even an empty uevent queue is a reliable indication that we already
-> > received the uevent we were waiting for, since with multi-partition blo=
-ck
-> > devices each partition's event is queued asynchronously and might be
-> > delivered later.
-> >=20
-> > Increment the disk sequence number when setting or changing the backing
-> > file, so the userspace knows which backing file generated the event:
->=20
-> Instead of manually incrementing the sequence here, can we make loop
-> generate the DISK_EVENT_MEDIA_CHANGE event on a backing device (aka
-> media) change?
+196e402adf2e - ext4: improve cr 0 / cr 1 group scanning
+4b68f6df1059 - ext4: add MB_NUM_ORDERS macro
+a6c75eaf1103 - ext4: add mballoc stats proc file
+67d251860461 - ext4: drop s_mb_bal_lock and convert protected fields to atomic
 
-Hi,
+The conflicts were relatively minor, but the obvious fix-ups resulted
+in a large number of crashes caused by various stress tests, such as
+generic/068 and generic/204.  I'm currently investigating to see what
+I might have messed up when I tried applying these patches, as well as
+running your patch set applied against 5.12 to make sure the problems
+weren't introduced by the patch set itself.
 
-This was answered in the v1 thread:
-
-https://lore.kernel.org/linux-fsdevel/20210315201331.GA2577561@casper.infra=
-dead.org/t/#m8a677028572e826352cbb1e19d1b9c1f3b6bff4b
-
-The fundamental issue is that we'd be back at trying to correlate
-events to loopdev instances, which does not work reliably - hence this
-patch series. With the new ioctl, we can get the id immediately and
-without delay when we create the device, with no possible races. Then
-we can handle events reliably, as we can correlate correctly in all
-cases.
-
---=20
-Kind regards,
-Luca Boccassi
-
---=-mxAzQuzzUw5nnkmWVfyT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEErCSqx93EIPGOymuRKGv37813JB4FAmDTM3UACgkQKGv37813
-JB4iiBAAh8dDexmraGaO7SQsP46DlEyznJWYgdFAe5nHENVy+whET347gGEt3VeB
-GDJOIHZuZ9q/dNdnqBaXA3Hek8tSdOcyFUVuZ//WDs2w7SDe5DxACdAiHuTcflvG
-pyXvH1MDuxMa0wGCLXZ8qepsqq8mcZzL++jCszmGSCC/wSfHL9t4ALN0ggotUzdW
-EnCdQX7hbpnA+g1CQpdiEffoZzeqBWAijchJ81X8T2HyQzFGh3VTfU3JiszZzprt
-0C1QuMkcfGM+yjItwZlwfg9GTZ3DZXIHdmuFsjngoOn1cdK/VEra1nUk7fdre/PP
-J8fWQ8vgwnxkm/RUq0F6HYreyyVzm/+VIBflZhhQiIafLClnEPgLfcffwlkQ02aW
-fulLRbvLHQeP0WUWi7ciRNIB4ZaX8eCKx+nG9GEWUZzwNDrP0R925NkVe+sD5vId
-e427CftslZIVIy4GNGcwF/M4VbWdXr3kUrqOH+SWGxc2lMaje9U0JJQt12BobfKG
-3Theu+uDi0NqzvUSv6jqZBhyFij1GtJu4VAv4oTpo35N+O84HI5ml2PU7iLKvY0m
-3m3ahx45g/kAZ/ufC4c63QT1lFSpeCma2TagabQXynHnxGwOyERGdaDtb9fXlXNi
-QZR/guYk/TMKfX1N3KrHEAWRyWwWH4IbAnCBZxhr74fEEY02wJs=
-=sy9m
------END PGP SIGNATURE-----
-
---=-mxAzQuzzUw5nnkmWVfyT--
+					- Ted
