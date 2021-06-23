@@ -2,127 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764F83B22CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E6A3B22CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbhFWVxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 17:53:49 -0400
-Received: from mail-pg1-f178.google.com ([209.85.215.178]:46701 "EHLO
-        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbhFWVxs (ORCPT
+        id S229918AbhFWVzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 17:55:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43585 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229759AbhFWVzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 17:53:48 -0400
-Received: by mail-pg1-f178.google.com with SMTP id n12so2903121pgs.13;
-        Wed, 23 Jun 2021 14:51:29 -0700 (PDT)
+        Wed, 23 Jun 2021 17:55:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624485178;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ACXvqcTUp2VEtZUNNrQgxrgIuroJ2VQXJ3O6aUtKlgU=;
+        b=F78Cc5VZFou942qSWQvfm56iJ0y/fczdYwBSR8nONCzv3+F1/rwadmqCXhGtWLkRygk1wf
+        wUKOcrrlE9PGDynKh1F23pcC8sq+z7LN0PdJL8mzWu+wABoE6Fz9IzxpNDEOPAkutBSaV2
+        nrPuor9ybZCGmDOEo2Z03jS4CbHfyms=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-0Ir9RWMSMcyvAkXN8Qmw0w-1; Wed, 23 Jun 2021 17:52:56 -0400
+X-MC-Unique: 0Ir9RWMSMcyvAkXN8Qmw0w-1
+Received: by mail-ed1-f69.google.com with SMTP id g13-20020a056402090db02903935a4cb74fso2095977edz.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 14:52:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=fUmvPVX0pNQIpjmU77OymHRA3RCFDEaz2r2r5An26CU=;
-        b=WE6K3ixx9ZKwUBRJcQKnAa95TdW41cOfeK+YLoRT6RnOIX5jexaW5qy/167iBPFswF
-         Dhv9doeTcQyr8UnaDOifT2/2MfYbdRiIL/8ZQO2ghuC3uH96CKR62yczJLDP7Talbd0Z
-         KMvcOFNBD5wcMPufeXR7B6DVb1b8CMVg+tpva3x7vH9DkapMIvffssYtlvBujeIt88ga
-         HtF7sZG3r/4caFCgcgvlqePIs5S2X1TjNJYA/tQ6PHDgWtHf3TFaVV7s5nUC+T+SxdeS
-         lUGdRS0rl5QpHg26qAjlX8nprQ1uYnipKW3XWIGYifD1c0QSJo274UL0+wUVlsG/pW+q
-         BuaQ==
-X-Gm-Message-State: AOAM531pmzE1f2JKFMvjgaJKR/ShPX2coazIMH99uF0GIDUXSn5skFfx
-        cG6ncEy/N9Hoy5QZtSb5Bdue4Lr2Ye8rZw==
-X-Google-Smtp-Source: ABdhPJx42xVRRIB+q7a9sc4Jiiu5InUUuYgK3gVaUOxdUo3/xj+CTKhFqajB5H5q52kid44vcx2sgw==
-X-Received: by 2002:aa7:9381:0:b029:306:34f8:b5d5 with SMTP id t1-20020aa793810000b029030634f8b5d5mr1725330pfe.23.1624485088483;
-        Wed, 23 Jun 2021 14:51:28 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id o12sm74022pgq.83.2021.06.23.14.51.26
+        bh=ACXvqcTUp2VEtZUNNrQgxrgIuroJ2VQXJ3O6aUtKlgU=;
+        b=ar5QjYxNByKLMk0quGmpa4V7+1zIYPEQFOcGm2eLttbpOpXmbCLVOz7TBZYDG60cll
+         F+Z49yzNc6PZ4W8qWTZ7a7mUNu4Q963kTVm4ImNk0V81hfRcM2BNeAITjdkKCFCAOg2F
+         mdSOQEpOrFxEmKwtKA+LTGnkxUrDRelAVJhbWCmtuwCq0rmQ5nunyp35eyXfKHikXJQm
+         n0VYygFRvGMDf9YIFx+4Lj+SGBTPmKSdYJf8UQga4vlCisukZS/LimdTbL+0bkAn3qjP
+         D0Je9txg7z2PoIia3MllVkz7sL7xLYzFQl/4ym7szu9xFX7bbtYwKlyDaJBfCUeZdJ32
+         +O7A==
+X-Gm-Message-State: AOAM532I7FkEHgAq01HsOQPUAkx110Bev1yNMvCX1Iq+uMZ7LmwLop40
+        NHG5MDuNO+FqXuhiJChdugqXnpZuz832IXGeiElJKpEY6NK9Win7oYKe4rXeCj4n//SpSNiodJc
+        pixgKf+n2pCcH0ups1ALZWgwN
+X-Received: by 2002:a05:6402:1510:: with SMTP id f16mr2429314edw.377.1624485175447;
+        Wed, 23 Jun 2021 14:52:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyhxr240/C1q6g952wJj7Uq9npWIdFVmvprVIKXPcuEUAEomJqmW+y8uav6RIN3m1STWgJQnw==
+X-Received: by 2002:a05:6402:1510:: with SMTP id f16mr2429299edw.377.1624485175324;
+        Wed, 23 Jun 2021 14:52:55 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id d22sm391752ejj.47.2021.06.23.14.52.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 14:51:27 -0700 (PDT)
-Subject: Re: [PATCH v4 10/10] scsi: ufs: Apply more limitations to user access
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-12-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <89a3c8bf-bbfc-4a2a-73f0-a0db956fbf0e@acm.org>
-Date:   Wed, 23 Jun 2021 14:51:25 -0700
+        Wed, 23 Jun 2021 14:52:54 -0700 (PDT)
+Subject: Re: [PATCH 06/10] KVM: SVM: tweak warning about enabled AVIC on
+ nested entry
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Jim Mattson <jmattson@google.com>
+References: <20210623113002.111448-1-mlevitsk@redhat.com>
+ <20210623113002.111448-7-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <30c057c7-3c42-90cd-0beb-a4c7fdff39ea@redhat.com>
+Date:   Wed, 23 Jun 2021 23:52:53 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <1624433711-9339-12-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210623113002.111448-7-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 12:35 AM, Can Guo wrote:
-> +int ufshcd_get_user_access(struct ufs_hba *hba)
-> +__acquires(&hba->host_sem)
-> +{
-> +	down(&hba->host_sem);
-> +	if (!ufshcd_is_user_access_allowed(hba)) {
-> +		up(&hba->host_sem);
-> +		return -EBUSY;
-> +	}
-> +	if (ufshcd_rpm_get_sync(hba)) {
-> +		ufshcd_rpm_put_sync(hba);
-> +		up(&hba->host_sem);
-> +		return -EBUSY;
-> +	}
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(ufshcd_get_user_access);
-> +
-> +void ufshcd_put_user_access(struct ufs_hba *hba)
-> +__releases(&hba->host_sem)
-> +{
-> +	ufshcd_rpm_put_sync(hba);
-> +	up(&hba->host_sem);
-> +}
-> +EXPORT_SYMBOL_GPL(ufshcd_put_user_access);
+On 23/06/21 13:29, Maxim Levitsky wrote:
+> It is possible that AVIC was requested to be disabled but
+> not yet disabled, e.g if the nested entry is done right
+> after svm_vcpu_after_set_cpuid.
+> 
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>   arch/x86/kvm/svm/nested.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index dca20f949b63..253847f7d9aa 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -505,7 +505,7 @@ static void nested_vmcb02_prepare_control(struct vcpu_svm *svm)
+>   	 * Also covers avic_vapic_bar, avic_backing_page, avic_logical_id,
+>   	 * avic_physical_id.
+>   	 */
+> -	WARN_ON(svm->vmcb01.ptr->control.int_ctl & AVIC_ENABLE_MASK);
+> +	WARN_ON(kvm_apicv_activated(svm->vcpu.kvm));
+>   
+>   	/* Copied from vmcb01.  msrpm_base can be overwritten later.  */
+>   	svm->vmcb->control.nested_ctl = svm->vmcb01.ptr->control.nested_ctl;
+> 
 
-Please indent __acquires() and __releases() annotations by one tab as is
-done elsewhere in the kernel.
+Queued, thanks.
 
->  static inline bool ufshcd_is_user_access_allowed(struct ufs_hba *hba)
->  {
-> -	return !hba->shutting_down;
-> +	return !hba->shutting_down && !hba->is_sys_suspended &&
-> +		!hba->is_wlu_sys_suspended &&
-> +		hba->ufshcd_state == UFSHCD_STATE_OPERATIONAL;
->  }
+Paolo
 
-Is my understanding of the following correct?
-- ufshcd_is_user_access_allowed() is not in the hot path and hence
-  should not be inline.
-- The hba->shutting_down member variable is set from inside a shutdown
-  callback. Hence, the hba->shutting_down test can be left out since
-  no UFS sysfs attributes are accessed after shutdown has started.
-- During system suspend, user space software is paused before the device
-  driver freeze callbacks are invoked. Hence, the hba->is_sys_suspended
-  check can be left out.
-- If a LUN is runtime suspended, it should be resumed if accessed from
-  user space instead of failing user space accesses. In other words, the
-  hba->is_wlu_sys_suspended check seems inappropriate to me.
-- If the HBA is not in an operational state, user space accesses
-  should be blocked until error handling has finished. After error
-  handling has finished, the user space access should fail if and only
-  if error handling failed.
-
-Thanks,
-
-Bart.
