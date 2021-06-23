@@ -2,56 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134F43B1B57
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 896013B1B5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbhFWNmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:42:55 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:55668 "EHLO gloria.sntech.de"
+        id S230498AbhFWNoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:44:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230061AbhFWNmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:42:54 -0400
-Received: from [95.90.166.74] (helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lw37H-0001rM-12; Wed, 23 Jun 2021 15:40:31 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Alex Bee <knaerzche@gmail.com>, wens@kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: rockchip: Add sdmmc_ext for RK3328
-Date:   Wed, 23 Jun 2021 15:40:30 +0200
-Message-ID: <6327455.haC6HkEk0m@diego>
-In-Reply-To: <CAGb2v67K-BRhQ_a1yXtdPCX8T30FJPLojueJ2cvpXmGUskOLjA@mail.gmail.com>
-References: <20210623120001.164920-1-knaerzche@gmail.com> <CAGb2v67K-BRhQ_a1yXtdPCX8T30FJPLojueJ2cvpXmGUskOLjA@mail.gmail.com>
+        id S230061AbhFWNoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 09:44:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C12CF61076;
+        Wed, 23 Jun 2021 13:41:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624455712;
+        bh=ahAIQzGeIV5bSA+izmWMgZyiMYHJ37sy5dm5nG35WsY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q2fs3xfj1k5ez23+zg+C8YgfDHiuth2aI+p7UqiOQwWK2sSAqUXxaqnpFRxiPL+Vu
+         yrIX6Ii4gw63FUm9vIRgoLmKYmuxHFoLda7MqkRAbTnqhzc8v3FehQkcyzXhtl1rlC
+         Vbk1eDjCtC15gwnY0osT+KmneZmHey/NlU4Kb5RG3t5fnUlFwxQ9Ybknkx4qBd74jn
+         BLx467xAqWjRurwe/dOHVwf+46JGH25SbcJFgG0mKWWOQWaCgqezEYEFGPFPTNi4X1
+         zIvAmd7tAe+ovpIG9dYW6RilEpCxGJiBD3U9PxvlYX2rh7w/At/AArTHZ1JuWpbVh6
+         867z2BiQTgPkQ==
+Date:   Wed, 23 Jun 2021 16:41:50 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        tim.gardner@canonical.com, reinette.chatre@intel.com,
+        shuah@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] selftests/sgx: remove checks for file execute permissions
+Message-ID: <20210623134150.j4qjhcepmtohsxdo@kernel.org>
+References: <20210621190556.4B5DCBB1@viggo.jf.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621190556.4B5DCBB1@viggo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, 23. Juni 2021, 15:11:12 CEST schrieb Chen-Yu Tsai:
-> On Wed, Jun 23, 2021 at 8:00 PM Alex Bee <knaerzche@gmail.com> wrote:
-> >
-> > RK3328 SoC has a fourth mmc controller called SDMMC_EXT. Some
-> > boards have sdio wifi connected to it. In order to use it
-> > one would have to add the pinctrls from sdmmc0ext group which
-> > is done on board level.
-> >
-> > While at that also add the reset controls for the other mmc
-> > controllers.
+On Mon, Jun 21, 2021 at 12:05:56PM -0700, Dave Hansen wrote:
 > 
-> I recommend splitting this part into a separate patch, and
-> adding an appropriate "Fixes" tag to it.
+> The SGX selftests can fail for a bunch of non-obvious reasons
+> like 'noexec' permissions on /dev (which is the default *EVERYWHERE*
+> it seems).
+> 
+> A new test mistakenly also looked for +x permission on the
+> /dev/sgx_enclave.  File execute permissions really only apply to
+> the ability of execve() to work on a file, *NOT* on the ability
+> for an application to map the file with PROT_EXEC.  SGX needs to
+> mmap(PROT_EXEC), but doesn't need to execve() the device file.
+> 
+> Remove the check.
+> 
+> Fixes: 4284f7acb78b ("selftests/sgx: Improve error detection and messages")
+> Reported-by: Tim Gardner <tim.gardner@canonical.com>
+> Cc: Jarkko Sakkinen <jarkko@kernel.org>
+> Cc: Reinette Chatre <reinette.chatre@intel.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: linux-sgx@vger.kernel.org
+> Cc: linux-kselftest@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> 
+> ---
+> 
+>  b/tools/testing/selftests/sgx/load.c |   16 +++-------------
+>  1 file changed, 3 insertions(+), 13 deletions(-)
+> 
+> diff -puN tools/testing/selftests/sgx/load.c~sgx-no-file-exec tools/testing/selftests/sgx/load.c
+> --- a/tools/testing/selftests/sgx/load.c~sgx-no-file-exec	2021-06-21 11:48:25.226294281 -0700
+> +++ b/tools/testing/selftests/sgx/load.c	2021-06-21 12:03:28.023292029 -0700
+> @@ -150,16 +150,6 @@ bool encl_load(const char *path, struct
+>  		goto err;
+>  	}
+>  
+> -	/*
+> -	 * This just checks if the /dev file has these permission
+> -	 * bits set.  It does not check that the current user is
+> -	 * the owner or in the owning group.
+> -	 */
+> -	if (!(sb.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))) {
+> -		fprintf(stderr, "no execute permissions on device file %s\n", device_path);
+> -		goto err;
+> -	}
+> -
+>  	ptr = mmap(NULL, PAGE_SIZE, PROT_READ, MAP_SHARED, fd, 0);
+>  	if (ptr == (void *)-1) {
+>  		perror("mmap for read");
+> @@ -169,13 +159,13 @@ bool encl_load(const char *path, struct
+>  
+>  #define ERR_MSG \
+>  "mmap() succeeded for PROT_READ, but failed for PROT_EXEC.\n" \
+> -" Check that current user has execute permissions on %s and \n" \
+> -" that /dev does not have noexec set: mount | grep \"/dev .*noexec\"\n" \
+> +" Check that /dev does not have noexec set:\n" \
+> +" \tmount | grep \"/dev .*noexec\"\n" \
+>  " If so, remount it executable: mount -o remount,exec /dev\n\n"
+>  
+>  	ptr = mmap(NULL, PAGE_SIZE, PROT_EXEC, MAP_SHARED, fd, 0);
+>  	if (ptr == (void *)-1) {
+> -		fprintf(stderr, ERR_MSG, device_path);
+> +		fprintf(stderr, ERR_MSG);
+>  		goto err;
+>  	}
+>  	munmap(ptr, PAGE_SIZE);
+> _
+> 
 
-I'm with you on that. Adding the resets to the existing controllers
-should be a separate patch.
-
-Heiko
 
 
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+
+/Jarkko
