@@ -2,77 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318503B1F3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F343B1F41
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbhFWROG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 13:14:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27498 "EHLO
+        id S229945AbhFWROU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 13:14:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28430 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229688AbhFWROD (ORCPT
+        by vger.kernel.org with ESMTP id S229831AbhFWROT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 13:14:03 -0400
+        Wed, 23 Jun 2021 13:14:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624468305;
+        s=mimecast20190719; t=1624468321;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TggIJ4Xh1AX7l8pzYC0ZKngxne49cnRfXWPo8Jy9AUM=;
-        b=Cwq2QEzj1DTGlNh0SkgxJlb/ftGdZsfn6vTVSeDFvzH8uRr56i9hyQU8S5QdyIB0y9XL+T
-        Nin7xEXz5IYP+wgWTFG/Jj4jrctkqNNAcuLkHSikUaocntD19KNwUIEJ/r+2Udha8bb/0r
-        RvLh8Xi82nTsPBEu4ScJ4A1JS2inIWA=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-436-WxGAfyW8PFqynkHsIm99-w-1; Wed, 23 Jun 2021 13:11:43 -0400
-X-MC-Unique: WxGAfyW8PFqynkHsIm99-w-1
-Received: by mail-ed1-f71.google.com with SMTP id c9-20020a05640227c9b0290394ac48c2e4so1691717ede.11
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:11:43 -0700 (PDT)
+        bh=0HXfW00/ZiOTGZh8Pkhz1aco0hFAG0H/heQF1wGLg5k=;
+        b=QE91AAGXuqPdxGEQ3h8PqY/UT/vGDlb81P2ykNHVwt8Q+O9x1uweP26JG2SO3/lNeTWwHw
+        x4Sn8xJi6x5+/AgVd5/1+WyLrjF/faCwm3SsLRh4CKYi5Cyr1sPoS/taW2Wz/IcXmET1W+
+        aCGu8TfyqzXqlk4bEs/6TEVQ1G1ssOk=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-354-B6ki8joqP9-49oaxFao0Ug-1; Wed, 23 Jun 2021 13:12:00 -0400
+X-MC-Unique: B6ki8joqP9-49oaxFao0Ug-1
+Received: by mail-ej1-f69.google.com with SMTP id lt4-20020a170906fa84b0290481535542e3so1227996ejb.18
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:11:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=TggIJ4Xh1AX7l8pzYC0ZKngxne49cnRfXWPo8Jy9AUM=;
-        b=uc7QN9kubZ03a1ewDnoxTs4QhQPgMdjHmtiUqjrbbTWDzRRpzefUA76VWRa6paW7P0
-         SvDJtOu3O+M/bL3bWcRuuRHkcrSNYBmEI/nwwvQzqa/zbIC17agHat94gbaDERsqCLhh
-         W69tbnm8ou1cKPf8cZiD0eKcUsndLEWiFy9XfF8TLY1RdYvUPWvAjqYHjaOV2SF7WoDf
-         b3TomkFf7Ssxz7RBWdyE0tlN9kzdnOYJDTTYNlTeI8ZCh+SurwFCBhaqnDKyFl1+rCaA
-         qIMyTKaumuUr9SOkkBfmkZkP1Si8rtkyoJAjHH9x/SLbrA2A/mCV+a2eneLWTCeEe+WY
-         AHzQ==
-X-Gm-Message-State: AOAM531JENNFJQiJkQUvpnsojWEzoiM4/aUU24S9wSW07zFJNnvgaTr9
-        UVlkC420X6lhDiBNhsMJpM6HCZAiba0ZK439Ca9K24hjsRaPVe1Knc0v2lQ78HWslvxoo54jDqV
-        RFw7y4GYtzCqGqcVP+wfBSYtn
-X-Received: by 2002:a17:906:85b:: with SMTP id f27mr1149344ejd.50.1624468302065;
-        Wed, 23 Jun 2021 10:11:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwIHxcJy11EjlnPuoHXJwR/9o9MR/7Oct3mzw1mbbTwMG/GmET4XacDhIybIZBTBW0wFu0U7A==
-X-Received: by 2002:a17:906:85b:: with SMTP id f27mr1149331ejd.50.1624468301923;
-        Wed, 23 Jun 2021 10:11:41 -0700 (PDT)
+        bh=0HXfW00/ZiOTGZh8Pkhz1aco0hFAG0H/heQF1wGLg5k=;
+        b=REChPUxm/pyoF/YTYBR+aNpqCiG5w4lV80xxOBOmMGEkNG2g7t/eOqgJp8pLw2Qp8l
+         ANS+juSdCe+0qK3gWuogJU0YW/XWroV37ZelEqcPY5UTro4UOfQ+iFXg8f5YFffyEpmo
+         ANXpFiIsBY3UQsaQewaup3z6s39gfXnizMbsMv+mpnXLview77OFbw1CN+h8Kft1OoWD
+         hpFzfqYmooZEkVWI8C7QHzTI0JY1hN7spzhpIogkls8HbraxVmZeeMIu1UfZ5rNaXzcl
+         F0TdXmGgm9kU1Axq0eM6roziwJo5rTCpLdu2u0Jd9p5FQ1mbCCG3+Ww63l5AmkEaJF/l
+         HEsQ==
+X-Gm-Message-State: AOAM533u/Mr7jgWyIcTVKmgjtZaz0vo+VwCmkml2BJAZIbk0HkmZAApt
+        kUifGHqlq0QRhQIPRSOEUXg8l8WZKkYWYPrpII22mIWB/CW3aRBEr90OuwEqZN9Mo+M8mNd8ex1
+        JyunCaRA5kyuQx+Mqa+Ux5RpV
+X-Received: by 2002:aa7:ca0d:: with SMTP id y13mr1104291eds.374.1624468318933;
+        Wed, 23 Jun 2021 10:11:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJypFonSlzdpXsAn0U+RI+a4pvkbMfOGEKHcpih/Yn3xWQ6W8Ge9ous+iUsy2aPcUgGRos3wwg==
+X-Received: by 2002:aa7:ca0d:: with SMTP id y13mr1104263eds.374.1624468318739;
+        Wed, 23 Jun 2021 10:11:58 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id lu21sm158417ejb.31.2021.06.23.10.11.40
+        by smtp.gmail.com with ESMTPSA id by1sm158365ejc.30.2021.06.23.10.11.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 10:11:41 -0700 (PDT)
-Subject: Re: [PATCH 07/54] KVM: x86: Alert userspace that KVM_SET_CPUID{,2}
- after KVM_RUN is broken
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wed, 23 Jun 2021 10:11:58 -0700 (PDT)
+Subject: Re: [PATCH 16/54] KVM: x86/mmu: Drop smep_andnot_wp check from "uses
+ NX" for shadow MMUs
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
         Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
         Yu Zhang <yu.c.zhang@linux.intel.com>,
         Maxim Levitsky <mlevitsk@redhat.com>
 References: <20210622175739.3610207-1-seanjc@google.com>
- <20210622175739.3610207-8-seanjc@google.com>
- <f031b6bc-c98d-8e46-34ac-79e540674a55@redhat.com>
- <CALMp9eSpEJrr6mNoLcGgV8Pa2abQUkPA1uwNBMJZWexBArB3gg@mail.gmail.com>
+ <20210622175739.3610207-17-seanjc@google.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <6f25273e-ad80-4d99-91df-1dd0c847af39@redhat.com>
-Date:   Wed, 23 Jun 2021 19:11:40 +0200
+Message-ID: <b4f8f250-14ac-b964-c82d-6a3ef48bd38f@redhat.com>
+Date:   Wed, 23 Jun 2021 19:11:57 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <CALMp9eSpEJrr6mNoLcGgV8Pa2abQUkPA1uwNBMJZWexBArB3gg@mail.gmail.com>
+In-Reply-To: <20210622175739.3610207-17-seanjc@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -80,45 +78,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/06/21 19:00, Jim Mattson wrote:
-> On Wed, Jun 23, 2021 at 7:16 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->>
->> On 22/06/21 19:56, Sean Christopherson wrote:
->>> +     /*
->>> +      * KVM does not correctly handle changing guest CPUID after KVM_RUN, as
->>> +      * MAXPHYADDR, GBPAGES support, AMD reserved bit behavior, etc.. aren't
->>> +      * tracked in kvm_mmu_page_role.  As a result, KVM may miss guest page
->>> +      * faults due to reusing SPs/SPTEs.  Alert userspace, but otherwise
->>> +      * sweep the problem under the rug.
->>> +      *
->>> +      * KVM's horrific CPUID ABI makes the problem all but impossible to
->>> +      * solve, as correctly handling multiple vCPU models (with respect to
->>> +      * paging and physical address properties) in a single VM would require
->>> +      * tracking all relevant CPUID information in kvm_mmu_page_role.  That
->>> +      * is very undesirable as it would double the memory requirements for
->>> +      * gfn_track (see struct kvm_mmu_page_role comments), and in practice
->>> +      * no sane VMM mucks with the core vCPU model on the fly.
->>> +      */
->>> +     if (vcpu->arch.last_vmentry_cpu != -1)
->>> +             pr_warn_ratelimited("KVM: KVM_SET_CPUID{,2} after KVM_RUN may cause guest instability\n");
->>
->> Let's make this even stronger and promise to break it in 5.16.
->>
->> Paolo
+On 22/06/21 19:57, Sean Christopherson wrote:
+> Drop the smep_andnot_wp role check from the "uses NX" calculation now
+> that all non-nested shadow MMUs treat NX as used via the !TDP check.
 > 
-> Doesn't this fall squarely into kvm's philosophy of "we should let
-> userspace shoot itself in the foot wherever possible"? I thought we
-> only stepped in when host stability was an issue.
+> The shadow MMU for nested NPT, which shares the helper, does not need to
+> deal with SMEP (or WP) as NPT walks are always "user" accesses and WP is
+> explicitly noted as being ignored:
 > 
-> I'm actually delighted if this is a sign that we're rethinking that
-> philosophy. I'd just like to hear someone say it.
+>    Table walks for guest page tables are always treated as user writes at
+>    the nested page table level.
+> 
+>    A table walk for the guest page itself is always treated as a user
+>    access at the nested page table level
+> 
+>    The host hCR0.WP bit is ignored under nested paging.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/mmu/mmu.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 96c16a6e0044..ca7680d1ea24 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -4223,8 +4223,7 @@ reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context)
+>   	 * NX can be used by any non-nested shadow MMU to avoid having to reset
+>   	 * MMU contexts.  Note, KVM forces EFER.NX=1 when TDP is disabled.
+>   	 */
+> -	bool uses_nx = context->nx || !tdp_enabled ||
+> -		context->mmu_role.base.smep_andnot_wp;
+> +	bool uses_nx = context->nx || !tdp_enabled;
+>   	struct rsvd_bits_validate *shadow_zero_check;
+>   	int i;
+>   
+> 
 
-Nah, that's not the philosophy.  The philosophy is that covering all 
-possible ways for userspace to shoot itself in the foot is impossible.
-
-However, here we're talking about 2 lines of code (thanks also to your 
-patches that add last_vmentry_cpu for completely unrelated reasons) to 
-remove a whole set of bullet/foot encounters.
+Good idea, but why not squash it into patch 2?
 
 Paolo
 
