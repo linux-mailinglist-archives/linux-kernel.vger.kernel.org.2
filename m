@@ -2,69 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89CD3B2257
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25A53B225B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhFWVWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 17:22:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhFWVWP (ORCPT
+        id S229918AbhFWVW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 17:22:58 -0400
+Received: from mail-pf1-f176.google.com ([209.85.210.176]:37825 "EHLO
+        mail-pf1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhFWVW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 17:22:15 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22802C061574;
-        Wed, 23 Jun 2021 14:19:56 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id v7so2875478pgl.2;
-        Wed, 23 Jun 2021 14:19:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QMHcaBwzbupzQgelN2696MohF2m7DMfYgUokxnU4T4I=;
-        b=pFTCSQjb7CwSOcGd4RT7yUNxpgAz/TJE7bp9wgoZR1sEvYLHiHgeObp874DVI+ve7k
-         +vGmnHTkyGFEqTltwT8lKZzkcnj9p4ZHmqej0ZA47kyU9+SbsvySBxW4hvNv4iNF+mYo
-         HKe22kSxnb1rIoMRUAcvd98RZuNq6qegiXpVyQNt/HkgsvYIQAkmeg6nSE2MJ9WDRHqj
-         rGmakXoA/Js8CAdQ1etItmjeqQ4Xg8cOMpWlEhZTFdDrWOS8NggDHndd7iztT3O0qs/7
-         Hma/hdNcgvNx/ugyCE0X/jQlw59EK5LjT0RIwdNatsgp/K4Fl8S+16CYKTsj5OrBsM41
-         WoAQ==
+        Wed, 23 Jun 2021 17:22:56 -0400
+Received: by mail-pf1-f176.google.com with SMTP id w71so3375681pfd.4;
+        Wed, 23 Jun 2021 14:20:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=QMHcaBwzbupzQgelN2696MohF2m7DMfYgUokxnU4T4I=;
-        b=Xx/gW20qrD+n0iKuHPguXbmFf2hUQ9zUh+meERVc2S77p+3uKyIKJRjDQo8KHg297C
-         WDpf2i0I4I9e/j1OudwGlLyQOrYFC1vZtmwwOvezhXqapJZboPzWdq+RKkI4C5+kSaGb
-         eNjTmFXFnmi+ddAlWMf9k4lMR2FSGiZcC3PHw65Axc3Nklxfu3OjDkUwebQckwSWXHf4
-         gLL7aNhNChGy2vRRqjTpqNB1ejxWeuAJWrvPQWloJnfRArVxKebmD2c+hT7/pMxA+GLQ
-         H1YNkfvMzbLmrmtrHDABglcf6Uf6q121lJM43DU7uX1nXMV2ZC0sbbavr///adI1xF1Z
-         +31g==
-X-Gm-Message-State: AOAM531m5kerC3IR2QIK+HxnV3J8Fs0lIpoXuvzDQSTbGcMGlAX8MBG4
-        evRHQssVjFvLYD1muBv4OB8=
-X-Google-Smtp-Source: ABdhPJzT1OIu99evO/1tNUgVVXPX+tSM/hiAVnTh1HqADtLR3CJwbzvS8U/FGU9Lj6XnVF6CzHPXGw==
-X-Received: by 2002:a62:820a:0:b029:2fd:5aa9:549b with SMTP id w10-20020a62820a0000b02902fd5aa9549bmr1356699pfd.77.1624483196388;
-        Wed, 23 Jun 2021 14:19:56 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id e4sm699621pfa.29.2021.06.23.14.19.54
+        bh=RSI/JXZQicsqAJ2ORJ8fz8xv3YMbDQ+62b+V7553KxM=;
+        b=uS3EBc82Z8ISqXP1eFa2FiBQrRSs7YOm5mN5nbwTPebNbql33pF+pt+b8/Q87qgs73
+         q7bh7rJHuVkJyYozjl5M307oHyEHzfACFfAdAhlffKcIFdlhZx/SreVuAAtUnWIQVNsR
+         EO1mOO/Ng0HSkxXcM4gnbgxxgtVYdhWXe/oJSujEg3tmDwS+zMX8qRm3rc6PzY+To40d
+         fd8WUEUZmrkeHO19ZPRUqySUUjJWs2gBXoWzzW5ugIZcp9ESstQGArmhWpx4tvoAejGn
+         NfM0KQoJhwCuBebjmZCwKUY1rRfJdKMLjIPZ22UeyZUiZAVXAS2nzdxM8bA5EH9QuKKi
+         RKgQ==
+X-Gm-Message-State: AOAM531JGpJ5l4k+7f1SF15TnVP77qS/HNWH7rlEKO/AsQp/ErPdLWSg
+        MASlTJ342kBwkIUhkvV5mtDcxeYFc6k=
+X-Google-Smtp-Source: ABdhPJzxaqIhTRzzt2ENNN0NuOAOQEOOBfd7hvkjpL4CtkE1VzY4MlibYhJDflVkE5AY6LuwvNtQsA==
+X-Received: by 2002:a63:ff4b:: with SMTP id s11mr1370190pgk.436.1624483237602;
+        Wed, 23 Jun 2021 14:20:37 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id o12sm41109pgq.83.2021.06.23.14.20.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 14:19:55 -0700 (PDT)
-Subject: Re: [PATCH v2] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
-To:     patchwork-bot+netdevbpf@kernel.org,
-        Jian-Hong Pan <jhp@endlessos.org>
-Cc:     f.fainelli@gmail.com, stefan.wahren@i2se.com, opendmb@gmail.com,
-        andrew@lunn.ch, bcm-kernel-feedback-list@broadcom.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@endlessos.org, linux-rpi-kernel@lists.infradead.org
-References: <20210623032802.3377-1-jhp@endlessos.org>
- <162448140362.19131.3107197931445260654.git-patchwork-notify@kernel.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <7f4e15bb-feb5-b4d2-57b9-c2a9b2248d4a@gmail.com>
-Date:   Wed, 23 Jun 2021 14:19:54 -0700
+        Wed, 23 Jun 2021 14:20:36 -0700 (PDT)
+Subject: Re: [PATCH v4 04/10] scsi: ufs: Enable IRQ after enabling clocks in
+ error handling preparation
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
+ <1624433711-9339-5-git-send-email-cang@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <6883ba75-be7c-96a2-9c33-62a244a15f6e@acm.org>
+Date:   Wed, 23 Jun 2021 14:20:34 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <162448140362.19131.3107197931445260654.git-patchwork-notify@kernel.org>
+In-Reply-To: <1624433711-9339-5-git-send-email-cang@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -72,32 +65,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 1:50 PM, patchwork-bot+netdevbpf@kernel.org wrote:
-> Hello:
+On 6/23/21 12:35 AM, Can Guo wrote:
+> In error handling preparation, enable IRQ after enabling clocks in case
+> unclocked register access happens.
 > 
-> This patch was applied to netdev/net.git (refs/heads/master):
+> Fixes: c72e79c0ad2bd ("scsi: ufs: Recover HBA runtime PM error in error handler")
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> On Wed, 23 Jun 2021 11:28:03 +0800 you wrote:
->> The Broadcom UniMAC MDIO bus from mdio-bcm-unimac module comes too late.
->> So, GENET cannot find the ethernet PHY on UniMAC MDIO bus. This leads
->> GENET fail to attach the PHY as following log:
->>
->> bcmgenet fd580000.ethernet: GENET 5.0 EPHY: 0x0000
->> ...
->> could not attach to PHY
->> bcmgenet fd580000.ethernet eth0: failed to connect to PHY
->> uart-pl011 fe201000.serial: no DMA platform data
->> libphy: bcmgenet MII bus: probed
->> ...
->> unimac-mdio unimac-mdio.-19: Broadcom UniMAC MDIO bus
->>
->> [...]
-> 
-> Here is the summary with links:
->   - [v2] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
->     https://git.kernel.org/netdev/net/c/b2ac9800cfe0
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index ee70522..5f837c4 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -5927,13 +5927,14 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+>  		 * can be OFF or in LPM.
+>  		 */
+>  		ufshcd_setup_hba_vreg(hba, true);
+> -		ufshcd_enable_irq(hba);
+>  		ufshcd_setup_vreg(hba, true);
+>  		ufshcd_config_vreg_hpm(hba, hba->vreg_info.vccq);
+>  		ufshcd_config_vreg_hpm(hba, hba->vreg_info.vccq2);
+>  		ufshcd_hold(hba, false);
+> -		if (!ufshcd_is_clkgating_allowed(hba))
+> +		if (!ufshcd_is_clkgating_allowed(hba)) {
+>  			ufshcd_setup_clocks(hba, true);
+> +			ufshcd_enable_irq(hba);
+> +		}
+>  		ufshcd_release(hba);
+>  		pm_op = hba->is_wlu_sys_suspended ? UFS_SYSTEM_PM : UFS_RUNTIME_PM;
+>  		ufshcd_vops_resume(hba, pm_op);
 
-There was feedback given that could have deserved a v3, if nothing else
-to fix the typo in the subject, I suppose that would do though.
--- 
-Florian
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
