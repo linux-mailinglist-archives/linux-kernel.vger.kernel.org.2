@@ -2,116 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D703B1984
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ECF13B19D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbhFWMCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:02:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24180 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230302AbhFWMCu (ORCPT
+        id S230283AbhFWMZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:25:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36358 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230019AbhFWMZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:02:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624449632;
+        Wed, 23 Jun 2021 08:25:53 -0400
+Message-Id: <20210623120127.327154589@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624451015;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=40lufiefSAXJYxyzql25e+wiCU9kJZcVj8CF016XD70=;
-        b=CEstZ7cIdGOqDR+jnolP/XRG/JXhBLjDflf7lCofp0kpQHaMDnWWthH34tcmchbvdBV0ct
-        GJl0+gObI3CuwmCiDP0LxOQZ8lsmAOI+mWDkiJj3CBZWA3Zdc6hRvOOm/ZGUvW7Rt6GMvx
-        f+zXS2rNdBJfAth/dDRE3/o+8wCG0zQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-1-hvTUk_ASNU2pe_o3jqp8fQ-1; Wed, 23 Jun 2021 08:00:31 -0400
-X-MC-Unique: hvTUk_ASNU2pe_o3jqp8fQ-1
-Received: by mail-wr1-f72.google.com with SMTP id l2-20020adfe5820000b029011a64161d6aso993797wrm.6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:00:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=40lufiefSAXJYxyzql25e+wiCU9kJZcVj8CF016XD70=;
-        b=aHhpwMXXO1JnBGQ0qtOjHitWEgcDZymqscagLXzKeKjqWp3k17ChLSe/NBIcZ7eL/V
-         G/YbYLy95sbZYqXOyhFBBx87EM3OTRZ3PkKRjbdKwBc/PsaYaQ/tbB4M/Ya60UOPBHOJ
-         mBepPtRRqrOxqh2/aLKP4iClfH5WCgzPgart+sE7RZNkvvYbJpMEf0KpFTNmxDcn5J5N
-         4bxqX61zMEhxno6P0u/ykkPi3obW7LvYHeWXcoG2DBZz+XsxS6SXnpSYFp39K5upDG+K
-         wDk4cyWw16eaJv1zHmkEPxj2lc5RZC4b2iBec+IeSAnQvHvrVMlHNviXCj+9MXTHX6Ex
-         sVYQ==
-X-Gm-Message-State: AOAM531/3GU8BBt8l5ypK4wpU1LPStCjCvkOco5sUFGUUyuukRDG4V/e
-        4ktUWyCy4h7R2Wsh0629YeADhrOkG0pOJJgqzSqZ/Wilbqi9Xa+qssecI4QYAYRtPds9pXLRxfu
-        aHkpbFf+X9i9Argy+xjhKgqcQQ4u1/6fmLJgsYaAejKB16z3JNuFIMAvcFzLWnyfP7gU2geFSe4
-        vG
-X-Received: by 2002:a05:600c:b57:: with SMTP id k23mr10532648wmr.133.1624449629776;
-        Wed, 23 Jun 2021 05:00:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxNmyUviHSGAy39wspBqD/44uhbsty4Dt6H2q9/tUgrngrqOMapjcP5jZzJYKbXJOEg9kj0+A==
-X-Received: by 2002:a05:600c:b57:: with SMTP id k23mr10532600wmr.133.1624449629425;
-        Wed, 23 Jun 2021 05:00:29 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id o203sm5900649wmo.36.2021.06.23.05.00.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 05:00:28 -0700 (PDT)
-Subject: Re: [PATCH RFC] KVM: nSVM: Fix L1 state corruption upon return from
- SMM
-To:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Cathy Avery <cavery@redhat.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        linux-kernel@vger.kernel.org
-References: <20210623074427.152266-1-vkuznets@redhat.com>
- <a3918bfa-7b4f-c31a-448a-aa22a44d4dfd@redhat.com>
- <2eaa94bcc697fec92d994146f7c69625b6a84cd0.camel@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <e4ba5286-f683-5876-1cd7-7fc83bc1638e@redhat.com>
-Date:   Wed, 23 Jun 2021 14:00:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jpxnLkCsAjVmLO8x6rSf120R71Y84WStaFX2t/JQQvQ=;
+        b=cjmWH47mtW2BU9b3Aq+XongCpWq5hk9e3J86F/ya9/xSPUboLHndsMRCXnDv2gevNlaUjE
+        j87F8dWK67YF+8TVfbqbu3jbxSxPHFjPxa/LiFZv9rVK2VhvOev3WtXwQgDaMJf1CKvdFL
+        sczqFBhI01yYOgg3TIBm9+DZIG5cu0muahGkeR1UNwXCWzhwXdYlllTMcQ/Ik/aTyRCK9k
+        DYzgnyyfbm712PwzEoUHjmf/TTQWW9aGI1NjdVVEmqS+C09hN65k6krl1JUR5UiccTLfFo
+        bB+6TaWJlCyvx06u4Cb80XmTPdKArfZdKeZ2MAuvj1mpVsJOHXMgnKDBpB3BJA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624451015;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jpxnLkCsAjVmLO8x6rSf120R71Y84WStaFX2t/JQQvQ=;
+        b=kED2iuPDo/Bb64eMwvjePkziirR4Vg2CmxXspOZNTKDVgq4Gcwf0foSq5bmIF+VXmelbzo
+        aQ3x1LFw4c7DbnAw==
+Date:   Wed, 23 Jun 2021 14:01:27 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        "Chang Seok Bae" <chang.seok.bae@intel.com>,
+        Megha Dey <megha.dey@linux.intel.com>,
+        Oliver Sang <oliver.sang@intel.com>
+Subject: [patch V4 00/65] x86/fpu: Spring cleaning and PKRU sanitizing
 MIME-Version: 1.0
-In-Reply-To: <2eaa94bcc697fec92d994146f7c69625b6a84cd0.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/06/21 13:39, Maxim Levitsky wrote:
-> On Wed, 2021-06-23 at 11:39 +0200, Paolo Bonzini wrote:
->> On 23/06/21 09:44, Vitaly Kuznetsov wrote:
->>> - RFC: I'm not 100% sure my 'smart' idea to use currently-unused HSAVE area
->>> is that smart. Also, we don't even seem to check that L1 set it up upon
->>> nested VMRUN so hypervisors which don't do that may remain broken. A very
->>> much needed selftest is also missing.
->>
->> It's certainly a bit weird, but I guess it counts as smart too.  It
->> needs a few more comments, but I think it's a good solution.
->>
->> One could delay the backwards memcpy until vmexit time, but that would
->> require a new flag so it's not worth it for what is a pretty rare and
->> already expensive case.
-> 
-> I wonder what would happen if SMM entry is triggered by L1 (say with ICR),
-> on a VCPU which is in L2. Such exit should go straight to L1 SMM mode.
-
-Yes, it does, but it still records the L2 state in the guest's SMM state 
-save area.  Everything works right as long as the guest stays in L2 (the 
-vmcb12 control save area is still there in svm->nested and is 
-saved/restored by KVM_GET/SET_NESTED_STATE), the problem that Vitaly 
-found is the destruction of the saved L1 host state.
-
-Paolo
-
-> I will very very soon, maybe even today start testing SMM with my migration
-> tests and such. I hope I will find more bugs in this area.
-> 
-> Thanks for fixing this issue!
-> 
-> Best regards,
-> 	Maxim Levitsky
-> 
-
+VGhlIG1haW4gcGFydHMgb2YgdGhpcyBzZXJpZXMgYXJlOgoKICAtIFNpbXBsaWZpY2F0aW9uIGFu
+ZCByZW1vdmFsL3JlcGxhY2VtZW50IG9mIHJlZHVuZGFudCBhbmQvb3IKICAgIG92ZXJlbmdpbmVl
+cmVkIGNvZGUuCgogIC0gTmFtZSBzcGFjZSBjbGVhbnVwIGFzIHRoZSBleGlzdGluZyBuYW1lcyB3
+ZXJlIGp1c3QgYSBwZXJtYW5lbnQgc291cmNlCiAgICBvZiBjb25mdXNpb24uCgogIC0gQ2xlYXIg
+c2VwZXJhdGlvbiBvZiB1c2VyIEFCSSBhbmQga2VybmVsIGludGVybmFsIHN0YXRlIGhhbmRsaW5n
+LgoKICAtIFJlbW92YWwgb2YgUEtSVSBmcm9tIGJlaW5nIFhTVEFURSBtYW5hZ2VkIGluIHRoZSBr
+ZXJuZWwgYmVjYXVzZSBQS1JVCiAgICBoYXMgdG8gYmUgZWFnZXJseSByZXN0b3JlZCBvbiBjb250
+ZXh0IHN3aXRjaCBhbmQga2VlcGluZyBpdCBpbiBzeW5jCiAgICBpbiB0aGUgeHN0YXRlIGJ1ZmZl
+ciBpcyBqdXN0IHBvaW50bGVzcyBvdmVyaGVhZCBhbmQgZnJhZ2lsZS4KCiAgICBUaGUga2VybmVs
+IHN0aWxsIFhTQVZFcyBQS1JVIG9uIGNvbnRleHQgc3dpdGNoIGJ1dCB0aGUgdmFsdWUgaW4gdGhl
+CiAgICBidWZmZXIgaXMgbm90IGxvbmdlciB1c2VkIGFuZCBuZXZlciByZXN0b3JlZCBmcm9tIHRo
+ZSBidWZmZXIuCgogICAgVGhpcyBzdGlsbCBuZWVkcyB0byBiZSBjbGVhbmVkIHVwLCBidXQgdGhl
+IHNlcmllcyBpcyBhbHJlYWR5IDQwKwogICAgcGF0Y2hlcyBsYXJnZSBhbmQgdGhlIGNsZWFudXAg
+b2YgdGhpcyBpcyBub3QgYSBmdW5jdGlvbmFsIHByb2JsZW0uCgogICAgVGhlIGZ1bmN0aW9uYWwg
+aXNzdWVzIG9mIFBLUlUgbWFuYWdlbWVudCBhcmUgZnVsbHkgYWRkcmVzc2VkIHdpdGggdGhlCiAg
+ICBzZXJpZXMgYXMgaXMuCgogIC0gQ2xlYW51cCBvZiBmcHUgc2lnbmFsIHJlc3RvcmUKCiAgICAt
+IE1ha2UgdGhlIGZhc3QgcGF0aCBzZWxmIGNvbnRhaW5lZC4gSGFuZGxlICNQRiBkaXJlY3RseSBh
+bmQgc2tpcAogICAgICB0aGUgc2xvdyBwYXRoIG9uIGFueSBvdGhlciBleGNlcHRpb24gYXMgdGhh
+dCB3aWxsIGp1c3QgZW5kIHVwCiAgICAgIHdpdGggdGhlIHNhbWUgcmVzdWx0IHRoYXQgdGhlIGZy
+YW1lIGlzIGludmFsaWQuIFRoaXMgYWxsb3dzCiAgICAgIHRoZSBjb21waWxlciB0byBvcHRpbWl6
+ZSB0aGUgc2xvdyBwYXRoIG91dCBmb3IgNjRiaXQga2VybmVscwogICAgICB3L28gaWEzMiBlbXVs
+YXRpb24uCgogICAgLSBSZWR1Y2UgY29kZSBkdXBsaWNhdGlvbiBhbmQgdW5uZWNlc3Nhcnkgb3Bl
+cmF0aW9ucwoKSXQgYXBwbGllcyBvbiB0b3Agb2YKCiAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHVi
+L3NjbS9saW51eC9rZXJuZWwvZ2l0L3RpcC90aXAuZ2l0IG1hc3RlcgoKYW5kIGlzIGFsc28gYXZh
+aWxhYmxlIHZpYSBnaXQ6CgogIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2Vy
+bmVsL2dpdC90Z2x4L2RldmVsLmdpdCB4ODYvZnB1CgpUaGlzIGlzIGEgZm9sbG93IHVwIHRvIFYz
+IHdoaWNoIGNhbiBiZSBmb3VuZCBoZXJlOgoKICAgICBodHRwczovL2xvcmUua2VybmVsLm9yZy9y
+LzIwMjEwNjE4MTQxODIzLjE2MTE1ODA5MEBsaW51dHJvbml4LmRlCgpDaGFuZ2VzIHZzLiBWMzoK
+CiAgLSBEcm9wcGVkIHRoZSB0d28gYnVnZml4ZXMgd2hpY2ggYXJlIGFwcGxpZWQgYWxyZWFkeSBh
+bmQgcmViYXNlZCBvbiB0b3AKCiAgLSBBZGRyZXNzZWQgcmV2aWV3IGNvbW1lbnRzIChBbmR5LCBC
+b3JpcykKCiAgICBQYXRjaGVzOiAxMywgMzUsIDM2LCAzNywgNDYsIDU4LCA2MiwgNjMKCiAgLSBG
+aXhlZCB0aGUgbWF0aC1lbXUgZmFsbG91dCB3aGljaCBJIGhhZCBzdGFzaGVkIHNhZmVseSBvbiB0
+aGUgMzJiaXQKICAgIHRlc3Rib3ggKEJvcmlzKQoKICAgIFBhdGNoOiAyOAoKICAtIFBpY2tlZCB1
+cCB0YWdzCgpUaGFua3MgdG8gZXZlcnlvbmUgZm9yIHJldmlldywgZmVlZGJhY2sgYW5kIHRlc3Rp
+bmcgKHZhcmlvdXMgdGVhbXMKQEludGVsKS4KCk5vdGU6IEkndmUgbm90IHBpY2tlZCB1cCBhbnkg
+dGVzdGVkLWJ5IHRhZ3MuIEl0IHdvdWxkIGJlIG5pY2UgdG8gaGF2ZQp0aGVtIG9uIHRoaXMgaG9w
+ZWZ1bGx5IGZpbmFsIHZlcnNpb24uCgpUaGFua3MsCgoJdGdseAotLS0KIGFyY2gveDg2L2V2ZW50
+cy9pbnRlbC9sYnIuYyAgICAgICAgICB8ICAgIDYgCiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9mcHUv
+aW50ZXJuYWwuaCAgfCAgMjAyICsrKystLS0tLS0KIGFyY2gveDg2L2luY2x1ZGUvYXNtL2ZwdS94
+c3RhdGUuaCAgICB8ICAgNzggKysrLQogYXJjaC94ODYvaW5jbHVkZS9hc20vcGd0YWJsZS5oICAg
+ICAgIHwgICA1NyAtLS0KIGFyY2gveDg2L2luY2x1ZGUvYXNtL3BrZXlzLmggICAgICAgICB8ICAg
+IDkgCiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9wa3J1LmggICAgICAgICAgfCAgIDYyICsrKwogYXJj
+aC94ODYvaW5jbHVkZS9hc20vcHJvY2Vzc29yLmggICAgIHwgICAgOSAKIGFyY2gveDg2L2luY2x1
+ZGUvYXNtL3NwZWNpYWxfaW5zbnMuaCB8ICAgMTQgCiBhcmNoL3g4Ni9rZXJuZWwvY3B1L2NvbW1v
+bi5jICAgICAgICAgfCAgIDM0IC0KIGFyY2gveDg2L2tlcm5lbC9mcHUvY29yZS5jICAgICAgICAg
+ICB8ICAyODIgKysrKysrKy0tLS0tLS0tCiBhcmNoL3g4Ni9rZXJuZWwvZnB1L2luaXQuYyAgICAg
+ICAgICAgfCAgIDE1IAogYXJjaC94ODYva2VybmVsL2ZwdS9yZWdzZXQuYyAgICAgICAgIHwgIDIy
+MyArKysrKystLS0tLS0KIGFyY2gveDg2L2tlcm5lbC9mcHUvc2lnbmFsLmMgICAgICAgICB8ICA0
+MTkgKysrKysrKysrKy0tLS0tLS0tLS0tLQogYXJjaC94ODYva2VybmVsL2ZwdS94c3RhdGUuYyAg
+ICAgICAgIHwgIDY0NSArKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogYXJjaC94
+ODYva2VybmVsL3Byb2Nlc3MuYyAgICAgICAgICAgIHwgICAyMiArCiBhcmNoL3g4Ni9rZXJuZWwv
+cHJvY2Vzc182NC5jICAgICAgICAgfCAgIDI4ICsKIGFyY2gveDg2L2tlcm5lbC90cmFwcy5jICAg
+ICAgICAgICAgICB8ICAgIDUgCiBhcmNoL3g4Ni9rdm0vc3ZtL3Nldi5jICAgICAgICAgICAgICAg
+fCAgICAxIAogYXJjaC94ODYva3ZtL3g4Ni5jICAgICAgICAgICAgICAgICAgIHwgICA1NiArLS0K
+IGFyY2gveDg2L21hdGgtZW11L2ZwdV9wcm90by5oICAgICAgICB8ICAgIDIgCiBhcmNoL3g4Ni9t
+YXRoLWVtdS9sb2FkX3N0b3JlLmMgICAgICAgfCAgICAyIAogYXJjaC94ODYvbWF0aC1lbXUvcmVn
+X2xkX3N0ci5jICAgICAgIHwgICAgMiAKIGFyY2gveDg2L21tL2V4dGFibGUuYyAgICAgICAgICAg
+ICAgICB8ICAgIDIgCiBhcmNoL3g4Ni9tbS9mYXVsdC5jICAgICAgICAgICAgICAgICAgfCAgICAy
+IAogYXJjaC94ODYvbW0vcGtleXMuYyAgICAgICAgICAgICAgICAgIHwgICAyMiAtCiBpbmNsdWRl
+L2xpbnV4L3BrZXlzLmggICAgICAgICAgICAgICAgfCAgICA0IAogMjYgZmlsZXMgY2hhbmdlZCwg
+MTAzNyBpbnNlcnRpb25zKCspLCAxMTY2IGRlbGV0aW9ucygtKQoKCg==
