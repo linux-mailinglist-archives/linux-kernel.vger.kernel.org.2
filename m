@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E393B1E52
+	by mail.lfdr.de (Postfix) with ESMTP id DBCEE3B1E53
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhFWQLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 12:11:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50630 "EHLO mail.kernel.org"
+        id S229890AbhFWQLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 12:11:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229913AbhFWQLq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 12:11:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F8016128D;
-        Wed, 23 Jun 2021 16:09:28 +0000 (UTC)
+        id S229952AbhFWQLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 12:11:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 062F6611C9;
+        Wed, 23 Jun 2021 16:09:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624464568;
-        bh=kYat1lDcdPalxoyEdVzJzS8BZA5l+ubFAD8SJB7kRZs=;
+        s=k20201202; t=1624464571;
+        bh=T2HXfNyzx3AS/mZLCTF/VYpLDzx4pOUOAoKS+LJ5qdQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DvV/5OyvJHxWST+toyxpna2dJTYbAWR3k21l1PTEi0vXnH++6SbvGvvkT22ICt539
-         AxcIw7Bw0QlUVebTEbqNCQ2vqpwReVfMp147PnO2aqtjCmtHpzb4kWpAaiXmIU80Aw
-         cF3L7RXcO2Fu0kgE2NGPmzmzOd2QmPYUqSfMLb1mWazxesMxXPB82cqHmcUtJLXK18
-         g+c8AkSkLUqiPV/BuLEEDIuL4x5m7jFCFMJG63NTnCMlLouNuYkr4WKQtHXD/4mcZy
-         zP8xjXOzuaELxGQsK0Jkf9Zy6O8yECMe2vFj+BDAip4hrgfRZ23AIwVj9M5Mu4TPA/
-         Ga8e3Efqc4HKg==
+        b=uWJZknoaZIRW6MAgdOre9B/EVXthhXWtEZu9QzQjo+OxsDYbJQKqQD7mowC1sebEJ
+         F4O36J72t0Uvn1e0PhPOpsmQSXUtwUU0EckbKU+Hhq1CV3571kyGZlHYNVIDAjkwZw
+         pRnfJvwava/E56U+iCBWe35LFpTHWgoFTJX59B2e8LWWEpJM4dmwP65Jx7VWgj6gRa
+         Fqm6ZOUrZYfV8hD6iji6Qt8qP48cYMp1KM3szmsZTZb9PSdiW8rmrFVxVkTf3nXNpR
+         6byoQlkTM0HKaDERegiJV/VUvTjtROuNzw1XS4QnOHO7Lge+bX/gdYht4ZATL7dY1/
+         VxQ9MIof0CmCg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-mmc@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH 0/2] spi: use proper DMAENGINE API for termination
-Date:   Wed, 23 Jun 2021 17:08:51 +0100
-Message-Id: <162446446390.55587.10222548953553641662.b4-ty@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>, axel.lin@ingics.com,
+        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        linux-kernel@vger.kernel.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] regulator: mt6358: Fix vdram2 .vsel_mask
+Date:   Wed, 23 Jun 2021 17:08:52 +0100
+Message-Id: <162446430311.55481.15380134833994033517.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210623095843.3228-1-wsa+renesas@sang-engineering.com>
-References: <20210623095843.3228-1-wsa+renesas@sang-engineering.com>
+In-Reply-To: <1624424169-510-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+References: <1624424169-510-1-git-send-email-hsin-hsiung.wang@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,27 +45,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Jun 2021 11:58:41 +0200, Wolfram Sang wrote:
-> dmaengine_terminate_all() is deprecated in favor of explicitly saying if
-> it should be sync or async. Update the drivers I audited.
-> 
-> 
-> Wolfram Sang (2):
->   spi: spi-rspi: : use proper DMAENGINE API for termination
->   spi: spi-sh-msiof: : use proper DMAENGINE API for termination
-> 
-> [...]
+On Wed, 23 Jun 2021 12:56:09 +0800, Hsin-Hsiung Wang wrote:
+> The valid vsel value are 0 and 12, so the .vsel_mask should be 0xf.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/2] spi: spi-rspi: : use proper DMAENGINE API for termination
-      commit: 29176edd6e7ad7333d0bb19a309b2104fa4f4341
-[2/2] spi: spi-sh-msiof: : use proper DMAENGINE API for termination
-      commit: a26dee29ec04a3f6779684852c36a2a71fd68fd8
+[1/1] regulator: mt6358: Fix vdram2 .vsel_mask
+      commit: 50c9462edcbf900f3d5097ca3ad60171346124de
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
