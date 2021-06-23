@@ -2,360 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC163B11A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 04:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6FC3B11A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 04:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhFWCV6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Jun 2021 22:21:58 -0400
-Received: from mga18.intel.com ([134.134.136.126]:36354 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229774AbhFWCV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 22:21:57 -0400
-IronPort-SDR: IL4NdlaR/hqoEFnrRHxSJSYGoQ/JpxYX2ADulDRanyjyjd+FoKcLgQFG5nt+FmSuYqUyH16/TW
- 2wc3wB8sxxQQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="194484520"
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="194484520"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 19:19:38 -0700
-IronPort-SDR: jpCrZqK6KLHkv2VPQ7uXfG9Qwz1kK1A5s2x5LscDmuRvVu+CdT7NZDjQycnMu5BcItRutRuTXP
- lAJPolK6gTyQ==
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="487132148"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 19:19:35 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>, Wei Xu <weixugc@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        osalvador <osalvador@suse.de>, Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH -V8 05/10] mm/migrate: demote pages during reclaim
-References: <20210618061537.434999-1-ying.huang@intel.com>
-        <20210618061537.434999-6-ying.huang@intel.com>
-        <88CFDFA7-70E1-4C26-B9CF-7A0CEFEB035A@nvidia.com>
-        <874kdupab0.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <CAHbLzkoOYoMuDQx7rBG0-9BrpczAbuE5_-HNLrr_Jn=ttc2kkg@mail.gmail.com>
-        <87o8bymyzg.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <CAHbLzkpr96b2WXYS_Y1yA21crwuawYxPcBRmatR_jZO_mQY0NQ@mail.gmail.com>
-Date:   Wed, 23 Jun 2021 10:19:32 +0800
-In-Reply-To: <CAHbLzkpr96b2WXYS_Y1yA21crwuawYxPcBRmatR_jZO_mQY0NQ@mail.gmail.com>
-        (Yang Shi's message of "Tue, 22 Jun 2021 10:15:25 -0700")
-Message-ID: <87o8bxjpaj.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S230225AbhFWC2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 22:28:07 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:8924 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229774AbhFWC2F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 22:28:05 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15N2GNNn016743;
+        Wed, 23 Jun 2021 02:19:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=HdqjnvWwX0uNHUdtjsjVBhJjj7c9crBokJstUf/wqkM=;
+ b=uwRv9Op8ZmjrRXnzNMCSVsNdCpkGeRhThidEYGpvU3pHtKFbksr9Q5Ujw9f84AEy1yge
+ vO671vlpCYjKlUtxGKy42dfxZF4l+izdk8L6HZl51A6R99gZhKFqlvwEkiPKLGknHMFa
+ Y3/opVAMK/RIgX44Ojy9YPrviA3Xh7DZgXDVlbIMLReO0YXJyE8GhkCpXwoX88blvpuh
+ nl4e+5B6D5fz6YRgc/SUvbckQx2PzQw/ti23/LFpkUwFC+yOfk3ILgdkw7DW2D0Nlf3b
+ iw1cqMK1Afs9MAhNvdsaGfe22B9Fm9nWpMLQaTYJa8XR56Az5qnSh+LeMhystpHRnzVU jg== 
+Received: from oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39ap66mqsv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Jun 2021 02:19:44 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15N2GLYv099313;
+        Wed, 23 Jun 2021 02:19:43 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2105.outbound.protection.outlook.com [104.47.58.105])
+        by aserp3030.oracle.com with ESMTP id 3996meds41-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Jun 2021 02:19:43 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d26snqxOX28s7fNysvJdsB3X1voTRPjKVpLJ8NSAqKoeL6X76CjULHN1+gedvDVc5X9DYiVBaGhx0uUyU3ICvI+CDjoDIQV1RpHhvzqL5j9u73CerMSoKzw4CJtbujA6d646cZUMyLYJGWnbzHXPGZNs0yaAinkx/oul7NpZ8IyUrQcqSU2wCr8UHWVSHSh3MrXXo1u+dUIWmQpdD4PuTQKTuzo2aEj3o/owKQ0ROamPfKqWEwMWKM58SHgFA9QEXc7KiPQLYebWDcLE5rcm1nlRQy4seMYtccYdxisok8eysRxSStJB0uJ9fqGK7icWVDaneF6dIsy0ddyUrdH22w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HdqjnvWwX0uNHUdtjsjVBhJjj7c9crBokJstUf/wqkM=;
+ b=KSHWmErnuwXmU+lj9kJGP0vW5iC5MNX0LLNlqfgDV5+voTntxGhlIFe/IOjISGhe61X+r4sBsxpWg29Ag6qiXpHuYQd5DHF+xOiAAH1F4gH2uRc7COsxooEZf8soVuE6XMuoyW0jTljJ11av+Sh/guUoNv5tF8LyiKbnWSOQnp8Y8sAQOV67UNCqpVesECj/Q3TwefxVS51rTJGswxH8cMIJXKLkxCL/hX3lhC2qfQZtScjX8NrowrkGvv04A1ECXo7Rr5b/KXPndcKaZJ2F3cfaNNy1yTiqx9gFlmmk7ijwZfKlrsI9C9TS4eONfCkaWqZjgW2SPJa5taQMG98dzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HdqjnvWwX0uNHUdtjsjVBhJjj7c9crBokJstUf/wqkM=;
+ b=w95vYlHb+EdZ2a3E0mJVJ/E7NDRMm5m5TJZkFBadthbJ7nWWl5cHjqmsbqplO79UuHzp2FmiFPwudQZimRbnVViKPzpgvTxi+PAunEGC7NfZkwQqCX7Cl3twArm/bVm+EVGc2IcBz7k4CMEO++5j9eJyxWSfI1fUG+UOBkkIuMU=
+Authentication-Results: wanadoo.fr; dkim=none (message not signed)
+ header.d=none;wanadoo.fr; dmarc=none action=none header.from=oracle.com;
+Received: from CO1PR10MB4754.namprd10.prod.outlook.com (2603:10b6:303:91::24)
+ by MWHPR10MB1568.namprd10.prod.outlook.com (2603:10b6:300:26::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Wed, 23 Jun
+ 2021 02:19:41 +0000
+Received: from CO1PR10MB4754.namprd10.prod.outlook.com
+ ([fe80::89c5:ded8:9c91:30d2]) by CO1PR10MB4754.namprd10.prod.outlook.com
+ ([fe80::89c5:ded8:9c91:30d2%4]) with mapi id 15.20.4242.024; Wed, 23 Jun 2021
+ 02:19:41 +0000
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     subbu.seetharaman@broadcom.com, ketan.mukadam@broadcom.com,
+        jitendra.bhivare@broadcom.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, minhduc.tran@emulex.com,
+        sony.john-n@emulex.com, JBottomley@Parallels.com,
+        jayamohank@gmail.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 1/2] scsi: be2iscsi: Fix an error handling path in
+ 'beiscsi_dev_probe()'
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1r1gtqq4u.fsf@ca-mkp.ca.oracle.com>
+References: <77adb02cfea7f1364e5603ecf3930d8597ae356e.1623482155.git.christophe.jaillet@wanadoo.fr>
+Date:   Tue, 22 Jun 2021 22:19:39 -0400
+In-Reply-To: <77adb02cfea7f1364e5603ecf3930d8597ae356e.1623482155.git.christophe.jaillet@wanadoo.fr>
+        (Christophe JAILLET's message of "Sat, 12 Jun 2021 09:18:34 +0200")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: BY3PR05CA0036.namprd05.prod.outlook.com
+ (2603:10b6:a03:39b::11) To CO1PR10MB4754.namprd10.prod.outlook.com
+ (2603:10b6:303:91::24)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by BY3PR05CA0036.namprd05.prod.outlook.com (2603:10b6:a03:39b::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.7 via Frontend Transport; Wed, 23 Jun 2021 02:19:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0501224b-2f51-4023-f19b-08d935ed5be0
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1568:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB15686CE219E9DFFB3D66CDCB8E089@MWHPR10MB1568.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Sv/dEhXPk01+4bfvGUx6CkoUfJdyDN9JhrHHjeE6t2WWLY1K8Ub2fXXa+nnAQHGnIBnHGnZB0fNnIBfa8h0IJTDDyakRMEMjBwV7XbH37+6s/NCzyXne5UKdtNk3Zxi5ejvfDmShbV6xxp9tzmhzDug0zlnNQW0zYmXdxM1YmMOn3rI/1VPfT1Z7RtS/adS788YZS9hb19XiYR/MOUUHmaa5vR6Oo5P40atajw5+2NyX6QdoMqrc+SYiKhwwMCYdblU3Qz/UruJSoBQkl0G+BBtGKQrrrdwCwLMwakcPCmxxw/iOJh+SfwHWuvRfU6eIpQuez8bWYe4Uw8ffohVRSzSb/gS2CC/eP4yjA+QklqcTsbg2VxrucGyVjDv+abWbONfayVZtuOh01H9GXX2NZW3A/sJLCIZ9AiKGgkwt98CjsY9kLoKS4I1cARHTN+5UsspTHmINIB/HxL1j1pbpqSCH/G9f20kMQAi0LSRxcatHmzmnD1lrKXrni7NRLsA7/0/G3SOUbjDf7fRmn6BDO+7qyRkEwIgN9MmUF8RmXootBmmigAz4YvHpKi2G3OX7lw7XUTVrxPIgAXFS97ME0KG4VaSblrvXkHLRQa0NbcoAk4+qgSfOivUcz3b7/tcRfzFtRbol/VycfFm7sITdnQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4754.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(136003)(376002)(366004)(396003)(36916002)(8676002)(4326008)(26005)(55016002)(316002)(478600001)(7416002)(5660300002)(86362001)(956004)(558084003)(38100700002)(66946007)(2906002)(6916009)(66476007)(38350700002)(66556008)(7696005)(16526019)(186003)(52116002)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RtQWNYRE9f3BEjoPMUW/KzozsiXQ+rpO3DiP/co5cYdogjVfJOcwdHiGaZoP?=
+ =?us-ascii?Q?ToGK3BtbF+M7uHALmBAiKBMQ/aTT2H2oFnjAXvmPTa4RiReTcUl7eqsvv94d?=
+ =?us-ascii?Q?CXqkuU1VEHLhosNjasox8NzCXFclBQk0dvEREUODHj97YxuYEOvDMHA6KQjs?=
+ =?us-ascii?Q?JJ1M7v4Thpri27UAC6gyl/GwICdbf5cBn8+x/OsZQuQdOuHCP7Dw6xe8Xa7r?=
+ =?us-ascii?Q?B2PH66/feWyNjUHU2C4XHeAEBW7zRVkTporjup4Li6M8IOBv1Bu3xdL70Cyo?=
+ =?us-ascii?Q?X37/PdUx+k099NsF487JTqly5djM3OSfVoY9fRZlVaXwJKVhxoJTozl3XmUt?=
+ =?us-ascii?Q?EDXaFku8CLV7KLrH3P1hUC41l8Kucql4RoupGEWw8A/XGFZYkp+/hfplpLv0?=
+ =?us-ascii?Q?9uNGSvNSZ83nwvXkc0HF+jJFtf1TXoe22qYWb3e8n6ums80ZhfQadosKLtgY?=
+ =?us-ascii?Q?VBBY6oFRlyyVWVqv5k9hmv/vR03QCr2vpkkYgaIQWkzuUcZrBfHr3MAs8cBM?=
+ =?us-ascii?Q?2CNo5T54CWer3T+z9LoSw/abB6A/NKlsEYcZErxFXRR6cYc1NSjSH33bQXI3?=
+ =?us-ascii?Q?rek/+6c3WpTFqmekMBmXbp+WJhF2/8sQs/DdKffdkwp0kDhx/4in/tPLhWX8?=
+ =?us-ascii?Q?/OlTTjEOmbs1yVjZer/qmnQUnzKNIpR9BVkpg9/P9Kk06Hc+ud2x7wWCubee?=
+ =?us-ascii?Q?sBgsN78budFd98HOB3htBhVDXgGyCsoB5qS9cotu/xC1cIJHmINp/Q4opaMi?=
+ =?us-ascii?Q?LrQK/CjFVPV5wXWAvnsUZRmbrZ635C6NKMi5msIEHluHLPu0kcMExkKy17XQ?=
+ =?us-ascii?Q?ooLpqyI18dJMy+jr7l5TrA2OeiCxSGB1K80XuuqGfYefCt9I2OTCpA+Ig73c?=
+ =?us-ascii?Q?9qKbzp0RQtQJB5AWn/0ICt+8eOgl5r6uJu3IpjmW8tTrG/VCQCOgfqIe8nuJ?=
+ =?us-ascii?Q?m9nJf8lAT7wageEkhJ/p2i/sVZkdBNQ+u81/xa8ZFLh2HXRaaxYEfLH3dOBs?=
+ =?us-ascii?Q?HXySNZ/9RvLZ+KrdY4s9kJQcGFb7M1MbxPqr0wwU9+kx5A8/ZHxDxRul1ksY?=
+ =?us-ascii?Q?bMiI5GSTjuZEhLQUeTGMbmEChNd1VYMyo0pT6zXBh+pf2BfC00JKlYmnld8G?=
+ =?us-ascii?Q?S4ORyLINlZC53f/MS4Ccr/Zavjo3vZ/0R394Go6WRW4l0fFowATkeAAlsWxJ?=
+ =?us-ascii?Q?KFVU87+5Z0BS7qpHmaM+t6qZfcU4Cm9CKAXP1kWjRmF+ye2kHXGrJEsyAC1O?=
+ =?us-ascii?Q?SHIc7bnEx1aUG9BloXdtrSDk71V9DJKqSKKSRu5P0Xbo0hXfETsbKC3Gyc5u?=
+ =?us-ascii?Q?LjZjBzsLp9UfrkfM+5sogb6j?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0501224b-2f51-4023-f19b-08d935ed5be0
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4754.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2021 02:19:41.5760
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: C2Jl7SkQfrH3ZNchF/19C8dR0Dxtbl5wwzyupT94sjQ3DBN1FB3Fa55E+/5LxVurx2X+PczbMSIGfCp0MkGHIeakp0IZNyT4vfUGowEYZto=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1568
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10023 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ mlxscore=0 mlxlogscore=999 adultscore=0 phishscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106230010
+X-Proofpoint-ORIG-GUID: ub1wfbhwZ-_asq6isXSjlCvjRLzogAOU
+X-Proofpoint-GUID: ub1wfbhwZ-_asq6isXSjlCvjRLzogAOU
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yang Shi <shy828301@gmail.com> writes:
 
-> On Mon, Jun 21, 2021 at 7:09 PM Huang, Ying <ying.huang@intel.com> wrote:
->>
->> Yang Shi <shy828301@gmail.com> writes:
->>
->> > On Sat, Jun 19, 2021 at 12:45 AM Huang, Ying <ying.huang@intel.com> wrote:
->> >>
->> >> Zi Yan <ziy@nvidia.com> writes:
->> >>
->> >> > On 18 Jun 2021, at 2:15, Huang Ying wrote:
->> >> >
->> >> >> From: Dave Hansen <dave.hansen@linux.intel.com>
->> >> >>
->> >> >> This is mostly derived from a patch from Yang Shi:
->> >> >>
->> >> >>      https://lore.kernel.org/linux-mm/1560468577-101178-10-git-send-email-yang.shi@linux.alibaba.com/
->> >> >>
->> >> >> Add code to the reclaim path (shrink_page_list()) to "demote" data
->> >> >> to another NUMA node instead of discarding the data.  This always
->> >> >> avoids the cost of I/O needed to read the page back in and sometimes
->> >> >> avoids the writeout cost when the pagee is dirty.
->> >> >>
->> >> >> A second pass through shrink_page_list() will be made if any demotions
->> >> >> fail.  This essentally falls back to normal reclaim behavior in the
->> >> >> case that demotions fail.  Previous versions of this patch may have
->> >> >> simply failed to reclaim pages which were eligible for demotion but
->> >> >> were unable to be demoted in practice.
->> >> >>
->> >> >> Note: This just adds the start of infratructure for migration. It is
->> >> >> actually disabled next to the FIXME in migrate_demote_page_ok().
->> >> >>
->> >> >> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
->> >> >> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
->> >> >> Cc: Michal Hocko <mhocko@suse.com>
->> >> >> Cc: Wei Xu <weixugc@google.com>
->> >> >> Cc: Yang Shi <yang.shi@linux.alibaba.com>
->> >> >> Cc: David Rientjes <rientjes@google.com>
->> >> >> Cc: Dan Williams <dan.j.williams@intel.com>
->> >> >> Cc: osalvador <osalvador@suse.de>
->> >> >>
->> >> >> --
->> >> >> changes from 20210122:
->> >> >>  * move from GFP_HIGHUSER -> GFP_HIGHUSER_MOVABLE (Ying)
->> >> >>
->> >> >> changes from 202010:
->> >> >>  * add MR_NUMA_MISPLACED to trace MIGRATE_REASON define
->> >> >>  * make migrate_demote_page_ok() static, remove 'sc' arg until
->> >> >>    later patch
->> >> >>  * remove unnecessary alloc_demote_page() hugetlb warning
->> >> >>  * Simplify alloc_demote_page() gfp mask.  Depend on
->> >> >>    __GFP_NORETRY to make it lightweight instead of fancier
->> >> >>    stuff like leaving out __GFP_IO/FS.
->> >> >>  * Allocate migration page with alloc_migration_target()
->> >> >>    instead of allocating directly.
->> >> >> changes from 20200730:
->> >> >>  * Add another pass through shrink_page_list() when demotion
->> >> >>    fails.
->> >> >> changes from 20210302:
->> >> >>  * Use __GFP_THISNODE and revise the comment explaining the
->> >> >>    GFP mask constructionn
->> >> >> ---
->> >> >>  include/linux/migrate.h        |  9 ++++
->> >> >>  include/trace/events/migrate.h |  3 +-
->> >> >>  mm/vmscan.c                    | 83 ++++++++++++++++++++++++++++++++++
->> >> >>  3 files changed, 94 insertions(+), 1 deletion(-)
->> >> >>
->> >> >> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
->> >> >> index 4a49bb358787..42952cbe452b 100644
->> >> >> --- a/include/linux/migrate.h
->> >> >> +++ b/include/linux/migrate.h
->> >> >> @@ -28,6 +28,7 @@ enum migrate_reason {
->> >> >>      MR_NUMA_MISPLACED,
->> >> >>      MR_CONTIG_RANGE,
->> >> >>      MR_LONGTERM_PIN,
->> >> >> +    MR_DEMOTION,
->> >> >>      MR_TYPES
->> >> >>  };
->> >> >>
->> >> >> @@ -191,6 +192,14 @@ struct migrate_vma {
->> >> >>  int migrate_vma_setup(struct migrate_vma *args);
->> >> >>  void migrate_vma_pages(struct migrate_vma *migrate);
->> >> >>  void migrate_vma_finalize(struct migrate_vma *migrate);
->> >> >> +int next_demotion_node(int node);
->> >> >> +
->> >> >> +#else /* CONFIG_MIGRATION disabled: */
->> >> >> +
->> >> >> +static inline int next_demotion_node(int node)
->> >> >> +{
->> >> >> +    return NUMA_NO_NODE;
->> >> >> +}
->> >> >>
->> >> >>  #endif /* CONFIG_MIGRATION */
->> >> >>
->> >> >> diff --git a/include/trace/events/migrate.h b/include/trace/events/migrate.h
->> >> >> index 9fb2a3bbcdfb..779f3fad9ecd 100644
->> >> >> --- a/include/trace/events/migrate.h
->> >> >> +++ b/include/trace/events/migrate.h
->> >> >> @@ -21,7 +21,8 @@
->> >> >>      EM( MR_MEMPOLICY_MBIND, "mempolicy_mbind")              \
->> >> >>      EM( MR_NUMA_MISPLACED,  "numa_misplaced")               \
->> >> >>      EM( MR_CONTIG_RANGE,    "contig_range")                 \
->> >> >> -    EMe(MR_LONGTERM_PIN,    "longterm_pin")
->> >> >> +    EM( MR_LONGTERM_PIN,    "longterm_pin")                 \
->> >> >> +    EMe(MR_DEMOTION,        "demotion")
->> >> >>
->> >> >>  /*
->> >> >>   * First define the enums in the above macros to be exported to userspace
->> >> >> diff --git a/mm/vmscan.c b/mm/vmscan.c
->> >> >> index 5199b9696bab..ddda32031f0c 100644
->> >> >> --- a/mm/vmscan.c
->> >> >> +++ b/mm/vmscan.c
->> >> >> @@ -41,6 +41,7 @@
->> >> >>  #include <linux/kthread.h>
->> >> >>  #include <linux/freezer.h>
->> >> >>  #include <linux/memcontrol.h>
->> >> >> +#include <linux/migrate.h>
->> >> >>  #include <linux/delayacct.h>
->> >> >>  #include <linux/sysctl.h>
->> >> >>  #include <linux/oom.h>
->> >> >> @@ -1231,6 +1232,23 @@ static enum page_references page_check_references(struct page *page,
->> >> >>      return PAGEREF_RECLAIM;
->> >> >>  }
->> >> >>
->> >> >> +static bool migrate_demote_page_ok(struct page *page)
->> >> >> +{
->> >> >> +    int next_nid = next_demotion_node(page_to_nid(page));
->> >> >> +
->> >> >> +    VM_BUG_ON_PAGE(!PageLocked(page), page);
->> >> >> +    VM_BUG_ON_PAGE(PageHuge(page), page);
->> >> >> +    VM_BUG_ON_PAGE(PageLRU(page), page);
->> >> >> +
->> >> >> +    if (next_nid == NUMA_NO_NODE)
->> >> >> +            return false;
->> >> >> +    if (PageTransHuge(page) && !thp_migration_supported())
->> >> >> +            return false;
->> >> >> +
->> >> >> +    // FIXME: actually enable this later in the series
->> >> >> +    return false;
->> >> >> +}
->> >> >> +
->> >> >>  /* Check if a page is dirty or under writeback */
->> >> >>  static void page_check_dirty_writeback(struct page *page,
->> >> >>                                     bool *dirty, bool *writeback)
->> >> >> @@ -1261,6 +1279,47 @@ static void page_check_dirty_writeback(struct page *page,
->> >> >>              mapping->a_ops->is_dirty_writeback(page, dirty, writeback);
->> >> >>  }
->> >> >>
->> >> >> +static struct page *alloc_demote_page(struct page *page, unsigned long node)
->> >> >> +{
->> >> >> +    struct migration_target_control mtc = {
->> >> >> +            /*
->> >> >> +             * Allocate from 'node', or fail the quickly and quietly.
->> >> >> +             * When this happens, 'page; will likely just be discarded
->> >> >> +             * instead of migrated.
->> >> >> +             */
->> >> >> +            .gfp_mask = (GFP_HIGHUSER_MOVABLE & ~__GFP_RECLAIM) |
->> >> >> +                        __GFP_THISNODE  | __GFP_NOWARN |
->> >> >> +                        __GFP_NOMEMALLOC | GFP_NOWAIT,
->> >> >> +            .nid = node
->> >> >> +    };
->> >> >> +
->> >> >> +    return alloc_migration_target(page, (unsigned long)&mtc);
->> >> >> +}
->> >> >> +
->> >> >> +/*
->> >> >> + * Take pages on @demote_list and attempt to demote them to
->> >> >> + * another node.  Pages which are not demoted are left on
->> >> >> + * @demote_pages.
->> >> >> + */
->> >> >> +static unsigned int demote_page_list(struct list_head *demote_pages,
->> >> >> +                                 struct pglist_data *pgdat,
->> >> >> +                                 struct scan_control *sc)
->> >> >> +{
->> >> >> +    int target_nid = next_demotion_node(pgdat->node_id);
->> >> >> +    unsigned int nr_succeeded = 0;
->> >> >> +    int err;
->> >> >> +
->> >> >> +    if (list_empty(demote_pages))
->> >> >> +            return 0;
->> >> >> +
->> >> >> +    /* Demotion ignores all cpuset and mempolicy settings */
->> >> >> +    err = migrate_pages(demote_pages, alloc_demote_page, NULL,
->> >> >> +                        target_nid, MIGRATE_ASYNC, MR_DEMOTION,
->> >> >> +                        &nr_succeeded);
->> >> >> +
->> >> >> +    return nr_succeeded;
->> >> >> +}
->> >> >> +
->> >> >>  /*
->> >> >>   * shrink_page_list() returns the number of reclaimed pages
->> >> >>   */
->> >> >> @@ -1272,12 +1331,15 @@ static unsigned int shrink_page_list(struct list_head *page_list,
->> >> >>  {
->> >> >>      LIST_HEAD(ret_pages);
->> >> >>      LIST_HEAD(free_pages);
->> >> >> +    LIST_HEAD(demote_pages);
->> >> >>      unsigned int nr_reclaimed = 0;
->> >> >>      unsigned int pgactivate = 0;
->> >> >> +    bool do_demote_pass = true;
->> >> >>
->> >> >>      memset(stat, 0, sizeof(*stat));
->> >> >>      cond_resched();
->> >> >>
->> >> >> +retry:
->> >> >>      while (!list_empty(page_list)) {
->> >> >>              struct address_space *mapping;
->> >> >>              struct page *page;
->> >> >> @@ -1426,6 +1488,16 @@ static unsigned int shrink_page_list(struct list_head *page_list,
->> >> >>                      ; /* try to reclaim the page below */
->> >> >>              }
->> >> >>
->> >> >> +            /*
->> >> >> +             * Before reclaiming the page, try to relocate
->> >> >> +             * its contents to another node.
->> >> >> +             */
->> >> >> +            if (do_demote_pass && migrate_demote_page_ok(page)) {
->> >> >> +                    list_add(&page->lru, &demote_pages);
->> >> >> +                    unlock_page(page);
->> >> >> +                    continue;
->> >> >> +            }
->> >> >> +
->> >> >>              /*
->> >> >>               * Anonymous process memory has backing store?
->> >> >>               * Try to allocate it some swap space here.
->> >> >> @@ -1676,6 +1748,17 @@ static unsigned int shrink_page_list(struct list_head *page_list,
->> >> >>              list_add(&page->lru, &ret_pages);
->> >> >>              VM_BUG_ON_PAGE(PageLRU(page) || PageUnevictable(page), page);
->> >> >>      }
->> >> >> +    /* 'page_list' is always empty here */
->> >> >> +
->> >> >> +    /* Migrate pages selected for demotion */
->> >> >> +    nr_reclaimed += demote_page_list(&demote_pages, pgdat, sc);
->> >> >> +    /* Pages that could not be demoted are still in @demote_pages */
->> >> >> +    if (!list_empty(&demote_pages)) {
->> >> >> +            /* Pages which failed to demoted go back on @page_list for retry: */
->> >> >> +            list_splice_init(&demote_pages, page_list);
->> >> >> +            do_demote_pass = false;
->> >> >> +            goto retry;
->> >> >> +    }
->> >> >>
->> >> >>      pgactivate = stat->nr_activate[0] + stat->nr_activate[1];
->> >> >>
->> >> >> --
->> >> >> 2.30.2
->> >> >
->> >> > shrink_page_list() is also used by reclaim_pages(), which is called by
->> >> > madvise(MADV_PAGEOUT). This patch changes the semantics of madvise(MADV_PAGEOUT)
->> >> > from “reclaim a given range of pages” to migrate the given pages to lower
->> >> > tier memory or reclaim them if the migration fails. You might want to check
->> >> > the caller of shrink_page_list() to avoid changing madvise(MADV_PAGEOUT)
->> >> > semantics.
->> >>
->> >> Thanks for pointing this out!
->> >>
->> >> Literally, PAGEOUT means writing the page to the disk instead of
->> >> migrating pages to the lower tier.  So it seems reasonable to make it
->> >> keep the original behavior instead of demoting even if in the tiered
->> >> memory system.
->> >>
->> >> If nobody objects, I will change this in the next version.
->> >
->> > I don't have a strong opinion on this. But I just thought why not let
->> > PAGEOUT do demotion if tier'ed memory is available and the "migration
->> > in lieu of discard" behavior is opt'ed in by a knob and we keep the
->> > consistency between passive reclaim and proactive reclaim.
->>
->> I thought about that too.  Considering the kernel API naming, is it
->> better to define MADV_PAGEOUT as writing to disk, and MADV_COLD as
->> demoting to the lower tier if enabled.
->
-> IMHO we don't have to bind kernel APIs semantics to hardware
-> configuration, right?
+Christophe,
 
-Yes.  We shouldn't bind the kernel API to some specific hardware
-configuration, but we can bind it to the general hardware concept.  Per
-my understanding, from naming, MADV_PAGEOUT means freeing the specified
-pages from MEMORY via saving the necessary information in STORAGE,
-regardless whether the memory is DRAM, PMEM, or something else.  Per my
-understanding, your suggestion is something like freeing the specified
-pages from the TOP TIER MEMORY (DRAM normally) via saving the necessary
-information in the lower tier memory or the storage.  We may need that
-kind of API at some point.  I just think that from naming, MADV_PAGEOUT
-is for general MEMORY instead of the top tier memory or DRAM.
+> If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
+> must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
+> call, as already done in the remove function.
 
-> IIUC, MADV_PAGEOUT means "we don't need it
-> anymore just reclaim the page" so shrink_page_list() is called
-> eventually, but do we really care whether the page is dropped (i.e.
-> clean file page), written out to swap partition or just migrated to
-> lower tier node when "migration in lieu of discard" is on?
->
-> MADV_COLD seems more straight forward, it just moves the page to the
-> inactive list. I don't think the patchset changes anything.
+Applied to 5.14/scsi-staging, thanks!
 
-Per my understanding, this sounds like binding the kernel API to the
-implementation.  But we may change the implementation in the long run.
-
-> Anyway I don't have the best answer, IMHO I'd say let's keep it as is
-> for now. We could revisit it when the usecases get clearer.
-
-Yes.  Because the use cases aren't clear, I agree that we should do the
-most basic support.
-
-Best Regards,
-Huang, Ying
+-- 
+Martin K. Petersen	Oracle Linux Engineering
