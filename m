@@ -2,80 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3CD3B19B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC5E03B19B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhFWMTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:19:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57478 "EHLO
+        id S230268AbhFWMUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhFWMTO (ORCPT
+        with ESMTP id S230019AbhFWMUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:19:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A463C061574;
-        Wed, 23 Jun 2021 05:16:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UZNtU7hYcqZpBzA1yCiqhGXNHHIoefG0OGqkF1QWY0U=; b=EneXs4ZyYT6XLmV/Zea7qgUKKt
-        ruGkYX2+qqFBxvY2oAteLxRUuN7icF98hCE7dvLsRV1iPYZZntb+7EC15pwNLpyGCT6AoeaS9LH2V
-        EGmItigKyXvQuzliOYAXioxwDFNS1SvAouwRCEvHEbsHEEZFQ9JcHO29vXEdjeO4dApZqkmMSb4I1
-        Bq+N8q2TxmxXgrmj1pzxq3de4Q9qb5n1H5x9eaX+qhVl+Hn3cfMwobdJiy/RaSdV+xTbwuVyetn+5
-        sDv+fWx72sY1KwIMvyirZaRNlQktbrPI6u9e0BXDwQ2yMDF3yTptUBVTb+2+sVHHkGoulAIh/jSpd
-        K6hbJ0iQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lw1nP-00FOtj-TT; Wed, 23 Jun 2021 12:16:13 +0000
-Date:   Wed, 23 Jun 2021 13:15:55 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 46/46] mm/filemap: Add FGP_STABLE
-Message-ID: <YNMl+4me2lUxiy6M@casper.infradead.org>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-47-willy@infradead.org>
- <YNMeYqPkzESAkojd@infradead.org>
+        Wed, 23 Jun 2021 08:20:15 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0EFC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:17:56 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id u11so2380271wrw.11
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:17:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=immu-ne.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KuVFAJxMALq05Bzeoy9nqG4MLHSRlPaxvvFAUb5EeGY=;
+        b=jlzRfYswY5CR74NIvgjjjLj932LY+6Ad4V1u62rEpXASsP2wnq6xAkE3eTKGG5ia6z
+         ATkL7W58410WWOJ4r8/BBGCAOvjQgapPdwVbRhp5RNdSuWz2LJHN1akhn3DWOiEZs5Xn
+         H5N/YnrFLKjQcIpm0N/zWmQHyd/WIUx9zcGWbRbP9jIuJV6lZGtMf9k4K0ruxXMbxA6Z
+         YEDBiX07kuwCLHWXBKnbsAPfD5ezwUFys/gEz5uKAY8jqUIdiKOB1kiCzwv3POokxE6L
+         hzyySC0Xqkkmj+oiQUEU9yR6ugBBCcxF6mEh6x5gyFMPUuzUKiyphtYtWnAzvUJgX3N+
+         XGSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KuVFAJxMALq05Bzeoy9nqG4MLHSRlPaxvvFAUb5EeGY=;
+        b=Bha3oEextppsvzxFn4yIzN+p+cFlIlp/9UARuoPkMKDAqV+FVZBajR2MwiG5qIng5J
+         CMC7FuO70Knr47sMShvxpPJ6p2FRP1c8WQe+UngHqlcpObLjM8ME2bChn1PNHQHXxddj
+         J9e2GH0hgtxGAXrREfc5ADMuRUEqedDqzeIkuyAWWr2zl/tmvPezndiszS+ztGQ/wnXb
+         3avmm17zwlI+O3fThlfsB9oJBQMB4Kzz4TVLr/mFesPMEzSZNzuBC7Bde5IfbUlkkF3U
+         phYPVfB9VNEVTCuV+dZF/3hrYdcBGf4dXLTtwvXTVKRwOXNaFzoNT0KaCvCockUnvlMG
+         /nNQ==
+X-Gm-Message-State: AOAM533exAMIXP97rhD09Xdh8E/UBk46brbZJj/qPgR8YL+3Ko1vU9la
+        QHsAAgUn+e+BtHkfhmXENqUcGUtzWRr+OL/x
+X-Google-Smtp-Source: ABdhPJwhMEY/Tg5fuEFD1TW4FbI86HGuN2hWzOLC/lejHps4GYNz6Vr/0DeEff4RfLRrKhCq522Kig==
+X-Received: by 2002:adf:c18a:: with SMTP id x10mr11246588wre.193.1624450675576;
+        Wed, 23 Jun 2021 05:17:55 -0700 (PDT)
+Received: from [172.25.20.242] (b2b-78-94-0-50.unitymedia.biz. [78.94.0.50])
+        by smtp.gmail.com with ESMTPSA id t82sm5764991wmf.22.2021.06.23.05.17.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 05:17:55 -0700 (PDT)
+Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via
+ sysfs
+To:     David Laight <David.Laight@ACULAB.COM>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "philipp.deppenwiese@immu.ne" <philipp.deppenwiese@immu.ne>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+References: <20210622142334.14883-1-hans-gert.dahmen@immu.ne>
+ <5ee9e467bfbf49d29cb54679d2dce1c3@AcuMS.aculab.com>
+From:   Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
+Message-ID: <d61176a0-67cf-268f-8c31-8de8739753c3@immu.ne>
+Date:   Wed, 23 Jun 2021 14:17:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNMeYqPkzESAkojd@infradead.org>
+In-Reply-To: <5ee9e467bfbf49d29cb54679d2dce1c3@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 01:43:30PM +0200, Christoph Hellwig wrote:
-> On Tue, Jun 22, 2021 at 01:15:51PM +0100, Matthew Wilcox (Oracle) wrote:
-> > Allow filemap_get_folio() to wait for writeback to complete (if the
-> > filesystem wants that behaviour).  This is the folio equivalent of
-> > grab_cache_page_write_begin(), which is moved into the folio-compat
-> > file as a reminder to migrate all the code using it.  This paves the
-> > way for getting rid of AOP_FLAG_NOFS once grab_cache_page_write_begin()
-> > is removed.
-> 
-> We actually should kill FGP_NOFS as well by switching everything over
-> to memalloc_nofs_{save, restore} eventually, given how error prone
-> all these manual flags settings are.
+Hi,
 
-Well, yes, but it's been four years and we still have over 1100 uses of
-GFP_NOFS.  Until someone takes on that Augean Stables, we're going to need
-FGP_NOFS.  I added that context to the readahead path in f2c817bed58d,
-but of course that doesn't let me remove any uses of GFP_NOFS.
+these are some good points.
 
-> > diff --git a/mm/folio-compat.c b/mm/folio-compat.c
-> > index 78365eaee7d3..206bedd621d0 100644
-> > --- a/mm/folio-compat.c
-> > +++ b/mm/folio-compat.c
-> > @@ -115,6 +115,7 @@ void lru_cache_add(struct page *page)
-> >  }
-> >  EXPORT_SYMBOL(lru_cache_add);
-> >  
-> > +noinline
-> >  struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
-> >  		int fgp_flags, gfp_t gfp)
-> 
-> How did that sneak in here?
+On 23.06.21 00:18, David Laight wrote:
+> Are you saying that my 15 year old 64bit Athlon cpu and bios
+> have this large SPI flash
 
-Without it, pagecache_get_page() gets inlined by
-grab_cache_page_write_begin() which is just too much code.
+No. The reads will wrap, i.e. if your flash is 2MB then it would be 
+repeated 8 times in the 16MB window.
+
+> and the required hardware to
+> convert bus cycles to serial spi reads?
+
+Yes. The window is part of the DMI interface and the south bridge or PCH 
+converts the bus cycles to SPI reads. It is because this region contains 
+the reset vector address of your CPU and the very first instruction it 
+executes after a reset when the internal setup is done will actually be 
+loaded from the serial SPI bus. It is AFAIK part of AMD's original 
+64-bit specification.
+
+However, after reading your mail I understand that I should have looked 
+up the exact explanations in the respective specs. So to definitively 
+answer your question I need to know which south bridge there is in your 
+15 year old system and have a look into its datasheet. Do you know which 
+one it is by any chance?
+
+Hans-Gert Dahmen
