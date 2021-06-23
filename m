@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 960CE3B120E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 05:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDA63B1212
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 05:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhFWDRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 23:17:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
+        id S230354AbhFWDTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 23:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbhFWDRh (ORCPT
+        with ESMTP id S229907AbhFWDTI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 23:17:37 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D278C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 20:15:20 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id g4so712119pjk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 20:15:20 -0700 (PDT)
+        Tue, 22 Jun 2021 23:19:08 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21720C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 20:16:52 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id i17so1183593ilj.11
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 20:16:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=TuCy8+xkSVnt5Wvjvnwh0oeMFS0ejFv9priNd5TkRqQ=;
-        b=cG4bJf/iowDxrn+Pd0mzF9l2OghEQ+/GMmF/toFW3RtBNfInDieq+h2fdr7W5WG+L2
-         qGWY3jPZ/AzziJ6L7uNKCa3PT10hUP0g3weLHm2iayaxC2O/OhnicSbZxaNDIoj3gHsX
-         BaFM7FXs5/07EmMkot4IgozRn6BxtZ5vV5FKA1KRDthBO/6GuaHq9CxBQVstAcGLkTot
-         dSdG4utG32FVNZ5MnWysmwkbNXzokFJuXpvH4R0AJGWfKXh/goCoOBs1L8zYjcZypuYW
-         modgX+u4ldDMD8h3FZF8f/YWXdVeazndwdVgMsyPsw7VT5UuUXkftXcHCrFw4KHUZW6g
-         1fEg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=81j1L3Z0NPJObfy71geJUOaAbAIew4nBFk+r15S0NkU=;
+        b=JkV8PUtCiP2oRsRojloQpoP46P+MNc85lg/QW9qe5hOPK/jcIeWOSCq/m5Y5w2alCl
+         kWxFiq7L0VHAGPqN4i04JArH+D1FF2h5+3zGXR+SLgeh/aiAtLnp48L+ftYvDrVDhj0F
+         WA2gNNoH49mWCL37FYLi3XuSQwNdRZX2LvbOV4lZYJ8xDu4NDV1qmpYi0BaBaoo60ida
+         bb61Cc63jYsO7kHRaGZ+ToNKx1flrqrOGcqtTJ6LeQsgYdAJf+3BEv5Xk0ED02kMSb0n
+         4scbWXfmjxEgmvers+XJTvJggL1ajUH/+B2je0RI1iCyKSSRmtszUPep9NAxjIERmSKd
+         04Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TuCy8+xkSVnt5Wvjvnwh0oeMFS0ejFv9priNd5TkRqQ=;
-        b=VdTFDx9XbG28xSPoIjDjRcDJUKa/h5QJbNm+yCFPeSRUOvFbHBQGwG6Qav9UFFa88l
-         vrmsP0qjGcJRNFEtyILo4rs/k74Ckx7gHySCV+Xs5qYr3DZCY/BL6mgWO1HupY48/hrQ
-         V4nIt9W66GQJQFIEmfwLuVzSXMDLgPyAnL19IjpQUXms6GABxKcM+3z9D4g8xXW4VYmF
-         vgIUuFPpfPC3mKpRYxuv+8a9Em5YNId60hm/gd5sxTYum+O0v1gOR1k8a1txVSpF6yCE
-         2eFCMf2QYL6bFIqM5GkJtMxmKpzNcW0In2LUl4wxiP3mv9VS/hewpOdF+dtlbGDuXEN+
-         FM4g==
-X-Gm-Message-State: AOAM533dBnnzisHQeRO0+iTKq01ZREVutATATt20TqL/ksjgB5gYv1mg
-        YyMPnnwaPXguuDPEmFpyGGfkYw==
-X-Google-Smtp-Source: ABdhPJzJQB81msBICR6glRTkaUTRQt50ey4SO5o8UwaeyNGNaaBktoTMV8qvj3S/aH9E7OXeSZOVVA==
-X-Received: by 2002:a17:902:b7c9:b029:122:ee2d:25f1 with SMTP id v9-20020a170902b7c9b0290122ee2d25f1mr18423595plz.14.1624418119745;
-        Tue, 22 Jun 2021 20:15:19 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id j15sm3490167pjn.28.2021.06.22.20.15.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 20:15:19 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 08:45:17 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
-        linux-pm@vger.kernel.org, amitk@kernel.org, rui.zhang@intel.com,
-        dietmar.eggemann@arm.com, Chris.Redpath@arm.com,
-        Beata.Michalska@arm.com, rjw@rjwysocki.net, amit.kachhap@gmail.com
-Subject: Re: [RFC PATCH 3/4] cpufreq: Add Active Stats calls tracking
- frequency changes
-Message-ID: <20210623031517.tldkue7dcx4bt7gn@vireshk-i7>
-References: <20210622075925.16189-1-lukasz.luba@arm.com>
- <20210622075925.16189-4-lukasz.luba@arm.com>
- <20210622093258.lddlznwsndpw5mju@vireshk-i7>
- <a5d5d6b8-f358-d1d6-86d0-750af76b0cfb@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=81j1L3Z0NPJObfy71geJUOaAbAIew4nBFk+r15S0NkU=;
+        b=uToHEMaMgCkZft3SXqSEG6cnKJ0X/Am1xi/Dtt9fmoz6RR7XG4Am7dkciI8NDBH3rI
+         B74S5rgvlT2GbasKKwIVcZblle7En6t8b//eY0iWdUPHu6lobrgV8YMIpcy94UGMKlru
+         XjZn7UdVbGNQiETh2R57lG+iLCBy8hjtZIx1FKqNmg+zUZUjLuMDQluGli5XKsLfmv4j
+         W/somYMdKo2CTiVkLoWZnKG4QjncxQeBegV/vgkhEi/g22Oftw9RmlRlZ/i9x5zEr2YO
+         gJ2hrBXBeq7IHLlhSHhXVc/IW5j9RgkP+iQlxKPebUOzyYpJslpXCJoIhz4WZ7j++ZDe
+         KHFA==
+X-Gm-Message-State: AOAM5329ci0OCPOw5I+uqpo7y86V2BXOcReTVoO/qxIjPOBrO5wrzeDG
+        zsQzkd8k/A3OlTR71laGFuaTUGknEeXbnKaMYqgVjhr6Sds=
+X-Google-Smtp-Source: ABdhPJxgV67nlwwWQFdrTSpKH0DzzwtRC/WJFLnC2snGJZ/ZnRC6kZmGV+4bIvxpWynSTSXHoL3QX0k4EV8eaCDWtKM=
+X-Received: by 2002:a92:c5c2:: with SMTP id s2mr1267534ilt.164.1624418211606;
+ Tue, 22 Jun 2021 20:16:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a5d5d6b8-f358-d1d6-86d0-750af76b0cfb@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20210622124211.715378-1-qiang.zhang@windriver.com>
+In-Reply-To: <20210622124211.715378-1-qiang.zhang@windriver.com>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Wed, 23 Jun 2021 11:16:40 +0800
+Message-ID: <CAJhGHyCNXEPEb0t9KLXafx8TPntjWFFH-T9uFUTsuGAQxVcZTw@mail.gmail.com>
+Subject: Re: [PATCH v2] workqueue: set the rescuer worker that belong to
+ freezable wq is freezable
+To:     "Zhang, Qiang" <qiang.zhang@windriver.com>
+Cc:     Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-06-21, 12:07, Lukasz Luba wrote:
-> That cpufreq_stats_record_transition() is present only if
-> CONFIG_CPU_FREQ_STAT is set. I didn't wanted to be dependent on
-> this config.
+On Tue, Jun 22, 2021 at 8:42 PM <qiang.zhang@windriver.com> wrote:
+>
+> From: Zqiang <qiang.zhang@windriver.com>
+>
+> If the rescuer worker belong to freezable wq, when this wq is
+> frozen, the rescuer worker also need to be frozen.
 
-Right, but you can also update the dummy
-cpufreq_stats_record_transition() function as well and you won't
-depend on the CONFIG then.
+Hello,
 
-> > 
-> > Plus don't you need to record this for all policy->cpus instead of
-> > just policy->cpu ?
-> > 
-> 
-> It will be accounted for all cpus in that freq domain. The
-> active_stats_cpu_freq_fast_change() implementation uses
-> a shared structure (single for whole domain) 'shared_ast':
-> _active_stats_cpu_freq_change(ast->shared_ast, freq, ts)
-> (from patch 1/4)
+From my understanding, the wq subsystem doesn't use set_freezable(),
+try_to_freeze() families.  For example, the worker_thread() doesn't
+use set_freezable(), neither do in your patch. If kthreads
+in the wq subsystem need these functions, please let us know.
 
-Ahh, I missed that then.
+The way the wq subsystem to freeze tasks is by freeze_workqueues_begin()
+and thaw_workqueues().  When WQs is requested for freezing,
+they will stop activating work items.  All the workers including
+*rescuers* will be scheduled as TASK_IDLE when all the activated work
+items are processed and the whole wq subsystem is frozen unless
+there is any semantic change about TASK_IDLE V.S. "frozen".
+(rescuers can also only process activated work items.)
 
--- 
-viresh
+Thanks
+Lai
+
+>
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> ---
+>  v1->v2:
+>  use kthread_freezable_should_stop() replaces try_to_freeze().
+>
+>  kernel/workqueue.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> index 104e3ef04e33..dd7b78bdb7f1 100644
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -2476,6 +2476,9 @@ static int rescuer_thread(void *__rescuer)
+>          * doesn't participate in concurrency management.
+>          */
+>         set_pf_worker(true);
+> +
+> +       if (wq->flags & WQ_FREEZABLE)
+> +               set_freezable();
+>  repeat:
+>         set_current_state(TASK_IDLE);
+>
+> @@ -2487,7 +2490,7 @@ static int rescuer_thread(void *__rescuer)
+>          * @wq->maydays processing before acting on should_stop so that the
+>          * list is always empty on exit.
+>          */
+> -       should_stop = kthread_should_stop();
+> +       should_stop = kthread_freezable_should_stop(NULL);
+>
+>         /* see whether any pwq is asking for help */
+>         raw_spin_lock_irq(&wq_mayday_lock);
+> --
+> 2.25.1
+>
