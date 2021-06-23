@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952F03B20C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E513B20C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbhFWTEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 15:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbhFWTEu (ORCPT
+        id S229881AbhFWTGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 15:06:36 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:37004 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhFWTGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 15:04:50 -0400
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97DF7C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 12:02:31 -0700 (PDT)
-Received: by mail-oo1-xc2f.google.com with SMTP id k21-20020a4a2a150000b029024955603642so984146oof.8
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 12:02:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MRqftscF1FzfzzSjl5zFo7iO4VJxE2+eaqEj1NzMIwk=;
-        b=N3zmO53vFPvwU+U7IahzduZVgdhRclf7RioMWOY+16NWHJ0+cf/uqdULwG4OvgCQzk
-         Z6QN1tXNYwWWK9PuDVzuLkTlINpbkyhFYm6US7NUtvm7pzLLQV3daJvVqQnGZxOAjy0l
-         jAnBACNa/mO2/NxRq+VFB9DvMh8xuTW6lKvZ86vb97EtPEi7hZv/zYhR+pd/cvohlto8
-         Pq8LEF2+gZaR0LjsQz1yiiPJsC/kP+mxmUZ1/1VRzEyQhxW8yW27q7qb6OeNRa4e6Pwm
-         5xUykPTFC1nvHZJ79TwbMEjjtMA45P1oAGfvzsW9OIoYtpz0Qj/tsyhCfORb8jz1hG9i
-         KYag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MRqftscF1FzfzzSjl5zFo7iO4VJxE2+eaqEj1NzMIwk=;
-        b=eBFV7SOs0kM9Jvo4mOktI8OGERkCk21uh+cGN0W8Qa637GzZbytCj/C7ng5+78O/rA
-         ZAHr56Oumleq1hokVhiiYbAKCruTJvhet1tTR/YY7XRMn84L83QKVXSmpa1EovaIvNYj
-         s/PA1E216SJ6axO309BCz0qzclx9el8LuwLZ9OZXl2Zj5Y0iKgoeJ0hIkAh+4vsJom4k
-         0CezQOeEpYhFNP6r4pXbejMFQQbhVv4GysCzMWuc7M+MNafTyHIbNAcbgAxrCOCu2B1n
-         0bR8NiXLdqYEx3W6+hMOyR2GKHBa6RljGHSJoitPK3uD/PbhcSY5MnaQMjBueef71fXb
-         UgIQ==
-X-Gm-Message-State: AOAM5322+pbSgZOlsOjQlbCxOca6nAgtP6yY3FriAzZNJfhmrQAjGqqs
-        x0kvGcSg3aVyTbBJ9VCF/Tkipym3aGGti36kn3bwXA==
-X-Google-Smtp-Source: ABdhPJx1rKEuvgjZXk4Aa0YPqdFzImQ6xpZMX639CAYw+F7eQsq6FSOuI4g8MPeykoozbRPJyFgLT8+n15pY7iONbVI=
-X-Received: by 2002:a4a:6c0c:: with SMTP id q12mr1045468ooc.81.1624474950658;
- Wed, 23 Jun 2021 12:02:30 -0700 (PDT)
+        Wed, 23 Jun 2021 15:06:34 -0400
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D3E8E20B83F5;
+        Wed, 23 Jun 2021 12:04:16 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D3E8E20B83F5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1624475056;
+        bh=iqMYBX8gNJqygF5F9g1MwbXLNoGunuU4jx9xCfqhSX0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=f70CcZvM/X7fzhoqUcMyo7Roi1vV3/vgWgNEKgWo5+lETiBHk3BERcmLN8jUe2Fps
+         xMnNIdfI2QILIpkVmd2wWBudvWqVfJqhtoyRN2+Bmx0ysTjetGEQhorSEYYxJbz2Pt
+         eznGGnjlr9NrhSpO9MCcHGvA/dHVsuPim7IsWm10=
+Received: by mail-pl1-f181.google.com with SMTP id v12so1653329plo.10;
+        Wed, 23 Jun 2021 12:04:16 -0700 (PDT)
+X-Gm-Message-State: AOAM530ySDJmbQ2tUKCfRsBa5kFZIeJYXPbSL1K3wzxx+uwMuGcx3rG5
+        UutYrVMrqGAhpF60I6XwGgCqstcn/AMzqP6lE1s=
+X-Google-Smtp-Source: ABdhPJz7IFiXQyTVrVydscmqOnQmgiIcflbsxtRx4Tot0Tc0Fti2nXFcTJ0ZQbo4ObI6ragERNkM1cn9NgR3bmygy2Q=
+X-Received: by 2002:a17:902:e9d5:b029:124:926:7971 with SMTP id
+ 21-20020a170902e9d5b029012409267971mr816793plk.19.1624475056368; Wed, 23 Jun
+ 2021 12:04:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210622175739.3610207-1-seanjc@google.com> <20210622175739.3610207-8-seanjc@google.com>
- <f031b6bc-c98d-8e46-34ac-79e540674a55@redhat.com> <CALMp9eSpEJrr6mNoLcGgV8Pa2abQUkPA1uwNBMJZWexBArB3gg@mail.gmail.com>
- <6f25273e-ad80-4d99-91df-1dd0c847af39@redhat.com> <CALMp9eTzJb0gnRzK_2MQyeO2kmrKJwyYYHE5eYEai+_LPg8HrQ@mail.gmail.com>
- <af716f56-9d68-2514-7b85-f9bbb1a82acf@redhat.com>
-In-Reply-To: <af716f56-9d68-2514-7b85-f9bbb1a82acf@redhat.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Wed, 23 Jun 2021 12:02:19 -0700
-Message-ID: <CALMp9eQG-QLm1xRXw2CxLEsRukH0q6HoaQKPraDo-TyCSv6EKg@mail.gmail.com>
-Subject: Re: [PATCH 07/54] KVM: x86: Alert userspace that KVM_SET_CPUID{,2}
- after KVM_RUN is broken
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
+References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
+ <20210623105858.6978-4-mcroce@linux.microsoft.com> <YNMgmK2vqQPL7PWb@infradead.org>
+In-Reply-To: <YNMgmK2vqQPL7PWb@infradead.org>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Wed, 23 Jun 2021 21:03:40 +0200
+X-Gmail-Original-Message-ID: <CAFnufp3=2Jhr9NqVhE2nCLcr48UvxVww=RpWHp2wpm7DWwGuEA@mail.gmail.com>
+Message-ID: <CAFnufp3=2Jhr9NqVhE2nCLcr48UvxVww=RpWHp2wpm7DWwGuEA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/6] block: refactor sysfs code
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lennart Poettering <lennart@poettering.net>,
+        Luca Boccassi <bluca@debian.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tejun Heo <tj@kernel.org>,
+        "Javier Gonz??lez" <javier@javigon.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        JeffleXu <jefflexu@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 11:49 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+On Wed, Jun 23, 2021 at 1:53 PM Christoph Hellwig <hch@infradead.org> wrote:
 >
-> On 23/06/21 20:11, Jim Mattson wrote:
-> > On Wed, Jun 23, 2021 at 10:11 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
-> >> Nah, that's not the philosophy.  The philosophy is that covering all
-> >> possible ways for userspace to shoot itself in the foot is impossible.
-> >>
-> >> However, here we're talking about 2 lines of code (thanks also to your
-> >> patches that add last_vmentry_cpu for completely unrelated reasons) to
-> >> remove a whole set of bullet/foot encounters.
-> >
-> > What about the problems that arise when we have different CPUID tables
-> > for different vCPUs in the same VM? Can we just replace this
-> > hole-in-foot inducing ioctl with a KVM_VM_SET_CPUID ioctl on the VM
-> > level that has to be called before any vCPUs are created?
+> > -static void disk_add_events(struct gendisk *disk)
+> > +static void disk_add_sysfs(struct gendisk *disk)
+> >  {
+> >       /* FIXME: error handling */
+> > -     if (sysfs_create_files(&disk_to_dev(disk)->kobj, disk_events_attrs) < 0)
+> > +     if (sysfs_create_files(&disk_to_dev(disk)->kobj, disk_sysfs_attrs) < 0)
+> >               pr_warn("%s: failed to create sysfs files for events\n",
+> >                       disk->disk_name);
+> > +}
 >
-> Are there any KVM bugs that this can fix?  The problem is that, unlike
-> this case, it would be effectively impossible to deprecate
-> KVM_SET_CPUID2 as a vcpu ioctl, so it would be hard to reap any benefits
-> in KVM.
->
-> BTW, there is actually a theoretical usecase for KVM_SET_CPUID2 after
-> KVM_RUN, which is to test OSes against microcode updates that hide,
-> totally random example, the RTM bit.  But it's still not worth keeping
-> it given 1) the bugs and complications in KVM, 2) if you really wanted
-> that kind of testing so hard, the fact that you can just create a new
-> vcpu file descriptor from scratch, possibly in cooperation with
-> userspace MSR filtering 3) AFAIK no one has done that anyway in 15 years.
+> Actually, what we need here is a way how we can setup the ->groups
+> field of the device to include all attribute groups instead of having
+> to call sysfs_create_files at all.
 
-Though such a usecase may exist, I don't think it actually works
-today. For example, kvm_vcpu_after_set_cpuid() potentially changes the
-value of the guest IA32_PERF_GLOBAL_CTRL MSR.
+I don't get this one. You mean in general or in this series?
+
+-- 
+per aspera ad upstream
