@@ -2,323 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56E83B18DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 13:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC063B18DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 13:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhFWL3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 07:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45998 "EHLO
+        id S230235AbhFWL32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 07:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbhFWL3W (ORCPT
+        with ESMTP id S230205AbhFWL31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 07:29:22 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DDBBC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 04:27:05 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id t17so3590434lfq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 04:27:05 -0700 (PDT)
+        Wed, 23 Jun 2021 07:29:27 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C9DC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 04:27:08 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id f30so3559363lfj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 04:27:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=xd2+3DATtHs1Io2NqAuv+460BtqKv5ZcSCJ7BTgVstU=;
-        b=bEozGw9h+Nkl9Uzk4zzTS6fDAz0+MNgA39lpThBdjuM++/ghsOB4DjopvJ5PHTGDHR
-         STtdly5fWmJbrMJYtGP7+Akj8qFdGQPKDO//gOx0adP6YXAZGaAw6fXjPWU3l0WHhcCB
-         Ff9sRqBS5JoEePIzTDt1MJ+lMCiWMlT3LXHuATczr6cdvEdXWx/YkV2HATTDwcaNhI+8
-         wvXE2aSjF7wbc6Wi6KshLemE32ELVBObyUOG+0g8ZaZIf4aITPZY5c94Elq1W6QMMF1l
-         1yMTJaGS3wRy1tCPvEvQw6gZgTkZWmkkxRc/UMDO2zxMtM1yX73VztbyAZ+mr1oBjQn5
-         Gtng==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=UWr5bBdzre6zz0XMKZOGH1iTjAFUl0PtpeleXTfI3Xk=;
+        b=qAIu1qD4S0I+cth0RweLmSX0Bse2NaMmHfSlyVrjBAQleGDbUcw6falwFJq57HdSYJ
+         OeyJuYhSJummHyKV6WkMnlSJWv6C0XNHB94K8Lfe1ElcnM8g3e719edBHh55sfNWwTzg
+         I/cMfyBwIAs1lktX5wJLAOwR+QxbQxrMYzpW7wAaNNdcah+xtdoaNanPcTXcg5uHzIoW
+         r7AhySM1h3K9ySSdkBM4/rcSRVuszVFWnd5zRvMEsjhB5b8ptZBxCOSQvs4fK1VZ0KhY
+         ukUDi8JhZLaTxp1s1i03s3njCOddQc1B1syf1Nv11Y5Zu8Ob04ja9JcgkY8UpIk3xuu8
+         AE3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=xd2+3DATtHs1Io2NqAuv+460BtqKv5ZcSCJ7BTgVstU=;
-        b=DXfJzJhMpVByIUbWaTosveOVFqwJcVjf/NpRXYfhJdFMz9dmQGxm5SwwPcgC4Ctt2G
-         zavwZk+tNgta/OsjJXICa6N2Y7KbB0Fw0lXnLi0lCRIFSmt76Ms41atm/jGyXmxRLHZs
-         j0164HzCVz0UatObYv8/asX/saQnRbwQe6P2W2zj7DLt5f4P0ACxnMoovkBgNd58snSM
-         ayaIH1ft+GpKjbmPjQORoyJwaX1kf3CNAprTpFzKep/F5fMVZI+LxEehhC5ibMzsyoeT
-         5ITlQhZa89nCQxB2W58BYSe2HwkCmbBAGN3fs0kjo79EUUDR1/tz425FeVApYTGPBXtQ
-         oD/w==
-X-Gm-Message-State: AOAM5320BSTN1icBMrXjByqU3aX+1967FqWwLVfZnS7ML0NTBJhgwHxz
-        R2r5pvh/uaOf1vMLLHNRWOs=
-X-Google-Smtp-Source: ABdhPJwZBX1ioJBa+Jg9KYidfHuap4/UvlzTR5mpBV9gHC2QBx0lfo8x94Mre7KVNM002ftXTbuhEw==
-X-Received: by 2002:a05:6512:308a:: with SMTP id z10mr6646754lfd.148.1624447623333;
-        Wed, 23 Jun 2021 04:27:03 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id a21sm289030ljj.21.2021.06.23.04.27.02
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=UWr5bBdzre6zz0XMKZOGH1iTjAFUl0PtpeleXTfI3Xk=;
+        b=ZTe5L6jQruFp/de+yv0Ij0ZtamB+GaTxk8gNy7BG0dWVPiCrcZPjjIksQmmWedC+BM
+         Fm216IiRR76Ut1JsHdHJDezvw933FRy8ouhMofKg0UgMQSLndS+HeuSTaFOwJCKDzy6x
+         nFcB09vPDlivcVuY3MURrtuPz7ZNHJYfWjDoWvqe0C2cooO6sVdqWFpxTcphGPJrjKA9
+         CZIZb5g7/i7TGVlh9dkRlPa3KkOKahLtDYs393U9/MigkTt1Ni3DCxAGkRMX2T+yYjIy
+         mjbaqV2NQnVw2ke/LBYudrkhbGfbdkQNrJ6vnR5gVZApKGHsJla9MLBsP5JfyfU2sUKO
+         23uQ==
+X-Gm-Message-State: AOAM532I3SpKICDmNPofJsjSuhpOaopXUvElnSx87eiBA/A36NEOjsKz
+        tKyVWiKeqPG2FrcFXjFQI/s=
+X-Google-Smtp-Source: ABdhPJxp7DJyqYd59MyfSejJoNoBRKlU8/OCPghwEvO5PIZ6Y/2nsF2LvVuARAL+idkBd3i/thYJVg==
+X-Received: by 2002:ac2:5feb:: with SMTP id s11mr6685710lfg.591.1624447627153;
+        Wed, 23 Jun 2021 04:27:07 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id br18sm1002444lfb.120.2021.06.23.04.27.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 04:27:03 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 14:26:59 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Werner Sembach <wse@tuxedocomputers.com>
-Cc:     sunpeng.li@amd.com, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        airlied@linux.ie, amd-gfx@lists.freedesktop.org,
-        tzimmermann@suse.de, rodrigo.vivi@intel.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com
-Subject: Re: [PATCH v4 15/17] drm/uAPI: Move "Broadcast RGB" property from
- driver specific to general context
-Message-ID: <20210623142659.16672192@eldfell>
-In-Reply-To: <2fc0547c-2968-1f52-4c07-82be58a41ef8@tuxedocomputers.com>
-References: <20210618091116.14428-1-wse@tuxedocomputers.com>
-        <20210618091116.14428-16-wse@tuxedocomputers.com>
-        <20210622102529.5266e87b@eldfell>
-        <70d89fe2-4e45-7ea9-2509-15257ef222f8@tuxedocomputers.com>
-        <20210623104836.77734bad@eldfell>
-        <2fc0547c-2968-1f52-4c07-82be58a41ef8@tuxedocomputers.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 23 Jun 2021 04:27:06 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Wed, 23 Jun 2021 13:27:04 +0200
+To:     Rafael Aquini <aquini@redhat.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: vmalloc: add cond_resched() in __vunmap()
+Message-ID: <20210623112704.GA1911@pc638.lan>
+References: <20210622225030.478384-1-aquini@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/hGX2jX8_vX=xEpb.UGXUxgp";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622225030.478384-1-aquini@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/hGX2jX8_vX=xEpb.UGXUxgp
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+> On non-preemptible kernel builds the watchdog can complain
+> about soft lockups when vfree() is called against large
+> vmalloc areas:
+> 
+> [  210.851798] kvmalloc-test: vmalloc(2199023255552) succeeded
+> [  238.654842] watchdog: BUG: soft lockup - CPU#181 stuck for 26s! [rmmod:5203]
+> [  238.662716] Modules linked in: kvmalloc_test(OE-) ...
+> [  238.772671] CPU: 181 PID: 5203 Comm: rmmod Tainted: G S         OE     5.13.0-rc7+ #1
+> [  238.781413] Hardware name: Intel Corporation PURLEY/PURLEY, BIOS PLYXCRB1.86B.0553.D01.1809190614 09/19/2018
+> [  238.792383] RIP: 0010:free_unref_page+0x52/0x60
+> [  238.797447] Code: 48 c1 fd 06 48 89 ee e8 9c d0 ff ff 84 c0 74 19 9c 41 5c fa 48 89 ee 48 89 df e8 b9 ea ff ff 41 f7 c4 00 02 00 00 74 01 fb 5b <5d> 41 5c c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 f0 29 77
+> [  238.818406] RSP: 0018:ffffb4d87868fe98 EFLAGS: 00000206
+> [  238.824236] RAX: 0000000000000000 RBX: 000000001da0c945 RCX: ffffb4d87868fe40
+> [  238.832200] RDX: ffffd79d3beed108 RSI: ffffd7998501dc08 RDI: ffff9c6fbffd7010
+> [  238.840166] RBP: 000000000d518cbd R08: ffffd7998501dc08 R09: 0000000000000001
+> [  238.848131] R10: 0000000000000000 R11: ffffd79d3beee088 R12: 0000000000000202
+> [  238.856095] R13: ffff9e5be3eceec0 R14: 0000000000000000 R15: 0000000000000000
+> [  238.864059] FS:  00007fe082c2d740(0000) GS:ffff9f4c69b40000(0000) knlGS:0000000000000000
+> [  238.873089] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  238.879503] CR2: 000055a000611128 CR3: 000000f6094f6006 CR4: 00000000007706e0
+> [  238.887467] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [  238.895433] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [  238.903397] PKRU: 55555554
+> [  238.906417] Call Trace:
+> [  238.909149]  __vunmap+0x17c/0x220
+> [  238.912851]  __x64_sys_delete_module+0x13a/0x250
+> [  238.918008]  ? syscall_trace_enter.isra.20+0x13c/0x1b0
+> [  238.923746]  do_syscall_64+0x39/0x80
+> [  238.927740]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Like in other range zapping routines that iterate over
+> a large list, lets just add cond_resched() within __vunmap()'s
+> page-releasing loop in order to avoid the watchdog splats.
+> 
+> Signed-off-by: Rafael Aquini <aquini@redhat.com>
+> ---
+>  mm/vmalloc.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index a13ac524f6ff..cd4b23d65748 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -2564,6 +2564,7 @@ static void __vunmap(const void *addr, int deallocate_pages)
+>  
+>  			BUG_ON(!page);
+>  			__free_pages(page, page_order);
+> +			cond_resched();
+>  		}
+>  		atomic_long_sub(area->nr_pages, &nr_vmalloc_pages);
+>  
+> -- 
+> 2.26.3
+> 
+I have a question about a test case you run to trigger such soft lockup.
 
-On Wed, 23 Jun 2021 12:10:14 +0200
-Werner Sembach <wse@tuxedocomputers.com> wrote:
+Is that test_vmalloc.sh test-suite or something local? Do you use a huge
+vmalloc mappings so high-order pages are used?
 
-> Am 23.06.21 um 09:48 schrieb Pekka Paalanen:
-> > On Tue, 22 Jun 2021 11:57:53 +0200
-> > Werner Sembach <wse@tuxedocomputers.com> wrote:
-> > =20
-> >> Am 22.06.21 um 09:25 schrieb Pekka Paalanen: =20
-> >>> On Fri, 18 Jun 2021 11:11:14 +0200
-> >>> Werner Sembach <wse@tuxedocomputers.com> wrote:
-> >>>   =20
-> >>>> Add "Broadcast RGB" to general drm context so that more drivers besi=
-des
-> >>>> i915 and gma500 can implement it without duplicating code.
-> >>>>
-> >>>> Userspace can use this property to tell the graphic driver to use fu=
-ll or
-> >>>> limited color range for a given connector, overwriting the default
-> >>>> behaviour/automatic detection.
-> >>>>
-> >>>> Possible options are:
-> >>>>     - Automatic (default/current behaviour)
-> >>>>     - Full
-> >>>>     - Limited 16:235
-> >>>>
-> >>>> In theory the driver should be able to automatically detect the moni=
-tors
-> >>>> capabilities, but because of flawed standard implementations in Moni=
-tors,
-> >>>> this might fail. In this case a manual overwrite is required to not =
-have
-> >>>> washed out colors or lose details in very dark or bright scenes.
-> >>>>
-> >>>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> >>>> ---
-> >>>>  drivers/gpu/drm/drm_atomic_helper.c |  4 +++
-> >>>>  drivers/gpu/drm/drm_atomic_uapi.c   |  4 +++
-> >>>>  drivers/gpu/drm/drm_connector.c     | 43 ++++++++++++++++++++++++++=
-+++
-> >>>>  include/drm/drm_connector.h         | 16 +++++++++++
-> >>>>  4 files changed, 67 insertions(+)
-> >>>>
-> >>>> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/d=
-rm_atomic_helper.c
-> >>>> index 90d62f305257..0c89d32efbd0 100644
-> >>>> --- a/drivers/gpu/drm/drm_atomic_helper.c
-> >>>> +++ b/drivers/gpu/drm/drm_atomic_helper.c
-> >>>> @@ -691,6 +691,10 @@ drm_atomic_helper_check_modeset(struct drm_devi=
-ce *dev,
-> >>>>  			if (old_connector_state->preferred_color_format !=3D
-> >>>>  			    new_connector_state->preferred_color_format)
-> >>>>  				new_crtc_state->connectors_changed =3D true;
-> >>>> +
-> >>>> +			if (old_connector_state->preferred_color_range !=3D
-> >>>> +			    new_connector_state->preferred_color_range)
-> >>>> +				new_crtc_state->connectors_changed =3D true;
-> >>>>  		}
-> >>>> =20
-> >>>>  		if (funcs->atomic_check)
-> >>>> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm=
-_atomic_uapi.c
-> >>>> index c536f5e22016..c589bb1a8163 100644
-> >>>> --- a/drivers/gpu/drm/drm_atomic_uapi.c
-> >>>> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
-> >>>> @@ -798,6 +798,8 @@ static int drm_atomic_connector_set_property(str=
-uct drm_connector *connector,
-> >>>>  		state->max_requested_bpc =3D val;
-> >>>>  	} else if (property =3D=3D connector->preferred_color_format_prope=
-rty) {
-> >>>>  		state->preferred_color_format =3D val;
-> >>>> +	} else if (property =3D=3D connector->preferred_color_range_proper=
-ty) {
-> >>>> +		state->preferred_color_range =3D val;
-> >>>>  	} else if (connector->funcs->atomic_set_property) {
-> >>>>  		return connector->funcs->atomic_set_property(connector,
-> >>>>  				state, property, val);
-> >>>> @@ -877,6 +879,8 @@ drm_atomic_connector_get_property(struct drm_con=
-nector *connector,
-> >>>>  		*val =3D state->max_requested_bpc;
-> >>>>  	} else if (property =3D=3D connector->preferred_color_format_prope=
-rty) {
-> >>>>  		*val =3D state->preferred_color_format;
-> >>>> +	} else if (property =3D=3D connector->preferred_color_range_proper=
-ty) {
-> >>>> +		*val =3D state->preferred_color_range;
-> >>>>  	} else if (connector->funcs->atomic_get_property) {
-> >>>>  		return connector->funcs->atomic_get_property(connector,
-> >>>>  				state, property, val);
-> >>>> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_c=
-onnector.c
-> >>>> index aea03dd02e33..9bc596638613 100644
-> >>>> --- a/drivers/gpu/drm/drm_connector.c
-> >>>> +++ b/drivers/gpu/drm/drm_connector.c
-> >>>> @@ -905,6 +905,12 @@ static const struct drm_prop_enum_list drm_acti=
-ve_color_format_enum_list[] =3D {
-> >>>>  	{ DRM_COLOR_FORMAT_YCRCB420, "ycbcr420" },
-> >>>>  };
-> >>>> =20
-> >>>> +static const struct drm_prop_enum_list drm_preferred_color_range_en=
-um_list[] =3D {
-> >>>> +	{ DRM_MODE_COLOR_RANGE_UNSET, "Automatic" },
-> >>>> +	{ DRM_MODE_COLOR_RANGE_FULL, "Full" },
-> >>>> +	{ DRM_MODE_COLOR_RANGE_LIMITED_16_235, "Limited 16:235" },   =20
-> >>> Hi,
-> >>>
-> >>> the same question here about these numbers as I asked on the "active
-> >>> color range" property.
-> >>>   =20
-> >>>> +};
-> >>>> +
-> >>>>  static const struct drm_prop_enum_list drm_active_color_range_enum_=
-list[] =3D {
-> >>>>  	{ DRM_MODE_COLOR_RANGE_UNSET, "Unknown" },
-> >>>>  	{ DRM_MODE_COLOR_RANGE_FULL, "Full" },
-> >>>> @@ -1243,6 +1249,13 @@ static const struct drm_prop_enum_list dp_col=
-orspaces[] =3D {
-> >>>>   *	drm_connector_attach_active_color_format_property() to install t=
-his
-> >>>>   *	property.
-> >>>>   *
-> >>>> + * Broadcast RGB:
-> >>>> + *	This property is used by userspace to change the used color rang=
-e. When
-> >>>> + *	used the driver will use the selected range if valid for the cur=
-rent
-> >>>> + *	color format. Drivers to use the function
-> >>>> + *	drm_connector_attach_preferred_color_format_property() to create=
- and
-> >>>> + *	attach the property to the connector during initialization.   =20
-> >>> An important detail to document here is: does userspace need to
-> >>> take care that pixel data at the connector will already match the set
-> >>> range, or will the driver program the hardware to produce the set ran=
-ge?   =20
-> >> Since until now, the userspace didn't even know for sure if RGB or YCb=
-Cr and therefore which full/limited format was
-> >> used I guess it's all kernel space conversion. =20
-> >>> If the former, then I'm afraid the preference/active property pair
-> >>> design does not work. Userspace needs to make sure the content is in
-> >>> the right range, so the driver cannot second-guess that afterwards.
-> >>>
-> >>> If the latter, then what does the driver assume about color range just
-> >>> before the automatic conversion to the final color range, and does the
-> >>> range conversion happen as the final step in the color pipeline?
-> >>>
-> >>> If I remember the discussion about Intel right, then the driver does
-> >>> the latter and assume that userspace programs KMS to always produce
-> >>> full range pixels. There is no provision for userspace to produce
-> >>> limited range pixels, IIRC.   =20
-> >> I think I remember this too from an answer to one of the revisions of =
-this patchset. =20
-> > As long as you keep the old KMS property as is, just moving code so it
-> > is used by more drivers, this is fine and one can't do otherwise anyway.
-> >
-> > (The rest of this email is merely pondering the future, so not about
-> > this patch in particular.)
-> >
-> >
-> > But if we had a new, more general property for the range reported to
-> > monitors via infoframes, then it would be worth to re-visit the design.
-> > The HDR properties only set the infoframe and expect userspace to make
-> > sure that the pixels actually correspond to what the infoframes tell
-> > the monitor. One can't do HDR tone mapping automatically in the kernel,
-> > so in that sense the HDR property behaviour is obvious. But which
-> > behaviour would fit range property or others better, I'm not sure.
-> >
-> > Generally there seems to be two approaches to designing KMS properties:
-> >
-> > - Let userspace describe what data it has and what data should be sent
-> >   to a monitor, and let the kernel driver magically come up with a
-> >   conversion.
-> >
-> > - Only userspace understands how the pixel data is encoded, and
-> >   programs the transformations (DEGAMMA/CTM/GAMMA etc.) such, that the
-> >   result is what a monitor expects based on e.g. infoframes. =20
->=20
-> Why not both?
+Thanks!
 
-Because "both" means you have overlapping sets of properties that might
-contradict each other. Or then you need a switch between the two models.
-
-> This patchset is thought to control what's happening "on the cable",
-> so if the input data is in a different format, the kernel has to
-> convert it.
-
-Right, if that is the desired semantics.
-
-That's not how the HDR property works. Kernel does not convert there.
-The HDR property only sets infoframes that the monitor interprets.
-
-> Maybe in the future there could be an additional set of "input-"
-> properties. aka "input bpc", "input color format", and "input color
-> range". With an additional constraint that if "input-" property =3D=3D
-> "active-" property the kernel is not allowed to do any conversion
-> regarding this aspect, giving userspace full control if wanted.
-
-If by "input" you mean "the result from userspace provided content
-going through the configured KMS pixel pipeline", then yes. But it's
-hard to put it into words accurately.
-
-The FB could contain whatever which userspace then programs DEGAMMA and
-CTM to produce what would be the "input" pixels for example.
-
-This is getting closer to the "abstract KMS pipeline" idea which has
-been predicted to fall apart in the email thread linked below.
-
-> > Doing the former requires policy in the kernel. If there is a
-> > specification that uniquely defines what the conversion is, this is
-> > good. But if not or if there are artistic decisions to be made, like
-> > with HDR tone mapping, then it doesn't work.
-> >
-> > OTOH, the former approach allows the driver to use any and all hardware
-> > features it has to realize the conversion, perhaps taking advantage of
-> > even fixed-function hardware blocks. The latter approach is much harder
-> > to map to hardware features.
-> >
-> > This dilemma has been discussed in length in
-> > https://lists.freedesktop.org/archives/dri-devel/2021-June/311689.html
-> >
-
-Thanks,
-pq
-
---Sig_/hGX2jX8_vX=xEpb.UGXUxgp
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmDTGoMACgkQI1/ltBGq
-qqdOSA//SgoOVw9niMLEzk2p1ki4oxn38LLDp3AbI/QGk3b1jS01sQXnIwH/cvLu
-wsiaHJ5ijHStH4cxsyHUWKXnxHcfVh9dQOD5O4ZEYcTPPan1UXI7DQKukLt4S/QJ
-h/k+dbGC5cLyiQkn6Q91D++LQit98y/K8jBq51x0kfG3Kzj3xafftE9a0DZ708vG
-yhkuzpkh5cTsVKtGReaWCji8OhTpNOe8OHZczk3Qiivwzm6hZPY6HwchNceF8uMV
-sIxxB9QJneMNoIZ3/AI8coi5zhzzCCyt/cwxj4EsmkhLcYDc7gvS0WBnsFxQsNRO
-IIjHChd0MUdpnnvzK+wKo48qm0ZM83ImnRrNlz3vMlU8TrRdLOU7uBM/QPOmUHLO
-t4djr2INSHwKxClctx8v5C/ekBAu0eBddAcrQoe9P+wnqtYw1AwLie8oMg9Pgb4I
-d0Wrlbu8k/qhkpLOgQAMlqhbOj73lQYxQsNmqaLggkwF9Ffxu1MtjWukKl5gSSxs
-sSUwNOPPM/of+L7w4dkGvy4EwJfQki7gYr5UI01Dbm0Pd9JLRf+ASZf+SPIiEPhh
-NbMS6ss6EKqJZGuaZ+/wiyJiF1zWtTRCp0jeDpd3xGiBkD3vpAmG8bUfioNZTgrd
-FKnPDcRy3RvY/O0k2vpePfIgK6cdC4EdpT+bfn/DHZ0q8KFLkj4=
-=ur7D
------END PGP SIGNATURE-----
-
---Sig_/hGX2jX8_vX=xEpb.UGXUxgp--
+--
+Vlad Rezki
