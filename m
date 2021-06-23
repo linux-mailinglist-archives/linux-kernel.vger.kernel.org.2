@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AF13B1C42
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3184A3B1C4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbhFWOVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:21:43 -0400
-Received: from mail-wm1-f41.google.com ([209.85.128.41]:44731 "EHLO
-        mail-wm1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231139AbhFWOVk (ORCPT
+        id S231289AbhFWOWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:22:14 -0400
+Received: from mail-io1-f52.google.com ([209.85.166.52]:35621 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231139AbhFWOWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:21:40 -0400
-Received: by mail-wm1-f41.google.com with SMTP id h21-20020a1ccc150000b02901d4d33c5ca0so1469018wmb.3;
-        Wed, 23 Jun 2021 07:19:22 -0700 (PDT)
+        Wed, 23 Jun 2021 10:22:11 -0400
+Received: by mail-io1-f52.google.com with SMTP id d9so3645990ioo.2;
+        Wed, 23 Jun 2021 07:19:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dYxNZdPZGzKRsKvBtkHi7tanxkrUxAuHSiGuuQ7Bh7g=;
-        b=Ni0zn3n7Ff/W5iZusy6mM6kngW9zaFFPVhJMQSR8C8pncJ99LakAzpqgNrCzCSruOR
-         2gZVqT5iGAmcbItBOOkVf0Au5ft9hG7pYC7jOy3DvwtvHL5iWv3XBZYl0WBdtwnFUZhY
-         lr8IHaCj7mM+LmQz6Jzij7c+JdU+XVJNwFTEHRXmgZzhAvkWtaX0WryKV1jNv7/qJmDV
-         tHLtzAO30ex5ihgtFoDG/VyYaCUF4i64tbEkXBdCqwizgeQ9tgqi2iRcsWStjvnhO7ey
-         F560TleOOZ/31qiequuqGb4Ijn9dTX0MTGKITulE32rpIMKyIdNauVwn3rfW8Ya+gF5s
-         KtHA==
-X-Gm-Message-State: AOAM531Gnx/1guJHc0ZWwEPxHKd93mu9/SkYBHsusX8S4vubaHjO9J5G
-        7u2IxgW4GzKiv0QUKh6112w=
-X-Google-Smtp-Source: ABdhPJwS9dSxcRr/RNB5UyxpC078lYD/bhF+LUFS64ViQXBH5uQeoNM09+6CnF+g4GPlPH4lqJ3U9A==
-X-Received: by 2002:a1c:6485:: with SMTP id y127mr11217952wmb.110.1624457962133;
-        Wed, 23 Jun 2021 07:19:22 -0700 (PDT)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id 22sm117032wmi.4.2021.06.23.07.19.21
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=lwKnYqnTj9urrJtngBA+D6WD7PR7Tx6Uogg2oTqP4N0=;
+        b=DgWhqIHFOlddFmQ0xaoFyVpj22li85T/CJZSt73mOso4TWZIFj/YjRxgpIaRFaReNP
+         c3uLPNmGETuzuiXryIWXFdxBtMpJPoB0OL44zvIMCCeUKb/l9CLugFAE9RD+3ZXhzjVp
+         ggOe/m5hd6eMVlGMzTRnOm3ftfhSL/cXlFdmBxoK7jPHOFutcBPHKjetPGy8RaCTCOE4
+         2xTUJ7KUlqSNPtaj7qJzsFYYh1w6NP5panOsIT/2ZYzd9s3BuJSNI+gROQeSDDxLknI2
+         F9g2xZTAw9l7eocq4UIfWdMMWGQt7IhsknN+9ZIcnf7VZHi4SIr1Sdps4UOLP49+eUxj
+         ayfw==
+X-Gm-Message-State: AOAM5332KfcKFnZwhfN0IMmKdLWMVgRrAh+SoPQkKy304zzTZ1ZAVNnO
+        1V8ONL+bpqGdDS9Eow0d2g==
+X-Google-Smtp-Source: ABdhPJw0OGW/d0endmXhaOcHhduijirWfmjcDfa1lb1HWOs7ZJ1L2rg7Ci4gyPp7hMJbk430hIxj/Q==
+X-Received: by 2002:a5d:8254:: with SMTP id n20mr7481435ioo.85.1624457993743;
+        Wed, 23 Jun 2021 07:19:53 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id x11sm25457ilc.40.2021.06.23.07.19.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 07:19:21 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 16:19:20 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        bharat.kumar.gogada@xilinx.com, Hyun Kwon <hyun.kwon@xilinx.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Ravi Kiran Gummaluri <rgummal@xilinx.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] PCI: xilinx-nwl: Enable the clock through CCF
-Message-ID: <20210623141920.GB54420@rocinante>
-References: <cover.1624454607.git.michal.simek@xilinx.com>
- <be603822953d0a815034a952b9c71bac642f22ae.1624454607.git.michal.simek@xilinx.com>
- <20210623135326.GA54420@rocinante>
- <f15a9fca-0fb0-5f7a-e1c7-6c52df617a2e@xilinx.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f15a9fca-0fb0-5f7a-e1c7-6c52df617a2e@xilinx.com>
+        Wed, 23 Jun 2021 07:19:53 -0700 (PDT)
+Received: (nullmailer pid 2339999 invoked by uid 1000);
+        Wed, 23 Jun 2021 14:19:45 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Iskren Chernev <iskren.chernev@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        devicetree@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>
+In-Reply-To: <20210622201054.532979-2-iskren.chernev@gmail.com>
+References: <20210622201054.532979-1-iskren.chernev@gmail.com> <20210622201054.532979-2-iskren.chernev@gmail.com>
+Subject: Re: [PATCH v1 1/2] dt-bindings: pinctrl: qcom: Add SM6115 pinctrl bindings
+Date:   Wed, 23 Jun 2021 08:19:45 -0600
+Message-Id: <1624457985.989752.2339998.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
-
-[...]
-> > Does it make sense for this change to be back-ported to stable and
-> > long-term kernels?
-> > 
-> > I am asking to make sure we do the right thing here, as I can imagine
-> > that older kernels (primarily because some folks could use, for example,
-> > Ubuntu LTS releases for development) might often be used by people who
-> > work with the Xilinx FPGAs and such.
+On Tue, 22 Jun 2021 23:10:53 +0300, Iskren Chernev wrote:
+> Add device tree binding Documentation details for Qualcomm SM6115 and
+> SM4250 pinctrl.
 > 
-> I think that make sense to do so. I haven't had a time to take look at
-> it closely but I think on Xilinx ZynqMP zcu102 board this missing patch
-> is causing hang when standard debian 5.10 is used.
+> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
+> ---
+>  .../bindings/pinctrl/qcom,sm6115-pinctrl.yaml | 172 ++++++++++++++++++
+>  1 file changed, 172 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm6115-pinctrl.yaml
+> 
 
-OK.  This definitely would be a good candidate for back-port then - it
-might help quite a few folks to get their device going without this
-troublesome hang you mentioned.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-There are a few options as per:
-  https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+yamllint warnings/errors:
 
-You can send v3 adding the appropriate tag (see above link or the
-comment below) or once this series (or mainly this patch) reaches Linus'
-tree, then send a message to the stable maintainers mailing list to let
-them know what any why to back-port.
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/pinctrl/qcom,sm6115-pinctrl.example.dts:35.5-6 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/pinctrl/qcom,sm6115-pinctrl.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1416: dt_binding_check] Error 2
+\ndoc reference errors (make refcheckdocs):
 
-At this point, I believe that adding the "Cc:" tag which includes the
-"stable@vger.kernel.org" might be the best option as it would involve
-the least amount of work to for Sasha et al.
+See https://patchwork.ozlabs.org/patch/1495840
 
-What do you think?  Which option would you like to go for?
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
-	Krzysztof
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
