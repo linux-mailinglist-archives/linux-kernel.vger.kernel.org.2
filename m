@@ -2,79 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5D53B1FE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3B23B1FE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhFWRzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 13:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFWRzM (ORCPT
+        id S229938AbhFWRzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 13:55:24 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:34647 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFWRzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 13:55:12 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E0B8C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:52:54 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id v5so3451564ilo.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:52:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZTdZKrScK75vVSK+78l3zNg1lCx7h5Yo+SzaMW8CFs8=;
-        b=ODNER+0CPC6KblN+P3+bZp8hoSkkIteb8oFIZO0Us/f2JJBgEV3u2ucGAtXWzQomWt
-         qCSFij+8qQsXCPj2zUrQ/ftM8CCkHXtWSO5Nkxl0HPJQszUYyQsvNsPZ/L0ySzW0Cl6m
-         YXzEVCXJUd53XYNAhuZsaUcwCp+XG/R5zNDbI=
+        Wed, 23 Jun 2021 13:55:22 -0400
+Received: by mail-oi1-f173.google.com with SMTP id u11so4272040oiv.1;
+        Wed, 23 Jun 2021 10:53:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZTdZKrScK75vVSK+78l3zNg1lCx7h5Yo+SzaMW8CFs8=;
-        b=Z3dk/gWuTiuPSP0ZBeTgf+AF3Of46kUn04bSQUrGrMaAIM+xoIq1oIFO7zfaadjRp2
-         FwX0Pb4yb6TdOGIgjv7+3z81lMFdtdBolbT3A+nsSg9VBFSiIYOrIpnLNVX3a07Ph99b
-         gfCGu+p3M0LaZ4oegXqoEiX6X0COQc0M7QQ//psCpklbgrmKVSr5togw4juQUjiojmMr
-         OdIoCH8Pth4dTiP5s8gjNZbkT5PT5QXOb3Nta1iDBSm459JErL+v4qMDibx/tR7mtxh3
-         FmOx7IVy5iuFb8QSwxoup4P2tCbh4I5o/RcDCSKmvTBcQ5saxm4JBxfoFysmAr7YKn2N
-         XVqA==
-X-Gm-Message-State: AOAM532bM4iYrl03klAN/Uf+kAaNfFH8LNZdqX9hybI2+qjyr4tFPoXl
-        GpL0/EayqlXHyicUH83TsjZ2+g==
-X-Google-Smtp-Source: ABdhPJwvIbt3B4cMZYng9WTzXdN3+wVYnlcxY1cO0EuRVISz1iafmDdt7KySEq4anW/tefITzt6wbA==
-X-Received: by 2002:a05:6e02:1aa9:: with SMTP id l9mr463647ilv.210.1624470774103;
-        Wed, 23 Jun 2021 10:52:54 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id m184sm265679ioa.17.2021.06.23.10.52.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 10:52:53 -0700 (PDT)
-Subject: Re: [PATCH v2] selftests/ftrace: fix event-no-pid on 1-core machine
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210623134315.77472-1-krzysztof.kozlowski@canonical.com>
- <20210623094614.1aa35179@gandalf.local.home>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <37c63ecb-956e-27ad-7186-a7accc6c581b@linuxfoundation.org>
-Date:   Wed, 23 Jun 2021 11:52:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kKQr82HDDUwFX7W6f2RL9f2u87FR6WdUapSEsXW/DEs=;
+        b=KeWdipt25KXMRkrgo4efs0m9yMPVNZbI6kOvMS85qbcJhDraziteoKg5tlEkN8OF5N
+         9649HlVKd7zbigK7hKtTXjlaqxEmqmP6XkV647OO4t0zW7zRzRlV5sumEMMTE9Jvw6Y9
+         crikD4nj6Q39tW9jUmnU/dutD5Mbz7pJwAwTpwVdLyjl2RCfKog8MuWFF5z2uHRsX9Lp
+         R/xtM8Pd/4lCEaoot4OEqBY0sqmnPqn3Q9AQJu52lghn+kzFn736/tf+7wQYuy/ukGGD
+         9atzfjU0ayBNS+QrhkKK2vBVETwxhMrhUqLfg8pTfA4m/DWY5/41KTsyP0FQL9K5C0Xh
+         p8xA==
+X-Gm-Message-State: AOAM5319OsK+tjd0Cd71ioDXsUAvSDyOwzfdgPRsoyokA92Fp/OBg+hc
+        zZXtolmgnGKLSnkYZZTgDlmoVgjQzstwdW18LFM=
+X-Google-Smtp-Source: ABdhPJwVRzUAEkyf6DGKb9Rgt01zJyb6iZCfhq/4GmCXF95MvMM5PMAMAYEdojbAeYhPmygDFAJ4PoXN1OdcVCwNbew=
+X-Received: by 2002:a05:6808:8d9:: with SMTP id k25mr807424oij.69.1624470783298;
+ Wed, 23 Jun 2021 10:53:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210623094614.1aa35179@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <3219454.74lMxhSOWB@kreacher> <YNDoGICcg0V8HhpQ@eldamar.lan>
+In-Reply-To: <YNDoGICcg0V8HhpQ@eldamar.lan>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 23 Jun 2021 19:52:52 +0200
+Message-ID: <CAJZ5v0hrcRWgre0HiJFw32dkmNUjaRzT=mFH=6WskopMbZsavA@mail.gmail.com>
+Subject: Re: [PATCH] PCI: PM: Do not read power state in pci_enable_device_flags()
+To:     Salvatore Bonaccorso <carnil@debian.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 7:46 AM, Steven Rostedt wrote:
-> Shuah,
-> 
-> Want to take this in your tree?
-> 
+On Mon, Jun 21, 2021 at 9:27 PM Salvatore Bonaccorso <carnil@debian.org> wrote:
+>
+> Hi,
+>
+> On Tue, Mar 16, 2021 at 04:51:40PM +0100, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > It should not be necessary to update the current_state field of
+> > struct pci_dev in pci_enable_device_flags() before calling
+> > do_pci_enable_device() for the device, because none of the
+> > code between that point and the pci_set_power_state() call in
+> > do_pci_enable_device() invoked later depends on it.
+> >
+> > Moreover, doing that is actively harmful in some cases.  For example,
+> > if the given PCI device depends on an ACPI power resource whose _STA
+> > method initially returns 0 ("off"), but the config space of the PCI
+> > device is accessible and the power state retrieved from the
+> > PCI_PM_CTRL register is D0, the current_state field in the struct
+> > pci_dev representing that device will get out of sync with the
+> > power.state of its ACPI companion object and that will lead to
+> > power management issues going forward.
+> >
+> > To avoid such issues it is better to leave the current_state value
+> > as is until it is changed to PCI_D0 by do_pci_enable_device() as
+> > appropriate.  However, the power state of the device is not changed
+> > to PCI_D0 if it is already enabled when pci_enable_device_flags()
+> > gets called for it, so update its current_state in that case, but
+> > use pci_update_current_state() covering platform PM too for that.
+> >
+> > Link: https://lore.kernel.org/lkml/20210314000439.3138941-1-luzmaximilian@gmail.com/
+> > Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
+> > Tested-by: Maximilian Luz <luzmaximilian@gmail.com>
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >
+> > Max, I've added a T-by from you even though the patch is slightly different
+> > from what you have tested, but the difference shouldn't matter for your case.
+> >
+> > ---
+> >  drivers/pci/pci.c |   16 +++-------------
+> >  1 file changed, 3 insertions(+), 13 deletions(-)
+> >
+> > Index: linux-pm/drivers/pci/pci.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/pci/pci.c
+> > +++ linux-pm/drivers/pci/pci.c
+> > @@ -1870,20 +1870,10 @@ static int pci_enable_device_flags(struc
+> >       int err;
+> >       int i, bars = 0;
+> >
+> > -     /*
+> > -      * Power state could be unknown at this point, either due to a fresh
+> > -      * boot or a device removal call.  So get the current power state
+> > -      * so that things like MSI message writing will behave as expected
+> > -      * (e.g. if the device really is in D0 at enable time).
+> > -      */
+> > -     if (dev->pm_cap) {
+> > -             u16 pmcsr;
+> > -             pci_read_config_word(dev, dev->pm_cap + PCI_PM_CTRL, &pmcsr);
+> > -             dev->current_state = (pmcsr & PCI_PM_CTRL_STATE_MASK);
+> > -     }
+> > -
+> > -     if (atomic_inc_return(&dev->enable_cnt) > 1)
+> > +     if (atomic_inc_return(&dev->enable_cnt) > 1) {
+> > +             pci_update_current_state(dev, dev->current_state);
+> >               return 0;               /* already enabled */
+> > +     }
+> >
+> >       bridge = pci_upstream_bridge(dev);
+> >       if (bridge)
+>
+> A user in Debian reported that this commit caused an issue, cf.
+> https://bugs.debian.org/990008#10 with the e1000e driver failing to
+> probe the device. It was reported as well to
+> https://bugzilla.kernel.org/show_bug.cgi?id=213481
+>
+> According to the above and
+> https://bugzilla.kernel.org/show_bug.cgi?id=213481#c2 reverting
+> 4514d991d992 ("PCI: PM: Do not read power state in
+> pci_enable_device_flags()") fixes the issue.
 
-Yes. I can pick this up.
+This commit has just been reverted.
 
-thanks,
--- Shuah
+We will try to address the original issue addressed by it in a different way.
+
+Thanks!
