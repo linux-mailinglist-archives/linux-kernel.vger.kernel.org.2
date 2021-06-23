@@ -2,188 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F1C3B208F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4F03B20BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhFWSrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 14:47:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbhFWSrf (ORCPT
+        id S229954AbhFWTD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 15:03:26 -0400
+Received: from h4.fbrelay.privateemail.com ([131.153.2.45]:51170 "EHLO
+        h4.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229523AbhFWTDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 14:47:35 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4921CC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:45:16 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id s23so4397423oiw.9
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:45:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=25Xb4P9ONl4NzuOE9BknQdHYzn3+WMCAH5CmkrDBv8c=;
-        b=nspS8/ZDtdjWSrZvTFB2KZLPbZsxOpGn627p0IOIQNtGCxXkG50wmJ3EULXwPEIzFc
-         mFdNRIrWbhiKHovPgDEdXLAr4/LKlZrtEj0mG+mWTH7HAZVsGxzgLo/SvuiWx1YN5uQH
-         aPp5GXJr56C6TvZxA1xLowlM7TFEbWyxx8CLOW+CXNluKaOmP2FRhXJEMj0X8KLOh1Ui
-         MsKz/Vetz0ClkYt29qCLhtoLf99QlgzJhLcn8Vmi9c49a11Y/dwJfh8HxOyp05b+a5vW
-         hGNXGX8JGfINtmrC+9Icqbz8f9OfASh8MHhBaRFS32+sFwgYXyE2LfNCQGdyyl2yzRAI
-         spQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=25Xb4P9ONl4NzuOE9BknQdHYzn3+WMCAH5CmkrDBv8c=;
-        b=eXw4tOzEVClKDEnARTP3nZUuitgvObKJ9Ii7bab3lysJQfFCESk334hVYTSj3BiiwK
-         8E9K3JcWK+aSE1Z7Jkco1msnQOcESWrb8pqHdVMMXGd5i5zSZAfAD4aBXe9IEj1GIxwt
-         Qzg4aVLGX3jr3SagoQYmvkuI+AcZHTMnlr8wEt/HhlrV8t/9w0aN1lnGTp1i88bHxJwB
-         4K6d3bJD4hvjHMsyRLBLsponRxuwhI+GyxbdKLQhnQLTfHK9HBSabyaVcqbsUELlRFIg
-         bafMavn35CXKwIKcTemArPmm94h/i9DnpJquy3C2pimxKGUsh40mOWIIUyoYqsBoAPH1
-         FkRw==
-X-Gm-Message-State: AOAM530WSCygAcrLrQdQrYe8mBGUjUqSgfRIG+3gSU9oIIz/S9tH9ZYo
-        m2bWbxtt1qQktmLGPozo8E2yZQ==
-X-Google-Smtp-Source: ABdhPJyhsb7VidpHXFDZm+c5HXvnzfTp415YuNkk7mYhD1hIhA/pa0B4lCsqz8c7gS021qvRHGI3+w==
-X-Received: by 2002:aca:3285:: with SMTP id y127mr973809oiy.115.1624473915614;
-        Wed, 23 Jun 2021 11:45:15 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id v42sm147961ott.70.2021.06.23.11.45.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 11:45:14 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 13:45:13 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH] remoteproc: stm32: fix mbox_send_message call
-Message-ID: <YNOBOeEkvG8WXM9o@builder.lan>
-References: <20210420091922.29429-1-arnaud.pouliquen@foss.st.com>
- <YLBi/JZ0u8394tI8@builder.lan>
- <b563f831-3876-1d5d-7268-ce1260363906@foss.st.com>
- <e112e4a3-d5c1-caff-8ef9-cbd5b21ea3a1@foss.st.com>
+        Wed, 23 Jun 2021 15:03:25 -0400
+X-Greylist: delayed 883 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Jun 2021 15:03:24 EDT
+Received: from MTA-06-3.privateemail.com (mta-06.privateemail.com [68.65.122.16])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h3.fbrelay.privateemail.com (Postfix) with ESMTPS id 718C8809C4;
+        Wed, 23 Jun 2021 14:46:23 -0400 (EDT)
+Received: from MTA-06.privateemail.com (localhost [127.0.0.1])
+        by MTA-06.privateemail.com (Postfix) with ESMTP id E826C600BA;
+        Wed, 23 Jun 2021 14:46:21 -0400 (EDT)
+Received: from hal-station.. (unknown [10.20.151.223])
+        by MTA-06.privateemail.com (Postfix) with ESMTPA id 11D5760071;
+        Wed, 23 Jun 2021 14:46:20 -0400 (EDT)
+From:   Hamza Mahfooz <someguy@effective-light.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        Hamza Mahfooz <someguy@effective-light.com>
+Subject: [PATCH] iwlwifi: remove redundant calls to unlikely()
+Date:   Wed, 23 Jun 2021 14:45:46 -0400
+Message-Id: <20210623184546.14769-1-someguy@effective-light.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e112e4a3-d5c1-caff-8ef9-cbd5b21ea3a1@foss.st.com>
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 22 Jun 02:56 CDT 2021, Arnaud POULIQUEN wrote:
+As per commit a7f3d3d3600c ("dma-mapping: add unlikely hint to error path
+in dma_mapping_error"), dma_mapping_error now internally calls unlikely(),
+so we don't need to call it directly anymore.
 
-> Hello Bjorn
-> 
-> On 5/28/21 10:03 AM, Arnaud POULIQUEN wrote:
-> > Hello Bjorn,
-> > 
-> > On 5/28/21 5:26 AM, Bjorn Andersson wrote:
-> >> On Tue 20 Apr 04:19 CDT 2021, Arnaud Pouliquen wrote:
-> >>
-> >>> mbox_send_message is called by passing a local dummy message or
-> >>> a function parameter. As the message is queued, it is dereferenced.
-> >>> This works because the message field is not used by the stm32 ipcc
-> >>> driver, but it is not clean.
-> >>>
-> >>> Fix by passing a constant string in all cases.
-> >>>
-> >>> The associated comments are removed because rproc should not have to
-> >>> deal with the behavior of the mailbox frame.
-> >>>
-> >>
-> >> Didn't we conclude that the mailbox driver doesn't actually dereference
-> >> the pointer being passed?
-> > 
-> > Right it can store the reference to queue the sent.
-> > 
-> >>
-> >> If so I would prefer that you just pass NULL, so that if you in the
-> >> future need to pass some actual data it will be easy to distinguish the
-> >> old and new case.
-> > 
-> > I can not use NULL pointer in stm32_rproc_attach and stm32_rproc_detach case.
-> > The reason is that the tx_done callback is not called if the message is NULL.
-> > (https://elixir.bootlin.com/linux/latest/source/drivers/mailbox/mailbox.c#L106)
-> > 
-> > I could use NULL pointer in stm32_rproc_kick, but I would prefer to use the same way
-> > of calling mbox_send_message for all use cases and not take into account the
-> > mailbox internal behavior.
-> 
-> Do you still have any concern about this patch?
-> 
+Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+---
+ drivers/net/wireless/intel/iwlwifi/pcie/tx.c  | 10 +++++-----
+ drivers/net/wireless/intel/iwlwifi/queue/tx.c | 10 +++++-----
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
-I think my concern is now directed at the mailbox api. I think the
-change is reasonable given that. Thanks for the explanation. I'm picking
-up the patch.
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/tx.c b/drivers/net/wireless/intel/iwlwifi/pcie/tx.c
+index 4f6c187eed69..3bf56d30f741 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/tx.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/tx.c
+@@ -1253,7 +1253,7 @@ static int iwl_fill_data_tbs(struct iwl_trans *trans, struct sk_buff *skb,
+ 		dma_addr_t tb_phys = dma_map_single(trans->dev,
+ 						    skb->data + hdr_len,
+ 						    head_tb_len, DMA_TO_DEVICE);
+-		if (unlikely(dma_mapping_error(trans->dev, tb_phys)))
++		if (dma_mapping_error(trans->dev, tb_phys))
+ 			return -EINVAL;
+ 		trace_iwlwifi_dev_tx_tb(trans->dev, skb, skb->data + hdr_len,
+ 					tb_phys, head_tb_len);
+@@ -1272,7 +1272,7 @@ static int iwl_fill_data_tbs(struct iwl_trans *trans, struct sk_buff *skb,
+ 		tb_phys = skb_frag_dma_map(trans->dev, frag, 0,
+ 					   skb_frag_size(frag), DMA_TO_DEVICE);
+ 
+-		if (unlikely(dma_mapping_error(trans->dev, tb_phys)))
++		if (dma_mapping_error(trans->dev, tb_phys))
+ 			return -EINVAL;
+ 		trace_iwlwifi_dev_tx_tb(trans->dev, skb, skb_frag_address(frag),
+ 					tb_phys, skb_frag_size(frag));
+@@ -1380,7 +1380,7 @@ static int iwl_fill_data_tbs_amsdu(struct iwl_trans *trans, struct sk_buff *skb,
+ 		hdr_tb_len = hdr_page->pos - start_hdr;
+ 		hdr_tb_phys = dma_map_single(trans->dev, start_hdr,
+ 					     hdr_tb_len, DMA_TO_DEVICE);
+-		if (unlikely(dma_mapping_error(trans->dev, hdr_tb_phys)))
++		if (dma_mapping_error(trans->dev, hdr_tb_phys))
+ 			return -EINVAL;
+ 		iwl_pcie_txq_build_tfd(trans, txq, hdr_tb_phys,
+ 				       hdr_tb_len, false);
+@@ -1400,7 +1400,7 @@ static int iwl_fill_data_tbs_amsdu(struct iwl_trans *trans, struct sk_buff *skb,
+ 
+ 			tb_phys = dma_map_single(trans->dev, tso.data,
+ 						 size, DMA_TO_DEVICE);
+-			if (unlikely(dma_mapping_error(trans->dev, tb_phys)))
++			if (dma_mapping_error(trans->dev, tb_phys))
+ 				return -EINVAL;
+ 
+ 			iwl_pcie_txq_build_tfd(trans, txq, tb_phys,
+@@ -1551,7 +1551,7 @@ int iwl_trans_pcie_tx(struct iwl_trans *trans, struct sk_buff *skb,
+ 	/* map the data for TB1 */
+ 	tb1_addr = ((u8 *)&dev_cmd->hdr) + IWL_FIRST_TB_SIZE;
+ 	tb1_phys = dma_map_single(trans->dev, tb1_addr, tb1_len, DMA_TO_DEVICE);
+-	if (unlikely(dma_mapping_error(trans->dev, tb1_phys)))
++	if (dma_mapping_error(trans->dev, tb1_phys))
+ 		goto out_err;
+ 	iwl_pcie_txq_build_tfd(trans, txq, tb1_phys, tb1_len, false);
+ 
+diff --git a/drivers/net/wireless/intel/iwlwifi/queue/tx.c b/drivers/net/wireless/intel/iwlwifi/queue/tx.c
+index 451b06069350..2b409fb33c99 100644
+--- a/drivers/net/wireless/intel/iwlwifi/queue/tx.c
++++ b/drivers/net/wireless/intel/iwlwifi/queue/tx.c
+@@ -211,7 +211,7 @@ static int iwl_txq_gen2_set_tb_with_wa(struct iwl_trans *trans,
+ 	struct page *page;
+ 	int ret;
+ 
+-	if (unlikely(dma_mapping_error(trans->dev, phys)))
++	if (dma_mapping_error(trans->dev, phys))
+ 		return -ENOMEM;
+ 
+ 	if (likely(!iwl_txq_crosses_4g_boundary(phys, len))) {
+@@ -251,7 +251,7 @@ static int iwl_txq_gen2_set_tb_with_wa(struct iwl_trans *trans,
+ 
+ 	phys = dma_map_single(trans->dev, page_address(page), len,
+ 			      DMA_TO_DEVICE);
+-	if (unlikely(dma_mapping_error(trans->dev, phys)))
++	if (dma_mapping_error(trans->dev, phys))
+ 		return -ENOMEM;
+ 	ret = iwl_txq_gen2_set_tb(trans, tfd, phys, len);
+ 	if (ret < 0) {
+@@ -405,7 +405,7 @@ static int iwl_txq_gen2_build_amsdu(struct iwl_trans *trans,
+ 		tb_len = hdr_page->pos - start_hdr;
+ 		tb_phys = dma_map_single(trans->dev, start_hdr,
+ 					 tb_len, DMA_TO_DEVICE);
+-		if (unlikely(dma_mapping_error(trans->dev, tb_phys)))
++		if (dma_mapping_error(trans->dev, tb_phys))
+ 			goto out_err;
+ 		/*
+ 		 * No need for _with_wa, this is from the TSO page and
+@@ -487,7 +487,7 @@ iwl_tfh_tfd *iwl_txq_gen2_build_tx_amsdu(struct iwl_trans *trans,
+ 	/* map the data for TB1 */
+ 	tb1_addr = ((u8 *)&dev_cmd->hdr) + IWL_FIRST_TB_SIZE;
+ 	tb_phys = dma_map_single(trans->dev, tb1_addr, len, DMA_TO_DEVICE);
+-	if (unlikely(dma_mapping_error(trans->dev, tb_phys)))
++	if (dma_mapping_error(trans->dev, tb_phys))
+ 		goto out_err;
+ 	/*
+ 	 * No need for _with_wa(), we ensure (via alignment) that the data
+@@ -582,7 +582,7 @@ iwl_tfh_tfd *iwl_txq_gen2_build_tx(struct iwl_trans *trans,
+ 	/* map the data for TB1 */
+ 	tb1_addr = ((u8 *)&dev_cmd->hdr) + IWL_FIRST_TB_SIZE;
+ 	tb_phys = dma_map_single(trans->dev, tb1_addr, tb1_len, DMA_TO_DEVICE);
+-	if (unlikely(dma_mapping_error(trans->dev, tb_phys)))
++	if (dma_mapping_error(trans->dev, tb_phys))
+ 		goto out_err;
+ 	/*
+ 	 * No need for _with_wa(), we ensure (via alignment) that the data
+-- 
+2.32.0
 
-Regards,
-Bjorn
-
-> Thanks,
-> Arnaud
-> 
-> > 
-> > Thanks,
-> > Arnaud
-> > 
-> > 
-> >>
-> >> Regards,
-> >> Bjorn
-> >>
-> >>> Reported-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> >>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> >>> ---
-> >>>  drivers/remoteproc/stm32_rproc.c | 14 +++++---------
-> >>>  1 file changed, 5 insertions(+), 9 deletions(-)
-> >>>
-> >>> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-> >>> index 7353f9e7e7af..0e8203a432ab 100644
-> >>> --- a/drivers/remoteproc/stm32_rproc.c
-> >>> +++ b/drivers/remoteproc/stm32_rproc.c
-> >>> @@ -474,14 +474,12 @@ static int stm32_rproc_attach(struct rproc *rproc)
-> >>>  static int stm32_rproc_detach(struct rproc *rproc)
-> >>>  {
-> >>>  	struct stm32_rproc *ddata = rproc->priv;
-> >>> -	int err, dummy_data, idx;
-> >>> +	int err, idx;
-> >>>  
-> >>>  	/* Inform the remote processor of the detach */
-> >>>  	idx = stm32_rproc_mbox_idx(rproc, STM32_MBX_DETACH);
-> >>>  	if (idx >= 0 && ddata->mb[idx].chan) {
-> >>> -		/* A dummy data is sent to allow to block on transmit */
-> >>> -		err = mbox_send_message(ddata->mb[idx].chan,
-> >>> -					&dummy_data);
-> >>> +		err = mbox_send_message(ddata->mb[idx].chan, "stop");
-> >>>  		if (err < 0)
-> >>>  			dev_warn(&rproc->dev, "warning: remote FW detach without ack\n");
-> >>>  	}
-> >>> @@ -493,15 +491,13 @@ static int stm32_rproc_detach(struct rproc *rproc)
-> >>>  static int stm32_rproc_stop(struct rproc *rproc)
-> >>>  {
-> >>>  	struct stm32_rproc *ddata = rproc->priv;
-> >>> -	int err, dummy_data, idx;
-> >>> +	int err, idx;
-> >>>  
-> >>>  	/* request shutdown of the remote processor */
-> >>>  	if (rproc->state != RPROC_OFFLINE) {
-> >>>  		idx = stm32_rproc_mbox_idx(rproc, STM32_MBX_SHUTDOWN);
-> >>>  		if (idx >= 0 && ddata->mb[idx].chan) {
-> >>> -			/* a dummy data is sent to allow to block on transmit */
-> >>> -			err = mbox_send_message(ddata->mb[idx].chan,
-> >>> -						&dummy_data);
-> >>> +			err = mbox_send_message(ddata->mb[idx].chan, "detach");
-> >>>  			if (err < 0)
-> >>>  				dev_warn(&rproc->dev, "warning: remote FW shutdown without ack\n");
-> >>>  		}
-> >>> @@ -556,7 +552,7 @@ static void stm32_rproc_kick(struct rproc *rproc, int vqid)
-> >>>  			continue;
-> >>>  		if (!ddata->mb[i].chan)
-> >>>  			return;
-> >>> -		err = mbox_send_message(ddata->mb[i].chan, (void *)(long)vqid);
-> >>> +		err = mbox_send_message(ddata->mb[i].chan, "kick");
-> >>>  		if (err < 0)
-> >>>  			dev_err(&rproc->dev, "%s: failed (%s, err:%d)\n",
-> >>>  				__func__, ddata->mb[i].name, err);
-> >>> -- 
-> >>> 2.17.1
-> >>>
