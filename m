@@ -2,512 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4BBE3B1143
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 03:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28993B1147
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 03:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhFWBPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 21:15:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbhFWBPK (ORCPT
+        id S229920AbhFWBRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 21:17:30 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:44100 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229751AbhFWBR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 21:15:10 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8EF1C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 18:12:52 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so355685oti.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 18:12:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=nCv+uSQRxGQLv4Iq8REm/hvddqVa4LVl72DXjsH2DWE=;
-        b=O/2YYYltHfQUibLivV48z/F/ZDnlQsZ2gFJNBkS+swKt56why4V8mcsHfj87K2aD+A
-         kYVTGAd5GwRDBUh/2YCIgZqXt/jhf2Ufpi2SjPMCylMdPc+B3rGke6+ELG5nCqn88W82
-         96gIeWykgCssxDtgaY17yKMyWsWGPzsn6NCIbr2VKuAPykaIUOY3+gDOrFjow0Y8814W
-         DJTGdly/6AeE8F4MRX7lBJMk3E9SbQiguQc5phu3PlyAOllFQkuJ+lQerRo99za4m4gn
-         UJiP+hENKjaiDzuzikXMhrzDwU9nK0c7B2kHqU9prGRmtDdTDZB5em94cu6pJCyyIken
-         2FUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nCv+uSQRxGQLv4Iq8REm/hvddqVa4LVl72DXjsH2DWE=;
-        b=K1U5IUCmuTS63Jv2lT6tvC3vzVbNugtzeW41WHt0dYmb0F06DKWIXY6pN82UH1pVP2
-         5sKBa2SDMe1BeM69pm57H1pprc6FLs2iVYfpX8ke5WaySTeh9YEMDETiBJiEfQFdKCiV
-         D/gjubSpbtTKVMwuYkJUh+D1XJXVtvI6AryZnwS4/dOj+MVlKdl2v417chXE50SOMrUr
-         pkddqEyrFWHRtSx9tB134XkRvPKorxTlVvAcgfYlIhS6+Xi0nJJSIts5R0QEHO15JHp1
-         05WS++7Fq5z1wqJBeSZmhccmfwrOtE6fMvFIutlInTPdMdIc8350p+KyXmMwi13abR2f
-         +Dcg==
-X-Gm-Message-State: AOAM533CgAOtBgRdkZnVmmjtdliq9lpzFTKfasrRBV+mxudY0RKmrw0D
-        4zqHQ2Q7rK/yMlowEX+V71alvw==
-X-Google-Smtp-Source: ABdhPJzZ5OlRRDdkwmla7NAqmzozmrf7HNC9smIBLEw6y3WLWoXqM60enZH0eFbalTMYtceelKDz6Q==
-X-Received: by 2002:a9d:6303:: with SMTP id q3mr5541388otk.197.1624410771973;
-        Tue, 22 Jun 2021 18:12:51 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id d10sm873802oop.3.2021.06.22.18.12.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 18:12:51 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 20:12:48 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
-Message-ID: <YNKKkEMD4sVhfcNr@yoga>
-References: <20210622030948.966748-1-bjorn.andersson@linaro.org>
- <20210622030948.966748-2-bjorn.andersson@linaro.org>
- <20210622202935.lbghwelbiwgufycd@pengutronix.de>
+        Tue, 22 Jun 2021 21:17:29 -0400
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4100C20B83DE;
+        Tue, 22 Jun 2021 18:15:13 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4100C20B83DE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1624410913;
+        bh=l5w3e6a6uV45UCOPO09+HzRVeLGtrESc4iOLHXlLq40=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eeYWpJspNWBJwXVAAozA8nBj+r/ixX8Dlm+JJh+n64jeFEUJ7S/qji3vdmFeyzQbt
+         o2riDk6C172kqvkolzAULl0Prm52N4EhZD+iNa6WslrYt/Zk2nv49Tgs7oXLEOlbUM
+         SA+1cOODscth8UflP4gI2UwYnyL9Sma4U9qTv0kk=
+Received: by mail-pj1-f51.google.com with SMTP id pf4-20020a17090b1d84b029016f6699c3f2so2830143pjb.0;
+        Tue, 22 Jun 2021 18:15:13 -0700 (PDT)
+X-Gm-Message-State: AOAM531HN9tl4pq5T/zalL6tlu0N2nme0etR/T3KGdk4iimkbQkexN5m
+        l/CkOpe20Hnna7uOJt9X0VRF0oyayITVJ1mPTdk=
+X-Google-Smtp-Source: ABdhPJzLLexTZpICwihNJqNqUYtS2rIt+NYxLY8qUvXTajsE+vUnH89AEaOgxElegimr8XtRQl94Vvtz1Ub5nK9dW5E=
+X-Received: by 2002:a17:90a:650b:: with SMTP id i11mr6657767pjj.39.1624410912716;
+ Tue, 22 Jun 2021 18:15:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210622202935.lbghwelbiwgufycd@pengutronix.de>
+References: <20210617152754.17960-1-mcroce@linux.microsoft.com>
+ <20210617152754.17960-4-mcroce@linux.microsoft.com> <17cd289430f08f2b75b7f04242c646f6@mailhost.ics.forth.gr>
+ <d0f11655f21243ad983bd24381cdc245@AcuMS.aculab.com>
+In-Reply-To: <d0f11655f21243ad983bd24381cdc245@AcuMS.aculab.com>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Wed, 23 Jun 2021 03:14:36 +0200
+X-Gmail-Original-Message-ID: <CAFnufp1XeKM-N1MdWsNpU6NnF-dYUgGXL1W9r_DDWazTMyRHVA@mail.gmail.com>
+Message-ID: <CAFnufp1XeKM-N1MdWsNpU6NnF-dYUgGXL1W9r_DDWazTMyRHVA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] riscv: optimized memset
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Nick Kossifidis <mick@ics.forth.gr>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Bin Meng <bmeng.cn@gmail.com>, Guo Ren <guoren@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 22 Jun 15:29 CDT 2021, Uwe Kleine-K?nig wrote:
+On Tue, Jun 22, 2021 at 10:38 AM David Laight <David.Laight@aculab.com> wro=
+te:
+>
+> From: Nick Kossifidis
+> > Sent: 22 June 2021 02:08
+> >
+> > =CE=A3=CF=84=CE=B9=CF=82 2021-06-17 18:27, Matteo Croce =CE=AD=CE=B3=CF=
+=81=CE=B1=CF=88=CE=B5:
+> > > +
+> > > +void *__memset(void *s, int c, size_t count)
+> > > +{
+> > > +   union types dest =3D { .u8 =3D s };
+> > > +
+> > > +   if (count >=3D MIN_THRESHOLD) {
+> > > +           const int bytes_long =3D BITS_PER_LONG / 8;
+> >
+> > You could make 'const int bytes_long =3D BITS_PER_LONG / 8;'
+>
+> What is wrong with sizeof (long) ?
+> ...
 
-> On Mon, Jun 21, 2021 at 10:09:48PM -0500, Bjorn Andersson wrote:
-> > The SN65DSI86 provides the ability to supply a PWM signal on GPIO 4,
-> > with the primary purpose of controlling the backlight of the attached
-> > panel. Add an implementation that exposes this using the standard PWM
-> > framework, to allow e.g. pwm-backlight to expose this to the user.
-> > 
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> > 
-> > Changes since v2:
-> > - Corrected calculation of scale, to include a 1 instead of 1/NSEC_TO_SEC and
-> >   rounded the period up in get_state, to make sure its idempotent
-> > - Changed duty_cycle calculation to make sure it idempotent over my tested period
-> > - Documented "Limitations"
-> > - Documented muxing operation after pm_runtime_get_sync()
-> > 
-> >  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 335 +++++++++++++++++++++++++-
-> >  1 file changed, 334 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > index 5d712c8c3c3b..0eabbdad1830 100644
-> > --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > @@ -4,6 +4,7 @@
-> >   * datasheet: https://www.ti.com/lit/ds/symlink/sn65dsi86.pdf
-> >   */
-> >  
-> > +#include <linux/atomic.h>
-> >  #include <linux/auxiliary_bus.h>
-> >  #include <linux/bits.h>
-> >  #include <linux/clk.h>
-> > @@ -15,6 +16,7 @@
-> >  #include <linux/module.h>
-> >  #include <linux/of_graph.h>
-> >  #include <linux/pm_runtime.h>
-> > +#include <linux/pwm.h>
-> >  #include <linux/regmap.h>
-> >  #include <linux/regulator/consumer.h>
-> >  
-> > @@ -91,6 +93,13 @@
-> >  #define SN_ML_TX_MODE_REG			0x96
-> >  #define  ML_TX_MAIN_LINK_OFF			0
-> >  #define  ML_TX_NORMAL_MODE			BIT(0)
-> > +#define SN_PWM_PRE_DIV_REG			0xA0
-> > +#define SN_BACKLIGHT_SCALE_REG			0xA1
-> > +#define  BACKLIGHT_SCALE_MAX			0xFFFF
-> > +#define SN_BACKLIGHT_REG			0xA3
-> > +#define SN_PWM_EN_INV_REG			0xA5
-> > +#define  SN_PWM_INV_MASK			BIT(0)
-> > +#define  SN_PWM_EN_MASK				BIT(1)
-> >  #define SN_AUX_CMD_STATUS_REG			0xF4
-> >  #define  AUX_IRQ_STATUS_AUX_RPLY_TOUT		BIT(3)
-> >  #define  AUX_IRQ_STATUS_AUX_SHORT		BIT(5)
-> > @@ -113,11 +122,14 @@
-> >  
-> >  #define SN_LINK_TRAINING_TRIES		10
-> >  
-> > +#define SN_PWM_GPIO_IDX			3 /* 4th GPIO */
-> > +
-> >  /**
-> >   * struct ti_sn65dsi86 - Platform data for ti-sn65dsi86 driver.
-> >   * @bridge_aux:   AUX-bus sub device for MIPI-to-eDP bridge functionality.
-> >   * @gpio_aux:     AUX-bus sub device for GPIO controller functionality.
-> >   * @aux_aux:      AUX-bus sub device for eDP AUX channel functionality.
-> > + * @pwm_aux:      AUX-bus sub device for PWM controller functionality.
-> >   *
-> >   * @dev:          Pointer to the top level (i2c) device.
-> >   * @regmap:       Regmap for accessing i2c.
-> > @@ -145,11 +157,17 @@
-> >   *                bitmap so we can do atomic ops on it without an extra
-> >   *                lock so concurrent users of our 4 GPIOs don't stomp on
-> >   *                each other's read-modify-write.
-> > + *
-> > + * @pchip:        pwm_chip if the PWM is exposed.
-> > + * @pwm_enabled:  Used to track if the PWM signal is currently enabled.
-> > + * @pwm_refclk_freq: Cache for the reference clock input to the PWM.
-> > + * @pwm_pin_busy: Track if GPIO4 is currently requested for GPIO or PWM.
-> >   */
-> >  struct ti_sn65dsi86 {
-> >  	struct auxiliary_device		bridge_aux;
-> >  	struct auxiliary_device		gpio_aux;
-> >  	struct auxiliary_device		aux_aux;
-> > +	struct auxiliary_device		pwm_aux;
-> >  
-> >  	struct device			*dev;
-> >  	struct regmap			*regmap;
-> > @@ -172,6 +190,12 @@ struct ti_sn65dsi86 {
-> >  	struct gpio_chip		gchip;
-> >  	DECLARE_BITMAP(gchip_output, SN_NUM_GPIOS);
-> >  #endif
-> > +#if defined(CONFIG_PWM)
-> > +	struct pwm_chip			pchip;
-> > +	bool				pwm_enabled;
-> > +	unsigned int			pwm_refclk_freq;
-> > +	atomic_t			pwm_pin_busy;
-> > +#endif
-> >  };
-> >  
-> >  static const struct regmap_range ti_sn65dsi86_volatile_ranges[] = {
-> > @@ -190,6 +214,25 @@ static const struct regmap_config ti_sn65dsi86_regmap_config = {
-> >  	.cache_type = REGCACHE_NONE,
-> >  };
-> >  
-> > +static int ti_sn65dsi86_read_u16(struct ti_sn65dsi86 *pdata,
-> > +				 unsigned int reg, u16 *val)
-> > +{
-> > +	unsigned int tmp;
-> > +	int ret;
-> > +
-> > +	ret = regmap_read(pdata->regmap, reg, &tmp);
-> > +	if (ret)
-> > +		return ret;
-> > +	*val = tmp;
-> > +
-> > +	ret = regmap_read(pdata->regmap, reg + 1, &tmp);
-> > +	if (ret)
-> > +		return ret;
-> > +	*val |= tmp << 8;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static void ti_sn65dsi86_write_u16(struct ti_sn65dsi86 *pdata,
-> >  				   unsigned int reg, u16 val)
-> >  {
-> > @@ -253,6 +296,14 @@ static void ti_sn_bridge_set_refclk_freq(struct ti_sn65dsi86 *pdata)
-> >  
-> >  	regmap_update_bits(pdata->regmap, SN_DPPLL_SRC_REG, REFCLK_FREQ_MASK,
-> >  			   REFCLK_FREQ(i));
-> > +
-> > +#if defined(CONFIG_PWM)
-> > +	/*
-> > +	 * The PWM refclk is based on the value written to SN_DPPLL_SRC_REG,
-> > +	 * regardless of its actual sourcing.
-> > +	 */
-> > +	pdata->pwm_refclk_freq = ti_sn_bridge_refclk_lut[i];
-> > +#endif
-> >  }
-> >  
-> >  static void ti_sn65dsi86_enable_comms(struct ti_sn65dsi86 *pdata)
-> > @@ -1044,6 +1095,258 @@ static int ti_sn_bridge_parse_dsi_host(struct ti_sn65dsi86 *pdata)
-> >  	return 0;
-> >  }
-> >  
-> > +#if defined(CONFIG_PWM)
-> > +static int ti_sn_pwm_pin_request(struct ti_sn65dsi86 *pdata)
-> > +{
-> > +	return atomic_xchg(&pdata->pwm_pin_busy, 1) ? -EBUSY : 0;
-> > +}
-> > +
-> > +static void ti_sn_pwm_pin_release(struct ti_sn65dsi86 *pdata)
-> > +{
-> > +	atomic_set(&pdata->pwm_pin_busy, 0);
-> > +}
-> > +
-> > +static struct ti_sn65dsi86 *pwm_chip_to_ti_sn_bridge(struct pwm_chip *chip)
-> > +{
-> > +	return container_of(chip, struct ti_sn65dsi86, pchip);
-> > +}
-> > +
-> > +static int ti_sn_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
-> > +{
-> > +	struct ti_sn65dsi86 *pdata = pwm_chip_to_ti_sn_bridge(chip);
-> > +
-> > +	return ti_sn_pwm_pin_request(pdata);
-> > +}
-> > +
-> > +static void ti_sn_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
-> > +{
-> > +	struct ti_sn65dsi86 *pdata = pwm_chip_to_ti_sn_bridge(chip);
-> > +
-> > +	ti_sn_pwm_pin_release(pdata);
-> > +}
-> > +
-> > +/*
-> > + * Limitations:
-> > + * - The PWM signal is not driven when the chip is powered down, or in its
-> > + *   reset state and the driver does not implement the "suspend state"
-> > + *   described in the documentation. In order to save power, state->enabled is
-> > + *   interpreted as denoting if the signal is expected to be valid, and is used to keep
-> > + *   the determine if the chip needs to be kept powered.
-> > + * - Changing both period and duty_cycle is not done atomically, so the output
-> > + *   might briefly be a mix of the two settings.
-> > + */
-> > +static int ti_sn_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-> > +			   const struct pwm_state *state)
-> > +{
-> > +	struct ti_sn65dsi86 *pdata = pwm_chip_to_ti_sn_bridge(chip);
-> > +	unsigned int pwm_en_inv;
-> > +	unsigned int backlight;
-> > +	unsigned int pre_div;
-> > +	unsigned int scale;
-> > +	u64 tick;
-> > +	int ret;
-> > +
-> > +	if (!pdata->pwm_enabled) {
-> > +		ret = pm_runtime_get_sync(pdata->dev);
-> > +		if (ret < 0)
-> > +			return ret;
-> > +
-> > +		/*
-> > +		 * The chip might have been powered down while we didn't hold a
-> > +		 * PM runtime reference, so mux in the PWM function on the GPIO
-> > +		 * pin again.
-> > +		 */
-> > +		ret = regmap_update_bits(pdata->regmap, SN_GPIO_CTRL_REG,
-> > +				SN_GPIO_MUX_MASK << (2 * SN_PWM_GPIO_IDX),
-> > +				SN_GPIO_MUX_SPECIAL << (2 * SN_PWM_GPIO_IDX));
-> > +		if (ret) {
-> > +			dev_err(pdata->dev, "failed to mux in PWM function\n");
-> > +			goto out;
-> > +		}
-> 
-> In reply to your v2 I requested to short-cut the case !pdata->pwm_enabled
-> && !state->enabled without enabling stuff.
-> 
+Nothing, I guess that BITS_PER_LONG is just (sizeof(long) * 8) anyway
 
-You're right, got lost in my thoughts about the power state. But per my
-own reasoning there's no need enable the mux when state->enabled = false
+> > > +           unsigned long cu =3D (unsigned long)c;
+> > > +
+> > > +           /* Compose an ulong with 'c' repeated 4/8 times */
+> > > +           cu |=3D cu << 8;
+> > > +           cu |=3D cu << 16;
+> > > +#if BITS_PER_LONG =3D=3D 64
+> > > +           cu |=3D cu << 32;
+> > > +#endif
+> > > +
+> >
+> > You don't have to create cu here, you'll fill dest buffer with 'c'
+> > anyway so after filling up enough 'c's to be able to grab an aligned
+> > word full of them from dest, you can just grab that word and keep
+> > filling up dest with it.
+>
+> That will be a lot slower - especially if run on something like x86.
+> A write-read of the same size is optimised by the store-load forwarder.
+> But the byte write, word read will have to go via the cache.
+>
+> You can just write:
+>         cu =3D (unsigned long)c * 0x0101010101010101ull;
+> and let the compiler sort out the best way to generate the constant.
+>
 
-> > +	}
-> > +
-> > +	if (state->enabled) {
-> > +		/*
-> > +		 * Per the datasheet the PWM frequency is given by:
-> > +		 *
-> > +		 *   PWM_FREQ = REFCLK_FREQ / (PWM_PRE_DIV * BACKLIGHT_SCALE + 1)
-> > +		 *
-> > +		 * which can be rewritten:
-> > +		 *
-> > +		 *   T_pwm * REFCLK_FREQ - 1 = PWM_PRE_DIV * BACKLIGHT_SCALE
-> > +		 *
-> > +		 * In order to keep BACKLIGHT_SCALE within its 16 bits,
-> > +		 * PWM_PRE_DIV must be:
-> > +		 *
-> > +		 *   PWM_PRE_DIV >= (T_pwm * REFCLK_FREQ - 1) / BACKLIGHT_SCALE_MAX;
-> > +		 *
-> > +		 * To simplify the search and optimize the resolution of the
-> > +		 * PWM, the lowest possible PWM_PRE_DIV is used. Finally the
-> > +		 * scale is calculated as:
-> > +		 *
-> > +		 *   BACKLIGHT_SCALE = (T_pwm * REFCLK_FREQ - 1) / PWM_PRE_DIV
-> > +		 *
-> > +		 * Here T_pwm is represented in seconds, so appropriate scaling
-> > +		 * to nanoseconds is necessary.
-> > +		 */
-> > +
-> > +		/* Minimum T_pwm is (1 * 1 + 1) / REFCLK_FREQ */
-> > +		if (state->period * pdata->pwm_refclk_freq <= 2 * NSEC_PER_SEC) {
-> > +			ret = -EINVAL;
-> > +			goto out;
-> > +		}
-> > +
-> > +		pre_div = DIV_ROUND_UP((state->period * pdata->pwm_refclk_freq - NSEC_PER_SEC),
-> > +				       (NSEC_PER_SEC * BACKLIGHT_SCALE_MAX));
-> > +		if (pre_div > 0xff)
-> > +			pre_div = 0xff;
-> > +
-> > +		scale = (state->period * pdata->pwm_refclk_freq - NSEC_PER_SEC) / (NSEC_PER_SEC * pre_div);
-> 
-> Please consider this multiplication to overflow. Something like:
-> 
-> 	if (state->period > $someterm)
-> 		period = $someterm;
-> 	else
-> 		period = state->period;
-> 
-> is usually appropriate. Also NSEC_PER_SEC * pre_div might overflow.
-> Moreover to divide a u64 you must not rely on / but need do_div() or
-> some variant of it.
-> 
+Interesting. I see that most compilers do an integer multiplication,
+is it faster than three shift and three or?
 
-Didn't consider that someone would ask for a period of 430 second, but
-that sounds reasonable and you're right the denominator might be only 4
-bytes on some architectures.
+clang on riscv generates even more instructions to create the immediate:
 
-Will fix this, and ensure that things are promoted to 64 bits where
-needed and divided appropriately.
+unsigned long repeat_shift(int c)
+{
+  unsigned long cu =3D (unsigned long)c;
+  cu |=3D cu << 8;
+  cu |=3D cu << 16;
+  cu |=3D cu << 32;
 
-> > +
-> > +		/*
-> > +		 * PWM duty cycle is given as:
-> > +		 *
-> > +		 *   duty = BACKLIGHT / (BACKLIGHT_SCALE + 1)
-> > +		 *
-> > +		 * The documentation is however inconsistent in its examples,
-> > +		 * so the interpretation used here is that the duty cycle is
-> > +		 * the period of BACKLIGHT * PRE_DIV / REFCLK_FREQ.
-> 
-> I don't understand this.
-> 
-> > +		 *
-> > +		 * The ratio PRE_DIV / REFCLK_FREQ is rounded up to whole
-> > +		 * nanoseconds in order to ensure that the calculations are
-> > +		 * idempotent and gives results that are smaller than the
-> > +		 * requested value.
-> > +		 */
-> > +		tick = DIV_ROUND_UP(NSEC_PER_SEC * pre_div, pdata->pwm_refclk_freq);
-> > +		backlight = state->duty_cycle / tick;
-> 
-> You're loosing precision here by dividing by the result of a division.
-> 
+  return cu;
+}
 
-The actual period is also a result of a division and after spending too
-many hours scratching my head I reached to conclusion that this was the
-reason why I wasn't able to get the duty cycle calculation idempotent
-over the ranges I tested.
+unsigned long repeat_mul(int c)
+{
+  return (unsigned long)c * 0x0101010101010101ull;
+}
 
-But in my effort to describe this to you here, I finally spotted the
-error and will follow up with a new version that does:
+repeat_shift:
+  slli a1, a0, 8
+  or a0, a0, a1
+  slli a1, a0, 16
+  or a0, a0, a1
+  slli a1, a0, 32
+  or a0, a0, a1
+  ret
 
-                actual = NSEC_PER_SEC * (pre_div * scale + 1) / pdata->pwm_refclk_freq);
-                backlight = state->duty_cycle * (scale + 1) / actual;
+repeat_mul:
+  lui a1, 4112
+  addiw a1, a1, 257
+  slli a1, a1, 16
+  addi a1, a1, 257
+  slli a1, a1, 16
+  addi a1, a1, 257
+  mul a0, a0, a1
+  ret
 
-(With appropriate u64 casts and divisions)
+> >
+> > > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > > +           /* Fill the buffer one byte at time until the destination
+> > > +            * is aligned on a 32/64 bit boundary.
+> > > +            */
+> > > +           for (; count && dest.uptr % bytes_long; count--)
+> >
+> > You could reuse & mask here instead of % bytes_long.
+> >
+> > > +                   *dest.u8++ =3D c;
+> > > +#endif
+> >
+> > I noticed you also used CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS on your
+> > memcpy patch, is it worth it here ? To begin with riscv doesn't set it
+> > and even if it did we are talking about a loop that will run just a few
+> > times to reach the alignment boundary (worst case scenario it'll run 7
+> > times), I don't think we gain much here, even for archs that have
+> > efficient unaligned access.
+>
+> With CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS it probably isn't worth
+> even checking the alignment.
+> While aligning the copy will be quicker for an unaligned buffer they
+> almost certainly don't happen often enough to worry about.
+> In any case you'd want to do a misaligned word write to the start
+> of the buffer - not separate byte writes.
+> Provided the buffer is long enough you can also do a misaligned write
+> to the end of the buffer before filling from the start.
+>
 
-> > +		if (backlight > scale)
-> > +			backlight = scale;
-> > +
-> > +		ret = regmap_write(pdata->regmap, SN_PWM_PRE_DIV_REG, pre_div);
-> > +		if (ret) {
-> > +			dev_err(pdata->dev, "failed to update PWM_PRE_DIV\n");
-> > +			goto out;
-> > +		}
-> > +
-> > +		ti_sn65dsi86_write_u16(pdata, SN_BACKLIGHT_SCALE_REG, scale);
-> > +		ti_sn65dsi86_write_u16(pdata, SN_BACKLIGHT_REG, backlight);
-> > +	}
-> > +
-> > +	pwm_en_inv = FIELD_PREP(SN_PWM_EN_MASK, !!state->enabled) |
-> > +		     FIELD_PREP(SN_PWM_INV_MASK, state->polarity == PWM_POLARITY_INVERSED);
-> > +	ret = regmap_write(pdata->regmap, SN_PWM_EN_INV_REG, pwm_en_inv);
-> > +	if (ret) {
-> > +		dev_err(pdata->dev, "failed to update PWM_EN/PWM_INV\n");
-> > +		goto out;
-> > +	}
-> > +
-> > +	pdata->pwm_enabled = !!state->enabled;
-> > +out:
-> > +
-> > +	if (!pdata->pwm_enabled)
-> > +		pm_runtime_put_sync(pdata->dev);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static void ti_sn_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
-> > +				struct pwm_state *state)
-> > +{
-> > +	struct ti_sn65dsi86 *pdata = pwm_chip_to_ti_sn_bridge(chip);
-> > +	unsigned int pwm_en_inv;
-> > +	unsigned int pre_div;
-> > +	u16 backlight;
-> > +	u16 scale;
-> > +	int ret;
-> > +
-> > +	ret = regmap_read(pdata->regmap, SN_PWM_EN_INV_REG, &pwm_en_inv);
-> > +	if (ret)
-> > +		return;
-> > +
-> > +	ret = ti_sn65dsi86_read_u16(pdata, SN_BACKLIGHT_SCALE_REG, &scale);
-> > +	if (ret)
-> > +		return;
-> > +
-> > +	ret = ti_sn65dsi86_read_u16(pdata, SN_BACKLIGHT_REG, &backlight);
-> > +	if (ret)
-> > +		return;
-> > +
-> > +	ret = regmap_read(pdata->regmap, SN_PWM_PRE_DIV_REG, &pre_div);
-> > +	if (ret)
-> > +		return;
-> > +
-> > +	state->enabled = FIELD_GET(SN_PWM_EN_MASK, pwm_en_inv);
-> > +	if (FIELD_GET(SN_PWM_INV_MASK, pwm_en_inv))
-> > +		state->polarity = PWM_POLARITY_INVERSED;
-> > +	else
-> > +		state->polarity = PWM_POLARITY_NORMAL;
-> > +
-> > +	state->period = DIV_ROUND_UP(NSEC_PER_SEC * (pre_div * scale + 1), pdata->pwm_refclk_freq);
-> > +	state->duty_cycle = backlight * DIV_ROUND_UP(NSEC_PER_SEC * pre_div, pdata->pwm_refclk_freq);
-> 
-> If you use
-> 
-> 	state->duty_cycle = DIV_ROUND_UP(backlight * NSEC_PER_SEC * pre_div, pdata->pwm_refclk_freq);
-> 
-> instead (with a cast to u64 to not yield an overflow) the result is more
-> exact.
-> 
+I don't understand this one, a misaligned write here is ~30x slower
+than an aligned one because it gets trapped and emulated in SBI.
+How can this be convenient?
 
-The problem with this is that it sometimes yields duty_cycles larger
-than what was requested... But going back to describing this as a ratio
-of the period this becomes:
+> I suspect you may need either barrier() or use a ptr to packed
+> to avoid the perverted 'undefined behaviour' fubar.'
+>
 
-        state->duty_cycle = DIV_ROUND_UP_ULL(state->period * backlight, scale + 1);
-
-> I still find this surprising, I'd expect that SCALE also matters for the
-> duty_cycle. With the assumption implemented here modifying SCALE only
-> affects the period. This should be easy to verify?! I would expect that
-> changing SCALE doesn't affect the relative duty_cycle, so the brightness
-> of an LED is unaffected (unless the period gets too big of course).
-> 
-
-I think the hardware is two nested counters, one (A) ticking at REFCLK_FREQ
-and as that hits PRE_DIV, it kicks the second counter (B) (and resets).
-
-As counter A is reset the output signal goes high, when A hits BACKLIGHT the
-signal goes low and when A hits BACKLIGHT_SCALE it resets.
-
-Per this implementation the actual length of the duty cycle would indeed
-be independent of the BACKLIGHT_SCALE, but the length of the low signal
-(and hence the ratio, which results in the actual brightness) does
-depend on BACKLIGHT_SCALE.
-
-> I didn't spend much cycles to verify that the logic in .apply() matches
-> .get_state(). I'd keep that check for the next iteration.
-> 
-
-Your feedback is much appreciated!
+Which UB are you referring to?
 
 Regards,
-Bjorn
-
-> Best regards
-> Uwe
-> 
-> -- 
-> Pengutronix e.K.                           | Uwe Kleine-König            |
-> Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
-
+--
+per aspera ad upstream
