@@ -2,92 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB5F3B1CBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D232F3B1CB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhFWOmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:42:07 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:21230 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231310AbhFWOmF (ORCPT
+        id S231280AbhFWOly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:41:54 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:33991 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230334AbhFWOlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:42:05 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624459187; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Reply-To: Sender;
- bh=82D/RvnvXIWarUQl34Y8kax/sq7KtyWDivoFVNNrcc0=; b=rjP9aY/21c5AnM0fSC29JcyhRd/mmxRqoFiELFzFFLiXgSC8MsTEFcOS/NsI2M1Id8HNYV87
- PkUpmL79Nm1s4foA8/6zG6czVeAkLNMYitfEJxmNPpbMVE5nqwg+YcJvExFb0EgkqqE1ajbM
- D6KVTMu6kMiVAfLvroSA6q8Ta4M=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60d3479d01dd9a9431f8b1af (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Jun 2021 14:39:25
- GMT
-Sender: bcain=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3B948C43460; Wed, 23 Jun 2021 14:39:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from BCAIN (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bcain)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 45043C433F1;
-        Wed, 23 Jun 2021 14:39:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 45043C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bcain@codeaurora.org
-Reply-To: <bcain@codeaurora.org>
-From:   "Brian Cain" <bcain@codeaurora.org>
-To:     "'Christoph Hellwig'" <hch@lst.de>,
-        "'Arnd Bergmann'" <arnd@arndb.de>
-Cc:     "'Linus Torvalds'" <torvalds@linux-foundation.org>,
-        "'Sid Manning'" <sidneym@codeaurora.org>,
-        <linux-hexagon@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210623141854.GA32155@lst.de>
-In-Reply-To: <20210623141854.GA32155@lst.de>
-Subject: RE: how can we test the hexagon port in mainline
-Date:   Wed, 23 Jun 2021 09:39:21 -0500
-Message-ID: <08df01d7683d$8f5b7b70$ae127250$@codeaurora.org>
+        Wed, 23 Jun 2021 10:41:52 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id D996C58062B;
+        Wed, 23 Jun 2021 10:39:31 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Wed, 23 Jun 2021 10:39:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=0HsLLey/fKRoKjdaUNTlRKglMem
+        573ETn+6PBaZhBlA=; b=qlQdZFetQFNz5/Zr/PNIwv/XABwMWCK4shyMf8XCiNx
+        /nYEihGoj26BjdB5aU2E5nTBxwYL9cQXFa/91zesFfeIEMh1vkhiCpIeNUPjYb7h
+        VOIjgOSkTEnqfUN3C0AzpbHB3GIVLM8flLxO/2TW4gaAbXV6fAhtSzQjWbYql/fd
+        jDSR3+pavj2kHvl1caC7hr9ZNtr9FirK2Pg2KMsUPYOJM2CJFSvh3Chqs3G8sDy4
+        AUE+mDpkCSlAvcLsgXVMTUmxAbD4n9xWKcoBYNkcDgw/43sLey9L9AHnW34rJphg
+        MRyQi6ZQQfE37xy8KNfw2HLLgD2hysrYvF8hj8k0fGg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=0HsLLe
+        y/fKRoKjdaUNTlRKglMem573ETn+6PBaZhBlA=; b=k8goKRCtv30z60+G0WpDPe
+        0Kl/TAC/cTXPU/00+i9hyjvPkYU3O0WriDwv8FxkAvX7I6UekoWJrikYjnmZiSSQ
+        ME57XRoQVKire1wpx9MNoYST5PhZaFlpKZVq6eMcEMup4Xzka3ApXBOPHEB1Tx3K
+        XS7OiJLmQklpPwDctMAPD1fHbFYv3re8tDTvomkBvC9imy3bTYPWyfi7TmPq3OsM
+        oXRIB2f3OF9nD4j2P4o2jSFkLAM5VWK4YmnHiQ5S2oIGRCegVkqifrNgJ9QIE4sM
+        aULpb0Gd5QUX6rWN5DtkKkGjzv7vUWjbhG9Q1gskqiQA5Or2NuT9aUZOdp59/6nw
+        ==
+X-ME-Sender: <xms:okfTYFH9Y5JwLcxIa28cR-0p7f39WUbQNsYMTd34PvdGUqZ5xbQ3gA>
+    <xme:okfTYKW9yzYaXFkZiqavzlGCTs4cdYEDd0solwQeSdL4CC8CKnJguoAS-RF3pXGND
+    VSmgKekA2Khwau4F0E>
+X-ME-Received: <xmr:okfTYHJVnkIdNalGGK8dsY7ZBk9irxpZB3y2uWg3VorHDvfhptJKTcCXA_9aGhr2rooo4iz-D99zFA6SWCLMk9ZKyO5FlZD2ngpH>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeegfedgkedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:okfTYLE5KoTeWvMi538qBEVwzxvUAmBgVNaKwY-29In-xk9YLjuJNA>
+    <xmx:okfTYLVaPx9j0bJCANeMwBqGKLWypbCv58ZSQDFVXIcHOKgKQvS-JQ>
+    <xmx:okfTYGPZOk9APMOyZETZF_tn_LzLyIwzLu6JCcgnRepHWAWB78g3Vw>
+    <xmx:o0fTYEsYOZp9MgqG3Bv6SxlPOuI_NlBkpBQ46DgN6JXombZcsfddVg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 23 Jun 2021 10:39:30 -0400 (EDT)
+Date:   Wed, 23 Jun 2021 16:39:28 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Esaki Tomohito <etom@igel.co.jp>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
+        Takanari Hayama <taki@igel.co.jp>
+Subject: Re: [PATH 0/4] [RFC] Support virtual DRM
+Message-ID: <20210623143928.ickbxz32w6lbpofn@gilmour>
+References: <20210621062742.26073-1-etom@igel.co.jp>
+ <9853d0a9-6053-db64-9c79-40b7e0689eec@suse.de>
+ <20210621092454.jvdmelk2h427jn5v@gilmour>
+ <cc08f858-7440-05f9-0d10-243f5115d209@igel.co.jp>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQJHxj6Ga6VuoE3mNrk9EKW2w3HC7qpA7bUg
-Content-Language: en-us
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="zrpqm6ro3pys2ppq"
+Content-Disposition: inline
+In-Reply-To: <cc08f858-7440-05f9-0d10-243f5115d209@igel.co.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Christoph Hellwig <hch@lst.de>
-...
-> 
-> Hi all,
-> 
-> the oldest supported gcc version in mainline is gcc 4.9.  But the only
-> hexagon crosscompiler I can find is the one Arnds website points to here:
-> 
-> https://mirrors.edge.kernel.org/pub/tools/crosstool/
-> 
-> which is a non-upstream gcc 4.6.1 port.  How are we supposed to even
-> build test hexagon code?
 
-We have provided a clang-12-based toolchain here:
+--zrpqm6ro3pys2ppq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-https://codelinaro.jfrog.io/artifactory/codelinaro-qemu/2021-05-12/clang+llv
-m-12.0.0-cross-hexagon-unknown-linux-musl.tar.xz
+On Tue, Jun 22, 2021 at 01:36:48PM +0900, Esaki Tomohito wrote:
+> Hi, Maxime
+> Thank you for reply.
+>=20
+> On 2021/06/21 18:24, Maxime Ripard wrote:
+> > Hi,
+> >=20
+> > On Mon, Jun 21, 2021 at 09:10:19AM +0200, Thomas Zimmermann wrote:
+> >> Am 21.06.21 um 08:27 schrieb Tomohito Esaki:
+> >>> Virtual DRM splits the overlay planes of a display controller into mu=
+ltiple
+> >>> virtual devices to allow each plane to be accessed by each process.
+> >>>
+> >>> This makes it possible to overlay images output from multiple process=
+es on a
+> >>> display. For example, one process displays the camera image without c=
+ompositor
+> >>> while another process overlays the UI.
+> >>
+> >> I briefly looked over your patches. I didn't understand how this is
+> >> different to the functionality of a compositor? Shouldn't this be solv=
+ed in
+> >> userspace?
+> >=20
+> > I think there could be a bunch of use-cases for something that could
+> > "steal" a plane without the compositor knowing.
+> >=20
+> > Something I'd really like to work at some point for example is that the
+> > downstream RaspberryPi display driver has a visual clue when it's
+> > running too hot or is in over-current.
+> >=20
+> > I don't think this is the right solution though. The DT binding makes it
+> > far too static, and if there's a compositor I'd assume it would want to
+> > know about it somehow (at least if it's from the userspace) ?
+> >=20
+>=20
+> I will reconsider the DT bindings.
+>=20
+> We want to separate the resources from the master in units of planes,
+> so we proposed virtual DRM.
+> By separating the plane from the master and making it appear as
+> a virtual DRM devicein userland, the plane can be accessed from
+> userland using the general DRM API.
+> What do you think about this idea?
 
-Could we update https://mirrors.edge.kernel.org/pub/tools/crosstool/ to
-point here?
+I guess you'd need to detail a bit more what your use case is exactly,
+and what issue you're trying to address.
 
--Brian
+Generally speaking, I'm not really sure how you can separate a KMS
+driver from its planes.
 
+Like, assuming that you have that super important application putting
+the rear-end camera on the display: I'd assume you want the connector
+and bridges to remain enabled? How are you going to synchronize with the
+compositor if it wants to disable it, or change resolution?
+
+Similarly, some features exposed on the connector, like bpc, might
+affect the input format you want to have for your planes?
+
+Maxime
+
+--zrpqm6ro3pys2ppq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYNNHoAAKCRDj7w1vZxhR
+xSYqAQCeBYrlpqR5FSj6MJ47x6cTdMpmzNwtz5kdH40wQJkV7AD/de9z5dNUHVoD
+IFn98/cS3zYxIr7sbZYk5LkBlbuvaAg=
+=owdM
+-----END PGP SIGNATURE-----
+
+--zrpqm6ro3pys2ppq--
