@@ -2,102 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F793B1EA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5DB3B1EA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbhFWQaK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Jun 2021 12:30:10 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:20800 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229818AbhFWQaI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 12:30:08 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-216-XdzaOTOkN5a2bqttQ15hmQ-1; Wed, 23 Jun 2021 17:27:48 +0100
-X-MC-Unique: XdzaOTOkN5a2bqttQ15hmQ-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 23 Jun
- 2021 17:27:47 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Wed, 23 Jun 2021 17:27:47 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Kees Cook' <keescook@chromium.org>
-CC:     'Guillaume Tucker' <guillaume.tucker@collabora.com>,
-        Shuah Khan <shuah@kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] selftests/lkdtm: Use /bin/sh not $SHELL
-Thread-Topic: [PATCH v2] selftests/lkdtm: Use /bin/sh not $SHELL
-Thread-Index: AQHXaCznpjkpNTpwjEW+kA8o/GdKZashmKhggAAdGgCAABKuUA==
-Date:   Wed, 23 Jun 2021 16:27:47 +0000
-Message-ID: <76a575d1364a47458d27c76c65b673b6@AcuMS.aculab.com>
-References: <20210619025834.2505201-1-keescook@chromium.org>
- <e958209b-8621-57ca-01d6-2e76b05dab4c@collabora.com>
- <42f26361db6f481e980ac349bf0079ef@AcuMS.aculab.com>
- <202106230917.FE2F587@keescook>
-In-Reply-To: <202106230917.FE2F587@keescook>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S230018AbhFWQa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 12:30:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60448 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229523AbhFWQa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 12:30:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F38EA6112D;
+        Wed, 23 Jun 2021 16:28:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624465688;
+        bh=pXQvDTlh7AxJ1xcJDWRJuLPfRjb/pFSHA7IOibiex28=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uXkvIQXWIo1Bk+IwK1I4UP5FloMgszcrdvs5K41xYF6hOxPVJvcRmh8Lnax5mB1d1
+         SfFzjh9ZC+Pq/Tz2YjHYX3aOYaaFTqU7/OahK0EcxWgymypVsUI1TOWxIOKQQQ5q4N
+         4rwjSEMEKQP0hxPJi83M8alR/a88Y9VkfnpEXdSo=
+Date:   Wed, 23 Jun 2021 18:28:05 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     rafael@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
+        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
+        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
+        rostedt@goodmis.org, peterz@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] drivers/base/core: refcount kobject and bus on device
+ attribute read / store
+Message-ID: <YNNhFdw++Auk+1Wg@kroah.com>
+References: <20210623003630.274804-1-mcgrof@kernel.org>
+ <YNLxtbzOm3/whYHc@kroah.com>
+ <20210623161434.qraapo4xaprte7bs@garbanzo>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210623161434.qraapo4xaprte7bs@garbanzo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook
-> Sent: 23 June 2021 17:19
+On Wed, Jun 23, 2021 at 09:14:34AM -0700, Luis Chamberlain wrote:
+> On Wed, Jun 23, 2021 at 10:32:53AM +0200, Greg KH wrote:
+> > On Tue, Jun 22, 2021 at 05:36:30PM -0700, Luis Chamberlain wrote:
+> > > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > > index 4a8bf8cda52b..f69aa040b56d 100644
+> > > --- a/drivers/base/core.c
+> > > +++ b/drivers/base/core.c
+> > > @@ -2042,28 +2042,56 @@ EXPORT_SYMBOL(dev_driver_string);
+> > >  static ssize_t dev_attr_show(struct kobject *kobj, struct attribute *attr,
+> > >  			     char *buf)
+> > >  {
+> > > -	struct device_attribute *dev_attr = to_dev_attr(attr);
+> > > -	struct device *dev = kobj_to_dev(kobj);
+> > > +	struct device_attribute *dev_attr;
+> > > +	struct device *dev;
+> > > +	struct bus_type *bus = NULL;
+> > >  	ssize_t ret = -EIO;
+> > >  
+> > > +	dev = get_device(kobj_to_dev(kobj));
+> > > +	if (dev->bus) {
+> > 
+> > No need to test for this, right?
 > 
-> On Wed, Jun 23, 2021 at 01:43:04PM +0000, David Laight wrote:
-> > From: Guillaume Tucker
-> > > Sent: 23 June 2021 13:40
-> > ...
-> > > > diff --git a/tools/testing/selftests/lkdtm/run.sh b/tools/testing/selftests/lkdtm/run.sh
-> > > > index bb7a1775307b..0f9f22ac004b 100755
-> > > > --- a/tools/testing/selftests/lkdtm/run.sh
-> > > > +++ b/tools/testing/selftests/lkdtm/run.sh
-> > > > @@ -78,8 +78,9 @@ dmesg > "$DMESG"
-> > > >
-> > > >  # Most shells yell about signals and we're expecting the "cat" process
-> > > >  # to usually be killed by the kernel. So we have to run it in a sub-shell
-> > > > -# and silence errors.
-> > > > -($SHELL -c 'cat <(echo '"$test"') >'"$TRIGGER" 2>/dev/null) || true
-> > > > +# to avoid terminating this script. Leave stderr alone, just in case
-> > > > +# something _else_ happens.
-> > > > +(/bin/sh -c '(echo '"$test"') | cat >'"$TRIGGER") || true
-> >
-> > I was having trouble parsing that command - and I'm good
-> > at shell scripts.
-> > I think the extra subshell the 'echo' is in doesn't help.
-> > In fact, is either subshell needed?
-> > Surely:
-> > /bin/sh -c "echo '$test' | cat >$trigger" || true
-> > will work just as well?
+> dev_uevent() checks for dev->bus, so I thought that was a clear
+> indication this isn't always set.
 > 
-> Ah yeah, and I just tested it to double check, it can be even simpler:
+> > 
+> > > +		bus = bus_get(dev->bus);
+> > > +		if (!bus)
+> > > +			goto out;
+
+The point is that even if dev->bus is NULL, then bus_get(NULL) is NULL.
+That's the only way that bus_get() can return NULL, which means this
+check too is not needed.
+
+> > >  	if (dev_attr->show)
+> > >  		ret = dev_attr->show(dev, dev_attr, buf);
+> > >  	if (ret >= (ssize_t)PAGE_SIZE) {
+> > >  		printk("dev_attr_show: %pS returned bad count\n",
+> > >  				dev_attr->show);
+> > >  	}
+> > > +
+> > > +	bus_put(bus);
+> > 
+> > You are incrementing the bus, which is nice, but I do not understand why
+> > it is needed.  What is causing the bus to go away _before_ the devices
+> > are going away?  Busses almost never are removed from the system, and if
+> > they are, all devices associated with them are removed first.  So I do
+> > not think you need to increment anything with that here.
 > 
-> echo "$test" | /bin/sh -c "cat >$TRIGGER" || true
+> You tell me. It was your suggestion as a replacement for the type
+> specific lock, in the zram case, its a block device so I was using
+> bdgrab().
 
-You can probably even do:
+I did?  Sorry, I do not remember, but this is not a lock, nor does it
+protect anything.
 
-echo "$test" | /bin/sh -c cat >$TRIGGER || true
+I'll respond to the rest later...
 
-(moving the redirect to the outer shell).
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+greg k-h
