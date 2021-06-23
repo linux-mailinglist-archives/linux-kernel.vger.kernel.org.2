@@ -2,181 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C063B21BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F66C3B21BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhFWUXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 16:23:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhFWUXM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 16:23:12 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F91C061574;
-        Wed, 23 Jun 2021 13:20:54 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id m15so2109958qvc.9;
-        Wed, 23 Jun 2021 13:20:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=azW1zX+eO9gp+O2n94OxE29cfxyxIikc6yBHD+EhJ4A=;
-        b=gf29hBMTVf7L5OOPMDNSJYasFrvwfKfm1PZKGTqPdKNtDPaNwoRQSGcJQKgrxHeLeJ
-         p4H0WfGNvTNtfzVLzUzYtxjfKRGkyowmrZKqMR1yE2z54Zxzl9CBx52zhKRZ7dej2kzm
-         LMaRgIUHtM9R1MTmnyNKK6wZkdxouhQDyNBIwr4qFF1rbZRpwqKM+8aAA1qDSM40gKbx
-         Y2wL4LfZB/u+ofc7I6hKYF97mh87LyHqIZF1mLoU56AVPtmS8xsHAtnOW1jfmR8KGquJ
-         3UUzb1uSgKzjTYVSSU0p9GRfyLc6+Ed99vf2iOFeamhAQtUh8XiBSB+p0dzl5lB1Fbgc
-         6j+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=azW1zX+eO9gp+O2n94OxE29cfxyxIikc6yBHD+EhJ4A=;
-        b=fSep8zVPoUMov4fVEaYavTubI2MCRSRjpGl54TQNCCfnYr6zBc5YxspLPS/O8SpsOn
-         mkszfRjqxkESzVhnTug38jq5BVl/NedE2KdC2hBImDk1coam4Vy41KKhrTd2w2A4EUWo
-         JT1JuECOrNXDmTaAO2VhYkHpaHznGWBgH7IVAXtEaholEXsMuOLfekcV6RhgyI7aVHyU
-         AO4vEdwDK3+QrIXGPG8Qcq0+dnrLoRMdu6czUa++cdaz9SUndmqZLJXIdFzX9g9LVGdc
-         uzE00+HqvWNTmbpSVWEz2f8DnuPjnY9nGkIjaBi9st+lG4gt/fGtLRRLrK8ZxbiTjr/d
-         2/hg==
-X-Gm-Message-State: AOAM5300UA2hw4bCX+CihKwjpEhacEwzr4NHOLfsb85frLGBjLi+npki
-        EvTF0eFgATvIza9sbuAg1lM=
-X-Google-Smtp-Source: ABdhPJzKwsCpj7QvmWKxfyTmwDTTfJJiUhnXokn6nJJjvZbt1g82Lgenaw4lbAPj0tTRsol40A+dWg==
-X-Received: by 2002:a05:6214:5b1:: with SMTP id by17mr1750452qvb.7.1624479654032;
-        Wed, 23 Jun 2021 13:20:54 -0700 (PDT)
-Received: from localhost (pool-68-160-176-52.bstnma.fios.verizon.net. [68.160.176.52])
-        by smtp.gmail.com with ESMTPSA id 206sm697360qke.67.2021.06.23.13.20.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 13:20:53 -0700 (PDT)
-Sender: Mike Snitzer <snitzer@gmail.com>
-Date:   Wed, 23 Jun 2021 16:20:52 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Anton Suvorov <warwish@yandex-team.ru>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        dmtrmonakhov@yandex-team.ru, linux-block@vger.kernel.org,
-        viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 04/10] dm: reduce stack footprint dealing with block
- device names
-Message-ID: <YNOXpHyBAD+C3Utt@redhat.com>
-References: <20210602152903.910190-1-warwish@yandex-team.ru>
- <20210602152903.910190-5-warwish@yandex-team.ru>
+        id S229954AbhFWUZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 16:25:05 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:52394 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229660AbhFWUZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 16:25:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=LTvMa7TrIXjadvzrpJ2IJPR9/sgB6OoGVq2NGlQ8XYU=; b=JOjeJdgYXJTAJOApMEEob0rYCQ
+        Tn9iALGfBlQLjHJaBuo2u1f0LWT4BmRqsBeB3y4ptFF5rmnsqv7bWXAKErTUk1Vf8FK1WVkfu/o8o
+        Df9l7kDOB/akb7NwJlBsGsXxZMeT4tnFUdnJDC3MuWi5XUxPt3yUGNQfg3r/k7a3ZkBI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lw9OW-00At84-FS; Wed, 23 Jun 2021 22:22:44 +0200
+Date:   Wed, 23 Jun 2021 22:22:44 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
+        jaz@semihalf.com, gjb@semihalf.com, upstream@semihalf.com,
+        Samer.El-Haj-Mahmoud@arm.com, jon@solid-run.com, tn@semihalf.com,
+        rjw@rjwysocki.net, lenb@kernel.org
+Subject: Re: [net-next: PATCH v3 2/6] net: mdiobus: Introduce
+ fwnode_mdbiobus_register()
+Message-ID: <YNOYFFgB5UNdSYeI@lunn.ch>
+References: <20210621173028.3541424-1-mw@semihalf.com>
+ <20210621173028.3541424-3-mw@semihalf.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210602152903.910190-5-warwish@yandex-team.ru>
+In-Reply-To: <20210621173028.3541424-3-mw@semihalf.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02 2021 at 11:28P -0400,
-Anton Suvorov <warwish@yandex-team.ru> wrote:
-
-> Stack usage reduced (measured with allyesconfig):
+On Mon, Jun 21, 2021 at 07:30:24PM +0200, Marcin Wojtas wrote:
+> This patch introduces a new helper function that
+> wraps acpi_/of_ mdiobus_register() and allows its
+> usage via common fwnode_ interface.
 > 
-> ./drivers/md/dm-cache-target.c	cache_ctr	392	328	-64
-> ./drivers/md/dm-cache-target.c	cache_io_hints	208	72	-136
-> ./drivers/md/dm-clone-target.c	clone_ctr	416	352	-64
-> ./drivers/md/dm-clone-target.c	clone_io_hints	216	80	-136
-> ./drivers/md/dm-crypt.c	crypt_convert_block_aead	408	272	-136
-> ./drivers/md/dm-crypt.c	kcryptd_async_done	192	56	-136
-> ./drivers/md/dm-integrity.c	integrity_metadata	872	808	-64
-> ./drivers/md/dm-mpath.c	parse_priority_group	368	304	-64
-> ./drivers/md/dm-table.c	device_area_is_invalid	216	80	-136
-> ./drivers/md/dm-table.c	dm_set_device_limits	200	72	-128
-> ./drivers/md/dm-thin.c	pool_io_hints	216	80	-136
+> Fall back to raw mdiobus_register() in case CONFIG_FWNODE_MDIO
+> is not enabled, in order to satisfy compatibility
+> in all future user drivers.
 > 
-> Signed-off-by: Anton Suvorov <warwish@yandex-team.ru>
+> Signed-off-by: Marcin Wojtas <mw@semihalf.com>
 > ---
->  drivers/md/dm-cache-target.c | 10 ++++------
->  drivers/md/dm-clone-target.c | 10 ++++------
->  drivers/md/dm-crypt.c        |  6 ++----
->  drivers/md/dm-integrity.c    |  4 ++--
->  drivers/md/dm-mpath.c        |  6 ++----
->  drivers/md/dm-table.c        | 34 ++++++++++++++++------------------
->  drivers/md/dm-thin.c         |  8 +++-----
->  7 files changed, 33 insertions(+), 45 deletions(-)
+>  include/linux/fwnode_mdio.h    | 12 +++++++++++
+>  drivers/net/mdio/fwnode_mdio.c | 22 ++++++++++++++++++++
+>  2 files changed, 34 insertions(+)
 > 
-
-<snip>
-
-> diff --git a/drivers/md/dm-integrity.c b/drivers/md/dm-integrity.c
-> index 20f2510db1f6..d2fec41635ff 100644
-> --- a/drivers/md/dm-integrity.c
-> +++ b/drivers/md/dm-integrity.c
-> @@ -1781,8 +1781,8 @@ static void integrity_metadata(struct work_struct *w)
->  						checksums_ptr - checksums, dio->op == REQ_OP_READ ? TAG_CMP : TAG_WRITE);
->  			if (unlikely(r)) {
->  				if (r > 0) {
-> -					char b[BDEVNAME_SIZE];
-> -					DMERR_LIMIT("%s: Checksum failed at sector 0x%llx", bio_devname(bio, b),
-> +					DMERR_LIMIT("%pg: Checksum failed at sector 0x%llx",
-> +						    bio->bi_bdev,
->  						    (sector - ((r + ic->tag_size - 1) / ic->tag_size)));
->  					r = -EILSEQ;
->  					atomic64_inc(&ic->number_of_mismatches);
-> diff --git a/drivers/md/dm-mpath.c b/drivers/md/dm-mpath.c
-> index bced42f082b0..678e5bb0fa5a 100644
-> --- a/drivers/md/dm-mpath.c
-> +++ b/drivers/md/dm-mpath.c
-> @@ -900,10 +900,8 @@ static int setup_scsi_dh(struct block_device *bdev, struct multipath *m,
->  	if (m->hw_handler_name) {
->  		r = scsi_dh_attach(q, m->hw_handler_name);
->  		if (r == -EBUSY) {
-> -			char b[BDEVNAME_SIZE];
-> -
-> -			printk(KERN_INFO "dm-mpath: retaining handler on device %s\n",
-> -			       bdevname(bdev, b));
-> +			pr_info("dm-mpath: retaining handler on device %pg\n",
-> +				bdev);
->  			goto retain;
->  		}
->  		if (r < 0) {
-
-Would appreciate it if you just left the arguments on the same line,
-for this dm-mpath.c change and the dm-integrity.c change, don't worry
-about 80 column.
-
-Also, would prefer you use DMINFO() instead of pr_info().  DMINFO()
-achieves the same but will add "device-mapper: multipath: " prefix for
-you, also you then don't need to add the newline. So use:
-
-     DMINFO("retaining handler on device %pg", bdev);
-
-
-> diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-> index 7e88e5e06922..175b9c7b1c48 100644
-> --- a/drivers/md/dm-table.c
-> +++ b/drivers/md/dm-table.c
-> @@ -282,20 +281,20 @@ static int device_area_is_invalid(struct dm_target *ti, struct dm_dev *dev,
->  		return 0;
+> diff --git a/include/linux/fwnode_mdio.h b/include/linux/fwnode_mdio.h
+> index faf603c48c86..13d4ae8fee0a 100644
+> --- a/include/linux/fwnode_mdio.h
+> +++ b/include/linux/fwnode_mdio.h
+> @@ -16,6 +16,7 @@ int fwnode_mdiobus_phy_device_register(struct mii_bus *mdio,
+>  int fwnode_mdiobus_register_phy(struct mii_bus *bus,
+>  				struct fwnode_handle *child, u32 addr);
 >  
->  	if (start & (logical_block_size_sectors - 1)) {
-> -		DMWARN("%s: start=%llu not aligned to h/w "
-> -		       "logical block size %u of %s",
-> +		DMWARN("%s: start=%llu not aligned to h/w logical block size %u of %pg",
->  		       dm_device_name(ti->table->md),
->  		       (unsigned long long)start,
-> -		       limits->logical_block_size, bdevname(bdev, b));
-> +		       limits->logical_block_size,
-> +		       bdev);
->  		return 1;
->  	}
->  
->  	if (len & (logical_block_size_sectors - 1)) {
-> -		DMWARN("%s: len=%llu not aligned to h/w "
-> -		       "logical block size %u of %s",
-> +		DMWARN("%s: len=%llu not aligned to h/w logical block size %u of %pg",
->  		       dm_device_name(ti->table->md),
->  		       (unsigned long long)len,
-> -		       limits->logical_block_size, bdevname(bdev, b));
-> +		       limits->logical_block_size,
-> +		       bdev);
->  		return 1;
->  	}
->  
+> +int fwnode_mdiobus_register(struct mii_bus *bus, struct fwnode_handle *fwnode);
+>  #else /* CONFIG_FWNODE_MDIO */
+>  int fwnode_mdiobus_phy_device_register(struct mii_bus *mdio,
+>  				       struct phy_device *phy,
+> @@ -30,6 +31,17 @@ static inline int fwnode_mdiobus_register_phy(struct mii_bus *bus,
+>  {
+>  	return -EINVAL;
+>  }
+> +
+> +static inline int fwnode_mdiobus_register(struct mii_bus *bus,
+> +					  struct fwnode_handle *fwnode)
+> +{
+> +	/*
+> +	 * Fall back to mdiobus_register() function to register a bus.
+> +	 * This way, we don't have to keep compat bits around in drivers.
+> +	 */
+> +
+> +	return mdiobus_register(mdio);
+> +}
+>  #endif
 
-Again, please just leave 'bdev' on the previous lines.
+I looked at this some more, and in the end i decided it was O.K.
 
-If you make those few tweaks, please add:
+> +/**
+> + * fwnode_mdiobus_register - bring up all the PHYs on a given MDIO bus and
+> + *	attach them to it.
+> + * @bus: Target MDIO bus.
+> + * @fwnode: Pointer to fwnode of the MDIO controller.
+> + *
+> + * Return values are determined accordingly to acpi_/of_ mdiobus_register()
+> + * operation.
+> + */
+> +int fwnode_mdiobus_register(struct mii_bus *bus, struct fwnode_handle *fwnode)
+> +{
+> +	if (is_acpi_node(fwnode))
+> +		return acpi_mdiobus_register(bus, fwnode);
+> +	else if (is_of_node(fwnode))
+> +		return of_mdiobus_register(bus, to_of_node(fwnode));
+> +	else
+> +		return -EINVAL;
 
-Acked-by: Mike Snitzer <snitzer@redhat.com>
+I wounder if here you should call mdiobus_register(mdio), rather than
+-EINVAL?
+
+I don't have a strong opinion.
+
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
