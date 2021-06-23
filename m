@@ -2,73 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904103B1AF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DA33B1AF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhFWNU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:20:26 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:38874 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbhFWNUZ (ORCPT
+        id S230464AbhFWNWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230163AbhFWNWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:20:25 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A53529AA;
-        Wed, 23 Jun 2021 15:18:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1624454286;
-        bh=4hkUKdHT15rj2vnmOuvAjcb9HIg4wLdlU7nwjmRC69I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kfxn7CGrXm6bhFXlcu2yEs0ZPR3gBBYmDz0rko913TX9FjaBt8AUuWoqrMqt4FJWI
-         XAbDl4NpsGjkmvXVga7LaYxZb9kmVjnJnCML9Dkw8ZA2vtqADPTQbcZzCouGGGfdN/
-         Me9GAPbJ81c8PFVKocYy9uow7S19MELfHrUr0jVk=
-Date:   Wed, 23 Jun 2021 16:17:37 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC v2] MEDIA: Driver for ON Semi AR0521 camera sensor
-Message-ID: <YNM0cZFV7/LKKFBn@pendragon.ideasonboard.com>
-References: <m3wnqm5eqo.fsf@t19.piap.pl>
- <YNHQDNdpxcY8+IV2@pendragon.ideasonboard.com>
- <m3r1gt5hzm.fsf@t19.piap.pl>
- <YNK5FhAXSpI1oHJV@pendragon.ideasonboard.com>
- <m3mtrh5evo.fsf@t19.piap.pl>
+        Wed, 23 Jun 2021 09:22:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 516E1C061574;
+        Wed, 23 Jun 2021 06:20:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PCiuVMRKNuvDVek4f2Qirj3VC8XGRRERUW2AchHc/MQ=; b=hcfWOuBJRoHFvIireuLopMJJIN
+        0mFj9pzL9E0v2HJFchjshkcfMrBODvjZXCYMcsfEIV79eOPVhChBwMqrB2gxf7Z6WyJmbW5BfKz7c
+        NoeM6xCILm0Ju0EhokXO44NR4XYh58h76EzyxwJRuBEP+Rmgf8YwsWWXuBbNOw3yNyXC4rLjq41Us
+        XoVdEBhsvMLjjrEfjI6iNwn8VzOM9NzwBwtQXxeH02gN8Uyv0GDKvUxmxRSrcRJjxCs7trNLRwZOW
+        EcTPHIODyXkwpeN4uh2IH6+MVCUjCIlH3bIbdBLRwoa0nrgyjsIDuu8Dn/pGnCNuE/msZEb2paEcf
+        zGJM0C3g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lw2n8-00FSzT-B9; Wed, 23 Jun 2021 13:19:48 +0000
+Date:   Wed, 23 Jun 2021 14:19:42 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 35/46] mm/filemap: Add folio_mkwrite_check_truncate()
+Message-ID: <YNM07q4bIw8Vii58@casper.infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-36-willy@infradead.org>
+ <YNMDTgeHh9/Sfd1/@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <m3mtrh5evo.fsf@t19.piap.pl>
+In-Reply-To: <YNMDTgeHh9/Sfd1/@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 07:28:11AM +0200, Krzysztof Hałasa wrote:
-> Laurent Pinchart writes:
+On Wed, Jun 23, 2021 at 11:47:58AM +0200, Christoph Hellwig wrote:
+> On Tue, Jun 22, 2021 at 01:15:40PM +0100, Matthew Wilcox (Oracle) wrote:
+> > This is the folio equivalent of page_mkwrite_check_truncate().
+> > 
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 > 
-> > How does a lack of an SoB line prevent someone from doing exactly what
-> > you've described above ?
-> 
-> The work is not published under GPL.
+> Any reason that page_mkwrite_check_truncate isn't turned into a wrapper?
 
-I only review kernel code covered by the GPL, sorry :-) (And stating
-that a kernel driver isn't covered by the GPL is at the very least a
-very grey area, as it's widely understoof that drivers developed
-specifically for Linux are derivative work of the kernel)
-
-> > Maintainers usually understand these issues. They may fail to notice,
-> > but if you point out a patch that would steal your work, that would
-> > prevent it from being merged.
-> 
-> I'd like to believe this as well. Unfortunately, it doesn't work like
-> that. See the "tw686x" (an SD TV frame grabber) case.
-> I didn't even request that the other driver wasn't merged. I only wanted
-> it as a patch on top of the original one - so the history could be
-> visible.
-
-Mauro, any comment on that ?
-
--- 
-Regards,
-
-Laurent Pinchart
+It'd introduce an extra call to page_folio() for no actual benefit
