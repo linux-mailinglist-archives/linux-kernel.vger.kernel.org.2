@@ -2,127 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDCD3B1F6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0ECC3B1F70
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhFWR3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 13:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbhFWR3i (ORCPT
+        id S229881AbhFWRaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 13:30:24 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.166]:28398 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFWRaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 13:29:38 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 110B9C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:27:20 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id d2so3972694ljj.11
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:27:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q2d2sQHy0KntFj7PyfcvDTPhCqiaY/wl1GYeGVevyXY=;
-        b=cPVdN6PDfWFEKRnik7cWwwE2fuQoRkEUgYdGwM27Vslnjn6NScjASeLKUvFlLUy1fa
-         YXUAtS1SSrQbJJQlZ2efFgnnrPWZiW04wQ7FvzRE38YrO12OoZGIOklD5hkfp6MB68OA
-         SfQUOdH7RhRTnUfD/jg5jAIXBApRwAtdcgh895kz/BsXk26Ga/0j5nPYOctu/Pw5UgmT
-         1JMpZBvjggPUqdlW5aZtJUx5D0OCzO0zs8ct+cEbq/aIBxEevuysksboegpZhScn9etZ
-         e7FZI6h13VkR/pzJv64UlKW7uEqGqSAcjFBGzC2s/TeO0Sza0buUk/FtfmJo2PWSVNKE
-         hW1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q2d2sQHy0KntFj7PyfcvDTPhCqiaY/wl1GYeGVevyXY=;
-        b=p5xsAMQzEsvWXuhWMdSR7zJDFdxjT4kQ86y6c9jEzxCrcMEVmGy5AY5xEwGTYsKTpZ
-         NxProGPqXXQD09MMEPEQh8dxr6je78PrWarMetEMu+BuEXb2g2iHqh+b2+pgNnLKBr8R
-         uXmk70A9Mzho2DzrKEVSgBGdnr9d91nvR2uKFYdGDMDpydVHm9pjMmSoSJB3XNEJi63F
-         qmsG+ZXoQ5LWGa4FKutjZfnvp41v+C6zUr1LK73G1XBnuv7LxebmYmtMa0be0tF3nufu
-         biIAyyQQDdRTqDKGza1hz/DGIVmLBGFMZfs34DldbCTj9hAvSmYHhcRSPvHs0VeYZIZd
-         s4Ww==
-X-Gm-Message-State: AOAM533VK+mxi5++RYkPG7K5sTV1Btkn04T+QWSttsCUivneFF9PhAXm
-        HAdNlrE0+OPJClG4cfqPUqmUqr+rbu7P1hRU6eiPRQ==
-X-Google-Smtp-Source: ABdhPJyc3ed/8kGPnbAGbdKUWTuzqOmrBvOtjBG7eXcy78/JpI6wipxa14CPu+ThHwFHhGlwP4yOZgSH2Lml/drFtZg=
-X-Received: by 2002:a2e:9b07:: with SMTP id u7mr585757lji.209.1624469238388;
- Wed, 23 Jun 2021 10:27:18 -0700 (PDT)
+        Wed, 23 Jun 2021 13:30:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1624469275;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=d9TuVPZ0rF7UOU9FBUncImFHBMM9OrT22FVksrVNH28=;
+    b=kQbYTHrtVA1PcBtqv8k9BakqwylVLXQFp5YIYYIHJYlmbFAyt0pVCV6I/WftuiTyWp
+    CoSvn1Rkshyxo79rhWuKF2LSeBhVaHlV9PHhiBvd88IT9XAjKSeI4Mz7hmB+w+om3qI6
+    c0wGK+6ppTPLQZdTEU9x0aFsTkkBaZgbfjGDp9AudiVmlFyLwQESbiYx0moHvtU32edI
+    tWvNo6HQEWaYPZZsbAeTYMcpM6oYwApLfdQK2uVNzs71UxJcgPHS9KAGkSUuaUJMH4D5
+    ENKt67VuS9LZocL7svC/A/IaMYFC/bZ7VbjkYDfUzfJ/yEJCn3I05jCz7eAvXgKDIW8G
+    x0OQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbJfScDuy6"
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+    by smtp.strato.de (RZmta 47.27.5 DYNA|AUTH)
+    with ESMTPSA id L04113x5NHRs1oF
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 23 Jun 2021 19:27:54 +0200 (CEST)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     James Morris <jamorris@linux.microsoft.com>
+Cc:     =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        David Miller <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Haxby <john.haxby@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Simo Sorce <simo@redhat.com>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
+        hpa@zytor.com, tytso@mit.edu
+Subject: Re: [PATCH v1] crypto: Make the DRBG compliant with NIST SP800-90A rev1
+Date:   Wed, 23 Jun 2021 19:27:53 +0200
+Message-ID: <8811360.37IJKxs2K1@positron.chronox.de>
+In-Reply-To: <a4e1c071-32af-9650-e6fd-8943b3a79bb0@linux.microsoft.com>
+References: <20210623120751.3033390-1-mic@digikod.net> <9dbbf4e751cb4953fe63079cdc917a0bb3a91670.camel@chronox.de> <a4e1c071-32af-9650-e6fd-8943b3a79bb0@linux.microsoft.com>
 MIME-Version: 1.0
-References: <2ED1BDF5-BC0C-47CD-8F33-9A46C738F8CF@linux.vnet.ibm.com>
- <CAKfTPtDrHv4OOfPvwOE2DMNoucXQJ=yvvEpTVKrXghSdKEnZcA@mail.gmail.com>
- <20210622143154.GA804@vingu-book> <53968DDE-9E93-4CB4-B5E4-526230B6E154@linux.vnet.ibm.com>
- <20210623071935.GA29143@vingu-book> <CCB4222F-000A-44E8-8D61-F69893704688@linux.vnet.ibm.com>
- <6C676AB3-5D06-471A-8715-60AABEBBE392@linux.vnet.ibm.com> <20210623120835.GB29143@vingu-book>
- <5D874F72-B575-4830-91C3-8814A2B371CD@linux.vnet.ibm.com> <CAKfTPtBKn27=jryS_sxsVb+0yHDze_PMcLuyFtDkDo0H9Nzqww@mail.gmail.com>
-In-Reply-To: <CAKfTPtBKn27=jryS_sxsVb+0yHDze_PMcLuyFtDkDo0H9Nzqww@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 23 Jun 2021 19:27:07 +0200
-Message-ID: <CAKfTPtDFUBe+qD9z0YYb7yyup_mhdNNX+zopFwcnyh+G41viAw@mail.gmail.com>
-Subject: Re: [powerpc][next-20210621] WARNING at kernel/sched/fair.c:3277
- during boot
-To:     Sachin Sant <sachinp@linux.vnet.ibm.com>
-Cc:     Odin Ugedal <odin@uged.al>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Jun 2021 at 18:55, Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
->
-> On Wed, 23 Jun 2021 at 18:46, Sachin Sant <sachinp@linux.vnet.ibm.com> wrote:
-> >
-> >
-> > > Ok. This becomes even more weird. Could you share your config file and more details about
-> > > you setup ?
-> > >
-> > > Have you applied the patch below ?
-> > > https://lore.kernel.org/lkml/20210621174330.11258-1-vincent.guittot@linaro.org/
-> > >
-> > > Regarding the load_avg warning, I can see possible problem during attach. Could you add
-> > > the patch below. The load_avg warning seems to happen during boot and sched_entity
-> > > creation.
-> > >
-> >
-> > Here is a summary of my testing.
-> >
-> > I have a POWER box with PowerVM hypervisor. On this box I have a logical partition(LPAR) or guest
-> > (allocated with 32 cpus 90G memory) running linux-next.
-> >
-> > I started with a clean slate.
-> > Moved to linux-next 5.13.0-rc7-next-20210622 as base code.
-> > Applied patch #1 from Vincent which contains changes to dequeue_load_avg()
-> > Applied patch #2 from Vincent which contains changes to enqueue_load_avg()
-> > Applied patch #3 from Vincent which contains changes to attach_entity_load_avg()
-> > Applied patch #4 from https://lore.kernel.org/lkml/20210621174330.11258-1-vincent.guittot@linaro.org/
-> >
-> > With these changes applied I was still able to recreate the issue. I could see kernel warning
-> > during boot.
-> >
-> > I then applied patch #5 from Odin which contains changes to update_cfs_rq_load_avg()
-> >
-> > With all the 5 patches applied I was able to boot the kernel without any warning messages.
-> > I also ran scheduler related tests from ltp (./runltp -f sched) . All tests including cfs_bandwidth01
-> > ran successfully. No kernel warnings were observed.
->
-> ok so Odin's patch fixes the problem which highlights that we
-> overestimate _sum or don't sync _avg and _sum correctly
->
-> I'm going to look at this further
+Am Mittwoch, 23. Juni 2021, 19:00:29 CEST schrieb James Morris:
 
-The problem is  "_avg * divider" makes the assumption that all pending
-contrib are not null contributions whereas they can be null.
+Hi James,
 
-Odin patch is the right way to fix this. Other patches should not be
-useful for your problem
+> On Wed, 23 Jun 2021, Stephan Mueller wrote:
+> > > These changes replace the use of the Linux RNG with the Jitter RNG,
+> > > which is NIST SP800-90B compliant, to get a proper entropy input and a
+> > > nonce as defined by FIPS.
+> > 
+> > Can you please help me understand what is missing in the current code
+> > which
+> > seemingly already has achieved this goal?
+> 
+> The advice we have is that if an attacker knows the internal state of the
+> CPU, then the output of the Jitter RNG can be predicted.
 
->
-> >
-> > Have also attached .config in case it is useful. config has CONFIG_HZ_100=y
->
-> Thanks, i will have a look
->
-> >
-> > Thanks
-> > -Sachin
-> >
+Thank you for the hint. And I think such goal is worthwhile (albeit I have to 
+admit that if an attacker is able to gain the internal state of a CPU, I would 
+assume we have more pressing problems that a bit of entropy).
+
+Anyways, the current code does:
+
+- in regular mode: seed the DRBG with 384 bits of data from get_random_bytes
+
+- in FIPS mode: seed the DRBG with 384 bits of data from get_random_bytes 
+concatenated with 384 bits from the Jitter RNG
+
+
+If I understand the suggested changes right, I would see the following changes 
+in the patch:
+
+- in the regular case: 640 bits from get_random_bytes
+
+- in FIPS mode: 256 bits of data from get_random_bytes concatenated with 384 
+bits from the Jitter RNG
+
+So, I am not fully sure what the benefit of the difference is: in FIPS mode 
+(where the Jitter RNG is used), the amount of data pulled from 
+get_random_bytes seems to be now reduced.
+
+Maybe I miss a point here, but I currently fail to understand why the changes 
+should be an improvement compared to the current case.
+
+Ciao
+Stephan
+
+
