@@ -2,119 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E43973B1B01
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 609E23B1B02
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhFWNZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbhFWNZD (ORCPT
+        id S231157AbhFWNZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:25:13 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:30513 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230234AbhFWNZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:25:03 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53487C061574;
-        Wed, 23 Jun 2021 06:22:46 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id s17-20020a17090a8811b029016e89654f93so3864917pjn.1;
-        Wed, 23 Jun 2021 06:22:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jZGWXHa050qFm5BneP5isu99H0Fbf7qPA1kM+KMynMI=;
-        b=mZjLUu3PuQC4n9NmhxTUPiA3gTQq6JtU1AS4Ou4KhW5j9Xe/7MAkSPNZnTsPRGgVRa
-         GuCMbcb1GNOeUMIgzJE/GkISgb7yXMCXMDgJT0KsMIfTTxye6lLAaAB29T8jEAG2v0a0
-         vrNxnTeA9Mbnwqg0QLnvk6XJcXUPWUA0YRGxAvV3E1oOIsY92F7dmobq764V5+pibvil
-         Phcb4mHzOFmn/t4QOcHvVftIeCNYMXutsjOJ4eDN3Dgak6nhA0If8lT+0Lz2SB+HeZmY
-         r3EMJgFDDlVYKUDyVbLuLlUw0GGRj4tpna7XwXkPC96+RaQlHeV/baaJWSskkkIRRvVO
-         L9UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jZGWXHa050qFm5BneP5isu99H0Fbf7qPA1kM+KMynMI=;
-        b=ly9YQA2nh61RyKx0ZCeVuTLxP78MuhZPsYZ9R1ygWRuA4nzTi+vQFtPszHlLJr35t6
-         6FP7qnOv1D5UdUd6kDBgnrd8C4qn48TnTg6Dr/R2QybJsma2EwsCKJDVyjXxsmfEmRIk
-         QD5x+ac7BmsirWQU/Bn0II9JoCeoIustRNFjGDePYvtOE6gbqwTWs7lqrwuYa9wk6OFs
-         G+d4/TZTroZ83bSx1ck6SP7+pBOzwbceEV9wjcNxADN/zmh2g1Ao5jd1ifl5lZUKqTFh
-         /nGlgbgh1pvx3dFRDWLM8T1fUWQham6EVMGvfXGnNeBa6og5UroWvgdI1PPopMnksJ/L
-         pRDg==
-X-Gm-Message-State: AOAM531vRT77SsCbl97sxEqJy9O89/YFoRK3xDsTowl1YdvsuCo02unX
-        UwRnfquqmS2L8oHgVuCjCN0=
-X-Google-Smtp-Source: ABdhPJyqhLHk6WkZZW5iYsMvFKbuhohwsm2xKIN4EuNPxMB3XqpROF77Yxr2r/RFAUhrIwM35JTfBA==
-X-Received: by 2002:a17:902:70c4:b029:122:250e:366c with SMTP id l4-20020a17090270c4b0290122250e366cmr23194388plt.7.1624454565809;
-        Wed, 23 Jun 2021 06:22:45 -0700 (PDT)
-Received: from vessel.. ([103.242.196.10])
-        by smtp.gmail.com with ESMTPSA id la18sm2767040pjb.55.2021.06.23.06.22.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 06:22:45 -0700 (PDT)
-From:   Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
-To:     peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca
-Cc:     Saubhik Mukherjee <saubhik.mukherjee@gmail.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org, andrianov@ispras.ru
-Subject: [PATCH] char: tpm: vtpm_proxy: Fix race in init
-Date:   Wed, 23 Jun 2021 18:52:26 +0530
-Message-Id: <20210623132226.140341-1-saubhik.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 23 Jun 2021 09:25:12 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-206-aLBAZPbBMtOpePwVytsljw-1; Wed, 23 Jun 2021 14:22:51 +0100
+X-MC-Unique: aLBAZPbBMtOpePwVytsljw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 23 Jun
+ 2021 14:22:51 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Wed, 23 Jun 2021 14:22:51 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Hans-Gert Dahmen' <hans-gert.dahmen@immu.ne>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "philipp.deppenwiese@immu.ne" <philipp.deppenwiese@immu.ne>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Subject: RE: [PATCH] firmware: export x86_64 platform flash bios region via
+ sysfs
+Thread-Topic: [PATCH] firmware: export x86_64 platform flash bios region via
+ sysfs
+Thread-Index: AQHXZ3I2QVY8Y0IZxk6JOQtZcZz8kKsgmXGQgADafQCAACJ5oA==
+Date:   Wed, 23 Jun 2021 13:22:51 +0000
+Message-ID: <6c6b6888e9994791a8044c8d8ad1fee5@AcuMS.aculab.com>
+References: <20210622142334.14883-1-hans-gert.dahmen@immu.ne>
+ <5ee9e467bfbf49d29cb54679d2dce1c3@AcuMS.aculab.com>
+ <d61176a0-67cf-268f-8c31-8de8739753c3@immu.ne>
+In-Reply-To: <d61176a0-67cf-268f-8c31-8de8739753c3@immu.ne>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vtpm_module_init calls vtpmx_init which calls misc_register. The file
-operations callbacks are registered. So, vtpmx_fops_ioctl can execute in
-parallel with rest of vtpm_module_init. vtpmx_fops_ioctl calls
-vtpmx_ioc_new_dev, which calls vtpm_proxy_create_device, which calls
-vtpm_proxy_work_start, which could read uninitialized workqueue.
-
-To avoid this, create workqueue before vtpmx init.
-
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
----
- drivers/char/tpm/tpm_vtpm_proxy.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/char/tpm/tpm_vtpm_proxy.c b/drivers/char/tpm/tpm_vtpm_proxy.c
-index 91c772e38bb5..225dfa026a8f 100644
---- a/drivers/char/tpm/tpm_vtpm_proxy.c
-+++ b/drivers/char/tpm/tpm_vtpm_proxy.c
-@@ -697,23 +697,22 @@ static int __init vtpm_module_init(void)
- {
- 	int rc;
- 
--	rc = vtpmx_init();
--	if (rc) {
--		pr_err("couldn't create vtpmx device\n");
--		return rc;
--	}
--
- 	workqueue = create_workqueue("tpm-vtpm");
- 	if (!workqueue) {
- 		pr_err("couldn't create workqueue\n");
--		rc = -ENOMEM;
--		goto err_vtpmx_cleanup;
-+		return -ENOMEM;
-+	}
-+
-+	rc = vtpmx_init();
-+	if (rc) {
-+		pr_err("couldn't create vtpmx device\n");
-+		goto err_destroy_workqueue;
- 	}
- 
- 	return 0;
- 
--err_vtpmx_cleanup:
--	vtpmx_cleanup();
-+err_destroy_workqueue:
-+	destroy_workqueue(workqueue);
- 
- 	return rc;
- }
--- 
-2.30.2
+RnJvbTogSGFucy1HZXJ0IERhaG1lbg0KPiBTZW50OiAyMyBKdW5lIDIwMjEgMTM6MTgNCj4gDQo+
+IHRoZXNlIGFyZSBzb21lIGdvb2QgcG9pbnRzLg0KPiANCj4gT24gMjMuMDYuMjEgMDA6MTgsIERh
+dmlkIExhaWdodCB3cm90ZToNCj4gPiBBcmUgeW91IHNheWluZyB0aGF0IG15IDE1IHllYXIgb2xk
+IDY0Yml0IEF0aGxvbiBjcHUgYW5kIGJpb3MNCj4gPiBoYXZlIHRoaXMgbGFyZ2UgU1BJIGZsYXNo
+DQo+IA0KPiBOby4gVGhlIHJlYWRzIHdpbGwgd3JhcCwgaS5lLiBpZiB5b3VyIGZsYXNoIGlzIDJN
+QiB0aGVuIGl0IHdvdWxkIGJlDQo+IHJlcGVhdGVkIDggdGltZXMgaW4gdGhlIDE2TUIgd2luZG93
+Lg0KPiANCj4gPiBhbmQgdGhlIHJlcXVpcmVkIGhhcmR3YXJlIHRvDQo+ID4gY29udmVydCBidXMg
+Y3ljbGVzIHRvIHNlcmlhbCBzcGkgcmVhZHM/DQo+IA0KPiBZZXMuIFRoZSB3aW5kb3cgaXMgcGFy
+dCBvZiB0aGUgRE1JIGludGVyZmFjZSBhbmQgdGhlIHNvdXRoIGJyaWRnZSBvciBQQ0gNCj4gY29u
+dmVydHMgdGhlIGJ1cyBjeWNsZXMgdG8gU1BJIHJlYWRzLiBJdCBpcyBiZWNhdXNlIHRoaXMgcmVn
+aW9uIGNvbnRhaW5zDQo+IHRoZSByZXNldCB2ZWN0b3IgYWRkcmVzcyBvZiB5b3VyIENQVSBhbmQg
+dGhlIHZlcnkgZmlyc3QgaW5zdHJ1Y3Rpb24gaXQNCj4gZXhlY3V0ZXMgYWZ0ZXIgYSByZXNldCB3
+aGVuIHRoZSBpbnRlcm5hbCBzZXR1cCBpcyBkb25lIHdpbGwgYWN0dWFsbHkgYmUNCj4gbG9hZGVk
+IGZyb20gdGhlIHNlcmlhbCBTUEkgYnVzLiBJdCBpcyBBRkFJSyBwYXJ0IG9mIEFNRCdzIG9yaWdp
+bmFsDQo+IDY0LWJpdCBzcGVjaWZpY2F0aW9uLg0KPiANCj4gSG93ZXZlciwgYWZ0ZXIgcmVhZGlu
+ZyB5b3VyIG1haWwgSSB1bmRlcnN0YW5kIHRoYXQgSSBzaG91bGQgaGF2ZSBsb29rZWQNCj4gdXAg
+dGhlIGV4YWN0IGV4cGxhbmF0aW9ucyBpbiB0aGUgcmVzcGVjdGl2ZSBzcGVjcy4gU28gdG8gZGVm
+aW5pdGl2ZWx5DQo+IGFuc3dlciB5b3VyIHF1ZXN0aW9uIEkgbmVlZCB0byBrbm93IHdoaWNoIHNv
+dXRoIGJyaWRnZSB0aGVyZSBpcyBpbiB5b3VyDQo+IDE1IHllYXIgb2xkIHN5c3RlbSBhbmQgaGF2
+ZSBhIGxvb2sgaW50byBpdHMgZGF0YXNoZWV0LiBEbyB5b3Uga25vdyB3aGljaA0KPiBvbmUgaXQg
+aXMgYnkgYW55IGNoYW5jZT8NCg0KQWJzb2x1dGVseSBubyBpZGVhLg0KVGhhdCBwYXJ0aWN1bGFy
+IHN5c3RlbSBkb2Vzbid0IGFjdHVhbGx5IGJvb3QgYW55IG1vcmUNCndpdGggZWl0aGVyIGNwdSBJ
+IGhhdmUgZm9yIGl0IHBsdWdnZWQgaXQuDQpJIHN1c3BlY3QgdGhlIHBzdSB2b2x0YWdlcyBhcmUg
+b3V0IG9mIHJhbmdlIGFuZCBoYXZlIGJyb2tlbiBpdC4NCg0KQnV0IHRoYXQgaXNuJ3QgdGhlIHBv
+aW50Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5
+IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRp
+b24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
