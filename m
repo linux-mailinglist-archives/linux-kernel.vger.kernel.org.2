@@ -2,75 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E633B23B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 127BE3B23B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbhFWWyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 18:54:39 -0400
-Received: from ozlabs.org ([203.11.71.1]:39155 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229726AbhFWWyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:54:38 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G9JS275Mlz9sV8;
-        Thu, 24 Jun 2021 08:52:18 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624488739;
-        bh=YTxTWDCl2htmPYBGAxRL4VBMNSZIIyBLcPcKhmWTcqc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=PpYLNDvgMef/Yr1a1iDvJ4EFcE/ouqbf0f2E5833dEceKM49DTuw45LlvYlVvq79I
-         nrAFYJ5BJ1DjENTMjPJzRp6RbCkj5+XxOH2VqMJCb9X3aNZNWD+0uUBq9NvOv0uFP0
-         ou+Sh90E/oxzN8+4p6jAN5poV2PlNxL3ydlLERQ01OEjcuKdAWetUQOfN0gRHqfUzL
-         RFOFTdmPR1j6tWDtjAoNPHetWTUq87AawIDoXkoC/qpPlNpbKMq5vnvjn4Xdol3A25
-         E/365bGl5nGzQXtTzbhcL3SGduoWbVYt1gAF40OyNTRlMNzvdb3/Y/CgGALPiW8zmi
-         +HyHU8CUg9HXQ==
-Date:   Thu, 24 Jun 2021 08:52:18 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the leds tree
-Message-ID: <20210624085218.54e081f8@canb.auug.org.au>
+        id S229906AbhFWW4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 18:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229755AbhFWW4A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 18:56:00 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455C5C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:53:41 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id e33so3050521pgm.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:53:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PhW/5nWJvry34gWtMWlmqOr4aezNJfCGGSSwW1Z44S4=;
+        b=Y7dexCHKupR8VvExygST6Sg82BTOYcmprRQLLuqPd75nZzlyfrWQ+VQd0nxsE9zU+N
+         vCnTJw9wcJDApxd+2hBcksBmXAmNfb8iJGVe4INj6W+SZvfkFTwERl2tEXkRghzQFcAD
+         2EsK2VLjaeZJJ/gx7GASNoXImTxNqKVW1z9pc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PhW/5nWJvry34gWtMWlmqOr4aezNJfCGGSSwW1Z44S4=;
+        b=H/jMcOyOIAcxVPAQgEusRv5wFTlSSy4f+R88FZ/GJP9H6PAfEn0lEurcPBJAMFaB49
+         lrC4hrZM3U4we6Ituf2jYu4IqVm2tGkiOllVsQBw1+XTLj4Kd+YW3rlUQ06lMkA6OR+k
+         HBD0nN2qLrBjVQistV6B7ccob6GWFKoPIs7BfSSLSFto1y+qvJGqZZRXYGR+WCkHP8pB
+         RswTbGrvqP3/oLHJER0RRalDUfYN6+HeCpSSBXfKORXRErNceVt1YM8Kl3z81iowJNQM
+         UZoNuj+XSLT4UpeN/1JjJML2kr8wLSIyRuKoPz58ZY3CN0mQQByxtNtMqpQN3Y59EDks
+         Ugig==
+X-Gm-Message-State: AOAM530oL7E41/iFQj8RCJGfmN2RtLg8e7x1nInbfV3jEEC8bhiC0AyU
+        q43AYh6av6F1Un6smyxjpnOBB7hev6shSA==
+X-Google-Smtp-Source: ABdhPJyUyFjDry9tl4mZDYoGZYq+Q9Sraxpjh2Y81MlBuLC2ZQWwKA6AWu5eqk4J8lc5YD4TqsG/8A==
+X-Received: by 2002:a63:755:: with SMTP id 82mr1681659pgh.209.1624488820844;
+        Wed, 23 Jun 2021 15:53:40 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u13sm148169pga.64.2021.06.23.15.53.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 15:53:39 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 15:53:38 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH] media: omap3isp: Extract struct group for memcpy() region
+Message-ID: <202106231547.1212335D@keescook>
+References: <20210616185938.1225218-1-keescook@chromium.org>
+ <YMpUR34kFSbiyi+q@pendragon.ideasonboard.com>
+ <202106162119.859E9A80B@keescook>
+ <YNOxuybjpLxr6sin@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/t.8s7cFA3GOYFvZ7sBh+mjU";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNOxuybjpLxr6sin@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/t.8s7cFA3GOYFvZ7sBh+mjU
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jun 24, 2021 at 01:12:11AM +0300, Laurent Pinchart wrote:
+> Hi Kees,
+> 
+> On Wed, Jun 16, 2021 at 09:22:23PM -0700, Kees Cook wrote:
+> > On Wed, Jun 16, 2021 at 10:43:03PM +0300, Laurent Pinchart wrote:
+> > > On Wed, Jun 16, 2021 at 11:59:38AM -0700, Kees Cook wrote:
+> > > > Avoid writing past the end of a structure member by wrapping the target
+> > > > region in a common named structure. This additionally fixes a
+> > > > misalignment of the copy (since the size of "buf" changes between 64-bit
+> > > > and 32-bit).
+> > > 
+> > > Could you have been mislead by the data64 name ? The difference between
+> > > omap3isp_stat_data_time and omap3isp_stat_data_time32 is the size of the
+> > > ts field, using 32-bit timestamps with legacy userspace, and 64-bit
+> > > timestamps with more recent userspace. In both cases we're dealing with
+> > > a 32-bit platform, as the omap3isp is not used in any 64-bit ARM SoC.
+> > > The size of void __user *buf is thus 4 bytes in all cases, as is __u32
+> > > buf.
+> > 
+> > Ah, yes, that's true. I was hitting this on arm64 builds
+> > (CONFIG_COMPILE_TEST) where __user *buf is 64-bit. So, the "additionally
+> > fixes" bit above is misleading in the sense that nothing was ever built
+> > in the real world like that.
+> > 
+> > The patch still fixes the compile-time warnings, though.
+> 
+> I What's the compile-time warning ? I tried compiling the driver for
+> ARM64 and didn't notice any.
 
-Hi all,
+Sorry, I didn't include the background well enough in the commit log,
+but it's part of a tightening of memcpy() under FORTIFY_SOURCE and
+also -Warray-bounds enablement. Here's what I've been saying on other
+patches (this one was different because it seemed to be just broken
+code):
 
-Commit
+  In preparation for FORTIFY_SOURCE performing compile-time and run-time
+  field bounds checking for memcpy(), memmove(), and memset(), avoid
+  intentionally writing across neighboring fields.
 
-  ea2866ca791c ("leds: ktd2692: Fix an error handling path")
+Anyway, I can carry this until the full series is posted, but I'm still
+working through a few more fixes before I send the whole thing. This
+patch was one of a handful that didn't have any series dependencies.
 
-is missing a Signed-off-by from its committer.
+-Kees
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/t.8s7cFA3GOYFvZ7sBh+mjU
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDTuyIACgkQAVBC80lX
-0GwNHwf7BtGCrfSlo6Gj6GGzFuhlp72wlovEwsPSfqauqoOzduQ6QOMvGYq7NpRs
-D7OjmhKIiW0I1TDDgkYIkrBP/LJ5AU5lVAtGZ3zGg7tdrEnWT6EBEXHf+ibZ9J4B
-NW4y/yn7TWeGs0TB6U5NFe5Gnh0RornIzFAXbrCe8OOKU3HOXEp6wWVHyzfDVGCt
-UNtIw2OH+1bEQdHAYPUi+KkwYLGyMZ3a+WJyfT6k9IeBY5s8wPl9AYMi3lm58jwK
-JYfdPU87pvb5xEWm2aY2ef52KBlLKr+pV+jao5qZEUv8uvnnfeE+UJkGU8gGnFol
-HSnA+XGGmheajFA6/Cp4HR8wKCzmXA==
-=wz4U
------END PGP SIGNATURE-----
-
---Sig_/t.8s7cFA3GOYFvZ7sBh+mjU--
+-- 
+Kees Cook
