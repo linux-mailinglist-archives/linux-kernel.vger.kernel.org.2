@@ -2,108 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BBB3B21DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C513B21E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhFWUkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 16:40:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59844 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229523AbhFWUkQ (ORCPT
+        id S229853AbhFWUlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 16:41:45 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:37468 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhFWUlp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 16:40:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624480678;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yzpn4h8z/3EwHO6Y56HGAwADTZHOyWPR+DhZ1Kza9PU=;
-        b=A7tOsqDnXj2Z4YTbsRILncaIELIYxPQrKbFKCFwAHsdBdV2dITzANnAMtyrGBWHbYXtffb
-        p/yIIQ1IWgQN1BJ1lRY10pQdEnhnsRRZgyRd59CZNDgMCD0k2SfajPGSGXIrMz47yQyFD7
-        KzwnQbqXoBOh2MNXaQizdkhqyI/6ols=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-480-GPbAbd7OM-ay8wIV5dKG2g-1; Wed, 23 Jun 2021 16:37:56 -0400
-X-MC-Unique: GPbAbd7OM-ay8wIV5dKG2g-1
-Received: by mail-wr1-f72.google.com with SMTP id g8-20020a5d54080000b0290124a2d22ff8so888748wrv.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:37:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Yzpn4h8z/3EwHO6Y56HGAwADTZHOyWPR+DhZ1Kza9PU=;
-        b=ddMm+YavF52EaMvI3n6Q2jerTT+zbDNSxa5wHhkXFRC86Xe8/mX2qUzthhWo89aKFV
-         xcHAtcyHTK9iklL8ldVMsP6I9UcSNB2qUPHG+P1uLImvwvx/dv0f2Ocna1F+ByXycYAd
-         RpwyGKYe5UB8N1t6XE4km7Gp3Rqn1m+FdiKO/xDEtXbO8YPT7Pz0yatfulk+ZCCrKQFU
-         mjhJipiMTfoPAi97ULW2jHbkMwSPUK8DoeQn2WcMQc+5QEWI6oFv2zsyf7kObz5H9QKI
-         cIH1SLrAJU4qF4o87ICoN7BCy9hP3FsLblr6HHERB85qTw5BxBH5pu9cxd8dS+AQJecS
-         bZ0g==
-X-Gm-Message-State: AOAM533hSFLyASgSgsWACg7FY2J6N/M1ndUwhdXj0m8Ap/hDgT5wNbdC
-        AEOvB6wUUEsos4GaroHlMc6laZzjxbqjNcGfQZj8Zb1fVfuS2POjIZoDQj2KWhyv3ruZKJLbCzz
-        I6Gr5h2nlxJEIyfGQxbpAhmZT
-X-Received: by 2002:adf:b19a:: with SMTP id q26mr2227906wra.401.1624480675467;
-        Wed, 23 Jun 2021 13:37:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyF6HnFGwdSZyTZFUWJepWew1VorokOc1Gz3flZnu6SWH+qKjTuAaiD7ri24gdTzUxsbnMLug==
-X-Received: by 2002:adf:b19a:: with SMTP id q26mr2227882wra.401.1624480675256;
-        Wed, 23 Jun 2021 13:37:55 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id w13sm1133784wrc.31.2021.06.23.13.37.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 13:37:54 -0700 (PDT)
-Subject: Re: [PATCH RFC] KVM: nSVM: Fix L1 state corruption upon return from
- SMM
-To:     Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Cathy Avery <cavery@redhat.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210623074427.152266-1-vkuznets@redhat.com>
- <a3918bfa-7b4f-c31a-448a-aa22a44d4dfd@redhat.com>
- <53a9f893cb895f4b52e16c374cbe988607925cdf.camel@redhat.com>
- <ac98150acd77f4c09167bc1bb1c552db68925cf2.camel@redhat.com>
- <87pmwc4sh4.fsf@vitty.brq.redhat.com>
- <5fc502b70a89e18034716166abc65caec192c19b.camel@redhat.com>
- <YNNc9lKIzM6wlDNf@google.com> <YNNfnLsc+3qMsdlN@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <82327cd1-92ca-9f6b-3af0-8215e9d21eae@redhat.com>
-Date:   Wed, 23 Jun 2021 22:37:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 23 Jun 2021 16:41:45 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 6840A1C0B76; Wed, 23 Jun 2021 22:39:26 +0200 (CEST)
+Date:   Wed, 23 Jun 2021 22:39:25 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Jafar Akhondali <gigelaknak@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        mauro.chehab@huawei.com,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: LEDs with hardware-accelerated patterns, suspend indication
+Message-ID: <20210623203925.GI8540@amd>
+References: <20210526153040.GA4537@amd>
+ <5fbbab4f-3e22-5a4a-eea8-2531ee165cc4@redhat.com>
+ <CAMW3L+19tP_9=+8j8LLjqCGDaaVZ86UMm9NwLbbpA77zOYnr1Q@mail.gmail.com>
+ <79988fe2-7b3d-7485-131c-4f654ec6d8b8@redhat.com>
+ <CAMW3L+13O4jXyp1LVtuxhpXP_fkfWXi9JoNS8FYUAMHaJBGKZg@mail.gmail.com>
+ <17ec2040-24e9-4090-e64b-8048f0b4005b@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YNNfnLsc+3qMsdlN@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="hABqaeELJqnDDeDE"
+Content-Disposition: inline
+In-Reply-To: <17ec2040-24e9-4090-e64b-8048f0b4005b@redhat.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/06/21 18:21, Sean Christopherson wrote:
-> On Wed, Jun 23, 2021, Sean Christopherson wrote:
->> And I believe this hackery is necessary only because nested_svm_vmexit() isn't
->> following the architcture in the first place.  I.e. using vmcb01 to restore
->> host state is flat out wrong.
-> 
-> Ah, that's not true, using vmcb01 is allowed by "may store some or all host state
-> in hidden on-chip memory".
 
-And also, "Different implementations may choose to save the hidden parts 
-of the host’s segment registers as well as the selectors".
+--hABqaeELJqnDDeDE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->  From a performance perspective, I do like the SMI/RSM shenanigans.  I'm not
-> totally opposed to the trickery since I think it will break a guest if and only
-> if the L1 guest is also violating the APM.  And we're not fudging the spec thaat
-> much :-)
+Hi!
 
-Yeah, that was my reasoning as well.  Any reference to "hidden on-chip 
-memory", plus the forbidding modifications of the host save area, sort 
-of implies that the processor can actually flush that hidden on-chip 
-memory for whatever reason (such as on some sleep states?!?).
+> > Sorry for the late reply.
+> > there are two categories of keyboard lighting modes:
+> > 1. static
+> > 2. dynamic
+> >=20
+> > In static mode, any of 4 zones can be configured to show specific color,
+> > independently.
+> >=20
+> > In dynamic mode, there is no control over specific zones.
+> > It's only possible to set some: color, speed, direction
+> > and: [R]ed,[G]reen, [B]lue
+> >=20
+> > so in dynamic mode, the user can't control zones,
+> > the dynamic effects take care of that.
+>=20
+> So we have 4 zones, which are individual controllable, so which should
+> probably be modeled as individual LED class devices. But when we enable
+> the hardware effects, then the individual addressing goes away and we
+> set one effect which applies to all zones.
+>=20
+> Jafar, do I understand this correctly?
+>=20
+> Pavel, how should this be mapped to the led-class API?
 
-Paolo
+Fun :-).
 
+> Some ideas:
+>=20
+> a) Only add the new lpattern to the main zone?
+> 2) Add the new lpattern to all zones, but only make it
+> writable in the main zone ?
+
+Require lpattern in all zones to be same and active before actually
+enabling the pattern?
+
+Decide lpattern is not suitable for this and figure out what to with
+multi-LED triggers? Someone wanted them for "meters" (CPU load 25% 50%
+75% 100% LED bar)...
+
+Skip this hardware feature for now. We don't have to support
+everything?
+
+Best regards,
+							Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--hABqaeELJqnDDeDE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmDTm/0ACgkQMOfwapXb+vL3GgCeLxqiGOHMfMCblFbN8WT62Lug
+nmoAnjag/BBo2rTZcTG6sCUoCiRio867
+=Xnzh
+-----END PGP SIGNATURE-----
+
+--hABqaeELJqnDDeDE--
