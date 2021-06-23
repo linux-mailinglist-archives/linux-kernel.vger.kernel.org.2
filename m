@@ -2,173 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5043B1A42
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 094C83B1A47
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhFWMf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:35:57 -0400
-Received: from mga04.intel.com ([192.55.52.120]:42821 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230384AbhFWMf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:35:56 -0400
-IronPort-SDR: MH1aMG9iCdIpzQ7jE4qQk612ReISVLm2mB91R8NZ9jzvYFzZl4h6mU4t8ghHZECpooY47wJ/Og
- X1zFY5A5lMwA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="205423464"
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="205423464"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 05:33:26 -0700
-IronPort-SDR: CoIbM9hMlkZZaXOB9WWWFvy8MOhN/dl5YS/M1dsRoU7BCSD9hj/45CC1rbHAPSxcKqbdC+ueyL
- gtQ71drzSBLw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="406293937"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by orsmga006.jf.intel.com with ESMTP; 23 Jun 2021 05:33:21 -0700
-Subject: Re: [PATCH v4 02/10] scsi: ufs: Add flags pm_op_in_progress and
- is_sys_suspended
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-3-git-send-email-cang@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <d9da89ac-cb40-d11b-5af3-5c948eb9b927@intel.com>
-Date:   Wed, 23 Jun 2021 15:33:43 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <1624433711-9339-3-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S230521AbhFWMhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230251AbhFWMhG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 08:37:06 -0400
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973A2C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:34:48 -0700 (PDT)
+Received: by mail-wm1-x34a.google.com with SMTP id v2-20020a7bcb420000b0290146b609814dso556663wmj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:34:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=mhqk3bJ8TzwOEMfK4Y0G6olPPNPdwc+Y9vj5xjXTf70=;
+        b=c2Z+7d1552P121A3rXuQWByk137vnSoac10fCzUkTj44JRx3UtwsmkxXH+fe8QWhW+
+         9ADtyfL19DYX8TtHbnblIhyYelSaofuND7+9qIl87UREh3pQeEeBE88eF2zcKz7L8B9b
+         /RfUK9LfelkrpSzp/ObAJ9tNim44lg1a0/RC092ZrKbsJdTFivYcAe0MbadDI2kqRrpC
+         QmwjqyjrNgH/UeJfekHQIbafIjHED52zOohCjlTT9w1xc6vcFVTPqn2efInglxBZbi2f
+         7b5D2zrEacroADcgYFEkTyDzGlAn245o79+DulAyDYyJdKmGM8eKeKKolsI4QqEYVvXO
+         geHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=mhqk3bJ8TzwOEMfK4Y0G6olPPNPdwc+Y9vj5xjXTf70=;
+        b=pHYSYH20bQw16fpAkrbWINMivXJUj5Noa8T35VcX4l0NEcT3ST2rCYyacSoZ7o3lKe
+         FrGNizsxxVle8Pb0kstln78YDDxALf6mta+zNRIZY0vMaW9V99RI9XHhyXw8A02uBKDX
+         xEJf35xc/9EUf5TKWJSmf0CjkrJqoExhA1LXMAuzzcmXSdPzUnNWGjxrvRmxcmq48Ogd
+         TJf8/PXdcOhik47piJSnTOgBm3shCr/t3CPeBANDU3IzZv8gtvjBkJrFFruDaOW4siAQ
+         w4jUUpq9waxCqPukild5u7b2AmzRUkXHiWZJjEfDxsbmh0q/PPiZU6Y0bVQPl3nbMvyQ
+         XBYA==
+X-Gm-Message-State: AOAM530lelMDlzpYCpmkFQKjXnR175gaKf9Ss/JFL9DhkNYybnRvb9DE
+        qiudU8U1wNId2QKwTEbIeHE1y0ksewEG
+X-Google-Smtp-Source: ABdhPJx8KfieE+NfCDEln9nDGN6Xjuci5VinmNyEOsdfRf4O3q3Rf38aX/UCIpcpJdN7AgHeGizwII92SG+T
+X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1652])
+ (user=qperret job=sendgmr) by 2002:a1c:7219:: with SMTP id
+ n25mr10394477wmc.3.1624451685037; Wed, 23 Jun 2021 05:34:45 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 12:34:38 +0000
+Message-Id: <20210623123441.592348-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
+Subject: [PATCH v3 0/3] sched: A few uclamp fixes and tweaks
+From:   Quentin Perret <qperret@google.com>
+To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, qais.yousef@arm.com, rickyiu@google.com,
+        wvw@google.com, patrick.bellasi@matbug.net, xuewen.yan94@gmail.com
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        qperret@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/06/21 10:35 am, Can Guo wrote:
-> Add flags pm_op_in_progress and is_sys_suspended to track the status of hba
-> runtime and system suspend/resume operations.
-> 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 12 +++++++++++-
->  drivers/scsi/ufs/ufshcd.h |  4 ++++
->  2 files changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index c40ba1d..abe5f2d 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -551,6 +551,8 @@ static void ufshcd_print_host_state(struct ufs_hba *hba)
->  		hba->curr_dev_pwr_mode, hba->uic_link_state);
->  	dev_err(hba->dev, "wlu_pm_op_in_progress=%d, is_wlu_sys_suspended=%d\n",
->  		hba->wlu_pm_op_in_progress, hba->is_wlu_sys_suspended);
-> +	dev_err(hba->dev, "pm_op_in_progress=%d, is_sys_suspended=%d\n",
-> +		hba->pm_op_in_progress, hba->is_sys_suspended);
->  	dev_err(hba->dev, "Auto BKOPS=%d, Host self-block=%d\n",
->  		hba->auto_bkops_enabled, hba->host->host_self_blocked);
->  	dev_err(hba->dev, "Clk gate=%d\n", hba->clk_gating.state);
-> @@ -9141,6 +9143,8 @@ static int ufshcd_suspend(struct ufs_hba *hba)
->  
->  	if (!hba->is_powered)
->  		return 0;
-> +
-> +	hba->pm_op_in_progress = true;
->  	/*
->  	 * Disable the host irq as host controller as there won't be any
->  	 * host controller transaction expected till resume.
-	 */
-	ufshcd_disable_irq(hba);
-	ret = ufshcd_setup_clocks(hba, false);
-	if (ret) {
-		ufshcd_enable_irq(hba);
+Hi all,
 
-Is "hba->pm_op_in_progress = false" needed here?
+This is the v3 of a series previously posted here:
 
-		return ret;
-	}
+  https://lore.kernel.org/r/20210610151306.1789549-1-qperret@google.com
 
+The first two patches are fixes that probably make sense on their own.
+The 3rd patch introduces a new RLIMIT for uclamp, which can be used to
+prevent userspace tasks from messing with their own uclamp requests.
 
+Thanks!
+Quentin
 
-> @@ -9160,6 +9164,7 @@ static int ufshcd_suspend(struct ufs_hba *hba)
->  	ufshcd_vreg_set_lpm(hba);
->  	/* Put the host controller in low power mode if possible */
->  	ufshcd_hba_vreg_set_lpm(hba);
-> +	hba->pm_op_in_progress = false;
->  	return ret;
->  }
->  
-> @@ -9179,6 +9184,7 @@ static int ufshcd_resume(struct ufs_hba *hba)
->  	if (!hba->is_powered)
->  		return 0;
->  
-> +	hba->pm_op_in_progress = true;
->  	ufshcd_hba_vreg_set_hpm(hba);
->  	ret = ufshcd_vreg_set_hpm(hba);
->  	if (ret)
-> @@ -9198,6 +9204,7 @@ static int ufshcd_resume(struct ufs_hba *hba)
->  out:
->  	if (ret)
->  		ufshcd_update_evt_hist(hba, UFS_EVT_RESUME_ERR, (u32)ret);
-> +	hba->pm_op_in_progress = false;
->  	return ret;
->  }
->  
-> @@ -9222,6 +9229,8 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
->  	trace_ufshcd_system_suspend(dev_name(hba->dev), ret,
->  		ktime_to_us(ktime_sub(ktime_get(), start)),
->  		hba->curr_dev_pwr_mode, hba->uic_link_state);
-> +	if (!ret)
-> +		hba->is_sys_suspended = true;
->  	return ret;
->  }
->  EXPORT_SYMBOL(ufshcd_system_suspend);
-> @@ -9247,7 +9256,8 @@ int ufshcd_system_resume(struct ufs_hba *hba)
->  	trace_ufshcd_system_resume(dev_name(hba->dev), ret,
->  		ktime_to_us(ktime_sub(ktime_get(), start)),
->  		hba->curr_dev_pwr_mode, hba->uic_link_state);
-> -
-> +	if (!ret)
-> +		hba->is_sys_suspended = false;
->  	return ret;
->  }
->  EXPORT_SYMBOL(ufshcd_system_resume);
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index 93aeeb3..1e7fe73 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -754,6 +754,8 @@ struct ufs_hba {
->  	struct device_attribute spm_lvl_attr;
->  	/* A flag to tell whether __ufshcd_wl_suspend/resume() is in progress */
->  	bool wlu_pm_op_in_progress;
-> +	/* A flag to tell whether ufshcd_suspend/resume() is in progress */
-> +	bool pm_op_in_progress;
->  
->  	/* Auto-Hibernate Idle Timer register value */
->  	u32 ahit;
-> @@ -841,6 +843,8 @@ struct ufs_hba {
->  	struct ufs_clk_scaling clk_scaling;
->  	/* A flag to tell whether the UFS device W-LU is system suspended */
->  	bool is_wlu_sys_suspended;
-> +	/* A flag to tell whether hba is system suspended */
-> +	bool is_sys_suspended;
->  
->  	enum bkops_status urgent_bkops_lvl;
->  	bool is_urgent_bkops_lvl_checked;
-> 
+Quentin Perret (3):
+  sched: Fix UCLAMP_FLAG_IDLE setting
+  sched: Skip priority checks with SCHED_FLAG_KEEP_PARAMS
+  sched: Introduce RLIMIT_UCLAMP
+
+ fs/proc/base.c                      |  1 +
+ include/asm-generic/resource.h      |  1 +
+ include/uapi/asm-generic/resource.h |  3 +-
+ kernel/sched/core.c                 | 72 ++++++++++++++++++++++-------
+ 4 files changed, 59 insertions(+), 18 deletions(-)
+
+-- 
+2.32.0.288.g62a8d224e6-goog
 
