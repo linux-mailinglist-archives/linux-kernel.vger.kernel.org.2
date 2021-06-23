@@ -2,130 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD823B1991
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E16E3B19B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhFWMIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:08:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230019AbhFWMIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:08:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DE7F6102A;
-        Wed, 23 Jun 2021 12:06:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624449985;
-        bh=pRjRyRfLrESTWmV+JAD0jFiz2kLDegDFhdIBtqzV2a8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=lDS22IWujCGbBwr2H+FZidYVi2ctHxtn0bg2GUVranYGqe2eU1rgevF8BVIdbq1vm
-         PI7PRruiW+g42S+f+unuo5+ui34MXUbQLowbXFTHHLQBeXdVcv1DtFJvpRPGk6uF7S
-         vWLhY2gyaX5jXQVvgbA7bTYtTwe9Q+TLqimYZhGaTWyfN9wmLgL3kQj/vkZuBGDXyF
-         AUf7GnRC0SWsjXQrLB1+1uu4j8QPuKN+nrh7OfoMVTf4Jl45HUErFbF3w1fQlihZGD
-         1FyBE3O3Cf1qSrhIuyPi9MJj4k0PRQc8Ru2fzfTQc3q2Tmf0jcf5285xcS+q3p6BML
-         i639rYdjo/gyw==
-Date:   Wed, 23 Jun 2021 07:06:23 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v7 4/8] PCI/sysfs: Allow userspace to query and set
- device reset mechanism
-Message-ID: <20210623120623.GA3295394@bjorn-Precision-5520>
+        id S230339AbhFWMUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230298AbhFWMUp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 08:20:45 -0400
+X-Greylist: delayed 600 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 23 Jun 2021 05:18:27 PDT
+Received: from smtp-42a9.mail.infomaniak.ch (smtp-42a9.mail.infomaniak.ch [IPv6:2001:1600:3:17::42a9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6339C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:18:27 -0700 (PDT)
+Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4G92934tY5zMqKM9;
+        Wed, 23 Jun 2021 14:08:23 +0200 (CEST)
+Received: from localhost (unknown [23.97.221.149])
+        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4G92923gCQzlh8Tm;
+        Wed, 23 Jun 2021 14:08:22 +0200 (CEST)
+From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To:     David Miller <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        James Morris <jamorris@linux.microsoft.com>,
+        John Haxby <john.haxby@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Simo Sorce <simo@redhat.com>,
+        =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>
+Subject: [PATCH v1] crypto: Make the DRBG compliant with NIST SP800-90A rev1
+Date:   Wed, 23 Jun 2021 14:07:51 +0200
+Message-Id: <20210623120751.3033390-1-mic@digikod.net>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621193307.gt7iwwg6gqqojhfc@archlinux>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 01:03:07AM +0530, Amey Narkhede wrote:
-> On 21/06/21 02:07PM, Bjorn Helgaas wrote:
-> > On Mon, Jun 21, 2021 at 10:58:54PM +0530, Amey Narkhede wrote:
-> > > On 21/06/21 08:01AM, Bjorn Helgaas wrote:
-> > > > On Sat, Jun 19, 2021 at 07:29:20PM +0530, Amey Narkhede wrote:
-> > > > > On 21/06/18 03:00PM, Bjorn Helgaas wrote:
-> > > > > > On Tue, Jun 08, 2021 at 11:18:53AM +0530, Amey Narkhede wrote:
-> > > > > > > Add reset_method sysfs attribute to enable user to
-> > > > > > > query and set user preferred device reset methods and
-> > > > > > > their ordering.
-> > > >
-> > > > > > > +	if (sysfs_streq(options, "default")) {
-> > > > > > > +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++)
-> > > > > > > +			reset_methods[i] = reset_methods[i] ? prio-- : 0;
-> > > > > > > +		goto set_reset_methods;
-> > > > > > > +	}
-> > > > > >
-> > > > > > If you use pci_init_reset_methods() here, you can also get this case
-> > > > > > out of the way early.
-> > > > > >
-> > > > > The problem with alternate encoding is we won't be able to know if
-> > > > > one of the reset methods was disabled previously. For example,
-> > > > >
-> > > > > # cat reset_methods
-> > > > > flr,bus 			# dev->reset_methods = [3, 5, 0, ...]
-> > > > > # echo bus > reset_methods 	# dev->reset_methods = [5, 0, 0, ...]
-> > > > > # cat reset_methods
-> > > > > bus
-> > > > >
-> > > > > Now if an user wants to enable flr
-> > > > >
-> > > > > # echo flr > reset_methods 	# dev->reset_methods = [3, 0, 0, ...]
-> > > > > OR
-> > > > > # echo bus,flr > reset_methods 	# dev->reset_methods = [5, 3, 0, ...]
-> > > > >
-> > > > > either they need to write "default" first then flr or we will need to
-> > > > > reprobe reset methods each time when user writes to reset_method attribute.
-> > > >
-> > > > Not sure I completely understand the problem here.  I think relying on
-> > > > previous state that is invisible to the user is a little problematic
-> > > > because it's hard for the user to predict what will happen.
-> > > >
-> > > > If the user enables a method that was previously "disabled" because
-> > > > the probe failed, won't the reset method itself just fail with
-> > > > -ENOTTY?  Is that a problem?
-> > > >
-> > > I think I didn't explain this correctly. With current implementation
-> > > its not necessary to explicitly set *order of availabe* reset methods.
-> > > User can directly write a single supported reset method only and then perform
-> > > the reset. Side effect of that is other methods are disabled if user
-> > > writes single or less than available number of supported reset method.
-> > > Current implementation is able to handle this case but with new encoding
-> > > we'll need to reprobe reset methods everytime because we have no way
-> > > of distingushing supported and currently enabled reset method.
-> >
-> > I'm confused.  I thought the point of the nested loops to find the
-> > highest priority enabled reset method was to allow the user to control
-> > the order.  The sysfs doc says writing "reset_method" sets the "reset
-> > methods and their ordering."
-> >
-> > It seems complicated to track "supported" and "enabled" separately,
-> > and I don't know what the benefit is.  If we write "reset_method" to
-> > enable reset X, can we just probe reset X to see if it's supported?
->
-> Although final result is same whether user writes a supported reset method or
-> their ordering that is,
-> # echo bus > reset_methods
-> and
-> # echo bus,flr > reset_methods
-> 
-> are the same but in the first version, users don't have to explicitly
-> set the ordering if they just want to perform bus reset.
-> Current implementation allows the flexibility for switching between
-> first and second option.
+From: Mickaël Salaün <mic@linux.microsoft.com>
 
-Sorry, I can't quite make sense of the above.
+Starting from November 2020, the first revision of NIST SP800-90A (June
+2015) is required for FIPS 140-2.  One of the changes brought by this
+first revision is that nonces used for seeding (instantiation) and
+re-seeding must come from entropy sources compliant with NIST SP800-90B
+(cf. NIST SP800-90A rev1, section 8.6.7).  However, this seeding is
+currently done with the Linux RNG (i.e. in-kernel /dev/urandom) that
+uses ChaCha20, a non-approved algorithm.
+Cf. https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-90Ar1.pdf
 
-Your doc implies the following are different:
+These changes replace the use of the Linux RNG with the Jitter RNG,
+which is NIST SP800-90B compliant, to get a proper entropy input and a
+nonce as defined by FIPS.
 
-  # echo bus,flr > reset_methods
-  # echo flr,bus > reset_methods
+However, only using the Jitter RNG may not provide adequate security as
+it could be possible for an attacker to know the state of the CPU and
+predict this RNG output.  To avoid this threat, we are making this both
+FIPS compliant and secure thanks to the use of Linux RNG as a random
+source (but not entropy per se) for the personalization string
+(instantiation) and the additional input (re-seeding).  These extra
+inputs have a length equal to the DRBG strength.  The original
+user-supplied personalization string and additional input are still used
+but potentially truncated to fit with the 2**35 limit (cf. NIST
+SP800-90A rev1, table 2 and 3).
 
-Are they?  If you don't need to provide control over the order of
-trying resets, this can all be simplified quite a bit.
+This new DRBG uses the same random and entropy sources as the current
+version but in a way that makes is compliant with FIPS 140-2.
 
-Bjorn
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: James Morris <jamorris@linux.microsoft.com>
+Cc: John Haxby <john.haxby@oracle.com>
+Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: Simo Sorce <simo@redhat.com>
+Cc: Stephan Müller <smueller@chronox.de>
+Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+Link: https://lore.kernel.org/r/20210623120751.3033390-1-mic@digikod.net
+---
+
+Do you prefer to truncate the user-supplied personalization string and
+the additional input, or to return an error if they are greater than
+2**27 (instead of 2**35)?
+
+Another solution to avoid truncating the personalization string and the
+additional input would be to hash them with SHA-512 and concatenate the
+resulting fixed-size buffers.
+---
+ crypto/drbg.c         | 77 ++++++++++++++++++++++++++++++++-----------
+ include/crypto/drbg.h |  2 +-
+ 2 files changed, 58 insertions(+), 21 deletions(-)
+
+diff --git a/crypto/drbg.c b/crypto/drbg.c
+index 1b4587e0ddad..b817a831815e 100644
+--- a/crypto/drbg.c
++++ b/crypto/drbg.c
+@@ -1119,9 +1119,10 @@ static int drbg_seed(struct drbg_state *drbg, struct drbg_string *pers,
+ 		     bool reseed)
+ {
+ 	int ret;
+-	unsigned char entropy[((32 + 16) * 2)];
+-	unsigned int entropylen = drbg_sec_strength(drbg->core->flags);
+-	struct drbg_string data1;
++	unsigned char entropy[((32 * 2) + 16)];
++	const unsigned int strength = drbg_sec_strength(drbg->core->flags);
++	unsigned int entropylen = strength;
++	struct drbg_string data1, data2;
+ 	LIST_HEAD(seedlist);
+ 
+ 	/* 9.1 / 9.2 / 9.3.1 step 3 */
+@@ -1147,21 +1148,32 @@ static int drbg_seed(struct drbg_state *drbg, struct drbg_string *pers,
+ 		BUG_ON(!entropylen);
+ 		if (!reseed)
+ 			entropylen = ((entropylen + 1) / 2) * 3;
+-		BUG_ON((entropylen * 2) > sizeof(entropy));
+-
+-		/* Get seed from in-kernel /dev/urandom */
+-		ret = drbg_get_random_bytes(drbg, entropy, entropylen);
+-		if (ret)
+-			goto out;
++		/*
++		 * Check that a minimal automatic personalization string
++		 * (instantiation) or additional input (re-seeding) of strength
++		 * length fits in.
++		 */
++		BUG_ON((entropylen + strength) > sizeof(entropy));
+ 
+ 		if (!drbg->jent) {
+-			drbg_string_fill(&data1, entropy, entropylen);
+-			pr_devel("DRBG: (re)seeding with %u bytes of entropy\n",
+-				 entropylen);
++			/*
++			 * Get entropy, nonce, personalization string or
++			 * additional input from in-kernel /dev/urandom
++			 */
++			ret = drbg_get_random_bytes(drbg, entropy, entropylen + strength);
++			if (ret)
++				goto out;
++
++			drbg_string_fill(&data1, entropy, entropylen + strength);
++			pr_devel("DRBG: (re)seeding with %u bytes of random\n",
++				 entropylen + strength);
+ 		} else {
+-			/* Get seed from Jitter RNG */
+-			ret = crypto_rng_get_bytes(drbg->jent,
+-						   entropy + entropylen,
++			/*
++			 * Get entropy (strength length), concatenated with a
++			 * nonce (half strength length) when instantiating,
++			 * both from the SP800-90B compliant Jitter RNG.
++			 */
++			ret = crypto_rng_get_bytes(drbg->jent, entropy,
+ 						   entropylen);
+ 			if (ret) {
+ 				pr_devel("DRBG: jent failed with %d\n", ret);
+@@ -1184,9 +1196,25 @@ static int drbg_seed(struct drbg_state *drbg, struct drbg_string *pers,
+ 					goto out;
+ 			}
+ 
+-			drbg_string_fill(&data1, entropy, entropylen * 2);
+-			pr_devel("DRBG: (re)seeding with %u bytes of entropy\n",
+-				 entropylen * 2);
++			/*
++			 * To improve security while still be compliant with
++			 * SP800-90A rev1, automatically append a minimal
++			 * personalization string (instantiation) or additional
++			 * input (re-seeding) of strength length from in-kernel
++			 * /dev/urandom (random source).  This may then replace
++			 * a (small) part of the supplied pers according to
++			 * drbg_max_addtl().
++			 */
++			ret = drbg_get_random_bytes(drbg, entropy + entropylen,
++						    strength);
++			if (ret)
++				goto out;
++
++			drbg_string_fill(&data1, entropy, entropylen + strength);
++
++			pr_devel("DRBG: (re)seeding with %u bytes of entropy "
++				 "and %u bytes of random\n", entropylen,
++				 strength);
+ 		}
+ 	}
+ 	list_add_tail(&data1.list, &seedlist);
+@@ -1197,7 +1225,16 @@ static int drbg_seed(struct drbg_state *drbg, struct drbg_string *pers,
+ 	 * contents whether it is appropriate
+ 	 */
+ 	if (pers && pers->buf && 0 < pers->len) {
+-		list_add_tail(&pers->list, &seedlist);
++		const size_t available = drbg_max_addtl(drbg) - pers->len;
++
++		data2 = *pers;
++		/*
++		 * Make sure that the drbg_max_addtl() limit is still respected
++		 * according to the automatically appended random values.
++		 */
++		if (available < strength)
++			data2.len -= strength - available;
++		list_add_tail(&data2.list, &seedlist);
+ 		pr_devel("DRBG: using personalization string\n");
+ 	}
+ 
+@@ -1209,7 +1246,7 @@ static int drbg_seed(struct drbg_state *drbg, struct drbg_string *pers,
+ 	ret = __drbg_seed(drbg, &seedlist, reseed);
+ 
+ out:
+-	memzero_explicit(entropy, entropylen * 2);
++	memzero_explicit(entropy, sizeof(entropy));
+ 
+ 	return ret;
+ }
+diff --git a/include/crypto/drbg.h b/include/crypto/drbg.h
+index c4165126937e..7fcff8d2289e 100644
+--- a/include/crypto/drbg.h
++++ b/include/crypto/drbg.h
+@@ -168,7 +168,7 @@ static inline size_t drbg_max_request_bytes(struct drbg_state *drbg)
+ 
+ static inline size_t drbg_max_addtl(struct drbg_state *drbg)
+ {
+-	/* SP800-90A requires 2**35 bytes additional info str / pers str */
++	/* SP800-90A requires 2**35 bits of additional info str / pers str */
+ #if (__BITS_PER_LONG == 32)
+ 	/*
+ 	 * SP800-90A allows smaller maximum numbers to be returned -- we
+
+base-commit: 13311e74253fe64329390df80bed3f07314ddd61
+-- 
+2.32.0
+
