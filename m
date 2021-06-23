@@ -2,75 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA23C3B1BBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7DD3B1BCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbhFWN6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:58:47 -0400
-Received: from mail-vs1-f48.google.com ([209.85.217.48]:45795 "EHLO
-        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbhFWN6q (ORCPT
+        id S230498AbhFWOBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:01:35 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:45973 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230274AbhFWOBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:58:46 -0400
-Received: by mail-vs1-f48.google.com with SMTP id u10so1455830vsu.12;
-        Wed, 23 Jun 2021 06:56:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=55QXwvr22S8G1+P0buYR2qozyQS1fW6lW2FrYqgk8aQ=;
-        b=talJpful02qswSe5n/zecUVJGcmgoCOszeFvE4O7hh0tuVIVA/NUJn8I8NMYDewCpJ
-         Z2YECGjoI3ssPnA6WP3WJQ/ijwlRc3aCkGUyxSi7PcMEk1z9tWNDISxZMiXbfvLIAqdC
-         WjtYvGl0tfPK0bGMraLEy/7kJfEoDf8R85J16N3todJC/S1o1o/1qG/hrV7JaiulH4ic
-         kC0XdC20sx9BLyMpT4qyVpL6iAv1ae3hNWw2JaU88fEVd0J1I4+3kcBHHFQPYIeLl1/F
-         ory6RO9ypxqajMn6ZwlSMIA5/HRmlrRr04IQAwqffY6PDFp1Nbl0RQIksxKZaEMdJm0C
-         llSg==
-X-Gm-Message-State: AOAM532dx0yhJPiaKcn9/Da3HVivp+FUv8ttfUMBh/s9w95lmiMJRJXq
-        XGtC86U9ITZNxjLt6GDaw1atHXstUP6Kp+mdsy0+X9qzSdX4mg==
-X-Google-Smtp-Source: ABdhPJynIOS0kQWBBoQ1HEzzM7pwPkpkSYXauN3cD9FTH7VwH1BXAlkoFvLtcyUKa5dsm0E9A3rtdphDO0ILgMIE6aw=
-X-Received: by 2002:a67:7787:: with SMTP id s129mr65565vsc.40.1624456587744;
- Wed, 23 Jun 2021 06:56:27 -0700 (PDT)
+        Wed, 23 Jun 2021 10:01:34 -0400
+Received: (qmail 492480 invoked by uid 1000); 23 Jun 2021 09:59:15 -0400
+Date:   Wed, 23 Jun 2021 09:59:15 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Claudiu.Beznea@microchip.com
+Cc:     gregkh@linuxfoundation.org, Nicolas.Ferre@microchip.com,
+        alexandre.belloni@bootlin.com, Ludovic.Desroches@microchip.com,
+        Cristian.Birsan@microchip.com, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: host: ohci-at91: suspend/resume ports after/before
+ OHCI accesses
+Message-ID: <20210623135915.GB491169@rowland.harvard.edu>
+References: <20210609121027.70951-1-claudiu.beznea@microchip.com>
+ <20210609230735.GA1861855@rowland.harvard.edu>
+ <0621eaba-db4d-a174-1b15-535e804b52ac@microchip.com>
 MIME-Version: 1.0
-References: <20210623095734.3046-1-wsa+renesas@sang-engineering.com> <20210623095734.3046-4-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20210623095734.3046-4-wsa+renesas@sang-engineering.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 23 Jun 2021 15:56:16 +0200
-Message-ID: <CAMuHMdWk4gHc682m1YeAYJ8DLjSVuXaBNNXLfjUR4E=n0ZRJ2w@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mmc: usdhi6rol0: : use proper DMAENGINE API for termination
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Linux MMC List <linux-mmc@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Lars Persson <lars.persson@axis.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-arm-kernel@axis.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0621eaba-db4d-a174-1b15-535e804b52ac@microchip.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 11:58 AM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> dmaengine_terminate_all() is deprecated in favor of explicitly saying if
-> it should be sync or async. Here, we want dmaengine_terminate_sync()
-> because there is no other synchronization code in the driver to handle
-> an async case.
->
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+On Wed, Jun 23, 2021 at 12:47:56PM +0000, Claudiu.Beznea@microchip.com wrote:
+> On 10.06.2021 02:07, Alan Stern wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > On Wed, Jun 09, 2021 at 03:10:27PM +0300, Claudiu Beznea wrote:
+> >> On SAMA7G5 suspending ports will cut the access to OHCI registers and
+> >> any subsequent access to them will lead to CPU being blocked trying to
+> >> access that memory. Same thing happens on resume: if OHCI memory is
+> >> accessed before resuming ports the CPU will block on that access. The
+> >> OCHI memory is accessed on suspend/resume though
+> >> ohci_suspend()/ohci_resume().
+> > 
+> > That sounds very strange.
+> 
+> The clock scheme for OHCI and EHCI IPs on SAMA7G5 is as follows
+> (I hope it is readable):
+> 
+>                                             Main Xtal
+>                                                |
+>                                                +-------------+
+>                                                |             |
+> +---------------------------+                 \ /            |
+> |                 +------+  | 60MHz  +--------------------+  |
+> |                 |      |  |        |                    |------+
+> |                 | Port |<----------| UTMI Transceiver A |  |   |
+> |                 |      |  |        |                    |----+ |
+> |  USB 2.0 EHCI   |Router|  |        +--------------------+  | | |
+> | Host Controller |      |  | 60MHz  +--------------------+  | | |
+> |                 |      |<----------| UTMI Transceiver B |<-+ | |
+> |                 |      |  |        +--------------------+  | | |
+> |                 |      |  | 60MHz  +--------------------+  | | |
+> |                 |      |<----------| UTMI Transceiver C |<-+ | |
+> |                 |      |  |        +--------------------+    | |
+> |                 +------+  |                                  | |
+> |                           |                                  | |
+> +---------------------------+                                  | |
+>                                                                | |
+> +---------------------------+                                  | |
+> |                 +------+  |         UHP48M                   | |
+> |                 | Root |  |<---------------------------------+ |
+> |  USB 1.1 OHCI   | hub  |  |                                    |
+> | Host Controller | and  |  |         UHP12M                     |
+> |                 | host |  |<-----------------------------------+
+> |                 | SIE  |  |
+> |                 +------+  |
+> |                           |
+> +---------------------------+
+> 
+> Where UTMI transceiver A generates the 48MHz and 12MHz clocks for OHCI
+> full-speed operations.
+> 
+> The ports control is done through AT91_SFR_OHCIICR via
+> ohci_at91_port_suspend() function where. Setting 0 in AT91_SFR_OHCIICR
+> means suspend is controlled by EHCI-OHCI and 1 forces the port suspend.
+> Suspending the port A will cut the clocks for OHCI. I want to mention that
+> AT91_SFR_OHCIICR register is not in the same memory space of OHCI, EHCI IPs
+> and is clocked by other clocks.
+> 
+> > Suppose one of the ports is suspended, so access to the
+> > OHCI registers is blocked.  Then how can you resume the port? 
+> 
+> For run-time control (via ohci_at91_hub_control()), I agree with you that
+> the current implemented approach is not healthy (taking into account the
+> clock scheme above) and the fact that we do force the ports suspend on
+> ohci_at91_hub_control(). For suspend/resume it should be OK as the ports
+> are suspended at the end of any OHCI accesses (I don't know how the Linux
+> USB subsystem behaves so please do correct me if I'm wrong).
 
- Looks OK, as this driver uses a threaded irq handler.
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+(I haven't checked the details recently, so I'm not certain about 
+this.)  In some -- perhaps all -- cases, we don't suspend the ports at 
+all during system suspend.  We just rely on the USB devices 
+automatically going into suspend when the root hub stops sending 
+packets.
 
-Have you tried triggering DMA termination, with lockdep enabled?
+> > Don't you have to
+> > access the OHCI registers in order to tell the controller to do the port resume?
+> 
+> On our implementation we control the port suspend/resume via
+> AT91_SFR_OHCIICR, a special kind of register, memory mapped at different
+> address (compared w/ OHCI, EHCI IPs), so clocked by other clocks.
+> 
+> > 
+> > What happens when there's more than one port, and one of them is suspended while
+> > the other one is still running?  How can you communicate with the active port if
+> > access to the OHCI registers is blocked?
+> 
+> For this kind of scenario (the run-time suspend of a port, not system
+> suspend/resume) a different mechanism should be implemented taking into
+> account the clock schema presented above.
 
-Gr{oetje,eeting}s,
+Okay, I see.  It seems like the driver will need some significant 
+changes to handle runtime power management properly.
 
-                        Geert
+One thing you might consider changing: The name of the 
+ohci_at91_port_suspend routine is misleading.  It doesn't really 
+handle suspending the port; instead it handles the clocks that drive 
+the entire OHCI controller.  Right?
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Alan Stern
