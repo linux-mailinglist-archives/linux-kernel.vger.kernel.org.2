@@ -2,91 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957903B19C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D89A3B19CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbhFWMXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:23:01 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]:41484 "EHLO
-        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbhFWMXA (ORCPT
+        id S230273AbhFWMYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:24:44 -0400
+Received: from mail-vs1-f53.google.com ([209.85.217.53]:45842 "EHLO
+        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230019AbhFWMYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:23:00 -0400
-Received: by mail-wr1-f47.google.com with SMTP id f15so2412365wro.8;
-        Wed, 23 Jun 2021 05:20:42 -0700 (PDT)
+        Wed, 23 Jun 2021 08:24:44 -0400
+Received: by mail-vs1-f53.google.com with SMTP id u10so1295966vsu.12;
+        Wed, 23 Jun 2021 05:22:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UfP6k5ommLM5X7TkcxI89PaM7Nsi15an45FVpSiGZ1w=;
-        b=D8kqkLgbNyH4eQfPf7Q4U6sJ/ysi0YIf/fmfmvlEGquUc8hzIV3/lqbj+Bhw7fOKhi
-         sIdYqznIOBejqyywviC8+x3EU4EAdXODDewoS/A+1PCmRtr4dy4UPbs44OAkShIEsKfZ
-         KKvy0o79d16yLMVHgKvdbOEyVCy7tvYzXEYkW/3Nuw+BszZr3P2xqbYfKa5GzSjrKo5y
-         VSKIPizBbqvnuMe/CbKjLzcPBLym6M4gd4HqdH0LR/6oMZsbOGq+AeiYwG/T70F/IPHm
-         5kAUBwh1dtw8hNwt/lpoSba7IAKtk6FeFmTKcuYd7IO9qsl5sUoxubkNAKEdJzFNKY1L
-         qxrA==
-X-Gm-Message-State: AOAM531v6HdY3E93xF63NIR5VSK+AKdS80mLj3fVi+p33MsCIg8BXv4K
-        WmZbdTsWxZE9yr0AkTbYTYQ=
-X-Google-Smtp-Source: ABdhPJwabmji/un4AUhLivSfMKZJDm6mnfCuU7n4mPp2sqRUjLTKOfww+5IO42a4UcM2C2mHjPFiMQ==
-X-Received: by 2002:adf:f808:: with SMTP id s8mr10890798wrp.270.1624450841945;
-        Wed, 23 Jun 2021 05:20:41 -0700 (PDT)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id l10sm2734991wrv.82.2021.06.23.05.20.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 05:20:41 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 14:20:40 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH] PCI: xilinx-nwl: Enable the clock through CCF
-Message-ID: <20210623122040.GA46059@rocinante>
-References: <dbc0ab2e109111ca814e73abb30a1dda5d333dbe.1624449519.git.michal.simek@xilinx.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J92JJ9AxLYD6AuIc0R+ExvscUVC8iOEpXyazWOseHlw=;
+        b=he+jLlrqSTwGqse/pcSy0t+WL+e3Vdsh1Zzpn8Vp9B92rZ0TfwDwwRqutksuIQFwI7
+         PZfN5K5SwHx3039SyI0arVk+uT3ilaTkKQxQqm+NpS6WnM3vzcOAqZWDsL57O3CUwshF
+         MLQAHBHUUkdpnVmb2g+1++F+TNtU5kEtD5W9dtponMuBQk78mUL5gCWf4knKiwg1AboW
+         N0TeUYrUKbFu8JpiIdRiW5NUdEudLmFp7ZN4u4RQ3TuuZjBuaJOjtkKHGwRn1E6SB/3R
+         juWvap5vCBoEUtG6bdgsraVVc6j6GKlRqp30ImP3ijPGj5TjiSF69x0W2HqNEl58YL3a
+         pGgQ==
+X-Gm-Message-State: AOAM530UhwDGsB0YxUpYEU/tCxhkntr+NDCM2bvuu90tfRwUIZbd6jU5
+        8vvu3TWor4l1UG6dJXl6F1t9aSyyorkI9MoVZu9fgRUFz8174Q==
+X-Google-Smtp-Source: ABdhPJz5D7ANzBG3ARnUXyB0HGg7R2bFlFTdnmV9tm5GBl1FUvfAL0+DEnwlR8FSwxqheFLVsI4SgodqNfHV10xhidY=
+X-Received: by 2002:a67:7787:: with SMTP id s129mr23344134vsc.40.1624450946217;
+ Wed, 23 Jun 2021 05:22:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <dbc0ab2e109111ca814e73abb30a1dda5d333dbe.1624449519.git.michal.simek@xilinx.com>
+References: <20210622232711.3219697-1-kieran.bingham@ideasonboard.com> <20210622232711.3219697-3-kieran.bingham@ideasonboard.com>
+In-Reply-To: <20210622232711.3219697-3-kieran.bingham@ideasonboard.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 23 Jun 2021 14:22:14 +0200
+Message-ID: <CAMuHMdVDo8TKg1E1NoM_TQdP7iFbZWzHjo9K2kFJDbeeRb_CfA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] clk: renesas: r8a779a0: Add the DSI clocks
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
+On Wed, Jun 23, 2021 at 1:27 AM Kieran Bingham
+<kieran.bingham@ideasonboard.com> wrote:
+> The DSI clock is incorrectly defined as a fixed clock. This
+> demonstrates itself as the dsi-encoders failing to correctly enable and
+> start their PPI and HS clocks internally, and causes failures.
+>
+> Move the DSI parent clock to match the updates in the BSP, which
+> resolves the initialisation procedures.
+>
+> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
 
-Thank you for sending the patch over!
+Fixes: 17bcc8035d2d19fc ("clk: renesas: cpg-mssr: Add support for R-Car V3U")
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-clk-for-v5.15.
 
-> Simply enable clocks. There is no remove function that's why
-> this should be enough for simple operation.
+Gr{oetje,eeting}s,
 
-What clock is this?  Would it be worth mentioning what it is for
-a reference (and for posterity) the commit message?
+                        Geert
 
-Also why it would need to be enabled and wasn't before?  Would this be
-a fix for some problem?  Would this warrant a "Fixes:" tag?  And would
-it need to be back-ported to stable kernels?
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-[...]
-> @@ -823,6 +825,11 @@ static int nwl_pcie_probe(struct platform_device *pdev)
->  		return err;
->  	}
->  
-> +	pcie->clk = devm_clk_get(dev, NULL);
-> +	if (IS_ERR(pcie->clk))
-> +		return PTR_ERR(pcie->clk);
-> +	clk_prepare_enable(pcie->clk);
-> +
-[...]
-
-Almost every other user of clk_prepare_enable() would check for
-potential failure, print an appropriate message, and then do the
-necessary clean-up before bailing out and returning an error.
-
-Would adding an error check for clk_prepare_enable() and printing an
-error message using dev_err() be too much in this case?  If not, then
-I would rather follow the pattern that other users established and
-handle errors as needed.  What do you think?
-
-	Krzysztof
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
