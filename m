@@ -2,131 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7170B3B1BA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 700BF3B1BB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhFWN46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:56:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:35740 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230334AbhFWN45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:56:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 505B0ED1;
-        Wed, 23 Jun 2021 06:54:39 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 19D583F718;
-        Wed, 23 Jun 2021 06:54:37 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 14:54:32 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Rahul Tanwar <rtanwar@maxlinear.com>
-Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Cheol Yong Kim <ckim@maxlinear.com>,
-        Qiming Wu <qwu@maxlinear.com>,
-        Lei Chuan Hua <lchuanhua@maxlinear.com>
-Subject: Re: [PATCH] PCI: dwc/intel-gw: Fix enabling the legacy PCI interrupt
- lines
-Message-ID: <20210623135432.GA14341@lpieralisi>
-References: <20210106135540.48420-1-martin.blumenstingl@googlemail.com>
- <20210323113559.GE29286@e121166-lin.cambridge.arm.com>
- <CAFBinCBaa_uGBg8x=nPTs6sYNqv_OCU2PgCaUKLQGNSN+Up99A@mail.gmail.com>
- <MN2PR19MB36934176A011B86624E1EA2BB1739@MN2PR19MB3693.namprd19.prod.outlook.com>
- <20210409102946.GA14799@lpieralisi>
+        id S231133AbhFWN6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:58:11 -0400
+Received: from mail-vk1-f176.google.com ([209.85.221.176]:37433 "EHLO
+        mail-vk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230182AbhFWN6K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 09:58:10 -0400
+Received: by mail-vk1-f176.google.com with SMTP id o198so525768vkc.4;
+        Wed, 23 Jun 2021 06:55:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9ahtRRokg3yDOqqCXUZvHVEkraTmmSQqzB4YruA7miw=;
+        b=YrjwUWn/tvrvku2aXnYzOOF5o6O6DW4vgQNFOfEDZ4b429FP+6ObdseWWY3zCmc3YJ
+         pNgviDiMBbGpxSnEttpzuuAJMtnBp4ZeasnX1EqO5/LsqY0W8sTGIETWG8S6+PLjP/Ml
+         qNrsB/sLjtRNp60aRLPdXVXr3lTFTmR/DIrHjFUbiRvuEtWJNon0qRN895z4EOqkZpyt
+         0I3Z43bxHTVffei070PS32jtd96FDxEk2WXjR30Dg1uCyJvRIXEGakpeFvU8fVoduNoH
+         4D/X+G7tHpE1tlK9odmgpBtTaClpAjhUtxCwu3zCEPb6vNIZCkw0JNiuMyKO6Va0CgqF
+         xexg==
+X-Gm-Message-State: AOAM530iuIOKrGedLjrDzhQRqTizr7euk9oClkD+e7HNZio/i/Te0sGX
+        tOmYLt4N/yKY8HVK2x6cerEgaGVFOtIiDGR+eJc=
+X-Google-Smtp-Source: ABdhPJwrBbGVEjgg6mlm9xRmaOGLgwNPSIOLeOhPKLe0eF8/M7KdOEGwhUT1wvFna7dMOCKd5TCAjpk5HjYorgjQ2Oo=
+X-Received: by 2002:a1f:d8c3:: with SMTP id p186mr23538101vkg.1.1624456551487;
+ Wed, 23 Jun 2021 06:55:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409102946.GA14799@lpieralisi>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210623095734.3046-1-wsa+renesas@sang-engineering.com> <20210623095734.3046-3-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20210623095734.3046-3-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 23 Jun 2021 15:55:40 +0200
+Message-ID: <CAMuHMdWeW7L4x9Q+h5RrR8JzKN9WagtSm47vFGg8Xh59f-EwkA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mmc: sh_mmcif: : use proper DMAENGINE API for termination
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux MMC List <linux-mmc@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 11:29:46AM +0100, Lorenzo Pieralisi wrote:
-> On Fri, Apr 09, 2021 at 10:17:12AM +0000, Rahul Tanwar wrote:
-> > On 9/4/2021 4:40 am, Martin Blumenstingl wrote:
-> > > This email was sent from outside of MaxLinear.
-> > > 
-> > > Hi Lorenzo,
-> > > 
-> > > On Tue, Mar 23, 2021 at 12:36 PM Lorenzo Pieralisi
-> > > <lorenzo.pieralisi@arm.com> wrote:
-> > >  >
-> > >  > On Wed, Jan 06, 2021 at 02:55:40PM +0100, Martin Blumenstingl wrote:
-> > >  > > The legacy PCI interrupt lines need to be enabled using PCIE_APP_IRNEN
-> > >  > > bits 13 (INTA), 14 (INTB), 15 (INTC) and 16 (INTD). The old code 
-> > > however
-> > >  > > was taking (for example) "13" as raw value instead of taking BIT(13).
-> > >  > > Define the legacy PCI interrupt bits using the BIT() macro and then use
-> > >  > > these in PCIE_APP_IRN_INT.
-> > >  > >
-> > >  > > Fixes: ed22aaaede44 ("PCI: dwc: intel: PCIe RC controller driver")
-> > >  > > Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> > >  > > ---
-> > >  > > drivers/pci/controller/dwc/pcie-intel-gw.c | 10 ++++++----
-> > >  > > 1 file changed, 6 insertions(+), 4 deletions(-)
-> > >  > >
-> > >  > > diff --git a/drivers/pci/controller/dwc/pcie-intel-gw.c 
-> > > b/drivers/pci/controller/dwc/pcie-intel-gw.c
-> > >  > > index 0cedd1f95f37..ae96bfbb6c83 100644
-> > >  > > --- a/drivers/pci/controller/dwc/pcie-intel-gw.c
-> > >  > > +++ b/drivers/pci/controller/dwc/pcie-intel-gw.c
-> > >  > > @@ -39,6 +39,10 @@
-> > >  > > #define PCIE_APP_IRN_PM_TO_ACK BIT(9)
-> > >  > > #define PCIE_APP_IRN_LINK_AUTO_BW_STAT BIT(11)
-> > >  > > #define PCIE_APP_IRN_BW_MGT BIT(12)
-> > >  > > +#define PCIE_APP_IRN_INTA BIT(13)
-> > >  > > +#define PCIE_APP_IRN_INTB BIT(14)
-> > >  > > +#define PCIE_APP_IRN_INTC BIT(15)
-> > >  > > +#define PCIE_APP_IRN_INTD BIT(16)
-> > >  > > #define PCIE_APP_IRN_MSG_LTR BIT(18)
-> > >  > > #define PCIE_APP_IRN_SYS_ERR_RC BIT(29)
-> > >  > > #define PCIE_APP_INTX_OFST 12
-> > >  > > @@ -48,10 +52,8 @@
-> > >  > > PCIE_APP_IRN_RX_VDM_MSG | PCIE_APP_IRN_SYS_ERR_RC | \
-> > >  > > PCIE_APP_IRN_PM_TO_ACK | PCIE_APP_IRN_MSG_LTR | \
-> > >  > > PCIE_APP_IRN_BW_MGT | PCIE_APP_IRN_LINK_AUTO_BW_STAT | \
-> > >  > > - (PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTA) | \
-> > >  > > - (PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTB) | \
-> > >  > > - (PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTC) | \
-> > >  > > - (PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTD))
-> > >  > > + PCIE_APP_IRN_INTA | PCIE_APP_IRN_INTB | \
-> > >  > > + PCIE_APP_IRN_INTC | PCIE_APP_IRN_INTD)
-> > >  > >
-> > >  > > #define BUS_IATU_OFFSET SZ_256M
-> > >  > > #define RESET_INTERVAL_MS 100
-> > >  >
-> > >  > This looks like a significant bug - which in turn raises the question
-> > >  > on how well this driver has been tested.
-> > > to give them the benefit of doubt: maybe only MSIs were tested
-> > > 
-> > >  > Dilip, can you review and ACK asap please ?
-> > >  From "Re: MaxLinear, please maintain your drivers was Re: [PATCH]
-> > > leds: lgm: fix gpiolib dependency" [0]:
-> > >  > Please send any Lightning Mountain SoC related issues email to Rahul
-> > >  > Tanwar (rtanwar@maxlinear.com) and I will ensure that I address the
-> > >  > issues in a timely manner.
-> > > so I added rtanwar@maxlinear.com to this email
-> > > 
-> > > 
-> > > Best regards,
-> > > Martin
-> > > 
-> > > 
-> > > [0] https://lkml.org/lkml/2021/3/16/282 
-> > > <https://lkml.org/lkml/2021/3/16/282>
-> > 
-> > 
-> > Dilip has left the org. So not sure how exactly he tested it (maybe only 
-> > MSIs). But i have confirmed it to be a bug. Thanks Martin for fixing it.
-> 
-> Can you take on maintainership for this driver please ?
+Hi Wolfram,
 
-I have not received any reply on this - this driver has no maintainer
-(with HW to test it) looking after it, it'd be great if we can add
-one - please let me know.
+On Wed, Jun 23, 2021 at 11:57 AM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> dmaengine_terminate_all() is deprecated in favor of explicitly saying if
+> it should be sync or async. Here, we want dmaengine_terminate_sync()
+> because there is no other synchronization code in the driver to handle
+> an async case.
+>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Lorenzo
+Looks OK, as this driver uses a threaded irq handler.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Have you tried triggering DMA termination, with lockdep enabled?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
