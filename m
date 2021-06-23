@@ -2,87 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D7C3B218C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062B13B2190
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhFWUIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 16:08:07 -0400
-Received: from mail-pl1-f170.google.com ([209.85.214.170]:39885 "EHLO
-        mail-pl1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWUID (ORCPT
+        id S229812AbhFWUIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 16:08:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhFWUIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 16:08:03 -0400
-Received: by mail-pl1-f170.google.com with SMTP id d1so1102022plg.6;
-        Wed, 23 Jun 2021 13:05:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jZtnIba38VOxOdV7QZ8WCZ06ktsu2UfEmSyMUoRu06c=;
-        b=pXXLN67faVkdwas1SiGqGAFbOG5A2cta+W2saEHzE8Ldmj6sZ01FnNa6n6LXUjn7Qf
-         WlyzHomBSjZaJUZoiSoLJkYG2hCzAGtx8D56lvNUIz3IsaUpK5TrBDYeWsYuMTPKqoLN
-         hIxu7K/U0UZBCiVdZTT6XiosLcgyiVHPclMdQ/WITSJa5m1C9tBoDI7PMe5TzGSnd3W8
-         0r2twGwsXD9caPF+TZv/cTzRxUbuedLonbiQweckztmSq0J6Lnip+/tphbknl5XoSGxd
-         Au0IqYtf1+P8ItO/UrEvrr8vI3XUXvy/rEgHCqG7hruQzDUOMXKd1I8+9O8I8bM29kKh
-         QKfw==
-X-Gm-Message-State: AOAM5309roVKf9jQbC6ktKT/hSboXP5V1NeNuMTkiwn/mdUeBDgwLZP7
-        TbgtepOZ8J/DQgR8T7phCfZo/QBH0/DHTQ==
-X-Google-Smtp-Source: ABdhPJxFJRcqIyn4UQMocls0xkI6Mw83I6DBWbP8KaU8RdegyB0vkglpuB4i7OLpIunQ4ajlspzbRQ==
-X-Received: by 2002:a17:902:7241:b029:126:aa2b:a0d1 with SMTP id c1-20020a1709027241b0290126aa2ba0d1mr1287075pll.51.1624478744120;
-        Wed, 23 Jun 2021 13:05:44 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id h27sm655632pfr.171.2021.06.23.13.05.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 13:05:43 -0700 (PDT)
-Subject: Re: [PATCH v4 01/10] scsi: ufs: Rename flags pm_op_in_progress and
- is_sys_suspended
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-2-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <1c5db457-ee87-2308-15f5-5dad49508f10@acm.org>
-Date:   Wed, 23 Jun 2021 13:05:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 23 Jun 2021 16:08:51 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DA3C061574;
+        Wed, 23 Jun 2021 13:06:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=IG70MoZoSqiFPenmXjBN2WpuGpkp6Lvmd3cBwqO3yfU=; b=A6xFJgCylu/fj4hOTR91ki5aV
+        BWDasOfgOz8YW+o1jP05PuEWXYrn7xO0JzwSeX7AT/RhzYidVxsB9zFr3b7SaLxLWireB+nq+Tsv5
+        2illYDiuMIPXTiZSmfM3PaY2YUlg8lKBHJwr23gGT9Ii5fU9ydp8xzSF/jdIfY6TDuw2MgDvz1xCD
+        BBWljt6TNPxMqJS0gpajWFndOBASjWkTA3U0oUtJquJKVzPkmceGiGKs1p4qfoB9JUigBUpw6F0Zx
+        8VVYYNf7Vw9YKFDoxjHpY+471wmUZ+KS9/vh2XVHiDKIFm6hfe8+1/1vPsIqWBt6mAxmBgE/jGU57
+        kNKEGQ2eg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45280)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lw98f-0006lr-Cf; Wed, 23 Jun 2021 21:06:21 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lw98c-00050g-9k; Wed, 23 Jun 2021 21:06:18 +0100
+Date:   Wed, 23 Jun 2021 21:06:18 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Ling Pei Lee <pei.lee.ling@intel.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>, davem@davemloft.net,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Marek Behun <marek.behun@nic.cz>,
+        weifeng.voon@intel.com, vee.khee.wong@linux.intel.com,
+        vee.khee.wong@intel.com
+Subject: Re: [PATCH net-next] net: phy: marvell10g: enable WoL for mv2110
+Message-ID: <20210623200618.GO22278@shell.armlinux.org.uk>
+References: <20210623130929.805559-1-pei.lee.ling@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1624433711-9339-2-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210623130929.805559-1-pei.lee.ling@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 12:35 AM, Can Guo wrote:
-> Rename pm_op_in_progress and is_sys_suspended to wlu_pm_op_in_progress and
-> is_wlu_sys_suspended accordingly.
+On Wed, Jun 23, 2021 at 09:09:29PM +0800, Ling Pei Lee wrote:
+> +static void mv2110_get_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
+> +{
+> +	int ret = 0;
 
-Hi Can,
+This initialiser doesn't do anything.
 
-My understanding is that power management operations must be submitted
-to one particular UFS WLUN (hba->sdev_ufs_device). That makes the "wlu_"
-part of the new names redundant. In other words, I like the current
-names better than the new names. Unless if I missed something, consider
-dropping this patch.
+> +
+> +	wol->supported = WAKE_MAGIC;
+> +	wol->wolopts = 0;
+> +
+> +	ret = phy_read_mmd(phydev, MDIO_MMD_VEND2, MV_V2_WOL_CTRL);
+> +
+> +	if (ret & MV_V2_WOL_MAGIC_PKT_EN)
+> +		wol->wolopts |= WAKE_MAGIC;
 
-Thanks,
+You need to check whether "ret" is a negative number - if phy_read_mmd()
+returns an error, this test could be true or false. It would be better
+to have well defined behaviour (e.g. reporting that WOL is disabled?)
 
-Bart.
+> +		/* Reset the clear WOL status bit as it does not self-clear */
+> +		ret = phy_clear_bits_mmd(phydev, MDIO_MMD_VEND2,
+> +					 MV_V2_WOL_CTRL,
+> +					 MV_V2_WOL_CLEAR_STS);
+> +
+> +		if (ret < 0)
+> +			return ret;
+> +	} else {
+> +		/* Disable magic packet matching & reset WOL status bit */
+> +		ret = phy_modify_mmd(phydev, MDIO_MMD_VEND2,
+> +				     MV_V2_WOL_CTRL,
+> +				     MV_V2_WOL_MAGIC_PKT_EN,
+> +				     MV_V2_WOL_CLEAR_STS);
+> +
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		ret = phy_clear_bits_mmd(phydev, MDIO_MMD_VEND2,
+> +					 MV_V2_WOL_CTRL,
+> +					 MV_V2_WOL_CLEAR_STS);
+> +
+> +		if (ret < 0)
+> +			return ret;
+
+This phy_clear_bits_mmd() is the same as the tail end of the other part
+of the if() clause. Consider moving it after the if () { } else { }
+statement...
+
+> +	}
+> +
+> +	return ret;
+
+and as all paths return "ret" just do:
+
+	return phy_clear_bits_mmd(...
+
+I will also need to check whether this is the same as the 88x3310, but
+I'm afraid I don't have the energy this evening - please email me a
+remind to look at this tomorrow. Thanks.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
