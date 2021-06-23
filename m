@@ -2,93 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F643B1F11
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8623B1F12
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbhFWQ46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 12:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36102 "EHLO
+        id S229926AbhFWQ5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 12:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhFWQ44 (ORCPT
+        with ESMTP id S229726AbhFWQ5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 12:56:56 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E101FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:54:38 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id 21so2804360pfp.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:54:38 -0700 (PDT)
+        Wed, 23 Jun 2021 12:57:39 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53CBC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:55:21 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id d2so3853844ljj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:55:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5KXLh/nNuoT2ip+063n2eXTSx2vwf4ghELGrq4CweBs=;
-        b=bYJ9m9pbQXUrM2IqV1nrLjs6lJxm0fVWw+dFsqVA7AniCDGdowvlGS4CEx5gTLh9Tk
-         SI91Bd5c7KzIymPTtKbif30Qih6kuvXD6vZ60Rmn3wdAyL5vX2KuuqCdFYu0BlY14eH4
-         5TLVRb6ZpTlztQBPDPfMunK6xLB+5ubSahIqlasR9OfX+fTk1VNvP80/VMxN0SRmmlX3
-         RC6AfwH2qMcavkijggcMqKF1JZ7s8B9dr5VAg3NjYjWFCh95Psx1WRtPClLh8eb7Siu4
-         y9mS2I04geQKupZkwjiUv1+PjqRVz3AByO9NWas2BfOOSMrZohgaSoy2cbma0nTn05gK
-         9Kvw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ax+qMkz9tc+3GIw6VBZG84/vn46E053CBBShLS/lu7Y=;
+        b=CueGo6nhL0ih/I8+FW2BDzxSi8s4y6185nndbX4VnBGU3Q0H2Dp7iJ49iu+3Go58DR
+         yqUuhfV3Ox29PVtvujH9wwUuCShzRU8yiOVxzFinEjKUAJAS0aTMVkDBL/dqryqKGyky
+         NpznK3UeD2MPMmPb/Lv+GFPLtebrapqwECa55UF+u7pJn21DUBY2OP+7tjRH3FyOCpuH
+         WOA2/vw1hBW/rfog/bzKCiV5ZjXIf28yVBXXXuGxf3/e4kKGxkUCeGguZxtnd+TI0VuF
+         +oL0McSqtoJmyHof+hJzkoDTkfVTXv2p9QvJiEJIrRbohBXdMIrZa5ojlZUh2rPjduL7
+         qDXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5KXLh/nNuoT2ip+063n2eXTSx2vwf4ghELGrq4CweBs=;
-        b=HtYWe8ii5dunPuGWFhkXwJVXJqXE79lI/v7+7u84b7ReKYxT7yXbDfQwgOxW6qf4F4
-         cKqenyx7e9P+6p/tp1/yExI6y0iAeDMOwNNylAEHrjmRJzYjZpU0tgKII9GvUXYjxr66
-         Pg3yA/j3hDOXlX9OmEKRTxBbj61gkL/Vh8rl4Z/ID8g4DxTv+WpFL3pVkhleffZNTM06
-         3mv9NehH2w4jAou2dMCnSQJinZTnl0fjFRARYKmmFhWlG/OhsMED4bovDOk7PXhHoFUZ
-         LUmt6+MK7YeSve+WAr5bOZ+z5koRplBF+qgc1JPMSX3rBeNOCnFE1dnX/l6ZAwgoJzdT
-         bFWw==
-X-Gm-Message-State: AOAM530Wu01dgUCyWPVEFVJgm1F23HqfvbiQ0Jm2nObByQIkG5r5Hp7q
-        4o0P+3cabvrwygE87qCNXD7wLg==
-X-Google-Smtp-Source: ABdhPJyE+6Ht+AMUZlWTAssMYAqrIi1ovU/mM3yZDUc92doUyVKyW4sA31zIU7uZt6jGoz9SCNY5Gw==
-X-Received: by 2002:a63:f850:: with SMTP id v16mr392047pgj.181.1624467278200;
-        Wed, 23 Jun 2021 09:54:38 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id b6sm385609pgw.67.2021.06.23.09.54.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 09:54:37 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 16:54:34 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH 10/54] KVM: x86/mmu: Replace EPT shadow page shenanigans
- with simpler check
-Message-ID: <YNNnSgVUYUewP2qK@google.com>
-References: <20210622175739.3610207-1-seanjc@google.com>
- <20210622175739.3610207-11-seanjc@google.com>
- <8ce36922-dba0-9b53-6f74-82f3f68b443c@redhat.com>
- <YNNegF8RcF3vX2Sh@google.com>
- <df77b8e9-b2bb-b085-0789-909a8b9d44c3@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ax+qMkz9tc+3GIw6VBZG84/vn46E053CBBShLS/lu7Y=;
+        b=bp+MAYbLSIMy36N4MWEnmcYBK9hALrwR9VNUg9AtqaTZpePISqcJ8Avu2IUywJ4qLA
+         buNOLO5qEghstdXiu3Jb9bDrAGezSLd2mJyIjvHH9xF1a0eb9YfJE2Vv5BgV/PnfVp5C
+         a0QMtiJp63yPGFhV3W6PvFuVb9hLZR67cVUyivwN4INOjMFews0HP96d4lMkMjjyotT/
+         63j20EbCw3Ynlr0y1bIbowaEMWc4Ph23paEM0joOIcwxytwKKRwMxh3K+nbZQk0sEaqK
+         cp/2L550WIvy+lmqj5M4YV2qsPItWy1+K5H6qMsb1FXafupsZREbQIsvHXQ4rM2nXKJj
+         fdiA==
+X-Gm-Message-State: AOAM530YtyNSbvkc3pbQG4GtJJjj9VmxmkVrMgUUhZGgW1QcKdLsbqau
+        JryYXdVXerizs6/uJO4TxPkj7tkjzy0Y+6kB2jB55Q==
+X-Google-Smtp-Source: ABdhPJxoNHsqS0Cspo6atJ2cS4VJgFv31o0Wr8mvnTzi19fZT73UHF2RR+bG/GciFyWIfq1NDhfzJrZct1B7Gxe2TMs=
+X-Received: by 2002:a2e:90ca:: with SMTP id o10mr476096ljg.299.1624467318567;
+ Wed, 23 Jun 2021 09:55:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <df77b8e9-b2bb-b085-0789-909a8b9d44c3@redhat.com>
+References: <2ED1BDF5-BC0C-47CD-8F33-9A46C738F8CF@linux.vnet.ibm.com>
+ <CAKfTPtDrHv4OOfPvwOE2DMNoucXQJ=yvvEpTVKrXghSdKEnZcA@mail.gmail.com>
+ <20210622143154.GA804@vingu-book> <53968DDE-9E93-4CB4-B5E4-526230B6E154@linux.vnet.ibm.com>
+ <20210623071935.GA29143@vingu-book> <CCB4222F-000A-44E8-8D61-F69893704688@linux.vnet.ibm.com>
+ <6C676AB3-5D06-471A-8715-60AABEBBE392@linux.vnet.ibm.com> <20210623120835.GB29143@vingu-book>
+ <5D874F72-B575-4830-91C3-8814A2B371CD@linux.vnet.ibm.com>
+In-Reply-To: <5D874F72-B575-4830-91C3-8814A2B371CD@linux.vnet.ibm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 23 Jun 2021 18:55:07 +0200
+Message-ID: <CAKfTPtBKn27=jryS_sxsVb+0yHDze_PMcLuyFtDkDo0H9Nzqww@mail.gmail.com>
+Subject: Re: [powerpc][next-20210621] WARNING at kernel/sched/fair.c:3277
+ during boot
+To:     Sachin Sant <sachinp@linux.vnet.ibm.com>
+Cc:     Odin Ugedal <odin@uged.al>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021, Paolo Bonzini wrote:
-> On 23/06/21 18:17, Sean Christopherson wrote:
-> > > What the commit message doesn't say is, did we miss this
-> > > opportunity all along, or has there been a change since commit
-> > > 47c42e6b4192 ("KVM: x86: fix handling of role.cr4_pae and rename it
-> > > to 'gpte_size'", 2019-03-28) that allows this?
-> > 
-> > The code was wrong from the initial "unsync" commit.  The 4-byte vs.
-> > 8-byte check papered over the real bug, which was that the roles were
-> > not checked for compabitility.  I suspect that the bug only
-> > manisfested as an observable problem when the GPTE sizes mismatched,
-> > thus the PAE check was added.
-> 
-> I meant that we really never needed is_ept_sp, and you could have used the
-> simpler check already at the time you introduced gpte_is_8_bytes. But anyway
-> I think we're in agreement.
+On Wed, 23 Jun 2021 at 18:46, Sachin Sant <sachinp@linux.vnet.ibm.com> wrote:
+>
+>
+> > Ok. This becomes even more weird. Could you share your config file and more details about
+> > you setup ?
+> >
+> > Have you applied the patch below ?
+> > https://lore.kernel.org/lkml/20210621174330.11258-1-vincent.guittot@linaro.org/
+> >
+> > Regarding the load_avg warning, I can see possible problem during attach. Could you add
+> > the patch below. The load_avg warning seems to happen during boot and sched_entity
+> > creation.
+> >
+>
+> Here is a summary of my testing.
+>
+> I have a POWER box with PowerVM hypervisor. On this box I have a logical partition(LPAR) or guest
+> (allocated with 32 cpus 90G memory) running linux-next.
+>
+> I started with a clean slate.
+> Moved to linux-next 5.13.0-rc7-next-20210622 as base code.
+> Applied patch #1 from Vincent which contains changes to dequeue_load_avg()
+> Applied patch #2 from Vincent which contains changes to enqueue_load_avg()
+> Applied patch #3 from Vincent which contains changes to attach_entity_load_avg()
+> Applied patch #4 from https://lore.kernel.org/lkml/20210621174330.11258-1-vincent.guittot@linaro.org/
+>
+> With these changes applied I was still able to recreate the issue. I could see kernel warning
+> during boot.
+>
+> I then applied patch #5 from Odin which contains changes to update_cfs_rq_load_avg()
+>
+> With all the 5 patches applied I was able to boot the kernel without any warning messages.
+> I also ran scheduler related tests from ltp (./runltp -f sched) . All tests including cfs_bandwidth01
+> ran successfully. No kernel warnings were observed.
 
-Ah, yes, I was too clever :-/
+ok so Odin's patch fixes the problem which highlights that we
+overestimate _sum or don't sync _avg and _sum correctly
+
+I'm going to look at this further
+
+>
+> Have also attached .config in case it is useful. config has CONFIG_HZ_100=y
+
+Thanks, i will have a look
+
+>
+> Thanks
+> -Sachin
+>
