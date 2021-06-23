@@ -2,170 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F42C3B1DB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77103B1DC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbhFWPlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 11:41:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229523AbhFWPlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 11:41:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7750611AC;
-        Wed, 23 Jun 2021 15:39:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624462746;
-        bh=Mm8FVZvOFHbYQOMrLA21ILjK4OC7KMRGPY0oHQSNWF8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=XiKwg4CHdsJk1NqhKjhAgIZYRSEexp5RNIwo4X8qeFcv+ykiUG5OgrFWZdxTuBIxn
-         8g5NLg8QmWsCKlcxcofi2EVzisj1Rxj6GucRS//CcUF/oEniWmroGeeKZMHKDDakGP
-         LwCZlGXDPTDGzThlEvL8/1CQa9DG+kqjnxucEvlAOWwEjtodN4L9/8us/VVluXJ6rT
-         ynghZE8r8OFNc70cCUMQLK2SReVJPw3r2b7Ht5W2odblTLfe9JoamvUdDjxxCZrzgR
-         1pccMoGwoiTgjXia4Ut4pNbD1c5hGrg8K1S9pUxrzd23e7e00AxJao1mS8x5Y3Rshe
-         RDU9jjscxgv5Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AF3635C06CA; Wed, 23 Jun 2021 08:39:05 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 08:39:05 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, urezki@gmail.com, frederic@kernel.org
-Subject: Re: [PATCH] rcu: update: Check rcu_bh_lock_map state in
- rcu_read_lock_bh_held
-Message-ID: <20210623153905.GO4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <1624363521-19702-1-git-send-email-neeraju@codeaurora.org>
- <20210622175855.GE4397@paulmck-ThinkPad-P17-Gen-1>
- <61bed875-5ebf-03d8-58ea-e9263c534201@codeaurora.org>
- <20210622234652.GL4397@paulmck-ThinkPad-P17-Gen-1>
- <b37e3232-4151-e948-3987-b19c88f0e217@codeaurora.org>
+        id S231335AbhFWPo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 11:44:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39152 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229523AbhFWPo6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 11:44:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624462960;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FywmPLYhhFRN4WW/md3yWe6mYjbslEQ7H0Xa8zhu5pQ=;
+        b=KhC8FLy52bCNUi1mK8D3ocPHUllV+RAiZrNPlfuwIaZALADCSUE1Ts/yT9u+FiAzGKgjhN
+        zaheIKo6mQa/UgX+lagNHSYkiottUpWeAQUZb12iaJ5VSTHe4/WdMwKS3+faFpQ8PlYkHM
+        I5y3vqwj+vDIoBb2ZR+hT7Lc+JqFZTk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-218-y-UNkku0MO2cXrYdTMRMSQ-1; Wed, 23 Jun 2021 11:42:39 -0400
+X-MC-Unique: y-UNkku0MO2cXrYdTMRMSQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F140A100B3B2;
+        Wed, 23 Jun 2021 15:42:37 +0000 (UTC)
+Received: from treble.redhat.com (ovpn-118-189.rdu2.redhat.com [10.10.118.189])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DDA181007623;
+        Wed, 23 Jun 2021 15:42:32 +0000 (UTC)
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     x86@kernel.org, Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>
+Subject: [PATCH] objtool: Don't make .altinstructions writable
+Date:   Wed, 23 Jun 2021 10:42:28 -0500
+Message-Id: <6c284ae89717889ea136f9f0064d914cd8329d31.1624462939.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b37e3232-4151-e948-3987-b19c88f0e217@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 09:27:11AM +0530, Neeraj Upadhyay wrote:
-> On 6/23/2021 5:16 AM, Paul E. McKenney wrote:
-> > On Wed, Jun 23, 2021 at 12:38:09AM +0530, Neeraj Upadhyay wrote:
-> > > On 6/22/2021 11:28 PM, Paul E. McKenney wrote:
-> > > > On Tue, Jun 22, 2021 at 05:35:21PM +0530, Neeraj Upadhyay wrote:
-> > > > > In addition to irq and softirq state, check rcu_bh_lock_map
-> > > > > state, to decide whether RCU bh lock is held.
-> > > > > 
-> > > > > Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-> > > > 
-> > > > My initial reaction was that "in_softirq() || irqs_disabled()" covers
-> > > > it because rcu_read_lock_bh() disables BH.  But you are right that it
-> > > > does seem a bit silly to ignore lockdep.
-> > > > 
-> > > > So would it also make sense to have a WARN_ON_ONCE() if lockdep claims
-> > > > we are under rcu_read_lock_bh() protection, but "in_softirq() ||
-> > > > irqs_disabled()" think otherwise?
-> > > 
-> > > After thinking more on this, looks like one intention of not
-> > > having lockdep check here was to catch scenarios where some code enables bh
-> > > after doing rcu_read_lock_bh(), as is mentioned in the comment above
-> > > rcu_read_lock_bh_held():
-> > > 
-> > >    Note that if someone uses
-> > >    rcu_read_lock_bh(), but then later enables BH, lockdep (if enabled)
-> > >    will show the situation.  This is useful for debug checks in functions
-> > >    that require that they be called within an RCU read-side critical
-> > >    section.
-> > > 
-> > > Client users seem to be doing lockdep checks on returned value:
-> > > drivers/net/wireguard/peer.c
-> > >     RCU_LOCKDEP_WARN(!rcu_read_lock_bh_held(),
-> > > 
-> > > Similarly, any rcu_dereference_check(..., rcu_read_lock_bh_held()) usage
-> > > also triggers warning, if bh is enabled, inside rcu_read_lock_bh()
-> > > section.
-> > > 
-> > > So, using 'in_softirq() || irqs_disabled()' condition looks to be sufficient
-> > > condition, to mark all read lock bh regions and adding '||
-> > > lock_is_held(&rcu_bh_lock_map)' to this condition does not seem to fit
-> > > well with the RCU_LOCKDEP_WARN(!rcu_read_lock_bh_held()) and
-> > > rcu_dereference_check(..., rcu_read_lock_bh_held()) calls, if we hit
-> > > the scenario, where bh lockmap state (shows bh lock acquired) conflicts with
-> > > the softirq/irq state .
-> > 
-> > That makes sense to me!
-> > 
-> > But should there be checks somewhere for something like
-> > "lock_is_held(&rcu_bh_lock_map) && !in_softirq() && !irqs_disabled()"?
-> > 
-> > 							Thanx, Paul
-> > 
-> 
-> I think this check is good to have inside rcu_read_lock_bh_held(), to
-> highlight this scenario explicitly; I am thinking, if it makes sense to
-> have lock_is_held(&rcu_bh_lock_map) check in rcu_softirq_qs() ?
-> 
-> Also, I think this check is more important for rcu_read_lock_sched_held(),
-> where lockdep state is used as a sufficient condition, for marking a RCU
-> sched region. One more api is rcu_read_lock_any_held(), where we can
-> warn on conflicting cases.
-> 
->   int rcu_read_lock_sched_held(void)
->   {
->         bool ret;
-> 
->         if (rcu_read_lock_held_common(&ret))
->                 return ret;
->         return lock_is_held(&rcu_sched_lock_map) || !preemptible();
->   }
+When objtool creates the .altinstructions section, it sets the SHF_WRITE
+flag to make the section writable -- unless the section had already been
+previously created by the kernel.  The mismatch between kernel-created
+and objtool-created section flags can cause failures with external
+tooling (kpatch-build).  And the section doesn't need to be writable
+anyway.
 
-Another option would be to check lock_is_held(&rcu_sched_lock_map)
-anywhere preemption is enabled and lock_is_held(&rcu_bh_lock_map)
-anywhere BH is enabled.  This would (in theory, anyway) catch more bugs.
+Make the section flags consistent with the kernel's.
 
-But it is necessary to be careful because these checks must be suppressed
-if lockdep has been disabled due to a prior lockdep splat.  Otherwise,
-the first lockdep splat is followed by an inundation of false-positive
-complaints.
+Fixes: 9bc0bb50727c ("objtool/x86: Rewrite retpoline thunk calls")
+Reported-by: Joe Lawrence <joe.lawrence@redhat.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ tools/objtool/arch/x86/decode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-But the real question is "Which important bugs are missed today, and
-what change would catch them more reliably?"
+diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+index cedf3ede7545..32b2739f6115 100644
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -683,7 +683,7 @@ static int elf_add_alternative(struct elf *elf,
+ 	sec = find_section_by_name(elf, ".altinstructions");
+ 	if (!sec) {
+ 		sec = elf_create_section(elf, ".altinstructions",
+-					 SHF_WRITE, size, 0);
++					 SHF_ALLOC, size, 0);
+ 
+ 		if (!sec) {
+ 			WARN_ELF("elf_create_section");
+-- 
+2.31.1
 
-Thoughts?
-
-						Thanx, Paul
-
-> Thanks
-> Neeraj
-> 
-> > > Thanks
-> > > Neeraj
-> > > 
-> > > > > ---
-> > > > >    kernel/rcu/update.c | 2 +-
-> > > > >    1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-> > > > > index c21b38c..d416f1c 100644
-> > > > > --- a/kernel/rcu/update.c
-> > > > > +++ b/kernel/rcu/update.c
-> > > > > @@ -333,7 +333,7 @@ int rcu_read_lock_bh_held(void)
-> > > > >    	if (rcu_read_lock_held_common(&ret))
-> > > > >    		return ret;
-> > > > > -	return in_softirq() || irqs_disabled();
-> > > > > +	return lock_is_held(&rcu_bh_lock_map) || in_softirq() || irqs_disabled();
-> > > > >    }
-> > > > >    EXPORT_SYMBOL_GPL(rcu_read_lock_bh_held);
-> > > > > -- 
-> > > > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > > > > hosted by The Linux Foundation
-> > > > > 
-> > > 
-> > > -- 
-> > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of
-> > > the Code Aurora Forum, hosted by The Linux Foundation
-> 
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of
-> the Code Aurora Forum, hosted by The Linux Foundation
