@@ -2,188 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A74D33B1D3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8053B1D2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231359AbhFWPKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 11:10:46 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:43535 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231229AbhFWPKj (ORCPT
+        id S231224AbhFWPJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 11:09:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47890 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229523AbhFWPJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 11:10:39 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15NF20CV031734;
-        Wed, 23 Jun 2021 17:08:14 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=qor8IDfXqtXwE4FJUTMJlIEuinvs4TdpF5ViY4rId8Y=;
- b=8SXvwQhSSVL0mqULs+y2ApobECB2JCcz07vkCIOOK+C0CF7rTejoEcsOrc17XmqbsjRQ
- nTJtiNyf2KsFMGGt0chLyMIRhyP8RhQ10fRY5U0awwLk2Hl/p50bRMd3GvOwulvgM9hd
- UZqd5K8B2w729MGRDJGFc8/uEdCFsEVJSQFfrBpNmFMmMOpo5VfHTwKTprsI8tqSCmO1
- JpPVSXjeke6yTY+l67XDUAaG6OVL8b5pWhvQpbhdGSjOQ5TCUubcl/IcXb8RsmQR5N8G
- na8ocJBwwqcV8n/h34bbIOvaP/fFjrZwt7zPXHeWZU1Wn/juA09vF2OgEstJCyg/yCx6 kA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 39bwdckhq0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Jun 2021 17:08:14 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 90F4A100034;
-        Wed, 23 Jun 2021 17:08:13 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7D86C22D186;
-        Wed, 23 Jun 2021 17:08:13 +0200 (CEST)
-Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 23 Jun 2021 17:08:12
- +0200
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <julien.massot@iot.bzh>, <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH v2 4/4] rpmsg: char: Introduce the "rpmsg-raw" channel
-Date:   Wed, 23 Jun 2021 17:05:04 +0200
-Message-ID: <20210623150504.14450-5-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210623150504.14450-1-arnaud.pouliquen@foss.st.com>
-References: <20210623150504.14450-1-arnaud.pouliquen@foss.st.com>
+        Wed, 23 Jun 2021 11:09:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624460851;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yHCiJj43tDNkuVMQugA1B24KSUzuIyfm9V4T1jsq3/Y=;
+        b=BdGruDAqGG4l+IGsebmHA6I7zAKPq7GjPWR0ayezgIdrXHsqo4khSu4yKiXRjYjZTMRFnJ
+        lxNCferlbw2vCCpfzTaOHtlK5vF9gZTDDMhKz9bYJ2dAxjemmmQDstfKpOyQBw3Uq196FL
+        Jz2rU4iaV9wuSXufF0c/PTfZvW8UiXA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-85-bLa3K0S1MjK3aW0KWqe4Wg-1; Wed, 23 Jun 2021 11:07:27 -0400
+X-MC-Unique: bLa3K0S1MjK3aW0KWqe4Wg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 66E0BBD42A;
+        Wed, 23 Jun 2021 15:06:43 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (ovpn-112-211.ams2.redhat.com [10.36.112.211])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BEB785C1A1;
+        Wed, 23 Jun 2021 15:06:38 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Dave Hansen via Libc-alpha <libc-alpha@sourceware.org>,
+        Len Brown <lenb@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Rich Felker <dalias@libc.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Kyle Huey <me@kylehuey.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Willy Tarreau <w@1wt.eu>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
+ features
+References: <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
+        <YIMmwhEr46VPAZa4@zn.tnic>
+        <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
+        <874kf11yoz.ffs@nanos.tec.linutronix.de>
+        <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
+        <87k0ntazyn.ffs@nanos.tec.linutronix.de>
+        <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
+        <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
+        <9c8138eb-3956-e897-ed4e-426bf6663c11@intel.com>
+        <87pmxk87th.fsf@oldenburg.str.redhat.com>
+        <YKfIct+DhpEBbaCQ@hirez.programming.kicks-ass.net>
+Date:   Wed, 23 Jun 2021 17:06:35 +0200
+In-Reply-To: <YKfIct+DhpEBbaCQ@hirez.programming.kicks-ass.net> (Peter
+        Zijlstra's message of "Fri, 21 May 2021 16:49:22 +0200")
+Message-ID: <87wnqkzklg.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-23_09:2021-06-23,2021-06-23 signatures=0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allows to probe the endpoint device on a remote name service announcement,
-by registering a rpmsg_driverfor the "rpmsg-raw" channel.
+* Peter Zijlstra:
 
-With this patch the /dev/rpmsgX interface can be instantiated by the remote
-firmware.
+> On Fri, May 21, 2021 at 04:44:58PM +0200, Florian Weimer wrote:
+>
+>> And we added an interface for querying x86 CPU features to glibc 2.33
+>> which is completely incompatible with this because it assumes that CPU
+>> features do not change during the lifetime of a process. 8-(
+>
+> How many x86 kernel maintainers signed off on that patch?
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
----
-update vs V1:
-- management of the default endpoint creation in the driver probe.
+I've started a new thread:
 
----
- drivers/rpmsg/rpmsg_char.c | 75 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 73 insertions(+), 2 deletions(-)
+  x86 CPU features detection for applications (and AMX)
+  <https://lore.kernel.org/linux-api/87tulo39ms.fsf@oldenburg.str.redhat.com/>
 
-diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-index a75dce1e29d8..3748de00c97b 100644
---- a/drivers/rpmsg/rpmsg_char.c
-+++ b/drivers/rpmsg/rpmsg_char.c
-@@ -25,6 +25,8 @@
- 
- #include "rpmsg_char.h"
- 
-+#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
-+
- static dev_t rpmsg_major;
- static struct class *rpmsg_class;
- 
-@@ -421,6 +423,61 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
- }
- EXPORT_SYMBOL(rpmsg_chrdev_eptdev_create);
- 
-+static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
-+{
-+	struct rpmsg_channel_info chinfo;
-+	struct rpmsg_eptdev *eptdev;
-+	struct rpmsg_endpoint *ept;
-+
-+	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
-+	chinfo.src = rpdev->src;
-+	chinfo.dst = rpdev->dst;
-+
-+	eptdev =  __rpmsg_chrdev_eptdev_create(rpdev, &rpdev->dev, chinfo);
-+	if (IS_ERR(eptdev))
-+		return PTR_ERR(eptdev);
-+
-+	/*
-+	 * Create the default endpoint associated to the rpmsg device and provide rpmsg_eptdev
-+	 * structure as callback private data.
-+	 */
-+	ept = rpmsg_create_default_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
-+	if (!ept) {
-+		dev_err(&rpdev->dev, "failed to create %s\n", eptdev->chinfo.name);
-+		put_device(&eptdev->dev);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Do not allow the creation and release of an endpoint on /dev/rpmsgX open and close,
-+	 * reuse the default endpoint instead
-+	 */
-+	eptdev->static_ept = true;
-+
-+	return 0;
-+}
-+
-+static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
-+{
-+	int ret;
-+
-+	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
-+	if (ret)
-+		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
-+}
-+
-+static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
-+	{ .name	= RPMSG_CHAR_DEVNAME },
-+	{ },
-+};
-+
-+static struct rpmsg_driver rpmsg_chrdev_driver = {
-+	.probe = rpmsg_chrdev_probe,
-+	.remove = rpmsg_chrdev_remove,
-+	.id_table = rpmsg_chrdev_id_table,
-+	.drv.name = "rpmsg_chrdev",
-+};
-+
- static int rpmsg_chrdev_init(void)
- {
- 	int ret;
-@@ -434,16 +491,30 @@ static int rpmsg_chrdev_init(void)
- 	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
- 	if (IS_ERR(rpmsg_class)) {
- 		pr_err("failed to create rpmsg class\n");
--		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
--		return PTR_ERR(rpmsg_class);
-+		ret = PTR_ERR(rpmsg_class);
-+		goto free_region;
-+	}
-+
-+	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
-+	if (ret < 0) {
-+		pr_err("rpmsg: failed to register rpmsg raw driver\n");
-+		goto free_class;
- 	}
- 
- 	return 0;
-+
-+free_class:
-+	class_destroy(rpmsg_class);
-+free_region:
-+	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-+
-+	return ret;
- }
- postcore_initcall(rpmsg_chrdev_init);
- 
- static void rpmsg_chrdev_exit(void)
- {
-+	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
- 	class_destroy(rpmsg_class);
- 	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
- }
--- 
-2.17.1
+Thanks,
+Florian
 
