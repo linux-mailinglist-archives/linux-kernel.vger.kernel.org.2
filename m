@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27283B20BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952F03B20C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhFWTEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 15:04:13 -0400
-Received: from gateway36.websitewelcome.com ([192.185.193.12]:11491 "EHLO
-        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229759AbhFWTEM (ORCPT
+        id S230013AbhFWTEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 15:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229759AbhFWTEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 15:04:12 -0400
-X-Greylist: delayed 1291 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Jun 2021 15:04:12 EDT
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway36.websitewelcome.com (Postfix) with ESMTP id 17D8E400C8031
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:40:15 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id w7lNlmyFEMGeEw7lNlR6Ge; Wed, 23 Jun 2021 13:38:13 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=C0MW5eb4P1KjrPDoV0Rq3MvNLJoSwHEP7qEI/WvdwRU=; b=pPzvkIo1r+5iK2//1v631kMFt5
-        gOCTU/+VJlm/+WLEudiNmods2jwPO+07eta+qiuaN+00VO3LfDivShSk3pPJ7GyL4ErKG16oqvd8Y
-        sYA/SdQODzOca88dq0etZAjW6RmuyTGXv9M3eLmCZnr505kANZ8uaVYmoCFD63H/Cl2O+1VXZk1t8
-        gEwLW/MdjQYxssK4EnmcNz8nVz4yTa8kNjEg5yMb515qZOosy7ZQD7ua/Jy1yqztlgHhCP5C+08SV
-        St1K2XXtKhvtJI6lV3JCEcWv4MsIa3CcIEQ+NPX88wRUIWM3jGYl/6nk+/mmc1KeF4Za1qXoG4QPO
-        HwtuFt6g==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:48326 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lw7lK-000Lfm-Pt; Wed, 23 Jun 2021 13:38:10 -0500
-Subject: Re: linux-next: build warning after merge of the kspp-gustavo tree
-To:     dsterba@suse.cz, Stephen Rothwell <sfr@canb.auug.org.au>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210623083901.1d49d19d@canb.auug.org.au>
- <20210623131455.GM28158@suse.cz>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <9f18da33-7446-7237-91be-e52a274877d8@embeddedor.com>
-Date:   Wed, 23 Jun 2021 13:39:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 23 Jun 2021 15:04:50 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97DF7C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 12:02:31 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id k21-20020a4a2a150000b029024955603642so984146oof.8
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 12:02:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MRqftscF1FzfzzSjl5zFo7iO4VJxE2+eaqEj1NzMIwk=;
+        b=N3zmO53vFPvwU+U7IahzduZVgdhRclf7RioMWOY+16NWHJ0+cf/uqdULwG4OvgCQzk
+         Z6QN1tXNYwWWK9PuDVzuLkTlINpbkyhFYm6US7NUtvm7pzLLQV3daJvVqQnGZxOAjy0l
+         jAnBACNa/mO2/NxRq+VFB9DvMh8xuTW6lKvZ86vb97EtPEi7hZv/zYhR+pd/cvohlto8
+         Pq8LEF2+gZaR0LjsQz1yiiPJsC/kP+mxmUZ1/1VRzEyQhxW8yW27q7qb6OeNRa4e6Pwm
+         5xUykPTFC1nvHZJ79TwbMEjjtMA45P1oAGfvzsW9OIoYtpz0Qj/tsyhCfORb8jz1hG9i
+         KYag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MRqftscF1FzfzzSjl5zFo7iO4VJxE2+eaqEj1NzMIwk=;
+        b=eBFV7SOs0kM9Jvo4mOktI8OGERkCk21uh+cGN0W8Qa637GzZbytCj/C7ng5+78O/rA
+         ZAHr56Oumleq1hokVhiiYbAKCruTJvhet1tTR/YY7XRMn84L83QKVXSmpa1EovaIvNYj
+         s/PA1E216SJ6axO309BCz0qzclx9el8LuwLZ9OZXl2Zj5Y0iKgoeJ0hIkAh+4vsJom4k
+         0CezQOeEpYhFNP6r4pXbejMFQQbhVv4GysCzMWuc7M+MNafTyHIbNAcbgAxrCOCu2B1n
+         0bR8NiXLdqYEx3W6+hMOyR2GKHBa6RljGHSJoitPK3uD/PbhcSY5MnaQMjBueef71fXb
+         UgIQ==
+X-Gm-Message-State: AOAM5322+pbSgZOlsOjQlbCxOca6nAgtP6yY3FriAzZNJfhmrQAjGqqs
+        x0kvGcSg3aVyTbBJ9VCF/Tkipym3aGGti36kn3bwXA==
+X-Google-Smtp-Source: ABdhPJx1rKEuvgjZXk4Aa0YPqdFzImQ6xpZMX639CAYw+F7eQsq6FSOuI4g8MPeykoozbRPJyFgLT8+n15pY7iONbVI=
+X-Received: by 2002:a4a:6c0c:: with SMTP id q12mr1045468ooc.81.1624474950658;
+ Wed, 23 Jun 2021 12:02:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210623131455.GM28158@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lw7lK-000Lfm-Pt
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:48326
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 4
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+References: <20210622175739.3610207-1-seanjc@google.com> <20210622175739.3610207-8-seanjc@google.com>
+ <f031b6bc-c98d-8e46-34ac-79e540674a55@redhat.com> <CALMp9eSpEJrr6mNoLcGgV8Pa2abQUkPA1uwNBMJZWexBArB3gg@mail.gmail.com>
+ <6f25273e-ad80-4d99-91df-1dd0c847af39@redhat.com> <CALMp9eTzJb0gnRzK_2MQyeO2kmrKJwyYYHE5eYEai+_LPg8HrQ@mail.gmail.com>
+ <af716f56-9d68-2514-7b85-f9bbb1a82acf@redhat.com>
+In-Reply-To: <af716f56-9d68-2514-7b85-f9bbb1a82acf@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 23 Jun 2021 12:02:19 -0700
+Message-ID: <CALMp9eQG-QLm1xRXw2CxLEsRukH0q6HoaQKPraDo-TyCSv6EKg@mail.gmail.com>
+Subject: Re: [PATCH 07/54] KVM: x86: Alert userspace that KVM_SET_CPUID{,2}
+ after KVM_RUN is broken
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 23, 2021 at 11:49 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 23/06/21 20:11, Jim Mattson wrote:
+> > On Wed, Jun 23, 2021 at 10:11 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+> >> Nah, that's not the philosophy.  The philosophy is that covering all
+> >> possible ways for userspace to shoot itself in the foot is impossible.
+> >>
+> >> However, here we're talking about 2 lines of code (thanks also to your
+> >> patches that add last_vmentry_cpu for completely unrelated reasons) to
+> >> remove a whole set of bullet/foot encounters.
+> >
+> > What about the problems that arise when we have different CPUID tables
+> > for different vCPUs in the same VM? Can we just replace this
+> > hole-in-foot inducing ioctl with a KVM_VM_SET_CPUID ioctl on the VM
+> > level that has to be called before any vCPUs are created?
+>
+> Are there any KVM bugs that this can fix?  The problem is that, unlike
+> this case, it would be effectively impossible to deprecate
+> KVM_SET_CPUID2 as a vcpu ioctl, so it would be hard to reap any benefits
+> in KVM.
+>
+> BTW, there is actually a theoretical usecase for KVM_SET_CPUID2 after
+> KVM_RUN, which is to test OSes against microcode updates that hide,
+> totally random example, the RTM bit.  But it's still not worth keeping
+> it given 1) the bugs and complications in KVM, 2) if you really wanted
+> that kind of testing so hard, the fact that you can just create a new
+> vcpu file descriptor from scratch, possibly in cooperation with
+> userspace MSR filtering 3) AFAIK no one has done that anyway in 15 years.
 
-
-On 6/23/21 08:14, David Sterba wrote:
-> On Wed, Jun 23, 2021 at 08:39:01AM +1000, Stephen Rothwell wrote:
->> Hi all,
->>
->> After merging the kspp-gustavo tree, today's linux-next build (powerpc
->> ppc64_defconfig) produced this warning:
->>
->> In file included from fs/btrfs/ctree.h:9,
->>                  from fs/btrfs/struct-funcs.c:8:
->> fs/btrfs/struct-funcs.c: In function 'btrfs_get_token_16':
->> fs/btrfs/struct-funcs.c:80:46: warning: array subscript 1 is above array bounds of 'struct page *[1]' [-Warray-bounds]
->>    80 |  token->kaddr = page_address(token->eb->pages[idx + 1]);  \
->>       |                              ~~~~~~~~~~~~~~~~^~~~~~~~~
-> 
-> The warning is correct, on powerpc and 64k pages the array has only 1
-> item, ie. only index 0 is valid. The overflow won't happen in practice
-> though because of previous branch that would happen in 100% cases. The
-> code handles when some bytes cross 2 pages but on 64k pages it's all
-> just one page.
-> 
-> To allow the warning to be enabled globally we'll fix it, I'll let
-> Gustavo know once it's done.
-
-Awesome. :)
-
-Thanks, David.
---
-Gustavo
-
+Though such a usecase may exist, I don't think it actually works
+today. For example, kvm_vcpu_after_set_cpuid() potentially changes the
+value of the guest IA32_PERF_GLOBAL_CTRL MSR.
