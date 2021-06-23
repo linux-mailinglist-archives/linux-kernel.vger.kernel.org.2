@@ -2,57 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89493B1712
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1340E3B1709
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhFWJlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 05:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229833AbhFWJla (ORCPT
+        id S230234AbhFWJjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 05:39:39 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:35500 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230004AbhFWJji (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 05:41:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07976C061574;
-        Wed, 23 Jun 2021 02:39:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nfS9E0d+Qm2GE0xaDNgwLpysOhCCYQAZpjFDdw/jAv0=; b=M3lmg5ZWFPBLg1jJmGp7VVd2Iv
-        y97xriDeEyibE1BbQlqWFpvH2gPFXIYvdTwVVM8QlIPe4Xnh40hODfz2WtYc8sr0cVdnOM6Sa+sVK
-        x1WQTicwDhQ3cN4tJ4vm0D+F1jpi06uL4uUcENLLZbiVvQLdcK42TsODdaBH/ygwr+nwj6HWUvdg2
-        JldVHKA7TXRFu4c5dSjLiCXsAhD4ZfTLd7t5kkJ3Nc5cdhfa9vcwFLc7xdqdn5ReNpEyADaz5iDU6
-        DVrvEoTrXw38/h/sAi2DZIWh5e7x+gcLmmbFcYK7B3tGvaR7HVgSmcJ2sZ/ob2CpyfP3RVTyh2cHE
-        humfjhMw==;
-Received: from 089144193030.atnat0002.highway.a1.net ([89.144.193.30] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvzL4-00FH2h-W7; Wed, 23 Jun 2021 09:38:38 +0000
-Date:   Wed, 23 Jun 2021 11:36:14 +0200
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 29/46] mm/writeback: Add folio_account_cleaned()
-Message-ID: <YNMAju9hE/3A+6NZ@infradead.org>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-30-willy@infradead.org>
+        Wed, 23 Jun 2021 05:39:38 -0400
+X-UUID: d132d4704be84bfaad737c0e332c7526-20210623
+X-UUID: d132d4704be84bfaad737c0e332c7526-20210623
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <zhiyong.tao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 243492518; Wed, 23 Jun 2021 17:37:16 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 23 Jun 2021 17:37:14 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 23 Jun 2021 17:37:13 +0800
+From:   Zhiyong Tao <zhiyong.tao@mediatek.com>
+To:     <robh+dt@kernel.org>, <linus.walleij@linaro.org>,
+        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
+        <sean.wang@kernel.org>
+CC:     <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
+        <hui.liu@mediatek.com>, <Rex-BC.chen@mediatek.com>,
+        <biao.huang@mediatek.com>, <hongzhou.yang@mediatek.com>,
+        <erin.lo@mediatek.com>, <sean.wang@mediatek.com>,
+        <seiya.wang@mediatek.com>, <sj.huang@mediatek.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>
+Subject: [PATCH v8 0/2] Mediatek pinctrl patch on mt8195
+Date:   Wed, 23 Jun 2021 17:37:08 +0800
+Message-ID: <20210623093710.5340-1-zhiyong.tao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622121551.3398730-30-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 01:15:34PM +0100, Matthew Wilcox (Oracle) wrote:
-> Get the statistics right; compound pages were being accounted as a
-> single page.
+This series includes 1 patches:
+1.add rsel define
+2.add pinctrl rsel setting on MT8195.
 
-Maybe reword this a little to document the existing function that got
-it wrong, and why it did not matter before.
+Changes in patch v8:
+1)add rsel define patch
+2)avoid  CamelCase
+3)add pinctrl rsel setting patch which is another resistance selection
+  solution for I2C on MT8195.
 
-Otherwise looks good:
+Changes in patch v7:
+1)add version in patch and fix spelling mistakes.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Changes in patch v6:
+1)add "pintcrl: mediatek" as prefix.
+
+Changes in patch v5:
+1)document and driver patch are apploed.
+2)change '-EOPNOTSUPP' to '-ENOTSUPP'
+
+Changes in patch v4:
+1)fix pinctrl-mt8195.yaml warning error.
+2)remove pinctrl device node patch which is based on "mt8195.dtsi".
+
+Changes in patch v3:
+1)change '^pins' to '-pins$'.
+2)change 'state_0_node_a' to 'gpio_pin' which is defined in dts.
+3)change 'state_0_node_b' to 'i2c0_pin' which is defined in dts.
+4)reorder this series patches. change pinctrl file and binding document
+together in one patch.
+
+There are no changes in v1 & v2.
+
+Zhiyong Tao (2):
+  dt-bindings: pinctrl: mt8195: add rsel define
+  pinctrl: mediatek: add rsel setting on MT8195
+
+ drivers/pinctrl/mediatek/pinctrl-mt8195.c     |  96 +++++++++++++
+ .../pinctrl/mediatek/pinctrl-mtk-common-v2.c  | 135 +++++++++++++++---
+ .../pinctrl/mediatek/pinctrl-mtk-common-v2.h  |  10 +-
+ drivers/pinctrl/mediatek/pinctrl-paris.c      |  23 ++-
+ drivers/pinctrl/mediatek/pinctrl-paris.h      |   2 +-
+ include/dt-bindings/pinctrl/mt65xx.h          |   9 ++
+ 6 files changed, 248 insertions(+), 27 deletions(-)
+
+--
+2.18.0
+
+
