@@ -2,56 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0BDE3B16E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3440B3B16E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhFWJdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 05:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbhFWJcy (ORCPT
+        id S230205AbhFWJdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 05:33:04 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:50801 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230019AbhFWJcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 05:32:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3295C061574;
-        Wed, 23 Jun 2021 02:30:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NU7eentD395rdHeDZnxtO6t94JfTEFM9vaCy6vjeiLE=; b=TpyRcfJAQcJETLpJhvymhsCd9K
-        lmpYZgQoE+WXW7WlWJSdxAyarKrD/3Mh3ZqcJmy2ApK1wEwpJ4uYUYNpmc8fJxlpw7DyQMpis76YI
-        BH5hnix8ZqRL/sL1wtXPr/CKDmbTd7vjwv2Hzm52mlcNX6YS+u4m74YbmPd4Sftpe8vReBEZJQvzt
-        3fQ353Kpzakay+T+ZTY18CZdQZzV318cCqwAGaE/d5dldyX0bIawT+DVdAU187PMSqLo6wB/du6uH
-        oWPmXJfHPeH77er7UQ3jFafrVNpMLU1AaX5cyJbCHmDynATXHZnyh92L8LF1pe297SFEjGbd48HkZ
-        KRXJtKuQ==;
-Received: from 089144193030.atnat0002.highway.a1.net ([89.144.193.30] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvzCE-00FGQZ-TG; Wed, 23 Jun 2021 09:29:27 +0000
-Date:   Wed, 23 Jun 2021 11:27:12 +0200
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 27/46] mm/writeback: Add __folio_mark_dirty()
-Message-ID: <YNL+cHDPMfvvXMUh@infradead.org>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-28-willy@infradead.org>
+        Wed, 23 Jun 2021 05:32:55 -0400
+X-UUID: cc8c3ed99da24e189df5556f89913480-20210623
+X-UUID: cc8c3ed99da24e189df5556f89913480-20210623
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 884459214; Wed, 23 Jun 2021 17:30:34 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 23 Jun 2021 17:30:27 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 23 Jun 2021 17:30:26 +0800
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>
+Subject: [PATCH v5, 0/3] support gce on mt8192 platform
+Date:   Wed, 23 Jun 2021 17:30:20 +0800
+Message-ID: <1624440623-4585-1-git-send-email-yongqiang.niu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622121551.3398730-28-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 01:15:32PM +0100, Matthew Wilcox (Oracle) wrote:
-> Turn __set_page_dirty() into a wrapper around __folio_mark_dirty() (which
-> can directly cast from page to folio because we know that set_page_dirty()
-> calls filesystems with the head page).  Convert account_page_dirtied()
-> into folio_account_dirtied() and account the number of pages in the folio.
+Change since v3:
+-rebase on linux 5.13-rc1
 
-Is it really worth micro-optimizing a transitional function like that?
-I'd rather eat the overhead of the compound_page() call over adding hacky
-casts like this.
+Change since v3:
+-fix review comment in v2
+
+Change since v2:
+- add controy_by_sw for mt8192
+
+Change since v1:
+- move out shift jump patch
+- remove useless patch
+
+
+Yongqiang Niu (3):
+  dt-binding: gce: add gce header file for mt8192
+  arm64: dts: mt8192: add gce node
+  mailbox: cmdq: add mt8192 support
+
+ .../devicetree/bindings/mailbox/mtk-gce.txt        |   7 +-
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi           |  10 +
+ drivers/mailbox/mtk-cmdq-mailbox.c                 |  10 +
+ include/dt-bindings/gce/mt8192-gce.h               | 335 +++++++++++++++++++++
+ 4 files changed, 359 insertions(+), 3 deletions(-)
+ create mode 100644 include/dt-bindings/gce/mt8192-gce.h
+
+-- 
+1.8.1.1.dirty
+
