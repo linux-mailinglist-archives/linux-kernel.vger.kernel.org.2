@@ -2,103 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE8A3B2222
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABD03B2228
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbhFWVBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 17:01:38 -0400
-Received: from mail-pj1-f46.google.com ([209.85.216.46]:38816 "EHLO
-        mail-pj1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbhFWVBh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 17:01:37 -0400
-Received: by mail-pj1-f46.google.com with SMTP id t19-20020a17090ae513b029016f66a73701so4556845pjy.3;
-        Wed, 23 Jun 2021 13:59:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xXD5y188ygqKIkP27Gof3N1FMMAdVHVTEzZJ+8kpeh4=;
-        b=ndF3imxlP8rlk1+z5GcSTcdkhozNeUg0Ca+OKbZVVRP+NZ+vHQ9YLr1JTZ3vF6Pk8n
-         OgUHq6tIYEbIL0JL7eg3nQddDoWaXX4U+0/H4z+RYCa4oHiOSRARZDFeayj/or2I8ZCb
-         sjXdJoJXFf7PqHuWhgkuMQAE97sad+y08115rNy8/Cp33+G96+GsvhCRVLV/EAJDN0V5
-         9bDR3QeZnTXd/mGbwxXlIz75470U6O0bcEo4jawIV87jVKzfFFbwH5Le202R1ReXSnMg
-         2+ByNR2lzwfwC/yyujake9+2K2Wr0AN2fi9Rcn16MJxLWnenC3J1/Lwlk3F3tSVoWLN5
-         ei9Q==
-X-Gm-Message-State: AOAM53197IvY+aja8VqRQCdHcRf7QqT0FJv6B7HzrCuwNzQ0XjX9Y7ji
-        oMZ7kfAMbnOfTJovJD7U1iFljY2RAOIVsA==
-X-Google-Smtp-Source: ABdhPJxogZWFuvq2zJmdrJa+0l8fXgjJx10+S62G7CuFk5TTw17H7vMibpIVfzR+jX3WP607B14/zA==
-X-Received: by 2002:a17:902:da84:b029:10e:fafc:b29b with SMTP id j4-20020a170902da84b029010efafcb29bmr1448845plx.35.1624481958920;
-        Wed, 23 Jun 2021 13:59:18 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id o16sm693352pfk.129.2021.06.23.13.59.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 13:59:18 -0700 (PDT)
-Subject: Re: [PATCH v4 02/10] scsi: ufs: Add flags pm_op_in_progress and
- is_sys_suspended
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Satya Tangirala <satyat@google.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-3-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <e728719d-8e43-0e5a-af7a-14196dafa2a9@acm.org>
-Date:   Wed, 23 Jun 2021 13:59:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229994AbhFWVCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 17:02:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53096 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229812AbhFWVCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 17:02:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id DB2DE61220;
+        Wed, 23 Jun 2021 21:00:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624482004;
+        bh=auHLJQjFrDf2PBjoVR10zMyWGYccZ+r2wT9T9bvCmb0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=bMZ/cBA1icYtNlbtxUROKP489ECqsLYlFgT8PIAXN31PTfiULWCtSpVVO7JEmjmep
+         hxGNTM82kdyYYWUB4/DmCVnBen3vCpRCzz/P1MuFPqUJQCW8EcvV8yGKQoJqyQxgW7
+         RCvY5KfEIC27tKWqXV/J5MEJkJ6g3KikiOnQTV4c0yUnK3dGYM2s5o2aBSTDg2akOX
+         6ri/8NrBhmyHyFAS6m0M/ebKQ5gcpIacYy/d6/2dEhEDLcHDUswzF2SZojUE4oCHOw
+         jysSzJi3WdqXnJwz1bopTK/CrXRHK9Kc2U74QjHoirkAoESqqLOQoitPm8p5ypwmC2
+         KB3SmhgcrxVcQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C9F5860A2F;
+        Wed, 23 Jun 2021 21:00:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <1624433711-9339-3-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] virtio_net: Use virtio_find_vqs_ctx() helper
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162448200482.24119.5476263935602482130.git-patchwork-notify@kernel.org>
+Date:   Wed, 23 Jun 2021 21:00:04 +0000
+References: <1624461382-8302-1-git-send-email-xianting_tian@126.com>
+In-Reply-To: <1624461382-8302-1-git-send-email-xianting_tian@126.com>
+To:     Xianting Tian <xianting_tian@126.com>
+Cc:     mst@redhat.com, jasowang@redhat.com, davem@davemloft.net,
+        kuba@kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xianting.tian@linux.alibaba.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 12:35 AM, Can Guo wrote:
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index 93aeeb3..1e7fe73 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -754,6 +754,8 @@ struct ufs_hba {
->  	struct device_attribute spm_lvl_attr;
->  	/* A flag to tell whether __ufshcd_wl_suspend/resume() is in progress */
->  	bool wlu_pm_op_in_progress;
-> +	/* A flag to tell whether ufshcd_suspend/resume() is in progress */
-> +	bool pm_op_in_progress;
->  
->  	/* Auto-Hibernate Idle Timer register value */
->  	u32 ahit;
-> @@ -841,6 +843,8 @@ struct ufs_hba {
->  	struct ufs_clk_scaling clk_scaling;
->  	/* A flag to tell whether the UFS device W-LU is system suspended */
->  	bool is_wlu_sys_suspended;
-> +	/* A flag to tell whether hba is system suspended */
-> +	bool is_sys_suspended;
->  
->  	enum bkops_status urgent_bkops_lvl;
->  	bool is_urgent_bkops_lvl_checked;
+Hello:
 
-It is not yet clear to me whether we really need these new member
-variables. If these are retained, please rename pm_op_in_progress into
-platform_pm_op_in_progress and is_sys_suspended into
-platform_is_sys_suspended.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Thanks,
+On Wed, 23 Jun 2021 11:16:22 -0400 you wrote:
+> virtio_find_vqs_ctx() is defined but never be called currently,
+> it is the right place to use it.
+> 
+> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+> ---
+>  drivers/net/virtio_net.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Bart.
+Here is the summary with links:
+  - virtio_net: Use virtio_find_vqs_ctx() helper
+    https://git.kernel.org/netdev/net-next/c/a2f7dc00ea51
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
