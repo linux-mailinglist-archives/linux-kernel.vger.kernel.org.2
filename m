@@ -2,55 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CED73B1902
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 13:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4CE3B1900
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 13:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbhFWLeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 07:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbhFWLeA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 07:34:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1169CC061756;
-        Wed, 23 Jun 2021 04:31:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nr51oxoXOse8+0HctYzGgI91ZnJJczBmgfx3fw83CwY=; b=U9piStg8JkBL5HYU3anvGC5AxX
-        +MAK7WmSIDRkJv9p/7UV4vy/U4HFxkjSKjdC65dgCtGadzw7HDOMCgc/TsC526zBlwQ8jVFU3mWTF
-        SK+5VaONZkuWHA9aqZlJ0/pTIUKMXxNgJ85JoIZuHRim/6j4oQGLX4Mcrr4IRbocblAuI2s8X4JDf
-        UR56jcU7AvQK8K1XXjW7vSu3gnFBwp6pH5DOlATd4bGwzdPGMtqVZLA93bB0zWhjmuo7KvCPxkUK1
-        3GZwohCBrkR5yv/HoC7Vta7FKeeHF1Vt3h3D3SRVPTuwXIl/bbS0ICwWHiQznUYUvlMq+isJLlB/4
-        y2n2w7kw==;
-Received: from [2001:4bb8:188:3e21:6594:49:139:2b3f] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lw154-00FMfW-NV; Wed, 23 Jun 2021 11:30:17 +0000
-Date:   Wed, 23 Jun 2021 13:30:04 +0200
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 43/46] mm/filemap: Add filemap_add_folio
-Message-ID: <YNMbPBIngFe2VOzc@infradead.org>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-44-willy@infradead.org>
+        id S230397AbhFWLd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 07:33:58 -0400
+Received: from first.geanix.com ([116.203.34.67]:39692 "EHLO first.geanix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230138AbhFWLd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 07:33:57 -0400
+Received: from zen.. (unknown [185.17.218.86])
+        by first.geanix.com (Postfix) with ESMTPSA id 932304C3C67;
+        Wed, 23 Jun 2021 11:31:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1624447897; bh=nUAgFgu7cSs+IeM1qSV85FLHqYX22lMVFLHZNr59TF0=;
+        h=From:To:Cc:Subject:Date;
+        b=F8DDThwiUMJSt77RFwNw5UwXZA8/Qy8F9wnFEv02PJLfjppXpAYageHpZpT2j1mXK
+         mwojARzLUP+yoHdu6WAm6eteNpeRoqq5XndqKBBnxOM7zJEgaIfT7N3pqJCWrT1oJi
+         hViXKF2Ub5YdXCYAlNw3V9Cwk4oFEfUJX0LiFABypxpFOAsZjtDAMYXD92dI1EUk9p
+         rHI0c6i2ccjyGxxlatV5EE0GMNocwZ/7HGWvCi3O/BHTi+QYxjwUBZLUiR2UaOW1+d
+         EYq1bronQ05FnF2BBTfykke7gTk4yjYF+WymnEtgV/V1ne8artnUh0IGwQrw5m/XHY
+         Wma6hz985+nLg==
+From:   Sean Nyekjaer <sean@geanix.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Sean Nyekjaer <sean@geanix.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: accel: fxls8962af: fix potential use of uninitialized symbol
+Date:   Wed, 23 Jun 2021 13:31:15 +0200
+Message-Id: <20210623113115.581609-1-sean@geanix.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622121551.3398730-44-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 01:15:48PM +0100, Matthew Wilcox (Oracle) wrote:
-> Pages being added to the page cache should already be folios, so
-> just cast the page to a folio in the add_to_page_cache_lru() wrapper.
-> Saves 96 bytes of text.
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+Fixes: af959b7b96b8 ("iio: accel: fxls8962af: fix errata bug E3 - I2C burst reads")
+---
+ drivers/iio/accel/fxls8962af-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-modulo the casting:
+diff --git a/drivers/iio/accel/fxls8962af-core.c b/drivers/iio/accel/fxls8962af-core.c
+index 078d87865fde..0019f1ea7df2 100644
+--- a/drivers/iio/accel/fxls8962af-core.c
++++ b/drivers/iio/accel/fxls8962af-core.c
+@@ -637,7 +637,7 @@ static int fxls8962af_i2c_raw_read_errata3(struct fxls8962af_data *data,
+ 			return ret;
+ 	}
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int fxls8962af_fifo_transfer(struct fxls8962af_data *data,
+-- 
+2.31.0
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
