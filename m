@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECF13B19D3
+	by mail.lfdr.de (Postfix) with ESMTP id 988603B19D4
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhFWMZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:25:54 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36358 "EHLO
+        id S230402AbhFWMZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:25:57 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36378 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhFWMZx (ORCPT
+        with ESMTP id S230206AbhFWMZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:25:53 -0400
-Message-Id: <20210623120127.327154589@linutronix.de>
+        Wed, 23 Jun 2021 08:25:54 -0400
+Message-Id: <20210623121451.294282032@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624451015;
+        s=2020; t=1624451016;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=jpxnLkCsAjVmLO8x6rSf120R71Y84WStaFX2t/JQQvQ=;
-        b=cjmWH47mtW2BU9b3Aq+XongCpWq5hk9e3J86F/ya9/xSPUboLHndsMRCXnDv2gevNlaUjE
-        j87F8dWK67YF+8TVfbqbu3jbxSxPHFjPxa/LiFZv9rVK2VhvOev3WtXwQgDaMJf1CKvdFL
-        sczqFBhI01yYOgg3TIBm9+DZIG5cu0muahGkeR1UNwXCWzhwXdYlllTMcQ/Ik/aTyRCK9k
-        DYzgnyyfbm712PwzEoUHjmf/TTQWW9aGI1NjdVVEmqS+C09hN65k6krl1JUR5UiccTLfFo
-        bB+6TaWJlCyvx06u4Cb80XmTPdKArfZdKeZ2MAuvj1mpVsJOHXMgnKDBpB3BJA==
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=J0zmkOtbdyM8nIUjRnUM+NHhu3MxNRPSHedtfTpszf4=;
+        b=32WQ2qNDXStlNEn6erAfUqqYFQ3agSPpNZOgfcNYiPqQ+LO7Af8PZd34P8x1TUch4ATFvq
+        E0vh4jq6NZRFSwTzpoTz4QrR5OrqgF+o+jA0Ay9X8k4IQeM0zGkHhrr9tjkZ3tpGSgjKnC
+        OEGoIGYGUHnUpk7GX3FCmpukMbvmG4VjCgZlzO1ih5EOWIlHpPl9mG5XSDGJpGNnu4OlIZ
+        LzFtyBi+cX4e9BlVfZHHrAoUaXmq2C+rRvtn6HWqr36W9RY8KsElTM6iTvkjxXCwhWv0W4
+        AtPeqU3VoT76hyed2GhOQoeIat8MXbV0CUeJsnskfd57k6alrEdS3KT6/gUjgA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624451015;
+        s=2020e; t=1624451016;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=jpxnLkCsAjVmLO8x6rSf120R71Y84WStaFX2t/JQQvQ=;
-        b=kED2iuPDo/Bb64eMwvjePkziirR4Vg2CmxXspOZNTKDVgq4Gcwf0foSq5bmIF+VXmelbzo
-        aQ3x1LFw4c7DbnAw==
-Date:   Wed, 23 Jun 2021 14:01:27 +0200
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=J0zmkOtbdyM8nIUjRnUM+NHhu3MxNRPSHedtfTpszf4=;
+        b=hyTsTxQicZnHyfMHEtoFjQUa3kNCtV0noyDckJ2UwT++pHRA7mDOWxU5RpZiEiZQziBStZ
+        eAhk7jwJBKdxjpDg==
+Date:   Wed, 23 Jun 2021 14:01:28 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -47,72 +47,183 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         "Chang Seok Bae" <chang.seok.bae@intel.com>,
         Megha Dey <megha.dey@linux.intel.com>,
         Oliver Sang <oliver.sang@intel.com>
-Subject: [patch V4 00/65] x86/fpu: Spring cleaning and PKRU sanitizing
+Subject: [patch V4 01/65] x86/fpu: Fix copy_xstate_to_kernel() gap handling
+References: <20210623120127.327154589@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhlIG1haW4gcGFydHMgb2YgdGhpcyBzZXJpZXMgYXJlOgoKICAtIFNpbXBsaWZpY2F0aW9uIGFu
-ZCByZW1vdmFsL3JlcGxhY2VtZW50IG9mIHJlZHVuZGFudCBhbmQvb3IKICAgIG92ZXJlbmdpbmVl
-cmVkIGNvZGUuCgogIC0gTmFtZSBzcGFjZSBjbGVhbnVwIGFzIHRoZSBleGlzdGluZyBuYW1lcyB3
-ZXJlIGp1c3QgYSBwZXJtYW5lbnQgc291cmNlCiAgICBvZiBjb25mdXNpb24uCgogIC0gQ2xlYXIg
-c2VwZXJhdGlvbiBvZiB1c2VyIEFCSSBhbmQga2VybmVsIGludGVybmFsIHN0YXRlIGhhbmRsaW5n
-LgoKICAtIFJlbW92YWwgb2YgUEtSVSBmcm9tIGJlaW5nIFhTVEFURSBtYW5hZ2VkIGluIHRoZSBr
-ZXJuZWwgYmVjYXVzZSBQS1JVCiAgICBoYXMgdG8gYmUgZWFnZXJseSByZXN0b3JlZCBvbiBjb250
-ZXh0IHN3aXRjaCBhbmQga2VlcGluZyBpdCBpbiBzeW5jCiAgICBpbiB0aGUgeHN0YXRlIGJ1ZmZl
-ciBpcyBqdXN0IHBvaW50bGVzcyBvdmVyaGVhZCBhbmQgZnJhZ2lsZS4KCiAgICBUaGUga2VybmVs
-IHN0aWxsIFhTQVZFcyBQS1JVIG9uIGNvbnRleHQgc3dpdGNoIGJ1dCB0aGUgdmFsdWUgaW4gdGhl
-CiAgICBidWZmZXIgaXMgbm90IGxvbmdlciB1c2VkIGFuZCBuZXZlciByZXN0b3JlZCBmcm9tIHRo
-ZSBidWZmZXIuCgogICAgVGhpcyBzdGlsbCBuZWVkcyB0byBiZSBjbGVhbmVkIHVwLCBidXQgdGhl
-IHNlcmllcyBpcyBhbHJlYWR5IDQwKwogICAgcGF0Y2hlcyBsYXJnZSBhbmQgdGhlIGNsZWFudXAg
-b2YgdGhpcyBpcyBub3QgYSBmdW5jdGlvbmFsIHByb2JsZW0uCgogICAgVGhlIGZ1bmN0aW9uYWwg
-aXNzdWVzIG9mIFBLUlUgbWFuYWdlbWVudCBhcmUgZnVsbHkgYWRkcmVzc2VkIHdpdGggdGhlCiAg
-ICBzZXJpZXMgYXMgaXMuCgogIC0gQ2xlYW51cCBvZiBmcHUgc2lnbmFsIHJlc3RvcmUKCiAgICAt
-IE1ha2UgdGhlIGZhc3QgcGF0aCBzZWxmIGNvbnRhaW5lZC4gSGFuZGxlICNQRiBkaXJlY3RseSBh
-bmQgc2tpcAogICAgICB0aGUgc2xvdyBwYXRoIG9uIGFueSBvdGhlciBleGNlcHRpb24gYXMgdGhh
-dCB3aWxsIGp1c3QgZW5kIHVwCiAgICAgIHdpdGggdGhlIHNhbWUgcmVzdWx0IHRoYXQgdGhlIGZy
-YW1lIGlzIGludmFsaWQuIFRoaXMgYWxsb3dzCiAgICAgIHRoZSBjb21waWxlciB0byBvcHRpbWl6
-ZSB0aGUgc2xvdyBwYXRoIG91dCBmb3IgNjRiaXQga2VybmVscwogICAgICB3L28gaWEzMiBlbXVs
-YXRpb24uCgogICAgLSBSZWR1Y2UgY29kZSBkdXBsaWNhdGlvbiBhbmQgdW5uZWNlc3Nhcnkgb3Bl
-cmF0aW9ucwoKSXQgYXBwbGllcyBvbiB0b3Agb2YKCiAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHVi
-L3NjbS9saW51eC9rZXJuZWwvZ2l0L3RpcC90aXAuZ2l0IG1hc3RlcgoKYW5kIGlzIGFsc28gYXZh
-aWxhYmxlIHZpYSBnaXQ6CgogIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2Vy
-bmVsL2dpdC90Z2x4L2RldmVsLmdpdCB4ODYvZnB1CgpUaGlzIGlzIGEgZm9sbG93IHVwIHRvIFYz
-IHdoaWNoIGNhbiBiZSBmb3VuZCBoZXJlOgoKICAgICBodHRwczovL2xvcmUua2VybmVsLm9yZy9y
-LzIwMjEwNjE4MTQxODIzLjE2MTE1ODA5MEBsaW51dHJvbml4LmRlCgpDaGFuZ2VzIHZzLiBWMzoK
-CiAgLSBEcm9wcGVkIHRoZSB0d28gYnVnZml4ZXMgd2hpY2ggYXJlIGFwcGxpZWQgYWxyZWFkeSBh
-bmQgcmViYXNlZCBvbiB0b3AKCiAgLSBBZGRyZXNzZWQgcmV2aWV3IGNvbW1lbnRzIChBbmR5LCBC
-b3JpcykKCiAgICBQYXRjaGVzOiAxMywgMzUsIDM2LCAzNywgNDYsIDU4LCA2MiwgNjMKCiAgLSBG
-aXhlZCB0aGUgbWF0aC1lbXUgZmFsbG91dCB3aGljaCBJIGhhZCBzdGFzaGVkIHNhZmVseSBvbiB0
-aGUgMzJiaXQKICAgIHRlc3Rib3ggKEJvcmlzKQoKICAgIFBhdGNoOiAyOAoKICAtIFBpY2tlZCB1
-cCB0YWdzCgpUaGFua3MgdG8gZXZlcnlvbmUgZm9yIHJldmlldywgZmVlZGJhY2sgYW5kIHRlc3Rp
-bmcgKHZhcmlvdXMgdGVhbXMKQEludGVsKS4KCk5vdGU6IEkndmUgbm90IHBpY2tlZCB1cCBhbnkg
-dGVzdGVkLWJ5IHRhZ3MuIEl0IHdvdWxkIGJlIG5pY2UgdG8gaGF2ZQp0aGVtIG9uIHRoaXMgaG9w
-ZWZ1bGx5IGZpbmFsIHZlcnNpb24uCgpUaGFua3MsCgoJdGdseAotLS0KIGFyY2gveDg2L2V2ZW50
-cy9pbnRlbC9sYnIuYyAgICAgICAgICB8ICAgIDYgCiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9mcHUv
-aW50ZXJuYWwuaCAgfCAgMjAyICsrKystLS0tLS0KIGFyY2gveDg2L2luY2x1ZGUvYXNtL2ZwdS94
-c3RhdGUuaCAgICB8ICAgNzggKysrLQogYXJjaC94ODYvaW5jbHVkZS9hc20vcGd0YWJsZS5oICAg
-ICAgIHwgICA1NyAtLS0KIGFyY2gveDg2L2luY2x1ZGUvYXNtL3BrZXlzLmggICAgICAgICB8ICAg
-IDkgCiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9wa3J1LmggICAgICAgICAgfCAgIDYyICsrKwogYXJj
-aC94ODYvaW5jbHVkZS9hc20vcHJvY2Vzc29yLmggICAgIHwgICAgOSAKIGFyY2gveDg2L2luY2x1
-ZGUvYXNtL3NwZWNpYWxfaW5zbnMuaCB8ICAgMTQgCiBhcmNoL3g4Ni9rZXJuZWwvY3B1L2NvbW1v
-bi5jICAgICAgICAgfCAgIDM0IC0KIGFyY2gveDg2L2tlcm5lbC9mcHUvY29yZS5jICAgICAgICAg
-ICB8ICAyODIgKysrKysrKy0tLS0tLS0tCiBhcmNoL3g4Ni9rZXJuZWwvZnB1L2luaXQuYyAgICAg
-ICAgICAgfCAgIDE1IAogYXJjaC94ODYva2VybmVsL2ZwdS9yZWdzZXQuYyAgICAgICAgIHwgIDIy
-MyArKysrKystLS0tLS0KIGFyY2gveDg2L2tlcm5lbC9mcHUvc2lnbmFsLmMgICAgICAgICB8ICA0
-MTkgKysrKysrKysrKy0tLS0tLS0tLS0tLQogYXJjaC94ODYva2VybmVsL2ZwdS94c3RhdGUuYyAg
-ICAgICAgIHwgIDY0NSArKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogYXJjaC94
-ODYva2VybmVsL3Byb2Nlc3MuYyAgICAgICAgICAgIHwgICAyMiArCiBhcmNoL3g4Ni9rZXJuZWwv
-cHJvY2Vzc182NC5jICAgICAgICAgfCAgIDI4ICsKIGFyY2gveDg2L2tlcm5lbC90cmFwcy5jICAg
-ICAgICAgICAgICB8ICAgIDUgCiBhcmNoL3g4Ni9rdm0vc3ZtL3Nldi5jICAgICAgICAgICAgICAg
-fCAgICAxIAogYXJjaC94ODYva3ZtL3g4Ni5jICAgICAgICAgICAgICAgICAgIHwgICA1NiArLS0K
-IGFyY2gveDg2L21hdGgtZW11L2ZwdV9wcm90by5oICAgICAgICB8ICAgIDIgCiBhcmNoL3g4Ni9t
-YXRoLWVtdS9sb2FkX3N0b3JlLmMgICAgICAgfCAgICAyIAogYXJjaC94ODYvbWF0aC1lbXUvcmVn
-X2xkX3N0ci5jICAgICAgIHwgICAgMiAKIGFyY2gveDg2L21tL2V4dGFibGUuYyAgICAgICAgICAg
-ICAgICB8ICAgIDIgCiBhcmNoL3g4Ni9tbS9mYXVsdC5jICAgICAgICAgICAgICAgICAgfCAgICAy
-IAogYXJjaC94ODYvbW0vcGtleXMuYyAgICAgICAgICAgICAgICAgIHwgICAyMiAtCiBpbmNsdWRl
-L2xpbnV4L3BrZXlzLmggICAgICAgICAgICAgICAgfCAgICA0IAogMjYgZmlsZXMgY2hhbmdlZCwg
-MTAzNyBpbnNlcnRpb25zKCspLCAxMTY2IGRlbGV0aW9ucygtKQoKCg==
+The gap handling in copy_xstate_to_kernel() is wrong when XSAVES is in use.
+
+Using init_fpstate for copying the init state of features which are
+not set in the xstate header is only correct for the legacy area, but
+not for the extended features area because when XSAVES is in use then
+init_fpstate is in compacted form which means the xstate offsets which
+are used to copy from init_fpstate are not valid.
+
+Fortunately this is not a real problem today because all extended
+features in use have an all zeros init state, but it is wrong
+nevertheless and with a potentially dynamically sized init_fpstate
+this would result in access outside of the init_fpstate.
+
+Fix this by keeping track of the last copied state in the target buffer and
+explicitly zero it when there is a feature or alignment gap.
+
+Use the compacted offset when accessing the extended feature space in
+init_fpstate.
+
+As this is not a functional issue on older kernels this is intentionally
+not tagged for stable.
+
+Fixes: b8be15d58806 ("x86/fpu/xstate: Re-enable XSAVES")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Borislav Petkov <bp@suse.de>
+---
+V3: Remove the AVX/SEE thinko
+    Fix comments (Boris)
+V2: New patch
+---
+ arch/x86/kernel/fpu/xstate.c |  105 ++++++++++++++++++++++++-------------------
+ 1 file changed, 61 insertions(+), 44 deletions(-)
+
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -1084,20 +1084,10 @@ static inline bool xfeatures_mxcsr_quirk
+ 	return true;
+ }
+ 
+-static void fill_gap(struct membuf *to, unsigned *last, unsigned offset)
++static void copy_feature(bool from_xstate, struct membuf *to, void *xstate,
++			 void *init_xstate, unsigned int size)
+ {
+-	if (*last >= offset)
+-		return;
+-	membuf_write(to, (void *)&init_fpstate.xsave + *last, offset - *last);
+-	*last = offset;
+-}
+-
+-static void copy_part(struct membuf *to, unsigned *last, unsigned offset,
+-		      unsigned size, void *from)
+-{
+-	fill_gap(to, last, offset);
+-	membuf_write(to, from, size);
+-	*last = offset + size;
++	membuf_write(to, from_xstate ? xstate : init_xstate, size);
+ }
+ 
+ /*
+@@ -1109,10 +1099,10 @@ static void copy_part(struct membuf *to,
+  */
+ void copy_xstate_to_kernel(struct membuf to, struct xregs_state *xsave)
+ {
++	const unsigned int off_mxcsr = offsetof(struct fxregs_state, mxcsr);
++	struct xregs_state *xinit = &init_fpstate.xsave;
+ 	struct xstate_header header;
+-	const unsigned off_mxcsr = offsetof(struct fxregs_state, mxcsr);
+-	unsigned size = to.left;
+-	unsigned last = 0;
++	unsigned int zerofrom;
+ 	int i;
+ 
+ 	/*
+@@ -1122,41 +1112,68 @@ void copy_xstate_to_kernel(struct membuf
+ 	header.xfeatures = xsave->header.xfeatures;
+ 	header.xfeatures &= xfeatures_mask_user();
+ 
+-	if (header.xfeatures & XFEATURE_MASK_FP)
+-		copy_part(&to, &last, 0, off_mxcsr, &xsave->i387);
+-	if (header.xfeatures & (XFEATURE_MASK_SSE | XFEATURE_MASK_YMM))
+-		copy_part(&to, &last, off_mxcsr,
+-			  MXCSR_AND_FLAGS_SIZE, &xsave->i387.mxcsr);
+-	if (header.xfeatures & XFEATURE_MASK_FP)
+-		copy_part(&to, &last, offsetof(struct fxregs_state, st_space),
+-			  128, &xsave->i387.st_space);
+-	if (header.xfeatures & XFEATURE_MASK_SSE)
+-		copy_part(&to, &last, xstate_offsets[XFEATURE_SSE],
+-			  256, &xsave->i387.xmm_space);
+-	/*
+-	 * Fill xsave->i387.sw_reserved value for ptrace frame:
+-	 */
+-	copy_part(&to, &last, offsetof(struct fxregs_state, sw_reserved),
+-		  48, xstate_fx_sw_bytes);
+-	/*
+-	 * Copy xregs_state->header:
+-	 */
+-	copy_part(&to, &last, offsetof(struct xregs_state, header),
+-		  sizeof(header), &header);
++	/* Copy FP state up to MXCSR */
++	copy_feature(header.xfeatures & XFEATURE_MASK_FP, &to, &xsave->i387,
++		     &xinit->i387, off_mxcsr);
++
++	/* Copy MXCSR when SSE or YMM are set in the feature mask */
++	copy_feature(header.xfeatures & (XFEATURE_MASK_SSE | XFEATURE_MASK_YMM),
++		     &to, &xsave->i387.mxcsr, &xinit->i387.mxcsr,
++		     MXCSR_AND_FLAGS_SIZE);
++
++	/* Copy the remaining FP state */
++	copy_feature(header.xfeatures & XFEATURE_MASK_FP,
++		     &to, &xsave->i387.st_space, &xinit->i387.st_space,
++		     sizeof(xsave->i387.st_space));
++
++	/* Copy the SSE state - shared with YMM, but independently managed */
++	copy_feature(header.xfeatures & XFEATURE_MASK_SSE,
++		     &to, &xsave->i387.xmm_space, &xinit->i387.xmm_space,
++		     sizeof(xsave->i387.xmm_space));
++
++	/* Zero the padding area */
++	membuf_zero(&to, sizeof(xsave->i387.padding));
++
++	/* Copy xsave->i387.sw_reserved */
++	membuf_write(&to, xstate_fx_sw_bytes, sizeof(xsave->i387.sw_reserved));
++
++	/* Copy the user space relevant state of @xsave->header */
++	membuf_write(&to, &header, sizeof(header));
++
++	zerofrom = offsetof(struct xregs_state, extended_state_area);
+ 
+ 	for (i = FIRST_EXTENDED_XFEATURE; i < XFEATURE_MAX; i++) {
+ 		/*
+-		 * Copy only in-use xstates:
++		 * The ptrace buffer is in non-compacted XSAVE format.
++		 * In non-compacted format disabled features still occupy
++		 * state space, but there is no state to copy from in the
++		 * compacted init_fpstate. The gap tracking will zero this
++		 * later.
++		 */
++		if (!(xfeatures_mask_user() & BIT_ULL(i)))
++			continue;
++
++		/*
++		 * If there was a feature or alignment gap, zero the space
++		 * in the destination buffer.
+ 		 */
+-		if ((header.xfeatures >> i) & 1) {
+-			void *src = __raw_xsave_addr(xsave, i);
++		if (zerofrom < xstate_offsets[i])
++			membuf_zero(&to, xstate_offsets[i] - zerofrom);
+ 
+-			copy_part(&to, &last, xstate_offsets[i],
+-				  xstate_sizes[i], src);
+-		}
++		copy_feature(header.xfeatures & BIT_ULL(i), &to,
++			     __raw_xsave_addr(xsave, i),
++			     __raw_xsave_addr(xinit, i),
++			     xstate_sizes[i]);
+ 
++		/*
++		 * Keep track of the last copied state in the non-compacted
++		 * target buffer for gap zeroing.
++		 */
++		zerofrom = xstate_offsets[i] + xstate_sizes[i];
+ 	}
+-	fill_gap(&to, &last, size);
++
++	if (to.left)
++		membuf_zero(&to, to.left);
+ }
+ 
+ /*
+
