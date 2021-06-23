@@ -2,142 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6753B15C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736343B15CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbhFWI15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 04:27:57 -0400
-Received: from mail-mw2nam12on2053.outbound.protection.outlook.com ([40.107.244.53]:15841
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        id S230163AbhFWI25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 04:28:57 -0400
+Received: from mailgw.kylinos.cn ([123.150.8.42]:45194 "EHLO nksmu.kylinos.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229864AbhFWI14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 04:27:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f5iQlS7Imdl/Yp/YAm9zqgJxNIF1lD97n5w7StmLla+Nvrp5xsT+W/gZCo/6MM2bgYBuLTcJhg3+COu39BDexQTMtk1eKX+f0xUFSclkKR66nKOjIeuuW/NzynVMnGkDYJcYQENjctc7l8R6W9hXwf+6rkbOMcv1MY9aO0Glz1PHDYcgDNNeCGibj7b1ybrA6Ly+chdt14rAVzYdFs87QEBVzS+hjwzUV2OBlmuzQCC9BVQrHA2gWF58Tdm9IXxf968GEYK3aVxTN9Q76xJJ4ZaEph6cwBwhYWWus56f463FuMl5fpfn9Tf9tLU2K0fLGfghbJOdMLUDbxvL29T5Yg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CB+SvEs2rWwxmFagdotDEFsI0EUGQ8H7wacIu7Voqvo=;
- b=a1qoR5+dvBgcpjs+Nus15d8HlxDyfR3JcVNQVaAH81iF4Ha/oCmdq5W9yHasY1NaU/VwtfUsmqzXzGJ0O3rs8ELoubIeMxsFGIn+4uASlFom6R3kBZCeNCi4whD5HPa4ls+MJ9EdgeFAa18G+KTrUmDQMP744x1+ldXrYIEEdbTAmsIUEJ0e024LesqFS2l1qNlVJxok5LyCfFAMVLC+eYikHgchPLzNh7upOW/+gBJiC26Ta1kZg56eHHSOKRuoUaIu8y6082H7miUr5Hguva1rcxNrgATT9wkV50ZHByxKapvaVrfb4cLoEFNCHyUxLzhdR+jDjj/QhXP9ObeBHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CB+SvEs2rWwxmFagdotDEFsI0EUGQ8H7wacIu7Voqvo=;
- b=tL5gvyqQsZ4oxJgK+9Hm2Dw3XL5t/S9W2EzPAFPqylGfaOe2jNfbvAA0NO+dignBeJAcyVOm8S+qcrmPydHtFZd1hgeh1MNtpWrsgJ12EHwywaZftALGahOdMUlAXneu62kf3UcX9VkuDOXqI+MjxW2tQXd9l0HjReIas8+wr0o=
-Authentication-Results: loongson.cn; dkim=none (message not signed)
- header.d=none;loongson.cn; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4336.namprd12.prod.outlook.com (2603:10b6:208:1df::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Wed, 23 Jun
- 2021 08:25:36 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756%5]) with mapi id 15.20.4242.024; Wed, 23 Jun 2021
- 08:25:36 +0000
-Subject: Re: [PATCH v3] drm/radeon: Call radeon_suspend_kms() in
- radeon_pci_shutdown() for Loongson64
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>, alexander.deucher@amd.com
-Cc:     airlied@linux.ie, amd-gfx@lists.freedesktop.org, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        lixuefeng@loongson.cn, lvjianmin@loongson.cn
-References: <1623210910-20057-1-git-send-email-yangtiezhu@loongson.cn>
- <3aa01e61-5c49-ccf9-6ad8-434eaf8a73cc@loongson.cn>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <df263d35-8af1-d34f-06f4-adbc83a804fb@amd.com>
-Date:   Wed, 23 Jun 2021 10:25:31 +0200
+        id S229833AbhFWI2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 04:28:55 -0400
+X-UUID: d701f4f7734d446a8f711030b3de84c8-20210623
+X-UUID: d701f4f7734d446a8f711030b3de84c8-20210623
+X-User: jiangguoqing@kylinos.cn
+Received: from [172.30.60.82] [(106.37.198.34)] by nksmu.kylinos.cn
+        (envelope-from <jiangguoqing@kylinos.cn>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 128/128)
+        with ESMTP id 1084115594; Wed, 23 Jun 2021 16:25:51 +0800
+Subject: Re: [PATCH v2 03/10] raid-md: reduce stack footprint dealing with
+ block device names
+To:     Anton Suvorov <warwish@yandex-team.ru>, willy@infradead.org
+Cc:     dmtrmonakhov@yandex-team.ru, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk
+References: <YLe9eDbG2c/rVjyu@casper.infradead.org>
+ <20210622174424.136960-1-warwish@yandex-team.ru>
+ <20210622174424.136960-4-warwish@yandex-team.ru>
+From:   Guoqing Jiang <jiangguoqing@kylinos.cn>
+Message-ID: <803a31fb-7b51-d160-5b3e-7736c0aa6d2d@kylinos.cn>
+Date:   Wed, 23 Jun 2021 16:26:30 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <3aa01e61-5c49-ccf9-6ad8-434eaf8a73cc@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:69e4:a619:aa86:4e9c]
-X-ClientProxiedBy: FR0P281CA0018.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:15::23) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:69e4:a619:aa86:4e9c] (2a02:908:1252:fb60:69e4:a619:aa86:4e9c) by FR0P281CA0018.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:15::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.7 via Frontend Transport; Wed, 23 Jun 2021 08:25:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a48d485d-c340-48db-7f75-08d936207a06
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4336:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB43360D2B4641DF15FF622D3B83089@MN2PR12MB4336.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3vj2b5yNJ1BE8zm36/zBv+fN0RTNx94zw2+gh4Jxe2wkqhzcAtukd1eOwV3mhBANZdiqiR3CGO6CxyK3n3URhRtGKndgmz74+ISA2CpdEjDEPQ/3KppC1nZ7GaDNLRPqeXb6Fm3Udsn358zRRZ1E8dBwzfhWBRw8cwDwOdn/BoNiRXfd/txOF52Wxyg+T/F0UP08/Zo2xJVhHv7KVv4IiYj70jq6fCAp+qTaG7FCNNJ8n6fVx7NsunsJqZG0eVWAqlHqv8x0LJpzxk1ITuKmpoSLcJ9AgHYWhBSQ8kzH2PgVdXBn7QJ/cUWG/zAOK9s5Orr84QlrSGqy0zWfzPxL9Qa6izMoz6svtuhUze3HJlMjpL7gwLZwua1bhtUS4yW3olAZbMh7anvOaYQW/E+cCfoKKD5CgIlIk6uJIKlygCdJBwcSShW6BZut7RKyNmbBtR0WPKwuAuyRckvY2kVo/h2IF80kKUbEyMaXtTg5UOzbGKc+bwyObSUwH+8TPxn726DM/ls7yl1zwNAsI4sAMrIOhm4PHlhQEhZxfU2JYJfi2Q6mM8BfLEW3oh5gvlXv4HC2DPMHiWtTfGZQt/wWd5nyZpsUr+map54j1FndsbEsxiMdytUNn+Ofd4mmtJBvThkC+/MDqsNcDQIkkEcpCyHAan57GtxGG6nLNkF/+IMYaVAqgGUfvG6licnRXOcKyh23zfQ3Zw1KHeP+uW0q/vtC3jeMNqItnXkU1LO+NajbUWSTAT1JsD4o3AwtUET6MX1cgMY8mTnfS1CiZu8U8KbTD68qFgTCPDd1e0+0O/BXPmy/3pJEt5T+NSH85Ljv
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(396003)(346002)(136003)(366004)(6666004)(66476007)(16526019)(186003)(966005)(66556008)(8936002)(2906002)(66946007)(31686004)(4744005)(2616005)(38100700002)(6486002)(31696002)(86362001)(478600001)(45080400002)(4326008)(8676002)(36756003)(5660300002)(6636002)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZXBKWklzVHlKdHBZeDNWN01tcE41VldTeU5zMTBpczBQVjJwRHRzSkgrQXl5?=
- =?utf-8?B?WFhlaFBicFpqQkd0ZUZoMU1MZWIvSFJ2UUgrL3lTaXN2TEpKbVhVd0ZSM0hL?=
- =?utf-8?B?djhlZ1dFdlYvQXF4QUhlbGdMQnZiMTZLT0o5d2Q2THBERGp0OG11NXVXRFJP?=
- =?utf-8?B?dUlaYk9IbjBJZ0U0aTBMSWhmaFY2ZTRWUjhVeDlLSVJxalROa0ZVQlZTMUtP?=
- =?utf-8?B?S2ROa0hZazMxMENTL2tuc1U5TlZNM2pJbUc4YUNFVmpNUEt0RGZBcS8wY3hh?=
- =?utf-8?B?QnowZnphR2RBMlNGeGFIMytIT0EvS1R5eG1KamZTRk9pQmlEN0xTK1VveW5E?=
- =?utf-8?B?eXdqSTFOSmJ2Qkx5NFk1bnZ2ak5tdnlTRkdaRGpzQ3RYSHJ0ek9SYVRkSE9t?=
- =?utf-8?B?NlVHNlR3REI5ZW41aVVGaEh1RFoxOFp5bDRERW9IS0ZLcUlRVFhoVG5TNzVi?=
- =?utf-8?B?eU1ZZ1pmQnEwb3VaS2ZJeVJ0b3hJRlpTSkdzbmFJWk5MNVpYb2RqLzVlNE9n?=
- =?utf-8?B?WVBwbEc3M2s2VlBSUzhFS2VBeXNETUd5MkF2SHd6cG9NZVZ6cCthZ1dtZDBx?=
- =?utf-8?B?bHcxYXZobVZkejR2ejZzOHZZRG5LNTZDSlpteVRpWUIzSmVCY3ZtVFRqY2lB?=
- =?utf-8?B?Ty85aENqcmRIUE5WaXRla1NzTDVYalVtRHJvZVdteFFybHNkSndUQXp6VWs2?=
- =?utf-8?B?cm1pR1BBMHZUREQ1NkJJdVltbk9DN0FPakpZOHRZSVpLTSt5QSt3WVJTWmdI?=
- =?utf-8?B?TDdkTHZBbmIzbUx1TmI4clFpeStwdE9vTFhjZUtQcjUrNTlpdDNzUFpGUUJh?=
- =?utf-8?B?bmFnaEsyOExjV21PbmpWdE9wM2RVOHBhUXJDcjNScEVENGU3bDYyMzc5N2ZP?=
- =?utf-8?B?UENaRWNjcHNqMXhJRjEvaWZLUytpLzBnNXhXRmZaZTdwaW45OVJrc0kzL0ZO?=
- =?utf-8?B?bmtzaE9VeElPd2IzUmR0azlJdDZBMUQzNVI5OWlLOGFaYmhFN0F1N1V4Y0FQ?=
- =?utf-8?B?REl3N1loWWRXUnY4UTh2MmxxMlFGdzNZWitKQmRVeXg1eGNSRk1nNTBKVk5N?=
- =?utf-8?B?b2JBcUtYYzMxVFlHa3VlT1hlQnVFQXpiQ2FpbEU3cXNJVUl0UmZ3TGErQzM1?=
- =?utf-8?B?QWZ6L3hEdVFON3RwRWZqdE1INWVacytoTmVQblpBSDRHUzRSUEFBNExrK0tq?=
- =?utf-8?B?RUZrOTVtbERVRVBsOXowV04xMS8xNUdWbW8rVDYyVmt0VkFuL0o0ZHZMR1Ro?=
- =?utf-8?B?RVV1VXA4V3RrQWs5WHltYU1mOVVXWW9OOUROMmtOcCtHd3F1Yzdrak1BT25O?=
- =?utf-8?B?K0d0OFJDQ3pNK01MbGV4b2p1VmloSlV1ZmtDeVpjTUN5OWtRYkpTMmErbUVJ?=
- =?utf-8?B?TTR3YVRESllYUGZxZ0N1WnYyUzgzZ0ZDbGwreG5lWUJnL0JNY3dRTW1BZjhk?=
- =?utf-8?B?N2lUaytrRXRTa3lWc051RWEzODhFNkNHbmp0UXM0bTlGSHQwVXZLSVZJYjlk?=
- =?utf-8?B?M0U5QWxWbVNKMUpraWV5OGI2bUJxR2dyME5sKy9LZDUyYmFrY0xnbHBBNEsw?=
- =?utf-8?B?Q3p6NjdoNlNHS2NBZnJBQThvZG8yRUdXUG4vVThVeEQ5ZVdzTGFTNktyV2Jo?=
- =?utf-8?B?RFk4dHQ4ZDNRVWhkMWYyYUx2MVpzRm8zQ3JId3lRVnEvZVRUZVI3VTBxb1Ru?=
- =?utf-8?B?cGhmTzV3SWViNjFVQUVKWjVINjVJYUtpQVlaZ2t3RGxuYXpEa1FmSVlJeU1i?=
- =?utf-8?B?Z01Nai9qaHQ4R0dmMHRldE8yU0dQQllEV255ZnVNdC9HRnhwaUJkYUM5VGlK?=
- =?utf-8?B?aSs0eTU3YWdGL3FZdC9nZzlFVnJYQUlQUyszLy9FUy95TVNhSGsxOXdqbTYz?=
- =?utf-8?Q?y1qYgi4p8JEX9?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a48d485d-c340-48db-7f75-08d936207a06
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2021 08:25:36.5284
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: l2BnK48RHP6JP8GKhn9jPvrHBK41NZ7rV7UyvCXrNHN+uRt2bsSSqmW7JV35Alns
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4336
+In-Reply-To: <20210622174424.136960-4-warwish@yandex-team.ru>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good to me.
+Hi,
 
-Somebody could try to investigate further why that is necessary on the 
-platform, but radeon is only in maintenance mode without new feature 
-developed.
+Maybe replace "raid-md" with "md/raid" or just "md".
 
-Regards,
-Christian.
+On 6/23/21 1:44 AM, Anton Suvorov wrote:
+> Stack usage reduced (measured with allyesconfig):
+>
+> ./drivers/md/md-linear.c	linear_make_request	248	112	-136
+> ./drivers/md/md-multipath.c	multipath_end_request	232	96	-136
+> ./drivers/md/md-multipath.c	multipath_error	208	72	-136
+> ./drivers/md/md-multipath.c	multipathd	248	112	-136
+> ./drivers/md/md-multipath.c	print_multipath_conf	208	64	-144
+> ./drivers/md/md.c	autorun_devices	312	184	-128
+> ./drivers/md/md.c	export_rdev	168	32	-136
+> ./drivers/md/md.c	md_add_new_disk	280	80	-200
+> ./drivers/md/md.c	md_import_device	200	56	-144
+> ./drivers/md/md.c	md_integrity_add_rdev	192	56	-136
+> ./drivers/md/md.c	md_ioctl	560	496	-64
+> ./drivers/md/md.c	md_reload_sb	224	88	-136
+> ./drivers/md/md.c	md_run	408	288	-120
+> ./drivers/md/md.c	md_seq_show	232	96	-136
+> ./drivers/md/md.c	md_update_sb	304	168	-136
+> ./drivers/md/md.c	read_disk_sb	184	48	-136
+> ./drivers/md/md.c	super_1_load	392	192	-200
+> ./drivers/md/md.c	super_90_load	304	112	-192
+> ./drivers/md/md.c	unbind_rdev_from_array	200	64	-136
+> ./drivers/md/raid0.c	create_strip_zones	400	200	-200
+> ./drivers/md/raid0.c	dump_zones	536	464	-72
+> ./drivers/md/raid1.c	fix_read_error	352	288	-64
+> ./drivers/md/raid1.c	print_conf	224	80	-144
+> ./drivers/md/raid1.c	raid1_end_read_request	216	80	-136
+> ./drivers/md/raid1.c	raid1_error	216	96	-120
+> ./drivers/md/raid1.c	sync_request_write	344	208	-136
+> ./drivers/md/raid10.c	fix_read_error	392	320	-72
+> ./drivers/md/raid10.c	print_conf	216	72	-144
+> ./drivers/md/raid10.c	raid10_end_read_request	216	80	-136
+> ./drivers/md/raid10.c	raid10_error	216	80	-136
+> ./drivers/md/raid5-cache.c	r5l_init_log	224	88	-136
+> ./drivers/md/raid5-ppl.c	ppl_do_flush	256	136	-120
+> ./drivers/md/raid5-ppl.c	ppl_flush_endio	192	56	-136
+> ./drivers/md/raid5-ppl.c	ppl_modify_log	192	56	-136
+> ./drivers/md/raid5-ppl.c	ppl_recover_entry	1296	1232	-64
+> ./drivers/md/raid5-ppl.c	ppl_submit_iounit_bio	192	56	-136
+> ./drivers/md/raid5-ppl.c	ppl_validate_rdev	184	48	-136
+> ./drivers/md/raid5.c	print_raid5_conf	208	64	-144
+> ./drivers/md/raid5.c	raid5_end_read_request	272	128	-144
+> ./drivers/md/raid5.c	raid5_error	216	80	-136
+> ./drivers/md/raid5.c	setup_conf	360	296	-64
+>
+> Signed-off-by: Anton Suvorov <warwish@yandex-team.ru>
+> ---
+>   drivers/md/md-linear.c    |   5 +-
+>   drivers/md/md-multipath.c |  24 +++----
+>   drivers/md/md.c           | 135 ++++++++++++++------------------------
+>   drivers/md/raid0.c        |  28 ++++----
+>   drivers/md/raid1.c        |  25 +++----
+>   drivers/md/raid10.c       |  65 ++++++++----------
+>   drivers/md/raid5-cache.c  |   5 +-
+>   drivers/md/raid5-ppl.c    |  40 +++++------
+>   drivers/md/raid5.c        |  39 +++++------
+>   9 files changed, 144 insertions(+), 222 deletions(-)
 
-Am 23.06.21 um 10:14 schrieb Tiezhu Yang:
-> Hi Alex and Christian,
->
-> Any comments?
-> Can this patch be accepted or anything else I need to improve?
->
-> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fpatchwork%2Fpatch%2F1443649%2F&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C2162309822114d2e41b108d9361ef26c%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637600328822651335%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=2uxyAGk6sHO3lqw0FX6HITY%2Fbj%2BzEMfSIcqbzmiguMs%3D&amp;reserved=0 
->
->
-> Thanks,
-> Tiezhu
->
+Also a nice cleanup!  Acked-by: Guoqing Jiang <jiangguoqing@kylinos.cn>
+
+Thanks,
+Guoqing
+
 
