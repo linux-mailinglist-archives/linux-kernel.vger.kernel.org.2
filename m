@@ -2,95 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE8D3B1F4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B11373B1F4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbhFWRU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 13:20:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37303 "EHLO
+        id S229916AbhFWRVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 13:21:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41111 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229660AbhFWRU4 (ORCPT
+        by vger.kernel.org with ESMTP id S229831AbhFWRVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 13:20:56 -0400
+        Wed, 23 Jun 2021 13:21:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624468717;
+        s=mimecast20190719; t=1624468773;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6avEDBgEg/m6epnbR31G0pmFV1cXbC29MU0UeyyuH4I=;
-        b=QimkoAMgnuV1SiuhdxPKAQh/1ANA9AUJGWKdoBxMZA/T61jgk1guGDPfoENXazbSwflqqH
-        iHjLWy50lUvmCbbRjIvCL7k4ayUMSomVlzOQLdBozjR/6OD5aPxOi+XCy83RfdGA6p8Igk
-        qDBfFaSF+wr39lL9bR0DVxHlHMdtI/w=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-154-enS3LwkCOU6B68oT6hWTpg-1; Wed, 23 Jun 2021 13:18:36 -0400
-X-MC-Unique: enS3LwkCOU6B68oT6hWTpg-1
-Received: by mail-ej1-f71.google.com with SMTP id f8-20020a1709064dc8b02904996ccd94c0so1238705ejw.9
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:18:36 -0700 (PDT)
+        bh=eafgGiX6GDLeKBcSkHNVWv30fndO9YqdjKRuqwRhCEI=;
+        b=YUBPRDmiHXnKrQMawNpBLM+UWHZv466SNn1NCTolgmPbsiijCTl+n2fZWPK3njLwo+uylG
+        Tm7pB036tZgI7BLReP1nTrjMp5wEDg9TRTLxWQ1HX7Dgbvz2VVAbvu2rSRdUTfTQzPdLvN
+        wpe4Kq9KVWJDcmbi5nOxMISrTYH19Ac=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-457-u4aFoMtNNOeM_oekqbXIhg-1; Wed, 23 Jun 2021 13:19:31 -0400
+X-MC-Unique: u4aFoMtNNOeM_oekqbXIhg-1
+Received: by mail-wm1-f70.google.com with SMTP id i82-20020a1c22550000b02901d64e84b3c9so850237wmi.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:19:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6avEDBgEg/m6epnbR31G0pmFV1cXbC29MU0UeyyuH4I=;
-        b=Y4bjGDraPJ53Odrss7qoB3weTkmS3NM7gE0HjV9LNrlYZSJ+aLcYGXbPWs1k/IG21x
-         CZ0h1ZjsvidOYgE+seXzXwLr19LBwZQFJIzHHui5bLL/pU+oASUvxrHoc+qtr7NZvb3t
-         YfjAAVxsGE7agqUnuEQDJHvKLREkvUiXeMBUMo6HW7RA+YIDgC3RvGNKkr82Lz1HaJyc
-         2e3zXvwjYbTu8zYxG3Jf2GmXrnQ/sxb2w95Z66TaP7c1yu0s8PNxp9OoHhmgJEgJIsew
-         Sak2XYx38nppi1tIAb5k/ETWPInCjwlGI0SsWoyJ+6T+7HFmiCQUMCMVSMMnnZhluBSF
-         zIGQ==
-X-Gm-Message-State: AOAM53340KF+vWQpihNURE/G58tqgyNLx53rlWTyM35Fd69Pv/wCfWML
-        ahAc5j3zFiQzR9B1aFF1Tw2a3YVWkZnVnt7WLKUuwOggaCOcD+MuLGxYKa6ag4u00r3rHz+Ws78
-        Y7yN9Lv7t+RHmlhF5UReR4p/O
-X-Received: by 2002:a17:907:6fd:: with SMTP id yh29mr1168037ejb.432.1624468715232;
-        Wed, 23 Jun 2021 10:18:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyzz2Z2ugg1KGq4OmFuDAXL2mGlkfLATWN6gvMvTiBP+rn9k965qo/kW3qBks/ZBZ+QfZ8PyQ==
-X-Received: by 2002:a17:907:6fd:: with SMTP id yh29mr1168025ejb.432.1624468715091;
-        Wed, 23 Jun 2021 10:18:35 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id n13sm380399edx.30.2021.06.23.10.18.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 10:18:34 -0700 (PDT)
-Subject: Re: [PATCH 20/54] KVM: x86/mmu: Add struct and helpers to retrieve
- MMU role bits from regs
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-References: <20210622175739.3610207-1-seanjc@google.com>
- <20210622175739.3610207-21-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <7e1a0bb6-cd73-70c7-0b94-4a52f5b04577@redhat.com>
-Date:   Wed, 23 Jun 2021 19:18:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=eafgGiX6GDLeKBcSkHNVWv30fndO9YqdjKRuqwRhCEI=;
+        b=EjfYx1xrn8BYtp7aHttI6Ao3AlUaL5HXxhd9zstFyozqm2KY93Zr9apaTcYkfQu0pB
+         yxA9GYIP9mmmEfOnON38y+kZLP7XULM1u2O2vtB74neaf5wZ4c0KmowrXGUeWDW96ARz
+         utF8vvpFc1RQXHd5m0rW7H7mUYdu3bxqD2meikt8m3YlnR+pIPwAuoFeSH2BEBLnUZYK
+         /m49DBaUOYZBlwi0rl5EkFBYo8z/Y9AA7LJu40AfZf+K5TiCavJUsL7JwEBUJW4cqKvt
+         mn1ZezvK2jZCH5Ba3PCbXSsKHRMho2kd6VTVlrYvBG4m+Mheym3hoQJ71jn4n3uRSO49
+         eMTg==
+X-Gm-Message-State: AOAM533zZUZhJ19CleCHOUETFXnhvAegpf7wlK6xCHCp0ffKHuef3zKZ
+        rynLkRC4j962VXlUByM0883bdQVCZteTiZrynLvfdmVA+gJSEOZsfTGH59N8QYTdMhUvttPxTRd
+        mDRpjhXQu43OfISHaVhw5mhf5
+X-Received: by 2002:a1c:98c9:: with SMTP id a192mr12303317wme.66.1624468769815;
+        Wed, 23 Jun 2021 10:19:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJykWKB2L8Jmzzeev9nZF/sDxjnXuBMTRrk1niG8jzrlOvAOHlT9AYg06Klj23R2wVc210QqJQ==
+X-Received: by 2002:a1c:98c9:: with SMTP id a192mr12303283wme.66.1624468769546;
+        Wed, 23 Jun 2021 10:19:29 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-109-224.dyn.eolo.it. [146.241.109.224])
+        by smtp.gmail.com with ESMTPSA id z4sm633801wrs.56.2021.06.23.10.19.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 10:19:29 -0700 (PDT)
+Message-ID: <97fd842e75ef1dd7d78b99441d5654fb9a05e320.camel@redhat.com>
+Subject: Re: [PATCH 5.10 038/146] mptcp: do not warn on bad input from the
+ network
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Date:   Wed, 23 Jun 2021 19:19:28 +0200
+In-Reply-To: <20210623165327.GA4150@amd>
+References: <20210621154911.244649123@linuxfoundation.org>
+         <20210621154912.589676201@linuxfoundation.org> <20210623142235.GA27348@amd>
+         <254a0b83518083416abdae4cd27659bc10760773.camel@redhat.com>
+         <20210623165327.GA4150@amd>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20210622175739.3610207-21-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/06/21 19:57, Sean Christopherson wrote:
-> +/*
-> + * Yes, lot's of underscores.  They're a hint that you probably shouldn't be
-> + * reading from the role_regs.  Once the mmu_role is constructed, it becomes
-> + * the single source of truth for the MMU's state.
-> + */
-> +#define BUILD_MMU_ROLE_REGS_ACCESSOR(reg, name, flag)			\
-> +static inline bool ____is_##reg##_##name(struct kvm_mmu_role_regs *regs)\
-> +{									\
-> +	return !!(regs->reg & flag);					\
-> +}
+On Wed, 2021-06-23 at 18:53 +0200, Pavel Machek wrote:
+> Hi!
+> 
+> > > > From: Paolo Abeni <pabeni@redhat.com>
+> > > > 
+> > > > [ Upstream commit 61e710227e97172355d5f150d5c78c64175d9fb2 ]
+> > > > 
+> > > > warn_bad_map() produces a kernel WARN on bad input coming
+> > > > from the network. Use pr_debug() to avoid spamming the system
+> > > > log.
+> > > 
+> > > So... we switched from WARN _ONCE_ to pr_debug, as many times as we
+> > > detect the problem.
+> > > 
+> > > Should this be pr_debug_once?
+> > 
+> > Thank you for double checking this!
+> > 
+> > In the MPTCP code, we use pr_debug() statements as a debug tool, e.g.
+> > when enabled, it could print per-packet info with no restriction. 
+> > 
+> > There are (a few) similar use in the plain TCP code.
+> > 
+> > pr_debug() is not supposed to be enabled on any production system,
+> > while the WARN_ONCE could trigger automated tools for irrelevant
+> > network noise.
+> 
+> Correct me if I'm wrong, but I believe pr_debug will result in
+> messages being stored in the dmesg buffer, even on production
+> systems.
 
-Ok, that's a decent reason to have these accessors in the first place. :)
+If DYNAMIC_DEBUG is enabled, and the system administator explicitly
+enables the relevant debug message writing suitable data in
+/sys/kernel/debug/dynamic_debug/control, yes, the message will be
+printed on dmsg.
+
+With DYNAMIC_DEBUG disabled, patching the kernel and defining the DEBUG
+macro in the net/mptcp/protocol.c file you will get again the debug
+message.
+
+Neither of the above fit productions systems IMHO, and I'm not aware of
+other options to trigger the relevant debug message.
+
+I personally have CONFIG_DYNAMIC_DEBUG=y in my kconfig and I enable the
+relevant debug message as needed in my devel activity.
+
+Cheers,
 
 Paolo
 
