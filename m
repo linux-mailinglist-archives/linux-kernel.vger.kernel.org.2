@@ -2,139 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068953B1F7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 049163B1F83
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhFWRcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 13:32:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28362 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229726AbhFWRcp (ORCPT
+        id S229955AbhFWRdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 13:33:25 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:53895 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229726AbhFWRdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 13:32:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624469427;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RP1VcIqhLwFYXzXkWr2dt9Vgt97hFXb+2xz/b6BZuvI=;
-        b=QLvGi9zgT6i2b2jxCMxdOggpZoQ88qf0qeEUa9VzFJvOCgCe03VBNSRuHdyKPdFV5aCQQW
-        018y3XhLaNgjp2aWwBDn90WXnS/ftB+SaVp0lT3dGO6cxNON0Fx524Yc6Mter01Un2NAB9
-        WBGcgFk8/epiCZaaM1i4/imul1KMsgE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-147-CwMQLns0NR-mTlo94ck5sw-1; Wed, 23 Jun 2021 13:30:12 -0400
-X-MC-Unique: CwMQLns0NR-mTlo94ck5sw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D1F09126F;
-        Wed, 23 Jun 2021 17:30:11 +0000 (UTC)
-Received: from optiplex-fbsd (unknown [10.3.128.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EC66860583;
-        Wed, 23 Jun 2021 17:30:09 +0000 (UTC)
-Date:   Wed, 23 Jun 2021 13:30:07 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: vmalloc: add cond_resched() in __vunmap()
-Message-ID: <YNNvn8yUiqXQgYT1@optiplex-fbsd>
-References: <20210622225030.478384-1-aquini@redhat.com>
- <1624437661.tyds6vli52.astroid@bobo.none>
+        Wed, 23 Jun 2021 13:33:23 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 43D69580661;
+        Wed, 23 Jun 2021 13:31:05 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 23 Jun 2021 13:31:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=xsm/iuKc+04iGIrtanquxcEfKGm
+        0/iHMtOF7c6r7Jqk=; b=nrg5Vic+q3fYGWO54Ohj8Ja8nFHGwEHL15bQRUdaZQo
+        UGdGD0d6oILejJ9507k2qhfYXJDztCBWHuNOWkMs2S/0AgNoK6dnZDc4IeI7quPo
+        Tfd9m+lYAEbt6yVey5delOudOe0Mi7PhH5s23sbJ7UFCY42UqWttU8CyP4vUluH5
+        K8bohS21hlYfN4McqQZoiAeoi2UGiuoYJtXhDZT0KfQqxH8Z7hhm5GmYiCBYZJyw
+        jpe8mrSiHV82GZjTBXb4GcIpOCu89hmzrJTZIONMwtEtz0vprOwy2IrgaeZEmsYi
+        SWW3hSco8qNmVOSke6zdY0nXIEUZHIINVTcPdmobTTQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=xsm/iu
+        Kc+04iGIrtanquxcEfKGm0/iHMtOF7c6r7Jqk=; b=Fo9q8bpZzDgc7kErb09oXI
+        L/ZU9KO7XyIILfJqtg43JCGiEPfeTMoiDq32drvTljvHqFARtCsnvYoiWGp7igI5
+        felWcOf7B2vZmkTjnY7VyvesdAiX2t95Wm7zHwze4zFwswr34gtzusL+toPXeOf0
+        t7TwQjj0LLa7KIe+9Cfrol6QOOh4GBlx+k0gvW7PgSDhrfg1/hNwv1540UMt8dLK
+        bpQxCvYuOXCAEp3mQXe3xZfzoMeiqIwaQMwXvnLPCrVu9PgOCD+ygtHbohasvpZ5
+        x/3XQZUPhPGgULtcje2D1jym3agHl+NjR00sPd6ubpYToDt0aUvq8vTu+nkms4cQ
+        ==
+X-ME-Sender: <xms:2G_TYMqLE7RSTgdCni3wFOh1kR67hgZfqVtYPBtC4RPT2QTZsWDSmA>
+    <xme:2G_TYCodGI49uGnzTMBkzy0o46HTwnGDndcYwqgq8-6uIvWzPMzhv7lETNqqvvwIc
+    RAGJQBaTLH53Q>
+X-ME-Received: <xmr:2G_TYBN_kHARcMAiOFf6bWJsZHPd0gHvgC78azWNqyPCnpQhEL-ngn8-AbCPmSVGWBrp6XwzM3GIrV-WU_qedwgZ2zhNPv5r>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeegfedgudduiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
+    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
+    hhrdgtohhm
+X-ME-Proxy: <xmx:2G_TYD6ZGKR0p7X6ceaaEhq8wJb4NRANNBy-wxHWGZYCi125R5I9nw>
+    <xmx:2G_TYL63kj2TDy7ru6hSzII_Dv3XSAQTSJuZCQyLe_DJCfjQYIReiA>
+    <xmx:2G_TYDiMm7BDOwCejppN4LaCcmr7CAzZ5Q_S73TP-gj2VrSrab352w>
+    <xmx:2W_TYGOBXx-GP0OhlAjQKn9hFIcn2wdVc4nuUdGTGHMgpzqy7B2taQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 23 Jun 2021 13:31:03 -0400 (EDT)
+Date:   Wed, 23 Jun 2021 19:31:00 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Rocco Yue <rocco.yue@mediatek.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org,
+        wsd_upstream@mediatek.com, chao.song@mediatek.com,
+        zhuoliang.zhang@mediatek.com, kuohong.wang@mediatek.com
+Subject: Re: [PATCH 4/4] drivers: net: mediatek: initial implementation of
+ ccmni
+Message-ID: <YNNv1AxDNBdPcQ1U@kroah.com>
+References: <20210623113452.5671-1-rocco.yue@mediatek.com>
+ <20210623113452.5671-4-rocco.yue@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1624437661.tyds6vli52.astroid@bobo.none>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210623113452.5671-4-rocco.yue@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 06:43:50PM +1000, Nicholas Piggin wrote:
-> Excerpts from Rafael Aquini's message of June 23, 2021 8:50 am:
-> > On non-preemptible kernel builds the watchdog can complain
-> > about soft lockups when vfree() is called against large
-> > vmalloc areas:
-> > 
-> > [  210.851798] kvmalloc-test: vmalloc(2199023255552) succeeded
-> 
-> This is vfreeing()ing 2TB of memory? Maybe not too realistic but
-> I guess it doesn't hurt to add.
->
+On Wed, Jun 23, 2021 at 07:34:52PM +0800, Rocco Yue wrote:
+> +static int ccmni_open(struct net_device *ccmni_dev)
+> +{
+> +	struct ccmni_inst *ccmni = netdev_priv(ccmni_dev);
+> +
+> +	netif_tx_start_all_queues(ccmni_dev);
+> +	netif_carrier_on(ccmni_dev);
+> +
+> +	if (atomic_inc_return(&ccmni->usage) > 1) {
+> +		atomic_dec(&ccmni->usage);
+> +		netdev_err(ccmni_dev, "dev already open\n");
+> +		return -EINVAL;
 
-Andrew has recently addressed https://bugzilla.kernel.org/show_bug.cgi?id=210023
-via 34fe653716b0d ("mm/vmalloc.c:__vmalloc_area_node(): avoid 32-bit overflow")
-
-The person that filed that bug also filed a case requesting the issue
-to be addressed in RHEL. So the case for large vmaps such as that one
-in the test case is real, albeit not being a frequent use case perhaps.
-
-Realistically, though, that vunmap loop can still burn considerable amount
-of CPU time, even when vfreeing smaller areas, thus as you well noted, 
-it's better to play nice and back off a bit and let others having a 
-chance to run as well. 
-
-> Acked-by: Nicholas Piggin <npiggin@gmail.com>
-
-Thanks!
-
--- Rafael
+You only check this _AFTER_ starting up?  If so, why even check a count
+at all?  Why does it matter as it's not keeping anything from working
+here.
 
 
-> Thanks,
-> Nick
-> 
-> > [  238.654842] watchdog: BUG: soft lockup - CPU#181 stuck for 26s! [rmmod:5203]
-> > [  238.662716] Modules linked in: kvmalloc_test(OE-) ...
-> > [  238.772671] CPU: 181 PID: 5203 Comm: rmmod Tainted: G S         OE     5.13.0-rc7+ #1
-> > [  238.781413] Hardware name: Intel Corporation PURLEY/PURLEY, BIOS PLYXCRB1.86B.0553.D01.1809190614 09/19/2018
-> > [  238.792383] RIP: 0010:free_unref_page+0x52/0x60
-> > [  238.797447] Code: 48 c1 fd 06 48 89 ee e8 9c d0 ff ff 84 c0 74 19 9c 41 5c fa 48 89 ee 48 89 df e8 b9 ea ff ff 41 f7 c4 00 02 00 00 74 01 fb 5b <5d> 41 5c c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 f0 29 77
-> > [  238.818406] RSP: 0018:ffffb4d87868fe98 EFLAGS: 00000206
-> > [  238.824236] RAX: 0000000000000000 RBX: 000000001da0c945 RCX: ffffb4d87868fe40
-> > [  238.832200] RDX: ffffd79d3beed108 RSI: ffffd7998501dc08 RDI: ffff9c6fbffd7010
-> > [  238.840166] RBP: 000000000d518cbd R08: ffffd7998501dc08 R09: 0000000000000001
-> > [  238.848131] R10: 0000000000000000 R11: ffffd79d3beee088 R12: 0000000000000202
-> > [  238.856095] R13: ffff9e5be3eceec0 R14: 0000000000000000 R15: 0000000000000000
-> > [  238.864059] FS:  00007fe082c2d740(0000) GS:ffff9f4c69b40000(0000) knlGS:0000000000000000
-> > [  238.873089] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  238.879503] CR2: 000055a000611128 CR3: 000000f6094f6006 CR4: 00000000007706e0
-> > [  238.887467] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > [  238.895433] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > [  238.903397] PKRU: 55555554
-> > [  238.906417] Call Trace:
-> > [  238.909149]  __vunmap+0x17c/0x220
-> > [  238.912851]  __x64_sys_delete_module+0x13a/0x250
-> > [  238.918008]  ? syscall_trace_enter.isra.20+0x13c/0x1b0
-> > [  238.923746]  do_syscall_64+0x39/0x80
-> > [  238.927740]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > 
-> > Like in other range zapping routines that iterate over
-> > a large list, lets just add cond_resched() within __vunmap()'s
-> > page-releasing loop in order to avoid the watchdog splats.
-> > 
-> > Signed-off-by: Rafael Aquini <aquini@redhat.com>
-> > ---
-> >  mm/vmalloc.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > index a13ac524f6ff..cd4b23d65748 100644
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -2564,6 +2564,7 @@ static void __vunmap(const void *addr, int deallocate_pages)
-> >  
-> >  			BUG_ON(!page);
-> >  			__free_pages(page, page_order);
-> > +			cond_resched();
-> >  		}
-> >  		atomic_long_sub(area->nr_pages, &nr_vmalloc_pages);
-> >  
-> > -- 
-> > 2.26.3
-> > 
-> > 
-> > 
-> 
 
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int ccmni_close(struct net_device *ccmni_dev)
+> +{
+> +	struct ccmni_inst *ccmni = netdev_priv(ccmni_dev);
+> +
+> +	atomic_dec(&ccmni->usage);
+> +	netif_tx_disable(ccmni_dev);
+> +
+> +	return 0;
+> +}
+> +
+> +static netdev_tx_t
+> +ccmni_start_xmit(struct sk_buff *skb, struct net_device *ccmni_dev)
+> +{
+> +	struct ccmni_inst *ccmni = NULL;
+> +
+> +	if (unlikely(!ccmni_hook_ready))
+> +		goto tx_ok;
+> +
+> +	if (!skb || !ccmni_dev)
+> +		goto tx_ok;
+> +
+> +	ccmni = netdev_priv(ccmni_dev);
+> +
+> +	/* some process can modify ccmni_dev->mtu */
+> +	if (skb->len > ccmni_dev->mtu) {
+> +		netdev_err(ccmni_dev, "xmit fail: len(0x%x) > MTU(0x%x, 0x%x)",
+> +			   skb->len, CCMNI_MTU, ccmni_dev->mtu);
+> +		goto tx_ok;
+> +	}
+> +
+> +	/* hardware driver send packet will return a negative value
+> +	 * ask the Linux netdevice to stop the tx queue
+> +	 */
+> +	if ((s_ccmni_ctlb->xmit_pkt(ccmni->index, skb, 0)) < 0)
+> +		return NETDEV_TX_BUSY;
+> +
+> +	return NETDEV_TX_OK;
+> +tx_ok:
+> +	dev_kfree_skb(skb);
+> +	ccmni_dev->stats.tx_dropped++;
+> +	return NETDEV_TX_OK;
+> +}
+> +
+> +static int ccmni_change_mtu(struct net_device *ccmni_dev, int new_mtu)
+> +{
+> +	if (new_mtu < 0 || new_mtu > CCMNI_MTU)
+> +		return -EINVAL;
+> +
+> +	if (unlikely(!ccmni_dev))
+> +		return -EINVAL;
+> +
+> +	ccmni_dev->mtu = new_mtu;
+> +	return 0;
+> +}
+> +
+> +static void ccmni_tx_timeout(struct net_device *ccmni_dev, unsigned int txqueue)
+> +{
+> +	struct ccmni_inst *ccmni = netdev_priv(ccmni_dev);
+> +
+> +	ccmni_dev->stats.tx_errors++;
+> +	if (atomic_read(&ccmni->usage) > 0)
+> +		netif_tx_wake_all_queues(ccmni_dev);
+
+Why does it matter what the reference count is?  What happens if it
+drops _RIGHT_ after testing for it?
+
+Anytime you do an atomic_read() call, it's almost always a sign that the
+logic is not correct.
+
+Again, why have this reference count at all?  What is it protecting?
+
+> +/* exposed API
+> + * receive incoming datagrams from the Modem and push them to the
+> + * kernel networking system
+> + */
+> +int ccmni_rx_push(unsigned int ccmni_idx, struct sk_buff *skb)
+
+Ah, so this driver doesn't really do anything on its own, as there is no
+modem driver for it.
+
+So without a modem driver, it will never be used?  Please submit the
+modem driver at the same time, otherwise it's impossible to review this
+correctly.
+
+thanks,
+
+greg k-h
