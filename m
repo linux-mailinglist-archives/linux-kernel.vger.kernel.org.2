@@ -2,160 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1CE23B1B2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C213B1B34
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhFWNel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:34:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57705 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230438AbhFWNe3 (ORCPT
+        id S231151AbhFWNer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:34:47 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37596 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231158AbhFWNeh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:34:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624455131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Wed, 23 Jun 2021 09:34:37 -0400
+Date:   Wed, 23 Jun 2021 13:32:13 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624455134;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NauHAI0CHbhsa2fGusxRfVa5/FAzeCMJVSm7zm9WPEI=;
-        b=PJtkOEjmSFK/nbHjZE+SaVqIUPR0KnMjkd8idKMf7l4lKLO4xH33U606E9T1uvCpAdPNe0
-        Kt7mhFtvR83eBMqkf2xyxnexqOTd7tnw3ZRtK9cjKa4wa0OHAbTV1A5eA7DWVdIFj8zRUo
-        a5m7azRfSzxznl0R6yOcyBrXa+SQQHU=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-o9gxqqVnP-ye4nUOV7_Cow-1; Wed, 23 Jun 2021 09:32:10 -0400
-X-MC-Unique: o9gxqqVnP-ye4nUOV7_Cow-1
-Received: by mail-ed1-f69.google.com with SMTP id r6-20020a05640216c6b0290394ed90b605so1208271edx.20
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 06:32:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=NauHAI0CHbhsa2fGusxRfVa5/FAzeCMJVSm7zm9WPEI=;
-        b=hVYS7TSENnaWowOQNCw92z7FWZ7+ivhACP+qmnDBJp295TCQlE1bUo/qpbgrFFkILJ
-         AsmZWsnST71c0/L9oNB1Wbh7EE9J0hRBrv+Mq66rtDFwk4zgKVReMP1l9x1aDKSH9scV
-         PDCkA4T3ob0Mu8HBYw87n5Y9Y6NbTNvYIlLrYaUxfeV3jHSRiyO5fAtGuVH0jFp9Km/w
-         uSwavpGkSxOwNjKMUr8S100twaVI4r/+45QASKWtYg4WdQcYtPIeQ3dfBOf4Te3mvrwj
-         tyjOZVtwdM7tPVbNx51bcPQVLmaZEIKY4kvxE5c+WoMC6dJfulLaZyKMkTpx1jSDVZdq
-         bqBg==
-X-Gm-Message-State: AOAM531ruaJX7DqB8cwxidyURe2R/wtnEBk47eJkWn8o4FMzYNRYM7OG
-        ZKyp1BuUEaAUF0RI4QlHOrdsGEYMYxl/661fYW6NJMkN8NHqajd4yz2ht0H9DxmHyLkb/2/qMlk
-        RiMU7LE/QCzNTsXftFB0QEJQR
-X-Received: by 2002:a05:6402:354d:: with SMTP id f13mr12403178edd.71.1624455129117;
-        Wed, 23 Jun 2021 06:32:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxCxfF2up/YZIVS08yHiIq6GoxMXVkJxXwH+FOJDnRGGAPn2YQd1WvYES2tGXE+a/KsBItaoQ==
-X-Received: by 2002:a05:6402:354d:: with SMTP id f13mr12403149edd.71.1624455128934;
-        Wed, 23 Jun 2021 06:32:08 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id o20sm34087eds.20.2021.06.23.06.32.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 06:32:08 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Cathy Avery <cavery@redhat.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH RFC] KVM: nSVM: Fix L1 state corruption upon return from
- SMM
-In-Reply-To: <ac98150acd77f4c09167bc1bb1c552db68925cf2.camel@redhat.com>
-References: <20210623074427.152266-1-vkuznets@redhat.com>
- <a3918bfa-7b4f-c31a-448a-aa22a44d4dfd@redhat.com>
- <53a9f893cb895f4b52e16c374cbe988607925cdf.camel@redhat.com>
- <ac98150acd77f4c09167bc1bb1c552db68925cf2.camel@redhat.com>
-Date:   Wed, 23 Jun 2021 15:32:07 +0200
-Message-ID: <87pmwc4sh4.fsf@vitty.brq.redhat.com>
+        bh=wHk5sOOatpxgKTeeDjRn7/KDyn4XdfhGj02rsJfjugk=;
+        b=bpR0VH6CtyjOSLTlTzi7I/uku6K56WzRg7PpPCVO5aRnc+vbtl1c5j0Irw/TMH3lcrmFsK
+        xdTC/fCiJWTaySGgZoVDEsyDVdwrCkY3qBFKHY+2z/YrGRfQwr8l6JKS4E9RbwGUueTq+u
+        isY3FSPKJh9itW1lhqvcY3yvv0JKGHHFAcFwxKnb2EpF/1kqsUvD9sNY5fYFFLkaxHVhhW
+        rwPDN2tPNx5fniA4peQ3Rkh/zo632IqFSYgwa7NsgdlHrPBnVx4UyICgSufPHpgSlIV63Y
+        yM+WEPBGGBREP/giA1EBkucWEaIDPqurHWRGf2ADwSO5UEQgRGNdxFLiF3isWQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624455134;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wHk5sOOatpxgKTeeDjRn7/KDyn4XdfhGj02rsJfjugk=;
+        b=B/dgmQaRSHfwxb5sWde5Zxw3YrAVjDuN0hkabteZb73IpcsPkoy6NedEBXHtYM42IFQYI/
+        4H9uPFBUiNIYyoDg==
+From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sev] x86/sev: Use "SEV: " prefix for messages from sev.c
+Cc:     Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210622144825.27588-4-joro@8bytes.org>
+References: <20210622144825.27588-4-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Message-ID: <162445513336.395.16316436915627045107.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxim Levitsky <mlevitsk@redhat.com> writes:
+The following commit has been merged into the x86/sev branch of tip:
 
-> On Wed, 2021-06-23 at 16:01 +0300, Maxim Levitsky wrote:
->> On Wed, 2021-06-23 at 11:39 +0200, Paolo Bonzini wrote:
->> > On 23/06/21 09:44, Vitaly Kuznetsov wrote:
->> > > - RFC: I'm not 100% sure my 'smart' idea to use currently-unused HSAVE area
->> > > is that smart. Also, we don't even seem to check that L1 set it up upon
->> > > nested VMRUN so hypervisors which don't do that may remain broken. A very
->> > > much needed selftest is also missing.
->> > 
->> > It's certainly a bit weird, but I guess it counts as smart too.  It 
->> > needs a few more comments, but I think it's a good solution.
->> > 
->> > One could delay the backwards memcpy until vmexit time, but that would 
->> > require a new flag so it's not worth it for what is a pretty rare and 
->> > already expensive case.
->> > 
->> > Paolo
->> > 
->> 
->> Hi!
->> 
->> I did some homework on this now and I would like to share few my thoughts on this:
->> 
->> First of all my attention caught the way we intercept the #SMI
->> (this isn't 100% related to the bug but still worth talking about IMHO)
->> 
->> A. Bare metal: Looks like SVM allows to intercept SMI, with SVM_EXIT_SMI, 
->>  with an intention of then entering the BIOS SMM handler manually using the SMM_CTL msr.
->>  On bare metal we do set the INTERCEPT_SMI but we emulate the exit as a nop.
->>  I guess on bare metal there are some undocumented bits that BIOS set which
->>  make the CPU to ignore that SMI intercept and still take the #SMI handler,
->>  normally but I wonder if we could still break some motherboard
->>  code due to that.
->> 
->> 
->> B. Nested: If #SMI is intercepted, then it causes nested VMEXIT.
->>  Since KVM does enable SMI intercept, when it runs nested it means that all SMIs 
->>  that nested KVM gets are emulated as NOP, and L1's SMI handler is not run.
->> 
->> 
->> About the issue that was fixed in this patch. Let me try to understand how
->> it would work on bare metal:
->> 
->> 1. A guest is entered. Host state is saved to VM_HSAVE_PA area (or stashed somewhere
->>   in the CPU)
->> 
->> 2. #SMI (without intercept) happens
->> 
->> 3. CPU has to exit SVM, and start running the host SMI handler, it loads the SMM
->>     state without touching the VM_HSAVE_PA runs the SMI handler, then once it RSMs,
->>     it restores the guest state from SMM area and continues the guest
->> 
->> 4. Once a normal VMexit happens, the host state is restored from VM_HSAVE_PA
->> 
->> So host state indeed can't be saved to VMC01.
->> 
->> I to be honest think would prefer not to use the L1's hsave area but rather add back our
->> 'hsave' in KVM and store there the L1 host state on the nested entry always.
->> 
->> This way we will avoid touching the vmcb01 at all and both solve the issue and 
->> reduce code complexity.
->> (copying of L1 host state to what basically is L1 guest state area and back
->> even has a comment to explain why it (was) possible to do so.
->> (before you discovered that this doesn't work with SMM).
->
-> I need more coffee today. The comment is somwhat wrong actually.
-> When L1 switches to L2, then its HSAVE area is L1 guest state, but
-> but L1 is a "host" vs L2, so it is host state.
-> The copying is more between kvm's register cache and the vmcb.
->
-> So maybe backing it up as this patch does is the best solution yet.
-> I will take more in depth look at this soon.
+Commit-ID:     8d9d46bbf3b6b7ff8edcac33603ab45c29e0e07f
+Gitweb:        https://git.kernel.org/tip/8d9d46bbf3b6b7ff8edcac33603ab45c29e0e07f
+Author:        Joerg Roedel <jroedel@suse.de>
+AuthorDate:    Tue, 22 Jun 2021 16:48:25 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 23 Jun 2021 11:56:18 +02:00
 
-We can resurrect 'hsave' and keep it internally indeed but to make this
-migratable, we'd have to add it to the nested state acquired through
-svm_get_nested_state(). Using L1's HSAVE area (ponted to by
-MSR_VM_HSAVE_PA) avoids that as we have everything in L1's memory. And,
-as far as I understand, we comply with the spec as 1) L1 has to set it
-up and 2) L1 is not supposed to expect any particular format there, it's
-completely volatile.
+x86/sev: Use "SEV: " prefix for messages from sev.c
 
--- 
-Vitaly
+The source file has been renamed froms sev-es.c to sev.c, but the
+messages are still prefixed with "SEV-ES: ". Change that to "SEV: " to
+make it consistent.
 
+Fixes: e759959fe3b8 ("x86/sev-es: Rename sev-es.{ch} to sev.{ch}")
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210622144825.27588-4-joro@8bytes.org
+---
+ arch/x86/kernel/sev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index 87a4b00..a6895e4 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -7,7 +7,7 @@
+  * Author: Joerg Roedel <jroedel@suse.de>
+  */
+ 
+-#define pr_fmt(fmt)	"SEV-ES: " fmt
++#define pr_fmt(fmt)	"SEV: " fmt
+ 
+ #include <linux/sched/debug.h>	/* For show_regs() */
+ #include <linux/percpu-defs.h>
