@@ -2,288 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BEC23B1515
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C353B1519
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhFWHvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 03:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFWHvA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 03:51:00 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23AF0C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 00:48:42 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id a21so1716142ljj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 00:48:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=8Ja036d3JX5UFLwHhqcTiZxQHalj0jmCs1SSzd3Ps7g=;
-        b=vTd7g/CFs2LPVblL4xKzYuhjTS35tdOIgtfNiti+sM9OtDUzpWrZ1JxkW5z+eTyeN0
-         W50qz5ltHipMxPN6UXRs0L+a1dyPTQgNvYqaRa80UqTfYiMbMzj7jEneQCiyGBUZ8ke4
-         G8n6me9TcPQMmwASNiBevhhmPW9nXF9cRMVU2UNs7I1TD23cB7PKFQ9rxmMxAjYHFkvl
-         H10MW4D8UImgZsi5xJiZujf8W4iN9km9VkLiYUzugTourigo+S5FqpArZMJgu9oZ2+uv
-         LW+okYhd5qqiaX3R/uMUdXQlWKA/oR4ZJUn0PCGYS+CKp8X2OR46wfbC2bIW4VsxZ0g9
-         76bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=8Ja036d3JX5UFLwHhqcTiZxQHalj0jmCs1SSzd3Ps7g=;
-        b=QLuw1ozlWSlFG0zNYta/dTPgKTom0gCaRHqpWZTG0hcavJ+X2KRpVftzSj+X9f2etE
-         tiTkjXFb31RGXq+zRdgJZv1n+mF7TtFt5JNpfF04jX0peQbpX7AUslWbBsb6zvmvX5pD
-         r7aArLvr3/Ypetp9i+KIwyddkWHdNiKpzojoTTpWH7W7a3UzpBSXFr6/JdeQ3F2ydt53
-         l03TOlyWcXxxHT+O7JTAKNGsdqJY/HL+TCvurDkfovjpqjzknfm/J+lYkvtA08W/g0Sa
-         Ck8MGSp5xtJ2djH/iRRguY8J2NfmGNiI2vi7mxKUNmQChB+BW6a795ogTRDNDYXnL76o
-         xFGw==
-X-Gm-Message-State: AOAM530g4VexOqWfxvGDyJx0FH2s0mwBuCRFDBEwAARLia6Aqiwa6Mmp
-        KuKdY7S2kzz3AcJfKXZXxVw=
-X-Google-Smtp-Source: ABdhPJx4wlG7+i1VWDQ8NRkNuIaxF+lWnUb575DmEObbBHN8yr47VcSizciFBdPLoKZWvwKX36yVBA==
-X-Received: by 2002:a2e:2e0d:: with SMTP id u13mr7106476lju.351.1624434520426;
-        Wed, 23 Jun 2021 00:48:40 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id x1sm230700lji.19.2021.06.23.00.48.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 00:48:40 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 10:48:36 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Werner Sembach <wse@tuxedocomputers.com>
-Cc:     amd-gfx@lists.freedesktop.org, tzimmermann@suse.de,
-        intel-gfx@lists.freedesktop.org, sunpeng.li@amd.com,
-        dri-devel@lists.freedesktop.org, joonas.lahtinen@linux.intel.com,
-        maarten.lankhorst@linux.intel.com, linux-kernel@vger.kernel.org,
-        mripard@kernel.org, airlied@linux.ie, jani.nikula@linux.intel.com,
-        daniel@ffwll.ch, rodrigo.vivi@intel.com, alexander.deucher@amd.com,
-        harry.wentland@amd.com, christian.koenig@amd.com
-Subject: Re: [PATCH v4 15/17] drm/uAPI: Move "Broadcast RGB" property from
- driver specific to general context
-Message-ID: <20210623104836.77734bad@eldfell>
-In-Reply-To: <70d89fe2-4e45-7ea9-2509-15257ef222f8@tuxedocomputers.com>
-References: <20210618091116.14428-1-wse@tuxedocomputers.com>
-        <20210618091116.14428-16-wse@tuxedocomputers.com>
-        <20210622102529.5266e87b@eldfell>
-        <70d89fe2-4e45-7ea9-2509-15257ef222f8@tuxedocomputers.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230044AbhFWHvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 03:51:10 -0400
+Received: from phobos.denx.de ([85.214.62.61]:37512 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229660AbhFWHvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 03:51:08 -0400
+Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 4BDF580082;
+        Wed, 23 Jun 2021 09:48:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1624434529;
+        bh=yT4ZmsheDrzflNLYEnptapHjyIcqPcx1/TgV4RPFfYQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=A/sEWLA2kbM9R0p1bJdCs8XKTue7dLtR9zbfBufZB/S8zEDH0q1VeueXWRtcsmVtn
+         CAdX/6gLQ6miW5wFV//wvVAAukBSpZollU/OSYLk1M7RRKbRcoV0edB40fXWLFByE1
+         S5S7pMMOHbAaD0ux9RAXWWvwHmyFF4qvRHihhiwJZ1Lr1OgbXL18pArTXF2EE5wkKt
+         OO7KwWYPXrYKwl6txBgdVJghEw9Y7tg3aDKKh3xDWKY1hEZ7iZYlO58xLcsOTNDLdA
+         D2Ox1EnNk2vQp+1rPKq8WLZi7b5cAylERufHvTU6rp4NNMFIkQGtEAzcAgga0jLbdu
+         JHVlpkZdrawoA==
+Date:   Wed, 23 Jun 2021 09:48:41 +0200
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Einon <mark.einon@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 3/3] net: imx: Adjust fec_main.c to provide support for L2
+ switch
+Message-ID: <20210623094841.4ea531bc@ktm>
+In-Reply-To: <YNH9YvjqbcHMaUFw@lunn.ch>
+References: <20210622144111.19647-1-lukma@denx.de>
+        <20210622144111.19647-4-lukma@denx.de>
+        <YNH9YvjqbcHMaUFw@lunn.ch>
+Organization: denx.de
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/m=u2eOUlQuyIDelbKBjlgiP";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/GFIlbTP2B=sNE2jdlzTnphK"; protocol="application/pgp-signature"
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/m=u2eOUlQuyIDelbKBjlgiP
+--Sig_/GFIlbTP2B=sNE2jdlzTnphK
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 22 Jun 2021 11:57:53 +0200
-Werner Sembach <wse@tuxedocomputers.com> wrote:
+Hi Andrew,
 
-> Am 22.06.21 um 09:25 schrieb Pekka Paalanen:
-> > On Fri, 18 Jun 2021 11:11:14 +0200
-> > Werner Sembach <wse@tuxedocomputers.com> wrote:
+> > index 0602d5d5d2ee..dc2d31321cbd 100644
+> > --- a/drivers/net/ethernet/freescale/fec.h
+> > +++ b/drivers/net/ethernet/freescale/fec.h
+> > @@ -29,6 +29,10 @@
+> >   */
+> >  #define FEC_IEVENT		0x004 /* Interrupt event reg */
+> >  #define FEC_IMASK		0x008 /* Interrupt mask reg */
+> > +#ifdef CONFIG_FEC_MTIP_L2SW
+> > +#define FEC_MTIP_R_DES_ACTIVE_0	0x018 /* L2 switch Receive
+> > descriptor reg */ +#define FEC_MTIP_X_DES_ACTIVE_0	0x01C /*
+> > L2 switch Transmit descriptor reg */ +#endif =20
+>=20
+> Please don't scatter #ifdef everywhere.
+>=20
+> In this case, the register exists, even if the switch it not being
+> used, so there is no need to have it conditional.
+
++1
+
+>=20
+> >  #include <asm/cacheflush.h>
 > > =20
-> >> Add "Broadcast RGB" to general drm context so that more drivers besides
-> >> i915 and gma500 can implement it without duplicating code.
-> >>
-> >> Userspace can use this property to tell the graphic driver to use full=
- or
-> >> limited color range for a given connector, overwriting the default
-> >> behaviour/automatic detection.
-> >>
-> >> Possible options are:
-> >>     - Automatic (default/current behaviour)
-> >>     - Full
-> >>     - Limited 16:235
-> >>
-> >> In theory the driver should be able to automatically detect the monito=
-rs
-> >> capabilities, but because of flawed standard implementations in Monito=
-rs,
-> >> this might fail. In this case a manual overwrite is required to not ha=
-ve
-> >> washed out colors or lose details in very dark or bright scenes.
-> >>
-> >> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> >> ---
-> >>  drivers/gpu/drm/drm_atomic_helper.c |  4 +++
-> >>  drivers/gpu/drm/drm_atomic_uapi.c   |  4 +++
-> >>  drivers/gpu/drm/drm_connector.c     | 43 +++++++++++++++++++++++++++++
-> >>  include/drm/drm_connector.h         | 16 +++++++++++
-> >>  4 files changed, 67 insertions(+)
-> >>
-> >> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm=
-_atomic_helper.c
-> >> index 90d62f305257..0c89d32efbd0 100644
-> >> --- a/drivers/gpu/drm/drm_atomic_helper.c
-> >> +++ b/drivers/gpu/drm/drm_atomic_helper.c
-> >> @@ -691,6 +691,10 @@ drm_atomic_helper_check_modeset(struct drm_device=
- *dev,
-> >>  			if (old_connector_state->preferred_color_format !=3D
-> >>  			    new_connector_state->preferred_color_format)
-> >>  				new_crtc_state->connectors_changed =3D true;
-> >> +
-> >> +			if (old_connector_state->preferred_color_range !=3D
-> >> +			    new_connector_state->preferred_color_range)
-> >> +				new_crtc_state->connectors_changed =3D true;
-> >>  		}
-> >> =20
-> >>  		if (funcs->atomic_check)
-> >> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_a=
-tomic_uapi.c
-> >> index c536f5e22016..c589bb1a8163 100644
-> >> --- a/drivers/gpu/drm/drm_atomic_uapi.c
-> >> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
-> >> @@ -798,6 +798,8 @@ static int drm_atomic_connector_set_property(struc=
-t drm_connector *connector,
-> >>  		state->max_requested_bpc =3D val;
-> >>  	} else if (property =3D=3D connector->preferred_color_format_propert=
-y) {
-> >>  		state->preferred_color_format =3D val;
-> >> +	} else if (property =3D=3D connector->preferred_color_range_property=
-) {
-> >> +		state->preferred_color_range =3D val;
-> >>  	} else if (connector->funcs->atomic_set_property) {
-> >>  		return connector->funcs->atomic_set_property(connector,
-> >>  				state, property, val);
-> >> @@ -877,6 +879,8 @@ drm_atomic_connector_get_property(struct drm_conne=
-ctor *connector,
-> >>  		*val =3D state->max_requested_bpc;
-> >>  	} else if (property =3D=3D connector->preferred_color_format_propert=
-y) {
-> >>  		*val =3D state->preferred_color_format;
-> >> +	} else if (property =3D=3D connector->preferred_color_range_property=
-) {
-> >> +		*val =3D state->preferred_color_range;
-> >>  	} else if (connector->funcs->atomic_get_property) {
-> >>  		return connector->funcs->atomic_get_property(connector,
-> >>  				state, property, val);
-> >> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_con=
-nector.c
-> >> index aea03dd02e33..9bc596638613 100644
-> >> --- a/drivers/gpu/drm/drm_connector.c
-> >> +++ b/drivers/gpu/drm/drm_connector.c
-> >> @@ -905,6 +905,12 @@ static const struct drm_prop_enum_list drm_active=
-_color_format_enum_list[] =3D {
-> >>  	{ DRM_COLOR_FORMAT_YCRCB420, "ycbcr420" },
-> >>  };
-> >> =20
-> >> +static const struct drm_prop_enum_list drm_preferred_color_range_enum=
-_list[] =3D {
-> >> +	{ DRM_MODE_COLOR_RANGE_UNSET, "Automatic" },
-> >> +	{ DRM_MODE_COLOR_RANGE_FULL, "Full" },
-> >> +	{ DRM_MODE_COLOR_RANGE_LIMITED_16_235, "Limited 16:235" }, =20
-> > Hi,
-> >
-> > the same question here about these numbers as I asked on the "active
-> > color range" property.
-> > =20
-> >> +};
-> >> +
-> >>  static const struct drm_prop_enum_list drm_active_color_range_enum_li=
-st[] =3D {
-> >>  	{ DRM_MODE_COLOR_RANGE_UNSET, "Unknown" },
-> >>  	{ DRM_MODE_COLOR_RANGE_FULL, "Full" },
-> >> @@ -1243,6 +1249,13 @@ static const struct drm_prop_enum_list dp_color=
-spaces[] =3D {
-> >>   *	drm_connector_attach_active_color_format_property() to install this
-> >>   *	property.
-> >>   *
-> >> + * Broadcast RGB:
-> >> + *	This property is used by userspace to change the used color range.=
- When
-> >> + *	used the driver will use the selected range if valid for the curre=
-nt
-> >> + *	color format. Drivers to use the function
-> >> + *	drm_connector_attach_preferred_color_format_property() to create a=
-nd
-> >> + *	attach the property to the connector during initialization. =20
-> > An important detail to document here is: does userspace need to
-> > take care that pixel data at the connector will already match the set
-> > range, or will the driver program the hardware to produce the set range=
-? =20
-> Since until now, the userspace didn't even know for sure if RGB or YCbCr =
-and therefore which full/limited format was
-> used I guess it's all kernel space conversion.
-> >
-> > If the former, then I'm afraid the preference/active property pair
-> > design does not work. Userspace needs to make sure the content is in
-> > the right range, so the driver cannot second-guess that afterwards.
-> >
-> > If the latter, then what does the driver assume about color range just
-> > before the automatic conversion to the final color range, and does the
-> > range conversion happen as the final step in the color pipeline?
-> >
-> > If I remember the discussion about Intel right, then the driver does
-> > the latter and assume that userspace programs KMS to always produce
-> > full range pixels. There is no provision for userspace to produce
-> > limited range pixels, IIRC. =20
-> I think I remember this too from an answer to one of the revisions of thi=
-s patchset.
+> >  #include "fec.h"
+> > +#ifdef CONFIG_FEC_MTIP_L2SW
+> > +#include "./mtipsw/fec_mtip.h"
+> > +#endif =20
+>=20
+> Why not just include it all the time?
 
-As long as you keep the old KMS property as is, just moving code so it
-is used by more drivers, this is fine and one can't do otherwise anyway.
+Ok.
 
-(The rest of this email is merely pondering the future, so not about
-this patch in particular.)
+>=20
+>     Andrew
 
 
-But if we had a new, more general property for the range reported to
-monitors via infoframes, then it would be worth to re-visit the design.
-The HDR properties only set the infoframe and expect userspace to make
-sure that the pixels actually correspond to what the infoframes tell
-the monitor. One can't do HDR tone mapping automatically in the kernel,
-so in that sense the HDR property behaviour is obvious. But which
-behaviour would fit range property or others better, I'm not sure.
-
-Generally there seems to be two approaches to designing KMS properties:
-
-- Let userspace describe what data it has and what data should be sent
-  to a monitor, and let the kernel driver magically come up with a
-  conversion.
-
-- Only userspace understands how the pixel data is encoded, and
-  programs the transformations (DEGAMMA/CTM/GAMMA etc.) such, that the
-  result is what a monitor expects based on e.g. infoframes.
-
-Doing the former requires policy in the kernel. If there is a
-specification that uniquely defines what the conversion is, this is
-good. But if not or if there are artistic decisions to be made, like
-with HDR tone mapping, then it doesn't work.
-
-OTOH, the former approach allows the driver to use any and all hardware
-features it has to realize the conversion, perhaps taking advantage of
-even fixed-function hardware blocks. The latter approach is much harder
-to map to hardware features.
-
-This dilemma has been discussed in length in
-https://lists.freedesktop.org/archives/dri-devel/2021-June/311689.html
 
 
-Thanks,
-pq
+Best regards,
 
---Sig_/m=u2eOUlQuyIDelbKBjlgiP
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/GFIlbTP2B=sNE2jdlzTnphK
 Content-Type: application/pgp-signature
 Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmDS51QACgkQI1/ltBGq
-qqeBKw/+PoeZSjhutIb3s8nKAPEhWVVI4vJea4eC3RP32dtKCw5Xx3pjmwxGStXG
-QCO7I6RIaTrfpg+PVgTZgxzwQ63rV9ZHyYfZE/cdmsF6/HkpAr14NQlKcYXvZPQX
-bzo3/iAOBUEXP0GV+dfVWsTNOG4seXjUzqinE8mm+5qS/qLW18Oppkur7jjkgrmR
-yQoLqMPIyPbwKnJZk3YGfnJpvZV6XF+1+kqJ3dwdC2LzdM0OCZ4lVcQalgxSiIBN
-k+nDiqq6L/e26QTgOksWWbpSg9dhfldQwj7sneXY7BlvsiI4p+5M3AcSSCDZfcpF
-6fhWwvMACKOOnQpV0uBx/n4wntItbpa6Vo7Dvq9DfWXWB+janj0aYRn/tmBZLnas
-a67KCBHXzh6dod6CRdbP5oikcek4CkdjDODFF096xkX/2HHtp5E1XZ7IWNf651fW
-SvlagflTwMjbiZcNxkctkKR7ITiLE+g5yl0rnfPb4NE1DS1NSlseZnwjV5NYEeld
-4/1v5d4WoJlqxmT6UaXJd55e7nXFQ8IP3isaJFHVSvOzmOnLdzFa1km25Sn/cwJU
-6QBed0xJ3+FX5MCikFiUFAGwQ4lqSbNjwqlcxyvUBlpUuXs8RYapvkUVqSMdecSM
-OLc0HoFgIUPbNeNGV+2HZnBItWdCZrhu8qpKt4IABlBajK5DCq0=
-=a8BZ
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmDS51kACgkQAR8vZIA0
+zr3+awf9ERCiE8gx/0jjYs1Hf/KTgAnemjWwYWqiLUlEcK/rXJFwUN2eQgJ93gUJ
+F8wrhAt4JZ8P158XUm8qpflU0e4F/PjVG2ndbIYJDPwWLppFz0wHesqJNf6rBW3l
+WZ/Myg7Cahems0W8g0yqtppR5+er0rl5PPNZlRjAwbXqsaSCnZlCmCxDzA7waxAu
+hGJoPJj7huDdO2KRKIUwfsX+TtoYUq93eAqMw4ldTV7gW9P3wi6BBYzUmjIsDrDA
+957tAHMF7Kb0KDQJp/P0CkYzgvHf7oJOn5HQbFFqzy8WuW4dvoaLGwS4p2od+FN4
+fCcwgsSI15Bl12Ivh7P8zvlvbzMC6Q==
+=w6o7
 -----END PGP SIGNATURE-----
 
---Sig_/m=u2eOUlQuyIDelbKBjlgiP--
+--Sig_/GFIlbTP2B=sNE2jdlzTnphK--
