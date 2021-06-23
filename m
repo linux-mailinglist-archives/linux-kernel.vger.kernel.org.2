@@ -2,249 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293E43B15D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 626CE3B15DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbhFWIbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 04:31:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229833AbhFWIbm (ORCPT
+        id S230205AbhFWIc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 04:32:59 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:46326 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230102AbhFWIc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 04:31:42 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2055C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 01:29:24 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lvyG5-0004q2-UE; Wed, 23 Jun 2021 10:29:17 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lvyG4-00032S-3W; Wed, 23 Jun 2021 10:29:16 +0200
-Date:   Wed, 23 Jun 2021 10:29:15 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH v3 2/2] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
-Message-ID: <20210623082915.tj7pid46wm3dl5jf@pengutronix.de>
-References: <20210622030948.966748-1-bjorn.andersson@linaro.org>
- <20210622030948.966748-2-bjorn.andersson@linaro.org>
- <20210622202935.lbghwelbiwgufycd@pengutronix.de>
- <YNKKkEMD4sVhfcNr@yoga>
+        Wed, 23 Jun 2021 04:32:57 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 265B81FD65;
+        Wed, 23 Jun 2021 08:30:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624437040; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pfxXoE59vW3i1oXCb2xd4QXiuJGD7urPR2kxDFn8kuI=;
+        b=BJhsgxEsGfh6+c3uQ4zEZa7elBrHzQFb0fwvZNmLKzfSCfyh5thvSppQ5roUC7CFOAbIld
+        dVVFqpzBjd/R3x+BKzDpgNPcsix2tKOSTD2gKPHa9IdlHCzHv3YhhDrzFRMtUV1gjK9Bh7
+        mBWx+G/rhivkoxBc7FlGqONmblxfYd4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624437040;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pfxXoE59vW3i1oXCb2xd4QXiuJGD7urPR2kxDFn8kuI=;
+        b=q6sUNhPtTH27ShfQMUxpfpjd8iDRQfjYBR9HhDCy7cOKqz1RXJAfAQJrl0r/3HvzELgphe
+        IgeAZWmCJ5P4OkAw==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 10E9711A97;
+        Wed, 23 Jun 2021 08:30:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624437040; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pfxXoE59vW3i1oXCb2xd4QXiuJGD7urPR2kxDFn8kuI=;
+        b=BJhsgxEsGfh6+c3uQ4zEZa7elBrHzQFb0fwvZNmLKzfSCfyh5thvSppQ5roUC7CFOAbIld
+        dVVFqpzBjd/R3x+BKzDpgNPcsix2tKOSTD2gKPHa9IdlHCzHv3YhhDrzFRMtUV1gjK9Bh7
+        mBWx+G/rhivkoxBc7FlGqONmblxfYd4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624437040;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pfxXoE59vW3i1oXCb2xd4QXiuJGD7urPR2kxDFn8kuI=;
+        b=q6sUNhPtTH27ShfQMUxpfpjd8iDRQfjYBR9HhDCy7cOKqz1RXJAfAQJrl0r/3HvzELgphe
+        IgeAZWmCJ5P4OkAw==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id V37wAjDx0mAyHwAALh3uQQ
+        (envelope-from <bp@suse.de>); Wed, 23 Jun 2021 08:30:40 +0000
+Date:   Wed, 23 Jun 2021 10:30:32 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V3 64/66] x86/fpu: Return proper error codes from user
+ access functions
+Message-ID: <YNLxKB9a6XQHW+w3@zn.tnic>
+References: <20210618141823.161158090@linutronix.de>
+ <20210618143451.682092608@linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2vpq5rw3nar65532"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YNKKkEMD4sVhfcNr@yoga>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618143451.682092608@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 18, 2021 at 04:19:27PM +0200, Thomas Gleixner wrote:
+> When *RSTOR from user memory raises an exception there is no way to
+> differentiate them. That's bad because it forces the slow path even when
+> the failure was not a fault. If the operation raised eg. #GP then going
+> through the slow path is pointless.
+> 
+> Use _ASM_EXTABLE_FAULT() which stores the trap number and let the exception
+> fixup return the negated trap number as error.
+> 
+> This allows to seperate the fast path and let it handle faults directly and
 
---2vpq5rw3nar65532
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+separate
 
-Hello Bjorn,
+> avoid the slow path for all other exceptions.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/include/asm/fpu/internal.h |    9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> --- a/arch/x86/include/asm/fpu/internal.h
+> +++ b/arch/x86/include/asm/fpu/internal.h
+> @@ -87,6 +87,7 @@ extern void fpstate_init_soft(struct swr
+>  static inline void fpstate_init_soft(struct swregs_state *soft) {}
+>  #endif
+>  
+> +/* Returns 0 or the negated trap number, which results in -EFAULT for #PF */
+>  #define user_insn(insn, output, input...)				\
+>  ({									\
+>  	int err;							\
+> @@ -94,14 +95,14 @@ static inline void fpstate_init_soft(str
+>  	might_fault();							\
+>  									\
+>  	asm volatile(ASM_STAC "\n"					\
+> -		     "1:" #insn "\n\t"					\
+> +		     "1: " #insn "\n"					\
+>  		     "2: " ASM_CLAC "\n"				\
+>  		     ".section .fixup,\"ax\"\n"				\
+> -		     "3:  movl $-1,%[err]\n"				\
+> +		     "3:  negl %%eax\n"					\
+>  		     "    jmp  2b\n"					\
+>  		     ".previous\n"					\
+> -		     _ASM_EXTABLE(1b, 3b)				\
+> -		     : [err] "=r" (err), output				\
+> +		     _ASM_EXTABLE_FAULT(1b, 3b)				\
+> +		     : [err] "=a" (err), output				\
+>  		     : "0"(0), input);					\
+>  	err;								\
 
-On Tue, Jun 22, 2021 at 08:12:48PM -0500, Bjorn Andersson wrote:
-> On Tue 22 Jun 15:29 CDT 2021, Uwe Kleine-K?nig wrote:
-> > On Mon, Jun 21, 2021 at 10:09:48PM -0500, Bjorn Andersson wrote:
-> > > +		/*
-> > > +		 * PWM duty cycle is given as:
-> > > +		 *
-> > > +		 *   duty =3D BACKLIGHT / (BACKLIGHT_SCALE + 1)
-> > > +		 *
-> > > +		 * The documentation is however inconsistent in its examples,
-> > > +		 * so the interpretation used here is that the duty cycle is
-> > > +		 * the period of BACKLIGHT * PRE_DIV / REFCLK_FREQ.
-> >=20
-> > I don't understand this.
-> >=20
-> > > +		 *
-> > > +		 * The ratio PRE_DIV / REFCLK_FREQ is rounded up to whole
-> > > +		 * nanoseconds in order to ensure that the calculations are
-> > > +		 * idempotent and gives results that are smaller than the
-> > > +		 * requested value.
-> > > +		 */
-> > > +		tick =3D DIV_ROUND_UP(NSEC_PER_SEC * pre_div, pdata->pwm_refclk_fr=
-eq);
-> > > +		backlight =3D state->duty_cycle / tick;
-> >=20
-> > You're loosing precision here by dividing by the result of a division.
->=20
-> The actual period is also a result of a division and after spending too
-> many hours scratching my head I reached to conclusion that this was the
-> reason why I wasn't able to get the duty cycle calculation idempotent
-> over the ranges I tested.
+Don't we wanna do the same for XSTATE_OP() too?
 
-How did you test? Using the sysfs interface?
-=20
-> But in my effort to describe this to you here, I finally spotted the
-> error and will follow up with a new version that does:
->=20
->                 actual =3D NSEC_PER_SEC * (pre_div * scale + 1) / pdata->=
-pwm_refclk_freq);
->                 backlight =3D state->duty_cycle * (scale + 1) / actual;
+Because restore_hwregs_from_user() could call
+xrstor_from_user_sigframe() too which ends up doing XRSTOR and latter
+can cause a #PF too.
 
-So the first term ("actual") is the period that you get for a given
-pre_div, scale and pwm_refclk_freq, right? And the 2nd ("backlight")
-defines the register value to configure the duty_cycle, right?
+Hmm.
 
-I wonder: Is it possible to configure a 100% relative duty cycle? Then
-backlight would be scale + 1 which (at least if scale is 0xffff) would
-overflow the 16 bit register width?!
+-- 
+Regards/Gruss,
+    Boris.
 
-> > > +static void ti_sn_pwm_get_state(struct pwm_chip *chip, struct pwm_de=
-vice *pwm,
-> > > +				struct pwm_state *state)
-> > > +{
-> > > +	struct ti_sn65dsi86 *pdata =3D pwm_chip_to_ti_sn_bridge(chip);
-> > > +	unsigned int pwm_en_inv;
-> > > +	unsigned int pre_div;
-> > > +	u16 backlight;
-> > > +	u16 scale;
-> > > +	int ret;
-> > > +
-> > > +	ret =3D regmap_read(pdata->regmap, SN_PWM_EN_INV_REG, &pwm_en_inv);
-> > > +	if (ret)
-> > > +		return;
-> > > +
-> > > +	ret =3D ti_sn65dsi86_read_u16(pdata, SN_BACKLIGHT_SCALE_REG, &scale=
-);
-> > > +	if (ret)
-> > > +		return;
-> > > +
-> > > +	ret =3D ti_sn65dsi86_read_u16(pdata, SN_BACKLIGHT_REG, &backlight);
-> > > +	if (ret)
-> > > +		return;
-> > > +
-> > > +	ret =3D regmap_read(pdata->regmap, SN_PWM_PRE_DIV_REG, &pre_div);
-> > > +	if (ret)
-> > > +		return;
-> > > +
-> > > +	state->enabled =3D FIELD_GET(SN_PWM_EN_MASK, pwm_en_inv);
-> > > +	if (FIELD_GET(SN_PWM_INV_MASK, pwm_en_inv))
-> > > +		state->polarity =3D PWM_POLARITY_INVERSED;
-> > > +	else
-> > > +		state->polarity =3D PWM_POLARITY_NORMAL;
-> > > +
-> > > +	state->period =3D DIV_ROUND_UP(NSEC_PER_SEC * (pre_div * scale + 1)=
-, pdata->pwm_refclk_freq);
-> > > +	state->duty_cycle =3D backlight * DIV_ROUND_UP(NSEC_PER_SEC * pre_d=
-iv, pdata->pwm_refclk_freq);
-> >=20
-> > If you use
-> >=20
-> > 	state->duty_cycle =3D DIV_ROUND_UP(backlight * NSEC_PER_SEC * pre_div,=
- pdata->pwm_refclk_freq);
-> >=20
-> > instead (with a cast to u64 to not yield an overflow) the result is more
-> > exact.
-> >=20
->=20
-> The problem with this is that it sometimes yields duty_cycles larger
-> than what was requested... But going back to describing this as a ratio
-> of the period this becomes:
->=20
->         state->duty_cycle =3D DIV_ROUND_UP_ULL(state->period * backlight,=
- scale + 1);
-
-I saw your next iteration of this patch set, but didn't look into it
-yet. Note that if it uses this formula it sill looses precision.
-Consider:
-
-	pwm_refclk_freq =3D 1333333
-	pre_div =3D 4
-	scale =3D 60000
-	backlight =3D 59999
-
-then you calculate:
-
-	state->period =3D 180000796 (exact value: 180000795.00019875)
-	state->duty_cycle =3D 179994797 (exact value: 179994795.0736975)
-
-so duty_cycle should actually be reported as 179994796. That happens
-because state->period is already the result of a division, you get the
-right value when doing:
-
-	state->duty_cycle =3D round_up(NSEC_PER_SEC * (pre_div * scale + 1) * back=
-light, (scale + 1) * pdata->pwm_refclk_freq)
-
-> > I still find this surprising, I'd expect that SCALE also matters for the
-> > duty_cycle. With the assumption implemented here modifying SCALE only
-> > affects the period. This should be easy to verify?! I would expect that
-> > changing SCALE doesn't affect the relative duty_cycle, so the brightness
-> > of an LED is unaffected (unless the period gets too big of course).
-> >=20
->=20
-> I think the hardware is two nested counters, one (A) ticking at REFCLK_FR=
-EQ
-> and as that hits PRE_DIV, it kicks the second counter (B) (and resets).
->=20
-> As counter A is reset the output signal goes high, when A hits BACKLIGHT =
-the
-> signal goes low and when A hits BACKLIGHT_SCALE it resets.
-
-then we would probably have:
-
-	period =3D (scale + 1) * pre_div / refclk
-
-but not
-
-	period =3D (scale * pre_div + 1) / refclk
-
-=2E The former would be nicer because then in the calculation for
-duty_cycle the factor (scale + 1) would cancel.
-
-> Per this implementation the actual length of the duty cycle would indeed
-> be independent of the BACKLIGHT_SCALE,
-
-In your formula for duty_cycle scale actually does matter. So I think
-we're not there yet?
-
-> but the length of the low signal (and hence the ratio, which results
-> in the actual brightness) does depend on BACKLIGHT_SCALE.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---2vpq5rw3nar65532
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDS8NgACgkQwfwUeK3K
-7AkmWQf8Cgehquu/iCwmNawhGxiQwrqeAVFvnlUEWyBetJg5IOeaL/HMb/zQmUI0
-17YHKce8WtlQl+ggyPiXOw03Hj9Hdgg22AEi/AlBpUTCj3uRiuL2h18UqFTzDqO6
-diXK5vaukl67y1+ty3wt1Nn6tkTidC3+3+z7gN4Rii0ww6q/RN50KacD/Hw3c/qU
-rX1VpxznBhAH7YIL3K2++yeD/rHWCZJyaMgKCDV0v03RHxOkVZc4P6NgJreGYRfA
-2x3mANPFi1GrIhZBvVEMApz5bIjiIjSyaY/ZHXKfpPGNKNe4p4ls2Gy8vOR0/w6L
-Jlo1kmWoQV06Bja5wxVbT8aLDNsbHw==
-=+/kF
------END PGP SIGNATURE-----
-
---2vpq5rw3nar65532--
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
