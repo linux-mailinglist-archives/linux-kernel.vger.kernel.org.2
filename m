@@ -2,121 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8DA23B14AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD533B14AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhFWHfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 03:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbhFWHfS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 03:35:18 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A3C5C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 00:33:01 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id f13so1646629ljp.10
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 00:33:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=YZemia2xkd9wPxf7PYIuUdoUM88tBDTDZzMRx7UGxbI=;
-        b=GfHaiQ+9dIGdjyaQLgempGl1KINMmr3YRF7D4wIkxctZlc9Det8VtdI2vY+KW1RABi
-         RlLB461SzAOy7eW5xXiO4QrJbQFjKRh02YPLm9FuNDAsSZJ3+/Pya0GCDpFNwKeVzRUY
-         9L9zI++esx59hHSg4upM+RXbCmm30qw+RE89EVeWmUTswYkgOrjlQqe9J9Y2iQAtmJbT
-         3o8rsqQehe99/nr5/Cp32XFWlCHs+Xmv+01P62t6HLtDd20RC8+ui3tPa7B6lHq6AxLk
-         ttzCtSuwBABrFc0Iu7K1Uh/hzmO2lX53IWxVAbTbK2Jb8gFp+ovD22+calRRL4kdG5so
-         q5tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=YZemia2xkd9wPxf7PYIuUdoUM88tBDTDZzMRx7UGxbI=;
-        b=XUozyu1GmfUrjUMIgW2sMu6zYEfzTEd5mFxqLMLWI2qqJLsIEOm9U0OSoUSPVd4av2
-         8fLTb+XqceTG/pfVesBoI65+hPIua+49sGUJZreZO1QBrIouVcDvnFehWwtI/FAh0Wt4
-         XzP422qnwHhBT+2JTEU8ru1eAU6v5NGH3Ngjz4vZ6VfjEq51CW7G45jVv7vH8zhLgC7G
-         q0T56YUybGSKPJ6kTyJg9nmSKtOvQfrqmYUw454DJL9yeqn99c56SdwIC0J8zM495saj
-         zYPp0sGMKN3fGmK8VLxAWdW24uSa11Gg+aUYv6AgRwvgthLREGYLR38NHndq/XhRVfqs
-         /7LA==
-X-Gm-Message-State: AOAM530ZovyDnl5it7fYBorWaNzxcy10MhaTbu11nC7kU6n5JgjXP2s2
-        FbYb6ZcWG0SmPIDj5EL0MJE=
-X-Google-Smtp-Source: ABdhPJxJtSHXZTH9k9mfjaw0yxkiKK6KeX3EYm+tlF1m1UoKVf8S59+ZjYAFAiXbmik1WnhotcwI5A==
-X-Received: by 2002:a2e:b790:: with SMTP id n16mr6712264ljo.9.1624433579918;
-        Wed, 23 Jun 2021 00:32:59 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id h22sm240173ljl.126.2021.06.23.00.32.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 00:32:59 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 10:32:56 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Simon Ser <contact@emersion.fr>
-Cc:     Werner Sembach <wse@tuxedocomputers.com>, sunpeng.li@amd.com,
-        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, airlied@linux.ie,
-        amd-gfx@lists.freedesktop.org, tzimmermann@suse.de,
-        rodrigo.vivi@intel.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com
-Subject: Re: [PATCH v4 09/17] drm/uAPI: Add "active color range" drm
- property as feedback for userspace
-Message-ID: <20210623103256.01d680ba@eldfell>
-In-Reply-To: <k_QeCRpur3SNNIspBiTHOTT6Oj1pSteEO3MzyQFUG0lSXmEqJUI2tMXJ6wR9chzUHGahdQApJZrUxdJvIv6s8aXr2DBdoHg-2PsGH4kEMyA=@emersion.fr>
-References: <20210618091116.14428-1-wse@tuxedocomputers.com>
-        <20210618091116.14428-10-wse@tuxedocomputers.com>
-        <20210622100042.4041624a@eldfell>
-        <56d079d4-841a-0ca5-b8a6-d2c10f91d211@tuxedocomputers.com>
-        <k_QeCRpur3SNNIspBiTHOTT6Oj1pSteEO3MzyQFUG0lSXmEqJUI2tMXJ6wR9chzUHGahdQApJZrUxdJvIv6s8aXr2DBdoHg-2PsGH4kEMyA=@emersion.fr>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230101AbhFWHfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 03:35:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33514 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230037AbhFWHfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 03:35:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6074C6101D;
+        Wed, 23 Jun 2021 07:33:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624433597;
+        bh=cSE4gvzltu40U/D3KFAbFM/4HN3+SscDhof3gpvHaJQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LsLrtEc96Fn6TLLI416f3+gEA4o78vBtze3/liP0+ob0AoBER5bXgOz7B9Mfi7pMo
+         pqRWDnbrSpcMtikE/3Hk7QGlcFZ5krUX6OGFSbYnQsYIe7VsaGpZ+BynW9+aiUNyZX
+         YoVDw0IbgnPf7yVnto3kwhbbV6Qm8+19GpMPVn1uSEzXrf5zZUz1DIe0r03DSp+xA3
+         5ErCmKBIdzhsDdmPw9GVg5fM8UaxhXBnVGzLWO28B/vJm2VAKaYQK/3mhHmRr/OHZG
+         Buj+Sm2tinYfUkDjQbiI2LyZcqY6KnbbY5kIMa17IJqo0cv4y67HsHl3ZvTBYdg5Em
+         nNiCihKKamJ+Q==
+Date:   Wed, 23 Jun 2021 09:33:12 +0200
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     YP WU <yp.wu@mediatek.com>
+Cc:     <leo.hsiao@mediatek.com>, <Lecopzer.Chen@mediatek.com>,
+        <gustavoars@kernel.org>, <hverkuil-cisco@xs4all.nl>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <Jason-BF.Huang@mediatek.com>, <francis.lee@mediatek.com>
+Subject: Re: How to use "DTV_FE_CAPABILITY" command for Frontend.h of Linux
+ DVB
+Message-ID: <20210623093312.6f9883a5@coco.lan>
+In-Reply-To: <20210623061551.10453-1-yp.wu@mediatek.com>
+References: <20210623061551.10453-1-yp.wu@mediatek.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/og1XePoz.LGaKFtP+VtKobU";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/og1XePoz.LGaKFtP+VtKobU
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On Tue, 22 Jun 2021 11:48:52 +0000
-Simon Ser <contact@emersion.fr> wrote:
+Em Wed, 23 Jun 2021 14:15:51 +0800
+YP WU <yp.wu@mediatek.com> escreveu:
 
-> On Tuesday, June 22nd, 2021 at 11:50, Werner Sembach <wse@tuxedocomputers=
-.com> wrote:
+> Hello, dvb frontend maintainer:
+> 	I work at mediatek company. Currently I develop TV with Linux DVB system=
+.   =20
+> 	I would like to implement the following LNB use cases: user space would =
+like to know if frontend device node have LNB or not.
+
+
+I need to understand more about the use case.
+
+The main scenario of userspace needing to know about LNB is on Satellite=20
+systems. For those, knowing that the standard is DVB-S/S2, ISDB-S, ... is
+enough to know that a LNB should be controlled.
+
+However, userspace needs more than the Kernel can provide, as the LNB is
+an external component, located at the satellite dish.
+
+Such kind of LNB may implement DiSEqC in order to allow certain control
+from the device powering them, but there are several LNB types that
+don't provide any control.
+
+Even when those that implement DiSEqC 1.x, there's no way to query the=20
+LNB properties.
+
+Only after DiSEqC 2.x, there's a way for the LNB to send data back to
+the digital TV receiver.
+
+Also, some satellite systems are configured as multipoint. On those,
+the LNBf power/control can be done by a centralized equipment. Depending
+on the type of arrangement, the LNB control can be set to OFF, as all
+channels are received on different intermediate frequencies.
+
+Due to such huge differences, and the lack of a way for the Kernel
+to retrieve the satellite configuration, what happens is the
+other way around: it should be up to userspace to tell the Kernel=20
+about it, asking it to turn on/off the LNB power, set the DC voltage
+and send/receive DiSEqC commands.
+
+-
+
+That's said, a few devices may have a low noise amplifier that
+could be turned on in order to boost the signal gain. The
+DTV_LNA is meant to control it.
+
+Currently, the only way to know if LNA is there is to try to
+set it, and check for the return code.
+
+
+> I want to use "DTV_FE_CAPABILITY" to represent above LNB capability, but =
+I am afraid that my usage is not suitable to the original definition.   =20
+> So I would like to consult the following quesitons:=20
+> 1. The use case for DTV_FE_CAPABILITY in DVB property command.
+> 2. Does it have any restriction for using this command?
+> 3. What=E2=80=99s your suggestion for using this command?
 >=20
-> > Unknown is when no monitor is connected or is when the
-> > connector/monitor is disabled. =20
+> File path: include/uapi/linux/dvb/Frontend.h
+> #define DTV_FE_CAPABILITY	16
 >=20
-> I think the other connector props (link-status, non-desktop, etc) don't
-> have a special "unset" value, and instead the value is set to a random
-> enum entry. User-space should ignore the prop on these disconnected
-> connectors anyways.
 
-That sounds fine to me.
+We need to better implement DVB capabilities at the subsystem.
 
+The DTV_FE_CAPABILITY property is meant to duplicate the DVBv3
+FE_GET_INFO capabilites (fe_caps), but there are very few bits
+left there. They aren't enough to provide all possible capabilities
+of a DVB system.
+
+I mean, for instance a DVB-S2 device may support only a subset
+of DVB-S2 modulation types. They may eventually not support PLP,
+and so on. The number of possible combinations is a way larger
+than a 32-bits caps could possible support.
+
+We had some upstream discussions about how to improve it in the
+past, but nothing got merged.
+
+IMO, if you're willing to work on a better way to report the
+device's capabilities, we should probably implement a new DTV
+property.
 
 Thanks,
-pq
-
---Sig_/og1XePoz.LGaKFtP+VtKobU
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmDS46kACgkQI1/ltBGq
-qqfLkw/+P6NaSOYz6suNSIJr6eu3bQ5Vjrs9V+oj+mwVKm9pq+WeE6l5yfRZpCMg
-FT0hQ0qGdXuIAnn/LpNjkLMjHJHTH4RdiE4y7UpOn3hxkXO4mYnQne1qw58dKsSC
-ZD4Zab6KBeJIQQ+pFzXP/8OeBszusmfxBrpOAEu5zI3GT9it+YqNHSIwsYTBeWSl
-unLG6slUBvLsQ8YmbaPapOH4VBLyOFJCIgFKGB086yD1vu/TF41S+U0suq+FsiWF
-tPr6hfYMv3EM82PTD1UFJEs4tZlLXpP9saX9ChWGOCHU42WAW3P1pOF/9mDHOsZb
-a3V0UY4W9cymrqUDz1ObBRnvGVT9OiLg4yIw5RilUg3X0xOigaftalTUgOysndY2
-PU7Wh+cPTwi4jkBIUVZQgViQ46btsdGVUBSa2t7VCvdN1Le+DxQ5IMN0P7b+63VP
-tVbAAqFbuApCxrtPO1/N24DCS0ZWx/UG4HkJtwDsk+7izQkFMyNdIO+QfnFbNG9W
-ANZ9SSweN4DlQeS1PyDiRye8Vx/tHFf05V1Vu2qSm9lXMsQPVI+r5JU2PldstOJM
-MCZ2p0BhETEa9qthpW4Ozb5hWUmjKZBbkDC6OrSg1eUo9P1e4bmuCS6XIdCdx23Y
-DvCmNmMOWQ89qzdOka3FmP4MA/uCQ33HfJZy+HR2A/4S1ONH89M=
-=9fd3
------END PGP SIGNATURE-----
-
---Sig_/og1XePoz.LGaKFtP+VtKobU--
+Mauro
