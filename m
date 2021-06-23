@@ -2,179 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A1A3B2408
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE303B240A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhFWXmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 19:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhFWXma (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 19:42:30 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D72BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 16:40:11 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id r16so5210966ljk.9
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 16:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m22T5sLi5MlC7izMU83G6XELshO1TaCPD5d1ECbMfac=;
-        b=kYlOcxydYne7K3UofWUlouyNMEFl8Ul06Flm3MVhkhmJfe8bLDR4bHZD4KvVWkBIgY
-         qc7E/sbFvHltDrrnGBn2x3sRPKJdT9KHVxas98fbgfi819yGP1WrsW4XoNjKrtPmR95k
-         rJQjQI5F69ZukAtJI9FbH5wpS0KsBHnMhBO0WtuK0v8nXQF1tslMUK3qwlyuFtWCuNnD
-         nX4JA1CGHRfrzv0fqmwVktpzPHfGivDVn3xnRoODT0pOIm82K0BJru6bzzmSZbpigUBA
-         MbjYbgrN4PuClJvu7Szn/WhFGiUSxOXCc3JPiQNbgrnRUQK3fbOSMfYmUvhY1hnEa7Qd
-         CHDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m22T5sLi5MlC7izMU83G6XELshO1TaCPD5d1ECbMfac=;
-        b=ER56ilyZMrXMhUWyLgq3agETYNVGF0zYFcY8fTGBuJEutLDnVFmHPFboKCNZ7Ljhvy
-         IeR24oHYMtqvsu/OuShTPBMKViprRcQ48WYwiijAhHt2DrmOD/ulSgRBv4Lodz6soK7a
-         uonj16YdOv1X2IqhuXfZkirk/XC7r4pCLp1iODLd6Ftkv9iGcOP8ra9hRWZFygmI82LL
-         nHpFMTt1GaCQ3DSoSkVbx1pdep8+rUB5W9zoDa7oNHbve/JE6O6iYfbSPnT/DfVDKvV6
-         ttoDPMpfpYKbHcJ5MYYddfUHnWLWEK1qFjZkSv2Ua0H+q5y0akMRsDoF2aC2El/x2Ia5
-         o4oA==
-X-Gm-Message-State: AOAM5322CNQks6krPNtDG7NsHfDAYT1ZVzNL73y4WVuXBbFeqEfFf8Nt
-        4HX+M57IiucxSkSCuUm5ojDudqCi8f7WMfcMEMAPfA==
-X-Google-Smtp-Source: ABdhPJzOF4Ju7gn+qrrFwHzrEs5fB36HGogB9jife7y/otPbrov9r4mj4mrsoTx3PREkTDMDLa3Qw1NKN87uyvS8OPo=
-X-Received: by 2002:a2e:a492:: with SMTP id h18mr1567944lji.495.1624491609801;
- Wed, 23 Jun 2021 16:40:09 -0700 (PDT)
+        id S229999AbhFWXnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 19:43:32 -0400
+Received: from mga18.intel.com ([134.134.136.126]:44431 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229755AbhFWXna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 19:43:30 -0400
+IronPort-SDR: n7ldQHDoanCFoBsmpybmt/jlNvtG0O9nd2rFJr76c/8zpY/L3GWJjEDLk3fGduOjYWwLqvh+Yt
+ Kh4aBzSyZehw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="194666792"
+X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
+   d="scan'208";a="194666792"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 16:41:12 -0700
+IronPort-SDR: IR+qu0Q4QcWy1+J31thSeCmmzqnIRzFdJ7FlONM87ZPg0biFHeJ/YnNig7sY11FRUwM5yLwyaB
+ 3nY7mpmkRAdg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
+   d="scan'208";a="490898217"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga002.fm.intel.com with ESMTP; 23 Jun 2021 16:41:12 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Wed, 23 Jun 2021 16:41:11 -0700
+Received: from fmsmsx605.amr.corp.intel.com (10.18.126.85) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Wed, 23 Jun 2021 16:41:11 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Wed, 23 Jun 2021 16:41:11 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.105)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Wed, 23 Jun 2021 16:41:11 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OoB1cbyw+qwYOa5C+NYQlnVkhPaAihl09vDQqMsvvXzU3FcgIp/raVcz9F4DwZbbCgmMh81jMmsRK+HXNhT6ZUNDZ+5pAi2qYBgq2OPR0E10iDjC/Y6X2/R10hg6qgD3+TKjmGlPPRASGxFUn3QEYxT6cxM/T1lossyYuyeOL7lGwk7zWkliTbIMzfeqhAKRnJKlS1t8ZW8wCBQktEd1a3p3ySYkF8tG1R1dVlFZP9psry4vYW4g+V1FDoqoXCIyOgdcqho80m4II4+zW/KaTaGHeqkTRmA9L9JV41i0yfo/12pEaDQFlfhCapp3BU1YEuAPLZW1Vxq6Gtmiplu+lg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a+PKy3KH3v8RBMkiPZFTn3sZUKj1uALSqOA0guyjYS0=;
+ b=Q7/AvKxr9JFQFInEbSN/E7LE6c7CtQIjik4yOPAIIRbi9xU3YOn7yY+iv8SuxgrFOdcqd3wPgMvd+K/1DQQZUMpphf+KKsZjWzg5kpO5kI3+imKfxO/7Epkb9wJ6U+DVbN59zefj689IBxqBAOwp2NjyB5ZA5IEWpKlyn0cU/n8sBZ9vAAshcbcotI+Sw04R5QkpkA5FWL9Mh3e8bi5tqR6R6mS9V09A5061/l/fi5Mr1n5lOe5bx/48eGjCImp/HMi41yko4mdCdfbYbZA/ThPQh+GcuJuaag7dXtMlAf7R5pNcPsAic5PWxIkeQK+5PwxuwNm6hh34qt8zOA5TJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a+PKy3KH3v8RBMkiPZFTn3sZUKj1uALSqOA0guyjYS0=;
+ b=j4+hKqO2IfwjOrL9MLjV4j5QzhSZdqjoilD9KqNzSdfeFz1qYNwln707kjd6KLI1nEV3zRuc9Yafmu8HFUx91q0qznxoPgXmbVVTsLKKWhPJVvh4Cx0PO1Zj+TUDptnLC7Wz5rYXDHoKIPWXj1FIcaEk3ipmtx07u6l22J6v01U=
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com (2603:10b6:300:110::9)
+ by MWHPR11MB1696.namprd11.prod.outlook.com (2603:10b6:300:23::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19; Wed, 23 Jun
+ 2021 23:41:09 +0000
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::6597:eb05:c507:c6c1]) by MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::6597:eb05:c507:c6c1%12]) with mapi id 15.20.4242.024; Wed, 23 Jun
+ 2021 23:41:09 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, KVM <kvm@vger.kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        "Bjorn Helgaas" <helgaas@kernel.org>
+Subject: RE: Virtualizing MSI-X on IMS via VFIO
+Thread-Topic: Virtualizing MSI-X on IMS via VFIO
+Thread-Index: AddnMs7+4GfLhTceT8q8tdV8716lmQAZ7UiAAAoHBgAACsXtAAAX4LwAAABVr4AADozDgA==
+Date:   Wed, 23 Jun 2021 23:41:09 +0000
+Message-ID: <MWHPR11MB188642E26DB4D5C541E5DCF18C089@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <20210622131217.76b28f6f.alex.williamson@redhat.com>
+ <87o8bxcuxv.ffs@nanos.tec.linutronix.de>
+ <MWHPR11MB1886811339F7873A8E34549A8C089@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <87bl7wczkp.ffs@nanos.tec.linutronix.de>
+ <20210623164109.GL2371267@nvidia.com>
+In-Reply-To: <20210623164109.GL2371267@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.142.21]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b26ddc81-d6b8-4608-2cd2-08d936a060aa
+x-ms-traffictypediagnostic: MWHPR11MB1696:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR11MB1696E36F109C5ED6093CE3DE8C089@MWHPR11MB1696.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: GcONv4nxkHdImTyxUXTAuIymMPYIN2Y4hSqzHODMWy7IldJ14q4QOsZJnsA7vbHoqLdw1goLNISSNFy1pC/Ms6OG3sgQ1x74fyrNCAYatddekp5Dmv4HhIWTG8D6Wp4bLoY6Mvo1bpmX7TQc53T3i31Xfew0GWTTOnb4oN/mAjfDIceXrYdsTfuWtJt5wiUlU24hjMk2SQxiKJYGRVYXN5dMHVEyBWtBapieKSqlRk+uoYG5fEYwLisW6DiWBt6S/B23+nZzT68sWlWMeJx0ZJQT+kzdB8WfHGKWyJaFiTgvBbaFU4wgX492f7JcdVCJXoHXi1AF12akBZXY2MG6ZcxQ8UoZb/4+oN0MB8s8iBIEB+MWRI1oA358EYchmHdQMcQd1vtaHYkMYzOFm3dEw4jVH0fpwJaSIlFzsZUwCrtEkGvFVEKb8wlIk7j2qeVJg8P9cspIHdgEo6qLqhRKXhs0AA/qTFVedfyJRBeazGVDQfdcOJ7eMtFKDEiYpglOxVjleVmUNvtwAZa//rA3ydDDai+r5RTYF2KMK21viJgCGVP/dx1e+ehrukIITIxfUOAMfShXQ4jAlOvs6P+qMXuGbaUqsB4odd+z/nRs9vs=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1886.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(376002)(136003)(39860400002)(396003)(7416002)(86362001)(52536014)(122000001)(5660300002)(38100700002)(316002)(9686003)(55016002)(26005)(4326008)(8676002)(7696005)(186003)(71200400001)(2906002)(33656002)(6506007)(8936002)(66946007)(76116006)(54906003)(478600001)(66556008)(64756008)(66446008)(66476007)(110136005)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?FhOBc757L0+06lpEF8nsrKnvZNqczOMzrXFb1I2DYz7XdrC0bXEG5QpC8wIS?=
+ =?us-ascii?Q?vSTapUaA7K13XGm6AL1lZPALPnvkyeI+2BG276eLTOFyHgIy0IBaUwD3XA84?=
+ =?us-ascii?Q?4gWTd6ALYeFq7D9C5lxBefzhJLDZudwy1iC2wXOZrZPU7fj3M370vbSk/7Xv?=
+ =?us-ascii?Q?R/IHursGISe8fSUbl7CBshIVgTBKoHtAPSwGoqEC3cnNBJw07RlaQ4my1MU0?=
+ =?us-ascii?Q?aZUs2bNlD9sg4oeOqRIwM8TwKAEI/nUeWQrTAEjGLO/0WLbjMz0xPIyybgwS?=
+ =?us-ascii?Q?AfDsptXnj3bX0qRIh9zIK+A4vg3YlevfdBU3l7JawEqoTPzgDGrNgMbG8Qwa?=
+ =?us-ascii?Q?YaMgQCeUsm5czXr7jJ1n6ABLFz5efC2f44baV2whqV+hGhi1VVIR+rfwk9/N?=
+ =?us-ascii?Q?m8q8gBe9MNXsEZ7Q0SCE8x2tgq5cDq80Wn526fSeLboUMDr1QbMnyVhttu7s?=
+ =?us-ascii?Q?5mdHFhReh+qqko8e28+jMP0Ab77+rsrdDDtN7sb4Oek+AfJizZseaLn8VmoV?=
+ =?us-ascii?Q?BGuCn+x3a3TB08TIQygxsKCxTy3g/Hl5REFq5RZp37gvCmvR7K34JGS87qV0?=
+ =?us-ascii?Q?xDCVADYlgnth53DyJqwCmjPa+l04SYFFExSCjyXGOVxtuA+M4Cqlge1IrjuQ?=
+ =?us-ascii?Q?DaSOAqDlaaVnHLfcCBUXhwv6UUQPXZ8qhTolpRYQFy/tYQf8EfiwdV8k6/7b?=
+ =?us-ascii?Q?iBgsepr9aso4ryJpbz2zyC6dej6GVglHEbGYCWRhRkiW+rh0Vna4CkCQJsUv?=
+ =?us-ascii?Q?ELG+xE6Jehx3nBQC+5zVo6SBKza7dC7iP5/Dwip36dQUGHSHVNU2WvL6Jdzt?=
+ =?us-ascii?Q?ZypaWVL4cf/pMp0+kJ7Kypv4ijO54OWyB7RhxJTNLUXMt0cJPXOnuYnzElPt?=
+ =?us-ascii?Q?ZJEVlmKAaR61ltBCBprcH65ZEmR3dM4J4Ztnz+YYAe9hACSzZOIcGWE0HZjh?=
+ =?us-ascii?Q?DPSr80YS+TRuevSOs+YxtmRrjGpMXQ0w9G7zQOcqExjkTy7hQFea5Gl/XFHz?=
+ =?us-ascii?Q?mf+vQCjZFm94VxVq6Ixu27+/i5ZUwEApZPP4e67xOh6bNpvtpgO/p0NniN+5?=
+ =?us-ascii?Q?QN8KEiX0uEMnrjq/y6RJmkW3jLEq3LIERPqMZtwgjNYcuSFbVvd8arT9AUbS?=
+ =?us-ascii?Q?bL7DPTaxibGbJxxUQu/ZQu8P1zfkWWqyfEObLwqTELp2ERupo3CaCqf+Bmbs?=
+ =?us-ascii?Q?6kbBJkoSEOh3Rs5alfv0GgveJG2t8QiWJmhcc8WqoUf8JVwy0VNNyClcORWN?=
+ =?us-ascii?Q?K/C2hUxtsJcd6KV1vvj2Ai9gladHn2KnmkTTuNQGPbU+LDn4kMmN9CXZywET?=
+ =?us-ascii?Q?B+fe2BRJ8j50kNZhpIYCVn2p?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <CA+G9fYsWHE5Vu9T3FV-vtHHbVFJWEF=bmjQxwaZs3uVYef028g@mail.gmail.com>
- <CA+G9fYvvf+XTvZg1sTq4_f9OrVFsCazGo0ozaEbjVYgSeKCkWA@mail.gmail.com>
- <YMtTdU2b9fI3dnFD@casper.infradead.org> <YMuOSnJsL9qkxweY@archlinux-ax161>
- <6f3c5317-2877-9a57-0126-e9305f000269@linux.ibm.com> <YM0mrZIPM+sWTDHf@Ryzen-9-3900X.localdomain>
-In-Reply-To: <YM0mrZIPM+sWTDHf@Ryzen-9-3900X.localdomain>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 23 Jun 2021 16:39:56 -0700
-Message-ID: <CAKwvOd=w0iPT_LLHQ48Mq3XCZcW9dZNRTpq+0OyVEjsg-VRXOw@mail.gmail.com>
-Subject: Re: [next] [clang] x86_64-linux-gnu-ld: mm/mremap.o: in function
- `move_pgt_entry': mremap.c:(.text+0x763): undefined reference to `__compiletime_assert_342'
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        lkft-triage@lists.linaro.org, LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1886.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b26ddc81-d6b8-4608-2cd2-08d936a060aa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jun 2021 23:41:09.2179
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: sHZAZI+uwCB0Mge7/+TIamQEPh+UBqDtf5IGzb/aOessM9SgQHkUKvc8kNEoHRD3lnUTRM/1U3pcH2/RnyFdgQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1696
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An additional report:
-https://lore.kernel.org/lkml/20210623223015.GA315292@paulmck-ThinkPad-P17-Gen-1/
-EOM
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Thursday, June 24, 2021 12:41 AM
+>=20
+> On Wed, Jun 23, 2021 at 06:31:34PM +0200, Thomas Gleixner wrote:
+>=20
+> > So IMO creating a proper paravirt interface is the right approach.  It
+> > avoids _all_ of the trouble and will be necessary anyway once you want
+> > to support devices which store the message/pasid in system memory and
+> > not in on-device memory.
+>=20
+> I think this is basically where we got to in the other earlier
+> discussion with using IMS natively in VMs - it can't be done
+> generically without a new paravirt interface.
+>=20
+> The guest needs a paravirt interface to program the IOMMU to route MSI
+> vectors to the guest's vAPIC and then the guest itself can deliver an
+> addr/data pair directly to the HW.
+>=20
+> In this mode qemu would not emulate MSI at all so will avoid all the
+> problems you identified.
 
-On Fri, Jun 18, 2021 at 4:05 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On Fri, Jun 18, 2021 at 10:32:42AM +0530, Aneesh Kumar K.V wrote:
-> > On 6/17/21 11:32 PM, Nathan Chancellor wrote:
-> > > Rebuilt the CC list because most people were added based on the
-> > > incorrect bisect result.
-> > >
-> > > On Thu, Jun 17, 2021 at 02:51:49PM +0100, Matthew Wilcox wrote:
-> > > > On Thu, Jun 17, 2021 at 06:15:45PM +0530, Naresh Kamboju wrote:
-> > > > > On Thu, 17 Jun 2021 at 17:41, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> > > > > > x86_64-linux-gnu-ld: mm/mremap.o: in function `move_pgt_entry':
-> > > > > > mremap.c:(.text+0x763): undefined reference to `__compiletime_assert_342'
-> > > > >
-> > > > > The git bisect pointed out the first bad commit.
-> > > > >
-> > > > > The first bad commit:
-> > > > > commit 928cf6adc7d60c96eca760c05c1000cda061604e
-> > > > > Author: Stephen Boyd <swboyd@chromium.org>
-> > > > > Date:   Thu Jun 17 15:21:35 2021 +1000
-> > > > >      module: add printk formats to add module build ID to stacktraces
-> > > >
-> > > > Your git bisect probably went astray.  There's no way that commit
-> > > > caused that regression.
-> > >
-> > > My bisect landed on commit 83f85ac75855 ("mm/mremap: convert huge PUD
-> > > move to separate helper"). flush_pud_tlb_range() evaluates to
-> > > BUILD_BUG() when CONFIG_TRANSPARENT_HUGEPAGE is unset but this function
-> > > is present just based on the value of
-> > > CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD.
-> > >
-> > > $ make -skj(nproc) ARCH=x86_64 CC=clang O=build/x86_64 distclean allnoconfig mm/mremap.o
-> > >
-> > > $ llvm-readelf -s build/x86_64/mm/mremap.o &| rg __compiletime_assert
-> > >      21: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT   UND __compiletime_assert_337
-> > >
-> > > $ rg TRANSPARENT_ build/x86_64/.config
-> > > 450:CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE=y
-> > > 451:CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD=y
-> > > 562:# CONFIG_TRANSPARENT_HUGEPAGE is not set
-> > >
-> > > Not sure why this does not happen on newer clang versions, presumably
-> > > something with inlining decisions? Still seems like a legitimate issue
-> > > to me.
-> > >
-> >
-> > gcc 10 also doesn't give a build error. I guess that is because we evaluate
-> >
-> >      if (pud_trans_huge(*old_pud) || pud_devmap(*old_pud)) {
-> >
-> >  to if (0) with CONFIG_TRANSPARENT_HUGEPAGE disabled.
-> >
-> > switching that to if (1) do results in BUILD_BUG triggering.
->
-> Thanks for pointing that out. I think what happens with clang-10 and
-> clang-11 is that move_huge_pud() gets inlined into move_pgt_entry() but
-> then the compiler does not figure out that the HPAGE_PUD case is dead so
-> the code sticks around, where as GCC and newer clang versions can figure
-> that out and eliminate that case.
->
-> > Should we fix this ?
->
-> Yes, I believe that we should.
->
-> > modified   mm/mremap.c
-> > @@ -336,7 +336,7 @@ static inline bool move_normal_pud(struct vm_area_struct
-> > *vma,
-> >  }
-> >  #endif
-> >
-> > -#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
-> > +#if defined(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
-> > defined(CONFIG_TRANSPARENT_HUGEPAGE)
-> >  static bool move_huge_pud(struct vm_area_struct *vma, unsigned long
-> > old_addr,
-> >                         unsigned long new_addr, pud_t *old_pud, pud_t *new_pud)
-> >  {
->
-> That works or we could mirror what has already been done for the
-> HPAGE_PMD case. No personal preference.
->
-> diff --git a/mm/mremap.c b/mm/mremap.c
-> index 9a7fbec31dc9..5989d3990020 100644
-> --- a/mm/mremap.c
-> +++ b/mm/mremap.c
-> @@ -460,7 +460,8 @@ static bool move_pgt_entry(enum pgt_entry entry, struct vm_area_struct *vma,
->                                       new_entry);
->                 break;
->         case HPAGE_PUD:
-> -               moved = move_huge_pud(vma, old_addr, new_addr, old_entry,
-> +               moved = IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
-> +                       move_huge_pud(vma, old_addr, new_addr, old_entry,
->                                       new_entry);
->                 break;
->
->
-> Cheers,
-> Nathan
+No emulation for PF/VF.
 
+But emulation might be required for mdev for two reasons:
 
+1)   the ims entries for mdevs are collapsed together;
+2)   there are other fields in ims entry which cannot allow guest to
+      control, e.g. PASID;
 
--- 
-Thanks,
-~Nick Desaulniers
+>=20
+> How to build that and provide backwards compat is an open
+> question. Instead that thread went into blocking IMS on VM situations..
+>=20
+> Jason
