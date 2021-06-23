@@ -2,102 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A77F3B152A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 710D43B152C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbhFWH4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 03:56:40 -0400
-Received: from mga09.intel.com ([134.134.136.24]:5726 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229920AbhFWH4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 03:56:38 -0400
-IronPort-SDR: O/eK9YFTvOAoyebV4dss7/TgAXR2wCMO2I8Qs7lKZc6M8wMT5HcGpjl9BbtXocfFKMrUunOd9f
- k6rIejALudUg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="207153186"
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="207153186"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 00:54:19 -0700
-IronPort-SDR: Ezel5oxpkWim0ATCfSltUKbIqfQvb8j2NWECbYR8dk1mliRU/ZVmo8dDE/8EFcsbTiWCljdjGj
- LNe43qP6XWug==
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="623758601"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 00:54:16 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id C8549201E1;
-        Wed, 23 Jun 2021 10:54:14 +0300 (EEST)
-Date:   Wed, 23 Jun 2021 10:54:14 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Yizhuo <yzhai003@ucr.edu>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: atomisp: fix the uninitialized use and rename
- "retvalue"
-Message-ID: <20210623075414.GF3@paasikivi.fi.intel.com>
-References: <20210623055634.12603-1-yzhai003@ucr.edu>
+        id S229978AbhFWH6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 03:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229844AbhFWH63 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 03:58:29 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C59BC061574;
+        Wed, 23 Jun 2021 00:56:11 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8wYy6pB8z9sVp;
+        Wed, 23 Jun 2021 17:56:06 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624434968;
+        bh=dFjgjrGzKqK0Sh1ApgF1a/SmVTexP434P8ROZMiZwUI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=s8gpUwaitzWnXzbw1Z+3iaLaSC5dQYX6hHCsha73veSB9wLJMYMXQwAMNBHgdMPDr
+         n82FUWg5cHLo+av6jCubYcp3XDYpKOvLRjzNCA2cDsh2L8k3IkYjuaG6vQsYtoWnzA
+         pH1n09xNihu0i26Se/HGnR2sgFxKLp/+qzNEghZPY+Y+oFVtwMtnSFq8OYC23NFLFS
+         VL7V4z2O1sdw8j8/kn3ZwKodVW2Xr+kjslk9SZHCH4eLoyOhXy7KvP/V5yjMq7nnsY
+         PtQH7R1/eimUlZ2Ny7CPk9ayiB/tvpdSd5yUyJmo+Nun4uh+aaZbIkXZrBY3E3coxq
+         4QJ/9BA2gaVig==
+Date:   Wed, 23 Jun 2021 17:56:05 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>, Greg KH <greg@kroah.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: linux-next: manual merge of the soundwire tree with the
+ sound-asoc-fixes tree
+Message-ID: <20210623175605.20b012cc@canb.auug.org.au>
+In-Reply-To: <20210622171936.1c147fbf@canb.auug.org.au>
+References: <20210622171936.1c147fbf@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210623055634.12603-1-yzhai003@ucr.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/2VFaH5iM_RIW9RefxXo/8Hu";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yizhuo,
+--Sig_/2VFaH5iM_RIW9RefxXo/8Hu
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 23, 2021 at 05:56:31AM +0000, Yizhuo wrote:
-> Inside function mt9m114_detect(), variable "retvalue" could
-> be uninitialized if mt9m114_read_reg() returns error, however, it
-> is used in the later if statement, which is potentially unsafe.
-> 
-> The local variable "retvalue" is renamed to "model" to avoid
-> confusion.
-> 
-> Signed-off-by: Yizhuo <yzhai003@ucr.edu>
-> ---
->  drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> index f5de81132177..fbd6c6cd84c8 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> @@ -1533,16 +1533,19 @@ static struct v4l2_ctrl_config mt9m114_controls[] = {
->  static int mt9m114_detect(struct mt9m114_device *dev, struct i2c_client *client)
->  {
->  	struct i2c_adapter *adapter = client->adapter;
-> -	u32 retvalue;
-> +	u32 model;
-> +	int ret;
->  
->  	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
->  		dev_err(&client->dev, "%s: i2c error", __func__);
->  		return -ENODEV;
->  	}
-> -	mt9m114_read_reg(client, MISENSOR_16BIT, (u32)MT9M114_PID, &retvalue);
-> -	dev->real_model_id = retvalue;
-> +	ret = mt9m114_read_reg(client, MISENSOR_16BIT, (u32)MT9M114_PID, &model);
+Hi all,
 
-This is over 80 characters.
+On Tue, 22 Jun 2021 17:19:36 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the soundwire tree got a conflict in:
+>=20
+>   include/linux/soundwire/sdw.h
+>=20
+> between commit:
+>=20
+>   d38ebaf2c884 ("soundwire: export sdw_update() and sdw_update_no_pm()")
+>=20
+> from the sound-asoc-fixes tree and commit:
+>=20
+>   031e668bc1ad ("soundwire: bus: Make sdw_nwrite() data pointer argument =
+const")
+>=20
+> from the soundwire tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> diff --cc include/linux/soundwire/sdw.h
+> index de9802a24e7e,ddbeb00799e4..000000000000
+> --- a/include/linux/soundwire/sdw.h
+> +++ b/include/linux/soundwire/sdw.h
+> @@@ -1040,10 -1039,7 +1039,10 @@@ int sdw_write(struct sdw_slave *slave,=
+=20
+>   int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value);
+>   int sdw_read_no_pm(struct sdw_slave *slave, u32 addr);
+>   int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
+> - int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val=
+);
+> + int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, const u=
+8 *val);
+>  +int sdw_update(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
+>  +int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val=
+);
+>  +
+>   int sdw_compare_devid(struct sdw_slave *slave, struct sdw_slave_id id);
+>   void sdw_extract_slave_id(struct sdw_bus *bus, u64 addr, struct sdw_sla=
+ve_id *id);
+>  =20
 
-You can also drop the cast, which also reduces the line length.
+This is now a conflict between the char-misc tree and the
+sound-asoc-fixes tree.
 
-> +	if (ret)
-> +		return ret;
-> +	dev->real_model_id = model;
->  
-> -	if (retvalue != MT9M114_MOD_ID) {
-> +	if (model != MT9M114_MOD_ID) {
->  		dev_err(&client->dev, "%s: failed: client->addr = %x\n",
->  			__func__, client->addr);
->  		return -ENODEV;
+--=20
+Cheers,
+Stephen Rothwell
 
--- 
-Regards,
+--Sig_/2VFaH5iM_RIW9RefxXo/8Hu
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Sakari Ailus
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDS6RUACgkQAVBC80lX
+0GxRmgf/QE+bX0xfhbPYpvdV2EurG6gr7KOjoB5yjLZEE/zOqxSKT/y8WLaUlmul
+e2M77kEtH778ovkaiW2h0Ue94gSGgUPq+FO1gUk0O6acuE1AQFz5nT48zRuxybxy
+1R16V6xS+tdxCgDI//QlEuTvkLFqAvTAKZ2M3p11D730hZWlveUqQAwk86364LmM
+LpUu8mFtgKgCW0lr5XjXpN3zJUJHG6slQEKDZ7CqNt4eTyshTt/0OHH9zy/KEWED
+LYNpVvgZasjJAsGtZ6Yk3Ta/lXyMmDhPfzh2b6J/UK6sEg9rJl3UYUJMXxb+WKbx
+fdTRQEL+SWepGrHfVtMX6s0KTqV30w==
+=iTXS
+-----END PGP SIGNATURE-----
+
+--Sig_/2VFaH5iM_RIW9RefxXo/8Hu--
