@@ -2,171 +2,353 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A3C3B237E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C443B2381
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbhFWWTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 18:19:03 -0400
-Received: from mga18.intel.com ([134.134.136.126]:45531 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229688AbhFWWTB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:19:01 -0400
-IronPort-SDR: ET4x9hI7mfaAm2EiHfoPltY7fWHMmFZJl9t4jI0JPLp4r+Ho2y77cv/G0vVZBVg87lx/nHWe7g
- 5yM2KMutqR1Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="194657904"
-X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
-   d="scan'208";a="194657904"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 15:16:43 -0700
-IronPort-SDR: HOwd+5ObPbk+XhFgaOP/qvRO8xp0WBxCnEEkowkx03KuZN1h8OAxroqP65zTOdbMkOBYs54ca2
- tmXWaNjYOOOA==
-X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
-   d="scan'208";a="487507153"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 15:16:42 -0700
-From:   ira.weiny@intel.com
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Kamal Heib <kheib@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3] RDMA/siw: Convert siw_tx_hdt() to kmap_local_page()
-Date:   Wed, 23 Jun 2021 15:15:44 -0700
-Message-Id: <20210623221543.2799198-1-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
-In-Reply-To: <20210622203432.2715659-1-ira.weiny@intel.com>
-References: <20210622203432.2715659-1-ira.weiny@intel.com>
+        id S229915AbhFWWUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 18:20:32 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:32940 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhFWWUa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 18:20:30 -0400
+Received: from [10.0.0.178] (c-67-168-106-253.hsd1.wa.comcast.net [67.168.106.253])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5291820B7188;
+        Wed, 23 Jun 2021 15:18:12 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5291820B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1624486692;
+        bh=QJRsqVQodqC2XLeNiwxcQB17F9aTuiBRP/T+vIefllI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=s8CQjC3mf4cteJ+bYbmXlp8NkRSiNRHs3L00eMp7DRlwSOSpOcguv+LtOsz2jvIOT
+         x0TVVde6JJ0hZuFH76f21bYZ8ev5V5JBiAuVQaaDB9mu/J0yogajjk1lSlPGOf13pj
+         A5fex4loPUoHY4U4V1ToiUz0dV2dNKM9CPzUIrDw=
+Subject: Re: [PATCH 00/19] Microsoft Hypervisor root partition ioctl interface
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org, mikelley@microsoft.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        wei.liu@kernel.org, ligrassi@microsoft.com, kys@microsoft.com,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
+References: <1622241819-21155-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <87bl8eyszj.fsf@vitty.brq.redhat.com>
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Message-ID: <81498149-f47a-fb27-827d-a9510ffee373@linux.microsoft.com>
+Date:   Wed, 23 Jun 2021 15:18:11 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87bl8eyszj.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
 
-kmap() is being deprecated and will break uses of device dax after PKS
-protection is introduced.[1]
 
-The use of kmap() in siw_tx_hdt() is all thread local therefore
-kmap_local_page() is a sufficient replacement and will work with pgmap
-protected pages when those are implemented.
+On 6/10/2021 2:22 AM, Vitaly Kuznetsov wrote:
+> Nuno Das Neves <nunodasneves@linux.microsoft.com> writes:
+> 
+>> This patch series provides a userspace interface for creating and running guest
+>> virtual machines while running on the Microsoft Hypervisor [0].
+>>
+>> Since managing guest machines can only be done when Linux is the root partition,
+>> this series depends on Wei Liu's patch series merged in 5.12:
+>> https://lore.kernel.org/linux-hyperv/20210203150435.27941-1-wei.liu@kernel.org/
+>>
+>> The first two patches provide some helpers for converting hypervisor status
+>> codes to linux error codes, and printing hypervisor status codes to dmesg for
+>> debugging.
+>>
+>> Hyper-V related headers asm-generic/hyperv-tlfs.h and x86/asm/hyperv-tlfs.h are
+>> split into uapi and non-uapi. The uapi versions contain structures used in both
+>> the ioctl interface and the kernel.
+>>
+>> The mshv API is introduced in drivers/hv/mshv_main.c. As each interface is
+>> introduced, documentation is added in Documentation/virt/mshv/api.rst.
+>> The API is file-desciptor based, like KVM. The entry point is /dev/mshv.
+>>
+>> /dev/mshv ioctls:
+>> MSHV_CHECK_EXTENSION
+>> MSHV_CREATE_PARTITION
+>>
+>> Partition (vm) ioctls:
+>> MSHV_MAP_GUEST_MEMORY, MSHV_UNMAP_GUEST_MEMORY
+>> MSHV_INSTALL_INTERCEPT
+>> MSHV_ASSERT_INTERRUPT
+>> MSHV_GET_PARTITION_PROPERTY, MSHV_SET_PARTITION_PROPERTY
+>> MSHV_CREATE_VP
+>>
+>> Vp (vcpu) ioctls:
+>> MSHV_GET_VP_REGISTERS, MSHV_SET_VP_REGISTERS
+>> MSHV_RUN_VP
+>> MSHV_GET_VP_STATE, MSHV_SET_VP_STATE
+>> MSHV_TRANSLATE_GVA
+>> mmap() (register page)
+>>
+>> [0] Hyper-V is more well-known, but it really refers to the whole stack
+>>     including the hypervisor and other components that run in Windows kernel
+>>     and userspace.
+>>
+>> Changes since RFC:
+>> 1. Moved code from virt/mshv to drivers/hv
+>> 2. Split hypercall helper functions and synic code to hv_call.c and hv_synic.c
+>> 3. MSHV_REQUEST_VERSION ioctl replaced with MSHV_CHECK_EXTENSION
+>> 3. Numerous suggestions, fixes, style changes, etc from Michael Kelley, Vitaly
+>>    Kuznetsov, Wei Liu, and Vineeth Pillai
+>> 4. Added patch to enable hypervisor enlightenments on partition creation
+>> 5. Added Wei Liu's patch for GVA to GPA translation
+>>
+> 
+> Thank you for addressing these!
+> 
+> One nitpick though: could you please run your next submission through
+> 'scripts/checkpatch.pl'? It reports a number of issues here, mostly
+> minor but still worth addressing, i.e.:
+> 
 
-siw_tx_hdt() tracks pages used in a page_array.  It uses that array to
-unmap pages which were mapped on function exit.  Not all entries in the
-array are mapped and this is tracked in kmap_mask.
+Whoops! Yes, I will fix these. Thank you
 
-kunmap_local() takes a mapped address rather than a page.  Alter
-siw_unmap_pages() to take the iov array to reuse the iov_base address of
-each mapping.  Use PAGE_MASK to get the proper address for
-kunmap_local().
-
-kmap_local_page() mappings are tracked in a stack and must be unmapped
-in the opposite order they were mapped in.  Because segments are mapped
-into the page array in increasing index order, modify siw_unmap_pages()
-to unmap pages in decreasing order.
-
-Use kmap_local_page() instead of kmap() to map pages in the page_array.
-
-[1] https://lore.kernel.org/lkml/20201009195033.3208459-59-ira.weiny@intel.com/
-
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
----
-Jason, I went ahead and left this a separate patch.  Let me know if you really
-want this and the other siw squashed.
-
-Changes for V3:
-	From Bernard
-		Use 'p' in kmap_local_page()
-		Use seg as length to siw_unmap_pages()
-
-Changes for V2:
-	From Bernard
-		Reuse iov[].iov_base rather than declaring another array
-		of pointers and preserve the use of kmap_mask to know
-		which iov's were kmapped.
----
- drivers/infiniband/sw/siw/siw_qp_tx.c | 30 +++++++++++++++++----------
- 1 file changed, 19 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index db68a10d12cd..89a5b75f7254 100644
---- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -396,13 +396,20 @@ static int siw_0copy_tx(struct socket *s, struct page **page,
- 
- #define MAX_TRAILER (MPA_CRC_SIZE + 4)
- 
--static void siw_unmap_pages(struct page **pp, unsigned long kmap_mask)
-+static void siw_unmap_pages(struct kvec *iov, unsigned long kmap_mask, int len)
- {
--	while (kmap_mask) {
--		if (kmap_mask & BIT(0))
--			kunmap(*pp);
--		pp++;
--		kmap_mask >>= 1;
-+	int i;
-+
-+	/*
-+	 * Work backwards through the array to honor the kmap_local_page()
-+	 * ordering requirements.
-+	 */
-+	for (i = (len-1); i >= 0; i--) {
-+		if (kmap_mask & BIT(i)) {
-+			unsigned long addr = (unsigned long)iov[i].iov_base;
-+
-+			kunmap_local((void *)(addr & PAGE_MASK));
-+		}
- 	}
- }
- 
-@@ -498,7 +505,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 					p = siw_get_upage(mem->umem,
- 							  sge->laddr + sge_off);
- 				if (unlikely(!p)) {
--					siw_unmap_pages(page_array, kmap_mask);
-+					siw_unmap_pages(iov, kmap_mask, seg);
- 					wqe->processed -= c_tx->bytes_unsent;
- 					rv = -EFAULT;
- 					goto done_crc;
-@@ -506,11 +513,12 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 				page_array[seg] = p;
- 
- 				if (!c_tx->use_sendpage) {
--					iov[seg].iov_base = kmap(p) + fp_off;
--					iov[seg].iov_len = plen;
-+					void *kaddr = kmap_local_page(p);
- 
- 					/* Remember for later kunmap() */
- 					kmap_mask |= BIT(seg);
-+					iov[seg].iov_base = kaddr + fp_off;
-+					iov[seg].iov_len = plen;
- 
- 					if (do_crc)
- 						crypto_shash_update(
-@@ -542,7 +550,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 
- 			if (++seg > (int)MAX_ARRAY) {
- 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
--				siw_unmap_pages(page_array, kmap_mask);
-+				siw_unmap_pages(iov, kmap_mask, seg-1);
- 				wqe->processed -= c_tx->bytes_unsent;
- 				rv = -EMSGSIZE;
- 				goto done_crc;
-@@ -593,7 +601,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 	} else {
- 		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
- 				    hdr_len + data_len + trl_len);
--		siw_unmap_pages(page_array, kmap_mask);
-+		siw_unmap_pages(iov, kmap_mask, seg+1);
- 	}
- 	if (rv < (int)hdr_len) {
- 		/* Not even complete hdr pushed or negative rv */
--- 
-2.28.0.rc0.12.gb6a658bd00c9
-
+> $ scripts/checkpatch.pl *.patch
+> ...
+> ---------------------------------------------------------------
+> 0002-asm-generic-hyperv-convert-hyperv-statuses-to-string.patch
+> ---------------------------------------------------------------
+> ERROR: Macros with complex values should be enclosed in parentheses
+> #95: FILE: include/asm-generic/hyperv-tlfs.h:192:
+> +#define __HV_STATUS_DEF(OP) \
+> +	OP(HV_STATUS_SUCCESS,				0x0) \
+> ...
+> 
+> ERROR: Macros with complex values should be enclosed in parentheses
+> #119: FILE: include/asm-generic/hyperv-tlfs.h:216:
+> +#define __HV_MAKE_HV_STATUS_ENUM(NAME, VAL) NAME = (VAL),
+> 
+> ERROR: Macros with multiple statements should be enclosed in a do - while loop
+> #120: FILE: include/asm-generic/hyperv-tlfs.h:217:
+> +#define __HV_MAKE_HV_STATUS_CASE(NAME, VAL) case (NAME): return (#NAME);
+> 
+> WARNING: Macros with flow control statements should be avoided
+> #120: FILE: include/asm-generic/hyperv-tlfs.h:217:
+> +#define __HV_MAKE_HV_STATUS_CASE(NAME, VAL) case (NAME): return (#NAME);
+> 
+> WARNING: macros should not use a trailing semicolon
+> #120: FILE: include/asm-generic/hyperv-tlfs.h:217:
+> +#define __HV_MAKE_HV_STATUS_CASE(NAME, VAL) case (NAME): return (#NAME);
+> 
+> total: 3 errors, 2 warnings, 108 lines checked
+> 
+> NOTE: For some of the reported defects, checkpatch may be able to
+>       mechanically convert to the typical style using --fix or --fix-inplace.
+> 
+> 0002-asm-generic-hyperv-convert-hyperv-statuses-to-string.patch has
+> style problems, please review.
+> ...
+> -------------------------------------------
+> 0004-drivers-hv-check-extension-ioctl.patch
+> -------------------------------------------
+> WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
+> #36: 
+> new file mode 100644
+> 
+> WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
+> #131: FILE: drivers/hv/mshv_main.c:52:
+> +	return -ENOTSUPP;
+> 
+> total: 0 errors, 2 warnings, 137 lines checked
+> 
+> ...
+> 
+> WARNING: Improper SPDX comment style for 'drivers/hv/hv_call.c', please use '//' instead
+> #94: FILE: drivers/hv/hv_call.c:1:
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> 
+> WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
+> #94: FILE: drivers/hv/hv_call.c:1:
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> 
+> ERROR: "(foo*)" should be "(foo *)"
+> #178: FILE: drivers/hv/hv_call.c:85:
+> +				*(u64*)&input);
+> 
+> ERROR: "(foo*)" should be "(foo *)"
+> #201: FILE: drivers/hv/hv_call.c:108:
+> +			*(u64*)&input);
+> 
+> ERROR: "(foo*)" should be "(foo *)"
+> #215: FILE: drivers/hv/hv_call.c:122:
+> +	status = hv_do_fast_hypercall8(HVCALL_DELETE_PARTITION, *(u64*)&input);
+> 
+> total: 3 errors, 3 warnings, 330 lines checked
+> 
+> ...
+> ------------------------------------------------
+> 0008-drivers-hv-map-and-unmap-guest-memory.patch
+> ------------------------------------------------
+> ERROR: code indent should use tabs where possible
+> #101: FILE: drivers/hv/hv_call.c:222:
+> +                                                    HV_MAP_GPA_DEPOSIT_PAGES);$
+> 
+> WARNING: please, no spaces at the start of a line
+> #101: FILE: drivers/hv/hv_call.c:222:
+> +                                                    HV_MAP_GPA_DEPOSIT_PAGES);$
+> 
+> ERROR: code indent should use tabs where possible
+> #469: FILE: include/asm-generic/hyperv-tlfs.h:895:
+> +        u32 padding;$
+> 
+> WARNING: please, no spaces at the start of a line
+> #469: FILE: include/asm-generic/hyperv-tlfs.h:895:
+> +        u32 padding;$
+> 
+> ERROR: code indent should use tabs where possible
+> #477: FILE: include/asm-generic/hyperv-tlfs.h:903:
+> +        u32 padding;$
+> 
+> WARNING: please, no spaces at the start of a line
+> #477: FILE: include/asm-generic/hyperv-tlfs.h:903:
+> +        u32 padding;$
+> 
+> total: 3 errors, 3 warnings, 487 lines checked
+> 
+> NOTE: For some of the reported defects, checkpatch may be able to
+>       mechanically convert to the typical style using --fix or --fix-inplace.
+> 
+> NOTE: Whitespace errors detected.
+>       You may wish to use scripts/cleanpatch or scripts/cleanfile
+> 
+> 0008-drivers-hv-map-and-unmap-guest-memory.patch has style problems, please review.
+> ---------------------------------------
+> 0009-drivers-hv-create-vcpu-ioctl.patch
+> ---------------------------------------
+> WARNING: Missing a blank line after declarations
+> #76: FILE: drivers/hv/mshv_main.c:75:
+> +	struct mshv_vp *vp = filp->private_data;
+> +	mshv_partition_put(vp->partition);
+> 
+> ERROR: trailing whitespace
+> #180: FILE: drivers/hv/mshv_main.c:376:
+> +^I$
+> 
+> total: 1 errors, 1 warnings, 210 lines checked
+> 
+> NOTE: For some of the reported defects, checkpatch may be able to
+>       mechanically convert to the typical style using --fix or --fix-inplace.
+> 
+> NOTE: Whitespace errors detected.
+>       You may wish to use scripts/cleanpatch or scripts/cleanfile
+> 
+> 0009-drivers-hv-create-vcpu-ioctl.patch has style problems, please review.
+> -------------------------------------------------------
+> 0010-drivers-hv-get-and-set-vcpu-registers-ioctls.patch
+> -------------------------------------------------------
+> WARNING: braces {} are not necessary for single statement blocks
+> #690: FILE: drivers/hv/hv_call.c:326:
+> +		for (i = 0; i < rep_count; ++i) {
+> +			input_page->names[i] = registers[i].name;
+> +		}
+> 
+> WARNING: braces {} are not necessary for single statement blocks
+> #704: FILE: drivers/hv/hv_call.c:340:
+> +		for (i = 0; i < completed; ++i) {
+> +			registers[i].value = output_page[i];
+> +		}
+> 
+> WARNING: braces {} are not necessary for single statement blocks
+> #859: FILE: drivers/hv/mshv_main.c:121:
+> +	if (!registers) {
+> +		return -ENOMEM;
+> +	}
+> 
+> total: 0 errors, 3 warnings, 965 lines checked
+> 
+> NOTE: For some of the reported defects, checkpatch may be able to
+>       mechanically convert to the typical style using --fix or --fix-inplace.
+> 
+> 0010-drivers-hv-get-and-set-vcpu-registers-ioctls.patch has style problems, please review.
+> ---------------------------------------------------------------
+> 0011-drivers-hv-set-up-synic-pages-for-intercept-messages.patch
+> ---------------------------------------------------------------
+> WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
+> #274: 
+> new file mode 100644
+> 
+> ERROR: code indent should use tabs where possible
+> #310: FILE: drivers/hv/hv_synic.c:32:
+> +                             MEMREMAP_WB);$
+> 
+> WARNING: please, no spaces at the start of a line
+> #310: FILE: drivers/hv/hv_synic.c:32:
+> +                             MEMREMAP_WB);$
+> 
+> total: 1 errors, 2 warnings, 574 lines checked
+> 
+> NOTE: For some of the reported defects, checkpatch may be able to
+>       mechanically convert to the typical style using --fix or --fix-inplace.
+> 
+> NOTE: Whitespace errors detected.
+>       You may wish to use scripts/cleanpatch or scripts/cleanfile
+> 
+> 0011-drivers-hv-set-up-synic-pages-for-intercept-messages.patch has style problems, please review.
+> ------------------------------------------
+> 0012-drivers-hv-run-vp-ioctl-and-isr.patch
+> ------------------------------------------
+> WARNING: EXPORT_SYMBOL(foo); should immediately follow its function/variable
+> #86: FILE: arch/x86/kernel/cpu/mshyperv.c:77:
+> +EXPORT_SYMBOL_GPL(hv_remove_mshv_irq);
+> 
+> WARNING: consider using a completion
+> #410: FILE: drivers/hv/mshv_main.c:344:
+> +	sema_init(&vp->run.sem, 0);
+> 
+> total: 0 errors, 2 warnings, 435 lines checked
+> 
+> NOTE: For some of the reported defects, checkpatch may be able to
+>       mechanically convert to the typical style using --fix or --fix-inplace.
+> 
+> 0012-drivers-hv-run-vp-ioctl-and-isr.patch has style problems, please review.
+> ---------------------------------------------
+> ...
+> -------------------------------------------
+> 0016-drivers-hv-mmap-vp-register-page.patch
+> -------------------------------------------
+> WARNING: Missing a blank line after declarations
+> #222: FILE: drivers/hv/mshv_main.c:441:
+> +	struct mshv_vp *vp = vmf->vma->vm_file->private_data;
+> +	vmf->page = vp->register_page;
+> 
+> total: 0 errors, 1 warnings, 257 lines checked
+> 
+> NOTE: For some of the reported defects, checkpatch may be able to
+>       mechanically convert to the typical style using --fix or --fix-inplace.
+> 
+> 0016-drivers-hv-mmap-vp-register-page.patch has style problems, please review.
+> -----------------------------------------------------------
+> 0017-drivers-hv-get-and-set-partition-property-ioctls.patch
+> -----------------------------------------------------------
+> ERROR: code indent should use tabs where possible
+> #205: FILE: include/asm-generic/hyperv-tlfs.h:890:
+> +        u32 padding;$
+> 
+> WARNING: please, no spaces at the start of a line
+> #205: FILE: include/asm-generic/hyperv-tlfs.h:890:
+> +        u32 padding;$
+> 
+> ERROR: code indent should use tabs where possible
+> #215: FILE: include/asm-generic/hyperv-tlfs.h:900:
+> +        u32 padding;$
+> 
+> WARNING: please, no spaces at the start of a line
+> #215: FILE: include/asm-generic/hyperv-tlfs.h:900:
+> +        u32 padding;$
+> 
+> total: 2 errors, 2 warnings, 258 lines checked
+> 
+> NOTE: For some of the reported defects, checkpatch may be able to
+>       mechanically convert to the typical style using --fix or --fix-inplace.
+> 
+> NOTE: Whitespace errors detected.
+>       You may wish to use scripts/cleanpatch or scripts/cleanfile
+> 
+> 
