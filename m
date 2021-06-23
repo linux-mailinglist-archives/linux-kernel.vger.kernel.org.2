@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965023B1A95
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 298B33B1A99
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbhFWNAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:00:09 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:38663 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230019AbhFWNAI (ORCPT
+        id S230298AbhFWNAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230019AbhFWNAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:00:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1624453071; x=1655989071;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=15/CAV2snDdvyAJxjJ5PKrRh/F+DBXa8aHprIfhpyUU=;
-  b=M+SFXFoWK8Hl7ISVGlRLBol2RTa2nfzAjsRO+8wMU6NVQ/iKy/PCZBn5
-   CELXVUGPxLGgqr9Fph8/sDGancTgMzW6tfdeGgvwCeX3KYg00/sEeEvBR
-   jmwpYuQBABP/oJJVM7BMo3Yw0dqavO00nhq617EJGeDU3JRngCkZgap+Q
-   4=;
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 23 Jun 2021 05:57:50 -0700
-X-QCInternal: smtphost
-Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
-  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 23 Jun 2021 05:57:49 -0700
-Received: from [10.38.240.33] (10.80.80.8) by nasanexm03e.na.qualcomm.com
- (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 23 Jun
- 2021 05:57:47 -0700
-Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
- invariance
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Will Deacon <will@kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-References: <cover.1624266901.git.viresh.kumar@linaro.org>
- <09a39f5c-b47b-a931-bf23-dc43229fb2dd@quicinc.com>
- <20210623041613.v2lo3nidpgw37abl@vireshk-i7>
-From:   Qian Cai <quic_qiancai@quicinc.com>
-Message-ID: <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
-Date:   Wed, 23 Jun 2021 08:57:46 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 23 Jun 2021 09:00:50 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24D0C061574;
+        Wed, 23 Jun 2021 05:58:32 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5E72B9AA;
+        Wed, 23 Jun 2021 14:58:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1624453110;
+        bh=PoI3uyMbudFJL9C12/C2MbS0ALkBMEjg8aIMinrYFmU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SiCDwopvFxqu8yVC6wZm8Dgl9nuayKsEQzCg5bkoBiJpnydGtUuyT0n+pPMacmwJD
+         zFV2+8AduJ8JAWbRkuEWxNzpdhfKZUYe16eIMX0RMKIYqiZFZXBDByCtjnMDm2yPZh
+         T5XwZlHkIEN3u0z6NkuZ4tluEaJ7s/KoI790kTsY=
+Date:   Wed, 23 Jun 2021 15:58:00 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:DRM DRIVERS FOR RENESAS" <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVERS FOR RENESAS" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] dt-bindings: display: renesas,du: Provide bindings for
+ r8a779a0
+Message-ID: <YNMv2KSjbwX5aAK2@pendragon.ideasonboard.com>
+References: <20210622231146.3208404-1-kieran.bingham@ideasonboard.com>
+ <CAMuHMdW8vYC3+gVCv5eG_vkX79vU8RQL-6fSJd9McetDzikzSA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210623041613.v2lo3nidpgw37abl@vireshk-i7>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanexm03d.na.qualcomm.com (10.85.0.91) To
- nasanexm03e.na.qualcomm.com (10.85.0.48)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdW8vYC3+gVCv5eG_vkX79vU8RQL-6fSJd9McetDzikzSA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Geert,
 
-
-On 6/23/2021 12:16 AM, Viresh Kumar wrote:
-> On 21-06-21, 16:48, Qian Cai wrote:
->>
->>
->> On 6/21/2021 5:19 AM, Viresh Kumar wrote:
->>> CPPC cpufreq driver is used for ARM servers and this patch series tries to
->>> provide counter-based frequency invariance support for them in the absence for
->>> architecture specific counters (like AMUs).
->>
->> Viresh, this series works fine on my quick tests so far.
+On Wed, Jun 23, 2021 at 02:53:33PM +0200, Geert Uytterhoeven wrote:
+> On Wed, Jun 23, 2021 at 1:11 AM Kieran Bingham wrote:
+> > From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> >
+> > Extend the Renesas DU display bindings to support the r8a779a0 V3U.
+> >
+> > Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 > 
-> Do you want me to add your Tested-by for the series ?
+> Thanks for your patch!
+> 
+> > --- a/Documentation/devicetree/bindings/display/renesas,du.yaml
+> > +++ b/Documentation/devicetree/bindings/display/renesas,du.yaml
+> > @@ -39,6 +39,7 @@ properties:
+> >        - renesas,du-r8a77980 # for R-Car V3H compatible DU
+> >        - renesas,du-r8a77990 # for R-Car E3 compatible DU
+> >        - renesas,du-r8a77995 # for R-Car D3 compatible DU
+> > +      - renesas,du-r8a779a0 # for R-Car V3U compatible DU
+> >
+> >    reg:
+> >      maxItems: 1
+> > @@ -774,6 +775,57 @@ allOf:
+> >          - reset-names
+> >          - renesas,vsps
+> >
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            enum:
+> > +              - renesas,du-r8a779a0
+> > +    then:
+> > +      properties:
+> > +        clocks:
+> > +          items:
+> > +            - description: Functional clock for DU0
+> > +            - description: Functional clock for DU1
+> > +
+> > +        clock-names:
+> > +          items:
+> > +            - const: du.0
+> > +            - const: du.1
+> 
+> The hardware block has only a single function clock for both channels,
+> like on R-Car H1.
+> 
+> And what about DU_DOTCLKIN?
 
-Viresh, I am afraid I don't feel comfortable yet. I have a few new tests in development, and will provide an update once ready. Also, I noticed the delivered perf is even smaller than lowest_perf (100).
+As far as I can tell, there's no DU_DOTCLKIN in V3U.
 
-# cat /sys/devices/system/cpu/cpu8/acpi_cppc/feedback_ctrs
- ref:103377547901 del:54540736873
-# cat /sys/devices/system/cpu/cpu8/acpi_cppc/feedback_ctrs
- ref:103379170101 del:54541599117
+-- 
+Regards,
 
-100 * (54541599117 - 54540736873) / (103379170101 - 103377547901) = 53
-
-My understanding is that the delivered perf should fail into the range between lowest_perf and highest_perf. Is that assumption correct? This happens on 5.4-based kernel, so I am in process running your series on that system to see if there is any differences. In any case, if it is a bug it is pre-existing, but I'd like to understand a bit better in that front first.
+Laurent Pinchart
