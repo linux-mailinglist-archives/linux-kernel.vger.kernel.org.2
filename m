@@ -2,57 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3333B15F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092F53B15FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbhFWIh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 04:37:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229833AbhFWIh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 04:37:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AFFE6112D;
-        Wed, 23 Jun 2021 08:35:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624437309;
-        bh=8YCFSY5VsJCT63ajemEnOr9JzZBCsow0txviF6oFvQA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fems5e7yd2tsP1vO8tEXQWyALM5OcUOhBEGn5Me/WDm+V908htKYb8hc4aZsWtkPG
-         hIdoPv8eeyOZ6xDdURZK9rY8/dF/o/mERttv0NxK/xTiA6r7NoUw23s8KV0mhgIoqS
-         c1weLOtXhV8YakoOVHAxIitd2C0+T30HBGsnqza0=
-Date:   Wed, 23 Jun 2021 10:34:11 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Linux Phy <linux-phy@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: Re: [GIT PULL]: Generic phy updates for v5.14 version 2
-Message-ID: <YNLyA6d1h1TLVcML@kroah.com>
-References: <YNLun13SP+PyYCEf@matsya>
+        id S229978AbhFWIkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 04:40:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229833AbhFWIkG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 04:40:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7116C061574;
+        Wed, 23 Jun 2021 01:37:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rM2Yp+8Itjz90D0EXjNMSXvd4FeigAopuxmvxgM0gQY=; b=XlkpC2A5OOR2l6x79e+08Mm8OT
+        9tWohCTbGn4GV+5+sIvTjLkW8POgOoFdW5IK/lqJtgwDwPIsSRxGOIY6o1PiSyvoofnuk1u7tW9+K
+        Ez34DmiuekyOaZ6e0Jd2R2YaegIPowfIwl4ST+E5rnAvzNXhdVPwQvazgcd8mgXdbN9LESJCNsspE
+        7Jp+3FlpR0KlX13Bv/0ft0WRSxj9JH0+RqpBoBxiqEInsMqPa6jd54wwNL4+4ZZEamlNtopDB92bH
+        sgXS2vhn/7VrQcR4ElYLIBuddMHHOJ8Iv6waBHNmUrNleouDtNmEMrSoDrd1jVooxwrOKHgJv4CyL
+        DNyDJ+lg==;
+Received: from 089144193030.atnat0002.highway.a1.net ([89.144.193.30] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvyNj-00FDev-Gr; Wed, 23 Jun 2021 08:37:18 +0000
+Date:   Wed, 23 Jun 2021 10:35:00 +0200
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 20/46] mm/migrate: Add folio_migrate_copy()
+Message-ID: <YNLyNJupwcDdj0ZG@infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-21-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNLun13SP+PyYCEf@matsya>
+In-Reply-To: <20210622121551.3398730-21-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 01:49:43PM +0530, Vinod Koul wrote:
-> Hello Greg,
-> 
-> As discussed, here is the updated pull request after reverting the
-> offending commit.
-> 
-> Again very sorry for missing this in the review.
-> 
-> The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
-> 
->   Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-for-5.14_v2
+> +void folio_migrate_copy(struct folio *newfolio, struct folio *folio)
+>  {
+> +	unsigned int i = folio_nr_pages(folio) - 1;
+>  
+> +	copy_highpage(folio_page(newfolio, i), folio_page(folio, i));
+> +	while (i-- > 0) {
+> +		cond_resched()a
+> +		/* folio_page() handles discontinuities in memmap */
+> +		copy_highpage(folio_page(newfolio, i), folio_page(folio, i));
+> +	}
+> +
 
-That worked, thanks!
-
-greg k-h
+What is the advantage of copying backwards here to start with?
