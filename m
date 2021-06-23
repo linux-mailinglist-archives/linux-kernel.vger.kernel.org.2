@@ -2,78 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 842843B1F7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B983B1F79
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhFWRcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 13:32:20 -0400
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:42613 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhFWRcR (ORCPT
+        id S229918AbhFWRcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 13:32:19 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:49050 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229758AbhFWRcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 13:32:17 -0400
-Received: by mail-oi1-f176.google.com with SMTP id s23so4140720oiw.9;
-        Wed, 23 Jun 2021 10:29:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uL4OeCof1O3VCffukg7OOAMuEHlzWUS97O2lsZYQKCc=;
-        b=aQoElZhxLjifKGq5Jm/BeqSvOWf9O2tAg7/sXmAHRNJyXPn8FYPyE/zKTjasvPKRAT
-         NRNZJDSqUU8APOPdKXMxV9dtqULemFvioIvnz1mFfIuqmcl6nk+RrT47Ff+MQUBPqFlA
-         BzSwTOQvVkBzF1b4NmS+HY/CwBNI+xtdL5ApOoMjOy/x2hfh/mYwVczBXXvI+yTO+oWs
-         v1UXzrUSMaAmZvd3BZwKQKHVXILb7vH0oGCjWy0xFh5YaODZbfZ97Fblk9El923unaPE
-         EZNKMcb/LYVJCRfT0uuPuzA73RdVd+S0UFCtZEjJTUNbz7fU9QI+MfPnPyp5yT2VF3U8
-         +gxA==
-X-Gm-Message-State: AOAM531rqIAI/5fFyONxOCjJL9J7jaedyM1F+sjhyG2DSkY+BeUzNwT7
-        B/12bHPo7qh9KBs4pV6Q/kp9qUJ3sScul1ChoHc=
-X-Google-Smtp-Source: ABdhPJwbiPQqGwFIcUNl4l/6kdARitMtkOA4F4mgoR15canAR9+PiTPwezeXr3x2W9V51042VY1iiwSM2JzlU5bDpKU=
-X-Received: by 2002:aca:f0d5:: with SMTP id o204mr754770oih.71.1624469372192;
- Wed, 23 Jun 2021 10:29:32 -0700 (PDT)
+        Wed, 23 Jun 2021 13:32:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624469386; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=s5Bz0eZCymv18Oj3WyVC1yQjpxs4Dm1dYfaMS7UGc5M=; b=hEOdwAnqx00lFrbLAov/Ec/mmy1rfhPLQiyF8We+p9TATT48OVcH6x8hrVgGCBMF/PJm/rY5
+ /oUen1tkeeYAlDUEp5djyEZu33txqG4ns38ZkG47cqCNOLTyYgNMcBN8azkhHXxk772dgAjR
+ RUJfe1ElA8NPL9oWv28mToRIrz8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60d36f86dc4628fe7e629aa6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Jun 2021 17:29:42
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 64760C43460; Wed, 23 Jun 2021 17:29:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C26C3C433D3;
+        Wed, 23 Jun 2021 17:29:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C26C3C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
+        ath11k@lists.infradead.org, bbhatt=codeaurora.org@codeaurora.org,
+        lilic@codeaurora.org, kangxu@codeaurora.org
+Subject: Re: [PATCH v4 4/6] ath11k: set register access length for MHI driver
+References: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
+        <1620330705-40192-5-git-send-email-bbhatt@codeaurora.org>
+        <20210521135152.GL70095@thinkpad> <87h7i0juxt.fsf@codeaurora.org>
+        <37184e28dcc952ba9ad5ed0dc2c1a6da@codeaurora.org>
+        <6ed9fe90f40e5f8151d3a028abf0acd1@codeaurora.org>
+        <20210618064514.GM3682@workstation>
+Date:   Wed, 23 Jun 2021 20:29:26 +0300
+In-Reply-To: <20210618064514.GM3682@workstation> (Manivannan Sadhasivam's
+        message of "Fri, 18 Jun 2021 12:15:14 +0530")
+Message-ID: <87k0mkh4ll.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210623013802.1904951-1-nathan@kernel.org> <20210623013802.1904951-2-nathan@kernel.org>
- <202106222250.7BD80A12FF@keescook> <a155e3ee-69aa-408d-208b-06144cf6cf8f@kernel.org>
- <202106230932.96179173E@keescook>
-In-Reply-To: <202106230932.96179173E@keescook>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 23 Jun 2021 19:29:21 +0200
-Message-ID: <CAJZ5v0hgk1_uofRKwQvOPgBqsMsBombAS5SpSo_FoeAXcBArWQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ACPI: bgrt: Use sysfs_emit
-To:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 6:32 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Wed, Jun 23, 2021 at 09:28:55AM -0700, Nathan Chancellor wrote:
-> > On 6/22/2021 10:51 PM, Kees Cook wrote:
-> > > On Tue, Jun 22, 2021 at 06:38:02PM -0700, Nathan Chancellor wrote:
-> > > > sysfs_emit is preferred to snprintf for emitting values after
-> > > > commit 2efc459d06f1 ("sysfs: Add sysfs_emit and sysfs_emit_at to format
-> > > > sysfs output").
-> > > >
-> > > > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> > >
-> > > Perhaps just squash this into patch 1? Looks good otherwise!
-> > >
-> >
-> > I thought about it but sysfs_emit is a relatively new API and the previous
-> > change may want to be backported but I do not have a strong opinion so I can
-> > squash it if Rafael or Len feel strongly :)
->
-> Fair enough. :) I figured since CFI is even newer than sysfs_emit(), it
-> didn't make sense to backport. Regardless:
->
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
 
-Applied along with the [1/2] as 5.14 material, thanks!
+> On Wed, Jun 16, 2021 at 10:38:01AM -0700, Bhaumik Bhatt wrote:
+>> Hi Kalle/Mani,
+>> 
+>> On 2021-06-14 10:49 AM, Bhaumik Bhatt wrote:
+>> Just got confirmation that the whole patch series was tested for functional
+>> sanity on
+>> Dell E7590 + QCA6390 with Ubuntu18.04 and patch 4/6 is also good to go.
+>> 
+>> Can you please ACK and pick up this series?
+>> 
+>
+> I can pick the series but I need an Ack from Kalle since it contains
+> ath11k changes. Kalle, can you please Ack this patch?
+>
+> I'm planning to send the PR by this weekend.
+
+Sorry for the late reply. Yes, as this now tested with ath11k driver
+please take this ath11k patch via the mhi tree:
+
+Acked-by: Kalle Valo <kvalo@codeaurora.org>
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
