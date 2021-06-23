@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF643B1A1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74EDF3B1A0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbhFWM3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:29:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231260AbhFWM3B (ORCPT
+        id S231334AbhFWM2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:28:10 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37100 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231216AbhFWM07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:29:01 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F68DC06121D
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:24:41 -0700 (PDT)
-Message-Id: <20210623121456.606745195@linutronix.de>
+        Wed, 23 Jun 2021 08:26:59 -0400
+Message-Id: <20210623121456.708180184@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624451080;
+        s=2020; t=1624451081;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=4HzeING7IsxLYKICIA1b9gmIi8d4deE8z4AOv2IimGA=;
-        b=hwvSgCB8ERrgaPW4wL8POAC1AQcysRryFETt1uYmTCXcmzQA1znOjdtJy846AscxN9W1nu
-        v45sYChL+qMKwl97pE2OvQtUlRHE46vcvH30d+QE+1ChJCgm8GYhto/xSUdAdI3xpaPl8p
-        buGnEpNEhu2EWsmKUeSO4ruHj1ka0CAi8svrPHvyfr1S9N8Crl65Z88HVIjLkz496ityhj
-        sJunsYtW75Imdd8AKqLf5aHT/jFJtEqjGka42pKha4V1I30xrUAhNVmzOMBc8SqEM7OHYm
-        VQW3pPozZcn5g67aOp/3jzYVajwsxOZSsJx7aMLeO/QZJRP1GP/faUlg2ILxeQ==
+        bh=HgUlrfBIFOM8rnuHwF2g/QbRSSYRGCph9RQoo4B94zA=;
+        b=xHykGx4dmMhx+gAg3LF7K14VYtCY8FHsrXQOqBLj3TM+ozKaUEEG7kO+rIaKWVpoGLjIyY
+        Cw08XDKgYDjVXV9IpY4SyqYHsbiwNr+z+68ltvhkIFdskppk3nP78Rt3VjwsHQMM7VQ/JW
+        BhvyCtVlzfuVSDDIthMjB5w0v92W9IeEALSoKtyc9g/60L1WKxTdBbiqgbfHeqAc+qTM9H
+        CBRn8Y9Sc5arMWqsct+k/2hBgg4ZaPeN6WrdaPehoZ/HW0zM9P2BaaIQUoZhwBhVKVAqKy
+        ENP8VpJZmp4B0XLxPct9l7Orgp/2jSSpmdXQHlP0f7pEwBxF+wFu4GCjUWbMyg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624451080;
+        s=2020e; t=1624451081;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=4HzeING7IsxLYKICIA1b9gmIi8d4deE8z4AOv2IimGA=;
-        b=9W28hkMAPAOx32ENFDRrZUdYebFbkh1E/7L8D6VVo2hDwlwO06skRrMgDpAhd1oAIgszh2
-        rjare/kwQHqvKqDg==
-Date:   Wed, 23 Jun 2021 14:02:20 +0200
+        bh=HgUlrfBIFOM8rnuHwF2g/QbRSSYRGCph9RQoo4B94zA=;
+        b=gaujydeliZXzKMpqg+eu6bRauP6w5NWmIkdgs/tf4+/KUP5YOddC94Ls/LikiEa37WuYMp
+        C7UWWiQlTP6cVnAg==
+Date:   Wed, 23 Jun 2021 14:02:21 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -50,7 +47,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         "Chang Seok Bae" <chang.seok.bae@intel.com>,
         Megha Dey <megha.dey@linux.intel.com>,
         Oliver Sang <oliver.sang@intel.com>
-Subject: [patch V4 53/65] x86/fpu: Mask PKRU from kernel XRSTOR[S] operations
+Subject: [patch V4 54/65] x86/fpu: Remove PKRU handling from switch_fpu_finish()
 References: <20210623120127.327154589@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -59,77 +56,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the PKRU state is managed separately restoring it from the xstate buffer
-would be counterproductive as it might either restore a stale value or
-reinit the PKRU state to 0.
+PKRU is already updated and the xstate is not longer the proper source of
+information.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Borislav Petkov <bp@suse.de>
 ---
- arch/x86/include/asm/fpu/internal.h |    4 ++--
- arch/x86/include/asm/fpu/xstate.h   |   10 ++++++++++
- arch/x86/kernel/fpu/xstate.c        |    1 +
- arch/x86/mm/extable.c               |    2 +-
- 4 files changed, 14 insertions(+), 3 deletions(-)
+ arch/x86/include/asm/fpu/internal.h |   34 ++++------------------------------
+ 1 file changed, 4 insertions(+), 30 deletions(-)
 
 --- a/arch/x86/include/asm/fpu/internal.h
 +++ b/arch/x86/include/asm/fpu/internal.h
-@@ -259,7 +259,7 @@ static inline void fxsave(struct fxregs_
+@@ -523,39 +523,13 @@ static inline void switch_fpu_prepare(st
   */
- static inline void os_xrstor_booting(struct xregs_state *xstate)
- {
--	u64 mask = -1;
-+	u64 mask = xfeatures_mask_fpstate();
- 	u32 lmask = mask;
- 	u32 hmask = mask >> 32;
- 	int err;
-@@ -388,7 +388,7 @@ extern void __restore_fpregs_from_fpstat
  
- static inline void restore_fpregs_from_fpstate(union fpregs_state *fpstate)
- {
--	__restore_fpregs_from_fpstate(fpstate, -1);
-+	__restore_fpregs_from_fpstate(fpstate, xfeatures_mask_fpstate());
- }
- 
- extern int copy_fpstate_to_sigframe(void __user *buf, void __user *fp, int size);
---- a/arch/x86/include/asm/fpu/xstate.h
-+++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -111,6 +111,16 @@ static inline u64 xfeatures_mask_restore
- 	return xfeatures_mask_all & XFEATURE_MASK_USER_RESTORE;
- }
- 
-+/*
-+ * Like xfeatures_mask_restore_user() but additionally restors the
-+ * supported supervisor states.
-+ */
-+static inline u64 xfeatures_mask_fpstate(void)
-+{
-+	return xfeatures_mask_all & \
-+		(XFEATURE_MASK_USER_RESTORE | XFEATURE_MASK_SUPERVISOR_SUPPORTED);
-+}
-+
- static inline u64 xfeatures_mask_independent(void)
- {
- 	if (!boot_cpu_has(X86_FEATURE_ARCH_LBR))
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -60,6 +60,7 @@ static short xsave_cpuid_features[] __in
-  * XSAVE buffer, both supervisor and user xstates.
+ /*
+- * Load PKRU from the FPU context if available. Delay loading of the
+- * complete FPU state until the return to userland.
++ * Delay loading of the complete FPU state until the return to userland.
++ * PKRU is handled separately.
   */
- u64 xfeatures_mask_all __ro_after_init;
-+EXPORT_SYMBOL_GPL(xfeatures_mask_all);
- 
- static unsigned int xstate_offsets[XFEATURE_MAX] __ro_after_init =
- 	{ [ 0 ... XFEATURE_MAX - 1] = -1};
---- a/arch/x86/mm/extable.c
-+++ b/arch/x86/mm/extable.c
-@@ -65,7 +65,7 @@ EXPORT_SYMBOL_GPL(ex_handler_fault);
- 	WARN_ONCE(1, "Bad FPU state detected at %pB, reinitializing FPU registers.",
- 		  (void *)instruction_pointer(regs));
- 
--	__restore_fpregs_from_fpstate(&init_fpstate, -1);
-+	__restore_fpregs_from_fpstate(&init_fpstate, xfeatures_mask_fpstate());
- 	return true;
+ static inline void switch_fpu_finish(struct fpu *new_fpu)
+ {
+-	u32 pkru_val = init_pkru_value;
+-	struct pkru_state *pk;
+-
+-	if (!static_cpu_has(X86_FEATURE_FPU))
+-		return;
+-
+-	set_thread_flag(TIF_NEED_FPU_LOAD);
+-
+-	if (!cpu_feature_enabled(X86_FEATURE_OSPKE))
+-		return;
+-
+-	/*
+-	 * PKRU state is switched eagerly because it needs to be valid before we
+-	 * return to userland e.g. for a copy_to_user() operation.
+-	 */
+-	if (!(current->flags & PF_KTHREAD)) {
+-		/*
+-		 * If the PKRU bit in xsave.header.xfeatures is not set,
+-		 * then the PKRU component was in init state, which means
+-		 * XRSTOR will set PKRU to 0. If the bit is not set then
+-		 * get_xsave_addr() will return NULL because the PKRU value
+-		 * in memory is not valid. This means pkru_val has to be
+-		 * set to 0 and not to init_pkru_value.
+-		 */
+-		pk = get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
+-		pkru_val = pk ? pk->pkru : 0;
+-	}
+-	__write_pkru(pkru_val);
++	if (static_cpu_has(X86_FEATURE_FPU))
++		set_thread_flag(TIF_NEED_FPU_LOAD);
  }
- EXPORT_SYMBOL_GPL(ex_handler_fprestore);
+ 
+ #endif /* _ASM_X86_FPU_INTERNAL_H */
 
