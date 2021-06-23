@@ -2,333 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB103B1F7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068953B1F7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhFWRcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 13:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbhFWRcW (ORCPT
+        id S229948AbhFWRcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 13:32:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28362 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229726AbhFWRcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 13:32:22 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAAFC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:30:04 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so2719784otl.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:30:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+ydUWrmEdj6nDidfKX+/eYYcUGvXa+c1FifMacfsvQU=;
-        b=HhichcHb3lYg8f6A1A6f+TM9tCumTcNG/WqCjLQ0w5/X1cgDGILBlnABMVIYQSC4hX
-         5FGPtqKGADHe5SnWI/x0Lm+MHT7Uz/XShpjncKA513+Ao3e7DYNryEeIrJMdt5ciOLXx
-         upL7oGdwMLLkqwKofk0EjHmwgo/PwFb9E9Bco=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+ydUWrmEdj6nDidfKX+/eYYcUGvXa+c1FifMacfsvQU=;
-        b=Yz0TDi0kzOihEo1E3FfisfReqe6cBZZ/wrNfIk1RIDyrxsp+SEXTpW35CXx0dc83O2
-         VxnrerzAd0QlPo3muHhrPIgTfkaXBJoFU3wCsnu8xORV5Bs1T59znaIi17gzglT7n87z
-         OvA4Kwn5E3ByTw2AYIGipHg3TvKBNnTLiVL9ANATHTAjrSPRe1eSVkzFG94lOFzb+qLm
-         /3LUaDfnYDHq5V03Iul6RLXOGlt4JMLi246EU2juiiyAtiQXB9BnSgnokCheDnvHyDoE
-         8scEE2cS5Hv0CjzUg2kNjttkfaXDCd+fvFDZrClLMvenh9c22lwX5VfDW9zBOofhpnOZ
-         gUFA==
-X-Gm-Message-State: AOAM532AWjhBLt4oNsUDpF+hGZHUPxbZyyGzIzL8bTpjKdwhvbA7RUp8
-        C+4xiX0JyaOhYK0sqP7Mk8cP3xowIXvckA==
-X-Google-Smtp-Source: ABdhPJyzhVYvZHsPEo/GORqpXk/1fdVPb2kgRv4O1h8I1aOI/1HIfNLx4UD13OR/ADwQphPV/uNUDg==
-X-Received: by 2002:a05:6830:2415:: with SMTP id j21mr903106ots.224.1624469403925;
-        Wed, 23 Jun 2021 10:30:03 -0700 (PDT)
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com. [209.85.210.44])
-        by smtp.gmail.com with ESMTPSA id u14sm86155oie.0.2021.06.23.10.30.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 10:30:03 -0700 (PDT)
-Received: by mail-ot1-f44.google.com with SMTP id x17-20020a05683000d1b029045fb1889a9eso2263699oto.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:30:03 -0700 (PDT)
-X-Received: by 2002:a25:80d4:: with SMTP id c20mr688032ybm.345.1624469392601;
- Wed, 23 Jun 2021 10:29:52 -0700 (PDT)
+        Wed, 23 Jun 2021 13:32:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624469427;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RP1VcIqhLwFYXzXkWr2dt9Vgt97hFXb+2xz/b6BZuvI=;
+        b=QLvGi9zgT6i2b2jxCMxdOggpZoQ88qf0qeEUa9VzFJvOCgCe03VBNSRuHdyKPdFV5aCQQW
+        018y3XhLaNgjp2aWwBDn90WXnS/ftB+SaVp0lT3dGO6cxNON0Fx524Yc6Mter01Un2NAB9
+        WBGcgFk8/epiCZaaM1i4/imul1KMsgE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-147-CwMQLns0NR-mTlo94ck5sw-1; Wed, 23 Jun 2021 13:30:12 -0400
+X-MC-Unique: CwMQLns0NR-mTlo94ck5sw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D1F09126F;
+        Wed, 23 Jun 2021 17:30:11 +0000 (UTC)
+Received: from optiplex-fbsd (unknown [10.3.128.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EC66860583;
+        Wed, 23 Jun 2021 17:30:09 +0000 (UTC)
+Date:   Wed, 23 Jun 2021 13:30:07 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: vmalloc: add cond_resched() in __vunmap()
+Message-ID: <YNNvn8yUiqXQgYT1@optiplex-fbsd>
+References: <20210622225030.478384-1-aquini@redhat.com>
+ <1624437661.tyds6vli52.astroid@bobo.none>
 MIME-Version: 1.0
-References: <20210621235248.2521620-1-dianders@chromium.org>
- <067dd86d-da7f-ac83-6ce6-b8fd5aba0b6f@arm.com> <CAD=FV=Vg7kqhgxZppHXwMPMc0xATZ+MqbrXx-FB0eg7pHhNE8w@mail.gmail.com>
- <498f3184-99fe-c21b-0eb0-a199f2615ceb@arm.com>
-In-Reply-To: <498f3184-99fe-c21b-0eb0-a199f2615ceb@arm.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 23 Jun 2021 10:29:40 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UQBRY4hobBWVWtC8y07NLRLhpejdvUAD+7UWw-jqP2UA@mail.gmail.com>
-Message-ID: <CAD=FV=UQBRY4hobBWVWtC8y07NLRLhpejdvUAD+7UWw-jqP2UA@mail.gmail.com>
-Subject: Re: [PATCH 0/6] iommu: Enable devices to request non-strict DMA,
- starting with QCom SD/MMC
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Clark <robdclark@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-pci@vger.kernel.org, quic_c_gdjako@quicinc.com,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Sonny Rao <sonnyrao@chromium.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Rajat Jain <rajatja@google.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andy Gross <agross@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1624437661.tyds6vli52.astroid@bobo.none>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, Jun 22, 2021 at 3:10 PM Robin Murphy <robin.murphy@arm.com> wrote:
+On Wed, Jun 23, 2021 at 06:43:50PM +1000, Nicholas Piggin wrote:
+> Excerpts from Rafael Aquini's message of June 23, 2021 8:50 am:
+> > On non-preemptible kernel builds the watchdog can complain
+> > about soft lockups when vfree() is called against large
+> > vmalloc areas:
+> > 
+> > [  210.851798] kvmalloc-test: vmalloc(2199023255552) succeeded
+> 
+> This is vfreeing()ing 2TB of memory? Maybe not too realistic but
+> I guess it doesn't hurt to add.
 >
-> On 2021-06-22 17:06, Doug Anderson wrote:
-> > Hi,
-> >
-> > On Tue, Jun 22, 2021 at 4:35 AM Robin Murphy <robin.murphy@arm.com> wrote:
-> >>
-> >> Hi Doug,
-> >>
-> >> On 2021-06-22 00:52, Douglas Anderson wrote:
-> >>>
-> >>> This patch attempts to put forward a proposal for enabling non-strict
-> >>> DMA on a device-by-device basis. The patch series requests non-strict
-> >>> DMA for the Qualcomm SDHCI controller as a first device to enable,
-> >>> getting a nice bump in performance with what's believed to be a very
-> >>> small drop in security / safety (see the patch for the full argument).
-> >>>
-> >>> As part of this patch series I am end up slightly cleaning up some of
-> >>> the interactions between the PCI subsystem and the IOMMU subsystem but
-> >>> I don't go all the way to fully remove all the tentacles. Specifically
-> >>> this patch series only concerns itself with a single aspect: strict
-> >>> vs. non-strict mode for the IOMMU. I'm hoping that this will be easier
-> >>> to talk about / reason about for more subsystems compared to overall
-> >>> deciding what it means for a device to be "external" or "untrusted".
-> >>>
-> >>> If something like this patch series ends up being landable, it will
-> >>> undoubtedly need coordination between many maintainers to land. I
-> >>> believe it's fully bisectable but later patches in the series
-> >>> definitely depend on earlier ones. Sorry for the long CC list. :(
-> >>
-> >> Unfortunately, this doesn't work. In normal operation, the default
-> >> domains should be established long before individual drivers are even
-> >> loaded (if they are modules), let alone anywhere near probing. The fact
-> >> that iommu_probe_device() sometimes gets called far too late off the
-> >> back of driver probe is an unfortunate artefact of the original
-> >> probe-deferral scheme, and causes other problems like potentially
-> >> malformed groups - I've been forming a plan to fix that for a while now,
-> >> so I for one really can't condone anything trying to rely on it.
-> >> Non-deterministic behaviour based on driver probe order for multi-device
-> >> groups is part of the existing problem, and your proposal seems equally
-> >> vulnerable to that too.
-> >
-> > Doh! :( I definitely can't say I understand the iommu subsystem
-> > amazingly well. It was working for me, but I could believe that I was
-> > somehow violating a rule somewhere.
-> >
-> > I'm having a bit of a hard time understanding where the problem is
-> > though. Is there any chance that you missed the part of my series
-> > where I introduced a "pre_probe" step? Specifically, I see this:
-> >
-> > * really_probe() is called w/ a driver and a device.
-> > * -> calls dev->bus->dma_configure() w/ a "struct device *"
-> > * -> eventually calls iommu_probe_device() w/ the device.
->
-> This...
->
-> > * -> calls iommu_alloc_default_domain() w/ the device
-> > * -> calls iommu_group_alloc_default_domain()
-> > * -> always allocates a new domain
-> >
-> > ...so we always have a "struct device" when a domain is allocated if
-> > that domain is going to be associated with a device.
-> >
-> > I will agree that iommu_probe_device() is called before the driver
-> > probe, but unless I missed something it's after the device driver is
-> > loaded.  ...and assuming something like patch #1 in this series looks
-> > OK then iommu_probe_device() will be called after "pre_probe".
-> >
-> > So assuming I'm not missing something, I'm not actually relying the
-> > IOMMU getting init off the back of driver probe.
->
-> ...is implicitly that. Sorry that it's not obvious.
->
-> The "proper" flow is that iommu_probe_device() is called for everything
-> which already exists during the IOMMU driver's own probe when it calls
-> bus_set_iommu(), then at BUS_NOTIFY_ADD_DEVICE time for everything which
-> appears subsequently. The only trouble is, to observe it in action on a
-> DT-based system you'd currently have to go back at least 4 years, before
-> 09515ef5ddad...
->
-> Basically there were two issues: firstly we need the of_xlate step
-> before add_device (now probe_device) for a DT-based IOMMU driver to know
-> whether it should care about the given device or not. When -EPROBE_DEFER
-> was the only tool we had to ensure probe ordering, and resolving the
-> "iommus" DT property the only place to decide that, delaying it all
-> until driver probe time was the only reasonable option, however ugly.
-> The iommu_probe_device() "replay" in {of,acpi}_iommu_configure() is
-> merely doing its best to fake up the previous behaviour. Try binding a
-> dummy driver to your device first, then unbind it and bind the real one,
-> and you'll see that iommu_probe_device() doesn't run the second or
-> subsequent times. Now that we have fw_devlink to take care of ordering,
 
-I probably haven't been following fw_devlink as closely as I should,
-but does it completely replace -EPROBE_DEFER? From what I can tell
-right now it helps optimize the boot ordering but it's not mandatory
-(AKA Linux should boot/work fine with fw_devlink=off)?
+Andrew has recently addressed https://bugzilla.kernel.org/show_bug.cgi?id=210023
+via 34fe653716b0d ("mm/vmalloc.c:__vmalloc_area_node(): avoid 32-bit overflow")
+
+The person that filed that bug also filed a case requesting the issue
+to be addressed in RHEL. So the case for large vmaps such as that one
+in the test case is real, albeit not being a frequent use case perhaps.
+
+Realistically, though, that vunmap loop can still burn considerable amount
+of CPU time, even when vfreeing smaller areas, thus as you well noted, 
+it's better to play nice and back off a bit and let others having a 
+chance to run as well. 
+
+> Acked-by: Nicholas Piggin <npiggin@gmail.com>
+
+Thanks!
+
+-- Rafael
 
 
-> the main reason for this weirdness is largely gone, so I'm keen to start
-> getting rid of the divergence again as far as possible. Fundamentally,
-> IOMMU drivers are supposed to be aware of all devices which the kernel
-> knows about, regardless of whether they have a driver available or not.
->
-> The second issue is that when we have multiple IOMMU instances, the
-> initial bus_set_iommu() "replay" is only useful for the first instance,
-> so devices managed by other instances which aren't up and running yet
-> will be glossed over. Currently this ends up being papered over by the
-> solution to the first point on DT systems, while the x86 drivers hide
-> their individual IOMMU units behind a single IOMMU API "instance", so
-> it's been having little impact in practice. However, improving the core
-> API's multi-instance support is an increasingly pressing issue now that
-> new more varied systems are showing up, and it's that which is really
-> going to be driving the aforementioned changes. FWIW the plan I
-> currently have is to hang things off iommu_device_register() instead.
+> Thanks,
+> Nick
+> 
+> > [  238.654842] watchdog: BUG: soft lockup - CPU#181 stuck for 26s! [rmmod:5203]
+> > [  238.662716] Modules linked in: kvmalloc_test(OE-) ...
+> > [  238.772671] CPU: 181 PID: 5203 Comm: rmmod Tainted: G S         OE     5.13.0-rc7+ #1
+> > [  238.781413] Hardware name: Intel Corporation PURLEY/PURLEY, BIOS PLYXCRB1.86B.0553.D01.1809190614 09/19/2018
+> > [  238.792383] RIP: 0010:free_unref_page+0x52/0x60
+> > [  238.797447] Code: 48 c1 fd 06 48 89 ee e8 9c d0 ff ff 84 c0 74 19 9c 41 5c fa 48 89 ee 48 89 df e8 b9 ea ff ff 41 f7 c4 00 02 00 00 74 01 fb 5b <5d> 41 5c c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 f0 29 77
+> > [  238.818406] RSP: 0018:ffffb4d87868fe98 EFLAGS: 00000206
+> > [  238.824236] RAX: 0000000000000000 RBX: 000000001da0c945 RCX: ffffb4d87868fe40
+> > [  238.832200] RDX: ffffd79d3beed108 RSI: ffffd7998501dc08 RDI: ffff9c6fbffd7010
+> > [  238.840166] RBP: 000000000d518cbd R08: ffffd7998501dc08 R09: 0000000000000001
+> > [  238.848131] R10: 0000000000000000 R11: ffffd79d3beee088 R12: 0000000000000202
+> > [  238.856095] R13: ffff9e5be3eceec0 R14: 0000000000000000 R15: 0000000000000000
+> > [  238.864059] FS:  00007fe082c2d740(0000) GS:ffff9f4c69b40000(0000) knlGS:0000000000000000
+> > [  238.873089] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [  238.879503] CR2: 000055a000611128 CR3: 000000f6094f6006 CR4: 00000000007706e0
+> > [  238.887467] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > [  238.895433] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > [  238.903397] PKRU: 55555554
+> > [  238.906417] Call Trace:
+> > [  238.909149]  __vunmap+0x17c/0x220
+> > [  238.912851]  __x64_sys_delete_module+0x13a/0x250
+> > [  238.918008]  ? syscall_trace_enter.isra.20+0x13c/0x1b0
+> > [  238.923746]  do_syscall_64+0x39/0x80
+> > [  238.927740]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > 
+> > Like in other range zapping routines that iterate over
+> > a large list, lets just add cond_resched() within __vunmap()'s
+> > page-releasing loop in order to avoid the watchdog splats.
+> > 
+> > Signed-off-by: Rafael Aquini <aquini@redhat.com>
+> > ---
+> >  mm/vmalloc.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > index a13ac524f6ff..cd4b23d65748 100644
+> > --- a/mm/vmalloc.c
+> > +++ b/mm/vmalloc.c
+> > @@ -2564,6 +2564,7 @@ static void __vunmap(const void *addr, int deallocate_pages)
+> >  
+> >  			BUG_ON(!page);
+> >  			__free_pages(page, page_order);
+> > +			cond_resched();
+> >  		}
+> >  		atomic_long_sub(area->nr_pages, &nr_vmalloc_pages);
+> >  
+> > -- 
+> > 2.26.3
+> > 
+> > 
+> > 
+> 
 
-I tried to follow all the above the best I can and hopefully
-understood some of it. ;-)
-
-OK, so what do you think about these points?
-
-* I think you are arguing that IOMMU strictness requirements needs to
-be known regardless of whether we have a driver for a given device or
-not. So the whole pre_probe stuff is just not right.
-
-* One thing that's been proposed is putting strictness info in the
-device tree. In theory on device-tree systems you could still put
-strictness info in the per-device nodes assuming that all devices are
-actually described in the device tree. That sounds nice, but I can
-believe it would be pretty hard to parse backward like this. AKA when
-the IOMMU probes it would need to find all the device tree nodes that
-would end up grouped together parse their details to find out if they
-should be non-strict.
-
-* Instead of putting the details in per-device nodes, maybe it makes
-sense to accept that we should be specifying these things at the IOMMU
-level? If specifying things at the device tree level then the
-device-tree node of the IOMMU itself would just have a list of things
-that should be strict/non-strict. ...this could potentially be merged
-with a hardcoded list of things in the IOMMU driver based on the IOMMU
-compatible string.
-
-Do those sound right?
-
-I still haven't totally grokked the ideal way to identify devices. I
-guess on Qualcomm systems each device is in its own group and so could
-have its own strictness levels? ...or would it be better to list by
-"stream ID" or something like that?
-
-If we do something like this then maybe that's a solution that could
-land short-ish term? We would know right at init time whether a given
-domain should be strict or non-strict and there'd be no requirements
-to transition it.
-
-
-> >> FWIW we already have a go-faster knob for people who want to tweak the
-> >> security/performance compromise for specific devices, namely the sysfs
-> >> interface for changing a group's domain type before binding the relevant
-> >> driver(s). Is that something you could use in your application, say from
-> >> an initramfs script?
-> >
-> > We've never had an initramfs script in Chrome OS. I don't know all the
-> > history of why (I'm trying to check), but I'm nearly certain it was a
-> > conscious decision. Probably it has to do with the fact that we're not
-> > trying to build a generic distribution where a single boot source can
-> > boot a huge variety of hardware. We generally have one kernel for a
-> > class of devices. I believe avoiding the initramfs just keeps things
-> > simpler.
-> >
-> > I think trying to revamp Chrome OS to switch to an initramfs type
-> > system would be a pretty big undertaking since (as I understand it)
-> > you can't just run a little command and then return to the normal boot
-> > flow. Once you switch to initramfs you're committing to finding /
-> > setting up the rootfs yourself and on Chrome OS I believe that means a
-> > whole bunch of dm-verity work.
-> >
-> >
-> > ...so probably the initramfs is a no-go for me, but I'm still crossing
-> > my fingers that the pre_probe() might be legit if you take a second
-> > look at it?
->
-> That's fair enough - TBH the current sysfs interface is a pretty
-> specialist sport primarily for datacentre folks who can afford to take
-> down their 40GBE NIC or whatever momentarily for a longer-term payoff,
-> but it was worth exploring - I'm assuming the SDHCI holds your root
-> filesystem so you wouldn't be able to do the unbinding dance from real
-> userspace. As I said, the idea of embedding any sort of data in
-> individual client drivers is a non-starter in general since it only has
-> any hope of working on DT platforms (maybe arm64 ACPI too?), and only
-> for very much the wrong reasons.
->
-> If this is something primarily demanded by QCom platforms in the short
-> term,
-
-At the moment I'm mostly focused on QCom platforms, but that's mostly
-because they're the first board that I've dealt with that has iommus
-on pretty much every peripheral under the sun. That's a _good_ thing,
-but it also means it's where we're hitting all these performance
-issues. I believe that the usage of "iommus everywhere" is about to
-become a lot more widespread across the SoC ecosystem, especially as
-they are important for virtualization and that seems to be a hot-topic
-these days.
-
-Basically: I could land a short-term hack a solution for me (and
-probably this is the right thing for me to do?), but I'm very much
-interested in finding a better solution, ideally something that we
-could achieve in something less than a year? Am I dreaming?
-
-
-> I'm tempted to say just try it with more device-matching magic in
-> arm-smmu-qcom.
-
-Yeah, I had this working (at least as far as my testing went)
-downstream in the chromeos-5.4 tree. I basically just implemented
-"init_context" for the arm-smmu-qcom driver and then if the "struct
-device *" passed in matched the SDMMC compatible string I just ORed in
-"IO_PGTABLE_QUIRK_NON_STRICT". That actually seemed to work fine in
-the downstream kernel tree but not upstream. I believe it broke in
-commit a250c23f15c2 ("iommu: remove DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE")
-because the flush queue stopped getting initted.
-
-I think I could revamp my patch series to continue to have the
-strictness attributes in the "struct iommu_domain" but just get rid of
-the bits in the "struct device" and obviously get rid of the
-"pre_probe" patch. Would something like that be acceptable?
-
-
-> Otherwise, the idea of growing the sysfs interface to
-> allow switching a DMA domain from default-strict to non-strict is
-> certainly an interesting prospect. Going a step beyond that to bring up
-> a flush queue 'live' without rebuilding the whole group and domain could
-> get ugly when it comes to drivers' interaction with io-pgtable, but I
-> think it might be *technically* feasible...
-
-It seems like it would be nice, but maybe with the above we could get
-by without having to do this?
-
--Doug
