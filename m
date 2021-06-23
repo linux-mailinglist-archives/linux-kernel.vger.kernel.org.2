@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 975BA3B1485
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1D73B148C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhFWHYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 03:24:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57862 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229660AbhFWHYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 03:24:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25AFE60FD8;
-        Wed, 23 Jun 2021 07:21:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624432903;
-        bh=Wr7Xwj0AVGz4/fmNTS3r6GUj58PDzxfEICzQj91dEMI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Eeh6f5ZxGETBItmTo6twrdn3krfzpeB8Nz9+B+ucHn/VNkJ5S5Qe7UHgbpI7V1VPv
-         VYw0Aqy7adNJddCzLxxBAJXLsTn/xcVqXMIhHHTZT41kUCULKH1qtTh+kZBLmXtMJU
-         NiYK3SzeeyA1K/4LlbVQyHcpiBYcE6A3YiEDbVd4=
-Date:   Wed, 23 Jun 2021 09:21:41 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     Linux Phy <linux-phy@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: Re: [GIT PULL]: Generic phy updates for v5.14
-Message-ID: <YNLhBZokBed/jxNC@kroah.com>
-References: <YNLRn/5JkyYhYwxi@matsya>
+        id S229987AbhFWH1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 03:27:36 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8435 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFWH1b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 03:27:31 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G8vpp6VhnzZky5;
+        Wed, 23 Jun 2021 15:22:10 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 23 Jun 2021 15:25:11 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 23 Jun 2021 15:25:10 +0800
+Subject: Re: [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide ZONE_DMA
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <akpm@linux-foundation.org>, <guohanjun@huawei.com>,
+        <sudeep.holla@arm.com>, <song.bao.hua@hisilicon.com>,
+        <ardb@kernel.org>, <anshuman.khandual@arm.com>,
+        <stable@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        Li Huafei <lihuafei1@huawei.com>
+References: <20210303073319.2215839-1-jingxiangfeng@huawei.com>
+ <YEDkmj6cchMPAq2h@kroah.com>
+ <9bc396116372de5b538d71d8f9ae9c3259f1002e.camel@suse.de>
+ <YEDr/lYZHew88/Ip@kroah.com>
+ <827b317d7f5da6e048806922098291faacdb19f9.camel@suse.de>
+ <YETwL6QGWFyJTAzk@kroah.com> <604597E3.5000605@huawei.com>
+ <YEX1OcbVNSqwwusF@kroah.com>
+ <31cd8432-2466-555d-7617-ae48cbcd4244@huawei.com>
+ <8b0a4f25-0803-9341-f3a4-277d16802295@huawei.com>
+ <YNLe4CGtOgVvTOMN@kroah.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <e47df0fd-0ddd-408b-2972-1b6d0a786f00@huawei.com>
+Date:   Wed, 23 Jun 2021 15:25:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNLRn/5JkyYhYwxi@matsya>
+In-Reply-To: <YNLe4CGtOgVvTOMN@kroah.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 11:45:59AM +0530, Vinod Koul wrote:
-> Hello Greg,
-> 
-> Please pull to receive Generic phy subsystem updates for v5.14
-> 
-> The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
-> 
->   Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-for-5.14
-> 
-> for you to fetch changes up to f7eedcb8539ddcbb6fe7791f1b4ccf43f905c72f:
-> 
->   phy: ti: dm816x: Fix the error handling path in 'dm816x_usb_phy_probe() (2021-06-21 12:04:18 +0530)
-> 
-> ----------------------------------------------------------------
-> phy-for-5.14
-> 
->   - Updates:
->         - Yaml conversion for renesas,rcar-gen3 pcie phy and
-> 	  rockchip-usb-phy bindings
->         - Support for devm_phy_get() taking NULL phy name
-> 
->   - New support:
-> 	- PCIe phy for Qualcomm IPQ60xx
-> 	- PCIe phy for Qualcomm SDX55
-> 	- USB phy for RK3308
-> 	- CAN transceivers phy for TI TCAN104x
->         - Innosilicon-based CSI dphy for rockchip
 
-Why is PHY_MT7621_PCI only y/n?  Shouldn't this be able to be built as a
-module?
 
-The USB phy enables this driver, which now forces me to build it into my
-kernel, which does not seem like a wise idea.  I'm not sure which commit
-in this series does this, but that isn't a good thing.
+On 2021/6/23 15:12, Greg KH wrote:
+> On Wed, Jun 23, 2021 at 02:59:59PM +0800, Kefeng Wang wrote:
+>> Hi Greg,
+>>
+>> There are two more patches about the ZONE_DMA[32] changes,
+> 
+> What ZONE_DMA changes?
 
-Ah, it's 6eded551cefe ("phy: ralink: Kconfig: convert mt7621-pci-phy
-into 'bool'"), why is that needed?  We are working to turn more code
-into modules, not force them to be built in, this feels like the wrong
-way to go :(
+See the subject, [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide 
+ZONE_DMA, We asked the ARM64 ZONE_DMA change backport before, link[1]
+> 
+>> especially the
+>> second one, both them need be backported, thanks.
+> 
+> Backported to where?
 
-I don't want to take this series because of this at the moment.
+stable 5.10
 
-thanks,
+> 
+>> 791ab8b2e3db - arm64: Ignore any DMA offsets in the max_zone_phys()
+>> calculation
+>> 2687275a5843 - arm64: Force NO_BLOCK_MAPPINGS if crashkernel reservation is
+>> required
+> 
+> Have you tried these patches?  Where do they need to be applied to?
 
-greg k-h
+Yes, we tested it, without them, especially the second one, we will
+meet crash when using kexec boot, also there is discussion in [2]
+and [3] from Catalin.
+
+
+> 
+> confused,
+> 
+Sorry about this, should add more information, thanks.
+
+[1] 
+https://lore.kernel.org/linux-riscv/20210303073319.2215839-1-jingxiangfeng@huawei.com/
+[2] 
+https://lore.kernel.org/linux-devicetree/e60d643e-4879-3fc3-737d-2c145332a6d7@arm.com/
+[3] 
+https://lore.kernel.org/linux-arm-kernel/20201119175556.18681-1-catalin.marinas@arm.com/
+> greg k-h
+> .
+> 
