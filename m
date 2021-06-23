@@ -2,201 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D16C63B20D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E24F53B20D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbhFWTN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 15:13:27 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:23209 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFWTNZ (ORCPT
+        id S229928AbhFWTPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 15:15:14 -0400
+Received: from pb-smtp1.pobox.com ([64.147.108.70]:53301 "EHLO
+        pb-smtp1.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFWTPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 15:13:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1624475452;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=Er6400DpBGbkMILlHTzXNng0HTW044QxiD2DGJNhQ2g=;
-    b=XkRIt2DI70riYYUbHi+mvVcL+uz7TXq4h/86ttAbh91nh+hhWc5cp05KvgFhP4wPIU
-    T1f8whgxXEdkeXwp2WS7OvOu3o9h31lVX97zUvJpXtt6c7h+BL4Kt18QYJOEYusWx4kO
-    10608oc8bX/U/nRD/KC1FlRSnPVCv2cT0W80fl69w+tYAmv+c9Sg8tST01rMilRYZ2xs
-    tnG0P5MswXI/4RhSGGvkM2R4kwZuI4wAAlMkyvKU5TLvcTaPSDxUR5lN/Jo7nLIRInuN
-    L46MpTxBDQY0MOrpx2Xos0AHwoaVzkfbLFCYpviiEQdBN4eeLp/mJMCpg4SHPuryewQI
-    ic0w==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNzyCzy1Sfr67uExK884EC0GFGHavJShFkMdZNkE="
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-    by smtp.strato.de (RZmta 47.27.5 DYNA|AUTH)
-    with ESMTPSA id L04113x5NJAp20R
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 23 Jun 2021 21:10:51 +0200 (CEST)
-Message-ID: <7acf0d4a63f7c94d8355101dd03cbfeb58c05d17.camel@chronox.de>
-Subject: Re: [PATCH v1] crypto: Make the DRBG compliant with NIST SP800-90A
- rev1
-From:   Stephan Mueller <smueller@chronox.de>
-To:     =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        James Morris <jamorris@linux.microsoft.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Haxby <john.haxby@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Simo Sorce <simo@redhat.com>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
-        hpa@zytor.com, tytso@mit.edu
-Date:   Wed, 23 Jun 2021 21:10:51 +0200
-In-Reply-To: <9ca2fdb4-8cee-3667-c90a-358255fb8f54@digikod.net>
-References: <20210623120751.3033390-1-mic@digikod.net>
-         <9dbbf4e751cb4953fe63079cdc917a0bb3a91670.camel@chronox.de>
-         <a4e1c071-32af-9650-e6fd-8943b3a79bb0@linux.microsoft.com>
-         <8811360.37IJKxs2K1@positron.chronox.de>
-         <9ca2fdb4-8cee-3667-c90a-358255fb8f54@digikod.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Wed, 23 Jun 2021 15:15:13 -0400
+Received: from pb-smtp1.pobox.com (unknown [127.0.0.1])
+        by pb-smtp1.pobox.com (Postfix) with ESMTP id 85FD9DB42F;
+        Wed, 23 Jun 2021 15:12:54 -0400 (EDT)
+        (envelope-from tdavies@darkphysics.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
+        :to:subject:message-id:references:mime-version:content-type
+        :in-reply-to; s=sasl; bh=2wSwZoUV0BkpVfQ4NaFgz9pv1d03ftI8MRES2Cx
+        KeXU=; b=W5ii4S8W2nF3Yh/MqkoiUjZteR9HTm016zp43rfsQGTnJ3ztJ9alZyW
+        OSY5CJp7Yk6Hlgu0iejWWmSfHOlPjvtESAvJNNmtFboWXhbFTuK2QkAXsiZDg2VC
+        0mNQ9dSr5+G1eOpOfcEdY+6zynrZYkdLdy/4uWeSFBWAFVPERlpE=
+Received: from pb-smtp1.nyi.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp1.pobox.com (Postfix) with ESMTP id 7EAB3DB42D;
+        Wed, 23 Jun 2021 15:12:54 -0400 (EDT)
+        (envelope-from tdavies@darkphysics.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=darkphysics.net;
+ h=date:from:to:subject:message-id:references:mime-version:content-type:in-reply-to; s=2019-09.pbsmtp; bh=2wSwZoUV0BkpVfQ4NaFgz9pv1d03ftI8MRES2CxKeXU=; b=TQeTHrj9QsMNgeYWeJpq4+fA6AnaTuIoh6xFJvmCNIZdDFJ0X8OxZpn0W3+7u7TcNrL6vk1PFXH8gqBstGyhaSvpYImSSe2rWvrDeKbwwW3ih1af/rk7X3P7SDi1OuzhPy+ZYA3Em6l3bOgUu5+esZUXQSsZP7xemX9u0JihqM8=
+Received: from oatmeal.darkphysics (unknown [24.19.107.226])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp1.pobox.com (Postfix) with ESMTPSA id 79E5ADB42C;
+        Wed, 23 Jun 2021 15:12:53 -0400 (EDT)
+        (envelope-from tdavies@darkphysics.net)
+Date:   Wed, 23 Jun 2021 12:12:46 -0700
+From:   Tree Davies <tdavies@darkphysics.net>
+To:     kernel-janitors@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] net/e1000e: Fix spelling mistake "The" -> "This"
+Message-ID: <20210623191245.GA32122@oatmeal.darkphysics>
+References: <20210622221938.GA30762@oatmeal.darkphysics>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622221938.GA30762@oatmeal.darkphysics>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Pobox-Relay-ID: 02C8137C-D457-11EB-9BB5-8B3BC6D8090B-45285927!pb-smtp1.pobox.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, dem 23.06.2021 um 20:04 +0200 schrieb Mickaël Salaün:
+On Tue, Jun 22, 2021 at 03:19:40PM -0700, Tree Davies wrote:
+> There is a spelling mistake in the comment block.
 > 
-> On 23/06/2021 19:27, Stephan Müller wrote:
-> > Am Mittwoch, 23. Juni 2021, 19:00:29 CEST schrieb James Morris:
-> > 
-> > Hi James,
-> > 
-> > > On Wed, 23 Jun 2021, Stephan Mueller wrote:
-> > > > > These changes replace the use of the Linux RNG with the Jitter RNG,
-> > > > > which is NIST SP800-90B compliant, to get a proper entropy input and a
-> > > > > nonce as defined by FIPS.
-> > > > 
-> > > > Can you please help me understand what is missing in the current code
-> > > > which
-> > > > seemingly already has achieved this goal?
-> > > 
-> > > The advice we have is that if an attacker knows the internal state of the
-> > > CPU, then the output of the Jitter RNG can be predicted.
-> > 
-> > Thank you for the hint. And I think such goal is worthwhile (albeit I have
-> > to 
-> > admit that if an attacker is able to gain the internal state of a CPU, I
-> > would 
-> > assume we have more pressing problems that a bit of entropy).
-> > 
-> > Anyways, the current code does:
-> > 
-> > - in regular mode: seed the DRBG with 384 bits of data from get_random_bytes
-> > 
-> > - in FIPS mode: seed the DRBG with 384 bits of data from get_random_bytes 
-> > concatenated with 384 bits from the Jitter RNG
-> > 
-> > 
-> > If I understand the suggested changes right, I would see the following
-> > changes 
-> > in the patch:
-> > 
-> > - in the regular case: 640 bits from get_random_bytes
+> Signed-off-by: Tree Davies <tdavies@darkphysics.net>
+> ---
+>  drivers/net/ethernet/intel/e1000e/netdev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Why 640 bits?
+> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+> index 88e9035b75cf..ff267cf75ef8 100644
+> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
+> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+> @@ -7674,7 +7674,7 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>   * @pdev: PCI device information struct
+>   *
+>   * e1000_remove is called by the PCI subsystem to alert the driver
+> - * that it should release a PCI device.  The could be caused by a
+> + * that it should release a PCI device.  This could be caused by a
+>   * Hot-Plug event, or because the driver is going to be removed from
+>   * memory.
+>   **/
+> -- 
+> 2.20.1
+>
 
- 		if (!reseed)
- 			entropylen = ((entropylen + 1) / 2) * 3;
-
--> Entropylen is 384 in case of a security strength of 256 bits.
-
-Your code does the following if the Jitter RNG is not allocated (i.e. in non-
-fips mode):
-
-ret = drbg_get_random_bytes(drbg, entropy, entropylen + strength);
-
-so: entropylen + strength = 384 + 256, no?
-
-> 
-> > 
-> > - in FIPS mode: 256 bits of data from get_random_bytes concatenated with 384
-> > bits from the Jitter RNG
-> 
-> In both cases there are 256 bits for the entropy input and 128 bits for
-> the nonce.
-
-I see in the code path with the Jitter RNG:
-
-ret = crypto_rng_get_bytes(drbg->jent, entropy,
- 						   entropylen);
-
---> 384 bits from the Jitter RNG
-
-ret = drbg_get_random_bytes(drbg, entropy + entropylen,
-+						    strength);
-
---> 256 bits from get_random_bytes
-
-What am I missing here?
-
-
->  If Jitter RNG is not available, then urandom is used instead,
-> which means that the system is not FIPS compliant.
-
-Agreed, the existing does does exactly the same with the exception that it
-pulls 384 bits from get_random_bytes instead of 640 in non-FIPS mode (i.e.
-when the Jitter RNG is not allocated).
-
-In FIPS mode, the current code draws 384 bits from get_random_bytes and
-separately 384 bits from the Jitter RNG. So, each data block from either
-entropy source could completely satisfy the SP800-90A requirement.
-
-> 
-> This follows the SP800-90Ar1, section 8.6.7: [a nonce shall be] "A value
-> with at least (security_strength/2) bits of entropy".
-
-Agreed, but what is your code doing different than the existing code?
-> 
-> > 
-> > So, I am not fully sure what the benefit of the difference is: in FIPS mode 
-> > (where the Jitter RNG is used), the amount of data pulled from 
-> > get_random_bytes seems to be now reduced.
-> 
-> We can increase the amount of data pulled from get_random_bytes (how to
-> decide the amount?), but as we understand the document, this should be
-> part of the personalization string and additional input, not the nonce.
-
-There is no need to have a personalization string or additional input. Note,
-those two values are intended to be provided by a caller or some other
-environment.
-
-If you want to stuff more seed into the DRBG, you simply enlarge the seed
-buffer and pull more from the entropy sources. I have no objections doing
-that. All I am trying to point out is that the 90A standard does not require
-more entropy than 256 bits during initialization plus 128 bits of nonce == 384
-bits of data. But the DRBGs all allow providing more data as seed.
-
-> I guess it may not change much according to the implementation, as for
-> the order of random and entropy concatenation, but these changes align
-> with the specifications and it should help FIPS certifications.
-
-Are you saying the order of data from the entropy sources matters in the
-entropy buffer? I have not seen that in the standard, but if you say this is
-the goal, then allow me to understand which order you want to see?
-
-The current code contains the order of:
-
-<384 bits get_random_bytes> || <384 bits Jitter RNG>
-
-Thanks
-Stephan
-> 
-> > 
-> > Maybe I miss a point here, but I currently fail to understand why the
-> > changes 
-> > should be an improvement compared to the current case.
-> > 
-> > Ciao
-> > Stephan
-> > 
-> > 
-
-
+Adding linux-kernel@  
