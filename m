@@ -2,85 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8EF3B1848
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 12:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C72F33B184B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 12:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhFWK7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 06:59:03 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35920 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbhFWK7C (ORCPT
+        id S230123AbhFWLBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 07:01:37 -0400
+Received: from mail-wr1-f44.google.com ([209.85.221.44]:37683 "EHLO
+        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230030AbhFWLBg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 06:59:02 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624445803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JSRw2o6fZe25+FTw4bxUdNYAwrLxHUJ1pNl7aOVIvtM=;
-        b=tkUZj+dECygGSHk0puCOoTHLKhyj+9ivi22N2O8I+YEiJiWNj4JbD+Ctd4LBp6+HnfCpZI
-        4lZwl/So0Rlw/RD7X46fyR56ivkQu0Xo5+yNHRThBysYSlKCKygzq2QzYnKeri/djLSdoW
-        T/Xe2oMRXjsfypch1Tl+89Sgw5jdwodViWL8fSjEioo4iYZsBRnterfILc3aMlK2TpnA7f
-        cQ/ivI9eK01FsOeygXar+v48zwlz3j4oc7xKn8Pdwxn3UZubgelxXDNaSjx3i9Mqc0SF0n
-        BsxINBI/kpQkf8kVBTwN2hvSNPuB9lU+6Z34e/REdxiv40c3htv2s5uWPudJMA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624445803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JSRw2o6fZe25+FTw4bxUdNYAwrLxHUJ1pNl7aOVIvtM=;
-        b=2nVvLAezXldeT/3G8MGPqC2b8OcksiEPK3PW4gidP67S1JKQsKVGnRjGy2f5eGOGHDYQTo
-        RLkQQ4R3M3UbngCA==
-To:     Borislav Petkov <bp@suse.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V3 64/66] x86/fpu: Return proper error codes from user access functions
-In-Reply-To: <YNLxKB9a6XQHW+w3@zn.tnic>
-References: <20210618141823.161158090@linutronix.de> <20210618143451.682092608@linutronix.de> <YNLxKB9a6XQHW+w3@zn.tnic>
-Date:   Wed, 23 Jun 2021 12:56:43 +0200
-Message-ID: <87lf70df2s.ffs@nanos.tec.linutronix.de>
+        Wed, 23 Jun 2021 07:01:36 -0400
+Received: by mail-wr1-f44.google.com with SMTP id i94so2149443wri.4;
+        Wed, 23 Jun 2021 03:59:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9AlY4fiYgbrXorQsx3xst03zsKqKyrjxSHIbQdEZSgE=;
+        b=EPVJbEpjPZM9ePdJqCAfBXfKlWHOFI99qegabS4EiLfOPGiYLvS+zZVw5fOENkhCGp
+         4Ys0B5QlSYgIo5pJ61tTaf8SfJkfxxPT8hl98Pj6ADTEfnBJLhwUxBuK/jNqRLC5LPDE
+         JrcX5kv5Ufclvu30jm/MT9Vn8VM6hTGThanxjsNQTdYDstXLbZAJ8kYCUdZ7TgTkrkWf
+         /UHtjvZQHtsd9hWYyHuma8EWvuIXr4NmEzMG5h0ZJwYk8SJuj/S27GqRe+6HSR2XmdzB
+         WOSMDxKuR3CfqlvWxLRjZbsLvgZckmGmBpuWBFYbed+I0d7fR1UPT4xJJ+pA7zlv189w
+         5Y5w==
+X-Gm-Message-State: AOAM530G5ILl/QHVlNOfQZBE1+ukCZmEMUiT+MRhLfQ3UfIAJ+7vHtPl
+        ucr59KQ9Ii8vsM0faQWBf2wj6cT1V3xhOw==
+X-Google-Smtp-Source: ABdhPJxMm1yvcS4hPM6aJ7GXE0Kew/P0LFO8c4NCuyHxk20Gk0prI065PGUL0Dhp3O4MIDyeBc84bg==
+X-Received: by 2002:a05:6000:2:: with SMTP id h2mr10621296wrx.347.1624445956594;
+        Wed, 23 Jun 2021 03:59:16 -0700 (PDT)
+Received: from msft-t490s.. (mob-176-246-29-26.net.vodafone.it. [176.246.29.26])
+        by smtp.gmail.com with ESMTPSA id r2sm2659458wrv.39.2021.06.23.03.59.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 03:59:16 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org,
+        Lennart Poettering <lennart@poettering.net>,
+        Luca Boccassi <bluca@debian.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tejun Heo <tj@kernel.org>,
+        =?UTF-8?q?Javier=20Gonz=C3=A1lez?= <javier@javigon.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        JeffleXu <jefflexu@linux.alibaba.com>
+Subject: [PATCH v3 0/6] block: add a sequence number to disks
+Date:   Wed, 23 Jun 2021 12:58:52 +0200
+Message-Id: <20210623105858.6978-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23 2021 at 10:30, Borislav Petkov wrote:
->> +/* Returns 0 or the negated trap number, which results in -EFAULT for #PF */
->>  #define user_insn(insn, output, input...)				\
->>  ({									\
->>  	int err;							\
->> @@ -94,14 +95,14 @@ static inline void fpstate_init_soft(str
->>  	might_fault();							\
->>  									\
->>  	asm volatile(ASM_STAC "\n"					\
->> -		     "1:" #insn "\n\t"					\
->> +		     "1: " #insn "\n"					\
->>  		     "2: " ASM_CLAC "\n"				\
->>  		     ".section .fixup,\"ax\"\n"				\
->> -		     "3:  movl $-1,%[err]\n"				\
->> +		     "3:  negl %%eax\n"					\
->>  		     "    jmp  2b\n"					\
->>  		     ".previous\n"					\
->> -		     _ASM_EXTABLE(1b, 3b)				\
->> -		     : [err] "=r" (err), output				\
->> +		     _ASM_EXTABLE_FAULT(1b, 3b)				\
->> +		     : [err] "=a" (err), output				\
->>  		     : "0"(0), input);					\
->>  	err;								\
->
-> Don't we wanna do the same for XSTATE_OP() too?
->
-> Because restore_hwregs_from_user() could call
-> xrstor_from_user_sigframe() too which ends up doing XRSTOR and latter
-> can cause a #PF too.
+From: Matteo Croce <mcroce@microsoft.com>
 
-Bah, right you are.
+With this series a monotonically increasing number is added to disks,
+precisely in the genhd struct, and it's exported in sysfs and uevent.
+
+This helps the userspace correlate events for devices that reuse the
+same device, like loop.
+
+The first patch is the core one, the 2..4 expose the information in
+different ways, the 5th increases the seqnum on media change and
+the last one increases the sequence number for loop devices upon
+attach, detach or reconfigure.
+
+If merged, this feature will immediately used by the userspace:
+https://github.com/systemd/systemd/issues/17469#issuecomment-762919781
+
+v2 -> v3:
+- rebased on top of 5.13-rc7
+- resend because it appeared archived on patchwork
+
+v1 -> v2:
+- increase seqnum on media change
+- increase on loop detach
+
+Matteo Croce (6):
+  block: add disk sequence number
+  block: add ioctl to read the disk sequence number
+  block: refactor sysfs code
+  block: export diskseq in sysfs
+  block: increment sequence number
+  loop: increment sequence number
+
+ Documentation/ABI/testing/sysfs-block | 12 +++++++
+ block/genhd.c                         | 46 ++++++++++++++++++++++++---
+ block/ioctl.c                         |  2 ++
+ drivers/block/loop.c                  |  5 +++
+ include/linux/genhd.h                 |  2 ++
+ include/uapi/linux/fs.h               |  1 +
+ 6 files changed, 64 insertions(+), 4 deletions(-)
+
+-- 
+2.31.1
+
