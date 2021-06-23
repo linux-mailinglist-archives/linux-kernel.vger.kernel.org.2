@@ -2,49 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92123B1C21
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60693B1C24
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbhFWONO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:13:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:36130 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231157AbhFWONK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:13:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 17CB9ED1;
-        Wed, 23 Jun 2021 07:10:53 -0700 (PDT)
-Received: from e123427-lin.arm.com (unknown [10.57.46.124])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9C7D63F718;
-        Wed, 23 Jun 2021 07:10:51 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-pci@vger.kernel.org, robh@kernel.org
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-kernel@vger.kernel.org, bhelgaas@google.com
-Subject: Re: [PATCH] PCI: dwc/intel-gw: Fix enabling the legacy PCI interrupt lines
-Date:   Wed, 23 Jun 2021 15:10:41 +0100
-Message-Id: <162445735726.18490.16882264115917693915.b4-ty@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20210106135540.48420-1-martin.blumenstingl@googlemail.com>
-References: <20210106135540.48420-1-martin.blumenstingl@googlemail.com>
+        id S231182AbhFWOOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230274AbhFWOOb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 10:14:31 -0400
+Received: from gardel.0pointer.net (gardel.0pointer.net [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A38FAC061574;
+        Wed, 23 Jun 2021 07:12:13 -0700 (PDT)
+Received: from gardel-login.0pointer.net (gardel-mail [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
+        by gardel.0pointer.net (Postfix) with ESMTP id 0FA6BE8094B;
+        Wed, 23 Jun 2021 16:12:12 +0200 (CEST)
+Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
+        id B4131160DC0; Wed, 23 Jun 2021 16:12:11 +0200 (CEST)
+Date:   Wed, 23 Jun 2021 16:12:11 +0200
+From:   Lennart Poettering <mzxreary@0pointer.de>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luca Boccassi <bluca@debian.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tejun Heo <tj@kernel.org>,
+        Javier Gonz??lez <javier@javigon.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        JeffleXu <jefflexu@linux.alibaba.com>
+Subject: Re: [PATCH v3 1/6] block: add disk sequence number
+Message-ID: <YNNBOyUiztf2wxDu@gardel-login>
+References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
+ <20210623105858.6978-2-mcroce@linux.microsoft.com>
+ <YNMffBWvs/Fz2ptK@infradead.org>
+ <CAFnufp1gdag0rGQ8K4_2oB6_aC+EZgfgwd2eL4-AxpG0mK+_qQ@mail.gmail.com>
+ <YNM8T44v5FTViVWM@gardel-login>
+ <3be63d9f-d8eb-7657-86dc-8d57187e5940@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3be63d9f-d8eb-7657-86dc-8d57187e5940@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Jan 2021 14:55:40 +0100, Martin Blumenstingl wrote:
-> The legacy PCI interrupt lines need to be enabled using PCIE_APP_IRNEN
-> bits 13 (INTA), 14 (INTB), 15 (INTC) and 16 (INTD). The old code however
-> was taking (for example) "13" as raw value instead of taking BIT(13).
-> Define the legacy PCI interrupt bits using the BIT() macro and then use
-> these in PCIE_APP_IRN_INT.
+On Mi, 23.06.21 16:01, Hannes Reinecke (hare@suse.de) wrote:
 
-Applied to pci/dwc, thanks!
+> > Thus: a global instead of local sequence number counter is absolutely
+> > *key* for the problem this is supposed to solve
+> >
+> Well ... except that you'll need to keep track of the numbers (otherwise you
+> wouldn't know if the numbers changed, right?).
+> And if you keep track of the numbers you probably will have to implement an
+> uevent listener to get the events in time.
 
-[1/1] PCI: dwc/intel-gw: Fix enabling the legacy PCI interrupt lines
-      https://git.kernel.org/lpieralisi/pci/c/263dcd1abf
+Hmm? This is backwards. The goal here is to be able to safely match up
+uevents to specific uses of a block device, given that block device
+names are agressively recycled.
 
-Thanks,
-Lorenzo
+you imply it was easy to know which device use a uevent belongs
+to. But that's the problem: it is not possible to do so safely. if i
+see a uevent for a block device "loop0" I cannot tell if it was from
+my own use of the device or for some previous user of it.
+
+And that's what we'd like to see fixed: i.e. we query the block device
+for the seqeno now used and then we can use that to filter the uevents
+and ignore the ones that do not carry the same sequence number as we
+got assigned for our user.
+
+Lennart
+
+--
+Lennart Poettering, Berlin
