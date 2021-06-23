@@ -2,197 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C2B3B1461
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416C03B146E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhFWHIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 03:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43580 "EHLO
+        id S229940AbhFWHPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 03:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbhFWHIw (ORCPT
+        with ESMTP id S229660AbhFWHP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 03:08:52 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D818CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 00:06:35 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lvwxq-0002I8-3K; Wed, 23 Jun 2021 09:06:22 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lvwxm-0001DJ-K9; Wed, 23 Jun 2021 09:06:18 +0200
-Date:   Wed, 23 Jun 2021 09:06:18 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v2 4/8] net: usb: asix: ax88772: add phylib
- support
-Message-ID: <20210623070618.nfv4yizuijbrv575@pengutronix.de>
-References: <20210607082727.26045-1-o.rempel@pengutronix.de>
- <20210607082727.26045-5-o.rempel@pengutronix.de>
- <CGME20210618083914eucas1p240f88e7064a7bf15b68370b7506d24a9@eucas1p2.samsung.com>
- <15e1bb24-7d67-9d45-54c1-c1c1a0fe444a@samsung.com>
- <20210618101317.55fr5vl5akmtgcf6@pengutronix.de>
- <b1c48fa1-d406-766e-f8d7-54f76d3acb7c@gmail.com>
- <e868450d-c623-bea9-6325-aca4e8367ad5@samsung.com>
- <20210618132035.6vg53gjwuyildlry@pengutronix.de>
- <2d0bdf2e-49bc-60c0-789e-b909cf1e2667@samsung.com>
+        Wed, 23 Jun 2021 03:15:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1BBC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 00:13:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LjIbOik+tUzV2FAD2na1696gFXMGb7R+P+hDuHHFZOI=; b=JAZPOKEMwDPIg03f1aYgme25zA
+        g9aQTjfMe07QbFC3mfhnrgbQlD/YUrJ38nUhvqx5RZQxUNLxFHUX1VD+YHbDEI0M0iMNJtuydIwqd
+        GLisIytMEGBdipVxvGUj6Z3CqozBv8W5rX0fijltGRJHwMb2GP6sLaM35qj6d/18pBVi2cfV28tzQ
+        s/U/cWaCk5fLB5Sn7Y+3ED2asMw91BZ7E5e5uQYkunpOzgmm8U1MHSifaCXFKH7TZnx6XliHz9zr+
+        Qu4gM+hHyUyyLbQzr1Zg38NzDeSpz2B/XnurpGeEzZ32ijQG1BahdQRVJl5J+QpMb25u91sTI5oSH
+        5kjUycFg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvx3B-00F8z9-5R; Wed, 23 Jun 2021 07:12:02 +0000
+Date:   Wed, 23 Jun 2021 08:11:53 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+Cc:     Alexandre Ghiti <alex@ghiti.fr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 1/2] riscv: Introduce set_kernel_memory helper
+Message-ID: <YNLeuR9j5DE1zcLY@infradead.org>
+References: <20210622082134.2404162-1-alex@ghiti.fr>
+ <20210622082134.2404162-2-alex@ghiti.fr>
+ <20210622225304.53d94c0b@xhacker>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2d0bdf2e-49bc-60c0-789e-b909cf1e2667@samsung.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 08:56:17 up 202 days, 21:02, 38 users,  load average: 0.10, 0.06,
- 0.01
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210622225304.53d94c0b@xhacker>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marek,
-
-On Mon, Jun 21, 2021 at 08:05:49AM +0200, Marek Szyprowski wrote:
-> Hi Oleksij,
+On Tue, Jun 22, 2021 at 10:53:04PM +0800, Jisheng Zhang wrote:
+> >  
+> > +__always_inline int set_kernel_memory(char *startp, char *endp,
 > 
-> On 18.06.2021 15:20, Oleksij Rempel wrote:
-> > On Fri, Jun 18, 2021 at 01:11:41PM +0200, Marek Szyprowski wrote:
-> >> On 18.06.2021 13:04, Heiner Kallweit wrote:
-> >>> On 18.06.2021 12:13, Oleksij Rempel wrote:
-> >>>> thank you for your feedback.
-> >>>>
-> >>>> On Fri, Jun 18, 2021 at 10:39:12AM +0200, Marek Szyprowski wrote:
-> >>>>> On 07.06.2021 10:27, Oleksij Rempel wrote:
-> >>>>>> To be able to use ax88772 with external PHYs and use advantage of
-> >>>>>> existing PHY drivers, we need to port at least ax88772 part of asix
-> >>>>>> driver to the phylib framework.
-> >>>>>>
-> >>>>>> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> >>>>> I found one more issue with this patch. On one of my test boards
-> >>>>> (Samsung Exynos5250 SoC based Arndale) system fails to establish network
-> >>>>> connection just after starting the kernel when the driver is build-in.
-> >>>>>
-> >>> If you build in the MAC driver, do you also build in the PHY driver?
-> >>> If the PHY driver is still a module this could explain why genphy
-> >>> driver is used.
-> >>> And your dmesg filtering suppresses the phy_attached_info() output
-> >>> that would tell us the truth.
-> >> Here is a bit more complete log:
-> >>
-> >> # dmesg | grep -i Asix
-> >> [    2.412966] usbcore: registered new interface driver asix
-> >> [    4.620094] usb 1-3.2.4: Manufacturer: ASIX Elec. Corp.
-> >> [    4.641797] asix 1-3.2.4:1.0 (unnamed net_device) (uninitialized):
-> >> invalid hw address, using random
-> >> [    5.657009] libphy: Asix MDIO Bus: probed
-> >> [    5.750584] Asix Electronics AX88772A usb-001:004:10: attached PHY
-> >> driver (mii_bus:phy_addr=usb-001:004:10, irq=POLL)
-> >> [    5.763908] asix 1-3.2.4:1.0 eth0: register 'asix' at
-> >> usb-12110000.usb-3.2.4, ASIX AX88772 USB 2.0 Ethernet, fe:a5:29:e2:97:3e
-> >> [    9.090270] asix 1-3.2.4:1.0 eth0: Link is Up - 100Mbps/Full - flow
-> >> control off
-> >>
-> >> This seems to be something different than missing PHY driver.
-> > Can you please test it:
-> >
-> > diff --git a/drivers/net/usb/asix_devices.c b/drivers/net/usb/asix_devices.c
-> > index aec97b021a73..7897108a1a42 100644
-> > --- a/drivers/net/usb/asix_devices.c
-> > +++ b/drivers/net/usb/asix_devices.c
-> > @@ -453,6 +453,7 @@ static int ax88772a_hw_reset(struct usbnet *dev, int in_pm)
-> >   	u16 rx_ctl, phy14h, phy15h, phy16h;
-> >   	u8 chipcode = 0;
-> >   
-> > +	netdev_info(dev->net, "ax88772a_hw_reset\n");
-> >   	ret = asix_write_gpio(dev, AX_GPIO_RSE, 5, in_pm);
-> >   	if (ret < 0)
-> >   		goto out;
-> > @@ -509,31 +510,7 @@ static int ax88772a_hw_reset(struct usbnet *dev, int in_pm)
-> >   			goto out;
-> >   		}
-> >   	} else if ((chipcode & AX_CHIPCODE_MASK) == AX_AX88772A_CHIPCODE) {
-> > -		/* Check if the PHY registers have default settings */
-> > -		phy14h = asix_mdio_read_nopm(dev->net, dev->mii.phy_id,
-> > -					     AX88772A_PHY14H);
-> > -		phy15h = asix_mdio_read_nopm(dev->net, dev->mii.phy_id,
-> > -					     AX88772A_PHY15H);
-> > -		phy16h = asix_mdio_read_nopm(dev->net, dev->mii.phy_id,
-> > -					     AX88772A_PHY16H);
-> > -
-> > -		netdev_dbg(dev->net,
-> > -			   "772a_hw_reset: MR20=0x%x MR21=0x%x MR22=0x%x\n",
-> > -			   phy14h, phy15h, phy16h);
-> > -
-> > -		/* Restore PHY registers default setting if not */
-> > -		if (phy14h != AX88772A_PHY14H_DEFAULT)
-> > -			asix_mdio_write_nopm(dev->net, dev->mii.phy_id,
-> > -					     AX88772A_PHY14H,
-> > -					     AX88772A_PHY14H_DEFAULT);
-> > -		if (phy15h != AX88772A_PHY15H_DEFAULT)
-> > -			asix_mdio_write_nopm(dev->net, dev->mii.phy_id,
-> > -					     AX88772A_PHY15H,
-> > -					     AX88772A_PHY15H_DEFAULT);
-> > -		if (phy16h != AX88772A_PHY16H_DEFAULT)
-> > -			asix_mdio_write_nopm(dev->net, dev->mii.phy_id,
-> > -					     AX88772A_PHY16H,
-> > -					     AX88772A_PHY16H_DEFAULT);
-> > +		netdev_info(dev->net, "do not touch PHY regs\n");
-> >   	}
-> >   
-> >   	ret = asix_write_cmd(dev, AX_CMD_WRITE_IPG0,
-> 
-> This doesn't help for this issue.
+> If __always_inline, can it be moved to set_memory.h?
 
-Ok.
-So far I was not able to see obvious differences between:
-probe -> ip link set dev eth1 up
-
-and
-
-probe -> ip link set dev eth1 up;
-	 ip link set dev eth1 down;
-	 ip link set dev eth1 up
-
-
-Except of PHY sate. By default the PHY is in resumed state after probe
-and is able to negotiate the link even if the MAC is down.
-After ip link set dev eth1 down, the PHY is in suspend state, as
-expected.
-
-Can you please test this change?
-
-diff --git a/drivers/net/usb/asix_devices.c b/drivers/net/usb/asix_devices.c
-index aec97b021a73..2c115216420a 100644
---- a/drivers/net/usb/asix_devices.c
-+++ b/drivers/net/usb/asix_devices.c
-@@ -701,6 +701,7 @@ static int ax88772_init_phy(struct usbnet *dev)
- 		return ret;
- 	}
- 
-+	phy_suspend(priv->phydev);
- 	priv->phydev->mac_managed_pm = 1;
- 
- 	phy_attached_info(priv->phydev);
-
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Yes, __always_inline pretty much only makes sense as
+"static __always_inline" anyway.
