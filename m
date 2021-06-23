@@ -2,137 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858853B12E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 06:25:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54ED13B12E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 06:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbhFWE1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 00:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36118 "EHLO
+        id S229938AbhFWEaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 00:30:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230439AbhFWE10 (ORCPT
+        with ESMTP id S229544AbhFWEaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 00:27:26 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B6AC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 21:25:08 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id e33so686283pgm.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 21:25:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IsYDkx5V1mJjZwOsL/IXqLmlqBdgt7SKxZu32NLqyoA=;
-        b=KoW+3L+nAzHaFgbRElzs5uOdutafEIWxBC8B5+GDKPJmQleXVfldK7z7iqfjfcts1Q
-         rPL0kfSafE8oFpk6vrVZuNwIRU6AgR8g80QroxtsUVS3fgsrxmhUjcHJybPvXNrlECFn
-         AAucYr0aZJMlHLGw09t3jUjQgj2XGLYNcQaGeuAUDeAoyhWbX1LrqiB6kBBDGV/8z/CN
-         ++aB+n41chkQUj2WNQ3WqdialMd1lKj6yKzDF0hXvNUGzITEYsvfRPlJpIra4FVwPNQk
-         b7US4tsXnrqo0EG6dj8k2TY/Ebg3EXPdt97zdZ9/IXIIO+2y6YkdmcBVH7hSDt3Fb6qh
-         gNqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IsYDkx5V1mJjZwOsL/IXqLmlqBdgt7SKxZu32NLqyoA=;
-        b=s43H112uKx31TP9vhHRMy4ga+VsNmAp3cD5jGRV1GFRHMSMMdsHMBTyhB+am/vJy01
-         rJiJK7xqV+yD9yZgDGk+Kap1MCdlfwR1cm1J1DI9l1dHCIV1p2ZemvXBP17YEethTPjh
-         QaZH9HfJszGczeQJFioQ2YXTU814trTG3yyeJFqw9f2/QFCYQ2i2TRWxF+/NzBAxgS6z
-         huZzxjnC1YUezItXQagrfpW6l3gEbkBPnVqaYW2jpZwQ01AVTB7pgz9siOy5Sjr3ECEx
-         3Pnik1cPV73yopoywyzjhPm4LA6cZnHE8N7Mv7W6GpZnwtmsYd+hoTAEedhMz/kHAl6i
-         O4/A==
-X-Gm-Message-State: AOAM530In9vR9+Soxcsf083N4kvOLKC1JPOzjItu3zwn/eRbBjUEjf+c
-        kOhb04WSB/CSTj1dthZuPKCnLA==
-X-Google-Smtp-Source: ABdhPJykxyALIdJtvZ3O3tAzyqaObMPTohAMm6rjwil0SUh9TpEoeEcPD3F2IEayX6QLESd2Wz/U6g==
-X-Received: by 2002:a63:5743:: with SMTP id h3mr1946424pgm.362.1624422308452;
-        Tue, 22 Jun 2021 21:25:08 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id u11sm3770311pjf.46.2021.06.22.21.25.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 21:25:08 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V4 4/4] cpufreq: Remove stop_cpu() callback
-Date:   Wed, 23 Jun 2021 09:54:42 +0530
-Message-Id: <56e8fadcecf014ef0786499fbf4e93975b123483.1624421816.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
-In-Reply-To: <cover.1624421816.git.viresh.kumar@linaro.org>
-References: <cover.1624421816.git.viresh.kumar@linaro.org>
+        Wed, 23 Jun 2021 00:30:24 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6709AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 21:28:07 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvuUD-00BPOp-9G; Wed, 23 Jun 2021 04:27:37 +0000
+Date:   Wed, 23 Jun 2021 04:27:37 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Xiaoming Ni <nixiaoming@huawei.com>
+Cc:     Chen Huang <chenhuang5@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
+Message-ID: <YNK4OSdoo/4wjhd7@zeniv-ca.linux.org.uk>
+References: <da9c2fa9-a545-0c48-4490-d6134cc31425@huawei.com>
+ <YNKhjkuzXEJrBUA8@zeniv-ca.linux.org.uk>
+ <92fa298d-9d88-0ca4-40d9-13690dcd42f9@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <92fa298d-9d88-0ca4-40d9-13690dcd42f9@huawei.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that all users of stop_cpu() are migrated to use other callbacks,
-lets remove its support from the core.
+On Wed, Jun 23, 2021 at 11:24:54AM +0800, Xiaoming Ni wrote:
+> On 2021/6/23 10:50, Al Viro wrote:
+> > On Wed, Jun 23, 2021 at 10:39:31AM +0800, Chen Huang wrote:
+> > 
+> > > Then when kernel handles the alignment_fault, it will not panic. As the
+> > > arm64 memory model spec said, when the address is not a multiple of the
+> > > element size, the access is unaligned. Unaligned accesses are allowed to
+> > > addresses marked as Normal, but not to Device regions. An unaligned access
+> > > to a Device region will trigger an exception (alignment fault).
+> > > 	
+> > > do_alignment_fault
+> > >      do_bad_area
+> > > 	__do_kernel_fault
+> > >             fixup_exception
+> > > 
+> > > But that fixup cann't handle the unaligned copy, so the
+> > > copy_page_from_iter_atomic returns 0 and traps in loop.
+> > 
+> > Looks like you need to fix your raw_copy_from_user(), then...
+> > .
+> > 
+> 
+> Exit loop when iov_iter_copy_from_user_atomic() returns 0.
+> This should solve the problem, too, and it's easier.
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- Documentation/cpu-freq/cpu-drivers.rst                    | 3 ---
- Documentation/translations/zh_CN/cpu-freq/cpu-drivers.rst | 3 ---
- drivers/cpufreq/cpufreq.c                                 | 3 ---
- include/linux/cpufreq.h                                   | 1 -
- 4 files changed, 10 deletions(-)
+It might be easier, but it's not going to work correctly.
+If the page gets evicted by memory pressure, you are going
+to get spurious short write.
 
-diff --git a/Documentation/cpu-freq/cpu-drivers.rst b/Documentation/cpu-freq/cpu-drivers.rst
-index a697278ce190..74fac797c396 100644
---- a/Documentation/cpu-freq/cpu-drivers.rst
-+++ b/Documentation/cpu-freq/cpu-drivers.rst
-@@ -71,9 +71,6 @@ And optionally
-  .exit - A pointer to a per-policy cleanup function called during
-  CPU_POST_DEAD phase of cpu hotplug process.
- 
-- .stop_cpu - A pointer to a per-policy stop function called during
-- CPU_DOWN_PREPARE phase of cpu hotplug process.
--
-  .suspend - A pointer to a per-policy suspend function which is called
-  with interrupts disabled and _after_ the governor is stopped for the
-  policy.
-diff --git a/Documentation/translations/zh_CN/cpu-freq/cpu-drivers.rst b/Documentation/translations/zh_CN/cpu-freq/cpu-drivers.rst
-index 0ca2cb646666..9570e9c9e939 100644
---- a/Documentation/translations/zh_CN/cpu-freq/cpu-drivers.rst
-+++ b/Documentation/translations/zh_CN/cpu-freq/cpu-drivers.rst
-@@ -76,9 +76,6 @@ 并且可选择
-  .exit - 一个指向per-policy清理函数的指针，该函数在cpu热插拔过程的CPU_POST_DEAD
-  阶段被调用。
- 
-- .stop_cpu - 一个指向per-policy停止函数的指针，该函数在cpu热插拔过程的CPU_DOWN_PREPARE
-- 阶段被调用。
--
-  .suspend - 一个指向per-policy暂停函数的指针，该函数在关中断且在该策略的调节器停止
-  后被调用。
- 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index cbab834c37a0..5e4b5316d254 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -1606,9 +1606,6 @@ static int cpufreq_offline(unsigned int cpu)
- 		policy->cdev = NULL;
- 	}
- 
--	if (cpufreq_driver->stop_cpu)
--		cpufreq_driver->stop_cpu(policy);
--
- 	if (has_target())
- 		cpufreq_exit_governor(policy);
- 
-diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-index 353969c7acd3..2e2267a36502 100644
---- a/include/linux/cpufreq.h
-+++ b/include/linux/cpufreq.h
-@@ -371,7 +371,6 @@ struct cpufreq_driver {
- 	int		(*online)(struct cpufreq_policy *policy);
- 	int		(*offline)(struct cpufreq_policy *policy);
- 	int		(*exit)(struct cpufreq_policy *policy);
--	void		(*stop_cpu)(struct cpufreq_policy *policy);
- 	int		(*suspend)(struct cpufreq_policy *policy);
- 	int		(*resume)(struct cpufreq_policy *policy);
- 
--- 
-2.31.1.272.g89b43f80a514
-
+Besides, it's simply wrong - write(2) does *NOT* require an
+aligned source.  It (and raw_copy_from_user()) should act the
+same way memcpy(3) does.
