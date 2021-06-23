@@ -2,131 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5783B2145
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B43D3B214B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhFWThT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 15:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbhFWThR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 15:37:17 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06176C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 12:34:58 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id c22so3028643qtn.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 12:34:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fGGtHhMjRxWC7q8u+QpLuSmAd2BS6BZvGpryakmPg+4=;
-        b=C/ChLYKJjxWUduhsqQDH/y3KkPljvKtmE9gnR4RWqH26X4Hcl0BZhRk8uZJDDcRefS
-         hGtO2MpvhYu1ncsQ4XftrvmDbf/mCW3wk2DupCuSLq+ie4Hyvpd20U48FGOE4dSGyEo0
-         TmyxIGRf7/r6jILWVF9V3iqSjUzYoN6B2NHcRb+DpKV2v39TKfOUwHneZqFmzFyu8wZH
-         aiub1NaEqGoa85Yu73CHqFp2wUJ1VM+8ZEE8HkUwdR6souayXVXN3DVtBP19SojfN0kr
-         E2ju0T5nvVMTyB6NE6nPMbaB3NYTA1ab7ECOlaIw1r3lb29JeCcDEsxrLY1+NlKZ05e4
-         b/PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fGGtHhMjRxWC7q8u+QpLuSmAd2BS6BZvGpryakmPg+4=;
-        b=ZXKYjClBmQ+jKSI1HlmWqyPs+bgqdnTuLCnRMu4Myd/2CZn8kA4ScRzU1+D3iBERD/
-         A3iMFfmAYZltCe6wv7w6kyc2MP66y7HdgSy3rGI0Rgcql7+aM9caz/yvu1WawKLSj+fv
-         QuX8TRm1ikIUHmgTtNRbDUVdSCYRnIT2Bp6qG/0KtcNoJaN321ubVrq/Lzt45Rwvl8Zq
-         IIM3Nnl7GxVA9nY0eDmT4luxUzj0d+V/o5UqocyZEU7ugle3I+0fV5fLPOlva00YbpBD
-         zS42V5d/S1B4rPRS97eqrRDcg0SkrvfX6rsQk6+cMK8dx4QSZXvMwAUEjt82aHrgUCXp
-         yvmw==
-X-Gm-Message-State: AOAM533BupI3rKi5g+F2HC5UKcQCRE99CuCzxMaXWZAteLq+cgPICn0l
-        5gETXJtD9rOQvgg/mEVPeK+ycg==
-X-Google-Smtp-Source: ABdhPJy4nm23YvC56EEKSx/Y/JuzrdTPRhd28eu5/vz3L6lZmXQMsZDuNXNFY8tXVtB6j1rc/ARD+w==
-X-Received: by 2002:a05:622a:1051:: with SMTP id f17mr1494327qte.226.1624476897149;
-        Wed, 23 Jun 2021 12:34:57 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id x7sm598287qke.62.2021.06.23.12.34.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 12:34:56 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lw8eG-00BmnU-3D; Wed, 23 Jun 2021 16:34:56 -0300
-Date:   Wed, 23 Jun 2021 16:34:56 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Tomer Tayar <ttayar@habana.ai>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
- FD for DMA-BUF
-Message-ID: <20210623193456.GZ1096940@ziepe.ca>
-References: <20210622152343.GO1096940@ziepe.ca>
- <3fabe8b7-7174-bf49-5ffe-26db30968a27@amd.com>
- <20210622154027.GS1096940@ziepe.ca>
- <09df4a03-d99c-3949-05b2-8b49c71a109e@amd.com>
- <20210622160538.GT1096940@ziepe.ca>
- <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com>
- <20210623182435.GX1096940@ziepe.ca>
- <CAFCwf111O0_YB_tixzEUmaKpGAHMNvMaOes2AfMD4x68Am4Yyg@mail.gmail.com>
- <20210623185045.GY1096940@ziepe.ca>
- <CAFCwf12tW_WawFfAfrC8bgVhTRnDA7DuM+0V8w3JsUZpA2j84w@mail.gmail.com>
+        id S230001AbhFWTjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 15:39:17 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:52276 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229523AbhFWTjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 15:39:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=T13J8AAOzye0vPE72zOkmKwgCqb3X8Y2nKlK460R0cY=; b=l4RlYytU80yLAKSl4Xth6DXqf0
+        BmquKFSwgp7FHexz1xEs42MFaZDR7EFJin0KXyMgWtuFumuVvBbjJAiTkC6JAmrbMfFEdml5XNu8v
+        16qklndSkA1nzTKlhrYx6jhQk9vtS7dIJRn+GFIut7ZrfiZnRRzOHU918mhAh8bWEwDw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lw8fl-00AsjI-68; Wed, 23 Jun 2021 21:36:29 +0200
+Date:   Wed, 23 Jun 2021 21:36:29 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Voon, Weifeng" <weifeng.voon@intel.com>
+Cc:     "Ling, Pei Lee" <pei.lee.ling@intel.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        Wong Vee Khee <vee.khee.wong@linux.intel.com>,
+        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
+        "Tan, Tee Min" <tee.min.tan@intel.com>,
+        "Sit, Michael Wei Hong" <michael.wei.hong.sit@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next V1 3/4] net: stmmac: Reconfigure the PHY WOL
+ settings in stmmac_resume()
+Message-ID: <YNONPZAfmdyBMoL5@lunn.ch>
+References: <20210621094536.387442-1-pei.lee.ling@intel.com>
+ <20210621094536.387442-4-pei.lee.ling@intel.com>
+ <YNCOqGCDgSOy/yTP@lunn.ch>
+ <CH0PR11MB53806E2DC74B2B9BE8F84D7088089@CH0PR11MB5380.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFCwf12tW_WawFfAfrC8bgVhTRnDA7DuM+0V8w3JsUZpA2j84w@mail.gmail.com>
+In-Reply-To: <CH0PR11MB53806E2DC74B2B9BE8F84D7088089@CH0PR11MB5380.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 10:00:29PM +0300, Oded Gabbay wrote:
-> On Wed, Jun 23, 2021 at 9:50 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Wed, Jun 23, 2021 at 09:43:04PM +0300, Oded Gabbay wrote:
-> >
-> > > Can you please explain why it is so important to (allow) access them
-> > > through the CPU ?
-> >
-> > It is not so much important, as it reflects significant design choices
-> > that are already tightly baked into alot of our stacks.
-> >
-> > A SGL is CPU accessible by design - that is baked into this thing and
-> > places all over the place assume it. Even in RDMA we have
-> > RXE/SWI/HFI1/qib that might want to use the CPU side (grep for sg_page
-> > to see)
-> >
-> > So, the thing at the top of the stack - in this case the gaudi driver
-> > - simply can't assume what the rest of the stack is going to do and
-> > omit the CPU side. It breaks everything.
-> >
-> > Logan's patch series is the most fully developed way out of this
-> > predicament so far.
+On Wed, Jun 23, 2021 at 10:06:44AM +0000, Voon, Weifeng wrote:
+> > > From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+> > >
+> > > After PHY received a magic packet, the PHY WOL event will be triggered
+> > > then PHY WOL event interrupt will be disarmed.
+> > > Ethtool settings will remain with WOL enabled after a S3/S4 suspend
+> > > resume cycle as expected. Hence,the driver should reconfigure the PHY
+> > > settings to reenable/disable WOL depending on the ethtool WOL settings
+> > > in the resume flow.
+> > 
+> > Please could you explain this a bit more? I'm wondering if you have a
+> > PHY driver bug. PHY WOL should remain enabled until it is explicitly
+> > disabled.
+> > 
+> > 	Andrew
 > 
-> I understand the argument and I agree that for the generic case, the
-> top of the stack can't assume anything.
-> Having said that, in this case the SGL is encapsulated inside a dma-buf object.
->
-> Maybe its a stupid/over-simplified suggestion, but can't we add a
-> property to the dma-buf object,
-> that will be set by the exporter, which will "tell" the importer it
-> can't use any CPU fallback ? Only "real" p2p ?
+> Let's take Marvell 1510 as example. 
+> 
+> As explained in driver/net/phy/marvell.c
+> 1773 >------->-------/* If WOL event happened once, the LED[2] interrupt pin
+> 1774 >------->------- * will not be cleared unless we reading the interrupt status
+> 1775 >------->------- * register. 
+> 
+> The WOL event will not able trigger again if the driver does not clear
+> the interrupt status.
+> Are we expecting PHY driver will automatically clears the interrupt
+> status rather than trigger from the MAC driver?
 
-The block stack has been trying to do something like this.
+So you are saying the interrupt it getting discarded? I would of
+though it is this interrupt which brings to system out of suspend, and
+it should trigger the usual action, i.e. call the interrupt
+handler. That should then clear the interrupt.
 
-The flag doesn't solve the DMA API/IOMMU problems though.
-
-Jason
+	 Andrew
