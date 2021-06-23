@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B20E3B23C1
+	by mail.lfdr.de (Postfix) with ESMTP id E5A4C3B23C2
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhFWXIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 19:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34664 "EHLO
+        id S229930AbhFWXI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 19:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbhFWXIU (ORCPT
+        with ESMTP id S229889AbhFWXIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 19:08:20 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7711FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 16:06:01 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id r8-20020a0562140c88b0290242bf8596feso4669329qvr.8
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 16:06:01 -0700 (PDT)
+        Wed, 23 Jun 2021 19:08:21 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D5DC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 16:06:03 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id h15-20020ac846cf0000b029024f584a591eso2048200qto.15
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 16:06:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=oH77o4lz1NSzb78aMq4uAG+U/iFLzDNAUznM/bo62rM=;
-        b=SHTgYbmg959e42qNZl0AWZ4dEw+/QJ0kmNAUoS+JotxoPZ67fTbBx9aztLXg0XppJR
-         qX8eRksw5kNejjfxTs3qoTSm3JFG5mjA0vgts9XvdCPOqyXjQVpbBC4D1OxUb7QFFEcN
-         lFV0n00kQCgZ0OMY+AOIPmdj23OHoYiMnaMfZ2YrJbgf0u8Pm/59bz6BwP5zydK8K6fF
-         TEm1wHkuMa8K4j4Refjr5aoFTuf5x4DF9jHJBX8E0By3TnSSUH/d36n9fe5d1d9N/SOS
-         Y1QJb0bpQ4dCh63xN9fh8NODwOxo0XhySnOa+WuOIVBzNrquX7sV1zA8+6LXPRRHjRdI
-         FsXA==
+        bh=jbfGWs931zA+JGWuuEGa9C1XdcBcxFB7u/E81/FmgGU=;
+        b=q4witublxlQfQh9byhgfZ2JZsN+6vdXlBZi0aMSrSAjmRmYvx9rFDvbS8yFOPcM4LB
+         /1NxO5D6/eZNco8/BabNsUhn0brbIh92TLER1gzpd13/O2Zy76WZxJCtulEKzpBuvW8I
+         988XdjGpKD6Bcr9HncDuGdCXh2LXROdtzD4VOqCu/2y55QLPQE7xBUTZweL+nFzXB24g
+         pq1yIkl8TKm2Ia2OD8LDhSuqUA7TXbKcCoFPsTwJNu7HxvV/RRB8Ow0uEVbf5L8Hy2UQ
+         IUMWRxhgRXtwlrhbbhWzCi+yckSL81UJn5vCW0JR7fdCZtUtz5KZSghBUQ4rW47zwXQm
+         s2xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=oH77o4lz1NSzb78aMq4uAG+U/iFLzDNAUznM/bo62rM=;
-        b=KsVL1spqyb/BGFaU29qM2Rc3x8HFWRYNyLsH1y+SeW3XcAOBdzKucnAWQ4WZTiXtC3
-         9y20594E2qae6jWslwhgk8lM1DN4kGlg7N2esLcVUr4tOKm5oaLANkg1i5V8RZUqY6v3
-         19tBfNP0zE3IZn5C41NCzvfSNHYE9SUQ0/Yiz5h3wDnunsmTA0OZj1r4a9uATo5QiFBK
-         X7vrhIKX18yanJHqWumKV1PPH2DyU2PUXNFt1miQSw26TQcAHftnpy1fqpEAOFpBUbpN
-         UTu0RAgxHCoY3NPJ/f/0xFlQvZacFZvOkwK19/ClFqDBMyhkrTM9NMIh3Qq92llWfUML
-         oTmQ==
-X-Gm-Message-State: AOAM532pRq50ga938RKjAKgb6ZVmBbLsOlEPvU22E9zNTH2yNEjZUzss
-        AgA6nHKKu+q3TpORpLD43JE/qgU6GAM=
-X-Google-Smtp-Source: ABdhPJws+FaF+iL4+9O3U4PePeppdh6J+coIlouK26lbEh4WpKyXv5fC2xidL+TZqY/x+5e/gV0FkB8gM/Q=
+        bh=jbfGWs931zA+JGWuuEGa9C1XdcBcxFB7u/E81/FmgGU=;
+        b=qrYEqBhCnaytqwClo2l235fCdjjgrxv50UXFpddpG0ni36UpcW/Kvgq8AmKgqgbfvQ
+         AJBdvC7xV3vId52w1hXgbVjB1yLaicQje2HAQisaBcEfmNgPKt/xvzkkfkVpNu3fdxBd
+         qCbuWeIFzlO3/eVCqpUtvTCM+8L+bgWt6Vwk1HJI/2whCeQRZr+Ki0F2IYeAEg7DPbTQ
+         KNgvCydeIV1HYs18eezB/vvMKegZFwl99FcUk6kjyNSMHnwWXAmmKgKzvBsG8lmMDZoK
+         xE5zlKt9edQX53+YAAO5xc2RBk6AbzC3cB6HYiGtzaBqspsi9AQfj20j6qc0853MJXYC
+         kBVg==
+X-Gm-Message-State: AOAM533MWp0SuGE5bbu58NQAnD1Bro0RtZniTDfcPq9lAZZj/kCe7TaL
+        bx8XXLg5iPR9J2GJnrNj/zlRSkK3p6Y=
+X-Google-Smtp-Source: ABdhPJyWxbjbqPIzyPvxjQ1GE7fMSRSGs/DNU7B9f28W8AIL1w65sp4XTKNcI58saYVi4VCH5f0kO2HHF60=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:e9e:5b86:b4f2:e3c9])
- (user=seanjc job=sendgmr) by 2002:a25:cf03:: with SMTP id f3mr635411ybg.522.1624489560555;
- Wed, 23 Jun 2021 16:06:00 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:ad4:5a07:: with SMTP id ei7mr2045985qvb.46.1624489562735;
+ Wed, 23 Jun 2021 16:06:02 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 23 Jun 2021 16:05:46 -0700
+Date:   Wed, 23 Jun 2021 16:05:47 -0700
 In-Reply-To: <20210623230552.4027702-1-seanjc@google.com>
-Message-Id: <20210623230552.4027702-2-seanjc@google.com>
+Message-Id: <20210623230552.4027702-3-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210623230552.4027702-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 1/7] KVM: x86: Use guest MAXPHYADDR from CPUID.0x8000_0008 iff
- TDP is enabled
+Subject: [PATCH 2/7] KVM: x86: Use kernel's x86_phys_bits to handle reduced MAXPHYADDR
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -69,40 +68,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ignore the guest MAXPHYADDR reported by CPUID.0x8000_0008 if TDP, i.e.
-NPT, is disabled, and instead use the host's MAXPHYADDR.  Per AMD'S APM:
+Use boot_cpu_data.x86_phys_bits instead of the raw CPUID information to
+enumerate the MAXPHYADDR for KVM guests when TDP is disabled (the guest
+version is only relevant to NPT/TDP).
 
-  Maximum guest physical address size in bits. This number applies only
-  to guests using nested paging. When this field is zero, refer to the
-  PhysAddrSize field for the maximum guest physical address size.
+When using shadow paging, any reductions to the host's MAXPHYADDR apply
+to KVM and its guests as well, i.e. using the raw CPUID info will cause
+KVM to misreport the number of PA bits available to the guest.
 
-Fixes: 24c82e576b78 ("KVM: Sanitize cpuid")
+Unconditionally zero out the "Physical Address bit reduction" entry.
+For !TDP, the adjustment is already done, and for TDP enumerating the
+host's reduction is wrong as the reduction does not apply to GPAs.
+
+Fixes: 9af9b94068fb ("x86/cpu/AMD: Handle SME reduction in physical address size")
 Cc: stable@vger.kernel.org
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/cpuid.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/x86/kvm/cpuid.c | 27 ++++++++++++++++++++-------
+ 1 file changed, 20 insertions(+), 7 deletions(-)
 
 diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index b4da665bb892..4b2f8c6b41e8 100644
+index 4b2f8c6b41e8..28878671d648 100644
 --- a/arch/x86/kvm/cpuid.c
 +++ b/arch/x86/kvm/cpuid.c
-@@ -940,8 +940,14 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
- 		unsigned virt_as = max((entry->eax >> 8) & 0xff, 48U);
+@@ -941,11 +941,18 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
  		unsigned phys_as = entry->eax & 0xff;
  
--		if (!g_phys_as)
-+		/*
-+		 * Use bare metal's MAXPHADDR if the CPU doesn't report guest
-+		 * MAXPHYADDR separately, or if TDP (NPT) is disabled, as the
-+		 * guest version "applies only to guests using nested paging".
-+		 */
-+		if (!g_phys_as || !tdp_enabled)
+ 		/*
+-		 * Use bare metal's MAXPHADDR if the CPU doesn't report guest
+-		 * MAXPHYADDR separately, or if TDP (NPT) is disabled, as the
+-		 * guest version "applies only to guests using nested paging".
++		 * If TDP (NPT) is disabled use the adjusted host MAXPHYADDR as
++		 * the guest operates in the same PA space as the host, i.e.
++		 * reductions in MAXPHYADDR for memory encryption affect shadow
++		 * paging, too.
++		 *
++		 * If TDP is enabled but an explicit guest MAXPHYADDR is not
++		 * provided, use the raw bare metal MAXPHYADDR as reductions to
++		 * the HPAs do not affect GPAs.
+ 		 */
+-		if (!g_phys_as || !tdp_enabled)
++		if (!tdp_enabled)
++			g_phys_as = boot_cpu_data.x86_phys_bits;
++		else if (!g_phys_as)
  			g_phys_as = phys_as;
-+
+ 
  		entry->eax = g_phys_as | (virt_as << 8);
- 		entry->edx = 0;
- 		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
+@@ -970,12 +977,18 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+ 	case 0x8000001a:
+ 	case 0x8000001e:
+ 		break;
+-	/* Support memory encryption cpuid if host supports it */
+ 	case 0x8000001F:
+-		if (!kvm_cpu_cap_has(X86_FEATURE_SEV))
++		if (!kvm_cpu_cap_has(X86_FEATURE_SEV)) {
+ 			entry->eax = entry->ebx = entry->ecx = entry->edx = 0;
+-		else
++		} else {
+ 			cpuid_entry_override(entry, CPUID_8000_001F_EAX);
++
++			/*
++			 * Enumerate '0' for "PA bits reduction", the adjusted
++			 * MAXPHYADDR is enumerated directly (see 0x80000008).
++			 */
++			entry->ebx &= ~GENMASK(11, 6);
++		}
+ 		break;
+ 	/*Add support for Centaur's CPUID instruction*/
+ 	case 0xC0000000:
 -- 
 2.32.0.288.g62a8d224e6-goog
 
