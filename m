@@ -2,83 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5813B15F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BF33B15F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbhFWIfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 04:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230130AbhFWIfR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 04:35:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA347C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 01:32:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=16jxg++O1mxsCUO4HYCxFH729seFeNe19fGHRxVgw+U=; b=WgK4pEnmYC2eHSWXSChThGWZOf
-        9/dHHL8laLKzptMdLlg2Al9t/6lEkpK9mZUWZe5mzsNzps7qvmpi2W55rjQaqketvLPrObTfNixZQ
-        e12amrEyMBk3lGBHrvJqAA+0Mivp0njGzfzavq2Sjmo3arVv0sWsy9qBHv1o5JWuaPbkn/9Z1RyM2
-        WBe0IAkpdFDszyQ5PrDpIWLNqQfJQWZofZ+askRlLZoYWhLgA04+jlWodfr1oRrLHfzpcSDf35pGT
-        vYw3PGmSXzFoN9ULz+o3Ux8k+JaOFqVJtJqSup0qw1CITNbfLdozAcerP/OnJFN9u6Bko0Lxmf4Uf
-        qFsBHEeQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvyHs-00FDIM-Kd; Wed, 23 Jun 2021 08:31:27 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 81023300204;
-        Wed, 23 Jun 2021 10:31:03 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8C1D020412F7D; Wed, 23 Jun 2021 10:31:03 +0200 (CEST)
-Date:   Wed, 23 Jun 2021 10:31:03 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kajoljain <kjain@linux.ibm.com>
-Cc:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        maddy@linux.vnet.ibm.com, santosh@fossix.org,
-        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
-        dan.j.williams@intel.com, ira.weiny@intel.com,
-        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
-        rnsastry@linux.ibm.com
-Subject: Re: [PATCH v3 0/4] Add perf interface to expose nvdimm
-Message-ID: <YNLxRz1w9IeatIKW@hirez.programming.kicks-ass.net>
-References: <20210617132617.99529-1-kjain@linux.ibm.com>
- <YNHiRO11E9yYS6mv@hirez.programming.kicks-ass.net>
- <cea827fe-62d4-95fe-b81f-5c7bebe4a6f0@linux.ibm.com>
+        id S230063AbhFWIfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 04:35:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229918AbhFWIfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 04:35:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B49D66112D;
+        Wed, 23 Jun 2021 08:32:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624437176;
+        bh=4sn8WqZijDYpxiuDqKDq6MKI/sEkghiCWQfDl6JYqrI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GbYqSZtbYinAzslu+VRVH6zxki0aFVWoiHzllbc0M/T5rj5FBJJwo4cwwuw31ddhB
+         ezL78WptrfOLgk709+WWNTYjqNE7coKUgQERdF7TbU4P3adVvYqLFBbEJ59bipEXAx
+         qLS8ionKOOjyQNxaj3M5XwAYUSWK+lkkBGJqcaxU=
+Date:   Wed, 23 Jun 2021 10:32:53 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     rafael@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
+        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
+        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
+        rostedt@goodmis.org, peterz@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] drivers/base/core: refcount kobject and bus on device
+ attribute read / store
+Message-ID: <YNLxtbzOm3/whYHc@kroah.com>
+References: <20210623003630.274804-1-mcgrof@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cea827fe-62d4-95fe-b81f-5c7bebe4a6f0@linux.ibm.com>
+In-Reply-To: <20210623003630.274804-1-mcgrof@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 01:40:38PM +0530, kajoljain wrote:
+On Tue, Jun 22, 2021 at 05:36:30PM -0700, Luis Chamberlain wrote:
+> It's possible today to have a device attribute read or store
+> race against device removal. When this happens there is a small
+> chance that the dereference for the private data area of the driver
+> is NULL.
 > 
+> Let's consider the zram driver as an example. Its possible to run into
+> a race where a sysfs knob is being used, we get preempted, and a zram
+> device is removed before we complete use of the sysfs knob. This can happen
+> for instance on block devices, where for instance the zram block devices
+> just part of the private data of the block device.
 > 
-> On 6/22/21 6:44 PM, Peter Zijlstra wrote:
-> > On Thu, Jun 17, 2021 at 06:56:13PM +0530, Kajol Jain wrote:
-> >> ---
-> >> Kajol Jain (4):
-> >>   drivers/nvdimm: Add nvdimm pmu structure
-> >>   drivers/nvdimm: Add perf interface to expose nvdimm performance stats
-> >>   powerpc/papr_scm: Add perf interface support
-> >>   powerpc/papr_scm: Document papr_scm sysfs event format entries
-> > 
-> > Don't see anything obviously wrong with this one.
-> > 
-> > Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > 
+> For instance this can happen in the following two situations
+> as examples to illustrate this better:
 > 
-> Hi Peter,
->     Thanks for reviewing the patch. Can you help me on how to take 
-> these patches to linus tree or can you take it?
+>         CPU 1                            CPU 2
+> destroy_devices
+> ...
+>                                  compact_store()
+>                                  zram = dev_to_zram(dev);
+> idr_for_each(zram_remove_cb
+>   zram_remove
+>   ...
+>   kfree(zram)
+>                                  down_read(&zram->init_lock);
+> 
+>         CPU 1                            CPU 2
+> hot_remove_store
+>                                  compact_store()
+>                                  zram = dev_to_zram(dev);
+>   zram_remove
+>     kfree(zram)
+>                                  down_read(&zram->init_lock);
+> 
+> To ensure the private data pointer is valid we could use bdget() / bdput()
+> in between access, however that would mean doing that in all sysfs
+> reads/stores on the driver. Instead a generic solution for all drivers
+> is to ensure the device kobject is still valid and also the bus, if
+> a bus is present.
+> 
+> This issue does not fix a known crash, however this race was
+> spotted by Minchan Kim through code inspection upon code review
+> of another zram patch.
+> 
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+> 
+> This v3 is the same as v2, but since the I got an email asking me to
+> clarify the differences between the first iteration and the second, this
+> v3 just describes what I did not explain in the v2. Namely:
+> 
+>   * I removed the checks from get_device() calls as suggested
+>   * The functions which are now being used outside of bus.c have
+>     forwared declarations stuffed into base.h
+> 
+>  drivers/base/base.h |  2 ++
+>  drivers/base/bus.c  |  4 ++--
+>  drivers/base/core.c | 36 ++++++++++++++++++++++++++++++++----
+>  3 files changed, 36 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/base/base.h b/drivers/base/base.h
+> index e5f9b7e656c3..3f95b125b667 100644
+> --- a/drivers/base/base.h
+> +++ b/drivers/base/base.h
+> @@ -127,6 +127,8 @@ static inline void auxiliary_bus_init(void) { }
+>  
+>  struct kobject *virtual_device_parent(struct device *dev);
+>  
+> +extern struct bus_type *bus_get(struct bus_type *bus);
+> +extern void bus_put(struct bus_type *bus);
+>  extern int bus_add_device(struct device *dev);
+>  extern void bus_probe_device(struct device *dev);
+>  extern void bus_remove_device(struct device *dev);
+> diff --git a/drivers/base/bus.c b/drivers/base/bus.c
+> index 36d0c654ea61..21c80d7d6433 100644
+> --- a/drivers/base/bus.c
+> +++ b/drivers/base/bus.c
+> @@ -39,7 +39,7 @@ static struct kset *system_kset;
+>  static int __must_check bus_rescan_devices_helper(struct device *dev,
+>  						void *data);
+>  
+> -static struct bus_type *bus_get(struct bus_type *bus)
+> +struct bus_type *bus_get(struct bus_type *bus)
+>  {
+>  	if (bus) {
+>  		kset_get(&bus->p->subsys);
+> @@ -48,7 +48,7 @@ static struct bus_type *bus_get(struct bus_type *bus)
+>  	return NULL;
+>  }
+>  
+> -static void bus_put(struct bus_type *bus)
+> +void bus_put(struct bus_type *bus)
+>  {
+>  	if (bus)
+>  		kset_put(&bus->p->subsys);
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 4a8bf8cda52b..f69aa040b56d 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -2042,28 +2042,56 @@ EXPORT_SYMBOL(dev_driver_string);
+>  static ssize_t dev_attr_show(struct kobject *kobj, struct attribute *attr,
+>  			     char *buf)
+>  {
+> -	struct device_attribute *dev_attr = to_dev_attr(attr);
+> -	struct device *dev = kobj_to_dev(kobj);
+> +	struct device_attribute *dev_attr;
+> +	struct device *dev;
+> +	struct bus_type *bus = NULL;
+>  	ssize_t ret = -EIO;
+>  
+> +	dev = get_device(kobj_to_dev(kobj));
+> +	if (dev->bus) {
 
-I would expect either the NVDIMM or PPC maintainers to take this. Dan,
-Michael ?
+No need to test for this, right?
+
+> +		bus = bus_get(dev->bus);
+> +		if (!bus)
+> +			goto out;
+
+How can this happen?
+
+> +	}
+> +
+> +	dev_attr = to_dev_attr(attr);
+
+Why did you move this call to way down here?  It's fine in the first
+line of the function above as-is.
+
+>  	if (dev_attr->show)
+>  		ret = dev_attr->show(dev, dev_attr, buf);
+>  	if (ret >= (ssize_t)PAGE_SIZE) {
+>  		printk("dev_attr_show: %pS returned bad count\n",
+>  				dev_attr->show);
+>  	}
+> +
+> +	bus_put(bus);
+
+You are incrementing the bus, which is nice, but I do not understand why
+it is needed.  What is causing the bus to go away _before_ the devices
+are going away?  Busses almost never are removed from the system, and if
+they are, all devices associated with them are removed first.  So I do
+not think you need to increment anything with that here.
+
+But step back, what prevented the kobject from decrementing between the
+call to dev_attr_show() and the first line of the function?
+
+The kobject needs to be incremented before show is called, right?  Or
+does kernfs handle this properly already?  I don't have the time at the
+moment to dig into this, but maybe this isn't an issue?  Look at how
+sysfs handles the kobject lookups for kernfs nodes to see if all is sane
+there, maybe there isn't an issue?
+
+thanks,
+
+greg k-h
