@@ -2,20 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A9283B236F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4C93B2345
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbhFWWPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 18:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230185AbhFWWOL (ORCPT
+        id S231346AbhFWWNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 18:13:15 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40250 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231207AbhFWWMA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:14:11 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3E5C061153;
-        Wed, 23 Jun 2021 15:09:40 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 22:09:37 -0000
+        Wed, 23 Jun 2021 18:12:00 -0400
+Date:   Wed, 23 Jun 2021 22:09:38 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1624486179;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=x5EWmVd0+smdN9HOChSX2nVA1fkRYxLBVpMUpkMhQH0=;
-        b=d/JYNaU5P9pqMPspJEyJKkBc4FB3PkaT6R+KKeINt1v3MvP0JkzaSTQTIvXCOe9jqPFQQa
-        3KYE2yS3rfPo/swGWjpJFPkzMKyIKTULYU5WQyMg18lZBNonDv3ajijJaRR1aRFlQRGQaI
-        CJ+ncOaGUJuXekAXcUPDW6drdh4extE6Ile68a+Xe0fB5y2lo4vSa0XHjnqcLROi3BReb3
-        xzmcIFmbPHL+ai9dtsDonf7MGJNlQHaSjKH29cIOquDwnkjSMccpYyVLlJsoZlI/8x6BY+
-        ocIE5BPfLm+wTwjA1R/YVg0mV8zy97GuOnl7a7Zzz7t5CEyrCA887nCqYIOGMw==
+        bh=O1jK/uvgtsEF8s7CNbb0A1lNAQJLEKIS0orkdT++wt0=;
+        b=hBanWkv6R77O+948FZp+mojTEIUPxB5ImPjdFRtqCeaueeEArtAa3Fpu4fW35VUovYH57n
+        aOMAaSFFVLkPYRbNF7pzvDP9edt1hj5USws+OmzX1diF8pwo79pGXqtW7BjD93qosfgkGJ
+        pkEbvSZj86b4fGETS/S9SLreuatK6hvhMFowsj5YKXx9V0uvRV4JoQ8t37mw8wGQ/1aem7
+        4c9MUUYx0XYfALZN5V89AEVS6ddJ3LNh0Qa9kN9PnMjShaUL9MO/QUrkPzkEbMzXk70Os+
+        m5ZsAVbqODTzlE7/JiH/GDTnv7xSqgeQMiYEvPW5DUR+hhH3Ibp0IugcY8L6Pg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1624486179;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,23 +33,23 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=x5EWmVd0+smdN9HOChSX2nVA1fkRYxLBVpMUpkMhQH0=;
-        b=GzFO2em1LfXzSxjXB29KxyQnHMbDAqSv2B2CLx8xV60k4wEiU0eZLeAn0qZDRx6UNYh7jL
-        xI9UY35POOVSkyBQ==
-From:   "tip-bot2 for Dave Hansen" <tip-bot2@linutronix.de>
+        bh=O1jK/uvgtsEF8s7CNbb0A1lNAQJLEKIS0orkdT++wt0=;
+        b=rlXhNGkX7j9BxTT2RsIc0XqkWhuONZQGDZisQZnYOLmDS98mwbOYKH8T0ogS1wV07Yi1AB
+        dv9lHHanZl2GlICw==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fpu] x86/fpu: Simplify PTRACE_GETREGS code
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+Subject: [tip: x86/fpu] x86/fpu: Reject invalid MXCSR values in
+ copy_kernel_to_xstate()
+Cc:     Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210623121452.408457100@linutronix.de>
-References: <20210623121452.408457100@linutronix.de>
+In-Reply-To: <20210623121452.308388343@linutronix.de>
+References: <20210623121452.308388343@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <162448617793.395.65698642676508191.tip-bot2@tip-bot2>
+Message-ID: <162448617894.395.180251854478791721.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,106 +60,68 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/fpu branch of tip:
 
-Commit-ID:     3a3351126ee8f1f1c86c4c79c60a650c1da89733
-Gitweb:        https://git.kernel.org/tip/3a3351126ee8f1f1c86c4c79c60a650c1da89733
-Author:        Dave Hansen <dave.hansen@linux.intel.com>
-AuthorDate:    Wed, 23 Jun 2021 14:01:38 +02:00
+Commit-ID:     947f4947cf00ea1e6d319eb182c64ea51ba4de8d
+Gitweb:        https://git.kernel.org/tip/947f4947cf00ea1e6d319eb182c64ea51ba4de8d
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Wed, 23 Jun 2021 14:01:37 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
 CommitterDate: Wed, 23 Jun 2021 17:49:46 +02:00
 
-x86/fpu: Simplify PTRACE_GETREGS code
+x86/fpu: Reject invalid MXCSR values in copy_kernel_to_xstate()
 
-ptrace() has interfaces that let a ptracer inspect a ptracee's register state.
-This includes XSAVE state.  The ptrace() ABI includes a hardware-format XSAVE
-buffer for both the SETREGS and GETREGS interfaces.
+Instead of masking out reserved bits, check them and reject the provided
+state as invalid if not zero.
 
-In the old days, the kernel buffer and the ptrace() ABI buffer were the
-same boring non-compacted format.  But, since the advent of supervisor
-states and the compacted format, the kernel buffer has diverged from the
-format presented in the ABI.
-
-This leads to two paths in the kernel:
-1. Effectively a verbatim copy_to_user() which just copies the kernel buffer
-   out to userspace.  This is used when the kernel buffer is kept in the
-   non-compacted form which means that it shares a format with the ptrace
-   ABI.
-2. A one-state-at-a-time path: copy_xstate_to_kernel().  This is theoretically
-   slower since it does a bunch of piecemeal copies.
-
-Remove the verbatim copy case.  Speed probably does not matter in this path,
-and the vast majority of new hardware will use the one-state-at-a-time path
-anyway.  This ensures greater testing for the "slow" path.
-
-This also makes enabling PKRU in this interface easier since a single path
-can be patched instead of two.
-
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Suggested-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Andy Lutomirski <luto@kernel.org>
 Reviewed-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210623121452.408457100@linutronix.de
+Link: https://lkml.kernel.org/r/20210623121452.308388343@linutronix.de
 ---
- arch/x86/kernel/fpu/regset.c | 24 +++---------------------
- arch/x86/kernel/fpu/xstate.c |  6 +++---
- 2 files changed, 6 insertions(+), 24 deletions(-)
+ arch/x86/kernel/fpu/xstate.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
-index a50c0a9..d60e77d 100644
---- a/arch/x86/kernel/fpu/regset.c
-+++ b/arch/x86/kernel/fpu/regset.c
-@@ -77,32 +77,14 @@ int xstateregs_get(struct task_struct *target, const struct user_regset *regset,
- 		struct membuf to)
- {
- 	struct fpu *fpu = &target->thread.fpu;
--	struct xregs_state *xsave;
- 
--	if (!boot_cpu_has(X86_FEATURE_XSAVE))
-+	if (!cpu_feature_enabled(X86_FEATURE_XSAVE))
- 		return -ENODEV;
- 
--	xsave = &fpu->state.xsave;
--
- 	fpu__prepare_read(fpu);
- 
--	if (using_compacted_format()) {
--		copy_xstate_to_kernel(to, xsave);
--		return 0;
--	} else {
--		fpstate_sanitize_xstate(fpu);
--		/*
--		 * Copy the 48 bytes defined by the software into the xsave
--		 * area in the thread struct, so that we can copy the whole
--		 * area to user using one user_regset_copyout().
--		 */
--		memcpy(&xsave->i387.sw_reserved, xstate_fx_sw_bytes, sizeof(xstate_fx_sw_bytes));
--
--		/*
--		 * Copy the xstate memory layout.
--		 */
--		return membuf_write(&to, xsave, fpu_user_xstate_size);
--	}
-+	copy_xstate_to_kernel(to, &fpu->state.xsave);
-+	return 0;
- }
- 
- int xstateregs_set(struct task_struct *target, const struct user_regset *regset,
 diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 9cf84c5..4203247 100644
+index 2b7b579..9cf84c5 100644
 --- a/arch/x86/kernel/fpu/xstate.c
 +++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1069,11 +1069,11 @@ static void copy_feature(bool from_xstate, struct membuf *to, void *xstate,
+@@ -1154,6 +1154,19 @@ void copy_xstate_to_kernel(struct membuf to, struct xregs_state *xsave)
+ 		membuf_zero(&to, to.left);
  }
  
++static inline bool mxcsr_valid(struct xstate_header *hdr, const u32 *mxcsr)
++{
++	u64 mask = XFEATURE_MASK_FP | XFEATURE_MASK_SSE | XFEATURE_MASK_YMM;
++
++	/* Only check if it is in use */
++	if (hdr->xfeatures & mask) {
++		/* Reserved bits in MXCSR must be zero. */
++		if (*mxcsr & ~mxcsr_feature_mask)
++			return false;
++	}
++	return true;
++}
++
  /*
-- * Convert from kernel XSAVES compacted format to standard format and copy
-- * to a kernel-space ptrace buffer.
-+ * Convert from kernel XSAVE or XSAVES compacted format to UABI
-+ * non-compacted format and copy to a kernel-space ptrace buffer.
-  *
-  * It supports partial copy but pos always starts from zero. This is called
-- * from xstateregs_get() and there we check the CPU has XSAVES.
-+ * from xstateregs_get() and there we check the CPU has XSAVE.
-  */
- void copy_xstate_to_kernel(struct membuf to, struct xregs_state *xsave)
- {
+  * Convert from a ptrace standard-format kernel buffer to kernel XSAVE[S] format
+  * and copy to the target thread. This is called from xstateregs_set().
+@@ -1172,6 +1185,9 @@ int copy_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
+ 	if (validate_user_xstate_header(&hdr))
+ 		return -EINVAL;
+ 
++	if (!mxcsr_valid(&hdr, kbuf + offsetof(struct fxregs_state, mxcsr)))
++		return -EINVAL;
++
+ 	for (i = 0; i < XFEATURE_MAX; i++) {
+ 		u64 mask = ((u64)1 << i);
+ 
+@@ -1202,9 +1218,6 @@ int copy_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
+ 	 */
+ 	xsave->header.xfeatures |= hdr.xfeatures;
+ 
+-	/* mxcsr reserved bits must be masked to zero for historical reasons. */
+-	xsave->i387.mxcsr &= mxcsr_feature_mask;
+-
+ 	return 0;
+ }
+ 
