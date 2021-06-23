@@ -2,216 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19CF3B1508
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6973B150B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbhFWHqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 03:46:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbhFWHqJ (ORCPT
+        id S230040AbhFWHqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 03:46:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28308 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229886AbhFWHqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 03:46:09 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949BBC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 00:43:52 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id v11-20020a9d340b0000b0290455f7b8b1dcso1062438otb.7
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 00:43:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cWzvtRTbDifdl+PxaGCuS2g5VXsz2HZV7fjfjiuvl1s=;
-        b=MwPZIV8ivWfiDYeNv72T0B+TQPZZrJ03iZ4rRoU2dOZH5hIhooeh4E9s44iqSXCJga
-         rLhAfs3qLh5yoXMJcT0SlHUVp9mhu3ulY2L3UIReEZwzMCwACBeBALYnuoHv4l2iNsTi
-         GPNyV/KpMzRb/s3TAd2ysZR4QjPPytSEIPRro=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cWzvtRTbDifdl+PxaGCuS2g5VXsz2HZV7fjfjiuvl1s=;
-        b=Hiy4TAb4GHDribbb0xcOYQ13+QQWyOnhHHzvNFl6KmT+igEaM+m9SKPzBKxXuSNJRg
-         6yBOIfK51s52d0WwT+e88v5uPrkea2nUl2s31uvWlxq4hUNMaQWiAqwWBtsOoUMlXxbc
-         gVveDFSNJEUB57y4TFR84wHynf/Ok2b2FpRZ1tZqVGAWOEffjhZ5DvQPuk+rq1TkXu7c
-         HEmbOoVeBJ9r1GtnJgqdbqyK5FlYJGupNowxRk6PbyB6wC7xNRz1VoD/hPYDQBzzmTSb
-         h6I5JR0cEzQM5S5+Rt6rpsS2qq3KALY6jsOyearLmF5k6MRZs/P6zkQhkprC6pF3ef6c
-         olMw==
-X-Gm-Message-State: AOAM530BfOe9mQh5IbSqZVPKfP4LTf+3K57Gybqz0zRvGl9VTf2E2b49
-        MgqNL3mbdJSLHZg9JpYuWxQjSjxkN/gLZ3EGBtwsANyvqQY=
-X-Google-Smtp-Source: ABdhPJwFpV7dlXUDEnB4E9Qw7A63kO4THfzJY0ME2w2Az3FtLmVWlU6ptDgsAet4iMbRa20uvHGl6WIJBc9CZdE8dbM=
-X-Received: by 2002:a9d:27a4:: with SMTP id c33mr6705525otb.281.1624434231910;
- Wed, 23 Jun 2021 00:43:51 -0700 (PDT)
+        Wed, 23 Jun 2021 03:46:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624434274;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=GoKBmPGWEhsMFpDL3RjinlhlKAMDjGAWJsst2nKIbvI=;
+        b=QgdDNytTAmr4SxandKajcexXNy9M2gvfhCJioJKnmSBukskny8Fq811CNfgit8DRkiraNp
+        Z8wLv5MfhCNAYKazzIA28q9ErDS6ROHDoOonnS1gss43S8m2jhJVfk0Gq12EUQusjbVGIY
+        JS6pxT10HNGGZrI/CR9uQDotz2DuuAs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-363-vUaJGREzP5G47qs9skj7rA-1; Wed, 23 Jun 2021 03:44:32 -0400
+X-MC-Unique: vUaJGREzP5G47qs9skj7rA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71F8E100C663;
+        Wed, 23 Jun 2021 07:44:31 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.193.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0221C10013D6;
+        Wed, 23 Jun 2021 07:44:28 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Cathy Avery <cavery@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RFC] KVM: nSVM: Fix L1 state corruption upon return from SMM
+Date:   Wed, 23 Jun 2021 09:44:27 +0200
+Message-Id: <20210623074427.152266-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-References: <20210620110327.4964-1-desmondcheongzx@gmail.com>
- <20210620110327.4964-2-desmondcheongzx@gmail.com> <YNChRvGjIz6++jnd@phenom.ffwll.local>
-In-Reply-To: <YNChRvGjIz6++jnd@phenom.ffwll.local>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Wed, 23 Jun 2021 09:43:41 +0200
-Message-ID: <CAKMK7uGPo=iFffph=fRYeuE=RoGJ1JahukPAwszY7Rsu5rb=5Q@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] drm: add a locked version of drm_is_current_master
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Dave Airlie <airlied@linux.ie>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Emil Velikov <emil.l.velikov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 4:25 PM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Sun, Jun 20, 2021 at 07:03:26PM +0800, Desmond Cheong Zhi Xi wrote:
-> > While checking the master status of the DRM file in
-> > drm_is_current_master(), the device's master mutex should be
-> > held. Without the mutex, the pointer fpriv->master may be freed
-> > concurrently by another process calling drm_setmaster_ioctl(). This
-> > could lead to use-after-free errors when the pointer is subsequently
-> > dereferenced in drm_lease_owner().
-> >
-> > The callers of drm_is_current_master() from drm_auth.c hold the
-> > device's master mutex, but external callers do not. Hence, we implement
-> > drm_is_current_master_locked() to be used within drm_auth.c, and
-> > modify drm_is_current_master() to grab the device's master mutex
-> > before checking the master status.
-> >
-> > Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> > Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
->
-> Merged to drm-misc-fixes, thanks for your patch.
+VMCB split commit 4995a3685f1b ("KVM: SVM: Use a separate vmcb for the
+nested L2 guest") broke return from SMM when we entered there from guest
+(L2) mode. Gen2 WS2016/Hyper-V is known to do this on boot. The problem
+manifests itself like this:
 
-Cc'ed you on the revert, but this blew up in intel-gfx CI. Please cc:
-intel-gfx@lists.freedesktop.org for the next round so CI can pick it
-up (it doesn't read dri-devel here).
+  kvm_exit:             reason EXIT_RSM rip 0x7ffbb280 info 0 0
+  kvm_emulate_insn:     0:7ffbb280: 0f aa
+  kvm_smm_transition:   vcpu 0: leaving SMM, smbase 0x7ffb3000
+  kvm_nested_vmrun:     rip: 0x000000007ffbb280 vmcb: 0x0000000008224000
+    nrip: 0xffffffffffbbe119 int_ctl: 0x01020000 event_inj: 0x00000000
+    npt: on
+  kvm_nested_intercepts: cr_read: 0000 cr_write: 0010 excp: 40060002
+    intercepts: fd44bfeb 0000217f 00000000
+  kvm_entry:            vcpu 0, rip 0xffffffffffbbe119
+  kvm_exit:             reason EXIT_NPF rip 0xffffffffffbbe119 info
+    200000006 1ab000
+  kvm_nested_vmexit:    vcpu 0 reason npf rip 0xffffffffffbbe119 info1
+    0x0000000200000006 info2 0x00000000001ab000 intr_info 0x00000000
+    error_code 0x00000000
+  kvm_page_fault:       address 1ab000 error_code 6
+  kvm_nested_vmexit_inject: reason EXIT_NPF info1 200000006 info2 1ab000
+    int_info 0 int_info_err 0
+  kvm_entry:            vcpu 0, rip 0x7ffbb280
+  kvm_exit:             reason EXIT_EXCP_GP rip 0x7ffbb280 info 0 0
+  kvm_emulate_insn:     0:7ffbb280: 0f aa
+  kvm_inj_exception:    #GP (0x0)
 
-I'm not exactly sure how we can best fix that issue in general, maybe
-there's more. But for the specific lockdep splat around getconnector I
-think just pulling the call to drm_is_current_master out from the
-connector mutex should avoid the issue (just store it locally and then
-still have the if() condition under the connector mutex ofc).
--Daniel
+Note: return to L2 succeeded but upon first exit to L1 its RIP points to
+'RSM' instruction but we're not in SMM.
 
-> -Daniel
->
-> > ---
-> >  drivers/gpu/drm/drm_auth.c | 51 ++++++++++++++++++++++++--------------
-> >  1 file changed, 32 insertions(+), 19 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
-> > index 232abbba3686..86d4b72e95cb 100644
-> > --- a/drivers/gpu/drm/drm_auth.c
-> > +++ b/drivers/gpu/drm/drm_auth.c
-> > @@ -61,6 +61,35 @@
-> >   * trusted clients.
-> >   */
-> >
-> > +static bool drm_is_current_master_locked(struct drm_file *fpriv)
-> > +{
-> > +     lockdep_assert_held_once(&fpriv->master->dev->master_mutex);
-> > +
-> > +     return fpriv->is_master && drm_lease_owner(fpriv->master) == fpriv->minor->dev->master;
-> > +}
-> > +
-> > +/**
-> > + * drm_is_current_master - checks whether @priv is the current master
-> > + * @fpriv: DRM file private
-> > + *
-> > + * Checks whether @fpriv is current master on its device. This decides whether a
-> > + * client is allowed to run DRM_MASTER IOCTLs.
-> > + *
-> > + * Most of the modern IOCTL which require DRM_MASTER are for kernel modesetting
-> > + * - the current master is assumed to own the non-shareable display hardware.
-> > + */
-> > +bool drm_is_current_master(struct drm_file *fpriv)
-> > +{
-> > +     bool ret;
-> > +
-> > +     mutex_lock(&fpriv->master->dev->master_mutex);
-> > +     ret = drm_is_current_master_locked(fpriv);
-> > +     mutex_unlock(&fpriv->master->dev->master_mutex);
-> > +
-> > +     return ret;
-> > +}
-> > +EXPORT_SYMBOL(drm_is_current_master);
-> > +
-> >  int drm_getmagic(struct drm_device *dev, void *data, struct drm_file *file_priv)
-> >  {
-> >       struct drm_auth *auth = data;
-> > @@ -223,7 +252,7 @@ int drm_setmaster_ioctl(struct drm_device *dev, void *data,
-> >       if (ret)
-> >               goto out_unlock;
-> >
-> > -     if (drm_is_current_master(file_priv))
-> > +     if (drm_is_current_master_locked(file_priv))
-> >               goto out_unlock;
-> >
-> >       if (dev->master) {
-> > @@ -272,7 +301,7 @@ int drm_dropmaster_ioctl(struct drm_device *dev, void *data,
-> >       if (ret)
-> >               goto out_unlock;
-> >
-> > -     if (!drm_is_current_master(file_priv)) {
-> > +     if (!drm_is_current_master_locked(file_priv)) {
-> >               ret = -EINVAL;
-> >               goto out_unlock;
-> >       }
-> > @@ -321,7 +350,7 @@ void drm_master_release(struct drm_file *file_priv)
-> >       if (file_priv->magic)
-> >               idr_remove(&file_priv->master->magic_map, file_priv->magic);
-> >
-> > -     if (!drm_is_current_master(file_priv))
-> > +     if (!drm_is_current_master_locked(file_priv))
-> >               goto out;
-> >
-> >       drm_legacy_lock_master_cleanup(dev, master);
-> > @@ -342,22 +371,6 @@ void drm_master_release(struct drm_file *file_priv)
-> >       mutex_unlock(&dev->master_mutex);
-> >  }
-> >
-> > -/**
-> > - * drm_is_current_master - checks whether @priv is the current master
-> > - * @fpriv: DRM file private
-> > - *
-> > - * Checks whether @fpriv is current master on its device. This decides whether a
-> > - * client is allowed to run DRM_MASTER IOCTLs.
-> > - *
-> > - * Most of the modern IOCTL which require DRM_MASTER are for kernel modesetting
-> > - * - the current master is assumed to own the non-shareable display hardware.
-> > - */
-> > -bool drm_is_current_master(struct drm_file *fpriv)
-> > -{
-> > -     return fpriv->is_master && drm_lease_owner(fpriv->master) == fpriv->minor->dev->master;
-> > -}
-> > -EXPORT_SYMBOL(drm_is_current_master);
-> > -
-> >  /**
-> >   * drm_master_get - reference a master pointer
-> >   * @master: &struct drm_master
-> > --
-> > 2.25.1
-> >
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+The problem appears to be that VMCB01 gets irreversibly destroyed during
+SMM execution. Previously, we used to have 'hsave' VMCB where regular
+(pre-SMM) L1's state was saved upon nested_svm_vmexit() but now we just
+switch to VMCB01 from VMCB02.
 
+Pre-split (working) flow looked like:
+- SMM is triggered during L2's execution
+- L2's state is pushed to SMRAM
+- nested_svm_vmexit() restores L1's state from 'hsave'
+- SMM -> RSM
+- enter_svm_guest_mode() switches to L2 but keeps 'hsave' intact so we have
+  pre-SMM (and pre L2 VMRUN) L1's state there
+- L2's state is restored from SMRAM
+- upon first exit L1's state is restored from L1.
 
+This was always broken with regards to svm_get_nested_state()/
+svm_set_nested_state(): 'hsave' was never a part of what's being
+save and restored so migration happening during SMM triggered from L2 would
+never restore L1's state correctly.
 
+Post-split flow (broken) looks like:
+- SMM is triggered during L2's execution
+- L2's state is pushed to SMRAM
+- nested_svm_vmexit() switches to VMCB01 from VMCB02
+- SMM -> RSM
+- enter_svm_guest_mode() switches from VMCB01 to VMCB02 but pre-SMM VMCB01
+  is already lost.
+- L2's state is restored from SMRAM
+- upon first exit L1's state is restored from VMCB01 but it is corrupted
+ (reflects the state during 'RSM' execution).
+
+VMX doesn't have this problem because unlike VMCB, VMCS keeps both guest
+and host state so when we switch back to VMCS02 L1's state is intact there.
+
+To resolve the issue we need to save L1's state somewhere. We could've
+created a third VMCB for SMM but that would require us to modify saved
+state format. L1's architectural HSAVE area (pointed by MSR_VM_HSAVE_PA)
+seems appropriate: L0 is free to save any (or none) of L1's state there.
+Currently, KVM does 'none'.
+
+Note, for nested state migration to succeed, both source and destination
+hypervisors must have the fix. We, however, don't need to create a new
+flag indicating the fact that HSAVE area is now populated as migration
+during SMM triggered from L2 was always broken.
+
+Fixes: 4995a3685f1b ("KVM: SVM: Use a separate vmcb for the nested L2 guest")
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+- RFC: I'm not 100% sure my 'smart' idea to use currently-unused HSAVE area
+is that smart. Also, we don't even seem to check that L1 set it up upon
+nested VMRUN so hypervisors which don't do that may remain broken. A very
+much needed selftest is also missing.
+---
+ arch/x86/kvm/svm/svm.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 12c06ea28f5c..d110bfe0e208 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -4286,6 +4286,7 @@ static int svm_smi_allowed(struct kvm_vcpu *vcpu, bool for_injection)
+ static int svm_enter_smm(struct kvm_vcpu *vcpu, char *smstate)
+ {
+ 	struct vcpu_svm *svm = to_svm(vcpu);
++	struct kvm_host_map map_save;
+ 	int ret;
+ 
+ 	if (is_guest_mode(vcpu)) {
+@@ -4301,6 +4302,13 @@ static int svm_enter_smm(struct kvm_vcpu *vcpu, char *smstate)
+ 		ret = nested_svm_vmexit(svm);
+ 		if (ret)
+ 			return ret;
++
++		/* Save L1 state to L1 HSAVE area as vmcb01 will be used in SMM */
++		if (kvm_vcpu_map(vcpu, gpa_to_gfn(svm->nested.hsave_msr),
++				 &map_save) == -EINVAL)
++			return 1;
++		memcpy(map_save.hva, &svm->vmcb01.ptr->save, sizeof(svm->vmcb01.ptr->save));
++		kvm_vcpu_unmap(vcpu, &map_save, true);
+ 	}
+ 	return 0;
+ }
+@@ -4308,7 +4316,7 @@ static int svm_enter_smm(struct kvm_vcpu *vcpu, char *smstate)
+ static int svm_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
+ {
+ 	struct vcpu_svm *svm = to_svm(vcpu);
+-	struct kvm_host_map map;
++	struct kvm_host_map map, map_save;
+ 	int ret = 0;
+ 
+ 	if (guest_cpuid_has(vcpu, X86_FEATURE_LM)) {
+@@ -4332,6 +4340,13 @@ static int svm_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
+ 
+ 			ret = enter_svm_guest_mode(vcpu, vmcb12_gpa, map.hva);
+ 			kvm_vcpu_unmap(vcpu, &map, true);
++
++			/* Restore L1 state from L1 HSAVE area as vmcb01 was used in SMM */
++			if (kvm_vcpu_map(vcpu, gpa_to_gfn(svm->nested.hsave_msr),
++					 &map_save) == -EINVAL)
++				return 1;
++			memcpy(&svm->vmcb01.ptr->save, map_save.hva, sizeof(svm->vmcb01.ptr->save));
++			kvm_vcpu_unmap(vcpu, &map_save, true);
+ 		}
+ 	}
+ 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.31.1
+
