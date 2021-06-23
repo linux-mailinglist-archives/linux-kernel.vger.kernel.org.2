@@ -2,83 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5B43B2286
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51DB13B2289
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbhFWVgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 17:36:17 -0400
-Received: from mail-pg1-f177.google.com ([209.85.215.177]:38549 "EHLO
-        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhFWVgP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 17:36:15 -0400
-Received: by mail-pg1-f177.google.com with SMTP id h4so2894793pgp.5;
-        Wed, 23 Jun 2021 14:33:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BhLMHeFA8LBF5iUv2hekNzgxO12U7tFqzW+X3BFXijI=;
-        b=KEN2cg8DRz1BEop6nlevaml8+LBVTUG4/O08+t25E7CmM96aLfhDegHGQhjB5o3u8B
-         qFxby/IrsL0o5qDb2i+5hgguXfDvRqdUSZU7X7ds0lh50feeygU4iIrGo5JyfXwxHa/E
-         G8QGkTnOq9pbb/u2KVM81qAaKzOkkTSMs0o8bL7qWZ4GcPt/dRPj5ATPaA6m7yQdh2WF
-         0yvHqehiv8apT9dNTQGRdoKFF8qOoLrwnGQze7AQMB8r1TtRkaqNheuMQvvmatJDVr2Q
-         7Xrua17Wwf+ajrcSQb4dmOayhGIJAXcfcHnec5JHUyPyniaRhD9Zz7O1amL/+c1Y6uew
-         wGmg==
-X-Gm-Message-State: AOAM533gdqJw6ey/ptZ+GG9i3tYne3DJ/53igX9huB4dr/0pyPceDcbF
-        PLwpQpm/LVgzvF/QModORNJCgnU+1OQ=
-X-Google-Smtp-Source: ABdhPJzKDm+5yz++kgjBwdOzkZPanJgqzSXKDvwMhrD4IyVuHaEzCosKOIK2czaxKlWFZOgESznVHA==
-X-Received: by 2002:a65:4244:: with SMTP id d4mr1406508pgq.83.1624484037280;
-        Wed, 23 Jun 2021 14:33:57 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id y2sm691418pfa.195.2021.06.23.14.33.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 14:33:56 -0700 (PDT)
-Subject: Re: [PATCH v4 09/10] scsi: ufs: Update the fast abort path in
- ufshcd_abort() for PM requests
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-11-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <b28d71a7-3839-2c07-2630-6196ea10951f@acm.org>
-Date:   Wed, 23 Jun 2021 14:33:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229902AbhFWVia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 17:38:30 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:52544 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229688AbhFWVi3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 17:38:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=JtGYd2CbnyZHUnhcura8ytby55+LDpWyZudxq9IXkBk=; b=P4iJol+QvuF3JOdzzQd/OVd5VB
+        1ETDOXkX3XDnE8WYBENBUdCSkAD+CiZj4fyui6Bl/zsBGyk9Or6wVFumtBERcqoX/QuJxbY4EehhD
+        bPumyOFp2CJBQIAZ+uRe9tvz8Fo1Fs8hVrWoCCLB11wKbl1o8N+stXRxn4lOEReeUpfg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lwAXY-00AtjQ-Pt; Wed, 23 Jun 2021 23:36:08 +0200
+Date:   Wed, 23 Jun 2021 23:36:08 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Jon Nettleton <jon@solid-run.com>,
+        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
+        lenb@kernel.org
+Subject: Re: [net-next: PATCH v3 1/6] Documentation: ACPI: DSD: describe
+ additional MAC configuration
+Message-ID: <YNOpSER3lUSvwqkV@lunn.ch>
+References: <20210621173028.3541424-1-mw@semihalf.com>
+ <20210621173028.3541424-2-mw@semihalf.com>
+ <YNOW+mQNEmSRx/6V@lunn.ch>
+ <CAPv3WKctVLzTZxH2gc-M_ZT7T-i6OmwSQk30AQ4oHEm8BUrpiw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1624433711-9339-11-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPv3WKctVLzTZxH2gc-M_ZT7T-i6OmwSQk30AQ4oHEm8BUrpiw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 12:35 AM, Can Guo wrote:
-> @@ -2737,7 +2737,7 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
->  		 * err handler blocked for too long. So, just fail the scsi cmd
->  		 * sent from PM ops, err handler can recover PM error anyways.
->  		 */
-> -		if (hba->wlu_pm_op_in_progress) {
-> +		if (cmd->request->rq_flags & RQF_PM) {
->  			hba->force_reset = true;
->  			set_host_byte(cmd, DID_BAD_TARGET);
->  			cmd->scsi_done(cmd);
+> Anyway - all above is a bit side discussion to the actual DSDT
+> description and how the fixed-link subnode looks like. I think
+> phy-mode set to "sgmii" is not incorrect, but we can change it to
+> whatever other type of your preference, as well.
 
-I'm still concerned that the above code may trigger data corruption. I
-prefer that the above code is removed instead of being modified.
+rgmii would be better, so we side step the whole auto-neg discussion.
 
-Thanks,
-
-Bart.
+      Andrew
