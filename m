@@ -2,79 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E24F53B20D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4089C3B20D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhFWTPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 15:15:14 -0400
-Received: from pb-smtp1.pobox.com ([64.147.108.70]:53301 "EHLO
-        pb-smtp1.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFWTPN (ORCPT
+        id S229978AbhFWTQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 15:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFWTQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 15:15:13 -0400
-Received: from pb-smtp1.pobox.com (unknown [127.0.0.1])
-        by pb-smtp1.pobox.com (Postfix) with ESMTP id 85FD9DB42F;
-        Wed, 23 Jun 2021 15:12:54 -0400 (EDT)
-        (envelope-from tdavies@darkphysics.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
-        :to:subject:message-id:references:mime-version:content-type
-        :in-reply-to; s=sasl; bh=2wSwZoUV0BkpVfQ4NaFgz9pv1d03ftI8MRES2Cx
-        KeXU=; b=W5ii4S8W2nF3Yh/MqkoiUjZteR9HTm016zp43rfsQGTnJ3ztJ9alZyW
-        OSY5CJp7Yk6Hlgu0iejWWmSfHOlPjvtESAvJNNmtFboWXhbFTuK2QkAXsiZDg2VC
-        0mNQ9dSr5+G1eOpOfcEdY+6zynrZYkdLdy/4uWeSFBWAFVPERlpE=
-Received: from pb-smtp1.nyi.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp1.pobox.com (Postfix) with ESMTP id 7EAB3DB42D;
-        Wed, 23 Jun 2021 15:12:54 -0400 (EDT)
-        (envelope-from tdavies@darkphysics.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=darkphysics.net;
- h=date:from:to:subject:message-id:references:mime-version:content-type:in-reply-to; s=2019-09.pbsmtp; bh=2wSwZoUV0BkpVfQ4NaFgz9pv1d03ftI8MRES2CxKeXU=; b=TQeTHrj9QsMNgeYWeJpq4+fA6AnaTuIoh6xFJvmCNIZdDFJ0X8OxZpn0W3+7u7TcNrL6vk1PFXH8gqBstGyhaSvpYImSSe2rWvrDeKbwwW3ih1af/rk7X3P7SDi1OuzhPy+ZYA3Em6l3bOgUu5+esZUXQSsZP7xemX9u0JihqM8=
-Received: from oatmeal.darkphysics (unknown [24.19.107.226])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp1.pobox.com (Postfix) with ESMTPSA id 79E5ADB42C;
-        Wed, 23 Jun 2021 15:12:53 -0400 (EDT)
-        (envelope-from tdavies@darkphysics.net)
-Date:   Wed, 23 Jun 2021 12:12:46 -0700
-From:   Tree Davies <tdavies@darkphysics.net>
-To:     kernel-janitors@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] net/e1000e: Fix spelling mistake "The" -> "This"
-Message-ID: <20210623191245.GA32122@oatmeal.darkphysics>
-References: <20210622221938.GA30762@oatmeal.darkphysics>
+        Wed, 23 Jun 2021 15:16:50 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E7ADC061574;
+        Wed, 23 Jun 2021 12:14:32 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id j4so5892071lfc.8;
+        Wed, 23 Jun 2021 12:14:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vCA9UxJ+EMCBunFdIzfCgcc8cOVFYGFyGgIL+e4eYGc=;
+        b=UzNhGzf3APIIvFvjJsrVV26jL1WdkAkoAwzH5J+sxCyYYAY8XvjzLBKarHlYSgEW+H
+         ROakHkkCfn70i7JTu+yHbCUbnkuPf7TkqgAOUJt1d0Ms8qGccgWOFHX7YAWXLuxF4qZl
+         U/XbtVMPj5nLRPkZKpRykEAA6jKBoO5kEXNfZAlVD+EWR1Led/Uz5YOVeudBbQyx3X57
+         OurvlnmzdOoSny+LJAPPAbww4QTxM0W6d/VHRAR8uiuhK1xGiMG1A94AOKVZJSkD5qPj
+         0bbbGsEAChYON9jaMET8xnLxvZDByABYXkAbL4e6Wq3VBH9HdfNQcUsTU0Os2aMchm45
+         AXkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vCA9UxJ+EMCBunFdIzfCgcc8cOVFYGFyGgIL+e4eYGc=;
+        b=CKSGAoC5Pne2c1+Z7TYaz2ETAhWVDJzuHBvF4qt4K+V9wdQTXtJdAZNy8eU2ShOdOx
+         52AaOzbAgTTHr7rhAE6ovMExacva4RNDa+CnIwq857JzmCJit84zc/J21XY/LY+YQhas
+         9TTH2LKM98ZJZgVQonzP03h6ndothNXtMECA+AVrNulr+l2sLqnDt5JXRyuXWnItCQED
+         lvxLOnXL7VqdzP0beeafWfYkua6kF/1LxMV7hSka+gAdqLIAbIz1a/HSDRyfd6LdjmIC
+         vMMbdUTpNjBZgse9xUrfVnmm5WIV9wRnt3z6J6Wr2ePZUq2F+0VRrd4YoH5R082o1/h1
+         wJlQ==
+X-Gm-Message-State: AOAM533CPsEMfRKrC1YdLR44TZoS0oapic6eHuZYGopxEs94RkIe4VH+
+        2IVBAc6T9w7B37lmgvADWB7gXeuHhw4UmA==
+X-Google-Smtp-Source: ABdhPJwEryE5nA4/ztCF+DQUY46j/ZZB0JCfX0QWNYwk/Gjoy0mw/XvPRg1ombAoJ9/Rq/4JX1XHwg==
+X-Received: by 2002:a05:6512:b26:: with SMTP id w38mr859979lfu.227.1624475670940;
+        Wed, 23 Jun 2021 12:14:30 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.225.155])
+        by smtp.gmail.com with ESMTPSA id w4sm79724lfr.282.2021.06.23.12.14.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 12:14:30 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     kvalo@codeaurora.org, davem@davemloft.net, chunkeey@gmail.com
+Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH] net: ath10: add missing ret initialization
+Date:   Wed, 23 Jun 2021 22:14:26 +0300
+Message-Id: <20210623191426.13648-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622221938.GA30762@oatmeal.darkphysics>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Pobox-Relay-ID: 02C8137C-D457-11EB-9BB5-8B3BC6D8090B-45285927!pb-smtp1.pobox.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 03:19:40PM -0700, Tree Davies wrote:
-> There is a spelling mistake in the comment block.
-> 
-> Signed-off-by: Tree Davies <tdavies@darkphysics.net>
-> ---
->  drivers/net/ethernet/intel/e1000e/netdev.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
-> index 88e9035b75cf..ff267cf75ef8 100644
-> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
-> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
-> @@ -7674,7 +7674,7 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->   * @pdev: PCI device information struct
->   *
->   * e1000_remove is called by the PCI subsystem to alert the driver
-> - * that it should release a PCI device.  The could be caused by a
-> + * that it should release a PCI device.  This could be caused by a
->   * Hot-Plug event, or because the driver is going to be removed from
->   * memory.
->   **/
-> -- 
-> 2.20.1
->
+In case of not supported chip the code jump
+to the error handling path, but _ret_ will be set to 0.
+Returning 0 from probe means, that ->probe() succeeded, but
+it's not true when chip is not supported.
 
-Adding linux-kernel@  
+Fixes: f8914a14623a ("ath10k: restore QCA9880-AR1A (v1) detection")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index e7fde635e0ee..36ea8debd1c7 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3697,11 +3697,15 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	}
+ 
+ 	bus_params.chip_id = ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
+-	if (bus_params.chip_id == 0xffffffff)
++	if (bus_params.chip_id == 0xffffffff) {
++		ret = -ENODEV;
+ 		goto err_unsupported;
++	}
+ 
+-	if (!ath10k_pci_chip_is_supported(pdev->device, bus_params.chip_id))
++	if (!ath10k_pci_chip_is_supported(pdev->device, bus_params.chip_id)) {
++		ret = -ENODEV;
+ 		goto err_free_irq;
++	}
+ 
+ 	ret = ath10k_core_register(ar, &bus_params);
+ 	if (ret) {
+-- 
+2.32.0
+
