@@ -2,136 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A953B1E75
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5933B1E7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229755AbhFWQTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 12:19:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
+        id S229873AbhFWQVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 12:21:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWQTa (ORCPT
+        with ESMTP id S229726AbhFWQVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 12:19:30 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54588C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:17:11 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id u190so2174924pgd.8
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:17:11 -0700 (PDT)
+        Wed, 23 Jun 2021 12:21:05 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1489C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:18:46 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso1680021pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:18:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=7zn0oCEuocGAdQ6ZsgTeBUSCFiV5Hshm48AY9/StAM4=;
-        b=Nz0Xjy+hjgVfAotFNLUVfPHkM8fT//dLdVyMD2rSuPCq5XlGXdsVfWDftvNwegRi0j
-         QuoHiUC4wWpK8j0CDRqFS1T+cK0RAt8KUHRRNPR9DcBNmJ8rTWtjzAdj7xjQh6jVOqVv
-         8RGrdSLkvx0n/VS0WKegRt+rFTykf/mHcjkZamF54etoNv82r/4GSu6uyfPSHpIdznQD
-         2GxNvp9/0v/tcZ2fFeK5Oro2OGcpg7Th3oGhH78UuIIB4KFRfMRjKlMTTL/Tea/t4cUi
-         74RjXxU6/898atYSMaLd8jV+mTNju5h5f9YH9h6H9kNpbgBodX4ezdGrHWggZTLhSvA3
-         VLJA==
+        bh=rhZzXtsZWfzXc61E37Y58HMAKueOCl1cxiUTemZwhBU=;
+        b=dH3chPBBa5s/c/kTTWhH9cTfQGuIHgt6buqYxYnwEqzVCEmuavirXgMY0jnzWzrhpf
+         FK8uGYEmwOjOuasjcAutd5ga7BMVZDFtJrfwPCEPGoiBq+FnZRea4SQmaQyFa+0CNfrF
+         sIjbKxy0LAM5hoYzEP2pje/v101mH4cfysi68=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=7zn0oCEuocGAdQ6ZsgTeBUSCFiV5Hshm48AY9/StAM4=;
-        b=bPXyBpz/QxFWi3wAHo8aHmMCUH24f0etaodXSJi8K5yqKfnrsoLpmoDYXixTHAIcyK
-         e8QvAP4VgVyG4GXawr+Dzj+a/jNa5RqHXER/BzQZAd2eQOd9A3QuvOfLU4+SXfwNd88M
-         cNwoh1o2itN9ekfur9vPkLonyi8C4iN5CLPX2spK/ShSTfQ5TFVG4LFLFlexdoW0Qai0
-         PrhEaBPc9DNv2N7LEWioEEnsr/UrlCJKvozaSgM3JJiWQO6Jz3JuzkJZA1TYCaYm7s7S
-         3h1zoR0hdwNDtYx56Nz56d9GwX7JuiX063ud7EE84SxWgMSTLxxuhh1i4VpZ3Y0f26KE
-         KVFQ==
-X-Gm-Message-State: AOAM530phY6uAgyxjuGVsG3KATywS7SJHFdOflKnBvRY2DIP6YwmaziP
-        itTMaUWokwthGedVmqXC1uoqew==
-X-Google-Smtp-Source: ABdhPJxPdUdZP/AXCe6m1ksJPlw7BankA6YIx7crDzcku/94bYiHOb5QSaOiXQXiHo19oS0Tio2AUg==
-X-Received: by 2002:a63:464b:: with SMTP id v11mr285761pgk.156.1624465030475;
-        Wed, 23 Jun 2021 09:17:10 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id la18sm3068180pjb.55.2021.06.23.09.17.08
+        bh=rhZzXtsZWfzXc61E37Y58HMAKueOCl1cxiUTemZwhBU=;
+        b=JIJ8WzecZqh8tkqcNYo3qFvJxNC2P5QXlIyxbhPWz/Qv9LPBM+e5SjEOTpc0H/HtY2
+         hG6GGZwYN8gqq7Gp4Ks7zMrDAfPkJsGwJmezoFdMMbyBAsfdGswedKUowKFMcUC8q+RU
+         T2+ZaWySND3rrza4IjGT8bkdoz+M4nFhv5TPAz81dOWlwA+xj0/XGNHon1rItF9+4IXT
+         fceSsa1WlVtCjM5ya8It0+On6IA+MixPu46zZdZJVfZQ1u0eB7YgkvlVqMCUqAmf7so2
+         sgxgbTVh5rSoliJ8DAF1CgxGNiDmAJV34HeyhXmWinyx1sCnO8wF8uXXzqF4eDO68hBa
+         losw==
+X-Gm-Message-State: AOAM5318nGA7oIZYjf8evLaBsXT7Y7MV5IcDcv8Opm9fjP1I3zJ7v3N7
+        YXWANzX75bhdnV8xsc2NlK+h5w==
+X-Google-Smtp-Source: ABdhPJzJ3D51ZkBeHYvydc2W7dqjMYmITjtDsX4GrfAXwNVMqd3U784KX/6bYsXi1F1SSe7WN/1Jgw==
+X-Received: by 2002:a17:90a:c002:: with SMTP id p2mr10127839pjt.132.1624465126002;
+        Wed, 23 Jun 2021 09:18:46 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id lp1sm133183pjb.44.2021.06.23.09.18.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 09:17:08 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 16:17:04 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH 10/54] KVM: x86/mmu: Replace EPT shadow page shenanigans
- with simpler check
-Message-ID: <YNNegF8RcF3vX2Sh@google.com>
-References: <20210622175739.3610207-1-seanjc@google.com>
- <20210622175739.3610207-11-seanjc@google.com>
- <8ce36922-dba0-9b53-6f74-82f3f68b443c@redhat.com>
+        Wed, 23 Jun 2021 09:18:45 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 09:18:44 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Guillaume Tucker' <guillaume.tucker@collabora.com>,
+        Shuah Khan <shuah@kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] selftests/lkdtm: Use /bin/sh not $SHELL
+Message-ID: <202106230917.FE2F587@keescook>
+References: <20210619025834.2505201-1-keescook@chromium.org>
+ <e958209b-8621-57ca-01d6-2e76b05dab4c@collabora.com>
+ <42f26361db6f481e980ac349bf0079ef@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8ce36922-dba0-9b53-6f74-82f3f68b443c@redhat.com>
+In-Reply-To: <42f26361db6f481e980ac349bf0079ef@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021, Paolo Bonzini wrote:
-> On 22/06/21 19:56, Sean Christopherson wrote:
-> > Replace the hack to identify nested EPT shadow pages with a simple check
-> > that the size of the guest PTEs associated with the shadow page and the
-> > current MMU match, which is the intent of the "8 bytes == PAE" test.
-> > The nested EPT hack existed to avoid a false negative due to the is_pae()
-> > check not matching for 32-bit L2 guests; checking the MMU role directly
-> > avoids the indirect calculation of the guest PTE size entirely.
+On Wed, Jun 23, 2021 at 01:43:04PM +0000, David Laight wrote:
+> From: Guillaume Tucker
+> > Sent: 23 June 2021 13:40
+> ...
+> > > diff --git a/tools/testing/selftests/lkdtm/run.sh b/tools/testing/selftests/lkdtm/run.sh
+> > > index bb7a1775307b..0f9f22ac004b 100755
+> > > --- a/tools/testing/selftests/lkdtm/run.sh
+> > > +++ b/tools/testing/selftests/lkdtm/run.sh
+> > > @@ -78,8 +78,9 @@ dmesg > "$DMESG"
+> > >
+> > >  # Most shells yell about signals and we're expecting the "cat" process
+> > >  # to usually be killed by the kernel. So we have to run it in a sub-shell
+> > > -# and silence errors.
+> > > -($SHELL -c 'cat <(echo '"$test"') >'"$TRIGGER" 2>/dev/null) || true
+> > > +# to avoid terminating this script. Leave stderr alone, just in case
+> > > +# something _else_ happens.
+> > > +(/bin/sh -c '(echo '"$test"') | cat >'"$TRIGGER") || true
 > 
-> What the commit message doesn't say is, did we miss this opportunity all
-> along, or has there been a change since commit 47c42e6b4192 ("KVM: x86:
-> fix handling of role.cr4_pae and rename it to 'gpte_size'", 2019-03-28)
-> that allows this?
+> I was having trouble parsing that command - and I'm good
+> at shell scripts.
+> I think the extra subshell the 'echo' is in doesn't help.
+> In fact, is either subshell needed?
+> Surely:
+> /bin/sh -c "echo '$test' | cat >$trigger" || true
+> will work just as well?
 
-The code was wrong from the initial "unsync" commit.  The 4-byte vs. 8-byte check
-papered over the real bug, which was that the roles were not checked for
-compabitility.  I suspect that the bug only manisfested as an observable problem
-when the GPTE sizes mismatched, thus the PAE check was added.
+Ah yeah, and I just tested it to double check, it can be even simpler:
 
-So yes, there was an "opportunity" that was missed all along.
+echo "$test" | /bin/sh -c "cat >$TRIGGER" || true
 
-> I think the only change needed would be making the commit something like
-> this:
-> 
-> ==========
-> KVM: x86/mmu: Use MMU role to check for matching guest page sizes
-> 
-> Originally, __kvm_sync_page used to check the cr4_pae bit in the role
-> to avoid zapping 4-byte kvm_mmu_pages when guest page size are 8-byte
-> or the other way round.  However, in commit 47c42e6b4192 ("KVM: x86: fix
-> handling of role.cr4_pae and rename it to 'gpte_size'", 2019-03-28) it
-> was observed that this did not work for nested EPT, where the page table
-> size would be 8 bytes even if CR4.PAE=0.  (Note that the check still
-> has to be done for nested *NPT*, so it is not possible to use tdp_enabled
-> or similar).
-> 
-> Therefore, a hack was introduced to identify nested EPT shadow pages
-> and unconditionally call __kvm_sync_page() on them.  However, it is
-> possible to do without the hack to identify nested EPT shadow pages:
-> if EPT is active, there will be no shadow pages in non-EPT format,
-> and all of them will have gpte_is_8_bytes set to true; we can just
-> check the MMU role directly, and the test will always be true.
-> 
-> Even for non-EPT shadow MMUs, this test should really always be true
-> now that __kvm_sync_page() is called if and only if the role is an
-> exact match (kvm_mmu_get_page()) or is part of the current MMU context
-> (kvm_mmu_sync_roots()).  A future commit will convert the likely-pointless
-> check into a meaningful WARN to enforce that the mmu_roles of the current
-> context and the shadow page are compatible.
-> ==========
-> 
-> 
-> Paolo
-> 
-> > Note, this should be a glorified nop now that __kvm_sync_page() is called
-> > if and only if the role is an exact match (kvm_mmu_get_page()) or is part
-> > of the current MMU context (kvm_mmu_sync_roots()).  A future commit will
-> > convert the likely-pointless check into a meaningful WARN to enforce that
-> > the mmu_roles of the current context and the shadow page are compatible.
-> > 
-> > Cc: Vitaly Kuznetsov<vkuznets@redhat.com>
-> > Signed-off-by: Sean Christopherson<seanjc@google.com>
-> 
+I'll adjust and resend...
+
+-Kees
+
+-- 
+Kees Cook
