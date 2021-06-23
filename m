@@ -2,221 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3B13B22AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B273B22B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbhFWVrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 17:47:11 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:32442 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbhFWVrJ (ORCPT
+        id S229970AbhFWVrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 17:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhFWVrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 17:47:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624484692; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=5BGEMURobcJs1YRJdsd1p1jqwtDiwEb1TOrMlLDJyMw=; b=SfC0j/hU1uVEFBQbb0ueRcgJcMnufHYdMcj7Rs2kdked7Isbzol9Ya6j/y35F69O9sXPINIi
- sAItFK/IgLaoBEqyfAtsjy/IfvdIDu7j6nsmMhP0eWV9dUxZcAXmOEqHZjkYH99BUEICmzHP
- 0Z+S8U1PyDyje12qRXgBh/njJzk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60d3ab43d2559fe392a771c4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Jun 2021 21:44:35
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DB0BFC4338A; Wed, 23 Jun 2021 21:44:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.110.66.189] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3535DC433F1;
-        Wed, 23 Jun 2021 21:44:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3535DC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH v10 2/6] usb: gadget: configfs: Check USB configuration
- before adding
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     balbi@kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, frowand.list@gmail.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        jackp@codeaurora.org, fntoth@gmail.com,
-        heikki.krogerus@linux.intel.com, andy.shevchenko@gmail.com
-References: <1623923899-16759-1-git-send-email-wcheng@codeaurora.org>
- <1623923899-16759-3-git-send-email-wcheng@codeaurora.org>
- <YMss5tFFBjokk1k6@kroah.com>
- <012b0264-107a-5596-d73f-3a2fd20470cf@codeaurora.org>
- <YNF9kv0kWAz6Pp00@kroah.com>
- <afe0c718-1c16-1b20-4b0c-d8592a13af42@codeaurora.org>
- <YNMcnISDv2e7bze1@kroah.com>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <e7d70e8c-4574-808c-80f6-ae469937f35d@codeaurora.org>
-Date:   Wed, 23 Jun 2021 14:44:31 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 23 Jun 2021 17:47:32 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DBDC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 14:45:14 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id g14so3307223qtv.4
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 14:45:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=eO/gYbfA6Dk3fvPEfq//UAVbrBE1Hl+b3nbIln7zxCo=;
+        b=IWYpWrmxb6b5oYYzL2CGARVvY1cJdnFmp0pf3q3Bz5VW+Yv5HFpsH4M9Bq+Nw/sjHK
+         2L0nDVw45GcJe7nQTlZ28k/miOGGntJR8W5J4Voi7MO1jrBUJgB5Ea0Esw50VWRmm45Y
+         38AF8mhKCT8oJimpI7VLn2vlR+sGga5+4DD9qedz7Z2rFAxEOHAA6DcEET+mez1x3J6+
+         GOvlJYnOt+dfs+bJsq/MHUwUv+NMt525B239rkOXryVQEIrngwee2HEu7obvBb4/uncB
+         6O+ax7RxC2XTTn3FxGkC3LYkt9ImH0/OqEC7GesBlxBxvHieu9Z9J226aKdj5hGBSXcE
+         O9ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eO/gYbfA6Dk3fvPEfq//UAVbrBE1Hl+b3nbIln7zxCo=;
+        b=FZ4Vz65mt0keqMHnlVKqiItsyzpwxTs0zuIXqN1HFvLIrVoVzqRg5yDRZ9k0khz67d
+         Dby6coRjEmcGuRHUsD0LMTd5jC7UVJ3ykgPfzWE3/YxppkyVyMT1/SilZn0q4TesJg9Y
+         QDMC+3mVquUtYUJt/gr6QVr5TzFJ4K9Bypjuiks72g6798DqfOgJq79jEM0hze2LGkFh
+         lgcSrJeXztiRQRMaUyYV2vL/inhtUk4EryzuRIxCkicAzr0uIfFUYIQRGAQMcqQ+dS8j
+         JzHB1YxUcemh5lCITsrqtM8wQqsnfk2aanlZhLcy1gaovkR5/SrIYkdp4FetocC8I30L
+         3t3Q==
+X-Gm-Message-State: AOAM531MLtvgHcQ+3R+AHqE6VRLxM4hGgtF62vq6+VJG/9Ydpi8QvdWI
+        lOL5KJxzieakX2MpzTpkfjGJ3KLVET7ieByHMKRGMA==
+X-Google-Smtp-Source: ABdhPJw3GtJtGKNZUWMs5ocfXyKukzULEu9ZrESDoOs8YOI4F1k7sQ982AKQG9jIeOCBC6M9JqVFAyAKPrwT60U/sRM=
+X-Received: by 2002:aed:2064:: with SMTP id 91mr1931402qta.318.1624484713483;
+ Wed, 23 Jun 2021 14:45:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YNMcnISDv2e7bze1@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210621173028.3541424-1-mw@semihalf.com> <20210621173028.3541424-6-mw@semihalf.com>
+ <YNObfrJN0Qk5RO+x@lunn.ch>
+In-Reply-To: <YNObfrJN0Qk5RO+x@lunn.ch>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Wed, 23 Jun 2021 23:45:04 +0200
+Message-ID: <CAPv3WKfdCwq=AYhARGxfRA92XcZjXYwdOj6_JLP+wOmPV8xxzQ@mail.gmail.com>
+Subject: Re: [net-next: PATCH v3 5/6] net: mvpp2: enable using phylink with ACPI
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Jon Nettleton <jon@solid-run.com>,
+        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
+        lenb@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+=C5=9Br., 23 cze 2021 o 22:37 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a):
+>
+> > +static bool mvpp2_use_acpi_compat_mode(struct fwnode_handle *port_fwno=
+de)
+> > +{
+> > +     if (!is_acpi_node(port_fwnode))
+> > +             return false;
+> > +
+> > +     return (!fwnode_property_present(port_fwnode, "phy-handle") &&
+> > +             !fwnode_property_present(port_fwnode, "managed") &&
+> > +             !fwnode_get_named_child_node(port_fwnode, "fixed-link"));
+>
+> I'm not too sure about this last one. You only use fixed-link when
+> connecting to an Ethernet switch. I doubt anybody will try ACPI and a
+> switch. It has been agreed, ACPI is for simple hardware, and you need
+> to use DT for advanced hardware configurations.
+>
+> What is your use case for fixed-link?
+>
 
-On 6/23/2021 4:35 AM, Greg KH wrote:
-> On Wed, Jun 23, 2021 at 02:38:55AM -0700, Wesley Cheng wrote:
->>
->>
->> On 6/21/2021 11:05 PM, Greg KH wrote:
->>> On Mon, Jun 21, 2021 at 10:27:09PM -0700, Wesley Cheng wrote:
->>>>
->>>>
->>>> On 6/17/2021 4:07 AM, Greg KH wrote:
->>>>> On Thu, Jun 17, 2021 at 02:58:15AM -0700, Wesley Cheng wrote:
->>>>>> Ensure that the USB gadget is able to support the configuration being
->>>>>> added based on the number of endpoints required from all interfaces.  This
->>>>>> is for accounting for any bandwidth or space limitations.
->>>>>>
->>>>>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
->>>>>> ---
->>>>>>  drivers/usb/gadget/configfs.c | 22 ++++++++++++++++++++++
->>>>>>  1 file changed, 22 insertions(+)
->>>>>>
->>>>>> diff --git a/drivers/usb/gadget/configfs.c b/drivers/usb/gadget/configfs.c
->>>>>> index 15a607c..76b9983 100644
->>>>>> --- a/drivers/usb/gadget/configfs.c
->>>>>> +++ b/drivers/usb/gadget/configfs.c
->>>>>> @@ -1374,6 +1374,7 @@ static int configfs_composite_bind(struct usb_gadget *gadget,
->>>>>>  		struct usb_function *f;
->>>>>>  		struct usb_function *tmp;
->>>>>>  		struct gadget_config_name *cn;
->>>>>> +		unsigned long ep_map = 0;
->>>>>>  
->>>>>>  		if (gadget_is_otg(gadget))
->>>>>>  			c->descriptors = otg_desc;
->>>>>> @@ -1403,7 +1404,28 @@ static int configfs_composite_bind(struct usb_gadget *gadget,
->>>>>>  				list_add(&f->list, &cfg->func_list);
->>>>>>  				goto err_purge_funcs;
->>>>>>  			}
->>>>>> +			if (f->fs_descriptors) {
->>>>>> +				struct usb_descriptor_header **d;
->>>>>> +
->>>>>> +				d = f->fs_descriptors;
->>>>>> +				for (; *d; ++d) {
->>>>
->>>> Hi Greg,
->>>>
->>>> Thanks for the review and feedback.
->>>>
->>>>>
->>>>> With this check, there really is not a need to check for
->>>>> f->fs_descriptors above in the if statement, right?
->>>>>
->>>>
->>>> f->fs_descriptor will carry the table of descriptors that a particular
->>>> function driver has assigned to it.  The for loop here, will dereference
->>>> the individual descriptors within that descriptor array, so we need to
->>>> first ensure the descriptor array is present before traversing through
->>>> the individual entries/elements.
->>>
->>> Ah, it's a dereference of an array element.  Subtle.  Tricky.  Messy :(
->>>
->>>>>> +					struct usb_endpoint_descriptor *ep;
->>>>>> +					int addr;
->>>>>> +
->>>>>> +					if ((*d)->bDescriptorType != USB_DT_ENDPOINT)
->>>>>> +						continue;
->>>>>> +
->>>>>> +					ep = (struct usb_endpoint_descriptor *)*d;
->>>>>> +					addr = ((ep->bEndpointAddress & 0x80) >> 3) |
->>>>>> +						(ep->bEndpointAddress & 0x0f);
->>>>>
->>>>> Don't we have direction macros for this type of check?
->>>>>
->>>>
->>>> I don't believe we have a macro which would be able to convert the
->>>> bEndpointAddress field into the bit which needs to be set, assuming that
->>>> the 32bit ep_map has the lower 16bits carrying OUT EPs, and the upper
->>>> 16bits carrying the IN EPs.
->>
->> Hi Greg,
->>
->>>
->>> We have macros to tell if an endpoint is IN or OUT, please use those.
->>>
->>> And this "cram the whole thing into 64 bits" is not obvious at all.
->>> Just pass around the original pointer to the descriptors if someone
->>> wants to use it or not, don't make up yet-another-data-structure here
->>> for no good reason.  We aren't so memory constrained we need to pack
->>> stuff into bits here.
->>>
->>
->> Hmm ok, what I can do is to move this logic into the check_config()
->> callback itself, which is implemented by the UDC driver.  So now, the
->> DWC3 will have to do something similar to what is done here, ie loop the
->> EP descriptors for each function to determine the number of IN endpoints
->> being used.
+Regardless of the "simple hardware" definition or whether DSA + ACPI
+feasibility, you can still have e.g. the switch left in "unmanaged"
+mode (or whatever the firmware configures), connected via fixed-link
+to the MAC. The same effect as booting with DT, but not loading the
+DSA/switch driver - the "CPU port" can be used as a normal netdev
+interface.
 
-Hi Greg,
+I'd also prefer to have all 3 major interface types supported in
+phylink, explicitly checked in the driver - it has not been supported
+yet, but can be in the future, so let's have them covered in the
+backward compatibility check.
 
-> 
-> We have common USB core functions for this, why can't you just use them?
-> 
-
-So, I've tried to use pre-existing mechanisms there in the USB core, but
-they are not populated correctly at the time of function binding.  I
-will highlight some of the things I've tried, and why they do not work.
- If possible, if you could point which core functions can achieve what
-we are trying to do here, that would help as well.
-
-  - f->endpoints - This is a bitmap which carries the endpoints used by
-a particular function driver.  This does not work, as this is set during
-receiving the SET_CONFIG packet.  (we need this during the function
-driver binding stage)
-
-  - gadget->in_epnum/gadget->out_epnum - This carries the count of
-endpoints used per configuration.  This would be perfect, but this count
-is only incremented when we are not matching EPs using the EP name.  So
-in designs where the EP name is used to match, it can not be used.
-
- - gadget->ep_list - I can use this now in the check_config() to iterate
-through the list of eps to see which ones have been claimed for a
-particular configuration.
-
-So just to re-iterate, the TXFIFO resize logic kicks in when the host
-sends the SET_CONFIG packet, which is the "end" of USB enumeration.  We
-had discussed a concern previously where, what if we run the resize
-logic, and there is not enough internal memory.  We'd end up with an
-enumerated device w/ certain functions broken.
-
-This is where the check_config() comes into the picture.  It uses the
-number of endpoints collected during the bind() stage, and checks to
-make sure the resize logic can at least allocate 1 TXFIFO per endpoint.
- If it can not, then it will fail the bind sequence.
-
-Thanks
-Wesley Cheng
-> Please do not take data that we already have in one format, and convert
-> it to another one just for a single driver to consume.  That's
-> pointless.
-> 
-> thanks,
-> 
-> greg k-h
-> 
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Best regards,
+Marcin
