@@ -2,115 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1C73B1ECA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 005A03B1ECE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhFWQk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 12:40:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49148 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229523AbhFWQk4 (ORCPT
+        id S230152AbhFWQlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 12:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230107AbhFWQlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 12:40:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624466318;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZzECnKDBmIvo/ujBqWPH8Hf50HLw/m8oX6rv0gXcfxQ=;
-        b=XSlkvbokyar+XZML9HJbUVvoPPFZmCiixzpkarB5H91o00rtjvUEyZiRzx22cGcdxjaCnO
-        OuFN7YSSBOvVp31A4uFJAnULnU6QD0b/RKsrik9aXP/8eibu3xjrf28DBoKO4+lNcppOmK
-        YpOgrruJRRmjLQ6KSaFSPZt8U9bZn10=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-487-h-qh4zrGPiqGaNlfATuzAQ-1; Wed, 23 Jun 2021 12:38:37 -0400
-X-MC-Unique: h-qh4zrGPiqGaNlfATuzAQ-1
-Received: by mail-ej1-f69.google.com with SMTP id u4-20020a1709061244b02904648b302151so1187440eja.17
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:38:37 -0700 (PDT)
+        Wed, 23 Jun 2021 12:41:06 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57217C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:38:48 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id i1so5170824lfe.6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:38:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=TUutKG4F+W5pEfTyRo0eILmARbQ2r9tO+kogVemQTQg=;
+        b=Nj8NqarWd1i9ntoq5E6MFTQKr/NV5AymNo/Lpnvk9s6flsvmof6do3TgtloBjwWlBg
+         YRpgayr4oLJ89OzULoT2NSt8hwTwTcoSb8ffKZ2/Kn2sDqDF6YIDtEQqjym4MbMVoEvF
+         4367aOslrYvM0CEkk7g0E2cddPkD4ooco0IoQqewJjMoYGkFwMm7Ki5Da7Rqe/9DSe0d
+         lXflO7nowCXNqs7A3AtGZh7S7b8il3UoOH/TyKkAT1DXjNHZu31Sd7lfM3YY8BWnSbUo
+         RdT0PYcvmyYvjDX4WHgheZOZQOjo/PalJUiUlyf3e3dDx1B7UJbjTJpay0Ydqc+9Miyz
+         dlVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZzECnKDBmIvo/ujBqWPH8Hf50HLw/m8oX6rv0gXcfxQ=;
-        b=AtN+j+LdzA6X/nu5+9XWrBi4dsxTnJ1IpYspiElaPOJZgk6cdL90duz2OIQTg2E7SQ
-         WT9UW7Am73qMQF983eK6LONue0NZ4wONEUjYQrB4xPiBWFMu/wpxbRX8DR0Kg0vtP7wC
-         OgwgRQx8rPUzyCOvapizcGxxt1IAN2NfnSE6uj6xPWjh03/zBgWPR5au8dmxS+F3Uu2T
-         TlI+aFHMSrx39GbCvRaswzHvB4FdFK/vLSieHyZ8jM+cAUDlDqW7oCPPSMQyFd/e7oCc
-         mVfI+PdQ8jS+ChqfJQWUxfdn33599+MhRqWpUEbR3WsxATLzO1NDpBYS4TaIkObLxOoZ
-         npYA==
-X-Gm-Message-State: AOAM532hG6BNI1+GVI2rNg189ISdqCfF/cXiS72dD3/FFuZBFHwD7YIb
-        nXyNu0tEuR8ur6VGEXIjhtRnp7Hj9I5sSrS/zg7cW2iCPFwa+n7ODR0bT6TrrhsWYkyA+l39Tt8
-        LKCmGBLf0X4Wa+HNSbn6nJT00
-X-Received: by 2002:a17:907:98c4:: with SMTP id kd4mr943068ejc.119.1624466315855;
-        Wed, 23 Jun 2021 09:38:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzdyc0GxzXAVwYD9leeHbZf3Ojn8RjxXdUDPOsa5C3q1WvM24iq/adb2MXELwzuVvE/n2m6Zw==
-X-Received: by 2002:a17:907:98c4:: with SMTP id kd4mr943052ejc.119.1624466315643;
-        Wed, 23 Jun 2021 09:38:35 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id d6sm318843edq.37.2021.06.23.09.38.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 09:38:34 -0700 (PDT)
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TUutKG4F+W5pEfTyRo0eILmARbQ2r9tO+kogVemQTQg=;
+        b=MhxqKYtsDw9I/Na05K69TJ2uga6VZy8R+VHY0vEf0yrohlxbqOBQWM7AV5WKomiLxK
+         BkUpaDrgPAAypuiY9L9m0wfJM2J5BK3wOdhYqrhYARB6L5boaksRFoBUZS4pff1+COOz
+         Mrojuv5gK5NubzFxgTEygr1QvpXSt3Zcoi58w9YqCytdZveBBfi9zNzG4p8fiv4zV+Av
+         75CB+EagHgdwfr2kOREaEUZwUAx+vRVwOM0qDrpr4ES2LoDYBZfc70uM2UpscTpyQL2L
+         5bf3jnIGuiNKIP6LLHK6lUZtHFn8giuTuN0lH8ZoeJJ7gDt0oMT6YyuSFfSjRGulXDEU
+         3eKw==
+X-Gm-Message-State: AOAM5317nz1G5p4t+ZXrqhmJrMF0GkbfXb5Ln3DCmoXWSizxeAU87+MZ
+        OimfAplGYAInDUd8aaO+Ofs=
+X-Google-Smtp-Source: ABdhPJwktWT0yn7Ci7FhnYW5SIXFGq/LqL6I3Dr2Mps5mokPWXhrc8lzgAZQ6M36Q6EPVBlBAXApjg==
+X-Received: by 2002:a05:6512:3049:: with SMTP id b9mr351134lfb.205.1624466326736;
+        Wed, 23 Jun 2021 09:38:46 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.225.155])
+        by smtp.gmail.com with ESMTPSA id t24sm17475ljc.45.2021.06.23.09.38.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 09:38:46 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 19:38:42 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Dave Kleikamp <dave.kleikamp@oracle.com>
+Cc:     shaggy@kernel.org, jfs-discussion@lists.sourceforge.net,
         linux-kernel@vger.kernel.org,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-References: <20210622175739.3610207-1-seanjc@google.com>
- <20210622175739.3610207-10-seanjc@google.com>
- <f2dcfe12-e562-754e-2756-1414e8e2775f@redhat.com>
- <YNNOeIWqNoZ3j8o+@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 09/54] KVM: x86/mmu: Unconditionally zap unsync SPs when
- creating >4k SP at GFN
-Message-ID: <f13fcf5b-f6bc-fb95-6f69-ea524ae446f5@redhat.com>
-Date:   Wed, 23 Jun 2021 18:38:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        syzbot+0a89a7b56db04c21a656@syzkaller.appspotmail.com
+Subject: Re: [PATCH] jfs: fix GPF in diFree
+Message-ID: <20210623193842.5f164966@gmail.com>
+In-Reply-To: <319afbd1-afc0-bae3-c446-3530505e7b21@oracle.com>
+References: <20210606142405.31047-1-paskripkin@gmail.com>
+        <319afbd1-afc0-bae3-c446-3530505e7b21@oracle.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YNNOeIWqNoZ3j8o+@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/06/21 17:08, Sean Christopherson wrote:
-> Because the shadow page's level is incorporated into its role, if the level of
-> the new page is >4k, the branch at (1) will be taken for all 4k shadow pages.
+On Wed, 23 Jun 2021 09:13:07 -0500
+Dave Kleikamp <dave.kleikamp@oracle.com> wrote:
+
+> On 6/6/21 9:24 AM, Pavel Skripkin wrote:
+> > Avoid passing inode with
+> > JFS_SBI(inode->i_sb)->ipimap == NULL to
+> > diFree()[1]. GFP will appear:
 > 
-> Maybe something like this for a comment?
+> I'm a little curious how we get as far as creating and freeing 
+> non-special inodes if ipimap == NULL.
+> 
+> > 
+> > 	struct inode *ipimap = JFS_SBI(ip->i_sb)->ipimap;
+> > 	struct inomap *imap = JFS_IP(ipimap)->i_imap;
+> > 
+> > JFS_IP() will return invalid pointer when ipimap == NULL
+> > 
+> > Call Trace:
+> >   diFree+0x13d/0x2dc0 fs/jfs/jfs_imap.c:853 [1]
+> >   jfs_evict_inode+0x2c9/0x370 fs/jfs/inode.c:154
+> >   evict+0x2ed/0x750 fs/inode.c:578
+> >   iput_final fs/inode.c:1654 [inline]
+> >   iput.part.0+0x3fe/0x820 fs/inode.c:1680
+> >   iput+0x58/0x70 fs/inode.c:1670
+> 
+> Is there more to the stack trace? Is this part of a failed mount()?
+> 
 
-Good, integrated.
+Hi, Dave!
 
-Though I also wonder why breaking out of the loop early is okay.  Initially I thought
-that zapping only matters if there's no existing page with the desired role,
-because otherwise the unsync page would have been zapped already by an earlier
-kvm_get_mmu_page, but what if the page was synced at the time of kvm_get_mmu_page
-and then both were unsynced?
+Yes, it was caused by mount fail. Log:
 
-It may be easier to just split the loop to avoid that additional confusion,
-something like:
+[  924.076873][ T8430] jfs_mount: diMount(ipaimap) failed w/rc = -5
 
-         /*
-          * If the guest is creating an upper-level page, zap unsync pages
-          * for the same gfn, because the gfn will be write protected and
-          * future syncs of those unsync pages could happen with an incompatible
-          * context.  While it's possible the guest is using recursive page
-          * tables, in all likelihood the guest has stopped using the unsync
-          * page and is installing a completely unrelated page.
-          */
-         if (level > PG_LEVEL_4K) {
-                 for_each_valid_sp(vcpu->kvm, sp, sp_list)
-                         if (sp->gfn == gfn && sp->role.word != role.word && sp->unsync)
-                                 kvm_mmu_prepare_zap_page(vcpu->kvm, sp,
-                                                          &invalid_list);
-         }
+So, it's errout21 label in jfs_mount(). I guess, It's early failure and
+some fields wasn't initialized properly. I don't really remember my
+debug results, because it was a long time ago, but I can do some debug
+work again if needed!
 
-Paolo
 
+Thanks for feedback!
+
+> > 
+> > Reported-and-tested-by:
+> > syzbot+0a89a7b56db04c21a656@syzkaller.appspotmail.com
+> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>ipimap == NULL
+> 
+> I don't doubt that this happened, so I'll apply the patch which is 
+> obviously safe.
+> 
+> > ---
+> >   fs/jfs/inode.c | 3 ++-
+> >   1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/jfs/inode.c b/fs/jfs/inode.c
+> > index 6f65bfa9f18d..b0eb9c85eea0 100644
+> > --- a/fs/jfs/inode.c
+> > +++ b/fs/jfs/inode.c
+> > @@ -151,7 +151,8 @@ void jfs_evict_inode(struct inode *inode)
+> >   			if (test_cflag(COMMIT_Freewmap, inode))
+> >   				jfs_free_zero_link(inode);
+> >   
+> > -			diFree(inode);
+> > +			if (JFS_SBI(inode->i_sb)->ipimap)
+> > +				diFree(inode);
+> >   
+> >   			/*
+> >   			 * Free the inode from the quota
+> > allocation.
+> > 
+
+
+
+
+With regards,
+Pavel Skripkin
