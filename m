@@ -2,143 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1193B1FA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 860733B1FA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbhFWRkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 13:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45850 "EHLO
+        id S229886AbhFWRkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 13:40:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWRkR (ORCPT
+        with ESMTP id S229523AbhFWRkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 13:40:17 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E87AC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:38:00 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id bj15so7173302qkb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:38:00 -0700 (PDT)
+        Wed, 23 Jun 2021 13:40:39 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722B1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:38:21 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id w26so2675927qto.13
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:38:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B5o1VpdMcZrmQnyC6VaIuCe6zHlh4bhQF/lUKDsspdg=;
-        b=uyCNzWi7QuYZIzhGrc5Gb0sdMjZK3o6D0PuYZzJifbcz5wgi1WYMMQLGlIjgLaTWiV
-         Y4aa2KgTJlvAvMQgmqyviyjzKaEw0jufgBBV0MDw9vzaM9Nm4/BsgAmh0UmIq5qmRIVy
-         iyjfe0Ng8PLGeYGk/YSVvr9pWYTZhy7WC/hqAWcRnXRZE1WQPk4VgRskrvGwvNKXusZ6
-         b8mwxVPmkgqS0o8quY79rwRVrItOcHsvvrvnr7DBPQXwCW4lqX1En11ySqqyjWAaxLyp
-         h2WPhz0s73bmvf73nVMXj6PPZv9uYKZleOl7R/tkmOjDmAT8zD5eKrJtiOqLI/E/rNkM
-         mSZw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UqKboHF7puyYHesYjNmpk5W53Yf+9XZPhNn73yz1inU=;
+        b=ocp0MVYBUWes+41iCL9NiCc9bOOvCmEPnbyq8Y4S+XfSG1sT2AyucVRZ++dnWwZvut
+         bIzV8G+F5q1Wj39T0+FYe/jLlCK7FeDBo/Lj5pp+WqpwFlH8ZIt4dE/m0I2eeILjok5n
+         7pWNXcIR9bZg6y/n8ppC34PjFN6yQQYsip8lTYVwznIgdXUaZcvtwCYr2/FdeGq+dOrI
+         mkeFXMuBlpf9xnvVsxF3BzQbT5zCEg1JUADMkDurou9IiYbXwfpUBdIkUCRrG22K4V/F
+         F/ZR/XADvKsLYtDxdR6FGQJSD+qAgw9jv8jEBTfWr64e3sh/xftubXeabJJKBNQBHBy+
+         s9ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B5o1VpdMcZrmQnyC6VaIuCe6zHlh4bhQF/lUKDsspdg=;
-        b=N9j81TtlFKVkEO0DVUJ6/11qHU4PDremt96EvC+PJO2Gflb6WxH1hBmKGJl2jo91A5
-         i5o/yM59Wj5UIrmPgFw1L5iNCTbqYFeOqpbB9T7+9Sd/XUT1CC857XDHQaxPFeQ+FQMI
-         Lq4+OxDtmFmmRAsmb2WYmimUq+FsK9vJHt3nbnNozlaNd87OSGOuIuNQerOl5w9rfM7g
-         QsSt3/ZWsqKboI7wyZdy3G5H75EtHZlMSLvjWXvRIfXc+Psxel76cfDev3PifWJbPhs6
-         GPP7zI44GXd4N9sBrn1ijUBAjT3GGDUxHzFAfm/B/YQ8fERsdHZyVC67NL/wTsbiFZiD
-         U8jQ==
-X-Gm-Message-State: AOAM532hwTEojgrtjGZ1KRJvQb+EwExFnR9E4UJNSyuA5FtL3CXohhAd
-        0NPeIjUPuzsyrx7k50F1ch4TZ47U/lHwxszDwLDoBA==
-X-Google-Smtp-Source: ABdhPJyS501FUMJKU2Fd8GSeFaTNJquoa/D16LPwAed/qRy5fatTpVdAvkwHb8W/LsdshZn6oTNpuwnYHJodG440fwc=
-X-Received: by 2002:ae9:dd06:: with SMTP id r6mr1270322qkf.74.1624469879194;
- Wed, 23 Jun 2021 10:37:59 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UqKboHF7puyYHesYjNmpk5W53Yf+9XZPhNn73yz1inU=;
+        b=HgfwND0AYveSlVFHAmIWg6CQX3QPwcFMXVWSvERl9rNv2t0CjMCvGooKTom7p0VFAm
+         gLeMp3QZuQtC/cVF4asjbQ8FQJK437lKPxOjSMv97PcTJzS3NRkEBiRA+2xdXQQmlnR0
+         xfpn1Nec+jlH9Ll0DQZGpJPBZioZKrt1fiFxrjGIzQVc3CCXMagXvHwM792Kqq8U3F2f
+         GcTWU1XHo1CBIfxLFFzeYeUrrLkesj3YURWbt9S0PanxW5gdr94DoBMPllTu2joaSxRC
+         6ZVHf5nYF5/WNOt7A3BoqJodvYYVpASuOAdleaug5ZEb8Wh/Cfs0AgNT9VMpzPP71GHo
+         I7aQ==
+X-Gm-Message-State: AOAM533L45Dltlks9wszUnkeIVDv+wd6bhiEDhbhcjWRx1LxgU3BMWYW
+        KwFXiPw6zDxeY9M8LwqTJUEWOg==
+X-Google-Smtp-Source: ABdhPJxtp9DJtcphPbNvy37IHUZ9wlvtyQUBIN5iGdofdboOD6poauXaNOHjSWl7ll2a7V7uYarECw==
+X-Received: by 2002:ac8:7418:: with SMTP id p24mr983226qtq.107.1624469900671;
+        Wed, 23 Jun 2021 10:38:20 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id p14sm356051qtw.61.2021.06.23.10.38.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 10:38:20 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lw6pP-00BZVk-Dd; Wed, 23 Jun 2021 14:38:19 -0300
+Date:   Wed, 23 Jun 2021 14:38:19 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Selvin Xavier <selvin.xavier@broadcom.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] RDMA/bnxt_re: Fix uninitialized struct bit field
+ rsvd1
+Message-ID: <20210623173819.GV1096940@ziepe.ca>
+References: <20210623171202.161107-1-colin.king@canonical.com>
 MIME-Version: 1.0
-References: <2ED1BDF5-BC0C-47CD-8F33-9A46C738F8CF@linux.vnet.ibm.com>
- <CAKfTPtDrHv4OOfPvwOE2DMNoucXQJ=yvvEpTVKrXghSdKEnZcA@mail.gmail.com>
- <20210622143154.GA804@vingu-book> <53968DDE-9E93-4CB4-B5E4-526230B6E154@linux.vnet.ibm.com>
- <20210623071935.GA29143@vingu-book> <CCB4222F-000A-44E8-8D61-F69893704688@linux.vnet.ibm.com>
- <6C676AB3-5D06-471A-8715-60AABEBBE392@linux.vnet.ibm.com> <20210623120835.GB29143@vingu-book>
- <5D874F72-B575-4830-91C3-8814A2B371CD@linux.vnet.ibm.com> <CAKfTPtBKn27=jryS_sxsVb+0yHDze_PMcLuyFtDkDo0H9Nzqww@mail.gmail.com>
- <CAKfTPtDFUBe+qD9z0YYb7yyup_mhdNNX+zopFwcnyh+G41viAw@mail.gmail.com>
-In-Reply-To: <CAKfTPtDFUBe+qD9z0YYb7yyup_mhdNNX+zopFwcnyh+G41viAw@mail.gmail.com>
-From:   Odin Ugedal <odin@uged.al>
-Date:   Wed, 23 Jun 2021 19:37:23 +0200
-Message-ID: <CAFpoUr1kLf3knmVG4HjPaOLzbs0bz+YpRf_uno233ZPO9xxCdQ@mail.gmail.com>
-Subject: Re: [powerpc][next-20210621] WARNING at kernel/sched/fair.c:3277
- during boot
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Sachin Sant <sachinp@linux.vnet.ibm.com>,
-        Odin Ugedal <odin@uged.al>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210623171202.161107-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ons. 23. jun. 2021 kl. 19:27 skrev Vincent Guittot <vincent.guittot@linaro.org>:
->
-> On Wed, 23 Jun 2021 at 18:55, Vincent Guittot
-> <vincent.guittot@linaro.org> wrote:
-> >
-> > On Wed, 23 Jun 2021 at 18:46, Sachin Sant <sachinp@linux.vnet.ibm.com> wrote:
-> > >
-> > >
-> > > > Ok. This becomes even more weird. Could you share your config file and more details about
-> > > > you setup ?
-> > > >
-> > > > Have you applied the patch below ?
-> > > > https://lore.kernel.org/lkml/20210621174330.11258-1-vincent.guittot@linaro.org/
-> > > >
-> > > > Regarding the load_avg warning, I can see possible problem during attach. Could you add
-> > > > the patch below. The load_avg warning seems to happen during boot and sched_entity
-> > > > creation.
-> > > >
-> > >
-> > > Here is a summary of my testing.
-> > >
-> > > I have a POWER box with PowerVM hypervisor. On this box I have a logical partition(LPAR) or guest
-> > > (allocated with 32 cpus 90G memory) running linux-next.
-> > >
-> > > I started with a clean slate.
-> > > Moved to linux-next 5.13.0-rc7-next-20210622 as base code.
-> > > Applied patch #1 from Vincent which contains changes to dequeue_load_avg()
-> > > Applied patch #2 from Vincent which contains changes to enqueue_load_avg()
-> > > Applied patch #3 from Vincent which contains changes to attach_entity_load_avg()
-> > > Applied patch #4 from https://lore.kernel.org/lkml/20210621174330.11258-1-vincent.guittot@linaro.org/
-> > >
-> > > With these changes applied I was still able to recreate the issue. I could see kernel warning
-> > > during boot.
-> > >
-> > > I then applied patch #5 from Odin which contains changes to update_cfs_rq_load_avg()
-> > >
-> > > With all the 5 patches applied I was able to boot the kernel without any warning messages.
-> > > I also ran scheduler related tests from ltp (./runltp -f sched) . All tests including cfs_bandwidth01
-> > > ran successfully. No kernel warnings were observed.
-> >
-> > ok so Odin's patch fixes the problem which highlights that we
-> > overestimate _sum or don't sync _avg and _sum correctly
-> >
-> > I'm going to look at this further
->
-> The problem is  "_avg * divider" makes the assumption that all pending
-> contrib are not null contributions whereas they can be null.
+On Wed, Jun 23, 2021 at 06:12:02PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The bit field rsvd1 in resp is not being initialized and garbage data
+> is being copied from the stack back to userspace via the ib_copy_to_udata
+> call. Fix this by setting rsvd1 to zero. Also remove some whitespace.
+> 
+> Addresses-Coverity: ("Uninitialized scalar variable")
+> Fixes: 879740517dab ("RDMA/bnxt_re: Update ABI to pass wqe-mode to user space")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> index 5955713234cb..45398f1777aa 100644
+> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> @@ -3880,7 +3880,8 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata)
+>  	resp.pg_size = PAGE_SIZE;
+>  	resp.cqe_sz = sizeof(struct cq_base);
+>  	resp.max_cqd = dev_attr->max_cq_wqes;
+> -	resp.rsvd    = 0;
+> +	resp.rsvd = 0;
+> +	resp.rsvd1 = 0;
 
-Yeah.
+I think I would prefer
 
-> Odin patch is the right way to fix this. Other patches should not be
-> useful for your problem
+	struct bnxt_re_uctx_resp resp = {};
 
-Ack. As I see it, given how PELT works now, it is the only way to
-mitigate it (without doing a lot of extra PELT stuff).
-Will post it as a patch together with a proper message later today or tomorrow.
+This isn't a performance path
 
->
-> >
-> > >
-> > > Have also attached .config in case it is useful. config has CONFIG_HZ_100=y
-> >
-> > Thanks, i will have a look
-> >
-> > >
-> > > Thanks
-> > > -Sachin
-> > >
-
-Thanks for reporting Sachin!
-
-Thanks
-Odin
+Jason
