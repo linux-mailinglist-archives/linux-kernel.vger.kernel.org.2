@@ -2,247 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDEF93B15B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2413B15C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbhFWIWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 04:22:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230445AbhFWIWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 04:22:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 401BD60D07;
-        Wed, 23 Jun 2021 08:19:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624436387;
-        bh=S+s2Ft9S1NB87mocVZfLX71sInvKxvx9L4A7FN8ycbI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=WassAqT/7pS1sViv2DBON2wWnN7CpNdSaC73Rlo8tzq+8W25uyG2gOY4r/XdCRt3q
-         F4XeGmUOKa91DGBOf2+G2V1GeKcsApkeByxm12yqjVkbxRtbC7shveENs2Op/yBble
-         X2BTw+ZUnhzb87dA2EVc0XgZkI8Z6/ZFJnXd1DvHmmLfh2umcx5ZyC/9N0+A5DZeHL
-         dOSa2NwjupuzcXiHszv43A4MUc46aOooH6y6PMI0CmSieQ+zoYm6ylKn4LBvVGo1Zq
-         6EYqmz2pvhRd7WzCtbGpZNtNaV+X/T/MoXqY3T2xy00G+mfFqUKsvcDHk18vH7unhL
-         U3Acf4sJjRzkg==
-Date:   Wed, 23 Jun 2021 13:49:43 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linux Phy <linux-phy@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: [GIT PULL]: Generic phy updates for v5.14 version 2
-Message-ID: <YNLun13SP+PyYCEf@matsya>
+        id S230130AbhFWIXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 04:23:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230030AbhFWIXp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 04:23:45 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384E5C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 01:21:28 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id 69so773820plc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 01:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=igel-co-jp.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/vpjqLnLja8zZg9F85wBmeicNZJ5E0kfTwub6S5I0nY=;
+        b=qyjoMEneFPyQG6FmpAm+blLv6qUuFnSfiHq9cwsD6vkL+N14a/IYUIUTUqOY2t15qU
+         orTFA+SzPPKYQEg/vg6aUJWkEx4TNqvO2RtgVWJyvQui+pZ/TnKX2y/OlFv2vaDUb+hu
+         VkuvJASiJfLUZ1yJJ2NAquzoKz2lDAduMIwIg8GEvgocPlEJinWAs1aMnQ9o5SDiwVWA
+         Tb+Cfp7SYSHZRtDLkBPMD1NQlBDQEHQ3ig7VsNPKaUOn3isd1x2Ziyr37iLaozV2eDeS
+         lGHyBldZdyHiqvHwnT6yiHmAVW525lIsaTkLsMit19GQWxbdY/vVswfJvppCEZBlKmwE
+         JnGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/vpjqLnLja8zZg9F85wBmeicNZJ5E0kfTwub6S5I0nY=;
+        b=QWKyltr0sm7gn9zvX2pfB2IFrr5i9uZeSUR4VLAvvv1vnKt9eoSKot8joHE0U+dLkU
+         Zst6ew/sqJNF+/tm468pq4T/W2ENuKDq9NjJSntTd10gVrqs/B9U3CAE9mA7JsSlJRlv
+         +Gisw7KSbC5YbHOPs5QC9hmxzy9+YFMm4G42y9Rmr81dASq9VS5alfjBPXmMpwwQYhVd
+         Grk4bN+ouH/HHenMSjwR1YMhu6fVaONII+Dd/yVsHGBxQYCv30WRv9FhJVTdD+kLyVNq
+         AMnmBJdJ4sFkXzJs7muXqFtUBGiwkOtO8xjDTqNjTWP8O2+w37xRLoKvnLbGpBrfhOnV
+         YAUg==
+X-Gm-Message-State: AOAM530KUseodM+7+5Af51Lc4RsHHt1IhRjJqPkhoIaSL/RGlSufo9lh
+        VKbW8NmRX606FslWhtBsI3GS2g==
+X-Google-Smtp-Source: ABdhPJyYaZ9+qPtqUGE0ix2e6z0tzu895F8iK8HYriQ9ex3rYbT2jDNvHbujgnZHhKfsy+6HIyxy5A==
+X-Received: by 2002:a17:90a:4ec8:: with SMTP id v8mr8506910pjl.178.1624436487667;
+        Wed, 23 Jun 2021 01:21:27 -0700 (PDT)
+Received: from ?IPv6:240b:10:c9a0:ca00:1102:c007:eee:4478? ([240b:10:c9a0:ca00:1102:c007:eee:4478])
+        by smtp.gmail.com with ESMTPSA id d13sm1552726pfn.136.2021.06.23.01.21.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 01:21:26 -0700 (PDT)
+Subject: Re: [PATH 0/4] [RFC] Support virtual DRM
+To:     =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
+        Pekka Paalanen <ppaalanen@gmail.com>
+Cc:     devicetree@vger.kernel.org, Takanari Hayama <taki@igel.co.jp>,
+        linux-doc@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-renesas-soc@vger.kernel.org,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>
+References: <20210621062742.26073-1-etom@igel.co.jp>
+ <9853d0a9-6053-db64-9c79-40b7e0689eec@suse.de>
+ <85593f2f-5aa9-6023-ecba-c5275a468b71@igel.co.jp>
+ <20210622105757.2b9dec32@eldfell>
+ <01a20860-8fe2-2762-5678-d9a75f70e20a@daenzer.net>
+From:   Esaki Tomohito <etom@igel.co.jp>
+Message-ID: <0fd18324-f396-ba76-1c8b-d048e5b72dca@igel.co.jp>
+Date:   Wed, 23 Jun 2021 17:21:24 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xXdEosMGUvG7arT2"
-Content-Disposition: inline
+In-Reply-To: <01a20860-8fe2-2762-5678-d9a75f70e20a@daenzer.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---xXdEosMGUvG7arT2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 2021/06/23 17:04, Michel Dänzer wrote:
+> On 2021-06-22 9:57 a.m., Pekka Paalanen wrote:
+>> On Tue, 22 Jun 2021 13:02:59 +0900
+>> Esaki Tomohito <etom@igel.co.jp> wrote:
+>>
+>>> Hi, Thomas
+>>> Thank you for reply.
+>>>
+>>> On 2021/06/21 16:10, Thomas Zimmermann wrote:
+>>>> Hi
+>>>>
+>>>> Am 21.06.21 um 08:27 schrieb Tomohito Esaki:  
+>>>>> Virtual DRM splits the overlay planes of a display controller into
+>>>>> multiple
+>>>>> virtual devices to allow each plane to be accessed by each process.
+>>>>>
+>>>>> This makes it possible to overlay images output from multiple
+>>>>> processes on a
+>>>>> display. For example, one process displays the camera image without
+>>>>> compositor
+>>>>> while another process overlays the UI.  
+>>>>
+>>>> I briefly looked over your patches. I didn't understand how this is
+>>>> different to the functionality of a compositor? Shouldn't this be solved
+>>>> in userspace?  
+>>>
+>>> I think when latency is important (e.g., AR, VR, for displaying camera
+>>> images in IVI systems), there may be use cases where the compositor
+>>> cannot be used.
+>>
+>> Hi,
+>>
+>>> Normally, when the image is passed through the compositor, it is
+>>> displayed after 2 VSYNC at most, because the compositor combines the
+>>> image with VSYNC synchronization.
+>>
+>> This is not a universal fact. You can write a Wayland compositor that
+>> consistently reaches app-to-screen latency of less than one monitor
+>> refresh cycle, while also using KMS planes.
+>>
+>> I believe Weston succeeds in this already if you write the Wayland
+>> application accordingly.
+> 
+> For a specific example, https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/1620 allows app-to-screen latency as low as ~6 ms (including a fixed 2 ms buffer to avoid skipped frames). mutter doesn't use KMS planes yet, but if anything I'd expect that to help rather than hurt for latency (if the compositor doesn't need to draw anything).
 
-Hello Greg,
+Thank you for providing specific examples.
 
-As discussed, here is the updated pull request after reverting the
-offending commit.
-
-Again very sorry for missing this in the review.
-
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
-
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-=
-for-5.14_v2
-
-for you to fetch changes up to 15692a80d9491b42f910f61f5ef2171b3c2eb15c:
-
-  phy: Revert "phy: ralink: Kconfig: convert mt7621-pci-phy into 'bool'" (2=
-021-06-23 12:59:46 +0530)
-
-----------------------------------------------------------------
-phy-for-5.14 version 2
-
-  - Updates:
-        - Yaml conversion for renesas,rcar-gen3 pcie phy and
-          rockchip-usb-phy bindings
-        - Support for devm_phy_get() taking NULL phy name
-
-  - New support:
-        - PCIe phy for Qualcomm IPQ60xx
-        - PCIe phy for Qualcomm SDX55
-        - USB phy for RK3308
-        - CAN transceivers phy for TI TCAN104x
-        - Innosilicon-based CSI dphy for rockchip
-
-----------------------------------------------------------------
-Amelie Delaunay (2):
-      dt-bindings: phy: add vbus-supply optional property to phy-stm32-usbp=
-hyc
-      phy: stm32: manage optional vbus regulator on phy_power_on/off
-
-Aswath Govindraju (3):
-      phy: core: Reword the comment specifying the units of max_link_rate t=
-o be Mbps
-      dt-bindings: phy: Add binding for TI TCAN104x CAN transceivers
-      phy: phy-can-transceiver: Add support for generic CAN transceiver dri=
-ver
-
-Baruch Siach (2):
-      dt-bindings: phy: qcom,qmp: Add IPQ60xx PCIe PHY bindings
-      dt-bindings: pci: qcom: Document PCIe bindings for IPQ6018 SoC
-
-Christophe JAILLET (1):
-      phy: ti: dm816x: Fix the error handling path in 'dm816x_usb_phy_probe=
-()
-
-Chunfeng Yun (1):
-      phy: qcom-qmp: remove redundant error of clock bulk
-
-Colin Ian King (1):
-      phy: rockchip: remove redundant initialization of pointer cfg
-
-Geert Uytterhoeven (1):
-      dt-bindings: phy: renesas,rcar-gen3-pcie-phy: Convert to json-schema
-
-He Ying (4):
-      phy: bcm-ns-usb3: Remove redundant dev_err call in bcm_ns_usb3_mdio_p=
-robe()
-      phy: phy-mmp3-hsic: Remove redundant dev_err call in mmp3_hsic_phy_pr=
-obe()
-      phy: phy-mtk-mipi-dsi: Remove redundant dev_err call in mtk_mipi_tx_p=
-robe()
-      phy: phy-mtk-hdmi: Remove redundant dev_err call in mtk_hdmi_phy_prob=
-e()
-
-Heiko Stuebner (2):
-      dt-bindings: phy: add yaml binding for rockchip-inno-csi-dphy
-      phy/rockchip: add Innosilicon-based CSI dphy
-
-Johan Jonker (1):
-      dt-bindings: phy: convert rockchip-usb-phy.txt to YAML
-
-Kunihiko Hayashi (1):
-      phy: uniphier-pcie: Fix updating phy parameters
-
-Manivannan Sadhasivam (3):
-      dt-bindings: phy: qcom,qmp: Add binding for SDX55 PCIe PHY
-      phy: qcom-qmp: Use phy_status field for the status bit offset
-      phy: qcom-qmp: Add support for SDX55 QMP PCIe PHY
-
-Mauro Carvalho Chehab (1):
-      MAINTAINERS: update marvell,armada-3700-utmi-phy.yaml reference
-
-Rob Herring (1):
-      phy: Allow a NULL phy name for devm_phy_get()
-
-Sebastian Fricke (1):
-      phy: phy-core-mipi-dphy.c: Correct reference version
-
-Selvam Sathappan Periakaruppan (1):
-      phy: qcom-qmp: add QMP V2 PCIe PHY support for ipq60xx
-
-Sergio Paracuellos (5):
-      dt-bindings: phy: mediatek,mt7621-pci-phy: add clock entries
-      phy: ralink: phy-mt7621-pci: use kernel clock APIS
-      phy: ralink: Kconfig: enable COMPILE_TEST on mt7621-pci-phy driver
-      phy: ralink: Kconfig: convert mt7621-pci-phy into 'bool'
-      phy: ralink: phy-mt7621-pci: properly print pointer address
-
-Shubhankar Kuranagatti (1):
-      phy: phy-xgene.c: Fix alignment of comment
-
-Tobias Schramm (2):
-      dt-bindings: phy: rockchip-inno-usb2: add compatible for rk3308 USB p=
-hy
-      phy: phy-rockchip-inno-usb2: add support for RK3308 USB phy
-
-Vinod Koul (1):
-      phy: Revert "phy: ralink: Kconfig: convert mt7621-pci-phy into 'bool'"
-
-YueHaibing (1):
-      phy: phy-twl4030-usb: use DEVICE_ATTR_RO macro
-
- .../devicetree/bindings/pci/qcom,pcie.txt          |  24 ++
- .../bindings/phy/mediatek,mt7621-pci-phy.yaml      |   5 +
- .../bindings/phy/phy-rockchip-inno-usb2.yaml       |   1 +
- .../devicetree/bindings/phy/phy-stm32-usbphyc.yaml |  11 +
- .../devicetree/bindings/phy/qcom,qmp-phy.yaml      |  27 ++
- .../devicetree/bindings/phy/rcar-gen3-phy-pcie.txt |  24 --
- .../bindings/phy/renesas,rcar-gen3-pcie-phy.yaml   |  53 +++
- .../bindings/phy/rockchip-inno-csi-dphy.yaml       |  79 ++++
- .../devicetree/bindings/phy/rockchip-usb-phy.txt   |  52 ---
- .../devicetree/bindings/phy/rockchip-usb-phy.yaml  |  81 ++++
- .../devicetree/bindings/phy/ti,tcan104x-can.yaml   |  56 +++
- MAINTAINERS                                        |   4 +-
- drivers/phy/Kconfig                                |   9 +
- drivers/phy/Makefile                               |   1 +
- drivers/phy/broadcom/phy-bcm-ns-usb3.c             |   4 +-
- drivers/phy/marvell/phy-mmp3-hsic.c                |   4 +-
- drivers/phy/mediatek/phy-mtk-hdmi.c                |   4 +-
- drivers/phy/mediatek/phy-mtk-mipi-dsi.c            |   4 +-
- drivers/phy/phy-can-transceiver.c                  | 146 +++++++
- drivers/phy/phy-core-mipi-dphy.c                   |   2 +-
- drivers/phy/phy-core.c                             |  16 +-
- drivers/phy/phy-xgene.c                            |   3 +-
- drivers/phy/qualcomm/phy-qcom-qmp.c                | 315 +++++++++++++-
- drivers/phy/qualcomm/phy-qcom-qmp.h                | 189 ++++++++-
- drivers/phy/ralink/Kconfig                         |   2 +-
- drivers/phy/ralink/phy-mt7621-pci.c                |  37 +-
- drivers/phy/rockchip/Kconfig                       |   9 +
- drivers/phy/rockchip/Makefile                      |   1 +
- drivers/phy/rockchip/phy-rockchip-inno-csidphy.c   | 459 +++++++++++++++++=
-++++
- drivers/phy/rockchip/phy-rockchip-inno-hdmi.c      |   4 +-
- drivers/phy/rockchip/phy-rockchip-inno-usb2.c      |  44 ++
- drivers/phy/socionext/phy-uniphier-pcie.c          |  11 +-
- drivers/phy/st/phy-stm32-usbphyc.c                 |  31 ++
- drivers/phy/ti/phy-dm816x-usb.c                    |  17 +-
- drivers/phy/ti/phy-twl4030-usb.c                   |   6 +-
- include/linux/phy/phy.h                            |   2 +-
- 36 files changed, 1601 insertions(+), 136 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/phy/rcar-gen3-phy-pci=
-e.txt
- create mode 100644 Documentation/devicetree/bindings/phy/renesas,rcar-gen3=
--pcie-phy.yaml
- create mode 100644 Documentation/devicetree/bindings/phy/rockchip-inno-csi=
--dphy.yaml
- delete mode 100644 Documentation/devicetree/bindings/phy/rockchip-usb-phy.=
-txt
- create mode 100644 Documentation/devicetree/bindings/phy/rockchip-usb-phy.=
-yaml
- create mode 100644 Documentation/devicetree/bindings/phy/ti,tcan104x-can.y=
-aml
- create mode 100644 drivers/phy/phy-can-transceiver.c
- create mode 100644 drivers/phy/rockchip/phy-rockchip-inno-csidphy.c
-
---=20
-~Vinod
-
---xXdEosMGUvG7arT2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmDS7p8ACgkQfBQHDyUj
-g0enBA/8DLmHroZPzMt/DUrQSOmi0Lvb3FLVh9NnVudOTmhPb/YI+WOy2UmLpVeR
-Ied+gCriI/5iFhWE948OSL25A8L8UXv5Lr73Q5uLTitdnSRG2d6xNrKRDnW2X0yT
-aSmVDB4i3E3fCh9gy7FoelaysXfgA44d7SWQzy8xkwE98d0EM3aIH/RSh8lnspCK
-7TKcYlSJU5MSnHK0JyISsKjvUATd3gK58rUbq9+W3kjiX9XvBeD+LwtuSYrsLEcK
-X76Y1wFwENgLlUcAOahvNHXTgN6ZhtPn8K/cGly4AOSr7KuLyB7pez/F4iifrTYe
-LbW0Ww58uNji1AL0fabW+GUMn3SsDwSxuT7DVWHv85kI72Yzs5M6kUaSEP+D1Vtx
-SFxLNlesKmme2BvhFZjh45TbQR0+Xm93tkjYFc4bDRGY/BToFOTNrTn4GAR60+ww
-q15yJwSvBLLdIribPWSkU94gtWxGnd1bQ3a+vHQ7vqWf1l0ln+lTiNRIvYJbly7n
-hQ53gdDcMChpIDzfyM8akeWdUeaV0nVhfdkkA+Bvx931l9fBkqE+MxXMzslCHuEI
-ZZ6UP0MBUGN9BigsJIUsRSqBIkIGlPFYpyPniE657CgPKPqYnc0R7rlxZxrkvEEO
-jI5aoNEIoI3GCGm9QssGW187MrKwrG933GFIy3GASG5xP06GKE4=
-=vJfk
------END PGP SIGNATURE-----
-
---xXdEosMGUvG7arT2--
+Best regards
+Esaki
