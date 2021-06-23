@@ -2,93 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D263B1687
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803623B1688
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbhFWJPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 05:15:09 -0400
-Received: from mga17.intel.com ([192.55.52.151]:62359 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229918AbhFWJPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 05:15:08 -0400
-IronPort-SDR: 0Ax3ZcRkDUV0NZ/iK54yUUoS/lOv3TKGLbWjewVI2/iSotjiClY9YvdDT4MabbWJa1XbGDZb1m
- +O2uj8GAkxEA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="187608058"
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="187608058"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 02:12:41 -0700
-IronPort-SDR: LUgIbKZ6f1Tkkgr/GVxI7wzz+qfxJ/nIxHt/00xPofIV3CQbqD3Bj9eRkt3mx+PEpm1HLCGoER
- IfRqg4kG81uQ==
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="452965804"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 02:12:37 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lvyvx-004hao-2B; Wed, 23 Jun 2021 12:12:33 +0300
-Date:   Wed, 23 Jun 2021 12:12:33 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Justin He <Justin.He@arm.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>, nd <nd@arm.com>
-Subject: Re: [PATCH v5 0/4] make '%pD' print the full path of file
-Message-ID: <YNL7Aft1EXJ9cyMC@smile.fi.intel.com>
-References: <20210622140634.2436-1-justin.he@arm.com>
- <YNH3C6P9i7xvapav@smile.fi.intel.com>
- <AM6PR08MB437633FB7FDF81D8F1A96DCAF7089@AM6PR08MB4376.eurprd08.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM6PR08MB437633FB7FDF81D8F1A96DCAF7089@AM6PR08MB4376.eurprd08.prod.outlook.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S230136AbhFWJPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 05:15:15 -0400
+Received: from lucky1.263xmail.com ([211.157.147.132]:53732 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230135AbhFWJPN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 05:15:13 -0400
+Received: from localhost (unknown [192.168.167.224])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 6C78CFAC1D;
+        Wed, 23 Jun 2021 17:12:53 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.240.82.166])
+        by smtp.263.net (postfix) whith ESMTP id P4528T140206187476736S1624439563868494_;
+        Wed, 23 Jun 2021 17:12:48 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <20a6f2888ef16c71f2ba7213c491eac8>
+X-RL-SENDER: huqiqiao@uniontech.com
+X-SENDER: huqiqiao@uniontech.com
+X-LOGIN-NAME: huqiqiao@uniontech.com
+X-FST-TO: airlied@linux.ie
+X-RCPT-COUNT: 6
+X-SENDER-IP: 58.240.82.166
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   huqiqiao <huqiqiao@uniontech.com>
+To:     airlied@linux.ie, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, huqiqiao <huqiqiao@uniontech.com>
+Subject: [PATCH] drm/amdgpu:use kvcalloc instead of kvmalloc_array
+Date:   Wed, 23 Jun 2021 17:12:42 +0800
+Message-Id: <20210623091242.12861-1-huqiqiao@uniontech.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 04:13:03AM +0000, Justin He wrote:
-> > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Sent: Tuesday, June 22, 2021 10:43 PM
-> > On Tue, Jun 22, 2021 at 10:06:30PM +0800, Jia He wrote:
+kvmalloc_array + __GFP_ZERO is the same with kvcalloc.
 
-...
+Signed-off-by: huqiqiao <huqiqiao@uniontech.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-> > > v5:
-> > > - remove the RFC tag
-> > 
-> > JFYI, when we drop RFC we usually start the series from v1.
-> > 
-> > > - refine the commit msg/comments(by Petr, Andy)
-> > > - make using_scratch_space a new parameter of the test case
-> > 
-> > Thanks for the update, I have found few minor things, please address them
-> > and
-> > feel free to add
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > 
-> 
-> I assume I can add your R-b to patch 4/4 "add test cases for '%pD'" instead of
-> whole series, right?
-
-It was against cover letter, means to cover the whole series, but since you do
-not address my comments, do not apply to the patches we have not settled down
-on.
-
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+index 9acee4a5b2ba..50edc73525b0 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+@@ -908,9 +908,8 @@ static int amdgpu_vm_alloc_pts(struct amdgpu_device *adev,
+ 		unsigned num_entries;
+ 
+ 		num_entries = amdgpu_vm_num_entries(adev, cursor->level);
+-		entry->entries = kvmalloc_array(num_entries,
+-						sizeof(*entry->entries),
+-						GFP_KERNEL | __GFP_ZERO);
++		entry->entries = kvcalloc(num_entries,
++						sizeof(*entry->entries), GFP_KERNEL);
+ 		if (!entry->entries)
+ 			return -ENOMEM;
+ 	}
 -- 
-With Best Regards,
-Andy Shevchenko
+2.11.0
+
 
 
