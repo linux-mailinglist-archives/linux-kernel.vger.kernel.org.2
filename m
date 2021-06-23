@@ -2,175 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB95A3B1C55
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8BCB3B1C59
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbhFWOXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:23:34 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:54358 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbhFWOXc (ORCPT
+        id S231184AbhFWOY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:24:56 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:55794 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230061AbhFWOYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:23:32 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D99F11FD65;
-        Wed, 23 Jun 2021 14:21:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624458073; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tJ3vR/SXh23CLtwZGi8lArXV8NRWnJk2otgFpbBFqJM=;
-        b=bIqFEUPKkWB/VqmvbWuWwqzChviBze5IhGqkCaXcLuWK8cQudyMslpregBBL93rSKT+/dO
-        BGy5NOj6vzNZ2djDCtl/hrW60MWqi48nfPiK1PcOKilKjdFs1KXuwdqs6kldvXV7Plb+2V
-        850cMQ+Gn9ReNMBReRNUBkHYzZ9BDOg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624458073;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tJ3vR/SXh23CLtwZGi8lArXV8NRWnJk2otgFpbBFqJM=;
-        b=vTS60IGlrXOVl8W1c2KVPDg+sOFaY5CZeo0i5N6A3kPTnbPeNGj8sDoKTHY0D54d8MCfns
-        iiXRPylHP1uYD5DA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 6EAAC11A97;
-        Wed, 23 Jun 2021 14:21:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624458073; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tJ3vR/SXh23CLtwZGi8lArXV8NRWnJk2otgFpbBFqJM=;
-        b=bIqFEUPKkWB/VqmvbWuWwqzChviBze5IhGqkCaXcLuWK8cQudyMslpregBBL93rSKT+/dO
-        BGy5NOj6vzNZ2djDCtl/hrW60MWqi48nfPiK1PcOKilKjdFs1KXuwdqs6kldvXV7Plb+2V
-        850cMQ+Gn9ReNMBReRNUBkHYzZ9BDOg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624458073;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tJ3vR/SXh23CLtwZGi8lArXV8NRWnJk2otgFpbBFqJM=;
-        b=vTS60IGlrXOVl8W1c2KVPDg+sOFaY5CZeo0i5N6A3kPTnbPeNGj8sDoKTHY0D54d8MCfns
-        iiXRPylHP1uYD5DA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id YOEyGVlD02DNWQAALh3uQQ
-        (envelope-from <hare@suse.de>); Wed, 23 Jun 2021 14:21:13 +0000
-Subject: Re: [PATCH v3 1/6] block: add disk sequence number
-To:     Luca Boccassi <bluca@debian.org>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        Javier Gonz??lez <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>
-References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
- <20210623105858.6978-2-mcroce@linux.microsoft.com>
- <YNMffBWvs/Fz2ptK@infradead.org>
- <CAFnufp1gdag0rGQ8K4_2oB6_aC+EZgfgwd2eL4-AxpG0mK+_qQ@mail.gmail.com>
- <YNM8T44v5FTViVWM@gardel-login>
- <3be63d9f-d8eb-7657-86dc-8d57187e5940@suse.de>
- <1b55bc67b75e5cf982c0c1e8f45096f2eb6e8590.camel@debian.org>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <f84cab19-fb5c-634b-d1ca-51404907a623@suse.de>
-Date:   Wed, 23 Jun 2021 16:21:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Wed, 23 Jun 2021 10:24:55 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id B9AB01C0B76; Wed, 23 Jun 2021 16:22:36 +0200 (CEST)
+Date:   Wed, 23 Jun 2021 16:22:36 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 038/146] mptcp: do not warn on bad input from the
+ network
+Message-ID: <20210623142235.GA27348@amd>
+References: <20210621154911.244649123@linuxfoundation.org>
+ <20210621154912.589676201@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <1b55bc67b75e5cf982c0c1e8f45096f2eb6e8590.camel@debian.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="2oS5YaxWCcQjTEyO"
+Content-Disposition: inline
+In-Reply-To: <20210621154912.589676201@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 4:07 PM, Luca Boccassi wrote:
-> On Wed, 2021-06-23 at 16:01 +0200, Hannes Reinecke wrote:
->> On 6/23/21 3:51 PM, Lennart Poettering wrote:
->>> On Mi, 23.06.21 15:10, Matteo Croce (mcroce@linux.microsoft.com) wrote:
->>>
->>>> On Wed, Jun 23, 2021 at 1:49 PM Christoph Hellwig <hch@infradead.org> wrote:
->>>>> On Wed, Jun 23, 2021 at 12:58:53PM +0200, Matteo Croce wrote:
->>>>>> +void inc_diskseq(struct gendisk *disk)
->>>>>> +{
->>>>>> +     static atomic64_t diskseq;
->>>>>
->>>>> Please don't hide file scope variables in functions.
->>>>>
->>>>
->>>> I just didn't want to clobber that file namespace, as that is the only
->>>> point where it's used.
->>>>
->>>>> Can you explain a little more why we need a global sequence count vs
->>>>> a per-disk one here?
->>>>
->>>> The point of the whole series is to have an unique sequence number for
->>>> all the disks.
->>>> Events can arrive to the userspace delayed or out-of-order, so this
->>>> helps to correlate events to the disk.
->>>> It might seem strange, but there isn't a way to do this yet, so I come
->>>> up with a global, monotonically incrementing number.
->>>
->>> To extend on this and given an example why the *global* sequence number
->>> matters:
->>>
->>> Consider you plug in a USB storage key, and it gets named
->>> /dev/sda. You unplug it, the kernel structures for that device all
->>> disappear. Then you plug in a different USB storage key, and since
->>> it's the only one it will too be called /dev/sda.
->>>
->>> With the global sequence number we can still distinguish these two
->>> devices even though otherwise they can look pretty much identical. If
->>> we had per-device counters then this would fall flat because the
->>> counter would be flushed out when the device disappears and when a device
->>> reappears under the same generic name we couldn't assign it a
->>> different sequence number than before.
->>>
->>> Thus: a global instead of local sequence number counter is absolutely
->>> *key* for the problem this is supposed to solve
->>>
->> Well ... except that you'll need to keep track of the numbers (otherwise
->> you wouldn't know if the numbers changed, right?).
->> And if you keep track of the numbers you probably will have to implement
->> an uevent listener to get the events in time.
->> But if you have an uevent listener you will also get the add/remove
->> events for these devices.
->> And if you get add and remove events you can as well implement sequence
->> numbers in your application, seeing that you have all information
->> allowing you to do so.
->> So why burden the kernel with it?
->>
->> Cheers,
->>
->> Hannes
-> 
-> Hi,
-> 
-> We need this so that we can reliably correlate events to instances of a
-> device. Events alone cannot solve this problem, because events _are_
-> the problem.
-> 
-In which sense?
-Yes, events can be delayed (if you list to uevents), but if you listen 
-to kernel events there shouldn't be a delay, right?
 
-Cheers,
+--2oS5YaxWCcQjTEyO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+Hi!
+
+> From: Paolo Abeni <pabeni@redhat.com>
+>=20
+> [ Upstream commit 61e710227e97172355d5f150d5c78c64175d9fb2 ]
+>=20
+> warn_bad_map() produces a kernel WARN on bad input coming
+> from the network. Use pr_debug() to avoid spamming the system
+> log.
+
+So... we switched from WARN _ONCE_ to pr_debug, as many times as we
+detect the problem.
+
+Should this be pr_debug_once?
+
+Best regards,
+								Pavel
+
+
+> +++ b/net/mptcp/subflow.c
+> @@ -655,10 +655,10 @@ static u64 expand_seq(u64 old_seq, u16 old_data_len=
+, u64 seq)
+>  	return seq | ((old_seq + old_data_len + 1) & GENMASK_ULL(63, 32));
+>  }
+> =20
+> -static void warn_bad_map(struct mptcp_subflow_context *subflow, u32 ssn)
+> +static void dbg_bad_map(struct mptcp_subflow_context *subflow, u32 ssn)
+>  {
+> -	WARN_ONCE(1, "Bad mapping: ssn=3D%d map_seq=3D%d map_data_len=3D%d",
+> -		  ssn, subflow->map_subflow_seq, subflow->map_data_len);
+> +	pr_debug("Bad mapping: ssn=3D%d map_seq=3D%d map_data_len=3D%d",
+> +		 ssn, subflow->map_subflow_seq, subflow->map_data_len);
+>  }
+> =20
+>  static bool skb_is_fully_mapped(struct sock *ssk, struct sk_buff *skb)
+
+Best regards,
+									Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--2oS5YaxWCcQjTEyO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmDTQ6sACgkQMOfwapXb+vLTHwCfYuGShn4ZlWkW5HubXshWQVKL
+3+cAn2aVMKRgXeeEE4q8EztWTVlAihzk
+=wxNu
+-----END PGP SIGNATURE-----
+
+--2oS5YaxWCcQjTEyO--
