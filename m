@@ -2,138 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308573B165D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0783B167C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbhFWJCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 05:02:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41206 "EHLO
+        id S230044AbhFWJKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 05:10:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbhFWJCT (ORCPT
+        with ESMTP id S229918AbhFWJKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 05:02:19 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C706C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 02:00:02 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id i24so2402884edx.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 02:00:02 -0700 (PDT)
+        Wed, 23 Jun 2021 05:10:48 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED9EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 02:08:31 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id w21so3314598qkb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 02:08:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FP9EsChXCfC6ERvq/VEROgpzH3E542Er7LriVewZlDk=;
-        b=ing6KloUgctO1neeEVoQc8Hzz8xmwpQNpZ//JACly27y5KT9cMPTveD95i1RTp1gp/
-         I+HE2N+Jtnn9K4yjZZ7UBZX5hyp+Q71+XeSlpeFuQeKLsD51QBObLNuejbmv3FBo4bnc
-         oNb71+HVe+3tVWsSylLHtllFwBaS0mdbzfkRkFgYLvCKx+pTIgY6GqkejrI9SKKFbSXK
-         8wrpFoHcR4pAnOuhc2/T1ODyBTbpeuxQboqsQZtO+qWZ+e2FA2GugxlWtvNEUgJ0iM8Z
-         015NX9+GIF/zt5SpdgVwWBE86MKRTFHCtsPDoDUpoPGkEKCqWLB5NC/dGsGgcvifzjxA
-         5LhQ==
+         :cc;
+        bh=13Gr0i1MTKRVJOLYjbaQS0t+sJQavN2HZYVSf9igv0I=;
+        b=SA9G17LOrb34DyVZWPMTTHIONdcJ/5ZbZWqssqBb4aWqa4vseTx3+V6CkFU4RvePBr
+         YNNS8jqCGxfTDXRduKfQQMwLt3JL1m3nr4PNVWIksCr6YiJm78aGWUxZDo4V4hXGS1bN
+         zAH4ZuRlx4WIbGetsYgzQvT1yucBC3KtrF3U0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FP9EsChXCfC6ERvq/VEROgpzH3E542Er7LriVewZlDk=;
-        b=Onv02bvwllfZxT3yT192kU8aGgmFEAa5+QfdXA1fggajKFTZ3am3psw5VGgEwn25EF
-         9qWMVxx06gX1X8ZYPXU2WzBzatgiD+hxkrpYpZie/QaFk847IADSZ4GZ+FO01rzRECh7
-         F67K2jnyETWrJSzqQxiP22M1kKYw61OU/gia2f5jsjba0E+3+QYfLoRdUJfJbJ2drVtf
-         QQFZ6jN3VZLUzlUGmRovFZtZORkoUBq5i3hlNzzEEDS7/pbwHjg5yeXdEjL+vrpC9B7m
-         8nWwf4ZihdUOA+S+RTqgPOHffBNE8NzUOteMrnFX//Hm/p72TAz8ly7fPfJ45BdRhtCN
-         ZhVw==
-X-Gm-Message-State: AOAM531COOz1hxNvY639f7yCkXHK3ilHDKVvhclszyTXtPHh9D+6hkPL
-        0HUldApPAKsE39BMpEEcWQfViUhDcbffgfdVVZOasg==
-X-Google-Smtp-Source: ABdhPJxKvaPk7aofu67kpiTg2LdEBMmh3ykWTcvt5e3BKRfcI4oOVJvqm0yfYA7i2RbesRb6/jBFkhu9bV1OmDXetzs=
-X-Received: by 2002:a05:6402:42cc:: with SMTP id i12mr6914846edc.88.1624438801003;
- Wed, 23 Jun 2021 02:00:01 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=13Gr0i1MTKRVJOLYjbaQS0t+sJQavN2HZYVSf9igv0I=;
+        b=O5xtF2GfLBmhhsdsKeBWjavL9xbE8xeYGOL7FObJ2+AyFf1UG5lUFjyQcU1ixsd3hI
+         i36x/qZvuMurAr9Ozt2UwdbMXJtujQ6lazI+L5iBYARi8AV66BzcGEMWhENo59umTRAW
+         BHeHR9ghyf5J/fYQJqMIVukvnHxiaKGaMzpJf6Aa+rtx/9GKOLU0QHa7Ro0gNiw3VCJU
+         xXwLBXuhN4GUjbgqjxNh8HKFFSCQlDEs7Vkz7fWIM5d4lMbZoFBXF6YLqpE/Af9eSjfq
+         u80M1mM9aOaKQ7o5kL9suVIgXNSCy2zJU9njtts5ZJhSpxpiRNYupILg0eCvnGZcD9hL
+         DSbw==
+X-Gm-Message-State: AOAM532N/nNuc7Bj9u21/jCwWeAbtmsTgWT1bNkECh/vun9Y5iDuRkd+
+        WymKm4o5542cBzIc+odoLdPo9eELFICh1w==
+X-Google-Smtp-Source: ABdhPJxMagnHN4AyuVL4WstpLFrmfoHT6yiyIcCLnBFmMIhkL0agQyeMI2IkdR0ikHyIBFWPhxYRpw==
+X-Received: by 2002:a05:620a:d4e:: with SMTP id o14mr9201441qkl.402.1624439310433;
+        Wed, 23 Jun 2021 02:08:30 -0700 (PDT)
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com. [209.85.160.174])
+        by smtp.gmail.com with ESMTPSA id o21sm3551621qtt.51.2021.06.23.02.08.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 02:08:30 -0700 (PDT)
+Received: by mail-qt1-f174.google.com with SMTP id t9so1512579qtw.7
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 02:08:30 -0700 (PDT)
+X-Received: by 2002:a02:4b46:: with SMTP id q67mr7991027jaa.84.1624438886886;
+ Wed, 23 Jun 2021 02:01:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200902150643.14839-1-krzk@kernel.org> <20200902150643.14839-4-krzk@kernel.org>
-In-Reply-To: <20200902150643.14839-4-krzk@kernel.org>
-From:   Michal Simek <monstr@monstr.eu>
-Date:   Wed, 23 Jun 2021 10:59:50 +0200
-Message-ID: <CAHTX3dLT5FoOZ0Hi9UArYCoxy4b69r6cHLiLPo25DGX2_1B-xA@mail.gmail.com>
-Subject: Re: [PATCH 4/9] i2c: cadence: Simplify with dev_err_probe()
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Sekhar Nori <nsekhar@ti.com>,
+References: <20210619034043.199220-1-tientzu@chromium.org> <YNLy7z0Zq1AXKLng@char.us.oracle.com>
+In-Reply-To: <YNLy7z0Zq1AXKLng@char.us.oracle.com>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Wed, 23 Jun 2021 17:01:16 +0800
+X-Gmail-Original-Message-ID: <CALiNf28U9xaqth99u=hB45b=qWMYaSoe2DGgNVFrHXze6wNmdQ@mail.gmail.com>
+Message-ID: <CALiNf28U9xaqth99u=hB45b=qWMYaSoe2DGgNVFrHXze6wNmdQ@mail.gmail.com>
+Subject: Re: [PATCH v14 00/12] Restricted DMA
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
+        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
+        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Peter Rosin <peda@axentia.se>, Wolfram Sang <wsa@kernel.org>,
-        linux-i2c@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rockchip@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
+        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
+        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
+        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com,
+        Tom Lendacky <thomas.lendacky@amd.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-st 2. 9. 2020 v 17:10 odes=C3=ADlatel Krzysztof Kozlowski <krzk@kernel.org>=
- napsal:
+On Wed, Jun 23, 2021 at 4:38 PM Konrad Rzeszutek Wilk
+<konrad.wilk@oracle.com> wrote:
 >
-> Common pattern of handling deferred probe can be simplified with
-> dev_err_probe().  Less code and the error value gets printed.
+> On Sat, Jun 19, 2021 at 11:40:31AM +0800, Claire Chang wrote:
+> > This series implements mitigations for lack of DMA access control on
+> > systems without an IOMMU, which could result in the DMA accessing the
+> > system memory at unexpected times and/or unexpected addresses, possibly
+> > leading to data leakage or corruption.
+> >
+> > For example, we plan to use the PCI-e bus for Wi-Fi and that PCI-e bus is
+> > not behind an IOMMU. As PCI-e, by design, gives the device full access to
+> > system memory, a vulnerability in the Wi-Fi firmware could easily escalate
+> > to a full system exploit (remote wifi exploits: [1a], [1b] that shows a
+> > full chain of exploits; [2], [3]).
+> >
+> > To mitigate the security concerns, we introduce restricted DMA. Restricted
+> > DMA utilizes the existing swiotlb to bounce streaming DMA in and out of a
+> > specially allocated region and does memory allocation from the same region.
+> > The feature on its own provides a basic level of protection against the DMA
+> > overwriting buffer contents at unexpected times. However, to protect
+> > against general data leakage and system memory corruption, the system needs
+> > to provide a way to restrict the DMA to a predefined memory region (this is
+> > usually done at firmware level, e.g. MPU in ATF on some ARM platforms [4]).
+> >
+> > [1a] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_4.html
+> > [1b] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_11.html
+> > [2] https://blade.tencent.com/en/advisories/qualpwn/
+> > [3] https://www.bleepingcomputer.com/news/security/vulnerabilities-found-in-highly-popular-firmware-for-wifi-chips/
+> > [4] https://github.com/ARM-software/arm-trusted-firmware/blob/master/plat/mediatek/mt8183/drivers/emi_mpu/emi_mpu.c#L132
 >
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  drivers/i2c/busses/i2c-cadence.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
+> Heya Claire,
 >
-> diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-ca=
-dence.c
-> index e4b7f2a951ad..eefde554c50c 100644
-> --- a/drivers/i2c/busses/i2c-cadence.c
-> +++ b/drivers/i2c/busses/i2c-cadence.c
-> @@ -1214,11 +1214,10 @@ static int cdns_i2c_probe(struct platform_device =
-*pdev)
->                  "Cadence I2C at %08lx", (unsigned long)r_mem->start);
+> I put all your patches on
+> https://git.kernel.org/pub/scm/linux/kernel/git/konrad/swiotlb.git/log/?h=devel/for-linus-5.14
 >
->         id->clk =3D devm_clk_get(&pdev->dev, NULL);
-> -       if (IS_ERR(id->clk)) {
-> -               if (PTR_ERR(id->clk) !=3D -EPROBE_DEFER)
-> -                       dev_err(&pdev->dev, "input clock not found.\n");
-> -               return PTR_ERR(id->clk);
-> -       }
-> +       if (IS_ERR(id->clk))
-> +               return dev_err_probe(&pdev->dev, PTR_ERR(id->clk),
-> +                                    "input clock not found.\n");
-> +
->         ret =3D clk_prepare_enable(id->clk);
->         if (ret)
->                 dev_err(&pdev->dev, "Unable to enable clock.\n");
-> --
-> 2.17.1
+> Please double-check that they all look ok.
 >
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> Thank you!
 
-Also this one is pending but still possible to apply without any conflict.
-
-Acked-by: Michal Simek <michal.simek@xilinx.com>
-
-Thanks,
-Michal
-
-
---=20
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+They look fine. Thank you!
