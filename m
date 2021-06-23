@@ -2,230 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF783B208C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FDCA3B2087
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhFWSrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 14:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWSr3 (ORCPT
+        id S229938AbhFWSrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 14:47:01 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:40932 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229523AbhFWSrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 14:47:29 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4117C061574;
-        Wed, 23 Jun 2021 11:45:10 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id c7so4857617edn.6;
-        Wed, 23 Jun 2021 11:45:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=in-reply-to:references:thread-topic:user-agent:mime-version
-         :content-transfer-encoding:subject:from:date:to:cc:message-id;
-        bh=ah7pBnbhzP9GnkQ3rGPkhU3+DWS7Z2OsFCqpYUElow8=;
-        b=BpaIaUQ0ce5ob/JOAjBlVv9KSNyieeU75lx7Oa5EBtX0KVeCAmDz32DP88jgmxyEuV
-         f9Q6pdyYTGNeDZBwzAyVuO3q5iE9Zp8faxFfC0qdZ3nV8JYztbuUQ1jL+RBf5cR6DrCz
-         qpPnh7RMD0a6a8ENUr3R+YDmAymdkAlE/HoH2NBRDWz2ZCpWP5phK87DdN838uUFlHe2
-         4V5DXvhm46VPf1n/pW+DFn0mRfefTPgz2tGgBtYp4+eeXNObwoSE2lTd0IVokYf+vqTG
-         48axfLBYdyUw0jryfa0OCMnhUpBHS7S15VzedNegaqWU+URoq8Ast6I5N3pXnG867Bu6
-         dLpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:in-reply-to:references:thread-topic:user-agent
-         :mime-version:content-transfer-encoding:subject:from:date:to:cc
-         :message-id;
-        bh=ah7pBnbhzP9GnkQ3rGPkhU3+DWS7Z2OsFCqpYUElow8=;
-        b=Xn0aQXoIdvcVTq/jOiF0vxt4x+1Ptq00ERGn2AhsSfLWVDLhY2ExRmt9OdkiTu6b1e
-         SR+aCIntwCqxn8+TFLw9NrdoMchPLhIEnzi6sMpGQBnZz/FovcO6wop55l+iMmSAaX6x
-         xjco5CQWjtMiCF4/K0/J/Rxx4KDzhoXevIV7Ni4Y2cZ6KIr5vQNH262xXFI5v81H2kYl
-         UdFk+HPgV8RUHFAurQxqfVRonGf4jMnAU60IRnkFSkfnchfkoAQMg3WAG2TAoXiYfpYo
-         ivUFIVhfg/8am/nJ0T7TMvHUQL64E/I900ty5fazlmmNv13A8m5VO0JupUdjW91D66+y
-         5MPA==
-X-Gm-Message-State: AOAM531XnuLY8BUh1fI62PKdiQc9KwKGRCsego6ogNJFu9TU3OleDNEb
-        5aYeQn9wDn+V4i8v3wUhYSU=
-X-Google-Smtp-Source: ABdhPJzDkrQhtZZC+CyPDsfo0g8ANdWq9ib6iNs7UYbxId9ryLzi0Ubw98iPpKpjsPeS1sq4mAl06w==
-X-Received: by 2002:aa7:dbc3:: with SMTP id v3mr1656874edt.63.1624473909523;
-        Wed, 23 Jun 2021 11:45:09 -0700 (PDT)
-Received: from 2001-1c01-471c-ce00-7d60-ae46-0c29-c0bb.cable.dynamic.v6.ziggo.nl (2001-1c01-471c-ce00-7d60-ae46-0c29-c0bb.cable.dynamic.v6.ziggo.nl. [2001:1c01:471c:ce00:7d60:ae46:c29:c0bb])
-        by smtp.gmail.com with ESMTPSA id c6sm460084ede.17.2021.06.23.11.45.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 11:45:08 -0700 (PDT)
-In-Reply-To: <a4e41929-6ab4-fabb-741e-f25a5fd14e3b@linaro.org>
-References: <20210619121927.32699-1-ericwouds@gmail.com> <e30a2d01-a200-80cb-88d9-6aea62dd49f1@linaro.org> <56fb5540-fb86-4e6a-a596-1276026b37e5@gmail.com> <a4e41929-6ab4-fabb-741e-f25a5fd14e3b@linaro.org>
-X-Referenced-Uid: 5591
-Thread-Topic: Re: [PATCH] Fix mt7622.dtsi thermal cpu
-User-Agent: Android
-X-Is-Generated-Message-Id: true
+        Wed, 23 Jun 2021 14:47:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1624473882; x=1656009882;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=N07wTNJU87j8J0GwX4jxR069BiU3mP0B1FK82hyEXsU=;
+  b=tY8226zhhKnXNPU9rX3v+Qz+lpCfzG0jhsIEWrTpx/TST7X0tgEf4JgD
+   2Y65V4YOehsiJf6flFqbR62zZsZj1Fr0VeDsZ0dICzu+iEBowFahrbO1N
+   M+Lk8k1v/CZYWkPQ3v2k4YcFQh8UvSkuxoUrK8gIPb4Nh2AeXXZFycKKY
+   U=;
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 23 Jun 2021 11:44:42 -0700
+X-QCInternal: smtphost
+Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
+  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 23 Jun 2021 11:44:41 -0700
+Received: from [10.38.240.33] (10.80.80.8) by nasanexm03e.na.qualcomm.com
+ (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 23 Jun
+ 2021 11:44:35 -0700
+Subject: Re: [PATCH v14 06/12] swiotlb: Use is_swiotlb_force_bounce for
+ swiotlb data bouncing
+To:     Will Deacon <will@kernel.org>
+CC:     Claire Chang <tientzu@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, <mpe@ellerman.id.au>,
+        Joerg Roedel <joro@8bytes.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        <boris.ostrovsky@oracle.com>, <jgross@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        <heikki.krogerus@linux.intel.com>,
+        <thomas.hellstrom@linux.intel.com>, <peterz@infradead.org>,
+        <benh@kernel.crashing.org>, <joonas.lahtinen@linux.intel.com>,
+        <dri-devel@lists.freedesktop.org>, <chris@chris-wilson.co.uk>,
+        <grant.likely@arm.com>, <paulus@samba.org>, <mingo@kernel.org>,
+        <jxgao@google.com>, <sstabellini@kernel.org>,
+        Saravana Kannan <saravanak@google.com>, <xypron.glpk@gmx.de>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        <bskeggs@redhat.com>, <linux-pci@vger.kernel.org>,
+        <xen-devel@lists.xenproject.org>,
+        Thierry Reding <treding@nvidia.com>,
+        <intel-gfx@lists.freedesktop.org>, <matthew.auld@intel.com>,
+        linux-devicetree <devicetree@vger.kernel.org>, <daniel@ffwll.ch>,
+        <airlied@linux.ie>, <maarten.lankhorst@linux.intel.com>,
+        <linuxppc-dev@lists.ozlabs.org>, <jani.nikula@linux.intel.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        <rodrigo.vivi@intel.com>, <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        <thomas.lendacky@amd.com>, Robin Murphy <robin.murphy@arm.com>,
+        <bauerman@linux.ibm.com>
+References: <20210619034043.199220-1-tientzu@chromium.org>
+ <20210619034043.199220-7-tientzu@chromium.org>
+ <76c3343d-72e5-9df3-8924-5474ee698ef4@quicinc.com>
+ <20210623183736.GA472@willie-the-truck>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <19d4c7a2-744d-21e0-289c-a576e1f0e6f3@quicinc.com>
+Date:   Wed, 23 Jun 2021 14:44:34 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Local-Message-Id: <47261865-00e3-41eb-bb36-2b939f81f1e8@gmail.com>
-Content-Type: text/plain;
- charset=UTF-8
-Subject: Re: [PATCH] Fix mt7622.dtsi thermal cpu
-From:   Eric Woudstra <ericwouds@gmail.com>
-Date:   Wed, 23 Jun 2021 20:43:15 +0200
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Message-ID: <47261865-00e3-41eb-bb36-2b939f81f1e8@gmail.com>
+In-Reply-To: <20210623183736.GA472@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanexm03e.na.qualcomm.com (10.85.0.48)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-I choose "hot" before, because 87 degrees seems ok to start frequency thro=
-ttling=2E But, yes, it should be passive=2E
 
-87 is still quite low if I com=
-pare this temperature with the wrt3200acm Marvell dual core arm soc=2E They=
- even went above 100 degrees so I feel for an arm processor inside a router=
- box it is fine to use 87 degrees But maybe someone at Mediatek can give so=
-me more details about operating temperatures=2E
+On 6/23/2021 2:37 PM, Will Deacon wrote:
+> On Wed, Jun 23, 2021 at 12:39:29PM -0400, Qian Cai wrote:
+>>
+>>
+>> On 6/18/2021 11:40 PM, Claire Chang wrote:
+>>> Propagate the swiotlb_force into io_tlb_default_mem->force_bounce and
+>>> use it to determine whether to bounce the data or not. This will be
+>>> useful later to allow for different pools.
+>>>
+>>> Signed-off-by: Claire Chang <tientzu@chromium.org>
+>>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>>> Tested-by: Stefano Stabellini <sstabellini@kernel.org>
+>>> Tested-by: Will Deacon <will@kernel.org>
+>>> Acked-by: Stefano Stabellini <sstabellini@kernel.org>
+>>
+>> Reverting the rest of the series up to this patch fixed a boot crash with NVMe on today's linux-next.
+> 
+> Hmm, so that makes patch 7 the suspicious one, right?
 
-It may be possible to leav=
-e the active map in the device tree as some users of the bananapi might cho=
-ose to install a fan as it is one of the options=2E
+Will, no. It is rather patch #6 (this patch). Only the patch from #6 to #12 were reverted to fix the issue. Also, looking at this offset of the crash,
 
-=E2=81=A3Get BlueMail =
-for Android =E2=80=8B
+pc : dma_direct_map_sg+0x304/0x8f0
+is_swiotlb_force_bounce at /usr/src/linux-next/./include/linux/swiotlb.h:119
 
-On Jun 23, 2021, 5:58 PM, at 5:58 PM, Daniel Lezcano=
- <daniel=2Elezcano@linaro=2Eorg> wrote:
->On 23/06/2021 17:35, Eric Woudstra=
- wrote:
->> It is only useful to set 1 map with the regulated temperature fo=
-r cpu
->> frequency throttling=2E Same as in the kernel document example=2E
-=
->> 
->> 
->> It has no use to set frequency scaling on 2 different temperatur=
-e
->> trip points, as the lowest one makes sure the higher one(s) are never
-=
->> reached=2E
->
->I looked more closely the DT and there is a misunderstandi=
-ng of the
->thermal framework in the definition=2E
->
->There is one trip poin=
-t with the passive type and the cpu cooling
->device, followed by a second t=
-rip point with the active type *but* the
->same cpu cooling device=2E That i=
-s wrong=2E
->
->And finally, there is the hot trip point as a third mapping a=
-nd the
->same
->cooling device=2E
->
->The hot trip point is only there to noti=
-fy userspace and let it take an
->immediate action to prevent an emergency s=
-hutdown when reaching the
->critical temperature=2E
->
->> It can be applied o=
-nly at 1 trip point=2E Multiple trip points
->> is only usefully for fan con=
-trol to make sure the fan is not too
->> noisy when it is not necessary to b=
-e noisy=2E
->> 
->> 
->> The CPU will almost come to a dead stop when it start=
-s to pass the
->> lowest thermal map with frequency throttling=2E
->> 
->> Thi=
-s is why it is a bug and needs a fix, not only adjustment=2E
->
->Yes, you ar=
-e right=2E It should be something like (verbatim copy):
->
->diff --git a/arc=
-h/arm64/boot/dts/mediatek/mt7622=2Edtsi
->b/arch/arm64/boot/dts/mediatek/mt7=
-622=2Edtsi
->index 890a942ec608=2E=2E88c81d24f4ff 100644
->--- a/arch/arm64/b=
-oot/dts/mediatek/mt7622=2Edtsi
->+++ b/arch/arm64/boot/dts/mediatek/mt7622=
-=2Edtsi
->@@ -136,24 +136,18 @@ secmon_reserved: secmon@43000000 {
->
-> 	ther=
-mal-zones {
-> 		cpu_thermal: cpu-thermal {
->-			polling-delay-passive =3D <=
-1000>;
->+			polling-delay-passive =3D <250>;
-> 			polling-delay =3D <1000>;=
+is_swiotlb_force_bounce() was the new function introduced in this patch here.
 
->
-> 			thermal-sensors =3D <&thermal 0>;
->
-> 			trips {
-> 				cpu_passive:=
- cpu-passive {
->-					temperature =3D <47000>;
->+					temperature =3D <7700=
-0>;
-> 					hysteresis =3D <2000>;
-> 					type =3D "passive";
-> 				};
->
->-	=
-			cpu_active: cpu-active {
->-					temperature =3D <67000>;
->-					hysteres=
-is =3D <2000>;
->-					type =3D "active";
->-				};
->-
-> 				cpu_hot: cpu-hot=
- {
-> 					temperature =3D <87000>;
-> 					hysteresis =3D <2000>;
->@@ -173,1=
-8 +167,6 @@ map0 {
-> 					cooling-device =3D <&cpu0 THERMAL_NO_LIMIT THERMA=
-L_NO_LIMIT>,
-> 							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> 				};
-=
->-
->-				map1 {
->-					trip =3D <&cpu_active>;
->-					cooling-device =3D <&=
-cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
->-							 <&cpu1 THERMAL_NO_LIMIT =
-THERMAL_NO_LIMIT>;
->-				};
->-
->-				map2 {
->-					trip =3D <&cpu_hot>;
->-	=
-				cooling-device =3D <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
->-							=
- <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
->-				};
-> 			};
-> 		};
-> 	};
->=
++static inline bool is_swiotlb_force_bounce(struct device *dev)
++{
++	return dev->dma_io_tlb_mem->force_bounce;
++}
 
->
->-- 
-><http://www=2Elinaro=2Eorg/> Linaro=2Eorg =E2=94=82 Open source so=
-ftware for ARM SoCs
->
->Follow Linaro:  <http://www=2Efacebook=2Ecom/pages/L=
-inaro> Facebook |
-><http://twitter=2Ecom/#!/linaroorg> Twitter |
-><http://w=
-ww=2Elinaro=2Eorg/linaro-blog/> Blog
-
+> 
+> Looking at that one more closely, it looks like swiotlb_find_slots() takes
+> 'alloc_size + offset' as its 'alloc_size' parameter from
+> swiotlb_tbl_map_single() and initialises 'mem->slots[i].alloc_size' based
+> on 'alloc_size + offset', which looks like a change in behaviour from the
+> old code, which didn't include the offset there.
+> 
+> swiotlb_release_slots() then adds the offset back on afaict, so we end up
+> accounting for it twice and possibly unmap more than we're supposed to?
+> 
+> Will
+> 
