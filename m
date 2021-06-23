@@ -2,96 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B1C3B1BE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 891133B1BE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhFWODw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:03:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56731 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230312AbhFWODv (ORCPT
+        id S231265AbhFWOEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:04:06 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52454 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231260AbhFWOD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:03:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624456893;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Wed, 23 Jun 2021 10:03:59 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1B3891FD36;
+        Wed, 23 Jun 2021 14:01:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624456901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GI7BUvQGaSJTYs1XHkSa35D9gwv1cTj0EBhXSBIFL1M=;
-        b=S1o6A23ECx4vq9DQGGQIOlNVBm08Y2mS+YNEnnH6LeJfkiyRmGqO0ZPtrAYuXOc840GDYd
-        DklbtNMjI/+AR+s8tFAVspMAFUx6x6hcEVanSxTTenvxYDjLcCXmkg+sVfhXepsQ8+uBA8
-        cJ6etpy6WYVJNpLiC5JW4tpDiTKfrOc=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-522-xZkN8XtAO_yDNv0FmAPdvQ-1; Wed, 23 Jun 2021 10:01:31 -0400
-X-MC-Unique: xZkN8XtAO_yDNv0FmAPdvQ-1
-Received: by mail-ej1-f69.google.com with SMTP id o12-20020a17090611ccb02904876d1b5532so1019497eja.11
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 07:01:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GI7BUvQGaSJTYs1XHkSa35D9gwv1cTj0EBhXSBIFL1M=;
-        b=ByUFnflru4soufCvAB9xCi1BcsXqMB1lAPqF3iKyEqfa+SiDWLclVYdrb2y3KZ0Js+
-         bAy4pGJj0nSGs7iaAEANBzkQVzsWAKLcym7m2Fe04Ojv95i65dgOhx1CIFyPYi4Cp8Co
-         3wMJKcHWt2/9z7AAgoiSYM1OhYeWveAki3QcCiXRHG16sJyBtBDp+ovsCd6CXQzX6uvJ
-         QoKWW0i1SULjXcv+/VMS0LJEFGzyWTJP7Y3lXcxtlmoWKUFF4LLHEw1Yyu+S6fD1i4Um
-         a338CrITttOpwL/Cnl0FOJ9Y0JVFRWj8m5i7Gn/sMnNZJpQLH4SNkoEtf6P5AeT5RutT
-         1Fmw==
-X-Gm-Message-State: AOAM533ykCDR13alUJDAKH6eZ9DgsoieJLvNw5t9mHH6zAnnr8FRH9KH
-        4jSSF5X4BZnwCDC6gq7KlPF0+NBtb6K02EDe7QT7+PSPgowj9IvMPY1D11g/f9azJ6vnhXTriHr
-        9io0XIL2zs4bkXMIdN2cYCGsd
-X-Received: by 2002:a17:906:36d5:: with SMTP id b21mr181071ejc.258.1624456890705;
-        Wed, 23 Jun 2021 07:01:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxVVzhqdfVDJJTFG6BriT0PEnR8sAnb90HHFIoMhWugO9e/5JQG8bPfqCAHNolqC3qdIS/oPg==
-X-Received: by 2002:a17:906:36d5:: with SMTP id b21mr181048ejc.258.1624456890517;
-        Wed, 23 Jun 2021 07:01:30 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id u12sm7382464eje.40.2021.06.23.07.01.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 07:01:29 -0700 (PDT)
-Subject: Re: [PATCH 03/54] KVM: x86: Properly reset MMU context at vCPU
- RESET/INIT
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-References: <20210622175739.3610207-1-seanjc@google.com>
- <20210622175739.3610207-4-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <3c3f9251-cab4-70ee-6e38-85fe8e6579f7@redhat.com>
-Date:   Wed, 23 Jun 2021 16:01:28 +0200
+        bh=w/XMjSd1ArDZiIdvvGl7Gc1Zip3z1VcHSbThBZcRsbU=;
+        b=Liy48y4JOsar34wdSnIy6K5wq1ggqhq6uhJwS3fOzYB6q+I9JmDN7Semc1W+vqgcijH8kP
+        OxT8FNFGp8bGHL1afLHaWHL7rDIAbiIMaveQtXCVeuw5/HjBwg1eszoRrUUcy/nfa3z8/p
+        ICjBvLTTts9DdFwMiuBucu2L65nmBuA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624456901;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w/XMjSd1ArDZiIdvvGl7Gc1Zip3z1VcHSbThBZcRsbU=;
+        b=vV9it4GNyXZqJ98l4XIea1URtJ/rCX++dM0Jenmg4X9Yfr9ISPNGHxzFRRZ3srBwesAgTM
+        N6yiVJ/Qg/qIyqBQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id A7EC711A97;
+        Wed, 23 Jun 2021 14:01:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624456901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w/XMjSd1ArDZiIdvvGl7Gc1Zip3z1VcHSbThBZcRsbU=;
+        b=Liy48y4JOsar34wdSnIy6K5wq1ggqhq6uhJwS3fOzYB6q+I9JmDN7Semc1W+vqgcijH8kP
+        OxT8FNFGp8bGHL1afLHaWHL7rDIAbiIMaveQtXCVeuw5/HjBwg1eszoRrUUcy/nfa3z8/p
+        ICjBvLTTts9DdFwMiuBucu2L65nmBuA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624456901;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w/XMjSd1ArDZiIdvvGl7Gc1Zip3z1VcHSbThBZcRsbU=;
+        b=vV9it4GNyXZqJ98l4XIea1URtJ/rCX++dM0Jenmg4X9Yfr9ISPNGHxzFRRZ3srBwesAgTM
+        N6yiVJ/Qg/qIyqBQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id DRUgKMQ+02BcTwAALh3uQQ
+        (envelope-from <hare@suse.de>); Wed, 23 Jun 2021 14:01:40 +0000
+Subject: Re: [PATCH v3 1/6] block: add disk sequence number
+To:     Lennart Poettering <mzxreary@0pointer.de>,
+        Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luca Boccassi <bluca@debian.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tejun Heo <tj@kernel.org>,
+        Javier Gonz??lez <javier@javigon.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        JeffleXu <jefflexu@linux.alibaba.com>
+References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
+ <20210623105858.6978-2-mcroce@linux.microsoft.com>
+ <YNMffBWvs/Fz2ptK@infradead.org>
+ <CAFnufp1gdag0rGQ8K4_2oB6_aC+EZgfgwd2eL4-AxpG0mK+_qQ@mail.gmail.com>
+ <YNM8T44v5FTViVWM@gardel-login>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <3be63d9f-d8eb-7657-86dc-8d57187e5940@suse.de>
+Date:   Wed, 23 Jun 2021 16:01:40 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210622175739.3610207-4-seanjc@google.com>
+In-Reply-To: <YNM8T44v5FTViVWM@gardel-login>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/06/21 19:56, Sean Christopherson wrote:
-> +	/*
-> +	 * Reset the MMU context if paging was enabled prior to INIT (which is
-> +	 * implied if CR0.PG=1 as CR0 will be '0' prior to RESET).  Unlike the
-> +	 * standard CR0/CR4/EFER modification paths, only CR0.PG needs to be
-> +	 * checked because it is unconditionally cleared on INIT and all other
-> +	 * paging related bits are ignored if paging is disabled, i.e. CR0.WP,
-> +	 * CR4, and EFER changes are all irrelevant if CR0.PG was '0'.
-> +	 */
-> +	if (old_cr0 & X86_CR0_PG)
-> +		kvm_mmu_reset_context(vcpu);
+On 6/23/21 3:51 PM, Lennart Poettering wrote:
+> On Mi, 23.06.21 15:10, Matteo Croce (mcroce@linux.microsoft.com) wrote:
+> 
+>> On Wed, Jun 23, 2021 at 1:49 PM Christoph Hellwig <hch@infradead.org> wrote:
+>>>
+>>> On Wed, Jun 23, 2021 at 12:58:53PM +0200, Matteo Croce wrote:
+>>>> +void inc_diskseq(struct gendisk *disk)
+>>>> +{
+>>>> +     static atomic64_t diskseq;
+>>>
+>>> Please don't hide file scope variables in functions.
+>>>
+>>
+>> I just didn't want to clobber that file namespace, as that is the only
+>> point where it's used.
+>>
+>>> Can you explain a little more why we need a global sequence count vs
+>>> a per-disk one here?
+>>
+>> The point of the whole series is to have an unique sequence number for
+>> all the disks.
+>> Events can arrive to the userspace delayed or out-of-order, so this
+>> helps to correlate events to the disk.
+>> It might seem strange, but there isn't a way to do this yet, so I come
+>> up with a global, monotonically incrementing number.
+> 
+> To extend on this and given an example why the *global* sequence number
+> matters:
+> 
+> Consider you plug in a USB storage key, and it gets named
+> /dev/sda. You unplug it, the kernel structures for that device all
+> disappear. Then you plug in a different USB storage key, and since
+> it's the only one it will too be called /dev/sda.
+> 
+> With the global sequence number we can still distinguish these two
+> devices even though otherwise they can look pretty much identical. If
+> we had per-device counters then this would fall flat because the
+> counter would be flushed out when the device disappears and when a device
+> reappears under the same generic name we couldn't assign it a
+> different sequence number than before.
+> 
+> Thus: a global instead of local sequence number counter is absolutely
+> *key* for the problem this is supposed to solve
+> 
+Well ... except that you'll need to keep track of the numbers (otherwise 
+you wouldn't know if the numbers changed, right?).
+And if you keep track of the numbers you probably will have to implement 
+an uevent listener to get the events in time.
+But if you have an uevent listener you will also get the add/remove 
+events for these devices.
+And if you get add and remove events you can as well implement sequence 
+numbers in your application, seeing that you have all information 
+allowing you to do so.
+So why burden the kernel with it?
 
-Hmm, I'll answer myself, is it because of the plan to add a vCPU reset 
-ioctl?
+Cheers,
 
-Paolo
-
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
