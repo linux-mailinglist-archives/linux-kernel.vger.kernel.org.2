@@ -2,215 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B4D3B1A14
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D713B1A2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbhFWM2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:28:54 -0400
-Received: from mail.xenproject.org ([104.130.215.37]:52768 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231215AbhFWM1z (ORCPT
+        id S231276AbhFWMbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:31:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231461AbhFWMbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:27:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
-        bh=B0DJ7ghfxZQgt2aFki6iaUURBqib+4g/6GH5PMjJUlg=; b=HTRta7BV6amD3qJrqcG53oPEri
-        /dCQ6UIvMvuZe0Bp5ki/k2+tDu5OhywzaB4L2DasWju10H0R7KbnmphtMLwxqmpQjd8vH5qq2DwmY
-        NDxrPWm5aKtfzivwtHLshlk0BcoGFbZ4qG5jOfsSINA8x2Ck8Q/S7JpT+ENixO5zZnkk=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1lw1wm-0004dR-0J; Wed, 23 Jun 2021 12:25:36 +0000
-Received: from [54.239.6.179] (helo=a483e7b01a66.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1lw1wl-0007NC-NK; Wed, 23 Jun 2021 12:25:35 +0000
-Subject: Re: Interrupt for port 19, but apparently not enabled; per-user
- 000000004af23acc
-To:     Juergen Gross <jgross@suse.com>
-Cc:     "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        linux-kernel@vger.kernel.org, mheyne@amazon.de
-References: <6552fc66-ba19-2c77-7928-b0272d3e1622@xen.org>
- <4d8a7ba7-a9f6-2999-8750-bfe2b85f064e@suse.com>
- <9a08bbf2-ba6a-6e49-3bcb-bfe2beb32b99@xen.org>
- <5d88a82e-d237-7803-7b50-897e857f2fbd@suse.com>
-From:   Julien Grall <julien@xen.org>
-Message-ID: <3d029164-43b7-d65f-4a8a-3ddef5e743e5@xen.org>
-Date:   Wed, 23 Jun 2021 14:25:33 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Wed, 23 Jun 2021 08:31:34 -0400
+Received: from smtp-42ae.mail.infomaniak.ch (smtp-42ae.mail.infomaniak.ch [IPv6:2001:1600:4:17::42ae])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48924C08C5F1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:26:55 -0700 (PDT)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4G92ZP0TT1zMprpm;
+        Wed, 23 Jun 2021 14:26:53 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4G92ZN3lv2zlmrrs;
+        Wed, 23 Jun 2021 14:26:52 +0200 (CEST)
+Subject: Re: [PATCH v2 27/29] docs: userspace-api: landlock.rst: avoid using
+ ReST :doc:`foo` markup
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+References: <cover.1623824363.git.mchehab+huawei@kernel.org>
+ <24888a9c5da3c505b2bc274fcd83be348dbaf972.1623824363.git.mchehab+huawei@kernel.org>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <7ebe5a4d-8835-6737-c006-3d065e50dc8a@digikod.net>
+Date:   Wed, 23 Jun 2021 14:26:43 +0200
+User-Agent: 
 MIME-Version: 1.0
-In-Reply-To: <5d88a82e-d237-7803-7b50-897e857f2fbd@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <24888a9c5da3c505b2bc274fcd83be348dbaf972.1623824363.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Juergen,
 
-On 22/06/2021 17:14, Juergen Gross wrote:
-> On 22.06.21 14:21, Julien Grall wrote:
->> Hi Juergen,
->>
->> On 22/06/2021 13:04, Juergen Gross wrote:
->>> On 22.06.21 12:24, Julien Grall wrote:
->>>> Hi Juergen,
->>>>
->>>> As discussed on IRC yesterday, we noticed a couple of splat in 5.13-rc6 
->>>
->>>> (and stable 5.4) in the evtchn driver:
->>>>
->>>> [    7.581000] ------------[ cut here ]------------
->>>> [    7.581899] Interrupt for port 19, but apparently not 
->>> enabled;
->>>> per-user 000000004af23acc
->>>> [    7.583401] WARNING: CPU: 0 PID: 467 at 
->>>> /home/ANT.AMAZON.COM/jgrall/works/oss/linux/drivers/xen/evtchn.c:169 
->>>> evtchn_interrupt+0xd5/0x100
->>>> [    7.585583] Modules linked in:
->>>> [    7.586188] CPU: 0 PID: 467 Comm: xenstore-read Not 
-> tainted
->>>> 5.13.0-rc6 #240
->>>> [    7.587462] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), 
->>>> BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
->>>> [    7.589462] RIP: e030:evtchn_interrupt+0xd5/0x100
->>>> [    7.590361] Code: 48 8d bb d8 01 00 00 ba 01 00 00 00 
->>> be 1d 00 00 00
->>>> e8 5f 72 c4 ff eb b2 8b 75 20 48 89 da 48 c7 c7 a8 03 5f 82 e8 6b 2d 96 
->>>
->>>> ff <0f> 0b e9 4d ff ff ff 41 0f b6 f4 48 c7 c7 80 da a2 82 e8 f0
->>>> [    7.593662] RSP: e02b:ffffc90040003e60 EFLAGS: 00010082
->>>> [    7.594636] RAX: 0000000000000000 RBX: ffff888102328c00 RCX: 
->>>> 0000000000000027
->>>> [    7.595924] RDX: 0000000000000000 RSI: ffff88817fe18ad0 RDI: 
->>>> ffff88817fe18ad8
->>>> [    7.597216] RBP: ffff888108ef8140 R08: 0000000000000000 R09: 
->>>> 0000000000000001
->>>> [    7.598522] R10: 0000000000000000 R11: 7075727265746e49 R12: 
->>>> 0000000000000000
->>>> [    7.599810] R13: ffffc90040003ec4 R14: ffff8881001b8000 R15: 
->>>> ffff888109b36f80
->>>> [    7.601113] FS:  0000000000000000(0000) GS:ffff88817fe00000(0000) 
->>>> knlGS:0000000000000000
->>>> [    7.602570] CS:  10000e030 DS: 0000 ES: 0000 CR0:0000000080050033
->>>> [    7.603700] CR2: 00007f15b390e368 CR3: 000000010bb04000 CR4: 
->>>> 0000000000050660
->>>> [    7.604993] Call Trace:
->>>> [    7.605501]  <IRQ>
->>>> [    7.605929]  __handle_irq_event_percpu+0x4c/0x330
->>>> [    7.606817]  handle_irq_event_percpu+0x32/0xa0
->>>> [    7.607670]  handle_irq_event+0x3a/0x60
->>>> [    7.608416]  handle_edge_irq+0x9b/0x1f0
->>>> [    7.609154]  generic_handle_irq+0x4f/0x60
->>>> [    7.609918]  __evtchn_fifo_handle_events+0x195/0x3a0
->>>> [    7.610864]  __xen_evtchn_do_upcall+0x66/0xb0
->>>> [    7.611693]  __xen_pv_evtchn_do_upcall+0x1d/0x30
->>>> [    7.612582]  xen_pv_evtchn_do_upcall+0x9d/0xc0
->>>> [    7.613439]  </IRQ>
->>>> [    7.613882]  exc_xen_hypervisor_callback+0x8/0x10
->>>>
->>>> This is quite similar to the problem I reported a few months ago (see 
+On 16/06/2021 08:27, Mauro Carvalho Chehab wrote:
+> The :doc:`foo` tag is auto-generated via automarkup.py.
+> So, use the filename at the sources, instead of :doc:`foo`.
 > 
->>>> [1]) but this time this is happening with fifo rather than 2L.
->>>>
->>>> I haven't been able to reproduced it reliably so far. But looking at 
->>>> the code, I think I have found another potential race after commit
->>>>
->>>> commit b6622798bc50b625a1e62f82c7190df40c1f5b21
->>>> Author: Juergen Gross <jgross@suse.com>
->>>> Date:   Sat Mar 6 17:18:33 2021 +0100
->>>>     xen/events: avoid handling the same event on two cpusat the same 
->>>> time
->>>>     When changing the cpu affinity of an event it can happen today that
->>>>     (with some unlucky timing) the same event will be handled 
->>> on the old
->>>>     and the new cpu at the same time.
->>>>     Avoid that by adding an "event active" flag to the 
-> per-event data
->>>> and
->>>>     call the handler only if this flag isn't set.
->>>>     Cc: stable@vger.kernel.org
->>>>     Reported-by: Julien Grall <julien@xen.org>
->>>>     Signed-off-by: Juergen Gross <jgross@suse.com>
->>>>     Reviewed-by: Julien Grall <jgrall@amazon.com>
->>>>     Link: 
->>>> https://lore.kernel.org/r/20210306161833.4552-4-jgross@suse.com
->>>>     Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
->>>>
->>>> The evtchn driver will use the lateeoi handlers. So the code to ack 
->>>> looks like:
->>>>
->>>> do_mask(..., EVT_MASK_REASON_EOI_PENDING)
->>>> smp_store_release(&info->is_active, 0);
->>>> clear_evtchn(info->evtchn);
->>>>
->>>> The code to handle an interrupts look like:
->>>>
->>>> clear_link(...)
->>>> if ( evtchn_fifo_is_pending(port) && !evtchn_fifo_is_mask()) {
->>>>    if (xchg_acquire(&info->is_active, 1)
->>>>      return;
->>>>    generic_handle_irq();
->>>> }
->>>>
->>>> After changing the affinity, an interrupt may be received once on the 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/userspace-api/landlock.rst | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+
+Acked-by: Micka�l Sala�n <mic@linux.microsoft.com>
+
+Like others, I think it would be nice to explain the reason of this
+change in the commit message, and why it is better than the current way
+to do it.
+
 > 
->>>> previous vCPU. So, I think the following can happen:
->>>>
->>>> vCPU0                             | vCPU1
->>>>                    |
->>>>   Receive event              |
->>>>                    | change affinity to vCPU1
->>>>   clear_link()              |
->>>>                        |
->>>>                 /* The interrupt is re-raised */
->>>>                    | receive event
->>>>                      |
->>>>                    | /* The interrupt is not masked */
->>>>   info->is_active = 1          |
->>>>   do_mask(...)              |
->>>>   info->is_active = 0          |
->>>>                    | info->is_active = 1
->>>>   clear_evtchn(...)               |
->>>>                                   | do_mask(...)
->>>>                                   | info->is_active = 0
->>>>                    | clear_evtchn(...)
->>>>
->>>> Does this look plausible to you?
->>>
->>> Yes, it does.
->>>
->>> Thanks for the analysis.
->>>
->>> So I guess for lateeoi events we need to clear is_active only in
->>> xen_irq_lateeoi()? At a first glance this should fix the issue.
->>
->> It should work and would be quite neat. But, I believe clear_evtchn() 
->> would have to stick in the ack helper to avoid losing interrupts.
->>
+> diff --git a/Documentation/userspace-api/landlock.rst b/Documentation/userspace-api/landlock.rst
+> index 62c9361a3c7f..f35552ff19ba 100644
+> --- a/Documentation/userspace-api/landlock.rst
+> +++ b/Documentation/userspace-api/landlock.rst
+> @@ -145,7 +145,8 @@ Bind mounts and OverlayFS
+>  
+>  Landlock enables to restrict access to file hierarchies, which means that these
+>  access rights can be propagated with bind mounts (cf.
+> -:doc:`/filesystems/sharedsubtree`) but not with :doc:`/filesystems/overlayfs`.
+> +Documentation/filesystems/sharedsubtree.rst) but not with
+> +Documentation/filesystems/overlayfs.rst.
+>  
+>  A bind mount mirrors a source file hierarchy to a destination.  The destination
+>  hierarchy is then composed of the exact same files, on which Landlock rules can
+> @@ -170,8 +171,8 @@ Inheritance
+>  
+>  Every new thread resulting from a :manpage:`clone(2)` inherits Landlock domain
+>  restrictions from its parent.  This is similar to the seccomp inheritance (cf.
+> -:doc:`/userspace-api/seccomp_filter`) or any other LSM dealing with task's
+> -:manpage:`credentials(7)`.  For instance, one process's thread may apply
+> +Documentation/userspace-api/seccomp_filter.rst) or any other LSM dealing with
+> +task's :manpage:`credentials(7)`.  For instance, one process's thread may apply
+>  Landlock rules to itself, but they will not be automatically applied to other
+>  sibling threads (unlike POSIX thread credential changes, cf.
+>  :manpage:`nptl(7)`).
+> @@ -278,7 +279,7 @@ Memory usage
+>  ------------
+>  
+>  Kernel memory allocated to create rulesets is accounted and can be restricted
+> -by the :doc:`/admin-guide/cgroup-v1/memory`.
+> +by the Documentation/admin-guide/cgroup-v1/memory.rst.
+>  
+>  Questions and answers
+>  =====================
+> @@ -303,7 +304,7 @@ issues, especially when untrusted processes can manipulate them (cf.
+>  Additional documentation
+>  ========================
+>  
+> -* :doc:`/security/landlock`
+> +* Documentation/security/landlock.rst
+>  * https://landlock.io
+>  
+>  .. Links
 > 
-> Could you try the attached patch, please? Only compile tested.
-
-Thanks for the patch! I have also found a reproducer on Linux 5.13 so it 
-was easier to confirm the patch works.
-
-The reproducer is continuously the affinity of the interrupt under high 
-interrupt load. After a few seconds I can see dozen of WARN splat.
-
-Regarding the patch itself, a few suggestions:
-   1) It is not entirely obvious from the code why ack_mask_dynirq() is 
-not modified. My understanding is we are assuming that the 
-xen_irq_lateeoi_locked() will not be called in this case. I would 
-suggest to spell it clearly in the commit message
-   2) I would suggest to add a comment in the code explaining why 
-event_handler_exit() is not used. It is probably worth to also add one 
-in event_handler_exit() so one know that this doesn't cover all the paths.
-
-Cheers,
-
--- 
-Julien Grall
