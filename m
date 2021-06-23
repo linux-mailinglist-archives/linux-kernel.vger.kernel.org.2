@@ -2,155 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4F03B20BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1959A3B2094
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbhFWTD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 15:03:26 -0400
-Received: from h4.fbrelay.privateemail.com ([131.153.2.45]:51170 "EHLO
-        h4.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229523AbhFWTDZ (ORCPT
+        id S229850AbhFWSux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 14:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhFWSuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 15:03:25 -0400
-X-Greylist: delayed 883 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Jun 2021 15:03:24 EDT
-Received: from MTA-06-3.privateemail.com (mta-06.privateemail.com [68.65.122.16])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by h3.fbrelay.privateemail.com (Postfix) with ESMTPS id 718C8809C4;
-        Wed, 23 Jun 2021 14:46:23 -0400 (EDT)
-Received: from MTA-06.privateemail.com (localhost [127.0.0.1])
-        by MTA-06.privateemail.com (Postfix) with ESMTP id E826C600BA;
-        Wed, 23 Jun 2021 14:46:21 -0400 (EDT)
-Received: from hal-station.. (unknown [10.20.151.223])
-        by MTA-06.privateemail.com (Postfix) with ESMTPA id 11D5760071;
-        Wed, 23 Jun 2021 14:46:20 -0400 (EDT)
-From:   Hamza Mahfooz <someguy@effective-light.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Hamza Mahfooz <someguy@effective-light.com>
-Subject: [PATCH] iwlwifi: remove redundant calls to unlikely()
-Date:   Wed, 23 Jun 2021 14:45:46 -0400
-Message-Id: <20210623184546.14769-1-someguy@effective-light.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 23 Jun 2021 14:50:51 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581A9C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:48:32 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id o7so2003764vss.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:48:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GLC/zfQwcP3c+pjyiImAKQNlOE1CIfA0BjDJ+QH/E3E=;
+        b=Mx8bYJkW0yp3mkGGW8xzVT6ExK1ufFhYixZUtFf2aVXWreVwRYq/UDzzIALlHBGAY5
+         a6O6YD7EB8NGSr0W9r/eEanwyuRyeTh4PnGMfY73V2S83Ty46RBXS43YqY7S0xmWHwLR
+         UQJ+8WE4KftwhMJRHVrxtdpiSnShuynC4LV7Myc4C/mlLB+iz3jy5pI6kE0DAbzPp+v/
+         Sz8QtMx+pEPMDlKwxcesi9rnvboKuFq6veiri2veSQ2iD9OEX3zx+ZsdywP+ESREgFNf
+         rMG9xBY6/PvejWz+YSOvjAN7bPGYkiqP0sGcYdtnYz6fAnlngodFPAWgOeZk5ejRjJIv
+         GpMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GLC/zfQwcP3c+pjyiImAKQNlOE1CIfA0BjDJ+QH/E3E=;
+        b=Z+i3tFdMSjFkHui1oOTg/tzeZpoEsP6lM4WSKEbfFXHpab0WyQyUQbCoyCLDKUa+w+
+         kmUH/T+GHZ8Eb4UcV1r9tiUuI+RFpwj37DthGyc/nFG99bdaDQuqv1QbfURYVFfPBqwW
+         GgcUZiGyqDNEsBT4QIUba6pU0HkhuOAty+Uv9VmcXwYMruPsQCbWYEQy5zDGp4jzvkwL
+         8aHFbW7KTJKP/HNtrvIH7clA+zm3ZpUHZRAYQ1RiIjRwc3su1VEzPEkJebP6ouDSzut6
+         sgEHU2q4RuQ2gT6bkKjyCAZHGd7ZaeD5Qn6CCaKzRBKtUAzuJd9YN+oXO0FHfb1ZKPvs
+         yXDw==
+X-Gm-Message-State: AOAM530H5pTlecwi/Hb1i7VzhigW+NON6UZnaeXTbM/G5etxmjLd6ek+
+        ykgrVuHyow1QJ0rO0kZC+9Am71GsqEXmX+3++0w=
+X-Google-Smtp-Source: ABdhPJyBrZAMUrxLqGKsMIYx1NrAFtQJEIF56XgJ8+RUFuh7HhApVznRiq1sIEl9LszYJ7b6mwBI0/v2fD+adMyDDmM=
+X-Received: by 2002:a67:6948:: with SMTP id e69mr1873866vsc.26.1624474111208;
+ Wed, 23 Jun 2021 11:48:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+References: <CAJfuBxxH9KVgJ7k0P5LX3fTSa4Pumcmu2NMC4P=TrGDVXE2ktQ@mail.gmail.com>
+ <YNIaFnfnZPGVd1t3@codewreck.org> <CAJfuBxywD3QrsoGszMnVbF2RYcCF7r3h7sCOg6hK7K60E+4qKA@mail.gmail.com>
+ <CAJfuBxw-JUpnENT9zNgTq2wdHqH-77pAjNuthoZYbtiCud4T=g@mail.gmail.com>
+ <CAJfuBxxsye593-vWtXz5As0vBCYEMm_R9r+JL=YMuD6fg+QGNA@mail.gmail.com> <YNJQBc4dawzwMrhn@codewreck.org>
+In-Reply-To: <YNJQBc4dawzwMrhn@codewreck.org>
+From:   jim.cromie@gmail.com
+Date:   Wed, 23 Jun 2021 12:48:04 -0600
+Message-ID: <CAJfuBxzH7VEDgKLOn7gZThR4pPwMK_oKhbMMAFcE-i7gByPO6A@mail.gmail.com>
+Subject: Re: [V9fs-developer] KCSAN BUG report on p9_client_cb / p9_client_rpc
+To:     Dominique Martinet <asmadeus@codewreck.org>
+Cc:     kasan-dev@googlegroups.com, v9fs-developer@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per commit a7f3d3d3600c ("dma-mapping: add unlikely hint to error path
-in dma_mapping_error"), dma_mapping_error now internally calls unlikely(),
-so we don't need to call it directly anymore.
+On Tue, Jun 22, 2021 at 3:03 PM Dominique Martinet
+<asmadeus@codewreck.org> wrote:
+>
+> Hi,
+>
+> let's keep the lists in Cc :)
+>
+> jim.cromie@gmail.com wrote on Tue, Jun 22, 2021 at 02:55:19PM -0600:
+> > heres a fuller report - Im seeing some new stuff here.
+>
+> Thanks, the one two should be the same as p9_client_cb / p9_client_rpc
+> and p9_client_cb / p9_virtio_zc_request are very similar, and also the
+> same to the first you had, so the patch didn't really work.
+>
+> I thought after sending it that it probably needs to be tag =
+> READ_ONCE(req->tc.tag) instead of just assigning it... Would you mind
+> trying that?
+>
 
-Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
----
- drivers/net/wireless/intel/iwlwifi/pcie/tx.c  | 10 +++++-----
- drivers/net/wireless/intel/iwlwifi/queue/tx.c | 10 +++++-----
- 2 files changed, 10 insertions(+), 10 deletions(-)
+I tried it, still getting the reports.
+I havent replicated it on a nearby work-tree
+and I tried bisecting on the problem work-tree,
+got past all my patches and problem remained.
+So everything is suspect ...
+I'll try to narrow things down.
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/tx.c b/drivers/net/wireless/intel/iwlwifi/pcie/tx.c
-index 4f6c187eed69..3bf56d30f741 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/tx.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/tx.c
-@@ -1253,7 +1253,7 @@ static int iwl_fill_data_tbs(struct iwl_trans *trans, struct sk_buff *skb,
- 		dma_addr_t tb_phys = dma_map_single(trans->dev,
- 						    skb->data + hdr_len,
- 						    head_tb_len, DMA_TO_DEVICE);
--		if (unlikely(dma_mapping_error(trans->dev, tb_phys)))
-+		if (dma_mapping_error(trans->dev, tb_phys))
- 			return -EINVAL;
- 		trace_iwlwifi_dev_tx_tb(trans->dev, skb, skb->data + hdr_len,
- 					tb_phys, head_tb_len);
-@@ -1272,7 +1272,7 @@ static int iwl_fill_data_tbs(struct iwl_trans *trans, struct sk_buff *skb,
- 		tb_phys = skb_frag_dma_map(trans->dev, frag, 0,
- 					   skb_frag_size(frag), DMA_TO_DEVICE);
- 
--		if (unlikely(dma_mapping_error(trans->dev, tb_phys)))
-+		if (dma_mapping_error(trans->dev, tb_phys))
- 			return -EINVAL;
- 		trace_iwlwifi_dev_tx_tb(trans->dev, skb, skb_frag_address(frag),
- 					tb_phys, skb_frag_size(frag));
-@@ -1380,7 +1380,7 @@ static int iwl_fill_data_tbs_amsdu(struct iwl_trans *trans, struct sk_buff *skb,
- 		hdr_tb_len = hdr_page->pos - start_hdr;
- 		hdr_tb_phys = dma_map_single(trans->dev, start_hdr,
- 					     hdr_tb_len, DMA_TO_DEVICE);
--		if (unlikely(dma_mapping_error(trans->dev, hdr_tb_phys)))
-+		if (dma_mapping_error(trans->dev, hdr_tb_phys))
- 			return -EINVAL;
- 		iwl_pcie_txq_build_tfd(trans, txq, hdr_tb_phys,
- 				       hdr_tb_len, false);
-@@ -1400,7 +1400,7 @@ static int iwl_fill_data_tbs_amsdu(struct iwl_trans *trans, struct sk_buff *skb,
- 
- 			tb_phys = dma_map_single(trans->dev, tso.data,
- 						 size, DMA_TO_DEVICE);
--			if (unlikely(dma_mapping_error(trans->dev, tb_phys)))
-+			if (dma_mapping_error(trans->dev, tb_phys))
- 				return -EINVAL;
- 
- 			iwl_pcie_txq_build_tfd(trans, txq, tb_phys,
-@@ -1551,7 +1551,7 @@ int iwl_trans_pcie_tx(struct iwl_trans *trans, struct sk_buff *skb,
- 	/* map the data for TB1 */
- 	tb1_addr = ((u8 *)&dev_cmd->hdr) + IWL_FIRST_TB_SIZE;
- 	tb1_phys = dma_map_single(trans->dev, tb1_addr, tb1_len, DMA_TO_DEVICE);
--	if (unlikely(dma_mapping_error(trans->dev, tb1_phys)))
-+	if (dma_mapping_error(trans->dev, tb1_phys))
- 		goto out_err;
- 	iwl_pcie_txq_build_tfd(trans, txq, tb1_phys, tb1_len, false);
- 
-diff --git a/drivers/net/wireless/intel/iwlwifi/queue/tx.c b/drivers/net/wireless/intel/iwlwifi/queue/tx.c
-index 451b06069350..2b409fb33c99 100644
---- a/drivers/net/wireless/intel/iwlwifi/queue/tx.c
-+++ b/drivers/net/wireless/intel/iwlwifi/queue/tx.c
-@@ -211,7 +211,7 @@ static int iwl_txq_gen2_set_tb_with_wa(struct iwl_trans *trans,
- 	struct page *page;
- 	int ret;
- 
--	if (unlikely(dma_mapping_error(trans->dev, phys)))
-+	if (dma_mapping_error(trans->dev, phys))
- 		return -ENOMEM;
- 
- 	if (likely(!iwl_txq_crosses_4g_boundary(phys, len))) {
-@@ -251,7 +251,7 @@ static int iwl_txq_gen2_set_tb_with_wa(struct iwl_trans *trans,
- 
- 	phys = dma_map_single(trans->dev, page_address(page), len,
- 			      DMA_TO_DEVICE);
--	if (unlikely(dma_mapping_error(trans->dev, phys)))
-+	if (dma_mapping_error(trans->dev, phys))
- 		return -ENOMEM;
- 	ret = iwl_txq_gen2_set_tb(trans, tfd, phys, len);
- 	if (ret < 0) {
-@@ -405,7 +405,7 @@ static int iwl_txq_gen2_build_amsdu(struct iwl_trans *trans,
- 		tb_len = hdr_page->pos - start_hdr;
- 		tb_phys = dma_map_single(trans->dev, start_hdr,
- 					 tb_len, DMA_TO_DEVICE);
--		if (unlikely(dma_mapping_error(trans->dev, tb_phys)))
-+		if (dma_mapping_error(trans->dev, tb_phys))
- 			goto out_err;
- 		/*
- 		 * No need for _with_wa, this is from the TSO page and
-@@ -487,7 +487,7 @@ iwl_tfh_tfd *iwl_txq_gen2_build_tx_amsdu(struct iwl_trans *trans,
- 	/* map the data for TB1 */
- 	tb1_addr = ((u8 *)&dev_cmd->hdr) + IWL_FIRST_TB_SIZE;
- 	tb_phys = dma_map_single(trans->dev, tb1_addr, len, DMA_TO_DEVICE);
--	if (unlikely(dma_mapping_error(trans->dev, tb_phys)))
-+	if (dma_mapping_error(trans->dev, tb_phys))
- 		goto out_err;
- 	/*
- 	 * No need for _with_wa(), we ensure (via alignment) that the data
-@@ -582,7 +582,7 @@ iwl_tfh_tfd *iwl_txq_gen2_build_tx(struct iwl_trans *trans,
- 	/* map the data for TB1 */
- 	tb1_addr = ((u8 *)&dev_cmd->hdr) + IWL_FIRST_TB_SIZE;
- 	tb_phys = dma_map_single(trans->dev, tb1_addr, tb1_len, DMA_TO_DEVICE);
--	if (unlikely(dma_mapping_error(trans->dev, tb_phys)))
-+	if (dma_mapping_error(trans->dev, tb_phys))
- 		goto out_err;
- 	/*
- 	 * No need for _with_wa(), we ensure (via alignment) that the data
--- 
-2.32.0
+heres the latest report, for the list
 
+qemu-system-x86_64: warning: 9p: degraded performance: a reasonable
+high msize should be chosen on client/guest side (chosen msize is <=
+8192). See https://wiki.qemu.org/Documentation/9psetup#msize for
+details.
+[    8.566576] VFS: Mounted root (9p filesystem) readonly on device 0:22.
+qemu-system-x86_64: warning: 9p: Multiple devices detected in same
+VirtFS export, which might lead to file ID collisions and severe
+misbehaviours on guest! You should either use a separate export for
+each device shared from host or use virtfs option 'multidevs=remap'!
+[    8.573452] devtmpfs: mounted
+[    8.585150] Freeing unused decrypted memory: 2036K
+[    8.589527] Freeing unused kernel image (initmem) memory: 3092K
+[    8.591756] Write protecting the kernel read-only data: 30720k
+[    8.601183] Freeing unused kernel image (text/rodata gap) memory: 2032K
+[    8.604040] Freeing unused kernel image (rodata/data gap) memory: 440K
+[    8.787167] x86/mm: Checked W+X mappings: passed, no W+X pages found.
+[    8.788573] rodata_test: all tests were successful
+[    8.789531] x86/mm: Checking user space page tables
+[    8.968680] x86/mm: Checked W+X mappings: passed, no W+X pages found.
+[    8.969933] Run /bin/sh as init process
+[    9.537655] ==================================================================
+[    9.538731] BUG: KCSAN: data-race in p9_client_cb / p9_virtio_zc_request
+[    9.539873]
+[    9.540113] write to 0xffff888005e5d000 of 4 bytes by interrupt on cpu 0:
+[    9.541192]  p9_client_cb+0x27/0x110
+[    9.541858]  req_done+0xd3/0x130
+[    9.542482]  vring_interrupt+0xac/0x130
+[    9.543171]  __handle_irq_event_percpu+0x64/0x260
+[    9.544042]  handle_irq_event+0x93/0x120
+[    9.544717]  handle_edge_irq+0x123/0x400
+[    9.545429]  __common_interrupt+0x3e/0xa0
+[    9.546001]  common_interrupt+0x7e/0xa0
+[    9.546518]  asm_common_interrupt+0x1e/0x40
+[    9.547127]  native_safe_halt+0xe/0x10
+[    9.547846]  default_idle+0xa/0x10
+[    9.548348]  default_idle_call+0x38/0xc0
+[    9.548991]  do_idle+0x1e7/0x270
+[    9.549548]  cpu_startup_entry+0x19/0x20
+[    9.550180]  rest_init+0xd0/0xd2
+[    9.550740]  arch_call_rest_init+0xa/0x11
+[    9.551493]  start_kernel+0xacb/0xadd
+[    9.552035]  secondary_startup_64_no_verify+0xc2/0xcb
+[    9.552739]
+[    9.552954] read to 0xffff888005e5d000 of 4 bytes by task 185 on cpu 1:
+[    9.553986]  p9_virtio_zc_request+0x449/0x7b0
+[    9.554586]  p9_client_zc_rpc.constprop.0+0x175/0x770
+[    9.555421]  p9_client_read_once+0x24d/0x330
+[    9.556013]  p9_client_read+0x81/0xa0
+[    9.556518]  v9fs_fid_readpage+0xca/0x310
+[    9.557084]  v9fs_vfs_readpage+0x28/0x30
+[    9.557785]  filemap_read_page+0x6e/0x1a0
+[    9.558337]  filemap_fault+0xc2a/0x1010
+[    9.558874]  __do_fault+0x76/0x210
+[    9.559343]  __handle_mm_fault+0x16fe/0x2010
+[    9.559934]  handle_mm_fault+0x129/0x410
+[    9.560472]  do_user_addr_fault+0x1b7/0x670
+[    9.561052]  exc_page_fault+0x78/0x160
+[    9.561569]  asm_exc_page_fault+0x1e/0x30
+[    9.562122]
+[    9.562336] Reported by Kernel Concurrency Sanitizer on:
+[    9.563054] CPU: 1 PID: 185 Comm: mount Not tainted
+5.13.0-rc7-dd7i-00040-g07a2fabfd89c-dirty #131
+[    9.564368] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS 1.14.0-3.fc34 04/01/2014
+[    9.565543] ==================================================================
+[    9.842861] virtme-init: basic initialization done
+[    9.870984] virtme-init: running systemd-tmpfiles
+[   10.371613] ==================================================================
+[   10.372752] BUG: KCSAN: data-race in p9_client_cb / p9_client_rpc
+[   10.373617]
+[   10.373832] write to 0xffff888005e5d000 of 4 bytes by interrupt on cpu 0:
+[   10.374753]  p9_client_cb+0x27/0x110
+[   10.375252]  req_done+0xd3/0x130
+[   10.375749]  vring_interrupt+0xac/0x130
+[   10.376282]  __handle_irq_event_percpu+0x64/0x260
+[   10.376927]  handle_irq_event+0x93/0x120
+[   10.377465]  handle_edge_irq+0x123/0x400
+[   10.378035]  __common_interrupt+0x3e/0xa0
+[   10.378611]  common_interrupt+0x7e/0xa0
+[   10.379126]  asm_common_interrupt+0x1e/0x40
+[   10.379720]  native_safe_halt+0xe/0x10
+[   10.380271]  default_idle+0xa/0x10
+[   10.380770]  default_idle_call+0x38/0xc0
+[   10.381328]  do_idle+0x1e7/0x270
+[   10.381835]  cpu_startup_entry+0x19/0x20
+[   10.382358]  rest_init+0xd0/0xd2
+[   10.382832]  arch_call_rest_init+0xa/0x11
+[   10.383414]  start_kernel+0xacb/0xadd
+[   10.383944]  secondary_startup_64_no_verify+0xc2/0xcb
+[   10.384660]
+[   10.384869] read to 0xffff888005e5d000 of 4 bytes by task 194 on cpu 1:
+[   10.385832]  p9_client_rpc+0x1cf/0x860
+[   10.386398]  p9_client_readlink+0x3b/0x110
+[   10.386972]  v9fs_vfs_get_link_dotl+0x37/0x80
+[   10.387568]  step_into+0xa7c/0xb60
+[   10.388042]  walk_component+0x8a/0x270
+[   10.388558]  path_lookupat+0xca/0x340
+[   10.389065]  filename_lookup+0x134/0x2a0
+[   10.389628]  user_path_at_empty+0x6d/0x90
+[   10.390187]  vfs_statx+0x79/0x1a0
+[   10.390681]  __do_sys_newfstatat+0x1e/0x40
+[   10.391237]  __x64_sys_newfstatat+0x4e/0x60
+[   10.391845]  do_syscall_64+0x42/0x80
+[   10.392373]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   10.393082]
+[   10.393310] Reported by Kernel Concurrency Sanitizer on:
+[   10.394106] CPU: 1 PID: 194 Comm: systemd-tmpfile Not tainted
+5.13.0-rc7-dd7i-00040-g07a2fabfd89c-dirty #131
+[   10.395779] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS 1.14.0-3.fc34 04/01/2014
+[   10.397131] ==================================================================
+Failed to create directory or subvolume "/var/spool/cups/tmp": Permission denied
+
+[   10.720448] virtme-init: starting udevd
+[   10.784768] ==================================================================
+[   10.785855] BUG: KCSAN: data-race in p9_client_cb / p9_client_rpc
+[   10.786937]
+[   10.787152] write to 0xffff888005e5d000 of 4 bytes by interrupt on cpu 0:
+[   10.788185]  p9_client_cb+0x27/0x110
+[   10.788687]  req_done+0xd3/0x130
+[   10.789133]  vring_interrupt+0xac/0x130
+[   10.789669]  __handle_irq_event_percpu+0x64/0x260
+[   10.790306]  handle_irq_event+0x93/0x120
+[   10.790845]  handle_edge_irq+0x123/0x400
+[   10.791384]  __common_interrupt+0x3e/0xa0
+[   10.791933]  common_interrupt+0x7e/0xa0
+[   10.792460]  asm_common_interrupt+0x1e/0x40
+[   10.793052]  native_safe_halt+0xe/0x10
+[   10.793674]  default_idle+0xa/0x10
+[   10.794293]  default_idle_call+0x38/0xc0
+[   10.794914]  do_idle+0x1e7/0x270
+[   10.795366]  cpu_startup_entry+0x19/0x20
+[   10.795909]  rest_init+0xd0/0xd2
+[   10.796353]  arch_call_rest_init+0xa/0x11
+[   10.796911]  start_kernel+0xacb/0xadd
+[   10.797459]  secondary_startup_64_no_verify+0xc2/0xcb
+[   10.798153]
+[   10.798367] read to 0xffff888005e5d000 of 4 bytes by task 196 on cpu 1:
+[   10.799256]  p9_client_rpc+0x185/0x860
+[   10.799776]  p9_client_clunk+0x99/0x150
+[   10.800300]  v9fs_dentry_release+0x38/0x60
+[   10.800863]  __dentry_kill+0x203/0x2b0
+[   10.801374]  dput+0x217/0x480
+[   10.801788]  path_openat+0x803/0x1860
+[   10.802573]  do_filp_open+0x116/0x1f0
+[   10.803322]  do_sys_openat2+0x91/0x190
+[   10.804215]  __x64_sys_openat+0x9b/0xd0
+[   10.805003]  do_syscall_64+0x42/0x80
+[   10.805838]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   10.806854]
+[   10.807226] Reported by Kernel Concurrency Sanitizer on:
+[   10.808460] CPU: 1 PID: 196 Comm: systemd-udevd Not tainted
+5.13.0-rc7-dd7i-00040-g07a2fabfd89c-dirty #131
+[   10.810544] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS 1.14.0-3.fc34 04/01/2014
+[   10.812337] ==================================================================
+...
+[   12.579025] ==================================================================
+[   12.580064] BUG: KCSAN: data-race in p9_client_cb / p9_virtio_zc_request
+[   12.580978]
+[   12.581193] write to 0xffff888005e5d900 of 4 bytes by interrupt on cpu 0:
+[   12.582107]  p9_client_cb+0x27/0x110
+[   12.582647]  req_done+0xd3/0x130
+[   12.583080]  vring_interrupt+0xac/0x130
+[   12.583632]  __handle_irq_event_percpu+0x64/0x260
+[   12.584335]  handle_irq_event+0x93/0x120
+[   12.584899]  handle_edge_irq+0x123/0x400
+[   12.585456]  __common_interrupt+0x3e/0xa0
+[   12.586028]  common_interrupt+0x43/0xa0
+[   12.586537]  asm_common_interrupt+0x1e/0x40
+[   12.587179]
+[   12.587387] read to 0xffff888005e5d900 of 4 bytes by task 238 on cpu 1:
+[   12.588322]  p9_virtio_zc_request+0x449/0x7b0
+[   12.588942]  p9_client_zc_rpc.constprop.0+0x175/0x770
+[   12.589645]  p9_client_read_once+0x24d/0x330
+[   12.590417]  p9_client_read+0x81/0xa0
+[   12.590946]  v9fs_fid_readpage+0xca/0x310
+[   12.591712]  v9fs_vfs_readpage+0x28/0x30
+[   12.592470]  filemap_read_page+0x6e/0x1a0
+[   12.593218]  filemap_fault+0xc2a/0x1010
+[   12.593922]  __do_fault+0x76/0x210
+[   12.594590]  __handle_mm_fault+0x16fe/0x2010
+[   12.595219]  handle_mm_fault+0x129/0x410
+[   12.596017]  do_user_addr_fault+0x1b7/0x670
+[   12.596902]  exc_page_fault+0x78/0x160
+[   12.597449]  asm_exc_page_fault+0x1e/0x30
+[   12.597999]
+[   12.598212] Reported by Kernel Concurrency Sanitizer on:
+[   12.598927] CPU: 1 PID: 238 Comm: modprobe Not tainted
+5.13.0-rc7-dd7i-00040-g07a2fabfd89c-dirty #131
+[   12.600153] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS 1.14.0-3.fc34 04/01/2014
+[   12.601318] ==================================================================
+...
+[   12.861485] ==================================================================
+[   12.862516] BUG: KCSAN: data-race in virtqueue_get_buf_ctx_split+0x62/0x250
+[   12.863531]
+[   12.863796] race at unknown origin, with read to 0xffff888005dcb942
+of 2 bytes by interrupt on cpu 0:
+[   12.865289]  virtqueue_get_buf_ctx_split+0x62/0x250
+[   12.866190]  virtqueue_get_buf+0x33/0x40
+[   12.866890]  req_done+0x6c/0x130
+[   12.867376]  vring_interrupt+0xac/0x130
+[   12.867913]  __handle_irq_event_percpu+0x64/0x260
+[   12.868559]  handle_irq_event+0x93/0x120
+[   12.869109]  handle_edge_irq+0x123/0x400
+[   12.869663]  __common_interrupt+0x3e/0xa0
+[   12.870213]  common_interrupt+0x7e/0xa0
+[   12.870840]  asm_common_interrupt+0x1e/0x40
+[   12.871444]  native_safe_halt+0xe/0x10
+[   12.872046]  default_idle+0xa/0x10
+[   12.872628]  default_idle_call+0x38/0xc0
+[   12.873214]  do_idle+0x1e7/0x270
+[   12.873756]  cpu_startup_entry+0x19/0x20
+[   12.874301]  rest_init+0xd0/0xd2
+[   12.874855]  arch_call_rest_init+0xa/0x11
+[   12.875418]  start_kernel+0xacb/0xadd
+[   12.875950]  secondary_startup_64_no_verify+0xc2/0xcb
+[   12.876683]
+[   12.876893] Reported by Kernel Concurrency Sanitizer on:
+[   12.877630] CPU: 0 PID: 0 Comm: swapper/0 Not tainted
+5.13.0-rc7-dd7i-00040-g07a2fabfd89c-dirty #131
+[   12.878962] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS 1.14.0-3.fc34 04/01/2014
+
+> > Im running in a vm, using virtme, which uses 9p to share host filesystems
+> > since 1st report to you, Ive added --smp 2 to my testing, it seems to
+> > have increased reporting
+>
+> I'm ashamed to say I've just never tried KCSAN... I can give it a try over
+> the next few weeks* if that patch + READ_ONCE doesn't cut it
+>
+> (*sorry)
+>
+> Thanks,
+> --
+> Dominique
