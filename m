@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8D03B1A08
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0063B1A09
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbhFWM2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:28:01 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36694 "EHLO
+        id S230157AbhFWM2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:28:03 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36710 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231531AbhFWM0y (ORCPT
+        with ESMTP id S231320AbhFWM0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:26:54 -0400
-Message-Id: <20210623121456.303919033@linutronix.de>
+        Wed, 23 Jun 2021 08:26:55 -0400
+Message-Id: <20210623121456.399107624@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624451076;
+        s=2020; t=1624451077;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=McSQS4QmZuQrR/negRnP0Q2gNhWHsURWcEb80O8PScQ=;
-        b=NqeSEw6Vb7B4m6ty753UyPmVGYhaKxvR6gEa9eNcRESenLZJV3hCY/ksfu34tgPfzpT/1g
-        yx3PDlx5a+v1cZv9p/zzGdAVOeivSKGpAqRvgW2aZQWd6LaBdKXFDzIZjixCO/A3WaJO98
-        A7nLPX4MhmCVhzxdoWBl2+NjDf7et3vD3hO4s87iqUH9C7GSx0eJPYZDpI5Jv8cMXctMqu
-        Vkmy0Zy/7X7+mllLqz2Sqby5H/QFoCfIc7sFNSVcq2tZSO5+osXZsQq8LDTI4E8JleM6P0
-        1yKHHw34c+JoyL/Us9ct8Y6TAAsuCuaPyU3n5lV8/y89R8aBRqlvZD2WtVAQ/A==
+        bh=/ymlPjCvQ6fAwzLlz/UnrN3GToe0ytIgsbF9h2BnLOo=;
+        b=zwhzWWDjL8uU/xiCh338cgSxhUOtJTHkdkvR1broA0/9/7NL4a7+dCwwa6X+fJ+TSAYkoL
+        lymS06HTsAx+fNMmLmj9DoJKCwJpw1vpyGv2O3H1jRzeYetkKKQALo92fRJOolAxLjwoy/
+        x5ap35Qq3RugUAuy7ufhtV34M8Xp2lbp6l6EF/aJPUoVnF7MwXiBQvc3s4tu9Tn4m/yqXo
+        OQv8qYwljOo+9Uj8Tu1Kv/SGc7iA9giyxdfYw3tX8cApfejVxow75ygYxeAP30Xqt07QP2
+        2myhS9/i4pSsJ0kY+8OkO2kyVEvytSHUv47T0PKWZgZFpw5i1absWdalhJmmsw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624451076;
+        s=2020e; t=1624451077;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=McSQS4QmZuQrR/negRnP0Q2gNhWHsURWcEb80O8PScQ=;
-        b=HV9qJZik16nvdKn2QMpyZLd9IwZ7VO5p8iB8zGktVnpsk+H452OEAKxGI7PZ8VrY/L8er6
-        9ikMY1nrhjkWtSDg==
-Date:   Wed, 23 Jun 2021 14:02:17 +0200
+        bh=/ymlPjCvQ6fAwzLlz/UnrN3GToe0ytIgsbF9h2BnLOo=;
+        b=0z6ermdlGwD3OAvi0b0tYlt6g8VBTgb/hFZzK7QCFsN+1AdCWjO4Qur3D2ijNUauBKiZ+Y
+        jCEOQ7HDQ4ZyzVCg==
+Date:   Wed, 23 Jun 2021 14:02:18 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -47,7 +47,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         "Chang Seok Bae" <chang.seok.bae@intel.com>,
         Megha Dey <megha.dey@linux.intel.com>,
         Oliver Sang <oliver.sang@intel.com>
-Subject: [patch V4 50/65] x86/fpu: Dont restore PKRU in fpregs_restore_userspace()
+Subject: [patch V4 51/65] x86/fpu: Add PKRU storage outside of task XSAVE buffer
 References: <20210623120127.327154589@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,94 +56,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-switch_to(), flush_thread() write the task's PKRU value eagerly so the PKRU
-value of current is always valid in the hardware.
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
-That means there is no point in restoring PKRU on exit to user or when
-reactivating the task's FPU registers in the signal frame setup path.
+PKRU is currently partly XSAVE-managed and partly not.  It has space in the
+task XSAVE buffer and is context-switched by XSAVE/XRSTOR.  However, it is
+switched more eagerly than FPU because there may be a need for PKRU to be
+up-to-date for things like copy_to/from_user() since PKRU affects
+user-permission memory accesses, not just accesses from userspace itself.
 
-This allows to remove all the xstate buffer updates with PKRU values once
-the PKRU state is stored in thread struct while a task is scheduled out.
+This leaves PKRU in a very odd position.  XSAVE brings very little value to
+the table for how Linux uses PKRU except for signal related XSTATE
+handling.
 
+Prepare to move PKRU away from being XSAVE-managed.  Allocate space in the
+thread_struct for it and save/restore it in the context-switch path
+separately from the XSAVE-managed features. task->thread_struct.pkru is
+only valid when the task is scheduled out. For the current task the
+authoritative source is the hardware, i.e. it has to be retrieved via
+rdpkru().
+
+Leave the XSAVE code in place for now to ensure bisectability.
+
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Borislav Petkov <bp@suse.de>
 ---
-V3: Restore supervisor state too. (Yu-Cheng)
+V3: Fix the fallout on !PKRU enabled systems in copy_thread() - Intel testing via Dave
 ---
- arch/x86/include/asm/fpu/internal.h |   16 +++++++++++++++-
- arch/x86/include/asm/fpu/xstate.h   |   19 +++++++++++++++++++
- arch/x86/kernel/fpu/core.c          |    2 +-
- 3 files changed, 35 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/processor.h |    9 +++++++++
+ arch/x86/kernel/process.c        |    7 +++++++
+ arch/x86/kernel/process_64.c     |   25 +++++++++++++++++++++++++
+ 3 files changed, 41 insertions(+)
 
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -457,7 +457,21 @@ static inline void fpregs_restore_userre
- 		return;
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -518,6 +518,15 @@ struct thread_struct {
  
- 	if (!fpregs_state_valid(fpu, cpu)) {
--		restore_fpregs_from_fpstate(&fpu->state);
-+		u64 mask;
+ 	unsigned int		sig_on_uaccess_err:1;
+ 
++	/*
++	 * Protection Keys Register for Userspace.  Loaded immediately on
++	 * context switch. Store it in thread_struct to avoid a lookup in
++	 * the tasks's FPU xstate buffer. This value is only valid when a
++	 * task is scheduled out. For 'current' the authoritative source of
++	 * PKRU is the hardware itself.
++	 */
++	u32			pkru;
 +
-+		/*
-+		 * This restores _all_ xstate which has not been
-+		 * established yet.
-+		 *
-+		 * If PKRU is enabled, then the PKRU value is already
-+		 * correct because it was either set in switch_to() or in
-+		 * flush_thread(). So it is excluded because it might be
-+		 * not up to date in current->thread.fpu.xsave state.
-+		 */
-+		mask = xfeatures_mask_restore_user() |
-+			xfeatures_mask_supervisor();
-+		__restore_fpregs_from_fpstate(&fpu->state, mask);
-+
- 		fpregs_activate(fpu);
- 		fpu->last_cpu = cpu;
+ 	/* Floating point and extended processor state */
+ 	struct fpu		fpu;
+ 	/*
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -156,11 +156,18 @@ int copy_thread(unsigned long clone_flag
+ 
+ 	/* Kernel thread ? */
+ 	if (unlikely(p->flags & PF_KTHREAD)) {
++		p->thread.pkru = pkru_get_init_value();
+ 		memset(childregs, 0, sizeof(struct pt_regs));
+ 		kthread_frame_init(frame, sp, arg);
+ 		return 0;
  	}
---- a/arch/x86/include/asm/fpu/xstate.h
-+++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -35,6 +35,14 @@
- 				      XFEATURE_MASK_BNDREGS | \
- 				      XFEATURE_MASK_BNDCSR)
  
-+/*
-+ * Features which are restored when returning to user space.
-+ * PKRU is not restored on return to user space because PKRU
-+ * is switched eagerly in switch_to() and flush_thread()
-+ */
-+#define XFEATURE_MASK_USER_RESTORE	\
-+	(XFEATURE_MASK_USER_SUPPORTED & ~XFEATURE_MASK_PKRU)
++	/*
++	 * Clone current's PKRU value from hardware. tsk->thread.pkru
++	 * is only valid when scheduled out.
++	 */
++	p->thread.pkru = read_pkru();
 +
- /* All currently supported supervisor features */
- #define XFEATURE_MASK_SUPERVISOR_SUPPORTED (XFEATURE_MASK_PASID)
- 
-@@ -92,6 +100,17 @@ static inline u64 xfeatures_mask_uabi(vo
- 	return xfeatures_mask_all & XFEATURE_MASK_USER_SUPPORTED;
+ 	frame->bx = 0;
+ 	*childregs = *current_pt_regs();
+ 	childregs->ax = 0;
+--- a/arch/x86/kernel/process_64.c
++++ b/arch/x86/kernel/process_64.c
+@@ -340,6 +340,29 @@ static __always_inline void load_seg_leg
+ 	}
  }
  
 +/*
-+ * The xfeatures which are restored by the kernel when returning to user
-+ * mode. This is not necessarily the same as xfeatures_mask_uabi() as the
-+ * kernel does not manage all XCR0 enabled features via xsave/xrstor as
-+ * some of them have to be switched eagerly on context switch and exec().
++ * Store prev's PKRU value and load next's PKRU value if they differ. PKRU
++ * is not XSTATE managed on context switch because that would require a
++ * lookup in the task's FPU xsave buffer and require to keep that updated
++ * in various places.
 + */
-+static inline u64 xfeatures_mask_restore_user(void)
++static __always_inline void x86_pkru_load(struct thread_struct *prev,
++					  struct thread_struct *next)
 +{
-+	return xfeatures_mask_all & XFEATURE_MASK_USER_RESTORE;
++	if (!cpu_feature_enabled(X86_FEATURE_OSPKE))
++		return;
++
++	/* Stash the prev task's value: */
++	prev->pkru = rdpkru();
++
++	/*
++	 * PKRU writes are slightly expensive.  Avoid them when not
++	 * strictly necessary:
++	 */
++	if (prev->pkru != next->pkru)
++		wrpkru(next->pkru);
 +}
 +
- static inline u64 xfeatures_mask_independent(void)
+ static __always_inline void x86_fsgsbase_load(struct thread_struct *prev,
+ 					      struct thread_struct *next)
  {
- 	if (!boot_cpu_has(X86_FEATURE_ARCH_LBR))
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -404,7 +404,7 @@ void fpu__clear_user_states(struct fpu *
- 	}
+@@ -589,6 +612,8 @@ void compat_start_thread(struct pt_regs
  
- 	/* Reset user states in registers. */
--	restore_fpregs_from_init_fpstate(xfeatures_mask_uabi());
-+	restore_fpregs_from_init_fpstate(xfeatures_mask_restore_user());
+ 	x86_fsgsbase_load(prev, next);
  
++	x86_pkru_load(prev, next);
++
  	/*
- 	 * Now all FPU registers have their desired values.  Inform the FPU
+ 	 * Switch the PDA and FPU contexts.
+ 	 */
 
