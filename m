@@ -2,122 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BBE33B23A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3633B23AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhFWWtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 18:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58640 "EHLO
+        id S229938AbhFWWtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 18:49:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbhFWWtH (ORCPT
+        with ESMTP id S229890AbhFWWtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:49:07 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A66C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:46:48 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id y13so1922377plc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:46:48 -0700 (PDT)
+        Wed, 23 Jun 2021 18:49:16 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4859DC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:46:58 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id g12so3431527qtb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:46:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8fAh4y0OB0EQHzmH30AhixLLr6acGSavXwUpuUJpLnM=;
-        b=iQSYf2Ji1gQzTW1DUhkt++SYi4wMGXiE/j2gPcKWSSCpt60rrrH8tpnKOQ0TMUyNYd
-         bF/8h2JGWRl78uOUwAU/3HQa3U7BSwTxH9J8b6g4Fo3m2YDBcw5UebKn+MuvQnpitYET
-         +UtODHFed+1v20RqHIbAOeKryMpu1wbaCfqOw=
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=baLWTJJOD9KKn4tbADk0l8SSVLIOO1E6adwsQz9cQtk=;
+        b=2P0QI+RvSARusDodtiS4LFDZvpm98ftfqZzlAvFmDeDEsWTR/41vPw2g5Li9BurLDS
+         KwtT+bk42gIoYWMCp6i2fLUoA7jI5XzJ0AGqnE/GtiO6/pXG+cxm0cCSXaa2xqH5sJkW
+         AzeSidNkqXfR4TdG0IL0yPw3nX/RyN7EjBZxCifIUKVJTFQeE+3tPkq9BBau39uHPrqp
+         tNQ93P1uB0t6SJjoMcFYIZxxTtZlmEJzXl2NUlZDA5nO0XiAwULd5DuKO2SXdOqWYk1v
+         rADERDLB7AWdggMHeLv6rediDUNjHjVoNQ13YpBJLtVJrYHiRIinfWB+4U0Zk2YhB4WO
+         cGvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8fAh4y0OB0EQHzmH30AhixLLr6acGSavXwUpuUJpLnM=;
-        b=ryZ+i+X6Tvac4kc63SZgMpnWxS+Z17sJngpuKqdIVxpCAjp5IvZnetyN2QWFUk+Aul
-         RtURNRxjg2x8/AIUUsAnQTlOQN+oQ8fXTUXztsXGVjdgUGPQZGyx59iDTdW/CMRp+xxM
-         e3RDsNp2INjum7nusOrUcRL7/YE0iMeGqhRUhEQMfYrEn18E6J8CuJ4c2Wp7iDeRsFNS
-         0SYgfcruzGspUyB1eID2eg5BM9cdmcIqWQ+oB/2oKTmEzwe1KEAS+KC/e0xyAF0Soy13
-         A6aWXSnFh3+/md7clsqT7avNQITohlvZeUjsOgLtxcjtPZvnv8J1Bn5zbptPkz+onJRs
-         bcKQ==
-X-Gm-Message-State: AOAM53314ikbDIwS3ax5cVAn+kcIuLN8rLszTYt8TC61Ih5Rj7+z1Y61
-        IZyvbjdGuAP3B3Dcw2c8e+Io9A==
-X-Google-Smtp-Source: ABdhPJzy25leCoGZ4NdFhG2H5wygYPxzyBacPc567UpFgXJlT7k0vpTYbb62nDZiabtSUq35+B9GuA==
-X-Received: by 2002:a17:902:fe0a:b029:11d:81c9:3adf with SMTP id g10-20020a170902fe0ab029011d81c93adfmr1559888plj.0.1624488408037;
-        Wed, 23 Jun 2021 15:46:48 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id u9sm130456pgp.90.2021.06.23.15.46.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 15:46:47 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 15:46:46 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     'Guillaume Tucker' <guillaume.tucker@collabora.com>,
-        Shuah Khan <shuah@kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] selftests/lkdtm: Use /bin/sh not $SHELL
-Message-ID: <202106231231.9B858B95A@keescook>
-References: <20210619025834.2505201-1-keescook@chromium.org>
- <e958209b-8621-57ca-01d6-2e76b05dab4c@collabora.com>
- <42f26361db6f481e980ac349bf0079ef@AcuMS.aculab.com>
- <202106230917.FE2F587@keescook>
- <76a575d1364a47458d27c76c65b673b6@AcuMS.aculab.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=baLWTJJOD9KKn4tbADk0l8SSVLIOO1E6adwsQz9cQtk=;
+        b=W3yOEoVkF+5zReDdifvBZrkQUmi4YDTbVxC+bSPeBoVRfAozj2bM+63rxAjVR3J2zo
+         ARQeGjOyf+3SvVg1zTh1tYsLtiAZO+yoTbNsMK4WOwmA8mi0jsDbYjz7836Oc4ZVec1a
+         pPb2IVqxjiX9NGcFUA1ts9elBsesMtuWl07dvN2llEjZfEnC7eYF2wJPiUFqIVFAxNqU
+         GCRoeL2fnYYXzENe1Bf1LXcYskZuc7u1ipeoPaNq2yGZ9ZQw9ooUmeaInPMmIdQ6G2ZI
+         hubMrmxAIUvTPYxRO/jAs1wr0ZlJ0wKFG6JkQ6DlDtSm8hPqu9ktsgFEE8LYtsvGewGp
+         lhjg==
+X-Gm-Message-State: AOAM532H6OnzOzjFb9WNx0XbDZ1o73QSWZyEBkdJGUONYio4AQ63Xshz
+        eiTK26kUa5RqTVfHLpvdp+r4mYn8F9KUebqqAiUuOxF834xJCQ==
+X-Google-Smtp-Source: ABdhPJyDaVuIlMDJXtFMt64IfujIqi5BMZ+bhCdX3D/i+ZNuIXsAQQjFbyaLX2q5i1c7no1NEFTYdQt0F/BZmf/DLJc=
+X-Received: by 2002:ac8:57d2:: with SMTP id w18mr2192305qta.306.1624488417307;
+ Wed, 23 Jun 2021 15:46:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <76a575d1364a47458d27c76c65b673b6@AcuMS.aculab.com>
+References: <20210624082911.5d013e8c@canb.auug.org.au>
+In-Reply-To: <20210624082911.5d013e8c@canb.auug.org.au>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Thu, 24 Jun 2021 00:46:48 +0200
+Message-ID: <CAPv3WKfiL+sR+iK_BjGKDhtNgjoxKEPv49bU1X9_7+v+ytdR1w@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the net-next tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 04:27:47PM +0000, David Laight wrote:
-> From: Kees Cook
-> > Sent: 23 June 2021 17:19
-> > 
-> > On Wed, Jun 23, 2021 at 01:43:04PM +0000, David Laight wrote:
-> > > From: Guillaume Tucker
-> > > > Sent: 23 June 2021 13:40
-> > > ...
-> > > > > diff --git a/tools/testing/selftests/lkdtm/run.sh b/tools/testing/selftests/lkdtm/run.sh
-> > > > > index bb7a1775307b..0f9f22ac004b 100755
-> > > > > --- a/tools/testing/selftests/lkdtm/run.sh
-> > > > > +++ b/tools/testing/selftests/lkdtm/run.sh
-> > > > > @@ -78,8 +78,9 @@ dmesg > "$DMESG"
-> > > > >
-> > > > >  # Most shells yell about signals and we're expecting the "cat" process
-> > > > >  # to usually be killed by the kernel. So we have to run it in a sub-shell
-> > > > > -# and silence errors.
-> > > > > -($SHELL -c 'cat <(echo '"$test"') >'"$TRIGGER" 2>/dev/null) || true
-> > > > > +# to avoid terminating this script. Leave stderr alone, just in case
-> > > > > +# something _else_ happens.
-> > > > > +(/bin/sh -c '(echo '"$test"') | cat >'"$TRIGGER") || true
-> > >
-> > > I was having trouble parsing that command - and I'm good
-> > > at shell scripts.
-> > > I think the extra subshell the 'echo' is in doesn't help.
-> > > In fact, is either subshell needed?
-> > > Surely:
-> > > /bin/sh -c "echo '$test' | cat >$trigger" || true
-> > > will work just as well?
-> > 
-> > Ah yeah, and I just tested it to double check, it can be even simpler:
-> > 
-> > echo "$test" | /bin/sh -c "cat >$TRIGGER" || true
-> 
-> You can probably even do:
-> 
-> echo "$test" | /bin/sh -c cat >$TRIGGER || true
-> 
-> (moving the redirect to the outer shell).
+Hi Stephen,
 
-Actually, it looks like the "write" is already happening in the exec'd
-process, so this can just be:
+czw., 24 cze 2021 o 00:29 Stephen Rothwell <sfr@canb.auug.org.au> napisa=C5=
+=82(a):
+>
+> Hi all,
+>
+> Today's linux-next build (x86_64 modules_install) failed like this:
+>
+> depmod: ../tools/depmod.c:1792: depmod_report_cycles_from_root: Assertion=
+ `is < stack_size' failed.
+>
+> Caused by commit
+>
+> 62a6ef6a996f ("net: mdiobus: Introduce fwnode_mdbiobus_register()")
+>
+> (I bisected to there and tested the commit before.)
+>
+> The actual build is an x86_64 allmodconfig, followed by a
+> modules_install.  This happens in my cross build environment as well as
+> a native build.
+>
+> $ gcc --version
+> gcc (Debian 10.2.1-6) 10.2.1 20210110
+> $ ld --version
+> GNU ld (GNU Binutils for Debian) 2.35.2
+> $ /sbin/depmod --version
+> kmod version 28
+> -ZSTD +XZ -ZLIB +LIBCRYPTO -EXPERIMENTAL
+>
+> I have no idea why that commit should caused this failure.
 
-echo "$test" | cat >$TRIGGER || true
+Thank you for letting us know. Not sure if related, but I just found
+out that this code won't compile for the !CONFIG_FWNODE_MDIO. Below
+one-liner fixes it:
 
-But it still can't be:
+--- a/include/linux/fwnode_mdio.h
++++ b/include/linux/fwnode_mdio.h
+@@ -40,7 +40,7 @@ static inline int fwnode_mdiobus_register(struct mii_bus =
+*bus,
+         * This way, we don't have to keep compat bits around in drivers.
+         */
 
-echo "$test" >$TRIGGER
+-       return mdiobus_register(mdio);
++       return mdiobus_register(bus);
+ }
+ #endif
 
-which is what I had over-engineered a solution to. :)
+I'm curious if this is the case. Tomorrow I'll resubmit with above, so
+I'd appreciate recheck.
 
--- 
-Kees Cook
+Thanks,
+Marcin
