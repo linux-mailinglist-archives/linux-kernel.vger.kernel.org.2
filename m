@@ -2,100 +2,430 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C1C3B2133
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0265E3B2135
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbhFWT2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 15:28:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
+        id S229900AbhFWTav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 15:30:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhFWT2o (ORCPT
+        with ESMTP id S229523AbhFWTat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 15:28:44 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC6EC061574;
-        Wed, 23 Jun 2021 12:26:26 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id j2so5946825lfg.9;
-        Wed, 23 Jun 2021 12:26:26 -0700 (PDT)
+        Wed, 23 Jun 2021 15:30:49 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38A5C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 12:28:31 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id p20-20020a05622a0494b029024f09fe9ec9so1941723qtx.4
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 12:28:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1mws8JTsPd9+atb1/JRjdmcWQnXTwDM12m7T79JCDYI=;
-        b=QKbruPrK8+r9Z6CHz8ZcBN91/61A8PbpooA0sGui9NBKFgMuuMLoyIVLMKCtsLHdeO
-         O3otQ5Z8TPQ3mNDvuIah4gK6NE2M8mDny2i0V4zqrPkmEBomA/Q7hJUhNY5LSAfNWeyk
-         YCakA62FspbPtZEMfcp4uNba1bU/SgJV8zIImpK/P61wRhP8ktrcdMoNxNzCdNm4skYf
-         +PJ5wjDyv90wNzAAJe1kLHVXvj+bfKbj94AoZT2J5y2wMi78x/Otyg3O+4MFiv6cdEAh
-         wnlBsPoAqJq+QtplRzV921rSgv7G2ohU7KVABXL9i5kisZGcI4U0MgFg/v98SChDv3Ry
-         axWw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=aTZpUS9K110nsrOGqhsEElM3j2XS7yzsacwiVzz1gJI=;
+        b=TmKFcGqkINEv6dDQE53RaisqSt5t/4FGjVn6Qme3gwiZ37xvA4zNtGbpFpQI6EM8ic
+         H0S9YXoU06aAvLxNFvzFOYMuQsTJUfSL4JcqI0VSRG9UbPa8BU2WcMQ+Ev+0xWsE07Er
+         EKiS1Mdx6CNSeG/2GsGgnDeHnoL/Fv7TGOZ94JKE3MyQNxCE/Tabhz57LTaGM6cWsh96
+         WoMOymbSPWjAYCnLyIWfnkGji8nea6vK/WUTL9oFOMBYJrmg61UMdy5b758zy77tOyrp
+         B8srUt7faaA3sNy+n2Uc2YygYyWkC2e1glOOb+SAHjbsR66ayEnbsYGJjTgR4Xt9l8p0
+         SASw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1mws8JTsPd9+atb1/JRjdmcWQnXTwDM12m7T79JCDYI=;
-        b=Y4Q4CH8RAxUkXNbL4eFNeNIEkoA1dV+0KyfsoV2DHYSHvxZHTwYg3W2waS7YmuislG
-         tCRotPZ3WHKr951I7r4GXuzMGelbxNUBp7pGMkg2sB576qW3tanvyf7qjpxKqFax2TXP
-         QJ3bk1UvthbOWj3F5kgKYJzQws+oJFFEveeU1O+T4wZRha8dllKxMTCDT6pE/AjzfJze
-         xve3aZdbOJf5OGzcO/fCOqmxbxaaD/hdOQJotXQCPNeDprr8OMOvrJ9cuOnZ5D8GObHM
-         bmBO3SaVPfhq4Bxg7nkQlycEK/cb9riLpZUAJQv18SLMnVqEfgAt3OAwfd16zljN2dDK
-         G7NA==
-X-Gm-Message-State: AOAM532jcjXvprogBhN+oNVL8dTKK4TRuX4mt7IYqytozDcrL5ZwYOK2
-        aHcsh+ZU2yDF07+8hmjXp/k=
-X-Google-Smtp-Source: ABdhPJx/y3z1NxEj0i19lW89L1QoDy9Hp6WsBpHJ7H8yUQyHKJpyoJlgX9mJBjXKMibgHc5AndiiIQ==
-X-Received: by 2002:ac2:4c48:: with SMTP id o8mr876420lfk.332.1624476384620;
-        Wed, 23 Jun 2021 12:26:24 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.225.155])
-        by smtp.gmail.com with ESMTPSA id p5sm50912ljn.109.2021.06.23.12.26.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 12:26:24 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 22:26:20 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Christian Lamparter <chunkeey@gmail.com>
-Cc:     kvalo@codeaurora.org, davem@davemloft.net,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] net: ath10: add missing ret initialization
-Message-ID: <20210623222620.06b6335a@gmail.com>
-In-Reply-To: <a0805010-788a-5ff8-2e6e-34e7ded8c34b@gmail.com>
-References: <20210623191426.13648-1-paskripkin@gmail.com>
-        <a0805010-788a-5ff8-2e6e-34e7ded8c34b@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=aTZpUS9K110nsrOGqhsEElM3j2XS7yzsacwiVzz1gJI=;
+        b=QMV0oy0r1Y4No3OWeRebvJqTpdJNARL0q/CpFHaA+pAO6catoTpIbxxyu5EpJa7TgF
+         9OruJ6IIHIG4NGP9fiKuM2vRglzv8Qt7kBgDCAEipgEjF/2NWvXAZxTJDLzQAT+p6/2r
+         mVUqleP4sBFdWUARWhFuEg02pZiAXuae7eYw4bBj1eNQC137umndO/q2HQEHmg6kxhtU
+         qV8M7UzWUb2LNeGypi9Y0W7Bp8SiTbxGS4TJAJ40sT/IdDzkW2qEYK2dLHDeiKQKW9Wl
+         7d/ZFaOsrSOM1sy05VVI3N1CRYVDdmuK4mY8ThJjrx69dIqbhZSiG+k2L3ibx4gWbmJ0
+         YRoQ==
+X-Gm-Message-State: AOAM531TmPQuSExnoKU/1Tn0GJ0xGSklykPg/cKhiio2KL2LNS3bcFiu
+        9vLU9luwby4GU3kotAWq8u09r8mKK0Y=
+X-Google-Smtp-Source: ABdhPJzufthls8RWH0ZTS3lvj+LYIAFiYHskFsqat46L7G2JZl92IUIJbS4vWK2zRL2k+ILQ1Af+BALmzh0=
+X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:ea72:d87e:f3fb:a1fa])
+ (user=surenb job=sendgmr) by 2002:a25:c045:: with SMTP id c66mr1485228ybf.296.1624476510873;
+ Wed, 23 Jun 2021 12:28:30 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 12:28:22 -0700
+Message-Id: <20210623192822.3072029-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH 1/1] mm: introduce process_reap system call
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     akpm@linux-foundation.org
+Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
+        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
+        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
+        hch@infradead.org, oleg@redhat.com, david@redhat.com,
+        jannh@google.com, shakeelb@google.com, timmurray@google.com,
+        linux-api@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        surenb@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Jun 2021 21:23:27 +0200
-Christian Lamparter <chunkeey@gmail.com> wrote:
+In modern systems it's not unusual to have a system component monitoring
+memory conditions of the system and tasked with keeping system memory
+pressure under control. One way to accomplish that is to kill
+non-essential processes to free up memory for more important ones.
+Examples of this are Facebook's OOM killer daemon called oomd and
+Android's low memory killer daemon called lmkd.
+For such system component it's important to be able to free memory
+quickly and efficiently. Unfortunately the time process takes to free
+up its memory after receiving a SIGKILL might vary based on the state
+of the process (uninterruptible sleep), size and OPP level of the core
+the process is running. A mechanism to free resources of the target
+process in a more predictable way would improve system's ability to
+control its memory pressure.
+Introduce process_reap system call that reclaims memory of a dying process
+from the context of the caller. This way the memory in freed in a more
+controllable way with CPU affinity and priority of the caller. The workload
+of freeing the memory will also be charged to the caller.
+The operation is allowed only on a dying process.
 
-> On 23/06/2021 21:14, Pavel Skripkin wrote:
-> > In case of not supported chip the code jump
-> > to the error handling path, but _ret_ will be set to 0.
-> > Returning 0 from probe means, that ->probe() succeeded, but
-> > it's not true when chip is not supported.
-> > 
-> > Fixes: f8914a14623a ("ath10k: restore QCA9880-AR1A (v1) detection")
-> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> 
-> I think this is already fixed by:
-> 
-> commit e2783e2f39ba99178dedfc1646d5cc0979d1bab3
-> Author: Yang Yingliang <yangyingliang@huawei.com>
-> Date:   Mon May 31 17:41:28 2021 +0300
-> 
->      ath10k: add missing error return code in ath10k_pci_probe()
-> 
-> 
+Previously I proposed a number of alternatives to accomplish this:
+- https://lore.kernel.org/patchwork/patch/1060407 extending
+pidfd_send_signal to allow memory reaping using oom_reaper thread;
+- https://lore.kernel.org/patchwork/patch/1338196 extending
+pidfd_send_signal to reap memory of the target process synchronously from
+the context of the caller;
+- https://lore.kernel.org/patchwork/patch/1344419/ to add MADV_DONTNEED
+support for process_madvise implementing synchronous memory reaping.
 
-Ah, i didn't check linux-next tree, my bad :(
+The end of the last discussion culminated with suggestion to introduce a
+dedicated system call (https://lore.kernel.org/patchwork/patch/1344418/#1553875)
+The reasoning was that the new variant of process_madvise
+  a) does not work on an address range
+  b) is destructive
+  c) doesn't share much code at all with the rest of process_madvise
+From the userspace point of view it was awkward and inconvenient to provide
+memory range for this operation that operates on the entire address space.
+Using special flags or address values to specify the entire address space
+was too hacky.
 
-Thanks for pointing it out
+The API is as follows,
 
+          int process_reap(int pidfd, unsigned int flags);
 
+        DESCRIPTION
+          The process_reap() system call is used to free the memory of a
+          dying process.
 
-With regards,
-Pavel Skripkin
+          The pidfd selects the process referred to by the PID file
+          descriptor.
+          (See pidofd_open(2) for further information)
+
+          The flags argument is reserved for future use; currently, this
+          argument must be specified as 0.
+
+        RETURN VALUE
+          On success, process_reap() returns 0. On error, -1 is returned
+          and errno is set to indicate the error.
+
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+---
+ arch/alpha/kernel/syscalls/syscall.tbl      |  1 +
+ arch/arm/tools/syscall.tbl                  |  1 +
+ arch/arm64/include/asm/unistd.h             |  2 +-
+ arch/arm64/include/asm/unistd32.h           |  2 +
+ arch/ia64/kernel/syscalls/syscall.tbl       |  1 +
+ arch/m68k/kernel/syscalls/syscall.tbl       |  1 +
+ arch/microblaze/kernel/syscalls/syscall.tbl |  1 +
+ arch/mips/kernel/syscalls/syscall_n32.tbl   |  1 +
+ arch/mips/kernel/syscalls/syscall_n64.tbl   |  1 +
+ arch/mips/kernel/syscalls/syscall_o32.tbl   |  1 +
+ arch/parisc/kernel/syscalls/syscall.tbl     |  1 +
+ arch/powerpc/kernel/syscalls/syscall.tbl    |  1 +
+ arch/s390/kernel/syscalls/syscall.tbl       |  1 +
+ arch/sh/kernel/syscalls/syscall.tbl         |  1 +
+ arch/sparc/kernel/syscalls/syscall.tbl      |  1 +
+ arch/x86/entry/syscalls/syscall_32.tbl      |  1 +
+ arch/x86/entry/syscalls/syscall_64.tbl      |  1 +
+ arch/xtensa/kernel/syscalls/syscall.tbl     |  1 +
+ include/linux/syscalls.h                    |  1 +
+ include/uapi/asm-generic/unistd.h           |  4 +-
+ kernel/sys_ni.c                             |  1 +
+ mm/oom_kill.c                               | 50 +++++++++++++++++++++
+ 22 files changed, 74 insertions(+), 2 deletions(-)
+
+diff --git a/arch/alpha/kernel/syscalls/syscall.tbl b/arch/alpha/kernel/syscalls/syscall.tbl
+index 3000a2e8ee21..14b9e81d2fc4 100644
+--- a/arch/alpha/kernel/syscalls/syscall.tbl
++++ b/arch/alpha/kernel/syscalls/syscall.tbl
+@@ -486,3 +486,4 @@
+ 554	common	landlock_create_ruleset		sys_landlock_create_ruleset
+ 555	common	landlock_add_rule		sys_landlock_add_rule
+ 556	common	landlock_restrict_self		sys_landlock_restrict_self
++557	common	process_reap			sys_process_reap
+diff --git a/arch/arm/tools/syscall.tbl b/arch/arm/tools/syscall.tbl
+index 28e03b5fec00..889b78d0f63f 100644
+--- a/arch/arm/tools/syscall.tbl
++++ b/arch/arm/tools/syscall.tbl
+@@ -460,3 +460,4 @@
+ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
+ 445	common	landlock_add_rule		sys_landlock_add_rule
+ 446	common	landlock_restrict_self		sys_landlock_restrict_self
++447	common	process_reap			sys_process_reap
+diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unistd.h
+index 727bfc3be99b..fb7a0be2f3d9 100644
+--- a/arch/arm64/include/asm/unistd.h
++++ b/arch/arm64/include/asm/unistd.h
+@@ -38,7 +38,7 @@
+ #define __ARM_NR_compat_set_tls		(__ARM_NR_COMPAT_BASE + 5)
+ #define __ARM_NR_COMPAT_END		(__ARM_NR_COMPAT_BASE + 0x800)
+ 
+-#define __NR_compat_syscalls		447
++#define __NR_compat_syscalls		448
+ #endif
+ 
+ #define __ARCH_WANT_SYS_CLONE
+diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
+index 5dab69d2c22b..80593454173e 100644
+--- a/arch/arm64/include/asm/unistd32.h
++++ b/arch/arm64/include/asm/unistd32.h
+@@ -900,6 +900,8 @@ __SYSCALL(__NR_landlock_create_ruleset, sys_landlock_create_ruleset)
+ __SYSCALL(__NR_landlock_add_rule, sys_landlock_add_rule)
+ #define __NR_landlock_restrict_self 446
+ __SYSCALL(__NR_landlock_restrict_self, sys_landlock_restrict_self)
++#define __NR_process_reap 447
++__SYSCALL(__NR_process_reap, sys_process_reap)
+ 
+ /*
+  * Please add new compat syscalls above this comment and update
+diff --git a/arch/ia64/kernel/syscalls/syscall.tbl b/arch/ia64/kernel/syscalls/syscall.tbl
+index bb11fe4c875a..6c94feedf086 100644
+--- a/arch/ia64/kernel/syscalls/syscall.tbl
++++ b/arch/ia64/kernel/syscalls/syscall.tbl
+@@ -367,3 +367,4 @@
+ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
+ 445	common	landlock_add_rule		sys_landlock_add_rule
+ 446	common	landlock_restrict_self		sys_landlock_restrict_self
++447	common	process_reap			sys_process_reap
+diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
+index 79c2d24c89dd..e80a7fa55696 100644
+--- a/arch/m68k/kernel/syscalls/syscall.tbl
++++ b/arch/m68k/kernel/syscalls/syscall.tbl
+@@ -446,3 +446,4 @@
+ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
+ 445	common	landlock_add_rule		sys_landlock_add_rule
+ 446	common	landlock_restrict_self		sys_landlock_restrict_self
++447	common	process_reap			sys_process_reap
+diff --git a/arch/microblaze/kernel/syscalls/syscall.tbl b/arch/microblaze/kernel/syscalls/syscall.tbl
+index b11395a20c20..511b2bd61fc1 100644
+--- a/arch/microblaze/kernel/syscalls/syscall.tbl
++++ b/arch/microblaze/kernel/syscalls/syscall.tbl
+@@ -452,3 +452,4 @@
+ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
+ 445	common	landlock_add_rule		sys_landlock_add_rule
+ 446	common	landlock_restrict_self		sys_landlock_restrict_self
++447	common	process_reap			sys_process_reap
+diff --git a/arch/mips/kernel/syscalls/syscall_n32.tbl b/arch/mips/kernel/syscalls/syscall_n32.tbl
+index 9220909526f9..1775704c6a24 100644
+--- a/arch/mips/kernel/syscalls/syscall_n32.tbl
++++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
+@@ -385,3 +385,4 @@
+ 444	n32	landlock_create_ruleset		sys_landlock_create_ruleset
+ 445	n32	landlock_add_rule		sys_landlock_add_rule
+ 446	n32	landlock_restrict_self		sys_landlock_restrict_self
++447	n32	process_reap			sys_process_reap
+diff --git a/arch/mips/kernel/syscalls/syscall_n64.tbl b/arch/mips/kernel/syscalls/syscall_n64.tbl
+index 9cd1c34f31b5..d769daca3f79 100644
+--- a/arch/mips/kernel/syscalls/syscall_n64.tbl
++++ b/arch/mips/kernel/syscalls/syscall_n64.tbl
+@@ -361,3 +361,4 @@
+ 444	n64	landlock_create_ruleset		sys_landlock_create_ruleset
+ 445	n64	landlock_add_rule		sys_landlock_add_rule
+ 446	n64	landlock_restrict_self		sys_landlock_restrict_self
++447	n64	process_reap			sys_process_reap
+diff --git a/arch/mips/kernel/syscalls/syscall_o32.tbl b/arch/mips/kernel/syscalls/syscall_o32.tbl
+index d560c467a8c6..1bd2fc056677 100644
+--- a/arch/mips/kernel/syscalls/syscall_o32.tbl
++++ b/arch/mips/kernel/syscalls/syscall_o32.tbl
+@@ -434,3 +434,4 @@
+ 444	o32	landlock_create_ruleset		sys_landlock_create_ruleset
+ 445	o32	landlock_add_rule		sys_landlock_add_rule
+ 446	o32	landlock_restrict_self		sys_landlock_restrict_self
++447	o32	process_reap			sys_process_reap
+diff --git a/arch/parisc/kernel/syscalls/syscall.tbl b/arch/parisc/kernel/syscalls/syscall.tbl
+index aabc37f8cae3..0012561ca557 100644
+--- a/arch/parisc/kernel/syscalls/syscall.tbl
++++ b/arch/parisc/kernel/syscalls/syscall.tbl
+@@ -444,3 +444,4 @@
+ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
+ 445	common	landlock_add_rule		sys_landlock_add_rule
+ 446	common	landlock_restrict_self		sys_landlock_restrict_self
++447	common	process_reap			sys_process_reap
+diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
+index 8f052ff4058c..89cbcc732b18 100644
+--- a/arch/powerpc/kernel/syscalls/syscall.tbl
++++ b/arch/powerpc/kernel/syscalls/syscall.tbl
+@@ -526,3 +526,4 @@
+ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
+ 445	common	landlock_add_rule		sys_landlock_add_rule
+ 446	common	landlock_restrict_self		sys_landlock_restrict_self
++447	common	process_reap			sys_process_reap
+diff --git a/arch/s390/kernel/syscalls/syscall.tbl b/arch/s390/kernel/syscalls/syscall.tbl
+index 0690263df1dd..7ebd4d809b5e 100644
+--- a/arch/s390/kernel/syscalls/syscall.tbl
++++ b/arch/s390/kernel/syscalls/syscall.tbl
+@@ -449,3 +449,4 @@
+ 444  common	landlock_create_ruleset	sys_landlock_create_ruleset	sys_landlock_create_ruleset
+ 445  common	landlock_add_rule	sys_landlock_add_rule		sys_landlock_add_rule
+ 446  common	landlock_restrict_self	sys_landlock_restrict_self	sys_landlock_restrict_self
++447  common	process_reap		sys_process_reap		sys_process_reap
+diff --git a/arch/sh/kernel/syscalls/syscall.tbl b/arch/sh/kernel/syscalls/syscall.tbl
+index 0b91499ebdcf..178fd47b372e 100644
+--- a/arch/sh/kernel/syscalls/syscall.tbl
++++ b/arch/sh/kernel/syscalls/syscall.tbl
+@@ -449,3 +449,4 @@
+ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
+ 445	common	landlock_add_rule		sys_landlock_add_rule
+ 446	common	landlock_restrict_self		sys_landlock_restrict_self
++447	common	process_reap			sys_process_reap
+diff --git a/arch/sparc/kernel/syscalls/syscall.tbl b/arch/sparc/kernel/syscalls/syscall.tbl
+index e34cc30ef22c..faee121b7ae2 100644
+--- a/arch/sparc/kernel/syscalls/syscall.tbl
++++ b/arch/sparc/kernel/syscalls/syscall.tbl
+@@ -492,3 +492,4 @@
+ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
+ 445	common	landlock_add_rule		sys_landlock_add_rule
+ 446	common	landlock_restrict_self		sys_landlock_restrict_self
++447	common	process_reap			sys_process_reap
+diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
+index 4bbc267fb36b..cbe070de9884 100644
+--- a/arch/x86/entry/syscalls/syscall_32.tbl
++++ b/arch/x86/entry/syscalls/syscall_32.tbl
+@@ -451,3 +451,4 @@
+ 444	i386	landlock_create_ruleset	sys_landlock_create_ruleset
+ 445	i386	landlock_add_rule	sys_landlock_add_rule
+ 446	i386	landlock_restrict_self	sys_landlock_restrict_self
++447	i386	process_reap		sys_process_reap
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index ce18119ea0d0..e6765646731b 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -368,6 +368,7 @@
+ 444	common	landlock_create_ruleset	sys_landlock_create_ruleset
+ 445	common	landlock_add_rule	sys_landlock_add_rule
+ 446	common	landlock_restrict_self	sys_landlock_restrict_self
++447	common	process_reap		sys_process_reap
+ 
+ #
+ # Due to a historical design error, certain syscalls are numbered differently
+diff --git a/arch/xtensa/kernel/syscalls/syscall.tbl b/arch/xtensa/kernel/syscalls/syscall.tbl
+index fd2f30227d96..f0e9dbee1a5b 100644
+--- a/arch/xtensa/kernel/syscalls/syscall.tbl
++++ b/arch/xtensa/kernel/syscalls/syscall.tbl
+@@ -417,3 +417,4 @@
+ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
+ 445	common	landlock_add_rule		sys_landlock_add_rule
+ 446	common	landlock_restrict_self		sys_landlock_restrict_self
++447	common	process_reap			sys_process_reap
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index 050511e8f1f8..b6659e09bf0d 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -915,6 +915,7 @@ asmlinkage long sys_mincore(unsigned long start, size_t len,
+ asmlinkage long sys_madvise(unsigned long start, size_t len, int behavior);
+ asmlinkage long sys_process_madvise(int pidfd, const struct iovec __user *vec,
+ 			size_t vlen, int behavior, unsigned int flags);
++asmlinkage long sys_process_reap(int pidfd, unsigned int flags);
+ asmlinkage long sys_remap_file_pages(unsigned long start, unsigned long size,
+ 			unsigned long prot, unsigned long pgoff,
+ 			unsigned long flags);
+diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
+index d2a942086fcb..b3bf57b928af 100644
+--- a/include/uapi/asm-generic/unistd.h
++++ b/include/uapi/asm-generic/unistd.h
+@@ -871,9 +871,11 @@ __SYSCALL(__NR_landlock_create_ruleset, sys_landlock_create_ruleset)
+ __SYSCALL(__NR_landlock_add_rule, sys_landlock_add_rule)
+ #define __NR_landlock_restrict_self 446
+ __SYSCALL(__NR_landlock_restrict_self, sys_landlock_restrict_self)
++#define __NR_process_reap 447
++__SYSCALL(__NR_process_reap, sys_process_reap)
+ 
+ #undef __NR_syscalls
+-#define __NR_syscalls 447
++#define __NR_syscalls 448
+ 
+ /*
+  * 32 bit systems traditionally used different
+diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
+index 0ea8128468c3..56eb7c9f8356 100644
+--- a/kernel/sys_ni.c
++++ b/kernel/sys_ni.c
+@@ -289,6 +289,7 @@ COND_SYSCALL(munlockall);
+ COND_SYSCALL(mincore);
+ COND_SYSCALL(madvise);
+ COND_SYSCALL(process_madvise);
++COND_SYSCALL(process_reap);
+ COND_SYSCALL(remap_file_pages);
+ COND_SYSCALL(mbind);
+ COND_SYSCALL_COMPAT(mbind);
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index eefd3f5fde46..0f85a0442fa5 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -28,6 +28,7 @@
+ #include <linux/sched/task.h>
+ #include <linux/sched/debug.h>
+ #include <linux/swap.h>
++#include <linux/syscalls.h>
+ #include <linux/timex.h>
+ #include <linux/jiffies.h>
+ #include <linux/cpuset.h>
+@@ -1141,3 +1142,52 @@ void pagefault_out_of_memory(void)
+ 	out_of_memory(&oc);
+ 	mutex_unlock(&oom_lock);
+ }
++
++SYSCALL_DEFINE2(process_reap, int, pidfd, unsigned int, flags)
++{
++	struct pid *pid;
++	struct task_struct *task;
++	struct mm_struct *mm = NULL;
++	unsigned int f_flags;
++	long ret = 0;
++
++	if (flags != 0)
++		return -EINVAL;
++
++	pid = pidfd_get_pid(pidfd, &f_flags);
++	if (IS_ERR(pid))
++		return PTR_ERR(pid);
++
++	task = get_pid_task(pid, PIDTYPE_PID);
++	if (!task) {
++		ret = -ESRCH;
++		goto put_pid;
++	}
++
++	/*
++	 * If the task is dying and in the process of releasing its memory
++	 * then get its mm.
++	 */
++	task_lock(task);
++	if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
++		mm = task->mm;
++		mmget(mm);
++	}
++	task_unlock(task);
++	if (!mm) {
++		ret = -EINVAL;
++		goto put_task;
++	}
++
++	mmap_read_lock(mm);
++	if (!__oom_reap_task_mm(mm))
++		ret = -EAGAIN;
++	mmap_read_unlock(mm);
++
++	mmput(mm);
++put_task:
++	put_task_struct(task);
++put_pid:
++	put_pid(pid);
++	return ret;
++}
+-- 
+2.32.0.93.g670b81a890-goog
+
