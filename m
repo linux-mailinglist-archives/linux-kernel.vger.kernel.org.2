@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BEF93B19FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383473B1A13
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbhFWM11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:27:27 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36896 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbhFWM0l (ORCPT
+        id S230298AbhFWM2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:28:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231752AbhFWM1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:26:41 -0400
-Message-Id: <20210623121455.196727450@linutronix.de>
+        Wed, 23 Jun 2021 08:27:37 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E66C06114C
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:24:25 -0700 (PDT)
+Message-Id: <20210623121455.305113644@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624451063;
+        s=2020; t=1624451064;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=YXowmCXHonvW8AM4/6rfQtQwmKDQq1zXLGAlLt6QXGg=;
-        b=qW29xIPy2lVJDK/dUk0f7iazjB33OiAyd70FNkTWirDR3tOAZATFbQpW5Ytllp64z3xq/k
-        lVRiyKpCgPfdJ/LPJNNLSpeuqQlWu6vY7yarut8CP6GsjCva7MIpEJd6VaFNOmNPBtrjsw
-        rzDwn40B0CgKYEX8XS0PmOtbI9hJxpLlE5Anf6H4piqMbElISyMzJQPGZg1Gsu8yEDWVEu
-        y6uDvSabGFDmhuoS+D/EjNZxpAFRLVWKMwbH+I5SpxHCxctmEp6W8UOsxHmd+uu/LhwKFp
-        mytHt8Zjt/Jstt8ydmDKldlw3a0cwLMC2Pt0I1+Ua2SHYKfha9fwpQU1GXtSug==
+        bh=+EgRwiFtnVjOwOvtftafGLs3YqIY7GVXnl5zVNUZwJM=;
+        b=qKy9cFy/RclkxhLuLqj4z2CeOlNZvveyVI816bVVix8HncICND1WhPBVGFUyH2i1EWVdOr
+        jypUlUAJGzrmTdRPFFUn6sFXrmdWBDx2wQeoOoTxUmyAG8n3qo1zORH9mH4kPPAjw5I3gj
+        63zn05TlPBWFRv9oqsrMSTBdmjpevpfkXTke2FWWDJVGPD4Ih+zNDO+neSp9wI+kDqSx1g
+        hAa1XFoemk9KnpMOWmrfSfV4dap/See60RA48RnxMQyw4hgy6c5ZrCXak7yEUevN+VL9fN
+        d3+yamX7pE3F+hMmLgWleg1kkcSDI1pncJBprS7zGnuZ/a7Pt0WmYNmOQm7fdQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624451063;
+        s=2020e; t=1624451064;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=YXowmCXHonvW8AM4/6rfQtQwmKDQq1zXLGAlLt6QXGg=;
-        b=ZeuFheMFvtokVkkMTqIk62OcHhOoGqa9HNSS8NqNdzUKizhPFeBgl3/237bwYatbxct+3g
-        9ZWhbKpFbwb4nxAQ==
-Date:   Wed, 23 Jun 2021 14:02:06 +0200
+        bh=+EgRwiFtnVjOwOvtftafGLs3YqIY7GVXnl5zVNUZwJM=;
+        b=MFlteflvWkbUh3IGn372wM4ZkyWHeqqoW1CIeNvVSyV1L/DeIe9AkC0h4wIVQcEeWPtOoM
+        PLVaK4jR9kNYubBg==
+Date:   Wed, 23 Jun 2021 14:02:07 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -47,7 +50,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         "Chang Seok Bae" <chang.seok.bae@intel.com>,
         Megha Dey <megha.dey@linux.intel.com>,
         Oliver Sang <oliver.sang@intel.com>
-Subject: [patch V4 39/65] x86/fpu: Rename and sanitize fpu__save/copy()
+Subject: [patch V4 40/65] x86/cpu: Sanitize X86_FEATURE_OSPKE
 References: <20210623120127.327154589@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,139 +59,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both functions are a misnomer.
+X86_FEATURE_OSPKE is enabled first on the boot CPU and the feature flag is
+set. Secondary CPUs have to enable CR4.PKE as well and set their per CPU
+feature flag. That's ineffective because all call sites have checks for
+boot_cpu_data.
 
-fpu__save() is actually about synchronizing the hardware register state
-into the task's memory state so that either coredump or a math exception
-handler can inspect the state at the time where the problem happens.
-
-The function guarantees to preserve the register state, while "save" is a
-common terminology for saving the current state so it can be modified and
-restored later. This is clearly not the case here.
-
-Rename it to fpu_sync_fpstate().
-
-fpu__copy() is used to clone the current task's FPU state when duplicating
-task_struct. While the register state is a copy the rest of the FPU state
-is not.
-
-Name it accordingly and remove the really pointless @src argument along
-with the warning which comes along with it.
-
-Nothing can ever copy the FPU state of a non-current task. It's clearly
-just a consequence of arch_dup_task_struct(), but it makes no sense to
-proliferate that further.
+Make it smarter and force the feature flag when PKU is enabled on the boot
+cpu which allows then to use cpu_feature_enabled(X86_FEATURE_OSPKE) all
+over the place. That either compiles the code out when PKEY support is
+disabled in Kconfig or uses a static_cpu_has() for the feature check which
+makes a significant difference in hotpaths, e.g. context switch.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Borislav Petkov <bp@suse.de>
 ---
-V3: New patch
----
- arch/x86/include/asm/fpu/internal.h |    6 ++++--
- arch/x86/kernel/fpu/core.c          |   17 ++++++++---------
- arch/x86/kernel/fpu/regset.c        |    2 +-
- arch/x86/kernel/process.c           |    3 +--
- arch/x86/kernel/traps.c             |    5 +++--
- 5 files changed, 17 insertions(+), 16 deletions(-)
+ arch/x86/include/asm/pkeys.h |    8 ++++----
+ arch/x86/include/asm/pkru.h  |    4 ++--
+ arch/x86/kernel/cpu/common.c |   24 +++++++++++-------------
+ arch/x86/kernel/fpu/core.c   |    2 +-
+ arch/x86/kernel/fpu/xstate.c |    2 +-
+ arch/x86/kernel/process_64.c |    2 +-
+ arch/x86/mm/fault.c          |    2 +-
+ 7 files changed, 21 insertions(+), 23 deletions(-)
 
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -26,14 +26,16 @@
- /*
-  * High level FPU state handling functions:
+--- a/arch/x86/include/asm/pkeys.h
++++ b/arch/x86/include/asm/pkeys.h
+@@ -9,14 +9,14 @@
+  * will be necessary to ensure that the types that store key
+  * numbers and masks have sufficient capacity.
   */
--extern void fpu__save(struct fpu *fpu);
- extern int  fpu__restore_sig(void __user *buf, int ia32_frame);
- extern void fpu__drop(struct fpu *fpu);
--extern int  fpu__copy(struct task_struct *dst, struct task_struct *src);
- extern void fpu__clear_user_states(struct fpu *fpu);
- extern void fpu__clear_all(struct fpu *fpu);
- extern int  fpu__exception_code(struct fpu *fpu, int trap_nr);
+-#define arch_max_pkey() (boot_cpu_has(X86_FEATURE_OSPKE) ? 16 : 1)
++#define arch_max_pkey() (cpu_feature_enabled(X86_FEATURE_OSPKE) ? 16 : 1)
  
-+extern void fpu_sync_fpstate(struct fpu *fpu);
-+
-+extern int  fpu_clone(struct task_struct *dst);
-+
- /*
-  * Boot time FPU initialization functions:
-  */
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -159,11 +159,10 @@ void kernel_fpu_end(void)
- EXPORT_SYMBOL_GPL(kernel_fpu_end);
+ extern int arch_set_user_pkey_access(struct task_struct *tsk, int pkey,
+ 		unsigned long init_val);
  
- /*
-- * Save the FPU state (mark it for reload if necessary):
-- *
-- * This only ever gets called for the current task.
-+ * Sync the FPU register state to current's memory register state when the
-+ * current task owns the FPU. The hardware register state is preserved.
-  */
--void fpu__save(struct fpu *fpu)
-+void fpu_sync_fpstate(struct fpu *fpu)
+ static inline bool arch_pkeys_enabled(void)
  {
- 	WARN_ON_FPU(fpu != &current->thread.fpu);
- 
-@@ -221,18 +220,18 @@ void fpstate_init(union fpregs_state *st
+-	return boot_cpu_has(X86_FEATURE_OSPKE);
++	return cpu_feature_enabled(X86_FEATURE_OSPKE);
  }
- EXPORT_SYMBOL_GPL(fpstate_init);
  
--int fpu__copy(struct task_struct *dst, struct task_struct *src)
-+/* Clone current's FPU state on fork */
-+int fpu_clone(struct task_struct *dst)
+ /*
+@@ -26,7 +26,7 @@ static inline bool arch_pkeys_enabled(vo
+ extern int __execute_only_pkey(struct mm_struct *mm);
+ static inline int execute_only_pkey(struct mm_struct *mm)
  {
-+	struct fpu *src_fpu = &current->thread.fpu;
- 	struct fpu *dst_fpu = &dst->thread.fpu;
--	struct fpu *src_fpu = &src->thread.fpu;
+-	if (!boot_cpu_has(X86_FEATURE_OSPKE))
++	if (!cpu_feature_enabled(X86_FEATURE_OSPKE))
+ 		return ARCH_DEFAULT_PKEY;
  
-+	/* The new task's FPU state cannot be valid in the hardware. */
- 	dst_fpu->last_cpu = -1;
- 
--	if (!static_cpu_has(X86_FEATURE_FPU))
-+	if (!cpu_feature_enabled(X86_FEATURE_FPU))
+ 	return __execute_only_pkey(mm);
+@@ -37,7 +37,7 @@ extern int __arch_override_mprotect_pkey
+ static inline int arch_override_mprotect_pkey(struct vm_area_struct *vma,
+ 		int prot, int pkey)
+ {
+-	if (!boot_cpu_has(X86_FEATURE_OSPKE))
++	if (!cpu_feature_enabled(X86_FEATURE_OSPKE))
  		return 0;
  
--	WARN_ON_FPU(src_fpu != &current->thread.fpu);
--
- 	/*
- 	 * Don't let 'init optimized' areas of the XSAVE area
- 	 * leak into the child task:
---- a/arch/x86/kernel/fpu/regset.c
-+++ b/arch/x86/kernel/fpu/regset.c
-@@ -41,7 +41,7 @@ int regset_xregset_fpregs_active(struct
- static void sync_fpstate(struct fpu *fpu)
+ 	return __arch_override_mprotect_pkey(vma, prot, pkey);
+--- a/arch/x86/include/asm/pkru.h
++++ b/arch/x86/include/asm/pkru.h
+@@ -32,7 +32,7 @@ static inline bool __pkru_allows_write(u
+ 
+ static inline u32 read_pkru(void)
  {
- 	if (fpu == &current->thread.fpu)
--		fpu__save(fpu);
-+		fpu_sync_fpstate(fpu);
+-	if (boot_cpu_has(X86_FEATURE_OSPKE))
++	if (cpu_feature_enabled(X86_FEATURE_OSPKE))
+ 		return rdpkru();
+ 	return 0;
+ }
+@@ -41,7 +41,7 @@ static inline void write_pkru(u32 pkru)
+ {
+ 	struct pkru_state *pk;
+ 
+-	if (!boot_cpu_has(X86_FEATURE_OSPKE))
++	if (!cpu_feature_enabled(X86_FEATURE_OSPKE))
+ 		return;
+ 
+ 	pk = get_xsave_addr(&current->thread.fpu.state.xsave, XFEATURE_PKRU);
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -466,22 +466,20 @@ static bool pku_disabled;
+ 
+ static __always_inline void setup_pku(struct cpuinfo_x86 *c)
+ {
+-	/* check the boot processor, plus compile options for PKU: */
+-	if (!cpu_feature_enabled(X86_FEATURE_PKU))
+-		return;
+-	/* checks the actual processor's cpuid bits: */
+-	if (!cpu_has(c, X86_FEATURE_PKU))
+-		return;
+-	if (pku_disabled)
++	if (c == &boot_cpu_data) {
++		if (pku_disabled || !cpu_feature_enabled(X86_FEATURE_PKU))
++			return;
++		/*
++		 * Setting CR4.PKE will cause the X86_FEATURE_OSPKE cpuid
++		 * bit to be set.  Enforce it.
++		 */
++		setup_force_cpu_cap(X86_FEATURE_OSPKE);
++
++	} else if (!cpu_feature_enabled(X86_FEATURE_OSPKE)) {
+ 		return;
++	}
+ 
+ 	cr4_set_bits(X86_CR4_PKE);
+-	/*
+-	 * Setting X86_CR4_PKE will cause the X86_FEATURE_OSPKE
+-	 * cpuid bit to be set.  We need to ensure that we
+-	 * update that bit in this CPU's "cpu_info".
+-	 */
+-	set_cpu_cap(c, X86_FEATURE_OSPKE);
  }
  
- /*
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -87,8 +87,7 @@ int arch_dup_task_struct(struct task_str
- #ifdef CONFIG_VM86
- 	dst->thread.vm86 = NULL;
- #endif
--
--	return fpu__copy(dst, src);
-+	return fpu_clone(dst);
+ #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -311,7 +311,7 @@ static inline void restore_fpregs_from_i
+ 	else
+ 		frstor(&init_fpstate.fsave);
+ 
+-	if (boot_cpu_has(X86_FEATURE_OSPKE))
++	if (cpu_feature_enabled(X86_FEATURE_OSPKE))
+ 		copy_init_pkru_to_fpregs();
  }
  
- /*
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -1046,9 +1046,10 @@ static void math_error(struct pt_regs *r
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -921,7 +921,7 @@ int arch_set_user_pkey_access(struct tas
+ 	 * This check implies XSAVE support.  OSPKE only gets
+ 	 * set if we enable XSAVE and we enable PKU in XCR0.
+ 	 */
+-	if (!boot_cpu_has(X86_FEATURE_OSPKE))
++	if (!cpu_feature_enabled(X86_FEATURE_OSPKE))
+ 		return -EINVAL;
+ 
+ 	/*
+--- a/arch/x86/kernel/process_64.c
++++ b/arch/x86/kernel/process_64.c
+@@ -137,7 +137,7 @@ void __show_regs(struct pt_regs *regs, e
+ 		       log_lvl, d3, d6, d7);
  	}
  
- 	/*
--	 * Save the info for the exception handler and clear the error.
-+	 * Synchronize the FPU register state to the memory register state
-+	 * if necessary. This allows the exception handler to inspect it.
- 	 */
--	fpu__save(fpu);
-+	fpu_sync_fpstate(fpu);
+-	if (boot_cpu_has(X86_FEATURE_OSPKE))
++	if (cpu_feature_enabled(X86_FEATURE_OSPKE))
+ 		printk("%sPKRU: %08x\n", log_lvl, read_pkru());
+ }
  
- 	task->thread.trap_nr	= trapnr;
- 	task->thread.error_code = 0;
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -875,7 +875,7 @@ static inline bool bad_area_access_from_
+ 	/* This code is always called on the current mm */
+ 	bool foreign = false;
+ 
+-	if (!boot_cpu_has(X86_FEATURE_OSPKE))
++	if (!cpu_feature_enabled(X86_FEATURE_OSPKE))
+ 		return false;
+ 	if (error_code & X86_PF_PK)
+ 		return true;
 
