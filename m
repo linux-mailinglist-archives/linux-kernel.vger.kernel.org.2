@@ -2,98 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6485F3B1D59
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26773B1D6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbhFWPQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 11:16:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230430AbhFWPQF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 11:16:05 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F310FC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 08:13:47 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id c138so6046196qkg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 08:13:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gZeBBRZLdgs5z5YIW+IZOvyuL2HOJs5r51r/cXKgVrI=;
-        b=YV66voH0V9MqAVOn7Keklep6VQK/r+/AlEwBzhLa/aXtZfO4MDlFTg7hphubEqbp+8
-         JfW9fD173C1e0822uNyOw1UIMnx1MB0RmeKn2NSvxU9twMPAp4X1Q4koYTLOx9AMekjN
-         9wMjYZELcmwL/iWnzTtlDWVmglTbUPx1lQRTQA9wypew7Hpwl/sqX3SKk4uu11CACnIs
-         VschCj2ZyRo4Jp+C5NE1wI39wDPRGGVvLw03CjaVtUwNFV/U2lu9jtO0p5we6nrktiwi
-         +ftiIXe1QeuQervG+nYNXMXwxPhe+RO2owMaStVg7GHfM2Yfdk9MApHpvV+XtxXcA8xC
-         5bQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gZeBBRZLdgs5z5YIW+IZOvyuL2HOJs5r51r/cXKgVrI=;
-        b=S5srXDAIrUwdB3pHQmox/gNwoO3Q0G3RuDZKgus7ZpoDdecdzWFHVdRmVZXyuQR7lo
-         P7RUFYV7Suty2eHQdCqV2/17Waucs29Dpax6cB8s/qTGp537xIZtxXZlJMmL7nNSJx/T
-         D0kUVVJOQ7E/aHCpCryIU/TTfo5ZijBNbQkQ+mHQ7LUoDlaE9jAyYMan9KZttz4Wicrb
-         NGvS7/3hUeHkfbJEMZLElk39KFYs4UjS1szQ97Mz3Y/Fkuo6wmVFopYInXg0JCJ3pYDM
-         Rfl5z5V06CqjJSwDqrMx9zBGAB832fQajMAuNOqmK2GRiWNlmQFZdEniZhEmLzyterfl
-         IHMQ==
-X-Gm-Message-State: AOAM530GHReri8nmefUIf40vm5LQYtYESo+DUptr7hhakaqTwZ7iKi2I
-        Zcvh+M5fDQPVYxNiIINAfukXHlsyMj80hOCQwcpaOg==
-X-Google-Smtp-Source: ABdhPJztGSPN1d/xRjk75/D+Fbiy6eSyD4Wtzm1wmWhJRjLyNZn3h+80Ztx7AH5f+x/Gj5yzIqqHgPAuhe1OmhCcg64=
-X-Received: by 2002:a05:620a:16c2:: with SMTP id a2mr528118qkn.148.1624461227131;
- Wed, 23 Jun 2021 08:13:47 -0700 (PDT)
+        id S231319AbhFWPR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 11:17:58 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:12337 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230449AbhFWPRz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 11:17:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624461337; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Reply-To: Sender;
+ bh=4vNjqSMYlYk5DogUqQXzNNYTENq480OkTALLBteEOqA=; b=GOIGknUX99sJ9JKf4cICYAxsEOb8GBoXDZYL20Pj69zhcMBMGI5B29aFivTOIWuX7O2Ay7CA
+ T9qVZZ0BcyO6YlP8ZwiL1ZoxGDStC9ZpFRSa8CsuwwScGbQ1baIrPxTA3UTmPE+ByUmNKJtI
+ DU7IS6UsMcHfekkgzCJ3VaKUDF4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60d3500901dd9a943124aa5e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Jun 2021 15:15:21
+ GMT
+Sender: bcain=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 91056C43460; Wed, 23 Jun 2021 15:15:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        PDS_BAD_THREAD_QP_64,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from BCAIN (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bcain)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 32E2CC433D3;
+        Wed, 23 Jun 2021 15:15:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 32E2CC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bcain@codeaurora.org
+Reply-To: <bcain@codeaurora.org>
+From:   "Brian Cain" <bcain@codeaurora.org>
+To:     "'Arnd Bergmann'" <arnd@arndb.de>
+Cc:     "'Christoph Hellwig'" <hch@lst.de>,
+        "'Linus Torvalds'" <torvalds@linux-foundation.org>,
+        "'Sid Manning'" <sidneym@codeaurora.org>,
+        "'open list:QUALCOMM HEXAGON...'" <linux-hexagon@vger.kernel.org>,
+        "'Linux Kernel Mailing List'" <linux-kernel@vger.kernel.org>
+References: <20210623141854.GA32155@lst.de> <08df01d7683d$8f5b7b70$ae127250$@codeaurora.org> <CAK8P3a28_0KJpcLRQrDhFk8-ndxmfk7-Q2_qcRRiYkyh-NNZUQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a28_0KJpcLRQrDhFk8-ndxmfk7-Q2_qcRRiYkyh-NNZUQ@mail.gmail.com>
+Subject: RE: how can we test the hexagon port in mainline
+Date:   Wed, 23 Jun 2021 10:15:19 -0500
+Message-ID: <08e101d76842$94f78a60$bee69f20$@codeaurora.org>
 MIME-Version: 1.0
-References: <2ED1BDF5-BC0C-47CD-8F33-9A46C738F8CF@linux.vnet.ibm.com>
- <CAKfTPtDrHv4OOfPvwOE2DMNoucXQJ=yvvEpTVKrXghSdKEnZcA@mail.gmail.com>
- <20210622143154.GA804@vingu-book> <53968DDE-9E93-4CB4-B5E4-526230B6E154@linux.vnet.ibm.com>
- <20210623071935.GA29143@vingu-book> <CCB4222F-000A-44E8-8D61-F69893704688@linux.vnet.ibm.com>
- <6C676AB3-5D06-471A-8715-60AABEBBE392@linux.vnet.ibm.com> <20210623120835.GB29143@vingu-book>
- <CAFpoUr01xb9ZJF9mb2nmZDpUHXFH3VSbY3AU8-1owV-_7wVTPg@mail.gmail.com>
- <CAKfTPtB++3y4VnbKE_n=bgsqCfqXuF0KUsdB_cFhi9xAnMRubw@mail.gmail.com>
- <CAFpoUr3bHzrwvumw6R=2JVbKa_wmtT9cMf-mdDHxY0Png-N9Jw@mail.gmail.com> <CAKfTPtAev0VgCmK3AUyTCoVA38YmskpB98q0kTrbEPK6e=1dTA@mail.gmail.com>
-In-Reply-To: <CAKfTPtAev0VgCmK3AUyTCoVA38YmskpB98q0kTrbEPK6e=1dTA@mail.gmail.com>
-From:   Odin Ugedal <odin@uged.al>
-Date:   Wed, 23 Jun 2021 17:13:11 +0200
-Message-ID: <CAFpoUr3Q+7Tr3y59H-BiFU7BO=dquhQpJ8M9JtmV0_3ySfp-+Q@mail.gmail.com>
-Subject: Re: [powerpc][next-20210621] WARNING at kernel/sched/fair.c:3277
- during boot
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Odin Ugedal <odin@uged.al>,
-        Sachin Sant <sachinp@linux.vnet.ibm.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+        charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJHxj6Ga6VuoE3mNrk9EKW2w3HC7gG6K8dnAg2GTieqIrkNAA==
+Content-Language: en-us
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ons. 23. jun. 2021 kl. 15:56 skrev Vincent Guittot <vincent.guittot@linaro.org>:
->
->
-> The pelt value of sched_entity is synced with  cfs and its contrib
-> before being removed.
+> -----Original Message-----
+> From: Arnd Bergmann <arnd@arndb.de>
+> Sent: Wednesday, June 23, 2021 9:54 AM
+> To: Brian Cain <bcain@codeaurora.org>
+> Cc: Christoph Hellwig <hch@lst.de>; Linus Torvalds <torvalds@linux-
+> foundation.org>; Sid Manning <sidneym@codeaurora.org>; open
+> list:QUALCOMM HEXAGON... <linux-hexagon@vger.kernel.org>; Linux Kernel
+> Mailing List <linux-kernel@vger.kernel.org>
+> Subject: Re: how can we test the hexagon port in mainline
+>=20
+> On Wed, Jun 23, 2021 at 4:39 PM Brian Cain <bcain@codeaurora.org> =
+wrote:
+> >
+> > > -----Original Message-----
+> > > From: Christoph Hellwig <hch@lst.de>
+> > ...
+> > >
+> > > Hi all,
+> > >
+> > > the oldest supported gcc version in mainline is gcc 4.9.  But the =
+only
+> > > hexagon crosscompiler I can find is the one Arnds website points =
+to here:
+> > >
+> > > https://mirrors.edge.kernel.org/pub/tools/crosstool/
+> > >
+> > > which is a non-upstream gcc 4.6.1 port.  How are we supposed to =
+even
+> > > build test hexagon code?
+> >
+> > We have provided a clang-12-based toolchain here:
+> >
+> > https://codelinaro.jfrog.io/artifactory/codelinaro-qemu/2021-05-
+> 12/clang+llv
+> > m-12.0.0-cross-hexagon-unknown-linux-musl.tar.xz
+>=20
+> How close is this to the mainline clang builds from =
+https://apt.llvm.org/?
 
+This is built from llvm-project 12.0.0 but also contains userspace =
+toolchain features like musl and qemu-linux-user for hexagon.  I suppose =
+for the purposes of kernel builds they're equivalent.
 
-Hmm. Not sure what you mean by sched_entity here, since this is only
-taking the "removed" load_avg
-and removing it from cfs_rq, together with (removed.load_avg *
-divider) from load_sum. (Although. ".removed" comes from
-a sched entity)
+> The last time we talked, there were still a couple of bugs that =
+prevented
+> me from building an unmodified kernel with an unmodified clang =
+toolchain,
+> but I think you planned to address those. Are any changes left that =
+did
+> not make it into the 12.0 release?
 
-> Then, we start to remove this load in update_cfs_rq_load_avg() before
-> calling __update_load_avg_cfs_rq so contrib should not have change and
-> we should be safe
+I think those were identified building with clang 12.0.0 or post-12.0.0, =
+so I don't think they'll be addressed.  Let me review and follow up on =
+the status of those items.  I recall one workaround was to use the =
+integrated assembler to avoid one of the toolchain bugs.
 
-For what it is worth, I am now able to reproduce it (maybe
-CONFIG_HZ=300/250 is the thing) as reported by Sachin,
-and my patch makes it disappear. Without my patch I see situations
-where _sum is zero while _avg is eg. 1 or 2 or 14 (in that range).
-This happens for both load, runnable and util.
+> > Could we update https://mirrors.edge.kernel.org/pub/tools/crosstool/ =
+to
+> > point here?
+>=20
+> I'm happy to edit the index page on
+> https://mirrors.edge.kernel.org/pub/tools/crosstool,
+> but could you provide a stable URL that will keep pointing to the =
+latest
+> version
+> in the future so I don't have to update it for each new build?
 
-Lets see what Sachin reports back.
+I don't know how to do that with the mechanisms we have so far.  But I =
+will see about getting one created and then hopefully you could use =
+that.
 
-Thanks
-Odin
+-Brian
+
