@@ -2,115 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D443B111D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 02:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75703B1124
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 02:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbhFWAo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 20:44:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbhFWAo1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 20:44:27 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18696C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 17:42:10 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id c11so612225ljd.6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 17:42:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1pJi6stLtza5ZFdImIffUNgdJoHKsMjc09flZZ4qiAI=;
-        b=SFcCe3m1FiAXHxPsSVxKjvrdNckQVrxdff+U4unr4V4zJzTMYaBEpSK9jjYtU7tMd6
-         D6+UsvBUdCLcIdv0JgGtdHlWRGtgBWAILphbvJEUZilovxO8PsYLDfvqyyYAEF0oFQuI
-         Rb1F4OutZ2mQyaIxFkh4FOdwyNm9Ixhuqq2qU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1pJi6stLtza5ZFdImIffUNgdJoHKsMjc09flZZ4qiAI=;
-        b=dRNL4AxNjkyBzHXxcmxiExrh+m7Qs2T1MEj6gC7QJVUqZ+6Tsk067u1hAAfa3SSVq1
-         V0ssRu7vBCaB3yzfoeOmN/3JbMqkLzRbzJygcyZLuDL+hCnm9i/8WvLQCniTEzeNAVvL
-         z9vcCMiNV4aMAfLhiqaQfP8kwzOv8ejsuBg/+UvGPdY0iRnjRw+fVcfp1/VuKwqCGZbm
-         PmBWwzeTs0iOBa7JLTOF7eR1wakbi1pVKZsGTkVR2WULzEs5jsjmZy+waY08wUrqcIsu
-         I/FOOZiIhWRFPCn6HiLLRWrRL4DJ2a0VH6mfo5WGRyAA05DnLJGkUjLvhkqn6naFsIcw
-         tbBw==
-X-Gm-Message-State: AOAM530Lt5KrubIUfUTKABNnpnaj9nSVOAF+cIT35Ck9Yy+y6DzFN74u
-        Xtja8RbC5U4qccECTrnUSSRuzhTgObPCmPYf
-X-Google-Smtp-Source: ABdhPJy/iBY6a0rj/5RKkOj8S3o/i29mJK8aa62dD6X6Q3zzt/XKIYfJglGd2dVDhNeOPQHogyYU2w==
-X-Received: by 2002:a2e:870f:: with SMTP id m15mr3571929lji.290.1624408928328;
-        Tue, 22 Jun 2021 17:42:08 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id g24sm2364101lfv.228.2021.06.22.17.42.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 17:42:07 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id x24so1137892lfr.10
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 17:42:07 -0700 (PDT)
-X-Received: by 2002:a05:6512:15a2:: with SMTP id bp34mr4693530lfb.40.1624408926925;
- Tue, 22 Jun 2021 17:42:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
- <87sg1lwhvm.fsf@disp2133> <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
- <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com> <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
- <87eed4v2dc.fsf@disp2133> <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
- <87fsxjorgs.fsf@disp2133> <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
- <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk> <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
- <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
- <87a6njf0ia.fsf@disp2133> <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
- <87tulpbp19.fsf@disp2133>
-In-Reply-To: <87tulpbp19.fsf@disp2133>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 22 Jun 2021 17:41:51 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
-Message-ID: <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
-Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        id S230018AbhFWAvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 20:51:47 -0400
+Received: from ozlabs.org ([203.11.71.1]:34569 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229775AbhFWAvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 20:51:46 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8l5b0DMCz9sS8;
+        Wed, 23 Jun 2021 10:49:22 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624409364;
+        bh=YdkEJgsORvn1PaXEMnVX3ZVxplLEgLM5bOYVMsSeeY0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=HEgH2AwnKcazyBaX2A/3/R22nXFhsGDSt+IutNCz/HRL+he9ESZXw4ULqUhjHpUq6
+         K8EX/5D/DswT8ncgaJNnmU2UVsSVUdxNYDd6iPT/nGIvh68Pr32ZRXWkwKx5QK9rSB
+         XxmzURoRdOEa0IMdlz8OGZJxt0m5zqpWXftEkGiUP4bABWh6nS91djl46WD2SKU62t
+         e1NVN4wtfth98q7tEQvIy8bkx68ThNNm3HrwAGJYQGgD3jzwZaDG6pIq5P3tyKj4BF
+         SS/vMUIYNe0Iro7lT30/iPOQtISbGMWb4mzTfMaR3+pkpKkt33wWwyC6WXlDYAi/9K
+         N0JxuKwh6giMQ==
+Date:   Wed, 23 Jun 2021 10:49:22 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Jan Kara <jack@suse.cz>
+Cc:     Chao Yu <chao@kernel.org>, Chao Yu <yuchao0@huawei.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the f2fs tree
+Message-ID: <20210623104922.30a5a3fa@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/st8K.Kvp/4WqFNY==dY70J0";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 1:53 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> Playing with it some more I think I have everything working working
-> except for PTRACE_EVENT_SECCOMP (which can stay ptrace_event) and
-> group_exit(2).
->
-> Basically in exit sending yourself a signal and then calling do_exit
-> from the signal handler is not unreasonable, as exit is an ordinary
-> system call.
+--Sig_/st8K.Kvp/4WqFNY==dY70J0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Ok, this is a bit odd, but I do like the concept of just making
-ptrace_event just post a signal, and have all ptrace things always be
-handled at signal time (or the special system call entry/exit, which
-is fine too).
+Hi all,
 
-> For purposes of discussion this is my current draft implementation.
+After merging the f2fs tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-I didn't check what is so different about exit_group() that you left
-that as an exercise for the reader, but if that ends up then removing
-the whole "wait synchromously for ptrace" cases for good I don't
-_hate_ this. It's a bit odd, but it would be really nice to limit
-where ptrace picks up data.
+fs/f2fs/data.c: In function 'f2fs_migrate_blocks':
+fs/f2fs/data.c:3853:27: error: 'struct f2fs_inode_info' has no member named=
+ 'i_mmap_sem'
+ 3853 |  down_write(&F2FS_I(inode)->i_mmap_sem);
+      |                           ^~
+fs/f2fs/data.c:3895:25: error: 'struct f2fs_inode_info' has no member named=
+ 'i_mmap_sem'
+ 3895 |  up_write(&F2FS_I(inode)->i_mmap_sem);
+      |                         ^~
 
-We do end up doing that stuff in "get_signal()", and that means that
-we have the interaction with io_uring calling it directly, but it's at
-least not a new thing.
+Caused by commit
 
-               Linus
+  7cc52cc33717 ("f2fs: swap: support migrating swapfile in aligned write mo=
+de")
+
+interacting with commit
+
+  c3762b9d26e1 ("f2fs: Convert to using invalidate_lock")
+
+from the ext3 tree.
+
+I have applied the following merge fix patch:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Wed, 23 Jun 2021 10:40:54 +1000
+Subject: [PATCH] fix up for "f2fs: Convert to using invalidate_lock"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ fs/f2fs/data.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 2fc1b71c640b..acf2dea65abc 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -3850,7 +3850,7 @@ static int f2fs_migrate_blocks(struct inode *inode, b=
+lock_t start_blk,
+ 	int ret =3D 0;
+=20
+ 	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+-	down_write(&F2FS_I(inode)->i_mmap_sem);
++	filemap_invalidate_lock(inode->i_mapping);
+=20
+ 	set_inode_flag(inode, FI_ALIGNED_WRITE);
+=20
+@@ -3892,7 +3892,7 @@ static int f2fs_migrate_blocks(struct inode *inode, b=
+lock_t start_blk,
+ 	clear_inode_flag(inode, FI_DO_DEFRAG);
+ 	clear_inode_flag(inode, FI_ALIGNED_WRITE);
+=20
+-	up_write(&F2FS_I(inode)->i_mmap_sem);
++	filemap_invalidate_unlock(inode->i_mapping);
+ 	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+=20
+ 	return ret;
+--=20
+2.30.2
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/st8K.Kvp/4WqFNY==dY70J0
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDShRIACgkQAVBC80lX
+0GzdWQf9HyNWdrhmCfenE9eySb7gpIHSz++WMhKpO0XU/zKDQydqEKkR/Guzhtrb
+fhCwkkseKfGFDlKLoRgmYV7YJ9ebA1mPcSWw0valYt+J3xuOzmQbridZUCQiTHse
+B9u+xgORDMIc/RFco319iwtTxF8UmG4mJ10HEfVinv0mCFGP1i3U86wnbP2BpF2V
+GAZem4n/X+7VsY7yCEC4crDNJ0XknWRTlIL6YxDThxUZQeTvG0QYYPWGTy7j6IIJ
+aScVRbkXRF9kC82t+vxW78ox/fzgl8FVX+gDEUox4Qlbmr/GQKRy7cqn9kzXG1vt
+zOiHuBKRXbQfV6SWOk2sIaX6lCStKA==
+=SjXT
+-----END PGP SIGNATURE-----
+
+--Sig_/st8K.Kvp/4WqFNY==dY70J0--
