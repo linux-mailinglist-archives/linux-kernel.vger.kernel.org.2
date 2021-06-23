@@ -2,154 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A871E3B1B90
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D913B1BC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhFWNwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:52:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:35660 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230229AbhFWNwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:52:50 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DB317ED1;
-        Wed, 23 Jun 2021 06:50:30 -0700 (PDT)
-Received: from localhost (unknown [10.1.195.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 783A03F718;
-        Wed, 23 Jun 2021 06:50:30 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 14:50:29 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Will Deacon <will@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 3/4] arch_topology: Avoid use-after-free for
- scale_freq_data
-Message-ID: <20210623135029.GC12411@arm.com>
-References: <cover.1624266901.git.viresh.kumar@linaro.org>
- <f0e5849b4fe19b8aabd12640c85e13dd96945e21.1624266901.git.viresh.kumar@linaro.org>
+        id S230392AbhFWOAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:00:33 -0400
+Received: from gardel.0pointer.net ([85.214.157.71]:53724 "EHLO
+        gardel.0pointer.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230263AbhFWOAa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 10:00:30 -0400
+X-Greylist: delayed 414 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Jun 2021 10:00:30 EDT
+Received: from gardel-login.0pointer.net (gardel-mail [85.214.157.71])
+        by gardel.0pointer.net (Postfix) with ESMTP id 3DC0EE8094B;
+        Wed, 23 Jun 2021 15:51:12 +0200 (CEST)
+Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
+        id EEA28160DC0; Wed, 23 Jun 2021 15:51:11 +0200 (CEST)
+Date:   Wed, 23 Jun 2021 15:51:11 +0200
+From:   Lennart Poettering <mzxreary@0pointer.de>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luca Boccassi <bluca@debian.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tejun Heo <tj@kernel.org>,
+        Javier Gonz??lez <javier@javigon.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        JeffleXu <jefflexu@linux.alibaba.com>
+Subject: Re: [PATCH v3 1/6] block: add disk sequence number
+Message-ID: <YNM8T44v5FTViVWM@gardel-login>
+References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
+ <20210623105858.6978-2-mcroce@linux.microsoft.com>
+ <YNMffBWvs/Fz2ptK@infradead.org>
+ <CAFnufp1gdag0rGQ8K4_2oB6_aC+EZgfgwd2eL4-AxpG0mK+_qQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f0e5849b4fe19b8aabd12640c85e13dd96945e21.1624266901.git.viresh.kumar@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAFnufp1gdag0rGQ8K4_2oB6_aC+EZgfgwd2eL4-AxpG0mK+_qQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
+On Mi, 23.06.21 15:10, Matteo Croce (mcroce@linux.microsoft.com) wrote:
 
-On Monday 21 Jun 2021 at 14:49:36 (+0530), Viresh Kumar wrote:
-> Currently topology_scale_freq_tick() (which gets called from
-> scheduler_tick()) may end up using a pointer to "struct
-> scale_freq_data", which was previously cleared by
-> topology_clear_scale_freq_source(), as there is no protection in place
-> here. The users of topology_clear_scale_freq_source() though needs a
-> guarantee that the previously cleared scale_freq_data isn't used
-> anymore, so they can free the related resources.
-> 
-> Since topology_scale_freq_tick() is called from scheduler tick, we don't
-> want to add locking in there. Use the RCU update mechanism instead
-> (which is already used by the scheduler's utilization update path) to
-> guarantee race free updates here.
-> 
-> synchronize_rcu() makes sure that all RCU critical sections that started
-> before it is called, will finish before it returns. And so the callers
-> of topology_clear_scale_freq_source() don't need to worry about their
-> callback getting called anymore.
-> 
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Fixes: 01e055c120a4 ("arch_topology: Allow multiple entities to provide sched_freq_tick() callback")
-> Tested-by: Vincent Guittot <vincent.guittot@linaro.org>
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  drivers/base/arch_topology.c | 27 +++++++++++++++++++++------
->  1 file changed, 21 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index c1179edc0f3b..921312a8d957 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -18,10 +18,11 @@
->  #include <linux/cpumask.h>
->  #include <linux/init.h>
->  #include <linux/percpu.h>
-> +#include <linux/rcupdate.h>
->  #include <linux/sched.h>
->  #include <linux/smp.h>
->  
-> -static DEFINE_PER_CPU(struct scale_freq_data *, sft_data);
-> +static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
->  static struct cpumask scale_freq_counters_mask;
->  static bool scale_freq_invariant;
->  
-> @@ -66,16 +67,20 @@ void topology_set_scale_freq_source(struct scale_freq_data *data,
->  	if (cpumask_empty(&scale_freq_counters_mask))
->  		scale_freq_invariant = topology_scale_freq_invariant();
->  
-> +	rcu_read_lock();
-> +
->  	for_each_cpu(cpu, cpus) {
-> -		sfd = per_cpu(sft_data, cpu);
-> +		sfd = rcu_dereference(*per_cpu_ptr(&sft_data, cpu));
->  
->  		/* Use ARCH provided counters whenever possible */
->  		if (!sfd || sfd->source != SCALE_FREQ_SOURCE_ARCH) {
-> -			per_cpu(sft_data, cpu) = data;
-> +			rcu_assign_pointer(per_cpu(sft_data, cpu), data);
->  			cpumask_set_cpu(cpu, &scale_freq_counters_mask);
->  		}
->  	}
->  
-> +	rcu_read_unlock();
-> +
->  	update_scale_freq_invariant(true);
->  }
->  EXPORT_SYMBOL_GPL(topology_set_scale_freq_source);
-> @@ -86,22 +91,32 @@ void topology_clear_scale_freq_source(enum scale_freq_source source,
->  	struct scale_freq_data *sfd;
->  	int cpu;
->  
-> +	rcu_read_lock();
-> +
->  	for_each_cpu(cpu, cpus) {
-> -		sfd = per_cpu(sft_data, cpu);
-> +		sfd = rcu_dereference(*per_cpu_ptr(&sft_data, cpu));
->  
->  		if (sfd && sfd->source == source) {
-> -			per_cpu(sft_data, cpu) = NULL;
-> +			rcu_assign_pointer(per_cpu(sft_data, cpu), NULL);
->  			cpumask_clear_cpu(cpu, &scale_freq_counters_mask);
->  		}
->  	}
->  
-> +	rcu_read_unlock();
-> +
-> +	/*
-> +	 * Make sure all references to previous sft_data are dropped to avoid
-> +	 * use-after-free races.
-> +	 */
-> +	synchronize_rcu();
-> +
->  	update_scale_freq_invariant(false);
->  }
->  EXPORT_SYMBOL_GPL(topology_clear_scale_freq_source);
->  
->  void topology_scale_freq_tick(void)
->  {
-> -	struct scale_freq_data *sfd = *this_cpu_ptr(&sft_data);
-> +	struct scale_freq_data *sfd = rcu_dereference_sched(*this_cpu_ptr(&sft_data));
->  
->  	if (sfd)
->  		sfd->set_freq_scale();
-> -- 
-> 2.31.1.272.g89b43f80a514
-> 
+> On Wed, Jun 23, 2021 at 1:49 PM Christoph Hellwig <hch@infradead.org> wrote:
+> >
+> > On Wed, Jun 23, 2021 at 12:58:53PM +0200, Matteo Croce wrote:
+> > > +void inc_diskseq(struct gendisk *disk)
+> > > +{
+> > > +     static atomic64_t diskseq;
+> >
+> > Please don't hide file scope variables in functions.
+> >
+>
+> I just didn't want to clobber that file namespace, as that is the only
+> point where it's used.
+>
+> > Can you explain a little more why we need a global sequence count vs
+> > a per-disk one here?
+>
+> The point of the whole series is to have an unique sequence number for
+> all the disks.
+> Events can arrive to the userspace delayed or out-of-order, so this
+> helps to correlate events to the disk.
+> It might seem strange, but there isn't a way to do this yet, so I come
+> up with a global, monotonically incrementing number.
 
-Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
+To extend on this and given an example why the *global* sequence number
+matters:
+
+Consider you plug in a USB storage key, and it gets named
+/dev/sda. You unplug it, the kernel structures for that device all
+disappear. Then you plug in a different USB storage key, and since
+it's the only one it will too be called /dev/sda.
+
+With the global sequence number we can still distinguish these two
+devices even though otherwise they can look pretty much identical. If
+we had per-device counters then this would fall flat because the
+counter would be flushed out when the device disappears and when a device
+reappears under the same generic name we couldn't assign it a
+different sequence number than before.
+
+Thus: a global instead of local sequence number counter is absolutely
+*key* for the problem this is supposed to solve
+
+Lennart
+
+--
+Lennart Poettering, Berlin
