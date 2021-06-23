@@ -2,60 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51DB13B2289
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6B23B2296
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbhFWVia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 17:38:30 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:52544 "EHLO vps0.lunn.ch"
+        id S229934AbhFWVlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 17:41:16 -0400
+Received: from mail.nic.cz ([217.31.204.67]:55790 "EHLO mail.nic.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229688AbhFWVi3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 17:38:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=JtGYd2CbnyZHUnhcura8ytby55+LDpWyZudxq9IXkBk=; b=P4iJol+QvuF3JOdzzQd/OVd5VB
-        1ETDOXkX3XDnE8WYBENBUdCSkAD+CiZj4fyui6Bl/zsBGyk9Or6wVFumtBERcqoX/QuJxbY4EehhD
-        bPumyOFp2CJBQIAZ+uRe9tvz8Fo1Fs8hVrWoCCLB11wKbl1o8N+stXRxn4lOEReeUpfg=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lwAXY-00AtjQ-Pt; Wed, 23 Jun 2021 23:36:08 +0200
-Date:   Wed, 23 Jun 2021 23:36:08 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Marcin Wojtas <mw@semihalf.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
-        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
-        Jon Nettleton <jon@solid-run.com>,
-        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
-        lenb@kernel.org
-Subject: Re: [net-next: PATCH v3 1/6] Documentation: ACPI: DSD: describe
- additional MAC configuration
-Message-ID: <YNOpSER3lUSvwqkV@lunn.ch>
-References: <20210621173028.3541424-1-mw@semihalf.com>
- <20210621173028.3541424-2-mw@semihalf.com>
- <YNOW+mQNEmSRx/6V@lunn.ch>
- <CAPv3WKctVLzTZxH2gc-M_ZT7T-i6OmwSQk30AQ4oHEm8BUrpiw@mail.gmail.com>
+        id S229796AbhFWVlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 17:41:15 -0400
+Received: from thinkpad (unknown [172.20.6.87])
+        by mail.nic.cz (Postfix) with ESMTPSA id 6E2B4140B53;
+        Wed, 23 Jun 2021 23:38:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+        t=1624484336; bh=IbpJn7feV38gl8Ic2De823HwB1rhd+wrPh4JbEInURQ=;
+        h=Date:From:To;
+        b=tuOZlPT2WiNA0NCMPqCozcxRpR8LcgdUbhFSQWJASs+wAHBXQENZ0DEbPDLp4Vh+j
+         6ZTvqsg0MrconVh8US0kifvAj/jzObwIkmSLcDVW9r/BktHSo6GD2ByEFBjZPyZpx9
+         zJcwG5UyWHy/KOKrWmGMe6Vv30v8hwLQdEzsYf5o=
+Date:   Wed, 23 Jun 2021 23:38:54 +0200
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Ling Pei Lee <pei.lee.ling@intel.com>
+Cc:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>, davem@davemloft.net,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, weifeng.voon@intel.com,
+        vee.khee.wong@linux.intel.com, vee.khee.wong@intel.com
+Subject: Re: [PATCH net-next] net: phy: marvell10g: enable WoL for mv2110
+Message-ID: <20210623233854.03ed9240@thinkpad>
+In-Reply-To: <20210623130929.805559-1-pei.lee.ling@intel.com>
+References: <20210623130929.805559-1-pei.lee.ling@intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPv3WKctVLzTZxH2gc-M_ZT7T-i6OmwSQk30AQ4oHEm8BUrpiw@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Anyway - all above is a bit side discussion to the actual DSDT
-> description and how the fixed-link subnode looks like. I think
-> phy-mode set to "sgmii" is not incorrect, but we can change it to
-> whatever other type of your preference, as well.
+On Wed, 23 Jun 2021 21:09:29 +0800
+Ling Pei Lee <pei.lee.ling@intel.com> wrote:
 
-rgmii would be better, so we side step the whole auto-neg discussion.
+> +		/* Enable the WOL interrupt */
+> +		ret = phy_set_bits_mmd(phydev, MDIO_MMD_VEND2,
+> +				       MV_V2_PORT_INTR_MASK,
+> +				       MV_V2_WOL_INTR_EN);
+> +
+> +		if (ret < 0)
+> +			return ret;
 
-      Andrew
+Hi, in addition to what Russell said, please remove the extra newline
+between function call and return value check, i.e. instead of
+  ret = phy_xyz(...);
+
+  if (ret)
+     return ret;
+
+  ret = phy_xyz(...);
+
+  if (ret)
+     return ret;
+
+do
+  ret = phy_xyz(...);
+  if (ret)
+     return ret;
+
+  ret = phy_xyz(...);
+  if (ret)
+     return ret;
+
+This is how this driver does this everywhere else.
+
+Do you have a device that uses this WoL feature?
+
+Marek
