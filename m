@@ -2,87 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5113B3B172E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ACBE3B1732
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhFWJtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 05:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229833AbhFWJtk (ORCPT
+        id S230273AbhFWJuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 05:50:21 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:19176 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229833AbhFWJuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 05:49:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA4F7C061574;
-        Wed, 23 Jun 2021 02:47:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8Ywl5L2ZPG3F3nRTyNYLoYPvfOhwKYjLH9p9+WMM1lg=; b=k2MsE88ocdP3lEuvBTOIHl0Ml2
-        IWrwgPNk4KHLuVZtA0QxLdtMHvxaYO1HEqTO8vVQGU6VXwPvdi+cdy40pu0GPR55ix3KimrCPz09V
-        3OHNaYqUVHu8Zkar3e+XrxDTpYfrHx1K/OQE/woOLGVnUmWRA59wzSImBgqZqNh4g36hvWBLQnhZO
-        aI9WA89Dn1lIO9v4LWsnlFCNpWrW9xvY6bJFQrk/IW8kfs/eB/YvfItl12TAmrFHt3PPhOcG/ylfU
-        kwMtOffGvHWEqPIZMcknse7AfZajBJ/waONeCTLPxYUXJMadzOi2mXSFBrwegRPD5EnAzU1qKDMwJ
-        Qfkm+B5A==;
-Received: from [2001:4bb8:188:3e21:6594:49:139:2b3f] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvzSo-00FHPW-09; Wed, 23 Jun 2021 09:46:39 +0000
-Date:   Wed, 23 Jun 2021 11:46:28 +0200
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 34/46] mm/filemap: Add i_blocks_per_folio()
-Message-ID: <YNMC9BDVexAnnHaK@infradead.org>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-35-willy@infradead.org>
+        Wed, 23 Jun 2021 05:50:18 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15N9ZWor021240;
+        Wed, 23 Jun 2021 09:47:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=FA+wKCvEqhPL++IUAHUQdMEuak2t5x5+jh4eWW+pcyg=;
+ b=ogBxUl36I7sVZ27nLgITcq3jsMiGbHXYZunKDllpR1LKEQ53uLOd0XtXjg9EAE4KOXBE
+ NNoteLvlfB27v4/29NARzeGBrmfHA91xh8UnueK/pPlYpm6MrAMUXKRSGk4sYV6vl9OL
+ t9B9PddMhiA0ooVRancKGN4Wy/RpBJY1gs9NrYrRjDoZ26ABWX77ayKYCoHeWKXlOt+i
+ mnO4IaUjcVO29E2t5Z0ztGTf7JYt8uwRB8omO2K4XjkN0yVXPNlv201S4oTQjQhqazIq
+ JR2Z/f4nwtyIUSgTuGGyV3SxV7K3bFEubHoLvAm0+ehlWR2Dh+ntmzpaaQ2mkkbMHjpM 4A== 
+Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39aqqvwe8d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Jun 2021 09:47:11 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15N9kv8W182759;
+        Wed, 23 Jun 2021 09:47:10 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 3995pxyyju-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Jun 2021 09:47:10 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15N9l9fU183647;
+        Wed, 23 Jun 2021 09:47:09 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 3995pxyyhn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Jun 2021 09:47:09 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 15N9l4r9018569;
+        Wed, 23 Jun 2021 09:47:05 GMT
+Received: from kadam (/102.222.70.252)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 23 Jun 2021 02:47:04 -0700
+Date:   Wed, 23 Jun 2021 12:46:55 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     support.opensource@diasemi.com, lgirdwood@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        Adam.Thomson.Opensource@diasemi.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] ASoC: da7219: Fix an out-of-bound read in an error
+ handling path
+Message-ID: <20210623094655.GB2116@kadam>
+References: <4fdde55198294a07f04933f7cef937fcb654c901.1624425670.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210622121551.3398730-35-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <4fdde55198294a07f04933f7cef937fcb654c901.1624425670.git.christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: KXRfO7fq66-Z4md6qkgM-t4DEuQv-mgZ
+X-Proofpoint-GUID: KXRfO7fq66-Z4md6qkgM-t4DEuQv-mgZ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 01:15:39PM +0100, Matthew Wilcox (Oracle) wrote:
-> Reimplement i_blocks_per_page() as a wrapper around i_blocks_per_folio().
+On Wed, Jun 23, 2021 at 07:22:45AM +0200, Christophe JAILLET wrote:
+> If 'of_clk_add_hw_provider()' fails, the previous 'for' loop will have
+> run completely and 'i' is know to be 'DA7219_DAI_NUM_CLKS'.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> In such a case, there will be an out-of-bounds access when using
+> 'da7219->dai_clks_lookup[i]' and '&da7219->dai_clks_hw[i]'.
+> 
+> To avoid that, add a new label, 'err_free_all', which set the expected
+> value of 'i' in such a case.
+> 
+> Fixes: 78013a1cf297 ("ASoC: da7219: Fix clock handling around codec level probe")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
->  include/linux/pagemap.h | 18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
+>  sound/soc/codecs/da7219.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index 31edfa891987..c30db827b65d 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -1149,19 +1149,25 @@ static inline int page_mkwrite_check_truncate(struct page *page,
->  }
+> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+> index 13009d08b09a..1e8b491d1fd3 100644
+> --- a/sound/soc/codecs/da7219.c
+> +++ b/sound/soc/codecs/da7219.c
+> @@ -2204,12 +2204,14 @@ static int da7219_register_dai_clks(struct snd_soc_component *component)
+>  					     da7219->clk_hw_data);
+>  		if (ret) {
+>  			dev_err(dev, "Failed to register clock provider\n");
+> -			goto err;
+> +			goto err_free_all;
+>  		}
+>  	}
 >  
->  /**
-> - * i_blocks_per_page - How many blocks fit in this page.
-> + * i_blocks_per_folio - How many blocks fit in this folio.
->   * @inode: The inode which contains the blocks.
-> - * @page: The page (head page if the page is a THP).
-> + * @folio: The folio.
->   *
-> - * If the block size is larger than the size of this page, return zero.
-> + * If the block size is larger than the size of this folio, return zero.
->   *
-> - * Context: The caller should hold a refcount on the page to prevent it
-> + * Context: The caller should hold a refcount on the folio to prevent it
->   * from being split.
-> - * Return: The number of filesystem blocks covered by this page.
-> + * Return: The number of filesystem blocks covered by this folio.
->   */
-> +static inline
-> +unsigned int i_blocks_per_folio(struct inode *inode, struct folio *folio)
+>  	return 0;
+>  
+> +err_free_all:
+> +	i = DA7219_DAI_NUM_CLKS - 1;
+>  err:
+>  	do {
+>  		if (da7219->dai_clks_lookup[i])
 
-Weirdo formatting (same as i_blocks_per_page, but I'd still rather avoid
-it).
+This do while statement is wrong and it leads to potentially calling
+clk_hw_unregister() on clks that haven't been registered.
 
-Otherwise looks good:
+I think that calling clk_hw_unregister() on unregistered clocks is
+supposed to okay but I found a case where it leads to a WARN_ON()
+(Nothing else harmful).  It's in __clk_register() if the alloc_clk()
+fails:
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+	hw->clk = alloc_clk(core, NULL, NULL);
+        if (IS_ERR(hw->clk)) {
+                ret = PTR_ERR(hw->clk);
+                goto fail_create_clk;  // <- forgot to set hw->clk = NULL
+        }
+
+The better way to handle errors from loops is to clean up partial
+iterations before doing the goto.  So add a clk_hw_unregister() if the
+dai_clk_lookup = clkdev_hw_create() assignment fails.  Then use a
+while (--i >= 0) loop in the unwind section:
+
+err_free_all:
+	i = DA7219_DAI_NUM_CLKS;
+err:
+	while (--i >= 0) {
+
+regards,
+dan carpenter
+
