@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094C83B1A47
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B2A3B1A46
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbhFWMhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33366 "EHLO
+        id S230415AbhFWMhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:37:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbhFWMhG (ORCPT
+        with ESMTP id S230170AbhFWMhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Jun 2021 08:37:06 -0400
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973A2C061574
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0578C061756
         for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:34:48 -0700 (PDT)
-Received: by mail-wm1-x34a.google.com with SMTP id v2-20020a7bcb420000b0290146b609814dso556663wmj.0
+Received: by mail-wr1-x44a.google.com with SMTP id h17-20020adff4d10000b029011a7b7961dbso1013785wrp.15
         for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:34:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=mhqk3bJ8TzwOEMfK4Y0G6olPPNPdwc+Y9vj5xjXTf70=;
-        b=c2Z+7d1552P121A3rXuQWByk137vnSoac10fCzUkTj44JRx3UtwsmkxXH+fe8QWhW+
-         9ADtyfL19DYX8TtHbnblIhyYelSaofuND7+9qIl87UREh3pQeEeBE88eF2zcKz7L8B9b
-         /RfUK9LfelkrpSzp/ObAJ9tNim44lg1a0/RC092ZrKbsJdTFivYcAe0MbadDI2kqRrpC
-         QmwjqyjrNgH/UeJfekHQIbafIjHED52zOohCjlTT9w1xc6vcFVTPqn2efInglxBZbi2f
-         7b5D2zrEacroADcgYFEkTyDzGlAn245o79+DulAyDYyJdKmGM8eKeKKolsI4QqEYVvXO
-         geHA==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=T0nSoJ5wzCyMprwr8b/+7hv8RW3/0jpCRYtsGO6gL4Q=;
+        b=TByi0SbBnqTnjMPgblA791r9/PtSoxty8K5P02++XsSzLWpYVq4k1HpUUmsPdxIAB5
+         Y6GG8enviW5savGoi0XIfwyNwb247sON2Q8P5r7UZNMr35OYxYFC5eDb8w9Yd6WIFkTf
+         LdGecknpLWj+Q/t7074wAfwMnybPj7Is4MGT8DJM62BdfiAu3Ybyqt9yYuFlu55KOaxt
+         dVm8mbWBZGXYZdog4XKJqQSN/YAkT7irkn7OiMmE/jq7x6RGFcXiEdp2J4fhTxckha+D
+         uECYcftFoBYJsef/vIFJ5nOh0xwnjrRLQ4HUOS2rq7HOPN3tPIwJCC5S5tgruA7J0bqB
+         ruZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=mhqk3bJ8TzwOEMfK4Y0G6olPPNPdwc+Y9vj5xjXTf70=;
-        b=pHYSYH20bQw16fpAkrbWINMivXJUj5Noa8T35VcX4l0NEcT3ST2rCYyacSoZ7o3lKe
-         FrGNizsxxVle8Pb0kstln78YDDxALf6mta+zNRIZY0vMaW9V99RI9XHhyXw8A02uBKDX
-         xEJf35xc/9EUf5TKWJSmf0CjkrJqoExhA1LXMAuzzcmXSdPzUnNWGjxrvRmxcmq48Ogd
-         TJf8/PXdcOhik47piJSnTOgBm3shCr/t3CPeBANDU3IzZv8gtvjBkJrFFruDaOW4siAQ
-         w4jUUpq9waxCqPukild5u7b2AmzRUkXHiWZJjEfDxsbmh0q/PPiZU6Y0bVQPl3nbMvyQ
-         XBYA==
-X-Gm-Message-State: AOAM530lelMDlzpYCpmkFQKjXnR175gaKf9Ss/JFL9DhkNYybnRvb9DE
-        qiudU8U1wNId2QKwTEbIeHE1y0ksewEG
-X-Google-Smtp-Source: ABdhPJx8KfieE+NfCDEln9nDGN6Xjuci5VinmNyEOsdfRf4O3q3Rf38aX/UCIpcpJdN7AgHeGizwII92SG+T
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=T0nSoJ5wzCyMprwr8b/+7hv8RW3/0jpCRYtsGO6gL4Q=;
+        b=eAuW+woYw+D6rYxJ81JJStfTOy1Fw+wSLOpJExq/5gFGyhRO0QPmQzRSySY9KXw/4/
+         80DUaUHGfzIBdVOW8dDo9eGvwfGfa3cSI6D2d2rOpKuToM/RU0JUH+0hHmpV8FnDKbdw
+         8mp9Imr92YFZotemaq4jK1oS3R7EPXtPjTuTQIB0JRNHhZc1cukOaXJsyXnjM0mAePAA
+         ny4X8CUTCeeiOnHqAcmmX1/c7/gLcahN7JmK51uLRcMFmofOcYAdKOBctPW+XN1hCQlz
+         HdoOvB3vUOo/NzxyYfu8YK6dVAxguafR+r4XOBAq0bhbMvSYaLZH2g+SzjqA32arx1Y3
+         AAGA==
+X-Gm-Message-State: AOAM530FjD2wRFsHtZQhRft17mDLLyEy0blVmE9F6amuGjyNmfgEr67V
+        otjOY9HlxoKgR8RYlOyU/P/tB7f5UQWX
+X-Google-Smtp-Source: ABdhPJwtdIeL9bm/b1l+yYiZ6Wf1aYJWJnuIXZjmBJLSPP0kAGVIA3o5mfWS9QiZtgUNXtEP/+/+2KmGL84a
 X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a1c:7219:: with SMTP id
- n25mr10394477wmc.3.1624451685037; Wed, 23 Jun 2021 05:34:45 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 12:34:38 +0000
-Message-Id: <20210623123441.592348-1-qperret@google.com>
+ (user=qperret job=sendgmr) by 2002:a05:6000:8b:: with SMTP id
+ m11mr11018582wrx.22.1624451687474; Wed, 23 Jun 2021 05:34:47 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 12:34:39 +0000
+In-Reply-To: <20210623123441.592348-1-qperret@google.com>
+Message-Id: <20210623123441.592348-2-qperret@google.com>
 Mime-Version: 1.0
+References: <20210623123441.592348-1-qperret@google.com>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH v3 0/3] sched: A few uclamp fixes and tweaks
+Subject: [PATCH v3 1/3] sched: Fix UCLAMP_FLAG_IDLE setting
 From:   Quentin Perret <qperret@google.com>
 To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
         dietmar.eggemann@arm.com, qais.yousef@arm.com, rickyiu@google.com,
@@ -59,30 +63,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+The UCLAMP_FLAG_IDLE flag is set on a runqueue when dequeueing the last
+active task to maintain the last uclamp.max and prevent blocked util
+from suddenly becoming visible.
 
-This is the v3 of a series previously posted here:
+However, there is an asymmetry in how the flag is set and cleared which
+can lead to having the flag set whilst there are active tasks on the rq.
+Specifically, the flag is cleared in the uclamp_rq_inc() path, which is
+called at enqueue time, but set in uclamp_rq_dec_id() which is called
+both when dequeueing a task _and_ in the update_uclamp_active() path. As
+a result, when both uclamp_rq_{dec,ind}_id() are called from
+update_uclamp_active(), the flag ends up being set but not cleared,
+hence leaving the runqueue in a broken state.
 
-  https://lore.kernel.org/r/20210610151306.1789549-1-qperret@google.com
+Fix this by clearing the flag in uclamp_idle_reset() which is also
+called in both paths to ensure things remain symmetrical.
 
-The first two patches are fixes that probably make sense on their own.
-The 3rd patch introduces a new RLIMIT for uclamp, which can be used to
-prevent userspace tasks from messing with their own uclamp requests.
+Fixes: e496187da710 ("sched/uclamp: Enforce last task's UCLAMP_MAX")
+Reported-by: Rick Yiu <rickyiu@google.com>
+Reviewed-by: Qais Yousef <qais.yousef@arm.com>
+Signed-off-by: Quentin Perret <qperret@google.com>
+---
+ kernel/sched/core.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Thanks!
-Quentin
-
-Quentin Perret (3):
-  sched: Fix UCLAMP_FLAG_IDLE setting
-  sched: Skip priority checks with SCHED_FLAG_KEEP_PARAMS
-  sched: Introduce RLIMIT_UCLAMP
-
- fs/proc/base.c                      |  1 +
- include/asm-generic/resource.h      |  1 +
- include/uapi/asm-generic/resource.h |  3 +-
- kernel/sched/core.c                 | 72 ++++++++++++++++++++++-------
- 4 files changed, 59 insertions(+), 18 deletions(-)
-
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 4ca80df205ce..e514a093a0ba 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -980,6 +980,7 @@ static inline void uclamp_idle_reset(struct rq *rq, enum uclamp_id clamp_id,
+ 	if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
+ 		return;
+ 
++	rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+ 	WRITE_ONCE(rq->uclamp[clamp_id].value, clamp_value);
+ }
+ 
+@@ -1252,10 +1253,6 @@ static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
+ 
+ 	for_each_clamp_id(clamp_id)
+ 		uclamp_rq_inc_id(rq, p, clamp_id);
+-
+-	/* Reset clamp idle holding when there is one RUNNABLE task */
+-	if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
+-		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+ }
+ 
+ static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
 -- 
 2.32.0.288.g62a8d224e6-goog
 
