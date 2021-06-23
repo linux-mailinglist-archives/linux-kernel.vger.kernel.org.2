@@ -2,88 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FA63B1AA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3243B1AA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbhFWND2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbhFWNDZ (ORCPT
+        id S231126AbhFWNER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:04:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54497 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230449AbhFWNEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:03:25 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D105C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 06:01:07 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id n23so1588431wms.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 06:01:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ffHHvblSbftugRKNFHdCEz54FjByJU5jPBUJvQCLlKQ=;
-        b=oyyFAIRvKscBPkw8wh5lHltPrhJujf66ARDgrmsGXfZZkEDnR9EdbD8p4USEHKep9i
-         pNglgshUvSTw+JnANym/3qKYIOOJUShQiguybMK3lGMupsNjn/g5Sz1v880K5SdKsc0H
-         PBmlcEi95+urYSkMZzW+hRQl5NiBJOGtVb4l+jfsJ4HNSeQGLOFRQ6pU3nmwoMmWNHyp
-         54ANU6cb1slIPjkqZAx1c+EjOvf/jEPbZoM1Vh7eyeQQnZtfanHfQyVzT9DGIPWg+LFQ
-         pZcxER23meMDlHIEIYG9Z0aU90B3F6oDeN+smOBEHofDrWumsII0Swobb9Diwf0sHmrZ
-         ZWAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ffHHvblSbftugRKNFHdCEz54FjByJU5jPBUJvQCLlKQ=;
-        b=nUQaJkfh/lj7kJ63meEbZePcW50IJkZ8OCeAOXzOO30U7YSpzTWbtQuHuw6289fr8O
-         hBq3yYqCt4tXkAA8alXfEWya9s+KhI+iWImrueMKXDG421tJ2On2V4WJ3+k4TFCjZ1ws
-         2tWpmj+p1pCudoj3mTWJA5jXZgOfS77h9VOxeHN/Jx0RdGnTODyfzgrzwRJhGb7F3uKN
-         IVMKgMNrf6boB0xjuRJoZMEENAFVi/WIQKqSqQdANwpiEZ5HI3gcijJvKJ2PFsRIjISJ
-         DwUH6EDABFeC/s0csoub8KyplMZL3LtiE8Rct5gTrMMh+pv49rJZmIItlz7s+WvYxtFJ
-         JBDQ==
-X-Gm-Message-State: AOAM531W5FhRuopK/HNtTx0HfghcVSbFrXziVH4dacEZ42CEfZpymchE
-        ZfCD7Et//HfseHZyB6Dcjd4Tiw8xiLPfMw==
-X-Google-Smtp-Source: ABdhPJyfp7sk2hIwqXsoJm9h+R+fkogfD0djsKDKd5eRr/WPRXfmRcg+OEudeCqk5SS3L7Rs+t7V0Q==
-X-Received: by 2002:a05:600c:a01:: with SMTP id z1mr10878368wmp.77.1624453265743;
-        Wed, 23 Jun 2021 06:01:05 -0700 (PDT)
-Received: from agape ([5.171.81.217])
-        by smtp.gmail.com with ESMTPSA id c8sm1946696wri.91.2021.06.23.06.01.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 06:01:05 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8723bs: convert function to static
-Date:   Wed, 23 Jun 2021 15:01:03 +0200
-Message-Id: <20210623130103.7727-1-fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Wed, 23 Jun 2021 09:04:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624453318;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TyzGFBztt+s07R786vixast5a60Y52xKVtpSjaEcYoA=;
+        b=Ea33kkjWQje3aqnox6tBvTk7OAskUl7R4wIrSE7/pnZbybgNhXSFxBpi7Zbik0+lsHOKy5
+        +er38r+fvCJVps+hFAZLL0d117MrOhih5nAjlh+zn+5ZahOQryxclWEkwtrt2dugt8obVz
+        JVgDn1N21RpAUmZ0S1jb6zLf43uCog4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-86-fGOYNdKuOe20KKvS4uxNMg-1; Wed, 23 Jun 2021 09:01:57 -0400
+X-MC-Unique: fGOYNdKuOe20KKvS4uxNMg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BB5E0802C80;
+        Wed, 23 Jun 2021 13:01:55 +0000 (UTC)
+Received: from starship (unknown [10.40.192.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BAE0910246F1;
+        Wed, 23 Jun 2021 13:01:49 +0000 (UTC)
+Message-ID: <53a9f893cb895f4b52e16c374cbe988607925cdf.camel@redhat.com>
+Subject: Re: [PATCH RFC] KVM: nSVM: Fix L1 state corruption upon return from
+ SMM
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Cathy Avery <cavery@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 23 Jun 2021 16:01:48 +0300
+In-Reply-To: <a3918bfa-7b4f-c31a-448a-aa22a44d4dfd@redhat.com>
+References: <20210623074427.152266-1-vkuznets@redhat.com>
+         <a3918bfa-7b4f-c31a-448a-aa22a44d4dfd@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-function chk_sta_is_alive() is used only inside core/rtw_ap.c
-so remove the prototype and convert it to static.
+On Wed, 2021-06-23 at 11:39 +0200, Paolo Bonzini wrote:
+> On 23/06/21 09:44, Vitaly Kuznetsov wrote:
+> > - RFC: I'm not 100% sure my 'smart' idea to use currently-unused HSAVE area
+> > is that smart. Also, we don't even seem to check that L1 set it up upon
+> > nested VMRUN so hypervisors which don't do that may remain broken. A very
+> > much needed selftest is also missing.
+> 
+> It's certainly a bit weird, but I guess it counts as smart too.  It 
+> needs a few more comments, but I think it's a good solution.
+> 
+> One could delay the backwards memcpy until vmexit time, but that would 
+> require a new flag so it's not worth it for what is a pretty rare and 
+> already expensive case.
+> 
+> Paolo
+> 
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_ap.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Hi!
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_ap.c b/drivers/staging/rtl8723bs/core/rtw_ap.c
-index 23bbdf084631..3e2d8b735fc8 100644
---- a/drivers/staging/rtl8723bs/core/rtw_ap.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_ap.c
-@@ -164,8 +164,7 @@ static void update_BCNTIM(struct adapter *padapter)
- 	pnetwork_mlmeext->IELength = offset + remainder_ielen;
- }
- 
--u8 chk_sta_is_alive(struct sta_info *psta);
--u8 chk_sta_is_alive(struct sta_info *psta)
-+static u8 chk_sta_is_alive(struct sta_info *psta)
- {
- 	sta_update_last_rx_pkts(psta);
- 
--- 
-2.20.1
+I did some homework on this now and I would like to share few my thoughts on this:
+
+First of all my attention caught the way we intercept the #SMI
+(this isn't 100% related to the bug but still worth talking about IMHO)
+
+A. Bare metal: Looks like SVM allows to intercept SMI, with SVM_EXIT_SMI, 
+ with an intention of then entering the BIOS SMM handler manually using the SMM_CTL msr.
+ On bare metal we do set the INTERCEPT_SMI but we emulate the exit as a nop.
+ I guess on bare metal there are some undocumented bits that BIOS set which
+ make the CPU to ignore that SMI intercept and still take the #SMI handler,
+ normally but I wonder if we could still break some motherboard
+ code due to that.
+
+
+B. Nested: If #SMI is intercepted, then it causes nested VMEXIT.
+ Since KVM does enable SMI intercept, when it runs nested it means that all SMIs 
+ that nested KVM gets are emulated as NOP, and L1's SMI handler is not run.
+
+
+About the issue that was fixed in this patch. Let me try to understand how
+it would work on bare metal:
+
+1. A guest is entered. Host state is saved to VM_HSAVE_PA area (or stashed somewhere
+  in the CPU)
+
+2. #SMI (without intercept) happens
+
+3. CPU has to exit SVM, and start running the host SMI handler, it loads the SMM
+    state without touching the VM_HSAVE_PA runs the SMI handler, then once it RSMs,
+    it restores the guest state from SMM area and continues the guest
+
+4. Once a normal VMexit happens, the host state is restored from VM_HSAVE_PA
+
+So host state indeed can't be saved to VMC01.
+
+I to be honest think would prefer not to use the L1's hsave area but rather add back our
+'hsave' in KVM and store there the L1 host state on the nested entry always.
+
+This way we will avoid touching the vmcb01 at all and both solve the issue and 
+reduce code complexity.
+(copying of L1 host state to what basically is L1 guest state area and back
+even has a comment to explain why it (was) possible to do so.
+(before you discovered that this doesn't work with SMM).
+
+Thanks again for fixing this bug!
+
+Best regards,
+	Maxim Levitsky
 
