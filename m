@@ -2,191 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6A73B23EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3053B23F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhFWXXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 19:23:54 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:35054 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229688AbhFWXXw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 19:23:52 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15NNFifv032131;
-        Wed, 23 Jun 2021 23:21:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2020-01-29;
- bh=9A8DxVX1PzDZMcoIRrAtg5masHWf9hAJAzhGZt8EsSo=;
- b=t8kaNabxHl2BN/JptHrZQ/BhUkllGtjwh+dxv1s7yngOPbiL1E2PzfRgV4KGXZYziDs4
- 10mljceC2HG8ZR2rr6/XV+e54rjbewIH29rM/203xj1XqI0oRkOcSZgfcgZsVkgJs7AJ
- vWwEPilmLlTdm8ZeV2WXHrJ87EwJxLvPuBdE1vs/x0ZXpCLu0z3+z/b/0JxByf9MWZXC
- YFyH0KlYNZWBW0eMvx8YlLld6Fw7Ys08TA5yQDIoEwo2vhMTc+vtzZeou43jcC1V3Gbo
- KHjNbV60f4/N9JbyR3Ver0i1tqTK4dc/dVhvlWWWKaqx1ugxkYmMKbgHh+T/pus+J8pZ Dg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39c634s5x3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Jun 2021 23:21:31 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15NNFhQN021821;
-        Wed, 23 Jun 2021 23:21:30 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2045.outbound.protection.outlook.com [104.47.73.45])
-        by aserp3030.oracle.com with ESMTP id 3996mfr92u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Jun 2021 23:21:30 +0000
+        id S229826AbhFWXj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 19:39:27 -0400
+Received: from mga03.intel.com ([134.134.136.65]:30535 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229726AbhFWXj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 19:39:26 -0400
+IronPort-SDR: V0mOCDFtLxEs38O64qwjZVbekz35tKTlXyKUS3HsgG4jMdQ3Ke735epucuITED1+9y++R5FnYK
+ POSLdFwRKy6w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="207404008"
+X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
+   d="scan'208";a="207404008"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 16:37:08 -0700
+IronPort-SDR: 4OebLzyy/qxQiFP8wFKUkTFgyV4VvPfjEXeQ+r3Ik6LDBDELkPvNFoNaJN6UIgpIVgHz8adgCC
+ KlNpIntx9GTA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
+   d="scan'208";a="406466179"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga006.jf.intel.com with ESMTP; 23 Jun 2021 16:37:07 -0700
+Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Wed, 23 Jun 2021 16:37:07 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Wed, 23 Jun 2021 16:37:07 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.176)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Wed, 23 Jun 2021 16:37:07 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C6JkZvl5qrSbVteUv0tTjEHVZx6KeqlwM5XDAdq3Jq0IvURCJayMOyw+czOjyQPHYeegJkpYwDKNvGnn/UuEHr2rWzP1Eg4ZR5ldiGG0lFlsWqg93d1FsymsmqmCmBQTNa4MQuxhmHLoQVdXQG3UNAhgYjIlqxtx5/QvSuRkAxy/wigHutu7jtjoMOWVUZIn2zeaMfT7iZ2zl/PH/ruZzf4Sm6jmz08AMW2e9MTPbpWNNgkITCe74XFpJaZH5dunvoQB35caf5B8qtbiGUQLADJaQDT+0qiyvTqgq1Q9q2Jud+ZXI5HRiJ0WhC5IQmObW39zf1X7yhPyJWVjmarflg==
+ b=XOGEnPa1kSuu2U9Z2wSW+cJJmOm8fWKENJ1BgTYMFj9+UhhDfIw7a6FCEUliGVJHycWXb+edALGp2uIzpwma7Sy6joHJCETxJbqctckOSo3ASkhJjLU2xbDzawsR78W8a9Vyb/UjDps0kruqya815TONvMsS0sQbvuDALYt3isS/h9GPf7NTZZjbX00VWm8YHwvhFiPxazuVicLFIO0T5vJlABV7WGk6p863V1O9LxgGQzxp5XZ159WAarwiHVUuJmMnm81gCpUwg76GD84bO0NOccOMBnnorKy1d+uUWbQQPhwFoimhyVW08ei2hTplLkcpgGN1XJvLEICbqZvbJA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9A8DxVX1PzDZMcoIRrAtg5masHWf9hAJAzhGZt8EsSo=;
- b=OpxZSPQcutRWebxJ+cDko02B68XFQDUF6EXQirQWdiIKOoZBTbuAec0C12ZWaB9uJZ17ZchcVIZsaUQBe5z0E3XQ+vOwbxMZMLFAZ8dKVzLp8/ZjiLsLyhQjyvhjRP/QHHmw2OXtqUs1+dHLF9JPMIixng2qrmd3Fnj2yukeaOqJMYPQX+q+5TIginwuYrj++mTco+QFYiuqUESX6xxsm1UEBZR6xke/7WczSszT7V+bM9rxudsrJjQ5/HbyO9GegOa8cpukdC/M/UwNXdzd9JjNGyOAOefo9twsH58vnQe+Mv9Nqq3dc1kiAlYmMGGd9EJDm0MNVK1hFs9TU18DgQ==
+ bh=ikzHZEuhTlqOWebinQqP/K7ohbbQ1CORBGdCy5esD5Y=;
+ b=ADJcoBKcFCYcOvdu3Q4dHLeupAgvY9O9/jQ2WEK5sXM6lNbUVWc63XBx1b0a3pq2o12SGqtIALyBGnkkq/8xJcEoYO5ckAWifmgcTkWoTRZPyyHFX8tCRkqHNrpqL6dloLv6H/2t4suSdBq1bk728KqcgRu0oWjjzA79NxVanCanPvdbWsrx+yhI1A3r0hRP66oY6IyOqiaaDT5nb5R6hHuxjyPeNr4MA4tE/MaPaQfkyMTEH8uEStSWz595vtWkQjfE8bbqpprUN3l1diMu44+3C39MdUg33Y8e4vAeAVYpVgDc3VLt5bw8Ch6birxiB29HYIrEUr4qD3KAF5YLDg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9A8DxVX1PzDZMcoIRrAtg5masHWf9hAJAzhGZt8EsSo=;
- b=PaqSOBU+nT0o8piO3lDfhXsVuYmL1c8ia9Mb8AEG5Un+eConC0HehIY8ctEg7Nbwx6FMvoFjL33Wk8CnKfq2eBV2TpkxUANkHGJH82DJm/wjBCJq+XDcoFiYd0RK9wDsrDGh/hkifC8KxexmD8hLlX64ASpRarM87KeCtxlKeW4=
-Authentication-Results: mit.edu; dkim=none (message not signed)
- header.d=none;mit.edu; dmarc=none action=none header.from=oracle.com;
-Received: from SN6PR10MB2830.namprd10.prod.outlook.com (2603:10b6:805:cc::33)
- by SN6PR10MB2624.namprd10.prod.outlook.com (2603:10b6:805:4c::22) with
+ bh=ikzHZEuhTlqOWebinQqP/K7ohbbQ1CORBGdCy5esD5Y=;
+ b=v5GoGmaBEa6qwVSAUmlxqe5YJPyMPieMykaYQugenGyKzuF2Xv96pKWuhh+5iPqXLEvqd9Gl31ylaX1//KbBv+evlz+Gllh7etcuiNpwnaJbwa68awarPbjoyWpHnUI0HOF8VPWhIwYqdhLitLg3eg7S+WN8LqJzBUawq7kxbUU=
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com (2603:10b6:300:110::9)
+ by MW3PR11MB4715.namprd11.prod.outlook.com (2603:10b6:303:57::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.23; Wed, 23 Jun
- 2021 23:21:28 +0000
-Received: from SN6PR10MB2830.namprd10.prod.outlook.com
- ([fe80::7523:a95d:4ab8:7f29]) by SN6PR10MB2830.namprd10.prod.outlook.com
- ([fe80::7523:a95d:4ab8:7f29%3]) with mapi id 15.20.4242.025; Wed, 23 Jun 2021
- 23:21:28 +0000
-From:   Stephen Brennan <stephen.s.brennan@oracle.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Junxiao Bi <junxiao.bi@oracle.com>
-Subject: [PATCH] ext4: use ext4_grp_locked_error in mb_find_extent
-Date:   Wed, 23 Jun 2021 16:21:14 -0700
-Message-Id: <20210623232114.34457-1-stephen.s.brennan@oracle.com>
-X-Mailer: git-send-email 2.30.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [2606:b400:8004:44::1d]
-X-ClientProxiedBy: SN4PR0501CA0041.namprd05.prod.outlook.com
- (2603:10b6:803:41::18) To SN6PR10MB2830.namprd10.prod.outlook.com
- (2603:10b6:805:cc::33)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Wed, 23 Jun
+ 2021 23:37:03 +0000
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::6597:eb05:c507:c6c1]) by MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::6597:eb05:c507:c6c1%12]) with mapi id 15.20.4242.024; Wed, 23 Jun
+ 2021 23:37:03 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Alex Williamson <alex.williamson@redhat.com>
+CC:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, KVM <kvm@vger.kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        "Bjorn Helgaas" <helgaas@kernel.org>
+Subject: RE: Virtualizing MSI-X on IMS via VFIO
+Thread-Topic: Virtualizing MSI-X on IMS via VFIO
+Thread-Index: AddnMs7+4GfLhTceT8q8tdV8716lmQAZ7UiAAAoHBgAACsXtAAAX4LwAAA2wIPA=
+Date:   Wed, 23 Jun 2021 23:37:03 +0000
+Message-ID: <MWHPR11MB1886BB017C6C53A8061DDEE28C089@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <20210622131217.76b28f6f.alex.williamson@redhat.com>
+ <87o8bxcuxv.ffs@nanos.tec.linutronix.de>
+ <MWHPR11MB1886811339F7873A8E34549A8C089@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <87bl7wczkp.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <87bl7wczkp.ffs@nanos.tec.linutronix.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: linutronix.de; dkim=none (message not signed)
+ header.d=none;linutronix.de; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.142.21]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 77b388e5-8dbe-4f89-3935-08d9369fce52
+x-ms-traffictypediagnostic: MW3PR11MB4715:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW3PR11MB47158D7C243CB311A2D13AA78C089@MW3PR11MB4715.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /+/DR/Y+xChXnXu+NirIlKDywIS+/Y7I2M7bJpdLPG9HuSyoxyheNQHHXjsTTjRQ9aiwCK5j7kMc7Y9DEmPM4Ghvo67oeeNOpMvtyDgGO5ZSs3RRX0kmPDQ/chBfgFcIc/77OYeCfMWZjLOKczweeOy28aq6CzvSrb87PciC/o/QK2+U4NgoyeBqD7FVUbqp8FpYYHA6MSHhL83ZSetsDa3dkaFLNwA9SBODQm/DBNHT2kLJuRH65T7uCux/7cHibDeMJl61WTgDapiqsAIzvFV9dz9s4OuVKwztGONTkxbA7FNw5DR0Gc2Vx+neyqL3o17aTnzjl17SAW6PPVkgFVLUYTkbLz0se31bggv8y/O9Jy7V6ntwezSmJNcLjEN3oyTHDgSwJDxdcMLIzrx8UJjouc3ux2nNiaI9xXVlYtSL/2jOzvTw4pNgd1vv392Fhgpb7kKcO2Y3ip9FrywjjVAI33UU/CDFESIc1D4jwb48V9y9taxtzVRUyVzBg94Tw2QBZQ4RTv8gpdruI3PrDLkSuPEe/5rsdvNrKEUNZ8SmDLVljwReJdYxZPGzg/ABDYIWZVqgucTdk894pmIgs5B/Lo+dX+EwAe134TV5zJU=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1886.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(396003)(376002)(39860400002)(366004)(6506007)(83380400001)(26005)(7696005)(7416002)(55016002)(33656002)(478600001)(122000001)(4326008)(38100700002)(9686003)(186003)(8676002)(2906002)(76116006)(71200400001)(5660300002)(66556008)(64756008)(66946007)(66446008)(66476007)(52536014)(8936002)(110136005)(54906003)(316002)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?74Vlam4pPM4wyo9ldcH40+KhQX9z9KZ/W0hgslW7w2UBwMgIcYi91jlYuxr1?=
+ =?us-ascii?Q?7PDptfwztg89CJFYMKZCP4/oQoSf2XBaMieR7O/oyv7jI6GpQ3d0ZYF1ZvGi?=
+ =?us-ascii?Q?JrwqGLQ2V8QcSbwLg0Rbxs95Tj7lVX0v0gnxUCWrP2MBD89FpAeM/2fCV5Oh?=
+ =?us-ascii?Q?BpdosmqwJUYwvuT3dHu5/algc8TwFaO3a3m8z+sC1GI0o0GU2vb/cVWm3y74?=
+ =?us-ascii?Q?QOp6jtOl230ZoY5SM+0X7Z1q14Yjt7DH+gIOsIFqXs6dBNBGDddql2Z4hWa+?=
+ =?us-ascii?Q?U0FCNii8H32hjAZVzvtDG4/gp0+HliK5PrY3hXdLQgkOLUl8qCEx60fdUyCT?=
+ =?us-ascii?Q?o8c5sD8p8J+IQvEh3qiPV8CvIv2GCv0dcga/ce1FKc6akSIXEq9KTKphGxIe?=
+ =?us-ascii?Q?g6AeCI7bSc23GARBuvm2zCOg0MmenjIc8HN8GBwudTfaKf/KXbOJZ+btzEJS?=
+ =?us-ascii?Q?YWSOcKDNZ3YSKcoA2ugpC0IVipjjlCiLRGYxrV/7lBsMDLBdcJG0WdUYtcK5?=
+ =?us-ascii?Q?/N6Anp/mztP9SqrhXOPhiZAaH8T4IE8aNgpYnTAiNDjwGScvS87/Fo7CYmZ2?=
+ =?us-ascii?Q?dQkVBaXKY3zUE0hdaqSRSfzFoLgvxlJJYm54qD2sTIM5ir+2x/5Nwiw3PUUA?=
+ =?us-ascii?Q?enHMErxT16XASoviJPoogH14fdYgBcgiNRAJ0mvbNu7lg0GYluhAZ+zOTDTp?=
+ =?us-ascii?Q?+MGq1hXXrjvpFqe29EsEi8tA4z8fW7gd9NmMRjZCHGq7CASg9kkk6ZRVZO8u?=
+ =?us-ascii?Q?FP4pVjI9TsUip8E9UIoB1B5O/vZXQnsNHkTzdXaKkDNQ/yCBGpjROYTywCFF?=
+ =?us-ascii?Q?5R2JRPCRq/nYP4n7U3j7d1ALxPamtzef0vJvA3c6h4pdFcie9me+1Db8gwz3?=
+ =?us-ascii?Q?YNyc5UTBnKoLkjKgS9fUNRNBZUosQGZ2du/HaVVNTp+Ab4Pwkw0KH9j4Vchd?=
+ =?us-ascii?Q?xBKHmWdysvU+PwavCUN/Tn0Duu4rO6IxPyX+Y4Em3Za7La5r/cEEEmlBwlfq?=
+ =?us-ascii?Q?m60Bn27wjrd1WPLjNxvObDIjOQh4Z9adf8hkhWKMPDJi77FG3A90nX7NwUIh?=
+ =?us-ascii?Q?yNVqb6wAtMP01V+74d5+Ie+fmFo7CXlvUvDeEFi26v4/eDiY3XbbkYXeT1Y8?=
+ =?us-ascii?Q?XV4MEWyes/85ItwVjUWh6XJCuHZutl+8Kv3tgBxgZilSX3DwWJGRk0JaNab5?=
+ =?us-ascii?Q?8knoL2P5z8RRUI3lylJATKiE+LFhXf4BQBvTnFN40hJY3+pUSFQvGUud1Hmw?=
+ =?us-ascii?Q?MS01TmBTb387YXNO3RImOP9qoY4kpNDnNJ2jJUTuh9twDA8Mce7exTAaW1Kp?=
+ =?us-ascii?Q?jxtBkNNrLqecmDf7QRZJ5KfZ?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (2606:b400:8004:44::1d) by SN4PR0501CA0041.namprd05.prod.outlook.com (2603:10b6:803:41::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.10 via Frontend Transport; Wed, 23 Jun 2021 23:21:28 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ed083ca5-9f03-4b27-2b13-08d9369da0a4
-X-MS-TrafficTypeDiagnostic: SN6PR10MB2624:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR10MB26242A8F29AD4BE9CD96AB67DB089@SN6PR10MB2624.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:541;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?HInPo2ybV17RlO13boeXhUpZjYUZjrDj27lKJcgXbyNgPbuogZ9i9VKMfqxb?=
- =?us-ascii?Q?mACIVdC3WFbfOMDA9y3dApNIah5aDyTOxDAyWcycBN8mD+vsXl1XSx+k0t+g?=
- =?us-ascii?Q?D4OlmVkKauVB0jEUoIM+tx/Vrw9JcrNan3p2trcmBM2eyeseOfbXHr6eZs52?=
- =?us-ascii?Q?NuVZTpacepwP8B9zi+i/OBN/xOn838z0G6zPinDoYV2woytnOjWfj7/+i9KR?=
- =?us-ascii?Q?oRK7P1B6GRI2ztfO1Jo2EYX+qobWf7Id399o0kSmQxQQmKkpSCZFOBYB+Oyo?=
- =?us-ascii?Q?xsVV4Y7cSxrRQaRemw0z5CYEbVLG8gwMlCT3pzRy0GLFaTJx7VkopYSKj++G?=
- =?us-ascii?Q?+aeu7H9KaHTW3SGJBn6FsBgYQJMN/HsjgHv77FzxMbzInQVgux167wNzMr77?=
- =?us-ascii?Q?e1VYxh3X/2YQsb2vr2KC9Z+cV9kT9bSbmhdSYgB67DlEcYIGUjt7ZkZJOfuD?=
- =?us-ascii?Q?W8JpF4DAwrlSdWOqa25MSdJa8wNaK5X6YEQOzwOmgyt0GrZMIaetnlOnf0JP?=
- =?us-ascii?Q?mhTCtpGoWugIkm73qfccYlFb5bLsKIEcD74WEZpSN724D0rcURLW+cZUqqeS?=
- =?us-ascii?Q?pmjSL8g+A3pKqt6dEIzAq6EMMDVk7+EUVLB3QS0ctOQbzjbUI8kJwv2T09kL?=
- =?us-ascii?Q?LYMxDOjMvphf0ucOavA9/sa/vKpheDsrlyLwsJ1j3HExyzOwXQdFFIORRAji?=
- =?us-ascii?Q?xbf6Frcd8vwREgWF3ZTQfJ1ZzsoHNAVr+7ZsjwOzURVklIIiihDNQ4043gPM?=
- =?us-ascii?Q?KoXJ/A/2v/XFL8nBnpWQuPwxNdW1OALG27g1AvAGT8T1QkdB4NXp613wkqo0?=
- =?us-ascii?Q?f7Ss7lp3hnNgzNGLhQ5154xjPIukNm4EvN1PbtTOYXlJnRRdEYx8d8nPxiJX?=
- =?us-ascii?Q?mo8pd3YEsnGLKcZQl5B81BiqH0J5HiN+snqZPL4VqG+/T2tnzl+4A6YVNXZZ?=
- =?us-ascii?Q?9QzKMbCtUT2DeomnVlZS0A=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:SN6PR10MB2830.namprd10.prod.outlook.com;PTR:;CAT:OSPM;SFS:(39860400002)(346002)(376002)(396003)(136003)(366004)(6486002)(38100700002)(52116002)(1076003)(6496006)(2616005)(478600001)(2906002)(83380400001)(110136005)(36756003)(5660300002)(16526019)(186003)(6636002)(66556008)(66946007)(66476007)(316002)(6666004)(86362001)(8936002)(103116003)(8676002)(23200700001);DIR:OUT;SFP:1501;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QrvhpHBT1QR73N0MtvuFqX6oWRvd+RisIRPZOnwCL0ZzLOQ8QGHY6cWGIpZ4?=
- =?us-ascii?Q?VwD/Tpni/Fvj+Ii6RqyvefrSnN1rCPr+rOrkJWqGpI2Jj20/YyGyEk8a/pSZ?=
- =?us-ascii?Q?S44IehmgAklK5kui/MkZnSG4vdpWFeUy3CmLJwXL1oZUCEmmaCP+IRYeupl7?=
- =?us-ascii?Q?G/2ORRuYjFPZNBoOBYKJTfrVm6LbDiLh+HitjaTYGkrhHWAVXfCVTdfZIlMZ?=
- =?us-ascii?Q?cj6pqzI8lWjM+O+ZupjouOE1cS1GiTllxYH7FMujp9DN0GVMxS9wvjxd/i7/?=
- =?us-ascii?Q?rxslRjnIPysVGKnkFyjVR95A1H1MblXJ1mlq+g6MIaHR8Pn0apoqxhbhvWXF?=
- =?us-ascii?Q?/gmCrVLA869J1x0XCAZZrBDZEjShOV7yAdrtSav0JfCwahGT48bndFqtBJ43?=
- =?us-ascii?Q?pN5oDPwbMsH5uaEzVponTE/ce5Exjk5xdqLKUm2mIYEZCpUl9tJCbVODPJ2F?=
- =?us-ascii?Q?9AWNsZU1KEZTl1uxgI7btd/2mTuYzQXhVZ+uQ2S8OgfuijA8bPvd3ui5KOPd?=
- =?us-ascii?Q?zx5jvqfOMRuvC8qxkfmkBv5SQGe7d2ehVqN00uu/OmA5zutreBqviFPdcVTJ?=
- =?us-ascii?Q?tLgT1onkmY3CYtj8oQcQ3jup6P8yWS3W/RYlgo5J68AkY/oXkeXPy0VbROR2?=
- =?us-ascii?Q?pJq1TInN0/3CGLQdw1bAKWOyCgGlRKj4u0oRGBdnY2I4TMF2XOCUB9KMifpR?=
- =?us-ascii?Q?4p4W7Qht6KM/K/zQH7CDauoPG7t4sZQRnW23pf092ylHWayCoaV6HhjQ4fGq?=
- =?us-ascii?Q?+aTQ74p9O1fawTp9i+oiM4qi14Kgp5HRYpXJPB6u9QWDdhDEP87J2QLHOPfB?=
- =?us-ascii?Q?Uczb/pO9EN/LN/It0mrqLyEIYet5zdiHmQGDHAppTnxF5Q6vbuZaCfU+Gjvw?=
- =?us-ascii?Q?xMp1ecF+7GhTNE+J2GXuI8y5xZu8sXsqiQpm/I+UbsKKYQ3bXUHs90jkEGLa?=
- =?us-ascii?Q?KSdQxMloKOqzruQUytPVx/yz49gezFT8su8sbivUaOm+9rJ4rlS4t+Tg+U4S?=
- =?us-ascii?Q?UQWLZXtT5DQWlVitMx1n5la3GxAwtIe9vIkPaO5Pf9tpjdLB7ArSVVx3xwhF?=
- =?us-ascii?Q?N9l0wVKTrv3MfEMwa/KlJxfH/64wxXqEPbX4RSigrfGtOIDh7G6IqsuAeHLq?=
- =?us-ascii?Q?wQhcklfZ1dUIKvKXUCcA2MvWN5CkmidpUFJ1gj0dkEbIar02Vg49g+Qdwi7b?=
- =?us-ascii?Q?qqdwjpV3qTwrrH7yThWxQiU92LfxS9FiMt4W4V1CzI336lQbVOhcX54MnxUZ?=
- =?us-ascii?Q?ecFaPrYLEfJ7TsTs4Y0fqvp4iLK0x1CjhnixdtF3Upy8pFLIuZAqlXlRLc9e?=
- =?us-ascii?Q?6BK5TqJZTQ4MNc4hSDV9ne2kJB+N2iJhwDTF8U5K6rXoow=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed083ca5-9f03-4b27-2b13-08d9369da0a4
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB2830.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2021 23:21:28.4393
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1886.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77b388e5-8dbe-4f89-3935-08d9369fce52
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jun 2021 23:37:03.6881
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XztEWoUtQK6fCnwFgaAEddARlys6QafkxIQA084dS730amEAC1iiTYuqD4LKPBR+t8x8Wwyd61QVidu64VNaxv9GvzvtcYNSJ8kNTTssz8Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR10MB2624
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10024 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- mlxscore=0 mlxlogscore=999 adultscore=0 phishscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106230136
-X-Proofpoint-ORIG-GUID: 8xXOquu-EBzwJujWKOW0V8bG3teQFgxm
-X-Proofpoint-GUID: 8xXOquu-EBzwJujWKOW0V8bG3teQFgxm
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zm8VN3MjhxZDfX+VsZqLSByqaQ8akmmtv1XEUsuSGHLyvKbhnwBKXQGDVG/lp0f3Z4r/YXZgAqp8TFYBWfvdFw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4715
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 5d1b1b3f492f ("ext4: fix BUG when calling ext4_error with locked
-block group") introduces ext4_grp_locked_error to handle unlocking a
-group in error cases. Otherwise, there is a possibility of a sleep while
-atomic. However, since 43c73221b3b1 ("ext4: replace BUG_ON with WARN_ON
-in mb_find_extent()"), mb_find_extent() has contained a ext4_error()
-call while a group spinlock is held. Replace this with
-ext4_grp_locked_error.
+> From: Thomas Gleixner <tglx@linutronix.de>
+> Sent: Thursday, June 24, 2021 12:32 AM
+>=20
+> On Wed, Jun 23 2021 at 06:12, Kevin Tian wrote:
+> >> From: Thomas Gleixner <tglx@linutronix.de>
+> >> So the only downside today of allocating more MSI-X vectors than
+> >> necessary is memory consumption for the irq descriptors.
+> >
+> > Curious about irte entry when IRQ remapping is enabled. Is it also
+> > allocated at request_irq()?
+>=20
+> Good question. No, it has to be allocated right away. We stick the
+> shutdown vector into the IRTE and then request_irq() will update it with
+> the real one.
 
-Fixes: 43c73221b3b1 ("ext4: replace BUG_ON with WARN_ON in mb_find_extent()")
-Cc: <stable@vger.kernel.org> # 4.14+
-Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
-Reviewed-by: Junxiao Bi <junxiao.bi@oracle.com>
----
- fs/ext4/mballoc.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+There are max 64K irte entries per Intel VT-d. Do we consider it as
+a limited resource in this new model, though it's much more than
+CPU vectors?
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index c2c22c2baac0..089c958aa2c3 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1909,10 +1909,11 @@ static int mb_find_extent(struct ext4_buddy *e4b, int block,
- 	if (ex->fe_start + ex->fe_len > EXT4_CLUSTERS_PER_GROUP(e4b->bd_sb)) {
- 		/* Should never happen! (but apparently sometimes does?!?) */
- 		WARN_ON(1);
--		ext4_error(e4b->bd_sb, "corruption or bug in mb_find_extent "
--			   "block=%d, order=%d needed=%d ex=%u/%d/%d@%u",
--			   block, order, needed, ex->fe_group, ex->fe_start,
--			   ex->fe_len, ex->fe_logical);
-+		ext4_grp_locked_error(e4b->bd_sb, e4b->bd_group, 0, 0,
-+			"corruption or bug in mb_find_extent "
-+			"block=%d, order=%d needed=%d ex=%u/%d/%d@%u",
-+			block, order, needed, ex->fe_group, ex->fe_start,
-+			ex->fe_len, ex->fe_logical);
- 		ex->fe_len = 0;
- 		ex->fe_start = 0;
- 		ex->fe_group = 0;
--- 
-2.30.2
+>=20
+> > So the correct flow is like below:
+> >
+> >     guest::enable_msix()
+> >       trapped_by_host()
+> >         pci_alloc_irq_vectors(); // for all possible vMSI-X entries
+> >           pci_enable_msix();
+> >
+> >     guest::unmask()
+> >       trapped_by_host()
+> >         request_irqs();
+> >
+> > the first trap calls a new VFIO ioctl e.g. VFIO_DEVICE_ALLOC_IRQS.
+> >
+> > the 2nd trap can reuse existing VFIO_DEVICE_SET_IRQS which just
+> > does request_irq() if specified irqs have been allocated.
+> >
+> > Then map ims to this flow:
+> >
+> >     guest::enable_msix()
+> >       trapped_by_host()
+> >         msi_domain_alloc_irqs(); // for all possible vMSI-X entries
+> >         for_all_allocated_irqs(i)
+> >           pci_update_msi_desc_id(i, default_pasid); // a new helper fun=
+c
+> >
+> >     guest::unmask(entry#0)
+> >       trapped_by_host()
+> >         request_irqs();
+> >           ims_array_irq_startup(); // write msi_desc.id (default_pasid)=
+ to ims
+> entry
+> >
+> >     guest::set_msix_perm(entry#1, guest_sva_pasid)
+> >       trapped_by_host()
+> >         pci_update_msi_desc_id(1, host_sva_pasid);
+> >
+> >     guest::unmask(entry#1)
+> >       trapped_by_host()
+> >         request_irqs();
+> >           ims_array_irq_startup(); // write msi_desc.id (host_sva_pasid=
+) to ims
+> entry
+>=20
+> That's one way to do that, but that still has the same problem that the
+> request_irq() in the guest succeeds even if the host side fails.
 
+yes
+
+>=20
+> As this is really new stuff there is no real good reason to force that
+> into the existing VFIO/MSIX stuff with all it's known downsides and
+> limitations.
+>=20
+> The point is, that IMS can just add another interrupt to a device on the
+> fly without doing any of the PCI/MSIX nasties. So why not take advantage
+> of that?
+>=20
+> I can see the point of using PCI to expose the device to the guest
+> because it's trivial to enumerate, but contrary to VF devices there is
+
+also about compatibility since PCI is supported by almost all OSes.
+
+> no legacy and the mechanism how to setup the device interrupts can be
+> completely different from PCI/MSIX.
+>=20
+> Exposing some trappable "IMS" storage in a separate PCI bar won't cut it
+> because this still has the same problem that the allocation or
+> request_irq() on the host can fail w/o feedback.
+
+yes to fully fix the said nasty some feedback mechanism is required.
+
+>=20
+> So IMO creating a proper paravirt interface is the right approach.  It
+> avoids _all_ of the trouble and will be necessary anyway once you want
+> to support devices which store the message/pasid in system memory and
+> not in on-device memory.
+>=20
+
+While I agree a paravirt interface is definitely cleaner, I wonder whether
+this should be done in orthogonal or tied to all new ims-capable devices.
+Back to earlier discussion about guest ims support, you explained a layered
+model where the paravirt interface sits between msi domain and vector
+domain to get addr/data pair from the host. In this way it could provide
+a feedback mechanism for both msi and ims devices, thus not specific
+to ims only. Then considering the transition window where not all guest
+OSes may support paravirt interface at the same time (or there are
+multiple paravirt interfaces which takes time for host to support all),=20
+would below staging approach still makes sense?
+
+1)  Fix the lost interrupt issue in existing MSI virtualization flow;
+2)  Virtualize MSI-X on IMS, bearing the same request_irq() problem;
+3)  Develop a paravirt interface to solve request_irq() problem for
+      both msi and ims devices;
+
+Thanks
+Kevin
