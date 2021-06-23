@@ -2,259 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7D03B1383
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 07:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7D93B1385
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 07:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbhFWF4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 01:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFWF4P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 01:56:15 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D6EC061574;
-        Tue, 22 Jun 2021 22:53:57 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8srz1kbJz9sVm;
-        Wed, 23 Jun 2021 15:53:54 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624427635;
-        bh=Ve6HXVCvVXXFe6dLof+5dJ02Hlr9UcoY4clXXI/pLAs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=imqBoRFGu3YPrZ7Bz1xwStLbCrJLbj8XrvN968C3eB8gNMCVJMWbd2XSblTaTSrzg
-         MQ1fMaUU5kOIoH/IInCgXXFk0jrCePMj0lYOo8/0oQ21mHCnvRr9TlQCgE6OrvTBNs
-         AnhehArd5bmNw0CjRLCAgIo1ab8Ge01V0MzzRIEVqL2YzrfFTK2ggkpsllzP3IagTo
-         K4GLSixbgEjIiiuUoDkNI7vrksbnETACfqUloNhSIxaYuHhk/RDY4d/Vsy75FaiQIp
-         qLjxx/h2C2U/vz7l+XdQXuGkZTW50nSM06G4Tni4CvG2VMW3OD3Jryl4h9iF2XJVz8
-         1q9NqAzA0t+EQ==
-Date:   Wed, 23 Jun 2021 15:53:53 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoffer Dall <cdall@cs.columbia.edu>,
-        Marc Zyngier <maz@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Steven Price <steven.price@arm.com>
-Subject: linux-next: manual merge of the kvm-arm tree with the kvm tree
-Message-ID: <20210623155353.466ff149@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/BSqM7k6WG.Tl.uc2E1P+V+b";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S229892AbhFWF5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 01:57:21 -0400
+Received: from mx5.ucr.edu ([138.23.62.67]:8796 "EHLO mx5.ucr.edu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229660AbhFWF5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 01:57:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
+  t=1624427703; x=1655963703;
+  h=from:to:cc:subject:date:message-id;
+  bh=HeroiO/f70kMSW1+IDvJqEJ6G7TytY2YJRExDN92zzI=;
+  b=L55m4VKLRQZVIuA1zjcebYqaysZozTLJu3wj4IuskgfKerC7S6LONspA
+   02Ero9pP0iZYQbXTUNRHZV/aVDZAu4ZMqCcAGaHsm9aiT9Kwjvgjfa684
+   jELtf4p4MQCzqtztq7FC9lXbC5+BM9MNLr/6Nbv/0kOM3regWE8u/b/OW
+   ocFzDoVi2J+/cOrPCjYsTb53XSV7P+NDs+0TGi81oqnUBBZDFTODqm8Qn
+   TeAFlg1tFir9JfoqAleWwtlPrCBVUY3IbKp634xsRRuUkgqG4hWox0JRq
+   IwrYEbYJrqTu+2M+3bNlPGIRHXkR6jiL4D5SQqVRVfBpky3jeCPRuHao0
+   A==;
+IronPort-SDR: UfJUe6UjWlytXeDZk27n87nRr50PtenEx4UmiZZohgO/V2jfB0pbkF13jzxmj4BF8JUdwxK6Oc
+ 2Kw2FfkNU4oy4H3q/dzlmBF1YfL2J1Y9tBUs+khftk/7E6sWh06ad6wEznLuEIad3rWwksxpyk
+ 0iWhwfINf3ekHL9pfLRfZwfJ2ks3eaOhjMFgNmx67mZpnxgV0tPMqDFhHFK4psJAACP8pgjZ9+
+ d/TumpUq9D1eoxbuvQmEWEKAXX/XT8VOJo8kjl5hSS9Br+Pb1lHRHV+oq4T70RlS+ZxPa1iS/N
+ IXA=
+X-IPAS-Result: =?us-ascii?q?A2HoBAD1y9Jgf8XXVdFagmCDeVUWjUyHKgEBAQaMGRh/h?=
+ =?us-ascii?q?nmIZYF8AgkBAQENAQFBBAEBhFCCbgIlNAkOAgQBAQEBAwIDAQEBAQUBAQYBA?=
+ =?us-ascii?q?QEBAQEFBAEBAhABAW6FL0aCOCmDZQsWFVKBFQEFATUiOYIWAYJhJgWaFoEEP?=
+ =?us-ascii?q?YwxM4EBiBMBCQ2BYgkBCIEoiHqFF4EZgRCEAnSHb4JQBIMdexODdgEBAZAPG?=
+ =?us-ascii?q?4MEjDubRQEGAoMFHIJ+mmpEhlKOJZB9AbodAgoHBhAjgTGCFU0lgWwKgUFQG?=
+ =?us-ascii?q?Q6NdQGOd0EyOAIGCgEBAwmMVAE?=
+IronPort-PHdr: A9a23:WXC1CB1pRT5mSnXksmDOUwQyDhhOgF0UFjAc5pdvsb9SaKPrp82kY
+ BWOo64x1hSZDc3y0LFts6LuqafuWGgNs96qkUspV9hybSIDktgchAc6AcSIWgXRJf/uaDEmT
+ owZDAc2t360PlJIF8ngelbcvmO97SIIGhX4KAF5Ovn5FpTdgsiq0+2+4ZPebgpWiDayYr5/L
+ wi9oBnMuMURnYZsMLs6xAHTontPdeRWxGdoKkyWkh3h+Mq+/4Nt/jpJtf45+MFOTav1f6IjT
+ bxFFzsmKHw65NfqtRbYUwSC4GYXX3gMnRpJBwjF6wz6Xov0vyDnuOdxxDWWMMvrRr0vRz+s8
+ 7lkRwPpiCcfNj427mfXitBrjKlGpB6tvgFzz5LIbI2QMvd+e6LdfcgBRWpAWMZRWDFKDJ2lY
+ YASAeoBPPhXr43gqFATqRezCxWgCObpxzBPmnL707E23/k4HQ3awQArAtYCvGnUodnwMqoZT
+ OK7w7TSzTjbb/1Yxyrz5obLfB4muvyAQa58fNDNxUQ1Cw/JklOdopHlMTOP0eQNtnCW4OhhV
+ eOui24ntgZxqSWoy8Ysi4jJhpgaylHY+Sllzos4PsC4R1JhYdK+DpRfqjyaOpJwT8g/TG5mp
+ Dw0xacauZ6nYicK0pInygbQZvCZcYWG4g7vWeKRLztmhH9oe7yxigis/Uagy+DxVNS53VdIo
+ ydBk9TBt24A2gDQ58SbVvdw/Fqt1DmR2w7T7OxPPEM6lbLDJpI/3rI9koAfvEfDEyPshkn6k
+ a+bel859uWs6enreqjqq56YOoNulA3zPKQjltahDek6KAQCQXaX9Oq62bb+50P2Wq9Kgeczk
+ qTBtZDaItkUqbChDg9O14Yj9w6/DzC70NQEhXUHLExKeBaAj4XxPlHBOvH4DfOmj1S0nzdn2
+ unKPrP8DpjJLHXPirjhfbF6605TzAo808pT6I5TCrEEOP7zW0nxu8LEDhIhLQC43+LqBM9+2
+ 44eQ26DHLKVPaPIvVOV4u8iIfGAZIoPtzb8L/gl6eTujXg8mVIFfaio3JsXZ2q5Hvh6P0mUb
+ 2HhgsodHmcQpAYxUvHliECaXT5Je3myR7485i08CI++CYfDR4atgKGO3SuiHZ1ZeHpGClaSH
+ nfsbIiERfgMZzyIIsN7kTwLS6KhS4k/2hGqrgP6zKBnLuWHsgMCspe25dln5/DU3UUj5zx9D
+ pzFiEmQRHsyk28VEWxllJtjqFBwnw/QmZNzhOZVQJkOupt0
+IronPort-HdrOrdr: A9a23:+EQGW6lazgHaw9s/qTnnXnHJDRPpDfIt3DAbv31ZSRFFG/FwWf
+ re+cjzuiWE7wr5NEtQ+uxoRpPwJ080nKQdieJwAV7LZmjbUQCTXeVfBOXZsl/d8u7Fm9K1F5
+ 0LT0GzMrLN5CBB/L/HCcCDf7gd/OU=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
+   d="scan'208";a="221745220"
+Received: from mail-pg1-f197.google.com ([209.85.215.197])
+  by smtpmx5.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 22 Jun 2021 22:55:02 -0700
+Received: by mail-pg1-f197.google.com with SMTP id x9-20020a6541490000b0290222fe6234d6so681492pgp.14
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 22:55:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=dZ01YeGO36ttJa1EkqeDzGCMLruDwsRboZArrpn5SFM=;
+        b=WKQ/3RqyrMt3RAJ83w6TRgOu8jcg5Z1xAwgsa8uObqUurw4M9Kq/UmgzEIfuv0HBqw
+         s0CU6BTVm1lpOuIUbV3VM9zGsIF/un5ZPSfJoO/haHAj9Yn0ttmhrNgONryN4U/KugSq
+         720cVc3R+aXA0g01r+olXpSSNjtXqov3MI6aLNhSH3ESHMEnX5YqUYMaComvRHX+8TGu
+         1k6ueF5atZmR3RM+zv/6C8DAl+d5YztWS/RXuelntjUJxOyJ5g82G/++3oOJMQ7SHpSu
+         qQEWOBXE3OqCGbW2ncthT8iBWIPTesERF6kMAIEVYoSsW3FApLVsxBpyG5a1iOl3sff8
+         1t5A==
+X-Gm-Message-State: AOAM533c2mfISk22iDlAzjDUFfnisCv8mzJ4L9n2Li/BPzZuaTjfUcf3
+        PTNGyXvvkgLlMKRjopLJi574U1jdKIfWxPozmkdIxCP+QnpBk6QKnO+z1PLvK0FEyg0DdisSNd2
+        whSAwa65w6ZoUBux1ilR2+RnXAA==
+X-Received: by 2002:a05:6a00:2395:b029:304:7a51:6f1d with SMTP id f21-20020a056a002395b02903047a516f1dmr7387060pfc.53.1624427701885;
+        Tue, 22 Jun 2021 22:55:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxZcMZuv9nHzaTSg9WiNWU0DHaItTgV98zNDYoD4whsou4ZO9Ewniqbv6pxQU3GccP+KRXscw==
+X-Received: by 2002:a05:6a00:2395:b029:304:7a51:6f1d with SMTP id f21-20020a056a002395b02903047a516f1dmr7387023pfc.53.1624427701428;
+        Tue, 22 Jun 2021 22:55:01 -0700 (PDT)
+Received: from kq.cs.ucr.edu (kq.cs.ucr.edu. [169.235.27.223])
+        by smtp.googlemail.com with ESMTPSA id ml5sm3980846pjb.3.2021.06.22.22.55.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 22:55:01 -0700 (PDT)
+From:   Yizhuo <yzhai003@ucr.edu>
+Cc:     yzhai003@ucr.edu, Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: atomisp: fix the uninitialized use and rename "retvalue"
+Date:   Wed, 23 Jun 2021 05:56:31 +0000
+Message-Id: <20210623055634.12603-1-yzhai003@ucr.edu>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/BSqM7k6WG.Tl.uc2E1P+V+b
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Inside function mt9m114_detect(), variable "retvalue" could
+be uninitialized if mt9m114_read_reg() returns error, however, it
+is used in the later if statement, which is potentially unsafe.
 
-Hi all,
+The local variable "retvalue" is renamed to "model" to avoid
+confusion.
 
-Today's linux-next merge of the kvm-arm tree got a conflict in:
+Signed-off-by: Yizhuo <yzhai003@ucr.edu>
+---
+ drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-  Documentation/virt/kvm/api.rst
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+index f5de81132177..fbd6c6cd84c8 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+@@ -1533,16 +1533,19 @@ static struct v4l2_ctrl_config mt9m114_controls[] = {
+ static int mt9m114_detect(struct mt9m114_device *dev, struct i2c_client *client)
+ {
+ 	struct i2c_adapter *adapter = client->adapter;
+-	u32 retvalue;
++	u32 model;
++	int ret;
+ 
+ 	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
+ 		dev_err(&client->dev, "%s: i2c error", __func__);
+ 		return -ENODEV;
+ 	}
+-	mt9m114_read_reg(client, MISENSOR_16BIT, (u32)MT9M114_PID, &retvalue);
+-	dev->real_model_id = retvalue;
++	ret = mt9m114_read_reg(client, MISENSOR_16BIT, (u32)MT9M114_PID, &model);
++	if (ret)
++		return ret;
++	dev->real_model_id = model;
+ 
+-	if (retvalue != MT9M114_MOD_ID) {
++	if (model != MT9M114_MOD_ID) {
+ 		dev_err(&client->dev, "%s: failed: client->addr = %x\n",
+ 			__func__, client->addr);
+ 		return -ENODEV;
+-- 
+2.17.1
 
-between commit:
-
-  6dba94035203 ("KVM: x86: Introduce KVM_GET_SREGS2 / KVM_SET_SREGS2")
-
-from the kvm tree and commit:
-
-  04c02c201d7e ("KVM: arm64: Document MTE capability and ioctl")
-
-from the kvm-arm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc Documentation/virt/kvm/api.rst
-index ef81de1d4a9b,97661a97943f..000000000000
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@@ -5034,54 -5034,43 +5034,91 @@@ see KVM_XEN_VCPU_SET_ATTR above
-  The KVM_XEN_VCPU_ATTR_TYPE_RUNSTATE_ADJUST type may not be used
-  with the KVM_XEN_VCPU_GET_ATTR ioctl.
- =20
-+ 4.130 KVM_ARM_MTE_COPY_TAGS
-+ ---------------------------
-+=20
-+ :Capability: KVM_CAP_ARM_MTE
-+ :Architectures: arm64
-+ :Type: vm ioctl
-+ :Parameters: struct kvm_arm_copy_mte_tags
-+ :Returns: number of bytes copied, < 0 on error (-EINVAL for incorrect
-+           arguments, -EFAULT if memory cannot be accessed).
-+=20
-+ ::
-+=20
-+   struct kvm_arm_copy_mte_tags {
-+ 	__u64 guest_ipa;
-+ 	__u64 length;
-+ 	void __user *addr;
-+ 	__u64 flags;
-+ 	__u64 reserved[2];
-+   };
-+=20
-+ Copies Memory Tagging Extension (MTE) tags to/from guest tag memory. The
-+ ``guest_ipa`` and ``length`` fields must be ``PAGE_SIZE`` aligned. The ``=
-addr``
-+ field must point to a buffer which the tags will be copied to or from.
-+=20
-+ ``flags`` specifies the direction of copy, either ``KVM_ARM_TAGS_TO_GUEST=
-`` or
-+ ``KVM_ARM_TAGS_FROM_GUEST``.
-+=20
-+ The size of the buffer to store the tags is ``(length / 16)`` bytes
-+ (granules in MTE are 16 bytes long). Each byte contains a single tag
-+ value. This matches the format of ``PTRACE_PEEKMTETAGS`` and
-+ ``PTRACE_POKEMTETAGS``.
-+=20
-+ If an error occurs before any data is copied then a negative error code is
-+ returned. If some tags have been copied before an error occurs then the n=
-umber
-+ of bytes successfully copied is returned. If the call completes successfu=
-lly
-+ then ``length`` is returned.
-+=20
- +
- +4.131 KVM_GET_SREGS2
- +------------------
- +
- +:Capability: KVM_CAP_SREGS2
- +:Architectures: x86
- +:Type: vcpu ioctl
- +:Parameters: struct kvm_sregs2 (out)
- +:Returns: 0 on success, -1 on error
- +
- +Reads special registers from the vcpu.
- +This ioctl (when supported) replaces the KVM_GET_SREGS.
- +
- +::
- +
- +struct kvm_sregs2 {
- +	/* out (KVM_GET_SREGS2) / in (KVM_SET_SREGS2) */
- +	struct kvm_segment cs, ds, es, fs, gs, ss;
- +	struct kvm_segment tr, ldt;
- +	struct kvm_dtable gdt, idt;
- +	__u64 cr0, cr2, cr3, cr4, cr8;
- +	__u64 efer;
- +	__u64 apic_base;
- +	__u64 flags;
- +	__u64 pdptrs[4];
- +};
- +
- +flags values for ``kvm_sregs2``:
- +
- +``KVM_SREGS2_FLAGS_PDPTRS_VALID``
- +
- +  Indicates thats the struct contain valid PDPTR values.
- +
- +
- +4.132 KVM_SET_SREGS2
- +------------------
- +
- +:Capability: KVM_CAP_SREGS2
- +:Architectures: x86
- +:Type: vcpu ioctl
- +:Parameters: struct kvm_sregs2 (in)
- +:Returns: 0 on success, -1 on error
- +
- +Writes special registers into the vcpu.
- +See KVM_GET_SREGS2 for the data structures.
- +This ioctl (when supported) replaces the KVM_SET_SREGS.
- +
- +
-  5. The kvm_run structure
-  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
- =20
-@@@ -6408,26 -6397,32 +6445,50 @@@ system fingerprint.  To prevent userspa
-  by running an enclave in a VM, KVM prevents access to privileged attribut=
-es by
-  default.
- =20
- -See Documentation/x86/sgx/2.Kernel-internals.rst for more details.
- +See Documentation/x86/sgx.rst for more details.
- +
- +7.26 KVM_CAP_PPC_RPT_INVALIDATE
- +-------------------------------
- +
- +:Capability: KVM_CAP_PPC_RPT_INVALIDATE
- +:Architectures: ppc
- +:Type: vm
- +
- +This capability indicates that the kernel is capable of handling
- +H_RPT_INVALIDATE hcall.
- +
- +In order to enable the use of H_RPT_INVALIDATE in the guest,
- +user space might have to advertise it for the guest. For example,
- +IBM pSeries (sPAPR) guest starts using it if "hcall-rpt-invalidate" is
- +present in the "ibm,hypertas-functions" device-tree property.
- +
- +This capability is enabled for hypervisors on platforms like POWER9
- +that support radix MMU.
- =20
-+ 7.26 KVM_CAP_ARM_MTE
-+ --------------------
-+=20
-+ :Architectures: arm64
-+ :Parameters: none
-+=20
-+ This capability indicates that KVM (and the hardware) supports exposing t=
-he
-+ Memory Tagging Extensions (MTE) to the guest. It must also be enabled by =
-the
-+ VMM before creating any VCPUs to allow the guest access. Note that MTE is=
- only
-+ available to a guest running in AArch64 mode and enabling this capability=
- will
-+ cause attempts to create AArch32 VCPUs to fail.
-+=20
-+ When enabled the guest is able to access tags associated with any memory =
-given
-+ to the guest. KVM will ensure that the tags are maintained during swap or
-+ hibernation of the host; however the VMM needs to manually save/restore t=
-he
-+ tags as appropriate if the VM is migrated.
-+=20
-+ When this capability is enabled all memory in memslots must be mapped as
-+ not-shareable (no MAP_SHARED), attempts to create a memslot with a
-+ MAP_SHARED mmap will result in an -EINVAL return.
-+=20
-+ When enabled the VMM may make use of the ``KVM_ARM_MTE_COPY_TAGS`` ioctl =
-to
-+ perform a bulk copy of tags to/from the guest.
-+=20
-  8. Other capabilities.
-  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
- =20
-
---Sig_/BSqM7k6WG.Tl.uc2E1P+V+b
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDSzHEACgkQAVBC80lX
-0GyRWwf/aMGuhelkmZ9KrQ4f8otwPgrkREwqzsQB2l7aW6naJshtcG936J6Fz3MH
-u7DNhKdHyoEQGYjOwX55rtPb8v3ORt0uQPFcJlD+0+FqydsTxAY70WExcjOUqq6z
-kBlCVu/iLE3isSKMmKjPDg8rKyRlvMPuq5DApE6tkWxC2dazLdEWgC8gu/Ho1PGG
-B1b1YVE5rmD0DdrUH55vAOch2cfStm5HvRbnjB5D0diSLZ/lhVe8TeRwyfPE/gj1
-2awrE12eVE8VxztJDOTxQMQScXQ9nJO1MQMprZesvxhWUJ+us6brZLT/PX6g+ZTV
-PVkhVwFtebNRAP3SgLpLPEnOeSrc0g==
-=AQHX
------END PGP SIGNATURE-----
-
---Sig_/BSqM7k6WG.Tl.uc2E1P+V+b--
