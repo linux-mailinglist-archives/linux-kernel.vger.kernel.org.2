@@ -2,86 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140B43B1BE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B1C3B1BE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhFWOEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:04:31 -0400
-Received: from mga12.intel.com ([192.55.52.136]:20145 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230505AbhFWOEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:04:30 -0400
-IronPort-SDR: xRyhFs5uJKNrA4bJVtw7Bol+SF5gEz02dztZNeSej4+OD7mA7th1CMUDIn200aPubJ+m6hJFez
- asg0kOBcXHYA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="186952936"
-X-IronPort-AV: E=Sophos;i="5.83,294,1616482800"; 
-   d="scan'208";a="186952936"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 07:00:45 -0700
-IronPort-SDR: I8TbkGBw6UGsu7YJpdrCWl+DcPYbqeOZc6VkiPGbAq5zl7Wg1oYjQbFE71fzIyZSsaqFyFP3PU
- v5KOa2urwscQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="453044333"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga008.jf.intel.com with ESMTP; 23 Jun 2021 07:00:43 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 4C50E23A; Wed, 23 Jun 2021 17:01:08 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 2/2] PCI: dwc: Clean up Kconfig dependencies (PCIE_DW_EP)
-Date:   Wed, 23 Jun 2021 17:01:03 +0300
-Message-Id: <20210623140103.47818-2-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210623140103.47818-1-andriy.shevchenko@linux.intel.com>
-References: <20210623140103.47818-1-andriy.shevchenko@linux.intel.com>
+        id S231252AbhFWODw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:03:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56731 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230312AbhFWODv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 10:03:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624456893;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GI7BUvQGaSJTYs1XHkSa35D9gwv1cTj0EBhXSBIFL1M=;
+        b=S1o6A23ECx4vq9DQGGQIOlNVBm08Y2mS+YNEnnH6LeJfkiyRmGqO0ZPtrAYuXOc840GDYd
+        DklbtNMjI/+AR+s8tFAVspMAFUx6x6hcEVanSxTTenvxYDjLcCXmkg+sVfhXepsQ8+uBA8
+        cJ6etpy6WYVJNpLiC5JW4tpDiTKfrOc=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-522-xZkN8XtAO_yDNv0FmAPdvQ-1; Wed, 23 Jun 2021 10:01:31 -0400
+X-MC-Unique: xZkN8XtAO_yDNv0FmAPdvQ-1
+Received: by mail-ej1-f69.google.com with SMTP id o12-20020a17090611ccb02904876d1b5532so1019497eja.11
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 07:01:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GI7BUvQGaSJTYs1XHkSa35D9gwv1cTj0EBhXSBIFL1M=;
+        b=ByUFnflru4soufCvAB9xCi1BcsXqMB1lAPqF3iKyEqfa+SiDWLclVYdrb2y3KZ0Js+
+         bAy4pGJj0nSGs7iaAEANBzkQVzsWAKLcym7m2Fe04Ojv95i65dgOhx1CIFyPYi4Cp8Co
+         3wMJKcHWt2/9z7AAgoiSYM1OhYeWveAki3QcCiXRHG16sJyBtBDp+ovsCd6CXQzX6uvJ
+         QoKWW0i1SULjXcv+/VMS0LJEFGzyWTJP7Y3lXcxtlmoWKUFF4LLHEw1Yyu+S6fD1i4Um
+         a338CrITttOpwL/Cnl0FOJ9Y0JVFRWj8m5i7Gn/sMnNZJpQLH4SNkoEtf6P5AeT5RutT
+         1Fmw==
+X-Gm-Message-State: AOAM533ykCDR13alUJDAKH6eZ9DgsoieJLvNw5t9mHH6zAnnr8FRH9KH
+        4jSSF5X4BZnwCDC6gq7KlPF0+NBtb6K02EDe7QT7+PSPgowj9IvMPY1D11g/f9azJ6vnhXTriHr
+        9io0XIL2zs4bkXMIdN2cYCGsd
+X-Received: by 2002:a17:906:36d5:: with SMTP id b21mr181071ejc.258.1624456890705;
+        Wed, 23 Jun 2021 07:01:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxVVzhqdfVDJJTFG6BriT0PEnR8sAnb90HHFIoMhWugO9e/5JQG8bPfqCAHNolqC3qdIS/oPg==
+X-Received: by 2002:a17:906:36d5:: with SMTP id b21mr181048ejc.258.1624456890517;
+        Wed, 23 Jun 2021 07:01:30 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id u12sm7382464eje.40.2021.06.23.07.01.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 07:01:29 -0700 (PDT)
+Subject: Re: [PATCH 03/54] KVM: x86: Properly reset MMU context at vCPU
+ RESET/INIT
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+References: <20210622175739.3610207-1-seanjc@google.com>
+ <20210622175739.3610207-4-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <3c3f9251-cab4-70ee-6e38-85fe8e6579f7@redhat.com>
+Date:   Wed, 23 Jun 2021 16:01:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210622175739.3610207-4-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "depends on" is no-op in the selectable options.
+On 22/06/21 19:56, Sean Christopherson wrote:
+> +	/*
+> +	 * Reset the MMU context if paging was enabled prior to INIT (which is
+> +	 * implied if CR0.PG=1 as CR0 will be '0' prior to RESET).  Unlike the
+> +	 * standard CR0/CR4/EFER modification paths, only CR0.PG needs to be
+> +	 * checked because it is unconditionally cleared on INIT and all other
+> +	 * paging related bits are ignored if paging is disabled, i.e. CR0.WP,
+> +	 * CR4, and EFER changes are all irrelevant if CR0.PG was '0'.
+> +	 */
+> +	if (old_cr0 & X86_CR0_PG)
+> +		kvm_mmu_reset_context(vcpu);
 
-Clean up the users of PCIE_DW_EP and introduce idiom
+Hmm, I'll answer myself, is it because of the plan to add a vCPU reset 
+ioctl?
 
-	depends on PCI_ENDPOINT
-	select PCIE_DW_EP
-
-for all of them.
-
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/pci/controller/dwc/Kconfig | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index 9bfd41eadd5e..ca5de4e40fbe 100644
---- a/drivers/pci/controller/dwc/Kconfig
-+++ b/drivers/pci/controller/dwc/Kconfig
-@@ -12,7 +12,6 @@ config PCIE_DW_HOST
- 
- config PCIE_DW_EP
- 	bool
--	depends on PCI_ENDPOINT
- 	select PCIE_DW
- 
- config PCI_DRA7XX
-@@ -37,8 +36,8 @@ config PCI_DRA7XX_HOST
- config PCI_DRA7XX_EP
- 	bool "TI DRA7xx PCIe controller Endpoint Mode"
- 	depends on SOC_DRA7XX || COMPILE_TEST
--	depends on PCI_ENDPOINT
- 	depends on OF && HAS_IOMEM && TI_PIPE3
-+	depends on PCI_ENDPOINT
- 	select PCIE_DW_EP
- 	select PCI_DRA7XX
- 	help
--- 
-2.30.2
+Paolo
 
