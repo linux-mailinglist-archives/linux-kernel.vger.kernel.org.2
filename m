@@ -2,176 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E3E3B1DD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CC03B1DD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231429AbhFWPv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 11:51:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230430AbhFWPv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 11:51:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D187A60FEA;
-        Wed, 23 Jun 2021 15:49:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624463379;
-        bh=dheBXah4lN1PML3sqwDz3TUbMTqBx7HVJb+gLYt7N3I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dl3AV3lCFCJa14hE7EkPx2AuxjC5e4sfV6A53N8yGaW7lKBuoF0ij+psP4ZXA2tIA
-         egXDeJ3Uu+l2j14M8i4x0f3BvKXYnX0FwcgzuOryKYxXj78cEUtIFkztKK1dtBxHao
-         ow5t2eK0z1GoExxp+t09qHs9uYTgvTnmAWdMZ590jrEVnWgCh+BAF6zsUyuyDfNVDS
-         eNhURpAzcLc5nAGF45PRejMeDSxtfSHxGaEiCkZa4dKRX+lpqBLWPxk2iRjX4s06uL
-         4NyOXaisQ7Trw5pKWKEU4Trv9FhNVZqXNmUJpGaouvRhKqrS5JymT+di+Ql5CY3XjC
-         y6G2uJw4Trq1w==
-Date:   Wed, 23 Jun 2021 08:49:37 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     Chao Yu <yuchao0@huawei.com>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Zhang Yi <yi.zhang@huawei.com>,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH] f2fs: avoid attaching SB_ACTIVE flag during mount/remount
-Message-ID: <YNNYEUumK506fxPK@google.com>
-References: <20210525113909.113486-1-yuchao0@huawei.com>
- <YNLsKSSxS5xLJcnB@google.com>
- <bd548ff5-4143-31f9-0d84-abc8a53b597d@kernel.org>
+        id S231445AbhFWPwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 11:52:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36249 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231432AbhFWPwB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 11:52:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624463383;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tXdBCM10slZlb/55bnauNdGrWpZkExrnqJ+22N/X4ww=;
+        b=IleIdMYk/7UGB2l+1ZHC+4wU2kbAHeqd1IUhATdrzO3ViXfaLgqLI1aRQb4NMr9IQ8txdT
+        M0uuWb5yzzhavq2/ny7Qd0tkcSnHmvJdd0MdoLBfluXGsicNFR0lRBddI9Jglwl6JPRxAl
+        k1yiyrNz/bzGB3E8qhCltF9YhxzUzds=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-OPkkaQUnMjaks_RvFBDPEA-1; Wed, 23 Jun 2021 11:49:42 -0400
+X-MC-Unique: OPkkaQUnMjaks_RvFBDPEA-1
+Received: by mail-ed1-f69.google.com with SMTP id j19-20020aa7c4130000b029039497d5cdbeso1539809edq.15
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 08:49:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tXdBCM10slZlb/55bnauNdGrWpZkExrnqJ+22N/X4ww=;
+        b=Uj0zRsByJNrZI7wFRwPqZprdLpMxtkI4nDmpKIl7zjOK/Hmf/tnzUEBYneYYcru4Iu
+         6fX+/zDBIP7cClUfr6RgUsM31rsPc5Jp3x6ZS5i9OG8W4lr0KuyE9XVwG7qyi3oA1k0d
+         uGBaVNDblx/Y8hTzaGLqp92P9wXO98cCJCqReo8Mtm4wWoS7PqWxowwZXYOFONh59Lfs
+         PtidwMLygJ8wkB4R+HoSE1TUtQRBdz4Xim+UjAMUaRD91fP2H2cUXPAfUJ/q4AXZCFA6
+         yhA7zJ+VznuMKgp47vvaF1XlY1JJNZHnnfPq8oKdeH9b5dHwIR0wxTZuSc6dUqI5rACF
+         KpjQ==
+X-Gm-Message-State: AOAM531To+5gVU1GmxEh3B971EJrmvi6cWlYOHOlQ7swCBpidsM3lxbm
+        HSBbzMeE8mGbPc4lpQ5HeyiPEj6T8HqTsqC2sT8+5cbZyTVg1YuIQeTYB65RivUvBczXiDrPpvb
+        Z6+2Ln8jXBOv1jXq4TvDxxlR8
+X-Received: by 2002:a17:907:986c:: with SMTP id ko12mr664857ejc.377.1624463380810;
+        Wed, 23 Jun 2021 08:49:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx0oh+yE6jc4noHd8UNYnAteFUd33tpUfhMoc3jM9EZ0PA4Xd0gj+XsjZpiUF0JwrfRxdkgWw==
+X-Received: by 2002:a17:907:986c:: with SMTP id ko12mr664836ejc.377.1624463380599;
+        Wed, 23 Jun 2021 08:49:40 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id q20sm78128ejb.71.2021.06.23.08.49.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 08:49:39 -0700 (PDT)
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+References: <20210622175739.3610207-1-seanjc@google.com>
+ <20210622175739.3610207-11-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 10/54] KVM: x86/mmu: Replace EPT shadow page shenanigans
+ with simpler check
+Message-ID: <8ce36922-dba0-9b53-6f74-82f3f68b443c@redhat.com>
+Date:   Wed, 23 Jun 2021 17:49:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bd548ff5-4143-31f9-0d84-abc8a53b597d@kernel.org>
+In-Reply-To: <20210622175739.3610207-11-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/23, Chao Yu wrote:
-> Hi Jaegeuk,
-> 
-> On 2021/6/23 16:09, Jaegeuk Kim wrote:
-> > Hi Chao,
-> > 
-> > I'll remove this patch, since it breaks checkpoint=disable and recovery
-> > flow that check SB_ACTIVE.
-> 
-> Oh, sorry, is it due to changes in f2fs_disable_checkpoint()?
-> 
-> So how about testing with changes f2fs_recover_orphan_inodes() and
-> f2fs_recover_fsync_data()?
+On 22/06/21 19:56, Sean Christopherson wrote:
+> Replace the hack to identify nested EPT shadow pages with a simple check
+> that the size of the guest PTEs associated with the shadow page and the
+> current MMU match, which is the intent of the "8 bytes == PAE" test.
+> The nested EPT hack existed to avoid a false negative due to the is_pae()
+> check not matching for 32-bit L2 guests; checking the MMU role directly
+> avoids the indirect calculation of the guest PTE size entirely.
 
-I'm now nervous whether the test can miss corner cases. So, I don't think
-we need to pour our time for this nice-to-have patch.
+What the commit message doesn't say is, did we miss this opportunity all
+along, or has there been a change since commit 47c42e6b4192 ("KVM: x86:
+fix handling of role.cr4_pae and rename it to 'gpte_size'", 2019-03-28)
+that allows this?
 
+I think the only change needed would be making the commit something like
+this:
+
+==========
+KVM: x86/mmu: Use MMU role to check for matching guest page sizes
+
+Originally, __kvm_sync_page used to check the cr4_pae bit in the role
+to avoid zapping 4-byte kvm_mmu_pages when guest page size are 8-byte
+or the other way round.  However, in commit 47c42e6b4192 ("KVM: x86: fix
+handling of role.cr4_pae and rename it to 'gpte_size'", 2019-03-28) it
+was observed that this did not work for nested EPT, where the page table
+size would be 8 bytes even if CR4.PAE=0.  (Note that the check still
+has to be done for nested *NPT*, so it is not possible to use tdp_enabled
+or similar).
+
+Therefore, a hack was introduced to identify nested EPT shadow pages
+and unconditionally call __kvm_sync_page() on them.  However, it is
+possible to do without the hack to identify nested EPT shadow pages:
+if EPT is active, there will be no shadow pages in non-EPT format,
+and all of them will have gpte_is_8_bytes set to true; we can just
+check the MMU role directly, and the test will always be true.
+
+Even for non-EPT shadow MMUs, this test should really always be true
+now that __kvm_sync_page() is called if and only if the role is an
+exact match (kvm_mmu_get_page()) or is part of the current MMU context
+(kvm_mmu_sync_roots()).  A future commit will convert the likely-pointless
+check into a meaningful WARN to enforce that the mmu_roles of the current
+context and the shadow page are compatible.
+==========
+
+
+Paolo
+
+> Note, this should be a glorified nop now that __kvm_sync_page() is called
+> if and only if the role is an exact match (kvm_mmu_get_page()) or is part
+> of the current MMU context (kvm_mmu_sync_roots()).  A future commit will
+> convert the likely-pointless check into a meaningful WARN to enforce that
+> the mmu_roles of the current context and the shadow page are compatible.
 > 
-> Thanks,
-> 
-> > 
-> > Thanks,
-> > 
-> > On 05/25, Chao Yu wrote:
-> > > Quoted from [1]
-> > > 
-> > > "I do remember that I've added this code back then because otherwise
-> > > orphan cleanup was losing updates to quota files. But you're right
-> > > that now I don't see how that could be happening and it would be nice
-> > > if we could get rid of this hack"
-> > > 
-> > > [1] https://lore.kernel.org/linux-ext4/99cce8ca-e4a0-7301-840f-2ace67c551f3@huawei.com/T/#m04990cfbc4f44592421736b504afcc346b2a7c00
-> > > 
-> > > Related fix in ext4 by
-> > > commit 72ffb49a7b62 ("ext4: do not set SB_ACTIVE in ext4_orphan_cleanup()").
-> > > 
-> > > f2fs has the same hack implementation in
-> > > - f2fs_recover_orphan_inodes()
-> > > - f2fs_recover_fsync_data()
-> > > - f2fs_disable_checkpoint()
-> > > 
-> > > Let's get rid of this hack as well in f2fs.
-> > > 
-> > > Cc: Zhang Yi <yi.zhang@huawei.com>
-> > > Cc: Jan Kara <jack@suse.cz>
-> > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> > > ---
-> > >   fs/f2fs/checkpoint.c |  3 ---
-> > >   fs/f2fs/recovery.c   |  8 ++------
-> > >   fs/f2fs/super.c      | 11 ++++-------
-> > >   3 files changed, 6 insertions(+), 16 deletions(-)
-> > > 
-> > > diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-> > > index 6c208108d69c..a578c7d13d81 100644
-> > > --- a/fs/f2fs/checkpoint.c
-> > > +++ b/fs/f2fs/checkpoint.c
-> > > @@ -691,9 +691,6 @@ int f2fs_recover_orphan_inodes(struct f2fs_sb_info *sbi)
-> > >   	}
-> > >   #ifdef CONFIG_QUOTA
-> > > -	/* Needed for iput() to work correctly and not trash data */
-> > > -	sbi->sb->s_flags |= SB_ACTIVE;
-> > > -
-> > >   	/*
-> > >   	 * Turn on quotas which were not enabled for read-only mounts if
-> > >   	 * filesystem has quota feature, so that they are updated correctly.
-> > > diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
-> > > index 4b2f7d1d5bf4..4cfe36fa41be 100644
-> > > --- a/fs/f2fs/recovery.c
-> > > +++ b/fs/f2fs/recovery.c
-> > > @@ -782,8 +782,6 @@ int f2fs_recover_fsync_data(struct f2fs_sb_info *sbi, bool check_only)
-> > >   	}
-> > >   #ifdef CONFIG_QUOTA
-> > > -	/* Needed for iput() to work correctly and not trash data */
-> > > -	sbi->sb->s_flags |= SB_ACTIVE;
-> > >   	/* Turn on quotas so that they are updated correctly */
-> > >   	quota_enabled = f2fs_enable_quota_files(sbi, s_flags & SB_RDONLY);
-> > >   #endif
-> > > @@ -811,10 +809,8 @@ int f2fs_recover_fsync_data(struct f2fs_sb_info *sbi, bool check_only)
-> > >   	err = recover_data(sbi, &inode_list, &tmp_inode_list, &dir_list);
-> > >   	if (!err)
-> > >   		f2fs_bug_on(sbi, !list_empty(&inode_list));
-> > > -	else {
-> > > -		/* restore s_flags to let iput() trash data */
-> > > -		sbi->sb->s_flags = s_flags;
-> > > -	}
-> > > +	else
-> > > +		f2fs_bug_on(sbi, sbi->sb->s_flags & SB_ACTIVE);
-> > >   skip:
-> > >   	fix_curseg_write_pointer = !check_only || list_empty(&inode_list);
-> > > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> > > index 0a77808ebb8f..e7bd983fbddc 100644
-> > > --- a/fs/f2fs/super.c
-> > > +++ b/fs/f2fs/super.c
-> > > @@ -1881,17 +1881,15 @@ static int f2fs_enable_quotas(struct super_block *sb);
-> > >   static int f2fs_disable_checkpoint(struct f2fs_sb_info *sbi)
-> > >   {
-> > > -	unsigned int s_flags = sbi->sb->s_flags;
-> > >   	struct cp_control cpc;
-> > >   	int err = 0;
-> > >   	int ret;
-> > >   	block_t unusable;
-> > > -	if (s_flags & SB_RDONLY) {
-> > > +	if (sbi->sb->s_flags & SB_RDONLY) {
-> > >   		f2fs_err(sbi, "checkpoint=disable on readonly fs");
-> > >   		return -EINVAL;
-> > >   	}
-> > > -	sbi->sb->s_flags |= SB_ACTIVE;
-> > >   	f2fs_update_time(sbi, DISABLE_TIME);
-> > > @@ -1909,13 +1907,13 @@ static int f2fs_disable_checkpoint(struct f2fs_sb_info *sbi)
-> > >   	ret = sync_filesystem(sbi->sb);
-> > >   	if (ret || err) {
-> > >   		err = ret ? ret : err;
-> > > -		goto restore_flag;
-> > > +		goto out;
-> > >   	}
-> > >   	unusable = f2fs_get_unusable_blocks(sbi);
-> > >   	if (f2fs_disable_cp_again(sbi, unusable)) {
-> > >   		err = -EAGAIN;
-> > > -		goto restore_flag;
-> > > +		goto out;
-> > >   	}
-> > >   	down_write(&sbi->gc_lock);
-> > > @@ -1931,8 +1929,7 @@ static int f2fs_disable_checkpoint(struct f2fs_sb_info *sbi)
-> > >   out_unlock:
-> > >   	up_write(&sbi->gc_lock);
-> > > -restore_flag:
-> > > -	sbi->sb->s_flags = s_flags;	/* Restore SB_RDONLY status */
-> > > +out:
-> > >   	return err;
-> > >   }
-> > > -- 
-> > > 2.29.2
+> Cc: Vitaly Kuznetsov<vkuznets@redhat.com>
+> Signed-off-by: Sean Christopherson<seanjc@google.com>
+
