@@ -2,118 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02F63B22EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E423B22ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhFWWHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 18:07:52 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:59450 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbhFWWHr (ORCPT
+        id S229929AbhFWWKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 18:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229800AbhFWWKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:07:47 -0400
-Received: from [10.0.0.178] (c-67-168-106-253.hsd1.wa.comcast.net [67.168.106.253])
-        by linux.microsoft.com (Postfix) with ESMTPSA id EE18B20B7188;
-        Wed, 23 Jun 2021 15:05:28 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EE18B20B7188
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1624485929;
-        bh=0S1B3tajSDS4jZ66fuyQAE4asiaTTZT2KKBCT5RZ+Tg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=dvmAR0/Ir1JwoS4pQw0LRF8HnuEJjCmvcHosMXmVGSiyVlVp3CgaglO+GIS1CbcRB
-         ihIT/j0yy+Ws3DhSVymjaqW61bLl2aRoyQ6fIe5Nkcbl781IofmTyGb2RfvHlcB5Ma
-         KDXqsl58OskEywKmdb4BIx8pCSABfSiP/iFiED2k=
-Subject: Re: [PATCH 03/19] drivers/hv: minimal mshv module (/dev/mshv/)
-To:     Sunil Muthuswamy <sunilmut@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "viremana@linux.microsoft.com" <viremana@linux.microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        Lillian Grassin-Drake <Lillian.GrassinDrake@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>
-References: <1622241819-21155-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1622241819-21155-4-git-send-email-nunodasneves@linux.microsoft.com>
- <MW4PR21MB2004EB3380731C8102DB7D16C03C9@MW4PR21MB2004.namprd21.prod.outlook.com>
-From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Message-ID: <323bb12e-82db-d54c-1014-7f0b431ebdd7@linux.microsoft.com>
-Date:   Wed, 23 Jun 2021 15:05:28 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 23 Jun 2021 18:10:38 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C846FC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:08:19 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id h23so2294529pjv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:08:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=44Yf6cLjs99O4uIqpzkWbsq5gnf+DtkSEt/XegXpG6E=;
+        b=tk8J7oMyp9qjr6rPOSZQv6b8CsU+QLFvOCYQP2w2ox008byz7djyW8OtDLw4NkY7Aj
+         0iGS0FBtuO4NZkAVq/7AI6EPLnwYQdiiXsU4PlQ364srB9dVikV1BSzwD+RxgKkSzC3t
+         nFWwB5kS8HEe5pmq90yED4WO7Q/rJ8fLsA1y1FZnanUX/o9ptOhjEjtOjshrGno1jAh8
+         xSakJk4hjtsCOxppj/DEFeO02d2YnTn8TuGI08rz7qq4koQfFvym4rZ7XDleDkdM4tYq
+         ZSWZdv9Qf67uVmC/N2NugKz6e8lecWaG9b0ZSvpOYvetszdUAMkU1Ty/RcT8Bug06KY1
+         Zakg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=44Yf6cLjs99O4uIqpzkWbsq5gnf+DtkSEt/XegXpG6E=;
+        b=DvbsZEtPGATd2gRbzEoFMi0CuCh3buKodeYoa89YwT5PI9OThrz0uZnpNFKsEPPr2p
+         +SQcfNEq/gc8YnpS2LWzITcLXAuinbFC9qspN7s2gNmR8Yq4tjaCeiJeulDKtX8bfUmd
+         ZDkH/wnFMhYlfGwethKPP2uYIVptOOXRdcxN+AdQbW3JRMR7wiTR2ipIAiScC+G2bLSA
+         P+Mbd1UtOuF1qeq1EVd1qeirMIBwSwCL80w8NZvJ/QlhcYuOuYjCctoc3uzNndr9DjIn
+         cqaJ/MtTs8fWCVvo5kfHr0Sll4O/CQPjAoYNii6Cz06y13RE+JkqJX+v/ko1pVcZ0yZS
+         BCFQ==
+X-Gm-Message-State: AOAM530jE6SZt1Oim39KLUYyrz4LWrBOaYZVtY/M07Zy5RMfw5ftsaXd
+        xfTUiW9pvJsKQIhP03ItvK6dtA==
+X-Google-Smtp-Source: ABdhPJw05HM2g2N8R13WyHgaeSGfcbunTji93ixugUtg+1FHkSDWB2SoqxWijlOGOapY0PK/2zrCAg==
+X-Received: by 2002:a17:90a:7c4a:: with SMTP id e10mr1847755pjl.56.1624486099017;
+        Wed, 23 Jun 2021 15:08:19 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id gg5sm6017037pjb.0.2021.06.23.15.08.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 15:08:18 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 22:08:15 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: Re: [PATCH 00/54] KVM: x86/mmu: Bug fixes and summer cleaning
+Message-ID: <YNOwz4ln0MsI+/Ts@google.com>
+References: <20210622175739.3610207-1-seanjc@google.com>
+ <b4efb3fd-9591-3153-5a64-19afb12edb2b@redhat.com>
+ <YNOiar3ySxs0Z3N3@google.com>
+ <d9004cf0-d7ac-dc7d-06ad-6669fe11a21b@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <MW4PR21MB2004EB3380731C8102DB7D16C03C9@MW4PR21MB2004.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d9004cf0-d7ac-dc7d-06ad-6669fe11a21b@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/2/2021 6:28 PM, Sunil Muthuswamy wrote:
->> diff --git a/drivers/hv/Kconfig b/drivers/hv/Kconfig
->> index 66c794d92391..d618b1fab2bb 100644
->> --- a/drivers/hv/Kconfig
->> +++ b/drivers/hv/Kconfig
->> @@ -27,4 +27,22 @@ config HYPERV_BALLOON
->>  	help
->>  	  Select this option to enable Hyper-V Balloon driver.
->>
->> +config HYPERV_ROOT_API
+On Wed, Jun 23, 2021, Paolo Bonzini wrote:
+> On 23/06/21 23:06, Sean Christopherson wrote:
+> > > 
+> > > This is good stuff, I made a few comments but almost all of them (all except
+> > > the last comment on patch 9, "Unconditionally zap unsync SPs") are cosmetic
+> > > and I can resolve them myself.
+> > The 0-day bot also reported some warnings.  vcpu_to_role_regs() needs to be
+> > static, the helpers are added without a user.  I liked the idea of adding the
+> > helpers in one patch, but I can't really defend adding them without a user. :-/
 > 
-> A more suitable place to put this would be under the "VIRTUALIZATION"
-> config menu option, where we have the "KVM" option today.
+> Yep, I noticed them too.
 > 
+> We can just mark them static inline, which is a good idea anyway and enough
 
-Is Xen also under "VIRTUALIZATION"?
+But they already are static inline :-(
 
->> +	tristate "Microsoft Hypervisor root partition interfaces: /dev/mshv"
->> +	depends on HYPERV
->> +	help
->> +	  Provides access to interfaces for managing guest virtual machines
->> +	  running under the Microsoft Hypervisor.
-> 
-> These are technically not "root" interfaces. As you say it too, these are
-> interfaces to manage guest VMs. Calling it "HYPERV_ROOT_API" would
-> be confusing. Something along the lines of "HYPERV_VMM_API" or
-> "HYPERV_VM_API" seems more appropriate to me.
-> 
+> to shut up the compiler (clang might behave different in this respect for .h
+> and .c files, but again it's just a warning and not a bisection breakage).
 
-Good point - HYPERV_VMM_API might be better.
-
->> new file mode 100644
->> index 000000000000..c68cc84fb983
->> --- /dev/null
->> +++ b/drivers/hv/mshv_main.c
-> Why not in /virt/hv or something under /virt?
-> 
-
-We decided that all the non arch-specific hyperv code should live in drivers/hv.
-
->> +static int mshv_dev_open(struct inode *inode, struct file *filp);
->> +static int mshv_dev_release(struct inode *inode, struct file *filp);
->> +static long mshv_dev_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg);
-> 
-> Do we need to have both 'mshv' & 'dev' in the name? How about just
-> calling these 'mshv_xyz'? Like you have for init/exit.
-> 
-
-I wanted a distinction between mshv_* the module, and mshv_dev_* the root device of the module,
-but I guess it's effectively the same thing.
-
->> +
->> +static struct miscdevice mshv_dev = {
->> +	.minor = MISC_DYNAMIC_MINOR,
->> +	.name = "mshv",
->> +	.fops = &mshv_dev_fops,
->> +	.mode = 600,
->> +};
-> For the default mode, I think we want to keep it the same as that for 'kvm'.
-> 
-
-KVM doesn't specify a mode here. Not sure how it gets set.
-
-> - Sunil
-> 
+I was worried about the CONFIG_KVM_WERROR=y case.
