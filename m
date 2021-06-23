@@ -2,93 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E423B22ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 434673B22FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhFWWKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 18:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50158 "EHLO
+        id S230151AbhFWWLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 18:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbhFWWKi (ORCPT
+        with ESMTP id S230030AbhFWWLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:10:38 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C846FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:08:19 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id h23so2294529pjv.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:08:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=44Yf6cLjs99O4uIqpzkWbsq5gnf+DtkSEt/XegXpG6E=;
-        b=tk8J7oMyp9qjr6rPOSZQv6b8CsU+QLFvOCYQP2w2ox008byz7djyW8OtDLw4NkY7Aj
-         0iGS0FBtuO4NZkAVq/7AI6EPLnwYQdiiXsU4PlQ364srB9dVikV1BSzwD+RxgKkSzC3t
-         nFWwB5kS8HEe5pmq90yED4WO7Q/rJ8fLsA1y1FZnanUX/o9ptOhjEjtOjshrGno1jAh8
-         xSakJk4hjtsCOxppj/DEFeO02d2YnTn8TuGI08rz7qq4koQfFvym4rZ7XDleDkdM4tYq
-         ZSWZdv9Qf67uVmC/N2NugKz6e8lecWaG9b0ZSvpOYvetszdUAMkU1Ty/RcT8Bug06KY1
-         Zakg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=44Yf6cLjs99O4uIqpzkWbsq5gnf+DtkSEt/XegXpG6E=;
-        b=DvbsZEtPGATd2gRbzEoFMi0CuCh3buKodeYoa89YwT5PI9OThrz0uZnpNFKsEPPr2p
-         +SQcfNEq/gc8YnpS2LWzITcLXAuinbFC9qspN7s2gNmR8Yq4tjaCeiJeulDKtX8bfUmd
-         ZDkH/wnFMhYlfGwethKPP2uYIVptOOXRdcxN+AdQbW3JRMR7wiTR2ipIAiScC+G2bLSA
-         P+Mbd1UtOuF1qeq1EVd1qeirMIBwSwCL80w8NZvJ/QlhcYuOuYjCctoc3uzNndr9DjIn
-         cqaJ/MtTs8fWCVvo5kfHr0Sll4O/CQPjAoYNii6Cz06y13RE+JkqJX+v/ko1pVcZ0yZS
-         BCFQ==
-X-Gm-Message-State: AOAM530jE6SZt1Oim39KLUYyrz4LWrBOaYZVtY/M07Zy5RMfw5ftsaXd
-        xfTUiW9pvJsKQIhP03ItvK6dtA==
-X-Google-Smtp-Source: ABdhPJw05HM2g2N8R13WyHgaeSGfcbunTji93ixugUtg+1FHkSDWB2SoqxWijlOGOapY0PK/2zrCAg==
-X-Received: by 2002:a17:90a:7c4a:: with SMTP id e10mr1847755pjl.56.1624486099017;
-        Wed, 23 Jun 2021 15:08:19 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id gg5sm6017037pjb.0.2021.06.23.15.08.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 15:08:18 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 22:08:15 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH 00/54] KVM: x86/mmu: Bug fixes and summer cleaning
-Message-ID: <YNOwz4ln0MsI+/Ts@google.com>
-References: <20210622175739.3610207-1-seanjc@google.com>
- <b4efb3fd-9591-3153-5a64-19afb12edb2b@redhat.com>
- <YNOiar3ySxs0Z3N3@google.com>
- <d9004cf0-d7ac-dc7d-06ad-6669fe11a21b@redhat.com>
+        Wed, 23 Jun 2021 18:11:14 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EE2C061574;
+        Wed, 23 Jun 2021 15:08:55 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 22:08:48 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624486130;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kFvgKDHdxGLPEf7Dd/fY3WCXGphBJH7eaR3d0W41+AU=;
+        b=DZ9EpKQxBEJuIXmcdu2sgiwzho2EQ+PMQ6xETAF36532K8ats77wv3GNka+bWzkCBsIrTX
+        KXp03D9p7/szA88GPkMcKEnrER4CDnnLm3ozKBFe5TLNjD+4fXNLT9EZjjZLizzr9V2IlH
+        j0l0vFBARxnxFVAQe9ivf0dazntBdw1BCYLjFkLCccuBRrRnbncOkLxRXEewuCGVl+wsZ8
+        fcNlSHpVrjLaKYrdC8lSsR9kD3OYQGxNBLMkswWNwfbsSaVhvJSWec6s3snr10Geaf+Jhq
+        dvAXXHUgg/M4CNx3Lgi1Z24CdphZrofSKVGj2Dgi9v4BujBbIuhfOpC5WN99qQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624486130;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kFvgKDHdxGLPEf7Dd/fY3WCXGphBJH7eaR3d0W41+AU=;
+        b=J3jrfQO2O4rimjI27eiOeI96N1NwyOkz0oG5mu2gb2gIO7K0BRPR6YCq6DMvvnrkkFyk6s
+        B0+Rpoo3QBgCYECg==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/fpu] x86/fpu/signal: Let xrstor handle the features to init
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210623121457.804115017@linutronix.de>
+References: <20210623121457.804115017@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d9004cf0-d7ac-dc7d-06ad-6669fe11a21b@redhat.com>
+Message-ID: <162448612843.395.15241204908461608511.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021, Paolo Bonzini wrote:
-> On 23/06/21 23:06, Sean Christopherson wrote:
-> > > 
-> > > This is good stuff, I made a few comments but almost all of them (all except
-> > > the last comment on patch 9, "Unconditionally zap unsync SPs") are cosmetic
-> > > and I can resolve them myself.
-> > The 0-day bot also reported some warnings.  vcpu_to_role_regs() needs to be
-> > static, the helpers are added without a user.  I liked the idea of adding the
-> > helpers in one patch, but I can't really defend adding them without a user. :-/
-> 
-> Yep, I noticed them too.
-> 
-> We can just mark them static inline, which is a good idea anyway and enough
+The following commit has been merged into the x86/fpu branch of tip:
 
-But they already are static inline :-(
+Commit-ID:     6f9866a166cd1ad3ebb2dcdb3874aa8fee8dea2f
+Gitweb:        https://git.kernel.org/tip/6f9866a166cd1ad3ebb2dcdb3874aa8fee8dea2f
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Wed, 23 Jun 2021 14:02:32 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 23 Jun 2021 23:45:31 +02:00
 
-> to shut up the compiler (clang might behave different in this respect for .h
-> and .c files, but again it's just a warning and not a bisection breakage).
+x86/fpu/signal: Let xrstor handle the features to init
 
-I was worried about the CONFIG_KVM_WERROR=y case.
+There is no reason to do an extra XRSTOR from init_fpstate for feature
+bits which have been cleared by user space in the FX magic xfeatures
+storage.
+
+Just clear them in the task's XSTATE header and do a full restore which
+will put these cleared features into init state.
+
+There is no real difference in performance because the current code
+already does a full restore when the xfeatures bits are preserved as the
+signal frame setup has stored them, which is the full UABI feature set.
+
+ [ bp: Use the negated mxcsr_feature_mask in the MXCSR check. ]
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210623121457.804115017@linutronix.de
+---
+ arch/x86/kernel/fpu/signal.c | 89 ++++++++++++-----------------------
+ 1 file changed, 31 insertions(+), 58 deletions(-)
+
+diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+index 4c252d0..445c57c 100644
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -220,36 +220,6 @@ retry:
+ 	return 0;
+ }
+ 
+-static inline void
+-sanitize_restored_user_xstate(union fpregs_state *state,
+-			      struct user_i387_ia32_struct *ia32_env, u64 mask)
+-{
+-	struct xregs_state *xsave = &state->xsave;
+-	struct xstate_header *header = &xsave->header;
+-
+-	if (use_xsave()) {
+-		/*
+-		 * Clear all feature bits which are not set in mask.
+-		 *
+-		 * Supervisor state has to be preserved. The sigframe
+-		 * restore can only modify user features, i.e. @mask
+-		 * cannot contain them.
+-		 */
+-		header->xfeatures &= mask | xfeatures_mask_supervisor();
+-	}
+-
+-	if (use_fxsr()) {
+-		/*
+-		 * mscsr reserved bits must be masked to zero for security
+-		 * reasons.
+-		 */
+-		xsave->i387.mxcsr &= mxcsr_feature_mask;
+-
+-		if (ia32_env)
+-			convert_to_fxsr(&state->fxsave, ia32_env);
+-	}
+-}
+-
+ static int __restore_fpregs_from_user(void __user *buf, u64 xrestore,
+ 				      bool fx_only)
+ {
+@@ -352,6 +322,8 @@ static int __fpu_restore_sig(void __user *buf, void __user *buf_fx,
+ 		fx_only = !fx_sw_user.magic1;
+ 		state_size = fx_sw_user.xstate_size;
+ 		user_xfeatures = fx_sw_user.xfeatures;
++	} else {
++		user_xfeatures = XFEATURE_MASK_FPSSE;
+ 	}
+ 
+ 	if (likely(!ia32_fxstate)) {
+@@ -395,54 +367,55 @@ static int __fpu_restore_sig(void __user *buf, void __user *buf_fx,
+ 		set_thread_flag(TIF_NEED_FPU_LOAD);
+ 	}
+ 	__fpu_invalidate_fpregs_state(fpu);
++	__cpu_invalidate_fpregs_state();
+ 	fpregs_unlock();
+ 
+ 	if (use_xsave() && !fx_only) {
+-		u64 init_bv = xfeatures_mask_uabi() & ~user_xfeatures;
+-
+ 		ret = copy_sigframe_from_user_to_xstate(&fpu->state.xsave, buf_fx);
+ 		if (ret)
+ 			return ret;
++	} else {
++		if (__copy_from_user(&fpu->state.fxsave, buf_fx,
++				     sizeof(fpu->state.fxsave)))
++			return -EFAULT;
+ 
+-		sanitize_restored_user_xstate(&fpu->state, &env, user_xfeatures);
++		/* Reject invalid MXCSR values. */
++		if (fpu->state.fxsave.mxcsr & ~mxcsr_feature_mask)
++			return -EINVAL;
+ 
+-		fpregs_lock();
+-		if (unlikely(init_bv))
+-			os_xrstor(&init_fpstate.xsave, init_bv);
++		/* Enforce XFEATURE_MASK_FPSSE when XSAVE is enabled */
++		if (use_xsave())
++			fpu->state.xsave.header.xfeatures |= XFEATURE_MASK_FPSSE;
++	}
++
++	/* Fold the legacy FP storage */
++	convert_to_fxsr(&fpu->state.fxsave, &env);
+ 
++	fpregs_lock();
++	if (use_xsave()) {
+ 		/*
+-		 * Restore previously saved supervisor xstates along with
+-		 * copied-in user xstates.
++		 * Remove all UABI feature bits not set in user_xfeatures
++		 * from the memory xstate header which makes the full
++		 * restore below bring them into init state. This works for
++		 * fx_only mode as well because that has only FP and SSE
++		 * set in user_xfeatures.
++		 *
++		 * Preserve supervisor states!
+ 		 */
+-		ret = os_xrstor_safe(&fpu->state.xsave,
+-				     user_xfeatures | xfeatures_mask_supervisor());
++		u64 mask = user_xfeatures | xfeatures_mask_supervisor();
+ 
++		fpu->state.xsave.header.xfeatures &= mask;
++		ret = os_xrstor_safe(&fpu->state.xsave, xfeatures_mask_all);
+ 	} else {
+-		ret = __copy_from_user(&fpu->state.fxsave, buf_fx, state_size);
+-		if (ret)
+-			return -EFAULT;
+-
+-		sanitize_restored_user_xstate(&fpu->state, &env, user_xfeatures);
+-
+-		fpregs_lock();
+-		if (use_xsave()) {
+-			u64 init_bv;
+-
+-			init_bv = xfeatures_mask_uabi() & ~XFEATURE_MASK_FPSSE;
+-			os_xrstor(&init_fpstate.xsave, init_bv);
+-		}
+-
+ 		ret = fxrstor_safe(&fpu->state.fxsave);
+ 	}
+ 
+-	if (!ret)
++	if (likely(!ret))
+ 		fpregs_mark_activate();
+-	else
+-		fpregs_deactivate(fpu);
++
+ 	fpregs_unlock();
+ 	return ret;
+ }
+-
+ static inline int xstate_sigframe_size(void)
+ {
+ 	return use_xsave() ? fpu_user_xstate_size + FP_XSTATE_MAGIC2_SIZE :
