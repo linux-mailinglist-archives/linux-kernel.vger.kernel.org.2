@@ -2,84 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816833B17FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 12:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 744C93B1805
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 12:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbhFWKUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 06:20:00 -0400
-Received: from srv6.fidu.org ([159.69.62.71]:41106 "EHLO srv6.fidu.org"
+        id S230124AbhFWKYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 06:24:52 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:45846 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229833AbhFWKT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 06:19:58 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id BA174C800A7;
-        Wed, 23 Jun 2021 12:17:40 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id cq-7LrBxmnzK; Wed, 23 Jun 2021 12:17:40 +0200 (CEST)
-Received: from [IPv6:2003:e3:7f39:4900:3156:839d:aed8:6ea6] (p200300e37f3949003156839Daed86eA6.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:4900:3156:839d:aed8:6ea6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        id S229833AbhFWKYv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 06:24:51 -0400
+Received: from zn.tnic (p200300ec2f114b00a4a414805e84bac1.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:4b00:a4a4:1480:5e84:bac1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPSA id 2D4ABC8009D;
-        Wed, 23 Jun 2021 12:17:40 +0200 (CEST)
-Subject: Re: [PATCH v4 09/17] drm/uAPI: Add "active color range" drm property
- as feedback for userspace
-To:     Pekka Paalanen <ppaalanen@gmail.com>,
-        Simon Ser <contact@emersion.fr>
-Cc:     amd-gfx@lists.freedesktop.org, sunpeng.li@amd.com,
-        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, airlied@linux.ie,
-        tzimmermann@suse.de, rodrigo.vivi@intel.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com
-References: <20210618091116.14428-1-wse@tuxedocomputers.com>
- <20210618091116.14428-10-wse@tuxedocomputers.com>
- <20210622100042.4041624a@eldfell>
- <56d079d4-841a-0ca5-b8a6-d2c10f91d211@tuxedocomputers.com>
- <k_QeCRpur3SNNIspBiTHOTT6Oj1pSteEO3MzyQFUG0lSXmEqJUI2tMXJ6wR9chzUHGahdQApJZrUxdJvIv6s8aXr2DBdoHg-2PsGH4kEMyA=@emersion.fr>
- <20210623103256.01d680ba@eldfell>
-From:   Werner Sembach <wse@tuxedocomputers.com>
-Message-ID: <5947f768-dd87-6b39-ecfc-b7c4aaa88aca@tuxedocomputers.com>
-Date:   Wed, 23 Jun 2021 12:17:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1F7B01EC0501;
+        Wed, 23 Jun 2021 12:22:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1624443752;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=p5+c5VpLnVkRT8GmtkDspNcjMFF7W/ui62AD9LCqlPk=;
+        b=e2LuFJNezzgau+25vW0IJH4CjrNtDoAaSBLURhPLxyMyrRAds/jOnXt78I5xC77knVEKvq
+        baJZP/TmTVV21d+sc0U45cY5tY1aI6z5eCV+axHmCLAaoAhEo9UqtSrSgRlXHKCYtdphid
+        1muhFRjcmYp9jP5yPnJw3C7F3KP/mR8=
+Date:   Wed, 23 Jun 2021 12:22:23 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michael Roth <michael.roth@amd.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
+        npmccallum@redhat.com
+Subject: Re: [PATCH Part1 RFC v3 20/22] x86/boot: Add Confidential Computing
+ address to setup_header
+Message-ID: <YNMLX6fbB3PQwSpv@zn.tnic>
+References: <20210602140416.23573-1-brijesh.singh@amd.com>
+ <20210602140416.23573-21-brijesh.singh@amd.com>
+ <YMw4UZn6AujpPSZO@zn.tnic>
+ <15568c80-c9a9-5602-d940-264af87bed98@amd.com>
+ <YMy2OGwsRzrR5bwD@zn.tnic>
+ <162442264313.98837.16983159316116149849@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20210623103256.01d680ba@eldfell>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <162442264313.98837.16983159316116149849@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 22, 2021 at 11:30:43PM -0500, Michael Roth wrote:
+> Quoting Borislav Petkov (2021-06-18 10:05:28)
+> > On Fri, Jun 18, 2021 at 08:57:12AM -0500, Brijesh Singh wrote:
+> > > Don't have any strong reason to keep it separate, I can define a new
+> > > type and use the setup_data to pass this information.
+> > 
+> > setup_data is exactly for use cases like that - pass a bunch of data
+> > to the kernel. So there's no need for a separate thing. Also see that
+> > kernel_info thing which got added recently for read_only data.
+> 
+> Hi Boris,
+> 
+> There's one side-effect to this change WRT the CPUID page (which I think
+> we're hoping to include in RFC v4).
+> 
+> With CPUID page we need to access it very early in boot, for both
+> boot/compressed kernel, and the uncompressed kernel. At first this was
+> implemented by moving the early EFI table parsing code from
+> arch/x86/kernel/boot/compressed/acpi.c into a little library to handle early
+> EFI table parsing to fetch the Confidential Computing blob to get the CPUID
+> page address.
+> 
+> This was a bit messy since we needed to share that library between
+> boot/compressed and uncompressed, and at that early stage things like
+> fixup_pointer() are needed in some places, else even basic things like
+> accessing EFI64_LOADER_SIGNATURE and various EFI helper functions could crash
+> in uncompressed otherwise, so the library code needed to be fixed up
+> accordingly.
+> 
+> To simplify things we ended up simply keeping the early EFI table parsing in
+> boot/compressed, and then having boot/compressed initialize
+> setup_data.cc_blob_address so that the uncompressed kernel could access it
+> from there (acpi does something similar with rdsp address).
 
-Am 23.06.21 um 09:32 schrieb Pekka Paalanen:
-> On Tue, 22 Jun 2021 11:48:52 +0000
-> Simon Ser <contact@emersion.fr> wrote:
->
->> On Tuesday, June 22nd, 2021 at 11:50, Werner Sembach <wse@tuxedocomputers.com> wrote:
->>
->>> Unknown is when no monitor is connected or is when the
->>> connector/monitor is disabled.  
->> I think the other connector props (link-status, non-desktop, etc) don't
->> have a special "unset" value, and instead the value is set to a random
->> enum entry. User-space should ignore the prop on these disconnected
->> connectors anyways.
-> That sounds fine to me.
+Yes, except the rsdp address is not vendor-specific but an x86 ACPI
+thing, so pretty much omnipresent.
 
-Currently the only case for "not applicable" is when the monitor is disconnected, but sicne the properties are so
-interdependent, there might be a case in the future where e.g. a color format that has no differentiation between full
-and limited arises. When there is no special unset/not applicable option, the userspace has to know exactly when an
-option is valid or not, possible requiring additional logic.
+Also, acpi_rsdp_addr is part of boot_params and that struct is full
+of padding holes and obsolete members so reusing a u32 there is a lot
+"easier" than changing the setup_header. So can you put that address in
+boot_params instead?
 
-Setting a "not applicable" value allows userspace to be more dumb, without much hassle on the kernelspace side.
+> Now that we're moving it to setup_data, this becomes a bit more awkward,
+> since we need to reserve memory in boot/compressed to store the setup_data
+> entry, then add it to the linked list to pass along to uncompressed kernel.
+> In turn that also means we need to add an identity mapping for this in
+> ident_map_64.c, so I'm not sure that's the best approach.
+> 
+> So just trying to pin what the best approach is:
+> 
+> a) move cc_blob to setup_data, and do the above-described to pass
+>    cc_blob_address from boot/compressed to uncompressed to avoid early
+>    EFI parsing in uncompressed
+> b) move cc_blob to setup_data, and do the EFI table parsing in both
+>    boot/compressed. leave setup_data allocation/init for BIOS/bootloader
+> c) keep storing cc_blob_address in setup_header.cc_blob_address
+> d) something else?
 
->
->
-> Thanks,
-> pq
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+Leaving in the whole text for newly CCed TDX folks in case they're going
+to need something like that.
+
+And if so, then both vendors should even share the field definition.
+
+Dave, Sathya, you can find the whole subthread here:
+
+https://lkml.kernel.org/r/20210602140416.23573-21-brijesh.singh@amd.com
+
+in case you need background info on the topic at hand.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
