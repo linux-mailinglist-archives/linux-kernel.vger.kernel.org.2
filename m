@@ -2,91 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE113B17F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 12:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816833B17FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 12:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhFWKT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 06:19:29 -0400
-Received: from mga09.intel.com ([134.134.136.24]:15880 "EHLO mga09.intel.com"
+        id S230138AbhFWKUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 06:20:00 -0400
+Received: from srv6.fidu.org ([159.69.62.71]:41106 "EHLO srv6.fidu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229833AbhFWKT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 06:19:28 -0400
-IronPort-SDR: 48OgBCeQ7QyssF+0HCGf3WgQtphdeJ0IdN0IES1EO7Fm2qRkpbpH92M3z8+z8Xf3zZPMrBj9pB
- gw5KVCehEv3A==
-X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="207171294"
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="207171294"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 03:17:10 -0700
-IronPort-SDR: EIuF4L3ycT8/hvv56l8I+BGfmhJ+BFTROkuRe9snHvH8R2U/xoLiviiEBCkH/P3tms9/h7JNe3
- BTsboYVqvllA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="417685362"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 23 Jun 2021 03:17:08 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id DF94F23A; Wed, 23 Jun 2021 13:17:33 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v1 1/1] mmc: mmc_spi: Simplify busy loop in mmc_spi_skip()
-Date:   Wed, 23 Jun 2021 13:17:31 +0300
-Message-Id: <20210623101731.87885-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S229833AbhFWKT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 06:19:58 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id BA174C800A7;
+        Wed, 23 Jun 2021 12:17:40 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id cq-7LrBxmnzK; Wed, 23 Jun 2021 12:17:40 +0200 (CEST)
+Received: from [IPv6:2003:e3:7f39:4900:3156:839d:aed8:6ea6] (p200300e37f3949003156839Daed86eA6.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:4900:3156:839d:aed8:6ea6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id 2D4ABC8009D;
+        Wed, 23 Jun 2021 12:17:40 +0200 (CEST)
+Subject: Re: [PATCH v4 09/17] drm/uAPI: Add "active color range" drm property
+ as feedback for userspace
+To:     Pekka Paalanen <ppaalanen@gmail.com>,
+        Simon Ser <contact@emersion.fr>
+Cc:     amd-gfx@lists.freedesktop.org, sunpeng.li@amd.com,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        tzimmermann@suse.de, rodrigo.vivi@intel.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com
+References: <20210618091116.14428-1-wse@tuxedocomputers.com>
+ <20210618091116.14428-10-wse@tuxedocomputers.com>
+ <20210622100042.4041624a@eldfell>
+ <56d079d4-841a-0ca5-b8a6-d2c10f91d211@tuxedocomputers.com>
+ <k_QeCRpur3SNNIspBiTHOTT6Oj1pSteEO3MzyQFUG0lSXmEqJUI2tMXJ6wR9chzUHGahdQApJZrUxdJvIv6s8aXr2DBdoHg-2PsGH4kEMyA=@emersion.fr>
+ <20210623103256.01d680ba@eldfell>
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Message-ID: <5947f768-dd87-6b39-ecfc-b7c4aaa88aca@tuxedocomputers.com>
+Date:   Wed, 23 Jun 2021 12:17:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210623103256.01d680ba@eldfell>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Infinite loops are hard to read and understand because of
-hidden main loop condition. Simplify such one in mmc_spi_skip().
 
-Using schedule() to schedule (and be friendly to others)
-is discouraged and cond_resched() should be used instead.
-Hence, replace schedule() with cond_resched() at the same
-time.
+Am 23.06.21 um 09:32 schrieb Pekka Paalanen:
+> On Tue, 22 Jun 2021 11:48:52 +0000
+> Simon Ser <contact@emersion.fr> wrote:
+>
+>> On Tuesday, June 22nd, 2021 at 11:50, Werner Sembach <wse@tuxedocomputers.com> wrote:
+>>
+>>> Unknown is when no monitor is connected or is when the
+>>> connector/monitor is disabled.  
+>> I think the other connector props (link-status, non-desktop, etc) don't
+>> have a special "unset" value, and instead the value is set to a random
+>> enum entry. User-space should ignore the prop on these disconnected
+>> connectors anyways.
+> That sounds fine to me.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/mmc/host/mmc_spi.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+Currently the only case for "not applicable" is when the monitor is disconnected, but sicne the properties are so
+interdependent, there might be a case in the future where e.g. a color format that has no differentiation between full
+and limited arises. When there is no special unset/not applicable option, the userspace has to know exactly when an
+option is valid or not, possible requiring additional logic.
 
-diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
-index 65c65bb5737f..a1bcde3395a6 100644
---- a/drivers/mmc/host/mmc_spi.c
-+++ b/drivers/mmc/host/mmc_spi.c
-@@ -180,7 +180,7 @@ static int mmc_spi_skip(struct mmc_spi_host *host, unsigned long timeout,
- 	u8 *cp = host->data->status;
- 	unsigned long start = jiffies;
- 
--	while (1) {
-+	do {
- 		int		status;
- 		unsigned	i;
- 
-@@ -193,16 +193,9 @@ static int mmc_spi_skip(struct mmc_spi_host *host, unsigned long timeout,
- 				return cp[i];
- 		}
- 
--		if (time_is_before_jiffies(start + timeout))
--			break;
--
--		/* If we need long timeouts, we may release the CPU.
--		 * We use jiffies here because we want to have a relation
--		 * between elapsed time and the blocking of the scheduler.
--		 */
--		if (time_is_before_jiffies(start + 1))
--			schedule();
--	}
-+		/* If we need long timeouts, we may release the CPU */
-+		cond_resched();
-+	} while (time_is_after_jiffies(start + timeout));
- 	return -ETIMEDOUT;
- }
- 
--- 
-2.30.2
+Setting a "not applicable" value allows userspace to be more dumb, without much hassle on the kernelspace side.
 
+>
+>
+> Thanks,
+> pq
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
