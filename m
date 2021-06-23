@@ -2,67 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1AFE3B1F20
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 912843B1F37
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbhFWRCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 13:02:49 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:49870 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFWRCq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 13:02:46 -0400
-Received: by linux.microsoft.com (Postfix, from userid 1001)
-        id 22BC220B7188; Wed, 23 Jun 2021 10:00:29 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 22BC220B7188
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1624467629;
-        bh=L5/H7FIrkz8GoqL+W/32b5NGry8n7J+n2NEMmYkG6jM=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=h7y0rAKUyxJFDSCeiHCLM6LCm94bD1SnSwGrKLXNMlokmNBETkm1LwdXxqkczC2vs
-         RM3Me+trkcLQvetAnKmpxcwWUsg5vfKFFu01SXXQk5bZBtFvhahBGZAW1zs1istIsb
-         DO6fZsoueoVdMTDiEbQQGkLzsLMvo/mM9z19fgUM=
-Received: from localhost (localhost [127.0.0.1])
-        by linux.microsoft.com (Postfix) with ESMTP id 21C203070324;
-        Wed, 23 Jun 2021 10:00:29 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 10:00:29 -0700 (PDT)
-From:   James Morris <jamorris@linux.microsoft.com>
-To:     Stephan Mueller <smueller@chronox.de>
-cc:     =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        David Miller <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Haxby <john.haxby@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Simo Sorce <simo@redhat.com>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
-        hpa@zytor.com, tytso@mit.edu
-Subject: Re: [PATCH v1] crypto: Make the DRBG compliant with NIST SP800-90A
- rev1
-In-Reply-To: <9dbbf4e751cb4953fe63079cdc917a0bb3a91670.camel@chronox.de>
-Message-ID: <a4e1c071-32af-9650-e6fd-8943b3a79bb0@linux.microsoft.com>
-References: <20210623120751.3033390-1-mic@digikod.net> <9dbbf4e751cb4953fe63079cdc917a0bb3a91670.camel@chronox.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S229864AbhFWRIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 13:08:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229688AbhFWRIF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 13:08:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50531611AC;
+        Wed, 23 Jun 2021 17:05:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624467947;
+        bh=p2cOw9iOxNby1j1UpRU+HVQ3uwvo4XbPaZB9GXC2nE4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Bdt3aDkGHFUIxxk7JRVAQzq6kOm/BBHJqBdwQaVPzQLmJdBJ7a0MceiJRWnfgVDMg
+         ZXvIF4psuiKmzSJYro3fmHia5Pkw9X3fPXZBGfXMou9F5k2ef23Duz/fyevcwxylBg
+         zYdf2kUETyyFMIM6uScMERFk0qK6xecASeydLVEnwIYx0Lrksvelca0uBD0zQL2eUI
+         Z+pdBAGXtDYUA9AyxcBq8oRJEEhE1jwLmLCyR0wMpWrwqSnFMbXhCdm9dCso8CXwfZ
+         9TRtbLUd1wAhYKTZChnWEp4Cv+5BNZZJ6E4MrNRvZ3iGXwEKnbg+DGboJxr8Sl4bVU
+         vlRhBgKoWthXA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] SPI fixes for v5.13-rc7
+Date:   Wed, 23 Jun 2021 18:05:18 +0100
+Message-Id: <20210623170547.50531611AC@mail.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Jun 2021, Stephan Mueller wrote:
+The following changes since commit d38fa9a155b2829b7e2cfcf8a4171b6dd3672808:
 
-> 
-> > These changes replace the use of the Linux RNG with the Jitter RNG,
-> > which is NIST SP800-90B compliant, to get a proper entropy input and a
-> > nonce as defined by FIPS.
-> 
-> Can you please help me understand what is missing in the current code which
-> seemingly already has achieved this goal?
+  spi: stm32-qspi: Always wait BUSY bit to be cleared in stm32_qspi_wait_cmd() (2021-06-03 13:55:36 +0100)
 
-The advice we have is that if an attacker knows the internal state of the 
-CPU, then the output of the Jitter RNG can be predicted.
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.13-rc7
 
+for you to fetch changes up to f422316c8e9d3c4aff3c56549dfb44a677d02f14:
 
--- 
-James Morris
-<jamorris@linux.microsoft.com>
+  spi: spi-nxp-fspi: move the register operation after the clock enable (2021-06-14 15:02:01 +0100)
+
+----------------------------------------------------------------
+spi: Fixes for v5.13
+
+A couple of small, driver specific fixes that arrived in the past few
+weeks.
+
+----------------------------------------------------------------
+Haibo Chen (1):
+      spi: spi-nxp-fspi: move the register operation after the clock enable
+
+Jon Hunter (1):
+      spi: tegra20-slink: Ensure SPI controller reset is deasserted
+
+ drivers/spi/spi-nxp-fspi.c      | 11 +++++------
+ drivers/spi/spi-tegra20-slink.c |  5 +++++
+ 2 files changed, 10 insertions(+), 6 deletions(-)
