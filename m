@@ -2,99 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F3A3B1BB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA23C3B1BBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbhFWN6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:58:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231196AbhFWN6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:58:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B5F66108E;
-        Wed, 23 Jun 2021 13:56:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624456562;
-        bh=ZxR4BovY53uDvOMSdze/R9rMzx/+26TaCSgXVB/sj1Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=k5I2pQA+lzyZhAXauzOM3OgRNgK20OwqM8AMBJtbLjIscKbp7oUuFtaIKNvQ2neUu
-         HsDawwvt7r70fTimZSbHPhJRS3ZVqikroQiN5G5uLVVWOCM09JQ1FGT6UjRKCj6mja
-         AUQTs/FpTK3SADxQHe+vFZXxcyKkZRlbog6npvGK5LohDzFW0wAK4gz1lqwg9IMOK8
-         4nCQIJaBi6k94HIYGC42TxNx76RxUwF4HoEB0eJB24tLhyQTY2Pahhea6NuJ82f4eL
-         qDzCxPUn7Tda0VxZ5MVqvcnuoNfilWaCPti9GcoCW1WQfKAcZGONH2il2zLxHX9fto
-         vDL8GrPA8hEEg==
-Date:   Wed, 23 Jun 2021 16:56:00 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        jmorris@namei.org, dhowells@redhat.com, peterhuewe@gmx.de
-Subject: [GIT PULL] TPM DEVICE DRIVER changes for v5.14
-Message-ID: <20210623135600.n343aglmvu272fsg@kernel.org>
+        id S231224AbhFWN6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:58:47 -0400
+Received: from mail-vs1-f48.google.com ([209.85.217.48]:45795 "EHLO
+        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230263AbhFWN6q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 09:58:46 -0400
+Received: by mail-vs1-f48.google.com with SMTP id u10so1455830vsu.12;
+        Wed, 23 Jun 2021 06:56:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=55QXwvr22S8G1+P0buYR2qozyQS1fW6lW2FrYqgk8aQ=;
+        b=talJpful02qswSe5n/zecUVJGcmgoCOszeFvE4O7hh0tuVIVA/NUJn8I8NMYDewCpJ
+         Z2YECGjoI3ssPnA6WP3WJQ/ijwlRc3aCkGUyxSi7PcMEk1z9tWNDISxZMiXbfvLIAqdC
+         WjtYvGl0tfPK0bGMraLEy/7kJfEoDf8R85J16N3todJC/S1o1o/1qG/hrV7JaiulH4ic
+         kC0XdC20sx9BLyMpT4qyVpL6iAv1ae3hNWw2JaU88fEVd0J1I4+3kcBHHFQPYIeLl1/F
+         ory6RO9ypxqajMn6ZwlSMIA5/HRmlrRr04IQAwqffY6PDFp1Nbl0RQIksxKZaEMdJm0C
+         llSg==
+X-Gm-Message-State: AOAM532dx0yhJPiaKcn9/Da3HVivp+FUv8ttfUMBh/s9w95lmiMJRJXq
+        XGtC86U9ITZNxjLt6GDaw1atHXstUP6Kp+mdsy0+X9qzSdX4mg==
+X-Google-Smtp-Source: ABdhPJynIOS0kQWBBoQ1HEzzM7pwPkpkSYXauN3cD9FTH7VwH1BXAlkoFvLtcyUKa5dsm0E9A3rtdphDO0ILgMIE6aw=
+X-Received: by 2002:a67:7787:: with SMTP id s129mr65565vsc.40.1624456587744;
+ Wed, 23 Jun 2021 06:56:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210623095734.3046-1-wsa+renesas@sang-engineering.com> <20210623095734.3046-4-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20210623095734.3046-4-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 23 Jun 2021 15:56:16 +0200
+Message-ID: <CAMuHMdWk4gHc682m1YeAYJ8DLjSVuXaBNNXLfjUR4E=n0ZRJ2w@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mmc: usdhi6rol0: : use proper DMAENGINE API for termination
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux MMC List <linux-mmc@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        Lars Persson <lars.persson@axis.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-arm-kernel@axis.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Jun 23, 2021 at 11:58 AM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> dmaengine_terminate_all() is deprecated in favor of explicitly saying if
+> it should be sync or async. Here, we want dmaengine_terminate_sync()
+> because there is no other synchronization code in the driver to handle
+> an async case.
+>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Contains bug fixes for TPM, and support for signing modules using elliptic
-curve keys, which I promised to pick up to my tree.
+ Looks OK, as this driver uses a threaded irq handler.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-/Jarkko
+Have you tried triggering DMA termination, with lockdep enabled?
 
-The following changes since commit 0c18f29aae7ce3dadd26d8ee3505d07cc982df75:
+Gr{oetje,eeting}s,
 
-  module: limit enabling module.sig_enforce (2021-06-22 11:13:19 -0700)
+                        Geert
 
-are available in the Git repository at:
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/ tags/tpmdd-next-v5.14-rc1
-
-for you to fetch changes up to 87e9688481163dee836c7f86e02f9aaf3240af2e:
-
-  certs: Add support for using elliptic curve keys for signing modules (2021-06-23 16:51:04 +0300)
-
-----------------------------------------------------------------
-tpmdd updates for Linux v5.14-rc1
-
-----------------------------------------------------------------
-Amir Mizinski (1):
-      tpm: add longer timeout for TPM2_CC_VERIFY_SIGNATURE
-
-Jarkko Sakkinen (1):
-      tpm: Replace WARN_ONCE() with dev_err_once() in tpm_tis_status()
-
-Javier Martinez Canillas (1):
-      tpm_tis_spi: add missing SPI device ID entries
-
-Liguang Zhang (1):
-      tpm_tis_spi: set default probe function if device id not match
-
-Stefan Berger (2):
-      certs: Trigger creation of RSA module signing key if it's not an RSA key
-      certs: Add support for using elliptic curve keys for signing modules
-
-Tian Tao (2):
-      tpm_crb: Use IOMEM_ERR_PTR when function returns iomem
-      char: tpm: move to use request_irq by IRQF_NO_AUTOEN flag
-
-Yang Yingliang (1):
-      tpm: fix some doc warnings in tpm1-cmd.c
-
-Zhen Lei (1):
-      tpm_tis: Use DEFINE_RES_MEM() to simplify code
-
- certs/Kconfig                         | 26 ++++++++++++++++++++++++++
- certs/Makefile                        | 21 +++++++++++++++++++++
- crypto/asymmetric_keys/pkcs7_parser.c |  8 ++++++++
- drivers/char/tpm/tpm1-cmd.c           |  4 ++--
- drivers/char/tpm/tpm2-cmd.c           |  2 +-
- drivers/char/tpm/tpm_crb.c            |  2 +-
- drivers/char/tpm/tpm_tis.c            |  6 +-----
- drivers/char/tpm/tpm_tis_core.c       | 25 ++++++++++++++++++-------
- drivers/char/tpm/tpm_tis_core.h       |  3 ++-
- drivers/char/tpm/tpm_tis_i2c_cr50.c   |  4 ++--
- drivers/char/tpm/tpm_tis_spi_main.c   | 14 ++++++++++----
- 11 files changed, 92 insertions(+), 23 deletions(-)
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
