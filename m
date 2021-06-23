@@ -2,94 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DF03B14B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952583B14DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbhFWHhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 03:37:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229916AbhFWHhB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 03:37:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A3AD60FDA;
-        Wed, 23 Jun 2021 07:34:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624433683;
-        bh=zVp16Al2ZaNe9A+v+foD48Mk+8GUKP4jIZTczxSQGmk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iDDXW91vE9Qx57L7b5haWZvIM9DzXJRBIBWRkH886SUQGTDNQq3gblzxcUXIs+5Wx
-         8QOvDnekrwdP7sMvav6Kw/GXmVf+XE+w0FdlxC6SFRBfLAdZ0CWglSAcO/awEHEmmx
-         dStYpmF9h1pI35K1nJNtUtvTZo4jV5mXoddxp4IE=
-Date:   Wed, 23 Jun 2021 09:34:36 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, guohanjun@huawei.com,
-        sudeep.holla@arm.com, song.bao.hua@hisilicon.com, ardb@kernel.org,
-        anshuman.khandual@arm.com, stable@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Li Huafei <lihuafei1@huawei.com>
-Subject: Re: [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide ZONE_DMA
-Message-ID: <YNLkDJ8zHGRZ5iG8@kroah.com>
-References: <9bc396116372de5b538d71d8f9ae9c3259f1002e.camel@suse.de>
- <YEDr/lYZHew88/Ip@kroah.com>
- <827b317d7f5da6e048806922098291faacdb19f9.camel@suse.de>
- <YETwL6QGWFyJTAzk@kroah.com>
- <604597E3.5000605@huawei.com>
- <YEX1OcbVNSqwwusF@kroah.com>
- <31cd8432-2466-555d-7617-ae48cbcd4244@huawei.com>
- <8b0a4f25-0803-9341-f3a4-277d16802295@huawei.com>
- <YNLe4CGtOgVvTOMN@kroah.com>
- <e47df0fd-0ddd-408b-2972-1b6d0a786f00@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e47df0fd-0ddd-408b-2972-1b6d0a786f00@huawei.com>
+        id S230436AbhFWHjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 03:39:23 -0400
+Received: from labrats.qualcomm.com ([199.106.110.90]:1345 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230422AbhFWHjG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 03:39:06 -0400
+IronPort-SDR: ctEM4QSLoXvC/Zv1StDrWtEWkPnvsFBmb/9zZU6Xl2S0Nhnd3UEOOWuXBcVa6AhbfQo+pe/vzj
+ Al/wPoQBIE70ChFg8ySnnXGcexOBTRCzGsClzqdyy9LX6AEJK4S/ZxFeQP29iBnFC9rx9B1r6B
+ 6a/ZW8AzdjERiATCscvEUvRO7/XvWET9hbI44xzweRILO4B56VuTGIOeIhmW4QowbAKzqZerbP
+ CZhBIukh7BIUvyAMUhoB72LfISMlm1hZDGKYToYlqGEkbWYxXqTpC126SmRoSZvzNiPRKx29SW
+ Jis=
+X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
+   d="scan'208";a="29780818"
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+  by labrats.qualcomm.com with ESMTP; 23 Jun 2021 00:36:47 -0700
+X-QCInternal: smtphost
+Received: from stor-presley.qualcomm.com ([192.168.140.85])
+  by ironmsg03-sd.qualcomm.com with ESMTP; 23 Jun 2021 00:36:46 -0700
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id A374A21BC1; Wed, 23 Jun 2021 00:36:46 -0700 (PDT)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        cang@codeaurora.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v4 01/10] scsi: ufs: Rename flags pm_op_in_progress and is_sys_suspended
+Date:   Wed, 23 Jun 2021 00:35:00 -0700
+Message-Id: <1624433711-9339-2-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
+References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 03:25:10PM +0800, Kefeng Wang wrote:
-> 
-> 
-> On 2021/6/23 15:12, Greg KH wrote:
-> > On Wed, Jun 23, 2021 at 02:59:59PM +0800, Kefeng Wang wrote:
-> > > Hi Greg,
-> > > 
-> > > There are two more patches about the ZONE_DMA[32] changes,
-> > 
-> > What ZONE_DMA changes?
-> 
-> See the subject, [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide
-> ZONE_DMA, We asked the ARM64 ZONE_DMA change backport before, link[1]
+Rename pm_op_in_progress and is_sys_suspended to wlu_pm_op_in_progress and
+is_wlu_sys_suspended accordingly.
 
-The subject doesn't help much, sorry, what commit does this refer to?
-What happened to it?  Was it accepted or rejected?
+Signed-off-by: Can Guo <cang@codeaurora.org>
+---
+ drivers/scsi/ufs/ufs-qcom.c |  2 +-
+ drivers/scsi/ufs/ufshcd.c   | 30 +++++++++++++++---------------
+ drivers/scsi/ufs/ufshcd.h   |  6 ++++--
+ 3 files changed, 20 insertions(+), 18 deletions(-)
 
-> > > especially the
-> > > second one, both them need be backported, thanks.
-> > 
-> > Backported to where?
-> 
-> stable 5.10
+diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+index 9b1d18d..fbe21e0 100644
+--- a/drivers/scsi/ufs/ufs-qcom.c
++++ b/drivers/scsi/ufs/ufs-qcom.c
+@@ -641,7 +641,7 @@ static int ufs_qcom_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	if (err)
+ 		return err;
+ 
+-	hba->is_sys_suspended = false;
++	hba->is_wlu_sys_suspended = false;
+ 	return 0;
+ }
+ 
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 25fe18a..c40ba1d 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -549,8 +549,8 @@ static void ufshcd_print_host_state(struct ufs_hba *hba)
+ 		hba->saved_err, hba->saved_uic_err);
+ 	dev_err(hba->dev, "Device power mode=%d, UIC link state=%d\n",
+ 		hba->curr_dev_pwr_mode, hba->uic_link_state);
+-	dev_err(hba->dev, "PM in progress=%d, sys. suspended=%d\n",
+-		hba->pm_op_in_progress, hba->is_sys_suspended);
++	dev_err(hba->dev, "wlu_pm_op_in_progress=%d, is_wlu_sys_suspended=%d\n",
++		hba->wlu_pm_op_in_progress, hba->is_wlu_sys_suspended);
+ 	dev_err(hba->dev, "Auto BKOPS=%d, Host self-block=%d\n",
+ 		hba->auto_bkops_enabled, hba->host->host_self_blocked);
+ 	dev_err(hba->dev, "Clk gate=%d\n", hba->clk_gating.state);
+@@ -1999,7 +1999,7 @@ static void ufshcd_clk_scaling_start_busy(struct ufs_hba *hba)
+ 	if (!hba->clk_scaling.active_reqs++)
+ 		queue_resume_work = true;
+ 
+-	if (!hba->clk_scaling.is_enabled || hba->pm_op_in_progress) {
++	if (!hba->clk_scaling.is_enabled || hba->wlu_pm_op_in_progress) {
+ 		spin_unlock_irqrestore(hba->host->host_lock, flags);
+ 		return;
+ 	}
+@@ -2734,7 +2734,7 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
+ 		 * err handler blocked for too long. So, just fail the scsi cmd
+ 		 * sent from PM ops, err handler can recover PM error anyways.
+ 		 */
+-		if (hba->pm_op_in_progress) {
++		if (hba->wlu_pm_op_in_progress) {
+ 			hba->force_reset = true;
+ 			set_host_byte(cmd, DID_BAD_TARGET);
+ 			cmd->scsi_done(cmd);
+@@ -2767,7 +2767,7 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
+ 		(hba->clk_gating.state != CLKS_ON));
+ 
+ 	if (unlikely(test_bit(tag, &hba->outstanding_reqs))) {
+-		if (hba->pm_op_in_progress)
++		if (hba->wlu_pm_op_in_progress)
+ 			set_host_byte(cmd, DID_BAD_TARGET);
+ 		else
+ 			err = SCSI_MLQUEUE_HOST_BUSY;
+@@ -5116,7 +5116,7 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+ 			 * solution could be to abort the system suspend if
+ 			 * UFS device needs urgent BKOPs.
+ 			 */
+-			if (!hba->pm_op_in_progress &&
++			if (!hba->wlu_pm_op_in_progress &&
+ 			    !ufshcd_eh_in_progress(hba) &&
+ 			    ufshcd_is_exception_event(lrbp->ucd_rsp_ptr))
+ 				/* Flushed in suspend */
+@@ -5916,7 +5916,7 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+ {
+ 	ufshcd_rpm_get_sync(hba);
+ 	if (pm_runtime_status_suspended(&hba->sdev_ufs_device->sdev_gendev) ||
+-	    hba->is_sys_suspended) {
++	    hba->is_wlu_sys_suspended) {
+ 		enum ufs_pm_op pm_op;
+ 
+ 		/*
+@@ -5933,7 +5933,7 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+ 		if (!ufshcd_is_clkgating_allowed(hba))
+ 			ufshcd_setup_clocks(hba, true);
+ 		ufshcd_release(hba);
+-		pm_op = hba->is_sys_suspended ? UFS_SYSTEM_PM : UFS_RUNTIME_PM;
++		pm_op = hba->is_wlu_sys_suspended ? UFS_SYSTEM_PM : UFS_RUNTIME_PM;
+ 		ufshcd_vops_resume(hba, pm_op);
+ 	} else {
+ 		ufshcd_hold(hba, false);
+@@ -5976,7 +5976,7 @@ static void ufshcd_recover_pm_error(struct ufs_hba *hba)
+ 	struct request_queue *q;
+ 	int ret;
+ 
+-	hba->is_sys_suspended = false;
++	hba->is_wlu_sys_suspended = false;
+ 	/*
+ 	 * Set RPM status of wlun device to RPM_ACTIVE,
+ 	 * this also clears its runtime error.
+@@ -8784,7 +8784,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	enum ufs_dev_pwr_mode req_dev_pwr_mode;
+ 	enum uic_link_state req_link_state;
+ 
+-	hba->pm_op_in_progress = true;
++	hba->wlu_pm_op_in_progress = true;
+ 	if (pm_op != UFS_SHUTDOWN_PM) {
+ 		pm_lvl = pm_op == UFS_RUNTIME_PM ?
+ 			 hba->rpm_lvl : hba->spm_lvl;
+@@ -8919,7 +8919,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 		hba->clk_gating.is_suspended = false;
+ 		ufshcd_release(hba);
+ 	}
+-	hba->pm_op_in_progress = false;
++	hba->wlu_pm_op_in_progress = false;
+ 	return ret;
+ }
+ 
+@@ -8928,7 +8928,7 @@ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	int ret;
+ 	enum uic_link_state old_link_state = hba->uic_link_state;
+ 
+-	hba->pm_op_in_progress = true;
++	hba->wlu_pm_op_in_progress = true;
+ 
+ 	/*
+ 	 * Call vendor specific resume callback. As these callbacks may access
+@@ -9006,7 +9006,7 @@ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 		ufshcd_update_evt_hist(hba, UFS_EVT_WL_RES_ERR, (u32)ret);
+ 	hba->clk_gating.is_suspended = false;
+ 	ufshcd_release(hba);
+-	hba->pm_op_in_progress = false;
++	hba->wlu_pm_op_in_progress = false;
+ 	return ret;
+ }
+ 
+@@ -9072,7 +9072,7 @@ static int ufshcd_wl_suspend(struct device *dev)
+ 
+ out:
+ 	if (!ret)
+-		hba->is_sys_suspended = true;
++		hba->is_wlu_sys_suspended = true;
+ 	trace_ufshcd_wl_suspend(dev_name(dev), ret,
+ 		ktime_to_us(ktime_sub(ktime_get(), start)),
+ 		hba->curr_dev_pwr_mode, hba->uic_link_state);
+@@ -9100,7 +9100,7 @@ static int ufshcd_wl_resume(struct device *dev)
+ 		ktime_to_us(ktime_sub(ktime_get(), start)),
+ 		hba->curr_dev_pwr_mode, hba->uic_link_state);
+ 	if (!ret)
+-		hba->is_sys_suspended = false;
++		hba->is_wlu_sys_suspended = false;
+ 	up(&hba->host_sem);
+ 	return ret;
+ }
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index c98d540..93aeeb3 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -752,7 +752,8 @@ struct ufs_hba {
+ 	enum ufs_pm_level spm_lvl;
+ 	struct device_attribute rpm_lvl_attr;
+ 	struct device_attribute spm_lvl_attr;
+-	int pm_op_in_progress;
++	/* A flag to tell whether __ufshcd_wl_suspend/resume() is in progress */
++	bool wlu_pm_op_in_progress;
+ 
+ 	/* Auto-Hibernate Idle Timer register value */
+ 	u32 ahit;
+@@ -838,7 +839,8 @@ struct ufs_hba {
+ 
+ 	struct devfreq *devfreq;
+ 	struct ufs_clk_scaling clk_scaling;
+-	bool is_sys_suspended;
++	/* A flag to tell whether the UFS device W-LU is system suspended */
++	bool is_wlu_sys_suspended;
+ 
+ 	enum bkops_status urgent_bkops_lvl;
+ 	bool is_urgent_bkops_lvl_checked;
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-Why?
-
-> > > 791ab8b2e3db - arm64: Ignore any DMA offsets in the max_zone_phys()
-> > > calculation
-> > > 2687275a5843 - arm64: Force NO_BLOCK_MAPPINGS if crashkernel reservation is
-> > > required
-> > 
-> > Have you tried these patches?  Where do they need to be applied to?
-> 
-> Yes, we tested it, without them, especially the second one, we will
-> meet crash when using kexec boot, also there is discussion in [2]
-> and [3] from Catalin.
-
-These [] do not seem to be links :(
-
-thanks,
-
-greg k-h
