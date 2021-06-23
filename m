@@ -2,112 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55CD3B1B6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 995E83B1B70
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhFWNpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:45:46 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59880 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbhFWNpk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:45:40 -0400
-Received: from mail-wm1-f71.google.com ([209.85.128.71])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lw3A1-0007JT-PM
-        for linux-kernel@vger.kernel.org; Wed, 23 Jun 2021 13:43:21 +0000
-Received: by mail-wm1-f71.google.com with SMTP id o3-20020a05600c5103b02901aeb7a4ac06so1620530wms.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 06:43:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yubxi2qbuY0f26nH+TCC7V2Gu19HEDSoQcEIu557Wn0=;
-        b=kmcmwJHQDrz7TRv9KUuiWGovvsvMrsIOiaggJVlypvcUkeBnqR0lyfxOib6EUKagPL
-         8onfR6Q3Jb83qJrsr3b6X8NiOWnoxSF+MOMGcc6UjM++qmASFSj+UNcUklrn1M02Q0yT
-         KNpuJFwxHr88NN3V+v37G/242CuJjJkBhCvAXECemib7y5TJwEeQaSA+C24/EBzc+Jjn
-         F0pkEu7yXMbazTwoO3HWu9ycIrqGRZV2bgBLOn1wvAlGXHBK82014psIUkbMWSVWi5Zo
-         ffrd75i/q0qCkBKp7JzZRoVXSnPlA0BiGzWFHgFdZVrDFSsPbbEVgcrxzVR8qrfe81mt
-         mL0g==
-X-Gm-Message-State: AOAM532JJfT5gvBdVBCcvHLVusnmeoeFsfGzWLo7LTNSXQssN3hM1DQy
-        5Xi+594wWn1wXjmL2f4pVOwnQybEZdYeI0cHqjExtS9Y98SXd+sRvDQIpMHW9eZpOByRIYd0M4o
-        n5h7MZTzkzxaO+tpC/ky8j1WpRdTP00MM9TVGJViiTA==
-X-Received: by 2002:a7b:c1ce:: with SMTP id a14mr10758137wmj.72.1624455801591;
-        Wed, 23 Jun 2021 06:43:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxNOn5MnmPCceGWkw5/wLdC+SG1xM2rIUPM/8N6mKYN/v/4zXCzfb61gwE5zQeig6N4a7DZEA==
-X-Received: by 2002:a7b:c1ce:: with SMTP id a14mr10758116wmj.72.1624455801401;
-        Wed, 23 Jun 2021 06:43:21 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id w13sm94341wrc.31.2021.06.23.06.43.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 06:43:21 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] selftests/ftrace: fix event-no-pid on 1-core machine
-Date:   Wed, 23 Jun 2021 15:43:15 +0200
-Message-Id: <20210623134315.77472-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        id S230427AbhFWNrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:47:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:35574 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230206AbhFWNrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 09:47:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 840CEED1;
+        Wed, 23 Jun 2021 06:44:48 -0700 (PDT)
+Received: from localhost (unknown [10.1.195.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 238D33F718;
+        Wed, 23 Jun 2021 06:44:48 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 14:44:46 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 1/4] cpufreq: cppc: Fix potential memleak in
+ cppc_cpufreq_cpu_init
+Message-ID: <20210623134446.GA12411@arm.com>
+References: <cover.1624266901.git.viresh.kumar@linaro.org>
+ <579689469ed8a7dfd68dcbb41e9191472799a326.1624266901.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <579689469ed8a7dfd68dcbb41e9191472799a326.1624266901.git.viresh.kumar@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running event-no-pid test on small machines (e.g. cloud 1-core
-instance), other events might not happen:
+Hi,
 
-    + cat trace
-    + cnt=0
-    + [ 0 -eq 0 ]
-    + fail No other events were recorded
-    [15] event tracing - restricts events based on pid notrace filtering [FAIL]
+On Monday 21 Jun 2021 at 14:49:34 (+0530), Viresh Kumar wrote:
+> It's a classic example of memleak, we allocate something, we fail and
+> never free the resources.
+>
+> Make sure we free all resources on policy ->init() failures.
+> 
+> Fixes: a28b2bfc099c ("cppc_cpufreq: replace per-cpu data array with a list")
 
-Schedule a simple sleep task to be sure that some other process events
-get recorded.
+This is on me, thanks for the fix!
 
-Fixes: ebed9628f5c2 ("selftests/ftrace: Add test to test new set_event_notrace_pid file")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Might be better for this to be separate from the series, but I suppose
+all will be going in 5.14 anyway.
 
----
+> Tested-by: Vincent Guittot <vincent.guittot@linaro.org>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  drivers/cpufreq/cppc_cpufreq.c | 30 ++++++++++++++++++++----------
+>  1 file changed, 20 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+> index be4f62e2c5f1..35b8ae66d1fb 100644
+> --- a/drivers/cpufreq/cppc_cpufreq.c
+> +++ b/drivers/cpufreq/cppc_cpufreq.c
+> @@ -256,6 +256,16 @@ static struct cppc_cpudata *cppc_cpufreq_get_cpu_data(unsigned int cpu)
+>  	return NULL;
+>  }
+>  
+> +static void cppc_cpufreq_put_cpu_data(struct cpufreq_policy *policy)
+> +{
+> +	struct cppc_cpudata *cpu_data = policy->driver_data;
+> +
+> +	list_del(&cpu_data->node);
+> +	free_cpumask_var(cpu_data->shared_cpu_map);
+> +	kfree(cpu_data);
+> +	policy->driver_data = NULL;
+> +}
+> +
+>  static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>  {
+>  	unsigned int cpu = policy->cpu;
+> @@ -309,7 +319,8 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>  	default:
+>  		pr_debug("Unsupported CPU co-ord type: %d\n",
+>  			 policy->shared_type);
+> -		return -EFAULT;
+> +		ret = -EFAULT;
+> +		goto out;
+>  	}
+>  
+>  	/*
+> @@ -324,10 +335,14 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>  	cpu_data->perf_ctrls.desired_perf =  caps->highest_perf;
+>  
+>  	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
+> -	if (ret)
+> -		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
+> -			 caps->highest_perf, cpu, ret);
+> +	if (!ret)
+> +		return 0;
+>  
+> +	pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
+> +		 caps->highest_perf, cpu, ret);
+> +
 
-Changes since v1:
-1. Correct spelling in commit msg.
-2. Add Steven's ack.
----
- .../testing/selftests/ftrace/test.d/event/event-no-pid.tc  | 7 +++++++
- 1 file changed, 7 insertions(+)
+Nit: I would have preferred the more traditional:
 
-diff --git a/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc b/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc
-index e6eb78f0b954..9933ed24f901 100644
---- a/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc
-+++ b/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc
-@@ -57,6 +57,10 @@ enable_events() {
-     echo 1 > tracing_on
- }
- 
-+other_task() {
-+    sleep .001 || usleep 1 || sleep 1
-+}
-+
- echo 0 > options/event-fork
- 
- do_reset
-@@ -94,6 +98,9 @@ child=$!
- echo "child = $child"
- wait $child
- 
-+# Be sure some other events will happen for small systems (e.g. 1 core)
-+other_task
-+
- echo 0 > tracing_on
- 
- cnt=`count_pid $mypid`
--- 
-2.27.0
+if (ret) {
+	pr_debug();
+	goto out;
+}
 
+return 0;
+
+It's always easier to read.
+
+Thanks,
+Ionela.
+
+> +out:
+> +	cppc_cpufreq_put_cpu_data(policy);
+>  	return ret;
+>  }
+>  
+> @@ -345,12 +360,7 @@ static int cppc_cpufreq_cpu_exit(struct cpufreq_policy *policy)
+>  		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
+>  			 caps->lowest_perf, cpu, ret);
+>  
+> -	/* Remove CPU node from list and free driver data for policy */
+> -	free_cpumask_var(cpu_data->shared_cpu_map);
+> -	list_del(&cpu_data->node);
+> -	kfree(policy->driver_data);
+> -	policy->driver_data = NULL;
+> -
+> +	cppc_cpufreq_put_cpu_data(policy);
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.31.1.272.g89b43f80a514
+> 
