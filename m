@@ -2,191 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6973B150B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7CD3B1510
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbhFWHqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 03:46:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28308 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229886AbhFWHqv (ORCPT
+        id S230054AbhFWHsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 03:48:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229890AbhFWHsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 03:46:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624434274;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=GoKBmPGWEhsMFpDL3RjinlhlKAMDjGAWJsst2nKIbvI=;
-        b=QgdDNytTAmr4SxandKajcexXNy9M2gvfhCJioJKnmSBukskny8Fq811CNfgit8DRkiraNp
-        Z8wLv5MfhCNAYKazzIA28q9ErDS6ROHDoOonnS1gss43S8m2jhJVfk0Gq12EUQusjbVGIY
-        JS6pxT10HNGGZrI/CR9uQDotz2DuuAs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-363-vUaJGREzP5G47qs9skj7rA-1; Wed, 23 Jun 2021 03:44:32 -0400
-X-MC-Unique: vUaJGREzP5G47qs9skj7rA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71F8E100C663;
-        Wed, 23 Jun 2021 07:44:31 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.193.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0221C10013D6;
-        Wed, 23 Jun 2021 07:44:28 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Cathy Avery <cavery@redhat.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH RFC] KVM: nSVM: Fix L1 state corruption upon return from SMM
-Date:   Wed, 23 Jun 2021 09:44:27 +0200
-Message-Id: <20210623074427.152266-1-vkuznets@redhat.com>
+        Wed, 23 Jun 2021 03:48:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB7FEC061574;
+        Wed, 23 Jun 2021 00:45:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tbxLmABV1Eam+4di+sqNdDzjHR+frCejHCLVHaU+ge0=; b=Xm9DuzrYRhjIDtYKcqBefON5+N
+        ig6Yjf7t4I5CZBuDPR2xmxvcTd8ovtIhQgvzkQr6yBdBoysvgBGC5q1etcLwDfgoPrunwnWJJdgUF
+        TbtW9DJfMLzZPFH+OuBuAbgIlOTEV5TT7UviZXO3tFBvJCcT53ZTSZ7XISMXdqbk84uukXh45UOH0
+        g/bAyUSkqMAhg4Luqso8Tkmjd3mATu2RsQom6CQxUU+8L5YXlK9QMZBUmdVJsIHznQgRYy3A0/8cS
+        Ze7eb8YwZGaPAGDUqgTiqw3OAcqmVM0abwrF4U64/pIZhYTgQQmn+NzmLvlFivaILyEvXIxI2XE01
+        2HAAJDmw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvxZG-00FAm8-Sf; Wed, 23 Jun 2021 07:45:09 +0000
+Date:   Wed, 23 Jun 2021 08:45:02 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Anton Suvorov <warwish@yandex-team.ru>
+Cc:     willy@infradead.org, dmtrmonakhov@yandex-team.ru,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
+Subject: Re: [PATCH v2 05/10] block: reduce stack footprint dealing with
+ block device names
+Message-ID: <YNLmfsrS6RIFBX/n@infradead.org>
+References: <YLe9eDbG2c/rVjyu@casper.infradead.org>
+ <20210622174424.136960-1-warwish@yandex-team.ru>
+ <20210622174424.136960-6-warwish@yandex-team.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622174424.136960-6-warwish@yandex-team.ru>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VMCB split commit 4995a3685f1b ("KVM: SVM: Use a separate vmcb for the
-nested L2 guest") broke return from SMM when we entered there from guest
-(L2) mode. Gen2 WS2016/Hyper-V is known to do this on boot. The problem
-manifests itself like this:
+On Tue, Jun 22, 2021 at 08:44:19PM +0300, Anton Suvorov wrote:
+> Stack usage reduced (measured with allyesconfig):
 
-  kvm_exit:             reason EXIT_RSM rip 0x7ffbb280 info 0 0
-  kvm_emulate_insn:     0:7ffbb280: 0f aa
-  kvm_smm_transition:   vcpu 0: leaving SMM, smbase 0x7ffb3000
-  kvm_nested_vmrun:     rip: 0x000000007ffbb280 vmcb: 0x0000000008224000
-    nrip: 0xffffffffffbbe119 int_ctl: 0x01020000 event_inj: 0x00000000
-    npt: on
-  kvm_nested_intercepts: cr_read: 0000 cr_write: 0010 excp: 40060002
-    intercepts: fd44bfeb 0000217f 00000000
-  kvm_entry:            vcpu 0, rip 0xffffffffffbbe119
-  kvm_exit:             reason EXIT_NPF rip 0xffffffffffbbe119 info
-    200000006 1ab000
-  kvm_nested_vmexit:    vcpu 0 reason npf rip 0xffffffffffbbe119 info1
-    0x0000000200000006 info2 0x00000000001ab000 intr_info 0x00000000
-    error_code 0x00000000
-  kvm_page_fault:       address 1ab000 error_code 6
-  kvm_nested_vmexit_inject: reason EXIT_NPF info1 200000006 info2 1ab000
-    int_info 0 int_info_err 0
-  kvm_entry:            vcpu 0, rip 0x7ffbb280
-  kvm_exit:             reason EXIT_EXCP_GP rip 0x7ffbb280 info 0 0
-  kvm_emulate_insn:     0:7ffbb280: 0f aa
-  kvm_inj_exception:    #GP (0x0)
+Not just stack footprint, but also a whole lot cleaner code in general.
 
-Note: return to L2 succeeded but upon first exit to L1 its RIP points to
-'RSM' instruction but we're not in SMM.
+> -			       bdevname(state->bdev, b), blk);
+> +			pr_err("Dev %pg: unable to read RDB block %d\n", state->bdev, blk);
 
-The problem appears to be that VMCB01 gets irreversibly destroyed during
-SMM execution. Previously, we used to have 'hsave' VMCB where regular
-(pre-SMM) L1's state was saved upon nested_svm_vmexit() but now we just
-switch to VMCB01 from VMCB02.
+> -		       bdevname(state->bdev, b), blk);
+> +		pr_err("Dev %pg: RDB in block %d has bad checksum\n", state->bdev, blk);
 
-Pre-split (working) flow looked like:
-- SMM is triggered during L2's execution
-- L2's state is pushed to SMRAM
-- nested_svm_vmexit() restores L1's state from 'hsave'
-- SMM -> RSM
-- enter_svm_guest_mode() switches to L2 but keeps 'hsave' intact so we have
-  pre-SMM (and pre L2 VMRUN) L1's state there
-- L2's state is restored from SMRAM
-- upon first exit L1's state is restored from L1.
+> -			pr_err("Dev %s: unable to read partition block %d\n",
+> -			       bdevname(state->bdev, b), blk);
+> +			pr_err("Dev %pg: unable to read partition block %d\n", state->bdev, blk);
 
-This was always broken with regards to svm_get_nested_state()/
-svm_set_nested_state(): 'hsave' was never a part of what's being
-save and restored so migration happening during SMM triggered from L2 would
-never restore L1's state correctly.
+[...]
 
-Post-split flow (broken) looks like:
-- SMM is triggered during L2's execution
-- L2's state is pushed to SMRAM
-- nested_svm_vmexit() switches to VMCB01 from VMCB02
-- SMM -> RSM
-- enter_svm_guest_mode() switches from VMCB01 to VMCB02 but pre-SMM VMCB01
-  is already lost.
-- L2's state is restored from SMRAM
-- upon first exit L1's state is restored from VMCB01 but it is corrupted
- (reflects the state during 'RSM' execution).
-
-VMX doesn't have this problem because unlike VMCB, VMCS keeps both guest
-and host state so when we switch back to VMCS02 L1's state is intact there.
-
-To resolve the issue we need to save L1's state somewhere. We could've
-created a third VMCB for SMM but that would require us to modify saved
-state format. L1's architectural HSAVE area (pointed by MSR_VM_HSAVE_PA)
-seems appropriate: L0 is free to save any (or none) of L1's state there.
-Currently, KVM does 'none'.
-
-Note, for nested state migration to succeed, both source and destination
-hypervisors must have the fix. We, however, don't need to create a new
-flag indicating the fact that HSAVE area is now populated as migration
-during SMM triggered from L2 was always broken.
-
-Fixes: 4995a3685f1b ("KVM: SVM: Use a separate vmcb for the nested L2 guest")
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
-- RFC: I'm not 100% sure my 'smart' idea to use currently-unused HSAVE area
-is that smart. Also, we don't even seem to check that L1 set it up upon
-nested VMRUN so hypervisors which don't do that may remain broken. A very
-much needed selftest is also missing.
----
- arch/x86/kvm/svm/svm.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 12c06ea28f5c..d110bfe0e208 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -4286,6 +4286,7 @@ static int svm_smi_allowed(struct kvm_vcpu *vcpu, bool for_injection)
- static int svm_enter_smm(struct kvm_vcpu *vcpu, char *smstate)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
-+	struct kvm_host_map map_save;
- 	int ret;
- 
- 	if (is_guest_mode(vcpu)) {
-@@ -4301,6 +4302,13 @@ static int svm_enter_smm(struct kvm_vcpu *vcpu, char *smstate)
- 		ret = nested_svm_vmexit(svm);
- 		if (ret)
- 			return ret;
-+
-+		/* Save L1 state to L1 HSAVE area as vmcb01 will be used in SMM */
-+		if (kvm_vcpu_map(vcpu, gpa_to_gfn(svm->nested.hsave_msr),
-+				 &map_save) == -EINVAL)
-+			return 1;
-+		memcpy(map_save.hva, &svm->vmcb01.ptr->save, sizeof(svm->vmcb01.ptr->save));
-+		kvm_vcpu_unmap(vcpu, &map_save, true);
- 	}
- 	return 0;
- }
-@@ -4308,7 +4316,7 @@ static int svm_enter_smm(struct kvm_vcpu *vcpu, char *smstate)
- static int svm_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
--	struct kvm_host_map map;
-+	struct kvm_host_map map, map_save;
- 	int ret = 0;
- 
- 	if (guest_cpuid_has(vcpu, X86_FEATURE_LM)) {
-@@ -4332,6 +4340,13 @@ static int svm_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
- 
- 			ret = enter_svm_guest_mode(vcpu, vmcb12_gpa, map.hva);
- 			kvm_vcpu_unmap(vcpu, &map, true);
-+
-+			/* Restore L1 state from L1 HSAVE area as vmcb01 was used in SMM */
-+			if (kvm_vcpu_map(vcpu, gpa_to_gfn(svm->nested.hsave_msr),
-+					 &map_save) == -EINVAL)
-+				return 1;
-+			memcpy(&svm->vmcb01.ptr->save, map_save.hva, sizeof(svm->vmcb01.ptr->save));
-+			kvm_vcpu_unmap(vcpu, &map_save, true);
- 		}
- 	}
- 
--- 
-2.31.1
-
+Please keep the non-format string arguments on separate lines instead
+of creating unreadable lines.
