@@ -2,124 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106163B1AC7
+	by mail.lfdr.de (Postfix) with ESMTP id 87B953B1AC8
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbhFWNLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:11:40 -0400
-Received: from mail-ua1-f45.google.com ([209.85.222.45]:40545 "EHLO
-        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbhFWNLg (ORCPT
+        id S230490AbhFWNLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:11:44 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51428 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230496AbhFWNLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:11:36 -0400
-Received: by mail-ua1-f45.google.com with SMTP id r9so828025ual.7;
-        Wed, 23 Jun 2021 06:09:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2GyvRMqzd0j7dU3QjG5cKA3SND3uzGcIE5fba+nRyaE=;
-        b=VSmcRh4MftvCjl9E1F1HLcutSXjgX9Vt474J0i55jARkgepTWyfhCb4LDCikvqS9uG
-         VX0DbKBXly9p2BfiWzCDsSYNO7BFSDyQmhoEHWMyT1CcrgFkDj183O8qrhnUZCoJr9du
-         IhD7hId0I2qZMD+0NgKQO/JS6WkVAH9EAjHYvlAWfSZ69aP/xndgx7wr4XEax+8Jeoi+
-         oDZ9/nt3q9FAuE4qxxtxQ6ms/KNb67+zkpvye02ZRQrnZ2Z57asV3xfkXlItorYuB4qr
-         7zW3GS9XbExwT6DnSQqcGTybtxmz4wIGIZb0eRSTQAtioTkSUB/R0eCErPZJR6Phtk6C
-         YZjg==
-X-Gm-Message-State: AOAM533ng+XxvaNb0bBgtD9tRMM8GTKv0ZomdnQohh2Ds5DR0S1uuOMy
-        Qhp/SQdhXkjM7UFTjdtGMzxyOjl5cM4CJpchA2E=
-X-Google-Smtp-Source: ABdhPJy7fEj+42hR8loz80KZeBpk8m6cSVSkPMGaM+vOPsqzJ7EuBgra5HjzbA2XO5FoOuNmfwqhB3mqOHbBdX7nzSE=
-X-Received: by 2002:ab0:1e4c:: with SMTP id n12mr4441015uak.58.1624453757600;
- Wed, 23 Jun 2021 06:09:17 -0700 (PDT)
+        Wed, 23 Jun 2021 09:11:40 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3764521962;
+        Wed, 23 Jun 2021 13:09:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624453760; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=fvLe4EDcZBFIJFV4utDnoKGG4SlCKvEBy8vMSAJDpnk=;
+        b=JvFAJrnRk4z9JofF9qR8IZLIrtA/HR4LsTpSYytHLGr/baiqJyKWcoa8i77iQYjkHGDtPG
+        nYCqIBCJPS3jLWcXfr2juHvEIVvlZd0a1X2+W61iXuQ1PV0TMhkYUzTbGzHjeNOQrJm9Ix
+        TgdnlutnZLfBh6DyZ7HJqAeYOQKMUPk=
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id F245A11A97;
+        Wed, 23 Jun 2021 13:09:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624453760; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=fvLe4EDcZBFIJFV4utDnoKGG4SlCKvEBy8vMSAJDpnk=;
+        b=JvFAJrnRk4z9JofF9qR8IZLIrtA/HR4LsTpSYytHLGr/baiqJyKWcoa8i77iQYjkHGDtPG
+        nYCqIBCJPS3jLWcXfr2juHvEIVvlZd0a1X2+W61iXuQ1PV0TMhkYUzTbGzHjeNOQrJm9Ix
+        TgdnlutnZLfBh6DyZ7HJqAeYOQKMUPk=
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id ol9pOX8y02DIMQAALh3uQQ
+        (envelope-from <jgross@suse.com>); Wed, 23 Jun 2021 13:09:19 +0000
+From:   Juergen Gross <jgross@suse.com>
+To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Julien Grall <julien@xen.org>
+Subject: [PATCH] xen/events: reset active flag for lateeoi events later
+Date:   Wed, 23 Jun 2021 15:09:13 +0200
+Message-Id: <20210623130913.9405-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210622231146.3208404-1-kieran.bingham@ideasonboard.com>
- <CAMuHMdW8vYC3+gVCv5eG_vkX79vU8RQL-6fSJd9McetDzikzSA@mail.gmail.com> <YNMv2KSjbwX5aAK2@pendragon.ideasonboard.com>
-In-Reply-To: <YNMv2KSjbwX5aAK2@pendragon.ideasonboard.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 23 Jun 2021 15:09:06 +0200
-Message-ID: <CAMuHMdXJTCyfMX3nN6pbAHeqqf5OCqJR4+7GJ=71+o1iKRrHhg@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: display: renesas,du: Provide bindings for r8a779a0
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:DRM DRIVERS FOR RENESAS" <dri-devel@lists.freedesktop.org>,
-        "open list:DRM DRIVERS FOR RENESAS" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+In order to avoid a race condition for user events when changing
+cpu affinity reset the active flag only when EOI-ing the event.
 
-On Wed, Jun 23, 2021 at 2:58 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
-> On Wed, Jun 23, 2021 at 02:53:33PM +0200, Geert Uytterhoeven wrote:
-> > On Wed, Jun 23, 2021 at 1:11 AM Kieran Bingham wrote:
-> > > From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> > >
-> > > Extend the Renesas DU display bindings to support the r8a779a0 V3U.
-> > >
-> > > Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> >
-> > Thanks for your patch!
-> >
-> > > --- a/Documentation/devicetree/bindings/display/renesas,du.yaml
-> > > +++ b/Documentation/devicetree/bindings/display/renesas,du.yaml
-> > > @@ -39,6 +39,7 @@ properties:
-> > >        - renesas,du-r8a77980 # for R-Car V3H compatible DU
-> > >        - renesas,du-r8a77990 # for R-Car E3 compatible DU
-> > >        - renesas,du-r8a77995 # for R-Car D3 compatible DU
-> > > +      - renesas,du-r8a779a0 # for R-Car V3U compatible DU
-> > >
-> > >    reg:
-> > >      maxItems: 1
-> > > @@ -774,6 +775,57 @@ allOf:
-> > >          - reset-names
-> > >          - renesas,vsps
-> > >
-> > > +  - if:
-> > > +      properties:
-> > > +        compatible:
-> > > +          contains:
-> > > +            enum:
-> > > +              - renesas,du-r8a779a0
-> > > +    then:
-> > > +      properties:
-> > > +        clocks:
-> > > +          items:
-> > > +            - description: Functional clock for DU0
-> > > +            - description: Functional clock for DU1
-> > > +
-> > > +        clock-names:
-> > > +          items:
-> > > +            - const: du.0
-> > > +            - const: du.1
-> >
-> > The hardware block has only a single function clock for both channels,
-> > like on R-Car H1.
-> >
-> > And what about DU_DOTCLKIN?
->
-> As far as I can tell, there's no DU_DOTCLKIN in V3U.
+This is working fine as all user events are lateeoi events. Note that
+lateeoi_ack_mask_dynirq() is not modified as there is no explicit call
+to xen_irq_lateeoi() expected later.
 
-See Table 6.13 of the Hardware User's Manual, pin IPC_CLKIN.
-Note that the register bits to configure it are present in
-drivers/pinctrl/renesas/pfc-r8a779a0.c, but the actual pin group is
-missing.
+Reported-by: Julien Grall <julien@xen.org>
+Fixes: b6622798bc50b62 ("xen/events: avoid handling the same event on two cpus at the same time")
+Tested-by: Julien Grall <julien@xen.org>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+---
+ drivers/xen/events/events_base.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
+index 7bbfd58958bc..d7e361fb0548 100644
+--- a/drivers/xen/events/events_base.c
++++ b/drivers/xen/events/events_base.c
+@@ -642,6 +642,9 @@ static void xen_irq_lateeoi_locked(struct irq_info *info, bool spurious)
+ 	}
+ 
+ 	info->eoi_time = 0;
++
++	/* is_active hasn't been reset yet, do it now. */
++	smp_store_release(&info->is_active, 0);
+ 	do_unmask(info, EVT_MASK_REASON_EOI_PENDING);
+ }
+ 
+@@ -811,6 +814,7 @@ static void xen_evtchn_close(evtchn_port_t port)
+ 		BUG();
+ }
+ 
++/* Not called for lateeoi events. */
+ static void event_handler_exit(struct irq_info *info)
+ {
+ 	smp_store_release(&info->is_active, 0);
+@@ -1883,7 +1887,12 @@ static void lateeoi_ack_dynirq(struct irq_data *data)
+ 
+ 	if (VALID_EVTCHN(evtchn)) {
+ 		do_mask(info, EVT_MASK_REASON_EOI_PENDING);
+-		event_handler_exit(info);
++		/*
++		 * Don't call event_handler_exit().
++		 * Need to keep is_active non-zero in order to ignore re-raised
++		 * events after cpu affinity changes while a lateeoi is pending.
++		 */
++		clear_evtchn(evtchn);
+ 	}
+ }
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.26.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
