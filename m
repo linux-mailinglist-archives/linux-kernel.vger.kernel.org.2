@@ -2,127 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E68853B1A2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 575033B1A30
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhFWMbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:31:35 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:38155 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230430AbhFWMbZ (ORCPT
+        id S230229AbhFWMdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:33:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58494 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230121AbhFWMc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:31:25 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 44CF35805E0;
-        Wed, 23 Jun 2021 08:29:07 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 23 Jun 2021 08:29:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=LYmysgAYQbYf4D5WIV3nX+JHKv4
-        gcr5JH0CPAhQp3EQ=; b=2eJlQpIHzliDahyhagWavmKnGgwp95ZisZfiYEn9MQr
-        kFnx2PwYMwEwfxbsdSuu5H0iwUSDqsdvFTmGqElDbDAKRvHLLvLCIS1C2D4DLieT
-        tdt+ULQRftMO8WV54GoiYsTiwbC3K1wUdoLrhvxobU6PNICaLAhzZZh5qwYIYHgW
-        Qot3r07h03x4S/7gR4qA7Boi0D2f9UFjmRPBw0qSmGz4XnDhs7jQPkAAdv7QCFLi
-        nJ9LVhD5NkgH7pPP4p/GixwP9y3ZHmJ2RmYL33AYyyR72L0/7xJhBtB7rBKnw5uJ
-        aGzyS9WSLYNaGC0bdDafCdCCbAUf/zU12Sh0GMJYOCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=LYmysg
-        AYQbYf4D5WIV3nX+JHKv4gcr5JH0CPAhQp3EQ=; b=lcr+uzMgCh79q2GtuWp50h
-        xEyL0RWnfNYX34/c26G/ynQQcmDVGgDu76mPvLqRRyrlHWQm54BVa78BABb3nkjD
-        RiE2e7XdKfj1iVGoZVQ27NgzEBxvM/5y4zx4W6Nd0dTIpqxtQgmQdEcaiXvm0Yp5
-        MIGwT6Y0dztc9joSc9wgrs7/e2oOtOMeCndXFrRRrlCoirJE24OTBUeJF+EMLOdE
-        APyK+Rzg9kPtZD+blzODFda0w24L/NONnXqZOovMh6kY6zlKzZLQlAwKiaN0GlyK
-        eVGAOHLp5rFyuNX7+j7zSLsA1ePkLNUQVn59JahN0ZKhhonk+V1xtXGWaY3MxZaw
-        ==
-X-ME-Sender: <xms:ESnTYK_C-21U2l2QozyILoNSlPVqKfpTp1q6YqEseQtERYTgD7wEjA>
-    <xme:ESnTYKs6ZYg2RUE3T4E6_4WYfh7byUamSHlJxrXSRIO9zEAnf3vP53J6ISh3gHTex
-    vjveIKAZEot9ElXG9Q>
-X-ME-Received: <xmr:ESnTYAD101y1Z0cSzKC5muGw7O86ArnMv0EERbPkuBkRESwg4ufvcqvrEDGFH43cICse_euQkCXeR5wF_iBFxf7l5AzuiVuIDg2F>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeegfedgheefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:ESnTYCe9QBXtVFJhfKsnRwaDl-xkxqvQydUEScUwiqPYbRcEi1TlPQ>
-    <xmx:ESnTYPNXuaRR8kEvEfb-7qU59Zify5c9K1HKVr_vC8Om2KWmtIZAxg>
-    <xmx:ESnTYMlg2fbk5mkdtWnpb4rpr71L0d4YVRQ-KoHTE6BfyypN_1u9OQ>
-    <xmx:EynTYCdX2W4keJN3BziO7ALHGBYvumNaAZ_6JzvRr3sRzPLV1XkbCg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 23 Jun 2021 08:29:04 -0400 (EDT)
-Date:   Wed, 23 Jun 2021 14:29:03 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     nicolas saenz julienne <nsaenz@kernel.org>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>, linux-doc@vger.kernel.org,
-        Eric Anholt <eric@anholt.net>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-rpi-kernel@lists.infradead.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 10/12] drm/vc4: hdmi: Register HDMI codec
-Message-ID: <20210623122903.nvkm7hagt324n4pd@gilmour>
-References: <20210525132354.297468-1-maxime@cerno.tech>
- <20210525132354.297468-11-maxime@cerno.tech>
- <c1ee306fbc81da2df7d0041c719fc8cd3302cf0f.camel@kernel.org>
+        Wed, 23 Jun 2021 08:32:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624451441;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CNpTMCJ8h80BO/+0pCndBRwHmkrNlQnKpFd4gripH9E=;
+        b=OfyCtexLB+xuQwWMrWH2TEsAElfGBALjH62CBwUb3bHS6REPLwiO+9uxf9Hk4jdjt+XRKV
+        Azdlgxxb27L9s50WWnoKkzZ18ZsislWgcJGyEXBD6T/ZIvnx5zNgJboKiMU0vArz7ZH01L
+        ggbcIgfEIJDCNVIMxxRRjbfsOFstCsE=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-334-ldARy1FLPQeJJL3NSaW5dg-1; Wed, 23 Jun 2021 08:30:40 -0400
+X-MC-Unique: ldARy1FLPQeJJL3NSaW5dg-1
+Received: by mail-ed1-f69.google.com with SMTP id cb4-20020a0564020b64b02903947455afa5so1221681edb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:30:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CNpTMCJ8h80BO/+0pCndBRwHmkrNlQnKpFd4gripH9E=;
+        b=YqxwlSfNMBsR5mb0lgNbfHuf8t8WxexLO6FNLRTM8X2ZqIHhrBo1AUOBE9e9v4NwU4
+         XnPIXatx/2A1/kobsfaL5y+il5Y+OoK9x/QD2dHZrEnNU5icc3d8b4mqVOHisYltnsV/
+         UWs+bU4gVx53w8kCLKcoqfGGcKUWLkl9SyIFiHFqP78ECgitTkQg7ihMf9YDrGCA4zB+
+         b3vAFdpOVPbfyqhMQ7fvkIIcqSPpwfzqcuh2NgH2Ha//ocxpi6cp/98NM8fFNXgPtCT9
+         PcV3yT2LvQwFlF1F75IttmDMtdnrJa+kPiG7kZ8Q8ATpWA38Kqw9wsxUoOmADUxDQR0p
+         awag==
+X-Gm-Message-State: AOAM53363VleQd/30/738ZsKhsziX5vJWF2auGgMSO1hddjnK44B1iXY
+        eeXuYzrfwDp64e8FheGBc6JtoL798Uw68ULvBMMlrRK6Iv/IjgJT1Q8ri6B77Qq58VhaIHurs+0
+        V3iZ6pmU5PtNzZ3Sei4tM/tsz/0jJ66hBxTpefBwrhgYERgDK+dVxVC89Ap/qs3wJoWkexKE1mF
+        hi
+X-Received: by 2002:a50:8dc6:: with SMTP id s6mr12033911edh.50.1624451438910;
+        Wed, 23 Jun 2021 05:30:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxmm7zTFDcKfnLZRxH+XZo5x35PRmTvnIDFPY8FLZghKb25e1jWxAFk5KRn57K4/Snxjtkn+Q==
+X-Received: by 2002:a50:8dc6:: with SMTP id s6mr12033887edh.50.1624451438767;
+        Wed, 23 Jun 2021 05:30:38 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id o14sm8403568edw.36.2021.06.23.05.30.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 05:30:38 -0700 (PDT)
+Subject: Re: [PATCH] KVM: nVMX: Handle split-lock #AC exceptions that happen
+ in L2
+To:     Xiaoyao Li <xiaoyao.li@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210622172244.3561540-1-seanjc@google.com>
+ <5196d26a-abb5-7ec9-70b1-69912a45ecd7@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <e0acbfa6-0f46-1c75-7453-fa604548b3c5@redhat.com>
+Date:   Wed, 23 Jun 2021 14:30:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ed3s3jfq3fuhw3ac"
-Content-Disposition: inline
-In-Reply-To: <c1ee306fbc81da2df7d0041c719fc8cd3302cf0f.camel@kernel.org>
+In-Reply-To: <5196d26a-abb5-7ec9-70b1-69912a45ecd7@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 23/06/21 04:43, Xiaoyao Li wrote:
+>>
+>> +        else if (is_alignment_check(intr_info) &&
+>> +             !vmx_guest_inject_ac(vcpu))
+>> +            return true;
+> 
+> Why choose to check in nested_vmx_l0_wants_exit, not in 
+> nested_vmx_l1_wants_exit()?
 
---ed3s3jfq3fuhw3ac
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+nested_vmx_l0_wants_exit() == true means "this is a vmexit that needs 
+some transformation before being injected into L1".  Instead, 
+nested_vmx_l1_wants_exit() == true means "this is an event that should 
+either be processed directly by L0, or cause a vmexit in L1"
 
-On Tue, Jun 01, 2021 at 11:26:24AM +0200, nicolas saenz julienne wrote:
-> On Tue, 2021-05-25 at 15:23 +0200, Maxime Ripard wrote:
-> > The hdmi-codec brings a lot of advanced features, including the HDMI
-> > channel mapping. Let's use it in our driver instead of our own codec.
-> >=20
-> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > ---
->=20
-> Reviewed-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
+Typically, nested_vmx_l1_wants_exit() checks the controls in vmcs12, 
+while nested_vmx_l0_wants_exit() returns true unconditionally for most 
+vmexits; for others it checks processor state, or other state set up by 
+userspace with ioctls such as vcpu->guest_debug.
 
-Applied 6 to 10, I'll resend 11
+In this case it's *L0* that wants that vmexit, in order to either 
+disable split-lock detection or inject a SIGBUS, so 
+nested_vmx_l0_wants_exit() is the right one to test.
 
-Thanks!
-Maxime
+Paolo
 
---ed3s3jfq3fuhw3ac
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYNMpDwAKCRDj7w1vZxhR
-xTtEAQCsRUnfy20Se4iYG9OnMpYBOcMIXkIlk4MHoGG22GbIhgD+KEWBCy8hUjqQ
-hXB++Vu4wHH9EPXj1HdCg3lwFXxWrQI=
-=QYZn
------END PGP SIGNATURE-----
-
---ed3s3jfq3fuhw3ac--
