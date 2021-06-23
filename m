@@ -2,365 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDBE73B1D17
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6993B1D09
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbhFWPFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 11:05:47 -0400
-Received: from pbmsgap02.intersil.com ([192.157.179.202]:56748 "EHLO
-        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWPFq (ORCPT
+        id S231260AbhFWPEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 11:04:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhFWPEe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 11:05:46 -0400
-Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
-        by pbmsgap02.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 15NEihXh010435;
-        Wed, 23 Jun 2021 10:47:05 -0400
-Received: from pbmxdp01.intersil.corp (pbmxdp01.pb.intersil.com [132.158.200.222])
-        by pbmsgap02.intersil.com with ESMTP id 399arh9djj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 23 Jun 2021 10:47:04 -0400
-Received: from pbmxdp01.intersil.corp (132.158.200.222) by
- pbmxdp01.intersil.corp (132.158.200.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.2242.4; Wed, 23 Jun 2021 10:47:03 -0400
-Received: from localhost (132.158.202.109) by pbmxdp01.intersil.corp
- (132.158.200.222) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Wed, 23 Jun 2021 10:47:02 -0400
-From:   <min.li.xe@renesas.com>
-To:     <richardcochran@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Min Li <min.li.xe@renesas.com>
-Subject: [PATCH net 2/2] ptp: idt82p33: implement double dco time correction
-Date:   Wed, 23 Jun 2021 10:46:25 -0400
-Message-ID: <1624459585-31233-2-git-send-email-min.li.xe@renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1624459585-31233-1-git-send-email-min.li.xe@renesas.com>
-References: <1624459585-31233-1-git-send-email-min.li.xe@renesas.com>
-X-TM-AS-MML: disable
+        Wed, 23 Jun 2021 11:04:34 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B75E6C061574;
+        Wed, 23 Jun 2021 08:02:16 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id y7so3009204wrh.7;
+        Wed, 23 Jun 2021 08:02:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=S3hVmf9aigJiJe+G0nwlGCjbRNQ3NnCl05yym4RSiNU=;
+        b=Dqarz+0+st1+sDQaaJCsLBr7OvLopq+iBh64AufUyJt7seHdV2ZNUi9fl16Tfr/K0N
+         LZYg3apWXPI+X6UovFLcvG8OGzAE8AkGRUUkI+pxGLmsmVwdx/D8Q+se4RczqLGVqJsR
+         7ndxWq+DJRlQxuuUX5+jaWFUTEErGuUYRQzx80MPBxghSWEro/l+xgaoXF9ZSHXmfyET
+         e81YpYYxTTVBMLSyoXJkBYI1yR5na4yadhFwu6hp6daG6Op5BkUm5qMvHGOPDdQ3/Gcw
+         mnynGB8ZMqn7Hwhz0iToTtbWOyecQ1LXc3uAZH4wZhc6dzhcYhnutvZZ6E7fJK7Tbz6G
+         1org==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=S3hVmf9aigJiJe+G0nwlGCjbRNQ3NnCl05yym4RSiNU=;
+        b=G+QT8VNOXFUZx+curTZTbu5rk48vmcDR5f+tCt8T6B7a+qR80VLF1VfyE/pel8u9W+
+         2yO8yvb9LrP/cbLpaH3puBqWBgNKi1qHZWaj6dfQdO/zqyhwNFTGHIs7l5g3zL3NFO2H
+         yqLAD6FDRjVz813Y9q6C2Ye8P2yKloSvFn7cPHa3q6aBMJxrTYeVcwokR+dJ3pHZNNKW
+         0w6kdWeq0W74IQSgDgL+RWewnrA/P/UdDLxg969g3RT78DTsdxtMoR12vYxERA3qI4sa
+         HVh+KKAzR/bNepibb6s26xBBHH4EKV1tMMXxK1rF6uuwwq6OyqLxgVUNjd/AS87qd1CX
+         46ZQ==
+X-Gm-Message-State: AOAM533kY4Rn1P4NIfuaru8KIgkEddIITBCfWicY3gbwvOg/d+YSql+K
+        7CORf9d+TUOFe5R2qgabcg==
+X-Google-Smtp-Source: ABdhPJwR6NAgHi9WhWSGr2ZJf47k7RAykEWoVlHDEM1hQJCl8B5SmvBzxYsqiMWvFytiJYNTsmW3jw==
+X-Received: by 2002:a5d:6783:: with SMTP id v3mr494015wru.217.1624460535385;
+        Wed, 23 Jun 2021 08:02:15 -0700 (PDT)
+Received: from localhost.localdomain (ip5b434b8b.dynamic.kabel-deutschland.de. [91.67.75.139])
+        by smtp.googlemail.com with ESMTPSA id h206sm5954863wmh.33.2021.06.23.08.02.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 08:02:15 -0700 (PDT)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Johan Jonker <jbx6244@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH] arm64: dts: rockchip: Add sdmmc/sdio/emmc reset controls for RK3328
+Date:   Wed, 23 Jun 2021 17:02:08 +0200
+Message-Id: <20210623150208.187201-1-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210623120001.164920-1-knaerzche@gmail.com>
+References: <20210623120001.164920-1-knaerzche@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: rIm5l1F2uVzIP-b1J1JPFsLCJ_KEJxut
-X-Proofpoint-ORIG-GUID: rIm5l1F2uVzIP-b1J1JPFsLCJ_KEJxut
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-23_09:2021-06-23,2021-06-23 signatures=0
-X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 malwarescore=0 mlxlogscore=999
- adultscore=0 bulkscore=0 phishscore=0 mlxscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106230084
-X-Proofpoint-Spam-Reason: mlx
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Min Li <min.li.xe@renesas.com>
+The DW MCI controller driver will use them to reset the IP block before
+initialisation.
 
-Current adjtime is not accurate when delta is smaller than 10000ns. So
-for small time correction, we will switch to DCO mode to pull phase
-more precisely in one second duration.
-
-Signed-off-by: Min Li <min.li.xe@renesas.com>
+Fixes: d717f7352ec6 ("arm64: dts: rockchip: add sdmmc/sdio/emmc nodes for RK3328 SoCs")
+Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
- drivers/ptp/ptp_idt82p33.c | 138 +++++++++++++++++++++++++++++++++------------
- drivers/ptp/ptp_idt82p33.h |   6 +-
- 2 files changed, 107 insertions(+), 37 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/ptp/ptp_idt82p33.c b/drivers/ptp/ptp_idt82p33.c
-index abe628c..f9c86d6 100644
---- a/drivers/ptp/ptp_idt82p33.c
-+++ b/drivers/ptp/ptp_idt82p33.c
-@@ -389,25 +389,22 @@ static int _idt82p33_adjfine(struct idt82p33_channel *channel, long scaled_ppm)
- 	int err, i;
- 	s64 fcw;
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+index aa11bce576a4..a0321897bd5f 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+@@ -858,6 +858,8 @@ sdmmc: mmc@ff500000 {
+ 		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
+ 		fifo-depth = <0x100>;
+ 		max-frequency = <150000000>;
++		resets = <&cru SRST_MMC0>;
++		reset-names = "reset";
+ 		status = "disabled";
+ 	};
  
--	if (scaled_ppm == channel->current_freq_ppb)
--		return 0;
--
- 	/*
--	 * Frequency Control Word unit is: 1.68 * 10^-10 ppm
-+	 * Frequency Control Word unit is: 1.6861512 * 10^-10 ppm
- 	 *
- 	 * adjfreq:
--	 *       ppb * 10^9
--	 * FCW = ----------
--	 *          168
-+	 *       ppb * 10^14
-+	 * FCW = -----------
-+	 *         16861512
- 	 *
- 	 * adjfine:
--	 *       scaled_ppm * 5^12
--	 * FCW = -------------
--	 *         168 * 2^4
-+	 *       scaled_ppm * 5^12 * 10^5
-+	 * FCW = ------------------------
-+	 *            16861512 * 2^4
- 	 */
+@@ -870,6 +872,8 @@ sdio: mmc@ff510000 {
+ 		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
+ 		fifo-depth = <0x100>;
+ 		max-frequency = <150000000>;
++		resets = <&cru SRST_SDIO>;
++		reset-names = "reset";
+ 		status = "disabled";
+ 	};
  
--	fcw = scaled_ppm * 244140625ULL;
--	fcw = div_s64(fcw, 2688);
-+	fcw = scaled_ppm * 762939453125ULL;
-+	fcw = div_s64(fcw, 8430756LL);
+@@ -882,6 +886,8 @@ emmc: mmc@ff520000 {
+ 		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
+ 		fifo-depth = <0x100>;
+ 		max-frequency = <150000000>;
++		resets = <&cru SRST_EMMC>;
++		reset-names = "reset";
+ 		status = "disabled";
+ 	};
  
- 	for (i = 0; i < 5; i++) {
- 		buf[i] = fcw & 0xff;
-@@ -422,26 +419,77 @@ static int _idt82p33_adjfine(struct idt82p33_channel *channel, long scaled_ppm)
- 	err = idt82p33_write(idt82p33, channel->dpll_freq_cnfg,
- 			     buf, sizeof(buf));
- 
--	if (err == 0)
--		channel->current_freq_ppb = scaled_ppm;
--
- 	return err;
- }
- 
-+/* ppb = scaled_ppm * 125 / 2^13 */
-+static s32 idt82p33_ddco_scaled_ppm(long current_ppm, s32 ddco_ppb)
-+{
-+	s64 scaled_ppm = (ddco_ppb << 13) / 125;
-+	s64 max_scaled_ppm = (DCO_MAX_PPB << 13) / 125;
-+
-+	current_ppm += scaled_ppm;
-+
-+	if (current_ppm > max_scaled_ppm)
-+		current_ppm = max_scaled_ppm;
-+	else if (current_ppm < -max_scaled_ppm)
-+		current_ppm = -max_scaled_ppm;
-+
-+	return (s32)current_ppm;
-+}
-+
-+static int idt82p33_stop_ddco(struct idt82p33_channel *channel)
-+{
-+	channel->ddco = false;
-+	return _idt82p33_adjfine(channel, channel->current_freq);
-+}
-+
-+static int idt82p33_start_ddco(struct idt82p33_channel *channel, s32 delta_ns)
-+{
-+	s32 current_ppm = channel->current_freq;
-+	u32 duration_ms = MSEC_PER_SEC;
-+	s32 ppb;
-+	int err;
-+
-+	/* If the ToD correction is less than 5 nanoseconds, then skip it.
-+	 * The error introduced by the ToD adjustment procedure would be bigger
-+	 * than the required ToD correction
-+	 */
-+	if (abs(delta_ns) < DDCO_THRESHOLD_NS)
-+		return 0;
-+
-+	/* For most cases, keep ddco duration 1 second */
-+	ppb = delta_ns;
-+	while (abs(ppb) > DCO_MAX_PPB) {
-+		duration_ms *= 2;
-+		ppb /= 2;
-+	}
-+
-+	err = _idt82p33_adjfine(channel,
-+				idt82p33_ddco_scaled_ppm(current_ppm, ppb));
-+	if (err)
-+		return err;
-+
-+	/* schedule the worker to cancel ddco */
-+	ptp_schedule_worker(channel->ptp_clock,
-+			    msecs_to_jiffies(duration_ms) - 1);
-+	channel->ddco = true;
-+
-+	return 0;
-+}
-+
- static int idt82p33_measure_one_byte_write_overhead(
- 		struct idt82p33_channel *channel, s64 *overhead_ns)
- {
- 	struct idt82p33 *idt82p33 = channel->idt82p33;
- 	ktime_t start, stop;
-+	u8 trigger = 0;
- 	s64 total_ns;
--	u8 trigger;
- 	int err;
- 	u8 i;
- 
- 	total_ns = 0;
- 	*overhead_ns = 0;
--	trigger = TOD_TRIGGER(HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG,
--			      HW_TOD_RD_TRIG_SEL_LSB_TOD_STS);
- 
- 	for (i = 0; i < MAX_MEASURMENT_COUNT; i++) {
- 
-@@ -658,6 +706,20 @@ static int idt82p33_sync_tod(struct idt82p33_channel *channel, bool enable)
- 			      &sync_cnfg, sizeof(sync_cnfg));
- }
- 
-+static long idt82p33_work_handler(struct ptp_clock_info *ptp)
-+{
-+	struct idt82p33_channel *channel =
-+			container_of(ptp, struct idt82p33_channel, caps);
-+	struct idt82p33 *idt82p33 = channel->idt82p33;
-+
-+	mutex_lock(&idt82p33->reg_lock);
-+	(void)idt82p33_stop_ddco(channel);
-+	mutex_unlock(&idt82p33->reg_lock);
-+
-+	/* Return a negative value here to not reschedule */
-+	return -1;
-+}
-+
- static int idt82p33_output_enable(struct idt82p33_channel *channel,
- 				  bool enable, unsigned int outn)
- {
-@@ -743,23 +805,20 @@ static void idt82p33_ptp_clock_unregister_all(struct idt82p33 *idt82p33)
- 
- 	for (i = 0; i < MAX_PHC_PLL; i++) {
- 		channel = &idt82p33->channel[i];
--
- 		if (channel->ptp_clock) {
--			channel = &idt82p33->channel[i];
-+			cancel_delayed_work_sync(&channel->adjtime_work);
- 			ptp_clock_unregister(channel->ptp_clock);
- 		}
- 	}
- }
- 
- static int idt82p33_enable(struct ptp_clock_info *ptp,
--			 struct ptp_clock_request *rq, int on)
-+			   struct ptp_clock_request *rq, int on)
- {
- 	struct idt82p33_channel *channel =
- 			container_of(ptp, struct idt82p33_channel, caps);
- 	struct idt82p33 *idt82p33 = channel->idt82p33;
--	int err;
--
--	err = -EOPNOTSUPP;
-+	int err = -EOPNOTSUPP;
- 
- 	mutex_lock(&idt82p33->reg_lock);
- 
-@@ -769,15 +828,18 @@ static int idt82p33_enable(struct ptp_clock_info *ptp,
- 						     &rq->perout);
- 		/* Only accept a 1-PPS aligned to the second. */
- 		else if (rq->perout.start.nsec || rq->perout.period.sec != 1 ||
--		    rq->perout.period.nsec) {
-+			 rq->perout.period.nsec)
- 			err = -ERANGE;
--		} else
-+		else
- 			err = idt82p33_perout_enable(channel, true,
- 						     &rq->perout);
- 	}
- 
- 	mutex_unlock(&idt82p33->reg_lock);
- 
-+	if (err)
-+		dev_err(&idt82p33->client->dev,
-+			"Failed in %s with err %d!\n", __func__, err);
- 	return err;
- }
- 
-@@ -830,14 +892,18 @@ static int idt82p33_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
- 	struct idt82p33 *idt82p33 = channel->idt82p33;
- 	int err;
- 
-+	if (channel->ddco == true || scaled_ppm == channel->current_freq)
-+		return 0;
-+
- 	mutex_lock(&idt82p33->reg_lock);
- 	err = _idt82p33_adjfine(channel, scaled_ppm);
-+	if (err == 0)
-+		channel->current_freq = scaled_ppm;
- 	mutex_unlock(&idt82p33->reg_lock);
- 
- 	if (err)
- 		dev_err(&idt82p33->client->dev,
- 			"Failed in %s with err %d!\n", __func__, err);
--
- 	return err;
- }
- 
-@@ -848,11 +914,15 @@ static int idt82p33_adjtime(struct ptp_clock_info *ptp, s64 delta_ns)
- 	struct idt82p33 *idt82p33 = channel->idt82p33;
- 	int err;
- 
-+	if (channel->ddco == true)
-+		return 0;
-+
- 	mutex_lock(&idt82p33->reg_lock);
- 
- 	if (abs(delta_ns) < phase_snap_threshold) {
-+		err = idt82p33_start_ddco(channel, delta_ns);
- 		mutex_unlock(&idt82p33->reg_lock);
--		return 0;
-+		return err;
- 	}
- 
- 	/* Use more accurate internal 1pps triggered write first */
-@@ -932,7 +1002,7 @@ static int idt82p33_channel_init(struct idt82p33_channel *channel, int index)
- 		return -EINVAL;
- 	}
- 
--	channel->current_freq_ppb = 0;
-+	channel->current_freq = 0;
- 
- 	return 0;
- }
-@@ -940,7 +1010,7 @@ static int idt82p33_channel_init(struct idt82p33_channel *channel, int index)
- static void idt82p33_caps_init(struct ptp_clock_info *caps)
- {
- 	caps->owner = THIS_MODULE;
--	caps->max_adj = 92000;
-+	caps->max_adj = DCO_MAX_PPB;
- 	caps->n_per_out = 11;
- 	caps->adjphase = idt82p33_adjwritephase;
- 	caps->adjfine = idt82p33_adjfine;
-@@ -948,6 +1018,7 @@ static void idt82p33_caps_init(struct ptp_clock_info *caps)
- 	caps->gettime64 = idt82p33_gettime;
- 	caps->settime64 = idt82p33_settime;
- 	caps->enable = idt82p33_enable;
-+	caps->do_aux_work = idt82p33_work_handler;
- }
- 
- static int idt82p33_enable_channel(struct idt82p33 *idt82p33, u32 index)
-@@ -1050,13 +1121,8 @@ static int idt82p33_load_firmware(struct idt82p33 *idt82p33)
- 		}
- 
- 		if (err == 0) {
--			/* maximum 8 pages  */
--			if (page >= PAGE_NUM)
--				continue;
--
- 			/* Page size 128, last 4 bytes of page skipped */
--			if (((loaddr > 0x7b) && (loaddr <= 0x7f))
--			     || loaddr > 0xfb)
-+			if (loaddr > 0x7b)
- 				continue;
- 
- 			err = idt82p33_write(idt82p33, _ADDR(page, loaddr),
-diff --git a/drivers/ptp/ptp_idt82p33.h b/drivers/ptp/ptp_idt82p33.h
-index a8b0923..6564f1c 100644
---- a/drivers/ptp/ptp_idt82p33.h
-+++ b/drivers/ptp/ptp_idt82p33.h
-@@ -92,9 +92,11 @@ enum hw_tod_trig_sel {
- #define FW_FILENAME			"idt82p33xxx.bin"
- #define MAX_PHC_PLL			(2)
- #define TOD_BYTE_COUNT			(10)
-+#define DCO_MAX_PPB			(92000)
- #define MAX_MEASURMENT_COUNT		(5)
- #define SNAP_THRESHOLD_NS		(10000)
- #define IMMEDIATE_SNAP_THRESHOLD_NS	(50000)
-+#define DDCO_THRESHOLD_NS		(5)
- #define IDT82P33_MAX_WRITE_COUNT	(512)
- 
- #define PLLMASK_ADDR_HI	0xFF
-@@ -129,7 +131,9 @@ struct idt82p33_channel {
- 	struct idt82p33		*idt82p33;
- 	enum pll_mode		pll_mode;
- 	struct delayed_work	adjtime_work;
--	s32			current_freq_ppb;
-+	s32			current_freq;
-+	/* double dco mode */
-+	bool			ddco;
- 	u8			output_mask;
- 	u16			dpll_tod_cnfg;
- 	u16			dpll_tod_trigger;
 -- 
-2.7.4
+2.27.0
 
