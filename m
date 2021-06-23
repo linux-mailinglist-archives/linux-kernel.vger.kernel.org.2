@@ -2,84 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2739E3B1F91
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F1A3B1F98
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhFWRfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 13:35:31 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:41704 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbhFWRf1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 13:35:27 -0400
-Received: by mail-ot1-f43.google.com with SMTP id m6-20020a9d1d060000b029044e2d8e855eso755291otm.8;
-        Wed, 23 Jun 2021 10:33:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=riea6Yx42NfdkMCg0Ketroi7GWO16G5+ktOeMGqjrPA=;
-        b=hlKcXI2BhCRPF1CFoDnettyFZ+oeGEc0q9ijOQbyksFylfT/G71iaNfHBn/3vL6aPk
-         skSjNGLYb1JS/XxIMtzE+KPT9P1soZ08dTnOR+Kl0MHBNjqP9b48S9RAWxBsGrDFgnK2
-         p+FatjNQHGypK0eLxQSVe/429uBAN6HMkYDzwfaYFkdwYGRH35mvmvvYMuZeLusycv5e
-         0+20esYhaR0hZwqm3Gf8ZS+PfM+MUxrwV14da+OvzzS7QcIpQl6Qu2P/YrpPl4HcyFUa
-         mbUAo7G+2T+Zpqvzev4gD35w36I9yUgnit7FMc4yBSuKKjcphtk8t2QM1B+Dblx/LgXY
-         PdLg==
-X-Gm-Message-State: AOAM531+9/rNJHDaLSlXBWUKA6RVgwBbnmPVZbjh/NWpvo555ABK9RbD
-        1OLVg+9VC00MTOdUxn9+E5gAfEEH7oKcpI15JFI=
-X-Google-Smtp-Source: ABdhPJwLCQlTei0mNC4Bf1WC6HysPCpYFklJTlGteqgE/TEzaTHp6+ZUtP6vDXySP99ZK2GhW4JNntTwjMKmznAYBiM=
-X-Received: by 2002:a9d:1905:: with SMTP id j5mr881357ota.321.1624469589692;
- Wed, 23 Jun 2021 10:33:09 -0700 (PDT)
+        id S229758AbhFWRg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 13:36:57 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:37278 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229726AbhFWRgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 13:36:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624469678; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=IIQCwdK7TFh8FgtUV+3MnvrVYUHcl6vu82d9dovgdYY=; b=iuMOXjUT3FeWQ0Lv8uoppXSZHVqnBmlgjOHzu6wxwfrbkzIUBVTKF0WOybvdJzFfd4aBLnSp
+ +OZ1SZ1vBpkpxV5h0ngfX1wi4M2WdeuT/GrSLIGpKZw/Jl94xRZzeDrUEXgP1+w6TkWHORs1
+ b38K7XiDHz8f6y2GJyvDMCS7evo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60d3708fd2559fe392e00865 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Jun 2021 17:34:07
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 88512C43145; Wed, 23 Jun 2021 17:34:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6E217C43217;
+        Wed, 23 Jun 2021 17:34:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6E217C43217
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
+        ath11k@lists.infradead.org
+Subject: Re: [PATCH v4 4/6] ath11k: set register access length for MHI driver
+References: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
+        <1620330705-40192-5-git-send-email-bbhatt@codeaurora.org>
+        <20210521135152.GL70095@thinkpad> <87h7i0juxt.fsf@codeaurora.org>
+        <37184e28dcc952ba9ad5ed0dc2c1a6da@codeaurora.org>
+Date:   Wed, 23 Jun 2021 20:34:02 +0300
+In-Reply-To: <37184e28dcc952ba9ad5ed0dc2c1a6da@codeaurora.org> (Bhaumik
+        Bhatt's message of "Mon, 14 Jun 2021 10:49:51 -0700")
+Message-ID: <87fsx8h4dx.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210621152433.29716-1-rf@opensource.cirrus.com>
-In-Reply-To: <20210621152433.29716-1-rf@opensource.cirrus.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 23 Jun 2021 19:32:58 +0200
-Message-ID: <CAJZ5v0jBk9LnimOPRgVOof-DJp4rqfto31+nFv8gzmsQ1jUB=A@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: tables: Add custom DSDT file as makefile prerequisite
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        patches@opensource.cirrus.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 5:24 PM Richard Fitzgerald
-<rf@opensource.cirrus.com> wrote:
->
-> A custom DSDT file is mostly used during development or debugging,
-> and in that case it is quite likely to want to rebuild the kernel
-> after changing ONLY the content of the DSDT.
->
-> This patch adds the custom DSDT as a prerequisite to tables.o
-> to ensure a rebuild if the DSDT file is updated. Make will merge
-> the prerequisites from multiple rules for the same target.
->
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> ---
->  drivers/acpi/Makefile | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
-> index efb0d1f64019..ceb1aed4b1fc 100644
-> --- a/drivers/acpi/Makefile
-> +++ b/drivers/acpi/Makefile
-> @@ -8,6 +8,11 @@ ccflags-$(CONFIG_ACPI_DEBUG)   += -DACPI_DEBUG_OUTPUT
->  #
->  # ACPI Boot-Time Table Parsing
->  #
-> +ifeq ($(CONFIG_ACPI_CUSTOM_DSDT),y)
-> +tables.o: $(src)/../../include/$(subst $\",,$(CONFIG_ACPI_CUSTOM_DSDT_FILE)) ;
-> +
-> +endif
-> +
->  obj-$(CONFIG_ACPI)             += tables.o
->  obj-$(CONFIG_X86)              += blacklist.o
->
-> --
+Bhaumik Bhatt <bbhatt@codeaurora.org> writes:
 
-Applied as 5.14 material, thanks!
+> Hi Kalle,
+>
+> On 2021-06-14 09:02 AM, Kalle Valo wrote:
+>> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
+>>
+>>> On Thu, May 06, 2021 at 12:51:43PM -0700, Bhaumik Bhatt wrote:
+>>>> MHI driver requires register space length to add range checks and
+>>>> prevent memory region accesses outside of that for MMIO space.
+>>>> Set it before registering the MHI controller.
+>>>>
+>>>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>>>> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+>>>
+>>> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>>>
+>>> Kalle, should we do immutable branch for this patch or I can pick
+>>> it up via MHI
+>>> tree (if there are no other patches expected from ath11k for this
+>>> controller)?
+>>
+>> I'm not expecting any conflicts with this, and if there are, they
+>> should
+>> be easy for Stephen or Linus to fix. So it's easiest to route this via
+>> your tree. But I'm not giving my ack yet, see below.
+>>
+>> I'm worried that this patchset breaks bisect. Every patch in the
+>> patchset should not break existing functionality, what if only patches
+>> 1-3 are included in the tree but not patch 4? Wouldn't ath11k be broken
+>> then? I didn't review the whole patchset, but I suspect the fix is to
+>> include the ath11k change in the actual mhi patch which changes the
+>> functionality. So that way we would not have a separate ath11k patch at
+>> all.
+>>
+>> Also I'm not able to test this patchset at the moment. Can someone else
+>> help and do a quick test with QCA6390 to verify these doesn't break
+>> ath11k?
+>
+> I have requested someone to try and test this patch series with QCA6390.
+>
+> I or the testers will get back to you with the test results when they
+> are available.
+>
+> As far as your concerns go, you can choose to pick patches 1-3 and
+> that would be just fine.
+>
+> Things will break if patchset 4 is _not_ in place with patchset 6
+> being part of the tree.
+>
+> It would, however, be nice to pick the whole series instead and ensure
+> that the functionality MHI introduces for boot-up sanity is in place
+> for any controllers such as ath11k.
+
+Just to be clear, this is not about me picking up any patches
+separately. I was instead making sure git-bisect works correctly, as it
+can randomly choose to test any commit in the tree. But based on your
+description everything seems to be in order in this patchset and bisect
+will work correctly.
+
+git-bisect is an important tool for me when I'm searching the root cause
+for ath11k regressions, that's why I'm so careful to make sure it works.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
