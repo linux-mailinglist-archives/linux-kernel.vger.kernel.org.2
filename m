@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA4E3B17E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 12:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787753B17E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 12:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhFWKNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 06:13:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43068 "EHLO mail.kernel.org"
+        id S230419AbhFWKN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 06:13:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230152AbhFWKNu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230174AbhFWKNu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Jun 2021 06:13:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82A21611C9;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 880106120D;
         Wed, 23 Jun 2021 10:11:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1624443093;
-        bh=lEMGdk+QOQQbwsmw6YQ5VqGUddHqHIPANLPyfPqVKt0=;
+        bh=1KL+QKiZ5XswHrkZfs1iQcYf609xqeKrKk66g0OR33c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y04lejJqplVnm8xl33R+qVL59qxO/Im5Ny1FfusZA2XIdX0KN7qIFta4L7nsvFcWy
-         7gURBzVlWAphcq9em4pDEoOHOm9PGc8CtjYo5c5FXzc8GWTmrESk2XeYfdx9DpNQtF
-         eud5yh6/yNI4Kj82YNcWR0+TsuLllA3qdwRL9bSMo53CINGka5q9KOYlX2BCTqU1NH
-         N4vXjb/YUPw5OYVxGJNe+pAVGUxennG5kSrw7x1qxvhwuw9/Q9mS7e86J1BtVrYoON
-         qkQbPPrk3Ke125FAEn2hibnuojcICNuyYw6k+Dg+Co0TYZRAHEt9FNBg19TpKQLN/C
-         xig6Vx0g0Cr+w==
+        b=FkJrWE1Z0H4qJ9UtInarJ+qC2+16z5qZ9RCTbuddMlCiFiLhcjB6ZRkFPpPs5nTBJ
+         6rn6MEB3F7btH467OAs1OZ5X1VM0fpFgTRrlHwzv7mO7Ug2/VL9CddE0hCWcFyyWOS
+         d2qUapkXKRHMxfqyDsCr/zFairJ9+Oiq8owGVB9f48gEzS5JqQa8Qry+quk1nD5ALa
+         AXbvuLvF75TvY70WzSAYH4ShSOC0z1D4lOKDnCLYZhih+XC9EFgAkn51DqPLWMvt0m
+         lSG/ihwSEpK0WI4HdqQuBw9uGhIlrmwmS3isGor+GSUXmwhj2n68336e6j/KNMNaRT
+         zRErXCjvGiqpQ==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lvzr1-002pFT-3T; Wed, 23 Jun 2021 12:11:31 +0200
+        id 1lvzr1-002pFW-4T; Wed, 23 Jun 2021 12:11:31 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: [PATCH v6 1/8] staging: phy-hi3670-usb3: do a some minor cleanups
-Date:   Wed, 23 Jun 2021 12:11:23 +0200
-Message-Id: <55db419e42fd3af72494acbe0ea0f0d1de8906ac.1624442566.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v6 2/8] staging: hisi-spmi-controller: rename spmi-channel property
+Date:   Wed, 23 Jun 2021 12:11:24 +0200
+Message-Id: <ed45fc5d84d7b531343ee5d3466ebfac26217da0.1624442566.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1624442566.git.mchehab+huawei@kernel.org>
 References: <cover.1624442566.git.mchehab+huawei@kernel.org>
@@ -44,75 +44,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before moving this driver out of staging:
-
-1. group some integers altogether;
-
-2. Use:
-
-	return some_function()
-
-instead of:
-
-	ret = some_function();
-	return ret;
-
-This is just a cleanup. No functional changes.
+The spmi-channel is not used on other drivers. So, rename it,
+in order to document that this is specific to those devices.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/staging/hikey9xx/phy-hi3670-usb3.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+ drivers/staging/hikey9xx/hisi-spmi-controller.c        |  2 +-
+ .../hikey9xx/hisilicon,hisi-spmi-controller.yaml       | 10 ++++++----
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/staging/hikey9xx/phy-hi3670-usb3.c b/drivers/staging/hikey9xx/phy-hi3670-usb3.c
-index e7e579ce0302..b9ffe08abaab 100644
---- a/drivers/staging/hikey9xx/phy-hi3670-usb3.c
-+++ b/drivers/staging/hikey9xx/phy-hi3670-usb3.c
-@@ -148,10 +148,8 @@ static int hi3670_phy_cr_clk(struct regmap *usb31misc)
- 		return ret;
+diff --git a/drivers/staging/hikey9xx/hisi-spmi-controller.c b/drivers/staging/hikey9xx/hisi-spmi-controller.c
+index 0d42bc65f39b..5bd23262abd6 100644
+--- a/drivers/staging/hikey9xx/hisi-spmi-controller.c
++++ b/drivers/staging/hikey9xx/hisi-spmi-controller.c
+@@ -290,7 +290,7 @@ static int spmi_controller_probe(struct platform_device *pdev)
+ 		goto err_put_controller;
+ 	}
  
- 	/* Clock down */
--	ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
--				 CFG54_USB31PHY_CR_CLK, 0);
--
--	return ret;
-+	return regmap_update_bits(usb31misc, USB_MISC_CFG54,
-+				  CFG54_USB31PHY_CR_CLK, 0);
- }
+-	ret = of_property_read_u32(pdev->dev.of_node, "spmi-channel",
++	ret = of_property_read_u32(pdev->dev.of_node, "hisilicon,spmi-channel",
+ 				   &spmi_controller->channel);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "can not get channel\n");
+diff --git a/drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml b/drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml
+index 6b755039a74c..f882903769f9 100644
+--- a/drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml
++++ b/drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml
+@@ -14,7 +14,7 @@ description: |
+   It is a MIPI System Power Management (SPMI) controller.
  
- static int hi3670_phy_cr_set_sel(struct regmap *usb31misc)
-@@ -215,17 +213,14 @@ static int hi3670_phy_cr_set_addr(struct regmap *usb31misc, u32 addr)
- 		return ret;
+   The PMIC part is provided by
+-  drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml.
++  ./Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml.
  
- 	reg = FIELD_PREP(CFG54_USB31PHY_CR_ADDR_MASK, addr);
--	ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
--				 CFG54_USB31PHY_CR_ADDR_MASK, reg);
+ allOf:
+   - $ref: spmi.yaml#
+@@ -30,7 +30,7 @@ properties:
+   reg:
+     maxItems: 1
  
--	return ret;
-+	return regmap_update_bits(usb31misc, USB_MISC_CFG54,
-+				  CFG54_USB31PHY_CR_ADDR_MASK, reg);
- }
+-  spmi-channel:
++  hisilicon,spmi-channel:
+     $ref: /schemas/types.yaml#/definitions/uint32
+     description: |
+       number of the Kirin 970 SPMI channel where the SPMI devices are connected.
+@@ -38,10 +38,12 @@ properties:
+ required:
+   - compatible
+   - reg
+-  - spmi-channel
++  - hisilicon,spmi-channel
  
- static int hi3670_phy_cr_read(struct regmap *usb31misc, u32 addr, u32 *val)
- {
--	int reg;
--	int i;
--	int ret;
-+	int reg, i, ret;
+ patternProperties:
+   "@[0-9a-f]$":
++    type: object
++
+     description: |
+       PMIC properties, which are specific to the used SPMI PMIC device(s).
+       When used in combination with HiSilicon 6421v600, the properties
+@@ -61,7 +63,7 @@ examples:
+         #address-cells = <2>;
+         #size-cells = <0>;
+         reg = <0x0 0xfff24000 0x0 0x1000>;
+-        spmi-channel = <2>;
++        hisilicon,spmi-channel = <2>;
  
- 	for (i = 0; i < 100; i++) {
- 		ret = hi3670_phy_cr_clk(usb31misc);
-@@ -286,9 +281,7 @@ static int hi3670_phy_cr_write(struct regmap *usb31misc, u32 addr, u32 val)
- 	if (ret)
- 		return ret;
- 
--	ret = hi3670_phy_cr_wait_ack(usb31misc);
--
--	return ret;
-+	return hi3670_phy_cr_wait_ack(usb31misc);
- }
- 
- static int hi3670_phy_set_params(struct hi3670_priv *priv)
+         pmic@0 {
+           reg = <0 0>;
 -- 
 2.31.1
 
