@@ -2,52 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71CB3B212C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ECE03B20E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhFWTZm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Jun 2021 15:25:42 -0400
-Received: from smtprelay0181.hostedemail.com ([216.40.44.181]:34270 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230523AbhFWTZX (ORCPT
+        id S229940AbhFWTVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 15:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFWTVU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 15:25:23 -0400
-X-Greylist: delayed 414 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Jun 2021 15:25:23 EDT
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id 48F5C1807EC00
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 19:16:11 +0000 (UTC)
-Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 31987100E7B53
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 19:16:10 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: m@hardcastle.com) by omf04.hostedemail.com (Postfix) with ESMTPA id C9D15D1516
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 19:16:09 +0000 (UTC)
-From:   Matt Hardcastle <m@hardcastle.com>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: [RFC] reconsider [PATCH] hostname up to 255 character
-Message-Id: <A27A5542-69CD-4B7F-86C5-6940179988B0@hardcastle.com>
-Date:   Wed, 23 Jun 2021 12:16:08 -0700
-To:     linux-kernel@vger.kernel.org
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
-X-Spam-Status: No, score=-2.36
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: C9D15D1516
-X-Stat-Signature: 9e9szt7kpekyieiya855yfyxzzrj5ses
-X-Session-Marker: 6D4068617264636173746C652E636F6D
-X-Session-ID: U2FsdGVkX18zXESlhS6YiXy3gtsmlc6/m9/BugK6Ros=
-X-HE-Tag: 1624475769-300618
+        Wed, 23 Jun 2021 15:21:20 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C36C061574;
+        Wed, 23 Jun 2021 12:19:02 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id k9so1284547uaq.6;
+        Wed, 23 Jun 2021 12:19:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v9LoyiV46pvdi80Pbx9CDtSP3RNB7KyV4DwXyuMZdGc=;
+        b=W3xk4sx35Lp/TDb6nZ99vzFv+COWGqNBIR2hpi8AVUZYCHyMciIn+bsVL58MGBFHgR
+         K8fdNathOjm8s9pJMzy5GAYVPmm/cN6z2sCnCexWUcTG6PR43x2ZSA5ymd6Gi7dx2GXs
+         yVDGYnFEY3R3di65ZbNsLJ6SYSqljZEH3GzVTWox2K5rIS8vwAX4SUik/CDJiYHkGnoL
+         Pj7Rbn9nx9zybEAny2aeYtVaGrJN99jbru3CR9yqG6l9XdzCn28V9UB1nuDgYc8TVZiS
+         MI7uHNVr4g2Ulbc/gkJIskNLecm/wFiqGmO0QtIPxWB7bbgqpjgD7+8A0xGROp031yFI
+         NitA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v9LoyiV46pvdi80Pbx9CDtSP3RNB7KyV4DwXyuMZdGc=;
+        b=AgrTrMcTEYMWw9JemRwSOFiLM4kDJat8bD0cMvOfACOYu/kalm6hIGnsIao3ZCuf52
+         jmihlQGxEml5cQxmyIdlfMKdtqFTb4MwTLgbjYJZRSqRdXSDtT8IlbgA+X9nHYbvaIIT
+         QvZIkqzhIDYMSHytsLqZC5RoBsJAWio4k9WK7M7de0kK+obJM3xx6kVdhKm46KwvWsbO
+         uT2wIQwNjMDQxLpoMsVbhkFn/X0oLLLNgMsX7qHLSIFArJX0osz83+yJkmQnEM8uExIf
+         pirj3ov0VdG+DiU9zAq7/cc6hxneh9dkS9TKlDwGyGvb3smPxgpFbr3ODmI97zsbuGjj
+         l6VQ==
+X-Gm-Message-State: AOAM533ay0itJeBR1DiJHfUrsflGoVAOj+ZoSFFLCbEZFcUk7qzT3CdX
+        Vj2uWb/oHYtuvMWzkWyvGD4PmHzT7E8BTgXum+Q=
+X-Google-Smtp-Source: ABdhPJwxgoNgzKlegGJk3WiBlO4Ca8BbbgQAPN2l4R6CrRNKQ7GWCDxOCeLMOwKnNkhk5JjF05jxykEuv+4/GFVsyEQ=
+X-Received: by 2002:a9f:31b1:: with SMTP id v46mr2106369uad.22.1624475940993;
+ Wed, 23 Jun 2021 12:19:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <1619348088-6887-1-git-send-email-jrdr.linux@gmail.com> <20210615133503.DA3B9C43149@smtp.codeaurora.org>
+In-Reply-To: <20210615133503.DA3B9C43149@smtp.codeaurora.org>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Thu, 24 Jun 2021 00:48:48 +0530
+Message-ID: <CAFqt6zY-eXTALDeLknCMpvCi1BCsN9QSrdqUnn-XrokHoTdbaw@mail.gmail.com>
+Subject: Re: [PATCH v2] ipw2x00: Minor documentation update
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     stas.yakovlev@gmail.com, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Jun 15, 2021 at 7:05 PM Kalle Valo <kvalo@codeaurora.org> wrote:
+>
+> Souptick Joarder <jrdr.linux@gmail.com> wrote:
+>
+> > Kernel test robot throws below warning ->
+> >
+> > drivers/net/wireless/intel/ipw2x00/ipw2100.c:5359: warning: This comment
+> > starts with '/**', but isn't a kernel-doc comment. Refer
+> > Documentation/doc-guide/kernel-doc.rst
+> >
+> > Minor update in documentation.
+> >
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> > Cc: Randy Dunlap <rdunlap@infradead.org>
+> > Acked-by: Randy Dunlap <rdunlap@infradead.org>
+>
+> Fails to apply, please rebase.
 
-In 2006 Randy Dunlap submitted a patch [^1] to increase the supported hostname length to 255 characters. There was some discussion on the patch, but it appeared to go stale.
-
-Are you open to reconsidering the change?
-
-- m@
-
-^1 https://lore.kernel.org/lkml/20060525204534.4068e730.rdunlap@xenotime.net/
+Sure.
+>
+> Recorded preimage for 'drivers/net/wireless/intel/ipw2x00/ipw2100.c'
+> error: Failed to merge in the changes.
+> hint: Use 'git am --show-current-patch' to see the failed patch
+> Applying: ipw2x00: Minor documentation update
+> Using index info to reconstruct a base tree...
+> M       drivers/net/wireless/intel/ipw2x00/ipw2100.c
+> Falling back to patching base and 3-way merge...
+> Auto-merging drivers/net/wireless/intel/ipw2x00/ipw2100.c
+> CONFLICT (content): Merge conflict in drivers/net/wireless/intel/ipw2x00/ipw2100.c
+> Patch failed at 0001 ipw2x00: Minor documentation update
+>
+> Patch set to Changes Requested.
+>
+> --
+> https://patchwork.kernel.org/project/linux-wireless/patch/1619348088-6887-1-git-send-email-jrdr.linux@gmail.com/
+>
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+>
