@@ -2,89 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5828A3B1E91
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B3D3B1E99
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhFWQYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 12:24:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbhFWQYL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 12:24:11 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB94C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:21:53 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id bb20so1784482pjb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:21:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5ii3VcP6yGwaAHrYr2ovsq7dBZBjX3jJHACpeShViPA=;
-        b=Dlvu2xzM8dvWAc4U4/8TT762Zpj56AIzsK0NYI9mRdYCfh55Vfg4tRKBpYdu7TFobJ
-         CFIOsn8YGIsF+zPP9HbuS+IDufTO2SXbJhWYAL5fdo3M17FumZy8KXAz3TPraxlaAcbr
-         jt8qAcMBy9dvRiDp61IHT3QvZYMCrr7Yf7plDNs7kJIkRYO8OupGAlX+fobPB5AdNpw2
-         2geqhPltSYJPV71YZe1AwuJ/HJt0vf7xxjWC4rLUNUXO643c4aswcy+cJgmm7lmjEcbg
-         2BSG7jU/TG/G1l/W32hN27YvLhBpaecf3cUJSCtnfwraAS9WZEHS7UzPok5PNbVHj0sl
-         BOUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5ii3VcP6yGwaAHrYr2ovsq7dBZBjX3jJHACpeShViPA=;
-        b=SPfIiGVLPxAf/Lxz4anB5+JdTvTUrupzlZchqjI21Cz5aZJNKejIWAAKJ4i1vAe4o5
-         fVQg+3dSI4ozQvkpa36KphzGtlFeh4+C3O9sD/F/G2gM0jHVk1SD4eQSS00Ealbgwhbq
-         sdULfaB9+TVrrPGwpabWRgs5XqjPkIkaVugF/DSnyBT+ihQtyA68WyJWgZ3shcSAqRTP
-         PUvpqvCW8jVJQPGghmCszvwjU1q2jaobyl9nlhhSfySDooxPFZyXMx6bVDa1TVdOCmYw
-         YLbwzY8vdt8PMErAd50bVAFCfIol5qbqHdBDC81S/sG5LmYAQ1OWQG+U922HvqBEjcbt
-         H9ow==
-X-Gm-Message-State: AOAM533i4PkPMaJY/dzyuJIrkBIB0hDyPuNyelaZv9idK0RYWID9NvHb
-        Veo7TJISKqD2akFL45MgpkU5sg==
-X-Google-Smtp-Source: ABdhPJyXzBIJ4uuVHOJ30Az+pMillzqNM3ekwhaPQbi6PBAbIcP27gEaHHBiJF2yLHpN5F+4CzIiGg==
-X-Received: by 2002:a17:90a:8a95:: with SMTP id x21mr556761pjn.154.1624465313070;
-        Wed, 23 Jun 2021 09:21:53 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id b18sm5960931pjq.2.2021.06.23.09.21.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 09:21:52 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 16:21:48 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Cathy Avery <cavery@redhat.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH RFC] KVM: nSVM: Fix L1 state corruption upon return from
- SMM
-Message-ID: <YNNfnLsc+3qMsdlN@google.com>
-References: <20210623074427.152266-1-vkuznets@redhat.com>
- <a3918bfa-7b4f-c31a-448a-aa22a44d4dfd@redhat.com>
- <53a9f893cb895f4b52e16c374cbe988607925cdf.camel@redhat.com>
- <ac98150acd77f4c09167bc1bb1c552db68925cf2.camel@redhat.com>
- <87pmwc4sh4.fsf@vitty.brq.redhat.com>
- <5fc502b70a89e18034716166abc65caec192c19b.camel@redhat.com>
- <YNNc9lKIzM6wlDNf@google.com>
+        id S229826AbhFWQ2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 12:28:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58580 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229523AbhFWQ2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 12:28:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F1D760FEE;
+        Wed, 23 Jun 2021 16:26:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624465577;
+        bh=vvKsxcawOIU7zaJ1jBb+8b/U8+WkJThvm04wURj4SMw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cbTH33dUHXrd0FmIlJ6uBzJbjsqN3uycHS90voxRndM3GrMvgq1s+0PolD82WF2Tz
+         Q1ZRHadFyslVuVGXVqLoW3oFaIPIGHPoYyY6IKJNOH4ISGNLF0ONjJLRsiaAGz8lIn
+         kb1e/PeNd872slHmurnOoGlnPTz1fulOs23ZcPwQ8mQtrCDnn62rZBk1qFMAwDVQwV
+         8GIzIhYeh02GSL41FcXv9zibzRQbiPpE/XeXMNxGh6fjUdYzsNT0HeaYH3qgHRCq9F
+         0cjDu6GeOh80+KhGcQPZ4+FIS9F21D6f7fzIJGEX0jISpMLZalpwORbP0knzbP8tbx
+         yhmpEe6r/IPpQ==
+Date:   Wed, 23 Jun 2021 18:26:15 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Michal Simek <michal.simek@xilinx.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Peter Rosin <peda@axentia.se>, linux-i2c@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH 4/9] i2c: cadence: Simplify with dev_err_probe()
+Message-ID: <YNNgpx8eMUuRH1y7@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Michal Simek <michal.simek@xilinx.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Peter Rosin <peda@axentia.se>, linux-i2c@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20200902150643.14839-1-krzk@kernel.org>
+ <20200902150643.14839-4-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yQCihXPE0Rw77HZd"
 Content-Disposition: inline
-In-Reply-To: <YNNc9lKIzM6wlDNf@google.com>
+In-Reply-To: <20200902150643.14839-4-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021, Sean Christopherson wrote:
-> And I believe this hackery is necessary only because nested_svm_vmexit() isn't
-> following the architcture in the first place.  I.e. using vmcb01 to restore
-> host state is flat out wrong.
 
-Ah, that's not true, using vmcb01 is allowed by "may store some or all host state
-in hidden on-chip memory".
+--yQCihXPE0Rw77HZd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-From a performance perspective, I do like the SMI/RSM shenanigans.  I'm not
-totally opposed to the trickery since I think it will break a guest if and only
-if the L1 guest is also violating the APM.  And we're not fudging the spec thaat
-much :-)
+On Wed, Sep 02, 2020 at 05:06:38PM +0200, Krzysztof Kozlowski wrote:
+> Common pattern of handling deferred probe can be simplified with
+> dev_err_probe().  Less code and the error value gets printed.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+Applied to for-next, thanks!
+
+
+--yQCihXPE0Rw77HZd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDTYKcACgkQFA3kzBSg
+KbY0zw/+KHiicY05BPDAkNLs7LvofrF8GF9g4q4kNTv+0zHqKwrdbTJFdBOXoQDL
+9L1VLCkQgAGYrDEFDyr5QTS7merRNCmWLg2NHVd57L15Gk0XqApSyo2ecEG1it4f
+5HH9mrgym+WGmgcqVOw4c8DxZjywEFo8ls+y8VugOQyYzSdRgOAigzm8ywA/tLYo
+YorHpmN4IVqbrhkXrsDTUZ9McG/n7XtJDZo9kBhKX279kQQIRfLkJ09mBTQm0zgw
+FVaSgkqs9wbo3nfupnpUf8rc1nos0iIKz+W0/P1JWPESV7Krqiv1zUk27lY5ptHy
+FWDvCK+/kBaJSjbYdEGixKXv2DsFQdbrzE9xi+19n1xzF7DtYmkOnk5lNKpxlB3z
+cx5Laus/NvZtK6U36lK5HULjZ4DCIJEbTrjMsR9FRJNowPeKPnSLnfm6TIYiq8EJ
+zDgsWhuZ3c7MZ/VS1WCZpxpNTjsEbm+bNmcO9RfyBVJif3To71mDsJjUcS2PdXIO
+HuAurETnq5MRepPzAzOy3LPs/xoD0dEx/0oFx3UVJHLHL/URRH364keM5YS6vMMo
+iJ+fYMPQ2zMLfBbGQA3/WFCjEDarJZPc0hqJTPyZLbZvAsjWFuMDVSR2oysB7zEy
+JiQdi8m3PVKkShrA7dCkC/wCManU+MZ/HOeaitjlY80AQ0WfF70=
+=kMfn
+-----END PGP SIGNATURE-----
+
+--yQCihXPE0Rw77HZd--
