@@ -2,183 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB293B1379
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 07:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0473B137F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 07:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbhFWFxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 01:53:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:58054 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230039AbhFWFxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 01:53:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 608B811D4;
-        Tue, 22 Jun 2021 22:50:55 -0700 (PDT)
-Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 388B83F694;
-        Tue, 22 Jun 2021 22:50:49 -0700 (PDT)
-From:   Jia He <justin.he@arm.com>
-To:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>, nd@arm.com,
-        Jia He <justin.he@arm.com>
-Subject: [PATCH v2 4/4] lib/test_printf.c: add test cases for '%pD'
-Date:   Wed, 23 Jun 2021 13:50:11 +0800
-Message-Id: <20210623055011.22916-5-justin.he@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210623055011.22916-1-justin.he@arm.com>
-References: <20210623055011.22916-1-justin.he@arm.com>
+        id S230004AbhFWFxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 01:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229864AbhFWFxh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 01:53:37 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB653C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 22:51:18 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id u190so831381pgd.8
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 22:51:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gvifQC5IeicUDnWoUsRHMENVSvoiy4CqG/g46bHGIBE=;
+        b=Nfhhac/bZAPq4PYEl8wGoNG3LtOlUf0ySTTBOT1i1L2PgBv0e5wt01FLhqlJmLQz8j
+         bkVCQAyMVaPjFnbOvJEsa/+w7he3kCWPerUO8x1LcddUFd7zGgL/G7/iplT3Ssaxmc9C
+         +7CXA1AJ638YsSQeYWXKnMaIevl4qskFAg0xQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gvifQC5IeicUDnWoUsRHMENVSvoiy4CqG/g46bHGIBE=;
+        b=KFyzpM7A84UZSa/GQapvxcASs/PKLX6X/RKdDTVlEzfz+xJ1PyrnHJ7bmcUOVospgp
+         5pgwQG6r3vYk0g4qit4SZDToQxJwoTXwbpCQR6hdDY696WMqlTc4eM5ELEWGw7JJCbk6
+         errqDZFYOm1+7aZoch6a7DpE96hAQcFvBFozQwcpD3CaRly3WLbm8D0w/TXepI7P3qRz
+         aIZhGnMRgLVZuafU7WgvLr/hYBIJEotioR1BR/womSj7FzPo2/LnAZXGgGyxSp9ufDhq
+         FxSDsYnrhE8HyEGjuEDRUi82HmyuC1HQXHxPxbKk7u5ykJk3QlFs9jGjlbmueE2dLXdc
+         8QsQ==
+X-Gm-Message-State: AOAM533qzgS3eb5nrewbjXQeTw3Jclv2TuOOMkB1SD1FMAPFdo+cwxhD
+        0wchpru8Q3DIKBkzVxlKlxch8CdprISvVxZ5
+X-Google-Smtp-Source: ABdhPJwS551YzUKPlrLg4xaKTDfZblIg72w73yK6vsDqeuSfN09P1F0/y6J/wAAl/1MV9m/6mJxyMQ==
+X-Received: by 2002:a63:5553:: with SMTP id f19mr2218816pgm.419.1624427478576;
+        Tue, 22 Jun 2021 22:51:18 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v129sm1108705pfc.71.2021.06.22.22.51.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 22:51:17 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 22:51:17 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 2/2] ACPI: bgrt: Use sysfs_emit
+Message-ID: <202106222250.7BD80A12FF@keescook>
+References: <20210623013802.1904951-1-nathan@kernel.org>
+ <20210623013802.1904951-2-nathan@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210623013802.1904951-2-nathan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the behaviour of specifier '%pD' is changed to print the full path
-of struct file, the related test cases are also updated.
+On Tue, Jun 22, 2021 at 06:38:02PM -0700, Nathan Chancellor wrote:
+> sysfs_emit is preferred to snprintf for emitting values after
+> commit 2efc459d06f1 ("sysfs: Add sysfs_emit and sysfs_emit_at to format
+> sysfs output").
+> 
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-Given the full path string of '%pD' is prepended from the end of the scratch
-buffer, the check of "wrote beyond the nul-terminator" should be skipped
-for '%pD'.
+Perhaps just squash this into patch 1? Looks good otherwise!
 
-Parameterize the new using_scratch_space in __test(), do_test() and wrapper
-macros to skip the test case mentioned above,
-
-Signed-off-by: Jia He <justin.he@arm.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- lib/test_printf.c | 49 +++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 39 insertions(+), 10 deletions(-)
-
-diff --git a/lib/test_printf.c b/lib/test_printf.c
-index d1d2f898ebae..f48da88bc77b 100644
---- a/lib/test_printf.c
-+++ b/lib/test_printf.c
-@@ -16,6 +16,7 @@
- 
- #include <linux/bitmap.h>
- #include <linux/dcache.h>
-+#include <linux/fs.h>
- #include <linux/socket.h>
- #include <linux/in.h>
- 
-@@ -37,8 +38,8 @@ static char *alloced_buffer __initdata;
- 
- extern bool no_hash_pointers;
- 
--static int __printf(4, 0) __init
--do_test(int bufsize, const char *expect, int elen,
-+static int __printf(5, 0) __init
-+do_test(int bufsize, const char *expect, int elen, bool using_scratch_space,
- 	const char *fmt, va_list ap)
- {
- 	va_list aq;
-@@ -78,7 +79,7 @@ do_test(int bufsize, const char *expect, int elen,
- 		return 1;
- 	}
- 
--	if (memchr_inv(test_buffer + written + 1, FILL_CHAR, bufsize - (written + 1))) {
-+	if (!using_scratch_space && memchr_inv(test_buffer + written + 1, FILL_CHAR, bufsize - (written + 1))) {
- 		pr_warn("vsnprintf(buf, %d, \"%s\", ...) wrote beyond the nul-terminator\n",
- 			bufsize, fmt);
- 		return 1;
-@@ -97,8 +98,9 @@ do_test(int bufsize, const char *expect, int elen,
- 	return 0;
- }
- 
--static void __printf(3, 4) __init
--__test(const char *expect, int elen, const char *fmt, ...)
-+static void __printf(4, 5) __init
-+__test(const char *expect, int elen, bool using_scratch_space,
-+	const char *fmt, ...)
- {
- 	va_list ap;
- 	int rand;
-@@ -119,11 +121,11 @@ __test(const char *expect, int elen, const char *fmt, ...)
- 	 * enough and 0), and then we also test that kvasprintf would
- 	 * be able to print it as expected.
- 	 */
--	failed_tests += do_test(BUF_SIZE, expect, elen, fmt, ap);
-+	failed_tests += do_test(BUF_SIZE, expect, elen, using_scratch_space, fmt, ap);
- 	rand = 1 + prandom_u32_max(elen+1);
- 	/* Since elen < BUF_SIZE, we have 1 <= rand <= BUF_SIZE. */
--	failed_tests += do_test(rand, expect, elen, fmt, ap);
--	failed_tests += do_test(0, expect, elen, fmt, ap);
-+	failed_tests += do_test(rand, expect, elen, using_scratch_space, fmt, ap);
-+	failed_tests += do_test(0, expect, elen, using_scratch_space, fmt, ap);
- 
- 	p = kvasprintf(GFP_KERNEL, fmt, ap);
- 	if (p) {
-@@ -138,8 +140,15 @@ __test(const char *expect, int elen, const char *fmt, ...)
- 	va_end(ap);
- }
- 
-+/*
-+ * More relaxed test for non-standard formats that are using the provided buffer
-+ * as a scratch space and write beyond the trailing '\0'.
-+ */
-+#define test_using_scratch_space(expect, fmt, ...)			\
-+	__test(expect, strlen(expect), true, fmt, ##__VA_ARGS__)
-+
- #define test(expect, fmt, ...)					\
--	__test(expect, strlen(expect), fmt, ##__VA_ARGS__)
-+	__test(expect, strlen(expect), false, fmt, ##__VA_ARGS__)
- 
- static void __init
- test_basic(void)
-@@ -150,7 +159,7 @@ test_basic(void)
- 	test("", &nul);
- 	test("100%", "100%%");
- 	test("xxx%yyy", "xxx%cyyy", '%');
--	__test("xxx\0yyy", 7, "xxx%cyyy", '\0');
-+	__test("xxx\0yyy", 7, false, "xxx%cyyy", '\0');
- }
- 
- static void __init
-@@ -501,6 +510,25 @@ dentry(void)
- 	test("  bravo/alfa|  bravo/alfa", "%12pd2|%*pd2", &test_dentry[2], 12, &test_dentry[2]);
- }
- 
-+static struct vfsmount test_vfsmnt __initdata = {};
-+
-+static struct file test_file __initdata = {
-+	.f_path = { .dentry = &test_dentry[2],
-+		    .mnt = &test_vfsmnt,
-+	},
-+};
-+
-+static void __init
-+f_d_path(void)
-+{
-+	test("(null)", "%pD", NULL);
-+	test("(efault)", "%pD", PTR_INVALID);
-+
-+	test_using_scratch_space("/bravo/alfa   |/bravo/alfa   ", "%-14pD|%*pD", &test_file, -14, &test_file);
-+	test_using_scratch_space("   /bravo/alfa|   /bravo/alfa", "%14pD|%*pD", &test_file, 14, &test_file);
-+	test_using_scratch_space("   /bravo/alfa|/bravo/alfa   ", "%14pD|%-14pD", &test_file, &test_file);
-+}
-+
- static void __init
- struct_va_format(void)
- {
-@@ -784,6 +812,7 @@ test_pointer(void)
- 	ip();
- 	uuid();
- 	dentry();
-+	f_d_path();
- 	struct_va_format();
- 	time_and_date();
- 	struct_clk();
 -- 
-2.17.1
-
+Kees Cook
