@@ -2,77 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792743B220C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 370F93B2208
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhFWUwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 16:52:33 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:57443 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229955AbhFWUw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 16:52:29 -0400
-Received: from [IPv6:2601:646:8602:8be1:41b0:e4be:291d:d842] ([IPv6:2601:646:8602:8be1:41b0:e4be:291d:d842])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 15NKnWss1881455
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Wed, 23 Jun 2021 13:49:42 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 15NKnWss1881455
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021052901; t=1624481384;
-        bh=uk/YtYtF3NyTcumCvliy/vR0llJ6HHjAYyR6yNJrg3w=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=EcOg1YMYqPLQxUgyx8chx9DZmodpxIRbipSdhYYcxSs3rn7jMEBpK5mbU95wcKOHR
-         8+J9iFvUKX4MpFyHsGHbs1ZbzA8tZN4bli0dBI0Q9ZO5nT13ALURL0ZGH15qs3lm06
-         I0hgFtqJmdl9+88R2EfcxlyXCMcXQkX/2mXB7zcLZfwNvbqVE0f/PR03s1zQV6B/KF
-         Brz0EfQcp6vaYwKUQtDUdsfHOc+dz8mZepwYF/3MOena43Y8cHodwE77M2t6r8mza0
-         okpf8DNsnbpcy2OKv4CDNjxl2FTphyEiTOSQZ4HtqTjjQ6Arhgn5Qmv8/NHmKtu+Cp
-         ct/ESNxGHl9eA==
-Date:   Wed, 23 Jun 2021 13:49:24 -0700
-User-Agent: K-9 Mail for Android
-In-Reply-To: <a4e1c071-32af-9650-e6fd-8943b3a79bb0@linux.microsoft.com>
-References: <20210623120751.3033390-1-mic@digikod.net> <9dbbf4e751cb4953fe63079cdc917a0bb3a91670.camel@chronox.de> <a4e1c071-32af-9650-e6fd-8943b3a79bb0@linux.microsoft.com>
+        id S229926AbhFWUwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 16:52:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229523AbhFWUwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 16:52:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B1946610C7;
+        Wed, 23 Jun 2021 20:50:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624481403;
+        bh=iGDk3UpxbzKEJYRtb7TXOFgh99KpKpTDu3Cmlx+hgS0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Qhjs+dsnmtZq7QCrUd81Hsz0iDbcU3tLOGFNPtLB/zWFNHn8kI/KjgCbiftxEt/k3
+         SqLf6Z9JrEGuv0x90AOMfCCZZP+wBclE0CvGgD5zLT+NCanorYf+CgkjkvbSkY2pwp
+         3q24Tm2XFpFGn2HmMfGqvxldtWgrBCZ/zZcFWGHQOhGsep/p5DJ1Nc7BdnrZEhgrVl
+         S/Zc2L0mCuOLJQwGnSxSMl2zAgyfbZ8o17wU+sKKhg+TRKaJpIaH1Lr9+jqfR9Tx2V
+         rDB1HZ0c+Ji0pJ3lq4QeoO81me+PteIGN2M0hlqCNUoyfXqEuVjcfUPNRn3bfO4VGQ
+         uMbkoiZWHr1zA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9AACC60A53;
+        Wed, 23 Jun 2021 20:50:03 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v1] crypto: Make the DRBG compliant with NIST SP800-90A rev1
-To:     James Morris <jamorris@linux.microsoft.com>,
-        Stephan Mueller <smueller@chronox.de>
-CC:     =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        David Miller <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Haxby <john.haxby@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Simo Sorce <simo@redhat.com>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
-        tytso@mit.edu
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <98006AFB-C40E-46F7-BE88-D8E66653B71B@zytor.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162448140362.19131.3107197931445260654.git-patchwork-notify@kernel.org>
+Date:   Wed, 23 Jun 2021 20:50:03 +0000
+References: <20210623032802.3377-1-jhp@endlessos.org>
+In-Reply-To: <20210623032802.3377-1-jhp@endlessos.org>
+To:     Jian-Hong Pan <jhp@endlessos.org>
+Cc:     f.fainelli@gmail.com, stefan.wahren@i2se.com, opendmb@gmail.com,
+        andrew@lunn.ch, bcm-kernel-feedback-list@broadcom.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@endlessos.org, linux-rpi-kernel@lists.infradead.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This one really does keep coming back like yesterday's herring, doesn't it=
-=2E=2E=2E
+Hello:
 
-On June 23, 2021 10:00:29 AM PDT, James Morris <jamorris@linux=2Emicrosoft=
-=2Ecom> wrote:
->On Wed, 23 Jun 2021, Stephan Mueller wrote:
->
->>=20
->> > These changes replace the use of the Linux RNG with the Jitter RNG,
->> > which is NIST SP800-90B compliant, to get a proper entropy input
->and a
->> > nonce as defined by FIPS=2E
->>=20
->> Can you please help me understand what is missing in the current code
->which
->> seemingly already has achieved this goal?
->
->The advice we have is that if an attacker knows the internal state of
->the=20
->CPU, then the output of the Jitter RNG can be predicted=2E
+This patch was applied to netdev/net.git (refs/heads/master):
 
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+On Wed, 23 Jun 2021 11:28:03 +0800 you wrote:
+> The Broadcom UniMAC MDIO bus from mdio-bcm-unimac module comes too late.
+> So, GENET cannot find the ethernet PHY on UniMAC MDIO bus. This leads
+> GENET fail to attach the PHY as following log:
+> 
+> bcmgenet fd580000.ethernet: GENET 5.0 EPHY: 0x0000
+> ...
+> could not attach to PHY
+> bcmgenet fd580000.ethernet eth0: failed to connect to PHY
+> uart-pl011 fe201000.serial: no DMA platform data
+> libphy: bcmgenet MII bus: probed
+> ...
+> unimac-mdio unimac-mdio.-19: Broadcom UniMAC MDIO bus
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
+    https://git.kernel.org/netdev/net/c/b2ac9800cfe0
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
