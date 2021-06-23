@@ -2,80 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7735C3B132E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 07:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 144303B132F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 07:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbhFWFZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 01:25:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57788 "EHLO mail.kernel.org"
+        id S229913AbhFWFZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 01:25:51 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:50665 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229665AbhFWFZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 01:25:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11E40610A0;
-        Wed, 23 Jun 2021 05:23:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624425800;
-        bh=OFqdMRZSiIQvLVLduSpuTOtW8IYIbvv1f7+uzGkqC3g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fu/asISaSJ9QJS6zK75gbfB07pIamtFSKaPtxURtGmYvtJ6uZG4WbroV/QBx0G50m
-         zKKvUpGTva2hw3PVEaYqo3Yw9UpuJaEHhrpLULlXrliau6zUeffTom1K+LKqEqD16R
-         wT+BsDvpoUS47oX6ZiZ6SWnm3LSgnvzgId/M4LR6on9g80uHJTMl3uPK4RTii0qYLR
-         zSWtR5jKVplXUK+PWwyVnoY0172WjL1K3WIyEywt3/iBmNOl4nr8QBf1MoYyqR0z+f
-         on/sPmySkgDwZvHyYc4tX0FSkc5BCbYwRLIBD6xTlbknOoE+ppcHHII3bkxDlmi2Yc
-         XV9nIkJUtsabA==
-Date:   Wed, 23 Jun 2021 08:23:17 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Christoph Hellwig <hch@lst.de>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next 2/2] RDMA: Use dma_map_sgtable for map umem
- pages
-Message-ID: <YNLFRa75KQ+BO4rB@unreal>
-References: <cover.1624361199.git.leonro@nvidia.com>
- <29b80ff0c32675351c0a1b2f34e0181f463beb3d.1624361199.git.leonro@nvidia.com>
- <20210622131816.GA2371267@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622131816.GA2371267@nvidia.com>
+        id S229665AbhFWFZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 01:25:50 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4G8s9w0JgnzBDb3;
+        Wed, 23 Jun 2021 07:23:32 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id bYOMyFCcoABL; Wed, 23 Jun 2021 07:23:31 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4G8s9v59R8zBDZK;
+        Wed, 23 Jun 2021 07:23:31 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A36AE8B7C1;
+        Wed, 23 Jun 2021 07:23:31 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id JK5fSF0_49QA; Wed, 23 Jun 2021 07:23:31 +0200 (CEST)
+Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5C1578B767;
+        Wed, 23 Jun 2021 07:23:31 +0200 (CEST)
+Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 1BA1B6630E; Wed, 23 Jun 2021 05:23:30 +0000 (UTC)
+Message-Id: <5bdc8cbc9a95d0779e27c9ddbf42b40f51f883c0.1624425798.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2] powerpc/kprobes: Fix Oops by passing ppc_inst as a pointer
+ to emulate_step() on ppc32
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed, 23 Jun 2021 05:23:30 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 10:18:16AM -0300, Jason Gunthorpe wrote:
-> On Tue, Jun 22, 2021 at 02:39:42PM +0300, Leon Romanovsky wrote:
-> 
-> > diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-> > index 0eb40025075f..a76ef6a6bac5 100644
-> > +++ b/drivers/infiniband/core/umem.c
-> > @@ -51,11 +51,11 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
-> >  	struct scatterlist *sg;
-> >  	unsigned int i;
-> >  
-> > -	if (umem->nmap > 0)
-> > -		ib_dma_unmap_sg(dev, umem->sg_head.sgl, umem->sg_nents,
-> > -				DMA_BIDIRECTIONAL);
-> > +	if (dirty)
-> > +		ib_dma_unmap_sgtable_attrs(dev, &umem->sg_head,
-> > +					   DMA_BIDIRECTIONAL, 0);
-> >  
-> > -	for_each_sg(umem->sg_head.sgl, sg, umem->sg_nents, i)
-> > +	for_each_sgtable_dma_sg(&umem->sg_head, sg, i)
-> >  		unpin_user_page_range_dirty_lock(sg_page(sg),
-> >  			DIV_ROUND_UP(sg->length, PAGE_SIZE), make_dirty);
-> 
-> This isn't right, can't mix sg_page with a _dma_ API
+From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 
-Jason, why is that?
+Trying to use a kprobe on ppc32 results in the below splat:
+    BUG: Unable to handle kernel data access on read at 0x7c0802a6
+    Faulting instruction address: 0xc002e9f0
+    Oops: Kernel access of bad area, sig: 11 [#1]
+    BE PAGE_SIZE=4K PowerPC 44x Platform
+    Modules linked in:
+    CPU: 0 PID: 89 Comm: sh Not tainted 5.13.0-rc1-01824-g3a81c0495fdb #7
+    NIP:  c002e9f0 LR: c0011858 CTR: 00008a47
+    REGS: c292fd50 TRAP: 0300   Not tainted  (5.13.0-rc1-01824-g3a81c0495fdb)
+    MSR:  00009000 <EE,ME>  CR: 24002002  XER: 20000000
+    DEAR: 7c0802a6 ESR: 00000000
+    <snip>
+    NIP [c002e9f0] emulate_step+0x28/0x324
+    LR [c0011858] optinsn_slot+0x128/0x10000
+    Call Trace:
+     opt_pre_handler+0x7c/0xb4 (unreliable)
+     optinsn_slot+0x128/0x10000
+     ret_from_syscall+0x0/0x28
 
-We use same pages that were passed to __sg_alloc_table_from_pages() in __ib_umem_get().
+The offending instruction is:
+    81 24 00 00     lwz     r9,0(r4)
 
-Thanks
+Here, we are trying to load the second argument to emulate_step():
+struct ppc_inst, which is the instruction to be emulated. On ppc64,
+structures are passed in registers when passed by value. However, per
+the ppc32 ABI, structures are always passed to functions as pointers.
+This isn't being adhered to when setting up the call to emulate_step()
+in the optprobe trampoline. Fix the same.
 
-> 
-> Jason
+Fixes: eacf4c0202654a ("powerpc: Enable OPTPROBES on PPC32")
+Cc: stable@vger.kernel.org
+Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+---
+v2: Rebased on powerpc/merge 7f030e9d57b8
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/optprobes.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/arch/powerpc/kernel/optprobes.c b/arch/powerpc/kernel/optprobes.c
+index 2b8fe40069ad..53facb4b377f 100644
+--- a/arch/powerpc/kernel/optprobes.c
++++ b/arch/powerpc/kernel/optprobes.c
+@@ -228,8 +228,12 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *p)
+ 	/*
+ 	 * 3. load instruction to be emulated into relevant register, and
+ 	 */
+-	temp = ppc_inst_read(p->ainsn.insn);
+-	patch_imm_load_insns(ppc_inst_as_ulong(temp), 4, buff + TMPL_INSN_IDX);
++	if (IS_ENABLED(CONFIG_PPC64)) {
++		temp = ppc_inst_read(p->ainsn.insn);
++		patch_imm_load_insns(ppc_inst_as_ulong(temp), 4, buff + TMPL_INSN_IDX);
++	} else {
++		patch_imm_load_insns((unsigned long)p->ainsn.insn, 4, buff + TMPL_INSN_IDX);
++	}
+ 
+ 	/*
+ 	 * 4. branch back from trampoline
+-- 
+2.25.0
+
