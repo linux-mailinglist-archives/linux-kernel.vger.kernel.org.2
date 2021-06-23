@@ -2,110 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1D73B148C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1900B3B1490
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbhFWH1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 03:27:36 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8435 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFWH1b (ORCPT
+        id S230010AbhFWH3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 03:29:01 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21399 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFWH27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 03:27:31 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G8vpp6VhnzZky5;
-        Wed, 23 Jun 2021 15:22:10 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 23 Jun 2021 15:25:11 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 23 Jun 2021 15:25:10 +0800
-Subject: Re: [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide ZONE_DMA
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <akpm@linux-foundation.org>, <guohanjun@huawei.com>,
-        <sudeep.holla@arm.com>, <song.bao.hua@hisilicon.com>,
-        <ardb@kernel.org>, <anshuman.khandual@arm.com>,
-        <stable@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Li Huafei <lihuafei1@huawei.com>
-References: <20210303073319.2215839-1-jingxiangfeng@huawei.com>
- <YEDkmj6cchMPAq2h@kroah.com>
- <9bc396116372de5b538d71d8f9ae9c3259f1002e.camel@suse.de>
- <YEDr/lYZHew88/Ip@kroah.com>
- <827b317d7f5da6e048806922098291faacdb19f9.camel@suse.de>
- <YETwL6QGWFyJTAzk@kroah.com> <604597E3.5000605@huawei.com>
- <YEX1OcbVNSqwwusF@kroah.com>
- <31cd8432-2466-555d-7617-ae48cbcd4244@huawei.com>
- <8b0a4f25-0803-9341-f3a4-277d16802295@huawei.com>
- <YNLe4CGtOgVvTOMN@kroah.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <e47df0fd-0ddd-408b-2972-1b6d0a786f00@huawei.com>
-Date:   Wed, 23 Jun 2021 15:25:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 23 Jun 2021 03:28:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1624433195; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=QjXi9Z744O4gVA2dBuKeemIS9umnEE/rKC2RPbp7t4usshO8nBKY1MIkT0TofK6/dbOrb++xRQghvWiW8iSH7aCOH3Eg2lqcrExGNb4nyMig1WqapEBsNLJvsjnRlGqzGrCJEl4mwDN0Bo+fWyrDgxQ7uD98bi03MhHP6cXZ7EA=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1624433195; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=gw/vXIkX0vz1a4zhZIygnhHXrFnG7MN5D4ERSVv0ZRU=; 
+        b=WwDF92utG6F7WAr3LPCAEBjZhqyz26gi7Ada3JSZZKAUlbhC0YAjArTD22v50mhWSd5FhAwXRFgcqjIzuF7gOK90e9z7Hqvjf4jgVdT6qDKHpZ8ZusiQQznCxcSto2cP2+moio8U0cEVgTUYcD/ReZH5wHMkcytzKjKx++FZ/qs=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1624433195;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To;
+        bh=gw/vXIkX0vz1a4zhZIygnhHXrFnG7MN5D4ERSVv0ZRU=;
+        b=Uy1yxaRMSrOj/+oFOcmxgL+3E/juQW3WfPGsLOGznVB7saneg0wrPedyFgwtx/Yc
+        b9cNz0SmxgitgcpBPIbeERZxNy9aIsbO8xVpkhQLOZPyUuFtC5vqJaVp0Mi3PKoGsPG
+        nEg1Fj9a98x3pNMpgrMxGAFrxroEjub1Efa7WWuU=
+Received: from anirudhrb.com (49.207.62.88 [49.207.62.88]) by mx.zohomail.com
+        with SMTPS id 1624433190736196.19138414928034; Wed, 23 Jun 2021 00:26:30 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 12:56:20 +0530
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+b2645b5bf1512b81fa22@syzkaller.appspotmail.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mail@anirudhrb.com
+Subject: Re: [PATCH] mac80211_hwsim: correctly handle zero length frames
+Message-ID: <YNLiHJuD3GuDgbKR@anirudhrb.com>
+References: <20210610161916.9307-1-mail@anirudhrb.com>
+ <a3589e399e179b389e90df36acb67ae1ec7dea97.camel@sipsolutions.net>
 MIME-Version: 1.0
-In-Reply-To: <YNLe4CGtOgVvTOMN@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a3589e399e179b389e90df36acb67ae1ec7dea97.camel@sipsolutions.net>
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/6/23 15:12, Greg KH wrote:
-> On Wed, Jun 23, 2021 at 02:59:59PM +0800, Kefeng Wang wrote:
->> Hi Greg,
->>
->> There are two more patches about the ZONE_DMA[32] changes,
+On Fri, Jun 18, 2021 at 11:36:16AM +0200, Johannes Berg wrote:
+> On Thu, 2021-06-10 at 21:49 +0530, Anirudh Rayabharam wrote:
+> > syzbot, using KMSAN, has reported an uninit-value access in
+> > hwsim_cloned_frame_received_nl(). This is happening because frame_data_len
+> > is 0. The code doesn't detect this case and blindly tries to read the
+> > frame's header.
+> > 
+> > Fix this by bailing out in case frame_data_len is 0.
 > 
-> What ZONE_DMA changes?
+> This really seems quite pointless - you should bail out if the frame is
+> too short for what we need to do, not just when it's 0.
 
-See the subject, [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide 
-ZONE_DMA, We asked the ARM64 ZONE_DMA change backport before, link[1]
-> 
->> especially the
->> second one, both them need be backported, thanks.
-> 
-> Backported to where?
+That makes sense. Do you happen to know what the min length of a valid
+frame is? There doesn't seem to be constant defined for that already.
 
-stable 5.10
+	- Anirudh
 
 > 
->> 791ab8b2e3db - arm64: Ignore any DMA offsets in the max_zone_phys()
->> calculation
->> 2687275a5843 - arm64: Force NO_BLOCK_MAPPINGS if crashkernel reservation is
->> required
-> 
-> Have you tried these patches?  Where do they need to be applied to?
-
-Yes, we tested it, without them, especially the second one, we will
-meet crash when using kexec boot, also there is discussion in [2]
-and [3] from Catalin.
-
-
-> 
-> confused,
-> 
-Sorry about this, should add more information, thanks.
-
-[1] 
-https://lore.kernel.org/linux-riscv/20210303073319.2215839-1-jingxiangfeng@huawei.com/
-[2] 
-https://lore.kernel.org/linux-devicetree/e60d643e-4879-3fc3-737d-2c145332a6d7@arm.com/
-[3] 
-https://lore.kernel.org/linux-arm-kernel/20201119175556.18681-1-catalin.marinas@arm.com/
-> greg k-h
-> .
+> johannes
 > 
