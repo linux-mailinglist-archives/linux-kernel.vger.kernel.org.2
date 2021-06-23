@@ -2,353 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C443B2381
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 029213B2387
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhFWWUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 18:20:32 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:32940 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhFWWUa (ORCPT
+        id S229952AbhFWWWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 18:22:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229818AbhFWWWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:20:30 -0400
-Received: from [10.0.0.178] (c-67-168-106-253.hsd1.wa.comcast.net [67.168.106.253])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5291820B7188;
-        Wed, 23 Jun 2021 15:18:12 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5291820B7188
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1624486692;
-        bh=QJRsqVQodqC2XLeNiwxcQB17F9aTuiBRP/T+vIefllI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=s8CQjC3mf4cteJ+bYbmXlp8NkRSiNRHs3L00eMp7DRlwSOSpOcguv+LtOsz2jvIOT
-         x0TVVde6JJ0hZuFH76f21bYZ8ev5V5JBiAuVQaaDB9mu/J0yogajjk1lSlPGOf13pj
-         A5fex4loPUoHY4U4V1ToiUz0dV2dNKM9CPzUIrDw=
-Subject: Re: [PATCH 00/19] Microsoft Hypervisor root partition ioctl interface
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org, mikelley@microsoft.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        wei.liu@kernel.org, ligrassi@microsoft.com, kys@microsoft.com,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-References: <1622241819-21155-1-git-send-email-nunodasneves@linux.microsoft.com>
- <87bl8eyszj.fsf@vitty.brq.redhat.com>
-From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Message-ID: <81498149-f47a-fb27-827d-a9510ffee373@linux.microsoft.com>
-Date:   Wed, 23 Jun 2021 15:18:11 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 23 Jun 2021 18:22:30 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CAFEC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:20:11 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id q190so9325316qkd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:20:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J0o69ZpxKlT1ALV6x4fn+6s1AcHCCKWZKDnuPxJmTV0=;
+        b=M32nuub7utJPjcnDhjTbeGhLaiYx37NognHb9zlFGO8qCxvDDxHTaeDCkfycW8V9jJ
+         l2LomWfxefoSUGDPirxMjo4GLgReQ2P2qYRSoj0lm1y5X1zu1ZesG703lbfwrtAcTVv9
+         cQ+dlMT0m3s2+Yg7gerWlJcWOAHGpKbzOjNgs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J0o69ZpxKlT1ALV6x4fn+6s1AcHCCKWZKDnuPxJmTV0=;
+        b=jIV2rxzgGlntyfa61pcsI6fnbeyQmyV2OGyjy0nTsJfgzvP8wE/mYU/HPwznNzqsxE
+         QuM3K5sS+9ODYbqCTPPNk1NvfO6+0L7fW1NRzXMaStkE6vPCAcIvBE3VxufF0ArMDCqG
+         dxgxeCg7QIU0JRM6KRC80yeC8rSqtjvwttkgeWslii57nFeLZjMzBZNF1Kzxye5L1Inq
+         5vkncboEKHIaoUzT9r6c34Y3qRWjyLYI4QCR5jcdvf6AyQdrQiTSCAuWhELYSQ8vJF57
+         YwQ6zL02se9oc0c8fDN4SsxGRr+9fU7P51j6+2EaTSxca19/yzPvpVoSqBs4XPBn0iR/
+         um3g==
+X-Gm-Message-State: AOAM531hAyyW/YYaWiEJgj55xgGS53FZEqe+TzAceSgyEJOqZyHfwe+k
+        7erax9mTQgMmzlu67dM5psU1H6cjUvmgFg==
+X-Google-Smtp-Source: ABdhPJwYk1QlBIaWGCNZyxpLo5SL7QISzhLbOYGM7jmi7Bk0TWG7ZHKnwl7mHFRYUcX4Vht7uGlTwg==
+X-Received: by 2002:a37:84c3:: with SMTP id g186mr2355565qkd.276.1624486809956;
+        Wed, 23 Jun 2021 15:20:09 -0700 (PDT)
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com. [209.85.222.173])
+        by smtp.gmail.com with ESMTPSA id l23sm912081qtp.28.2021.06.23.15.20.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 15:20:08 -0700 (PDT)
+Received: by mail-qk1-f173.google.com with SMTP id bm25so9485941qkb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:20:07 -0700 (PDT)
+X-Received: by 2002:a25:60c1:: with SMTP id u184mr393689ybb.343.1624486807505;
+ Wed, 23 Jun 2021 15:20:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87bl8eyszj.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210623032755.1170809-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20210623032755.1170809-1-bjorn.andersson@linaro.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 23 Jun 2021 15:19:55 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VbWu-zK=uuuYRBnddao4X5ELT29L=Dn_mBLG57kzuK4A@mail.gmail.com>
+Message-ID: <CAD=FV=VbWu-zK=uuuYRBnddao4X5ELT29L=Dn_mBLG57kzuK4A@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] pwm: Introduce single-PWM of_xlate function
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-pwm <linux-pwm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+On Tue, Jun 22, 2021 at 8:28 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> The existing pxa driver and the upcoming addition of PWM support in the
+> TI sn565dsi86 DSI/eDP bridge driver both has a single PWM channel and
+> thereby a need for a of_xlate function with the period as its single
+> argument.
+>
+> Introduce a common helper function in the core that can be used as
+> of_xlate by such drivers and migrate the pxa driver to use this.
+>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>
+> Changes since v3:
+> - None
+>
+> Changes since v2:
+> - None
+>
+>  drivers/pwm/core.c    | 26 ++++++++++++++++++++++++++
+>  drivers/pwm/pwm-pxa.c | 16 +---------------
+>  include/linux/pwm.h   |  2 ++
+>  3 files changed, 29 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
+> index a42999f877d2..5e9c876fccc4 100644
+> --- a/drivers/pwm/core.c
+> +++ b/drivers/pwm/core.c
+> @@ -152,6 +152,32 @@ of_pwm_xlate_with_flags(struct pwm_chip *pc, const struct of_phandle_args *args)
+>  }
+>  EXPORT_SYMBOL_GPL(of_pwm_xlate_with_flags);
+>
+> +struct pwm_device *
+> +of_pwm_single_xlate(struct pwm_chip *pc, const struct of_phandle_args *args)
+
+It's probably up to PWM folks, but to make it symmetric to
+of_pwm_xlate_with_flags() I probably would have named it with the
+"_with_flags" suffix.
 
 
-On 6/10/2021 2:22 AM, Vitaly Kuznetsov wrote:
-> Nuno Das Neves <nunodasneves@linux.microsoft.com> writes:
-> 
->> This patch series provides a userspace interface for creating and running guest
->> virtual machines while running on the Microsoft Hypervisor [0].
->>
->> Since managing guest machines can only be done when Linux is the root partition,
->> this series depends on Wei Liu's patch series merged in 5.12:
->> https://lore.kernel.org/linux-hyperv/20210203150435.27941-1-wei.liu@kernel.org/
->>
->> The first two patches provide some helpers for converting hypervisor status
->> codes to linux error codes, and printing hypervisor status codes to dmesg for
->> debugging.
->>
->> Hyper-V related headers asm-generic/hyperv-tlfs.h and x86/asm/hyperv-tlfs.h are
->> split into uapi and non-uapi. The uapi versions contain structures used in both
->> the ioctl interface and the kernel.
->>
->> The mshv API is introduced in drivers/hv/mshv_main.c. As each interface is
->> introduced, documentation is added in Documentation/virt/mshv/api.rst.
->> The API is file-desciptor based, like KVM. The entry point is /dev/mshv.
->>
->> /dev/mshv ioctls:
->> MSHV_CHECK_EXTENSION
->> MSHV_CREATE_PARTITION
->>
->> Partition (vm) ioctls:
->> MSHV_MAP_GUEST_MEMORY, MSHV_UNMAP_GUEST_MEMORY
->> MSHV_INSTALL_INTERCEPT
->> MSHV_ASSERT_INTERRUPT
->> MSHV_GET_PARTITION_PROPERTY, MSHV_SET_PARTITION_PROPERTY
->> MSHV_CREATE_VP
->>
->> Vp (vcpu) ioctls:
->> MSHV_GET_VP_REGISTERS, MSHV_SET_VP_REGISTERS
->> MSHV_RUN_VP
->> MSHV_GET_VP_STATE, MSHV_SET_VP_STATE
->> MSHV_TRANSLATE_GVA
->> mmap() (register page)
->>
->> [0] Hyper-V is more well-known, but it really refers to the whole stack
->>     including the hypervisor and other components that run in Windows kernel
->>     and userspace.
->>
->> Changes since RFC:
->> 1. Moved code from virt/mshv to drivers/hv
->> 2. Split hypercall helper functions and synic code to hv_call.c and hv_synic.c
->> 3. MSHV_REQUEST_VERSION ioctl replaced with MSHV_CHECK_EXTENSION
->> 3. Numerous suggestions, fixes, style changes, etc from Michael Kelley, Vitaly
->>    Kuznetsov, Wei Liu, and Vineeth Pillai
->> 4. Added patch to enable hypervisor enlightenments on partition creation
->> 5. Added Wei Liu's patch for GVA to GPA translation
->>
-> 
-> Thank you for addressing these!
-> 
-> One nitpick though: could you please run your next submission through
-> 'scripts/checkpatch.pl'? It reports a number of issues here, mostly
-> minor but still worth addressing, i.e.:
-> 
+> +{
+> +       struct pwm_device *pwm;
+> +
+> +       if (pc->of_pwm_n_cells < 1)
+> +               return ERR_PTR(-EINVAL);
+> +
+> +       /* validate that one cell is specified, optionally with flags */
+> +       if (args->args_count != 1 && args->args_count != 2)
+> +               return ERR_PTR(-EINVAL);
 
-Whoops! Yes, I will fix these. Thank you
+I don't know all the rules for attempted forward compatibility, but
+unless there's a strong reason I'd expect to match the rules for
+of_pwm_xlate_with_flags(). That function doesn't consider it to be an
+error if either "pc->of_pwm_n_cells" or "args->args_count" is bigger
+than you need. Unless there's a reason to be inconsistent, it seems
+like we should be consistent between the two functions. That would
+make the test:
 
-> $ scripts/checkpatch.pl *.patch
-> ...
-> ---------------------------------------------------------------
-> 0002-asm-generic-hyperv-convert-hyperv-statuses-to-string.patch
-> ---------------------------------------------------------------
-> ERROR: Macros with complex values should be enclosed in parentheses
-> #95: FILE: include/asm-generic/hyperv-tlfs.h:192:
-> +#define __HV_STATUS_DEF(OP) \
-> +	OP(HV_STATUS_SUCCESS,				0x0) \
-> ...
-> 
-> ERROR: Macros with complex values should be enclosed in parentheses
-> #119: FILE: include/asm-generic/hyperv-tlfs.h:216:
-> +#define __HV_MAKE_HV_STATUS_ENUM(NAME, VAL) NAME = (VAL),
-> 
-> ERROR: Macros with multiple statements should be enclosed in a do - while loop
-> #120: FILE: include/asm-generic/hyperv-tlfs.h:217:
-> +#define __HV_MAKE_HV_STATUS_CASE(NAME, VAL) case (NAME): return (#NAME);
-> 
-> WARNING: Macros with flow control statements should be avoided
-> #120: FILE: include/asm-generic/hyperv-tlfs.h:217:
-> +#define __HV_MAKE_HV_STATUS_CASE(NAME, VAL) case (NAME): return (#NAME);
-> 
-> WARNING: macros should not use a trailing semicolon
-> #120: FILE: include/asm-generic/hyperv-tlfs.h:217:
-> +#define __HV_MAKE_HV_STATUS_CASE(NAME, VAL) case (NAME): return (#NAME);
-> 
-> total: 3 errors, 2 warnings, 108 lines checked
-> 
-> NOTE: For some of the reported defects, checkpatch may be able to
->       mechanically convert to the typical style using --fix or --fix-inplace.
-> 
-> 0002-asm-generic-hyperv-convert-hyperv-statuses-to-string.patch has
-> style problems, please review.
-> ...
-> -------------------------------------------
-> 0004-drivers-hv-check-extension-ioctl.patch
-> -------------------------------------------
-> WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
-> #36: 
-> new file mode 100644
-> 
-> WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
-> #131: FILE: drivers/hv/mshv_main.c:52:
-> +	return -ENOTSUPP;
-> 
-> total: 0 errors, 2 warnings, 137 lines checked
-> 
-> ...
-> 
-> WARNING: Improper SPDX comment style for 'drivers/hv/hv_call.c', please use '//' instead
-> #94: FILE: drivers/hv/hv_call.c:1:
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> 
-> WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
-> #94: FILE: drivers/hv/hv_call.c:1:
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> 
-> ERROR: "(foo*)" should be "(foo *)"
-> #178: FILE: drivers/hv/hv_call.c:85:
-> +				*(u64*)&input);
-> 
-> ERROR: "(foo*)" should be "(foo *)"
-> #201: FILE: drivers/hv/hv_call.c:108:
-> +			*(u64*)&input);
-> 
-> ERROR: "(foo*)" should be "(foo *)"
-> #215: FILE: drivers/hv/hv_call.c:122:
-> +	status = hv_do_fast_hypercall8(HVCALL_DELETE_PARTITION, *(u64*)&input);
-> 
-> total: 3 errors, 3 warnings, 330 lines checked
-> 
-> ...
-> ------------------------------------------------
-> 0008-drivers-hv-map-and-unmap-guest-memory.patch
-> ------------------------------------------------
-> ERROR: code indent should use tabs where possible
-> #101: FILE: drivers/hv/hv_call.c:222:
-> +                                                    HV_MAP_GPA_DEPOSIT_PAGES);$
-> 
-> WARNING: please, no spaces at the start of a line
-> #101: FILE: drivers/hv/hv_call.c:222:
-> +                                                    HV_MAP_GPA_DEPOSIT_PAGES);$
-> 
-> ERROR: code indent should use tabs where possible
-> #469: FILE: include/asm-generic/hyperv-tlfs.h:895:
-> +        u32 padding;$
-> 
-> WARNING: please, no spaces at the start of a line
-> #469: FILE: include/asm-generic/hyperv-tlfs.h:895:
-> +        u32 padding;$
-> 
-> ERROR: code indent should use tabs where possible
-> #477: FILE: include/asm-generic/hyperv-tlfs.h:903:
-> +        u32 padding;$
-> 
-> WARNING: please, no spaces at the start of a line
-> #477: FILE: include/asm-generic/hyperv-tlfs.h:903:
-> +        u32 padding;$
-> 
-> total: 3 errors, 3 warnings, 487 lines checked
-> 
-> NOTE: For some of the reported defects, checkpatch may be able to
->       mechanically convert to the typical style using --fix or --fix-inplace.
-> 
-> NOTE: Whitespace errors detected.
->       You may wish to use scripts/cleanpatch or scripts/cleanfile
-> 
-> 0008-drivers-hv-map-and-unmap-guest-memory.patch has style problems, please review.
-> ---------------------------------------
-> 0009-drivers-hv-create-vcpu-ioctl.patch
-> ---------------------------------------
-> WARNING: Missing a blank line after declarations
-> #76: FILE: drivers/hv/mshv_main.c:75:
-> +	struct mshv_vp *vp = filp->private_data;
-> +	mshv_partition_put(vp->partition);
-> 
-> ERROR: trailing whitespace
-> #180: FILE: drivers/hv/mshv_main.c:376:
-> +^I$
-> 
-> total: 1 errors, 1 warnings, 210 lines checked
-> 
-> NOTE: For some of the reported defects, checkpatch may be able to
->       mechanically convert to the typical style using --fix or --fix-inplace.
-> 
-> NOTE: Whitespace errors detected.
->       You may wish to use scripts/cleanpatch or scripts/cleanfile
-> 
-> 0009-drivers-hv-create-vcpu-ioctl.patch has style problems, please review.
-> -------------------------------------------------------
-> 0010-drivers-hv-get-and-set-vcpu-registers-ioctls.patch
-> -------------------------------------------------------
-> WARNING: braces {} are not necessary for single statement blocks
-> #690: FILE: drivers/hv/hv_call.c:326:
-> +		for (i = 0; i < rep_count; ++i) {
-> +			input_page->names[i] = registers[i].name;
-> +		}
-> 
-> WARNING: braces {} are not necessary for single statement blocks
-> #704: FILE: drivers/hv/hv_call.c:340:
-> +		for (i = 0; i < completed; ++i) {
-> +			registers[i].value = output_page[i];
-> +		}
-> 
-> WARNING: braces {} are not necessary for single statement blocks
-> #859: FILE: drivers/hv/mshv_main.c:121:
-> +	if (!registers) {
-> +		return -ENOMEM;
-> +	}
-> 
-> total: 0 errors, 3 warnings, 965 lines checked
-> 
-> NOTE: For some of the reported defects, checkpatch may be able to
->       mechanically convert to the typical style using --fix or --fix-inplace.
-> 
-> 0010-drivers-hv-get-and-set-vcpu-registers-ioctls.patch has style problems, please review.
-> ---------------------------------------------------------------
-> 0011-drivers-hv-set-up-synic-pages-for-intercept-messages.patch
-> ---------------------------------------------------------------
-> WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
-> #274: 
-> new file mode 100644
-> 
-> ERROR: code indent should use tabs where possible
-> #310: FILE: drivers/hv/hv_synic.c:32:
-> +                             MEMREMAP_WB);$
-> 
-> WARNING: please, no spaces at the start of a line
-> #310: FILE: drivers/hv/hv_synic.c:32:
-> +                             MEMREMAP_WB);$
-> 
-> total: 1 errors, 2 warnings, 574 lines checked
-> 
-> NOTE: For some of the reported defects, checkpatch may be able to
->       mechanically convert to the typical style using --fix or --fix-inplace.
-> 
-> NOTE: Whitespace errors detected.
->       You may wish to use scripts/cleanpatch or scripts/cleanfile
-> 
-> 0011-drivers-hv-set-up-synic-pages-for-intercept-messages.patch has style problems, please review.
-> ------------------------------------------
-> 0012-drivers-hv-run-vp-ioctl-and-isr.patch
-> ------------------------------------------
-> WARNING: EXPORT_SYMBOL(foo); should immediately follow its function/variable
-> #86: FILE: arch/x86/kernel/cpu/mshyperv.c:77:
-> +EXPORT_SYMBOL_GPL(hv_remove_mshv_irq);
-> 
-> WARNING: consider using a completion
-> #410: FILE: drivers/hv/mshv_main.c:344:
-> +	sema_init(&vp->run.sem, 0);
-> 
-> total: 0 errors, 2 warnings, 435 lines checked
-> 
-> NOTE: For some of the reported defects, checkpatch may be able to
->       mechanically convert to the typical style using --fix or --fix-inplace.
-> 
-> 0012-drivers-hv-run-vp-ioctl-and-isr.patch has style problems, please review.
-> ---------------------------------------------
-> ...
-> -------------------------------------------
-> 0016-drivers-hv-mmap-vp-register-page.patch
-> -------------------------------------------
-> WARNING: Missing a blank line after declarations
-> #222: FILE: drivers/hv/mshv_main.c:441:
-> +	struct mshv_vp *vp = vmf->vma->vm_file->private_data;
-> +	vmf->page = vp->register_page;
-> 
-> total: 0 errors, 1 warnings, 257 lines checked
-> 
-> NOTE: For some of the reported defects, checkpatch may be able to
->       mechanically convert to the typical style using --fix or --fix-inplace.
-> 
-> 0016-drivers-hv-mmap-vp-register-page.patch has style problems, please review.
-> -----------------------------------------------------------
-> 0017-drivers-hv-get-and-set-partition-property-ioctls.patch
-> -----------------------------------------------------------
-> ERROR: code indent should use tabs where possible
-> #205: FILE: include/asm-generic/hyperv-tlfs.h:890:
-> +        u32 padding;$
-> 
-> WARNING: please, no spaces at the start of a line
-> #205: FILE: include/asm-generic/hyperv-tlfs.h:890:
-> +        u32 padding;$
-> 
-> ERROR: code indent should use tabs where possible
-> #215: FILE: include/asm-generic/hyperv-tlfs.h:900:
-> +        u32 padding;$
-> 
-> WARNING: please, no spaces at the start of a line
-> #215: FILE: include/asm-generic/hyperv-tlfs.h:900:
-> +        u32 padding;$
-> 
-> total: 2 errors, 2 warnings, 258 lines checked
-> 
-> NOTE: For some of the reported defects, checkpatch may be able to
->       mechanically convert to the typical style using --fix or --fix-inplace.
-> 
-> NOTE: Whitespace errors detected.
->       You may wish to use scripts/cleanpatch or scripts/cleanfile
-> 
-> 
+if (args->args_count < 1)
+  return ERR_PTR(-EINVAL);
+
+
+> +
+> +       pwm = pwm_request_from_chip(pc, 0, NULL);
+> +       if (IS_ERR(pwm))
+> +               return pwm;
+> +
+> +       pwm->args.period = args->args[0];
+> +       pwm->args.polarity = PWM_POLARITY_NORMAL;
+> +
+> +       if (args->args_count == 2 && args->args[2] & PWM_POLARITY_INVERTED)
+
+Similar to above, should this be ">= 2" rather than "== 2" ?
+
+I also notice that in commit cf38c978cf1d ("pwm: Make
+of_pwm_xlate_with_flags() work with #pwm-cells = <2>") Uwe added a
+check for "pc->of_pwm_n_cells" in of_pwm_xlate_with_flags() right
+around here. You're not checking it in your function.
+
+I _think_ your code is fine because I can't see how "args->args_count"
+could ever be greater than "pc->of_pwm_n_cells" but maybe I'm not
+seeing something. Assuming your code is correct then maybe the right
+thing to do is to remove the extra check from
+of_pwm_xlate_with_flags() to make the two functions more similar.
+
+
+-Doug
