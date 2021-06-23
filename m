@@ -2,90 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC7F3B18C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 13:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC083B18C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 13:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhFWLWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 07:22:01 -0400
-Received: from srv6.fidu.org ([159.69.62.71]:44612 "EHLO srv6.fidu.org"
+        id S230170AbhFWLYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 07:24:40 -0400
+Received: from mga02.intel.com ([134.134.136.20]:18786 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230061AbhFWLWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 07:22:00 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id B2A3DC800A7;
-        Wed, 23 Jun 2021 13:19:41 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id VnxvvrRkcqOg; Wed, 23 Jun 2021 13:19:41 +0200 (CEST)
-Received: from [IPv6:2003:e3:7f39:4900:3156:839d:aed8:6ea6] (p200300e37f3949003156839daED86Ea6.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:4900:3156:839d:aed8:6ea6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPSA id 3B189C8009D;
-        Wed, 23 Jun 2021 13:19:41 +0200 (CEST)
-Subject: Re: [PATCH v4 09/17] drm/uAPI: Add "active color range" drm property
- as feedback for userspace
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-Cc:     sunpeng.li@amd.com, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        airlied@linux.ie, amd-gfx@lists.freedesktop.org,
-        tzimmermann@suse.de, rodrigo.vivi@intel.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com
-References: <20210618091116.14428-1-wse@tuxedocomputers.com>
- <20210618091116.14428-10-wse@tuxedocomputers.com>
- <20210622100042.4041624a@eldfell>
- <56d079d4-841a-0ca5-b8a6-d2c10f91d211@tuxedocomputers.com>
- <k_QeCRpur3SNNIspBiTHOTT6Oj1pSteEO3MzyQFUG0lSXmEqJUI2tMXJ6wR9chzUHGahdQApJZrUxdJvIv6s8aXr2DBdoHg-2PsGH4kEMyA=@emersion.fr>
- <20210623103256.01d680ba@eldfell>
- <5947f768-dd87-6b39-ecfc-b7c4aaa88aca@tuxedocomputers.com>
- <20210623141423.3f6c3e9f@eldfell>
-From:   Werner Sembach <wse@tuxedocomputers.com>
-Message-ID: <fe83dcd2-889d-f9de-fc4e-b25b1887cb80@tuxedocomputers.com>
-Date:   Wed, 23 Jun 2021 13:19:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230031AbhFWLYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 07:24:38 -0400
+IronPort-SDR: Ehi0vicMpgr8kUgFHRXs0aTUF3LGPjMktqScy8s0SLemENdAMaI8eDuFDw4pNpCYiyF1JSjpxw
+ 49GCSLDQF1lQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="194381375"
+X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
+   d="scan'208";a="194381375"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 04:22:20 -0700
+IronPort-SDR: eJATB5d1HUnqRg/rroSNfziyy0B8FBGTmhBgWT5+sx7YHgRIRiPaFPXGLfd+9Sedoijfez6RFo
+ RJQ0cX64lOtw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
+   d="scan'208";a="481116388"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 23 Jun 2021 04:22:18 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lw0xW-0005u4-Aq; Wed, 23 Jun 2021 11:22:18 +0000
+Date:   Wed, 23 Jun 2021 19:21:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:for-next/Warray-bounds] BUILD SUCCESS
+ 645826289c29a33850a0b7537bc96956244d42c4
+Message-ID: <60d31948.uo8JXHzq/m+Dn3pW%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20210623141423.3f6c3e9f@eldfell>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 23.06.21 um 13:14 schrieb Pekka Paalanen:
-> On Wed, 23 Jun 2021 12:17:40 +0200
-> Werner Sembach <wse@tuxedocomputers.com> wrote:
->
->> Am 23.06.21 um 09:32 schrieb Pekka Paalanen:
->>> On Tue, 22 Jun 2021 11:48:52 +0000
->>> Simon Ser <contact@emersion.fr> wrote:
->>>  
->>>> On Tuesday, June 22nd, 2021 at 11:50, Werner Sembach <wse@tuxedocomputers.com> wrote:
->>>>  
->>>>> Unknown is when no monitor is connected or is when the
->>>>> connector/monitor is disabled.    
->>>> I think the other connector props (link-status, non-desktop, etc) don't
->>>> have a special "unset" value, and instead the value is set to a random
->>>> enum entry. User-space should ignore the prop on these disconnected
->>>> connectors anyways.  
->>> That sounds fine to me.  
->> Currently the only case for "not applicable" is when the monitor is
->> disconnected, but sicne the properties are so interdependent, there
->> might be a case in the future where e.g. a color format that has no
->> differentiation between full and limited arises. When there is no
->> special unset/not applicable option, the userspace has to know
->> exactly when an option is valid or not, possible requiring additional
->> logic.
->>
->> Setting a "not applicable" value allows userspace to be more dumb,
->> without much hassle on the kernelspace side.
-> That's a good point too. So "not applicable" would be a value, but
-> "unknown" would not be.
-Ok, I have already renamed the "unknown" option to "not applicable" in my next revision (not yet posted to the mailing
-list).
->
->
-> Thanks,
-> pq
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/Warray-bounds
+branch HEAD: 645826289c29a33850a0b7537bc96956244d42c4  Makefile: Enable -Warray-bounds
+
+elapsed time: 744m
+
+configs tested: 144
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                           h3600_defconfig
+powerpc                    klondike_defconfig
+arm                       imx_v6_v7_defconfig
+powerpc                      arches_defconfig
+arm                             rpc_defconfig
+arm                            lart_defconfig
+powerpc                        fsp2_defconfig
+sparc64                             defconfig
+mips                         mpc30x_defconfig
+arm                        multi_v7_defconfig
+powerpc                 mpc8315_rdb_defconfig
+nds32                            alldefconfig
+powerpc                       maple_defconfig
+arm                           corgi_defconfig
+arc                    vdk_hs38_smp_defconfig
+mips                   sb1250_swarm_defconfig
+powerpc                    sam440ep_defconfig
+sh                           se7705_defconfig
+powerpc               mpc834x_itxgp_defconfig
+mips                          malta_defconfig
+xtensa                           alldefconfig
+powerpc                      makalu_defconfig
+h8300                     edosk2674_defconfig
+sh                           se7724_defconfig
+arc                           tb10x_defconfig
+powerpc                  mpc866_ads_defconfig
+mips                     cu1830-neo_defconfig
+i386                                defconfig
+powerpc                      acadia_defconfig
+arc                     nsimosci_hs_defconfig
+mips                           ip28_defconfig
+arm                     eseries_pxa_defconfig
+powerpc                     ep8248e_defconfig
+sh                   rts7751r2dplus_defconfig
+arm                    vt8500_v6_v7_defconfig
+arm                         axm55xx_defconfig
+arm                         lpc18xx_defconfig
+powerpc                     tqm8560_defconfig
+openrisc                 simple_smp_defconfig
+sh                                  defconfig
+arm                        mvebu_v5_defconfig
+sh                   sh7770_generic_defconfig
+powerpc                     kmeter1_defconfig
+microblaze                          defconfig
+arm                         orion5x_defconfig
+arm                        shmobile_defconfig
+powerpc                     tqm5200_defconfig
+sh                            titan_defconfig
+mips                            gpr_defconfig
+h8300                               defconfig
+mips                         bigsur_defconfig
+powerpc                      katmai_defconfig
+mips                        nlm_xlr_defconfig
+powerpc                     ppa8548_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20210623
+x86_64               randconfig-a001-20210623
+x86_64               randconfig-a005-20210623
+x86_64               randconfig-a003-20210623
+x86_64               randconfig-a004-20210623
+x86_64               randconfig-a006-20210623
+i386                 randconfig-a001-20210622
+i386                 randconfig-a002-20210622
+i386                 randconfig-a003-20210622
+i386                 randconfig-a006-20210622
+i386                 randconfig-a005-20210622
+i386                 randconfig-a004-20210622
+x86_64               randconfig-a012-20210622
+x86_64               randconfig-a016-20210622
+x86_64               randconfig-a015-20210622
+x86_64               randconfig-a014-20210622
+x86_64               randconfig-a013-20210622
+x86_64               randconfig-a011-20210622
+i386                 randconfig-a011-20210623
+i386                 randconfig-a014-20210623
+i386                 randconfig-a013-20210623
+i386                 randconfig-a015-20210623
+i386                 randconfig-a012-20210623
+i386                 randconfig-a016-20210623
+i386                 randconfig-a011-20210622
+i386                 randconfig-a014-20210622
+i386                 randconfig-a013-20210622
+i386                 randconfig-a015-20210622
+i386                 randconfig-a012-20210622
+i386                 randconfig-a016-20210622
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210622
+x86_64               randconfig-a002-20210622
+x86_64               randconfig-a001-20210622
+x86_64               randconfig-a005-20210622
+x86_64               randconfig-a003-20210622
+x86_64               randconfig-a004-20210622
+x86_64               randconfig-a006-20210622
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
