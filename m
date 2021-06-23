@@ -2,89 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30323B21C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3543E3B21C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbhFWU1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 16:27:50 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:36406 "EHLO
+        id S229926AbhFWU2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 16:28:49 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:36502 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhFWU1s (ORCPT
+        with ESMTP id S229688AbhFWU2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 16:27:48 -0400
+        Wed, 23 Jun 2021 16:28:48 -0400
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id EABFD1C0B76; Wed, 23 Jun 2021 22:25:29 +0200 (CEST)
-Date:   Wed, 23 Jun 2021 22:25:29 +0200
+        id 284031C0B76; Wed, 23 Jun 2021 22:26:29 +0200 (CEST)
+Date:   Wed, 23 Jun 2021 22:26:28 +0200
 From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH 4.19 425/425] scripts: switch explicitly to Python 3
-Message-ID: <20210623202529.GG8540@amd>
-References: <20210520092131.308959589@linuxfoundation.org>
- <20210520092145.369052506@linuxfoundation.org>
- <20210520203625.GA6187@amd>
- <YKc4wSgWcnGh3Bbq@kroah.com>
- <YKc47AGJRaBn3qIQ@kroah.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     j.anaszewski@samsung.com, sw0312.kim@samsung.com,
+        ingi2.kim@samsung.com, varkabhadram@gmail.com, cooloney@gmail.com,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] leds: ktd2692: Fix an error handling path
+Message-ID: <20210623202628.GH8540@amd>
+References: <4057d4cb2d47f893039de85e595682d17f4814a4.1621595943.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="0qt3EE9wi45a2ZFX"
+        protocol="application/pgp-signature"; boundary="2oox5VnwalALFvA7"
 Content-Disposition: inline
-In-Reply-To: <YKc47AGJRaBn3qIQ@kroah.com>
+In-Reply-To: <4057d4cb2d47f893039de85e595682d17f4814a4.1621595943.git.christophe.jaillet@wanadoo.fr>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---0qt3EE9wi45a2ZFX
+--2oox5VnwalALFvA7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri 2021-05-21 06:37:00, Greg Kroah-Hartman wrote:
-> On Fri, May 21, 2021 at 06:36:18AM +0200, Greg Kroah-Hartman wrote:
-> > On Thu, May 20, 2021 at 10:36:26PM +0200, Pavel Machek wrote:
-> > > Hi!
-> > >=20
-> > > > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > >=20
-> > > > commit 51839e29cb5954470ea4db7236ef8c3d77a6e0bb upstream.
-> > > >=20
-> > > > Some distributions are about to switch to Python 3 support only.
-> > > > This means that /usr/bin/python, which is Python 2, is not available
-> > > > anymore. Hence, switch scripts to use Python 3 explicitly.
-> > >=20
-> > > I'd say this is unsuitable for -stable.
-> > >=20
-> > > Old distributions may not have python3 installed, and we should not
-> > > change this dependency in the middle of the series.
-> >=20
-> > What distro that was released in 2017 (the year 4.14.0 was released) did
-> > not have python3 on it?
+On Fri 2021-05-21 13:21:01, Christophe JAILLET wrote:
+> In 'ktd2692_parse_dt()', if an error occurs after a successful
+> 'regulator_enable()' call, we should call 'regulator_enable()'.
 >=20
-> oops, I meant 2018, when 4.19.0 was out, wrong tree...
+> This is the same in 'ktd2692_probe()', if an error occurs after a
+> successful 'ktd2692_parse_dt()' call.
+>=20
+> Instead of adding 'regulator_enable()' in several places, implement a
+> resource managed solution and simplify the remove function accordingly.
+>=20
+> Fixes: b7da8c5c725c ("leds: Add ktd2692 flash LED driver")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-In anything yocto-based, for example, you explicitely select which
-packages you want. And changing dependencies in middle of stable
-release is surprising and against our documentation.
-
-Best regards,
-							Pavel
+Thanks, applied.
+								Pavel
+							=09
 --=20
 http://www.livejournal.com/~pavelmachek
 
---0qt3EE9wi45a2ZFX
+--2oox5VnwalALFvA7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iEYEARECAAYFAmDTmLkACgkQMOfwapXb+vJVbACeMwxIVQcVq+g77yLg9aJHEuww
-zScAn3YOTP94NukwBlTBhC5eVZfLvu0F
-=epBE
+iEYEARECAAYFAmDTmPQACgkQMOfwapXb+vLEoQCeLTA+wEeQ7e7kvDDNwzWp8Rnd
+y28An07W7Dm/9ehKFMVeAI1XtUzAODL/
+=266f
 -----END PGP SIGNATURE-----
 
---0qt3EE9wi45a2ZFX--
+--2oox5VnwalALFvA7--
