@@ -2,90 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A1C3B1A63
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C3B3B1A51
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbhFWMm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:42:56 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:55039 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231157AbhFWMmb (ORCPT
+        id S230182AbhFWMld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230019AbhFWMlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:42:31 -0400
-X-UUID: 97f8fcefaad8497fb4513dbc8a51f1cc-20210623
-X-UUID: 97f8fcefaad8497fb4513dbc8a51f1cc-20210623
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <christine.zhu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 876596850; Wed, 23 Jun 2021 20:40:10 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 23 Jun 2021 20:40:03 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 23 Jun 2021 20:40:02 +0800
-From:   Christine Zhu <Christine.Zhu@mediatek.com>
-To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
-        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <seiya.wang@mediatek.com>,
-        Christine Zhu <Christine.Zhu@mediatek.com>
-Subject: [v4,3/3] watchdog: mediatek: mt8195: add wdt support
-Date:   Wed, 23 Jun 2021 20:38:54 +0800
-Message-ID: <20210623123854.21941-4-Christine.Zhu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210623123854.21941-1-Christine.Zhu@mediatek.com>
-References: <20210623123854.21941-1-Christine.Zhu@mediatek.com>
+        Wed, 23 Jun 2021 08:41:24 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F65FC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:39:04 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G92rN21WRz9sVm;
+        Wed, 23 Jun 2021 22:39:00 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1624451940;
+        bh=YcB/9YcVFOV23ikLx+fO1is/rA8AMgT7lbS0KblGDX8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=IhO3VnSPInKOmgJ6xl4x8k54oh3tBUpey7qr5Q7eNwHTBl2lb+wc84ShJMY/WAY/K
+         Mf3fEPIYKb3zE8VEsJfhtQmdlUee/tzIJiVDyLy0gmyLnGOgxAjH7vJhMCQ4uHZhWu
+         W81cskQH6XGtFSVcCh8SA0hJI2OKKbCFWvi3N8e7FnronJq9UGfYBDX1fkpahhoFHI
+         iqat3Wq9TfysA1b4mQxUtjoTNN9ibGFxM0WmPUg7GSJ42OlTfGqQVoQ/gCMvgUeyo8
+         rfO4bflS7/cXYJNR7I3dzzmod5PUit/W81ScqFEO6ZpPMf3yfDTVqkY9pc5IUZ6onN
+         pWR/q2zD7CEOw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Daniel Axtens <dja@axtens.net>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 2/3] powerpc: Define swapper_pg_dir[] in C
+In-Reply-To: <871r8siyqm.fsf@dja-thinkpad.axtens.net>
+References: <5838caffa269e0957c5a50cc85477876220298b0.1623063174.git.christophe.leroy@csgroup.eu>
+ <5e3f1b8a4695c33ccc80aa3870e016bef32b85e1.1623063174.git.christophe.leroy@csgroup.eu>
+ <871r8siyqm.fsf@dja-thinkpad.axtens.net>
+Date:   Wed, 23 Jun 2021 22:38:58 +1000
+Message-ID: <87czsc21st.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Christine Zhu" <Christine.Zhu@mediatek.com>
+Daniel Axtens <dja@axtens.net> writes:
+> Hi Christophe,
+>
+> This breaks booting a radix KVM guest with 4k pages for me:
+>
+> make pseries_le_defconfig
+> scripts/config -d CONFIG_PPC_64K_PAGES
+> scripts/config -e CONFIG_PPC_4K_PAGES
+> make vmlinux
+> sudo qemu-system-ppc64 -enable-kvm -M pseries -m 1G -nographic -vga none -smp 4 -cpu host -kernel vmlinux
+>
+> Boot hangs after printing 'Booting Linux via __start()' and qemu's 'info
+> registers' reports that it's stuck at the instruction fetch exception.
+>
+> My host is Power9, 64k page size radix, and
+> gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34
+>
 
-Support MT8195 watchdog device.
+...
+>> diff --git a/arch/powerpc/kernel/head_64.S b/arch/powerpc/kernel/head_64.S
+>> index 730838c7ca39..79f2d1e61abd 100644
+>> --- a/arch/powerpc/kernel/head_64.S
+>> +++ b/arch/powerpc/kernel/head_64.S
+>> @@ -997,18 +997,3 @@ start_here_common:
+>>  0:	trap
+>>  	EMIT_BUG_ENTRY 0b, __FILE__, __LINE__, 0
+>>  	.previous
+>> -
+>> -/*
+>> - * We put a few things here that have to be page-aligned.
+>> - * This stuff goes at the beginning of the bss, which is page-aligned.
+>> - */
+>> -	.section ".bss"
+>> -/*
+>> - * pgd dir should be aligned to PGD_TABLE_SIZE which is 64K.
+>> - * We will need to find a better way to fix this
+>> - */
+>> -	.align	16
+>> -
+>> -	.globl	swapper_pg_dir
+>> -swapper_pg_dir:
+>> -	.space	PGD_TABLE_SIZE
 
-Signed-off-by: christine.zhu <Christine.Zhu@mediatek.com>
----
- drivers/watchdog/mtk_wdt.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+This is now 4K aligned whereas it used to be 64K.
 
-diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
-index 97ca993bd009..8231cb9cf5f9 100644
---- a/drivers/watchdog/mtk_wdt.c
-+++ b/drivers/watchdog/mtk_wdt.c
-@@ -12,6 +12,7 @@
- #include <dt-bindings/reset-controller/mt2712-resets.h>
- #include <dt-bindings/reset-controller/mt8183-resets.h>
- #include <dt-bindings/reset-controller/mt8192-resets.h>
-+#include <dt-bindings/reset-controller/mt8195-resets.h>
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/init.h>
-@@ -81,6 +82,10 @@ static const struct mtk_wdt_data mt8192_data = {
- 	.toprgu_sw_rst_num = MT8192_TOPRGU_SW_RST_NUM,
- };
+This fixes it and is not completely ugly?
+
+diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
+index 1707ab580ee2..298469beaa90 100644
+--- a/arch/powerpc/mm/pgtable.c
++++ b/arch/powerpc/mm/pgtable.c
+@@ -28,7 +28,13 @@
+ #include <asm/hugetlb.h>
+ #include <asm/pte-walk.h>
  
-+static const struct mtk_wdt_data mt8195_data = {
-+	.toprgu_sw_rst_num = MT8195_TOPRGU_SW_RST_NUM,
-+};
+-pgd_t swapper_pg_dir[MAX_PTRS_PER_PGD] __page_aligned_bss;
++#ifdef CONFIG_PPC64
++#define PGD_ALIGN 0x10000
++#else
++#define PGD_ALIGN PAGE_SIZE
++#endif
 +
- static int toprgu_reset_update(struct reset_controller_dev *rcdev,
- 			       unsigned long id, bool assert)
++pgd_t swapper_pg_dir[MAX_PTRS_PER_PGD] __section(".bss..page_aligned") __aligned(PGD_ALIGN);
+ 
+ static inline int is_exec_fault(void)
  {
-@@ -341,6 +346,7 @@ static const struct of_device_id mtk_wdt_dt_ids[] = {
- 	{ .compatible = "mediatek,mt6589-wdt" },
- 	{ .compatible = "mediatek,mt8183-wdt", .data = &mt8183_data },
- 	{ .compatible = "mediatek,mt8192-wdt", .data = &mt8192_data },
-+	{ .compatible = "mediatek,mt8195-wdt", .data = &mt8195_data },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, mtk_wdt_dt_ids);
--- 
-2.18.0
 
+
+cheers
