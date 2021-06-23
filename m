@@ -2,151 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565313B1D9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41C83B1DA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbhFWP3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 11:29:00 -0400
-Received: from phobos.denx.de ([85.214.62.61]:59696 "EHLO phobos.denx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229523AbhFWP26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 11:28:58 -0400
-Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 19E73829C0;
-        Wed, 23 Jun 2021 17:26:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1624461999;
-        bh=Ad2oj8LJDEBPkhxuWus0G9Bt9hK4DhlS4HyiBHvg654=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=THPRWo3k8bKRfB4xqXY9JMDadNC9d3MeboCf46nDaINIBpVSwR9X0esnlT9f2MQXU
-         w4CCjBZHmpTy8xG7I2UgQmXIdnHWxisNo3HbnNbzocjoKbePQcUBLEqMXNfvTSyguk
-         cafrxJ4kglV1maWFtW8N8l1ACSGmia0iXdRq70Rxr2tVZiCGUIQuOoUlNhNR38eM7m
-         mt0CrECiB7qbrVXT9LplsnacExG0gd4BIAGoKp3CypZ0hC6M+FmmlcwIo0EdQsKOfd
-         cTEtcYWP2H+UwFvrW/yuUmr1SH1wukAQlvL4G7Hy0iLG/MhvyJRhqzLXgAut+iO9hD
-         gM9CGgB0b67AQ==
-Date:   Wed, 23 Jun 2021 17:26:31 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Einon <mark.einon@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 1/3] ARM: dts: imx28: Add description for L2 switch on XEA
- board
-Message-ID: <20210623172631.0b547fcd@ktm>
-In-Reply-To: <YNM0Wz1wb4dnCg5/@lunn.ch>
-References: <20210622144111.19647-1-lukma@denx.de>
-        <20210622144111.19647-2-lukma@denx.de>
-        <YNH3mb9fyBjLf0fj@lunn.ch>
-        <20210622225134.4811b88f@ktm>
-        <YNM0Wz1wb4dnCg5/@lunn.ch>
-Organization: denx.de
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S231364AbhFWPbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 11:31:41 -0400
+Received: from gardel.0pointer.net ([85.214.157.71]:53826 "EHLO
+        gardel.0pointer.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhFWPbh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 11:31:37 -0400
+Received: from gardel-login.0pointer.net (gardel-mail [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
+        by gardel.0pointer.net (Postfix) with ESMTP id A6871E8094B;
+        Wed, 23 Jun 2021 17:29:17 +0200 (CEST)
+Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
+        id 5CE82160DC0; Wed, 23 Jun 2021 17:29:17 +0200 (CEST)
+Date:   Wed, 23 Jun 2021 17:29:17 +0200
+From:   Lennart Poettering <mzxreary@0pointer.de>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Luca Boccassi <bluca@debian.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tejun Heo <tj@kernel.org>,
+        Javier Gonz??lez <javier@javigon.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        JeffleXu <jefflexu@linux.alibaba.com>
+Subject: Re: [PATCH v3 6/6] loop: increment sequence number
+Message-ID: <YNNTTUYRlpXDqMgX@gardel-login>
+References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
+ <20210623105858.6978-7-mcroce@linux.microsoft.com>
+ <YNMhwLMr7DiNdqC/@infradead.org>
+ <bbd3d100ee997431b2905838575eb4bdec820ad3.camel@debian.org>
+ <YNNEdbr+0p+PzinQ@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/mnqD6czC/DR4qF_Yl8dNP/w"; protocol="application/pgp-signature"
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNNEdbr+0p+PzinQ@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mnqD6czC/DR4qF_Yl8dNP/w
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mi, 23.06.21 15:25, Christoph Hellwig (hch@infradead.org) wrote:
 
-Hi Andrew,
+> On Wed, Jun 23, 2021 at 02:13:25PM +0100, Luca Boccassi wrote:
+> > On Wed, 2021-06-23 at 12:57 +0100, Christoph Hellwig wrote:
+> > > On Wed, Jun 23, 2021 at 12:58:58PM +0200, Matteo Croce wrote:
+> > > > From: Matteo Croce <mcroce@microsoft.com>
+> > > >
+> > > > On a very loaded system, if there are many events queued up from multiple
+> > > > attach/detach cycles, it's impossible to match them up with the
+> > > > LOOP_CONFIGURE or LOOP_SET_FD call, since we don't know where the position
+> > > > of our own association in the queue is[1].
+> > > > Not even an empty uevent queue is a reliable indication that we already
+> > > > received the uevent we were waiting for, since with multi-partition block
+> > > > devices each partition's event is queued asynchronously and might be
+> > > > delivered later.
+> > > >
+> > > > Increment the disk sequence number when setting or changing the backing
+> > > > file, so the userspace knows which backing file generated the event:
+> > >
+> > > Instead of manually incrementing the sequence here, can we make loop
+> > > generate the DISK_EVENT_MEDIA_CHANGE event on a backing device (aka
+> > > media) change?
+> >
+> > Hi,
+> >
+> > This was answered in the v1 thread:
+> >
+> > https://lore.kernel.org/linux-fsdevel/20210315201331.GA2577561@casper.infradead.org/t/#m8a677028572e826352cbb1e19d1b9c1f3b6bff4b
+> >
+> > The fundamental issue is that we'd be back at trying to correlate
+> > events to loopdev instances, which does not work reliably - hence this
+> > patch series. With the new ioctl, we can get the id immediately and
+> > without delay when we create the device, with no possible races. Then
+> > we can handle events reliably, as we can correlate correctly in all
+> > cases.
+>
+> I very much disagree with your reply there.  The device now points to
+> a different media.  Both for the loop device, a floppy or a CD changer
+> probably by some kind of user action.  In the last cast it might even
+> by done entirely locally through a script just like the loop device.
 
-> On Tue, Jun 22, 2021 at 10:51:34PM +0200, Lukasz Majewski wrote:
-> > Hi Andrew,
-> >=20
-> > > On Tue, Jun 22, 2021 at 04:41:09PM +0200, Lukasz Majewski wrote:
-> > > > The 'eth_switch' node is now extendfed to enable support for L2
-> > > > switch.
-> > > >=20
-> > > > Moreover, the mac[01] nodes are defined as well and linked to
-> > > > the former with 'phy-handle' property. =20
-> > >=20
-> > > A phy-handle points to a phy, not a MAC! Don't abuse a well known
-> > > DT property like this.
-> >=20
-> > Ach.... You are right. I will change it.
-> >=20
-> > Probably 'ethernet' property or 'link' will fit better?
->=20
-> You should first work on the overall architecture. I suspect you will
-> end up with something more like the DSA binding, and not have the FEC
-> nodes at all. Maybe the MDIO busses will appear under the switch?
->=20
-> Please don't put minimal changes to the FEC driver has your first
-> goal. We want an architecture which is similar to other switchdev
-> drivers. Maybe look at drivers/net/ethernet/ti/cpsw_new.c.
+I am not sure I grok your point.
 
-I'm a bit confused - as I thought that with switchdev API I could just
-extend the current FEC driver to add bridge offload.
-This patch series shows that it is doable with little changes
-introduced.
+but let me try to explain why I think it's better to make media
+changes *also* trigger seqno changes, and not make media change events
+the *only* way to trigger seqno changes.
 
-However, now it looks like I would need to replace FEC driver and
-rewrite it in a way similar to cpsw_new.c, so the switchdev could be
-used for both cases - with and without L2 switch offload.
+1. First of all, loopback devices currently don't hook into the media
+   change logic (which so far is focussed on time-based polling
+   actually, for both CDs and floppies). Adding this would change
+   semantics visibly to userspace (since userspace would suddenly see
+   another action=change + DISK_MEDIA_CHANGE=1 uevent suddenly that it
+   needs to handle correctly). One can certainly argue that userspace
+   must be ready to get additional uevents like this any time, but
+   knowing userspace a bit I am pretty sure this will confuse some
+   userspace that doesn't expect this. I mean loopback block devices
+   already issue "change" uevents on attachment and detachment, one
+   that userpace typically expects, but adding the media change one
+   probably means sending two (?) of these out for each
+   attachment. One being the old one from the loopback device itself,
+   and then another one for the media change from the mdia change
+   logic. That's not just noisy, but also ugly.
 
-This would be probably conceptually correct, but i.MX FEC driver has
-several issues to tackle:
+2. We want seqnums to be allocated for devices not only when doing
+   media change (e.g. when attaching or detaching a loopback device)
+   but also when allocating a block device, so that even before the
+   first media change event a block device has a sequence number. This
+   means allocating a sequence number for block devices won't be
+   limited to the media change code anyway.
 
-- On some SoCs (vf610, imx287, etc.) the ENET-MAC ports don't have the
-  same capabilities (eth1 is a bit special)
+3. Doing the sequence number bumping in media change code exclusively
+   kinda suggests this was something we could properly abstract away,
+   to be done only there, and that the rest of the block subsystems
+   wouldn#t have to bother much. But I am pretty sure that's not
+   correct: in particular in the loopback block device code (but in
+   other block subsystems too I guess) we really want to be able to
+   atomically attach a loopback block device and return the seqnum of
+   that very attachmnt so that we can focus on uevents for it. Thus,
+   attachment, allocation and returning the seqnum to userspace in the
+   LOOP_CONFIGURE ioctl (or whatever is appropriate) kinda go hand in
+   hand.
 
-- Without switch we need to use DMA0 and DMA1 in the "bypass" switch
-  mode (default). When switch is enabled we only use DMA0. The former
-  case is best fitted with FEC driver instantiation. The latter with
-  DSA or switchdev.
+4. The media change protocol follows a protocol along with the eject
+   button handling (DISK_EVENT_EJECT_REQUEST), the locking of the tray
+   and the time based polling. i.e. it's specifically focussed on
+   certain hw features, none of which really apply to loopback block
+   devices, which have no trays to lock, but eject buttons to handle,
+   and where media change is always triggered internally by privileged
+   code, never externally by the user. I doubt it makes sense to mix
+   these up. Currently udev+udisks in userspace implement that
+   procotol for cdroms/floppies, and I doubt we would want to bother
+   to extend this for loopback devices in userspace. In fact, if media
+   change events are added to loopback devices, we probably would have
+   to change userspace to ignore them.
 
-> The cpsw
-> driver has an interesting past, it did things the wrong way for a long
-> time, but the new switchdev driver has an architecture similar to what
-> the FEC driver could be like.
->=20
-> 	Andrew
+TLDR: making loopback block devices generate media is a (probably
+minor, but unclear) API break, probably means duplicating uevent
+traffic for it, won't abstract things away anyway, won't allocate a
+seqnum on device allocation, and won't actually use anything of the
+real media change functionality.
 
-Maybe somebody from NXP can provide input to this discussion - for
-example to sched some light on FEC driver (near) future.
+Or to say this differently: if the goal is to make loopback block
+devices to send CDROM compatible media change events to userspace,
+then I think it would probably make more sense to attach the
+DISK_MEDIA_CHANGE=1 property to the attachment/detachment uevents the
+loopback devices *already* generate, rather than to try to shoehorn the
+existing media change infrastructure into the loopback device logic,
+trying to reuse it even though nothing of it is really needed.
 
+But that said, I am not aware of anyone ever asking for CDROM
+compatible EDISK_MEDIA_CHANGE=1 uevents for loopback devices. I really
+wouldn't bother with that. Sounds like nothing anyone want with a
+chance of breaking things everywhere. (i.e. remember the
+"bind"/"unbind" uevent fiasco?)
 
-Best regards,
-
-Lukasz Majewski
+Lennart
 
 --
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/mnqD6czC/DR4qF_Yl8dNP/w
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmDTUqcACgkQAR8vZIA0
-zr3LfQf/Zot+Z55/glX8vDDtSt6reS9ADWfJ9hMRqPqRB1iCGVQYMISBWCUlH2w+
-lurkNGjWqUq72LgyyJuBGgAvm1HDRegCcs0dxFi0b0NtMgfKo+WLc9OqisN0enzQ
-QydsMbXG2oB7nGN2PVqx+3TiYBr6wV4tUhS4RzLrtAkPaJOLYqQWEFdP8mnyKNQv
-pJeX2BWfkoJTHW2WJp2U+0TrWse7F2yXCaawKOlv0g/2HP3XWAl/htqAUuzQ4b/u
-c/0M1O6o936T4Ny7RTkRy9h+KVSSbOzLdwsITltSbQWcupZtTCF011RNmV6z6PeN
-LNVsEtp3m+d2z/g9DEu7w0s1hh00KQ==
-=Z0Zy
------END PGP SIGNATURE-----
-
---Sig_/mnqD6czC/DR4qF_Yl8dNP/w--
+Lennart Poettering, Berlin
