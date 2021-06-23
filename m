@@ -2,126 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08AC43B1393
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 07:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A033B1398
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 08:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbhFWGBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 02:01:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56786 "EHLO
+        id S229920AbhFWGD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 02:03:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbhFWGBM (ORCPT
+        with ESMTP id S229660AbhFWGD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 02:01:12 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC146C061574;
-        Tue, 22 Jun 2021 22:58:55 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8syh4JX2z9sVm;
-        Wed, 23 Jun 2021 15:58:52 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624427933;
-        bh=siE4tx1biqrCwjCyQ1Xcq/VGKY7KaoEOfWxTZZue4IQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=EJg/p2sbAiXpneiBgnYXlw1+Nk9H8OygSOYoC7YU84pZvVIfJ5uxFHaXwAoMvF9IY
-         aWvoWTx5pmrkhi+KfqllBBWwB4RO07OZP7KKGl7K/Il7lT35Qypep0l4F+9mjTzgju
-         JDTOKnE+SkLvCLutjCCjpcX3a0mg3dMd0EBzJ1XVkhqEZ+tQdwgYpK0IMCN9kFkRwy
-         9CAAcg2YKuS4MCCFi5E3IdOkVHsuEUcghXo9U5Bqo/gTQlXEkyoS/ciNd894J03O6x
-         Jnj06K4I8FsY6hrxlGe8bYjpHnOu1uHO89PkGEg1QSwZ8DrnnCS6Y6h0w/xKCWd/9h
-         Q2LTQXtlwhAng==
-Date:   Wed, 23 Jun 2021 15:58:51 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoffer Dall <cdall@cs.columbia.edu>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Steven Price <steven.price@arm.com>
-Subject: linux-next: manual merge of the kvm-arm tree with the arm64 tree
-Message-ID: <20210623155851.2db598e7@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4z.MafC/9hEqCSY8UburFXh";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Wed, 23 Jun 2021 02:03:56 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E398C061574;
+        Tue, 22 Jun 2021 23:01:39 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id p9so870637pgb.1;
+        Tue, 22 Jun 2021 23:01:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=AwCLE+DyMKTS3qPMS+p6QFW2jKEw+x46CBWvTw+EJO8=;
+        b=VwoZoB1EHoAWjgmG0/Vh1kvXEa6X0YD+nY+HpnUbDSCv6lTBgyaPMyHK9ymNiICFx0
+         Azaa8ehGnLH2wzU3fsMwihNL0t7/g1rT6wvLsBPlzQxrdwO6FSFKIXqjD39WrOyJG50j
+         vHGi2t67rBLDscne46nJ93fDAn4HAoT6RI2q0GpCtRFqavOP028KRZn63a1rGP4qeXPh
+         kqe68mJIzdS4mdyaF8J1o3yMoSN4Yj6aPtMtRhK1h1R8XMw7yGgbD5GQX8YH/1FNwtjB
+         bdtL6v/K2STwZ/m31+C/y+vUnn94euH/K8XRf/eWDQi7YSN0U3uj7JApOUk7qTwZTLqw
+         kL5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=AwCLE+DyMKTS3qPMS+p6QFW2jKEw+x46CBWvTw+EJO8=;
+        b=deKGbmmvgVcI8GaYoQMIUxEFJgkwG7TWZ38bW+6WHoXN3oh+da06+ONcsk9EEAeETy
+         Cgkdmc07iISH8sLU4ISBbVF2pmR6C35zShR1kAKOFNy5Pn4x+51IXVRdMN9wstueqiwF
+         MKD6f+BofC3ibanA84bkPa2Gk/owdiymr9hL0tM7Q0UwJbeJCPwWKwK6rkhOp6JsHmjF
+         HiL/lK22yQz4CrSZfCOrmVCUfUTGqXgnFAFoX1KuPzmUpKU+FGlo54eb7KbqsP/Rz2R3
+         dKanh/6EVfJx3V5tK5+1TeazK5fKS7CXTkLiJncA+/oi2mxALwYWE2JT1Ni4KngkmVJ9
+         AG1Q==
+X-Gm-Message-State: AOAM5322/df6ad+/lbmVkNmEacAAV5XrXGLCeiPtgpa6fDNrT2jWKFy8
+        bfy48N9qfFVRbYIVYcnVTg==
+X-Google-Smtp-Source: ABdhPJzAJ7zDoJEFIfgNCkpFLwdOzUMJS9XoDnsCwFenaYRY4r31qSvEX0bicvUdZnMSZutqa2lnFA==
+X-Received: by 2002:a63:5203:: with SMTP id g3mr2333215pgb.247.1624428098824;
+        Tue, 22 Jun 2021 23:01:38 -0700 (PDT)
+Received: from vultr.guest ([107.191.53.97])
+        by smtp.gmail.com with ESMTPSA id q4sm22332186pgg.0.2021.06.22.23.01.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 22 Jun 2021 23:01:38 -0700 (PDT)
+From:   Zheyu Ma <zheyuma97@gmail.com>
+To:     serjk@netup.ru, aospan@netup.ru, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zheyu Ma <zheyuma97@gmail.com>
+Subject: [PATCH] media: netup_unidvb: handle interrupt properly according to the firmware
+Date:   Wed, 23 Jun 2021 06:01:05 +0000
+Message-Id: <1624428065-21788-1-git-send-email-zheyuma97@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/4z.MafC/9hEqCSY8UburFXh
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The interrupt handling should be related to the firmware version. If
+the driver matches an old firmware, then the driver should not handle
+interrupt such as i2c or dma, otherwise it will cause some errors.
 
-Hi all,
+This log reveals it:
 
-Today's linux-next merge of the kvm-arm tree got a conflict in:
+[   27.708641] INFO: trying to register non-static key.
+[   27.710851] The code is fine but needs lockdep annotation, or maybe
+[   27.712010] you didn't initialize this object before use?
+[   27.712396] turning off the locking correctness validator.
+[   27.712787] CPU: 2 PID: 0 Comm: swapper/2 Not tainted 5.12.4-g70e7f0549188-dirty #169
+[   27.713349] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+[   27.714149] Call Trace:
+[   27.714329]  <IRQ>
+[   27.714480]  dump_stack+0xba/0xf5
+[   27.714737]  register_lock_class+0x873/0x8f0
+[   27.715052]  ? __lock_acquire+0x323/0x1930
+[   27.715353]  __lock_acquire+0x75/0x1930
+[   27.715636]  lock_acquire+0x1dd/0x3e0
+[   27.715905]  ? netup_i2c_interrupt+0x19/0x310
+[   27.716226]  _raw_spin_lock_irqsave+0x4b/0x60
+[   27.716544]  ? netup_i2c_interrupt+0x19/0x310
+[   27.716863]  netup_i2c_interrupt+0x19/0x310
+[   27.717178]  netup_unidvb_isr+0xd3/0x160
+[   27.717467]  __handle_irq_event_percpu+0x53/0x3e0
+[   27.717808]  handle_irq_event_percpu+0x35/0x90
+[   27.718129]  handle_irq_event+0x39/0x60
+[   27.718409]  handle_fasteoi_irq+0xc2/0x1d0
+[   27.718707]  __common_interrupt+0x7f/0x150
+[   27.719008]  common_interrupt+0xb4/0xd0
+[   27.719289]  </IRQ>
+[   27.719446]  asm_common_interrupt+0x1e/0x40
+[   27.719747] RIP: 0010:native_safe_halt+0x17/0x20
+[   27.720084] Code: 07 0f 00 2d 8b ee 4c 00 f4 5d c3 0f 1f 84 00 00 00 00 00 8b 05 72 95 17 02 55 48 89 e5 85 c0 7e 07 0f 00 2d 6b ee 4c 00 fb f4 <5d> c3 cc cc cc cc cc cc cc 55 48 89 e5 e8 67 53 ff ff 8b 0d 29 f6
+[   27.721386] RSP: 0018:ffffc9000008fe90 EFLAGS: 00000246
+[   27.721758] RAX: 0000000000000000 RBX: 0000000000000002 RCX: 0000000000000000
+[   27.722262] RDX: 0000000000000000 RSI: ffffffff85f7c054 RDI: ffffffff85ded4e6
+[   27.722770] RBP: ffffc9000008fe90 R08: 0000000000000001 R09: 0000000000000001
+[   27.723277] R10: 0000000000000000 R11: 0000000000000001 R12: ffffffff86a75408
+[   27.723781] R13: 0000000000000000 R14: 0000000000000000 R15: ffff888100260000
+[   27.724289]  default_idle+0x9/0x10
+[   27.724537]  arch_cpu_idle+0xa/0x10
+[   27.724791]  default_idle_call+0x6e/0x250
+[   27.725082]  do_idle+0x1f0/0x2d0
+[   27.725326]  cpu_startup_entry+0x18/0x20
+[   27.725613]  start_secondary+0x11f/0x160
+[   27.725902]  secondary_startup_64_no_verify+0xb0/0xbb
+[   27.726272] BUG: kernel NULL pointer dereference, address: 0000000000000002
+[   27.726768] #PF: supervisor read access in kernel mode
+[   27.727138] #PF: error_code(0x0000) - not-present page
+[   27.727507] PGD 8000000118688067 P4D 8000000118688067 PUD 10feab067 PMD 0
+[   27.727999] Oops: 0000 [#1] PREEMPT SMP PTI
+[   27.728302] CPU: 2 PID: 0 Comm: swapper/2 Not tainted 5.12.4-g70e7f0549188-dirty #169
+[   27.728861] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+[   27.729660] RIP: 0010:netup_i2c_interrupt+0x23/0x310
+[   27.730019] Code: 0f 1f 80 00 00 00 00 55 48 89 e5 41 55 41 54 53 48 89 fb e8 af 6e 95 fd 48 89 df e8 e7 9f 1c 01 49 89 c5 48 8b 83 48 08 00 00 <66> 44 8b 60 02 44 89 e0 48 8b 93 48 08 00 00 83 e0 f8 66 89 42 02
+[   27.731339] RSP: 0018:ffffc90000118e90 EFLAGS: 00010046
+[   27.731716] RAX: 0000000000000000 RBX: ffff88810803c4d8 RCX: 0000000000000000
+[   27.732223] RDX: 0000000000000001 RSI: ffffffff85d37b94 RDI: ffff88810803c4d8
+[   27.732727] RBP: ffffc90000118ea8 R08: 0000000000000000 R09: 0000000000000001
+[   27.733239] R10: ffff88810803c4f0 R11: 61646e6f63657320 R12: 0000000000000000
+[   27.733745] R13: 0000000000000046 R14: ffff888101041000 R15: ffff8881081b2400
+[   27.734251] FS:  0000000000000000(0000) GS:ffff88817bc80000(0000) knlGS:0000000000000000
+[   27.734821] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   27.735228] CR2: 0000000000000002 CR3: 0000000108194000 CR4: 00000000000006e0
+[   27.735735] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   27.736241] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   27.736744] Call Trace:
+[   27.736924]  <IRQ>
+[   27.737074]  netup_unidvb_isr+0xd3/0x160
+[   27.737363]  __handle_irq_event_percpu+0x53/0x3e0
+[   27.737706]  handle_irq_event_percpu+0x35/0x90
+[   27.738028]  handle_irq_event+0x39/0x60
+[   27.738306]  handle_fasteoi_irq+0xc2/0x1d0
+[   27.738602]  __common_interrupt+0x7f/0x150
+[   27.738899]  common_interrupt+0xb4/0xd0
+[   27.739176]  </IRQ>
+[   27.739331]  asm_common_interrupt+0x1e/0x40
+[   27.739633] RIP: 0010:native_safe_halt+0x17/0x20
+[   27.739967] Code: 07 0f 00 2d 8b ee 4c 00 f4 5d c3 0f 1f 84 00 00 00 00 00 8b 05 72 95 17 02 55 48 89 e5 85 c0 7e 07 0f 00 2d 6b ee 4c 00 fb f4 <5d> c3 cc cc cc cc cc cc cc 55 48 89 e5 e8 67 53 ff ff 8b 0d 29 f6
+[   27.741275] RSP: 0018:ffffc9000008fe90 EFLAGS: 00000246
+[   27.741647] RAX: 0000000000000000 RBX: 0000000000000002 RCX: 0000000000000000
+[   27.742148] RDX: 0000000000000000 RSI: ffffffff85f7c054 RDI: ffffffff85ded4e6
+[   27.742652] RBP: ffffc9000008fe90 R08: 0000000000000001 R09: 0000000000000001
+[   27.743154] R10: 0000000000000000 R11: 0000000000000001 R12: ffffffff86a75408
+[   27.743652] R13: 0000000000000000 R14: 0000000000000000 R15: ffff888100260000
+[   27.744157]  default_idle+0x9/0x10
+[   27.744405]  arch_cpu_idle+0xa/0x10
+[   27.744658]  default_idle_call+0x6e/0x250
+[   27.744948]  do_idle+0x1f0/0x2d0
+[   27.745190]  cpu_startup_entry+0x18/0x20
+[   27.745475]  start_secondary+0x11f/0x160
+[   27.745761]  secondary_startup_64_no_verify+0xb0/0xbb
+[   27.746123] Modules linked in:
+[   27.746348] Dumping ftrace buffer:
+[   27.746596]    (ftrace buffer empty)
+[   27.746852] CR2: 0000000000000002
+[   27.747094] ---[ end trace ebafd46f83ab946d ]---
+[   27.747424] RIP: 0010:netup_i2c_interrupt+0x23/0x310
+[   27.747778] Code: 0f 1f 80 00 00 00 00 55 48 89 e5 41 55 41 54 53 48 89 fb e8 af 6e 95 fd 48 89 df e8 e7 9f 1c 01 49 89 c5 48 8b 83 48 08 00 00 <66> 44 8b 60 02 44 89 e0 48 8b 93 48 08 00 00 83 e0 f8 66 89 42 02
+[   27.749082] RSP: 0018:ffffc90000118e90 EFLAGS: 00010046
+[   27.749461] RAX: 0000000000000000 RBX: ffff88810803c4d8 RCX: 0000000000000000
+[   27.749966] RDX: 0000000000000001 RSI: ffffffff85d37b94 RDI: ffff88810803c4d8
+[   27.750471] RBP: ffffc90000118ea8 R08: 0000000000000000 R09: 0000000000000001
+[   27.750976] R10: ffff88810803c4f0 R11: 61646e6f63657320 R12: 0000000000000000
+[   27.751480] R13: 0000000000000046 R14: ffff888101041000 R15: ffff8881081b2400
+[   27.751986] FS:  0000000000000000(0000) GS:ffff88817bc80000(0000) knlGS:0000000000000000
+[   27.752560] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   27.752970] CR2: 0000000000000002 CR3: 0000000108194000 CR4: 00000000000006e0
+[   27.753481] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   27.753984] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   27.754487] Kernel panic - not syncing: Fatal exception in interrupt
+[   27.755033] Dumping ftrace buffer:
+[   27.755279]    (ftrace buffer empty)
+[   27.755534] Kernel Offset: disabled
+[   27.755785] Rebooting in 1 seconds..
 
-  arch/arm64/include/asm/mte.h
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+---
+ .../pci/netup_unidvb/netup_unidvb_core.c      | 26 +++++++++++--------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
 
-between commit:
+diff --git a/drivers/media/pci/netup_unidvb/netup_unidvb_core.c b/drivers/media/pci/netup_unidvb/netup_unidvb_core.c
+index 6f3125c2d097..533ab29be06b 100644
+--- a/drivers/media/pci/netup_unidvb/netup_unidvb_core.c
++++ b/drivers/media/pci/netup_unidvb/netup_unidvb_core.c
+@@ -258,19 +258,23 @@ static irqreturn_t netup_unidvb_isr(int irq, void *dev_id)
+ 	if ((reg40 & AVL_IRQ_ASSERTED) != 0) {
+ 		/* IRQ is being signaled */
+ 		reg_isr = readw(ndev->bmmio0 + REG_ISR);
+-		if (reg_isr & NETUP_UNIDVB_IRQ_I2C0) {
+-			iret = netup_i2c_interrupt(&ndev->i2c[0]);
+-		} else if (reg_isr & NETUP_UNIDVB_IRQ_I2C1) {
+-			iret = netup_i2c_interrupt(&ndev->i2c[1]);
+-		} else if (reg_isr & NETUP_UNIDVB_IRQ_SPI) {
++		if (reg_isr & NETUP_UNIDVB_IRQ_SPI)
+ 			iret = netup_spi_interrupt(ndev->spi);
+-		} else if (reg_isr & NETUP_UNIDVB_IRQ_DMA1) {
+-			iret = netup_dma_interrupt(&ndev->dma[0]);
+-		} else if (reg_isr & NETUP_UNIDVB_IRQ_DMA2) {
+-			iret = netup_dma_interrupt(&ndev->dma[1]);
+-		} else if (reg_isr & NETUP_UNIDVB_IRQ_CI) {
+-			iret = netup_ci_interrupt(ndev);
++		else if (!ndev->old_fw) {
++			if (reg_isr & NETUP_UNIDVB_IRQ_I2C0) {
++				iret = netup_i2c_interrupt(&ndev->i2c[0]);
++			} else if (reg_isr & NETUP_UNIDVB_IRQ_I2C1) {
++				iret = netup_i2c_interrupt(&ndev->i2c[1]);
++			} else if (reg_isr & NETUP_UNIDVB_IRQ_DMA1) {
++				iret = netup_dma_interrupt(&ndev->dma[0]);
++			} else if (reg_isr & NETUP_UNIDVB_IRQ_DMA2) {
++				iret = netup_dma_interrupt(&ndev->dma[1]);
++			} else if (reg_isr & NETUP_UNIDVB_IRQ_CI) {
++				iret = netup_ci_interrupt(ndev);
++			} else
++				goto err;
+ 		} else {
++err:
+ 			dev_err(&pci_dev->dev,
+ 				"%s(): unknown interrupt 0x%x\n",
+ 				__func__, reg_isr);
+-- 
+2.17.6
 
-  013bb59dbb7c ("arm64: mte: handle tags zeroing at page allocation time")
-
-from the arm64 tree and commit:
-
-  69e3b846d8a7 ("arm64: mte: Sync tags for pages where PTE is untagged")
-
-from the kvm-arm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/arm64/include/asm/mte.h
-index 67bf259ae768,347ef38a35f7..000000000000
---- a/arch/arm64/include/asm/mte.h
-+++ b/arch/arm64/include/asm/mte.h
-@@@ -37,8 -37,7 +37,8 @@@ void mte_free_tag_storage(char *storage
-  /* track which pages have valid allocation tags */
-  #define PG_mte_tagged	PG_arch_2
- =20
- +void mte_zero_clear_page_tags(void *addr);
-- void mte_sync_tags(pte_t *ptep, pte_t pte);
-+ void mte_sync_tags(pte_t old_pte, pte_t pte);
-  void mte_copy_page_tags(void *kto, const void *kfrom);
-  void mte_thread_init_user(void);
-  void mte_thread_switch(struct task_struct *next);
-@@@ -54,10 -53,7 +54,10 @@@ int mte_ptrace_copy_tags(struct task_st
-  /* unused if !CONFIG_ARM64_MTE, silence the compiler */
-  #define PG_mte_tagged	0
- =20
- +static inline void mte_zero_clear_page_tags(void *addr)
- +{
- +}
-- static inline void mte_sync_tags(pte_t *ptep, pte_t pte)
-+ static inline void mte_sync_tags(pte_t old_pte, pte_t pte)
-  {
-  }
-  static inline void mte_copy_page_tags(void *kto, const void *kfrom)
-
---Sig_/4z.MafC/9hEqCSY8UburFXh
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDSzZsACgkQAVBC80lX
-0GyJCwf5ASRxr/1g6JvYVjY/sASFdo2hNDb8D3hZoqdd5zD02QNh8WbocIYMuST7
-3PfMwv/XWL8nW4j9fp926SWke7C/gkXTJb+067hNwI+6/mV95v5QMTzhKyzmaLYU
-p1Zqb7dZBJLpQ0mV/+Wzwn5si3ywfk7c0gAH6m8V2/uJxnnc/kh+rtj1nBkVGj0Z
-DP3Aflh7s7eU5UWPvjNK0VlQExUbMNoUPR9GRsEtPhS/9yKb4Oo7ngobk4sdRXUv
-LEoupHhulBIkEzYVDT4zZ+SGVBvR8pWQqwvLiYOOpVIIzouQ+/8Fjoq1Sb0YxhLU
-Ila0Emp+lelztfnmA8Vd207J6hPP/Q==
-=CJqE
------END PGP SIGNATURE-----
-
---Sig_/4z.MafC/9hEqCSY8UburFXh--
