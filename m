@@ -2,110 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B7E3B15B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182363B15BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbhFWIVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 04:21:55 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35172 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230339AbhFWIVj (ORCPT
+        id S230053AbhFWIXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 04:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229881AbhFWIXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 04:21:39 -0400
-Date:   Wed, 23 Jun 2021 08:19:20 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624436361;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tmf+B/ay9uQXnP5gmNJ4t/WgEwzskc41MT+UY+HvSJ0=;
-        b=blUjUCbrUZcoy5pJjB6WXxGtH/uFQDqjcsRnkw4UWTk/aHb6km9KtRo+SV9424mMn9OJZ5
-        dvTzFDyBLj7pmVsjMUjGxCVhui50COy40/CxataUZpnk7tE/xARpSWZuFFrWAMQhAvNzfJ
-        3bVY9piEdERAWqWB8w0iIX4YYSrOkSnwcnwVWO2ixldAvCYFs3/IwL4LBtRQ3zf7KVoZxM
-        tflqkiOxC6+u/5iyJjLXGJ20MjdpFj1OooLkEJSYDAjSAaiPLSJRilRzdsG2hWrDB/Z5i6
-        cOxes4dtqE0HAV+FNHCj9EZ70TOKhyTyQU1Ve4yrKYeJLXlb9KrJIGBusFmnAw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624436361;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tmf+B/ay9uQXnP5gmNJ4t/WgEwzskc41MT+UY+HvSJ0=;
-        b=yMMIueF/t02vwWSyud9ojBJL1Af5wdwWKBch9ydRTzRbLuPvol03u8UEo1NV+60iToSj4d
-        MkPxrHFbGfUjTUBA==
-From:   "tip-bot2 for Vincent Donnefort" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/rt: Fix Deadline utilization tracking during
- policy change
-Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <1624271872-211872-3-git-send-email-vincent.donnefort@arm.com>
-References: <1624271872-211872-3-git-send-email-vincent.donnefort@arm.com>
+        Wed, 23 Jun 2021 04:23:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5612C061574;
+        Wed, 23 Jun 2021 01:20:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Lupc2K9WWLP7yjyLXhXKGqDnyOWZO98xG9W27Gok5W4=; b=iHGbBdJKjLkIsMxIln1XNGJQ+g
+        lFAFu+9uJeDCHKOQQ4rhmm36ayxese6yudLpoT+qg84nTqLDKR43ZrghiKD/qWL8pdP1xVZ6a/dp2
+        pqdXSwRtazxnzBE9uw0y/wDMWdm+29stKzTeib78W9gqXPm+/LeW6pZF9iD8neIR/Jug8n0a0+O0a
+        b7vl5HTE5gLiU9r3R7aai0IIX+sJkFywq/fsaA58D5dg1HUwOIqxn/4SCxZmTCJ6gWcKJir6vVzSI
+        llkoH7ICcg+EPMlN5bGSuyQ/OLy7TmgfwCKQTGIEUtjIKEQ3NehCh3bcuI7rD8GqfslvmPeD9vpgb
+        LnAQGIfQ==;
+Received: from [2001:4bb8:188:3e21:6594:49:139:2b3f] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvy6T-00FCbA-S5; Wed, 23 Jun 2021 08:19:40 +0000
+Date:   Wed, 23 Jun 2021 10:19:20 +0200
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 16/46] mm/memcg: Add folio_migrate_cgroup()
+Message-ID: <YNLuiGp5onZV+WGL@infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-17-willy@infradead.org>
 MIME-Version: 1.0
-Message-ID: <162443636041.395.15592882101869070492.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622121551.3398730-17-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On Tue, Jun 22, 2021 at 01:15:21PM +0100, Matthew Wilcox (Oracle) wrote:
+> Convert all callers of mem_cgroup_migrate() to call folio_migrate_cgroup()
+> instead.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Commit-ID:     d7d607096ae6d378b4e92d49946d22739c047d4c
-Gitweb:        https://git.kernel.org/tip/d7d607096ae6d378b4e92d49946d22739c047d4c
-Author:        Vincent Donnefort <vincent.donnefort@arm.com>
-AuthorDate:    Mon, 21 Jun 2021 11:37:52 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 22 Jun 2021 16:41:59 +02:00
+Looks good,
 
-sched/rt: Fix Deadline utilization tracking during policy change
-
-DL keeps track of the utilization on a per-rq basis with the structure
-avg_dl. This utilization is updated during task_tick_dl(),
-put_prev_task_dl() and set_next_task_dl(). However, when the current
-running task changes its policy, set_next_task_dl() which would usually
-take care of updating the utilization when the rq starts running DL
-tasks, will not see a such change, leaving the avg_dl structure outdated.
-When that very same task will be dequeued later, put_prev_task_dl() will
-then update the utilization, based on a wrong last_update_time, leading to
-a huge spike in the DL utilization signal.
-
-The signal would eventually recover from this issue after few ms. Even
-if no DL tasks are run, avg_dl is also updated in
-__update_blocked_others(). But as the CPU capacity depends partly on the
-avg_dl, this issue has nonetheless a significant impact on the scheduler.
-
-Fix this issue by ensuring a load update when a running task changes
-its policy to DL.
-
-Fixes: 3727e0e ("sched/dl: Add dl_rq utilization tracking")
-Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lore.kernel.org/r/1624271872-211872-3-git-send-email-vincent.donnefort@arm.com
----
- kernel/sched/deadline.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 22878cd..aaacd6c 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -2497,6 +2497,8 @@ static void switched_to_dl(struct rq *rq, struct task_struct *p)
- 			check_preempt_curr_dl(rq, p, 0);
- 		else
- 			resched_curr(rq);
-+	} else {
-+		update_dl_rq_load_avg(rq_clock_pelt(rq), rq, 0);
- 	}
- }
- 
+Reviewed-by: Christoph Hellwig <hch@lst.de>
