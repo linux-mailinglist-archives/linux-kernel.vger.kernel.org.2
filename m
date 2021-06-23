@@ -2,121 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE253B1F99
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB723B1FA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhFWRhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 13:37:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32528 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229902AbhFWRg6 (ORCPT
+        id S229800AbhFWRjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 13:39:25 -0400
+Received: from mail-oo1-f43.google.com ([209.85.161.43]:42508 "EHLO
+        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhFWRjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 13:36:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624469680;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=82l7b5mph8aViFGBqr97Zc7YWOX6QRR3iD1HvNwnDpc=;
-        b=FU6Ke+A3RckDNMWtZ5ziAYqLVqbDVMV8NhQPeOmpGHhtXDOSLPCSXiuf7VByBjUBfDHFiM
-        Ncl8OGCohrHmDDtuxQS2cTIAjZ67ri3oGLvLTbTSd0Vd5chX2Bh+tW3B8DiKev5qIVKkL1
-        O+t+8LB5FBwAc4XIrJhj7WPbWdJZC5U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-512-9bCgQpL_N7GkIrBmfyO0-w-1; Wed, 23 Jun 2021 13:34:38 -0400
-X-MC-Unique: 9bCgQpL_N7GkIrBmfyO0-w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82E6F19057A2;
-        Wed, 23 Jun 2021 17:34:37 +0000 (UTC)
-Received: from optiplex-fbsd (unknown [10.3.128.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 15C5E5D6D7;
-        Wed, 23 Jun 2021 17:34:35 +0000 (UTC)
-Date:   Wed, 23 Jun 2021 13:34:33 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: vmalloc: add cond_resched() in __vunmap()
-Message-ID: <YNNwqdM/U+ZErA6j@optiplex-fbsd>
-References: <20210622225030.478384-1-aquini@redhat.com>
- <20210623112704.GA1911@pc638.lan>
+        Wed, 23 Jun 2021 13:39:24 -0400
+Received: by mail-oo1-f43.google.com with SMTP id n20-20020a4abd140000b029024b43f59314so912586oop.9;
+        Wed, 23 Jun 2021 10:37:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3melYO0wZCMRg7XHkx/hptxaOoEYV4eau0N+U+gvijA=;
+        b=m5SZMR7jEi3cKnKd9OovfhjBO0Ab6lteNtTGGA/OZ/zCps1yvEc2F+odrZ1h1sBAxn
+         dEDYFlWxqhcNeVDT4WL742HhWKgQknOew249oNVZiR0YDdCxpqPYe3YDKM1fzrHokHDG
+         zq5A8wCsR9PUDfxu9kH92aXUoccjMVlnTs93LAsFQ576caneVXjGlcma+poUblZjR7go
+         9Gi1aUhZPdSO58vSsVCNYqG1hYLY4OZMjYxi5ehOSS4UMJ3kIcuntFUW8Y5ejcy32nug
+         0mWSXHlGM5eSzqL4Y9YQZQu52bgx+KJLmcnnD1t8v5x8hLvnBS2TLgIzPxbNndnEVJHI
+         0wvA==
+X-Gm-Message-State: AOAM532nEXafg07g97oN9Oia8V+JIK/VEBUTauPQ1Jjveqenw+wa4+Fh
+        /xTFRGnR88a/t3mQFsYbU/yNnpKNp3hGIL64SOA=
+X-Google-Smtp-Source: ABdhPJyy84IZQYogTvfFfev6mmMHPVE7Tcr8qSTbweBXX1S44/guPsvT4MVoyUyWoGtLg+sCwk9h/PDS6j3vS4K29FY=
+X-Received: by 2002:a4a:5285:: with SMTP id d127mr805018oob.2.1624469825723;
+ Wed, 23 Jun 2021 10:37:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210623112704.GA1911@pc638.lan>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <YNJYm34h3Z9yfm+k@google.com>
+In-Reply-To: <YNJYm34h3Z9yfm+k@google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 23 Jun 2021 19:36:54 +0200
+Message-ID: <CAJZ5v0icHp=a2OgM8ptisvC0U1NbzXVXxRHw1ZhMPHWn6dKtUg@mail.gmail.com>
+Subject: Re: [PATCH v2] ACPI: PM: postpone bringing devices to D0 unless we
+ need them
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 01:27:04PM +0200, Uladzislau Rezki wrote:
-> > On non-preemptible kernel builds the watchdog can complain
-> > about soft lockups when vfree() is called against large
-> > vmalloc areas:
-> > 
-> > [  210.851798] kvmalloc-test: vmalloc(2199023255552) succeeded
-> > [  238.654842] watchdog: BUG: soft lockup - CPU#181 stuck for 26s! [rmmod:5203]
-> > [  238.662716] Modules linked in: kvmalloc_test(OE-) ...
-> > [  238.772671] CPU: 181 PID: 5203 Comm: rmmod Tainted: G S         OE     5.13.0-rc7+ #1
-> > [  238.781413] Hardware name: Intel Corporation PURLEY/PURLEY, BIOS PLYXCRB1.86B.0553.D01.1809190614 09/19/2018
-> > [  238.792383] RIP: 0010:free_unref_page+0x52/0x60
-> > [  238.797447] Code: 48 c1 fd 06 48 89 ee e8 9c d0 ff ff 84 c0 74 19 9c 41 5c fa 48 89 ee 48 89 df e8 b9 ea ff ff 41 f7 c4 00 02 00 00 74 01 fb 5b <5d> 41 5c c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 f0 29 77
-> > [  238.818406] RSP: 0018:ffffb4d87868fe98 EFLAGS: 00000206
-> > [  238.824236] RAX: 0000000000000000 RBX: 000000001da0c945 RCX: ffffb4d87868fe40
-> > [  238.832200] RDX: ffffd79d3beed108 RSI: ffffd7998501dc08 RDI: ffff9c6fbffd7010
-> > [  238.840166] RBP: 000000000d518cbd R08: ffffd7998501dc08 R09: 0000000000000001
-> > [  238.848131] R10: 0000000000000000 R11: ffffd79d3beee088 R12: 0000000000000202
-> > [  238.856095] R13: ffff9e5be3eceec0 R14: 0000000000000000 R15: 0000000000000000
-> > [  238.864059] FS:  00007fe082c2d740(0000) GS:ffff9f4c69b40000(0000) knlGS:0000000000000000
-> > [  238.873089] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  238.879503] CR2: 000055a000611128 CR3: 000000f6094f6006 CR4: 00000000007706e0
-> > [  238.887467] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > [  238.895433] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > [  238.903397] PKRU: 55555554
-> > [  238.906417] Call Trace:
-> > [  238.909149]  __vunmap+0x17c/0x220
-> > [  238.912851]  __x64_sys_delete_module+0x13a/0x250
-> > [  238.918008]  ? syscall_trace_enter.isra.20+0x13c/0x1b0
-> > [  238.923746]  do_syscall_64+0x39/0x80
-> > [  238.927740]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > 
-> > Like in other range zapping routines that iterate over
-> > a large list, lets just add cond_resched() within __vunmap()'s
-> > page-releasing loop in order to avoid the watchdog splats.
-> > 
-> > Signed-off-by: Rafael Aquini <aquini@redhat.com>
-> > ---
-> >  mm/vmalloc.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > index a13ac524f6ff..cd4b23d65748 100644
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -2564,6 +2564,7 @@ static void __vunmap(const void *addr, int deallocate_pages)
-> >  
-> >  			BUG_ON(!page);
-> >  			__free_pages(page, page_order);
-> > +			cond_resched();
-> >  		}
-> >  		atomic_long_sub(area->nr_pages, &nr_vmalloc_pages);
-> >  
-> > -- 
-> > 2.26.3
-> > 
-> I have a question about a test case you run to trigger such soft lockup.
-> 
-> Is that test_vmalloc.sh test-suite or something local? Do you use a huge
-> vmalloc mappings so high-order pages are used?
+On Tue, Jun 22, 2021 at 11:39 PM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
 >
+> Currently ACPI power domain brings devices into D0 state in the "resume
+> early" phase. Normally this does not cause any issues, as powering up
+> happens quickly. However there are peripherals that have certain timing
+> requirements for powering on, for example some models of Elan
+> touchscreens need 300msec after powering up/releasing reset line before
+> they can accept commands from the host. Such devices will dominate
+> the time spent in early resume phase and cause increase in overall
+> resume time as we wait for early resume to complete before we can
+> proceed to the normal resume stage.
+>
+> There are ways for a driver to indicate that it can tolerate device
+> being in the low power mode and that it knows how to power the device
+> back up when resuming, bit that requires changes to individual drivers
+> that may not really care about details of ACPI controlled power
+> management.
+>
+> This change attempts to solve this issue at ACPI power domain level, by
+> postponing powering up device until we get to the normal resume stage,
+> unless there is early resume handler defined for the device, or device
+> does not declare any resume handlers, in which case we continue powering
+> up such devices early. This allows us to shave off several hundred
+> milliseconds of resume time on affected systems.
+>
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> ---
+>
+> v2:
+>
+> - do not call acpi_device_wakeup_disable() in early resume when
+>   we postponing transition to D0, do it all in normal resume phase
+>   (Rafael's feedback)
+>
+> - reduce patch noise in acpi_subsys_resume_early() per Rafael's
+>   comments
 
-Vlad,
+Applied as 5.14 material, thanks!
 
-It's a variant of the simple testcase presented with Kernel Bug 210023:
-https://bugzilla.kernel.org/show_bug.cgi?id=210023#c7
-
-Cheers,
--- Rafael
-
+>  drivers/acpi/device_pm.c | 32 +++++++++++++++++++++++++++++++-
+>  1 file changed, 31 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
+> index 096153761ebc..8afa66bdb3ce 100644
+> --- a/drivers/acpi/device_pm.c
+> +++ b/drivers/acpi/device_pm.c
+> @@ -1131,19 +1131,48 @@ static int acpi_subsys_resume_noirq(struct device *dev)
+>   *
+>   * Use ACPI to put the given device into the full-power state and carry out the
+>   * generic early resume procedure for it during system transition into the
+> - * working state.
+> + * working state, but only do that if device either defines early resume
+> + * handler, or does not define power operations at all. Otherwise powering up
+> + * of the device is postponed to the normal resume phase.
+>   */
+>  static int acpi_subsys_resume_early(struct device *dev)
+>  {
+> +       const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+>         int ret;
+>
+>         if (dev_pm_skip_resume(dev))
+>                 return 0;
+>
+> +       if (pm && !pm->resume_early) {
+> +               dev_dbg(dev, "postponing D0 transition to normal resume stage\n");
+> +               return 0;
+> +       }
+> +
+>         ret = acpi_dev_resume(dev);
+>         return ret ? ret : pm_generic_resume_early(dev);
+>  }
+>
+> +/**
+> + * acpi_subsys_resume - Resume device using ACPI.
+> + * @dev: Device to Resume.
+> + *
+> + * Use ACPI to put the given device into the full-power state if it has not been
+> + * powered up during early resume phase, and carry out the generic resume
+> + * procedure for it during system transition into the working state.
+> + */
+> +static int acpi_subsys_resume(struct device *dev)
+> +{
+> +       const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+> +       int ret = 0;
+> +
+> +       if (!dev_pm_skip_resume(dev) && pm && !pm->resume_early) {
+> +               dev_dbg(dev, "executing postponed D0 transition\n");
+> +               ret = acpi_dev_resume(dev);
+> +       }
+> +
+> +       return ret ? ret : pm_generic_resume(dev);
+> +}
+> +
+>  /**
+>   * acpi_subsys_freeze - Run the device driver's freeze callback.
+>   * @dev: Device to handle.
+> @@ -1236,6 +1265,7 @@ static struct dev_pm_domain acpi_general_pm_domain = {
+>                 .prepare = acpi_subsys_prepare,
+>                 .complete = acpi_subsys_complete,
+>                 .suspend = acpi_subsys_suspend,
+> +               .resume = acpi_subsys_resume,
+>                 .suspend_late = acpi_subsys_suspend_late,
+>                 .suspend_noirq = acpi_subsys_suspend_noirq,
+>                 .resume_noirq = acpi_subsys_resume_noirq,
+> --
+> 2.32.0.288.g62a8d224e6-goog
+>
+>
+> --
+> Dmitry
