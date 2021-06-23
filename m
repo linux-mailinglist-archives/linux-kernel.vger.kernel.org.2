@@ -2,74 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8D53B16EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D393B16F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhFWJdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 05:33:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35425 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230028AbhFWJds (ORCPT
+        id S230138AbhFWJhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 05:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229833AbhFWJhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 05:33:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624440691;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uoKxP6WJfMKdvV/ri4cCRJHkTaSzfh+UYio6Jvz7jjE=;
-        b=gukkTH4/C/F5mZkqAx8FwBqjU5Kysykx9sDHgDfCn/VjkyE73n25tU2qrENGp/6rQsVaOt
-        TDVY8fgf2olcAt6kXLdPqDxULxs1FH5yGdaTIOSfCZaYQ+coMzj1Vp1r/PFOuTYi6OSKSm
-        7X6fijjuRzXsvvB0wXgCuChh+kAbM5Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-390-fIknOGXQOXmCQ2p4G_Ju1g-1; Wed, 23 Jun 2021 05:31:27 -0400
-X-MC-Unique: fIknOGXQOXmCQ2p4G_Ju1g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 347AAC7442;
-        Wed, 23 Jun 2021 09:31:24 +0000 (UTC)
-Received: from localhost (ovpn-113-66.ams2.redhat.com [10.36.113.66])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7D55010016F8;
-        Wed, 23 Jun 2021 09:31:16 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>, bhelgaas@google.com,
-        alex.williamson@redhat.com, jgg@ziepe.ca, kevin.tian@intel.com,
-        eric.auger@redhat.com, giovanni.cabiddu@intel.com,
-        mjrosato@linux.ibm.com, jannh@google.com, kvm@vger.kernel.org,
-        linux-pci@vger.kernel.org, schnelle@linux.ibm.com
-Cc:     minchan@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org,
-        jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, mcgrof@kernel.org,
-        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
-        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
-        rostedt@goodmis.org, peterz@infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] vfio: use the new pci_dev_trylock() helper to
- simplify try lock
-In-Reply-To: <20210623022824.308041-3-mcgrof@kernel.org>
-Organization: Red Hat GmbH
-References: <20210623022824.308041-1-mcgrof@kernel.org>
- <20210623022824.308041-3-mcgrof@kernel.org>
-User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
-Date:   Wed, 23 Jun 2021 11:31:15 +0200
-Message-ID: <87pmwdlyfw.fsf@redhat.com>
+        Wed, 23 Jun 2021 05:37:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84848C061574;
+        Wed, 23 Jun 2021 02:34:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=suFUEnnBh47VEalkyVKQG0DaoortwBc65iKhQ335eJU=; b=reXMzGjqASlZeg0+A0kjQllnUM
+        wmLKwGs7f8fPMP5T6uZaQm1KK2Rey6xe5C2uHdx7kHQJoOTYuhMFNMIyf6jhJcbjcXhFu0hJwGx2I
+        QSzk1YWzyUVV/Q1RfgaD1J5RVtwsbxQeKU8HiMM6FEpc7M2S0c8l2yvuWr2kcvjwkiCMFFw2Nq07e
+        RhD3kyXo/LClIQGApVoznmeT6u8vLhG0rmAKsdoABhsDq2pEwP5kv+hjfHgJh7A8yUFtSMYngFHN0
+        96flUldaRLsKA88lFal8G35/JiT9cJ6P5uINkGMsSC3PDH1a+uMoURm/1899iECZKTzWbuLcBMvhu
+        ShflwkhA==;
+Received: from 089144193030.atnat0002.highway.a1.net ([89.144.193.30] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvzGt-00FGkt-LT; Wed, 23 Jun 2021 09:34:16 +0000
+Date:   Wed, 23 Jun 2021 11:32:01 +0200
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 28/46] mm/writeback: Add filemap_dirty_folio()
+Message-ID: <YNL/kb3E1miS28of@infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-29-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622121551.3398730-29-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22 2021, Luis Chamberlain <mcgrof@kernel.org> wrote:
+On Tue, Jun 22, 2021 at 01:15:33PM +0100, Matthew Wilcox (Oracle) wrote:
+> Reimplement __set_page_dirty_nobuffers() as a wrapper around
+> filemap_dirty_folio().  This can use a cast to struct folio
+> because we know that the ->set_page_dirty address space op
+> is always called with a page pointer that happens to also be
+> a folio pointer.  Saves 7 bytes of kernel text.
 
-> Use the new pci_dev_trylock() helper to simplify our locking.
->
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  drivers/vfio/pci/vfio_pci.c | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
+Modulo the cast comment from the last patch this looks fine:
 
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
