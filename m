@@ -2,122 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EECF3B13AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 08:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076CD3B13B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 08:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbhFWGHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 02:07:06 -0400
-Received: from ozlabs.org ([203.11.71.1]:45397 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229665AbhFWGHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 02:07:05 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8t5T6kYdz9sVm;
-        Wed, 23 Jun 2021 16:04:45 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624428286;
-        bh=zGFQryYP618aKWsIAzWK267Cz0lCeMlvKnIsCfwMrKA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CqDCbHJzlzQ8Gh+HmoHkHgwxMKl8Wy91jEk3Gl2Kx0tHS6lJ9OBlFuJjOZVVSlGoQ
-         pChq8YWyZl8ayjFJNuCGGBSGxo65UBikQwKEjUmI+/JVgVAteGaEWcxvPv9Ohhk1uV
-         76WLr5UyEZgAkHx5NlfAKIjYX23GUgXBkpeXhzBccffQuIrQ6cNFVKbKt502YlWqIg
-         X9DR05RXH/pAYl9vMir3/oWss+K9z83N0WVj+wAtY5aqYsNaRttehyeyXHvMLVEZRv
-         Gdn7EpkOUmhmQKVlBHBQlPIr2SxdWtNYReP4moX+Yv34lEPpIlTypBKrCPTJIkf8Dg
-         2AjmR3TTo0U6g==
-Date:   Wed, 23 Jun 2021 16:04:44 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoffer Dall <cdall@cs.columbia.edu>,
-        Marc Zyngier <maz@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Ashish Kalra <ashish.kalra@amd.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Steven Price <steven.price@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: linux-next: manual merge of the kvm-arm tree with the powerpc and
- kvm trees
-Message-ID: <20210623160444.413791ec@canb.auug.org.au>
+        id S229892AbhFWGJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 02:09:22 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:54880 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229896AbhFWGJU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 02:09:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1624428424; x=1655964424;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=YCtpVTQAaNY+hgGVKdr0kJYx/uxBrYXjRLRe3p6CJqg=;
+  b=TjKeW12Djx7IUHLQ+8ZksD5Xu0N2DHCMVYtdQO3+wgTs5p4ZCO82la5c
+   jaVUZ//QvMyTP8k3elCniUflsiroU4sZcfkNt+SzXpb6OpsVW94gGwtFg
+   F2DILhfC3phyZMq/3bLj7myG4hlf6PiRu/JU50MLQq9sg9+/IhE8vHeJl
+   E=;
+X-IronPort-AV: E=Sophos;i="5.83,293,1616457600"; 
+   d="scan'208";a="116186703"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-4101.iad4.amazon.com with ESMTP; 23 Jun 2021 06:07:03 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com (Postfix) with ESMTPS id 9A207A1880;
+        Wed, 23 Jun 2021 06:07:01 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Wed, 23 Jun 2021 06:07:00 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.162.36) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Wed, 23 Jun 2021 06:06:57 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Boris Pismenny <borisp@nvidia.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>
+Subject: [PATCH net-next] net/tls: Remove the __TLS_DEC_STATS() macro.
+Date:   Wed, 23 Jun 2021 15:06:34 +0900
+Message-ID: <20210623060634.1909-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/_S5Z7DmvPJ.DCnyaey19BjI";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.36]
+X-ClientProxiedBy: EX13P01UWA002.ant.amazon.com (10.43.160.46) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/_S5Z7DmvPJ.DCnyaey19BjI
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The commit d26b698dd3cd ("net/tls: add skeleton of MIB statistics")
+introduced __TLS_DEC_STATS(), but it is not used and __SNMP_DEC_STATS() is
+not defined also. Let's remove it.
 
-Hi all,
+Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+---
+The commit d26b698dd3cd does not contain a bug, so I think Fixes tag is not
+necessary and post this to net-next. But if the tag is needed, I'll respin
+to the net tree with the tag, so please let me know.
+---
+ include/net/tls.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-Today's linux-next merge of the kvm-arm tree got a conflict in:
+diff --git a/include/net/tls.h b/include/net/tls.h
+index 8341a8d1e807..8d398a5de3ee 100644
+--- a/include/net/tls.h
++++ b/include/net/tls.h
+@@ -79,8 +79,6 @@
+ 	__SNMP_INC_STATS((net)->mib.tls_statistics, field)
+ #define TLS_INC_STATS(net, field)				\
+ 	SNMP_INC_STATS((net)->mib.tls_statistics, field)
+-#define __TLS_DEC_STATS(net, field)				\
+-	__SNMP_DEC_STATS((net)->mib.tls_statistics, field)
+ #define TLS_DEC_STATS(net, field)				\
+ 	SNMP_DEC_STATS((net)->mib.tls_statistics, field)
+ 
+-- 
+2.30.2
 
-  include/uapi/linux/kvm.h
-
-between commits:
-
-  b87cc116c7e1 ("KVM: PPC: Book3S HV: Add KVM_CAP_PPC_RPT_INVALIDATE capabi=
-lity")
-  644f706719f0 ("KVM: x86: hyper-v: Introduce KVM_CAP_HYPERV_ENFORCE_CPUID")
-  0dbb11230437 ("KVM: X86: Introduce KVM_HC_MAP_GPA_RANGE hypercall")
-
-from the powerpc and kvm trees and commit:
-
-  ea7fc1bb1cd1 ("KVM: arm64: Introduce MTE VM feature")
-
-from the kvm-arm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/uapi/linux/kvm.h
-index 330835f1005b,da1edd2b4046..000000000000
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@@ -1083,10 -1083,7 +1083,11 @@@ struct kvm_ppc_resize_hpt=20
-  #define KVM_CAP_SGX_ATTRIBUTE 196
-  #define KVM_CAP_VM_COPY_ENC_CONTEXT_FROM 197
-  #define KVM_CAP_PTP_KVM 198
- -#define KVM_CAP_ARM_MTE 199
- +#define KVM_CAP_HYPERV_ENFORCE_CPUID 199
- +#define KVM_CAP_SREGS2 200
- +#define KVM_CAP_EXIT_HYPERCALL 201
- +#define KVM_CAP_PPC_RPT_INVALIDATE 202
-++#define KVM_CAP_ARM_MTE 203
- =20
-  #ifdef KVM_CAP_IRQ_ROUTING
- =20
-
---Sig_/_S5Z7DmvPJ.DCnyaey19BjI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDSzvwACgkQAVBC80lX
-0Gy43wf/WucH04KA5/4fIZG1aO2Pglwt2RKuNbBPCxq8Gii9/cBVWr7hXoPm9wls
-CYeLOqv7Je7PPKaRgtJKBfRoJmbxrK2Zl+VkaZRFgS5SydFCfRzLImeuSv66I4EX
-u3jmv0MWEOLQgXlKDMblEZvznuPuIhvjR4rM1wlhfFv9ii32uUn+EwIlDNGz+bPv
-C+jSuq7/gu9TlHtsP8zyAHmDfMqDv+1Kqko9ZTrk82URydhKpoOZlRm3gyhviUWw
-t+P0CjEypszRwnoVPHD5yWwxOLkjy/dnx6QeQxsCIKp0QASyPq+K6PZXg3gfChq3
-M9aPKADLiNI6w7DpYV7jn526s6ynew==
-=QDit
------END PGP SIGNATURE-----
-
---Sig_/_S5Z7DmvPJ.DCnyaey19BjI--
