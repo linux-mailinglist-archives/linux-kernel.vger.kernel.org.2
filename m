@@ -2,84 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D9B3B1DB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F42C3B1DB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbhFWPkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 11:40:19 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:60215 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231236AbhFWPkT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 11:40:19 -0400
-Received: from mail-wr1-f46.google.com ([209.85.221.46]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MfqCF-1lKXCo30JN-00gHdF; Wed, 23 Jun 2021 17:37:59 +0200
-Received: by mail-wr1-f46.google.com with SMTP id h11so3155246wrx.5;
-        Wed, 23 Jun 2021 08:37:59 -0700 (PDT)
-X-Gm-Message-State: AOAM532Iic5skdug6B0NJgIQNYsmMt5ULEVDPRbsWVwWzfPqf7Jh3pnH
-        iiQDP4n0F7pL+CpvDjVw8BAn/zEjtZeUXqFMjYM=
-X-Google-Smtp-Source: ABdhPJyBbj5Pm/lt5QEZ9/ukavK4e4a6Akcrh3OkRCgWAd0YKSJxsqqB9rr7QOm5LlXYeAiFQ5/m9Hb73+YYGuKylew=
-X-Received: by 2002:a5d:5650:: with SMTP id j16mr736136wrw.99.1624462679365;
- Wed, 23 Jun 2021 08:37:59 -0700 (PDT)
+        id S231409AbhFWPlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 11:41:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229523AbhFWPlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 11:41:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7750611AC;
+        Wed, 23 Jun 2021 15:39:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624462746;
+        bh=Mm8FVZvOFHbYQOMrLA21ILjK4OC7KMRGPY0oHQSNWF8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=XiKwg4CHdsJk1NqhKjhAgIZYRSEexp5RNIwo4X8qeFcv+ykiUG5OgrFWZdxTuBIxn
+         8g5NLg8QmWsCKlcxcofi2EVzisj1Rxj6GucRS//CcUF/oEniWmroGeeKZMHKDDakGP
+         LwCZlGXDPTDGzThlEvL8/1CQa9DG+kqjnxucEvlAOWwEjtodN4L9/8us/VVluXJ6rT
+         ynghZE8r8OFNc70cCUMQLK2SReVJPw3r2b7Ht5W2odblTLfe9JoamvUdDjxxCZrzgR
+         1pccMoGwoiTgjXia4Ut4pNbD1c5hGrg8K1S9pUxrzd23e7e00AxJao1mS8x5Y3Rshe
+         RDU9jjscxgv5Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id AF3635C06CA; Wed, 23 Jun 2021 08:39:05 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 08:39:05 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, urezki@gmail.com, frederic@kernel.org
+Subject: Re: [PATCH] rcu: update: Check rcu_bh_lock_map state in
+ rcu_read_lock_bh_held
+Message-ID: <20210623153905.GO4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <1624363521-19702-1-git-send-email-neeraju@codeaurora.org>
+ <20210622175855.GE4397@paulmck-ThinkPad-P17-Gen-1>
+ <61bed875-5ebf-03d8-58ea-e9263c534201@codeaurora.org>
+ <20210622234652.GL4397@paulmck-ThinkPad-P17-Gen-1>
+ <b37e3232-4151-e948-3987-b19c88f0e217@codeaurora.org>
 MIME-Version: 1.0
-References: <20210623141854.GA32155@lst.de> <08df01d7683d$8f5b7b70$ae127250$@codeaurora.org>
- <CAK8P3a28_0KJpcLRQrDhFk8-ndxmfk7-Q2_qcRRiYkyh-NNZUQ@mail.gmail.com>
- <08e101d76842$94f78a60$bee69f20$@codeaurora.org> <20210623151746.GA4247@lst.de>
-In-Reply-To: <20210623151746.GA4247@lst.de>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 23 Jun 2021 17:35:38 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2bG64ARjpwQ0ZhQ9P0g8B-=AwcHHAbYBXBS4B6Fy9pQw@mail.gmail.com>
-Message-ID: <CAK8P3a2bG64ARjpwQ0ZhQ9P0g8B-=AwcHHAbYBXBS4B6Fy9pQw@mail.gmail.com>
-Subject: Re: how can we test the hexagon port in mainline
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Brian Cain <bcain@codeaurora.org>,
-        Sid Manning <sidneym@codeaurora.org>,
-        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:UVrRONGH7WEEgxmi9CsYT9lyiBJLfqqh+xpmwQxeq9OlN0ToPuk
- 4vdYpzs8xI1FotMDS22WTPQAbNxOIrgLt48U2+rSlNIdON3SzLbcIbjUrvrT3ZaWOU0sEbC
- Z3dWPz/je7k+I6uZW3VzA0GI/LI+4UolwWOWKvCnvAIoCM0Y8uEOL5prf55GJ62FUFUPG6T
- UMrT/aQfrHKAxHNcsIEHw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LU7Yf9EZG/E=:4cqFOmEps5v8tnKljicZXN
- 4LXmehJrCAWtvh82GsxVK3TfgfQZtEUp9gp8k3dX2sk8MWdPLppwZFdEhBg0QMYj86K63YPak
- Lnr9vcchEG1hYMRE91H+tugnhVK9McORmtdz+aW+jhwOziJRE/9cLSXBxjwoL6qS8yAcoeHkl
- ORoVZ586/U5V6sJW5TElsD8Sf1i3712coGBJv06+pawEVi35XB57pEMyzNlLKqVYzCRsue+r6
- lUO97EqX/HjZlrPH7iJsOziBnvIEOZEentXIDYzwAec5HmOmsGHzmpyW4ZaGuzaNtRWXFtMZX
- JtsSnjrbAwi3davxBRYsy4SIlM1FPrJz9M+BvamcQ6qKWjVWs/R9cc6U2AUuL2ve8NoxXdKD/
- KTjO1SSzDCFiTX9dl9rAIXVQJ0Gb9YsZDHPyqHdeak1M9WZwTyyatHE6pjCsgm4vKbX2pDzod
- 0O4HDNyL1A9ZUmph1tCp3oAtFFhXlEoiQi8eiWJv5hi+nxrlMrz+1TBfeEwIHNKtCbxpwblO0
- 0N6OvWJG2xwrXDOyrJ8yYQ8dTSw8Lj7XNP+StINHC2NDHApxF0l/ITVJs/msEj2ZWqAjF2f1X
- 9nm6BRqRq62FzyZYNRYGJ9JM5Qf/gPeZe0+kgK2ZdiJFrQLV+EB8HCwMbGBNJwpZPO9EuDLMl
- sofM=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b37e3232-4151-e948-3987-b19c88f0e217@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 5:17 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> It seem like it still isn't complete enought for a kernel build, though:
->
-> $ export CROSS_COMPILE=/opt/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/hexagon-unknown-linux-musl-
-> $ make ARCH=hexagon LLVM=1 oldconfig
-> ...
-> scripts/Kconfig.include:40: linker 'ld.lld' not found
+On Wed, Jun 23, 2021 at 09:27:11AM +0530, Neeraj Upadhyay wrote:
+> On 6/23/2021 5:16 AM, Paul E. McKenney wrote:
+> > On Wed, Jun 23, 2021 at 12:38:09AM +0530, Neeraj Upadhyay wrote:
+> > > On 6/22/2021 11:28 PM, Paul E. McKenney wrote:
+> > > > On Tue, Jun 22, 2021 at 05:35:21PM +0530, Neeraj Upadhyay wrote:
+> > > > > In addition to irq and softirq state, check rcu_bh_lock_map
+> > > > > state, to decide whether RCU bh lock is held.
+> > > > > 
+> > > > > Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > > > 
+> > > > My initial reaction was that "in_softirq() || irqs_disabled()" covers
+> > > > it because rcu_read_lock_bh() disables BH.  But you are right that it
+> > > > does seem a bit silly to ignore lockdep.
+> > > > 
+> > > > So would it also make sense to have a WARN_ON_ONCE() if lockdep claims
+> > > > we are under rcu_read_lock_bh() protection, but "in_softirq() ||
+> > > > irqs_disabled()" think otherwise?
+> > > 
+> > > After thinking more on this, looks like one intention of not
+> > > having lockdep check here was to catch scenarios where some code enables bh
+> > > after doing rcu_read_lock_bh(), as is mentioned in the comment above
+> > > rcu_read_lock_bh_held():
+> > > 
+> > >    Note that if someone uses
+> > >    rcu_read_lock_bh(), but then later enables BH, lockdep (if enabled)
+> > >    will show the situation.  This is useful for debug checks in functions
+> > >    that require that they be called within an RCU read-side critical
+> > >    section.
+> > > 
+> > > Client users seem to be doing lockdep checks on returned value:
+> > > drivers/net/wireguard/peer.c
+> > >     RCU_LOCKDEP_WARN(!rcu_read_lock_bh_held(),
+> > > 
+> > > Similarly, any rcu_dereference_check(..., rcu_read_lock_bh_held()) usage
+> > > also triggers warning, if bh is enabled, inside rcu_read_lock_bh()
+> > > section.
+> > > 
+> > > So, using 'in_softirq() || irqs_disabled()' condition looks to be sufficient
+> > > condition, to mark all read lock bh regions and adding '||
+> > > lock_is_held(&rcu_bh_lock_map)' to this condition does not seem to fit
+> > > well with the RCU_LOCKDEP_WARN(!rcu_read_lock_bh_held()) and
+> > > rcu_dereference_check(..., rcu_read_lock_bh_held()) calls, if we hit
+> > > the scenario, where bh lockmap state (shows bh lock acquired) conflicts with
+> > > the softirq/irq state .
+> > 
+> > That makes sense to me!
+> > 
+> > But should there be checks somewhere for something like
+> > "lock_is_held(&rcu_bh_lock_map) && !in_softirq() && !irqs_disabled()"?
+> > 
+> > 							Thanx, Paul
+> > 
+> 
+> I think this check is good to have inside rcu_read_lock_bh_held(), to
+> highlight this scenario explicitly; I am thinking, if it makes sense to
+> have lock_is_held(&rcu_bh_lock_map) check in rcu_softirq_qs() ?
+> 
+> Also, I think this check is more important for rcu_read_lock_sched_held(),
+> where lockdep state is used as a sufficient condition, for marking a RCU
+> sched region. One more api is rcu_read_lock_any_held(), where we can
+> warn on conflicting cases.
+> 
+>   int rcu_read_lock_sched_held(void)
+>   {
+>         bool ret;
+> 
+>         if (rcu_read_lock_held_common(&ret))
+>                 return ret;
+>         return lock_is_held(&rcu_sched_lock_map) || !preemptible();
+>   }
 
-I tried this using the prebuilt binaries from apt.llvm.org:
+Another option would be to check lock_is_held(&rcu_sched_lock_map)
+anywhere preemption is enabled and lock_is_held(&rcu_bh_lock_map)
+anywhere BH is enabled.  This would (in theory, anyway) catch more bugs.
 
-$ make ARCH=hexagon LLVM=1 O=obj-hexagon CROSS_COMPILE=hexagon-linux-
-LLVM_IAS=1 CC=llvm-12 defconfig modules vmlinux
-<stdin>:1515:2: warning: syscall clone3 not implemented [-W#warnings]
-#warning syscall clone3 not implemented
- ^
-1 warning generated.
+But it is necessary to be careful because these checks must be suppressed
+if lockdep has been disabled due to a prior lockdep splat.  Otherwise,
+the first lockdep splat is followed by an inundation of false-positive
+complaints.
 
-Doing the same thing with allmodconfig results in an internal error
-with clang-12
-while compiling kernel/locking/lockdep.c. Same thing with clang-13.
-After turning
-off lock debugging, it seems fine.
+But the real question is "Which important bugs are missed today, and
+what change would catch them more reliably?"
 
-       Arnd
+Thoughts?
+
+						Thanx, Paul
+
+> Thanks
+> Neeraj
+> 
+> > > Thanks
+> > > Neeraj
+> > > 
+> > > > > ---
+> > > > >    kernel/rcu/update.c | 2 +-
+> > > > >    1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+> > > > > index c21b38c..d416f1c 100644
+> > > > > --- a/kernel/rcu/update.c
+> > > > > +++ b/kernel/rcu/update.c
+> > > > > @@ -333,7 +333,7 @@ int rcu_read_lock_bh_held(void)
+> > > > >    	if (rcu_read_lock_held_common(&ret))
+> > > > >    		return ret;
+> > > > > -	return in_softirq() || irqs_disabled();
+> > > > > +	return lock_is_held(&rcu_bh_lock_map) || in_softirq() || irqs_disabled();
+> > > > >    }
+> > > > >    EXPORT_SYMBOL_GPL(rcu_read_lock_bh_held);
+> > > > > -- 
+> > > > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> > > > > hosted by The Linux Foundation
+> > > > > 
+> > > 
+> > > -- 
+> > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of
+> > > the Code Aurora Forum, hosted by The Linux Foundation
+> 
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of
+> the Code Aurora Forum, hosted by The Linux Foundation
