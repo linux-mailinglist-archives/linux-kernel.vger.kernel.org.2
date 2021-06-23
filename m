@@ -2,107 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196B43B3A47
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78CA3B3A5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 03:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232970AbhFYA7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 20:59:30 -0400
-Received: from smtp.bonedaddy.net ([45.33.94.42]:40130 "EHLO
-        smtp.bonedaddy.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhFYA71 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 20:59:27 -0400
-X-Greylist: delayed 354 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Jun 2021 20:59:27 EDT
-Received: from [192.168.1.209] (n175-38-129-149.per2.wa.optusnet.com.au [175.38.129.149])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pabs3@bonedaddy.net)
-        by smtp.bonedaddy.net (Postfix) with ESMTPSA id ED574180045;
-        Thu, 24 Jun 2021 20:51:59 -0400 (EDT)
-Authentication-Results: smtp.bonedaddy.net; dmarc=fail (p=none dis=none) header.from=bonedaddy.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bonedaddy.net;
-        s=mail; t=1624582325;
-        bh=zXuCZMd9zz98b+NCH+tpPpN/tUHyuBhG6l57d8TmYeQ=;
-        h=Subject:From:To:Cc:In-Reply-To:References:Date;
-        b=oG5DKZJw6f4PiGCpuQDdwTx31bY6q34/dz4Jk86xbEFgZ844cWjggZkd1i9v7B2Hz
-         xQ+j4olt+FJeQwuGpvDkPPqGDVEFKrEV4uAikMiR5wCzSzuh8zTRq+j8JmzQIeyjcD
-         +B566Ayg2nh5TG9bfGw4NwCc/mkMRIch8nuTLzdytu6Ui7FU9T0KxTOaBDdCLrHrge
-         WQbmx7Km/FbS/7+0PSDLMNHaV7lfiHKqxSmXsdce3d0eGGq+zrLc/IuMynyHFzsYgr
-         J9DFgzQ0jV6HJk+uXz+/+e9ZFVo2+DWh+XZlGthobUCnKrTvpQhKKCN5ykJLmUNexb
-         f+Pts58pqb5iA==
-Message-ID: <466172bd9e2e3e223685ea3fa11cb1f990113e6e.camel@bonedaddy.net>
-Subject: Re: [PATCH 0/6] sched,delayacct: Some cleanups
-From:   Paul Wise <pabs3@bonedaddy.net>
-To:     Mel Gorman <mgorman@suse.de>, Balbir Singh <bsingharora@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
-        mingo@kernel.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        pbonzini@redhat.com, maz@kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, riel@surriel.com, hannes@cmpxchg.org
-In-Reply-To: <20210512113419.GF3672@suse.de>
-References: <20210505105940.190490250@infradead.org>
-         <20210505222940.GA4236@balbir-desktop>
-         <YJOzUAg30LZWSHcI@hirez.programming.kicks-ass.net>
-         <20210507123810.GB4236@balbir-desktop> <20210512113419.GF3672@suse.de>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-ChuWidyUdrci/irWU01F"
-Date:   Fri, 25 Jun 2021 08:50:55 +0800
+        id S232997AbhFYBHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 21:07:18 -0400
+Received: from bravo.moz.gov.ua ([91.142.166.206]:38372 "EHLO bravo.moz.gov.ua"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232972AbhFYBHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 21:07:15 -0400
+X-Greylist: delayed 20604 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Jun 2021 21:07:14 EDT
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by bravo.moz.gov.ua (Postfix) with ESMTP id 5ED7AD15FEB;
+        Thu, 24 Jun 2021 06:00:58 +0300 (EEST)
+Received: from bravo.moz.gov.ua ([127.0.0.1])
+        by localhost (bravo.moz.gov.ua [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id jMlHhxXDHPgD; Thu, 24 Jun 2021 06:00:58 +0300 (EEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by bravo.moz.gov.ua (Postfix) with ESMTP id 52D77C3A061;
+        Thu, 24 Jun 2021 02:11:05 +0300 (EEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 bravo.moz.gov.ua 52D77C3A061
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=moz.gov.ua;
+        s=ACC34A14-A4AF-11EA-B990-E3711060C5A2; t=1624489865;
+        bh=tkNUHGXNgOxDI459yLEbk2zadyFPhAO93YFG/39o59Y=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=K9OmX9wtXCs5STejgGo7l6OVQxXC39XYixzqK6aK5nTR470YFaJjDFKV36kX6BFH/
+         5Z1thX2eHpmrLmhBt0an4kkXPtUNrTBLlPS18ptSEpk7v2AGh1wJi1n32SbKE+UvAF
+         H1d4nwiOXe+taCNYSmJhXxC4yMczjWlDudpSx8gs=
+X-Virus-Scanned: amavisd-new at moz.gov.ua
+Received: from bravo.moz.gov.ua ([127.0.0.1])
+        by localhost (bravo.moz.gov.ua [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 6407gk6ojSXC; Thu, 24 Jun 2021 02:11:05 +0300 (EEST)
+Received: from [192.168.8.102] (unknown [41.144.82.141])
+        by bravo.moz.gov.ua (Postfix) with ESMTPSA id 5C8A6BEF6A0;
+        Thu, 24 Jun 2021 00:16:26 +0300 (EEST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-User-Agent: Evolution 3.40.2-1 
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?q?Sie_haben_eine_Spende_=E2=82=AC_1=2E000=2E000=2C00_?=
+To:     Recipients <line@moz.gov.ua>
+From:   <line@moz.gov.ua>
+Date:   Wed, 23 Jun 2021 14:16:19 -0700
+Reply-To: prejimsfoundation@gmail.com
+Message-Id: <20210623211627.5C8A6BEF6A0@bravo.moz.gov.ua>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---=-ChuWidyUdrci/irWU01F
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, 2021-05-12 at 12:34 +0100, Mel Gorman wrote:
-
-> Alternatively, I've added Paul Wise to the cc who is the latest
-> committer to iotop.=C2=A0 Maybe he knows who could add/commit a check for
-> sysctl.sched_delayacct and if it exists then check if it's 1 and display
-> an error suggesting corrective action (add delayacct to the kernel comman=
-d
-> line or sysctl sched.sched_delayacct=3D1). iotop appears to be in mainten=
-ance
-> mode but gets occasional commits even if it has not had a new version
-> since 2013 so maybe it could get a 0.7 tag if such a check was added.
-
-Did the proposed changes get merged?
-
-If so, please let me know the details of what needs to happen in iotop
-and iotop-c to cope with the changes in the Linux kernel.
-
---=20
-bye,
-pabs
-
-https://bonedaddy.net/pabs3/
-
---=-ChuWidyUdrci/irWU01F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEYQsotVz8/kXqG1Y7MRa6Xp/6aaMFAmDVKGwACgkQMRa6Xp/6
-aaO8XQ/7BncsdOw1sINDr8GaBKzEocFNtwiEgN1V7sffj4clK7ZOvheQy8yIjFr3
-mKDWLGQ68AfgVNeMnERlxyaxlFp+/rzJt1vhUdHNs/3BPY++HqcdwKVx2Ay/IHC4
-PDtYcr/9hx0UwpImqzPckVgA5q5TqGgjP6AH5POOhrmn25FEvcRoEla8BwiIutWE
-aFO00+4nFsR0t5ALbv3vH8yH0iFCIWK14Datd9iorDnU2Kghm1cNEgURjk1zU3Iq
-0AQMn54+kxpHUUBzB9iasGrund3Tcs6aVcDprV/iVcWbMkGby5jQs3yfupJAgKI8
-nA/SUQikwPnyV1i5W0CtRD4HV9PxPYiMhCM07+nMc2Q9wq/IKWXyzLwsZePwcxiS
-zLwO0s/108ULzNxDC4nrcdWXR6tNpdkxi3dwGntjsMv0e5oYpDF0Vg3Zp6XjT7js
-vRXDjZ39TUKQBupkzhQuj8z8AxOttfOKPAZIoaHBqboeTLaSFb+Ga3LRIvUU4Ohg
-0sL4AemLw6UlK13UvjCtg54Q1UD5vvCkchzpFwR9mZGa0zowNPe5AzRuCu5Ci9QN
-KRY+RrIIaArRPWfi8vSxSJJ1Avyd7XlthnJMnbq4qJtGtpPgorNeztnffo5dmuZt
-hZzwkTha5vBjVE0wm5x0g/aYjMFO6J9JmYkV4FvRjQWgChnaW60=
-=QHXq
------END PGP SIGNATURE-----
-
---=-ChuWidyUdrci/irWU01F--
-
+Die Azim Premji Foundation spendete 1.000.000,00 Euro. Weitere Informatione=
+n finden Sie hier: http://en.wikipedia.org/wiki/Azim_Premji und fordern Sie=
+ umgehend eine E-Mail an: prejimsfoundation@gmail.com Vielen Dank Herr Azim=
+ Premji=20
