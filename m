@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765303B1D39
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A74D33B1D3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231318AbhFWPKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 11:10:41 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:45826 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229523AbhFWPKj (ORCPT
+        id S231359AbhFWPKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 11:10:46 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:43535 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231229AbhFWPKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Jun 2021 11:10:39 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15NF1rA8005711;
-        Wed, 23 Jun 2021 17:08:13 +0200
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15NF20CV031734;
+        Wed, 23 Jun 2021 17:08:14 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=selector1;
- bh=WlwL5ztXWChpFycVBMo0Ty/Vdy7r4eJCRq1GkIG9V9Q=;
- b=xNqG2SRnzTwmHW7mFYubkgvPQAl5gA+bq1PXMm7r3GaZCOTigbGEAPBX2BdEdug7Nb8r
- JBc5oebWh+SOKfsJfRgkb8CNL08nYdXTLrfQ4MVTRa5PU4oFhjQN8Ws6QqxBEhgbURDj
- XM3f/BkeuyJCO4gfil3CgFZbcaHGDL30EIM9quG9e2jK87afQOxCUsuSk0r7eY14K1Nq
- Fk1mcJpPSnf2cx3o7KDcFlBAcZFORxEWkcUINbruYXwmBb/FUzXEe45wpq8FKr+Y1uN4
- N/RB9AHff+7x22GYALXf7GUi+q8pfwccM7/pZqeV7oS2eBOvnVgwToRgyQYoaJm32F4s tQ== 
+ bh=qor8IDfXqtXwE4FJUTMJlIEuinvs4TdpF5ViY4rId8Y=;
+ b=8SXvwQhSSVL0mqULs+y2ApobECB2JCcz07vkCIOOK+C0CF7rTejoEcsOrc17XmqbsjRQ
+ nTJtiNyf2KsFMGGt0chLyMIRhyP8RhQ10fRY5U0awwLk2Hl/p50bRMd3GvOwulvgM9hd
+ UZqd5K8B2w729MGRDJGFc8/uEdCFsEVJSQFfrBpNmFMmMOpo5VfHTwKTprsI8tqSCmO1
+ JpPVSXjeke6yTY+l67XDUAaG6OVL8b5pWhvQpbhdGSjOQ5TCUubcl/IcXb8RsmQR5N8G
+ na8ocJBwwqcV8n/h34bbIOvaP/fFjrZwt7zPXHeWZU1Wn/juA09vF2OgEstJCyg/yCx6 kA== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 39c18m2ph5-1
+        by mx07-00178001.pphosted.com with ESMTP id 39bwdckhq0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Jun 2021 17:08:13 +0200
+        Wed, 23 Jun 2021 17:08:14 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DAEBA10002A;
-        Wed, 23 Jun 2021 17:08:12 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 90F4A100034;
+        Wed, 23 Jun 2021 17:08:13 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CAAC222D186;
-        Wed, 23 Jun 2021 17:08:12 +0200 (CEST)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7D86C22D186;
+        Wed, 23 Jun 2021 17:08:13 +0200 (CEST)
 Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
  with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 23 Jun 2021 17:08:12
  +0200
@@ -44,16 +44,16 @@ To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
 CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <julien.massot@iot.bzh>, <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH v2 3/4] rpmsg: char: Add possibility to use default endpoint of the rpmsg device.
-Date:   Wed, 23 Jun 2021 17:05:03 +0200
-Message-ID: <20210623150504.14450-4-arnaud.pouliquen@foss.st.com>
+Subject: [PATCH v2 4/4] rpmsg: char: Introduce the "rpmsg-raw" channel
+Date:   Wed, 23 Jun 2021 17:05:04 +0200
+Message-ID: <20210623150504.14450-5-arnaud.pouliquen@foss.st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210623150504.14450-1-arnaud.pouliquen@foss.st.com>
 References: <20210623150504.14450-1-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
  (10.75.127.6)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-06-23_09:2021-06-23,2021-06-23 signatures=0
@@ -61,100 +61,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current implementation create/destroy a new endpoint on each
-rpmsg_eptdev_open/rpmsg_eptdev_release calls.
+Allows to probe the endpoint device on a remote name service announcement,
+by registering a rpmsg_driverfor the "rpmsg-raw" channel.
 
-For a rpmsg device created by the NS announcement mechanism we need to
-use a unique static endpoint that is the default rpmsg device endpoint
-associated to the channel.
-
-This patch prepares the introduction of a rpmsg channel device for the
-char device. The rpmsg channel device will require a default endpoint to
-communicate to the remote processor.
-
-Add the static_ept field in rpmsg_eptdev structure. This boolean
-determines the behavior on rpmsg_eptdev_open and rpmsg_eptdev_release call.
-
-- If static_ept == false:
-  Use the legacy behavior by creating a new endpoint each time
-  rpmsg_eptdev_open is called and release it when rpmsg_eptdev_release
-  is called on /dev/rpmsgX device open/close.
-
-- If static_ept == true:
-  use the rpmsg device default endpoint for the communication.
-- Address the update of _rpmsg_chrdev_eptdev_create in e separate patch for readability.
-
-Add protection in rpmsg_eptdev_ioctl to prevent to destroy a default endpoint.
+With this patch the /dev/rpmsgX interface can be instantiated by the remote
+firmware.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
 ---
 update vs V1:
-- remove the management of the default endpoint creation from rpmsg_eptdev_open.
+- management of the default endpoint creation in the driver probe.
 
 ---
- drivers/rpmsg/rpmsg_char.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+ drivers/rpmsg/rpmsg_char.c | 75 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 73 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-index 50b7d4b00175..a75dce1e29d8 100644
+index a75dce1e29d8..3748de00c97b 100644
 --- a/drivers/rpmsg/rpmsg_char.c
 +++ b/drivers/rpmsg/rpmsg_char.c
-@@ -45,6 +45,8 @@ static DEFINE_IDA(rpmsg_minor_ida);
-  * @queue_lock:	synchronization of @queue operations
-  * @queue:	incoming message queue
-  * @readq:	wait object for incoming queue
-+ * @static_ept: specify if the endpoint has to be created at each device opening or
-+ *              if the default endpoint should be used.
-  */
- struct rpmsg_eptdev {
- 	struct device dev;
-@@ -59,6 +61,8 @@ struct rpmsg_eptdev {
- 	spinlock_t queue_lock;
- 	struct sk_buff_head queue;
- 	wait_queue_head_t readq;
+@@ -25,6 +25,8 @@
+ 
+ #include "rpmsg_char.h"
+ 
++#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
 +
-+	bool static_ept;
- };
+ static dev_t rpmsg_major;
+ static struct class *rpmsg_class;
  
- int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data)
-@@ -116,7 +120,15 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
- 
- 	get_device(dev);
- 
--	ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
-+	/*
-+	 * If the static_ept is set to true, the rpmsg device default endpoint is used.
-+	 * Else a new endpoint is created on open that will be destroyed on release.
-+	 */
-+	if (eptdev->static_ept)
-+		ept = rpdev->ept;
-+	else
-+		ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
-+
- 	if (!ept) {
- 		dev_err(dev, "failed to open %s\n", eptdev->chinfo.name);
- 		put_device(dev);
-@@ -137,7 +149,8 @@ static int rpmsg_eptdev_release(struct inode *inode, struct file *filp)
- 	/* Close the endpoint, if it's not already destroyed by the parent */
- 	mutex_lock(&eptdev->ept_lock);
- 	if (eptdev->ept) {
--		rpmsg_destroy_ept(eptdev->ept);
-+		if (!eptdev->static_ept)
-+			rpmsg_destroy_ept(eptdev->ept);
- 		eptdev->ept = NULL;
- 	}
- 	mutex_unlock(&eptdev->ept_lock);
-@@ -264,6 +277,10 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
- 	if (cmd != RPMSG_DESTROY_EPT_IOCTL)
- 		return -EINVAL;
- 
-+	/* Don't allow to destroy a default endpoint. */
-+	if (!eptdev->rpdev || eptdev->ept == eptdev->rpdev->ept)
-+		return -EPERM;
-+
- 	return rpmsg_chrdev_eptdev_destroy(&eptdev->dev, NULL);
+@@ -421,6 +423,61 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
  }
+ EXPORT_SYMBOL(rpmsg_chrdev_eptdev_create);
  
++static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
++{
++	struct rpmsg_channel_info chinfo;
++	struct rpmsg_eptdev *eptdev;
++	struct rpmsg_endpoint *ept;
++
++	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
++	chinfo.src = rpdev->src;
++	chinfo.dst = rpdev->dst;
++
++	eptdev =  __rpmsg_chrdev_eptdev_create(rpdev, &rpdev->dev, chinfo);
++	if (IS_ERR(eptdev))
++		return PTR_ERR(eptdev);
++
++	/*
++	 * Create the default endpoint associated to the rpmsg device and provide rpmsg_eptdev
++	 * structure as callback private data.
++	 */
++	ept = rpmsg_create_default_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
++	if (!ept) {
++		dev_err(&rpdev->dev, "failed to create %s\n", eptdev->chinfo.name);
++		put_device(&eptdev->dev);
++		return -EINVAL;
++	}
++
++	/*
++	 * Do not allow the creation and release of an endpoint on /dev/rpmsgX open and close,
++	 * reuse the default endpoint instead
++	 */
++	eptdev->static_ept = true;
++
++	return 0;
++}
++
++static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
++{
++	int ret;
++
++	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
++	if (ret)
++		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
++}
++
++static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
++	{ .name	= RPMSG_CHAR_DEVNAME },
++	{ },
++};
++
++static struct rpmsg_driver rpmsg_chrdev_driver = {
++	.probe = rpmsg_chrdev_probe,
++	.remove = rpmsg_chrdev_remove,
++	.id_table = rpmsg_chrdev_id_table,
++	.drv.name = "rpmsg_chrdev",
++};
++
+ static int rpmsg_chrdev_init(void)
+ {
+ 	int ret;
+@@ -434,16 +491,30 @@ static int rpmsg_chrdev_init(void)
+ 	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
+ 	if (IS_ERR(rpmsg_class)) {
+ 		pr_err("failed to create rpmsg class\n");
+-		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+-		return PTR_ERR(rpmsg_class);
++		ret = PTR_ERR(rpmsg_class);
++		goto free_region;
++	}
++
++	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
++	if (ret < 0) {
++		pr_err("rpmsg: failed to register rpmsg raw driver\n");
++		goto free_class;
+ 	}
+ 
+ 	return 0;
++
++free_class:
++	class_destroy(rpmsg_class);
++free_region:
++	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
++
++	return ret;
+ }
+ postcore_initcall(rpmsg_chrdev_init);
+ 
+ static void rpmsg_chrdev_exit(void)
+ {
++	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
+ 	class_destroy(rpmsg_class);
+ 	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+ }
 -- 
 2.17.1
 
