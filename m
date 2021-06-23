@@ -2,120 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14EFB3B214D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540F03B215D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbhFWTjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 15:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
+        id S230130AbhFWTmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 15:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbhFWTjR (ORCPT
+        with ESMTP id S230124AbhFWTmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 15:39:17 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E75C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 12:36:59 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id a2so2638281pgi.6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 12:36:59 -0700 (PDT)
+        Wed, 23 Jun 2021 15:42:35 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A0AC0613A2;
+        Wed, 23 Jun 2021 12:40:15 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 6-20020a9d07860000b02903e83bf8f8fcso3086987oto.12;
+        Wed, 23 Jun 2021 12:40:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DlZY/TglFz9Z+A/FXNVmCx8+XtZYKOCmoni9885067M=;
-        b=P2kxwQz7RbtSVh2sDIXBaHMTo7nhNcUuMgEys+kaa61inUPicr0NuRffqlBA4+7anp
-         3FN9ufvskOQ+YDx9TQPxPrk/vpRopw7QRnYnYG734rPrUe5k0xedegvZuA7O8efRjQRn
-         twFIga5jSf0f/rLLspvYuTzQ+NuhgCOr2J0e2zpVoBxIjdKHseBd4ezqwGThXvMU4yb9
-         y2KJmK5fLZKDWv261UiwKxKNJIVti8Fi2aOyxpDqfPQsthM4aP4zN6xLOLQ9Zv1LgwuK
-         30bshb9jzrJA+W0AJk4rJ5665/OYhoGYuxsuWAfeYxOiy9FZMhTalIvrmQtJhVjj0yLI
-         eNpQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iDjEA/DLHJuJqbx7wc+mRyI0RJczQytGp1V6E75bd6s=;
+        b=njxfplOx17G0/91fOLaiwVofE0DeSdGcCG3lxRi9OYVY6KYvRDAEsYT4a2X08avjYz
+         uk9LS4BPT8B0ygh92FmzwsjnilNP75l1/gXEVq89GseCAdSIpq6YYw8fjjAPPxr4o+PW
+         L1d2m01Uw4KLPxZ66w09nOVAPTd8mJoSjCCMU66jx/8k6x/Lf49D21aPA/ifhKbt2vkW
+         jY4n3+MG8/wALoxr2cftjzWWAHPFat3vVo01kBbQP+RM7GGT5W4PQR6uFllaJRjFkjzQ
+         vwcmftcSUgYfe5LpftZyXNntJzQ+Wo2BZqKzqtT+Ch7LKM5E+/AWX9vBPa/rH66Sg51K
+         GNSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DlZY/TglFz9Z+A/FXNVmCx8+XtZYKOCmoni9885067M=;
-        b=aRfuNvNUSTWmKEKZTEMaJQjjRyeQLmLXhtCLhM40f9ljBugus3oI5KQ40b2w5ToxWj
-         KnLw9D3z/e9TaTdsd82aH4VCxNMedC5/qbEz4eMVd+2k+tAsuOTFbOhv/YFktvSHovpr
-         TgHfh1u25Kk9cuA3M7qiUnoYPQKJnthzeqdX5bjZaxr9+4+tntRWcJR7/eY3pe2fC60h
-         u1qy42GlttywrkGL8DfIEW4gALlvlO6L0JFP+/iXptvliQ6YvAvmZHvXdiqxYYiHZxOs
-         +R14QGZ9tdAgJpERycANjTQO/lQkdPry4wXzVQgXDXSn/jAGkQW1A2Sb5bnrufuDaSoS
-         QyRg==
-X-Gm-Message-State: AOAM533/jJ6yFaJbyAXetYolZM0d6/1nMIHvr5if5Qcb8y7VeKVkZYSH
-        LGqjpX7ls+IpsTp1JVPSO2MYoQ==
-X-Google-Smtp-Source: ABdhPJyYMVuea+gbeWDgtzHw4uopdhfLoWSqWVlRSJHP5Vpf+/KUJ8I3RIpiQwtQJ55NkVDAEmUgSg==
-X-Received: by 2002:a65:5ac9:: with SMTP id d9mr986290pgt.293.1624477018561;
-        Wed, 23 Jun 2021 12:36:58 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id k6sm578633pfa.215.2021.06.23.12.36.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 12:36:57 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 19:36:54 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH 16/54] KVM: x86/mmu: Drop smep_andnot_wp check from "uses
- NX" for shadow MMUs
-Message-ID: <YNONVux/a+/fuw0I@google.com>
-References: <20210622175739.3610207-1-seanjc@google.com>
- <20210622175739.3610207-17-seanjc@google.com>
- <b4f8f250-14ac-b964-c82d-6a3ef48bd38f@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iDjEA/DLHJuJqbx7wc+mRyI0RJczQytGp1V6E75bd6s=;
+        b=d7oDwWtBSFOBJ15jMYouUqLjlwSCasEdomDIFvWMcYICYo1E4noBb+G7rEoltqExPQ
+         oK5LrZgJo4cLXUUjvL/wEqLO+qCGCV0QpU8v8NpVOQf0eOwggoCxY/bAEUONGNAg3G3E
+         1H2mW+y/uJ28qjcmw5zHA6ATCJbAqLysGLEJBHQ0Ta3lxQXPJXlxoSYIpZ1OEZRGJwSV
+         Oolm3VK1vALZZ+0mOTV5sZYKcxZJSnpjpqFY9lAk6SJ5SIueSR/cEO5mXbocGz6oEhjK
+         o5NEp+EuytaKgHvkx494ehwNg1qUgOjagS5TPAlb5ktYTOou7GGpZ2ZzFx8LmCRWPJ1M
+         kMlw==
+X-Gm-Message-State: AOAM530ColhpSh+ZVgUlBXq4Z5EH8gbuSriJwiqCl1z9Zdsp/r3nn2Wx
+        mf4p6FqWRx9GdaIsIHJXiCDSklS4gX9i2w4LYhI=
+X-Google-Smtp-Source: ABdhPJznDm09EdJ4nc7aCaNiJgX/OzhaJax6fBkCDboeJEjZGy4mnzO3nT99DVOufQL4W+3P5HvD7FiPj986tjjoFdA=
+X-Received: by 2002:a9d:542:: with SMTP id 60mr1364333otw.143.1624477214591;
+ Wed, 23 Jun 2021 12:40:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b4f8f250-14ac-b964-c82d-6a3ef48bd38f@redhat.com>
+References: <20210622152343.GO1096940@ziepe.ca> <3fabe8b7-7174-bf49-5ffe-26db30968a27@amd.com>
+ <20210622154027.GS1096940@ziepe.ca> <09df4a03-d99c-3949-05b2-8b49c71a109e@amd.com>
+ <20210622160538.GT1096940@ziepe.ca> <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com>
+ <20210623182435.GX1096940@ziepe.ca> <CAFCwf111O0_YB_tixzEUmaKpGAHMNvMaOes2AfMD4x68Am4Yyg@mail.gmail.com>
+ <20210623185045.GY1096940@ziepe.ca> <CAFCwf12tW_WawFfAfrC8bgVhTRnDA7DuM+0V8w3JsUZpA2j84w@mail.gmail.com>
+ <20210623193456.GZ1096940@ziepe.ca>
+In-Reply-To: <20210623193456.GZ1096940@ziepe.ca>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Wed, 23 Jun 2021 22:39:48 +0300
+Message-ID: <CAFCwf13vM2T-eJUu42ht5jdXpRCF3UZh0Ow=vwN9QqZ=KNUBsQ@mail.gmail.com>
+Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
+ FD for DMA-BUF
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Tomer Tayar <ttayar@habana.ai>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021, Paolo Bonzini wrote:
-> On 22/06/21 19:57, Sean Christopherson wrote:
-> > Drop the smep_andnot_wp role check from the "uses NX" calculation now
-> > that all non-nested shadow MMUs treat NX as used via the !TDP check.
-> > 
-> > The shadow MMU for nested NPT, which shares the helper, does not need to
-> > deal with SMEP (or WP) as NPT walks are always "user" accesses and WP is
-> > explicitly noted as being ignored:
-> > 
-> >    Table walks for guest page tables are always treated as user writes at
-> >    the nested page table level.
-> > 
-> >    A table walk for the guest page itself is always treated as a user
-> >    access at the nested page table level
-> > 
-> >    The host hCR0.WP bit is ignored under nested paging.
-> > 
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >   arch/x86/kvm/mmu/mmu.c | 3 +--
-> >   1 file changed, 1 insertion(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 96c16a6e0044..ca7680d1ea24 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -4223,8 +4223,7 @@ reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context)
-> >   	 * NX can be used by any non-nested shadow MMU to avoid having to reset
-> >   	 * MMU contexts.  Note, KVM forces EFER.NX=1 when TDP is disabled.
-> >   	 */
-> > -	bool uses_nx = context->nx || !tdp_enabled ||
-> > -		context->mmu_role.base.smep_andnot_wp;
-> > +	bool uses_nx = context->nx || !tdp_enabled;
-> >   	struct rsvd_bits_validate *shadow_zero_check;
-> >   	int i;
-> > 
-> 
-> Good idea, but why not squash it into patch 2?
+On Wed, Jun 23, 2021 at 10:34 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Wed, Jun 23, 2021 at 10:00:29PM +0300, Oded Gabbay wrote:
+> > On Wed, Jun 23, 2021 at 9:50 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >
+> > > On Wed, Jun 23, 2021 at 09:43:04PM +0300, Oded Gabbay wrote:
+> > >
+> > > > Can you please explain why it is so important to (allow) access them
+> > > > through the CPU ?
+> > >
+> > > It is not so much important, as it reflects significant design choices
+> > > that are already tightly baked into alot of our stacks.
+> > >
+> > > A SGL is CPU accessible by design - that is baked into this thing and
+> > > places all over the place assume it. Even in RDMA we have
+> > > RXE/SWI/HFI1/qib that might want to use the CPU side (grep for sg_page
+> > > to see)
+> > >
+> > > So, the thing at the top of the stack - in this case the gaudi driver
+> > > - simply can't assume what the rest of the stack is going to do and
+> > > omit the CPU side. It breaks everything.
+> > >
+> > > Logan's patch series is the most fully developed way out of this
+> > > predicament so far.
+> >
+> > I understand the argument and I agree that for the generic case, the
+> > top of the stack can't assume anything.
+> > Having said that, in this case the SGL is encapsulated inside a dma-buf object.
+> >
+> > Maybe its a stupid/over-simplified suggestion, but can't we add a
+> > property to the dma-buf object,
+> > that will be set by the exporter, which will "tell" the importer it
+> > can't use any CPU fallback ? Only "real" p2p ?
+>
+> The block stack has been trying to do something like this.
+>
+> The flag doesn't solve the DMA API/IOMMU problems though.
+hmm, I thought using dma_map_resource will solve the IOMMU issues, no ?
+We talked about it yesterday, and you said that it will "work"
+(although I noticed a tone of reluctance when you said that).
 
-Because that patch is marked for stable and dropping the smep_andnot_wp is not
-necessary to fix the bug.  At worst, the too-liberal uses_nx will suppress the
-WARN in handle_mmio_page_fault() because this is for checking KVM's SPTEs, not
-the guest's SPTEs, i.e. KVM won't miss a guest reserved NX #PF.
+If I use dma_map_resource to set the addresses inside the SGL before I
+export the dma-buf, and guarantee no one will use the SGL in the
+dma-buf for any other purpose than device p2p, what else is needed ?
 
-That said, I'm not at all opposed to squashing this.  I have a feeling I originally
-split the patches because I wasn't super confident about either change, and never
-revisited them.
+Oded
+
+>
+> Jason
