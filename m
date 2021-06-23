@@ -2,67 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0E93B1F44
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D71D3B1F47
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbhFWROZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 13:14:25 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37939 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhFWROX (ORCPT
+        id S229900AbhFWRQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 13:16:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57116 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229688AbhFWRQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 13:14:23 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lw6Pz-0008Oj-69; Wed, 23 Jun 2021 17:12:03 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] RDMA/bnxt_re: Fix uninitialized struct bit field rsvd1
-Date:   Wed, 23 Jun 2021 18:12:02 +0100
-Message-Id: <20210623171202.161107-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 23 Jun 2021 13:16:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624468433;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z78ec/g98BXKe06htANr2c/DYa/h7G3+QwLaaBhgeMg=;
+        b=PrKmYdHch7zWnHA+bJhXIV/YsDsofwQ+2aZ3WapwjriIn6t5hfnzV8+wboslhNqSbfQAhk
+        CQNtgwnPClvZr4Vt+LiFIAg1jxYEJfRgO4l5UJClY48kq2mQLdWF3wXsXC1FSMnNAsrvNt
+        lsm2FJB3O1CF8ifTeuL//3xun2kt6pw=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-366-SKmCvxLuPa-xU15I397VXQ-1; Wed, 23 Jun 2021 13:13:52 -0400
+X-MC-Unique: SKmCvxLuPa-xU15I397VXQ-1
+Received: by mail-ej1-f72.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so1238458ejz.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:13:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z78ec/g98BXKe06htANr2c/DYa/h7G3+QwLaaBhgeMg=;
+        b=snERlw3ODwy5Amo8b3nw848WIZM1sojUPeoj//rK+QVWdxc69oUqmBHVWquCo31h1T
+         FWQGK2Ag+r8l8ufstV7l0gMfJKmmg91PEV9cdfbuvhmOFCB0hJbvZLlEo4ougZmqo70V
+         crjfPMgxYtJ1JbJrQ8Gx4ilhZnk8CohFAJhTd/Vq75CG29tARqMXBq8MbZhPjCFBF02w
+         f2jbD4Oan1lxxs7taI1a/Xi2iIPMOdD1JIMXQA1sD5I6jCtvJex/flnERJQW+SFjR8wy
+         yBIOyQAH/7CtQ8A5wRNi9yuPqzOTZ58SNMivct1+I2HGRs2BbiasWqDGdbxzRECzJnWl
+         ilDQ==
+X-Gm-Message-State: AOAM533oQnpbsuwnjAYNvyFgL/dbKSrAsyrKCsSBq1dod06NJKPfbYNr
+        Pp1miSnMzbK3ar1C9aS2174r6Y+++qWY1PZ9m+WN8P/potD2TDtSkJJKR2DSirT+z1e+++ek7ns
+        M+1CnPFoYFXuCXcfB0EqV9BLQ
+X-Received: by 2002:a17:906:c1d2:: with SMTP id bw18mr1097575ejb.123.1624468430923;
+        Wed, 23 Jun 2021 10:13:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJym0Tg6QclCCulk6ViohSKxfCSp3imk6kCnCvxSC4rXbibsXjj4upZA3C1TvWC6WGmOfQIbFQ==
+X-Received: by 2002:a17:906:c1d2:: with SMTP id bw18mr1097550ejb.123.1624468430728;
+        Wed, 23 Jun 2021 10:13:50 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id s4sm360957edu.49.2021.06.23.10.13.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 10:13:50 -0700 (PDT)
+Subject: Re: [PATCH 18/54] KVM: x86/mmu: Move nested NPT reserved bit
+ calculation into MMU proper
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+References: <20210622175739.3610207-1-seanjc@google.com>
+ <20210622175739.3610207-19-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <61d6fa84-6bfa-ec40-cc8c-5d968ca39b1b@redhat.com>
+Date:   Wed, 23 Jun 2021 19:13:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210622175739.3610207-19-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 22/06/21 19:57, Sean Christopherson wrote:
+> Move nested NPT's invocation of reset_shadow_zero_bits_mask() into the
+> MMU proper and unexport said function.  Aside from dropping an export,
+> this is a baby step toward eliminating the call entirely by fixing the
+> shadow_root_level confusion.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-The bit field rsvd1 in resp is not being initialized and garbage data
-is being copied from the stack back to userspace via the ib_copy_to_udata
-call. Fix this by setting rsvd1 to zero. Also remove some whitespace.
+Extra points for adding a comment about why the heck it's there.
 
-Addresses-Coverity: ("Uninitialized scalar variable")
-Fixes: 879740517dab ("RDMA/bnxt_re: Update ABI to pass wqe-mode to user space")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Paolo
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 5955713234cb..45398f1777aa 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -3880,7 +3880,8 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata)
- 	resp.pg_size = PAGE_SIZE;
- 	resp.cqe_sz = sizeof(struct cq_base);
- 	resp.max_cqd = dev_attr->max_cq_wqes;
--	resp.rsvd    = 0;
-+	resp.rsvd = 0;
-+	resp.rsvd1 = 0;
- 
- 	resp.comp_mask |= BNXT_RE_UCNTX_CMASK_HAVE_MODE;
- 	resp.mode = rdev->chip_ctx->modes.wqe_mode;
--- 
-2.31.1
+> ---
+>   arch/x86/kvm/mmu.h        |  3 ---
+>   arch/x86/kvm/mmu/mmu.c    | 11 ++++++++---
+>   arch/x86/kvm/svm/nested.c |  1 -
+>   3 files changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+> index 4e926f4935b0..62844bacd13f 100644
+> --- a/arch/x86/kvm/mmu.h
+> +++ b/arch/x86/kvm/mmu.h
+> @@ -68,9 +68,6 @@ static __always_inline u64 rsvd_bits(int s, int e)
+>   void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 access_mask);
+>   void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only);
+>   
+> -void
+> -reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context);
+> -
+>   void kvm_init_mmu(struct kvm_vcpu *vcpu);
+>   void kvm_init_shadow_npt_mmu(struct kvm_vcpu *vcpu, unsigned long cr0,
+>   			     unsigned long cr4, u64 efer, gpa_t nested_cr3);
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 02c54426e7a2..5a46a87b23b0 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -4212,8 +4212,8 @@ static inline u64 reserved_hpa_bits(void)
+>    * table in guest or amd nested guest, its mmu features completely
+>    * follow the features in guest.
+>    */
+> -void
+> -reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context)
+> +static void reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu,
+> +					struct kvm_mmu *context)
+>   {
+>   	/*
+>   	 * KVM uses NX when TDP is disabled to handle a variety of scenarios,
+> @@ -4247,7 +4247,6 @@ reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context)
+>   	}
+>   
+>   }
+> -EXPORT_SYMBOL_GPL(reset_shadow_zero_bits_mask);
+>   
+>   static inline bool boot_cpu_is_amd(void)
+>   {
+> @@ -4714,6 +4713,12 @@ void kvm_init_shadow_npt_mmu(struct kvm_vcpu *vcpu, unsigned long cr0,
+>   		 */
+>   		context->shadow_root_level = new_role.base.level;
+>   	}
+> +
+> +	/*
+> +	 * Redo the shadow bits, the reset done by shadow_mmu_init_context()
+> +	 * (above) may use the wrong shadow_root_level.
+> +	 */
+> +	reset_shadow_zero_bits_mask(vcpu, context);
+>   }
+>   EXPORT_SYMBOL_GPL(kvm_init_shadow_npt_mmu);
+>   
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index 33b2f9337e26..927e545591c3 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -110,7 +110,6 @@ static void nested_svm_init_mmu_context(struct kvm_vcpu *vcpu)
+>   	vcpu->arch.mmu->get_guest_pgd     = nested_svm_get_tdp_cr3;
+>   	vcpu->arch.mmu->get_pdptr         = nested_svm_get_tdp_pdptr;
+>   	vcpu->arch.mmu->inject_page_fault = nested_svm_inject_npf_exit;
+> -	reset_shadow_zero_bits_mask(vcpu, vcpu->arch.mmu);
+>   	vcpu->arch.walk_mmu              = &vcpu->arch.nested_mmu;
+>   }
+>   
+> 
 
