@@ -2,71 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD753B1762
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC173B1774
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhFWKAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 06:00:04 -0400
-Received: from www.zeus03.de ([194.117.254.33]:50036 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229987AbhFWJ7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 05:59:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=k1; bh=qnjHWxrvlV25E+
-        d+JqYskC/fAm0u3KqPiwP+2q1JtkQ=; b=KMVo5yBBkOuXR892knTgzaUrFLjniH
-        l+JmDW59UsQNN+qFCQURpFKmXa7lO/OqCygPKyZeFuonX90TTz/c+JvAQy81sKEi
-        9Qenenf3J44CvFtFtUubBt/dasWq2rc6GL9MCaphYdcEUJ8KnoH8CBcho/rQbob8
-        KK+0ljW12y1Go=
-Received: (qmail 2551062 invoked from network); 23 Jun 2021 11:57:36 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 23 Jun 2021 11:57:36 +0200
-X-UD-Smtp-Session: l3s3148p1@zeCn72vFBqogARa4RfhaAavnjlTTqzSz
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-mmc@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Lars Persson <lars.persson@axis.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-arm-kernel@axis.com, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] mmc: usdhi6rol0: : use proper DMAENGINE API for termination
-Date:   Wed, 23 Jun 2021 11:57:33 +0200
-Message-Id: <20210623095734.3046-4-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210623095734.3046-1-wsa+renesas@sang-engineering.com>
-References: <20210623095734.3046-1-wsa+renesas@sang-engineering.com>
+        id S230479AbhFWKBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 06:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230160AbhFWKBM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 06:01:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64842C061574;
+        Wed, 23 Jun 2021 02:58:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iH0tpXt8GJfX+4f0kNFBqSwnldGbSut7DrbyCImiM24=; b=rSen0Ki9x6jRV2vUrFJwY10Bs6
+        h+RK02kZENkhklTfkRVFqZ5scaMyoZQJePFTC754jWSNjScqBbNf6V7FTt9FTv3CoS+5N05j3GP9t
+        6MxuPaxWb0BGXqG49m1Sj/JrwFgRrVgTEnybs9MmZmMw90mxP+33Y+hhxjXgxG8Y9BwtSPK8r+XoV
+        YlNPE3IMttoruC7jR+kCZQ648k8KJzBU+QqWxucyO0BosIojhfUyNSrYnO0MTNYSlqU+xz0Ol4FDC
+        NHcKEKti0NMTxeOO/o6BE2Nl1Fk5HJIGrhvRB03oX5XFJ6RhUPUIIF+QDcTndJf2k2HbW9t2FwNto
+        YipIJrDg==;
+Received: from [2001:4bb8:188:3e21:6594:49:139:2b3f] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvzdz-00FI2U-Lv; Wed, 23 Jun 2021 09:58:20 +0000
+Date:   Wed, 23 Jun 2021 11:58:02 +0200
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 41/46] mm/page_alloc: Add folio allocation functions
+Message-ID: <YNMFqhRS+GK2YK8h@infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-42-willy@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622121551.3398730-42-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dmaengine_terminate_all() is deprecated in favor of explicitly saying if
-it should be sync or async. Here, we want dmaengine_terminate_sync()
-because there is no other synchronization code in the driver to handle
-an async case.
+On Tue, Jun 22, 2021 at 01:15:46PM +0100, Matthew Wilcox (Oracle) wrote:
+> +static inline
+> +struct folio *__alloc_folio_node(gfp_t gfp, unsigned int order, int nid)
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
- drivers/mmc/host/usdhi6rol0.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Weirdo prototype formatting.
 
-diff --git a/drivers/mmc/host/usdhi6rol0.c b/drivers/mmc/host/usdhi6rol0.c
-index 615f3d008af1..8cfbb244a4ae 100644
---- a/drivers/mmc/host/usdhi6rol0.c
-+++ b/drivers/mmc/host/usdhi6rol0.c
-@@ -631,9 +631,9 @@ static void usdhi6_dma_kill(struct usdhi6_host *host)
- 		__func__, data->sg_len, data->blocks, data->blksz);
- 	/* Abort DMA */
- 	if (data->flags & MMC_DATA_READ)
--		dmaengine_terminate_all(host->chan_rx);
-+		dmaengine_terminate_sync(host->chan_rx);
- 	else
--		dmaengine_terminate_all(host->chan_tx);
-+		dmaengine_terminate_sync(host->chan_tx);
- }
- 
- static void usdhi6_dma_check_error(struct usdhi6_host *host)
--- 
-2.30.2
+Otherwise looks good (assuming we grow callers):
 
+Reviewed-by: Christoph Hellwig <hch@lst.de>
