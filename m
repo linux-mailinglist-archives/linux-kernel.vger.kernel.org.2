@@ -2,78 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090683B142B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 08:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3423B1430
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 08:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhFWGtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 02:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhFWGtp (ORCPT
+        id S229915AbhFWGyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 02:54:55 -0400
+Received: from lucky1.263xmail.com ([211.157.147.130]:60154 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFWGyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 02:49:45 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 243BCC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 23:47:27 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id j2so2248982lfg.9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 23:47:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=L0V3tEWU6RXdv4sHk2WURUiKYv8hNk/3Vb4RrbCcOlY=;
-        b=NNIzqOYwBynenFN8vdGe7ySNHqpxvPYp40UtycV+u8T0/DzkDVfGebaNJZTiaaxs+m
-         JU6BZtFEM+HuMoMcE39KG4wkvyg47pX2Ig/bJUMkQJysrHm190UO9m0ELxSjtzgBoDFH
-         LllrbCzSCCPP5t7i9+O3zUpTdOkbvrEVjh7cFRiAL7/gcTbCRRnHL6xVysl7hiJc6uI7
-         9KerAOtBaoDnpJ58zK82F2gZpU5aph+Gqik30tAJYLZO7bfKAVPjV67u2Os3OFylcSWY
-         0pugdGNSNUzyJ+g6yGZSYsGJWIlHafV+8X7hs5Iuoly01+Awvd11KQ8phRHUdf9fzjD3
-         FGPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=L0V3tEWU6RXdv4sHk2WURUiKYv8hNk/3Vb4RrbCcOlY=;
-        b=oI3CD9qwcWj7xr605kTD3J37Zzep0uLP5ohU2KOOIdMhx9elD6/r0Eu2EUdHmnSRlE
-         /VBBo3RxBtfcmzUqdKGT36iNJT+1rJ8pIHmAkMegEtFHiN71p81IwLUSpp0dDzx5Gr2n
-         lMIpZbpI8p/wKwVTE6ezWcOroXMZWNV9DDracoXMY1deuM6Iwh8lXLYQ+LHY6huxVAbW
-         wVf83fq/DC4UfdDPMhyRxdc0rzHHsJ50yaiMxh5rMUiulONbd2VVPvaxBW0k/anNPv5w
-         DlR/iFfAf74ZT0C+nZsdfDYOjPv65/9HHa/G37ibz+aYfsUf8ahs5a5f1MqPHCF8kOpR
-         hfBQ==
-X-Gm-Message-State: AOAM531gWnIhZ+SHLuafN4FA5KFCGSIF1EfVB0qCiVIPy1LhtNiY/7ef
-        FaAd51fzijSIklJ0+4jIaTPFuqFJ91D+WtloIDk=
-X-Google-Smtp-Source: ABdhPJy9apBlfTn2BeeCKJqE69QfF6t+fc5zVTWNpl9YEMabMnNCtaqklFziqU3NEPkK+ry8npgV2bfHEOdbzSAis7g=
-X-Received: by 2002:a19:e301:: with SMTP id a1mr1615623lfh.468.1624430845089;
- Tue, 22 Jun 2021 23:47:25 -0700 (PDT)
+        Wed, 23 Jun 2021 02:54:54 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 06445D5D50;
+        Wed, 23 Jun 2021 14:52:25 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.240.82.166])
+        by smtp.263.net (postfix) whith ESMTP id P12363T139709705611008S1624431137991408_;
+        Wed, 23 Jun 2021 14:52:25 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <e1260b0ac2be0914014618341be74d5b>
+X-RL-SENDER: wubian@uniontech.com
+X-SENDER: wubian@uniontech.com
+X-LOGIN-NAME: wubian@uniontech.com
+X-FST-TO: gregkh@linuxfoundation.org
+X-RCPT-COUNT: 3
+X-SENDER-IP: 58.240.82.166
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   wubian <wubian@uniontech.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, wubian <wubian@uniontech.com>
+Subject: [PATCH] uio: Fix bus error that access memory mapped by physical
+Date:   Wed, 23 Jun 2021 14:52:14 +0800
+Message-Id: <20210623065214.4525-1-wubian@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Received: by 2002:a05:6512:31c2:0:0:0:0 with HTTP; Tue, 22 Jun 2021 23:47:24
- -0700 (PDT)
-Reply-To: ayishagddafio@mail.ru
-From:   AISHA GADDAFI <mrmusakabore17@gmail.com>
-Date:   Tue, 22 Jun 2021 23:47:24 -0700
-Message-ID: <CA+jaZSAZ8KSVCZxAk9eGzynYbqM6ncQympNZqAH61KLkAEX+4w@mail.gmail.com>
-Subject: Liebster Freund,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Liebster Freund,
+On the arm64, register the uio driver and map a physical space
+on the pci device to user space, then use memset write data to
+the address space, a bus error will occur. This error is due to
+the dc instruction(cache operation) used in the assembly of memset,
+uio mapping physical memory will call pgprot_noncached() to set
+non-cached and non-buffered, while pgprot_writecombine() has fewer
+restrictions. It does not prohibit write buffer, so replacing
+pgprot_noncached() with pgprot_writecombine() can solve this problem.
 
-Im Namen Gottes, des gn=C3=A4digsten, barmherzigsten.
+Signed-off-by: wubian <wubian@uniontech.com>
+---
+ drivers/uio/uio.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Friede sei mit dir und Barmherzigkeit sei mit dir und Segen sei mit dir.
-Ich habe die Summe von 27,5 Millionen USD f=C3=BCr Investitionen, ich
-interessiere mich f=C3=BCr Sie f=C3=BCr die Unterst=C3=BCtzung von
-Investitionsprojekten in Ihrem Land. Mein Name ist Aisha Gaddafi und
-lebe derzeit im Oman, ich bin eine Witwe und alleinerziehende Mutter
-mit drei Kindern, die einzige leibliche Tochter des verstorbenen
-libyschen Pr=C3=A4sidenten (dem verstorbenen Oberst Muammar Gaddafi) und
-stehe derzeit unter politischem Asylschutz der omanischen Regierung.
+diff --git a/drivers/uio/uio.c b/drivers/uio/uio.c
+index ea96e319c8a0..09b04b20fa30 100644
+--- a/drivers/uio/uio.c
++++ b/drivers/uio/uio.c
+@@ -739,7 +739,11 @@ static int uio_mmap_physical(struct vm_area_struct *vma)
+ 
+ 	vma->vm_ops = &uio_physical_vm_ops;
+ 	if (idev->info->mem[mi].memtype == UIO_MEM_PHYS)
++#if defined(CONFIG_ARM64)
++		vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
++#else
+ 		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
++#endif
+ 
+ 	/*
+ 	 * We cannot use the vm_iomap_memory() helper here,
+-- 
+2.20.1
 
-Bitte antworten Sie dringend f=C3=BCr weitere Details.
 
-Vielen Dank
-Mit freundlichen Gr=C3=BC=C3=9Fen Aisha
+
