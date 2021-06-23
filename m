@@ -2,53 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5993B159E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB443B15A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhFWIV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 04:21:29 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35070 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbhFWIV2 (ORCPT
+        id S230182AbhFWIVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 04:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229978AbhFWIV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Jun 2021 04:21:28 -0400
-Date:   Wed, 23 Jun 2021 08:19:06 -0000
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7166C061574;
+        Wed, 23 Jun 2021 01:19:10 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 08:19:07 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624436347;
+        s=2020; t=1624436348;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=eK7GRCwA6HO4XWyVewMswAnEzqvKLugjY6A+BEGGUL0=;
-        b=ZE7cS7WAuAVXsYw3zUv52NMean/5Sn17ngt7TbKbCLxDJT0Nzc7UlQ8D3D8kqamin44kDt
-        1mMkq5wWfBm7gdjT9vyA2RNgmFMDF+M/c6a6aJLbyAMZzTErPLEZQqyyb4qXUpJhY1QiBv
-        /pTiN6izbjGPQ+lkv+42Dk0t9GON9M3dSvfl/PgfyuSaKVliKsAoIPg6iKQACLNgWPYl2D
-        CcuwRd0nEUAd8W9gKWzDsl5TAIfyJkBMhbJR41TKwOA4ktKQ2m08yinXFvnxtvc9GzAc//
-        ve9TYBURtPbtOpA7FmUVJ6w4oew/XbtNnlyTYmaS5DSwljHloo3grlz1+1g6Ew==
+        bh=BvmuNRkHNMpJnMr2xeAn53Js5Ahjs2Qmz5REv6aVmj8=;
+        b=o936KJfLFXUfGKavuwzuAb7UkxX+RAC9Gt8afzUIGQEhcjoXjZRXhLasKbgpKRD7yJtkHC
+        RgGhU9cquWM72OE8hEMDIB0yWXYkMR78qy78t57zd4Zd4nfkzmCZAk6rBEbfyblIODur7N
+        sktBYtsCAuy/UB9oxtqKeUXhX90AiDtnj23IPZ8IsLKrfQSVGk/5teo+XfS+tplhKzCxC4
+        7DLFiXCBzZAInkovmhEgjr+1VrGY5vi6PASkprcH/WCQYIHjn3/1Mb8VJOj8zDJPiRLHVC
+        vkrstb4krj0RazyfVneL49K1EwJ/wP/aWoGI/PVFBZGUSeVnjv4JtNjurd3BrA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624436347;
+        s=2020e; t=1624436348;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=eK7GRCwA6HO4XWyVewMswAnEzqvKLugjY6A+BEGGUL0=;
-        b=DdguHOpPngcAODqdBPDwPmwSzkvKeA0iJHk4IcRWek6jZcC5QNVJwKaPFTepwp/5CLslNJ
-        q5B9VD3CknDyM0CA==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+        bh=BvmuNRkHNMpJnMr2xeAn53Js5Ahjs2Qmz5REv6aVmj8=;
+        b=AYtgg3YxrTdgo8pTxCWgZlicJz0lyYuSluxqBvDgRysvshAlvEzrdYhWM9YWaNMfKo6ESo
+        Y65dRg0WCh1nxnDA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] futex: Provide FUTEX_LOCK_PI2 to support clock selection
-Cc:     Kurt Kanzenbach <kurt@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+Subject: [tip: locking/core] lockdep/selftest: Remove wait-type RCU_CALLBACK tests
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210422194705.440773992@linutronix.de>
-References: <20210422194705.440773992@linutronix.de>
+In-Reply-To: <20210617190313.384290291@infradead.org>
+References: <20210617190313.384290291@infradead.org>
 MIME-Version: 1.0
-Message-ID: <162443634666.395.17352380561826819926.tip-bot2@tip-bot2>
+Message-ID: <162443634758.395.13143299842597952033.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,94 +61,73 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     bf22a6976897977b0a3f1aeba6823c959fc4fdae
-Gitweb:        https://git.kernel.org/tip/bf22a6976897977b0a3f1aeba6823c959fc4fdae
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 22 Apr 2021 21:44:23 +02:00
+Commit-ID:     1a8122960484b19d8d887fb32e1cf42be5647533
+Gitweb:        https://git.kernel.org/tip/1a8122960484b19d8d887fb32e1cf42be5647533
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Thu, 17 Jun 2021 20:57:20 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 22 Jun 2021 16:42:09 +02:00
+CommitterDate: Tue, 22 Jun 2021 16:42:08 +02:00
 
-futex: Provide FUTEX_LOCK_PI2 to support clock selection
+lockdep/selftest: Remove wait-type RCU_CALLBACK tests
 
-The FUTEX_LOCK_PI futex operand uses a CLOCK_REALTIME based absolute
-timeout since it was implemented, but it does not require that the
-FUTEX_CLOCK_REALTIME flag is set, because that was introduced later.
+The problem is that rcu_callback_map doesn't have wait_types defined,
+and doing so would make it indistinguishable from SOFTIRQ in any case.
+Remove it.
 
-In theory as none of the user space implementations can set the
-FUTEX_CLOCK_REALTIME flag on this operand, it would be possible to
-creatively abuse it and make the meaning invers, i.e. select CLOCK_REALTIME
-when not set and CLOCK_MONOTONIC when set. But that's a nasty hackery.
-
-Another option would be to have a new FUTEX_CLOCK_MONOTONIC flag only for
-FUTEX_LOCK_PI, but that's also awkward because it does not allow libraries
-to handle the timeout clock selection consistently.
-
-So provide a new FUTEX_LOCK_PI2 operand which implements the timeout
-semantics which the other operands use and leave FUTEX_LOCK_PI alone.
-
-Reported-by: Kurt Kanzenbach <kurt@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Fixes: 9271a40d2a14 ("lockdep/selftest: Add wait context selftests")
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210422194705.440773992@linutronix.de
+Tested-by: Joerg Roedel <jroedel@suse.de>
+Link: https://lore.kernel.org/r/20210617190313.384290291@infradead.org
 ---
- include/uapi/linux/futex.h | 2 ++
- kernel/futex.c             | 7 ++++++-
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ lib/locking-selftest.c | 17 -----------------
+ 1 file changed, 17 deletions(-)
 
-diff --git a/include/uapi/linux/futex.h b/include/uapi/linux/futex.h
-index a89eb0a..235e5b2 100644
---- a/include/uapi/linux/futex.h
-+++ b/include/uapi/linux/futex.h
-@@ -21,6 +21,7 @@
- #define FUTEX_WAKE_BITSET	10
- #define FUTEX_WAIT_REQUEUE_PI	11
- #define FUTEX_CMP_REQUEUE_PI	12
-+#define FUTEX_LOCK_PI2		13
+diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+index af12e84..161108e 100644
+--- a/lib/locking-selftest.c
++++ b/lib/locking-selftest.c
+@@ -2494,16 +2494,6 @@ static void rcu_sched_exit(int *_)
+ 	int rcu_sched_guard_##name __guard(rcu_sched_exit);	\
+ 	rcu_read_lock_sched();
  
- #define FUTEX_PRIVATE_FLAG	128
- #define FUTEX_CLOCK_REALTIME	256
-@@ -32,6 +33,7 @@
- #define FUTEX_CMP_REQUEUE_PRIVATE (FUTEX_CMP_REQUEUE | FUTEX_PRIVATE_FLAG)
- #define FUTEX_WAKE_OP_PRIVATE	(FUTEX_WAKE_OP | FUTEX_PRIVATE_FLAG)
- #define FUTEX_LOCK_PI_PRIVATE	(FUTEX_LOCK_PI | FUTEX_PRIVATE_FLAG)
-+#define FUTEX_LOCK_PI2_PRIVATE	(FUTEX_LOCK_PI2 | FUTEX_PRIVATE_FLAG)
- #define FUTEX_UNLOCK_PI_PRIVATE	(FUTEX_UNLOCK_PI | FUTEX_PRIVATE_FLAG)
- #define FUTEX_TRYLOCK_PI_PRIVATE (FUTEX_TRYLOCK_PI | FUTEX_PRIVATE_FLAG)
- #define FUTEX_WAIT_BITSET_PRIVATE	(FUTEX_WAIT_BITSET | FUTEX_PRIVATE_FLAG)
-diff --git a/kernel/futex.c b/kernel/futex.c
-index f820439..f832b64 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -3707,12 +3707,14 @@ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
+-static void rcu_callback_exit(int *_)
+-{
+-	rcu_lock_release(&rcu_callback_map);
+-}
+-
+-#define RCU_CALLBACK_CONTEXT(name, ...)					\
+-	int rcu_callback_guard_##name __guard(rcu_callback_exit);	\
+-	rcu_lock_acquire(&rcu_callback_map);
+-
+-
+ static void raw_spinlock_exit(raw_spinlock_t **lock)
+ {
+ 	raw_spin_unlock(*lock);
+@@ -2560,8 +2550,6 @@ static void __maybe_unused inner##_in_##outer(void)				\
+  * ---------------+-------+----------+------+-------
+  * RCU_BH         |   o   |    o     |  o   |  x
+  * ---------------+-------+----------+------+-------
+- * RCU_CALLBACK   |   o   |    o     |  o   |  x
+- * ---------------+-------+----------+------+-------
+  * RCU_SCHED      |   o   |    o     |  x   |  x
+  * ---------------+-------+----------+------+-------
+  * RAW_SPIN       |   o   |    o     |  x   |  x
+@@ -2578,7 +2566,6 @@ GENERATE_2_CONTEXT_TESTCASE(NOTTHREADED_HARDIRQ, , inner, inner_lock)		\
+ GENERATE_2_CONTEXT_TESTCASE(SOFTIRQ, , inner, inner_lock)			\
+ GENERATE_2_CONTEXT_TESTCASE(RCU, , inner, inner_lock)				\
+ GENERATE_2_CONTEXT_TESTCASE(RCU_BH, , inner, inner_lock)			\
+-GENERATE_2_CONTEXT_TESTCASE(RCU_CALLBACK, , inner, inner_lock)			\
+ GENERATE_2_CONTEXT_TESTCASE(RCU_SCHED, , inner, inner_lock)			\
+ GENERATE_2_CONTEXT_TESTCASE(RAW_SPINLOCK, raw_lock_A, inner, inner_lock)	\
+ GENERATE_2_CONTEXT_TESTCASE(SPINLOCK, lock_A, inner, inner_lock)		\
+@@ -2640,10 +2627,6 @@ static void wait_context_tests(void)
+ 	DO_CONTEXT_TESTCASE_OUTER_LIMITED_PREEMPTIBLE(RCU_BH);
+ 	pr_cont("\n");
  
- 	if (op & FUTEX_CLOCK_REALTIME) {
- 		flags |= FLAGS_CLOCKRT;
--		if (cmd != FUTEX_WAIT_BITSET &&	cmd != FUTEX_WAIT_REQUEUE_PI)
-+		if (cmd != FUTEX_WAIT_BITSET && cmd != FUTEX_WAIT_REQUEUE_PI &&
-+		    cmd != FUTEX_LOCK_PI2)
- 			return -ENOSYS;
- 	}
- 
- 	switch (cmd) {
- 	case FUTEX_LOCK_PI:
-+	case FUTEX_LOCK_PI2:
- 	case FUTEX_UNLOCK_PI:
- 	case FUTEX_TRYLOCK_PI:
- 	case FUTEX_WAIT_REQUEUE_PI:
-@@ -3740,6 +3742,8 @@ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
- 		return futex_wake_op(uaddr, flags, uaddr2, val, val2, val3);
- 	case FUTEX_LOCK_PI:
- 		flags |= FLAGS_CLOCKRT;
-+		fallthrough;
-+	case FUTEX_LOCK_PI2:
- 		return futex_lock_pi(uaddr, flags, timeout, 0);
- 	case FUTEX_UNLOCK_PI:
- 		return futex_unlock_pi(uaddr, flags);
-@@ -3760,6 +3764,7 @@ static __always_inline bool futex_cmd_has_timeout(u32 cmd)
- 	switch (cmd) {
- 	case FUTEX_WAIT:
- 	case FUTEX_LOCK_PI:
-+	case FUTEX_LOCK_PI2:
- 	case FUTEX_WAIT_BITSET:
- 	case FUTEX_WAIT_REQUEUE_PI:
- 		return true;
+-	print_testname("in RCU callback context");
+-	DO_CONTEXT_TESTCASE_OUTER_LIMITED_PREEMPTIBLE(RCU_CALLBACK);
+-	pr_cont("\n");
+-
+ 	print_testname("in RCU-sched context");
+ 	DO_CONTEXT_TESTCASE_OUTER_NOT_PREEMPTIBLE(RCU_SCHED);
+ 	pr_cont("\n");
