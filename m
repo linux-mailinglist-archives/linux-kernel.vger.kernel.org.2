@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880F03B14B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFFA3B14D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbhFWHiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 03:38:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229906AbhFWHiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 03:38:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04F536128A;
-        Wed, 23 Jun 2021 07:35:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624433747;
-        bh=pCOhVJN/mvleiRbdksd7EMIoZK9+lmr+dtQTNulvelw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MjhbzRFvwHvypgQZoJh5SxzpMVOS+MbnMFxQH6BZ6fspyIZpjteJhlTekt6oyhSvp
-         N13atBa15MCb3ULaLM3fJe2BDYGygXhjVo7MEreOX4Ltp7yKk//J4dlY75QnfkW8cj
-         c1laWpwl1fAGavsgwXPkbd/AvX/oyTqYgU/spWBpsm2mcgaWQSd7UK5AUZyfj0skVj
-         8eMcjYR7NgQZa2nRCa5X7mNqo4NaOaTtSH5xRJbAKxy1cC6CF58FPPZiRqYLoXV6V9
-         Zt5lpqRbSqLgc0BPl0Tecr9hQPyHfk9gEnLaf7N2gBBMMDymQRJ4noOpRhelYjioy1
-         AyWOb8IOAG5jQ==
-Date:   Wed, 23 Jun 2021 13:05:44 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Linux Phy <linux-phy@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: Re: [GIT PULL]: Generic phy updates for v5.14
-Message-ID: <YNLkUNrqIV13NtMI@matsya>
-References: <YNLRn/5JkyYhYwxi@matsya>
- <YNLhBZokBed/jxNC@kroah.com>
- <CAMhs-H8hV8Lv2B3vCcCqgWmpg3jbhLF8kna2SoFbSd5xV3ARXw@mail.gmail.com>
+        id S230505AbhFWHil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 03:38:41 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:32841 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230224AbhFWHiW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 03:38:22 -0400
+X-UUID: b8ebb6a309b0468da29a2edfaf44f64a-20210623
+X-UUID: b8ebb6a309b0468da29a2edfaf44f64a-20210623
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <moudy.ho@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1649141153; Wed, 23 Jun 2021 15:35:58 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 23 Jun 2021 15:35:57 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 23 Jun 2021 15:35:57 +0800
+From:   Moudy Ho <moudy.ho@mediatek.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+CC:     Maoguang Meng <maoguang.meng@mediatek.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        daoyuan huang <daoyuan.huang@mediatek.com>,
+        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Landley <rob@landley.net>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <tfiga@chromium.org>,
+        <drinkcat@chromium.org>, <acourbot@chromium.org>,
+        <pihsun@chromium.org>, <menghui.lin@mediatek.com>,
+        <sj.huang@mediatek.com>, <ben.lok@mediatek.com>,
+        <randy.wu@mediatek.com>, <moudy.ho@mediatek.com>,
+        <srv_heupstream@mediatek.com>, <frederic.chen@mediatek.com>
+Subject: [RFC PATCH V0 06/10] media: mtk-mdp3: move clock on to precise place
+Date:   Wed, 23 Jun 2021 15:35:45 +0800
+Message-ID: <20210623073549.24170-6-moudy.ho@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210623073549.24170-1-moudy.ho@mediatek.com>
+References: <20210623073549.24170-1-moudy.ho@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMhs-H8hV8Lv2B3vCcCqgWmpg3jbhLF8kna2SoFbSd5xV3ARXw@mail.gmail.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-06-21, 09:29, Sergio Paracuellos wrote:
-> Hi Greg,
-> 
-> On Wed, Jun 23, 2021 at 9:21 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, Jun 23, 2021 at 11:45:59AM +0530, Vinod Koul wrote:
-> > > Hello Greg,
-> > >
-> > > Please pull to receive Generic phy subsystem updates for v5.14
-> > >
-> > > The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
-> > >
-> > >   Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
-> > >
-> > > are available in the Git repository at:
-> > >
-> > >   git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-for-5.14
-> > >
-> > > for you to fetch changes up to f7eedcb8539ddcbb6fe7791f1b4ccf43f905c72f:
-> > >
-> > >   phy: ti: dm816x: Fix the error handling path in 'dm816x_usb_phy_probe() (2021-06-21 12:04:18 +0530)
-> > >
-> > > ----------------------------------------------------------------
-> > > phy-for-5.14
-> > >
-> > >   - Updates:
-> > >         - Yaml conversion for renesas,rcar-gen3 pcie phy and
-> > >         rockchip-usb-phy bindings
-> > >         - Support for devm_phy_get() taking NULL phy name
-> > >
-> > >   - New support:
-> > >       - PCIe phy for Qualcomm IPQ60xx
-> > >       - PCIe phy for Qualcomm SDX55
-> > >       - USB phy for RK3308
-> > >       - CAN transceivers phy for TI TCAN104x
-> > >         - Innosilicon-based CSI dphy for rockchip
-> >
-> > Why is PHY_MT7621_PCI only y/n?  Shouldn't this be able to be built as a
-> > module?
-> >
-> > The USB phy enables this driver, which now forces me to build it into my
-> > kernel, which does not seem like a wise idea.  I'm not sure which commit
-> > in this series does this, but that isn't a good thing.
-> >
-> > Ah, it's 6eded551cefe ("phy: ralink: Kconfig: convert mt7621-pci-phy
-> > into 'bool'"), why is that needed?  We are working to turn more code
-> > into modules, not force them to be built in, this feels like the wrong
-> > way to go :(
+From: daoyuan huang <daoyuan.huang@mediatek.com>
 
-Agree, I should have _not_ picked this, sorry.
+Move clock on to the previous line of cmdq_pkt_flush.
 
-I am reverting this commit and sending updated series shortly
+Due to there're two ways(sync/async) to submit CMDQ task,
+and for async case we need to prepare callback param struct along
+with error checks and error handlings before submit,
+if we move clock on after these error check steps,
+we can save some clock off code in error handling.
 
-> This was turned into bool to automatically be included if CONFIG_PCI_MT7621
-> is set. This should be the only requirement to add this phy driver for
-> real hardware since it has nothing to do if there is no
-> CONFIG_PCI_MT7621. That's why Kconfig is now:
-> 
-> depends on (RALINK && OF && PCI_MT7621) || COMPILE_TEST
-> Am I missing something here???
+Signed-off-by: daoyuan huang <daoyuan.huang@mediatek.com>
+---
+ drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-Yes a module can also be added. I think you should select PHY_MT7621_PCI
-in the PCI_MT7621 Kconfig
-
+diff --git a/drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.c b/drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.c
+index df956ca3685c..a1bdf92d45f7 100644
+--- a/drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.c
++++ b/drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.c
+@@ -445,11 +445,9 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
+ 		return ret;
+ 	}
+ 
+-	// TODO: engine conflict dispatch
+-	for (i = 0; i < param->config->num_components; i++)
+-		mdp_comp_clock_on(&mdp->pdev->dev, path.comps[i].comp);
+-
+ 	if (param->wait) {
++		for (i = 0; i < param->config->num_components; i++)
++			mdp_comp_clock_on(&mdp->pdev->dev, path.comps[i].comp);
+ 		ret = cmdq_pkt_flush(cmd.pkt);
+ #ifdef MDP_DEBUG
+ 		if (ret) {
+@@ -495,6 +493,9 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
+ 		cb_param->num_comps = param->config->num_components;
+ 		cb_param->mdp_ctx = param->mdp_ctx;
+ 
++		mdp_comp_clocks_on(&mdp->pdev->dev, cb_param->comps,
++				   cb_param->num_comps);
++
+ 		ret = cmdq_pkt_flush_async(cmd.pkt,
+ 					   mdp_handle_cmdq_callback,
+ 					   (void *)cb_param);
 -- 
-~Vinod
+2.18.0
+
