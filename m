@@ -2,122 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D783B1F65
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 235643B1F69
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhFWR3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 13:29:16 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:36711 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWR3Q (ORCPT
+        id S229916AbhFWR3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 13:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229774AbhFWR33 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 13:29:16 -0400
-Received: by mail-ot1-f49.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so2710235otl.3;
-        Wed, 23 Jun 2021 10:26:58 -0700 (PDT)
+        Wed, 23 Jun 2021 13:29:29 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB64C061574;
+        Wed, 23 Jun 2021 10:27:10 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id t3so4545277edc.7;
+        Wed, 23 Jun 2021 10:27:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+KZPiHeG/Rq1ZQLgxs4APyK8yr6SPbxpLROL4ArpvqE=;
+        b=c2CgtmoF2XDF8s79vK5XcvoVAhZowxI6Lq803huU5yTmEyApOzwh5MCG2G3kpqSOpU
+         P5AD/ip6ALvfVsON9fY6px4Bh0u6ta5zF1eU9WMpUVYxm+6iC9J0ZrcihSAqPe+kx3R5
+         Rc/yz+SPf+0XxKXN5YbcAHkpbLB8WDvo20hzJxFIoCzP3wyegyiAOgkGGRgBCCS8DF0p
+         xcvJrK7ETuRjN4+W7sjAjugL3PgzcfMbzRYEZHH6iBtXvbqRzJEk5um1qyeMKX0KfEvD
+         ENzZs0kDaja2q58iZc7lRb5eM3tqwaZdhC0+8qWFjfcRQ3vG6B3a2y1m/g/8bVDg13hY
+         jpqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2hySmmm64dClZ27jhI5Y3Yqw9/VnJejZB+aX0WgljZo=;
-        b=frIz+liIfQdvSSdOuLOaIF3gc61MrkMLQS84L1I/AOBMTZnYJ8kLbeALoFzZVkP4Tk
-         340bEbAEyGsM7hlYCIK8c6r8hzjADf9Do++p8FlILKjw4UHQxUyEnw2+nCYKaTOH16Hw
-         K8mKP4guTUXdIpQKVuNjesyemxOhIIQUcFQtWfoEsq4VSOz2bpLPzIjJqJ64QmHvapZb
-         PZgjsDFV/A67Hkv0JRspLqmE5MV/bvtYfTPv8wbMqQW8okB6xlh4dpqJ4gk1NFqCIF5F
-         fFSHlDOGnG6jtK9WNNjRVkDMS5kyax5IB30DvmngDxhZ2Pd+hC4Ih1jnz/B6Hu054kDo
-         NHhA==
-X-Gm-Message-State: AOAM531roeO88OXGJYZr7RzQZxNeLXzkQJ6zoRZey5YK3vpV4nm37K4S
-        pncFjVfwibdrATzvUZxebo0kn2rx0nHXdyeS8is=
-X-Google-Smtp-Source: ABdhPJzkF7/upEQ0DXTViC2+CRwHDgP1sncfDiZNpUaMQ9+qPTqxDk54Cn8doVYTp3AChJatHfu6kUXRf/O6y//YYOo=
-X-Received: by 2002:a9d:674b:: with SMTP id w11mr893919otm.260.1624469218068;
- Wed, 23 Jun 2021 10:26:58 -0700 (PDT)
+        bh=+KZPiHeG/Rq1ZQLgxs4APyK8yr6SPbxpLROL4ArpvqE=;
+        b=MZTkqnltFDGTJcURe52y1enWik3s9VRgKj8BmZY6J10q531ZxvIYZu0B8uH1z6cArC
+         yan9yZ/YUzj4iKOjpFD87kOiSCWs7r473ZmhfWDpUrhFXdSq6Cd92E0C+MvZZMYipJMt
+         zL+AXJE0BUERomBUSoDphEenCSpl4M5iHrNIdWCoP2Kdw+i1M54mridfOJKJ4etr1aM0
+         d/4aJX7jPuTJ94eHCsKNlQJbPEY7ml79ZI1c/lnLhckyVT4BBbQxh06DfOq9Ogqb8f+w
+         fuHZ0P5O9unftG03tPbs+UUjxXoF9J0o5SR40tTuLZcmMZC9xgpAbaXFdsXAp7uw6iii
+         zfYg==
+X-Gm-Message-State: AOAM530N2rkxryZMeXSCNVA2N1SXQ5DI53S/1ym2TUZwib7GCMcSHDQW
+        mObpNkrLYcWcbOQUBXKwvdNu4Oj8AJicUnXzZw==
+X-Google-Smtp-Source: ABdhPJwxEKceuZts//aKP7vF++I/FLJ48EXaO8JiZiPxKXTTxsNfb4fm/QRD9iZNhHU0kuRZ9hX9UWPmAcG90dZ07HE=
+X-Received: by 2002:a50:9345:: with SMTP id n5mr1178741eda.289.1624469228266;
+ Wed, 23 Jun 2021 10:27:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210623131421.15159-1-heikki.krogerus@linux.intel.com>
-In-Reply-To: <20210623131421.15159-1-heikki.krogerus@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 23 Jun 2021 19:26:46 +0200
-Message-ID: <CAJZ5v0hEj5e_4RwfCZxnV+zpw92YyYV55Qu6iheVkjrUYorXkg@mail.gmail.com>
-Subject: Re: [PATCH] software node: Handle software node injection to an
- existing device properly
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+References: <20210622181624.57527651@canb.auug.org.au>
+In-Reply-To: <20210622181624.57527651@canb.auug.org.au>
+From:   Rob Herring <robherring2@gmail.com>
+Date:   Wed, 23 Jun 2021 11:26:56 -0600
+Message-ID: <CAL_JsqL+4FqU=jexFiXVLN-782N+Qh6DJLYoXZGitTYY2ULRBw@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the gpio-brgl tree with the
+ devicetree tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 3:14 PM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
+On Tue, Jun 22, 2021 at 2:16 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
-> The function software_node_notify() - the function that creates
-> and removes the symlinks between the node and the device - was
-> called unconditionally in device_add_software_node() and
-> device_remove_software_node(), but it needs to be called in
-> those functions only in the special case where the node is
-> added to a device that has already been registered.
+> Hi all,
 >
-> This fixes NULL pointer dereference that happens if
-> device_remove_software_node() is used with device that was
-> never registered.
+> Today's linux-next merge of the gpio-brgl tree got a conflict in:
 >
-> Fixes: b622b24519f5 ("software node: Allow node addition to already existing device")
-> Reported-and-tested-by: Dominik Brodowski <linux@dominikbrodowski.net>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+>   Documentation/devicetree/bindings/gpio/gpio-davinci.txt
+>
+> between commit:
+>
+>   c601eef1e258 ("dt-bindings: clock: update ti,sci-clk.yaml references")
+>
+> from the devicetree tree and commit:
+>
+>   c830b87a761b ("dt-bindings: gpio: gpio-davinci: Convert to json-schema")
+>
+> from the gpio-brgl tree.
+>
+> I fixed it up (the latter removed the file, so I did that) and can
+> carry the fix as necessary.
 
-Applied, thanks!
+As the reference is gone in the schema, that is the correct resolution.
 
-It may not make it into 5.13 though due to the timing.
-
-> ---
->  drivers/base/swnode.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> index 3cc11b813f28c..d1f1a82401207 100644
-> --- a/drivers/base/swnode.c
-> +++ b/drivers/base/swnode.c
-> @@ -1045,7 +1045,15 @@ int device_add_software_node(struct device *dev, const struct software_node *nod
->         }
->
->         set_secondary_fwnode(dev, &swnode->fwnode);
-> -       software_node_notify(dev, KOBJ_ADD);
-> +
-> +       /*
-> +        * If the device has been fully registered by the time this function is
-> +        * called, software_node_notify() must be called separately so that the
-> +        * symlinks get created and the reference count of the node is kept in
-> +        * balance.
-> +        */
-> +       if (device_is_registered(dev))
-> +               software_node_notify(dev, KOBJ_ADD);
->
->         return 0;
->  }
-> @@ -1065,7 +1073,8 @@ void device_remove_software_node(struct device *dev)
->         if (!swnode)
->                 return;
->
-> -       software_node_notify(dev, KOBJ_REMOVE);
-> +       if (device_is_registered(dev))
-> +               software_node_notify(dev, KOBJ_REMOVE);
->         set_secondary_fwnode(dev, NULL);
->         kobject_put(&swnode->kobj);
->  }
-> @@ -1119,8 +1128,7 @@ int software_node_notify(struct device *dev, unsigned long action)
->
->         switch (action) {
->         case KOBJ_ADD:
-> -               ret = sysfs_create_link_nowarn(&dev->kobj, &swnode->kobj,
-> -                                              "software_node");
-> +               ret = sysfs_create_link(&dev->kobj, &swnode->kobj, "software_node");
->                 if (ret)
->                         break;
->
-> --
-> 2.30.2
->
+Rob
