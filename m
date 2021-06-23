@@ -2,110 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C513B21E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D703B21F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbhFWUlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 16:41:45 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:37468 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWUlp (ORCPT
+        id S229970AbhFWUmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 16:42:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229924AbhFWUmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 16:41:45 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 6840A1C0B76; Wed, 23 Jun 2021 22:39:26 +0200 (CEST)
-Date:   Wed, 23 Jun 2021 22:39:25 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Jafar Akhondali <gigelaknak@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        mauro.chehab@huawei.com,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: LEDs with hardware-accelerated patterns, suspend indication
-Message-ID: <20210623203925.GI8540@amd>
-References: <20210526153040.GA4537@amd>
- <5fbbab4f-3e22-5a4a-eea8-2531ee165cc4@redhat.com>
- <CAMW3L+19tP_9=+8j8LLjqCGDaaVZ86UMm9NwLbbpA77zOYnr1Q@mail.gmail.com>
- <79988fe2-7b3d-7485-131c-4f654ec6d8b8@redhat.com>
- <CAMW3L+13O4jXyp1LVtuxhpXP_fkfWXi9JoNS8FYUAMHaJBGKZg@mail.gmail.com>
- <17ec2040-24e9-4090-e64b-8048f0b4005b@redhat.com>
+        Wed, 23 Jun 2021 16:42:06 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E00FC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:39:48 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id x16so3255435pfa.13
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:39:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lnn9jp/s32hmkbL+/fflp0AYulLa8VCq66U0jv/eDes=;
+        b=C1YmvtJB6ygrlO6e3yWlLKjc6iRwUSJaKCLlk6vJQ46k0QV+mgo5ZXBkqnx1ETI7Bo
+         0ImQPtsKOnj13rIVcLAnUm4f4mWTuB9d6UG69Ymk9JjWlge3TjqC4Q1y3alDooeS3+2r
+         vThLKpEt8iYquBxfy1ZwtfJBPAXkp9aG2u5k0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lnn9jp/s32hmkbL+/fflp0AYulLa8VCq66U0jv/eDes=;
+        b=llyTvNncwLL/fhO3VF8XipWrbIo9HBJ+rAAD/fZpevQAqB3Gz9hBEgstWNiVcBbN0o
+         crnF3S/hZb0r41Q7irrh+kb3dQQKmi6R7XkyZLE/IT4ZJPfUKNVVbTEz18Hq8k6MYL2N
+         iR6Hox6qAXRqFHwmEwK0E0ZLbINCgV2i32ht2oBN0F68msMbYQWrNon4OUUBMRFAlW2f
+         6SalTSHmbFx/13eyVQxpHC+k25InqV86tz6+be1tfUWtLtQJVIZ5KeZ6xHGlFQs4CRmn
+         X2zHe7hM8oFVPx4L/nxeQCEwUeAs2c97DmB6i5ksPg0MbzdPGan9UHhLUIl8kcU2nlR+
+         pYQQ==
+X-Gm-Message-State: AOAM532aqfUt+uFc7kuMGg+pL1K/Xlsz6nNLG+5B8aV701TdP0sEKfZH
+        znLdnYTtdg/m+K/eeILdfN0uqQ==
+X-Google-Smtp-Source: ABdhPJy25JF5LfPlvMzjiFU6YxFBAIl/9LluZtx9nqJMnVqSL0stDwYx7dEMGfPl3SHI7ZOODjCkFw==
+X-Received: by 2002:aa7:8254:0:b029:2ed:b41:fefc with SMTP id e20-20020aa782540000b02902ed0b41fefcmr1498913pfn.42.1624480788262;
+        Wed, 23 Jun 2021 13:39:48 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 92sm6294061pjv.29.2021.06.23.13.39.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 13:39:45 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        kernelci@groups.io, linux-kselftest@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH 0/9] LKDTM: Improvements for kernelci.org
+Date:   Wed, 23 Jun 2021 13:39:27 -0700
+Message-Id: <20210623203936.3151093-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="hABqaeELJqnDDeDE"
-Content-Disposition: inline
-In-Reply-To: <17ec2040-24e9-4090-e64b-8048f0b4005b@redhat.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1469; h=from:subject; bh=zEuv0J1e6Ce2pKHimEyiAaIYYKWtyU0Hog/oTewgJ2Q=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBg05wFChS5JDlFBZpH8NNFzZZUwtqUxgF7CN0I4TwO T784QdeJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYNOcBQAKCRCJcvTf3G3AJkcxEA CluTxSMcPooRUNQtu6ITHy4aTzsPHZRIHL4Ygd6kjyDQO3ldSlcQafSvdwQdU9mmcXXkKfA4FU2E9Q VUiby+2TjqiTHS7GoDzvduYDAiJ2qTPK9eKfipp6zcwyrZEfXmFV0l1CBZIuab7G5uKq67+Nqx+j0G gAihVQFVrIDuP2xqSolSgSDZ4HDV7qRcpcOz4dp86mvfQyvp/vjTodFTYpSQaUWb54m9CKgmerG/Ki cw1JyjSGPQBCXev0rY4IyRn0WyUFzfa1DKIZnRMI6+up9iNTR1pKOCeqaP7q4+rHpJs9yCm40WlT8A AhF7CDUWj6J/ocghjGEByr+ObzUm/F5ip+eGRHPubl8oavMB2pBKov2vM+v6LTcJQkKMz82OFHU7P8 SLKxRr9PO5BSHuwCr80Ju0BqWRDohcjP3xK2j9hqvhzFCEhoIew9IDYZtAo1iqEAY5G5FA3m336cFW hc/U9lDeHJSo9RedWBRcTz8zLAQTYsnRz4QTdORHzmHhfc8VRVdQ5+HgYJqk4sSEt6JqKmH06zys0y L4zXmsaU4uuKIzVWtX89R1xPRARgF1FDUy4hFicEfL6TR7hpGzMdxcsv7jdn7CQUfbcgmrwkN01S9O 0SfggbzjvFahUpHkHC1b849WPAa/AinczkLUw1s9B21RYzD335XtCKHTAEjg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a bunch of LKDTM clean-ups to improve and expand testing,
+given feedback from testing at kernelci.org. Adds a few new tests as
+well.
 
---hABqaeELJqnDDeDE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+(If a pull-request is preferred, please let me know.)
 
-Hi!
+Thanks!
 
-> > Sorry for the late reply.
-> > there are two categories of keyboard lighting modes:
-> > 1. static
-> > 2. dynamic
-> >=20
-> > In static mode, any of 4 zones can be configured to show specific color,
-> > independently.
-> >=20
-> > In dynamic mode, there is no control over specific zones.
-> > It's only possible to set some: color, speed, direction
-> > and: [R]ed,[G]reen, [B]lue
-> >=20
-> > so in dynamic mode, the user can't control zones,
-> > the dynamic effects take care of that.
->=20
-> So we have 4 zones, which are individual controllable, so which should
-> probably be modeled as individual LED class devices. But when we enable
-> the hardware effects, then the individual addressing goes away and we
-> set one effect which applies to all zones.
->=20
-> Jafar, do I understand this correctly?
->=20
-> Pavel, how should this be mapped to the led-class API?
+-Kees
 
-Fun :-).
+Kees Cook (9):
+  selftests/lkdtm: Avoid needing explicit sub-shell
+  selftests/lkdtm: Fix expected text for CR4 pinning
+  selftests/lkdtm: Fix expected text for free poison
+  lkdtm/bugs: XFAIL UNALIGNED_LOAD_STORE_WRITE
+  lkdtm/heap: Add vmalloc linear overflow test
+  lkdtm: Enable DOUBLE_FAULT on all architectures
+  lkdtm: Add CONFIG hints in errors where possible
+  selftests/lkdtm: Enable various testable CONFIGs
+  lkdtm/heap: Add init_on_alloc tests
 
-> Some ideas:
->=20
-> a) Only add the new lpattern to the main zone?
-> 2) Add the new lpattern to all zones, but only make it
-> writable in the main zone ?
+ drivers/misc/lkdtm/bugs.c                     | 11 ++-
+ drivers/misc/lkdtm/cfi.c                      |  3 +-
+ drivers/misc/lkdtm/core.c                     | 58 ++++++++++-
+ drivers/misc/lkdtm/fortify.c                  |  3 +-
+ drivers/misc/lkdtm/heap.c                     | 97 ++++++++++++++++++-
+ drivers/misc/lkdtm/lkdtm.h                    | 46 ++++++++-
+ drivers/misc/lkdtm/stackleak.c                |  4 +-
+ drivers/misc/lkdtm/usercopy.c                 |  7 +-
+ tools/testing/selftests/lkdtm/config          |  7 ++
+ tools/testing/selftests/lkdtm/run.sh          | 12 ++-
+ .../testing/selftests/lkdtm/stack-entropy.sh  |  1 +
+ tools/testing/selftests/lkdtm/tests.txt       | 11 ++-
+ 12 files changed, 236 insertions(+), 24 deletions(-)
 
-Require lpattern in all zones to be same and active before actually
-enabling the pattern?
+-- 
+2.30.2
 
-Decide lpattern is not suitable for this and figure out what to with
-multi-LED triggers? Someone wanted them for "meters" (CPU load 25% 50%
-75% 100% LED bar)...
-
-Skip this hardware feature for now. We don't have to support
-everything?
-
-Best regards,
-							Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---hABqaeELJqnDDeDE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmDTm/0ACgkQMOfwapXb+vL3GgCeLxqiGOHMfMCblFbN8WT62Lug
-nmoAnjag/BBo2rTZcTG6sCUoCiRio867
-=Xnzh
------END PGP SIGNATURE-----
-
---hABqaeELJqnDDeDE--
