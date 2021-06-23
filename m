@@ -2,194 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412863B1DAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B713B1DB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbhFWPhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 11:37:09 -0400
-Received: from mail-wr1-f43.google.com ([209.85.221.43]:42881 "EHLO
-        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWPhI (ORCPT
+        id S231422AbhFWPh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 11:37:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231409AbhFWPht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 11:37:08 -0400
-Received: by mail-wr1-f43.google.com with SMTP id j1so3134198wrn.9;
-        Wed, 23 Jun 2021 08:34:50 -0700 (PDT)
+        Wed, 23 Jun 2021 11:37:49 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5EBC061574;
+        Wed, 23 Jun 2021 08:35:31 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id ji1so4713193ejc.4;
+        Wed, 23 Jun 2021 08:35:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=in-reply-to:references:thread-topic:user-agent:mime-version
+         :content-transfer-encoding:subject:from:date:to:cc:message-id;
+        bh=0lBN5wng9HjRZe2/VE+AfmR/BJx2jekBW1owJUvPIs4=;
+        b=h+Z/Q3I8U2g4dr0t/lT+8F+hVSpsLMIycNMr9vhko3jbLFZf6hap9ZtyFVnTsjN99k
+         L7cDeN+imOdYOrDR6h+H1shCdYD0Upuewpi9LEYFOJyeDB+JA/zumdFHc3S7ax/u2uKY
+         +yl3M+Vp6uVxVLZe5zN7mgIiNnKe9xRi/7le9+jlMQoAZqxKEOdfqm5pD4OJjgv5yXtJ
+         cdGahnhHKDVphy7zDXQ0lUS0rw/AHcvBp5dkyTGt9gh1ofHwF/6Izl7iwnOpOWalJzQH
+         zzVcE/h0PNoheyjVpheOy4yzb0PVhVtgF2c8uSBEns86+UWz2ZdjpQMiqwLyjKg/OFhs
+         C0gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version;
-        bh=ueYLv5nLA5m/ch9hOCe6RtvzN0ZpwJGvYz9XF9zrIHI=;
-        b=QLrNN81rsqdHQHAOIzirm1TnNDxwY1VFAbd9IzqBJ9OBR7XgVKakaKtLu1l9Vok22U
-         GpkRJXrLiCWJJ3ISQcqbELYnosyszXl15O/esjo14I7cF0DjMPZsZE3oR40yKcWccmXs
-         jFTK8MMU+wa2M7FEvFLvy2nmcvVjmHhyS5w1Lh4ew6+zjIxBxw71Z2r1xLVSO3J0cxfG
-         JFQRCe6opyVDm59QjFFHCeGQP0U5GWFE72e3wE+Ut+HL/ACUQXjqNNlMTvaARfRD06hE
-         IeQ/lsklGgTtpk/nkaVd1eeFls3P84WkQV1ZTA6femhv6/60Z87Y63V+UdesDF5B6Iy6
-         wPdw==
-X-Gm-Message-State: AOAM531UQnvlOtuo3szZTQFWJgKKL7fhFqa0Jr66dtmgoMYZrxSKzJbY
-        WPkqNrZY4DA9hMBtGv4ReaI=
-X-Google-Smtp-Source: ABdhPJwveizYytFM63ffpYlgxz3m0k/Ae3ubo7hU8BB6arwFs/cq8Fmvsdo3hESjFHnqddCHOQawvg==
-X-Received: by 2002:adf:f706:: with SMTP id r6mr725255wrp.280.1624462489975;
-        Wed, 23 Jun 2021 08:34:49 -0700 (PDT)
-Received: from localhost ([137.220.125.106])
-        by smtp.gmail.com with ESMTPSA id p8sm6312514wmi.46.2021.06.23.08.34.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 08:34:48 -0700 (PDT)
-Message-ID: <5f95e9835aa751b699f7d196121e3974697661f4.camel@debian.org>
-Subject: Re: [PATCH v3 1/6] block: add disk sequence number
-From:   Luca Boccassi <bluca@debian.org>
-To:     Hannes Reinecke <hare@suse.de>,
-        Lennart Poettering <mzxreary@0pointer.de>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        Javier Gonz??lez <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>
-Date:   Wed, 23 Jun 2021 16:34:47 +0100
-In-Reply-To: <adeedcd2-15a7-0655-3b3c-85eec719ed37@suse.de>
-References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
-         <20210623105858.6978-2-mcroce@linux.microsoft.com>
-         <YNMffBWvs/Fz2ptK@infradead.org>
-         <CAFnufp1gdag0rGQ8K4_2oB6_aC+EZgfgwd2eL4-AxpG0mK+_qQ@mail.gmail.com>
-         <YNM8T44v5FTViVWM@gardel-login>
-         <3be63d9f-d8eb-7657-86dc-8d57187e5940@suse.de>
-         <YNNBOyUiztf2wxDu@gardel-login>
-         <adeedcd2-15a7-0655-3b3c-85eec719ed37@suse.de>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-ElLXLc/LDOyeO5Wy5bf1"
-User-Agent: Evolution 3.30.5-1.2 
+        h=x-gm-message-state:in-reply-to:references:thread-topic:user-agent
+         :mime-version:content-transfer-encoding:subject:from:date:to:cc
+         :message-id;
+        bh=0lBN5wng9HjRZe2/VE+AfmR/BJx2jekBW1owJUvPIs4=;
+        b=bA5fazliMPKzbD6+L7V2kgLn8uvVVSLWFsP0W5Kx6smz10p3ektQ+/N2dlp0sWvyvM
+         0RlUUvQ1CJl1qCpvVICgvHElBxY8ejaYKimexghMZ4HJFa93GPpj3wVXZDjBDSKrgvBc
+         elM6l2YHBaVt8anwB+RO9l2O14vnAnXbYnT8q9WrVBBC6iheq1gd6HkMIL3Yt7S178FU
+         1oxMtNgt9P6bOWS9MqEs8ZppVqL+Lruc/sWEalbdkQ+XRprTCCb7LUebn4p4uAr8a40k
+         QGD4qK6YK3MuipxSKdPv70H4GwEOjJoPfAHZONTcc5Xv0j4bJfWlkmo+8pJjRuukgw9x
+         O6eQ==
+X-Gm-Message-State: AOAM531SVrJE0d+aWtiivMqgVEPOKn/Qi+iP48rGHjvz3NzXlTiz7jq1
+        j43iBSTcuwlRXTSV2V8w0ec=
+X-Google-Smtp-Source: ABdhPJz1gI6TE3EPMu7ywc8G3XlQhPA8Fh69loCONFm7DukNz4LavOCitwHQTB6/97WIDf1Qxt1jYQ==
+X-Received: by 2002:a17:906:1704:: with SMTP id c4mr670525eje.182.1624462530204;
+        Wed, 23 Jun 2021 08:35:30 -0700 (PDT)
+Received: from [10.69.29.103] ([89.205.226.226])
+        by smtp.gmail.com with ESMTPSA id aq12sm56854ejc.77.2021.06.23.08.35.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 08:35:29 -0700 (PDT)
+In-Reply-To: <e30a2d01-a200-80cb-88d9-6aea62dd49f1@linaro.org>
+References: <20210619121927.32699-1-ericwouds@gmail.com> <e30a2d01-a200-80cb-88d9-6aea62dd49f1@linaro.org>
+X-Referenced-Uid: 5577
+Thread-Topic: Re: [PATCH] Fix mt7622.dtsi thermal cpu
+X-Blue-Identity: !l=368&o=43&fo=3760&pl=202&po=0&qs=PREFIX&f=HTML&m=!%3ANzRiZDk5M2QtNTJhNy00MTE4LThlNmYtYTk2ZDg2NDQzNGU0%3ASU5CT1g%3D%3ANTU3Nw%3D%3D%3AANSWERED&p=171&q=SHOW
+X-Is-Generated-Message-Id: true
+User-Agent: Android
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Local-Message-Id: <56fb5540-fb86-4e6a-a596-1276026b37e5@gmail.com>
+Content-Type: text/plain;
+ charset=UTF-8
+Subject: Re: [PATCH] Fix mt7622.dtsi thermal cpu
+From:   Eric Woudstra <ericwouds@gmail.com>
+Date:   Wed, 23 Jun 2021 17:35:27 +0200
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Message-ID: <56fb5540-fb86-4e6a-a596-1276026b37e5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It is only useful to set 1 map with the regulated temperature for cpu frequ=
+ency throttling=2E Same as in the kernel document example=2E
 
---=-ElLXLc/LDOyeO5Wy5bf1
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2021-06-23 at 17:02 +0200, Hannes Reinecke wrote:
-> On 6/23/21 4:12 PM, Lennart Poettering wrote:
-> > On Mi, 23.06.21 16:01, Hannes Reinecke (hare@suse.de) wrote:
-> >=20
-> > > > Thus: a global instead of local sequence number counter is absolute=
-ly
-> > > > *key* for the problem this is supposed to solve
-> > > >=20
-> > > Well ... except that you'll need to keep track of the numbers (otherw=
-ise you
-> > > wouldn't know if the numbers changed, right?).
-> > > And if you keep track of the numbers you probably will have to implem=
-ent an
-> > > uevent listener to get the events in time.
-> >=20
-> > Hmm? This is backwards. The goal here is to be able to safely match up
-> > uevents to specific uses of a block device, given that block device
-> > names are agressively recycled.
-> >=20
-> > you imply it was easy to know which device use a uevent belongs
-> > to. But that's the problem: it is not possible to do so safely. if i
-> > see a uevent for a block device "loop0" I cannot tell if it was from
-> > my own use of the device or for some previous user of it.
-> >=20
-> > And that's what we'd like to see fixed: i.e. we query the block device
-> > for the seqeno now used and then we can use that to filter the uevents
-> > and ignore the ones that do not carry the same sequence number as we
-> > got assigned for our user.
-> >=20
->=20
-> It is notoriously tricky to monitor the intended use-case for kernel=20
-> devices, precisely because we do _not_ attach any additional information=
-=20
-> to it.
-> I have send a proposal for LSF to implement block-namespaces, the prime=
-=20
-> use-case of which is indeed attaching cgroup/namespace information to=20
-> block devices such that we _can_ match (block) devices to specific contex=
-ts.
+It has no us=
+e to set frequency scaling on 2 different temperature trip points, as the l=
+owest one makes sure the higher one(s) are never reached=2E It can be appli=
+ed only at 1 trip point=2E Multiple trip points is only usefully for fan co=
+ntrol to make sure the fan is not too noisy when it is not necessary to be =
+noisy=2E
 
-Having namespaces for block devices would be an awesome feature, very
-much looking forward to have that, as it solves a number of other
-issues we have.
-And while it could maybe be used in some instances of this particular
-problem, unfortunately I don't think it can solve all of them - in some
-real cases, we have to work in the root namespace as we are setting
-things up for it.
 
-> Which I rather prefer than adding sequence numbers to block devices;=20
-> incidentally you could solve the same problem by _not_ reusing numbers=
-=20
-> aggressively but rather allocate the next free one after the most=20
-> recently allocated one.
-> Will give you much the same thing without having to burden others with it=
-.
+The CPU will almost come to a dead stop when it starts to pass t=
+he lowest thermal map with frequency throttling=2E 
 
-If I understood this right, you are proposing to move the
-monothonically increasing sequence id to the device name, rather than
-as internal metadata? So that, eg, loop0 gets used exactly once and
-never again, and so on? Wouldn't that be a much more visible and
-disruptive change, potentially backward incompatible and breaking
-userspace left and right?
+This is why it is a bu=
+g and needs a fix, not only adjustment=2E
 
-> The better alternative here would be to extend the loop ioctl to pass in=
-=20
-> an UUID when allocating the device.
-> That way you can easily figure out whether the loop device has been=20
-> modified.
 
-A UUID solves the problem we are currently talking about. But a
-monothonically increasing sequence number has additional great
-properties compared to a UUID, that we very much want to make use of
-(again these are all _real_ use cases), and were described  in detail
-here:
 
-https://lore.kernel.org/linux-fsdevel/20210315201331.GA2577561@casper.infra=
-dead.org/t/#m3b1ffdffcc70a7c3ef4d7f13d0c2d5b9e4dde35a
 
-> But in the end, it's the loop driver and I'm not particular bothered=20
-> with it. I am, though, if you need to touch all drivers just to support=
-=20
-> one particular use-case in one particular device driver.
->=20
-> Incidentally, we don't have this problem in SCSI as we _can_ identify=20
-> devices here. So in the end we couldn't care less on which /dev/sdX=20
-> device it ends up.
-> And I guess that's what we should attempt for loop devices, too.
+There is no fan=2E=2E=2E On t=
+he bpi r64=2E
 
-Sorry, I'm not sure what you mean here by "touch all drivers"? This
-series changes only drivers/block/loop.c, no other device drivers code
-is touched?
 
---=20
-Kind regards,
-Luca Boccassi
+Anyway without throttling at all a kernel build for more th=
+en an hour temperature creeps up to 85 degrees=2E
 
---=-ElLXLc/LDOyeO5Wy5bf1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+=E2=81=A3Get BlueMail fo=
+r Android =E2=80=8B
 
------BEGIN PGP SIGNATURE-----
+On Jun 21, 2021, 8:29 PM, at 8:29 PM, Daniel Lezcano <=
+daniel=2Elezcano@linaro=2Eorg> wrote:
+>On 19/06/2021 14:19, ericwouds@gmail=
+=2Ecom wrote:
+>> From: Eric Woudstra <ericwouds@gmail=2Ecom>
+>> 
+>> Cpu-the=
+rmal is set to use all frequencies already at 47 degrees=2E 
+>> Using the C=
+PU at 50 for a minute, the CPU has reached 48 degrees, is 
+>> throttled bac=
+k to lowest setting, making the mt7622 terrribly slow=2E 
+>> Even at this l=
+ow speed, the CPU does not cool down lower then 47 so
+>> the CPU is stuck a=
+t lowest possible frequency until it shut down and
+>> stays off for 15 minu=
+tes=2E
+>> 
+>> cooling-device =3D <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,=
 
-iQIzBAABCgAdFiEErCSqx93EIPGOymuRKGv37813JB4FAmDTVJcACgkQKGv37813
-JB5/JBAAllM8bwVm3gOpA4BZDcQXp5SNxFZCgqiUBOCgXYJy2kOnsWEN3DVxojuk
-LTdPBttBWxj1hkMRs/YdrhF588navYLaFwvVyNK64dqw1vjdee68Als/KRd16A3R
-v0FGFR/ycOtMfkVOhhinovrf+WFgax6XjmqGzW6uU5PEWexqMEsMUbUsG33AolUg
-kygSTVS6rBizWyy+swqr0WOEoZg2d1PDN4nuC8tpDuxlsvVseeEjYoxvUuNHkaqb
-MebrCCtZYZXd10LBQ8MLVkM7bvK7cCe1YrclAjI0wEvMQzXjXyHrz28KLMgLOwcX
-lOa8uqAvFJX4LSN7nQIePGO7+ys1l05/pI5ZlgH8oc8BgpM9jXE3mcAKdYAmbgaD
-62AV4a6NU1jMp8IKmWcoErssEdy+jqcueqPBxCP66xJ9G64tO9ZLbIFb6uo5EGUT
-CezkEUQvj9OCKI63QblaVKX6qXWNkacKAP1RtiOC4S57Wm0/RoJ0TFpEvRNOb87M
-PwgQ/OYryFIlrBDVvpCQQjOwW31rTMf6KGqWct2EfXsTQJZw8/s8AtAqRfC3Pk4i
-l8e29s6PhsRjeB8uIjoaljF4VdeVLePpVMhw9uYPChEoh4oLBy7UX7YIVNFf1xTo
-dx8wQRd1W8dCzq9l9k3oUTftWJeYgmsBwvCNmrrjcIxtUNX4c3Y=
-=dzQ+
------END PGP SIGNATURE-----
+>>                  <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+>> 
+>> This=
+ should not be set al every cooling map=2E It should only be set at
+>> the =
+highest cooling map=2E Same as in the example:
+>> 
+>> https://www=2Ekernel=
+=2Eorg/doc/Documentation/devicetree/bindings/
+>> thermal/thermal=2Etxt  lin=
+e 272
+>> 
+>> But then without the fan and added a third map=2E
+>> 
+>> Now t=
+emperature will be regulated at 87 degrees celcius=2E At
+>temperatures
+>> l=
+ower then 87, all frequencies can be used=2E
+>
+>47=C2=B0C is really a too l=
+ow temperature and this performance drop is
+>normal=2E
+>
+>I would not remov=
+e the passive mitigation but try by increasing the CPU
+>temp to 70=C2=B0C a=
+nd by changing the active trip point to 80=C2=B0C=2E If it works
+>fine, try=
+ 75=C2=B0C and 85=C2=B0C=2E
+>
+>To test, the thermal killer is dhrystone (on=
+e thread per cpu)=2E
+>
+>With a 75=C2=B0C passive trip point, the step wise =
+thermal governor, I think
+>the mitigation will happen smoothly providing be=
+tter performances, and
+>probably the fan won't fire=2E
+>
+>> Also see the po=
+st:
+>> 
+>> http://forum=2Ebanana-pi=2Eorg/t/bpi-r64-only-10-cpu-speed-at-al=
+ready-48-
+>> degrees-celcius-speed-not-increasing-anymore/12262
+>> 
+>> Sign=
+ed-off-by: Eric Woudstra <ericwouds@gmail=2Ecom>
+>> ---
+>>  arch/arm64/boot=
+/dts/mediatek/mt7622=2Edtsi | 8 ++++----
+>>  1 file changed, 4 insertions(+=
+), 4 deletions(-)
+>> 
+>> diff --git a/arch/arm64/boot/dts/mediatek/mt7622=
+=2Edtsi
+>b/arch/arm64/boot/dts/mediatek/mt7622=2Edtsi
+>> index 890a942ec=2E=
+=2Eb779c7aa6 100644
+>> --- a/arch/arm64/boot/dts/mediatek/mt7622=2Edtsi
+>> =
++++ b/arch/arm64/boot/dts/mediatek/mt7622=2Edtsi
+>> @@ -170,14 +170,14 @@ c=
+pu-crit {
+>>  			cooling-maps {
+>>  				map0 {
+>>  					trip =3D <&cpu_pass=
+ive>;
+>> -					cooling-device =3D <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>=
+,
+>> -							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+>> +					cooling-d=
+evice =3D <&cpu0 0 0>,
+>> +							 <&cpu1 0 0>;
+>>  				};
+>>  
+>>  				map=
+1 {
+>>  					trip =3D <&cpu_active>;
+>> -					cooling-device =3D <&cpu0 THE=
+RMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+>> -							 <&cpu1 THERMAL_NO_LIMIT THERMA=
+L_NO_LIMIT>;
+>> +					cooling-device =3D <&cpu0 0 0>,
+>> +							 <&cpu1 0 =
+0>;
+>>  				};
+>>  
+>>  				map2 {
+>> 
+>
+>
+>-- 
+><http://www=2Elinaro=2Eorg=
+/> Linaro=2Eorg =E2=94=82 Open source software for ARM SoCs
+>
+>Follow Linar=
+o:  <http://www=2Efacebook=2Ecom/pages/Linaro> Facebook |
+><http://twitter=
+=2Ecom/#!/linaroorg> Twitter |
+><http://www=2Elinaro=2Eorg/linaro-blog/> Bl=
+og
 
---=-ElLXLc/LDOyeO5Wy5bf1--
