@@ -2,109 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B953B1AC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4A23B1ACA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhFWNLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:11:44 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51428 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbhFWNLk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:11:40 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3764521962;
-        Wed, 23 Jun 2021 13:09:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624453760; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=fvLe4EDcZBFIJFV4utDnoKGG4SlCKvEBy8vMSAJDpnk=;
-        b=JvFAJrnRk4z9JofF9qR8IZLIrtA/HR4LsTpSYytHLGr/baiqJyKWcoa8i77iQYjkHGDtPG
-        nYCqIBCJPS3jLWcXfr2juHvEIVvlZd0a1X2+W61iXuQ1PV0TMhkYUzTbGzHjeNOQrJm9Ix
-        TgdnlutnZLfBh6DyZ7HJqAeYOQKMUPk=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id F245A11A97;
-        Wed, 23 Jun 2021 13:09:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624453760; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=fvLe4EDcZBFIJFV4utDnoKGG4SlCKvEBy8vMSAJDpnk=;
-        b=JvFAJrnRk4z9JofF9qR8IZLIrtA/HR4LsTpSYytHLGr/baiqJyKWcoa8i77iQYjkHGDtPG
-        nYCqIBCJPS3jLWcXfr2juHvEIVvlZd0a1X2+W61iXuQ1PV0TMhkYUzTbGzHjeNOQrJm9Ix
-        TgdnlutnZLfBh6DyZ7HJqAeYOQKMUPk=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id ol9pOX8y02DIMQAALh3uQQ
-        (envelope-from <jgross@suse.com>); Wed, 23 Jun 2021 13:09:19 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Julien Grall <julien@xen.org>
-Subject: [PATCH] xen/events: reset active flag for lateeoi events later
-Date:   Wed, 23 Jun 2021 15:09:13 +0200
-Message-Id: <20210623130913.9405-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+        id S231128AbhFWNMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:12:06 -0400
+Received: from mga03.intel.com ([134.134.136.65]:44388 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231126AbhFWNMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 09:12:03 -0400
+IronPort-SDR: K7DGkeF+0S3RHlDnQxQnJ8AThy31G7ZKdaGX4zPwj8bcrmDq4TaB0aJNI0Qi8a3HjHVhDwOptr
+ Fq/V7t5BBQ1A==
+X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="207298336"
+X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
+   d="scan'208";a="207298336"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 06:09:43 -0700
+IronPort-SDR: 2Ww2ltAuTia9bEXIEITK6bMG3yryraNj/ALZPhjl0EP0LIDbqlM4jW780cX+L5EK4KkwU16Bwb
+ Ohu1C6R4Cejg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
+   d="scan'208";a="641979134"
+Received: from peileeli.png.intel.com ([172.30.240.12])
+  by fmsmga005.fm.intel.com with ESMTP; 23 Jun 2021 06:09:39 -0700
+From:   Ling Pei Lee <pei.lee.ling@intel.com>
+To:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>, davem@davemloft.net,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Marek Behun <marek.behun@nic.cz>, weifeng.voon@intel.com,
+        vee.khee.wong@linux.intel.com, vee.khee.wong@intel.com,
+        pei.lee.ling@intel.com
+Subject: [PATCH net-next] net: phy: marvell10g: enable WoL for mv2110
+Date:   Wed, 23 Jun 2021 21:09:29 +0800
+Message-Id: <20210623130929.805559-1-pei.lee.ling@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to avoid a race condition for user events when changing
-cpu affinity reset the active flag only when EOI-ing the event.
+From: Voon Weifeng <weifeng.voon@intel.com>
 
-This is working fine as all user events are lateeoi events. Note that
-lateeoi_ack_mask_dynirq() is not modified as there is no explicit call
-to xen_irq_lateeoi() expected later.
+Basically it is just to enable to WoL interrupt and enable WoL detection.
+Then, configure the MAC address into address detection register.
 
-Reported-by: Julien Grall <julien@xen.org>
-Fixes: b6622798bc50b62 ("xen/events: avoid handling the same event on two cpus at the same time")
-Tested-by: Julien Grall <julien@xen.org>
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+Signed-off-by: Ling PeiLee <pei.lee.ling@intel.com>
 ---
- drivers/xen/events/events_base.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/net/phy/marvell10g.c | 102 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 102 insertions(+)
 
-diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
-index 7bbfd58958bc..d7e361fb0548 100644
---- a/drivers/xen/events/events_base.c
-+++ b/drivers/xen/events/events_base.c
-@@ -642,6 +642,9 @@ static void xen_irq_lateeoi_locked(struct irq_info *info, bool spurious)
- 	}
+diff --git a/drivers/net/phy/marvell10g.c b/drivers/net/phy/marvell10g.c
+index bbbc6ac8fa82..93410ece83af 100644
+--- a/drivers/net/phy/marvell10g.c
++++ b/drivers/net/phy/marvell10g.c
+@@ -28,6 +28,7 @@
+ #include <linux/marvell_phy.h>
+ #include <linux/phy.h>
+ #include <linux/sfp.h>
++#include <linux/netdevice.h>
  
- 	info->eoi_time = 0;
+ #define MV_PHY_ALASKA_NBT_QUIRK_MASK	0xfffffffe
+ #define MV_PHY_ALASKA_NBT_QUIRK_REV	(MARVELL_PHY_ID_88X3310 | 0xa)
+@@ -106,6 +107,17 @@ enum {
+ 	MV_V2_TEMP_CTRL_DISABLE	= 0xc000,
+ 	MV_V2_TEMP		= 0xf08c,
+ 	MV_V2_TEMP_UNKNOWN	= 0x9600, /* unknown function */
++	MV_V2_MAGIC_PKT_WORD0	= 0xf06b,
++	MV_V2_MAGIC_PKT_WORD1	= 0xf06c,
++	MV_V2_MAGIC_PKT_WORD2	= 0xf06d,
++	/* Wake on LAN registers */
++	MV_V2_WOL_CTRL		= 0xf06e,
++	MV_V2_WOL_STS		= 0xf06f,
++	MV_V2_WOL_CLEAR_STS	= BIT(15),
++	MV_V2_WOL_MAGIC_PKT_EN	= BIT(0),
++	MV_V2_PORT_INTR_STS	= 0xf040,
++	MV_V2_PORT_INTR_MASK	= 0xf043,
++	MV_V2_WOL_INTR_EN	= BIT(8),
+ };
+ 
+ struct mv3310_chip {
+@@ -991,6 +1003,94 @@ static int mv2111_match_phy_device(struct phy_device *phydev)
+ 	return mv211x_match_phy_device(phydev, false);
+ }
+ 
++static void mv2110_get_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
++{
++	int ret = 0;
 +
-+	/* is_active hasn't been reset yet, do it now. */
-+	smp_store_release(&info->is_active, 0);
- 	do_unmask(info, EVT_MASK_REASON_EOI_PENDING);
- }
- 
-@@ -811,6 +814,7 @@ static void xen_evtchn_close(evtchn_port_t port)
- 		BUG();
- }
- 
-+/* Not called for lateeoi events. */
- static void event_handler_exit(struct irq_info *info)
- {
- 	smp_store_release(&info->is_active, 0);
-@@ -1883,7 +1887,12 @@ static void lateeoi_ack_dynirq(struct irq_data *data)
- 
- 	if (VALID_EVTCHN(evtchn)) {
- 		do_mask(info, EVT_MASK_REASON_EOI_PENDING);
--		event_handler_exit(info);
-+		/*
-+		 * Don't call event_handler_exit().
-+		 * Need to keep is_active non-zero in order to ignore re-raised
-+		 * events after cpu affinity changes while a lateeoi is pending.
-+		 */
-+		clear_evtchn(evtchn);
- 	}
- }
- 
++	wol->supported = WAKE_MAGIC;
++	wol->wolopts = 0;
++
++	ret = phy_read_mmd(phydev, MDIO_MMD_VEND2, MV_V2_WOL_CTRL);
++
++	if (ret & MV_V2_WOL_MAGIC_PKT_EN)
++		wol->wolopts |= WAKE_MAGIC;
++}
++
++static int mv2110_set_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
++{
++	int ret = 0;
++
++	if (wol->wolopts & WAKE_MAGIC) {
++		/* Enable the WOL interrupt */
++		ret = phy_set_bits_mmd(phydev, MDIO_MMD_VEND2,
++				       MV_V2_PORT_INTR_MASK,
++				       MV_V2_WOL_INTR_EN);
++
++		if (ret < 0)
++			return ret;
++
++		/* Store the device address for the magic packet */
++		ret = phy_write_mmd(phydev, MDIO_MMD_VEND2,
++				    MV_V2_MAGIC_PKT_WORD2,
++				    ((phydev->attached_dev->dev_addr[5] << 8) |
++				    phydev->attached_dev->dev_addr[4]));
++
++		if (ret < 0)
++			return ret;
++
++		ret = phy_write_mmd(phydev, MDIO_MMD_VEND2,
++				    MV_V2_MAGIC_PKT_WORD1,
++				    ((phydev->attached_dev->dev_addr[3] << 8) |
++				    phydev->attached_dev->dev_addr[2]));
++
++		if (ret < 0)
++			return ret;
++
++		ret = phy_write_mmd(phydev, MDIO_MMD_VEND2,
++				    MV_V2_MAGIC_PKT_WORD0,
++				    ((phydev->attached_dev->dev_addr[1] << 8) |
++				    phydev->attached_dev->dev_addr[0]));
++
++		if (ret < 0)
++			return ret;
++
++		/* Clear WOL status and enable magic packet matching */
++		ret = phy_set_bits_mmd(phydev, MDIO_MMD_VEND2,
++				       MV_V2_WOL_CTRL,
++				       MV_V2_WOL_MAGIC_PKT_EN |
++				       MV_V2_WOL_CLEAR_STS);
++
++		if (ret < 0)
++			return ret;
++
++		/* Reset the clear WOL status bit as it does not self-clear */
++		ret = phy_clear_bits_mmd(phydev, MDIO_MMD_VEND2,
++					 MV_V2_WOL_CTRL,
++					 MV_V2_WOL_CLEAR_STS);
++
++		if (ret < 0)
++			return ret;
++	} else {
++		/* Disable magic packet matching & reset WOL status bit */
++		ret = phy_modify_mmd(phydev, MDIO_MMD_VEND2,
++				     MV_V2_WOL_CTRL,
++				     MV_V2_WOL_MAGIC_PKT_EN,
++				     MV_V2_WOL_CLEAR_STS);
++
++		if (ret < 0)
++			return ret;
++
++		ret = phy_clear_bits_mmd(phydev, MDIO_MMD_VEND2,
++					 MV_V2_WOL_CTRL,
++					 MV_V2_WOL_CLEAR_STS);
++
++		if (ret < 0)
++			return ret;
++	}
++
++	return ret;
++}
++
+ static struct phy_driver mv3310_drivers[] = {
+ 	{
+ 		.phy_id		= MARVELL_PHY_ID_88X3310,
+@@ -1045,6 +1145,8 @@ static struct phy_driver mv3310_drivers[] = {
+ 		.set_tunable	= mv3310_set_tunable,
+ 		.remove		= mv3310_remove,
+ 		.set_loopback	= genphy_c45_loopback,
++		.get_wol	= mv2110_get_wol,
++		.set_wol	= mv2110_set_wol,
+ 	},
+ 	{
+ 		.phy_id		= MARVELL_PHY_ID_88E2110,
 -- 
-2.26.2
+2.25.1
 
