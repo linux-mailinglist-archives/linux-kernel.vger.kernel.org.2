@@ -2,119 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EEE53B1D91
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EEB3B1D97
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbhFWPZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 11:25:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33078 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229523AbhFWPZ5 (ORCPT
+        id S231390AbhFWP1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 11:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230061AbhFWP1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 11:25:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624461819;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KqNfBw+DZy7VZXBvahJMXyxmm59IKQhUiq2dn1235vw=;
-        b=al5+qDE98xCfMMjJOInGnGtQG/Jre0q0BjMjH+tHe1KQOOnoinpuHXdsDj7FR/N7MOkyNg
-        +GBDV1Ve5dxbXhv4wvoZZ5tbPnItUFmvNiFxzEDHFlezcjFCRmZ/ydxSUjDTrs1Rup70gB
-        FrAw49aPIt/ocgz9LR8xDJ6xnjRxCjA=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-291-Jev1xyjVMNKxq--7GemLzw-1; Wed, 23 Jun 2021 11:23:37 -0400
-X-MC-Unique: Jev1xyjVMNKxq--7GemLzw-1
-Received: by mail-wr1-f71.google.com with SMTP id f9-20020a5d64c90000b029011a3c2a0337so1217674wri.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 08:23:37 -0700 (PDT)
+        Wed, 23 Jun 2021 11:27:39 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B34C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 08:25:21 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id h15so4691409lfv.12
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 08:25:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tWN1jNVFh7vMLUtEdkRQtm2LdDMMDH1982Vnm5Q9SIM=;
+        b=m1ekFegoNdrGbxt+7TUKRZ/VO3BsPXgL10cMuDLlUJZXZlwxqvY9tta1wja6faHjpO
+         G+CQsu7pYz8vJsBsNcAkJfHrPuyQjGpNU2TBzSIk1HJI+7gj/Fieh4F/DHdx4grkDHY2
+         kfB3jdFvWKJ5Qa8LlaVuIlB/pdKuslTtXhbRKqzqMdwGEbH/BcvapozB9bUnnoKNbkmN
+         xZr+zY74/6TgBt3N/OUIF54UOm2aEg/kHc2SJSAdCYjf0tFL/lx/osWCfCizbWW73zpt
+         sOgiwdiQwRLvQug8IYZDX5r53HI8H3DlUQD7b3NOx5njM+K+Ap1PgyfYJ1GFvoUpbq0Y
+         jcQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KqNfBw+DZy7VZXBvahJMXyxmm59IKQhUiq2dn1235vw=;
-        b=ru8pvWCZUMpWKvQJWvvCvyShy5n110BWud/gFo7pgKbMHnrRqqdWwZQNuX3fI38HVE
-         BcSG8ZUvwQungWfix2xDVFT9cgK30KfjkVu96s53VicMvKQO0rrBsGR1dGpb2JQORIsh
-         yUY3wIbmRNPL1+F4F6DtnqgbNoXzMUBzLfAS8T2+fMWiaBj+EWFqAIp/iyOYEp/eHzAk
-         9tHRf1Olt5uIngdBnJ2uNcYfvBrThJNpqNWL9dsxFzH919zqcC4RBmjC1xXKmqp7twgZ
-         Ta+Ci/E8qcbeVMpymsFBRDVNUJe+PcKmyEsEiDljn0faAbRZtFqN6J1fEzDItYxASXaw
-         r80Q==
-X-Gm-Message-State: AOAM5338IHKO9wymmwTnJLQT7OUPDL+7XY3oZgOAG6i5Hvd6J2O++MoW
-        1yZ6szSWHDsl3c09SYtsdiTGvTP5vwqoQfxzyutceJDfS5uOjh6PwoQBFuHd7RPj4TIyBwkxkeK
-        GFMVK0xFEcfRNChWnuJLFdIgWfaOvQ/df0dCrsTY1
-X-Received: by 2002:a05:600c:2907:: with SMTP id i7mr4087031wmd.139.1624461816650;
-        Wed, 23 Jun 2021 08:23:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzkwprwBs+4+m2cINYxKCit9IeKr9Iv1V9yb/mYUuehMDtRmPDtVVvRYTjDw7TLfVWQ+DO40JMT0djrFoge9kc=
-X-Received: by 2002:a05:600c:2907:: with SMTP id i7mr4087017wmd.139.1624461816527;
- Wed, 23 Jun 2021 08:23:36 -0700 (PDT)
+        bh=tWN1jNVFh7vMLUtEdkRQtm2LdDMMDH1982Vnm5Q9SIM=;
+        b=LTZkqFvtEBC4140ZxVAX0ErAf+03vbqM1G7ge7hjJx/8KJoXn8GZ1x+0kP+cDC6394
+         saAASCmHaO+mcH4qPVPYWwfnxiR9A2RKAlcCtvr0szsEDRWH22CyS7T2rtQwXu3beKwY
+         NITCUpLRauqK7XZXMxp2suiIfg/+1z8CEHpO2M3QyL3kkglIw7Bpsv3QcHQOK0UIdCA4
+         3nPEp8ZiRK2oZUw06H8QY62o0KU/cnQVy+6w/zJDb/+6sKb5BU7ihdWNaYG1j9nz4K+G
+         vOMv3aptr94edQ5qSgjGB/uy/cn06mzra6cSakMq5qcDU/A14w//pgrzYW/lyrevMPI0
+         fekw==
+X-Gm-Message-State: AOAM532cbkpG591eBpylem+io112Ti2O8Y+JJPWq5HX0LBRBlZFQnNTO
+        ol7MRoOGNsEQzl5/LYVyAXsQ92md0tRKkukmD9RTGQ==
+X-Google-Smtp-Source: ABdhPJyAwIGUgo68OmahnP4EuuvHtTd1UL9j1UkXicbKw75wPKkSOcVk3aLPokn2FK3hKP2mN+WPLGYKcQULj8B7MQE=
+X-Received: by 2002:a05:6512:3694:: with SMTP id d20mr116319lfs.470.1624461919639;
+ Wed, 23 Jun 2021 08:25:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210622125803.640-1-caihuoqing@baidu.com>
-In-Reply-To: <20210622125803.640-1-caihuoqing@baidu.com>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Wed, 23 Jun 2021 17:23:25 +0200
-Message-ID: <CACO55ttH-BbGzT+2ZXPiONdmtv5s-4qCCLWAx+sxQ9kyJoKtfQ@mail.gmail.com>
-Subject: Re: [PATCH] remove unused varialble "struct device *dev"
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+References: <2ED1BDF5-BC0C-47CD-8F33-9A46C738F8CF@linux.vnet.ibm.com>
+ <CAKfTPtDrHv4OOfPvwOE2DMNoucXQJ=yvvEpTVKrXghSdKEnZcA@mail.gmail.com>
+ <20210622143154.GA804@vingu-book> <53968DDE-9E93-4CB4-B5E4-526230B6E154@linux.vnet.ibm.com>
+ <20210623071935.GA29143@vingu-book> <CCB4222F-000A-44E8-8D61-F69893704688@linux.vnet.ibm.com>
+ <6C676AB3-5D06-471A-8715-60AABEBBE392@linux.vnet.ibm.com> <20210623120835.GB29143@vingu-book>
+ <CAFpoUr01xb9ZJF9mb2nmZDpUHXFH3VSbY3AU8-1owV-_7wVTPg@mail.gmail.com>
+ <CAKfTPtB++3y4VnbKE_n=bgsqCfqXuF0KUsdB_cFhi9xAnMRubw@mail.gmail.com>
+ <CAFpoUr3bHzrwvumw6R=2JVbKa_wmtT9cMf-mdDHxY0Png-N9Jw@mail.gmail.com>
+ <CAKfTPtAev0VgCmK3AUyTCoVA38YmskpB98q0kTrbEPK6e=1dTA@mail.gmail.com> <CAFpoUr3Q+7Tr3y59H-BiFU7BO=dquhQpJ8M9JtmV0_3ySfp-+Q@mail.gmail.com>
+In-Reply-To: <CAFpoUr3Q+7Tr3y59H-BiFU7BO=dquhQpJ8M9JtmV0_3ySfp-+Q@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 23 Jun 2021 17:25:08 +0200
+Message-ID: <CAKfTPtAjWpupvUE_m_KK9o4djQ_m5WmXuMqjxxxsMMRbfHqTmQ@mail.gmail.com>
+Subject: Re: [powerpc][next-20210621] WARNING at kernel/sched/fair.c:3277
+ during boot
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 5:14 PM Cai Huoqing <caihuoqing@baidu.com> wrote:
+On Wed, 23 Jun 2021 at 17:13, Odin Ugedal <odin@uged.al> wrote:
 >
-> fix the warning- variable 'dev' set but not used
+> ons. 23. jun. 2021 kl. 15:56 skrev Vincent Guittot <vincent.guittot@linaro.org>:
+> >
+> >
+> > The pelt value of sched_entity is synced with  cfs and its contrib
+> > before being removed.
 >
+>
+> Hmm. Not sure what you mean by sched_entity here, since this is only
+> taking the "removed" load_avg
+> and removing it from cfs_rq, together with (removed.load_avg *
+> divider) from load_sum. (Although. ".removed" comes from
+> a sched entity)
 
-the patch title needs a prefix to indicate which subsystem it belongs
-to. Check git log for examples.
+The sched_entity's load_avg that is put in removed.load, is sync with
+the cfs_rq PELT signal, which includes contrib, before being added to
+removed.load.
 
-With that fixed: Reviewed-by: Karol Herbst <kherbst@redhat.com>
+>
+> > Then, we start to remove this load in update_cfs_rq_load_avg() before
+> > calling __update_load_avg_cfs_rq so contrib should not have change and
+> > we should be safe
+>
+> For what it is worth, I am now able to reproduce it (maybe
+> CONFIG_HZ=300/250 is the thing) as reported by Sachin,
+> and my patch makes it disappear. Without my patch I see situations
+> where _sum is zero while _avg is eg. 1 or 2 or 14 (in that range).
 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->  drivers/gpu/drm/nouveau/nouveau_bo.c | 4 ----
->  1 file changed, 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau/nouveau_bo.c
-> index 984721b..cb3ff4a 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_bo.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
-> @@ -1242,7 +1242,6 @@ vm_fault_t nouveau_ttm_fault_reserve_notify(struct ttm_buffer_object *bo)
->  {
->         struct ttm_tt *ttm_dma = (void *)ttm;
->         struct nouveau_drm *drm;
-> -       struct device *dev;
->         bool slave = !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
->
->         if (ttm_tt_is_populated(ttm))
-> @@ -1255,7 +1254,6 @@ vm_fault_t nouveau_ttm_fault_reserve_notify(struct ttm_buffer_object *bo)
->         }
->
->         drm = nouveau_bdev(bdev);
-> -       dev = drm->dev->dev;
->
->         return ttm_pool_alloc(&drm->ttm.bdev.pool, ttm, ctx);
->  }
-> @@ -1265,14 +1263,12 @@ vm_fault_t nouveau_ttm_fault_reserve_notify(struct ttm_buffer_object *bo)
->                           struct ttm_tt *ttm)
->  {
->         struct nouveau_drm *drm;
-> -       struct device *dev;
->         bool slave = !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
->
->         if (slave)
->                 return;
->
->         drm = nouveau_bdev(bdev);
-> -       dev = drm->dev->dev;
->
->         return ttm_pool_free(&drm->ttm.bdev.pool, ttm);
->  }
-> --
-> 1.8.3.1
->
+hmm, so there is something wrong in the propagation
 
+> This happens for both load, runnable and util.
+>
+> Lets see what Sachin reports back.
+>
+> Thanks
+> Odin
