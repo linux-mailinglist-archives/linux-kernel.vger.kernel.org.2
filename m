@@ -2,92 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8A03B2279
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CFF3B2284
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhFWVcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 17:32:48 -0400
-Received: from mail-pj1-f54.google.com ([209.85.216.54]:35559 "EHLO
-        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhFWVcq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 17:32:46 -0400
-Received: by mail-pj1-f54.google.com with SMTP id pf4-20020a17090b1d84b029016f6699c3f2so4630294pjb.0;
-        Wed, 23 Jun 2021 14:30:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fdjwEWE24Dy/IG34lYYHtdW9bawi+R/sEfDdB4k+M44=;
-        b=FP5/8F1Q9PKqRetB/0wLbCeY21JvfejTSTlRyoDbK2knKIFPGw532IijKh+Ur8enWe
-         XLX6WtD6c8frWRGZqn6JowXzR0EmwqEG0BBafI0NFXMmgtpcPkXLKsjyyz/MAV5r2ub8
-         L3y6TP7UKVcbSzeLxgawqvkOBklB0k64AE5glPasPWcCHAFutYu6ARwUYwPco4Eooy+S
-         bVEUAK1vSm4mlbqlGcQxyIxt6oZXDRxtIXD0Osy4B3klKV7n4BPTrlC+GylCjJ7UOiFp
-         7uwzcQnXN17j4TjFZnHyC8wm2Nw29KtOnyWOBl7YXiHOG3Q8tTW/WKrYRG+JiXYjo24J
-         c4+w==
-X-Gm-Message-State: AOAM530sR8NLpij8hmPB+AWhRJk9j4m2uh0DlndPF+CMYEcBczFfJsAP
-        xl54hGi//qC0JYXOJXpTlRkOPCdls8c=
-X-Google-Smtp-Source: ABdhPJy7DX5Ast8uucUZKUgFPqMCI4ozmIf83KEET693R9mgkhDLUap6BnyNimy1ur33fhmUdJW+Hg==
-X-Received: by 2002:a17:90a:6fc5:: with SMTP id e63mr1750174pjk.90.1624483827344;
-        Wed, 23 Jun 2021 14:30:27 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id l10sm6094468pjg.26.2021.06.23.14.30.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 14:30:26 -0700 (PDT)
-Subject: Re: [PATCH v4 07/10] scsi: ufs: Simplify error handling preparation
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-9-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <dbe3e867-7e47-e306-038e-2e578845c5ba@acm.org>
-Date:   Wed, 23 Jun 2021 14:30:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229952AbhFWVfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 17:35:39 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:25352 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229755AbhFWVfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 17:35:33 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624483995; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=tOGyNtlccrkAAMmGN0pd+swv2Kj8HU9UzZuPW5E+0JQ=;
+ b=NzsWldu/iTVIKn+m1A3YkDabxJ8iXVkLxl2EcYygMBoMxFcQKHcvVbib1or3k6Ekh5F5uXt/
+ V+2urVM3b/BBMewOnF+Qdzt6eLma+Iv5aEpKZ28TROJVWyqbB+GamdCgZiaR5s+iY3w7WEKr
+ YXqBZKwVgDIlipOkKaEmcum2uVE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60d3a8905e3e57240b57b621 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Jun 2021 21:33:04
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id ECB60C4338A; Wed, 23 Jun 2021 21:33:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EE634C433D3;
+        Wed, 23 Jun 2021 21:33:02 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <1624433711-9339-9-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 23 Jun 2021 14:33:02 -0700
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
+        ath11k@lists.infradead.org
+Subject: Re: [PATCH v4 4/6] ath11k: set register access length for MHI driver
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <87fsx8h4dx.fsf@codeaurora.org>
+References: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
+ <1620330705-40192-5-git-send-email-bbhatt@codeaurora.org>
+ <20210521135152.GL70095@thinkpad> <87h7i0juxt.fsf@codeaurora.org>
+ <37184e28dcc952ba9ad5ed0dc2c1a6da@codeaurora.org>
+ <87fsx8h4dx.fsf@codeaurora.org>
+Message-ID: <061e797fedbd1bc3dd7b86a087f6c69f@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 12:35 AM, Can Guo wrote:
-> -static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
-> +static int ufshcd_err_handling_prepare(struct ufs_hba *hba)
->  {
->  	/*
->  	 * It is not safe to perform error handling while suspend or resume is
->  	 * in progress. Hence the lock_system_sleep() call.
->  	 */
->  	lock_system_sleep();
-> +	/*
-> +	 * Exclusively call pm_runtime_get_sync(hba->dev) once, in case
-> +	 * following ufshcd_rpm_get_sync() fails.
-> +	 */
-> +	pm_runtime_get_sync(hba->dev);
-> +	if (pm_runtime_suspended(hba->dev) || hba->is_sys_suspended) {
-> +		pm_runtime_put(hba->dev);
-> +		unlock_system_sleep();
-> +		return -EINVAL;
-> +	}
-
-There is code present in ufshcd_queuecommand() that may trigger data
-corruption to prevent that the above pm_runtime_get_sync() call triggers
-a deadlock. I think we need a better solution.
+On 2021-06-23 10:34 AM, Kalle Valo wrote:
+> Bhaumik Bhatt <bbhatt@codeaurora.org> writes:
+> 
+>> Hi Kalle,
+>> 
+>> On 2021-06-14 09:02 AM, Kalle Valo wrote:
+>>> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
+>>> 
+>>>> On Thu, May 06, 2021 at 12:51:43PM -0700, Bhaumik Bhatt wrote:
+>>>>> MHI driver requires register space length to add range checks and
+>>>>> prevent memory region accesses outside of that for MMIO space.
+>>>>> Set it before registering the MHI controller.
+>>>>> 
+>>>>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>>>>> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+>>>> 
+>>>> Reviewed-by: Manivannan Sadhasivam 
+>>>> <manivannan.sadhasivam@linaro.org>
+>>>> 
+>>>> Kalle, should we do immutable branch for this patch or I can pick
+>>>> it up via MHI
+>>>> tree (if there are no other patches expected from ath11k for this
+>>>> controller)?
+>>> 
+>>> I'm not expecting any conflicts with this, and if there are, they
+>>> should
+>>> be easy for Stephen or Linus to fix. So it's easiest to route this 
+>>> via
+>>> your tree. But I'm not giving my ack yet, see below.
+>>> 
+>>> I'm worried that this patchset breaks bisect. Every patch in the
+>>> patchset should not break existing functionality, what if only 
+>>> patches
+>>> 1-3 are included in the tree but not patch 4? Wouldn't ath11k be 
+>>> broken
+>>> then? I didn't review the whole patchset, but I suspect the fix is to
+>>> include the ath11k change in the actual mhi patch which changes the
+>>> functionality. So that way we would not have a separate ath11k patch 
+>>> at
+>>> all.
+>>> 
+>>> Also I'm not able to test this patchset at the moment. Can someone 
+>>> else
+>>> help and do a quick test with QCA6390 to verify these doesn't break
+>>> ath11k?
+>> 
+>> I have requested someone to try and test this patch series with 
+>> QCA6390.
+>> 
+>> I or the testers will get back to you with the test results when they
+>> are available.
+>> 
+>> As far as your concerns go, you can choose to pick patches 1-3 and
+>> that would be just fine.
+>> 
+>> Things will break if patchset 4 is _not_ in place with patchset 6
+>> being part of the tree.
+>> 
+>> It would, however, be nice to pick the whole series instead and ensure
+>> that the functionality MHI introduces for boot-up sanity is in place
+>> for any controllers such as ath11k.
+> 
+> Just to be clear, this is not about me picking up any patches
+> separately. I was instead making sure git-bisect works correctly, as it
+> can randomly choose to test any commit in the tree. But based on your
+> description everything seems to be in order in this patchset and bisect
+> will work correctly.
+> 
+> git-bisect is an important tool for me when I'm searching the root 
+> cause
+> for ath11k regressions, that's why I'm so careful to make sure it 
+> works.
+OK. Understood.
 
 Thanks,
-
-Bart.
+Bhaumik
+---
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
