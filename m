@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C3B3B1A51
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87FC3B1A5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhFWMld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:41:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34350 "EHLO
+        id S230495AbhFWMm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhFWMlY (ORCPT
+        with ESMTP id S230206AbhFWMmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:41:24 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F65FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:39:04 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G92rN21WRz9sVm;
-        Wed, 23 Jun 2021 22:39:00 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1624451940;
-        bh=YcB/9YcVFOV23ikLx+fO1is/rA8AMgT7lbS0KblGDX8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=IhO3VnSPInKOmgJ6xl4x8k54oh3tBUpey7qr5Q7eNwHTBl2lb+wc84ShJMY/WAY/K
-         Mf3fEPIYKb3zE8VEsJfhtQmdlUee/tzIJiVDyLy0gmyLnGOgxAjH7vJhMCQ4uHZhWu
-         W81cskQH6XGtFSVcCh8SA0hJI2OKKbCFWvi3N8e7FnronJq9UGfYBDX1fkpahhoFHI
-         iqat3Wq9TfysA1b4mQxUtjoTNN9ibGFxM0WmPUg7GSJ42OlTfGqQVoQ/gCMvgUeyo8
-         rfO4bflS7/cXYJNR7I3dzzmod5PUit/W81ScqFEO6ZpPMf3yfDTVqkY9pc5IUZ6onN
-         pWR/q2zD7CEOw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Daniel Axtens <dja@axtens.net>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 2/3] powerpc: Define swapper_pg_dir[] in C
-In-Reply-To: <871r8siyqm.fsf@dja-thinkpad.axtens.net>
-References: <5838caffa269e0957c5a50cc85477876220298b0.1623063174.git.christophe.leroy@csgroup.eu>
- <5e3f1b8a4695c33ccc80aa3870e016bef32b85e1.1623063174.git.christophe.leroy@csgroup.eu>
- <871r8siyqm.fsf@dja-thinkpad.axtens.net>
-Date:   Wed, 23 Jun 2021 22:38:58 +1000
-Message-ID: <87czsc21st.fsf@mpe.ellerman.id.au>
+        Wed, 23 Jun 2021 08:42:20 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96294C061574;
+        Wed, 23 Jun 2021 05:40:02 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 555951F436DA
+Subject: Re: [PATCH v2] selftests/lkdtm: Use /bin/sh not $SHELL
+To:     Kees Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>
+Cc:     stable@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210619025834.2505201-1-keescook@chromium.org>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <e958209b-8621-57ca-01d6-2e76b05dab4c@collabora.com>
+Date:   Wed, 23 Jun 2021 13:39:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210619025834.2505201-1-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Axtens <dja@axtens.net> writes:
-> Hi Christophe,
->
-> This breaks booting a radix KVM guest with 4k pages for me:
->
-> make pseries_le_defconfig
-> scripts/config -d CONFIG_PPC_64K_PAGES
-> scripts/config -e CONFIG_PPC_4K_PAGES
-> make vmlinux
-> sudo qemu-system-ppc64 -enable-kvm -M pseries -m 1G -nographic -vga none -smp 4 -cpu host -kernel vmlinux
->
-> Boot hangs after printing 'Booting Linux via __start()' and qemu's 'info
-> registers' reports that it's stuck at the instruction fetch exception.
->
-> My host is Power9, 64k page size radix, and
-> gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34
->
-
-...
->> diff --git a/arch/powerpc/kernel/head_64.S b/arch/powerpc/kernel/head_64.S
->> index 730838c7ca39..79f2d1e61abd 100644
->> --- a/arch/powerpc/kernel/head_64.S
->> +++ b/arch/powerpc/kernel/head_64.S
->> @@ -997,18 +997,3 @@ start_here_common:
->>  0:	trap
->>  	EMIT_BUG_ENTRY 0b, __FILE__, __LINE__, 0
->>  	.previous
->> -
->> -/*
->> - * We put a few things here that have to be page-aligned.
->> - * This stuff goes at the beginning of the bss, which is page-aligned.
->> - */
->> -	.section ".bss"
->> -/*
->> - * pgd dir should be aligned to PGD_TABLE_SIZE which is 64K.
->> - * We will need to find a better way to fix this
->> - */
->> -	.align	16
->> -
->> -	.globl	swapper_pg_dir
->> -swapper_pg_dir:
->> -	.space	PGD_TABLE_SIZE
-
-This is now 4K aligned whereas it used to be 64K.
-
-This fixes it and is not completely ugly?
-
-diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
-index 1707ab580ee2..298469beaa90 100644
---- a/arch/powerpc/mm/pgtable.c
-+++ b/arch/powerpc/mm/pgtable.c
-@@ -28,7 +28,13 @@
- #include <asm/hugetlb.h>
- #include <asm/pte-walk.h>
- 
--pgd_t swapper_pg_dir[MAX_PTRS_PER_PGD] __page_aligned_bss;
-+#ifdef CONFIG_PPC64
-+#define PGD_ALIGN 0x10000
-+#else
-+#define PGD_ALIGN PAGE_SIZE
-+#endif
-+
-+pgd_t swapper_pg_dir[MAX_PTRS_PER_PGD] __section(".bss..page_aligned") __aligned(PGD_ALIGN);
- 
- static inline int is_exec_fault(void)
- {
+On 19/06/2021 03:58, Kees Cook wrote:
+> Some environments do not set $SHELL when running tests. There's no need
+> to use $SHELL here anyway, so just replace it with hard-coded path
+> instead. Additionally avoid using bash-isms in the command, so that
+> regular /bin/sh can be used.
+> 
+> Suggested-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+> Fixes: 46d1a0f03d66 ("selftests/lkdtm: Add tests for LKDTM targets")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
 
-cheers
+Tested-by: "kernelci.org bot" <bot@kernelci.org> 
+
+
+Sample staging results with this patch applied on top of
+next-20210622:
+
+https://staging.kernelci.org/test/plan/id/60d2dbdc3cfb88da0924bf41/
+
+Full log:
+
+https://storage.staging.kernelci.org/kernelci/staging-next/staging-next-20210623.0/x86_64/x86_64_defconfig+x86-chromebook+kselftest/clang-13/lab-collabora/kselftest-lkdtm-asus-C523NA-A20057-coral.html
+
+
+This was tested using Debian Buster with the default shell
+being "dash", which doesn't support Bash-specific features.
+
+
+Thanks,
+Guillaume
+
+> ---
+>  tools/testing/selftests/lkdtm/run.sh | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/lkdtm/run.sh b/tools/testing/selftests/lkdtm/run.sh
+> index bb7a1775307b..0f9f22ac004b 100755
+> --- a/tools/testing/selftests/lkdtm/run.sh
+> +++ b/tools/testing/selftests/lkdtm/run.sh
+> @@ -78,8 +78,9 @@ dmesg > "$DMESG"
+>  
+>  # Most shells yell about signals and we're expecting the "cat" process
+>  # to usually be killed by the kernel. So we have to run it in a sub-shell
+> -# and silence errors.
+> -($SHELL -c 'cat <(echo '"$test"') >'"$TRIGGER" 2>/dev/null) || true
+> +# to avoid terminating this script. Leave stderr alone, just in case
+> +# something _else_ happens.
+> +(/bin/sh -c '(echo '"$test"') | cat >'"$TRIGGER") || true
+>  
+>  # Record and dump the results
+>  dmesg | comm --nocheck-order -13 "$DMESG" - > "$LOG" || true
+> 
+
