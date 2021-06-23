@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379DD3B21ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3243B21F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhFWUmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 16:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58482 "EHLO
+        id S230087AbhFWUmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 16:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbhFWUmF (ORCPT
+        with ESMTP id S229934AbhFWUmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 16:42:05 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7B9C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:39:47 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id c5so3283758pfv.8
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:39:47 -0700 (PDT)
+        Wed, 23 Jun 2021 16:42:06 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C85C061768
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:39:48 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id l11so2166068pji.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:39:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=h2E/emdsJT4/hSnBDyJfRLo21OxhdAolWugWFwmcmlQ=;
-        b=W3ln4OJoSgh2tDYaZAkeBL1277kPHbjLgQzh5jp2lHmXWXDid6pL7ifbY/8JMhqBnS
-         E7ljjEw7rDNL3pcvx7ES8rXIbycmwc5DlSBciCnxaHzzXxCJZJrIjzcmCdgTP3ZMG3h1
-         SvFAVic/oKTuJMlBmdCueWnPCoQBZ/kqG3otE=
+        bh=weOFYHnAt9XHzyijtFN46zZa/bge4PQn7pFxvS+uscM=;
+        b=PINKBfWpr3gvTyJ0eFnAv65n6MifZbR/apDoNhNeYQq+pb7Y+nHfI6/29jpyhKRsrA
+         kSmtPGNKM36+xWmlgXqHNtUo2kVWovxkLqFL92N+B8M0nbpRfCD32Nat5OMJ3EJp3QwV
+         KrPvrHdngyt40imWa1hgx+IPHVy1nFGR4oZAI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=h2E/emdsJT4/hSnBDyJfRLo21OxhdAolWugWFwmcmlQ=;
-        b=eRf/icD4lE0haQqzO2dyPscrxPAGlf/gGS4d0GsvXIAiiRpLAxTbybTy489WHP+paB
-         s6RsoCZOmhjlbGkXI0xF3kYSjXjTklEC0pYEQcsGOr0LrE2cw95lVhj2a9FmcOSDKdID
-         caX6+h+YorrO1+0FUEZplWfqYyvXNt05UncgQ8pk5vfcCORiDMjqeiOdzaEb8arT2YV9
-         UpF2xrwodldiPbWLYzye/vKYLrQmqnN8IDBZflm6av2d9LUi1gY+3AxX6f/5BqPAw+0W
-         EscYZFhC2zfDz2KcRzlvcOHxilxDv0zY3x7/Y2o/Nkvyu1vhGhxUxVA8/b7Uu+FCuUK+
-         U/LA==
-X-Gm-Message-State: AOAM530fDJ6LEm06jUyXwiZgo0DtAxm4P4VKwwcLwbLEBDqPtOX83MfA
-        JuxXYclpoCOUd8MH5yLaei5hAA==
-X-Google-Smtp-Source: ABdhPJzu//ZPWLX4RFym3EWsld5xfBoKsgNiAcSmpIzhn3Zc80aAcR0fpGEdYQmR0b32cLTxprQFRw==
-X-Received: by 2002:a63:d003:: with SMTP id z3mr1232630pgf.210.1624480786581;
-        Wed, 23 Jun 2021 13:39:46 -0700 (PDT)
+        bh=weOFYHnAt9XHzyijtFN46zZa/bge4PQn7pFxvS+uscM=;
+        b=eT6Ktcp9Nkht7NXS6NBHLg/fPuL7ImrT2vn329i80WNJ7vc4W0zjM2Fo4FLSejzc0O
+         3QghdPd9VFHheDhbLXQPWenBHPlp+JD3E5cZqL6lQjcv3yso4gW+qN6tDQzZaiB+Kzpu
+         1CssMh5+APOzo6sV4YuH2SYTRN7MLzjjVNKcqr+E+pJQFy7NmiUFcnnZ3AIceHBlM4Wn
+         C2Pcaw/1CGLn5srRTwLYzg2b2qVhdo8haqHgP/oqlRtD6/H7DAIiTe84zPX3Nqjk3jwZ
+         NyaI7Wpu2umUaxG3CL6PmsRha/JrNa5GxBO4DjJTxDcCda+a+WRSjLuPqb5UL8hrddj9
+         h+LQ==
+X-Gm-Message-State: AOAM531shyaEwb/HZwvaxPA92stYOap16r+jk1n3HUgSf8j1BevnwCm8
+        ftMlXqf2vANHY/aDfoD+tcJxuQ==
+X-Google-Smtp-Source: ABdhPJx1ypcWLUnUHJBbnBIjhX9m3ZNAxwtdnMUAu2WOpDwAvnSgoGuRx7tr0mmBARqaMdXFPQlhRQ==
+X-Received: by 2002:a17:902:c789:b029:110:4933:71ce with SMTP id w9-20020a170902c789b0290110493371cemr1194211pla.56.1624480788561;
+        Wed, 23 Jun 2021 13:39:48 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c5sm5961432pjq.38.2021.06.23.13.39.45
+        by smtp.gmail.com with ESMTPSA id f5sm640523pfe.79.2021.06.23.13.39.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 23 Jun 2021 13:39:45 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
+Cc:     Kees Cook <keescook@chromium.org>, stable@vger.kernel.org,
         Guillaume Tucker <guillaume.tucker@collabora.com>,
         David Laight <David.Laight@ACULAB.COM>,
         Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
         kernelci@groups.io, linux-kselftest@vger.kernel.org,
         linux-hardening@vger.kernel.org
-Subject: [PATCH 3/9] selftests/lkdtm: Fix expected text for free poison
-Date:   Wed, 23 Jun 2021 13:39:30 -0700
-Message-Id: <20210623203936.3151093-4-keescook@chromium.org>
+Subject: [PATCH 4/9] lkdtm/bugs: XFAIL UNALIGNED_LOAD_STORE_WRITE
+Date:   Wed, 23 Jun 2021 13:39:31 -0700
+Message-Id: <20210623203936.3151093-5-keescook@chromium.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210623203936.3151093-1-keescook@chromium.org>
 References: <20210623203936.3151093-1-keescook@chromium.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=948; h=from:subject; bh=7Z6rDIdXc6OEiqueR+KR4HSl76Pq0nn3txazVEELU2Y=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBg05wG3Bu0QsJe7x2Dvq5gEv1AswiiPcQny5ntqUEu USMIUZuJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYNOcBgAKCRCJcvTf3G3AJsYqEA C06Fjzuf/YFUDtqs9XGLBFg8ytEwa9LuoVTEzEvqPRHMjLXpPtx0U+WDGizzYfKlE9cFl1/pMdd05j Wqbj0N7UjHFWwa0qWFNGrMl0TnxkVFLZfK0ATu8aHMg6WAaZeSIBkijJHxpo5Oucnw5eDyiMn+eaGC Ht8s39AluGZ9uMqV0Ra2HIUaMimP7PnwM71FZXQ0OT+HxNtj4uL3gQuImuMfFRr5eaUsFDRVMHbsDL SOQXpMm34N/lycRcZvd8dRinj3+tA+TMBrv9pydRg6n3Qgm/FBD0Te8TnASKtt2RedQpsuj72Ho+Fe 4Lxv2yQ7inHYJbkrl9GAYOEDY1W7zQOj6yYUgutI6/919Zt3bs0Ml6CYaGCAtuu3evX9uhSdvR1ZPt NvglZf1dMNUGJZ3qeib24mKTek1QAcTJzvswlV+JxLBaCxAFtvMelCA7re6G/OO/84EEg4yKGtJxEp VmAjYgmqw3ZJbfB9PBCNgi89vQuhA85JuyGLqta9lTeu1U76SWF2IdUCctfcGnAAlcVtMBGLwiYPN5 Ajj52D8lA1Mcl9Wa0N98/YLkIynMA9A5evXOM/0x1WQ8C2gnVipNq6pk4+u1OvkX2Kf7XOzp4+lVqO Ap6O16W38xSAf6o1xen1nRrRpc1Um5d/6PNVEObh//+D2Moh51HKm+vbrBCg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=821; h=from:subject; bh=Ug1zxBYqfqGVjk6HZPE+S2IQ++k8iErOOapO5olSeEg=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBg05wGnJvmDSLi1MPOx05nkNSD/27SmvDUPYKaSZ+b ABK1bYKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYNOcBgAKCRCJcvTf3G3AJhiJEA Ciux3+IGOay7Jw49WbIkgIv0TxSZgcO90q+vD3qxYri5Kve5Gl362F2aW0FCOlOtxfzOnGmC53o+vL mnCazUpoqn0dW/Y15W4dfOo+HoN5/Afr2nMEj2cwPYh7e2v3kQ2/JK4gaqP9mMDegUGCvWynQbQq54 md3YCttGo14SuaAMF9Wgo60xgxde5gIvQadm2WfvXU0BLyeZBBQb/iHJb8A06PBRzIBP06Nu+NmVVS 4gjNsMrbg6ltVcNDZ67UJ4sjzuFEP2hO+bd3d6/D/d7os59xJd11AHlpBYfk1gCBMC4wl/ZHgbOsaY ew49zKobbo1qt1K8F7Yct3U3IZZ9e2Ny/XCdM/rQMR0KlGYK/LXREO8mEubV2DBQzQidihoy2cFwBk 5gEjXn+w2QmsY5GXkuCXxsRXVw90q9IyT0Qt6kyJ44vqmTKpUFpcarqthBP1/2nXx243B73YaVCB12 6nd+koQb1m5NQNvzwZ8i/jObt5py/ucSDlpCVQ/PCl3NUt9sRB0S8MRNKXxgEJuNMGGs/BUSoYK5AE 51LAiLpudvJPuDuLgHUfzx1Ig+tAVem+P/7WoryLM/rDXtXqsXoyyHzBPcZGczV6nPm7xCwdkviySP adfzxjhgaQrqToXPyTkus9c6NYZDhVyUcK6oihTYUAjfRzEQc+F7f3grbaNA==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Freed memory poisoning can be tested a few ways, so update the expected
-text to reflect the non-Oopsing alternative.
+When built under CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS, this test is
+expected to fail (i.e. not trip an exception).
 
+Fixes: 46d1a0f03d66 ("selftests/lkdtm: Add tests for LKDTM targets")
+Cc: stable@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- tools/testing/selftests/lkdtm/tests.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/misc/lkdtm/bugs.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tools/testing/selftests/lkdtm/tests.txt b/tools/testing/selftests/lkdtm/tests.txt
-index a5fce7fd4520..a94d4d8eeb5c 100644
---- a/tools/testing/selftests/lkdtm/tests.txt
-+++ b/tools/testing/selftests/lkdtm/tests.txt
-@@ -17,9 +17,9 @@ CORRUPT_PAC
- UNALIGNED_LOAD_STORE_WRITE
- #OVERWRITE_ALLOCATION Corrupts memory on failure
- #WRITE_AFTER_FREE Corrupts memory on failure
--READ_AFTER_FREE
-+READ_AFTER_FREE call trace:|Memory correctly poisoned
- #WRITE_BUDDY_AFTER_FREE Corrupts memory on failure
--READ_BUDDY_AFTER_FREE
-+READ_BUDDY_AFTER_FREE call trace:|Memory correctly poisoned
- SLAB_FREE_DOUBLE
- SLAB_FREE_CROSS
- SLAB_FREE_PAGE
+diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
+index 0e8254d0cf0b..9ff02bdf3153 100644
+--- a/drivers/misc/lkdtm/bugs.c
++++ b/drivers/misc/lkdtm/bugs.c
+@@ -161,6 +161,9 @@ void lkdtm_UNALIGNED_LOAD_STORE_WRITE(void)
+ 	if (*p == 0)
+ 		val = 0x87654321;
+ 	*p = val;
++
++	if (IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS))
++		pr_err("XFAIL: arch has CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS\n");
+ }
+ 
+ void lkdtm_SOFTLOCKUP(void)
 -- 
 2.30.2
 
