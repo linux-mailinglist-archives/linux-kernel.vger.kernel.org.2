@@ -2,97 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6499D3B3BDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 06:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87D13B3BEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhFYE7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 00:59:25 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:63897 "EHLO pegase1.c-s.fr"
+        id S233085AbhFYFHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 01:07:37 -0400
+Received: from bravo.moz.gov.ua ([91.142.166.206]:59154 "EHLO bravo.moz.gov.ua"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230097AbhFYE7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 00:59:19 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4GB4VK1WGnzBC7l;
-        Fri, 25 Jun 2021 06:56:57 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 2g-zeAQYg2tJ; Fri, 25 Jun 2021 06:56:57 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4GB4VK0Z0yzBC7h;
-        Fri, 25 Jun 2021 06:56:57 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id EB1638B7F4;
-        Fri, 25 Jun 2021 06:56:55 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id WESD5kl9hnOU; Fri, 25 Jun 2021 06:56:55 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0E8C58B7F0;
-        Fri, 25 Jun 2021 06:56:51 +0200 (CEST)
-Subject: Re: [PATCH v2 1/4] mm: pagewalk: Fix walk for hugepage tables
-To:     Michael Ellerman <mpe@ellerman.id.au>, akpm@linux-foundation.org
-Cc:     linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Oliver O'Halloran <oohall@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Paul Mackerras <paulus@samba.org>, dja@axtens.net,
-        Steven Price <steven.price@arm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-References: <cover.1618828806.git.christophe.leroy@csgroup.eu>
- <db6981c69f96a8c9c6dcf688b7f485e15993ddef.1618828806.git.christophe.leroy@csgroup.eu>
- <d22d196a-45ea-0960-b748-caab0e996c7c@csgroup.eu>
- <874kdm1rim.fsf@mpe.ellerman.id.au>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <217a6b38-a6ac-84d5-e3dc-257331431bb2@csgroup.eu>
-Date:   Fri, 25 Jun 2021 06:56:51 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230139AbhFYFHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 01:07:36 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by bravo.moz.gov.ua (Postfix) with ESMTP id 638B7E0FA22;
+        Fri, 25 Jun 2021 02:00:30 +0300 (EEST)
+Received: from bravo.moz.gov.ua ([127.0.0.1])
+        by localhost (bravo.moz.gov.ua [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 731Nxuh_66Ai; Fri, 25 Jun 2021 02:00:30 +0300 (EEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by bravo.moz.gov.ua (Postfix) with ESMTP id B3517D17E90;
+        Thu, 24 Jun 2021 06:08:26 +0300 (EEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 bravo.moz.gov.ua B3517D17E90
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=moz.gov.ua;
+        s=ACC34A14-A4AF-11EA-B990-E3711060C5A2; t=1624504106;
+        bh=tkNUHGXNgOxDI459yLEbk2zadyFPhAO93YFG/39o59Y=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=Dz2UdzHRX2EeiJFUNUvN9b3F5uop5LTX3Jtohg+7wkwgGaQ25XBYWKP/v2hQ2Pzv9
+         WcnK5F05DQKoO2BbjK1ktyUMlJryeXEeLDfaFKOmkwsDZ+XKzfutaSorIX3htDXhJ+
+         z+ov9+9h5CaYLUgIO2MmHPKnvrrt8yv981CmbIrI=
+X-Virus-Scanned: amavisd-new at moz.gov.ua
+Received: from bravo.moz.gov.ua ([127.0.0.1])
+        by localhost (bravo.moz.gov.ua [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id G8-OJAuPF3Av; Thu, 24 Jun 2021 06:08:26 +0300 (EEST)
+Received: from [192.168.8.102] (unknown [41.144.82.91])
+        by bravo.moz.gov.ua (Postfix) with ESMTPSA id 50EB6C12536;
+        Thu, 24 Jun 2021 01:09:16 +0300 (EEST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-In-Reply-To: <874kdm1rim.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?q?Sie_haben_eine_Spende_=E2=82=AC_1=2E000=2E000=2C00_?=
+To:     Recipients <line@moz.gov.ua>
+From:   <line@moz.gov.ua>
+Date:   Wed, 23 Jun 2021 15:09:09 -0700
+Reply-To: prejimsfoundation@gmail.com
+Message-Id: <20210623220916.50EB6C12536@bravo.moz.gov.ua>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 25/06/2021 à 06:45, Michael Ellerman a écrit :
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->> Hi Michael,
->>
->> Le 19/04/2021 à 12:47, Christophe Leroy a écrit :
->>> Pagewalk ignores hugepd entries and walk down the tables
->>> as if it was traditionnal entries, leading to crazy result.
->>>
->>> Add walk_hugepd_range() and use it to walk hugepage tables.
->>
->> I see you took patch 2 and 3 of the series.
-> 
-> Yeah I decided those were bug fixes so could be taken separately.
-> 
->> Do you expect Andrew to take patch 1 via mm tree, and then you'll take
->> patch 4 once mm tree is merged ?
-> 
-> I didn't feel I could take patch 1 via the powerpc tree without risking
-> conflicts.
-> 
-> Andrew could take patch 1 and 4 via mm, though he might not want to pick
-> them up this late.
-
-Patch 4 needs patches 2 and 3 and doesn't apply without them so it is not that easy.
-
-Maybe Andrew you can take patch 1 now and then Michael you can take patch 4 at anytime during 5.15 
-preparation without any conflict risk ?
-
-> 
-> I guess step one would be to repost 1 and 4 as a new series. Either they
-> can go via mm, or for 5.15 I could probably take them both as long as I
-> pick them up early enough.
-> 
-
-I'll first repost patch 1 as standalone and see what happens.
-
-Christophe
+Die Azim Premji Foundation spendete 1.000.000,00 Euro. Weitere Informatione=
+n finden Sie hier: http://en.wikipedia.org/wiki/Azim_Premji und fordern Sie=
+ umgehend eine E-Mail an: prejimsfoundation@gmail.com Vielen Dank Herr Azim=
+ Premji=20
