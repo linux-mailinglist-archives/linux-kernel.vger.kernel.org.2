@@ -2,135 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7DD3B1BCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 427023B1BD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbhFWOBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:01:35 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:45973 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S230274AbhFWOBe (ORCPT
+        id S231153AbhFWOCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:02:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21657 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230274AbhFWOCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:01:34 -0400
-Received: (qmail 492480 invoked by uid 1000); 23 Jun 2021 09:59:15 -0400
-Date:   Wed, 23 Jun 2021 09:59:15 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Claudiu.Beznea@microchip.com
-Cc:     gregkh@linuxfoundation.org, Nicolas.Ferre@microchip.com,
-        alexandre.belloni@bootlin.com, Ludovic.Desroches@microchip.com,
-        Cristian.Birsan@microchip.com, linux-usb@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: host: ohci-at91: suspend/resume ports after/before
- OHCI accesses
-Message-ID: <20210623135915.GB491169@rowland.harvard.edu>
-References: <20210609121027.70951-1-claudiu.beznea@microchip.com>
- <20210609230735.GA1861855@rowland.harvard.edu>
- <0621eaba-db4d-a174-1b15-535e804b52ac@microchip.com>
+        Wed, 23 Jun 2021 10:02:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624456795;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W+F5l5QW3STX3y3/WEJ/bMw23bThzj09neVyyElnu8M=;
+        b=DHUxPvCpa9YfjRomBooI3V6j2ZvBJM2vVRtBh35oHsEHsPCeAkGVlFthSxrXSZbQsGnS43
+        tw942VMVIWC1WBfDkTvhRejIM1nlLdRIcBKmYQ8ljCLWjdUSBEadYwnPkPjTanAYC6plqi
+        ZltZpPA/vw7WjX9/z+NDtG69F1SuBK4=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-508-Dukw-54tOLOxsdeutw9WsA-1; Wed, 23 Jun 2021 09:59:54 -0400
+X-MC-Unique: Dukw-54tOLOxsdeutw9WsA-1
+Received: by mail-ed1-f71.google.com with SMTP id z5-20020a05640235c5b0290393974bcf7eso1374670edc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 06:59:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=W+F5l5QW3STX3y3/WEJ/bMw23bThzj09neVyyElnu8M=;
+        b=Wghlen/Ih9z4spTYjYm3v1mNQVoZ8FLloKTr1u96JWy2eO4Imb/wef9FsZriIU63lw
+         9VSKnQVqn6WjnBs7wICYZKPc0yqB0g9LgvMA6MpyddjFmE2sAE2+cA1j5R7CRuU0tyKX
+         PtiTNlffaNnGxmP4ew0EfTA+wSiq01UKjp4kYVg65bHS1QIOk9nT90qwfRK1L/szrDQb
+         HQE/s+UUmJCaDrLKgk6GKb8K2cCy0daIRQNXr+f52LaVuuqR3HKYGbeE5LmFNRRSOk3F
+         q/Hpg19FlGr7ZF5CaRjn3dPRGmI3ZWCypNGY0W19nFueSKax7COcOReZcp+0If3/Xku3
+         0ndw==
+X-Gm-Message-State: AOAM533iDRIGIvAKM7k68aws2lUZqD9EzuxNkjNLpUpS8oTr1SCMKF8l
+        UWB0mmJR68M/yR426nRfIHQHj8O4x2HjrsyCJQ4JtKi2bl0rVgoqddNZZD9grqNzl8ughTuTk/v
+        3j86dHM/LPG4viViC4ZkIVPG/
+X-Received: by 2002:aa7:dcd9:: with SMTP id w25mr9584653edu.372.1624456792872;
+        Wed, 23 Jun 2021 06:59:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwLHabZmyqKCiK4K8pfsG0grstezdILx8RDtMnSnWBdAxMkonqBuG3peMm/7+YrUFSAudLzSw==
+X-Received: by 2002:aa7:dcd9:: with SMTP id w25mr9584628edu.372.1624456792651;
+        Wed, 23 Jun 2021 06:59:52 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id qq26sm7351945ejb.6.2021.06.23.06.59.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 06:59:52 -0700 (PDT)
+Subject: Re: [PATCH 03/54] KVM: x86: Properly reset MMU context at vCPU
+ RESET/INIT
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+References: <20210622175739.3610207-1-seanjc@google.com>
+ <20210622175739.3610207-4-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <2460a222-947a-6913-117c-f222f1dd0579@redhat.com>
+Date:   Wed, 23 Jun 2021 15:59:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0621eaba-db4d-a174-1b15-535e804b52ac@microchip.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210622175739.3610207-4-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 12:47:56PM +0000, Claudiu.Beznea@microchip.com wrote:
-> On 10.06.2021 02:07, Alan Stern wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > On Wed, Jun 09, 2021 at 03:10:27PM +0300, Claudiu Beznea wrote:
-> >> On SAMA7G5 suspending ports will cut the access to OHCI registers and
-> >> any subsequent access to them will lead to CPU being blocked trying to
-> >> access that memory. Same thing happens on resume: if OHCI memory is
-> >> accessed before resuming ports the CPU will block on that access. The
-> >> OCHI memory is accessed on suspend/resume though
-> >> ohci_suspend()/ohci_resume().
-> > 
-> > That sounds very strange.
-> 
-> The clock scheme for OHCI and EHCI IPs on SAMA7G5 is as follows
-> (I hope it is readable):
-> 
->                                             Main Xtal
->                                                |
->                                                +-------------+
->                                                |             |
-> +---------------------------+                 \ /            |
-> |                 +------+  | 60MHz  +--------------------+  |
-> |                 |      |  |        |                    |------+
-> |                 | Port |<----------| UTMI Transceiver A |  |   |
-> |                 |      |  |        |                    |----+ |
-> |  USB 2.0 EHCI   |Router|  |        +--------------------+  | | |
-> | Host Controller |      |  | 60MHz  +--------------------+  | | |
-> |                 |      |<----------| UTMI Transceiver B |<-+ | |
-> |                 |      |  |        +--------------------+  | | |
-> |                 |      |  | 60MHz  +--------------------+  | | |
-> |                 |      |<----------| UTMI Transceiver C |<-+ | |
-> |                 |      |  |        +--------------------+    | |
-> |                 +------+  |                                  | |
-> |                           |                                  | |
-> +---------------------------+                                  | |
->                                                                | |
-> +---------------------------+                                  | |
-> |                 +------+  |         UHP48M                   | |
-> |                 | Root |  |<---------------------------------+ |
-> |  USB 1.1 OHCI   | hub  |  |                                    |
-> | Host Controller | and  |  |         UHP12M                     |
-> |                 | host |  |<-----------------------------------+
-> |                 | SIE  |  |
-> |                 +------+  |
-> |                           |
-> +---------------------------+
-> 
-> Where UTMI transceiver A generates the 48MHz and 12MHz clocks for OHCI
-> full-speed operations.
-> 
-> The ports control is done through AT91_SFR_OHCIICR via
-> ohci_at91_port_suspend() function where. Setting 0 in AT91_SFR_OHCIICR
-> means suspend is controlled by EHCI-OHCI and 1 forces the port suspend.
-> Suspending the port A will cut the clocks for OHCI. I want to mention that
-> AT91_SFR_OHCIICR register is not in the same memory space of OHCI, EHCI IPs
-> and is clocked by other clocks.
-> 
-> > Suppose one of the ports is suspended, so access to the
-> > OHCI registers is blocked.  Then how can you resume the port? 
-> 
-> For run-time control (via ohci_at91_hub_control()), I agree with you that
-> the current implemented approach is not healthy (taking into account the
-> clock scheme above) and the fact that we do force the ports suspend on
-> ohci_at91_hub_control(). For suspend/resume it should be OK as the ports
-> are suspended at the end of any OHCI accesses (I don't know how the Linux
-> USB subsystem behaves so please do correct me if I'm wrong).
+On 22/06/21 19:56, Sean Christopherson wrote:
+> +	/*
+> +	 * Reset the MMU context if paging was enabled prior to INIT (which is
+> +	 * implied if CR0.PG=1 as CR0 will be '0' prior to RESET).  Unlike the
+> +	 * standard CR0/CR4/EFER modification paths, only CR0.PG needs to be
+> +	 * checked because it is unconditionally cleared on INIT and all other
+> +	 * paging related bits are ignored if paging is disabled, i.e. CR0.WP,
+> +	 * CR4, and EFER changes are all irrelevant if CR0.PG was '0'.
+> +	 */
+> +	if (old_cr0 & X86_CR0_PG)
+> +		kvm_mmu_reset_context(vcpu);
 
-(I haven't checked the details recently, so I'm not certain about 
-this.)  In some -- perhaps all -- cases, we don't suspend the ports at 
-all during system suspend.  We just rely on the USB devices 
-automatically going into suspend when the root hub stops sending 
-packets.
+Why not just check "if (init_event)", with a simple comment like
 
-> > Don't you have to
-> > access the OHCI registers in order to tell the controller to do the port resume?
-> 
-> On our implementation we control the port suspend/resume via
-> AT91_SFR_OHCIICR, a special kind of register, memory mapped at different
-> address (compared w/ OHCI, EHCI IPs), so clocked by other clocks.
-> 
-> > 
-> > What happens when there's more than one port, and one of them is suspended while
-> > the other one is still running?  How can you communicate with the active port if
-> > access to the OHCI registers is blocked?
-> 
-> For this kind of scenario (the run-time suspend of a port, not system
-> suspend/resume) a different mechanism should be implemented taking into
-> account the clock schema presented above.
+	/*
+	 * Reset the MMU context in case paging was enabled prior to INIT (CR0
+	 * will be '0' prior to RESET).
+	 */
 
-Okay, I see.  It seems like the driver will need some significant 
-changes to handle runtime power management properly.
+?
 
-One thing you might consider changing: The name of the 
-ohci_at91_port_suspend routine is misleading.  It doesn't really 
-handle suspending the port; instead it handles the clocks that drive 
-the entire OHCI controller.  Right?
+Paolo
 
-Alan Stern
