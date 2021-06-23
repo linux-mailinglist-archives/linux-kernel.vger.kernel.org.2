@@ -2,175 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3AA3B1C94
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C41D3B1CA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231301AbhFWOfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:35:41 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:26105 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWOfg (ORCPT
+        id S231326AbhFWOhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:37:13 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:50778 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhFWOhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:35:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1624458799; x=1655994799;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=DmKD8PadTkKP+v189tqpdpaG/zW/KZxWWAP0vKgH/HI=;
-  b=iLqP8sUBREwpmHUJO86HJD3Rf7qCks85MMCrkeeNB/r40/NcvpEL+vry
-   14/ChSfzBMfDgTAPEYgR18ZB9zGrYFu3haIZOdG+ecvM+7Q9yy0gBn28D
-   k2xNC3z2DlNAZZ2V0gkSwp7Sv7rPIQOyju7qGjcsL3w4GzCvBZdwZug59
-   DxFH6NGMqRhn4a0D3M/xC4RIOkQbuCUK2Ln7E+LkOan+QzZUcBsupNEJS
-   NwmhxQW+Y7VE9Pju4mTWvgjTvVyn57EZ60NvVs5V9p4hMAUxIVckolIDG
-   66qhyEg6ca834pThdkSMHh/e0TW44mo5B/78cPIqGvNO2OJVjSFW7l7w1
-   w==;
-IronPort-SDR: fVFfYptO/bjUwoNGRhYCJ0wwWnjOkQS89g+K85yngYofkcrF5A/OT48X90P3MN/ugIeCBo04Rg
- Jj5HDVjZs5bMRATKR6+iv2zoTAoR9SlM2/QRxWosimnbPr0jukvs/PZc2Hc7ob1IwHKAxJHUse
- xciyolbx8N19FaHKjeWrIrd/7XywguIKA949wqxmSZyZKUvqkDbRJFWfYm8m1fuLpvvDjLi5yu
- 00TOOVbXrUFjAn+LONZZmHoQBFuOZ3cReHmqZ/5OJ7YVLwk3sDTEtmlCvzC/qQBBGzwzEc2mMY
- 3Js=
-X-IronPort-AV: E=Sophos;i="5.83,294,1616482800"; 
-   d="scan'208";a="125795804"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jun 2021 07:33:18 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 23 Jun 2021 07:33:17 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2
- via Frontend Transport; Wed, 23 Jun 2021 07:33:17 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QxaJuBwubnUr8WHXRxxWBRPq+4RqvL53GXaK2w9DIhomGVNYQ4HesYhS1yYr5q8Q6k3PafBdx/Tj9U265G2gfagjAJ6JJgBFjq9Ka9vNP4t7h+KFIxF0tooXhVHT9bSiG7V6SAJIB4DsitrJzLW9ffq//hj0nNUdmKeGDvjh38riemjKm2MRQE3SqX9Z7c/EgRoyk/kHI8AmOPGZPkZ5Uzi7T/z7NXP5pkvWJZkzi5A9tPheyqT5rh37lSYhrkUo0m1jwUJWlfFtKJhZk8vi7XbIEw2mkvoEG3pSEkzHCgl7Ho2Mc2DeSGd4njVy2u4ZQXGCQDNwHq2rP1M17AIlIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DmKD8PadTkKP+v189tqpdpaG/zW/KZxWWAP0vKgH/HI=;
- b=AgS8HrMXU8k3PDG+RffuuMDkzCZM5WzGcd9bzxY0LVjEFiyPoppySO6neNnAqfxfTrwV0faJqIufUCCL7jQieEWUMbBd2k6FaxZS73EnGx0wyy4n9t0ihJavFMCyjceEeiAXfgq4bVnBvz5S4J879whHp3Ny7s+LWMZDpZyLRh5TLAwvve7YhaAndYwIYYzN1zMyCyNGjEbb/IGxSJSyl6/ft4kLscf/xwu6GhwB+5jRf3yjfP6CmixrnuVjVe1HXbbAw7WCAzKtMkmYn73NMWKdUJX7zU1EAf9JpKAYtum82/ExeCRrjoI7kYaUVssasyzOtWsS9bsF4RCAiZkQ8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DmKD8PadTkKP+v189tqpdpaG/zW/KZxWWAP0vKgH/HI=;
- b=jhCa0pNtMKF8TtGCxxuH9o49hX0XR8bpfudNrVQScSbqFYK2JbZZ0KmyUE2VWxgE5MqZ2JdugBb5wLS/ep+wszX2BFRLGNj9/6qx/I5AWuwryS5l7rUhhAZaJhA9CQXL2ESIOiRH6wXc82bVXb++ahXqnaC+1ddZRw+dR3RBWNE=
-Received: from DM6PR11MB3420.namprd11.prod.outlook.com (2603:10b6:5:69::31) by
- DM6PR11MB4233.namprd11.prod.outlook.com (2603:10b6:5:14f::26) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4242.23; Wed, 23 Jun 2021 14:33:14 +0000
-Received: from DM6PR11MB3420.namprd11.prod.outlook.com
- ([fe80::831:1c4d:711f:3ee5]) by DM6PR11MB3420.namprd11.prod.outlook.com
- ([fe80::831:1c4d:711f:3ee5%5]) with mapi id 15.20.4242.023; Wed, 23 Jun 2021
- 14:33:14 +0000
-From:   <Claudiu.Beznea@microchip.com>
-To:     <stern@rowland.harvard.edu>
-CC:     <gregkh@linuxfoundation.org>, <Nicolas.Ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <Ludovic.Desroches@microchip.com>,
-        <Cristian.Birsan@microchip.com>, <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb: host: ohci-at91: suspend/resume ports after/before
- OHCI accesses
-Thread-Topic: [PATCH] usb: host: ohci-at91: suspend/resume ports after/before
- OHCI accesses
-Thread-Index: AQHXaC37D+YfoBgtzEKBvdp3Oa3YYg==
-Date:   Wed, 23 Jun 2021 14:33:14 +0000
-Message-ID: <8bff20a7-8eb8-276a-086e-f1729fbbdbe4@microchip.com>
-References: <20210609121027.70951-1-claudiu.beznea@microchip.com>
- <20210609230735.GA1861855@rowland.harvard.edu>
- <0621eaba-db4d-a174-1b15-535e804b52ac@microchip.com>
- <20210623135915.GB491169@rowland.harvard.edu>
- <a5c68849-a48c-5224-7ba3-1ad44e0d9874@microchip.com>
- <20210623141907.GC491169@rowland.harvard.edu>
-In-Reply-To: <20210623141907.GC491169@rowland.harvard.edu>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-authentication-results: rowland.harvard.edu; dkim=none (message not signed)
- header.d=none;rowland.harvard.edu; dmarc=none action=none
- header.from=microchip.com;
-x-originating-ip: [82.78.167.126]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6ac61356-4568-41aa-05db-08d93653d5ab
-x-ms-traffictypediagnostic: DM6PR11MB4233:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB4233E314C7D1E1B9A8010B1B87089@DM6PR11MB4233.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: S/TeBmv8zERo9uHEYHEINumJrCEFeg40zK9PE2bxXuxabh2YH1i/B9a5s0yPol00Rhcxt2f8wtQpsfj4v/A2RQBN48mJuozjzKBR9Cps7kwJDWCXtYRM/59Nrj+lcRcd3KWCjZJOxIDfo3z9d1ugtAqTNb9q2lOpT11UUOv8GXEyIxrMtnYPNlqF+K8qeeRVJIe7vu7rtwsEK+8yZQOaGJ1/EtWeK4xw3VHJoU2OuHwYs9w7h2EhKlu6i5tzg9CaLw9zgaWzUSHq4aX1ZXVu8NIR0k/gzxIAoOkddxXTcChe80rHXSDEGsGccj3zsAmQw+2ixrkA0S9rPKAkciehF/+nOLo6NEZDF+1AlnvIXfmsfgv6zIbm9TGsd508aionnt0QIs11NyJJTLTeyEF2aY3jn8tjD0vUIFPC7p3k4uh2wIrRZF+B1kuxF5peaQv1wJXhbYrzHqViZATGQDVMuhW5sJOx7cVb+HGBMXv8UeX3zqVsAp14uTWYnO1M42n52vQ1ql1mwFPs7w/ZyOHd6/H3Wa4RstgYm0Q2nJX0fumh+LIlyvnykX8bZuNwrz9bgVvGoSKEUSKGDkMXFYOvl0KcH22X3IWgh/FO4KESIhO0w77p8Sbb6IIuH3RVkAB8Di9LWFVJr6KMBWJReZ9thfo5ibXFlniXv2Q58yqK13XZMF92npi4/Q/fKCIBL/DZnGgrssoRrEBKPS7Izom95/exU3zJEWB8ITAZWSncifbtp9bgYrDyfHdbWQiJkFd+
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3420.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(376002)(39860400002)(366004)(346002)(6512007)(2616005)(6916009)(36756003)(66946007)(66476007)(66556008)(66446008)(64756008)(76116006)(6486002)(91956017)(71200400001)(8936002)(4326008)(478600001)(8676002)(4744005)(2906002)(6506007)(86362001)(53546011)(31686004)(26005)(38100700002)(186003)(15650500001)(5660300002)(316002)(31696002)(122000001)(54906003)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MFI4TGpFUGJPN0pRN2gyQ3RuQjZwWjJJUWh6azdmTUg4UE5XaGMvdGFrTHFo?=
- =?utf-8?B?VHFWR1poc0E2bUcxemRXaVNSM25RaDFic0F0RGN4ZEQzcWxISkdOcFd6Q3k4?=
- =?utf-8?B?dUh0bmtQRWk1U1NoTjh6c2ZWWUZSOUt5NlhvUis2OTgzc1dVRWgvdmg0aWFj?=
- =?utf-8?B?dzBaQThBZ2VDT0RCcitXcmFyd01oVlUyVVo1V3h3SnZtV3JhWENyZVUrYktO?=
- =?utf-8?B?OGtJckJFVzJUcWpoOUovaXUwc2FPRUxCbThTS0RvMlN2bHU0L1hxaGw5WFB2?=
- =?utf-8?B?SzJHbFJaK2ZCbWZNUUFjVWVvTWQ4aS92cUVmUVhWL1hTZVV6SW1zTXlPSVZG?=
- =?utf-8?B?Tjd2SE5aSUZUTUZGSDJEYnFMYzVIT3ZOUTRaZzNHMGpNL0lNRVRQOHppaWl5?=
- =?utf-8?B?K29acGlEODU0NDF3cWdVYk1sWE9HY1VGT0RPU2hPeVp4VEpsTE01UUI4dTdL?=
- =?utf-8?B?UlYxZ0tpcm9WZ21GNDczalRFeHhFT01hOHZTWHl0RGN3eGhuMW9YSjlnM3Ny?=
- =?utf-8?B?b2VjYzlPWit4NjhYbWNXd0NiWFFHUlo5WTdFQXVHZkFJakhWVFZUcjV6Y1JH?=
- =?utf-8?B?UkZwek01d0xSUFk5NExZb3FXaXpUSjdKalRiVWR2Q3hzRU1YNWc4VDRIUTNN?=
- =?utf-8?B?b0t5OXRHVkFIN2tHUWppbkRvbnhtUmk2QUtXVmhWYWVyUkRGY2pFdDFEVXlo?=
- =?utf-8?B?TVZTTDRJU3k4RFRId21IZmhhbGpqWnRZcnRuT3I2SUJsUHBBWGY5UmtUZE9W?=
- =?utf-8?B?VFF1Zk9yb3lkWVB6SEJ2U0R4c2ZpT29ZbGJVNmxvdWJLam52UWRwd1JLbjZS?=
- =?utf-8?B?NTNGMWszZUViSGZqZzNLYUF1WWJjMUx1bDNhSWI0Z2RVQzF3dG5IMitvWVpD?=
- =?utf-8?B?MTFUU0FoT2dJNE9SZFdFQWZYTmlzb0h6SDBHVHh0Yk9GdDBLZWprTWJlR09T?=
- =?utf-8?B?OHhLVUFVSVNrc2gwZFlYRXM3bmlsNTJ3THdnN1JWTWFZejMremVhcXA1cWJH?=
- =?utf-8?B?bmwwMlVIeTJIcmZvYVZvRCtsUkFIV01yN3hzbFpUYmJwZG1wUjJZR0J2Sm5K?=
- =?utf-8?B?RnY1MHpaSXdIU3hLR1d4aFVFRm93UERKd3QrZ2FtaWd6Y1JXSlBBQUVtdjMz?=
- =?utf-8?B?L08yT1lBT2NtT2NZMzV5STZKdzcremZNUkhFUnZLWkhmZ1lnOVdMN0Z5R2Vn?=
- =?utf-8?B?UnEzV2VJSDd1Wk9sV0xuc0lOL052cDZiR1p1R2ZzamJBZGQ4UHpnQm9HL0lJ?=
- =?utf-8?B?Y0FMMi9YbFNmTWNiVTY4bWNUYTRKK1Vya1VoTUF3MDU4NEVVUVV1d3gyMFZk?=
- =?utf-8?B?MHFqVlZLOFRrZDZDUFVjOHZDRjMvOWMvN1RJSTdPbWVxUFpGeVd6TGNCcjlK?=
- =?utf-8?B?UEpldUgrV1BPRldxK0hSVFR1OVl4N3RDL1hpQ0xhMFV4RWorR0NpbUd6WkZ2?=
- =?utf-8?B?ZTJpaU1kMTNlMWEyUkptc0dGaXMyZ0lFWGpSRzhlbnQrNHcrYUo0dGRROFVl?=
- =?utf-8?B?YUdJakZoa0c4NjU5YXNJU1kycGZtQURoblMybk5wRUtRQkJNaGllRzRGTFVC?=
- =?utf-8?B?QThKWUJGMmJ6QTRDK1ZQVm1kelpLbkYwUWZkM25uRG5LRWNRTlo0RVh4Z2o2?=
- =?utf-8?B?dnVvV2NEenpzTlB4RG9UOVdWdlErMld1SU1sSTVDODd2Q09GWVNsWm9NS1VX?=
- =?utf-8?B?ZnpPc2xHbUxuUlRTWW43VkpSTGkvSnNJTklsUEJHeFdncTQzQXRBci9hcy81?=
- =?utf-8?Q?M1i+TsY8WOvkamwdTk=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C50EFA4C97ACEB4B80E2FC22DE5DAD36@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Wed, 23 Jun 2021 10:37:10 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lw3xr-00DZwe-3m; Wed, 23 Jun 2021 08:34:51 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lw3xp-001cBY-Vq; Wed, 23 Jun 2021 08:34:50 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+References: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+        <87sg1lwhvm.fsf@disp2133>
+        <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+        <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+        <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+        <87eed4v2dc.fsf@disp2133>
+        <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+        <87fsxjorgs.fsf@disp2133>
+        <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+        <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+        <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+        <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+        <87a6njf0ia.fsf@disp2133>
+        <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
+        <87tulpbp19.fsf@disp2133>
+        <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
+Date:   Wed, 23 Jun 2021 09:33:50 -0500
+In-Reply-To: <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
+        (Linus Torvalds's message of "Tue, 22 Jun 2021 17:41:51 -0700")
+Message-ID: <87zgvgabw1.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3420.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6ac61356-4568-41aa-05db-08d93653d5ab
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jun 2021 14:33:14.3543
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 93ZFeT9Vn+xWmWcg/zvzJj/Z4zucACCff+Jd+fuYJjzHv8g2/ZqW9vfS7VqA4xO77B4QppqOU9M8agMfWcMWrH7FnKMs/vrfYHNeCViVkNY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4233
+Content-Type: text/plain
+X-XM-SPF: eid=1lw3xp-001cBY-Vq;;;mid=<87zgvgabw1.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19bOZKovoM2dTCNa4FoP/ARdkEwpSg1W4M=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 533 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 12 (2.3%), b_tie_ro: 10 (1.9%), parse: 1.01
+        (0.2%), extract_message_metadata: 16 (3.0%), get_uri_detail_list: 1.41
+        (0.3%), tests_pri_-1000: 23 (4.4%), tests_pri_-950: 1.38 (0.3%),
+        tests_pri_-900: 1.22 (0.2%), tests_pri_-90: 75 (14.1%), check_bayes:
+        73 (13.6%), b_tokenize: 6 (1.2%), b_tok_get_all: 14 (2.6%),
+        b_comp_prob: 3.0 (0.6%), b_tok_touch_all: 44 (8.2%), b_finish: 1.42
+        (0.3%), tests_pri_0: 390 (73.2%), check_dkim_signature: 0.51 (0.1%),
+        check_dkim_adsp: 3.3 (0.6%), poll_dns_idle: 1.45 (0.3%), tests_pri_10:
+        2.1 (0.4%), tests_pri_500: 7 (1.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMjMuMDYuMjAyMSAxNzoxOSwgQWxhbiBTdGVybiB3cm90ZToNCj4gRVhURVJOQUwgRU1BSUw6
-IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Uga25vdyB0
-aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBPbiBXZWQsIEp1biAyMywgMjAyMSBhdCAwMjowOTox
-NlBNICswMDAwLCBDbGF1ZGl1LkJlem5lYUBtaWNyb2NoaXAuY29tIHdyb3RlOg0KPj4gT24gMjMu
-MDYuMjAyMSAxNjo1OSwgQWxhbiBTdGVybiB3cm90ZToNCj4+PiBPbmUgdGhpbmcgeW91IG1pZ2h0
-IGNvbnNpZGVyIGNoYW5naW5nOiBUaGUgbmFtZSBvZiB0aGUNCj4+PiBvaGNpX2F0OTFfcG9ydF9z
-dXNwZW5kIHJvdXRpbmUgaXMgbWlzbGVhZGluZy4gIEl0IGRvZXNuJ3QgcmVhbGx5DQo+Pj4gaGFu
-ZGxlIHN1c3BlbmRpbmcgdGhlIHBvcnQ7IGluc3RlYWQgaXQgaGFuZGxlcyB0aGUgY2xvY2tzIHRo
-YXQgZHJpdmUNCj4+PiB0aGUgZW50aXJlIE9IQ0kgY29udHJvbGxlci4gIFJpZ2h0Pw0KPj4NCj4+
-IEl0IGRvZXMgYm90aCBhcyBmYXIgYXMgSSBjYW4gdGVsbCBhdCB0aGUgbW9tZW50Lg0KPiANCj4g
-QnV0IHRoZSBuYW1lIHN1Z2dlc3RzIHRoYXQgaXQgb25seSBoYW5kbGVzIHN1c3BlbmRpbmcgYSBw
-b3J0LiAgVGhhdCdzDQo+IG1pc2xlYWRpbmcuDQo+IA0KPiBBbmQgdGhlIHdheSBpdCBpcyB1c2Vk
-IGluIHRoZSBTZXRQb3J0RmVhdHVyZShVU0JfUE9SVF9GRUFUX1NVU1BFTkQpDQo+IGNhc2UgaW4g
-b2hjaV9hdDkxX2h1Yl9jb250cm9sIGlzIGp1c3QgcGxhaW4gd3JvbmcuICBJdCB3b24ndCBtZXJl
-bHkNCj4gc3VzcGVuZCBhIHNpbmdsZSBwb3J0OyBpdCB3aWxsIGRpc2FibGUgdGhlIGVudGlyZSBP
-SENJIGNvbnRyb2xsZXIuDQoNCkFncmVlIHdpdGggYWxsIHRoZSBhYm92ZSENCg0KPiANCj4gQWxh
-biBTdGVybg0KPiANCg0K
+Linus Torvalds <torvalds@linux-foundation.org> writes:
+
+> On Tue, Jun 22, 2021 at 1:53 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+>> Playing with it some more I think I have everything working working
+>> except for PTRACE_EVENT_SECCOMP (which can stay ptrace_event) and
+>> group_exit(2).
+>>
+>> Basically in exit sending yourself a signal and then calling do_exit
+>> from the signal handler is not unreasonable, as exit is an ordinary
+>> system call.
+>
+> Ok, this is a bit odd, but I do like the concept of just making
+> ptrace_event just post a signal, and have all ptrace things always be
+> handled at signal time (or the special system call entry/exit, which
+> is fine too).
+>
+>> For purposes of discussion this is my current draft implementation.
+>
+> I didn't check what is so different about exit_group() that you left
+> that as an exercise for the reader, but if that ends up then removing
+> the whole "wait synchromously for ptrace" cases for good I don't
+> _hate_ this. It's a bit odd, but it would be really nice to limit
+> where ptrace picks up data.
+
+I am still figuring out exit_group.  I am hoping for sometime today.
+My intuition tells me I can do it, and I have a sense of what threads I
+need to pull to get there.  I just don't know what the code is going to
+look like yet.
+
+Basically solving exit_group means moving ptrace_event out of do_exit.
+
+> We do end up doing that stuff in "get_signal()", and that means that
+> we have the interaction with io_uring calling it directly, but it's at
+> least not a new thing.
+
+The ugliest bit is having to repeat the wait_for_vfork_done both in fork
+and in get_signal.
+
+Eric
