@@ -2,54 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49703B1635
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B26233B1629
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhFWIu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 04:50:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230130AbhFWIu3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 04:50:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEA9C061756;
-        Wed, 23 Jun 2021 01:48:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=M9F8mCIj4S0MvLdVHR7/mG/7dfK1HG/42QHJ9bt57Mw=; b=QgT7SsfZnH11MtnYoWG+JXh1Os
-        vdQeZo22TK21CfDJjWwvMc+YDcoiH4H/YHEnqClzEtN00dP2YeAJub+W4bjQHj40J2G4vTMSeH4JH
-        6LSWbrrcdcGo1z72aQs95PEA1Ur28FLtPb8yX6kwzqnOJa2y0ca65ScwTqAHrOsQ7RuGdzv5SE3m0
-        YLA5n2oydCIHu76H+Z+dTMJy5bd5v5gDLj2ICzKyGTaJGXNXru8IiUDlfuU4WCdrV44VVC2xWiAhT
-        aaQ4q/VYVxWBmVs79lqQd2/toQM8a7/U9mARJ7GHDivgx8vR5pRCw5nPvhAakEprZg/WgQMTjqANN
-        vZ5j60Qg==;
-Received: from 089144193030.atnat0002.highway.a1.net ([89.144.193.30] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvyXZ-00FEAL-PC; Wed, 23 Jun 2021 08:47:27 +0000
-Date:   Wed, 23 Jun 2021 10:45:11 +0200
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 23/46] mm/writeback: Change __wb_writeout_inc() to
- __wb_writeout_add()
-Message-ID: <YNL0l6AOT2RogKS7@infradead.org>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-24-willy@infradead.org>
+        id S230206AbhFWIsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 04:48:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229930AbhFWIse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 04:48:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DEA7611C1;
+        Wed, 23 Jun 2021 08:46:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624437977;
+        bh=20Wb14EbOvgiOYlOPRi00TSueCOobAF5wMGQvt+VUV4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Zh4RZ6/rWswlrSCdSolWiUuuOaPMisZXKLz52sb3YWNowOVcdTf71z1yRxCAp3wM8
+         sRuPRZOmJfZWx8ZqoA06pzMNTf7Lwau2KifDtKsKRFWEQt7+/2ahvceWdRBZr7MDLd
+         YzE5PO+Kah1K2W0qi9ds7s6Fl+lUMMW0KcP4RV7ymVZA2uFGKlu9WhzsnTF9vETwdA
+         g80Qw8D5mEYPiONA/4BxDpZQE+fTqo4GT/WBvs4aBDAXD+/U8HWBXI78ICbAbs8y10
+         rnudVtBu0qUkWryzEHqz3CEIs+9eIQbRF4rTZ6qCQ+he9tYnn0k1Px4Q2tBydNagRq
+         o+Fz5vPweSZnA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lvyWV-0001ry-1D; Wed, 23 Jun 2021 10:46:15 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Antti Palosaari <crope@iki.fi>,
+        Eero Lehtinen <debiangamer2@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 0/2] media: rtl28xxu: fix regression in linux-next
+Date:   Wed, 23 Jun 2021 10:45:19 +0200
+Message-Id: <20210623084521.7105-1-johan@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622121551.3398730-24-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 01:15:28PM +0100, Matthew Wilcox (Oracle) wrote:
-> Allow for accounting N pages at once instead of one page at a time.
+A patch addressing a new USB core warning in rtl28xxu ended up causing a
+regression. As this was caught before the patch was committed it was
+superseded by a v2. Unfortunately, the first erroneous version ended up
+being applied to the media tree anyway.
 
-Looks good,
+This reverts the first version of the patch and resends the second
+version.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Mauro and Hans, I've reported this issue to you both repeatedly over the
+course of three weeks but you never replied to any of mails. I'm not
+sure what went wrong, but I would assume that regressions would be
+handled with a bit more urgency. Are you not receiving my mails or was
+this perhaps a case of it not being clear who of you should act on the
+reports?
+
+2021-05-24: v1 posted
+
+	https://lore.kernel.org/r/20210524110920.24599-4-johan@kernel.org
+
+2021-05-31: Request not apply v1
+
+	https://lore.kernel.org/r/YLSWeyy1skooTmqD@hovoldconsulting.com
+
+2021-05-31: v2 posted
+
+	https://lore.kernel.org/r/20210531094434.12651-4-johan@kernel.org
+
+2021-06-02: v1 applied to media tree and a request to drop it was sent
+            in response to the automatic notification mail
+
+2021-06-07: Second request to drop v1 with a question of how best to
+            proceed to fix the regression otherwise
+
+	https://lore.kernel.org/r/YL3MCGY5wTsW2kEF@hovoldconsulting.com
+
+Johan
+
+
+Johan Hovold (2):
+  Revert "media: rtl28xxu: fix zero-length control request"
+  media: rtl28xxu: fix zero-length control request
+
+ drivers/media/usb/dvb-usb-v2/rtl28xxu.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+-- 
+2.31.1
+
