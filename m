@@ -2,298 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F1C3B195C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 13:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44F83B196A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 13:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbhFWLzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 07:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbhFWLz2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 07:55:28 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49942C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 04:53:10 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id l11so1353319pji.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 04:53:10 -0700 (PDT)
+        id S230234AbhFWL7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 07:59:38 -0400
+Received: from mail-eopbgr130125.outbound.protection.outlook.com ([40.107.13.125]:9188
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230019AbhFWL7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 07:59:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MCCZBkAI92nf69+C46+MI+AaiqAsH0wxknJpVAGaMriXUd3WjN1RPGkcZl+DKp1RifRtS+Cc6Ju7BeI0r6ZtGbkVJbA7wEcb09c4N+myH4o81iiL0tN7dXtDKjjThk9udFWvlnhUb+RMLjjax6pNiNCanKV2/0wK6u6UuDBuPZst30LGsN1dW15HOXwaLnJxG+fT7Iy2+OzB1GdkJymnF5zWO70l/op+ctSqLO/NbHg3CLBkYj+qfAGrTkasKnaPq2ubHTVTLLDPKGUvyzy5YYwCLpjMzzD7lrItYQKcL3ePAD/ACq/4PyVZdElcWBQg+erW1y7gmWamnuqlSU0Nbg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mB3OXAmyzXmwFVFJcFzMbTGw+X6n766/Ym3U/BDeMeM=;
+ b=llJy32c3N8qD09PlYl3dCFpEjyRfw3fedHoBWxUaVGwuhwhsl1i6yRT7EW73Sdjf7+NndEBtjVR64ZjUAeUfsgvJphUMcDqCIGr9wsl7bPd2HGpadiBJBXFbNCCx+5sR94NUZkMOO6YSYoMMIxryL+KXHGx9OVVgwWXr77PTU0iMW/ZQQDsdNYP1dOH3zdMKqmz/JV++uLWOlCeXEiw58NKU5eBTM/RXmhK36NSyAyQPBB6X/P+iP0m6F36ANHuFJZ/2ug1NH5OYCxQyzeN/lje3xLhvHperMvJeqr61U9G8gUSycrTCHZxHCM0rH1+v0mChggosGl2x64hFaVDciw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=silicom.dk; dmarc=pass action=none header.from=silicom.dk;
+ dkim=pass header.d=silicom.dk; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=PLD4E/3tzCkBjKoh4yAZoZOFlc86vB66N+vtNE57Pd8=;
-        b=WDaeq+Ms7FnKXkfh4e1MsS+w7PZts3YpaiKSDTRQun8B/qeoEqQHmrVa+TkK/0ZG5c
-         xSM+ue8RUA84nv1/+GKuNeYVWFV5zeQ8oOfegNXCWvNkiCsLNbDVk+zq6ea9By5kTTDi
-         fZm6hOcoWI27m9JuD7i8kTQlScBIOXB/Tqd4c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=PLD4E/3tzCkBjKoh4yAZoZOFlc86vB66N+vtNE57Pd8=;
-        b=Rf7zGULJ/Y5EZZgM3VIb4Bxo4mFRNL0J5lVLZA3RCmi9c6pjKFTSmzMgGyVQrB4+DZ
-         NBiRFwqn14NFycEw0mmS3l+31pMBQRF2+Ua19MFX8z6bZ5Z5mUJAu6zj59SeWrfWr5I+
-         Zf8bOg9IG4StdIP1RBh0PzRVQfOAX7HVxkiCgD+RoR+Z2DoBFI7UpCFxfLInFf+w7uMg
-         V82hBlqjvoyyckoTiOeWoIDJA/9xjNp+wNI8+pRV2NYCVdEKEG+kV4w9OoV9W5kzt7MZ
-         zR50klgdyOkd2L0fH/OKOHX8iBtD/9ZfsoP/YS0VepXWKKFeUmhhSPy9k3R88BNpnRkS
-         JNUA==
-X-Gm-Message-State: AOAM5333Z6qx9MAr6IMZd8h4Nk3AU8BwR/4O8wPRK7euZdW0LxiimUMS
-        zcZwlnChWsehfCxPL9ym+a5lYvr3bGIpjg==
-X-Google-Smtp-Source: ABdhPJyg/Sc4seJqwWH6MvLOgnvU0HQ65y+xbuQvokGzICog5wp0dOB27dbeMVr6RZ7Iecx7Iv4stw==
-X-Received: by 2002:a17:90a:5504:: with SMTP id b4mr9133455pji.208.1624449189716;
-        Wed, 23 Jun 2021 04:53:09 -0700 (PDT)
-Received: from localhost ([203.206.29.204])
-        by smtp.gmail.com with ESMTPSA id 30sm5246322pjz.42.2021.06.23.04.53.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 04:53:09 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 2/3] powerpc: Define swapper_pg_dir[] in C
-In-Reply-To: <5e3f1b8a4695c33ccc80aa3870e016bef32b85e1.1623063174.git.christophe.leroy@csgroup.eu>
-References: <5838caffa269e0957c5a50cc85477876220298b0.1623063174.git.christophe.leroy@csgroup.eu>
- <5e3f1b8a4695c33ccc80aa3870e016bef32b85e1.1623063174.git.christophe.leroy@csgroup.eu>
-Date:   Wed, 23 Jun 2021 21:53:05 +1000
-Message-ID: <871r8siyqm.fsf@dja-thinkpad.axtens.net>
+ d=SILICOMLTD.onmicrosoft.com; s=selector2-SILICOMLTD-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mB3OXAmyzXmwFVFJcFzMbTGw+X6n766/Ym3U/BDeMeM=;
+ b=g48o4frpfE8/DUwY2WNP137Q6AInBxvqWMYvCUsT0ada9QtXOiiZlXMoibT9VgOUE5yMR3lmIcHXKjJn9cTPFOZkwV42W/METuqCMcj2k4fsYIMEzzll8i7IXUjx/Bb9Ia6bAgwHjRlbLT7HfYoj//NSV61ZCu8wehXksDuAI6Y=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=silicom.dk;
+Received: from AM0PR0402MB3426.eurprd04.prod.outlook.com
+ (2603:10a6:208:22::15) by AM0PR04MB4067.eurprd04.prod.outlook.com
+ (2603:10a6:208:64::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.23; Wed, 23 Jun
+ 2021 11:57:01 +0000
+Received: from AM0PR0402MB3426.eurprd04.prod.outlook.com
+ ([fe80::50fd:f133:3592:292e]) by AM0PR0402MB3426.eurprd04.prod.outlook.com
+ ([fe80::50fd:f133:3592:292e%7]) with mapi id 15.20.4242.023; Wed, 23 Jun 2021
+ 11:57:01 +0000
+Subject: Re: [PATCH 2/4] fpga: dfl: Move DFH header register macros to
+ linux/dfl.h
+To:     "Wu, Hao" <hao.wu@intel.com>, "Xu, Yilun" <yilun.xu@intel.com>
+Cc:     Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@geanix.com>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        Debarati Biswas <debaratix.biswas@intel.com>,
+        "Weight, Russell H" <russell.h.weight@intel.com>
+References: <20210621070621.431482-1-mhu@silicom.dk>
+ <20210621070621.431482-3-mhu@silicom.dk>
+ <DM6PR11MB3819FE54D2C399DDBBC38FBA850A9@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <20210622052205.GB27046@yilunxu-OptiPlex-7050>
+ <DM6PR11MB3819B9B2F357B9B03F7707B685099@DM6PR11MB3819.namprd11.prod.outlook.com>
+From:   =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>
+Message-ID: <0257dcaf-348a-375d-6ed8-657974208e30@silicom.dk>
+Date:   Wed, 23 Jun 2021 13:56:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <DM6PR11MB3819B9B2F357B9B03F7707B685099@DM6PR11MB3819.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US-large
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [185.17.218.86]
+X-ClientProxiedBy: AM5PR0202CA0022.eurprd02.prod.outlook.com
+ (2603:10a6:203:69::32) To AM0PR0402MB3426.eurprd04.prod.outlook.com
+ (2603:10a6:208:22::15)
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.64.70] (185.17.218.86) by AM5PR0202CA0022.eurprd02.prod.outlook.com (2603:10a6:203:69::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Wed, 23 Jun 2021 11:57:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 66423611-a230-44c8-415a-08d9363e029e
+X-MS-TrafficTypeDiagnostic: AM0PR04MB4067:
+X-Microsoft-Antispam-PRVS: <AM0PR04MB406757A56A9E4134793D1DF3D5089@AM0PR04MB4067.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 73D9/rswL9cHaBahKs1ZlOMsMRoq7ZkOAoapRpBjf8wR1UGX3ZTNDJIlHpj0C6d5xr5aiVrrkrJK8bEeaqiVk7JSpeLitauCYxujBxC2WW7bG7VD8kDI9GVM5YIYUktQKYLIXArFuXvGTJexbXvbPWXjPHA14dKaWY0/eaOa9+HRPFKi6iIt3yHai07SNxVazWgmqKHnp9RgSKOKYfyiBhCRk8nuxFj1L1fmXfyYfvCNebFVvtLUzEhgKKZTARFjRdRQSMweeQDc67Y2ueqBOKxq1fgXScND9n+yfMfC1GgUTYGGpgvPWdlwGFKIr9Xr9uzGDosB3kVcz21jkgrKcFKEwjgJ7LjXtKuiJgGcGHAZy0/IP7pEkdQPrqyW6w57Gltgc4Fb2B8NfusMTxpvHKYm7IrQkAothhwYoPGRAfYIGmHEYAZb/oSrxJBtfCyMNKkrGy2ghk6tUzdiZL4BdMqAV+ZScyXypC31cs2a7mEazLIZOjutKV5GIcaTAhRjEk+Uo9BpYXEt9fYNzfxLhVdPcXDTHCCrWkoPO2wrISYM71Lgpr3c3GD5hf9PRLaF1cGR/K87dd9mO4QKyDKl++AinynFZoupsFAW4pd0puxqPZ0ej0WIS3uMOq4FrUVFApjTHVhvvfl2OAzZDAYcAMDMkDzGCF6T8Oiphbsh1rMn1PmYCIQ0jfx8tFxmp1oh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR0402MB3426.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(39850400004)(366004)(376002)(66946007)(2906002)(66556008)(66476007)(2616005)(26005)(316002)(54906003)(956004)(8676002)(16576012)(8976002)(110136005)(8936002)(478600001)(4326008)(5660300002)(7416002)(83380400001)(36756003)(6486002)(38100700002)(16526019)(31686004)(186003)(31696002)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NmV6QjdoUENIcHFjMVMyWTUvTEk5K3pEdE9rY3cwakF1b2FjYTdoRW5GSzFL?=
+ =?utf-8?B?YkZjUG9sdE1FczdNWDJaS3FxK0lzSEdsNEw0TzhmQlhnRm9UYkI2MnczN0RM?=
+ =?utf-8?B?cDh3NmNUTU0xcXJOdVZoQ0VxQWRTYmZ5bmxLbW1vc2paa0FnUUxyN05xbVVN?=
+ =?utf-8?B?OGxzZHdVOGIzZmk2bFA0endTamdlRDJNaWZhYnhDRWxGbEpvU05hQ0lPMWFJ?=
+ =?utf-8?B?YjM4eERkcmFienFvMDFJNTM4YmVJeXM2dW5HdjZrT3VXUnV2dU1YdTBqNTJ4?=
+ =?utf-8?B?b2w1eEJwRnZ5aGJrQ3B6SlFPZjJxK291RUNUeFAvT3ltbjYxYUNGeEp1SUE1?=
+ =?utf-8?B?YkhaNHpMbCtNWjE1TlpsRVJCdGpkSWpoYTN5U25BeUozb1N0Vno3R2RLQUEr?=
+ =?utf-8?B?a01iYmcycGNrcTlyN2V0QjFWWUF4ZUdaTXcxZXJybkpGNFBtNU15YXZvSHg3?=
+ =?utf-8?B?UXFObWY0WkRRcUw1ZlBSSERSVE9mY1pvUGJpaWFQZC9zdEN1azlSUWx6MTlq?=
+ =?utf-8?B?S3pCTHMwNk1iZVc2MStyZ1NrU2hhdGoyaUU4QTRWZXpwS2llbEtlczN1enpW?=
+ =?utf-8?B?aXNTOEhuNkJHTnhydWs2UjdveHlSSVNuRVk1Q0o4MjN3OEdCYk5ncG1VSDBp?=
+ =?utf-8?B?UGFqRHZWd3ZRVWhsYmFZQzR1ZERiaXB4aTNoVC9lSkN5ODdVSXZNc3VQMUEz?=
+ =?utf-8?B?Ylo5Qy85SjlZQjljZExDT0VqNzhMNVNWUTl6em9SVmNLRDhhR1RlOG1XeE5M?=
+ =?utf-8?B?VnR0dnREU0xQTlp6ZkxBNml6bDZqKzkrV0w3YmQyWm9rL3A2R3dxc2Z2QzVG?=
+ =?utf-8?B?a1d3UW8zTWh3WkxuSFcvYlRDcStXaWNxRUVMWDU5a0ZVNXMxMGxXRUVDSk44?=
+ =?utf-8?B?c1E2Mm03K0Jwb3NHTG9XOE8xWnFUU29wQ0VIYnRaSUFRbHY3aXpnYWEwUUFs?=
+ =?utf-8?B?Zys0VWFqREdJSGpNMGNSb1k2clNLQ3R3Z0NvSitPQXVHQWsyVlhFUUo4cHo1?=
+ =?utf-8?B?ZCt5U2Vkb29JdzhzSGYwQmt4TDVDZ0VocmptSWsxYmVBOXA3U01jN2hjM0x4?=
+ =?utf-8?B?TnYwcHdFUlI3b0NUeHBjNFp1bGRmYUIrRVd4c3ZEZW1McG1jUGcrbDBGc3pl?=
+ =?utf-8?B?RkoyYXhoaHZFaHBwNVp6LzNtMFdLZWw5UFdHS0d5V3NjeGZFM0E5cmRVcGda?=
+ =?utf-8?B?clp4MDI1dFpEK2NIaDhIaS9iNE9WMjBLRmJpUEx5c2YzYlRFQnlQMUpLUDF4?=
+ =?utf-8?B?cjZPL2d6azlpUlQvYlREMjlrTHRXdGxpeW8zRTN0aFI2aTEvcG5Sc2UrNjBz?=
+ =?utf-8?B?eXh6alRqTEpFRUxCaU5taUZiSllGR0U5RHllUS9IYS9MbWVRRllJUDg0RzlM?=
+ =?utf-8?B?MW1sS1BzMHB6REFqZlp6amI3eUovUlRRSzRjMFJXdDU4R01uNUo0N1BFMWx3?=
+ =?utf-8?B?Y3dyeE1uYnp1Z2J1OTNXTHdmM28wT2pPV1o5bzhISFpWRnR2QkJ0SlFpT2NP?=
+ =?utf-8?B?TUVFdFVXZ3Qxdk5MdzlxaUNkaWJVa0FhclZ4aC8velNRR1V0U2l3UVhUbGlS?=
+ =?utf-8?B?TlFob2xWNzJ5cHplUkhuVFBFRk4zT3MyQnFybXFFWm5HVzVYTVYvRGR1VG9W?=
+ =?utf-8?B?SllvdzNDVjVmanRtWFNnYU5STGNQblM4cXJQYVMwZFdBK1BPZUR2QWdUZXZ6?=
+ =?utf-8?B?YVNveG9uVmJKSnlLY3NoaThCaDlTMmppUTBXcXZYK2d5anNodkROTHJzbWZX?=
+ =?utf-8?Q?gLi+EpZSc0QUz4kQql3TZaGa2O3WybIIYpwzN9q?=
+X-OriginatorOrg: silicom.dk
+X-MS-Exchange-CrossTenant-Network-Message-Id: 66423611-a230-44c8-415a-08d9363e029e
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR0402MB3426.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2021 11:57:01.1162
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: c9e326d8-ce47-4930-8612-cc99d3c87ad1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IHW1J40Mfj31T0hQcw+Uf30dXLC7yTDjmmGrXrUxdnKundW+eUNRy01FSkf1h1s7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB4067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
 
-This breaks booting a radix KVM guest with 4k pages for me:
 
-make pseries_le_defconfig
-scripts/config -d CONFIG_PPC_64K_PAGES
-scripts/config -e CONFIG_PPC_4K_PAGES
-make vmlinux
-sudo qemu-system-ppc64 -enable-kvm -M pseries -m 1G -nographic -vga none -smp 4 -cpu host -kernel vmlinux
+On 22/06/2021 09.39, Wu, Hao wrote:
+>> On Mon, Jun 21, 2021 at 06:19:15PM +0800, Wu, Hao wrote:
+>>>> Subject: [PATCH 2/4] fpga: dfl: Move DFH header register macros to
+>> linux/dfl.h
+>>>>
+>>>> From: Debarati Biswas <debaratix.biswas@intel.com>
+>>>>
+>>>> Device Feature List (DFL) drivers may be defined in subdirectories other
+>>>> than drivers/fpga, and each DFL driver should have access to the Device
+>>>> Feature Header (DFH) register, which contains revision and type
+>>>> information. This change moves the macros specific to the DFH register
+>>>> from drivers/fpga/dfl.h to include/linux/dfl.h.
+>>>
+>>> Looks like it requires to access the revision info in the next patch, because
+>>> current dfl_device doesn't expose related information.
+>>>
+>>> @Yilun, do you have any concern to expose those info via dfl_device?
+>>
+>> Exposing these header register definitions are good to me. These registers
+>> are in DFL device's MMIO region, so it is good to share these info with
+>> all DFL drivers.
+> 
+> I mean expose revision via dfl_device, as dfl core already reads the DFL
+> header, it sounds duplicate read in each dfl device driver. And if we
+> consider this as a common need from dfl device driver, then the code
+> can be moved to a common place as well.
+> 
+> I hope from dfl device driver side, it doesn't need to know details of
+> how DFH register is defined, only simple way from dfl device data
+> structure or some simple helper function, then dfl device driver could
+> know all common information from DFH.
+> 
+> How do you think?
 
-Boot hangs after printing 'Booting Linux via __start()' and qemu's 'info
-registers' reports that it's stuck at the instruction fetch exception.
+struct dfl_device {} already has "u16 type" and "u16 feature_id", so it would make sense to add "u8 feature_rev" as well?
 
-My host is Power9, 64k page size radix, and
-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34
-
-Kind regards,
-Daniel
-
-> Don't duplicate swapper_pg_dir[] in each platform's head.S
->
-> Define it in mm/pgtable.c
->
-> Define MAX_PTRS_PER_PGD because on book3s/64 PTRS_PER_PGD is
-> not a constant.
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/include/asm/book3s/64/pgtable.h |  3 +++
->  arch/powerpc/include/asm/pgtable.h           |  4 ++++
->  arch/powerpc/kernel/asm-offsets.c            |  5 -----
->  arch/powerpc/kernel/head_40x.S               | 11 -----------
->  arch/powerpc/kernel/head_44x.S               | 17 +----------------
->  arch/powerpc/kernel/head_64.S                | 15 ---------------
->  arch/powerpc/kernel/head_8xx.S               | 12 ------------
->  arch/powerpc/kernel/head_book3s_32.S         | 11 -----------
->  arch/powerpc/kernel/head_fsl_booke.S         | 12 ------------
->  arch/powerpc/mm/pgtable.c                    |  2 ++
->  10 files changed, 10 insertions(+), 82 deletions(-)
->
-> diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
-> index a666d561b44d..4d9941b2fe51 100644
-> --- a/arch/powerpc/include/asm/book3s/64/pgtable.h
-> +++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
-> @@ -232,6 +232,9 @@ extern unsigned long __pmd_frag_size_shift;
->  #define PTRS_PER_PUD	(1 << PUD_INDEX_SIZE)
->  #define PTRS_PER_PGD	(1 << PGD_INDEX_SIZE)
->  
-> +#define MAX_PTRS_PER_PGD	(1 << (H_PGD_INDEX_SIZE > RADIX_PGD_INDEX_SIZE ? \
-> +				       H_PGD_INDEX_SIZE : RADIX_PGD_INDEX_SIZE))
-> +
->  /* PMD_SHIFT determines what a second-level page table entry can map */
->  #define PMD_SHIFT	(PAGE_SHIFT + PTE_INDEX_SIZE)
->  #define PMD_SIZE	(1UL << PMD_SHIFT)
-> diff --git a/arch/powerpc/include/asm/pgtable.h b/arch/powerpc/include/asm/pgtable.h
-> index c6a676714f04..b9c8641654f4 100644
-> --- a/arch/powerpc/include/asm/pgtable.h
-> +++ b/arch/powerpc/include/asm/pgtable.h
-> @@ -41,6 +41,10 @@ struct mm_struct;
->  
->  #ifndef __ASSEMBLY__
->  
-> +#ifndef MAX_PTRS_PER_PGD
-> +#define MAX_PTRS_PER_PGD PTRS_PER_PGD
-> +#endif
-> +
->  /* Keep these as a macros to avoid include dependency mess */
->  #define pte_page(x)		pfn_to_page(pte_pfn(x))
->  #define mk_pte(page, pgprot)	pfn_pte(page_to_pfn(page), (pgprot))
-> diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
-> index 0480f4006e0c..f1b6ff14c8a0 100644
-> --- a/arch/powerpc/kernel/asm-offsets.c
-> +++ b/arch/powerpc/kernel/asm-offsets.c
-> @@ -361,11 +361,6 @@ int main(void)
->  	DEFINE(BUG_ENTRY_SIZE, sizeof(struct bug_entry));
->  #endif
->  
-> -#ifdef CONFIG_PPC_BOOK3S_64
-> -	DEFINE(PGD_TABLE_SIZE, (sizeof(pgd_t) << max(RADIX_PGD_INDEX_SIZE, H_PGD_INDEX_SIZE)));
-> -#else
-> -	DEFINE(PGD_TABLE_SIZE, PGD_TABLE_SIZE);
-> -#endif
->  	DEFINE(PTE_SIZE, sizeof(pte_t));
->  
->  #ifdef CONFIG_KVM
-> diff --git a/arch/powerpc/kernel/head_40x.S b/arch/powerpc/kernel/head_40x.S
-> index 92b6c7356161..7d72ee5ab387 100644
-> --- a/arch/powerpc/kernel/head_40x.S
-> +++ b/arch/powerpc/kernel/head_40x.S
-> @@ -701,14 +701,3 @@ _GLOBAL(abort)
->          mfspr   r13,SPRN_DBCR0
->          oris    r13,r13,DBCR0_RST_SYSTEM@h
->          mtspr   SPRN_DBCR0,r13
-> -
-> -/* We put a few things here that have to be page-aligned. This stuff
-> - * goes at the beginning of the data segment, which is page-aligned.
-> - */
-> -	.data
-> -	.align	12
-> -	.globl	sdata
-> -sdata:
-> -	.globl	swapper_pg_dir
-> -swapper_pg_dir:
-> -	.space	PGD_TABLE_SIZE
-> diff --git a/arch/powerpc/kernel/head_44x.S b/arch/powerpc/kernel/head_44x.S
-> index e037eb615757..ddc978a2d381 100644
-> --- a/arch/powerpc/kernel/head_44x.S
-> +++ b/arch/powerpc/kernel/head_44x.S
-> @@ -1233,23 +1233,8 @@ head_start_common:
->  	isync
->  	blr
->  
-> -/*
-> - * We put a few things here that have to be page-aligned. This stuff
-> - * goes at the beginning of the data segment, which is page-aligned.
-> - */
-> -	.data
-> -	.align	PAGE_SHIFT
-> -	.globl	sdata
-> -sdata:
-> -
-> -/*
-> - * To support >32-bit physical addresses, we use an 8KB pgdir.
-> - */
-> -	.globl	swapper_pg_dir
-> -swapper_pg_dir:
-> -	.space	PGD_TABLE_SIZE
-> -
->  #ifdef CONFIG_SMP
-> +	.data
->  	.align	12
->  temp_boot_stack:
->  	.space	1024
-> diff --git a/arch/powerpc/kernel/head_64.S b/arch/powerpc/kernel/head_64.S
-> index 730838c7ca39..79f2d1e61abd 100644
-> --- a/arch/powerpc/kernel/head_64.S
-> +++ b/arch/powerpc/kernel/head_64.S
-> @@ -997,18 +997,3 @@ start_here_common:
->  0:	trap
->  	EMIT_BUG_ENTRY 0b, __FILE__, __LINE__, 0
->  	.previous
-> -
-> -/*
-> - * We put a few things here that have to be page-aligned.
-> - * This stuff goes at the beginning of the bss, which is page-aligned.
-> - */
-> -	.section ".bss"
-> -/*
-> - * pgd dir should be aligned to PGD_TABLE_SIZE which is 64K.
-> - * We will need to find a better way to fix this
-> - */
-> -	.align	16
-> -
-> -	.globl	swapper_pg_dir
-> -swapper_pg_dir:
-> -	.space	PGD_TABLE_SIZE
-> diff --git a/arch/powerpc/kernel/head_8xx.S b/arch/powerpc/kernel/head_8xx.S
-> index 5ce42dfac061..9bdb95f5694f 100644
-> --- a/arch/powerpc/kernel/head_8xx.S
-> +++ b/arch/powerpc/kernel/head_8xx.S
-> @@ -786,15 +786,3 @@ _GLOBAL(mmu_pin_tlb)
->  	mtspr	SPRN_SRR1, r10
->  	mtspr	SPRN_SRR0, r11
->  	rfi
-> -
-> -/*
-> - * We put a few things here that have to be page-aligned.
-> - * This stuff goes at the beginning of the data segment,
-> - * which is page-aligned.
-> - */
-> -	.data
-> -	.globl	sdata
-> -sdata:
-> -	.globl	swapper_pg_dir
-> -swapper_pg_dir:
-> -	.space	PGD_TABLE_SIZE
-> diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
-> index 79c744afc6b6..689c9d37f193 100644
-> --- a/arch/powerpc/kernel/head_book3s_32.S
-> +++ b/arch/powerpc/kernel/head_book3s_32.S
-> @@ -1266,18 +1266,7 @@ setup_usbgecko_bat:
->  	blr
->  #endif
->  
-> -/*
-> - * We put a few things here that have to be page-aligned.
-> - * This stuff goes at the beginning of the data segment,
-> - * which is page-aligned.
-> - */
->  	.data
-> -	.globl	sdata
-> -sdata:
-> -	.globl	swapper_pg_dir
-> -swapper_pg_dir:
-> -	.space	PGD_TABLE_SIZE
-> -
->  /* Room for two PTE pointers, usually the kernel and current user pointers
->   * to their respective root page table.
->   */
-> diff --git a/arch/powerpc/kernel/head_fsl_booke.S b/arch/powerpc/kernel/head_fsl_booke.S
-> index f33bc5a8e73e..0f9642f36b49 100644
-> --- a/arch/powerpc/kernel/head_fsl_booke.S
-> +++ b/arch/powerpc/kernel/head_fsl_booke.S
-> @@ -1212,15 +1212,3 @@ _GLOBAL(restore_to_as0)
->  	*/
->  3:	mr	r3,r5
->  	bl	_start
-> -
-> -/*
-> - * We put a few things here that have to be page-aligned. This stuff
-> - * goes at the beginning of the data segment, which is page-aligned.
-> - */
-> -	.data
-> -	.align	12
-> -	.globl	sdata
-> -sdata:
-> -	.globl	swapper_pg_dir
-> -swapper_pg_dir:
-> -	.space	PGD_TABLE_SIZE
-> diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
-> index 354611940118..1707ab580ee2 100644
-> --- a/arch/powerpc/mm/pgtable.c
-> +++ b/arch/powerpc/mm/pgtable.c
-> @@ -28,6 +28,8 @@
->  #include <asm/hugetlb.h>
->  #include <asm/pte-walk.h>
->  
-> +pgd_t swapper_pg_dir[MAX_PTRS_PER_PGD] __page_aligned_bss;
-> +
->  static inline int is_exec_fault(void)
->  {
->  	return current->thread.regs && TRAP(current->thread.regs) == 0x400;
-> -- 
-> 2.25.0
+// Martin
