@@ -2,78 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1303B21B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7DC3B21B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbhFWUUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 16:20:24 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:52374 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229849AbhFWUUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 16:20:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=eBdvdXLvFySdllVHeHdoDDe9M7upqNkx1Ws1iVGbDDU=; b=U8pdFx4Fbzb0/ZHInFJvIfahrK
-        geu/L+BcSz3VU9ORPqZJzyq9/WnAevciAInvWih4u25ftHEflxkI+HYhw7+MUJipICbHD+WWBk2Z3
-        x23LA1Q3pjYPt4aVhmk2DtN48PrGxUL77YeHI0IQEuiDlMQYbrt0wgg5++gffM3SmmMM=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lw9Jy-00At5z-PY; Wed, 23 Jun 2021 22:18:02 +0200
-Date:   Wed, 23 Jun 2021 22:18:02 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Marcin Wojtas <mw@semihalf.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
-        jaz@semihalf.com, gjb@semihalf.com, upstream@semihalf.com,
-        Samer.El-Haj-Mahmoud@arm.com, jon@solid-run.com, tn@semihalf.com,
-        rjw@rjwysocki.net, lenb@kernel.org
-Subject: Re: [net-next: PATCH v3 1/6] Documentation: ACPI: DSD: describe
- additional MAC configuration
-Message-ID: <YNOW+mQNEmSRx/6V@lunn.ch>
-References: <20210621173028.3541424-1-mw@semihalf.com>
- <20210621173028.3541424-2-mw@semihalf.com>
+        id S230031AbhFWUU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 16:20:59 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:35828 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhFWUU6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 16:20:58 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id B24E11C0B76; Wed, 23 Jun 2021 22:18:39 +0200 (CEST)
+Date:   Wed, 23 Jun 2021 22:18:39 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [PATCH -next] leds: class: fix W=1 warnings in led-class.c
+Message-ID: <20210623201839.GE8540@amd>
+References: <20210517044826.3458498-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="xJK8B5Wah2CMJs8h"
 Content-Disposition: inline
-In-Reply-To: <20210621173028.3541424-2-mw@semihalf.com>
+In-Reply-To: <20210517044826.3458498-1-yangyingliang@huawei.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +MAC node example with a "fixed-link" subnode.
-> +---------------------------------------------
-> +
-> +.. code-block:: none
-> +
-> +	Scope(\_SB.PP21.ETH1)
-> +	{
-> +	  Name (_DSD, Package () {
-> +	    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-> +		 Package () {
-> +		     Package () {"phy-mode", "sgmii"},
-> +		 },
-> +	    ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),
-> +		 Package () {
-> +		     Package () {"fixed-link", "LNK0"}
-> +		 }
-> +	  })
 
-At least in the DT world, it is pretty unusual to see both fixed-link
-and phy-mode. You might have one of the four RGMII modes, in order to
-set the delays when connecting to a switch. But sgmii and fixed link
-seems very unlikely, how is sgmii autoneg going to work?
+--xJK8B5Wah2CMJs8h
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +	  Name (LNK0, Package(){ // Data-only subnode of port
-> +	    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-> +		 Package () {
-> +		     Package () {"speed", 1000},
-> +		     Package () {"full-duplex", 1}
-> +		 }
-> +	  })
-> +	}
-> +
+Hi!
 
-  Andrew
+> Fix the following make W=3D1 kernel build warnings:
+>=20
+>   drivers/leds/led-class.c:521: warning: Function parameter or member 'de=
+v' not described in 'devm_led_classdev_unregister'
+>   drivers/leds/led-class.c:521: warning: Excess function parameter 'paren=
+t' description in 'devm_led_classdev_unregister'
+>=20
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+
+I tried to apply it on current -next, but was fixed already. Best
+regards,
+
+								Pavel
+							=09
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--xJK8B5Wah2CMJs8h
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmDTlx4ACgkQMOfwapXb+vLTNgCeJpdxLH/XiAuo+AJEHM2XFZ3n
+LTMAn24qaW8WYmTVe6kZf3r8iokIUZLj
+=o1G3
+-----END PGP SIGNATURE-----
+
+--xJK8B5Wah2CMJs8h--
