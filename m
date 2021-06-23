@@ -2,273 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C273B21FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 966593B2204
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbhFWUox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 16:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59174 "EHLO
+        id S229881AbhFWUuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 16:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWUov (ORCPT
+        with ESMTP id S229826AbhFWUuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 16:44:51 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A82C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:42:33 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id a133so2585043oib.13
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:42:33 -0700 (PDT)
+        Wed, 23 Jun 2021 16:50:23 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA87CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:48:04 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id x22so1783077pll.11
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:48:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Ssz/oktO6uO+CirK2ulMaAGD2E4NYuFjNx1oGhPBz88=;
-        b=KpMPmt0evI/acbKEXiS6IkcdGvHhWvEJHgmzUbtk5G2UfTEE3DqGnV8W1fiRCWouY+
-         kY1Zqp2clob4k718momHKrHB5aCHaCuJ+U00sXtqi40u48g4jxDvasXjxs7GVwunOIBw
-         SjeobmH/8OtsvzpvS2M8guU6RPfRc9S/wky86cL8AJ06jLplwCsreO5NibVIfbL9slvC
-         rZAx8QGkV23JpPs+xb27B5Bgg7wHayEC4udLpJkxLKM0HYrTpf1uoFjqdMmwpDccyvkS
-         cc7XE/59v0JKcB9Muw/cAC2NvDhKUlqQedSdJXjGV8oEe2rn3z3gf2f49kuU/VYyje0S
-         DZDw==
+        bh=KPQttoS4IMq2aybrhdSAm6wEH6LRGO37mRcOcCH2GA8=;
+        b=rVe8KpaPY6kuM41sXjMWkWWA8fPUg7oZ5+RvsxBdHwA2VILv0xeGl+zEVx6WWIqYB2
+         b8W3o+cQbjq/CkIkuSvSoppk9qaxXQ3n6wivXVRhiULHDlnUUbnvzACC8Hzeu344fmCe
+         +MRYbs7TXP1gO/WcFMG4gkeDal78jioeE/CKgLPs7axUTDDkXGJ4OEhHk3Y6TYqhkA35
+         BMNjGZzUsjtVfNQ/F/imdW+cPbNqGRkYzxnoquOEDzpJvXLh00fl51wuI2Z4Hqm4JOpz
+         UMK39lBFhtyhPnOIHJelnWA8ESS7YencEm3AIAv6HvDumgirDhpf2PiqI8xH3ChuNPRq
+         5x9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Ssz/oktO6uO+CirK2ulMaAGD2E4NYuFjNx1oGhPBz88=;
-        b=NOyILNST8TNQ/NBZ9sEhHxGIzFVidg6W96yKg1SUwfDnucu3AGIORVPH3bMu1IDMia
-         L5qR5pQWzF8FakB+ocR6U4mYCxA+1mLquAn18GzAOmLDob1SpmOPIfjjVVDc8rSA9uVo
-         GRBtGTJvAACoFora5rDzSGkWWYk6YAY1mn1Wc9rPJ9Y/FQS6AVdTcMItJ4J9bvro/Joa
-         ciGVfmWO5f0ndnsDhzcLWJiYE6+laOpLDi9TOlZtFxBAHCQLXFNpdnVUmEYIQziXq/Es
-         3ngGYjDoBj0YT5xnAVM0qt07PpYQsTr+65P8sHvhi2Z3uZpJn6+hbpBR8wySeRCfezqv
-         +JCA==
-X-Gm-Message-State: AOAM530kZvytf4gdZpuAjZmQjJ5R2kazEhmabv86fCzU1AZea7yLlFP7
-        6eE7yaS+ua34ORzRufWc8MlxCQ==
-X-Google-Smtp-Source: ABdhPJwok4DrxFFeza7ir4VD5PVDJukDMA4axEKA2BXA3W4OiWPneRSw/GFFs7DJfcUV7qvN8WOCYg==
-X-Received: by 2002:aca:4a45:: with SMTP id x66mr2667534oia.79.1624480952269;
-        Wed, 23 Jun 2021 13:42:32 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id l8sm181958ooo.13.2021.06.23.13.42.30
+        bh=KPQttoS4IMq2aybrhdSAm6wEH6LRGO37mRcOcCH2GA8=;
+        b=ZuN3NaxhefUmDlozgO8cfuSaaLuFlw9nFX5lYzYIh+4XOi3xujNL3UD1IIFH2yq/Co
+         hFAFrYnW5K1lwxTmgev65cGJgZiLOmSGn2ia4TNYb6l8rMYzHhqls8SvJt27Cs3CMmnC
+         JW2lPpfEFSbIXz4eUpCZjn3jfWKORkuzrEreDvrIZughfBUJ0P+yDGS7hpCUi0l7qNet
+         NEqji7zUme48ly6L6taSVNBMdAWZ4bZqjAmsc7ftLgpIoTIS3VdYVqtBy1R66m4lWm8C
+         sTQ43OpuCfkzaT1akfQTwckImElQoO1WVBFtiCovhVMfud1QEPfrjx1MZYaqHiHuwT0i
+         vygA==
+X-Gm-Message-State: AOAM531XIWW/eMWaEeoHzqu+/rdpmKzBdHt3D9y2jV0rb44Ri7YouyJ4
+        f25FLg0uOScOhsOCYHONkmwOmw==
+X-Google-Smtp-Source: ABdhPJzfKt5rhw5CZw6QaYPIr2PW/BBph0kOlQHC2t7P/nr5KdNQk+VU29QNNta8gNtKaLlWXe4Haw==
+X-Received: by 2002:a17:90a:7381:: with SMTP id j1mr11247671pjg.29.1624481284023;
+        Wed, 23 Jun 2021 13:48:04 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id q18sm25708pgj.8.2021.06.23.13.48.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 13:42:31 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 15:42:29 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Andy Gross <agross@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 01/10] scsi: ufs: Rename flags pm_op_in_progress and
- is_sys_suspended
-Message-ID: <YNOctRTGYZaSe6lw@yoga>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-2-git-send-email-cang@codeaurora.org>
+        Wed, 23 Jun 2021 13:48:03 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 20:47:59 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: Re: [PATCH 25/54] KVM: x86/mmu: Add helpers to query mmu_role bits
+Message-ID: <YNOd/0RxSnqmDBvd@google.com>
+References: <20210622175739.3610207-1-seanjc@google.com>
+ <20210622175739.3610207-26-seanjc@google.com>
+ <1babfd1c-bee1-12e5-a9d9-9507891efdfd@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1624433711-9339-2-git-send-email-cang@codeaurora.org>
+In-Reply-To: <1babfd1c-bee1-12e5-a9d9-9507891efdfd@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 23 Jun 02:35 CDT 2021, Can Guo wrote:
-
-> Rename pm_op_in_progress and is_sys_suspended to wlu_pm_op_in_progress and
-> is_wlu_sys_suspended accordingly.
+On Wed, Jun 23, 2021, Paolo Bonzini wrote:
+> On 22/06/21 19:57, Sean Christopherson wrote:
+> > +static inline bool is_##reg##_##name(struct kvm_mmu *mmu)	\
 > 
+> What do you think about calling these is_mmu_##name?  The point of having
+> these helpers is that the register doesn't count, and they return the
+> effective value (e.g. false in most EPT cases).
 
-This reflects what the change does, but the commit message is supposed
-to capture "why".
+I strongly prefer to keep <reg> in the name, both to match the mmu_role bits and
+to make it a bit more clear that it's reflective (modified) register state, as
+opposed to PTEs or even something else entirely.  E.g. I always struggled to
+remember the purpose of mmu->nx flag.
 
-Regards,
-Bjorn
+I wouldn't be opposed to is_mmu_##reg##_##name() though.  I omitted the "mmu"
+part because it was loosely implied by the "struct kvm_mmu" param, and to keep
+line lengths short.  But being explicit is usually a good thing, and looking at
+the code I don't see any lines that would wrap if "mmu" were added.
 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> ---
->  drivers/scsi/ufs/ufs-qcom.c |  2 +-
->  drivers/scsi/ufs/ufshcd.c   | 30 +++++++++++++++---------------
->  drivers/scsi/ufs/ufshcd.h   |  6 ++++--
->  3 files changed, 20 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-> index 9b1d18d..fbe21e0 100644
-> --- a/drivers/scsi/ufs/ufs-qcom.c
-> +++ b/drivers/scsi/ufs/ufs-qcom.c
-> @@ -641,7 +641,7 @@ static int ufs_qcom_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  	if (err)
->  		return err;
->  
-> -	hba->is_sys_suspended = false;
-> +	hba->is_wlu_sys_suspended = false;
->  	return 0;
->  }
->  
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 25fe18a..c40ba1d 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -549,8 +549,8 @@ static void ufshcd_print_host_state(struct ufs_hba *hba)
->  		hba->saved_err, hba->saved_uic_err);
->  	dev_err(hba->dev, "Device power mode=%d, UIC link state=%d\n",
->  		hba->curr_dev_pwr_mode, hba->uic_link_state);
-> -	dev_err(hba->dev, "PM in progress=%d, sys. suspended=%d\n",
-> -		hba->pm_op_in_progress, hba->is_sys_suspended);
-> +	dev_err(hba->dev, "wlu_pm_op_in_progress=%d, is_wlu_sys_suspended=%d\n",
-> +		hba->wlu_pm_op_in_progress, hba->is_wlu_sys_suspended);
->  	dev_err(hba->dev, "Auto BKOPS=%d, Host self-block=%d\n",
->  		hba->auto_bkops_enabled, hba->host->host_self_blocked);
->  	dev_err(hba->dev, "Clk gate=%d\n", hba->clk_gating.state);
-> @@ -1999,7 +1999,7 @@ static void ufshcd_clk_scaling_start_busy(struct ufs_hba *hba)
->  	if (!hba->clk_scaling.active_reqs++)
->  		queue_resume_work = true;
->  
-> -	if (!hba->clk_scaling.is_enabled || hba->pm_op_in_progress) {
-> +	if (!hba->clk_scaling.is_enabled || hba->wlu_pm_op_in_progress) {
->  		spin_unlock_irqrestore(hba->host->host_lock, flags);
->  		return;
->  	}
-> @@ -2734,7 +2734,7 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
->  		 * err handler blocked for too long. So, just fail the scsi cmd
->  		 * sent from PM ops, err handler can recover PM error anyways.
->  		 */
-> -		if (hba->pm_op_in_progress) {
-> +		if (hba->wlu_pm_op_in_progress) {
->  			hba->force_reset = true;
->  			set_host_byte(cmd, DID_BAD_TARGET);
->  			cmd->scsi_done(cmd);
-> @@ -2767,7 +2767,7 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
->  		(hba->clk_gating.state != CLKS_ON));
->  
->  	if (unlikely(test_bit(tag, &hba->outstanding_reqs))) {
-> -		if (hba->pm_op_in_progress)
-> +		if (hba->wlu_pm_op_in_progress)
->  			set_host_byte(cmd, DID_BAD_TARGET);
->  		else
->  			err = SCSI_MLQUEUE_HOST_BUSY;
-> @@ -5116,7 +5116,7 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
->  			 * solution could be to abort the system suspend if
->  			 * UFS device needs urgent BKOPs.
->  			 */
-> -			if (!hba->pm_op_in_progress &&
-> +			if (!hba->wlu_pm_op_in_progress &&
->  			    !ufshcd_eh_in_progress(hba) &&
->  			    ufshcd_is_exception_event(lrbp->ucd_rsp_ptr))
->  				/* Flushed in suspend */
-> @@ -5916,7 +5916,7 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
->  {
->  	ufshcd_rpm_get_sync(hba);
->  	if (pm_runtime_status_suspended(&hba->sdev_ufs_device->sdev_gendev) ||
-> -	    hba->is_sys_suspended) {
-> +	    hba->is_wlu_sys_suspended) {
->  		enum ufs_pm_op pm_op;
->  
->  		/*
-> @@ -5933,7 +5933,7 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
->  		if (!ufshcd_is_clkgating_allowed(hba))
->  			ufshcd_setup_clocks(hba, true);
->  		ufshcd_release(hba);
-> -		pm_op = hba->is_sys_suspended ? UFS_SYSTEM_PM : UFS_RUNTIME_PM;
-> +		pm_op = hba->is_wlu_sys_suspended ? UFS_SYSTEM_PM : UFS_RUNTIME_PM;
->  		ufshcd_vops_resume(hba, pm_op);
->  	} else {
->  		ufshcd_hold(hba, false);
-> @@ -5976,7 +5976,7 @@ static void ufshcd_recover_pm_error(struct ufs_hba *hba)
->  	struct request_queue *q;
->  	int ret;
->  
-> -	hba->is_sys_suspended = false;
-> +	hba->is_wlu_sys_suspended = false;
->  	/*
->  	 * Set RPM status of wlun device to RPM_ACTIVE,
->  	 * this also clears its runtime error.
-> @@ -8784,7 +8784,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  	enum ufs_dev_pwr_mode req_dev_pwr_mode;
->  	enum uic_link_state req_link_state;
->  
-> -	hba->pm_op_in_progress = true;
-> +	hba->wlu_pm_op_in_progress = true;
->  	if (pm_op != UFS_SHUTDOWN_PM) {
->  		pm_lvl = pm_op == UFS_RUNTIME_PM ?
->  			 hba->rpm_lvl : hba->spm_lvl;
-> @@ -8919,7 +8919,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  		hba->clk_gating.is_suspended = false;
->  		ufshcd_release(hba);
->  	}
-> -	hba->pm_op_in_progress = false;
-> +	hba->wlu_pm_op_in_progress = false;
->  	return ret;
->  }
->  
-> @@ -8928,7 +8928,7 @@ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  	int ret;
->  	enum uic_link_state old_link_state = hba->uic_link_state;
->  
-> -	hba->pm_op_in_progress = true;
-> +	hba->wlu_pm_op_in_progress = true;
->  
->  	/*
->  	 * Call vendor specific resume callback. As these callbacks may access
-> @@ -9006,7 +9006,7 @@ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  		ufshcd_update_evt_hist(hba, UFS_EVT_WL_RES_ERR, (u32)ret);
->  	hba->clk_gating.is_suspended = false;
->  	ufshcd_release(hba);
-> -	hba->pm_op_in_progress = false;
-> +	hba->wlu_pm_op_in_progress = false;
->  	return ret;
->  }
->  
-> @@ -9072,7 +9072,7 @@ static int ufshcd_wl_suspend(struct device *dev)
->  
->  out:
->  	if (!ret)
-> -		hba->is_sys_suspended = true;
-> +		hba->is_wlu_sys_suspended = true;
->  	trace_ufshcd_wl_suspend(dev_name(dev), ret,
->  		ktime_to_us(ktime_sub(ktime_get(), start)),
->  		hba->curr_dev_pwr_mode, hba->uic_link_state);
-> @@ -9100,7 +9100,7 @@ static int ufshcd_wl_resume(struct device *dev)
->  		ktime_to_us(ktime_sub(ktime_get(), start)),
->  		hba->curr_dev_pwr_mode, hba->uic_link_state);
->  	if (!ret)
-> -		hba->is_sys_suspended = false;
-> +		hba->is_wlu_sys_suspended = false;
->  	up(&hba->host_sem);
->  	return ret;
->  }
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index c98d540..93aeeb3 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -752,7 +752,8 @@ struct ufs_hba {
->  	enum ufs_pm_level spm_lvl;
->  	struct device_attribute rpm_lvl_attr;
->  	struct device_attribute spm_lvl_attr;
-> -	int pm_op_in_progress;
-> +	/* A flag to tell whether __ufshcd_wl_suspend/resume() is in progress */
-> +	bool wlu_pm_op_in_progress;
->  
->  	/* Auto-Hibernate Idle Timer register value */
->  	u32 ahit;
-> @@ -838,7 +839,8 @@ struct ufs_hba {
->  
->  	struct devfreq *devfreq;
->  	struct ufs_clk_scaling clk_scaling;
-> -	bool is_sys_suspended;
-> +	/* A flag to tell whether the UFS device W-LU is system suspended */
-> +	bool is_wlu_sys_suspended;
->  
->  	enum bkops_status urgent_bkops_lvl;
->  	bool is_urgent_bkops_lvl_checked;
-> -- 
-> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+> > +{								\
+> > +	return !!(mmu->mmu_role. base_or_ext . reg##_##name);	\
+> > +}
+> > +BUILD_MMU_ROLE_ACCESSOR(ext,  cr0, pg);
+> > +BUILD_MMU_ROLE_ACCESSOR(base, cr0, wp);
+> > +BUILD_MMU_ROLE_ACCESSOR(ext,  cr4, pse);
+> > +BUILD_MMU_ROLE_ACCESSOR(ext,  cr4, pae);
+> > +BUILD_MMU_ROLE_ACCESSOR(ext,  cr4, smep);
+> > +BUILD_MMU_ROLE_ACCESSOR(ext,  cr4, smap);
+> > +BUILD_MMU_ROLE_ACCESSOR(ext,  cr4, pke);
+> > +BUILD_MMU_ROLE_ACCESSOR(ext,  cr4, la57);
+> > +BUILD_MMU_ROLE_ACCESSOR(base, efer, nx);
+> > +
+> >   struct kvm_mmu_role_regs vcpu_to_role_regs(struct kvm_vcpu *vcpu)
 > 
