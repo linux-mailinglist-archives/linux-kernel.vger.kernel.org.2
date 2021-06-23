@@ -2,125 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F084B3B20B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27283B20BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhFWTDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 15:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWTDO (ORCPT
+        id S229978AbhFWTEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 15:04:13 -0400
+Received: from gateway36.websitewelcome.com ([192.185.193.12]:11491 "EHLO
+        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229759AbhFWTEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 15:03:14 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63711C061574;
-        Wed, 23 Jun 2021 12:00:56 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id r16so4496188oiw.3;
-        Wed, 23 Jun 2021 12:00:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HU0njkEAFXSJ+n1VhC5vO37YX20GbDuiyUcRu8p0LjY=;
-        b=rM3WDg9MMATVrxXbwamjLp8MYkt3nKZzzeXshLf8ILv5x6LgyXo2blESNLQIVeXsFD
-         rpjPxLKs1h6HOwdPV14GthqwAemSKTrfW+nY32gCA+UIpPY6ihPofAgehpg7681KUIJo
-         IxLdr13iGdEUHDNjN933QVGA/I/zGKtjSXUCfl9XFFp8gtAZxYi7iB3TIHJWaw+D725M
-         voWKL6spbhaM8cvdeDxt2zl3XvfYn/ragq8k6CV6q9O/DUtK/a5Pnmd6TVv8UhbanjwQ
-         P4Fo52HgvmP31qSnkL1NysqPThoMiJhTwMPxGzMMAHosCkhwP6CH4HFv2r6M9U3QsvSH
-         iaew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HU0njkEAFXSJ+n1VhC5vO37YX20GbDuiyUcRu8p0LjY=;
-        b=tZpEiZfQUP3pxqwqUCicHAsUMj+8TDqluwq4DU4XGbZ/YfFQbsLOJDoggWIEfA5eN4
-         ZS5Y9FWo5CpzgGrTh5z1y3TfHbH0h7CO7ZrUUaKl1YpHhHIqNDYOpSJLxDMcW6nPdB7z
-         GXydTzjpLR94ZOEPXL7wzTct8cuGo8afRwMzCoPWbBqQ5Svfn6AwGrY/7oBgZAlRdvO+
-         qyJS0fhzPanwFCI7GZtCO0YQLVlNhmU4SnpvlDaJwwVO0AfeWnG9gT+fAHL+W8KF+jad
-         IHYN0QVPuOtGxWCBUIcXbiaY/3DG4fYM2pP5VqqsDa23jeKIvjLhAvj5iprIOxydlAys
-         S5QQ==
-X-Gm-Message-State: AOAM532yXGvtRpu6Nhw27CMRqHmuJKZ3MDz4zQI6jI7IbdgVfsQWJuBt
-        ARLoIcE1FS8UhvFAhygsp2VAmfUleX0O01bWedQ=
-X-Google-Smtp-Source: ABdhPJwZaqDGEAw39pokh5wKazMtsYd0U8zjcFHkgl/u/5WFqx2ojdszUYddCg8iZJyKUS2V1hzOATZO27SCBKnlQ9E=
-X-Received: by 2002:aca:ac02:: with SMTP id v2mr4495297oie.154.1624474855653;
- Wed, 23 Jun 2021 12:00:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210622120142.GL1096940@ziepe.ca> <d497b0a2-897e-adff-295c-cf0f4ff93cb4@amd.com>
- <20210622152343.GO1096940@ziepe.ca> <3fabe8b7-7174-bf49-5ffe-26db30968a27@amd.com>
- <20210622154027.GS1096940@ziepe.ca> <09df4a03-d99c-3949-05b2-8b49c71a109e@amd.com>
- <20210622160538.GT1096940@ziepe.ca> <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com>
- <20210623182435.GX1096940@ziepe.ca> <CAFCwf111O0_YB_tixzEUmaKpGAHMNvMaOes2AfMD4x68Am4Yyg@mail.gmail.com>
- <20210623185045.GY1096940@ziepe.ca>
-In-Reply-To: <20210623185045.GY1096940@ziepe.ca>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Wed, 23 Jun 2021 22:00:29 +0300
-Message-ID: <CAFCwf12tW_WawFfAfrC8bgVhTRnDA7DuM+0V8w3JsUZpA2j84w@mail.gmail.com>
-Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
- FD for DMA-BUF
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
+        Wed, 23 Jun 2021 15:04:12 -0400
+X-Greylist: delayed 1291 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Jun 2021 15:04:12 EDT
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway36.websitewelcome.com (Postfix) with ESMTP id 17D8E400C8031
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:40:15 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id w7lNlmyFEMGeEw7lNlR6Ge; Wed, 23 Jun 2021 13:38:13 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=C0MW5eb4P1KjrPDoV0Rq3MvNLJoSwHEP7qEI/WvdwRU=; b=pPzvkIo1r+5iK2//1v631kMFt5
+        gOCTU/+VJlm/+WLEudiNmods2jwPO+07eta+qiuaN+00VO3LfDivShSk3pPJ7GyL4ErKG16oqvd8Y
+        sYA/SdQODzOca88dq0etZAjW6RmuyTGXv9M3eLmCZnr505kANZ8uaVYmoCFD63H/Cl2O+1VXZk1t8
+        gEwLW/MdjQYxssK4EnmcNz8nVz4yTa8kNjEg5yMb515qZOosy7ZQD7ua/Jy1yqztlgHhCP5C+08SV
+        St1K2XXtKhvtJI6lV3JCEcWv4MsIa3CcIEQ+NPX88wRUIWM3jGYl/6nk+/mmc1KeF4Za1qXoG4QPO
+        HwtuFt6g==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:48326 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lw7lK-000Lfm-Pt; Wed, 23 Jun 2021 13:38:10 -0500
+Subject: Re: linux-next: build warning after merge of the kspp-gustavo tree
+To:     dsterba@suse.cz, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Kees Cook <keescook@chromium.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Tomer Tayar <ttayar@habana.ai>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210623083901.1d49d19d@canb.auug.org.au>
+ <20210623131455.GM28158@suse.cz>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <9f18da33-7446-7237-91be-e52a274877d8@embeddedor.com>
+Date:   Wed, 23 Jun 2021 13:39:49 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210623131455.GM28158@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lw7lK-000Lfm-Pt
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:48326
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 4
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 9:50 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Wed, Jun 23, 2021 at 09:43:04PM +0300, Oded Gabbay wrote:
->
-> > Can you please explain why it is so important to (allow) access them
-> > through the CPU ?
->
-> It is not so much important, as it reflects significant design choices
-> that are already tightly baked into alot of our stacks.
->
-> A SGL is CPU accessible by design - that is baked into this thing and
-> places all over the place assume it. Even in RDMA we have
-> RXE/SWI/HFI1/qib that might want to use the CPU side (grep for sg_page
-> to see)
->
-> So, the thing at the top of the stack - in this case the gaudi driver
-> - simply can't assume what the rest of the stack is going to do and
-> omit the CPU side. It breaks everything.
->
-> Logan's patch series is the most fully developed way out of this
-> predicament so far.
 
-I understand the argument and I agree that for the generic case, the
-top of the stack can't assume anything.
-Having said that, in this case the SGL is encapsulated inside a dma-buf object.
 
-Maybe its a stupid/over-simplified suggestion, but can't we add a
-property to the dma-buf object,
-that will be set by the exporter, which will "tell" the importer it
-can't use any CPU fallback ? Only "real" p2p ?
-Won't that solve the problem by eliminating the unsupported access methods ?
+On 6/23/21 08:14, David Sterba wrote:
+> On Wed, Jun 23, 2021 at 08:39:01AM +1000, Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> After merging the kspp-gustavo tree, today's linux-next build (powerpc
+>> ppc64_defconfig) produced this warning:
+>>
+>> In file included from fs/btrfs/ctree.h:9,
+>>                  from fs/btrfs/struct-funcs.c:8:
+>> fs/btrfs/struct-funcs.c: In function 'btrfs_get_token_16':
+>> fs/btrfs/struct-funcs.c:80:46: warning: array subscript 1 is above array bounds of 'struct page *[1]' [-Warray-bounds]
+>>    80 |  token->kaddr = page_address(token->eb->pages[idx + 1]);  \
+>>       |                              ~~~~~~~~~~~~~~~~^~~~~~~~~
+> 
+> The warning is correct, on powerpc and 64k pages the array has only 1
+> item, ie. only index 0 is valid. The overflow won't happen in practice
+> though because of previous branch that would happen in 100% cases. The
+> code handles when some bytes cross 2 pages but on 64k pages it's all
+> just one page.
+> 
+> To allow the warning to be enabled globally we'll fix it, I'll let
+> Gustavo know once it's done.
 
-Oded
+Awesome. :)
 
->
-> > The whole purpose is that the other device accesses my device,
-> > bypassing the CPU.
->
-> Sure, but you don't know that will happen, or if it is even possible
-> in any given system configuration. The purpose is to allow for that
-> optimization when possible, not exclude CPU based approaches.
->
-> Jason
+Thanks, David.
+--
+Gustavo
+
