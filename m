@@ -2,105 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0473B1AE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DBA3B1AE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhFWNQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:16:26 -0400
-Received: from mga02.intel.com ([134.134.136.20]:27317 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231129AbhFWNQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:16:19 -0400
-IronPort-SDR: 2jcJcCp9hNhpkEiFztnnVl0bkV0RwiSDUdpfdnxjX3BKvH8NYzyEFiMddq3q9UdbpCM1eDzTus
- MlynW5LVJ++g==
-X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="194398139"
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="194398139"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 06:13:58 -0700
-IronPort-SDR: UyzkES5Cdzl1/1lnLeF5ZRRPo1GAM47RpKllxBgKOsqDm9pRq7ImQI2/MQ4FXxqxeGEXirDGdd
- 4/EIl4XDvLoA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="556964242"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 23 Jun 2021 06:13:56 -0700
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH] software node: Handle software node injection to an existing device properly
-Date:   Wed, 23 Jun 2021 16:14:21 +0300
-Message-Id: <20210623131421.15159-1-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S230392AbhFWNRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:17:33 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:38832 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230182AbhFWNRb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 09:17:31 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EDAA69AA;
+        Wed, 23 Jun 2021 15:15:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1624454112;
+        bh=GVMK38SrPGTYbsOKUOPXSrEWY3ARN0rb2JGcAOPGBtQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sd76KXBNzmD/7FV+Gt4wR9mi4Lxk/zMoruxdN9MF5tC8iXo8ltWBUF35E1592qlms
+         jN8Na4J3N87rM+phQYcEEJTQ1uGI1z0adgrZhbaygPV3/NXk9Co5H+OQZsMDv3lMJ0
+         XmoXHC9TPgp4lAqcG56vFOC6WVe7hFc/7DIUThxE=
+Date:   Wed, 23 Jun 2021 16:14:42 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:DRM DRIVERS FOR RENESAS" <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVERS FOR RENESAS" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] dt-bindings: display: renesas,du: Provide bindings for
+ r8a779a0
+Message-ID: <YNMzwtTqhfOzdJ56@pendragon.ideasonboard.com>
+References: <20210622231146.3208404-1-kieran.bingham@ideasonboard.com>
+ <CAMuHMdW8vYC3+gVCv5eG_vkX79vU8RQL-6fSJd9McetDzikzSA@mail.gmail.com>
+ <YNMv2KSjbwX5aAK2@pendragon.ideasonboard.com>
+ <CAMuHMdXJTCyfMX3nN6pbAHeqqf5OCqJR4+7GJ=71+o1iKRrHhg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXJTCyfMX3nN6pbAHeqqf5OCqJR4+7GJ=71+o1iKRrHhg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function software_node_notify() - the function that creates
-and removes the symlinks between the node and the device - was
-called unconditionally in device_add_software_node() and
-device_remove_software_node(), but it needs to be called in
-those functions only in the special case where the node is
-added to a device that has already been registered.
+Hi Geert,
 
-This fixes NULL pointer dereference that happens if
-device_remove_software_node() is used with device that was
-never registered.
+On Wed, Jun 23, 2021 at 03:09:06PM +0200, Geert Uytterhoeven wrote:
+> On Wed, Jun 23, 2021 at 2:58 PM Laurent Pinchart wrote:
+> > On Wed, Jun 23, 2021 at 02:53:33PM +0200, Geert Uytterhoeven wrote:
+> > > On Wed, Jun 23, 2021 at 1:11 AM Kieran Bingham wrote:
+> > > > From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> > > >
+> > > > Extend the Renesas DU display bindings to support the r8a779a0 V3U.
+> > > >
+> > > > Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> > >
+> > > Thanks for your patch!
+> > >
+> > > > --- a/Documentation/devicetree/bindings/display/renesas,du.yaml
+> > > > +++ b/Documentation/devicetree/bindings/display/renesas,du.yaml
+> > > > @@ -39,6 +39,7 @@ properties:
+> > > >        - renesas,du-r8a77980 # for R-Car V3H compatible DU
+> > > >        - renesas,du-r8a77990 # for R-Car E3 compatible DU
+> > > >        - renesas,du-r8a77995 # for R-Car D3 compatible DU
+> > > > +      - renesas,du-r8a779a0 # for R-Car V3U compatible DU
+> > > >
+> > > >    reg:
+> > > >      maxItems: 1
+> > > > @@ -774,6 +775,57 @@ allOf:
+> > > >          - reset-names
+> > > >          - renesas,vsps
+> > > >
+> > > > +  - if:
+> > > > +      properties:
+> > > > +        compatible:
+> > > > +          contains:
+> > > > +            enum:
+> > > > +              - renesas,du-r8a779a0
+> > > > +    then:
+> > > > +      properties:
+> > > > +        clocks:
+> > > > +          items:
+> > > > +            - description: Functional clock for DU0
+> > > > +            - description: Functional clock for DU1
+> > > > +
+> > > > +        clock-names:
+> > > > +          items:
+> > > > +            - const: du.0
+> > > > +            - const: du.1
+> > >
+> > > The hardware block has only a single function clock for both channels,
+> > > like on R-Car H1.
+> > >
+> > > And what about DU_DOTCLKIN?
+> >
+> > As far as I can tell, there's no DU_DOTCLKIN in V3U.
+> 
+> See Table 6.13 of the Hardware User's Manual, pin IPC_CLKIN.
 
-Fixes: b622b24519f5 ("software node: Allow node addition to already existing device")
-Reported-and-tested-by: Dominik Brodowski <linux@dominikbrodowski.net>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- drivers/base/swnode.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+Maybe that's incorrect ? There's no mention of DU_DOTCLKIN anywhere
+else, and the DU bits that allow selection of the input clocks list the
+value documented for Gen3 SoCs as selected DU_DOTCLKIN as reserved.
 
-diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-index 3cc11b813f28c..d1f1a82401207 100644
---- a/drivers/base/swnode.c
-+++ b/drivers/base/swnode.c
-@@ -1045,7 +1045,15 @@ int device_add_software_node(struct device *dev, const struct software_node *nod
- 	}
- 
- 	set_secondary_fwnode(dev, &swnode->fwnode);
--	software_node_notify(dev, KOBJ_ADD);
-+
-+	/*
-+	 * If the device has been fully registered by the time this function is
-+	 * called, software_node_notify() must be called separately so that the
-+	 * symlinks get created and the reference count of the node is kept in
-+	 * balance.
-+	 */
-+	if (device_is_registered(dev))
-+		software_node_notify(dev, KOBJ_ADD);
- 
- 	return 0;
- }
-@@ -1065,7 +1073,8 @@ void device_remove_software_node(struct device *dev)
- 	if (!swnode)
- 		return;
- 
--	software_node_notify(dev, KOBJ_REMOVE);
-+	if (device_is_registered(dev))
-+		software_node_notify(dev, KOBJ_REMOVE);
- 	set_secondary_fwnode(dev, NULL);
- 	kobject_put(&swnode->kobj);
- }
-@@ -1119,8 +1128,7 @@ int software_node_notify(struct device *dev, unsigned long action)
- 
- 	switch (action) {
- 	case KOBJ_ADD:
--		ret = sysfs_create_link_nowarn(&dev->kobj, &swnode->kobj,
--					       "software_node");
-+		ret = sysfs_create_link(&dev->kobj, &swnode->kobj, "software_node");
- 		if (ret)
- 			break;
- 
+> Note that the register bits to configure it are present in
+> drivers/pinctrl/renesas/pfc-r8a779a0.c, but the actual pin group is
+> missing.
+
 -- 
-2.30.2
+Regards,
 
+Laurent Pinchart
