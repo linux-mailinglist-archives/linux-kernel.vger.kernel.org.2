@@ -2,107 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B273B22B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D94E3B22B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhFWVrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 17:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhFWVrc (ORCPT
+        id S229999AbhFWVsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 17:48:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27564 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229774AbhFWVsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 17:47:32 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DBDC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 14:45:14 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id g14so3307223qtv.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 14:45:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=eO/gYbfA6Dk3fvPEfq//UAVbrBE1Hl+b3nbIln7zxCo=;
-        b=IWYpWrmxb6b5oYYzL2CGARVvY1cJdnFmp0pf3q3Bz5VW+Yv5HFpsH4M9Bq+Nw/sjHK
-         2L0nDVw45GcJe7nQTlZ28k/miOGGntJR8W5J4Voi7MO1jrBUJgB5Ea0Esw50VWRmm45Y
-         38AF8mhKCT8oJimpI7VLn2vlR+sGga5+4DD9qedz7Z2rFAxEOHAA6DcEET+mez1x3J6+
-         GOvlJYnOt+dfs+bJsq/MHUwUv+NMt525B239rkOXryVQEIrngwee2HEu7obvBb4/uncB
-         6O+ax7RxC2XTTn3FxGkC3LYkt9ImH0/OqEC7GesBlxBxvHieu9Z9J226aKdj5hGBSXcE
-         O9ZQ==
+        Wed, 23 Jun 2021 17:48:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624484744;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8VFhSgomzeVbLhtKZrv0JDwPRrK50qS0eUPXJlcvMMI=;
+        b=D7+54fOJ6N+Bd/2RfyBMciXIcUC/++wyLajIvAGZjv3/YRw5ndNAOKjER2ANxIGgJ8tvKs
+        K5KxAQXP1fR/uJfp/mtZuzxc4i+wQAg1/ZMDvUYqh8lc3/USJU82IPIQgP7bVhCJxcj2lQ
+        kXurCDrPQrM4tade5WV/oeFNIBjCaSA=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-179-B7amFvM_NImV_tsFYd5V_w-1; Wed, 23 Jun 2021 17:45:33 -0400
+X-MC-Unique: B7amFvM_NImV_tsFYd5V_w-1
+Received: by mail-wr1-f71.google.com with SMTP id j2-20020a5d61820000b029011a6a8149b5so1522222wru.14
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 14:45:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=eO/gYbfA6Dk3fvPEfq//UAVbrBE1Hl+b3nbIln7zxCo=;
-        b=FZ4Vz65mt0keqMHnlVKqiItsyzpwxTs0zuIXqN1HFvLIrVoVzqRg5yDRZ9k0khz67d
-         Dby6coRjEmcGuRHUsD0LMTd5jC7UVJ3ykgPfzWE3/YxppkyVyMT1/SilZn0q4TesJg9Y
-         QDMC+3mVquUtYUJt/gr6QVr5TzFJ4K9Bypjuiks72g6798DqfOgJq79jEM0hze2LGkFh
-         lgcSrJeXztiRQRMaUyYV2vL/inhtUk4EryzuRIxCkicAzr0uIfFUYIQRGAQMcqQ+dS8j
-         JzHB1YxUcemh5lCITsrqtM8wQqsnfk2aanlZhLcy1gaovkR5/SrIYkdp4FetocC8I30L
-         3t3Q==
-X-Gm-Message-State: AOAM531MLtvgHcQ+3R+AHqE6VRLxM4hGgtF62vq6+VJG/9Ydpi8QvdWI
-        lOL5KJxzieakX2MpzTpkfjGJ3KLVET7ieByHMKRGMA==
-X-Google-Smtp-Source: ABdhPJw3GtJtGKNZUWMs5ocfXyKukzULEu9ZrESDoOs8YOI4F1k7sQ982AKQG9jIeOCBC6M9JqVFAyAKPrwT60U/sRM=
-X-Received: by 2002:aed:2064:: with SMTP id 91mr1931402qta.318.1624484713483;
- Wed, 23 Jun 2021 14:45:13 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8VFhSgomzeVbLhtKZrv0JDwPRrK50qS0eUPXJlcvMMI=;
+        b=tLSYPdydf4FtxbZYLppJe7nC9jLh6fYkNq6Ksgj2MZFClG8KWPVnu9XZIYCyxP1I64
+         eF6zTH5lQWZFPfGJecaDPr2t+dtJKsH/QK3Okalzf2AVfwL1T8Ed5WLlWRskZOPboq31
+         l5ae6SH7Aq1GKoYs7YBBt7r+uF0BTpVDOEFMPRVFbIHs9C70IZZgNKssXGBf1eu4pisk
+         yRwMRqW/dr7W19zVPcyTpfJAN+MMilC/Ugn429yQOsL0U3LyZpGcaT1vGlxSo4AOolTQ
+         V+KlKjPRBt2xYi7fKVzgMOhZMLd9DNUNOcqI8vxA+J4bLgZPkrg638G1fsAdfYjHkkO5
+         w1dQ==
+X-Gm-Message-State: AOAM533lStF1bKJGfR06D5pLdnrZznUuJho0yWv1UvkyI8lokyz1lt/h
+        ra+lDrnMx5hJeK+G3BT/P/GLVYMcgkskzXWdzKimUUEIjiUEDqhhLPnZpAmkKHeBrhD3ojAkItl
+        PYa8QTpvyEWcpdBIvk6FFbuLq
+X-Received: by 2002:adf:e38c:: with SMTP id e12mr266431wrm.404.1624484732197;
+        Wed, 23 Jun 2021 14:45:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx7QeUfOhA6Glym8/pNOgX8KdbWWlcMsZF1ybxmwmhOWFvZLPcbBiLW7eMXz978W2pJyIwdbg==
+X-Received: by 2002:adf:e38c:: with SMTP id e12mr266421wrm.404.1624484732043;
+        Wed, 23 Jun 2021 14:45:32 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id x25sm7154187wmj.23.2021.06.23.14.45.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 14:45:31 -0700 (PDT)
+Subject: Re: [PATCH] KVM: selftests: Speed up set_memory_region_test
+To:     Zenghui Yu <yuzenghui@huawei.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        linux-kernel@vger.kernel.org, wanghaibin.wang@huawei.com
+References: <20210426130121.758229-1-vkuznets@redhat.com>
+ <91a2d145-fd3c-6e8d-6478-60f62dff07fe@huawei.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <3dc9bd69-f38a-daed-4ac3-84b280ef5901@redhat.com>
+Date:   Wed, 23 Jun 2021 23:45:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210621173028.3541424-1-mw@semihalf.com> <20210621173028.3541424-6-mw@semihalf.com>
- <YNObfrJN0Qk5RO+x@lunn.ch>
-In-Reply-To: <YNObfrJN0Qk5RO+x@lunn.ch>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Wed, 23 Jun 2021 23:45:04 +0200
-Message-ID: <CAPv3WKfdCwq=AYhARGxfRA92XcZjXYwdOj6_JLP+wOmPV8xxzQ@mail.gmail.com>
-Subject: Re: [net-next: PATCH v3 5/6] net: mvpp2: enable using phylink with ACPI
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
-        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
-        Jon Nettleton <jon@solid-run.com>,
-        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
-        lenb@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <91a2d145-fd3c-6e8d-6478-60f62dff07fe@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 23/06/21 11:03, Zenghui Yu wrote:
+> On 2021/4/26 21:01, Vitaly Kuznetsov wrote:
+>> After commit 4fc096a99e01 ("KVM: Raise the maximum number of user 
+>> memslots")
+>> set_memory_region_test may take too long, reports are that the default
+>> timeout value we have (120s) may not be enough even on a physical host.
+>>
+>> Speed things up a bit by throwing away vm_userspace_mem_region_add() 
+>> usage
+>> from test_add_max_memory_regions(), we don't really need to do the 
+>> majority
+>> of the stuff it does for the sake of this test.
+>>
+>> On my AMD EPYC 7401P, # time ./set_memory_region_test
+>> pre-patch:
+>>  Testing KVM_RUN with zero added memory regions
+>>  Allowed number of memory slots: 32764
+>>  Adding slots 0..32763, each memory region with 2048K size
+>>  Testing MOVE of in-use region, 10 loops
+>>  Testing DELETE of in-use region, 10 loops
+>>
+>>  real    0m44.917s
+>>  user    0m7.416s
+>>  sys    0m34.601s
+>>
+>> post-patch:
+>>  Testing KVM_RUN with zero added memory regions
+>>  Allowed number of memory slots: 32764
+>>  Adding slots 0..32763, each memory region with 2048K size
+>>  Testing MOVE of in-use region, 10 loops
+>>  Testing DELETE of in-use region, 10 loops
+>>
+>>  real    0m20.714s
+>>  user    0m0.109s
+>>  sys    0m18.359s
+>>
+>> Reported-by: kernel test robot <oliver.sang@intel.com>
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> 
+> I've seen the failure on my arm64 server, # ./set_memory_region_test
+> 
+> Allowed number of memory slots: 32767
+> Adding slots 0..32766, each memory region with 2048K size
+> ==== Test Assertion Failure ====
+>    set_memory_region_test.c:391: ret == 0
+>    pid=42696 tid=42696 errno=22 - Invalid argument
+>       1    0x00000000004015a7: test_add_max_memory_regions at 
+> set_memory_region_test.c:389
+>       2     (inlined by) main at set_memory_region_test.c:426
+>       3    0x0000ffffb7c63bdf: ?? ??:0
+>       4    0x00000000004016db: _start at :?
+>    KVM_SET_USER_MEMORY_REGION IOCTL failed,
+>    rc: -1 errno: 22 slot: 2624
+> 
+>> +    mem = mmap(NULL, MEM_REGION_SIZE * max_mem_slots + alignment,
+> 
+> The problem is that max_mem_slots is declared as uint32_t, the result
+> of (MEM_REGION_SIZE * max_mem_slots) is unexpectedly truncated to be
+> 0xffe00000.
+> 
+>> +           PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+>> +    TEST_ASSERT(mem != MAP_FAILED, "Failed to mmap() host");
+>> +    mem_aligned = (void *)(((size_t) mem + alignment - 1) & 
+>> ~(alignment - 1));
+>> +
+>>      for (slot = 0; slot < max_mem_slots; slot++) {
+>> -        vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
+>> -                        guest_addr, slot, mem_reg_npages,
+>> -                        0);
+>> -        guest_addr += MEM_REGION_SIZE;
+>> +        ret = test_memory_region_add(vm, mem_aligned +
+>> +                         ((uint64_t)slot * MEM_REGION_SIZE),
+> 
+> These unmapped VAs got caught by access_ok() checker in
+> __kvm_set_memory_region() as they happen to go beyond the task's
+> address space on arm64. Casting max_mem_slots to size_t in both
+> mmap() and munmap() fixes the issue for me.
 
-=C5=9Br., 23 cze 2021 o 22:37 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a):
->
-> > +static bool mvpp2_use_acpi_compat_mode(struct fwnode_handle *port_fwno=
-de)
-> > +{
-> > +     if (!is_acpi_node(port_fwnode))
-> > +             return false;
-> > +
-> > +     return (!fwnode_property_present(port_fwnode, "phy-handle") &&
-> > +             !fwnode_property_present(port_fwnode, "managed") &&
-> > +             !fwnode_get_named_child_node(port_fwnode, "fixed-link"));
->
-> I'm not too sure about this last one. You only use fixed-link when
-> connecting to an Ethernet switch. I doubt anybody will try ACPI and a
-> switch. It has been agreed, ACPI is for simple hardware, and you need
-> to use DT for advanced hardware configurations.
->
-> What is your use case for fixed-link?
->
+Can you provide a patch for both?
 
-Regardless of the "simple hardware" definition or whether DSA + ACPI
-feasibility, you can still have e.g. the switch left in "unmanaged"
-mode (or whatever the firmware configures), connected via fixed-link
-to the MAC. The same effect as booting with DT, but not loading the
-DSA/switch driver - the "CPU port" can be used as a normal netdev
-interface.
+Paolo
 
-I'd also prefer to have all 3 major interface types supported in
-phylink, explicitly checked in the driver - it has not been supported
-yet, but can be in the future, so let's have them covered in the
-backward compatibility check.
-
-Best regards,
-Marcin
