@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2EE3B1F3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 789303B1F3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhFWRJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 13:09:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35734 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229758AbhFWRJR (ORCPT
+        id S229958AbhFWRJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 13:09:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229758AbhFWRJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 13:09:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624468019;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nPVt+K/jMh/0Kfe0YLtFKBFaxz7RZ0N0HZlRqVxmqDs=;
-        b=FzfEfxCkp2MWl63I6EEQgiJ85vNz3ph/2C5LD9KJJLbn6SmmudnF+xDb/fHXoOqgtezCOP
-        QTee03HfQ39fZRneSghdn2YGDT/7sWk/3VmVwjuD7mYsiUINvIOFO+Jcsta4Bk155bGHgh
-        ChzcvwHTNvGEl9wj44pBwddm5/6A6uw=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-425-Ah_67_5eMyuIRHNaCSSb5g-1; Wed, 23 Jun 2021 13:06:57 -0400
-X-MC-Unique: Ah_67_5eMyuIRHNaCSSb5g-1
-Received: by mail-ed1-f70.google.com with SMTP id m4-20020a0564024304b0290394d27742e4so1678718edc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:06:57 -0700 (PDT)
+        Wed, 23 Jun 2021 13:09:30 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33AC4C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:07:12 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id m18so3476125wrv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:07:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=2HpyCQpwgrc/aHBUoC6zr6QEL1NXeYoH0TAbwDDPVvg=;
+        b=tiFcjBa6bC/mOfwix6wnDy4xusQNtELfGwQ6Lznz+xUF2RxLgxDG4U+9z1kIsOd/Cx
+         /TMN1sUHZmoFYJDJH6+UnTB5Q1LMrrc0lznh/yYKFrcl+KCCMNaaAXq9cf27EQBha3FK
+         yYkTIXBGCgf+zSfkv1OiSWz80DtBvs1ygeNCdqIl04WC1QZmTMZKey+S98EXkN43ejeC
+         EDMkFDzzeLfqs1aLiPy/vMpIKZrqo7UnEW250Mgtx7KJrC8YpRZEZzFbkKA6/bDn8NUA
+         0kGbk90aWAxoLbi6QuP7jWu2WemzRVDzD018rgWHUduXRooEWUtW+7qkNxJlBGXlXfVS
+         a4jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nPVt+K/jMh/0Kfe0YLtFKBFaxz7RZ0N0HZlRqVxmqDs=;
-        b=WRu8UhdGoJqfno5fBPJ0RkUdgaQJlZQhsQWjHizY/oalSWO4bG4ofoMLytTpm3HxvY
-         gQ6hFc06zrE6uqS93fH36Zhh/Za5HDQIGBZdu1b4/aR35vFRboUo/kuK7pMXX70sgAAe
-         ppsAm+ruNSZ6qu06Yf0AQyI/9ncHaqoQ+ynTnDxRJmqaQSTS52UgVU8MPk1X1D8+//ij
-         hqW6esye9M9SzobCBtB/NHTqQ3BO//igk6UOTWwlRH3SaTtX6V40jeyQyux+aQRfWTQy
-         NitYj6na3gw2xo9lsq+r6d2Zidd3o8wW6NAwFRVXzxdaAXJRV7q60LCbEE4CeCTFyNFO
-         /oVg==
-X-Gm-Message-State: AOAM533i7J2zSGHw7S/WyIJUx3HmP2Xi+is2Yay74+gWWd62uGO56Unm
-        F+Py7MiXXeU4whEfa2jLFCHZkz0429fd3raFmJ0PU5iW/q+AySmPGGa3Yyenxt/zQTKIs8KCmWS
-        Zbg1yROvh4P2SOS3YbJvfJMap
-X-Received: by 2002:a05:6402:b17:: with SMTP id bm23mr1038645edb.173.1624468016100;
-        Wed, 23 Jun 2021 10:06:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyLFwygq5KyPf04IwpHKYc7htZRNliOVInK6MiB1I1WnqSCK5JY1zXrVoLimYgI18Y5jIgZ2w==
-X-Received: by 2002:a05:6402:b17:: with SMTP id bm23mr1038619edb.173.1624468015958;
-        Wed, 23 Jun 2021 10:06:55 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id yh11sm154201ejb.16.2021.06.23.10.06.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 10:06:55 -0700 (PDT)
-Subject: Re: [PATCH 15/54] KVM: nSVM: Add a comment to document why nNPT uses
- vmcb01, not vCPU state
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-References: <20210622175739.3610207-1-seanjc@google.com>
- <20210622175739.3610207-16-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <b759e31b-6269-a401-9fbb-49227b8be009@redhat.com>
-Date:   Wed, 23 Jun 2021 19:06:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=2HpyCQpwgrc/aHBUoC6zr6QEL1NXeYoH0TAbwDDPVvg=;
+        b=JacOyZPLHj8yHu287LogTvtVRjSiiJJYGLMx5cBLKyZz2t46U9IfUZ8Qgx95QgJkDc
+         ViiKy+kdLK4m0D0VPJLAFzcNHru0igsIZ5itgP5JS05oLCaqdzbwjyCy1POsFOfoA8uM
+         M4RfEnuYcyHUreBSzM+4BouSUiqZGiRCc9sLn93dLSONf8X0BVtPqttPcZNWdOCsOSE/
+         4k2qWGq6i3R7DLUVfYkhO5/8NUaQEFD4x2p9Tyj9X/Icv4SOgqDg36944YfbkdLxsEDs
+         rNvopTQkvxtmmLp43tjeysZ9Hyv4KC2l/InTGikzgiNEbftLmMuYktE8nF8Q5QwhA/p8
+         vBTQ==
+X-Gm-Message-State: AOAM530rJMvEpiK54DPvngsP90CD+ANWGGOQFxFAW1WowL52xWIllhnZ
+        un+hKf2VKBMXlXGPFXG0RpM4BFOnkGXap+u+4eg=
+X-Google-Smtp-Source: ABdhPJyeBRhRrIAg2wWOxYzY8lCWkbzFSc5SoXLT9s3alJvmDvtXQsDLBSevwdty7laAczIm0buSAVl4fpJMmMNLDHk=
+X-Received: by 2002:a5d:4b44:: with SMTP id w4mr1265082wrs.78.1624468030361;
+ Wed, 23 Jun 2021 10:07:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210622175739.3610207-16-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a5d:65d2:0:0:0:0:0 with HTTP; Wed, 23 Jun 2021 10:07:10
+ -0700 (PDT)
+Reply-To: lukaszjanuszjanuszewski@gmail.com
+From:   =?UTF-8?Q?=C5=81ukasz_Janusz_Januszewski?= 
+        <martinlochea2006@gmail.com>
+Date:   Wed, 23 Jun 2021 10:07:10 -0700
+Message-ID: <CA+VHdM4iTA4fS+B9g81B+fEbjon02_8L8icRC+313c2_7o_1pg@mail.gmail.com>
+Subject: Business Offer!!!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/06/21 19:57, Sean Christopherson wrote:
-> +	/*
-> +	 * L1's CR4 and EFER are stuffed into vmcb01 by the caller.  Note, when
-> +	 * called via KVM_SET_NESTED_STATE, that state may_not_  match current
-> +	 * vCPU state.  CR0.WP is explicitly ignored, while CR0.PG is required.
-> +	 */
+--=20
+Dear Friend,
 
-"stuffed into" doesn't really match reality of vmentry, though it works 
-for KVM_SET_NESTED_STATE.  What about a more neutral "The NPT format 
-depends on L1's CR4 and EFER, which is in vmcb01"?
+My sincere apologies for sending you this unsolicited e-mail, but
+based on strong instincts and deep conviction that you are a matured,
+trustworthy and reliable person, I am compelled to write you and seek
+your hand/co-operation in an investment/business scheme that will be
+mutually beneficial.
 
-Paolo
+My name is =C5=81ukasz Janusz Januszewski, Markets & Investment Banking,
+Raiffeisen Bank International AG, Vienna, Austria. I by virtue of my
+position have some good substantial sums of money in a private coded
+bank account and I am seeking someone like you who will help me to
+receive and have it invested in a profitable business venture in your
+country.
 
+Meanwhile, be rest assured that this offer is RISK-FREE but due to my
+status in the society, you are required to keep this offer strictly
+confidential and top secret. Kindly oblige me your full names, private
+e-mail address, your age, contact phone number, your profession and
+nationality.
+
+Upon receipt of your positive response, I will oblige you fuller
+details in my next e-mail correspondence, as it is said, "the taste of
+the pudding is in the eating" so join hands with me to make this
+once-in-a-life-opportunity a resounding success. Please have total
+faith on this offer and TRUST me on this too!
+
+Thank you very much.
+
+Sincerely,
+
+=C5=81ukasz Janusz Januszewski,
+Markets & Investment Banking,
+Raiffeisen Bank International AG,
+Vienna, Austria.
