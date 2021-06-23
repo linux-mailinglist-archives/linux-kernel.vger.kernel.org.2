@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2EEB3B19F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9943B1A0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbhFWM1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:27:11 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36778 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231375AbhFWM0b (ORCPT
+        id S231835AbhFWM2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:28:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231572AbhFWM06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:26:31 -0400
-Message-Id: <20210623121454.414215896@linutronix.de>
+        Wed, 23 Jun 2021 08:26:58 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D202CC0611FB
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:24:15 -0700 (PDT)
+Message-Id: <20210623121454.508853062@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624451053;
+        s=2020; t=1624451054;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=zWDa8W0rBshx7pY/lVk5v1xc2fzISGaYfl8MoWaH6Jo=;
-        b=CdkBbEQZYjC+VVoU1ii+6ZvjdhJzr4foBJHWoNfEGdx6g40R6oBxwLUM85SYQBL8+mOoPJ
-        gKJdJTrxghKyLIodWvJ5AudKXUpIn41wOpuBVxWeoOUThiwvZpFcqZr+sQSProhFUUwXbd
-        ihzV5Gsb4f+yj2NV14dUWm2F9G5lGqXnKQUQ/IeCga93hig/n3k8ytkox5kNd83RKWtYw9
-        95TwfGnK94ESK+/DBagl26EDUkJmbnqRvbzfXDmxz29al6Pk2V3Qjx0G79/0bL6vFWy6Bj
-        opsinW5E3FiQ3TmxuWadyu7+X/j135NbHZRQv5Wzrwc3h7URn/ygVzX2ygDeAQ==
+        bh=FtnYcODUXDnBALgwJ5Ou9onaGXOy3UuICkvWur3i3iU=;
+        b=g4zKLuHzy+HrgKxUApnrLFmzBaVU2CfxmXnUXvFLxdnDqsmiX6eRiTSSl/gyst14r1F3oe
+        7BoHy5UU08BEuSE4QKfForVhiPZtzVpR5KB4xZ+WJhrblaRf7W7QsYfGZeAx9vx5Isv0Rk
+        Hd8dY+kKoswJaAVE4jkeHM3VhSdQhlOaVcga7Fhvfe5dwoFbGUDWom3YkoLStFLN9s5Nos
+        OBNX5TfyiYhM4SuCpFnu3qhLkY99ZR9e0Uf2k26dRY+JhPrfFtBYq/IlXJ+DrE/HGTusAm
+        A6XhufCctx129Xw0MKZ+/+lwlh4D7CgInD15KV6Zde4Fw/8X61HVerMY3C9FGA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624451053;
+        s=2020e; t=1624451054;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=zWDa8W0rBshx7pY/lVk5v1xc2fzISGaYfl8MoWaH6Jo=;
-        b=Q4ILkxlfBihmtk5aWeSGJ0Aurao/GTR/ArFiNLHaJp9QaPGQGhVFJID+xrreSS2zEQYb9q
-        5Pz7Odk4cs1gDtCg==
-Date:   Wed, 23 Jun 2021 14:01:58 +0200
+        bh=FtnYcODUXDnBALgwJ5Ou9onaGXOy3UuICkvWur3i3iU=;
+        b=EQ0dw1hZ+f+04I3FuC6tI0/OH1NEjzLFLF9pxrZJQV9w//P1al9KxHRaxzkPy59Cexwv77
+        WTv6ZlhpeE7TaXDQ==
+Date:   Wed, 23 Jun 2021 14:01:59 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -47,7 +50,8 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         "Chang Seok Bae" <chang.seok.bae@intel.com>,
         Megha Dey <megha.dey@linux.intel.com>,
         Oliver Sang <oliver.sang@intel.com>
-Subject: [patch V4 31/65] x86/fpu: Deduplicate copy_uabi_from_user/kernel_to_xstate()
+Subject: [patch V4 32/65] x86/fpu: Rename copy_fpregs_to_fpstate() to
+ save_fpregs_to_fpstate()
 References: <20210623120127.327154589@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,208 +60,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-copy_uabi_from_user_to_xstate() and copy_uabi_from_kernel_to_xstate() are
-almost identical except for the copy function.
+A copy is guaranteed to leave the source intact, which is not the case when
+FNSAVE is used as that reinitilizes the registers.
 
-Unify them.
+Save does not make such guarantees and it matches what this is about,
+i.e. to save the state for a later restore.
+
+Rename it to save_fpregs_to_fpstate(). 
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Andy Lutomirski <luto@kernel.org>
 Reviewed-by: Borislav Petkov <bp@suse.de>
 ---
-V3: Fixed MXCSR thinkos and simplified the handling of MXCSR
----
- arch/x86/kernel/fpu/xstate.c |  137 ++++++++++++++-----------------------------
- 1 file changed, 47 insertions(+), 90 deletions(-)
+ arch/x86/include/asm/fpu/internal.h |    4 ++--
+ arch/x86/kernel/fpu/core.c          |   10 +++++-----
+ arch/x86/kvm/x86.c                  |    2 +-
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -953,23 +953,6 @@ int arch_set_user_pkey_access(struct tas
- }
- #endif /* ! CONFIG_ARCH_HAS_PKEYS */
- 
--/*
-- * Weird legacy quirk: SSE and YMM states store information in the
-- * MXCSR and MXCSR_FLAGS fields of the FP area. That means if the FP
-- * area is marked as unused in the xfeatures header, we need to copy
-- * MXCSR and MXCSR_FLAGS if either SSE or YMM are in use.
-- */
--static inline bool xfeatures_mxcsr_quirk(u64 xfeatures)
--{
--	if (!(xfeatures & (XFEATURE_MASK_SSE|XFEATURE_MASK_YMM)))
--		return false;
--
--	if (xfeatures & XFEATURE_MASK_FP)
--		return false;
--
--	return true;
--}
--
- static void copy_feature(bool from_xstate, struct membuf *to, void *xstate,
- 			 void *init_xstate, unsigned int size)
- {
-@@ -1082,39 +1065,53 @@ void copy_xstate_to_uabi_buf(struct memb
- 		membuf_zero(&to, to.left);
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -375,7 +375,7 @@ static inline int os_xrstor_safe(struct
+ 	return err;
  }
  
--static inline bool mxcsr_valid(struct xstate_header *hdr, const u32 *mxcsr)
-+static int copy_from_buffer(void *dst, unsigned int offset, unsigned int size,
-+			    const void *kbuf, const void __user *ubuf)
+-extern int copy_fpregs_to_fpstate(struct fpu *fpu);
++extern int save_fpregs_to_fpstate(struct fpu *fpu);
+ 
+ static inline void __copy_kernel_to_fpregs(union fpregs_state *fpstate, u64 mask)
  {
--	u64 mask = XFEATURE_MASK_FP | XFEATURE_MASK_SSE | XFEATURE_MASK_YMM;
--
--	/* Only check if it is in use */
--	if (hdr->xfeatures & mask) {
--		/* Reserved bits in MXCSR must be zero. */
--		if (*mxcsr & ~mxcsr_feature_mask)
--			return false;
-+	if (kbuf) {
-+		memcpy(dst, kbuf + offset, size);
-+	} else {
-+		if (copy_from_user(dst, ubuf + offset, size))
-+			return -EFAULT;
+@@ -507,7 +507,7 @@ static inline void __fpregs_load_activat
+ static inline void switch_fpu_prepare(struct fpu *old_fpu, int cpu)
+ {
+ 	if (static_cpu_has(X86_FEATURE_FPU) && !(current->flags & PF_KTHREAD)) {
+-		if (!copy_fpregs_to_fpstate(old_fpu))
++		if (!save_fpregs_to_fpstate(old_fpu))
+ 			old_fpu->last_cpu = -1;
+ 		else
+ 			old_fpu->last_cpu = cpu;
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -92,7 +92,7 @@ EXPORT_SYMBOL(irq_fpu_usable);
+  * Modern FPU state can be kept in registers, if there are
+  * no pending FP exceptions.
+  */
+-int copy_fpregs_to_fpstate(struct fpu *fpu)
++int save_fpregs_to_fpstate(struct fpu *fpu)
+ {
+ 	if (likely(use_xsave())) {
+ 		os_xsave(&fpu->state.xsave);
+@@ -119,7 +119,7 @@ int copy_fpregs_to_fpstate(struct fpu *f
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL(copy_fpregs_to_fpstate);
++EXPORT_SYMBOL(save_fpregs_to_fpstate);
+ 
+ void kernel_fpu_begin_mask(unsigned int kfpu_mask)
+ {
+@@ -137,7 +137,7 @@ void kernel_fpu_begin_mask(unsigned int
+ 		 * Ignore return value -- we don't care if reg state
+ 		 * is clobbered.
+ 		 */
+-		copy_fpregs_to_fpstate(&current->thread.fpu);
++		save_fpregs_to_fpstate(&current->thread.fpu);
  	}
--	return true;
-+	return 0;
- }
+ 	__cpu_invalidate_fpregs_state();
  
--/*
-- * Convert from a ptrace standard-format kernel buffer to kernel XSAVE[S] format
-- * and copy to the target thread. This is called from xstateregs_set().
-- */
--int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
-+
-+static int copy_uabi_to_xstate(struct xregs_state *xsave, const void *kbuf,
-+			       const void __user *ubuf)
- {
- 	unsigned int offset, size;
--	int i;
- 	struct xstate_header hdr;
-+	u64 mask;
-+	int i;
+@@ -172,7 +172,7 @@ void fpu__save(struct fpu *fpu)
+ 	trace_x86_fpu_before_save(fpu);
  
- 	offset = offsetof(struct xregs_state, header);
--	size = sizeof(hdr);
--
--	memcpy(&hdr, kbuf + offset, size);
-+	if (copy_from_buffer(&hdr, offset, sizeof(hdr), kbuf, ubuf))
-+		return -EFAULT;
- 
- 	if (validate_user_xstate_header(&hdr))
- 		return -EINVAL;
- 
--	if (!mxcsr_valid(&hdr, kbuf + offsetof(struct fxregs_state, mxcsr)))
--		return -EINVAL;
-+	/* Validate MXCSR when any of the related features is in use */
-+	mask = XFEATURE_MASK_FP | XFEATURE_MASK_SSE | XFEATURE_MASK_YMM;
-+	if (hdr.xfeatures & mask) {
-+		u32 mxcsr[2];
-+
-+		offset = offsetof(struct fxregs_state, mxcsr);
-+		if (copy_from_buffer(mxcsr, offset, sizeof(mxcsr), kbuf, ubuf))
-+			return -EFAULT;
-+
-+		/* Reserved bits in MXCSR must be zero. */
-+		if (mxcsr[0] & ~mxcsr_feature_mask)
-+			return -EINVAL;
-+
-+		/* SSE and YMM require MXCSR even when FP is not in use. */
-+		if (!(hdr.xfeatures & XFEATURE_MASK_FP)) {
-+			xsave->i387.mxcsr = mxcsr[0];
-+			xsave->i387.mxcsr_mask = mxcsr[1];
-+		}
-+	}
- 
- 	for (i = 0; i < XFEATURE_MAX; i++) {
- 		u64 mask = ((u64)1 << i);
-@@ -1125,16 +1122,11 @@ int copy_uabi_from_kernel_to_xstate(stru
- 			offset = xstate_offsets[i];
- 			size = xstate_sizes[i];
- 
--			memcpy(dst, kbuf + offset, size);
-+			if (copy_from_buffer(dst, offset, size, kbuf, ubuf))
-+				return -EFAULT;
+ 	if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
+-		if (!copy_fpregs_to_fpstate(fpu)) {
++		if (!save_fpregs_to_fpstate(fpu)) {
+ 			copy_kernel_to_fpregs(&fpu->state);
  		}
  	}
+@@ -255,7 +255,7 @@ int fpu__copy(struct task_struct *dst, s
+ 	if (test_thread_flag(TIF_NEED_FPU_LOAD))
+ 		memcpy(&dst_fpu->state, &src_fpu->state, fpu_kernel_xstate_size);
  
--	if (xfeatures_mxcsr_quirk(hdr.xfeatures)) {
--		offset = offsetof(struct fxregs_state, mxcsr);
--		size = MXCSR_AND_FLAGS_SIZE;
--		memcpy(&xsave->i387.mxcsr, kbuf + offset, size);
--	}
--
- 	/*
- 	 * The state that came in from userspace was user-state only.
- 	 * Mask all the user states out of 'xfeatures':
-@@ -1150,6 +1142,16 @@ int copy_uabi_from_kernel_to_xstate(stru
+-	else if (!copy_fpregs_to_fpstate(dst_fpu))
++	else if (!save_fpregs_to_fpstate(dst_fpu))
+ 		copy_kernel_to_fpregs(&dst_fpu->state);
+ 
+ 	fpregs_unlock();
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9618,7 +9618,7 @@ static void kvm_save_current_fpu(struct
+ 		memcpy(&fpu->state, &current->thread.fpu.state,
+ 		       fpu_kernel_xstate_size);
+ 	else
+-		copy_fpregs_to_fpstate(fpu);
++		save_fpregs_to_fpstate(fpu);
  }
  
- /*
-+ * Convert from a ptrace standard-format kernel buffer to kernel XSAVE[S]
-+ * format and copy to the target thread. This is called from
-+ * xstateregs_set().
-+ */
-+int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
-+{
-+	return copy_uabi_to_xstate(xsave, kbuf, NULL);
-+}
-+
-+/*
-  * Convert from a sigreturn standard-format user-space buffer to kernel
-  * XSAVE[S] format and copy to the target thread. This is called from the
-  * sigreturn() and rt_sigreturn() system calls.
-@@ -1157,52 +1159,7 @@ int copy_uabi_from_kernel_to_xstate(stru
- int copy_sigframe_from_user_to_xstate(struct xregs_state *xsave,
- 				      const void __user *ubuf)
- {
--	unsigned int offset, size;
--	int i;
--	struct xstate_header hdr;
--
--	offset = offsetof(struct xregs_state, header);
--	size = sizeof(hdr);
--
--	if (copy_from_user(&hdr, ubuf + offset, size))
--		return -EFAULT;
--
--	if (validate_user_xstate_header(&hdr))
--		return -EINVAL;
--
--	for (i = 0; i < XFEATURE_MAX; i++) {
--		u64 mask = ((u64)1 << i);
--
--		if (hdr.xfeatures & mask) {
--			void *dst = __raw_xsave_addr(xsave, i);
--
--			offset = xstate_offsets[i];
--			size = xstate_sizes[i];
--
--			if (copy_from_user(dst, ubuf + offset, size))
--				return -EFAULT;
--		}
--	}
--
--	if (xfeatures_mxcsr_quirk(hdr.xfeatures)) {
--		offset = offsetof(struct fxregs_state, mxcsr);
--		size = MXCSR_AND_FLAGS_SIZE;
--		if (copy_from_user(&xsave->i387.mxcsr, ubuf + offset, size))
--			return -EFAULT;
--	}
--
--	/*
--	 * The state that came in from userspace was user-state only.
--	 * Mask all the user states out of 'xfeatures':
--	 */
--	xsave->header.xfeatures &= XFEATURE_MASK_SUPERVISOR_ALL;
--
--	/*
--	 * Add back in the features that came in from userspace:
--	 */
--	xsave->header.xfeatures |= hdr.xfeatures;
--
--	return 0;
-+	return copy_uabi_to_xstate(xsave, NULL, ubuf);
- }
- 
- /**
+ /* Swap (qemu) user FPU context for the guest FPU context. */
 
