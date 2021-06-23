@@ -2,186 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9632A3B1CC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAAF03B1CD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231359AbhFWOny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231293AbhFWOnt (ORCPT
+        id S231185AbhFWOt5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Jun 2021 10:49:57 -0400
+Received: from de-smtp-delivery-105.mimecast.com ([194.104.109.105]:39843 "EHLO
+        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230061AbhFWOt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:43:49 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6028C061574;
-        Wed, 23 Jun 2021 07:41:31 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id bj15so5685978qkb.11;
-        Wed, 23 Jun 2021 07:41:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=grMpRFSFa/Yee9hmf0XS+EbMWVihg50NgZvro2wq+xc=;
-        b=S4g+emmjW3QfbSeWI0ifotqF+o05TYimfJARIYh0LtYg1Jj5NIYpt/qAXZ21fYQV6B
-         502oXLVFc9rZaMkdhriGbVz7Fj7oboguSOJpIFqjk+jqzelyiOxp3zWa5JPhXkktBAOl
-         5jb/MbzibcELwikH+ufMyyZ5RCqV/B4bQzwfIrvONtFZ5abeFlfv91gZLcCTUxkfnXiG
-         5umJERgIJdAGS9yMUmjZArw/r1cJQ98gpPty24XhfVr5qxmpx7AYQSRUv6Hi+WbXxnnD
-         5CDaMr0yKWP64miJgUCEzS1mCMoJvruQHbMH8CsF0fcRKWwqNDnkMj0U3PlvLywXlBaH
-         yNXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=grMpRFSFa/Yee9hmf0XS+EbMWVihg50NgZvro2wq+xc=;
-        b=AmlDG/NYKeX7+C6Qv89ETEJSn00AYOsuNhgbw6/ukoxMcbhbNiw0FUn/uCKOuQG8/1
-         8WZ4LVDfga9gTPH1DNxCKsXg1g9b3wI/lhmOQ1yAbnQuXzKP1FYIsrC+Zi6iRjoy9Jg5
-         HFn1xsCJotcd2Ri0TTXsZwliIU/U52r1Mv6E3gEWvnirSepSwdCDRxmInJ0x6dplJFHr
-         VDaIcBaETlh61cjChSXZXj9qaSrb6kiNalVl+JzCdswFV9x3xOL3ZTeKnom0TRkxMBSz
-         itRcWArswHznLYPbX2EzeW+hQWhD3FLFc6bFm819KSRcmJsr75sepI8+vFkL7AoBdGK5
-         GexQ==
-X-Gm-Message-State: AOAM531obiaFtDgBoMEDzpL9b8oaxXWp5OYxSTInm8rW1p8Kn0uFbkOm
-        ZTikZ2Byo91hZhxklyl/nIJ7i01lhw/xOvessGEHtC+FWuEt7uuW
-X-Google-Smtp-Source: ABdhPJwaT121xh0WhBnhBkhQxPZ2qRT6Z35kfo9SUFw2z6xPsi1u5Eb/4/Ug+ZAG+IA4BJBMH2stDLzpF7rlh2es3Jo=
-X-Received: by 2002:a25:ba85:: with SMTP id s5mr12480653ybg.336.1624459290890;
- Wed, 23 Jun 2021 07:41:30 -0700 (PDT)
+        Wed, 23 Jun 2021 10:49:56 -0400
+Received: from GBR01-LO2-obe.outbound.protection.outlook.com
+ (mail-lo2gbr01lp2053.outbound.protection.outlook.com [104.47.21.53]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-29-AtaEgG65NR-SgCiQJLUBWQ-1; Wed, 23 Jun 2021 16:47:36 +0200
+X-MC-Unique: AtaEgG65NR-SgCiQJLUBWQ-1
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
+ by CWLP265MB3219.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:be::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18; Wed, 23 Jun
+ 2021 14:47:35 +0000
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::259d:65ac:ae6d:409d]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::259d:65ac:ae6d:409d%9]) with mapi id 15.20.4242.024; Wed, 23 Jun 2021
+ 14:47:35 +0000
+From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+CC:     "rafael@kernel.org" <rafael@kernel.org>
+Subject: [PATCH] kobject: Safe return of kobject_get_path with NULL
+Thread-Topic: [PATCH] kobject: Safe return of kobject_get_path with NULL
+Thread-Index: AQHXaD5guylz4e+fzky/qfcToJhYzA==
+Date:   Wed, 23 Jun 2021 14:47:35 +0000
+Message-ID: <CWXP265MB2680094534A5559B0A904B76C4089@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [185.80.168.10]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8ac332ea-f663-415d-fd11-08d93655d6d8
+x-ms-traffictypediagnostic: CWLP265MB3219:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CWLP265MB321955A4A1E071725A5A4B06C4089@CWLP265MB3219.GBRP265.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:6790
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: cY1fcBu4kMTVHLU84l9UoXZwNp4IeuOT4WCL7RkK5kV+wBYpscQtMeDiRSJY6xEiVVjJ0oHUhD1oJ3Kl5fEUxxUDKBjs5jJYqMg67cdEv+n4VsdXcGIhwS23gRa3sY5bw8YQFcSYL9Ukv4LJhAfJlanc8p3Cg1U9Gt6FymiP2nv1biuZxLBNDvJhizJ5dv74pOTRM7MPMqmuYG5Fr7gBfgGvG7AWGOuGwvQgVDYBFPSew+h54oCUC3kwVs1KkZhi/oIyUFapKct5scQMjdvhzByf6ZPHxSrEn+GD2F+fk6zhRi7k7ee/4/kFDo3efbPCfh88NlxhIR2BOtydBmTQh7IVT4hkAjxkoqbmt42mxQE7lDyvG3z9XkPqcPIpKuUFY3JSEs43nTqN7rGkBfOVLQbHz2LhderkJi2Jfam/sd4tfHi09zQ/KkWz6DRuoRjgEH4aqrQ7SzkVhKSwjP64j19QinItIAj+qhPtXw9SgycuL2i4BlEH2CeTAnE13n6GmTvwLWyFshIiNWJxRDbnNJjm7LmsXoEccTMbU3xI4JCxUasnyRtcqNSxH+u4NC8Mv30qTPutn1xpuhwXRBOkdc8kel5s9Uae59eJFpvSRmM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(39830400003)(366004)(346002)(136003)(376002)(122000001)(26005)(66946007)(66476007)(64756008)(66556008)(316002)(66446008)(186003)(52536014)(2906002)(33656002)(4744005)(71200400001)(38100700002)(91956017)(9686003)(478600001)(76116006)(6506007)(110136005)(86362001)(5660300002)(8676002)(55016002)(7696005)(8936002)(4326008);DIR:OUT;SFP:1101
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?NuLa2C76zWYOwtzaAC/lckOg1ZDfJcIIRu5oBDdngEhTAy6a9NB/oDDo4h?=
+ =?iso-8859-1?Q?K4vPyB2auuGnwEm/Dbg29sTifCZfvIFz99DfdQwAgN5ZuKGWM2flVDhwVh?=
+ =?iso-8859-1?Q?jUr586cqHgMy/MrPl9bC+xzCCnK40CULEOfX0v/VhybumL7m/eXxbUCCFq?=
+ =?iso-8859-1?Q?WdN5OScygdNH2QLGw9wTDlOuO1RgBUMUQ1myNPlnrM/K4NF6AOyEUD88AI?=
+ =?iso-8859-1?Q?rgwxl7htvn/EJOtCjTvpKdWPwwNckJDb2TcqvkGxoGlMAXBtuonD0/CcZi?=
+ =?iso-8859-1?Q?MQUyH/12jSe9N8yzEn/EhYUJyIATaXspq/LUvoaTnwlK9IftwwIEpHwtsk?=
+ =?iso-8859-1?Q?k1tjg83W07eyGJamI9Q0u5elPBnrsncoBeToB0DmLqeZhIeL1qD81wBwHz?=
+ =?iso-8859-1?Q?yOwbE1wodHfSVbmtChN1flUNkQ+xGnzqJ41ngL7hZlYN9VPDLb6QieXjU7?=
+ =?iso-8859-1?Q?6Xc3EUiiKj0Se6MMIORadgjHo2JL0andk3+iZyYXkYZBGipM9mbJwcwX/T?=
+ =?iso-8859-1?Q?gF7FiX3xuvsSQWcNHT79XpPDVjDqsBuEgypfM9Yaem2NDAwEWa0uicuaA9?=
+ =?iso-8859-1?Q?SO0457mkjqJt1zxjNAv9YYaDo5vAbOc/NB0kevw6VlnoGW57NXqCf4MhKz?=
+ =?iso-8859-1?Q?+cdFC6ebmHW/Rvw+wFLjYTZXNJJ3Y0cszJfmUgp2lcCKMvj1zwfRdQxzJ0?=
+ =?iso-8859-1?Q?L9UILO59Po7nY9ODU/q1TlBd//XCJEwtQF8rYDvXJzav639Sp5wJRkE2Hm?=
+ =?iso-8859-1?Q?fdlNJtxQiw/2yrDtrTKD3dQ/l46kn84S+kuCjKknGqLzEj9M2sHOed8ljX?=
+ =?iso-8859-1?Q?8WlUhFc5MW7yItQNgpEyZ3QDL+yCGDTHLb07YfjG8+SF1ELH/Xz6+wtbfB?=
+ =?iso-8859-1?Q?5qQt5HaRjGAlU3HB6eyN/OitNcDsDsqXH73qsUc+uS23QhV4RHfQ0ok8jZ?=
+ =?iso-8859-1?Q?z1pMvKzcXY+vkAC/qB8smwohpmGwxWzJqrCZG+jNDzhrevsVcb9V3xvl6y?=
+ =?iso-8859-1?Q?QjXn3G5j+lPqATXpOMVbotzZEXsqhD9lBMxY/V2efWALZ5XA3jaAzmxc01?=
+ =?iso-8859-1?Q?Cr2jTA3TOd8LB6cYesckMqFpjCVun2R/SfybbPn0bKxWWQRYqNGgm1oLWh?=
+ =?iso-8859-1?Q?CxQZ6cZFKvwXbEhy3WZLTUaomwI1MtPS2WUuX1GhvJxYsyaEcrZY2b4ZbK?=
+ =?iso-8859-1?Q?AHbU48UihHWj3QX5GkO8CvA1N+aj3DTt0AkEzJwwCWeqZiRccU2tVVPTb3?=
+ =?iso-8859-1?Q?ABw0Q3OuhULVryET72LA3ZQyg0Fx8HEbkkDKvIRIl1fIH7ypPyJ36rL6lV?=
+ =?iso-8859-1?Q?SFf8q0fR3oBdkUS53CpVosy4THYlA7tC0AIsNWpkx9nheIg=3D?=
 MIME-Version: 1.0
-References: <CAJjojJsj9pzF4j2MVvsM-hCpvyR7OkZn232yt3MdOGnLxOiRRg@mail.gmail.com>
- <20210623083329.1455-1-hdanton@sina.com>
-In-Reply-To: <20210623083329.1455-1-hdanton@sina.com>
-From:   Lin Horse <kylin.formalin@gmail.com>
-Date:   Wed, 23 Jun 2021 22:41:19 +0800
-Message-ID: <CAJjojJstJnwjeLmOyd-7sOOOJnF3gYbCXc+VZU7qbMBzLp_sEw@mail.gmail.com>
-Subject: Re: Another patch for CVE-2021-3573 without introducing lock bugs
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Marcel Holtmann <marcel@holtmann.org>, ohan.hedberg@gmail.com,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Anand Mistry <amistry@google.com>, Greg KH <greg@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: hyperstone.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ac332ea-f663-415d-fd11-08d93655d6d8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jun 2021 14:47:35.3464
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7Ou7X38HYkM/pLSaHmaXXLgHMLN0fZ25b+eE52UP4qVk3L4eSaGtLawMPcTgcgqKwUSat0nXNx1312ERaY1RnQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB3219
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hyperstone.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi there
+Prevent NULL dereference within get_kobj_path_length
 
->
-> It is good to put your patch in the mail message instead of attachment.
->
+Calling kobject_get_path could provoke a NULL dereference
+if NULL was passed. while fill_kobj_path will return
+with a sane 0 for NULL, kobjet_get_path_length did not.
 
-Hi Danton, thanks for the advice. I will present the patch and give
-the description in the message.
+Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+---
+ lib/kobject.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
->
-> Yes the uaf can be fixed by taking another grab to hci dev, see below
-> diff.
-> >
+diff --git a/lib/kobject.c b/lib/kobject.c
+index ea53b30cf483..735159c13a94 100644
+--- a/lib/kobject.c
++++ b/lib/kobject.c
+@@ -130,6 +130,8 @@ static int get_kobj_path_length(struct kobject *kobj)
+ {
+ 	int length = 1;
+ 	struct kobject *parent = kobj;
++	if (!kobj)
++		return 0;
+ 
+ 	/* walk up the ancestors until we hit the one pointing to the
+ 	 * root.
+-- 
+2.32.0
 
---- a/net/bluetooth/hci_sock.c
-+++ b/net/bluetooth/hci_sock.c
-@@ -762,7 +762,7 @@ void hci_sock_dev_event(struct hci_dev *hdev, int event)
-         /* Detach sockets from device */
-         read_lock(&hci_sk_list.lock);
-         sk_for_each(sk, &hci_sk_list.head) {
--            lock_sock(sk);
-+            bh_lock_sock_nested(sk);
-             if (hci_pi(sk)->hdev == hdev) {
-                 hci_pi(sk)->hdev = NULL;
-                 sk->sk_err = EPIPE;
-@@ -771,7 +771,7 @@ void hci_sock_dev_event(struct hci_dev *hdev, int event)
+Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+Managing Directors: Dr. Jan Peter Berns.
+Commercial register of local courts: Freiburg HRB381782
 
-                 hci_dev_put(hdev);
-             }
--            release_sock(sk);
-+            bh_unlock_sock(sk);
-         }
-         read_unlock(&hci_sk_list.lock);
-     }
-
-The first thing is to revert the lock replacement. By the way, I
-wonder if we need to change the read_lock() here to write_lock(), as
-the code between the lock indeed changes something related to the
-hci_sk_list.
-
-For the patch code in hci_sock_bound_ioctl() function, I prefer to
-leave the hci_sock_ioctl() function alone. Danton changes the
-lock_sock() from hci_sock_ioctl() to hci_sock_bound_ioctl() for the
-serialise stuff, which I don't really get the point.
-
-> +       /* serialise with read_lock in hci_sock_dev_event */
-> +       write_lock(&hci_sk_list.lock);
-> +       bh_lock_sock_nested(sk);
-> +       hdev = hci_pi(sk)->hdev;
-> +       if (hdev)
-> +               hci_dev_hold(hdev);
-> +       bh_unlock_sock(sk);
-> +       write_unlock(&hci_sk_list.lock);
-
-Even the read of hci_pi(sk)->hdev is protected like above, the
-attacker can still play userfaultfd tricks to abuse this hdev object.
-Check the attacker scripts in the OSS list.
-
-Hence, I think the important thing is to add proper flag check after
-the dangerous copy_from_user() functions like below.
-
-diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
-index 88ec08978ff4..2787da8fe14a 100644
---- a/net/bluetooth/hci_conn.c
-+++ b/net/bluetooth/hci_conn.c
-@@ -1711,6 +1711,9 @@ int hci_get_conn_info(struct hci_dev *hdev, void
-__user *arg)
-        if (copy_from_user(&req, arg, sizeof(req)))
-                return -EFAULT;
-
-+       if (!test_bit(HCI_UP, &hdev->flags))
-+               return -ENETDOWN;
-+
-        hci_dev_lock(hdev);
-        conn = hci_conn_hash_lookup_ba(hdev, req.type, &req.bdaddr);
-        if (conn) {
-@@ -1737,6 +1740,9 @@ int hci_get_auth_info(struct hci_dev *hdev, void
-__user *arg)
-        if (copy_from_user(&req, arg, sizeof(req)))
-                return -EFAULT;
-
-+       if (!test_bit(HCI_UP, &hdev->flags))
-+               return -ENETDOWN;
-+
-        hci_dev_lock(hdev);
-        conn = hci_conn_hash_lookup_ba(hdev, ACL_LINK, &req.bdaddr);
-        if (conn)
-
-@@ -900,6 +900,9 @@ static int hci_sock_blacklist_add(struct hci_dev
-*hdev, void __user *arg)
-        if (copy_from_user(&bdaddr, arg, sizeof(bdaddr)))
-                return -EFAULT;
-
-+       if (!test_bit(HCI_UP, &hdev->flags))
-+               return -ENETDOWN;
-+
-        hci_dev_lock(hdev);
-
-        err = hci_bdaddr_list_add(&hdev->blacklist, &bdaddr, BDADDR_BREDR);
-@@ -917,6 +920,9 @@ static int hci_sock_blacklist_del(struct hci_dev
-*hdev, void __user *arg)
-        if (copy_from_user(&bdaddr, arg, sizeof(bdaddr)))
-                return -EFAULT;
-
-+       if (!test_bit(HCI_UP, &hdev->flags))
-+               return -ENETDOWN;
-+
-        hci_dev_lock(hdev);
-
-        err = hci_bdaddr_list_del(&hdev->blacklist, &bdaddr, BDADDR_BREDR);
-
-And last but not least, we patch the hci_sock_bound_ioctl() and
-hci_sock_sendmsg() function to take an extra hold of the hdev. That
-part is almost like Danton's code and you can check the previous added
-attachment.
-
-There are some other readings of hci_pi(sk)->hdev. One is in
-hci_sock_release() and another is in hci_sock_getname(). However, I
-don't think these two can be easily abused because no copy_from_user()
-is called. Do we need to add hold for these functions too?
-
-Regards
-Lin Ma
