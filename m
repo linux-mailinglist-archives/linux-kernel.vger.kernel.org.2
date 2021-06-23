@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBBA43B230D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2513B230E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhFWWL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 18:11:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39932 "EHLO
+        id S231186AbhFWWL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 18:11:57 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40012 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbhFWWLY (ORCPT
+        with ESMTP id S230272AbhFWWL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:11:24 -0400
-Date:   Wed, 23 Jun 2021 22:09:05 -0000
+        Wed, 23 Jun 2021 18:11:26 -0400
+Date:   Wed, 23 Jun 2021 22:09:06 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624486146;
+        s=2020; t=1624486147;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=y8Gj09o/ueaaBiBS5p4XWwcA7rzzOgIuoAr2XGfslbU=;
-        b=VkJEsb4RyP1K5CW0hAbMHvYigIvwu9JxhD84kAFDJKRtrMDECm/GswLa5OmHFkZq4UmjMM
-        xFMsDePpshVyxV7dq0l12olepMV52k09kkLxxPZGfIFUVCs6TGb+b8/TXDsv0IXqrUIWQg
-        NZsN9LkyjD4dsbzcVcQ556Azz+apve0VWdum5SrNMXUDVZtpHAEdxZT+NAuuD7waa2VeME
-        2YDdiXKQHuLCYn55Xez4d01r+K7B+beRTlAabddENeadbKJILGDBorL2xgytZv6l804eth
-        7tQOVAgBUbpOQyhwWLXPN0S8ScNW29p5mhSMbp/75USHYauPRZwvBHcZqAb8dQ==
+        bh=+DcehFnEhOmw2XdJy1+4tlmLp/foipARH4S2dnSD2aY=;
+        b=UnbrIdav6Ie2q/r+teC+Mw62nTiYs85+H59fzD9Lwi4Xc4F51HcpbIRsxbUz/FiYVKsTIM
+        gC75VnZDMWcTgsQF7Uvjf4CFjCuA89c5+pGnMS/0gT0NVvJ+3ifV8Ycv3Dks7OUEb3qvNp
+        r5mojzRBbQhwtJtKKu6HgLMO3Ta7kJGD/V7Dpc++dUlaY1BX1evG6mWPqnzAVe5FKmc6m5
+        aRSWato3oEh3wrNEF4esxktbpGvBtCy/XAclBebitCiMPdGhJZ9qlFO87G7z5GckIObsQg
+        5MrXQZAALF79JGQ1Fk8Bb3evfKzIVHo5j6RqGuK6qPio2RCBqOLF+o43QSxtgw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624486146;
+        s=2020e; t=1624486147;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=y8Gj09o/ueaaBiBS5p4XWwcA7rzzOgIuoAr2XGfslbU=;
-        b=IDPd03qZeQJ30pxGEBLsRpm4mTl/Zmxt1ZeDNq+NnlOmjze+FqbGxSJ3G5sDHlHWXfjZD4
-        DNl3TINZnEQZVuCQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+        bh=+DcehFnEhOmw2XdJy1+4tlmLp/foipARH4S2dnSD2aY=;
+        b=xadID12prKIRipEbfPMMgxgBC1GS2ch+CegH52CwMVyyE3VL6rj8dyv/aYwfQ18wt2uHwD
+        FgZpjXEwqwKf58Dw==
+From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fpu] x86/fpu: Rename __fpregs_load_activate() to
- fpregs_restore_userregs()
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210623121456.018867925@linutronix.de>
-References: <20210623121456.018867925@linutronix.de>
+Subject: [tip: x86/fpu] x86/fpu: Clean up the fpu__clear() variants
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210623121455.922729522@linutronix.de>
+References: <20210623121455.922729522@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <162448614524.395.17075159464260599808.tip-bot2@tip-bot2>
+Message-ID: <162448614600.395.8923389802793002837.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,70 +59,224 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/fpu branch of tip:
 
-Commit-ID:     727d01100e15b18c67f05fb697779ad2a6c99b63
-Gitweb:        https://git.kernel.org/tip/727d01100e15b18c67f05fb697779ad2a6c99b63
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 23 Jun 2021 14:02:14 +02:00
+Commit-ID:     33344368cb08f8d6bf55a32aa052318d3a69ea84
+Gitweb:        https://git.kernel.org/tip/33344368cb08f8d6bf55a32aa052318d3a69ea84
+Author:        Andy Lutomirski <luto@kernel.org>
+AuthorDate:    Wed, 23 Jun 2021 14:02:13 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 23 Jun 2021 19:23:40 +02:00
+CommitterDate: Wed, 23 Jun 2021 19:23:07 +02:00
 
-x86/fpu: Rename __fpregs_load_activate() to fpregs_restore_userregs()
+x86/fpu: Clean up the fpu__clear() variants
 
-Rename it so that it becomes entirely clear what this function is
-about. It's purpose is to restore the FPU registers to the state which was
-saved in the task's FPU memory state either at context switch or by an in
-kernel FPU user.
+fpu__clear() currently resets both register state and kernel XSAVE buffer
+state.  It has two modes: one for all state (supervisor and user) and
+another for user state only.  fpu__clear_all() uses the "all state"
+(user_only=0) mode, while a number of signal paths use the user_only=1
+mode.
 
+Make fpu__clear() work only for user state (user_only=1) and remove the
+"all state" (user_only=0) code.  Rename it to match so it can be used by
+the signal paths.
+
+Replace the "all state" (user_only=0) fpu__clear() functionality.  Use the
+TIF_NEED_FPU_LOAD functionality instead of making any actual hardware
+registers changes in this path.
+
+Instead of invoking fpu__initialize() just memcpy() init_fpstate into the
+task's FPU state because that has already the correct format and in case of
+PKRU also contains the default PKRU value. Move the actual PKRU write out
+into flush_thread() where it belongs and where it will end up anyway when
+PKRU and XSTATE have been untangled.
+
+For bisectability a workaround is required which stores the PKRU value in
+the xstate memory until PKRU is untangled from XSTATE for context
+switching and return to user.
+
+[ Dave Hansen: Polished changelog ]
+[ tglx: Fixed the PKRU fallout ]
+
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210623121456.018867925@linutronix.de
+Link: https://lkml.kernel.org/r/20210623121455.922729522@linutronix.de
 ---
- arch/x86/include/asm/fpu/internal.h | 6 ++----
- arch/x86/kernel/fpu/core.c          | 2 +-
- arch/x86/kernel/fpu/signal.c        | 2 +-
- 3 files changed, 4 insertions(+), 6 deletions(-)
+ arch/x86/kernel/fpu/core.c | 113 ++++++++++++++++++++++++------------
+ arch/x86/kernel/process.c  |  10 +++-
+ 2 files changed, 86 insertions(+), 37 deletions(-)
 
-diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
-index dabbb70..f7688f6 100644
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -465,10 +465,8 @@ static inline void fpregs_activate(struct fpu *fpu)
- 	trace_x86_fpu_regs_activated(fpu);
- }
- 
--/*
-- * Internal helper, do not use directly. Use switch_fpu_return() instead.
-- */
--static inline void __fpregs_load_activate(void)
-+/* Internal helper for switch_fpu_return() and signal frame setup */
-+static inline void fpregs_restore_userregs(void)
- {
- 	struct fpu *fpu = &current->thread.fpu;
- 	int cpu = smp_processor_id();
 diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index aa7e808..6babf18 100644
+index 4b69be9..aa7e808 100644
 --- a/arch/x86/kernel/fpu/core.c
 +++ b/arch/x86/kernel/fpu/core.c
-@@ -402,7 +402,7 @@ void switch_fpu_return(void)
- 	if (!static_cpu_has(X86_FEATURE_FPU))
- 		return;
- 
--	__fpregs_load_activate();
-+	fpregs_restore_userregs();
+@@ -260,19 +260,6 @@ int fpu_clone(struct task_struct *dst)
  }
- EXPORT_SYMBOL_GPL(switch_fpu_return);
  
-diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index fd4b58d..b12665c 100644
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -188,7 +188,7 @@ retry:
- 	 */
- 	fpregs_lock();
- 	if (test_thread_flag(TIF_NEED_FPU_LOAD))
--		__fpregs_load_activate();
-+		fpregs_restore_userregs();
+ /*
+- * Activate the current task's in-memory FPU context,
+- * if it has not been used before:
+- */
+-static void fpu__initialize(struct fpu *fpu)
+-{
+-	WARN_ON_FPU(fpu != &current->thread.fpu);
+-
+-	set_thread_flag(TIF_NEED_FPU_LOAD);
+-	fpstate_init(&fpu->state);
+-	trace_x86_fpu_init_state(fpu);
+-}
+-
+-/*
+  * Drops current FPU state: deactivates the fpregs and
+  * the fpstate. NOTE: it still leaves previous contents
+  * in the fpregs in the eager-FPU case.
+@@ -314,47 +301,99 @@ static inline void restore_fpregs_from_init_fpstate(u64 features_mask)
+ 	pkru_write_default();
+ }
  
- 	pagefault_disable();
- 	ret = copy_fpregs_to_sigframe(buf_fx);
++static inline unsigned int init_fpstate_copy_size(void)
++{
++	if (!use_xsave())
++		return fpu_kernel_xstate_size;
++
++	/* XSAVE(S) just needs the legacy and the xstate header part */
++	return sizeof(init_fpstate.xsave);
++}
++
++/* Temporary workaround. Will be removed once PKRU and XSTATE are untangled. */
++static inline void pkru_set_default_in_xstate(struct xregs_state *xsave)
++{
++	struct pkru_state *pk;
++
++	if (!cpu_feature_enabled(X86_FEATURE_OSPKE))
++		return;
++	/*
++	 * Force XFEATURE_PKRU to be set in the header otherwise
++	 * get_xsave_addr() does not work and it also needs to be set to
++	 * make XRSTOR(S) load it.
++	 */
++	xsave->header.xfeatures |= XFEATURE_MASK_PKRU;
++	pk = get_xsave_addr(xsave, XFEATURE_PKRU);
++	pk->pkru = pkru_get_init_value();
++}
++
+ /*
+- * Clear the FPU state back to init state.
+- *
+- * Called by sys_execve(), by the signal handler code and by various
+- * error paths.
++ * Reset current->fpu memory state to the init values.
++ */
++static void fpu_reset_fpstate(void)
++{
++	struct fpu *fpu = &current->thread.fpu;
++
++	fpregs_lock();
++	fpu__drop(fpu);
++	/*
++	 * This does not change the actual hardware registers. It just
++	 * resets the memory image and sets TIF_NEED_FPU_LOAD so a
++	 * subsequent return to usermode will reload the registers from the
++	 * task's memory image.
++	 *
++	 * Do not use fpstate_init() here. Just copy init_fpstate which has
++	 * the correct content already except for PKRU.
++	 */
++	memcpy(&fpu->state, &init_fpstate, init_fpstate_copy_size());
++	pkru_set_default_in_xstate(&fpu->state.xsave);
++	set_thread_flag(TIF_NEED_FPU_LOAD);
++	fpregs_unlock();
++}
++
++/*
++ * Reset current's user FPU states to the init states.  current's
++ * supervisor states, if any, are not modified by this function.  The
++ * caller guarantees that the XSTATE header in memory is intact.
+  */
+-static void fpu__clear(struct fpu *fpu, bool user_only)
++void fpu__clear_user_states(struct fpu *fpu)
+ {
+ 	WARN_ON_FPU(fpu != &current->thread.fpu);
+ 
+-	if (!static_cpu_has(X86_FEATURE_FPU)) {
+-		fpu__drop(fpu);
+-		fpu__initialize(fpu);
++	fpregs_lock();
++	if (!cpu_feature_enabled(X86_FEATURE_FPU)) {
++		fpu_reset_fpstate();
++		fpregs_unlock();
+ 		return;
+ 	}
+ 
+-	fpregs_lock();
+-
+-	if (user_only) {
+-		if (!fpregs_state_valid(fpu, smp_processor_id()) &&
+-		    xfeatures_mask_supervisor())
+-			os_xrstor(&fpu->state.xsave, xfeatures_mask_supervisor());
+-		restore_fpregs_from_init_fpstate(xfeatures_mask_user());
+-	} else {
+-		restore_fpregs_from_init_fpstate(xfeatures_mask_all);
++	/*
++	 * Ensure that current's supervisor states are loaded into their
++	 * corresponding registers.
++	 */
++	if (xfeatures_mask_supervisor() &&
++	    !fpregs_state_valid(fpu, smp_processor_id())) {
++		os_xrstor(&fpu->state.xsave, xfeatures_mask_supervisor());
+ 	}
+ 
++	/* Reset user states in registers. */
++	restore_fpregs_from_init_fpstate(xfeatures_mask_user());
++
++	/*
++	 * Now all FPU registers have their desired values.  Inform the FPU
++	 * state machine that current's FPU registers are in the hardware
++	 * registers. The memory image does not need to be updated because
++	 * any operation relying on it has to save the registers first when
++	 * current's FPU is marked active.
++	 */
+ 	fpregs_mark_activate();
+ 	fpregs_unlock();
+ }
+ 
+-void fpu__clear_user_states(struct fpu *fpu)
+-{
+-	fpu__clear(fpu, true);
+-}
+-
+ void fpu_flush_thread(void)
+ {
+-	fpu__clear(&current->thread.fpu, false);
++	fpu_reset_fpstate();
+ }
+-
+ /*
+  * Load FPU context before returning to userspace.
+  */
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 19d05d3..de942b0 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -198,6 +198,15 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
+ 	return ret;
+ }
+ 
++static void pkru_flush_thread(void)
++{
++	/*
++	 * If PKRU is enabled the default PKRU value has to be loaded into
++	 * the hardware right here (similar to context switch).
++	 */
++	pkru_write_default();
++}
++
+ void flush_thread(void)
+ {
+ 	struct task_struct *tsk = current;
+@@ -206,6 +215,7 @@ void flush_thread(void)
+ 	memset(tsk->thread.tls_array, 0, sizeof(tsk->thread.tls_array));
+ 
+ 	fpu_flush_thread();
++	pkru_flush_thread();
+ }
+ 
+ void disable_TSC(void)
