@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DE73B2207
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792743B220C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhFWUvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 16:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbhFWUvc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 16:51:32 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FF4C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:49:13 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id g24so2181446pji.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:49:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SJKphL8uOUhd6liKj++z6WVQVSyBvdXtPp4yiTiG0+g=;
-        b=PQlAN3JA0b1xAhCl8OBNeH+zKs/l2VBcECbikSgi+dHCFDxLK38FY+HyXZlWyV9WSJ
-         6iUUCqtAXH1tDO2QR6+HRti3vBJ652t6wv3q8fodPa8fXxb51+wDyxRiqteiPRE7Zmbj
-         4f9dOegBimsVqOBfmTcOkyNAyv+7WsrwZVF6ps3PNoGYNHJVRmF5BuyQi1BCIGdJ3bwS
-         JUNPwEG5a6No7TUYJbk2DYO2+jUGLRiJhSeMIQ6KXgjYrUoHKCta+fOxuFOFY4rd1XZr
-         gWffZjGebFM+1ZcFHn0KS64hoa0gJCEofpLZexuss3hJT+Hx4zE40uzVBJ74eDjeCbdp
-         l+rA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SJKphL8uOUhd6liKj++z6WVQVSyBvdXtPp4yiTiG0+g=;
-        b=pTbWvIs/Z9v60MULvnAF6upAC+K7FIS39+zshnikUIhIqH13dXvnxYu6jUuxJ7+n/C
-         O0FM3wdmqk0Nal0AHdG7QWG2yhjX7jPR62/qezgZcTMF4/XSq9FMF8NEvlX1VrG/Qsk3
-         kDBZW9us8PqMfsTM4nH2u7svwsy2zLiwxOe66GgNj6Mccp4sWsVgepmOwLknJQ1Sn07k
-         AsRYpMEK1YyQYPLkYShM15dOhEiam3fmZaUZMUmTv0v3lqzPt+3gDVWhImqRHsv5Okui
-         B0+ZEmmJrpVb11t55WJGvZMBbTh1Ijen0M3s94926/kLEyeAbpTzQLH05fRVC7Mmswto
-         w/dg==
-X-Gm-Message-State: AOAM530DpaiJKFhDM3p7Dl8eJ5zjfar6HOWW5ihMx7brBEGN32Vs4oEN
-        qxLRN09S5OxZPsf7iVUNbtNV2w==
-X-Google-Smtp-Source: ABdhPJy4bUIJIg5BnVOL2fOwy2ZwQLeXBKBMHJPepyjsPHZYqtQS6DHJVMfo3EBMLjG+fDeYdpwAOg==
-X-Received: by 2002:a17:90a:694d:: with SMTP id j13mr1526258pjm.99.1624481352832;
-        Wed, 23 Jun 2021 13:49:12 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id oc9sm173802pjb.43.2021.06.23.13.49.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 13:49:12 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 20:49:08 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH 15/54] KVM: nSVM: Add a comment to document why nNPT uses
- vmcb01, not vCPU state
-Message-ID: <YNOeRCntGwh5QVz2@google.com>
-References: <20210622175739.3610207-1-seanjc@google.com>
- <20210622175739.3610207-16-seanjc@google.com>
- <b759e31b-6269-a401-9fbb-49227b8be009@redhat.com>
+        id S229959AbhFWUwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 16:52:33 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:57443 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229955AbhFWUw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 16:52:29 -0400
+Received: from [IPv6:2601:646:8602:8be1:41b0:e4be:291d:d842] ([IPv6:2601:646:8602:8be1:41b0:e4be:291d:d842])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 15NKnWss1881455
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Wed, 23 Jun 2021 13:49:42 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 15NKnWss1881455
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021052901; t=1624481384;
+        bh=uk/YtYtF3NyTcumCvliy/vR0llJ6HHjAYyR6yNJrg3w=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=EcOg1YMYqPLQxUgyx8chx9DZmodpxIRbipSdhYYcxSs3rn7jMEBpK5mbU95wcKOHR
+         8+J9iFvUKX4MpFyHsGHbs1ZbzA8tZN4bli0dBI0Q9ZO5nT13ALURL0ZGH15qs3lm06
+         I0hgFtqJmdl9+88R2EfcxlyXCMcXQkX/2mXB7zcLZfwNvbqVE0f/PR03s1zQV6B/KF
+         Brz0EfQcp6vaYwKUQtDUdsfHOc+dz8mZepwYF/3MOena43Y8cHodwE77M2t6r8mza0
+         okpf8DNsnbpcy2OKv4CDNjxl2FTphyEiTOSQZ4HtqTjjQ6Arhgn5Qmv8/NHmKtu+Cp
+         ct/ESNxGHl9eA==
+Date:   Wed, 23 Jun 2021 13:49:24 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <a4e1c071-32af-9650-e6fd-8943b3a79bb0@linux.microsoft.com>
+References: <20210623120751.3033390-1-mic@digikod.net> <9dbbf4e751cb4953fe63079cdc917a0bb3a91670.camel@chronox.de> <a4e1c071-32af-9650-e6fd-8943b3a79bb0@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b759e31b-6269-a401-9fbb-49227b8be009@redhat.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v1] crypto: Make the DRBG compliant with NIST SP800-90A rev1
+To:     James Morris <jamorris@linux.microsoft.com>,
+        Stephan Mueller <smueller@chronox.de>
+CC:     =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        David Miller <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Haxby <john.haxby@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Simo Sorce <simo@redhat.com>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
+        tytso@mit.edu
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <98006AFB-C40E-46F7-BE88-D8E66653B71B@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021, Paolo Bonzini wrote:
-> On 22/06/21 19:57, Sean Christopherson wrote:
-> > +	/*
-> > +	 * L1's CR4 and EFER are stuffed into vmcb01 by the caller.  Note, when
-> > +	 * called via KVM_SET_NESTED_STATE, that state may_not_  match current
-> > +	 * vCPU state.  CR0.WP is explicitly ignored, while CR0.PG is required.
-> > +	 */
-> 
-> "stuffed into" doesn't really match reality of vmentry, though it works for
-> KVM_SET_NESTED_STATE.  What about a more neutral "The NPT format depends on
-> L1's CR4 and EFER, which is in vmcb01"?
+This one really does keep coming back like yesterday's herring, doesn't it=
+=2E=2E=2E
 
-Ah, true.  Works for me.
+On June 23, 2021 10:00:29 AM PDT, James Morris <jamorris@linux=2Emicrosoft=
+=2Ecom> wrote:
+>On Wed, 23 Jun 2021, Stephan Mueller wrote:
+>
+>>=20
+>> > These changes replace the use of the Linux RNG with the Jitter RNG,
+>> > which is NIST SP800-90B compliant, to get a proper entropy input
+>and a
+>> > nonce as defined by FIPS=2E
+>>=20
+>> Can you please help me understand what is missing in the current code
+>which
+>> seemingly already has achieved this goal?
+>
+>The advice we have is that if an attacker knows the internal state of
+>the=20
+>CPU, then the output of the Jitter RNG can be predicted=2E
+
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
