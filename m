@@ -2,328 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B653B23E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 658543B23E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhFWXKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 19:10:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbhFWXKx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 19:10:53 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4AA2C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 16:08:35 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id n99-20020a9d206c0000b029045d4f996e62so3681363ota.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 16:08:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=spxLzNl1WczKhSgIfE+tUewWWbh43cgGhLoKHWyLKZ0=;
-        b=iuozrOOoCE/N/EoJiaTPeujMmDMEO1+OsjhIi0qUZZtUSOBL7bCAMytTOQwII3kxtj
-         EocmDDErMJsf+SF4L32YeKn+NWmkF9eWX7Ik47iQf+DhEM6Mv3W/T2qyDdSiyIiZ+YLo
-         R98kViqyWxUYIxUG6A49rYiWMJOWCH/S2gwK+3tMmqmGNV64JQ4LueQjP4NCtdNxA6m9
-         p67P2oBCMe35qyiMLMU6GGIQScqSEiGHguf1ZwaYCWyJe37lkg0yZoe59dJKQvA+eKxH
-         6xIe7+vmxRPqsVoIoNKQlLazUi8JgpHRnSBCX/tnrV9qQnu+8xLldO9rERJuRJbTG9zT
-         IjJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=spxLzNl1WczKhSgIfE+tUewWWbh43cgGhLoKHWyLKZ0=;
-        b=X0HZXb4F2XCyavNuYLTgdUtqY7Ttiez1boH3H7JQR1a/fq/QGUv6aYTCs6frsBmSg8
-         u1ZLpr+Dnf+2hPru1sGHnRnBdlG+FdYYyZhIBXCg9gQyKdHGGECsCFr8m8hUcXYGcHKd
-         yiKUr3Yp4ATuIYQZAX2EJY6DFDVUzQ/If6FFvkCa3n3cB1Sh0+QTCveSGWkphawkF0qW
-         stallY6w5plxHndH5sma5NgqXcV/G4+HH1aaVBLvdxbovJyN7ZyVZY0sDzrXaHGQqJPs
-         KQBraIW4d+HpvSLr57CKmPblveKrzSrn3IgLhtKCMf4Mbtn8YRdqDtrqAKsPRNMmCyZ8
-         CtxQ==
-X-Gm-Message-State: AOAM5324g6mh/d0UfWZX5wItwvnG61Kau2nRQFWcmNb7JHdSwHqHUM14
-        7Lfio2MoYw6ED4kwPeJXrAI22w==
-X-Google-Smtp-Source: ABdhPJzlupqIzZNLgzUsHCrQc+Hev5LzkJzbQ4wOxzz2WYqXSipiFwuA79uRGLXjx7X070vwOwSNWw==
-X-Received: by 2002:a9d:589:: with SMTP id 9mr1972661otd.65.1624489715030;
-        Wed, 23 Jun 2021 16:08:35 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id v203sm286256oib.37.2021.06.23.16.08.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 16:08:34 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 18:08:32 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH v3 2/2] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
-Message-ID: <YNO+8O679/BVNR9K@yoga>
-References: <20210622030948.966748-1-bjorn.andersson@linaro.org>
- <20210622030948.966748-2-bjorn.andersson@linaro.org>
- <20210622202935.lbghwelbiwgufycd@pengutronix.de>
- <YNKKkEMD4sVhfcNr@yoga>
- <20210623082915.tj7pid46wm3dl5jf@pengutronix.de>
+        id S229902AbhFWXMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 19:12:05 -0400
+Received: from mail-eopbgr1410078.outbound.protection.outlook.com ([40.107.141.78]:29717
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229688AbhFWXMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 19:12:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R5e6T/z3nCBNuAxLgZ4FHHTZIZmP+LzpheqJSwgzexaaTA8PURCuF40/UglfCZRI5iEhMoWhToJ49p8zdOY10inV8SiOKdx7yRUG5WgPtGHCyK8rLkXBR+q+mUYoi8bdENvM+OWWQgBJdnN7j5eXw8TxNpuXrEduAFT75UZkH9Fqq7H0guca4Z0fhZrWmwDeCieiy07m/c3wapTq/BMapBwOwA/zRkC+ufrX43SSZMZd/WTmySeFWQuCWGpjF0PXB2JEG6mbbMOEd90LehEfsFJEPxwzSVGTP8djyikxpLx+V8uO1GAkMuhz/tsZu1hasVztrGLlXRUq/4TYIPWmfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7ScwhG7h0YXS1EfQPFbUf4/zPbcVdBnmrL4P0/ryy6E=;
+ b=Yd54iUrSDM1QslVWh5b9IpfKkp6nj5er+M8u63bT/Iwqdr8MsGwwDJs9ttnVCgcAYx3E54YncmUHF591LYSMksVnEJFnxFErTtc5DrTmqYB9ca1Q4e+kLAmsGYz9Z1HW+RQ/vBPurANqnE6TRfufsv5uBIobngA0DtDZw6y0g0pNA4VDwua8Jca43Xjpawv+nD+Kkqz3Sea8AbbPixxOgm994nUAmCs9LEvQEv2er/zLh8znv211ejV9gFq6U02WUx/EudiMLmWNiV99i3SgLCawCvnee3ze7d/9cmFHqFwASLMknwmJah9aJPo9DUmyJp3wGej1jmt6BWIqW/BKQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
+ header.d=nec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7ScwhG7h0YXS1EfQPFbUf4/zPbcVdBnmrL4P0/ryy6E=;
+ b=RQXeMhCb9wqgYwW8tdkbzDg6NC364v3gGnxzeDS0zst9i1yWtM0eN399QzkVg584OtikMf2kZr7Zb0rQxSND9+f984f62V++3bv/lV3+Mdp7vN2Krv/5oTRpXeUCGLRP+640f60U29XAEqtNEraaeSpifksuk1bwB3xj+GgRKPo=
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
+ by TYAPR01MB5929.jpnprd01.prod.outlook.com (2603:1096:404:8054::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Wed, 23 Jun
+ 2021 23:09:40 +0000
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::751b:afbb:95df:b563]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::751b:afbb:95df:b563%5]) with mapi id 15.20.4242.023; Wed, 23 Jun 2021
+ 23:09:40 +0000
+From:   =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPo+OAgOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>
+To:     Wang Wensheng <wangwensheng4@huawei.com>,
+        David Hildenbrand <david@redhat.com>
+CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rui.xiang@huawei.com" <rui.xiang@huawei.com>,
+        =?utf-8?B?SEFHSU8gS0FaVUhJVE8o6JCp5bC+44CA5LiA5LuBKQ==?= 
+        <k-hagio-ab@nec.com>
+Subject: Re: [PATCH] mm/sparse: Fix flags overlap in section_mem_map
+Thread-Topic: [PATCH] mm/sparse: Fix flags overlap in section_mem_map
+Thread-Index: AQHXaITYkxTC4UgbbEScTTfz2sUPkg==
+Date:   Wed, 23 Jun 2021 23:09:40 +0000
+Message-ID: <20210623230939.GA2963480@hori.linux.bs1.fc.nec.co.jp>
+References: <20210427083019.110184-1-wangwensheng4@huawei.com>
+ <e838d8b5-84f1-5532-6f22-e4b729124e1c@redhat.com>
+In-Reply-To: <e838d8b5-84f1-5532-6f22-e4b729124e1c@redhat.com>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nec.com;
+x-originating-ip: [165.225.110.205]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 62711ca6-4a88-4d14-0fdc-08d9369bfac7
+x-ms-traffictypediagnostic: TYAPR01MB5929:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TYAPR01MB5929D06E9CF1BBFC5C98A2B4E7089@TYAPR01MB5929.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: d+Y+gGfjkg9g6AM4hkEjLq+f19OCHObrawnBWe3ShZjehKKMvHJXzXrN3+u9nB+AxgLRqL71J4MJ1NnnReEGDtqMGlSJ7QkDr1JNIjfMl7MUpeCriCnUFTrMPusx2Aoj8hthTJ4PFNwIHo2r+uGEDTIFkE3CpO31iVGRCGS0Gcj2mJy8rAlYSWedxg9LtnW16NdrJ4dOOF7/WFSVLQBRsB4mnTz2xLpdOaQ6ivBznRFg8SwpdIleVZ47WcQo4VclZ5sXrMLlpgmaWv7qll2P0szdxkn73eOztjKhlL00mZN6TtHKiN8uLI2K8fBEhsuio5nritKJM5um+7mm1ilUcI61wBwbla7ov5SiNXwR98gXSAEhLboALhb1AZxZQB7bUhq4sODdrmG3UGO2hI7X7Nw6lzoWd/qCUfKU+zAPow7YK2x/8BNuhqy+ASmVi+jrOw/v5207kWPnHvwE9s/N7uY4NGqMcKhSCQ9Y+uxcfKHDZcTYtJd8+uKwh4JUS8wJE6ucMA1jForNWl3OOXrRCxMbwBshqGDpnTHr9bp0SBQk7j88eHHsYQj8h+OB2HEoau9+YKD19Lbtufv4yfqn/5VwkgJ3znXZ6HKCAcBVgIw=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(39850400004)(366004)(136003)(4326008)(478600001)(1076003)(66556008)(66446008)(33656002)(8936002)(2906002)(85182001)(66476007)(122000001)(64756008)(26005)(186003)(86362001)(8676002)(38100700002)(83380400001)(53546011)(6506007)(66946007)(55236004)(71200400001)(76116006)(9686003)(5660300002)(6512007)(6486002)(110136005)(54906003)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eUdkUFZaWGFYOE13MTdWRFRvN3dCOUVPOVdsTHFGNU1MYlFUNGtPZ25RdjRk?=
+ =?utf-8?B?Mk9ENVFXSHlINVhsQUpUMExMYWpha2RWVzBWa3FZVlR6NzV0dENZSWdYaHpB?=
+ =?utf-8?B?S3RzZ1lhbCtFM25sTEJKak1NaWZ0QThWSmtTNFI0aVVMK1dLWmRYb294RytL?=
+ =?utf-8?B?clcwMnVISzJqZkNoTFA5YzY2Tm9pTlpYSEZPbTlFQnVTc3ppN3pjRVhoTHpU?=
+ =?utf-8?B?QkhqaGpKZ1o2SDIzWGJRa3RrVGZCendkd2VrZTNkbXZkWFZYUzV4SGhSMk9U?=
+ =?utf-8?B?MnM0dFh2OXVYRVZNWk9BWmI4NjlvRENkKzQrcm96OGVIZ0pTczZqYk56M0tM?=
+ =?utf-8?B?ektWdjh1V2kvSTV6eElZTk5kMDF1RXd3a3BndFdlckdjTVEzZDJ2Z0FNWnVs?=
+ =?utf-8?B?T09EaFhqSFVScGJsbWJLc1pqalNMRVZuVng4NDl1WVRDckNVZTFRUyt2YzlF?=
+ =?utf-8?B?elZMR1NtTjhKV2dMa3lkalIwa2ppOXhQUEZmQ1lhT21nREZBTS9HS2dneFBL?=
+ =?utf-8?B?NjEwdVd0L2kyTnJhWk5ta2ZpVUIydzZDeVFPcDJkeUVDQ1BFRyt4NE1oMkw2?=
+ =?utf-8?B?VDFyQy82WUcrMXI4ZmoyenBDRWxHQXNTa3lTbU9JS0I1Vk5IYkNmczlYbTVZ?=
+ =?utf-8?B?dlFTVFFSQ01MMlowWWRkTDkzcGFBdklKOGNkZHZOZmZQSTl6OTMzRXh6cVV2?=
+ =?utf-8?B?OWtrS0I5dVEwOFJqRnhmMWU4Tk96WUZIZmppcjVSVXhXNzdOZVpaRmMycVMx?=
+ =?utf-8?B?Tm9wRVRBTTA2L0VkVCthVCtuSUFaLytBb0JMc2NaZ1IrejZIWVBHRjdDOHBU?=
+ =?utf-8?B?a1VFYmRiYzRjYzN2WGZDRFVSWUNxTG5laVF2amtEOFNGUHBYcDNqU1dSUUJC?=
+ =?utf-8?B?K0kxNllsdUFtQmg1dzlWdUtueVpKcWh6ZG91Tk1TckRBK0l3SGRqZUtpN0hQ?=
+ =?utf-8?B?TmlMUDRsNnhJQkNXUjVIOVNjMjNpUXAzM050QmpGKzhucmc5T3E3RkNPRnda?=
+ =?utf-8?B?c1REaGRFTXNtUkVlSjB1NzcvM3VURVJicC9lTEtneHZMNU9zVVJTeU1za1Br?=
+ =?utf-8?B?ZGxIY0tTZ1pvOW1reGtKckFzQkFkNi9JN2RpczVLUjk0THV4dWlmdFlHc2k1?=
+ =?utf-8?B?Z0xEVVprcEtmN1N3Vzh0YkJlcytuN3d1NmtrVjA1TVI5WmN0NGVXM2tOMXpq?=
+ =?utf-8?B?OFBBaE9GZWFWbVZ0QzhyVWJsSmNudWx3Nk9wSVl6MDBURGtpd1hURHA1OEow?=
+ =?utf-8?B?WEZYTWkyUU95blRqbmFCS096VS9oUHhFNGZ0RFhaUXVRa1VaL0JtcW5BSERI?=
+ =?utf-8?B?MU1uYkFqS1lvOU5GV2pGVnFwUUVXaEZHV3o0bU1VcStiUDVyUjBSZXdUOXJB?=
+ =?utf-8?B?MmE1UnZSQmV2aVVSYVMxeisvdnp2WW1ORTgwd3MzZ2k1NUxnL3BBSys3alZu?=
+ =?utf-8?B?V3Z1QzVCUGJWZFRmSDRxTXR5dlVtbEJDa2FxZmZkS281dkpGOEhtdm5PRThr?=
+ =?utf-8?B?YStXM3FmSDJnd0hLVFFPSi9vRmdnSTB0UkNCSk5ObDRYcTRGNHhIR0ZaZkl0?=
+ =?utf-8?B?RE94SjBTdkV3WE1sWkRUTTVOZ3pxcnNQNG5tOTZ2dS83YTFGLy9aMlY4RU1N?=
+ =?utf-8?B?cHE3R084VzZrVVUxTEg0WktKNFJCMzZhRjd5S2k0a2QyL1g3QWFaUjllVDBG?=
+ =?utf-8?B?SWVPTXpZL3NSWXZhc3JTN0ZMQ04rb3VUOC8vWENWOTdNdzJpZVE3SDlNZ09S?=
+ =?utf-8?B?ZnErOC9YTjdFcUxpbm5lVDdGb2szTkx3dUNUWDhEMEpWZk5CbE5sN0lLbm1a?=
+ =?utf-8?B?U3ZON0svV0Y0QVRTSVpHZz09?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9C8CC8E84F18304B9EC589CBF2EBCCDA@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210623082915.tj7pid46wm3dl5jf@pengutronix.de>
+X-OriginatorOrg: nec.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 62711ca6-4a88-4d14-0fdc-08d9369bfac7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jun 2021 23:09:40.4106
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1t1eXnoPslsHIFE6mrR1Ikrwfbh4B99AmSd9sLpE6K0RnVnNOm8RgVaQ24nbAV58ZZQhRzxOvUdTxci335H6dw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB5929
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 23 Jun 03:29 CDT 2021, Uwe Kleine-K?nig wrote:
-
-> Hello Bjorn,
-> 
-> On Tue, Jun 22, 2021 at 08:12:48PM -0500, Bjorn Andersson wrote:
-> > On Tue 22 Jun 15:29 CDT 2021, Uwe Kleine-K?nig wrote:
-> > > On Mon, Jun 21, 2021 at 10:09:48PM -0500, Bjorn Andersson wrote:
-> > > > +		/*
-> > > > +		 * PWM duty cycle is given as:
-> > > > +		 *
-> > > > +		 *   duty = BACKLIGHT / (BACKLIGHT_SCALE + 1)
-> > > > +		 *
-> > > > +		 * The documentation is however inconsistent in its examples,
-> > > > +		 * so the interpretation used here is that the duty cycle is
-> > > > +		 * the period of BACKLIGHT * PRE_DIV / REFCLK_FREQ.
-> > > 
-> > > I don't understand this.
-> > > 
-> > > > +		 *
-> > > > +		 * The ratio PRE_DIV / REFCLK_FREQ is rounded up to whole
-> > > > +		 * nanoseconds in order to ensure that the calculations are
-> > > > +		 * idempotent and gives results that are smaller than the
-> > > > +		 * requested value.
-> > > > +		 */
-> > > > +		tick = DIV_ROUND_UP(NSEC_PER_SEC * pre_div, pdata->pwm_refclk_freq);
-> > > > +		backlight = state->duty_cycle / tick;
-> > > 
-> > > You're loosing precision here by dividing by the result of a division.
-> > 
-> > The actual period is also a result of a division and after spending too
-> > many hours scratching my head I reached to conclusion that this was the
-> > reason why I wasn't able to get the duty cycle calculation idempotent
-> > over the ranges I tested.
-> 
-> How did you test? Using the sysfs interface?
->  
-
-I primarily tested this by transplanting this into a user space thing
-where I could sweep over various values for refclk, duty cycle and
-period.
-
-Then after that I tested it setting up pwm-backlight on top (as I don't
-have access to the signal anyways) and try a few different periods and
-for those test all possible brightness levels for those periods... (With
-CONFIG_PWM_DEBUG enabled)
-
-> > But in my effort to describe this to you here, I finally spotted the
-> > error and will follow up with a new version that does:
-> > 
-> >                 actual = NSEC_PER_SEC * (pre_div * scale + 1) / pdata->pwm_refclk_freq);
-> >                 backlight = state->duty_cycle * (scale + 1) / actual;
-> 
-> So the first term ("actual") is the period that you get for a given
-> pre_div, scale and pwm_refclk_freq, right? And the 2nd ("backlight")
-> defines the register value to configure the duty_cycle, right?
-> 
-
-Right, pre_div and pwm_refclk_freq defines the rate at which the PWM
-ticks. "actual" is our estimate of the actual period that results in and
-"backlight" is then the number of ticks (each prediv / refclk seconds
-long) the signal should be high.
-
-> I wonder: Is it possible to configure a 100% relative duty cycle? Then
-> backlight would be scale + 1 which (at least if scale is 0xffff) would
-> overflow the 16 bit register width?!
-> 
-
-The documentation gives two examples:
-* backlight = 0x40, scale = 0xff results in 25% duty cycle, i.e. the
-  duty is 0x40 / (0xff + 1).
-* backlight = 0xff, scale = 0xff results in 100% duty cycle, i.e. the
-  duty is 0xff / 0xff.
-
-As you can see these are in  conflict and I think the latter is the one
-that doesn't match the rest of what's described.
-
-So I don't think it's possible to go beyond 99.6% - 99.998% duty cycle,
-depending on BACKLIGHT_SCALE.
-
-> > > > +static void ti_sn_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
-> > > > +				struct pwm_state *state)
-> > > > +{
-> > > > +	struct ti_sn65dsi86 *pdata = pwm_chip_to_ti_sn_bridge(chip);
-> > > > +	unsigned int pwm_en_inv;
-> > > > +	unsigned int pre_div;
-> > > > +	u16 backlight;
-> > > > +	u16 scale;
-> > > > +	int ret;
-> > > > +
-> > > > +	ret = regmap_read(pdata->regmap, SN_PWM_EN_INV_REG, &pwm_en_inv);
-> > > > +	if (ret)
-> > > > +		return;
-> > > > +
-> > > > +	ret = ti_sn65dsi86_read_u16(pdata, SN_BACKLIGHT_SCALE_REG, &scale);
-> > > > +	if (ret)
-> > > > +		return;
-> > > > +
-> > > > +	ret = ti_sn65dsi86_read_u16(pdata, SN_BACKLIGHT_REG, &backlight);
-> > > > +	if (ret)
-> > > > +		return;
-> > > > +
-> > > > +	ret = regmap_read(pdata->regmap, SN_PWM_PRE_DIV_REG, &pre_div);
-> > > > +	if (ret)
-> > > > +		return;
-> > > > +
-> > > > +	state->enabled = FIELD_GET(SN_PWM_EN_MASK, pwm_en_inv);
-> > > > +	if (FIELD_GET(SN_PWM_INV_MASK, pwm_en_inv))
-> > > > +		state->polarity = PWM_POLARITY_INVERSED;
-> > > > +	else
-> > > > +		state->polarity = PWM_POLARITY_NORMAL;
-> > > > +
-> > > > +	state->period = DIV_ROUND_UP(NSEC_PER_SEC * (pre_div * scale + 1), pdata->pwm_refclk_freq);
-> > > > +	state->duty_cycle = backlight * DIV_ROUND_UP(NSEC_PER_SEC * pre_div, pdata->pwm_refclk_freq);
-> > > 
-> > > If you use
-> > > 
-> > > 	state->duty_cycle = DIV_ROUND_UP(backlight * NSEC_PER_SEC * pre_div, pdata->pwm_refclk_freq);
-> > > 
-> > > instead (with a cast to u64 to not yield an overflow) the result is more
-> > > exact.
-> > > 
-> > 
-> > The problem with this is that it sometimes yields duty_cycles larger
-> > than what was requested... But going back to describing this as a ratio
-> > of the period this becomes:
-> > 
-> >         state->duty_cycle = DIV_ROUND_UP_ULL(state->period * backlight, scale + 1);
-> 
-> I saw your next iteration of this patch set, but didn't look into it
-> yet. Note that if it uses this formula it sill looses precision.
-> Consider:
-> 
-> 	pwm_refclk_freq = 1333333
-> 	pre_div = 4
-> 	scale = 60000
-> 	backlight = 59999
-> 
-> then you calculate:
-> 
-> 	state->period = 180000796 (exact value: 180000795.00019875)
-> 	state->duty_cycle = 179994797 (exact value: 179994795.0736975)
-> 
-> so duty_cycle should actually be reported as 179994796. That happens
-> because state->period is already the result of a division, you get the
-> right value when doing:
-> 
-> 	state->duty_cycle = round_up(NSEC_PER_SEC * (pre_div * scale + 2) * backlight, (scale + 1) * pdata->pwm_refclk_freq)
-> 
-
-The problem (in addition to that being hideous) with that added
-precision is that if I plug in that duty_cycle and period with
-pwm_refclk_freq = 19200000 (one of the valid ones) the function is no
-longer idempotent.
-
-With period given as 180000796 i get 179998542 back as actual period,
-but the duty cycle becomes 3186264 and if I throw that in I get 3185473.
-
-> > > I still find this surprising, I'd expect that SCALE also matters for the
-> > > duty_cycle. With the assumption implemented here modifying SCALE only
-> > > affects the period. This should be easy to verify?! I would expect that
-> > > changing SCALE doesn't affect the relative duty_cycle, so the brightness
-> > > of an LED is unaffected (unless the period gets too big of course).
-> > > 
-> > 
-> > I think the hardware is two nested counters, one (A) ticking at REFCLK_FREQ
-> > and as that hits PRE_DIV, it kicks the second counter (B) (and resets).
-> > 
-> > As counter A is reset the output signal goes high, when A hits BACKLIGHT the
-> > signal goes low and when A hits BACKLIGHT_SCALE it resets.
-> 
-> then we would probably have:
-> 
-> 	period = (scale + 1) * pre_div / refclk
-> 
-> but not
-> 
-> 	period = (scale * pre_div + 1) / refclk
-> 
-> . The former would be nicer because then in the calculation for
-> duty_cycle the factor (scale + 1) would cancel.
-> 
-
-Not only does scale + 1 cancel, there's something entity that actually
-divides the (BACKLIGHT_SCALE + 1) in the denominator of the duty cycle
-ratio.
-
-> > Per this implementation the actual length of the duty cycle would indeed
-> > be independent of the BACKLIGHT_SCALE,
-> 
-> In your formula for duty_cycle scale actually does matter. So I think
-> we're not there yet?
-> 
-
-Right, the relationship between pre_div, backlight and duty_cycle should
-be independent of period. I think is misinterpreted what you said
-yesterday, and thought you where looking for there to be a relationship.
-
-
-So, if we decide that we have a typo in the datasheet and make the
-formula:
-
-          NSEC_PER_SEC * PRE_DIV * (BACKLIGHT_SCALE + 1)
-period = -----------------------------------------------
-                        REFCLK_FREQ
-
-then given the formula for the duty ratio:
-
-  duty           BACKLIGHT
--------- = ---------------------
- period     BACKLIGHT_SCALE + 1
-
-with NSEC_PER_SEC * PRE_DIV / REFCLK_FREQ cancelled out, this fits
-better together and we can deduce that:
-
-              NSEC_PER_SEC * PRE_DIV * BACKLIGHT
-duty_cycle = ------------------------------------
-                        REFCLK_FREQ
-
-So after adjusting the calculations for pre_div and scale I can
-calculate backlight, without first calculating the actual period using:
-
-             duty_cycle * REFCLK_FREQ
-BACKLIGHT = --------------------------
-              NSEC_PER_SEC * PRE_DIV
-
-Which I now assume is what you where trying to say but I misunderstood
-the other day?
-
-
-PS. With refclk 19200000 and period 180000796 this satisfies the
-PWM_DEBUG requirements for all possible duty_cycles.
-
-Regards,
-Bjorn
-
-> > but the length of the low signal (and hence the ratio, which results
-> > in the actual brightness) does depend on BACKLIGHT_SCALE.
-> 
-> Best regards
-> Uwe
-> 
-> -- 
-> Pengutronix e.K.                           | Uwe Kleine-König            |
-> Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
-
+T24gVHVlLCBBcHIgMjcsIDIwMjEgYXQgMTE6MDU6MTdBTSArMDIwMCwgRGF2aWQgSGlsZGVuYnJh
+bmQgd3JvdGU6DQo+IE9uIDI3LjA0LjIxIDEwOjMwLCBXYW5nIFdlbnNoZW5nIHdyb3RlOg0KPiA+
+IFRoZSBzZWN0aW9uX21lbV9tYXAgbWVtYmVyIG9mIHN0cnVjdCBtZW1fc2VjdGlvbiBzdG9yZXMg
+c29tZSBmbGFncyBhbmQNCj4gPiB0aGUgYWRkcmVzcyBvZiBzdHJ1Y3QgcGFnZSBhcnJheSBvZiB0
+aGUgbWVtX3NlY3Rpb24uDQo+ID4gDQo+ID4gQWRkaXRpb25hbGx5IHRoZSBub2RlIGlkIG9mIHRo
+ZSBtZW1fc2VjdGlvbiBpcyBzdG9yZWQgZHVyaW5nIGVhcmx5IGJvb3QsDQo+ID4gd2hlcmUgdGhl
+IHN0cnVjdCBwYWdlIGFycmF5IGhhcyBub3QgYmVlbiBhbGxvY2F0ZWQuIEluIG90aGVyIHdvcmRz
+LCB0aGUNCj4gPiBoaWdoZXIgYml0cyBvZiBzZWN0aW9uX21lbV9tYXAgYXJlIHVzZWQgZm9yIHR3
+byBwdXJwb3NlLCBhbmQgdGhlIG5vZGUgaWQNCj4gPiBzaG91bGQgYmUgY2xlYXIgcHJvcGVybHkg
+YWZ0ZXIgdGhlIGVhcmx5IGJvb3QuDQo+ID4gDQo+ID4gQ3VycmVudGx5IHRoZSBub2RlIGlkIGZp
+ZWxkIGlzIG92ZXJsYXBwZWQgd2l0aCB0aGUgZmxhZyBmaWVsZCBhbmQgY2Fubm90DQo+ID4gYmUg
+Y2xlYXIgcHJvcGVybHkuIFRoYXQgb3ZlcmxhcHBlZCBiaXRzIHdvdWxkIHRoZW4gYmUgdHJlYXRl
+ZCBhcw0KPiA+IG1lbV9zZWN0aW9uIGZsYWdzIGFuZCBtYXkgbGVhZCB0byB1bmV4cGVjdGVkIHNp
+ZGUgZWZmZWN0cy4NCj4gPiANCj4gPiBEZWZpbmUgU0VDVElPTl9OSURfU0hJRlQgdXNpbmcgb3Jk
+ZXJfYmFzZV8yIHRvIGVuc3VyZSB0aGF0IHRoZSBub2RlIGlkDQo+ID4gZmllbGQgYWx3YXlzIGxv
+Y2F0ZXMgYWZ0ZXIgZmxhZ3MgZmllbGQuIFRoYXQncyB3aHkgdGhlIG92ZXJsYXAgb2NjdXJzIC0N
+Cj4gPiBmb3JnZXR0aW5nIHRvIGluY3JlYXNlIFNFQ1RJT05fTklEX1NISUZUIHdoZW4gYWRkaW5n
+IG5ldyBtZW1fc2VjdGlvbg0KPiA+IGZsYWcuDQo+ID4gDQo+ID4gRml4ZXM6IDMyNmUxYjhmODNh
+NCAoIm1tL3NwYXJzZW1lbTogaW50cm9kdWNlIGEgU0VDVElPTl9JU19FQVJMWSBmbGFnIikNCj4g
+PiBTaWduZWQtb2ZmLWJ5OiBXYW5nIFdlbnNoZW5nIDx3YW5nd2Vuc2hlbmc0QGh1YXdlaS5jb20+
+DQo+ID4gLS0tDQo+ID4gICBpbmNsdWRlL2xpbnV4L21tem9uZS5oIHwgMiArLQ0KPiA+ICAgMSBm
+aWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4gDQo+ID4gZGlm
+ZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbW16b25lLmggYi9pbmNsdWRlL2xpbnV4L21tem9uZS5o
+DQo+ID4gaW5kZXggNDc5NDZjZS4uYjAxNjk0ZCAxMDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL2xp
+bnV4L21tem9uZS5oDQo+ID4gKysrIGIvaW5jbHVkZS9saW51eC9tbXpvbmUuaA0KPiA+IEBAIC0x
+MzI1LDcgKzEzMjUsNyBAQCBleHRlcm4gc2l6ZV90IG1lbV9zZWN0aW9uX3VzYWdlX3NpemUodm9p
+ZCk7DQo+ID4gICAjZGVmaW5lIFNFQ1RJT05fVEFJTlRfWk9ORV9ERVZJQ0UJKDFVTDw8NCkNCj4g
+PiAgICNkZWZpbmUgU0VDVElPTl9NQVBfTEFTVF9CSVQJCSgxVUw8PDUpDQo+ID4gICAjZGVmaW5l
+IFNFQ1RJT05fTUFQX01BU0sJCSh+KFNFQ1RJT05fTUFQX0xBU1RfQklULTEpKQ0KPiA+IC0jZGVm
+aW5lIFNFQ1RJT05fTklEX1NISUZUCQkzDQo+ID4gKyNkZWZpbmUgU0VDVElPTl9OSURfU0hJRlQJ
+CW9yZGVyX2Jhc2VfMihTRUNUSU9OX01BUF9MQVNUX0JJVCkNCj4gPiAgIHN0YXRpYyBpbmxpbmUg
+c3RydWN0IHBhZ2UgKl9fc2VjdGlvbl9tZW1fbWFwX2FkZHIoc3RydWN0IG1lbV9zZWN0aW9uICpz
+ZWN0aW9uKQ0KPiA+ICAgew0KPiA+IA0KPiANCj4gV2VsbCwgYWxsIHNlY3Rpb25zIGFyb3VuZCBk
+dXJpbmcgYm9vdCB0aGF0IGhhdmUgYW4gZWFybHkgTklEIGFyZSBlYXJseSAuLi4NCj4gc28gaXQn
+cyBub3QgYW4gaXNzdWUgd2l0aCBTRUNUSU9OX0lTX0VBUkxZLCBubz8gSSBtZWFuLCBpdCdzIHVn
+bHksIGJ1dCBub3QNCj4gYnJva2VuLg0KPiANCj4gQnV0IGl0J3MgYW4gaXNzdWUgd2l0aCBTRUNU
+SU9OX1RBSU5UX1pPTkVfREVWSUNFLCBBRkFJS1QuDQo+IHNwYXJzZV9pbml0X29uZV9zZWN0aW9u
+KCkgd291bGQgbGVhdmUgdGhlIGJpdCBzZXQgaWYgdGhlIG5pZCBoYXBwZW5zIHRvIGhhdmUNCj4g
+dGhhdCBiaXQgc2V0IChlLmcuLCBub2RlIDIsMykuIEl0J3Mgc2VtaS1icm9rZW4gdGhlbiwgYmVj
+YXVzZSB3ZSBmb3JjZSBhbGwNCj4gcGZuX3RvX29ubGluZV9wYWdlKCkgdGhyb3VnaCB0aGUgc2xv
+dyBwYXRoLg0KPiANCj4gDQo+IFRoYXQgd2hvbGUgc2VjdGlvbiBmbGFnIHNldHRpbmcgY29kZSBp
+cyBmcmFnaWxlLg0KDQpIaSBXZW5zaGVuZywgRGF2aWQsDQoNClRoaXMgcGF0Y2ggc2VlbXMgbm90
+IGFjY2VwdGVkIG9yIHVwZGF0ZWQgeWV0LCBzbyB3aGF0J3MgZ29pbmcgb24/DQoNCldlIHJlY2Vu
+dGx5IHNhdyB0aGUgZXhhY3QgaXNzdWUgb24gdGVzdGluZyBjcmFzaCB1dGlsaXRpZXMgd2l0aCBs
+YXRlc3QNCmtlcm5lbHMgb24gNCBOVU1BIG5vZGUgc3lzdGVtLiAgU0VDVElPTl9UQUlOVF9aT05F
+X0RFVklDRSBzZWVtcyB0byBiZQ0Kc2V0IHdyb25nbHksIGFuZCBtYWtlZHVtcGZpbGUgY291bGQg
+ZmFpbCBkdWUgdG8gdGhpcy4gU28gd2UgbmVlZCBhIGZpeC4NCg0KSSB0aG91Z2h0IG9mIGFub3Ro
+ZXIgYXBwcm9hY2ggbGlrZSBiZWxvdyBiZWZvcmUgZmluZGluZyB0aGlzIHRocmVhZCwNCnNvIGlm
+IHlvdSBhcmUgZmluZSwgSSdkIGxpa2UgdG8gc3VibWl0IGEgcGF0Y2ggd2l0aCB0aGlzLiBBbmQg
+aWYgeW91DQpsaWtlIGdvaW5nIHdpdGggb3JkZXJfYmFzZV8yKCkgYXBwcm9hY2gsIEknbSBnbGFk
+IHRvIGFjayB0aGlzIHBhdGNoLg0KDQogIC0tLSBhL2luY2x1ZGUvbGludXgvbW16b25lLmgNCiAg
+KysrIGIvaW5jbHVkZS9saW51eC9tbXpvbmUuaA0KICBAQCAtMTM1OCwxNCArMTM1OCwxNSBAQCBl
+eHRlcm4gc2l6ZV90IG1lbV9zZWN0aW9uX3VzYWdlX3NpemUodm9pZCk7DQogICAgKiAgICAgIHdo
+aWNoIHJlc3VsdHMgaW4gUEZOX1NFQ1RJT05fU0hJRlQgZXF1YWwgNi4NCiAgICAqIFRvIHN1bSBp
+dCB1cCwgYXQgbGVhc3QgNiBiaXRzIGFyZSBhdmFpbGFibGUuDQogICAgKi8NCiAgKyNkZWZpbmUg
+U0VDVElPTl9NQVBfTEFTVF9TSElGVCAgICAgICAgIDUNCiAgICNkZWZpbmUgU0VDVElPTl9NQVJL
+RURfUFJFU0VOVCAgICAgICAgICgxVUw8PDApDQogICAjZGVmaW5lIFNFQ1RJT05fSEFTX01FTV9N
+QVAgICAgICAgICAgICAoMVVMPDwxKQ0KICAgI2RlZmluZSBTRUNUSU9OX0lTX09OTElORSAgICAg
+ICAgICAgICAgKDFVTDw8MikNCiAgICNkZWZpbmUgU0VDVElPTl9JU19FQVJMWSAgICAgICAgICAg
+ICAgICgxVUw8PDMpDQogICAjZGVmaW5lIFNFQ1RJT05fVEFJTlRfWk9ORV9ERVZJQ0UgICAgICAo
+MVVMPDw0KQ0KICAtI2RlZmluZSBTRUNUSU9OX01BUF9MQVNUX0JJVCAgICAgICAgICAgKDFVTDw8
+NSkNCiAgKyNkZWZpbmUgU0VDVElPTl9NQVBfTEFTVF9CSVQgICAgICAgICAgICgxVUw8PFNFQ1RJ
+T05fTUFQX0xBU1RfU0hJRlQpDQogICAjZGVmaW5lIFNFQ1RJT05fTUFQX01BU0sgICAgICAgICAg
+ICAgICAofihTRUNUSU9OX01BUF9MQVNUX0JJVC0xKSkNCiAgLSNkZWZpbmUgU0VDVElPTl9OSURf
+U0hJRlQgICAgICAgICAgICAgIDMNCiAgKyNkZWZpbmUgU0VDVElPTl9OSURfU0hJRlQgICAgICAg
+ICAgICAgIFNFQ1RJT05fTUFQX0xBU1RfU0hJRlQNCiAgDQogICBzdGF0aWMgaW5saW5lIHN0cnVj
+dCBwYWdlICpfX3NlY3Rpb25fbWVtX21hcF9hZGRyKHN0cnVjdCBtZW1fc2VjdGlvbiAqc2VjdGlv
+bikNCiAgIHsNCg0KVGhhbmtzLA0KTmFveWEgSG9yaWd1Y2hp
