@@ -2,254 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C153B1833
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 12:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2227D3B1835
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 12:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbhFWKnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 06:43:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229833AbhFWKnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 06:43:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8121E611CE;
-        Wed, 23 Jun 2021 10:41:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624444890;
-        bh=SfXOgGuAgO7vhYwOC+JWO72WGhlYb92qO1wdzr6JfjY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Jehgj2UonYKDScnD8sbwVPx4GPv5iK62nD1TFX2M/7zKn0Umj/aaoS6tOsa3DrINW
-         Tu6wp60Yk+lmoG/gvt+55a0wLHYAPk5/TF4ptXcmJ7pUNxdDE2n+atf9qLutW6lwmd
-         URrsLiGi+05a0Wv6vDxv9F2Pzs/vYX6RSt4VWRNwqUsYJZMiFPIGc8TDvSQIQEGMp2
-         GbsNNY17Qrnb6A2cPTkjcuD9+sdBCQSlN964HhYbFYC5Dmp4BrVz3RaPiUvLHTE+jx
-         HV4w0jbfyaAPk+8dm29o/HbHDastI0N94VPJIKgme37Vd3wYQK565XeN32MsKCZ3KA
-         sBQzwXPw9wraw==
-Received: by mail-ed1-f44.google.com with SMTP id h2so2795064edt.3;
-        Wed, 23 Jun 2021 03:41:30 -0700 (PDT)
-X-Gm-Message-State: AOAM530k4ab0OI2pmI9sBCWVVq0x3g+g7CSyoO1a6QC7Jx0nnXvBxCsN
-        0Dg1Yu3Mli67chcpMQUlIJ4CLrd9LPchxN+j7w==
-X-Google-Smtp-Source: ABdhPJwOOBSZ371QrvZL98gwzM7omrKAK7M04wdMFnvogwkefUJzh8wJIMDIyi8edPUHRmaxCXzfHELNYL4NBeuR0Yk=
-X-Received: by 2002:a05:6402:1777:: with SMTP id da23mr11259427edb.72.1624444888919;
- Wed, 23 Jun 2021 03:41:28 -0700 (PDT)
+        id S230137AbhFWKoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 06:44:15 -0400
+Received: from mail-mw2nam12on2069.outbound.protection.outlook.com ([40.107.244.69]:6753
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230102AbhFWKoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 06:44:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TKOhg/y3Njnuz3pZELNelJpsMT7+vCi1aE4rZg9GQik98VFbFgo48zvvaI8WgmHDgC3ghX8D4AzCQL3Sw5DzFlHNSJND36as+o/p296u5V5iEqHV+Kv3q4RMvEsppMipl6ZvFMO1QFqpwtWQzwG0DOFeY4HPw3o8QDedxmq5iJbzxXmfyJMXHdDSU77sotv6LlTaeSIOqez17VClCsnV0Wq4eeGOc3PBroCQfRdb1cIIfk8V89GZMBx7s7tq3ZBo4Opz3K7T8eM2B6JOlkbaJEqOyPjT5cpNZfmrinbSaVmkPCTi8Pw9AgMEu7/CH2B2xLSGABl7hNgsOhVYb+VlHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nvItxsWl4zz0QxOIF2IqGKDH+7K2CeQR+vpsIemHBiM=;
+ b=VjRkmUgByAN+WUFJD9TTjyfUeRCZw18vzDJzVwnEaUvRuzrJi9oAdXo4BlD0mdUx3n4EEpCgvVfiuUE/vO8m4bvYA5T9BIp4V4RpepBtIk+jSZ++9Zbv3eLDwR8hfrEkIapWk0SxJOHWo7AK+td2aVXrhFvlYi57AhSs3Wg9JY7N54mtoeD8B+bCb+E0DgrMcyT1eKuVkcedQZbA6WvNY2aPj9NSzZQSSDd6lH3VqjXo9fo4bA0OzUWvciErEPUQleorkiImtevMRUMpXdWV2csJJBBRAhWg2XuXoJDR5AmAoOlCKjsG2V0h5Zr2QdN0EymzXeXb4jV0gUk43nsXrQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nvItxsWl4zz0QxOIF2IqGKDH+7K2CeQR+vpsIemHBiM=;
+ b=oUSfdpDwTH4rnL3tvgUMQc/7RwdDIPaWdrdsrzKZRmvchJAaWmUlH+9gdtuc/HIt7X478LGoNtFlXzpHhDq2kMMXvbOQIaXVoOznB1E9CvEB5I8szGCAgocpNrWn+ipX4ZrFCgYnXYYhfMNkIoEofh5Ah0XqqHTx95XmCBU8UuQ=
+Authentication-Results: linutronix.de; dkim=none (message not signed)
+ header.d=none;linutronix.de; dmarc=none action=none
+ header.from=synaptics.com;
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com (2603:10b6:408:137::15)
+ by BN6PR03MB2610.namprd03.prod.outlook.com (2603:10b6:404:5d::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.23; Wed, 23 Jun
+ 2021 10:41:53 +0000
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::502a:5487:b3ee:f61c]) by BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::502a:5487:b3ee:f61c%3]) with mapi id 15.20.4264.018; Wed, 23 Jun 2021
+ 10:41:53 +0000
+Date:   Wed, 23 Jun 2021 18:41:42 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] timer: Use static_branch_likely() for
+ timers_nohz_active
+Message-ID: <20210623184142.255b2769@xhacker.debian>
+In-Reply-To: <87o8bydj0n.ffs@nanos.tec.linutronix.de>
+References: <20210513143354.096c6baf@xhacker.debian>
+        <87o8bydj0n.ffs@nanos.tec.linutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: BYAPR01CA0071.prod.exchangelabs.com (2603:10b6:a03:94::48)
+ To BN9PR03MB6058.namprd03.prod.outlook.com (2603:10b6:408:137::15)
 MIME-Version: 1.0
-References: <20210623073549.24170-1-moudy.ho@mediatek.com>
-In-Reply-To: <20210623073549.24170-1-moudy.ho@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 23 Jun 2021 18:41:18 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9dhqYutP3EfNe8tPZ0GTPU04s5zGfyT-As74wLE6Zyrg@mail.gmail.com>
-Message-ID: <CAAOTY_9dhqYutP3EfNe8tPZ0GTPU04s5zGfyT-As74wLE6Zyrg@mail.gmail.com>
-Subject: Re: [RFC PATCH V0 01/10] media: mtk-mdp3: Add Mediatek MDP Driver
-To:     Moudy Ho <moudy.ho@mediatek.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        daoyuan huang <daoyuan.huang@mediatek.com>,
-        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Landley <rob@landley.net>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-media@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>, acourbot@chromium.org,
-        Pi-Hsun Shih <pihsun@chromium.org>, menghui.lin@mediatek.com,
-        =?UTF-8?B?U2ogSHVhbmcgKOm7g+S/oeeSiyk=?= <sj.huang@mediatek.com>,
-        ben.lok@mediatek.com, randy.wu@mediatek.com,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        =?UTF-8?B?RnJlZGVyaWMgQ2hlbiAo6Zmz5L+K5YWDKQ==?= 
-        <frederic.chen@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by BYAPR01CA0071.prod.exchangelabs.com (2603:10b6:a03:94::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19 via Frontend Transport; Wed, 23 Jun 2021 10:41:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cd9156d2-bffd-48b8-2af0-08d9363383db
+X-MS-TrafficTypeDiagnostic: BN6PR03MB2610:
+X-Microsoft-Antispam-PRVS: <BN6PR03MB26103C2DD15300601E2131F5ED089@BN6PR03MB2610.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: X/uMUSNvnmjht32PZVoSqDyynWuhG9SKzWgFxcQ5gzWOnySEAaiQZH9HLbgSuvgCPKEVhiDJoVei8yE0sW0LKP6R8140Rq1IuMeZGhu3V1LhZ3zPLogM0rZ7AVFw3imFsRK7pZBdrlNgfbfP55ndIepxbtFzZNddAsR0Xusr3BEkko2wLKuLUgzvsLbV4ewWNZKeq1mDyAj6xLLeIXBYPWk4R5xyKaURdk16YNs98JQGHz7czwx1HTYQYMuFmll9hLDAi0pSqiza4aYCe61aPms3YmSYFFHvd32d79XaVbtKPr68ghT70dnuCuqnN9wLco/oGlrPA2FJGwWfIAH/mItVe17jeolstTwZo6tpgcHO1FCYTmMZ7hiAeULTccqzsd1Stw3WtLCAuDKvxXpfJrbFaE7abYxObzsZGucfsZxLjxUzAssYryaV0n3RJdezHyA2uy7i4TVuIdNJ5p/uGAyZ+f5tWmyi0uokPMo2s2x4YcQIEtbJC+e6Pmh3w5t5+UtZk2o41a4WoLodIgSjIOa/r7XB4ErwsGjhOJ/a+fB10LFkBkPzOLcWCbfpc/0ZcyBIAmY5AdK82ChpU4XNYjfv5qCCicbkXZlp3jVfRJ9ga+rku1v8xVuj7AZiWjWBxas4TFEVGUP6NXeCvgBWx6XlG7Lu3UzEn5gmjD2fN7o=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR03MB6058.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(39850400004)(136003)(396003)(346002)(376002)(366004)(6916009)(186003)(2906002)(26005)(5660300002)(66556008)(66476007)(66946007)(4326008)(83380400001)(52116002)(16526019)(6506007)(86362001)(478600001)(7696005)(9686003)(55016002)(8676002)(6666004)(8936002)(956004)(1076003)(4744005)(316002)(38350700002)(54906003)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?awr6dkpoavFIQXXmP+F6jeAk28h7h5wr3bZh8MFqQkV72cctpVxDC3MrU/ES?=
+ =?us-ascii?Q?c1//0cfNNH+pLlsEj6nP1NxazS1F+a6GChjPHeLAfuL6943lsTH7bffs3R/s?=
+ =?us-ascii?Q?h2FfUz64/mngc4+owMEh22vWtNwZfc2weuaNGy1Pw8U0mkG388jW/Hmj2qd5?=
+ =?us-ascii?Q?GyCBNWigUsACcIbFShYZAsqyWol0FvL3/bWBhMb4YDOGY7kjiKAi9bLz8Hmg?=
+ =?us-ascii?Q?v9Ci0cjHcmQLhiIX4xqnfmhVH4/ceIhRbz4yhpVl6Y1j/wFFPVraqYMGjo3A?=
+ =?us-ascii?Q?JHEncG4duHhykcii89iZDPIdkSGEtljlC+ORxVAs6QIVHbUZ69QTQsLRxy+u?=
+ =?us-ascii?Q?WKRLCy4UxJypxHWM2v994OM/fYULybyIzvU21RbSPEYHdlW00k6qWPGRptTn?=
+ =?us-ascii?Q?N9scd8mc2+Zz7ybJJk/7Ch6NGT7TfPq5xW3TDGdfSF25b3LZVKxfFeNEiGFj?=
+ =?us-ascii?Q?GeowUXa0SY/iuSKPDPO9KU1nXN3+oQBPXEPSd1AlNASTZLhC6PPqHn927pVF?=
+ =?us-ascii?Q?wik4CmEhK0MxZFov3k+MqUX1yjJkoNjM0INl5DE6lONUwq9EsPqzrWdZfcrj?=
+ =?us-ascii?Q?VlKdBwdYG9zeLJ5t4XgTzGacvsmzlb9WD2iE6KZVJsNH05DGl6ybaV74s5Ri?=
+ =?us-ascii?Q?jwhIFsO39WDaJiXtAdGLhMuAzgXSviWVxT129R5WIXX6yFBwViNkAbQOyW8C?=
+ =?us-ascii?Q?BPJDhEx0v16HLl7gBgjvZNuLHLcGFDam1RrObAfAUoXhTl28xAkz96xemgt8?=
+ =?us-ascii?Q?AjDZXLk9cqI+fYImN3IiMpJedMq8H6bnljIUlfmH9ZXSJ1Z5u0c+45knMs+R?=
+ =?us-ascii?Q?R7bXm5g+SiTU6HEFhU+Fq5bEeC35ybI7523d7DN3JIimUT4rMzlgnXzhKPfG?=
+ =?us-ascii?Q?GB+5EXPMuzrbuR3xBYnsLcvUN/cj5zqKPEsOfwwKaWPJIgeJfmxIA0F4DWJZ?=
+ =?us-ascii?Q?KuPS2SSwkmHsDIx/8bqRp+o1p8KOnR/3EK2iVsX8UvOAJFzNBHTbt8UjK4XG?=
+ =?us-ascii?Q?iSURnmN8iz7Zs7v7lOEiSv5IX7xWnm02ZqwwpgHAyuYcaM1ppZ7Oto73uSR8?=
+ =?us-ascii?Q?fQjVC8Wza7Az2CcSYxeQLFF+StAwH1RJ3s7N2HLRqrtEQg2JdAD9NSxnJMol?=
+ =?us-ascii?Q?k3HXKLlpkahtSy84RURDEsb2NAO1p9JQTqNVAAlj7RgjPSbuDPH+C/MCV3su?=
+ =?us-ascii?Q?nXpsz++bvJeQWpkPT8zFSVsVlAE82+5Vh3vRDSJh1KEq6XwKonOZwSRqmtZS?=
+ =?us-ascii?Q?hV7eQXNo5W8dBac3fscAevVvCWThL1PAC3iVc3ysZ3bYunzSgCvPC7IonHJY?=
+ =?us-ascii?Q?HA6k0wJiQW1Z56AFfhApf5r+?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd9156d2-bffd-48b8-2af0-08d9363383db
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR03MB6058.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2021 10:41:53.5077
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i1XGaxxX0DoK/bWUOUB5k+bkBSUS+gpTFON8Qy1d//BDGSAtmUHL9k/K0j3tt3Nk/TiQND5NNOLcJM0MsYdQBA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR03MB2610
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Moudy:
+On Tue, 22 Jun 2021 17:19:20 +0200
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
-Moudy Ho <moudy.ho@mediatek.com> =E6=96=BC 2021=E5=B9=B46=E6=9C=8823=E6=97=
-=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=883:46=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> From: mtk18742 <moudy.ho@mediatek.com>
->
-> Add MDP driver for MT8183
->
-> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
-> ---
 
-[snip]
+> 
+> 
+> On Thu, May 13 2021 at 14:33, Jisheng Zhang wrote:
+> > NOHZ is likely to be enabled, so use static_branch_likely() to  
+> 
+> Why is it likely to be enabled? Did you make a survey of the wider
+> distro universe or what?
 
-> +
-> +#endif  // __MMSYS_CONFIG_H__
-> diff --git a/drivers/media/platform/mtk-mdp3/mmsys_mutex.h b/drivers/medi=
-a/platform/mtk-mdp3/mmsys_mutex.h
-> new file mode 100644
-> index 000000000000..fb8c179f11af
-> --- /dev/null
-> +++ b/drivers/media/platform/mtk-mdp3/mmsys_mutex.h
-> @@ -0,0 +1,35 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (c) 2019 MediaTek Inc.
-> + * Author: Ping-Hsun Wu <ping-hsun.wu@mediatek.com>
-> + */
-> +
-> +#ifndef __MMSYS_MUTEX_H__
-> +#define __MMSYS_MUTEX_H__
-> +
-> +#include "mmsys_reg_base.h"
-> +#include "mdp-platform.h"
-> +
-> +#define MM_MUTEX_INTEN              0x00
-> +#define MM_MUTEX_INTSTA             0x04
-> +#define MM_MUTEX_CFG                0x08
-> +
-> +#define MM_MUTEX_EN                 (0x20 + mutex_id * 0x20)
-> +#define MM_MUTEX_GET                (0x24 + mutex_id * 0x20)
-> +#define MM_MUTEX_RST                (0x28 + mutex_id * 0x20)
-> +#define MM_MUTEX_MOD                (MM_MUTEX_MOD_OFFSET + mutex_id * 0x=
-20)
-> +#define MM_MUTEX_SOF                (MM_MUTEX_SOF_OFFSET + mutex_id * 0x=
-20)
+One more thought: maybe NOHZ is confusing, what I mean here is:
+timers_nohz_active is likely to be true.
 
-mtk_mutex driver is in drivers/soc/mediatek/mtk-mutex.c, so the
-mtk_mutex control should be placed there.
+If I update the commit msg as the following, is it acceptable?
 
-> +
-> +// MASK
-> +#define MM_MUTEX_INTEN_MASK         0x0fff
-> +#define MM_MUTEX_INTSTA_MASK        0x0fff
-> +#define MM_MUTEX_DEBUG_OUT_SEL_MASK 0x03
-> +#define MM_MUTEX_CFG_MASK           0x01
-> +
-> +#define MM_MUTEX_EN_MASK            0x01
-> +#define MM_MUTEX_GET_MASK           0x03
-> +#define MM_MUTEX_RST_MASK           0x01
-> +#define MM_MUTEX_MOD_MASK           0x07ffffff
-> +#define MM_MUTEX_SOF_MASK           0x0f
-> +
+"timers_nohz_active is likely to be true, so use static_branch_likely() to
+reflect this fact. This could improve the finally generated code
+a bit for the most likely scenario, I.E save two "jmp" instructions."
 
-[snip]
+Thanks
 
-> +int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
-> +{
-> +       struct mdp_cmd cmd;
-> +       struct mdp_path path;
-> +       int i, ret;
-> +
-> +       if (atomic_read(&mdp->suspended))
-> +               return -ECANCELED;
-> +
-> +       atomic_inc(&mdp->job_count);
-> +
-> +       cmd.pkt =3D cmdq_pkt_create(mdp->cmdq_clt, SZ_16K);
-> +       if (IS_ERR(cmd.pkt)) {
-> +               atomic_dec(&mdp->job_count);
-> +               wake_up(&mdp->callback_wq);
-> +               return PTR_ERR(cmd.pkt);
-> +       }
-> +       cmd.event =3D &mdp->event[0];
-> +
-> +       path.mdp_dev =3D mdp;
-> +       path.config =3D param->config;
-> +       path.param =3D param->param;
-> +       for (i =3D 0; i < param->param->num_outputs; i++) {
-> +               path.bounds[i].left =3D 0;
-> +               path.bounds[i].top =3D 0;
-> +               path.bounds[i].width =3D
-> +                       param->param->outputs[i].buffer.format.width;
-> +               path.bounds[i].height =3D
-> +                       param->param->outputs[i].buffer.format.height;
-> +               path.composes[i] =3D param->composes[i] ?
-> +                       param->composes[i] : &path.bounds[i];
-> +       }
-> +       ret =3D mdp_path_config(mdp, &cmd, &path);
-> +       if (ret) {
-> +               atomic_dec(&mdp->job_count);
-> +               wake_up(&mdp->callback_wq);
-> +               return ret;
-> +       }
-> +
-> +       // TODO: engine conflict dispatch
-> +       for (i =3D 0; i < param->config->num_components; i++)
-> +               mdp_comp_clock_on(&mdp->pdev->dev, path.comps[i].comp);
-> +
-> +       if (param->wait) {
-> +               ret =3D cmdq_pkt_flush(cmd.pkt);
+> 
+> > reflect this fact. This could improve the finally generated code  
+> 
+> could improve? Either it does or it does not.
+> 
+> Thanks,
+> 
+>         tglx
 
-cmdq_pkt_flush() is removed in latest kernel, please rebase this
-series onto latest kernel before you send patches.
-
-Regards,
-Chun-Kuang.
-
-> +#ifdef MDP_DEBUG
-> +               if (ret) {
-> +                       struct mdp_func_struct *p_func =3D mdp_get_func()=
-;
-> +
-> +                       p_func->mdp_dump_mmsys_config();
-> +                       mdp_dump_info(~0, 1);
-> +               }
-> +#endif
-> +               if (param->mdp_ctx)
-> +                       mdp_m2m_job_finish(param->mdp_ctx);
-> +               cmdq_pkt_destroy(cmd.pkt);
-> +               for (i =3D 0; i < param->config->num_components; i++)
-> +                       mdp_comp_clock_off(&mdp->pdev->dev, path.comps[i]=
-.comp);
-> +
-> +               atomic_dec(&mdp->job_count);
-> +               wake_up(&mdp->callback_wq);
-> +       } else {
-> +               struct mdp_cmdq_cb_param *cb_param;
-> +               struct mdp_comp *comps;
-> +
-> +               cb_param =3D kzalloc(sizeof(*cb_param), GFP_KERNEL);
-> +               if (!cb_param)
-> +                       return -ENOMEM;
-> +               comps =3D kcalloc(param->config->num_components, sizeof(*=
-comps),
-> +                               GFP_KERNEL);
-> +               if (!comps) {
-> +                       kfree(cb_param);
-> +                       mdp_err("%s:comps alloc fail!\n", __func__);
-> +                       return -ENOMEM;
-> +               }
-> +
-> +               for (i =3D 0; i < param->config->num_components; i++)
-> +                       memcpy(&comps[i], path.comps[i].comp,
-> +                              sizeof(struct mdp_comp));
-> +               cb_param->mdp =3D mdp;
-> +               cb_param->user_cmdq_cb =3D param->cmdq_cb;
-> +               cb_param->user_cb_data =3D param->cb_data;
-> +               cb_param->pkt =3D cmd.pkt;
-> +               cb_param->comps =3D comps;
-> +               cb_param->num_comps =3D param->config->num_components;
-> +               cb_param->mdp_ctx =3D param->mdp_ctx;
-> +
-> +               ret =3D cmdq_pkt_flush_async(cmd.pkt,
-> +                                          mdp_handle_cmdq_callback,
-> +                                          (void *)cb_param);
-> +               if (ret) {
-> +                       mdp_err("%s:cmdq_pkt_flush_async fail!\n", __func=
-__);
-> +                       kfree(cb_param);
-> +                       kfree(comps);
-> +               }
-> +       }
-> +       return ret;
-> +}
-> +
-
-> --
-> 2.18.0
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
