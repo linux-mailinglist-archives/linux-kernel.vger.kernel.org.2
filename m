@@ -2,207 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35CE43B21F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C273B21FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhFWUm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 16:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58490 "EHLO
+        id S229844AbhFWUox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 16:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbhFWUmK (ORCPT
+        with ESMTP id S229523AbhFWUov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 16:42:10 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B40DC061280
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:39:51 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso2096114pjp.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:39:51 -0700 (PDT)
+        Wed, 23 Jun 2021 16:44:51 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A82C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:42:33 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id a133so2585043oib.13
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:42:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9CbW/Yfm4YOVx5TLgcAG255DFJHXdYOCCgKp2CMgl9c=;
-        b=dunBoi+rvP55ibjO4aMmp3PEcqi6plGzD3RKUIy2JY6icM4NLoCwMdjkH3bSpJGEZL
-         rXBy87J/BsJRIb8BKC6N9nIa5pdSEtVsj9Jt2Eu2c7ibgdf7VysPOSGq2GGofBeJdmkV
-         iHok836cmLjkdFjQnvhcnR9i+SLiV5yPdY7UI=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ssz/oktO6uO+CirK2ulMaAGD2E4NYuFjNx1oGhPBz88=;
+        b=KpMPmt0evI/acbKEXiS6IkcdGvHhWvEJHgmzUbtk5G2UfTEE3DqGnV8W1fiRCWouY+
+         kY1Zqp2clob4k718momHKrHB5aCHaCuJ+U00sXtqi40u48g4jxDvasXjxs7GVwunOIBw
+         SjeobmH/8OtsvzpvS2M8guU6RPfRc9S/wky86cL8AJ06jLplwCsreO5NibVIfbL9slvC
+         rZAx8QGkV23JpPs+xb27B5Bgg7wHayEC4udLpJkxLKM0HYrTpf1uoFjqdMmwpDccyvkS
+         cc7XE/59v0JKcB9Muw/cAC2NvDhKUlqQedSdJXjGV8oEe2rn3z3gf2f49kuU/VYyje0S
+         DZDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9CbW/Yfm4YOVx5TLgcAG255DFJHXdYOCCgKp2CMgl9c=;
-        b=VmPXpvoZZvYVvjTYH4INHdDMRBC3DU3ndcuUeJm6T9ysZTK9XBXwKCUj+gUcYude9B
-         OK9oxOBNoDDzzgPOV1Fwgp/1yVwjNhjFbn+2yP80t3rntLgSN4pM9pdnD9KftdA/d5LQ
-         ZMpnMxSEC71K409BURBTiS0zmpBi5U80mQtq4bpY4OaZbtw/jbNF2A8HPn0BcMlO7Fh/
-         9gpTJNqdmMDQQkkjqyXTMt7W270sxfz3ehCBLfDlhN0qUd/2ofzMNm9jZmRyDPb4r4ny
-         fEm9yjlqdKyBeHRL19RisXIiPsQDmCD1TNl0zSaZ1ZmQ4f533l3KP7bNBrByyC/NvO1S
-         vK+w==
-X-Gm-Message-State: AOAM533WHLsMY9c27K2yXGMsmKMFDfhZvrS0CKblZ0/DhOgjDVBzTFDF
-        p685Y5/cAui3zd92oRt/pyw4TQ==
-X-Google-Smtp-Source: ABdhPJwt4bDW3fWxEAD6L43dOhtIQeD8GcbmXS575cFZ1n3sB6Aw0rEr0X01RYvfSmd5imUhk+B7Xw==
-X-Received: by 2002:a17:90a:4410:: with SMTP id s16mr1427889pjg.25.1624480791179;
-        Wed, 23 Jun 2021 13:39:51 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id u1sm630574pfu.160.2021.06.23.13.39.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ssz/oktO6uO+CirK2ulMaAGD2E4NYuFjNx1oGhPBz88=;
+        b=NOyILNST8TNQ/NBZ9sEhHxGIzFVidg6W96yKg1SUwfDnucu3AGIORVPH3bMu1IDMia
+         L5qR5pQWzF8FakB+ocR6U4mYCxA+1mLquAn18GzAOmLDob1SpmOPIfjjVVDc8rSA9uVo
+         GRBtGTJvAACoFora5rDzSGkWWYk6YAY1mn1Wc9rPJ9Y/FQS6AVdTcMItJ4J9bvro/Joa
+         ciGVfmWO5f0ndnsDhzcLWJiYE6+laOpLDi9TOlZtFxBAHCQLXFNpdnVUmEYIQziXq/Es
+         3ngGYjDoBj0YT5xnAVM0qt07PpYQsTr+65P8sHvhi2Z3uZpJn6+hbpBR8wySeRCfezqv
+         +JCA==
+X-Gm-Message-State: AOAM530kZvytf4gdZpuAjZmQjJ5R2kazEhmabv86fCzU1AZea7yLlFP7
+        6eE7yaS+ua34ORzRufWc8MlxCQ==
+X-Google-Smtp-Source: ABdhPJwok4DrxFFeza7ir4VD5PVDJukDMA4axEKA2BXA3W4OiWPneRSw/GFFs7DJfcUV7qvN8WOCYg==
+X-Received: by 2002:aca:4a45:: with SMTP id x66mr2667534oia.79.1624480952269;
+        Wed, 23 Jun 2021 13:42:32 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id l8sm181958ooo.13.2021.06.23.13.42.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 13:39:48 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        kernelci@groups.io, linux-kselftest@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH 9/9] lkdtm/heap: Add init_on_alloc tests
-Date:   Wed, 23 Jun 2021 13:39:36 -0700
-Message-Id: <20210623203936.3151093-10-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210623203936.3151093-1-keescook@chromium.org>
-References: <20210623203936.3151093-1-keescook@chromium.org>
+        Wed, 23 Jun 2021 13:42:31 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 15:42:29 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Can Guo <cang@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Andy Gross <agross@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 01/10] scsi: ufs: Rename flags pm_op_in_progress and
+ is_sys_suspended
+Message-ID: <YNOctRTGYZaSe6lw@yoga>
+References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
+ <1624433711-9339-2-git-send-email-cang@codeaurora.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4448; h=from:subject; bh=kzB2kajsXBcnoqdrRcymGnm8fdce7wFUEweva8HvKLM=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBg05wH5VR4lDW7Qn91KFyY0Hf6dSvabN6SXZM7fu6f PsdQeJCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYNOcBwAKCRCJcvTf3G3AJrtiEA CoREcu/vUQ2ed0GVO1Y3dypJDMih0UI4I5eduqeIitcrzItlcyUt0VyMnXcja+eI5KhvKJre/DEV6N JAmsX7/8fMHcIlJvDAVMxb5mzgFTyAQcwIOMVW9W+3r+UUHZS6kGdX0In5GjM0oGTDphSkDw7LVQbY wxTSCuoFvaX6JGRwtwTKCmf0yOxkYuSUmjJHP3vbzw8rycqrSTvpffy2vHVdG5lfncP2QvUbJhkroR YqXt+Y08bdkpdIS99ztaIPadsdcCWvdRG1KoGTSmnFHwfm11MhRoZPD2AzUKCn99c2adU25UgJoQQu IfWiqZ/0JUuO4YJACqa63gUv3lttKXM6Y0RLOyzPSZrdfG6fMJRbyK2BDNNBneDaeJOogvG+FWcLkT yX9ISCyG4xyhfgsPYQ37Dzftv2T9rWsCzn6IQbFefHbwjFbUTlG27if6rc8uiaQbPCh7g50faN26Kq OSqEkA5KwA251CpX+KiNd2JlxtXfTFtnSQKbVawsGGExVvDlLeuE+uZU9gps0EYtL4Rx8vGAiCMyOM 7kaI1WNW2RzpRc+2bK5fHt8rVn0HI3LFcHoX2pTX1ee//VbjPmF4EWsZsI7fVrgoTto7tM+Z+mOTU4 aF8WROfsOAjSNjtvkwi9P3oHmKdtILwXEN+5HFG/zWLAj0/J+i31bg6ZSiig==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1624433711-9339-2-git-send-email-cang@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SLAB and page allocator tests for init_on_alloc. Testing for
-init_on_free was already happening via the poisoning tests.
+On Wed 23 Jun 02:35 CDT 2021, Can Guo wrote:
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/misc/lkdtm/core.c               |  2 +
- drivers/misc/lkdtm/heap.c               | 65 +++++++++++++++++++++++++
- drivers/misc/lkdtm/lkdtm.h              |  2 +
- tools/testing/selftests/lkdtm/config    |  1 +
- tools/testing/selftests/lkdtm/tests.txt |  2 +
- 5 files changed, 72 insertions(+)
+> Rename pm_op_in_progress and is_sys_suspended to wlu_pm_op_in_progress and
+> is_wlu_sys_suspended accordingly.
+> 
 
-diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
-index c185ae4719c3..9dda87c6b54a 100644
---- a/drivers/misc/lkdtm/core.c
-+++ b/drivers/misc/lkdtm/core.c
-@@ -127,6 +127,8 @@ static const struct crashtype crashtypes[] = {
- 	CRASHTYPE(READ_AFTER_FREE),
- 	CRASHTYPE(WRITE_BUDDY_AFTER_FREE),
- 	CRASHTYPE(READ_BUDDY_AFTER_FREE),
-+	CRASHTYPE(SLAB_INIT_ON_ALLOC),
-+	CRASHTYPE(BUDDY_INIT_ON_ALLOC),
- 	CRASHTYPE(SLAB_FREE_DOUBLE),
- 	CRASHTYPE(SLAB_FREE_CROSS),
- 	CRASHTYPE(SLAB_FREE_PAGE),
-diff --git a/drivers/misc/lkdtm/heap.c b/drivers/misc/lkdtm/heap.c
-index a3bb0577ed8b..3d9aae5821a0 100644
---- a/drivers/misc/lkdtm/heap.c
-+++ b/drivers/misc/lkdtm/heap.c
-@@ -174,6 +174,71 @@ void lkdtm_READ_BUDDY_AFTER_FREE(void)
- 	kfree(val);
- }
- 
-+void lkdtm_SLAB_INIT_ON_ALLOC(void)
-+{
-+	u8 *first;
-+	u8 *val;
-+
-+	first = kmalloc(512, GFP_KERNEL);
-+	if (!first) {
-+		pr_info("Unable to allocate 512 bytes the first time.\n");
-+		return;
-+	}
-+
-+	memset(first, 0xAB, 512);
-+	kfree(first);
-+
-+	val = kmalloc(512, GFP_KERNEL);
-+	if (!val) {
-+		pr_info("Unable to allocate 512 bytes the second time.\n");
-+		return;
-+	}
-+	if (val != first) {
-+		pr_warn("Reallocation missed clobbered memory.\n");
-+	}
-+
-+	if (memchr(val, 0xAB, 512) == NULL) {
-+		pr_info("Memory appears initialized (%x, no earlier values)\n", *val);
-+	} else {
-+		pr_err("FAIL: Slab was not initialized\n");
-+		pr_expected_config_param(CONFIG_INIT_ON_ALLOC_DEFAULT_ON, "init_on_alloc");
-+	}
-+	kfree(val);
-+}
-+
-+void lkdtm_BUDDY_INIT_ON_ALLOC(void)
-+{
-+	u8 *first;
-+	u8 *val;
-+
-+	first = (u8 *)__get_free_page(GFP_KERNEL);
-+	if (!first) {
-+		pr_info("Unable to allocate first free page\n");
-+		return;
-+	}
-+
-+	memset(first, 0xAB, PAGE_SIZE);
-+	free_page((unsigned long)first);
-+
-+	val = (u8 *)__get_free_page(GFP_KERNEL);
-+	if (!val) {
-+		pr_info("Unable to allocate second free page\n");
-+		return;
-+	}
-+
-+	if (val != first) {
-+		pr_warn("Reallocation missed clobbered memory.\n");
-+	}
-+
-+	if (memchr(val, 0xAB, PAGE_SIZE) == NULL) {
-+		pr_info("Memory appears initialized (%x, no earlier values)\n", *val);
-+	} else {
-+		pr_err("FAIL: Slab was not initialized\n");
-+		pr_expected_config_param(CONFIG_INIT_ON_ALLOC_DEFAULT_ON, "init_on_alloc");
-+	}
-+	free_page((unsigned long)val);
-+}
-+
- void lkdtm_SLAB_FREE_DOUBLE(void)
- {
- 	int *val;
-diff --git a/drivers/misc/lkdtm/lkdtm.h b/drivers/misc/lkdtm/lkdtm.h
-index e491bc571808..6a30b60519f3 100644
---- a/drivers/misc/lkdtm/lkdtm.h
-+++ b/drivers/misc/lkdtm/lkdtm.h
-@@ -86,6 +86,8 @@ void lkdtm_WRITE_AFTER_FREE(void);
- void lkdtm_READ_AFTER_FREE(void);
- void lkdtm_WRITE_BUDDY_AFTER_FREE(void);
- void lkdtm_READ_BUDDY_AFTER_FREE(void);
-+void lkdtm_SLAB_INIT_ON_ALLOC(void);
-+void lkdtm_BUDDY_INIT_ON_ALLOC(void);
- void lkdtm_SLAB_FREE_DOUBLE(void);
- void lkdtm_SLAB_FREE_CROSS(void);
- void lkdtm_SLAB_FREE_PAGE(void);
-diff --git a/tools/testing/selftests/lkdtm/config b/tools/testing/selftests/lkdtm/config
-index 849799bcfa95..013446e87f1f 100644
---- a/tools/testing/selftests/lkdtm/config
-+++ b/tools/testing/selftests/lkdtm/config
-@@ -5,3 +5,4 @@ CONFIG_FORTIFY_SOURCE=y
- CONFIG_HARDENED_USERCOPY=y
- # CONFIG_HARDENED_USERCOPY_FALLBACK is not set
- CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT=y
-+CONFIG_INIT_ON_ALLOC_DEFAULT_ON=y
-diff --git a/tools/testing/selftests/lkdtm/tests.txt b/tools/testing/selftests/lkdtm/tests.txt
-index 30080cc15623..846cfd508d3c 100644
---- a/tools/testing/selftests/lkdtm/tests.txt
-+++ b/tools/testing/selftests/lkdtm/tests.txt
-@@ -21,6 +21,8 @@ VMALLOC_LINEAR_OVERFLOW
- READ_AFTER_FREE call trace:|Memory correctly poisoned
- #WRITE_BUDDY_AFTER_FREE Corrupts memory on failure
- READ_BUDDY_AFTER_FREE call trace:|Memory correctly poisoned
-+SLAB_INIT_ON_ALLOC Memory appears initialized
-+BUDDY_INIT_ON_ALLOC Memory appears initialized
- SLAB_FREE_DOUBLE
- SLAB_FREE_CROSS
- SLAB_FREE_PAGE
--- 
-2.30.2
+This reflects what the change does, but the commit message is supposed
+to capture "why".
 
+Regards,
+Bjorn
+
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> ---
+>  drivers/scsi/ufs/ufs-qcom.c |  2 +-
+>  drivers/scsi/ufs/ufshcd.c   | 30 +++++++++++++++---------------
+>  drivers/scsi/ufs/ufshcd.h   |  6 ++++--
+>  3 files changed, 20 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+> index 9b1d18d..fbe21e0 100644
+> --- a/drivers/scsi/ufs/ufs-qcom.c
+> +++ b/drivers/scsi/ufs/ufs-qcom.c
+> @@ -641,7 +641,7 @@ static int ufs_qcom_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  	if (err)
+>  		return err;
+>  
+> -	hba->is_sys_suspended = false;
+> +	hba->is_wlu_sys_suspended = false;
+>  	return 0;
+>  }
+>  
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 25fe18a..c40ba1d 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -549,8 +549,8 @@ static void ufshcd_print_host_state(struct ufs_hba *hba)
+>  		hba->saved_err, hba->saved_uic_err);
+>  	dev_err(hba->dev, "Device power mode=%d, UIC link state=%d\n",
+>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
+> -	dev_err(hba->dev, "PM in progress=%d, sys. suspended=%d\n",
+> -		hba->pm_op_in_progress, hba->is_sys_suspended);
+> +	dev_err(hba->dev, "wlu_pm_op_in_progress=%d, is_wlu_sys_suspended=%d\n",
+> +		hba->wlu_pm_op_in_progress, hba->is_wlu_sys_suspended);
+>  	dev_err(hba->dev, "Auto BKOPS=%d, Host self-block=%d\n",
+>  		hba->auto_bkops_enabled, hba->host->host_self_blocked);
+>  	dev_err(hba->dev, "Clk gate=%d\n", hba->clk_gating.state);
+> @@ -1999,7 +1999,7 @@ static void ufshcd_clk_scaling_start_busy(struct ufs_hba *hba)
+>  	if (!hba->clk_scaling.active_reqs++)
+>  		queue_resume_work = true;
+>  
+> -	if (!hba->clk_scaling.is_enabled || hba->pm_op_in_progress) {
+> +	if (!hba->clk_scaling.is_enabled || hba->wlu_pm_op_in_progress) {
+>  		spin_unlock_irqrestore(hba->host->host_lock, flags);
+>  		return;
+>  	}
+> @@ -2734,7 +2734,7 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
+>  		 * err handler blocked for too long. So, just fail the scsi cmd
+>  		 * sent from PM ops, err handler can recover PM error anyways.
+>  		 */
+> -		if (hba->pm_op_in_progress) {
+> +		if (hba->wlu_pm_op_in_progress) {
+>  			hba->force_reset = true;
+>  			set_host_byte(cmd, DID_BAD_TARGET);
+>  			cmd->scsi_done(cmd);
+> @@ -2767,7 +2767,7 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
+>  		(hba->clk_gating.state != CLKS_ON));
+>  
+>  	if (unlikely(test_bit(tag, &hba->outstanding_reqs))) {
+> -		if (hba->pm_op_in_progress)
+> +		if (hba->wlu_pm_op_in_progress)
+>  			set_host_byte(cmd, DID_BAD_TARGET);
+>  		else
+>  			err = SCSI_MLQUEUE_HOST_BUSY;
+> @@ -5116,7 +5116,7 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+>  			 * solution could be to abort the system suspend if
+>  			 * UFS device needs urgent BKOPs.
+>  			 */
+> -			if (!hba->pm_op_in_progress &&
+> +			if (!hba->wlu_pm_op_in_progress &&
+>  			    !ufshcd_eh_in_progress(hba) &&
+>  			    ufshcd_is_exception_event(lrbp->ucd_rsp_ptr))
+>  				/* Flushed in suspend */
+> @@ -5916,7 +5916,7 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+>  {
+>  	ufshcd_rpm_get_sync(hba);
+>  	if (pm_runtime_status_suspended(&hba->sdev_ufs_device->sdev_gendev) ||
+> -	    hba->is_sys_suspended) {
+> +	    hba->is_wlu_sys_suspended) {
+>  		enum ufs_pm_op pm_op;
+>  
+>  		/*
+> @@ -5933,7 +5933,7 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+>  		if (!ufshcd_is_clkgating_allowed(hba))
+>  			ufshcd_setup_clocks(hba, true);
+>  		ufshcd_release(hba);
+> -		pm_op = hba->is_sys_suspended ? UFS_SYSTEM_PM : UFS_RUNTIME_PM;
+> +		pm_op = hba->is_wlu_sys_suspended ? UFS_SYSTEM_PM : UFS_RUNTIME_PM;
+>  		ufshcd_vops_resume(hba, pm_op);
+>  	} else {
+>  		ufshcd_hold(hba, false);
+> @@ -5976,7 +5976,7 @@ static void ufshcd_recover_pm_error(struct ufs_hba *hba)
+>  	struct request_queue *q;
+>  	int ret;
+>  
+> -	hba->is_sys_suspended = false;
+> +	hba->is_wlu_sys_suspended = false;
+>  	/*
+>  	 * Set RPM status of wlun device to RPM_ACTIVE,
+>  	 * this also clears its runtime error.
+> @@ -8784,7 +8784,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  	enum ufs_dev_pwr_mode req_dev_pwr_mode;
+>  	enum uic_link_state req_link_state;
+>  
+> -	hba->pm_op_in_progress = true;
+> +	hba->wlu_pm_op_in_progress = true;
+>  	if (pm_op != UFS_SHUTDOWN_PM) {
+>  		pm_lvl = pm_op == UFS_RUNTIME_PM ?
+>  			 hba->rpm_lvl : hba->spm_lvl;
+> @@ -8919,7 +8919,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  		hba->clk_gating.is_suspended = false;
+>  		ufshcd_release(hba);
+>  	}
+> -	hba->pm_op_in_progress = false;
+> +	hba->wlu_pm_op_in_progress = false;
+>  	return ret;
+>  }
+>  
+> @@ -8928,7 +8928,7 @@ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  	int ret;
+>  	enum uic_link_state old_link_state = hba->uic_link_state;
+>  
+> -	hba->pm_op_in_progress = true;
+> +	hba->wlu_pm_op_in_progress = true;
+>  
+>  	/*
+>  	 * Call vendor specific resume callback. As these callbacks may access
+> @@ -9006,7 +9006,7 @@ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  		ufshcd_update_evt_hist(hba, UFS_EVT_WL_RES_ERR, (u32)ret);
+>  	hba->clk_gating.is_suspended = false;
+>  	ufshcd_release(hba);
+> -	hba->pm_op_in_progress = false;
+> +	hba->wlu_pm_op_in_progress = false;
+>  	return ret;
+>  }
+>  
+> @@ -9072,7 +9072,7 @@ static int ufshcd_wl_suspend(struct device *dev)
+>  
+>  out:
+>  	if (!ret)
+> -		hba->is_sys_suspended = true;
+> +		hba->is_wlu_sys_suspended = true;
+>  	trace_ufshcd_wl_suspend(dev_name(dev), ret,
+>  		ktime_to_us(ktime_sub(ktime_get(), start)),
+>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
+> @@ -9100,7 +9100,7 @@ static int ufshcd_wl_resume(struct device *dev)
+>  		ktime_to_us(ktime_sub(ktime_get(), start)),
+>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
+>  	if (!ret)
+> -		hba->is_sys_suspended = false;
+> +		hba->is_wlu_sys_suspended = false;
+>  	up(&hba->host_sem);
+>  	return ret;
+>  }
+> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> index c98d540..93aeeb3 100644
+> --- a/drivers/scsi/ufs/ufshcd.h
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -752,7 +752,8 @@ struct ufs_hba {
+>  	enum ufs_pm_level spm_lvl;
+>  	struct device_attribute rpm_lvl_attr;
+>  	struct device_attribute spm_lvl_attr;
+> -	int pm_op_in_progress;
+> +	/* A flag to tell whether __ufshcd_wl_suspend/resume() is in progress */
+> +	bool wlu_pm_op_in_progress;
+>  
+>  	/* Auto-Hibernate Idle Timer register value */
+>  	u32 ahit;
+> @@ -838,7 +839,8 @@ struct ufs_hba {
+>  
+>  	struct devfreq *devfreq;
+>  	struct ufs_clk_scaling clk_scaling;
+> -	bool is_sys_suspended;
+> +	/* A flag to tell whether the UFS device W-LU is system suspended */
+> +	bool is_wlu_sys_suspended;
+>  
+>  	enum bkops_status urgent_bkops_lvl;
+>  	bool is_urgent_bkops_lvl_checked;
+> -- 
+> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+> 
