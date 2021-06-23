@@ -2,88 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DE63B1A83
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15CC3B1A85
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhFWMyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:54:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230163AbhFWMyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:54:36 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB29361076;
-        Wed, 23 Jun 2021 12:52:18 +0000 (UTC)
-Date:   Wed, 23 Jun 2021 08:52:17 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/ftrace: fix event-no-pid on 1-core machine
-Message-ID: <20210623085217.036b7e8d@gandalf.local.home>
-In-Reply-To: <20210623070431.16592-1-krzysztof.kozlowski@canonical.com>
-References: <20210623070431.16592-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230339AbhFWMzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230019AbhFWMzo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 08:55:44 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1F6C061574;
+        Wed, 23 Jun 2021 05:53:26 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id nd37so3892728ejc.3;
+        Wed, 23 Jun 2021 05:53:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AoXX4SX7rV+WFRuHMMsSXZsHaxT12D2qXpCC8mveCBs=;
+        b=bc+fJMq0Nexc4x+TzqlhSZ91XKaf2VqAOdF1oK+kLmTwkV6yJ6tip+JSiZOKXnewXq
+         kv0xPhCnZa5Ysf83zcnmzM+14SEIpePLzNMVfqYLQ5GrCYe2Fo1x0EiOC/ryM3VCJT3x
+         JR11HX8L23w9EW8/m37LWYCssXg0X3A05jan4LArGwaNZeeqbq4tLKWiZXBG00GREk/Z
+         4JK8mtZ0O/VhirYb7MIPuiHQRLYJCpbcdp8hH9oDt/ks65hUztqi/kMF/bM97ktKdTen
+         yqg6oSf+WtpkBkzSXzZr9RSHaFNQHJjennWtgZ42H0dup6ZQSSQnaeTTACo4TJFICMBl
+         aK5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AoXX4SX7rV+WFRuHMMsSXZsHaxT12D2qXpCC8mveCBs=;
+        b=b+y+SZmMwWER7CuxzlaSPI+J5Vht8hgDgurpXK6DmG04wHiStisCyhK5zGsWCu7Ejv
+         Y2a/qNroc98gSmIV/+1JgLl0T9hhzaJNf8vUdwkEk/SrjldgE+bNBLxZLIBlUFF7N/SA
+         b2jpe6Rr+Uh9kLQsxPiWtkAZszQZ+96Q1MatZKWnzFokZfjjqUua1gS9arOqmYGrQH4Y
+         pD4tYH4GaQz0pegzijD7/iuP2pYUxWw1lo2rYxDfkdUbcSZ92v6vBp+N+ZVAnfdqFSe8
+         iKezwkveaG1MB+bBtg3gNNSwcwmcW92pCyIpJUNeilmnmdIRtxgK5PS4UalIwrM4Frm7
+         sSUg==
+X-Gm-Message-State: AOAM533PI1OUxzvPNhGGe6L0XVUVdcMzg+lPkZJzooOmQ/OErKt0gfO0
+        vOISYePD+iTSJQD1aKYzHdeWuzgS1jU6qw==
+X-Google-Smtp-Source: ABdhPJx+iMhYgPNTj4qUhJF40jNYvuXqAcXmr1VTDM8EkTlVRQUuL1iTiitmPKM+lsoudUPfaH/kKw==
+X-Received: by 2002:a17:906:841:: with SMTP id f1mr6680570ejd.308.1624452804700;
+        Wed, 23 Jun 2021 05:53:24 -0700 (PDT)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id b10sm13449981edx.4.2021.06.23.05.53.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 05:53:24 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: rockchip: Add sdmmc_ext for RK3328
+To:     Alex Bee <knaerzche@gmail.com>, Heiko Stuebner <heiko@sntech.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210623120001.164920-1-knaerzche@gmail.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <c30377a1-90aa-d79e-a60a-5bc1a8e18c44@gmail.com>
+Date:   Wed, 23 Jun 2021 14:53:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210623120001.164920-1-knaerzche@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Jun 2021 09:04:31 +0200
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote:
+Hi Alex,
 
-> When running event-no-pid test on a small machines (e.g. cloud 1-core
-> instance), other events might not happen:
+make ARCH=arm64 dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
+
+On 6/23/21 2:00 PM, Alex Bee wrote:
+> RK3328 SoC has a fourth mmc controller called SDMMC_EXT. Some
+> boards have sdio wifi connected to it. In order to use it
+> one would have to add the pinctrls from sdmmc0ext group which
+> is done on board level.
 > 
->     + cat trace
->     + cnt=0
->     + [ 0 -eq 0 ]
->     + fail No other events were recorded
->     [15] event tracing - restricts events based on pid notrace filtering [FAIL]
-
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-Shua, do you want to take this?
-
--- Steve
-
+> While at that also add the reset controls for the other mmc
+> controllers.
 > 
-> Schedule a simple sleep task to be sure that some other process events
-> get recorder.
-> 
-> Fixes: ebed9628f5c2 ("selftests/ftrace: Add test to test new set_event_notrace_pid file")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Signed-off-by: Alex Bee <knaerzche@gmail.com>
 > ---
->  .../testing/selftests/ftrace/test.d/event/event-no-pid.tc  | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  arch/arm64/boot/dts/rockchip/rk3328.dtsi | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
 > 
-> diff --git a/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc b/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc
-> index e6eb78f0b954..9933ed24f901 100644
-> --- a/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc
-> +++ b/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc
-> @@ -57,6 +57,10 @@ enable_events() {
->      echo 1 > tracing_on
->  }
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+> index da84be6f4715..c13fa2f3f4cd 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+> @@ -858,6 +858,8 @@ sdmmc: mmc@ff500000 {
+>  		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
+>  		fifo-depth = <0x100>;
+>  		max-frequency = <150000000>;
+> +		resets = <&cru SRST_MMC0>;
+> +		reset-names = "reset";
+>  		status = "disabled";
+>  	};
 >  
-> +other_task() {
-> +    sleep .001 || usleep 1 || sleep 1
-> +}
-> +
->  echo 0 > options/event-fork
+> @@ -870,6 +872,8 @@ sdio: mmc@ff510000 {
+>  		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
+>  		fifo-depth = <0x100>;
+>  		max-frequency = <150000000>;
+> +		resets = <&cru SRST_SDIO>;
+> +		reset-names = "reset";
+>  		status = "disabled";
+>  	};
 >  
->  do_reset
-> @@ -94,6 +98,9 @@ child=$!
->  echo "child = $child"
->  wait $child
+> @@ -882,6 +886,8 @@ emmc: mmc@ff520000 {
+>  		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
+>  		fifo-depth = <0x100>;
+>  		max-frequency = <150000000>;
+> +		resets = <&cru SRST_EMMC>;
+> +		reset-names = "reset";
+>  		status = "disabled";
+>  	};
 >  
-> +# Be sure some other events will happen for small systems (e.g. 1 core)
-> +other_task
-> +
->  echo 0 > tracing_on
+> @@ -980,6 +986,20 @@ usb_host0_ohci: usb@ff5d0000 {
+>  		status = "disabled";
+>  	};
 >  
->  cnt=`count_pid $mypid`
 
+> +	sdmmc_ext: dwmmc@ff5f0000 {
+
+/arch/arm64/boot/dts/rockchip/rk3328-evb.dt.yaml: dwmmc@ff5f0000:
+$nodename:0: 'dwmmc@ff5f0000' does not match '^mmc(@.*)?$'
+
+> +		compatible = "rockchip,rk3328-dw-mshc", "rockchip,rk3288-dw-mshc";
+> +		reg = <0x0 0xff5f0000 0x0 0x4000>;
+> +		interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks = <&cru HCLK_SDMMC_EXT>, <&cru SCLK_SDMMC_EXT>,
+> +			 <&cru SCLK_SDMMC_EXT_DRV>, <&cru SCLK_SDMMC_EXT_SAMPLE>;
+> +		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
+> +		fifo-depth = <0x100>;
+> +		max-frequency = <150000000>;
+> +		resets = <&cru SRST_SDMMCEXT>;
+> +		reset-names = "reset";
+> +		status = "disabled";
+> +	};
+> +
+>  	usbdrd3: usb@ff600000 {
+>  		compatible = "rockchip,rk3328-dwc3", "snps,dwc3";
+>  		reg = <0x0 0xff600000 0x0 0x100000>;
+> 
