@@ -2,224 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED453B1CC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9632A3B1CC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhFWOnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:43:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57454 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230061AbhFWOng (ORCPT
+        id S231359AbhFWOny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:43:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231293AbhFWOnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:43:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624459278;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=36Ney60QwLOA5znkwX0SnRwg20FjhKs4Zpxi9/E5Tpw=;
-        b=IkLrw/MeeQIYiBI+KKfRlazrVwudr6myrQ2I31pmruYTtZbZTsluy+EXBFYtOqdhY58mRK
-        V7ShTBJZ9y/7+2KjsVIBqSohkUBywpE+GiCLG4hy+hALM9HmkcipJga0p0/fZPNDJRpCPp
-        ugy0Xuwm8K4pdypUcd6oxsxIibfpiA0=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-240-JRCNYb-rOdqJtpol2k_6xw-1; Wed, 23 Jun 2021 10:41:17 -0400
-X-MC-Unique: JRCNYb-rOdqJtpol2k_6xw-1
-Received: by mail-wm1-f70.google.com with SMTP id s15-20020a7bc38f0000b02901dbb76fabe9so683122wmj.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 07:41:17 -0700 (PDT)
+        Wed, 23 Jun 2021 10:43:49 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6028C061574;
+        Wed, 23 Jun 2021 07:41:31 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id bj15so5685978qkb.11;
+        Wed, 23 Jun 2021 07:41:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=grMpRFSFa/Yee9hmf0XS+EbMWVihg50NgZvro2wq+xc=;
+        b=S4g+emmjW3QfbSeWI0ifotqF+o05TYimfJARIYh0LtYg1Jj5NIYpt/qAXZ21fYQV6B
+         502oXLVFc9rZaMkdhriGbVz7Fj7oboguSOJpIFqjk+jqzelyiOxp3zWa5JPhXkktBAOl
+         5jb/MbzibcELwikH+ufMyyZ5RCqV/B4bQzwfIrvONtFZ5abeFlfv91gZLcCTUxkfnXiG
+         5umJERgIJdAGS9yMUmjZArw/r1cJQ98gpPty24XhfVr5qxmpx7AYQSRUv6Hi+WbXxnnD
+         5CDaMr0yKWP64miJgUCEzS1mCMoJvruQHbMH8CsF0fcRKWwqNDnkMj0U3PlvLywXlBaH
+         yNXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=36Ney60QwLOA5znkwX0SnRwg20FjhKs4Zpxi9/E5Tpw=;
-        b=cWuGqp5dPn1a0RymAvKX7ypTlA4minvvI4QpNP6YkiLMT8E6iEzrRfrm3As/T0Vh9S
-         KmpW2jjpDKquvhxqxCKNyctPe0sGCfTweBc3x9oyR+DF5JncqyprOAGr0XUgA44tVS60
-         8AVgGm2ACbM51XlwalwaqK66jrO3t6NY2Gzmn674ov6ELYSwAk+L7MzsEeFmjKSof7gE
-         Gmm1Hiw6eRh96LhH3ePu2myfEDpHPvPakCG8C3QahZwgg6IXEc3ErUQ0kkIHAj/wm07v
-         TnThx/KsaEv7b5hcqvn+WfQ54pQrRffSxL52Te/nj2pfcU23xXNeNFgwMmxfGxDibAwy
-         PmaQ==
-X-Gm-Message-State: AOAM531LvkS71vwYwkXixT6Xm44A11XaynNo5qSGfvKwJdJG1yJ0ZWmL
-        7Kp2OJnscQoWK3PnFzBd8g7vSDrqurDLjiQ2F8R7YAtGWK9YTbW5zrVWRK+tQeOUy1iDq5584rA
-        Srq6780yg3sNNYtQy4v03dNYB
-X-Received: by 2002:a05:6000:1367:: with SMTP id q7mr422595wrz.306.1624459276294;
-        Wed, 23 Jun 2021 07:41:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzRRbpbxzOcbllEgwS/pfK7cAIJBOd+/iZk45ykRSCMjl9ZoW8MrMWeylR0rMHwn2MJquAeow==
-X-Received: by 2002:a05:6000:1367:: with SMTP id q7mr422570wrz.306.1624459276129;
-        Wed, 23 Jun 2021 07:41:16 -0700 (PDT)
-Received: from [172.16.0.103] ([5.28.162.59])
-        by smtp.gmail.com with ESMTPSA id e2sm247809wrt.29.2021.06.23.07.41.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 07:41:15 -0700 (PDT)
-Message-ID: <5fc502b70a89e18034716166abc65caec192c19b.camel@redhat.com>
-Subject: Re: [PATCH RFC] KVM: nSVM: Fix L1 state corruption upon return from
- SMM
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Cathy Avery <cavery@redhat.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        kvm@vger.kernel.org
-Date:   Wed, 23 Jun 2021 17:41:13 +0300
-In-Reply-To: <87pmwc4sh4.fsf@vitty.brq.redhat.com>
-References: <20210623074427.152266-1-vkuznets@redhat.com>
-         <a3918bfa-7b4f-c31a-448a-aa22a44d4dfd@redhat.com>
-         <53a9f893cb895f4b52e16c374cbe988607925cdf.camel@redhat.com>
-         <ac98150acd77f4c09167bc1bb1c552db68925cf2.camel@redhat.com>
-         <87pmwc4sh4.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=grMpRFSFa/Yee9hmf0XS+EbMWVihg50NgZvro2wq+xc=;
+        b=AmlDG/NYKeX7+C6Qv89ETEJSn00AYOsuNhgbw6/ukoxMcbhbNiw0FUn/uCKOuQG8/1
+         8WZ4LVDfga9gTPH1DNxCKsXg1g9b3wI/lhmOQ1yAbnQuXzKP1FYIsrC+Zi6iRjoy9Jg5
+         HFn1xsCJotcd2Ri0TTXsZwliIU/U52r1Mv6E3gEWvnirSepSwdCDRxmInJ0x6dplJFHr
+         VDaIcBaETlh61cjChSXZXj9qaSrb6kiNalVl+JzCdswFV9x3xOL3ZTeKnom0TRkxMBSz
+         itRcWArswHznLYPbX2EzeW+hQWhD3FLFc6bFm819KSRcmJsr75sepI8+vFkL7AoBdGK5
+         GexQ==
+X-Gm-Message-State: AOAM531obiaFtDgBoMEDzpL9b8oaxXWp5OYxSTInm8rW1p8Kn0uFbkOm
+        ZTikZ2Byo91hZhxklyl/nIJ7i01lhw/xOvessGEHtC+FWuEt7uuW
+X-Google-Smtp-Source: ABdhPJwaT121xh0WhBnhBkhQxPZ2qRT6Z35kfo9SUFw2z6xPsi1u5Eb/4/Ug+ZAG+IA4BJBMH2stDLzpF7rlh2es3Jo=
+X-Received: by 2002:a25:ba85:: with SMTP id s5mr12480653ybg.336.1624459290890;
+ Wed, 23 Jun 2021 07:41:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAJjojJsj9pzF4j2MVvsM-hCpvyR7OkZn232yt3MdOGnLxOiRRg@mail.gmail.com>
+ <20210623083329.1455-1-hdanton@sina.com>
+In-Reply-To: <20210623083329.1455-1-hdanton@sina.com>
+From:   Lin Horse <kylin.formalin@gmail.com>
+Date:   Wed, 23 Jun 2021 22:41:19 +0800
+Message-ID: <CAJjojJstJnwjeLmOyd-7sOOOJnF3gYbCXc+VZU7qbMBzLp_sEw@mail.gmail.com>
+Subject: Re: Another patch for CVE-2021-3573 without introducing lock bugs
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>, ohan.hedberg@gmail.com,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Anand Mistry <amistry@google.com>, Greg KH <greg@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-23 at 15:32 +0200, Vitaly Kuznetsov wrote:
-> Maxim Levitsky <mlevitsk@redhat.com> writes:
-> 
-> > On Wed, 2021-06-23 at 16:01 +0300, Maxim Levitsky wrote:
-> > > On Wed, 2021-06-23 at 11:39 +0200, Paolo Bonzini wrote:
-> > > > On 23/06/21 09:44, Vitaly Kuznetsov wrote:
-> > > > > - RFC: I'm not 100% sure my 'smart' idea to use currently-
-> > > > > unused HSAVE area
-> > > > > is that smart. Also, we don't even seem to check that L1 set
-> > > > > it up upon
-> > > > > nested VMRUN so hypervisors which don't do that may remain
-> > > > > broken. A very
-> > > > > much needed selftest is also missing.
-> > > > 
-> > > > It's certainly a bit weird, but I guess it counts as smart
-> > > > too.  It 
-> > > > needs a few more comments, but I think it's a good solution.
-> > > > 
-> > > > One could delay the backwards memcpy until vmexit time, but
-> > > > that would 
-> > > > require a new flag so it's not worth it for what is a pretty
-> > > > rare and 
-> > > > already expensive case.
-> > > > 
-> > > > Paolo
-> > > > 
-> > > 
-> > > Hi!
-> > > 
-> > > I did some homework on this now and I would like to share few my
-> > > thoughts on this:
-> > > 
-> > > First of all my attention caught the way we intercept the #SMI
-> > > (this isn't 100% related to the bug but still worth talking about
-> > > IMHO)
-> > > 
-> > > A. Bare metal: Looks like SVM allows to intercept SMI, with
-> > > SVM_EXIT_SMI, 
-> > >  with an intention of then entering the BIOS SMM handler manually
-> > > using the SMM_CTL msr.
-> > >  On bare metal we do set the INTERCEPT_SMI but we emulate the
-> > > exit as a nop.
-> > >  I guess on bare metal there are some undocumented bits that BIOS
-> > > set which
-> > >  make the CPU to ignore that SMI intercept and still take the
-> > > #SMI handler,
-> > >  normally but I wonder if we could still break some motherboard
-> > >  code due to that.
-> > > 
-> > > 
-> > > B. Nested: If #SMI is intercepted, then it causes nested VMEXIT.
-> > >  Since KVM does enable SMI intercept, when it runs nested it
-> > > means that all SMIs 
-> > >  that nested KVM gets are emulated as NOP, and L1's SMI handler
-> > > is not run.
-> > > 
-> > > 
-> > > About the issue that was fixed in this patch. Let me try to
-> > > understand how
-> > > it would work on bare metal:
-> > > 
-> > > 1. A guest is entered. Host state is saved to VM_HSAVE_PA area
-> > > (or stashed somewhere
-> > >   in the CPU)
-> > > 
-> > > 2. #SMI (without intercept) happens
-> > > 
-> > > 3. CPU has to exit SVM, and start running the host SMI handler,
-> > > it loads the SMM
-> > >     state without touching the VM_HSAVE_PA runs the SMI handler,
-> > > then once it RSMs,
-> > >     it restores the guest state from SMM area and continues the
-> > > guest
-> > > 
-> > > 4. Once a normal VMexit happens, the host state is restored from
-> > > VM_HSAVE_PA
-> > > 
-> > > So host state indeed can't be saved to VMC01.
-> > > 
-> > > I to be honest think would prefer not to use the L1's hsave area
-> > > but rather add back our
-> > > 'hsave' in KVM and store there the L1 host state on the nested
-> > > entry always.
-> > > 
-> > > This way we will avoid touching the vmcb01 at all and both solve
-> > > the issue and 
-> > > reduce code complexity.
-> > > (copying of L1 host state to what basically is L1 guest state
-> > > area and back
-> > > even has a comment to explain why it (was) possible to do so.
-> > > (before you discovered that this doesn't work with SMM).
-> > 
-> > I need more coffee today. The comment is somwhat wrong actually.
-> > When L1 switches to L2, then its HSAVE area is L1 guest state, but
-> > but L1 is a "host" vs L2, so it is host state.
-> > The copying is more between kvm's register cache and the vmcb.
-> > 
-> > So maybe backing it up as this patch does is the best solution yet.
-> > I will take more in depth look at this soon.
-> 
-> We can resurrect 'hsave' and keep it internally indeed but to make
-> this
-> migratable, we'd have to add it to the nested state acquired through
-> svm_get_nested_state(). Using L1's HSAVE area (ponted to by
-> MSR_VM_HSAVE_PA) avoids that as we have everything in L1's memory.
-> And,
+Hi there
 
-Hi!
+>
+> It is good to put your patch in the mail message instead of attachment.
+>
 
-I think I would prefer to avoid touching guest memory as much
-as possible to avoid the shenanigans of accessing it:
+Hi Danton, thanks for the advice. I will present the patch and give
+the description in the message.
 
-For example on nested state read we are not allowed to write guest
-memory since at the point it is already migrated, and for setting
-nested state we are not allowed to even read the guest memory since
-the memory map might not be up to date. Then a malicious guest can
-always change its memory which also can cause issues.
+>
+> Yes the uaf can be fixed by taking another grab to hci dev, see below
+> diff.
+> >
 
-Since it didn't work before and both sides of migration need a fix,
-adding a new flag and adding hsave area to nested state seems like a
-very good thing.
+--- a/net/bluetooth/hci_sock.c
++++ b/net/bluetooth/hci_sock.c
+@@ -762,7 +762,7 @@ void hci_sock_dev_event(struct hci_dev *hdev, int event)
+         /* Detach sockets from device */
+         read_lock(&hci_sk_list.lock);
+         sk_for_each(sk, &hci_sk_list.head) {
+-            lock_sock(sk);
++            bh_lock_sock_nested(sk);
+             if (hci_pi(sk)->hdev == hdev) {
+                 hci_pi(sk)->hdev = NULL;
+                 sk->sk_err = EPIPE;
+@@ -771,7 +771,7 @@ void hci_sock_dev_event(struct hci_dev *hdev, int event)
 
-I think though that I would use that smm hsave area just like you
-did in the patch, just not save it to the guest memory and migrate
-it as a new state.
+                 hci_dev_put(hdev);
+             }
+-            release_sock(sk);
++            bh_unlock_sock(sk);
+         }
+         read_unlock(&hci_sk_list.lock);
+     }
 
-I would call it something smm_l1_hsave_area or something like
-that with a comment explaining why it is needed.
+The first thing is to revert the lock replacement. By the way, I
+wonder if we need to change the read_lock() here to write_lock(), as
+the code between the lock indeed changes something related to the
+hci_sk_list.
 
-This way we still avoid overhead of copying the hsave area
-on each nested entry.
+For the patch code in hci_sock_bound_ioctl() function, I prefer to
+leave the hci_sock_ioctl() function alone. Danton changes the
+lock_sock() from hci_sock_ioctl() to hci_sock_bound_ioctl() for the
+serialise stuff, which I don't really get the point.
 
-What do you think?
+> +       /* serialise with read_lock in hci_sock_dev_event */
+> +       write_lock(&hci_sk_list.lock);
+> +       bh_lock_sock_nested(sk);
+> +       hdev = hci_pi(sk)->hdev;
+> +       if (hdev)
+> +               hci_dev_hold(hdev);
+> +       bh_unlock_sock(sk);
+> +       write_unlock(&hci_sk_list.lock);
 
-Best regards,
-	Maxim Levitsky
+Even the read of hci_pi(sk)->hdev is protected like above, the
+attacker can still play userfaultfd tricks to abuse this hdev object.
+Check the attacker scripts in the OSS list.
 
-> as far as I understand, we comply with the spec as 1) L1 has to set
-> it
-> up and 2) L1 is not supposed to expect any particular format there,
-> it's
-> completely volatile.
-> 
+Hence, I think the important thing is to add proper flag check after
+the dangerous copy_from_user() functions like below.
 
+diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
+index 88ec08978ff4..2787da8fe14a 100644
+--- a/net/bluetooth/hci_conn.c
++++ b/net/bluetooth/hci_conn.c
+@@ -1711,6 +1711,9 @@ int hci_get_conn_info(struct hci_dev *hdev, void
+__user *arg)
+        if (copy_from_user(&req, arg, sizeof(req)))
+                return -EFAULT;
 
++       if (!test_bit(HCI_UP, &hdev->flags))
++               return -ENETDOWN;
++
+        hci_dev_lock(hdev);
+        conn = hci_conn_hash_lookup_ba(hdev, req.type, &req.bdaddr);
+        if (conn) {
+@@ -1737,6 +1740,9 @@ int hci_get_auth_info(struct hci_dev *hdev, void
+__user *arg)
+        if (copy_from_user(&req, arg, sizeof(req)))
+                return -EFAULT;
+
++       if (!test_bit(HCI_UP, &hdev->flags))
++               return -ENETDOWN;
++
+        hci_dev_lock(hdev);
+        conn = hci_conn_hash_lookup_ba(hdev, ACL_LINK, &req.bdaddr);
+        if (conn)
+
+@@ -900,6 +900,9 @@ static int hci_sock_blacklist_add(struct hci_dev
+*hdev, void __user *arg)
+        if (copy_from_user(&bdaddr, arg, sizeof(bdaddr)))
+                return -EFAULT;
+
++       if (!test_bit(HCI_UP, &hdev->flags))
++               return -ENETDOWN;
++
+        hci_dev_lock(hdev);
+
+        err = hci_bdaddr_list_add(&hdev->blacklist, &bdaddr, BDADDR_BREDR);
+@@ -917,6 +920,9 @@ static int hci_sock_blacklist_del(struct hci_dev
+*hdev, void __user *arg)
+        if (copy_from_user(&bdaddr, arg, sizeof(bdaddr)))
+                return -EFAULT;
+
++       if (!test_bit(HCI_UP, &hdev->flags))
++               return -ENETDOWN;
++
+        hci_dev_lock(hdev);
+
+        err = hci_bdaddr_list_del(&hdev->blacklist, &bdaddr, BDADDR_BREDR);
+
+And last but not least, we patch the hci_sock_bound_ioctl() and
+hci_sock_sendmsg() function to take an extra hold of the hdev. That
+part is almost like Danton's code and you can check the previous added
+attachment.
+
+There are some other readings of hci_pi(sk)->hdev. One is in
+hci_sock_release() and another is in hci_sock_getname(). However, I
+don't think these two can be easily abused because no copy_from_user()
+is called. Do we need to add hold for these functions too?
+
+Regards
+Lin Ma
