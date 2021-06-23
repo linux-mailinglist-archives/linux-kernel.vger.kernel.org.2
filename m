@@ -2,134 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC653B222B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2534A3B222D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhFWVDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230028AbhFWVDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 17:03:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229812AbhFWVDK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Jun 2021 17:03:10 -0400
-Received: from smtp-35.italiaonline.it ([213.209.10.35]:44159 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229812AbhFWVDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 17:03:08 -0400
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
- ([79.17.119.101])
-        by smtp-35.iol.local with ESMTPA
-        id w9zGldO2dsptiw9zLlZNPm; Wed, 23 Jun 2021 23:00:48 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1624482048; bh=ZGSmRoFXZ8qDZOFZuNx5T8XiAvYHeA24TOLTUmvi9KA=;
-        h=From;
-        b=HlnrKS8OR53BTgQ5RXUOwsEtbEV3TtqKRZE2MV9zqLj9XT8XTytclCsiaaKa9Lq70
-         h/AODGpbK9/dglndo8D2Sxpw1egroGspjPC+nI79V2QE1xOzX/zzcvz+PqabAGgbXd
-         jHC1o2kS5I79IOx9KWwOltMR7hEkOaJzw3l6QibYD5UJUGtqYil5qQ5eKPAeYFKNQN
-         I9B8qZH0jrCiw/whneto7GRtKToOnCob151aZhzWO6dtmnr01BewF7zazJi2BsWIOm
-         b3xCSngHLZUEO9XH3tnixafQlDNs8V/aWxaBDfITLQgOcp/f3c1uMdt7DArLrLSRGe
-         yk6FIC6AqdMsA==
-X-CNFS-Analysis: v=2.4 cv=Bo1Yfab5 c=1 sm=1 tr=0 ts=60d3a100 cx=a_exe
- a=do1bHx4A/kh2kuTIUQHSxQ==:117 a=do1bHx4A/kh2kuTIUQHSxQ==:17
- a=wSIzyl8AIrrWyGTfDxQA:9
-From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-clk@vger.kernel.org
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Gabriel Fernandez <gabriel.fernandez@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH v2] clk: stm32f4: fix post divisor setup for I2S/SAI PLLs
-Date:   Wed, 23 Jun 2021 23:00:39 +0200
-Message-Id: <20210623210039.19494-1-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-X-CMAE-Envelope: MS4xfM514amN4bhnkNihBFRmnPokG3YHEb1br53n59dTy/IwfAJJkYISTe7KYo2ugKKRfik9RU7nvNajiQbHgycxgwd7LeRERYhNYl9+i+NbcoGyD/O5Qg1a
- aSuOGCQbwneLs/9z9C8rTwxebXeAFhqzs72nDE11LwA32CNEO8SO3lFMsekQfvIg9q/BIKOu8EIkGkYX7SLUnKtaHlUtIUBENQpKTStlq4Lvu8VxlmpUIls2
- uTTdOMCgHeHhZAcrAIsHLhAe+BHKoi2ulwkmjpU7kNAY2aku80EqiOS5c+q2u7PuSwC/J7J9w2xCd+IzB+TLm9MHd1X/lUCnjMVBqKMYswyefkXpnhJXt8Yn
- wFI/lS+He45zCignNnsu2THsC3vZ6XhPNGyxsDa/gCgBEbrlPKhnMu5t9mMWHP5Gag2+4g59EN9DjRtgDQWwQbJGyweisFD5z30zrFS1rIPLF02ZAYFEprvB
- S98XK05zuNsFfj7X3dUFv5+zwXXWnHLQGRtJCQqX/Omvpejg36nYOPNiiG3gVVr5Wl8HhJucbeCyLVmlhCdVjZoxwd1FuopgDqMuXBSanYkdeC2CEMU6TxR9
- phSK6Ua8KdWGijNjr7MEKrX2
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD474C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 14:00:52 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id x1so4898884qkp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 14:00:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wWc7S1al1WwAVOp+y6zQe0CWSp+8hVb9XJrJmdJfBBU=;
+        b=eUrA2uEsrdP8RvvO4m51oEKWTX2Qswv+d2+PL/m8WFQVCIL2f09FxousY0CsIS+/+K
+         jThpFKoOmBLw3lKktqNw/fRGHt0sM7kkB4o9pupIzDZS9POK+65OOp1ogpOsIvOea+0S
+         0fNbTGIy9p0/Dd8yUASCaERBMb0FOjh3vZv15C89/puNbHM2gurGb38tB407ijVjdlKr
+         cI3eavDSiqfoloXBni1Wyg8osmNC/EVCg0MdtgNHYrnbaHJyjMxvTXht8rwvXAQuheCm
+         E6JiZQ73lKfGzVdgjZtAuelbfNCGSmz3+rXK0z8gGkCc7w+F0sbwbMIIVlmG5OjFSoEl
+         fyXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wWc7S1al1WwAVOp+y6zQe0CWSp+8hVb9XJrJmdJfBBU=;
+        b=pwcRkswjFpFh9V7usSQbnZ8BXGj1OwtsUAgUdbt4nOUAaZFnOHz5J+CrKUcK0cNWEw
+         tjtnMVoo4l+H1cQZNSv2UaTjjTW8Wn2CRM/nNohxz4LoMxp62zHH0si0jAeSFIvq0187
+         PHaDudV8z6lecNkMCpZ50QjoAbF3K4d0MFNDV8oSaUoc+gY7k9E6a///CJ84MfUcl18H
+         UIYntSB+NZA1azGwz4Qp9nrr72p6Qd9EX7ZLR6yDaH9P646V91WaBmUwhZLNORcPuabJ
+         lwebMsvUWbiQCiSxiTH2aqE6rRInUwUz9H4EfHzmX8+eN3no4Po+a7uI54GnIV6d0ucP
+         Qwqw==
+X-Gm-Message-State: AOAM530DN56sq/SMH1JXiOY5h62MUOQNMXgDgu89tAvSU/Zf9CjrFI+a
+        gCW6g9smp6oUzyiTVWvMw5GmzdY8/JANIm2g0KQ4lA==
+X-Google-Smtp-Source: ABdhPJxxsQSUj31dvJRDYjgDMyLXsvuem6+pypfokYWpON7PFK8GL48uVo0QJFwKl2NczV8nr5j1V1Gr9vkQf7GAPgU=
+X-Received: by 2002:a37:311:: with SMTP id 17mr1235839qkd.295.1624482051895;
+ Wed, 23 Jun 2021 14:00:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210621173028.3541424-1-mw@semihalf.com> <20210621173028.3541424-2-mw@semihalf.com>
+ <YNOW+mQNEmSRx/6V@lunn.ch>
+In-Reply-To: <YNOW+mQNEmSRx/6V@lunn.ch>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Wed, 23 Jun 2021 23:00:42 +0200
+Message-ID: <CAPv3WKctVLzTZxH2gc-M_ZT7T-i6OmwSQk30AQ4oHEm8BUrpiw@mail.gmail.com>
+Subject: Re: [net-next: PATCH v3 1/6] Documentation: ACPI: DSD: describe
+ additional MAC configuration
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Jon Nettleton <jon@solid-run.com>,
+        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
+        lenb@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enabling the framebuffer leads to a system hang. Running, as a debug
-hack, the store_pan() function in drivers/video/fbdev/core/fbsysfs.c
-without taking the console_lock, allows to see the crash backtrace on
-the serial line.
+Hi Andrew,
 
-~ # echo 0 0 > /sys/class/graphics/fb0/pan
+=C5=9Br., 23 cze 2021 o 22:18 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a):
+>
+> > +MAC node example with a "fixed-link" subnode.
+> > +---------------------------------------------
+> > +
+> > +.. code-block:: none
+> > +
+> > +     Scope(\_SB.PP21.ETH1)
+> > +     {
+> > +       Name (_DSD, Package () {
+> > +         ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+> > +              Package () {
+> > +                  Package () {"phy-mode", "sgmii"},
+> > +              },
+> > +         ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),
+> > +              Package () {
+> > +                  Package () {"fixed-link", "LNK0"}
+> > +              }
+> > +       })
+>
+> At least in the DT world, it is pretty unusual to see both fixed-link
+> and phy-mode.
 
-[    9.719414] Unhandled exception: IPSR = 00000005 LR = fffffff1
-[    9.726937] CPU: 0 PID: 49 Comm: sh Not tainted 5.13.0-rc5 #9
-[    9.733008] Hardware name: STM32 (Device Tree Support)
-[    9.738296] PC is at clk_gate_is_enabled+0x0/0x28
-[    9.743426] LR is at stm32f4_pll_div_set_rate+0xf/0x38
-[    9.748857] pc : [<0011e4be>]    lr : [<0011f9e3>]    psr: 0100000b
-[    9.755373] sp : 00bc7be0  ip : 00000000  fp : 001f3ac4
-[    9.760812] r10: 002610d0  r9 : 01efe920  r8 : 00540560
-[    9.766269] r7 : 02e7ddb0  r6 : 0173eed8  r5 : 00000000  r4 : 004027c0
-[    9.773081] r3 : 0011e4bf  r2 : 02e7ddb0  r1 : 0173eed8  r0 : 1d3267b8
-[    9.779911] xPSR: 0100000b
-[    9.782719] CPU: 0 PID: 49 Comm: sh Not tainted 5.13.0-rc5 #9
-[    9.788791] Hardware name: STM32 (Device Tree Support)
-[    9.794120] [<0000afa1>] (unwind_backtrace) from [<0000a33f>] (show_stack+0xb/0xc)
-[    9.802421] [<0000a33f>] (show_stack) from [<0000a8df>] (__invalid_entry+0x4b/0x4c)
+I did a quick experiment:
+git grep -C 8 fixed-link arch/arm64/boot/dts/
+git grep -C 8 fixed-link arch/arm/boot/dts/
+almost all MAC nodes (i.e. not switch ports) containing 'fixed-link'
+have an adjacent 'phy-mode' property defined. How else would the
+drivers know how to configure the HW connection type in its registers?
 
-The `pll_num' field in the post_div_data configuration contained a wrong
-value which also referenced an uninitialized hardware clock when
-clk_register_pll_div() was called.
+> You might have one of the four RGMII modes, in order to
+> set the delays when connecting to a switch. But sgmii and fixed link
+> seems very unlikely, how is sgmii autoneg going to work?
+>
 
-Fixes: 517633ef630e ("clk: stm32f4: Add post divisor for I2S & SAI PLLs")
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
+Indeed most cases in the tree are "rgmii*", but we can also see e.g.
+10gbase-r, sgmii and 2500base-x. You can find sgmii + fixed-link on
+the eth1 of the armada-388-clearfog. Regarding the autoneg - I'm
+mostly familiar with the mvneta/mvpp2, but in this mode the
+autonegotiation is disabled and the link is forcibly set up/down in
+MAC registers during the netedev_open/close accordingly. FYI, along
+with the 10G ports on CN913x-DB, I tested fixed-link on Macchiatobin
+sgmii port.
 
----
+Anyway - all above is a bit side discussion to the actual DSDT
+description and how the fixed-link subnode looks like. I think
+phy-mode set to "sgmii" is not incorrect, but we can change it to
+whatever other type of your preference, as well.
 
-Changes in v2:
-- Change  'u8 pll_num' from 'stm32f4_pll_post_div_data' structure into
-  'int pll_idx'.
+Best regards,
+Marcin
 
- drivers/clk/clk-stm32f4.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
-index 18117ce5ff85..5c75e3d906c2 100644
---- a/drivers/clk/clk-stm32f4.c
-+++ b/drivers/clk/clk-stm32f4.c
-@@ -526,7 +526,7 @@ struct stm32f4_pll {
- 
- struct stm32f4_pll_post_div_data {
- 	int idx;
--	u8 pll_num;
-+	int pll_idx;
- 	const char *name;
- 	const char *parent;
- 	u8 flag;
-@@ -557,13 +557,13 @@ static const struct clk_div_table post_divr_table[] = {
- 
- #define MAX_POST_DIV 3
- static const struct stm32f4_pll_post_div_data  post_div_data[MAX_POST_DIV] = {
--	{ CLK_I2SQ_PDIV, PLL_I2S, "plli2s-q-div", "plli2s-q",
-+	{ CLK_I2SQ_PDIV, PLL_VCO_I2S, "plli2s-q-div", "plli2s-q",
- 		CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 0, 5, 0, NULL},
- 
--	{ CLK_SAIQ_PDIV, PLL_SAI, "pllsai-q-div", "pllsai-q",
-+	{ CLK_SAIQ_PDIV, PLL_VCO_SAI, "pllsai-q-div", "pllsai-q",
- 		CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 8, 5, 0, NULL },
- 
--	{ NO_IDX, PLL_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PARENT,
-+	{ NO_IDX, PLL_VCO_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PARENT,
- 		STM32F4_RCC_DCKCFGR, 16, 2, 0, post_divr_table },
- };
- 
-@@ -1774,7 +1774,7 @@ static void __init stm32f4_rcc_init(struct device_node *np)
- 				post_div->width,
- 				post_div->flag_div,
- 				post_div->div_table,
--				clks[post_div->pll_num],
-+				clks[post_div->pll_idx],
- 				&stm32f4_clk_lock);
- 
- 		if (post_div->idx != NO_IDX)
--- 
-2.17.1
-
+> > +       Name (LNK0, Package(){ // Data-only subnode of port
+> > +         ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+> > +              Package () {
+> > +                  Package () {"speed", 1000},
+> > +                  Package () {"full-duplex", 1}
+> > +              }
+> > +       })
+> > +     }
+> > +
+>
+>   Andrew
