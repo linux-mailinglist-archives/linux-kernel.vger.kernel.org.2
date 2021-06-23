@@ -2,63 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64203B226D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8A03B2279
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229755AbhFWV2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 17:28:09 -0400
-Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:45259 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhFWV2I (ORCPT
+        id S229849AbhFWVcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 17:32:48 -0400
+Received: from mail-pj1-f54.google.com ([209.85.216.54]:35559 "EHLO
+        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhFWVcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 17:28:08 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d90 with ME
-        id LlRm2500721Fzsu03lRmLM; Wed, 23 Jun 2021 23:25:49 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 23 Jun 2021 23:25:49 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] ath11k: Remove some duplicate code
-Date:   Wed, 23 Jun 2021 23:25:44 +0200
-Message-Id: <a65952db7f4eb8aaaa654b77dcd4930482f5c49b.1624483438.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Wed, 23 Jun 2021 17:32:46 -0400
+Received: by mail-pj1-f54.google.com with SMTP id pf4-20020a17090b1d84b029016f6699c3f2so4630294pjb.0;
+        Wed, 23 Jun 2021 14:30:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fdjwEWE24Dy/IG34lYYHtdW9bawi+R/sEfDdB4k+M44=;
+        b=FP5/8F1Q9PKqRetB/0wLbCeY21JvfejTSTlRyoDbK2knKIFPGw532IijKh+Ur8enWe
+         XLX6WtD6c8frWRGZqn6JowXzR0EmwqEG0BBafI0NFXMmgtpcPkXLKsjyyz/MAV5r2ub8
+         L3y6TP7UKVcbSzeLxgawqvkOBklB0k64AE5glPasPWcCHAFutYu6ARwUYwPco4Eooy+S
+         bVEUAK1vSm4mlbqlGcQxyIxt6oZXDRxtIXD0Osy4B3klKV7n4BPTrlC+GylCjJ7UOiFp
+         7uwzcQnXN17j4TjFZnHyC8wm2Nw29KtOnyWOBl7YXiHOG3Q8tTW/WKrYRG+JiXYjo24J
+         c4+w==
+X-Gm-Message-State: AOAM530sR8NLpij8hmPB+AWhRJk9j4m2uh0DlndPF+CMYEcBczFfJsAP
+        xl54hGi//qC0JYXOJXpTlRkOPCdls8c=
+X-Google-Smtp-Source: ABdhPJy7DX5Ast8uucUZKUgFPqMCI4ozmIf83KEET693R9mgkhDLUap6BnyNimy1ur33fhmUdJW+Hg==
+X-Received: by 2002:a17:90a:6fc5:: with SMTP id e63mr1750174pjk.90.1624483827344;
+        Wed, 23 Jun 2021 14:30:27 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id l10sm6094468pjg.26.2021.06.23.14.30.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 14:30:26 -0700 (PDT)
+Subject: Re: [PATCH v4 07/10] scsi: ufs: Simplify error handling preparation
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
+ <1624433711-9339-9-git-send-email-cang@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <dbe3e867-7e47-e306-038e-2e578845c5ba@acm.org>
+Date:   Wed, 23 Jun 2021 14:30:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1624433711-9339-9-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'ATH11K_HE_MCS_MAX' is 11, so these 2 blocks of code are exactly the same.
-Remove the one that uses a hard-coded constant.
+On 6/23/21 12:35 AM, Can Guo wrote:
+> -static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+> +static int ufshcd_err_handling_prepare(struct ufs_hba *hba)
+>  {
+>  	/*
+>  	 * It is not safe to perform error handling while suspend or resume is
+>  	 * in progress. Hence the lock_system_sleep() call.
+>  	 */
+>  	lock_system_sleep();
+> +	/*
+> +	 * Exclusively call pm_runtime_get_sync(hba->dev) once, in case
+> +	 * following ufshcd_rpm_get_sync() fails.
+> +	 */
+> +	pm_runtime_get_sync(hba->dev);
+> +	if (pm_runtime_suspended(hba->dev) || hba->is_sys_suspended) {
+> +		pm_runtime_put(hba->dev);
+> +		unlock_system_sleep();
+> +		return -EINVAL;
+> +	}
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/net/wireless/ath/ath11k/dp_rx.c | 5 -----
- 1 file changed, 5 deletions(-)
+There is code present in ufshcd_queuecommand() that may trigger data
+corruption to prevent that the above pm_runtime_get_sync() call triggers
+a deadlock. I think we need a better solution.
 
-diff --git a/drivers/net/wireless/ath/ath11k/dp_rx.c b/drivers/net/wireless/ath/ath11k/dp_rx.c
-index 603d2f93ac18..9a224817630a 100644
---- a/drivers/net/wireless/ath/ath11k/dp_rx.c
-+++ b/drivers/net/wireless/ath/ath11k/dp_rx.c
-@@ -1406,11 +1406,6 @@ ath11k_update_per_peer_tx_stats(struct ath11k *ar,
- 	 * Firmware rate's control to be skipped for this?
- 	 */
- 
--	if (flags == WMI_RATE_PREAMBLE_HE && mcs > 11) {
--		ath11k_warn(ab, "Invalid HE mcs %d peer stats",  mcs);
--		return;
--	}
--
- 	if (flags == WMI_RATE_PREAMBLE_HE && mcs > ATH11K_HE_MCS_MAX) {
- 		ath11k_warn(ab, "Invalid HE mcs %d peer stats",  mcs);
- 		return;
--- 
-2.30.2
+Thanks,
 
+Bart.
