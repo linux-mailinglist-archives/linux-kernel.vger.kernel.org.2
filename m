@@ -2,116 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9753B1EB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7EC3B1EB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbhFWQbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 12:31:13 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:40479 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWQbE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 12:31:04 -0400
-Received: by mail-io1-f70.google.com with SMTP id l15-20020a5e820f0000b02904bd1794d00eso2320127iom.7
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:28:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to:cc;
-        bh=U3PZEl0Cdz5lWpgoZ3LcxBmCftsorG7+dKagwjSphas=;
-        b=qDptwzRS/XonUI233EWMYTocGDeZxOXk0BinXHlHQ8VdjKlxcjvq5Nedfe6+J+msId
-         PSRx63S9StZb+dfvF9zVXliaNuQk6/AUr6U6GiQ0sQlzrpE9Wr55PSEkTKaTGusDWlFS
-         Nf9cRKc+WBzx8+5dr7AaWyECy+nodTxO3yggeQJPQZhiwXCJg7uhG1lJPt6ng6foXH9z
-         qqQLR15ZoSCuUo2Yq2C8nCCJT0rlgjFc15k773rglQlZjysXBkwdiMD/xtJ3FcwawM/a
-         LhpA14OxzKF8EGjrG7Vz11IJycZKFBdaK4CUxt3MRYjayBbgVk6tslSqXiRASju93xcN
-         XIsw==
-X-Gm-Message-State: AOAM533UXvk18YyUl9XHS3IZw2trk5iMg7JZufwSGnQ7lvZdUq9p97LL
-        GtA1/lA3pMhsp0VESUsrJUWB/DUVXrbvtpJ+8Bt+8h8kifWV
-X-Google-Smtp-Source: ABdhPJxWibJjI3zl8BX97kjoK8MD9g1qOHd22umTb2oqfAL1duULt7iEPmx3R7h0vjlzdlOJ5d2bXHVdheJ/jqPGdiGn+EFMmyQK
+        id S230135AbhFWQbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 12:31:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229902AbhFWQbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 12:31:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E93E61350;
+        Wed, 23 Jun 2021 16:28:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624465738;
+        bh=r4YKzhDT6S2mPQ+5hEgonlfzwke4UWS0t2mdsGa79Z0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=hvrz4kEnLMO5yMkyHPwHybg5xWpfz1pNbjnMT3nYTYJuCNlhrzhaUfK/sNNTvmV1O
+         ascsKkgcZhX461cs95MeHbs9XBCxtSoQ+Vx5kyDEBz9XSRDkkj7cMQpZv8n+Qid6FP
+         KZdz4tZ37QYvRchwIzVv+wRWWT8+0HLCUw7pBrpgjDepr37zeBqGj7l9YvodukiOuc
+         2npyZ+Mw3JwJOLwx27Xy4NaXdVuYQUPjqgTYadQVwVauQZokCKM+VYzH7k38hnJAfS
+         j6owaysPKExWNvvTDKE7QaJyOoWcaknHR0knJU+B/NWtJAghMzGCWLSMnpc0xwRGZZ
+         qOsut+EyUBRjg==
+Subject: Re: [PATCH 2/2] ACPI: bgrt: Use sysfs_emit
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        clang-built-linux@googlegroups.com
+References: <20210623013802.1904951-1-nathan@kernel.org>
+ <20210623013802.1904951-2-nathan@kernel.org>
+ <202106222250.7BD80A12FF@keescook>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <a155e3ee-69aa-408d-208b-06144cf6cf8f@kernel.org>
+Date:   Wed, 23 Jun 2021 09:28:55 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2206:: with SMTP id n6mr339969ion.54.1624465725884;
- Wed, 23 Jun 2021 09:28:45 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 09:28:45 -0700
-In-Reply-To: <20210623192837.13792eae@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008a8f9c05c571668c@google.com>
-Subject: Re: [syzbot] WARNING: zero-size vmalloc in corrupted
-From:   syzbot <syzbot+c2f6f09fe907a838effb@syzkaller.appspotmail.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     akpm@linux-foundation.org, coreteam@netfilter.org,
-        davem@davemloft.net, dsahern@kernel.org, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, paskripkin@gmail.com,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <202106222250.7BD80A12FF@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Wed, 23 Jun 2021 19:19:28 +0300
-> Pavel Skripkin <paskripkin@gmail.com> wrote:
->
->> On Wed, 23 Jun 2021 02:15:23 -0700
->> syzbot <syzbot+c2f6f09fe907a838effb@syzkaller.appspotmail.com> wrote:
->> 
->> > Hello,
->> > 
->> > syzbot found the following issue on:
->> > 
->> > HEAD commit:    13311e74 Linux 5.13-rc7
->> > git tree:       upstream
->> > console output:
->> > https://syzkaller.appspot.com/x/log.txt?x=15d01e58300000 kernel
->> > config:  https://syzkaller.appspot.com/x/.config?x=42ecca11b759d96c
->> > dashboard link:
->> > https://syzkaller.appspot.com/bug?extid=c2f6f09fe907a838effb syz
->> > repro:
->> > https://syzkaller.appspot.com/x/repro.syz?x=14bb89e8300000 C
->> > reproducer:
->> > https://syzkaller.appspot.com/x/repro.c?x=17cc51b8300000
->> > 
->> > The issue was bisected to:
->> > 
->> > commit f9006acc8dfe59e25aa75729728ac57a8d84fc32
->> > Author: Florian Westphal <fw@strlen.de>
->> > Date:   Wed Apr 21 07:51:08 2021 +0000
->> > 
->> >     netfilter: arp_tables: pass table pointer via nf_hook_ops
->> > 
->> > bisection log:
->> > https://syzkaller.appspot.com/x/bisect.txt?x=13b88400300000 final
->> > oops:
->> > https://syzkaller.appspot.com/x/report.txt?x=10788400300000 console
->> > output: https://syzkaller.appspot.com/x/log.txt?x=17b88400300000
->> > 
->> 
->> This one is similar to previous zero-size vmalloc, I guess :)
->> 
->> #syz test
->> git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->> master
->> 
->> 
->
-> Hah, I didn't notice that this one is already fixed by me. But the
-> patch is in the media tree, it's not upstreamed yet:  
->
-> https://git.linuxtv.org/media_tree.git/commit/?id=c680ed46e418e9c785d76cf44eb33bfd1e8cf3f6
->
-> So, 
->
-> #syz dup: WARNING: zero-size vmalloc in dvb_dmx_init
+On 6/22/2021 10:51 PM, Kees Cook wrote:
+> On Tue, Jun 22, 2021 at 06:38:02PM -0700, Nathan Chancellor wrote:
+>> sysfs_emit is preferred to snprintf for emitting values after
+>> commit 2efc459d06f1 ("sysfs: Add sysfs_emit and sysfs_emit_at to format
+>> sysfs output").
+>>
+>> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> 
+> Perhaps just squash this into patch 1? Looks good otherwise!
+> 
 
-Can't dup bug to a bug in different reporting (upstream->internal).Please dup syzbot bugs only onto syzbot bugs for the same kernel/reporting.
+I thought about it but sysfs_emit is a relatively new API and the 
+previous change may want to be backported but I do not have a strong 
+opinion so I can squash it if Rafael or Len feel strongly :)
 
->
-> With regards,
-> Pavel Skripkin
->
-> -- 
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/20210623192837.13792eae%40gmail.com.
+Thanks for taking a look, cheers!
+Nathan
