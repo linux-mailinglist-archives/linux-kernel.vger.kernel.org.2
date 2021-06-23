@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 849C83B2028
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7773B2033
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbhFWSWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 14:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWSWi (ORCPT
+        id S229822AbhFWS0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 14:26:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23926 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229523AbhFWS0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 14:22:38 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8D0C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:20:21 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id j184so7597988qkd.6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:20:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jl8pbJWalrLhIBlNXOVoQQE4IHG/JvIijc85CtgYeeo=;
-        b=O9TJXI61AW9H2nQtUEnlSBFAPp1Dbm0DFWyvVQzfD/PJICtcInbflOVhVjNXaZC+/A
-         P5oHFmIKwbl6pOHIftFzPCxPDeh1x/lKRVvMsGHK9UZml3jK2tnIowXHThpv5UVtE+Sm
-         5cLMhWY0zpTFvHpTYfr1AbjnBxpwd81+C7RPncszrI4askcQTsqjuNBSpGs42/FuYOUR
-         Zo1Jsaxs5PUHdvj03/RI59F2gWk6fh+bkxwXwGg+BUd0Fx0z6y8O2HdfuaUyv4OWvRWt
-         P1LDggXBACdgJJyoF+/8c2wmxP4OmrriRa/T9WiPUOMz7uGWEHZKMmmYOJhGWbGV+5kQ
-         mXTA==
+        Wed, 23 Jun 2021 14:26:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624472661;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=GrJNB3F5Xa+3Y8OXY7VwcTtiFdRpMIB1S8U9GBXw92s=;
+        b=ZTi1HOZdEj0zI4aziqgNhdbPEd+nV67mxpcPrQw8WkQ/y1dQ48s8Wl4Ef9+wXh2vJcY+oX
+        UJu01tI11QWJVnY6/Qfsooznuowvz8/mnK8iBrNTKCnfy3E/y0Z72yzZiF147LoM1BSWmZ
+        WGxIv2Z/kjkgn/8PwGExsCF0pkaBenQ=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-2-wE1_-AYSPB-15jw6vkh9Ag-1; Wed, 23 Jun 2021 14:24:19 -0400
+X-MC-Unique: wE1_-AYSPB-15jw6vkh9Ag-1
+Received: by mail-oi1-f198.google.com with SMTP id w125-20020acac6830000b029021ecc100d7bso2265336oif.6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:24:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jl8pbJWalrLhIBlNXOVoQQE4IHG/JvIijc85CtgYeeo=;
-        b=VivjFR+5Fr3G8ZXYLZ0gukhsICN8P9jh2V/my+VUbWqVepAEogBZf/L/pWwCH1QHvM
-         Hcr0yZ42voEwuGYzTiAwzn1MgbBvliWpsO7DY3VWFW8e/ytcOInGlnLDpWQaqHFEm35e
-         9uTAAOj33EKB42U4JSRAJBySkd5QzhQ2yhPrtfcp3+4FxgNLKY/FphT+/ITw9FEmFu5q
-         gfiT280fTJnzzoHBvhANT7QwSopWsvqUiASOTzx3tiKdHqfntjBQSpucjbvitiaT4gOT
-         Kv9r3bTLThDoygqxJtn/llbC7Dq2bVixIma6s8UYVv6bCBZej3SubFgH+MvZKZ3am0MA
-         Ny2g==
-X-Gm-Message-State: AOAM531JzbEfMaKrRMP0j6pQ9saPFGJO4yOTLBjraxGZ0+jC7jiQrSpj
-        HIhzvkp04z4GjXboT4ry9Ro7ng==
-X-Google-Smtp-Source: ABdhPJxSsiUaYE217a9+roMj6tfYeEagEHiITUo/av6ByWOnU7jl//t+ROZ4QR4Wpb+FkcwkwjCMDw==
-X-Received: by 2002:ae9:c219:: with SMTP id j25mr1367484qkg.313.1624472420239;
-        Wed, 23 Jun 2021 11:20:20 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id x19sm474843qtp.58.2021.06.23.11.20.19
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GrJNB3F5Xa+3Y8OXY7VwcTtiFdRpMIB1S8U9GBXw92s=;
+        b=ZcOha/WXYebgt2Izy4qaXWgsA1t+SuXMl4Ah5gjqTvgwU5GLFw0Nv2YnIofDRzCJui
+         MUHYZgeBGXK73p0MPABGtevKq76G19wG9k5651m4BtligEo8Y9WIizK1dugccj5knmBE
+         1+nxyu2y3CBh09h/T35SDuW8qUDQ/FzpSg4KYNNeFbqDdNfwnHiCi0NXAxTdXmmLpDML
+         OowqlnMlfXr5HWk9l+Pn9QUZgO9u55AxBzDjXTmcAI3OJsMP+2aoYM9LseqMOXSuJuEt
+         8niWN2gMgNttmCFOIXr9+5U+RXK4KuwwEBWrTe7SraxnTOXeOg/A77F4vmgUg4pFbfaS
+         IEEQ==
+X-Gm-Message-State: AOAM533YnXCfH0owlW8+K7EQao+Xr3h6q7G+JcXVzJPpXrSoMYycro7x
+        hZ9ntnJ75lDZ/tjTE/CDyxojOGs2UUgACuHEQrjNuuyccsb44Q6wM9vBOXcaUi4ZhhDEyZkMMtS
+        K6sXi2kX1J1Ns6F1dS7N9mXFY
+X-Received: by 2002:a9d:1b4f:: with SMTP id l73mr1114572otl.21.1624472659095;
+        Wed, 23 Jun 2021 11:24:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzg5ir0u+uONkcYSiNdhPznngImJRhHue1OFRj781vKuQhdCxHokiOVjGkujqp5MU0GiKAItw==
+X-Received: by 2002:a9d:1b4f:: with SMTP id l73mr1114558otl.21.1624472658915;
+        Wed, 23 Jun 2021 11:24:18 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id l24sm105186oii.45.2021.06.23.11.24.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 11:20:19 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lw7U3-00BlBX-5u; Wed, 23 Jun 2021 15:20:19 -0300
-Date:   Wed, 23 Jun 2021 15:20:19 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     bhelgaas@google.com, alex.williamson@redhat.com, cohuck@redhat.com,
-        kevin.tian@intel.com, eric.auger@redhat.com,
-        giovanni.cabiddu@intel.com, mjrosato@linux.ibm.com,
-        jannh@google.com, kvm@vger.kernel.org, linux-pci@vger.kernel.org,
-        schnelle@linux.ibm.com, minchan@kernel.org,
-        gregkh@linuxfoundation.org, rafael@kernel.org, jeyu@kernel.org,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
-        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
-        rostedt@goodmis.org, peterz@infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] vfio: use the new pci_dev_trylock() helper to
- simplify try lock
-Message-ID: <20210623182019.GW1096940@ziepe.ca>
-References: <20210623022824.308041-1-mcgrof@kernel.org>
- <20210623022824.308041-3-mcgrof@kernel.org>
+        Wed, 23 Jun 2021 11:24:18 -0700 (PDT)
+From:   trix@redhat.com
+To:     hao.wu@intel.com, mdf@kernel.org, michal.simek@xilinx.com
+Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH v3 0/7] wrappers for fpga_manager_ops
+Date:   Wed, 23 Jun 2021 11:24:02 -0700
+Message-Id: <20210623182410.3787784-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210623022824.308041-3-mcgrof@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 07:28:24PM -0700, Luis Chamberlain wrote:
-> Use the new pci_dev_trylock() helper to simplify our locking.
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  drivers/vfio/pci/vfio_pci.c | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
+From: Tom Rix <trix@redhat.com>
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+As followup from
+https://lore.kernel.org/linux-fpga/06301910-10a1-0e62-45a0-d28ab5a787ed@redhat.com/
 
-Jason
+Boards should not be required to have noop functions.
+So improve or create fpga-mgr wrappers for the fpga_manager_ops.  
+Remove the noop functions.
+Refactor fpga-mgr to use the wrappers.
+
+write_sg op was not wrapped on purpose.  Its checking / use in
+fpga_mgr_buf_load_sg() did not warrant a wrapper.
+
+Changes from
+
+v1:
+  commit subject,log
+
+v2:
+  rebase to next-20210623
+
+Tom Rix (7):
+  fpga-mgr: wrap the write_init() op
+  fpga-mgr: make write_complete() op optional
+  fpga-mgr: wrap the write() op
+  fpga-mgr: wrap the status() op
+  fpga-mgr: wrap the state() op
+  fpga-mgr: wrap the fpga_remove() op
+  fpga-mgr: collect wrappers and change to inline
+
+ drivers/fpga/dfl-fme-mgr.c   |   6 ---
+ drivers/fpga/fpga-mgr.c      | 102 +++++++++++++++++++++++------------
+ drivers/fpga/stratix10-soc.c |   6 ---
+ drivers/fpga/ts73xx-fpga.c   |   6 ---
+ drivers/fpga/zynqmp-fpga.c   |   7 ---
+ 5 files changed, 67 insertions(+), 60 deletions(-)
+
+-- 
+2.26.3
+
