@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED2A3B1739
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA76F3B1740
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhFWJvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 05:51:00 -0400
-Received: from mailgate.ics.forth.gr ([139.91.1.2]:16254 "EHLO
-        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhFWJuz (ORCPT
+        id S230291AbhFWJwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 05:52:01 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33330 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229833AbhFWJv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 05:50:55 -0400
-Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
-        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 15N9maJM089296
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 12:48:36 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
-        q=dns/txt; i=@ics.forth.gr; t=1624441711; x=1627033711;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=MISFftgg2hIKWcEtfdZHWCPZ3XpVUN6O8IsMWxh6AwY=;
-        b=b/R6w9sFXlUiHNOh4jO8lZEfd0LyYx5EYOhxNLwH25n/oaVEJ6HxNyNzIm8IjZ5B
-        d22Gw5m5dGemQDvC9folwTeWWlsdmdDIvGkpi3uVMtriocxYSohf3QJbUMd5gfT4
-        rOP3w94LSTCaysDW0hx01zTbwlCdy66KGLfkyhaFK9qD2jpXo4g2y2utO3aZ2MkA
-        MkRAHU07YP4ergQpl+7bxXTOiWOGZpcIWmTpBjgohV8DlvLQ8aTwuq6BezvSGkHc
-        oPbWsoB5avF/211Yk9sTTPmIUz/4An0Ck22fAwV7dIoRjBNTcRsqj+IYgGbP5z4a
-        UUU+GvulJgoH0/bCNQnTPw==;
-X-AuditID: 8b5b014d-96ef2700000067b6-fe-60d3036faf83
-Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
-        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 34.3E.26550.F6303D06; Wed, 23 Jun 2021 12:48:31 +0300 (EEST)
-X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
+        Wed, 23 Jun 2021 05:51:59 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C1ECE21970;
+        Wed, 23 Jun 2021 09:49:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624441781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ux+joYOB/UsMHX7POd5I9X3miorAtdiYmMYNa+mcW6E=;
+        b=mpcL6YYNLF0eM6WXm1Q4WixD/1Y0RnUjjEOMj46KrRfzIvpiyEyvAz2w4RPKVf8tHkkxoL
+        6S7sXh6xbj3f802IhtyD/00gI6cHXGKk3DM6+mNDgFt2DUmLwag5CRxqHvdI5KzJCzSv13
+        WIGLqCJgTEuPkg1lftiUMCsBAGXzPEI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624441781;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ux+joYOB/UsMHX7POd5I9X3miorAtdiYmMYNa+mcW6E=;
+        b=nV2ZmUFlTFTEi4JFefYmjQ6Nsp0O9ka/R/08BSGYZLCHK4k+RdQVrxkZ5IGj8UMTmpFkR8
+        GOMXtbRIVPf1eQDA==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id EBBD211A97;
+        Wed, 23 Jun 2021 09:49:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624441781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ux+joYOB/UsMHX7POd5I9X3miorAtdiYmMYNa+mcW6E=;
+        b=mpcL6YYNLF0eM6WXm1Q4WixD/1Y0RnUjjEOMj46KrRfzIvpiyEyvAz2w4RPKVf8tHkkxoL
+        6S7sXh6xbj3f802IhtyD/00gI6cHXGKk3DM6+mNDgFt2DUmLwag5CRxqHvdI5KzJCzSv13
+        WIGLqCJgTEuPkg1lftiUMCsBAGXzPEI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624441781;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ux+joYOB/UsMHX7POd5I9X3miorAtdiYmMYNa+mcW6E=;
+        b=nV2ZmUFlTFTEi4JFefYmjQ6Nsp0O9ka/R/08BSGYZLCHK4k+RdQVrxkZ5IGj8UMTmpFkR8
+        GOMXtbRIVPf1eQDA==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id FdfVN7QD02ATSgAALh3uQQ
+        (envelope-from <jroedel@suse.de>); Wed, 23 Jun 2021 09:49:40 +0000
+Date:   Wed, 23 Jun 2021 11:49:39 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 2/3] x86/sev: Add defines for GHCB version 2 MSR protocol
+ requests
+Message-ID: <YNMDs5iuhCxeII/U@suse.de>
+References: <20210622144825.27588-1-joro@8bytes.org>
+ <20210622144825.27588-3-joro@8bytes.org>
+ <YNLXQIZ5e1wjkshG@8bytes.org>
+ <YNL/wpVY1PmGJASW@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 23 Jun 2021 12:48:30 +0300
-From:   Nick Kossifidis <mick@ics.forth.gr>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     Nick Kossifidis <mick@ics.forth.gr>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v3 1/3] riscv: optimized memcpy
-Organization: FORTH
-In-Reply-To: <CAFnufp0JuAvrOA89KDbcbhMeMvovoS96STVV+r53PLGJV4r0aw@mail.gmail.com>
-References: <20210617152754.17960-1-mcroce@linux.microsoft.com>
- <20210617152754.17960-2-mcroce@linux.microsoft.com>
- <87f2cf0e98c5c5560cfb591b4f4b29c8@mailhost.ics.forth.gr>
- <CAFnufp0JuAvrOA89KDbcbhMeMvovoS96STVV+r53PLGJV4r0aw@mail.gmail.com>
-Message-ID: <6b35ec67ae580c64b4259e92ce21dc49@mailhost.ics.forth.gr>
-X-Sender: mick@mailhost.ics.forth.gr
-User-Agent: Roundcube Webmail/1.3.16
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMIsWRmVeSWpSXmKPExsXSHT1dWTef+XKCwYHZ6hbb3l1lsdj6exa7
-        xaIV31kspvbEW+xYupnJ4t6KZewWL/Y2slg8WTOT0aJj11cWi8u75rBZbPvcwmZx8dd8Rovm
-        d+fYLV5e7mG2aJvF78Dv0T97CpvHu9/LGD3evHzJ4nG44wu7R0ffPxaPnbPusns83HSJyWPT
-        qk42j1/bjzJ5bF5S73Gp+Tq7x+dNch7tB7qZAnijuGxSUnMyy1KL9O0SuDL6pv5iK5jMUTHz
-        0hqWBsZjbF2MnBwSAiYS51tOs3cxcnEICRxllHj2qJsVImEqMXtvJyOIzSsgKHFy5hMWEJtZ
-        wEJi6pX9jBC2vETz1tnMIDaLgKrExX/3wWw2AU2J+ZcOgtWLCOhKXPxwGGwBs8AkVon599vB
-        ioQFjCXOX2oEG8QvICzx6e5FsMWcAoESbfvfMUJc9J1RYu3zPVBXuEj0TGuBuk5F4sPvB0BT
-        OThEgezNc5UmMArOQnLrLCS3zkJy6wJG5lWMAollxnqZycV6aflFJRl66UWbGMHxyOi7g/H2
-        5rd6hxiZOBgPMUpwMCuJ8D5quZQgxJuSWFmVWpQfX1Sak1p8iFGag0VJnJdXb0K8kEB6Yklq
-        dmpqQWoRTJaJg1OqgSkn6N6hWEPnmLqXAvdeKUkntC+s2n7j+O9SwUQDdbv1GxYoiS8VT61e
-        WML7Kk0m8ktGgdDXNOX/osfZ5hxWWHK1T0HEjVksWekf35w793JfPeVPdNez8nSp8jjxhYO1
-        zN7r0dd0B6U/LSvdH9qeWbLq9otz2kH3b+sxrWi8WeJ6wGPRuo97zC0yd3xbru72fZ2Pz6TD
-        x9LcXb3zN2iF+r1/G7nl3d1prr6OZnmX7DZstGozP5wsv9l78oPDe+du7Ov/8epmefPUKouw
-        TTPqpNcxLDk66/8uTsuJcjKHWwtvt5y2tz13XXabB6PgOqdPx6+or95b/GG5apXq9P9rZi7+
-        Zy8aox1mf+bozpN2RteVWIozEg21mIuKEwEza0BxNgMAAA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNL/wpVY1PmGJASW@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Στις 2021-06-23 02:35, Matteo Croce έγραψε:
->> 
->> If you want to be compliant with memcpy you should check for 
->> overlapping
->> regions here since "The memory areas must not overlap", and do nothing
->> about it because according to POSIX this leads to undefined behavior.
->> That's why recent libc implementations use memmove in any case (memcpy
->> is an alias to memmove), which is the suggested approach.
->> 
+On Wed, Jun 23, 2021 at 11:32:50AM +0200, Borislav Petkov wrote:
+> Ok, so I took a critical look at this and it doesn't make sense to have
+> a differently named define each time you need the [63:12] slice of
+> GHCBData. So you can simply use GHCB_DATA(msr_value) instead, see below.
 > 
-> Mmm which memcpy arch implementation does this check?
-> I guess that noone is currently doing it.
-> 
+> Complaints?
 
-Yup because even if they did the wouldn't know what to do about it since 
-POSIX leaves this as undefined behavior. So instead of using memcpy it's 
-suggested that people use memmove that can handle overlapping regions, 
-and because we can't patch the rest of the kernel to only use memmove 
-(or the rest of the programs if we were a libc), the idea is to just 
-alias memcpy to memmove (BTW Torvalds also thinks this is a good idea: 
-https://bugzilla.redhat.com/show_bug.cgi?id=638477#c132).
+Looks good to me.
+
