@@ -2,79 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93DA13B1C7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7753B1C86
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbhFWObr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59856 "EHLO
+        id S231294AbhFWOcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbhFWObp (ORCPT
+        with ESMTP id S231286AbhFWOcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:31:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2592C061574;
-        Wed, 23 Jun 2021 07:29:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ieDdiT+cXnudy2hbSqWAlqdZ9AqoFLDbGiLjJtl0z+k=; b=IfuozOkc+1XSuEugMOC8GRdMVH
-        gDDh3l4GzQvnjGpr60DReCardwRJoeWVVcH0ILI7WUAgVPKDtY0cG79Qjg3sQy+Y7YvS/g7dx1KAb
-        gDHn6bXFVxNq4wFpK0VnA3t3t8dCnhDo+S/dKEasnkiBBtGYeppFFnHP785U/kEPvdBRTeFWX4mtZ
-        8bf7IEZt1GbBaKqkJmckjefsWeW0XO+KThOAK/CEgUhN8R2mxLjqBRlYSqKuXRvdSNQAbQQGIqs9Y
-        k9acsCzUb+LcWgIgahctY+o9Oeva4ViK+vIug45xOLE7PjTYVO6pPW+PwJW2sXJmshIrEYwH1iEQF
-        6aNl3WGg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lw3rv-00FWMS-N2; Wed, 23 Jun 2021 14:28:51 +0000
-Date:   Wed, 23 Jun 2021 15:28:43 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lennart Poettering <lennart@poettering.net>,
-        Luca Boccassi <bluca@debian.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        Javier Gonz??lez <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>
-Subject: Re: [PATCH v3 1/6] block: add disk sequence number
-Message-ID: <YNNFGx8Su8rjhRUL@infradead.org>
-References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
- <20210623105858.6978-2-mcroce@linux.microsoft.com>
- <YNMffBWvs/Fz2ptK@infradead.org>
- <CAFnufp1gdag0rGQ8K4_2oB6_aC+EZgfgwd2eL4-AxpG0mK+_qQ@mail.gmail.com>
+        Wed, 23 Jun 2021 10:32:46 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB151C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 07:30:27 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id v7so1937929pgl.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 07:30:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WKMVzZz8u7uLBmWomdYlr+oMy96WS6tUJGPPtCZ0D60=;
+        b=eYVZTdGsyVwQA4kGhfrZ47tU/XyD6Gdfb5Rx3FV6lq4wWZL1YRspeUnNTaN16uOM/5
+         PiZwMKxRT8JUaXAUA/B6aFfoWoCGBSxCgq9OBk8jcWvqbh7VlX3w1dMY1/ykca4/GhDN
+         OY8g353DIBKO8cvg/x7Zg5+Dnx1v8r30cn340=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WKMVzZz8u7uLBmWomdYlr+oMy96WS6tUJGPPtCZ0D60=;
+        b=j99fnlBOZThZqzWaEep7+5UgBwWucdr3EVvBctrV0H1c1wPENL8MgUNF120RlZCDdu
+         BNRT5NZD94/GBcsV/QeJlPmqz/tTdWbMsiQQTGwJi8frQknzHUA+4nPvmYzzmA8pluct
+         H0bLMKx5ZlZnqBoCS77svJHY443Utpo0oWWrnoxpr+pEAtfCwTYaIFDXuS01Q3NcLDQx
+         Q49LpDQOkhXqFpRywwVsVWZkJcU+dnzLpxLwIAHBdqhw/dy8ctfB05xpCNPk4WvdRHYM
+         MIuw7ItdCop6vziwt7ZTw10slOMHHqBMKLzdqQyc7f/M65UIXUuF43mbQzaRtaXYkXyV
+         MixA==
+X-Gm-Message-State: AOAM532uJcbq4tTsmXE1SU80aRgc0HTeMN8cntvZJjWdsVlQNgf0hIDC
+        q5vPzCHK1ePJ18Qaq90jbAD25w==
+X-Google-Smtp-Source: ABdhPJzBNh/oD3wHuk2SjWKRS7Sjx1wJamx3k/4NZa6pNlIIEJ2pDtPK2Km1/JZKZW6Ey9ydWdubmQ==
+X-Received: by 2002:a63:8241:: with SMTP id w62mr4176796pgd.343.1624458627555;
+        Wed, 23 Jun 2021 07:30:27 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q4sm158954pgg.0.2021.06.23.07.30.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 07:30:27 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 07:30:26 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     0day robot <lkp@intel.com>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        Shuah Khan <shuah@kernel.org>, stable@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [selftests/lkdtm]  84d8cf25b0:
+ kernel_BUG_at_drivers/misc/lkdtm/bugs.c
+Message-ID: <202106230728.4844CE5@keescook>
+References: <20210619025834.2505201-1-keescook@chromium.org>
+ <20210623143549.GA25993@xsang-OptiPlex-9020>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFnufp1gdag0rGQ8K4_2oB6_aC+EZgfgwd2eL4-AxpG0mK+_qQ@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210623143549.GA25993@xsang-OptiPlex-9020>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 03:10:21PM +0200, Matteo Croce wrote:
-> I just didn't want to clobber that file namespace, as that is the only
-> point where it's used.
-
-It doesn't really clobber the file namespace.  Declaring it normally
-at the top of the file makes it very clear we have global state.
-Hiding it in a function just causes obsfucation.
-
-> > Can you explain a little more why we need a global sequence count vs
-> > a per-disk one here?
+On Wed, Jun 23, 2021 at 10:35:50PM +0800, kernel test robot wrote:
 > 
-> The point of the whole series is to have an unique sequence number for
-> all the disks.
-> Events can arrive to the userspace delayed or out-of-order, so this
-> helps to correlate events to the disk.
-> It might seem strange, but there isn't a way to do this yet, so I come
-> up with a global, monotonically incrementing number.
+> 
+> Greeting,
+> 
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: 84d8cf25b0f80da0ac229214864654a7662ec7e4 ("[PATCH v2] selftests/lkdtm: Use /bin/sh not $SHELL")
+> url: https://github.com/0day-ci/linux/commits/Kees-Cook/selftests-lkdtm-Use-bin-sh-not-SHELL/20210619-105959
+> base: https://git.kernel.org/cgit/linux/kernel/git/shuah/linux-kselftest.git next
+> 
+> in testcase: kernel-selftests
+> version: kernel-selftests-x86_64-f8879e85-1_20210618
+> with following parameters:
+> 
+> 	group: lkdtm
+> 	ucode: 0xe2
 
-Maybe add a comment to explain that?
+Heh. Yes, this is working as intended. :) Most of the lkdtm tests will
+trigger Oopses, and this is by design: it is checking that the kernel
+catches bad conditions and freaks out appropriately.
+
+-Kees
+
+-- 
+Kees Cook
