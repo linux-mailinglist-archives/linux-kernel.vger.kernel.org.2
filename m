@@ -2,104 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D713B1A2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8D13B1A29
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbhFWMbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbhFWMbe (ORCPT
+        id S231403AbhFWMa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:30:56 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:36954 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231336AbhFWMaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:31:34 -0400
-Received: from smtp-42ae.mail.infomaniak.ch (smtp-42ae.mail.infomaniak.ch [IPv6:2001:1600:4:17::42ae])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48924C08C5F1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:26:55 -0700 (PDT)
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4G92ZP0TT1zMprpm;
-        Wed, 23 Jun 2021 14:26:53 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4G92ZN3lv2zlmrrs;
-        Wed, 23 Jun 2021 14:26:52 +0200 (CEST)
-Subject: Re: [PATCH v2 27/29] docs: userspace-api: landlock.rst: avoid using
- ReST :doc:`foo` markup
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-References: <cover.1623824363.git.mchehab+huawei@kernel.org>
- <24888a9c5da3c505b2bc274fcd83be348dbaf972.1623824363.git.mchehab+huawei@kernel.org>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <7ebe5a4d-8835-6737-c006-3d065e50dc8a@digikod.net>
-Date:   Wed, 23 Jun 2021 14:26:43 +0200
-User-Agent: 
+        Wed, 23 Jun 2021 08:30:30 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15NCCAHv019382;
+        Wed, 23 Jun 2021 12:28:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=E/rZF6f/E1j3A2n1P6pKXv312XOIRxH+4M3jl3gzcXg=;
+ b=Rh3iCHZ836i/QMvrrsAMY8emsUCWt1OK0HzMy0NrN/F4f3Celhs97ycqwy3SALZyfg/1
+ cwTSVWyf+1y6tky1y52MinJVsWbKIQvwmQdAKzUwWysZx11yx6MNdRuOW/hV/zxy9y0Q
+ P9aOTO1mlcueCQSDI59dU9C5yFnHYK5iaxtuICANjG3Xa8Yk4Gb0J+Pe5mT5LVjkEPGR
+ DemyYCjzh74xwvzDViD/neZ/XyecfsFBU/CxMeFXR17N96y2tX5GHU2RVBLBddPOE98q
+ iWE6y7cN2xD6Ew+5Cr77KiMb6ESaaMQ8tBWdQ0/oX62CCHwgEivu7n/l2xQ3e5Z5gWb1 ig== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39aqqvwqx2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Jun 2021 12:28:10 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15NCFHPN025458;
+        Wed, 23 Jun 2021 12:28:09 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 3995py66j9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Jun 2021 12:28:09 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15NCS8l3064004;
+        Wed, 23 Jun 2021 12:28:08 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 3995py66hv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Jun 2021 12:28:08 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15NCS4U0007448;
+        Wed, 23 Jun 2021 12:28:04 GMT
+Received: from kadam (/102.222.70.252)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 23 Jun 2021 05:28:03 -0700
+Date:   Wed, 23 Jun 2021 15:27:57 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     "kbuild@lists.01.org" <kbuild@lists.01.org>,
+        kernel test robot <lkp@intel.com>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: Re: net/sunrpc/xprtrdma/frwr_ops.c:647 frwr_unmap_async() error:
+ potentially dereferencing uninitialized 'last'.
+Message-ID: <20210623122756.GB2094@kadam>
+References: <202106231840.ECkPJRDx-lkp@intel.com>
+ <AAA93115-ABDD-44DA-9784-B8A001E9CEC5@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <24888a9c5da3c505b2bc274fcd83be348dbaf972.1623824363.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AAA93115-ABDD-44DA-9784-B8A001E9CEC5@oracle.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: ghOfa99bWbv9CnQn-6TM7BsGh81Z1BKB
+X-Proofpoint-GUID: ghOfa99bWbv9CnQn-6TM7BsGh81Z1BKB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 16/06/2021 08:27, Mauro Carvalho Chehab wrote:
-> The :doc:`foo` tag is auto-generated via automarkup.py.
-> So, use the filename at the sources, instead of :doc:`foo`.
+On Wed, Jun 23, 2021 at 03:20:10PM +0300, Chuck Lever III wrote:
+> Howdy Dan!
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/userspace-api/landlock.rst | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-
-Acked-by: Mickaël Salaün <mic@linux.microsoft.com>
-
-Like others, I think it would be nice to explain the reason of this
-change in the commit message, and why it is better than the current way
-to do it.
-
+> > On Jun 23, 2021, at 6:07 AM, Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > 
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   0c18f29aae7ce3dadd26d8ee3505d07cc982df75
+> > commit: e10fa96d347488d1fd278e84f52ba7b25067cc71 xprtrdma: Move cqe to struct rpcrdma_mr
+> > config: x86_64-randconfig-m001-20210622 (attached as .config)
+> > compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > 
+> > New smatch warnings:
+> > net/sunrpc/xprtrdma/frwr_ops.c:647 frwr_unmap_async() error: potentially dereferencing uninitialized 'last'.
+> > 
+> > Old smatch warnings:
+> > net/sunrpc/xprtrdma/frwr_ops.c:546 frwr_unmap_sync() error: potentially dereferencing uninitialized 'last'.
+> > 
+> > vim +/last +647 net/sunrpc/xprtrdma/frwr_ops.c
+> > 
+> > d8099feda4833b Chuck Lever 2019-06-19  608  void frwr_unmap_async(struct rpcrdma_xprt *r_xprt, struct rpcrdma_req *req)
+> > d8099feda4833b Chuck Lever 2019-06-19  609  {
+> > d8099feda4833b Chuck Lever 2019-06-19  610  	struct ib_send_wr *first, *last, **prev;
+> > 5ecef9c8436695 Chuck Lever 2020-11-09  611  	struct rpcrdma_ep *ep = r_xprt->rx_ep;
+> > d8099feda4833b Chuck Lever 2019-06-19  612  	struct rpcrdma_frwr *frwr;
+> > d8099feda4833b Chuck Lever 2019-06-19  613  	struct rpcrdma_mr *mr;
+> > d8099feda4833b Chuck Lever 2019-06-19  614  	int rc;
+> > d8099feda4833b Chuck Lever 2019-06-19  615  
+> > d8099feda4833b Chuck Lever 2019-06-19  616  	/* Chain the LOCAL_INV Work Requests and post them with
+> > d8099feda4833b Chuck Lever 2019-06-19  617  	 * a single ib_post_send() call.
+> > d8099feda4833b Chuck Lever 2019-06-19  618  	 */
+> > d8099feda4833b Chuck Lever 2019-06-19  619  	frwr = NULL;
+> > d8099feda4833b Chuck Lever 2019-06-19  620  	prev = &first;
+> > 265a38d4611360 Chuck Lever 2019-08-19  621  	while ((mr = rpcrdma_mr_pop(&req->rl_registered))) {
+> > 
+> > Is it possible for the ->rl_registered list to be empty?
 > 
-> diff --git a/Documentation/userspace-api/landlock.rst b/Documentation/userspace-api/landlock.rst
-> index 62c9361a3c7f..f35552ff19ba 100644
-> --- a/Documentation/userspace-api/landlock.rst
-> +++ b/Documentation/userspace-api/landlock.rst
-> @@ -145,7 +145,8 @@ Bind mounts and OverlayFS
->  
->  Landlock enables to restrict access to file hierarchies, which means that these
->  access rights can be propagated with bind mounts (cf.
-> -:doc:`/filesystems/sharedsubtree`) but not with :doc:`/filesystems/overlayfs`.
-> +Documentation/filesystems/sharedsubtree.rst) but not with
-> +Documentation/filesystems/overlayfs.rst.
->  
->  A bind mount mirrors a source file hierarchy to a destination.  The destination
->  hierarchy is then composed of the exact same files, on which Landlock rules can
-> @@ -170,8 +171,8 @@ Inheritance
->  
->  Every new thread resulting from a :manpage:`clone(2)` inherits Landlock domain
->  restrictions from its parent.  This is similar to the seccomp inheritance (cf.
-> -:doc:`/userspace-api/seccomp_filter`) or any other LSM dealing with task's
-> -:manpage:`credentials(7)`.  For instance, one process's thread may apply
-> +Documentation/userspace-api/seccomp_filter.rst) or any other LSM dealing with
-> +task's :manpage:`credentials(7)`.  For instance, one process's thread may apply
->  Landlock rules to itself, but they will not be automatically applied to other
->  sibling threads (unlike POSIX thread credential changes, cf.
->  :manpage:`nptl(7)`).
-> @@ -278,7 +279,7 @@ Memory usage
->  ------------
->  
->  Kernel memory allocated to create rulesets is accounted and can be restricted
-> -by the :doc:`/admin-guide/cgroup-v1/memory`.
-> +by the Documentation/admin-guide/cgroup-v1/memory.rst.
->  
->  Questions and answers
->  =====================
-> @@ -303,7 +304,7 @@ issues, especially when untrusted processes can manipulate them (cf.
->  Additional documentation
->  ========================
->  
-> -* :doc:`/security/landlock`
-> +* Documentation/security/landlock.rst
->  * https://landlock.io
->  
->  .. Links
+> The one and only call site for frwr_unmap_async() in in rpcrdma_reply_handler():
 > 
+> 1483         if (!list_empty(&req->rl_registered))
+> 1484                 frwr_unmap_async(r_xprt, req);
+> 1485                 /* LocalInv completion will complete the RPC */
+> 1486         else
+> 1487                 kref_put(&req->rl_kref, rpcrdma_reply_done);
+> 
+> 
+> > If not, then just ignore this email.
+> 
+> I seem to recall smatch catching this problem before. Is there a way
+> to annotate frwr_unmap_async() to calm smatch's nerves?
+
+In theory, if you have the cross function DB built then it's not
+supposed to print this warning.  But in reality it does.  The data is
+stored correctly in DB, but it's not used correctly.  Huh...  I will
+investigate.
+
+I don't think the kbuild bot uses the cross function DB, but it only
+sends the warning once so who cares.
+
+regards,
+dan carpenter
+
