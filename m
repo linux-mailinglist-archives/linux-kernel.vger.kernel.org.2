@@ -2,164 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FAB3B11F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 04:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654D73B11FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 04:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbhFWCzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 22:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbhFWCzR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 22:55:17 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93866C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 19:52:59 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id o5-20020a4a2c050000b0290245d6c7b555so378981ooo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 19:52:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iQPRI9VlPTgzdRBNR9cu3Y1yAK0KjUj8zkwoLnfL0b4=;
-        b=lKjieprEHNd7Gb8ed6WjZQQ07ZiX+Sd9cNiqccT7+sEcQDfrm+HHCEBQexAKJTcgA7
-         MX72dblVd23f/ukS4JXLpuijOSA7yQYSqe5XTe9TF/i4vJ3mTUwTE70m873fS/ZgmQlJ
-         liH1VEjGJ7790IVoi0uTbd06WZBzluEmi9RcMPhuFEV/SctmZmCZkZJ17mMiWA8zre0s
-         tklNAYxjXM0QPKEyyZF2vChePNcztFFyuwmKMfhpzxiEAOghVKCwrWzKeqC4/eK9dbMS
-         gsDErwpgmyMGUNgPFHq2k2d/+5SmQfUCJuRYBba/T9S83Arq0t4uXMVCVQ7RTyoLxxPI
-         RHUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iQPRI9VlPTgzdRBNR9cu3Y1yAK0KjUj8zkwoLnfL0b4=;
-        b=pWmxQowyValRda1VdlxPItK7mA8gziv+HSBTYB8mtuc+vN1T7tkUc5SopUYeFukhuv
-         h9dZqO5gjIu+893Ue7AeBmj5o4LUFWqldjxwYmlZue0l1kpUzYsj702ga5rIKX5x3JPJ
-         bglh4glPvDNFSezJ39rSE22D9tz75G0apZLg74Bba0NWrsF7sSvrBqDXuahH2yzb1QfU
-         m8z0ZqSSqLiU1oi2whbEFUmtOqufaqToc2cc3WlmRorogG+nrUZ5vCFo/Mjz3bProy1W
-         g81Ygcb7K9RZPqrwmkxjkGNJmsd9MzuXppAMJo8XbNek6+rol/yH0Se5hcDol1JcWGOv
-         4xBA==
-X-Gm-Message-State: AOAM531XAzLhwauVbkl1Bj3HrU6C593WmkFFlQQCSB5NlV8uELCvvbsz
-        bBS4GC0ZFeUQ0qZtmhMIQy0+qg==
-X-Google-Smtp-Source: ABdhPJwPMPpfbBtL3Z9YpwuUqIcllFoSMkx42NLNfW0CK2SsGCgoPgM5m65L/Rj3yow7GnTvEMSzAw==
-X-Received: by 2002:a4a:4fc8:: with SMTP id c191mr6038147oob.68.1624416778780;
-        Tue, 22 Jun 2021 19:52:58 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id b198sm4718927oii.19.2021.06.22.19.52.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 19:52:58 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 21:52:56 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     khsieh@codeaurora.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org, agross@kernel.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64/dts/qcom/sc7180: Add Display Port dt node
-Message-ID: <YNKiB3ZEtOQ+T/MX@yoga>
-References: <CAE-0n50-X03sMyJdsw7s=Ue0dWXBo=iHOc0HxDQm5yh2J-uS3A@mail.gmail.com>
- <YL/uj+t+BFkII1Fh@yoga>
- <CAE-0n50WP25kRQkWMVdDZGsZWBXwfbVSTFKyBLF7f8Mp3x2Wfg@mail.gmail.com>
- <YL/wWdRs6e/eECiC@yoga>
- <CAE-0n51GM65rZVJgXuHy6FerJorHeHKf2W31GijG8sDEhaX_KQ@mail.gmail.com>
- <YL/41hWz8xB+jSeO@yoga>
- <21dc5c9fc2efdc1a0ba924354bfd9d75@codeaurora.org>
- <CAE-0n52J_mLsmXLS+skZn2u3k9dhn+GcHeXi0B2BeQyQxEUL9A@mail.gmail.com>
- <YM0THrlJlv7ADW8w@builder.lan>
- <CAE-0n53Zr-w5m-eFhLM2BVmphcYb_M4=s5je3Y7Lg6=onNo=uA@mail.gmail.com>
+        id S230180AbhFWDAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 23:00:54 -0400
+Received: from mga14.intel.com ([192.55.52.115]:37782 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229890AbhFWDAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 23:00:53 -0400
+IronPort-SDR: W2jN67/biuCstH6z0SK5NN8xvDwgbz1+x6Q6lo9gRGy3ibJB6IiKQuHOdYZf58RlxJZaN1k9yl
+ UumyWvLRe0ug==
+X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="206998717"
+X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
+   d="scan'208";a="206998717"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 19:58:36 -0700
+IronPort-SDR: SHDm5Sp2mGJa2CT22c5oIFBFMa++ZKaWotNQcuVtRB00giO8s84b30Hga32DIBTfYCWqd+xhPD
+ 8oRC86ybmqAg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
+   d="scan'208";a="406541724"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 22 Jun 2021 19:58:34 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lvt62-0005eb-A0; Wed, 23 Jun 2021 02:58:34 +0000
+Date:   Wed, 23 Jun 2021 10:58:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:core/urgent] BUILD SUCCESS
+ 399f8dd9a866e107639eabd3c1979cd526ca3a98
+Message-ID: <60d2a346.nM+wrNCVtmHAVdAf%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAE-0n53Zr-w5m-eFhLM2BVmphcYb_M4=s5je3Y7Lg6=onNo=uA@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 22 Jun 15:23 CDT 2021, Stephen Boyd wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core/urgent
+branch HEAD: 399f8dd9a866e107639eabd3c1979cd526ca3a98  signal: Prevent sigqueue caching after task got released
 
-> Quoting Bjorn Andersson (2021-06-18 14:41:50)
-> > On Fri 18 Jun 15:49 CDT 2021, Stephen Boyd wrote:
-> >
-> > > Quoting khsieh@codeaurora.org (2021-06-10 09:54:05)
-> > > > On 2021-06-08 16:10, Bjorn Andersson wrote:
-> > > > > On Tue 08 Jun 17:44 CDT 2021, Stephen Boyd wrote:
-> > > > >
-> > > > >> Honestly I suspect the DP PHY is _not_ in the CX domain as CX is for
-> > > > >> digital logic. Probably the PLL is the hardware that has some minimum
-> > > > >> CX
-> > > > >> requirement, and that flows down into the various display clks like
-> > > > >> the
-> > > > >> link clk that actually clock the DP controller hardware. The mdss_gdsc
-> > > > >> probably gates CX for the display subsystem (mdss) so if we had proper
-> > > > >> corner aggregation logic we could indicate that mdss_gdsc is a child
-> > > > >> of
-> > > > >> the CX domain and then make requests from the DP driver for particular
-> > > > >> link frequencies on the mdss_gdsc and then have that bubble up to CX
-> > > > >> appropriately. I don't think any of that sort of code is in place
-> > > > >> though, right?
-> > > > >
-> > > > > I haven't checked sc7180, but I'm guessing that it's following the
-> > > > > other
-> > > > > modern platforms, where all the MDSS related pieces (including e.g.
-> > > > > dispcc) lives in the MMCX domain, which is separate from CX.
-> > > > >
-> > > > > So the parent of MDSS_GDSC should be MMCX, while Kuogee's answer (and
-> > > > > the dp-opp-table) tells us that the PLL lives in the CX domain.
-> > >
-> > > Isn't MMCX a "child" of CX? At least my understanding is that MMCX is
-> > > basically a GDSC that clamps all of multimedia hardware block power
-> > > logic so that the leakage is minimized when multimedia isn't in use,
-> > > i.e. the device is suspended. In terms of bumping up the voltage we have
-> > > to pin that on CX though as far as I know because that's the only power
-> > > domain that can actually change voltage, while MMCX merely gates that
-> > > voltage for multimedia.
-> > >
-> >
-> > No, MMCX is a separate rail from CX, which powers the display blocks and
-> > is parent of MDSS_GDSC. But I see in rpmhpd that sc7180 is not one of
-> > these platforms, so I presume this means that the displayport controller
-> > thereby sits in MDSS_GDSC parented by CX.
-> >
-> > But in line with what you're saying, the naming of the supplies to the
-> > QMP indicates that the power for the PLLs is static. As such the only
-> > moving things would be the clock rates in the DP controller and as such
-> > that's what needs to scale the voltage.
-> >
-> > So if the resources we're scaling is the clocks in the DP controller
-> > then the gist of the patch is correct. The only details I see is that
-> > the DP controller actually sits in MDSS_GDSC - while it should control
-> > the level of its parent (CX). Not sure if we can describe that in a
-> > simple way.
-> 
-> Right. I'm not sure things could be described any better right now. If
-> we need to change this to be MDSS_GDSC power domain and control the
-> level of the parent then I suppose we'll have to make some sort of DT
-> change and pair that with a driver change. Maybe if that happens we can
-> just pick a new compatible and leave the old code in place.
-> 
+elapsed time: 727m
 
-I would prefer that we stay away from making up a new compatible for
-that, but let's see when we get there.
+configs tested: 153
+configs skipped: 2
 
-> Are you happy enough with this current patch?
-> 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Yes, I think this looks good.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                           h3600_defconfig
+powerpc                    klondike_defconfig
+arm                       imx_v6_v7_defconfig
+powerpc                      arches_defconfig
+arm                             rpc_defconfig
+powerpc                   motionpro_defconfig
+arc                        vdk_hs38_defconfig
+powerpc                     powernv_defconfig
+powerpc                 mpc832x_rdb_defconfig
+powerpc                     tqm5200_defconfig
+powerpc                    gamecube_defconfig
+powerpc                    sam440ep_defconfig
+sh                           se7705_defconfig
+powerpc               mpc834x_itxgp_defconfig
+mips                          malta_defconfig
+xtensa                           alldefconfig
+powerpc                      makalu_defconfig
+h8300                     edosk2674_defconfig
+sh                           se7724_defconfig
+arc                           tb10x_defconfig
+powerpc                  mpc866_ads_defconfig
+mips                     cu1830-neo_defconfig
+i386                                defconfig
+powerpc                      acadia_defconfig
+arc                     nsimosci_hs_defconfig
+arm                         cm_x300_defconfig
+sh                   secureedge5410_defconfig
+mips                  decstation_64_defconfig
+powerpc                     stx_gp3_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                         hackkit_defconfig
+arc                     haps_hs_smp_defconfig
+m68k                       m5475evb_defconfig
+arm                       netwinder_defconfig
+um                            kunit_defconfig
+sh                          polaris_defconfig
+m68k                         apollo_defconfig
+powerpc                      katmai_defconfig
+h8300                            alldefconfig
+um                           x86_64_defconfig
+sh                          r7785rp_defconfig
+mips                      bmips_stb_defconfig
+sh                        edosk7705_defconfig
+mips                   sb1250_swarm_defconfig
+arm                            zeus_defconfig
+mips                           mtx1_defconfig
+arc                    vdk_hs38_smp_defconfig
+sh                          kfr2r09_defconfig
+powerpc                      pcm030_defconfig
+arm                           sama5_defconfig
+arm                       cns3420vb_defconfig
+powerpc                 mpc836x_rdk_defconfig
+sh                 kfr2r09-romimage_defconfig
+m68k                          atari_defconfig
+powerpc                     tqm8555_defconfig
+powerpc                 mpc8315_rdb_defconfig
+arm                       imx_v4_v5_defconfig
+arm                      tct_hammer_defconfig
+sh                           se7712_defconfig
+arm                             ezx_defconfig
+mips                         rt305x_defconfig
+arm                     eseries_pxa_defconfig
+powerpc                     ep8248e_defconfig
+mips                           xway_defconfig
+arm                        realview_defconfig
+arm                      jornada720_defconfig
+m68k                        mvme16x_defconfig
+s390                             allmodconfig
+riscv                               defconfig
+sh                                  defconfig
+arm                        mvebu_v5_defconfig
+sh                   sh7770_generic_defconfig
+powerpc                     kmeter1_defconfig
+microblaze                          defconfig
+arm                         orion5x_defconfig
+arm                        shmobile_defconfig
+sh                            titan_defconfig
+mips                            gpr_defconfig
+h8300                               defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210622
+i386                 randconfig-a002-20210622
+i386                 randconfig-a003-20210622
+i386                 randconfig-a006-20210622
+i386                 randconfig-a005-20210622
+i386                 randconfig-a004-20210622
+x86_64               randconfig-a012-20210622
+x86_64               randconfig-a016-20210622
+x86_64               randconfig-a015-20210622
+x86_64               randconfig-a014-20210622
+x86_64               randconfig-a013-20210622
+x86_64               randconfig-a011-20210622
+i386                 randconfig-a011-20210622
+i386                 randconfig-a014-20210622
+i386                 randconfig-a013-20210622
+i386                 randconfig-a015-20210622
+i386                 randconfig-a012-20210622
+i386                 randconfig-a016-20210622
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-> >
-> >
-> > PS. Why does the node name of the opp-table have to be globally unique?
-> 
-> Presumably the opp table node name can be 'opp-table' as long as it
-> lives under the node that's using it. If the opp table is at / or /soc
-> then it will need to be unique. I'd prefer just 'opp-table' if possible.
+clang tested configs:
+x86_64               randconfig-b001-20210622
+x86_64               randconfig-a002-20210622
+x86_64               randconfig-a001-20210622
+x86_64               randconfig-a005-20210622
+x86_64               randconfig-a003-20210622
+x86_64               randconfig-a004-20210622
+x86_64               randconfig-a006-20210622
 
-I asked the same question (if it has to be globally unique) in the patch
-adding sdhci nodes for sc7280 and I didn't get a sufficient answer...
-
-So now I do want to know why "opp-table" wouldn't be sufficient name for
-these device-internal nodes.
-
-Regards,
-Bjorn
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
