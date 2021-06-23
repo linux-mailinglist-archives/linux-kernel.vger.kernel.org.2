@@ -2,105 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC693B169B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8473B16AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhFWJRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 05:17:44 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:33539 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230189AbhFWJRl (ORCPT
+        id S230101AbhFWJTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 05:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229970AbhFWJTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 05:17:41 -0400
-Received: by mail-io1-f70.google.com with SMTP id i9-20020a0566021349b02904df6556dad4so1510184iov.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 02:15:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=tu+XTnTLmC9DibbRT9Ja/k7FUiyom6JkIMBLX50ARKo=;
-        b=pn8Dbw4h3H1HqlB8Q7y/UTvAeaFkaDK/HkSXvXH0VHLm9Nt/6mRmKCHMmgeOEP8Ahq
-         U4MuLC1w3QdD5QnJQcOzSwukoaG3hbJUBcX+65L1ZpucaT+FbCrmgUTL5OMVc5LLLgi3
-         6Lul9b4ou4OyPK498W/S8w0Qfaye287uphnSM8TFvK426RBJ3fkjSGr4nPbQhDlooEMN
-         Q9nFnbzslZARChJYIVV3eXYS8TYptdltOLeqkyoSv+27Ry2TBLWET2FnCMgFnSaIhLbV
-         AilnYnGOihf2hF82wQZ19U7xyZ5d7prKx9P7bhEorkXrgk46DkaNqBiis70kNk8Hv/0l
-         MA2A==
-X-Gm-Message-State: AOAM53202vAxgkvdtGDIgkooNK7yvFtW48Z1/RR4CcRwTlUnh7ZIQ8Al
-        aHAgu7c8fyLFX+es03wuYyPml14JLyeuuO9KuSQLyb8x7Px4
-X-Google-Smtp-Source: ABdhPJx+TvC18vUgDtM/8/PQwHM8IDggKp4p/DvJ5T0Ya/ItnxEhnGJ1rQGrB461kRji28Bs/ivSB/XZunBwKS4d2V0bDZecfUqE
+        Wed, 23 Jun 2021 05:19:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F73C061574;
+        Wed, 23 Jun 2021 02:17:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CL8XQmsLz8MJp1hdhyIHxSeG4lqcBDV8J2aWoqxO7kM=; b=oUU0MJd19YgEIwWB21YP+sbRKv
+        fka7CIUJ+qIA/GRKsOA263HiOQMZ+2OA7l0jC/g0UtqzrdzG5geGoIo2tK+QTwwdnU5QlfD/NqDSv
+        v8JcUU0g8tAmj/FOQO47v6ihpxybQnJaokSBJPuPL4oHhLAgHXrl5VkLL+/MiuapGu0wfyTGqUz+u
+        vBFbaYYGXTbHL2MFJwKTZpKXX0s/rKiuWRZnkag893AMHaCW5ZDm4FkZ5Wh4+GXaG/L4nWiD1Y26s
+        IyBM5Uq6OIzSKl1bJrIxnEGxBv+VVhJspYO9UL9Hb0/zC0BsTIKY2YM3YIkQjgtbSEx/niNM9ppAW
+        k+lrBWPA==;
+Received: from [2001:4bb8:188:3e21:6594:49:139:2b3f] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvyzE-00FFcA-82; Wed, 23 Jun 2021 09:16:12 +0000
+Date:   Wed, 23 Jun 2021 11:15:55 +0200
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 24/46] mm/writeback: Add __folio_end_writeback()
+Message-ID: <YNL7yxWFqlL7/Fd+@infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-25-willy@infradead.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a66:: with SMTP id w6mr2222624ilv.99.1624439723269;
- Wed, 23 Jun 2021 02:15:23 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 02:15:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000aa23a205c56b587d@google.com>
-Subject: [syzbot] WARNING: zero-size vmalloc in corrupted
-From:   syzbot <syzbot+c2f6f09fe907a838effb@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, coreteam@netfilter.org,
-        davem@davemloft.net, dsahern@kernel.org, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622121551.3398730-25-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Jun 22, 2021 at 01:15:29PM +0100, Matthew Wilcox (Oracle) wrote:
+> test_clear_page_writeback() is actually an mm-internal function, although
+> it's named as if it's a pagecache function.  Move it to mm/internal.h,
+> rename it to __folio_end_writeback() and change the return type to bool.
+> 
+> The conversion from page to folio is mostly about accounting the number
+> of pages being written back, although it does eliminate a couple of
+> calls to compound_head().
 
-syzbot found the following issue on:
+While this looks good, I think the whole abstraction is wrong.  I think
+test_clear_page_writeback should just be merged into it's only caller.
 
-HEAD commit:    13311e74 Linux 5.13-rc7
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15d01e58300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=42ecca11b759d96c
-dashboard link: https://syzkaller.appspot.com/bug?extid=c2f6f09fe907a838effb
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14bb89e8300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17cc51b8300000
+But if that is somehow not on the table this change looks ok:
 
-The issue was bisected to:
-
-commit f9006acc8dfe59e25aa75729728ac57a8d84fc32
-Author: Florian Westphal <fw@strlen.de>
-Date:   Wed Apr 21 07:51:08 2021 +0000
-
-    netfilter: arp_tables: pass table pointer via nf_hook_ops
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13b88400300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10788400300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17b88400300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c2f6f09fe907a838effb@syzkaller.appspotmail.com
-Fixes: f9006acc8dfe ("netfilter: arp_tables: pass table pointer via nf_hook_ops")
-
-usb 1-1: media controller created
-dvbdev: dvb_create_media_entity: media entity 'dvb-demux' registered.
-cxusb: set interface failed
-dvb-usb: bulk message failed: -22 (1/0)
-DVB: Unable to find symbol mt352_attach()
-dvb-usb: no frontend was attached by 'DViCO FusionHDTV DVB-T USB (LGZ201)'
-dvbdev: DVB: registering new adapter (DViCO FusionHDTV DVB-T USB (LGZ201))
-usb 1-1: media controller created
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 2950 at mm/vmalloc.c:2873 __vmalloc_node_range+0x769/0x970 mm/vmalloc.c:2873
-Modules linked in:
-CPU: 1 PID: 2950 Comm: kworker/1:2 Not tainted 5.13.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:__vmalloc_node_range+0x769/0x970 mm/vmalloc.c:2873
-Code: c7 04 24 00 00 00 00 eb 93 e8 b3 44 c5 ff 44 89 fa 44 89 f6 4c 89 ef e8 05 f7 09 00 48 89 04 24 e9 be fb ff ff e8 97 44 c5 ff <0f> 0b 48
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Reviewed-by: Christoph Hellwig <hch@lst.de>
