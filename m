@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBCEE3B1E53
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721623B1E54
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhFWQLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 12:11:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50666 "EHLO mail.kernel.org"
+        id S230121AbhFWQLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 12:11:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229952AbhFWQLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 12:11:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 062F6611C9;
-        Wed, 23 Jun 2021 16:09:30 +0000 (UTC)
+        id S229982AbhFWQLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 12:11:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1483611C1;
+        Wed, 23 Jun 2021 16:09:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624464571;
-        bh=T2HXfNyzx3AS/mZLCTF/VYpLDzx4pOUOAoKS+LJ5qdQ=;
+        s=k20201202; t=1624464574;
+        bh=Fe/lgYVdQSc/KaJO3ok3Kpjxi6Q44XBvRLAARo0KrWM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uWJZknoaZIRW6MAgdOre9B/EVXthhXWtEZu9QzQjo+OxsDYbJQKqQD7mowC1sebEJ
-         F4O36J72t0Uvn1e0PhPOpsmQSXUtwUU0EckbKU+Hhq1CV3571kyGZlHYNVIDAjkwZw
-         pRnfJvwava/E56U+iCBWe35LFpTHWgoFTJX59B2e8LWWEpJM4dmwP65Jx7VWgj6gRa
-         Fqm6ZOUrZYfV8hD6iji6Qt8qP48cYMp1KM3szmsZTZb9PSdiW8rmrFVxVkTf3nXNpR
-         6byoQlkTM0HKaDERegiJV/VUvTjtROuNzw1XS4QnOHO7Lge+bX/gdYht4ZATL7dY1/
-         VxQ9MIof0CmCg==
+        b=udUQbmRrNyEoqdGC76sEWbInLp+FO9Roalt2YJ6+/kV8wgev+dcoFahhJCiFA7obK
+         W0ZOVdejgo7jFx60O3/k/lgm7+j+7vSb4Ld1omB2k0A/RovQYvfFX1akSU8j4JLYk8
+         047lPRl5p6OhTNKWS7B+vTObOdn7nUCANci7I1xAsBQAOM2gsB+ACtxqtZ6H6wlCFU
+         zgpTSFD1ifHcZIIEZUVeN98IqDdxwHotAVM/lq4O3BlMQkl4HKepNJbkiJFEp66AKO
+         bVyKM8prbsIAAzjYGkhK0PsxyKSwCd7vwqRoWmaqdsS/PNKUFaPWcm82+uOphd0nuK
+         Bfw5m5tz9aimg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>, axel.lin@ingics.com,
-        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
+To:     Axel Lin <axel.lin@ingics.com>
 Cc:     Mark Brown <broonie@kernel.org>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        Liam Girdwood <lgirdwood@gmail.com>,
         linux-kernel@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] regulator: mt6358: Fix vdram2 .vsel_mask
-Date:   Wed, 23 Jun 2021 17:08:52 +0100
-Message-Id: <162446430311.55481.15380134833994033517.b4-ty@kernel.org>
+        Sergey Larin <cerg2010cerg2010@mail.ru>
+Subject: Re: [PATCH] regulator: max8893: Select REGMAP_I2C to fix build error
+Date:   Wed, 23 Jun 2021 17:08:53 +0100
+Message-Id: <162446430310.55481.7404123200722937268.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1624424169-510-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-References: <1624424169-510-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+In-Reply-To: <20210622141526.472175-1-axel.lin@ingics.com>
+References: <20210622141526.472175-1-axel.lin@ingics.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -45,8 +42,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Jun 2021 12:56:09 +0800, Hsin-Hsiung Wang wrote:
-> The valid vsel value are 0 and 12, so the .vsel_mask should be 0xf.
+On Tue, 22 Jun 2021 22:15:26 +0800, Axel Lin wrote:
+> Fix build error if REGMAP_I2C is not set.
 
 Applied to
 
@@ -54,8 +51,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: mt6358: Fix vdram2 .vsel_mask
-      commit: 50c9462edcbf900f3d5097ca3ad60171346124de
+[1/1] regulator: max8893: Select REGMAP_I2C to fix build error
+      commit: 1aeb1a72f330a0fa21610fb44769cd0e68379418
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
