@@ -2,217 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4723B2378
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D363B2372
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbhFWWR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 18:17:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbhFWWRo (ORCPT
+        id S230476AbhFWWPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 18:15:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55650 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231158AbhFWWPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:17:44 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FE3C08EB27;
-        Wed, 23 Jun 2021 15:12:44 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A231387F;
-        Thu, 24 Jun 2021 00:12:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1624486361;
-        bh=vol6kpF3aMCgA3x4WowIw9eVw+hdIqAus2kw55MDYxY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dMXQcq5CVQjM+KHZhIk+qm+BeerbmD0wljQWPTO4ILDSGjR0sQ7G0cJ5vj7je84q+
-         wSNUGFO6zWu2twX7jkNsl3pLl1tgcmn2c4LY+Ksq71Llds8v3XqOaB+KuWwahHhYw2
-         g4zxjKM5rZI3fwEzYD/GDS13Hd7mcJ+CXFahwnAA=
-Date:   Thu, 24 Jun 2021 01:12:11 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH] media: omap3isp: Extract struct group for memcpy() region
-Message-ID: <YNOxuybjpLxr6sin@pendragon.ideasonboard.com>
-References: <20210616185938.1225218-1-keescook@chromium.org>
- <YMpUR34kFSbiyi+q@pendragon.ideasonboard.com>
- <202106162119.859E9A80B@keescook>
+        Wed, 23 Jun 2021 18:15:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624486379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RI3bpzwl+9lRSuSFRNo0yswkG4pYNG6+9xza8sRUOac=;
+        b=AS8ujqJ19bS7qdSzWIVgAfUPDOy4dT4k/w6ph6AtWzBfhR1TZcVPbcxF1rjgFR9xRF9nqx
+        W3IkG7gl9y2BKCewpbztnoNamJ2SuduyG/7FB1CZ81b0qJBizYPw3sdV7XHR2szSMYRwpY
+        +RouoHStoGnSeGU39Qo2LhOpU1UKMNQ=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-581-foTOIhPuNGi9MOxn6-g0XQ-1; Wed, 23 Jun 2021 18:12:58 -0400
+X-MC-Unique: foTOIhPuNGi9MOxn6-g0XQ-1
+Received: by mail-ed1-f70.google.com with SMTP id p23-20020aa7cc970000b02903948bc39fd5so2102714edt.13
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:12:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RI3bpzwl+9lRSuSFRNo0yswkG4pYNG6+9xza8sRUOac=;
+        b=qlV640xOURsSiw+8D0uf8hFmNnmx0MR9TvJmlGLCTUe6XRPRjtaawEEIaOngZB7d3d
+         HYNNC0zQzLp+09DLL4EtXUNpv5UF6xfkIvw203wES5KfEymFYIahCFZFDNX4q7T/C0Mq
+         elSjV7vB7wm54+xFwEYY8uI8nbOOUp1OUur2yQpFG5h0jdEqcXcVQMhEHoWPskfRDUwc
+         IyFhWKI/3FA6nfSju/zVBxkkIvar/odh39GB2e0G+H4Zy2lOu61kz4ipW7rZmP3lyA91
+         7m1pPha0OW14D4u/2WuOvffZvnh8uqbYQYjPfdzFguV82qKmffqC5wDfcVW2UrXcNmPl
+         3MAg==
+X-Gm-Message-State: AOAM530lauW42Qbjy2Xni/PiXQBJ+kEoFZZydiS9pS/Kcz40DMOkNDtL
+        /I5q8BtvFeRjFp2x+2nTaKxVwEU61sJOimrlljgJnxN5VgHudAXhLOgZgS+cdly5DNk9uUwNUf2
+        qkJrDtYCTTK1kKkm6QKDUdMvk
+X-Received: by 2002:a17:906:6ad3:: with SMTP id q19mr2089777ejs.11.1624486377003;
+        Wed, 23 Jun 2021 15:12:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz23lnkyS8pgkuHkgkoqeGalGDDxaV/9NdMfAgAvm/CcnpOfH14xYP5wOBkIhPjaaBrvcPTPA==
+X-Received: by 2002:a17:906:6ad3:: with SMTP id q19mr2089763ejs.11.1624486376856;
+        Wed, 23 Jun 2021 15:12:56 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id y16sm373010ejk.101.2021.06.23.15.12.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 15:12:56 -0700 (PDT)
+Subject: Re: [PATCH 00/54] KVM: x86/mmu: Bug fixes and summer cleaning
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+References: <20210622175739.3610207-1-seanjc@google.com>
+ <b4efb3fd-9591-3153-5a64-19afb12edb2b@redhat.com>
+ <YNOiar3ySxs0Z3N3@google.com>
+ <d9004cf0-d7ac-dc7d-06ad-6669fe11a21b@redhat.com>
+ <YNOwz4ln0MsI+/Ts@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <80a120a4-305d-33e7-6f97-eb2f154f4cef@redhat.com>
+Date:   Thu, 24 Jun 2021 00:12:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202106162119.859E9A80B@keescook>
+In-Reply-To: <YNOwz4ln0MsI+/Ts@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kees,
+On 24/06/21 00:08, Sean Christopherson wrote:
+>> We can just mark them static inline, which is a good idea anyway and enough
+> But they already are static inline:-(
 
-On Wed, Jun 16, 2021 at 09:22:23PM -0700, Kees Cook wrote:
-> On Wed, Jun 16, 2021 at 10:43:03PM +0300, Laurent Pinchart wrote:
-> > On Wed, Jun 16, 2021 at 11:59:38AM -0700, Kees Cook wrote:
-> > > Avoid writing past the end of a structure member by wrapping the target
-> > > region in a common named structure. This additionally fixes a
-> > > misalignment of the copy (since the size of "buf" changes between 64-bit
-> > > and 32-bit).
-> > 
-> > Could you have been mislead by the data64 name ? The difference between
-> > omap3isp_stat_data_time and omap3isp_stat_data_time32 is the size of the
-> > ts field, using 32-bit timestamps with legacy userspace, and 64-bit
-> > timestamps with more recent userspace. In both cases we're dealing with
-> > a 32-bit platform, as the omap3isp is not used in any 64-bit ARM SoC.
-> > The size of void __user *buf is thus 4 bytes in all cases, as is __u32
-> > buf.
+Yep, I noticed later. :/  Probably the clang difference below?
+
+>> to shut up the compiler (clang might behave different in this respect for .h
+>> and .c files, but again it's just a warning and not a bisection breakage).
 > 
-> Ah, yes, that's true. I was hitting this on arm64 builds
-> (CONFIG_COMPILE_TEST) where __user *buf is 64-bit. So, the "additionally
-> fixes" bit above is misleading in the sense that nothing was ever built
-> in the real world like that.
-> 
-> The patch still fixes the compile-time warnings, though.
+> I was worried about the CONFIG_KVM_WERROR=y case.
 
-I What's the compile-time warning ? I tried compiling the driver for
-ARM64 and didn't notice any.
+CONFIG_KVM_WERROR can always be disabled.  "Unused" warnings do 
+sometimes happen in the middle of large series.
 
-> However, I don't think anything actually uses any of this code
-> regardless. ;)
-> 
-> > > I actually think this code is completely unused in the real world:
-> > > I don't think it could have ever worked, as it would either always
-> > > fail (with an uninitialized data->buf_size) or would cause corruption
-> > > in userspace due to the copy_to_user() in the call path against an
-> > > uninitialized data->buf value:
-> > > 
-> > > omap3isp_stat_request_statistics_time32(...)
-> > >     struct omap3isp_stat_data data64;
-> > >     ...
-> > >     omap3isp_stat_request_statistics(stat, &data64);
-> > > 
-> > > int omap3isp_stat_request_statistics(struct ispstat *stat,
-> > >                                      struct omap3isp_stat_data *data)
-> > >     ...
-> > >     buf = isp_stat_buf_get(stat, data);
-> > > 
-> > > static struct ispstat_buffer *isp_stat_buf_get(struct ispstat *stat,
-> > >                                                struct omap3isp_stat_data *data)
-> > > ...
-> > >     if (buf->buf_size > data->buf_size) {
-> > >             ...
-> > >             return ERR_PTR(-EINVAL);
-> > >     }
-> > >     ...
-> > >     rval = copy_to_user(data->buf,
-> > >                         buf->virt_addr,
-> > >                         buf->buf_size);
-> > > 
-> > > Regardless, additionally initialize data64 to be zero-filled to avoid
-> > > undefined behavior.
-> > > 
-> > > Fixes: 378e3f81cb56 ("media: omap3isp: support 64-bit version of omap3isp_stat_data")
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> > >  drivers/media/platform/omap3isp/ispstat.c |  5 +--
-> > >  include/uapi/linux/omap3isp.h             | 44 +++++++++++++++++------
-> > >  2 files changed, 36 insertions(+), 13 deletions(-)
-> > > 
-> > > diff --git a/drivers/media/platform/omap3isp/ispstat.c b/drivers/media/platform/omap3isp/ispstat.c
-> > > index 5b9b57f4d9bf..ea8222fed38e 100644
-> > > --- a/drivers/media/platform/omap3isp/ispstat.c
-> > > +++ b/drivers/media/platform/omap3isp/ispstat.c
-> > > @@ -512,7 +512,7 @@ int omap3isp_stat_request_statistics(struct ispstat *stat,
-> > >  int omap3isp_stat_request_statistics_time32(struct ispstat *stat,
-> > >  					struct omap3isp_stat_data_time32 *data)
-> > >  {
-> > > -	struct omap3isp_stat_data data64;
-> > > +	struct omap3isp_stat_data data64 = { };
-> > >  	int ret;
-> > >  
-> > >  	ret = omap3isp_stat_request_statistics(stat, &data64);
-> > > @@ -521,7 +521,8 @@ int omap3isp_stat_request_statistics_time32(struct ispstat *stat,
-> > >  
-> > >  	data->ts.tv_sec = data64.ts.tv_sec;
-> > >  	data->ts.tv_usec = data64.ts.tv_usec;
-> > > -	memcpy(&data->buf, &data64.buf, sizeof(*data) - sizeof(data->ts));
-> > > +	data->buf = (uintptr_t)data64.buf;
-> > > +	memcpy(&data->frame, &data64.buf, sizeof(data->frame));
-> > >  
-> > >  	return 0;
-> > >  }
-> > > diff --git a/include/uapi/linux/omap3isp.h b/include/uapi/linux/omap3isp.h
-> > > index 87b55755f4ff..0a16af91621f 100644
-> > > --- a/include/uapi/linux/omap3isp.h
-> > > +++ b/include/uapi/linux/omap3isp.h
-> > > @@ -159,13 +159,25 @@ struct omap3isp_h3a_aewb_config {
-> > >  };
-> > >  
-> > >  /**
-> > > - * struct omap3isp_stat_data - Statistic data sent to or received from user
-> > > - * @ts: Timestamp of returned framestats.
-> > > - * @buf: Pointer to pass to user.
-> > > + * struct omap3isp_stat_frame - Statistic data without timestamp nor pointer.
-> > > + * @buf_size: Size of buffer.
-> > >   * @frame_number: Frame number of requested stats.
-> > >   * @cur_frame: Current frame number being processed.
-> > >   * @config_counter: Number of the configuration associated with the data.
-> > >   */
-> > > +struct omap3isp_stat_frame {
-> > > +	__u32 buf_size;
-> > > +	__u16 frame_number;
-> > > +	__u16 cur_frame;
-> > > +	__u16 config_counter;
-> > > +};
-> > > +
-> > > +/**
-> > > + * struct omap3isp_stat_data - Statistic data sent to or received from user
-> > > + * @ts: Timestamp of returned framestats.
-> > > + * @buf: Pointer to pass to user.
-> > > + * @frame: Statistic data for frame.
-> > > + */
-> > >  struct omap3isp_stat_data {
-> > >  #ifdef __KERNEL__
-> > >  	struct {
-> > > @@ -176,10 +188,15 @@ struct omap3isp_stat_data {
-> > >  	struct timeval ts;
-> > >  #endif
-> > >  	void __user *buf;
-> > > -	__u32 buf_size;
-> > > -	__u16 frame_number;
-> > > -	__u16 cur_frame;
-> > > -	__u16 config_counter;
-> > > +	union {
-> > > +		struct {
-> > > +			__u32 buf_size;
-> > > +			__u16 frame_number;
-> > > +			__u16 cur_frame;
-> > > +			__u16 config_counter;
-> > > +		};
-> > > +		struct omap3isp_stat_frame frame;
-> > > +	};
-> > >  };
-> > >  
-> > >  #ifdef __KERNEL__
-> > > @@ -189,10 +206,15 @@ struct omap3isp_stat_data_time32 {
-> > >  		__s32	tv_usec;
-> > >  	} ts;
-> > >  	__u32 buf;
-> > > -	__u32 buf_size;
-> > > -	__u16 frame_number;
-> > > -	__u16 cur_frame;
-> > > -	__u16 config_counter;
-> > > +	union {
-> > > +		struct {
-> > > +			__u32 buf_size;
-> > > +			__u16 frame_number;
-> > > +			__u16 cur_frame;
-> > > +			__u16 config_counter;
-> > > +		};
-> > > +		struct omap3isp_stat_frame frame;
-> > > +	};
-> > >  };
-> > >  #endif
-> > >  
+Paolo
 
--- 
-Regards,
-
-Laurent Pinchart
