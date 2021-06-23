@@ -2,104 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA76F3B1740
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654813B1746
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhFWJwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 05:52:01 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:33330 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229833AbhFWJv7 (ORCPT
+        id S230302AbhFWJxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 05:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229833AbhFWJxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 05:51:59 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C1ECE21970;
-        Wed, 23 Jun 2021 09:49:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624441781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ux+joYOB/UsMHX7POd5I9X3miorAtdiYmMYNa+mcW6E=;
-        b=mpcL6YYNLF0eM6WXm1Q4WixD/1Y0RnUjjEOMj46KrRfzIvpiyEyvAz2w4RPKVf8tHkkxoL
-        6S7sXh6xbj3f802IhtyD/00gI6cHXGKk3DM6+mNDgFt2DUmLwag5CRxqHvdI5KzJCzSv13
-        WIGLqCJgTEuPkg1lftiUMCsBAGXzPEI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624441781;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ux+joYOB/UsMHX7POd5I9X3miorAtdiYmMYNa+mcW6E=;
-        b=nV2ZmUFlTFTEi4JFefYmjQ6Nsp0O9ka/R/08BSGYZLCHK4k+RdQVrxkZ5IGj8UMTmpFkR8
-        GOMXtbRIVPf1eQDA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id EBBD211A97;
-        Wed, 23 Jun 2021 09:49:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624441781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ux+joYOB/UsMHX7POd5I9X3miorAtdiYmMYNa+mcW6E=;
-        b=mpcL6YYNLF0eM6WXm1Q4WixD/1Y0RnUjjEOMj46KrRfzIvpiyEyvAz2w4RPKVf8tHkkxoL
-        6S7sXh6xbj3f802IhtyD/00gI6cHXGKk3DM6+mNDgFt2DUmLwag5CRxqHvdI5KzJCzSv13
-        WIGLqCJgTEuPkg1lftiUMCsBAGXzPEI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624441781;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ux+joYOB/UsMHX7POd5I9X3miorAtdiYmMYNa+mcW6E=;
-        b=nV2ZmUFlTFTEi4JFefYmjQ6Nsp0O9ka/R/08BSGYZLCHK4k+RdQVrxkZ5IGj8UMTmpFkR8
-        GOMXtbRIVPf1eQDA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id FdfVN7QD02ATSgAALh3uQQ
-        (envelope-from <jroedel@suse.de>); Wed, 23 Jun 2021 09:49:40 +0000
-Date:   Wed, 23 Jun 2021 11:49:39 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 2/3] x86/sev: Add defines for GHCB version 2 MSR protocol
- requests
-Message-ID: <YNMDs5iuhCxeII/U@suse.de>
-References: <20210622144825.27588-1-joro@8bytes.org>
- <20210622144825.27588-3-joro@8bytes.org>
- <YNLXQIZ5e1wjkshG@8bytes.org>
- <YNL/wpVY1PmGJASW@zn.tnic>
+        Wed, 23 Jun 2021 05:53:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D4CC061574;
+        Wed, 23 Jun 2021 02:50:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wX68kOPzYETyqJ2SCKqkqr7ukc9cCZeyMzMIUFAMr1E=; b=XjutMCRefnRt22zx8OdxtQ4Jsg
+        G0r0exLUeLlGZZJ2j24THQD6fRqFPEuAXiq0Dshb3s0GUgZe+QEUorXxMlYKxO4F9zyL4Fdk8CfZn
+        v4KNESEHhSvdB46CAz7mlCGzgJ6WCEZU4UVb4k3uOjmUmzIsk+1rqrhiC517KTkOCglo+8RiMqYxT
+        SX/9lMehzoV76Ms83Y5kVTb3Bfw1/KyPX3p5zmrQ4il5X37RrzfaDgStrud1IT6P/mZ6oT2eltFM4
+        Pb6u9YvlQngryCf4uIS+9F1fizTp83sRZNIXMfVQHDLh1etXSGYUqxY+bO2yydSUeCT84kL5yT4k1
+        8XHyxp9w==;
+Received: from [2001:4bb8:188:3e21:6594:49:139:2b3f] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvzWH-00FHgM-KV; Wed, 23 Jun 2021 09:50:13 +0000
+Date:   Wed, 23 Jun 2021 11:50:04 +0200
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 36/46] mm/filemap: Add readahead_folio()
+Message-ID: <YNMDzHwIA4neIPDD@infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-37-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNL/wpVY1PmGJASW@zn.tnic>
+In-Reply-To: <20210622121551.3398730-37-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 11:32:50AM +0200, Borislav Petkov wrote:
-> Ok, so I took a critical look at this and it doesn't make sense to have
-> a differently named define each time you need the [63:12] slice of
-> GHCBData. So you can simply use GHCB_DATA(msr_value) instead, see below.
-> 
-> Complaints?
+On Tue, Jun 22, 2021 at 01:15:41PM +0100, Matthew Wilcox (Oracle) wrote:
+> The pointers stored in the page cache are folios, by definition.
+> This change comes with a behaviour change -- callers of readahead_folio()
+> are no longer required to put the page reference themselves.  This matches
+> how readpage works, rather than matching how readpages used to work.
 
-Looks good to me.
+The way this stores and retrieves different but compatible types from the
+same xarray is a little nasty.  But I guess we'll have to live with it for
+now, so:
 
+Reviewed-by: Christoph Hellwig <hch@lst.de>
