@@ -2,61 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA3B3B1730
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 621193B173D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhFWJuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 05:50:01 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:57042 "EHLO mail1.perex.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229833AbhFWJuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 05:50:00 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 68AACA0046;
-        Wed, 23 Jun 2021 11:47:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 68AACA0046
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1624441661; bh=iQKSfYdGguOxhcWoXnpPevbxvqE7Ys35BcjvPAc9G4g=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=W5p0xh2tNJAFnPa9zM4f+maPx6YRMFi83HLu4P2s4mWEzZ1rb5yWjgkFodpOYuk5+
-         Wvj0mChkMtf9Z5pyjvT3Li3NkBW18LyqAQZtPJ0hGkX5/EAK8z0BAjH5iUCGabRv6Y
-         fBdliTUa5vbHJ9ValgzuU8+tRQtQ0cJTr3pg5lMU=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Wed, 23 Jun 2021 11:47:37 +0200 (CEST)
-Subject: Re: [PATCH] PNP: moved EXPORT_SYMBOL so that it immediately followed
- its function/variable
-To:     Jinchao Wang <wjc@cdjrlc.com>, rafael.j.wysocki@intel.com
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210623094045.41335-1-wjc@cdjrlc.com>
-From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <e52956bd-c7db-1494-44fa-921a976cea94@perex.cz>
-Date:   Wed, 23 Jun 2021 11:47:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230343AbhFWJvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 05:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230152AbhFWJvH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 05:51:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC99C061574;
+        Wed, 23 Jun 2021 02:48:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eWWzTz3d/E3f2fGekb7/l0j74niGTy484vF3Xv8Djxk=; b=bdb8xLaT/m4ojaXZ9PF5xjfz3+
+        BZZB+x7J5pS7sMfkdWK24JR69AHUQBF9NkNkgdGDj1uvwMsVnsOUMTlRzEdyQtdhL3sRqhMPKD+KS
+        GdrkKOjtVVynZJS7JVGEcOU8Kn6l9lEcW+PFA2nOkJiUF08hm3y/6FAmVAiUy+YEnlbi3AaLI1FoF
+        c69ERwRPEBfBgONk+eJKb1Dma2g6hdFdjpnrzQKrEj+TC/BDJONBtZ1CPXN1UHc8h2+sfrONvYckd
+        jqc9SDrnwrey+UqTySVJo5IcYm/JV40VwApMBYmWtrhCXdyWT9N8nc+lBFbecQ3kOmjFJqPtEVpNo
+        oS8/eU+w==;
+Received: from [2001:4bb8:188:3e21:6594:49:139:2b3f] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvzUG-00FHWW-0J; Wed, 23 Jun 2021 09:48:08 +0000
+Date:   Wed, 23 Jun 2021 11:47:58 +0200
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 35/46] mm/filemap: Add folio_mkwrite_check_truncate()
+Message-ID: <YNMDTgeHh9/Sfd1/@infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-36-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210623094045.41335-1-wjc@cdjrlc.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622121551.3398730-36-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 06. 21 11:40, Jinchao Wang wrote:
-> change made to resolve following checkpatch message:
->   WARNING: EXPORT_SYMBOL(foo); should immediately follow its
-> function/variable
+On Tue, Jun 22, 2021 at 01:15:40PM +0100, Matthew Wilcox (Oracle) wrote:
+> This is the folio equivalent of page_mkwrite_check_truncate().
 > 
-> Signed-off-by: Jinchao Wang <wjc@cdjrlc.com>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Thank you.
-
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Any reason that page_mkwrite_check_truncate isn't turned into a wrapper?
