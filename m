@@ -2,94 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B43D3B214B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14EFB3B214D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhFWTjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230037AbhFWTjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 15:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230018AbhFWTjR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Jun 2021 15:39:17 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:52276 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229523AbhFWTjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 15:39:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=T13J8AAOzye0vPE72zOkmKwgCqb3X8Y2nKlK460R0cY=; b=l4RlYytU80yLAKSl4Xth6DXqf0
-        BmquKFSwgp7FHexz1xEs42MFaZDR7EFJin0KXyMgWtuFumuVvBbjJAiTkC6JAmrbMfFEdml5XNu8v
-        16qklndSkA1nzTKlhrYx6jhQk9vtS7dIJRn+GFIut7ZrfiZnRRzOHU918mhAh8bWEwDw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lw8fl-00AsjI-68; Wed, 23 Jun 2021 21:36:29 +0200
-Date:   Wed, 23 Jun 2021 21:36:29 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Voon, Weifeng" <weifeng.voon@intel.com>
-Cc:     "Ling, Pei Lee" <pei.lee.ling@intel.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
-        Wong Vee Khee <vee.khee.wong@linux.intel.com>,
-        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
-        "Tan, Tee Min" <tee.min.tan@intel.com>,
-        "Sit, Michael Wei Hong" <michael.wei.hong.sit@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next V1 3/4] net: stmmac: Reconfigure the PHY WOL
- settings in stmmac_resume()
-Message-ID: <YNONPZAfmdyBMoL5@lunn.ch>
-References: <20210621094536.387442-1-pei.lee.ling@intel.com>
- <20210621094536.387442-4-pei.lee.ling@intel.com>
- <YNCOqGCDgSOy/yTP@lunn.ch>
- <CH0PR11MB53806E2DC74B2B9BE8F84D7088089@CH0PR11MB5380.namprd11.prod.outlook.com>
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E75C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 12:36:59 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id a2so2638281pgi.6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 12:36:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DlZY/TglFz9Z+A/FXNVmCx8+XtZYKOCmoni9885067M=;
+        b=P2kxwQz7RbtSVh2sDIXBaHMTo7nhNcUuMgEys+kaa61inUPicr0NuRffqlBA4+7anp
+         3FN9ufvskOQ+YDx9TQPxPrk/vpRopw7QRnYnYG734rPrUe5k0xedegvZuA7O8efRjQRn
+         twFIga5jSf0f/rLLspvYuTzQ+NuhgCOr2J0e2zpVoBxIjdKHseBd4ezqwGThXvMU4yb9
+         y2KJmK5fLZKDWv261UiwKxKNJIVti8Fi2aOyxpDqfPQsthM4aP4zN6xLOLQ9Zv1LgwuK
+         30bshb9jzrJA+W0AJk4rJ5665/OYhoGYuxsuWAfeYxOiy9FZMhTalIvrmQtJhVjj0yLI
+         eNpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DlZY/TglFz9Z+A/FXNVmCx8+XtZYKOCmoni9885067M=;
+        b=aRfuNvNUSTWmKEKZTEMaJQjjRyeQLmLXhtCLhM40f9ljBugus3oI5KQ40b2w5ToxWj
+         KnLw9D3z/e9TaTdsd82aH4VCxNMedC5/qbEz4eMVd+2k+tAsuOTFbOhv/YFktvSHovpr
+         TgHfh1u25Kk9cuA3M7qiUnoYPQKJnthzeqdX5bjZaxr9+4+tntRWcJR7/eY3pe2fC60h
+         u1qy42GlttywrkGL8DfIEW4gALlvlO6L0JFP+/iXptvliQ6YvAvmZHvXdiqxYYiHZxOs
+         +R14QGZ9tdAgJpERycANjTQO/lQkdPry4wXzVQgXDXSn/jAGkQW1A2Sb5bnrufuDaSoS
+         QyRg==
+X-Gm-Message-State: AOAM533/jJ6yFaJbyAXetYolZM0d6/1nMIHvr5if5Qcb8y7VeKVkZYSH
+        LGqjpX7ls+IpsTp1JVPSO2MYoQ==
+X-Google-Smtp-Source: ABdhPJyYMVuea+gbeWDgtzHw4uopdhfLoWSqWVlRSJHP5Vpf+/KUJ8I3RIpiQwtQJ55NkVDAEmUgSg==
+X-Received: by 2002:a65:5ac9:: with SMTP id d9mr986290pgt.293.1624477018561;
+        Wed, 23 Jun 2021 12:36:58 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id k6sm578633pfa.215.2021.06.23.12.36.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 12:36:57 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 19:36:54 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: Re: [PATCH 16/54] KVM: x86/mmu: Drop smep_andnot_wp check from "uses
+ NX" for shadow MMUs
+Message-ID: <YNONVux/a+/fuw0I@google.com>
+References: <20210622175739.3610207-1-seanjc@google.com>
+ <20210622175739.3610207-17-seanjc@google.com>
+ <b4f8f250-14ac-b964-c82d-6a3ef48bd38f@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CH0PR11MB53806E2DC74B2B9BE8F84D7088089@CH0PR11MB5380.namprd11.prod.outlook.com>
+In-Reply-To: <b4f8f250-14ac-b964-c82d-6a3ef48bd38f@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 10:06:44AM +0000, Voon, Weifeng wrote:
-> > > From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
-> > >
-> > > After PHY received a magic packet, the PHY WOL event will be triggered
-> > > then PHY WOL event interrupt will be disarmed.
-> > > Ethtool settings will remain with WOL enabled after a S3/S4 suspend
-> > > resume cycle as expected. Hence,the driver should reconfigure the PHY
-> > > settings to reenable/disable WOL depending on the ethtool WOL settings
-> > > in the resume flow.
+On Wed, Jun 23, 2021, Paolo Bonzini wrote:
+> On 22/06/21 19:57, Sean Christopherson wrote:
+> > Drop the smep_andnot_wp role check from the "uses NX" calculation now
+> > that all non-nested shadow MMUs treat NX as used via the !TDP check.
 > > 
-> > Please could you explain this a bit more? I'm wondering if you have a
-> > PHY driver bug. PHY WOL should remain enabled until it is explicitly
-> > disabled.
+> > The shadow MMU for nested NPT, which shares the helper, does not need to
+> > deal with SMEP (or WP) as NPT walks are always "user" accesses and WP is
+> > explicitly noted as being ignored:
 > > 
-> > 	Andrew
+> >    Table walks for guest page tables are always treated as user writes at
+> >    the nested page table level.
+> > 
+> >    A table walk for the guest page itself is always treated as a user
+> >    access at the nested page table level
+> > 
+> >    The host hCR0.WP bit is ignored under nested paging.
+> > 
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >   arch/x86/kvm/mmu/mmu.c | 3 +--
+> >   1 file changed, 1 insertion(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index 96c16a6e0044..ca7680d1ea24 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -4223,8 +4223,7 @@ reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context)
+> >   	 * NX can be used by any non-nested shadow MMU to avoid having to reset
+> >   	 * MMU contexts.  Note, KVM forces EFER.NX=1 when TDP is disabled.
+> >   	 */
+> > -	bool uses_nx = context->nx || !tdp_enabled ||
+> > -		context->mmu_role.base.smep_andnot_wp;
+> > +	bool uses_nx = context->nx || !tdp_enabled;
+> >   	struct rsvd_bits_validate *shadow_zero_check;
+> >   	int i;
+> > 
 > 
-> Let's take Marvell 1510 as example. 
-> 
-> As explained in driver/net/phy/marvell.c
-> 1773 >------->-------/* If WOL event happened once, the LED[2] interrupt pin
-> 1774 >------->------- * will not be cleared unless we reading the interrupt status
-> 1775 >------->------- * register. 
-> 
-> The WOL event will not able trigger again if the driver does not clear
-> the interrupt status.
-> Are we expecting PHY driver will automatically clears the interrupt
-> status rather than trigger from the MAC driver?
+> Good idea, but why not squash it into patch 2?
 
-So you are saying the interrupt it getting discarded? I would of
-though it is this interrupt which brings to system out of suspend, and
-it should trigger the usual action, i.e. call the interrupt
-handler. That should then clear the interrupt.
+Because that patch is marked for stable and dropping the smep_andnot_wp is not
+necessary to fix the bug.  At worst, the too-liberal uses_nx will suppress the
+WARN in handle_mmio_page_fault() because this is for checking KVM's SPTEs, not
+the guest's SPTEs, i.e. KVM won't miss a guest reserved NX #PF.
 
-	 Andrew
+That said, I'm not at all opposed to squashing this.  I have a feeling I originally
+split the patches because I wasn't super confident about either change, and never
+revisited them.
