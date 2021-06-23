@@ -2,90 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FFE03B1E7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC073B1E84
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhFWQVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 12:21:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53966 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229726AbhFWQVQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 12:21:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9DC560FEE;
-        Wed, 23 Jun 2021 16:18:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624465138;
-        bh=nFxDX3ob+5lrr19ZRCiRLVmW1vX1e+NTnnN+gVbSdx8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h7IWxKWOYuMGPnptAXVpdupWM233lGFswGdu03Vw2NdlsTi+IM17AoN46iYQZzozU
-         ZWrpXu/oN685eSERGJzz85apt8LDgtA+YCbc/4YX5YLDDyje8R7jWdn3P6nplpAxOx
-         uhPbBFObjU/M9K0O82sO3Ea/mYp+ECJdceAixCVfDKyl9fdwOIHvkGra/L3Mwjmyv7
-         9VjW2rcaF1nMpkR4FHTpVYNipv9SxH1q4o+w0t3PFKBenI6HBPHcBsDxsp4Ahh2wb/
-         Z+9gEMy1jXbg/Ke0cD/Mt9UK2yZBqQz6PcNIOJTlhGWEIC6r7gMWmF/r3SvgCbNXCK
-         R/i0bTstCaing==
-Date:   Wed, 23 Jun 2021 18:18:51 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Raviteja Narayanam <raviteja.narayanam@xilinx.com>
-Cc:     linux-i2c@vger.kernel.org, michal.simek@xilinx.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        git@xilinx.com
-Subject: Re: [PATCH] i2c: cadence: Clear HOLD bit before xfer_size register
- rolls over
-Message-ID: <YNNe63q2T/9ndSgg@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Raviteja Narayanam <raviteja.narayanam@xilinx.com>,
-        linux-i2c@vger.kernel.org, michal.simek@xilinx.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        git@xilinx.com
-References: <1606203965-31595-1-git-send-email-raviteja.narayanam@xilinx.com>
+        id S229995AbhFWQV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 12:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229801AbhFWQVz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 12:21:55 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12980C061574;
+        Wed, 23 Jun 2021 09:19:38 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id f30so5118863lfj.1;
+        Wed, 23 Jun 2021 09:19:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=/Krbzq37k1sCPaakVsLwyC67OCSSZuxfiSPx6Qi5QzI=;
+        b=M86HOfXUVH5O2ebnaL7FrciUwyvUFN27hWfI2LxJxr+s2VCB+vAfueoKTr2aZIxu8p
+         LEoUcsoO9/tygtHYwRsAfA6WDe7/fKvEohFVyaQYbrfyDmAmiAag1ZnYJAohUjfdhM2T
+         E+WimHdKu4hcGwx1Qv08kZBvNDM85qrzlHCIbhyzmFfUAq4Gi6Hq9XVJbAlRExna7Brb
+         fSdyvDURW2nPzRmSFvPsa/xj2AYzIB62VB5yZuk05AEFPcwTdjCLiyJB4rudb0ErPFWQ
+         k68f0o/0ikcwCC+kLadGhYVX3FJglXCQgXzyASf4hWKRufneeYMgD/NKpWhlG3TBCxgt
+         OB+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=/Krbzq37k1sCPaakVsLwyC67OCSSZuxfiSPx6Qi5QzI=;
+        b=aH0Tgs/PNAnLmydzZaP1pxa8jPh2IGpr1zyh5oy/zi0QFGq9fwfr5B0hzTc02s2gWj
+         0+AT1OQSMD+fWHKXmO7+L1Qfhv8AyyqdaVZJC+UTu0qOMmFPE0mby9pd1tycenJfQ/Zg
+         VBkoJhnYUc4Qq+8zRX51/5E8SF6WGrApXGn+k6kGxAt1MoJlNIQqLERMNVN6ZUyUV626
+         VoU4MwhAiWU9dBmjwiD0N//siSryRrhipMecCdohN29MZ+5AuEF+7MkvqC3sRpNR1ton
+         W5GR9jBYwUONsoj5Eqt7Cnf5wOrwYyaC4BrGWLkFSazQgjtowhbJCxkEwFHkpGaT85UO
+         VDqQ==
+X-Gm-Message-State: AOAM531/ZGSqqrHmjg1wplbvBXg/42OTx70Wm6yveLGeUZPfqGO7gGH8
+        Sji5ue3l8RIBwHvkh7kklz0=
+X-Google-Smtp-Source: ABdhPJxPos8WRklKRY4cTHO1X3q1tR2gxIW/5WTxL+4ITuO4LXCxH4mt9tAEYN4uVXLjGfVdVG9Kxg==
+X-Received: by 2002:a19:7414:: with SMTP id v20mr294814lfe.203.1624465176302;
+        Wed, 23 Jun 2021 09:19:36 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.225.155])
+        by smtp.gmail.com with ESMTPSA id h24sm42632lfp.60.2021.06.23.09.19.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 09:19:35 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 19:19:28 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     syzbot <syzbot+c2f6f09fe907a838effb@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, coreteam@netfilter.org,
+        davem@davemloft.net, dsahern@kernel.org, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
+        yoshfuji@linux-ipv6.org
+Subject: Re: [syzbot] WARNING: zero-size vmalloc in corrupted
+Message-ID: <20210623191928.69d279d1@gmail.com>
+In-Reply-To: <000000000000aa23a205c56b587d@google.com>
+References: <000000000000aa23a205c56b587d@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OyBLtaJDLVkSju19"
-Content-Disposition: inline
-In-Reply-To: <1606203965-31595-1-git-send-email-raviteja.narayanam@xilinx.com>
+Content-Type: multipart/mixed; boundary="MP_/WS2tHtsc/ybjuavLYXEFySg"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---OyBLtaJDLVkSju19
-Content-Type: text/plain; charset=us-ascii
+--MP_/WS2tHtsc/ybjuavLYXEFySg
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 24, 2020 at 01:16:05PM +0530, Raviteja Narayanam wrote:
-> On Xilinx zynq SOC if the delay between address register write and
-> control register write in cdns_mrecv function is more, the xfer size
-> register rolls over and controller is stuck. This is an IP bug and
-> is resolved in later versions of IP.
->=20
-> To avoid this scenario, disable the interrupts on the current processor
-> core between the two register writes and enable them later. This can
-> help achieve the timing constraint.
->=20
-> Signed-off-by: Raviteja Narayanam <raviteja.narayanam@xilinx.com>
+On Wed, 23 Jun 2021 02:15:23 -0700
+syzbot <syzbot+c2f6f09fe907a838effb@syzkaller.appspotmail.com> wrote:
 
-Applied to for-next, thanks!
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    13311e74 Linux 5.13-rc7
+> git tree:       upstream
+> console output:
+> https://syzkaller.appspot.com/x/log.txt?x=15d01e58300000 kernel
+> config:  https://syzkaller.appspot.com/x/.config?x=42ecca11b759d96c
+> dashboard link:
+> https://syzkaller.appspot.com/bug?extid=c2f6f09fe907a838effb syz
+> repro:
+> https://syzkaller.appspot.com/x/repro.syz?x=14bb89e8300000 C
+> reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17cc51b8300000
+> 
+> The issue was bisected to:
+> 
+> commit f9006acc8dfe59e25aa75729728ac57a8d84fc32
+> Author: Florian Westphal <fw@strlen.de>
+> Date:   Wed Apr 21 07:51:08 2021 +0000
+> 
+>     netfilter: arp_tables: pass table pointer via nf_hook_ops
+> 
+> bisection log:
+> https://syzkaller.appspot.com/x/bisect.txt?x=13b88400300000 final
+> oops:     https://syzkaller.appspot.com/x/report.txt?x=10788400300000
+> console output:
+> https://syzkaller.appspot.com/x/log.txt?x=17b88400300000
+> 
+
+This one is similar to previous zero-size vmalloc, I guess :)
+
+#syz test
+git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
 
---OyBLtaJDLVkSju19
-Content-Type: application/pgp-signature; name="signature.asc"
+With regards,
+Pavel Skripkin
 
------BEGIN PGP SIGNATURE-----
+--MP_/WS2tHtsc/ybjuavLYXEFySg
+Content-Type: text/x-patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename=0001-media-dvb-usb-fix-wrong-definition.patch
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDTXuYACgkQFA3kzBSg
-KbYIdg//exVtEUi0D2HX1w/0woHDZRYQ/uFHs4XoH8Ptbj2eWqUTHEKz+9tepW91
-vtkbu2vGzNeP8m4aEVB1zg9ncCn0aj+EYJGb68JvLFGGgoHf2R7i1ko2PoAV4d47
-q3ZNU1F54QRvUScOc5soabUQBVJ0NFRQJJ841ZAEqL0ODHmkrZYa4ki8EvV6zPEH
-FI1g2ccETNrBGoS3no8u9ecAMV5RFEP3zYHDjnpyLyPSODnkB/eH8fhjCMmvyE39
-3/PwLQGpT0qlj0yDk1T38ohUUucDD6V9YbrHvKw9w0F3Pfq21w8fGSKL/sIRkhwo
-spbt7lCT9ao1rLgd/8NXVqRl69tLv+fqJI0vl0YvJyOVTyddWRTHZDw8D9qDiS5Z
-8iGbgWU3UAgfTFkm9l2IyZZikzBCWuTwYWMfxwP9ZHrlmR/28V3jAjL9/AOXm/sd
-x5d0qMKsJHta9yKqnmERGiTFSRTKrBk4RhEhMVD89a131VyMfoHnNZQOnHLhjAgh
-wDnvDz5TQthhCQzeLKWfUPTMMsNojfg/qsbXWrOoUySqVYD8nlHsuvNUopKno6MA
-Y5SdLK5NetL3qvED/0MmchTZbNgWsnvhbTjpxbnuaLfvtGlu6G2w2gfQ3VRuPflc
-jptjt3QNgph9TwVra44sl04QHp3+1/kXO7UgfWiARuKFoAJHcXw=
-=1t/y
------END PGP SIGNATURE-----
+From b1ed745713bb840e0778c5a13f1f83f535dca044 Mon Sep 17 00:00:00 2001
+From: Pavel Skripkin <paskripkin@gmail.com>
+Date: Wed, 23 Jun 2021 19:18:09 +0300
+Subject: [PATCH] media: dvb-usb: fix wrong definition
 
---OyBLtaJDLVkSju19--
+/* ..... */
+
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/media/usb/dvb-usb/cxusb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/usb/dvb-usb/cxusb.c b/drivers/media/usb/dvb-usb/cxusb.c
+index 761992ad05e2..7707de7bae7c 100644
+--- a/drivers/media/usb/dvb-usb/cxusb.c
++++ b/drivers/media/usb/dvb-usb/cxusb.c
+@@ -1947,7 +1947,7 @@ static struct dvb_usb_device_properties cxusb_bluebird_lgz201_properties = {
+ 
+ 	.size_of_priv     = sizeof(struct cxusb_state),
+ 
+-	.num_adapters = 2,
++	.num_adapters = 1,
+ 	.adapter = {
+ 		{
+ 		.num_frontends = 1,
+-- 
+2.32.0
+
+
+--MP_/WS2tHtsc/ybjuavLYXEFySg--
