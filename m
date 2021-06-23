@@ -2,106 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8E73B1CB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB5F3B1CBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhFWOka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231187AbhFWOk3 (ORCPT
+        id S231335AbhFWOmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:42:07 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:21230 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231310AbhFWOmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:40:29 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81DF3C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 07:38:12 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso1500626pjp.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 07:38:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gYsWzSIHMSc6Tk2EhcHMeSwtIxBEj34qEnDzw9ljN3s=;
-        b=On69jlBS8D8eW015oMkd5PZ2WcwQmLiyjgNGu9DtIfKZV0aMLPx3I4ItRey5K6mYDV
-         xwOnvhsLXMLHTs9uOgjKZM+AAmcRCcNUyOXkhDaasZ4vUbuQUC2Y+tJOn+sxQ6ANsmda
-         fPYT2eyPvHfGHH1cz0BDu0FYRr7cNEsZ9OeAs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gYsWzSIHMSc6Tk2EhcHMeSwtIxBEj34qEnDzw9ljN3s=;
-        b=ivZnFfCkS0AnQrvtRN5FE/BAYnpZiyx6CowcQkAfqqQeDOLIuxX7Qn6EGI5Db56Hdj
-         flcQqs8aVw1+gWd+1VoD+USQ6ZsqrVmql9Oz/vErX3ZiakxvPTiUKxKBzfu666HN1VKU
-         9krli1qcYEs39djKZz0dshLHG5dXLwLOEwCOXggGO0wuBLt0mdbo/iT7Te1VNArmT3Ne
-         vyTNbS4NCcrdxSKt+o+BaHZtyM8zLu9klzc+vYwE7hYV9wS0RjH1GmbF6xgQtdf5g+6x
-         BU8+qYTHlcCcXJJ6hYsAKRjOqwSlsRzOgr2gv2isP/RF/A8pf4ntohLEi8rayhKqoDY/
-         /VPA==
-X-Gm-Message-State: AOAM531vUcp5T1GC2IUE8kYOUx4uzFSbgSF5+Q34Gq8ZJ4stclEFyoLv
-        KG9LWs4Tb9gsTwapkKhAyvJ/pg==
-X-Google-Smtp-Source: ABdhPJyPZywy459VJObSw/vvdeHF8Qv736PYSJ4zEvgpg+nRYBaYdVTNJsDR2tMXD8cxy2Ug8yvQ9w==
-X-Received: by 2002:a17:902:db07:b029:125:765c:75e1 with SMTP id m7-20020a170902db07b0290125765c75e1mr9852plx.9.1624459092040;
-        Wed, 23 Jun 2021 07:38:12 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i125sm186361pfc.7.2021.06.23.07.38.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 07:38:11 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 07:38:10 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>
-Cc:     Shuah Khan <shuah@kernel.org>, stable@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] selftests/lkdtm: Use /bin/sh not $SHELL
-Message-ID: <202106230734.78A239D@keescook>
-References: <20210619025834.2505201-1-keescook@chromium.org>
- <e958209b-8621-57ca-01d6-2e76b05dab4c@collabora.com>
+        Wed, 23 Jun 2021 10:42:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624459187; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Reply-To: Sender;
+ bh=82D/RvnvXIWarUQl34Y8kax/sq7KtyWDivoFVNNrcc0=; b=rjP9aY/21c5AnM0fSC29JcyhRd/mmxRqoFiELFzFFLiXgSC8MsTEFcOS/NsI2M1Id8HNYV87
+ PkUpmL79Nm1s4foA8/6zG6czVeAkLNMYitfEJxmNPpbMVE5nqwg+YcJvExFb0EgkqqE1ajbM
+ D6KVTMu6kMiVAfLvroSA6q8Ta4M=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60d3479d01dd9a9431f8b1af (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Jun 2021 14:39:25
+ GMT
+Sender: bcain=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3B948C43460; Wed, 23 Jun 2021 14:39:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from BCAIN (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bcain)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 45043C433F1;
+        Wed, 23 Jun 2021 14:39:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 45043C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bcain@codeaurora.org
+Reply-To: <bcain@codeaurora.org>
+From:   "Brian Cain" <bcain@codeaurora.org>
+To:     "'Christoph Hellwig'" <hch@lst.de>,
+        "'Arnd Bergmann'" <arnd@arndb.de>
+Cc:     "'Linus Torvalds'" <torvalds@linux-foundation.org>,
+        "'Sid Manning'" <sidneym@codeaurora.org>,
+        <linux-hexagon@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210623141854.GA32155@lst.de>
+In-Reply-To: <20210623141854.GA32155@lst.de>
+Subject: RE: how can we test the hexagon port in mainline
+Date:   Wed, 23 Jun 2021 09:39:21 -0500
+Message-ID: <08df01d7683d$8f5b7b70$ae127250$@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e958209b-8621-57ca-01d6-2e76b05dab4c@collabora.com>
+Content-Type: text/plain;
+        charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJHxj6Ga6VuoE3mNrk9EKW2w3HC7qpA7bUg
+Content-Language: en-us
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 01:39:57PM +0100, Guillaume Tucker wrote:
-> On 19/06/2021 03:58, Kees Cook wrote:
-> > Some environments do not set $SHELL when running tests. There's no need
-> > to use $SHELL here anyway, so just replace it with hard-coded path
-> > instead. Additionally avoid using bash-isms in the command, so that
-> > regular /bin/sh can be used.
-> > 
-> > Suggested-by: Guillaume Tucker <guillaume.tucker@collabora.com>
-> > Fixes: 46d1a0f03d66 ("selftests/lkdtm: Add tests for LKDTM targets")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> -----Original Message-----
+> From: Christoph Hellwig <hch@lst.de>
+...
 > 
+> Hi all,
 > 
-> Tested-by: "kernelci.org bot" <bot@kernelci.org> 
+> the oldest supported gcc version in mainline is gcc 4.9.  But the only
+> hexagon crosscompiler I can find is the one Arnds website points to here:
 > 
+> https://mirrors.edge.kernel.org/pub/tools/crosstool/
 > 
-> Sample staging results with this patch applied on top of
-> next-20210622:
-> 
-> https://staging.kernelci.org/test/plan/id/60d2dbdc3cfb88da0924bf41/
-> 
-> Full log:
-> 
-> https://storage.staging.kernelci.org/kernelci/staging-next/staging-next-20210623.0/x86_64/x86_64_defconfig+x86-chromebook+kselftest/clang-13/lab-collabora/kselftest-lkdtm-asus-C523NA-A20057-coral.html
+> which is a non-upstream gcc 4.6.1 port.  How are we supposed to even
+> build test hexagon code?
 
-Awesome! This looks great. :)
+We have provided a clang-12-based toolchain here:
 
-What's needed to build these kernels will different CONFIGs? I see a
-bunch of things (commonly found in distro kernels) that are not set:
+https://codelinaro.jfrog.io/artifactory/codelinaro-qemu/2021-05-12/clang+llv
+m-12.0.0-cross-hexagon-unknown-linux-musl.tar.xz
 
-CONFIG_SLAB_FREELIST_HARDENED=y
-CONFIG_FORTIFY_SOURCE=y
-CONFIG_HARDENED_USERCOPY=y
-# CONFIG_HARDENED_USERCOPY_FALLBACK is not set
+Could we update https://mirrors.edge.kernel.org/pub/tools/crosstool/ to
+point here?
 
-Should I add these to the kselftest "config" file for LKDTM?
+-Brian
 
-Thanks again for the help with this!
-
--Kees
-
--- 
-Kees Cook
