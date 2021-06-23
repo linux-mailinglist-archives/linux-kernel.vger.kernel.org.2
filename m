@@ -2,128 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD533B14AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DF03B14B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbhFWHfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 03:35:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33514 "EHLO mail.kernel.org"
+        id S230094AbhFWHhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 03:37:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230037AbhFWHfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 03:35:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6074C6101D;
-        Wed, 23 Jun 2021 07:33:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624433597;
-        bh=cSE4gvzltu40U/D3KFAbFM/4HN3+SscDhof3gpvHaJQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LsLrtEc96Fn6TLLI416f3+gEA4o78vBtze3/liP0+ob0AoBER5bXgOz7B9Mfi7pMo
-         pqRWDnbrSpcMtikE/3Hk7QGlcFZ5krUX6OGFSbYnQsYIe7VsaGpZ+BynW9+aiUNyZX
-         YoVDw0IbgnPf7yVnto3kwhbbV6Qm8+19GpMPVn1uSEzXrf5zZUz1DIe0r03DSp+xA3
-         5ErCmKBIdzhsDdmPw9GVg5fM8UaxhXBnVGzLWO28B/vJm2VAKaYQK/3mhHmRr/OHZG
-         Buj+Sm2tinYfUkDjQbiI2LyZcqY6KnbbY5kIMa17IJqo0cv4y67HsHl3ZvTBYdg5Em
-         nNiCihKKamJ+Q==
-Date:   Wed, 23 Jun 2021 09:33:12 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     YP WU <yp.wu@mediatek.com>
-Cc:     <leo.hsiao@mediatek.com>, <Lecopzer.Chen@mediatek.com>,
-        <gustavoars@kernel.org>, <hverkuil-cisco@xs4all.nl>,
-        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <Jason-BF.Huang@mediatek.com>, <francis.lee@mediatek.com>
-Subject: Re: How to use "DTV_FE_CAPABILITY" command for Frontend.h of Linux
- DVB
-Message-ID: <20210623093312.6f9883a5@coco.lan>
-In-Reply-To: <20210623061551.10453-1-yp.wu@mediatek.com>
-References: <20210623061551.10453-1-yp.wu@mediatek.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S229916AbhFWHhB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 03:37:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A3AD60FDA;
+        Wed, 23 Jun 2021 07:34:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624433683;
+        bh=zVp16Al2ZaNe9A+v+foD48Mk+8GUKP4jIZTczxSQGmk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iDDXW91vE9Qx57L7b5haWZvIM9DzXJRBIBWRkH886SUQGTDNQq3gblzxcUXIs+5Wx
+         8QOvDnekrwdP7sMvav6Kw/GXmVf+XE+w0FdlxC6SFRBfLAdZ0CWglSAcO/awEHEmmx
+         dStYpmF9h1pI35K1nJNtUtvTZo4jV5mXoddxp4IE=
+Date:   Wed, 23 Jun 2021 09:34:36 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        catalin.marinas@arm.com, will@kernel.org,
+        akpm@linux-foundation.org, guohanjun@huawei.com,
+        sudeep.holla@arm.com, song.bao.hua@hisilicon.com, ardb@kernel.org,
+        anshuman.khandual@arm.com, stable@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Li Huafei <lihuafei1@huawei.com>
+Subject: Re: [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide ZONE_DMA
+Message-ID: <YNLkDJ8zHGRZ5iG8@kroah.com>
+References: <9bc396116372de5b538d71d8f9ae9c3259f1002e.camel@suse.de>
+ <YEDr/lYZHew88/Ip@kroah.com>
+ <827b317d7f5da6e048806922098291faacdb19f9.camel@suse.de>
+ <YETwL6QGWFyJTAzk@kroah.com>
+ <604597E3.5000605@huawei.com>
+ <YEX1OcbVNSqwwusF@kroah.com>
+ <31cd8432-2466-555d-7617-ae48cbcd4244@huawei.com>
+ <8b0a4f25-0803-9341-f3a4-277d16802295@huawei.com>
+ <YNLe4CGtOgVvTOMN@kroah.com>
+ <e47df0fd-0ddd-408b-2972-1b6d0a786f00@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e47df0fd-0ddd-408b-2972-1b6d0a786f00@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Jun 23, 2021 at 03:25:10PM +0800, Kefeng Wang wrote:
+> 
+> 
+> On 2021/6/23 15:12, Greg KH wrote:
+> > On Wed, Jun 23, 2021 at 02:59:59PM +0800, Kefeng Wang wrote:
+> > > Hi Greg,
+> > > 
+> > > There are two more patches about the ZONE_DMA[32] changes,
+> > 
+> > What ZONE_DMA changes?
+> 
+> See the subject, [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide
+> ZONE_DMA, We asked the ARM64 ZONE_DMA change backport before, link[1]
 
-Em Wed, 23 Jun 2021 14:15:51 +0800
-YP WU <yp.wu@mediatek.com> escreveu:
+The subject doesn't help much, sorry, what commit does this refer to?
+What happened to it?  Was it accepted or rejected?
 
-> Hello, dvb frontend maintainer:
-> 	I work at mediatek company. Currently I develop TV with Linux DVB system=
-.   =20
-> 	I would like to implement the following LNB use cases: user space would =
-like to know if frontend device node have LNB or not.
+> > > especially the
+> > > second one, both them need be backported, thanks.
+> > 
+> > Backported to where?
+> 
+> stable 5.10
 
+Why?
 
-I need to understand more about the use case.
+> > > 791ab8b2e3db - arm64: Ignore any DMA offsets in the max_zone_phys()
+> > > calculation
+> > > 2687275a5843 - arm64: Force NO_BLOCK_MAPPINGS if crashkernel reservation is
+> > > required
+> > 
+> > Have you tried these patches?  Where do they need to be applied to?
+> 
+> Yes, we tested it, without them, especially the second one, we will
+> meet crash when using kexec boot, also there is discussion in [2]
+> and [3] from Catalin.
 
-The main scenario of userspace needing to know about LNB is on Satellite=20
-systems. For those, knowing that the standard is DVB-S/S2, ISDB-S, ... is
-enough to know that a LNB should be controlled.
+These [] do not seem to be links :(
 
-However, userspace needs more than the Kernel can provide, as the LNB is
-an external component, located at the satellite dish.
+thanks,
 
-Such kind of LNB may implement DiSEqC in order to allow certain control
-from the device powering them, but there are several LNB types that
-don't provide any control.
-
-Even when those that implement DiSEqC 1.x, there's no way to query the=20
-LNB properties.
-
-Only after DiSEqC 2.x, there's a way for the LNB to send data back to
-the digital TV receiver.
-
-Also, some satellite systems are configured as multipoint. On those,
-the LNBf power/control can be done by a centralized equipment. Depending
-on the type of arrangement, the LNB control can be set to OFF, as all
-channels are received on different intermediate frequencies.
-
-Due to such huge differences, and the lack of a way for the Kernel
-to retrieve the satellite configuration, what happens is the
-other way around: it should be up to userspace to tell the Kernel=20
-about it, asking it to turn on/off the LNB power, set the DC voltage
-and send/receive DiSEqC commands.
-
--
-
-That's said, a few devices may have a low noise amplifier that
-could be turned on in order to boost the signal gain. The
-DTV_LNA is meant to control it.
-
-Currently, the only way to know if LNA is there is to try to
-set it, and check for the return code.
-
-
-> I want to use "DTV_FE_CAPABILITY" to represent above LNB capability, but =
-I am afraid that my usage is not suitable to the original definition.   =20
-> So I would like to consult the following quesitons:=20
-> 1. The use case for DTV_FE_CAPABILITY in DVB property command.
-> 2. Does it have any restriction for using this command?
-> 3. What=E2=80=99s your suggestion for using this command?
->=20
-> File path: include/uapi/linux/dvb/Frontend.h
-> #define DTV_FE_CAPABILITY	16
->=20
-
-We need to better implement DVB capabilities at the subsystem.
-
-The DTV_FE_CAPABILITY property is meant to duplicate the DVBv3
-FE_GET_INFO capabilites (fe_caps), but there are very few bits
-left there. They aren't enough to provide all possible capabilities
-of a DVB system.
-
-I mean, for instance a DVB-S2 device may support only a subset
-of DVB-S2 modulation types. They may eventually not support PLP,
-and so on. The number of possible combinations is a way larger
-than a 32-bits caps could possible support.
-
-We had some upstream discussions about how to improve it in the
-past, but nothing got merged.
-
-IMO, if you're willing to work on a better way to report the
-device's capabilities, we should probably implement a new DTV
-property.
-
-Thanks,
-Mauro
+greg k-h
