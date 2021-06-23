@@ -2,112 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 703E23B199F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3CD3B19B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbhFWMPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:15:33 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:47055 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230157AbhFWMPc (ORCPT
+        id S230235AbhFWMTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230019AbhFWMTO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:15:32 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 53CB05805EC;
-        Wed, 23 Jun 2021 08:13:14 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 23 Jun 2021 08:13:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=bvlEN71gEJw8dTddmdc2q2Vwa/f
-        oT2HV1h2HUMGGpWk=; b=QYV3LZdLpqmkM4L4+cnqSa9HU9oU+rMprHSsb/GpRe9
-        GWY52E7PipkKUevdhlO+ajgvcc3aj0gLNpPLP+UjaGmBv4A28YWKy+1jWG2pOHe6
-        SDBQOVDw+l6ZA82FeCqFPJ3u/4XxxsbwHBCRTYM5hrF46sz1F7uLhshZmbiK8bnQ
-        hpaPiZYKnIpvd1Le0A15a6GRd6HPPloI9UEMkzWK7QFnkH2pGGPFAq7rKgIEUGFZ
-        XEEAHECCcQBU8WymCYPRZ+BK2E1gd7VA535ODx4izTEbsVhvWgfok93dbS1vDSzj
-        1bBbZK2GmiOZga74UEFtgvcO7FxmdlYCDRuGc1baUhg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=bvlEN7
-        1gEJw8dTddmdc2q2Vwa/foT2HV1h2HUMGGpWk=; b=jHJeARFsGYkV+1k41dYd+p
-        6uJzJBWNE4MSFYijIqiOo00ZPHFYzJWOc61a9Yc4kQWeLAQxlJW5WHk5RT64ajet
-        QFXddb2XshDyU18V6QWl8R7TwpY0j3u2UbjpRov+SlxxUyww62RXsUGAbDjB34p7
-        5GZDUWEf6zEQ1b5NVm7phrJIODeKzT88VXxqNlzwaxORcJHAPmIjVRxPNxODRr9W
-        30DFG2I1Kg8xrNtGmttYIhhof/5kYRVGItSRl0nr0rrMEUTxGVTVYjLPZRCBgV8Y
-        i8SjgqtqGDImToat70xcPZvsUvJUU3F+70xnrTo7j/s56EbdwRpiqXAWwtPOmOiQ
-        ==
-X-ME-Sender: <xms:WCXTYGUK8xceoJrOxy2UUQELe-vEVQAbyxc_dv_f83XITRI6TkIZdA>
-    <xme:WCXTYClH5AAS0C0ZHLHb9WwanAZZEb7wOBxhQxoQ7OvWpuZYYGKVLpjXZU_ONHNMV
-    QgogFtMI7Q-qa7wdAM>
-X-ME-Received: <xmr:WCXTYKZ6TZjLlypY3q-xGLUlerQc5WZaOoMc3V2CwquMjq2Qydr-eV3bdJdI_cNwY7TMj_RN64Qxbqoj5KhKCOhBT2gMjs1Rk8qG>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeegfedghedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:WCXTYNXIGb-bFSIrhvw-sjJ6GagaRged1569H6I9Tl7EgBswtCtLvg>
-    <xmx:WCXTYAmlCZ8X-KS48Y-6CAg-g7OH88Db6db7OqPDE7PPfO0zGA2sGg>
-    <xmx:WCXTYCf3k9TpbenJgrE388JwyVpL123O1fj4qUTuYue-rLrINppWwA>
-    <xmx:WiXTYNjItrZulxglOXXEKAnrELpJgs_SyR0F0mLHVMAJoRNq-y5bpQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 23 Jun 2021 08:13:12 -0400 (EDT)
-Date:   Wed, 23 Jun 2021 14:13:11 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>
-Cc:     Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [GIT PULL] HDMI codec improvements, v2
-Message-ID: <20210623121311.qlbnije5gn7o7so7@gilmour>
-References: <20210610122550.jnriewchqspdcrwk@gilmour>
+        Wed, 23 Jun 2021 08:19:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A463C061574;
+        Wed, 23 Jun 2021 05:16:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UZNtU7hYcqZpBzA1yCiqhGXNHHIoefG0OGqkF1QWY0U=; b=EneXs4ZyYT6XLmV/Zea7qgUKKt
+        ruGkYX2+qqFBxvY2oAteLxRUuN7icF98hCE7dvLsRV1iPYZZntb+7EC15pwNLpyGCT6AoeaS9LH2V
+        EGmItigKyXvQuzliOYAXioxwDFNS1SvAouwRCEvHEbsHEEZFQ9JcHO29vXEdjeO4dApZqkmMSb4I1
+        Bq+N8q2TxmxXgrmj1pzxq3de4Q9qb5n1H5x9eaX+qhVl+Hn3cfMwobdJiy/RaSdV+xTbwuVyetn+5
+        sDv+fWx72sY1KwIMvyirZaRNlQktbrPI6u9e0BXDwQ2yMDF3yTptUBVTb+2+sVHHkGoulAIh/jSpd
+        K6hbJ0iQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lw1nP-00FOtj-TT; Wed, 23 Jun 2021 12:16:13 +0000
+Date:   Wed, 23 Jun 2021 13:15:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 46/46] mm/filemap: Add FGP_STABLE
+Message-ID: <YNMl+4me2lUxiy6M@casper.infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-47-willy@infradead.org>
+ <YNMeYqPkzESAkojd@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ttfcqn3oaqjqblfs"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210610122550.jnriewchqspdcrwk@gilmour>
+In-Reply-To: <YNMeYqPkzESAkojd@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 23, 2021 at 01:43:30PM +0200, Christoph Hellwig wrote:
+> On Tue, Jun 22, 2021 at 01:15:51PM +0100, Matthew Wilcox (Oracle) wrote:
+> > Allow filemap_get_folio() to wait for writeback to complete (if the
+> > filesystem wants that behaviour).  This is the folio equivalent of
+> > grab_cache_page_write_begin(), which is moved into the folio-compat
+> > file as a reminder to migrate all the code using it.  This paves the
+> > way for getting rid of AOP_FLAG_NOFS once grab_cache_page_write_begin()
+> > is removed.
+> 
+> We actually should kill FGP_NOFS as well by switching everything over
+> to memalloc_nofs_{save, restore} eventually, given how error prone
+> all these manual flags settings are.
 
---ttfcqn3oaqjqblfs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Well, yes, but it's been four years and we still have over 1100 uses of
+GFP_NOFS.  Until someone takes on that Augean Stables, we're going to need
+FGP_NOFS.  I added that context to the readahead path in f2c817bed58d,
+but of course that doesn't let me remove any uses of GFP_NOFS.
 
-On Thu, Jun 10, 2021 at 02:25:50PM +0200, Maxime Ripard wrote:
-> Hi,
->=20
-> Here's a PR for the changes to hdmi-codec that need to be shared between
-> drm-misc-next and ASoC.
->=20
-> This is the second iteration, fixing a bisection issue with compilation
->=20
-> Thanks!
-> Maxime
+> > diff --git a/mm/folio-compat.c b/mm/folio-compat.c
+> > index 78365eaee7d3..206bedd621d0 100644
+> > --- a/mm/folio-compat.c
+> > +++ b/mm/folio-compat.c
+> > @@ -115,6 +115,7 @@ void lru_cache_add(struct page *page)
+> >  }
+> >  EXPORT_SYMBOL(lru_cache_add);
+> >  
+> > +noinline
+> >  struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
+> >  		int fgp_flags, gfp_t gfp)
+> 
+> How did that sneak in here?
 
-Merged into drm-misc-next
-
-Maxime
-
---ttfcqn3oaqjqblfs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYNMlVwAKCRDj7w1vZxhR
-xX3xAQDxAGQmBeNhyLP7BR6FrulVySLHaiWkeiGlePaRir2uugD+NyFXqQyaAFJX
-OHqA+RuGw5JNpbnPtgsQYEU3Aj+Efwk=
-=homM
------END PGP SIGNATURE-----
-
---ttfcqn3oaqjqblfs--
+Without it, pagecache_get_page() gets inlined by
+grab_cache_page_write_begin() which is just too much code.
