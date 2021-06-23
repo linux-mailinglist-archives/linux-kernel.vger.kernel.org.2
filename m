@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD303B1CED
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8033B1CFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhFWO5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:57:36 -0400
-Received: from gardel.0pointer.net ([85.214.157.71]:53798 "EHLO
-        gardel.0pointer.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWO5e (ORCPT
+        id S231224AbhFWPBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 11:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhFWPBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:57:34 -0400
-Received: from gardel-login.0pointer.net (gardel-mail [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
-        by gardel.0pointer.net (Postfix) with ESMTP id 2AE4FE8094B;
-        Wed, 23 Jun 2021 16:55:15 +0200 (CEST)
-Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
-        id CEA8B160DC0; Wed, 23 Jun 2021 16:55:14 +0200 (CEST)
-Date:   Wed, 23 Jun 2021 16:55:14 +0200
-From:   Lennart Poettering <mzxreary@0pointer.de>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     Luca Boccassi <bluca@debian.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        Javier Gonz??lez <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>
-Subject: Re: [PATCH v3 1/6] block: add disk sequence number
-Message-ID: <YNNLUnGMO/gNNIJK@gardel-login>
-References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
- <20210623105858.6978-2-mcroce@linux.microsoft.com>
- <YNMffBWvs/Fz2ptK@infradead.org>
- <CAFnufp1gdag0rGQ8K4_2oB6_aC+EZgfgwd2eL4-AxpG0mK+_qQ@mail.gmail.com>
- <YNM8T44v5FTViVWM@gardel-login>
- <3be63d9f-d8eb-7657-86dc-8d57187e5940@suse.de>
- <1b55bc67b75e5cf982c0c1e8f45096f2eb6e8590.camel@debian.org>
- <f84cab19-fb5c-634b-d1ca-51404907a623@suse.de>
+        Wed, 23 Jun 2021 11:01:43 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A61C061574;
+        Wed, 23 Jun 2021 07:59:24 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id i94so3016312wri.4;
+        Wed, 23 Jun 2021 07:59:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Rgspf46aiQviRMOC9Q3QVjuGGzAywfUO2vjWnpCd7FM=;
+        b=doLMYYZf9Ic92WHKcXaYf1NRPdNMdNPlRNtYsrkKRXUsb9N5j+OWX5PkjkobwXrTJ1
+         GqSdwKT1Qxs0GewjFzMCqwxFRIPRM1focjsEIJQD6fxxWd0z0slO+JgL8Va8CiCRNgyr
+         5mgXVg5TYOMzDouFQtq90066lOY6OXtreD7QCU2V8+lI9GcU7A5eKFnOaI7ghV6uN/4N
+         gPbVIslOhRf74uFcAURC/b8gdNOEFjLqpcAn/nHFDXr3w4tKqvLNJBeupvhAxLu1LhYy
+         QoG+dT9yj4pP60Ui5nfO6lZ66C9XLOWcPuuaAhPpTUbKxPVHw/d6ngOcjRG9rAjqZpCR
+         qOJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Rgspf46aiQviRMOC9Q3QVjuGGzAywfUO2vjWnpCd7FM=;
+        b=bmMTU9NWtnJ44EjwtwNujGfxPIqxvv8la6NlQfl8nWUBiD7RRcm9i5YEw6iwdIMAmv
+         8zMx6EBypBRRQuz+h61i9ff5IYwTVWvT8rJpnWm0f343aLcimtDUvDN2aDuPiiTyPXAF
+         izKHGIQMHOCkp4hB1xZxlu8d9k+3VAYsTM9w4fwOYJ4kP2lJIquy9UM0LXQIuRG69rYu
+         RrKtapfPG0PEivnsNIUC5EueCKs6i2S+CSIBoxUjCGVQwgqgnKJOkXhqmHOIeztzUo0J
+         XEbiA+CLkVj45pIOQszFKFnQnYK9Nkw5IMd0SxqYgQ1HqZgqA8yZcO2i8npCk6E6e3Sb
+         zjAQ==
+X-Gm-Message-State: AOAM531bBJeCFZNRdI8p4pvQsgg9HvROtd8Wjgm0Ky3kvF09FRMhwSPq
+        pQIrUxcgAEe9uEIDtGJ0pQ==
+X-Google-Smtp-Source: ABdhPJwNwSw2Bc/LOuSVHV1AObnhRNMS8wUppy0twDkW+2tOffI8MC+j9MxQsJ/8sBnjU1u/dl1shg==
+X-Received: by 2002:a5d:50ce:: with SMTP id f14mr466201wrt.259.1624460363556;
+        Wed, 23 Jun 2021 07:59:23 -0700 (PDT)
+Received: from localhost.localdomain (ip5b434b8b.dynamic.kabel-deutschland.de. [91.67.75.139])
+        by smtp.googlemail.com with ESMTPSA id n4sm301012wrw.21.2021.06.23.07.59.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 07:59:23 -0700 (PDT)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Johan Jonker <jbx6244@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH v2] arm64: dts: rockchip: Add sdmmc_ext for RK3328
+Date:   Wed, 23 Jun 2021 16:59:18 +0200
+Message-Id: <20210623145918.187018-1-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210623120001.164920-1-knaerzche@gmail.com>
+References: <20210623120001.164920-1-knaerzche@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <f84cab19-fb5c-634b-d1ca-51404907a623@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mi, 23.06.21 16:21, Hannes Reinecke (hare@suse.de) wrote:
+RK3328 SoC has a fourth mmc controller called SDMMC_EXT. Some
+boards have sdio wifi connected to it. In order to use it
+one would have to add the pinctrls from sdmmc0ext group which
+is done on board level.
 
-> > We need this so that we can reliably correlate events to instances of a
-> > device. Events alone cannot solve this problem, because events _are_
-> > the problem.
-> >
-> In which sense?
-> Yes, events can be delayed (if you list to uevents), but if you listen to
-> kernel events there shouldn't be a delay, right?
+Signed-off-by: Alex Bee <knaerzche@gmail.com>
+---
 
-uevents are delivered to userpace via an AF_NETLINK socket. The
-AF_NETLINK socket is basically an asynchronous buffer.
+ Changes in v2:
+ - fixed node name in accordance to DT bindings (Johan)
+ - seperated patch which adds reset controls for the
+   other mmc controllers (Chen-Yu)
 
-I mean, consider what you are saying: you establish the AF_NETLINK
-uevent watching socket, then you allocate /dev/loop0. Since you cannot
-do that atomically, you'll first have to do one, and then the
-other. But if you do that in two steps, then in the middle some other
-process might get scheduled that quickly allocates /dev/loop0 and
-releases it again, before your code gets to run. So now you have in
-your AF_NETLINK socket buffer the uevents for that other process' use
-of the device, and you cannot sanely distinguish them from your own.
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-of course you could do it the other way: allocate the device first,
-and only then allocate the AF_NETLINK uevent socket. But then you
-might or might not lose the "add" event for the device you just
-allocated. And you don't know if you should wait for it or not.
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+index da84be6f4715..aa11bce576a4 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+@@ -980,6 +980,20 @@ usb_host0_ohci: usb@ff5d0000 {
+ 		status = "disabled";
+ 	};
+ 
++	sdmmc_ext: mmc@ff5f0000 {
++		compatible = "rockchip,rk3328-dw-mshc", "rockchip,rk3288-dw-mshc";
++		reg = <0x0 0xff5f0000 0x0 0x4000>;
++		interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru HCLK_SDMMC_EXT>, <&cru SCLK_SDMMC_EXT>,
++			 <&cru SCLK_SDMMC_EXT_DRV>, <&cru SCLK_SDMMC_EXT_SAMPLE>;
++		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
++		fifo-depth = <0x100>;
++		max-frequency = <150000000>;
++		resets = <&cru SRST_SDMMCEXT>;
++		reset-names = "reset";
++		status = "disabled";
++	};
++
+ 	usbdrd3: usb@ff600000 {
+ 		compatible = "rockchip,rk3328-dwc3", "snps,dwc3";
+ 		reg = <0x0 0xff600000 0x0 0x100000>;
+-- 
+2.27.0
 
-This isn't even a constructed issue, this is the common case if you
-have multiple processes all simultaneously trying to acquire a loopback
-block device, because they all will end up eying /dev/loop0 at the same time.
-
-But it gets worse IRL because of various factors. For example,
-partition probing is asynchronous, so if you use LO_FLAGS_PARTSCAN and
-want to watch for some partition device associated to your loopback
-block device to show up, this can take *really* long, so the race
-window is large. Or you actually use udev (like most userspace
-probably should) because you want the metainfo it collects about the
-device, in which case it will take even longer for the uevent to reach
-you, i.e. the time window where a previous user's uevents and your own
-for the same loopback device "overlap" can be quite large and you
-cannot determine if they are yours or the previous user's uevents —
-unless we have these new sequence numbers.
-
-Lennart
-
---
-Lennart Poettering, Berlin
