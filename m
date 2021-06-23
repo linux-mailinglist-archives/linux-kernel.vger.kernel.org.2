@@ -2,27 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFF53B2245
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173173B2246
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhFWVQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 17:16:58 -0400
-Received: from ciao.gmane.io ([116.202.254.214]:46402 "EHLO ciao.gmane.io"
+        id S229886AbhFWVRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 17:17:22 -0400
+Received: from ciao.gmane.io ([116.202.254.214]:48384 "EHLO ciao.gmane.io"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229844AbhFWVQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 17:16:56 -0400
-X-Greylist: delayed 302 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Jun 2021 17:16:55 EDT
+        id S229844AbhFWVRV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 17:17:21 -0400
 Received: from list by ciao.gmane.io with local (Exim 4.92)
         (envelope-from <glk-linux-kernel-4@m.gmane-mx.org>)
-        id 1lwA7o-0008Qs-HV
-        for linux-kernel@vger.kernel.org; Wed, 23 Jun 2021 23:09:32 +0200
+        id 1lwAD8-000591-Gc
+        for linux-kernel@vger.kernel.org; Wed, 23 Jun 2021 23:15:02 +0200
 X-Injected-Via-Gmane: http://gmane.org/
 To:     linux-kernel@vger.kernel.org
 From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Subject: Re: [PATCH] ASoC: da7219: Fix an out-of-bound read in an error
  handling path
-Date:   Wed, 23 Jun 2021 23:09:26 +0200
-Message-ID: <dccc9e1a-5463-17ee-cd7c-fc407a470b09@wanadoo.fr>
+Date:   Wed, 23 Jun 2021 23:13:46 +0200
+Message-ID: <8e0d461a-c633-0162-b9e6-c2166bc013fe@wanadoo.fr>
 References: <4fdde55198294a07f04933f7cef937fcb654c901.1624425670.git.christophe.jaillet@wanadoo.fr>
  <20210623094655.GB2116@kadam>
 Mime-Version: 1.0
