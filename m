@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074563B19F5
+	by mail.lfdr.de (Postfix) with ESMTP id 502433B19F6
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbhFWM06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:26:58 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36522 "EHLO
+        id S231585AbhFWM1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:27:00 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36694 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230430AbhFWM0W (ORCPT
+        with ESMTP id S231315AbhFWM0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:26:22 -0400
-Message-Id: <20210623121453.734561971@linutronix.de>
+        Wed, 23 Jun 2021 08:26:24 -0400
+Message-Id: <20210623121453.830239347@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624451044;
+        s=2020; t=1624451046;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=01WpygfFRGjrldoKJIoHrdsDBh5jc0Rp0vdud8BMKQY=;
-        b=bKRHpQePE6MDWt5Mxf5ZSyB+w1bqEbqPUMAt7HttVOrNE0EX77GB9wqQimZWKJAqWDIIRg
-        jFn/VooSul/s7dMEScuyXpG/chDCn1GZs+9lbT3rGO8vl9ktwn61c6lP85C/8UEFBtmQ7p
-        U3d9Cvb01YfypQjAefgsYFCBRSNibhu4H7E8IC9oMiM15S/WdxzYKPLzWaxYkh6PPDQ6tS
-        ScBslBWLTlm8RVLIWmg+5j4jIyL0kUolA8kwaVFKrmYHjJC6AdSk+hD9tx15C8Hti6mZZn
-        fvt6lebhdTlLNsWcOcC0pwInxPHWPjrGWIWk+nenjpe3ORNddDkYkVxibijAtQ==
+        bh=WhjFMUjM1WJAzo4n/deeXLk3u3NyNqr9i/GuZc1L+6k=;
+        b=f55dZ/5nzWaTbk5QIJzjyrxJkGpx3co6oMCTknYczKzs9rzqNCXOpEbvchpXs0/lBDND4W
+        SGzOf+SCzCCQnYzf6ZiOyMUtrFH8JNIFYYiji8U664epUd19lzq71CUSPtZzp9CRMifDns
+        7H7mvcQ0M2xd7Pd7POtHDNPng13L4CVsynAViZGNtBlOu3v+Y+DAG/76AFMqz/0hIjgIZE
+        54vuykIwRfmFRRoOWrhyaqxC+5St25iRkd0BqMsvm5JssFxoyHZwyj0OehgvxPVxJ4m0Gc
+        r9zHIbIAmXEynz6Ox11pNk84a8nJyoeUu1yhGN5q7eEvm2yQFiLi982f/oSQSw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624451044;
+        s=2020e; t=1624451046;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=01WpygfFRGjrldoKJIoHrdsDBh5jc0Rp0vdud8BMKQY=;
-        b=KbAG3EfrSj1pPxhR4HOEIr2F4atsfBZJQANIJmkDbsXw7puGDiKH1g/8SgFyAQtiSEsZBe
-        mTMbPXLYPH/AVjBw==
-Date:   Wed, 23 Jun 2021 14:01:51 +0200
+        bh=WhjFMUjM1WJAzo4n/deeXLk3u3NyNqr9i/GuZc1L+6k=;
+        b=I+JcalQfFppNA4i6zSCgqdh3PI9vHW+fu8EWh7pp1WtfNwCcVVFWw6UMr5xqMYtkSG2K9k
+        RC3XqcpjjKBJUpDQ==
+Date:   Wed, 23 Jun 2021 14:01:52 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -47,7 +47,8 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         "Chang Seok Bae" <chang.seok.bae@intel.com>,
         Megha Dey <megha.dey@linux.intel.com>,
         Oliver Sang <oliver.sang@intel.com>
-Subject: [patch V4 24/65] x86/fpu: Get rid of copy_supervisor_to_kernel()
+Subject: [patch V4 25/65] x86/fpu: Rename copy_xregs_to_kernel() and
+ copy_kernel_to_xregs()
 References: <20210623120127.327154589@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,126 +57,203 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the fast path of restoring the FPU state on sigreturn fails or is not
-taken and the current task's FPU is active then the FPU has to be
-deactivated for the slow path to allow a safe update of the tasks FPU
-memory state.
+The function names for xsave[s]/xrstor[s] operations are horribly named and
+a permanent source of confusion.
 
-With supervisor states enabled, this requires to save the supervisor state
-in the memory state first. Supervisor states require XSAVES so saving only
-the supervisor state requires to reshuffle the memory buffer because XSAVES
-uses the compacted format and therefore stores the supervisor states at the
-beginning of the memory state. That's just an overengineered optimization.
+Rename:
+	copy_xregs_to_kernel() to os_xsave()
+	copy_kernel_to_xregs() to os_xrstor()
 
-Get rid of it and save the full state for this case.
+These are truly low level wrappers around the actual instructions
+XSAVE[OPT]/XRSTOR and XSAVES/XRSTORS with the twist that the selection
+based on the available CPU features happens with an alternative to avoid
+conditionals all over the place and to provide the best performance for hot
+paths.
+
+The os_ prefix tells that this is the OS selected mechanism.
+
+No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Andy Lutomirski <luto@kernel.org>
 Reviewed-by: Borislav Petkov <bp@suse.de>
 ---
- arch/x86/include/asm/fpu/xstate.h |    1 
- arch/x86/kernel/fpu/signal.c      |   13 +++++---
- arch/x86/kernel/fpu/xstate.c      |   55 --------------------------------------
- 3 files changed, 8 insertions(+), 61 deletions(-)
+V3: Rename (Boris)
+---
+ arch/x86/include/asm/fpu/internal.h |   17 +++++++++++------
+ arch/x86/kernel/fpu/core.c          |    7 +++----
+ arch/x86/kernel/fpu/signal.c        |   21 +++++++++++----------
+ arch/x86/kernel/fpu/xstate.c        |    2 +-
+ 4 files changed, 26 insertions(+), 21 deletions(-)
 
---- a/arch/x86/include/asm/fpu/xstate.h
-+++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -104,7 +104,6 @@ void *get_xsave_addr(struct xregs_state
- int xfeature_size(int xfeature_nr);
- int copy_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf);
- int copy_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf);
--void copy_supervisor_to_kernel(struct xregs_state *xsave);
- void copy_dynamic_supervisor_to_kernel(struct xregs_state *xstate, u64 mask);
- void copy_kernel_to_dynamic_supervisor(struct xregs_state *xstate, u64 mask);
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -263,7 +263,7 @@ static inline void fxsave_to_kernel(stru
+  * This function is called only during boot time when x86 caps are not set
+  * up and alternative can not be used yet.
+  */
+-static inline void copy_kernel_to_xregs_booting(struct xregs_state *xstate)
++static inline void os_xrstor_booting(struct xregs_state *xstate)
+ {
+ 	u64 mask = -1;
+ 	u32 lmask = mask;
+@@ -286,8 +286,11 @@ static inline void copy_kernel_to_xregs_
  
+ /*
+  * Save processor xstate to xsave area.
++ *
++ * Uses either XSAVE or XSAVEOPT or XSAVES depending on the CPU features
++ * and command line options. The choice is permanent until the next reboot.
+  */
+-static inline void copy_xregs_to_kernel(struct xregs_state *xstate)
++static inline void os_xsave(struct xregs_state *xstate)
+ {
+ 	u64 mask = xfeatures_mask_all;
+ 	u32 lmask = mask;
+@@ -304,8 +307,10 @@ static inline void copy_xregs_to_kernel(
+ 
+ /*
+  * Restore processor xstate from xsave area.
++ *
++ * Uses XRSTORS when XSAVES is used, XRSTOR otherwise.
+  */
+-static inline void copy_kernel_to_xregs(struct xregs_state *xstate, u64 mask)
++static inline void os_xrstor(struct xregs_state *xstate, u64 mask)
+ {
+ 	u32 lmask = mask;
+ 	u32 hmask = mask >> 32;
+@@ -366,13 +371,13 @@ static inline int copy_user_to_xregs(str
+  * Restore xstate from kernel space xsave area, return an error code instead of
+  * an exception.
+  */
+-static inline int copy_kernel_to_xregs_err(struct xregs_state *xstate, u64 mask)
++static inline int os_xrstor_safe(struct xregs_state *xstate, u64 mask)
+ {
+ 	u32 lmask = mask;
+ 	u32 hmask = mask >> 32;
+ 	int err;
+ 
+-	if (static_cpu_has(X86_FEATURE_XSAVES))
++	if (cpu_feature_enabled(X86_FEATURE_XSAVES))
+ 		XSTATE_OP(XRSTORS, xstate, lmask, hmask, err);
+ 	else
+ 		XSTATE_OP(XRSTOR, xstate, lmask, hmask, err);
+@@ -385,7 +390,7 @@ extern int copy_fpregs_to_fpstate(struct
+ static inline void __copy_kernel_to_fpregs(union fpregs_state *fpstate, u64 mask)
+ {
+ 	if (use_xsave()) {
+-		copy_kernel_to_xregs(&fpstate->xsave, mask);
++		os_xrstor(&fpstate->xsave, mask);
+ 	} else {
+ 		if (use_fxsr())
+ 			copy_kernel_to_fxregs(&fpstate->fxsave);
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -95,7 +95,7 @@ EXPORT_SYMBOL(irq_fpu_usable);
+ int copy_fpregs_to_fpstate(struct fpu *fpu)
+ {
+ 	if (likely(use_xsave())) {
+-		copy_xregs_to_kernel(&fpu->state.xsave);
++		os_xsave(&fpu->state.xsave);
+ 
+ 		/*
+ 		 * AVX512 state is tracked here because its use is
+@@ -358,7 +358,7 @@ void fpu__drop(struct fpu *fpu)
+ static inline void copy_init_fpstate_to_fpregs(u64 features_mask)
+ {
+ 	if (use_xsave())
+-		copy_kernel_to_xregs(&init_fpstate.xsave, features_mask);
++		os_xrstor(&init_fpstate.xsave, features_mask);
+ 	else if (static_cpu_has(X86_FEATURE_FXSR))
+ 		copy_kernel_to_fxregs(&init_fpstate.fxsave);
+ 	else
+@@ -389,8 +389,7 @@ static void fpu__clear(struct fpu *fpu,
+ 	if (user_only) {
+ 		if (!fpregs_state_valid(fpu, smp_processor_id()) &&
+ 		    xfeatures_mask_supervisor())
+-			copy_kernel_to_xregs(&fpu->state.xsave,
+-					     xfeatures_mask_supervisor());
++			os_xrstor(&fpu->state.xsave, xfeatures_mask_supervisor());
+ 		copy_init_fpstate_to_fpregs(xfeatures_mask_user());
+ 	} else {
+ 		copy_init_fpstate_to_fpregs(xfeatures_mask_all);
 --- a/arch/x86/kernel/fpu/signal.c
 +++ b/arch/x86/kernel/fpu/signal.c
-@@ -401,15 +401,18 @@ static int __fpu__restore_sig(void __use
- 	 * the optimisation).
- 	 */
- 	fpregs_lock();
--
- 	if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
--
- 		/*
--		 * Supervisor states are not modified by user space input.  Save
--		 * current supervisor states first and invalidate the FPU regs.
-+		 * If supervisor states are available then save the
-+		 * hardware state in current's fpstate so that the
-+		 * supervisor state is preserved. Save the full state for
-+		 * simplicity. There is no point in optimizing this by only
-+		 * saving the supervisor states and then shuffle them to
-+		 * the right place in memory. This is the slow path and the
-+		 * above XRSTOR failed or ia32_fxstate is true. Shrug.
+@@ -261,14 +261,14 @@ static int copy_user_to_fpregs_zeroing(v
+ 
+ 			r = copy_user_to_fxregs(buf);
+ 			if (!r)
+-				copy_kernel_to_xregs(&init_fpstate.xsave, init_bv);
++				os_xrstor(&init_fpstate.xsave, init_bv);
+ 			return r;
+ 		} else {
+ 			init_bv = xfeatures_mask_user() & ~xbv;
+ 
+ 			r = copy_user_to_xregs(buf, xbv);
+ 			if (!r && unlikely(init_bv))
+-				copy_kernel_to_xregs(&init_fpstate.xsave, init_bv);
++				os_xrstor(&init_fpstate.xsave, init_bv);
+ 			return r;
+ 		}
+ 	} else if (use_fxsr()) {
+@@ -356,9 +356,10 @@ static int __fpu__restore_sig(void __use
+ 			 * has been copied to the kernel one.
+ 			 */
+ 			if (test_thread_flag(TIF_NEED_FPU_LOAD) &&
+-			    xfeatures_mask_supervisor())
+-				copy_kernel_to_xregs(&fpu->state.xsave,
+-						     xfeatures_mask_supervisor());
++			    xfeatures_mask_supervisor()) {
++				os_xrstor(&fpu->state.xsave,
++					  xfeatures_mask_supervisor());
++			}
+ 			fpregs_mark_activate();
+ 			fpregs_unlock();
+ 			return 0;
+@@ -412,7 +413,7 @@ static int __fpu__restore_sig(void __use
+ 		 * above XRSTOR failed or ia32_fxstate is true. Shrug.
  		 */
  		if (xfeatures_mask_supervisor())
--			copy_supervisor_to_kernel(&fpu->state.xsave);
-+			copy_xregs_to_kernel(&fpu->state.xsave);
+-			copy_xregs_to_kernel(&fpu->state.xsave);
++			os_xsave(&fpu->state.xsave);
  		set_thread_flag(TIF_NEED_FPU_LOAD);
  	}
  	__fpu_invalidate_fpregs_state(fpu);
+@@ -430,14 +431,14 @@ static int __fpu__restore_sig(void __use
+ 
+ 		fpregs_lock();
+ 		if (unlikely(init_bv))
+-			copy_kernel_to_xregs(&init_fpstate.xsave, init_bv);
++			os_xrstor(&init_fpstate.xsave, init_bv);
+ 
+ 		/*
+ 		 * Restore previously saved supervisor xstates along with
+ 		 * copied-in user xstates.
+ 		 */
+-		ret = copy_kernel_to_xregs_err(&fpu->state.xsave,
+-					       user_xfeatures | xfeatures_mask_supervisor());
++		ret = os_xrstor_safe(&fpu->state.xsave,
++				     user_xfeatures | xfeatures_mask_supervisor());
+ 
+ 	} else if (use_fxsr()) {
+ 		ret = __copy_from_user(&fpu->state.fxsave, buf_fx, state_size);
+@@ -454,7 +455,7 @@ static int __fpu__restore_sig(void __use
+ 			u64 init_bv;
+ 
+ 			init_bv = xfeatures_mask_user() & ~XFEATURE_MASK_FPSSE;
+-			copy_kernel_to_xregs(&init_fpstate.xsave, init_bv);
++			os_xrstor(&init_fpstate.xsave, init_bv);
+ 		}
+ 
+ 		ret = copy_kernel_to_fxregs_err(&fpu->state.fxsave);
 --- a/arch/x86/kernel/fpu/xstate.c
 +++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1197,61 +1197,6 @@ int copy_user_to_xstate(struct xregs_sta
- 	return 0;
- }
+@@ -400,7 +400,7 @@ static void __init setup_init_fpu_buf(vo
+ 	/*
+ 	 * Init all the features state with header.xfeatures being 0x0
+ 	 */
+-	copy_kernel_to_xregs_booting(&init_fpstate.xsave);
++	os_xrstor_booting(&init_fpstate.xsave);
  
--/*
-- * Save only supervisor states to the kernel buffer.  This blows away all
-- * old states, and is intended to be used only in __fpu__restore_sig(), where
-- * user states are restored from the user buffer.
-- */
--void copy_supervisor_to_kernel(struct xregs_state *xstate)
--{
--	struct xstate_header *header;
--	u64 max_bit, min_bit;
--	u32 lmask, hmask;
--	int err, i;
--
--	if (WARN_ON(!boot_cpu_has(X86_FEATURE_XSAVES)))
--		return;
--
--	if (!xfeatures_mask_supervisor())
--		return;
--
--	max_bit = __fls(xfeatures_mask_supervisor());
--	min_bit = __ffs(xfeatures_mask_supervisor());
--
--	lmask = xfeatures_mask_supervisor();
--	hmask = xfeatures_mask_supervisor() >> 32;
--	XSTATE_OP(XSAVES, xstate, lmask, hmask, err);
--
--	/* We should never fault when copying to a kernel buffer: */
--	if (WARN_ON_FPU(err))
--		return;
--
--	/*
--	 * At this point, the buffer has only supervisor states and must be
--	 * converted back to normal kernel format.
--	 */
--	header = &xstate->header;
--	header->xcomp_bv |= xfeatures_mask_all;
--
--	/*
--	 * This only moves states up in the buffer.  Start with
--	 * the last state and move backwards so that states are
--	 * not overwritten until after they are moved.  Note:
--	 * memmove() allows overlapping src/dst buffers.
--	 */
--	for (i = max_bit; i >= min_bit; i--) {
--		u8 *xbuf = (u8 *)xstate;
--
--		if (!((header->xfeatures >> i) & 1))
--			continue;
--
--		/* Move xfeature 'i' into its normal location */
--		memmove(xbuf + xstate_comp_offsets[i],
--			xbuf + xstate_supervisor_only_offsets[i],
--			xstate_sizes[i]);
--	}
--}
--
- /**
-  * copy_dynamic_supervisor_to_kernel() - Save dynamic supervisor states to
-  *                                       an xsave area
+ 	/*
+ 	 * All components are now in init state. Read the state back so
 
