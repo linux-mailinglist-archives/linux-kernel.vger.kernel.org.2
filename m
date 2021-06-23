@@ -2,119 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308F53B237B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65FD13B2379
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhFWWSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 18:18:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbhFWWSB (ORCPT
+        id S230146AbhFWWR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 18:17:58 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:60830 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229996AbhFWWRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:18:01 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23D2C061766;
-        Wed, 23 Jun 2021 15:14:45 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id l12so3591994wrt.3;
-        Wed, 23 Jun 2021 15:14:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:references:from:subject:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=jby64o0v7EYHfux9Oun1hrQ36e6m6gcFy0/ViVpUCHI=;
-        b=mi8kKh/V9M9TalRkKjVOQmcdPCEsO3frZoHqQUZoWjyM/nEtVNQVGyzB5sX76auBPL
-         L/X/Q4fk3rt4ehqgQhdb1Uzh7+82hbYYCnw6Co4zv2qe5SqeHj4KhmAbs+lbmAidm/gd
-         2MEqD9D4gdpi0re/PlPmMJ4Dke1nINeUTFRqRA4QzMkcgzDKAZ5Khr+OSgDWY8QmHFM9
-         jFYOBw6NB0npn43RXlkdOb8J+NK1coP2XQzXDgQ5EwqS/NYp8Fxef8g1PVPTb1W0nneM
-         p8qjZ3klf8/l9PnOtyVLihSwIRkFyhZh4XNtcrBgc6qygNyEFifNpAZYz+C9OTuBqMOz
-         MMqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jby64o0v7EYHfux9Oun1hrQ36e6m6gcFy0/ViVpUCHI=;
-        b=UsNKhFo2Kd9R6X2Gz+6D8ZUoTgvEzJsZNZfhgSi8WBaXGG1Xac2CuitVGAWZ/qN4ql
-         uKwRBvf6yN1YXW98RDeXNzWDIWWW6A6TckkefNYdaYjRaqaM8QlfIici70WSRL4Kn1c3
-         VM5SOfXWsKeOt4ORU8IqrGU1nkvBxyES9NzFjTooH/BZ9bi3BLGC9vOwCVthL7FC0os9
-         1nZRRJqIXawLVyTOZ0PtWIDAos53og25KiBKODciqlBVYy2zy2q/4TSux0naIa0CLhtz
-         vHA3fBZgQIGjtUSKONhWTYDcKswM/YSV7zZB+2Ir9TbmKyvHOK11GcNdNjeeodlVof79
-         Xp6w==
-X-Gm-Message-State: AOAM532RikNDQ+AG4WZndT7eGvJgymkl5YAwbhqxG3Hq9IuZzovi0ykw
-        uzkzHRmxT5PSzwzTZqzT0/DG0jPUs1jiRuQI
-X-Google-Smtp-Source: ABdhPJxKjMWxHo02CoRmQzrgqDTgUJpyICa/HIjCWO4FILUke108zmzpLBO8U5Up39+nIOJfGnKASA==
-X-Received: by 2002:a05:6000:1281:: with SMTP id f1mr380435wrx.137.1624486484332;
-        Wed, 23 Jun 2021 15:14:44 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.132.93])
-        by smtp.gmail.com with ESMTPSA id f19sm1031916wmc.16.2021.06.23.15.14.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 15:14:43 -0700 (PDT)
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1624473200.git.olivier@trillion01.com>
- <b401640063e77ad3e9f921e09c9b3ac10a8bb923.1624473200.git.olivier@trillion01.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [PATCH v2 2/2] io_uring: Create define to modify a SQPOLL
- parameter
-Message-ID: <b8b77ef8-6908-6446-5245-5dbd8fa7cfd7@gmail.com>
-Date:   Wed, 23 Jun 2021 23:14:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 23 Jun 2021 18:17:45 -0400
+Received: from [10.0.0.178] (c-67-168-106-253.hsd1.wa.comcast.net [67.168.106.253])
+        by linux.microsoft.com (Postfix) with ESMTPSA id F296220B7188;
+        Wed, 23 Jun 2021 15:15:26 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F296220B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1624486527;
+        bh=fcz0zmv3fb9TLhXJgjPYUIlkJMTZb0BSgbSLG1PJe/c=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=K/zy6V8tjn5/uf1v4mmYfqxhlY3QHJBwxGON+7R1mbtv2BoFN0Dno4newrA6ewY09
+         vhZBpeyipeDNpQPrzfkHW24O8R3Z9cflAZ3HHGx+UJb+NqVE4VwU5JCwo4BSQUwErM
+         uvmHUnYIvJgOW2BC/ocUtfEEaj7lfOgsj24ZaMgM=
+Subject: Re: [PATCH 02/19] asm-generic/hyperv: convert hyperv statuses to
+ strings
+To:     Sunil Muthuswamy <sunilmut@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "viremana@linux.microsoft.com" <viremana@linux.microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        Lillian Grassin-Drake <Lillian.GrassinDrake@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>
+References: <1622241819-21155-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1622241819-21155-3-git-send-email-nunodasneves@linux.microsoft.com>
+ <MW4PR21MB200490109062F93EDCBB3DE7C0359@MW4PR21MB2004.namprd21.prod.outlook.com>
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Message-ID: <0c8d9808-3bde-da95-a7fb-cd294b77b6f3@linux.microsoft.com>
+Date:   Wed, 23 Jun 2021 15:15:26 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <b401640063e77ad3e9f921e09c9b3ac10a8bb923.1624473200.git.olivier@trillion01.com>
+In-Reply-To: <MW4PR21MB200490109062F93EDCBB3DE7C0359@MW4PR21MB2004.namprd21.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 7:50 PM, Olivier Langlois wrote:
-> The magic number used to cap the number of entries extracted from an
-> io_uring instance SQ before moving to the other instances is an
-> interesting parameter to experiment with.
+
+
+On 6/10/2021 11:42 AM, Sunil Muthuswamy wrote:
 > 
-> A define has been created to make it easy to change its value from a
-> single location.
-
-It's better to send fixes separately from other improvements,
-because the process a bit different for them, go into different
-branches and so on.
-
-Jens, any chance you can pick as is (at least 1/2)?
-
-Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
- 
-> Signed-off-by: Olivier Langlois <olivier@trillion01.com>
-> ---
->  fs/io_uring.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index 7c545fa66f31..e7997f9bf879 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -89,6 +89,7 @@
->  
->  #define IORING_MAX_ENTRIES	32768
->  #define IORING_MAX_CQ_ENTRIES	(2 * IORING_MAX_ENTRIES)
-> +#define IORING_SQPOLL_CAP_ENTRIES_VALUE 8
->  
->  /*
->   * Shift of 9 is 512 entries, or exactly one page on 64-bit archs
-> @@ -6797,8 +6798,8 @@ static int __io_sq_thread(struct io_ring_ctx *ctx, bool cap_entries)
->  
->  	to_submit = io_sqring_entries(ctx);
->  	/* if we're handling multiple rings, cap submit size for fairness */
-> -	if (cap_entries && to_submit > 8)
-> -		to_submit = 8;
-> +	if (cap_entries && to_submit > IORING_SQPOLL_CAP_ENTRIES_VALUE)
-> +		to_submit = IORING_SQPOLL_CAP_ENTRIES_VALUE;
->  
->  	if (!list_empty(&ctx->iopoll_list) || to_submit) {
->  		unsigned nr_events = 0;
+>> -----Original Message-----
+>> From: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+>> Sent: Friday, May 28, 2021 3:43 PM
+>> To: linux-hyperv@vger.kernel.org; linux-kernel@vger.kernel.org
+>> Cc: virtualization@lists.linux-foundation.org; Michael Kelley <mikelley@microsoft.com>; viremana@linux.microsoft.com; Sunil
+>> Muthuswamy <sunilmut@microsoft.com>; wei.liu@kernel.org; vkuznets <vkuznets@redhat.com>; Lillian Grassin-Drake
+>> <Lillian.GrassinDrake@microsoft.com>; KY Srinivasan <kys@microsoft.com>
+>> Subject: [PATCH 02/19] asm-generic/hyperv: convert hyperv statuses to strings
+>>
+>> Allow hyperv hypercall failures to be debugged more easily with dmesg.
+>> This will be used in the mshv module.
+>>
+>> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+>> ---
+>>  arch/x86/hyperv/hv_init.c         |  2 +-
+>>  arch/x86/hyperv/hv_proc.c         | 10 +++---
+>>  include/asm-generic/hyperv-tlfs.h | 52 ++++++++++++++++++-------------
+>>  include/asm-generic/mshyperv.h    |  8 +++++
+>>  4 files changed, 44 insertions(+), 28 deletions(-)
+>>
+>> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+>> index bb0ae4b5c00f..722bafdb2225 100644
+>> --- a/arch/x86/hyperv/hv_init.c
+>> +++ b/arch/x86/hyperv/hv_init.c
+>> @@ -349,7 +349,7 @@ static void __init hv_get_partition_id(void)
+>>  	status = hv_do_hypercall(HVCALL_GET_PARTITION_ID, NULL, output_page);
+>>  	if (!hv_result_success(status)) {
+>>  		/* No point in proceeding if this failed */
+>> -		pr_err("Failed to get partition ID: %lld\n", status);
+>> +		pr_err("Failed to get partition ID: %s\n", hv_status_to_string(status));
+>>  		BUG();
+>>  	}
+>>  	hv_current_partition_id = output_page->partition_id;
+>> diff --git a/arch/x86/hyperv/hv_proc.c b/arch/x86/hyperv/hv_proc.c
+>> index 59cf9a9e0975..30951e778577 100644
+>> --- a/arch/x86/hyperv/hv_proc.c
+>> +++ b/arch/x86/hyperv/hv_proc.c
+>> @@ -117,7 +117,7 @@ int hv_call_deposit_pages(int node, u64 partition_id, u32 num_pages)
+>>  				     page_count, 0, input_page, NULL);
+>>  	local_irq_restore(flags);
+>>  	if (!hv_result_success(status)) {
+>> -		pr_err("Failed to deposit pages: %lld\n", status);
+>> +		pr_err("Failed to deposit pages: %s\n", hv_status_to_string(status));
+>>  		ret = hv_status_to_errno(status);
+>>  		goto err_free_allocations;
+>>  	}
+>> @@ -172,8 +172,8 @@ int hv_call_add_logical_proc(int node, u32 lp_index, u32 apic_id)
+>>
+>>  		if (hv_result(status) != HV_STATUS_INSUFFICIENT_MEMORY) {
+>>  			if (!hv_result_success(status)) {
+>> -				pr_err("%s: cpu %u apic ID %u, %lld\n", __func__,
+>> -				       lp_index, apic_id, status);
+>> +				pr_err("%s: cpu %u apic ID %u, %s\n", __func__,
+>> +				       lp_index, apic_id, hv_status_to_string(status));
+>>  				ret = hv_status_to_errno(status);
+>>  			}
+>>  			break;
+>> @@ -222,8 +222,8 @@ int hv_call_create_vp(int node, u64 partition_id, u32 vp_index, u32 flags)
+>>
+>>  		if (hv_result(status) != HV_STATUS_INSUFFICIENT_MEMORY) {
+>>  			if (!hv_result_success(status)) {
+>> -				pr_err("%s: vcpu %u, lp %u, %lld\n", __func__,
+>> -				       vp_index, flags, status);
+>> +				pr_err("%s: vcpu %u, lp %u, %s\n", __func__,
+>> +				       vp_index, flags, hv_status_to_string(status));
+>>  				ret = hv_status_to_errno(status);
+>>  			}
+>>  			break;
+>> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+>> index fe6d41d0b114..40ff7cdd4a2b 100644
+>> --- a/include/asm-generic/hyperv-tlfs.h
+>> +++ b/include/asm-generic/hyperv-tlfs.h
+>> @@ -189,28 +189,36 @@ enum HV_GENERIC_SET_FORMAT {
+>>  #define HV_HYPERCALL_REP_START_MASK	GENMASK_ULL(59, 48)
+>>
+>>  /* hypercall status code */
+>> -#define HV_STATUS_SUCCESS			0x0
+>> -#define HV_STATUS_INVALID_HYPERCALL_CODE	0x2
+>> -#define HV_STATUS_INVALID_HYPERCALL_INPUT	0x3
+>> -#define HV_STATUS_INVALID_ALIGNMENT		0x4
+>> -#define HV_STATUS_INVALID_PARAMETER		0x5
+>> -#define HV_STATUS_ACCESS_DENIED			0x6
+>> -#define HV_STATUS_INVALID_PARTITION_STATE	0x7
+>> -#define HV_STATUS_OPERATION_DENIED		0x8
+>> -#define HV_STATUS_UNKNOWN_PROPERTY		0x9
+>> -#define HV_STATUS_PROPERTY_VALUE_OUT_OF_RANGE	0xA
+>> -#define HV_STATUS_INSUFFICIENT_MEMORY		0xB
+>> -#define HV_STATUS_INVALID_PARTITION_ID		0xD
+>> -#define HV_STATUS_INVALID_VP_INDEX		0xE
+>> -#define HV_STATUS_NOT_FOUND			0x10
+>> -#define HV_STATUS_INVALID_PORT_ID		0x11
+>> -#define HV_STATUS_INVALID_CONNECTION_ID		0x12
+>> -#define HV_STATUS_INSUFFICIENT_BUFFERS		0x13
+>> -#define HV_STATUS_NOT_ACKNOWLEDGED		0x14
+>> -#define HV_STATUS_INVALID_VP_STATE		0x15
+>> -#define HV_STATUS_NO_RESOURCES			0x1D
+>> -#define HV_STATUS_INVALID_LP_INDEX		0x41
+>> -#define HV_STATUS_INVALID_REGISTER_VALUE	0x50
+>> +#define __HV_STATUS_DEF(OP) \
+>> +	OP(HV_STATUS_SUCCESS,				0x0) \
+>> +	OP(HV_STATUS_INVALID_HYPERCALL_CODE,		0x2) \
+>> +	OP(HV_STATUS_INVALID_HYPERCALL_INPUT,		0x3) \
+>> +	OP(HV_STATUS_INVALID_ALIGNMENT,			0x4) \
+>> +	OP(HV_STATUS_INVALID_PARAMETER,			0x5) \
+>> +	OP(HV_STATUS_ACCESS_DENIED,			0x6) \
+>> +	OP(HV_STATUS_INVALID_PARTITION_STATE,		0x7) \
+>> +	OP(HV_STATUS_OPERATION_DENIED,			0x8) \
+>> +	OP(HV_STATUS_UNKNOWN_PROPERTY,			0x9) \
+>> +	OP(HV_STATUS_PROPERTY_VALUE_OUT_OF_RANGE,	0xA) \
+>> +	OP(HV_STATUS_INSUFFICIENT_MEMORY,		0xB) \
+>> +	OP(HV_STATUS_INVALID_PARTITION_ID,		0xD) \
+>> +	OP(HV_STATUS_INVALID_VP_INDEX,			0xE) \
+>> +	OP(HV_STATUS_NOT_FOUND,				0x10) \
+>> +	OP(HV_STATUS_INVALID_PORT_ID,			0x11) \
+>> +	OP(HV_STATUS_INVALID_CONNECTION_ID,		0x12) \
+>> +	OP(HV_STATUS_INSUFFICIENT_BUFFERS,		0x13) \
+>> +	OP(HV_STATUS_NOT_ACKNOWLEDGED,			0x14) \
+>> +	OP(HV_STATUS_INVALID_VP_STATE,			0x15) \
+>> +	OP(HV_STATUS_NO_RESOURCES,			0x1D) \
+>> +	OP(HV_STATUS_INVALID_LP_INDEX,			0x41) \
+>> +	OP(HV_STATUS_INVALID_REGISTER_VALUE,		0x50)
+>> +
+>> +#define __HV_MAKE_HV_STATUS_ENUM(NAME, VAL) NAME = (VAL),
+>> +#define __HV_MAKE_HV_STATUS_CASE(NAME, VAL) case (NAME): return (#NAME);
+>> +
+>> +enum hv_status {
+>> +	__HV_STATUS_DEF(__HV_MAKE_HV_STATUS_ENUM)
+>> +};
+>>
+>>  /*
+>>   * The Hyper-V TimeRefCount register and the TSC
+>> diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
+>> index 9a000ba2bb75..21fb71ca1ba9 100644
+>> --- a/include/asm-generic/mshyperv.h
+>> +++ b/include/asm-generic/mshyperv.h
+>> @@ -59,6 +59,14 @@ static inline unsigned int hv_repcomp(u64 status)
+>>  			 HV_HYPERCALL_REP_COMP_OFFSET;
+>>  }
+>>
+>> +static inline const char *hv_status_to_string(u64 hv_status)
+>> +{
+>> +	switch (hv_result(hv_status)) {
+>> +	__HV_STATUS_DEF(__HV_MAKE_HV_STATUS_CASE)
+>> +	default : return "Unknown";
+>> +	}
+>> +}
+> Wouldn't this be a big switch statement that will get duplicated all over the place
+> in the code because of the inline (and also the strings within)?
 > 
 
--- 
-Pavel Begunkov
+I'm not totally sure. If so, I guess it should not be inline!
+
+> - Sunil
+> 
