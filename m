@@ -2,246 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B633B2049
+	by mail.lfdr.de (Postfix) with ESMTP id 32D673B2048
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhFWS1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 14:27:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48500 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230013AbhFWS1J (ORCPT
+        id S230157AbhFWS1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 14:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhFWS1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 14:27:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624472691;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tvDjxT4JNnOa6YI54+xpsPvfGpnD/xGsyt4kT9ZCqb0=;
-        b=KRSkVxUIHgwHlmdRKk1Ie02xDaBR3OFL3KenJ/MUb05JagzF60JegqRjfd7K7rBvjqg2b7
-        cfOeG9JmqL9PH/rkQ/rz61m9Jgw3v5GbhyY+u86Etd3hUTaKSBqWLWoFIXfmmEmrAnL4fT
-        4LHv1MHdI1LB0KSUVu2iwGoPZ2Qj/n4=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-347-ED8mRUTCM0uSJpZdW_JQ-A-1; Wed, 23 Jun 2021 14:24:43 -0400
-X-MC-Unique: ED8mRUTCM0uSJpZdW_JQ-A-1
-Received: by mail-oi1-f200.google.com with SMTP id l123-20020acad4810000b02901f1fb44dca7so2227003oig.15
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:24:42 -0700 (PDT)
+        Wed, 23 Jun 2021 14:27:00 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C169AC061767
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:24:37 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id g19so1911119qvx.12
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:24:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Ay2MFJ8k8M7R+vcG/EIgcKO9+a17Gdo2IRp61Ubbznw=;
+        b=mCvqGy8+wtoV1fX/pyjo8KTMFPXZBXguyo9f6344j9Tuu6bvNitRH+6EMM391SPgX6
+         SQMYyLNce8QZVpU7zBjnXebtb+Q1dmFuIlrzFz1aYg4dzKB/BRgz4LB8VyLVDBN8SLbD
+         /DnbLaMY7YnyWKxjMZMgiPK42h8fTN66ErFs85v1J8jFaHQ7sl2AsFzx96c0xf/l9U1g
+         an4hgyfwGlZSu7q9rvwAQ11c2UHFj6bACLkguqt6g9SVPdmo2aTNRobeEQ+DP+d/WoQh
+         ZrnVQWoPWeo+kqw9aoKL73cB5McCCDUOBzJRc7EqyhLF4fkeGZrtBUlGnWa8WWodzdtj
+         vF9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tvDjxT4JNnOa6YI54+xpsPvfGpnD/xGsyt4kT9ZCqb0=;
-        b=XOGPsuo4iVEfG/eFviDkSliolTd0wmO7+PJsSyEySM3PAXZFRua/AIs51CoNOUWVV7
-         KfCjlccAcwxsmh/Q2NQ+DKFhWymNnXEQP/vNpB+qnhW1eE3BVWfuprdKs/QLeDQk8Yik
-         X6Eiq+Hnef953BPl3B+gBgTSsnx2miHI2Oh0jQwSoH+v/HWIazja6F0FVWPOZrGRCQNJ
-         2DI9RTNxV+VwLerapPkt6aqcHIRysxn6lPJ/LvIzuqu4mFYvWqApOXDS8qNaPzOEjSMs
-         Kdn92r+NhLt8mW4vwaxhdQ/wEwyXvIY5/5r4LcXSaA4VyMfeFJVxlBq98GUh3mEMXuQs
-         wd1w==
-X-Gm-Message-State: AOAM531taD8dC86a5p1hK/8w/3A2X1YfY9ExO+tMB4EemqzZ6Yif4j5R
-        BL8zNtQYTwi+1LJK4+Nc05pswvSEgk7VIruRI4A/K9mhgj5ZmRRYsGt020MYegVDfGngjx42pgH
-        6bNzeOk/jM7pmADETvhPede94
-X-Received: by 2002:a05:6830:1658:: with SMTP id h24mr1117198otr.149.1624472682140;
-        Wed, 23 Jun 2021 11:24:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyGxW/gR8wVzOIBVQ5Zi3UaRp0R838f9fy7n6jF4t2ZrwynunQMj2JjoRpRgrK/gAnIOAC4JA==
-X-Received: by 2002:a05:6830:1658:: with SMTP id h24mr1117185otr.149.1624472681977;
-        Wed, 23 Jun 2021 11:24:41 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id l24sm105186oii.45.2021.06.23.11.24.40
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Ay2MFJ8k8M7R+vcG/EIgcKO9+a17Gdo2IRp61Ubbznw=;
+        b=BgQD0hXQ4/LbjLLV89t3Dk695WJDQu73SDug27xOclj0kgf/GZfpIhHMCpSbpIvRvI
+         WxBn5JezMixIftfuttv3VbSRGnQlRLv53GtkxHZpRibnzFKn8TcnsiYiJoTzlVMnVqXj
+         zFr50gM05gT6KODDmq+MoaTlf6YygU+XrUNBNxw1k1ylBl0UTIDNr1f7KqzvPO1RjDdX
+         sn0v7sclzHkcRZgv8SQlX6H2NmVGlO9cgPqppGZfLhgnVMuE4yHGtHtDxpvEfpua8taV
+         xdYNZ+DKg1C9w8a7XGvv/z3kliPN1Fn0KRh0K44gYOJFNBZDGjxR1Lg36vDToI6rwhfr
+         2O/Q==
+X-Gm-Message-State: AOAM531oH8Le6MQ2WuMAzDNRtfDmDs/2BHGYhVFnWxOaY/XMRcc6KQSA
+        wRJvoJ+s/HXKzxHl7gY9OC927g==
+X-Google-Smtp-Source: ABdhPJwlrtEHn8YPQ5NuHFKzj1NcK0jWPqvPQ5lmMB0+rCMklEH74CDToqHNweA68dTG1W74jUsdaA==
+X-Received: by 2002:a0c:f309:: with SMTP id j9mr1350376qvl.12.1624472676911;
+        Wed, 23 Jun 2021 11:24:36 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id 85sm456567qkl.46.2021.06.23.11.24.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 11:24:41 -0700 (PDT)
-From:   trix@redhat.com
-To:     hao.wu@intel.com, mdf@kernel.org, michal.simek@xilinx.com
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH v3 7/7] fpga-mgr: collect wrappers and change to inline
-Date:   Wed, 23 Jun 2021 11:24:10 -0700
-Message-Id: <20210623182410.3787784-9-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210623182410.3787784-1-trix@redhat.com>
-References: <20210623182410.3787784-1-trix@redhat.com>
+        Wed, 23 Jun 2021 11:24:36 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lw7YB-00BlF7-OO; Wed, 23 Jun 2021 15:24:35 -0300
+Date:   Wed, 23 Jun 2021 15:24:35 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>
+Cc:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Tomer Tayar <ttayar@habana.ai>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
+ FD for DMA-BUF
+Message-ID: <20210623182435.GX1096940@ziepe.ca>
+References: <d358c740-fd3a-9ecd-7001-676e2cb44ec9@gmail.com>
+ <CAFCwf11h_Nj_GEdCdeTzO5jgr-Y9em+W-v_pYUfz64i5Ac25yg@mail.gmail.com>
+ <20210622120142.GL1096940@ziepe.ca>
+ <d497b0a2-897e-adff-295c-cf0f4ff93cb4@amd.com>
+ <20210622152343.GO1096940@ziepe.ca>
+ <3fabe8b7-7174-bf49-5ffe-26db30968a27@amd.com>
+ <20210622154027.GS1096940@ziepe.ca>
+ <09df4a03-d99c-3949-05b2-8b49c71a109e@amd.com>
+ <20210622160538.GT1096940@ziepe.ca>
+ <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Wed, Jun 23, 2021 at 10:57:35AM +0200, Christian König wrote:
 
-Anyone searching for the wrappers should find all of
-them together, so  move the wrappers.
+> > > No it isn't. It makes devices depend on allocating struct pages for their
+> > > BARs which is not necessary nor desired.
+> > Which dramatically reduces the cost of establishing DMA mappings, a
+> > loop of dma_map_resource() is very expensive.
+> 
+> Yeah, but that is perfectly ok. Our BAR allocations are either in chunks of
+> at least 2MiB or only a single 4KiB page.
 
-Since they are all small functions, make them inline.
+And very small apparently
+ 
+> > > Allocating a struct pages has their use case, for example for exposing VRAM
+> > > as memory for HMM. But that is something very specific and should not limit
+> > > PCIe P2P DMA in general.
+> > Sure, but that is an ideal we are far from obtaining, and nobody wants
+> > to work on it prefering to do hacky hacky like this.
+> > 
+> > If you believe in this then remove the scatter list from dmabuf, add a
+> > new set of dma_map* APIs to work on physical addresses and all the
+> > other stuff needed.
+> 
+> Yeah, that's what I totally agree on. And I actually hoped that the new P2P
+> work for PCIe would go into that direction, but that didn't materialized.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/fpga/fpga-mgr.c | 117 ++++++++++++++++++++--------------------
- 1 file changed, 59 insertions(+), 58 deletions(-)
+It is a lot of work and the only gain is to save a bit of memory for
+struct pages. Not a very big pay off.
+ 
+> But allocating struct pages for PCIe BARs which are essentially registers
+> and not memory is much more hacky than the dma_resource_map() approach.
 
-diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
-index 1a2b8d8be7674..000fa89fda99d 100644
---- a/drivers/fpga/fpga-mgr.c
-+++ b/drivers/fpga/fpga-mgr.c
-@@ -25,6 +25,65 @@ struct fpga_mgr_devres {
- 	struct fpga_manager *mgr;
- };
- 
-+/* mops wrappers */
-+static inline enum fpga_mgr_states fpga_mgr_state(struct fpga_manager *mgr)
-+{
-+	if (mgr->mops && mgr->mops->state)
-+		return  mgr->mops->state(mgr);
-+	return FPGA_MGR_STATE_UNKNOWN;
-+}
-+
-+static inline u64 fpga_mgr_status(struct fpga_manager *mgr)
-+{
-+	if (mgr->mops && mgr->mops->status)
-+		return mgr->mops->status(mgr);
-+	return 0;
-+}
-+
-+static inline int fpga_mgr_write_init(struct fpga_manager *mgr,
-+				      struct fpga_image_info *info,
-+				      const char *buf, size_t count)
-+{
-+	if (mgr->mops && mgr->mops->write_init)
-+		return  mgr->mops->write_init(mgr, info, buf, count);
-+	return 0;
-+}
-+
-+static inline int fpga_mgr_write(struct fpga_manager *mgr, const char *buf, size_t count)
-+{
-+	if (mgr->mops && mgr->mops->write)
-+		return  mgr->mops->write(mgr, buf, count);
-+	return -EOPNOTSUPP;
-+}
-+
-+/*
-+ * After all the FPGA image has been written, do the device specific steps to
-+ * finish and set the FPGA into operating mode.
-+ */
-+static inline int fpga_mgr_write_complete(struct fpga_manager *mgr,
-+					  struct fpga_image_info *info)
-+{
-+	int ret = 0;
-+
-+	mgr->state = FPGA_MGR_STATE_WRITE_COMPLETE;
-+	if (mgr->mops && mgr->mops->write_complete)
-+		ret = mgr->mops->write_complete(mgr, info);
-+	if (ret) {
-+		dev_err(&mgr->dev, "Error after writing image data to FPGA\n");
-+		mgr->state = FPGA_MGR_STATE_WRITE_COMPLETE_ERR;
-+		return ret;
-+	}
-+	mgr->state = FPGA_MGR_STATE_OPERATING;
-+
-+	return 0;
-+}
-+
-+static inline void fpga_mgr_fpga_remove(struct fpga_manager *mgr)
-+{
-+	if (mgr->mops && mgr->mops->fpga_remove)
-+		mgr->mops->fpga_remove(mgr);
-+}
-+
- /**
-  * fpga_image_info_alloc - Allocate an FPGA image info struct
-  * @dev: owning device
-@@ -69,14 +128,6 @@ void fpga_image_info_free(struct fpga_image_info *info)
- }
- EXPORT_SYMBOL_GPL(fpga_image_info_free);
- 
--static int fpga_mgr_write_init(struct fpga_manager *mgr,
--			       struct fpga_image_info *info,
--			       const char *buf, size_t count)
--{
--	if (mgr->mops && mgr->mops->write_init)
--		return  mgr->mops->write_init(mgr, info, buf, count);
--	return 0;
--}
- /*
-  * Call the low level driver's write_init function.  This will do the
-  * device-specific things to get the FPGA into the state where it is ready to
-@@ -145,35 +196,6 @@ static int fpga_mgr_write_init_sg(struct fpga_manager *mgr,
- 	return ret;
- }
- 
--/*
-- * After all the FPGA image has been written, do the device specific steps to
-- * finish and set the FPGA into operating mode.
-- */
--static int fpga_mgr_write_complete(struct fpga_manager *mgr,
--				   struct fpga_image_info *info)
--{
--	int ret = 0;
--
--	mgr->state = FPGA_MGR_STATE_WRITE_COMPLETE;
--	if (mgr->mops && mgr->mops->write_complete)
--		ret = mgr->mops->write_complete(mgr, info);
--	if (ret) {
--		dev_err(&mgr->dev, "Error after writing image data to FPGA\n");
--		mgr->state = FPGA_MGR_STATE_WRITE_COMPLETE_ERR;
--		return ret;
--	}
--	mgr->state = FPGA_MGR_STATE_OPERATING;
--
--	return 0;
--}
--
--static int fpga_mgr_write(struct fpga_manager *mgr, const char *buf, size_t count)
--{
--	if (mgr->mops && mgr->mops->write)
--		return  mgr->mops->write(mgr, buf, count);
--	return -EOPNOTSUPP;
--}
--
- /**
-  * fpga_mgr_buf_load_sg - load fpga from image in buffer from a scatter list
-  * @mgr:	fpga manager
-@@ -426,14 +448,6 @@ static ssize_t state_show(struct device *dev,
- 	return sprintf(buf, "%s\n", state_str[mgr->state]);
- }
- 
--static u64 fpga_mgr_status(struct fpga_manager *mgr)
--{
--	if (mgr->mops && mgr->mops->status)
--		return mgr->mops->status(mgr);
--
--	return 0;
--}
--
- static ssize_t status_show(struct device *dev,
- 			   struct device_attribute *attr, char *buf)
- {
-@@ -692,13 +706,6 @@ struct fpga_manager *devm_fpga_mgr_create(struct device *parent, const char *nam
- }
- EXPORT_SYMBOL_GPL(devm_fpga_mgr_create);
- 
--static enum fpga_mgr_states fpga_mgr_state(struct fpga_manager *mgr)
--{
--	if (mgr->mops && mgr->mops->state)
--		return  mgr->mops->state(mgr);
--	return FPGA_MGR_STATE_UNKNOWN;
--}
--
- /**
-  * fpga_mgr_register - register an FPGA manager
-  * @mgr: fpga manager struct
-@@ -731,12 +738,6 @@ int fpga_mgr_register(struct fpga_manager *mgr)
- }
- EXPORT_SYMBOL_GPL(fpga_mgr_register);
- 
--static void fpga_mgr_fpga_remove(struct fpga_manager *mgr)
--{
--	if (mgr->mops && mgr->mops->fpga_remove)
--		mgr->mops->fpga_remove(mgr);
--}
--
- /**
-  * fpga_mgr_unregister - unregister an FPGA manager
-  * @mgr: fpga manager struct
--- 
-2.26.3
+It doesn't really matter. The pages are in a special zone and are only
+being used as handles for the BAR memory.
 
+> By using PCIe P2P we want to avoid the round trip to the CPU when one device
+> has filled the ring buffer and another device must be woken up to process
+> it.
+
+Sure, we all have these scenarios, what is inside the memory doesn't
+realy matter. The mechanism is generic and the struct pages don't care
+much if they point at something memory-like or at something
+register-like.
+
+They are already in big trouble because you can't portably use CPU
+instructions to access them anyhow.
+
+Jason
