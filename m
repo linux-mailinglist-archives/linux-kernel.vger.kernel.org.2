@@ -2,144 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 005A03B1ECE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DED3B1ED2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhFWQlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 12:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhFWQlG (ORCPT
+        id S230098AbhFWQl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 12:41:57 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:53847 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229889AbhFWQlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 12:41:06 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57217C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:38:48 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id i1so5170824lfe.6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:38:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TUutKG4F+W5pEfTyRo0eILmARbQ2r9tO+kogVemQTQg=;
-        b=Nj8NqarWd1i9ntoq5E6MFTQKr/NV5AymNo/Lpnvk9s6flsvmof6do3TgtloBjwWlBg
-         YRpgayr4oLJ89OzULoT2NSt8hwTwTcoSb8ffKZ2/Kn2sDqDF6YIDtEQqjym4MbMVoEvF
-         4367aOslrYvM0CEkk7g0E2cddPkD4ooco0IoQqewJjMoYGkFwMm7Ki5Da7Rqe/9DSe0d
-         lXflO7nowCXNqs7A3AtGZh7S7b8il3UoOH/TyKkAT1DXjNHZu31Sd7lfM3YY8BWnSbUo
-         RdT0PYcvmyYvjDX4WHgheZOZQOjo/PalJUiUlyf3e3dDx1B7UJbjTJpay0Ydqc+9Miyz
-         dlVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TUutKG4F+W5pEfTyRo0eILmARbQ2r9tO+kogVemQTQg=;
-        b=MhxqKYtsDw9I/Na05K69TJ2uga6VZy8R+VHY0vEf0yrohlxbqOBQWM7AV5WKomiLxK
-         BkUpaDrgPAAypuiY9L9m0wfJM2J5BK3wOdhYqrhYARB6L5boaksRFoBUZS4pff1+COOz
-         Mrojuv5gK5NubzFxgTEygr1QvpXSt3Zcoi58w9YqCytdZveBBfi9zNzG4p8fiv4zV+Av
-         75CB+EagHgdwfr2kOREaEUZwUAx+vRVwOM0qDrpr4ES2LoDYBZfc70uM2UpscTpyQL2L
-         5bf3jnIGuiNKIP6LLHK6lUZtHFn8giuTuN0lH8ZoeJJ7gDt0oMT6YyuSFfSjRGulXDEU
-         3eKw==
-X-Gm-Message-State: AOAM5317nz1G5p4t+ZXrqhmJrMF0GkbfXb5Ln3DCmoXWSizxeAU87+MZ
-        OimfAplGYAInDUd8aaO+Ofs=
-X-Google-Smtp-Source: ABdhPJwktWT0yn7Ci7FhnYW5SIXFGq/LqL6I3Dr2Mps5mokPWXhrc8lzgAZQ6M36Q6EPVBlBAXApjg==
-X-Received: by 2002:a05:6512:3049:: with SMTP id b9mr351134lfb.205.1624466326736;
-        Wed, 23 Jun 2021 09:38:46 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.225.155])
-        by smtp.gmail.com with ESMTPSA id t24sm17475ljc.45.2021.06.23.09.38.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 09:38:46 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 19:38:42 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Dave Kleikamp <dave.kleikamp@oracle.com>
-Cc:     shaggy@kernel.org, jfs-discussion@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org,
-        syzbot+0a89a7b56db04c21a656@syzkaller.appspotmail.com
-Subject: Re: [PATCH] jfs: fix GPF in diFree
-Message-ID: <20210623193842.5f164966@gmail.com>
-In-Reply-To: <319afbd1-afc0-bae3-c446-3530505e7b21@oracle.com>
-References: <20210606142405.31047-1-paskripkin@gmail.com>
-        <319afbd1-afc0-bae3-c446-3530505e7b21@oracle.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        Wed, 23 Jun 2021 12:41:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1624466378; x=1656002378;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=bD3fHcpKfJA9p2zej1L/UrxZaxu1AH26pxH4pa5HgfE=;
+  b=J25k+0X2r6bhjLWTDHVsp3IWabanjvu6tre2LozQj1mhkSKwYGVeHX0G
+   R05+kLiSkWZQ4Fhh+6djlOQ4Wyu/OKG/TgJfOlCNBzx4RpLv2vW3g595P
+   qJzQBKCngIf5AvIczu5o2ysOdhjrPow3f1PTT8QFyURZY6YJg01idm8Bx
+   M=;
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 23 Jun 2021 09:39:37 -0700
+X-QCInternal: smtphost
+Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
+  by ironmsg01-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 23 Jun 2021 09:39:35 -0700
+Received: from [10.38.240.33] (10.80.80.8) by nasanexm03e.na.qualcomm.com
+ (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 23 Jun
+ 2021 09:39:31 -0700
+Subject: Re: [PATCH v14 06/12] swiotlb: Use is_swiotlb_force_bounce for
+ swiotlb data bouncing
+To:     Claire Chang <tientzu@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, <mpe@ellerman.id.au>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        <boris.ostrovsky@oracle.com>, <jgross@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+CC:     <heikki.krogerus@linux.intel.com>,
+        <thomas.hellstrom@linux.intel.com>, <peterz@infradead.org>,
+        <benh@kernel.crashing.org>, <joonas.lahtinen@linux.intel.com>,
+        <dri-devel@lists.freedesktop.org>, <chris@chris-wilson.co.uk>,
+        <grant.likely@arm.com>, <paulus@samba.org>, <mingo@kernel.org>,
+        <jxgao@google.com>, <sstabellini@kernel.org>,
+        Saravana Kannan <saravanak@google.com>, <xypron.glpk@gmx.de>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        <bskeggs@redhat.com>, <linux-pci@vger.kernel.org>,
+        <xen-devel@lists.xenproject.org>,
+        Thierry Reding <treding@nvidia.com>,
+        <intel-gfx@lists.freedesktop.org>, <matthew.auld@intel.com>,
+        linux-devicetree <devicetree@vger.kernel.org>, <daniel@ffwll.ch>,
+        <airlied@linux.ie>, <maarten.lankhorst@linux.intel.com>,
+        <linuxppc-dev@lists.ozlabs.org>, <jani.nikula@linux.intel.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        <rodrigo.vivi@intel.com>, <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        <thomas.lendacky@amd.com>, Robin Murphy <robin.murphy@arm.com>,
+        <bauerman@linux.ibm.com>
+References: <20210619034043.199220-1-tientzu@chromium.org>
+ <20210619034043.199220-7-tientzu@chromium.org>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <76c3343d-72e5-9df3-8924-5474ee698ef4@quicinc.com>
+Date:   Wed, 23 Jun 2021 12:39:29 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210619034043.199220-7-tientzu@chromium.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanexm03e.na.qualcomm.com (10.85.0.48)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Jun 2021 09:13:07 -0500
-Dave Kleikamp <dave.kleikamp@oracle.com> wrote:
 
-> On 6/6/21 9:24 AM, Pavel Skripkin wrote:
-> > Avoid passing inode with
-> > JFS_SBI(inode->i_sb)->ipimap == NULL to
-> > diFree()[1]. GFP will appear:
+
+On 6/18/2021 11:40 PM, Claire Chang wrote:
+> Propagate the swiotlb_force into io_tlb_default_mem->force_bounce and
+> use it to determine whether to bounce the data or not. This will be
+> useful later to allow for different pools.
 > 
-> I'm a little curious how we get as far as creating and freeing 
-> non-special inodes if ipimap == NULL.
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Tested-by: Stefano Stabellini <sstabellini@kernel.org>
+> Tested-by: Will Deacon <will@kernel.org>
+> Acked-by: Stefano Stabellini <sstabellini@kernel.org>
+
+Reverting the rest of the series up to this patch fixed a boot crash with NVMe on today's linux-next.
+
+[   22.286574][    T7] Unable to handle kernel paging request at virtual address dfff80000000000e
+[   22.295225][    T7] Mem abort info:
+[   22.298743][    T7]   ESR = 0x96000004
+[   22.302496][    T7]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   22.308525][    T7]   SET = 0, FnV = 0
+[   22.312274][    T7]   EA = 0, S1PTW = 0
+[   22.316131][    T7]   FSC = 0x04: level 0 translation fault
+[   22.321704][    T7] Data abort info:
+[   22.325278][    T7]   ISV = 0, ISS = 0x00000004
+[   22.329840][    T7]   CM = 0, WnR = 0
+[   22.333503][    T7] [dfff80000000000e] address between user and kernel address ranges
+[   22.338543][  T256] igb 0006:01:00.0: Intel(R) Gigabit Ethernet Network Connection
+[   22.341400][    T7] Internal error: Oops: 96000004 [#1] SMP
+[   22.348915][  T256] igb 0006:01:00.0: eth0: (PCIe:2.5Gb/s:Width x1) 4c:38:d5:09:c8:83
+[   22.354458][    T7] Modules linked in: igb(+) i2c_algo_bit nvme mlx5_core(+) i2c_core nvme_core firmware_class
+[   22.362512][  T256] igb 0006:01:00.0: eth0: PBA No: G69016-004
+[   22.372287][    T7] CPU: 13 PID: 7 Comm: kworker/u64:0 Not tainted 5.13.0-rc7-next-20210623+ #47
+[   22.372293][    T7] Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 1.6 06/28/2020
+[   22.372298][    T7] Workqueue: nvme-reset-wq nvme_reset_work [nvme]
+[   22.378145][  T256] igb 0006:01:00.0: Using MSI-X interrupts. 4 rx queue(s), 4 tx queue(s)
+[   22.386901][    T7] 
+[   22.386905][    T7] pstate: 10000005 (nzcV daif -PAN -UAO -TCO BTYPE=--)
+[   22.386910][    T7] pc : dma_direct_map_sg+0x304/0x8f0
+
+is_swiotlb_force_bounce at /usr/src/linux-next/./include/linux/swiotlb.h:119
+(inlined by) dma_direct_map_page at /usr/src/linux-next/kernel/dma/direct.h:90
+(inlined by) dma_direct_map_sg at /usr/src/linux-next/kernel/dma/direct.c:428
+
+[   22.386919][    T7] lr : dma_map_sg_attrs+0x6c/0x118
+[   22.386924][    T7] sp : ffff80001dc8eac0
+[   22.386926][    T7] x29: ffff80001dc8eac0 x28: ffff0000199e70b0 x27: 0000000000000000
+[   22.386935][    T7] x26: ffff000847ee7000 x25: ffff80001158e570 x24: 0000000000000002
+[   22.386943][    T7] x23: dfff800000000000 x22: 0000000000000100 x21: ffff0000199e7460
+[   22.386951][    T7] x20: ffff0000199e7488 x19: 0000000000000001 x18: ffff000010062670
+[   22.386955][  T253] Unable to handle kernel paging request at virtual address dfff80000000000e
+[   22.386958][    T7] x17: ffff8000109f6a90 x16: ffff8000109e1b4c x15: ffff800009303420
+[   22.386965][  T253] Mem abort info:
+[   22.386967][    T7] x14: 0000000000000001 x13: ffff80001158e000
+[   22.386970][  T253]   ESR = 0x96000004
+[   22.386972][    T7]  x12: 1fffe00108fdce01
+[   22.386975][  T253]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   22.386976][    T7] x11: 1fffe00108fdce03 x10: ffff000847ee700c x9 : 0000000000000004
+[   22.386981][  T253]   SET = 0, FnV = 0
+[   22.386983][    T7] 
+[   22.386985][    T7] x8 : ffff700003b91d72
+[   22.386986][  T253]   EA = 0, S1PTW = 0
+[   22.386987][    T7]  x7 : 0000000000000000 x6 : 000000000000000e
+[   22.386990][  T253]   FSC = 0x04: level 0 translation fault
+[   22.386992][    T7] 
+[   22.386994][    T7] x5 : dfff800000000000
+[   22.386995][  T253] Data abort info:
+[   22.386997][    T7]  x4 : 00000008c7ede000
+[   22.386999][  T253]   ISV = 0, ISS = 0x00000004
+[   22.386999][    T7]  x3 : 00000008c7ede000
+[   22.387003][    T7] x2 : 0000000000001000
+[   22.387003][  T253]   CM = 0, WnR = 0
+[   22.387006][    T7]  x1 : 0000000000000000 x0 : 0000000000000071
+[   22.387008][  T253] [dfff80000000000e] address between user and kernel address ranges
+[   22.387011][    T7] 
+[   22.387013][    T7] Call trace:
+[   22.387016][    T7]  dma_direct_map_sg+0x304/0x8f0
+[   22.387022][    T7]  dma_map_sg_attrs+0x6c/0x118
+[   22.387026][    T7]  nvme_map_data+0x2ec/0x21d8 [nvme]
+[   22.387040][    T7]  nvme_queue_rq+0x274/0x3f0 [nvme]
+[   22.387052][    T7]  blk_mq_dispatch_rq_list+0x2ec/0x18a0
+[   22.387060][    T7]  __blk_mq_sched_dispatch_requests+0x2a0/0x3e8
+[   22.387065][    T7]  blk_mq_sched_dispatch_requests+0xa4/0x100
+[   22.387070][    T7]  __blk_mq_run_hw_queue+0x148/0x1d8
+[   22.387075][    T7]  __blk_mq_delay_run_hw_queue+0x3f8/0x730
+[   22.414539][  T269] igb 0006:01:00.0 enP6p1s0: renamed from eth0
+[   22.418957][    T7]  blk_mq_run_hw_queue+0x148/0x248
+[   22.418969][    T7]  blk_mq_sched_insert_request+0x2a4/0x330
+[   22.418975][    T7]  blk_execute_rq_nowait+0xc8/0x118
+[   22.418981][    T7]  blk_execute_rq+0xd4/0x188
+[   22.453203][  T255] udevadm (255) used greatest stack depth: 57408 bytes left
+[   22.456504][    T7]  __nvme_submit_sync_cmd+0x4e0/0x730 [nvme_core]
+[   22.673245][    T7]  nvme_identify_ctrl.isra.0+0x124/0x1e0 [nvme_core]
+[   22.679784][    T7]  nvme_init_identify+0x90/0x1868 [nvme_core]
+[   22.685713][    T7]  nvme_init_ctrl_finish+0x1a8/0xb88 [nvme_core]
+[   22.691903][    T7]  nvme_reset_work+0xe5c/0x2aa4 [nvme]
+[   22.697219][    T7]  process_one_work+0x7e4/0x19a0
+[   22.702005][    T7]  worker_thread+0x334/0xae0
+[   22.706442][    T7]  kthread+0x3bc/0x470
+[   22.710359][    T7]  ret_from_fork+0x10/0x18
+[   22.714627][    T7] Code: f941ef81 9101c420 1200080e d343fc06 (38f768c6) 
+[   22.721407][    T7] ---[ end trace 1f3c4181ae408676 ]---
+[   22.726712][    T7] Kernel panic - not syncing: Oops: Fatal exception
+[   22.733169][    T7] SMP: stopping secondary CPUs
+[   23.765164][    T7] SMP: failed to stop secondary CPUs 13,15
+[   23.770818][    T7] Kernel Offset: disabled
+[   23.774991][    T7] CPU features: 0x00000251,20000846
+[   23.780034][    T7] Memory Limit: none
+[   23.783794][    T7] ---[ end Kernel panic - not syncing: Oops: Fatal exception ]---
+
+> ---
+>  drivers/xen/swiotlb-xen.c |  2 +-
+>  include/linux/swiotlb.h   | 11 +++++++++++
+>  kernel/dma/direct.c       |  2 +-
+>  kernel/dma/direct.h       |  2 +-
+>  kernel/dma/swiotlb.c      |  4 ++++
+>  5 files changed, 18 insertions(+), 3 deletions(-)
 > 
-> > 
-> > 	struct inode *ipimap = JFS_SBI(ip->i_sb)->ipimap;
-> > 	struct inomap *imap = JFS_IP(ipimap)->i_imap;
-> > 
-> > JFS_IP() will return invalid pointer when ipimap == NULL
-> > 
-> > Call Trace:
-> >   diFree+0x13d/0x2dc0 fs/jfs/jfs_imap.c:853 [1]
-> >   jfs_evict_inode+0x2c9/0x370 fs/jfs/inode.c:154
-> >   evict+0x2ed/0x750 fs/inode.c:578
-> >   iput_final fs/inode.c:1654 [inline]
-> >   iput.part.0+0x3fe/0x820 fs/inode.c:1680
-> >   iput+0x58/0x70 fs/inode.c:1670
+> diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
+> index 0c6ed09f8513..4730a146fa35 100644
+> --- a/drivers/xen/swiotlb-xen.c
+> +++ b/drivers/xen/swiotlb-xen.c
+> @@ -369,7 +369,7 @@ static dma_addr_t xen_swiotlb_map_page(struct device *dev, struct page *page,
+>  	if (dma_capable(dev, dev_addr, size, true) &&
+>  	    !range_straddles_page_boundary(phys, size) &&
+>  		!xen_arch_need_swiotlb(dev, phys, dev_addr) &&
+> -		swiotlb_force != SWIOTLB_FORCE)
+> +		!is_swiotlb_force_bounce(dev))
+>  		goto done;
+>  
+>  	/*
+> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+> index dd1c30a83058..8d8855c77d9a 100644
+> --- a/include/linux/swiotlb.h
+> +++ b/include/linux/swiotlb.h
+> @@ -84,6 +84,7 @@ extern enum swiotlb_force swiotlb_force;
+>   *		unmap calls.
+>   * @debugfs:	The dentry to debugfs.
+>   * @late_alloc:	%true if allocated using the page allocator
+> + * @force_bounce: %true if swiotlb bouncing is forced
+>   */
+>  struct io_tlb_mem {
+>  	phys_addr_t start;
+> @@ -94,6 +95,7 @@ struct io_tlb_mem {
+>  	spinlock_t lock;
+>  	struct dentry *debugfs;
+>  	bool late_alloc;
+> +	bool force_bounce;
+>  	struct io_tlb_slot {
+>  		phys_addr_t orig_addr;
+>  		size_t alloc_size;
+> @@ -109,6 +111,11 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+>  	return mem && paddr >= mem->start && paddr < mem->end;
+>  }
+>  
+> +static inline bool is_swiotlb_force_bounce(struct device *dev)
+> +{
+> +	return dev->dma_io_tlb_mem->force_bounce;
+> +}
+> +
+>  void __init swiotlb_exit(void);
+>  unsigned int swiotlb_max_segment(void);
+>  size_t swiotlb_max_mapping_size(struct device *dev);
+> @@ -120,6 +127,10 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+>  {
+>  	return false;
+>  }
+> +static inline bool is_swiotlb_force_bounce(struct device *dev)
+> +{
+> +	return false;
+> +}
+>  static inline void swiotlb_exit(void)
+>  {
+>  }
+> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+> index 7a88c34d0867..a92465b4eb12 100644
+> --- a/kernel/dma/direct.c
+> +++ b/kernel/dma/direct.c
+> @@ -496,7 +496,7 @@ size_t dma_direct_max_mapping_size(struct device *dev)
+>  {
+>  	/* If SWIOTLB is active, use its maximum mapping size */
+>  	if (is_swiotlb_active(dev) &&
+> -	    (dma_addressing_limited(dev) || swiotlb_force == SWIOTLB_FORCE))
+> +	    (dma_addressing_limited(dev) || is_swiotlb_force_bounce(dev)))
+>  		return swiotlb_max_mapping_size(dev);
+>  	return SIZE_MAX;
+>  }
+> diff --git a/kernel/dma/direct.h b/kernel/dma/direct.h
+> index 13e9e7158d94..4632b0f4f72e 100644
+> --- a/kernel/dma/direct.h
+> +++ b/kernel/dma/direct.h
+> @@ -87,7 +87,7 @@ static inline dma_addr_t dma_direct_map_page(struct device *dev,
+>  	phys_addr_t phys = page_to_phys(page) + offset;
+>  	dma_addr_t dma_addr = phys_to_dma(dev, phys);
+>  
+> -	if (unlikely(swiotlb_force == SWIOTLB_FORCE))
+> +	if (is_swiotlb_force_bounce(dev))
+>  		return swiotlb_map(dev, phys, size, dir, attrs);
+>  
+>  	if (unlikely(!dma_capable(dev, dma_addr, size, true))) {
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index 8a120f42340b..0d294bbf274c 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -179,6 +179,10 @@ static void swiotlb_init_io_tlb_mem(struct io_tlb_mem *mem, phys_addr_t start,
+>  	mem->end = mem->start + bytes;
+>  	mem->index = 0;
+>  	mem->late_alloc = late_alloc;
+> +
+> +	if (swiotlb_force == SWIOTLB_FORCE)
+> +		mem->force_bounce = true;
+> +
+>  	spin_lock_init(&mem->lock);
+>  	for (i = 0; i < mem->nslabs; i++) {
+>  		mem->slots[i].list = IO_TLB_SEGSIZE - io_tlb_offset(i);
 > 
-> Is there more to the stack trace? Is this part of a failed mount()?
-> 
-
-Hi, Dave!
-
-Yes, it was caused by mount fail. Log:
-
-[  924.076873][ T8430] jfs_mount: diMount(ipaimap) failed w/rc = -5
-
-So, it's errout21 label in jfs_mount(). I guess, It's early failure and
-some fields wasn't initialized properly. I don't really remember my
-debug results, because it was a long time ago, but I can do some debug
-work again if needed!
-
-
-Thanks for feedback!
-
-> > 
-> > Reported-and-tested-by:
-> > syzbot+0a89a7b56db04c21a656@syzkaller.appspotmail.com
-> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>ipimap == NULL
-> 
-> I don't doubt that this happened, so I'll apply the patch which is 
-> obviously safe.
-> 
-> > ---
-> >   fs/jfs/inode.c | 3 ++-
-> >   1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/jfs/inode.c b/fs/jfs/inode.c
-> > index 6f65bfa9f18d..b0eb9c85eea0 100644
-> > --- a/fs/jfs/inode.c
-> > +++ b/fs/jfs/inode.c
-> > @@ -151,7 +151,8 @@ void jfs_evict_inode(struct inode *inode)
-> >   			if (test_cflag(COMMIT_Freewmap, inode))
-> >   				jfs_free_zero_link(inode);
-> >   
-> > -			diFree(inode);
-> > +			if (JFS_SBI(inode->i_sb)->ipimap)
-> > +				diFree(inode);
-> >   
-> >   			/*
-> >   			 * Free the inode from the quota
-> > allocation.
-> > 
-
-
-
-
-With regards,
-Pavel Skripkin
