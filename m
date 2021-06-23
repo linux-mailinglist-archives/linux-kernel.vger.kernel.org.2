@@ -2,125 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A61903B1AB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3853B1ABC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbhFWNH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:07:58 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:42954 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbhFWNHt (ORCPT
+        id S230315AbhFWNJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:09:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40713 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230182AbhFWNJp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:07:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1624453532; x=1655989532;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=6ngQ1L8CvZrw2+GK1uugRRh4hu9W22hWObLewNrxIaM=;
-  b=QvqHL9lx/mKseEyBa6+G31vnMCkg5O6or01+PAPa2odHOaE7XSslv/SE
-   NCi3/akhz+Pbtu7wZ627qUmrRcn5foLUGxp/Gg0vhVx3+1aLvKMUudWUT
-   Rg5v3tsOFMaQd3o+BR42Iw9/iPL2oQ+DYLLK5ozemLFM330VGU3YXiPsC
-   NFHsrp0b6He1T7pY1b0FY24aFx9YApJzuD76l5GgKDAqzn2OKhCJCH3AO
-   oHaWe0Ye+gip2OzssQEl9kBQ2lti7nVDTrbOSqP1wr4+sm40yw+STPCLn
-   npQaYPTngXk6zIKtmHRqb51Qzdlp+c1jAR/wCaqW2NbkGXR6u+wWkJzYn
-   w==;
-IronPort-SDR: X4O/Y/IWGPQ2/LS/+RUEM3lDTTnBUBp1MK5HxwzY4+kfmteJJvxqfgNZcwo3kAQ5H3Da2LvhuH
- Zccelp4qDQ0v7eUaHF7Qbw8uppLC74TG5LTv4NZ4FOH5Y2EwvhmjnbAtzJExa5dtoK93oLhz2k
- vVgunE2YP1lbZkb/r8J1cr6uZ8UbVFaZpeBHlf0viFmbn06zJ5FgpfV3y+rqn5GDOI64Aw8v3f
- 2f/vQLhSA8fKnabwgXMpi0/thGg5VvBQ0xVhOlUAuMzZboDffsa27x0w1Xe5ffhk94pmSYtk+p
- zZQ=
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="126349718"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jun 2021 06:05:31 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 23 Jun 2021 06:05:31 -0700
-Received: from [10.205.21.35] (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Wed, 23 Jun 2021 06:05:26 -0700
-Message-ID: <13fc1b7dac31464f8a635336bf41143d7d02b04a.camel@microchip.com>
-Subject: Re: [PATCH net-next v4 04/10] net: sparx5: add port module support
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Simon Horman" <simon.horman@netronome.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>
-Date:   Wed, 23 Jun 2021 15:05:25 +0200
-In-Reply-To: <20210621143334.GN22278@shell.armlinux.org.uk>
-References: <20210615085034.1262457-1-steen.hegelund@microchip.com>
-         <20210615085034.1262457-5-steen.hegelund@microchip.com>
-         <20210621143334.GN22278@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.2 
+        Wed, 23 Jun 2021 09:09:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624453646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pvXmK6gZaWHVnyy8+y3rlbryBzsszFyIqFKtOvq27dg=;
+        b=GL1ExbluuI+FUF1/WD21JpeTbhoW6NGLPbY9SMgXpC44rmvtJ19v9YLu7p6wINGo165lKS
+        dgKqrQcRemlefB/acNdebdu9DA1tcePJ8DsAc8NNDSYHVsEg/YtRWDKbUV2pdLF0Tmf9aD
+        nUxWaodEoTQcbDajfx5lxP0JYNvpnLk=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-385-V4QdnAsfOPm3TVlsEdzLnw-1; Wed, 23 Jun 2021 09:07:25 -0400
+X-MC-Unique: V4QdnAsfOPm3TVlsEdzLnw-1
+Received: by mail-wm1-f70.google.com with SMTP id i24-20020a1c54180000b02901dbcf5d699eso168977wmb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 06:07:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pvXmK6gZaWHVnyy8+y3rlbryBzsszFyIqFKtOvq27dg=;
+        b=rgBrPy0ms9qePQDQv7DR5Gyl9WQMjiw8+awcsw7MYXRwQxOUUIRvaM72LJu6kfgwp0
+         X8MPwatYln8SmgYOcVl/QBmMESQ6JRXEMulpvzwaYqr1JWNi/kfcOsZXoMAL2OUCuro/
+         gqsmcD6e/wIicmgZ9SNL3ZrYdoWyftBzbwcALWSj63PzRfzAgZbyDwxSy62grDgYJJKC
+         rgQvMBsq79yCfkJWdNgxK5/sgEaS1WifjFLn206oELJguuZ2FkraS/At6Wlwgnbt9StH
+         cBEIPVTbfqNdPsA2cjV92chirs4pWVsSuFRt5NVuj7K4+x+brnHG22O49YjbTvN1cuiS
+         X7Aw==
+X-Gm-Message-State: AOAM530y6bnF5Q1hxuDSiOpD6vHGofzH8e4TOY7jluMwSR2jYvf/VlOw
+        8lnDRT3LEujbnTkWc6Gy5iNCBWdVbVzXbR1t2QtLiCuFIk+/piHbDKFlNnR54rhwI3DsywsN9B1
+        XNljQh2QS3QN/qyhEc3dvdzLl
+X-Received: by 2002:a1c:2605:: with SMTP id m5mr10886879wmm.123.1624453643955;
+        Wed, 23 Jun 2021 06:07:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzxLb99ul1vFnR49Qlsotnc9tdEXKCN3S0jHBZHVkivu4D5gyHanH9XPf5rpMDfAiROB8n3UQ==
+X-Received: by 2002:a1c:2605:: with SMTP id m5mr10886835wmm.123.1624453643623;
+        Wed, 23 Jun 2021 06:07:23 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id d4sm5868848wmd.42.2021.06.23.06.07.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 06:07:22 -0700 (PDT)
+Subject: Re: [PATCH 00/19] KVM: selftests: Add x86 mmu_role test and cleanups
+To:     Sean Christopherson <seanjc@google.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Peter Shier <pshier@google.com>
+References: <20210622200529.3650424-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <74ef13b2-ed97-1386-f6ea-5b041e68fe92@redhat.com>
+Date:   Wed, 23 Jun 2021 15:07:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210622200529.3650424-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russell,
-
-Thanks for your comment.
-
-
-On Mon, 2021-06-21 at 15:33 +0100, Russell King (Oracle) wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+On 22/06/21 22:05, Sean Christopherson wrote:
+> The primary intent of this series is to allow x86-64 tests to create
+> arbitrary hugepages and use the new functionality to abuse x86's CPUID
+> APIs to test KVM MMU behavior.
 > 
-> Hi,
+> The majority of the prep work refactors the selftests APIs related to
+> memory allocation.  The core memory allocation APIs within the selftests
+> don't provide defaults for memslot or min virtual address, which has led
+> to a ridiculous amount of magic and duplicate code.  Literally zero tests
+> use non-standard values in a meaningful way, and if a test comes along
+> that has a legitimate use case, it should use lower-level helpers.
 > 
-> On Tue, Jun 15, 2021 at 10:50:28AM +0200, Steen Hegelund wrote:
-> > +static int sparx5_port_pcs_low_set(struct sparx5 *sparx5,
-> > +                                struct sparx5_port *port,
-> > +                                struct sparx5_port_config *conf)
-> > +{
-> > +     bool sgmii = false, inband_aneg = false;
-> > +     int err;
-> > +
-> > +     if (!port->conf.has_sfp) {
-> > +             sgmii = true; /* Phy is connnected to the MAC */
-> > +     } else {
-> > +             if (conf->portmode == PHY_INTERFACE_MODE_SGMII ||
-> > +                 conf->portmode == PHY_INTERFACE_MODE_QSGMII)
-> > +                     inband_aneg = true; /* Cisco-SGMII in-band-aneg */
-> > +             else if (conf->portmode == PHY_INTERFACE_MODE_1000BASEX &&
-> > +                      conf->autoneg)
-> > +                     inband_aneg = true; /* Clause-37 in-band-aneg */
+> Patches 01 and 02 are fixes for bugs found during the refactoring.
 > 
-> I have to wonder why the presence of inband aneg depends on whether
-> there's a SFP or not... We don't do that kind of thing in other
-> drivers, so what is different here?
-
-Hmm.
-I have changed the implementation to use phylink_autoneg_inband() instead of a preconfigured value.
-
-
+> As for the mmu_role test itself, the idea is to change the vCPU model
+> while the guest is running (via KVM_SET_CPUID2) to verify that KVM
+> reconfigures its MMUs when the vCPU model is changed.  E.g. toggling
+> guest support for 1gb hugepages and changing guest MAXPHYADDR.
 > 
-> Thanks.
+> Sadly, the test doesn't pass when KVM is using TDP paging (even with all
+> my mmu_role fixes) because KVM doesn't fully support manipulating GBPAGES
+> and MAXPHYADDR (and other CPUID-based properties that affect the MMU)
+> while the guest is running.  And practically speaking, KVM will never
+> fully support such behavior becuase (a) there is likely no sane use case,
+> (b) fixing the issues is very costly (memory consumption), (c) GBPAGES
+> and potentially other features _can't_ be handled correctly due to lack
+> of hardware support, and (d) userspace can workaround all issues simply
+> by deleting a memslot.
 > 
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+> All that said, I purposely made the test off-by-default instead of
+> requiring TDP.  Partly because detecting whether TDP is enabled is a pain
+> becuase it's per-vendor, but also because running the test with TDP
+> enabled is still interesting to some extent, e.g. the test will fail, but
+> it shouldn't crash KVM, trigger WARNs, etc...
+> 
+> Sean Christopherson (19):
+>    KVM: selftests: Remove errant asm/barrier.h include to fix arm64 build
+>    KVM: selftests: Zero out the correct page in the Hyper-V features test
+>    KVM: selftests: Unconditionally use memslot 0 when loading elf binary
+>    KVM: selftests: Unconditionally use memslot 0 for x86's GDT/TSS setup
+>    KVM: selftests: Use "standard" min virtual address for Hyper-V pages
+>    KVM: selftests: Add helpers to allocate N pages of virtual memory
+>    KVM: selftests: Lower the min virtual address for misc page
+>      allocations
+>    KVM: selftests: Use alloc_page helper for x86-64's GDT/ITD/TSS
+>      allocations
+>    KVM: selftests: Use alloc page helper for xAPIC IPI test
+>    KVM: selftests: Use "standard" min virtual address for CPUID test
+>      alloc
+>    KVM: selftest: Unconditionally use memslot 0 for vaddr allocations
+>    KVM: selftests: Unconditionally use memslot '0' for page table
+>      allocations
+>    KVM: selftests: Unconditionally allocate EPT tables in memslot 0
+>    KVM: selftests: Add wrapper to allocate page table page
+>    KVM: selftests: Rename x86's page table "address" to "pfn"
+>    KVM: selfests: Add PTE helper for x86-64 in preparation for hugepages
+>    KVM: selftests: Genericize upper level page table entry struct
+>    KVM: selftests: Add hugepage support for x86-64
+>    KVM: sefltests: Add x86-64 test to verify MMU reacts to CPUID updates
+> 
+>   tools/testing/selftests/kvm/.gitignore        |   1 +
+>   tools/testing/selftests/kvm/Makefile          |   1 +
+>   tools/testing/selftests/kvm/dirty_log_test.c  |   5 +-
+>   .../selftests/kvm/hardware_disable_test.c     |   2 +-
+>   .../testing/selftests/kvm/include/kvm_util.h  |  18 +-
+>   .../selftests/kvm/include/x86_64/processor.h  |  11 +
+>   .../selftests/kvm/include/x86_64/vmx.h        |  10 +-
+>   .../selftests/kvm/kvm_page_table_test.c       |   2 +-
+>   .../selftests/kvm/lib/aarch64/processor.c     |  34 +--
+>   .../testing/selftests/kvm/lib/aarch64/ucall.c |   2 +-
+>   tools/testing/selftests/kvm/lib/elf.c         |   6 +-
+>   tools/testing/selftests/kvm/lib/kvm_util.c    |  62 ++++-
+>   .../selftests/kvm/lib/perf_test_util.c        |   2 +-
+>   .../selftests/kvm/lib/s390x/processor.c       |  17 +-
+>   .../selftests/kvm/lib/x86_64/processor.c      | 254 ++++++++----------
+>   tools/testing/selftests/kvm/lib/x86_64/svm.c  |   9 +-
+>   tools/testing/selftests/kvm/lib/x86_64/vmx.c  |  52 ++--
+>   .../testing/selftests/kvm/memslot_perf_test.c |   2 +-
+>   .../selftests/kvm/set_memory_region_test.c    |   2 +-
+>   tools/testing/selftests/kvm/steal_time.c      |   2 +-
+>   .../selftests/kvm/x86_64/get_cpuid_test.c     |   3 +-
+>   .../selftests/kvm/x86_64/hyperv_clock.c       |   2 +-
+>   .../selftests/kvm/x86_64/hyperv_features.c    |   8 +-
+>   .../selftests/kvm/x86_64/mmu_role_test.c      | 147 ++++++++++
+>   .../selftests/kvm/x86_64/set_boot_cpu_id.c    |   2 +-
+>   .../kvm/x86_64/vmx_apic_access_test.c         |   2 +-
+>   .../selftests/kvm/x86_64/vmx_dirty_log_test.c |   8 +-
+>   .../selftests/kvm/x86_64/xapic_ipi_test.c     |   4 +-
+>   .../selftests/kvm/x86_64/xen_shinfo_test.c    |   2 +-
+>   .../selftests/kvm/x86_64/xen_vmcall_test.c    |   2 +-
+>   30 files changed, 414 insertions(+), 260 deletions(-)
+>   create mode 100644 tools/testing/selftests/kvm/x86_64/mmu_role_test.c
+> 
 
--- 
-BR
-Steen
+Queued, thanks.
 
--=-=-=-=-=-=-=-=-=-=-=-=-=-=
-steen.hegelund@microchip.com
-
-
+Paolo
 
