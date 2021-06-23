@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D703B21F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECA53B21EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhFWUmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 16:42:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58494 "EHLO
+        id S229928AbhFWUmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 16:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbhFWUmG (ORCPT
+        with ESMTP id S229818AbhFWUmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 16:42:06 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E00FC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:39:48 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id x16so3255435pfa.13
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:39:48 -0700 (PDT)
+        Wed, 23 Jun 2021 16:42:05 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4DDC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:39:47 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id k5so2187548pjj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:39:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Lnn9jp/s32hmkbL+/fflp0AYulLa8VCq66U0jv/eDes=;
-        b=C1YmvtJB6ygrlO6e3yWlLKjc6iRwUSJaKCLlk6vJQ46k0QV+mgo5ZXBkqnx1ETI7Bo
-         0ImQPtsKOnj13rIVcLAnUm4f4mWTuB9d6UG69Ymk9JjWlge3TjqC4Q1y3alDooeS3+2r
-         vThLKpEt8iYquBxfy1ZwtfJBPAXkp9aG2u5k0=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=a/NHLnzJB2ygZFZV6tY0zJmtOu+fbM3j2iEZapLwC/A=;
+        b=I/banPaTpbTehL6OdlALe/IibBFT5OlgTdWS6XNKoIoXm+GiZtXArwzsPg+rtwRkgg
+         NmrSVIMu+8EuZ9CYJ01zzWl4kbE+LLteCDRjIKB9SxVkzoI6SWm+GokpeXxJUhilXbxr
+         V3BTbXTDX4uqb6Jl4nP19anmnYosCw2t8IZxM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Lnn9jp/s32hmkbL+/fflp0AYulLa8VCq66U0jv/eDes=;
-        b=llyTvNncwLL/fhO3VF8XipWrbIo9HBJ+rAAD/fZpevQAqB3Gz9hBEgstWNiVcBbN0o
-         crnF3S/hZb0r41Q7irrh+kb3dQQKmi6R7XkyZLE/IT4ZJPfUKNVVbTEz18Hq8k6MYL2N
-         iR6Hox6qAXRqFHwmEwK0E0ZLbINCgV2i32ht2oBN0F68msMbYQWrNon4OUUBMRFAlW2f
-         6SalTSHmbFx/13eyVQxpHC+k25InqV86tz6+be1tfUWtLtQJVIZ5KeZ6xHGlFQs4CRmn
-         X2zHe7hM8oFVPx4L/nxeQCEwUeAs2c97DmB6i5ksPg0MbzdPGan9UHhLUIl8kcU2nlR+
-         pYQQ==
-X-Gm-Message-State: AOAM532aqfUt+uFc7kuMGg+pL1K/Xlsz6nNLG+5B8aV701TdP0sEKfZH
-        znLdnYTtdg/m+K/eeILdfN0uqQ==
-X-Google-Smtp-Source: ABdhPJy25JF5LfPlvMzjiFU6YxFBAIl/9LluZtx9nqJMnVqSL0stDwYx7dEMGfPl3SHI7ZOODjCkFw==
-X-Received: by 2002:aa7:8254:0:b029:2ed:b41:fefc with SMTP id e20-20020aa782540000b02902ed0b41fefcmr1498913pfn.42.1624480788262;
-        Wed, 23 Jun 2021 13:39:48 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=a/NHLnzJB2ygZFZV6tY0zJmtOu+fbM3j2iEZapLwC/A=;
+        b=mCbCrsHinjqNFRvqWFLIOCnJrNNapMVtlGCJgKx0LE0Hu9Rn/nDwwaLrNFoht8QZHJ
+         DpERpcMxgj2pTcQdP9wLX3DunnkFvluaqUiW5sRfYmlCsaGdhK7c5TZnEkGLetcMrJsO
+         ifhrCU6313rabjP6zMYnBslFnTDJM9cIxAwdZzM/90itPzX/SEX+n9bTYQnIaIpjryci
+         94cmdLeX98r99xqdeMGZ8Onj1+4gbovPriwr2UzVCqRcrHoYrITeKXkrXzAhm3Fs10IN
+         IOGYam8SPZxQuosNZ10HSu/zopLGi5pf7DMasc/xUeLuhglNh7roYgrhXO6gHU8QLaEs
+         x7pw==
+X-Gm-Message-State: AOAM532uGCDDGwHFl+656R96lxvYefF/jP+DHW0O2ksOeCRT5nqyjO7O
+        LUD56qEE09MS3f4lhH/eqjhgJw==
+X-Google-Smtp-Source: ABdhPJyIVBrXhKOZzCBKXG3oK3wjH6BAd9s13vXvBJ+PpxlX5LInY9Q6iJqJZX6Jh5pq81lEvn0kug==
+X-Received: by 2002:a17:90a:5a08:: with SMTP id b8mr11356642pjd.228.1624480786915;
+        Wed, 23 Jun 2021 13:39:46 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 92sm6294061pjv.29.2021.06.23.13.39.45
+        by smtp.gmail.com with ESMTPSA id u23sm9942pgk.38.2021.06.23.13.39.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 23 Jun 2021 13:39:45 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Kees Cook <keescook@chromium.org>,
         Guillaume Tucker <guillaume.tucker@collabora.com>,
-        David Laight <David.Laight@ACULAB.COM>,
+        David Laight <David.Laight@ACULAB.COM>, stable@vger.kernel.org,
         Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
         kernelci@groups.io, linux-kselftest@vger.kernel.org,
         linux-hardening@vger.kernel.org
-Subject: [PATCH 0/9] LKDTM: Improvements for kernelci.org
-Date:   Wed, 23 Jun 2021 13:39:27 -0700
-Message-Id: <20210623203936.3151093-1-keescook@chromium.org>
+Subject: [PATCH 1/9] selftests/lkdtm: Avoid needing explicit sub-shell
+Date:   Wed, 23 Jun 2021 13:39:28 -0700
+Message-Id: <20210623203936.3151093-2-keescook@chromium.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210623203936.3151093-1-keescook@chromium.org>
+References: <20210623203936.3151093-1-keescook@chromium.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1469; h=from:subject; bh=zEuv0J1e6Ce2pKHimEyiAaIYYKWtyU0Hog/oTewgJ2Q=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBg05wFChS5JDlFBZpH8NNFzZZUwtqUxgF7CN0I4TwO T784QdeJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYNOcBQAKCRCJcvTf3G3AJkcxEA CluTxSMcPooRUNQtu6ITHy4aTzsPHZRIHL4Ygd6kjyDQO3ldSlcQafSvdwQdU9mmcXXkKfA4FU2E9Q VUiby+2TjqiTHS7GoDzvduYDAiJ2qTPK9eKfipp6zcwyrZEfXmFV0l1CBZIuab7G5uKq67+Nqx+j0G gAihVQFVrIDuP2xqSolSgSDZ4HDV7qRcpcOz4dp86mvfQyvp/vjTodFTYpSQaUWb54m9CKgmerG/Ki cw1JyjSGPQBCXev0rY4IyRn0WyUFzfa1DKIZnRMI6+up9iNTR1pKOCeqaP7q4+rHpJs9yCm40WlT8A AhF7CDUWj6J/ocghjGEByr+ObzUm/F5ip+eGRHPubl8oavMB2pBKov2vM+v6LTcJQkKMz82OFHU7P8 SLKxRr9PO5BSHuwCr80Ju0BqWRDohcjP3xK2j9hqvhzFCEhoIew9IDYZtAo1iqEAY5G5FA3m336cFW hc/U9lDeHJSo9RedWBRcTz8zLAQTYsnRz4QTdORHzmHhfc8VRVdQ5+HgYJqk4sSEt6JqKmH06zys0y L4zXmsaU4uuKIzVWtX89R1xPRARgF1FDUy4hFicEfL6TR7hpGzMdxcsv7jdn7CQUfbcgmrwkN01S9O 0SfggbzjvFahUpHkHC1b849WPAa/AinczkLUw1s9B21RYzD335XtCKHTAEjg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1841; h=from:subject; bh=AmOgu4HWdRZorYqBFRSjQNwNv37L2JYo/PWnXeJW7vY=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBg05wFY5oavND7smh3PFgLH+LKjB2fUh5OHY6bWTIk eYMshS6JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYNOcBQAKCRCJcvTf3G3AJvtJD/ 9G+j8CKarzbS3nY6L6aaVmdftLkiLrU13NYZGNHPstjHi6Lx9CpHpJ+QwK8wc78agXMWUB/r+L8qLk s5gPPethiYZV3QumjnWFZ+gj2T/Xoz+EbjLOWntVMv9mjstH5+5/e/VcX9vi3N56IBFqOT/OAyrw6V piyzsjxVP6elfNaUtfASxPcXo5H7zZVums4Lnz/S7qok5qi+zmFuE9cxdfPi1g5YHAdw8uxX76SDgD hoV+UheZw8Vf76IBrTdkW9Jp46PrE+jfJrWT6bx2II9gX/ukVqaMFNd4OMh/CyptWTqAdlnB165u2o dy3BZ1goom8Vqgcw5HC4Xyvj6RHMejdsHAwvZi1eykN7tOV2Ad3VciAb5zpVW0aw6N6KFim54cJhF+ 6ZEq4G2peIhgqpOiJQeN3nNjM19grUPTa4eG/YYfxZxPmhW9BgnimjjelWxx2V2bEUMsU5WvOOOhKl 3av97w61teJaEc5UTni4zXrsFfROtUVxxWtGT6W++WLxeHaIFjxiNKPOUNqIF8xNIDbfy5mnHt7dp6 qzq+WOtPvEmqbCZQ/qsVUVxIbAaVUSoNjmrIU5nCypQyLphJMqKBzn/qDVtewgDbXOT8Np07K7fFns ceDGvDFjboNdC3WG7S0yN+Pj+kveweqXC8AKB5TUR06NIKYA8nA74XD1efAg==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a bunch of LKDTM clean-ups to improve and expand testing,
-given feedback from testing at kernelci.org. Adds a few new tests as
-well.
+Some environments do not set $SHELL when running tests. There's no
+need to use $SHELL here anyway, since "cat" can be used to receive any
+delivered signals from the kernel. Additionally avoid using bash-isms
+in the command, and record stderr for posterity.
 
-(If a pull-request is preferred, please let me know.)
+Suggested-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+Suggested-by: David Laight <David.Laight@ACULAB.COM>
+Fixes: 46d1a0f03d66 ("selftests/lkdtm: Add tests for LKDTM targets")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ tools/testing/selftests/lkdtm/run.sh | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-Thanks!
-
--Kees
-
-Kees Cook (9):
-  selftests/lkdtm: Avoid needing explicit sub-shell
-  selftests/lkdtm: Fix expected text for CR4 pinning
-  selftests/lkdtm: Fix expected text for free poison
-  lkdtm/bugs: XFAIL UNALIGNED_LOAD_STORE_WRITE
-  lkdtm/heap: Add vmalloc linear overflow test
-  lkdtm: Enable DOUBLE_FAULT on all architectures
-  lkdtm: Add CONFIG hints in errors where possible
-  selftests/lkdtm: Enable various testable CONFIGs
-  lkdtm/heap: Add init_on_alloc tests
-
- drivers/misc/lkdtm/bugs.c                     | 11 ++-
- drivers/misc/lkdtm/cfi.c                      |  3 +-
- drivers/misc/lkdtm/core.c                     | 58 ++++++++++-
- drivers/misc/lkdtm/fortify.c                  |  3 +-
- drivers/misc/lkdtm/heap.c                     | 97 ++++++++++++++++++-
- drivers/misc/lkdtm/lkdtm.h                    | 46 ++++++++-
- drivers/misc/lkdtm/stackleak.c                |  4 +-
- drivers/misc/lkdtm/usercopy.c                 |  7 +-
- tools/testing/selftests/lkdtm/config          |  7 ++
- tools/testing/selftests/lkdtm/run.sh          | 12 ++-
- .../testing/selftests/lkdtm/stack-entropy.sh  |  1 +
- tools/testing/selftests/lkdtm/tests.txt       | 11 ++-
- 12 files changed, 236 insertions(+), 24 deletions(-)
-
+diff --git a/tools/testing/selftests/lkdtm/run.sh b/tools/testing/selftests/lkdtm/run.sh
+index bb7a1775307b..e95e79bd3126 100755
+--- a/tools/testing/selftests/lkdtm/run.sh
++++ b/tools/testing/selftests/lkdtm/run.sh
+@@ -76,10 +76,14 @@ fi
+ # Save existing dmesg so we can detect new content below
+ dmesg > "$DMESG"
+ 
+-# Most shells yell about signals and we're expecting the "cat" process
+-# to usually be killed by the kernel. So we have to run it in a sub-shell
+-# and silence errors.
+-($SHELL -c 'cat <(echo '"$test"') >'"$TRIGGER" 2>/dev/null) || true
++# Since the kernel is likely killing the process writing to the trigger
++# file, it must not be the script's shell itself. i.e. we cannot do:
++#     echo "$test" >"$TRIGGER"
++# Instead, use "cat" to take the signal. Since the shell will yell about
++# the signal that killed the subprocess, we must ignore the failure and
++# continue. However we don't silence stderr since there might be other
++# useful details reported there in the case of other unexpected conditions.
++echo "$test" | cat >"$TRIGGER" || true
+ 
+ # Record and dump the results
+ dmesg | comm --nocheck-order -13 "$DMESG" - > "$LOG" || true
 -- 
 2.30.2
 
