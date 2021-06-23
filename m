@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0063B1A09
+	by mail.lfdr.de (Postfix) with ESMTP id CCD2D3B1A0A
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbhFWM2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:28:03 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36710 "EHLO
+        id S231823AbhFWM2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:28:06 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37066 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231320AbhFWM0z (ORCPT
+        with ESMTP id S231310AbhFWM05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:26:55 -0400
-Message-Id: <20210623121456.399107624@linutronix.de>
+        Wed, 23 Jun 2021 08:26:57 -0400
+Message-Id: <20210623121456.508770763@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624451077;
+        s=2020; t=1624451079;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=/ymlPjCvQ6fAwzLlz/UnrN3GToe0ytIgsbF9h2BnLOo=;
-        b=zwhzWWDjL8uU/xiCh338cgSxhUOtJTHkdkvR1broA0/9/7NL4a7+dCwwa6X+fJ+TSAYkoL
-        lymS06HTsAx+fNMmLmj9DoJKCwJpw1vpyGv2O3H1jRzeYetkKKQALo92fRJOolAxLjwoy/
-        x5ap35Qq3RugUAuy7ufhtV34M8Xp2lbp6l6EF/aJPUoVnF7MwXiBQvc3s4tu9Tn4m/yqXo
-        OQv8qYwljOo+9Uj8Tu1Kv/SGc7iA9giyxdfYw3tX8cApfejVxow75ygYxeAP30Xqt07QP2
-        2myhS9/i4pSsJ0kY+8OkO2kyVEvytSHUv47T0PKWZgZFpw5i1absWdalhJmmsw==
+        bh=8vVUCO1Y1lBdQOGuPUm4O23Rc9HcCuQc+sg4uh9f8X8=;
+        b=Uh4RMVcxTQqux6NiWt0UmJvTXxxjeZdpjcCLu/hFdqBofMyhc+Xbvd0YP32sh5wWqjPHZR
+        8NX3I7JKrU7DE/8qgJMGccmadWk1KkpSiH/aWlW+KSp9wb+T3opjQdZyC6MAujpgrTaQ7N
+        U2pxiDN3LOmBDECUNbzJn+3/U0CCZfqu28EGv6Fv8DKJQVbwMcP8n5j+Bk9wKZp1YyNoLU
+        YuFSav6hrJf5piIRIsBhjBz7/34/YDvXu9jyHp4VEwJ0mrybTLtp86mYxAsdgqSkiElKFi
+        teo+cZ4FMsGpkBPadc6eIaIVg63JL0pRIu8e4HijB5lBWtMdwbSUXBORofE0Cg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624451077;
+        s=2020e; t=1624451079;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=/ymlPjCvQ6fAwzLlz/UnrN3GToe0ytIgsbF9h2BnLOo=;
-        b=0z6ermdlGwD3OAvi0b0tYlt6g8VBTgb/hFZzK7QCFsN+1AdCWjO4Qur3D2ijNUauBKiZ+Y
-        jCEOQ7HDQ4ZyzVCg==
-Date:   Wed, 23 Jun 2021 14:02:18 +0200
+        bh=8vVUCO1Y1lBdQOGuPUm4O23Rc9HcCuQc+sg4uh9f8X8=;
+        b=L3cJ2aQxtPUWACG8Tup6/Yq4Rkcvb0dH3YSaOVEd+J8l1WG3YMwu6IjP4eLcpyfh4FuZQT
+        srX8c8AExeNRp3BA==
+Date:   Wed, 23 Jun 2021 14:02:19 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -47,7 +47,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         "Chang Seok Bae" <chang.seok.bae@intel.com>,
         Megha Dey <megha.dey@linux.intel.com>,
         Oliver Sang <oliver.sang@intel.com>
-Subject: [patch V4 51/65] x86/fpu: Add PKRU storage outside of task XSAVE buffer
+Subject: [patch V4 52/65] x86/fpu: Hook up PKRU into ptrace()
 References: <20210623120127.327154589@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,114 +58,120 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dave Hansen <dave.hansen@linux.intel.com>
 
-PKRU is currently partly XSAVE-managed and partly not.  It has space in the
-task XSAVE buffer and is context-switched by XSAVE/XRSTOR.  However, it is
-switched more eagerly than FPU because there may be a need for PKRU to be
-up-to-date for things like copy_to/from_user() since PKRU affects
-user-permission memory accesses, not just accesses from userspace itself.
+One nice thing about having PKRU be XSAVE-managed is that it gets naturally
+exposed into the XSAVE-using ABIs.  Now that XSAVE will not be used to
+manage PKRU, these ABIs need to be manually enabled to deal with PKRU.
 
-This leaves PKRU in a very odd position.  XSAVE brings very little value to
-the table for how Linux uses PKRU except for signal related XSTATE
-handling.
-
-Prepare to move PKRU away from being XSAVE-managed.  Allocate space in the
-thread_struct for it and save/restore it in the context-switch path
-separately from the XSAVE-managed features. task->thread_struct.pkru is
-only valid when the task is scheduled out. For the current task the
-authoritative source is the hardware, i.e. it has to be retrieved via
-rdpkru().
-
-Leave the XSAVE code in place for now to ensure bisectability.
+ptrace() uses copy_uabi_xstate_to_kernel() to collect the tracee's
+XSTATE. As PKRU is not in the task's XSTATE buffer, use task->thread.pkru
+for filling in up the ptrace buffer.
 
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Borislav Petkov <bp@suse.de>
 ---
-V3: Fix the fallout on !PKRU enabled systems in copy_thread() - Intel testing via Dave
----
- arch/x86/include/asm/processor.h |    9 +++++++++
- arch/x86/kernel/process.c        |    7 +++++++
- arch/x86/kernel/process_64.c     |   25 +++++++++++++++++++++++++
- 3 files changed, 41 insertions(+)
+ arch/x86/include/asm/fpu/xstate.h |    2 +-
+ arch/x86/kernel/fpu/regset.c      |   10 ++++------
+ arch/x86/kernel/fpu/xstate.c      |   25 ++++++++++++++++++-------
+ 3 files changed, 23 insertions(+), 14 deletions(-)
 
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -518,6 +518,15 @@ struct thread_struct {
+--- a/arch/x86/include/asm/fpu/xstate.h
++++ b/arch/x86/include/asm/fpu/xstate.h
+@@ -139,7 +139,7 @@ enum xstate_copy_mode {
+ };
  
- 	unsigned int		sig_on_uaccess_err:1;
+ struct membuf;
+-void copy_xstate_to_uabi_buf(struct membuf to, struct xregs_state *xsave,
++void copy_xstate_to_uabi_buf(struct membuf to, struct task_struct *tsk,
+ 			     enum xstate_copy_mode mode);
  
-+	/*
-+	 * Protection Keys Register for Userspace.  Loaded immediately on
-+	 * context switch. Store it in thread_struct to avoid a lookup in
-+	 * the tasks's FPU xstate buffer. This value is only valid when a
-+	 * task is scheduled out. For 'current' the authoritative source of
-+	 * PKRU is the hardware itself.
-+	 */
-+	u32			pkru;
-+
- 	/* Floating point and extended processor state */
- 	struct fpu		fpu;
- 	/*
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -156,11 +156,18 @@ int copy_thread(unsigned long clone_flag
- 
- 	/* Kernel thread ? */
- 	if (unlikely(p->flags & PF_KTHREAD)) {
-+		p->thread.pkru = pkru_get_init_value();
- 		memset(childregs, 0, sizeof(struct pt_regs));
- 		kthread_frame_init(frame, sp, arg);
- 		return 0;
+ #endif
+--- a/arch/x86/kernel/fpu/regset.c
++++ b/arch/x86/kernel/fpu/regset.c
+@@ -78,7 +78,7 @@ int xfpregs_get(struct task_struct *targ
+ 				    sizeof(fpu->state.fxsave));
  	}
  
-+	/*
-+	 * Clone current's PKRU value from hardware. tsk->thread.pkru
-+	 * is only valid when scheduled out.
-+	 */
-+	p->thread.pkru = read_pkru();
-+
- 	frame->bx = 0;
- 	*childregs = *current_pt_regs();
- 	childregs->ax = 0;
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -340,6 +340,29 @@ static __always_inline void load_seg_leg
- 	}
+-	copy_xstate_to_uabi_buf(to, &fpu->state.xsave, XSTATE_COPY_FX);
++	copy_xstate_to_uabi_buf(to, target, XSTATE_COPY_FX);
+ 	return 0;
  }
  
-+/*
-+ * Store prev's PKRU value and load next's PKRU value if they differ. PKRU
-+ * is not XSTATE managed on context switch because that would require a
-+ * lookup in the task's FPU xsave buffer and require to keep that updated
-+ * in various places.
-+ */
-+static __always_inline void x86_pkru_load(struct thread_struct *prev,
-+					  struct thread_struct *next)
-+{
-+	if (!cpu_feature_enabled(X86_FEATURE_OSPKE))
-+		return;
-+
-+	/* Stash the prev task's value: */
-+	prev->pkru = rdpkru();
-+
-+	/*
-+	 * PKRU writes are slightly expensive.  Avoid them when not
-+	 * strictly necessary:
-+	 */
-+	if (prev->pkru != next->pkru)
-+		wrpkru(next->pkru);
-+}
-+
- static __always_inline void x86_fsgsbase_load(struct thread_struct *prev,
- 					      struct thread_struct *next)
+@@ -127,14 +127,12 @@ int xfpregs_set(struct task_struct *targ
+ int xstateregs_get(struct task_struct *target, const struct user_regset *regset,
+ 		struct membuf to)
  {
-@@ -589,6 +612,8 @@ void compat_start_thread(struct pt_regs
+-	struct fpu *fpu = &target->thread.fpu;
+-
+ 	if (!cpu_feature_enabled(X86_FEATURE_XSAVE))
+ 		return -ENODEV;
  
- 	x86_fsgsbase_load(prev, next);
+-	sync_fpstate(fpu);
++	sync_fpstate(&target->thread.fpu);
  
-+	x86_pkru_load(prev, next);
-+
- 	/*
- 	 * Switch the PDA and FPU contexts.
- 	 */
+-	copy_xstate_to_uabi_buf(to, &fpu->state.xsave, XSTATE_COPY_XSAVE);
++	copy_xstate_to_uabi_buf(to, target, XSTATE_COPY_XSAVE);
+ 	return 0;
+ }
+ 
+@@ -337,7 +335,7 @@ int fpregs_get(struct task_struct *targe
+ 		struct membuf mb = { .p = &fxsave, .left = sizeof(fxsave) };
+ 
+ 		/* Handle init state optimized xstate correctly */
+-		copy_xstate_to_uabi_buf(mb, &fpu->state.xsave, XSTATE_COPY_FP);
++		copy_xstate_to_uabi_buf(mb, target, XSTATE_COPY_FP);
+ 		fx = &fxsave;
+ 	} else {
+ 		fx = &fpu->state.fxsave;
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -962,7 +962,7 @@ static void copy_feature(bool from_xstat
+ /**
+  * copy_xstate_to_uabi_buf - Copy kernel saved xstate to a UABI buffer
+  * @to:		membuf descriptor
+- * @xsave:	The kernel xstate buffer to copy from
++ * @tsk:	The task from which to copy the saved xstate
+  * @copy_mode:	The requested copy mode
+  *
+  * Converts from kernel XSAVE or XSAVES compacted format to UABI conforming
+@@ -971,10 +971,11 @@ static void copy_feature(bool from_xstat
+  *
+  * It supports partial copy but @to.pos always starts from zero.
+  */
+-void copy_xstate_to_uabi_buf(struct membuf to, struct xregs_state *xsave,
++void copy_xstate_to_uabi_buf(struct membuf to, struct task_struct *tsk,
+ 			     enum xstate_copy_mode copy_mode)
+ {
+ 	const unsigned int off_mxcsr = offsetof(struct fxregs_state, mxcsr);
++	struct xregs_state *xsave = &tsk->thread.fpu.state.xsave;
+ 	struct xregs_state *xinit = &init_fpstate.xsave;
+ 	struct xstate_header header;
+ 	unsigned int zerofrom;
+@@ -1048,11 +1049,21 @@ void copy_xstate_to_uabi_buf(struct memb
+ 		if (zerofrom < xstate_offsets[i])
+ 			membuf_zero(&to, xstate_offsets[i] - zerofrom);
+ 
+-		copy_feature(header.xfeatures & BIT_ULL(i), &to,
+-			     __raw_xsave_addr(xsave, i),
+-			     __raw_xsave_addr(xinit, i),
+-			     xstate_sizes[i]);
+-
++		if (i == XFEATURE_PKRU) {
++			struct pkru_state pkru = {0};
++			/*
++			 * PKRU is not necessarily up to date in the
++			 * thread's XSAVE buffer.  Fill this part from the
++			 * per-thread storage.
++			 */
++			pkru.pkru = tsk->thread.pkru;
++			membuf_write(&to, &pkru, sizeof(pkru));
++		} else {
++			copy_feature(header.xfeatures & BIT_ULL(i), &to,
++				     __raw_xsave_addr(xsave, i),
++				     __raw_xsave_addr(xinit, i),
++				     xstate_sizes[i]);
++		}
+ 		/*
+ 		 * Keep track of the last copied state in the non-compacted
+ 		 * target buffer for gap zeroing.
 
