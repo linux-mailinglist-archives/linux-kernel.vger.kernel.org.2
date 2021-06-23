@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01A63B2066
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D05F43B2067
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhFWSnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 14:43:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60092 "EHLO
+        id S229906AbhFWSnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 14:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbhFWSns (ORCPT
+        with ESMTP id S229796AbhFWSnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 14:43:48 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1685C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:41:29 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id e22so2505322pgv.10
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:41:29 -0700 (PDT)
+        Wed, 23 Jun 2021 14:43:49 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25126C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:41:32 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id s17-20020a17090a8811b029016e89654f93so4376506pjn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:41:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CmSxjVifvEvCqk0+9pO7z5s7Ge6oi3hKkOZK5hFSWaY=;
-        b=LluFmH6faSDsy5zNPOC5XgyCUGC49cppIjUOhBK4h233TCJkZWz8/u5xK1rXIwOYCo
-         yVLlUiH5GK0vEd/wmbZNVQMgsmh2HhDr8g9afDiLFHfbW9tVgc12KVqsowWpu7GKLodA
-         bWvCkzmbQyGs8TGr/1M28YzaLi4LdwQFGH24A=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=VGosW2rs/EYJqX206hFqsFUIaq3gYBNN1MYzGGDuweM=;
+        b=cZZzfHZ1xLi6jZvJq3l3fBargO4auHk9zd4F5k+s2G0TWZ7tG3q3KKotis2D+9uwW4
+         5bAowKW0LUigr5fGIsS4uFAA0TP02rlErDFMYGcwuyMlEvI8COwOHiRcxbV6tdmU74M6
+         pQQYH0asKuXP1DNB5ky3Na8AJHxygFp5Uotpo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CmSxjVifvEvCqk0+9pO7z5s7Ge6oi3hKkOZK5hFSWaY=;
-        b=hP3At1fKx4ceA4lXgOCPSnWRx+tyUk8GpX0U47kwRfeqoRU7NlnA55wTXxuH/UAtSA
-         ilZW3KrFgHzNbhQyBx78lsnXO9+ZvE/0ZfNX3RWyaANuwACbfk7rzulAnLvSXYJCa1IG
-         LbQeb7/fMFIQ8sXZJT7ZWqZHuUpSD3yX3zfvbNybPzr5f7jvhi6D84QwLe949AfXT8E2
-         CuLdS7ADtTrNN7h5BCZeUyDFdObP+xBH/wItQzevxi688qhaDsAcun5qlgwa6eDQWiBx
-         MB1ubWvEUIU+piENxiLeTJrpzLIj7zo8f56BRJyYEgwbWFCBgJMdUDTNtJXedeCcmKZa
-         a01g==
-X-Gm-Message-State: AOAM5332N0UJO1cy1ym2txbt39phOJPK1MEIUUcqvzHFGjTuuhYXie6K
-        dUkZGqLCWM2KDlIK9Jzj4VaE5A==
-X-Google-Smtp-Source: ABdhPJwoZ9MJ9mzv9yFsoY9HMcrNs70l8450M7S+Sm3N1iyk6cCgVPMpRYCShxwgBwdfEoJcwVikWQ==
-X-Received: by 2002:a63:31cc:: with SMTP id x195mr792039pgx.99.1624473689165;
-        Wed, 23 Jun 2021 11:41:29 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VGosW2rs/EYJqX206hFqsFUIaq3gYBNN1MYzGGDuweM=;
+        b=ausbXGsFQGXG+d7Y/au5HRe59fhk1GPOtZmQHvbqxFXW2XPaN7B5pBn891O6ubAX+R
+         jgpx0m5JNMdWJYRi9b5+Ujdcr0OS5sfYxhVqjaLPcPUa0PA264g7FViVVDwtCuO6/blE
+         g4Sm7f2OwujRhiW0eZRPGI0Wd0kxz+FECQEOCrAPfkn5R59T98NNU41WK4p5yAidO5O3
+         +TnjcnpODlXO5YGaZHIRozbYfjf8UaZx3sjHVVCSdCTLP/8KVtU1M/IC4NWAE7Zzu3cY
+         Hoy04iwowYKKJ5NR88NAsbjnsSGOGxctDxeEgTle/bhdwNurTp8huMKhN40YTnkw+/QS
+         YoxA==
+X-Gm-Message-State: AOAM532y4+l7lj66adP4X5HChzzauM/R0WdC3XyD5Qur4YIgvzHK5kdp
+        yx2ogqqoZLWpPcWBjKOG73RgMg==
+X-Google-Smtp-Source: ABdhPJzI1Dv+BsMm+DAAlHpJN160SV9S+rOgzZripmsdD+vEnHbxJgnuqlht17w0Mh64R19/AsCtHA==
+X-Received: by 2002:a17:902:c412:b029:127:958e:79c3 with SMTP id k18-20020a170902c412b0290127958e79c3mr735086plk.27.1624473691648;
+        Wed, 23 Jun 2021 11:41:31 -0700 (PDT)
 Received: from localhost ([2620:15c:202:201:d440:232:5e25:41f4])
-        by smtp.gmail.com with UTF8SMTPSA id v13sm978597pja.44.2021.06.23.11.41.26
+        by smtp.gmail.com with UTF8SMTPSA id h11sm512363pgq.68.2021.06.23.11.41.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 11:41:28 -0700 (PDT)
+        Wed, 23 Jun 2021 11:41:31 -0700 (PDT)
 From:   Matthias Kaehlcke <mka@chromium.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Alan Stern <stern@rowland.harvard.edu>,
@@ -62,134 +62,153 @@ Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
         Douglas Anderson <dianders@chromium.org>,
         Ravi Chandra Sadineni <ravisadineni@chromium.org>,
         Matthias Kaehlcke <mka@chromium.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Andy Gross <agross@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Michael Walle <michael@walle.cc>, Nishanth Menon <nm@ti.com>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org
-Subject: [PATCH v13 0/7] usb: misc: Add onboard_usb_hub driver
-Date:   Wed, 23 Jun 2021 11:41:16 -0700
-Message-Id: <20210623184124.3504047-1-mka@chromium.org>
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v13 1/7] dt-bindings: usb: Add binding for Realtek RTS5411 hub controller
+Date:   Wed, 23 Jun 2021 11:41:17 -0700
+Message-Id: <20210623114025.v13.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
+In-Reply-To: <20210623184124.3504047-1-mka@chromium.org>
+References: <20210623184124.3504047-1-mka@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds:
-- the onboard_usb_hub_driver
-- glue in the xhci-plat driver to create and destroy the
-  onboard_usb_hub platform devices if needed
-- a device tree binding for the Realtek RTS5411 USB hub controller
-- device tree changes that add RTS5411 entries for the QCA SC7180
-  based boards trogdor and lazor
-- a couple of stubs for platform device functions to avoid
-  unresolved symbols with certain kernel configs
+The Realtek RTS5411 is a USB 3.0 hub controller with 4 ports.
 
-The main issue the driver addresses is that a USB hub needs to be
-powered before it can be discovered. For discrete onboard hubs (an
-example for such a hub is the Realtek RTS5411) this is often solved
-by supplying the hub with an 'always-on' regulator, which is kind
-of a hack. Some onboard hubs may require further initialization
-steps, like changing the state of a GPIO or enabling a clock, which
-requires even more hacks. This driver creates a platform device
-representing the hub which performs the necessary initialization.
-Currently it only supports switching on a single regulator, support
-for multiple regulators or other actions can be added as needed.
-Different initialization sequences can be supported based on the
-compatible string.
+This initial version of the binding only describes USB related
+aspects of the RTS5411, it does not cover the option of
+connecting the controller as an i2c slave.
 
-Besides performing the initialization the driver can be configured
-to power the hub off during system suspend. This can help to extend
-battery life on battery powered devices which have no requirements
-to keep the hub powered during suspend. The driver can also be
-configured to leave the hub powered when a wakeup capable USB device
-is connected when suspending, and power it off otherwise.
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
 
 Changes in v13:
-- added patch "usb: Specify dependency on USB_XHCI_PLATFORM with
-  'depends on'" to the series to avoid Kconfig conflicts
-- added patch "arm64: defconfig: Explicitly enable USB_XHCI_PLATFORM"
-  to the series to keep effective defconfig unchanged
+- none
 
 Changes in v12:
-- onboard_hub driver: use IS_ENABLED(CONFIG_USB_ONBOARD_HUB_MODULE)
-  in onboard_hub.h to also check for the driver built as module
-- onboard_hub_driver: include onboard_hub.h again to make sure there
-  are prototype declarations for the public functions
+- none
 
 Changes in v11:
-- support multiple onboard hubs connected to the same parent
-- don't include ‘onboard_hub.h’ from the onboard hub driver
+- none
 
 Changes in v10:
-- always use of_is_onboard_usb_hub() stub unless ONBOARD_USB_HUB=y/m
-- keep 'regulator-boot-on' property for pp3300_hub
+- none
 
 Changes in v9:
-- added dependency on ONBOARD_USB_HUB (or !!ONBOARD_USB_HUB) to
-  USB_PLATFORM_XHCI
+- added Rob's 'Reviewed-by' tag
+
+Changes in v8:
+- added entry for 'reg'
+- marked 'companion-hub' as required
+- changed node name of USB controller to 'usb'
 
 Changes in v7:
-- updated DT binding
-- series rebased on qcom/arm64-for-5.13
+- added type ref for 'companion-hub' property
 
 Changes in v6:
-- updated summary
+- Realtek binding instead of generic onboard_usb_hub
+- added 'companion-hub' property
+- added reference to 'usb-device.yaml'
+- 'fixed' indentation of compatible entries to keep yamllint happy
+- added 'additionalProperties' entry
+- updated commit message
 
 Changes in v5:
-- cover letter added
+- updated 'title'
+- only use standard USB compatible strings
+- deleted 'usb_hub' node
+- renamed 'usb_controller' node to 'usb-controller'
+- removed labels from USB nodes
+- added 'vdd-supply' to USB nodes
 
-Matthias Kaehlcke (7):
-  dt-bindings: usb: Add binding for Realtek RTS5411 hub controller
-  usb: misc: Add onboard_usb_hub driver
-  of/platform: Add stubs for of_platform_device_create/destroy()
-  arm64: defconfig: Explicitly enable USB_XHCI_PLATFORM
-  usb: Specify dependencies on USB_XHCI_PLATFORM with 'depends on'
-  usb: host: xhci-plat: Create platform device for onboard hubs in
-    probe()
-  arm64: dts: qcom: sc7180-trogdor: Add nodes for onboard USB hub
+Changes in v4:
+- none
 
- .../sysfs-bus-platform-onboard-usb-hub        |   8 +
- .../bindings/usb/realtek,rts5411.yaml         |  62 +++
- MAINTAINERS                                   |   7 +
- .../boot/dts/qcom/sc7180-trogdor-lazor-r0.dts |  19 +-
- .../boot/dts/qcom/sc7180-trogdor-lazor-r1.dts |  12 +-
- .../arm64/boot/dts/qcom/sc7180-trogdor-r1.dts |  19 +-
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  |  19 +-
- arch/arm64/configs/defconfig                  |   1 +
- drivers/usb/cdns3/Kconfig                     |   2 +-
- drivers/usb/dwc3/Kconfig                      |   3 +-
- drivers/usb/host/Kconfig                      |   5 +-
- drivers/usb/host/xhci-plat.c                  |   6 +
- drivers/usb/host/xhci.h                       |   2 +
- drivers/usb/misc/Kconfig                      |  17 +
- drivers/usb/misc/Makefile                     |   1 +
- drivers/usb/misc/onboard_usb_hub.c            | 497 ++++++++++++++++++
- include/linux/of_platform.h                   |  22 +-
- include/linux/usb/onboard_hub.h               |  18 +
- 18 files changed, 682 insertions(+), 38 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-hub
+Changes in v3:
+- updated commit message
+- removed recursive reference to $self
+- adjusted 'compatible' definition to support multiple entries
+- changed USB controller phandle to be a node
+
+Changes in v2:
+- removed 'wakeup-source' and 'power-off-in-suspend' properties
+- consistently use spaces for indentation in example
+
+ .../bindings/usb/realtek,rts5411.yaml         | 62 +++++++++++++++++++
+ 1 file changed, 62 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
- create mode 100644 drivers/usb/misc/onboard_usb_hub.c
- create mode 100644 include/linux/usb/onboard_hub.h
 
+diff --git a/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml b/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
+new file mode 100644
+index 000000000000..04ee255eb4f0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
+@@ -0,0 +1,62 @@
++# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/usb/realtek,rts5411.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Binding for the Realtek RTS5411 USB 3.0 hub controller
++
++maintainers:
++  - Matthias Kaehlcke <mka@chromium.org>
++
++allOf:
++  - $ref: usb-device.yaml#
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - usbbda,5411
++          - usbbda,411
++
++  reg: true
++
++  vdd-supply:
++    description:
++      phandle to the regulator that provides power to the hub.
++
++  companion-hub:
++    $ref: '/schemas/types.yaml#/definitions/phandle'
++    description:
++      phandle to the companion hub on the controller.
++
++required:
++  - companion-hub
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    usb {
++        dr_mode = "host";
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        /* 2.0 hub on port 1 */
++        hub_2_0: hub@1 {
++            compatible = "usbbda,5411";
++            reg = <1>;
++            vdd-supply = <&pp3300_hub>;
++            companion-hub = <&hub_3_0>;
++        };
++
++        /* 3.0 hub on port 2 */
++        hub_3_0: hub@2 {
++            compatible = "usbbda,411";
++            reg = <2>;
++            vdd-supply = <&pp3300_hub>;
++            companion-hub = <&hub_2_0>;
++        };
++    };
 -- 
 2.32.0.288.g62a8d224e6-goog
 
