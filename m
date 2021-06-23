@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEF33B1656
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308573B165D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhFWJAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 05:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40712 "EHLO
+        id S230044AbhFWJCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 05:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230157AbhFWJAG (ORCPT
+        with ESMTP id S229881AbhFWJCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 05:00:06 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC21C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 01:57:48 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id my49so2825856ejc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 01:57:47 -0700 (PDT)
+        Wed, 23 Jun 2021 05:02:19 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C706C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 02:00:02 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id i24so2402884edx.4
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 02:00:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=monstr-eu.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=Z6Z3rnoFwy3s+OnHi/sH1rvXTGduUYkOOkAbeaIPw4Q=;
-        b=tdK9uAJWdmT+cTqTX4ozHwlgRi7wW7OUcIGpx+5Br2fodFNa+MnfUQZVAzgz1DMfXp
-         n/6yy9sAzllko9mIwsv87gD1kCOH5+UvzuTO8Ov4YmQvbrKg9vhNxEnX9Bb3xpiNP2fH
-         k9Oyze3A8ShMVN/bVHL82sBkwKgirt++Dw9dhx7H9AShjZynKsDqAx3QjkNyy+S3seYa
-         O7aOzg7Mj0Cm2KxHYiHvi5dJSHR99JkBwPvAeetXr4PIjVliCzIaKYRVlGsyYaoAOytV
-         AXOwIKzGUy2+Qw0GsQqKp2vE+Hbxv9yib/h1U+C6vqKY5DAWNhTnHvHGn5ed0S9mxQ6J
-         iM2Q==
+        bh=FP9EsChXCfC6ERvq/VEROgpzH3E542Er7LriVewZlDk=;
+        b=ing6KloUgctO1neeEVoQc8Hzz8xmwpQNpZ//JACly27y5KT9cMPTveD95i1RTp1gp/
+         I+HE2N+Jtnn9K4yjZZ7UBZX5hyp+Q71+XeSlpeFuQeKLsD51QBObLNuejbmv3FBo4bnc
+         oNb71+HVe+3tVWsSylLHtllFwBaS0mdbzfkRkFgYLvCKx+pTIgY6GqkejrI9SKKFbSXK
+         8wrpFoHcR4pAnOuhc2/T1ODyBTbpeuxQboqsQZtO+qWZ+e2FA2GugxlWtvNEUgJ0iM8Z
+         015NX9+GIF/zt5SpdgVwWBE86MKRTFHCtsPDoDUpoPGkEKCqWLB5NC/dGsGgcvifzjxA
+         5LhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z6Z3rnoFwy3s+OnHi/sH1rvXTGduUYkOOkAbeaIPw4Q=;
-        b=AHs5tXp39nKifgzidfKTYRlRBr4/SzolQpYVBg1OCLTG/Q0cuXEIU9I9hocX+aVHrz
-         YGRGEkaOcktEOCYXcDU9VZKmeyErpxgLK9q/zPmXslfSH1aRsvJosBbQMNLkSD9Rsaki
-         E47BM/c7m8sP5kavG/Wq7ss8XytPZnCL3bKRqMUdSjG5gcYIWftb8QkcIg8pESsOKwkp
-         YSe0mrQDS4lDqP/DrrWMT+PL/OEuRuKgLsS3UIgVeiXVWjZdLmmF0H4OtFGuFsbkWJ6t
-         smEr3jKk37IVSJvrkKijDjdAXbgbsnEmQPDzO31CU6cWcXZ1x/R4A8dIGjonnbSUKgKe
-         xdjg==
-X-Gm-Message-State: AOAM533HXclQ8eu0L/STe04om+ZPWRclsgPSLhLQXONLCVOhq2hJ92oX
-        x8V75Omjq5P0cZkBmD/8lzFmgIt1IMHj4YdIXYDP0A==
-X-Google-Smtp-Source: ABdhPJwy+pM9oZ1iyRoxUOJy65b7IRacVpAEIpAEHz2ud7J2MhpMBy54g7b0sAw4obchFDygfdWC6jUFii9npycxr4w=
-X-Received: by 2002:a17:906:ca4a:: with SMTP id jx10mr8892678ejb.200.1624438666647;
- Wed, 23 Jun 2021 01:57:46 -0700 (PDT)
+        bh=FP9EsChXCfC6ERvq/VEROgpzH3E542Er7LriVewZlDk=;
+        b=Onv02bvwllfZxT3yT192kU8aGgmFEAa5+QfdXA1fggajKFTZ3am3psw5VGgEwn25EF
+         9qWMVxx06gX1X8ZYPXU2WzBzatgiD+hxkrpYpZie/QaFk847IADSZ4GZ+FO01rzRECh7
+         F67K2jnyETWrJSzqQxiP22M1kKYw61OU/gia2f5jsjba0E+3+QYfLoRdUJfJbJ2drVtf
+         QQFZ6jN3VZLUzlUGmRovFZtZORkoUBq5i3hlNzzEEDS7/pbwHjg5yeXdEjL+vrpC9B7m
+         8nWwf4ZihdUOA+S+RTqgPOHffBNE8NzUOteMrnFX//Hm/p72TAz8ly7fPfJ45BdRhtCN
+         ZhVw==
+X-Gm-Message-State: AOAM531COOz1hxNvY639f7yCkXHK3ilHDKVvhclszyTXtPHh9D+6hkPL
+        0HUldApPAKsE39BMpEEcWQfViUhDcbffgfdVVZOasg==
+X-Google-Smtp-Source: ABdhPJxKvaPk7aofu67kpiTg2LdEBMmh3ykWTcvt5e3BKRfcI4oOVJvqm0yfYA7i2RbesRb6/jBFkhu9bV1OmDXetzs=
+X-Received: by 2002:a05:6402:42cc:: with SMTP id i12mr6914846edc.88.1624438801003;
+ Wed, 23 Jun 2021 02:00:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200902150643.14839-1-krzk@kernel.org> <20200902150643.14839-2-krzk@kernel.org>
-In-Reply-To: <20200902150643.14839-2-krzk@kernel.org>
+References: <20200902150643.14839-1-krzk@kernel.org> <20200902150643.14839-4-krzk@kernel.org>
+In-Reply-To: <20200902150643.14839-4-krzk@kernel.org>
 From:   Michal Simek <monstr@monstr.eu>
-Date:   Wed, 23 Jun 2021 10:57:35 +0200
-Message-ID: <CAHTX3dK+M9eg+Xod9tYHiEXY_igjO6iocaO=e1Frqd1kzPKTrw@mail.gmail.com>
-Subject: Re: [PATCH 2/9] i2c: xiic: Simplify with dev_err_probe()
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Wolfram Sang <wsa@the-dreams.de>
+Date:   Wed, 23 Jun 2021 10:59:50 +0200
+Message-ID: <CAHTX3dLT5FoOZ0Hi9UArYCoxy4b69r6cHLiLPo25DGX2_1B-xA@mail.gmail.com>
+Subject: Re: [PATCH 4/9] i2c: cadence: Simplify with dev_err_probe()
+To:     Krzysztof Kozlowski <krzk@kernel.org>
 Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Ray Jui <rjui@broadcom.com>,
@@ -90,30 +89,30 @@ st 2. 9. 2020 v 17:10 odes=C3=ADlatel Krzysztof Kozlowski <krzk@kernel.org>=
 >
 > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > ---
->  drivers/i2c/busses/i2c-xiic.c | 9 ++++-----
+>  drivers/i2c/busses/i2c-cadence.c | 9 ++++-----
 >  1 file changed, 4 insertions(+), 5 deletions(-)
 >
-> diff --git a/drivers/i2c/busses/i2c-xiic.c b/drivers/i2c/busses/i2c-xiic.=
-c
-> index 90c1c362394d..a97438f35c5d 100644
-> --- a/drivers/i2c/busses/i2c-xiic.c
-> +++ b/drivers/i2c/busses/i2c-xiic.c
-> @@ -787,11 +787,10 @@ static int xiic_i2c_probe(struct platform_device *p=
-dev)
->         init_waitqueue_head(&i2c->wait);
+> diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-ca=
+dence.c
+> index e4b7f2a951ad..eefde554c50c 100644
+> --- a/drivers/i2c/busses/i2c-cadence.c
+> +++ b/drivers/i2c/busses/i2c-cadence.c
+> @@ -1214,11 +1214,10 @@ static int cdns_i2c_probe(struct platform_device =
+*pdev)
+>                  "Cadence I2C at %08lx", (unsigned long)r_mem->start);
 >
->         i2c->clk =3D devm_clk_get(&pdev->dev, NULL);
-> -       if (IS_ERR(i2c->clk)) {
-> -               if (PTR_ERR(i2c->clk) !=3D -EPROBE_DEFER)
+>         id->clk =3D devm_clk_get(&pdev->dev, NULL);
+> -       if (IS_ERR(id->clk)) {
+> -               if (PTR_ERR(id->clk) !=3D -EPROBE_DEFER)
 > -                       dev_err(&pdev->dev, "input clock not found.\n");
-> -               return PTR_ERR(i2c->clk);
+> -               return PTR_ERR(id->clk);
 > -       }
-> +       if (IS_ERR(i2c->clk))
-> +               return dev_err_probe(&pdev->dev, PTR_ERR(i2c->clk),
+> +       if (IS_ERR(id->clk))
+> +               return dev_err_probe(&pdev->dev, PTR_ERR(id->clk),
 > +                                    "input clock not found.\n");
 > +
->         ret =3D clk_prepare_enable(i2c->clk);
->         if (ret) {
+>         ret =3D clk_prepare_enable(id->clk);
+>         if (ret)
 >                 dev_err(&pdev->dev, "Unable to enable clock.\n");
 > --
 > 2.17.1
@@ -124,10 +123,9 @@ dev)
 > linux-arm-kernel@lists.infradead.org
 > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
-I see that this didn't go through.
-Acked-by: Michal Simek <michal.simek@xilinx.com>
+Also this one is pending but still possible to apply without any conflict.
 
-Wolfram: Can you please apply?
+Acked-by: Michal Simek <michal.simek@xilinx.com>
 
 Thanks,
 Michal
