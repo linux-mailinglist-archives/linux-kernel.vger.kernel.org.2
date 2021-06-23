@@ -2,95 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E253B1130
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 03:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D26F3B1140
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 03:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhFWBEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 21:04:25 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:50867 "EHLO ozlabs.org"
+        id S230107AbhFWBOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 21:14:41 -0400
+Received: from mga09.intel.com ([134.134.136.24]:63454 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229751AbhFWBEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 21:04:24 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8lNG2DLCz9sWQ;
-        Wed, 23 Jun 2021 11:02:06 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624410126;
-        bh=xrGd58hDoKV2wGMEzh1eY2NT4DixE0KaMw4Gwgdd4WA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bCVCHKzq4OgWgUE5CWN0NyMKVc9WvLHULBnNPLc4jBjWGgO4Y+jXXDdEXYG1DyqiB
-         OgWsBSCxMvdbSjyCkGD3/hMDqcScmpKCHH5qoJK8hwOrvhYuTJMALkGmKc9vfzW/Ns
-         5KFFADPtzS6hUAO2MAI4W9qgQjCYMzg+PeVKBUd3KBtAPr9+CqT4oPrCgBiR24z8ah
-         qnEKzohUY6FRKDv2VFftR1qzwt0l2QTKsaVzcY0gtACRFgeuc3K+ploCwMKUoOEV+x
-         KSV4V7i4ilDAHTCFEQcv9rx0F0JxXtGnDQD747lVq0bMWdGEFO6VPDbxHjMWaXDSJV
-         VdRKKzcUFksxg==
-Date:   Wed, 23 Jun 2021 11:02:05 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the drm-msm tree
-Message-ID: <20210623110205.05f98019@canb.auug.org.au>
-In-Reply-To: <20210618125019.4a339135@canb.auug.org.au>
-References: <20210618124203.14b57bef@canb.auug.org.au>
-        <20210618125019.4a339135@canb.auug.org.au>
+        id S229751AbhFWBOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 21:14:39 -0400
+IronPort-SDR: bQWZQOZF+/4bMzFSjNNaQez1fB5OlCuwMQLaAGmF3/uE/7zuGrzzR3Zv4eWHib3mgtaf+yQmJH
+ f5G+FvbHWxqA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="207110997"
+X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
+   d="scan'208";a="207110997"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 18:12:21 -0700
+IronPort-SDR: vtYkuSiAThcHiNIx9s9RAHtCiVp8T1TspE+VJeUrPcouWD6lcj/N9whvLroNmcT3YTz+CAgB9b
+ IlYrUC+cQ6CA==
+X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
+   d="scan'208";a="487115207"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 18:12:17 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        yang.shi@linux.alibaba.com, rientjes@google.com,
+        dan.j.williams@intel.com, david@redhat.com, weixugc@google.com,
+        Michal Hocko <mhocko@suse.com>, Yang Shi <shy828301@gmail.com>
+Subject: Re: [PATCH -V8 00/10] Migrate Pages in lieu of discard
+References: <20210618061537.434999-1-ying.huang@intel.com>
+        <20210622090033.GA11045@linux>
+Date:   Wed, 23 Jun 2021 09:12:14 +0800
+In-Reply-To: <20210622090033.GA11045@linux> (Oscar Salvador's message of "Tue,
+        22 Jun 2021 11:00:38 +0200")
+Message-ID: <87sg19jsep.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/C.B1ADPViDZUpY=D8KvjwoR";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/C.B1ADPViDZUpY=D8KvjwoR
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Oscar Salvador <osalvador@suse.de> writes:
 
-Hi all,
-
-On Fri, 18 Jun 2021 12:50:19 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+> On Fri, Jun 18, 2021 at 02:15:27PM +0800, Huang Ying wrote:
+>> The full series is also available here:
+>> 
+>> 	https://github.com/hying-caritas/linux/tree/automigrate-20210618
+>> 
+>> The changes since the last post are as follows,
+>> 
+>>  * Change the page allocation flags per Michal's comments.
+>>  * Change the user interface to enable the feature.
 >
-> [Adding maintainers]
->=20
-> On Fri, 18 Jun 2021 12:42:03 +1000 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > After merging the etnaviv tree, today's linux-next build (arm
-> > multi_v7_defconfig) failed like this:
-> >=20
-> > ERROR: modpost: "__aeabi_ldivmod" [drivers/gpu/drm/msm/msm.ko] undefine=
-d!
-> > ERROR: modpost: "__aeabi_uldivmod" [drivers/gpu/drm/msm/msm.ko] undefin=
-ed!
-> >=20
-> > I don't know which commit in the drm-msm tree caused the failure, but
-> > it is probably in the range 558d4272b60f..7e0230fd096c.
-> >=20
-> > I have used the drm-msm tree from next-20210617 for today. =20
+> Hi Huang Ying,
+>
+> I would suggest going back to [1] and revisit the feedback provided in v7,
+> as it seemed you ignored (probably not intentionally) some of the provided
+> comments.
 
-I am still seeing this (as of yesterday).
+Hi, Oscar,
 
---=20
-Cheers,
-Stephen Rothwell
+I am really sorry about that.  It's my fault forgetting reviewing all
+comments for v7.  All your comments are valuable for me, it's not my
+intention to ignore them.  I will be more careful in the future.  Thanks
+a lot for your reminding.
 
---Sig_/C.B1ADPViDZUpY=D8KvjwoR
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDSiA0ACgkQAVBC80lX
-0GxG6gf6A5NeMuSjYVLn2SI3R+Mk383wodUKqQuMzpxK0mY5OFNu3JiPAE+xG4cN
-HH3oCP/d4ZlkQVQgdw8Zn5Wrny48bmSV/6q0rKRqcqGW+9FT1sQHAdQ3+OmclMF2
-24htKqmbBaqOMJSdZ0WZ3oIE8mhy+R2pb2WZgP1OCnP1EuzqJnPHMNq6plHXWyGz
-VZRnLA7G7L0nhF6OhktJJfZLK19pSHiH482y88rcZ4WEB6SDnz4W4wjMx0rkUM9g
-QfwkVVmQaE9zrkZSulY+nQhDpTovyODnvVpB5JJyNG6ceMrMBk2K/VNBphHVz/cr
-hNQSc75NgxKLJ7AwgAUyEx3aqDU2Fw==
-=Q68V
------END PGP SIGNATURE-----
-
---Sig_/C.B1ADPViDZUpY=D8KvjwoR--
+Best Regards,
+Huang, Ying
