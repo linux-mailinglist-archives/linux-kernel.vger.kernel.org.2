@@ -2,56 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC173B1774
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B253B1767
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhFWKBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 06:01:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbhFWKBM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 06:01:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64842C061574;
-        Wed, 23 Jun 2021 02:58:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=iH0tpXt8GJfX+4f0kNFBqSwnldGbSut7DrbyCImiM24=; b=rSen0Ki9x6jRV2vUrFJwY10Bs6
-        h+RK02kZENkhklTfkRVFqZ5scaMyoZQJePFTC754jWSNjScqBbNf6V7FTt9FTv3CoS+5N05j3GP9t
-        6MxuPaxWb0BGXqG49m1Sj/JrwFgRrVgTEnybs9MmZmMw90mxP+33Y+hhxjXgxG8Y9BwtSPK8r+XoV
-        YlNPE3IMttoruC7jR+kCZQ648k8KJzBU+QqWxucyO0BosIojhfUyNSrYnO0MTNYSlqU+xz0Ol4FDC
-        NHcKEKti0NMTxeOO/o6BE2Nl1Fk5HJIGrhvRB03oX5XFJ6RhUPUIIF+QDcTndJf2k2HbW9t2FwNto
-        YipIJrDg==;
-Received: from [2001:4bb8:188:3e21:6594:49:139:2b3f] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvzdz-00FI2U-Lv; Wed, 23 Jun 2021 09:58:20 +0000
-Date:   Wed, 23 Jun 2021 11:58:02 +0200
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 41/46] mm/page_alloc: Add folio allocation functions
-Message-ID: <YNMFqhRS+GK2YK8h@infradead.org>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-42-willy@infradead.org>
+        id S230327AbhFWKBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 06:01:03 -0400
+Received: from www.zeus03.de ([194.117.254.33]:50502 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230102AbhFWKBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 06:01:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=k1; bh=w1QHaAQSPxAK8tA/vbz/Vy2Zy3h
+        bg3SP3Mj8bdNwTTw=; b=NORZkO1KLGIAh/nIL/L3WUnPh51JJhGyDxfEcwxL4iZ
+        uPxdVkYjDKqj779PkEErYsxlP8sa3FpA2pTmzJ6rUxxh14Mt1aTTAtPxP7wS7KNk
+        uck4KpOYPNp5Tj25hCVAFFryUFRqqf80o5VRtYWiGW5IrUCx63wnZZLkhrHpDsmo
+        =
+Received: (qmail 2551444 invoked from network); 23 Jun 2021 11:58:44 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 23 Jun 2021 11:58:44 +0200
+X-UD-Smtp-Session: l3s3148p1@UGiq82vFCKogARa4RfhaAavnjlTTqzSz
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-mmc@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: [PATCH 0/2] spi: use proper DMAENGINE API for termination
+Date:   Wed, 23 Jun 2021 11:58:41 +0200
+Message-Id: <20210623095843.3228-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622121551.3398730-42-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 01:15:46PM +0100, Matthew Wilcox (Oracle) wrote:
-> +static inline
-> +struct folio *__alloc_folio_node(gfp_t gfp, unsigned int order, int nid)
+dmaengine_terminate_all() is deprecated in favor of explicitly saying if
+it should be sync or async. Update the drivers I audited.
 
-Weirdo prototype formatting.
 
-Otherwise looks good (assuming we grow callers):
+Wolfram Sang (2):
+  spi: spi-rspi: : use proper DMAENGINE API for termination
+  spi: spi-sh-msiof: : use proper DMAENGINE API for termination
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+ drivers/spi/spi-rspi.c     | 6 +++---
+ drivers/spi/spi-sh-msiof.c | 4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+-- 
+2.30.2
+
