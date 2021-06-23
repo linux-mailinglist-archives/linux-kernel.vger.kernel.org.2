@@ -2,213 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FD13B2379
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A3C3B237E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhFWWR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 18:17:58 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:60830 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbhFWWRp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:17:45 -0400
-Received: from [10.0.0.178] (c-67-168-106-253.hsd1.wa.comcast.net [67.168.106.253])
-        by linux.microsoft.com (Postfix) with ESMTPSA id F296220B7188;
-        Wed, 23 Jun 2021 15:15:26 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F296220B7188
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1624486527;
-        bh=fcz0zmv3fb9TLhXJgjPYUIlkJMTZb0BSgbSLG1PJe/c=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=K/zy6V8tjn5/uf1v4mmYfqxhlY3QHJBwxGON+7R1mbtv2BoFN0Dno4newrA6ewY09
-         vhZBpeyipeDNpQPrzfkHW24O8R3Z9cflAZ3HHGx+UJb+NqVE4VwU5JCwo4BSQUwErM
-         uvmHUnYIvJgOW2BC/ocUtfEEaj7lfOgsj24ZaMgM=
-Subject: Re: [PATCH 02/19] asm-generic/hyperv: convert hyperv statuses to
- strings
-To:     Sunil Muthuswamy <sunilmut@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "viremana@linux.microsoft.com" <viremana@linux.microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        Lillian Grassin-Drake <Lillian.GrassinDrake@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>
-References: <1622241819-21155-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1622241819-21155-3-git-send-email-nunodasneves@linux.microsoft.com>
- <MW4PR21MB200490109062F93EDCBB3DE7C0359@MW4PR21MB2004.namprd21.prod.outlook.com>
-From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Message-ID: <0c8d9808-3bde-da95-a7fb-cd294b77b6f3@linux.microsoft.com>
-Date:   Wed, 23 Jun 2021 15:15:26 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229853AbhFWWTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 18:19:03 -0400
+Received: from mga18.intel.com ([134.134.136.126]:45531 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229688AbhFWWTB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 18:19:01 -0400
+IronPort-SDR: ET4x9hI7mfaAm2EiHfoPltY7fWHMmFZJl9t4jI0JPLp4r+Ho2y77cv/G0vVZBVg87lx/nHWe7g
+ 5yM2KMutqR1Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="194657904"
+X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
+   d="scan'208";a="194657904"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 15:16:43 -0700
+IronPort-SDR: HOwd+5ObPbk+XhFgaOP/qvRO8xp0WBxCnEEkowkx03KuZN1h8OAxroqP65zTOdbMkOBYs54ca2
+ tmXWaNjYOOOA==
+X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
+   d="scan'208";a="487507153"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 15:16:42 -0700
+From:   ira.weiny@intel.com
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Kamal Heib <kheib@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V3] RDMA/siw: Convert siw_tx_hdt() to kmap_local_page()
+Date:   Wed, 23 Jun 2021 15:15:44 -0700
+Message-Id: <20210623221543.2799198-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+In-Reply-To: <20210622203432.2715659-1-ira.weiny@intel.com>
+References: <20210622203432.2715659-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <MW4PR21MB200490109062F93EDCBB3DE7C0359@MW4PR21MB2004.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Ira Weiny <ira.weiny@intel.com>
 
+kmap() is being deprecated and will break uses of device dax after PKS
+protection is introduced.[1]
 
-On 6/10/2021 11:42 AM, Sunil Muthuswamy wrote:
-> 
-> 
->> -----Original Message-----
->> From: Nuno Das Neves <nunodasneves@linux.microsoft.com>
->> Sent: Friday, May 28, 2021 3:43 PM
->> To: linux-hyperv@vger.kernel.org; linux-kernel@vger.kernel.org
->> Cc: virtualization@lists.linux-foundation.org; Michael Kelley <mikelley@microsoft.com>; viremana@linux.microsoft.com; Sunil
->> Muthuswamy <sunilmut@microsoft.com>; wei.liu@kernel.org; vkuznets <vkuznets@redhat.com>; Lillian Grassin-Drake
->> <Lillian.GrassinDrake@microsoft.com>; KY Srinivasan <kys@microsoft.com>
->> Subject: [PATCH 02/19] asm-generic/hyperv: convert hyperv statuses to strings
->>
->> Allow hyperv hypercall failures to be debugged more easily with dmesg.
->> This will be used in the mshv module.
->>
->> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
->> ---
->>  arch/x86/hyperv/hv_init.c         |  2 +-
->>  arch/x86/hyperv/hv_proc.c         | 10 +++---
->>  include/asm-generic/hyperv-tlfs.h | 52 ++++++++++++++++++-------------
->>  include/asm-generic/mshyperv.h    |  8 +++++
->>  4 files changed, 44 insertions(+), 28 deletions(-)
->>
->> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
->> index bb0ae4b5c00f..722bafdb2225 100644
->> --- a/arch/x86/hyperv/hv_init.c
->> +++ b/arch/x86/hyperv/hv_init.c
->> @@ -349,7 +349,7 @@ static void __init hv_get_partition_id(void)
->>  	status = hv_do_hypercall(HVCALL_GET_PARTITION_ID, NULL, output_page);
->>  	if (!hv_result_success(status)) {
->>  		/* No point in proceeding if this failed */
->> -		pr_err("Failed to get partition ID: %lld\n", status);
->> +		pr_err("Failed to get partition ID: %s\n", hv_status_to_string(status));
->>  		BUG();
->>  	}
->>  	hv_current_partition_id = output_page->partition_id;
->> diff --git a/arch/x86/hyperv/hv_proc.c b/arch/x86/hyperv/hv_proc.c
->> index 59cf9a9e0975..30951e778577 100644
->> --- a/arch/x86/hyperv/hv_proc.c
->> +++ b/arch/x86/hyperv/hv_proc.c
->> @@ -117,7 +117,7 @@ int hv_call_deposit_pages(int node, u64 partition_id, u32 num_pages)
->>  				     page_count, 0, input_page, NULL);
->>  	local_irq_restore(flags);
->>  	if (!hv_result_success(status)) {
->> -		pr_err("Failed to deposit pages: %lld\n", status);
->> +		pr_err("Failed to deposit pages: %s\n", hv_status_to_string(status));
->>  		ret = hv_status_to_errno(status);
->>  		goto err_free_allocations;
->>  	}
->> @@ -172,8 +172,8 @@ int hv_call_add_logical_proc(int node, u32 lp_index, u32 apic_id)
->>
->>  		if (hv_result(status) != HV_STATUS_INSUFFICIENT_MEMORY) {
->>  			if (!hv_result_success(status)) {
->> -				pr_err("%s: cpu %u apic ID %u, %lld\n", __func__,
->> -				       lp_index, apic_id, status);
->> +				pr_err("%s: cpu %u apic ID %u, %s\n", __func__,
->> +				       lp_index, apic_id, hv_status_to_string(status));
->>  				ret = hv_status_to_errno(status);
->>  			}
->>  			break;
->> @@ -222,8 +222,8 @@ int hv_call_create_vp(int node, u64 partition_id, u32 vp_index, u32 flags)
->>
->>  		if (hv_result(status) != HV_STATUS_INSUFFICIENT_MEMORY) {
->>  			if (!hv_result_success(status)) {
->> -				pr_err("%s: vcpu %u, lp %u, %lld\n", __func__,
->> -				       vp_index, flags, status);
->> +				pr_err("%s: vcpu %u, lp %u, %s\n", __func__,
->> +				       vp_index, flags, hv_status_to_string(status));
->>  				ret = hv_status_to_errno(status);
->>  			}
->>  			break;
->> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
->> index fe6d41d0b114..40ff7cdd4a2b 100644
->> --- a/include/asm-generic/hyperv-tlfs.h
->> +++ b/include/asm-generic/hyperv-tlfs.h
->> @@ -189,28 +189,36 @@ enum HV_GENERIC_SET_FORMAT {
->>  #define HV_HYPERCALL_REP_START_MASK	GENMASK_ULL(59, 48)
->>
->>  /* hypercall status code */
->> -#define HV_STATUS_SUCCESS			0x0
->> -#define HV_STATUS_INVALID_HYPERCALL_CODE	0x2
->> -#define HV_STATUS_INVALID_HYPERCALL_INPUT	0x3
->> -#define HV_STATUS_INVALID_ALIGNMENT		0x4
->> -#define HV_STATUS_INVALID_PARAMETER		0x5
->> -#define HV_STATUS_ACCESS_DENIED			0x6
->> -#define HV_STATUS_INVALID_PARTITION_STATE	0x7
->> -#define HV_STATUS_OPERATION_DENIED		0x8
->> -#define HV_STATUS_UNKNOWN_PROPERTY		0x9
->> -#define HV_STATUS_PROPERTY_VALUE_OUT_OF_RANGE	0xA
->> -#define HV_STATUS_INSUFFICIENT_MEMORY		0xB
->> -#define HV_STATUS_INVALID_PARTITION_ID		0xD
->> -#define HV_STATUS_INVALID_VP_INDEX		0xE
->> -#define HV_STATUS_NOT_FOUND			0x10
->> -#define HV_STATUS_INVALID_PORT_ID		0x11
->> -#define HV_STATUS_INVALID_CONNECTION_ID		0x12
->> -#define HV_STATUS_INSUFFICIENT_BUFFERS		0x13
->> -#define HV_STATUS_NOT_ACKNOWLEDGED		0x14
->> -#define HV_STATUS_INVALID_VP_STATE		0x15
->> -#define HV_STATUS_NO_RESOURCES			0x1D
->> -#define HV_STATUS_INVALID_LP_INDEX		0x41
->> -#define HV_STATUS_INVALID_REGISTER_VALUE	0x50
->> +#define __HV_STATUS_DEF(OP) \
->> +	OP(HV_STATUS_SUCCESS,				0x0) \
->> +	OP(HV_STATUS_INVALID_HYPERCALL_CODE,		0x2) \
->> +	OP(HV_STATUS_INVALID_HYPERCALL_INPUT,		0x3) \
->> +	OP(HV_STATUS_INVALID_ALIGNMENT,			0x4) \
->> +	OP(HV_STATUS_INVALID_PARAMETER,			0x5) \
->> +	OP(HV_STATUS_ACCESS_DENIED,			0x6) \
->> +	OP(HV_STATUS_INVALID_PARTITION_STATE,		0x7) \
->> +	OP(HV_STATUS_OPERATION_DENIED,			0x8) \
->> +	OP(HV_STATUS_UNKNOWN_PROPERTY,			0x9) \
->> +	OP(HV_STATUS_PROPERTY_VALUE_OUT_OF_RANGE,	0xA) \
->> +	OP(HV_STATUS_INSUFFICIENT_MEMORY,		0xB) \
->> +	OP(HV_STATUS_INVALID_PARTITION_ID,		0xD) \
->> +	OP(HV_STATUS_INVALID_VP_INDEX,			0xE) \
->> +	OP(HV_STATUS_NOT_FOUND,				0x10) \
->> +	OP(HV_STATUS_INVALID_PORT_ID,			0x11) \
->> +	OP(HV_STATUS_INVALID_CONNECTION_ID,		0x12) \
->> +	OP(HV_STATUS_INSUFFICIENT_BUFFERS,		0x13) \
->> +	OP(HV_STATUS_NOT_ACKNOWLEDGED,			0x14) \
->> +	OP(HV_STATUS_INVALID_VP_STATE,			0x15) \
->> +	OP(HV_STATUS_NO_RESOURCES,			0x1D) \
->> +	OP(HV_STATUS_INVALID_LP_INDEX,			0x41) \
->> +	OP(HV_STATUS_INVALID_REGISTER_VALUE,		0x50)
->> +
->> +#define __HV_MAKE_HV_STATUS_ENUM(NAME, VAL) NAME = (VAL),
->> +#define __HV_MAKE_HV_STATUS_CASE(NAME, VAL) case (NAME): return (#NAME);
->> +
->> +enum hv_status {
->> +	__HV_STATUS_DEF(__HV_MAKE_HV_STATUS_ENUM)
->> +};
->>
->>  /*
->>   * The Hyper-V TimeRefCount register and the TSC
->> diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
->> index 9a000ba2bb75..21fb71ca1ba9 100644
->> --- a/include/asm-generic/mshyperv.h
->> +++ b/include/asm-generic/mshyperv.h
->> @@ -59,6 +59,14 @@ static inline unsigned int hv_repcomp(u64 status)
->>  			 HV_HYPERCALL_REP_COMP_OFFSET;
->>  }
->>
->> +static inline const char *hv_status_to_string(u64 hv_status)
->> +{
->> +	switch (hv_result(hv_status)) {
->> +	__HV_STATUS_DEF(__HV_MAKE_HV_STATUS_CASE)
->> +	default : return "Unknown";
->> +	}
->> +}
-> Wouldn't this be a big switch statement that will get duplicated all over the place
-> in the code because of the inline (and also the strings within)?
-> 
+The use of kmap() in siw_tx_hdt() is all thread local therefore
+kmap_local_page() is a sufficient replacement and will work with pgmap
+protected pages when those are implemented.
 
-I'm not totally sure. If so, I guess it should not be inline!
+siw_tx_hdt() tracks pages used in a page_array.  It uses that array to
+unmap pages which were mapped on function exit.  Not all entries in the
+array are mapped and this is tracked in kmap_mask.
 
-> - Sunil
-> 
+kunmap_local() takes a mapped address rather than a page.  Alter
+siw_unmap_pages() to take the iov array to reuse the iov_base address of
+each mapping.  Use PAGE_MASK to get the proper address for
+kunmap_local().
+
+kmap_local_page() mappings are tracked in a stack and must be unmapped
+in the opposite order they were mapped in.  Because segments are mapped
+into the page array in increasing index order, modify siw_unmap_pages()
+to unmap pages in decreasing order.
+
+Use kmap_local_page() instead of kmap() to map pages in the page_array.
+
+[1] https://lore.kernel.org/lkml/20201009195033.3208459-59-ira.weiny@intel.com/
+
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
+---
+Jason, I went ahead and left this a separate patch.  Let me know if you really
+want this and the other siw squashed.
+
+Changes for V3:
+	From Bernard
+		Use 'p' in kmap_local_page()
+		Use seg as length to siw_unmap_pages()
+
+Changes for V2:
+	From Bernard
+		Reuse iov[].iov_base rather than declaring another array
+		of pointers and preserve the use of kmap_mask to know
+		which iov's were kmapped.
+---
+ drivers/infiniband/sw/siw/siw_qp_tx.c | 30 +++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
+index db68a10d12cd..89a5b75f7254 100644
+--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
++++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+@@ -396,13 +396,20 @@ static int siw_0copy_tx(struct socket *s, struct page **page,
+ 
+ #define MAX_TRAILER (MPA_CRC_SIZE + 4)
+ 
+-static void siw_unmap_pages(struct page **pp, unsigned long kmap_mask)
++static void siw_unmap_pages(struct kvec *iov, unsigned long kmap_mask, int len)
+ {
+-	while (kmap_mask) {
+-		if (kmap_mask & BIT(0))
+-			kunmap(*pp);
+-		pp++;
+-		kmap_mask >>= 1;
++	int i;
++
++	/*
++	 * Work backwards through the array to honor the kmap_local_page()
++	 * ordering requirements.
++	 */
++	for (i = (len-1); i >= 0; i--) {
++		if (kmap_mask & BIT(i)) {
++			unsigned long addr = (unsigned long)iov[i].iov_base;
++
++			kunmap_local((void *)(addr & PAGE_MASK));
++		}
+ 	}
+ }
+ 
+@@ -498,7 +505,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 					p = siw_get_upage(mem->umem,
+ 							  sge->laddr + sge_off);
+ 				if (unlikely(!p)) {
+-					siw_unmap_pages(page_array, kmap_mask);
++					siw_unmap_pages(iov, kmap_mask, seg);
+ 					wqe->processed -= c_tx->bytes_unsent;
+ 					rv = -EFAULT;
+ 					goto done_crc;
+@@ -506,11 +513,12 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 				page_array[seg] = p;
+ 
+ 				if (!c_tx->use_sendpage) {
+-					iov[seg].iov_base = kmap(p) + fp_off;
+-					iov[seg].iov_len = plen;
++					void *kaddr = kmap_local_page(p);
+ 
+ 					/* Remember for later kunmap() */
+ 					kmap_mask |= BIT(seg);
++					iov[seg].iov_base = kaddr + fp_off;
++					iov[seg].iov_len = plen;
+ 
+ 					if (do_crc)
+ 						crypto_shash_update(
+@@ -542,7 +550,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 
+ 			if (++seg > (int)MAX_ARRAY) {
+ 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
+-				siw_unmap_pages(page_array, kmap_mask);
++				siw_unmap_pages(iov, kmap_mask, seg-1);
+ 				wqe->processed -= c_tx->bytes_unsent;
+ 				rv = -EMSGSIZE;
+ 				goto done_crc;
+@@ -593,7 +601,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 	} else {
+ 		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
+ 				    hdr_len + data_len + trl_len);
+-		siw_unmap_pages(page_array, kmap_mask);
++		siw_unmap_pages(iov, kmap_mask, seg+1);
+ 	}
+ 	if (rv < (int)hdr_len) {
+ 		/* Not even complete hdr pushed or negative rv */
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
+
