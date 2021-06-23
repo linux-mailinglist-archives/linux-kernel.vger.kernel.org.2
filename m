@@ -2,180 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F0E3B1B67
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 191353B1B63
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbhFWNpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:45:30 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:42930 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230464AbhFWNp1 (ORCPT
+        id S231126AbhFWNp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:45:26 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:49370 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230430AbhFWNpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:45:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624455790; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=wV+nd+kMY0rKltOol5zVxgEq9lFFAYRlvZph3teCol0=;
- b=VmJUOswb3L0JDtGVqyMdUFWX0ygBl9APUacBYlU4MbHwda/TwvPiJyT3JdFEaAwKTWxZGpeo
- R/6Id8iAnkPtKlInO/yWRiRdQlTkEc1X1B2TAjm4KWsP2hFUgMwUB0qd2AAu7Rrbsvc3dAWf
- yeFJu5mAEdAF8QXVn32D3IHU5os=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60d33a67ec0b18a745f1b037 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Jun 2021 13:43:03
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AE96EC4360C; Wed, 23 Jun 2021 13:43:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 763E6C433F1;
-        Wed, 23 Jun 2021 13:43:01 +0000 (UTC)
+        Wed, 23 Jun 2021 09:45:25 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-263-si2JVMyPPtOU_tjpJ7Q3cw-1; Wed, 23 Jun 2021 14:43:05 +0100
+X-MC-Unique: si2JVMyPPtOU_tjpJ7Q3cw-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 23 Jun
+ 2021 14:43:04 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Wed, 23 Jun 2021 14:43:04 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Guillaume Tucker' <guillaume.tucker@collabora.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>
+CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2] selftests/lkdtm: Use /bin/sh not $SHELL
+Thread-Topic: [PATCH v2] selftests/lkdtm: Use /bin/sh not $SHELL
+Thread-Index: AQHXaCznpjkpNTpwjEW+kA8o/GdKZashmKhg
+Date:   Wed, 23 Jun 2021 13:43:04 +0000
+Message-ID: <42f26361db6f481e980ac349bf0079ef@AcuMS.aculab.com>
+References: <20210619025834.2505201-1-keescook@chromium.org>
+ <e958209b-8621-57ca-01d6-2e76b05dab4c@collabora.com>
+In-Reply-To: <e958209b-8621-57ca-01d6-2e76b05dab4c@collabora.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 23 Jun 2021 19:13:01 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Thierry Reding <treding@nvidia.com>,
-        linux-arm-msm@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv2 1/3] iommu/io-pgtable: Add a quirk to use
- tlb_flush_all() for partial walk flush
-In-Reply-To: <015e1274-d28e-f5e3-7f96-b79cf3d56a8e@arm.com>
-References: <cover.1623981933.git.saiprakash.ranjan@codeaurora.org>
- <b099af10926b34249f4a30262db37f50491bebe7.1623981933.git.saiprakash.ranjan@codeaurora.org>
- <904f283c-f8b1-ba84-d010-eacc87bb53c5@arm.com>
- <a110e58e36af207be2bed04d1331832a@codeaurora.org>
- <2b093b93-7fab-be35-59d8-4463c199719a@arm.com>
- <c0329da89bee9b51b88d907875608877@codeaurora.org>
- <015e1274-d28e-f5e3-7f96-b79cf3d56a8e@arm.com>
-Message-ID: <7f2d853b9d6cf5b4781810ce86dc8ceb@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
+RnJvbTogR3VpbGxhdW1lIFR1Y2tlcg0KPiBTZW50OiAyMyBKdW5lIDIwMjEgMTM6NDANCi4uLg0K
+PiA+IGRpZmYgLS1naXQgYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9sa2R0bS9ydW4uc2ggYi90
+b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9sa2R0bS9ydW4uc2gNCj4gPiBpbmRleCBiYjdhMTc3NTMw
+N2IuLjBmOWYyMmFjMDA0YiAxMDA3NTUNCj4gPiAtLS0gYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0
+cy9sa2R0bS9ydW4uc2gNCj4gPiArKysgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9sa2R0bS9y
+dW4uc2gNCj4gPiBAQCAtNzgsOCArNzgsOSBAQCBkbWVzZyA+ICIkRE1FU0ciDQo+ID4NCj4gPiAg
+IyBNb3N0IHNoZWxscyB5ZWxsIGFib3V0IHNpZ25hbHMgYW5kIHdlJ3JlIGV4cGVjdGluZyB0aGUg
+ImNhdCIgcHJvY2Vzcw0KPiA+ICAjIHRvIHVzdWFsbHkgYmUga2lsbGVkIGJ5IHRoZSBrZXJuZWwu
+IFNvIHdlIGhhdmUgdG8gcnVuIGl0IGluIGEgc3ViLXNoZWxsDQo+ID4gLSMgYW5kIHNpbGVuY2Ug
+ZXJyb3JzLg0KPiA+IC0oJFNIRUxMIC1jICdjYXQgPChlY2hvICciJHRlc3QiJykgPiciJFRSSUdH
+RVIiIDI+L2Rldi9udWxsKSB8fCB0cnVlDQo+ID4gKyMgdG8gYXZvaWQgdGVybWluYXRpbmcgdGhp
+cyBzY3JpcHQuIExlYXZlIHN0ZGVyciBhbG9uZSwganVzdCBpbiBjYXNlDQo+ID4gKyMgc29tZXRo
+aW5nIF9lbHNlXyBoYXBwZW5zLg0KPiA+ICsoL2Jpbi9zaCAtYyAnKGVjaG8gJyIkdGVzdCInKSB8
+IGNhdCA+JyIkVFJJR0dFUiIpIHx8IHRydWUNCg0KSSB3YXMgaGF2aW5nIHRyb3VibGUgcGFyc2lu
+ZyB0aGF0IGNvbW1hbmQgLSBhbmQgSSdtIGdvb2QNCmF0IHNoZWxsIHNjcmlwdHMuDQpJIHRoaW5r
+IHRoZSBleHRyYSBzdWJzaGVsbCB0aGUgJ2VjaG8nIGlzIGluIGRvZXNuJ3QgaGVscC4NCkluIGZh
+Y3QsIGlzIGVpdGhlciBzdWJzaGVsbCBuZWVkZWQ/DQpTdXJlbHk6DQovYmluL3NoIC1jICJlY2hv
+ICckdGVzdCcgfCBjYXQgPiR0cmlnZ2VyIiB8fCB0cnVlDQp3aWxsIHdvcmsganVzdCBhcyB3ZWxs
+Pw0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJv
+YWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24g
+Tm86IDEzOTczODYgKFdhbGVzKQ0K
 
-On 2021-06-23 00:07, Robin Murphy wrote:
-> On 2021-06-22 15:27, Sai Prakash Ranjan wrote:
->> Hi Robin,
->> 
->> On 2021-06-22 17:41, Robin Murphy wrote:
->>> On 2021-06-22 08:11, Sai Prakash Ranjan wrote:
->>>> Hi Robin,
->>>> 
->>>> On 2021-06-21 21:15, Robin Murphy wrote:
->>>>> On 2021-06-18 03:51, Sai Prakash Ranjan wrote:
->>>>>> Add a quirk IO_PGTABLE_QUIRK_TLB_INV_ALL to invalidate entire 
->>>>>> context
->>>>>> with tlb_flush_all() callback in partial walk flush to improve 
->>>>>> unmap
->>>>>> performance on select few platforms where the cost of 
->>>>>> over-invalidation
->>>>>> is less than the unmap latency.
->>>>> 
->>>>> I still think this doesn't belong anywhere near io-pgtable at all.
->>>>> It's a driver-internal decision how exactly it implements a 
->>>>> non-leaf
->>>>> invalidation, and that may be more complex than a predetermined
->>>>> boolean decision. For example, I've just realised for SMMUv3 we 
->>>>> can't
->>>>> invalidate multiple levels of table at once with a range command,
->>>>> since if we assume the whole thing is mapped at worst-case page
->>>>> granularity we may fail to invalidate any parts which are mapped as
->>>>> intermediate-level blocks. If invalidating a 1GB region (with 4KB
->>>>> granule) means having to fall back to 256K non-range commands, we 
->>>>> may
->>>>> not want to invalidate by VA then, even though doing so for a 2MB
->>>>> region is still optimal.
->>>>> 
->>>>> It's also quite feasible that drivers might want to do this for 
->>>>> leaf
->>>>> invalidations too - if you don't like issuing 512 commands to
->>>>> invalidate 2MB, do you like issuing 511 commands to invalidate 
->>>>> 2044KB?
->>>>> - and at that point the logic really has to be in the driver 
->>>>> anyway.
->>>>> 
->>>> 
->>>> Ok I will move this to tlb_flush_walk() functions in the drivers. In 
->>>> the previous
->>>> v1 thread, you suggested to make the choice in 
->>>> iommu_get_dma_strict() test,
->>>> I assume you meant the test in iommu_dma_init_domain() with a flag 
->>>> or was it
->>>> the leaf driver(ex:arm-smmu.c) test of iommu_get_dma_strict() in 
->>>> init_domain?
->>> 
->>> Yes, I meant literally inside the same condition where we currently
->>> set "pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;" in
->>> arm_smmu_init_domain_context().
->>> 
->> 
->> Ok got it, thanks.
->> 
->>>> I am still a bit confused on where this flag would be? Should this 
->>>> be a part
->>>> of struct iommu_domain?
->>> 
->>> Well, if you were to rewrite the config with an alternative set of
->>> flush_ops at that point it would be implicit. For a flag, probably
->>> either in arm_smmu_domain or arm_smmu_impl. Maybe a flag would be 
->>> less
->>> useful than generalising straight to a "maximum number of by-VA
->>> invalidations it's worth sending individually" threshold value?
->> 
->> But then we would still need some flag to make this implementation
->> specific (qcom specific for now) and this threshold would just be
->> another condition although it would have been useful if this was
->> generic enough.
-> 
-> Well, for that approach I assume we could do something like
-> special-case 0, or if it's a mutable per-domain value maybe just
-> initialise it to SIZE_MAX or whatever such that it would never be
-> reached in practice. Whichever way, it was meant to be implied that
-> anything at the domain level would still be subject to final
-> adjustment by the init_context hook.
-> 
-
-Ok that should work, so I went ahead with another set of flush_ops
-and posted out v3.
-
-Thanks,
-Sai
-
-> 
->>> It's clear to me what overall shape and separation of responsibility 
->>> is
->>> most logical, but beyond that I don't have a particularly strong
->>> opinion on the exact implementation; I've just been chucking ideas
->>> around :)
->>> 
->> 
->> Your ideas are very informative and useful :)
->> 
->> Thanks,
->> Sai
->> 
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
