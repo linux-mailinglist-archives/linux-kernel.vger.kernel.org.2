@@ -2,66 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7EC3B1EB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8168B3B1EB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhFWQbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 12:31:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229902AbhFWQbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 12:31:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E93E61350;
-        Wed, 23 Jun 2021 16:28:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624465738;
-        bh=r4YKzhDT6S2mPQ+5hEgonlfzwke4UWS0t2mdsGa79Z0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=hvrz4kEnLMO5yMkyHPwHybg5xWpfz1pNbjnMT3nYTYJuCNlhrzhaUfK/sNNTvmV1O
-         ascsKkgcZhX461cs95MeHbs9XBCxtSoQ+Vx5kyDEBz9XSRDkkj7cMQpZv8n+Qid6FP
-         KZdz4tZ37QYvRchwIzVv+wRWWT8+0HLCUw7pBrpgjDepr37zeBqGj7l9YvodukiOuc
-         2npyZ+Mw3JwJOLwx27Xy4NaXdVuYQUPjqgTYadQVwVauQZokCKM+VYzH7k38hnJAfS
-         j6owaysPKExWNvvTDKE7QaJyOoWcaknHR0knJU+B/NWtJAghMzGCWLSMnpc0xwRGZZ
-         qOsut+EyUBRjg==
-Subject: Re: [PATCH 2/2] ACPI: bgrt: Use sysfs_emit
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        clang-built-linux@googlegroups.com
-References: <20210623013802.1904951-1-nathan@kernel.org>
- <20210623013802.1904951-2-nathan@kernel.org>
- <202106222250.7BD80A12FF@keescook>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <a155e3ee-69aa-408d-208b-06144cf6cf8f@kernel.org>
-Date:   Wed, 23 Jun 2021 09:28:55 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229926AbhFWQdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 12:33:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38514 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFWQdx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 12:33:53 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624465895;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vum7XhG4Y/D6N0CnClS6m9YiPMuQUmjUuLSjPUe4UiU=;
+        b=18q/s0XeWySvRpSD4BYDKY2u8rjH27TrHKNHyCwaERbA2eDl9yPULzJTIeXzLbaQmRLGZk
+        A1UqKD9EFVmq/Rx4yrsFNWA9lQRff0+LFrI4+CckZPhxIhXM+Wb2Nd2qunWK85gdr2Y3Gm
+        Ri8qKu2H2ghtfoKx2sNlarTy8J1QWVJZfOmEK2u36npqCbC+7UWmWPzqW3rPE8gtW3Tx9x
+        WbBmLcZsOR/onwmu77lsVzZgSueBq922cO3XZUJqPoEBvm/v8ZsUa5+QAL4e1R8IzZpkSG
+        4EAprE5Fuj7Z/Z8D2qrnNrM3kWbsxQyhiKQlPVk6Y3RHF4LJnHS3K6CfR5d/Uw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624465895;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vum7XhG4Y/D6N0CnClS6m9YiPMuQUmjUuLSjPUe4UiU=;
+        b=cCSiRfYI4Pn9pQ/AytopE5opHmoRRL5BB7oRhn6jszRJQsvy4Y1D155HtVPYk9E/leEBw4
+        0p9D1eDFTEb0iRAw==
+To:     "Tian\, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Dey\, Megha" <megha.dey@intel.com>,
+        "Raj\, Ashok" <ashok.raj@intel.com>,
+        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Jiang\, Dave" <dave.jiang@intel.com>,
+        "Liu\, Yi L" <yi.l.liu@intel.com>,
+        "Lu\, Baolu" <baolu.lu@intel.com>,
+        "Williams\, Dan J" <dan.j.williams@intel.com>,
+        "Luck\, Tony" <tony.luck@intel.com>,
+        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, KVM <kvm@vger.kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Subject: RE: Virtualizing MSI-X on IMS via VFIO
+In-Reply-To: <MWHPR11MB1886811339F7873A8E34549A8C089@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <20210622131217.76b28f6f.alex.williamson@redhat.com> <87o8bxcuxv.ffs@nanos.tec.linutronix.de> <MWHPR11MB1886811339F7873A8E34549A8C089@MWHPR11MB1886.namprd11.prod.outlook.com>
+Date:   Wed, 23 Jun 2021 18:31:34 +0200
+Message-ID: <87bl7wczkp.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <202106222250.7BD80A12FF@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/2021 10:51 PM, Kees Cook wrote:
-> On Tue, Jun 22, 2021 at 06:38:02PM -0700, Nathan Chancellor wrote:
->> sysfs_emit is preferred to snprintf for emitting values after
->> commit 2efc459d06f1 ("sysfs: Add sysfs_emit and sysfs_emit_at to format
->> sysfs output").
->>
->> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> 
-> Perhaps just squash this into patch 1? Looks good otherwise!
-> 
+On Wed, Jun 23 2021 at 06:12, Kevin Tian wrote:
+>> From: Thomas Gleixner <tglx@linutronix.de>
+>> So the only downside today of allocating more MSI-X vectors than
+>> necessary is memory consumption for the irq descriptors.
+>
+> Curious about irte entry when IRQ remapping is enabled. Is it also
+> allocated at request_irq()?
 
-I thought about it but sysfs_emit is a relatively new API and the 
-previous change may want to be backported but I do not have a strong 
-opinion so I can squash it if Rafael or Len feel strongly :)
+Good question. No, it has to be allocated right away. We stick the
+shutdown vector into the IRTE and then request_irq() will update it with
+the real one.
 
-Thanks for taking a look, cheers!
-Nathan
+> So the correct flow is like below:
+>
+>     guest::enable_msix()
+>       trapped_by_host()
+>         pci_alloc_irq_vectors(); // for all possible vMSI-X entries
+>           pci_enable_msix();      
+>
+>     guest::unmask()
+>       trapped_by_host()
+>         request_irqs();
+>
+> the first trap calls a new VFIO ioctl e.g. VFIO_DEVICE_ALLOC_IRQS.
+>
+> the 2nd trap can reuse existing VFIO_DEVICE_SET_IRQS which just
+> does request_irq() if specified irqs have been allocated.
+>
+> Then map ims to this flow:
+>
+>     guest::enable_msix()
+>       trapped_by_host()
+>         msi_domain_alloc_irqs(); // for all possible vMSI-X entries
+>         for_all_allocated_irqs(i)
+>           pci_update_msi_desc_id(i, default_pasid); // a new helper func
+>
+>     guest::unmask(entry#0) 
+>       trapped_by_host()
+>         request_irqs();
+>           ims_array_irq_startup(); // write msi_desc.id (default_pasid) to ims entry
+>
+>     guest::set_msix_perm(entry#1, guest_sva_pasid)
+>       trapped_by_host()
+>         pci_update_msi_desc_id(1, host_sva_pasid);
+>
+>     guest::unmask(entry#1)
+>       trapped_by_host()
+>         request_irqs();
+>           ims_array_irq_startup(); // write msi_desc.id (host_sva_pasid) to ims entry
+
+That's one way to do that, but that still has the same problem that the
+request_irq() in the guest succeeds even if the host side fails.
+
+As this is really new stuff there is no real good reason to force that
+into the existing VFIO/MSIX stuff with all it's known downsides and
+limitations.
+
+The point is, that IMS can just add another interrupt to a device on the
+fly without doing any of the PCI/MSIX nasties. So why not take advantage
+of that?
+
+I can see the point of using PCI to expose the device to the guest
+because it's trivial to enumerate, but contrary to VF devices there is
+no legacy and the mechanism how to setup the device interrupts can be
+completely different from PCI/MSIX.
+
+Exposing some trappable "IMS" storage in a separate PCI bar won't cut it
+because this still has the same problem that the allocation or
+request_irq() on the host can fail w/o feedback.
+
+So IMO creating a proper paravirt interface is the right approach.  It
+avoids _all_ of the trouble and will be necessary anyway once you want
+to support devices which store the message/pasid in system memory and
+not in on-device memory.
+
+Thanks,
+
+        tglx
+
+
+
+
