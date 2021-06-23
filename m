@@ -2,135 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FDCA3B2087
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F1C3B208F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhFWSrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 14:47:01 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:40932 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229523AbhFWSrA (ORCPT
+        id S230018AbhFWSrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 14:47:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230006AbhFWSrf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 14:47:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1624473882; x=1656009882;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=N07wTNJU87j8J0GwX4jxR069BiU3mP0B1FK82hyEXsU=;
-  b=tY8226zhhKnXNPU9rX3v+Qz+lpCfzG0jhsIEWrTpx/TST7X0tgEf4JgD
-   2Y65V4YOehsiJf6flFqbR62zZsZj1Fr0VeDsZ0dICzu+iEBowFahrbO1N
-   M+Lk8k1v/CZYWkPQ3v2k4YcFQh8UvSkuxoUrK8gIPb4Nh2AeXXZFycKKY
-   U=;
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 23 Jun 2021 11:44:42 -0700
-X-QCInternal: smtphost
-Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
-  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 23 Jun 2021 11:44:41 -0700
-Received: from [10.38.240.33] (10.80.80.8) by nasanexm03e.na.qualcomm.com
- (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 23 Jun
- 2021 11:44:35 -0700
-Subject: Re: [PATCH v14 06/12] swiotlb: Use is_swiotlb_force_bounce for
- swiotlb data bouncing
-To:     Will Deacon <will@kernel.org>
-CC:     Claire Chang <tientzu@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, <mpe@ellerman.id.au>,
-        Joerg Roedel <joro@8bytes.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        <boris.ostrovsky@oracle.com>, <jgross@suse.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        <heikki.krogerus@linux.intel.com>,
-        <thomas.hellstrom@linux.intel.com>, <peterz@infradead.org>,
-        <benh@kernel.crashing.org>, <joonas.lahtinen@linux.intel.com>,
-        <dri-devel@lists.freedesktop.org>, <chris@chris-wilson.co.uk>,
-        <grant.likely@arm.com>, <paulus@samba.org>, <mingo@kernel.org>,
-        <jxgao@google.com>, <sstabellini@kernel.org>,
-        Saravana Kannan <saravanak@google.com>, <xypron.glpk@gmx.de>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        <bskeggs@redhat.com>, <linux-pci@vger.kernel.org>,
-        <xen-devel@lists.xenproject.org>,
-        Thierry Reding <treding@nvidia.com>,
-        <intel-gfx@lists.freedesktop.org>, <matthew.auld@intel.com>,
-        linux-devicetree <devicetree@vger.kernel.org>, <daniel@ffwll.ch>,
-        <airlied@linux.ie>, <maarten.lankhorst@linux.intel.com>,
-        <linuxppc-dev@lists.ozlabs.org>, <jani.nikula@linux.intel.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        <rodrigo.vivi@intel.com>, <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        <thomas.lendacky@amd.com>, Robin Murphy <robin.murphy@arm.com>,
-        <bauerman@linux.ibm.com>
-References: <20210619034043.199220-1-tientzu@chromium.org>
- <20210619034043.199220-7-tientzu@chromium.org>
- <76c3343d-72e5-9df3-8924-5474ee698ef4@quicinc.com>
- <20210623183736.GA472@willie-the-truck>
-From:   Qian Cai <quic_qiancai@quicinc.com>
-Message-ID: <19d4c7a2-744d-21e0-289c-a576e1f0e6f3@quicinc.com>
-Date:   Wed, 23 Jun 2021 14:44:34 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 23 Jun 2021 14:47:35 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4921CC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:45:16 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id s23so4397423oiw.9
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:45:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=25Xb4P9ONl4NzuOE9BknQdHYzn3+WMCAH5CmkrDBv8c=;
+        b=nspS8/ZDtdjWSrZvTFB2KZLPbZsxOpGn627p0IOIQNtGCxXkG50wmJ3EULXwPEIzFc
+         mFdNRIrWbhiKHovPgDEdXLAr4/LKlZrtEj0mG+mWTH7HAZVsGxzgLo/SvuiWx1YN5uQH
+         aPp5GXJr56C6TvZxA1xLowlM7TFEbWyxx8CLOW+CXNluKaOmP2FRhXJEMj0X8KLOh1Ui
+         MsKz/Vetz0ClkYt29qCLhtoLf99QlgzJhLcn8Vmi9c49a11Y/dwJfh8HxOyp05b+a5vW
+         hGNXGX8JGfINtmrC+9Icqbz8f9OfASh8MHhBaRFS32+sFwgYXyE2LfNCQGdyyl2yzRAI
+         spQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=25Xb4P9ONl4NzuOE9BknQdHYzn3+WMCAH5CmkrDBv8c=;
+        b=eXw4tOzEVClKDEnARTP3nZUuitgvObKJ9Ii7bab3lysJQfFCESk334hVYTSj3BiiwK
+         8E9K3JcWK+aSE1Z7Jkco1msnQOcESWrb8pqHdVMMXGd5i5zSZAfAD4aBXe9IEj1GIxwt
+         Qzg4aVLGX3jr3SagoQYmvkuI+AcZHTMnlr8wEt/HhlrV8t/9w0aN1lnGTp1i88bHxJwB
+         4K6d3bJD4hvjHMsyRLBLsponRxuwhI+GyxbdKLQhnQLTfHK9HBSabyaVcqbsUELlRFIg
+         bafMavn35CXKwIKcTemArPmm94h/i9DnpJquy3C2pimxKGUsh40mOWIIUyoYqsBoAPH1
+         FkRw==
+X-Gm-Message-State: AOAM530WSCygAcrLrQdQrYe8mBGUjUqSgfRIG+3gSU9oIIz/S9tH9ZYo
+        m2bWbxtt1qQktmLGPozo8E2yZQ==
+X-Google-Smtp-Source: ABdhPJyhsb7VidpHXFDZm+c5HXvnzfTp415YuNkk7mYhD1hIhA/pa0B4lCsqz8c7gS021qvRHGI3+w==
+X-Received: by 2002:aca:3285:: with SMTP id y127mr973809oiy.115.1624473915614;
+        Wed, 23 Jun 2021 11:45:15 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id v42sm147961ott.70.2021.06.23.11.45.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 11:45:14 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 13:45:13 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH] remoteproc: stm32: fix mbox_send_message call
+Message-ID: <YNOBOeEkvG8WXM9o@builder.lan>
+References: <20210420091922.29429-1-arnaud.pouliquen@foss.st.com>
+ <YLBi/JZ0u8394tI8@builder.lan>
+ <b563f831-3876-1d5d-7268-ce1260363906@foss.st.com>
+ <e112e4a3-d5c1-caff-8ef9-cbd5b21ea3a1@foss.st.com>
 MIME-Version: 1.0
-In-Reply-To: <20210623183736.GA472@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanexm03e.na.qualcomm.com (10.85.0.48)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e112e4a3-d5c1-caff-8ef9-cbd5b21ea3a1@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue 22 Jun 02:56 CDT 2021, Arnaud POULIQUEN wrote:
 
-
-On 6/23/2021 2:37 PM, Will Deacon wrote:
-> On Wed, Jun 23, 2021 at 12:39:29PM -0400, Qian Cai wrote:
->>
->>
->> On 6/18/2021 11:40 PM, Claire Chang wrote:
->>> Propagate the swiotlb_force into io_tlb_default_mem->force_bounce and
->>> use it to determine whether to bounce the data or not. This will be
->>> useful later to allow for different pools.
->>>
->>> Signed-off-by: Claire Chang <tientzu@chromium.org>
->>> Reviewed-by: Christoph Hellwig <hch@lst.de>
->>> Tested-by: Stefano Stabellini <sstabellini@kernel.org>
->>> Tested-by: Will Deacon <will@kernel.org>
->>> Acked-by: Stefano Stabellini <sstabellini@kernel.org>
->>
->> Reverting the rest of the series up to this patch fixed a boot crash with NVMe on today's linux-next.
+> Hello Bjorn
 > 
-> Hmm, so that makes patch 7 the suspicious one, right?
-
-Will, no. It is rather patch #6 (this patch). Only the patch from #6 to #12 were reverted to fix the issue. Also, looking at this offset of the crash,
-
-pc : dma_direct_map_sg+0x304/0x8f0
-is_swiotlb_force_bounce at /usr/src/linux-next/./include/linux/swiotlb.h:119
-
-is_swiotlb_force_bounce() was the new function introduced in this patch here.
-
-+static inline bool is_swiotlb_force_bounce(struct device *dev)
-+{
-+	return dev->dma_io_tlb_mem->force_bounce;
-+}
-
+> On 5/28/21 10:03 AM, Arnaud POULIQUEN wrote:
+> > Hello Bjorn,
+> > 
+> > On 5/28/21 5:26 AM, Bjorn Andersson wrote:
+> >> On Tue 20 Apr 04:19 CDT 2021, Arnaud Pouliquen wrote:
+> >>
+> >>> mbox_send_message is called by passing a local dummy message or
+> >>> a function parameter. As the message is queued, it is dereferenced.
+> >>> This works because the message field is not used by the stm32 ipcc
+> >>> driver, but it is not clean.
+> >>>
+> >>> Fix by passing a constant string in all cases.
+> >>>
+> >>> The associated comments are removed because rproc should not have to
+> >>> deal with the behavior of the mailbox frame.
+> >>>
+> >>
+> >> Didn't we conclude that the mailbox driver doesn't actually dereference
+> >> the pointer being passed?
+> > 
+> > Right it can store the reference to queue the sent.
+> > 
+> >>
+> >> If so I would prefer that you just pass NULL, so that if you in the
+> >> future need to pass some actual data it will be easy to distinguish the
+> >> old and new case.
+> > 
+> > I can not use NULL pointer in stm32_rproc_attach and stm32_rproc_detach case.
+> > The reason is that the tx_done callback is not called if the message is NULL.
+> > (https://elixir.bootlin.com/linux/latest/source/drivers/mailbox/mailbox.c#L106)
+> > 
+> > I could use NULL pointer in stm32_rproc_kick, but I would prefer to use the same way
+> > of calling mbox_send_message for all use cases and not take into account the
+> > mailbox internal behavior.
 > 
-> Looking at that one more closely, it looks like swiotlb_find_slots() takes
-> 'alloc_size + offset' as its 'alloc_size' parameter from
-> swiotlb_tbl_map_single() and initialises 'mem->slots[i].alloc_size' based
-> on 'alloc_size + offset', which looks like a change in behaviour from the
-> old code, which didn't include the offset there.
+> Do you still have any concern about this patch?
 > 
-> swiotlb_release_slots() then adds the offset back on afaict, so we end up
-> accounting for it twice and possibly unmap more than we're supposed to?
+
+I think my concern is now directed at the mailbox api. I think the
+change is reasonable given that. Thanks for the explanation. I'm picking
+up the patch.
+
+Regards,
+Bjorn
+
+> Thanks,
+> Arnaud
 > 
-> Will
-> 
+> > 
+> > Thanks,
+> > Arnaud
+> > 
+> > 
+> >>
+> >> Regards,
+> >> Bjorn
+> >>
+> >>> Reported-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> >>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> >>> ---
+> >>>  drivers/remoteproc/stm32_rproc.c | 14 +++++---------
+> >>>  1 file changed, 5 insertions(+), 9 deletions(-)
+> >>>
+> >>> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+> >>> index 7353f9e7e7af..0e8203a432ab 100644
+> >>> --- a/drivers/remoteproc/stm32_rproc.c
+> >>> +++ b/drivers/remoteproc/stm32_rproc.c
+> >>> @@ -474,14 +474,12 @@ static int stm32_rproc_attach(struct rproc *rproc)
+> >>>  static int stm32_rproc_detach(struct rproc *rproc)
+> >>>  {
+> >>>  	struct stm32_rproc *ddata = rproc->priv;
+> >>> -	int err, dummy_data, idx;
+> >>> +	int err, idx;
+> >>>  
+> >>>  	/* Inform the remote processor of the detach */
+> >>>  	idx = stm32_rproc_mbox_idx(rproc, STM32_MBX_DETACH);
+> >>>  	if (idx >= 0 && ddata->mb[idx].chan) {
+> >>> -		/* A dummy data is sent to allow to block on transmit */
+> >>> -		err = mbox_send_message(ddata->mb[idx].chan,
+> >>> -					&dummy_data);
+> >>> +		err = mbox_send_message(ddata->mb[idx].chan, "stop");
+> >>>  		if (err < 0)
+> >>>  			dev_warn(&rproc->dev, "warning: remote FW detach without ack\n");
+> >>>  	}
+> >>> @@ -493,15 +491,13 @@ static int stm32_rproc_detach(struct rproc *rproc)
+> >>>  static int stm32_rproc_stop(struct rproc *rproc)
+> >>>  {
+> >>>  	struct stm32_rproc *ddata = rproc->priv;
+> >>> -	int err, dummy_data, idx;
+> >>> +	int err, idx;
+> >>>  
+> >>>  	/* request shutdown of the remote processor */
+> >>>  	if (rproc->state != RPROC_OFFLINE) {
+> >>>  		idx = stm32_rproc_mbox_idx(rproc, STM32_MBX_SHUTDOWN);
+> >>>  		if (idx >= 0 && ddata->mb[idx].chan) {
+> >>> -			/* a dummy data is sent to allow to block on transmit */
+> >>> -			err = mbox_send_message(ddata->mb[idx].chan,
+> >>> -						&dummy_data);
+> >>> +			err = mbox_send_message(ddata->mb[idx].chan, "detach");
+> >>>  			if (err < 0)
+> >>>  				dev_warn(&rproc->dev, "warning: remote FW shutdown without ack\n");
+> >>>  		}
+> >>> @@ -556,7 +552,7 @@ static void stm32_rproc_kick(struct rproc *rproc, int vqid)
+> >>>  			continue;
+> >>>  		if (!ddata->mb[i].chan)
+> >>>  			return;
+> >>> -		err = mbox_send_message(ddata->mb[i].chan, (void *)(long)vqid);
+> >>> +		err = mbox_send_message(ddata->mb[i].chan, "kick");
+> >>>  		if (err < 0)
+> >>>  			dev_err(&rproc->dev, "%s: failed (%s, err:%d)\n",
+> >>>  				__func__, ddata->mb[i].name, err);
+> >>> -- 
+> >>> 2.17.1
+> >>>
