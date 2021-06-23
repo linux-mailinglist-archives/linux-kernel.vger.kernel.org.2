@@ -2,108 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C90343B223C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145633B223D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbhFWVKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 17:10:46 -0400
-Received: from mail-pl1-f175.google.com ([209.85.214.175]:33782 "EHLO
-        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFWVKn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 17:10:43 -0400
-Received: by mail-pl1-f175.google.com with SMTP id f10so1840813plg.0;
-        Wed, 23 Jun 2021 14:08:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gZwBdBLs++V9xhBPmC4GV0Qda84sztnFz2ba/5gwfkE=;
-        b=VRL0AKyi0vRSWjaoDx9AV+a8tEwG4NX2PMZLeXLmUFSmA+PkXYVeJwMKsOpvZpmjG7
-         IWQBdW0l4QkSEMYQ+8Yh2yStKh3y/ptfI5Gcg8ZSSY2EUtXrkV8iVLlOoVHFjvIipyq+
-         DsRtMTMBDD0dBEt022Rahe2g6ctov98IxcVmopbziaqLuoKwED0NHpig30JVpEymfN/l
-         xXefRy2UtWbm2/hZnPrf3YJVmnwyIbM/OJ4R8k+TqoJCNMYoQXC8X6Lp1KJq310GBCid
-         VV+fJvzLKEKDaH+R/bUxWBuAfzrLhjMRYKLsx4sdXLSej9BHwfPoM4HYHBomz4ltc4QV
-         9cfA==
-X-Gm-Message-State: AOAM5333I+K8ObqVETivm4Ep3rAEtmuivgBmrhK5Ig/PBUNa7zqjmYoa
-        VokuQCX/3NgVPc+khJQNS9yWqezxytI=
-X-Google-Smtp-Source: ABdhPJxii+00hklQYX3DtNqvsT283hSS5BmiQecIdlMkoYIdNt05v5WIT760fBQWGkNL7aRZm9tXpQ==
-X-Received: by 2002:a17:90b:2306:: with SMTP id mt6mr11846433pjb.71.1624482504794;
-        Wed, 23 Jun 2021 14:08:24 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id k35sm41869pgi.21.2021.06.23.14.08.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 14:08:23 -0700 (PDT)
-Subject: Re: [PATCH v4 03/10] scsi: ufs: Update the return value of supplier
- pm ops
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-4-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <59b0c04a-298a-4eae-7938-8170835c00b7@acm.org>
-Date:   Wed, 23 Jun 2021 14:08:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <1624433711-9339-4-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S229900AbhFWVLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 17:11:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229758AbhFWVLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 17:11:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8FD061164;
+        Wed, 23 Jun 2021 21:08:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1624482528;
+        bh=dWa1P5JrFB4uCUcML15b7T0lwnbl4Qi2VU6ZCyFcovs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=raF8KZVodlGYiIXIQUL36k8AosVaS1PPpusW/XE7qIs9UG3OGlT9JBdj8HgNkJmFM
+         TS19/nfABKjbsfYiWx+zpSvylxujQqoi354GyN6Jfs57fkqS5P3F8bFjLWvFz0jPoV
+         X8bfQxmASxX4pbWr2zRt4J14k1rlDOBfht1i9Nss=
+Date:   Wed, 23 Jun 2021 14:08:47 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Chris Down <chris@chrisdown.name>, linux-kernel@vger.kernel.org,
+        Jessica Yu <jeyu@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>, kernel-team@fb.com
+Subject: Re: [PATCH v7 0/5] printk: Userspace format indexing support
+Message-Id: <20210623140847.6c548197dd03c6137a2b1a53@linux-foundation.org>
+In-Reply-To: <YNBTrhErZsp0jKYG@alley>
+References: <cover.1623775748.git.chris@chrisdown.name>
+        <YMsfo3/b1LvOoiM0@alley>
+        <YNBTrhErZsp0jKYG@alley>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 12:35 AM, Can Guo wrote:
-> rpm_get_suppliers() is returning an error only if the error is negative.
-> However, ufshcd_wl_resume() may return a positive error code, e.g., when
-> hibern8 or SSU cmd fails. Make the positive return value a negative error
-> code so that consumers are aware of any resume failure from their supplier.
-> Make the same change to ufshcd_wl_suspend() just to keep symmetry.
+On Mon, 21 Jun 2021 10:54:06 +0200 Petr Mladek <pmladek@suse.com> wrote:
+
+> > Well, I would still like to get acks from:
+> > 
+> >    + Andy for the 1st patch
+> >    + Jessica for the changes in the module loader code in 4th patch.
 > 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> They provided the Acks, so that we could push it.
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index abe5f2d..ee70522 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -8922,7 +8922,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  		ufshcd_release(hba);
->  	}
->  	hba->wlu_pm_op_in_progress = false;
-> -	return ret;
-> +	return ret <= 0 ? ret : -EINVAL;
->  }
->  
->  static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
-> @@ -9009,7 +9009,7 @@ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  	hba->clk_gating.is_suspended = false;
->  	ufshcd_release(hba);
->  	hba->wlu_pm_op_in_progress = false;
-> -	return ret;
-> +	return ret <= 0 ? ret : -EINVAL;
->  }
+> Andrew, this patchset depends on seq_file and string_helpers changes
+> that are in -mm tree:
+> 
+> lib-string_helpers-switch-to-use-bit-macro.patch
+> lib-string_helpers-move-escape_np-check-inside-else-branch-in-a-loop.patch
+> lib-string_helpers-drop-indentation-level-in-string_escape_mem.patch
+> lib-string_helpers-introduce-escape_na-for-escaping-non-ascii.patch
+> lib-string_helpers-introduce-escape_nap-to-escape-non-ascii-and-non-printable.patch
+> lib-string_helpers-allow-to-append-additional-characters-to-be-escaped.patch
+> lib-test-string_helpers-print-flags-in-hexadecimal-format.patch
+> lib-test-string_helpers-get-rid-of-trailing-comma-in-terminators.patch
+> lib-test-string_helpers-add-test-cases-for-new-features.patch
+> maintainers-add-myself-as-designated-reviewer-for-generic-string-library.patch
+> seq_file-introduce-seq_escape_mem.patch
+> seq_file-add-seq_escape_str-as-replica-of-string_escape_str.patch
+> seq_file-convert-seq_escape-to-use-seq_escape_str.patch
+> nfsd-avoid-non-flexible-api-in-seq_quote_mem.patch
+> seq_file-drop-unused-_escape_mem_ascii.patch
+> 
+> 
+> Would you mind to take this patchset via -mm tree as well, please?
+> 
+> You were not in CC. Should Chris send v8 with all the Acks and
+> you in CC?
 
-I think the above patch shows that indicating failure by either
-returning a positive or a negative value is a booby trap. Please modify
-ufshcd_send_request_sense() and ufshcd_set_dev_pwr_mode() such that
-these return a value that is either zero or negative. Are there any
-other functions than that need to be modified?
-
-Thanks,
-
-Bart.
+We're at -rc7, so I wouldn't be inclined to merge significant feature
+work at this time.  I suggest a resend after -rc1, at which time the
+above changes will be in mainline.
