@@ -2,92 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DC73B1B3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7ED3B1B41
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbhFWNiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:38:04 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:55030 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230182AbhFWNiC (ORCPT
+        id S230463AbhFWNi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:38:28 -0400
+Received: from mail-vk1-f173.google.com ([209.85.221.173]:33454 "EHLO
+        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230163AbhFWNi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:38:02 -0400
-X-UUID: 2c1ef5406b6a47a0ab1eff22471b5ae3-20210623
-X-UUID: 2c1ef5406b6a47a0ab1eff22471b5ae3-20210623
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <yee.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 166794494; Wed, 23 Jun 2021 21:35:41 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 23 Jun 2021 21:35:40 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 23 Jun 2021 21:35:40 +0800
-From:   <yee.lee@mediatek.com>
-To:     <andreyknvl@gmail.com>
-CC:     <wsd_upstream@mediatek.com>, Yee Lee <yee.lee@mediatek.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:KASAN" <kasan-dev@googlegroups.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v2 1/1] kasan: Add memzero init for unaligned size under SLUB debug
-Date:   Wed, 23 Jun 2021 21:35:32 +0800
-Message-ID: <20210623133533.2246-2-yee.lee@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210623133533.2246-1-yee.lee@mediatek.com>
-References: <20210623133533.2246-1-yee.lee@mediatek.com>
+        Wed, 23 Jun 2021 09:38:27 -0400
+Received: by mail-vk1-f173.google.com with SMTP id f2so520408vkc.0;
+        Wed, 23 Jun 2021 06:36:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rRwGVTRnG0zW3NttzH7gOF+9Sju3wYweP6tlvzlLQAw=;
+        b=KDaQcY78z4L9VpJw7FO1bRFDdNaz4oCnrQbL4GjPG3Rp8In3UDSt7ETYrTaufKu9Qh
+         a8lRxP3TGMBaMh7Fh3TaLhNlXR+pp2usB9pMGN8z7fbeGSC6hnJUHF1Hv52Q4XK41nsQ
+         PPjp0yNQhwCRZc4X3/ZvCw/flZygulbgyvASgKp/MhJ14dIBwGlR8ZHffzTt/lmg/f+t
+         WJn5QFpy7b0RBLIXQ/kQjpeoEyGUxK4Kj1jU0w7Ey8/5LBoJ4B3Uol6dpyRBlskUzbnA
+         xDZPP7tT+81sGZx68/QAcCLDjW6y3Su6ASXDw8dzOmOElMnWxyOEITDm3gu51fFU6N7N
+         xSUA==
+X-Gm-Message-State: AOAM532Jf5CA8gGoWj3oypcL/fpwSL2OzJKQn0chA+RY0/OxkMuMJCDe
+        gYj+puYQTZeW+p4Je0U8vWd62oy7is9LxeJtsTGkHUBBDaE=
+X-Google-Smtp-Source: ABdhPJx4nCb36+ndIPmUN591CUcdm1WQ2GBX3PfSOPNz/3zIgcTQud2Oanma2GZ9hqCdlPH4vE12pCCf+AykNT6UF18=
+X-Received: by 2002:ac5:cf08:: with SMTP id y8mr24080869vke.2.1624455368505;
+ Wed, 23 Jun 2021 06:36:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20210623133205.GA28589@lst.de>
+In-Reply-To: <20210623133205.GA28589@lst.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 23 Jun 2021 15:35:57 +0200
+Message-ID: <CAMuHMdVXN3NGyLqJKNwTOEGSQTm1PahMGBmLLH5yhEEnPiD=EQ@mail.gmail.com>
+Subject: Re: dma_declare_coherent_memory and SuperH
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yee Lee <yee.lee@mediatek.com>
+Hi Christoph,
 
-Issue: when SLUB debug is on, hwtag kasan_unpoison() would overwrite the redzone with unaligned object size.
+On Wed, Jun 23, 2021 at 3:33 PM Christoph Hellwig <hch@lst.de> wrote:
+> I have a vague recollection that you were planning on dropping support
+> for non-devicetree platforms, is that still the case?
 
-An additional memzero_explicit() path is added to replacing hwtag initialization
-at SLUB deubg mode.
+There are no devicetree SuperH platforms upstream, only J2, so that
+means dropping support for all SuperH platforms?
 
-Signed-off-by: Yee Lee <yee.lee@mediatek.com>
-Suggested-by: Marco Elver <elver@google.com>
-Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
- mm/kasan/kasan.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Gr{oetje,eeting}s,
 
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index d8faa64614b7..e984a9ac814d 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -387,10 +387,12 @@ static inline void kasan_unpoison(const void *addr, size_t size, bool init)
- 
- 	if (WARN_ON((unsigned long)addr & KASAN_GRANULE_MASK))
- 		return;
-+	#if IS_ENABLED(CONFIG_SLUB_DEBUG)
- 	if (init && ((unsigned long)size & KASAN_GRANULE_MASK)) {
- 		init = false;
--		memset((void *)addr, 0, size);
-+		memzero_explicit((void *)addr, size);
- 	}
-+	#endif
- 	size = round_up(size, KASAN_GRANULE_SIZE);
- 	hw_set_mem_tag_range((void *)addr, size, tag, init);
- }
+                        Geert
+
 -- 
-2.18.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
