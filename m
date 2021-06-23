@@ -2,134 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7CC3B1160
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 03:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 987F73B1166
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 03:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhFWBhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 21:37:24 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:36540 "EHLO m43-7.mailgun.net"
+        id S230123AbhFWBlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 21:41:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229775AbhFWBhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 21:37:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624412105; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=+4WX1+XKSVWz3RW6iMyqFbDGyD0cNV+UYK/Z+DXHS7M=;
- b=L34xrZXUG+0sH4QR0i9Bp/LGyjT1tabswLs2FDUGqcHKhPOeNstnrMJGvFPHIXywZuqtcHR2
- dqHIX4JT2H7jARe9VrPWvELjCe4FD0L8Os4BNrGYDIl3wmnL6l6AKRMXIfuLZn+MIwrkadTH
- jCKCZo78KZhxfpcpJXVEGGEXQiQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60d28fb3638039e9977d6deb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Jun 2021 01:34:43
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 349A9C4360C; Wed, 23 Jun 2021 01:34:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5974CC433F1;
-        Wed, 23 Jun 2021 01:34:42 +0000 (UTC)
+        id S229751AbhFWBlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 21:41:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F2CA610A0;
+        Wed, 23 Jun 2021 01:38:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624412334;
+        bh=tYMcg0A6FJf1k3FBz4ypXl/o/qa0iWWfHJFijI/1IVw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uIr9F5Lyaoq60Bqi+omXqpIj5pbfw2wbaVSYCUmslV6JcQnd6y+BfiDUG/EgT9bHi
+         pc/P+mbrKTmojx+UUZgptzALVoTrs2AE14tyf7shwPFvU9/l17ozqB4a+lUKWRzXhB
+         VqNOoOVzvxT1icBNst3mWou4IvfGGMrjleWqEIc2SeQdOkgyhdDIPC6dzWZdwb7hQg
+         LgdVvR3XKPWlkVKL1dA2g01PC6/AYopHBQoaiwp50TCGQ151FhHNuADgaDXwXFiVYY
+         FK/UloIOC0X4XVMRCppak2ieyvadK5Y2ahOmfuv3wSouEYa5L+plULA0IHaiI+G1pG
+         YZadOlnW3ecYQ==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH 1/2] ACPI: bgrt: Fix CFI violation
+Date:   Tue, 22 Jun 2021 18:38:01 -0700
+Message-Id: <20210623013802.1904951-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 23 Jun 2021 09:34:42 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 8/9] scsi: ufs: Update the fast abort path in
- ufshcd_abort() for PM requests
-In-Reply-To: <2fa53602-8968-09e4-60f4-28462d85ae08@acm.org>
-References: <1623300218-9454-1-git-send-email-cang@codeaurora.org>
- <1623300218-9454-9-git-send-email-cang@codeaurora.org>
- <fa37645b-3c1e-2272-d492-0c2b563131b1@acm.org>
- <16f5bd448c7ae1a45fcb23133391aa3f@codeaurora.org>
- <926d8c4a-0fbf-a973-188a-b10c9acaa444@acm.org>
- <75527f0ba5d315d6edbf800a2ddcf8c7@codeaurora.org>
- <8b27b0cc-ae16-173a-bd6f-0321a6aba01c@acm.org>
- <3fce15502c2742a4388817538eb4db97@codeaurora.org>
- <fabc70f8-6bb8-4b62-3311-f6e0ce9eb2c3@acm.org>
- <8aae95071b9ab3c0a3cab91d1ae138e1@codeaurora.org>
- <0081ad7c-8a15-62bb-0e6a-82552aab5309@acm.org>
- <8eadb2f2e30804faf23c9c71e5724d08@codeaurora.org>
- <2fa53602-8968-09e4-60f4-28462d85ae08@acm.org>
-Message-ID: <386c2e650232d7a900f5c1bbf98bd5a5@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart,
+clang's Control Flow Integrity requires that every indirect call has a
+valid target, which is based on the type of the function pointer. The
+*_show() functions in this file are written as if they will be called
+from dev_attr_show(); however, they will be called from
+sysfs_kf_seq_show() because the files were created by
+sysfs_create_group() and the sysfs ops are based on kobj_sysfs_ops
+because of kobject_add_and_create(). Because the *_show() functions do
+not match the type of the show() member in struct kobj_attribute, there
+is a CFI violation.
 
-On 2021-06-17 01:55, Bart Van Assche wrote:
-> On 6/16/21 1:47 AM, Can Guo wrote:
->> On 2021-06-16 12:40, Bart Van Assche wrote:
->>> On 6/15/21 9:00 PM, Can Guo wrote:
->>>> 2. And say we want SCSI layer to resubmit PM requests to prevent
->>>> suspend/resume fail, we should keep retrying the PM requests (so
->>>> long as error handler can recover everything successfully),
->>>> meaning we should give them unlimited retries (which I think is a
->>>> bad idea), otherwise (if they have zero retries or limited
->>>> retries), in extreme conditions, what may happen is that error
->>>> handler can recover everything successfully every time, but all
->>>> these retries (say 3) still time out, which block the power
->>>> management for too long (retries * 60 seconds) and, most
->>>> important, when the last retry times out, scsi layer will
->>>> anyways complete the PM request (even we return DID_IMM_RETRY),
->>>> then we end up same - suspend/resume shall run concurrently with
->>>> error handler and we couldn't recover saved PM errors.
->>> 
->>> Hmm ... it is not clear to me why this behavior is considered a
->>> problem?
->> 
->> To me, task abort to PM requests does not worth being treated so
->> differently, after all suspend/resume may fail due to any kinds of
->> UFS errors (as I've explained so many times). My idea is to let PM
->> requests fast fail (60 seconds has passed, a broken device maybe, we
->> have reason to fail it since it is just a passthrough req) and
->> schedule UFS error handler, UFS error handler shall proceed after
->> suspend/resume fails out then start to recover everything in a safe
->> environment. Is this way not working?
-> Hi Can,
-> 
-> Thank you for the clarification. As you probably know the power
-> management subsystem serializes runtime power management (RPM) and
-> system suspend callbacks. I was concerned about the consequences of a
-> failed RPM transition on system suspend and resume. Having taken a
-> closer look at the UFS driver, I see that failed RPM transitions do not
-> require special handling in the system suspend or resume callbacks. In
-> other words, I'm fine with the approach of failing PM requests fast.
-> 
+$ cat /sys/firmware/acpi/bgrt/{status,type,version,{x,y}offset}}
+1
+0
+1
+522
+307
 
-Thank you for your time and efforts spent on this series, I will upload
-next version to address your previous comments (hope I can convince 
-Trilok
-to pick these up).
+$ dmesg | grep "CFI failure"
+[  267.761825] CFI failure (target: type_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
+[  267.762246] CFI failure (target: xoffset_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
+[  267.762584] CFI failure (target: status_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
+[  267.762973] CFI failure (target: yoffset_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
+[  267.763330] CFI failure (target: version_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
 
-Thanks,
+Convert these functions to the type of the show() member in struct
+kobj_attribute so that there is no more CFI violation. Because these
+functions are all so similar, combine them into a macro.
 
-Can Guo.
+Fixes: d1ff4b1cdbab ("ACPI: Add support for exposing BGRT data")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1406
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ drivers/acpi/bgrt.c | 57 ++++++++++++++-------------------------------
+ 1 file changed, 18 insertions(+), 39 deletions(-)
 
-> Bart.
+diff --git a/drivers/acpi/bgrt.c b/drivers/acpi/bgrt.c
+index 19bb7f870204..e0d14017706e 100644
+--- a/drivers/acpi/bgrt.c
++++ b/drivers/acpi/bgrt.c
+@@ -15,40 +15,19 @@
+ static void *bgrt_image;
+ static struct kobject *bgrt_kobj;
+ 
+-static ssize_t version_show(struct device *dev,
+-			    struct device_attribute *attr, char *buf)
+-{
+-	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.version);
+-}
+-static DEVICE_ATTR_RO(version);
+-
+-static ssize_t status_show(struct device *dev,
+-			   struct device_attribute *attr, char *buf)
+-{
+-	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.status);
+-}
+-static DEVICE_ATTR_RO(status);
+-
+-static ssize_t type_show(struct device *dev,
+-			 struct device_attribute *attr, char *buf)
+-{
+-	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_type);
+-}
+-static DEVICE_ATTR_RO(type);
+-
+-static ssize_t xoffset_show(struct device *dev,
+-			    struct device_attribute *attr, char *buf)
+-{
+-	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_offset_x);
+-}
+-static DEVICE_ATTR_RO(xoffset);
+-
+-static ssize_t yoffset_show(struct device *dev,
+-			    struct device_attribute *attr, char *buf)
+-{
+-	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_offset_y);
+-}
+-static DEVICE_ATTR_RO(yoffset);
++#define BGRT_SHOW(_name, _member) \
++	static ssize_t _name##_show(struct kobject *kobj,			\
++				    struct kobj_attribute *attr, char *buf)	\
++	{									\
++		return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab._member);	\
++	}									\
++	struct kobj_attribute bgrt_attr_##_name = __ATTR_RO(_name)
++
++BGRT_SHOW(version, version);
++BGRT_SHOW(status, status);
++BGRT_SHOW(type, image_type);
++BGRT_SHOW(xoffset, image_offset_x);
++BGRT_SHOW(yoffset, image_offset_y);
+ 
+ static ssize_t image_read(struct file *file, struct kobject *kobj,
+ 	       struct bin_attribute *attr, char *buf, loff_t off, size_t count)
+@@ -60,11 +39,11 @@ static ssize_t image_read(struct file *file, struct kobject *kobj,
+ static BIN_ATTR_RO(image, 0);	/* size gets filled in later */
+ 
+ static struct attribute *bgrt_attributes[] = {
+-	&dev_attr_version.attr,
+-	&dev_attr_status.attr,
+-	&dev_attr_type.attr,
+-	&dev_attr_xoffset.attr,
+-	&dev_attr_yoffset.attr,
++	&bgrt_attr_version.attr,
++	&bgrt_attr_status.attr,
++	&bgrt_attr_type.attr,
++	&bgrt_attr_xoffset.attr,
++	&bgrt_attr_yoffset.attr,
+ 	NULL,
+ };
+ 
+
+base-commit: a51c80057a887e0f24bd8303b0791a130ff04121
+-- 
+2.32.0.93.g670b81a890
+
