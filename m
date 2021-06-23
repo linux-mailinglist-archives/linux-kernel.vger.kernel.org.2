@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609E23B1B02
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC913B1B03
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbhFWNZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:25:13 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:30513 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230234AbhFWNZM (ORCPT
+        id S231176AbhFWNZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:25:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230274AbhFWNZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:25:12 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-206-aLBAZPbBMtOpePwVytsljw-1; Wed, 23 Jun 2021 14:22:51 +0100
-X-MC-Unique: aLBAZPbBMtOpePwVytsljw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 23 Jun
- 2021 14:22:51 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Wed, 23 Jun 2021 14:22:51 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Hans-Gert Dahmen' <hans-gert.dahmen@immu.ne>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "philipp.deppenwiese@immu.ne" <philipp.deppenwiese@immu.ne>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Subject: RE: [PATCH] firmware: export x86_64 platform flash bios region via
- sysfs
-Thread-Topic: [PATCH] firmware: export x86_64 platform flash bios region via
- sysfs
-Thread-Index: AQHXZ3I2QVY8Y0IZxk6JOQtZcZz8kKsgmXGQgADafQCAACJ5oA==
-Date:   Wed, 23 Jun 2021 13:22:51 +0000
-Message-ID: <6c6b6888e9994791a8044c8d8ad1fee5@AcuMS.aculab.com>
-References: <20210622142334.14883-1-hans-gert.dahmen@immu.ne>
- <5ee9e467bfbf49d29cb54679d2dce1c3@AcuMS.aculab.com>
- <d61176a0-67cf-268f-8c31-8de8739753c3@immu.ne>
-In-Reply-To: <d61176a0-67cf-268f-8c31-8de8739753c3@immu.ne>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 23 Jun 2021 09:25:51 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCAA6C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 06:23:33 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id c7so3458617edn.6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 06:23:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=icz3yVZaBKoKX5vfFzNoQ1deA5c6HrQTyBzJ3S/dmpU=;
+        b=Nd8BGvHG4fkZSwrvHa0V54ds3E7zPyQ5lfq56LFsxQUsJR+m+XtJRBJVEEMNKehrjQ
+         dHlHp8TgEwSXX0e/IpLjB2csGXnZ+bvWy8R2VIldz/oaoebFRfRLHIBxzJF0VybbrgWw
+         POWSTxS2tTDWN25hCnLhwb7bDHhY+VznvfubBIdwh/dWK7CCXdGelLyQxRM6XjlyOAbb
+         0t9u53ys5llAj527SRTdmk0wd/hp3tVipUTRXyVLHsRFcU3Jy2WlUvZDtUup/86qFvm9
+         iyyUzk3MdplNg4FbpcpTVqb0skmLm8ZucI0+NXcgLhkWakVwvBdotHfNL8iXAWHYJbFA
+         uznQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=icz3yVZaBKoKX5vfFzNoQ1deA5c6HrQTyBzJ3S/dmpU=;
+        b=hsLvcLkiTTQ8DceIHwIKtf1sWPIBs4vVD9NaiM/J0Qkd3ObzYYig79f4+ss5EoLcir
+         czBk0LY5TekS1e7fUF/2HuxJJHqz/VWPW1Dz/eFkiBTy046O0oq91h38CevXTEJNyYXK
+         /HpLyAHplcgygSLuMTHVCjcpRep62ccjhngUixqOXiKRgvrEJP0LwxqFdX7AHk+uYzzL
+         ATTJGCXJeyv3FClxHyN/rRPRZv4kZURbRdErpwdiFHpQs26rdc6CVhL1vpg6NNDnKck6
+         pjOZxTxvWyGcKHS2Wfhr4SQzn4RWrGTg7+WygpPbp/5+Yd7A9Uf7s4WgXGRhpQJYSIwC
+         Pnhg==
+X-Gm-Message-State: AOAM532W9w0W+oIg9aTSYcc6p8jYb02rRsxQAm+NNAwlvtX4/YikvP2N
+        loXf8nEEDEijBLAcUuVXRTev6iyHr+R1Jn0m
+X-Google-Smtp-Source: ABdhPJyhXeGkzrD7cnNNDLRAfHQBWl7KLjfXWEQOkdCJPTp+0+bGmwSyem9kK6cjSI+v6rQFtDRwmA==
+X-Received: by 2002:a05:6402:53:: with SMTP id f19mr12470179edu.200.1624454612307;
+        Wed, 23 Jun 2021 06:23:32 -0700 (PDT)
+Received: from localhost ([2a02:768:2307:40d6:f666:9af6:3fed:e53b])
+        by smtp.gmail.com with ESMTPSA id b24sm1814916ejl.61.2021.06.23.06.23.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 23 Jun 2021 06:23:31 -0700 (PDT)
+Sender: Michal Simek <monstr@monstr.eu>
+From:   Michal Simek <michal.simek@xilinx.com>
+To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com,
+        bharat.kumar.gogada@xilinx.com, kw@linux.com
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Ravi Kiran Gummaluri <rgummal@xilinx.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
+Subject: [PATCH v2 0/2] PCI: xilinx-nwl: Add clock handling
+Date:   Wed, 23 Jun 2021 15:23:28 +0200
+Message-Id: <cover.1624454607.git.michal.simek@xilinx.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSGFucy1HZXJ0IERhaG1lbg0KPiBTZW50OiAyMyBKdW5lIDIwMjEgMTM6MTgNCj4gDQo+
-IHRoZXNlIGFyZSBzb21lIGdvb2QgcG9pbnRzLg0KPiANCj4gT24gMjMuMDYuMjEgMDA6MTgsIERh
-dmlkIExhaWdodCB3cm90ZToNCj4gPiBBcmUgeW91IHNheWluZyB0aGF0IG15IDE1IHllYXIgb2xk
-IDY0Yml0IEF0aGxvbiBjcHUgYW5kIGJpb3MNCj4gPiBoYXZlIHRoaXMgbGFyZ2UgU1BJIGZsYXNo
-DQo+IA0KPiBOby4gVGhlIHJlYWRzIHdpbGwgd3JhcCwgaS5lLiBpZiB5b3VyIGZsYXNoIGlzIDJN
-QiB0aGVuIGl0IHdvdWxkIGJlDQo+IHJlcGVhdGVkIDggdGltZXMgaW4gdGhlIDE2TUIgd2luZG93
-Lg0KPiANCj4gPiBhbmQgdGhlIHJlcXVpcmVkIGhhcmR3YXJlIHRvDQo+ID4gY29udmVydCBidXMg
-Y3ljbGVzIHRvIHNlcmlhbCBzcGkgcmVhZHM/DQo+IA0KPiBZZXMuIFRoZSB3aW5kb3cgaXMgcGFy
-dCBvZiB0aGUgRE1JIGludGVyZmFjZSBhbmQgdGhlIHNvdXRoIGJyaWRnZSBvciBQQ0gNCj4gY29u
-dmVydHMgdGhlIGJ1cyBjeWNsZXMgdG8gU1BJIHJlYWRzLiBJdCBpcyBiZWNhdXNlIHRoaXMgcmVn
-aW9uIGNvbnRhaW5zDQo+IHRoZSByZXNldCB2ZWN0b3IgYWRkcmVzcyBvZiB5b3VyIENQVSBhbmQg
-dGhlIHZlcnkgZmlyc3QgaW5zdHJ1Y3Rpb24gaXQNCj4gZXhlY3V0ZXMgYWZ0ZXIgYSByZXNldCB3
-aGVuIHRoZSBpbnRlcm5hbCBzZXR1cCBpcyBkb25lIHdpbGwgYWN0dWFsbHkgYmUNCj4gbG9hZGVk
-IGZyb20gdGhlIHNlcmlhbCBTUEkgYnVzLiBJdCBpcyBBRkFJSyBwYXJ0IG9mIEFNRCdzIG9yaWdp
-bmFsDQo+IDY0LWJpdCBzcGVjaWZpY2F0aW9uLg0KPiANCj4gSG93ZXZlciwgYWZ0ZXIgcmVhZGlu
-ZyB5b3VyIG1haWwgSSB1bmRlcnN0YW5kIHRoYXQgSSBzaG91bGQgaGF2ZSBsb29rZWQNCj4gdXAg
-dGhlIGV4YWN0IGV4cGxhbmF0aW9ucyBpbiB0aGUgcmVzcGVjdGl2ZSBzcGVjcy4gU28gdG8gZGVm
-aW5pdGl2ZWx5DQo+IGFuc3dlciB5b3VyIHF1ZXN0aW9uIEkgbmVlZCB0byBrbm93IHdoaWNoIHNv
-dXRoIGJyaWRnZSB0aGVyZSBpcyBpbiB5b3VyDQo+IDE1IHllYXIgb2xkIHN5c3RlbSBhbmQgaGF2
-ZSBhIGxvb2sgaW50byBpdHMgZGF0YXNoZWV0LiBEbyB5b3Uga25vdyB3aGljaA0KPiBvbmUgaXQg
-aXMgYnkgYW55IGNoYW5jZT8NCg0KQWJzb2x1dGVseSBubyBpZGVhLg0KVGhhdCBwYXJ0aWN1bGFy
-IHN5c3RlbSBkb2Vzbid0IGFjdHVhbGx5IGJvb3QgYW55IG1vcmUNCndpdGggZWl0aGVyIGNwdSBJ
-IGhhdmUgZm9yIGl0IHBsdWdnZWQgaXQuDQpJIHN1c3BlY3QgdGhlIHBzdSB2b2x0YWdlcyBhcmUg
-b3V0IG9mIHJhbmdlIGFuZCBoYXZlIGJyb2tlbiBpdC4NCg0KQnV0IHRoYXQgaXNuJ3QgdGhlIHBv
-aW50Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5
-IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRp
-b24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+Hi,
+
+this small series add support for enabling pcie reference clock by driver.
+
+Thanks,
+Michal
+
+Changes in v2:
+- new patch in this series because I found that it has never been sent
+- Update commit message - reported by Krzysztof
+- Check return value from clk_prepare_enable() - reported by Krzysztof
+
+Hyun Kwon (1):
+  PCI: xilinx-nwl: Enable the clock through CCF
+
+Michal Simek (1):
+  dt-bindings: pci: xilinx-nwl: Document optional clock property
+
+ .../devicetree/bindings/pci/xilinx-nwl-pcie.txt      |  1 +
+ drivers/pci/controller/pcie-xilinx-nwl.c             | 12 ++++++++++++
+ 2 files changed, 13 insertions(+)
+
+-- 
+2.32.0
 
