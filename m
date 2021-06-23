@@ -2,267 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4273B152F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23A53B1537
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbhFWH7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 03:59:46 -0400
-Received: from mga07.intel.com ([134.134.136.100]:53133 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229801AbhFWH7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 03:59:43 -0400
-IronPort-SDR: ZoGYYx9rt3Ze+Ejz9rvM9qdFMQiehIvDdmDdvM/YbKizasViYL2b2rHgs0JboHT/0tSk0VrIZB
- iU7niQjmvBmw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="271060644"
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="271060644"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 00:57:21 -0700
-IronPort-SDR: xjW/1U3G9KifhcjJeF4INANdM70m7Cvh02iMOA9qXHDoIn+eDghkenevQ5n0fA/+/4CXvUK25r
- I4/XjunECsuw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="639375625"
-Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
-  by fmsmga006.fm.intel.com with ESMTP; 23 Jun 2021 00:57:20 -0700
-Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
- ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Wed, 23 Jun 2021 00:57:20 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
- via Frontend Transport; Wed, 23 Jun 2021 00:57:20 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.171)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.4; Wed, 23 Jun 2021 00:57:20 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KmiPi0DZBYIm2Lohpy0/3ofbab3rsqHC/nMg2bytj1uVdD9ih6248uCF0p3PEUmtxyYdCxrJ5zhWfWL49x2X++il+eJNeU27uPJl4YaT+mwOlnA98efjvCeXfIpv0pL0gkHqV7iWil4X2dOg72gdIk6tb/U+UOVoI3zOFxS7sKVYgdh22RFtE0Cg+Rcrq9G5Dwv0CQxOF96sAS9di8Pl2I9msmXn+fd3nX3D1rEM1+vabQ3HxuXqcuetcG5AzKi4f1rzgdofTgG9DpIqwmP2VBP/d93wyO7OKII1p+m0wv///IvPcldfql1JAGbQ5tWZ9zvi+uuEBqWmB1lJnNMbPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VP2fgAZI8WyYlLV5b3cwR0tcR6LXIjRxmgNaCd7iGkg=;
- b=Z/8Adu8QFu7hxEhcVt+9MhfqtaIPY+7bQefpSNyyOM2+kzv2MHlEE3XDQ6DBfiChdHOcTy+JZXM3W/ki2XWF7WS5dUQHojBFrS7BrDdStJwvu/AP9SPPRa1aX9LQT4thbCmGyhdv4sgUIrwF2ebAQdshiOB1b4VqBnUSkpqe/7dLycEkrs3bhX0+fbIv9URd/cnLSuMQOQDORzqTmaCPn1BAM4GGOg8xz5WM2NY1PdgyS0QeBxg6UP+8BijYczJHjM1QS+mzFQ6yWk74rliTVybjUGwaRN+6l6Z+Sj8S3Vxn015AELqNsOEbc0pJnToqbCTCf8lJY5IOFhw4A2oNPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VP2fgAZI8WyYlLV5b3cwR0tcR6LXIjRxmgNaCd7iGkg=;
- b=OqRGOHyUNwKyLSGzb0XRow1paC6fCH1d4PHwY4iJby5EbDjz7QEqw5xQO+E4pc8YzeBra33NJ1cNpwtzgGKY0WW5LmPXa+w0ega5ztOnbKj9gax7oaAsOBehkxoP2iCAlLfOyB6eJN+CFux8dwNEvSPco96REYqBE+fJCJ/WSrk=
-Received: from MWHPR11MB1886.namprd11.prod.outlook.com (10.175.54.9) by
- MWHPR11MB1933.namprd11.prod.outlook.com (10.175.54.20) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4242.21; Wed, 23 Jun 2021 07:57:19 +0000
-Received: from MWHPR11MB1886.namprd11.prod.outlook.com
- ([fe80::6597:eb05:c507:c6c1]) by MWHPR11MB1886.namprd11.prod.outlook.com
- ([fe80::6597:eb05:c507:c6c1%12]) with mapi id 15.20.4242.024; Wed, 23 Jun
- 2021 07:57:19 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>
-CC:     "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, "Raj, Ashok" <ashok.raj@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "Jason Gunthorpe" <jgg@nvidia.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "David Woodhouse" <dwmw2@infradead.org>,
-        Jason Wang <jasowang@redhat.com>
-Subject: RE: [RFC] /dev/ioasid uAPI proposal
-Thread-Topic: [RFC] /dev/ioasid uAPI proposal
-Thread-Index: AddSzQ97BhCb3gd8AUyldaDZ6yOMNABLsqGAAN/dRYAAFU5FAAAaxTKAADwI6AAAwQ1+AAB5vHCAAUN/JAAAT74kgADnO8Og
-Date:   Wed, 23 Jun 2021 07:57:19 +0000
-Message-ID: <MWHPR11MB18865A92E12E7C2F6422987C8C089@MWHPR11MB1886.namprd11.prod.outlook.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210528195839.GO1002214@nvidia.com> <YLcpw5Kx61L7TVmR@yekko>
- <20210602165838.GA1002214@nvidia.com> <YLhsZRc72aIMZajz@yekko>
- <YLn/SJtzuJopSO2x@myrica> <YL8O1pAlg1jtHudn@yekko> <YMI/yynDsX/aaG8T@myrica>
- <YMq6voIhXt7guI+W@yekko> <YMzR46luaG7hXsJi@myrica>
-In-Reply-To: <YMzR46luaG7hXsJi@myrica>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.198.143.21]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 13185682-2afa-4025-3f02-08d9361c867a
-x-ms-traffictypediagnostic: MWHPR11MB1933:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR11MB1933F4F84EA623AFAF0C60828C089@MWHPR11MB1933.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 74KVg4qD2PUMA6614La7ld00V1LezQVrPZaanxV0N7acqV/PmY5VMQNvkvJ8jfTIZAYgemWP6C7s+sLOcVbjIAeJxbnPCw1r/ChUJl2ItE3B7W42cfrdT0k7ZQ9w+lDocwBcVXbaBHSPeoK2YZMjXFX1RXd3bDpuo6LuSPlx+5cBH0v7NUteno7kGqKruiQjSex5OyG8tgrei+ybqNa+YF74yeLq7hJCn8QCNp8b7g8/8qgqjiMbaqu1ZDtPiyz78DHc/bwYDgFBCLGH7JhdMEocYhAYPqcII9PHQbibovSRgwuFelnMwg9GXyYOOcls2WurWsIzq97leFlgNxUxNpUVEaXSt0lHsCm9An589Ba+9z/IimzY63HNNVow/qTb+KDtftFFApQrvD8xyDuuwLPhGBUeGedN4W7l1U1FowhVIyHgEhlojZgEmtSCzHK8TpAmfpJw6ew3MYY7lk7RR1H9L5iHcFLJceM4iXQQ7a+NDOexpdLHzx2xO77ru8Ndt4Lhn2tVcqtBQ+EOjO1lpa7mU8r9W63PCrVQu2Egj+90G+dYqPfnlLRiJ1x4RY2Be/fihBcdZL2vwVTLD1rjxYvoOBfgDJZG5H5rrO6pQ0U=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1886.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(396003)(366004)(39860400002)(136003)(71200400001)(4326008)(86362001)(7416002)(66556008)(2906002)(66446008)(478600001)(83380400001)(186003)(122000001)(26005)(52536014)(8676002)(8936002)(76116006)(110136005)(7696005)(54906003)(55016002)(6506007)(9686003)(316002)(5660300002)(66946007)(38100700002)(66476007)(33656002)(64756008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Mwp2H+UJHUG+WX3qqt8+fzFMHfHM++MsSSaCTs5VP2liL5HQnoH4mk0B+CXf?=
- =?us-ascii?Q?JQgFM4UgzjC8zLQ2TnvTef2J8v/ILquWYQRcREDXKEKal0KLT2VB7lOvX6Nj?=
- =?us-ascii?Q?QgGK9lNa8LmCta2ADXa8vRRNmqgtwz9ovZK59osg/FFKU2yMYn+CFW+zBebX?=
- =?us-ascii?Q?K51yR2bRLOpMfBc0MmX4MmttKvMB3732U1ZlTJlpEMcs0YqaXZy4C1acgVvB?=
- =?us-ascii?Q?mmmLRzQmx9EAQ0Gs7z5wqjc50HrvGNDm8VXKQaCA2Lhuex8xBpfwwYIwhVNC?=
- =?us-ascii?Q?VTJFIZs8oXHXi/VU7YNUcEfarR3mIQH3OClztMoMCyQEt3JkaKP/nun3UyWq?=
- =?us-ascii?Q?KCE916Cjmh/sfo93/fVY45BUc6dwdpHxlXX7Sw7ZzPFZHz7qrfGlCQsfQ/bt?=
- =?us-ascii?Q?TGE6mB2klOfPsNy0DnuqMmMLpIwT8dgeu9NoVmWwC176M/Vu74uRJSTJ0etL?=
- =?us-ascii?Q?X4ligVxJWuYQ+HfMeRb5tziws4ZIluZB811t8RZT+NObrtQeejrdYSyYtozv?=
- =?us-ascii?Q?4vLqe+X7+g9BTzZe70BEVeaQwA/2EiqY5P4yCVx7crTLZRJFFsitooMrNGZp?=
- =?us-ascii?Q?jgUYVgrz7UqoW5y33eeCLr0R3NN1DbiU5SLvkbpB24avSXMaCsjnSM3Ml6kO?=
- =?us-ascii?Q?X2TpiLdsQlthEE4H8Ui5ZwuKFmZgMG6X8xf/M5R6WktFTuvE+OIh5z+fXr6F?=
- =?us-ascii?Q?qhuB0uigKU+DOaxiP2BOPp3g4VaIcpt4OlL5g4RTCi+N7iVClVLI+tuLxZRK?=
- =?us-ascii?Q?NdfBU+HKqWq+HlpRak83S4f7H16lJD40nijkwHmkghIbMHs3hU7NYio94W6f?=
- =?us-ascii?Q?rioy03ltqHA3OvyHHcOeGlZcVl4bwBdb+emrG1ABgb13AfIKpcsp4ESxNz90?=
- =?us-ascii?Q?FYeHWnI0DEhZBlkF2qAkCVVZzt+TXWwkvOpKBz0+UCjG77qyiwEFQ4mWCJ/4?=
- =?us-ascii?Q?3J3Porcz1Rlbg2JAYqTtl2UXK5lnGnZNRhNRKacMvnHCdPqsAtc6wC4zPLiK?=
- =?us-ascii?Q?b65BzvewZmHe34zBFs8dIWHODJeQZYOwuQqIYlFayyvhW6hwe737oJpT0R31?=
- =?us-ascii?Q?Sp62GpLxo77xkkHJ473usN/9TNR3wwUqhNHIk99iJEcyumnk5TLO7a/tZceG?=
- =?us-ascii?Q?65y6bFwd6ZoXgsvO0ogQTUyOuMrf9nueOUfVgLseF5iGzK5P1xDkmWUHD+7r?=
- =?us-ascii?Q?e4Am2OEXEivCoQZj9hcMTLPx1uErqULIuRxUM1JStogS0vcRceVMLPaVx7uR?=
- =?us-ascii?Q?gE/zaCKd1EHDP1SSZFflWFIyLt8/ybbwV69+PCY5fCE9M1Cr+8uUD9MKlME9?=
- =?us-ascii?Q?PNbrkt/OKKP89zWrnIJA21Nw?=
-Content-Type: text/plain; charset="us-ascii"
+        id S230049AbhFWIAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 04:00:42 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59650 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229660AbhFWIAi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 04:00:38 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15N7ZJls094580;
+        Wed, 23 Jun 2021 03:58:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to; s=pp1;
+ bh=thGBY720BhJc8XFtkNQ6HDPkmK0Iysx+8owzz63PDZI=;
+ b=MEVcHSdyIlzmoE/RyFfXjYFJYOkjLBipeV36wVornPXUsltZnnygsf+cDN1v3OKfcv3I
+ pJpdFV5ef54pvU8oQMCQDc1I55Q7sH6CmlvaPtaupHROAwDEd993OLk1wMZvllyt07yo
+ k1Jt6c8BLtYtHPNujmzZCgHDrFEWHtLCqQWoy9+0wjFacHcwMymhSKeAhH4+sivWelb6
+ aUESVtE2zqk/qt54FwNR0KGgJ/wiSVe+X8vORr/MYPztDLgs+hKhcF6/J9ahzmSeowwz
+ n4bAjO82p8vMO/hyea4QyiNbfMx3LURO4k/LF5IhTGIquzbTlzx+hWZ8dKl+0GCw2AGg 7g== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39bwhd5xt7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Jun 2021 03:58:16 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15N7wDgc016465;
+        Wed, 23 Jun 2021 07:58:13 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3997uh9tw0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Jun 2021 07:58:13 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15N7wBvG30671224
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Jun 2021 07:58:11 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 205A9AE045;
+        Wed, 23 Jun 2021 07:58:11 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1D0F3AE053;
+        Wed, 23 Jun 2021 07:58:10 +0000 (GMT)
+Received: from smtpclient.apple (unknown [9.77.197.182])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 23 Jun 2021 07:58:09 +0000 (GMT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [powerpc][next-20210621] WARNING at kernel/sched/fair.c:3277
+ during boot
+From:   Sachin Sant <sachinp@linux.vnet.ibm.com>
+In-Reply-To: <20210623071935.GA29143@vingu-book>
+Date:   Wed, 23 Jun 2021 13:28:08 +0530
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, Odin Ugedal <odin@uged.al>
 Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1886.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13185682-2afa-4025-3f02-08d9361c867a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jun 2021 07:57:19.1788
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qzeK2WqLTaLYKacRyJfNRw+ewToYkz2PhNIx5F6M74TFYLSK3zgbOtEb4NYqz9pb9DHrLFCg9Q8zVML8BiNetw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1933
-X-OriginatorOrg: intel.com
+Message-Id: <CCB4222F-000A-44E8-8D61-F69893704688@linux.vnet.ibm.com>
+References: <2ED1BDF5-BC0C-47CD-8F33-9A46C738F8CF@linux.vnet.ibm.com>
+ <CAKfTPtDrHv4OOfPvwOE2DMNoucXQJ=yvvEpTVKrXghSdKEnZcA@mail.gmail.com>
+ <20210622143154.GA804@vingu-book>
+ <53968DDE-9E93-4CB4-B5E4-526230B6E154@linux.vnet.ibm.com>
+ <20210623071935.GA29143@vingu-book>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: buSy29hWUtzMXIhAy_LAVFasTmDEsbAI
+X-Proofpoint-GUID: buSy29hWUtzMXIhAy_LAVFasTmDEsbAI
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-23_02:2021-06-22,2021-06-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ spamscore=0 mlxscore=0 phishscore=0 suspectscore=0 adultscore=0
+ clxscore=1015 malwarescore=0 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106230044
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jean-Philippe Brucker
-> Sent: Saturday, June 19, 2021 1:04 AM
+
+>>> Could you try the patch below ? I have been able to reproduce the =
+problem locally and this
+>>> fix it on my system:
+>>>=20
+>> I can recreate the issue with this patch.
 >=20
-> On Thu, Jun 17, 2021 at 01:00:14PM +1000, David Gibson wrote:
-> > On Thu, Jun 10, 2021 at 06:37:31PM +0200, Jean-Philippe Brucker wrote:
-> > > On Tue, Jun 08, 2021 at 04:31:50PM +1000, David Gibson wrote:
-> > > > For the qemu case, I would imagine a two stage fallback:
-> > > >
-> > > >     1) Ask for the exact IOMMU capabilities (including pagetable
-> > > >        format) that the vIOMMU has.  If the host can supply, you're
-> > > >        good
-> > > >
-> > > >     2) If not, ask for a kernel managed IOAS.  Verify that it can m=
-ap
-> > > >        all the IOVA ranges the guest vIOMMU needs, and has an equal=
- or
-> > > >        smaller pagesize than the guest vIOMMU presents.  If so,
-> > > >        software emulate the vIOMMU by shadowing guest io pagetable
-> > > >        updates into the kernel managed IOAS.
-> > > >
-> > > >     3) You're out of luck, don't start.
-> > > >
-> > > > For both (1) and (2) I'd expect it to be asking this question *afte=
-r*
-> > > > saying what devices are attached to the IOAS, based on the virtual
-> > > > hardware configuration.  That doesn't cover hotplug, of course, for
-> > > > that you have to just fail the hotplug if the new device isn't
-> > > > supportable with the IOAS you already have.
-> > >
-> > > Yes. So there is a point in time when the IOAS is frozen, and cannot =
-take
-> > > in new incompatible devices. I think that can support the usage I had=
- in
-> > > mind. If the VMM (non-QEMU, let's say) wanted to create one IOASID FD
-> per
-> > > feature set it could bind the first device, freeze the features, then=
- bind
-> >
-> > Are you thinking of this "freeze the features" as an explicitly
-> > triggered action?  I have suggested that an explicit "ENABLE" step
-> > might be useful, but that hasn't had much traction from what I've
-> > seen.
+> ok, so your problem seem to be different from my assumption. Could you =
+try
+> the patch below on top of the previous one ?
 >=20
-> Seems like we do need an explicit enable step for the flow you described
-> above:
+> This will help us to confirm that the problem comes from load_avg and =
+that
+> it's linked to the cfs load_avg and it's not a problem happening =
+earlier in
+> the update of PELT.
 >=20
-> a) Bind all devices to an ioasid. Each bind succeeds.
 
-let's use consistent terms in this discussion. :)
+Indeed. With both the patches applied I see following warning related to =
+load_avg
 
-'bind' the device to a IOMMU fd (container of I/O address spaces).=20
-
-'attach' the device to an IOASID (representing an I/O address space=20
-within the IOMMU fd)
-
-> b) Ask for a specific set of features for this aggregate of device. Ask
->    for (1), fall back to (2), or abort.
-> c) Boot the VM
-> d) Hotplug a device, bind it to the ioasid. We're long past negotiating
->    features for the ioasid, so the host needs to reject the bind if the
->    new device is incompatible with what was requested at (b)
->=20
-> So a successful request at (b) would be the point where we change the
-> behavior of bind.
-
-Per Jason's recommendation v2 will move to a new model:
-
-a) Bind all devices to an IOMMU fd:
-        - The user should provide a 'device_cookie' to mark each bound=20
-          device in following uAPIs.
-
-b) Successful binding allows user to check the capability/format info per
-     device_cookie (GET_DEVICE_INFO), before creating any IOASID:
-        - Sample capability info:
-               * VFIO type1 map: supported page sizes, permitted IOVA range=
-s, etc.;
-               * IOASID nesting: hardware nesting vs. software nesting;
-               * User-managed page table: vendor specific formats;
-               * User-managed pasid table: vendor specific formats;
-               * vPASID: whether delegated to user, if kernel-managed per-R=
-ID or global;
-               * coherency: what's kernel default policy, whether allows us=
-er to change;
-               * ...
-       - Actual logistics might be finalized when code is implemented;
-
-c) When creating a new IOASID, the user should specify a format which
-    is compatible to one or more devices which will be attached to this=20
-    IOASID right after.
-
-d) Attaching a device which has incompatible format to this IOASID=20
-     is simply rejected. Whether it's hotplugged doesn't matter.
-
-Qemu is expected to query capability/format information for all devices
-according to what a specified vIOMMU model requires. Then decide
-whether to fail vIOMMU creation if not strictly matched or fall back to
-a hybrid model with software emulation to bridge the gap. In any case
-before a new I/O address space is created, Qemu should have a clear=20
-picture about what format is required given a set of to-be-attached=20
-devices and whether multiple IOASIDs are required if these devices=20
-have incompatible formats.=20
-
-With this model we don't need a separate 'enable' step. =20
-
->=20
-> Since the kernel needs a form of feature check in any case, I still have =
-a
-> preference for aborting the bind at (a) if the device isn't exactly
-> compatible with other devices already in the ioasid, because it might be
-> simpler to implement in the host, but I don't feel strongly about this.
-
-this is covered by d). Actually with all the format information available
-Qemu even should not attempt to attach incompatible device in the=20
-first place, though the kernel will do this simple check under the hood.
+         Starting NTP client/server...
+         Starting VDO volume services...
+[    9.029054] ------------[ cut here ]------------
+[    9.029084] cfs_rq->avg.load_avg
+[    9.029111] WARNING: CPU: 21 PID: 1169 at kernel/sched/fair.c:3282 =
+update_blocked_averages+0x760/0x830
+[    9.029151] Modules linked in: pseries_rng xts vmx_crypto =
+uio_pdrv_genirq uio sch_fq_codel ip_tables xfs libcrc32c sr_mod sd_mod =
+cdrom t10_pi sg ibmvscsi ibmveth scsi_transport_srp dm_mirror =
+dm_region_hash dm_log dm_mod fuse
+[    9.029233] CPU: 21 PID: 1169 Comm: grep Not tainted =
+5.13.0-rc7-next-20210621-dirty #3
+[    9.029246] NIP:  c0000000001b6150 LR: c0000000001b614c CTR: =
+c000000000728f40
+[    9.029259] REGS: c00000000e177650 TRAP: 0700   Not tainted  =
+(5.13.0-rc7-next-20210621-dirty)
+[    9.029271] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: =
+48088224  XER: 00000005
+[    9.029296] CFAR: c00000000014d120 IRQMASK: 1=20
+[    9.029296] GPR00: c0000000001b614c c00000000e1778f0 c0000000029bb900 =
+0000000000000014=20
+[    9.029296] GPR04: 00000000fffeffff c00000000e1775b0 0000000000000027 =
+c00000154f637e18=20
+[    9.029296] GPR08: 0000000000000023 0000000000000001 0000000000000027 =
+c00000167f1d7fe8=20
+[    9.029296] GPR12: 0000000000008000 c00000154ffe0e80 000000000000b820 =
+000000021a2c6864=20
+[    9.029296] GPR16: c0000000482cc000 c00000154f6c2580 0000000000000001 =
+0000000000000000=20
+[    9.029296] GPR20: c00000000291a7f9 c0000000482cc100 0000000000000000 =
+000000000000020d=20
+[    9.029296] GPR24: 0000000000000000 c00000154f6c2f90 0000000000000001 =
+c000000030b84400=20
+[    9.029296] GPR28: 000000000000020d c0000000482cc1c0 0000000000000338 =
+0000000000000000=20
+[    9.029481] NIP [c0000000001b6150] =
+update_blocked_averages+0x760/0x830
+[    9.029494] LR [c0000000001b614c] update_blocked_averages+0x75c/0x830
+[    9.029508] Call Trace:
+[    9.029515] [c00000000e1778f0] [c0000000001b614c] =
+update_blocked_averages+0x75c/0x830 (unreliable)
+[    9.029533] [c00000000e177a20] [c0000000001bd388] =
+newidle_balance+0x258/0x5c0
+[    9.029542] [c00000000e177ab0] [c0000000001bd7cc] =
+pick_next_task_fair+0x7c/0x4c0
+[    9.029574] [c00000000e177b10] [c000000000cee3dc] =
+__schedule+0x15c/0x1780
+[    9.029599] [c00000000e177c50] [c0000000001a5984] =
+do_task_dead+0x64/0x70
+[    9.029622] [c00000000e177c80] [c000000000156338] do_exit+0x848/0xcc0
+[    9.029646] [c00000000e177d50] [c000000000156884] =
+do_group_exit+0x64/0xe0
+[    9.029666] [c00000000e177d90] [c000000000156924] =
+sys_exit_group+0x24/0x30
+[    9.029688] [c00000000e177db0] [c0000000000310c0] =
+system_call_exception+0x150/0x2d0
+         Startin[    9.029710] [gc00000000e177e10 Hardware Monito] =
+[c00000000000_common+0xec/0x2lling Sensors...
+78
+[    9.029743] --- interrupt: c00 at 0x7fff943fddcc
+[    9.029758] NIP:  00007fff943fddcc LR: 00007fff94357f04 CTR: =
+0000000000000000
+[    9.029786] REGS: c00000000e177e80 TRAP: 0c00   Not tainted  =
+(5.13.0-rc7-next-20210621-dirty)
+[    9.029798] MSR:  800000000280f033 =
+<SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 28000402  XER: 00000000
+[    9.029825] IRQMASK: 0=20
+[    9.029825] GPR00: 00000000000000ea 00007ffff59c0170 00007fff94527100 =
+0000000000000001=20
+[    9.029825] GPR04: 0000000000000000 0000000000000000 0000000000000001 =
+0000000000000000=20
+[    9.029825] GPR08: 0000000000000000 0000000000000000 0000000000000000 =
+0000000000000000=20
+[    9.029825] GPR12: 0000000000000000 00007fff9466af00 0000000000000000 =
+0000000000000000=20
+[    9.029825] GPR16: 0000000000000000 0000000000000000 0000000000000000 =
+0000000000000000=20
+[    9.029825] GPR20: 0000000000000000 00007fff94524f98 0000000000000002 =
+0000000000000001=20
+[    9.029825] GPR24: 00007fff94520950 0000000000000000 0000000000000001 =
+0000000000000001=20
+[    9.029825] GPR28: 0000000000000000 0000000000000000 00007fff94663f10 =
+0000000000000001=20
+[    9.029935] NIP [00007fff943fddcc] 0x7fff943fddcc
+[    9.029944] LR [00007fff94357f04] 0x7fff94357f04
+[    9.029952] --- interrupt: c00
+[    9.029959] Instruction dump:
+[    9.029966] 0fe00000 4bfffc64 60000000 60000000 89340007 2f890000 =
+409efc38 e8610098=20
+[    9.029987] 39200001 99340007 4bf96f71 60000000 <0fe00000> 4bfffc1c =
+60000000 60000000=20
+[    9.030013] ---[ end trace 3d7e3a29c9539d96 ]---
+         Starting Authorization Manager=E2=80=A6
 
 Thanks
-Kevin
+-Sachin
+
+
+>=20
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index da91db1c137f..8a6566f945a0 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -3030,8 +3030,9 @@ account_entity_dequeue(struct cfs_rq *cfs_rq, =
+struct sched_entity *se)
+> static inline void
+> enqueue_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se)
+> {
+> +       u32 divider =3D get_pelt_divider(&se->avg);
+>        cfs_rq->avg.load_avg +=3D se->avg.load_avg;
+> -       cfs_rq->avg.load_sum +=3D se_weight(se) * se->avg.load_sum;
+> +       cfs_rq->avg.load_sum =3D cfs_rq->avg.load_avg * divider;
+> }
+>=20
+> static inline void
+> @@ -3304,9 +3305,9 @@ static inline bool cfs_rq_is_decayed(struct =
+cfs_rq *cfs_rq)
+>         * Make sure that rounding and/or propagation of PELT values =
+never
+>         * break this.
+>         */
+> -       SCHED_WARN_ON(cfs_rq->avg.load_avg ||
+> -                     cfs_rq->avg.util_avg ||
+> -                     cfs_rq->avg.runnable_avg);
+> +       SCHED_WARN_ON(cfs_rq->avg.load_avg);
+> +       SCHED_WARN_ON(cfs_rq->avg.util_avg);
+> +       SCHED_WARN_ON(cfs_rq->avg.runnable_avg);
+>=20
+>        return true;
+> }
+>=20
+>=20
+>>=20
+>>         Starting Terminate Plymouth Boot Screen...
+>>         Starting Hold until boot process finishes up...
+>> [FAILED] Failed to start Crash recovery kernel arming.
+>> See 'systemctl status kdump.service' for details.
+>> [   10.737913] ------------[ cut here ]------------
+>> [   10.737960] cfs_rq->avg.load_avg || cfs_rq->avg.util_avg || =
+cfs_rq->avg.runnable_avg
+>> [   10.737976] WARNING: CPU: 27 PID: 146 at kernel/sched/fair.c:3279 =
+update_blocked_averages+0x758/0x780
+>> [   10.738010] Modules linked in: stp llc rfkill sunrpc pseries_rng =
+xts vmx_crypto uio_pdrv_genirq uio sch_fq_codel ip_tables xfs libcrc32c =
+sr_mod sd_mod cdrom t10_pi sg ibmvscsi ibmveth scsi_transport_srp =
+dm_mirror dm_region_hash dm_log dm_mod fuse
+>> [   10.738089] CPU: 27 PID: 146 Comm: ksoftirqd/27 Not tainted =
+5.13.0-rc7-next-20210621-dirty #2
+>> [   10.738103] NIP:  c0000000001b2768 LR: c0000000001b2764 CTR: =
+c000000000729120
+>> [   10.738116] REGS: c000000015973840 TRAP: 0700   Not tainted  =
+(5.13.0-rc7-next-20210621-dirty)
+>> [   10.738130] MSR:  800000000282b033 =
+<SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 48000224  XER: 00000005
+>> [   10.738161] CFAR: c00000000014d120 IRQMASK: 1=20
+>> [   10.738161] GPR00: c0000000001b2764 c000000015973ae0 =
+c0000000029bb900 0000000000000048=20
+>> [   10.738161] GPR04: 00000000fffeffff c0000000159737a0 =
+0000000000000027 c00000154f9f7e18=20
+>> [   10.738161] GPR08: 0000000000000023 0000000000000001 =
+0000000000000027 c00000167f1d7fe8=20
+>> [   10.738161] GPR12: 0000000000000000 c00000154ffd7e80 =
+c00000154fa82580 000000000000b78a=20
+>> [   10.738161] GPR16: 000000028007883c 00000000000002ed =
+c000000038d31000 0000000000000000=20
+>> [   10.738161] GPR20: 0000000000000000 c0000000029fdfe0 =
+0000000000000000 000000000000037b=20
+>> [   10.738161] GPR24: 0000000000000000 c00000154fa82f90 =
+0000000000000001 c00000003d4ca400=20
+>> [   10.738161] GPR28: 00000000000002ed c000000038d311c0 =
+c000000038d31100 0000000000000000=20
+>> [   10.738281] NIP [c0000000001b2768] =
+update_blocked_averages+0x758/0x780
+>> [   10.738290] LR [c0000000001b2764] =
+update_blocked_averages+0x754/0x780
+>> [   10.738299] Call Trace:
+>> [   10.738303] [c000000015973ae0] [c0000000001b2764] =
+update_blocked_averages+0x754/0x780 (unreliable)
+>> [   10.738315] [c000000015973c00] [c0000000001be720] =
+run_rebalance_domains+0xa0/0xd0
+>> [   10.738326] [c000000015973c30] [c000000000cf9acc] =
+__do_softirq+0x15c/0x3d4
+>> [   10.738337] [c000000015973d20] [c000000000158464] =
+run_ksoftirqd+0x64/0x90
+>> [   10.738346] [c000000015973d40] [c00000000018fd24] =
+smpboot_thread_fn+0x204/0x270
+>> [   10.738357] [c000000015973da0] [c000000000189770] =
+kthread+0x190/0x1a0
+>> [   10.738367] [c000000015973e10] [c00000000000ceec] =
+ret_from_kernel_thread+0x5c/0x70
+>> [   10.738381] Instruction dump:
+>> [   10.738388] 3863c808 9be9eefe 4bf9a979 60000000 0fe00000 4bfff980 =
+e9210070 e8610088=20
+>> [   10.738410] 39400001 99490003 4bf9a959 60000000 <0fe00000> =
+4bfffc24 3d22fff6 8929eefb=20
+>> [   10.738431] ---[ end trace 9ca80b55840c53f0 ]=E2=80=94
+>>=20
+>> Thanks
+>> -Sachin
+>>=20
+>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>>> index 8cc27b847ad8..da91db1c137f 100644
+>>> --- a/kernel/sched/fair.c
+>>> +++ b/kernel/sched/fair.c
+>>> @@ -3037,8 +3037,9 @@ enqueue_load_avg(struct cfs_rq *cfs_rq, struct =
+sched_entity *se)
+>>> static inline void
+>>> dequeue_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se)
+>>> {
+>>> +       u32 divider =3D get_pelt_divider(&se->avg);
+>>>       sub_positive(&cfs_rq->avg.load_avg, se->avg.load_avg);
+>>> -       sub_positive(&cfs_rq->avg.load_sum, se_weight(se) * =
+se->avg.load_sum);
+>>> +       cfs_rq->avg.load_sum =3D cfs_rq->avg.load_avg * divider;
+>>> }
+>>> #else
+>>> static inline void
+
