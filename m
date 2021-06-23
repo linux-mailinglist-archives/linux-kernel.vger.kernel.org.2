@@ -2,122 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFBE3B2237
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C90343B223C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhFWVJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 17:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFWVJN (ORCPT
+        id S229924AbhFWVKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 17:10:46 -0400
+Received: from mail-pl1-f175.google.com ([209.85.214.175]:33782 "EHLO
+        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFWVKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 17:09:13 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AED3C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 14:06:55 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id k5so2222608pjj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 14:06:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NGOtnJRM413AW/4WzGgBLLTqbXHQ1TD22dgtA07InvY=;
-        b=d+7AgKkBClG4Pi7p+1wrEXh5Vw7Ffgd5qmz+Ifmsk9unDXMJwnMadmgiOclHpqjXfQ
-         kUBsjWgXXWjEa/W2Fxm6rj+GEzi1gXYks4nUyZiLqRqd5ga3B+Ee5Xq0aR7BtQIo27jm
-         9BbQRI49JsfoAPU/5thquB7J164rNuol74IIAN5OWgvmS3U2tQdnkRC+R+3MZx9mNmVR
-         LLI/O/1MYjYQ2gsbbT7X3MJOShiAQs3OcE8/9gzwELLe8sbbTu5/vXeoOUCncYxn5Kzj
-         /Mbjkb1+zQ+iiZmr2QFRE3HciQHLuOvr7BOf/ntZp8dg83rgxas+khDXe5ereDFht2sw
-         gcCA==
+        Wed, 23 Jun 2021 17:10:43 -0400
+Received: by mail-pl1-f175.google.com with SMTP id f10so1840813plg.0;
+        Wed, 23 Jun 2021 14:08:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NGOtnJRM413AW/4WzGgBLLTqbXHQ1TD22dgtA07InvY=;
-        b=kUHBMKr5BCOIvy/K+FMAHd2sMBDZFRHhMcSyXZPJ0MOGQv71ZwhjAQudTBd6Sjyn6I
-         ECMrsU0uuxri4A6NrREyYdXq+AfDvRwzN0SmEf6y08qd7lDsbNSHpRyieYttDdMIMFlU
-         spFEtFMf6bh5kyJT3eST5ZFMHB5L6AN34Fqf2Kh5xwICRONhH3sYUEQMqCYOQ4qnxVFZ
-         nkK2hmLKuK4CouEVghJQ6m8jD/VezorxtXISBcVJuz/iAsyyYIuKROTCYF62z51jFMS7
-         DhU12aztbDKFzE53vwiiTLSj1+wL+Y0mwefxoS2un+XUGlDL2H2PCCPK+C7UIHgm4K1B
-         OVFw==
-X-Gm-Message-State: AOAM532KgJmGfCjlv9f9lB9K23O17RZ+09NBaYzbhqeHcw9oH0OuiEvs
-        2pIygIu94oPxieyat8Rfr/h3zg==
-X-Google-Smtp-Source: ABdhPJxmcGvI6WF/6wJ4phX5MiTOXtD1weAlXETOb2PhcyTtcuAy620UrfS6qWp1nh89/XX4bqdPlQ==
-X-Received: by 2002:a17:902:9a01:b029:11a:d4e:8f4 with SMTP id v1-20020a1709029a01b029011a0d4e08f4mr1271615plp.52.1624482414587;
-        Wed, 23 Jun 2021 14:06:54 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id 190sm46371pgd.1.2021.06.23.14.06.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 14:06:54 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 21:06:50 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH 00/54] KVM: x86/mmu: Bug fixes and summer cleaning
-Message-ID: <YNOiar3ySxs0Z3N3@google.com>
-References: <20210622175739.3610207-1-seanjc@google.com>
- <b4efb3fd-9591-3153-5a64-19afb12edb2b@redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gZwBdBLs++V9xhBPmC4GV0Qda84sztnFz2ba/5gwfkE=;
+        b=VRL0AKyi0vRSWjaoDx9AV+a8tEwG4NX2PMZLeXLmUFSmA+PkXYVeJwMKsOpvZpmjG7
+         IWQBdW0l4QkSEMYQ+8Yh2yStKh3y/ptfI5Gcg8ZSSY2EUtXrkV8iVLlOoVHFjvIipyq+
+         DsRtMTMBDD0dBEt022Rahe2g6ctov98IxcVmopbziaqLuoKwED0NHpig30JVpEymfN/l
+         xXefRy2UtWbm2/hZnPrf3YJVmnwyIbM/OJ4R8k+TqoJCNMYoQXC8X6Lp1KJq310GBCid
+         VV+fJvzLKEKDaH+R/bUxWBuAfzrLhjMRYKLsx4sdXLSej9BHwfPoM4HYHBomz4ltc4QV
+         9cfA==
+X-Gm-Message-State: AOAM5333I+K8ObqVETivm4Ep3rAEtmuivgBmrhK5Ig/PBUNa7zqjmYoa
+        VokuQCX/3NgVPc+khJQNS9yWqezxytI=
+X-Google-Smtp-Source: ABdhPJxii+00hklQYX3DtNqvsT283hSS5BmiQecIdlMkoYIdNt05v5WIT760fBQWGkNL7aRZm9tXpQ==
+X-Received: by 2002:a17:90b:2306:: with SMTP id mt6mr11846433pjb.71.1624482504794;
+        Wed, 23 Jun 2021 14:08:24 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id k35sm41869pgi.21.2021.06.23.14.08.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 14:08:23 -0700 (PDT)
+Subject: Re: [PATCH v4 03/10] scsi: ufs: Update the return value of supplier
+ pm ops
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
+ <1624433711-9339-4-git-send-email-cang@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <59b0c04a-298a-4eae-7938-8170835c00b7@acm.org>
+Date:   Wed, 23 Jun 2021 14:08:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b4efb3fd-9591-3153-5a64-19afb12edb2b@redhat.com>
+In-Reply-To: <1624433711-9339-4-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021, Paolo Bonzini wrote:
-> On 22/06/21 19:56, Sean Christopherson wrote:
-> > Patch 01 is the only patch that is remotely 5.13 worthy, and even then
-> > only because it's about as safe as a patch can be.  Everything else is far
-> > from urgent as these bugs have existed for quite some time.
+On 6/23/21 12:35 AM, Can Guo wrote:
+> rpm_get_suppliers() is returning an error only if the error is negative.
+> However, ufshcd_wl_resume() may return a positive error code, e.g., when
+> hibern8 or SSU cmd fails. Make the positive return value a negative error
+> code so that consumers are aware of any resume failure from their supplier.
+> Make the same change to ufshcd_wl_suspend() just to keep symmetry.
 > 
-> Maybe patch 54 (not sarcastic), but I agree it's not at all necessary.
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> This is good stuff, I made a few comments but almost all of them (all except
-> the last comment on patch 9, "Unconditionally zap unsync SPs") are cosmetic
-> and I can resolve them myself.
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index abe5f2d..ee70522 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -8922,7 +8922,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  		ufshcd_release(hba);
+>  	}
+>  	hba->wlu_pm_op_in_progress = false;
+> -	return ret;
+> +	return ret <= 0 ? ret : -EINVAL;
+>  }
+>  
+>  static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+> @@ -9009,7 +9009,7 @@ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  	hba->clk_gating.is_suspended = false;
+>  	ufshcd_release(hba);
+>  	hba->wlu_pm_op_in_progress = false;
+> -	return ret;
+> +	return ret <= 0 ? ret : -EINVAL;
+>  }
 
-The 0-day bot also reported some warnings.  vcpu_to_role_regs() needs to be
-static, the helpers are added without a user.  I liked the idea of adding the
-helpers in one patch, but I can't really defend adding them without a user. :-/
+I think the above patch shows that indicating failure by either
+returning a positive or a negative value is a booby trap. Please modify
+ufshcd_send_request_sense() and ufshcd_set_dev_pwr_mode() such that
+these return a value that is either zero or negative. Are there any
+other functions than that need to be modified?
 
-   arch/x86/kvm/mmu/mmu.c:209:26: warning: no previous prototype for function 'vcpu_to_role_regs' [-Wmissing-prototypes]
-   struct kvm_mmu_role_regs vcpu_to_role_regs(struct kvm_vcpu *vcpu)
-                            ^
-   arch/x86/kvm/mmu/mmu.c:209:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   struct kvm_mmu_role_regs vcpu_to_role_regs(struct kvm_vcpu *vcpu)
-   ^
-   static
-   arch/x86/kvm/mmu/mmu.c:199:1: warning: unused function '____is_cr0_wp' [-Wunused-function]
-   BUILD_MMU_ROLE_REGS_ACCESSOR(cr0, wp, X86_CR0_WP);
+Thanks,
 
-> 
-> I'd like your input on renaming is_{cr0,cr4,efer}_* to is_mmu_* (and
-> possibly reduce the four underscores to two...).
-> 
-> If I get remarks by tomorrow, I'll get this into 5.14, otherwise consider
-> everything but the first eight patches queued only for 5.15.
-> 
-> > I labeled the "sections" of this mess in the shortlog below.
-> > 
-> > P.S. Does anyone know how PKRU interacts with NPT?  I assume/hope NPT
-> >       accesses, which are always "user", ignore PKRU, but the APM doesn't
-> >       say a thing.  If PKRU is ignored, KVM has some fixing to do.  If PKRU
-> >       isn't ignored, AMD has some fixing to do:-)
-> > 
-> > P.S.S. This series pulled in one patch from my vCPU RESET/INIT series,
-> >         "Properly reset MMU context at vCPU RESET/INIT", as that was needed
-> >         to fix a root_level bug on VMX.  My goal is to get the RESET/INIT
-> >         series refreshed later this week and thoroughly bombard everyone.
-> 
-> Note that it won't get into 5.14 anyway, since I plan to send my first pull
-> request to Linus as soon as Friday.
-
-Good to know.  I'll still try to get it out tomorrow as I'll be on vacation
-for a few weeks starting Friday, and I'm afraid I'll completely forget what's in
-the series :-)
+Bart.
