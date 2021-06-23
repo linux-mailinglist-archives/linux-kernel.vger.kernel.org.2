@@ -2,101 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4463B1127
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 02:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8773B1129
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 02:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhFWAxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 20:53:05 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:8293 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbhFWAxE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 20:53:04 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G8l1C4SlVz1BNZV;
-        Wed, 23 Jun 2021 08:45:35 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 23 Jun 2021 08:50:45 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 23 Jun 2021 08:50:44 +0800
-Subject: Re: [PATCH 5.10 000/146] 5.10.46-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210621154911.244649123@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <240a5dd3-f1e7-1a93-2fa1-eee0f6a65adf@huawei.com>
-Date:   Wed, 23 Jun 2021 08:50:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S230013AbhFWAzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 20:55:46 -0400
+Received: from m12-11.163.com ([220.181.12.11]:49309 "EHLO m12-11.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229751AbhFWAzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 20:55:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=riv/d
+        1fiZZvZXSAHNlPrcNY0KX3T2Arv+m2otWF3/Rw=; b=bmK6Kw6kLWbGKhP6uiiOb
+        plTFSAEH9GsiuAzisBhhGQGeY+hQi/5R4lx/xaC+yPtqChaKFMKW0ZT9+va/GQPO
+        jWg9FJRjriqMvskWBC3VnG7/WDeg3awmjdzd0GMY0z/HIP28+EQYo8mkCCYOxH+f
+        GrDlrBJ0lecBRk31vNzxFQ=
+Received: from ubuntu.localdomain (unknown [218.17.89.92])
+        by smtp7 (Coremail) with SMTP id C8CowABHVn72hdJg0WmrjQ--.23263S2;
+        Wed, 23 Jun 2021 08:53:11 +0800 (CST)
+From:   13145886936@163.com
+To:     roopa@nvidia.com, nikolay@nvidia.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>
+Subject: [PATCH] net: bridge: remove redundant return
+Date:   Tue, 22 Jun 2021 17:53:07 -0700
+Message-Id: <20210623005307.6215-1-13145886936@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: C8CowABHVn72hdJg0WmrjQ--.23263S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7JrWUJFyrAw17tFWrJw4UCFg_yoWkAwbEv3
+        s5ZrWI93yUXr92yrnrCw4qvF1rta1xur18CFnIgFW7trZ5Ar4Ig3WDJrs8trsFkw1xuFyU
+        Ar9YkFZIvr13KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5FYLPUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/xtbBdhe6g1UMRWteoQAAsQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: gushengxian <gushengxian@yulong.com>
 
+Return statements are not needed in Void function.
 
-On 2021/6/22 0:13, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.46 release.
-> There are 146 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 23 Jun 2021 15:48:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.46-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Signed-off-by: gushengxian <gushengxian@yulong.com>
+---
+ net/bridge/br_netlink.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Tested on arm64 and x86 for 5.10.46-rc1,
+diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
+index 8642e56059fb..b70075939721 100644
+--- a/net/bridge/br_netlink.c
++++ b/net/bridge/br_netlink.c
+@@ -619,7 +619,7 @@ void br_ifinfo_notify(int event, const struct net_bridge *br,
+ {
+ 	u32 filter = RTEXT_FILTER_BRVLAN_COMPRESSED;
+ 
+-	return br_info_notify(event, br, port, filter);
++	br_info_notify(event, br, port, filter);
+ }
+ 
+ /*
+@@ -814,7 +814,7 @@ static const struct nla_policy br_port_policy[IFLA_BRPORT_MAX + 1] = {
+ 	[IFLA_BRPORT_MODE]	= { .type = NLA_U8 },
+ 	[IFLA_BRPORT_GUARD]	= { .type = NLA_U8 },
+ 	[IFLA_BRPORT_PROTECT]	= { .type = NLA_U8 },
+-	[IFLA_BRPORT_FAST_LEAVE]= { .type = NLA_U8 },
++	[IFLA_BRPORT_FAST_LEAVE] = { .type = NLA_U8 },
+ 	[IFLA_BRPORT_LEARNING]	= { .type = NLA_U8 },
+ 	[IFLA_BRPORT_UNICAST_FLOOD] = { .type = NLA_U8 },
+ 	[IFLA_BRPORT_PROXYARP]	= { .type = NLA_U8 },
+-- 
+2.25.1
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Version: 5.10.46-rc1
-Commit: c00b84692b513471386cc0db08f8ac9020f88659
-Compiler: gcc version 7.3.0 (GCC)
-
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8906
-passed: 8906
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8906
-passed: 8906
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
