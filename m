@@ -2,162 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1419F3B1620
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49703B1635
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhFWIrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 04:47:31 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55328 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhFWIr3 (ORCPT
+        id S230152AbhFWIu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 04:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230130AbhFWIu3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 04:47:29 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4806921971;
-        Wed, 23 Jun 2021 08:45:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624437911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cE4bYv+K1a7sv52v46zmtwHcACNaYAGxMXHAvz0lsFc=;
-        b=XdfY4sc4xWI2HTg0TDm9NQAoNiKU8ylIL8iqkvaGvjVwBpN0oF8DF2TVrvfkjHXL+wHv9b
-        4u/B0V71Rf2L8Dn3/+WdO3BVwbi9ftfOBCSpPjV5t8hPBnTZk89FF9EiF6+2IQbDdEff7B
-        4ax0Dga4uiUox2ZV5aBXt5XA9xKihsM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624437911;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cE4bYv+K1a7sv52v46zmtwHcACNaYAGxMXHAvz0lsFc=;
-        b=hQF/ypcJP95FN5mlNb1Yt2ZxxXLDCH8Psd0bsrZVybnRX8ielOdixLXPLL+296+PJxI5Rg
-        9j8EBHSCwNHeZ4Aw==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 32B9C11A97;
-        Wed, 23 Jun 2021 08:45:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624437911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cE4bYv+K1a7sv52v46zmtwHcACNaYAGxMXHAvz0lsFc=;
-        b=XdfY4sc4xWI2HTg0TDm9NQAoNiKU8ylIL8iqkvaGvjVwBpN0oF8DF2TVrvfkjHXL+wHv9b
-        4u/B0V71Rf2L8Dn3/+WdO3BVwbi9ftfOBCSpPjV5t8hPBnTZk89FF9EiF6+2IQbDdEff7B
-        4ax0Dga4uiUox2ZV5aBXt5XA9xKihsM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624437911;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cE4bYv+K1a7sv52v46zmtwHcACNaYAGxMXHAvz0lsFc=;
-        b=hQF/ypcJP95FN5mlNb1Yt2ZxxXLDCH8Psd0bsrZVybnRX8ielOdixLXPLL+296+PJxI5Rg
-        9j8EBHSCwNHeZ4Aw==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id Hde3C5f00mC1JgAALh3uQQ
-        (envelope-from <bp@suse.de>); Wed, 23 Jun 2021 08:45:11 +0000
-Date:   Wed, 23 Jun 2021 10:45:04 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V3 65/66] x86/fpu/signal: Handle #PF in the direct
- restore path
-Message-ID: <YNL0kPkir7+sQVoO@zn.tnic>
-References: <20210618141823.161158090@linutronix.de>
- <20210618143451.783907985@linutronix.de>
+        Wed, 23 Jun 2021 04:50:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEA9C061756;
+        Wed, 23 Jun 2021 01:48:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=M9F8mCIj4S0MvLdVHR7/mG/7dfK1HG/42QHJ9bt57Mw=; b=QgT7SsfZnH11MtnYoWG+JXh1Os
+        vdQeZo22TK21CfDJjWwvMc+YDcoiH4H/YHEnqClzEtN00dP2YeAJub+W4bjQHj40J2G4vTMSeH4JH
+        6LSWbrrcdcGo1z72aQs95PEA1Ur28FLtPb8yX6kwzqnOJa2y0ca65ScwTqAHrOsQ7RuGdzv5SE3m0
+        YLA5n2oydCIHu76H+Z+dTMJy5bd5v5gDLj2ICzKyGTaJGXNXru8IiUDlfuU4WCdrV44VVC2xWiAhT
+        aaQ4q/VYVxWBmVs79lqQd2/toQM8a7/U9mARJ7GHDivgx8vR5pRCw5nPvhAakEprZg/WgQMTjqANN
+        vZ5j60Qg==;
+Received: from 089144193030.atnat0002.highway.a1.net ([89.144.193.30] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvyXZ-00FEAL-PC; Wed, 23 Jun 2021 08:47:27 +0000
+Date:   Wed, 23 Jun 2021 10:45:11 +0200
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 23/46] mm/writeback: Change __wb_writeout_inc() to
+ __wb_writeout_add()
+Message-ID: <YNL0l6AOT2RogKS7@infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-24-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210618143451.783907985@linutronix.de>
+In-Reply-To: <20210622121551.3398730-24-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:19:28PM +0200, Thomas Gleixner wrote:
-> If *RSTOR raises an exception, then the slow path is taken. That's wrong
-> because if the reason was not #PF then going through the slow path is waste
-> of time because that will end up with the same conclusion that the data is
-> invalid.
-> 
-> Now that the wrapper around *RSTOR return an negative error code, which is
-> the negated trap number, it's possible to differentiate.
-> 
-> If the *RSTOR raised #PF then handle it directly in the fast path and if it
-> was some other exception, e.g. #GP, then give up and do not try the fast
-> path.
-> 
-> This removes the legacy frame FRSTOR code from the slow path because FRSTOR
-> is not a ia32_fxstate frame and is therefore handled in the fast path.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  arch/x86/kernel/fpu/signal.c |   65 ++++++++++++++++++++-----------------------
->  1 file changed, 31 insertions(+), 34 deletions(-)
-> 
-> --- a/arch/x86/kernel/fpu/signal.c
-> +++ b/arch/x86/kernel/fpu/signal.c
-> @@ -270,11 +270,17 @@ static int restore_hwregs_from_user(void
->  	}
->  }
->  
-> -static int restore_fpregs_from_user(void __user *buf, u64 xrestore, bool fx_only)
-> +/*
-> + * Attempt to restore the FPU registers directly from user memory.
-> + * Pagefaults are handled and any errors returned are fatal.
-> + */
-> +static int restore_fpregs_from_user(void __user *buf, u64 xrestore,
-> +				    bool fx_only, unsigned int size)
->  {
->  	struct fpu *fpu = &current->thread.fpu;
->  	int ret ;
->  
-> +retry:
->  	fpregs_lock();
->  	pagefault_disable();
->  	ret = restore_hwregs_from_user(buf, xrestore, fx_only);
-> @@ -291,15 +297,16 @@ static int restore_fpregs_from_user(void
->  		 * invalidate the FPU register state otherwise the task
->  		 * might preempt current and return to user space with
->  		 * corrupted FPU registers.
-> -		 *
-> -		 * In case current owns the FPU registers then no further
-> -		 * action is required. The fixup in the slow path will
-> -		 * handle it correctly.
->  		 */
->  		if (test_thread_flag(TIF_NEED_FPU_LOAD))
->  			__cpu_invalidate_fpregs_state();
->  		fpregs_unlock();
-> -		return ret;
-> +
-> +		if (ret == -EFAULT)
-> +			ret = fault_in_pages_readable(buf, size);
-> +		if (!ret)
-> +			goto retry;
-> +		return ret == -EFAULT ? ret : -EINVAL;
+On Tue, Jun 22, 2021 at 01:15:28PM +0100, Matthew Wilcox (Oracle) wrote:
+> Allow for accounting N pages at once instead of one page at a time.
 
-Uuuh, this is gonna make people stop and think, with all those different
-ret assignments and cases. :)
+Looks good,
 
-In any case, __fpu_restore_sig() is starting to become somewhat saner
-again, nice!
-
-Reviewed-by: Borislav Petkov <bp@suse.de>
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Reviewed-by: Christoph Hellwig <hch@lst.de>
