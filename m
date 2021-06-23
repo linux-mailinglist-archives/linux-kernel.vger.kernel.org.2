@@ -2,188 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A28993B1147
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 03:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B5D3B114B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 03:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbhFWBRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 21:17:30 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:44100 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbhFWBR3 (ORCPT
+        id S230056AbhFWBTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 21:19:35 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:45366 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229751AbhFWBTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 21:17:29 -0400
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 4100C20B83DE;
-        Tue, 22 Jun 2021 18:15:13 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4100C20B83DE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1624410913;
-        bh=l5w3e6a6uV45UCOPO09+HzRVeLGtrESc4iOLHXlLq40=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=eeYWpJspNWBJwXVAAozA8nBj+r/ixX8Dlm+JJh+n64jeFEUJ7S/qji3vdmFeyzQbt
-         o2riDk6C172kqvkolzAULl0Prm52N4EhZD+iNa6WslrYt/Zk2nv49Tgs7oXLEOlbUM
-         SA+1cOODscth8UflP4gI2UwYnyL9Sma4U9qTv0kk=
-Received: by mail-pj1-f51.google.com with SMTP id pf4-20020a17090b1d84b029016f6699c3f2so2830143pjb.0;
-        Tue, 22 Jun 2021 18:15:13 -0700 (PDT)
-X-Gm-Message-State: AOAM531HN9tl4pq5T/zalL6tlu0N2nme0etR/T3KGdk4iimkbQkexN5m
-        l/CkOpe20Hnna7uOJt9X0VRF0oyayITVJ1mPTdk=
-X-Google-Smtp-Source: ABdhPJzLLexTZpICwihNJqNqUYtS2rIt+NYxLY8qUvXTajsE+vUnH89AEaOgxElegimr8XtRQl94Vvtz1Ub5nK9dW5E=
-X-Received: by 2002:a17:90a:650b:: with SMTP id i11mr6657767pjj.39.1624410912716;
- Tue, 22 Jun 2021 18:15:12 -0700 (PDT)
+        Tue, 22 Jun 2021 21:19:33 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15N1GGZl017647;
+        Wed, 23 Jun 2021 01:17:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=GvV9lmAIy36rYy+R5rAmGbC1kZlFF6ooGsin9vXZqbU=;
+ b=KnnNZC3B6Lqqv5IfE7KL0J5lK4sq1doXokiCCLZqgnU3VWGESh5Ex/YDcD212x8c0jbF
+ AL6p3xFk49hN42R1Wh7h9yFUyr9MEJqA3yIEGIxqb5zNabOBBkDeDCr/wNerOMSjTCVP
+ ohse/HjTpCuGVuWTx4xnSwir2KjZxEHnozDKnTxivls/vphXsKSMpCDVIHaQLjd0dUJd
+ JPagu7DBUWdVNtcnXXV2sOxyIvjM5/W3DMc/lXy7tRj+NGG6wKI1j6nC/lfEpLXLw/DR
+ 4HNnCqXAmTPGXcYFMPFHu+JQmdtboOnK2gvbzdlarlyOZxi78KnlJslckqvl+iqyh/PG 4w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39b98vagf6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Jun 2021 01:17:11 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15N1FdZp137234;
+        Wed, 23 Jun 2021 01:17:10 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2105.outbound.protection.outlook.com [104.47.70.105])
+        by aserp3030.oracle.com with ESMTP id 3996mec0sk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Jun 2021 01:17:10 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LDQo1bjlvSsltHEoscD60oOtAfndUauZTtABJEHNIdlZ8ox9jsJhFPASEdzvOxvvkbFFM1oGUNbPS6ezS3xCHefSp8aYfyYB8XxRLH68V1JP+nm4AOo97S0GKt5+oH1BMeJjRORgMxK9el1M7ppfxyntox/UVKzbCW+kU3cNC/CcXgUXnEGXzqah55BA8OicbB5b8cHXzwzCtruHFCrI3YAu11Qj7Fb6UL48+qkH7xO/YMIN2Y11O+FnYqNhjZPkQx0G3ph7Vj0iHHu52F3us1iYH0A1n6YQM6w+jlqkRCO7aLppqU3HdRBkT6SVepcK5R32x0kjFBudJvuwvhWMMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GvV9lmAIy36rYy+R5rAmGbC1kZlFF6ooGsin9vXZqbU=;
+ b=YrRdg+s3BZjpTMaKi6MAY1mW20GjvzaCvqSbjuOp/f3RxwH6Wimr08JCJa8aDJSEPeDrECma2lVzezNoV8tm3pOCA8C+xJIdyFPW8G+z9pixNnEpt4bRTPfFjdVsAyxk0wVJ6KYTeCcOVNAKJRg8JgGcrm7K47bkgxRMBNatFcr2fSso/JiaYro2OO7E3VuFO6t7/ZvFIYmXu4iiOMxRAmMBbzzFBVYrMe2nN4p0iqv2QBRCpFUeI5TmAMcZ/daP8JdQJhDByDGPMEvU3eXGQO323CRYNVQbqqufifb5W+8J8O8Cto/hpJZpG0j6Jhjv0Ok6bpC84/5CyT2LwdrwwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GvV9lmAIy36rYy+R5rAmGbC1kZlFF6ooGsin9vXZqbU=;
+ b=TwY4T1VF5inltCexJv0+bcZMUPWKB1CNsc4ycpmp5j6FPO/v95fJ00GySmhEosw4GEBo9sqViqXgluMrT84x9fZn4R06ZNx8uMgF9fsIQSrkRO++GXv5i5f6iZO1SP3lrfZfOoX9u4KaT+3GU5sdY+79+e3VRCpz9ug7fBv+sGo=
+Authentication-Results: canonical.com; dkim=none (message not signed)
+ header.d=none;canonical.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB5450.namprd10.prod.outlook.com (2603:10b6:510:ee::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Wed, 23 Jun
+ 2021 01:17:08 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796%7]) with mapi id 15.20.4242.024; Wed, 23 Jun 2021
+ 01:17:08 +0000
+To:     Colin King <colin.king@canonical.com>
+Cc:     Hannes Reinecke <hare@suse.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: aic7xxx: Fix unintentional sign extension issue
+ on left shift of u8
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1v965s7ln.fsf@ca-mkp.ca.oracle.com>
+References: <20210621151727.20667-1-colin.king@canonical.com>
+Date:   Tue, 22 Jun 2021 21:17:06 -0400
+In-Reply-To: <20210621151727.20667-1-colin.king@canonical.com> (Colin King's
+        message of "Mon, 21 Jun 2021 16:17:27 +0100")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: SJ0PR05CA0010.namprd05.prod.outlook.com
+ (2603:10b6:a03:33b::15) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-References: <20210617152754.17960-1-mcroce@linux.microsoft.com>
- <20210617152754.17960-4-mcroce@linux.microsoft.com> <17cd289430f08f2b75b7f04242c646f6@mailhost.ics.forth.gr>
- <d0f11655f21243ad983bd24381cdc245@AcuMS.aculab.com>
-In-Reply-To: <d0f11655f21243ad983bd24381cdc245@AcuMS.aculab.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Wed, 23 Jun 2021 03:14:36 +0200
-X-Gmail-Original-Message-ID: <CAFnufp1XeKM-N1MdWsNpU6NnF-dYUgGXL1W9r_DDWazTMyRHVA@mail.gmail.com>
-Message-ID: <CAFnufp1XeKM-N1MdWsNpU6NnF-dYUgGXL1W9r_DDWazTMyRHVA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] riscv: optimized memset
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Nick Kossifidis <mick@ics.forth.gr>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>, Guo Ren <guoren@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SJ0PR05CA0010.namprd05.prod.outlook.com (2603:10b6:a03:33b::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.7 via Frontend Transport; Wed, 23 Jun 2021 01:17:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1f9e0dc0-7b33-41d0-542d-08d935e49eea
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5450:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB54501FE190CA0EC38467BC2A8E089@PH0PR10MB5450.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rBSzkAygFZpeU/Xb/RroWunWWRJpjAVNMMVt/AjfNk0fgqKku9nIXDkA2dOQbimx1Ifut9bcd5XOkLpLdR5WmltgV2WUeaxA8Yf75An7XB8jcbl05Z1kj2x5xptJF15723sEwwf+8I32mrw1PLIZE/wjy9H/L3hogeAQRHPQKeKXTy16x/zJ7whg64pE9ls3UJmyJjyUUo/zHGH2hP529blGGQd7+44Ns1Bmzh4+d695OTIIOLBnYjWMu/FX5/AxPrYWSlrp+t78SMLUl7Bykya8UQDOFC1hIPcbpYQ8PVDo8UEwouPIQlD36XY4XkJe9APrZ8TG/19CqWkxnUJltdL4zB6ZFG2C0n7Uj8ezvp5qomgnXnyvuvIMFTF4tunEOpO5LH9gtSrIajR4H7Fh5AfQebATXF/Hbit/ciG+BBN50ox+S6Kl7ysCMWrISSKCBVcmBx+FMjskfAdPr0II/C0ctIvf9fNmvX25pAdXYJiMW8VBpxVzyuPx7S1zINgB3WQKMpnaAA3Dw/jFC+dVssgYmZSVtvDgFqVEGwjvk6rJT6kq/pyzocyt2xZqA12otwuEHCpqg6cygcYCbIYcXA7Myuxi2Ua0pwfeLl2hOtAcjkya3TxBNC3xe3wQOK9Y0xgL6r/XPC/nHZmymfiZ5HHmzXsUCjv/mHS5WpV5y/o=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(396003)(376002)(346002)(136003)(26005)(558084003)(66476007)(5660300002)(2906002)(6916009)(16526019)(8936002)(66946007)(8676002)(66556008)(186003)(55016002)(478600001)(38100700002)(38350700002)(52116002)(956004)(86362001)(7696005)(36916002)(54906003)(316002)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vyFYV2Qm1gZ1yHpsOdndnz8i6MKlquEUFeME5TpTE0mUmR4eOvaZCXlbJHBZ?=
+ =?us-ascii?Q?jF4+Sb3B9CO88coZPiWPaQimH4p1X2OAE0uQc8w0gM1qpTsJcvDGaHXYj5sM?=
+ =?us-ascii?Q?nKH861r9rMKs7wxvJZctbF2xDbA/OvJxniEMMCWx+E8DiMQylT2RbIKb2cWf?=
+ =?us-ascii?Q?4RcdoJsgEA6mFjEPxwALv7OKkdep7iZyT+Tk+rhU8ktltNCw9j3u7Km+Pcgn?=
+ =?us-ascii?Q?VNP1p7wmvaJodme791smSR9Zv1Vw3PlKbPJDWwWckLuLg46zVmdd+Cm7gEUM?=
+ =?us-ascii?Q?tkf1+rXBw/nbCIEtIt/MsN4s18efOUFHj4hozhoCKZY4BIJpTdfr/EvpODF4?=
+ =?us-ascii?Q?4znSH+QghuGquSu6PpWzNY5Xg+L0oPf2XiSiC2S2nKmJtJRgbrRzHtRLAtlX?=
+ =?us-ascii?Q?/MWhZqBcLtz/f+zI6tOUF6JMn7sPUEPJEJBDn2Yv2UfrouoiEltNOjBEhQjF?=
+ =?us-ascii?Q?y1Ntoaw/FYJIsFRq89S4Iu5HfwchHU0rgFaCW1ZqVuoiu4QoZm0vwN0S3SjL?=
+ =?us-ascii?Q?+8FDDpkbXPtRfFDq5/oAUl3qoztQ2uc1tgy1RdI9WQ0eyXnvPsvn0S6EkzjM?=
+ =?us-ascii?Q?FlvGNibJ8yBsdTKIZHOV5Y3bg9enyj/f1+foyewziHGGa9ILkQue3EzaeMXs?=
+ =?us-ascii?Q?+oLfxjE+Q50x5qBFJZxeM15yUrFCTdc5O834DNtomZPN5XWfpLvJPEUgR7OR?=
+ =?us-ascii?Q?fihplUamTiHfsh3UUB5ckxf4IWsCusumegAHNkXOrSAWW0fEEVyBMcw8WhPo?=
+ =?us-ascii?Q?nTauTnXXeSKG8Eu2yGQcV3CPei3rGT7ptTwdluwzqlZtelgGA6QmDGApLJYO?=
+ =?us-ascii?Q?CgqFyetgUkBFq7XmED2dLquAFCBqYYOxYH7S73NxHxzQoS+R1lNSF5tEMEva?=
+ =?us-ascii?Q?ZuqnzHq/sbWwWhyEL6cGTQ5BX6GwD5Weu/lqRdDLm2n84i3GW3PIt6LGnbfM?=
+ =?us-ascii?Q?/eWa3eT74uJuYsd30OYWu4GLezStqQUKXJaJzi6rdSv2YMRaUDNYhu8ggG+7?=
+ =?us-ascii?Q?EStQHQWSNnklCjmXboBvrsrsuY6T2dZ4Acg4CQlCVSAnbwNP36T5bs6lTcz8?=
+ =?us-ascii?Q?8MJFceOyX4VfrHBqwLUottQzQUltGE/3XbeGLp4T9kweL6yVY8mjYhuOIfkV?=
+ =?us-ascii?Q?Jd/5tiZsUCdiEhqyuDEoqbjPOqcc7tBfqVe5q02H4vTx8ZjCLjZi6Ahv/R7X?=
+ =?us-ascii?Q?Hky/60rxvTETHjF5wRLIClQwP+qDyCglR9wgL386b+zOXvBqp/r9fovq0Yrv?=
+ =?us-ascii?Q?gByuHLAfO62zjS5M8wUxsrHZStakXh28VpiKixAo0B3fnLPk4N6Ny+wQ3wnw?=
+ =?us-ascii?Q?s/q/7PlQrL0RPNDKlv9AIA4W?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f9e0dc0-7b33-41d0-542d-08d935e49eea
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2021 01:17:08.5395
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: G4OAo+Q8pNi7x7NLEQIjS1x/yazgB588OaQG4vpoPu+Le5ib1GTaH810vfSmkC4/Bp4xwTu9p7xyxzHjop15Wv8w0f69Honl7hv+Roz/V94=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5450
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10023 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ mlxscore=0 mlxlogscore=999 adultscore=0 phishscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106230004
+X-Proofpoint-ORIG-GUID: SmF2H3-Nz04OAX1pboUteVK_phkfHUQJ
+X-Proofpoint-GUID: SmF2H3-Nz04OAX1pboUteVK_phkfHUQJ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 10:38 AM David Laight <David.Laight@aculab.com> wro=
-te:
->
-> From: Nick Kossifidis
-> > Sent: 22 June 2021 02:08
-> >
-> > =CE=A3=CF=84=CE=B9=CF=82 2021-06-17 18:27, Matteo Croce =CE=AD=CE=B3=CF=
-=81=CE=B1=CF=88=CE=B5:
-> > > +
-> > > +void *__memset(void *s, int c, size_t count)
-> > > +{
-> > > +   union types dest =3D { .u8 =3D s };
-> > > +
-> > > +   if (count >=3D MIN_THRESHOLD) {
-> > > +           const int bytes_long =3D BITS_PER_LONG / 8;
-> >
-> > You could make 'const int bytes_long =3D BITS_PER_LONG / 8;'
->
-> What is wrong with sizeof (long) ?
-> ...
 
-Nothing, I guess that BITS_PER_LONG is just (sizeof(long) * 8) anyway
+Colin,
 
-> > > +           unsigned long cu =3D (unsigned long)c;
-> > > +
-> > > +           /* Compose an ulong with 'c' repeated 4/8 times */
-> > > +           cu |=3D cu << 8;
-> > > +           cu |=3D cu << 16;
-> > > +#if BITS_PER_LONG =3D=3D 64
-> > > +           cu |=3D cu << 32;
-> > > +#endif
-> > > +
-> >
-> > You don't have to create cu here, you'll fill dest buffer with 'c'
-> > anyway so after filling up enough 'c's to be able to grab an aligned
-> > word full of them from dest, you can just grab that word and keep
-> > filling up dest with it.
->
-> That will be a lot slower - especially if run on something like x86.
-> A write-read of the same size is optimised by the store-load forwarder.
-> But the byte write, word read will have to go via the cache.
->
-> You can just write:
->         cu =3D (unsigned long)c * 0x0101010101010101ull;
-> and let the compiler sort out the best way to generate the constant.
->
+> The shifting of the u8 integer returned fom ahc_inb(ahc, port+3) by 24
+> bits to the left will be promoted to a 32 bit signed int and then
+> sign-extended to a u64.
 
-Interesting. I see that most compilers do an integer multiplication,
-is it faster than three shift and three or?
+Applied to 5.14/scsi-staging, thanks!
 
-clang on riscv generates even more instructions to create the immediate:
-
-unsigned long repeat_shift(int c)
-{
-  unsigned long cu =3D (unsigned long)c;
-  cu |=3D cu << 8;
-  cu |=3D cu << 16;
-  cu |=3D cu << 32;
-
-  return cu;
-}
-
-unsigned long repeat_mul(int c)
-{
-  return (unsigned long)c * 0x0101010101010101ull;
-}
-
-repeat_shift:
-  slli a1, a0, 8
-  or a0, a0, a1
-  slli a1, a0, 16
-  or a0, a0, a1
-  slli a1, a0, 32
-  or a0, a0, a1
-  ret
-
-repeat_mul:
-  lui a1, 4112
-  addiw a1, a1, 257
-  slli a1, a1, 16
-  addi a1, a1, 257
-  slli a1, a1, 16
-  addi a1, a1, 257
-  mul a0, a0, a1
-  ret
-
-> >
-> > > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-> > > +           /* Fill the buffer one byte at time until the destination
-> > > +            * is aligned on a 32/64 bit boundary.
-> > > +            */
-> > > +           for (; count && dest.uptr % bytes_long; count--)
-> >
-> > You could reuse & mask here instead of % bytes_long.
-> >
-> > > +                   *dest.u8++ =3D c;
-> > > +#endif
-> >
-> > I noticed you also used CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS on your
-> > memcpy patch, is it worth it here ? To begin with riscv doesn't set it
-> > and even if it did we are talking about a loop that will run just a few
-> > times to reach the alignment boundary (worst case scenario it'll run 7
-> > times), I don't think we gain much here, even for archs that have
-> > efficient unaligned access.
->
-> With CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS it probably isn't worth
-> even checking the alignment.
-> While aligning the copy will be quicker for an unaligned buffer they
-> almost certainly don't happen often enough to worry about.
-> In any case you'd want to do a misaligned word write to the start
-> of the buffer - not separate byte writes.
-> Provided the buffer is long enough you can also do a misaligned write
-> to the end of the buffer before filling from the start.
->
-
-I don't understand this one, a misaligned write here is ~30x slower
-than an aligned one because it gets trapped and emulated in SBI.
-How can this be convenient?
-
-> I suspect you may need either barrier() or use a ptr to packed
-> to avoid the perverted 'undefined behaviour' fubar.'
->
-
-Which UB are you referring to?
-
-Regards,
---
-per aspera ad upstream
+-- 
+Martin K. Petersen	Oracle Linux Engineering
