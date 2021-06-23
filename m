@@ -2,137 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2534A3B222D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CFBE3B2237
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbhFWVDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 17:03:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
+        id S229818AbhFWVJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 17:09:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbhFWVDK (ORCPT
+        with ESMTP id S229660AbhFWVJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 17:03:10 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD474C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 14:00:52 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id x1so4898884qkp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 14:00:52 -0700 (PDT)
+        Wed, 23 Jun 2021 17:09:13 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AED3C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 14:06:55 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id k5so2222608pjj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 14:06:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wWc7S1al1WwAVOp+y6zQe0CWSp+8hVb9XJrJmdJfBBU=;
-        b=eUrA2uEsrdP8RvvO4m51oEKWTX2Qswv+d2+PL/m8WFQVCIL2f09FxousY0CsIS+/+K
-         jThpFKoOmBLw3lKktqNw/fRGHt0sM7kkB4o9pupIzDZS9POK+65OOp1ogpOsIvOea+0S
-         0fNbTGIy9p0/Dd8yUASCaERBMb0FOjh3vZv15C89/puNbHM2gurGb38tB407ijVjdlKr
-         cI3eavDSiqfoloXBni1Wyg8osmNC/EVCg0MdtgNHYrnbaHJyjMxvTXht8rwvXAQuheCm
-         E6JiZQ73lKfGzVdgjZtAuelbfNCGSmz3+rXK0z8gGkCc7w+F0sbwbMIIVlmG5OjFSoEl
-         fyXg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NGOtnJRM413AW/4WzGgBLLTqbXHQ1TD22dgtA07InvY=;
+        b=d+7AgKkBClG4Pi7p+1wrEXh5Vw7Ffgd5qmz+Ifmsk9unDXMJwnMadmgiOclHpqjXfQ
+         kUBsjWgXXWjEa/W2Fxm6rj+GEzi1gXYks4nUyZiLqRqd5ga3B+Ee5Xq0aR7BtQIo27jm
+         9BbQRI49JsfoAPU/5thquB7J164rNuol74IIAN5OWgvmS3U2tQdnkRC+R+3MZx9mNmVR
+         LLI/O/1MYjYQ2gsbbT7X3MJOShiAQs3OcE8/9gzwELLe8sbbTu5/vXeoOUCncYxn5Kzj
+         /Mbjkb1+zQ+iiZmr2QFRE3HciQHLuOvr7BOf/ntZp8dg83rgxas+khDXe5ereDFht2sw
+         gcCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wWc7S1al1WwAVOp+y6zQe0CWSp+8hVb9XJrJmdJfBBU=;
-        b=pwcRkswjFpFh9V7usSQbnZ8BXGj1OwtsUAgUdbt4nOUAaZFnOHz5J+CrKUcK0cNWEw
-         tjtnMVoo4l+H1cQZNSv2UaTjjTW8Wn2CRM/nNohxz4LoMxp62zHH0si0jAeSFIvq0187
-         PHaDudV8z6lecNkMCpZ50QjoAbF3K4d0MFNDV8oSaUoc+gY7k9E6a///CJ84MfUcl18H
-         UIYntSB+NZA1azGwz4Qp9nrr72p6Qd9EX7ZLR6yDaH9P646V91WaBmUwhZLNORcPuabJ
-         lwebMsvUWbiQCiSxiTH2aqE6rRInUwUz9H4EfHzmX8+eN3no4Po+a7uI54GnIV6d0ucP
-         Qwqw==
-X-Gm-Message-State: AOAM530DN56sq/SMH1JXiOY5h62MUOQNMXgDgu89tAvSU/Zf9CjrFI+a
-        gCW6g9smp6oUzyiTVWvMw5GmzdY8/JANIm2g0KQ4lA==
-X-Google-Smtp-Source: ABdhPJxxsQSUj31dvJRDYjgDMyLXsvuem6+pypfokYWpON7PFK8GL48uVo0QJFwKl2NczV8nr5j1V1Gr9vkQf7GAPgU=
-X-Received: by 2002:a37:311:: with SMTP id 17mr1235839qkd.295.1624482051895;
- Wed, 23 Jun 2021 14:00:51 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NGOtnJRM413AW/4WzGgBLLTqbXHQ1TD22dgtA07InvY=;
+        b=kUHBMKr5BCOIvy/K+FMAHd2sMBDZFRHhMcSyXZPJ0MOGQv71ZwhjAQudTBd6Sjyn6I
+         ECMrsU0uuxri4A6NrREyYdXq+AfDvRwzN0SmEf6y08qd7lDsbNSHpRyieYttDdMIMFlU
+         spFEtFMf6bh5kyJT3eST5ZFMHB5L6AN34Fqf2Kh5xwICRONhH3sYUEQMqCYOQ4qnxVFZ
+         nkK2hmLKuK4CouEVghJQ6m8jD/VezorxtXISBcVJuz/iAsyyYIuKROTCYF62z51jFMS7
+         DhU12aztbDKFzE53vwiiTLSj1+wL+Y0mwefxoS2un+XUGlDL2H2PCCPK+C7UIHgm4K1B
+         OVFw==
+X-Gm-Message-State: AOAM532KgJmGfCjlv9f9lB9K23O17RZ+09NBaYzbhqeHcw9oH0OuiEvs
+        2pIygIu94oPxieyat8Rfr/h3zg==
+X-Google-Smtp-Source: ABdhPJxmcGvI6WF/6wJ4phX5MiTOXtD1weAlXETOb2PhcyTtcuAy620UrfS6qWp1nh89/XX4bqdPlQ==
+X-Received: by 2002:a17:902:9a01:b029:11a:d4e:8f4 with SMTP id v1-20020a1709029a01b029011a0d4e08f4mr1271615plp.52.1624482414587;
+        Wed, 23 Jun 2021 14:06:54 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id 190sm46371pgd.1.2021.06.23.14.06.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 14:06:54 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 21:06:50 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: Re: [PATCH 00/54] KVM: x86/mmu: Bug fixes and summer cleaning
+Message-ID: <YNOiar3ySxs0Z3N3@google.com>
+References: <20210622175739.3610207-1-seanjc@google.com>
+ <b4efb3fd-9591-3153-5a64-19afb12edb2b@redhat.com>
 MIME-Version: 1.0
-References: <20210621173028.3541424-1-mw@semihalf.com> <20210621173028.3541424-2-mw@semihalf.com>
- <YNOW+mQNEmSRx/6V@lunn.ch>
-In-Reply-To: <YNOW+mQNEmSRx/6V@lunn.ch>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Wed, 23 Jun 2021 23:00:42 +0200
-Message-ID: <CAPv3WKctVLzTZxH2gc-M_ZT7T-i6OmwSQk30AQ4oHEm8BUrpiw@mail.gmail.com>
-Subject: Re: [net-next: PATCH v3 1/6] Documentation: ACPI: DSD: describe
- additional MAC configuration
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
-        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
-        Jon Nettleton <jon@solid-run.com>,
-        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
-        lenb@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b4efb3fd-9591-3153-5a64-19afb12edb2b@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On Wed, Jun 23, 2021, Paolo Bonzini wrote:
+> On 22/06/21 19:56, Sean Christopherson wrote:
+> > Patch 01 is the only patch that is remotely 5.13 worthy, and even then
+> > only because it's about as safe as a patch can be.  Everything else is far
+> > from urgent as these bugs have existed for quite some time.
+> 
+> Maybe patch 54 (not sarcastic), but I agree it's not at all necessary.
+> 
+> This is good stuff, I made a few comments but almost all of them (all except
+> the last comment on patch 9, "Unconditionally zap unsync SPs") are cosmetic
+> and I can resolve them myself.
 
-=C5=9Br., 23 cze 2021 o 22:18 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a):
->
-> > +MAC node example with a "fixed-link" subnode.
-> > +---------------------------------------------
-> > +
-> > +.. code-block:: none
-> > +
-> > +     Scope(\_SB.PP21.ETH1)
-> > +     {
-> > +       Name (_DSD, Package () {
-> > +         ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-> > +              Package () {
-> > +                  Package () {"phy-mode", "sgmii"},
-> > +              },
-> > +         ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),
-> > +              Package () {
-> > +                  Package () {"fixed-link", "LNK0"}
-> > +              }
-> > +       })
->
-> At least in the DT world, it is pretty unusual to see both fixed-link
-> and phy-mode.
+The 0-day bot also reported some warnings.  vcpu_to_role_regs() needs to be
+static, the helpers are added without a user.  I liked the idea of adding the
+helpers in one patch, but I can't really defend adding them without a user. :-/
 
-I did a quick experiment:
-git grep -C 8 fixed-link arch/arm64/boot/dts/
-git grep -C 8 fixed-link arch/arm/boot/dts/
-almost all MAC nodes (i.e. not switch ports) containing 'fixed-link'
-have an adjacent 'phy-mode' property defined. How else would the
-drivers know how to configure the HW connection type in its registers?
+   arch/x86/kvm/mmu/mmu.c:209:26: warning: no previous prototype for function 'vcpu_to_role_regs' [-Wmissing-prototypes]
+   struct kvm_mmu_role_regs vcpu_to_role_regs(struct kvm_vcpu *vcpu)
+                            ^
+   arch/x86/kvm/mmu/mmu.c:209:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   struct kvm_mmu_role_regs vcpu_to_role_regs(struct kvm_vcpu *vcpu)
+   ^
+   static
+   arch/x86/kvm/mmu/mmu.c:199:1: warning: unused function '____is_cr0_wp' [-Wunused-function]
+   BUILD_MMU_ROLE_REGS_ACCESSOR(cr0, wp, X86_CR0_WP);
 
-> You might have one of the four RGMII modes, in order to
-> set the delays when connecting to a switch. But sgmii and fixed link
-> seems very unlikely, how is sgmii autoneg going to work?
->
+> 
+> I'd like your input on renaming is_{cr0,cr4,efer}_* to is_mmu_* (and
+> possibly reduce the four underscores to two...).
+> 
+> If I get remarks by tomorrow, I'll get this into 5.14, otherwise consider
+> everything but the first eight patches queued only for 5.15.
+> 
+> > I labeled the "sections" of this mess in the shortlog below.
+> > 
+> > P.S. Does anyone know how PKRU interacts with NPT?  I assume/hope NPT
+> >       accesses, which are always "user", ignore PKRU, but the APM doesn't
+> >       say a thing.  If PKRU is ignored, KVM has some fixing to do.  If PKRU
+> >       isn't ignored, AMD has some fixing to do:-)
+> > 
+> > P.S.S. This series pulled in one patch from my vCPU RESET/INIT series,
+> >         "Properly reset MMU context at vCPU RESET/INIT", as that was needed
+> >         to fix a root_level bug on VMX.  My goal is to get the RESET/INIT
+> >         series refreshed later this week and thoroughly bombard everyone.
+> 
+> Note that it won't get into 5.14 anyway, since I plan to send my first pull
+> request to Linus as soon as Friday.
 
-Indeed most cases in the tree are "rgmii*", but we can also see e.g.
-10gbase-r, sgmii and 2500base-x. You can find sgmii + fixed-link on
-the eth1 of the armada-388-clearfog. Regarding the autoneg - I'm
-mostly familiar with the mvneta/mvpp2, but in this mode the
-autonegotiation is disabled and the link is forcibly set up/down in
-MAC registers during the netedev_open/close accordingly. FYI, along
-with the 10G ports on CN913x-DB, I tested fixed-link on Macchiatobin
-sgmii port.
-
-Anyway - all above is a bit side discussion to the actual DSDT
-description and how the fixed-link subnode looks like. I think
-phy-mode set to "sgmii" is not incorrect, but we can change it to
-whatever other type of your preference, as well.
-
-Best regards,
-Marcin
-
-> > +       Name (LNK0, Package(){ // Data-only subnode of port
-> > +         ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-> > +              Package () {
-> > +                  Package () {"speed", 1000},
-> > +                  Package () {"full-duplex", 1}
-> > +              }
-> > +       })
-> > +     }
-> > +
->
->   Andrew
+Good to know.  I'll still try to get it out tomorrow as I'll be on vacation
+for a few weeks starting Friday, and I'm afraid I'll completely forget what's in
+the series :-)
