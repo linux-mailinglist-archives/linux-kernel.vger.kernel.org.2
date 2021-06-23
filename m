@@ -2,97 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15B33B2405
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A1A3B2408
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhFWXmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 19:42:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42254 "EHLO
+        id S230015AbhFWXmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 19:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbhFWXmV (ORCPT
+        with ESMTP id S229994AbhFWXma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 19:42:21 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6C9C061574;
-        Wed, 23 Jun 2021 16:40:01 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id o22so1757577wms.0;
-        Wed, 23 Jun 2021 16:40:01 -0700 (PDT)
+        Wed, 23 Jun 2021 19:42:30 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D72BC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 16:40:11 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id r16so5210966ljk.9
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 16:40:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:references:from:subject:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=dIcMIKiqgju7ISXHt5Sf7jt9PfPhvTF5fdN3Qy2UJsU=;
-        b=Bscv8COquz6oOXtYPkM82AFLwQ4HLPDrGR15Ksn5WmHl67ROgBeViE/NpaBnXPAy7L
-         LL/6lC2SZFXvL+50PpWWzo35GqzWDuJg2KSy/gPOcPNAb7b7yX0HHVWUjw4pLscGYzJV
-         pj06iRfaPLjMx0olGsvLwloIUXinqinKA5OhE3u01/voB2byrKGvcMIzsB1Q8i7r6BEM
-         j7g5OtXNXhknSkUscwJkpdYyAaKMhtmBBHUfxl/DFz+i8PtRQKQ9a2iBenFGFI1em4gX
-         SZmLwrdkhbsRmqKY93Sq+q67th8MMUSK3iGxAsDomJlZ6hfUM3oYBv8f3/+3cE1ntxgb
-         ghWQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m22T5sLi5MlC7izMU83G6XELshO1TaCPD5d1ECbMfac=;
+        b=kYlOcxydYne7K3UofWUlouyNMEFl8Ul06Flm3MVhkhmJfe8bLDR4bHZD4KvVWkBIgY
+         qc7E/sbFvHltDrrnGBn2x3sRPKJdT9KHVxas98fbgfi819yGP1WrsW4XoNjKrtPmR95k
+         rJQjQI5F69ZukAtJI9FbH5wpS0KsBHnMhBO0WtuK0v8nXQF1tslMUK3qwlyuFtWCuNnD
+         nX4JA1CGHRfrzv0fqmwVktpzPHfGivDVn3xnRoODT0pOIm82K0BJru6bzzmSZbpigUBA
+         MbjYbgrN4PuClJvu7Szn/WhFGiUSxOXCc3JPiQNbgrnRUQK3fbOSMfYmUvhY1hnEa7Qd
+         CHDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dIcMIKiqgju7ISXHt5Sf7jt9PfPhvTF5fdN3Qy2UJsU=;
-        b=jbjoWAMYpzSodKYf29D89O1Zz6wsndtVBfpcrLNmQWzQyYhO0sNm30CG9p4dE0KOHQ
-         Nzsfs1iiJBk1uyiBSarG8Xxc4gS4LMBqlV3/HozYCi7mOXUhbqRbzKlVffhd9/eRJHn5
-         186CQaK8c+WFNnEzCIsGFAvgTQXs5IoB7DY2SZ6vafaHieUmmwNFbHq3UTm9wjrz/9o4
-         Bk2fqHWfQjU9kJlxYYCDTeESqslY3wUt0eDHQJN1Qp+f1GZ9M4RhzHL8VDf26NKSD6eE
-         ii9vpPcvqtU6W9lMMBQ4n/6xKdL+BAV4J8C27jrUn11Ko6kEr0z+XVXywJytyelaC7z1
-         GoGw==
-X-Gm-Message-State: AOAM530/oczfoMiLBAvgIKfr0KAJvC9dzdqD4sQpr3ZnXsHdgKICfnGC
-        yfGe4Cru17ZE2OZi7HxZ/g96Ajv0A5TVV/hu
-X-Google-Smtp-Source: ABdhPJwO5cUNQP5ldlLTIVuWHKD1YVgqfnNS3SOfaWuXlVUo0Yeg0KgdMlZ7BtKJqd/XirmwDtAm1Q==
-X-Received: by 2002:a7b:cc92:: with SMTP id p18mr681984wma.93.1624491600385;
-        Wed, 23 Jun 2021 16:40:00 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.132.93])
-        by smtp.gmail.com with ESMTPSA id y66sm1159957wmy.39.2021.06.23.16.39.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 16:39:59 -0700 (PDT)
-To:     Jens Axboe <axboe@kernel.dk>,
-        Olivier Langlois <olivier@trillion01.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1624473200.git.olivier@trillion01.com>
- <b401640063e77ad3e9f921e09c9b3ac10a8bb923.1624473200.git.olivier@trillion01.com>
- <b8b77ef8-6908-6446-5245-5dbd8fa7cfd7@gmail.com>
- <6a566122-c4b2-6594-cc94-c578988d3f80@kernel.dk>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [PATCH v2 2/2] io_uring: Create define to modify a SQPOLL
- parameter
-Message-ID: <8f4c6fad-ff01-4b3a-a0d8-06717af5095c@gmail.com>
-Date:   Thu, 24 Jun 2021 00:39:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m22T5sLi5MlC7izMU83G6XELshO1TaCPD5d1ECbMfac=;
+        b=ER56ilyZMrXMhUWyLgq3agETYNVGF0zYFcY8fTGBuJEutLDnVFmHPFboKCNZ7Ljhvy
+         IeR24oHYMtqvsu/OuShTPBMKViprRcQ48WYwiijAhHt2DrmOD/ulSgRBv4Lodz6soK7a
+         uonj16YdOv1X2IqhuXfZkirk/XC7r4pCLp1iODLd6Ftkv9iGcOP8ra9hRWZFygmI82LL
+         nHpFMTt1GaCQ3DSoSkVbx1pdep8+rUB5W9zoDa7oNHbve/JE6O6iYfbSPnT/DfVDKvV6
+         ttoDPMpfpYKbHcJ5MYYddfUHnWLWEK1qFjZkSv2Ua0H+q5y0akMRsDoF2aC2El/x2Ia5
+         o4oA==
+X-Gm-Message-State: AOAM5322CNQks6krPNtDG7NsHfDAYT1ZVzNL73y4WVuXBbFeqEfFf8Nt
+        4HX+M57IiucxSkSCuUm5ojDudqCi8f7WMfcMEMAPfA==
+X-Google-Smtp-Source: ABdhPJzOF4Ju7gn+qrrFwHzrEs5fB36HGogB9jife7y/otPbrov9r4mj4mrsoTx3PREkTDMDLa3Qw1NKN87uyvS8OPo=
+X-Received: by 2002:a2e:a492:: with SMTP id h18mr1567944lji.495.1624491609801;
+ Wed, 23 Jun 2021 16:40:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6a566122-c4b2-6594-cc94-c578988d3f80@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CA+G9fYsWHE5Vu9T3FV-vtHHbVFJWEF=bmjQxwaZs3uVYef028g@mail.gmail.com>
+ <CA+G9fYvvf+XTvZg1sTq4_f9OrVFsCazGo0ozaEbjVYgSeKCkWA@mail.gmail.com>
+ <YMtTdU2b9fI3dnFD@casper.infradead.org> <YMuOSnJsL9qkxweY@archlinux-ax161>
+ <6f3c5317-2877-9a57-0126-e9305f000269@linux.ibm.com> <YM0mrZIPM+sWTDHf@Ryzen-9-3900X.localdomain>
+In-Reply-To: <YM0mrZIPM+sWTDHf@Ryzen-9-3900X.localdomain>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 23 Jun 2021 16:39:56 -0700
+Message-ID: <CAKwvOd=w0iPT_LLHQ48Mq3XCZcW9dZNRTpq+0OyVEjsg-VRXOw@mail.gmail.com>
+Subject: Re: [next] [clang] x86_64-linux-gnu-ld: mm/mremap.o: in function
+ `move_pgt_entry': mremap.c:(.text+0x763): undefined reference to `__compiletime_assert_342'
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        lkft-triage@lists.linaro.org, LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 11:24 PM, Jens Axboe wrote:
-> On 6/23/21 4:14 PM, Pavel Begunkov wrote:
->> On 6/23/21 7:50 PM, Olivier Langlois wrote:
->>> The magic number used to cap the number of entries extracted from an
->>> io_uring instance SQ before moving to the other instances is an
->>> interesting parameter to experiment with.
->>>
->>> A define has been created to make it easy to change its value from a
->>> single location.
->>
->> It's better to send fixes separately from other improvements,
->> because the process a bit different for them, go into different
->> branches and so on.
-> 
-> It's not a huge problem even if they go to different branches,
-> for these I'd be more comfortable doing 5.14 anyway and that
-> makes it even less of a concern.
+An additional report:
+https://lore.kernel.org/lkml/20210623223015.GA315292@paulmck-ThinkPad-P17-Gen-1/
+EOM
 
-Ok, good to know. I was finding splitting more convenient
-as a default option, easier with b4, more confidence that
-they apply to the right branch and so on
+On Fri, Jun 18, 2021 at 4:05 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On Fri, Jun 18, 2021 at 10:32:42AM +0530, Aneesh Kumar K.V wrote:
+> > On 6/17/21 11:32 PM, Nathan Chancellor wrote:
+> > > Rebuilt the CC list because most people were added based on the
+> > > incorrect bisect result.
+> > >
+> > > On Thu, Jun 17, 2021 at 02:51:49PM +0100, Matthew Wilcox wrote:
+> > > > On Thu, Jun 17, 2021 at 06:15:45PM +0530, Naresh Kamboju wrote:
+> > > > > On Thu, 17 Jun 2021 at 17:41, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> > > > > > x86_64-linux-gnu-ld: mm/mremap.o: in function `move_pgt_entry':
+> > > > > > mremap.c:(.text+0x763): undefined reference to `__compiletime_assert_342'
+> > > > >
+> > > > > The git bisect pointed out the first bad commit.
+> > > > >
+> > > > > The first bad commit:
+> > > > > commit 928cf6adc7d60c96eca760c05c1000cda061604e
+> > > > > Author: Stephen Boyd <swboyd@chromium.org>
+> > > > > Date:   Thu Jun 17 15:21:35 2021 +1000
+> > > > >      module: add printk formats to add module build ID to stacktraces
+> > > >
+> > > > Your git bisect probably went astray.  There's no way that commit
+> > > > caused that regression.
+> > >
+> > > My bisect landed on commit 83f85ac75855 ("mm/mremap: convert huge PUD
+> > > move to separate helper"). flush_pud_tlb_range() evaluates to
+> > > BUILD_BUG() when CONFIG_TRANSPARENT_HUGEPAGE is unset but this function
+> > > is present just based on the value of
+> > > CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD.
+> > >
+> > > $ make -skj(nproc) ARCH=x86_64 CC=clang O=build/x86_64 distclean allnoconfig mm/mremap.o
+> > >
+> > > $ llvm-readelf -s build/x86_64/mm/mremap.o &| rg __compiletime_assert
+> > >      21: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT   UND __compiletime_assert_337
+> > >
+> > > $ rg TRANSPARENT_ build/x86_64/.config
+> > > 450:CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE=y
+> > > 451:CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD=y
+> > > 562:# CONFIG_TRANSPARENT_HUGEPAGE is not set
+> > >
+> > > Not sure why this does not happen on newer clang versions, presumably
+> > > something with inlining decisions? Still seems like a legitimate issue
+> > > to me.
+> > >
+> >
+> > gcc 10 also doesn't give a build error. I guess that is because we evaluate
+> >
+> >      if (pud_trans_huge(*old_pud) || pud_devmap(*old_pud)) {
+> >
+> >  to if (0) with CONFIG_TRANSPARENT_HUGEPAGE disabled.
+> >
+> > switching that to if (1) do results in BUILD_BUG triggering.
+>
+> Thanks for pointing that out. I think what happens with clang-10 and
+> clang-11 is that move_huge_pud() gets inlined into move_pgt_entry() but
+> then the compiler does not figure out that the HPAGE_PUD case is dead so
+> the code sticks around, where as GCC and newer clang versions can figure
+> that out and eliminate that case.
+>
+> > Should we fix this ?
+>
+> Yes, I believe that we should.
+>
+> > modified   mm/mremap.c
+> > @@ -336,7 +336,7 @@ static inline bool move_normal_pud(struct vm_area_struct
+> > *vma,
+> >  }
+> >  #endif
+> >
+> > -#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+> > +#if defined(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
+> > defined(CONFIG_TRANSPARENT_HUGEPAGE)
+> >  static bool move_huge_pud(struct vm_area_struct *vma, unsigned long
+> > old_addr,
+> >                         unsigned long new_addr, pud_t *old_pud, pud_t *new_pud)
+> >  {
+>
+> That works or we could mirror what has already been done for the
+> HPAGE_PMD case. No personal preference.
+>
+> diff --git a/mm/mremap.c b/mm/mremap.c
+> index 9a7fbec31dc9..5989d3990020 100644
+> --- a/mm/mremap.c
+> +++ b/mm/mremap.c
+> @@ -460,7 +460,8 @@ static bool move_pgt_entry(enum pgt_entry entry, struct vm_area_struct *vma,
+>                                       new_entry);
+>                 break;
+>         case HPAGE_PUD:
+> -               moved = move_huge_pud(vma, old_addr, new_addr, old_entry,
+> +               moved = IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+> +                       move_huge_pud(vma, old_addr, new_addr, old_entry,
+>                                       new_entry);
+>                 break;
+>
+>
+> Cheers,
+> Nathan
+
+
 
 -- 
-Pavel Begunkov
+Thanks,
+~Nick Desaulniers
