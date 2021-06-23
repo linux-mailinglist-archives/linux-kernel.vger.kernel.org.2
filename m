@@ -2,105 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3EF93B20CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16C63B20D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 21:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhFWTL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 15:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFWTLw (ORCPT
+        id S229902AbhFWTN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 15:13:27 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:23209 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFWTNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 15:11:52 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387B7C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 12:09:34 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id 142-20020a370d940000b02903b12767b75aso3676717qkn.6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 12:09:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=J6FXlCH6GdU6G8KE2DrypG+FaXn/OBwuSoRNmfTEo4Y=;
-        b=Zv53Jlk8RsxRXVXxyvdxFRA86daaO67Qno0OYRPiOYqDm704ItdVfLG/RTQRWPRWd0
-         d8h50fETiRYyTsddvWgQoNke/RRXUz4gLq3fN85APG4SZ1PMWtSjHef2s3ACiksAn/rB
-         qirS2ynXEGrmcmtz2etIQbisE11XpcBz6OrJqsWgw8r0AipAdjEF8J6hLsX3LuD+teGW
-         qDIfRoRKiFkGQKafhpzD7dJFuUuo1eSCqrWmPoZcHFu0OyuqvMo1MftepJMeqISMaXvG
-         FZqZ1HVBoAMJONmQ1JR8obgHPp3DPy6CvuUTjJzs7qpUb5oTgaTfAvXig4k8STXl4XqB
-         C8rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=J6FXlCH6GdU6G8KE2DrypG+FaXn/OBwuSoRNmfTEo4Y=;
-        b=GxP91v1Ujev7BIHWylv45BlKhPvhZOjEcICdFL64x4kFoZQgupWHyEbVhGkyOPKg5b
-         M3H2w5eP/R0WZuJZ36S/8vDJ8AEVDepwdw8+lQWDu7Kxlydk3JiQo+UB0O6gGQ/KdZci
-         SsOPprNe0D5ZWCxjpiD3XnrqjNOpKGWEUXoQwOJY2vA3puHNL2S8dOgnxpfHdzhh3RBF
-         wo2eQvBUmwOM10iUqNFLS7Qxw92KP2d/hw+VN8ASlHEv2MfUs84WUXU0pLXicOgbx/XH
-         NJ4Zn6q8GUyRvJZD5hpmStCpN8Jfp3uSBQDWMVx2ubuRLiprl379A85S2pXOLRf83GsT
-         P/+Q==
-X-Gm-Message-State: AOAM531Z12n7nbaOiupOc4t/NI7YUWr6CNiuW810iKsAJF073eq5SxX7
-        5KBH3a5cPTQqoOBsetyXRB9bKHNYrlJ6vQ==
-X-Google-Smtp-Source: ABdhPJxDi48BGKHwxZ5fCr6+LLXgqU2ZiUABwokrBZKuGhuHj1qWSvi7pOGHas56dDEuDRZUgzHaAlL+0Trk7A==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:bb8a:281b:ed1:24b3])
- (user=dlatypov job=sendgmr) by 2002:a05:6902:1028:: with SMTP id
- x8mr1465157ybt.140.1624475373332; Wed, 23 Jun 2021 12:09:33 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 12:09:19 -0700
-Message-Id: <20210623190919.956814-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH] kunit: tool: remove unnecessary "annotations" import
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
+        Wed, 23 Jun 2021 15:13:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1624475452;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=Er6400DpBGbkMILlHTzXNng0HTW044QxiD2DGJNhQ2g=;
+    b=XkRIt2DI70riYYUbHi+mvVcL+uz7TXq4h/86ttAbh91nh+hhWc5cp05KvgFhP4wPIU
+    T1f8whgxXEdkeXwp2WS7OvOu3o9h31lVX97zUvJpXtt6c7h+BL4Kt18QYJOEYusWx4kO
+    10608oc8bX/U/nRD/KC1FlRSnPVCv2cT0W80fl69w+tYAmv+c9Sg8tST01rMilRYZ2xs
+    tnG0P5MswXI/4RhSGGvkM2R4kwZuI4wAAlMkyvKU5TLvcTaPSDxUR5lN/Jo7nLIRInuN
+    L46MpTxBDQY0MOrpx2Xos0AHwoaVzkfbLFCYpviiEQdBN4eeLp/mJMCpg4SHPuryewQI
+    ic0w==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNzyCzy1Sfr67uExK884EC0GFGHavJShFkMdZNkE="
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+    by smtp.strato.de (RZmta 47.27.5 DYNA|AUTH)
+    with ESMTPSA id L04113x5NJAp20R
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 23 Jun 2021 21:10:51 +0200 (CEST)
+Message-ID: <7acf0d4a63f7c94d8355101dd03cbfeb58c05d17.camel@chronox.de>
+Subject: Re: [PATCH v1] crypto: Make the DRBG compliant with NIST SP800-90A
+ rev1
+From:   Stephan Mueller <smueller@chronox.de>
+To:     =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        James Morris <jamorris@linux.microsoft.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Haxby <john.haxby@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Simo Sorce <simo@redhat.com>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
+        hpa@zytor.com, tytso@mit.edu
+Date:   Wed, 23 Jun 2021 21:10:51 +0200
+In-Reply-To: <9ca2fdb4-8cee-3667-c90a-358255fb8f54@digikod.net>
+References: <20210623120751.3033390-1-mic@digikod.net>
+         <9dbbf4e751cb4953fe63079cdc917a0bb3a91670.camel@chronox.de>
+         <a4e1c071-32af-9650-e6fd-8943b3a79bb0@linux.microsoft.com>
+         <8811360.37IJKxs2K1@positron.chronox.de>
+         <9ca2fdb4-8cee-3667-c90a-358255fb8f54@digikod.net>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The import was working around the fact "tuple[T]" was used instead of
-typing.Tuple[T].
+Am Mittwoch, dem 23.06.2021 um 20:04 +0200 schrieb Mickaël Salaün:
+> 
+> On 23/06/2021 19:27, Stephan Müller wrote:
+> > Am Mittwoch, 23. Juni 2021, 19:00:29 CEST schrieb James Morris:
+> > 
+> > Hi James,
+> > 
+> > > On Wed, 23 Jun 2021, Stephan Mueller wrote:
+> > > > > These changes replace the use of the Linux RNG with the Jitter RNG,
+> > > > > which is NIST SP800-90B compliant, to get a proper entropy input and a
+> > > > > nonce as defined by FIPS.
+> > > > 
+> > > > Can you please help me understand what is missing in the current code
+> > > > which
+> > > > seemingly already has achieved this goal?
+> > > 
+> > > The advice we have is that if an attacker knows the internal state of the
+> > > CPU, then the output of the Jitter RNG can be predicted.
+> > 
+> > Thank you for the hint. And I think such goal is worthwhile (albeit I have
+> > to 
+> > admit that if an attacker is able to gain the internal state of a CPU, I
+> > would 
+> > assume we have more pressing problems that a bit of entropy).
+> > 
+> > Anyways, the current code does:
+> > 
+> > - in regular mode: seed the DRBG with 384 bits of data from get_random_bytes
+> > 
+> > - in FIPS mode: seed the DRBG with 384 bits of data from get_random_bytes 
+> > concatenated with 384 bits from the Jitter RNG
+> > 
+> > 
+> > If I understand the suggested changes right, I would see the following
+> > changes 
+> > in the patch:
+> > 
+> > - in the regular case: 640 bits from get_random_bytes
+> 
+> Why 640 bits?
 
-Convert it to use type.Tuple to be consistent with how the rest of the
-code is anotated.
+ 		if (!reseed)
+ 			entropylen = ((entropylen + 1) / 2) * 3;
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- tools/testing/kunit/kunit_kernel.py | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+-> Entropylen is 384 in case of a security strength of 256 bits.
 
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index e1951fa60027..5987d5b1b874 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -6,15 +6,13 @@
- # Author: Felix Guo <felixguoxiuping@gmail.com>
- # Author: Brendan Higgins <brendanhiggins@google.com>
- 
--from __future__ import annotations
- import importlib.util
- import logging
- import subprocess
- import os
- import shutil
- import signal
--from typing import Iterator
--from typing import Optional
-+from typing import Iterator, Optional, Tuple
- 
- from contextlib import ExitStack
- 
-@@ -208,7 +206,7 @@ def get_source_tree_ops(arch: str, cross_compile: Optional[str]) -> LinuxSourceT
- 		raise ConfigError(arch + ' is not a valid arch')
- 
- def get_source_tree_ops_from_qemu_config(config_path: str,
--					 cross_compile: Optional[str]) -> tuple[
-+					 cross_compile: Optional[str]) -> Tuple[
- 							 str, LinuxSourceTreeOperations]:
- 	# The module name/path has very little to do with where the actual file
- 	# exists (I learned this through experimentation and could not find it
+Your code does the following if the Jitter RNG is not allocated (i.e. in non-
+fips mode):
 
-base-commit: 87c9c16317882dd6dbbc07e349bc3223e14f3244
--- 
-2.32.0.93.g670b81a890-goog
+ret = drbg_get_random_bytes(drbg, entropy, entropylen + strength);
+
+so: entropylen + strength = 384 + 256, no?
+
+> 
+> > 
+> > - in FIPS mode: 256 bits of data from get_random_bytes concatenated with 384
+> > bits from the Jitter RNG
+> 
+> In both cases there are 256 bits for the entropy input and 128 bits for
+> the nonce.
+
+I see in the code path with the Jitter RNG:
+
+ret = crypto_rng_get_bytes(drbg->jent, entropy,
+ 						   entropylen);
+
+--> 384 bits from the Jitter RNG
+
+ret = drbg_get_random_bytes(drbg, entropy + entropylen,
++						    strength);
+
+--> 256 bits from get_random_bytes
+
+What am I missing here?
+
+
+>  If Jitter RNG is not available, then urandom is used instead,
+> which means that the system is not FIPS compliant.
+
+Agreed, the existing does does exactly the same with the exception that it
+pulls 384 bits from get_random_bytes instead of 640 in non-FIPS mode (i.e.
+when the Jitter RNG is not allocated).
+
+In FIPS mode, the current code draws 384 bits from get_random_bytes and
+separately 384 bits from the Jitter RNG. So, each data block from either
+entropy source could completely satisfy the SP800-90A requirement.
+
+> 
+> This follows the SP800-90Ar1, section 8.6.7: [a nonce shall be] "A value
+> with at least (security_strength/2) bits of entropy".
+
+Agreed, but what is your code doing different than the existing code?
+> 
+> > 
+> > So, I am not fully sure what the benefit of the difference is: in FIPS mode 
+> > (where the Jitter RNG is used), the amount of data pulled from 
+> > get_random_bytes seems to be now reduced.
+> 
+> We can increase the amount of data pulled from get_random_bytes (how to
+> decide the amount?), but as we understand the document, this should be
+> part of the personalization string and additional input, not the nonce.
+
+There is no need to have a personalization string or additional input. Note,
+those two values are intended to be provided by a caller or some other
+environment.
+
+If you want to stuff more seed into the DRBG, you simply enlarge the seed
+buffer and pull more from the entropy sources. I have no objections doing
+that. All I am trying to point out is that the 90A standard does not require
+more entropy than 256 bits during initialization plus 128 bits of nonce == 384
+bits of data. But the DRBGs all allow providing more data as seed.
+
+> I guess it may not change much according to the implementation, as for
+> the order of random and entropy concatenation, but these changes align
+> with the specifications and it should help FIPS certifications.
+
+Are you saying the order of data from the entropy sources matters in the
+entropy buffer? I have not seen that in the standard, but if you say this is
+the goal, then allow me to understand which order you want to see?
+
+The current code contains the order of:
+
+<384 bits get_random_bytes> || <384 bits Jitter RNG>
+
+Thanks
+Stephan
+> 
+> > 
+> > Maybe I miss a point here, but I currently fail to understand why the
+> > changes 
+> > should be an improvement compared to the current case.
+> > 
+> > Ciao
+> > Stephan
+> > 
+> > 
+
 
