@@ -2,158 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 891133B1BE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0033B1BEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbhFWOEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:04:06 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52454 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231260AbhFWOD7 (ORCPT
+        id S231284AbhFWOEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:04:55 -0400
+Received: from mail-ua1-f51.google.com ([209.85.222.51]:34560 "EHLO
+        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230430AbhFWOEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:03:59 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1B3891FD36;
-        Wed, 23 Jun 2021 14:01:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624456901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w/XMjSd1ArDZiIdvvGl7Gc1Zip3z1VcHSbThBZcRsbU=;
-        b=Liy48y4JOsar34wdSnIy6K5wq1ggqhq6uhJwS3fOzYB6q+I9JmDN7Semc1W+vqgcijH8kP
-        OxT8FNFGp8bGHL1afLHaWHL7rDIAbiIMaveQtXCVeuw5/HjBwg1eszoRrUUcy/nfa3z8/p
-        ICjBvLTTts9DdFwMiuBucu2L65nmBuA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624456901;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w/XMjSd1ArDZiIdvvGl7Gc1Zip3z1VcHSbThBZcRsbU=;
-        b=vV9it4GNyXZqJ98l4XIea1URtJ/rCX++dM0Jenmg4X9Yfr9ISPNGHxzFRRZ3srBwesAgTM
-        N6yiVJ/Qg/qIyqBQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id A7EC711A97;
-        Wed, 23 Jun 2021 14:01:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624456901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w/XMjSd1ArDZiIdvvGl7Gc1Zip3z1VcHSbThBZcRsbU=;
-        b=Liy48y4JOsar34wdSnIy6K5wq1ggqhq6uhJwS3fOzYB6q+I9JmDN7Semc1W+vqgcijH8kP
-        OxT8FNFGp8bGHL1afLHaWHL7rDIAbiIMaveQtXCVeuw5/HjBwg1eszoRrUUcy/nfa3z8/p
-        ICjBvLTTts9DdFwMiuBucu2L65nmBuA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624456901;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w/XMjSd1ArDZiIdvvGl7Gc1Zip3z1VcHSbThBZcRsbU=;
-        b=vV9it4GNyXZqJ98l4XIea1URtJ/rCX++dM0Jenmg4X9Yfr9ISPNGHxzFRRZ3srBwesAgTM
-        N6yiVJ/Qg/qIyqBQ==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id DRUgKMQ+02BcTwAALh3uQQ
-        (envelope-from <hare@suse.de>); Wed, 23 Jun 2021 14:01:40 +0000
-Subject: Re: [PATCH v3 1/6] block: add disk sequence number
-To:     Lennart Poettering <mzxreary@0pointer.de>,
-        Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luca Boccassi <bluca@debian.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        Javier Gonz??lez <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>
-References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
- <20210623105858.6978-2-mcroce@linux.microsoft.com>
- <YNMffBWvs/Fz2ptK@infradead.org>
- <CAFnufp1gdag0rGQ8K4_2oB6_aC+EZgfgwd2eL4-AxpG0mK+_qQ@mail.gmail.com>
- <YNM8T44v5FTViVWM@gardel-login>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <3be63d9f-d8eb-7657-86dc-8d57187e5940@suse.de>
-Date:   Wed, 23 Jun 2021 16:01:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Wed, 23 Jun 2021 10:04:49 -0400
+Received: by mail-ua1-f51.google.com with SMTP id c47so192936uad.1;
+        Wed, 23 Jun 2021 07:02:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4kB7+8R1X1Mp14SEda7xSh4fu9NS5YjQHGge6J0bi9w=;
+        b=oo+BEZqR6dKsQ/GOoqsG47gtlUvQx2aTOcd4cJc2XK/qb6LMG5LtZ6Jv7E3VVfYagN
+         Mo5oV+1SqL0MiMBpZxqDoDCTsV7BvA2V9uzwiH0xj5oKlmP2/v0X5a0rN5UiPsPLraKo
+         KXrcIbKhPz8BMiMhXgOvID9XHc3n75kwozhvYID774bqwJsXUw3ID8H7c4hWSPcbqfpX
+         cB7CVu7U6Xd6MrSwoTkzMBLSEjS6V4QbGtDqLGG7UkF+CQKarfS3vL3mQLXuhqAvg5LP
+         uRPtuhrGLj5pAtJ867gcy0zSVAvVuFAPnRe6u9WjCk8917oZThUWwfQ9PMEC77TnNAgk
+         aHJg==
+X-Gm-Message-State: AOAM530pTGyZVJVnxazUbZEw/0ZvVU38LGvEW/t8JA64i0rvjpGRVDB+
+        2PRy6IXMWtSHEdAO/Bez3q3aTBsA6D/jiC7ZYzk33n9D6C1uDg==
+X-Google-Smtp-Source: ABdhPJy31i5AAunYMREiF+cdMgFimvVF04l3hoci7n34ee1J2y5AMmyPDDJo06xDEY8hquOoSeWkvrZOFG8J6pkbDPk=
+X-Received: by 2002:ab0:1e4c:: with SMTP id n12mr4804036uak.58.1624456951381;
+ Wed, 23 Jun 2021 07:02:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YNM8T44v5FTViVWM@gardel-login>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210623095942.3325-1-wsa+renesas@sang-engineering.com> <20210623095942.3325-6-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20210623095942.3325-6-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 23 Jun 2021 16:02:19 +0200
+Message-ID: <CAMuHMdVQ-XFy6fP_g70N8ukNPFj20ds-iEDF58Ocnpg7e5wLsQ@mail.gmail.com>
+Subject: Re: [PATCH 5/7] i2c: rcar: : use proper DMAENGINE API for termination
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux MMC List <linux-mmc@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 3:51 PM, Lennart Poettering wrote:
-> On Mi, 23.06.21 15:10, Matteo Croce (mcroce@linux.microsoft.com) wrote:
-> 
->> On Wed, Jun 23, 2021 at 1:49 PM Christoph Hellwig <hch@infradead.org> wrote:
->>>
->>> On Wed, Jun 23, 2021 at 12:58:53PM +0200, Matteo Croce wrote:
->>>> +void inc_diskseq(struct gendisk *disk)
->>>> +{
->>>> +     static atomic64_t diskseq;
->>>
->>> Please don't hide file scope variables in functions.
->>>
->>
->> I just didn't want to clobber that file namespace, as that is the only
->> point where it's used.
->>
->>> Can you explain a little more why we need a global sequence count vs
->>> a per-disk one here?
->>
->> The point of the whole series is to have an unique sequence number for
->> all the disks.
->> Events can arrive to the userspace delayed or out-of-order, so this
->> helps to correlate events to the disk.
->> It might seem strange, but there isn't a way to do this yet, so I come
->> up with a global, monotonically incrementing number.
-> 
-> To extend on this and given an example why the *global* sequence number
-> matters:
-> 
-> Consider you plug in a USB storage key, and it gets named
-> /dev/sda. You unplug it, the kernel structures for that device all
-> disappear. Then you plug in a different USB storage key, and since
-> it's the only one it will too be called /dev/sda.
-> 
-> With the global sequence number we can still distinguish these two
-> devices even though otherwise they can look pretty much identical. If
-> we had per-device counters then this would fall flat because the
-> counter would be flushed out when the device disappears and when a device
-> reappears under the same generic name we couldn't assign it a
-> different sequence number than before.
-> 
-> Thus: a global instead of local sequence number counter is absolutely
-> *key* for the problem this is supposed to solve
-> 
-Well ... except that you'll need to keep track of the numbers (otherwise 
-you wouldn't know if the numbers changed, right?).
-And if you keep track of the numbers you probably will have to implement 
-an uevent listener to get the events in time.
-But if you have an uevent listener you will also get the add/remove 
-events for these devices.
-And if you get add and remove events you can as well implement sequence 
-numbers in your application, seeing that you have all information 
-allowing you to do so.
-So why burden the kernel with it?
+Hi Wolfram,
 
-Cheers,
+On Wed, Jun 23, 2021 at 12:01 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> dmaengine_terminate_all() is deprecated in favor of explicitly saying if
+> it should be sync or async. Here, we want dmaengine_terminate_sync()
+> because there is no other synchronization code in the driver to handle
+> an async case.
+>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Hannes
+Thanks for your patch!
+
+Is this safe? The driver is not using a threaded irq, and DMA termination
+may be called from the interrupt handler.
+
+Have you tried triggering DMA termination, with lockdep enabled?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
