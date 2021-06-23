@@ -2,93 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7753B1C86
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12BF3B1C83
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbhFWOcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbhFWOcq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:32:46 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB151C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 07:30:27 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id v7so1937929pgl.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 07:30:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WKMVzZz8u7uLBmWomdYlr+oMy96WS6tUJGPPtCZ0D60=;
-        b=eYVZTdGsyVwQA4kGhfrZ47tU/XyD6Gdfb5Rx3FV6lq4wWZL1YRspeUnNTaN16uOM/5
-         PiZwMKxRT8JUaXAUA/B6aFfoWoCGBSxCgq9OBk8jcWvqbh7VlX3w1dMY1/ykca4/GhDN
-         OY8g353DIBKO8cvg/x7Zg5+Dnx1v8r30cn340=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WKMVzZz8u7uLBmWomdYlr+oMy96WS6tUJGPPtCZ0D60=;
-        b=j99fnlBOZThZqzWaEep7+5UgBwWucdr3EVvBctrV0H1c1wPENL8MgUNF120RlZCDdu
-         BNRT5NZD94/GBcsV/QeJlPmqz/tTdWbMsiQQTGwJi8frQknzHUA+4nPvmYzzmA8pluct
-         H0bLMKx5ZlZnqBoCS77svJHY443Utpo0oWWrnoxpr+pEAtfCwTYaIFDXuS01Q3NcLDQx
-         Q49LpDQOkhXqFpRywwVsVWZkJcU+dnzLpxLwIAHBdqhw/dy8ctfB05xpCNPk4WvdRHYM
-         MIuw7ItdCop6vziwt7ZTw10slOMHHqBMKLzdqQyc7f/M65UIXUuF43mbQzaRtaXYkXyV
-         MixA==
-X-Gm-Message-State: AOAM532uJcbq4tTsmXE1SU80aRgc0HTeMN8cntvZJjWdsVlQNgf0hIDC
-        q5vPzCHK1ePJ18Qaq90jbAD25w==
-X-Google-Smtp-Source: ABdhPJzBNh/oD3wHuk2SjWKRS7Sjx1wJamx3k/4NZa6pNlIIEJ2pDtPK2Km1/JZKZW6Ey9ydWdubmQ==
-X-Received: by 2002:a63:8241:: with SMTP id w62mr4176796pgd.343.1624458627555;
-        Wed, 23 Jun 2021 07:30:27 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q4sm158954pgg.0.2021.06.23.07.30.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 07:30:27 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 07:30:26 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     0day robot <lkp@intel.com>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Shuah Khan <shuah@kernel.org>, stable@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [selftests/lkdtm]  84d8cf25b0:
- kernel_BUG_at_drivers/misc/lkdtm/bugs.c
-Message-ID: <202106230728.4844CE5@keescook>
-References: <20210619025834.2505201-1-keescook@chromium.org>
- <20210623143549.GA25993@xsang-OptiPlex-9020>
+        id S231201AbhFWOck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:32:40 -0400
+Received: from mga17.intel.com ([192.55.52.151]:61095 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229523AbhFWOcj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 10:32:39 -0400
+IronPort-SDR: Df7HhXnOXxn5v6uQ80xCtCAsmN0GVOm7zT1JnbKd/lVQcbVypvE+cQg/WvXVe615mU4aCd/dKd
+ KtM54rgkhTTQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="187655225"
+X-IronPort-AV: E=Sophos;i="5.83,294,1616482800"; 
+   d="scan'208";a="187655225"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 07:30:21 -0700
+IronPort-SDR: C6+aZbqdDk246XhXNvDOJ+/rxc9bElyLIcisJuxRPwuLzQtBtReRRYHDlf+cLC5p+HwR38Y5Vm
+ iyMEAR/GTK2A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,294,1616482800"; 
+   d="scan'208";a="406325931"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
+  by orsmga006.jf.intel.com with ESMTP; 23 Jun 2021 07:30:17 -0700
+Subject: Re: [PATCH v4 06/10] scsi: ufs: Remove host_sem used in
+ suspend/resume
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
+ <1624433711-9339-8-git-send-email-cang@codeaurora.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <ed59d61a-6951-2acd-4f89-40f8dc5015e1@intel.com>
+Date:   Wed, 23 Jun 2021 17:30:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210623143549.GA25993@xsang-OptiPlex-9020>
+In-Reply-To: <1624433711-9339-8-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 10:35:50PM +0800, kernel test robot wrote:
+On 23/06/21 10:35 am, Can Guo wrote:
+> To protect system suspend/resume from being disturbed by error handling,
+> instead of using host_sem, let error handler call lock_system_sleep() and
+> unlock_system_sleep() which achieve the same purpose. Remove the host_sem
+> used in suspend/resume paths to make the code more readable.
 > 
+> Suggested-by: Bart Van Assche <bvanassche@acm.org>
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
 > 
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: 84d8cf25b0f80da0ac229214864654a7662ec7e4 ("[PATCH v2] selftests/lkdtm: Use /bin/sh not $SHELL")
-> url: https://github.com/0day-ci/linux/commits/Kees-Cook/selftests-lkdtm-Use-bin-sh-not-SHELL/20210619-105959
-> base: https://git.kernel.org/cgit/linux/kernel/git/shuah/linux-kselftest.git next
-> 
-> in testcase: kernel-selftests
-> version: kernel-selftests-x86_64-f8879e85-1_20210618
-> with following parameters:
-> 
-> 	group: lkdtm
-> 	ucode: 0xe2
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 3695dd2..a09e4a2 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -5907,6 +5907,11 @@ static void ufshcd_clk_scaling_suspend(struct ufs_hba *hba, bool suspend)
+>  
+>  static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+>  {
+> +	/*
+> +	 * It is not safe to perform error handling while suspend or resume is
+> +	 * in progress. Hence the lock_system_sleep() call.
+> +	 */
+> +	lock_system_sleep();
 
-Heh. Yes, this is working as intended. :) Most of the lkdtm tests will
-trigger Oopses, and this is by design: it is checking that the kernel
-catches bad conditions and freaks out appropriately.
+It looks to me like the system takes this lock quite early, even before
+freezing tasks, so if anything needs the error handler to run it will
+deadlock.
 
--Kees
+>  	ufshcd_rpm_get_sync(hba);
+>  	if (pm_runtime_status_suspended(&hba->sdev_ufs_device->sdev_gendev) ||
+>  	    hba->is_wlu_sys_suspended) {
+> @@ -5951,6 +5956,7 @@ static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
+>  		ufshcd_clk_scaling_suspend(hba, false);
+>  	ufshcd_clear_ua_wluns(hba);
+>  	ufshcd_rpm_put(hba);
+> +	unlock_system_sleep();
+>  }
+>  
+>  static inline bool ufshcd_err_handling_should_stop(struct ufs_hba *hba)
+> @@ -9053,16 +9059,13 @@ static int ufshcd_wl_suspend(struct device *dev)
+>  	ktime_t start = ktime_get();
+>  
+>  	hba = shost_priv(sdev->host);
+> -	down(&hba->host_sem);
+>  
+>  	if (pm_runtime_suspended(dev))
+>  		goto out;
+>  
+>  	ret = __ufshcd_wl_suspend(hba, UFS_SYSTEM_PM);
+> -	if (ret) {
+> +	if (ret)
+>  		dev_err(&sdev->sdev_gendev, "%s failed: %d\n", __func__,  ret);
+> -		up(&hba->host_sem);
+> -	}
+>  
+>  out:
+>  	if (!ret)
+> @@ -9095,7 +9098,6 @@ static int ufshcd_wl_resume(struct device *dev)
+>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
+>  	if (!ret)
+>  		hba->is_wlu_sys_suspended = false;
+> -	up(&hba->host_sem);
+>  	return ret;
+>  }
+>  #endif
+> 
 
--- 
-Kees Cook
