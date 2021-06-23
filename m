@@ -2,319 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA713B23AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E633B23B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhFWWxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 18:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhFWWxd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:53:33 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34D5C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:51:14 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id 69so1930502plc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:51:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ojZcueDSPD/ERt4bOu86T2XmRZadicKtfCs4npiprqs=;
-        b=oC2ki8sMMsIWI+7fRxQmfT/VBHQBCn+286TDaS+3A3i2l/BZho7r7TZg8FgUpw8/sj
-         MjuhW+2q2b8UdzUNovBjw+IBQxvi6GUEywBpircBIrpASBK4E8MoGzjHVQKOvzsnIy3s
-         rcwvVMYRFLEsS2TaR/glFdQ0Z69hyYgQQBUL6PEhN0dIgpCRObchPZ+BL/67IcR04PPk
-         8LFNlilbx6dTv3jKGqH2Lws1CC0+eKHJZrtCzwhbMr2xMwrCN0dAHQR4jhQwZMDVfrRy
-         anV9jE71OVAsIrW2ds+XOh2sJ33LOhTRp1fF75xutsq/GaITf2OI43N3nErnOzOli1le
-         xIzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ojZcueDSPD/ERt4bOu86T2XmRZadicKtfCs4npiprqs=;
-        b=UEd3m1KpGDu0u1/sIGv2YcAroBYMOk1p/8P+0k+9klQDXtF+vlwD3y97fZVZdEmN59
-         /4TJnmiUDD9EBiXV3IBLR2bXYp+ysfuKtKVkwoPIQFGmQeg9CCfnuGCScEuxkr6cCfJj
-         YH31sMgDJLC1HluaeuHkLK4me6PKmctt3J9kaZijqA41ayTeuW3pck6h8M5LKQ/48mVE
-         NajgoS2u1Z6AEmAnrmmLHI/UQmT3jr6KuCgRr5157sL4/KvTehV/c5ZhCV08MX0PZ747
-         soYhQ3oK0UM4Qccs8w0LhXyb3DEwWqDmJbrIAqKj33pXr4fTgIeH5fBiR1uOCyNnYTF9
-         7dPA==
-X-Gm-Message-State: AOAM532g31DoZQLa0WRGKg51BviMkFwePfrCdVahbojOF2iO5Ht55aHu
-        UA+16D7eZW1+8Ktfo7L1ubuFcw==
-X-Google-Smtp-Source: ABdhPJyPAZJXz6EIO9TE5Wi9N2xJrCac6WnBrjuCX+1oJoXEVZqA9T8G+Lhxa0hTnQlkj1rbPm4ayg==
-X-Received: by 2002:a17:902:8a83:b029:10f:45c4:b435 with SMTP id p3-20020a1709028a83b029010f45c4b435mr1489733plo.17.1624488674222;
-        Wed, 23 Jun 2021 15:51:14 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id z15sm141384pgu.71.2021.06.23.15.51.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 15:51:13 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 16:51:11 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Qi Liu <liuqi115@huawei.com>
-Cc:     alexander.shishkin@linux.intel.com, suzuki.poulose@arm.com,
-        jonathan.zhouwen@huawei.com, f.fangjian@huawei.com,
-        linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
-        linuxarm@huawei.com
-Subject: Re: [RFC PATCH 1/4] Documentation: tracing: Documentation for
- ultrasoc framework and drivers
-Message-ID: <20210623225111.GA1057775@p14s>
-References: <1623749684-65432-1-git-send-email-liuqi115@huawei.com>
- <1623749684-65432-2-git-send-email-liuqi115@huawei.com>
+        id S229850AbhFWWyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 18:54:39 -0400
+Received: from ozlabs.org ([203.11.71.1]:39155 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229726AbhFWWyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 18:54:38 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G9JS275Mlz9sV8;
+        Thu, 24 Jun 2021 08:52:18 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624488739;
+        bh=YTxTWDCl2htmPYBGAxRL4VBMNSZIIyBLcPcKhmWTcqc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=PpYLNDvgMef/Yr1a1iDvJ4EFcE/ouqbf0f2E5833dEceKM49DTuw45LlvYlVvq79I
+         nrAFYJ5BJ1DjENTMjPJzRp6RbCkj5+XxOH2VqMJCb9X3aNZNWD+0uUBq9NvOv0uFP0
+         ou+Sh90E/oxzN8+4p6jAN5poV2PlNxL3ydlLERQ01OEjcuKdAWetUQOfN0gRHqfUzL
+         RFOFTdmPR1j6tWDtjAoNPHetWTUq87AawIDoXkoC/qpPlNpbKMq5vnvjn4Xdol3A25
+         E/365bGl5nGzQXtTzbhcL3SGduoWbVYt1gAF40OyNTRlMNzvdb3/Y/CgGALPiW8zmi
+         +HyHU8CUg9HXQ==
+Date:   Thu, 24 Jun 2021 08:52:18 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the leds tree
+Message-ID: <20210624085218.54e081f8@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1623749684-65432-2-git-send-email-liuqi115@huawei.com>
+Content-Type: multipart/signed; boundary="Sig_/t.8s7cFA3GOYFvZ7sBh+mjU";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/t.8s7cFA3GOYFvZ7sBh+mjU
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 15, 2021 at 05:34:41PM +0800, Qi Liu wrote:
-> Ultrasoc trace module is a system level solution for both core tracing
-> and SoC tracing. This patch brings in a documentation for ultrasoc
-> framework and drivers. It simply introduces function of ultrasoc, a
-> typical Ultrasoc system, and a driver framework for ultrasoc.
-> 
-> Signed-off-by: Jonathan Zhou <jonathan.zhouwen@huawei.com>
-> Signed-off-by: Qi Liu <liuqi115@huawei.com>
-> ---
->  Documentation/trace/ultrasoc-trace.rst | 209 +++++++++++++++++++++++++++++++++
->  1 file changed, 209 insertions(+)
->  create mode 100644 Documentation/trace/ultrasoc-trace.rst
-> 
-> diff --git a/Documentation/trace/ultrasoc-trace.rst b/Documentation/trace/ultrasoc-trace.rst
-> new file mode 100644
-> index 0000000..36d2df2
-> --- /dev/null
-> +++ b/Documentation/trace/ultrasoc-trace.rst
-> @@ -0,0 +1,209 @@
-> +=======================================================
-> +Siemens Embedded Analytics - HW Assisted Tracing on SoC
-> +=======================================================
-> +   :Author:   Jonathan Zhou <Jonathan.zhouwen@huawei.com>
-> +              Qi Liu <liuqi115@huawei.com>
-> +   :Date:     January 16th, 2021
-> +
-> +Introduction
-> +------------
-> +
-> +The Siemens Embedded Analytics Framework is system level solution for tracing
-> +of multiple type SoC, this document is concerned with trace module. This module
-> +has two main components: AXI Bus Communicator and System Memory Buffer.
-> +
-> +The AXI Communicator has upstream and downstream channels, the upstream channel
-> +is used to transmit user configuration, and downstream channel to carry response
-> +and trace data to the users.
-> +
-> +The System Memory Buffer provides a way to buffer and store messages in system
-> +memory. It provides a capability to store messages received on its input message
-> +interface to an area of system memory.
-> +
-> +A typical Siemens trace system would look like the following diagram:
-> +                           @@@@@@@@@@@@@
-> +                           @    CPU    @
-> +                           @@@@@@@@@@@@@
-> +                           #############
-> +                           # Coresight #
-> +                             #  ETM  #
-> +                              #######
-> +                                ###
-> +                                 #
-> +                                 |
-> +                                 *
-> +                    *******************************
-> +                 *** AMBA Advanced Trace Bus (ATB) ***
-> +                    ***************^***************
-> +                          ===============    |
-> +                           === FUNNEL ==<--- |
-> +                              =======
-> +                                 |
-> +                                 *
-> +                              @@@@@@@
-> +                              @ TRC @
-> +                               @@@@@
-> +                                @@@
-> +                                 @
-> +                                 |
-> +                                 *
-> +    ************************************** *******************
-> + ************************ Message BUS ***************************
-> +    ******************^************************^****************
-> +             |                               |
-> +     @@@@@@@@@@@@@@@@@@                      |   @@@@@@@@@@@@
-> +     @ Message Engine @                      |   @ JTAG COM @
-> +     @@@@@@@@@@@@@@@@@@                      |    @@@@@@@@@@
-> +       |            *                        |---> @@@@@@@@
-> +       |            |                               @@@@@@
-> +    @@@@@@@         |   @@@@@@@@@@@                    |
-> +    @ SMB @         |   @ AXI COM @                  JTAG
-> +     @@@@@          |--> @@@@@@@@@
-> +      @@@--|              @@@@@@@
-> +       @   |               @@@@@
-> +           |                 |
-> +           |                 |
-> +           *                 *
-> +  ***************************************************************
-> + **************************** AMBA AXI  ****************************
-> +  *****************************************************************
-> +
-> +Acronyms
-> +---------------------------
-> +
-> +Acronyms:
-> +
-> +AXI-COM:     AXI Communicator
-> +SMB:         System Memory Buffer
-> +TRC:         Trace receiver
-> +
-> +Framework and implementation
-> +------------------------------
-> +
-> +Siemens Embedded Analytics Framework is implemented as a platform device. The
-> +platform device provides a global point to configure the Embedded Analytics
-> +subsystem, and also provides a ``struct ultrasoc_com`` to manage AXI-COM and
-> +SMB.
-> +
-> +AXI-COM and SMB are implemented as platform devices, each SCCL has one AXI-COM
-> +device and one SMB device. AXI-COM and SMB can use the following API to register
-> +into Embedded Analytics framework:
-> +.. c:function:: struct ultrasoc_com *ultrasoc_register_com(struct device *root_dev, struct ultrasoc_com_descp *com_descp)
-> +.. c:function:: void ultrasoc_unregister_com(struct ultrasoc_com *com);
-> +
-> +As TRC receives data from coresight ETM device, SMB can use the following API
-> +to register into coresight framework as a sink device:
-> +.. c:function:: struct coresight_device *coresight_register(struct coresight_desc *desc);
-> +.. c:function:: void coresight_unregister(struct coresight_device *csdev);
-> +
-> +Then users can get trace data by this path: ETM->funnel->SMB->System Memory.
-> +More information about coresight framework can be found in
-> +Documention/trace/coresight/coresight.rst.
-> +
-> +If everything goes well, the relationship of Embedded Analytics devices will be
-> +described under the sysfs::
-> +
-> +    $# ls /sys/bus/platform/devices/
-> +    <HID.Embedded Analytics>:00   <HID.axi-com>:00   <HID.smb>:00
-> +    $# ls /sys/bus/platform/devices/<HID.Embedded Analytics>:00
-> +    com_mux             firmware_node     power      <HID.axi-com>:00
-> +    driver              message           subsystem  <HID.smb>:00
-> +    driver_override     modalias          uevent
-> +    $# ls /sys/bus/coresight/devices/
-> +    etm0     etm14    etm2     etm25    etm30    etm8       funnel4
-> +    etm1     etm15    etm20    etm26    etm31    etm9       funnel5
-> +    etm10    etm16    etm21    etm27    etm4     funnel0    funnel6
-> +    etm11    etm17    etm22    etm28    etm5     funnel1    funnel7
-> +    etm12    etm18    etm23    etm29    etm6     funnel2    sink_smb0
-> +    etm13    etm19    etm24    etm3     etm7     funnel3
-> +    $# ls -l /sys/bus/coresight/devices/funnel0/connections/
-> +    <file details> in:0 -> ../../../../system/cpu/cpu0/ARMHC500:00/etm0
-> +    <file details> in:1 -> ../../../../system/cpu/cpu1/ARMHC500:01/etm1
-> +    <file details> in:2 -> ../../../../system/cpu/cpu2/ARMHC500:02/etm2
-> +    <file details> in:3 -> ../../../../system/cpu/cpu3/ARMHC500:03/etm3
-> +    <file details> nr_links
-> +    <file details> out:0 -> ../../../HISI0391:00/HISI03A1:00/sink_smb0
-> +    $# ls -l /sys/bus/coresight/devices/sink_smb0/connections/
-> +    <file details>  in:101 -> ../../../../ARMHC9FE:05/funnel5
-> +    <file details>  in:114 -> ../../../../ARMHC9FE:07/funnel7
-> +    <file details>  in:121 -> ../../../../ARMHC9FE:03/funnel3
-> +    <file details>  in:39 -> ../../../../ARMHC9FE:00/funnel0
-> +    <file details>  in:51 -> ../../../../ARMHC9FE:04/funnel4
-> +    <file details>  in:61 -> ../../../../ARMHC9FE:06/funnel6
-> +    <file details>  in:68 -> ../../../../ARMHC9FE:02/funnel2
-> +    <file details>  in:89 -> ../../../../ARMHC9FE:01/funnel1
-> +    <file details>  nr_links
-> +
-> +How to use the Embedded Analytics trace module
-> +-----------------------------------------------
-> +
-> +There are two ways to use the Embedded Analytics trace module:
-> +
-> +1. interacting directly with the devices using the sysFS interface.
-> +2. using the perf cmd line tools.
-> +
-> +1) Using the sysFS interface:
-> +
-> +Before trace collection can start, a coresight sink needs to be identified.
-> +There is no limit on the amount of sinks (nor sources) that can be enabled at
-> +any given moment.  As a generic operation, all device pertaining to the sink
-> +class will have an "active" entry in sysfs::
+Hi all,
 
-I haven't looked at the rest of the patchset but unless you have changed that,
-only one sink will be selected by the framework when operating from sysfs.
-Regardless of the number of sinks that were enabled, the framework will pick the
-first one it finds.
+Commit
 
-> +
-> +    $# ls /sys/bus/coresight/devices/
-> +    etm0     etm14    etm2     etm25    etm30    etm8       funnel4
-> +    etm1     etm15    etm20    etm26    etm31    etm9       funnel5
-> +    etm10    etm16    etm21    etm27    etm4     funnel0    funnel6
-> +    etm11    etm17    etm22    etm28    etm5     funnel1    funnel7
-> +    etm12    etm18    etm23    etm29    etm6     funnel2    sink_smb0
-> +    etm13    etm19    etm24    etm3     etm7     funnel3
-> +    $# ls /sys/bus/coresight/devices/sink_smb0
-> +    connections  enable_sink  firmware_node  power  subsystem  uevent
-> +    $# echo 1 > /sys/bus/coresight/devices/sink_smb0/enable_sink
-> +    $# cat /sys/bus/coresight/devices/sink_smb0/enable_sink
-> +    1
-> +
-> +When start trace collection, etm devices corresponding to the enabled sink
-> +should be selected::
-> +
-> +    $# echo 1 > /sys/bus/coresight/devices/etm0/enable_source
-> +    $# cat /sys/bus/coresight/devices/etm0/enable_source
-> +    1
-> +    $# cat /sys/bus/platform/devices/<HID.smb>:00/com_status
-> +    com-type            : DOWN-ONLY
-> +    service status      : stopped
-> +    interrupt status    : 0x00000003
-> +    write point         : 0x5437f400   <----- The write pointer is moving
-> +
-> +Trace collection is stopped the same way::
-> +
-> +    $# echo 0 > /sys/bus/coresight/devices/etm0/enable_source
-> +    $# echo 0 > /sys/bus/coresight/devices/sink_smb0/enable_sink
-> +
-> +The content of the SMB buffer can be harvested directly from /dev::
-> +
-> +    $# dd if=/dev/sink_smb0 of=~/cstrace.bin
-> +    5233+0 records in
-> +    5233+0 records out
-> +    2679296 bytes (2.7 MB) copied, 0.0131708 s, 203 MB/s
-> +
-> +    root:/sys/bus/coresight/devices#
-> +
-> +The file cstrace.bin can be decompressed using "ptm2human".
-> +
-> +2) Using perf framework:
-> +
-> +As SMB device has been registered with coresight framework, perf tool can be
-> +used to control Embedded Analytics trace collection, and the method is similar
-> +to using perf to do coresight trace collection.
-> +
-> +The only thing to note is, list of cpus should be correspond to the specified
-> +sink device.
-> +
-> +Example usage of perf::
-> +
-> +	 $# ./perf list pmu
-> +	 cs_etm//                                    [Kernel PMU event]
-> +    $# ./perf record -e cs_etm/@sink_smb0/ -C 0 --per-thread sleep 2s
-> +    [ perf record: Woken up 2 times to write data ]
-> +    [ perf record: Captured and wrote 0.288 MB perf.data ]
-> +    $# ./perf report
+  ea2866ca791c ("leds: ktd2692: Fix an error handling path")
 
-After reading all this and without looking at the rest of the patchset it seems
-to me this work should go under drivers/hwtracing/coresight/.
+is missing a Signed-off-by from its committer.
 
-There is a lot of code to review and as such it will take me a fair amount of
-time to go through it all.  Comments will be scattered over several days (weeks)
-- I will set you know when I am done.
+--=20
+Cheers,
+Stephen Rothwell
 
-Thanks,
-Mathieu
+--Sig_/t.8s7cFA3GOYFvZ7sBh+mjU
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> -- 
-> 2.7.4
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDTuyIACgkQAVBC80lX
+0GwNHwf7BtGCrfSlo6Gj6GGzFuhlp72wlovEwsPSfqauqoOzduQ6QOMvGYq7NpRs
+D7OjmhKIiW0I1TDDgkYIkrBP/LJ5AU5lVAtGZ3zGg7tdrEnWT6EBEXHf+ibZ9J4B
+NW4y/yn7TWeGs0TB6U5NFe5Gnh0RornIzFAXbrCe8OOKU3HOXEp6wWVHyzfDVGCt
+UNtIw2OH+1bEQdHAYPUi+KkwYLGyMZ3a+WJyfT6k9IeBY5s8wPl9AYMi3lm58jwK
+JYfdPU87pvb5xEWm2aY2ef52KBlLKr+pV+jao5qZEUv8uvnnfeE+UJkGU8gGnFol
+HSnA+XGGmheajFA6/Cp4HR8wKCzmXA==
+=wz4U
+-----END PGP SIGNATURE-----
+
+--Sig_/t.8s7cFA3GOYFvZ7sBh+mjU--
