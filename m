@@ -2,164 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D232F3B1CB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED453B1CC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231280AbhFWOly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:41:54 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:33991 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230334AbhFWOlw (ORCPT
+        id S231286AbhFWOnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:43:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57454 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230061AbhFWOng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:41:52 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id D996C58062B;
-        Wed, 23 Jun 2021 10:39:31 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 23 Jun 2021 10:39:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=0HsLLey/fKRoKjdaUNTlRKglMem
-        573ETn+6PBaZhBlA=; b=qlQdZFetQFNz5/Zr/PNIwv/XABwMWCK4shyMf8XCiNx
-        /nYEihGoj26BjdB5aU2E5nTBxwYL9cQXFa/91zesFfeIEMh1vkhiCpIeNUPjYb7h
-        VOIjgOSkTEnqfUN3C0AzpbHB3GIVLM8flLxO/2TW4gaAbXV6fAhtSzQjWbYql/fd
-        jDSR3+pavj2kHvl1caC7hr9ZNtr9FirK2Pg2KMsUPYOJM2CJFSvh3Chqs3G8sDy4
-        AUE+mDpkCSlAvcLsgXVMTUmxAbD4n9xWKcoBYNkcDgw/43sLey9L9AHnW34rJphg
-        MRyQi6ZQQfE37xy8KNfw2HLLgD2hysrYvF8hj8k0fGg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=0HsLLe
-        y/fKRoKjdaUNTlRKglMem573ETn+6PBaZhBlA=; b=k8goKRCtv30z60+G0WpDPe
-        0Kl/TAC/cTXPU/00+i9hyjvPkYU3O0WriDwv8FxkAvX7I6UekoWJrikYjnmZiSSQ
-        ME57XRoQVKire1wpx9MNoYST5PhZaFlpKZVq6eMcEMup4Xzka3ApXBOPHEB1Tx3K
-        XS7OiJLmQklpPwDctMAPD1fHbFYv3re8tDTvomkBvC9imy3bTYPWyfi7TmPq3OsM
-        oXRIB2f3OF9nD4j2P4o2jSFkLAM5VWK4YmnHiQ5S2oIGRCegVkqifrNgJ9QIE4sM
-        aULpb0Gd5QUX6rWN5DtkKkGjzv7vUWjbhG9Q1gskqiQA5Or2NuT9aUZOdp59/6nw
-        ==
-X-ME-Sender: <xms:okfTYFH9Y5JwLcxIa28cR-0p7f39WUbQNsYMTd34PvdGUqZ5xbQ3gA>
-    <xme:okfTYKW9yzYaXFkZiqavzlGCTs4cdYEDd0solwQeSdL4CC8CKnJguoAS-RF3pXGND
-    VSmgKekA2Khwau4F0E>
-X-ME-Received: <xmr:okfTYHJVnkIdNalGGK8dsY7ZBk9irxpZB3y2uWg3VorHDvfhptJKTcCXA_9aGhr2rooo4iz-D99zFA6SWCLMk9ZKyO5FlZD2ngpH>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeegfedgkedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:okfTYLE5KoTeWvMi538qBEVwzxvUAmBgVNaKwY-29In-xk9YLjuJNA>
-    <xmx:okfTYLVaPx9j0bJCANeMwBqGKLWypbCv58ZSQDFVXIcHOKgKQvS-JQ>
-    <xmx:okfTYGPZOk9APMOyZETZF_tn_LzLyIwzLu6JCcgnRepHWAWB78g3Vw>
-    <xmx:o0fTYEsYOZp9MgqG3Bv6SxlPOuI_NlBkpBQ46DgN6JXombZcsfddVg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 23 Jun 2021 10:39:30 -0400 (EDT)
-Date:   Wed, 23 Jun 2021 16:39:28 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Esaki Tomohito <etom@igel.co.jp>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
-        Takanari Hayama <taki@igel.co.jp>
-Subject: Re: [PATH 0/4] [RFC] Support virtual DRM
-Message-ID: <20210623143928.ickbxz32w6lbpofn@gilmour>
-References: <20210621062742.26073-1-etom@igel.co.jp>
- <9853d0a9-6053-db64-9c79-40b7e0689eec@suse.de>
- <20210621092454.jvdmelk2h427jn5v@gilmour>
- <cc08f858-7440-05f9-0d10-243f5115d209@igel.co.jp>
+        Wed, 23 Jun 2021 10:43:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624459278;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=36Ney60QwLOA5znkwX0SnRwg20FjhKs4Zpxi9/E5Tpw=;
+        b=IkLrw/MeeQIYiBI+KKfRlazrVwudr6myrQ2I31pmruYTtZbZTsluy+EXBFYtOqdhY58mRK
+        V7ShTBJZ9y/7+2KjsVIBqSohkUBywpE+GiCLG4hy+hALM9HmkcipJga0p0/fZPNDJRpCPp
+        ugy0Xuwm8K4pdypUcd6oxsxIibfpiA0=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-240-JRCNYb-rOdqJtpol2k_6xw-1; Wed, 23 Jun 2021 10:41:17 -0400
+X-MC-Unique: JRCNYb-rOdqJtpol2k_6xw-1
+Received: by mail-wm1-f70.google.com with SMTP id s15-20020a7bc38f0000b02901dbb76fabe9so683122wmj.4
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 07:41:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=36Ney60QwLOA5znkwX0SnRwg20FjhKs4Zpxi9/E5Tpw=;
+        b=cWuGqp5dPn1a0RymAvKX7ypTlA4minvvI4QpNP6YkiLMT8E6iEzrRfrm3As/T0Vh9S
+         KmpW2jjpDKquvhxqxCKNyctPe0sGCfTweBc3x9oyR+DF5JncqyprOAGr0XUgA44tVS60
+         8AVgGm2ACbM51XlwalwaqK66jrO3t6NY2Gzmn674ov6ELYSwAk+L7MzsEeFmjKSof7gE
+         Gmm1Hiw6eRh96LhH3ePu2myfEDpHPvPakCG8C3QahZwgg6IXEc3ErUQ0kkIHAj/wm07v
+         TnThx/KsaEv7b5hcqvn+WfQ54pQrRffSxL52Te/nj2pfcU23xXNeNFgwMmxfGxDibAwy
+         PmaQ==
+X-Gm-Message-State: AOAM531LvkS71vwYwkXixT6Xm44A11XaynNo5qSGfvKwJdJG1yJ0ZWmL
+        7Kp2OJnscQoWK3PnFzBd8g7vSDrqurDLjiQ2F8R7YAtGWK9YTbW5zrVWRK+tQeOUy1iDq5584rA
+        Srq6780yg3sNNYtQy4v03dNYB
+X-Received: by 2002:a05:6000:1367:: with SMTP id q7mr422595wrz.306.1624459276294;
+        Wed, 23 Jun 2021 07:41:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzRRbpbxzOcbllEgwS/pfK7cAIJBOd+/iZk45ykRSCMjl9ZoW8MrMWeylR0rMHwn2MJquAeow==
+X-Received: by 2002:a05:6000:1367:: with SMTP id q7mr422570wrz.306.1624459276129;
+        Wed, 23 Jun 2021 07:41:16 -0700 (PDT)
+Received: from [172.16.0.103] ([5.28.162.59])
+        by smtp.gmail.com with ESMTPSA id e2sm247809wrt.29.2021.06.23.07.41.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 07:41:15 -0700 (PDT)
+Message-ID: <5fc502b70a89e18034716166abc65caec192c19b.camel@redhat.com>
+Subject: Re: [PATCH RFC] KVM: nSVM: Fix L1 state corruption upon return from
+ SMM
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Cathy Avery <cavery@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        kvm@vger.kernel.org
+Date:   Wed, 23 Jun 2021 17:41:13 +0300
+In-Reply-To: <87pmwc4sh4.fsf@vitty.brq.redhat.com>
+References: <20210623074427.152266-1-vkuznets@redhat.com>
+         <a3918bfa-7b4f-c31a-448a-aa22a44d4dfd@redhat.com>
+         <53a9f893cb895f4b52e16c374cbe988607925cdf.camel@redhat.com>
+         <ac98150acd77f4c09167bc1bb1c552db68925cf2.camel@redhat.com>
+         <87pmwc4sh4.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zrpqm6ro3pys2ppq"
-Content-Disposition: inline
-In-Reply-To: <cc08f858-7440-05f9-0d10-243f5115d209@igel.co.jp>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2021-06-23 at 15:32 +0200, Vitaly Kuznetsov wrote:
+> Maxim Levitsky <mlevitsk@redhat.com> writes:
+> 
+> > On Wed, 2021-06-23 at 16:01 +0300, Maxim Levitsky wrote:
+> > > On Wed, 2021-06-23 at 11:39 +0200, Paolo Bonzini wrote:
+> > > > On 23/06/21 09:44, Vitaly Kuznetsov wrote:
+> > > > > - RFC: I'm not 100% sure my 'smart' idea to use currently-
+> > > > > unused HSAVE area
+> > > > > is that smart. Also, we don't even seem to check that L1 set
+> > > > > it up upon
+> > > > > nested VMRUN so hypervisors which don't do that may remain
+> > > > > broken. A very
+> > > > > much needed selftest is also missing.
+> > > > 
+> > > > It's certainly a bit weird, but I guess it counts as smart
+> > > > too.  It 
+> > > > needs a few more comments, but I think it's a good solution.
+> > > > 
+> > > > One could delay the backwards memcpy until vmexit time, but
+> > > > that would 
+> > > > require a new flag so it's not worth it for what is a pretty
+> > > > rare and 
+> > > > already expensive case.
+> > > > 
+> > > > Paolo
+> > > > 
+> > > 
+> > > Hi!
+> > > 
+> > > I did some homework on this now and I would like to share few my
+> > > thoughts on this:
+> > > 
+> > > First of all my attention caught the way we intercept the #SMI
+> > > (this isn't 100% related to the bug but still worth talking about
+> > > IMHO)
+> > > 
+> > > A. Bare metal: Looks like SVM allows to intercept SMI, with
+> > > SVM_EXIT_SMI, 
+> > >  with an intention of then entering the BIOS SMM handler manually
+> > > using the SMM_CTL msr.
+> > >  On bare metal we do set the INTERCEPT_SMI but we emulate the
+> > > exit as a nop.
+> > >  I guess on bare metal there are some undocumented bits that BIOS
+> > > set which
+> > >  make the CPU to ignore that SMI intercept and still take the
+> > > #SMI handler,
+> > >  normally but I wonder if we could still break some motherboard
+> > >  code due to that.
+> > > 
+> > > 
+> > > B. Nested: If #SMI is intercepted, then it causes nested VMEXIT.
+> > >  Since KVM does enable SMI intercept, when it runs nested it
+> > > means that all SMIs 
+> > >  that nested KVM gets are emulated as NOP, and L1's SMI handler
+> > > is not run.
+> > > 
+> > > 
+> > > About the issue that was fixed in this patch. Let me try to
+> > > understand how
+> > > it would work on bare metal:
+> > > 
+> > > 1. A guest is entered. Host state is saved to VM_HSAVE_PA area
+> > > (or stashed somewhere
+> > >   in the CPU)
+> > > 
+> > > 2. #SMI (without intercept) happens
+> > > 
+> > > 3. CPU has to exit SVM, and start running the host SMI handler,
+> > > it loads the SMM
+> > >     state without touching the VM_HSAVE_PA runs the SMI handler,
+> > > then once it RSMs,
+> > >     it restores the guest state from SMM area and continues the
+> > > guest
+> > > 
+> > > 4. Once a normal VMexit happens, the host state is restored from
+> > > VM_HSAVE_PA
+> > > 
+> > > So host state indeed can't be saved to VMC01.
+> > > 
+> > > I to be honest think would prefer not to use the L1's hsave area
+> > > but rather add back our
+> > > 'hsave' in KVM and store there the L1 host state on the nested
+> > > entry always.
+> > > 
+> > > This way we will avoid touching the vmcb01 at all and both solve
+> > > the issue and 
+> > > reduce code complexity.
+> > > (copying of L1 host state to what basically is L1 guest state
+> > > area and back
+> > > even has a comment to explain why it (was) possible to do so.
+> > > (before you discovered that this doesn't work with SMM).
+> > 
+> > I need more coffee today. The comment is somwhat wrong actually.
+> > When L1 switches to L2, then its HSAVE area is L1 guest state, but
+> > but L1 is a "host" vs L2, so it is host state.
+> > The copying is more between kvm's register cache and the vmcb.
+> > 
+> > So maybe backing it up as this patch does is the best solution yet.
+> > I will take more in depth look at this soon.
+> 
+> We can resurrect 'hsave' and keep it internally indeed but to make
+> this
+> migratable, we'd have to add it to the nested state acquired through
+> svm_get_nested_state(). Using L1's HSAVE area (ponted to by
+> MSR_VM_HSAVE_PA) avoids that as we have everything in L1's memory.
+> And,
 
---zrpqm6ro3pys2ppq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi!
 
-On Tue, Jun 22, 2021 at 01:36:48PM +0900, Esaki Tomohito wrote:
-> Hi, Maxime
-> Thank you for reply.
->=20
-> On 2021/06/21 18:24, Maxime Ripard wrote:
-> > Hi,
-> >=20
-> > On Mon, Jun 21, 2021 at 09:10:19AM +0200, Thomas Zimmermann wrote:
-> >> Am 21.06.21 um 08:27 schrieb Tomohito Esaki:
-> >>> Virtual DRM splits the overlay planes of a display controller into mu=
-ltiple
-> >>> virtual devices to allow each plane to be accessed by each process.
-> >>>
-> >>> This makes it possible to overlay images output from multiple process=
-es on a
-> >>> display. For example, one process displays the camera image without c=
-ompositor
-> >>> while another process overlays the UI.
-> >>
-> >> I briefly looked over your patches. I didn't understand how this is
-> >> different to the functionality of a compositor? Shouldn't this be solv=
-ed in
-> >> userspace?
-> >=20
-> > I think there could be a bunch of use-cases for something that could
-> > "steal" a plane without the compositor knowing.
-> >=20
-> > Something I'd really like to work at some point for example is that the
-> > downstream RaspberryPi display driver has a visual clue when it's
-> > running too hot or is in over-current.
-> >=20
-> > I don't think this is the right solution though. The DT binding makes it
-> > far too static, and if there's a compositor I'd assume it would want to
-> > know about it somehow (at least if it's from the userspace) ?
-> >=20
->=20
-> I will reconsider the DT bindings.
->=20
-> We want to separate the resources from the master in units of planes,
-> so we proposed virtual DRM.
-> By separating the plane from the master and making it appear as
-> a virtual DRM devicein userland, the plane can be accessed from
-> userland using the general DRM API.
-> What do you think about this idea?
+I think I would prefer to avoid touching guest memory as much
+as possible to avoid the shenanigans of accessing it:
 
-I guess you'd need to detail a bit more what your use case is exactly,
-and what issue you're trying to address.
+For example on nested state read we are not allowed to write guest
+memory since at the point it is already migrated, and for setting
+nested state we are not allowed to even read the guest memory since
+the memory map might not be up to date. Then a malicious guest can
+always change its memory which also can cause issues.
 
-Generally speaking, I'm not really sure how you can separate a KMS
-driver from its planes.
+Since it didn't work before and both sides of migration need a fix,
+adding a new flag and adding hsave area to nested state seems like a
+very good thing.
 
-Like, assuming that you have that super important application putting
-the rear-end camera on the display: I'd assume you want the connector
-and bridges to remain enabled? How are you going to synchronize with the
-compositor if it wants to disable it, or change resolution?
+I think though that I would use that smm hsave area just like you
+did in the patch, just not save it to the guest memory and migrate
+it as a new state.
 
-Similarly, some features exposed on the connector, like bpc, might
-affect the input format you want to have for your planes?
+I would call it something smm_l1_hsave_area or something like
+that with a comment explaining why it is needed.
 
-Maxime
+This way we still avoid overhead of copying the hsave area
+on each nested entry.
 
---zrpqm6ro3pys2ppq
-Content-Type: application/pgp-signature; name="signature.asc"
+What do you think?
 
------BEGIN PGP SIGNATURE-----
+Best regards,
+	Maxim Levitsky
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYNNHoAAKCRDj7w1vZxhR
-xSYqAQCeBYrlpqR5FSj6MJ47x6cTdMpmzNwtz5kdH40wQJkV7AD/de9z5dNUHVoD
-IFn98/cS3zYxIr7sbZYk5LkBlbuvaAg=
-=owdM
------END PGP SIGNATURE-----
+> as far as I understand, we comply with the spec as 1) L1 has to set
+> it
+> up and 2) L1 is not supposed to expect any particular format there,
+> it's
+> completely volatile.
+> 
 
---zrpqm6ro3pys2ppq--
+
