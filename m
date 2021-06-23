@@ -2,118 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA433B1305
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 06:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 923B23B1316
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 06:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhFWE5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 00:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhFWE5i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 00:57:38 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D79C061574;
-        Tue, 22 Jun 2021 21:55:21 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id m17so514339plx.7;
-        Tue, 22 Jun 2021 21:55:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Z98M28/S5DTkRaCcduNwo8JvvrtDJam3SJ6vLPsh7e8=;
-        b=t0j8pqTBwCofwBmzsMnRKN8o9RrKS1dthZm7imB1FnfTXT4A2CS3bmDV2d8UFN/n4N
-         fbTB+6140FV1SHkH6VwmXE1szaiWj2fZGCdsVaXGt142q2M9RNTxNs4GXuqKZDyqsfnD
-         LyO2vGQ9mfzOMJM23AnGFSEteQCimeJv+P7eMFcL4y/91lB+NW3HQakXN7LYiDIpFa9s
-         JBPPxLeMYO3mQR/2yCyVtlOGPgIhWRzGS+HlX2G6ymqCxqdcULDl9ATcoGU5mULnuOlO
-         N9BwAjm5kVRj5cZ87t1LVHOgCrsEErDJW6ILBQ08et/0UmsKEkaz8RbC7dJAXjwOYxBP
-         DeMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Z98M28/S5DTkRaCcduNwo8JvvrtDJam3SJ6vLPsh7e8=;
-        b=jj37eMHceGTT+xAIPSjvnMm+z5vacl1wAJExopmjaGBR7uCTRZ26vLhBhih2K7Jemu
-         +d8p1cp0cyb693hIVPNSjrvCnaE7F8SSc88vtlu0rNyIoYpfjvsyVf/41w8ok4jAUJfQ
-         1z761+zFK3/8iiL/N2RqrQEIQwYGgkrbMJWrQfSn2wGA8bFJ5hJ5CWYdZua2PmgJGfkK
-         GbYLis3luAZuzbPbbM5jS+oJ9uCj4gfpfC4rWcmCiObavPHyT85/13lN6DFUYXedJX+h
-         sNRQOx/Gcu8UaQ+2gv4Br84om2oOZebkQRAUYQS07/WNkr5WsRJ905wESBi0CXOXUadg
-         yg4g==
-X-Gm-Message-State: AOAM533aixgI5Gg0yAegaQNglku90xmGrUL9r3tE7tFB5kM2pLxSn1yk
-        ZwlMqURJQauO2JaLBg7/dxc=
-X-Google-Smtp-Source: ABdhPJyr34usZfM4otBZLMCgqdIkx6xknpF7q6eN/7Pl6CxcYIkUbun7aJssJW51BLb6HSZg9pSefQ==
-X-Received: by 2002:a17:90a:4410:: with SMTP id s16mr7264860pjg.25.1624424120569;
-        Tue, 22 Jun 2021 21:55:20 -0700 (PDT)
-Received: from d3 ([2405:6580:97e0:3100:ae94:2ee7:59a:4846])
-        by smtp.gmail.com with ESMTPSA id r14sm16539508pgu.18.2021.06.22.21.55.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 21:55:19 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 13:55:15 +0900
-From:   Benjamin Poirier <benjamin.poirier@gmail.com>
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-staging@lists.linux.dev, netdev@vger.kernel.org,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC 01/19] staging: qlge: fix incorrect truesize accounting
-Message-ID: <YNK+s9Rm7OtL++YM@d3>
-References: <20210621134902.83587-1-coiby.xu@gmail.com>
- <20210621134902.83587-2-coiby.xu@gmail.com>
- <20210621141027.GJ1861@kadam>
- <20210622113649.vm2hfh2veqr4dq6y@Rk>
+        id S230363AbhFWE67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 00:58:59 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:45478 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229544AbhFWE66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 00:58:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624424201; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=0rSIwgctBlahlkEeN46SC5CMf+Iz8K2VB7mfWOAp8iM=; b=iXV2jCkfZZRQLkb8EJfc1465729iCwCD3p7FJh/VKPKLAvOfTOxmoVgZUP4M/67ra/4NVs7F
+ XwmzHqmnzxO9c2WeYSkU+4v5SQidCdFzmhiuAGh3r0RpI7MoMZAgpJOhG2/7CLDudSNdNUHf
+ jYy+Q4HOJw0C66EUOYoqlrmqusY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60d2bf08638039e997ef5226 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Jun 2021 04:56:40
+ GMT
+Sender: eberman=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 95185C433F1; Wed, 23 Jun 2021 04:56:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hu-eberman-lv.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: eberman)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 571BBC433F1;
+        Wed, 23 Jun 2021 04:56:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 571BBC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=eberman@codeaurora.org
+From:   Elliot Berman <eberman@codeaurora.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+Cc:     Elliot Berman <eberman@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] lockdep: Remove console_verbose when disable lock debugging
+Date:   Tue, 22 Jun 2021 21:55:59 -0700
+Message-Id: <20210623045559.15750-1-eberman@codeaurora.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622113649.vm2hfh2veqr4dq6y@Rk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-22 19:36 +0800, Coiby Xu wrote:
-> On Mon, Jun 21, 2021 at 05:10:27PM +0300, Dan Carpenter wrote:
-> > On Mon, Jun 21, 2021 at 09:48:44PM +0800, Coiby Xu wrote:
-> > > Commit 7c734359d3504c869132166d159c7f0649f0ab34 ("qlge: Size RX buffers
-> > > based on MTU") introduced page_chunk structure. We should add
-> > > qdev->lbq_buf_size to skb->truesize after __skb_fill_page_desc.
-> > > 
-> > 
-> > Add a Fixes tag.
-> 
-> I will fix it in next version, thanks!
-> 
-> > 
-> > The runtime impact of this is just that ethtool will report things
-> > incorrectly, right?  It's not 100% from the commit message.  Could you
-> > please edit the commit message so that an ignoramous like myself can
-> > understand it?
+debug_locks_off can be called in scenarios where the kernel doesn't
+immediately panic. For instance, debug_locks_off is called with a
+mismatched preempt_count or when registering an improper lockdep map
+and fails the sanity check for lock-class key [1]. Both of these issues
+were discovered in vendor kernel code and were fixed.
 
-truesize is used in socket memory accounting, the stuff behind sysctl
-net.core.rmem_max, SO_RCVBUF, ss -m, ...
+When console_verbose is enabled, we have found that kernel tends to be
+unstable because it is spending much of its time printing to the serial
+log, so the system may miss watchdog pats. We explicitly set our system
+to reduce the loglevel in order to prevent such scenarios, however
+lockdep can circumvent the commandline setting. Thus, when we ran into
+the kernel bugs, we first ended up trying to debug why the kernel wasn't
+able to respond to watchdog pets and why it was spending all of its time
+flushing the console, which did not quickly lead us to the "real"
+lock dependency issue.
 
-Some helpful chap wrote a page about it a while ago:
-http://vger.kernel.org/~davem/skb_sk.html
+Remove the console_verbose when turning off lock debugging. Other debug
+facilities, such as KASAN, KFENCE, SPINLOCK_DEBUG, and DEBUG_OBJECTS
+don't set console_verbose when issues are detected. Current other uses
+for console_verbose are in situations where kernel is in a panic path.
 
-> 
-> I'm not sure how it would affect ethtool. But according to "git log
-> --grep=truesize", it affects coalescing SKBs. Btw, I fixed the issue
-> according to the definition of truesize which according to Linux Kernel
-> Network by Rami Rosen, it's defined as follows,
-> > The total memory allocated for the SKB (including the SKB structure
-> > itself and the size of the allocated data block).
-> 
-> I'll edit the commit message to include it, thanks!
-> 
-> > 
-> > Why is this an RFC instead of just a normal patch which we can apply?
-> 
-> After doing the tests mentioned in the cover letter, I found Red Hat's
-> network QE team has quite a rigorous test suite. But I needed to return the
-> machine before having the time to learn about the test suite and run it by
-> myself. So I mark it as an RFC before I borrow the machine again to run the
-> test suite.
+[1]: kernel/locking/lockdep.c:lockdep_init_map_waits:4617
 
-Interesting. Is this test suite based on a public project?
+Signed-off-by: Elliot Berman <eberman@codeaurora.org>
+---
+ lib/debug_locks.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/lib/debug_locks.c b/lib/debug_locks.c
+index 06d3135bd184..f91b5d31f63c 100644
+--- a/lib/debug_locks.c
++++ b/lib/debug_locks.c
+@@ -38,12 +38,8 @@ EXPORT_SYMBOL_GPL(debug_locks_silent);
+  */
+ noinstr int debug_locks_off(void)
+ {
+-	if (debug_locks && __debug_locks_off()) {
+-		if (!debug_locks_silent) {
+-			console_verbose();
+-			return 1;
+-		}
+-	}
++	if (debug_locks && __debug_locks_off() && !debug_locks_silent)
++		return 1;
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(debug_locks_off);
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
