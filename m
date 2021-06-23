@@ -2,145 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A383B21A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171633B21AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhFWURG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 16:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhFWURF (ORCPT
+        id S229948AbhFWUSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 16:18:14 -0400
+Received: from mail-lj1-f170.google.com ([209.85.208.170]:43882 "EHLO
+        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhFWUSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 16:17:05 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A07C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:14:46 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id f30so6267356lfj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:14:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=66ykk3fa/e/O9LbG3+nVJlND/S/m5SrN0SqToevufSg=;
-        b=d8PmOamlHA7u9848LkKQAILvUUoxD7Gos/8ajMJLFpSzt7ly7OnfyoFsb4dc4at6Ox
-         EpPgW3K2ZuzqFe0YsdPZvDsd/KKLj08Fm2XjxluVkIJIXN3SwnB7+yTS+uBqSscorfHJ
-         FzgtCtCBujOGlXT9KqvsvcjeRVl1995f7y+Ggm+HRhee3WPIRVWw3rhK0YYfEQra2KDN
-         AInT3NU4ooFdTqnbyP2eInpQhvmWLSoitCMBkIjSA4dqmgt137SsdBsFHZHqHFdakfXr
-         6HSHLWNaKtszAt7tbsodQ4wtAWlhj5Dw/m13z1QgWysd49Y3EBHIhmFJqm05hmY/b+Cp
-         1/6Q==
+        Wed, 23 Jun 2021 16:18:13 -0400
+Received: by mail-lj1-f170.google.com with SMTP id f13so4610412ljp.10
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 13:15:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=66ykk3fa/e/O9LbG3+nVJlND/S/m5SrN0SqToevufSg=;
-        b=gdxf+xBK4pZTK3pjwFzBTKM2K1KQ1PpAq0b016y+C5h2wwsD96Ws4qmpxucFWouobM
-         vFQkMJ20+Dj1T9iGvb1ehfXu2J9zyCsb1++InZMreXTBg4Cd4R4lDVHDVdr8CpNS8ZA0
-         boTmcsUwi2ueUIsKaA/JF6T2IZ4xGUdJ7zgCHKlYXlpVL64GIFieEVSTqC3hWyGWyKge
-         0UnjSASUFj544idLietz529TYz9nxQ9im4DzKT+VmsQaI/OYLe0pAJiYip5Szy/l5t3R
-         UnIare8Rcg87Z1wj8AUIwP6EBB75zlOB+cCMMB+pw9BUitNmDLJEHpbKHOVLh07SdGQ8
-         iSlg==
-X-Gm-Message-State: AOAM532i1xZYSfjZ925ozNGHenzzvhSPXYMyp77UwmYspYA/9dnJfk3B
-        lQ4UpW+zQKOf31if0QCt3io=
-X-Google-Smtp-Source: ABdhPJxrjFHJ05de0MAtITfPF5qIsytOdde5OwIuKIU4zXlnlEIC3nymVz+Fqit8bbYyK6BXur9Fhw==
-X-Received: by 2002:ac2:4d81:: with SMTP id g1mr983671lfe.319.1624479284265;
-        Wed, 23 Jun 2021 13:14:44 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id bp27sm94906lfb.107.2021.06.23.13.14.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 13:14:43 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 23 Jun 2021 22:14:42 +0200
-To:     Rafael Aquini <aquini@redhat.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: vmalloc: add cond_resched() in __vunmap()
-Message-ID: <20210623201442.GA2111@pc638.lan>
-References: <20210622225030.478384-1-aquini@redhat.com>
- <20210623112704.GA1911@pc638.lan>
- <YNNwqdM/U+ZErA6j@optiplex-fbsd>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5RY3tWwIuihPcox2Au/c1e4a7Ggnf7W7JLrTgPdHZrU=;
+        b=oRE9jXFZbVNjXcRaFiCT+iHjuo9QLGzGGbGMb63gCjMGyedX0c/ot3zAvLA28gWYGH
+         Hz/QbWGyUQnOzGKkc93fiFmRfq2wLShZiYQyc8gGBwxqDHmNCajTz3mgysMTxIGtupI+
+         lX1Hg+Q/2KkaphXVpvYGQE6WBLxDBoR6oR0Hy8gfmvK7gYyKzeXmPgJLUiuwiFFdnZdu
+         +ItKEiOFBiyDHcBH+K8rcB8c3LJJRGEk5hvfSYgomWFH/SDA2BbmmY9qD+3RcCFMcnDs
+         tjwUlvx5sLkE04845HpuQclZjAK9kjEyqmgdPBQgx8LBrlFdlhFs3eQEU/DjpHQuHgOD
+         fpSA==
+X-Gm-Message-State: AOAM5300mweplypPF9uDaMkyTYSo5bf5crxqfi8sGiZ1lt4I7kdocqUi
+        WzTSb2uLFOMgWbeQogguLnJ0TuurJBqtxcQyBPU=
+X-Google-Smtp-Source: ABdhPJwcFuhtg8Ova31f/UXrOfI4Xh8P6Y3oZV8+TJTYbzG41HKdECSAPE8ObFmmsPOxVIONhSr8q5/81w7a3U9KX3o=
+X-Received: by 2002:a2e:9984:: with SMTP id w4mr1015410lji.393.1624479353243;
+ Wed, 23 Jun 2021 13:15:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNNwqdM/U+ZErA6j@optiplex-fbsd>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210622153918.688500-1-jolsa@kernel.org>
+In-Reply-To: <20210622153918.688500-1-jolsa@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 23 Jun 2021 13:15:41 -0700
+Message-ID: <CAM9d7chf1skToXEkyPRRwm9Ak_QOVu3todZ3y4mGnAH1rrdaGw@mail.gmail.com>
+Subject: Re: [RFC 00/10] perf: Add build id parsing fault detection/fix
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 01:34:33PM -0400, Rafael Aquini wrote:
-> On Wed, Jun 23, 2021 at 01:27:04PM +0200, Uladzislau Rezki wrote:
-> > > On non-preemptible kernel builds the watchdog can complain
-> > > about soft lockups when vfree() is called against large
-> > > vmalloc areas:
-> > > 
-> > > [  210.851798] kvmalloc-test: vmalloc(2199023255552) succeeded
-> > > [  238.654842] watchdog: BUG: soft lockup - CPU#181 stuck for 26s! [rmmod:5203]
-> > > [  238.662716] Modules linked in: kvmalloc_test(OE-) ...
-> > > [  238.772671] CPU: 181 PID: 5203 Comm: rmmod Tainted: G S         OE     5.13.0-rc7+ #1
-> > > [  238.781413] Hardware name: Intel Corporation PURLEY/PURLEY, BIOS PLYXCRB1.86B.0553.D01.1809190614 09/19/2018
-> > > [  238.792383] RIP: 0010:free_unref_page+0x52/0x60
-> > > [  238.797447] Code: 48 c1 fd 06 48 89 ee e8 9c d0 ff ff 84 c0 74 19 9c 41 5c fa 48 89 ee 48 89 df e8 b9 ea ff ff 41 f7 c4 00 02 00 00 74 01 fb 5b <5d> 41 5c c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 f0 29 77
-> > > [  238.818406] RSP: 0018:ffffb4d87868fe98 EFLAGS: 00000206
-> > > [  238.824236] RAX: 0000000000000000 RBX: 000000001da0c945 RCX: ffffb4d87868fe40
-> > > [  238.832200] RDX: ffffd79d3beed108 RSI: ffffd7998501dc08 RDI: ffff9c6fbffd7010
-> > > [  238.840166] RBP: 000000000d518cbd R08: ffffd7998501dc08 R09: 0000000000000001
-> > > [  238.848131] R10: 0000000000000000 R11: ffffd79d3beee088 R12: 0000000000000202
-> > > [  238.856095] R13: ffff9e5be3eceec0 R14: 0000000000000000 R15: 0000000000000000
-> > > [  238.864059] FS:  00007fe082c2d740(0000) GS:ffff9f4c69b40000(0000) knlGS:0000000000000000
-> > > [  238.873089] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > [  238.879503] CR2: 000055a000611128 CR3: 000000f6094f6006 CR4: 00000000007706e0
-> > > [  238.887467] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > [  238.895433] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > [  238.903397] PKRU: 55555554
-> > > [  238.906417] Call Trace:
-> > > [  238.909149]  __vunmap+0x17c/0x220
-> > > [  238.912851]  __x64_sys_delete_module+0x13a/0x250
-> > > [  238.918008]  ? syscall_trace_enter.isra.20+0x13c/0x1b0
-> > > [  238.923746]  do_syscall_64+0x39/0x80
-> > > [  238.927740]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > > 
-> > > Like in other range zapping routines that iterate over
-> > > a large list, lets just add cond_resched() within __vunmap()'s
-> > > page-releasing loop in order to avoid the watchdog splats.
-> > > 
-> > > Signed-off-by: Rafael Aquini <aquini@redhat.com>
-> > > ---
-> > >  mm/vmalloc.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > > 
-> > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > > index a13ac524f6ff..cd4b23d65748 100644
-> > > --- a/mm/vmalloc.c
-> > > +++ b/mm/vmalloc.c
-> > > @@ -2564,6 +2564,7 @@ static void __vunmap(const void *addr, int deallocate_pages)
-> > >  
-> > >  			BUG_ON(!page);
-> > >  			__free_pages(page, page_order);
-> > > +			cond_resched();
-> > >  		}
-> > >  		atomic_long_sub(area->nr_pages, &nr_vmalloc_pages);
-> > >  
-> > > -- 
-> > > 2.26.3
-> > > 
-> > I have a question about a test case you run to trigger such soft lockup.
-> > 
-> > Is that test_vmalloc.sh test-suite or something local? Do you use a huge
-> > vmalloc mappings so high-order pages are used?
-> >
-> 
-> Vlad,
-> 
-> It's a variant of the simple testcase presented with Kernel Bug 210023:
-> https://bugzilla.kernel.org/show_bug.cgi?id=210023#c7
-> 
-OK, now i see how you get ~23 seconds soft lockup :)
+On Tue, Jun 22, 2021 at 8:39 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> hi,
+> this *RFC* patchset adds support to detect faults during
+> mmap2's build id parsing and a way to fix such maps in
+> generated perf.data.
+>
+> It adds support to record build id faults count for session
+> and store it in perf.data and perf inject support to find
+> these maps and reads build ids for them in user space.
+>
+> It's probably best explained by the workflow:
+>
+>   Record data with --buildid-mmap option:
+>
+>     # perf record --buildid-mmap ...
+>     ...
+>     [ perf record: Woken up 1 times to write data ]
+>     [ perf record: Failed to parse 4 build ids]
+>     [ perf record: Captured and wrote 0.008 MB perf.data ]
+>
+>   Check if there's any build id fault reported:
+>
+>     # perf report --header-only
+>     ...
+>     # build id mmap stats: FAULTS 4, LOST 0, NOT FIXED
+>
+>   There is, check the stats:
+>
+>     # perf report --stat
+>
+>     Aggregated stats:
+>              TOTAL events:        104
+>                       ....
+>            BUILD_ID fails:          4  (14.3%)
+>
+>   Yep, let's fix it:
 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Depending on the failure, it might not need to be fixed.
+Say, one process mmapped a file A and succeeded.
+And then another process mmaped the same file A,
+but it failed to get a build-id (mmap itself was ok).
+And vice versa is fine too.
 
-Thanks!
+So even if it sees failures, we didn't lose anything.
 
---
-Vlad Rezki
+>
+>     # perf inject --buildid-mmap2 -i perf.data -o perf-fixed.data
+
+Not sure this is really needed since `perf inject -j`
+can add BUILD_ID records without fixing MMAP2.
+
+>
+>   And verify:
+>
+>     # perf report -i perf-fixed.data --stats
+>
+>     Aggregated stats:
+>                TOTAL events:        104
+>                         ....
+>
+>   Good, let's see how many we fixed:
+>
+>     # perf report --header-only -i perf-fixed.data
+>     ...
+>     # build id mmap stats: FAULTS 4, LOST 0, FIXED(4)
+>
+>
+> I don't have a good way to test it, just by artificially
+> adding the faults in kernel code, but Ian and Namhyung
+> might have setup that could generate that.. would be great
+> to have a perf test for this.
+>
+> Also available in here:
+>   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+>   perf/buildid_stats
+>
+> thoughts?
+>
+> thanks,
+> jirka
+>
+>
+> ---
+> Jiri Olsa (10):
+>       perf: Track build id faults for mmap2 event
+>       perf: Move build_id_parse to check only regular files
+>       perf: Add new read_format bit to read build id faults
+>       perf: Add new read_format bit to read lost events
+>       tools: Sync perf_event.h uapi
+>       libperf: Do not allow PERF_FORMAT_GROUP in perf_evsel__read
+>       perf record: Add support to read build id fails
+>       perf record: Add new HEADER_BUILD_ID_MMAP feature
+>       perf report: Display build id fails stats
+>       perf inject: Add --buildid-mmap2 option to fix failed build ids
+>
+>  include/linux/perf_event.h                         |  2 ++
+>  include/uapi/linux/perf_event.h                    | 20 +++++++++++++-------
+>  kernel/events/core.c                               | 49 +++++++++++++++++++++++++++++++++++++++++++------
+>  kernel/events/ring_buffer.c                        |  3 +++
+>  tools/include/uapi/linux/perf_event.h              | 20 +++++++++++++-------
+>  tools/lib/perf/evsel.c                             | 10 ++++++++++
+>  tools/lib/perf/include/perf/evsel.h                | 11 ++++++++++-
+>  tools/perf/Documentation/perf-inject.txt           |  3 +++
+>  tools/perf/Documentation/perf.data-file-format.txt | 19 +++++++++++++++++++
+>  tools/perf/builtin-inject.c                        | 45 +++++++++++++++++++++++++++++++++++++++++++--
+>  tools/perf/builtin-record.c                        | 97 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  tools/perf/builtin-report.c                        | 35 +++++++++++++++++++++++++++++++++++
+>  tools/perf/util/env.h                              |  6 ++++++
+>  tools/perf/util/evsel.c                            | 12 ++++++++++++
+>  tools/perf/util/header.c                           | 80 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  tools/perf/util/header.h                           |  1 +
+>  tools/perf/util/map.h                              | 15 +++++++++++++++
+>  tools/perf/util/perf_event_attr_fprintf.c          |  3 ++-
+>  18 files changed, 407 insertions(+), 24 deletions(-)
+>
