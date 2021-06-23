@@ -2,98 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0633B1C6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F02C3B1C65
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhFWO3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbhFWO3W (ORCPT
+        id S230509AbhFWO2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:28:54 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:56102 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230061AbhFWO2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:29:22 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1F8C061574;
-        Wed, 23 Jun 2021 07:27:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DDDhkKoOSvn2SSqNME1lq0AiPIJcymhF4xvIun7LjzI=; b=tXCs140TX5Dp/CQfrgnASXfijn
-        78PTLXbWv37XLx1RsZQh3kUkN2I4QGm9SlH7fyJdRRJdFqALd1gUZ4eOd6o7+J03FvMM/2qILobp7
-        +mZgYskd6ChXuoDA5zGCjPiXTXMpI7yJMuaYkK25dNQ5sF3swAXX1ZTijJDfcrt9mllz7XgOq4Rlg
-        WPZZyEaVkreWGJ4vBi7dpRJRrpkumYhDaFZijUS8Dyj+wUiZ8F4cJKqP21BxaWEGYzbFtbcJ/HsIJ
-        wBO8Irhv87qkBTwWW6QTbulmxkMO5Dq7DpguJCdCERlRS2z4fcS17JitCT2Ksy5I1sz3+ZPTa9rYP
-        2+LiLb+w==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lw3pF-00FW9x-Rd; Wed, 23 Jun 2021 14:26:08 +0000
-Date:   Wed, 23 Jun 2021 15:25:57 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luca Boccassi <bluca@debian.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        Lennart Poettering <lennart@poettering.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        Javier Gonz??lez <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>
-Subject: Re: [PATCH v3 6/6] loop: increment sequence number
-Message-ID: <YNNEdbr+0p+PzinQ@infradead.org>
-References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
- <20210623105858.6978-7-mcroce@linux.microsoft.com>
- <YNMhwLMr7DiNdqC/@infradead.org>
- <bbd3d100ee997431b2905838575eb4bdec820ad3.camel@debian.org>
+        Wed, 23 Jun 2021 10:28:54 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 92DC71C0B77; Wed, 23 Jun 2021 16:26:35 +0200 (CEST)
+Date:   Wed, 23 Jun 2021 16:26:35 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Changbin Du <changbin.du@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 045/146] net: make get_net_ns return error if NET_NS
+ is disabled
+Message-ID: <20210623142635.GB27348@amd>
+References: <20210621154911.244649123@linuxfoundation.org>
+ <20210621154912.823486108@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="LpQ9ahxlCli8rRTG"
 Content-Disposition: inline
-In-Reply-To: <bbd3d100ee997431b2905838575eb4bdec820ad3.camel@debian.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210621154912.823486108@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 02:13:25PM +0100, Luca Boccassi wrote:
-> On Wed, 2021-06-23 at 12:57 +0100, Christoph Hellwig wrote:
-> > On Wed, Jun 23, 2021 at 12:58:58PM +0200, Matteo Croce wrote:
-> > > From: Matteo Croce <mcroce@microsoft.com>
-> > > 
-> > > On a very loaded system, if there are many events queued up from multiple
-> > > attach/detach cycles, it's impossible to match them up with the
-> > > LOOP_CONFIGURE or LOOP_SET_FD call, since we don't know where the position
-> > > of our own association in the queue is[1].
-> > > Not even an empty uevent queue is a reliable indication that we already
-> > > received the uevent we were waiting for, since with multi-partition block
-> > > devices each partition's event is queued asynchronously and might be
-> > > delivered later.
-> > > 
-> > > Increment the disk sequence number when setting or changing the backing
-> > > file, so the userspace knows which backing file generated the event:
-> > 
-> > Instead of manually incrementing the sequence here, can we make loop
-> > generate the DISK_EVENT_MEDIA_CHANGE event on a backing device (aka
-> > media) change?
-> 
-> Hi,
-> 
-> This was answered in the v1 thread:
-> 
-> https://lore.kernel.org/linux-fsdevel/20210315201331.GA2577561@casper.infradead.org/t/#m8a677028572e826352cbb1e19d1b9c1f3b6bff4b
-> 
-> The fundamental issue is that we'd be back at trying to correlate
-> events to loopdev instances, which does not work reliably - hence this
-> patch series. With the new ioctl, we can get the id immediately and
-> without delay when we create the device, with no possible races. Then
-> we can handle events reliably, as we can correlate correctly in all
-> cases.
 
-I very much disagree with your reply there.  The device now points to
-a different media.  Both for the loop device, a floppy or a CD changer
-probably by some kind of user action.  In the last cast it might even
-by done entirely locally through a script just like the loop device.
+--LpQ9ahxlCli8rRTG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+>=20
+> There is a panic in socket ioctl cmd SIOCGSKNS when NET_NS is not enabled.
+> The reason is that nsfs tries to access ns->ops but the proc_ns_operations
+> is not implemented in this case.
+>=20
+> [7.670023] Unable to handle kernel NULL pointer dereference at virtual ad=
+dress 00000010
+> [7.670268] pgd =3D 32b54000
+> [7.670544] [00000010] *pgd=3D00000000
+> [7.671861] Internal error: Oops: 5 [#1] SMP ARM
+> [7.672315] Modules linked in:
+> [7.672918] CPU: 0 PID: 1 Comm: systemd Not tainted 5.13.0-rc3-00375-g6799=
+d4f2da49 #16
+> [7.673309] Hardware name: Generic DT based system
+> [7.673642] PC is at nsfs_evict+0x24/0x30
+> [7.674486] LR is at clear_inode+0x20/0x9c
+>=20
+> The same to tun SIOCGSKNS command.
+>=20
+> To fix this problem, we make get_net_ns() return -EINVAL when NET_NS is
+> disabled. Meanwhile move it to right place net/core/net_namespace.c.
+
+-EINVAL sounds like wrong error code for valid operation kernel was
+configured to do. -ENOTSUPP?
+
+Best regards,
+								Pavel
+							=09
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--LpQ9ahxlCli8rRTG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmDTRJoACgkQMOfwapXb+vKLSgCgmVri4C1MoNWL+M+Rsa38QWIa
+yEcAnRdpSF14hmblCXYBiOBkla8L08lc
+=BmRA
+-----END PGP SIGNATURE-----
+
+--LpQ9ahxlCli8rRTG--
