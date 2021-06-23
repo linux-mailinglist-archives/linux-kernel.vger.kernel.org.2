@@ -2,119 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2DF3B198C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD823B1991
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhFWMFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:05:48 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:38264 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhFWMFq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:05:46 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 081741FD65;
-        Wed, 23 Jun 2021 12:03:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624449808; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pTV0UJMvjAlHC0068bqJsxAfZBAJ3v623+Gud9Q+2ok=;
-        b=JEwVwd5lWr59EcR28oxtQoQeflZEtZ6GtvIqFr+3qPap9DIqlIxS16dhKGeD88AdgHhrQK
-        FnaGZl6LUbHmCXqawqEN/CTgAdCZYjbNY2Zq58VJ569soEXfRxCLgg/SnorvXx7d8ZtdW5
-        YHjUElLq6Fyl98xM/jRHIF7FsABnP5E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624449808;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pTV0UJMvjAlHC0068bqJsxAfZBAJ3v623+Gud9Q+2ok=;
-        b=NwoYa3wurxv0LfPJNjQb5ZEd1tVjfIl9pupg76GLbPUHgiC4wWiYX5RAAVvfb5RlyXPytc
-        j4Nna4Tidn/PA9Aw==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id ADCA511A97;
-        Wed, 23 Jun 2021 12:03:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624449807; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pTV0UJMvjAlHC0068bqJsxAfZBAJ3v623+Gud9Q+2ok=;
-        b=YF5l59Liz2PwKX7sWBCPjDz8AJ/4dt0uGGV+1XjZDof0eMiBagemhhka4asURm2hQLjPHk
-        pToA+nVJaTwvciMnCOeiYAJllplYa7V3i+WBOd2tbr8Zr07nHtB757209mun/fOjmXwXHB
-        FA7WEn/722VuFam8SwPykndZg7ENp4I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624449807;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pTV0UJMvjAlHC0068bqJsxAfZBAJ3v623+Gud9Q+2ok=;
-        b=phFHobecXngr10YyZGcNi33kkMtxHjkkaAk14F16/Y1M+JRLYUrn+0tW9Bj8hI1yrs1KWX
-        xRKybiw+NIuYoXBA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id rhDpKA8j02B6DwAALh3uQQ
-        (envelope-from <hare@suse.de>); Wed, 23 Jun 2021 12:03:27 +0000
-Subject: Re: [PATCH v3 0/6] block: add a sequence number to disks
-To:     Matteo Croce <mcroce@linux.microsoft.com>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org,
-        Lennart Poettering <lennart@poettering.net>,
-        Luca Boccassi <bluca@debian.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Javier_Gonz=c3=a1lez?= <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>
-References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <bfdd6f56-ce2b-ef74-27b1-83b922e5f7d9@suse.de>
-Date:   Wed, 23 Jun 2021 14:03:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S230235AbhFWMIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:08:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230019AbhFWMIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 08:08:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DE7F6102A;
+        Wed, 23 Jun 2021 12:06:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624449985;
+        bh=pRjRyRfLrESTWmV+JAD0jFiz2kLDegDFhdIBtqzV2a8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=lDS22IWujCGbBwr2H+FZidYVi2ctHxtn0bg2GUVranYGqe2eU1rgevF8BVIdbq1vm
+         PI7PRruiW+g42S+f+unuo5+ui34MXUbQLowbXFTHHLQBeXdVcv1DtFJvpRPGk6uF7S
+         vWLhY2gyaX5jXQVvgbA7bTYtTwe9Q+TLqimYZhGaTWyfN9wmLgL3kQj/vkZuBGDXyF
+         AUf7GnRC0SWsjXQrLB1+1uu4j8QPuKN+nrh7OfoMVTf4Jl45HUErFbF3w1fQlihZGD
+         1FyBE3O3Cf1qSrhIuyPi9MJj4k0PRQc8Ru2fzfTQc3q2Tmf0jcf5285xcS+q3p6BML
+         i639rYdjo/gyw==
+Date:   Wed, 23 Jun 2021 07:06:23 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v7 4/8] PCI/sysfs: Allow userspace to query and set
+ device reset mechanism
+Message-ID: <20210623120623.GA3295394@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210623105858.6978-1-mcroce@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621193307.gt7iwwg6gqqojhfc@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 12:58 PM, Matteo Croce wrote:
-> From: Matteo Croce <mcroce@microsoft.com>
+On Tue, Jun 22, 2021 at 01:03:07AM +0530, Amey Narkhede wrote:
+> On 21/06/21 02:07PM, Bjorn Helgaas wrote:
+> > On Mon, Jun 21, 2021 at 10:58:54PM +0530, Amey Narkhede wrote:
+> > > On 21/06/21 08:01AM, Bjorn Helgaas wrote:
+> > > > On Sat, Jun 19, 2021 at 07:29:20PM +0530, Amey Narkhede wrote:
+> > > > > On 21/06/18 03:00PM, Bjorn Helgaas wrote:
+> > > > > > On Tue, Jun 08, 2021 at 11:18:53AM +0530, Amey Narkhede wrote:
+> > > > > > > Add reset_method sysfs attribute to enable user to
+> > > > > > > query and set user preferred device reset methods and
+> > > > > > > their ordering.
+> > > >
+> > > > > > > +	if (sysfs_streq(options, "default")) {
+> > > > > > > +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++)
+> > > > > > > +			reset_methods[i] = reset_methods[i] ? prio-- : 0;
+> > > > > > > +		goto set_reset_methods;
+> > > > > > > +	}
+> > > > > >
+> > > > > > If you use pci_init_reset_methods() here, you can also get this case
+> > > > > > out of the way early.
+> > > > > >
+> > > > > The problem with alternate encoding is we won't be able to know if
+> > > > > one of the reset methods was disabled previously. For example,
+> > > > >
+> > > > > # cat reset_methods
+> > > > > flr,bus 			# dev->reset_methods = [3, 5, 0, ...]
+> > > > > # echo bus > reset_methods 	# dev->reset_methods = [5, 0, 0, ...]
+> > > > > # cat reset_methods
+> > > > > bus
+> > > > >
+> > > > > Now if an user wants to enable flr
+> > > > >
+> > > > > # echo flr > reset_methods 	# dev->reset_methods = [3, 0, 0, ...]
+> > > > > OR
+> > > > > # echo bus,flr > reset_methods 	# dev->reset_methods = [5, 3, 0, ...]
+> > > > >
+> > > > > either they need to write "default" first then flr or we will need to
+> > > > > reprobe reset methods each time when user writes to reset_method attribute.
+> > > >
+> > > > Not sure I completely understand the problem here.  I think relying on
+> > > > previous state that is invisible to the user is a little problematic
+> > > > because it's hard for the user to predict what will happen.
+> > > >
+> > > > If the user enables a method that was previously "disabled" because
+> > > > the probe failed, won't the reset method itself just fail with
+> > > > -ENOTTY?  Is that a problem?
+> > > >
+> > > I think I didn't explain this correctly. With current implementation
+> > > its not necessary to explicitly set *order of availabe* reset methods.
+> > > User can directly write a single supported reset method only and then perform
+> > > the reset. Side effect of that is other methods are disabled if user
+> > > writes single or less than available number of supported reset method.
+> > > Current implementation is able to handle this case but with new encoding
+> > > we'll need to reprobe reset methods everytime because we have no way
+> > > of distingushing supported and currently enabled reset method.
+> >
+> > I'm confused.  I thought the point of the nested loops to find the
+> > highest priority enabled reset method was to allow the user to control
+> > the order.  The sysfs doc says writing "reset_method" sets the "reset
+> > methods and their ordering."
+> >
+> > It seems complicated to track "supported" and "enabled" separately,
+> > and I don't know what the benefit is.  If we write "reset_method" to
+> > enable reset X, can we just probe reset X to see if it's supported?
+>
+> Although final result is same whether user writes a supported reset method or
+> their ordering that is,
+> # echo bus > reset_methods
+> and
+> # echo bus,flr > reset_methods
 > 
-> With this series a monotonically increasing number is added to disks,
-> precisely in the genhd struct, and it's exported in sysfs and uevent.
-> 
-> This helps the userspace correlate events for devices that reuse the
-> same device, like loop.
-> 
-I'm failing to see the point here.
-Apparently you are assuming that there is a userspace tool tracking 
-events, and has a need to correlate events related to different 
-instances of the disk.
-But if you have an userspace application tracking events, why can't the 
-same application track the 'add' and 'remove' events to track the 
-lifetime of the devices, and implement its own numbering based on that?
+> are the same but in the first version, users don't have to explicitly
+> set the ordering if they just want to perform bus reset.
+> Current implementation allows the flexibility for switching between
+> first and second option.
 
-Why do we need to burden the kernel with this?
+Sorry, I can't quite make sense of the above.
 
-Cheers,
+Your doc implies the following are different:
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+  # echo bus,flr > reset_methods
+  # echo flr,bus > reset_methods
+
+Are they?  If you don't need to provide control over the order of
+trying resets, this can all be simplified quite a bit.
+
+Bjorn
