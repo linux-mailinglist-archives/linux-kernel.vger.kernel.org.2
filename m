@@ -2,137 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556533B10F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 02:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA3B3B10F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 02:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbhFWALY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 20:11:24 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:36300 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhFWALX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 20:11:23 -0400
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C888620B83F8;
-        Tue, 22 Jun 2021 17:09:06 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C888620B83F8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1624406946;
-        bh=u2Kpz6rC+qyNeuxX3/et2fXCG3LMTAAce/YCvewjL6E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=F4AOWiKu4E4h8PeZ+1b5zD/OPMJjF/iErqq054eAH9I+TQGvhmgXZUSDaiVHWwNzp
-         S2hkjc5K50UVLhNClLCdYeM1Bt4539F+/WDkIIQvSO3k0drL6oSZmsJrHuvpJKC2Hu
-         88/YaHSeaNArfCVE5ZApQK2rM6mUG/cPgaci2rT0=
-Received: by mail-pl1-f170.google.com with SMTP id y21so161262plb.4;
-        Tue, 22 Jun 2021 17:09:06 -0700 (PDT)
-X-Gm-Message-State: AOAM533g27J4Oe94/ICrLtt1qy8a6vX+g0DnOKfOa4DytwHMUvzFfCe3
-        WUXzNmmpSqACCto2ZDMAccgXhuPYsXVBZ+7UtC4=
-X-Google-Smtp-Source: ABdhPJxADUAYw2fWMz82whP6EvMifZHPYm6r/owIfLNMTB5E0CccJG2Rjp2DhW6xHkiWbi/cyVI7XdSkrm/6g3tmaSo=
-X-Received: by 2002:a17:903:304e:b029:11d:75ff:c304 with SMTP id
- u14-20020a170903304eb029011d75ffc304mr24509944pla.33.1624406946257; Tue, 22
- Jun 2021 17:09:06 -0700 (PDT)
+        id S230001AbhFWAOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 20:14:49 -0400
+Received: from mga17.intel.com ([192.55.52.151]:47745 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229747AbhFWAOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 20:14:45 -0400
+IronPort-SDR: fEQvIVIiP5Drh4GdnB91RZ2+abrZhe97Po2LQNoy/Zps29pMYSV9uKefI3XGwwdDMw4BiH7fqp
+ y40SevxAhySA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="187547238"
+X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
+   d="scan'208";a="187547238"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 17:12:26 -0700
+IronPort-SDR: vNow671Yl0eVpVcbTCNryxO0H5nh8jOvzyhG/dU3bjhLrqmOvPcytV9Dw0+l+sTW0MdahusRMR
+ bYP4vMknUZ9g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
+   d="scan'208";a="454454243"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 22 Jun 2021 17:12:25 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lvqVF-0005Xs-4J; Wed, 23 Jun 2021 00:12:25 +0000
+Date:   Wed, 23 Jun 2021 08:12:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ f9dfb5e390fab2df9f7944bb91e7705aba14cd26
+Message-ID: <60d27c51.Al+fc/oQh4sQPv9k%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210617152754.17960-1-mcroce@linux.microsoft.com>
- <20210617152754.17960-4-mcroce@linux.microsoft.com> <17cd289430f08f2b75b7f04242c646f6@mailhost.ics.forth.gr>
-In-Reply-To: <17cd289430f08f2b75b7f04242c646f6@mailhost.ics.forth.gr>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Wed, 23 Jun 2021 02:08:30 +0200
-X-Gmail-Original-Message-ID: <CAFnufp2w1TGtaBjfTtsBpDatgAtATRZbB4MURV3tLh1fi-W1JQ@mail.gmail.com>
-Message-ID: <CAFnufp2w1TGtaBjfTtsBpDatgAtATRZbB4MURV3tLh1fi-W1JQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] riscv: optimized memset
-To:     Nick Kossifidis <mick@ics.forth.gr>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Guo Ren <guoren@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 3:07 AM Nick Kossifidis <mick@ics.forth.gr> wrote:
->
-> =CE=A3=CF=84=CE=B9=CF=82 2021-06-17 18:27, Matteo Croce =CE=AD=CE=B3=CF=
-=81=CE=B1=CF=88=CE=B5:
-> > +
-> > +void *__memset(void *s, int c, size_t count)
-> > +{
-> > +     union types dest =3D { .u8 =3D s };
-> > +
-> > +     if (count >=3D MIN_THRESHOLD) {
-> > +             const int bytes_long =3D BITS_PER_LONG / 8;
->
-> You could make 'const int bytes_long =3D BITS_PER_LONG / 8;' and 'const
-> int mask =3D bytes_long - 1;' from your memcpy patch visible to memset as
-> well (static const...) and use them here (mask would make more sense to
-> be named as word_mask).
->
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: f9dfb5e390fab2df9f7944bb91e7705aba14cd26  x86/fpu: Make init_fpstate correct with optimized XSAVE
 
-I'll do
+elapsed time: 723m
 
-> > +             unsigned long cu =3D (unsigned long)c;
-> > +
-> > +             /* Compose an ulong with 'c' repeated 4/8 times */
-> > +             cu |=3D cu << 8;
-> > +             cu |=3D cu << 16;
-> > +#if BITS_PER_LONG =3D=3D 64
-> > +             cu |=3D cu << 32;
-> > +#endif
-> > +
->
-> You don't have to create cu here, you'll fill dest buffer with 'c'
-> anyway so after filling up enough 'c's to be able to grab an aligned
-> word full of them from dest, you can just grab that word and keep
-> filling up dest with it.
->
+configs tested: 119
+configs skipped: 96
 
-I tried that, but this way I have to wait 8 bytes more before starting
-the memset.
-And, the machine code needed to generate 'cu' is just 6 instructions on ris=
-cv:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-slli a5,a0,8
-or a5,a5,a0
-slli a0,a5,16
-or a0,a0,a5
-slli a5,a0,32
-or a0,a5,a0
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                   motionpro_defconfig
+arc                        vdk_hs38_defconfig
+powerpc                     powernv_defconfig
+powerpc                 mpc832x_rdb_defconfig
+powerpc                     tqm5200_defconfig
+powerpc                    gamecube_defconfig
+powerpc                    sam440ep_defconfig
+sh                           se7705_defconfig
+powerpc               mpc834x_itxgp_defconfig
+mips                          malta_defconfig
+xtensa                           alldefconfig
+powerpc                      makalu_defconfig
+powerpc                  mpc866_ads_defconfig
+mips                     cu1830-neo_defconfig
+powerpc                      acadia_defconfig
+arc                     nsimosci_hs_defconfig
+arm                         cm_x300_defconfig
+sh                   secureedge5410_defconfig
+mips                  decstation_64_defconfig
+powerpc                     stx_gp3_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                         hackkit_defconfig
+arc                     haps_hs_smp_defconfig
+m68k                       m5475evb_defconfig
+arm                       netwinder_defconfig
+um                           x86_64_defconfig
+sh                          r7785rp_defconfig
+mips                      bmips_stb_defconfig
+sh                        edosk7705_defconfig
+mips                   sb1250_swarm_defconfig
+powerpc                      pcm030_defconfig
+arm                           sama5_defconfig
+arm                       cns3420vb_defconfig
+powerpc                 mpc836x_rdk_defconfig
+sh                 kfr2r09-romimage_defconfig
+sh                           se7724_defconfig
+m68k                          atari_defconfig
+powerpc                     tqm8555_defconfig
+powerpc                 mpc8315_rdb_defconfig
+arm                        shmobile_defconfig
+sh                            titan_defconfig
+mips                            gpr_defconfig
+h8300                               defconfig
+arm                             rpc_defconfig
+powerpc                     sequoia_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+nios2                            allyesconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                          allyesconfig
+i386                 randconfig-a001-20210622
+i386                 randconfig-a002-20210622
+i386                 randconfig-a003-20210622
+i386                 randconfig-a006-20210622
+i386                 randconfig-a005-20210622
+i386                 randconfig-a004-20210622
+x86_64               randconfig-a016-20210622
+x86_64               randconfig-a015-20210622
+x86_64               randconfig-a014-20210622
+x86_64               randconfig-a013-20210622
+x86_64               randconfig-a011-20210622
+x86_64               randconfig-a012-20210622
+i386                 randconfig-a014-20210622
+i386                 randconfig-a013-20210622
+i386                 randconfig-a015-20210622
+i386                 randconfig-a012-20210622
+i386                 randconfig-a016-20210622
+i386                 randconfig-a011-20210622
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-so probably it's not worth it.
+clang tested configs:
+x86_64               randconfig-b001-20210622
+x86_64               randconfig-a002-20210622
+x86_64               randconfig-a001-20210622
+x86_64               randconfig-a005-20210622
+x86_64               randconfig-a003-20210622
+x86_64               randconfig-a004-20210622
+x86_64               randconfig-a006-20210622
 
-> > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-> > +             /* Fill the buffer one byte at time until the destination
-> > +              * is aligned on a 32/64 bit boundary.
-> > +              */
-> > +             for (; count && dest.uptr % bytes_long; count--)
->
-> You could reuse & mask here instead of % bytes_long.
->
-
-Sure, even if the machine code will be the same.
-
-> > +                     *dest.u8++ =3D c;
-> > +#endif
->
-> I noticed you also used CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS on your
-> memcpy patch, is it worth it here ? To begin with riscv doesn't set it
-> and even if it did we are talking about a loop that will run just a few
-> times to reach the alignment boundary (worst case scenario it'll run 7
-> times), I don't think we gain much here, even for archs that have
-> efficient unaligned access.
-
-It doesn't _now_, but maybe in the future we will have a CPU which
-handles unaligned accesses correctly!
-
---=20
-per aspera ad upstream
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
