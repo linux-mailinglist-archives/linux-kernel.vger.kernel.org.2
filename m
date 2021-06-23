@@ -2,67 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694C63B1319
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 07:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D72053B1320
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 07:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhFWFFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 01:05:09 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:43742 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229665AbhFWFFI (ORCPT
+        id S229794AbhFWFL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 01:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFWFL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 01:05:08 -0400
-X-UUID: beb468f6d08b4aeab283cd1a3e7f4fcd-20210623
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Tb0D+IuavYVr+gsGbryHcedknd8az3dO6DMKG1z8G4Y=;
-        b=Q9GZe7IeUtuzYkIkc5o8yb+kWqRAGrxRb7akCrnSZ4A49cyWr6zKAQhYvg3lSzFRIPwdcxQHd3xrb/t37C0bhMcdJQJVQgRkVc+ZVC+uyjFN9SpFxNp+JrRULbci6/Shmi1kUMK1czuoTJv11CIG2OqO/x5Gy4f5uvhNPqbkmc8=;
-X-UUID: beb468f6d08b4aeab283cd1a3e7f4fcd-20210623
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <hsin-hsiung.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1392690866; Wed, 23 Jun 2021 13:02:48 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 23 Jun 2021 13:02:47 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 23 Jun 2021 13:02:47 +0800
-Message-ID: <1624424567.1145.0.camel@mtksdaap41>
-Subject: Re: regulator: mt6358 vdram2_idx/vsel_mask/ vsel_shift setting
- seems wrong
-From:   Hsin-hsiung Wang <hsin-hsiung.wang@mediatek.com>
-To:     Axel Lin <axel.lin@ingics.com>
-CC:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <fan.chen@mediatek.com>
-Date:   Wed, 23 Jun 2021 13:02:47 +0800
-In-Reply-To: <CAFRkauDjKaEmtEoUH94wkT0Xd9-XL3NOYyvB3haYVT+BrAK-Dw@mail.gmail.com>
-References: <CAFRkauDjKaEmtEoUH94wkT0Xd9-XL3NOYyvB3haYVT+BrAK-Dw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Wed, 23 Jun 2021 01:11:57 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 580DFC061574;
+        Tue, 22 Jun 2021 22:09:40 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id o21so533638pll.6;
+        Tue, 22 Jun 2021 22:09:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=VqGeL42RTOC+E9+SQYGTfGiCaSotCi3VvO6rfkKcNPM=;
+        b=IFrz/YEUJopX8c+nwgr5e7kHD4d3/0DLR664YUFXmllUS8s/XAICU1COB9WhfGKg1F
+         6kzPJ4H5hyRXiPGrIORjx2exRf001o6nb8cZpp5ZMOqyS+3KrTCYuKHaT6EAmtFSu5Y4
+         NcMIzlITwTHPZ7HqmoGVM5qBUruP/cdScjP60NpqfgcwxonQjZqQMfJDwx/v4yO8mwdb
+         vjI0iPjkwqSRGIodJjbUrd+Y4+y7R0gb2UgNV4wmsZ5DBjbQSAb9k+KuWWtTprxSppKC
+         94RCrahpqrITPMyvOkbC1Cf/MrxGulpQQAeTe2ZbPNw2KGicdE2EiOoEIp1HfCkHuaNT
+         6UDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VqGeL42RTOC+E9+SQYGTfGiCaSotCi3VvO6rfkKcNPM=;
+        b=T/xJHQI4X9IinUqHsEQAgMJKDdlhqfY567nTHoValNouO2lF8Dm6lA0E4iWX0QNsMd
+         7aBMnrxJaJ5EaJfwp9YfjgCV9GtMrbgsuHLzeQhxL9FN/V2SLHKehISlsf8HdV6H73nI
+         3GrzBZ5E9dcEoJDbOHzsjeIRgvMnwkBd1Wu3ed7UsHU0fMqImt4iZlPQeJCGY+K0yBAg
+         mBWdfz16lRBaHan4+p+fWVA/D3E78uS5JL+/3RCnErivq9UGc7l2ZZxPpdpY1lNa9Hbu
+         LHm5MzNFmKBZwtkZ6Qgt39x+4TqgcMiqV45Gu2kUu+5yRKXMzHmmfoh4/kQG4Qy96QCv
+         wKGA==
+X-Gm-Message-State: AOAM532uLLwRhxk5b1WE4rgVPpPSLz889bIS4V6Di+qaiTy0NdIE8mEm
+        Jn6oC+cYx1PKZwdWNEssydY=
+X-Google-Smtp-Source: ABdhPJyepRMiToVIa65MqmqIfNUEkTCS63UBkYEv6GnRARgtAghdWOminemkvTx8NeNFgw5AYe4SUg==
+X-Received: by 2002:a17:90a:5889:: with SMTP id j9mr3674221pji.234.1624424979646;
+        Tue, 22 Jun 2021 22:09:39 -0700 (PDT)
+Received: from fedora.. ([2405:201:6008:6d7c:6bfd:dac8:eafe:7bde])
+        by smtp.googlemail.com with ESMTPSA id h8sm22340998pgr.43.2021.06.22.22.09.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 22:09:39 -0700 (PDT)
+From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+To:     axboe@kernel.dk
+Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+cf89d662483d6a1a0790@syzkaller.appspotmail.com
+Subject: [RESEND PATCH] loop: fix setting arbitrarily large block size
+Date:   Wed, 23 Jun 2021 10:39:33 +0530
+Message-Id: <20210623050933.140572-1-chouhan.shreyansh630@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210622161019.130090-1-chouhan.shreyansh630@gmail.com>
+References: <20210622161019.130090-1-chouhan.shreyansh630@gmail.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEF4ZWwgc2lyDQpBZnRlciBjaGVja2luZyB0aGUgc3BlYywgdGhlIHZzZWxfbWFzayBpcyB3
-cm9uZy4NCkkgc3VibWl0IGEgcGF0Y2ggdG8gZml4IGl0Lg0KTWFueSB0aGFua3MgZm9yIHRoZSBj
-b3JyZWN0aW5nLiA6KQ0KDQpPbiBUdWUsIDIwMjEtMDYtMjIgYXQgMTE6MjAgKzA4MDAsIEF4ZWwg
-TGluIHdyb3RlOg0KPiBIaSBIc2luLUhzaXVuZywNCj4gDQo+IEluIGRyaXZlcnMvcmVndWxhdG9y
-L210NjM1OC1yZWd1bGF0b3IuYzoNCj4gDQo+IHN0YXRpYyBjb25zdCB1MzIgdmRyYW0yX2lkeFtd
-ID0gew0KPiAgICAgICAgIDAsIDEyLA0KPiB9Ow0KPiANCj4gTVQ2MzU4X0xETygibGRvX3ZkcmFt
-MiIsIFZEUkFNMiwgdmRyYW0yX3ZvbHRhZ2VzLCB2ZHJhbTJfaWR4LA0KPiAgICAgICAgICAgIE1U
-NjM1OF9MRE9fVkRSQU0yX0NPTjAsIDAsIE1UNjM1OF9MRE9fVkRSQU0yX0VMUjAsIDB4MTAsIDAp
-LA0KPiANCj4gV2l0aCBjdXJyZW50IHNldHRpbmcgdGhlIHZzZWxfbWFzayBkb2VzIG5vdCBtYXRj
-aCB0aGUgdnNlbF9zaGlmdCBzZXR0aW5nDQo+ICAgIFNvIGluIHNldF92b2x0YWdlX3NlbCwgaXQg
-d2lsbCBjYWxsIHJlZ21hcF91cGRhdGVfYml0cyB3aXRoDQo+ICAgIG1hc2sgPSAweDEwDQo+ICAg
-IHZhbCA9IGlkeCA8PCAwDQo+ICAgIE5vIG1hdHRlciBpZHggaXMgMCAocHZvbFswXSkgb3IgMTIg
-KHB2b2xbMV0pLCBpdCB3aWxsIGNsZWFyIHZzZWxfbWFzayBiaXRzDQo+IA0KPiBJIGRvbid0IGhh
-dmUgdGhlIGRhdGFzaGVldCB0byBjaGVjaywgc28gcGxlYXNlIGhlbHAgdG8gZG91YmxlIGNoZWNr
-IHRoZQ0KPiB2ZHJhbTJfaWR4LCB2c2VsX21hc2sgYW5kIHZzZWxfc2hpZnQgc2V0dGluZ3MgZm9y
-IGxkb192ZHJhbTIuDQo+IEkgdGhpbmsgYXQgbGVhc3Qgb25lIG9mIHRoZSBzZXR0aW5ncyBpcyB3
-cm9uZy4NCj4gDQo+IFJlZ2FyZHMsDQo+IEF4ZWwNCg0K
+REASON FOR RESEND: Fixed spelling of the Reported-by tag.
+
+loop_validate_block_size took an unsigned short argument. Passing an
+argument with size greater than the size of unsigned short would cause
+an overflow and could potentially render the upper bound check on the
+block size useless, allowing to set an arbitrarily large block size.
+
+Reported-by: syzbot+cf89d662483d6a1a0790@syzkaller.appspotmail.com
+Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+---
+ drivers/block/loop.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+index 9a758cf66507..635baff0dd66 100644
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -236,7 +236,7 @@ static void __loop_update_dio(struct loop_device *lo, bool dio)
+  * @bsize: size to validate
+  */
+ static int
+-loop_validate_block_size(unsigned short bsize)
++loop_validate_block_size(unsigned long bsize)
+ {
+ 	if (bsize < 512 || bsize > PAGE_SIZE || !is_power_of_2(bsize))
+ 		return -EINVAL;
+-- 
+2.31.1
 
