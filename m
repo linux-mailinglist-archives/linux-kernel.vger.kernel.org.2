@@ -2,71 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DBD3B1960
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 13:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F1C3B195C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 13:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhFWL4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 07:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
+        id S230308AbhFWLzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 07:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbhFWL4N (ORCPT
+        with ESMTP id S230239AbhFWLz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 07:56:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6118C061574;
-        Wed, 23 Jun 2021 04:53:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=C76xuKc0/I/xOs/y/pdbSsixKGVcKLl7S3Wq7XHoPp8=; b=qONu4UaOXnSjh+9vZhiINjShGz
-        FvBdZHJ0lvQRldfL6CjUhxmofCzkMQQr2iCvn1SpLxI1HJauuEhANX1ALoaWfuxypO4JDw9PpR+7E
-        kSkCWU5/73MRD3NyaQwLqN7aRWY4DvMFd6c6TuAt1qRlInpDO9MUQn/qM86sK97NApbKEKpsKKaNY
-        mJL9jYmk8kJxTOL9BxIQXrZRF5WaQf6EgDOOU9tzv92t5OTKAwLTpVSVDNhhxZBtYnCuypmdcxt1N
-        G1oyvvNmsRvX406yjTgW3Y1pFc2kmJbgNFhPexxbRihTD5c8ouUUoh/yh1/W7Eslxs4ncVnpXtx9f
-        tZThuytg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lw1RA-00FNss-2e; Wed, 23 Jun 2021 11:53:01 +0000
-Date:   Wed, 23 Jun 2021 12:52:56 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        Lennart Poettering <lennart@poettering.net>,
-        Luca Boccassi <bluca@debian.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        Javier Gonz??lez <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>
-Subject: Re: [PATCH v3 3/6] block: refactor sysfs code
-Message-ID: <YNMgmK2vqQPL7PWb@infradead.org>
-References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
- <20210623105858.6978-4-mcroce@linux.microsoft.com>
+        Wed, 23 Jun 2021 07:55:28 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49942C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 04:53:10 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id l11so1353319pji.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 04:53:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=PLD4E/3tzCkBjKoh4yAZoZOFlc86vB66N+vtNE57Pd8=;
+        b=WDaeq+Ms7FnKXkfh4e1MsS+w7PZts3YpaiKSDTRQun8B/qeoEqQHmrVa+TkK/0ZG5c
+         xSM+ue8RUA84nv1/+GKuNeYVWFV5zeQ8oOfegNXCWvNkiCsLNbDVk+zq6ea9By5kTTDi
+         fZm6hOcoWI27m9JuD7i8kTQlScBIOXB/Tqd4c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=PLD4E/3tzCkBjKoh4yAZoZOFlc86vB66N+vtNE57Pd8=;
+        b=Rf7zGULJ/Y5EZZgM3VIb4Bxo4mFRNL0J5lVLZA3RCmi9c6pjKFTSmzMgGyVQrB4+DZ
+         NBiRFwqn14NFycEw0mmS3l+31pMBQRF2+Ua19MFX8z6bZ5Z5mUJAu6zj59SeWrfWr5I+
+         Zf8bOg9IG4StdIP1RBh0PzRVQfOAX7HVxkiCgD+RoR+Z2DoBFI7UpCFxfLInFf+w7uMg
+         V82hBlqjvoyyckoTiOeWoIDJA/9xjNp+wNI8+pRV2NYCVdEKEG+kV4w9OoV9W5kzt7MZ
+         zR50klgdyOkd2L0fH/OKOHX8iBtD/9ZfsoP/YS0VepXWKKFeUmhhSPy9k3R88BNpnRkS
+         JNUA==
+X-Gm-Message-State: AOAM5333Z6qx9MAr6IMZd8h4Nk3AU8BwR/4O8wPRK7euZdW0LxiimUMS
+        zcZwlnChWsehfCxPL9ym+a5lYvr3bGIpjg==
+X-Google-Smtp-Source: ABdhPJyg/Sc4seJqwWH6MvLOgnvU0HQ65y+xbuQvokGzICog5wp0dOB27dbeMVr6RZ7Iecx7Iv4stw==
+X-Received: by 2002:a17:90a:5504:: with SMTP id b4mr9133455pji.208.1624449189716;
+        Wed, 23 Jun 2021 04:53:09 -0700 (PDT)
+Received: from localhost ([203.206.29.204])
+        by smtp.gmail.com with ESMTPSA id 30sm5246322pjz.42.2021.06.23.04.53.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 04:53:09 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 2/3] powerpc: Define swapper_pg_dir[] in C
+In-Reply-To: <5e3f1b8a4695c33ccc80aa3870e016bef32b85e1.1623063174.git.christophe.leroy@csgroup.eu>
+References: <5838caffa269e0957c5a50cc85477876220298b0.1623063174.git.christophe.leroy@csgroup.eu>
+ <5e3f1b8a4695c33ccc80aa3870e016bef32b85e1.1623063174.git.christophe.leroy@csgroup.eu>
+Date:   Wed, 23 Jun 2021 21:53:05 +1000
+Message-ID: <871r8siyqm.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210623105858.6978-4-mcroce@linux.microsoft.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -static void disk_add_events(struct gendisk *disk)
-> +static void disk_add_sysfs(struct gendisk *disk)
->  {
->  	/* FIXME: error handling */
-> -	if (sysfs_create_files(&disk_to_dev(disk)->kobj, disk_events_attrs) < 0)
-> +	if (sysfs_create_files(&disk_to_dev(disk)->kobj, disk_sysfs_attrs) < 0)
->  		pr_warn("%s: failed to create sysfs files for events\n",
->  			disk->disk_name);
-> +}
+Hi Christophe,
 
-Actually, what we need here is a way how we can setup the ->groups
-field of the device to include all attribute groups instead of having
-to call sysfs_create_files at all.
+This breaks booting a radix KVM guest with 4k pages for me:
+
+make pseries_le_defconfig
+scripts/config -d CONFIG_PPC_64K_PAGES
+scripts/config -e CONFIG_PPC_4K_PAGES
+make vmlinux
+sudo qemu-system-ppc64 -enable-kvm -M pseries -m 1G -nographic -vga none -smp 4 -cpu host -kernel vmlinux
+
+Boot hangs after printing 'Booting Linux via __start()' and qemu's 'info
+registers' reports that it's stuck at the instruction fetch exception.
+
+My host is Power9, 64k page size radix, and
+gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34
+
+Kind regards,
+Daniel
+
+> Don't duplicate swapper_pg_dir[] in each platform's head.S
+>
+> Define it in mm/pgtable.c
+>
+> Define MAX_PTRS_PER_PGD because on book3s/64 PTRS_PER_PGD is
+> not a constant.
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/include/asm/book3s/64/pgtable.h |  3 +++
+>  arch/powerpc/include/asm/pgtable.h           |  4 ++++
+>  arch/powerpc/kernel/asm-offsets.c            |  5 -----
+>  arch/powerpc/kernel/head_40x.S               | 11 -----------
+>  arch/powerpc/kernel/head_44x.S               | 17 +----------------
+>  arch/powerpc/kernel/head_64.S                | 15 ---------------
+>  arch/powerpc/kernel/head_8xx.S               | 12 ------------
+>  arch/powerpc/kernel/head_book3s_32.S         | 11 -----------
+>  arch/powerpc/kernel/head_fsl_booke.S         | 12 ------------
+>  arch/powerpc/mm/pgtable.c                    |  2 ++
+>  10 files changed, 10 insertions(+), 82 deletions(-)
+>
+> diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
+> index a666d561b44d..4d9941b2fe51 100644
+> --- a/arch/powerpc/include/asm/book3s/64/pgtable.h
+> +++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
+> @@ -232,6 +232,9 @@ extern unsigned long __pmd_frag_size_shift;
+>  #define PTRS_PER_PUD	(1 << PUD_INDEX_SIZE)
+>  #define PTRS_PER_PGD	(1 << PGD_INDEX_SIZE)
+>  
+> +#define MAX_PTRS_PER_PGD	(1 << (H_PGD_INDEX_SIZE > RADIX_PGD_INDEX_SIZE ? \
+> +				       H_PGD_INDEX_SIZE : RADIX_PGD_INDEX_SIZE))
+> +
+>  /* PMD_SHIFT determines what a second-level page table entry can map */
+>  #define PMD_SHIFT	(PAGE_SHIFT + PTE_INDEX_SIZE)
+>  #define PMD_SIZE	(1UL << PMD_SHIFT)
+> diff --git a/arch/powerpc/include/asm/pgtable.h b/arch/powerpc/include/asm/pgtable.h
+> index c6a676714f04..b9c8641654f4 100644
+> --- a/arch/powerpc/include/asm/pgtable.h
+> +++ b/arch/powerpc/include/asm/pgtable.h
+> @@ -41,6 +41,10 @@ struct mm_struct;
+>  
+>  #ifndef __ASSEMBLY__
+>  
+> +#ifndef MAX_PTRS_PER_PGD
+> +#define MAX_PTRS_PER_PGD PTRS_PER_PGD
+> +#endif
+> +
+>  /* Keep these as a macros to avoid include dependency mess */
+>  #define pte_page(x)		pfn_to_page(pte_pfn(x))
+>  #define mk_pte(page, pgprot)	pfn_pte(page_to_pfn(page), (pgprot))
+> diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
+> index 0480f4006e0c..f1b6ff14c8a0 100644
+> --- a/arch/powerpc/kernel/asm-offsets.c
+> +++ b/arch/powerpc/kernel/asm-offsets.c
+> @@ -361,11 +361,6 @@ int main(void)
+>  	DEFINE(BUG_ENTRY_SIZE, sizeof(struct bug_entry));
+>  #endif
+>  
+> -#ifdef CONFIG_PPC_BOOK3S_64
+> -	DEFINE(PGD_TABLE_SIZE, (sizeof(pgd_t) << max(RADIX_PGD_INDEX_SIZE, H_PGD_INDEX_SIZE)));
+> -#else
+> -	DEFINE(PGD_TABLE_SIZE, PGD_TABLE_SIZE);
+> -#endif
+>  	DEFINE(PTE_SIZE, sizeof(pte_t));
+>  
+>  #ifdef CONFIG_KVM
+> diff --git a/arch/powerpc/kernel/head_40x.S b/arch/powerpc/kernel/head_40x.S
+> index 92b6c7356161..7d72ee5ab387 100644
+> --- a/arch/powerpc/kernel/head_40x.S
+> +++ b/arch/powerpc/kernel/head_40x.S
+> @@ -701,14 +701,3 @@ _GLOBAL(abort)
+>          mfspr   r13,SPRN_DBCR0
+>          oris    r13,r13,DBCR0_RST_SYSTEM@h
+>          mtspr   SPRN_DBCR0,r13
+> -
+> -/* We put a few things here that have to be page-aligned. This stuff
+> - * goes at the beginning of the data segment, which is page-aligned.
+> - */
+> -	.data
+> -	.align	12
+> -	.globl	sdata
+> -sdata:
+> -	.globl	swapper_pg_dir
+> -swapper_pg_dir:
+> -	.space	PGD_TABLE_SIZE
+> diff --git a/arch/powerpc/kernel/head_44x.S b/arch/powerpc/kernel/head_44x.S
+> index e037eb615757..ddc978a2d381 100644
+> --- a/arch/powerpc/kernel/head_44x.S
+> +++ b/arch/powerpc/kernel/head_44x.S
+> @@ -1233,23 +1233,8 @@ head_start_common:
+>  	isync
+>  	blr
+>  
+> -/*
+> - * We put a few things here that have to be page-aligned. This stuff
+> - * goes at the beginning of the data segment, which is page-aligned.
+> - */
+> -	.data
+> -	.align	PAGE_SHIFT
+> -	.globl	sdata
+> -sdata:
+> -
+> -/*
+> - * To support >32-bit physical addresses, we use an 8KB pgdir.
+> - */
+> -	.globl	swapper_pg_dir
+> -swapper_pg_dir:
+> -	.space	PGD_TABLE_SIZE
+> -
+>  #ifdef CONFIG_SMP
+> +	.data
+>  	.align	12
+>  temp_boot_stack:
+>  	.space	1024
+> diff --git a/arch/powerpc/kernel/head_64.S b/arch/powerpc/kernel/head_64.S
+> index 730838c7ca39..79f2d1e61abd 100644
+> --- a/arch/powerpc/kernel/head_64.S
+> +++ b/arch/powerpc/kernel/head_64.S
+> @@ -997,18 +997,3 @@ start_here_common:
+>  0:	trap
+>  	EMIT_BUG_ENTRY 0b, __FILE__, __LINE__, 0
+>  	.previous
+> -
+> -/*
+> - * We put a few things here that have to be page-aligned.
+> - * This stuff goes at the beginning of the bss, which is page-aligned.
+> - */
+> -	.section ".bss"
+> -/*
+> - * pgd dir should be aligned to PGD_TABLE_SIZE which is 64K.
+> - * We will need to find a better way to fix this
+> - */
+> -	.align	16
+> -
+> -	.globl	swapper_pg_dir
+> -swapper_pg_dir:
+> -	.space	PGD_TABLE_SIZE
+> diff --git a/arch/powerpc/kernel/head_8xx.S b/arch/powerpc/kernel/head_8xx.S
+> index 5ce42dfac061..9bdb95f5694f 100644
+> --- a/arch/powerpc/kernel/head_8xx.S
+> +++ b/arch/powerpc/kernel/head_8xx.S
+> @@ -786,15 +786,3 @@ _GLOBAL(mmu_pin_tlb)
+>  	mtspr	SPRN_SRR1, r10
+>  	mtspr	SPRN_SRR0, r11
+>  	rfi
+> -
+> -/*
+> - * We put a few things here that have to be page-aligned.
+> - * This stuff goes at the beginning of the data segment,
+> - * which is page-aligned.
+> - */
+> -	.data
+> -	.globl	sdata
+> -sdata:
+> -	.globl	swapper_pg_dir
+> -swapper_pg_dir:
+> -	.space	PGD_TABLE_SIZE
+> diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
+> index 79c744afc6b6..689c9d37f193 100644
+> --- a/arch/powerpc/kernel/head_book3s_32.S
+> +++ b/arch/powerpc/kernel/head_book3s_32.S
+> @@ -1266,18 +1266,7 @@ setup_usbgecko_bat:
+>  	blr
+>  #endif
+>  
+> -/*
+> - * We put a few things here that have to be page-aligned.
+> - * This stuff goes at the beginning of the data segment,
+> - * which is page-aligned.
+> - */
+>  	.data
+> -	.globl	sdata
+> -sdata:
+> -	.globl	swapper_pg_dir
+> -swapper_pg_dir:
+> -	.space	PGD_TABLE_SIZE
+> -
+>  /* Room for two PTE pointers, usually the kernel and current user pointers
+>   * to their respective root page table.
+>   */
+> diff --git a/arch/powerpc/kernel/head_fsl_booke.S b/arch/powerpc/kernel/head_fsl_booke.S
+> index f33bc5a8e73e..0f9642f36b49 100644
+> --- a/arch/powerpc/kernel/head_fsl_booke.S
+> +++ b/arch/powerpc/kernel/head_fsl_booke.S
+> @@ -1212,15 +1212,3 @@ _GLOBAL(restore_to_as0)
+>  	*/
+>  3:	mr	r3,r5
+>  	bl	_start
+> -
+> -/*
+> - * We put a few things here that have to be page-aligned. This stuff
+> - * goes at the beginning of the data segment, which is page-aligned.
+> - */
+> -	.data
+> -	.align	12
+> -	.globl	sdata
+> -sdata:
+> -	.globl	swapper_pg_dir
+> -swapper_pg_dir:
+> -	.space	PGD_TABLE_SIZE
+> diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
+> index 354611940118..1707ab580ee2 100644
+> --- a/arch/powerpc/mm/pgtable.c
+> +++ b/arch/powerpc/mm/pgtable.c
+> @@ -28,6 +28,8 @@
+>  #include <asm/hugetlb.h>
+>  #include <asm/pte-walk.h>
+>  
+> +pgd_t swapper_pg_dir[MAX_PTRS_PER_PGD] __page_aligned_bss;
+> +
+>  static inline int is_exec_fault(void)
+>  {
+>  	return current->thread.regs && TRAP(current->thread.regs) == 0x400;
+> -- 
+> 2.25.0
