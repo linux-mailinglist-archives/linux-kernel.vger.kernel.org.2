@@ -2,87 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE583B23E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B511D3B23E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhFWXOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 19:14:24 -0400
-Received: from mail-ej1-f48.google.com ([209.85.218.48]:35439 "EHLO
-        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhFWXOX (ORCPT
+        id S229800AbhFWXVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 19:21:08 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:59124 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229688AbhFWXVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 19:14:23 -0400
-Received: by mail-ej1-f48.google.com with SMTP id gn32so6524394ejc.2;
-        Wed, 23 Jun 2021 16:12:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uOSFodj4auX4yeH5YdDicEQGbayWjRRaX6zTkpmd55M=;
-        b=aLw43jD/9+bSuPoYxiSOjKcTKDGlOJdlQK7HcoEZzlcps4wIwTbu010KJ80KRSxK3L
-         Z9ycPCmoItksfm0tmeJEwMhFXnKgwhUcSU4X6dk0wKSkqMWTuhXNVX31mnQ4zPP1F08M
-         oeCYFgSXdNj6s5k8BjiRgq1yS0L0A4c5Lfqqw5vzxLnUZ+4Xk0t2DFO3jWVnxZOx81/B
-         5HDJ7Bpta0AJKcx5Nohgkrzb6EM7RltjNBB6vvT7lJ9kAik/Xcp1OB7RwTGDR9B0zl5r
-         Fnb7yagqDOSwW6r6NtLrjfYCISLetJzy1Fm5k03YySCzBxyHKqs4/4HBWWtUzL61gaxz
-         simg==
-X-Gm-Message-State: AOAM532f4L3piZVlATzAJjAiZKyAnMfGDW8BZrKEGFoLi/8lBTmENk1j
-        3MZF36V2PDAJraxHfBYXSpI3vjvL54Napg4htGA=
-X-Google-Smtp-Source: ABdhPJyC295VkNAJqZlMSj3vxEw5F3msVz/27GqRfqjyeIfuinxBYjCGV7BUPtT6RywvWfkoGYNXyeQZ8UNERHAHgh0=
-X-Received: by 2002:a17:906:2bc6:: with SMTP id n6mr2348171ejg.256.1624489923489;
- Wed, 23 Jun 2021 16:12:03 -0700 (PDT)
+        Wed, 23 Jun 2021 19:21:07 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15NNH8i2002775;
+        Wed, 23 Jun 2021 23:18:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=NXaHNbeqOPtKkQw9Dha8CY4CHp/tDnQ+pswMmyzLSBE=;
+ b=PpEy9HS3Iao0eEuAmfoKeID8w5fl5yun9EwiIWAzhbiA3cVu7sdyUKta8RaRve9ZT5ux
+ IJHS8T4vOpm9VCmxmjmkXjoPppVwQf9KpGr3efKQgwr150hbK9s4QH6uVloL2+7rvy+7
+ wZtOLtyJaXC8dcqZaD/VwoihW5bhS40b3hjaQbLmVo8LlSOWm04y4j1lVZuL4ba8rAEK
+ 9f/ObZyIQU6ZasJGc2PSMEOYkNfQEwA9Grg4gVJ8zHg9kv6bJrUH7OrUJEqdsJCzbqXE
+ WHAKWDArNDuP5BhD+adWlA0cwucNf9+Q9xWqlp5ivm6lkpl9YeJe88ctpQ0KuSP4ihmm VQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39c2wnhjwd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Jun 2021 23:18:43 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15NNFv29113613;
+        Wed, 23 Jun 2021 23:18:42 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2107.outbound.protection.outlook.com [104.47.58.107])
+        by userp3020.oracle.com with ESMTP id 399tbv65g3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Jun 2021 23:18:41 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ss2M0SQwbLE+mlwY1AYzlTSJyF675t05Zx9kicGoOAU7jKlGy3V3Kkj3aUmQ9DvLzY9xDO9uA4v8zD+4miZM0uAs20n9+vf2Y7Ov2KEG7jLUtk+1sWMYhQji6lm2UpsMqF4CZGeX0cyV1E9soZO+gruNEY+Xqj5aFwIkhOaMSrhoqM1Q/2iEaCDSVYrsnhKBEmse8RrcZV2nQMLfEaSyRlERIXRvkaT5druzL8PUq8Wii1//dKo4rrB39WbTjQcV0n7xc64utbq2vEmeqPhvPF3l3xATOXi0gYANb97gsqTSL8Z2LPxERYhtmVcvXN0RZMgO+3XzNWoomdLDnn5Cag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NXaHNbeqOPtKkQw9Dha8CY4CHp/tDnQ+pswMmyzLSBE=;
+ b=hw/t5+sDyfonvPOL476MLtABlWL+bbyMrvJDCT7JLoQm0K5AwhemBI+6Ly1vqtXTQuvDSgWnt26FY69Sw2rMZ09CDSNBkUG6klNx+GJ15Oao6vZvigiDMCxqMjFCa6C3J3Rihpzytzu53bP7yz4LLhS+NKxJbkaJJiLj1AKXRdtPQNk+5Vzuj7I+hig7+KrzO0/w2WpnaNkrmOM3lWG5Ul202wM1+rh2a7rplHx0QPQFzOo5ERlMM+pzZwhs3bTJFpa0JSD1BYwO3FiTqN8E7sW9BX6qUVXjnJ5oigSXjRUzYvdUpvZNvePhiFklFzjFK++7j17mXvLey6Ces5tbgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NXaHNbeqOPtKkQw9Dha8CY4CHp/tDnQ+pswMmyzLSBE=;
+ b=d4MU6BiyF51FSyL51WIPKn3qjVuaRj7XfnovC1bNVYkzbzJU0uf4lA68EEU5qhmlQuxRU5rJutXEWNQ4j/u+juI9Z6nV7iV2cVy9XhUQTvYqqVc97gAHp5n2SNK+lPtHyWG86BMRHhqpO5L7KH4bdFYdENlhzMekDjzXvwBA30k=
+Authentication-Results: xen.org; dkim=none (message not signed)
+ header.d=none;xen.org; dmarc=none action=none header.from=oracle.com;
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
+ by MN2PR10MB4333.namprd10.prod.outlook.com (2603:10b6:208:199::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19; Wed, 23 Jun
+ 2021 23:18:40 +0000
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::78a3:67d:a8ca:93cf]) by BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::78a3:67d:a8ca:93cf%7]) with mapi id 15.20.4264.019; Wed, 23 Jun 2021
+ 23:18:39 +0000
+Subject: Re: [PATCH] xen/events: reset active flag for lateeoi events later
+To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Julien Grall <julien@xen.org>
+References: <20210623130913.9405-1-jgross@suse.com>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Message-ID: <9736ccf7-ee9d-ccae-fed6-cfeef78e6a8f@oracle.com>
+Date:   Wed, 23 Jun 2021 19:18:36 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+In-Reply-To: <20210623130913.9405-1-jgross@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [160.34.88.31]
+X-ClientProxiedBy: SN7P220CA0029.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:806:123::34) To BLAPR10MB5009.namprd10.prod.outlook.com
+ (2603:10b6:208:321::10)
 MIME-Version: 1.0
-References: <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
- <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
- <874kf11yoz.ffs@nanos.tec.linutronix.de> <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
- <87k0ntazyn.ffs@nanos.tec.linutronix.de> <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
- <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
- <9c8138eb-3956-e897-ed4e-426bf6663c11@intel.com> <87pmxk87th.fsf@oldenburg.str.redhat.com>
- <YKfIct+DhpEBbaCQ@hirez.programming.kicks-ass.net> <87wnqkzklg.fsf@oldenburg.str.redhat.com>
-In-Reply-To: <87wnqkzklg.fsf@oldenburg.str.redhat.com>
-From:   Len Brown <lenb@kernel.org>
-Date:   Wed, 23 Jun 2021 19:11:52 -0400
-Message-ID: <CAJvTdKkBTD62GTi=GW0+y0_1qc2JxfpfkNbXKWniWWOEmZZmUw@mail.gmail.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen via Libc-alpha <libc-alpha@sourceware.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Rich Felker <dalias@libc.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Kyle Huey <me@kylehuey.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.74.102.31] (160.34.88.31) by SN7P220CA0029.NAMP220.PROD.OUTLOOK.COM (2603:10b6:806:123::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Wed, 23 Jun 2021 23:18:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2acce191-0931-4846-9914-08d9369d3c17
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4333:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB433351FA3AD64AC14BAFA3048A089@MN2PR10MB4333.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XNGdQbzXxLo/6UiMA0Y1JfMqrjebBKjA9by96F759xpSHCqBxuAwQO5A/fznaSqkve2Qq7f1krkNehc3kCLFylkkutbmweJHaLt19/9AblxskiEQpUpDfleFxxv3K3HIx8nmljc91S/7BanG1K9fZK4FNmcA/u8ZNTafGRXeDyWI0mH+v/5+d2IR5Qm4BtvY/fRbOaz49CVB1nq/KWmo3us7puocayI7essSD/lL/IPHdkGQStPR3bHi1vAKMZeSAGIInF+beT5n1fsbN0lBpqNVlfodoCdbjsyo62GpBfheK8G6U8kNf9IBn3gR8RqkVO0kqzH6VyLAPom8pt48n1/YId9/akFZi+b4DL1R/ZyD8sLCH76Ptkz04yXzyVm6Zcalu5zWgR7Bd7LnTJj5ABszHocAnPOCyKzke/MsAbk+Tw4l1yNIcxHcqBUrKb3BhxmD8B+yZELS0LvB1GZ9YnYNl+maicOU8H3v19wgnyU8RfU05sIOGyD57UQSuS45DAJsvo1TSHXoXrHsFfKslzmUIXiHp/agPUZvXl/1NUx3ZiGtdxlL9K89a0n5XKSWf6gEEnivDAYSLcZukBBd7Oa5N46DftOyx3moXtCzvL9l9/HiRb8estGzePPUa3r04WroEtf1GEJpvbjSqsar7kOSg5ADSpRZl7jUUxXS3XWjpgIm3Fs/WVNmaT+IyPGG
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(376002)(366004)(39860400002)(136003)(83380400001)(38100700002)(54906003)(6486002)(31696002)(2906002)(86362001)(956004)(478600001)(16576012)(2616005)(44832011)(316002)(26005)(4744005)(8676002)(36756003)(16526019)(186003)(31686004)(53546011)(8936002)(66946007)(5660300002)(66476007)(4326008)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RlcwZFRSQjFjVEYwRkRzN2t2anBHdlpaZGRHZzkyc3pGdWtYVkZtRmgzN3Ri?=
+ =?utf-8?B?YkVJZi9FZVdlVGtNenM0M1pUYU9QeUJZVjIvZE11OE5nUmlvbmRVR0xxa3kx?=
+ =?utf-8?B?VEV6NmYvbmZITmlnV2c1cFZUU2g3N2o5REc4ZEliVG93UStiODA2RlhQT0pU?=
+ =?utf-8?B?M3JpajI0NHk4UHF4cXdDenMyNGxqTVBsKzhjRHhvMUp4THdZQ2NId2syOWRW?=
+ =?utf-8?B?b1AzeGtKUHZEazFaNUIyNkx4Yk9nRWdPMXhNOEZlUE1RNkk1dWdJUVVMa2V5?=
+ =?utf-8?B?N2FVQ095SXMySVBxeVI2REQ0RVd2V0c3THVsK015eTdVd0RoVzEya3JBa2xT?=
+ =?utf-8?B?bFpsS05pcE5zL2o0SExDcEZNVS9ISFlnSERQQThFdU81eGpwSEdIWjQvLzhU?=
+ =?utf-8?B?aTdrZ08zUGl2NVYyUzJ3eWNyYW1RYTNUc1lrNlN4Vnk3ZUl2Q0ZLWXJIa0xo?=
+ =?utf-8?B?QnI0aXhiUHVjUlFLZldZRHEzeHBHMkhZaC9zUHpvdlpMc2Y3dXk3TlZtNXVS?=
+ =?utf-8?B?N2FoZmczc3VLeVB5ZVlZUGs5L0tpLzl4czZVTTlzangwb0crd3Y3bDJyOVpC?=
+ =?utf-8?B?SzZ6TG42OXdYcUhNR0Y4a1ZIbytHR2ZscUJjWmNRUWxzSzZzc2Ivb0xSbm02?=
+ =?utf-8?B?S2tlaTR6NVkrTVcwVENML2RCclppRHZpcHoremVJRlkrNHoxTFNVSm05M21h?=
+ =?utf-8?B?aCsxZWJ1czZFdE9hSXhpcDNDS3BFL1BDektGOGFHQS9sOTF3cXNGOEtsQnM0?=
+ =?utf-8?B?OVV5dXI2Y2YrTDZpckg0bk9sR3I1bUM3dG1jSVd3MWcveit6NWFhdjFnbjFl?=
+ =?utf-8?B?RmhJdFRPZWNTRHhna24wak5wc2xsVVpjR09mN2ZvRlRnb3oyN1ExUVRFVXFC?=
+ =?utf-8?B?d3JYRnJLSUtwV2dOTm1yS1FUVTFLekhpcFlXb1NHbjd2TjZ1SW5PZkRLZE4y?=
+ =?utf-8?B?di9VYXlDS3JhTWxvQkVJbWRORzQzVjJUUU52R3NqR2c5Q2U5cy9xLy9ZMGRR?=
+ =?utf-8?B?QTA0dG9IRDMvMS9OWGc5OVRoT3ZoWVhLWGNBQ0Vnc2JXd2pXVmRIeVhmdmZl?=
+ =?utf-8?B?SmZuaFRYN0FWQmc3WkFPNGMxQm9UcjYwR3NlZDVSMStlUGRLZ3VxaHBLN3ZV?=
+ =?utf-8?B?N1A0Zmc0ak5LdS9Db3VBTzNwV2NjbTVjOVNTUDB1ekRFeENJRVhKQWwzVmtq?=
+ =?utf-8?B?OFBTUkdqR1VXZEd6RUVaLzZCc2RubUJFMDdCRVdCbkswNGs5c2VkRThtM000?=
+ =?utf-8?B?UzcyZ2JEWGVBVUJoZWxFU3VmY1lIbWlKTlNnTVJ0WHdwWmZXTk8xVkUyUWZV?=
+ =?utf-8?B?bW9GOGVGaUUvRW9QS3JMcXZxM0loUHB0UUVyYVZORUJGVGY3ajRCcHkvd0lW?=
+ =?utf-8?B?M05FdnV1YjV4dkRMMTZUWm9zbjlkZ1NCZmRnME83T3B1SEh2R2wwVi9pR1k1?=
+ =?utf-8?B?dmpuMldOb1FmL0Nrci9Mdm9WbkhpRm9SaVhpdUl6Z3ByQ1ZyUENCRDhtUzRa?=
+ =?utf-8?B?b2pQOStvMGR6OXhpM3dYR1JwZnVtaVFzMXZJV0JpODJmSjJsdkxaYUJ2M0Yr?=
+ =?utf-8?B?VTBGdUdLSndKYWovd01lWHQ5NnI2Mm0xck82OFpWbEk1YTZmQlVzTW5xZFcw?=
+ =?utf-8?B?OS90S1N6UkV6UUxtVm10c21vVTlFRlVPV21McFZtWjFJUUxFWGhaVCtUcjJ3?=
+ =?utf-8?B?MDVhVFg5Q1FBZm5pTkx6SEducjNZeHpoeUQ2S3dRQ0ordSs1Z2R3QVNtVUtI?=
+ =?utf-8?Q?MMvVzPc05mfLqC5t0X3pnfqUVe6IVYqIKmqI0X2?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2acce191-0931-4846-9914-08d9369d3c17
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2021 23:18:39.8019
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qc1eb/+I/oFnyx4aYPGgwRn1qe1Q+y+cVNJvzgDL6CpeUZvWoyCs/DVTd+esriLE2DixpzC3yWreu/3fu/mYPb6MsXt/F2UFxDa6VRlonFg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4333
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10024 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106230136
+X-Proofpoint-GUID: vj2DWSSemc14Kp2eE4WH09dPyS1VC6xS
+X-Proofpoint-ORIG-GUID: vj2DWSSemc14Kp2eE4WH09dPyS1VC6xS
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 11:07 AM Florian Weimer <fweimer@redhat.com> wrote:
->
-> * Peter Zijlstra:
->
-> > On Fri, May 21, 2021 at 04:44:58PM +0200, Florian Weimer wrote:
-> >
-> >> And we added an interface for querying x86 CPU features to glibc 2.33
-> >> which is completely incompatible with this because it assumes that CPU
-> >> features do not change during the lifetime of a process. 8-(
-> >
-> > How many x86 kernel maintainers signed off on that patch?
->
-> I've started a new thread:
->
->   x86 CPU features detection for applications (and AMX)
->   <https://lore.kernel.org/linux-api/87tulo39ms.fsf@oldenburg.str.redhat.com/>
 
-FWIW, I didn't receive it, because you excluded
+On 6/23/21 9:09 AM, Juergen Gross wrote:
+> In order to avoid a race condition for user events when changing
+> cpu affinity reset the active flag only when EOI-ing the event.
+>
+> This is working fine as all user events are lateeoi events. Note that
+> lateeoi_ack_mask_dynirq() is not modified as there is no explicit call
+> to xen_irq_lateeoi() expected later.
+>
+> Reported-by: Julien Grall <julien@xen.org>
+> Fixes: b6622798bc50b62 ("xen/events: avoid handling the same event on two cpus at the same time")
+> Tested-by: Julien Grall <julien@xen.org>
+> Signed-off-by: Juergen Gross <jgross@suse.com>
 
-linux-kernel@vger.kernel.org
 
-(x86@kernel.org is just the actual x86 kernel committers, ISTR)
+Reviewed-by: Boris Ostrovsky <boris.ostrvsky@oracle.com>
 
-Len Brown, Intel Open Source Technology Center
+
