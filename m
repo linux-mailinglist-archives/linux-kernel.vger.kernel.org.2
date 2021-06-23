@@ -2,142 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4312B3B1DAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F1F3B1DAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231407AbhFWPhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 11:37:42 -0400
-Received: from mga06.intel.com ([134.134.136.31]:41948 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229523AbhFWPhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 11:37:41 -0400
-IronPort-SDR: 5R0YjPbfnam1ka79dpZLE3E2iC6/1CgsfiNb6svrlCm+U6M4CgijBDUrj7fcpre0f0Ai4OeVZ9
- iwI7guBcVVzQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="268427698"
-X-IronPort-AV: E=Sophos;i="5.83,294,1616482800"; 
-   d="scan'208";a="268427698"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 08:34:38 -0700
-IronPort-SDR: Ic+vQ/72rh0752HjI3D182s5di1XZZ7LJCwJJMEdDhjv+PSx0YXGbpbY2D68Ezz1sQqUgrxic1
- vrslBJTFw63Q==
-X-IronPort-AV: E=Sophos;i="5.83,294,1616482800"; 
-   d="scan'208";a="487358319"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 08:34:37 -0700
-Date:   Wed, 23 Jun 2021 08:34:37 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Kamal Heib <kheib@redhat.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V2] RDMA/siw: Convert siw_tx_hdt() to kmap_local_page()
-Message-ID: <20210623153437.GR1905674@iweiny-DESK2.sc.intel.com>
-References: <20210622203432.2715659-1-ira.weiny@intel.com>
- <20210622061422.2633501-5-ira.weiny@intel.com>
- <OF951DAF0B.941A938D-ON002586FD.003F1610-002586FD.00504522@notes.na.collabserv.com>
+        id S231386AbhFWPhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 11:37:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhFWPhW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 11:37:22 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6F8C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 08:35:04 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id pf4-20020a17090b1d84b029016f6699c3f2so4101081pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 08:35:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+mI6+zz+H583afuk78K0myFGshVLHyM3wXS60guYtuo=;
+        b=kAnAOV0Cb5WWxjMsN894W7EHiVAoPY+5e0mwzuTOkRme634ZWqvUumNfyEmAjjMH9W
+         GFQsOjhnaSSZ1ac1AslcbYWl3exG+VSq4UJoOcTMXhCsNvvxQrjKSoW2OS9rvHYRXWuU
+         O4AaqbkyPwJQfooBqx5yWJYEkDC9j6DPHYhlCSvIFGDND8W05bFkRtK1e6htc+Umvx57
+         3Lr+X+XtmPL2M0pQg5gugyfNAm9ViVc4CdgL6euUbrkDm6HZ7JwMlCkieS0MzUWMJT2L
+         yPR/s0yjjxDQPZTltKc42/oPJuzOT2GXYc+6ZeF3tLZqicg/VChUYOFVZz4bBIDiCRjh
+         kCSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+mI6+zz+H583afuk78K0myFGshVLHyM3wXS60guYtuo=;
+        b=UWtGdz+RvJHgDfeZgOHDyUBnZRn0uh9W+aR1scbjxIJ2E2E99F0PsEo6ND6x+UIPQc
+         G9Fyw8kg8HQzRiIqwivrpnSWeiH5UAtawor7omFLAhJRbY4wMf5h+iWIbWF14oB9Vbmy
+         cJE5TUfdGVqaW6iRxk9Su4Ga1iJkWXNAlLgQ7j8eBfN5u+PRV70fMThryBV5DkQZAQXs
+         z/LY0Bh4si8U2qAwHbMetSC84XxIXvruemRpnJBJJPb92ChTw86/ZsO9j11YO4CLmZ38
+         Jro+5eqDiVLKeXdjUzwyhxcUerPQnZYXYjl300OM3mf8IHjb48Sel/YbhFgpF8JjhplG
+         G46Q==
+X-Gm-Message-State: AOAM532YqQK0ci5QNqyDKH7AWY4Niv6ZMtelNVn25e+qq5+GTnT3MWMy
+        sq7GyeJ2oC6/VZuXtktyabuxqw==
+X-Google-Smtp-Source: ABdhPJzNO0Rpq6z6YL9Mk3SpLmNc1ftGLkjm+Q8e86KEWVQXLZmOeBK5xEl3rJZnSUdWypHdhtgaVw==
+X-Received: by 2002:a17:90a:d598:: with SMTP id v24mr302933pju.185.1624462504101;
+        Wed, 23 Jun 2021 08:35:04 -0700 (PDT)
+Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
+        by smtp.gmail.com with ESMTPSA id t13sm287472pfq.4.2021.06.23.08.35.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 08:35:03 -0700 (PDT)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] regulator: bd9576: Fix testing wrong flag in check_temp_flag_mismatch
+Date:   Wed, 23 Jun 2021 23:34:43 +0800
+Message-Id: <20210623153443.623856-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OF951DAF0B.941A938D-ON002586FD.003F1610-002586FD.00504522@notes.na.collabserv.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 02:36:45PM +0000, Bernard Metzler wrote:
-> -----ira.weiny@intel.com wrote: -----
-> 
-> >@@ -506,11 +513,12 @@ static int siw_tx_hdt(struct siw_iwarp_tx
-> >*c_tx, struct socket *s)
-> > 				page_array[seg] = p;
-> > 
-> > 				if (!c_tx->use_sendpage) {
-> >-					iov[seg].iov_base = kmap(p) + fp_off;
-> >-					iov[seg].iov_len = plen;
-> >+					void *kaddr = kmap_local_page(page_array[seg]);
-> 
-> we can use 'kmap_local_page(p)' here
+Fix trivial copy-paste typo.
 
-Yes but I actually did this on purpose as it makes the code read clearly that
-the mapping is 'seg' element of the array.  Do you prefer 'p' because this is a
-performant path?
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ drivers/regulator/bd9576-regulator.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> > 
-> > 					/* Remember for later kunmap() */
-> > 					kmap_mask |= BIT(seg);
-> >+					iov[seg].iov_base = kaddr + fp_off;
-> >+					iov[seg].iov_len = plen;
-> > 
-> > 					if (do_crc)
-> > 						crypto_shash_update(
-> >@@ -518,7 +526,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
-> >struct socket *s)
-> > 							iov[seg].iov_base,
-> > 							plen);
-> 
-> This patch does not apply for me. Would I have to install first
-> your [Patch 3/4] -- since the current patch references kmap_local_page()
-> already? Maybe it is better to apply if it would be just one siw
-> related patch in that series?
+diff --git a/drivers/regulator/bd9576-regulator.c b/drivers/regulator/bd9576-regulator.c
+index 8b54d88827be..3023069536ff 100644
+--- a/drivers/regulator/bd9576-regulator.c
++++ b/drivers/regulator/bd9576-regulator.c
+@@ -294,9 +294,9 @@ static bool check_temp_flag_mismatch(struct regulator_dev *rdev, int severity,
+ 				    struct bd957x_regulator_data *r)
+ {
+ 	if ((severity == REGULATOR_SEVERITY_ERR &&
+-	     r->ovd_notif != REGULATOR_EVENT_OVER_TEMP) ||
++	     r->temp_notif != REGULATOR_EVENT_OVER_TEMP) ||
+ 	     (severity == REGULATOR_SEVERITY_WARN &&
+-	     r->ovd_notif != REGULATOR_EVENT_OVER_TEMP_WARN)) {
++	     r->temp_notif != REGULATOR_EVENT_OVER_TEMP_WARN)) {
+ 		dev_warn(rdev_get_dev(rdev),
+ 			 "Can't support both thermal WARN and ERR\n");
+ 		if (severity == REGULATOR_SEVERITY_WARN)
+-- 
+2.25.1
 
-Yes the other patch goes first.  I split it out to make this more difficult
-change more reviewable.  I could squash them as it is probably straight forward
-enough but I've been careful with this in other subsystems.
-
-Jason, do you have any issue with squashing the 2 patches?
-
-> 
-> 
-> 
-> > 				} else if (do_crc) {
-> >-					kaddr = kmap_local_page(p);
-> >+					kaddr = kmap_local_page(page_array[seg]);
-> 
-> using 'kmap_local_page(p)' as you had it is straightforward
-> and I would prefer it.
-
-OK.  I think this reads cleaner but I can see 'p' being more performant.
-
-> 
-> > 					crypto_shash_update(c_tx->mpa_crc_hd,
-> > 							    kaddr + fp_off,
-> > 							    plen);
-> >@@ -542,7 +550,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
-> >struct socket *s)
-> > 
-> > 			if (++seg > (int)MAX_ARRAY) {
-> > 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
-> >-				siw_unmap_pages(page_array, kmap_mask);
-> >+				siw_unmap_pages(iov, kmap_mask, MAX_ARRAY);
-> 
-> to minimize the iterations over the byte array in 'siw_unmap_pages()',
-> we may pass seg-1 instead of MAX_ARRAY
-
-Sounds good.
-
-> 
-> 
-> > 				wqe->processed -= c_tx->bytes_unsent;
-> > 				rv = -EMSGSIZE;
-> > 				goto done_crc;
-> >@@ -593,7 +601,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
-> >struct socket *s)
-> > 	} else {
-> > 		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
-> > 				    hdr_len + data_len + trl_len);
-> >-		siw_unmap_pages(page_array, kmap_mask);
-> >+		siw_unmap_pages(iov, kmap_mask, MAX_ARRAY);
-> 
-> to minimize the iterations over the byte array in 'siw_unmap_pages()',
-> we may pass seg instead of MAX_ARRAY
-
-Will do.
-
-Thanks for the review!  :-D
-Ira
