@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A693B1AEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 904103B1AF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhFWNTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:19:49 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:51750 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230163AbhFWNTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:19:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=l3Mdl37ptulzi/amZuYMo3pqLMLTnrhN/xeuh+SnyY8=; b=kj1EEQcNerDvoNaOpZPQx+HRzu
-        ebWZrS0pOrocIWAhBnbn+/i9T/S82Fkb/O7sg09rffUiVIKuoX+Zc+31QPNK7RtOY5dg1pSvTtUtb
-        RvMknfGRuDsyiMjxY8xUILT+kRu7/kjp+8x1m18gJHxERyA00gi+wzWL2deEobmxqkYU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lw2kl-00AqVp-2V; Wed, 23 Jun 2021 15:17:15 +0200
-Date:   Wed, 23 Jun 2021 15:17:15 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Einon <mark.einon@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 1/3] ARM: dts: imx28: Add description for L2 switch on XEA
- board
-Message-ID: <YNM0Wz1wb4dnCg5/@lunn.ch>
-References: <20210622144111.19647-1-lukma@denx.de>
- <20210622144111.19647-2-lukma@denx.de>
- <YNH3mb9fyBjLf0fj@lunn.ch>
- <20210622225134.4811b88f@ktm>
+        id S230463AbhFWNU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:20:26 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:38874 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230163AbhFWNUZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 09:20:25 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A53529AA;
+        Wed, 23 Jun 2021 15:18:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1624454286;
+        bh=4hkUKdHT15rj2vnmOuvAjcb9HIg4wLdlU7nwjmRC69I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Kfxn7CGrXm6bhFXlcu2yEs0ZPR3gBBYmDz0rko913TX9FjaBt8AUuWoqrMqt4FJWI
+         XAbDl4NpsGjkmvXVga7LaYxZb9kmVjnJnCML9Dkw8ZA2vtqADPTQbcZzCouGGGfdN/
+         Me9GAPbJ81c8PFVKocYy9uow7S19MELfHrUr0jVk=
+Date:   Wed, 23 Jun 2021 16:17:37 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2] MEDIA: Driver for ON Semi AR0521 camera sensor
+Message-ID: <YNM0cZFV7/LKKFBn@pendragon.ideasonboard.com>
+References: <m3wnqm5eqo.fsf@t19.piap.pl>
+ <YNHQDNdpxcY8+IV2@pendragon.ideasonboard.com>
+ <m3r1gt5hzm.fsf@t19.piap.pl>
+ <YNK5FhAXSpI1oHJV@pendragon.ideasonboard.com>
+ <m3mtrh5evo.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210622225134.4811b88f@ktm>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <m3mtrh5evo.fsf@t19.piap.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 10:51:34PM +0200, Lukasz Majewski wrote:
-> Hi Andrew,
+On Wed, Jun 23, 2021 at 07:28:11AM +0200, Krzysztof Hałasa wrote:
+> Laurent Pinchart writes:
 > 
-> > On Tue, Jun 22, 2021 at 04:41:09PM +0200, Lukasz Majewski wrote:
-> > > The 'eth_switch' node is now extendfed to enable support for L2
-> > > switch.
-> > > 
-> > > Moreover, the mac[01] nodes are defined as well and linked to the
-> > > former with 'phy-handle' property.  
-> > 
-> > A phy-handle points to a phy, not a MAC! Don't abuse a well known DT
-> > property like this.
+> > How does a lack of an SoB line prevent someone from doing exactly what
+> > you've described above ?
 > 
-> Ach.... You are right. I will change it.
+> The work is not published under GPL.
+
+I only review kernel code covered by the GPL, sorry :-) (And stating
+that a kernel driver isn't covered by the GPL is at the very least a
+very grey area, as it's widely understoof that drivers developed
+specifically for Linux are derivative work of the kernel)
+
+> > Maintainers usually understand these issues. They may fail to notice,
+> > but if you point out a patch that would steal your work, that would
+> > prevent it from being merged.
 > 
-> Probably 'ethernet' property or 'link' will fit better?
+> I'd like to believe this as well. Unfortunately, it doesn't work like
+> that. See the "tw686x" (an SD TV frame grabber) case.
+> I didn't even request that the other driver wasn't merged. I only wanted
+> it as a patch on top of the original one - so the history could be
+> visible.
 
-You should first work on the overall architecture. I suspect you will
-end up with something more like the DSA binding, and not have the FEC
-nodes at all. Maybe the MDIO busses will appear under the switch?
+Mauro, any comment on that ?
 
-Please don't put minimal changes to the FEC driver has your first
-goal. We want an architecture which is similar to other switchdev
-drivers. Maybe look at drivers/net/ethernet/ti/cpsw_new.c. The cpsw
-driver has an interesting past, it did things the wrong way for a long
-time, but the new switchdev driver has an architecture similar to what
-the FEC driver could be like.
+-- 
+Regards,
 
-	Andrew
+Laurent Pinchart
