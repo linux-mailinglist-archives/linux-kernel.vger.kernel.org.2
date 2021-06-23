@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04363B2391
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D714A3B2399
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhFWW0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 18:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53726 "EHLO
+        id S229906AbhFWWbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 18:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229906AbhFWW0c (ORCPT
+        with ESMTP id S229688AbhFWWbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:26:32 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE48C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:24:13 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id i189so5426432ioa.8
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:24:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=rarFiEcktOV4PMyvDV95VcjSVtUjs4RdLS31HBip5uA=;
-        b=lE18ucs7drfzcX+0pjDbjf8JgBhEqOnLDKsssvstFzfaLG4LXqUhNmb23n2OZm1CLW
-         5t4kdONyJzEb5dcke/lmdRBs5T3a3UFcCGh4xZMhNgx7kpgoWZVHfuuuqCSXCUlBZY9B
-         X12yTjz32/pvuyfob3DXa6+5Na58NQXckEia2kAD0lyvMQGf0MWhira1HTjvFXXQLwXi
-         0aAED1oC2VMRSdseHbd28orq3+1n4VoQwdfrc4qMHIe2xHBM6Fc4OwPQUV5S7osjO3Rf
-         q7oJVXKbb2mDbKR2YIGLt1m/r2KmgvwX6bNJf+IQRKJd4NtGFeiGkW8jFzKrdulyZWvk
-         nVmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rarFiEcktOV4PMyvDV95VcjSVtUjs4RdLS31HBip5uA=;
-        b=tYCLjmvGWo80APyoMdQZ3W1xo3qMf+eFX8WRoxUDZq1g9b5mdvNrvWpNcx1SzD401O
-         CNl6CocZuOoaLBoOSowrZNHcVVdctypAzdJ+qXTnxFmWA3KQMTwfzmtJ0GrrQ8yAHKuD
-         12DYSEhlTq+iTXeVKq/dZfQCuG0CfYxd5hndl62NniDKJPtwZdbs1HMAQzCng4wLWCyW
-         Zfp6Aq0P8Dk1Tq3aNIqPdrc6pBwdG3EumsXvmdoZNK7amQXhitRf7a1eRporIDn5hgqP
-         3OYx6XYmnf8F8QHBgFWouCJ+O4zMKQ6cZDOpLQoG11rUozW9Fd1jrxVOvursY8faS/iy
-         rsvA==
-X-Gm-Message-State: AOAM532Wwwlgnvfo6nppv2laJu5O0KRCM4TAOwpvmKlrSjmN47s5YyTS
-        dbnRraGIbcjaMqc85KNb/93DDlajlkbxPg==
-X-Google-Smtp-Source: ABdhPJwUZbCdMymItjEzWVPFYctd082FTIQe8OkbfvcjtyCef5RL0iJF8c+C8d4s/rDpQAyCEg8muw==
-X-Received: by 2002:a05:6638:379d:: with SMTP id w29mr1727299jal.2.1624487052609;
-        Wed, 23 Jun 2021 15:24:12 -0700 (PDT)
-Received: from [192.168.1.134] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id b23sm168772ior.4.2021.06.23.15.24.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 15:24:12 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] Minor SQPOLL thread fix and improvement
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1624473200.git.olivier@trillion01.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <e4b52e6b-2e03-58e4-8732-595c59adefbc@kernel.dk>
-Date:   Wed, 23 Jun 2021 16:24:10 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 23 Jun 2021 18:31:35 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F9CC061574;
+        Wed, 23 Jun 2021 15:29:16 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G9HxP1HNPz9sCD;
+        Thu, 24 Jun 2021 08:29:12 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624487353;
+        bh=B0nnRaXy3juVwSWhjg6oCgD9xS70cicB6mdlEGWBlF0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=YhD5Q6GLIwL//8kIvc1dJ1BBS1np/DKQz7tryiVL8eNi69BU5MyGfIfHIF/lc/LXz
+         MRW3NrrCRwAcGLt1VWHKz4LHwz9rwVQgc9YvHgY4CLb4Sh4nXWGTwgdhVpgxQyTQ4L
+         nSX+Ue6K2yf/DfJ9Sx5JN3tsQQzl3+dO8jlpiiO9oj/ik87nh6pwX7oum5ouj53GJ5
+         1Dm5GQVGw2aWimTKIA6cJ9bIRqdKlvI/hrEspv5YMWMGC1V+8674lWD90j2giMEE3A
+         x6C0A+VaNirVz/xu++0jUzmrWVSUpJCqr7vCdopPwf2JkXABoAg+tHns87myulzAZs
+         nupcoi0ybuxmg==
+Date:   Thu, 24 Jun 2021 08:29:11 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Marcin Wojtas <mw@semihalf.com>
+Subject: linux-next: build failure after merge of the net-next tree
+Message-ID: <20210624082911.5d013e8c@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <cover.1624473200.git.olivier@trillion01.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/ZRNepBVwBa+CXQz8hwLzlt6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 12:50 PM, Olivier Langlois wrote:
-> I have been investigated a deadlock situation in my io_uring usage where
-> the SQPOLL thread was going to sleep and my user threads were waiting
-> inside io_uring_enter() for completions.
-> 
-> https://github.com/axboe/liburing/issues/367
+--Sig_/ZRNepBVwBa+CXQz8hwLzlt6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Applied, thanks.
+Hi all,
 
--- 
-Jens Axboe
+Today's linux-next build (x86_64 modules_install) failed like this:
 
+depmod: ../tools/depmod.c:1792: depmod_report_cycles_from_root: Assertion `=
+is < stack_size' failed.
+
+Caused by commit
+
+62a6ef6a996f ("net: mdiobus: Introduce fwnode_mdbiobus_register()")
+
+(I bisected to there and tested the commit before.)
+
+The actual build is an x86_64 allmodconfig, followed by a
+modules_install.  This happens in my cross build environment as well as
+a native build.
+
+$ gcc --version
+gcc (Debian 10.2.1-6) 10.2.1 20210110
+$ ld --version
+GNU ld (GNU Binutils for Debian) 2.35.2
+$ /sbin/depmod --version
+kmod version 28
+-ZSTD +XZ -ZLIB +LIBCRYPTO -EXPERIMENTAL
+
+I have no idea why that commit should caused this failure.
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ZRNepBVwBa+CXQz8hwLzlt6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDTtbcACgkQAVBC80lX
+0GyWnAf/fmWanH5fu0BZZxX7crVE4yFDux50672MBz3UemASiwSxESWCibgyLt/S
+iX4tn6ZZ4xev5Zj/2WBHee53ZQ+R8tpWt8JGultrcy4nWN9/+QzUJL28WRKtg3ih
+Wcau62uEnk0nI3pN/LB3OJBdrF3jsPk27zWemNdlGKK9HHLz5jwXuH2cIZXu2Y23
+jN+bJbSc/svwAQzQvNpAZiKdN4LCrGXakpYL5ztmWYDVleqYOIDZ2GZU5pQcaT+2
+J5pwlBQPjq80n3sqoBObnkTAqVRY0N78uQXraK0SWMJ4ORla9LiHme57uoIIY4nW
+JpqVGSvOqSjc9RgasAnIocaM8P4iyQ==
+=I5ac
+-----END PGP SIGNATURE-----
+
+--Sig_/ZRNepBVwBa+CXQz8hwLzlt6--
