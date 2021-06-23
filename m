@@ -2,91 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1193B240C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23BF3B2412
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbhFWXoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 19:44:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229812AbhFWXoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 19:44:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40BB3611AC;
-        Wed, 23 Jun 2021 23:41:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624491714;
-        bh=iKHrbK2LLQgN0Vdey8aEtJKullSH9rF7grmndIc1hdY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=GsX1V/vmv/e6V3h7NTdfNlp+jfqOcZGm3yVnqd3kI1/3zE72MTKA9bBbIj7kv1+j8
-         zcPkeIsOT370uT2evCiRmEA+HPJJtffjEISbtB3/8karSfOmlVN4tZdpOtj/+8Gm2K
-         W1XZfEL6OCprmSI00HPByWVM/xPHRWS8mRhmBUPqLEPdyIp4QzhK7oBBUphieUIbAu
-         Os3ijOSqu7fw/kUPclFm+rYsG7SqEmTxQA4uOfnjqhK9L5iSq1q+GKuBjepkJ7IONk
-         ptBVQLXKevt8gOFZi1R/3NqWLoTE3Cf58EjJQAc2nr2gJXz0gTfWv8G5r9So741Iew
-         K88cgu6YBRioQ==
-Subject: Re: Build failure in -next
-To:     paulmck@kernel.org, aneesh.kumar@linux.ibm.com
-Cc:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        sfr@canb.auug.org.au, elver@google.com, ndesaulniers@google.com,
-        clang-built-linux@googlegroups.com
-References: <20210623223015.GA315292@paulmck-ThinkPad-P17-Gen-1>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <5b55b544-67de-871d-465c-af3c8be203c3@kernel.org>
-Date:   Wed, 23 Jun 2021 16:41:53 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229844AbhFWXv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 19:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229758AbhFWXv0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 19:51:26 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A466C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 16:49:07 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id m15so2373502qvc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 16:49:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BcD3XeKrvg91MeNcipf4GPVPCVuvU776EyzBAaNx5+Q=;
+        b=Dos2KRiMe165B/Nr9CNkUGafaOtwJ3BvWME+t8fT5mu1+xjlWMiHyluv6NLNXpyju5
+         7yGHG/xFFKOlVMAfyOcdOUlltSuIm/uA6M7TMMe3chZMVqwX5TxfetBYwXD+xoDAFSQO
+         Smf8GkHzscOqHSUF92P6q1hrjN0WiK5WcWCMsGRxPLPpiRYb+nH9JHQlhOur9ppHdLul
+         TRU0kXC8sCpu9RqMXQTGu55dBhmI2FV+Aa8saIWCZQB0U1PgMsIqa0lNcGpBkOMMQvO/
+         r9JaFYaHNZFIUE/fDCXB9D8S5056qahvxqLwaRWXISdITKC+A2xyMbNFhh6V0QC7KxKC
+         wn7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BcD3XeKrvg91MeNcipf4GPVPCVuvU776EyzBAaNx5+Q=;
+        b=oO6j8ZiaMNPARebpNqP8eQu4pBrHxMJiyU9UkaDa55rG2eQl+Fi1zO9PyibJ480VkO
+         c53+sy8CknkfXybNGkcHeiWcU9wohbJRUqnihumTMRvvz7BIqGyhj36tD8awVm7tjAej
+         d2UzAAPBm2/Wesn6RAwFEtZzk2CA/Tbd45PBC8sXj+lsTDJjYo0eIoSRVZuYIfr1odQW
+         c7yoCShGUsJhwgblHrandQfS5/DPl456FBxyc6+HIxRqpQVdPWYKQzJK7gt5db+HQqUC
+         MAzapPxHAt8TV9TAFVxWlfqRNWggEqPpsMGWqddYzwJVMMcbUfqvzMFPbItl+9gxHMXL
+         uq7A==
+X-Gm-Message-State: AOAM532Peb4oF34KNXQZCheqX9jpRP8Lysdtd5tAWhc7QMBfkJDi/XcG
+        ae8dkkd1oUb4f93l+vPaKRDjMw==
+X-Google-Smtp-Source: ABdhPJxs/r6pA2FKvdj9zfVm2n1+2vY60gW4Cda6wEnscWne1NBHlxji4yAiFPhT50kqTortHC16lQ==
+X-Received: by 2002:a05:6214:5b1:: with SMTP id by17mr2537121qvb.7.1624492146275;
+        Wed, 23 Jun 2021 16:49:06 -0700 (PDT)
+Received: from kerneldevvm.. (5.6.a.8.a.a.b.f.c.9.4.c.a.9.a.a.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0:aa9a:c49c:fbaa:8a65])
+        by smtp.gmail.com with ESMTPSA id w2sm992387qto.50.2021.06.23.16.49.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 16:49:05 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, dan.carpenter@oracle.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [PATCH 0/9] staging: rtl8188eu: remove DBG_88E_LEVEL and MSG_88E macros
+Date:   Thu, 24 Jun 2021 00:48:53 +0100
+Message-Id: <20210623234902.7411-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210623223015.GA315292@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+This patch set removes all callers of the DBG_88E_LEVEL and MSG_88E
+macros, then removes the macro definitions themselves. This code does
+not follow kernel coding conventions/best practices and it is better
+to remove it and ultimately rely upon pre-existing kernel debugging
+and logging functionality.
 
-On 6/23/2021 3:30 PM, Paul E. McKenney wrote:
-> Hello, Aneesh!
-> 
-> Yesterday evening's next-20210622 testing gave me the following
-> kernel-build error:
-> 
-> ld: mm/mremap.o: in function `move_huge_pud':
-> /home/git/linux-next/mm/mremap.c:372: undefined reference to `__compiletime_assert_395'
-> 
-> Bisection landed on this commit:
-> 
-> 257121c5aabe ("mm/mremap: convert huge PUD move to separate helper")
-> 
-> I have no idea how this commit relates to that error message, but
-> reverting this commit on top of next-20210622 really does get rid of
-> the problem.
+With these macros gone, there is only RT_TRACE to go (and the other
+definitions in include/rtw_debug.h) and then the file can be entirely
+removed.
 
-This was reported by Naresh Kamboju last week:
+Phillip Potter (9):
+  staging: rtl8188eu: remove all DBG_88E_LEVEL calls from
+    os_dep/ioctl_linux.c
+  staging: rtl8188eu: remove all DBG_88E_LEVEL calls from
+    core/rtw_mlmw_ext.c
+  staging: rtl8188eu: remove all DBG_88E_LEVEL calls from
+    core/rtw_ioctl_set.c
+  staging: rtl8188eu: remove all DBG_88E_LEVEL calls from
+    core/rtw_pwrctrl.c
+  staging: rtl8188eu: remove all DBG_88E_LEVEL calls from
+    core/rtw_xmit.c
+  staging: rtl8188eu: remove DBG_88E_LEVEL macro from
+    include/rtw_debug.h
+  staging: rtl8188eu: remove MSG_88E call from hal/odm.c
+  staging: rtl8188eu: remove MSG_88E calls from hal/usb_halinit.c
+  staging: rtl8188eu: remove MSG_88E macro from include/rtw_debug.h
 
-https://lore.kernel.org/r/CA+G9fYsWHE5Vu9T3FV-vtHHbVFJWEF=bmjQxwaZs3uVYef028g@mail.gmail.com/
+ .../staging/rtl8188eu/core/rtw_ioctl_set.c    |  5 -----
+ drivers/staging/rtl8188eu/core/rtw_mlme_ext.c | 21 -------------------
+ drivers/staging/rtl8188eu/core/rtw_pwrctrl.c  |  9 +-------
+ drivers/staging/rtl8188eu/core/rtw_xmit.c     |  2 --
+ drivers/staging/rtl8188eu/hal/odm.c           |  1 -
+ drivers/staging/rtl8188eu/hal/usb_halinit.c   |  7 -------
+ drivers/staging/rtl8188eu/include/rtw_debug.h | 12 -----------
+ .../staging/rtl8188eu/os_dep/ioctl_linux.c    |  2 --
+ 8 files changed, 1 insertion(+), 58 deletions(-)
 
-It seems to be related to the fact that older versions of clang cannot 
-figure out that the HPAGE_PUD case in move_pgt_entry() is never called 
-when CONFIG_TRANSPARENT_HUGE is unset so it is not eliminated, which is 
-problematic because flush_pud_tlb_range() evaluates to BUILD_BUG() in 
-that case, which is called within move_huge_pud().
+-- 
+2.31.1
 
-> The following reproducer provokes this error:
-> 
-> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --torture lock --configs LOCK07 --build-only --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y" --kmake-arg "CC=clang-11"
-> 
-> Run the above command in the top-level directory of your -next source
-> tree, and using this compiler:
-> 
-> $ clang-11 -v
-> Ubuntu clang version 11.1.0-++20210428103817+1fdec59bffc1-1~exp1~20210428204431.166
-> Target: x86_64-pc-linux-gnu
-> 
-> Thoughts?
-
-Aneesh had a patch in that thread above that would resolve the issue, it 
-just needs to be sent to Andrew for a fixup patch.
-
-Cheers,
-Nathan
