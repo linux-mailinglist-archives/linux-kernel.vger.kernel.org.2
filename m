@@ -2,116 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3633B23AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA713B23AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhFWWtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 18:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58688 "EHLO
+        id S229849AbhFWWxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 18:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhFWWtQ (ORCPT
+        with ESMTP id S229688AbhFWWxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:49:16 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4859DC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:46:58 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id g12so3431527qtb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:46:58 -0700 (PDT)
+        Wed, 23 Jun 2021 18:53:33 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34D5C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:51:14 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id 69so1930502plc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 15:51:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=baLWTJJOD9KKn4tbADk0l8SSVLIOO1E6adwsQz9cQtk=;
-        b=2P0QI+RvSARusDodtiS4LFDZvpm98ftfqZzlAvFmDeDEsWTR/41vPw2g5Li9BurLDS
-         KwtT+bk42gIoYWMCp6i2fLUoA7jI5XzJ0AGqnE/GtiO6/pXG+cxm0cCSXaa2xqH5sJkW
-         AzeSidNkqXfR4TdG0IL0yPw3nX/RyN7EjBZxCifIUKVJTFQeE+3tPkq9BBau39uHPrqp
-         tNQ93P1uB0t6SJjoMcFYIZxxTtZlmEJzXl2NUlZDA5nO0XiAwULd5DuKO2SXdOqWYk1v
-         rADERDLB7AWdggMHeLv6rediDUNjHjVoNQ13YpBJLtVJrYHiRIinfWB+4U0Zk2YhB4WO
-         cGvw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ojZcueDSPD/ERt4bOu86T2XmRZadicKtfCs4npiprqs=;
+        b=oC2ki8sMMsIWI+7fRxQmfT/VBHQBCn+286TDaS+3A3i2l/BZho7r7TZg8FgUpw8/sj
+         MjuhW+2q2b8UdzUNovBjw+IBQxvi6GUEywBpircBIrpASBK4E8MoGzjHVQKOvzsnIy3s
+         rcwvVMYRFLEsS2TaR/glFdQ0Z69hyYgQQBUL6PEhN0dIgpCRObchPZ+BL/67IcR04PPk
+         8LFNlilbx6dTv3jKGqH2Lws1CC0+eKHJZrtCzwhbMr2xMwrCN0dAHQR4jhQwZMDVfrRy
+         anV9jE71OVAsIrW2ds+XOh2sJ33LOhTRp1fF75xutsq/GaITf2OI43N3nErnOzOli1le
+         xIzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=baLWTJJOD9KKn4tbADk0l8SSVLIOO1E6adwsQz9cQtk=;
-        b=W3yOEoVkF+5zReDdifvBZrkQUmi4YDTbVxC+bSPeBoVRfAozj2bM+63rxAjVR3J2zo
-         ARQeGjOyf+3SvVg1zTh1tYsLtiAZO+yoTbNsMK4WOwmA8mi0jsDbYjz7836Oc4ZVec1a
-         pPb2IVqxjiX9NGcFUA1ts9elBsesMtuWl07dvN2llEjZfEnC7eYF2wJPiUFqIVFAxNqU
-         GCRoeL2fnYYXzENe1Bf1LXcYskZuc7u1ipeoPaNq2yGZ9ZQw9ooUmeaInPMmIdQ6G2ZI
-         hubMrmxAIUvTPYxRO/jAs1wr0ZlJ0wKFG6JkQ6DlDtSm8hPqu9ktsgFEE8LYtsvGewGp
-         lhjg==
-X-Gm-Message-State: AOAM532H6OnzOzjFb9WNx0XbDZ1o73QSWZyEBkdJGUONYio4AQ63Xshz
-        eiTK26kUa5RqTVfHLpvdp+r4mYn8F9KUebqqAiUuOxF834xJCQ==
-X-Google-Smtp-Source: ABdhPJyDaVuIlMDJXtFMt64IfujIqi5BMZ+bhCdX3D/i+ZNuIXsAQQjFbyaLX2q5i1c7no1NEFTYdQt0F/BZmf/DLJc=
-X-Received: by 2002:ac8:57d2:: with SMTP id w18mr2192305qta.306.1624488417307;
- Wed, 23 Jun 2021 15:46:57 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ojZcueDSPD/ERt4bOu86T2XmRZadicKtfCs4npiprqs=;
+        b=UEd3m1KpGDu0u1/sIGv2YcAroBYMOk1p/8P+0k+9klQDXtF+vlwD3y97fZVZdEmN59
+         /4TJnmiUDD9EBiXV3IBLR2bXYp+ysfuKtKVkwoPIQFGmQeg9CCfnuGCScEuxkr6cCfJj
+         YH31sMgDJLC1HluaeuHkLK4me6PKmctt3J9kaZijqA41ayTeuW3pck6h8M5LKQ/48mVE
+         NajgoS2u1Z6AEmAnrmmLHI/UQmT3jr6KuCgRr5157sL4/KvTehV/c5ZhCV08MX0PZ747
+         soYhQ3oK0UM4Qccs8w0LhXyb3DEwWqDmJbrIAqKj33pXr4fTgIeH5fBiR1uOCyNnYTF9
+         7dPA==
+X-Gm-Message-State: AOAM532g31DoZQLa0WRGKg51BviMkFwePfrCdVahbojOF2iO5Ht55aHu
+        UA+16D7eZW1+8Ktfo7L1ubuFcw==
+X-Google-Smtp-Source: ABdhPJyPAZJXz6EIO9TE5Wi9N2xJrCac6WnBrjuCX+1oJoXEVZqA9T8G+Lhxa0hTnQlkj1rbPm4ayg==
+X-Received: by 2002:a17:902:8a83:b029:10f:45c4:b435 with SMTP id p3-20020a1709028a83b029010f45c4b435mr1489733plo.17.1624488674222;
+        Wed, 23 Jun 2021 15:51:14 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id z15sm141384pgu.71.2021.06.23.15.51.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 15:51:13 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 16:51:11 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Qi Liu <liuqi115@huawei.com>
+Cc:     alexander.shishkin@linux.intel.com, suzuki.poulose@arm.com,
+        jonathan.zhouwen@huawei.com, f.fangjian@huawei.com,
+        linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+        linuxarm@huawei.com
+Subject: Re: [RFC PATCH 1/4] Documentation: tracing: Documentation for
+ ultrasoc framework and drivers
+Message-ID: <20210623225111.GA1057775@p14s>
+References: <1623749684-65432-1-git-send-email-liuqi115@huawei.com>
+ <1623749684-65432-2-git-send-email-liuqi115@huawei.com>
 MIME-Version: 1.0
-References: <20210624082911.5d013e8c@canb.auug.org.au>
-In-Reply-To: <20210624082911.5d013e8c@canb.auug.org.au>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Thu, 24 Jun 2021 00:46:48 +0200
-Message-ID: <CAPv3WKfiL+sR+iK_BjGKDhtNgjoxKEPv49bU1X9_7+v+ytdR1w@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the net-next tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1623749684-65432-2-git-send-email-liuqi115@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+Hi,
 
-czw., 24 cze 2021 o 00:29 Stephen Rothwell <sfr@canb.auug.org.au> napisa=C5=
-=82(a):
->
-> Hi all,
->
-> Today's linux-next build (x86_64 modules_install) failed like this:
->
-> depmod: ../tools/depmod.c:1792: depmod_report_cycles_from_root: Assertion=
- `is < stack_size' failed.
->
-> Caused by commit
->
-> 62a6ef6a996f ("net: mdiobus: Introduce fwnode_mdbiobus_register()")
->
-> (I bisected to there and tested the commit before.)
->
-> The actual build is an x86_64 allmodconfig, followed by a
-> modules_install.  This happens in my cross build environment as well as
-> a native build.
->
-> $ gcc --version
-> gcc (Debian 10.2.1-6) 10.2.1 20210110
-> $ ld --version
-> GNU ld (GNU Binutils for Debian) 2.35.2
-> $ /sbin/depmod --version
-> kmod version 28
-> -ZSTD +XZ -ZLIB +LIBCRYPTO -EXPERIMENTAL
->
-> I have no idea why that commit should caused this failure.
+On Tue, Jun 15, 2021 at 05:34:41PM +0800, Qi Liu wrote:
+> Ultrasoc trace module is a system level solution for both core tracing
+> and SoC tracing. This patch brings in a documentation for ultrasoc
+> framework and drivers. It simply introduces function of ultrasoc, a
+> typical Ultrasoc system, and a driver framework for ultrasoc.
+> 
+> Signed-off-by: Jonathan Zhou <jonathan.zhouwen@huawei.com>
+> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+> ---
+>  Documentation/trace/ultrasoc-trace.rst | 209 +++++++++++++++++++++++++++++++++
+>  1 file changed, 209 insertions(+)
+>  create mode 100644 Documentation/trace/ultrasoc-trace.rst
+> 
+> diff --git a/Documentation/trace/ultrasoc-trace.rst b/Documentation/trace/ultrasoc-trace.rst
+> new file mode 100644
+> index 0000000..36d2df2
+> --- /dev/null
+> +++ b/Documentation/trace/ultrasoc-trace.rst
+> @@ -0,0 +1,209 @@
+> +=======================================================
+> +Siemens Embedded Analytics - HW Assisted Tracing on SoC
+> +=======================================================
+> +   :Author:   Jonathan Zhou <Jonathan.zhouwen@huawei.com>
+> +              Qi Liu <liuqi115@huawei.com>
+> +   :Date:     January 16th, 2021
+> +
+> +Introduction
+> +------------
+> +
+> +The Siemens Embedded Analytics Framework is system level solution for tracing
+> +of multiple type SoC, this document is concerned with trace module. This module
+> +has two main components: AXI Bus Communicator and System Memory Buffer.
+> +
+> +The AXI Communicator has upstream and downstream channels, the upstream channel
+> +is used to transmit user configuration, and downstream channel to carry response
+> +and trace data to the users.
+> +
+> +The System Memory Buffer provides a way to buffer and store messages in system
+> +memory. It provides a capability to store messages received on its input message
+> +interface to an area of system memory.
+> +
+> +A typical Siemens trace system would look like the following diagram:
+> +                           @@@@@@@@@@@@@
+> +                           @    CPU    @
+> +                           @@@@@@@@@@@@@
+> +                           #############
+> +                           # Coresight #
+> +                             #  ETM  #
+> +                              #######
+> +                                ###
+> +                                 #
+> +                                 |
+> +                                 *
+> +                    *******************************
+> +                 *** AMBA Advanced Trace Bus (ATB) ***
+> +                    ***************^***************
+> +                          ===============    |
+> +                           === FUNNEL ==<--- |
+> +                              =======
+> +                                 |
+> +                                 *
+> +                              @@@@@@@
+> +                              @ TRC @
+> +                               @@@@@
+> +                                @@@
+> +                                 @
+> +                                 |
+> +                                 *
+> +    ************************************** *******************
+> + ************************ Message BUS ***************************
+> +    ******************^************************^****************
+> +             |                               |
+> +     @@@@@@@@@@@@@@@@@@                      |   @@@@@@@@@@@@
+> +     @ Message Engine @                      |   @ JTAG COM @
+> +     @@@@@@@@@@@@@@@@@@                      |    @@@@@@@@@@
+> +       |            *                        |---> @@@@@@@@
+> +       |            |                               @@@@@@
+> +    @@@@@@@         |   @@@@@@@@@@@                    |
+> +    @ SMB @         |   @ AXI COM @                  JTAG
+> +     @@@@@          |--> @@@@@@@@@
+> +      @@@--|              @@@@@@@
+> +       @   |               @@@@@
+> +           |                 |
+> +           |                 |
+> +           *                 *
+> +  ***************************************************************
+> + **************************** AMBA AXI  ****************************
+> +  *****************************************************************
+> +
+> +Acronyms
+> +---------------------------
+> +
+> +Acronyms:
+> +
+> +AXI-COM:     AXI Communicator
+> +SMB:         System Memory Buffer
+> +TRC:         Trace receiver
+> +
+> +Framework and implementation
+> +------------------------------
+> +
+> +Siemens Embedded Analytics Framework is implemented as a platform device. The
+> +platform device provides a global point to configure the Embedded Analytics
+> +subsystem, and also provides a ``struct ultrasoc_com`` to manage AXI-COM and
+> +SMB.
+> +
+> +AXI-COM and SMB are implemented as platform devices, each SCCL has one AXI-COM
+> +device and one SMB device. AXI-COM and SMB can use the following API to register
+> +into Embedded Analytics framework:
+> +.. c:function:: struct ultrasoc_com *ultrasoc_register_com(struct device *root_dev, struct ultrasoc_com_descp *com_descp)
+> +.. c:function:: void ultrasoc_unregister_com(struct ultrasoc_com *com);
+> +
+> +As TRC receives data from coresight ETM device, SMB can use the following API
+> +to register into coresight framework as a sink device:
+> +.. c:function:: struct coresight_device *coresight_register(struct coresight_desc *desc);
+> +.. c:function:: void coresight_unregister(struct coresight_device *csdev);
+> +
+> +Then users can get trace data by this path: ETM->funnel->SMB->System Memory.
+> +More information about coresight framework can be found in
+> +Documention/trace/coresight/coresight.rst.
+> +
+> +If everything goes well, the relationship of Embedded Analytics devices will be
+> +described under the sysfs::
+> +
+> +    $# ls /sys/bus/platform/devices/
+> +    <HID.Embedded Analytics>:00   <HID.axi-com>:00   <HID.smb>:00
+> +    $# ls /sys/bus/platform/devices/<HID.Embedded Analytics>:00
+> +    com_mux             firmware_node     power      <HID.axi-com>:00
+> +    driver              message           subsystem  <HID.smb>:00
+> +    driver_override     modalias          uevent
+> +    $# ls /sys/bus/coresight/devices/
+> +    etm0     etm14    etm2     etm25    etm30    etm8       funnel4
+> +    etm1     etm15    etm20    etm26    etm31    etm9       funnel5
+> +    etm10    etm16    etm21    etm27    etm4     funnel0    funnel6
+> +    etm11    etm17    etm22    etm28    etm5     funnel1    funnel7
+> +    etm12    etm18    etm23    etm29    etm6     funnel2    sink_smb0
+> +    etm13    etm19    etm24    etm3     etm7     funnel3
+> +    $# ls -l /sys/bus/coresight/devices/funnel0/connections/
+> +    <file details> in:0 -> ../../../../system/cpu/cpu0/ARMHC500:00/etm0
+> +    <file details> in:1 -> ../../../../system/cpu/cpu1/ARMHC500:01/etm1
+> +    <file details> in:2 -> ../../../../system/cpu/cpu2/ARMHC500:02/etm2
+> +    <file details> in:3 -> ../../../../system/cpu/cpu3/ARMHC500:03/etm3
+> +    <file details> nr_links
+> +    <file details> out:0 -> ../../../HISI0391:00/HISI03A1:00/sink_smb0
+> +    $# ls -l /sys/bus/coresight/devices/sink_smb0/connections/
+> +    <file details>  in:101 -> ../../../../ARMHC9FE:05/funnel5
+> +    <file details>  in:114 -> ../../../../ARMHC9FE:07/funnel7
+> +    <file details>  in:121 -> ../../../../ARMHC9FE:03/funnel3
+> +    <file details>  in:39 -> ../../../../ARMHC9FE:00/funnel0
+> +    <file details>  in:51 -> ../../../../ARMHC9FE:04/funnel4
+> +    <file details>  in:61 -> ../../../../ARMHC9FE:06/funnel6
+> +    <file details>  in:68 -> ../../../../ARMHC9FE:02/funnel2
+> +    <file details>  in:89 -> ../../../../ARMHC9FE:01/funnel1
+> +    <file details>  nr_links
+> +
+> +How to use the Embedded Analytics trace module
+> +-----------------------------------------------
+> +
+> +There are two ways to use the Embedded Analytics trace module:
+> +
+> +1. interacting directly with the devices using the sysFS interface.
+> +2. using the perf cmd line tools.
+> +
+> +1) Using the sysFS interface:
+> +
+> +Before trace collection can start, a coresight sink needs to be identified.
+> +There is no limit on the amount of sinks (nor sources) that can be enabled at
+> +any given moment.  As a generic operation, all device pertaining to the sink
+> +class will have an "active" entry in sysfs::
 
-Thank you for letting us know. Not sure if related, but I just found
-out that this code won't compile for the !CONFIG_FWNODE_MDIO. Below
-one-liner fixes it:
+I haven't looked at the rest of the patchset but unless you have changed that,
+only one sink will be selected by the framework when operating from sysfs.
+Regardless of the number of sinks that were enabled, the framework will pick the
+first one it finds.
 
---- a/include/linux/fwnode_mdio.h
-+++ b/include/linux/fwnode_mdio.h
-@@ -40,7 +40,7 @@ static inline int fwnode_mdiobus_register(struct mii_bus =
-*bus,
-         * This way, we don't have to keep compat bits around in drivers.
-         */
+> +
+> +    $# ls /sys/bus/coresight/devices/
+> +    etm0     etm14    etm2     etm25    etm30    etm8       funnel4
+> +    etm1     etm15    etm20    etm26    etm31    etm9       funnel5
+> +    etm10    etm16    etm21    etm27    etm4     funnel0    funnel6
+> +    etm11    etm17    etm22    etm28    etm5     funnel1    funnel7
+> +    etm12    etm18    etm23    etm29    etm6     funnel2    sink_smb0
+> +    etm13    etm19    etm24    etm3     etm7     funnel3
+> +    $# ls /sys/bus/coresight/devices/sink_smb0
+> +    connections  enable_sink  firmware_node  power  subsystem  uevent
+> +    $# echo 1 > /sys/bus/coresight/devices/sink_smb0/enable_sink
+> +    $# cat /sys/bus/coresight/devices/sink_smb0/enable_sink
+> +    1
+> +
+> +When start trace collection, etm devices corresponding to the enabled sink
+> +should be selected::
+> +
+> +    $# echo 1 > /sys/bus/coresight/devices/etm0/enable_source
+> +    $# cat /sys/bus/coresight/devices/etm0/enable_source
+> +    1
+> +    $# cat /sys/bus/platform/devices/<HID.smb>:00/com_status
+> +    com-type            : DOWN-ONLY
+> +    service status      : stopped
+> +    interrupt status    : 0x00000003
+> +    write point         : 0x5437f400   <----- The write pointer is moving
+> +
+> +Trace collection is stopped the same way::
+> +
+> +    $# echo 0 > /sys/bus/coresight/devices/etm0/enable_source
+> +    $# echo 0 > /sys/bus/coresight/devices/sink_smb0/enable_sink
+> +
+> +The content of the SMB buffer can be harvested directly from /dev::
+> +
+> +    $# dd if=/dev/sink_smb0 of=~/cstrace.bin
+> +    5233+0 records in
+> +    5233+0 records out
+> +    2679296 bytes (2.7 MB) copied, 0.0131708 s, 203 MB/s
+> +
+> +    root:/sys/bus/coresight/devices#
+> +
+> +The file cstrace.bin can be decompressed using "ptm2human".
+> +
+> +2) Using perf framework:
+> +
+> +As SMB device has been registered with coresight framework, perf tool can be
+> +used to control Embedded Analytics trace collection, and the method is similar
+> +to using perf to do coresight trace collection.
+> +
+> +The only thing to note is, list of cpus should be correspond to the specified
+> +sink device.
+> +
+> +Example usage of perf::
+> +
+> +	 $# ./perf list pmu
+> +	 cs_etm//                                    [Kernel PMU event]
+> +    $# ./perf record -e cs_etm/@sink_smb0/ -C 0 --per-thread sleep 2s
+> +    [ perf record: Woken up 2 times to write data ]
+> +    [ perf record: Captured and wrote 0.288 MB perf.data ]
+> +    $# ./perf report
 
--       return mdiobus_register(mdio);
-+       return mdiobus_register(bus);
- }
- #endif
+After reading all this and without looking at the rest of the patchset it seems
+to me this work should go under drivers/hwtracing/coresight/.
 
-I'm curious if this is the case. Tomorrow I'll resubmit with above, so
-I'd appreciate recheck.
+There is a lot of code to review and as such it will take me a fair amount of
+time to go through it all.  Comments will be scattered over several days (weeks)
+- I will set you know when I am done.
 
 Thanks,
-Marcin
+Mathieu
+
+> -- 
+> 2.7.4
+> 
