@@ -2,168 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93CE3B1751
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E1F3B1756
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbhFWJ6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 05:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53916 "EHLO
+        id S230274AbhFWJ7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 05:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbhFWJ6T (ORCPT
+        with ESMTP id S229987AbhFWJ7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 05:58:19 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45AF7C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 02:56:01 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id x1so1117984vsc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 02:56:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yEF0pU+j9W7QEF7ZKp/0JDvB0o4iInh63yAG3OtQCpE=;
-        b=UvDmlu72FFUpf0mmRF+8z/NdlKNhw4j6ynPqTbNuEmDiHP0k+XuX8ZOeLZ6lHtkgBz
-         GWiREDhHP9Y4Pja1YIzt9jD9YkWY9PQURhPazPZ2POmrguE1NzXkV6rqfM5RQA9fFC07
-         +bT/NGdokVqp7AMLE621icSDRF6+YnQRusTnieMbo21RPAWRWpSm/orAbdJmbBqLq0lc
-         0J6dsJzkr/0agydrGcOJuQu3hK8X+DygP0lTiLQRyqCxidUZs7p7mFqJSFy71/9kYxOC
-         cGWQE0gyVDzVp1Deu11EOeVWZctoWb1NzzblKSSzp4ypm2nyTH3a5aVf9lfBIQSg0Tcm
-         FCog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yEF0pU+j9W7QEF7ZKp/0JDvB0o4iInh63yAG3OtQCpE=;
-        b=U2Wanzhrrktzf1sdyKvXbkxhLogn4LOzqA1izzw4RzhKHYYKbQQqv+gNDzZJknuRP9
-         a2Z+5mjAfC7O+lgqoVNDdx0qNMFtyJRhlwnjBtVIfjhQ8kRtOS5NmXH8qbG3hN0MY+RM
-         y3A0cwZv846FW5O3KZJMB2NDLbGbUx3bjSJSMl74yYJejyJyUSpr3au+nss2Vm6TXyja
-         Blm/A7CeSSkKt4lMe0o80sGFDjpit95azmH5pRfFNImNfyFS1UPn7grc9lzIemnuBhiJ
-         +HFnVjDQb1V/lSgEx5MnSMBCGwy5IU9ipRQ1khe/qFvQZs8Rpxdyo4OMbqZwVFf0SPeN
-         DwNA==
-X-Gm-Message-State: AOAM533IXrpy5X8mQOp7OUYPZBw+GwK3aEgclq/PM0H9DoGQe70cXgSh
-        7pT9rOEJerJ3K3ZI6qdj1M8DK3vK5mR/TSRZ9zLAmQ==
-X-Google-Smtp-Source: ABdhPJxj7GpQ3PKbtuDhdeUp5vKfKSQlvikz2C0Pzs9lEsev7wE7CaimIDyJANObsB7KlCgeKZ18FjrvvmXStFE77O8=
-X-Received: by 2002:a05:6102:3a70:: with SMTP id bf16mr18178025vsb.48.1624442160336;
- Wed, 23 Jun 2021 02:56:00 -0700 (PDT)
+        Wed, 23 Jun 2021 05:59:34 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35D5C061574;
+        Wed, 23 Jun 2021 02:57:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bIbRJjhhKfu75t8tDhgINmW7gh8eq/IMXLJ3rJlZnPs=; b=IdB68v6jCaq3FDfkoizQaDHqfv
+        LGZhN7uEpyB2HXS00qB8VexZj3dCWoyZPvr+0cq5rHpk4EHqmrIzy5FwBPAcd3MVbFjVKQVhGuvE0
+        i3stacSwsQQrsY8KHdBZcHbgLbTiUyQ9qtT6mcECRFaOeRNl8QsNTOr+2DWY3mJHd46ufrjzMdXCy
+        qCHdgfZcxYUyo3e4ud9i/4uHLZO1EofcePXtlZLtS3FmRgC1Hew0Q3FwaYO0IFptlo2wNxZ/wVSfl
+        3G9igwKZc8KWiclhSr2RE1P90NL9tX7fxHlXdPqvLa9sKO6NZMbR3coCMS9nRR8m7kMs76b3yDzXt
+        eJX+ZsGA==;
+Received: from [2001:4bb8:188:3e21:6594:49:139:2b3f] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvzcQ-00FHuI-EM; Wed, 23 Jun 2021 09:56:35 +0000
+Date:   Wed, 23 Jun 2021 11:56:25 +0200
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 40/46] mm/lru: Add folio_add_lru()
+Message-ID: <YNMFSW1YIO/zsH7W@infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-41-willy@infradead.org>
 MIME-Version: 1.0
-References: <20210621201051.3211529-1-swboyd@chromium.org> <CAPDyKFr=sapFwgsDrZw5ZokcryGDpXDQTnv9kzAiijfuT6cw9g@mail.gmail.com>
- <CAE-0n53=AuYcBSTKkvDmNHpLMq7j4yTeMh5j80uN5dobqvC5ag@mail.gmail.com>
-In-Reply-To: <CAE-0n53=AuYcBSTKkvDmNHpLMq7j4yTeMh5j80uN5dobqvC5ag@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 23 Jun 2021 11:55:24 +0200
-Message-ID: <CAPDyKFoxg0OhHUONm4dsOTyJperfM7bkkHpK0ikqP8u9mgi97w@mail.gmail.com>
-Subject: Re: [PATCH] PM: domains: Shrink locking area of the gpd_list_lock
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622121551.3398730-41-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Jun 2021 at 10:31, Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Ulf Hansson (2021-06-22 09:27:09)
-> > On Mon, 21 Jun 2021 at 22:10, Stephen Boyd <swboyd@chromium.org> wrote:
-> > > diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> > > index b6a782c31613..18063046961c 100644
-> > > --- a/drivers/base/power/domain.c
-> > > +++ b/drivers/base/power/domain.c
-> > > @@ -1984,8 +1984,8 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
-> > >
-> > >         mutex_lock(&gpd_list_lock);
-> > >         list_add(&genpd->gpd_list_node, &gpd_list);
-> > > -       genpd_debug_add(genpd);
-> > >         mutex_unlock(&gpd_list_lock);
-> > > +       genpd_debug_add(genpd);
-> > >
-> > >         return 0;
-> > >  }
-> > > @@ -2162,9 +2162,11 @@ static int genpd_add_provider(struct device_node *np, genpd_xlate_t xlate,
-> > >         cp->xlate = xlate;
-> > >         fwnode_dev_initialized(&np->fwnode, true);
-> > >
-> > > +       mutex_lock(&gpd_list_lock);
-> >
-> > By looking at the existing code, $subject patch makes the behavior
-> > consistent and fixes the problem that the locks must always be
-> > taken/released in the same order.
-> >
-> > However, as I have been looking at this before (but never got to the
-> > point of sending a patch), I am actually thinking that it would be
-> > better to decouple the two locks, instead of further combining them.
-> >
-> > In other words, we shouldn't lock/unlock the &gpd_list_lock here in
-> > this function. Of course, that also means we need to fixup the code in
-> > of_genpd_del_provider() accordingly.
->
-> Yes I was wondering why this list lock was used here at all. It seems to
-> be a substitute for calling genpd_lock()? I opted to just push the list
+On Tue, Jun 22, 2021 at 01:15:45PM +0100, Matthew Wilcox (Oracle) wrote:
+> Reimplement lru_cache_add() as a wrapper around folio_add_lru().
+> Saves 159 bytes of kernel text due to removing calls to compound_head().
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-The genpd_lock should be used to protect some of the data in the genpd
-struct. Like the genpd->provider and the genpd->has_provider, for
-example.
+Looks good,
 
-Clearly, some of the data in the genpd struct are protected with
-gpd_list_lock, which is suboptimal.
-
-> lock as far down as possible to fix the problem, which is holding it
-> over the calls into OPP.
-
-Yes, we don't want that.
-
->
-> If I've read the code correctly it serves no purpose to grab the
-> gpd_list_lock here in genpd_add_provider() because we grab the
-> of_genpd_mutex and that is protecting the of_genpd_providers list
-> everywhere else. Is that right? Put another way, This hunk of the patch
-> can be dropped and then your concern will be addressed and there isn't
-> anything more to do.
-
-It certainly can be dropped from the $subject patch, please re-spin to
-update that.
-
-However, there are additional changes that deserve to be done to
-improve the behaviour around the locks. More precisely, the
-&gpd_list_lock and the &of_genpd_mutex should be completely decoupled,
-but there are some other related things as well.
-
-Probably it's easier if I post a patch, on top of yours, to try to
-further improve the behavior. I would appreciate it if you could help
-with the test/review then.
-
->
-> >
-> >
-> > >         mutex_lock(&of_genpd_mutex);
-> > >         list_add(&cp->link, &of_genpd_providers);
-> > >         mutex_unlock(&of_genpd_mutex);
-> > > +       mutex_unlock(&gpd_list_lock);
-> > >         pr_debug("Added domain provider from %pOF\n", np);
-> > >
-> > >         return 0;
-> > > @@ -2314,8 +2314,6 @@ int of_genpd_add_provider_onecell(struct device_node *np,
-> > >                 }
-> > >         }
-> > >
-> > > -       mutex_unlock(&gpd_list_lock);
-> > > -
-> > >         return ret;
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(of_genpd_add_provider_onecell);
-> >
-> > I will continue to have a look at this and provide some more comments
-> > asap, but overall the change is a step in the right direction.
-> >
-> > Possibly, we may even consider applying it as is and work on the
-> > things I pointed out above, as improvements on top. Let's see, give me
-> > a day or so.
-> >
->
-> Ok sure.
-
-Kind regards
-Uffe
+Reviewed-by: Christoph Hellwig <hch@lst.de>
