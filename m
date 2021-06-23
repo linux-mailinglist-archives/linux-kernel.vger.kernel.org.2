@@ -2,102 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F293B166F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0AF3B1678
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbhFWJIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 05:08:13 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:35108 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229920AbhFWJIK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 05:08:10 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-108-3xH7Sk6BPwS58IEzlMBB7Q-1; Wed, 23 Jun 2021 10:05:49 +0100
-X-MC-Unique: 3xH7Sk6BPwS58IEzlMBB7Q-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 23 Jun
- 2021 10:05:48 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Wed, 23 Jun 2021 10:05:48 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Matteo Croce' <mcroce@linux.microsoft.com>
-CC:     Nick Kossifidis <mick@ics.forth.gr>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        id S230073AbhFWJJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 05:09:39 -0400
+Received: from mga09.intel.com ([134.134.136.24]:11271 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229833AbhFWJJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 05:09:38 -0400
+IronPort-SDR: XcJHDQ3vl8odD21STa6BfJVdYPsaDROP8dNpGoLIEAxenx5E1jq8i9sfB+ZHgW1mePULrgUhre
+ ZCLfPGTTOStA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="207163003"
+X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
+   d="scan'208";a="207163003"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 02:07:20 -0700
+IronPort-SDR: UCdi/PzEUbzatk9xT7i3SGzelM334sHuXSmnQxoxiPa6jZchh/0nt0p9HFLF/ayurpxDcgHoGT
+ fgvOXO+eHNhg==
+X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
+   d="scan'208";a="641918962"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 02:07:16 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lvyql-004hX6-U2; Wed, 23 Jun 2021 12:07:11 +0300
+Date:   Wed, 23 Jun 2021 12:07:11 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Justin He <Justin.He@arm.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>, Guo Ren <guoren@kernel.org>
-Subject: RE: [PATCH v3 3/3] riscv: optimized memset
-Thread-Topic: [PATCH v3 3/3] riscv: optimized memset
-Thread-Index: AQHXZwMJWYnk4yvoiESUZuZXhHkP6qsfsYlggAEJ8ACAAJGKIA==
-Date:   Wed, 23 Jun 2021 09:05:48 +0000
-Message-ID: <fe6c2f646cf1468c89622cc1d848ae0c@AcuMS.aculab.com>
-References: <20210617152754.17960-1-mcroce@linux.microsoft.com>
- <20210617152754.17960-4-mcroce@linux.microsoft.com>
- <17cd289430f08f2b75b7f04242c646f6@mailhost.ics.forth.gr>
- <d0f11655f21243ad983bd24381cdc245@AcuMS.aculab.com>
- <CAFnufp1XeKM-N1MdWsNpU6NnF-dYUgGXL1W9r_DDWazTMyRHVA@mail.gmail.com>
-In-Reply-To: <CAFnufp1XeKM-N1MdWsNpU6NnF-dYUgGXL1W9r_DDWazTMyRHVA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>, nd <nd@arm.com>
+Subject: Re: [PATCH v5 1/4] fs: introduce helper d_path_unsafe()
+Message-ID: <YNL5v1I9xOfpLPke@smile.fi.intel.com>
+References: <20210622140634.2436-1-justin.he@arm.com>
+ <20210622140634.2436-2-justin.he@arm.com>
+ <YNH1d0aAu1WRiua1@smile.fi.intel.com>
+ <AM6PR08MB43761598697E6DC08A5E71ADF7089@AM6PR08MB4376.eurprd08.prod.outlook.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM6PR08MB43761598697E6DC08A5E71ADF7089@AM6PR08MB4376.eurprd08.prod.outlook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTWF0dGVvIENyb2NlDQo+IFNlbnQ6IDIzIEp1bmUgMjAyMSAwMjoxNQ0KPiANCj4gT24g
-VHVlLCBKdW4gMjIsIDIwMjEgYXQgMTA6MzggQU0gRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWlnaHRA
-YWN1bGFiLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBGcm9tOiBOaWNrIEtvc3NpZmlkaXMNCi4uLg0K
-PiA+IFlvdSBjYW4ganVzdCB3cml0ZToNCj4gPiAgICAgICAgIGN1ID0gKHVuc2lnbmVkIGxvbmcp
-YyAqIDB4MDEwMTAxMDEwMTAxMDEwMXVsbDsNCj4gPiBhbmQgbGV0IHRoZSBjb21waWxlciBzb3J0
-IG91dCB0aGUgYmVzdCB3YXkgdG8gZ2VuZXJhdGUgdGhlIGNvbnN0YW50Lg0KPiA+DQo+IA0KPiBJ
-bnRlcmVzdGluZy4gSSBzZWUgdGhhdCBtb3N0IGNvbXBpbGVycyBkbyBhbiBpbnRlZ2VyIG11bHRp
-cGxpY2F0aW9uLA0KPiBpcyBpdCBmYXN0ZXIgdGhhbiB0aHJlZSBzaGlmdCBhbmQgdGhyZWUgb3I/
-DQo+IA0KPiBjbGFuZyBvbiByaXNjdiBnZW5lcmF0ZXMgZXZlbiBtb3JlIGluc3RydWN0aW9ucyB0
-byBjcmVhdGUgdGhlIGltbWVkaWF0ZToNCj4gDQo+IHVuc2lnbmVkIGxvbmcgcmVwZWF0X3NoaWZ0
-KGludCBjKQ0KPiB7DQo+ICAgdW5zaWduZWQgbG9uZyBjdSA9ICh1bnNpZ25lZCBsb25nKWM7DQo+
-ICAgY3UgfD0gY3UgPDwgODsNCj4gICBjdSB8PSBjdSA8PCAxNjsNCj4gICBjdSB8PSBjdSA8PCAz
-MjsNCj4gDQo+ICAgcmV0dXJuIGN1Ow0KPiB9DQo+IA0KPiB1bnNpZ25lZCBsb25nIHJlcGVhdF9t
-dWwoaW50IGMpDQo+IHsNCj4gICByZXR1cm4gKHVuc2lnbmVkIGxvbmcpYyAqIDB4MDEwMTAxMDEw
-MTAxMDEwMXVsbDsNCj4gfQ0KPiANCj4gcmVwZWF0X3NoaWZ0Og0KPiAgIHNsbGkgYTEsIGEwLCA4
-DQo+ICAgb3IgYTAsIGEwLCBhMQ0KPiAgIHNsbGkgYTEsIGEwLCAxNg0KPiAgIG9yIGEwLCBhMCwg
-YTENCj4gICBzbGxpIGExLCBhMCwgMzINCj4gICBvciBhMCwgYTAsIGExDQo+ICAgcmV0DQo+IA0K
-PiByZXBlYXRfbXVsOg0KPiAgIGx1aSBhMSwgNDExMg0KPiAgIGFkZGl3IGExLCBhMSwgMjU3DQo+
-ICAgc2xsaSBhMSwgYTEsIDE2DQo+ICAgYWRkaSBhMSwgYTEsIDI1Nw0KPiAgIHNsbGkgYTEsIGEx
-LCAxNg0KPiAgIGFkZGkgYTEsIGExLCAyNTcNCj4gICBtdWwgYTAsIGEwLCBhMQ0KPiAgIHJldA0K
-DQpIbW1tLi4uIEkgZXhwZWN0ZWQgdGhlIGNvbXBpbGVyIHRvIGNvbnZlcnQgaXQgdG8gdGhlIGZp
-cnN0IGZvcm0uDQpJdCBpcyBhbHNvIHByZXR0eSBjcmFwIGF0IGdlbmVyYXRpbmcgdGhhdCBjb25z
-dGFudC4NClN0dXBpZCBjb21waWxlcnMuDQoNCkluIGFueSBjYXNlLCBmb3IgdGhlIHVzdWFsIGNh
-c2Ugb2YgJ2MnIGJlaW5nIGEgY29uc3RhbnQgemVybw0KeW91IHJlYWxseSBkb24ndCB3YW50IHRo
-ZSBsYXRlbmN5IG9mIHRob3NlIGluc3RydWN0aW9ucyBhdCBhbGwuDQoNCkl0IGlzIGFsbW9zdCB3
-b3J0aCBqdXN0IHB1c2hpbmcgdGhhdCBleHBhbnNpb24gaW50byB0aGUgY2FsbGVyLg0KDQplZyBi
-eSBoYXZpbmc6DQojZGVmaW5lIG1lbXNldChwLCB2LCBsKSBtZW1zZXRfdyhwLCAodikgKiAweDAx
-MDEwMTAxMDEwMTAxMDEsIGwpDQoob3Igc29tZSBvdGhlciBieXRlIHJlcGxpY2F0b3IpLg0KDQpS
-ZWFsbHkgYW5ub3lpbmdseSB5b3Ugd2FudCB0byB3cml0ZSB0aGUgY29kZSB0aGF0IGdlbmVyYXRl
-cw0KdGhlIDY0Yml0IGNvbnN0YW50LCBhbmQgdGhlbiBoYXZlIHRoZSBjb21waWxlciBvcHRpbWlz
-ZSBhd2F5DQp0aGUgcGFydCB0aGF0IGdlbmVyYXRlcyB0aGUgaGlnaCAzMiBiaXRzIG9uIDMyIGJp
-dHMgc3lzdGVtcy4NCkJ1dCBvbmUgb2YgdGhlIGNvbXBpbGVycyBpcyBnb2luZyB0byAnYmxlYXQn
-IGFib3V0IHRydW5jYXRpbmcNCmEgY29uc3RhbnQgdmFsdWUuDQpTdHVwaWQgY29tcGlsZXJzIChh
-Z2FpbikuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1s
-ZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJh
-dGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On Wed, Jun 23, 2021 at 02:02:45AM +0000, Justin He wrote:
+> > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Sent: Tuesday, June 22, 2021 10:37 PM
+> > On Tue, Jun 22, 2021 at 10:06:31PM +0800, Jia He wrote:
+
+...
+
+> > >   * prepend_name - prepend a pathname in front of current buffer pointer
+> > > - * @buffer: buffer pointer
+> > > - * @buflen: allocated length of the buffer
+> > > + * @p: prepend buffer which contains buffer pointer and allocated length
+> > 
+> > >   * @name:   name string and length qstr structure
+> > 
+> > Indentation issue btw, can be fixed in the same patch.
+> 
+> Okay
+> > 
+> > >   *
+> > >   * With RCU path tracing, it may race with d_move(). Use READ_ONCE() to
+> > 
+> > Shouldn't this be a separate change with corresponding Fixes tag?
+> 
+> Sorry, I don't quite understand here.
+> What do you want to fix?
+
+Kernel doc. The Fixes tag should correspond to the changes that missed the
+update of kernel doc.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
