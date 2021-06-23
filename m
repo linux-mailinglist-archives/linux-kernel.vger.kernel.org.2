@@ -2,180 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352883B162E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1F03B1636
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhFWIt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 04:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38326 "EHLO
+        id S230030AbhFWIwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 04:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhFWItY (ORCPT
+        with ESMTP id S229934AbhFWIwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 04:49:24 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D988C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 01:47:07 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id nd37so2818731ejc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 01:47:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ffi7vh5kMUYfLBdLZZUIYBjBht5Z7skCTxAnKO9WzXI=;
-        b=ylyAfMNSpUzGxf9uRYDwXOMNc/YihIMaYnKzKnOTvnAF2xRRUDnPef4ETeJD5cXP5G
-         Wc3mzZCQy3/HM2B7LFWLG6WU/gnjP1uPD3qJIm3qUMpk7GVYcv423FF/p16bymWzhbaK
-         I9jfrXeJ/AnEieMAHLmB3pXItB8LgUcsqrjZoCbqWLiHUgRolUz4EQW7SW0aC+jwaCw/
-         YAGsDxW7GPc+hPPAhp6bNrxVfg0vkg1N9NOXxd2jN1wHDiRRjbcpd6/p6irlMUh2EAcM
-         6TYBK0s9ZfUZ6fIG17B9GfPBZGbKsy8444mlr2SR7M8TI2IYW35XjXIdNjjBNojh2RTj
-         JaRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ffi7vh5kMUYfLBdLZZUIYBjBht5Z7skCTxAnKO9WzXI=;
-        b=rnIV5MtV9DRceghndnQAogDtxkM7pRR2bcsmS80bffsKlAozOYdicH30KQ2tgWhWGX
-         AtgJfIDitki/XHXjzAJt+2zdwVdO2nWLvFS9AwemZ8lRoCMOvOgWOtegpd16iVmG+Rj2
-         5b7QLkKZ3KnoBijVdGN4yANlClTgZoCKar3yUxxFxC29CjYwSFcuG5ExSi8L1gnhRZo6
-         yD/WRkpXsldQ8LCowaXY6ElvTVDv0nlmc1Xq20m+8rZI5nSv0BU+EKFpDBV73p77wtDC
-         eJIhU4W3HYv0iUv1B2pDQGfO92fAOoSL/VYDPEZPG01s/1aHXGuAywzo+peUN3Iwjx7X
-         lb/w==
-X-Gm-Message-State: AOAM533iGDpEzGaKELFYeGlbFL9EA9TuI3I6YT+UPKrXOycyZuJrdK7T
-        5CW99AqBJDnS0XdMef++Fvj7rI2vXKn8a/dZn/ailw==
-X-Google-Smtp-Source: ABdhPJyTH9s/UvsUtyQ35JbuOcY8GUH5gY0ir2daf6IxKqtBsARRZA5kE2l2S9HejwPvUjA3qDvBV2kPtZA9ABiRbvA=
-X-Received: by 2002:a17:906:31cb:: with SMTP id f11mr8791435ejf.379.1624438025789;
- Wed, 23 Jun 2021 01:47:05 -0700 (PDT)
+        Wed, 23 Jun 2021 04:52:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9D0C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 01:50:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tpY7ZJfQv1M//nCf3suckiVtk/GSAXGbw4FxDg1kHDs=; b=oaEet3qcBIKu9mVF4070Wv30iA
+        c/3oX4VuCncfMTXKhXKh01+t178xPSWw+ySlTQQp3Q3TVIXKL0EERgW63HtuRuEfgKaQqsUf0tcGE
+        4j53AbTArjIjlFL/WEuxm1lfkM8MKwAoPnwdPWO4P+YcIrPooqz8d0M0nS5d1TiIaQ1UZ4ZzmAWqH
+        5YGuyz/gvb4g0g5x3RPbwlk7QiS8ochOFVqjbO42zVy9N/JsLoEHPabT6wp37JWkSD1xR9On8iW6M
+        5T5k15opJfZS8sjForCPJ9PNREVt9Sl40zukVi3zB+7Ul8ysPEVeBjC27UNqCGfoo+7Lgp6uFzodK
+        8Ikw4FYA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvyY2-00FECb-4m; Wed, 23 Jun 2021 08:47:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 62BDA30005A;
+        Wed, 23 Jun 2021 10:47:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3D41E2C6EF008; Wed, 23 Jun 2021 10:47:45 +0200 (CEST)
+Date:   Wed, 23 Jun 2021 10:47:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Huaixin Chang <changhuaixin@linux.alibaba.com>,
+        luca.abeni@santannapisa.it, anderson@cs.unc.edu, baruah@wustl.edu,
+        Benjamin Segall <bsegall@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        dtcccc@linux.alibaba.com, Juri Lelli <juri.lelli@redhat.com>,
+        khlebnikov@yandex-team.ru,
+        open list <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        pauld@redhead.com, Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Shanpei Chen <shanpeic@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>, tommaso.cucinotta@santannapisa.it,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        xiyou.wangcong@gmail.com
+Subject: Re: [PATCH v6 1/3] sched/fair: Introduce the burstable CFS controller
+Message-ID: <YNL1MWe3PzD4YGAr@hirez.programming.kicks-ass.net>
+References: <20210621092800.23714-1-changhuaixin@linux.alibaba.com>
+ <20210621092800.23714-2-changhuaixin@linux.alibaba.com>
+ <CAFpoUr1Q-DuvXhPtX=bNdjg6xVcyBF=Qm8kz+HG7pGtNtu9X4A@mail.gmail.com>
 MIME-Version: 1.0
-References: <1606203965-31595-1-git-send-email-raviteja.narayanam@xilinx.com>
-In-Reply-To: <1606203965-31595-1-git-send-email-raviteja.narayanam@xilinx.com>
-From:   Michal Simek <monstr@monstr.eu>
-Date:   Wed, 23 Jun 2021 10:46:54 +0200
-Message-ID: <CAHTX3dLA1oF2v6FRgeL9kMExMXxGz=7LJBM3oo9Zf1CA2HfQFA@mail.gmail.com>
-Subject: Re: [PATCH] i2c: cadence: Clear HOLD bit before xfer_size register
- rolls over
-To:     Raviteja Narayanam <raviteja.narayanam@xilinx.com>
-Cc:     linux-i2c@vger.kernel.org, git <git@xilinx.com>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFpoUr1Q-DuvXhPtX=bNdjg6xVcyBF=Qm8kz+HG7pGtNtu9X4A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=C3=BAt 24. 11. 2020 v 8:48 odes=C3=ADlatel Raviteja Narayanam
-<raviteja.narayanam@xilinx.com> napsal:
->
-> On Xilinx zynq SOC if the delay between address register write and
-> control register write in cdns_mrecv function is more, the xfer size
-> register rolls over and controller is stuck. This is an IP bug and
+On Tue, Jun 22, 2021 at 05:27:30PM +0200, Odin Ugedal wrote:
 
-and the controller
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index bfaa6e1f6067..ab809bd11785 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -5277,6 +5277,7 @@ static enum hrtimer_restart
+> sched_cfs_period_timer(struct hrtimer *timer)
+>                         if (new < max_cfs_quota_period) {
+>                                 cfs_b->period = ns_to_ktime(new);
+>                                 cfs_b->quota *= 2;
+> +                               cfs_b->burst *= 2;
+> 
+>                                 pr_warn_ratelimited(
+>         "cfs_period_timer[cpu%d]: period too short, scaling up (new
+> cfs_period_us = %lld, cfs_quota_us = %lld)\n",
 
-> is resolved in later versions of IP.
->
-> To avoid this scenario, disable the interrupts on the current processor
-> core between the two register writes and enable them later. This can
-> help achieve the timing constraint.
->
-> Signed-off-by: Raviteja Narayanam <raviteja.narayanam@xilinx.com>
-> ---
->  drivers/i2c/busses/i2c-cadence.c | 48 ++++++++++++++++++++++++++++++++++=
-------
->  1 file changed, 41 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-ca=
-dence.c
-> index e4b7f2a..81b7c45 100644
-> --- a/drivers/i2c/busses/i2c-cadence.c
-> +++ b/drivers/i2c/busses/i2c-cadence.c
-> @@ -578,6 +578,11 @@ static void cdns_i2c_mrecv(struct cdns_i2c *id)
->  {
->         unsigned int ctrl_reg;
->         unsigned int isr_status;
-> +       unsigned long flags;
-> +       bool hold_clear =3D false;
-> +       bool irq_save =3D false;
-> +
-> +       u32 addr;
->
->         id->p_recv_buf =3D id->p_msg->buf;
->         id->recv_count =3D id->p_msg->len;
-> @@ -618,14 +623,43 @@ static void cdns_i2c_mrecv(struct cdns_i2c *id)
->                 cdns_i2c_writereg(id->recv_count, CDNS_I2C_XFER_SIZE_OFFS=
-ET);
->         }
->
-> -       /* Set the slave address in address register - triggers operation=
- */
-> -       cdns_i2c_writereg(id->p_msg->addr & CDNS_I2C_ADDR_MASK,
-> -                                               CDNS_I2C_ADDR_OFFSET);
-> -       /* Clear the bus hold flag if bytes to receive is less than FIFO =
-size */
-> +       /* Determine hold_clear based on number of bytes to receive and h=
-old flag */
->         if (!id->bus_hold_flag &&
-> -               ((id->p_msg->flags & I2C_M_RECV_LEN) !=3D I2C_M_RECV_LEN)=
- &&
-> -               (id->recv_count <=3D CDNS_I2C_FIFO_DEPTH))
-> -                       cdns_i2c_clear_bus_hold(id);
-> +           ((id->p_msg->flags & I2C_M_RECV_LEN) !=3D I2C_M_RECV_LEN) &&
-> +           (id->recv_count <=3D CDNS_I2C_FIFO_DEPTH)) {
-> +               if (cdns_i2c_readreg(CDNS_I2C_CR_OFFSET) & CDNS_I2C_CR_HO=
-LD) {
-> +                       hold_clear =3D true;
-> +                       if (id->quirks & CDNS_I2C_BROKEN_HOLD_BIT)
-> +                               irq_save =3D true;
-> +               }
-> +       }
-> +
-> +       addr =3D id->p_msg->addr;
-> +       addr &=3D CDNS_I2C_ADDR_MASK;
-> +
-> +       if (hold_clear) {
-> +               ctrl_reg =3D cdns_i2c_readreg(CDNS_I2C_CR_OFFSET) & ~CDNS=
-_I2C_CR_HOLD;
-> +               /*
-> +                * In case of Xilinx Zynq SOC, clear the HOLD bit before =
-transfer size
-> +                * register reaches '0'. This is an IP bug which causes t=
-ransfer size
-> +                * register overflow to 0xFF. To satisfy this timing requ=
-irement,
-> +                * disable the interrupts on current processor core betwe=
-en register
-> +                * writes to slave address register and control register.
-> +                */
-> +               if (irq_save)
-> +                       local_irq_save(flags);
-> +
-> +               cdns_i2c_writereg(addr, CDNS_I2C_ADDR_OFFSET);
-> +               cdns_i2c_writereg(ctrl_reg, CDNS_I2C_CR_OFFSET);
-> +               /* Read it back to avoid bufferring and make sure write h=
-appens */
-> +               cdns_i2c_readreg(CDNS_I2C_CR_OFFSET);
-> +
-> +               if (irq_save)
-> +                       local_irq_restore(flags);
-> +       } else {
-> +               cdns_i2c_writereg(addr, CDNS_I2C_ADDR_OFFSET);
-> +       }
-> +
->         cdns_i2c_writereg(CDNS_I2C_ENABLED_INTR_MASK, CDNS_I2C_IER_OFFSET=
-);
->  }
-
-Unfortunately we can't do anything with this on the Zynq platform. It
-is better than nothing.
-ZynqMP is not affected.
-
-Acked-by: Michal Simek <michal.simek@xilinx.com>
-
-Thanks,
-Michal
-
---=20
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+Thanks, folded that.
