@@ -2,55 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04DA33B1AF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A703B3B1AFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbhFWNWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbhFWNWm (ORCPT
+        id S231134AbhFWNYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:24:15 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:38922 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230234AbhFWNYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:22:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 516E1C061574;
-        Wed, 23 Jun 2021 06:20:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PCiuVMRKNuvDVek4f2Qirj3VC8XGRRERUW2AchHc/MQ=; b=hcfWOuBJRoHFvIireuLopMJJIN
-        0mFj9pzL9E0v2HJFchjshkcfMrBODvjZXCYMcsfEIV79eOPVhChBwMqrB2gxf7Z6WyJmbW5BfKz7c
-        NoeM6xCILm0Ju0EhokXO44NR4XYh58h76EzyxwJRuBEP+Rmgf8YwsWWXuBbNOw3yNyXC4rLjq41Us
-        XoVdEBhsvMLjjrEfjI6iNwn8VzOM9NzwBwtQXxeH02gN8Uyv0GDKvUxmxRSrcRJjxCs7trNLRwZOW
-        EcTPHIODyXkwpeN4uh2IH6+MVCUjCIlH3bIbdBLRwoa0nrgyjsIDuu8Dn/pGnCNuE/msZEb2paEcf
-        zGJM0C3g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lw2n8-00FSzT-B9; Wed, 23 Jun 2021 13:19:48 +0000
-Date:   Wed, 23 Jun 2021 14:19:42 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 35/46] mm/filemap: Add folio_mkwrite_check_truncate()
-Message-ID: <YNM07q4bIw8Vii58@casper.infradead.org>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-36-willy@infradead.org>
- <YNMDTgeHh9/Sfd1/@infradead.org>
+        Wed, 23 Jun 2021 09:24:09 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7D977EE;
+        Wed, 23 Jun 2021 15:21:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1624454510;
+        bh=tD3yAfBocRoh42iKv+1nU6GmJxJgj3qdpSr0sTecR8g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J6PkKp5wWllwRTlRLAOdU1u0BsEBrC0wvoH4QXTTJaX/3lZ35HDadPXZoIdUpUv3O
+         kkL0aHDUKZbaspama8on3DCH4QHoxN0L5R2est5e0t6Ef6A9j4jXRsAAaYuBPcCT2A
+         Nldqf8ApmICAWBV5JPT6x5kbpbvNOKvZjSQ+WBLo=
+Date:   Wed, 23 Jun 2021 16:21:21 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
+Cc:     devicetree@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2] dt-binding: media: document ON Semi AR0521 sensor
+ bindings
+Message-ID: <YNM1UeZ7aw0hWUE2@pendragon.ideasonboard.com>
+References: <m3y2b25er8.fsf@t19.piap.pl>
+ <YNHVbFp2+Ow8CyCV@pendragon.ideasonboard.com>
+ <m3im255e1a.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YNMDTgeHh9/Sfd1/@infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <m3im255e1a.fsf@t19.piap.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 11:47:58AM +0200, Christoph Hellwig wrote:
-> On Tue, Jun 22, 2021 at 01:15:40PM +0100, Matthew Wilcox (Oracle) wrote:
-> > This is the folio equivalent of page_mkwrite_check_truncate().
-> > 
-> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+On Wed, Jun 23, 2021 at 07:46:25AM +0200, Krzysztof Hałasa wrote:
+> Laurent Pinchart <laurent.pinchart@ideasonboard.com> writes:
 > 
-> Any reason that page_mkwrite_check_truncate isn't turned into a wrapper?
+> >> The question still stands: is there a way to reliably put national
+> >> unicode characters into:
+> >> - commit messages for patches submitted via email,
+> >
+> > This shouldn't be too much of a problem, as long as you MUA and MTA
+> > don't mess up encoding.
+> 
+> Maybe it's better now. I had mixed results in the past, but maybe it was
+> 10+ years ago. Then I stopped using non-ASCII as they weren't very
+> essential.
+> Apparently there was no such problems with drivers/net, at least from
+> the time I started using non-ASCII characters.
 
-It'd introduce an extra call to page_folio() for no actual benefit
+I think it should be better, yes. As long as there's no MS Exchange
+along the way of course ;-)
+
+-- 
+Regards,
+
+Laurent Pinchart
