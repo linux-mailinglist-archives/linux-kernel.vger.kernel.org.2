@@ -2,122 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 410D13B20A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F41AB3B20B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbhFWSxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 14:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbhFWSxE (ORCPT
+        id S229890AbhFWS67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 14:58:59 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:24002 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229758AbhFWS65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 14:53:04 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C889C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:50:47 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id bj15so7752187qkb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 11:50:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=A9I072mZJre1TS+IQKbZNgSu5AaMK7P2E0lmk7a57z4=;
-        b=b5e3Vs0J8hbfUScY+Wtfo2QnoFw5zQRvSxFua4X+zv6sZmqniXxjtckK2oI0DJ0jKp
-         +FpDq4XgR5FvYz5KhFDvESo6/vvn5bGvgGZWSgiYdS8/PfbLxpaqI3o9lhVUAZxmPK5T
-         nDlzhXlXLqlvJVTPQVPebRcUOY8aDMfSl2n44EWIYFP7pJbCLgzg7CgH7naHE97q6TC2
-         fZXUfMee0Dfy9rvfoVtazaR6R+Q7ESYAYIdPD2TcTnMWbmqWi3fqt48BxyEAqBINSR6Y
-         /GKjFQQmTzpnkbtvp/1Ez+q16SM92SVKit9WzRj/wJHNz3K/lD3bYob3W0EWe1zfdvXM
-         mlxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=A9I072mZJre1TS+IQKbZNgSu5AaMK7P2E0lmk7a57z4=;
-        b=GCBSHXL258ldut8Ky5oT1MN4Q121dt3ed4cCBsw0NSDxgRiLUVkYRzuiyYq/C9U8sh
-         C5B6KlVW6KpdqiQR34DbFE5Z5uHYq/AWvdig/jhoOTcykUriLDlXhWllUSwlMIc8a48q
-         U0Ki670DVmMP/nj+eUdSgU0sg+FCnmilk8cfEtqu4egei1j1wG4ZU4dRiu0voFsaO3AH
-         e8wIt3Z1x8n7tSnsTx3vm3ONEbgT7nQa/3+ldGuzstUfU7m45uabUAnMKodpEj3E0k4K
-         1jPONm8yDUPm8/T+4PP8+Vsb0rNHj/f/XXmjgtkC7RQXsVQa3vUZ/lX7TqUxbXSPsTmF
-         gFSQ==
-X-Gm-Message-State: AOAM531RoOlegCYCY5TbmR94P2pagTJQTKAoW9OVwyrijLSyUvm0a9yp
-        JL+BJ77kGMQ2tNzHoeZvQ9c26Q==
-X-Google-Smtp-Source: ABdhPJy26aLIQNDGYzv9yUWJkE1S7Ng46xlnu9FBhglctMci0BMRl57bB82kjnJJ4TuniXpuKS76ig==
-X-Received: by 2002:a37:5cc6:: with SMTP id q189mr1519218qkb.305.1624474246361;
-        Wed, 23 Jun 2021 11:50:46 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id y18sm503840qtx.6.2021.06.23.11.50.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 11:50:45 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lw7xV-00Blq0-8k; Wed, 23 Jun 2021 15:50:45 -0300
-Date:   Wed, 23 Jun 2021 15:50:45 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Tomer Tayar <ttayar@habana.ai>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
- FD for DMA-BUF
-Message-ID: <20210623185045.GY1096940@ziepe.ca>
-References: <20210622120142.GL1096940@ziepe.ca>
- <d497b0a2-897e-adff-295c-cf0f4ff93cb4@amd.com>
- <20210622152343.GO1096940@ziepe.ca>
- <3fabe8b7-7174-bf49-5ffe-26db30968a27@amd.com>
- <20210622154027.GS1096940@ziepe.ca>
- <09df4a03-d99c-3949-05b2-8b49c71a109e@amd.com>
- <20210622160538.GT1096940@ziepe.ca>
- <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com>
- <20210623182435.GX1096940@ziepe.ca>
- <CAFCwf111O0_YB_tixzEUmaKpGAHMNvMaOes2AfMD4x68Am4Yyg@mail.gmail.com>
+        Wed, 23 Jun 2021 14:58:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624474599; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=raM5yy7Fixm9SBjgzY+GjFB9SPnrp4+WIjv/dKrKXH8=; b=GBWjoKLEgLyvYVv6zH06zlnz4iM9xsisZfTGu7XslBVa1NIHBrsK9030gFD9BmWB3LPSiJhC
+ D9DJTQ0s6ioZS9laSg0lSXFFPE51yK4TTt/Zt2nuBlMj+gFpnLkVuElIiHFcXye6kk8ULECR
+ bhvAocpxqXumpi8U6vjZzs3XecY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60d383df638039e9976a6a47 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Jun 2021 18:56:31
+ GMT
+Sender: sidgup=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3EC04C43217; Wed, 23 Jun 2021 18:56:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 81904C433D3;
+        Wed, 23 Jun 2021 18:56:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 81904C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+Subject: Re: [PATCH v3 1/4] remoteproc: core: Move cdev add before device add
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     bjorn.andersson@linaro.org, ohad@wizery.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, psodagud@codeaurora.org,
+        stable@vger.kernel.org
+References: <1623723671-5517-1-git-send-email-sidgup@codeaurora.org>
+ <1623723671-5517-2-git-send-email-sidgup@codeaurora.org>
+ <YMgy7eg3wde0eVfe@kroah.com>
+ <0a196786-f624-d9bb-8ef9-55c04ed57497@codeaurora.org>
+ <YMmTGD6hAKbpGWMp@kroah.com>
+ <f81acd52-fe59-a296-b221-febbf8281606@codeaurora.org>
+ <YNLibU0/kMfZ3Hio@kroah.com>
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+Message-ID: <7e8ee1c3-e11e-52fc-068d-34fe036e132f@codeaurora.org>
+Date:   Wed, 23 Jun 2021 11:56:28 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFCwf111O0_YB_tixzEUmaKpGAHMNvMaOes2AfMD4x68Am4Yyg@mail.gmail.com>
+In-Reply-To: <YNLibU0/kMfZ3Hio@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 09:43:04PM +0300, Oded Gabbay wrote:
 
-> Can you please explain why it is so important to (allow) access them
-> through the CPU ?
+On 6/23/2021 12:27 AM, Greg KH wrote:
+> On Wed, Jun 16, 2021 at 11:47:01AM -0700, Siddharth Gupta wrote:
+>> On 6/15/2021 10:58 PM, Greg KH wrote:
+>>> On Tue, Jun 15, 2021 at 12:03:26PM -0700, Siddharth Gupta wrote:
+>>>> On 6/14/2021 9:56 PM, Greg KH wrote:
+>>>>> On Mon, Jun 14, 2021 at 07:21:08PM -0700, Siddharth Gupta wrote:
+>>>>>> When cdev_add is called after device_add has been called there is no
+>>>>>> way for the userspace to know about the addition of a cdev as cdev_add
+>>>>>> itself doesn't trigger a uevent notification, or for the kernel to
+>>>>>> know about the change to devt. This results in two problems:
+>>>>>>     - mknod is never called for the cdev and hence no cdev appears on
+>>>>>>       devtmpfs.
+>>>>>>     - sysfs links to the new cdev are not established.
+>>>>>>
+>>>>>> The cdev needs to be added and devt assigned before device_add() is
+>>>>>> called in order for the relevant sysfs and devtmpfs entries to be
+>>>>>> created and the uevent to be properly populated.
+>>>>> So this means no one ever ran this code on a system that used devtmpfs?
+>>>>>
+>>>>> How was it ever tested?
+>>>> My testing was done with toybox + Android's ueventd ramdisk.
+>>>> As I mentioned in the discussion, the race became evident
+>>>> recently. I will make sure to test all such changes without
+>>>> systemd/ueventd in the future.
+>>> It isn't an issue of systemd/ueventd, those do not control /dev on a
+>>> normal system, that is what devtmpfs is for.
+>> I am not fully aware of when devtmpfs is enabled or not, but in
+>> case it is not - systemd/ueventd will create these files with
+>> mknod, right?
+> No, systemd does not create device nodes, and neither does udev.  Hasn't
+> done so for well over 10 years now.
+Oh okay. I thought ueventd does it because it allows setting
+the node permissions through ueventd.rc:
+https://android.googlesource.com/platform/system/core/+/master/rootdir/ueventd.rc
+>
+>> I was even manually able to call mknod from the
+>> terminal when some of the remoteproc character device entries
+>> showed up (using major number from there, and minor number being
+>> the remoteproc id), and that allowed me to boot up the
+>> remoteprocs as well.
+> Yes, that is fine, but that also means that this was not working from
+> the very beginning :(
+Right. To clarify, I did this after we started seeing the problem
+on our devices, which led me to believe there was a race between
+ueventd and cdev_add(). Not sure anymore if that is not the case.
+>
+>>> And devtmpfs nodes are only created if you create a struct device
+>>> somewhere with a proper major/minor, which you were not doing here, so
+>>> you must have had a static /dev on your test systems, right?
+>> I am not sure of what you mean by a static /dev? Could you
+>> explain? In case you mean the character device would be
+>> non-functional, that is not the case. They have been working
+>> for us since the beginning.
+> /dev on modern systems is managed by devtmpfs, which knows to create the
+> device nodes when you properly register the device with the driver core.
+> A "static" /dev is managed by mknod from userspace, like you did "by
+> hand", and that is usually only done by older systems.
+Thanks for the explanation! As I mentioned earlier - I was under
+the impression that ueventd does it. I will go through our older
+builds where this was working (without this patch) and try to see
+how the dev nodes were being populated.
 
-It is not so much important, as it reflects significant design choices
-that are already tightly baked into alot of our stacks. 
-
-A SGL is CPU accessible by design - that is baked into this thing and
-places all over the place assume it. Even in RDMA we have
-RXE/SWI/HFI1/qib that might want to use the CPU side (grep for sg_page
-to see)
-
-So, the thing at the top of the stack - in this case the gaudi driver
-- simply can't assume what the rest of the stack is going to do and
-omit the CPU side. It breaks everything.
-
-Logan's patch series is the most fully developed way out of this
-predicament so far.
-
-> The whole purpose is that the other device accesses my device,
-> bypassing the CPU.
-
-Sure, but you don't know that will happen, or if it is even possible
-in any given system configuration. The purpose is to allow for that
-optimization when possible, not exclude CPU based approaches.
-
-Jason
+Thanks,
+Sid
+> thanks,
+>
+> greg k-h
