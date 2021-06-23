@@ -2,145 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F3E3B154A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DDE3B1553
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbhFWIDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 04:03:34 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:11086 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbhFWIDb (ORCPT
+        id S230229AbhFWIEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 04:04:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhFWIET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 04:03:31 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G8wcM22CnzZgsm;
-        Wed, 23 Jun 2021 15:58:11 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 23 Jun 2021 16:01:12 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 23 Jun 2021 16:01:11 +0800
-Subject: Re: [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide ZONE_DMA
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <akpm@linux-foundation.org>, <guohanjun@huawei.com>,
-        <sudeep.holla@arm.com>, <song.bao.hua@hisilicon.com>,
-        <ardb@kernel.org>, <anshuman.khandual@arm.com>,
-        <stable@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Li Huafei <lihuafei1@huawei.com>
-References: <9bc396116372de5b538d71d8f9ae9c3259f1002e.camel@suse.de>
- <YEDr/lYZHew88/Ip@kroah.com>
- <827b317d7f5da6e048806922098291faacdb19f9.camel@suse.de>
- <YETwL6QGWFyJTAzk@kroah.com> <604597E3.5000605@huawei.com>
- <YEX1OcbVNSqwwusF@kroah.com>
- <31cd8432-2466-555d-7617-ae48cbcd4244@huawei.com>
- <8b0a4f25-0803-9341-f3a4-277d16802295@huawei.com>
- <YNLe4CGtOgVvTOMN@kroah.com>
- <e47df0fd-0ddd-408b-2972-1b6d0a786f00@huawei.com>
- <YNLkDJ8zHGRZ5iG8@kroah.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <f692a6e5-9e07-8b96-b7d3-213e6e3d071b@huawei.com>
-Date:   Wed, 23 Jun 2021 16:01:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 23 Jun 2021 04:04:19 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CDA7C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 01:02:02 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id i1so2612054lfe.6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 01:02:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=ALp5/N27RPVlOOdmQTHFA/PlRSYSgcTj/HOCoALwZHU=;
+        b=jTbDpOhkkcRBj+Tr+txKS3w8AL191MGPqQKTJnQWRFyghzbRxc50ybjVs9+xSyTvBP
+         NPKTd7wql5N78Irn8b3ZVHQHFY0FjPEmEsiOLtkdnErfTMzbrdg/Oxhn6tfTI03wP8pD
+         4OxyMTgkHuIi/5O5pBE/DFuXlbiJyQoo8NpmtaGXEZgp8yvXA14xeAiJS2uNsTsyMJNs
+         U2fwbQiqPFzTc1K164Xm2DcFlE3uTI1PF6xJc8NR7rrQabMu0T9kSMPPTLF+S1JmnW8O
+         xZ143ju579UWLalmW98hQWyCtdk8LrFHsLTMBaxd6b3Bd+8teorXbhCb1Eg0/zqsok6Y
+         IQ8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=ALp5/N27RPVlOOdmQTHFA/PlRSYSgcTj/HOCoALwZHU=;
+        b=G+Eiv1o+v3ID+HGGNhuSu94a6w2EFQdcGuCl4os2ip5JYsTvDr1b5IHu+D31Sp5znu
+         G3T7kQWYnEXJfwIYC76YEf8xt+7Z0n32z+HLZxWhSJCkEvR3ylJu1ynLikxFoPIOmJkZ
+         uo7jsN2bNj0DUE+QY/CJ2j+Vrn+eK2nm4HSLUzcFpbXpMHKw0cenvPjot/dbp0+IZPFV
+         c/N2qBVdCUhKS92dIqCEFhZvBTijIGFPh4a7mLIvj0aZ/TdsId85oDNr0epYi8aey0/4
+         XzhdKtwenNGznFWdURU2NHp1KgzOUaTuzoenNVfeI+70Gq3nrRnnp5ec2d8wn0sLbj8C
+         pRkg==
+X-Gm-Message-State: AOAM531C+R0AHNYCFG1SgCFdjr4H2QmpB7+Q6o4Dl8PcTUo7I6Lx+/SP
+        5GaqfAcyifXN53ocda5pg4g=
+X-Google-Smtp-Source: ABdhPJxA76V011BKXooz42uid5MGbx2UUylgUe4QH9zqXyMr8+sUmU3nxOG3kR1o/s1ae8kxoCdS2Q==
+X-Received: by 2002:a05:6512:4c3:: with SMTP id w3mr6328062lfq.594.1624435320753;
+        Wed, 23 Jun 2021 01:02:00 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id z15sm2459818lfs.207.2021.06.23.01.01.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 01:02:00 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 11:01:56 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     amd-gfx@lists.freedesktop.org, tzimmermann@suse.de,
+        intel-gfx@lists.freedesktop.org, sunpeng.li@amd.com,
+        dri-devel@lists.freedesktop.org, joonas.lahtinen@linux.intel.com,
+        maarten.lankhorst@linux.intel.com, linux-kernel@vger.kernel.org,
+        mripard@kernel.org, airlied@linux.ie, jani.nikula@linux.intel.com,
+        daniel@ffwll.ch, rodrigo.vivi@intel.com, alexander.deucher@amd.com,
+        harry.wentland@amd.com, christian.koenig@amd.com
+Subject: Re: [PATCH v4 17/17] drm/amd/display: Add handling for new
+ "Broadcast RGB" property
+Message-ID: <20210623110156.4791505e@eldfell>
+In-Reply-To: <ded3d448-4837-f38d-9878-f5d764712db7@tuxedocomputers.com>
+References: <20210618091116.14428-1-wse@tuxedocomputers.com>
+        <20210618091116.14428-18-wse@tuxedocomputers.com>
+        <20210622102955.1e0488b1@eldfell>
+        <ded3d448-4837-f38d-9878-f5d764712db7@tuxedocomputers.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YNLkDJ8zHGRZ5iG8@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/9t65WvBL3CHONVstlbG_ova";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/9t65WvBL3CHONVstlbG_ova
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, 22 Jun 2021 11:28:57 +0200
+Werner Sembach <wse@tuxedocomputers.com> wrote:
+
+> Am 22.06.21 um 09:29 schrieb Pekka Paalanen:
+> > On Fri, 18 Jun 2021 11:11:16 +0200
+> > Werner Sembach <wse@tuxedocomputers.com> wrote:
+> > =20
+> >> This commit implements the "Broadcast RGB" drm property for the AMD GPU
+> >> driver.
+> >>
+> >> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> >> ---
+> >>  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 22 ++++++++++++++-----
+> >>  .../display/amdgpu_dm/amdgpu_dm_mst_types.c   |  4 ++++
+> >>  2 files changed, 21 insertions(+), 5 deletions(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drive=
+rs/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> >> index 9ffd2f9d3d75..c5dbf948a47a 100644
+> >> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> >> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> >> @@ -5252,7 +5252,8 @@ get_aspect_ratio(const struct drm_display_mode *=
+mode_in)
+> >>  }
+> >> =20
+> >>  static enum dc_color_space
+> >> -get_output_color_space(const struct dc_crtc_timing *dc_crtc_timing)
+> >> +get_output_color_space(const struct dc_crtc_timing *dc_crtc_timing,
+> >> +		       enum drm_mode_color_range preferred_color_range)
+> >>  {
+> >>  	enum dc_color_space color_space =3D COLOR_SPACE_SRGB;
+> >> =20
+> >> @@ -5267,13 +5268,17 @@ get_output_color_space(const struct dc_crtc_ti=
+ming *dc_crtc_timing)
+> >>  		 * respectively
+> >>  		 */
+> >>  		if (dc_crtc_timing->pix_clk_100hz > 270300) {
+> >> -			if (dc_crtc_timing->flags.Y_ONLY)
+> >> +			if (dc_crtc_timing->flags.Y_ONLY
+> >> +					|| preferred_color_range =3D=3D
+> >> +						DRM_MODE_COLOR_RANGE_LIMITED_16_235)
+> >>  				color_space =3D
+> >>  					COLOR_SPACE_YCBCR709_LIMITED;
+> >>  			else
+> >>  				color_space =3D COLOR_SPACE_YCBCR709; =20
+> > Hi,
+> >
+> > does this mean that amdgpu would be using a property named "Broadcast
+> > RGB" to control the range of YCbCr too? =20
+>=20
+> Yes, because I avoided creating a new property, but I'm not really happy =
+with it either.
+>=20
+> Possibility 1: Use "Broadcast RGB" for Y'CbCr too and clarify in document=
+ation
+> =C2=A0=C2=A0=C2=A0 - still confusing name
+> =C2=A0=C2=A0=C2=A0 - limited does not mean something a little bit differe=
+nt for Y'CbCr and not strictly 16-235:
+> https://www.kernel.org/doc/html/v5.12/userspace-api/media/v4l/colorspaces=
+-defs.html#c.V4L.v4l2_quantization , but name
+> of option is given by preexisting property
+>=20
+> Possibility 2: Deprecate "Broadcast RGB" and a a more neutral sounding "p=
+referred color range", with the more neutral
+> sounding "limited" option instead of "Limited 16:235"
+> =C2=A0=C2=A0=C2=A0 - What's the relation between the 2? pq mentioned on t=
+he amdgpu
+> gitlab that there is a posibility for userspace to have only the new
+> or the old one shown
+
+It's just an idea that we could decide to expose only one or the other
+property. It would need to be engineered in code, go through the UAPI
+validation with userspace etc. I'm not aware of this being done before
+exactly like this, but DRM client caps exist.
+
+> =C2=A0=C2=A0=C2=A0 - Alternatively ignore "Broadcast RGB" when "preferred=
+ color range" is set and have them coexist?
+
+Determining "is set" means we would need "unset" value for "preferred
+color range". But there is no notion of who set it. If some KMS client
+decides to set it, then it will likely remain set, even if you next
+start another KMS client who does not use this property - it would just
+confuse users when "Broadcast RGB" silently stopped working while it
+still exists.
+
+So I don't think this is a good solution.
+
+When considering a new property, what I wrote just earlier fit here:
+https://lists.freedesktop.org/archives/dri-devel/2021-June/312248.html
+
+There are more questions that just what does the limited range actually
+mean.
+
+> > That is surprising. If this is truly wanted, then the documentation of
+> > "Broadcast RGB" must say that it applies to YCbCr too.
+> >
+> > Does amdgpu do the same as intel wrt. to the question about whose
+> > responsibility it is to make the pixels at the connector to match the
+> > set range? =20
+>=20
+> I guess the kernel driver does the conversion, but i have to check
+> for both.
+>=20
+> For Intel I did not change the behavior of Boradcast RGB, but i think
+> it's not clearly specified in the docs where the conversion happens.
+
+Right, at the very least the current behaviour needs to be documented
+before enrolling this property to any more drivers, so that those
+drivers can then be reviewed to work the same way.
+
+You notice I didn't actually answer your question 1 or 2. I don't know.
+Going with 1 is easy compared to 2, even if the names are awkward but
+it technically shouldn't cause any problems. 2 may or may not be
+better, and until we have answers to which design is better, it's maybe
+best to leave option 2 alone?
 
 
-On 2021/6/23 15:34, Greg KH wrote:
-> On Wed, Jun 23, 2021 at 03:25:10PM +0800, Kefeng Wang wrote:
->>
->>
->> On 2021/6/23 15:12, Greg KH wrote:
->>> On Wed, Jun 23, 2021 at 02:59:59PM +0800, Kefeng Wang wrote:
->>>> Hi Greg,
->>>>
->>>> There are two more patches about the ZONE_DMA[32] changes,
->>>
->>> What ZONE_DMA changes?
->>
->> See the subject, [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide
->> ZONE_DMA, We asked the ARM64 ZONE_DMA change backport before, link[1]
+Thanks,
+pq
 
-Let's inline the link:
-https://lore.kernel.org/lkml/20210303073319.2215839-1-jingxiangfeng@huawei.com/
+--Sig_/9t65WvBL3CHONVstlbG_ova
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-The following 7 patches(we asked from link) has merged into lts5.10(tag: 
-v5.10.22)
+-----BEGIN PGP SIGNATURE-----
 
-   4d7ed9a49b0c mm: Remove examples from enum zone_type comment
-   8eaef922e938 arm64: mm: Set ZONE_DMA size based on early IORT scan
-   35ec3d09ff6a arm64: mm: Set ZONE_DMA size based on devicetree's 
-dma-ranges
-   a9861e7fa4f8 of: unittest: Add test for of_dma_get_max_cpu_address()
-   18bf6e998d08 of/address: Introduce of_dma_get_max_cpu_address()
-   3fbe62ffbb54 arm64: mm: Move zone_dma_bits initialization into 
-zone_sizes_init()
-   407b173adfac arm64: mm: Move reserve_crashkernel() into mem_init()
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmDS6nQACgkQI1/ltBGq
+qqchjQ//UhWP/scpD6nbt+KCsdHLrYGMFqmi8iFTG/Zhl+XDBib1UkOYt0zH5IVo
+i9Ag05LEaNmGK51xuDZ65wAyjyEY66T3tvcZyM6Wb+y+Au7DWTTEA5v3I4VmTD87
+tSHHvAFEKtgUdukSpoemhEUuxlCad/sOqLbA0D/ykX2osM7eLiy3ViSZdjxT0Nyt
+0KIhgfVQ4t5Df/uzjRHOISj6kzgUx/pZrBwwY/9c7vZ5hIzkJahEmYhOxXggMX4w
+beZPHa12peZ+zom8Y94aW51WK85qoFYJ8F9Lq+Yb0NcMiKpK5qk+u4n1We1obbuG
+KePy6Ctwbz2QzDsi2PBIpHHYIdEh3mZpQa8RU4bWIHYFaI6aAg/CMR46jnUMzjrw
+DklDzxcd/l5/HnokBVRbHjTrks0J379KY6o85ZWyg4cUJOhcbmPEC24H7NDUpZzd
+pq6LctfNTEMMeOB8DY975tNr3UYaR7hfP00iXGUC+15s0buqBhKFMcfyZ4O6dGyo
+/xjX35DrGoB31aOQdLevPh6Nd+682PmwwrtAGAC/h9T+NQ2X2B7WrirBDhkhxlC7
+PW7sHpyFpLBInTjOuiavpV8bd6M/cd0nONzxJQTrtw5TP7c8kuGGdC4vYplW5gtT
+aPUsotdeQxloZvgk8oewjvHuIB/acDz+5GDM/4YhIpjCAH2ee80=
+=9bA4
+-----END PGP SIGNATURE-----
 
-but the patch "arm64: mm: Move reserve_crashkernel() into mem_init()"
-has some issue, see the following discussion from Catalin,
-
-https://lore.kernel.org/linux-devicetree/e60d643e-4879-3fc3-737d-2c145332a6d7@arm.com/
-https://lore.kernel.org/linux-arm-kernel/20201119175556.18681-1-catalin.marinas@arm.com/
-
-and yes, we met crash in lts5.10 when kexec boot due to "arm64: mm: Move 
-reserve_crashkernel() into mem_init()" too, which could be fixed by
-commit 2687275a5843 "arm64: Force NO_BLOCK_MAPPINGS if crashkernel 
-reservation is required", and the commit 791ab8b2e3db "arm64: Ignore any 
-DMA offsets in the max_zone_phys() calculation" also about DMA set,
-So I only asked the two patches(both in v5.11) related ARM64 ZONE_DMA 
-changes backported into lts5.10.
-
-> 
-> The subject doesn't help much, sorry, what commit does this refer to?
-> What happened to it?  Was it accepted or rejected?
-> 
->>>> especially the
->>>> second one, both them need be backported, thanks.
->>>
->>> Backported to where?
->>
->> stable 5.10
-> 
-> Why?
-
-> 
->>>> 791ab8b2e3db - arm64: Ignore any DMA offsets in the max_zone_phys()
->>>> calculation
->>>> 2687275a5843 - arm64: Force NO_BLOCK_MAPPINGS if crashkernel reservation is
->>>> required
->>>
->>> Have you tried these patches?  Where do they need to be applied to?
->>
->> Yes, we tested it, without them, especially the second one, we will
->> meet crash when using kexec boot, also there is discussion in [2]
->> and [3] from Catalin.
-> 
-> These [] do not seem to be links :(
-I could see the links is in the end, see 
-https://lore.kernel.org/lkml/e47df0fd-0ddd-408b-2972-1b6d0a786f00@huawei.com/
-
-> 
-> thanks,
-> 
-> greg k-h
-> .
-> 
+--Sig_/9t65WvBL3CHONVstlbG_ova--
