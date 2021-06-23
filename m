@@ -2,54 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01083B1D51
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB2D3B1D54
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 17:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhFWPOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 11:14:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230061AbhFWPOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 11:14:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66965601FF;
-        Wed, 23 Jun 2021 15:12:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624461145;
-        bh=2BXvozL35GZ2CwrGnA16lbsGHp087RB1g1dC5lovYoo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SBxsEvU3I4FbVb1pf9qT+5J5hV2P/E+e6ZCjQpb2F8OywRoVYXBSDvRktTrlaXbqp
-         cVK1FS71jDf3U+RDyFgq974dFfirLM8vbLvMM1J91xvTP85PJ5gzoy6DIknuOmuvMR
-         L6UzCJemjmL3LXvsSVfrOMp4JWIhLRnFX6UtYfXc=
-Date:   Wed, 23 Jun 2021 17:12:22 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Christian =?iso-8859-1?Q?L=F6hle?= <CLoehle@hyperstone.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>
-Subject: Re: [PATCH] kobject: Safe return of kobject_get_path with NULL
-Message-ID: <YNNPVumB7LqLLWgW@kroah.com>
-References: <CWXP265MB2680094534A5559B0A904B76C4089@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
- <CWXP265MB2680FAA36A50E96193037B4DC4089@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CWXP265MB2680FAA36A50E96193037B4DC4089@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+        id S231352AbhFWPPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 11:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230061AbhFWPPD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 11:15:03 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FD3C061574;
+        Wed, 23 Jun 2021 08:12:45 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id g21so845713pfc.11;
+        Wed, 23 Jun 2021 08:12:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=wnhbXxHraLaC8TefgPDC+qQd7KIYTELFweoZS4SUhy0=;
+        b=cP9+Bnv9X/RUwcBBLodk6HrdfAq7W8xUm9jF2y9HxXigTtOrU1sWXPymJ5bs89RacO
+         jBzLD7af2mpTkEnBGbiL+tquNd29+ZucE97dUa/wg5x9yxh/2Q2DhA3nNUgguCojeC+2
+         ye5pA/A7+/ASg0WRcz8Y+wkI18xq3foKgWgm+I/8I71slXidjjF1kdbj3gbBQ7h259md
+         jrP+lc963A8qA9pBqiG6o26eQEBGf/35bFlUG0b2nu50df7PXXXvIm6NMJg6PVM1nMXN
+         W3yraZ7G9a3nAZMyPTKE5vegJ+B0wxMG6EzrK04lpdptXxhgKMNhwJrFOZF/nttItP7O
+         2GiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=wnhbXxHraLaC8TefgPDC+qQd7KIYTELFweoZS4SUhy0=;
+        b=CyVbBRzVM6YGR8lZK4OZELheDUqV4ibjqQ0VMjC/ZgB61UMYOiooB86mGOqv3xjzix
+         FX7k1Z1z65OH0RjXgjc6xCo++z/63/zlZ7oeiZAdlQhA5bZI23jG4BJ3OfzHMtnmFKYJ
+         9f99YGmBmqkBWynzXKdEhnJ0kq95gzkekAaSv8UoF0jdVSBjRg/P56XIjqeptvGvuX+P
+         jFxscjDHPEDaCZJLdGRMrVso5K8Nfndb4jMzeFTJXzGz7oj2v6gu19Pq12bRQzPCLPIs
+         AELqeqmtaRoXYiZFQulo7aAwGzdgu5ETUA40Oe6kZ+j6YsCIZu4Sgb6EzWp5JeQXvfIA
+         z3zw==
+X-Gm-Message-State: AOAM532SQU0TGtC2lFEH62mHDxabUUHKZBi1TekdHelPxjpq4/Uq3g6Y
+        wLPkKkbIjrF8h9Y7Bbv9nT8JgtZNni4fcJq5Qxc=
+X-Google-Smtp-Source: ABdhPJyW3C19YcI6JBUyZ6Tuo39lmC+yIi5EjMEHx+N+pda0aHhEcxXaVCYwaWzYfkc/dFXamiQO2Q==
+X-Received: by 2002:aa7:9252:0:b029:2ae:bde3:621f with SMTP id 18-20020aa792520000b02902aebde3621fmr272079pfp.18.1624461164822;
+        Wed, 23 Jun 2021 08:12:44 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id o7sm235740pgs.45.2021.06.23.08.12.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 08:12:44 -0700 (PDT)
+Message-ID: <60d34f6c.1c69fb81.3314.0aa0@mx.google.com>
+Date:   Wed, 23 Jun 2021 08:12:44 -0700 (PDT)
+X-Google-Original-Date: Wed, 23 Jun 2021 15:12:42 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
+Subject: RE: [PATCH 5.12 000/178] 5.12.13-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 02:49:57PM +0000, Christian Löhle wrote:
-> This prevents two Oopses I've encountered.
-> (Sorry for the older kernel)
+On Mon, 21 Jun 2021 18:13:34 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.12.13 release.
+> There are 178 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> [ 4650.202534] general protection fault: 0000 [#1] PREEMPT SMP
-> [ 4650.202554] Modules linked in: serio_raw atkbd libps2 aesni_intel aes_x86_64 crypto_simd glue_helper ahci libahci i8042 fam15h_power hwmon_vid k10temp scsi_mon ftdi_sio usbserial exfat ext4 crc16 mbcache jbd2 fscrypto sg fuse nls_iso8859_1 nls_cp437 vfat fat nfsv3 nfs_acl nfsv4 dns_resolver nfs lockd grace sunrpc fscache e1000e ptp pps_core i915 intel_gtt usbmon button serio ehci_pci ehci_hcd r8169 mii xhci_pci xhci_hcd libcrc32c crc32c_generic crc32c_intel crc32_pclmul radeon i2c_algo_bit drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops ttm drm agpgart ata_piix pata_acpi ata_generic libata uas usb_storage sd_mod scsi_mod isofs loop overlay ip_tables x_tables sch_fq_codel tpm_tis tpm_tis_core tpm lpc_ich ie31200_edac mei_me mei shpchp parport_pc battery fan thermal i2c_i801 intel_rapl_perf
-> [ 4650.202746]  intel_cstate ghash_clmulni_intel cryptd crct10dif_pclmul ppdev parport mousedev input_leds iTCO_wdt iTCO_vendor_support kvm irqbypass evdev mac_hid eeepc_wmi asus_wmi sparse_keymap wmi led_class video coretemp intel_powerclamp x86_pkg_temp_thermal intel_rapl cfg80211 rfkill hid_generic usbhid hid usbcore usb_common
-> [ 4650.202824] CPU: 0 PID: 20750 Comm: python3 Not tainted 4.13.5-1hyLinux #22
+> Responses should be made by Wed, 23 Jun 2021 15:48:46 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.13-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Lots of things have changed since this old kernel version.  Can you see
-if this is still needed on Linus's tree?
+5.12.13-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-thanks,
-
-greg k-h
