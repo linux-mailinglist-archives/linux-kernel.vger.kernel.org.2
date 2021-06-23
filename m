@@ -2,266 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81943B1E70
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A953B1E75
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbhFWQQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 12:16:58 -0400
-Received: from mail-pj1-f42.google.com ([209.85.216.42]:45729 "EHLO
-        mail-pj1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbhFWQQ4 (ORCPT
+        id S229755AbhFWQTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 12:19:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhFWQTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 12:16:56 -0400
-Received: by mail-pj1-f42.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso1673119pjb.4;
-        Wed, 23 Jun 2021 09:14:38 -0700 (PDT)
+        Wed, 23 Jun 2021 12:19:30 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54588C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:17:11 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id u190so2174924pgd.8
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:17:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7zn0oCEuocGAdQ6ZsgTeBUSCFiV5Hshm48AY9/StAM4=;
+        b=Nz0Xjy+hjgVfAotFNLUVfPHkM8fT//dLdVyMD2rSuPCq5XlGXdsVfWDftvNwegRi0j
+         QuoHiUC4wWpK8j0CDRqFS1T+cK0RAt8KUHRRNPR9DcBNmJ8rTWtjzAdj7xjQh6jVOqVv
+         8RGrdSLkvx0n/VS0WKegRt+rFTykf/mHcjkZamF54etoNv82r/4GSu6uyfPSHpIdznQD
+         2GxNvp9/0v/tcZ2fFeK5Oro2OGcpg7Th3oGhH78UuIIB4KFRfMRjKlMTTL/Tea/t4cUi
+         74RjXxU6/898atYSMaLd8jV+mTNju5h5f9YH9h6H9kNpbgBodX4ezdGrHWggZTLhSvA3
+         VLJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Qc9ZU4x5fck6ND4TKf+J1mR/42R39eBlW/ngWT8FK2c=;
-        b=anvbxG7lHXxUTkj4KZYfiDkqG6cRwyKUSL1fz7o15XFH3FE63abfuP+afqis7OXIuh
-         a2lfWP4MRNYmgsVfeYK62EuNte+xTEQukydDt1FiCOLf4DM6HU5TFK4IAW3aWyfETpCi
-         Gbs7CEEu41WQt9SQT+zZfauoMiTsvadXN9gqBa3TAxbMIkOYJvM2lt5gw2fJ5c86WsVl
-         hjz9oJDZAkRK9J/eM/qKz0F7w8BdWKZMiyhQY6DeHseTIoJXWp/lyeagebuoiFtPUXDN
-         TIT2aOPj6Iu4RE6CDEJUuSur2aVa2X4bXuuRIVzQVqQCdiHNTiBu+layVl0byQaHhCqT
-         Ao0g==
-X-Gm-Message-State: AOAM530BIMf7bjBpwCjMrbMyHlfuQO9FQmI7mHLVLo9Bmd7pO/TKjHFT
-        YMosDeygGZaNlFETRgHZ4b4=
-X-Google-Smtp-Source: ABdhPJzK/5WH0Ma9bjHKCcxGEhzynubQSsq8mUx3VmN7acPLHu09eT6xarhh+knNollJK2nPIC5EXQ==
-X-Received: by 2002:a17:90a:390d:: with SMTP id y13mr551474pjb.52.1624464878244;
-        Wed, 23 Jun 2021 09:14:38 -0700 (PDT)
-Received: from garbanzo ([191.96.121.71])
-        by smtp.gmail.com with ESMTPSA id y1sm364052pfe.72.2021.06.23.09.14.36
+        bh=7zn0oCEuocGAdQ6ZsgTeBUSCFiV5Hshm48AY9/StAM4=;
+        b=bPXyBpz/QxFWi3wAHo8aHmMCUH24f0etaodXSJi8K5yqKfnrsoLpmoDYXixTHAIcyK
+         e8QvAP4VgVyG4GXawr+Dzj+a/jNa5RqHXER/BzQZAd2eQOd9A3QuvOfLU4+SXfwNd88M
+         cNwoh1o2itN9ekfur9vPkLonyi8C4iN5CLPX2spK/ShSTfQ5TFVG4LFLFlexdoW0Qai0
+         PrhEaBPc9DNv2N7LEWioEEnsr/UrlCJKvozaSgM3JJiWQO6Jz3JuzkJZA1TYCaYm7s7S
+         3h1zoR0hdwNDtYx56Nz56d9GwX7JuiX063ud7EE84SxWgMSTLxxuhh1i4VpZ3Y0f26KE
+         KVFQ==
+X-Gm-Message-State: AOAM530phY6uAgyxjuGVsG3KATywS7SJHFdOflKnBvRY2DIP6YwmaziP
+        itTMaUWokwthGedVmqXC1uoqew==
+X-Google-Smtp-Source: ABdhPJxPdUdZP/AXCe6m1ksJPlw7BankA6YIx7crDzcku/94bYiHOb5QSaOiXQXiHo19oS0Tio2AUg==
+X-Received: by 2002:a63:464b:: with SMTP id v11mr285761pgk.156.1624465030475;
+        Wed, 23 Jun 2021 09:17:10 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id la18sm3068180pjb.55.2021.06.23.09.17.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 09:14:37 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 09:14:34 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     rafael@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
-        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
-        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
-        rostedt@goodmis.org, peterz@infradead.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] drivers/base/core: refcount kobject and bus on device
- attribute read / store
-Message-ID: <20210623161434.qraapo4xaprte7bs@garbanzo>
-References: <20210623003630.274804-1-mcgrof@kernel.org>
- <YNLxtbzOm3/whYHc@kroah.com>
+        Wed, 23 Jun 2021 09:17:08 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 16:17:04 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: Re: [PATCH 10/54] KVM: x86/mmu: Replace EPT shadow page shenanigans
+ with simpler check
+Message-ID: <YNNegF8RcF3vX2Sh@google.com>
+References: <20210622175739.3610207-1-seanjc@google.com>
+ <20210622175739.3610207-11-seanjc@google.com>
+ <8ce36922-dba0-9b53-6f74-82f3f68b443c@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNLxtbzOm3/whYHc@kroah.com>
+In-Reply-To: <8ce36922-dba0-9b53-6f74-82f3f68b443c@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 10:32:53AM +0200, Greg KH wrote:
-> On Tue, Jun 22, 2021 at 05:36:30PM -0700, Luis Chamberlain wrote:
-> > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > index 4a8bf8cda52b..f69aa040b56d 100644
-> > --- a/drivers/base/core.c
-> > +++ b/drivers/base/core.c
-> > @@ -2042,28 +2042,56 @@ EXPORT_SYMBOL(dev_driver_string);
-> >  static ssize_t dev_attr_show(struct kobject *kobj, struct attribute *attr,
-> >  			     char *buf)
-> >  {
-> > -	struct device_attribute *dev_attr = to_dev_attr(attr);
-> > -	struct device *dev = kobj_to_dev(kobj);
-> > +	struct device_attribute *dev_attr;
-> > +	struct device *dev;
-> > +	struct bus_type *bus = NULL;
-> >  	ssize_t ret = -EIO;
-> >  
-> > +	dev = get_device(kobj_to_dev(kobj));
-> > +	if (dev->bus) {
+On Wed, Jun 23, 2021, Paolo Bonzini wrote:
+> On 22/06/21 19:56, Sean Christopherson wrote:
+> > Replace the hack to identify nested EPT shadow pages with a simple check
+> > that the size of the guest PTEs associated with the shadow page and the
+> > current MMU match, which is the intent of the "8 bytes == PAE" test.
+> > The nested EPT hack existed to avoid a false negative due to the is_pae()
+> > check not matching for 32-bit L2 guests; checking the MMU role directly
+> > avoids the indirect calculation of the guest PTE size entirely.
 > 
-> No need to test for this, right?
+> What the commit message doesn't say is, did we miss this opportunity all
+> along, or has there been a change since commit 47c42e6b4192 ("KVM: x86:
+> fix handling of role.cr4_pae and rename it to 'gpte_size'", 2019-03-28)
+> that allows this?
 
-dev_uevent() checks for dev->bus, so I thought that was a clear
-indication this isn't always set.
+The code was wrong from the initial "unsync" commit.  The 4-byte vs. 8-byte check
+papered over the real bug, which was that the roles were not checked for
+compabitility.  I suspect that the bug only manisfested as an observable problem
+when the GPTE sizes mismatched, thus the PAE check was added.
 
+So yes, there was an "opportunity" that was missed all along.
+
+> I think the only change needed would be making the commit something like
+> this:
 > 
-> > +		bus = bus_get(dev->bus);
-> > +		if (!bus)
-> > +			goto out;
+> ==========
+> KVM: x86/mmu: Use MMU role to check for matching guest page sizes
 > 
-> How can this happen?
-
-device_add() calls bus_add_device(), and the bus_add_device()
-implementation seems to have a check for the bus returned from bus_get() as
-well?
-
-> > +	}
-> > +
-> > +	dev_attr = to_dev_attr(attr);
+> Originally, __kvm_sync_page used to check the cr4_pae bit in the role
+> to avoid zapping 4-byte kvm_mmu_pages when guest page size are 8-byte
+> or the other way round.  However, in commit 47c42e6b4192 ("KVM: x86: fix
+> handling of role.cr4_pae and rename it to 'gpte_size'", 2019-03-28) it
+> was observed that this did not work for nested EPT, where the page table
+> size would be 8 bytes even if CR4.PAE=0.  (Note that the check still
+> has to be done for nested *NPT*, so it is not possible to use tdp_enabled
+> or similar).
 > 
-> Why did you move this call to way down here?  It's fine in the first
-> line of the function above as-is.
-
-I had done that when I had the device kobject reference incremented.
-I'll move it back up.
-
-> >  	if (dev_attr->show)
-> >  		ret = dev_attr->show(dev, dev_attr, buf);
-> >  	if (ret >= (ssize_t)PAGE_SIZE) {
-> >  		printk("dev_attr_show: %pS returned bad count\n",
-> >  				dev_attr->show);
-> >  	}
-> > +
-> > +	bus_put(bus);
+> Therefore, a hack was introduced to identify nested EPT shadow pages
+> and unconditionally call __kvm_sync_page() on them.  However, it is
+> possible to do without the hack to identify nested EPT shadow pages:
+> if EPT is active, there will be no shadow pages in non-EPT format,
+> and all of them will have gpte_is_8_bytes set to true; we can just
+> check the MMU role directly, and the test will always be true.
 > 
-> You are incrementing the bus, which is nice, but I do not understand why
-> it is needed.  What is causing the bus to go away _before_ the devices
-> are going away?  Busses almost never are removed from the system, and if
-> they are, all devices associated with them are removed first.  So I do
-> not think you need to increment anything with that here.
-
-You tell me. It was your suggestion as a replacement for the type
-specific lock, in the zram case, its a block device so I was using
-bdgrab().
-
-> But step back, what prevented the kobject from decrementing between the
-> call to dev_attr_show() and the first line of the function?
+> Even for non-EPT shadow MMUs, this test should really always be true
+> now that __kvm_sync_page() is called if and only if the role is an
+> exact match (kvm_mmu_get_page()) or is part of the current MMU context
+> (kvm_mmu_sync_roots()).  A future commit will convert the likely-pointless
+> check into a meaningful WARN to enforce that the mmu_roles of the current
+> context and the shadow page are compatible.
+> ==========
 > 
-> The kobject needs to be incremented before show is called, right?  Or
-> does kernfs handle this properly already? 
-
-kernfs / sysfs is in not struct device specific, it has no semantics for
-modules or even devices. The aspect of kernfs which deals with locking
-a struct kernfs_node is kernfs_get_active(). The refcount there of
-importance is the call to atomic_inc_unless_negative(&kn->active).
-
-struct kernfs_node *kernfs_get_active(struct kernfs_node *kn)                   
-{                                                                               
-	if (unlikely(!kn))
-		return NULL;                                                    
-
-	if (!atomic_inc_unless_negative(&kn->active))                           
-		return NULL;                                                    
-
-	if (kernfs_lockdep(kn))
-		rwsem_acquire_read(&kn->dep_map, 0, 1, _RET_IP_);               
-	return kn;                                                              
-}
-
-BTW this was also precisely where I had suggested to extend the
-kernfs_node with an optional kn->owner and if set we try_module_get() to
-prevent the deadlock case if the module exit routine also happens to use
-a lock also used by a sysfs attribute store/read.
-
-The flow would be (from a real live gdb crash backtrace from an original
-bug report from a customer):
-
-write system call -->
-  ksys_write ()
-    vfs_write() -->
-      __vfs_write() -->
-       kernfs_fop_write() (note now this is kernfs_fop_write_iter()) -->
-         sysfs_kf_write() -->
-           dev_attr_store() -->
-	     null reference
-
-The dereference is because the dev_attr_store() call which we are
-modifying
-
-LINE-001 static ssize_t dev_attr_store(struct kobject *kobj, struct attribute *attr,                                                                                         
-LINE-002 const char *buf, size_t count)                                                                                                                 
-LINE-003 {
-LINE-004	struct device_attribute *dev_attr = to_dev_attr(attr);
-LINE-005	struct device *dev = kobj_to_dev(kobj);
-LINE-006	ssize_t ret = -EIO;
-LINE-007
-LINE-008	if (dev_attr->store)
-LINE-009		ret = dev_attr->store(dev, dev_attr, buf, count);
-	...
-	}
-
-The race happens because a sysfs store / read can be triggered, the CPU
-could be preempted after LINE-008, and the ->store is gone by LINE-009.
-This begs the question if kernfs_fop_write_iter() or sysfs protects this
-somehow? Let's see.
-
-For kernfs we have:
-
-static ssize_t kernfs_fop_write_iter(struct kiocb *iocb, struct iov_iter *iter) 
-{
-	struct kernfs_open_file *of = kernfs_of(iocb->ki_filp);
-	...
-	mutex_lock(&of->mutex);
-	if (!kernfs_get_active(of->kn)) {
-		mutex_unlock(&of->mutex);
-		len = -ENODEV;
-		goto out_free;
-	}
-
-	ops = kernfs_ops(of->kn);
-	if (ops->write)
-		len = ops->write(of, buf, len, iocb->ki_pos);
-	else
-		len = -EINVAL;
-
-	kernfs_put_active(of->kn);
-	mutex_unlock(&of->mutex);
-	...
-}
-
-And the write call here is a syfs calls:
-
-static ssize_t sysfs_kf_write(struct kernfs_open_file *of, char *buf,           
-			      size_t count, loff_t pos)                         
-{                                                                               
-	const struct sysfs_ops *ops = sysfs_file_ops(of->kn);                   
-	struct kobject *kobj = of->kn->parent->priv;                            
-
-	if (!count)                                                             
-		return 0;                                                       
-
-	return ops->store(kobj, of->kn->priv, buf, count);                      
-}           
-
-As we have observed already, the active reference obtained through
-kernfs_get_active() was for the struct kernfs_node. Sure, the
-ops->write() is valid, in this case it sysfs_kf_write().
-
-sysfs isn't doing any active reference check for the kobject device
-attribute as it doesn't care for them. So syfs calls
-dev_attr_store(), but the dev_attr_store() is not preventing the device
-attribute ops to go fishing, and we destroy them while we're destroying
-the device on module removal.
-
-In the zram case, the abstraction is worse given the device attributes
-are are created on behalf of the driver as group attributes.  The zram
-disksize_store() for instance will use:
-
-static inline struct zram *dev_to_zram(struct device *dev)                      
-{                                                                               
-	return (struct zram *)dev_to_disk(dev)->private_data;                   
-} 
-
-static ssize_t disksize_store(struct device *dev,
-			      struct device_attribute *attr,
-			      const char *buf, size_t len)     
-{                                  
-	...
-	struct zram *zram = dev_to_zram(dev);
-	...
-}
-
-Nothing is preventing an active block group sysfs attribute from going
-fishing, in the dev_to_disk() is the struct gendisk, and that can get
-free'd on module exit while the sysfs attribute is about to be poked.
-
-> I don't have the time at the
-> moment to dig into this, but maybe this isn't an issue?  Look at how
-> sysfs handles the kobject lookups for kernfs nodes to see if all is sane
-> there, maybe there isn't an issue?
-
-The deadlock issue I noted and am fixing with the zram driver was one
-real live situation a customer reported, however a null dereference
-illustrated above turned out to also be in the logs of the same bug
-report, just that it happened in other situations, so what Minchan
-claimed as theoretical actually indeed was a real issue and I hope
-that the above illustrates this better.
-
-  Luis
+> 
+> Paolo
+> 
+> > Note, this should be a glorified nop now that __kvm_sync_page() is called
+> > if and only if the role is an exact match (kvm_mmu_get_page()) or is part
+> > of the current MMU context (kvm_mmu_sync_roots()).  A future commit will
+> > convert the likely-pointless check into a meaningful WARN to enforce that
+> > the mmu_roles of the current context and the shadow page are compatible.
+> > 
+> > Cc: Vitaly Kuznetsov<vkuznets@redhat.com>
+> > Signed-off-by: Sean Christopherson<seanjc@google.com>
+> 
