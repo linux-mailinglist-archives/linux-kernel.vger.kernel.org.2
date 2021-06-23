@@ -2,54 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353323B2336
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2CA3B2315
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 00:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231631AbhFWWMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 18:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231128AbhFWWLr (ORCPT
+        id S231303AbhFWWMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 18:12:07 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40026 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230296AbhFWWL2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:11:47 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA8FC061226;
-        Wed, 23 Jun 2021 15:09:09 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 22:09:06 -0000
+        Wed, 23 Jun 2021 18:11:28 -0400
+Date:   Wed, 23 Jun 2021 22:09:07 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624486148;
+        s=2020; t=1624486149;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0T6UVIkfAu6888o1tDCT2L4hkrX+XH49QGg+lq4ZTks=;
-        b=maW1bVcgtg42+n8dB/PSeivWVX4wPGrRUCPFQXyWDzPgmHDJ9Npi7bDeQm/iaAQPSroe4d
-        ywA2rUjK3hy7v1IEK15dZbTA6f8uSfdxMl1Vg2UpRuoAkY/WkE4KGDxkydCTlMFHlnVEbP
-        Kq50eOAR7mCdxkHlBCxS/w1C7ImugnTNl0zJHlt2uNTyCVf5pL60EFitbxpiUtZfmyuIH4
-        LhrNnnVcakCBPYGRuGhPeKfACJ1pH5ZpHLRhEMXPLnb+0n/CeX5qz9hxd4MinL+WQaJNKh
-        KWHSYJDS1zevZLbye5DygJW9A3abPesW4jsktHJmFk/ZMsuuMeHaiGXkQG5V8g==
+        bh=rHT1xy2y6HmWEAcL2Bua6yAiuEzC27z+9jqCwE3Qpcc=;
+        b=qR3iyY0M6JMdnwOriIGShvuNswOrJ0306ZEWlf56xMeDxJKC43+TtlX/m7vY2XlagnJUnq
+        1mCESLuwwbPvC3k1wq8ebPlEopEDhj2dL2XwYDJKNBu8INqug0R+/0ed/KgDwAwK9oYTFO
+        szY8LS0nbXk55lzokHEpdHBo0UQaYk/40szvnkxYbDjogiWc0APu6OV8nU7OSBH6FlNJqb
+        XttRS7eDfYSNxl0iL5asfLm7T9Kpc0iKhfVYM/brnnjFBOKa/te4AOgfgQzvsLSKRrcPoG
+        CDhWGKOB53I2kTXIEPPMZhBdL8JB+Mx3uOHiChPCFvbFtqJnZjNk7/bzTzGBvQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624486148;
+        s=2020e; t=1624486149;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0T6UVIkfAu6888o1tDCT2L4hkrX+XH49QGg+lq4ZTks=;
-        b=+WFs7VuJypNg8ugI+cMoT3ZzrJlmKC9Ikx3DA1lC4+KO0n9e97+PYSzbvpZ5V3EezPfS0M
-        6mqTdm6L/jo+1LAw==
+        bh=rHT1xy2y6HmWEAcL2Bua6yAiuEzC27z+9jqCwE3Qpcc=;
+        b=uDG23VoqH9emNpSx5HMqC/Ub6lTfJopy+/yk8QxquYbpPyShIZrRYCs1RmOZ1oqMk2xkHT
+        CpIohJxFkVH0TyBQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fpu] x86/fpu: Rename fpu__clear_all() to fpu_flush_thread()
+Subject: [tip: x86/fpu] x86/fpu: Use pkru_write_default() in
+ copy_init_fpstate_to_fpregs()
 Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210623121455.827979263@linutronix.de>
-References: <20210623121455.827979263@linutronix.de>
+In-Reply-To: <20210623121455.732508792@linutronix.de>
+References: <20210623121455.732508792@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <162448614692.395.5621201580670080626.tip-bot2@tip-bot2>
+Message-ID: <162448614794.395.13993829314591430410.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,72 +58,109 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/fpu branch of tip:
 
-Commit-ID:     e7ecad17c84d0f6bef635c20d02bbe4096eea700
-Gitweb:        https://git.kernel.org/tip/e7ecad17c84d0f6bef635c20d02bbe4096eea700
+Commit-ID:     371071131cd1032c1e9172c51234a2a324841cab
+Gitweb:        https://git.kernel.org/tip/371071131cd1032c1e9172c51234a2a324841cab
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 23 Jun 2021 14:02:12 +02:00
+AuthorDate:    Wed, 23 Jun 2021 14:02:11 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 23 Jun 2021 19:20:10 +02:00
+CommitterDate: Wed, 23 Jun 2021 19:15:16 +02:00
 
-x86/fpu: Rename fpu__clear_all() to fpu_flush_thread()
+x86/fpu: Use pkru_write_default() in copy_init_fpstate_to_fpregs()
 
-Make it clear what the function is about.
+There is no point in using copy_init_pkru_to_fpregs() which in turn calls
+write_pkru(). write_pkru() tries to fiddle with the task's xstate buffer
+for nothing because the XRSTOR[S](init_fpstate) just cleared the xfeature
+flag in the xstate header which makes get_xsave_addr() fail.
+
+It's a useless exercise anyway because the reinitialization activates the
+FPU so before the task's xstate buffer can be used again a XRSTOR[S] must
+happen which in turn dumps the PKRU value.
+
+Get rid of the now unused copy_init_pkru_to_fpregs().
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210623121455.827979263@linutronix.de
+Link: https://lkml.kernel.org/r/20210623121455.732508792@linutronix.de
 ---
- arch/x86/include/asm/fpu/internal.h | 3 ++-
- arch/x86/kernel/fpu/core.c          | 4 ++--
- arch/x86/kernel/process.c           | 2 +-
- 3 files changed, 5 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/pkeys.h |  1 -
+ arch/x86/kernel/fpu/core.c   |  3 +--
+ arch/x86/mm/pkeys.c          | 17 -----------------
+ include/linux/pkeys.h        |  4 ----
+ 4 files changed, 1 insertion(+), 24 deletions(-)
 
-diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
-index f5da2e9..dabbb70 100644
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -29,12 +29,13 @@
- extern int  fpu__restore_sig(void __user *buf, int ia32_frame);
- extern void fpu__drop(struct fpu *fpu);
- extern void fpu__clear_user_states(struct fpu *fpu);
--extern void fpu__clear_all(struct fpu *fpu);
- extern int  fpu__exception_code(struct fpu *fpu, int trap_nr);
+diff --git a/arch/x86/include/asm/pkeys.h b/arch/x86/include/asm/pkeys.h
+index 4128f64..5c7bcaa 100644
+--- a/arch/x86/include/asm/pkeys.h
++++ b/arch/x86/include/asm/pkeys.h
+@@ -124,7 +124,6 @@ extern int arch_set_user_pkey_access(struct task_struct *tsk, int pkey,
+ 		unsigned long init_val);
+ extern int __arch_set_user_pkey_access(struct task_struct *tsk, int pkey,
+ 		unsigned long init_val);
+-extern void copy_init_pkru_to_fpregs(void);
  
- extern void fpu_sync_fpstate(struct fpu *fpu);
- 
-+/* Clone and exit operations */
- extern int  fpu_clone(struct task_struct *dst);
-+extern void fpu_flush_thread(void);
- 
- /*
-  * Boot time FPU initialization functions:
+ static inline int vma_pkey(struct vm_area_struct *vma)
+ {
 diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index fedadcb..4b69be9 100644
+index 3866954..fedadcb 100644
 --- a/arch/x86/kernel/fpu/core.c
 +++ b/arch/x86/kernel/fpu/core.c
-@@ -350,9 +350,9 @@ void fpu__clear_user_states(struct fpu *fpu)
- 	fpu__clear(fpu, true);
- }
+@@ -311,8 +311,7 @@ static inline void restore_fpregs_from_init_fpstate(u64 features_mask)
+ 	else
+ 		frstor(&init_fpstate.fsave);
  
--void fpu__clear_all(struct fpu *fpu)
-+void fpu_flush_thread(void)
- {
--	fpu__clear(fpu, false);
-+	fpu__clear(&current->thread.fpu, false);
+-	if (cpu_feature_enabled(X86_FEATURE_OSPKE))
+-		copy_init_pkru_to_fpregs();
++	pkru_write_default();
  }
  
  /*
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index af3db53..19d05d3 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -205,7 +205,7 @@ void flush_thread(void)
- 	flush_ptrace_hw_breakpoint(tsk);
- 	memset(tsk->thread.tls_array, 0, sizeof(tsk->thread.tls_array));
+diff --git a/arch/x86/mm/pkeys.c b/arch/x86/mm/pkeys.c
+index a02cfcf..fb171a5 100644
+--- a/arch/x86/mm/pkeys.c
++++ b/arch/x86/mm/pkeys.c
+@@ -10,7 +10,6 @@
  
--	fpu__clear_all(&tsk->thread.fpu);
-+	fpu_flush_thread();
+ #include <asm/cpufeature.h>             /* boot_cpu_has, ...            */
+ #include <asm/mmu_context.h>            /* vma_pkey()                   */
+-#include <asm/pkru.h>			/* read/write_pkru()		*/
+ 
+ int __execute_only_pkey(struct mm_struct *mm)
+ {
+@@ -125,22 +124,6 @@ u32 init_pkru_value = PKRU_AD_KEY( 1) | PKRU_AD_KEY( 2) | PKRU_AD_KEY( 3) |
+ 		      PKRU_AD_KEY(10) | PKRU_AD_KEY(11) | PKRU_AD_KEY(12) |
+ 		      PKRU_AD_KEY(13) | PKRU_AD_KEY(14) | PKRU_AD_KEY(15);
+ 
+-/*
+- * Called from the FPU code when creating a fresh set of FPU
+- * registers.  This is called from a very specific context where
+- * we know the FPU registers are safe for use and we can use PKRU
+- * directly.
+- */
+-void copy_init_pkru_to_fpregs(void)
+-{
+-	u32 init_pkru_value_snapshot = READ_ONCE(init_pkru_value);
+-	/*
+-	 * Override the PKRU state that came from 'init_fpstate'
+-	 * with the baseline from the process.
+-	 */
+-	write_pkru(init_pkru_value_snapshot);
+-}
+-
+ static ssize_t init_pkru_read_file(struct file *file, char __user *user_buf,
+ 			     size_t count, loff_t *ppos)
+ {
+diff --git a/include/linux/pkeys.h b/include/linux/pkeys.h
+index 2955ba9..6beb26b 100644
+--- a/include/linux/pkeys.h
++++ b/include/linux/pkeys.h
+@@ -44,10 +44,6 @@ static inline bool arch_pkeys_enabled(void)
+ 	return false;
  }
  
- void disable_TSC(void)
+-static inline void copy_init_pkru_to_fpregs(void)
+-{
+-}
+-
+ #endif /* ! CONFIG_ARCH_HAS_PKEYS */
+ 
+ #endif /* _LINUX_PKEYS_H */
