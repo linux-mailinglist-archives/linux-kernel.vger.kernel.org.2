@@ -2,103 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E033B1494
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6EB3B1498
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 09:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhFWHaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 03:30:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59654 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229660AbhFWHaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 03:30:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FC0D61076;
-        Wed, 23 Jun 2021 07:27:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624433264;
-        bh=MfGpAhkgNAsV4Gs6J3HXShXQ6oCjPOD50RyhMvI5TIg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VL3P8zhD1J20JIY2+okRVn52pWiyX0awT2ZEVB1iqKyPEBYhY9PaQjYqUQzPkriup
-         d9d1+2/QNqASXUYg+5eheF++kEPxPVMbHSwrOsoBQbv/e3FSK+pudi4Plpyu9fxbpe
-         GV+0b11T757IsJ8cMWyS/7IkjBHHTatjN+TCeVsw=
-Date:   Wed, 23 Jun 2021 09:27:41 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Siddharth Gupta <sidgup@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, ohad@wizery.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, psodagud@codeaurora.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] remoteproc: core: Move cdev add before device add
-Message-ID: <YNLibU0/kMfZ3Hio@kroah.com>
-References: <1623723671-5517-1-git-send-email-sidgup@codeaurora.org>
- <1623723671-5517-2-git-send-email-sidgup@codeaurora.org>
- <YMgy7eg3wde0eVfe@kroah.com>
- <0a196786-f624-d9bb-8ef9-55c04ed57497@codeaurora.org>
- <YMmTGD6hAKbpGWMp@kroah.com>
- <f81acd52-fe59-a296-b221-febbf8281606@codeaurora.org>
+        id S230040AbhFWHbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 03:31:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFWHbf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 03:31:35 -0400
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A86C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 00:29:18 -0700 (PDT)
+Received: by mail-vk1-xa2c.google.com with SMTP id k189so304551vkb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 00:29:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8OiI0V+yxMIONf4gEnVaBVWNdRCT16qVKxJ40BTU8ic=;
+        b=p+aXkgOclQiJf908cOV14Nzac6usd94n7ZjzLLxxVaILz2otBr4Fv2gN9coGh3QPSO
+         B5CrC0rGLI2xOYoITpLWdjys5dvKyYWZw+3fpeKfcUQZMfqgNkSO07eli3G3pzYzYwUe
+         t6KU+FzDyY6ZRqEKzuW347wQw6I0O21iUWswRVqFQ6ixxXNF99IJDCtn6Lf3pfPlm0zu
+         GgBIYuYgQTdMvbSQbAC6LoqgxeGoCI0Jr2fpY+AuImLaCD2JEUAbqnIksYOAZuSz2phZ
+         XetoWNq2kycBmOm5VjzhDzoNzqWQvd4NDX23/0Bj5iryK5UOg9L+23tOfp5nJI/c24wh
+         Gm7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8OiI0V+yxMIONf4gEnVaBVWNdRCT16qVKxJ40BTU8ic=;
+        b=cip+Ud3vCOpbZVgNR/pX/CVo4PdUM5fC8Rj+45KVl4bpis7dRAdFcjpNb6OiD2oOOo
+         7f0eWISuWBcwnol9dDRltEqqdFV2rz62JiRWLZtjJM4AtBQXS9B9579BvQfpWvj3slCA
+         kO5dPeHAojdw3o0chzIbxXOiiuW6ACVaP89EHRPH4l+du8cx2NBCUh+NkCzIcOBXYWbM
+         0nknYbVR0SPjRTW3dsrfKPZEXtH/H48Qu5YEygS8YnG2zNgzJHPtVv7Mg3dlfeB4vWNl
+         ZhEwG0RVzB2QxpCsostlcGUIe2K7m+VOQhZdIRnXqz8MLA/Iz4LKGfh1wINrZd/uPnxV
+         UFpg==
+X-Gm-Message-State: AOAM530TGa/qe6TbIwD5y0I8v8NmR9pcgie6m0cStMwGPIh0E0gdimhG
+        AGNusv6kZ9UO4C7c4K9rC0dYYJJ8dNMu62FZLJs=
+X-Google-Smtp-Source: ABdhPJxOnWA5wALAFeYNUynI/DbnbsK1KxwIavA00LNxgW2H+j4Sn3hVD5biN2Sck2rGqSX+cZuYgchyPR4cfOR2iXg=
+X-Received: by 2002:a1f:fecc:: with SMTP id l195mr19508445vki.21.1624433357432;
+ Wed, 23 Jun 2021 00:29:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f81acd52-fe59-a296-b221-febbf8281606@codeaurora.org>
+References: <YNLRn/5JkyYhYwxi@matsya> <YNLhBZokBed/jxNC@kroah.com>
+In-Reply-To: <YNLhBZokBed/jxNC@kroah.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Wed, 23 Jun 2021 09:29:06 +0200
+Message-ID: <CAMhs-H8hV8Lv2B3vCcCqgWmpg3jbhLF8kna2SoFbSd5xV3ARXw@mail.gmail.com>
+Subject: Re: [GIT PULL]: Generic phy updates for v5.14
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Linux Phy <linux-phy@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 11:47:01AM -0700, Siddharth Gupta wrote:
-> 
-> On 6/15/2021 10:58 PM, Greg KH wrote:
-> > On Tue, Jun 15, 2021 at 12:03:26PM -0700, Siddharth Gupta wrote:
-> > > On 6/14/2021 9:56 PM, Greg KH wrote:
-> > > > On Mon, Jun 14, 2021 at 07:21:08PM -0700, Siddharth Gupta wrote:
-> > > > > When cdev_add is called after device_add has been called there is no
-> > > > > way for the userspace to know about the addition of a cdev as cdev_add
-> > > > > itself doesn't trigger a uevent notification, or for the kernel to
-> > > > > know about the change to devt. This results in two problems:
-> > > > >    - mknod is never called for the cdev and hence no cdev appears on
-> > > > >      devtmpfs.
-> > > > >    - sysfs links to the new cdev are not established.
-> > > > > 
-> > > > > The cdev needs to be added and devt assigned before device_add() is
-> > > > > called in order for the relevant sysfs and devtmpfs entries to be
-> > > > > created and the uevent to be properly populated.
-> > > > So this means no one ever ran this code on a system that used devtmpfs?
-> > > > 
-> > > > How was it ever tested?
-> > > My testing was done with toybox + Android's ueventd ramdisk.
-> > > As I mentioned in the discussion, the race became evident
-> > > recently. I will make sure to test all such changes without
-> > > systemd/ueventd in the future.
-> > It isn't an issue of systemd/ueventd, those do not control /dev on a
-> > normal system, that is what devtmpfs is for.
-> I am not fully aware of when devtmpfs is enabled or not, but in
-> case it is not - systemd/ueventd will create these files with
-> mknod, right?
+Hi Greg,
 
-No, systemd does not create device nodes, and neither does udev.  Hasn't
-done so for well over 10 years now.
+On Wed, Jun 23, 2021 at 9:21 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Jun 23, 2021 at 11:45:59AM +0530, Vinod Koul wrote:
+> > Hello Greg,
+> >
+> > Please pull to receive Generic phy subsystem updates for v5.14
+> >
+> > The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+> >
+> >   Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+> >
+> > are available in the Git repository at:
+> >
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-for-5.14
+> >
+> > for you to fetch changes up to f7eedcb8539ddcbb6fe7791f1b4ccf43f905c72f:
+> >
+> >   phy: ti: dm816x: Fix the error handling path in 'dm816x_usb_phy_probe() (2021-06-21 12:04:18 +0530)
+> >
+> > ----------------------------------------------------------------
+> > phy-for-5.14
+> >
+> >   - Updates:
+> >         - Yaml conversion for renesas,rcar-gen3 pcie phy and
+> >         rockchip-usb-phy bindings
+> >         - Support for devm_phy_get() taking NULL phy name
+> >
+> >   - New support:
+> >       - PCIe phy for Qualcomm IPQ60xx
+> >       - PCIe phy for Qualcomm SDX55
+> >       - USB phy for RK3308
+> >       - CAN transceivers phy for TI TCAN104x
+> >         - Innosilicon-based CSI dphy for rockchip
+>
+> Why is PHY_MT7621_PCI only y/n?  Shouldn't this be able to be built as a
+> module?
+>
+> The USB phy enables this driver, which now forces me to build it into my
+> kernel, which does not seem like a wise idea.  I'm not sure which commit
+> in this series does this, but that isn't a good thing.
+>
+> Ah, it's 6eded551cefe ("phy: ralink: Kconfig: convert mt7621-pci-phy
+> into 'bool'"), why is that needed?  We are working to turn more code
+> into modules, not force them to be built in, this feels like the wrong
+> way to go :(
 
-> I was even manually able to call mknod from the
-> terminal when some of the remoteproc character device entries
-> showed up (using major number from there, and minor number being
-> the remoteproc id), and that allowed me to boot up the
-> remoteprocs as well.
+This was turned into bool to automatically be included if CONFIG_PCI_MT7621
+is set. This should be the only requirement to add this phy driver for
+real hardware since it has nothing to do if there is no
+CONFIG_PCI_MT7621. That's why Kconfig is now:
 
-Yes, that is fine, but that also means that this was not working from
-the very beginning :(
+depends on (RALINK && OF && PCI_MT7621) || COMPILE_TEST
+Am I missing something here???
 
-> > And devtmpfs nodes are only created if you create a struct device
-> > somewhere with a proper major/minor, which you were not doing here, so
-> > you must have had a static /dev on your test systems, right?
-> I am not sure of what you mean by a static /dev? Could you
-> explain? In case you mean the character device would be
-> non-functional, that is not the case. They have been working
-> for us since the beginning.
+Thanks,
+    Sergio Paracuellos
 
-/dev on modern systems is managed by devtmpfs, which knows to create the
-device nodes when you properly register the device with the driver core.
-A "static" /dev is managed by mknod from userspace, like you did "by
-hand", and that is usually only done by older systems.
-
-thanks,
-
-greg k-h
+>
+> I don't want to take this series because of this at the moment.
+>
+> thanks,
+>
+> greg k-h
