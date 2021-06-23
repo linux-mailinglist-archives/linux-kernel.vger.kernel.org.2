@@ -2,106 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473DF3B157D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2923B1579
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhFWINr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 04:13:47 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17896 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229881AbhFWINq (ORCPT
+        id S230157AbhFWINL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 04:13:11 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45094 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230028AbhFWINH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 04:13:46 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15N84KQU050994;
-        Wed, 23 Jun 2021 04:10:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=i8MDSIZW/35ev9s39ALUhQOMjMh/q0RDS7Pu1CN4oDk=;
- b=fF5r69AGE6rRo+QmX/7xCrHYyndSUZx7yn+h3BmX5lgw/I7vEYdsU9fit078p9WzYjIb
- aeyJMFgSQEkT8vLCE8Dg0L7KW3tT5TFW1q4UtdbaNed2KJDRgUle9RJ+1gC8YHn83/pv
- in13oQeZloHqSXRX4r+aQMlUnMjyihNJQxCspEmpZrUTIT35+/C+I7V06HF4PGQ6DT21
- esei9VAywbQQ0k6s7yzTjmvZZLtgIym0UTXBKj6B7IrUsiC/n8tVRgWHLglO7DSKNO+p
- 9JY6YhjbKGK1aezKAw8f/jNX39A5u8Z6HObQCqwn9wOYOj8EPARcrfDiimQLPrsjKncg Uw== 
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39bx95n4yg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Jun 2021 04:10:48 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15N87rII016869;
-        Wed, 23 Jun 2021 08:10:47 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma05wdc.us.ibm.com with ESMTP id 399879ejf3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Jun 2021 08:10:47 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15N8AkPW18219498
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Jun 2021 08:10:46 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 692A178069;
-        Wed, 23 Jun 2021 08:10:46 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4E7A47805F;
-        Wed, 23 Jun 2021 08:10:41 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.33.142])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 23 Jun 2021 08:10:40 +0000 (GMT)
-Subject: Re: [PATCH v3 0/4] Add perf interface to expose nvdimm
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        maddy@linux.vnet.ibm.com, santosh@fossix.org,
-        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
-        dan.j.williams@intel.com, ira.weiny@intel.com,
-        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
-        rnsastry@linux.ibm.com
-References: <20210617132617.99529-1-kjain@linux.ibm.com>
- <YNHiRO11E9yYS6mv@hirez.programming.kicks-ass.net>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <cea827fe-62d4-95fe-b81f-5c7bebe4a6f0@linux.ibm.com>
-Date:   Wed, 23 Jun 2021 13:40:38 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 23 Jun 2021 04:13:07 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BBB371FD65;
+        Wed, 23 Jun 2021 08:10:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624435848; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wUSXtAyfCTHluwzt1Ag75fz9EwMswluyA6LLKhKGOro=;
+        b=iYu1X6LTxk06+fHTUOZpl0OVWuzokWgzemWqc4o8ML26wmd6lpj0rjgSdULGHBZpQpj7GA
+        +tgbzxNnzqwT9KmJHedrr2YoVIfm8PNcNS1qzbLHSyqpULJaiPHJE8exLZ1C2Odba+H6wy
+        x7vyn3U5HKOAFZdtQZPIIryxTiGnsq4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624435848;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wUSXtAyfCTHluwzt1Ag75fz9EwMswluyA6LLKhKGOro=;
+        b=ZSMoA6u9NzhAtAjbE1BkgNfUtXqR9NE52G93mRoU/M/PXBJGiC5rQVVW0s/zYtIrDPmxaS
+        Qh5/n9//sn/km/BQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id A88F311A97;
+        Wed, 23 Jun 2021 08:10:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624435848; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wUSXtAyfCTHluwzt1Ag75fz9EwMswluyA6LLKhKGOro=;
+        b=iYu1X6LTxk06+fHTUOZpl0OVWuzokWgzemWqc4o8ML26wmd6lpj0rjgSdULGHBZpQpj7GA
+        +tgbzxNnzqwT9KmJHedrr2YoVIfm8PNcNS1qzbLHSyqpULJaiPHJE8exLZ1C2Odba+H6wy
+        x7vyn3U5HKOAFZdtQZPIIryxTiGnsq4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624435848;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wUSXtAyfCTHluwzt1Ag75fz9EwMswluyA6LLKhKGOro=;
+        b=ZSMoA6u9NzhAtAjbE1BkgNfUtXqR9NE52G93mRoU/M/PXBJGiC5rQVVW0s/zYtIrDPmxaS
+        Qh5/n9//sn/km/BQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id iatGKYjs0mBEFAAALh3uQQ
+        (envelope-from <bp@suse.de>); Wed, 23 Jun 2021 08:10:48 +0000
+Date:   Wed, 23 Jun 2021 10:10:42 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V3 63/66] x86/fpu/signal: Split out the direct restore
+ code
+Message-ID: <YNLsgprAfL1Sy7uu@zn.tnic>
+References: <20210618141823.161158090@linutronix.de>
+ <20210618143451.562513044@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <YNHiRO11E9yYS6mv@hirez.programming.kicks-ass.net>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: jOAojHhoEMMccKbKMSYzhidU-4waVfvF
-X-Proofpoint-GUID: jOAojHhoEMMccKbKMSYzhidU-4waVfvF
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-23_03:2021-06-22,2021-06-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 impostorscore=0 spamscore=0 malwarescore=0 mlxlogscore=999
- adultscore=0 mlxscore=0 priorityscore=1501 clxscore=1015 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106230048
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618143451.562513044@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/22/21 6:44 PM, Peter Zijlstra wrote:
-> On Thu, Jun 17, 2021 at 06:56:13PM +0530, Kajol Jain wrote:
->> ---
->> Kajol Jain (4):
->>   drivers/nvdimm: Add nvdimm pmu structure
->>   drivers/nvdimm: Add perf interface to expose nvdimm performance stats
->>   powerpc/papr_scm: Add perf interface support
->>   powerpc/papr_scm: Document papr_scm sysfs event format entries
+On Fri, Jun 18, 2021 at 04:19:26PM +0200, Thomas Gleixner wrote:
+> Prepare for smarter failure handling of the direct restore.
 > 
-> Don't see anything obviously wrong with this one.
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/kernel/fpu/signal.c |  110 +++++++++++++++++++++----------------------
+>  1 file changed, 56 insertions(+), 54 deletions(-)
 > 
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> 
+> --- a/arch/x86/kernel/fpu/signal.c
+> +++ b/arch/x86/kernel/fpu/signal.c
+> @@ -249,10 +249,7 @@ sanitize_restored_user_xstate(union fpre
+>  	}
+>  }
+>  
+> -/*
+> - * Restore the FPU state directly from the userspace signal frame.
+> - */
+> -static int restore_fpregs_from_user(void __user *buf, u64 xrestore, bool fx_only)
+> +static int restore_hwregs_from_user(void __user *buf, u64 xrestore, bool fx_only)
 
-Hi Peter,
-    Thanks for reviewing the patch. Can you help me on how to take 
-these patches to linus tree or can you take it?
+Or simply
 
-Thanks,
-Kajol Jain
+	__restore_fpregs_from_user
+
+to denote it is the low-level helper like the rest of the code does
+around here.
+
+>  {
+>  	if (use_xsave()) {
+>  		u64 init_bv = xfeatures_mask_uabi() & ~xrestore;
+> @@ -273,6 +270,56 @@ static int restore_fpregs_from_user(void
+>  	}
+>  }
+>  
+> +static int restore_fpregs_from_user(void __user *buf, u64 xrestore, bool fx_only)
+> +{
+> +	struct fpu *fpu = &current->thread.fpu;
+> +	int ret ;
+	       ^
+
+superfluous space.
+
+
+> +	fpregs_lock();
+> +	pagefault_disable();
+> +	ret = restore_hwregs_from_user(buf, xrestore, fx_only);
+> +	pagefault_enable();
+> +
+> +	if (unlikely(ret)) {
+> +		/*
+> +		 * The above did an FPU restore operation, restricted to
+> +		 * the user portion of the registers, and failed, but the
+> +		 * microcode might have modified the FPU registers
+> +		 * nevertheless.
+> +		 *
+> +		 * If the FPU registers do not belong to current, then
+> +		 * invalidate the FPU register state otherwise the task
+> +		 * might preempt current and return to user space with
+> +		 * corrupted FPU registers.
+> +		 *
+> +		 * In case current owns the FPU registers then no further
+> +		 * action is required. The fixup in the slow path will
+> +		 * handle it correctly.
+> +		 */
+> +		if (test_thread_flag(TIF_NEED_FPU_LOAD))
+> +			__cpu_invalidate_fpregs_state();
+> +		fpregs_unlock();
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * Restore supervisor states: previous context switch etc has done
+> +	 * XSAVES and saved the supervisor states in the kernel buffer from
+> +	 * which they can be restored now.
+> +	 *
+> +	 * We cannot do a single XRSTORS here - which would be nice -
+
+Might wanna fix up the "We" brotherhood formulation, while at it. :)
+
+> +	 * because the rest of the FPU registers are being restored from a
+> +	 * user buffer directly. The single XRSTORS happens below, when the
+> +	 * user buffer has been copied to the kernel one.
+> +	 */
+> +	if (test_thread_flag(TIF_NEED_FPU_LOAD) && xfeatures_mask_supervisor())
+> +		os_xrstor(&fpu->state.xsave, xfeatures_mask_supervisor());
+> +
+> +	fpregs_mark_activate();
+> +	fpregs_unlock();
+> +	return 0;
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
