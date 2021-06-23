@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5D63B1B96
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C2B3B1B9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbhFWNy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbhFWNy0 (ORCPT
+        id S230464AbhFWNzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:55:21 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:34879 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230520AbhFWNzT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:54:26 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5D3C061574;
-        Wed, 23 Jun 2021 06:52:07 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id n23so1709751wms.2;
-        Wed, 23 Jun 2021 06:52:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=RswLHNaF00PO7Arh2mf+qDFVtXypth6PIohJQobPJdA=;
-        b=UqW954dW/ofN6YhRqH73bEer3gWpwd76LByR3QvhJ4XH5VBMQEsJyUzgvc17Z1PP08
-         9Ta/WfWcthg1CDJ+BgUDwTbhLtR1I1WKN4UpMlrAeld4PF6u/AdTKtiviudC73hwg8Lz
-         xYmjVrq9lSY/hFRYosKRoMFA+/2XAo8cvhjVYEoIEcRL6Ilt46oQrXkH9truJbKjMj4M
-         3hbQ8xoMfcwX+HTZm+NZ9tHzrEoltJ8w0cOU/MvfVYzBUGqX5jDOOlbKk1CaOS/ziVQR
-         NEA+Yyz0Piv4jNBNtfA6Ckj5Z4cP/iwbRnKlevBw/le+v9zujhnXnyt8/N2R792v9hEz
-         AVlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=RswLHNaF00PO7Arh2mf+qDFVtXypth6PIohJQobPJdA=;
-        b=JrwVbGKVrftTTozH/vo9rIV6Z13lxmbCuAdrVK2HiLHAzWEAAlD0iTQ8pNt5EYhnhB
-         StTRZWUhB3U3E0F2/DcPhTC+avDsMQRKe5CmdImZyhCnhq/Oe28mEj/wWPxnZWAAX3D4
-         cLh+MgyT6CmlD1+aNIjsvYn3dbPSXeZs8ZRIErQpvX/BhdF+B0ojTpVlcI0otXLNzV36
-         uUP2YoeyCiCR/t4l9E1DIjEPpdfh8QwxjNsVMm1OIrY/mFtYZONxTTPpUP6aoPZ09C0t
-         ilsJMQb6II8xduuXHgnMkht0kfd0FZPM0lgUVs3h+LP3PXBVkf5Ri0Nbg0B9AkNr2O30
-         ti7w==
-X-Gm-Message-State: AOAM530knw9Es18dkloj5QTAra9y5O6NUcdINuAE3RxxAPXNzOJZs1bl
-        ZGZSPagg1e0tPnjF/v+TKVOLm7TFRvFH
-X-Google-Smtp-Source: ABdhPJyZYaSej/0iKW6pQbiDQdw7KsYcMOhnQ6fIa7wK6mYNSV2Kr4abOqf64sshVHHxZwVMqV3Zow==
-X-Received: by 2002:a7b:c7c7:: with SMTP id z7mr11124693wmk.21.1624456326541;
-        Wed, 23 Jun 2021 06:52:06 -0700 (PDT)
-Received: from [192.168.200.247] (ip5b434b8b.dynamic.kabel-deutschland.de. [91.67.75.139])
-        by smtp.gmail.com with ESMTPSA id r10sm122412wrq.17.2021.06.23.06.52.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 06:52:06 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: rockchip: Add sdmmc_ext for RK3328
-To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>, wens@kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210623120001.164920-1-knaerzche@gmail.com>
- <CAGb2v67K-BRhQ_a1yXtdPCX8T30FJPLojueJ2cvpXmGUskOLjA@mail.gmail.com>
- <6327455.haC6HkEk0m@diego>
-From:   Alex Bee <knaerzche@gmail.com>
-Message-ID: <f1cf1be4-b386-2ab0-9813-dd47dc4e7a8f@gmail.com>
-Date:   Wed, 23 Jun 2021 15:52:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 23 Jun 2021 09:55:19 -0400
+X-UUID: 041a74b278754e9596b573f8f57eb514-20210623
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=HAjT4udO57t+rw0LhCJdv0l55D4KZ+MMoREZAkGCEQU=;
+        b=jjXHYD8KddypiZh8KgIirXdOrS5jPUMoANVD7AAvnLKxgL2tZ91DHo3V2Ki1SlPdon/KuUzDbOgLkr+V7Ade982G1oMbY+R50DZU8v4ucUbQtoihklQUrHEdkXu3NhVJ8BUlBvyOgQu+BVnDZS5QmsY8j8fNZJufTxk1npcNH+g=;
+X-UUID: 041a74b278754e9596b573f8f57eb514-20210623
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <yee.lee@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 282718694; Wed, 23 Jun 2021 21:52:57 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 23 Jun 2021 21:52:49 +0800
+Received: from mtksdccf07 (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 23 Jun 2021 21:52:49 +0800
+Message-ID: <9a77839314b3c33970925b5127182c97914c185d.camel@mediatek.com>
+Subject: Re: [PATCH v2 1/1] kasan: Add memzero init for unaligned size under
+ SLUB debug
+From:   Yee Lee <yee.lee@mediatek.com>
+To:     <andreyknvl@gmail.com>
+CC:     <wsd_upstream@mediatek.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        "open list:KASAN" <kasan-dev@googlegroups.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Date:   Wed, 23 Jun 2021 21:52:49 +0800
+In-Reply-To: <20210623133533.2246-2-yee.lee@mediatek.com>
+References: <20210623133533.2246-1-yee.lee@mediatek.com>
+         <20210623133533.2246-2-yee.lee@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-In-Reply-To: <6327455.haC6HkEk0m@diego>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi  Chen-Yu, Heiko,
+U29ycnkgbm90IGEgY29tcGxldGVkIHBhdGNoLg0KUGxlYXNlIHNraXAgdGhpcyBtYWlsLg0KDQpC
+UiwNClllZQ0KDQpPbiBXZWQsIDIwMjEtMDYtMjMgYXQgMjE6MzUgKzA4MDAsIHllZS5sZWVAbWVk
+aWF0ZWsuY29tIHdyb3RlOg0KPiBGcm9tOiBZZWUgTGVlIDx5ZWUubGVlQG1lZGlhdGVrLmNvbT4N
+Cj4gDQo+IElzc3VlOiB3aGVuIFNMVUIgZGVidWcgaXMgb24sIGh3dGFnIGthc2FuX3VucG9pc29u
+KCkgd291bGQgb3ZlcndyaXRlDQo+IHRoZSByZWR6b25lIHdpdGggdW5hbGlnbmVkIG9iamVjdCBz
+aXplLg0KPiANCj4gQW4gYWRkaXRpb25hbCBtZW16ZXJvX2V4cGxpY2l0KCkgcGF0aCBpcyBhZGRl
+ZCB0byByZXBsYWNpbmcgaHd0YWcNCj4gaW5pdGlhbGl6YXRpb24NCj4gYXQgU0xVQiBkZXViZyBt
+b2RlLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogWWVlIExlZSA8eWVlLmxlZUBtZWRpYXRlay5jb20+
+DQo+IFN1Z2dlc3RlZC1ieTogTWFyY28gRWx2ZXIgPGVsdmVyQGdvb2dsZS5jb20+DQo+IENjOiBB
+bmRyZXkgUnlhYmluaW4gPHJ5YWJpbmluLmEuYUBnbWFpbC5jb20+DQo+IENjOiBBbGV4YW5kZXIg
+UG90YXBlbmtvIDxnbGlkZXJAZ29vZ2xlLmNvbT4NCj4gQ2M6IEFuZHJleSBLb25vdmFsb3YgPGFu
+ZHJleWtudmxAZ21haWwuY29tPg0KPiBDYzogRG1pdHJ5IFZ5dWtvdiA8ZHZ5dWtvdkBnb29nbGUu
+Y29tPg0KPiBDYzogQW5kcmV3IE1vcnRvbiA8YWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZz4NCj4g
+LS0tDQo+ICBtbS9rYXNhbi9rYXNhbi5oIHwgNCArKystDQo+ICAxIGZpbGUgY2hhbmdlZCwgMyBp
+bnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvbW0va2FzYW4v
+a2FzYW4uaCBiL21tL2thc2FuL2thc2FuLmgNCj4gaW5kZXggZDhmYWE2NDYxNGI3Li5lOTg0YTlh
+YzgxNGQgMTAwNjQ0DQo+IC0tLSBhL21tL2thc2FuL2thc2FuLmgNCj4gKysrIGIvbW0va2FzYW4v
+a2FzYW4uaA0KPiBAQCAtMzg3LDEwICszODcsMTIgQEAgc3RhdGljIGlubGluZSB2b2lkIGthc2Fu
+X3VucG9pc29uKGNvbnN0IHZvaWQNCj4gKmFkZHIsIHNpemVfdCBzaXplLCBib29sIGluaXQpDQo+
+ICANCj4gIAlpZiAoV0FSTl9PTigodW5zaWduZWQgbG9uZylhZGRyICYgS0FTQU5fR1JBTlVMRV9N
+QVNLKSkNCj4gIAkJcmV0dXJuOw0KPiArCSNpZiBJU19FTkFCTEVEKENPTkZJR19TTFVCX0RFQlVH
+KQ0KPiAgCWlmIChpbml0ICYmICgodW5zaWduZWQgbG9uZylzaXplICYgS0FTQU5fR1JBTlVMRV9N
+QVNLKSkgew0KPiAgCQlpbml0ID0gZmFsc2U7DQo+IC0JCW1lbXNldCgodm9pZCAqKWFkZHIsIDAs
+IHNpemUpOw0KPiArCQltZW16ZXJvX2V4cGxpY2l0KCh2b2lkICopYWRkciwgc2l6ZSk7DQo+ICAJ
+fQ0KPiArCSNlbmRpZg0KPiAgCXNpemUgPSByb3VuZF91cChzaXplLCBLQVNBTl9HUkFOVUxFX1NJ
+WkUpOw0KPiAgCWh3X3NldF9tZW1fdGFnX3JhbmdlKCh2b2lkICopYWRkciwgc2l6ZSwgdGFnLCBp
+bml0KTsNCj4gIH0NCg==
 
-Am 23.06.21 um 15:40 schrieb Heiko Stübner:
-> Am Mittwoch, 23. Juni 2021, 15:11:12 CEST schrieb Chen-Yu Tsai:
->> On Wed, Jun 23, 2021 at 8:00 PM Alex Bee <knaerzche@gmail.com> wrote:
->>> RK3328 SoC has a fourth mmc controller called SDMMC_EXT. Some
->>> boards have sdio wifi connected to it. In order to use it
->>> one would have to add the pinctrls from sdmmc0ext group which
->>> is done on board level.
->>>
->>> While at that also add the reset controls for the other mmc
->>> controllers.
->> I recommend splitting this part into a separate patch, and
->> adding an appropriate "Fixes" tag to it.
-> I'm with you on that. Adding the resets to the existing controllers
-> should be a separate patch.
-
-Will do.
-
-Alex
-
-> Heiko
->
->
