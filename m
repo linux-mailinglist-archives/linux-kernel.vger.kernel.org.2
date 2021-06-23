@@ -2,117 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4543A3B13DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 08:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03D73B13D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 08:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhFWGUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 02:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbhFWGUM (ORCPT
+        id S229958AbhFWGSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 02:18:15 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:46950 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229934AbhFWGSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 02:20:12 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8996FC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 23:17:54 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id bb20so899581pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 23:17:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Tz2RBdudba5q9p5CtX8u2n7Y/c2CX7BU/uPpUa5EceU=;
-        b=IfQNjiTjlHeOtyJvGTlaSnVIszGJHPIXd2ZLetG7fRg3/1qxDfxJBGaFvglBkjs0A9
-         aOMIVfHWFPggoGKFJebTQaAcngMdomXFzJAZ41RUF+nNb5iUr+j1EYwDMOdnmcyBzx+S
-         UXKJ+LYCQxpE3JB9b/Xuh6JN1PZmT/I96wE8Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Tz2RBdudba5q9p5CtX8u2n7Y/c2CX7BU/uPpUa5EceU=;
-        b=Vu7u4I8+k16qkWQaZFlxEai54UoSHU6VRw8KL20DjKAp1QsG0LvVnzEKaWA/MBRCcs
-         0XOBKrZsX8qQjOXye3Odz3pHFx+B3hqAZ0vhYNxSCkCA7ifHfXKDqN3I7NcvRDmoh1TX
-         8VtQf0bxeMPiXtukih6eGEO1XXMuTcItIpMOeXp6dEucemjPfWuNHJtB/u1RRkFV2j3J
-         XaPkHieFm49HmAzD8zuJS1QnxCbcRNFg8/DlU2iqh5eC0W1kwphYcwDME0JAwSF3FUpj
-         PrNejd+zg0dtDeCkiBwf7UOOggiI6VwDlXlXgy9X+P8HDR5j5hyF63HYC/XhY5KhWM/m
-         yM7w==
-X-Gm-Message-State: AOAM532p+oS5YBgr1Woz79u657b2aEEN2IBBwJZWTjDwjDHKc1/F+y6v
-        X9KKHjRnmuzojVXBO/HkCQR5uw==
-X-Google-Smtp-Source: ABdhPJzn0CH+45cTEhcoIwl87qkwPrIemELQImLMLCSKtRYhh9WOlPotlexcZ8zGNKPJxyuXXn3TWw==
-X-Received: by 2002:a17:90b:2241:: with SMTP id hk1mr7714688pjb.97.1624429074073;
-        Tue, 22 Jun 2021 23:17:54 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z18sm1113249pfe.214.2021.06.22.23.17.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 23:17:53 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-arm-kernel@lists.infradead.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Bill Wendling <wcw@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        johannes.berg@intel.com, clang-built-linux@googlegroups.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Martin Liska <mliska@suse.cz>,
-        linux-toolchains@vger.kernel.org, x86@kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v2 0/3] no_profile fn attr and Kconfig for GCOV+PGO
-Date:   Tue, 22 Jun 2021 23:15:50 -0700
-Message-Id: <162442894704.2888450.8087873021886781652.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210621231822.2848305-1-ndesaulniers@google.com>
-References: <20210621231822.2848305-1-ndesaulniers@google.com>
+        Wed, 23 Jun 2021 02:18:14 -0400
+X-UUID: 042604d903aa4f9fb3863fdeb6f33156-20210623
+X-UUID: 042604d903aa4f9fb3863fdeb6f33156-20210623
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <yp.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1234963530; Wed, 23 Jun 2021 14:15:52 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 23 Jun 2021 14:15:51 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 23 Jun 2021 14:15:51 +0800
+From:   YP WU <yp.wu@mediatek.com>
+To:     <yp.wu@mediatek.com>, <leo.hsiao@mediatek.com>,
+        <Lecopzer.Chen@mediatek.com>, <mchehab@kernel.org>,
+        <gustavoars@kernel.org>, <hverkuil-cisco@xs4all.nl>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <Jason-BF.Huang@mediatek.com>, <francis.lee@mediatek.com>
+Subject: How to use "DTV_FE_CAPABILITY" command for Frontend.h of Linux DVB 
+Date:   Wed, 23 Jun 2021 14:15:51 +0800
+Message-ID: <20210623061551.10453-1-yp.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Jun 2021 16:18:19 -0700, Nick Desaulniers wrote:
-> The kernel has been using noinstr for correctness to politely request
-> that the compiler avoid adding various forms of instrumentation to
-> certain functions.
-> 
-> GCOV and PGO can both instrument functions, yet the function attribute
-> to disable such instrumentation (no_profile_instrument_function) was not
-> being used to suppress such implementation. Also, clang only just
-> recently gained support for no_profile_instrument_function. GCC has
-> supported that since 7.1+.
-> 
-> [...]
+Hello, dvb frontend maintainer:
+	I work at mediatek company. Currently I develop TV with Linux DVB system.    
+	I would like to implement the following LNB use cases: user space would like to know if frontend device node have LNB or not.
+I want to use "DTV_FE_CAPABILITY" to represent above LNB capability, but I am afraid that my usage is not suitable to the original definition.    
+So I would like to consult the following quesitons: 
+1. The use case for DTV_FE_CAPABILITY in DVB property command.
+2. Does it have any restriction for using this command?
+3. What’s your suggestion for using this command?
 
-Applied to for-next/clang/features, thanks!
+File path: include/uapi/linux/dvb/Frontend.h
+#define DTV_FE_CAPABILITY	16
 
-[1/3] compiler_attributes.h: define __no_profile, add to noinstr
-      https://git.kernel.org/kees/c/380d53c45ff2
-[2/3] compiler_attributes.h: cleanups for GCC 4.9+
-      https://git.kernel.org/kees/c/ae4d682dfd33
-[3/3] Kconfig: add ARCH_WANTS_NO_INSTR+CC_HAS_NO_PROFILE_FN_ATTR, depend on for GCOV and PGO
-      https://git.kernel.org/kees/c/51c2ee6d121c
-
-Note that I've tweaked the series slightly to move the PGO Kconfig change into
-the PGO patch.
-
--- 
-Kees Cook
-
+Sorry to bother you and thanks for your helps.
+BRs,
+YP
