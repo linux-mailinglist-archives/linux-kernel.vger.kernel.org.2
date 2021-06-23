@@ -2,91 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973B63B2268
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B64203B226D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 23:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhFWV1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 17:27:01 -0400
-Received: from mail-pf1-f180.google.com ([209.85.210.180]:44755 "EHLO
-        mail-pf1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhFWV07 (ORCPT
+        id S229755AbhFWV2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 17:28:09 -0400
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:45259 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229726AbhFWV2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 17:26:59 -0400
-Received: by mail-pf1-f180.google.com with SMTP id g21so1669219pfc.11;
-        Wed, 23 Jun 2021 14:24:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mfUoywj7A+qHZaFjYcTf+Sk+zKqKTIl/377sFv2uQeE=;
-        b=opJeDT+EI/X3hXl+o31sgEYLHZnjROe3j+c+Hi1fIvwnxDyOkBg8D4L/s+hA46mpbq
-         E2Qos7BefupiqBB3wXUUBGq3Me62oKp5N1kVy6NQrhVgOiuPm98wFB09oCTk3wZqCvrq
-         jIej2nOAPka4HEZyM868SJmxQrt+ItwBvkzn5J4ftav4+u7P35AqqI1/1BHohF5utp7q
-         b2YTD2U/GujSYXDFisAxTFGpLj7TfJHwhxS1nlhzlZ1bpqDG68D//fH1FAhjbMlVVLYM
-         kx0pcKEArKenGH/OJv+Nvfyeqb8HQ8hP6/T3fWM2eZ1itHQ61eB+VOKqlds42IWA8aYI
-         I+fA==
-X-Gm-Message-State: AOAM531AM9WlEmImP0Rk0uOPpsOPdsph4heEP0SR3gyXN3keIHPXgmmK
-        1xtL8RoI1xKQdO29hFLT1q5tfmX4ccY=
-X-Google-Smtp-Source: ABdhPJy3aD3qI5cijiTLRw0cWD9T/89kkHDgwqz7GDDWm+VwdSPfgwgeIwbQ4XkmGnuAhqNzgnqCtA==
-X-Received: by 2002:a63:50b:: with SMTP id 11mr1354190pgf.411.1624483481264;
-        Wed, 23 Jun 2021 14:24:41 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id u13sm53193pga.64.2021.06.23.14.24.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 14:24:40 -0700 (PDT)
-Subject: Re: [PATCH v4 05/10] scsi: ufs: Remove a redundant tag check in
- ufshcd_queuecommand()
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-7-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <f98b3db3-f0cb-952d-b87e-acb7307e2090@acm.org>
-Date:   Wed, 23 Jun 2021 14:24:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 23 Jun 2021 17:28:08 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d90 with ME
+        id LlRm2500721Fzsu03lRmLM; Wed, 23 Jun 2021 23:25:49 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 23 Jun 2021 23:25:49 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] ath11k: Remove some duplicate code
+Date:   Wed, 23 Jun 2021 23:25:44 +0200
+Message-Id: <a65952db7f4eb8aaaa654b77dcd4930482f5c49b.1624483438.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <1624433711-9339-7-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 12:35 AM, Can Guo wrote:
-> Since commit a45f937110fa6b0c2c06a5d3ef026963a5759050 ("scsi: ufs: Optimize
+'ATH11K_HE_MCS_MAX' is 11, so these 2 blocks of code are exactly the same.
+Remove the one that uses a hard-coded constant.
 
-Please shorten commit IDs to 12 characters.
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/net/wireless/ath/ath11k/dp_rx.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 5f837c4..3695dd2 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -2768,15 +2768,6 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
->  	WARN_ON(ufshcd_is_clkgating_allowed(hba) &&
->  		(hba->clk_gating.state != CLKS_ON));
->  
-> -	if (unlikely(test_bit(tag, &hba->outstanding_reqs))) {
-> -		if (hba->wlu_pm_op_in_progress)
-> -			set_host_byte(cmd, DID_BAD_TARGET);
-> -		else
-> -			err = SCSI_MLQUEUE_HOST_BUSY;
-> -		ufshcd_release(hba);
-> -		goto out;
-> -	}
+diff --git a/drivers/net/wireless/ath/ath11k/dp_rx.c b/drivers/net/wireless/ath/ath11k/dp_rx.c
+index 603d2f93ac18..9a224817630a 100644
+--- a/drivers/net/wireless/ath/ath11k/dp_rx.c
++++ b/drivers/net/wireless/ath/ath11k/dp_rx.c
+@@ -1406,11 +1406,6 @@ ath11k_update_per_peer_tx_stats(struct ath11k *ar,
+ 	 * Firmware rate's control to be skipped for this?
+ 	 */
+ 
+-	if (flags == WMI_RATE_PREAMBLE_HE && mcs > 11) {
+-		ath11k_warn(ab, "Invalid HE mcs %d peer stats",  mcs);
+-		return;
+-	}
+-
+ 	if (flags == WMI_RATE_PREAMBLE_HE && mcs > ATH11K_HE_MCS_MAX) {
+ 		ath11k_warn(ab, "Invalid HE mcs %d peer stats",  mcs);
+ 		return;
+-- 
+2.30.2
 
-I have never encountered code like the above in any other SCSI LLD. Anyway:
-
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
