@@ -2,90 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B5B3B161F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1419F3B1620
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbhFWIrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 04:47:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhFWIrW (ORCPT
+        id S230225AbhFWIrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 04:47:31 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55328 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhFWIr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 04:47:22 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46772C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 01:45:05 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id f30so2842046lfj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 01:45:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mnf/412BXT3SW6cMM4XrHUEIZkc2F6iPAGQOAC9hxkI=;
-        b=HRe8ptDqAKO9fbUgdpEpgLH+fZ2WoPny5DL8SFLjklM1wPMdFyZ8rDTy5Zf6zytLuS
-         yyW3HOR8JXPAcThdImno7gqL53pekgyvJAV+R0hQiNDQIQ1BNzjJDPX99dsjp6ueApbx
-         S8iiesbcp2zi71iXH0Mdkm02Z96nIOuol/S3w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mnf/412BXT3SW6cMM4XrHUEIZkc2F6iPAGQOAC9hxkI=;
-        b=Y5Q3hW9nbOi2liGCCGJpF2l73iiYeRrVlGPJI4gJWb8mNER+sg7hBMuJArUOLEWCWA
-         5y9yZFNlmTD2LtRTDTNPFhOjzhew7SIoYE/Q+g1vFG5vkLO/S/TXlqd2hiEu06eXWW9n
-         euLD2qa5XklEiDzUVfcFb8qMBxYIgzBEB+4uVt78RdnZ4KKT4CqJw7NVEvs8LP98If6T
-         BVr7lFPPgnXqQP4g8DexRrHagI6MdIq16MNTSJlSec4WooZ7IeYdhT7vtCm+HokeDnl9
-         NZya0kWbYcpmyc4raTrU63ild0QCEYUSycdowwyTmRlSgvuP2yxogO7bs50jE82CE7IS
-         kLFQ==
-X-Gm-Message-State: AOAM5314gQgIi8X2fvqvn2BW2/V130dyl4oE1jx+AdWtVoAE65VkupT5
-        cdZBw0ATgiz6w3ESEPGk1hdeY5l/XtVeckODKARUbOeZdHU=
-X-Google-Smtp-Source: ABdhPJzixrwlbsgihe9DSf0fQWrERfgmVQa0QAoHiwkWYylAeOsi7OM1vaTkpZk9MirF+w40feaVLpI7dAXAZ3q1yY0=
-X-Received: by 2002:ac2:4db6:: with SMTP id h22mr5928298lfe.171.1624437903317;
- Wed, 23 Jun 2021 01:45:03 -0700 (PDT)
+        Wed, 23 Jun 2021 04:47:29 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4806921971;
+        Wed, 23 Jun 2021 08:45:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624437911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cE4bYv+K1a7sv52v46zmtwHcACNaYAGxMXHAvz0lsFc=;
+        b=XdfY4sc4xWI2HTg0TDm9NQAoNiKU8ylIL8iqkvaGvjVwBpN0oF8DF2TVrvfkjHXL+wHv9b
+        4u/B0V71Rf2L8Dn3/+WdO3BVwbi9ftfOBCSpPjV5t8hPBnTZk89FF9EiF6+2IQbDdEff7B
+        4ax0Dga4uiUox2ZV5aBXt5XA9xKihsM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624437911;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cE4bYv+K1a7sv52v46zmtwHcACNaYAGxMXHAvz0lsFc=;
+        b=hQF/ypcJP95FN5mlNb1Yt2ZxxXLDCH8Psd0bsrZVybnRX8ielOdixLXPLL+296+PJxI5Rg
+        9j8EBHSCwNHeZ4Aw==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 32B9C11A97;
+        Wed, 23 Jun 2021 08:45:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624437911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cE4bYv+K1a7sv52v46zmtwHcACNaYAGxMXHAvz0lsFc=;
+        b=XdfY4sc4xWI2HTg0TDm9NQAoNiKU8ylIL8iqkvaGvjVwBpN0oF8DF2TVrvfkjHXL+wHv9b
+        4u/B0V71Rf2L8Dn3/+WdO3BVwbi9ftfOBCSpPjV5t8hPBnTZk89FF9EiF6+2IQbDdEff7B
+        4ax0Dga4uiUox2ZV5aBXt5XA9xKihsM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624437911;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cE4bYv+K1a7sv52v46zmtwHcACNaYAGxMXHAvz0lsFc=;
+        b=hQF/ypcJP95FN5mlNb1Yt2ZxxXLDCH8Psd0bsrZVybnRX8ielOdixLXPLL+296+PJxI5Rg
+        9j8EBHSCwNHeZ4Aw==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id Hde3C5f00mC1JgAALh3uQQ
+        (envelope-from <bp@suse.de>); Wed, 23 Jun 2021 08:45:11 +0000
+Date:   Wed, 23 Jun 2021 10:45:04 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V3 65/66] x86/fpu/signal: Handle #PF in the direct
+ restore path
+Message-ID: <YNL0kPkir7+sQVoO@zn.tnic>
+References: <20210618141823.161158090@linutronix.de>
+ <20210618143451.783907985@linutronix.de>
 MIME-Version: 1.0
-References: <20210618105526.265003-1-zenczykowski@gmail.com>
-In-Reply-To: <20210618105526.265003-1-zenczykowski@gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 23 Jun 2021 09:44:52 +0100
-Message-ID: <CACAyw9-UnQODTf+=xEmexpWE6zhYUQfp7go76bEEc_A1rAyd7Q@mail.gmail.com>
-Subject: Re: [PATCH bpf] Revert "bpf: program: Refuse non-O_RDWR flags in BPF_OBJ_GET"
-To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Cc:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Network Development Mailing List 
-        <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Greg Kroah-Hartman <gregkh@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618143451.783907985@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Jun 2021 at 11:55, Maciej =C5=BBenczykowski
-<zenczykowski@gmail.com> wrote:
->
-> From: Maciej =C5=BBenczykowski <maze@google.com>
->
-> This reverts commit d37300ed182131f1757895a62e556332857417e5.
->
-> This breaks Android userspace which expects to be able to
-> fetch programs with just read permissions.
->
-> See: https://cs.android.com/android/platform/superproject/+/master:framew=
-orks/libs/net/common/native/bpf_syscall_wrappers/include/BpfSyscallWrappers=
-.h;drc=3D7005c764be23d31fa1d69e826b4a2f6689a8c81e;l=3D124
+On Fri, Jun 18, 2021 at 04:19:28PM +0200, Thomas Gleixner wrote:
+> If *RSTOR raises an exception, then the slow path is taken. That's wrong
+> because if the reason was not #PF then going through the slow path is waste
+> of time because that will end up with the same conclusion that the data is
+> invalid.
+> 
+> Now that the wrapper around *RSTOR return an negative error code, which is
+> the negated trap number, it's possible to differentiate.
+> 
+> If the *RSTOR raised #PF then handle it directly in the fast path and if it
+> was some other exception, e.g. #GP, then give up and do not try the fast
+> path.
+> 
+> This removes the legacy frame FRSTOR code from the slow path because FRSTOR
+> is not a ia32_fxstate frame and is therefore handled in the fast path.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/kernel/fpu/signal.c |   65 ++++++++++++++++++++-----------------------
+>  1 file changed, 31 insertions(+), 34 deletions(-)
+> 
+> --- a/arch/x86/kernel/fpu/signal.c
+> +++ b/arch/x86/kernel/fpu/signal.c
+> @@ -270,11 +270,17 @@ static int restore_hwregs_from_user(void
+>  	}
+>  }
+>  
+> -static int restore_fpregs_from_user(void __user *buf, u64 xrestore, bool fx_only)
+> +/*
+> + * Attempt to restore the FPU registers directly from user memory.
+> + * Pagefaults are handled and any errors returned are fatal.
+> + */
+> +static int restore_fpregs_from_user(void __user *buf, u64 xrestore,
+> +				    bool fx_only, unsigned int size)
+>  {
+>  	struct fpu *fpu = &current->thread.fpu;
+>  	int ret ;
+>  
+> +retry:
+>  	fpregs_lock();
+>  	pagefault_disable();
+>  	ret = restore_hwregs_from_user(buf, xrestore, fx_only);
+> @@ -291,15 +297,16 @@ static int restore_fpregs_from_user(void
+>  		 * invalidate the FPU register state otherwise the task
+>  		 * might preempt current and return to user space with
+>  		 * corrupted FPU registers.
+> -		 *
+> -		 * In case current owns the FPU registers then no further
+> -		 * action is required. The fixup in the slow path will
+> -		 * handle it correctly.
+>  		 */
+>  		if (test_thread_flag(TIF_NEED_FPU_LOAD))
+>  			__cpu_invalidate_fpregs_state();
+>  		fpregs_unlock();
+> -		return ret;
+> +
+> +		if (ret == -EFAULT)
+> +			ret = fault_in_pages_readable(buf, size);
+> +		if (!ret)
+> +			goto retry;
+> +		return ret == -EFAULT ? ret : -EINVAL;
 
-As a follow up, what does Android expect to be able to do with this
-read only FD?
+Uuuh, this is gonna make people stop and think, with all those different
+ret assignments and cases. :)
 
-Lorenz
+In any case, __fpu_restore_sig() is starting to become somewhat saner
+again, nice!
 
---=20
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+Reviewed-by: Borislav Petkov <bp@suse.de>
 
-www.cloudflare.com
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
