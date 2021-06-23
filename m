@@ -2,160 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B4D3B23FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555023B2403
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbhFWXl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 19:41:26 -0400
-Received: from angie.orcam.me.uk ([78.133.224.34]:59872 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbhFWXlZ (ORCPT
+        id S229996AbhFWXlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 19:41:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229796AbhFWXlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 19:41:25 -0400
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 3A7039200B4; Thu, 24 Jun 2021 01:39:05 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 37FFB92009D;
-        Thu, 24 Jun 2021 01:39:05 +0200 (CEST)
-Date:   Thu, 24 Jun 2021 01:39:05 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Nikolai Zhubr <zhubr.2@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-cc:     Arnd Bergmann <arnd@kernel.org>, x86@kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RFC 2/2] x86/PCI: Add support for the SiS85C497 PIRQ router
-In-Reply-To: <alpine.DEB.2.21.2106240047560.37803@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2106240111270.37803@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2106240047560.37803@angie.orcam.me.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Wed, 23 Jun 2021 19:41:44 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E151AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 16:39:25 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id c11so5211970ljd.6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 16:39:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8Sp9kvKEzYyUtaXztGUZ5tIFsqruRShTDkrjjkj9hMA=;
+        b=DmxrR811qtDeK81ykDtJ64z5VEVDzDyn6DVJMs2J4ofhRHYf//dTXcglj/MdFFVWp8
+         YVXqEvcKOgVsHvTXYa3McKUQRUunEhMiyBb4wxWm3y8PPnhp1Y1MZMQ3PGFxxk0zyFxN
+         ok+GRnoeyRDEU6WBZPX799Xb/7R3BRz/npvu1ZI/3IWbgl/WjN8wO57e8ckeMfrlSA7f
+         j8FJVMM7+nocWeR3Y8NmfRdVC3A1KYxXXnhgicSYQEw5toYWbLZJT84Bi3B0JD7JrR97
+         eDC8v02oES3Vi56VB/2/We0VxGP/4xe8cY/0rNkXP44i8cKJ2QrKw34WGux6OkDgb/c/
+         /adg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8Sp9kvKEzYyUtaXztGUZ5tIFsqruRShTDkrjjkj9hMA=;
+        b=V5E02rB/G/jRd3GUAZzalDDuvNGJRL2UsoKDLNztQocevKOVOJW761y1wPC6XIhLg5
+         NjnN//uyonc27gAFZG/g4YkvPMAcYUTwPvluGI/XVK+zWh8P5GzRCEzOsenLAOaNz3Gi
+         p6qmUWqqj6kUiL0v2//svpPBaH4b9DA97cQDDbM1jsgY709B4gUkVJrBTYbHBQlMixje
+         yenu0wVDXKiQQfeEt4Kzh6/RLwwr4DpfC3pU3AEc1j1sbhg2W1XT6Aye6YcTT/iq8dDb
+         JHE2P65MvA9MD0g7bG+OT1BoPkSvI/ES/oCAO8k8HTvbxMqOiXgSolWiOebduGBWy5kA
+         EbMg==
+X-Gm-Message-State: AOAM5339cxcwgBKJDLhc32qPJcvVif/61J8GUMHcxFdQ4Nt5EfL+gnIL
+        AoDm2iNf594C3rR2XQy9Kcirdcla6iXwJxET0ig+QUEY4puUtA==
+X-Google-Smtp-Source: ABdhPJyNc5X8MCzg++DxfuCIWb6GRmNW1XC26TvO24/XitnPxrPMhaUIPfO1EeusOmJVSqJs4Fph5fzFqE8wN8lPRk8=
+X-Received: by 2002:a2e:5c03:: with SMTP id q3mr1506404ljb.233.1624491563981;
+ Wed, 23 Jun 2021 16:39:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210623223015.GA315292@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20210623223015.GA315292@paulmck-ThinkPad-P17-Gen-1>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 23 Jun 2021 16:39:11 -0700
+Message-ID: <CAKwvOd=Y1fhJM7NpotvjNy3OE+JtqEBy046ctwE=cqV_ge5tgw@mail.gmail.com>
+Subject: Re: Build failure in -next
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     aneesh.kumar@linux.ibm.com, LKML <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Marco Elver <elver@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SiS 85C496/497 486 Green PC VESA/ISA/PCI Chipset has support for PCI 
-steering and the ELCR register implemented.  These features are handled 
-by the SiS85C497 AT Bus Controller & Megacell (ATM) ISA bridge, however 
-the device is wired as a peer bridge directly to the host bus and has 
-its PCI configuration registers decoded at addresses 0x80-0xff by the 
-accompanying SiS85C496 PCI & CPU Memory Controller (PCM) host bridge[1].  
-Therefore we need to match on the host bridge's vendor and device ID.
+On Wed, Jun 23, 2021 at 3:30 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> Hello, Aneesh!
+>
+> Yesterday evening's next-20210622 testing gave me the following
+> kernel-build error:
+>
+> ld: mm/mremap.o: in function `move_huge_pud':
+> /home/git/linux-next/mm/mremap.c:372: undefined reference to `__compiletime_assert_395'
+>
+> Bisection landed on this commit:
+>
+> 257121c5aabe ("mm/mremap: convert huge PUD move to separate helper")
+>
+> I have no idea how this commit relates to that error message, but
+> reverting this commit on top of next-20210622 really does get rid of
+> the problem.
+>
+> The following reproducer provokes this error:
+>
+> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --torture lock --configs LOCK07 --build-only --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y" --kmake-arg "CC=clang-11"
+>
+> Run the above command in the top-level directory of your -next source
+> tree, and using this compiler:
+>
+> $ clang-11 -v
+> Ubuntu clang version 11.1.0-++20210428103817+1fdec59bffc1-1~exp1~20210428204431.166
+> Target: x86_64-pc-linux-gnu
+>
+> Thoughts?
+>
+>                                                         Thanx, Paul
 
-Like with the SiS85C503 PIRQ router handle link value ranges of 1-4 and 
-0xc0-0xc3, corresponding respectively to PIRQ line numbers counted from 
-1 and link register PCI configuration space addresses.
+++beers_owed; for the report and bisection. Also reported
+https://lore.kernel.org/lkml/YM0mrZIPM+sWTDHf@Ryzen-9-3900X.localdomain/,
+let's chat over there.
 
-References:
-
-[1]  "486 Green PC VESA/ISA/PCI Chipset, SiS 85C496/497", Rev 3.0,
-     Silicon Integrated Systems Corp., July 1995, Part IV, Section 3. 
-     "PCI Configuration Space Registers (00h ~ FFh)", p. 114
-
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
----
- arch/x86/pci/irq.c |   80 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 80 insertions(+)
-
-linux-x86-pirq-router-sis85c497.diff
-Index: linux-macro-ide/arch/x86/pci/irq.c
-===================================================================
---- linux-macro-ide.orig/arch/x86/pci/irq.c
-+++ linux-macro-ide/arch/x86/pci/irq.c
-@@ -328,6 +328,81 @@ static int pirq_cyrix_set(struct pci_dev
- 	return 1;
- }
- 
-+
-+/*
-+ *	PIRQ routing for the SiS85C497 AT Bus Controller & Megacell (ATM)
-+ *	ISA bridge used with the SiS 85C496/497 486 Green PC VESA/ISA/PCI
-+ *	Chipset.
-+ *
-+ *	There are four PCI INTx#-to-IRQ Link registers provided in the
-+ *	SiS85C497 part of the peculiar combined 85C496/497 configuration
-+ *	space decoded by the SiS85C496 PCI & CPU Memory Controller (PCM)
-+ *	host bridge, at 0xc0/0xc1/0xc2/0xc3 respectively for the PCI INT
-+ *	A/B/C/D lines.  Bit 7 enables the respective link if set and bits
-+ *	3:0 select the 8259A IRQ line as follows:
-+ *
-+ *	0000 : Reserved
-+ *	0001 : Reserved
-+ *	0010 : Reserved
-+ *	0011 : IRQ3
-+ *	0100 : IRQ4
-+ *	0101 : IRQ5
-+ *	0110 : IRQ6
-+ *	0111 : IRQ7
-+ *	1000 : Reserved
-+ *	1001 : IRQ9
-+ *	1010 : IRQ10
-+ *	1011 : IRQ11
-+ *	1100 : IRQ12
-+ *	1101 : Reserved
-+ *	1110 : IRQ14
-+ *	1111 : IRQ15
-+ *
-+ *	We avoid using a reserved value for disabled links, hence the
-+ *	choice of IRQ15 for that case.
-+ *
-+ *	References:
-+ *
-+ *	"486 Green PC VESA/ISA/PCI Chipset, SiS 85C496/497", Rev 3.0,
-+ *	Silicon Integrated Systems Corp., July 1995
-+ */
-+
-+#define PCI_SIS497_INTA_TO_IRQ_LINK	0xc0u
-+
-+#define PIRQ_SIS497_IRQ_MASK		0x0fu
-+#define PIRQ_SIS497_IRQ_ENABLE		0x80u
-+
-+static int pirq_sis497_get(struct pci_dev *router, struct pci_dev *dev,
-+			   int pirq)
-+{
-+	int reg;
-+	u8 x;
-+
-+	reg = pirq;
-+	if (reg >= 1 && reg <= 4)
-+		reg += PCI_SIS497_INTA_TO_IRQ_LINK - 1;
-+
-+	pci_read_config_byte(router, reg, &x);
-+	return (x & PIRQ_SIS497_IRQ_ENABLE) ? (x & PIRQ_SIS497_IRQ_MASK) : 0;
-+}
-+
-+static int pirq_sis497_set(struct pci_dev *router, struct pci_dev *dev,
-+			   int pirq, int irq)
-+{
-+	int reg;
-+	u8 x;
-+
-+	reg = pirq;
-+	if (reg >= 1 && reg <= 4)
-+		reg += PCI_SIS497_INTA_TO_IRQ_LINK - 1;
-+
-+	pci_read_config_byte(router, reg, &x);
-+	x &= ~(PIRQ_SIS497_IRQ_MASK | PIRQ_SIS497_IRQ_ENABLE);
-+	x |= irq ? (PIRQ_SIS497_IRQ_ENABLE | irq) : PIRQ_SIS497_IRQ_MASK;
-+	pci_write_config_byte(router, reg, x);
-+	return 1;
-+}
-+
- /*
-  *	PIRQ routing for SiS 85C503 router used in several SiS chipsets.
-  *	We have to deal with the following issues here:
-@@ -700,6 +775,11 @@ static __init int serverworks_router_pro
- static __init int sis_router_probe(struct irq_router *r, struct pci_dev *router, u16 device)
- {
- 	switch (device) {
-+	case PCI_DEVICE_ID_SI_496:
-+		r->name = "SiS85C497";
-+		r->get = pirq_sis497_get;
-+		r->set = pirq_sis497_set;
-+		return 1;
- 	case PCI_DEVICE_ID_SI_503:
- 		r->name = "SiS85C503";
- 		r->get = pirq_sis503_get;
+-- 
+Thanks,
+~Nick Desaulniers
