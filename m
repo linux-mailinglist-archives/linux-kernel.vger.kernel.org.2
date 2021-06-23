@@ -2,143 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632B43B1ABE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426CE3B1AC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbhFWNKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:10:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40571 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230286AbhFWNKV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:10:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624453683;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wsbXUg23KXttQ8gqZSKKydn8DnRXviPL+Q6v+yRsByU=;
-        b=AvXSE1prPGnvLFJwnYrEtQRBrgJ4oFA+AB6caxHzfqCA9UoHRedRmP3uvnRxqigzeCyDbS
-        4sxqmSVsTscSb9R6Ac6EA/QACo+7D6b0TVACCvE+AC7FQf+yiTw74D+AB2KsJ8G0P6/p/X
-        YcOOzvvpYejiYXdZ/ujaxJbgdnO2dSM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-432-OTyFDim1NHatmF18hobVgQ-1; Wed, 23 Jun 2021 09:08:02 -0400
-X-MC-Unique: OTyFDim1NHatmF18hobVgQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BF96B100C661;
-        Wed, 23 Jun 2021 13:08:00 +0000 (UTC)
-Received: from starship (unknown [10.40.192.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7EC345E7D9;
-        Wed, 23 Jun 2021 13:07:51 +0000 (UTC)
-Message-ID: <ac98150acd77f4c09167bc1bb1c552db68925cf2.camel@redhat.com>
-Subject: Re: [PATCH RFC] KVM: nSVM: Fix L1 state corruption upon return from
- SMM
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Cathy Avery <cavery@redhat.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 23 Jun 2021 16:07:50 +0300
-In-Reply-To: <53a9f893cb895f4b52e16c374cbe988607925cdf.camel@redhat.com>
-References: <20210623074427.152266-1-vkuznets@redhat.com>
-         <a3918bfa-7b4f-c31a-448a-aa22a44d4dfd@redhat.com>
-         <53a9f893cb895f4b52e16c374cbe988607925cdf.camel@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S230513AbhFWNLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:11:02 -0400
+Received: from mail-mw2nam08on2072.outbound.protection.outlook.com ([40.107.101.72]:36544
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230430AbhFWNKz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 09:10:55 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PloSFpD2HQlgzei3i3UnWKIL4yUbIuLJhNazv0CdNF1DGqurVswHxD1o9GDBw2hBp2iJwWQ9wuAtLUKKOrrEp0eOdEK4TcyDPZz9lvMcdIqHi0AA03LYQVOR4lVyhDqBK10S5LY0iGsvfvFDiGa40hbwDPeokh+5rFU2AvevbWkzMkjX4gGLsjzZSgn4TxdBBjcBJN04TgDvMG+QhTJNIAS/Jh35XACdjjDQzc8BzQWMqLHQSJ3lBI2ZYYuPEXb1OZTkBxu78WCTWg+HAqAruWDIUXuQIcdKdPDIxMCvPplIHzlO+JWY31YBG06Rcp/EKlSJ5u4B7JEoic8jOdZ+ig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rP0wHlia1yI1cUcdDmU/uCnMmEauFXjOKTA5MsIAO20=;
+ b=aoeGN9buCwslhC5BgO6qC3mWW5BnscPfIcmwijAZZLFSUL5UZKTnnqkEgtHbMkMZ7QKluP9vf03QV6ouT6rh5fb353Vx0LA+GW/vPjRT3dhkZTw/sZAWs8Zb5MIRxF+lpoSRRecnw1NQ9rHiULdBzVsJBjA7dW6gPb5hcrR4wUfAHCA9W9Ibyqrn/GsFi1Pl6RCpcPvxunXJA72nRJ15K8WKN43TVpFM6aO3ZnyL0Tu6LFA8UICs8bF355BraTWFE0AVXoO8DoMdkSLI2drnLwFEYG8IYbFeD8tRbqOi0VPBxgNhak2y3tTnxo7cyFyC6YZLadlQSsrJvkpYnph1UA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rP0wHlia1yI1cUcdDmU/uCnMmEauFXjOKTA5MsIAO20=;
+ b=AvjxNZio6ES8hPXgXR71GdYg/vkWUTPmvCJrkm0v1TFxW/fJOd3oS1Qpk4jCaawZcaIDCbpPccjvEiMJFIO6yG808ZU6r3djNWR3f0IwH3Ah33FOOjuTgbw0ADJhLzTA08EWBZg11wH7h4jope+fUTFo8iGhsDYlfevMkry6z3o=
+Received: from DS7PR03CA0243.namprd03.prod.outlook.com (2603:10b6:5:3b3::8) by
+ SN6PR02MB5437.namprd02.prod.outlook.com (2603:10b6:805:ea::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4242.21; Wed, 23 Jun 2021 13:08:36 +0000
+Received: from DM3NAM02FT034.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:5:3b3:cafe::54) by DS7PR03CA0243.outlook.office365.com
+ (2603:10b6:5:3b3::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19 via Frontend
+ Transport; Wed, 23 Jun 2021 13:08:36 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ DM3NAM02FT034.mail.protection.outlook.com (10.13.4.156) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4264.18 via Frontend Transport; Wed, 23 Jun 2021 13:08:36 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 23 Jun 2021 06:08:09 -0700
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Wed, 23 Jun 2021 06:08:09 -0700
+Envelope-to: git@xilinx.com,
+ linux-pci@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ robh@kernel.org,
+ lorenzo.pieralisi@arm.com,
+ bhelgaas@google.com,
+ monstr@monstr.eu,
+ linux-kernel@vger.kernel.org,
+ kw@linux.com
+Received: from [172.30.17.109] (port=43174)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1lw2bw-00074a-JD; Wed, 23 Jun 2021 06:08:08 -0700
+Subject: Re: [PATCH] PCI: xilinx-nwl: Enable the clock through CCF
+To:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Michal Simek <michal.simek@xilinx.com>
+CC:     <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
+        <git@xilinx.com>, "Hyun Kwon" <hyun.kwon@xilinx.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pci@vger.kernel.org>
+References: <dbc0ab2e109111ca814e73abb30a1dda5d333dbe.1624449519.git.michal.simek@xilinx.com>
+ <20210623122040.GA46059@rocinante>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <d7dd7dfe-2c48-c155-793d-1431256a070e@xilinx.com>
+Date:   Wed, 23 Jun 2021 15:08:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210623122040.GA46059@rocinante>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b0ac16ce-063d-4e3e-3eee-08d9364802c4
+X-MS-TrafficTypeDiagnostic: SN6PR02MB5437:
+X-Microsoft-Antispam-PRVS: <SN6PR02MB54379410A7C5899F5BBB686AC6089@SN6PR02MB5437.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: V2YQ9GS0nzv6tuTh42jn22QgQAUnug00LUZTaQtYN+N6UVjPkzMykcmfSi5fIf1Ud5j8MB5xAfUl6cJDH5qIr0lVk6y5wn7JErYhJ7NdBpjIz6se962fSqeOcEc37Ag+kUATEGrt6vrbHC3yHiKezUIdKk2kkGpbyz+xk0tuJNanfT3Sxg2H5WATdTkQZo6kTYVu6pH2EIZBTystzpW32jFguzCy+CO0eMk2SAL0hND7XlTDwxK0IqwRAX0ky/lho+9pxprZ7BWncxl2Na8m39MGHZrTlarRkNeC4Jzd/AxMT72Fj4xprqIUJftTAaPOusOQuFmBw9ZtuOMNzQh/lb4theYS8nzxdyMPPy9g5NetS2elnJ0KLgqHRHUy0g9aTkOO72XLhbQeCZdvFbPkCeW4AR3ZbnemMq+3PLLkivPe/GLPu+t87ALewhIAyA7Q6G6CqRfAW57Tz6Jt7DAuk3wCOSj68iVkVOBcUPSl1oKqOKoXEu4BCvBcLCBuzn2LLRkvVZT5Kgsicm5/Nwl2RCOuhZ2IMoIjOAhT1kivyi3rR8S4OiawI4aBC01im4Jbhz2A1zxUbVAuXUT0teATqv7z0UPmNX4WOf4S7HDL8gQzJl3h8+AsOeBJAVNdURGxzZj0q27HJG+dycngHAqN8YHXfCT2WPfTxodzLoYU/cqkpMygfFU3LToN+AK8hAMbs56YDncvzaYhsMjuvMr4Lg==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(346002)(396003)(36840700001)(46966006)(8936002)(2906002)(8676002)(478600001)(70206006)(336012)(316002)(36906005)(36860700001)(186003)(4326008)(70586007)(110136005)(54906003)(82310400003)(5660300002)(53546011)(26005)(47076005)(83380400001)(9786002)(31696002)(6666004)(82740400003)(426003)(36756003)(2616005)(7636003)(31686004)(44832011)(66574015)(356005)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2021 13:08:36.0687
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0ac16ce-063d-4e3e-3eee-08d9364802c4
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT034.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB5437
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-23 at 16:01 +0300, Maxim Levitsky wrote:
-> On Wed, 2021-06-23 at 11:39 +0200, Paolo Bonzini wrote:
-> > On 23/06/21 09:44, Vitaly Kuznetsov wrote:
-> > > - RFC: I'm not 100% sure my 'smart' idea to use currently-unused HSAVE area
-> > > is that smart. Also, we don't even seem to check that L1 set it up upon
-> > > nested VMRUN so hypervisors which don't do that may remain broken. A very
-> > > much needed selftest is also missing.
-> > 
-> > It's certainly a bit weird, but I guess it counts as smart too.  It 
-> > needs a few more comments, but I think it's a good solution.
-> > 
-> > One could delay the backwards memcpy until vmexit time, but that would 
-> > require a new flag so it's not worth it for what is a pretty rare and 
-> > already expensive case.
-> > 
-> > Paolo
-> > 
-> 
-> Hi!
-> 
-> I did some homework on this now and I would like to share few my thoughts on this:
-> 
-> First of all my attention caught the way we intercept the #SMI
-> (this isn't 100% related to the bug but still worth talking about IMHO)
-> 
-> A. Bare metal: Looks like SVM allows to intercept SMI, with SVM_EXIT_SMI, 
->  with an intention of then entering the BIOS SMM handler manually using the SMM_CTL msr.
->  On bare metal we do set the INTERCEPT_SMI but we emulate the exit as a nop.
->  I guess on bare metal there are some undocumented bits that BIOS set which
->  make the CPU to ignore that SMI intercept and still take the #SMI handler,
->  normally but I wonder if we could still break some motherboard
->  code due to that.
-> 
-> 
-> B. Nested: If #SMI is intercepted, then it causes nested VMEXIT.
->  Since KVM does enable SMI intercept, when it runs nested it means that all SMIs 
->  that nested KVM gets are emulated as NOP, and L1's SMI handler is not run.
-> 
-> 
-> About the issue that was fixed in this patch. Let me try to understand how
-> it would work on bare metal:
-> 
-> 1. A guest is entered. Host state is saved to VM_HSAVE_PA area (or stashed somewhere
->   in the CPU)
-> 
-> 2. #SMI (without intercept) happens
-> 
-> 3. CPU has to exit SVM, and start running the host SMI handler, it loads the SMM
->     state without touching the VM_HSAVE_PA runs the SMI handler, then once it RSMs,
->     it restores the guest state from SMM area and continues the guest
-> 
-> 4. Once a normal VMexit happens, the host state is restored from VM_HSAVE_PA
-> 
-> So host state indeed can't be saved to VMC01.
-> 
-> I to be honest think would prefer not to use the L1's hsave area but rather add back our
-> 'hsave' in KVM and store there the L1 host state on the nested entry always.
-> 
-> This way we will avoid touching the vmcb01 at all and both solve the issue and 
-> reduce code complexity.
-> (copying of L1 host state to what basically is L1 guest state area and back
-> even has a comment to explain why it (was) possible to do so.
-> (before you discovered that this doesn't work with SMM).
+Hi Krzysztof,
 
-I need more coffee today. The comment is somwhat wrong actually.
-When L1 switches to L2, then its HSAVE area is L1 guest state, but
-but L1 is a "host" vs L2, so it is host state.
-The copying is more between kvm's register cache and the vmcb.
+On 6/23/21 2:20 PM, Krzysztof Wilczyński wrote:
+> Hi Michal,
+> 
+> Thank you for sending the patch over!
 
-So maybe backing it up as this patch does is the best solution yet.
-I will take more in depth look at this soon.
-
-Best regards,
-	Maxim Levitsky
+Thanks for review.
 
 > 
-> Thanks again for fixing this bug!
+>> Simply enable clocks. There is no remove function that's why
+>> this should be enough for simple operation.
 > 
-> Best regards,
-> 	Maxim Levitsky
+> What clock is this?  Would it be worth mentioning what it is for
+> a reference (and for posterity) the commit message?
+
+It is reference clock coming to the IP. I will update commit message.
 
 
+> 
+> Also why it would need to be enabled and wasn't before?  Would this be
+> a fix for some problem?  Would this warrant a "Fixes:" tag?  And would
+> it need to be back-ported to stable kernels?
+
+I will update commit message. Normally reference clock is enabled by
+firmware but on some configurations this doesn't need to be truth that's
+why it is necessary to enable it. It also records refcount for this
+reference clock is good.
+
+I will add Fixes tag to v2.
+
+> 
+> [...]
+>> @@ -823,6 +825,11 @@ static int nwl_pcie_probe(struct platform_device *pdev)
+>>  		return err;
+>>  	}
+>>  
+>> +	pcie->clk = devm_clk_get(dev, NULL);
+>> +	if (IS_ERR(pcie->clk))
+>> +		return PTR_ERR(pcie->clk);
+>> +	clk_prepare_enable(pcie->clk);
+>> +
+> [...]
+> 
+> Almost every other user of clk_prepare_enable() would check for
+> potential failure, print an appropriate message, and then do the
+> necessary clean-up before bailing out and returning an error.
+> 
+> Would adding an error check for clk_prepare_enable() and printing an
+> error message using dev_err() be too much in this case?  If not, then
+> I would rather follow the pattern that other users established and
+> handle errors as needed.  What do you think?
+
+Agree. I have added it. It is called very early and devm_ functions are
+used that's why cleanup shouldn't be necessary.
+
+I have also found that clock wasn't documented in dt binding for this IP
+but we are setting it up for quite a long time.
+9c8a47b484ed ("arm64: dts: xilinx: Add the clock nodes for zynqmp")
+
+Thanks,
+Michal
