@@ -2,133 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6639D3B1981
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D703B1984
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230339AbhFWMC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhFWMCZ (ORCPT
+        id S230455AbhFWMCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:02:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24180 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230302AbhFWMCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:02:25 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6FB0C061574;
-        Wed, 23 Jun 2021 05:00:06 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id f15so2337180wro.8;
-        Wed, 23 Jun 2021 05:00:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eJZITneZK2pFfehw2W3mpmQwKfsEafjynuMXLav/Q64=;
-        b=RSRTZL+7yEON+42CSpXCS2ZRdRKBpmmq72uqvVtJBaDX3QuE7tbiRTixuPVK3Q28r3
-         boMLUjmnhkk4HH48WoC6ClKZ/HAhEkVDZkviSYDWnP7KbFHfCMFnm5gDuCSai7a23tzf
-         HsBNDQzfqi5YiwBlOAhjQSbq1gUZmiKzlxaGpsTgGGYiPuw/7+YC4uEnwFtve3FeTdJ6
-         d1OqvQL46F1hB4EGtR66C6BE6hPx948e+WE5i9jXVoGFZflrvO1P1xvnwCGhC4/5eGZi
-         VjxOnG9g0q9yUkv8Tkg7LejN/8ZQAidlLxzSReXTKWpjIQhnar8Kjg65Kfyltm+wLYmQ
-         M9SQ==
+        Wed, 23 Jun 2021 08:02:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624449632;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=40lufiefSAXJYxyzql25e+wiCU9kJZcVj8CF016XD70=;
+        b=CEstZ7cIdGOqDR+jnolP/XRG/JXhBLjDflf7lCofp0kpQHaMDnWWthH34tcmchbvdBV0ct
+        GJl0+gObI3CuwmCiDP0LxOQZ8lsmAOI+mWDkiJj3CBZWA3Zdc6hRvOOm/ZGUvW7Rt6GMvx
+        f+zXS2rNdBJfAth/dDRE3/o+8wCG0zQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-1-hvTUk_ASNU2pe_o3jqp8fQ-1; Wed, 23 Jun 2021 08:00:31 -0400
+X-MC-Unique: hvTUk_ASNU2pe_o3jqp8fQ-1
+Received: by mail-wr1-f72.google.com with SMTP id l2-20020adfe5820000b029011a64161d6aso993797wrm.6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:00:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=eJZITneZK2pFfehw2W3mpmQwKfsEafjynuMXLav/Q64=;
-        b=J2QWiNyNwIeNz5Kn4DymDsuI4HQKZj7JDaGF3Kz7DyR6p6sX0wAwjn0WqM2nUGgGhi
-         85imLqlrc0Ur48D8LUyCyePv8IYOEVuKCXCtRMQvlrymqkTzLdJwEZEM4uSybX6uPFWn
-         XoUJdx8vMjageFn60eG0PDISnIcnn4UiYK535sQ3Zf44s5z1CjqgQmA6D/Ob1qkeRxR/
-         xBU1qutsZEFvmVZRrlF73nWXqbnkY37P+Bl6pqImbOmZabesg5SfKHeFQn/HhdCnmUfB
-         bBkpoOO6BM9Uku51AO+PwpkC+thnP7FEiIbltk6xI08iiJXpJmIZXcwzlIFceraflICq
-         TKAA==
-X-Gm-Message-State: AOAM531ysZ9gTH5ZV1P5wgafRl7ihX7QBcTcsVAv7pjY+ias/WSqTVqt
-        hpE9DDRXuOnl0eqo43vc/A==
-X-Google-Smtp-Source: ABdhPJxp2pV1Cwiio1m4yUGYVArQ7yQtoI2cifSaqMW73mMQPqvJNyrgsvNNrAOPg4u2yFDam2cYTg==
-X-Received: by 2002:a5d:6502:: with SMTP id x2mr10729320wru.327.1624449605446;
-        Wed, 23 Jun 2021 05:00:05 -0700 (PDT)
-Received: from localhost.localdomain (ip5b434b8b.dynamic.kabel-deutschland.de. [91.67.75.139])
-        by smtp.googlemail.com with ESMTPSA id y189sm5666157wmg.6.2021.06.23.05.00.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 05:00:05 -0700 (PDT)
-From:   Alex Bee <knaerzche@gmail.com>
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH] arm64: dts: rockchip: Add sdmmc_ext for RK3328
-Date:   Wed, 23 Jun 2021 14:00:01 +0200
-Message-Id: <20210623120001.164920-1-knaerzche@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        bh=40lufiefSAXJYxyzql25e+wiCU9kJZcVj8CF016XD70=;
+        b=aHhpwMXXO1JnBGQ0qtOjHitWEgcDZymqscagLXzKeKjqWp3k17ChLSe/NBIcZ7eL/V
+         G/YbYLy95sbZYqXOyhFBBx87EM3OTRZ3PkKRjbdKwBc/PsaYaQ/tbB4M/Ya60UOPBHOJ
+         mBepPtRRqrOxqh2/aLKP4iClfH5WCgzPgart+sE7RZNkvvYbJpMEf0KpFTNmxDcn5J5N
+         4bxqX61zMEhxno6P0u/ykkPi3obW7LvYHeWXcoG2DBZz+XsxS6SXnpSYFp39K5upDG+K
+         wDk4cyWw16eaJv1zHmkEPxj2lc5RZC4b2iBec+IeSAnQvHvrVMlHNviXCj+9MXTHX6Ex
+         sVYQ==
+X-Gm-Message-State: AOAM531/3GU8BBt8l5ypK4wpU1LPStCjCvkOco5sUFGUUyuukRDG4V/e
+        4ktUWyCy4h7R2Wsh0629YeADhrOkG0pOJJgqzSqZ/Wilbqi9Xa+qssecI4QYAYRtPds9pXLRxfu
+        aHkpbFf+X9i9Argy+xjhKgqcQQ4u1/6fmLJgsYaAejKB16z3JNuFIMAvcFzLWnyfP7gU2geFSe4
+        vG
+X-Received: by 2002:a05:600c:b57:: with SMTP id k23mr10532648wmr.133.1624449629776;
+        Wed, 23 Jun 2021 05:00:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxNmyUviHSGAy39wspBqD/44uhbsty4Dt6H2q9/tUgrngrqOMapjcP5jZzJYKbXJOEg9kj0+A==
+X-Received: by 2002:a05:600c:b57:: with SMTP id k23mr10532600wmr.133.1624449629425;
+        Wed, 23 Jun 2021 05:00:29 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id o203sm5900649wmo.36.2021.06.23.05.00.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 05:00:28 -0700 (PDT)
+Subject: Re: [PATCH RFC] KVM: nSVM: Fix L1 state corruption upon return from
+ SMM
+To:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Cathy Avery <cavery@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <20210623074427.152266-1-vkuznets@redhat.com>
+ <a3918bfa-7b4f-c31a-448a-aa22a44d4dfd@redhat.com>
+ <2eaa94bcc697fec92d994146f7c69625b6a84cd0.camel@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <e4ba5286-f683-5876-1cd7-7fc83bc1638e@redhat.com>
+Date:   Wed, 23 Jun 2021 14:00:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <2eaa94bcc697fec92d994146f7c69625b6a84cd0.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RK3328 SoC has a fourth mmc controller called SDMMC_EXT. Some
-boards have sdio wifi connected to it. In order to use it
-one would have to add the pinctrls from sdmmc0ext group which
-is done on board level.
+On 23/06/21 13:39, Maxim Levitsky wrote:
+> On Wed, 2021-06-23 at 11:39 +0200, Paolo Bonzini wrote:
+>> On 23/06/21 09:44, Vitaly Kuznetsov wrote:
+>>> - RFC: I'm not 100% sure my 'smart' idea to use currently-unused HSAVE area
+>>> is that smart. Also, we don't even seem to check that L1 set it up upon
+>>> nested VMRUN so hypervisors which don't do that may remain broken. A very
+>>> much needed selftest is also missing.
+>>
+>> It's certainly a bit weird, but I guess it counts as smart too.  It
+>> needs a few more comments, but I think it's a good solution.
+>>
+>> One could delay the backwards memcpy until vmexit time, but that would
+>> require a new flag so it's not worth it for what is a pretty rare and
+>> already expensive case.
+> 
+> I wonder what would happen if SMM entry is triggered by L1 (say with ICR),
+> on a VCPU which is in L2. Such exit should go straight to L1 SMM mode.
 
-While at that also add the reset controls for the other mmc
-controllers.
+Yes, it does, but it still records the L2 state in the guest's SMM state 
+save area.  Everything works right as long as the guest stays in L2 (the 
+vmcb12 control save area is still there in svm->nested and is 
+saved/restored by KVM_GET/SET_NESTED_STATE), the problem that Vitaly 
+found is the destruction of the saved L1 host state.
 
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
----
- arch/arm64/boot/dts/rockchip/rk3328.dtsi | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+Paolo
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-index da84be6f4715..c13fa2f3f4cd 100644
---- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-@@ -858,6 +858,8 @@ sdmmc: mmc@ff500000 {
- 		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
- 		fifo-depth = <0x100>;
- 		max-frequency = <150000000>;
-+		resets = <&cru SRST_MMC0>;
-+		reset-names = "reset";
- 		status = "disabled";
- 	};
- 
-@@ -870,6 +872,8 @@ sdio: mmc@ff510000 {
- 		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
- 		fifo-depth = <0x100>;
- 		max-frequency = <150000000>;
-+		resets = <&cru SRST_SDIO>;
-+		reset-names = "reset";
- 		status = "disabled";
- 	};
- 
-@@ -882,6 +886,8 @@ emmc: mmc@ff520000 {
- 		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
- 		fifo-depth = <0x100>;
- 		max-frequency = <150000000>;
-+		resets = <&cru SRST_EMMC>;
-+		reset-names = "reset";
- 		status = "disabled";
- 	};
- 
-@@ -980,6 +986,20 @@ usb_host0_ohci: usb@ff5d0000 {
- 		status = "disabled";
- 	};
- 
-+	sdmmc_ext: dwmmc@ff5f0000 {
-+		compatible = "rockchip,rk3328-dw-mshc", "rockchip,rk3288-dw-mshc";
-+		reg = <0x0 0xff5f0000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru HCLK_SDMMC_EXT>, <&cru SCLK_SDMMC_EXT>,
-+			 <&cru SCLK_SDMMC_EXT_DRV>, <&cru SCLK_SDMMC_EXT_SAMPLE>;
-+		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
-+		fifo-depth = <0x100>;
-+		max-frequency = <150000000>;
-+		resets = <&cru SRST_SDMMCEXT>;
-+		reset-names = "reset";
-+		status = "disabled";
-+	};
-+
- 	usbdrd3: usb@ff600000 {
- 		compatible = "rockchip,rk3328-dwc3", "snps,dwc3";
- 		reg = <0x0 0xff600000 0x0 0x100000>;
--- 
-2.27.0
+> I will very very soon, maybe even today start testing SMM with my migration
+> tests and such. I hope I will find more bugs in this area.
+> 
+> Thanks for fixing this issue!
+> 
+> Best regards,
+> 	Maxim Levitsky
+> 
 
