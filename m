@@ -2,110 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 736343B15CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E98EA3B15D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhFWI25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 04:28:57 -0400
-Received: from mailgw.kylinos.cn ([123.150.8.42]:45194 "EHLO nksmu.kylinos.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229833AbhFWI2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 04:28:55 -0400
-X-UUID: d701f4f7734d446a8f711030b3de84c8-20210623
-X-UUID: d701f4f7734d446a8f711030b3de84c8-20210623
-X-User: jiangguoqing@kylinos.cn
-Received: from [172.30.60.82] [(106.37.198.34)] by nksmu.kylinos.cn
-        (envelope-from <jiangguoqing@kylinos.cn>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 128/128)
-        with ESMTP id 1084115594; Wed, 23 Jun 2021 16:25:51 +0800
-Subject: Re: [PATCH v2 03/10] raid-md: reduce stack footprint dealing with
- block device names
-To:     Anton Suvorov <warwish@yandex-team.ru>, willy@infradead.org
-Cc:     dmtrmonakhov@yandex-team.ru, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk
-References: <YLe9eDbG2c/rVjyu@casper.infradead.org>
- <20210622174424.136960-1-warwish@yandex-team.ru>
- <20210622174424.136960-4-warwish@yandex-team.ru>
-From:   Guoqing Jiang <jiangguoqing@kylinos.cn>
-Message-ID: <803a31fb-7b51-d160-5b3e-7736c0aa6d2d@kylinos.cn>
-Date:   Wed, 23 Jun 2021 16:26:30 +0800
+        id S229978AbhFWIa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 04:30:57 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:34632 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229833AbhFWIa4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 04:30:56 -0400
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DC4499B1;
+        Wed, 23 Jun 2021 10:28:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1624436918;
+        bh=nApNo5hcf8BQh5BVUFafE+xcZysYzEQx+MRVHfn8ISY=;
+        h=From:Subject:To:Cc:References:Date:In-Reply-To:From;
+        b=nx1LkOwluS9fVtYANJTTuvbmtFKz3aOMNC9vDO6T0/zdKl0i+R1AYxnbtDFP0ac8O
+         cjHsT2DFQW7SVeW/hNxMoARdkd+XoF92GJh5q+AisBXF0DuCgo+jl2/Vd2RlRlZf72
+         U+fsDfZ6+gmiRsJphoBdgWLayIo7GkAQQKxXb6DI=
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+Subject: Re: [PATCH 0/3] drm: rcar-du: V3U support
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210622232024.3215248-1-kieran.bingham@ideasonboard.com>
+ <YNKX8qN4YtjFlW6T@pendragon.ideasonboard.com>
+Message-ID: <dba479d7-eab8-dbc0-ec70-0c898c5783df@ideasonboard.com>
+Date:   Wed, 23 Jun 2021 09:28:34 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210622174424.136960-4-warwish@yandex-team.ru>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <YNKX8qN4YtjFlW6T@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Laurent,
 
-Maybe replace "raid-md" with "md/raid" or just "md".
+On 23/06/2021 03:09, Laurent Pinchart wrote:
+> Hi Kieran,
+> 
+> It seems that the cover letter didn't include the mailing lists on CC,
+> fixing this.
 
-On 6/23/21 1:44 AM, Anton Suvorov wrote:
-> Stack usage reduced (measured with allyesconfig):
->
-> ./drivers/md/md-linear.c	linear_make_request	248	112	-136
-> ./drivers/md/md-multipath.c	multipath_end_request	232	96	-136
-> ./drivers/md/md-multipath.c	multipath_error	208	72	-136
-> ./drivers/md/md-multipath.c	multipathd	248	112	-136
-> ./drivers/md/md-multipath.c	print_multipath_conf	208	64	-144
-> ./drivers/md/md.c	autorun_devices	312	184	-128
-> ./drivers/md/md.c	export_rdev	168	32	-136
-> ./drivers/md/md.c	md_add_new_disk	280	80	-200
-> ./drivers/md/md.c	md_import_device	200	56	-144
-> ./drivers/md/md.c	md_integrity_add_rdev	192	56	-136
-> ./drivers/md/md.c	md_ioctl	560	496	-64
-> ./drivers/md/md.c	md_reload_sb	224	88	-136
-> ./drivers/md/md.c	md_run	408	288	-120
-> ./drivers/md/md.c	md_seq_show	232	96	-136
-> ./drivers/md/md.c	md_update_sb	304	168	-136
-> ./drivers/md/md.c	read_disk_sb	184	48	-136
-> ./drivers/md/md.c	super_1_load	392	192	-200
-> ./drivers/md/md.c	super_90_load	304	112	-192
-> ./drivers/md/md.c	unbind_rdev_from_array	200	64	-136
-> ./drivers/md/raid0.c	create_strip_zones	400	200	-200
-> ./drivers/md/raid0.c	dump_zones	536	464	-72
-> ./drivers/md/raid1.c	fix_read_error	352	288	-64
-> ./drivers/md/raid1.c	print_conf	224	80	-144
-> ./drivers/md/raid1.c	raid1_end_read_request	216	80	-136
-> ./drivers/md/raid1.c	raid1_error	216	96	-120
-> ./drivers/md/raid1.c	sync_request_write	344	208	-136
-> ./drivers/md/raid10.c	fix_read_error	392	320	-72
-> ./drivers/md/raid10.c	print_conf	216	72	-144
-> ./drivers/md/raid10.c	raid10_end_read_request	216	80	-136
-> ./drivers/md/raid10.c	raid10_error	216	80	-136
-> ./drivers/md/raid5-cache.c	r5l_init_log	224	88	-136
-> ./drivers/md/raid5-ppl.c	ppl_do_flush	256	136	-120
-> ./drivers/md/raid5-ppl.c	ppl_flush_endio	192	56	-136
-> ./drivers/md/raid5-ppl.c	ppl_modify_log	192	56	-136
-> ./drivers/md/raid5-ppl.c	ppl_recover_entry	1296	1232	-64
-> ./drivers/md/raid5-ppl.c	ppl_submit_iounit_bio	192	56	-136
-> ./drivers/md/raid5-ppl.c	ppl_validate_rdev	184	48	-136
-> ./drivers/md/raid5.c	print_raid5_conf	208	64	-144
-> ./drivers/md/raid5.c	raid5_end_read_request	272	128	-144
-> ./drivers/md/raid5.c	raid5_error	216	80	-136
-> ./drivers/md/raid5.c	setup_conf	360	296	-64
->
-> Signed-off-by: Anton Suvorov <warwish@yandex-team.ru>
-> ---
->   drivers/md/md-linear.c    |   5 +-
->   drivers/md/md-multipath.c |  24 +++----
->   drivers/md/md.c           | 135 ++++++++++++++------------------------
->   drivers/md/raid0.c        |  28 ++++----
->   drivers/md/raid1.c        |  25 +++----
->   drivers/md/raid10.c       |  65 ++++++++----------
->   drivers/md/raid5-cache.c  |   5 +-
->   drivers/md/raid5-ppl.c    |  40 +++++------
->   drivers/md/raid5.c        |  39 +++++------
->   9 files changed, 144 insertions(+), 222 deletions(-)
+Argh, I should have remembered this. I used --cc-cmd
+./scripts/get_maintainer... but it doesn't match anything for the cover
+letters, when really the cover letter should cc all recipients of all
+patches.
 
-Also a nice cleanup!  Acked-by: Guoqing Jiang <jiangguoqing@kylinos.cn>
-
-Thanks,
-Guoqing
+Anyone got a workaround for that, so that the cover-letter actually
+makes it to the right places as well?
 
 
+> On Wed, Jun 23, 2021 at 12:20:21AM +0100, Kieran Bingham wrote:
+>> Extend support for the V3U Display Unit, making use of the {recently,
+>> soon to be} posted DSI encoder from Laurent.
+>>
+>> Patch 1 just cleans up in preparation for patch 3, and patch 2 is
+>> required for operation on the V3U, however it is functional and should
+>> be correct for the D3 and E3 as well, as they also lack external sync.
+>>
+>> Patch 3 enables the V3U and connects it to the MIPI DSI encoder, of
+>> which I'm in a race between me and laurent for posting these patches ;-)
+> 
+> You won the race :-)
+
+Ah well, as long as the dependency is clear ;D
+
+--
+Kieran
+
+
+> 
+>> Tests have been run and produce images - but there are artifacts visible
+>> and some modes are unavailable, which will need further investigations,
+>> but can be done on top of this integration.
+>>
+>> Kieran Bingham (3):
+>>   drm: rcar-du: Sort the DU outputs
+>>   drm: rcar-du: Only initialise TVM_TVSYNC mode when supported
+>>   drm: rcar-du: Add r8a779a0 device support
+>>
+>>  drivers/gpu/drm/rcar-du/rcar_du_crtc.c    | 25 ++++++++++++++++++++++-
+>>  drivers/gpu/drm/rcar-du/rcar_du_crtc.h    |  6 ++++--
+>>  drivers/gpu/drm/rcar-du/rcar_du_drv.c     | 21 +++++++++++++++++++
+>>  drivers/gpu/drm/rcar-du/rcar_du_drv.h     |  6 ++++++
+>>  drivers/gpu/drm/rcar-du/rcar_du_encoder.c |  4 ++++
+>>  drivers/gpu/drm/rcar-du/rcar_du_group.c   |  2 ++
+>>  6 files changed, 61 insertions(+), 3 deletions(-)
+>>
+> 
