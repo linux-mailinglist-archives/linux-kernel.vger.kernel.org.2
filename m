@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801AA3B1971
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 13:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8363B1976
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 13:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhFWMAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:00:24 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:54543 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230206AbhFWMAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 08:00:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624449484; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=AHMt0GzCvHn4hyYD7cdhM7SJoQ7X95tIMSwPoZD5d7s=; b=jbyG9iTmfMSVGq+8tleX9/L0E9OijYr2f9vBrDtk+EUw3Ozs9SF6A71XF8c51l9D9cdD9sFK
- +kyrCn2eYoW/CE1sJ8pZ+PEqCE8GxL3wJiqXmZomJjy/sq46Ug7Q5GyIUZI2/7kzCkReACqn
- uANeSiEeGxDIexuQ03WM9W81QGc=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60d321cadc4628fe7eb49d9a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Jun 2021 11:58:02
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 11E66C4338A; Wed, 23 Jun 2021 11:58:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 00A2DC433D3;
-        Wed, 23 Jun 2021 11:57:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 00A2DC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-From:   Taniya Das <tdas@codeaurora.org>
-To:     Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?q?Michael=20Turquette=20=C2=A0?= <mturquette@baylibre.com>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-Subject: [PATCH v2] clk: qcom: gcc: Add support for a new frequency for SC7280
-Date:   Wed, 23 Jun 2021 17:27:51 +0530
-Message-Id: <1624449471-9984-1-git-send-email-tdas@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S230334AbhFWMA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230157AbhFWMA6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 08:00:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED8CC061574;
+        Wed, 23 Jun 2021 04:58:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=if+5vcxnYg39PHn7QTmtFHoajkkKrnrnAav0TjgSnZ4=; b=svVwbyrReSA0bEdCFvAQL0nRR6
+        pd6rdU+J/z/Uh7KtI6XWF1ddX4S6fLjMN7Ru1DAXN7TxPiqkBI6iJXlTKRC7i9Q0dG5Q1dRIqm0xJ
+        LQ6zjTzMlqnPtrU99PboitgP3+uHj+mBV3EuT0OaU+JZtX5RQ4nYXI+OvgwRRJ65Rzn8aPH4n7Vib
+        DaoFcSDaxmxLSFRhBD/L7bCK+CadMc7hL7T4zLFHNvI2R26zNrnzLsVyTfAEX6//KSbZ81KmCOPey
+        +gJJZpDjgOvNbPHrZ5O1J5lC6I2Du2zRvDe33C6lDrZvo7m0Ahc1MlYNrFoGJN0IWDvrrZpByPx5+
+        QUIeC9nQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lw1Vw-00FO5h-Jw; Wed, 23 Jun 2021 11:58:01 +0000
+Date:   Wed, 23 Jun 2021 12:57:52 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        Lennart Poettering <lennart@poettering.net>,
+        Luca Boccassi <bluca@debian.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tejun Heo <tj@kernel.org>,
+        Javier Gonz??lez <javier@javigon.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        JeffleXu <jefflexu@linux.alibaba.com>
+Subject: Re: [PATCH v3 6/6] loop: increment sequence number
+Message-ID: <YNMhwLMr7DiNdqC/@infradead.org>
+References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
+ <20210623105858.6978-7-mcroce@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210623105858.6978-7-mcroce@linux.microsoft.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a requirement to support 52MHz for qup clocks for bluetooth
-usecase, thus update the frequency table to support the frequency.
+On Wed, Jun 23, 2021 at 12:58:58PM +0200, Matteo Croce wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
+> 
+> On a very loaded system, if there are many events queued up from multiple
+> attach/detach cycles, it's impossible to match them up with the
+> LOOP_CONFIGURE or LOOP_SET_FD call, since we don't know where the position
+> of our own association in the queue is[1].
+> Not even an empty uevent queue is a reliable indication that we already
+> received the uevent we were waiting for, since with multi-partition block
+> devices each partition's event is queued asynchronously and might be
+> delivered later.
+> 
+> Increment the disk sequence number when setting or changing the backing
+> file, so the userspace knows which backing file generated the event:
 
-Fixes: a3cc092196ef ("clk: qcom: Add Global Clock controller (GCC) driver for SC7280")
-Signed-off-by: Taniya Das <tdas@codeaurora.org>
----
-[v2]
- * Update commit message and subject "Add"/"bluetooth".
-
- drivers/clk/qcom/gcc-sc7280.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/clk/qcom/gcc-sc7280.c b/drivers/clk/qcom/gcc-sc7280.c
-index ef734db..6cefcdc 100644
---- a/drivers/clk/qcom/gcc-sc7280.c
-+++ b/drivers/clk/qcom/gcc-sc7280.c
-@@ -716,6 +716,7 @@ static const struct freq_tbl ftbl_gcc_qupv3_wrap0_s2_clk_src[] = {
- 	F(29491200, P_GCC_GPLL0_OUT_EVEN, 1, 1536, 15625),
- 	F(32000000, P_GCC_GPLL0_OUT_EVEN, 1, 8, 75),
- 	F(48000000, P_GCC_GPLL0_OUT_EVEN, 1, 4, 25),
-+	F(52174000, P_GCC_GPLL0_OUT_MAIN, 1, 2, 23),
- 	F(64000000, P_GCC_GPLL0_OUT_EVEN, 1, 16, 75),
- 	F(75000000, P_GCC_GPLL0_OUT_EVEN, 4, 0, 0),
- 	F(80000000, P_GCC_GPLL0_OUT_EVEN, 1, 4, 15),
---
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-of the Code Aurora Forum, hosted by the  Linux Foundation.
-
+Instead of manually incrementing the sequence here, can we make loop
+generate the DISK_EVENT_MEDIA_CHANGE event on a backing device (aka
+media) change?
