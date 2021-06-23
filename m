@@ -2,61 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9203B1354
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 07:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C95143B135A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 07:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbhFWFsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 01:48:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFWFsD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 01:48:03 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E58A2C061574;
-        Tue, 22 Jun 2021 22:45:46 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S229892AbhFWFso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 01:48:44 -0400
+Received: from ni.piap.pl ([195.187.100.5]:46118 "EHLO ni.piap.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229831AbhFWFsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 01:48:43 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8sgW4nkBz9sVm;
-        Wed, 23 Jun 2021 15:45:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1624427145;
-        bh=sXhcp1RB5kLyzObQe3C2zDzTOXxU5fzWiYuFkRLId/M=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ayFUw5sRYFxzw/vSiU7c+4d+5MvSRPkxW7K6N4a8O71m1Vz0TV4kbCeYwsyKnmokT
-         Q3y9tZ04R0DGWMmIEDlFkK80T4IpXfn23uUVWj2TA4CpuY6exw+6Xl5MJrKGYt2JNg
-         kvQD20DF5hoQHBBKJAB5kG7jN2pD+1rJcKcrKLinJ2aUjKDb1AI1zqQaV9jQhwmGZd
-         QjhJaeHofYn+lBWkELBB3MzrOkPpBg28kjf0r/r+CdwPqYP+qJGMgNqVbSnMt5NNF4
-         kG13bbr3K6F6ZfK2/pTqgn3W2dNKLHWMvEcSakRMugUtsovkjbZ4fPqDytPGIDwJRm
-         lmqwweHUh0nNQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 3/4] cpufreq: powerenv: Migrate to ->exit() callback
- instead of ->stop_cpu()
-In-Reply-To: <e40e57a97735614941e9ca7fa2f221f8db9a12b2.1624421816.git.viresh.kumar@linaro.org>
-References: <cover.1624421816.git.viresh.kumar@linaro.org>
- <e40e57a97735614941e9ca7fa2f221f8db9a12b2.1624421816.git.viresh.kumar@linaro.org>
-Date:   Wed, 23 Jun 2021 15:45:38 +1000
-Message-ID: <87v96516d9.fsf@mpe.ellerman.id.au>
+        by ni.piap.pl (Postfix) with ESMTPSA id 340E54A0008;
+        Wed, 23 Jun 2021 07:46:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 340E54A0008
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1624427185; bh=3xyG1FSrnZAwvVu0JGJn6EiNIO8EpTdIEwQkEUEeVjg=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=nCLg1Tyi6VZw10NVWugc/ylesgZUFfx6Q5F024NYhtqRDqnXOAUnXZEI/TljiCYux
+         WWHmkeL+3KPgaauE8EQB2YNqef4zNrdHIOCKEmANkzp9GE7dNTadLlL31fcwTB1XdM
+         mGADIV9PGY+jn7vm6Gvm/lNx7u7cIuZ0vzkGQnfE=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     devicetree@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2] dt-binding: media: document ON Semi AR0521 sensor
+ bindings
+References: <m3y2b25er8.fsf@t19.piap.pl>
+        <YNHVbFp2+Ow8CyCV@pendragon.ideasonboard.com>
+Sender: khalasa@piap.pl
+Date:   Wed, 23 Jun 2021 07:46:25 +0200
+In-Reply-To: <YNHVbFp2+Ow8CyCV@pendragon.ideasonboard.com> (Laurent Pinchart's
+        message of "Tue, 22 Jun 2021 15:19:56 +0300")
+Message-ID: <m3im255e1a.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 4
+X-KLMS-Message-Action: skipped
+X-KLMS-AntiSpam-Status: not scanned, whitelist
+X-KLMS-AntiPhishing: not scanned, whitelist
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Viresh Kumar <viresh.kumar@linaro.org> writes:
+Laurent Pinchart <laurent.pinchart@ideasonboard.com> writes:
+
+>> The question still stands: is there a way to reliably put national
+>> unicode characters into:
+>> - commit messages for patches submitted via email,
 >
-> Subject: Re: [PATCH V4 3/4] cpufreq: powerenv: Migrate to ->exit() callback instead of ->stop_cpu()
+> This shouldn't be too much of a problem, as long as you MUA and MTA
+> don't mess up encoding.
 
-Typo in subject should be "powernv".
+Maybe it's better now. I had mixed results in the past, but maybe it was
+10+ years ago. Then I stopped using non-ASCII as they weren't very
+essential.
+Apparently there was no such problems with drivers/net, at least from
+the time I started using non-ASCII characters.
+--=20
+Krzysztof Ha=C5=82asa
 
-cheers
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
