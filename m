@@ -2,109 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0FA3B1AC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106163B1AC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhFWNK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:10:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58219 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230415AbhFWNKw (ORCPT
+        id S230464AbhFWNLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:11:40 -0400
+Received: from mail-ua1-f45.google.com ([209.85.222.45]:40545 "EHLO
+        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230163AbhFWNLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:10:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624453714;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=laMK981mv0ZnD0B9GFNK7CVhuuQIdDNlKXWiyssjTBI=;
-        b=HB/G0BeqDnoj4GiBQcWQGMgAgJX4TSPL9+k4sR8ScJSjRIPGjPqwTWBti6sIlZUhfdeuKE
-        Cvsq+f+SCW7Ss71kUrTltJxgmbB6tv78GWgOCPkjHXEhk6q3d0s7N1z5loIsBw/8RT97Cs
-        hFshPcch5grV8NOU+SwSLNdhOS6NYyc=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-269-KtXNY7ELOCORW3ua5F91rA-1; Wed, 23 Jun 2021 09:08:33 -0400
-X-MC-Unique: KtXNY7ELOCORW3ua5F91rA-1
-Received: by mail-ej1-f71.google.com with SMTP id k1-20020a17090666c1b029041c273a883dso972752ejp.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 06:08:33 -0700 (PDT)
+        Wed, 23 Jun 2021 09:11:36 -0400
+Received: by mail-ua1-f45.google.com with SMTP id r9so828025ual.7;
+        Wed, 23 Jun 2021 06:09:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=laMK981mv0ZnD0B9GFNK7CVhuuQIdDNlKXWiyssjTBI=;
-        b=ihhg202vdBYdmN1rCZUyuexU0CddKWJxGkoaLiMlPYt6YZaDN1om2Z9njUS8Et57BY
-         b+T+gISBGWVGYBxQ/g0RCyVNNyoR6/bec7LSvo99BYlii3Zhdytp+wje04vlIo9GL/9h
-         4Q/jxF+QK4LCMSI+JkAYMveYBIQJaA93s6BVAHaoIZ08JSwn7ukY/pwkaWi6BtVsD1Es
-         ezKVkY+rHYh8Sy7IxA7TEYOu3OmWlpnRGQ98gBPdJkNTVH8Ok0YwDcSKFwOQZC/I/rnO
-         BRpAPUb/Zs6V2K108NB/JroYWyhz70tJ6r7XcB3xcjMOVF0jgVqcEQJenkca/rruP9Do
-         HIOQ==
-X-Gm-Message-State: AOAM5320jZZSVj4gdjATDrrb9nMQBUv+RZTifMQUYgK+1yqlrP858MHv
-        X621vxtHUDKYgJWshxdcFmznHMdWcSqa8NnBS8i+wLI8tNYCS+T3l5C88TiccUW6pt4J9SpZEQn
-        v8evmW+ZnV/2xZwcRFnCWAG0nVvtoyxVZdnPkG2dIod83mcQCANLuylMO8VY40RSzZTRgvEAiOv
-        dO
-X-Received: by 2002:a05:6402:214:: with SMTP id t20mr12498362edv.20.1624453711673;
-        Wed, 23 Jun 2021 06:08:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyZyOJdESTaoaBILztmfKMoUyzU0klenAe/9rbnsswLUshPvy0GTs8FlOlUumkGgkSEzu3bfQ==
-X-Received: by 2002:a05:6402:214:: with SMTP id t20mr12498337edv.20.1624453711490;
-        Wed, 23 Jun 2021 06:08:31 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id cb14sm7954783edb.68.2021.06.23.06.08.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 06:08:30 -0700 (PDT)
-Subject: Re: [PATCH] staging: rtl8723bs: convert function to static
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>, gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20210623130103.7727-1-fabioaiuto83@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <a5e755c3-48c9-40d4-fccb-1b9146fe762f@redhat.com>
-Date:   Wed, 23 Jun 2021 15:08:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2GyvRMqzd0j7dU3QjG5cKA3SND3uzGcIE5fba+nRyaE=;
+        b=VSmcRh4MftvCjl9E1F1HLcutSXjgX9Vt474J0i55jARkgepTWyfhCb4LDCikvqS9uG
+         VX0DbKBXly9p2BfiWzCDsSYNO7BFSDyQmhoEHWMyT1CcrgFkDj183O8qrhnUZCoJr9du
+         IhD7hId0I2qZMD+0NgKQO/JS6WkVAH9EAjHYvlAWfSZ69aP/xndgx7wr4XEax+8Jeoi+
+         oDZ9/nt3q9FAuE4qxxtxQ6ms/KNb67+zkpvye02ZRQrnZ2Z57asV3xfkXlItorYuB4qr
+         7zW3GS9XbExwT6DnSQqcGTybtxmz4wIGIZb0eRSTQAtioTkSUB/R0eCErPZJR6Phtk6C
+         YZjg==
+X-Gm-Message-State: AOAM533ng+XxvaNb0bBgtD9tRMM8GTKv0ZomdnQohh2Ds5DR0S1uuOMy
+        Qhp/SQdhXkjM7UFTjdtGMzxyOjl5cM4CJpchA2E=
+X-Google-Smtp-Source: ABdhPJy7fEj+42hR8loz80KZeBpk8m6cSVSkPMGaM+vOPsqzJ7EuBgra5HjzbA2XO5FoOuNmfwqhB3mqOHbBdX7nzSE=
+X-Received: by 2002:ab0:1e4c:: with SMTP id n12mr4441015uak.58.1624453757600;
+ Wed, 23 Jun 2021 06:09:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210623130103.7727-1-fabioaiuto83@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210622231146.3208404-1-kieran.bingham@ideasonboard.com>
+ <CAMuHMdW8vYC3+gVCv5eG_vkX79vU8RQL-6fSJd9McetDzikzSA@mail.gmail.com> <YNMv2KSjbwX5aAK2@pendragon.ideasonboard.com>
+In-Reply-To: <YNMv2KSjbwX5aAK2@pendragon.ideasonboard.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 23 Jun 2021 15:09:06 +0200
+Message-ID: <CAMuHMdXJTCyfMX3nN6pbAHeqqf5OCqJR4+7GJ=71+o1iKRrHhg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: display: renesas,du: Provide bindings for r8a779a0
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:DRM DRIVERS FOR RENESAS" <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVERS FOR RENESAS" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Laurent,
 
-On 6/23/21 3:01 PM, Fabio Aiuto wrote:
-> function chk_sta_is_alive() is used only inside core/rtw_ap.c
-> so remove the prototype and convert it to static.
-> 
-> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+On Wed, Jun 23, 2021 at 2:58 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+> On Wed, Jun 23, 2021 at 02:53:33PM +0200, Geert Uytterhoeven wrote:
+> > On Wed, Jun 23, 2021 at 1:11 AM Kieran Bingham wrote:
+> > > From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> > >
+> > > Extend the Renesas DU display bindings to support the r8a779a0 V3U.
+> > >
+> > > Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> >
+> > Thanks for your patch!
+> >
+> > > --- a/Documentation/devicetree/bindings/display/renesas,du.yaml
+> > > +++ b/Documentation/devicetree/bindings/display/renesas,du.yaml
+> > > @@ -39,6 +39,7 @@ properties:
+> > >        - renesas,du-r8a77980 # for R-Car V3H compatible DU
+> > >        - renesas,du-r8a77990 # for R-Car E3 compatible DU
+> > >        - renesas,du-r8a77995 # for R-Car D3 compatible DU
+> > > +      - renesas,du-r8a779a0 # for R-Car V3U compatible DU
+> > >
+> > >    reg:
+> > >      maxItems: 1
+> > > @@ -774,6 +775,57 @@ allOf:
+> > >          - reset-names
+> > >          - renesas,vsps
+> > >
+> > > +  - if:
+> > > +      properties:
+> > > +        compatible:
+> > > +          contains:
+> > > +            enum:
+> > > +              - renesas,du-r8a779a0
+> > > +    then:
+> > > +      properties:
+> > > +        clocks:
+> > > +          items:
+> > > +            - description: Functional clock for DU0
+> > > +            - description: Functional clock for DU1
+> > > +
+> > > +        clock-names:
+> > > +          items:
+> > > +            - const: du.0
+> > > +            - const: du.1
+> >
+> > The hardware block has only a single function clock for both channels,
+> > like on R-Car H1.
+> >
+> > And what about DU_DOTCLKIN?
+>
+> As far as I can tell, there's no DU_DOTCLKIN in V3U.
 
-Thanks, patch looks good to me:
+See Table 6.13 of the Hardware User's Manual, pin IPC_CLKIN.
+Note that the register bits to configure it are present in
+drivers/pinctrl/renesas/pfc-r8a779a0.c, but the actual pin group is
+missing.
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Gr{oetje,eeting}s,
 
-Regards,
+                        Geert
 
-Hans
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-> ---
->  drivers/staging/rtl8723bs/core/rtw_ap.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_ap.c b/drivers/staging/rtl8723bs/core/rtw_ap.c
-> index 23bbdf084631..3e2d8b735fc8 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_ap.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_ap.c
-> @@ -164,8 +164,7 @@ static void update_BCNTIM(struct adapter *padapter)
->  	pnetwork_mlmeext->IELength = offset + remainder_ielen;
->  }
->  
-> -u8 chk_sta_is_alive(struct sta_info *psta);
-> -u8 chk_sta_is_alive(struct sta_info *psta)
-> +static u8 chk_sta_is_alive(struct sta_info *psta)
->  {
->  	sta_update_last_rx_pkts(psta);
->  
-> 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
