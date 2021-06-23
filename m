@@ -2,54 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A043B21C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A30323B21C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 22:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhFWU0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 16:26:39 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:52412 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229758AbhFWU0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 16:26:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=6Ii75us1kCULe9IWZ/dfVhM3nBnfsNUJlSfNnoF9IjY=; b=PrJWAIs+QcC5F8WFBNLgYEJ9IU
-        7+caU2bD5RGcgRsAnEqZhhXVZmwbc+o7n/T4+qnRhKOpHvXoElg4pX3m8DcZ1hn5hBLTR9wBRpWWb
-        5UD5q6E4ILWjSNKvwKWzFvZ/E/hHEiPpI+abXsgvw9FDrClWheJqKilUcejWucWAnvYQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lw9Q3-00At9D-6O; Wed, 23 Jun 2021 22:24:19 +0200
-Date:   Wed, 23 Jun 2021 22:24:19 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Marcin Wojtas <mw@semihalf.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
-        jaz@semihalf.com, gjb@semihalf.com, upstream@semihalf.com,
-        Samer.El-Haj-Mahmoud@arm.com, jon@solid-run.com, tn@semihalf.com,
-        rjw@rjwysocki.net, lenb@kernel.org
-Subject: Re: [net-next: PATCH v3 3/6] net/fsl: switch to
- fwnode_mdiobus_register
-Message-ID: <YNOYc3O/GMH18eaR@lunn.ch>
-References: <20210621173028.3541424-1-mw@semihalf.com>
- <20210621173028.3541424-4-mw@semihalf.com>
+        id S229886AbhFWU1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 16:27:50 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:36406 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhFWU1s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 16:27:48 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id EABFD1C0B76; Wed, 23 Jun 2021 22:25:29 +0200 (CEST)
+Date:   Wed, 23 Jun 2021 22:25:29 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH 4.19 425/425] scripts: switch explicitly to Python 3
+Message-ID: <20210623202529.GG8540@amd>
+References: <20210520092131.308959589@linuxfoundation.org>
+ <20210520092145.369052506@linuxfoundation.org>
+ <20210520203625.GA6187@amd>
+ <YKc4wSgWcnGh3Bbq@kroah.com>
+ <YKc47AGJRaBn3qIQ@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="0qt3EE9wi45a2ZFX"
 Content-Disposition: inline
-In-Reply-To: <20210621173028.3541424-4-mw@semihalf.com>
+In-Reply-To: <YKc47AGJRaBn3qIQ@kroah.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 07:30:25PM +0200, Marcin Wojtas wrote:
-> Utilize the newly added helper routine
-> for registering the MDIO bus via fwnode_
-> interface.
-> 
-> Signed-off-by: Marcin Wojtas <mw@semihalf.com>
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+--0qt3EE9wi45a2ZFX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-    Andrew
+On Fri 2021-05-21 06:37:00, Greg Kroah-Hartman wrote:
+> On Fri, May 21, 2021 at 06:36:18AM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, May 20, 2021 at 10:36:26PM +0200, Pavel Machek wrote:
+> > > Hi!
+> > >=20
+> > > > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > >=20
+> > > > commit 51839e29cb5954470ea4db7236ef8c3d77a6e0bb upstream.
+> > > >=20
+> > > > Some distributions are about to switch to Python 3 support only.
+> > > > This means that /usr/bin/python, which is Python 2, is not available
+> > > > anymore. Hence, switch scripts to use Python 3 explicitly.
+> > >=20
+> > > I'd say this is unsuitable for -stable.
+> > >=20
+> > > Old distributions may not have python3 installed, and we should not
+> > > change this dependency in the middle of the series.
+> >=20
+> > What distro that was released in 2017 (the year 4.14.0 was released) did
+> > not have python3 on it?
+>=20
+> oops, I meant 2018, when 4.19.0 was out, wrong tree...
+
+In anything yocto-based, for example, you explicitely select which
+packages you want. And changing dependencies in middle of stable
+release is surprising and against our documentation.
+
+Best regards,
+							Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--0qt3EE9wi45a2ZFX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmDTmLkACgkQMOfwapXb+vJVbACeMwxIVQcVq+g77yLg9aJHEuww
+zScAn3YOTP94NukwBlTBhC5eVZfLvu0F
+=epBE
+-----END PGP SIGNATURE-----
+
+--0qt3EE9wi45a2ZFX--
