@@ -2,302 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DED3B1ED2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF68A3B1ED8
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbhFWQl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 12:41:57 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:53847 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229889AbhFWQlz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 12:41:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1624466378; x=1656002378;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=bD3fHcpKfJA9p2zej1L/UrxZaxu1AH26pxH4pa5HgfE=;
-  b=J25k+0X2r6bhjLWTDHVsp3IWabanjvu6tre2LozQj1mhkSKwYGVeHX0G
-   R05+kLiSkWZQ4Fhh+6djlOQ4Wyu/OKG/TgJfOlCNBzx4RpLv2vW3g595P
-   qJzQBKCngIf5AvIczu5o2ysOdhjrPow3f1PTT8QFyURZY6YJg01idm8Bx
-   M=;
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 23 Jun 2021 09:39:37 -0700
-X-QCInternal: smtphost
-Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
-  by ironmsg01-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 23 Jun 2021 09:39:35 -0700
-Received: from [10.38.240.33] (10.80.80.8) by nasanexm03e.na.qualcomm.com
- (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 23 Jun
- 2021 09:39:31 -0700
-Subject: Re: [PATCH v14 06/12] swiotlb: Use is_swiotlb_force_bounce for
- swiotlb data bouncing
-To:     Claire Chang <tientzu@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, <mpe@ellerman.id.au>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        <boris.ostrovsky@oracle.com>, <jgross@suse.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-CC:     <heikki.krogerus@linux.intel.com>,
-        <thomas.hellstrom@linux.intel.com>, <peterz@infradead.org>,
-        <benh@kernel.crashing.org>, <joonas.lahtinen@linux.intel.com>,
-        <dri-devel@lists.freedesktop.org>, <chris@chris-wilson.co.uk>,
-        <grant.likely@arm.com>, <paulus@samba.org>, <mingo@kernel.org>,
-        <jxgao@google.com>, <sstabellini@kernel.org>,
-        Saravana Kannan <saravanak@google.com>, <xypron.glpk@gmx.de>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        <bskeggs@redhat.com>, <linux-pci@vger.kernel.org>,
-        <xen-devel@lists.xenproject.org>,
-        Thierry Reding <treding@nvidia.com>,
-        <intel-gfx@lists.freedesktop.org>, <matthew.auld@intel.com>,
-        linux-devicetree <devicetree@vger.kernel.org>, <daniel@ffwll.ch>,
-        <airlied@linux.ie>, <maarten.lankhorst@linux.intel.com>,
-        <linuxppc-dev@lists.ozlabs.org>, <jani.nikula@linux.intel.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        <rodrigo.vivi@intel.com>, <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        <thomas.lendacky@amd.com>, Robin Murphy <robin.murphy@arm.com>,
-        <bauerman@linux.ibm.com>
-References: <20210619034043.199220-1-tientzu@chromium.org>
- <20210619034043.199220-7-tientzu@chromium.org>
-From:   Qian Cai <quic_qiancai@quicinc.com>
-Message-ID: <76c3343d-72e5-9df3-8924-5474ee698ef4@quicinc.com>
-Date:   Wed, 23 Jun 2021 12:39:29 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229826AbhFWQnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 12:43:31 -0400
+Received: from mail-dm6nam12on2062.outbound.protection.outlook.com ([40.107.243.62]:49504
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229523AbhFWQna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 12:43:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fVwvbBXo2v2HR5eH7LrOAceT5RJk7yXlkQrt9MagO9ZUuBoYBaLkL/S4ESqd2eC4jkgN9l32qnm8X7TpdeIcgL0LxrHpCj+Cv5YXCrVyqE+TqzL/guGVEAnv8WeEziCMoKVFtCyL7EhiUE8fq9JODlI1bVg/Z94x5OCXc0PP7ufsrRcKdeRUjevBm5uSYDfisb6rICDe9PR/dElBBTWX4ihV4RvCtqdmDy+Uhy0HwrtALNT+Ey+sySnGKSC2qQPitqFkHVyqnsRV0gHvT8Fn8HfG1BzxN0arQYjDSGTvnnFvj9mbpexbBwYschpEdP8B2DuOlCy5Sjq5bguio5DsCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CcqD7kBHTIu8L7a6Z7JDlhO2suVhHYluffA0VJbrSHY=;
+ b=ezw3lTP3Uvm63r3pbaVKi/JfX5PTpA97NhFG8itVP6IsxcSOung53d5HhCy5KclhL4YGYmDx3EZWPQNllbaVjcqcN0aeSuDxUdWxy9bor/6aJ2vLG0RnJ46AyEcU7Ew3Fd0a7mejNf7b5nM6jF3Ej312X2Lsd3/E98+AbQiuCdQvd7PLjnboDkBcL5d8r3xRMjD85pTFsuQnbncZj3KOxhoaDCPNCiauVQMJYTnuCzTfhnTXPWlujFPrfj2b1OCaF0rMQKsm0VMsJ/MOZOJRQzOafe65ZhgbuJFQk2l7XO+2zGeDpIIhJVYnVhL2z6UIaND0xJCHR5GaU/osMScTHg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CcqD7kBHTIu8L7a6Z7JDlhO2suVhHYluffA0VJbrSHY=;
+ b=n2vMwASKi/kFpkufZQVLlOqFm26JcXc9Wy5L6Aq6EL20hSLYJ0XoxuMO6m5zjkcY7cGtKr+Xan/4DXbVXPAOFpgE7ywf9d8k/TJ/NGSUeMEi8Xvoz9S2M+JMCpcB6lgkRqGcniK/120w8SCCynDQ26NLPIMn2qOj4ncWYPHHWlatN/Q3pW3uWWqvQf/hIFQ8MoqLK68SQG+AnZEeaQqQ6lLdahTa8+iWx2VL3HOOrTWRam8470ORKOvBKM42v+ov1tAfTGHvLgAvVLNpRDSEGT62Wb8dCc25gQjpX+/cR+MdXUqNapqincmeW1jzFmBXqehqkF29obuY8zEvyTYxmw==
+Authentication-Results: linutronix.de; dkim=none (message not signed)
+ header.d=none;linutronix.de; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL0PR12MB5539.namprd12.prod.outlook.com (2603:10b6:208:1c3::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19; Wed, 23 Jun
+ 2021 16:41:10 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4264.019; Wed, 23 Jun 2021
+ 16:41:10 +0000
+Date:   Wed, 23 Jun 2021 13:41:09 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, KVM <kvm@vger.kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Subject: Re: Virtualizing MSI-X on IMS via VFIO
+Message-ID: <20210623164109.GL2371267@nvidia.com>
+References: <20210622131217.76b28f6f.alex.williamson@redhat.com>
+ <87o8bxcuxv.ffs@nanos.tec.linutronix.de>
+ <MWHPR11MB1886811339F7873A8E34549A8C089@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <87bl7wczkp.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87bl7wczkp.ffs@nanos.tec.linutronix.de>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL1PR13CA0404.namprd13.prod.outlook.com
+ (2603:10b6:208:2c2::19) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <20210619034043.199220-7-tientzu@chromium.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanexm03e.na.qualcomm.com (10.85.0.48)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0404.namprd13.prod.outlook.com (2603:10b6:208:2c2::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.9 via Frontend Transport; Wed, 23 Jun 2021 16:41:10 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lw5w5-00BXlV-CC; Wed, 23 Jun 2021 13:41:09 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cfca2d0d-15c5-4743-3408-08d93665b4c2
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5539:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB55391AB263896C5C9C23719EC2089@BL0PR12MB5539.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FlyPMCIHB+HBekWikyAN4rBgLaLc0dYMQ7k1y0/aAza34nXzhUwEiMXGJdEk16FzekfFKtNcIw1d6prAiUA0WuHRtwVcKsLjpv6wHmLMJ2yTtp4uvoVNc4+7qNLsmIrfgG/UOOx98ks3cc8WXldEhUFPqOYWImrOJSNaenEz9ou7OCLtms+pF/y5WQzoNbDZA9AS3qgSectMpWEOgN7B/zmf8jDaDLK6EoD9okoyhaqLhIQccYeKqES92OSbjj00TTwNUF7uztU5goh0pzn51N9/KXPDUiqJOe5Ijj4z2xC1wx3Bo4Y0GIS4XiMYAnJKjqVaXsy1VRgkxr6zFEkeLQAEt5ZR0cWxq+za/iB6K3YwoTzrJHUJ0SY5GspvH/Br32yQt4n9iLaLQVO9qjvvSyDkxhQcmCLFchtxjKevVd1qwj5G4RVO7F77UkYFQxMnBATHIDVnZuvcBYCJSxrPamHZYzyl/JUV9/OfRfG9O6N8oEKO30smqN6OAR1NWFwmGk0bHP1siPy64TzkaBTHjAp0vSuFWZD05gxZ5JIJm/fZgspZcUQrBUBZ0dPUi7gQjJ9NRzQB6kF9v5D1DVei50YjjcN8AEJ0Crp5xClDs2AMEvAZHPeGzwfpGESlpOsmVSAdJpIX2y8OXG0BLLNZ9A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(346002)(396003)(39860400002)(186003)(36756003)(8936002)(9746002)(5660300002)(9786002)(26005)(8676002)(4744005)(7416002)(426003)(33656002)(4326008)(6916009)(66946007)(66476007)(66556008)(86362001)(38100700002)(54906003)(83380400001)(478600001)(316002)(2616005)(1076003)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?f1PtV0tSu8kkpgGRfkHaB62vLYvaTLiHzKLPVIiY/oY7NGyM8QeElUXONZHw?=
+ =?us-ascii?Q?CFEU8cLBQR0RW8vJ1IKoj+jad72xm0UGkQjr8n26RA26v/wa8KxlGl8dBs8f?=
+ =?us-ascii?Q?FinNrGJe1uwZ+g5j/R/K7aNY3l1+hRuXuqq92FzgvUERQqAnPWcOYmjJpe7W?=
+ =?us-ascii?Q?HeWgXcpQ6lKab7MCjT4r+N1AqnpAl1Eb0zv3Jpo9ZoVIgKv6wIkQyflcD5nb?=
+ =?us-ascii?Q?/aTQlcK2NG7aSw2XOE771dSSDshzQp8EBwJWNQrxOJCruKKFD+yKfiuNOmXG?=
+ =?us-ascii?Q?CVkVaUB+VHaeMk2NsOF0qaxR6/8AlWAE5S0aqDbwvkI6kBgSD6642WOZoubO?=
+ =?us-ascii?Q?TXKtHuMu9KkpYow4GidIvhkhrKSpB8tasHAX/QpLMC2NGti59n+ZzsXMbN/D?=
+ =?us-ascii?Q?pGhdm4SVZ5qgRBA0MwpfzZxXLgicsHadHO/S+vnGCxa2uS2526R/WvYfgGbY?=
+ =?us-ascii?Q?/l7fqqekfDkg/BGYzAbexIc+2hqh5M9zO4Iqpgp8ZVwlpWsQLAMbzi+4qsrE?=
+ =?us-ascii?Q?clhF/lpMzuM0XTmeOzXP2G+CmmtplBlRvBpS8a2pCk1P0ZYOTRoAhJQWx4VS?=
+ =?us-ascii?Q?bUheXiQzeYWY2QP5jG9/mxI5mWUf5DZ4g2z78jTJ4lFVZ2mRvZqUgJMPvyn5?=
+ =?us-ascii?Q?8rBcare9KpPUzUTD5y6KvaiM9+JWvZL1rVg7noPRvxQbQC+3vLV60zWYnGR5?=
+ =?us-ascii?Q?1A1ceA0EcmFrvzQCjZM000ZETCCrNu0e4y6mtVZur8QnWyeN5j5D7DBi2h5V?=
+ =?us-ascii?Q?GqhygoShvo4Xdj5krzNkZHmZebDr5xaXikxY/2QgZIDvzzd+/ciQoW+r2I0/?=
+ =?us-ascii?Q?c/4A9Hjp3O8hzdSs+Ut6dNPYukoLM0WJXNaSub5LAY9HJVBKPCnbUpHHWNji?=
+ =?us-ascii?Q?o57pcU1PoJt5pRfq1ReTHX8rGGWObyb3LF3iix3SUbCTFz7nhsbWmUd4bh6q?=
+ =?us-ascii?Q?cslmhQP6p0VS68AAYLxor4ARYN87qdwqDkqMCT6C0/wX2NTDC7pUXJb3BkFR?=
+ =?us-ascii?Q?JXW/yA8AdNWXpNqtqnyVu8eT8I2JEqeRbWDPwNhy5eZtpD1A3jfOqR3psaeh?=
+ =?us-ascii?Q?aHeJYATGzIsJMTeOlsfiwzD2O1aLvoyD2rd6wW6VhG/GDdi5Fk+pluJKq/Jb?=
+ =?us-ascii?Q?NKPbg6+vxcoZzdsdqUK4/pRr6XAZ7FyHI98E46Aa+/Lcxvp7k/duTMOJYdAm?=
+ =?us-ascii?Q?PLuQztPgLEYMXRdWUPTSGkGIkt3IPAOnS2ZJ0TA83uf9M8XSYnvKWk2ffHiP?=
+ =?us-ascii?Q?KKt5bQ5NCjqnHqqtrqF42eteUf6SRbmbaCHSiE7bcXiA1I5BxV+AdZJ5F3DW?=
+ =?us-ascii?Q?xkThUxQUIXkqV+QuGEiHfOvf?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cfca2d0d-15c5-4743-3408-08d93665b4c2
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2021 16:41:10.4138
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZBqS0Hs3J3SBHE6YTKrKPEArM13MsB4emRp3PlATkVSMAdYwYOb9EB6Clm6X7m9u
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5539
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 23, 2021 at 06:31:34PM +0200, Thomas Gleixner wrote:
 
+> So IMO creating a proper paravirt interface is the right approach.  It
+> avoids _all_ of the trouble and will be necessary anyway once you want
+> to support devices which store the message/pasid in system memory and
+> not in on-device memory.
 
-On 6/18/2021 11:40 PM, Claire Chang wrote:
-> Propagate the swiotlb_force into io_tlb_default_mem->force_bounce and
-> use it to determine whether to bounce the data or not. This will be
-> useful later to allow for different pools.
-> 
-> Signed-off-by: Claire Chang <tientzu@chromium.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Tested-by: Stefano Stabellini <sstabellini@kernel.org>
-> Tested-by: Will Deacon <will@kernel.org>
-> Acked-by: Stefano Stabellini <sstabellini@kernel.org>
+I think this is basically where we got to in the other earlier
+discussion with using IMS natively in VMs - it can't be done
+generically without a new paravirt interface.
 
-Reverting the rest of the series up to this patch fixed a boot crash with NVMe on today's linux-next.
+The guest needs a paravirt interface to program the IOMMU to route MSI
+vectors to the guest's vAPIC and then the guest itself can deliver an
+addr/data pair directly to the HW.
 
-[   22.286574][    T7] Unable to handle kernel paging request at virtual address dfff80000000000e
-[   22.295225][    T7] Mem abort info:
-[   22.298743][    T7]   ESR = 0x96000004
-[   22.302496][    T7]   EC = 0x25: DABT (current EL), IL = 32 bits
-[   22.308525][    T7]   SET = 0, FnV = 0
-[   22.312274][    T7]   EA = 0, S1PTW = 0
-[   22.316131][    T7]   FSC = 0x04: level 0 translation fault
-[   22.321704][    T7] Data abort info:
-[   22.325278][    T7]   ISV = 0, ISS = 0x00000004
-[   22.329840][    T7]   CM = 0, WnR = 0
-[   22.333503][    T7] [dfff80000000000e] address between user and kernel address ranges
-[   22.338543][  T256] igb 0006:01:00.0: Intel(R) Gigabit Ethernet Network Connection
-[   22.341400][    T7] Internal error: Oops: 96000004 [#1] SMP
-[   22.348915][  T256] igb 0006:01:00.0: eth0: (PCIe:2.5Gb/s:Width x1) 4c:38:d5:09:c8:83
-[   22.354458][    T7] Modules linked in: igb(+) i2c_algo_bit nvme mlx5_core(+) i2c_core nvme_core firmware_class
-[   22.362512][  T256] igb 0006:01:00.0: eth0: PBA No: G69016-004
-[   22.372287][    T7] CPU: 13 PID: 7 Comm: kworker/u64:0 Not tainted 5.13.0-rc7-next-20210623+ #47
-[   22.372293][    T7] Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 1.6 06/28/2020
-[   22.372298][    T7] Workqueue: nvme-reset-wq nvme_reset_work [nvme]
-[   22.378145][  T256] igb 0006:01:00.0: Using MSI-X interrupts. 4 rx queue(s), 4 tx queue(s)
-[   22.386901][    T7] 
-[   22.386905][    T7] pstate: 10000005 (nzcV daif -PAN -UAO -TCO BTYPE=--)
-[   22.386910][    T7] pc : dma_direct_map_sg+0x304/0x8f0
+In this mode qemu would not emulate MSI at all so will avoid all the
+problems you identified.
 
-is_swiotlb_force_bounce at /usr/src/linux-next/./include/linux/swiotlb.h:119
-(inlined by) dma_direct_map_page at /usr/src/linux-next/kernel/dma/direct.h:90
-(inlined by) dma_direct_map_sg at /usr/src/linux-next/kernel/dma/direct.c:428
+How to build that and provide backwards compat is an open
+question. Instead that thread went into blocking IMS on VM situations..
 
-[   22.386919][    T7] lr : dma_map_sg_attrs+0x6c/0x118
-[   22.386924][    T7] sp : ffff80001dc8eac0
-[   22.386926][    T7] x29: ffff80001dc8eac0 x28: ffff0000199e70b0 x27: 0000000000000000
-[   22.386935][    T7] x26: ffff000847ee7000 x25: ffff80001158e570 x24: 0000000000000002
-[   22.386943][    T7] x23: dfff800000000000 x22: 0000000000000100 x21: ffff0000199e7460
-[   22.386951][    T7] x20: ffff0000199e7488 x19: 0000000000000001 x18: ffff000010062670
-[   22.386955][  T253] Unable to handle kernel paging request at virtual address dfff80000000000e
-[   22.386958][    T7] x17: ffff8000109f6a90 x16: ffff8000109e1b4c x15: ffff800009303420
-[   22.386965][  T253] Mem abort info:
-[   22.386967][    T7] x14: 0000000000000001 x13: ffff80001158e000
-[   22.386970][  T253]   ESR = 0x96000004
-[   22.386972][    T7]  x12: 1fffe00108fdce01
-[   22.386975][  T253]   EC = 0x25: DABT (current EL), IL = 32 bits
-[   22.386976][    T7] x11: 1fffe00108fdce03 x10: ffff000847ee700c x9 : 0000000000000004
-[   22.386981][  T253]   SET = 0, FnV = 0
-[   22.386983][    T7] 
-[   22.386985][    T7] x8 : ffff700003b91d72
-[   22.386986][  T253]   EA = 0, S1PTW = 0
-[   22.386987][    T7]  x7 : 0000000000000000 x6 : 000000000000000e
-[   22.386990][  T253]   FSC = 0x04: level 0 translation fault
-[   22.386992][    T7] 
-[   22.386994][    T7] x5 : dfff800000000000
-[   22.386995][  T253] Data abort info:
-[   22.386997][    T7]  x4 : 00000008c7ede000
-[   22.386999][  T253]   ISV = 0, ISS = 0x00000004
-[   22.386999][    T7]  x3 : 00000008c7ede000
-[   22.387003][    T7] x2 : 0000000000001000
-[   22.387003][  T253]   CM = 0, WnR = 0
-[   22.387006][    T7]  x1 : 0000000000000000 x0 : 0000000000000071
-[   22.387008][  T253] [dfff80000000000e] address between user and kernel address ranges
-[   22.387011][    T7] 
-[   22.387013][    T7] Call trace:
-[   22.387016][    T7]  dma_direct_map_sg+0x304/0x8f0
-[   22.387022][    T7]  dma_map_sg_attrs+0x6c/0x118
-[   22.387026][    T7]  nvme_map_data+0x2ec/0x21d8 [nvme]
-[   22.387040][    T7]  nvme_queue_rq+0x274/0x3f0 [nvme]
-[   22.387052][    T7]  blk_mq_dispatch_rq_list+0x2ec/0x18a0
-[   22.387060][    T7]  __blk_mq_sched_dispatch_requests+0x2a0/0x3e8
-[   22.387065][    T7]  blk_mq_sched_dispatch_requests+0xa4/0x100
-[   22.387070][    T7]  __blk_mq_run_hw_queue+0x148/0x1d8
-[   22.387075][    T7]  __blk_mq_delay_run_hw_queue+0x3f8/0x730
-[   22.414539][  T269] igb 0006:01:00.0 enP6p1s0: renamed from eth0
-[   22.418957][    T7]  blk_mq_run_hw_queue+0x148/0x248
-[   22.418969][    T7]  blk_mq_sched_insert_request+0x2a4/0x330
-[   22.418975][    T7]  blk_execute_rq_nowait+0xc8/0x118
-[   22.418981][    T7]  blk_execute_rq+0xd4/0x188
-[   22.453203][  T255] udevadm (255) used greatest stack depth: 57408 bytes left
-[   22.456504][    T7]  __nvme_submit_sync_cmd+0x4e0/0x730 [nvme_core]
-[   22.673245][    T7]  nvme_identify_ctrl.isra.0+0x124/0x1e0 [nvme_core]
-[   22.679784][    T7]  nvme_init_identify+0x90/0x1868 [nvme_core]
-[   22.685713][    T7]  nvme_init_ctrl_finish+0x1a8/0xb88 [nvme_core]
-[   22.691903][    T7]  nvme_reset_work+0xe5c/0x2aa4 [nvme]
-[   22.697219][    T7]  process_one_work+0x7e4/0x19a0
-[   22.702005][    T7]  worker_thread+0x334/0xae0
-[   22.706442][    T7]  kthread+0x3bc/0x470
-[   22.710359][    T7]  ret_from_fork+0x10/0x18
-[   22.714627][    T7] Code: f941ef81 9101c420 1200080e d343fc06 (38f768c6) 
-[   22.721407][    T7] ---[ end trace 1f3c4181ae408676 ]---
-[   22.726712][    T7] Kernel panic - not syncing: Oops: Fatal exception
-[   22.733169][    T7] SMP: stopping secondary CPUs
-[   23.765164][    T7] SMP: failed to stop secondary CPUs 13,15
-[   23.770818][    T7] Kernel Offset: disabled
-[   23.774991][    T7] CPU features: 0x00000251,20000846
-[   23.780034][    T7] Memory Limit: none
-[   23.783794][    T7] ---[ end Kernel panic - not syncing: Oops: Fatal exception ]---
-
-> ---
->  drivers/xen/swiotlb-xen.c |  2 +-
->  include/linux/swiotlb.h   | 11 +++++++++++
->  kernel/dma/direct.c       |  2 +-
->  kernel/dma/direct.h       |  2 +-
->  kernel/dma/swiotlb.c      |  4 ++++
->  5 files changed, 18 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
-> index 0c6ed09f8513..4730a146fa35 100644
-> --- a/drivers/xen/swiotlb-xen.c
-> +++ b/drivers/xen/swiotlb-xen.c
-> @@ -369,7 +369,7 @@ static dma_addr_t xen_swiotlb_map_page(struct device *dev, struct page *page,
->  	if (dma_capable(dev, dev_addr, size, true) &&
->  	    !range_straddles_page_boundary(phys, size) &&
->  		!xen_arch_need_swiotlb(dev, phys, dev_addr) &&
-> -		swiotlb_force != SWIOTLB_FORCE)
-> +		!is_swiotlb_force_bounce(dev))
->  		goto done;
->  
->  	/*
-> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-> index dd1c30a83058..8d8855c77d9a 100644
-> --- a/include/linux/swiotlb.h
-> +++ b/include/linux/swiotlb.h
-> @@ -84,6 +84,7 @@ extern enum swiotlb_force swiotlb_force;
->   *		unmap calls.
->   * @debugfs:	The dentry to debugfs.
->   * @late_alloc:	%true if allocated using the page allocator
-> + * @force_bounce: %true if swiotlb bouncing is forced
->   */
->  struct io_tlb_mem {
->  	phys_addr_t start;
-> @@ -94,6 +95,7 @@ struct io_tlb_mem {
->  	spinlock_t lock;
->  	struct dentry *debugfs;
->  	bool late_alloc;
-> +	bool force_bounce;
->  	struct io_tlb_slot {
->  		phys_addr_t orig_addr;
->  		size_t alloc_size;
-> @@ -109,6 +111,11 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
->  	return mem && paddr >= mem->start && paddr < mem->end;
->  }
->  
-> +static inline bool is_swiotlb_force_bounce(struct device *dev)
-> +{
-> +	return dev->dma_io_tlb_mem->force_bounce;
-> +}
-> +
->  void __init swiotlb_exit(void);
->  unsigned int swiotlb_max_segment(void);
->  size_t swiotlb_max_mapping_size(struct device *dev);
-> @@ -120,6 +127,10 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
->  {
->  	return false;
->  }
-> +static inline bool is_swiotlb_force_bounce(struct device *dev)
-> +{
-> +	return false;
-> +}
->  static inline void swiotlb_exit(void)
->  {
->  }
-> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-> index 7a88c34d0867..a92465b4eb12 100644
-> --- a/kernel/dma/direct.c
-> +++ b/kernel/dma/direct.c
-> @@ -496,7 +496,7 @@ size_t dma_direct_max_mapping_size(struct device *dev)
->  {
->  	/* If SWIOTLB is active, use its maximum mapping size */
->  	if (is_swiotlb_active(dev) &&
-> -	    (dma_addressing_limited(dev) || swiotlb_force == SWIOTLB_FORCE))
-> +	    (dma_addressing_limited(dev) || is_swiotlb_force_bounce(dev)))
->  		return swiotlb_max_mapping_size(dev);
->  	return SIZE_MAX;
->  }
-> diff --git a/kernel/dma/direct.h b/kernel/dma/direct.h
-> index 13e9e7158d94..4632b0f4f72e 100644
-> --- a/kernel/dma/direct.h
-> +++ b/kernel/dma/direct.h
-> @@ -87,7 +87,7 @@ static inline dma_addr_t dma_direct_map_page(struct device *dev,
->  	phys_addr_t phys = page_to_phys(page) + offset;
->  	dma_addr_t dma_addr = phys_to_dma(dev, phys);
->  
-> -	if (unlikely(swiotlb_force == SWIOTLB_FORCE))
-> +	if (is_swiotlb_force_bounce(dev))
->  		return swiotlb_map(dev, phys, size, dir, attrs);
->  
->  	if (unlikely(!dma_capable(dev, dma_addr, size, true))) {
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index 8a120f42340b..0d294bbf274c 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -179,6 +179,10 @@ static void swiotlb_init_io_tlb_mem(struct io_tlb_mem *mem, phys_addr_t start,
->  	mem->end = mem->start + bytes;
->  	mem->index = 0;
->  	mem->late_alloc = late_alloc;
-> +
-> +	if (swiotlb_force == SWIOTLB_FORCE)
-> +		mem->force_bounce = true;
-> +
->  	spin_lock_init(&mem->lock);
->  	for (i = 0; i < mem->nslabs; i++) {
->  		mem->slots[i].list = IO_TLB_SEGSIZE - io_tlb_offset(i);
-> 
+Jason
