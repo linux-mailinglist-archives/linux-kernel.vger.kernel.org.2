@@ -2,111 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE773B1CA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8E73B1CB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 16:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhFWOjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 10:39:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59265 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231185AbhFWOjM (ORCPT
+        id S231260AbhFWOka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 10:40:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231187AbhFWOk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 10:39:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624459014;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VBMDG4UXrSJboSIzPzYeNyQOJqoBBhGOYVr8H5cUqrM=;
-        b=g8wnmVT8OM8ekkQeo8A20bNDK3hSOvjhKql31HpoczOcziNVUvb9hBVWf61bsOAGtnpeRt
-        SUtXwltXshb2InLHgbBdEWxsATDYkoxYArg/fa1TME8ETZ+8IW+3Qw/6BTuSVbMiWpa69V
-        H9Iq4C+wzERYhnKdVAg8E5pA8xBsxWk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-286-WsYo9_bmNFCK8aHhURxH2A-1; Wed, 23 Jun 2021 10:36:53 -0400
-X-MC-Unique: WsYo9_bmNFCK8aHhURxH2A-1
-Received: by mail-ed1-f69.google.com with SMTP id r6-20020a05640216c6b0290394ed90b605so1318121edx.20
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 07:36:52 -0700 (PDT)
+        Wed, 23 Jun 2021 10:40:29 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81DF3C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 07:38:12 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso1500626pjp.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 07:38:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gYsWzSIHMSc6Tk2EhcHMeSwtIxBEj34qEnDzw9ljN3s=;
+        b=On69jlBS8D8eW015oMkd5PZ2WcwQmLiyjgNGu9DtIfKZV0aMLPx3I4ItRey5K6mYDV
+         xwOnvhsLXMLHTs9uOgjKZM+AAmcRCcNUyOXkhDaasZ4vUbuQUC2Y+tJOn+sxQ6ANsmda
+         fPYT2eyPvHfGHH1cz0BDu0FYRr7cNEsZ9OeAs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VBMDG4UXrSJboSIzPzYeNyQOJqoBBhGOYVr8H5cUqrM=;
-        b=VL9u84ktfsTzJM13FIYJECke8Goyq9432gJlDCOh0tV9k/kjtuK/4WtetbTBu3FrQB
-         wgtrz9ejamNEBjQTev2r0AvXRSYd3DOBDmn30oKF8N3lKYez3nTXhRIYOpDRIslvumrx
-         4YydTDl6YA5+F0cdE8kumcW0Po0++KIanwmQLvqpCnXqs2fIHb93ePJemxKJ8v+8vQbs
-         UI6c0ip7bD/MY0qcIQ7+QyAQxVzc9tqbZwlHMcGTrtkWrEB1VmAw8w0JuBdBlZR+Osoi
-         uuHV5CuL1+JTfH/+KHzuDMnYJQrudiKplYSMCXVd4uyowvRDeqwrrCDZD+jSTVd0Wj8e
-         fisg==
-X-Gm-Message-State: AOAM5310jDLkkqLq8p8FFYgoH8lXqB3ViCR03U0UsTjh1r6QL+F6qe8X
-        gfctojp3fQIpFqRKWrmrmNXR0d3WVP5hqX+VqJk5I7RsUKqQm7jWGES31uzcSos4Ow8zRg5xH0T
-        BELTRei3kjF7jMdxpoehAKfqQ
-X-Received: by 2002:a05:6402:27c9:: with SMTP id c9mr13083961ede.371.1624459011908;
-        Wed, 23 Jun 2021 07:36:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxn6E7ZOsBU41zrf1ugX7X/dOmdoRD+dXxMpFcDw6hD51zUhNu4HUdFstpH5YCILWNR9OpFag==
-X-Received: by 2002:a05:6402:27c9:: with SMTP id c9mr13083945ede.371.1624459011780;
-        Wed, 23 Jun 2021 07:36:51 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id g15sm7358368ejb.103.2021.06.23.07.36.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 07:36:51 -0700 (PDT)
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-References: <20210622175739.3610207-1-seanjc@google.com>
- <20210622175739.3610207-10-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 09/54] KVM: x86/mmu: Unconditionally zap unsync SPs when
- creating >4k SP at GFN
-Message-ID: <f2dcfe12-e562-754e-2756-1414e8e2775f@redhat.com>
-Date:   Wed, 23 Jun 2021 16:36:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gYsWzSIHMSc6Tk2EhcHMeSwtIxBEj34qEnDzw9ljN3s=;
+        b=ivZnFfCkS0AnQrvtRN5FE/BAYnpZiyx6CowcQkAfqqQeDOLIuxX7Qn6EGI5Db56Hdj
+         flcQqs8aVw1+gWd+1VoD+USQ6ZsqrVmql9Oz/vErX3ZiakxvPTiUKxKBzfu666HN1VKU
+         9krli1qcYEs39djKZz0dshLHG5dXLwLOEwCOXggGO0wuBLt0mdbo/iT7Te1VNArmT3Ne
+         vyTNbS4NCcrdxSKt+o+BaHZtyM8zLu9klzc+vYwE7hYV9wS0RjH1GmbF6xgQtdf5g+6x
+         BU8+qYTHlcCcXJJ6hYsAKRjOqwSlsRzOgr2gv2isP/RF/A8pf4ntohLEi8rayhKqoDY/
+         /VPA==
+X-Gm-Message-State: AOAM531vUcp5T1GC2IUE8kYOUx4uzFSbgSF5+Q34Gq8ZJ4stclEFyoLv
+        KG9LWs4Tb9gsTwapkKhAyvJ/pg==
+X-Google-Smtp-Source: ABdhPJyPZywy459VJObSw/vvdeHF8Qv736PYSJ4zEvgpg+nRYBaYdVTNJsDR2tMXD8cxy2Ug8yvQ9w==
+X-Received: by 2002:a17:902:db07:b029:125:765c:75e1 with SMTP id m7-20020a170902db07b0290125765c75e1mr9852plx.9.1624459092040;
+        Wed, 23 Jun 2021 07:38:12 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i125sm186361pfc.7.2021.06.23.07.38.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 07:38:11 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 07:38:10 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     Shuah Khan <shuah@kernel.org>, stable@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] selftests/lkdtm: Use /bin/sh not $SHELL
+Message-ID: <202106230734.78A239D@keescook>
+References: <20210619025834.2505201-1-keescook@chromium.org>
+ <e958209b-8621-57ca-01d6-2e76b05dab4c@collabora.com>
 MIME-Version: 1.0
-In-Reply-To: <20210622175739.3610207-10-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e958209b-8621-57ca-01d6-2e76b05dab4c@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/06/21 19:56, Sean Christopherson wrote:
-> When creating a new upper-level shadow page, zap unsync shadow pages at
-> the same target gfn instead of attempting to sync the pages.  This fixes
-> a bug where an unsync shadow page could be sync'd with an incompatible
-> context, e.g. wrong smm, is_guest, etc... flags.  In practice, the bug is
-> relatively benign as sync_page() is all but guaranteed to fail its check
-> that the guest's desired gfn (for the to-be-sync'd page) matches the
-> current gfn associated with the shadow page.  I.e. kvm_sync_page() would
-> end up zapping the page anyways.
+On Wed, Jun 23, 2021 at 01:39:57PM +0100, Guillaume Tucker wrote:
+> On 19/06/2021 03:58, Kees Cook wrote:
+> > Some environments do not set $SHELL when running tests. There's no need
+> > to use $SHELL here anyway, so just replace it with hard-coded path
+> > instead. Additionally avoid using bash-isms in the command, so that
+> > regular /bin/sh can be used.
+> > 
+> > Suggested-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+> > Fixes: 46d1a0f03d66 ("selftests/lkdtm: Add tests for LKDTM targets")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
 > 
-> Alternatively, __kvm_sync_page() could be modified to explicitly verify
-> the mmu_role of the unsync shadow page is compatible with the current MMU
-> context.  But, except for this specific case, __kvm_sync_page() is called
-> iff the page is compatible, e.g. the transient sync in kvm_mmu_get_page()
-> requires an exact role match, and the call from kvm_sync_mmu_roots() is
-> only synchronizing shadow pages from the current MMU (which better be
-> compatible or KVM has problems).  And as described above, attempting to
-> sync shadow pages when creating an upper-level shadow page is unlikely
-> to succeed, e.g. zero successful syncs were observed when running Linux
-> guests despite over a million attempts.
+> 
+> Tested-by: "kernelci.org bot" <bot@kernelci.org> 
+> 
+> 
+> Sample staging results with this patch applied on top of
+> next-20210622:
+> 
+> https://staging.kernelci.org/test/plan/id/60d2dbdc3cfb88da0924bf41/
+> 
+> Full log:
+> 
+> https://storage.staging.kernelci.org/kernelci/staging-next/staging-next-20210623.0/x86_64/x86_64_defconfig+x86-chromebook+kselftest/clang-13/lab-collabora/kselftest-lkdtm-asus-C523NA-A20057-coral.html
 
-One issue, this WARN_ON may now trigger:
+Awesome! This looks great. :)
 
-                         WARN_ON(!list_empty(&invalid_list));
+What's needed to build these kernels will different CONFIGs? I see a
+bunch of things (commonly found in distro kernels) that are not set:
 
-due to a kvm_mmu_prepare_zap_page that could have happened on an earlier 
-iteration of the for_each_valid_sp.  Before your change, __kvm_sync_page 
-would be called always before kvm_sync_pages could add anything to 
-invalid_list.
+CONFIG_SLAB_FREELIST_HARDENED=y
+CONFIG_FORTIFY_SOURCE=y
+CONFIG_HARDENED_USERCOPY=y
+# CONFIG_HARDENED_USERCOPY_FALLBACK is not set
 
-Paolo
+Should I add these to the kselftest "config" file for LKDTM?
 
+Thanks again for the help with this!
+
+-Kees
+
+-- 
+Kees Cook
