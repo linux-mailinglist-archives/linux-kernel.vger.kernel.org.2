@@ -2,56 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7444E3B1201
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 05:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3EA3B1207
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 05:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbhFWDI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 23:08:28 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58786 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229774AbhFWDI1 (ORCPT
+        id S230272AbhFWDNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 23:13:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhFWDNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 23:08:27 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 15N362U4026019
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 23:06:02 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 1375015C3CD6; Tue, 22 Jun 2021 23:06:02 -0400 (EDT)
-Date:   Tue, 22 Jun 2021 23:06:02 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Wang Jianchao <jianchao.wan9@gmail.com>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lishujin@kuaishou.com
-Subject: Re: [PATCH V2 5/7] ext4: get buddy cache after insert successfully
-Message-ID: <YNKlGn3GRFCtyls7@mit.edu>
-References: <164ffa3b-c4d5-6967-feba-b972995a6dfb@gmail.com>
- <a602a6ba-2073-8384-4c8f-d669ee25c065@gmail.com>
- <49382052-6238-f1fb-40d1-b6b801b39ff7@gmail.com>
- <48e33dea-d15e-f211-0191-e01bd3eb17b3@gmail.com>
- <67eeb65a-d413-c4f9-c06f-d5dcceca0e4f@gmail.com>
- <93458049-0d43-617a-a5e7-c7e10325443a@gmail.com>
+        Tue, 22 Jun 2021 23:13:12 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F48C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 20:10:55 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id p9so572111pgb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 20:10:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=X0gPs/cs8YvnQjVNndlg//nehJAxA2/r7AIcl6qRSJw=;
+        b=wpfhEedfhZcJ6o7g7lFoOV4VkVD/dYlAckXkDcsS8MHNP8iNBhshJtmdcdsVFRknCy
+         ekPFziu3c6jKykAou/RtZewHx0KJk5/kr/pmKqQOjDngYzDTLa3HVc1qbR8m6gJJajmA
+         iPGV9W4iLR0dr8qx5/XG+eZpULi86fAU7/Nrc7iyzTiJee5RB0xgyvok2nWxEuqKZmRp
+         qDpNj86TgJxYYO4QReHiuWrqjSlY70SXX9zV8c9SXo58gmzvvvpbEcMEhwnf+MeoBMxc
+         7zgtfdMmPEyiC5p5oXuqm6gKOUJRtV6+yffa058IjKUgpTF3BMR0ijAtgwoXmmzIHwTy
+         yvjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=X0gPs/cs8YvnQjVNndlg//nehJAxA2/r7AIcl6qRSJw=;
+        b=aN1JDP/zQ7AY+jKBC9akDnvUs2Mq8PnRmu23Wag1ZIqcGCfN1muneXhpkVG4lsMcQy
+         B46dhw6aHSL4y1d98/sJaaKZj3N5cZNijCNiMXk259K7DJJWQRVn2kamBooS8kzWj5tF
+         fepc101Hm+LRkcBsQCBq2m31rLzlNk3+fZaUpSg7ick9HEuqhSCOr1OEPKjxYjWGMsdo
+         THYNi4ZQ03y4hvmOxWCTh1wov411Ekzjp3cDK/qmuxr+d7iJbx0Bmvh5Fu1niTVK1h9e
+         l/AP4+rHh6XtfolKOTyHRAxCKaEMV87kklblUzcmpC2JysvTB4YKE8481FbyeOnjVGVp
+         nk8Q==
+X-Gm-Message-State: AOAM533oTWscP4ijhhHsAFu4U4tk5UXDG2FVD36Acb4zOkt97F+IaFNx
+        1iPhEtH1ak82x2CbmPCfg8YFaQ==
+X-Google-Smtp-Source: ABdhPJyy3UQ9Fcvn1OWMeug2nlY5olK42S2yBzsHOzX5nuv98ZPVPdeGAxStLE4FLbrDL0wQ/IqH+Q==
+X-Received: by 2002:a05:6a00:c2:b029:2ee:9cfc:af85 with SMTP id e2-20020a056a0000c2b02902ee9cfcaf85mr6680704pfj.78.1624417854712;
+        Tue, 22 Jun 2021 20:10:54 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id f17sm20974482pgm.37.2021.06.22.20.10.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 20:10:54 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 08:40:51 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] cpufreq: Make cpufreq_online() call driver->offline()
+ on errors
+Message-ID: <20210623031051.xsbcug5erbgvzjde@vireshk-i7>
+References: <11788436.O9o76ZdvQC@kreacher>
+ <5490292.DvuYhMxLoT@kreacher>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <93458049-0d43-617a-a5e7-c7e10325443a@gmail.com>
+In-Reply-To: <5490292.DvuYhMxLoT@kreacher>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 04:43:43PM +0800, Wang Jianchao wrote:
-> The getting of bd_bitmap_page and bd_buddy_page should be done
-> after insert the ext4_free_data successfully. Otherwise, nobody
-> can put them.
+On 22-06-21, 21:11, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Subject: [PATCH] cpufreq: Make cpufreq_online() call driver->offline() on errors
 > 
-> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
+> In the CPU removal path the ->offline() callback provided by the
+> driver is always invoked before ->exit(), but in the cpufreq_online()
+> error path it is not, so ->exit() is expected to somehow know the
+> context in which it has been called and act accordingly.
+> 
+> That is less than straightforward, so make cpufreq_online() invoke
+> the driver's ->offline() callback, if present, on errors before
+> ->exit() too.
+> 
+> This only potentially affects intel_pstate.
+> 
+> Fixes: 91a12e91dc39 ("cpufreq: Allow light-weight tear down and bring up of CPUs")
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+> 
+> -> v2:
+>    * Avoid calling ->offline() after a failing ->online().
+>    * Add a comment regarding the expected state after calling ->init().
+>    * Edit the changelog a bit.
 
-This looks like it's a bug fix for patch 4/7 --- is that correct?  If
-so, maybe we should fold this into the previous patch?
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Thanks,
-
-						- Ted
+-- 
+viresh
