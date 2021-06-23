@@ -2,103 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555023B2403
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15B33B2405
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 01:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhFWXlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 19:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42114 "EHLO
+        id S229978AbhFWXmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 19:42:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbhFWXlo (ORCPT
+        with ESMTP id S229826AbhFWXmV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 19:41:44 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E151AC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 16:39:25 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id c11so5211970ljd.6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 16:39:25 -0700 (PDT)
+        Wed, 23 Jun 2021 19:42:21 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6C9C061574;
+        Wed, 23 Jun 2021 16:40:01 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id o22so1757577wms.0;
+        Wed, 23 Jun 2021 16:40:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8Sp9kvKEzYyUtaXztGUZ5tIFsqruRShTDkrjjkj9hMA=;
-        b=DmxrR811qtDeK81ykDtJ64z5VEVDzDyn6DVJMs2J4ofhRHYf//dTXcglj/MdFFVWp8
-         YVXqEvcKOgVsHvTXYa3McKUQRUunEhMiyBb4wxWm3y8PPnhp1Y1MZMQ3PGFxxk0zyFxN
-         ok+GRnoeyRDEU6WBZPX799Xb/7R3BRz/npvu1ZI/3IWbgl/WjN8wO57e8ckeMfrlSA7f
-         j8FJVMM7+nocWeR3Y8NmfRdVC3A1KYxXXnhgicSYQEw5toYWbLZJT84Bi3B0JD7JrR97
-         eDC8v02oES3Vi56VB/2/We0VxGP/4xe8cY/0rNkXP44i8cKJ2QrKw34WGux6OkDgb/c/
-         /adg==
+        d=gmail.com; s=20161025;
+        h=to:references:from:subject:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=dIcMIKiqgju7ISXHt5Sf7jt9PfPhvTF5fdN3Qy2UJsU=;
+        b=Bscv8COquz6oOXtYPkM82AFLwQ4HLPDrGR15Ksn5WmHl67ROgBeViE/NpaBnXPAy7L
+         LL/6lC2SZFXvL+50PpWWzo35GqzWDuJg2KSy/gPOcPNAb7b7yX0HHVWUjw4pLscGYzJV
+         pj06iRfaPLjMx0olGsvLwloIUXinqinKA5OhE3u01/voB2byrKGvcMIzsB1Q8i7r6BEM
+         j7g5OtXNXhknSkUscwJkpdYyAaKMhtmBBHUfxl/DFz+i8PtRQKQ9a2iBenFGFI1em4gX
+         SZmLwrdkhbsRmqKY93Sq+q67th8MMUSK3iGxAsDomJlZ6hfUM3oYBv8f3/+3cE1ntxgb
+         ghWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8Sp9kvKEzYyUtaXztGUZ5tIFsqruRShTDkrjjkj9hMA=;
-        b=V5E02rB/G/jRd3GUAZzalDDuvNGJRL2UsoKDLNztQocevKOVOJW761y1wPC6XIhLg5
-         NjnN//uyonc27gAFZG/g4YkvPMAcYUTwPvluGI/XVK+zWh8P5GzRCEzOsenLAOaNz3Gi
-         p6qmUWqqj6kUiL0v2//svpPBaH4b9DA97cQDDbM1jsgY709B4gUkVJrBTYbHBQlMixje
-         yenu0wVDXKiQQfeEt4Kzh6/RLwwr4DpfC3pU3AEc1j1sbhg2W1XT6Aye6YcTT/iq8dDb
-         JHE2P65MvA9MD0g7bG+OT1BoPkSvI/ES/oCAO8k8HTvbxMqOiXgSolWiOebduGBWy5kA
-         EbMg==
-X-Gm-Message-State: AOAM5339cxcwgBKJDLhc32qPJcvVif/61J8GUMHcxFdQ4Nt5EfL+gnIL
-        AoDm2iNf594C3rR2XQy9Kcirdcla6iXwJxET0ig+QUEY4puUtA==
-X-Google-Smtp-Source: ABdhPJyNc5X8MCzg++DxfuCIWb6GRmNW1XC26TvO24/XitnPxrPMhaUIPfO1EeusOmJVSqJs4Fph5fzFqE8wN8lPRk8=
-X-Received: by 2002:a2e:5c03:: with SMTP id q3mr1506404ljb.233.1624491563981;
- Wed, 23 Jun 2021 16:39:23 -0700 (PDT)
+        h=x-gm-message-state:to:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dIcMIKiqgju7ISXHt5Sf7jt9PfPhvTF5fdN3Qy2UJsU=;
+        b=jbjoWAMYpzSodKYf29D89O1Zz6wsndtVBfpcrLNmQWzQyYhO0sNm30CG9p4dE0KOHQ
+         Nzsfs1iiJBk1uyiBSarG8Xxc4gS4LMBqlV3/HozYCi7mOXUhbqRbzKlVffhd9/eRJHn5
+         186CQaK8c+WFNnEzCIsGFAvgTQXs5IoB7DY2SZ6vafaHieUmmwNFbHq3UTm9wjrz/9o4
+         Bk2fqHWfQjU9kJlxYYCDTeESqslY3wUt0eDHQJN1Qp+f1GZ9M4RhzHL8VDf26NKSD6eE
+         ii9vpPcvqtU6W9lMMBQ4n/6xKdL+BAV4J8C27jrUn11Ko6kEr0z+XVXywJytyelaC7z1
+         GoGw==
+X-Gm-Message-State: AOAM530/oczfoMiLBAvgIKfr0KAJvC9dzdqD4sQpr3ZnXsHdgKICfnGC
+        yfGe4Cru17ZE2OZi7HxZ/g96Ajv0A5TVV/hu
+X-Google-Smtp-Source: ABdhPJwO5cUNQP5ldlLTIVuWHKD1YVgqfnNS3SOfaWuXlVUo0Yeg0KgdMlZ7BtKJqd/XirmwDtAm1Q==
+X-Received: by 2002:a7b:cc92:: with SMTP id p18mr681984wma.93.1624491600385;
+        Wed, 23 Jun 2021 16:40:00 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.132.93])
+        by smtp.gmail.com with ESMTPSA id y66sm1159957wmy.39.2021.06.23.16.39.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 16:39:59 -0700 (PDT)
+To:     Jens Axboe <axboe@kernel.dk>,
+        Olivier Langlois <olivier@trillion01.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1624473200.git.olivier@trillion01.com>
+ <b401640063e77ad3e9f921e09c9b3ac10a8bb923.1624473200.git.olivier@trillion01.com>
+ <b8b77ef8-6908-6446-5245-5dbd8fa7cfd7@gmail.com>
+ <6a566122-c4b2-6594-cc94-c578988d3f80@kernel.dk>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH v2 2/2] io_uring: Create define to modify a SQPOLL
+ parameter
+Message-ID: <8f4c6fad-ff01-4b3a-a0d8-06717af5095c@gmail.com>
+Date:   Thu, 24 Jun 2021 00:39:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210623223015.GA315292@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20210623223015.GA315292@paulmck-ThinkPad-P17-Gen-1>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 23 Jun 2021 16:39:11 -0700
-Message-ID: <CAKwvOd=Y1fhJM7NpotvjNy3OE+JtqEBy046ctwE=cqV_ge5tgw@mail.gmail.com>
-Subject: Re: Build failure in -next
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     aneesh.kumar@linux.ibm.com, LKML <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Marco Elver <elver@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6a566122-c4b2-6594-cc94-c578988d3f80@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 3:30 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> Hello, Aneesh!
->
-> Yesterday evening's next-20210622 testing gave me the following
-> kernel-build error:
->
-> ld: mm/mremap.o: in function `move_huge_pud':
-> /home/git/linux-next/mm/mremap.c:372: undefined reference to `__compiletime_assert_395'
->
-> Bisection landed on this commit:
->
-> 257121c5aabe ("mm/mremap: convert huge PUD move to separate helper")
->
-> I have no idea how this commit relates to that error message, but
-> reverting this commit on top of next-20210622 really does get rid of
-> the problem.
->
-> The following reproducer provokes this error:
->
-> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --torture lock --configs LOCK07 --build-only --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y" --kmake-arg "CC=clang-11"
->
-> Run the above command in the top-level directory of your -next source
-> tree, and using this compiler:
->
-> $ clang-11 -v
-> Ubuntu clang version 11.1.0-++20210428103817+1fdec59bffc1-1~exp1~20210428204431.166
-> Target: x86_64-pc-linux-gnu
->
-> Thoughts?
->
->                                                         Thanx, Paul
+On 6/23/21 11:24 PM, Jens Axboe wrote:
+> On 6/23/21 4:14 PM, Pavel Begunkov wrote:
+>> On 6/23/21 7:50 PM, Olivier Langlois wrote:
+>>> The magic number used to cap the number of entries extracted from an
+>>> io_uring instance SQ before moving to the other instances is an
+>>> interesting parameter to experiment with.
+>>>
+>>> A define has been created to make it easy to change its value from a
+>>> single location.
+>>
+>> It's better to send fixes separately from other improvements,
+>> because the process a bit different for them, go into different
+>> branches and so on.
+> 
+> It's not a huge problem even if they go to different branches,
+> for these I'd be more comfortable doing 5.14 anyway and that
+> makes it even less of a concern.
 
-++beers_owed; for the report and bisection. Also reported
-https://lore.kernel.org/lkml/YM0mrZIPM+sWTDHf@Ryzen-9-3900X.localdomain/,
-let's chat over there.
+Ok, good to know. I was finding splitting more convenient
+as a default option, easier with b4, more confidence that
+they apply to the right branch and so on
 
 -- 
-Thanks,
-~Nick Desaulniers
+Pavel Begunkov
