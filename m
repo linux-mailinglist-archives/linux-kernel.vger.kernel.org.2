@@ -2,104 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41ED3B205C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334F93B2071
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbhFWSkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 14:40:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229523AbhFWSkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 14:40:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C1E061185;
-        Wed, 23 Jun 2021 18:37:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624473468;
-        bh=K9ctSOOXg/HLNG/KMzo+bt+uXbhOKksVK31vHq8QEAc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pew0mCStiOrsU0bWjM0b54f2cDTk0BFJYuT7oL0Hl93RfndilrrpZ00P5EcbMTEX/
-         /lbkdoUtJfhzG6xhgO6NWycBIcDRvmNhEJGTWAKSFbeL2aFhOe2jpLrVodVSrKGkzr
-         gHxURUCJo+Bry9z+VHTZDIOT/ABoSs0DN2Tjo7IL/UHU38iukI2V/m5xdJIYc7NUws
-         7NMVKjT7vcMuSIu2fy0OZOLVI8+LwwecPlMOHv27TBpClMax/sAEQmgzVN3VS5iIlB
-         HGiL4Uzn3xHn2voW7eTXBh/NjM9NO32LN+GkhPpRHj+kINjyQizH9+P5WDGveYcADU
-         kFBCzfquuEa8w==
-Date:   Wed, 23 Jun 2021 19:37:37 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     Claire Chang <tientzu@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
-        peterz@infradead.org, benh@kernel.crashing.org,
-        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
-        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
-        mingo@kernel.org, jxgao@google.com, sstabellini@kernel.org,
-        Saravana Kannan <saravanak@google.com>, xypron.glpk@gmx.de,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        bskeggs@redhat.com, linux-pci@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Thierry Reding <treding@nvidia.com>,
-        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
-        linux-devicetree <devicetree@vger.kernel.org>, daniel@ffwll.ch,
-        airlied@linux.ie, maarten.lankhorst@linux.intel.com,
-        linuxppc-dev@lists.ozlabs.org, jani.nikula@linux.intel.com,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        rodrigo.vivi@intel.com, bhelgaas@google.com,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        thomas.lendacky@amd.com, Robin Murphy <robin.murphy@arm.com>,
-        bauerman@linux.ibm.com
-Subject: Re: [PATCH v14 06/12] swiotlb: Use is_swiotlb_force_bounce for
- swiotlb data bouncing
-Message-ID: <20210623183736.GA472@willie-the-truck>
-References: <20210619034043.199220-1-tientzu@chromium.org>
- <20210619034043.199220-7-tientzu@chromium.org>
- <76c3343d-72e5-9df3-8924-5474ee698ef4@quicinc.com>
+        id S229996AbhFWSoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 14:44:01 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21315 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229987AbhFWSn5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 14:43:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1624473690; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=mkehzUmVHoCUncWZ8ZTHJtkryvxbRyxDfv7xb1SX6kBFEvjt+kcisbodGyBWGgBiXTT2p1yadTn43AbfBhRCiCe/20XW9FzHLKs46Miv9IKmmK2boGZ7u4GYWz8gvlM/3Sn+5rmSK0uMJf2Xq42F/wAgLa4Ys7oHowFyplkVams=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1624473690; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=a0aZd2nt4DPjia7/Fj05AyVF/MJKOxRj/yaO2GlO0CE=; 
+        b=S+A37kz/R8FmreeiZW4aCbFmJVyiPsFwJJqsjiV/17P7IjhvVP+o7m7E7NgcCFuolpe47Ss26mg73cG6ZQfpiSnfA3yFeXaEUS8jrp/jMj7cHThFzkgO/41DEvPmYuqdXpXFPs5oHlW5mZ+h9E/gHjT9ofCyLI6Q/zzFI9kMpww=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1624473690;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Transfer-Encoding;
+        bh=a0aZd2nt4DPjia7/Fj05AyVF/MJKOxRj/yaO2GlO0CE=;
+        b=SUrC6OwZq/rCbtQxyCZGU5fOXjNZ6Dpaxjr5sztKxrRr+2ScJhFVw/+SoqCapbMW
+        l9J2Ub5ooDfDRGZt1bN3V2UDK9uaY24SPBvX4unNvo1j9YbaBCjzmvRvlnZQtkypcA1
+        rha3UOic3yUyVKsthvds/y5QjTaNoVVaDvNjvS18=
+Received: from localhost.localdomain (106.51.111.168 [106.51.111.168]) by mx.zohomail.com
+        with SMTPS id 1624473685552656.6071262710982; Wed, 23 Jun 2021 11:41:25 -0700 (PDT)
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com,
+        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] usbhid: free raw_report buffers in usbhid_stop
+Date:   Thu, 24 Jun 2021 00:10:29 +0530
+Message-Id: <20210623184030.17281-1-mail@anirudhrb.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <76c3343d-72e5-9df3-8924-5474ee698ef4@quicinc.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 12:39:29PM -0400, Qian Cai wrote:
-> 
-> 
-> On 6/18/2021 11:40 PM, Claire Chang wrote:
-> > Propagate the swiotlb_force into io_tlb_default_mem->force_bounce and
-> > use it to determine whether to bounce the data or not. This will be
-> > useful later to allow for different pools.
-> > 
-> > Signed-off-by: Claire Chang <tientzu@chromium.org>
-> > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > Tested-by: Stefano Stabellini <sstabellini@kernel.org>
-> > Tested-by: Will Deacon <will@kernel.org>
-> > Acked-by: Stefano Stabellini <sstabellini@kernel.org>
-> 
-> Reverting the rest of the series up to this patch fixed a boot crash with NVMe on today's linux-next.
+Free the unsent raw_report buffers when the device is removed.
 
-Hmm, so that makes patch 7 the suspicious one, right?
+Fixes a memory leak reported by syzbot at:
+https://syzkaller.appspot.com/bug?id=7b4fa7cb1a7c2d3342a2a8a6c53371c8c418ab47
 
-Looking at that one more closely, it looks like swiotlb_find_slots() takes
-'alloc_size + offset' as its 'alloc_size' parameter from
-swiotlb_tbl_map_single() and initialises 'mem->slots[i].alloc_size' based
-on 'alloc_size + offset', which looks like a change in behaviour from the
-old code, which didn't include the offset there.
+Reported-by: syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com
+Tested-by: syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+---
+ drivers/hid/usbhid/hid-core.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-swiotlb_release_slots() then adds the offset back on afaict, so we end up
-accounting for it twice and possibly unmap more than we're supposed to?
+diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
+index 4e9077363c96..9c970e63670e 100644
+--- a/drivers/hid/usbhid/hid-core.c
++++ b/drivers/hid/usbhid/hid-core.c
+@@ -505,7 +505,7 @@ static void hid_ctrl(struct urb *urb)
+ 
+ 	if (unplug) {
+ 		usbhid->ctrltail = usbhid->ctrlhead;
+-	} else {
++	} else if (usbhid->ctrlhead != usbhid->ctrltail) {
+ 		usbhid->ctrltail = (usbhid->ctrltail + 1) & (HID_CONTROL_FIFO_SIZE - 1);
+ 
+ 		if (usbhid->ctrlhead != usbhid->ctrltail &&
+@@ -1223,9 +1223,20 @@ static void usbhid_stop(struct hid_device *hid)
+ 	mutex_lock(&usbhid->mutex);
+ 
+ 	clear_bit(HID_STARTED, &usbhid->iofl);
++
+ 	spin_lock_irq(&usbhid->lock);	/* Sync with error and led handlers */
+ 	set_bit(HID_DISCONNECTED, &usbhid->iofl);
++	while (usbhid->ctrltail != usbhid->ctrlhead) {
++		if (usbhid->ctrl[usbhid->ctrltail].dir == USB_DIR_OUT) {
++			kfree(usbhid->ctrl[usbhid->ctrltail].raw_report);
++			usbhid->ctrl[usbhid->ctrltail].raw_report = NULL;
++		}
++
++		usbhid->ctrltail = (usbhid->ctrltail + 1) &
++			(HID_CONTROL_FIFO_SIZE - 1);
++	}
+ 	spin_unlock_irq(&usbhid->lock);
++
+ 	usb_kill_urb(usbhid->urbin);
+ 	usb_kill_urb(usbhid->urbout);
+ 	usb_kill_urb(usbhid->urbctrl);
+-- 
+2.26.2
 
-Will
