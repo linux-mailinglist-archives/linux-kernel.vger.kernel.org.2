@@ -2,188 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 847823B1639
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 440943B163D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 10:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbhFWIx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 04:53:27 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:8312 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229833AbhFWIx0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 04:53:26 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G8xhj29QNz70s2;
-        Wed, 23 Jun 2021 16:47:01 +0800 (CST)
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 23 Jun 2021 16:51:07 +0800
-Received: from huawei.com (10.174.179.206) by dggema753-chm.china.huawei.com
- (10.1.198.195) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 23
- Jun 2021 16:51:06 +0800
-From:   wangbin <wangbin224@huawei.com>
-To:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-CC:     <mike.kravetz@oracle.com>, <nao.horiguchi@gmail.com>,
-        <akpm@linux-foundation.org>, <wuxu.wu@huawei.com>
-Subject: [PATCH v2] mm: hugetlb: add hwcrp_hugepages to record memory failure on hugetlbfs
-Date:   Wed, 23 Jun 2021 16:51:02 +0800
-Message-ID: <20210623085102.2458-1-wangbin224@huawei.com>
-X-Mailer: git-send-email 2.29.2.windows.3
+        id S230082AbhFWIyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 04:54:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229833AbhFWIyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 04:54:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8822611AD;
+        Wed, 23 Jun 2021 08:52:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624438325;
+        bh=q1/pZ+8XNyXmDYADtZuYnclhptwzKj9U01waM05X9kM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G3Q2NGpduDsEzBbm+JtSbBOWO8IxUb5//355wIoeaDmbU6jQ2dj1m7J336hvTIpZ7
+         xWomRwFI2rkCcJvbpp3DG4ewNXRHSBaoI0YdSXwgb0jcYY25U4WeeCxYreT1C4047X
+         ivvm/aFuHyTN8aazHHb76orlBvrUt0REJTBl1jNU/gF4ggfxNaHwffhfaJ31qnj8PZ
+         TdD+ujwj5I6itPUFrN5dnMzrxlPF9ErQ+DQH9An5dRAxxnD21s/qRq6XXZLC+8thta
+         dJzgCzejV/VGrHIzAAZX17La7HiBni1JWoibGmgqESqAsfdt+BXOP3+j6r12kcWfkC
+         orP1bJ3ou1Scg==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lvyc8-0001tR-79; Wed, 23 Jun 2021 10:52:04 +0200
+Date:   Wed, 23 Jun 2021 10:52:04 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     linux-i2c@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+9d7dadd15b8819d73f41@syzkaller.appspotmail.com,
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH] i2c: robotfuzz-osif: fix control-request directions
+Message-ID: <YNL2NLSpBQqnc2bH@hovoldconsulting.com>
+References: <20210524090912.3989-1-johan@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.206]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema753-chm.china.huawei.com (10.1.198.195)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210524090912.3989-1-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bin Wang <wangbin224@huawei.com>
+On Mon, May 24, 2021 at 11:09:12AM +0200, Johan Hovold wrote:
+> The direction of the pipe argument must match the request-type direction
+> bit or control requests may fail depending on the host-controller-driver
+> implementation.
+> 
+> Control transfers without a data stage are treated as OUT requests by
+> the USB stack and should be using usb_sndctrlpipe(). Failing to do so
+> will now trigger a warning.
+> 
+> Fix the OSIFI2C_SET_BIT_RATE and OSIFI2C_STOP requests which erroneously
+> used the osif_usb_read() helper and set the IN direction bit.
+> 
+> Reported-by: syzbot+9d7dadd15b8819d73f41@syzkaller.appspotmail.com
+> Fixes: 83e53a8f120f ("i2c: Add bus driver for for OSIF USB i2c device.")
+> Cc: stable@vger.kernel.org      # 3.14
+> Cc: Andrew Lunn <andrew@lunn.ch>
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> ---
 
-In the current hugetlbfs memory failure handler, reserved huge page
-counts are used to record the number of huge pages with hwposion.
-There are two problems:
+Wolfram, can you pick this one up for 5.14?
 
-1. We call hugetlb_fix_reserve_counts() to change reserved counts
-in hugetlbfs_error_remove_page(). But this function is only called if
-hugetlb_unreserve_pages() fails, and hugetlb_unreserve_pages() fails
-only if kmalloc in region_del() fails, which is almost impossible.
-As a result, the reserved count is not corrected as expected when a
-memory failure occurs.
+Johan
 
-2. Reserved counts is designed to display the number of hugepages
-reserved at mmap() time. This means that even if we fix the first
-issue, reserved counts will be confusing because we can't tell if
-it's hwposion or reserved hugepage.
-
-This patch adds hardware corrput huge pages counts to record memory
-failure on hugetlbfs instead of reserved counts.
-
-Signed-off-by: Bin Wang <wangbin224@huawei.com>
----
- fs/hugetlbfs/inode.c    |  3 +--
- include/linux/hugetlb.h |  3 +++
- mm/hugetlb.c            | 30 ++++++++++++++++++++++++++++++
- 3 files changed, 34 insertions(+), 2 deletions(-)
-
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 926eeb9bf4eb..ffb6e7b6756b 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -986,8 +986,7 @@ static int hugetlbfs_error_remove_page(struct address_space *mapping,
- 	pgoff_t index = page->index;
- 
- 	remove_huge_page(page);
--	if (unlikely(hugetlb_unreserve_pages(inode, index, index + 1, 1)))
--		hugetlb_fix_reserve_counts(inode);
-+	hugetlb_fix_hwcrp_counts(page);
- 
- 	return 0;
- }
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index f7ca1a3870ea..1d5bada80aa5 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -171,6 +171,7 @@ void putback_active_hugepage(struct page *page);
- void move_hugetlb_state(struct page *oldpage, struct page *newpage, int reason);
- void free_huge_page(struct page *page);
- void hugetlb_fix_reserve_counts(struct inode *inode);
-+void hugetlb_fix_hwcrp_counts(struct page *page);
- extern struct mutex *hugetlb_fault_mutex_table;
- u32 hugetlb_fault_mutex_hash(struct address_space *mapping, pgoff_t idx);
- 
-@@ -602,12 +603,14 @@ struct hstate {
- 	unsigned long free_huge_pages;
- 	unsigned long resv_huge_pages;
- 	unsigned long surplus_huge_pages;
-+	unsigned long hwcrp_huge_pages;
- 	unsigned long nr_overcommit_huge_pages;
- 	struct list_head hugepage_activelist;
- 	struct list_head hugepage_freelists[MAX_NUMNODES];
- 	unsigned int nr_huge_pages_node[MAX_NUMNODES];
- 	unsigned int free_huge_pages_node[MAX_NUMNODES];
- 	unsigned int surplus_huge_pages_node[MAX_NUMNODES];
-+	unsigned int hwcrp_huge_pages_node[MAX_NUMNODES];
- #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
- 	unsigned int nr_free_vmemmap_pages;
- #endif
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 760b5fb836b8..3e6385381db7 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -763,6 +763,15 @@ void hugetlb_fix_reserve_counts(struct inode *inode)
- 		pr_warn("hugetlb: Huge Page Reserved count may go negative.\n");
- }
- 
-+void hugetlb_fix_hwcrp_counts(struct page *page)
-+{
-+	struct hstate *h = &default_hstate;
-+	int nid = page_to_nid(page);
-+
-+	h->hwcrp_huge_pages++;
-+	h->hwcrp_huge_pages_node[nid]++;
-+}
-+
- /*
-  * Count and return the number of huge pages in the reserve map
-  * that intersect with the range [f, t).
-@@ -3293,12 +3302,30 @@ static ssize_t surplus_hugepages_show(struct kobject *kobj,
- }
- HSTATE_ATTR_RO(surplus_hugepages);
- 
-+static ssize_t hwcrp_hugepages_show(struct kobject *kobj,
-+					struct kobj_attribute *attr, char *buf)
-+{
-+	struct hstate *h;
-+	unsigned long hwcrp_huge_pages;
-+	int nid;
-+
-+	h = kobj_to_hstate(kobj, &nid);
-+	if (nid == NUMA_NO_NODE)
-+		hwcrp_huge_pages = h->hwcrp_huge_pages;
-+	else
-+		hwcrp_huge_pages = h->hwcrp_huge_pages_node[nid];
-+
-+	return sysfs_emit(buf, "%lu\n", hwcrp_huge_pages);
-+}
-+HSTATE_ATTR_RO(hwcrp_hugepages);
-+
- static struct attribute *hstate_attrs[] = {
- 	&nr_hugepages_attr.attr,
- 	&nr_overcommit_hugepages_attr.attr,
- 	&free_hugepages_attr.attr,
- 	&resv_hugepages_attr.attr,
- 	&surplus_hugepages_attr.attr,
-+	&hwcrp_hugepages_attr.attr,
- #ifdef CONFIG_NUMA
- 	&nr_hugepages_mempolicy_attr.attr,
- #endif
-@@ -3368,6 +3395,7 @@ static struct attribute *per_node_hstate_attrs[] = {
- 	&nr_hugepages_attr.attr,
- 	&free_hugepages_attr.attr,
- 	&surplus_hugepages_attr.attr,
-+	&hwcrp_hugepages_attr.attr,
- 	NULL,
- };
- 
-@@ -3862,11 +3890,13 @@ void hugetlb_report_meminfo(struct seq_file *m)
- 				   "HugePages_Free:    %5lu\n"
- 				   "HugePages_Rsvd:    %5lu\n"
- 				   "HugePages_Surp:    %5lu\n"
-+				   "HugePages_Hwcrp:   %5lu\n"
- 				   "Hugepagesize:   %8lu kB\n",
- 				   count,
- 				   h->free_huge_pages,
- 				   h->resv_huge_pages,
- 				   h->surplus_huge_pages,
-+				   h->hwcrp_huge_pages,
- 				   huge_page_size(h) / SZ_1K);
- 	}
- 
--- 
-2.23.0
-
+>  drivers/i2c/busses/i2c-robotfuzz-osif.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-robotfuzz-osif.c b/drivers/i2c/busses/i2c-robotfuzz-osif.c
+> index a39f7d092797..66dfa211e736 100644
+> --- a/drivers/i2c/busses/i2c-robotfuzz-osif.c
+> +++ b/drivers/i2c/busses/i2c-robotfuzz-osif.c
+> @@ -83,7 +83,7 @@ static int osif_xfer(struct i2c_adapter *adapter, struct i2c_msg *msgs,
+>  			}
+>  		}
+>  
+> -		ret = osif_usb_read(adapter, OSIFI2C_STOP, 0, 0, NULL, 0);
+> +		ret = osif_usb_write(adapter, OSIFI2C_STOP, 0, 0, NULL, 0);
+>  		if (ret) {
+>  			dev_err(&adapter->dev, "failure sending STOP\n");
+>  			return -EREMOTEIO;
+> @@ -153,7 +153,7 @@ static int osif_probe(struct usb_interface *interface,
+>  	 * Set bus frequency. The frequency is:
+>  	 * 120,000,000 / ( 16 + 2 * div * 4^prescale).
+>  	 * Using dev = 52, prescale = 0 give 100KHz */
+> -	ret = osif_usb_read(&priv->adapter, OSIFI2C_SET_BIT_RATE, 52, 0,
+> +	ret = osif_usb_write(&priv->adapter, OSIFI2C_SET_BIT_RATE, 52, 0,
+>  			    NULL, 0);
+>  	if (ret) {
+>  		dev_err(&interface->dev, "failure sending bit rate");
