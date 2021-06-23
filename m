@@ -2,115 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CFC3B2059
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F41ED3B205C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 20:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhFWSgs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Jun 2021 14:36:48 -0400
-Received: from aposti.net ([89.234.176.197]:56938 "EHLO aposti.net"
+        id S229844AbhFWSkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 14:40:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229523AbhFWSgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 14:36:47 -0400
-Date:   Wed, 23 Jun 2021 19:34:15 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 2/3] MIPS: Ingenic: Add MAC syscon nodes for Ingenic
- SoCs.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     tsbogend@alpha.franken.de, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com
-Message-Id: <3L36VQ.1XFKT5OGBXT2@crapouillou.net>
-In-Reply-To: <1624377338-75384-3-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1624377338-75384-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1624377338-75384-3-git-send-email-zhouyanjie@wanyeetech.com>
+        id S229523AbhFWSkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 14:40:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C1E061185;
+        Wed, 23 Jun 2021 18:37:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624473468;
+        bh=K9ctSOOXg/HLNG/KMzo+bt+uXbhOKksVK31vHq8QEAc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pew0mCStiOrsU0bWjM0b54f2cDTk0BFJYuT7oL0Hl93RfndilrrpZ00P5EcbMTEX/
+         /lbkdoUtJfhzG6xhgO6NWycBIcDRvmNhEJGTWAKSFbeL2aFhOe2jpLrVodVSrKGkzr
+         gHxURUCJo+Bry9z+VHTZDIOT/ABoSs0DN2Tjo7IL/UHU38iukI2V/m5xdJIYc7NUws
+         7NMVKjT7vcMuSIu2fy0OZOLVI8+LwwecPlMOHv27TBpClMax/sAEQmgzVN3VS5iIlB
+         HGiL4Uzn3xHn2voW7eTXBh/NjM9NO32LN+GkhPpRHj+kINjyQizH9+P5WDGveYcADU
+         kFBCzfquuEa8w==
+Date:   Wed, 23 Jun 2021 19:37:37 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     Claire Chang <tientzu@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
+        peterz@infradead.org, benh@kernel.crashing.org,
+        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
+        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
+        mingo@kernel.org, jxgao@google.com, sstabellini@kernel.org,
+        Saravana Kannan <saravanak@google.com>, xypron.glpk@gmx.de,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        bskeggs@redhat.com, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Thierry Reding <treding@nvidia.com>,
+        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
+        linux-devicetree <devicetree@vger.kernel.org>, daniel@ffwll.ch,
+        airlied@linux.ie, maarten.lankhorst@linux.intel.com,
+        linuxppc-dev@lists.ozlabs.org, jani.nikula@linux.intel.com,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        rodrigo.vivi@intel.com, bhelgaas@google.com,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        thomas.lendacky@amd.com, Robin Murphy <robin.murphy@arm.com>,
+        bauerman@linux.ibm.com
+Subject: Re: [PATCH v14 06/12] swiotlb: Use is_swiotlb_force_bounce for
+ swiotlb data bouncing
+Message-ID: <20210623183736.GA472@willie-the-truck>
+References: <20210619034043.199220-1-tientzu@chromium.org>
+ <20210619034043.199220-7-tientzu@chromium.org>
+ <76c3343d-72e5-9df3-8924-5474ee698ef4@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <76c3343d-72e5-9df3-8924-5474ee698ef4@quicinc.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
+On Wed, Jun 23, 2021 at 12:39:29PM -0400, Qian Cai wrote:
+> 
+> 
+> On 6/18/2021 11:40 PM, Claire Chang wrote:
+> > Propagate the swiotlb_force into io_tlb_default_mem->force_bounce and
+> > use it to determine whether to bounce the data or not. This will be
+> > useful later to allow for different pools.
+> > 
+> > Signed-off-by: Claire Chang <tientzu@chromium.org>
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > Tested-by: Stefano Stabellini <sstabellini@kernel.org>
+> > Tested-by: Will Deacon <will@kernel.org>
+> > Acked-by: Stefano Stabellini <sstabellini@kernel.org>
+> 
+> Reverting the rest of the series up to this patch fixed a boot crash with NVMe on today's linux-next.
 
-Le mar., juin 22 2021 at 23:55:37 +0800, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> Add MAC syscon nodes for X1000 SoC and X1830 SoC from Ingenic.
-> 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> Acked-by: Paul Cercueil <paul@crapouillou.net>
-> ---
-> 
-> Notes:
->     v1->v2:
->     No change.
-> 
->  arch/mips/boot/dts/ingenic/x1000.dtsi | 7 +++++++
->  arch/mips/boot/dts/ingenic/x1830.dtsi | 7 +++++++
->  2 files changed, 14 insertions(+)
-> 
-> diff --git a/arch/mips/boot/dts/ingenic/x1000.dtsi 
-> b/arch/mips/boot/dts/ingenic/x1000.dtsi
-> index aac9ded..dec7909 100644
-> --- a/arch/mips/boot/dts/ingenic/x1000.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/x1000.dtsi
-> @@ -80,6 +80,11 @@
-> 
->  			status = "disabled";
->  		};
-> +
-> +		mac_phy_ctrl: mac-phy-ctrl@e8 {
-> +			compatible = "syscon";
-> +			reg = <0xe8 0x4>;
-> +		};
+Hmm, so that makes patch 7 the suspicious one, right?
 
-I acked this patch already, but you do need to update the CGU binding 
-documentation as well.
+Looking at that one more closely, it looks like swiotlb_find_slots() takes
+'alloc_size + offset' as its 'alloc_size' parameter from
+swiotlb_tbl_map_single() and initialises 'mem->slots[i].alloc_size' based
+on 'alloc_size + offset', which looks like a change in behaviour from the
+old code, which didn't include the offset there.
 
--Paul
+swiotlb_release_slots() then adds the offset back on afaict, so we end up
+accounting for it twice and possibly unmap more than we're supposed to?
 
->  	};
-> 
->  	ost: timer@12000000 {
-> @@ -347,6 +352,8 @@
->  		clocks = <&cgu X1000_CLK_MAC>;
->  		clock-names = "stmmaceth";
-> 
-> +		mode-reg = <&mac_phy_ctrl>;
-> +
->  		status = "disabled";
-> 
->  		mdio: mdio {
-> diff --git a/arch/mips/boot/dts/ingenic/x1830.dtsi 
-> b/arch/mips/boot/dts/ingenic/x1830.dtsi
-> index 59ca3a8..215257f 100644
-> --- a/arch/mips/boot/dts/ingenic/x1830.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/x1830.dtsi
-> @@ -73,6 +73,11 @@
-> 
->  			status = "disabled";
->  		};
-> +
-> +		mac_phy_ctrl: mac-phy-ctrl@e8 {
-> +			compatible = "syscon";
-> +			reg = <0xe8 0x4>;
-> +		};
->  	};
-> 
->  	ost: timer@12000000 {
-> @@ -336,6 +341,8 @@
->  		clocks = <&cgu X1830_CLK_MAC>;
->  		clock-names = "stmmaceth";
-> 
-> +		mode-reg = <&mac_phy_ctrl>;
-> +
->  		status = "disabled";
-> 
->  		mdio: mdio {
-> --
-> 2.7.4
-> 
-
-
+Will
