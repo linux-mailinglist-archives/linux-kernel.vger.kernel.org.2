@@ -2,508 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DBF3B1F61
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D783B1F65
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 19:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhFWR2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 13:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWR2F (ORCPT
+        id S229873AbhFWR3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 13:29:16 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:36711 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhFWR3Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 13:28:05 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CE2C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:25:46 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id d19so4140314oic.7
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 10:25:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iAcZLvLu7TpK6AOfx0i5fSi2wYs6cUBdnS5hLmiwJ7A=;
-        b=M8Tcx8EHO08j3/woATiBT9gwOGGHgi+LbRzA6eaBwhKBwIO9fqkAhwas6cuNmKG3v6
-         yEXFYaIEwU08izbgpLqjpZMsgYMgicu04wJL4hF2Gxwvi43EfO1JdSBWIMG6nZUTs7hc
-         KKbAZzvEOaQMZwBa+DwH7abiUlHt0r1/kj1PRdUbqzIQhfcuEn4Cz7h8jDjEArexUW2u
-         Z2ONUxmjv5INGJKC9A+2bHmOjl2ek9qNmBxIfyVxlZ9ueVKek1bl0wFE5kZreUEjE4dQ
-         cMbeJvBDg1h2eLzzPhPSIe2F5J4nB7gzJ6M1F9SuWdyatYScS1OG1oggPDBD90Cz07yL
-         hKlQ==
+        Wed, 23 Jun 2021 13:29:16 -0400
+Received: by mail-ot1-f49.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so2710235otl.3;
+        Wed, 23 Jun 2021 10:26:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iAcZLvLu7TpK6AOfx0i5fSi2wYs6cUBdnS5hLmiwJ7A=;
-        b=ConUtcj+pUi9NWR+KeOdaq9jMlrtfTbctnwpcrDM7iUHmskpM1H29KAEIe2v5leC5C
-         uew1paHZW2yLNDk4ZO08FsXsExemMsgYLu1pE9TNsnSYOi7cyg56rzt1cuxyJScnxtJ2
-         lP6jMQUO155VzWLyqkLXHYgngdZFfepJbs3r/RuVKfPbPwBMnQPVyMA5cy5wRa6ALpBw
-         iAXo786b8AJyoDEkLRwA9lxu0bJ9oFx5TZgVeauR6oyjTi/ltG8vaG13SAEpqQBE46aT
-         m4oq8KMvyFiSG6Qg9uRwfU8gJEizsFD7gBYObI7E5UXaB8/LJjq5vABWrm8Kna6160NP
-         HTSA==
-X-Gm-Message-State: AOAM531BBqFDnVobxTD6umqIP3uKGLH3i/QW5qzjqfW+4kZmWZaufigV
-        Npqa0ESA1coUI2R05hGOepdlwQ==
-X-Google-Smtp-Source: ABdhPJxqwn9vITUzWCT0d39VZxJlYy0iEr8YB/2QlF5gy2uGXlJ1lrzBSF5sK3Hp6NEa/kTt2Delhw==
-X-Received: by 2002:aca:3385:: with SMTP id z127mr757571oiz.142.1624469145956;
-        Wed, 23 Jun 2021 10:25:45 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 3sm76572oob.1.2021.06.23.10.25.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 10:25:45 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 12:25:43 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Deepak Kumar Singh <deesin@codeaurora.org>
-Cc:     clew@codeaurora.org, aneela@codeaurora.org,
-        Andy Gross <agross@kernel.org>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V1 1/2] soc: qcom: smem: validate fields of shared
- structures
-Message-ID: <YNNulzbZB/FkIF8O@builder.lan>
-References: <1591702804-26223-1-git-send-email-deesin@codeaurora.org>
- <1591702804-26223-2-git-send-email-deesin@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2hySmmm64dClZ27jhI5Y3Yqw9/VnJejZB+aX0WgljZo=;
+        b=frIz+liIfQdvSSdOuLOaIF3gc61MrkMLQS84L1I/AOBMTZnYJ8kLbeALoFzZVkP4Tk
+         340bEbAEyGsM7hlYCIK8c6r8hzjADf9Do++p8FlILKjw4UHQxUyEnw2+nCYKaTOH16Hw
+         K8mKP4guTUXdIpQKVuNjesyemxOhIIQUcFQtWfoEsq4VSOz2bpLPzIjJqJ64QmHvapZb
+         PZgjsDFV/A67Hkv0JRspLqmE5MV/bvtYfTPv8wbMqQW8okB6xlh4dpqJ4gk1NFqCIF5F
+         fFSHlDOGnG6jtK9WNNjRVkDMS5kyax5IB30DvmngDxhZ2Pd+hC4Ih1jnz/B6Hu054kDo
+         NHhA==
+X-Gm-Message-State: AOAM531roeO88OXGJYZr7RzQZxNeLXzkQJ6zoRZey5YK3vpV4nm37K4S
+        pncFjVfwibdrATzvUZxebo0kn2rx0nHXdyeS8is=
+X-Google-Smtp-Source: ABdhPJzkF7/upEQ0DXTViC2+CRwHDgP1sncfDiZNpUaMQ9+qPTqxDk54Cn8doVYTp3AChJatHfu6kUXRf/O6y//YYOo=
+X-Received: by 2002:a9d:674b:: with SMTP id w11mr893919otm.260.1624469218068;
+ Wed, 23 Jun 2021 10:26:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1591702804-26223-2-git-send-email-deesin@codeaurora.org>
+References: <20210623131421.15159-1-heikki.krogerus@linux.intel.com>
+In-Reply-To: <20210623131421.15159-1-heikki.krogerus@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 23 Jun 2021 19:26:46 +0200
+Message-ID: <CAJZ5v0hEj5e_4RwfCZxnV+zpw92YyYV55Qu6iheVkjrUYorXkg@mail.gmail.com>
+Subject: Re: [PATCH] software node: Handle software node injection to an
+ existing device properly
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 09 Jun 06:40 CDT 2020, Deepak Kumar Singh wrote:
+On Wed, Jun 23, 2021 at 3:14 PM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> The function software_node_notify() - the function that creates
+> and removes the symlinks between the node and the device - was
+> called unconditionally in device_add_software_node() and
+> device_remove_software_node(), but it needs to be called in
+> those functions only in the special case where the node is
+> added to a device that has already been registered.
+>
+> This fixes NULL pointer dereference that happens if
+> device_remove_software_node() is used with device that was
+> never registered.
+>
+> Fixes: b622b24519f5 ("software node: Allow node addition to already existing device")
+> Reported-and-tested-by: Dominik Brodowski <linux@dominikbrodowski.net>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-> Structures in shared memory that can be modified by remote
-> processors may have untrusted values, they should be validated
-> before use.
-> 
-> Adding proper validation before using fields of shared
-> structures.
-> 
-> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+Applied, thanks!
+
+It may not make it into 5.13 though due to the timing.
+
 > ---
->  drivers/soc/qcom/smem.c | 194 +++++++++++++++++++++++++++++++++---------------
->  1 file changed, 133 insertions(+), 61 deletions(-)
-> 
-> diff --git a/drivers/soc/qcom/smem.c b/drivers/soc/qcom/smem.c
-> index 28c19bc..c1bd310 100644
-> --- a/drivers/soc/qcom/smem.c
-> +++ b/drivers/soc/qcom/smem.c
-> @@ -249,11 +249,9 @@ struct smem_region {
->   * struct qcom_smem - device data for the smem device
->   * @dev:	device pointer
->   * @hwlock:	reference to a hwspinlock
-> - * @global_partition:	pointer to global partition when in use
-> - * @global_cacheline:	cacheline size for global partition
-> - * @partitions:	list of pointers to partitions affecting the current
-> + * @global_partition_entry: pointer to global partition entry when in use
-> + * @ptable_entries: list of pointers to partitions table entry of current
->   *		processor/host
-> - * @cacheline:	list of cacheline sizes for each host
->   * @item_count: max accepted item number
->   * @num_regions: number of @regions
->   * @regions:	list of the memory regions defining the shared memory
-> @@ -263,10 +261,8 @@ struct qcom_smem {
->  
->  	struct hwspinlock *hwlock;
->  
-> -	struct smem_partition_header *global_partition;
-> -	size_t global_cacheline;
-> -	struct smem_partition_header *partitions[SMEM_HOST_COUNT];
-> -	size_t cacheline[SMEM_HOST_COUNT];
-> +	struct smem_ptable_entry *global_partition_entry;
-> +	struct smem_ptable_entry *ptable_entries[SMEM_HOST_COUNT];
-
-Could you please split this patch in one that transitions these to
-smem_ptable_entry and then a separate one that adds the new range
-checks.
-
->  	u32 item_count;
->  	struct platform_device *socinfo;
->  
-> @@ -274,7 +270,19 @@ struct qcom_smem {
->  	struct smem_region regions[];
->  };
->  
-> -static void *
-> +/* Pointer to the one and only smem handle */
-> +static struct qcom_smem *__smem;
+>  drivers/base/swnode.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index 3cc11b813f28c..d1f1a82401207 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -1045,7 +1045,15 @@ int device_add_software_node(struct device *dev, const struct software_node *nod
+>         }
+>
+>         set_secondary_fwnode(dev, &swnode->fwnode);
+> -       software_node_notify(dev, KOBJ_ADD);
 > +
-> +/* Timeout (ms) for the trylock of remote spinlocks */
-> +#define HWSPINLOCK_TIMEOUT     1000
-> +
-> +static struct smem_partition_header *
-> +ptable_entry_to_phdr(struct smem_ptable_entry *entry)
-> +{
-> +	return __smem->regions[0].virt_base + le32_to_cpu(entry->offset);
-
-Overall __smem was only used to acquire the struct qcom_smem handle, but
-after that we pass that pointer around - rather than operating on the
-global variable.
-
-So how about passing the struct qcom_smem as a first argument to this
-function, to stick to this kind of design?
-
-> +}
-> +
-> +static struct smem_private_entry *
->  phdr_to_last_uncached_entry(struct smem_partition_header *phdr)
->  {
->  	void *p = phdr;
-> @@ -339,25 +347,27 @@ static void *cached_entry_to_item(struct smem_private_entry *e)
->  	return p - le32_to_cpu(e->size);
+> +       /*
+> +        * If the device has been fully registered by the time this function is
+> +        * called, software_node_notify() must be called separately so that the
+> +        * symlinks get created and the reference count of the node is kept in
+> +        * balance.
+> +        */
+> +       if (device_is_registered(dev))
+> +               software_node_notify(dev, KOBJ_ADD);
+>
+>         return 0;
 >  }
->  
-> -/* Pointer to the one and only smem handle */
-> -static struct qcom_smem *__smem;
-> -
-> -/* Timeout (ms) for the trylock of remote spinlocks */
-> -#define HWSPINLOCK_TIMEOUT	1000
-
-This should have the side effect of you being able to leave there where
-they were.
-
-> -
->  static int qcom_smem_alloc_private(struct qcom_smem *smem,
-> -				   struct smem_partition_header *phdr,
-> +				   struct smem_ptable_entry *entry,
->  				   unsigned item,
->  				   size_t size)
->  {
->  	struct smem_private_entry *hdr, *end;
-> +	struct smem_partition_header *phdr;
->  	size_t alloc_size;
->  	void *cached;
-> +	void *p_end;
-> +
-> +	phdr = ptable_entry_to_phdr(entry);
-> +	p_end = (void *)phdr + le32_to_cpu(entry->size);
->  
->  	hdr = phdr_to_first_uncached_entry(phdr);
->  	end = phdr_to_last_uncached_entry(phdr);
->  	cached = phdr_to_last_cached_entry(phdr);
->  
-> +	if (WARN_ON((void *)end > p_end || (void *)cached > p_end))
-> +		return -EINVAL;
-> +
->  	while (hdr < end) {
->  		if (hdr->canary != SMEM_PRIVATE_CANARY)
->  			goto bad_canary;
-> @@ -366,6 +376,8 @@ static int qcom_smem_alloc_private(struct qcom_smem *smem,
->  
->  		hdr = uncached_entry_next(hdr);
->  	}
-> +	if (WARN_ON((void *)hdr > p_end))
-> +		return -EINVAL;
->  
->  	/* Check that we don't grow into the cached region */
->  	alloc_size = sizeof(*hdr) + ALIGN(size, 8);
-> @@ -440,7 +452,7 @@ static int qcom_smem_alloc_global(struct qcom_smem *smem,
->   */
->  int qcom_smem_alloc(unsigned host, unsigned item, size_t size)
->  {
-> -	struct smem_partition_header *phdr;
-> +	struct smem_ptable_entry *entry;
->  	unsigned long flags;
->  	int ret;
->  
-> @@ -462,12 +474,12 @@ int qcom_smem_alloc(unsigned host, unsigned item, size_t size)
->  	if (ret)
->  		return ret;
->  
-> -	if (host < SMEM_HOST_COUNT && __smem->partitions[host]) {
-> -		phdr = __smem->partitions[host];
-> -		ret = qcom_smem_alloc_private(__smem, phdr, item, size);
-> -	} else if (__smem->global_partition) {
-> -		phdr = __smem->global_partition;
-> -		ret = qcom_smem_alloc_private(__smem, phdr, item, size);
-> +	if (host < SMEM_HOST_COUNT && __smem->ptable_entries[host]) {
-> +		entry = __smem->ptable_entries[host];
-> +		ret = qcom_smem_alloc_private(__smem, entry, item, size);
-> +	} else if (__smem->global_partition_entry) {
-> +		entry = __smem->global_partition_entry;
-> +		ret = qcom_smem_alloc_private(__smem, entry, item, size);
->  	} else {
->  		ret = qcom_smem_alloc_global(__smem, item, size);
->  	}
-> @@ -482,9 +494,11 @@ static void *qcom_smem_get_global(struct qcom_smem *smem,
->  				  unsigned item,
->  				  size_t *size)
->  {
-> -	struct smem_header *header;
-> -	struct smem_region *region;
->  	struct smem_global_entry *entry;
-> +	struct smem_header *header;
-> +	struct smem_region *area;
-
-Perhaps leave this as "region" and keep "header" the first, to limit
-this function to only the logical changes?
-
-> +	u64 entry_offset;
-> +	u32 e_size;
->  	u32 aux_base;
->  	unsigned i;
->  
-> @@ -496,12 +510,19 @@ static void *qcom_smem_get_global(struct qcom_smem *smem,
->  	aux_base = le32_to_cpu(entry->aux_base) & AUX_BASE_MASK;
->  
->  	for (i = 0; i < smem->num_regions; i++) {
-> -		region = &smem->regions[i];
-> +		area = &smem->regions[i];
-> +
-> +		if (area->aux_base == aux_base || !aux_base) {
-> +			e_size = le32_to_cpu(entry->size);
-> +			entry_offset = le32_to_cpu(entry->offset);
-> +
-> +			if (WARN_ON(e_size + entry_offset > area->size))
-> +				return ERR_PTR(-EINVAL);
->  
-> -		if (region->aux_base == aux_base || !aux_base) {
->  			if (size != NULL)
-> -				*size = le32_to_cpu(entry->size);
-> -			return region->virt_base + le32_to_cpu(entry->offset);
-> +				*size = e_size;
-> +
-> +			return area->virt_base + entry_offset;
->  		}
->  	}
->  
-> @@ -509,50 +530,92 @@ static void *qcom_smem_get_global(struct qcom_smem *smem,
+> @@ -1065,7 +1073,8 @@ void device_remove_software_node(struct device *dev)
+>         if (!swnode)
+>                 return;
+>
+> -       software_node_notify(dev, KOBJ_REMOVE);
+> +       if (device_is_registered(dev))
+> +               software_node_notify(dev, KOBJ_REMOVE);
+>         set_secondary_fwnode(dev, NULL);
+>         kobject_put(&swnode->kobj);
 >  }
->  
->  static void *qcom_smem_get_private(struct qcom_smem *smem,
-> -				   struct smem_partition_header *phdr,
-> -				   size_t cacheline,
-> +				   struct smem_ptable_entry *entry,
->  				   unsigned item,
->  				   size_t *size)
->  {
->  	struct smem_private_entry *e, *end;
-> +	struct smem_partition_header *phdr;
-> +	void *item_ptr, *p_end;
-> +	u32 partition_size;
-> +	size_t cacheline;
-> +	u32 padding_data;
-> +	u32 e_size;
-> +
-> +	phdr = ptable_entry_to_phdr(entry);
-> +	partition_size = le32_to_cpu(entry->size);
-> +	p_end = (void *)phdr + partition_size;
-> +	cacheline = le32_to_cpu(entry->cacheline);
->  
->  	e = phdr_to_first_uncached_entry(phdr);
->  	end = phdr_to_last_uncached_entry(phdr);
->  
-> +	if (WARN_ON((void *)end > p_end))
-> +		return ERR_PTR(-EINVAL);
-> +
->  	while (e < end) {
->  		if (e->canary != SMEM_PRIVATE_CANARY)
->  			goto invalid_canary;
->  
->  		if (le16_to_cpu(e->item) == item) {
-> -			if (size != NULL)
-> -				*size = le32_to_cpu(e->size) -
-> -					le16_to_cpu(e->padding_data);
-> -
-> -			return uncached_entry_to_item(e);
-> +			if (size != NULL) {
-> +				e_size = le32_to_cpu(e->size);
-> +				padding_data = le16_to_cpu(e->padding_data);
-> +
-> +				if (e_size < partition_size
-> +				    && padding_data < e_size)
-
-It's fine to unwrap this line and go over 80 chars when it makes the
-code easier to read.
-
-> +					*size = e_size - padding_data;
-> +				else
-> +					return ERR_PTR(-EINVAL);
-
-Flip this around and keep doing:
-
-				if (WARN_ON(invalid))
-					return - EINVAL;
-
-				continue with the good stuff;
-
-> +			}
-> +
-> +			item_ptr =  uncached_entry_to_item(e);
-
-There's two spaces after the '='
-
-> +			if (WARN_ON(item_ptr > p_end))
-> +				return ERR_PTR(-EINVAL);
-> +
-> +			return item_ptr;
->  		}
->  
->  		e = uncached_entry_next(e);
->  	}
-> +	if (WARN_ON((void *)e > p_end))
-> +		return ERR_PTR(-EINVAL);
->  
->  	/* Item was not found in the uncached list, search the cached list */
->  
->  	e = phdr_to_first_cached_entry(phdr, cacheline);
->  	end = phdr_to_last_cached_entry(phdr);
->  
-> +	if (WARN_ON((void *)e < (void *)phdr || (void *)end > p_end))
-> +		return ERR_PTR(-EINVAL);
-> +
->  	while (e > end) {
->  		if (e->canary != SMEM_PRIVATE_CANARY)
->  			goto invalid_canary;
->  
->  		if (le16_to_cpu(e->item) == item) {
-> -			if (size != NULL)
-> -				*size = le32_to_cpu(e->size) -
-> -					le16_to_cpu(e->padding_data);
-> -
-> -			return cached_entry_to_item(e);
-> +			if (size != NULL) {
-> +				e_size = le32_to_cpu(e->size);
-> +				padding_data = le16_to_cpu(e->padding_data);
-> +
-> +				if (e_size < partition_size
-> +				    && padding_data < e_size)
-> +					*size = e_size - padding_data;
-> +				else
-> +					return ERR_PTR(-EINVAL);
-
-Same as above.
-
-Regards,
-Bjorn
-
-> +			}
-> +
-> +			item_ptr =  cached_entry_to_item(e);
-> +			if (WARN_ON(item_ptr < (void *)phdr))
-> +				return ERR_PTR(-EINVAL);
-> +
-> +			return item_ptr;
->  		}
->  
->  		e = cached_entry_next(e, cacheline);
->  	}
-> +	if (WARN_ON((void *)e < (void *)phdr))
-> +		return ERR_PTR(-EINVAL);
->  
->  	return ERR_PTR(-ENOENT);
->  
-> @@ -574,9 +637,8 @@ static void *qcom_smem_get_private(struct qcom_smem *smem,
->   */
->  void *qcom_smem_get(unsigned host, unsigned item, size_t *size)
->  {
-> -	struct smem_partition_header *phdr;
-> +	struct smem_ptable_entry *entry;
->  	unsigned long flags;
-> -	size_t cacheln;
->  	int ret;
->  	void *ptr = ERR_PTR(-EPROBE_DEFER);
->  
-> @@ -592,14 +654,12 @@ void *qcom_smem_get(unsigned host, unsigned item, size_t *size)
->  	if (ret)
->  		return ERR_PTR(ret);
->  
-> -	if (host < SMEM_HOST_COUNT && __smem->partitions[host]) {
-> -		phdr = __smem->partitions[host];
-> -		cacheln = __smem->cacheline[host];
-> -		ptr = qcom_smem_get_private(__smem, phdr, cacheln, item, size);
-> -	} else if (__smem->global_partition) {
-> -		phdr = __smem->global_partition;
-> -		cacheln = __smem->global_cacheline;
-> -		ptr = qcom_smem_get_private(__smem, phdr, cacheln, item, size);
-> +	if (host < SMEM_HOST_COUNT && __smem->ptable_entries[host]) {
-> +		entry = __smem->ptable_entries[host];
-> +		ptr = qcom_smem_get_private(__smem, entry, item, size);
-> +	} else if (__smem->global_partition_entry) {
-> +		entry = __smem->global_partition_entry;
-> +		ptr = qcom_smem_get_private(__smem, entry, item, size);
->  	} else {
->  		ptr = qcom_smem_get_global(__smem, item, size);
->  	}
-> @@ -621,23 +681,37 @@ EXPORT_SYMBOL(qcom_smem_get);
->  int qcom_smem_get_free_space(unsigned host)
->  {
->  	struct smem_partition_header *phdr;
-> +	struct smem_ptable_entry *entry;
->  	struct smem_header *header;
->  	unsigned ret;
->  
->  	if (!__smem)
->  		return -EPROBE_DEFER;
->  
-> -	if (host < SMEM_HOST_COUNT && __smem->partitions[host]) {
-> -		phdr = __smem->partitions[host];
-> +	if (host < SMEM_HOST_COUNT && __smem->ptable_entries[host]) {
-> +		entry = __smem->ptable_entries[host];
-> +		phdr = ptable_entry_to_phdr(entry);
-> +
->  		ret = le32_to_cpu(phdr->offset_free_cached) -
->  		      le32_to_cpu(phdr->offset_free_uncached);
-> -	} else if (__smem->global_partition) {
-> -		phdr = __smem->global_partition;
-> +
-> +		if (ret > le32_to_cpu(entry->size))
-> +			return -EINVAL;
-> +	} else if (__smem->global_partition_entry) {
-> +		entry = __smem->global_partition_entry;
-> +		phdr = ptable_entry_to_phdr(entry);
-> +
->  		ret = le32_to_cpu(phdr->offset_free_cached) -
->  		      le32_to_cpu(phdr->offset_free_uncached);
-> +
-> +		if (ret > le32_to_cpu(entry->size))
-> +			return -EINVAL;
->  	} else {
->  		header = __smem->regions[0].virt_base;
->  		ret = le32_to_cpu(header->available);
-> +
-> +		if (ret > __smem->regions[0].size)
-> +			return -EINVAL;
->  	}
->  
->  	return ret;
-> @@ -772,7 +846,7 @@ static int qcom_smem_set_global_partition(struct qcom_smem *smem)
->  	bool found = false;
->  	int i;
->  
-> -	if (smem->global_partition) {
-> +	if (smem->global_partition_entry) {
->  		dev_err(smem->dev, "Already found the global partition\n");
->  		return -EINVAL;
->  	}
-> @@ -807,8 +881,7 @@ static int qcom_smem_set_global_partition(struct qcom_smem *smem)
->  	if (!header)
->  		return -EINVAL;
->  
-> -	smem->global_partition = header;
-> -	smem->global_cacheline = le32_to_cpu(entry->cacheline);
-> +	smem->global_partition_entry = entry;
->  
->  	return 0;
->  }
-> @@ -848,7 +921,7 @@ qcom_smem_enumerate_partitions(struct qcom_smem *smem, u16 local_host)
->  			return -EINVAL;
->  		}
->  
-> -		if (smem->partitions[remote_host]) {
-> +		if (smem->ptable_entries[remote_host]) {
->  			dev_err(smem->dev, "duplicate host %hu\n", remote_host);
->  			return -EINVAL;
->  		}
-> @@ -857,8 +930,7 @@ qcom_smem_enumerate_partitions(struct qcom_smem *smem, u16 local_host)
->  		if (!header)
->  			return -EINVAL;
->  
-> -		smem->partitions[remote_host] = header;
-> -		smem->cacheline[remote_host] = le32_to_cpu(entry->cacheline);
-> +		smem->ptable_entries[remote_host] = entry;
->  	}
->  
->  	return 0;
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+> @@ -1119,8 +1128,7 @@ int software_node_notify(struct device *dev, unsigned long action)
+>
+>         switch (action) {
+>         case KOBJ_ADD:
+> -               ret = sysfs_create_link_nowarn(&dev->kobj, &swnode->kobj,
+> -                                              "software_node");
+> +               ret = sysfs_create_link(&dev->kobj, &swnode->kobj, "software_node");
+>                 if (ret)
+>                         break;
+>
+> --
+> 2.30.2
+>
