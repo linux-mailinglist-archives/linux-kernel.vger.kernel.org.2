@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5993B19EC
+	by mail.lfdr.de (Postfix) with ESMTP id DCFD93B19ED
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 14:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbhFWM0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 08:26:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59094 "EHLO
+        id S231261AbhFWM0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 08:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbhFWM0N (ORCPT
+        with ESMTP id S231207AbhFWM0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Jun 2021 08:26:13 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DDAC0617A8
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:23:55 -0700 (PDT)
-Message-Id: <20210623121452.805327286@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE9EC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 05:23:56 -0700 (PDT)
+Message-Id: <20210623121452.901736860@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624451033;
+        s=2020; t=1624451035;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Kmbt6E+mVkDsbmVbrnwpwdJxLTX7f6bLSJV9dbGQ5WE=;
-        b=hQFnR/cw4SrovZqpEuXxBMjRGoDljVpGtGe/hDL/gO8S4UbZFDb9GGh/8dlcOZmLeBys8/
-        N4c0MfzGVbdXfMA24RI2kTdMw5pPi7dvdI8aPNBZIRBIeahBeYnn3OiE5p3Kmz6Sb6FGsP
-        nE/rmd+KweFsas6yZgsi/bs0hgA7s1ON/zw4TUgST4Q33ho7JXKysaNwfKUoHeZORH7GqI
-        vHnEwC3p2mgnsWWNZCpNMKfJxQNDSd1e3a+bglGF9mAWGuVjzBeFNw2RELKMSExNiNLdyE
-        M75BceIVpNQ8w4V7F/XwmYb1SoiypNZqOI47AO5IV1CzVXSvUaWRg4We3hFVtw==
+        bh=0dSVheBdT2C1SUe6+q+ORCYWtS6QZlFN/YbnYkZnvpc=;
+        b=XjlPk7PhMlLqg0wAxGxdiBudauLQaFew+fnqpEMgwhkr5wKagy+kH8aQ4yn4CZWJ3V5zQp
+        yDyufqVo5FDevszh8+bYKLb0WCkUqs1pa9X0Ho7SAtAYlFdjPE3Bf8WJ7DvqgI8auEtdKw
+        b+92IBuaVIP30yb3uWNOfyafY+blOiO3anfMot5p8nYewaGtGojd88ou1nutbrvF59k4+3
+        6Q3gB7bEkPbdnUiLqokSlvJ0Sb5ALXT1tTX+tpw8bTThlOscBgkFzPdL3w4a0usn89Dfb9
+        sb9pHdKcKn1NDanYgmFq2ueAhC38yRtFSzPMf1szetTeeylY6/Zr8x1AaW/FmA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624451033;
+        s=2020e; t=1624451035;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Kmbt6E+mVkDsbmVbrnwpwdJxLTX7f6bLSJV9dbGQ5WE=;
-        b=q3ogPcXHbylorX+SEk5GnlKdcz6AdmtKaIuRYAbvA3jsX1laEgydnzTrMsSdXBIAYsFG4b
-        BceSrIHnBvK+DnCg==
-Date:   Wed, 23 Jun 2021 14:01:42 +0200
+        bh=0dSVheBdT2C1SUe6+q+ORCYWtS6QZlFN/YbnYkZnvpc=;
+        b=Z4dtZ3ZKpfjackbntE6NhiMUQfYm5CQvua3HgolFaz4GkJnBtuSeZy2K4p0kOxgt3VmZBD
+        wfJUB7WcnHweCOCw==
+Date:   Wed, 23 Jun 2021 14:01:43 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -50,8 +50,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         "Chang Seok Bae" <chang.seok.bae@intel.com>,
         Megha Dey <megha.dey@linux.intel.com>,
         Oliver Sang <oliver.sang@intel.com>
-Subject: [patch V4 15/65] x86/fpu: Make copy_xstate_to_kernel() usable for
- [x]fpregs_get()
+Subject: [patch V4 16/65] x86/fpu: Use copy_xstate_to_uabi_buf() in xfpregs_get()
 References: <20210623120127.327154589@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -60,140 +59,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When xsave with init state optimization is used then a component's state
-in the task's xsave buffer can be stale when the corresponding feature bit
-is not set.
-
-fpregs_get() and xfpregs_get() invoke fpstate_sanitize_xstate() to update
-the task's xsave buffer before retrieving the FX or FP state. That's just
-duplicated code as copy_xstate_to_kernel() already handles this correctly.
-
-Add a copy mode argument to the function which allows to restrict the state
-copy to the FP and SSE features.
-
-Also rename the function to copy_xstate_to_uabi_buf() so the name reflects
-what it is doing.
+Use the new functionality of copy_xstate_to_uabi_buf() to retrieve the
+FX state when XSAVE* is in use. This avoids overwriting the FPU state
+buffer with fpstate_sanitize_xstate() which is error prone and duplicated
+code.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Borislav Petkov <bp@suse.de>
 ---
-V3: Rename to copy_xstate_to_uabi_buf() - Boris
+V3: Adopted to function rename
 V2: New patch
 ---
- arch/x86/include/asm/fpu/xstate.h |   12 +++++++++-
- arch/x86/kernel/fpu/regset.c      |    2 -
- arch/x86/kernel/fpu/xstate.c      |   42 ++++++++++++++++++++++++++++----------
- 3 files changed, 42 insertions(+), 14 deletions(-)
+ arch/x86/kernel/fpu/regset.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
---- a/arch/x86/include/asm/fpu/xstate.h
-+++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -103,12 +103,20 @@ extern void __init update_regset_xstate_
- void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr);
- int using_compacted_format(void);
- int xfeature_size(int xfeature_nr);
--struct membuf;
--void copy_xstate_to_kernel(struct membuf to, struct xregs_state *xsave);
- int copy_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf);
- int copy_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf);
- void copy_supervisor_to_kernel(struct xregs_state *xsave);
- void copy_dynamic_supervisor_to_kernel(struct xregs_state *xstate, u64 mask);
- void copy_kernel_to_dynamic_supervisor(struct xregs_state *xstate, u64 mask);
- 
-+enum xstate_copy_mode {
-+	XSTATE_COPY_FP,
-+	XSTATE_COPY_FX,
-+	XSTATE_COPY_XSAVE,
-+};
-+
-+struct membuf;
-+void copy_xstate_to_uabi_buf(struct membuf to, struct xregs_state *xsave,
-+			     enum xstate_copy_mode mode);
-+
- #endif
 --- a/arch/x86/kernel/fpu/regset.c
 +++ b/arch/x86/kernel/fpu/regset.c
-@@ -94,7 +94,7 @@ int xstateregs_get(struct task_struct *t
+@@ -33,13 +33,18 @@ int xfpregs_get(struct task_struct *targ
+ {
+ 	struct fpu *fpu = &target->thread.fpu;
+ 
+-	if (!boot_cpu_has(X86_FEATURE_FXSR))
++	if (!cpu_feature_enabled(X86_FEATURE_FXSR))
+ 		return -ENODEV;
  
  	fpu__prepare_read(fpu);
+-	fpstate_sanitize_xstate(fpu);
  
--	copy_xstate_to_kernel(to, &fpu->state.xsave);
-+	copy_xstate_to_uabi_buf(to, &fpu->state.xsave, XSTATE_COPY_XSAVE);
- 	return 0;
- }
- 
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1068,14 +1068,20 @@ static void copy_feature(bool from_xstat
- 	membuf_write(to, from_xstate ? xstate : init_xstate, size);
- }
- 
--/*
-- * Convert from kernel XSAVE or XSAVES compacted format to UABI
-- * non-compacted format and copy to a kernel-space ptrace buffer.
-+/**
-+ * copy_xstate_to_uabi_buf - Copy kernel saved xstate to a UABI buffer
-+ * @to:		membuf descriptor
-+ * @xsave:	The kernel xstate buffer to copy from
-+ * @copy_mode:	The requested copy mode
-  *
-- * It supports partial copy but pos always starts from zero. This is called
-- * from xstateregs_get() and there we check the CPU has XSAVE.
-+ * Converts from kernel XSAVE or XSAVES compacted format to UABI conforming
-+ * format, i.e. from the kernel internal hardware dependent storage format
-+ * to the requested @mode. UABI XSTATE is always uncompacted!
-+ *
-+ * It supports partial copy but @to.pos always starts from zero.
-  */
--void copy_xstate_to_kernel(struct membuf to, struct xregs_state *xsave)
-+void copy_xstate_to_uabi_buf(struct membuf to, struct xregs_state *xsave,
-+			     enum xstate_copy_mode copy_mode)
- {
- 	const unsigned int off_mxcsr = offsetof(struct fxregs_state, mxcsr);
- 	struct xregs_state *xinit = &init_fpstate.xsave;
-@@ -1083,12 +1089,22 @@ void copy_xstate_to_kernel(struct membuf
- 	unsigned int zerofrom;
- 	int i;
- 
--	/*
--	 * The destination is a ptrace buffer; we put in only user xstates:
--	 */
--	memset(&header, 0, sizeof(header));
- 	header.xfeatures = xsave->header.xfeatures;
--	header.xfeatures &= xfeatures_mask_user();
-+
-+	/* Mask out the feature bits depending on copy mode */
-+	switch (copy_mode) {
-+	case XSTATE_COPY_FP:
-+		header.xfeatures &= XFEATURE_MASK_FP;
-+		break;
-+
-+	case XSTATE_COPY_FX:
-+		header.xfeatures &= XFEATURE_MASK_FP | XFEATURE_MASK_SSE;
-+		break;
-+
-+	case XSTATE_COPY_XSAVE:
-+		header.xfeatures &= xfeatures_mask_user();
-+		break;
+-	return membuf_write(&to, &fpu->state.fxsave, sizeof(struct fxregs_state));
++	if (!use_xsave()) {
++		return membuf_write(&to, &fpu->state.fxsave,
++				    sizeof(fpu->state.fxsave));
 +	}
- 
- 	/* Copy FP state up to MXCSR */
- 	copy_feature(header.xfeatures & XFEATURE_MASK_FP, &to, &xsave->i387,
-@@ -1109,6 +1125,9 @@ void copy_xstate_to_kernel(struct membuf
- 		     &to, &xsave->i387.xmm_space, &xinit->i387.xmm_space,
- 		     sizeof(xsave->i387.xmm_space));
- 
-+	if (copy_mode != XSTATE_COPY_XSAVE)
-+		goto out;
 +
- 	/* Zero the padding area */
- 	membuf_zero(&to, sizeof(xsave->i387.padding));
- 
-@@ -1150,6 +1169,7 @@ void copy_xstate_to_kernel(struct membuf
- 		zerofrom = xstate_offsets[i] + xstate_sizes[i];
- 	}
- 
-+out:
- 	if (to.left)
- 		membuf_zero(&to, to.left);
++	copy_xstate_to_uabi_buf(to, &fpu->state.xsave, XSTATE_COPY_FX);
++	return 0;
  }
+ 
+ int xfpregs_set(struct task_struct *target, const struct user_regset *regset,
 
