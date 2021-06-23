@@ -2,76 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744233B1E8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5828A3B1E91
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 18:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhFWQX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 12:23:28 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:33418 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhFWQXY (ORCPT
+        id S229938AbhFWQYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 12:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229800AbhFWQYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 12:23:24 -0400
-Received: by mail-ot1-f49.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so2533498otl.0;
-        Wed, 23 Jun 2021 09:21:05 -0700 (PDT)
+        Wed, 23 Jun 2021 12:24:11 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB94C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:21:53 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id bb20so1784482pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 09:21:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5ii3VcP6yGwaAHrYr2ovsq7dBZBjX3jJHACpeShViPA=;
+        b=Dlvu2xzM8dvWAc4U4/8TT762Zpj56AIzsK0NYI9mRdYCfh55Vfg4tRKBpYdu7TFobJ
+         CFIOsn8YGIsF+zPP9HbuS+IDufTO2SXbJhWYAL5fdo3M17FumZy8KXAz3TPraxlaAcbr
+         jt8qAcMBy9dvRiDp61IHT3QvZYMCrr7Yf7plDNs7kJIkRYO8OupGAlX+fobPB5AdNpw2
+         2geqhPltSYJPV71YZe1AwuJ/HJt0vf7xxjWC4rLUNUXO643c4aswcy+cJgmm7lmjEcbg
+         2BSG7jU/TG/G1l/W32hN27YvLhBpaecf3cUJSCtnfwraAS9WZEHS7UzPok5PNbVHj0sl
+         BOUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=35WsYJT9YpRPnzEEhoqfjKbQt4vKvTmr17v8IGf8pkA=;
-        b=sYAtF3zWwgT0vjuCBM1ozsHW6O+zcXHTrlpOn/qlwwtqe3hhzc0dL1xHVQC3tlXcD6
-         40g6uk8yFFie9GKfV8MfBZ7ejiMeMwJzOk2YFce98HA88itoBVVgPsKqZBIxiZN2BIeI
-         ZZ1Ys4SRgjYahkjZg6DtkDVTVnOhITfjHq7YvWX2b539UbyVFF0RcEeGCEWG6g53wXAO
-         i0Uzb9GTeJXLdD/JXrC2tVg2VoqcUXJmD4oUJ3kGT4szkXzlXrQv0D1utPPGYPSNYTbp
-         4WnUSLiIez/bWI3n9lMCpF+0WWSgajCooovSRyftgzt46tJmkW07C+VYWV/tO77aps0X
-         lIoA==
-X-Gm-Message-State: AOAM532qxeyZIe/VJN8kMK3epXDtRPfRShmqWJ6F06ndCOHH8oZgrj54
-        N/FseOxXaSQmi3hU2yDisId+uHWJb18BxA+VilrCPQmbpmc=
-X-Google-Smtp-Source: ABdhPJzBgjWy+VqeBJbt+KGxoD1N/UTshnFIiaEUPd2SEQOGfdsJ3Kqg/RQuV+59rHsN4vwCi3U7bejsvXkGw+6ep8U=
-X-Received: by 2002:a9d:1905:: with SMTP id j5mr598865ota.321.1624465265283;
- Wed, 23 Jun 2021 09:21:05 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5ii3VcP6yGwaAHrYr2ovsq7dBZBjX3jJHACpeShViPA=;
+        b=SPfIiGVLPxAf/Lxz4anB5+JdTvTUrupzlZchqjI21Cz5aZJNKejIWAAKJ4i1vAe4o5
+         fVQg+3dSI4ozQvkpa36KphzGtlFeh4+C3O9sD/F/G2gM0jHVk1SD4eQSS00Ealbgwhbq
+         sdULfaB9+TVrrPGwpabWRgs5XqjPkIkaVugF/DSnyBT+ihQtyA68WyJWgZ3shcSAqRTP
+         PUvpqvCW8jVJQPGghmCszvwjU1q2jaobyl9nlhhSfySDooxPFZyXMx6bVDa1TVdOCmYw
+         YLbwzY8vdt8PMErAd50bVAFCfIol5qbqHdBDC81S/sG5LmYAQ1OWQG+U922HvqBEjcbt
+         H9ow==
+X-Gm-Message-State: AOAM533i4PkPMaJY/dzyuJIrkBIB0hDyPuNyelaZv9idK0RYWID9NvHb
+        Veo7TJISKqD2akFL45MgpkU5sg==
+X-Google-Smtp-Source: ABdhPJyXzBIJ4uuVHOJ30Az+pMillzqNM3ekwhaPQbi6PBAbIcP27gEaHHBiJF2yLHpN5F+4CzIiGg==
+X-Received: by 2002:a17:90a:8a95:: with SMTP id x21mr556761pjn.154.1624465313070;
+        Wed, 23 Jun 2021 09:21:53 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id b18sm5960931pjq.2.2021.06.23.09.21.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 09:21:52 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 16:21:48 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Cathy Avery <cavery@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH RFC] KVM: nSVM: Fix L1 state corruption upon return from
+ SMM
+Message-ID: <YNNfnLsc+3qMsdlN@google.com>
+References: <20210623074427.152266-1-vkuznets@redhat.com>
+ <a3918bfa-7b4f-c31a-448a-aa22a44d4dfd@redhat.com>
+ <53a9f893cb895f4b52e16c374cbe988607925cdf.camel@redhat.com>
+ <ac98150acd77f4c09167bc1bb1c552db68925cf2.camel@redhat.com>
+ <87pmwc4sh4.fsf@vitty.brq.redhat.com>
+ <5fc502b70a89e18034716166abc65caec192c19b.camel@redhat.com>
+ <YNNc9lKIzM6wlDNf@google.com>
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 23 Jun 2021 18:20:54 +0200
-Message-ID: <CAJZ5v0gcogmEi_-wcycEv77443_LT9w-7Ln_x1eiBm=mPiX9hA@mail.gmail.com>
-Subject: [GIT PULL] Power management fix for v5.13-rc8
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PCI <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNNc9lKIzM6wlDNf@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Jun 23, 2021, Sean Christopherson wrote:
+> And I believe this hackery is necessary only because nested_svm_vmexit() isn't
+> following the architcture in the first place.  I.e. using vmcb01 to restore
+> host state is flat out wrong.
 
-Please pull from the tag
+Ah, that's not true, using vmcb01 is allowed by "may store some or all host state
+in hidden on-chip memory".
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-5.13-rc8
-
-with top-most commit 4d6035f9bf4ea12776322746a216e856dfe46698
-
- Revert "PCI: PM: Do not read power state in pci_enable_device_flags()"
-
-on top of commit 13311e74253fe64329390df80bed3f07314ddd61
-
- Linux 5.13-rc7
-
-to receive a power management fix for 5.13-rc8.
-
-This reverts a recent PCI power management commit that causes
-initialization issues to appear on some systems.
-
-Thanks!
-
-
----------------
-
-Rafael J. Wysocki (1):
-      Revert "PCI: PM: Do not read power state in pci_enable_device_flags()"
-
----------------
-
- drivers/pci/pci.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+From a performance perspective, I do like the SMI/RSM shenanigans.  I'm not
+totally opposed to the trickery since I think it will break a guest if and only
+if the L1 guest is also violating the APM.  And we're not fudging the spec thaat
+much :-)
