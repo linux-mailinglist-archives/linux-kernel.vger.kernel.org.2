@@ -2,107 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7383B1B79
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 537753B1B7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhFWNrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:47:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:35602 "EHLO foss.arm.com"
+        id S231147AbhFWNsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:48:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230206AbhFWNrx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:47:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A7666ED1;
-        Wed, 23 Jun 2021 06:45:35 -0700 (PDT)
-Received: from localhost (unknown [10.1.195.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 482B93F718;
-        Wed, 23 Jun 2021 06:45:35 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 14:45:33 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 2/4] cpufreq: cppc: Pass structure instance by
- reference
-Message-ID: <20210623134533.GB12411@arm.com>
-References: <cover.1624266901.git.viresh.kumar@linaro.org>
- <b910f89cf11f6916319f9a2fb48d9146005318b1.1624266901.git.viresh.kumar@linaro.org>
+        id S230206AbhFWNse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 09:48:34 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 249C061075;
+        Wed, 23 Jun 2021 13:46:16 +0000 (UTC)
+Date:   Wed, 23 Jun 2021 09:46:14 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v2] selftests/ftrace: fix event-no-pid on 1-core machine
+Message-ID: <20210623094614.1aa35179@gandalf.local.home>
+In-Reply-To: <20210623134315.77472-1-krzysztof.kozlowski@canonical.com>
+References: <20210623134315.77472-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b910f89cf11f6916319f9a2fb48d9146005318b1.1624266901.git.viresh.kumar@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 21 Jun 2021 at 14:49:35 (+0530), Viresh Kumar wrote:
-> Don't pass structure instance by value, pass it by reference instead.
->
+Shuah,
 
-Might be best to justify the change a bit :)
+Want to take this in your tree?
 
-For me this is a judgement call, and I don't really see the reasons for
-changing it: we don't care if the structure is modified or not, as we're
-not reusing the data after the call to cppc_get_rate_from_fbctrs().
-More so, in this scenario we might not even want for the called function
-to modify the counter values. Also there is no further call to a function
-in cppc_get_rate_from_fbctrs(), that might require references to the
-fb_ctrs.
-
-So what is the reason behind this change?
-
-Thanks,
-Ionela.
+-- Steve
 
 
-> Tested-by: Vincent Guittot <vincent.guittot@linaro.org>
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+On Wed, 23 Jun 2021 15:43:15 +0200
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote:
+
+> When running event-no-pid test on small machines (e.g. cloud 1-core
+> instance), other events might not happen:
+> 
+>     + cat trace
+>     + cnt=0
+>     + [ 0 -eq 0 ]
+>     + fail No other events were recorded
+>     [15] event tracing - restricts events based on pid notrace filtering [FAIL]
+> 
+> Schedule a simple sleep task to be sure that some other process events
+> get recorded.
+> 
+> Fixes: ebed9628f5c2 ("selftests/ftrace: Add test to test new set_event_notrace_pid file")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> 
 > ---
->  drivers/cpufreq/cppc_cpufreq.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index 35b8ae66d1fb..490175d65082 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -373,18 +373,18 @@ static inline u64 get_delta(u64 t1, u64 t0)
+> Changes since v1:
+> 1. Correct spelling in commit msg.
+> 2. Add Steven's ack.
+> ---
+>  .../testing/selftests/ftrace/test.d/event/event-no-pid.tc  | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc b/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc
+> index e6eb78f0b954..9933ed24f901 100644
+> --- a/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc
+> +++ b/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc
+> @@ -57,6 +57,10 @@ enable_events() {
+>      echo 1 > tracing_on
 >  }
 >  
->  static int cppc_get_rate_from_fbctrs(struct cppc_cpudata *cpu_data,
-> -				     struct cppc_perf_fb_ctrs fb_ctrs_t0,
-> -				     struct cppc_perf_fb_ctrs fb_ctrs_t1)
-> +				     struct cppc_perf_fb_ctrs *fb_ctrs_t0,
-> +				     struct cppc_perf_fb_ctrs *fb_ctrs_t1)
->  {
->  	u64 delta_reference, delta_delivered;
->  	u64 reference_perf, delivered_perf;
+> +other_task() {
+> +    sleep .001 || usleep 1 || sleep 1
+> +}
+> +
+>  echo 0 > options/event-fork
 >  
-> -	reference_perf = fb_ctrs_t0.reference_perf;
-> +	reference_perf = fb_ctrs_t0->reference_perf;
+>  do_reset
+> @@ -94,6 +98,9 @@ child=$!
+>  echo "child = $child"
+>  wait $child
 >  
-> -	delta_reference = get_delta(fb_ctrs_t1.reference,
-> -				    fb_ctrs_t0.reference);
-> -	delta_delivered = get_delta(fb_ctrs_t1.delivered,
-> -				    fb_ctrs_t0.delivered);
-> +	delta_reference = get_delta(fb_ctrs_t1->reference,
-> +				    fb_ctrs_t0->reference);
-> +	delta_delivered = get_delta(fb_ctrs_t1->delivered,
-> +				    fb_ctrs_t0->delivered);
+> +# Be sure some other events will happen for small systems (e.g. 1 core)
+> +other_task
+> +
+>  echo 0 > tracing_on
 >  
->  	/* Check to avoid divide-by zero */
->  	if (delta_reference || delta_delivered)
-> @@ -415,7 +415,7 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpu)
->  	if (ret)
->  		return ret;
->  
-> -	return cppc_get_rate_from_fbctrs(cpu_data, fb_ctrs_t0, fb_ctrs_t1);
-> +	return cppc_get_rate_from_fbctrs(cpu_data, &fb_ctrs_t0, &fb_ctrs_t1);
->  }
->  
->  static int cppc_cpufreq_set_boost(struct cpufreq_policy *policy, int state)
-> -- 
-> 2.31.1.272.g89b43f80a514
-> 
+>  cnt=`count_pid $mypid`
+
