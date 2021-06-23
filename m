@@ -2,153 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7FD13B1B9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2473B1BA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 15:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbhFWNzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 09:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230243AbhFWNzj (ORCPT
+        id S230286AbhFWNzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 09:55:50 -0400
+Received: from mail-ej1-f51.google.com ([209.85.218.51]:42828 "EHLO
+        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231139AbhFWNzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:55:39 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 311ECC061574;
-        Wed, 23 Jun 2021 06:53:21 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso3273031wmc.1;
-        Wed, 23 Jun 2021 06:53:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=pKJo2zfQJAto+H7on6ydNnW2a5qzcSImZ5tu6Hz8SPs=;
-        b=Ax5amtes4QHAh5hFHrs1nlkfPyuUGwzzAv1QPZ+CsoH50Xgyw/7JKR+P+GtUWWaSgA
-         LiGgeYD93qjaZ9qlcD8BQYq3AbD/B6XtbKuu+CLCzjyKzUbz5/GGDF/zoXXSwVVOGF1y
-         UnJBK3s0JXaeEYup+j5MgnOxc5tg5IJ0VSPPiiXkxll3ptUcEABrWbKu+trMyHnvn5SI
-         7aqoE23wqwLp8KgTj4uV3ib+W7KRpVMDmKZeM95amRPuVRWF/NBuQDLqFYnaiJUq5dEu
-         N3DNyMno4cj84YUSDj7vdOMlIswvYpmHq6E/6umWyWlzBabP5RLPpcbiwu3SEVLCwLp3
-         IWyg==
+        Wed, 23 Jun 2021 09:55:47 -0400
+Received: by mail-ej1-f51.google.com with SMTP id bg14so4131363ejb.9;
+        Wed, 23 Jun 2021 06:53:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=pKJo2zfQJAto+H7on6ydNnW2a5qzcSImZ5tu6Hz8SPs=;
-        b=mL4khqoFTMlQNOd6iLQYKaLlnXebrZJ7IVakhO4WeeAuEYtMBjnJKbKwJmq2x+1k18
-         gTmrCcK0kzzTzZ37mPPbJ7uzoBQw817HbZe2Z//+tQm0Y0Ng+Aau22rmynW6ZDqMrOgg
-         47D9qMUk4mP4g646UK+NgAUtI5wxtaRFiBf5TUipkhLHAWPlVsYEy/aXiqTFVfo+bNIG
-         uVqPGIPv4U/harUQZYdCUg5cB+AGawiGtbyxr60GhUo0bgWx4lEp4S77MaqNuW0ptZtE
-         DtRbL5Da614ojlANlSgxS38A7v4ojGFPUnTG6q32agnaG3XbYJwTfSswLg9gqUq6mj1a
-         DWJw==
-X-Gm-Message-State: AOAM530ocVy48go1N3foKkHogpwMZ85vS+KPc5wrpqp71IHWBdO5yMr9
-        yd8Y9tEaBjnkaBiImDV3/A8CjfWLR6oc
-X-Google-Smtp-Source: ABdhPJx6MegljGgLzjeJ/OV84M5roMM/v+iHCm4FMq3beu+lQ7zyxaZd9zVURsttRoq10p/dwncWrQ==
-X-Received: by 2002:a05:600c:ada:: with SMTP id c26mr11165067wmr.189.1624456399786;
-        Wed, 23 Jun 2021 06:53:19 -0700 (PDT)
-Received: from [192.168.200.247] (ip5b434b8b.dynamic.kabel-deutschland.de. [91.67.75.139])
-        by smtp.gmail.com with ESMTPSA id t82sm36707wmf.22.2021.06.23.06.53.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 06:53:19 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: rockchip: Add sdmmc_ext for RK3328
-To:     Johan Jonker <jbx6244@gmail.com>, Heiko Stuebner <heiko@sntech.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210623120001.164920-1-knaerzche@gmail.com>
- <c30377a1-90aa-d79e-a60a-5bc1a8e18c44@gmail.com>
-From:   Alex Bee <knaerzche@gmail.com>
-Message-ID: <b534795a-fc1d-3e89-7ea9-0606297cd9b1@gmail.com>
-Date:   Wed, 23 Jun 2021 15:53:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xJccocnoRdorcslUAq9kb6AGcZBt5E/D2oTNxvA/DUE=;
+        b=QWirZGqOn4x5bjIFEBJdvTlZx1redvBJXVAjbgNzQBr+JAdIGGKIURHSZGZ/o+fVj6
+         hYNN9ctv8gbVTrDceCyuuZ6CFZftY2MdSJV1e+KzZZ1XshIa7xoyz4uQaiT6DeOGkuxi
+         T1A91Pg5tFZvFn/iwziIe56+nigpM/6zW+Zn7eXVr1vtfjgGfwG76b7xHJwdBOBECHz7
+         jIE3yOhPlEtou9FoxU9NZ8x5QAXm/PzdfQ49f14KuEqJs+zErfYQCvq+tM1++oTG7C1o
+         rvcpLRIuNveJumB43JR6uyVMc9U304B3+Fic+cAuY2jOWpXXsqpu/M7YaJcGnjTW+Pe2
+         WodA==
+X-Gm-Message-State: AOAM532zEkJ+HFYqSNB2Qyvd2SQ18kR4S+OUQM/1tNKfpjU3tp+geqjM
+        8ak8rNLe2O2spy3syBJEZRsAyMNpuRUbX15f8jE=
+X-Google-Smtp-Source: ABdhPJx4MiPBQ7sojERe3xK7MmHDIA3eZ06CVhmxc0qfIKDm5CajmkayvlQvbc/hC7PnBccVzO+z/g==
+X-Received: by 2002:a17:906:ce29:: with SMTP id sd9mr168698ejb.56.1624456408751;
+        Wed, 23 Jun 2021 06:53:28 -0700 (PDT)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id da28sm77961edb.0.2021.06.23.06.53.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 06:53:28 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 15:53:26 +0200
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
+        bharat.kumar.gogada@xilinx.com, Hyun Kwon <hyun.kwon@xilinx.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Ravi Kiran Gummaluri <rgummal@xilinx.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] PCI: xilinx-nwl: Enable the clock through CCF
+Message-ID: <20210623135326.GA54420@rocinante>
+References: <cover.1624454607.git.michal.simek@xilinx.com>
+ <be603822953d0a815034a952b9c71bac642f22ae.1624454607.git.michal.simek@xilinx.com>
 MIME-Version: 1.0
-In-Reply-To: <c30377a1-90aa-d79e-a60a-5bc1a8e18c44@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <be603822953d0a815034a952b9c71bac642f22ae.1624454607.git.michal.simek@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johan,
+[+cc Sasha for visibility]
 
-Am 23.06.21 um 14:53 schrieb Johan Jonker:
-> Hi Alex,
->
-> make ARCH=arm64 dtbs_check
-> DT_SCHEMA_FILES=Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
->
-> On 6/23/21 2:00 PM, Alex Bee wrote:
->> RK3328 SoC has a fourth mmc controller called SDMMC_EXT. Some
->> boards have sdio wifi connected to it. In order to use it
->> one would have to add the pinctrls from sdmmc0ext group which
->> is done on board level.
->>
->> While at that also add the reset controls for the other mmc
->> controllers.
->>
->> Signed-off-by: Alex Bee <knaerzche@gmail.com>
->> ---
->>   arch/arm64/boot/dts/rockchip/rk3328.dtsi | 20 ++++++++++++++++++++
->>   1 file changed, 20 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
->> index da84be6f4715..c13fa2f3f4cd 100644
->> --- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
->> +++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
->> @@ -858,6 +858,8 @@ sdmmc: mmc@ff500000 {
->>   		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
->>   		fifo-depth = <0x100>;
->>   		max-frequency = <150000000>;
->> +		resets = <&cru SRST_MMC0>;
->> +		reset-names = "reset";
->>   		status = "disabled";
->>   	};
->>   
->> @@ -870,6 +872,8 @@ sdio: mmc@ff510000 {
->>   		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
->>   		fifo-depth = <0x100>;
->>   		max-frequency = <150000000>;
->> +		resets = <&cru SRST_SDIO>;
->> +		reset-names = "reset";
->>   		status = "disabled";
->>   	};
->>   
->> @@ -882,6 +886,8 @@ emmc: mmc@ff520000 {
->>   		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
->>   		fifo-depth = <0x100>;
->>   		max-frequency = <150000000>;
->> +		resets = <&cru SRST_EMMC>;
->> +		reset-names = "reset";
->>   		status = "disabled";
->>   	};
->>   
->> @@ -980,6 +986,20 @@ usb_host0_ohci: usb@ff5d0000 {
->>   		status = "disabled";
->>   	};
->>   
->> +	sdmmc_ext: dwmmc@ff5f0000 {
-> /arch/arm64/boot/dts/rockchip/rk3328-evb.dt.yaml: dwmmc@ff5f0000:
-> $nodename:0: 'dwmmc@ff5f0000' does not match '^mmc(@.*)?$'
+Hi Michal,
 
-Argh: I submitted the pre-dtbs_check version. Thanks for checking.
+Thank you for sending v2 so promptly!  And for all the extra changes and
+fixes.  Much appreciated!
 
-Alex.
+> Enable PCIE reference clock. There is no remove function that's why
+> this should be enough for simple operation.
+> Normally this clock is enabled by default by firmware but there are
+> usecases where this clock should be enabled by driver itself.
+> It is also good that clock user is recorded in clock framework.
 
->> +		compatible = "rockchip,rk3328-dw-mshc", "rockchip,rk3288-dw-mshc";
->> +		reg = <0x0 0xff5f0000 0x0 0x4000>;
->> +		interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
->> +		clocks = <&cru HCLK_SDMMC_EXT>, <&cru SCLK_SDMMC_EXT>,
->> +			 <&cru SCLK_SDMMC_EXT_DRV>, <&cru SCLK_SDMMC_EXT_SAMPLE>;
->> +		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
->> +		fifo-depth = <0x100>;
->> +		max-frequency = <150000000>;
->> +		resets = <&cru SRST_SDMMCEXT>;
->> +		reset-names = "reset";
->> +		status = "disabled";
->> +	};
->> +
->>   	usbdrd3: usb@ff600000 {
->>   		compatible = "rockchip,rk3328-dwc3", "snps,dwc3";
->>   		reg = <0x0 0xff600000 0x0 0x100000>;
->>
+Small nitpicks: it would be PCIe here in the above and in the error
+message (this is as per [1]), and "use cases" also in the above. 
+
+This can be corrected when the patch will be merged by either Bjorn or
+Lorenzo, to avoid sending v3 unnecessarily, provided that they would
+have a moment to do it, of course.
+
+> Fixes: ab597d35ef11 ("PCI: xilinx-nwl: Add support for Xilinx NWL PCIe Host Controller")
+
+Thank you!
+
+Does it make sense for this change to be back-ported to stable and
+long-term kernels?
+
+I am asking to make sure we do the right thing here, as I can imagine
+that older kernels (primarily because some folks could use, for example,
+Ubuntu LTS releases for development) might often be used by people who
+work with the Xilinx FPGAs and such.
+
+[...]
+> +	err = clk_prepare_enable(pcie->clk);
+> +	if (err) {
+> +		dev_err(dev, "can't enable pcie ref clock\n");
+> +		return err;
+> +	}
+> +
+
+As per the nitpick above, it would be "PCIe", but probably no need to
+send v3 to correct this.
+
+1. https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com/
+
+	Krzysztof
