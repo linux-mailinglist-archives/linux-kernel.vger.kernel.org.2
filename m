@@ -2,410 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6207C3B1243
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 05:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F413B1247
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 05:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhFWDiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 23:38:55 -0400
-Received: from m12-18.163.com ([220.181.12.18]:39836 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229890AbhFWDix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 23:38:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=TvHIb
-        +BigytgBE+8MHak7LRZvj3BGmrakjZaxRzsnsg=; b=QGuo/heRwSOXqhg+Tf5o5
-        FnZLkHNu/8GZg2GWCywiIZLQxbREV1Hd8/K99qH2M19FHNtuh9eUsqJ3UqyIZ6DG
-        en3chprTlT4I+DzZqhnDPDCP00ejLoikUuPmdd6NxkcyuCVNSfherdUTEAGL2r/6
-        FRmXwhiXr5QCF1xYLNpAyE=
-Received: from ubuntu.localdomain (unknown [218.17.89.92])
-        by smtp14 (Coremail) with SMTP id EsCowABXXgIRrNJgcAUhrA--.27647S2;
-        Wed, 23 Jun 2021 11:35:46 +0800 (CST)
-From:   13145886936@163.com
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     linux-decnet-user@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
-Subject: [PATCH] decnet: af_decnet: pmc should not be referenced when it's NULL
-Date:   Tue, 22 Jun 2021 20:35:40 -0700
-Message-Id: <20210623033540.27552-1-13145886936@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S230283AbhFWDkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 23:40:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230236AbhFWDkC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 23:40:02 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6130DC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 20:37:45 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id t40so1787800oiw.8
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 20:37:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2FvWhtJmcV/16/EjsQ9dgtceUGbcijtN3zkjcRvsci0=;
+        b=IJLo9nODJoEAENam9rz9IpUFB+H6qytEd0ng5OQnL9FzBqgRgt1yyCexd/Bqofg9Px
+         q9LzIocK6+SI66KvIqd/c72TUYe6+b3H9+Sxfxc7tcgwN+QJtkBzLhkK/JfNMjHcOpU7
+         CPldcdBwRLP82XQWxZxsVdZWqgrIvQy0l+o/XWygEXd6UPqNI8K/mhxFyyaXAp1eXChS
+         XkB7ZgWsg3VLdEZVSfNy4geFw377UPs3VDQZmEKaENag6Ti9NFRqzo7WnZNM0DY5Y1rs
+         9sdhGzVm2TXNQIU3zyp/jcgXSM7oV7YQXZ38CGOM1ElFWA7zGRGUlsXAu5VrQSRKtnMs
+         iRSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2FvWhtJmcV/16/EjsQ9dgtceUGbcijtN3zkjcRvsci0=;
+        b=So32nOqP7g0aY8EM4bI2XwQMV9+b0vDOGYhCpPu3jZqtBHclOu75e1RIjNf2GjQkgz
+         YhvbhR/f3QFSx+S4EtUfUxE41Mj7o1WHRKIYaNlw5OJQKNDBUe8rvs8uy65fzKFmhl0v
+         Kx8vETPiti4T4G1Zk2pfXB+7iJCLcstz1ddNk88nxsNUUIfuHG6eVovn1Fy2uCdxVMw4
+         EjdLPVOsUHyj9Da7kQ4vqwbhsMvkrBUzTj23NXoSHa7vg6F2E0oscP88MTYQrAvZxzSJ
+         +mTUJVGwMkxHZ1EpOsdEqaxiFDms5hMsdHN5y3jYu7MSPMBFTgpsjf3rxRkhsoUR13I2
+         il2g==
+X-Gm-Message-State: AOAM533JVd2qHdDvbygX51x9WGezuRVqM2r2BMKvi5qvu+6NkOdUYOec
+        P5+jVkedur0nJLO7ijArIZoRnQ==
+X-Google-Smtp-Source: ABdhPJwD3YI+MKyLUE9P+xDxEzxwGjvVdcTAgdfEO+nNUwMFiAjqbOVH8MR0JEEMIb4LTI9YCGg48A==
+X-Received: by 2002:a05:6808:903:: with SMTP id w3mr1619363oih.16.1624419464708;
+        Tue, 22 Jun 2021 20:37:44 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id c21sm939260ooj.33.2021.06.22.20.37.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 20:37:44 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 22:37:41 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Iskren Chernev <iskren.chernev@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, linux-usb@vger.kernel.org,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v1 3/3] phy: qcom-qusb2: Add configuration for SM4250 and
+ SM6115
+Message-ID: <YNKshSbsf5d5Uyew@yoga>
+References: <20210622203240.559979-1-iskren.chernev@gmail.com>
+ <20210622203240.559979-4-iskren.chernev@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowABXXgIRrNJgcAUhrA--.27647S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWfGF47tw4UKr4xKrWUAr1DKFg_yoWDuFyrpF
-        4jka1DCF48tFW7WrZYyaykur4Syw18tryxCryIga4SyFyqgr1rJa48AFyYyr4rWrWkCw43
-        Aa1qgFs0kr4UWFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bozuAUUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiQhK6g1aD-WTsJQAAss
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622203240.559979-4-iskren.chernev@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
+On Tue 22 Jun 15:32 CDT 2021, Iskren Chernev wrote:
 
-pmc should not be referenced when it's NULL.
+> The SM4250 and SM6115 uses the same register layout as MSM8996, but the
+> tune sequence is a bit different.
+> 
 
-Signed-off-by: gushengxian <gushengxian@yulong.com>
----
- net/decnet/af_decnet.c | 67 ++++++++++++++++--------------------------
- 1 file changed, 25 insertions(+), 42 deletions(-)
+Didn't review the initialization sequence, but it's different from the
+existing ones so adding a new compatible and init_tbl seems to be the
+right choice.
 
-diff --git a/net/decnet/af_decnet.c b/net/decnet/af_decnet.c
-index 5dbd45dc35ad..be2758ac40cb 100644
---- a/net/decnet/af_decnet.c
-+++ b/net/decnet/af_decnet.c
-@@ -152,7 +152,8 @@ static atomic_long_t decnet_memory_allocated;
- 
- static int __dn_setsockopt(struct socket *sock, int level, int optname,
- 		sockptr_t optval, unsigned int optlen, int flags);
--static int __dn_getsockopt(struct socket *sock, int level, int optname, char __user *optval, int __user *optlen, int flags);
-+static int __dn_getsockopt(struct socket *sock, int level, int optname,
-+		char __user *optval, int __user *optlen, int flags);
- 
- static struct hlist_head *dn_find_list(struct sock *sk)
- {
-@@ -176,6 +177,7 @@ static int check_port(__le16 port)
- 
- 	sk_for_each(sk, &dn_sk_hash[le16_to_cpu(port) & DN_SK_HASH_MASK]) {
- 		struct dn_scp *scp = DN_SK(sk);
-+
- 		if (scp->addrloc == port)
- 			return -1;
- 	}
-@@ -373,6 +375,7 @@ struct sock *dn_sklist_find_listener(struct sockaddr_dn *addr)
- 	read_lock(&dn_hash_lock);
- 	sk_for_each(sk, list) {
- 		struct dn_scp *scp = DN_SK(sk);
-+
- 		if (sk->sk_state != TCP_LISTEN)
- 			continue;
- 		if (scp->addr.sdn_objnum) {
-@@ -427,8 +430,6 @@ struct sock *dn_find_by_skb(struct sk_buff *skb)
- 	return sk;
- }
- 
--
--
- static void dn_destruct(struct sock *sk)
- {
- 	struct dn_scp *scp = DN_SK(sk);
-@@ -444,9 +445,8 @@ static unsigned long dn_memory_pressure;
- 
- static void dn_enter_memory_pressure(struct sock *sk)
- {
--	if (!dn_memory_pressure) {
-+	if (!dn_memory_pressure)
- 		dn_memory_pressure = 1;
--	}
- }
- 
- static struct proto dn_proto = {
-@@ -548,7 +548,6 @@ static void dn_keepalive(struct sock *sk)
- 		dn_nsp_send_link(sk, DN_NOCHANGE, 0);
- }
- 
--
- /*
-  * Timer for shutdown/destroyed sockets.
-  * When socket is dead & no packets have been sent for a
-@@ -664,8 +663,6 @@ char *dn_addr2asc(__u16 addr, char *buf)
- 	return buf;
- }
- 
--
--
- static int dn_create(struct net *net, struct socket *sock, int protocol,
- 		     int kern)
- {
-@@ -688,7 +685,6 @@ static int dn_create(struct net *net, struct socket *sock, int protocol,
- 		return -ESOCKTNOSUPPORT;
- 	}
- 
--
- 	if ((sk = dn_alloc_sock(net, sock, GFP_KERNEL, kern)) == NULL)
- 		return -ENOBUFS;
- 
-@@ -755,7 +751,7 @@ static int dn_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
- 				}
- 			}
- 			rcu_read_unlock();
--			if (ldev == NULL)
-+			if (!ldev)
- 				return -EADDRNOTAVAIL;
- 		}
- 	}
-@@ -775,7 +771,6 @@ static int dn_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
- 	return rv;
- }
- 
--
- static int dn_auto_bind(struct socket *sock)
- {
- 	struct sock *sk = sock->sk;
-@@ -793,7 +788,6 @@ static int dn_auto_bind(struct socket *sock)
- 	 */
- 	if ((scp->accessdata.acc_accl != 0) &&
- 		(scp->accessdata.acc_accl <= 12)) {
--
- 		scp->addr.sdn_objnamel = cpu_to_le16(scp->accessdata.acc_accl);
- 		memcpy(scp->addr.sdn_objname, scp->accessdata.acc_acc, le16_to_cpu(scp->addr.sdn_objnamel));
- 
-@@ -926,7 +920,7 @@ static int __dn_connect(struct sock *sk, struct sockaddr_dn *addr, int addrlen,
- 	if (scp->state != DN_O)
- 		goto out;
- 
--	if (addr == NULL || addrlen != sizeof(struct sockaddr_dn))
-+	if (!addr || addrlen != sizeof(struct sockaddr_dn))
- 		goto out;
- 	if (addr->sdn_family != AF_DECnet)
- 		goto out;
-@@ -958,9 +952,8 @@ static int __dn_connect(struct sock *sk, struct sockaddr_dn *addr, int addrlen,
- 
- 	dn_nsp_send_conninit(sk, NSP_CI);
- 	err = -EINPROGRESS;
--	if (*timeo) {
-+	if (*timeo)
- 		err = dn_wait_run(sk, timeo);
--	}
- out:
- 	return err;
- }
-@@ -998,7 +991,6 @@ static inline int dn_check_state(struct sock *sk, struct sockaddr_dn *addr, int
- 	return -EINVAL;
- }
- 
--
- static void dn_access_copy(struct sk_buff *skb, struct accessdata_dn *acc)
- {
- 	unsigned char *ptr = skb->data;
-@@ -1015,7 +1007,6 @@ static void dn_access_copy(struct sk_buff *skb, struct accessdata_dn *acc)
- 	memcpy(&acc->acc_acc, ptr, acc->acc_accl);
- 
- 	skb_pull(skb, acc->acc_accl + acc->acc_passl + acc->acc_userl + 3);
--
- }
- 
- static void dn_user_copy(struct sk_buff *skb, struct optdata_dn *opt)
-@@ -1040,12 +1031,12 @@ static struct sk_buff *dn_wait_for_connect(struct sock *sk, long *timeo)
- 	for(;;) {
- 		release_sock(sk);
- 		skb = skb_dequeue(&sk->sk_receive_queue);
--		if (skb == NULL) {
-+		if (!skb) {
- 			*timeo = schedule_timeout(*timeo);
- 			skb = skb_dequeue(&sk->sk_receive_queue);
- 		}
- 		lock_sock(sk);
--		if (skb != NULL)
-+		if (skb)
- 			break;
- 		err = -EINVAL;
- 		if (sk->sk_state != TCP_LISTEN)
-@@ -1060,7 +1051,7 @@ static struct sk_buff *dn_wait_for_connect(struct sock *sk, long *timeo)
- 	}
- 	finish_wait(sk_sleep(sk), &wait);
- 
--	return skb == NULL ? ERR_PTR(err) : skb;
-+	return !skb ? ERR_PTR(err) : skb;
- }
- 
- static int dn_accept(struct socket *sock, struct socket *newsock, int flags,
-@@ -1083,7 +1074,7 @@ static int dn_accept(struct socket *sock, struct socket *newsock, int flags,
- 	}
- 
- 	skb = skb_dequeue(&sk->sk_receive_queue);
--	if (skb == NULL) {
-+	if (!skb) {
- 		skb = dn_wait_for_connect(sk, &timeo);
- 		if (IS_ERR(skb)) {
- 			release_sock(sk);
-@@ -1094,7 +1085,7 @@ static int dn_accept(struct socket *sock, struct socket *newsock, int flags,
- 	cb = DN_SKB_CB(skb);
- 	sk_acceptq_removed(sk);
- 	newsk = dn_alloc_sock(sock_net(sk), newsock, sk->sk_allocation, kern);
--	if (newsk == NULL) {
-+	if (!newsk) {
- 		release_sock(sk);
- 		kfree_skb(skb);
- 		return -ENOBUFS;
-@@ -1172,8 +1163,7 @@ static int dn_accept(struct socket *sock, struct socket *newsock, int flags,
- 	return err;
- }
- 
--
--static int dn_getname(struct socket *sock, struct sockaddr *uaddr,int peer)
-+static int dn_getname(struct socket *sock, struct sockaddr *uaddr, int peer)
- {
- 	struct sockaddr_dn *sa = (struct sockaddr_dn *)uaddr;
- 	struct sock *sk = sock->sk;
-@@ -1199,7 +1189,6 @@ static int dn_getname(struct socket *sock, struct sockaddr *uaddr,int peer)
- 	return sizeof(struct sockaddr_dn);
- }
- 
--
- static __poll_t dn_poll(struct file *file, struct socket *sock, poll_table  *wait)
- {
- 	struct sock *sk = sock->sk;
-@@ -1221,8 +1210,7 @@ static int dn_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
- 	struct sk_buff *skb;
- 	int val;
- 
--	switch(cmd)
--	{
-+	switch (cmd) {
- 	case SIOCGIFADDR:
- 	case SIOCSIFADDR:
- 		return dn_dev_ioctl(cmd, (void __user *)arg);
-@@ -1249,7 +1237,6 @@ static int dn_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
- 			amount = skb->len;
- 		} else {
- 			skb_queue_walk(&sk->sk_receive_queue, skb)
--				amount += skb->len;
- 		}
- 		release_sock(sk);
- 		err = put_user(amount, (int __user *)arg);
-@@ -1288,7 +1275,6 @@ static int dn_listen(struct socket *sock, int backlog)
- 	return err;
- }
- 
--
- static int dn_shutdown(struct socket *sock, int how)
- {
- 	struct sock *sk = sock->sk;
-@@ -1537,7 +1523,7 @@ static int __dn_getsockopt(struct socket *sock, int level,int optname, char __us
- 	void *r_data = NULL;
- 	unsigned int val;
- 
--	if(get_user(r_len , optlen))
-+	if (get_user(r_len, optlen))
- 		return -EFAULT;
- 
- 	switch (optname) {
-@@ -1639,7 +1625,6 @@ static int __dn_getsockopt(struct socket *sock, int level,int optname, char __us
- 	return 0;
- }
- 
--
- static int dn_data_ready(struct sock *sk, struct sk_buff_head *q, int flags, int target)
- {
- 	struct sk_buff *skb;
-@@ -1650,6 +1635,7 @@ static int dn_data_ready(struct sock *sk, struct sk_buff_head *q, int flags, int
- 
- 	skb_queue_walk(q, skb) {
- 		struct dn_skb_cb *cb = DN_SKB_CB(skb);
-+
- 		len += skb->len;
- 
- 		if (cb->nsp_flags & 0x40) {
-@@ -1669,7 +1655,6 @@ static int dn_data_ready(struct sock *sk, struct sk_buff_head *q, int flags, int
- 	return 0;
- }
- 
--
- static int dn_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 		      int flags)
- {
-@@ -1711,7 +1696,6 @@ static int dn_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 	if (flags & MSG_WAITALL)
- 		target = size;
- 
--
- 	/*
- 	 * See if there is data ready to read, sleep if there isn't
- 	 */
-@@ -1756,6 +1740,7 @@ static int dn_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 
- 	skb_queue_walk_safe(queue, skb, n) {
- 		unsigned int chunk = skb->len;
-+
- 		cb = DN_SKB_CB(skb);
- 
- 		if ((chunk + copied) > size)
-@@ -1801,7 +1786,6 @@ static int dn_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 
- 	rv = copied;
- 
--
- 	if (eor && (sk->sk_type == SOCK_SEQPACKET))
- 		msg->msg_flags |= MSG_EOR;
- 
-@@ -1820,7 +1804,6 @@ static int dn_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 	return rv;
- }
- 
--
- static inline int dn_queue_too_long(struct dn_scp *scp, struct sk_buff_head *queue, int flags)
- {
- 	unsigned char fctype = scp->services_rem & NSP_FC_MASK;
-@@ -1849,8 +1832,10 @@ static inline int dn_queue_too_long(struct dn_scp *scp, struct sk_buff_head *que
- unsigned int dn_mss_from_pmtu(struct net_device *dev, int mtu)
- {
- 	unsigned int mss = 230 - DN_MAX_NSP_DATA_HEADER;
-+
- 	if (dev) {
- 		struct dn_dev *dn_db = rcu_dereference_raw(dev->dn_ptr);
-+
- 		mtu -= LL_RESERVED_SPACE(dev);
- 		if (dn_db->use_long)
- 			mtu -= 21;
-@@ -1881,6 +1866,7 @@ static inline unsigned int dn_current_mss(struct sock *sk, int flags)
- 	/* This works out the maximum size of segment we can send out */
- 	if (dst) {
- 		u32 mtu = dst_mtu(dst);
-+
- 		mss_now = min_t(int, dn_mss_from_pmtu(dst->dev, mtu), mss_now);
- 	}
- 
-@@ -1944,7 +1930,6 @@ static int dn_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 		flags |= MSG_EOR;
- 	}
- 
--
- 	err = dn_check_state(sk, addr, addr_len, &timeo, flags);
- 	if (err)
- 		goto out_err;
-@@ -2063,7 +2048,6 @@ static int dn_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 		skb = NULL;
- 
- 		scp->persist = dn_nsp_persist(sk);
--
- 	}
- out:
- 
-@@ -2159,11 +2143,11 @@ static struct sock *socket_get_idx(struct seq_file *seq, loff_t *pos)
- static void *dn_socket_get_idx(struct seq_file *seq, loff_t pos)
- {
- 	void *rc;
-+
- 	read_lock_bh(&dn_hash_lock);
- 	rc = socket_get_idx(seq, &pos);
--	if (!rc) {
-+	if (!rc)
- 		read_unlock_bh(&dn_hash_lock);
--	}
- 	return rc;
- }
- 
-@@ -2261,8 +2245,8 @@ static inline void dn_socket_format_entry(struct seq_file *seq, struct sock *sk)
- 	struct dn_scp *scp = DN_SK(sk);
- 	char buf1[DN_ASCBUF_LEN];
- 	char buf2[DN_ASCBUF_LEN];
--	char local_object[DN_MAXOBJL+3];
--	char remote_object[DN_MAXOBJL+3];
-+	char local_object[DN_MAXOBJL + 3];
-+	char remote_object[DN_MAXOBJL + 3];
- 
- 	dn_printable_object(&scp->addr, local_object);
- 	dn_printable_object(&scp->peer, remote_object);
-@@ -2368,7 +2352,6 @@ static int __init decnet_init(void)
- 	dn_register_sysctl();
- out:
- 	return rc;
--
- }
- module_init(decnet_init);
- 
--- 
-2.25.1
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
+Regards,
+Bjorn
 
+> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-qusb2.c | 34 +++++++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+> 
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qusb2.c b/drivers/phy/qualcomm/phy-qcom-qusb2.c
+> index 8f1bf7e2186b..3c1d3b71c825 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qusb2.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-qusb2.c
+> @@ -219,6 +219,22 @@ static const struct qusb2_phy_init_tbl msm8998_init_tbl[] = {
+>  	QUSB2_PHY_INIT_CFG(QUSB2PHY_PLL_DIGITAL_TIMERS_TWO, 0x19),
+>  };
+>  
+> +static const struct qusb2_phy_init_tbl sm6115_init_tbl[] = {
+> +	QUSB2_PHY_INIT_CFG_L(QUSB2PHY_PORT_TUNE1, 0xf8),
+> +	QUSB2_PHY_INIT_CFG_L(QUSB2PHY_PORT_TUNE2, 0x53),
+> +	QUSB2_PHY_INIT_CFG_L(QUSB2PHY_PORT_TUNE3, 0x81),
+> +	QUSB2_PHY_INIT_CFG_L(QUSB2PHY_PORT_TUNE4, 0x17),
+> +
+> +	QUSB2_PHY_INIT_CFG(QUSB2PHY_PLL_TUNE, 0x30),
+> +	QUSB2_PHY_INIT_CFG(QUSB2PHY_PLL_USER_CTL1, 0x79),
+> +	QUSB2_PHY_INIT_CFG(QUSB2PHY_PLL_USER_CTL2, 0x21),
+> +
+> +	QUSB2_PHY_INIT_CFG_L(QUSB2PHY_PORT_TEST2, 0x14),
+> +
+> +	QUSB2_PHY_INIT_CFG(QUSB2PHY_PLL_AUTOPGM_CTL1, 0x9f),
+> +	QUSB2_PHY_INIT_CFG(QUSB2PHY_PLL_PWR_CTRL, 0x00),
+> +};
+> +
+>  static const unsigned int qusb2_v2_regs_layout[] = {
+>  	[QUSB2PHY_PLL_CORE_INPUT_OVERRIDE] = 0xa8,
+>  	[QUSB2PHY_PLL_STATUS]		= 0x1a0,
+> @@ -342,6 +358,18 @@ static const struct qusb2_phy_cfg sdm660_phy_cfg = {
+>  	.autoresume_en	 = BIT(3),
+>  };
+>  
+> +static const struct qusb2_phy_cfg sm6115_phy_cfg = {
+> +	.tbl		= sm6115_init_tbl,
+> +	.tbl_num	= ARRAY_SIZE(sm6115_init_tbl),
+> +	.regs		= msm8996_regs_layout,
+> +
+> +	.has_pll_test	= true,
+> +	.se_clk_scheme_default = true,
+> +	.disable_ctrl	= (CLAMP_N_EN | FREEZIO_N | POWER_DOWN),
+> +	.mask_core_ready = PLL_LOCKED,
+> +	.autoresume_en	 = BIT(3),
+> +};
+> +
+>  static const char * const qusb2_phy_vreg_names[] = {
+>  	"vdda-pll", "vdda-phy-dpdm",
+>  };
+> @@ -888,6 +916,12 @@ static const struct of_device_id qusb2_phy_of_match_table[] = {
+>  	}, {
+>  		.compatible	= "qcom,sdm660-qusb2-phy",
+>  		.data		= &sdm660_phy_cfg,
+> +	}, {
+> +		.compatible	= "qcom,sm4250-qusb2-phy",
+> +		.data		= &sm6115_phy_cfg,
+> +	}, {
+> +		.compatible	= "qcom,sm6115-qusb2-phy",
+> +		.data		= &sm6115_phy_cfg,
+>  	}, {
+>  		/*
+>  		 * Deprecated. Only here to support legacy device
+> -- 
+> 2.31.1
+> 
