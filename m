@@ -2,125 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42163B16E9
+	by mail.lfdr.de (Postfix) with ESMTP id 008003B16E7
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 11:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbhFWJdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 05:33:12 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:50921 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230028AbhFWJdH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230239AbhFWJdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 23 Jun 2021 05:33:07 -0400
-X-UUID: b7abbf6fe05e4edc858c040d2162eb1d-20210623
-X-UUID: b7abbf6fe05e4edc858c040d2162eb1d-20210623
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 418237550; Wed, 23 Jun 2021 17:30:46 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 23 Jun 2021 17:30:35 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 23 Jun 2021 17:30:34 +0800
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Subject: [PATCH v5, 3/3] mailbox: cmdq: add mt8192 support
-Date:   Wed, 23 Jun 2021 17:30:23 +0800
-Message-ID: <1624440623-4585-4-git-send-email-yongqiang.niu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1624440623-4585-1-git-send-email-yongqiang.niu@mediatek.com>
-References: <1624440623-4585-1-git-send-email-yongqiang.niu@mediatek.com>
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50498 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230136AbhFWJc7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 05:32:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624440642;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kAxjtAMgAgnQc3g+VJW6cHqmyhoDwUFxxzEOFIhyLsg=;
+        b=eA+x8zHSbuASvyEngVxHmODSmEwpHzNsJmobHcN9H7EXyKUi/nqiFDwTH9EFRHLEt7DTP4
+        0sDrQu6soQgD6Lnt73cGBjLX+FGJCPOXMOyEtNGkF6ZHbywD50Jrd7SFDETczwGCBNhQEC
+        Wf3DyfUaj9u2dhT6YRo/o3eS/oiyics=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-219-pOP5RYI6NWGGf7tuvIJtUQ-1; Wed, 23 Jun 2021 05:30:38 -0400
+X-MC-Unique: pOP5RYI6NWGGf7tuvIJtUQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 58985100CF6E;
+        Wed, 23 Jun 2021 09:30:35 +0000 (UTC)
+Received: from localhost (ovpn-113-66.ams2.redhat.com [10.36.113.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 884CF5D6D7;
+        Wed, 23 Jun 2021 09:30:27 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>, bhelgaas@google.com,
+        alex.williamson@redhat.com, jgg@ziepe.ca, kevin.tian@intel.com,
+        eric.auger@redhat.com, giovanni.cabiddu@intel.com,
+        mjrosato@linux.ibm.com, jannh@google.com, kvm@vger.kernel.org,
+        linux-pci@vger.kernel.org, schnelle@linux.ibm.com
+Cc:     minchan@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org,
+        jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, mcgrof@kernel.org,
+        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
+        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
+        rostedt@goodmis.org, peterz@infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] PCI: Export pci_dev_trylock() and pci_dev_unlock()
+In-Reply-To: <20210623022824.308041-2-mcgrof@kernel.org>
+Organization: Red Hat GmbH
+References: <20210623022824.308041-1-mcgrof@kernel.org>
+ <20210623022824.308041-2-mcgrof@kernel.org>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Wed, 23 Jun 2021 11:30:25 +0200
+Message-ID: <87sg19lyha.fsf@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-MTK:  N
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add mt8192 support
+On Tue, Jun 22 2021, Luis Chamberlain <mcgrof@kernel.org> wrote:
 
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
- drivers/mailbox/mtk-cmdq-mailbox.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+> Other places in the kernel use this form, and so just
+> provide a common path for it.
+>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  drivers/pci/pci.c   | 6 ++++--
+>  include/linux/pci.h | 3 +++
+>  2 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
-index 5665b6e..de4793e 100644
---- a/drivers/mailbox/mtk-cmdq-mailbox.c
-+++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-@@ -36,6 +36,8 @@
- #define CMDQ_THR_WAIT_TOKEN		0x30
- #define CMDQ_THR_PRIORITY		0x40
- 
-+#define GCE_GCTL_VALUE			0x48
-+
- #define CMDQ_THR_ACTIVE_SLOT_CYCLES	0x3200
- #define CMDQ_THR_ENABLED		0x1
- #define CMDQ_THR_DISABLED		0x0
-@@ -76,11 +78,13 @@ struct cmdq {
- 	struct clk		*clock;
- 	bool			suspended;
- 	u8			shift_pa;
-+	bool			control_by_sw;
- };
- 
- struct gce_plat {
- 	u32 thread_nr;
- 	u8 shift;
-+	bool control_by_sw;
- };
- 
- u8 cmdq_get_shift_pa(struct mbox_chan *chan)
-@@ -121,6 +125,8 @@ static void cmdq_init(struct cmdq *cmdq)
- 	int i;
- 
- 	WARN_ON(clk_enable(cmdq->clock) < 0);
-+	if (cmdq->control_by_sw)
-+		writel(0x7, cmdq->base + GCE_GCTL_VALUE);
- 	writel(CMDQ_THR_ACTIVE_SLOT_CYCLES, cmdq->base + CMDQ_THR_SLOT_CYCLES);
- 	for (i = 0; i <= CMDQ_MAX_EVENT; i++)
- 		writel(i, cmdq->base + CMDQ_SYNC_TOKEN_UPDATE);
-@@ -536,6 +542,7 @@ static int cmdq_probe(struct platform_device *pdev)
- 
- 	cmdq->thread_nr = plat_data->thread_nr;
- 	cmdq->shift_pa = plat_data->shift;
-+	cmdq->control_by_sw = plat_data->control_by_sw;
- 	cmdq->irq_mask = GENMASK(cmdq->thread_nr - 1, 0);
- 	err = devm_request_irq(dev, cmdq->irq, cmdq_irq_handler, IRQF_SHARED,
- 			       "mtk_cmdq", cmdq);
-@@ -601,11 +608,14 @@ static int cmdq_probe(struct platform_device *pdev)
- static const struct gce_plat gce_plat_v2 = {.thread_nr = 16};
- static const struct gce_plat gce_plat_v3 = {.thread_nr = 24};
- static const struct gce_plat gce_plat_v4 = {.thread_nr = 24, .shift = 3};
-+static const struct gce_plat gce_plat_v5 = {.thread_nr = 24, .shift = 3,
-+					    .control_by_sw = true};
- 
- static const struct of_device_id cmdq_of_ids[] = {
- 	{.compatible = "mediatek,mt8173-gce", .data = (void *)&gce_plat_v2},
- 	{.compatible = "mediatek,mt8183-gce", .data = (void *)&gce_plat_v3},
- 	{.compatible = "mediatek,mt6779-gce", .data = (void *)&gce_plat_v4},
-+	{.compatible = "mediatek,mt8192-gce", .data = (void *)&gce_plat_v5},
- 	{}
- };
- 
--- 
-1.8.1.1.dirty
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 
