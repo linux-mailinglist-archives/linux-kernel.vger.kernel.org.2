@@ -2,289 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE4A3B10E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8AD3B10E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 02:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhFWABn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 20:01:43 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:32958 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbhFWABm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 20:01:42 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624406365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=RzYa72mioInPwQvI3NEpRj5PoaDVGEY7YubgtuSnqRw=;
-        b=S/e/szlvUv0xGBmwhxTzk8Notvpd5128Z2lJK76DZiGW3UVNLX6hWh/8aPQ3tdEGOKB6uj
-        Fb9zYvwQSerZuL140DAHp5D58CWOj6jm/P7K8RPraBUyTHGQ6nOpeixr7drLcFFNR8fvyP
-        pxhg3gbvyJJVXrLRYJZZ5R+9W/jrdTCF7cZ0PQuT2FS4nb7Oh7+yqOSjUv3Ufh7auO0A4r
-        sndd1Vd9t7VpYqIlKAIR5scmD89+ngBvrCmWfaIgrNea9AgJfI0HhYoLc/EOUnOskLYc6+
-        OkjtfOR5dzxVx1GoLPzhi1O5Jx1BidRU0hvkq+HbjBvEPxSqTQrljnh+DFCGcg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624406365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=RzYa72mioInPwQvI3NEpRj5PoaDVGEY7YubgtuSnqRw=;
-        b=XqfxyzhPwSRUbUgsSq+pfRJ2e6N4Bi5Qnd8OxT5OeiqHiYA1N5B/QCvnby4RVWidFZVnGJ
-        /rvtiiltecdX1oBw==
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, Megha Dey <megha.dey@intel.com>,
-        Ashok Rai <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Baolu Lu <baolu.lu@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Sanjay Kumar <sanjay.k.kumar@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, KVM <kvm@vger.kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: Virtualizing MSI-X on IMS via VFIO
-In-Reply-To: <20210622131217.76b28f6f.alex.williamson@redhat.com>
-Date:   Wed, 23 Jun 2021 01:59:24 +0200
-Message-ID: <87o8bxcuxv.ffs@nanos.tec.linutronix.de>
+        id S229853AbhFWAHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 20:07:49 -0400
+Received: from smtp47.i.mail.ru ([94.100.177.107]:53400 "EHLO smtp47.i.mail.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229718AbhFWAHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 20:07:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail3;
+        h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=mU2Ayn5gYoFPGauTijC+NFA1H+bS1gD6zZD3uhMdnq0=;
+        t=1624406732;x=1625012132; 
+        b=PMemd0zL2tsPlWF93/Uu47PALg77qJ0sThLusPFclWSc+GyNPlP+GIwVMM6v4XkVcgtKHjjOQLW5OvMXWU1gHs6XWDZI+wRTN5emVmN4YVuJCfM2uShTTQ1zb8Z4P32Xtc3WiU3CG8fL9LGDKfeor2vQHWtcNUZ8Ll5AS7cxiN4=;
+Received: by smtp47.i.mail.ru with esmtpa (envelope-from <cerg2010cerg2010@mail.ru>)
+        id 1lvqOX-00056K-GL; Wed, 23 Jun 2021 03:05:30 +0300
+Date:   Wed, 23 Jun 2021 03:05:19 +0300
+From:   Sergey Larin <cerg2010cerg2010@mail.ru>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-input@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: stmpe-keypad - add STMPE1801 support
+Message-ID: <YNJ6v7DfXUFMO8YA@minibook.localdomain>
+References: <20210618145149.10136-1-cerg2010cerg2010@mail.ru>
+ <YNAj30vl2yGxRX4e@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNAj30vl2yGxRX4e@google.com>
+Authentication-Results: smtp47.i.mail.ru; auth=pass smtp.auth=cerg2010cerg2010@mail.ru smtp.mailfrom=cerg2010cerg2010@mail.ru
+X-4EC0790: 10
+X-7564579A: 646B95376F6C166E
+X-77F55803: 4F1203BC0FB41BD954DFF1DC42D673FB0C620705B15DE32DFE392EA95FA71EAB182A05F5380850409D49A42B3DAEFD1A747001B17FDD96B4733F37DE7D0E7804F51113CE28EC3845
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE76574C3D62D66A535EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006371D5B197C6EC5B4BE8638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8598EEFA7D2C0B3AF39201CB3FE49DD556F9789CCF6C18C3F8528715B7D10C86878DA827A17800CE7C26CFBAC0749D213D2E47CDBA5A96583C09775C1D3CA48CFA12191B5F2BB8629117882F4460429724CE54428C33FAD30A8DF7F3B2552694AC26CFBAC0749D213D2E47CDBA5A9658378DA827A17800CE7D9442B0B5983000E8941B15DA834481F9449624AB7ADAF37BA3038C0950A5D3613377AFFFEAFD2697680F9384605B9038DDEAFF2085696F27B076A6E789B0E97A8DF7F3B2552694A1E7802607F20496D49FD398EE364050F652FD71AFB96DC7DC8623B8F170C382FB3661434B16C20AC78D18283394535A9E827F84554CEF5019E625A9149C048EE9ECD01F8117BC8BEE2021AF6380DFAD18AA50765F790063735872C767BF85DA227C277FBC8AE2E8BD7F3427536E911FA75ECD9A6C639B01B4E70A05D1297E1BBCB5012B2E24CD356
+X-B7AD71C0: AC4F5C86D027EB782CDD5689AFBDA7A2368A440D3B0F6089093C9A16E5BC824A2A04A2ABAA09D25379311020FFC8D4ADA1D348123C1DF65DCE436DEC22D88E07
+X-C1DE0DAB: 0D63561A33F958A537E89769116E7D7A9891AC65CEF55E09E241BE8572CD6504D59269BC5F550898D99A6476B3ADF6B47008B74DF8BB9EF7333BD3B22AA88B938A852937E12ACA75C4D20244F7083972410CA545F18667F91A7EA1CDA0B5A7A0
+X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D341E2D05735FCBECD1B739B158BCC54AE74274D818876CDA4ACB0D75FB0E0BC791288F50ABA9C210BD1D7E09C32AA3244C5F30E075F0AF1E1ED204972B6BA2444D24AF4FAF06DA24FDDCA3B3C10BC03908
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojXL4lMZLpcSTBWKEz5bkzNA==
+X-Mailru-Sender: 4121B63E61E70785D3806BAA2BD19524DEF24F9614A5AA65747001B17FDD96B4825871508D9F3970CAD91EC71FC00F3837D2A27E1A8065646C7A2150F6097340301919DCEDD5454186FA049C4F996C4B5FEEDEB644C299C0ED14614B50AE0675
+X-Mras: Ok
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alex,
+Hello Dmitry,
 
-[ Resend due to a delivery issue here. Sorry if you got this twice. ]
+On Sun, Jun 20, 2021 at 10:30:07PM -0700, Dmitry Torokhov wrote:
+> Do we really need to do this swap vs. simply arranging the keymap
+> differently for 1801?
 
-On Tue, Jun 22 2021 at 13:12, Alex Williamson wrote:
-> On Tue, 22 Jun 2021 10:16:15 +0000 "Tian, Kevin" <kevin.tian@intel.com> wrote:
->
-> Now the 2nd open requires your help. Below is what I learned from 
->> current vfio/qemu code (for vfio-pci device):
->> 
->>     0) Qemu doesn't attempt to allocate all irqs as reported by msix->
->>         table_size. It is done in an dynamic and incremental way.
->
-> Not by table_size, our expectation is that the device interrupt
-> behavior can be implicitly affected by the enabled vectors and the
-> table size may support far more vectors than the driver might actually
-> use.  It's also easier if we never need to get into the scenario of
-> pci_alloc_irq_vectors() returning a smaller than requested number of
-> vectors and needing to fallback to a vector negotiation that doesn't
-> exist via MSI-X.
->
-> FWIW, more recent QEMU will scan the vector table for the highest
-> non-masked vector to initially enable that number of vectors in the
-> host, both to improve restore behavior after migration and avoid
-> overhead for guests that write the vector table before setting the
-> MSI-X capability enable bit (Windows?).
->
->>     1) VFIO provides just one command (VFIO_DEVICE_SET_IRQS) for 
->>          allocating/enabling irqs given a set of vMSIX vectors [start, count]:
->>         a) if irqs not allocated, allocate irqs [start+count]. Enable irqs for 
->>             specified vectors [start, count] via request_irq();
->>         b) if irqs already allocated, enable irqs for specified vectors;
->>         c) if irq already enabled, disable and re-enable irqs for specified
->>              vectors because user may specify a different eventfd;
->> 
->>     2) When guest enables virtual MSI-X capability, Qemu calls VFIO_
->>         DEVICE_SET_IRQS to enable vector#0, even though it's currently 
->>         masked by the guest. Interrupts are received by Qemu but blocked
->>         from guest via mask/pending bit emulation. The main intention is 
->>         to enable physical MSI-X;
->
-> Yes, this is a bit awkward since the interrupt API is via SET_IRQS and
-> we don't allow writes to the MSI-X enable bit via config space.
->  
->>     3) When guest unmasks vector#0 via request_irq(), Qemu calls VFIO_
->>         DEVICE_SET_IRQS to enable vector#0 again, with a eventfd different
->>         from the one provided in 2);
->> 
->>     4) When guest unmasks vector#1, Qemu finds it's outside of allocated
->>         vectors (only vector#0 now):
->> 
->>         a) Qemu first calls VFIO_DEVICE_SET_IRQS to disable and free 
->>             irq for vector#0;
->> 
->>         b) Qemu then calls VFIO_DEVICE_SET_IRQS to allocate and enable
->>             irqs for both vector#0 and vector#1;
->> 
->>      5) When guest unmasks vector#2, same flow in 4) continues.
+Yes I thought about it, but that will break device tree writer's
+assumptions of the device so I think it's better to keep the keymap
+correct and not make driver's behavior confusing.
 
-That's dangerous and makes weird assumptions about interrupts being
-requested early in the driver init() function. But that's wishful
-thinking, really. There are enough drivers, especially networking which
-request interrupts on device open() and not on device init(). Some
-special functions only request the irq way later, i.e. only when someone
-uses that special function and at this point the other irqs of that very
-same device are already in use.
-
->> If above understanding is correct, how is lost interrupt avoided between 
->> 4.a) and 4.b) given that irq has been torn down for vector#0 in the middle
->> while from guest p.o.v this vector is actually unmasked? There must be
->> a mechanism in place, but I just didn't figure it out...
->
-> In practice unmasking new vectors is rare and done only at
-> initialization.  Risk from lost interrupts at this time is low.
-
-See above. Wishful thinking.
-
-OMG, I really don't want to be the one to debug _WHY_ a device lost
-interrupts just because it did a late request_irq() when the device is
-operational already and has other interrupts active.
-
-> When masking and unmasking vectors that are already in use, we're only
-> changing the signaling eventfd between KVM and QEMU such that QEMU can
-> set emulated pending bits in response to interrupts (and our lack of
-> interfaces to handle the mask/unmask at the host).  I believe that
-> locking in the vfio-pci driver prevents an interrupt from being lost
-> during the eventfd switch.
-
-Let's look at this from a driver perspective:
-
-  1) Driver checks how many entries are possible in the MSI-X table
-
-  2) Driver invokes pci_msix_enable[_range]() which returns the number
-     of vectors the system is willing to hand out to the driver.
-
-  3) Driver assigns the vectors to the different resources in the
-     hardware
-
-  4) Later on these interrupts are requested, but not necessarily during
-     device init.
-
-     Yes, request_irq() can fail and today it can fail also due to CPU
-     vector exhaustion. That's perfectly fine as the driver can handle
-     the fail and act accordingly.
-
-All of this is consistent and well defined.
-
-Now lets look at the guest. This VFIO mechanism introduces two brand new
-failure modes because of this:
-
-    guest::unmask()
-      trapped_by_host()
-        free_irqs();
-        pci_free_irq_vectors();
-          pci_disable_msix();
-        pci_alloc_irq_vectors();
-          pci_enable_msix();
-        request_irqs();
-        
-   #1 What happens if the host side allocation or the host side request_irq()
-      fails?
-
-        a) Guest is killed?
-        b) Failure is silently ignored and guest just does not receive
-           interrupts?
-        c) Any other mechanism?
-
-       Whatever it is, it simply _cannot_ make request_irq() in the
-       guest fail because the guest has already passed all failure
-       points and is in the low level function of unmasking the
-       interrupt for the first time after which is will return 0, aka
-       success.
-
-       So if you answer #a, fine with me. It's well defined.
-
-   #2 What happens to already active interrupts on that device which might
-      fire during that time?
-
-       They get lost or are redirected to the legacy PCI interrupt and
-       there is absolutely nothing you can do about that.
-
-       Simply because to prevent that the host side would have to
-       disable the interrupt source at the device level, i.e. fiddle
-       with actual device registers to shut up interrupt delivery and
-       reenable it afterwards again and thereby racing against some
-       other VCPU of the same guest which fiddles with that very same
-       registers.
-
-       IOW, undefined behaviour, which the "VFIO design" shrugged off on
-       completely unjustified assumptions.
-
-No matter how much you argue about this being unlikely, this is just
-broken. Unlikely simply does not exist at cloud scale.
-
-Aside of that. How did you come to the conclusion that #2 does not
-matter? By analyzing _every_ open and closed source driver for their
-usage patterns and documenting that all drivers which want to work in
-VFIO-PCI space have to follow specific rules vs. interrupt setup and
-usage? I'm pretty sure that you have a mechanism in place which
-monitors closely whether a driver violates those well documented rules.
-
-Yes, I know that I'm dreaming and the reality is that this is based on
-interesting assumptions and just works by chance.
-
-I have no idea _why_ this has been done that way. The changelogs of the
-relevant commits are void of useful content and lack links to the
-possibly existing discussions about this.
-
-I only can assume that back then the main problem was vector exhaustion
-on the host and to avoid allocating memory for interrupt descriptors
-etc, right?
-
-The host vector exhaustion problem was that each MSIX vector consumed a
-real CPU vector which is a limited resource on X86. This is not longer
-the case today:
-
-    1) pci_msix_enable[range]() consumes exactly zero CPU vectors from
-       the allocatable range independent of the number of MSIX vectors
-       it allocates, unless it is in multi-queue managed mode where it
-       will actually reserve a vector (maybe two) per CPU.
-
-       But for devices which are not using that mode, they just
-       opportunistically "reserve" vectors.
-
-       All entries are initialized with a special system vector which
-       when raised will emit a nastigram in dmesg.
-
-    2) request_irq() actually allocates a CPU vector from the
-       allocatable vector space which can obviously still fail, which is
-       perfectly fine.
-
-So the only downside today of allocating more MSI-X vectors than
-necessary is memory consumption for the irq descriptors.
-
-Though for virtualization there is still another problem:
-
-  Even if all possible MSI-X vectors for a passthrough PCI device would
-  be allocated upfront independent of the actual usage in the guest,
-  then there is still the issue of request_irq() failing on the host
-  once the guest decides to use any of those interrupts.
-
-It's a halfways reasonable argumentation by some definition of
-reasonable, that this case would be a host system configuration problem
-and the admin who overcommitted is responsible for the consequence.
-
-Where the only reasonable consequence is to kill the guest right there
-because there is no mechanism to actually tell it that the host ran out
-of resources.
-
-Not at all a pretty solution, but it is contrary to the status quo well
-defined. The most important aspect is that it is well defined for the
-case of success:
-
-  If it succeeds then there is no way that already requested interrupts
-  can be lost or end up being redirected to the legacy PCI irq due to
-  clearing the MSIX enable bit, which is a gazillion times better than
-  the "let's hope it works" based tinkerware we have now.
-
-So, aside of the existing VFIO/PCI/MSIX thing being just half thought
-out, even thinking about proliferating this with IMS is bonkers.
-
-IMS is meant to avoid the problem of MSI-X which needs to disable MSI-X
-in order to expand the number of vectors. The use cases are going to be
-even more dynamic than the usual device drivers, so the lost interrupt
-issue will be much more likely to trigger.
-
-So no, we are not going to proliferate this complete ignorance of how
-MSI-X actually works and just cram another "feature" into code which is
-known to be incorrect.
-
-Thanks,
-
-        tglx
