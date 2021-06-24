@@ -2,113 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB013B2BD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D968B3B2BDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232062AbhFXJw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232017AbhFXJwZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:52:25 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E655C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 02:50:06 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id d13so6883185ljg.12
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 02:50:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qqcZleP2S371WLdXJOXTAsMiO7kHRVmitjNgvjiTzrc=;
-        b=Y8xRKNeDp2eAwdEwtd+znlFoFof7cIlrVRBx5CJZ7bdYNROu+Od7vtLkWOGKpS8GBX
-         h+n9Abkmc4BoaOq5MYQ1eJC3ME5uYwRjrRjrkz/LqbNTZnbxW5BoY3bObS624o1cVZDV
-         3j2BcKt07vswzCSPvPgudRwzlFTFr7ryvM6ChD8AcnrFSQNNBBt4PiD7W9HGI4sovVYe
-         WeUA6Xwy2zfcuGumXszTGrftibl6niN9SWft0hbTxazgAvwoTs6DrSRn9froEGiqRf99
-         i1i9ZE1bGaWk4u+0IYnQtVtZ4oodxT7NIXmEdsCJr5uJ+gdMp1owTBKkNm5UqVlKhHqu
-         V6IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qqcZleP2S371WLdXJOXTAsMiO7kHRVmitjNgvjiTzrc=;
-        b=l0L2O2xaAWSrxb/e0zqnP0LudQMo2dp/4SZb2DzLmJ7/9a8HbgvsV9mxP4Z+ll0GMF
-         E6kCuyn72TSK64z/v/l8XZ1GZwYqF7GqiIyAAulHgNfuIb1ROpewPJFMxC3T6z6syjmt
-         4gdQj9uSn1ovsmeDdIip62/NHndILMIF8J6BeTsIO/8YC8fgmVIvjEQBbWwkLUyjOJ9K
-         EQJBWf68sy3cQgycIIwbfbuGIqcS2M2alYmfhP+NLEJbSkvRKTuv8pWXHnq/xxAug21Q
-         1FPxmvsA/qQHB/EScAvWmKczyDqoY93hO1nCGGlMBXq1STuLwB+9L1WDegZQEpX2qfUv
-         vE9A==
-X-Gm-Message-State: AOAM530O40RZJj5urzRQIqm0hw2+AwjtMj4rJLb54PwinqYcy4hA02IX
-        JFARi6PYwiOw1GscJhE6s42XIKHbgtyep56IKLKZ+Q==
-X-Google-Smtp-Source: ABdhPJw6cF3UPDUE/hjLyp07fIBsyMqwanQ2zzErcjkcsVhu+t+on9LmMD26Yn19M3ZdrE+WkHLwuv83ICSxPxjuCKg=
-X-Received: by 2002:a2e:95c9:: with SMTP id y9mr3182951ljh.401.1624528204937;
- Thu, 24 Jun 2021 02:50:04 -0700 (PDT)
+        id S232056AbhFXJ4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:56:20 -0400
+Received: from m12-15.163.com ([220.181.12.15]:57524 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229974AbhFXJ4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 05:56:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=D6rgt
+        o8QOwuzbuG3+IcLd2Dpya5XNWPjc+F0E2n2abk=; b=W8lp65PwdW6zFcfV6KUeA
+        Tnaqd6lGWEdfRyjzN7FkbaSv7I8FijDeHP/MelCNK5XuSjNCR3ucHpHjNuEseIku
+        DilAPU9IUB05XgQ0ts6YEsIWD6BCpOK/VaSJXF30maXaiYd8vh9oVc/rm0ecTxki
+        zeBA3QVRnCfXITmaDxzCLQ=
+Received: from ubuntu.localdomain (unknown [218.17.89.92])
+        by smtp11 (Coremail) with SMTP id D8CowADnVs+NVdRgzs9MAQ--.96S2;
+        Thu, 24 Jun 2021 17:53:25 +0800 (CST)
+From:   13145886936@163.com
+To:     linux@armlinux.org.uk
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>
+Subject: [PATCH] ARM: pxa: ssp: remove unnecessary print function dev_err()
+Date:   Thu, 24 Jun 2021 02:51:06 -0700
+Message-Id: <20210624095106.392317-1-13145886936@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <cover.1624266901.git.viresh.kumar@linaro.org> <09a39f5c-b47b-a931-bf23-dc43229fb2dd@quicinc.com>
- <20210623041613.v2lo3nidpgw37abl@vireshk-i7> <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
- <20210624025414.4iszkovggk6lg6hj@vireshk-i7>
-In-Reply-To: <20210624025414.4iszkovggk6lg6hj@vireshk-i7>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 24 Jun 2021 11:49:53 +0200
-Message-ID: <CAKfTPtAXMYYrG1w-iwSWXb428FkwFArEwXQgHnjShoCEMjdYcw@mail.gmail.com>
-Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency invariance
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Qian Cai <quic_qiancai@quicinc.com>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: D8CowADnVs+NVdRgzs9MAQ--.96S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZFWUCF45ur4kXFWUKr45Jrb_yoW3WFc_Ca
+        1Ika4kG3yrAr1vva4UJw1ayryaq3ZI9rWqkr1DKF1xKrW5Aa18G34DWFs7JF9rWw4I93y3
+        Xa93u3y3Cr1akjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5dR67UUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiXBe7g1Xl0Ei+8QABsV
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 at 04:54, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 23-06-21, 08:57, Qian Cai wrote:
-> > Viresh, I am afraid I don't feel comfortable yet. I have a few new tests in
-> > development, and will provide an update once ready.
->
-> Oh sure, np.
->
-> > Also, I noticed the delivered perf is even smaller than lowest_perf (100).
->
-> > # cat /sys/devices/system/cpu/cpu8/acpi_cppc/feedback_ctrs
-> >  ref:103377547901 del:54540736873
-> > # cat /sys/devices/system/cpu/cpu8/acpi_cppc/feedback_ctrs
-> >  ref:103379170101 del:54541599117
-> >
-> > 100 * (54541599117 - 54540736873) / (103379170101 - 103377547901) = 53
+From: gushengxian <gushengxian@yulong.com>
 
-I'm not sure that I understand your point. The formula above says that
-cpu8 run @ 53% of nominal performance
+The print function dev_err() is redundant because
+platform_get_irq() already prints an error.
 
-> >
-> > My understanding is that the delivered perf should fail into the range between
-> > lowest_perf and highest_perf. Is that assumption correct? This happens on
-> > 5.4-based kernel, so I am in process running your series on that system to see
-> > if there is any differences. In any case, if it is a bug it is pre-existing,
-> > but I'd like to understand a bit better in that front first.
->
-> Vincent:
->
-> Can that happen because of CPU idle ?
->
-> --
-> viresh
+Signed-off-by: gushengxian <gushengxian@yulong.com>
+---
+ arch/arm/plat-pxa/ssp.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/arm/plat-pxa/ssp.c b/arch/arm/plat-pxa/ssp.c
+index 563440315acd..9e77b3392c1e 100644
+--- a/arch/arm/plat-pxa/ssp.c
++++ b/arch/arm/plat-pxa/ssp.c
+@@ -146,10 +146,8 @@ static int pxa_ssp_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ssp->irq = platform_get_irq(pdev, 0);
+-	if (ssp->irq < 0) {
+-		dev_err(dev, "no IRQ resource defined\n");
++	if (ssp->irq < 0)
+ 		return -ENODEV;
+-	}
+ 
+ 	if (dev->of_node) {
+ 		const struct of_device_id *id =
+-- 
+2.25.1
+
