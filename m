@@ -2,165 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27553B31B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3F93B31CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232224AbhFXOrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 10:47:48 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:61662 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231475AbhFXOrq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 10:47:46 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15OEfIqN023842;
-        Thu, 24 Jun 2021 10:45:12 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 39bk4vj7af-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Jun 2021 10:45:11 -0400
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 15OEjA4n038692
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 24 Jun 2021 10:45:10 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Thu, 24 Jun 2021
- 10:45:09 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
- Transport; Thu, 24 Jun 2021 10:45:09 -0400
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 15OEj0IN003029;
-        Thu, 24 Jun 2021 10:45:08 -0400
-From:   <alexandru.tachici@analog.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <andrew@lunn.ch>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux@armlinux.org.uk>,
-        Alexandru Tachici <alexandru.tachici@analog.com>
-Subject: [PATCH 4/4] net: phy: adin1100: Add SQI support
-Date:   Thu, 24 Jun 2021 17:53:53 +0300
-Message-ID: <20210624145353.6910-5-alexandru.tachici@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210624145353.6910-1-alexandru.tachici@analog.com>
-References: <20210624145353.6910-1-alexandru.tachici@analog.com>
+        id S231608AbhFXO4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 10:56:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230249AbhFXO4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 10:56:43 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5627E60C3E;
+        Thu, 24 Jun 2021 14:54:24 +0000 (UTC)
+Date:   Thu, 24 Jun 2021 10:54:22 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yun Zhou <yun.zhou@windriver.com>
+Cc:     <linux-kernel@vger.kernel.org>,
+        <kernel-hardening@lists.openwall.com>, <ying.xue@windriver.com>,
+        <ps-ccm-rr@windriver.com>
+Subject: Re: [PATCH] seq_buf: let seq_buf_putmem_hex support len larger than
+ 8
+Message-ID: <20210624105422.5c8aaf4d@oasis.local.home>
+In-Reply-To: <20210624131646.17878-1-yun.zhou@windriver.com>
+References: <20210624131646.17878-1-yun.zhou@windriver.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: sxHrXKMrQy4VY78RD3OK2F0ghNYLdxIr
-X-Proofpoint-ORIG-GUID: sxHrXKMrQy4VY78RD3OK2F0ghNYLdxIr
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-24_12:2021-06-24,2021-06-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- mlxlogscore=999 impostorscore=0 phishscore=0 lowpriorityscore=0
- suspectscore=0 bulkscore=0 mlxscore=0 spamscore=0 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106240081
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandru Tachici <alexandru.tachici@analog.com>
+On Thu, 24 Jun 2021 21:16:46 +0800
+Yun Zhou <yun.zhou@windriver.com> wrote:
 
-Determine the SQI from MSE using a predefined table
-for the 10BASE-T1L.
+> I guess the original intention of seq_buf_putmem_hex is to dump the raw
 
-Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
----
- drivers/net/phy/adin1100.c | 52 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
+A little background, this was originally introduced in 2008:
 
-diff --git a/drivers/net/phy/adin1100.c b/drivers/net/phy/adin1100.c
-index a8ddf5a9879a..661ccb4a2045 100644
---- a/drivers/net/phy/adin1100.c
-+++ b/drivers/net/phy/adin1100.c
-@@ -62,6 +62,8 @@ static const int phy_10_features_array[] = {
- 
- #define ADIN_FC_EN				0x8001
- 
-+#define ADIN_MSE_VAL				0x830B
-+
- #define ADIN_CRSM_SFT_RST			0x8810
- #define   ADIN_CRSM_SFT_RST_EN			BIT(0)
- 
-@@ -80,6 +82,8 @@ static const int phy_10_features_array[] = {
- #define   ADIN_MAC_IF_LOOPBACK_EN		BIT(0)
- #define   ADIN_MAC_IF_REMOTE_LOOPBACK_EN	BIT(2)
- 
-+#define ADIN_SQI_MAX	7
-+
- struct adin_hw_stat {
- 	const char *string;
- 	u16 reg1;
-@@ -99,6 +103,22 @@ static const struct adin_hw_stat adin_hw_stats[] = {
- 	{ "false_carrier_events_count",		0x8013 },
- };
- 
-+struct adin_mse_sqi_range {
-+	u16 start;
-+	u16 end;
-+};
-+
-+static const struct adin_mse_sqi_range adin_mse_sqi_map[] = {
-+	{ 0x0A74, 0xFFFF },
-+	{ 0x084E, 0x0A74 },
-+	{ 0x0698, 0x084E },
-+	{ 0x053D, 0x0698 },
-+	{ 0x0429, 0x053D },
-+	{ 0x034E, 0x0429 },
-+	{ 0x02A0, 0x034E },
-+	{ 0x0000, 0x02A0 },
-+};
-+
- /**
-  * struct adin_priv - ADIN PHY driver private data
-  * tx_level_24v			set if the PHY supports 2.4V TX levels (10BASE-T1L)
-@@ -543,6 +563,36 @@ static void adin_get_stats(struct phy_device *phydev, struct ethtool_stats *stat
- 		data[i] = adin_get_stat(phydev, i);
- }
- 
-+static int adin_get_sqi(struct phy_device *phydev)
-+{
-+	u16 mse_val;
-+	int sqi;
-+	int ret;
-+
-+	ret = phy_read_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_STAT1);
-+	if (ret < 0)
-+		return ret;
-+	else if (!(ret & MDIO_STAT1_LSTATUS))
-+		return 0;
-+
-+	ret = phy_read_mmd(phydev, MDIO_STAT1, ADIN_MSE_VAL);
-+	if (ret < 0)
-+		return ret;
-+
-+	mse_val = 0xFFFF & ret;
-+	for (sqi = 0; sqi < ARRAY_SIZE(adin_mse_sqi_map); sqi++) {
-+		if (mse_val >= adin_mse_sqi_map[sqi].start && mse_val <= adin_mse_sqi_map[sqi].end)
-+			return sqi;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int adin_get_sqi_max(struct phy_device *phydev)
-+{
-+	return ADIN_SQI_MAX;
-+}
-+
- static int adin_probe(struct phy_device *phydev)
- {
- 	struct device *dev = &phydev->mdio.dev;
-@@ -575,6 +625,8 @@ static struct phy_driver adin_driver[] = {
- 		.get_sset_count		= adin_get_sset_count,
- 		.get_strings		= adin_get_strings,
- 		.get_stats		= adin_get_stats,
-+		.get_sqi		= adin_get_sqi,
-+		.get_sqi_max		= adin_get_sqi_max,
- 	},
- };
- 
--- 
-2.25.1
+ 5e3ca0ec76fce ("ftrace: introduce the "hex" output method")
+
+And commit ad0a3b68114e8 ("trace: add build-time check to avoid overrunning hex buffer")
+
+changed HEX_CHARS from a hardcoded 17 to a way to decided what the max
+long is.
+
+ #define HEX_CHARS              (MAX_MEMHEX_BYTES*2 + 1)
+
+
+> memory to seq_buf according to 64 bits integer number. It tries to output
+> numbers in reverse, with the high bits in the front and the low bits in
+> the back. If the length of the raw memory is equal to 8, e.g.
+> "01 23 45 67 89 ab cd ef" in memory, it will be dumped as "efcdab8967452301".
+
+Note, it only does that for little endian machines.
+
+> 
+> But if the length of the raw memory is larger than 8, the first value of
+> start_len will larger than 8, than seq_buf will save the last data, not
+> the eighth one, e.g. "01 23 45 67 89 ab cd ef 11" in memory, it will be
+> dumped as "11efcdab8967452301". I think it is not the original
+> intention of the function.
+> 
+> More seriously, if the length of the raw memory is larger than 9, the
+> start_len will be larger than 9, then hex will overflow, and the stack will be
+> corrupted. I do not kown if it can be exploited by hacker. But I am sure
+> it will cause kernel panic when the length of memory is more than 32 bytes.
+> 
+> [  448.551471] Unable to handle kernel paging request at virtual address 3438376c
+> [  448.558678] pgd = 6eaf278e
+> [  448.561376] [3438376c] *pgd=00000000
+> [  448.564945] Internal error: Oops: 5 [#2] PREEMPT ARM
+> [  448.569899] Modules linked in:
+> [  448.572951] CPU: 0 PID: 368 Comm: cat Tainted: G        W        4.18.40-yocto-standard #18
+> [  448.581374] Hardware name: Xilinx Zynq Platform
+> [  448.585901] PC is at trace_seq_putmem_hex+0x6c/0x84
+> [  448.590768] LR is at 0x20643032
+> [  448.593901] pc : [<c009a85c>]    lr : [<20643032>]    psr: 60000093
+> [  448.600159] sp : d980dc08  ip : 00000020  fp : c05f58cc
+> [  448.605375] r10: c05e5f30  r9 : 00000031  r8 : 00000000
+> [  448.610584] r7 : 20643032  r6 : 37663666  r5 : 36343730  r4 : 34383764
+> [  448.617103] r3 : 00001000  r2 : 00000042  r1 : d980dc00  r0 : 00000000
+> ...
+> [  448.907962] [<c009a85c>] (trace_seq_putmem_hex) from [<c010b008>] (trace_raw_output_write+0x58/0x9c)
+> [  448.917094] [<c010b008>] (trace_raw_output_write) from [<c00964c0>] (print_trace_line+0x144/0x3e8)
+> [  448.926050] [<c00964c0>] (print_trace_line) from [<c0098710>] (ftrace_dump+0x204/0x254)
+> [  448.934053] [<c0098710>] (ftrace_dump) from [<c0098780>] (trace_die_handler+0x20/0x34)
+> [  448.941975] [<c0098780>] (trace_die_handler) from [<c003cff8>] (notifier_call_chain+0x48/0x6c)
+> [  448.950581] [<c003cff8>] (notifier_call_chain) from [<c003d19c>] (__atomic_notifier_call_chain+0x3c/0x50)
+> [  448.960142] [<c003d19c>] (__atomic_notifier_call_chain) from [<c003d1cc>] (atomic_notifier_call_chain+0x1c/0x24)
+> [  448.970306] [<c003d1cc>] (atomic_notifier_call_chain) from [<c003d204>] (notify_die+0x30/0x3c)
+> [  448.978908] [<c003d204>] (notify_die) from [<c001361c>] (die+0xc4/0x258)
+> [  448.985604] [<c001361c>] (die) from [<c00173e8>] (__do_kernel_fault.part.0+0x5c/0x7c)
+> [  448.993438] [<c00173e8>] (__do_kernel_fault.part.0) from [<c043a270>] (do_page_fault+0x158/0x394)
+> [  449.002305] [<c043a270>] (do_page_fault) from [<c00174dc>] (do_DataAbort+0x40/0xec)
+> [  449.009959] [<c00174dc>] (do_DataAbort) from [<c0009970>] (__dabt_svc+0x50/0x80)
+> 
+> Additionally, the address of data ptr keeps in the same value in multiple
+> loops, the value of data buffer will not be picked forever.
+
+So the bug looks like it was there since the original code was
+introduced in 2008! There's two variables being increased in that loop
+(i and j), and i follows the raw data, and j follows what is being
+written into the buffer. The bug is that we are comparing the HEX_CHARS
+to 'i' when we really should be comparing it to 'j'! As if 'j' goes
+bigger than HEX_CHARS, it will overflow the destination buffer.
+
+And, it should be noted, that this is to read a single word (long) and
+not more. Thus, the "date += start_len" shouldn't be needed.
+
+Could you send another patch that makes it only process a single word
+and exit?
+
+I'll tag it for stable when you do.
+
+Thanks!
+
+-- Steve
+
+
+> 
+> Signed-off-by: Yun Zhou <yun.zhou@windriver.com>
+> ---
+>  lib/seq_buf.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/lib/seq_buf.c b/lib/seq_buf.c
+> index 6aabb609dd87..948c8b55f666 100644
+> --- a/lib/seq_buf.c
+> +++ b/lib/seq_buf.c
+> @@ -229,7 +229,7 @@ int seq_buf_putmem_hex(struct seq_buf *s, const void *mem,
+>  	WARN_ON(s->size == 0);
+>  
+>  	while (len) {
+> -		start_len = min(len, HEX_CHARS - 1);
+> +		start_len = min(len, MAX_MEMHEX_BYTES);
+>  #ifdef __BIG_ENDIAN
+>  		for (i = 0, j = 0; i < start_len; i++) {
+>  #else
+> @@ -248,6 +248,8 @@ int seq_buf_putmem_hex(struct seq_buf *s, const void *mem,
+>  		seq_buf_putmem(s, hex, j);
+>  		if (seq_buf_has_overflowed(s))
+>  			return -1;
+> +
+> +		data += start_len;
+>  	}
+>  	return 0;
+>  }
 
