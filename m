@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B923C3B2AF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB21D3B2AFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhFXJFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:05:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59732 "EHLO mail.kernel.org"
+        id S231315AbhFXJFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:05:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230064AbhFXJFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230149AbhFXJFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 24 Jun 2021 05:05:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 702CA613E3;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DAC2613E8;
         Thu, 24 Jun 2021 09:02:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1624525373;
-        bh=JntM5SsvC+TwzNi5LcjkIB38XM7r8DqFdl5GvXVXIfg=;
+        bh=3wkeS6LjECniYU0Q4Rka5Hwi5+LM8FaepjAduPS6+SM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f2afi4FJh8RGJ/B9V+3JczzGKv1eyFFKOMaobAvT9V87zTo77NtoOdA6+EJKcck7M
-         90uJ2ZwfJOUp1XxWeKP6vfi/SzRHW47N1rlrCXy5DnBaQgJ7sPlFsGfbATcFJQsOZP
-         8e7pIaUQkSMGgPgnp382mxYdXnb7MplngDlormDAv5uUugMNWgVB1x3GlpiyAP1kBq
-         Mr8Wxg1o2DsXOlNiPxgDU7tfpL8ETRZ0o556lmLeIgfRV/22NWpggEw/jqG2fp/xSa
-         dXG8sYntE22qO/LbUGqSSkv6IQW6i/c4UImNVfYi+ibOXPm7Z15F2bUL2vGMG91cRm
-         YYwxPYaX/1j7Q==
+        b=vL5xVBt/QP3BG8QuSpY+50E9kJGvHjqHztsWcguzyDQo5Q+diyjoaV0mxm4ZT3BBm
+         RLe3Agr5wSu9CFCAyinEUvLh+hYQyYiy/QVNb167C6zlfUq7reOyoekCtNOqvEK4M4
+         M0whLH/NgIywLkk1Y0geYNJX+NM8NdYXASaJgh8GzOdoL2L50MfcbO5MB2ABNYBfud
+         JyPlWE3Ohwqd9W6JP8FvnoTKY8mTFOL/CbaUE7vPoi3xL2RIwyPbpbQKJWlwxoa2LO
+         ieO7DJmEfNcg+UgqQb60jFDnB86UQZweVhCl28IzTbAVVua+5EhtTvSzJ5v5c/l7vN
+         n+W26SYn6KheQ==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lwLG7-003jsF-0N; Thu, 24 Jun 2021 11:02:51 +0200
+        id 1lwLG7-003jsJ-2A; Thu, 24 Jun 2021 11:02:51 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
@@ -33,9 +33,9 @@ Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Rob Herring <robh+dt@kernel.org>,
         Wei Xu <xuwei5@hisilicon.com>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v6 7/8] dts: hisilicon: add support for the PMIC found on Hikey 970
-Date:   Thu, 24 Jun 2021 11:01:11 +0200
-Message-Id: <5535fd62eee69fbb59300054d14ceba79dfe39cf.1624525118.git.mchehab+huawei@kernel.org>
+Subject: [PATCH RESEND v6 8/8] dts: hisilicon: add support for USB3 on Hikey 970
+Date:   Thu, 24 Jun 2021 11:01:12 +0200
+Message-Id: <24e9929fd5609d4988c93504d0b0b0f4c8a99075.1624525118.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1624525118.git.mchehab+huawei@kernel.org>
 References: <cover.1624525118.git.mchehab+huawei@kernel.org>
@@ -46,159 +46,209 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a device tree for the HiSilicon 6421v600 SPMI PMIC, used
-on HiKey970 board.
-
-As we now have support for it, change the fixed regulators
-used by the SD I/O to use the proper LDO supplies.
+Add the USB3 bindings for Kirin 970 phy and Hikey 970 board.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../boot/dts/hisilicon/hi3670-hikey970.dts    | 22 +----
- .../boot/dts/hisilicon/hikey970-pmic.dtsi     | 87 +++++++++++++++++++
- 2 files changed, 90 insertions(+), 19 deletions(-)
- create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+ .../boot/dts/hisilicon/hi3670-hikey970.dts    | 107 ++++++++++++++++++
+ arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  56 +++++++++
+ 2 files changed, 163 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-index 7f9f9886c349..5e6d7b329771 100644
+index 5e6d7b329771..9e3dfe877ebe 100644
 --- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
 +++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-@@ -12,6 +12,7 @@
- 
- #include "hi3670.dtsi"
- #include "hikey970-pinctrl.dtsi"
-+#include "hikey970-pmic.dtsi"
- 
- / {
- 	model = "HiKey970";
-@@ -39,23 +40,6 @@ memory@0 {
- 		reg = <0x0 0x0 0x0 0x0>;
+@@ -53,6 +53,30 @@ wlan_en: wlan-en-1-8v {
+ 		startup-delay-us = <70000>;
+ 		enable-active-high;
  	};
- 
--	sd_1v8: regulator-1v8 {
--		compatible = "regulator-fixed";
--		regulator-name = "fixed-1.8V";
--		regulator-min-microvolt = <1800000>;
--		regulator-max-microvolt = <1800000>;
--		regulator-always-on;
--	};
--
--	sd_3v3: regulator-3v3 {
--		compatible = "regulator-fixed";
--		regulator-name = "fixed-3.3V";
--		regulator-min-microvolt = <3300000>;
--		regulator-max-microvolt = <3300000>;
--		regulator-boot-on;
--		regulator-always-on;
--	};
--
- 	wlan_en: wlan-en-1-8v {
- 		compatible = "regulator-fixed";
- 		regulator-name = "wlan-en-regulator";
-@@ -402,8 +386,8 @@ &dwmmc1 {
- 	pinctrl-0 = <&sd_pmx_func
- 		     &sd_clk_cfg_func
- 		     &sd_cfg_func>;
--	vmmc-supply = <&sd_3v3>;
--	vqmmc-supply = <&sd_1v8>;
-+	vmmc-supply = <&ldo16>;
-+	vqmmc-supply = <&ldo9>;
- 	status = "okay";
++
++	hikey_usbhub: hikey_usbhub {
++		compatible = "hisilicon,kirin970_hikey_usbhub";
++
++		typec-vbus-gpios = <&gpio26 1 0>;
++		otg-switch-gpios = <&gpio4 2 0>;
++		hub_reset_en_gpio = <&gpio0 3 0>;
++		hub-vdd-supply = <&ldo17>;
++		usb-role-switch;
++
++		port {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			hikey_usb_ep0: endpoint@0 {
++				reg = <0>;
++				remote-endpoint = <&dwc3_role_switch>;
++			};
++			hikey_usb_ep1: endpoint@1 {
++				reg = <1>;
++				remote-endpoint = <&rt1711h_ep>;
++			};
++		};
++	};
  };
  
-diff --git a/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-new file mode 100644
-index 000000000000..48c739eacba0
---- /dev/null
-+++ b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-@@ -0,0 +1,87 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * dts file for Hi6421v600 SPMI PMIC used at the HiKey970 Development Board
-+ *
-+ * Copyright (C) 2020, Huawei Tech. Co., Ltd.
-+ */
+ /*
+@@ -430,3 +454,86 @@ &uart6 {
+ 	label = "LS-UART1";
+ 	status = "okay";
+ };
 +
-+#include <dt-bindings/spmi/spmi.h>
++&usb_phy {
++	phy-supply = <&ldo17>;
++};
 +
-+/ {
-+	spmi: spmi@fff24000 {
-+		compatible = "hisilicon,kirin970-spmi-controller";
-+		#address-cells = <2>;
-+		#size-cells = <0>;
++&i2c1 {
++	status = "okay";
++
++	rt1711h: rt1711h@4e {
++		compatible = "richtek,rt1711h";
++		reg = <0x4e>;
 +		status = "okay";
-+		reg = <0x0 0xfff24000 0x0 0x1000>;
-+		hisilicon,spmi-channel = <2>;
++		interrupt-parent = <&gpio27>;
++		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&usb_cfg_func>;
 +
-+		pmic: pmic@0 {
-+			compatible = "hisilicon,hi6421-spmi";
-+			reg = <0 SPMI_USID>;
++		usb_con: connector {
++			compatible = "usb-c-connector";
++			label = "USB-C";
++			data-role = "dual";
++			power-role = "dual";
++			try-power-role = "sink";
++			source-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)>;
++			sink-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)
++				PDO_VAR(5000, 5000, 1000)>;
++			op-sink-microwatt = <10000000>;
 +
-+			#interrupt-cells = <2>;
-+			interrupt-controller;
-+			gpios = <&gpio28 0 0>;
-+
-+			regulators {
++			ports {
 +				#address-cells = <1>;
 +				#size-cells = <0>;
-+
-+				ldo3: LDO3 { /* HDMI */
-+					regulator-name = "ldo3";
-+					regulator-min-microvolt = <1500000>;
-+					regulator-max-microvolt = <2000000>;
-+					regulator-boot-on;
++				port@1 {
++					reg = <1>;
++					usb_con_ss: endpoint {
++						remote-endpoint = <&dwc3_ss>;
++					};
 +				};
++			};
++		};
++		port {
++			#address-cells = <1>;
++			#size-cells = <0>;
 +
-+				ldo4: LDO4 { /* 40 PIN */
-+					regulator-name = "ldo4";
-+					regulator-min-microvolt = <1725000>;
-+					regulator-max-microvolt = <1900000>;
-+					regulator-boot-on;
-+				};
-+
-+				ldo9: LDO9 { /* SDCARD I/O */
-+					regulator-name = "ldo9";
-+					regulator-min-microvolt = <1750000>;
-+					regulator-max-microvolt = <3300000>;
-+					regulator-boot-on;
-+				};
-+
-+				ldo15: LDO15 { /* UFS */
-+					regulator-name = "ldo15";
-+					regulator-min-microvolt = <1800000>;
-+					regulator-max-microvolt = <3000000>;
-+					regulator-always-on;
-+				};
-+
-+				ldo16: LDO16 { /* SD */
-+					regulator-name = "ldo16";
-+					regulator-min-microvolt = <1800000>;
-+					regulator-max-microvolt = <3000000>;
-+					regulator-boot-on;
-+				};
-+
-+				ldo17: LDO17 { /* USB HUB */
-+					regulator-name = "ldo17";
-+					regulator-min-microvolt = <2500000>;
-+					regulator-max-microvolt = <3300000>;
-+				};
-+
-+				ldo33: LDO33 { /* PEX8606 */
-+					regulator-name = "ldo33";
-+					regulator-min-microvolt = <2500000>;
-+					regulator-max-microvolt = <3300000>;
-+					regulator-boot-on;
-+				};
-+
-+				ldo34: LDO34 { /* GPS AUX IN VDD */
-+					regulator-name = "ldo34";
-+					regulator-min-microvolt = <2600000>;
-+					regulator-max-microvolt = <3300000>;
-+				};
++			rt1711h_ep: endpoint@0 {
++				reg = <0>;
++				remote-endpoint = <&hikey_usb_ep1>;
 +			};
 +		};
 +	};
 +};
++
++&i2c2 {
++	/* USB HUB is on this bus at address 0x44 */
++	status = "okay";
++};
++
++&dwc3 { /* USB */
++	dr_mode = "otg";
++	maximum-speed = "super-speed";
++	phy_type = "utmi";
++	snps,dis-del-phy-power-chg-quirk;
++	snps,dis_u2_susphy_quirk;
++	snps,dis_u3_susphy_quirk;
++	snps,tx_de_emphasis_quirk;
++	snps,tx_de_emphasis = <1>;
++	snps,dis-split-quirk;
++	snps,gctl-reset-quirk;
++	usb-role-switch;
++	role-switch-default-mode = "host";
++	port {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		dwc3_role_switch: endpoint@0 {
++			reg = <0>;
++			remote-endpoint = <&hikey_usb_ep0>;
++		};
++
++		dwc3_ss: endpoint@1 {
++			reg = <1>;
++			remote-endpoint = <&usb_con_ss>;
++		};
++	};
++};
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+index 8830795c8efc..6476149d99e3 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+@@ -8,6 +8,7 @@
+ 
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ #include <dt-bindings/clock/hi3670-clock.h>
++#include <dt-bindings/usb/pd.h>
+ 
+ / {
+ 	compatible = "hisilicon,hi3670";
+@@ -785,5 +786,60 @@ i2c4: i2c@fdf0d000 {
+ 			pinctrl-0 = <&i2c4_pmx_func &i2c4_cfg_func>;
+ 			status = "disabled";
+ 		};
++
++		usb3_otg_bc: usb3_otg_bc@ff200000 {
++			compatible = "syscon", "simple-mfd";
++			reg = <0x0 0xff200000 0x0 0x1000>;
++
++			usb_phy: usbphy {
++				compatible = "hisilicon,hi3670-usb-phy";
++				#phy-cells = <0>;
++				hisilicon,pericrg-syscon = <&crg_ctrl>;
++				hisilicon,pctrl-syscon = <&pctrl>;
++				hisilicon,sctrl-syscon = <&sctrl>;
++				hisilicon,eye-diagram-param = <0xFDFEE4>;
++				hisilicon,tx-vboost-lvl = <0x5>;
++			};
++		};
++
++		usb31_misc_rst: usb31_misc_rst_controller {
++			compatible = "hisilicon,hi3660-reset";
++			#reset-cells = <2>;
++			hisi,rst-syscon = <&usb3_otg_bc>;
++		};
++
++		usb3: hisi_dwc3 {
++			compatible = "hisilicon,hi3670-dwc3";
++			#address-cells = <2>;
++			#size-cells = <2>;
++			ranges;
++
++			clocks = <&crg_ctrl HI3670_CLK_GATE_ABB_USB>,
++				  <&crg_ctrl HI3670_HCLK_GATE_USB3OTG>,
++				  <&crg_ctrl HI3670_CLK_GATE_USB3OTG_REF>,
++				  <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
++			clock-names = "clk_gate_abb_usb",
++				      "hclk_gate_usb3otg",
++				      "clk_gate_usb3otg_ref",
++				      "aclk_gate_usb3dvfs";
++
++			assigned-clocks = <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
++			assigned-clock-rates = <238000000>;
++			resets = <&crg_rst 0x90 6>,
++				 <&crg_rst 0x90 7>,
++				 <&usb31_misc_rst 0xA0 8>,
++				 <&usb31_misc_rst 0xA0 9>;
++
++			dwc3: usb@ff100000 {
++				compatible = "snps,dwc3";
++				reg = <0x0 0xff100000 0x0 0x100000>;
++
++				interrupts = <0 159 IRQ_TYPE_LEVEL_HIGH>,
++					    <0 161 IRQ_TYPE_LEVEL_HIGH>;
++
++				phys = <&usb_phy>;
++				phy-names = "usb3-phy";
++			};
++		};
+ 	};
+ };
 -- 
 2.31.1
 
