@@ -2,179 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864AC3B311D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E164C3B3122
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232006AbhFXOSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 10:18:15 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:5423 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbhFXOSO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 10:18:14 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G9hst3KXjz72F0;
-        Thu, 24 Jun 2021 22:12:34 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 24 Jun 2021 22:15:51 +0800
-Received: from [10.67.102.67] (10.67.102.67) by dggemi759-chm.china.huawei.com
- (10.1.198.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 24
- Jun 2021 22:15:50 +0800
-Subject: Re: [PATCH net-next 2/3] net: hns3: add support for TX push mode
-To:     Will Deacon <will@kernel.org>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>,
-        <catalin.marinas@arm.com>, <maz@kernel.org>,
-        <mark.rutland@arm.com>, <dbrazdil@google.com>,
-        <qperret@google.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <lipeng321@huawei.com>,
-        <peterz@infradead.org>
-References: <1624360271-17525-1-git-send-email-huangguangbin2@huawei.com>
- <1624360271-17525-3-git-send-email-huangguangbin2@huawei.com>
- <20210622121611.GB30757@willie-the-truck>
-From:   "huangguangbin (A)" <huangguangbin2@huawei.com>
-Message-ID: <ea9f2737-6639-b9ce-9472-bb3c04581734@huawei.com>
-Date:   Thu, 24 Jun 2021 22:15:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S231440AbhFXOTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 10:19:49 -0400
+Received: from ni.piap.pl ([195.187.100.5]:50994 "EHLO ni.piap.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229878AbhFXOTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 10:19:49 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ni.piap.pl (Postfix) with ESMTPSA id 828554A007F;
+        Thu, 24 Jun 2021 16:17:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 828554A007F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1624544248; bh=Rnf0ABC9pxPhm1eu9IeRLu9i9k/XWznp2dgKd4/rwfw=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=INmtnc8ZCH0f8pYlKO90++q/3SVj6OfiaO5bAPvoiduUlChufVTPnPkRUCyGxoqOq
+         9KgGL43CkWncOSJ8J31058qhytpWP6l3C0AgIwmiwfFoCZRfSRwCQU3JCqQQgYgCMO
+         zQqJ1OQhLSKM2eInGLIgMtk2YOa3AyAUH6ExfLLo=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2] MEDIA: Driver for ON Semi AR0521 camera sensor
+References: <YNHQDNdpxcY8+IV2@pendragon.ideasonboard.com>
+        <m3r1gt5hzm.fsf@t19.piap.pl>
+        <YNK5FhAXSpI1oHJV@pendragon.ideasonboard.com>
+        <m3mtrh5evo.fsf@t19.piap.pl>
+        <YNM0cZFV7/LKKFBn@pendragon.ideasonboard.com>
+        <42958029-5625-5f4d-a075-2f59a74e0fb5@ideasonboard.com>
+        <m3bl7v6er0.fsf@t19.piap.pl>
+        <YNR2OkXL+wUaKuy4@pendragon.ideasonboard.com>
+        <YNR9CS/PfG7s1e71@kroah.com> <m3wnqj4ct3.fsf@t19.piap.pl>
+        <YNSIqSQeefzai4fW@kroah.com>
+Sender: khalasa@piap.pl
+Date:   Thu, 24 Jun 2021 16:17:28 +0200
+In-Reply-To: <YNSIqSQeefzai4fW@kroah.com> (Greg KH's message of "Thu, 24 Jun
+        2021 15:29:13 +0200")
+Message-ID: <m3o8bv4a9z.fsf@t19.piap.pl>
 MIME-Version: 1.0
-In-Reply-To: <20210622121611.GB30757@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.67]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 4
+X-KLMS-Message-Action: skipped
+X-KLMS-AntiSpam-Status: not scanned, whitelist
+X-KLMS-AntiPhishing: not scanned, whitelist
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Greg,
 
+Greg KH <gregkh@linuxfoundation.org> writes:
 
-On 2021/6/22 20:16, Will Deacon wrote:
-> On Tue, Jun 22, 2021 at 07:11:10PM +0800, Guangbin Huang wrote:
->> From: Huazhong Tan <tanhuazhong@huawei.com>
->>
->> For the device that supports the TX push capability, the BD can
->> be directly copied to the device memory. However, due to hardware
->> restrictions, the push mode can be used only when there are no
->> more than two BDs, otherwise, the doorbell mode based on device
->> memory is used.
->>
->> Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
->> Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
->> ---
->>   drivers/net/ethernet/hisilicon/hns3/hnae3.h        |  1 +
->>   drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    | 83 ++++++++++++++++++++--
->>   drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |  6 ++
->>   drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |  2 +
->>   .../net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c |  2 +
->>   .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    | 11 ++-
->>   .../ethernet/hisilicon/hns3/hns3pf/hclge_main.h    |  8 +++
->>   .../ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.c   |  2 +
->>   .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c  | 11 ++-
->>   .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.h  |  8 +++
->>   10 files changed, 126 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
->> index 0b202f4def83..3979d5d2e842 100644
->> --- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
->> +++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
->> @@ -163,6 +163,7 @@ struct hnae3_handle;
->>   
->>   struct hnae3_queue {
->>   	void __iomem *io_base;
->> +	void __iomem *mem_base;
->>   	struct hnae3_ae_algo *ae_algo;
->>   	struct hnae3_handle *handle;
->>   	int tqp_index;		/* index in a handle */
->> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
->> index cdb5f14fb6bc..8649bd8e1b57 100644
->> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
->> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
->> @@ -2002,9 +2002,77 @@ static int hns3_fill_skb_to_desc(struct hns3_enet_ring *ring,
->>   	return bd_num;
->>   }
->>   
->> +static void hns3_tx_push_bd(struct hns3_enet_ring *ring, int num)
->> +{
->> +#define HNS3_BYTES_PER_64BIT		8
->> +
->> +	struct hns3_desc desc[HNS3_MAX_PUSH_BD_NUM] = {};
->> +	int offset = 0;
->> +
->> +	/* make sure everything is visible to device before
->> +	 * excuting tx push or updating doorbell
->> +	 */
->> +	dma_wmb();
->> +
->> +	do {
->> +		int idx = (ring->next_to_use - num + ring->desc_num) %
->> +			  ring->desc_num;
->> +
->> +		u64_stats_update_begin(&ring->syncp);
->> +		ring->stats.tx_push++;
->> +		u64_stats_update_end(&ring->syncp);
->> +		memcpy(&desc[offset], &ring->desc[idx],
->> +		       sizeof(struct hns3_desc));
->> +		offset++;
->> +	} while (--num);
->> +
->> +	__iowrite64_copy(ring->tqp->mem_base, desc,
->> +			 (sizeof(struct hns3_desc) * HNS3_MAX_PUSH_BD_NUM) /
->> +			 HNS3_BYTES_PER_64BIT);
->> +
->> +#if defined(CONFIG_ARM64)
->> +	dgh();
->> +#endif
-> 
-> It looks a bit weird putting this at the end of the function, given that
-> it's supposed to do something to a pair of accesses. Please can you explain
-> what it's doing, and also provide some numbers to show that it's worthwhile
-> (given that it's a performance hint not a correctness thing afaict).
-> 
-When the driver writes the device space mapped to the WriteCombine,
-CPU combines into the cacheline unit by using the merge window mechanism
-and delivers the cacheline to the device. However, even if the cacheline
-is full, the device space is delivered only after the merge window
-ends. (There is about 10ns delay at 3G frequency). To reduce the delay,
-the WriteCombine needs to be flushed explicitly. This is why the DGH
-needs to be invoked here.
+>> How about a book, e.g. describing a patch submission process (but not
+>> a copy of kernel's Documentation). The same?
+>
+> That does not make sense, please explain.
 
->> +}
->> +
->> +static void hns3_tx_mem_doorbell(struct hns3_enet_ring *ring)
->> +{
->> +#define HNS3_MEM_DOORBELL_OFFSET	64
->> +
->> +	__le64 bd_num = cpu_to_le64((u64)ring->pending_buf);
->> +
->> +	/* make sure everything is visible to device before
->> +	 * excuting tx push or updating doorbell
->> +	 */
->> +	dma_wmb();
->> +
->> +	__iowrite64_copy(ring->tqp->mem_base + HNS3_MEM_DOORBELL_OFFSET,
->> +			 &bd_num, 1);
->> +	u64_stats_update_begin(&ring->syncp);
->> +	ring->stats.tx_mem_doorbell += ring->pending_buf;
->> +	u64_stats_update_end(&ring->syncp);
->> +
->> +#if defined(CONFIG_ARM64)
->> +	dgh();
->> +#endif
-> 
-> Same here.
-> 
-> Thanks,
-> 
-> Will
-> .
-> 
-Thanks,
+Why not? I can put such a text on a book (say, an e-book) as well.
 
-Guangbin
-.
+I'd say you're right with the absence of indication to the contrary -
+but if someone explicitly states something is not (e.g. yet) under GPL,
+then how one could say SPDX-something has legal precedence is beyound
+me.
+
+>> Also - in all countries? Most of them?
+>
+> Yes.
+
+I assume the latter and not both :-)
+
+> S-o-b is a DIFFERENT thing entirely.   Please go read the DCO for what
+> you are agreeing to there, it is a declaration for what you are doing.
+
+Well, that's my position.
+
+>> From my perspective, the SPDX-License-Identifier is only meaningful when
+>> the file is actually a part of the kernel, or if, at least, it's been
+>> presented for merge, with Signed-off-by etc.
+>
+> Not true at all, sorry.  Same for a Copyright line.
+
+The difference seems to me a copyright is regulated by international
+agreements and various national laws. A big part of the world doesn't
+need the "copyright line", the "protection" is automatic.
+
+But yes, I will remember to ask our lawyers about it. Now that I know
+I need to.
+--=20
+Krzysztof Ha=C5=82asa
+
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
