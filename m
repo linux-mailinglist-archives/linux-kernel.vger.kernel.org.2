@@ -2,217 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7968A3B30C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B973B30C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231881AbhFXODh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 10:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbhFXODg (ORCPT
+        id S231950AbhFXOD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 10:03:56 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41006 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231969AbhFXODt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 10:03:36 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAE1C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:01:17 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id f16so3319160qvs.7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:01:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qA/15TvxyljLeiT6v+8qmN6kWt8A8lTygEXqoXNw+04=;
-        b=Rw6WpSNMHTbg23NxwJvuOjaHdtgv0Fj8nxCsBmOYLlr9CLdBH8VOno97w1rjhpK7QS
-         fwqIqx9HX6X8tYR/DUbVTec6h1/VI2RngzjSavToO71KaG1mXaNuJKT6sdAS0G2d8VEg
-         i8Ybg3BEoJp0gfRJeGyl62WDRO2HONssyTuck=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qA/15TvxyljLeiT6v+8qmN6kWt8A8lTygEXqoXNw+04=;
-        b=EORlMI3S4sdgl5cfDGcjUX71zLao7uZdj8KybiOhriVq5v0pPlG7xigTfPmKpUCtPY
-         IBBWJVeLkrl+0onH4QI8kQIrgp+vgWdV6DTYtiV7zu2b5OLVzps0f0+Lswb2x3/bn4lU
-         m6ZPjK4+tvchd0n0lwUi8b00tUPpduYNtVzgeHykgTFp9afT2x0yY/XnbrhbidAV//gj
-         6eQrSw6QoYKBZZYx2Pj9s4xUoqkD9sf4FZK/HeY7k6VQW4Gz4YGfEQT6IwfSkLYBfMhI
-         mAfF/ee8lWP3hu7YaQQUWditdhKwy0lYRA9gcWsFwCF60H7ZBPfraeHtbMS8kdUrDY3u
-         qJUQ==
-X-Gm-Message-State: AOAM530coOUcGtJaHWJmAODz0iG7AjxWQVrBdjNa7EdyxNNPsCsRJKNW
-        XFZxsgZYzie5EYuFmH7dIvuRMhrqLBQT9w==
-X-Google-Smtp-Source: ABdhPJyLHHi+11jiFeBLGIpK0NWUjra/1rNkubU4GphXhaMSLTLpiObjIH7Buj+Vtwo2xiC8giwMzA==
-X-Received: by 2002:a0c:e94c:: with SMTP id n12mr5577135qvo.61.1624543276594;
-        Thu, 24 Jun 2021 07:01:16 -0700 (PDT)
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com. [209.85.222.179])
-        by smtp.gmail.com with ESMTPSA id d20sm1962604qtw.92.2021.06.24.07.01.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 07:01:16 -0700 (PDT)
-Received: by mail-qk1-f179.google.com with SMTP id e1so2665451qkm.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:01:16 -0700 (PDT)
-X-Received: by 2002:a25:bcb:: with SMTP id 194mr5441792ybl.32.1624543265649;
- Thu, 24 Jun 2021 07:01:05 -0700 (PDT)
+        Thu, 24 Jun 2021 10:03:49 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1DED721A32;
+        Thu, 24 Jun 2021 14:01:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624543288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FEFKZdgTERWXT+0XJ1bL+AoGSIdGk1Zg9WIdMoUJSP4=;
+        b=CWzYk38bXrB42FnPkKbbWY9XOlnfxGFr30hdadDcnhfnJjYKG2Q1WwBaF+eYarN5VVPpfF
+        fZY829DJIgn6fhqh8AGEe3Dtoi2z476kM+l/07Y5JdlqevOQT8MR8N9KeCASCvfBN/wySl
+        EWry2ykB05wxstef6iRnlUwBc//9vx0=
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id CB77F11A97;
+        Thu, 24 Jun 2021 14:01:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624543288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FEFKZdgTERWXT+0XJ1bL+AoGSIdGk1Zg9WIdMoUJSP4=;
+        b=CWzYk38bXrB42FnPkKbbWY9XOlnfxGFr30hdadDcnhfnJjYKG2Q1WwBaF+eYarN5VVPpfF
+        fZY829DJIgn6fhqh8AGEe3Dtoi2z476kM+l/07Y5JdlqevOQT8MR8N9KeCASCvfBN/wySl
+        EWry2ykB05wxstef6iRnlUwBc//9vx0=
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id 1LeFMDeQ1GCYbwAALh3uQQ
+        (envelope-from <mkoutny@suse.com>); Thu, 24 Jun 2021 14:01:27 +0000
+Date:   Thu, 24 Jun 2021 16:01:26 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] memcg: periodically flush the memcg stats
+Message-ID: <YNSQNu4ZW7mEX6LW@blackbook>
+References: <20210615174435.4174364-1-shakeelb@google.com>
+ <20210615174435.4174364-2-shakeelb@google.com>
 MIME-Version: 1.0
-References: <20210621235248.2521620-1-dianders@chromium.org>
- <20210621165230.6.Icde6be7601a5939960caf802056c88cd5132eb4e@changeid> <YNSL/r+fOz6KMuwI@kroah.com>
-In-Reply-To: <YNSL/r+fOz6KMuwI@kroah.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 24 Jun 2021 07:00:52 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VsdYpgzoC9JvDEjBDqVNKmuz-gOs8oceiuYXs8E680XA@mail.gmail.com>
-Message-ID: <CAD=FV=VsdYpgzoC9JvDEjBDqVNKmuz-gOs8oceiuYXs8E680XA@mail.gmail.com>
-Subject: Re: [PATCH 6/6] mmc: sdhci-msm: Request non-strict IOMMU mode
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Clark <robdclark@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-pci@vger.kernel.org, quic_c_gdjako@quicinc.com,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        Sonny Rao <sonnyrao@chromium.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Rajat Jain <rajatja@google.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andy Gross <agross@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="c4XJuQpPXESUwDMB"
+Content-Disposition: inline
+In-Reply-To: <20210615174435.4174364-2-shakeelb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Thu, Jun 24, 2021 at 6:43 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Mon, Jun 21, 2021 at 04:52:48PM -0700, Douglas Anderson wrote:
-> > IOMMUs can be run in "strict" mode or in "non-strict" mode. The
-> > quick-summary difference between the two is that in "strict" mode we
-> > wait until everything is flushed out when we unmap DMA memory. In
-> > "non-strict" we don't.
-> >
-> > Using the IOMMU in "strict" mode is more secure/safer but slower
-> > because we have to sit and wait for flushes while we're unmapping. To
-> > explain a bit why "non-strict" mode is unsafe, let's imagine two
-> > examples.
-> >
-> > An example of "non-strict" being insecure when reading from a device:
-> > a) Linux driver maps memory for DMA.
-> > b) Linux driver starts DMA on the device.
-> > c) Device write to RAM subject to bounds checking done by IOMMU.
-> > d) Device finishes writing to RAM and signals transfer is finished.
-> > e) Linux driver starts unmapping DMA memory but doesn't flush.
->
-> Why doesn't it "flush"?
+--c4XJuQpPXESUwDMB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This is just how the pre-existing "iommu.strict=0" command line parameter works.
+Hello Shakeel.
 
+On Tue, Jun 15, 2021 at 10:44:35AM -0700, Shakeel Butt <shakeelb@google.com=
+> wrote:
+> At the moment memcg stats are read in four contexts:
+>=20
+> 1. memcg stat user interfaces
+> 2. dirty throttling
+> 3. page fault
+> 4. memory reclaim
 
-> > f) Linux driver validates that the data in memory looks sane and that
-> >    accessing it won't cause the driver to, for instance, overflow a
-> >    buffer.
-> > g) Device takes advantage of knowledge of how the Linux driver works
-> >    and sneaks in a modification to the data after the validation but
-> >    before the IOMMU unmap flush finishes.
-> > h) Device has now caused the Linux driver to access memory it
-> >    shouldn't.
->
-> So you are now saying we need to not trust hardware?  If so, that's a
-> massive switch for how the kernel needs to work right?
+Sorry for being dense or ignorant -- what do you refer to with the point
+no. 3 (memcg stats reader during page fault)?
 
-This is a pre-existing concept in the kernel and is in fact so
-prevalent that there are a bunch of inconsistent ways to configure it
-(though it's being made better [1])
+Thanks,
+Michal
 
-* On ARM64, default is strict and you can configure it with iommu.strict
+--c4XJuQpPXESUwDMB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-* On AMD, default is non-strict and you can configure it with
-amd_iommu=fullflush
+-----BEGIN PGP SIGNATURE-----
 
-* On Intel, default is non-strict and you can configure it with
-intel_iommu=strict
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmDUkDIACgkQia1+riC5
+qSgkNQ//Wx0lGjWBl5Ptgkl24PLr6hC4dKT9xfGHtREMBivFRgsE7HDg49GLByPH
+qUAvKXTGT6aD5vnwCWjQLC6DrLHSXCdDFWRdg0QjFtAoPGnNNoil0bZ1JJIwH7EU
+RJ1CVAdMoCwGc0P1tY/fl3hb/l6alCa9ogmfmBtrDZYKIeYkAque3jRMgbzFwPqA
+ME1FFj9eO4WyxTvl34p1Lc3S3rq2YBEWskuJ27f0okqfVo3TZAER8ZTHU9YEuSb0
+fh/rspft73eHhmYLtri5zZYwsl8WudFavZYGBD/m01cwy8GlxMczm5aep4m4NDSY
++OFuESusbxrVAq7Kjq3UU0DKxQj+bN1QRnVcMt1ZUiiIPEn6sRUK/DYTPFMYCSrh
+jaI9f8f5ADEfWuPanlLbcaTkxWFwOHRM6YxjP52NMcCXt7DMGJKxMxUXQdOd4PSY
+HnMhO0BiJErkCdU3m5omvvT+aK5/dF8q6SaAwWLea+NeOBTxOIIaCRs0VtO9CRJb
+zEE/bi+BKAsjKwMRIdk0QVLY+WpRP+WWi/Fb9s+nVleWkSgOb6ypst2rL0bNRGOr
+4Xc/ouDNjDm1enrcWbxoeMSffYGc3WcpJ1D/mkAQrE+t2ElTAR8R+YHh5uWTsdzU
+OzdNbHsqQDJEMEsU7L/oDFKhhAuK7oOSPBZx90X8QI/C3+XJypo=
+=wXYz
+-----END PGP SIGNATURE-----
 
-...also pre-existing is that the kernel has special cases for
-"external" PCI devices where it forces them to strict mode even if the
-default is non-strict (like on Intel and AMD). I was pointed
-specifically at <http://thunderclap.io/> for an example of why this
-was important.
-
-
-> And what driver does f) and allows g) to happen?  That would be a normal
-> bug anyway, why not just fix the driver?
-
-This one would be possible to workaround in the driver by copying the
-memory somewhere else, but it violates the DMA model. Specifically
-step "e)" above is supposed to mean that the driver is now in full
-control of the memory, so it should be perfectly justified in assuming
-that nobody else is scribbling on it.
-
-
-> > An example of "non-strict" being insecure when writing to a device:
-> > a) Linux driver writes data intended for the device to RAM.
-> > b) Linux driver maps memory for DMA.
-> > c) Linux driver starts DMA on the device.
-> > d) Device reads from RAM subject to bounds checking done by IOMMU.
-> > e) Device finishes reading from RAM and signals transfer is finished.
-> > f) Linux driver starts unmapping DMA memory but doesn't flush.
->
-> Why does it not flush?
->
-> What do you mean by "flush"
-
-"flush" means force / wait for the IOMMU unmap to fully take effect.
-
-
-> > g) Linux driver frees memory and returns it to the pool.
->
-> What pool?
-
-The normal Linux memory pool.
-
-
-> > h) Memory is allocated for another purpose.
->
-> Allocated by what?
-
-Someone else that wanted memory.
-
-
-> We have memory allocators that write over the data when freed, why not
-> just use this if you are concerned about this type of issue?
->
-> > i) Device takes advantage of the period of time before IOMMU flush to
-> >    read memory that it shouldn't have had access to.
->
-> What memory would that be?
-
-Depends on who got it. This could be hard to predict unless a
-peripheral was trying to exploit a very specific version of Linux
-where maybe it was predictable who got the memory next.
-
-
-> And if you really care about these issues, are you not able to take the
-> "hit" for the flush all the time as that is a hardware thing, not a
-> software thing.  Why not just always take advantage of that, no driver
-> changes needed?
-
-The whole concept of strict vs. non-strict is definitely not new to my
-series and I'm mostly just trying to configure it properly.
-
-
-> And this isn't going to work, again, because the "pre_probe" isn't going
-> to be acceptable, sorry.
-
-Right. As discussed in the cover letter, I'm going to try to solve
-this in other ways that doesn't involve pre_probe.
-
-[1] https://lore.kernel.org/linux-iommu/1624016058-189713-1-git-send-email-john.garry@huawei.com/T/#m21bc07b9353b3ba85f2a40557645c2bcc13cbb3e
-
--Doug
+--c4XJuQpPXESUwDMB--
