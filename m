@@ -2,110 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 553C73B24AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 03:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D67D3B248F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 03:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhFXCA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 22:00:56 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:32849 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229812AbhFXCAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 22:00:54 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S229970AbhFXBik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 21:38:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42150 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229850AbhFXBih (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 21:38:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624498578;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=MWyyy9NSRWYF/IIOd9RfJwjKp0KmO/I0ymT6gR07HiY=;
+        b=VZYa00ddQ1OjZUlWIwpD5PNLITk5Z+I+BHTK9yS3kLFiA4hLiXb4RJ+A5V3gHFco+9lxid
+        33l8PQYXe9HKcH1y5XBEOO0HYfDT9ZSwVxcjlnhSGWQLANGaWCR+gpr3aad0OSwxrZJAMR
+        FdI1s53un77Zv9cLY2d/8Mm+DhSCHEQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-46-O8Z27GltM5Wg0YAVBsHl6w-1; Wed, 23 Jun 2021 21:36:17 -0400
+X-MC-Unique: O8Z27GltM5Wg0YAVBsHl6w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G9NZy0B8nz9sX1;
-        Thu, 24 Jun 2021 11:58:33 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624499914;
-        bh=TtVONHpBgW64sQti2v2KVngpO3bGOmdSaV6jJxzKf9U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=VuYiF38/+zagiyIkOEMHCRgEr7fV8qgjGYE9VAnGlykMSonlALhy782hN3QrI2UUd
-         yfbzd+s5nEXlOOVgQ/EaUpD2NLLODKd0lk/++rmY7E57bRMZ394d8iMcRDZEpZ4YRx
-         dGw4YUJFw7XnqG1B4/hPGBiLIzHgq7z12Unzw9VWfnRF3e+L7dmEbIXlk+sCWaneuJ
-         wTpoTsEMyMt0tzroObiyHZuwAiMB1Ey88r/VRqQ5JRgP7OCpdlmRUNKgOmFH9uLlDV
-         hOacwF1bcUCXzrFsPfFfi3asBuQ4oSKjYfsf76ubYtPhFcieL/xdGeMRi7z+LvgJ/G
-         1oKF4oa/e07/w==
-Date:   Thu, 24 Jun 2021 11:58:30 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20210624115830.606b35c8@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2BA741084F53;
+        Thu, 24 Jun 2021 01:36:16 +0000 (UTC)
+Received: from gshan.redhat.com (vpn2-54-70.bne.redhat.com [10.64.54.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B4EA85D9C6;
+        Thu, 24 Jun 2021 01:36:14 +0000 (UTC)
+From:   Gavin Shan <gshan@redhat.com>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        drjones@redhat.com, shan.gavin@gmail.com
+Subject: [PATCH] Documentation, dt, numa: Add note to empty NUMA node
+Date:   Thu, 24 Jun 2021 11:37:40 +0800
+Message-Id: <20210624033740.20862-1-gshan@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/RkAg1RTb0HAPH/bjOvC2VIL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/RkAg1RTb0HAPH/bjOvC2VIL
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The empty NUMA nodes, where no memory resides in, are allowed. For
+these empty NUMA nodes, the 'len' of 'reg' property is zero. These
+empty NUMA node IDs are still valid and parsed. I finds difficulty
+to get where it's properly documented.
 
-Hi all,
+So lets add note to empty NUMA nodes in the NUMA binding doc.
 
-Today's linux-next merge of the net-next tree got a conflict in:
+Signed-off-by: Gavin Shan <gshan@redhat.com>
+---
+ Documentation/devicetree/bindings/numa.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-  net/netfilter/nf_tables_api.c
+diff --git a/Documentation/devicetree/bindings/numa.txt b/Documentation/devicetree/bindings/numa.txt
+index 21b35053ca5a..c564705c0eac 100644
+--- a/Documentation/devicetree/bindings/numa.txt
++++ b/Documentation/devicetree/bindings/numa.txt
+@@ -109,6 +109,10 @@ Example:
+ Dual socket system consists of 2 boards connected through ccn bus and
+ each board having one socket/soc of 8 cpus, memory and pci bus.
+ 
++Note that the empty NUMA nodes, which no memory resides in, are allowed
++Their NUMA node IDs are still valid so that memory can be added into these
++NUMA nodes through hotplug afterwards.
++
+ 	memory@c00000 {
+ 		device_type = "memory";
+ 		reg = <0x0 0xc00000 0x0 0x80000000>;
+-- 
+2.23.0
 
-between commit:
-
-  3c5e44622011 ("netfilter: nf_tables: memleak in hw offload abort path")
-
-from the net tree and commit:
-
-  ef4b65e53cc7 ("netfilter: nfnetlink: add struct nfgenmsg to struct nfnl_i=
-nfo and use it")
-
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc net/netfilter/nf_tables_api.c
-index fcb15b8904e8,d6214242fe7f..000000000000
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@@ -3249,9 -3236,9 +3242,9 @@@ static int nf_tables_newrule(struct sk_
-  	u8 genmask =3D nft_genmask_next(info->net);
-  	struct nft_rule *rule, *old_rule =3D NULL;
-  	struct nft_expr_info *expr_info =3D NULL;
-+ 	u8 family =3D info->nfmsg->nfgen_family;
- +	struct nft_flow_rule *flow =3D NULL;
-- 	int family =3D nfmsg->nfgen_family;
-  	struct net *net =3D info->net;
- -	struct nft_flow_rule *flow;
-  	struct nft_userdata *udata;
-  	struct nft_table *table;
-  	struct nft_chain *chain;
-
---Sig_/RkAg1RTb0HAPH/bjOvC2VIL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDT5sYACgkQAVBC80lX
-0GyVZAf/WAOJ2xGd77gHjzc/0BJ12ETOmKga+KWO2BN7GfyjCjlQG2S9hRP+Fjoz
-fZTBq6mWUxcgHeU4XQx9qxOYSBcfwL1BlEo3WukOujVKZIaI+A0znhugHiHSxSZA
-CHTPBprceqxka7h3DCM6MwL7s3P390je0Jd7o06bgHjdlP8I8pCZ4H94m1sMVl2I
-KS6AcgGS1teas5EwABblyFwaeH2DAfYfj13cg91rxCZXqpNaZ3O/gRJLAAWgoq7X
-faPAMA8Lf0fzhCYl46QlWE2fukQFq/FnSjwCTPSqUiZcvSmAWYtbfruNDOtMgcRN
-qy28KEbnGf3ZgAlusW+m+sgzIeiuEw==
-=06H5
------END PGP SIGNATURE-----
-
---Sig_/RkAg1RTb0HAPH/bjOvC2VIL--
