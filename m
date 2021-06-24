@@ -2,127 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5D13B369B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7923B369D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232752AbhFXTI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 15:08:27 -0400
-Received: from mga01.intel.com ([192.55.52.88]:40240 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232694AbhFXTIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 15:08:25 -0400
-IronPort-SDR: uGYjZ+ofxejniPV0NPrmdZBs7EaNtAG8CkT616d/FytDZl6i2hk0jo2etzaHZYzqkRSWj77pUA
- 3EQZXVbR6WCw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="229131708"
-X-IronPort-AV: E=Sophos;i="5.83,297,1616482800"; 
-   d="scan'208";a="229131708"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 12:06:05 -0700
-IronPort-SDR: +1qitdYIQ0Xfmc+/A1mpr/8L6W9RRsXrLC6NdDuRbiiVd4LpIO1K9y+mYuvXPjhfMo0ZaZjGLh
- zLMkHSKmps6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,297,1616482800"; 
-   d="scan'208";a="639887905"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga006.fm.intel.com with ESMTP; 24 Jun 2021 12:06:04 -0700
-Received: from [10.212.160.234] (kliang2-MOBL.ccr.corp.intel.com [10.212.160.234])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id A802058060A;
-        Thu, 24 Jun 2021 12:06:03 -0700 (PDT)
-Subject: Re: [PATCH] x86: eas should not be NULL when it is referenced
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-To:     13145886936@163.com, tglx@linutronix.de, bp@alien8.de,
-        x86@kernel.org
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>,
-        "Antonov, Alexander" <alexander.antonov@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210624070442.34291-1-13145886936@163.com>
- <40e66cf9-398b-20d7-ce4d-433be6e08921@linux.intel.com>
-Message-ID: <f313e0d9-b18e-5dd8-cadf-ee0a689f20ea@linux.intel.com>
-Date:   Thu, 24 Jun 2021 15:06:02 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232708AbhFXTJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 15:09:37 -0400
+Received: from mail-io1-f49.google.com ([209.85.166.49]:43897 "EHLO
+        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232029AbhFXTJg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 15:09:36 -0400
+Received: by mail-io1-f49.google.com with SMTP id k16so9535403ios.10;
+        Thu, 24 Jun 2021 12:07:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xeM6BF+kmfhSHu1ypq6fM0NbpYMNvzRJ0qbkk31usLE=;
+        b=YFqjpMUvxTliEPULm+gXjuQ6xeM9EiQE29ySDhSiJb4NRxFXMha6sYopIXRriD65MN
+         /U147g50xAPYyQs3UMmeYB81wV2VgcS7uKKyBTnu+MG1A/tCKanDiIgfVjynkxhzDucT
+         stb0ZtddOmOs6e/42qexjY27pSeKkieUka+oCUQscwSS3AZDYM9iPj0XjX7ue0jkQjY+
+         i9JOxqXcSIMBNcxvtD3qgn4PW8iaR4Axbjg/gD98jWaoX0s83ruWQyjcFJvFykcslnx2
+         dh/FX4sbZDze4gFB6WpNob0Rcq5Cn6UEW0P8W/5Pgg/VVQaq3Zt6FNLzq+kjffMrBgLr
+         j+nQ==
+X-Gm-Message-State: AOAM5313Yc5PN+6cetDFGJXH5KFisZClxufXmTcp6jzvcESKO2AMaKFF
+        FqdXnxyPaz+asHBVredhPg==
+X-Google-Smtp-Source: ABdhPJynUegQswgABTawywZBs8oFR7DNJUPy2c6rkvU/vbFfFl2W/mhG9gTV+7gSjT1cO8dFw31q4w==
+X-Received: by 2002:a02:9f8a:: with SMTP id a10mr6092348jam.136.1624561636036;
+        Thu, 24 Jun 2021 12:07:16 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id j25sm1818105iog.47.2021.06.24.12.07.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 12:07:14 -0700 (PDT)
+Received: (nullmailer pid 1821869 invoked by uid 1000);
+        Thu, 24 Jun 2021 19:07:12 -0000
+Date:   Thu, 24 Jun 2021 13:07:12 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Dong Aisheng <aisheng.dong@nxp.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, dongas86@gmail.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/2] of: of_reserved_mem: mark nomap memory instead of
+ removing
+Message-ID: <20210624190712.GA1821687@robh.at.kernel.org>
+References: <20210611131153.3731147-1-aisheng.dong@nxp.com>
+ <20210611131153.3731147-2-aisheng.dong@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <40e66cf9-398b-20d7-ce4d-433be6e08921@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210611131153.3731147-2-aisheng.dong@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Oops, forgot to add Peter.
-
-On 6/24/2021 3:03 PM, Liang, Kan wrote:
+On Fri, 11 Jun 2021 21:11:53 +0800, Dong Aisheng wrote:
+> Since commit 86588296acbf ("fdt: Properly handle "no-map" field in the memory region"),
+> nomap memory is changed to call memblock_mark_nomap() instead of
+> memblock_remove(). But it only changed the reserved memory with fixed
+> addr and size case in early_init_dt_reserve_memory_arch(), not
+> including the dynamical allocation by size case in
+> early_init_dt_alloc_reserved_memory_arch().
 > 
-> Hi Shengxian,
-> 
-> Thanks for the patch.
-> 
-> On 6/24/2021 3:04 AM, 13145886936@163.com wrote:
->> From: gushengxian <gushengxian@yulong.com>
->>
->> "eas" should not be NULL when it is referenced.
->>
-> 
-> I think the NULL pointer dereference of eas should not happen, because 
-> die is -1 if eas is NULL. But the whole error handling path looks fragile.
-> 
-> We already fixed one issue caused by it in commit ID f797f05d917f 
-> ("perf/x86/intel/uncore: Fix for iio mapping on Skylake Server")
-> https://lore.kernel.org/lkml/160149233331.7002.10919231011379055356.tip-bot2@tip-bot2/ 
-> 
-> 
-> Maybe something as below?
-> 
->  From 3de81ba3b04262ef3346297d82f6c4ffb4af7029 Mon Sep 17 00:00:00 2001
-> From: Kan Liang <kan.liang@linux.intel.com>
-> Date: Thu, 24 Jun 2021 11:17:57 -0700
-> Subject: [PATCH] perf/x86/intel/uncore: Clean up error handling path of 
-> iio mapping
-> 
-> The error handling path of iio mapping looks fragile. We already fixed
-> one issue caused by it, commit ID f797f05d917f ("perf/x86/intel/uncore:
-> Fix for iio mapping on Skylake Server"). Clean up the error handling
-> path and make the code robust.
-> 
-> Reported-by: gushengxian <gushengxian@yulong.com>
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
 > ---
->   arch/x86/events/intel/uncore_snbep.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
+>  drivers/of/of_reserved_mem.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/x86/events/intel/uncore_snbep.c 
-> b/arch/x86/events/intel/uncore_snbep.c
-> index 7622762..6d4a5a9 100644
-> --- a/arch/x86/events/intel/uncore_snbep.c
-> +++ b/arch/x86/events/intel/uncore_snbep.c
-> @@ -3802,11 +3802,11 @@ pmu_iio_set_mapping(struct intel_uncore_type 
-> *type, struct attribute_group *ag)
->       /* One more for NULL. */
->       attrs = kcalloc((uncore_max_dies() + 1), sizeof(*attrs), GFP_KERNEL);
->       if (!attrs)
-> -        goto err;
-> +        goto clear_topology;
-> 
->       eas = kcalloc(uncore_max_dies(), sizeof(*eas), GFP_KERNEL);
->       if (!eas)
-> -        goto err;
-> +        goto clear_attrs;
-> 
->       for (die = 0; die < uncore_max_dies(); die++) {
->           sprintf(buf, "die%ld", die);
-> @@ -3827,7 +3827,9 @@ pmu_iio_set_mapping(struct intel_uncore_type 
-> *type, struct attribute_group *ag)
->       for (; die >= 0; die--)
->           kfree(eas[die].attr.attr.name);
->       kfree(eas);
-> +clear_attrs:
->       kfree(attrs);
-> +clear_topology:
->       kfree(type->topology);
->   clear_attr_update:
->       type->attr_update = NULL;
+
+Applied, thanks!
