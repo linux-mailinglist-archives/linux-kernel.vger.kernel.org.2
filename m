@@ -2,202 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F463B2C20
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4753B2C26
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232142AbhFXKKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 06:10:07 -0400
-Received: from mga06.intel.com ([134.134.136.31]:38090 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231501AbhFXKKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 06:10:06 -0400
-IronPort-SDR: JnBDOllJaagMqwjMcFCU/i8apQ/2ApxHTzGvUkCrZfdyHUqq0MXxTP3jE5GICZrt+omVti7vpo
- /Efg5b4MoDZg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="268573065"
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="268573065"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 03:07:46 -0700
-IronPort-SDR: hxGimYrNOVFnAVYS5aiFz35SY4Vcr2F1fYWKInQ+WQsKeQggLJyhs3w26bYdmF8uj7sWDSwPrI
- DHGfY4IsWbwQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="406595499"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga006.jf.intel.com with ESMTP; 24 Jun 2021 03:07:46 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Thu, 24 Jun 2021 03:07:46 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
- via Frontend Transport; Thu, 24 Jun 2021 03:07:46 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.171)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.4; Thu, 24 Jun 2021 03:07:45 -0700
+        id S232157AbhFXKLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 06:11:11 -0400
+Received: from mx0a-0064b401.pphosted.com ([205.220.166.238]:12106 "EHLO
+        mx0a-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232100AbhFXKLJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 06:11:09 -0400
+Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15OA8bAb020322;
+        Thu, 24 Jun 2021 03:08:46 -0700
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2176.outbound.protection.outlook.com [104.47.56.176])
+        by mx0a-0064b401.pphosted.com with ESMTP id 39cf0erbn8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Jun 2021 03:08:46 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UZ9E6nry9gDjD777in/EAExzICxrskTb/C1c1cb1X5GdrSfFifC0u7OiJcbzuXEQpIOJvjXBjEu6BkcnSPN4C6THRGj3Dv0cGPh7dMY8Nrmsknfi2Io2JnYyGBFUPz0uZqA0B32wlGIFg4HBOXlI3O0yse94oEwALWWIlBQmHf/S/45FMFXaZ8fqXDZWdfZ1R458BDyDzC55RPxIWJghRhU1KkHBXGyV4UTI3FHmED0VP/hnlcoTl2vlek+vQ/Hz0v1lRK8JdPQ0E9ZiVknMFHFj+ePdb1LJIbPKFL8hSv0L/UYV18LQ4VqgRoJkhRMK3GCaXr8vNTbY9mzWn1QnYQ==
+ b=T4UgCKKVwlybQ/KAAG9CTjXjacOjEN9jlie0TAK8G9FfCLLZ9fmt0ecBgR1ZAJ29+yHGOipYM3qF9QHrLJmRa+9RZQ0Q2qduc8d0AOWV4CuBCLjP1ASsEZm8pymNMUbBIKqny0YJdRtbu10iRXHfpcp0fEZczJhKMB+zo68ysP2B4Hcfy0S8Y0GWfpzEbG37JLEh4mP6ZiJQJWfx3PRgMeFM3P3qLxxpdjECVFkKptT9sMba7TCpxcqiRJ7iaC7Mr01LqEd/MmA1DFYv23S7tzE8n5o/1H2JtyHYOYsGUfcikdThi0MSqXlvzDgHeC6b7AHZtNlr6wEl27j5mj6TbQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JJufsYpJxF00DikROC5+5CtBfBu+tz7fawY4shda8ac=;
- b=FR1xUCEtpAkHIhV7CvpOYwPOfdJQJPQiYcyctRfirszvVIdzxToTPNHd7OJPVevGNRT1hibrcG4t5cnE+rstEuVtiCVe1ULxFQebxVN4GkW/n26WMUOolTcW2fTSrbuecMrJJa3R8kf54wz+L/5c+Y241bWuNdCTkr3mEjrvOKh/YTNRRxHqNvmfJaCNgt/7jLnU8oOEeygT/1OCo0P3V2BNkYoTpT+bgO5BgoNuufacx0TCa4OFDTL1I8LBCC00SMXFhLW5CBsc1sI5VcOd2CekiTk7CGRcUO5zyuYwpDAulF4Gdrj0byxS73lypZ2SyccXiHbQvNpxPzYqi2nVUQ==
+ bh=pXJfAZLyX1p39Q1Hrk8p3qTmjUDfBGMK4lnSaTrrZTc=;
+ b=a3Za7lR84pbrPPqA5XcqmU/PFFijd+UAyxVkTW7/f9u9R9W7s731FVpVw2caKkAjQnoaJ+AMcWUbYERFnH5hVlhZucOznswqfTiap71/4b1qtSc0qtlN8Zwhq+kyo6Csr9RZVYdD+Zc6+WooMFFN+mzYnkDIX0rsvy/v7KZx7z6npNqqQYxX7n+mmv+aBhCRSLQQGVMKgvtT9XukafKTvJR0NZyEZp/RwZAlbXWyypJxI6TwMfEEs/GoQYT04oqKrQirg8ShiIIe6utNUW3d7+k5Pm7+sAQqQZNOpIp9BMm67Cdpul1TmUR9q8kwwT2bfY15YqaMSvQhDZJVf2SllA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JJufsYpJxF00DikROC5+5CtBfBu+tz7fawY4shda8ac=;
- b=PaM3bxfsX9PANmSpg9yguTovOuTzgEukUFFRjtX66cqmVv5PPXv2iY4sj6NPw4ixv7giSWo/ulEfW5c9V6q3P3vj4EksYPqj8ago5NmiYkTnJOhCKLk2pGfUZZUvokndkJ6DgaF4UGxPyG8y11xldoQIQIc6IGO0YNrVQlgE7dc=
-Received: from CH0PR11MB5380.namprd11.prod.outlook.com (2603:10b6:610:bb::5)
- by CH0PR11MB5314.namprd11.prod.outlook.com (2603:10b6:610:bd::22) with
+ bh=pXJfAZLyX1p39Q1Hrk8p3qTmjUDfBGMK4lnSaTrrZTc=;
+ b=dE1In0Hjzg7CSg3sKORYFsE8daReeIIAuBxQiDwAQd+4Tz9yimA953kc35oAyrzWNfav38bovD5RryuCCXfeIvJ87AQIA/zwpG6vyHvmBA95TQxI5jPK1Qtsx0QpfLFQYmgRh+MSTscRiG537yejaNSThaVdwtBKOJQl4+9GoV8=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=windriver.com;
+Received: from DM6PR11MB4739.namprd11.prod.outlook.com (2603:10b6:5:2a0::22)
+ by DM6PR11MB3419.namprd11.prod.outlook.com (2603:10b6:5:6f::32) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Thu, 24 Jun
- 2021 10:07:44 +0000
-Received: from CH0PR11MB5380.namprd11.prod.outlook.com
- ([fe80::d52:3043:fef4:ebcd]) by CH0PR11MB5380.namprd11.prod.outlook.com
- ([fe80::d52:3043:fef4:ebcd%4]) with mapi id 15.20.4264.020; Thu, 24 Jun 2021
- 10:07:44 +0000
-From:   "Voon, Weifeng" <weifeng.voon@intel.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "Ling, Pei Lee" <pei.lee.ling@intel.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        "Jose Abreu" <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.23; Thu, 24 Jun
+ 2021 10:08:43 +0000
+Received: from DM6PR11MB4739.namprd11.prod.outlook.com
+ ([fe80::600f:ab96:ee86:2ec4]) by DM6PR11MB4739.namprd11.prod.outlook.com
+ ([fe80::600f:ab96:ee86:2ec4%6]) with mapi id 15.20.4264.020; Thu, 24 Jun 2021
+ 10:08:42 +0000
+From:   Liwei Song <liwei.song@windriver.com>
+To:     Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>, David <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
-        Wong Vee Khee <vee.khee.wong@linux.intel.com>,
-        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
-        "Tan, Tee Min" <tee.min.tan@intel.com>,
-        "Sit, Michael Wei Hong" <michael.wei.hong.sit@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net-next V1 3/4] net: stmmac: Reconfigure the PHY WOL
- settings in stmmac_resume()
-Thread-Topic: [PATCH net-next V1 3/4] net: stmmac: Reconfigure the PHY WOL
- settings in stmmac_resume()
-Thread-Index: AQHXZoJFBtZ0uXgSn0S7qboFjm+Joqseb0UAgALh+bCAAK/dgIAA5rbA
-Date:   Thu, 24 Jun 2021 10:07:44 +0000
-Message-ID: <CH0PR11MB538084AFEA548F4B453C624F88079@CH0PR11MB5380.namprd11.prod.outlook.com>
-References: <20210621094536.387442-1-pei.lee.ling@intel.com>
- <20210621094536.387442-4-pei.lee.ling@intel.com> <YNCOqGCDgSOy/yTP@lunn.ch>
- <CH0PR11MB53806E2DC74B2B9BE8F84D7088089@CH0PR11MB5380.namprd11.prod.outlook.com>
- <YNONPZAfmdyBMoL5@lunn.ch>
-In-Reply-To: <YNONPZAfmdyBMoL5@lunn.ch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [161.142.208.90]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1133637e-b8ad-4a98-33c7-08d936f7e953
-x-ms-traffictypediagnostic: CH0PR11MB5314:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CH0PR11MB5314FAFE4FC6A54363609D8388079@CH0PR11MB5314.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AvizZX7iySO088m26/GPGibArZb6RbbCYId0QFNkpsPoek554ZedlzSlW7Km9PE56YoIffJGZR1MQJXeoU+Dk5fNdbBA/s78hrp9/r487leLGGGyrV20cPRO/OcdxlqdpkMYzZOd2Cxzodj2rnKQK3m/rdQJB9CoqkXsiOCBP8OHL8bPBXLeAEFVrSLmRmTe8gg07ZZFym/pCPExTEMpoHWsw+JyofT8Qw9dhWuW/C7KnVDX5jJyzrDKrqhw/Bnrk4sH845BIIGCesf+2VtjaeEEouKvvQ4QslhcSh5D3ZhW6F6C/OGfBFj5hr/Q73gN7P1qlLh1cxHCE7tdf39foKCW9IwS5FYYGoPbXN7inhkn7wpyiLmgoyNoIj1MCNq4aS1ZCtxGUVCohVUk1y0ZHNIvP5rD7f8S4XQJj6IBLnxPf7FJYDBXFAaNZdhKixj4Udxyo81LWDoJ23vuJmj+nsZ0wJEYMjAjjdmjwu2YUovnSteaArFG0PLXgTrI2CMUtjJ+5OkfmXbW46f8NWuLIcQGQKJbaGjC1px4Bvc0fhXTg99ec6dEuJ0S3wpoAj4PpbKn9K5QHy3nKDZOSPXAqgfwjiuQU3r4hV8XBUgk7ds=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR11MB5380.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(366004)(39860400002)(136003)(346002)(8936002)(26005)(122000001)(9686003)(7416002)(38100700002)(55016002)(86362001)(8676002)(2906002)(66556008)(66476007)(71200400001)(4326008)(83380400001)(6506007)(54906003)(316002)(7696005)(64756008)(66446008)(76116006)(33656002)(66946007)(6916009)(5660300002)(52536014)(186003)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?3XVR+j8EspbckidKEfzrArgZKzgk0xj/FVvclqYDPJ8sPfFMbcFQ69rTMOqC?=
- =?us-ascii?Q?zCgMjteO5bPmk1bNhNAABaHDp8xC2Ho4zVmn8hM5S0do413FHUbrZmcQ7ESy?=
- =?us-ascii?Q?XLaKHoB/xoC+NeF0pQv7RQ/2lPDXPL2Zb90MOVkMR0pFIplWC3BQ01B6UtUk?=
- =?us-ascii?Q?4tJLUQA17i3rX1txYe2fxTVr46mOvae69ZGCZRhXrV/FJP35g9/qd6rgYofJ?=
- =?us-ascii?Q?w4vE9/qVRnjMxD8HTiI0UMhxqXxh8aZ8IEUGlX6WXpwUEo8Yz96Q/QxMuyRF?=
- =?us-ascii?Q?2D08H/xiLHp55xvpuClTeBjHZjDO1LCWCQf9PJbXgCNKD931Pdgcm5wT88um?=
- =?us-ascii?Q?yoEjHmI8eWNW4QuIfc0W51VKtpVmL1NHGD/354Geh//eIyHwwjvf77/Ugbje?=
- =?us-ascii?Q?sJ4u4Th7m8dimgcSK1vp3sSpZ8illQNolzUf/78etXjPRp/5jE7QwsWQvAx2?=
- =?us-ascii?Q?q/zlPDgVGdzXlRSujvYWoLWuyWX3E9E9dG7cbvdeczdhqVnHZLsEOOov1oR3?=
- =?us-ascii?Q?WpLAhBoiu8Dm67bqx75ucQaGiGPpTbQkYztj0QLaclwImb3G63P+rSxccCQ1?=
- =?us-ascii?Q?M9GBex+nCfdwwwzyl9OwNusC20HcRO18EuIaudmcavlleNO5rXRUVvHtd3Hj?=
- =?us-ascii?Q?hmQKztUIGf5k9uMlEOkSG8wvjBT8oSqF0/Tp5ZuRjS7XdS6H3TVL+76wtnPv?=
- =?us-ascii?Q?vwzhAqfBkkZ7A9UGXprI1djOEh9u94oY22IaeokAkQiHc82XRlgiIxoLjR3x?=
- =?us-ascii?Q?PtGvAbL2RTgoW1W8tAOiqZFVUOIC1CKrjMZCrnLaAmPr8lvanNBEBMC3xUpw?=
- =?us-ascii?Q?T/0Ct9vrb80Or+XYuLQiLo6bbLRBB6mP5DiWq+kKP/i86ItBQ2c10es9G7ju?=
- =?us-ascii?Q?FDUHDvfgRGKlIdD9u7IsrUOj4Fgz+jHMXVilG20VNAf5zP5wKq1Kau7X3eam?=
- =?us-ascii?Q?vs9PZoMs36OnB7rw+MT23q2Xq7ptYdZilPJNT8h+jPWQS99AJVopV1G7LEwH?=
- =?us-ascii?Q?Vxiddxql3mqO3C7k7ro+4kGVBe5mHoP86DEMYGLiWIc31mRjgtuWjEUy2Vk9?=
- =?us-ascii?Q?gaeS1v5tiXsGkT//gqxCt886P9LR0CRB7DGITCRgGEaZGlFC9CL9BRTkC1hJ?=
- =?us-ascii?Q?02BCo1r0rnMPAbbWtCxoQXvueyUUCqcvs1vufeo/G25oLYmeGDv2YV08DV72?=
- =?us-ascii?Q?iUPlg2KVhtcugAUTJU6JI8OObXJrEdI609LjdVbykgbrcBSwR5gehkoCFVEr?=
- =?us-ascii?Q?rFGF6J0e3bwjuK87Zba6GwbrYw8R2I0tnZAvfvurNsA2Q72R9E8d+k67pe+X?=
- =?us-ascii?Q?HCxPG6aFF9Xkx1kCUPFOCGa3?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        linux-wireless@vger.kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liwei.song@windriver.com
+Subject: [PATCH] iwlwifi: select MAC80211_LEDS conditionally
+Date:   Thu, 24 Jun 2021 18:08:23 +0800
+Message-Id: <20210624100823.854-1-liwei.song@windriver.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK0PR03CA0105.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::21) To DM6PR11MB4739.namprd11.prod.outlook.com
+ (2603:10b6:5:2a0::22)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-lpggp3.wrs.com (60.247.85.82) by HK0PR03CA0105.apcprd03.prod.outlook.com (2603:1096:203:b0::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Thu, 24 Jun 2021 10:08:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 838947b9-8483-4b63-9f3e-08d936f80b50
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3419:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR11MB3419E96321AF00B1701E29909E079@DM6PR11MB3419.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: f8oKjaIfnu+vqHd9Tb/GAnN91338qT30hBI3wi6y41LWkIsU+qcOmcNSB7LQuE2FZhaiVISamDP1WN2nSqOQU414p6B7LPnHL0y8Jy951le46s7L0WBlpV3lSvM46td6dn3e7LvlWG13oV7RKUE91JGlAUIGb7CWvofgWi/Qp7IsTRe/+rZ7DHU7w8Q5IYE1qF8YCzy1tZLsHB7aL/ydDAz/mB/GFf3focoPpMZzMidLcoe0zni9f1Akp68idj1CWf8BGD20V7blaNtmc2FrWJwpbpd4ypg4wHGh0/nE52IqYOb5jN7ZF3TskVu1lpDTSoK3z5s6m1aE91P6L3LDZbAfqGB4J7F3hDXu3xme8z4ClPgmq48I4jJtDKQ+CmL+YPtkMW72RC8f44f36YtwC89kfYEN4UZMJIOJIB05sG/Bo8WQjKMKLfCEBCoCvJc+Z3yIcq1GY9ZQ7lRnb9wW8geQDxAtu+XIJpvnI9TtBU1V8dQxp3KEQVGT5gR9K48uZX0FMzty9XKT8nhnxWhJ5uLSz+j1D01XP5RFBv7TE+Imi4e0ZxiNXmOkOWSrU7pEEOsXg1MmCQAKKWSkh34f07hOURZg4/Vniqb9eupXbEzuTFoZAPukPiOxL14CxqHtQKAeVc0qdpGZlmm/nsG91WQw3ov40vCvbSaNQgkqFHM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4739.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(346002)(366004)(396003)(136003)(376002)(6506007)(44832011)(478600001)(5660300002)(1076003)(26005)(6666004)(8676002)(38350700002)(52116002)(38100700002)(4326008)(186003)(956004)(2616005)(36756003)(8936002)(107886003)(16526019)(86362001)(2906002)(83380400001)(66946007)(6486002)(66556008)(66476007)(110136005)(316002)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DSwjsQh7+c2McwPkU1sM0vZUQKRyD93BGg1ngEyTVr/TkfCjB+WANBTD9Q4u?=
+ =?us-ascii?Q?x8PaUlduGJWBDCr2zX9YEeoeD7RUyaMG+KlDyLNNojDnmr1Po/dAvFcxxZw4?=
+ =?us-ascii?Q?lWmgzOnPwcYCtCFJ9WzPC7RL9Nbw4aNQx9HJQpTj7V88XsrFIqcZceyr1cQI?=
+ =?us-ascii?Q?04/CAAkeaOVKUlia2p2G0NXVDdbvyNmIqso8IyJ2WVLe6IE4EGJCpXbzB+FB?=
+ =?us-ascii?Q?Yn8cL6stQPkm1l/RUinPeWlXepjWvA8cR36nINxPUgnNdnw5TklSZgnQshhT?=
+ =?us-ascii?Q?RiFrD0Xbipz3JvszuP4xjE9T56MjM9xRsNpeQ3ALL6pOUER+d5rb5ZzUSAjM?=
+ =?us-ascii?Q?8x0EW8L6OJDBY8wt+Xmudkcx+n9foSKNjSPdp7u0Nrd5ZiT/+ZGsesnWIBVB?=
+ =?us-ascii?Q?SDMnkjJDgR2BaP0Bj22FVDgLY+k/SxUFuUqijy+pqPlteFKK7jZYrTECfvNo?=
+ =?us-ascii?Q?qn7waRSxhwtx+Hvwu0nOoMcwclvVV0y4fIV72Y82Cz32V6pPiQvnaCOp870I?=
+ =?us-ascii?Q?haiXZKNy/Jf/gsZQRDvVZlPi+tFadUqL5V5tUtzNKezV+dsxYQVCZr7/JFHU?=
+ =?us-ascii?Q?Yx0EKtWlreUsq944ggQ3fcXStGyb3Vq0NbWeW1fvt7XSTpkoBY+1EDsnTkdY?=
+ =?us-ascii?Q?Ag3FA6tjTeONRskwY/ALggCOmzoUZpA9rx1acEx8mw4grx6L9GDmwhsDc922?=
+ =?us-ascii?Q?ZcN01XCxt79MyUZMe6Zm8DPo9qpsZx0hiBcahu0iYfnRjaso++CYncwAbc6C?=
+ =?us-ascii?Q?87xHnQiwUCXXJeIMzBCvQTjJDL9g3pBQUFY/kL6GaL9BIMxR7bU6uTTHzHro?=
+ =?us-ascii?Q?IbvjBTmltE7KXH1TNBHQ8OSOUbN2IrE9taiQ9plYmfo6UR4ZrBsOaq7+ym87?=
+ =?us-ascii?Q?638GkyGdhPO4gX/b4Xe7NxRHqo6UTmoI26uYpJPcyqfjkcFHkLl3cXnV92H6?=
+ =?us-ascii?Q?3vx/1djv+vEYeZhHlAARv+4B7/5Ew+/AOt5P9n7pK9ebgztJSY/avfpe0a9S?=
+ =?us-ascii?Q?GGuzVyFqFEifQWGVqhgvUdCJ6ofhSdo3jGsf+4ZTTyclsfkQaUH6yruE6fSo?=
+ =?us-ascii?Q?ivn+tkvZ/sgsdii3NjepPgtUtKU4cbS4QYNQpXtQvxTPr38akEQGYCwYXUUu?=
+ =?us-ascii?Q?GLWapQ8LZjYanZzl3m8CBaHoruROmSJN2WEHCCmSDoqgnP/c7HkfOhoFv6FO?=
+ =?us-ascii?Q?9b3hMS/wVbKEAtCbY3HE2sRT6U8b9vIo23IWsK6TDFjPxZ7G0dFmMRkoKnXw?=
+ =?us-ascii?Q?Xx8sLgiw/z3cvjZx/6lrK3k9mnFDCTljqbUINGUvrN8EtZax+jcVqx/M5pMJ?=
+ =?us-ascii?Q?d7Zqr5/0LnZ0G8dm+hcaWxPR?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 838947b9-8483-4b63-9f3e-08d936f80b50
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4739.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR11MB5380.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1133637e-b8ad-4a98-33c7-08d936f7e953
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jun 2021 10:07:44.7528
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2021 10:08:42.3171
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: oqXFlF9ycoYLsfvRIETYvkT9E4ccneasLfvkVSphgZ/rQvVy1R8YuLylOBrdy9j1nU+4eWtyHG9be1UrJMKPqg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5314
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YdLnKB5Lojk89lBiLcYSg/fLInEh5A91GpM0935t77qSnlXqUEgHwaZc9mqXFTDGfY2wlxuWpXir/IyyURSfTsHC/QjUM0Dwtb9/5El6trk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3419
+X-Proofpoint-ORIG-GUID: 8FiQYxSEFWnZ95IfGAowPOsentJOmeBM
+X-Proofpoint-GUID: 8FiQYxSEFWnZ95IfGAowPOsentJOmeBM
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-24_06:2021-06-24,2021-06-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 malwarescore=0 mlxscore=0 adultscore=0 clxscore=1011
+ priorityscore=1501 bulkscore=0 phishscore=0 lowpriorityscore=0
+ mlxlogscore=999 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106240054
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > > After PHY received a magic packet, the PHY WOL event will be
-> > > > triggered then PHY WOL event interrupt will be disarmed.
-> > > > Ethtool settings will remain with WOL enabled after a S3/S4
-> > > > suspend resume cycle as expected. Hence,the driver should
-> > > > reconfigure the PHY settings to reenable/disable WOL depending on
-> > > > the ethtool WOL settings in the resume flow.
-> > >
-> > > Please could you explain this a bit more? I'm wondering if you have
-> > > a PHY driver bug. PHY WOL should remain enabled until it is
-> > > explicitly disabled.
-> > >
-> > > 	Andrew
-> >
-> > Let's take Marvell 1510 as example.
-> >
-> > As explained in driver/net/phy/marvell.c
-> > 1773 >------->-------/* If WOL event happened once, the LED[2]
-> > interrupt pin
-> > 1774 >------->------- * will not be cleared unless we reading the
-> > interrupt status
-> > 1775 >------->------- * register.
-> >
-> > The WOL event will not able trigger again if the driver does not clear
-> > the interrupt status.
-> > Are we expecting PHY driver will automatically clears the interrupt
-> > status rather than trigger from the MAC driver?
->=20
-> So you are saying the interrupt it getting discarded? I would of though i=
-t
-> is this interrupt which brings to system out of suspend, and it should
-> trigger the usual action, i.e. call the interrupt handler. That should th=
-en
-> clear the interrupt.
->=20
-> 	 Andrew
+MAC80211_LEDS depends on LEDS_CLASS=y or LEDS_CLASS=MAC80211,
+add condition to enable it in iwlwifi/Kconfig to avoid below
+compile warning when LEDS_CLASS was set to m:
 
-No, the interrupt will not be discarded. If the PHY is in interrupt mode, t=
-he
-interrupt handler will triggers and ISR will clear the WOL status bit.=20
-The condition here is when the PHY is in polling mode, the PHY driver does =
-not
-have any other mechanism to clear the WOL interrupt status bit.
-Hence, we need to go through the PHY set_wol() again.=20
+WARNING: unmet direct dependencies detected for MAC80211_LEDS
+  Depends on [n]: NET [=y] && WIRELESS [=y] && MAC80211 [=y] && (LEDS_CLASS [=m]=y || LEDS_CLASS [=m]=MAC80211 [=y])
+  Selected by [m]:
+  - IWLWIFI_LEDS [=y] && NETDEVICES [=y] && WLAN [=y] && WLAN_VENDOR_INTEL [=y] && IWLWIFI [=m] && (LEDS_CLASS [=m]=y || LEDS_CLASS [=m]=IWLWIFI [=m]) && (IWLMVM [=m] || IWLDVM [=m])
 
-Weifeng
+Signed-off-by: Liwei Song <liwei.song@windriver.com>
+---
+ drivers/net/wireless/intel/iwlwifi/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/intel/iwlwifi/Kconfig b/drivers/net/wireless/intel/iwlwifi/Kconfig
+index 1085afbefba8..0e1de69c259f 100644
+--- a/drivers/net/wireless/intel/iwlwifi/Kconfig
++++ b/drivers/net/wireless/intel/iwlwifi/Kconfig
+@@ -50,7 +50,7 @@ config IWLWIFI_LEDS
+ 	depends on LEDS_CLASS=y || LEDS_CLASS=IWLWIFI
+ 	depends on IWLMVM || IWLDVM
+ 	select LEDS_TRIGGERS
+-	select MAC80211_LEDS
++	select MAC80211_LEDS if (LEDS_CLASS=y || LEDS_CLASS=MAC80211)
+ 	default y
+ 
+ config IWLDVM
+-- 
+2.17.1
+
