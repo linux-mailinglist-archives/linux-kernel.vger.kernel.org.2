@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F8C3B2BF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA223B2BFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhFXJ6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:58:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38176 "EHLO
+        id S232252AbhFXJ7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232178AbhFXJ6t (ORCPT
+        with ESMTP id S232025AbhFXJ6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 24 Jun 2021 05:58:49 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA4FC061766
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3864FC061574
         for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 02:56:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=aoz8GqgWyLrn/eCm1STfWs7bb1T5oXDPWfrj4n03Lmo=; b=K9eVgzCMWbTDRJErG5WRi7IOU7
-        5GuL5MVWu++aqn9Qx8UHV1ihiATfrD3o1k8w78gW8W+fnxL7F1e6grifk3eh+4IJKuchK16J7CsPf
-        uWzJKR+JrP9rgV0kIINK7jb+1vWRFaCRlK342Q6OFwgjjTFZQjVLOYuwXRbMSUcfULBT5jB7Si9RE
-        lroSXS2S0ChIT6YSXc5ea6a0l6HBCCebPxw2Ax7kCiaVAFspX/jJFEXqccfFnqZVJ839MVAL20TSx
-        efu5aLEHBfH/F5nxsoWmLUzJWd0x+kD4HW2rAq8CflOxdnSTdEkOCcO8wheDNkeOOyOCZ11q0OEfG
-        vt9EDA6A==;
+        bh=RnMXf4wN3pAPS/c+om2cdvtDY/gkdx5mVmwXT1Q1Mi8=; b=S34RmuV3F38bioSeUdb1jCxtmQ
+        A19Ly7q7+UgNaRcAD43SfBw61JgjX0ryKu5qlgzJpz9oWgQ6cMpRTnrU0FItqk65NxviD0XWd1gQZ
+        WBYmKl+GIEDGU1iV8mboxK1CLIz7s4bXSWaMejQIdqfyVucjp9fnVfr876wXZa21A9LsufXd8BdH/
+        0NXuBJ8qqUa33zF5FW5sca2llzJXXfDwJozykLlH3TVRoKMbDMKPnwHTWzYyFtX0cKfWO6/VNwdrx
+        seIKW82MZzsjPFuo3DFQieTM3J/14FBFB8A4kTJaH7SZxxASG8pXV4Ge/9woWRSTxVQaVsF77Ihbt
+        93YU4h2g==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwM4K-00GQP8-1p; Thu, 24 Jun 2021 09:54:47 +0000
+        id 1lwM4K-00GQP9-1z; Thu, 24 Jun 2021 09:54:47 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ADE183005F4;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AF2C23005FA;
         Thu, 24 Jun 2021 11:54:24 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 44DFD2BC1D0C5; Thu, 24 Jun 2021 11:54:24 +0200 (CEST)
-Message-ID: <20210624095149.057262522@infradead.org>
+        id 4DBCC2BC1D0C6; Thu, 24 Jun 2021 11:54:24 +0200 (CEST)
+Message-ID: <20210624095149.118815755@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 24 Jun 2021 11:41:22 +0200
+Date:   Thu, 24 Jun 2021 11:41:23 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     jpoimboe@redhat.com, tglx@linutronix.de
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
         joro@8bytes.org, boris.ostrovsky@oracle.com, jgross@suse.com,
         x86@kernel.org, mbenes@suse.com, rostedt@goodmis.org,
         dvyukov@google.com, elver@google.com
-Subject: [PATCH v2 23/24] x86/xen: Rework the xen_{cpu,irq,mmu}_ops[] arrays
+Subject: [PATCH v2 24/24] objtool: Support pv_opsindirect calls for noinstr
 References: <20210624094059.886075998@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,283 +53,435 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to allow objtool to make sense of all the various paravirt
-functions, it needs to either parse whole pv_ops[] tables, or observe
-individual assignments in the form:
+Normally objtool will now follow indirect calls; there is no need.
+
+However, this becomes a problem with noinstr validation; if there's an
+indirect call from noinstr code, we very much need to know it is to
+another noinstr function. Luckily there aren't many indirect calls in
+entry code with the obvious exception of paravirt. As such, noinstr
+validation didn't work with paravirt kernels.
+
+In order to track pv_ops[] call targets, objtool reads the static
+pv_ops[] tables as well as direct assignments to the pv_ops[] array,
+provided the compiler makes them a single instruction like:
 
   bf87:       48 c7 05 00 00 00 00 00 00 00 00        movq   $0x0,0x0(%rip)
     bf92 <xen_init_spinlocks+0x5f>
     bf8a: R_X86_64_PC32     pv_ops+0x268
 
-As is, xen_cpu_ops[] is at offset +0 in pv_ops[] and could thus be
-parsed as a 'normal' pv_ops[] table, however xen_irq_ops[] and
-xen_mmu_ops[] are not.
+There are, as of yet, no warnings for when this goes wrong :/
 
-Worse, both the latter two are compiled into the individual assignment
-for by current GCC, but that's not something one can rely on.
-
-Therefore, convert all three into full pv_ops[] tables. This has the
-benefit of not needing to teach objtool about the offsets and
-resulting in more conservative code-gen.
+Using the functions found with the above means, all pv_ops[] calls are
+now subject to noinstr validation.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/xen/enlighten_pv.c |   66 ++++++++++++++++---------------
- arch/x86/xen/irq.c          |   17 ++++----
- arch/x86/xen/mmu_pv.c       |   92 ++++++++++++++++++++++----------------------
- 3 files changed, 91 insertions(+), 84 deletions(-)
+ lib/Kconfig.debug                       |    2 
+ tools/objtool/arch/x86/decode.c         |   34 ++++++-
+ tools/objtool/check.c                   |  151 +++++++++++++++++++++++++++++---
+ tools/objtool/include/objtool/arch.h    |    2 
+ tools/objtool/include/objtool/elf.h     |    1 
+ tools/objtool/include/objtool/objtool.h |    9 +
+ tools/objtool/objtool.c                 |   22 ++++
+ 7 files changed, 208 insertions(+), 13 deletions(-)
 
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -1051,52 +1051,54 @@ static const struct pv_info xen_info __i
- 	.name = "Xen",
- };
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -445,7 +445,7 @@ config STACK_VALIDATION
  
--static const struct pv_cpu_ops xen_cpu_ops __initconst = {
--	.cpuid = xen_cpuid,
-+static const typeof(pv_ops) xen_cpu_ops __initconst = {
-+	.cpu = {
-+		.cpuid = xen_cpuid,
+ config VMLINUX_VALIDATION
+ 	bool
+-	depends on STACK_VALIDATION && DEBUG_ENTRY && !PARAVIRT
++	depends on STACK_VALIDATION && DEBUG_ENTRY
+ 	default y
  
--	.set_debugreg = xen_set_debugreg,
--	.get_debugreg = xen_get_debugreg,
-+		.set_debugreg = xen_set_debugreg,
-+		.get_debugreg = xen_get_debugreg,
+ config VMLINUX_MAP
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -20,6 +20,7 @@
+ #include <objtool/arch.h>
+ #include <objtool/warn.h>
+ #include <objtool/endianness.h>
++#include <objtool/builtin.h>
+ #include <arch/elf.h>
  
--	.read_cr0 = xen_read_cr0,
--	.write_cr0 = xen_write_cr0,
-+		.read_cr0 = xen_read_cr0,
-+		.write_cr0 = xen_write_cr0,
+ static int is_x86_64(const struct elf *elf)
+@@ -102,12 +103,13 @@ unsigned long arch_jump_destination(stru
+ #define rm_is_mem(reg)	(mod_is_mem() && !is_RIP() && rm_is(reg))
+ #define rm_is_reg(reg)	(mod_is_reg() && modrm_rm == (reg))
  
--	.write_cr4 = xen_write_cr4,
-+		.write_cr4 = xen_write_cr4,
- 
--	.wbinvd = native_wbinvd,
-+		.wbinvd = native_wbinvd,
- 
--	.read_msr = xen_read_msr,
--	.write_msr = xen_write_msr,
-+		.read_msr = xen_read_msr,
-+		.write_msr = xen_write_msr,
- 
--	.read_msr_safe = xen_read_msr_safe,
--	.write_msr_safe = xen_write_msr_safe,
-+		.read_msr_safe = xen_read_msr_safe,
-+		.write_msr_safe = xen_write_msr_safe,
- 
--	.read_pmc = xen_read_pmc,
-+		.read_pmc = xen_read_pmc,
- 
--	.load_tr_desc = paravirt_nop,
--	.set_ldt = xen_set_ldt,
--	.load_gdt = xen_load_gdt,
--	.load_idt = xen_load_idt,
--	.load_tls = xen_load_tls,
--	.load_gs_index = xen_load_gs_index,
-+		.load_tr_desc = paravirt_nop,
-+		.set_ldt = xen_set_ldt,
-+		.load_gdt = xen_load_gdt,
-+		.load_idt = xen_load_idt,
-+		.load_tls = xen_load_tls,
-+		.load_gs_index = xen_load_gs_index,
- 
--	.alloc_ldt = xen_alloc_ldt,
--	.free_ldt = xen_free_ldt,
-+		.alloc_ldt = xen_alloc_ldt,
-+		.free_ldt = xen_free_ldt,
- 
--	.store_tr = xen_store_tr,
-+		.store_tr = xen_store_tr,
- 
--	.write_ldt_entry = xen_write_ldt_entry,
--	.write_gdt_entry = xen_write_gdt_entry,
--	.write_idt_entry = xen_write_idt_entry,
--	.load_sp0 = xen_load_sp0,
-+		.write_ldt_entry = xen_write_ldt_entry,
-+		.write_gdt_entry = xen_write_gdt_entry,
-+		.write_idt_entry = xen_write_idt_entry,
-+		.load_sp0 = xen_load_sp0,
- 
- #ifdef CONFIG_X86_IOPL_IOPERM
--	.invalidate_io_bitmap = xen_invalidate_io_bitmap,
--	.update_io_bitmap = xen_update_io_bitmap,
-+		.invalidate_io_bitmap = xen_invalidate_io_bitmap,
-+		.update_io_bitmap = xen_update_io_bitmap,
- #endif
--	.io_delay = xen_io_delay,
-+		.io_delay = xen_io_delay,
- 
--	.start_context_switch = paravirt_start_context_switch,
--	.end_context_switch = xen_end_context_switch,
-+		.start_context_switch = paravirt_start_context_switch,
-+		.end_context_switch = xen_end_context_switch,
-+	},
- };
- 
- static void xen_restart(char *msg)
-@@ -1232,7 +1234,7 @@ asmlinkage __visible void __init xen_sta
- 
- 	/* Install Xen paravirt ops */
- 	pv_info = xen_info;
--	pv_ops.cpu = xen_cpu_ops;
-+	pv_ops.cpu = xen_cpu_ops.cpu;
- 	paravirt_iret = xen_iret;
- 	xen_init_irq_ops();
- 
---- a/arch/x86/xen/irq.c
-+++ b/arch/x86/xen/irq.c
-@@ -94,17 +94,20 @@ static void xen_halt(void)
- 		xen_safe_halt();
- }
- 
--static const struct pv_irq_ops xen_irq_ops __initconst = {
--	.save_fl = PV_CALLEE_SAVE(xen_save_fl),
--	.irq_disable = PV_CALLEE_SAVE(xen_irq_disable),
--	.irq_enable = PV_CALLEE_SAVE(xen_irq_enable),
-+static const typeof(pv_ops) xen_irq_ops __initconst = {
-+	.irq = {
- 
--	.safe_halt = xen_safe_halt,
--	.halt = xen_halt,
-+		.save_fl = PV_CALLEE_SAVE(xen_save_fl),
-+		.irq_disable = PV_CALLEE_SAVE(xen_irq_disable),
-+		.irq_enable = PV_CALLEE_SAVE(xen_irq_enable),
-+
-+		.safe_halt = xen_safe_halt,
-+		.halt = xen_halt,
-+	},
- };
- 
- void __init xen_init_irq_ops(void)
+-int arch_decode_instruction(const struct elf *elf, const struct section *sec,
++int arch_decode_instruction(struct objtool_file *file, const struct section *sec,
+ 			    unsigned long offset, unsigned int maxlen,
+ 			    unsigned int *len, enum insn_type *type,
+ 			    unsigned long *immediate,
+ 			    struct list_head *ops_list)
  {
--	pv_ops.irq = xen_irq_ops;
-+	pv_ops.irq = xen_irq_ops.irq;
- 	x86_init.irqs.intr_init = xen_init_IRQ;
- }
---- a/arch/x86/xen/mmu_pv.c
-+++ b/arch/x86/xen/mmu_pv.c
-@@ -2076,67 +2076,69 @@ static void xen_leave_lazy_mmu(void)
- 	preempt_enable();
- }
++	const struct elf *elf = file->elf;
+ 	struct insn insn;
+ 	int x86_64, ret;
+ 	unsigned char op1, op2,
+@@ -544,6 +546,36 @@ int arch_decode_instruction(const struct
+ 		*type = INSN_RETURN;
+ 		break;
  
--static const struct pv_mmu_ops xen_mmu_ops __initconst = {
--	.read_cr2 = __PV_IS_CALLEE_SAVE(xen_read_cr2),
--	.write_cr2 = xen_write_cr2,
-+static const typeof(pv_ops) xen_mmu_ops __initconst = {
-+	.mmu = {
-+		.read_cr2 = __PV_IS_CALLEE_SAVE(xen_read_cr2),
-+		.write_cr2 = xen_write_cr2,
- 
--	.read_cr3 = xen_read_cr3,
--	.write_cr3 = xen_write_cr3_init,
-+		.read_cr3 = xen_read_cr3,
-+		.write_cr3 = xen_write_cr3_init,
- 
--	.flush_tlb_user = xen_flush_tlb,
--	.flush_tlb_kernel = xen_flush_tlb,
--	.flush_tlb_one_user = xen_flush_tlb_one_user,
--	.flush_tlb_multi = xen_flush_tlb_multi,
--	.tlb_remove_table = tlb_remove_table,
-+		.flush_tlb_user = xen_flush_tlb,
-+		.flush_tlb_kernel = xen_flush_tlb,
-+		.flush_tlb_one_user = xen_flush_tlb_one_user,
-+		.flush_tlb_multi = xen_flush_tlb_multi,
-+		.tlb_remove_table = tlb_remove_table,
- 
--	.pgd_alloc = xen_pgd_alloc,
--	.pgd_free = xen_pgd_free,
-+		.pgd_alloc = xen_pgd_alloc,
-+		.pgd_free = xen_pgd_free,
- 
--	.alloc_pte = xen_alloc_pte_init,
--	.release_pte = xen_release_pte_init,
--	.alloc_pmd = xen_alloc_pmd_init,
--	.release_pmd = xen_release_pmd_init,
-+		.alloc_pte = xen_alloc_pte_init,
-+		.release_pte = xen_release_pte_init,
-+		.alloc_pmd = xen_alloc_pmd_init,
-+		.release_pmd = xen_release_pmd_init,
- 
--	.set_pte = xen_set_pte_init,
--	.set_pmd = xen_set_pmd_hyper,
-+		.set_pte = xen_set_pte_init,
-+		.set_pmd = xen_set_pmd_hyper,
- 
--	.ptep_modify_prot_start = __ptep_modify_prot_start,
--	.ptep_modify_prot_commit = __ptep_modify_prot_commit,
-+		.ptep_modify_prot_start = __ptep_modify_prot_start,
-+		.ptep_modify_prot_commit = __ptep_modify_prot_commit,
- 
--	.pte_val = PV_CALLEE_SAVE(xen_pte_val),
--	.pgd_val = PV_CALLEE_SAVE(xen_pgd_val),
-+		.pte_val = PV_CALLEE_SAVE(xen_pte_val),
-+		.pgd_val = PV_CALLEE_SAVE(xen_pgd_val),
- 
--	.make_pte = PV_CALLEE_SAVE(xen_make_pte_init),
--	.make_pgd = PV_CALLEE_SAVE(xen_make_pgd),
-+		.make_pte = PV_CALLEE_SAVE(xen_make_pte_init),
-+		.make_pgd = PV_CALLEE_SAVE(xen_make_pgd),
- 
--	.set_pud = xen_set_pud_hyper,
-+		.set_pud = xen_set_pud_hyper,
- 
--	.make_pmd = PV_CALLEE_SAVE(xen_make_pmd),
--	.pmd_val = PV_CALLEE_SAVE(xen_pmd_val),
-+		.make_pmd = PV_CALLEE_SAVE(xen_make_pmd),
-+		.pmd_val = PV_CALLEE_SAVE(xen_pmd_val),
- 
--	.pud_val = PV_CALLEE_SAVE(xen_pud_val),
--	.make_pud = PV_CALLEE_SAVE(xen_make_pud),
--	.set_p4d = xen_set_p4d_hyper,
-+		.pud_val = PV_CALLEE_SAVE(xen_pud_val),
-+		.make_pud = PV_CALLEE_SAVE(xen_make_pud),
-+		.set_p4d = xen_set_p4d_hyper,
- 
--	.alloc_pud = xen_alloc_pmd_init,
--	.release_pud = xen_release_pmd_init,
-+		.alloc_pud = xen_alloc_pmd_init,
-+		.release_pud = xen_release_pmd_init,
- 
- #if CONFIG_PGTABLE_LEVELS >= 5
--	.p4d_val = PV_CALLEE_SAVE(xen_p4d_val),
--	.make_p4d = PV_CALLEE_SAVE(xen_make_p4d),
-+		.p4d_val = PV_CALLEE_SAVE(xen_p4d_val),
-+		.make_p4d = PV_CALLEE_SAVE(xen_make_p4d),
- #endif
- 
--	.activate_mm = xen_activate_mm,
--	.dup_mmap = xen_dup_mmap,
--	.exit_mmap = xen_exit_mmap,
--
--	.lazy_mode = {
--		.enter = paravirt_enter_lazy_mmu,
--		.leave = xen_leave_lazy_mmu,
--		.flush = paravirt_flush_lazy_mmu,
--	},
-+		.activate_mm = xen_activate_mm,
-+		.dup_mmap = xen_dup_mmap,
-+		.exit_mmap = xen_exit_mmap,
++	case 0xc7: /* mov imm, r/m */
++		if (!noinstr)
++			break;
 +
-+		.lazy_mode = {
-+			.enter = paravirt_enter_lazy_mmu,
-+			.leave = xen_leave_lazy_mmu,
-+			.flush = paravirt_flush_lazy_mmu,
-+		},
++		if (insn.length == 3+4+4 && !strncmp(sec->name, ".init.text", 10)) {
++			struct reloc *immr, *disp;
++			struct symbol *func;
++			int idx;
++
++			immr = find_reloc_by_dest(elf, (void *)sec, offset+3);
++			disp = find_reloc_by_dest(elf, (void *)sec, offset+7);
++
++			if (!immr || strcmp(immr->sym->name, "pv_ops"))
++				break;
++
++			idx = (immr->addend + 8) / sizeof(void *);
++
++			func = disp->sym;
++			if (disp->sym->type == STT_SECTION)
++				func = find_symbol_by_offset(disp->sym->sec, disp->addend);
++			if (!func) {
++				WARN("no func for pv_ops[]");
++				return -1;
++			}
++
++			objtool_pv_add(file, idx, func);
++		}
++
++		break;
++
+ 	case 0xcf: /* iret */
+ 		/*
+ 		 * Handle sync_core(), which has an IRET to self.
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -306,7 +306,7 @@ static int decode_instructions(struct ob
+ 			insn->sec = sec;
+ 			insn->offset = offset;
  
--	.set_fixmap = xen_set_fixmap,
-+		.set_fixmap = xen_set_fixmap,
-+	},
+-			ret = arch_decode_instruction(file->elf, sec, offset,
++			ret = arch_decode_instruction(file, sec, offset,
+ 						      sec->len - offset,
+ 						      &insn->len, &insn->type,
+ 						      &insn->immediate,
+@@ -344,6 +344,82 @@ static int decode_instructions(struct ob
+ 	return ret;
+ }
+ 
++/*
++ * Read the pv_ops[] .data table to find the static initialized values.
++ */
++static int add_pv_ops(struct objtool_file *file, const char *symname)
++{
++	struct symbol *sym, *func;
++	unsigned long off, end;
++	struct reloc *rel;
++	int idx;
++
++	sym = find_symbol_by_name(file->elf, symname);
++	if (!sym)
++		return 0;
++
++	off = sym->offset;
++	end = off + sym->len;
++	for (;;) {
++		rel = find_reloc_by_dest_range(file->elf, sym->sec, off, end - off);
++		if (!rel)
++			break;
++
++		func = rel->sym;
++		if (func->type == STT_SECTION)
++			func = find_symbol_by_offset(rel->sym->sec, rel->addend);
++
++		idx = (rel->offset - sym->offset) / sizeof(unsigned long);
++
++		objtool_pv_add(file, idx, func);
++
++		off = rel->offset + 1;
++		if (off > end)
++			break;
++	}
++
++	return 0;
++}
++
++/*
++ * Allocate and initialize file->pv_ops[].
++ */
++static int init_pv_ops(struct objtool_file *file)
++{
++	static const char *pv_ops_tables[] = {
++		"pv_ops",
++		"xen_cpu_ops",
++		"xen_irq_ops",
++		"xen_mmu_ops",
++		NULL,
++	};
++	const char *pv_ops;
++	struct symbol *sym;
++	int idx, nr;
++
++	if (!noinstr)
++		return 0;
++
++	file->pv_ops = NULL;
++
++	sym = find_symbol_by_name(file->elf, "pv_ops");
++	if (!sym)
++		return 0;
++
++	nr = sym->len / sizeof(unsigned long);
++	file->pv_ops = calloc(sizeof(struct pv_state), nr);
++	if (!file->pv_ops)
++		return -1;
++
++	for (idx = 0; idx < nr; idx++)
++		INIT_LIST_HEAD(&file->pv_ops[idx].targets);
++
++	for (idx = 0; (pv_ops = pv_ops_tables[idx]); idx++)
++		add_pv_ops(file, pv_ops);
++
++	return 0;
++}
++
+ static struct instruction *find_last_insn(struct objtool_file *file,
+ 					  struct section *sec)
+ {
+@@ -817,6 +893,9 @@ static struct reloc *insn_reloc(struct o
+ 		return NULL;
+ 
+ 	if (!insn->reloc) {
++		if (!file)
++			return NULL;
++
+ 		insn->reloc = find_reloc_by_dest_range(file->elf, insn->sec,
+ 						       insn->offset, insn->len);
+ 		if (!insn->reloc) {
+@@ -1791,6 +1870,10 @@ static int decode_sections(struct objtoo
+ 
+ 	mark_rodata(file);
+ 
++	ret = init_pv_ops(file);
++	if (ret)
++		return ret;
++
+ 	ret = decode_instructions(file);
+ 	if (ret)
+ 		return ret;
+@@ -2562,20 +2645,64 @@ static inline bool func_uaccess_safe(str
+ 
+ static inline const char *call_dest_name(struct instruction *insn)
+ {
++	static char pvname[16];
++	struct reloc *rel;
++	int idx;
++
+ 	if (insn->call_dest)
+ 		return insn->call_dest->name;
+ 
++	rel = insn_reloc(NULL, insn);
++	if (rel && !strcmp(rel->sym->name, "pv_ops")) {
++		idx = (rel->addend / sizeof(void *));
++		snprintf(pvname, sizeof(pvname), "pv_ops[%d]", idx);
++		return pvname;
++	}
++
+ 	return "{dynamic}";
+ }
+ 
+-static inline bool noinstr_call_dest(struct symbol *func)
++static bool pv_call_dest(struct objtool_file *file, struct instruction *insn)
++{
++	struct symbol *target;
++	struct reloc *rel;
++	int idx;
++
++	rel = insn_reloc(file, insn);
++	if (!rel || strcmp(rel->sym->name, "pv_ops"))
++		return false;
++
++	idx = (arch_dest_reloc_offset(rel->addend) / sizeof(void *));
++
++	if (file->pv_ops[idx].clean)
++		return true;
++
++	file->pv_ops[idx].clean = true;
++
++	list_for_each_entry(target, &file->pv_ops[idx].targets, pv_target) {
++		if (!target->sec->noinstr) {
++			WARN("pv_ops[%d]: %s", idx, target->name);
++			file->pv_ops[idx].clean = false;
++		}
++	}
++
++	return file->pv_ops[idx].clean;
++}
++
++static inline bool noinstr_call_dest(struct objtool_file *file,
++				     struct instruction *insn,
++				     struct symbol *func)
+ {
+ 	/*
+ 	 * We can't deal with indirect function calls at present;
+ 	 * assume they're instrumented.
+ 	 */
+-	if (!func)
++	if (!func) {
++		if (file->pv_ops)
++			return pv_call_dest(file, insn);
++
+ 		return false;
++	}
+ 
+ 	/*
+ 	 * If the symbol is from a noinstr section; we good.
+@@ -2594,10 +2721,12 @@ static inline bool noinstr_call_dest(str
+ 	return false;
+ }
+ 
+-static int validate_call(struct instruction *insn, struct insn_state *state)
++static int validate_call(struct objtool_file *file,
++			 struct instruction *insn,
++			 struct insn_state *state)
+ {
+ 	if (state->noinstr && state->instr <= 0 &&
+-	    !noinstr_call_dest(insn->call_dest)) {
++	    !noinstr_call_dest(file, insn, insn->call_dest)) {
+ 		WARN_FUNC("call to %s() leaves .noinstr.text section",
+ 				insn->sec, insn->offset, call_dest_name(insn));
+ 		return 1;
+@@ -2618,7 +2747,9 @@ static int validate_call(struct instruct
+ 	return 0;
+ }
+ 
+-static int validate_sibling_call(struct instruction *insn, struct insn_state *state)
++static int validate_sibling_call(struct objtool_file *file,
++				 struct instruction *insn,
++				 struct insn_state *state)
+ {
+ 	if (has_modified_stack_frame(insn, state)) {
+ 		WARN_FUNC("sibling call from callable instruction with modified stack frame",
+@@ -2626,7 +2757,7 @@ static int validate_sibling_call(struct
+ 		return 1;
+ 	}
+ 
+-	return validate_call(insn, state);
++	return validate_call(file, insn, state);
+ }
+ 
+ static int validate_return(struct symbol *func, struct instruction *insn, struct insn_state *state)
+@@ -2769,7 +2900,7 @@ static int validate_branch(struct objtoo
+ 
+ 		case INSN_CALL:
+ 		case INSN_CALL_DYNAMIC:
+-			ret = validate_call(insn, &state);
++			ret = validate_call(file, insn, &state);
+ 			if (ret)
+ 				return ret;
+ 
+@@ -2788,7 +2919,7 @@ static int validate_branch(struct objtoo
+ 		case INSN_JUMP_CONDITIONAL:
+ 		case INSN_JUMP_UNCONDITIONAL:
+ 			if (is_sibling_call(insn)) {
+-				ret = validate_sibling_call(insn, &state);
++				ret = validate_sibling_call(file, insn, &state);
+ 				if (ret)
+ 					return ret;
+ 
+@@ -2810,7 +2941,7 @@ static int validate_branch(struct objtoo
+ 		case INSN_JUMP_DYNAMIC:
+ 		case INSN_JUMP_DYNAMIC_CONDITIONAL:
+ 			if (is_sibling_call(insn)) {
+-				ret = validate_sibling_call(insn, &state);
++				ret = validate_sibling_call(file, insn, &state);
+ 				if (ret)
+ 					return ret;
+ 			}
+--- a/tools/objtool/include/objtool/arch.h
++++ b/tools/objtool/include/objtool/arch.h
+@@ -69,7 +69,7 @@ struct instruction;
+ 
+ void arch_initial_func_cfi_state(struct cfi_init_state *state);
+ 
+-int arch_decode_instruction(const struct elf *elf, const struct section *sec,
++int arch_decode_instruction(struct objtool_file *file, const struct section *sec,
+ 			    unsigned long offset, unsigned int maxlen,
+ 			    unsigned int *len, enum insn_type *type,
+ 			    unsigned long *immediate,
+--- a/tools/objtool/include/objtool/elf.h
++++ b/tools/objtool/include/objtool/elf.h
+@@ -57,6 +57,7 @@ struct symbol {
+ 	struct symbol *pfunc, *cfunc, *alias;
+ 	bool uaccess_safe;
+ 	bool static_call_tramp;
++	struct list_head pv_target;
  };
  
- void __init xen_init_mmu_ops(void)
-@@ -2144,7 +2146,7 @@ void __init xen_init_mmu_ops(void)
- 	x86_init.paging.pagetable_init = xen_pagetable_init;
- 	x86_init.hyper.init_after_bootmem = xen_after_bootmem;
+ struct reloc {
+--- a/tools/objtool/include/objtool/objtool.h
++++ b/tools/objtool/include/objtool/objtool.h
+@@ -14,6 +14,11 @@
  
--	pv_ops.mmu = xen_mmu_ops;
-+	pv_ops.mmu = xen_mmu_ops.mmu;
+ #define __weak __attribute__((weak))
  
- 	memset(dummy_mapping, 0xff, PAGE_SIZE);
++struct pv_state {
++	bool clean;
++	struct list_head targets;
++};
++
+ struct objtool_file {
+ 	struct elf *elf;
+ 	struct list_head insn_list;
+@@ -25,10 +30,14 @@ struct objtool_file {
+ 
+ 	unsigned long jl_short, jl_long;
+ 	unsigned long jl_nop_short, jl_nop_long;
++
++	struct pv_state *pv_ops;
+ };
+ 
+ struct objtool_file *objtool_open_read(const char *_objname);
+ 
++void objtool_pv_add(struct objtool_file *file, int idx, struct symbol *func);
++
+ int check(struct objtool_file *file);
+ int orc_dump(const char *objname);
+ int orc_create(struct objtool_file *file);
+--- a/tools/objtool/objtool.c
++++ b/tools/objtool/objtool.c
+@@ -135,6 +135,28 @@ struct objtool_file *objtool_open_read(c
+ 	return &file;
  }
+ 
++void objtool_pv_add(struct objtool_file *f, int idx, struct symbol *func)
++{
++	if (!noinstr)
++		return;
++
++	if (!f->pv_ops) {
++		WARN("paravirt confusion");
++		return;
++	}
++
++	/*
++	 * These functions will be patched into native code,
++	 * see paravirt_patch().
++	 */
++	if (!strcmp(func->name, "_paravirt_nop") ||
++	    !strcmp(func->name, "_paravirt_ident_64"))
++		return;
++
++	list_add(&func->pv_target, &f->pv_ops[idx].targets);
++	f->pv_ops[idx].clean = false;
++}
++
+ static void cmd_usage(void)
+ {
+ 	unsigned int i, longest = 0;
 
 
