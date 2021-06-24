@@ -2,115 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143FD3B340D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B973B3417
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232094AbhFXQnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 12:43:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43714 "EHLO mail.kernel.org"
+        id S232154AbhFXQp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 12:45:26 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:52270 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229772AbhFXQnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 12:43:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FCA4613CA;
-        Thu, 24 Jun 2021 16:40:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624552846;
-        bh=HymNcG1+IzgcE8hHbs0AR1es0sYS8KvJ1NstBZBO46c=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=W37CauQhCERdE6JNuOAMBVdh/YJyNd/gHXacIrSZ6GTzf3PctFsWo3f64O6YIwxZA
-         eVIXaJZ1jm2+0pL2Q/QPtMiPBPQRVTQ2kAaI9Wr/DEKSEAktOvbatBe3DagzrdwCl1
-         OQKJ84Gx7p3Ta1AEUhZB67iJDMfk41ZxKbzqCtI38ta+Pm4gok3Pq239624jOEQlro
-         JYvHQRern0kBD9xjMVaXjTjuuPFH8GoPKe78jTzh7Qv9beVdqKNgdGremIuEA/d1fh
-         6/QsTv3Uiwb15qfRljeilDqaGKXrIunl9GNyvN+m8P/fodXOXm9WHQcsK85G4e8gl/
-         8s7BXeceGBflw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F16665C0525; Thu, 24 Jun 2021 09:40:45 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 09:40:45 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Jiangong.Han" <jiangong.han@windriver.com>
-Cc:     dave@stgolabs.net, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH v3] rcuscale: Console output claims too few grace periods
-Message-ID: <20210624164045.GU4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210624143424.16158-1-jiangong.han@windriver.com>
+        id S229525AbhFXQpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 12:45:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624552985; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=UrdwEsv/GeGu8n59uVeExy6KofQb0BPJZKoMnLtN7A4=;
+ b=a2BXzsnZ1oqEzDO3vBU87YzSMQxG76EViaq07HqHStBqzBPzCkma9lw955dEvWqOaVvGcxQJ
+ Nisd2FG0qYfxUVrxoq8oIkngJ7CARl6gx/o/M9T51TGqyBN6gsIwd4W6b0d//LhPIg8rEdbz
+ K/MOUsTVsXU4Z59PqXOAyLIwuE4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60d4b5c37b2963a2826b0221 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Jun 2021 16:41:39
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2CFA8C433D3; Thu, 24 Jun 2021 16:41:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1B17CC433F1;
+        Thu, 24 Jun 2021 16:41:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1B17CC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624143424.16158-1-jiangong.han@windriver.com>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] wireless: hostap: Fix a use after free in hostap_80211_rx
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210329110021.7497-1-lyl2019@mail.ustc.edu.cn>
+References: <20210329110021.7497-1-lyl2019@mail.ustc.edu.cn>
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Cc:     j@w1.fi, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210624164139.2CFA8C433D3@smtp.codeaurora.org>
+Date:   Thu, 24 Jun 2021 16:41:39 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 10:34:24PM +0800, Jiangong.Han wrote:
-> The rcuscale console output claims N grace periods, numbered from zero
-> to N, which means that there were really N+1 grace periods.  The root
-> cause of this bug is that rcu_scale_writer() stores the number of the
-> last grace period (numbered from zero) into writer_n_durations[me]
-> instead of the number of grace periods. This commit therefore assigns
-> the actual number of grace periods to writer_n_durations[me], and also
-> makes the corresponding adjustment to the loop outputting per-grace-period
-> measurements.
-> 
-> Sample of old console output:
-> 	rcu-scale: writer 0 gps: 133
-> 	......
-> 	rcu-scale:    0 writer-duration:     0 44003961
-> 	rcu-scale:    0 writer-duration:     1 32003582
-> 	......
-> 	rcu-scale:    0 writer-duration:   132 28004391
-> 	rcu-scale:    0 writer-duration:   133 27996410
-> 
-> Sample of new console output:
-> 	rcu-scale: writer 0 gps: 134
-> 	......
-> 	rcu-scale:    0 writer-duration:     0 44003961
-> 	rcu-scale:    0 writer-duration:     1 32003582
-> 	......
-> 	rcu-scale:    0 writer-duration:   132 28004391
-> 	rcu-scale:    0 writer-duration:   133 27996410
-> 
-> Signed-off-by: Jiangong.Han <jiangong.han@windriver.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Lv Yunlong <lyl2019@mail.ustc.edu.cn> wrote:
 
-I already have it queued in -rcu here:
-
-4c154a910344 ("rcuscale: Console output claims too few grace periods")
-
-Or did you find an error in my wordsmithed version of your commit log?
-If so, please point out the error explicitly.  (It looks identical to me,
-but I could easily be missing something.)
-
-							Thanx, Paul
-
-> ---
->  kernel/rcu/rcuscale.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Function hostap_80211_rx() calls prism2_rx_80211(..,skb,..). In
+> prism2_rx_80211, i found that the skb could be freed by dev_kfree_skb_any(skb)
+> and return 0. Also could be freed by netif_rx(skb) when netif_rx return
+> NET_RX_DROP.
 > 
-> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-> index dca51fe9c73f..2cc34a22a506 100644
-> --- a/kernel/rcu/rcuscale.c
-> +++ b/kernel/rcu/rcuscale.c
-> @@ -487,7 +487,7 @@ rcu_scale_writer(void *arg)
->  	if (gp_async) {
->  		cur_ops->gp_barrier();
->  	}
-> -	writer_n_durations[me] = i_max;
-> +	writer_n_durations[me] = i_max + 1;
->  	torture_kthread_stopping("rcu_scale_writer");
->  	return 0;
->  }
-> @@ -561,7 +561,7 @@ rcu_scale_cleanup(void)
->  			wdpp = writer_durations[i];
->  			if (!wdpp)
->  				continue;
-> -			for (j = 0; j <= writer_n_durations[i]; j++) {
-> +			for (j = 0; j < writer_n_durations[i]; j++) {
->  				wdp = &wdpp[j];
->  				pr_alert("%s%s %4d writer-duration: %5d %llu\n",
->  					scale_type, SCALE_FLAG,
-> -- 
-> 2.17.1
+> But after called the prism2_rx_80211(..,skb,..), the skb is used by skb->len.
 > 
+> As the new skb->len is returned by prism2_rx_80211(), my patch uses a variable
+> len to repalce skb->len. According to another useage of prism2_rx_80211 in
+> monitor_rx().
+> 
+> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+
+Can someone help with reviewing the patch?
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210329110021.7497-1-lyl2019@mail.ustc.edu.cn/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
