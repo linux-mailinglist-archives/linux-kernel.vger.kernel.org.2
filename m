@@ -2,120 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941503B361D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 20:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 307BA3B3678
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232131AbhFXSyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 14:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230450AbhFXSyV (ORCPT
+        id S232696AbhFXTDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 15:03:51 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:36308 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232417AbhFXTDs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 14:54:21 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECBBC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 11:52:01 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id bb10-20020a17090b008ab029016eef083425so6468910pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 11:52:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8ln1A9UtqeatalTuFd5yr3Sv9uZ87THfHk+cp3HF9TU=;
-        b=kk/hpXBE5BJz7ok6etMns0jGJT3f3jqTWfXAHsHthLBChYV8lxBhq/q1AF9In5F1fA
-         E0TSiKV6hEkoy76XwuPOEPHt+tJQFyT6OeR4r8MdCJ1UOhPaubUrtZ3Qb5tRydKR0hJu
-         kY0W/3NwZWXjYUSl3pW2qk78KHEP1UDyoVBdF8Lb2vX6fXYTFRCTZDRr/+nLzo+XNRak
-         ghHpl9xm/8zNCAZZKe/5hfmYi4Kp+YikguOzBS6uA+ZWVXKaajbmX7aQIYynhu0Rf1dH
-         3HMKS8/oHq0R7FHbcxwNcN2bBYoXkIhSfiBZrnn37MRU9Uswys+zToSaFAiFcvFfpWHE
-         2AwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8ln1A9UtqeatalTuFd5yr3Sv9uZ87THfHk+cp3HF9TU=;
-        b=mKfk8xY1zkvIzdqI4iCr7AKOQRElkkXu/fFyg5HkkOEU79T1z1sXfe7bU8/0MhP4Ys
-         hwCdOpsFG+8mRsKpT8+6BNIXQjYqtbNS6HSpi0bxHvfeW6mZw0Izrh6ZzpYYPg+LdWz0
-         /Z/yPJyCpgZJ5nJNYZlqZFO/ymb93tHMcXsAxJ9uB1U006MCaPFYdRdWIa4XzzLgWJPm
-         99X06KXZlDpcrIccD8OoULe+XaagLf60FsEdm3tdk22oW4I5cg4ZZnISCeCqS/wQe2TP
-         tJpgiJv1435k4NANVhvWj9GaW1SraBqPiGbkdoBIjQOqijXj01020qRbwO4gzVQxBtUn
-         PVkQ==
-X-Gm-Message-State: AOAM533NxsDGpPoPXsTU3ImuUoSBRNYrAWFkyQ++QXD8fD1qPzcg8QmK
-        kxJgMh5y5s1mjXO4yhnE/Iby9RQ4raPMJPPQ33RddA==
-X-Google-Smtp-Source: ABdhPJy8O7GxYN+yty7XPvXAYcgzEL5eRFnt1MmDlKOjYsrxbsTHPID/Zq0mORGdAnbkU5m39EFLniFDGQSK/S6vSl4=
-X-Received: by 2002:a17:90a:5106:: with SMTP id t6mr16975653pjh.231.1624560720882;
- Thu, 24 Jun 2021 11:52:00 -0700 (PDT)
+        Thu, 24 Jun 2021 15:03:48 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lwUbQ-0009Qk-PD; Thu, 24 Jun 2021 13:01:28 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:47150 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lwUbP-003Rm9-NH; Thu, 24 Jun 2021 13:01:28 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+References: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+        <87sg1lwhvm.fsf@disp2133>
+        <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+        <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+        <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+        <87eed4v2dc.fsf@disp2133>
+        <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+        <87fsxjorgs.fsf@disp2133>
+        <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+        <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+        <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+        <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+        <87a6njf0ia.fsf@disp2133>
+        <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
+        <87tulpbp19.fsf@disp2133>
+        <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
+        <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133>
+Date:   Thu, 24 Jun 2021 14:01:20 -0500
+In-Reply-To: <875yy3850g.fsf_-_@disp2133> (Eric W. Biederman's message of
+        "Thu, 24 Jun 2021 13:57:35 -0500")
+Message-ID: <87czsb6q9r.fsf_-_@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210621161616.77524-1-manivannan.sadhasivam@linaro.org>
- <20210621161616.77524-5-manivannan.sadhasivam@linaro.org> <YNSN6Yjk/P05ql8G@kroah.com>
- <CAMZdPi9=F0agD=5eSmVngmDRXNhb7TstQzgMSXFoJzkuRVFtjQ@mail.gmail.com> <YNS3T6Tp4oc66zFh@kroah.com>
-In-Reply-To: <YNS3T6Tp4oc66zFh@kroah.com>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Thu, 24 Jun 2021 21:01:30 +0200
-Message-ID: <CAMZdPi_T3MP_b9Sr8PWSNqO6SthJk4r_osJ6Jp=APcTXJEeWxQ@mail.gmail.com>
-Subject: Re: [PATCH 4/8] bus: mhi: Add inbound buffers allocation flag
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1lwUbP-003Rm9-NH;;;mid=<87czsb6q9r.fsf_-_@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+PJXbb1itesHXgjxe+XHQIzMBZMGxsoRk=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: ***
+X-Spam-Status: No, score=3.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TooManySym_01,XMNoVowels,XMSubLong,
+        XM_Body_Dirty_Words autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 XM_Body_Dirty_Words Contains a dirty word
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ***;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 500 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 11 (2.2%), b_tie_ro: 9 (1.9%), parse: 1.49 (0.3%),
+         extract_message_metadata: 18 (3.5%), get_uri_detail_list: 2.5 (0.5%),
+        tests_pri_-1000: 23 (4.5%), tests_pri_-950: 1.91 (0.4%),
+        tests_pri_-900: 1.46 (0.3%), tests_pri_-90: 117 (23.3%), check_bayes:
+        115 (23.0%), b_tokenize: 17 (3.4%), b_tok_get_all: 9 (1.7%),
+        b_comp_prob: 3.5 (0.7%), b_tok_touch_all: 82 (16.3%), b_finish: 0.93
+        (0.2%), tests_pri_0: 315 (62.9%), check_dkim_signature: 0.58 (0.1%),
+        check_dkim_adsp: 2.8 (0.6%), poll_dns_idle: 1.04 (0.2%), tests_pri_10:
+        2.0 (0.4%), tests_pri_500: 7 (1.3%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH 4/9] signal: Factor start_group_exit out of complete_signal
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 at 18:48, Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Jun 24, 2021 at 05:39:58PM +0200, Loic Poulain wrote:
-> > Hi Greg,
-> >
-> > On Thu, 24 Jun 2021 at 15:51, Greg KH <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Mon, Jun 21, 2021 at 09:46:12PM +0530, Manivannan Sadhasivam wrote:
-> > > > From: Loic Poulain <loic.poulain@linaro.org>
-> > > >
-> > > > Currently, the MHI controller driver defines which channels should
-> > > > have their inbound buffers allocated and queued. But ideally, this is
-> > > > something that should be decided by the MHI device driver instead,
-> > > > which actually deals with that buffers.
-> > > >
-> > > > Add a flag parameter to mhi_prepare_for_transfer allowing to specify
-> > > > if buffers have to be allocated and queued by the MHI stack.
-> > > >
-> > > > Keep auto_queue flag for now, but should be removed at some point.
-> > > >
-> > > > Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-> > > > Tested-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> > > > Reviewed-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> > > > Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
-> > > > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > > Acked-by: Jakub Kicinski <kuba@kernel.org>
-> > > > Link: https://lore.kernel.org/r/1621603519-16773-1-git-send-email-loic.poulain@linaro.org
-> > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > [...]
-> > > > +/**
-> > > > + * enum mhi_chan_flags - MHI channel flags
-> > > > + * @MHI_CH_INBOUND_ALLOC_BUFS: Automatically allocate and queue inbound buffers
-> > > > + */
-> > > > +enum mhi_chan_flags {
-> > > > +     MHI_CH_INBOUND_ALLOC_BUFS = BIT(0),
-> > >
-> > > Why is an enumerated type a bitfield?
-> > >
-> > > Please just use integers for enumerated types.
-> >
-> > This 'trick' for listing flags is used in other places like drm,
-> > mac80211, etc...: grep -r "BIT(0)," ./include/
->
-> An enum is a list of values that are unique.  Not values you can mush
-> together into a single variable and look at the bit masks of.
->
-> > I don't understand why it would not be right? should we simply use
-> > a list of defines for this?
->
-> What are you using this for?  If you are going to combine them, then
-> yes, use #defines.
 
-Yes, it's for combining, thanks for the clarification.
-Loic
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ include/linux/sched/signal.h |  2 ++
+ kernel/signal.c              | 52 +++++++++++++++++++++++++-----------
+ 2 files changed, 39 insertions(+), 15 deletions(-)
+
+diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+index 774be5d3ac3e..c007e55cb119 100644
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -428,6 +428,8 @@ static inline void ptrace_signal_wake_up(struct task_struct *t, bool resume)
+ 	signal_wake_up_state(t, resume ? __TASK_TRACED : 0);
+ }
+ 
++void start_group_exit(int exit_code);
++
+ void task_join_group_stop(struct task_struct *task);
+ 
+ #ifdef TIF_RESTORE_SIGMASK
+diff --git a/kernel/signal.c b/kernel/signal.c
+index da37cc4515f2..c79c010ca5f3 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1027,6 +1027,42 @@ static inline bool wants_signal(int sig, struct task_struct *p)
+ 	return task_curr(p) || !task_sigpending(p);
+ }
+ 
++static void start_group_exit_locked(struct signal_struct *signal, int exit_code)
++{
++	/*
++	 * Start a group exit and wake everybody up.
++	 * This way we don't have other threads
++	 * running and doing things after a slower
++	 * thread has the fatal signal pending.
++	 */
++	struct task_struct *t;
++
++	signal->flags = SIGNAL_GROUP_EXIT;
++	signal->group_exit_code = exit_code;
++	signal->group_stop_count = 0;
++	__for_each_thread(signal, t) {
++		task_clear_jobctl_pending(t, JOBCTL_PENDING_MASK);
++
++		/* Don't bother with already dead threads */
++		if (t->exit_state)
++			continue;
++		sigaddset(&t->pending.signal, SIGKILL);
++		signal_wake_up(t, 1);
++	}
++}
++
++void start_group_exit(int exit_code)
++{
++	if (!fatal_signal_pending(current)) {
++		struct sighand_struct *const sighand = current->sighand;
++
++		spin_lock_irq(&sighand->siglock);
++		if (!fatal_signal_pending(current))
++			start_group_exit_locked(current->signal, exit_code);
++		spin_unlock_irq(&sighand->siglock);
++	}
++}
++
+ static void complete_signal(int sig, struct task_struct *p, enum pid_type type)
+ {
+ 	struct signal_struct *signal = p->signal;
+@@ -1076,21 +1112,7 @@ static void complete_signal(int sig, struct task_struct *p, enum pid_type type)
+ 		 * This signal will be fatal to the whole group.
+ 		 */
+ 		if (!sig_kernel_coredump(sig)) {
+-			/*
+-			 * Start a group exit and wake everybody up.
+-			 * This way we don't have other threads
+-			 * running and doing things after a slower
+-			 * thread has the fatal signal pending.
+-			 */
+-			signal->flags = SIGNAL_GROUP_EXIT;
+-			signal->group_exit_code = sig;
+-			signal->group_stop_count = 0;
+-			t = p;
+-			do {
+-				task_clear_jobctl_pending(t, JOBCTL_PENDING_MASK);
+-				sigaddset(&t->pending.signal, SIGKILL);
+-				signal_wake_up(t, 1);
+-			} while_each_thread(p, t);
++			start_group_exit_locked(signal, sig);
+ 			return;
+ 		}
+ 	}
+-- 
+2.20.1
+
