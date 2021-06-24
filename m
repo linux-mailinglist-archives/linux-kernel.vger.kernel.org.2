@@ -2,74 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4BF3B3783
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6DF3B378A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbhFXUC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 16:02:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42394 "EHLO mail.kernel.org"
+        id S232709AbhFXUGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 16:06:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232759AbhFXUCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 16:02:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 96DD2613C2;
-        Thu, 24 Jun 2021 20:00:04 +0000 (UTC)
+        id S232178AbhFXUGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 16:06:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E72CF61220;
+        Thu, 24 Jun 2021 20:04:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624564804;
-        bh=iqW6OKBD+Pd54AIhc1V9/0r7UUpEJ54FfBFonNp4wlQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=oO0ysNuqPIwg2+FIj618DpHbY3F9IM19JHT03HnM2bg2fLL9mt2LeQKyLud9xlY21
-         zSflRO4c20dChYfj5BAZVGjwOte81EnxtHgtC9OmYnWvRYyhZDImJX3lUl22WSi9eJ
-         HZ83SW57j5kSiwoLxBHA1hZ9fK/H1FCCSuWXO/cPLEzEBoqlyKnRCYFu3071Z1i/vV
-         R1O2mWpDKI6oOCQVQaQYGVhM7+0RfE+odUPeQ4rlim2J0xuZX3Qjsr7xOwkPfLVVEQ
-         70caBPBDFoMTuihe3TPz2hF9G0u4hfaMv0tUUNe63ponVWDxdSnwJHUxew+HW++O2f
-         tIJizK1qU5h6g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 908D9609AC;
-        Thu, 24 Jun 2021 20:00:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1624565057;
+        bh=NTWckRn1poC49O7dy6r7JRVT/OR7EtV/ck2t1K7Qa8A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ied8OL+680PQ8FsfytK/XFLQhtYGL9zS3Kb7aVZ0rSJw37hspfaHZxqMvPC17GNsE
+         IJuhFB3Ry2djSV3ADpW+XcyQftMOXRL7kn/dw4s55tdd+1WIQOwZz3eJPD1bdZZp1q
+         5ajHm4XB3jMYb151n0GmNzoaaLLT8DhHYydSOt04Cyx7wVXiNxV36OrSMc8cnc2MN1
+         J/4+KiVhtvIg9kMXuwerZZ1NuGXoTtV761FInpilIo6mpOhhG8l2DvIBk+hfrQRTZV
+         mzbXCfxfHMKbF2ivQp4Y3BZXutSGB359YM5xuQ2J7WslKaQ4eqZdqEUVLvhPiA+ih7
+         6bWifVHA0PqiA==
+Date:   Thu, 24 Jun 2021 22:04:13 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2] i2c: core: Disable client irq on reboot/shutdown
+Message-ID: <YNTlPeP7UMz4FJkg@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+References: <20210604232744.1259150-1-swboyd@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/2] Document the NXP SJA1110 switch as supported
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162456480458.15446.9074214993699449470.git-patchwork-notify@kernel.org>
-Date:   Thu, 24 Jun 2021 20:00:04 +0000
-References: <20210624145524.944878-1-olteanv@gmail.com>
-In-Reply-To: <20210624145524.944878-1-olteanv@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        f.fainelli@gmail.com, andrew@lunn.ch, vivien.didelot@gmail.com,
-        corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, vladimir.oltean@nxp.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lK/r+RGshAVR/Cbr"
+Content-Disposition: inline
+In-Reply-To: <20210604232744.1259150-1-swboyd@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+--lK/r+RGshAVR/Cbr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 24 Jun 2021 17:55:22 +0300 you wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
-> 
-> Now that most of the basic work for SJA1110 support has been done in the
-> sja1105 DSA driver, let's add the missing documentation bits to make it
-> clear that the driver can be used.
-> 
-> Vladimir Oltean (2):
->   Documentation: net: dsa: add details about SJA1110
->   net: dsa: sja1105: document the SJA1110 in the Kconfig
-> 
-> [...]
+On Fri, Jun 04, 2021 at 04:27:44PM -0700, Stephen Boyd wrote:
+> From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+>=20
+> If an i2c client receives an interrupt during reboot or shutdown it may
+> be too late to service it by making an i2c transaction on the bus
+> because the i2c controller has already been shutdown. This can lead to
+> system hangs if the i2c controller tries to make a transfer that is
+> doomed to fail because the access to the i2c pins is already shut down,
+> or an iommu translation has been torn down so i2c controller register
+> access doesn't work.
+>=20
+> Let's simply disable the irq if there isn't a shutdown callback for an
+> i2c client when there is an irq associated with the device. This will
+> make sure that irqs don't come in later than the time that we can handle
+> it. We don't do this if the i2c client device already has a shutdown
+> callback because presumably they're doing the right thing and quieting
+> the device so irqs don't come in after the shutdown callback returns.
+>=20
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> [swboyd@chromium.org: Dropped newline, added commit text, added
+> interrupt.h for robot build error]
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 
-Here is the summary with links:
-  - [net-next,1/2] Documentation: net: dsa: add details about SJA1110
-    https://git.kernel.org/netdev/net-next/c/44531076338f
-  - [net-next,2/2] net: dsa: sja1105: document the SJA1110 in the Kconfig
-    https://git.kernel.org/netdev/net-next/c/75e994709f8a
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Applied to for-next, thanks!
 
 
+--lK/r+RGshAVR/Cbr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDU5T0ACgkQFA3kzBSg
+KbZ23hAAlpBEOrTHLQ98sISGlEx9SLvsZVqzHCUPBj5ipjKB9fhp+7daqOsEIRs3
+qpFd/vQCdcBsuTasC7xQYoAw8OJAWGs5dfr3s1DUoyMyJ5YJq3ZZK+9u9IR23z2Q
+F6VOz5G6Kzwu8JGA+3tR0B8lcwMh+7ppgYv4A7DRuvzVoTTFezzR2YoPNJU8D5yR
+jCxRbPZbqNFzt/gmB1UMWI+ZQ761vhC6IcV0qhevPugO5Gvsn/u31Uq8oMEtU3u7
+U3BslPhw0CwV0YkZN3FaPmq0Huv5+tJ99oe5SvE5yLX5AVG3GhmZqRsDewBKN/m6
+x55r+Wfc4zWK+8KhERe1/1aOetbpYG/QGMX9ZrDnnPVB+oPihBGdvUY3udu8qN+V
+SUr3ZAhAdTS7c3x5JY1EQJMrMjzIIacpkgN1v7762oyxt+GEZSDIj6odT3XgqgOY
+QrKFpc2l0W47I7R3Ss/roe9+FSDgjfDXxVoAJQwcqOa13yqR6Mm22hwEF0nKFT92
+JvoQm686yPJembutX/GTA8rA/FfuXVRfDl7wDizS6qhPbqOSMESoABh+jelu+eFy
+ELmh88SX+nlHFFuS+GDT375F/lIJWAFBET4iclXhlyox0CjIDiCcvoxbX5CbdYgI
+T/P/DLU6EPqUH8sPxRS2wBHNPgkd4T3y87/a/hrDcQel6+xQCRU=
+=L/nM
+-----END PGP SIGNATURE-----
+
+--lK/r+RGshAVR/Cbr--
