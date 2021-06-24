@@ -2,81 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C38A3B328D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614153B328B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232406AbhFXP3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 11:29:19 -0400
-Received: from mail-io1-f54.google.com ([209.85.166.54]:44995 "EHLO
-        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232383AbhFXP3S (ORCPT
+        id S232285AbhFXP3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 11:29:16 -0400
+Received: from mail-io1-f41.google.com ([209.85.166.41]:42735 "EHLO
+        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230008AbhFXP3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 11:29:18 -0400
-Received: by mail-io1-f54.google.com with SMTP id h2so8685031iob.11;
-        Thu, 24 Jun 2021 08:26:58 -0700 (PDT)
+        Thu, 24 Jun 2021 11:29:13 -0400
+Received: by mail-io1-f41.google.com with SMTP id v3so8649491ioq.9;
+        Thu, 24 Jun 2021 08:26:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=Lpd5za3dZjGLZkNK8IONDaXRQC0MpG6W9WKoTOpJEic=;
-        b=c8+z0hYyNafCRk6VH3Bbw52CC/Pjy0w63b9rtTFDvUr/8v3NAo7xjijexCboyV7MKk
-         EtkILEqhyVQ3iQAo8fS4gzyo1mc2GT8iPC1CwSwGoYMVzRqwHNIVu5dfCWj0NqD63HqN
-         2g7MR6gjDO71Ng22SayLyu+CQSjPn1JxKnz+uClquReJIugl+0PIyaIZSw6ntplfUkX8
-         PeStBauwpmu76bFockbkin2bto2KqVPLlgkQ5RiCcwhK9coFYF3BuqyaZEXBnnJ2DOrE
-         xf60jBNvZRENLCqEFpyXQ43QEf/rvjDb1LEAty5CV4qXdZzqNlwmV8g95yJW8/blS3CM
-         mOWw==
-X-Gm-Message-State: AOAM533fQ046n3cweNlfer+sqGLW+HWiAH5TkaCgncPd//EXb2OLuJA5
-        mPgRV2J/f/Zd1hgTh7xP1A==
-X-Google-Smtp-Source: ABdhPJzNvu/L2aSmJ8pUz8GEkVdEXFN/A4t8nbnJmWO27uA5Fk9oHVl3KzTts6kq5N/hOHu6M5y6ow==
-X-Received: by 2002:a02:600b:: with SMTP id i11mr5319850jac.86.1624548418226;
-        Thu, 24 Jun 2021 08:26:58 -0700 (PDT)
+        bh=HOGrYrM6PV3hDIcITNjHdQ5hR0yFg+mdRVz9ZVSehKY=;
+        b=AcB5fK9ggx9Rfb8Gg81At9znpYj1WkKdjrzq+pUmE0B4X0f0wD2c6pJa9FW9dLznwB
+         KeGy0anBgRQis3JCen6jR9c0sEGUWiYsdaIAexLPJgHAEKJF+LmLb+WopCrqgCUH/eaf
+         9+MVUZvhfHjAegYBxPEQcpAQUK8BiO2dxyWKdVMh81uzeANc9gmrQDTX0dE2u/Jp8vW7
+         JJFKv9djJAiOAAzd5PmrQwPQuU3rccQzMTlvCDwegWYl8TrW4ku10dU0xMG398oDpQI6
+         wumMoaothyngb5e8iEVi+xUvbpxa2q79cyw29mzxHUMBn5laXGBftSq93CS9G20A+31U
+         1VSg==
+X-Gm-Message-State: AOAM530j/zqD6J9m7cTzHwb254E1CLlDDpOLYHQk4SgqqG13Y0N4ORkp
+        rm1GrrA8QEKVwUzMn44wqQ==
+X-Google-Smtp-Source: ABdhPJzWP2QA98bwU+FK2Yi3UK9Ab0rpz2jWx9eXkC1Md3Yj8ox+xFZMLtvmpJjlaymU3ExKkp3c5Q==
+X-Received: by 2002:a02:ce88:: with SMTP id y8mr5095030jaq.34.1624548413557;
+        Thu, 24 Jun 2021 08:26:53 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id r6sm1398859ioh.27.2021.06.24.08.26.55
+        by smtp.gmail.com with ESMTPSA id h18sm1874242ilr.86.2021.06.24.08.26.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 08:26:57 -0700 (PDT)
-Received: (nullmailer pid 1393286 invoked by uid 1000);
+        Thu, 24 Jun 2021 08:26:52 -0700 (PDT)
+Received: (nullmailer pid 1393281 invoked by uid 1000);
         Thu, 24 Jun 2021 15:26:48 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        linuxarm@huawei.com, devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        mauro.chehab@huawei.com, Rob Herring <robh+dt@kernel.org>,
-        linux-staging@lists.linux.dev
-In-Reply-To: <1ad2cbbd182d18ba2cae716fb5f1497b1cabbdbe.1624525118.git.mchehab+huawei@kernel.org>
-References: <cover.1624525118.git.mchehab+huawei@kernel.org> <1ad2cbbd182d18ba2cae716fb5f1497b1cabbdbe.1624525118.git.mchehab+huawei@kernel.org>
-Subject: Re: [PATCH RESEND v6 6/8] mfd: hi6421-spmi-pmic: move driver from staging
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, marijn.suijten@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, martin.botka@somainline.org,
+        devicetree@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        jamipkettunen@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        angelogioacchino.delregno@somainline.org
+In-Reply-To: <20210623175354.248103-1-konrad.dybcio@somainline.org>
+References: <20210623175354.248103-1-konrad.dybcio@somainline.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: qcom: Add bindings for MDM9607
 Date:   Thu, 24 Jun 2021 09:26:48 -0600
-Message-Id: <1624548408.771970.1393285.nullmailer@robh.at.kernel.org>
+Message-Id: <1624548408.751488.1393280.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 11:01:10 +0200, Mauro Carvalho Chehab wrote:
-> This driver is ready for mainstream. So, move it out of staging.
+On Wed, 23 Jun 2021 19:53:51 +0200, Konrad Dybcio wrote:
+> Document the newly added MDM9607 pinctrl driver.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 > ---
->  .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 134 ++++++++
->  MAINTAINERS                                   |   7 +
->  drivers/mfd/Kconfig                           |  16 +
->  drivers/mfd/Makefile                          |   1 +
->  drivers/mfd/hi6421-spmi-pmic.c                | 316 ++++++++++++++++++
->  drivers/staging/Kconfig                       |   2 -
->  drivers/staging/Makefile                      |   1 -
->  drivers/staging/hikey9xx/Kconfig              |  19 --
->  drivers/staging/hikey9xx/Makefile             |   3 -
->  drivers/staging/hikey9xx/TODO                 |   5 -
->  drivers/staging/hikey9xx/hi6421-spmi-pmic.c   | 316 ------------------
->  .../hikey9xx/hisilicon,hi6421-spmi-pmic.yaml  | 134 --------
->  12 files changed, 474 insertions(+), 480 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
->  create mode 100644 drivers/mfd/hi6421-spmi-pmic.c
->  delete mode 100644 drivers/staging/hikey9xx/Kconfig
->  delete mode 100644 drivers/staging/hikey9xx/Makefile
->  delete mode 100644 drivers/staging/hikey9xx/TODO
->  delete mode 100644 drivers/staging/hikey9xx/hi6421-spmi-pmic.c
->  delete mode 100644 drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
+> Changes since v2:
+> - Fixed up to use qcom,tlmm-common.yaml as per Bjorn's request
+> - NOT added Rob Herring's r-b as the yaml changed somewhat significantly
+>  .../pinctrl/qcom,mdm9607-pinctrl.yaml         | 133 ++++++++++++++++++
+>  1 file changed, 133 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,mdm9607-pinctrl.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -85,10 +76,10 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.example.dt.yaml:0:0: /example-0/pmic@0: failed to match any schema with compatible: ['hisilicon,hi6421-spmi']
+Documentation/devicetree/bindings/pinctrl/qcom,mdm9607-pinctrl.example.dt.yaml:0:0: /example-0/pinctrl@1000000: failed to match any schema with compatible: ['qcom,mdm9607-pinctrl']
 \ndoc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1496456
+See https://patchwork.ozlabs.org/patch/1496238
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
