@@ -2,59 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0008E3B35E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 20:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3843B3B35E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 20:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232545AbhFXSkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 14:40:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhFXSkF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 14:40:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E37FC061574;
-        Thu, 24 Jun 2021 11:37:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=E+uLdTeJRbTTNHca4zI78GWb1XhxGHzRHR8t0yMnlDs=; b=sCqo0PLQqL9Uemwsd99lDLlnrO
-        ppRBZb+YSjSy6ZehBdwNitdTNNRLyJZs3g9lkwyZ31Mne3wrcykwaRtEzxFCZr46QCCU2Ifwnhmc3
-        2fsfYU7mHUOPepEL1Bz9AX0xcqvAyFfuZQ646Ey3YdlzYqp/bB/ZEz1c08SDnIqbbBkmxLuZMC/CB
-        +PMqu6RmbKL/fIMzXbQHZkw5CNYauqeMQxolFR0ILlQaOlrFTcQA9THOGi8ktWc4KQllzs6KaQes2
-        y64H2b9f2668qetRhHPwsp82Xl9oCj28v3JldJldk1ep/pGQM+o+JGbmBl7Oqq/GSAEsreqFXCP1h
-        O/1ZoWLw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwUEE-00GsyS-MO; Thu, 24 Jun 2021 18:37:33 +0000
-Date:   Thu, 24 Jun 2021 19:37:30 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 27/46] mm/writeback: Add __folio_mark_dirty()
-Message-ID: <YNTQ6o0kxESisBri@casper.infradead.org>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-28-willy@infradead.org>
- <YNL+cHDPMfvvXMUh@infradead.org>
+        id S232621AbhFXSmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 14:42:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231969AbhFXSmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 14:42:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7960D613FB;
+        Thu, 24 Jun 2021 18:40:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624560005;
+        bh=GuW75x/Uov6toarX2fe+UEY8NYrRjldxWDXcSmWe5Ok=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=u2kLxykAJQndMbdjXpGXYjpGjSMMiCKRVFibvrZvuU5PHQZp1nPbTk9gO2oldqJC5
+         ZSaWq/24lT9f2Qum1Cqtgb2hmp9uoNbDk8DL/dRixyzo+y7iaFrB4jRBz+H8728xkW
+         8GXd1Amgb0zRvqdHx30D3RN0eufhMCVg222Z9bOn2nmmnAMZFRApZ7rT+xCOJ6GUbk
+         YGwjAzlQeFQ6TsuWD7e2f97KVKwVAwvuIWF5FLfRHltzlZAPOrj1oKThYAMD8F7Shl
+         USoK7HYvkrGXHCB6xqpUU4j4Rz523v861J2xc+Wc2R3AA2EuyTLzk+1v1rDM88xqXK
+         ZVxvLsF6nSUAg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6733960ACA;
+        Thu, 24 Jun 2021 18:40:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNL+cHDPMfvvXMUh@infradead.org>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [net-next: PATCH] net: mdiobus: fix fwnode_mdbiobus_register()
+ fallback case
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162456000541.7935.16610298420010746313.git-patchwork-notify@kernel.org>
+Date:   Thu, 24 Jun 2021 18:40:05 +0000
+References: <20210624005151.3735706-1-mw@semihalf.com>
+In-Reply-To: <20210624005151.3735706-1-mw@semihalf.com>
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
+        jon@solid-run.com, tn@semihalf.com, jaz@semihalf.com,
+        hkallweit1@gmail.com, andrew@lunn.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 11:27:12AM +0200, Christoph Hellwig wrote:
-> On Tue, Jun 22, 2021 at 01:15:32PM +0100, Matthew Wilcox (Oracle) wrote:
-> > Turn __set_page_dirty() into a wrapper around __folio_mark_dirty() (which
-> > can directly cast from page to folio because we know that set_page_dirty()
-> > calls filesystems with the head page).  Convert account_page_dirtied()
-> > into folio_account_dirtied() and account the number of pages in the folio.
-> 
-> Is it really worth micro-optimizing a transitional function like that?
-> I'd rather eat the overhead of the compound_page() call over adding hacky
-> casts like this.
+Hello:
 
-Fair enough.  There's only three calls to it and one of them goes away
-this series.
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Thu, 24 Jun 2021 02:51:51 +0200 you wrote:
+> The fallback case of fwnode_mdbiobus_register()
+> (relevant for !CONFIG_FWNODE_MDIO) was defined with wrong
+> argument name, causing a compilation error. Fix that.
+> 
+> Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+> ---
+>  include/linux/fwnode_mdio.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Here is the summary with links:
+  - [net-next:] net: mdiobus: fix fwnode_mdbiobus_register() fallback case
+    https://git.kernel.org/netdev/net-next/c/c88c192dc3ea
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
