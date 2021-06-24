@@ -2,68 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EAB73B29BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 09:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA463B29CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 09:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231802AbhFXHxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 03:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231709AbhFXHxc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 03:53:32 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B18C061574;
-        Thu, 24 Jun 2021 00:51:13 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94.2)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1lwK8f-00AtWB-CA; Thu, 24 Jun 2021 09:51:05 +0200
-Message-ID: <63d3f8ec9095031d5d6b1374f304a76c64a036f2.camel@sipsolutions.net>
-Subject: Re: [PATCH] mac80211: add dependency for MAC80211_LEDS
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Liwei Song <liwei.song@windriver.com>, David <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 24 Jun 2021 09:51:04 +0200
-In-Reply-To: <20210624074956.37298-1-liwei.song@windriver.com>
-References: <20210624074956.37298-1-liwei.song@windriver.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S231791AbhFXIBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 04:01:52 -0400
+Received: from mga01.intel.com ([192.55.52.88]:49749 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231630AbhFXIBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 04:01:51 -0400
+IronPort-SDR: fhe5lwq18lnTVNxHH0U78HKGyXNDx1WaGPIlwJx+AWlAmSU5Cr42m/H6DnHq/kvg3A4Aore4ge
+ ho54yKqv6gXg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="229006955"
+X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
+   d="scan'208";a="229006955"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 00:59:31 -0700
+IronPort-SDR: 9rrIp9l+o5YU/gZbNNmGk1pTfaV91pCI7CzngOK5/quyOfaBZ+JjbMuY1JCYe2jLtrc3uYBsBu
+ /jGvwOe8AXHA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
+   d="scan'208";a="557249382"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
+  by fmsmga001.fm.intel.com with ESMTP; 24 Jun 2021 00:59:28 -0700
+Date:   Thu, 24 Jun 2021 15:54:14 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     trix@redhat.com
+Cc:     hao.wu@intel.com, mdf@kernel.org, michal.simek@xilinx.com,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 1/7] fpga-mgr: wrap the write_init() op
+Message-ID: <20210624075414.GA44700@yilunxu-OptiPlex-7050>
+References: <20210623182410.3787784-1-trix@redhat.com>
+ <20210623182410.3787784-3-trix@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210623182410.3787784-3-trix@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-06-24 at 15:49 +0800, Liwei Song wrote:
-> Let MAC80211_LEDS depends on LEDS_CLASS=IWLWIFI to fix the below warning:
+On Wed, Jun 23, 2021 at 11:24:04AM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
 > 
-> WARNING: unmet direct dependencies detected for MAC80211_LEDS
->   Depends on [n]: NET [=y] && WIRELESS [=y] && MAC80211 [=y] && (LEDS_CLASS [=m]=y || LEDS_CLASS [=m]=MAC80211 [=y])
->   Selected by [m]:
->   - IWLWIFI_LEDS [=y] && NETDEVICES [=y] && WLAN [=y] && WLAN_VENDOR_INTEL [=y] && IWLWIFI [=m] && (LEDS_CLASS [=m]=y || LEDS_CLASS [=m]=IWLWIFI [=m]) && (IWLMVM [=m] || IWLDVM [=m])
+> An FPGA manager should not be required to provide a
+> write_init() op if there is nothing for it do.
+> So add a wrapper and move the op checking.
+> Default to success.
 > 
-> Signed-off-by: Liwei Song <liwei.song@windriver.com>
+> Signed-off-by: Tom Rix <trix@redhat.com>
 > ---
->  net/mac80211/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/fpga/fpga-mgr.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
 > 
-> diff --git a/net/mac80211/Kconfig b/net/mac80211/Kconfig
-> index 51ec8256b7fa..918a11fed563 100644
-> --- a/net/mac80211/Kconfig
-> +++ b/net/mac80211/Kconfig
-> @@ -69,7 +69,7 @@ config MAC80211_MESH
->  config MAC80211_LEDS
->  	bool "Enable LED triggers"
->  	depends on MAC80211
-> -	depends on LEDS_CLASS=y || LEDS_CLASS=MAC80211
-> +	depends on LEDS_CLASS=y || LEDS_CLASS=MAC80211 || LEDS_CLASS=IWLWIFI
+> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
+> index ecb4c3c795fa5..87bbb940c9504 100644
+> --- a/drivers/fpga/fpga-mgr.c
+> +++ b/drivers/fpga/fpga-mgr.c
+> @@ -69,6 +69,14 @@ void fpga_image_info_free(struct fpga_image_info *info)
+>  }
+>  EXPORT_SYMBOL_GPL(fpga_image_info_free);
+>  
+> +static int fpga_mgr_write_init(struct fpga_manager *mgr,
+> +			       struct fpga_image_info *info,
+> +			       const char *buf, size_t count)
+> +{
+> +	if (mgr->mops && mgr->mops->write_init)
 
-Eh, no. this is the wrong way around. If anything needs to be fixed,
-then it must be in iwlwifi, not the generic core part.
+Maybe we don't have to check mgr->mops, it is already checked on
+creation.
 
-johannes
+The same concern to all the following patches.
 
+Thanks,
+Yilun
+
+> +		return  mgr->mops->write_init(mgr, info, buf, count);
+> +	return 0;
+> +}
+>  /*
+>   * Call the low level driver's write_init function.  This will do the
+>   * device-specific things to get the FPGA into the state where it is ready to
+> @@ -83,9 +91,9 @@ static int fpga_mgr_write_init_buf(struct fpga_manager *mgr,
+>  
+>  	mgr->state = FPGA_MGR_STATE_WRITE_INIT;
+>  	if (!mgr->mops->initial_header_size)
+> -		ret = mgr->mops->write_init(mgr, info, NULL, 0);
+> +		ret = fpga_mgr_write_init(mgr, info, NULL, 0);
+>  	else
+> -		ret = mgr->mops->write_init(
+> +		ret = fpga_mgr_write_init(
+>  		    mgr, info, buf, min(mgr->mops->initial_header_size, count));
+>  
+>  	if (ret) {
+> @@ -569,7 +577,7 @@ struct fpga_manager *fpga_mgr_create(struct device *parent, const char *name,
+>  	int id, ret;
+>  
+>  	if (!mops || !mops->write_complete || !mops->state ||
+> -	    !mops->write_init || (!mops->write && !mops->write_sg) ||
+> +	    (!mops->write && !mops->write_sg) ||
+>  	    (mops->write && mops->write_sg)) {
+>  		dev_err(parent, "Attempt to register without fpga_manager_ops\n");
+>  		return NULL;
+> -- 
+> 2.26.3
