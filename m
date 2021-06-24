@@ -2,77 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394123B2574
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 05:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 853103B257E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 05:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhFXDbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 23:31:03 -0400
-Received: from m12-18.163.com ([220.181.12.18]:42892 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229822AbhFXDae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 23:30:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Fe+e1
-        wtZxwC1qjG0jmHrW9KDp4hy5111Lx6noDteteQ=; b=NPJ4LPwzij1Fu6puwpcsJ
-        lYKt1TPY27iGuWRwCRhaWZPMc2PHi6QzYKShXOUUyC4UdTyEQEz6G4+BpjX5p5rt
-        cU0RMiKsA9/EjRav/sTJjyueGHsQhRcSTCVPo1jN12Pp0fovLEmH92RJBs/+1qla
-        or+tfu7Ui7OAYeNc8Wno7o=
-Received: from ubuntu.localdomain (unknown [218.17.89.92])
-        by smtp14 (Coremail) with SMTP id EsCowAA3RAi5+9NguxvLrA--.14217S2;
-        Thu, 24 Jun 2021 11:27:53 +0800 (CST)
-From:   13145886936@163.com
-To:     tony@atomide.com, linux@armlinux.org.uk,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>
-Subject: [PATCH] ARM: omap2: remove unneeded variable: "errata"
-Date:   Wed, 23 Jun 2021 20:27:51 -0700
-Message-Id: <20210624032751.24315-1-13145886936@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S229818AbhFXDbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 23:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229774AbhFXDby (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 23:31:54 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1EFC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 20:29:35 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id n99-20020a9d206c0000b029045d4f996e62so4196365ota.4
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 20:29:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=iJCurAd0QJM4SEDLicA9j39/tcXrqbQx+mlduxNSE1w=;
+        b=UKRxu4BDkFMUGtXNlol5Gks5gwGhfNb6hRp1rMHlcWYJLIBnlfOC38YXHJLEDgs9sD
+         aJyMYxFHuWmeRB6ueLLEAsmPBeinKTC600Q7cgxPPIPkibJULj6ZgNuEA6JcqODQ8lhZ
+         vaBwgrIEZ3DXSMcGgHd+koyzJTCFfwN2O+zqBzrT8tZRZF9p3tS3zkTfTWnO8LbJlOKs
+         cR8FFf23iv21AbtXEda53YmAu9J4+SyBCXvwTr7WSoJlMPSUpSLcXSZ8oCNZQLuNC6k6
+         LNkhJbIBFZWe2c/Wlh9pjOkF1i8qtpHCkk+NsOMDDimHgb/DLcga7rHJ04uCNKUXcKpN
+         cloQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iJCurAd0QJM4SEDLicA9j39/tcXrqbQx+mlduxNSE1w=;
+        b=I/nr9Hzzsxus0jtjJpUOOPmFFLJQGch2Eq6bzIo2ogde7qvyk7KQ6Had8zWbMU55Cd
+         XzqVQmlDr1h4M38FIybkjlyUD+FwftZ/cddLlwCSVdWcRTvfaSe3qU8MwnQYqKL30HLD
+         sGgk518/Y3H/EDD6j7RVg0QSKA7qm+3zAd4wnPBINfcDJZ4uzDZM8G8j34eH3Ynua6Me
+         A1ph9f4OfQ1OxYet2A66/KZKGmySCqw8bISUcMEygX2zwK7uJtYgezu6Oz8riy16LBbZ
+         BUI5VGw0qyRchXX156QorpRzPVVT75JsQIQEn44MY+Q5wieXJLNGFED1zwDYGxIPDO/L
+         IkDw==
+X-Gm-Message-State: AOAM533aMB9HIMr0VQCYF4a7HoCqcb4/bV0guFzpb5G5tAPauEmK8eAn
+        7A7hCaPLiPledn2mQe+xxvInTPOZusGPbrECmLMkMQ==
+X-Google-Smtp-Source: ABdhPJzIuSEJSh/lDfYU329TQt3RF57KMLdWVSszJiamILZvYDCk7a4eksA3MIADIAYSva2Z0Kigo42/4xJs9Eom+LI=
+X-Received: by 2002:a9d:6f93:: with SMTP id h19mr2750323otq.100.1624505374421;
+ Wed, 23 Jun 2021 20:29:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowAA3RAi5+9NguxvLrA--.14217S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XrWkJrW5CFyxWry5trWrKrg_yoWfAwbEyw
-        n7tw4kuan5Jwn2vr1UtanIyr1Ig3Z0gFZFga4vqFy5KFy5Jr13C34vkrZ7Ary5Xr40yrZx
-        ur93ArWYk3ZrtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU55KsUUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiGhm7g1aD+N-cwgAAsX
+References: <20210623032802.3377-1-jhp@endlessos.org> <162448140362.19131.3107197931445260654.git-patchwork-notify@kernel.org>
+ <7f4e15bb-feb5-b4d2-57b9-c2a9b2248d4a@gmail.com> <CAPpJ_edpVxbnPBGTrkvB8EY5mt_sgPmoMv7rBdUKUHZJnjhHNg@mail.gmail.com>
+ <20eeedec-4ec2-7aae-2e80-09b784e1693b@gmail.com>
+In-Reply-To: <20eeedec-4ec2-7aae-2e80-09b784e1693b@gmail.com>
+From:   Jian-Hong Pan <jhp@endlessos.org>
+Date:   Thu, 24 Jun 2021 11:28:51 +0800
+Message-ID: <CAPpJ_edSg54W-eo2jqMszPP-QntPJ=ahyeQE5DOofd-XFFjFwA@mail.gmail.com>
+Subject: Re: [PATCH v2] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     patchwork-bot+netdevbpf@kernel.org,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Doug Berger <opendmb@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        linux@endlessos.org, linux-rpi-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
+Ok, thanks!
 
-Remove unneeded variable: "errata".
-
-Signed-off-by: gushengxian <gushengxian@yulong.com>
----
- arch/arm/mach-omap2/dma.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/arch/arm/mach-omap2/dma.c b/arch/arm/mach-omap2/dma.c
-index dfc9b21ff19b..ba4a48e3d264 100644
---- a/arch/arm/mach-omap2/dma.c
-+++ b/arch/arm/mach-omap2/dma.c
-@@ -79,7 +79,6 @@ static const struct omap_dma_reg reg_map[] = {
- 
- static unsigned configure_dma_errata(void)
- {
--	unsigned errata = 0;
- 
- 	/*
- 	 * Errata applicable for OMAP2430ES1.0 and all omap2420
-@@ -158,7 +157,7 @@ static unsigned configure_dma_errata(void)
- 	if (cpu_is_omap34xx() && (omap_type() != OMAP2_DEVICE_TYPE_GP))
- 		SET_DMA_ERRATA(DMA_ROMCODE_BUG);
- 
--	return errata;
-+	return 0;
- }
- 
- static const struct dma_slave_map omap24xx_sdma_dt_map[] = {
--- 
-2.25.1
-
-
+Florian Fainelli <f.fainelli@gmail.com> =E6=96=BC 2021=E5=B9=B46=E6=9C=8824=
+=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8811:27=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+>
+>
+> On 6/23/2021 7:47 PM, Jian-Hong Pan wrote:
+> > Florian Fainelli <f.fainelli@gmail.com> =E6=96=BC 2021=E5=B9=B46=E6=9C=
+=8824=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=885:19=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+> >>
+> >> On 6/23/21 1:50 PM, patchwork-bot+netdevbpf@kernel.org wrote:
+> >>> Hello:
+> >>>
+> >>> This patch was applied to netdev/net.git (refs/heads/master):
+> >>>
+> >>> On Wed, 23 Jun 2021 11:28:03 +0800 you wrote:
+> >>>> The Broadcom UniMAC MDIO bus from mdio-bcm-unimac module comes too l=
+ate.
+> >>>> So, GENET cannot find the ethernet PHY on UniMAC MDIO bus. This lead=
+s
+> >>>> GENET fail to attach the PHY as following log:
+> >>>>
+> >>>> bcmgenet fd580000.ethernet: GENET 5.0 EPHY: 0x0000
+> >>>> ...
+> >>>> could not attach to PHY
+> >>>> bcmgenet fd580000.ethernet eth0: failed to connect to PHY
+> >>>> uart-pl011 fe201000.serial: no DMA platform data
+> >>>> libphy: bcmgenet MII bus: probed
+> >>>> ...
+> >>>> unimac-mdio unimac-mdio.-19: Broadcom UniMAC MDIO bus
+> >>>>
+> >>>> [...]
+> >>>
+> >>> Here is the summary with links:
+> >>>    - [v2] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
+> >>>      https://git.kernel.org/netdev/net/c/b2ac9800cfe0
+> >
+> > This bot is interesting!!!  Good feature! :)
+> >
+> >> There was feedback given that could have deserved a v3, if nothing els=
+e
+> >> to fix the typo in the subject, I suppose that would do though.
+> >
+> > I can prepare the v3 patch with Florian's suggestion!
+>
+> Too late, once it's merged only fixups can be accepted, and that does
+> not include commit messages, it's alright.
+> --
+> Florian
