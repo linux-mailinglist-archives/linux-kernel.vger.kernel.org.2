@@ -2,77 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012433B24E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 019563B24E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbhFXCYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 22:24:53 -0400
-Received: from smtpbgeu1.qq.com ([52.59.177.22]:47513 "EHLO smtpbgeu1.qq.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229759AbhFXCYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 22:24:52 -0400
-X-Greylist: delayed 60082 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Jun 2021 22:24:51 EDT
-X-QQ-mid: bizesmtp42t1624501343tsdvmezl
-Received: from localhost.localdomain (unknown [182.148.13.245])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Thu, 24 Jun 2021 10:22:20 +0800 (CST)
-X-QQ-SSF: 0100000000200040B000B00A0000000
-X-QQ-FEAT: vRxJyNZKtn7YycPXZKXuImxRmH5Y77vBon3cs/Dr/3AI5ud9YzzIvs+PxVSYI
-        NsuRYfgk7rurLeSuG3MNHSQbZDmJzV590YhnA4wFoQs4VcanH7qN0TG+bgZDa5up0cC2us9
-        mZqaV6oDcOdnNB0B5kJOaMUeIRXwOaSjnZe8f2dVYcgGC5FrMMxYmQaJSu7rBcxH1G02tXK
-        AG2mBYzs41SPpPqNdgHU7olUM4M7rQcIW6DyE/iCk6Gwleq/vGM2lHZpWlI6rN1+dDgZe1f
-        TlZwzZu+sWuQLlp9nDL9jlE4ijqdLqIY6hJyYlnoXTq1wtcIwjPCUlS2Br4Qycl4hLhvx84
-        D3HLdd+
-X-QQ-GoodBg: 0
-From:   Jinchao Wang <wjc@cdjrlc.com>
-To:     bgolaszewski@baylibre.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de
-Cc:     linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wjc@cdjrlc.com
-Subject: [PATCH] gpio: Prefer unsigned int to bare use of unsigned
-Date:   Thu, 24 Jun 2021 10:22:13 +0800
-Message-Id: <20210624022213.65140-1-wjc@cdjrlc.com>
-X-Mailer: git-send-email 2.31.1
+        id S229918AbhFXCZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 22:25:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229826AbhFXCZP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 22:25:15 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2728BC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 19:22:56 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id k6so3855770pfk.12
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 19:22:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8E0w6EUy5FYV/ZXtFIifZuvspQzbp8qJ/1Ru+U5hWb0=;
+        b=rhcqG5bXRF+/qQu+0PcRAAaZjK7SrDV3G9a1cbYR8BT5Mz2pFl+hUUdvZN0NYn6yVE
+         GGfr2K1IpqQGqoiqk1Wedr2+J4pei2krzolrPowwvr55Vw869by7D5gG/ARMdd0b/qmY
+         AJwdORvXSghESA+PSbE6ve6KEfC7HZ1HG6OLjYqEAg1HE0LXiKWw1J05kuIkSbXYnF//
+         9ekQ5f7BhLj9LqEKdI/OnqMm4WZGXQorynfiOvZMZRnIkn+xWCvNzgs7Ge55Klc6Dr4y
+         M2t6VjCl/BKGoYFThOFYFy/EE4IAfDAjvk5s3Yq7HiOpylTAu45ceA5qquUy5lbxMdHg
+         xBrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8E0w6EUy5FYV/ZXtFIifZuvspQzbp8qJ/1Ru+U5hWb0=;
+        b=V6jt+PYZEuQSlx1aTJN0OxRPHxj6nW84RCiAxiJXu97lslek/mEzXFGYA6Mif1l46x
+         Lw3GKmJ8U4pP+2YRtS8KBKdP/nY40aHiz9VHSwlDf/5vRHgwwrA/aOP634GPE2xHJr8m
+         YG/U00FMN3mEzoE0jV6ysYXKe24BuCBGulLVslU231XXs1uJ83KCMjqnY2KcV48RSB30
+         0rs1nM5KsuOJ/t8Z8uUusP1BmHhBpRz8RjfbeQcS+/NwMw4rQBQu/cTDaM6Qu3ZRlhI9
+         FRN6+as0qRSzBFH3z1JZYPfRYxFB5k5tCDv3AhHlM9EzHGoX2gpsTUofuy81Fm/Ow1fo
+         GD1g==
+X-Gm-Message-State: AOAM532qL0DWgE7X3sXrw2JP4HgyZkvIUr2TJ5bqYZqwo3hju95PwbpK
+        Oljtuvc4E2Ty7BjTCVuH/VbvSg==
+X-Google-Smtp-Source: ABdhPJwWW49GPW2MjWU5iNXoK9O0NEZ3kG9SNphywPzGZivZ7VLJeEnm5bhuchn9VRe6TGS/NDA3CQ==
+X-Received: by 2002:a63:1143:: with SMTP id 3mr2553834pgr.166.1624501375726;
+        Wed, 23 Jun 2021 19:22:55 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id j2sm1022237pfb.53.2021.06.23.19.22.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 19:22:54 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 07:52:52 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 2/4] cpufreq: cppc: Pass structure instance by
+ reference
+Message-ID: <20210624022252.zrxsftrvcd43eqra@vireshk-i7>
+References: <cover.1624266901.git.viresh.kumar@linaro.org>
+ <b910f89cf11f6916319f9a2fb48d9146005318b1.1624266901.git.viresh.kumar@linaro.org>
+ <20210623134533.GB12411@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgforeign:qybgforeign1
-X-QQ-Bgrelay: 1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210623134533.GB12411@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix checkpatch warnings:
-    WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+On 23-06-21, 14:45, Ionela Voinescu wrote:
+> On Monday 21 Jun 2021 at 14:49:35 (+0530), Viresh Kumar wrote:
+> > Don't pass structure instance by value, pass it by reference instead.
+> >
+> 
+> Might be best to justify the change a bit :)
 
-Signed-off-by: Jinchao Wang <wjc@cdjrlc.com>
----
- drivers/gpio/gpio-mxs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I had it and removed later as I thought it would be obvious :)
 
-diff --git a/drivers/gpio/gpio-mxs.c b/drivers/gpio/gpio-mxs.c
-index 524b668eb1ac..31a336b86ff2 100644
---- a/drivers/gpio/gpio-mxs.c
-+++ b/drivers/gpio/gpio-mxs.c
-@@ -229,14 +229,14 @@ static int mxs_gpio_init_gc(struct mxs_gpio_port *port, int irq_base)
- 	return rv;
- }
- 
--static int mxs_gpio_to_irq(struct gpio_chip *gc, unsigned offset)
-+static int mxs_gpio_to_irq(struct gpio_chip *gc, unsigned int offset)
- {
- 	struct mxs_gpio_port *port = gpiochip_get_data(gc);
- 
- 	return irq_find_mapping(port->domain, offset);
- }
- 
--static int mxs_gpio_get_direction(struct gpio_chip *gc, unsigned offset)
-+static int mxs_gpio_get_direction(struct gpio_chip *gc, unsigned int offset)
- {
- 	struct mxs_gpio_port *port = gpiochip_get_data(gc);
- 	u32 mask = 1 << offset;
+> For me this is a judgement call, and I don't really see the reasons for
+> changing it: we don't care if the structure is modified or not, as we're
+> not reusing the data after the call to cppc_get_rate_from_fbctrs().
+> More so, in this scenario we might not even want for the called function
+> to modify the counter values. Also there is no further call to a function
+> in cppc_get_rate_from_fbctrs(), that might require references to the
+> fb_ctrs.
+> 
+> So what is the reason behind this change?
+
+How about this commit log then:
+
+Theoretically speaking, call by reference is cheaper/faster than call by value
+for structures as the later requires the compiler to make a new copy of the
+whole structure (which has four u64 values here), to be used by the called
+function, while with call by reference we just need to pass a single pointer
+(u64 on 64-bit architectures) to the existing structure.
+
+Yes, on modern architectures, the compilers will likely end up using the
+processor registers for passing this structure as it isn't doesn't have lot of
+fields and it shouldn't be bad eventually, but nevertheless the code should do
+the right thing without assuming about the compiler's or architecture's
+optimizations.
+
+Don't pass structure instance by value, pass it by reference instead.
+
 -- 
-2.31.1
-
-
-
+viresh
