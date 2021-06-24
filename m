@@ -2,139 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3EE13B340A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143FD3B340D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhFXQma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 12:42:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43354 "EHLO mail.kernel.org"
+        id S232094AbhFXQnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 12:43:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229445AbhFXQm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 12:42:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E903F613CA;
-        Thu, 24 Jun 2021 16:40:09 +0000 (UTC)
+        id S229772AbhFXQnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 12:43:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FCA4613CA;
+        Thu, 24 Jun 2021 16:40:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624552810;
-        bh=lJTybvnfd2Dl4R3uXC3jF8lbmzNbn81U7eS8WWOTCEg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=YTvqcNLd570mrY4dCrXUXRSK4l/MRHXMtYDEDucJucojPYRInb+tgsrIhfB6DUJ7w
-         Gxph2m8AAZqhJnVycJzP0B4pqLOxTXebq/quL9g/CZYIeRIJQQ3bmPBmftGgSLJkkp
-         2+rLtA6nTs3FqOhIEkCh73SEP1aDrEGwabsMKFNs3oaylaZzaCR6WUBt3ljfCbnhk+
-         Wg42sTwmWtw/aCiAx+ZkDtwKijd9ZpZE3WiWorGUoFLbOM814jGV1HTn6UhjDgWYHy
-         LbMYNWJOufe5Hb8dGENk1DmbZDcaIYjf7HuQuh5k4VcHhz0Y7jzYKduZl3c9qzY4LK
-         C04Oi0lijykig==
-Subject: Re: linux-next: build failure after merge of the net-next tree
-To:     Marcin Wojtas <mw@semihalf.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-References: <20210624082911.5d013e8c@canb.auug.org.au>
- <CAPv3WKfiL+sR+iK_BjGKDhtNgjoxKEPv49bU1X9_7+v+ytdR1w@mail.gmail.com>
- <YNPt91bfjrgSt8G3@Ryzen-9-3900X.localdomain>
- <CA+G9fYtb07aySOpB6=wc4ip_9S4Rr2UUYNgEOG6i76g--uPryQ@mail.gmail.com>
- <20210624185430.692d4b60@canb.auug.org.au>
- <CAPv3WKf6HguRC_2ckau99d4iWG-FV71kn8wiX9r5wuK335EEFw@mail.gmail.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <3d6ea68a-9654-6def-9533-56640ceae69f@kernel.org>
-Date:   Thu, 24 Jun 2021 09:40:08 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        s=k20201202; t=1624552846;
+        bh=HymNcG1+IzgcE8hHbs0AR1es0sYS8KvJ1NstBZBO46c=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=W37CauQhCERdE6JNuOAMBVdh/YJyNd/gHXacIrSZ6GTzf3PctFsWo3f64O6YIwxZA
+         eVIXaJZ1jm2+0pL2Q/QPtMiPBPQRVTQ2kAaI9Wr/DEKSEAktOvbatBe3DagzrdwCl1
+         OQKJ84Gx7p3Ta1AEUhZB67iJDMfk41ZxKbzqCtI38ta+Pm4gok3Pq239624jOEQlro
+         JYvHQRern0kBD9xjMVaXjTjuuPFH8GoPKe78jTzh7Qv9beVdqKNgdGremIuEA/d1fh
+         6/QsTv3Uiwb15qfRljeilDqaGKXrIunl9GNyvN+m8P/fodXOXm9WHQcsK85G4e8gl/
+         8s7BXeceGBflw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id F16665C0525; Thu, 24 Jun 2021 09:40:45 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 09:40:45 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Jiangong.Han" <jiangong.han@windriver.com>
+Cc:     dave@stgolabs.net, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH v3] rcuscale: Console output claims too few grace periods
+Message-ID: <20210624164045.GU4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210624143424.16158-1-jiangong.han@windriver.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPv3WKf6HguRC_2ckau99d4iWG-FV71kn8wiX9r5wuK335EEFw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624143424.16158-1-jiangong.han@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcin,
-
-On 6/24/2021 7:25 AM, Marcin Wojtas wrote:
-> Hi Stephen,
+On Thu, Jun 24, 2021 at 10:34:24PM +0800, Jiangong.Han wrote:
+> The rcuscale console output claims N grace periods, numbered from zero
+> to N, which means that there were really N+1 grace periods.  The root
+> cause of this bug is that rcu_scale_writer() stores the number of the
+> last grace period (numbered from zero) into writer_n_durations[me]
+> instead of the number of grace periods. This commit therefore assigns
+> the actual number of grace periods to writer_n_durations[me], and also
+> makes the corresponding adjustment to the loop outputting per-grace-period
+> measurements.
 > 
-> czw., 24 cze 2021 o 10:54 Stephen Rothwell <sfr@canb.auug.org.au> napisał(a):
->>
->> Hi all,
->>
->> On Thu, 24 Jun 2021 11:43:14 +0530 Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->>>
->>> On Thu, 24 Jun 2021 at 07:59, Nathan Chancellor <nathan@kernel.org> wrote:
->>>>
->>>> On Thu, Jun 24, 2021 at 12:46:48AM +0200, Marcin Wojtas wrote:
->>>>> Hi Stephen,
->>>>>
->>>>> czw., 24 cze 2021 o 00:29 Stephen Rothwell <sfr@canb.auug.org.au> napisał(a):
->>>>>>
->>>>>> Hi all,
->>>>>>
->>>>>> Today's linux-next build (x86_64 modules_install) failed like this:
->>>>>>
->>>>>> depmod: ../tools/depmod.c:1792: depmod_report_cycles_from_root: Assertion `is < stack_size' failed.
->>>
->>> LKFT test farm found this build error.
->>>
->>> Regressions found on mips:
->>>
->>>   - build/gcc-9-malta_defconfig
->>>   - build/gcc-10-malta_defconfig
->>>   - build/gcc-8-malta_defconfig
->>>
->>> depmod: ERROR: Cycle detected: fwnode_mdio -> of_mdio -> fwnode_mdio
->>> depmod: ERROR: Found 2 modules in dependency cycles!
->>> make[1]: *** [/builds/linux/Makefile:1875: modules_install] Error 1
->>>
->>>>> Thank you for letting us know. Not sure if related, but I just found
->>>>> out that this code won't compile for the !CONFIG_FWNODE_MDIO. Below
->>>>> one-liner fixes it:
->>>>>
->>>>> --- a/include/linux/fwnode_mdio.h
->>>>> +++ b/include/linux/fwnode_mdio.h
->>>>> @@ -40,7 +40,7 @@ static inline int fwnode_mdiobus_register(struct mii_bus *bus,
->>>>>           * This way, we don't have to keep compat bits around in drivers.
->>>>>           */
->>>>>
->>>>> -       return mdiobus_register(mdio);
->>>>> +       return mdiobus_register(bus);
->>>>>   }
->>>>>   #endif
->>>>>
->>>>> I'm curious if this is the case. Tomorrow I'll resubmit with above, so
->>>>> I'd appreciate recheck.
->>>
->>> This proposed fix did not work.
->>>
->>>> Reverting all the patches in that series fixes the issue for me.
->>>
->>> Yes.
->>> Reverting all the (6) patches in that series fixed this build problem.
->>>
->>> git log --oneline | head
->>> 3752a7bfe73e Revert "Documentation: ACPI: DSD: describe additional MAC
->>> configuration"
->>> da53528ed548 Revert "net: mdiobus: Introduce fwnode_mdbiobus_register()"
->>> 479b72ae8b68 Revert "net/fsl: switch to fwnode_mdiobus_register"
->>> 92f85677aff4 Revert "net: mvmdio: add ACPI support"
->>> 3d725ff0f271 Revert "net: mvpp2: enable using phylink with ACPI"
->>> ffa8c267d44e Revert "net: mvpp2: remove unused 'has_phy' field"
->>> d61c8b66c840 Add linux-next specific files for 20210623
->>
->> So I have reverted the merge of that topic branch from linux-next for
->> today.
+> Sample of old console output:
+> 	rcu-scale: writer 0 gps: 133
+> 	......
+> 	rcu-scale:    0 writer-duration:     0 44003961
+> 	rcu-scale:    0 writer-duration:     1 32003582
+> 	......
+> 	rcu-scale:    0 writer-duration:   132 28004391
+> 	rcu-scale:    0 writer-duration:   133 27996410
 > 
-> Just to understand correctly - you reverted merge from the local
-> branch (I still see the commits on Dave M's net-next/master). I see a
-> quick solution, but I'm wondering how I should proceed. Submit a
-> correction patch to the mailing lists against the net-next? Or the
-> branch is going to be reverted and I should resubmit everything as v4?
+> Sample of new console output:
+> 	rcu-scale: writer 0 gps: 134
+> 	......
+> 	rcu-scale:    0 writer-duration:     0 44003961
+> 	rcu-scale:    0 writer-duration:     1 32003582
+> 	......
+> 	rcu-scale:    0 writer-duration:   132 28004391
+> 	rcu-scale:    0 writer-duration:   133 27996410
+> 
+> Signed-off-by: Jiangong.Han <jiangong.han@windriver.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-As far as I am aware, net and net-next are not rebased so you would need 
-to submit a fixup patch against the current net-next with a proper 
-Fixes: tag.
+I already have it queued in -rcu here:
 
-Cheers,
-Nathan
+4c154a910344 ("rcuscale: Console output claims too few grace periods")
+
+Or did you find an error in my wordsmithed version of your commit log?
+If so, please point out the error explicitly.  (It looks identical to me,
+but I could easily be missing something.)
+
+							Thanx, Paul
+
+> ---
+>  kernel/rcu/rcuscale.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> index dca51fe9c73f..2cc34a22a506 100644
+> --- a/kernel/rcu/rcuscale.c
+> +++ b/kernel/rcu/rcuscale.c
+> @@ -487,7 +487,7 @@ rcu_scale_writer(void *arg)
+>  	if (gp_async) {
+>  		cur_ops->gp_barrier();
+>  	}
+> -	writer_n_durations[me] = i_max;
+> +	writer_n_durations[me] = i_max + 1;
+>  	torture_kthread_stopping("rcu_scale_writer");
+>  	return 0;
+>  }
+> @@ -561,7 +561,7 @@ rcu_scale_cleanup(void)
+>  			wdpp = writer_durations[i];
+>  			if (!wdpp)
+>  				continue;
+> -			for (j = 0; j <= writer_n_durations[i]; j++) {
+> +			for (j = 0; j < writer_n_durations[i]; j++) {
+>  				wdp = &wdpp[j];
+>  				pr_alert("%s%s %4d writer-duration: %5d %llu\n",
+>  					scale_type, SCALE_FLAG,
+> -- 
+> 2.17.1
+> 
