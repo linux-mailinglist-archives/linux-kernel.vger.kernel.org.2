@@ -2,107 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9680D3B2B08
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBA33B2B30
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231429AbhFXJGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:06:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60856 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230013AbhFXJG1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:06:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DCAE613DC;
-        Thu, 24 Jun 2021 09:04:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624525448;
-        bh=rby+ZPgSSxK8+RzLEO6EAEviTD7NAgOLS/9KpTQJ4FU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YwvmEv3TARAfMjBW8u0BmYQnLofpa8rvMy3sGduJ2AW5d4eg6GWV6H7og8F0G+vTV
-         5f3ZCXj78qe5lizHerdHMjDRZXlMwvBNzuwctQrXCK0bjoZaJu5cPlJBSM417NzGqO
-         YinHgu09t22NltJkxV+4C25ZsjzZtgAP9awWL/XE=
-Date:   Thu, 24 Jun 2021 11:04:04 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Rocco Yue <rocco.yue@mediatek.com>
-Cc:     David Ahern <dsahern@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org,
-        wsd_upstream@mediatek.com, chao.song@mediatek.com,
-        kuohong.wang@mediatek.com
-Subject: Re: [PATCH 1/4] net: if_arp: add ARPHRD_PUREIP type
-Message-ID: <YNRKhJB9/K4SKPdR@kroah.com>
-References: <YNQYHfE09Dx5kWyg@kroah.com>
- <20210624061310.12315-1-rocco.yue@mediatek.com>
+        id S231489AbhFXJTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:19:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231298AbhFXJTM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 05:19:12 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 355FAC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 02:16:52 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id s15so7455053edt.13
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 02:16:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ToYKmnHgqk/66SzWjvRy2Lj5kh6aXbY58HiBGtTfTYc=;
+        b=ZEweUXuAJoGCGMqY3z9xEzvHeOc45CgfE+oRLPnwvWDM8sEylSod/l69pmO1wTq6Fk
+         dJ6IJffz8PwtlA84nAwOMbu/T24GwtdMUEWh7Wfy0A/5i4gI8Lx4GorjU0lFTf+6k/vp
+         waHl9OMa0UhLOi5kJckBgVUzPJL/7362ZFcIUrXc9waM3czme6JE2Mo08y5M7V+vITDj
+         FSMllieK9ieeAYx2zFLgwFaafNl51St8nhwF6tDUKXqzbB8XsjnOGrlgyKrhcMFFDR5E
+         SiRzn5cHnpY863Xr8EDmjh2FISKPY1AoSdoR/zlJVxPQyBejxzBJIxXPRJBt624oRvsJ
+         Nt6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ToYKmnHgqk/66SzWjvRy2Lj5kh6aXbY58HiBGtTfTYc=;
+        b=PikHHE9w9aMr81I8sGElFdwkzQtwgT1T1m+ZhGp3yyHyrKTo/Lzy2HFcY2Vk2MA9aL
+         4IVxgq8yF0b1h225QQpCh2IjDocivpB4O1Cv5hwj9GWQoB9nJtevpepVsOE47d4qQC35
+         ynYTd9RyDY70JaKoAherl8KqqYuh0fJA5BWpjfA6YO8P25pVYjSy2Vsv5ajqOuEbN0kx
+         SggNDeT04LlQtdkLSlGYHM7dW7o+3xAjWTCr7aWe5NwVgFI2M1Tdca0mbyPWiqXOmoQs
+         m+4STKFA3Si1OKlTvM7H2HKdWPgHMot3AK+RZGJ8FORB5BEy4qlWWy6u8bRpI1OB+7AR
+         NGYA==
+X-Gm-Message-State: AOAM532z83JBg405Z2rGYjy3fbjKRtmNIh90tAIgIITGiqfLc1Pkk9BF
+        +MBHmnSMOaBdUKwrkOwykPyQFr8U98hS6jX72y+5
+X-Google-Smtp-Source: ABdhPJwzxlNtCT4qXONVb1tZWclCON16CNPSh2qEimKMjvYzH/fk8YJnTCoKh644GYgJY+nPjC5RJVk2i47qjgJpKlM=
+X-Received: by 2002:a05:6402:27ce:: with SMTP id c14mr5750686ede.118.1624526210663;
+ Thu, 24 Jun 2021 02:16:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624061310.12315-1-rocco.yue@mediatek.com>
+References: <20210615141331.407-1-xieyongji@bytedance.com> <20210615141331.407-10-xieyongji@bytedance.com>
+ <adfb2be9-9ed9-ca37-ac37-4cd00bdff349@redhat.com> <CACycT3tAON+-qZev+9EqyL2XbgH5HDspOqNt3ohQLQ8GqVK=EA@mail.gmail.com>
+ <1bba439f-ffc8-c20e-e8a4-ac73e890c592@redhat.com> <CACycT3uzMJS7vw6MVMOgY4rb=SPfT2srV+8DPdwUVeELEiJgbA@mail.gmail.com>
+ <0aeb7cb7-58e5-1a95-d830-68edd7e8ec2e@redhat.com> <CACycT3uuooKLNnpPHewGZ=q46Fap2P4XCFirdxxn=FxK+X1ECg@mail.gmail.com>
+ <e4cdee72-b6b4-d055-9aac-3beae0e5e3e1@redhat.com> <CACycT3u8=_D3hCtJR+d5BgeUQMce6S7c_6P3CVfvWfYhCQeXFA@mail.gmail.com>
+ <d2334f66-907c-2e9c-ea4f-f912008e9be8@redhat.com> <CACycT3uCSLUDVpQHdrmuxSuoBDg-4n22t+N-Jm2GoNNp9JYB2w@mail.gmail.com>
+ <48cab125-093b-2299-ff9c-3de8c7c5ed3d@redhat.com>
+In-Reply-To: <48cab125-093b-2299-ff9c-3de8c7c5ed3d@redhat.com>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Thu, 24 Jun 2021 17:16:39 +0800
+Message-ID: <CACycT3tS=10kcUCNGYm=dUZsK+vrHzDvB3FSwAzuJCu3t+QuUQ@mail.gmail.com>
+Subject: Re: Re: [PATCH v8 09/10] vduse: Introduce VDUSE - vDPA Device in Userspace
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 02:13:10PM +0800, Rocco Yue wrote:
-> On Thu, 2021-06-24 at 07:29 +0200, Greg KH wrote:
-> > 
-> > Thanks for the explaination, why is this hardware somehow "special" in
-> > this way that this has never been needed before?
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> 
-> Before kernel-4.18, RAWIP was the same as PUREIP, neither of them
-> automatically generates an IPv6 link-local address, and the way to
-> generate an IPv6 global address is the same.
-> 
-> After kernel-4.18 (include 4.18 version), the behavior of RAWIP had
-> changed due to the following patch:
-> @@  static int ipv6_generate_eui64(u8 *eui, struct net_device *dev)
-> +	case ARPHRD_RAWIP:
-> +		return addrconf_ifid_rawip(eui, dev);
->  	}
->  	return -1;
+On Thu, Jun 24, 2021 at 4:14 PM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> =E5=9C=A8 2021/6/24 =E4=B8=8B=E5=8D=8812:46, Yongji Xie =E5=86=99=E9=81=
+=93:
+> >> So we need to deal with both FEATURES_OK and reset, but probably not
+> >> DRIVER_OK.
+> >>
+> > OK, I see. Thanks for the explanation. One more question is how about
+> > clearing the corresponding status bit in get_status() rather than
+> > making set_status() fail. Since the spec recommends this way for
+> > validation which is done in virtio_dev_remove() and
+> > virtio_finalize_features().
+> >
+> > Thanks,
+> > Yongji
+> >
+>
+> I think you can. Or it would be even better that we just don't set the
+> bit during set_status().
+>
+
+Yes, that's what I mean.
+
+> I just realize that in vdpa_reset() we had:
+>
+> static inline void vdpa_reset(struct vdpa_device *vdev)
+> {
+>          const struct vdpa_config_ops *ops =3D vdev->config;
+>
+>          vdev->features_valid =3D false;
+>          ops->set_status(vdev, 0);
 > }
-> 
-> the reason why the kernel doesn't need to generate the link-local
-> address automatically is as follows:
-> 
-> In the 3GPP 29.061, here is some description as follows:
-> "in order to avoid any conflict between the link-local address of
-> MS and that of the GGSN, the Interface-Identifier used by the MS to
-> build its link-local address shall be assigned by the GGSN. The GGSN
-> ensures the uniqueness of this Interface-Identifier. Then MT shall
-> then enforce the use of this Interface-Identifier by the TE"
-> 
-> In other words, in the cellular network, GGSN determines whether to
-> reply to the Router Solicitation message of UE by identifying the
-> low 64bits of UE interface's ipv6 link-local address.
-> 
-> When using a new kernel and RAWIP, kernel will generate an EUI64
-> format ipv6 link-local address, and if the device uses this address
-> to send RS, GGSN will not reply RA message.
-> 
-> Therefore, in that background, we came up with PUREIP to make kernel
-> doesn't generate a ipv6 link-local address in any address generate
-> mode.
+>
+> We probably need to add the synchronization here. E.g re-read with a
+> timeout.
+>
 
-Thanks for the better description.  That should go into the changelog
-text somewhere so that others know what is going on here with this new
-option.
+Looks like the timeout is already in set_status(). Do we really need a
+duplicated one here? And how to handle failure? Adding a return value
+to virtio_config_ops->reset() and passing the error to the upper
+layer?
 
-And are these user-visable flags documented in a man page or something
-else somewhere?  If not, how does userspace know about them?
-
-thanks,
-
-greg k-h
+Thanks,
+Yongji
