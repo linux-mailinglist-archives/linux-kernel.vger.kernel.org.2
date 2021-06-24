@@ -2,138 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580B03B2A3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12403B2A3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231893AbhFXIV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 04:21:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44526 "EHLO
+        id S231924AbhFXIV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 04:21:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbhFXIVy (ORCPT
+        with ESMTP id S231713AbhFXIVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 24 Jun 2021 04:21:54 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 050B1C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:19:33 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id i24so7281689edx.4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:19:33 -0700 (PDT)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB24C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:19:34 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id mj3so736594ejb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:19:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EaNSCMGV5qh1CquvxbjGYHMLSp9S15q2vTJ0o9vKxN0=;
-        b=TLyee5ouAerT+C1yZLIoqowVjsiAD5gKsKq5chr0XpfUfnNX9rEcymsL5yVgHGxccp
-         qaGcW9AlYF5rN8uL7o2qQALyFPLy0V+h0RC2zzwP48de8tfPqULW94YsYip0NJSTSxWd
-         lskXHzb3R9kakbSUCIk4Y6fw/ig+Uuis9FwwG23rx7+SLI8c47AS6xnxsnFkHIi6ZtPi
-         NFyzbVcrIz2gy4u0OQCr+kSlT1HJJSoUy/ryDW9vkB2KeCvNjt4Vr2wzloRyq49ExR59
-         m4leYGoCzK8EWTg+xHFQ8l3fKLte4Z4McYNcniAwTwiRXomdMHG8g+BKSYw9x8qGrghS
-         oygA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=HNUWuqrxVQTnwiFC8WouZpCK7dDNHne0/fZ7ZJMqRNQ=;
+        b=F1daisEjVlUxd1cUecOhmbxPuXNwmb5mz8qkw6FK+mOifcEWoXDMo2q2Dj6hRkWhqB
+         HR9Q/rz1q53kgfTZn5/X6PZ7+0PpTH3YfrH+0EewnrqMW8Hs+PkXAccXNSycoKhCSEkW
+         xE56jYx20Ou4V+LWVOKDA1zpu+kcbqxlT1YO8TdcxCXEBwpNB9+jkxpmENHXg3z+eV5o
+         lku/1hyhrW36UjPHgqBh4Wb8TiOJCOu5uevsvugZvoCPy7vM0nUDGSs1LLATmadiSW20
+         AsI6mQaiP25o7bIE+inNCpwoydFV8ZtuzADe4NRThBQWwDiLHlSXWPdrIdgPLEjrmwy3
+         lIlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EaNSCMGV5qh1CquvxbjGYHMLSp9S15q2vTJ0o9vKxN0=;
-        b=CARN4OED1jqSlydt7GvtFufrztRmcipqo5rMd0dK7cC6fFJC0U2+Kwlh5F/AInOt4p
-         3xHazPya1+69Jea8aju+A1nPTvPJk/DE+rr1IZa1i1qS19cXnrCQkqiE7ZzePaF+nHQF
-         R+dW6G61561qeLPrMW8d89vKQJt6whEwGFyAvAp8o+5zBNMqqVFh9BiDqLER2pu9y/OJ
-         QsX/QxDEctOkkkyJkQSiIowUTgWnEjZg7jLd4O0TH2Qs+N81qbiBg4j07tLV1Lcqj5bj
-         Wks3TIAft/0Wza/16vaxNGUCWGCNhHVDgAxtpoDt3p1LFcoVZykakUaCRpw+Ftz8Bs/I
-         jsrg==
-X-Gm-Message-State: AOAM5329Nww3VQfuqgtkTbT5gGJ1qXn1QCyBQn5gnTiRoZIO+r/V8IBb
-        132Ldiy5uAf4gBIDosMC04BxuA==
-X-Google-Smtp-Source: ABdhPJzr1GubAJdC6LBzt0jQgZyshEsbRCHypo5AkdW8ZDgu8j0BYpPoybkgWWZNtgpyGMqTij4hvA==
-X-Received: by 2002:a05:6402:18f6:: with SMTP id x54mr5689099edy.53.1624522772214;
-        Thu, 24 Jun 2021 01:19:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=HNUWuqrxVQTnwiFC8WouZpCK7dDNHne0/fZ7ZJMqRNQ=;
+        b=Y7JMzy0IS20jFfTSN8SJtLoe4NHoBcQ8jm7Z4w/sHb4ZgicSHM4PRDwE+Q9X0LjCeP
+         fISJqpoiIuqVFBENjAmdO2yZpwUcWAqg6xDnrNj7JTFC5CvQ9g2YlS5bhMvg3A5HBUCj
+         t6J4Kp46v7dA+2i4bV6A6LUFXfJ/NQcPf6ZTxShsSEWvRKT9rsiQxxwajuGlgtPoT55W
+         7qgUUSiKnWEdREhBPrNLI48osgTiXy8hYVuBbPQWpVkBFo6kx1iiEa7PrSf+NhBIjQ/B
+         xSeFOpZBU8N55yZm27/bIEfEMRlxfCMNQQkahl8v//G0Qx78C8ygpWJukElLKhZaMNP8
+         0+uw==
+X-Gm-Message-State: AOAM531Cf6uVWZCQsZ97WPUO39Ls8Hwq0nvn3qo9V8n6U3hDVihs19sw
+        GFgIcXjQc2KW0EebxvhzkwEUHg==
+X-Google-Smtp-Source: ABdhPJwJKq4o32mL1BlBWOyiUQjfUFhivfrsbCK6PIDU1fNJPj1aT9XVsopVj4NxX83HFkQQXMhTvg==
+X-Received: by 2002:a17:906:9419:: with SMTP id q25mr4115347ejx.341.1624522773141;
+        Thu, 24 Jun 2021 01:19:33 -0700 (PDT)
 Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id o4sm1374641edc.94.2021.06.24.01.19.31
+        by smtp.gmail.com with ESMTPSA id o4sm1374641edc.94.2021.06.24.01.19.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 01:19:31 -0700 (PDT)
+        Thu, 24 Jun 2021 01:19:32 -0700 (PDT)
 From:   Alexandru Ardelean <aardelean@deviqon.com>
 To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     jic23@kernel.org, pmeerw@pmeerw.net,
         Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH 1/2] iio: temperature: tmp006: convert probe to device-managed
-Date:   Thu, 24 Jun 2021 11:19:23 +0300
-Message-Id: <20210624081924.15897-1-aardelean@deviqon.com>
+Subject: [PATCH 2/2] iio: temperature: tmp006: make sure the chip is powered up in probe
+Date:   Thu, 24 Jun 2021 11:19:24 +0300
+Message-Id: <20210624081924.15897-2-aardelean@deviqon.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210624081924.15897-1-aardelean@deviqon.com>
+References: <20210624081924.15897-1-aardelean@deviqon.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change converts the driver to register via devm_iio_device_register().
-For the tmp006_powerdown() hook, this uses a devm_add_action() hook to put
-the device in powerdown mode when it's unregistered.
+When the device is probed, there's no guarantee that the device is not in
+power-down mode. This can happen if the driver is unregistered and
+re-probed.
 
-With these changes, the remove hook can be removed.
+To make sure this doesn't happen, the value of the TMP006_CONFIG register
+(which is read in the probe function and stored in the device's private
+data) is being checked to see if the MOD bits have the correct value.
 
-The i2c_set_clientdata() call is staying around as the private data is used
-in the PM routines.
+This is a fix for a somewhat-rare corner case. As it stands, this doesn't
+look like a high priority to go into the Fixes route.
 
 Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 ---
- drivers/iio/temperature/tmp006.c | 32 +++++++++++++++-----------------
- 1 file changed, 15 insertions(+), 17 deletions(-)
+ drivers/iio/temperature/tmp006.c | 33 +++++++++++++++++++++-----------
+ 1 file changed, 22 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/iio/temperature/tmp006.c b/drivers/iio/temperature/tmp006.c
-index 54976c7dad92..db1ac6029c27 100644
+index db1ac6029c27..e4943a0bc9aa 100644
 --- a/drivers/iio/temperature/tmp006.c
 +++ b/drivers/iio/temperature/tmp006.c
-@@ -193,6 +193,17 @@ static bool tmp006_check_identification(struct i2c_client *client)
+@@ -193,15 +193,23 @@ static bool tmp006_check_identification(struct i2c_client *client)
  	return mid == TMP006_MANUFACTURER_MAGIC && did == TMP006_DEVICE_MAGIC;
  }
  
-+static int tmp006_powerdown(struct tmp006_data *data)
-+{
-+	return i2c_smbus_write_word_swapped(data->client, TMP006_CONFIG,
-+		data->config & ~TMP006_CONFIG_MOD_MASK);
-+}
-+
-+static void tmp006_powerdown_cleanup(void *data)
-+{
-+	tmp006_powerdown(data);
-+}
-+
- static int tmp006_probe(struct i2c_client *client,
- 			 const struct i2c_device_id *id)
+-static int tmp006_powerdown(struct tmp006_data *data)
++static int tmp006_power(struct device *dev, bool up)
  {
-@@ -228,23 +239,11 @@ static int tmp006_probe(struct i2c_client *client,
++	struct iio_dev *indio_dev = i2c_get_clientdata(to_i2c_client(dev));
++	struct tmp006_data *data = iio_priv(indio_dev);
++
++	if (up)
++		data->config |= TMP006_CONFIG_MOD_MASK;
++	else
++		data->config &= ~TMP006_CONFIG_MOD_MASK;
++
+ 	return i2c_smbus_write_word_swapped(data->client, TMP006_CONFIG,
+-		data->config & ~TMP006_CONFIG_MOD_MASK);
++		data->config);
+ }
+ 
+-static void tmp006_powerdown_cleanup(void *data)
++static void tmp006_powerdown_cleanup(void *dev)
+ {
+-	tmp006_powerdown(data);
++	tmp006_power(dev, false);
+ }
+ 
+ static int tmp006_probe(struct i2c_client *client,
+@@ -239,7 +247,14 @@ static int tmp006_probe(struct i2c_client *client,
  		return ret;
  	data->config = ret;
  
--	return iio_device_register(indio_dev);
--}
--
--static int tmp006_powerdown(struct tmp006_data *data)
--{
--	return i2c_smbus_write_word_swapped(data->client, TMP006_CONFIG,
--		data->config & ~TMP006_CONFIG_MOD_MASK);
--}
--
--static int tmp006_remove(struct i2c_client *client)
--{
--	struct iio_dev *indio_dev = i2c_get_clientdata(client);
--
--	iio_device_unregister(indio_dev);
--	tmp006_powerdown(iio_priv(indio_dev));
-+	ret = devm_add_action(&client->dev, tmp006_powerdown_cleanup, data);
-+	if (ret < 0)
-+		return ret;
+-	ret = devm_add_action(&client->dev, tmp006_powerdown_cleanup, data);
++	if ((ret & TMP006_CONFIG_MOD_MASK) != TMP006_CONFIG_MOD_MASK) {
++		ret = tmp006_power(&client->dev, true);
++		if (ret < 0)
++			return ret;
++	}
++
++	ret = devm_add_action_or_reset(&client->dev, tmp006_powerdown_cleanup,
++				       &client->dev);
+ 	if (ret < 0)
+ 		return ret;
  
--	return 0;
-+	return devm_iio_device_register(&client->dev, indio_dev);
+@@ -249,16 +264,12 @@ static int tmp006_probe(struct i2c_client *client,
+ #ifdef CONFIG_PM_SLEEP
+ static int tmp006_suspend(struct device *dev)
+ {
+-	struct iio_dev *indio_dev = i2c_get_clientdata(to_i2c_client(dev));
+-	return tmp006_powerdown(iio_priv(indio_dev));
++	return tmp006_power(dev, false);
  }
  
- #ifdef CONFIG_PM_SLEEP
-@@ -277,7 +276,6 @@ static struct i2c_driver tmp006_driver = {
- 		.pm	= &tmp006_pm_ops,
- 	},
- 	.probe = tmp006_probe,
--	.remove = tmp006_remove,
- 	.id_table = tmp006_id,
- };
- module_i2c_driver(tmp006_driver);
+ static int tmp006_resume(struct device *dev)
+ {
+-	struct tmp006_data *data = iio_priv(i2c_get_clientdata(
+-		to_i2c_client(dev)));
+-	return i2c_smbus_write_word_swapped(data->client, TMP006_CONFIG,
+-		data->config | TMP006_CONFIG_MOD_MASK);
++	return tmp006_power(dev, true);
+ }
+ #endif
+ 
 -- 
 2.31.1
 
