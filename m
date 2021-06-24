@@ -2,168 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57293B2A82
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0368D3B2A96
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbhFXIl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 04:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
+        id S229994AbhFXIp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 04:45:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhFXIl4 (ORCPT
+        with ESMTP id S229890AbhFXIp0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 04:41:56 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C94C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:39:36 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so5457640pjs.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:39:36 -0700 (PDT)
+        Thu, 24 Jun 2021 04:45:26 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD76C061574;
+        Thu, 24 Jun 2021 01:43:06 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id u2so2596436plf.3;
+        Thu, 24 Jun 2021 01:43:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raydium-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ajTOyjYSJ0oov782itPNsymFCO3cX1BrHaaPfNpFmD8=;
-        b=0m/vunNgQ/tTu6nbV8YIx/FLwYSZsKUbsNT5Hr9jX6QIq7caEoNGng3fmn66lra4Qi
-         81gYzUC1JWSnFnJso883DhJkgNKEHBx85rfTl8kY77xnku+bLpPC/0PAZsEskBcuR1Pv
-         YSqudlZZvFSAqWcHTAYJvo+KAlJ5Mo4ABkUrNDet8JpXYuwT2JPCu0WDObWTotWeY3f6
-         P0uWI6yxoyCBYXAmK0mxNc8PjCj+8HTPYuWx6LsnoB/Xls+XcUXPFSux52xMLySiD2kP
-         gckhbvvwhc/AJYmJGAfbIq2vlaanj+BS5yym8BlKJA/5iToPsCCwn/ykCp6d6U8cyo5j
-         MzWQ==
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=yhvFMq52QAZ9Grg2JNZMftQHgs3RA/23cRzSXZS17k0=;
+        b=gAOPVlMk/C7twisLQPwKCNWWewikvdh3rxAsE3ZtniqnTTajI/NMXYxiFGdNgFsAb5
+         HygkoSZIJ35Gv0csn5ROrHrh88J/UJu+eQftLB0ieYLqxUsTshCjLCXS6gCtoawRaivr
+         09ywa3Xbj5hpxhL9dwXklJBlZskMpYTiquDzecxyLb9cNgD5q6A07FqSvRwXDFm8rCjX
+         BNwM+/+ntQwzLzmsj9QUq7rwCh6LY1EpIQpDwzEMVK8zxcfbTYEjGD1dfARZQBO2ATzQ
+         bXhbvn6/C4gpLxmOLhsNYYF/nPrsfEvzkHwVbcZduLr1uAs8pjNAgfhm1dhPRaqpCZmK
+         qi+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ajTOyjYSJ0oov782itPNsymFCO3cX1BrHaaPfNpFmD8=;
-        b=eVzW8X/79bZJrXWc8bWF51QMj1MBV8ng7g9EU5MTHnDNsGkiQC9ZwHHqIW7wMBloNX
-         gwcUcFa+d44OGrEetRVpOnwtd6MwGhNcuez7iRr5tNwm22JlrYX5qs4BbU3mex1J3v5U
-         /LzJ0gIyCNVGu0UbUvHXfQqSkLwPcCvn1C8rGTRoRg8QG72XiWTI2rfj71wTSZjROEUD
-         JZybba5TeofRnZQb9a7CLAJfs5PjQ4ABzvg5GJtnFEc30eTIO2sAa3G4rzISX2qJUm7q
-         GBmRprAabrnJOU9EeEiwMvUen6pJyL8Uo9HVJziYkkFUe4UhlSNsmcFJjchc63TfI/uS
-         mf2g==
-X-Gm-Message-State: AOAM530dlj+otcSinlzZwUG6EhSrwx1RQWGAghyCrM7gl7oa6wIQ3d8v
-        WsEO0f9YxAaAsLejFT/Lg43vUA==
-X-Google-Smtp-Source: ABdhPJwKthPtxXkaae/OY1X7xkFWlJNVbQx2G8tigfr8Gcu4lDaNyRzwQPzQRqHW2/Moe/zYH95Zdw==
-X-Received: by 2002:a17:90a:65c8:: with SMTP id i8mr14220646pjs.207.1624523976337;
-        Thu, 24 Jun 2021 01:39:36 -0700 (PDT)
-Received: from localhost.localdomain ([2402:7500:486:1484:8b7e:ac0:b691:20b0])
-        by smtp.gmail.com with ESMTPSA id a25sm2080228pff.54.2021.06.24.01.39.34
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=yhvFMq52QAZ9Grg2JNZMftQHgs3RA/23cRzSXZS17k0=;
+        b=BU3nHJhNpbqzNyn2Kk9HrmtaroFtkm9XNqK5e5rbR+Z/NMmGxaFRQCbSavR9e0lgxi
+         Fto6wNZ7gHIXsYpSxP7JsWapZEHQ7HstMj4Mok7pyhxT6U0JvAV4VjCJ8v1RPRUoUtaa
+         QdA0PE126I/bgM2S3EOjE2wcFy9mVGyhCrymp5kPkN8rGn6AhtPYFFQUtDBce5xyhlpA
+         HfRQsknWKQWdXZYWvm7l7SzIADJtcUP+wr4aZYOzjWrbBw2lg898vMPB+7nLlVOlc8hX
+         yS4kaHsTLtjhHRdHBz5UNjEAlDm3mHWI41vcsDCosfydV+awa5iNsebEytBkmAfEvrQ7
+         R4Lw==
+X-Gm-Message-State: AOAM530FY2fKReHTCME6EoyzKwO3TJNySRwRM0XlkEd8kn6DDgZAo7Bc
+        jhQpyZRVnO8q12Jf13WlELw=
+X-Google-Smtp-Source: ABdhPJxPYtDJj0lFNs0Ok5TeYJmivmtsbDnnr/kiA2/ldwDSYWrbmF8IsiSMPIQHeLM0imoUnt26JQ==
+X-Received: by 2002:a17:90b:793:: with SMTP id l19mr14007232pjz.111.1624524186360;
+        Thu, 24 Jun 2021 01:43:06 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id 23sm1841779pjw.28.2021.06.24.01.43.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 01:39:36 -0700 (PDT)
-From:   "simba.hsu" <simba.hsu@raydium.corp-partner.google.com>
-X-Google-Original-From: "simba.hsu" <simba.hsu@rad-ic.com>
-To:     dmitry.torokhov@gmail.com, simba.hsu@rad-ic.com,
-        furquan@google.com, seanpaul@chromium.org, rrangle@chromium.org
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        KP.li@rad-ic.com, jeffrey.lin@rad-ic.com
-Subject: [PATCH] Input: raydium_i2c_ts - read device version in bootloader mode
-Date:   Thu, 24 Jun 2021 16:39:13 +0800
-Message-Id: <20210624083913.14936-1-simba.hsu@rad-ic.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 24 Jun 2021 01:43:06 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 18:43:00 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 1/6] KVM: x86/mmu: release audited pfns
+To:     Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Stevens <stevensd@chromium.org>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        James Morse <james.morse@arm.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvmarm@lists.cs.columbia.edu,
+        kvm-ppc@vger.kernel.org, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Sean Christopherson <seanjc@google.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Will Deacon <will@kernel.org>
+References: <20210624035749.4054934-1-stevensd@google.com>
+        <20210624035749.4054934-2-stevensd@google.com>
+In-Reply-To: <20210624035749.4054934-2-stevensd@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <1624524156.04etgk7zmz.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support reading device ID when controller is in bootloader
-mode, which may happen if firmware update has been interrupted.
+Excerpts from David Stevens's message of June 24, 2021 1:57 pm:
+> From: David Stevens <stevensd@chromium.org>
 
-Signed-off-by: simba.hsu <simba.hsu@rad-ic.com>
----
- drivers/input/touchscreen/raydium_i2c_ts.c | 52 ++++++++++++++++++----
- 1 file changed, 44 insertions(+), 8 deletions(-)
+Changelog? This looks like a bug, should it have a Fixes: tag?
 
-diff --git a/drivers/input/touchscreen/raydium_i2c_ts.c b/drivers/input/touchscreen/raydium_i2c_ts.c
-index 4d2d22a86977..d3f8cc3285a2 100644
---- a/drivers/input/touchscreen/raydium_i2c_ts.c
-+++ b/drivers/input/touchscreen/raydium_i2c_ts.c
-@@ -36,7 +36,8 @@
- #define RM_CMD_BOOT_CHK		0x33		/* send data check */
- #define RM_CMD_BOOT_READ	0x44		/* send wait bl data ready*/
- 
--#define RM_BOOT_RDY		0xFF		/* bl data ready */
-+#define RM_BOOT_RDY		0xFF			/* bl data ready */
-+#define RM_BOOT_CMD_READHWID	0x0E	/* read hwid */
- 
- /* I2C main commands */
- #define RM_CMD_QUERY_BANK	0x2B
-@@ -155,6 +156,7 @@ static int raydium_i2c_xfer(struct i2c_client *client, u32 addr,
- 	 * sent first. Else, skip the header i.e. xfer[0].
- 	 */
- 	int xfer_start_idx = (addr > 0xff) ? 0 : 1;
-+
- 	xfer_count -= xfer_start_idx;
- 
- 	ret = i2c_transfer(client->adapter, &xfer[xfer_start_idx], xfer_count);
-@@ -290,6 +292,43 @@ static int raydium_i2c_sw_reset(struct i2c_client *client)
- 	return 0;
- }
- 
-+static int raydium_i2c_query_ts_bootloader_info(struct raydium_data *ts)
-+{
-+	struct i2c_client *client = ts->client;
-+	static const u8 get_hwid[7] = {RM_BOOT_CMD_READHWID,
-+				0x10, 0xc0, 0x01, 0x00, 0x04, 0x00};
-+	u8 rbuf[5] = {0};
-+	u32 hw_ver;
-+	int error;
-+
-+	error = raydium_i2c_send(client, RM_CMD_BOOT_WRT,
-+			 get_hwid, sizeof(get_hwid));
-+	if (error) {
-+		dev_err(&client->dev, "WRT HWID command failed: %d\n", error);
-+		return error;
-+	}
-+
-+	error = raydium_i2c_send(client, RM_CMD_BOOT_ACK, rbuf, 1);
-+	if (error) {
-+		dev_err(&client->dev, "Ack HWID command failed: %d\n", error);
-+		return error;
-+	}
-+
-+	error = raydium_i2c_read(client, RM_CMD_BOOT_CHK, rbuf, sizeof(rbuf));
-+	if (error) {
-+		dev_err(&client->dev, "Read HWID command failed: %d (%4ph)\n",
-+			error, rbuf + 1);
-+		hw_ver = 0xffffffffUL;
-+	} else
-+		hw_ver = get_unaligned_be32(rbuf + 1);
-+
-+	ts->info.hw_ver = cpu_to_le32(hw_ver);
-+	ts->info.main_ver = 0xff;
-+	ts->info.sub_ver = 0xff;
-+
-+	return error;
-+}
-+
- static int raydium_i2c_query_ts_info(struct raydium_data *ts)
- {
- 	struct i2c_client *client = ts->client;
-@@ -388,13 +427,10 @@ static int raydium_i2c_initialize(struct raydium_data *ts)
- 	if (error)
- 		ts->boot_mode = RAYDIUM_TS_BLDR;
- 
--	if (ts->boot_mode == RAYDIUM_TS_BLDR) {
--		ts->info.hw_ver = cpu_to_le32(0xffffffffUL);
--		ts->info.main_ver = 0xff;
--		ts->info.sub_ver = 0xff;
--	} else {
-+	if (ts->boot_mode == RAYDIUM_TS_BLDR)
-+		raydium_i2c_query_ts_bootloader_info(ts);
-+	else
- 		raydium_i2c_query_ts_info(ts);
--	}
- 
- 	return error;
- }
-@@ -1218,7 +1254,7 @@ static SIMPLE_DEV_PM_OPS(raydium_i2c_pm_ops,
- 			 raydium_i2c_suspend, raydium_i2c_resume);
- 
- static const struct i2c_device_id raydium_i2c_id[] = {
--	{ "raydium_i2c" , 0 },
-+	{ "raydium_i2c", 0 },
- 	{ "rm32380", 0 },
- 	{ /* sentinel */ }
- };
--- 
-2.25.1
+Thanks,
+Nick
 
+>=20
+> Signed-off-by: David Stevens <stevensd@chromium.org>
+> ---
+>  arch/x86/kvm/mmu/mmu_audit.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/arch/x86/kvm/mmu/mmu_audit.c b/arch/x86/kvm/mmu/mmu_audit.c
+> index cedc17b2f60e..97ff184084b4 100644
+> --- a/arch/x86/kvm/mmu/mmu_audit.c
+> +++ b/arch/x86/kvm/mmu/mmu_audit.c
+> @@ -121,6 +121,8 @@ static void audit_mappings(struct kvm_vcpu *vcpu, u64=
+ *sptep, int level)
+>  		audit_printk(vcpu->kvm, "levels %d pfn %llx hpa %llx "
+>  			     "ent %llxn", vcpu->arch.mmu->root_level, pfn,
+>  			     hpa, *sptep);
+> +
+> +	kvm_release_pfn_clean(pfn);
+>  }
+> =20
+>  static void inspect_spte_has_rmap(struct kvm *kvm, u64 *sptep)
+> --=20
+> 2.32.0.93.g670b81a890-goog
+>=20
+>=20
