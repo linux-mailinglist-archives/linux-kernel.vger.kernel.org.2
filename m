@@ -2,73 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F5A3B36FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6923B3701
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232888AbhFXT3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 15:29:02 -0400
-Received: from mail-il1-f176.google.com ([209.85.166.176]:39789 "EHLO
-        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232729AbhFXT27 (ORCPT
+        id S232626AbhFXTb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 15:31:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232029AbhFXTb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 15:28:59 -0400
-Received: by mail-il1-f176.google.com with SMTP id o10so2566458ils.6;
-        Thu, 24 Jun 2021 12:26:39 -0700 (PDT)
+        Thu, 24 Jun 2021 15:31:56 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84682C061574;
+        Thu, 24 Jun 2021 12:29:36 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id hz1so11260391ejc.1;
+        Thu, 24 Jun 2021 12:29:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l0vCZVJmlxeZsHP1JHZxI0c+0Gn87IYlynAirE52ORE=;
+        b=HWs70M2rMsBn+n0I+yCR6V0lcXTcc5lOy9y+1P1OuFVoXbPbE+pa7mAROQTLu8I6i0
+         +5Ch4iiHXSMBd6U/AlKh/M82F+UAIJIHUl8DFDb2qpfERlWuKqrVtQg2bSEcGX0ZQQQs
+         ZEweBw6cGsdvqbKKMibmup65JwEyyfhopU6G8Yq6RW2Dgbc6T/ZB0GfXxzGbfJs73eUU
+         PNvYUMQ/wEgujB3FCkM9qby/sfU1b2nGqnb4z3qemiXfZuxmLfKCx7kyQrMBOLFQg1bk
+         Z3UR8+nFp1/tPw6XrZ0cqCYnprT/LqnYL7ZerZU9qH4J/dnwMLrbh1zg5MxHEglYro38
+         gRVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dSG5iyMydBCniM77uDjax6qhqUdcjRFfdotREnD1yf8=;
-        b=abDSVqawn8UwNoucomArvWXDpdyREcH8uNTHZiJNGXPMgZlXW85hTf/FzYddo48z04
-         cxDSsrNi0jnNKq3+Fa7G3MsM51ZzqhyiEB/rT+pnz84J/gpCNiDC7U9iVfAQyv4btbSN
-         uynlGhOsuhxP9Xnx2ynjSt6BrzgyS1CdQ/QzkZtQ32JMJkWDD+Co2UJ5waVcNp0leYiE
-         x28tFRJu4mNIrq/W/3NeeLOddnx1wX8Dz/f/pyhwSsZ16jqJNVz0lDKS7qH45MgfupGe
-         fUxvNiaTI/fIVlfO6oxPUbkfvPB8vbZQru0eydP0X106OJ+Z7mxGuvM8g+gGjMwpNdWf
-         xRAw==
-X-Gm-Message-State: AOAM531oMEyw017gIzuL8X1HG1v05GQTMA10ZVu7eOfV/kTnHYoqqT5H
-        XoB02lmu3+VmkixkOVqHrg==
-X-Google-Smtp-Source: ABdhPJxosHZ6UCf4ZBWT4AAFBdYXYV2tlYS5vA1EcK/D2wvxLEbubSX6DPNEoAEOImWhjPNxSl5vGw==
-X-Received: by 2002:a05:6e02:1486:: with SMTP id n6mr4760863ilk.174.1624562799612;
-        Thu, 24 Jun 2021 12:26:39 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id q7sm1770304iob.49.2021.06.24.12.26.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 12:26:38 -0700 (PDT)
-Received: (nullmailer pid 1847240 invoked by uid 1000);
-        Thu, 24 Jun 2021 19:26:34 -0000
-Date:   Thu, 24 Jun 2021 13:26:34 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Martin Botka <martin.botka@somainline.org>
-Cc:     marijn.suijten@somainline.org, konrad.dybcio@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Sivaprakash Murugesan <sivaprak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, jamipkettunen@somainline.org,
-        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH V3 2/3] dt-bindings: mailbox: Add binding for sm6125
-Message-ID: <20210624192634.GA1847185@robh.at.kernel.org>
-References: <20210612094631.89980-1-martin.botka@somainline.org>
- <20210612094631.89980-2-martin.botka@somainline.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l0vCZVJmlxeZsHP1JHZxI0c+0Gn87IYlynAirE52ORE=;
+        b=Sm3NJ4aDapMW/L2hEJ98pNuNTTuRrq7s4/HtTasyJyp3wdHtpAqFFBQW70BRsgvO18
+         IEMi2A445ftnwLJ1OsIDmSz6WFhUmut79jpsclcJOBsKK/eKCAoSv5HBdaPdJHk+p4Dz
+         IKLeTvbFpZRw2QHtiXgA7QoToFEkL/m3zaJ4eZPhrA2giyleTdIDzIF0oo4U3VgygPUH
+         aCeKz4zVC/m7Xzu+YUDVNMufkBKLaeRc1yGRH3C7lNwhVVsUuqrOCi3FW6HIHsWsXvIq
+         Lt/JCyCIFgkYmuohgdXFMs9zJ8qvJjW+Oiyj1Es3tmKPe+ppHkst05gV5p5/jx9THynr
+         dbuA==
+X-Gm-Message-State: AOAM530OoxzYbfVrM8EpY+7uwBp4guYdols4JrsHf4heMias0rLWRXaG
+        ULbQQACpIPyElgGWxZrn+W9krCmWNU7VsgzjrW0=
+X-Google-Smtp-Source: ABdhPJxIan0loZsBJnWMG+041AAK3GFfFqb3bxdtvzCHrXU4hHTdpydPiGhW4eBn/UxiCFR6PViKPB+0ltwcK0c+P4g=
+X-Received: by 2002:a17:906:2844:: with SMTP id s4mr6760586ejc.263.1624562974956;
+ Thu, 24 Jun 2021 12:29:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210612094631.89980-2-martin.botka@somainline.org>
+References: <20210612140559.20022-1-paskripkin@gmail.com>
+In-Reply-To: <20210612140559.20022-1-paskripkin@gmail.com>
+From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date:   Fri, 25 Jun 2021 04:29:22 +0900
+Message-ID: <CAKFNMokV7WC_6LVBKJ2mN26w91ZT=rfLvzD5v4cYahHH2ZUWpQ@mail.gmail.com>
+Subject: Re: [PATCH] nilfs2: fix memory leak in nilfs_sysfs_delete_device_group
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Pavel Skripkin <paskripkin@gmail.com>,
+        Vyacheslav Dubeyko <Vyacheslav.Dubeyko@hgst.com>,
+        linux-nilfs <linux-nilfs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 12 Jun 2021 11:46:29 +0200, Martin Botka wrote:
-> This patch adds the binding for sm6125
-> 
-> Signed-off-by: Martin Botka <martin.botka@somainline.org>
-> ---
-> Changes in V3:
-> Add this file
->  .../devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml      | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+Hi Andrew,
 
-Acked-by: Rob Herring <robh@kernel.org>
+On Sat, Jun 12, 2021 at 11:06 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
+>
+> My local syzbot instance hit memory leak in nilfs2.
+> The problem was in missing kobject_put() in
+> nilfs_sysfs_delete_device_group().
+>
+> kobject_del() does not call kobject_cleanup() for
+> passed kobject and it leads to leaking duped
+> kobject name if kobject_put() was not called.
+>
+> Fail log:
+>
+> BUG: memory leak
+> unreferenced object 0xffff8880596171e0 (size 8):
+>   comm "syz-executor379", pid 8381, jiffies 4294980258 (age 21.100s)
+>   hex dump (first 8 bytes):
+>     6c 6f 6f 70 30 00 00 00                          loop0...
+>   backtrace:
+>     [<ffffffff81a2c656>] kstrdup+0x36/0x70 mm/util.c:60
+>     [<ffffffff81a2c6e3>] kstrdup_const+0x53/0x80 mm/util.c:83
+>     [<ffffffff83ccc698>] kvasprintf_const+0x108/0x190 lib/kasprintf.c:48
+>     [<ffffffff83e99926>] kobject_set_name_vargs+0x56/0x150 lib/kobject.c:289
+>     [<ffffffff83e99fd9>] kobject_add_varg lib/kobject.c:384 [inline]
+>     [<ffffffff83e99fd9>] kobject_init_and_add+0xc9/0x160 lib/kobject.c:473
+>     [<ffffffff8304e840>] nilfs_sysfs_create_device_group+0x150/0x800 fs/nilfs2/sysfs.c:999
+>     [<ffffffff830159f6>] init_nilfs+0xe26/0x12b0 fs/nilfs2/the_nilfs.c:637
+>
+> Fixes: da7141fb78db ("nilfs2: add /sys/fs/nilfs2/<device> group")
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+
+This fix looks correct to me.
+
+Acked-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+
+Thanks,
+Ryusuke Konishi
+
+> ---
+>  fs/nilfs2/sysfs.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+> index 303d71430bdd..9c6c0e2e5880 100644
+> --- a/fs/nilfs2/sysfs.c
+> +++ b/fs/nilfs2/sysfs.c
+> @@ -1053,6 +1053,7 @@ void nilfs_sysfs_delete_device_group(struct the_nilfs *nilfs)
+>         nilfs_sysfs_delete_superblock_group(nilfs);
+>         nilfs_sysfs_delete_segctor_group(nilfs);
+>         kobject_del(&nilfs->ns_dev_kobj);
+> +       kobject_put(&nilfs->ns_dev_kobj);
+>         kfree(nilfs->ns_dev_subgroups);
+>  }
+>
+> --
+> 2.32.0
+>
