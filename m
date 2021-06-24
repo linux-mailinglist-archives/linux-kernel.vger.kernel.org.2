@@ -2,152 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F953B2707
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 07:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76AD3B270A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 07:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhFXFys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 01:54:48 -0400
-Received: from mga11.intel.com ([192.55.52.93]:13025 "EHLO mga11.intel.com"
+        id S230429AbhFXF4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 01:56:24 -0400
+Received: from www.zeus03.de ([194.117.254.33]:45496 "EHLO mail.zeus03.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230490AbhFXFym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 01:54:42 -0400
-IronPort-SDR: xB/0foU3Fp3R8n37Ulc4FPZsf43wweObL3EJi/xvkyM0eCPqwAcFYZpP1/DtKRl/e+GylkG0BP
- G54MNVQ8adtA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="204393799"
-X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
-   d="scan'208";a="204393799"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 22:52:06 -0700
-IronPort-SDR: ui/P9D01LSr2z7kxpyRmG7ZclFxhQZDgisqApsmdsNwLeZt4FdNTDlW8uw45D6Z/cU8PTyTKS9
- 7Mo2a5IUlVbw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
-   d="scan'208";a="406531260"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by orsmga006.jf.intel.com with ESMTP; 23 Jun 2021 22:52:02 -0700
-Subject: Re: [PATCH v4 06/10] scsi: ufs: Remove host_sem used in
- suspend/resume
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-8-git-send-email-cang@codeaurora.org>
- <ed59d61a-6951-2acd-4f89-40f8dc5015e1@intel.com>
- <9105f328ee6ce916a7f01027b0d28332@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <a87e5ca5-390f-8ca0-41bf-27cdc70e3316@intel.com>
-Date:   Thu, 24 Jun 2021 08:52:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230252AbhFXF4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 01:56:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=n67uatpfXLyIHHV1EPlcxgPblzft
+        RI+gNuElRxsC2yU=; b=cUwHMPxg75kA9h22EEqUvjhfYHFHAN9lH87J/RH5YL26
+        3+4YrGUc+tk+LbpQT3KJcd+OgLxjZKve51qCycNj0lcSdbesFQFwKPWlseLgR5D0
+        6CJbhRGWPFl9lvlN8GuZzPv9YvXNj3blwiybH4IrXv+xcQBhp1V7+K5mh2m0kfo=
+Received: (qmail 2848297 invoked from network); 24 Jun 2021 07:54:02 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 24 Jun 2021 07:54:02 +0200
+X-UD-Smtp-Session: l3s3148p1@WDY7pnzFns4gAwDPXwgVAAQm652OYQ07
+Date:   Thu, 24 Jun 2021 07:53:58 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH RFC] usb: renesas_usbhs: fifo: : use proper DMAENGINE API
+ for termination
+Message-ID: <YNQd9hS+hqPYvLNp@kunai>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210623100304.3697-1-wsa+renesas@sang-engineering.com>
+ <TY2PR01MB3692C7B6E0FD027B5C3E05B5D8079@TY2PR01MB3692.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <9105f328ee6ce916a7f01027b0d28332@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gb/GYRUtYYZSy6bC"
+Content-Disposition: inline
+In-Reply-To: <TY2PR01MB3692C7B6E0FD027B5C3E05B5D8079@TY2PR01MB3692.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/06/21 5:16 am, Can Guo wrote:
-> On 2021-06-23 22:30, Adrian Hunter wrote:
->> On 23/06/21 10:35 am, Can Guo wrote:
->>> To protect system suspend/resume from being disturbed by error handling,
->>> instead of using host_sem, let error handler call lock_system_sleep() and
->>> unlock_system_sleep() which achieve the same purpose. Remove the host_sem
->>> used in suspend/resume paths to make the code more readable.
->>>
->>> Suggested-by: Bart Van Assche <bvanassche@acm.org>
->>> Signed-off-by: Can Guo <cang@codeaurora.org>
->>> ---
->>>  drivers/scsi/ufs/ufshcd.c | 12 +++++++-----
->>>  1 file changed, 7 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->>> index 3695dd2..a09e4a2 100644
->>> --- a/drivers/scsi/ufs/ufshcd.c
->>> +++ b/drivers/scsi/ufs/ufshcd.c
->>> @@ -5907,6 +5907,11 @@ static void ufshcd_clk_scaling_suspend(struct ufs_hba *hba, bool suspend)
->>>
->>>  static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
->>>  {
->>> +    /*
->>> +     * It is not safe to perform error handling while suspend or resume is
->>> +     * in progress. Hence the lock_system_sleep() call.
->>> +     */
->>> +    lock_system_sleep();
->>
->> It looks to me like the system takes this lock quite early, even before
->> freezing tasks, so if anything needs the error handler to run it will
->> deadlock.
-> 
-> Hi Adrian,
-> 
-> UFS/hba system suspend/resume does not invoke or call error handling in a
-> synchronous way. So, whatever UFS errors (which schedules the error handler)
-> happens during suspend/resume, error handler will just wait here till system
-> suspend/resume release the lock. Hence no worries of deadlock here.
 
-It looks to me like the state can change to UFSHCD_STATE_EH_SCHEDULED_FATAL
-and since user processes are not frozen, nor file systems sync'ed, everything
-is going to deadlock.
-i.e.
-I/O is blocked waiting on error handling
-error handling is blocked waiting on lock_system_sleep()
-suspend is blocked waiting on I/O
+--gb/GYRUtYYZSy6bC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
-> Thanks,
-> 
-> Can Guo.
-> 
->>
->>>      ufshcd_rpm_get_sync(hba);
->>>      if (pm_runtime_status_suspended(&hba->sdev_ufs_device->sdev_gendev) ||
->>>          hba->is_wlu_sys_suspended) {
->>> @@ -5951,6 +5956,7 @@ static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
->>>          ufshcd_clk_scaling_suspend(hba, false);
->>>      ufshcd_clear_ua_wluns(hba);
->>>      ufshcd_rpm_put(hba);
->>> +    unlock_system_sleep();
->>>  }
->>>
->>>  static inline bool ufshcd_err_handling_should_stop(struct ufs_hba *hba)
->>> @@ -9053,16 +9059,13 @@ static int ufshcd_wl_suspend(struct device *dev)
->>>      ktime_t start = ktime_get();
->>>
->>>      hba = shost_priv(sdev->host);
->>> -    down(&hba->host_sem);
->>>
->>>      if (pm_runtime_suspended(dev))
->>>          goto out;
->>>
->>>      ret = __ufshcd_wl_suspend(hba, UFS_SYSTEM_PM);
->>> -    if (ret) {
->>> +    if (ret)
->>>          dev_err(&sdev->sdev_gendev, "%s failed: %d\n", __func__,  ret);
->>> -        up(&hba->host_sem);
->>> -    }
->>>
->>>  out:
->>>      if (!ret)
->>> @@ -9095,7 +9098,6 @@ static int ufshcd_wl_resume(struct device *dev)
->>>          hba->curr_dev_pwr_mode, hba->uic_link_state);
->>>      if (!ret)
->>>          hba->is_wlu_sys_suspended = false;
->>> -    up(&hba->host_sem);
->>>      return ret;
->>>  }
->>>  #endif
->>>
+Hi Shimoda-san,
 
+> In backporting point of view, I guess it's better to apply my fixed patch at first,
+> and then apply this DMAENGINE patch. But, what do you think?
+
+Yes, I agree. Could you kindly notify me when your patch is accepted
+upstream? Or CC me on your patch?
+
+Thank you and kind regards,
+
+   Wolfram
+
+
+--gb/GYRUtYYZSy6bC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDUHfEACgkQFA3kzBSg
+KbYHZA/8DALuavEWfJkui0rm56H2wrwUwiegsSfvfGZrlpRuW36i71US4mr0GZKn
+NbeekEeDpygQK0n5zZwZFzg8gNMaHOvCaaWy+BFxvY90l2PlnXiDLgpFd7e93DPe
+ZfpxzM4uohYPzLjeQNy+hsDp/Kj8BJV3ZXCzaBHL0qnCcTrBb/EbKfo0pcCVR6aG
+y0MiD9WZpk+gwbKpGWja5HcAF9M39e+9yRgv1TZIZ/K/oXDcELm4MXRqT54vNFE4
+s5Exg1OXEi7JlMVj8LYRGU/aZwD6dCXKD/OjefD90olP513pTKLS/q9UayyUVApO
+FBDPQn8QqurgDg+qPBo9q4Yx4h0uXI/RLVgdOwvnJTHEunR2TWV9EyO7sxMnIFH+
+m7XnJbVwGwIrwCCk39bGcyaPHahoBVNif/FWDfkuN/EJ013CLDnvtyUkdd9Pl8/1
+CXAFoFnYD3EaEjODq6DMjnGJv962faHjs9W/HWzcauYG44Q95tdki7Hu6N4AMYJV
+JfV42nw92+IHEkCnjusI0r274FjEf01oYWwOza+qwHfVuJ2n2HThKsF445OXDCMa
+WXqpyAOimXPRjzfEotc4yeG1c2sxyVKfaUVEt02fTzOgGCdPSxNWqHVrGm8Bc22A
+NczoQmr5rL2UF59LEdXYAaotglS7wFhFrTcOUj07XveE6e4hYuY=
+=0bFP
+-----END PGP SIGNATURE-----
+
+--gb/GYRUtYYZSy6bC--
