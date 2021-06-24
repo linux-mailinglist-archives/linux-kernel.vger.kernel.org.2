@@ -2,189 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56863B24D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 293EC3B24D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhFXCTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 22:19:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbhFXCTL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 22:19:11 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E30C061574;
-        Wed, 23 Jun 2021 19:16:53 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id n12so3397688pgs.13;
-        Wed, 23 Jun 2021 19:16:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=m8BjcwU8RuYcSDssG95FGdDIkS7+nA+sQUBByLWGNG4=;
-        b=QTjJ0PHb0XfM3um70pjfej+BMT7hzzy+l6oyKB9VHv1yuK7EEbnPJ5HyX/UrMzRWzp
-         ETJyje8dwe2dSpv68zq1H/q60Pv4woXhkUWNI4JqAaFiDOE+P5hJTZxUQuo2fKLkDnGN
-         U7LGfPz/dqMa8BXc+jZCdbutlI+BEgx2w+p34zNBgHsnSOShsxmPfLQJYjaZ0dgsYxki
-         9cX09qR4tsp/vqiu6shO4A4dhCpTvc5K0yjpjB829nFiSpkDRulJ4btkCUx2I63Cpf1i
-         vkaWC+08V3j4tOBgxo7Gj8iXuu7VwI2koEPmcdu68D/QFK8v2QCrYRYSi0vg3hJD6Plo
-         4exg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=m8BjcwU8RuYcSDssG95FGdDIkS7+nA+sQUBByLWGNG4=;
-        b=O046G1Li/hjmKHDdI00ky098+bCqOU5jKTLf35t5ySB6Zq9UM+rhyYb33JxqSxjCKt
-         pjqGLDV7z022PK9TQJYR8AvwJ1+QT8y7XGbwx9eW3benGJuhxd3xCGZOoqH5TErkNzAO
-         vl2sXKhkNq5wgSiBPvxbiSkrwIi6Fy/0keN9KrRuWKvAJ2OKZRC5U81r9gf8486r2pEL
-         1B2zFApz7AoLwWfaZUQdKxMPgLKRxh8rpjwMlRl9VZfdngRgWLI/JyEpPBamdu2bOF5K
-         pA9mX4s5FrygB34hQDoiEqWiCU1C9MC0rs3NbUtk3JB3gfgvVhXQXdG2/ei0gzz4Hrx/
-         aAqA==
-X-Gm-Message-State: AOAM531clobNMoC7fYiETxquC5MPV+9ulDSKsR0S6d9P7paq6eDU4C4I
-        ESMmq08Qc6CLsqo/1VyI22L2DH51P2JQZQ==
-X-Google-Smtp-Source: ABdhPJxkHe8Gdy4DGLjJ5ufvI3fLz9EaGvdWutVooqHfCPReTEGzkVYLYtedVN+cFlFsqJb1U65ISQ==
-X-Received: by 2002:a62:14c8:0:b029:2fb:3d9e:bc35 with SMTP id 191-20020a6214c80000b02902fb3d9ebc35mr2657145pfu.40.1624501013338;
-        Wed, 23 Jun 2021 19:16:53 -0700 (PDT)
-Received: from gli-System-Product-Name.genesyslogic.com.tw (60-251-58-169.HINET-IP.hinet.net. [60.251.58.169])
-        by smtp.gmail.com with ESMTPSA id m4sm6228794pjv.41.2021.06.23.19.16.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 19:16:52 -0700 (PDT)
-From:   Renius Chen <reniuschengl@gmail.com>
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben.Chuang@genesyslogic.com.tw,
-        Renius Chen <reniuschengl@gmail.com>
-Subject: [PATCH] mmc: sdhci-pci-gli: Improve Random 4K Read Performance of GL9763E
-Date:   Thu, 24 Jun 2021 10:16:48 +0800
-Message-Id: <20210624021648.101033-1-reniuschengl@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S229853AbhFXCWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 22:22:12 -0400
+Received: from mail-eopbgr60081.outbound.protection.outlook.com ([40.107.6.81]:49725
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229759AbhFXCWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 22:22:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oT+92rYMacgHSnkEGPmHcp8b7Wbhj8t/a8iL80YxDYgJH7UuU/q7OFSzlcM+ZTj+2//KRLZYLJV+HRZdCeJN9OcO1f+vidKtEV99nKU7Q2MYEiN6hmXjmkf+JQCt5GTrCNRMd4D/DkfMFxKtwQYIfbRxzFjQS9CXAgU6II3SwraCzSMuFnYpcFgJQ6Ct2HjQOwzin0/5ixrg33F+VhK1PpRBDZGzHhB2LtJtopSwaIGk0m2yV/v0B52jxt/eqLLeZfavqIKs3NmA+bRVkyVqRE1OgdUAy8VkyMjVwAWUwwf8BSbp9jNSaQ0h5/l8q6IivbMbdFEHDHizZUjQzpO4/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JNkvtLumL2wvyRNCP5MPqiFHUnWp0gpWOfSBn8rZmGg=;
+ b=HoPL6n9yJbE8krzmybYfINVkttWr0sMARXwhv1pT9Q/Kv7tD6w+4s9vQ0RDP6OtROqKGuwH3+sP7o7schm1snAgDg3j3myMvHCHaKSKH+vEfRDGlz5Rf+hDojUw6FRtkUxlxcre+laayQO/kTpILgo0C8GeEIouizcrISW+BTnyRg86Ef9H7+JXQeO1AkSGDuK3MzL1wgAIQCJVlIu7D9N9+EB8U15c/hMgJNp/ht8Nr0Nem1TE8Q5DARJm24UHhQWNyg8/ZM12jH4/77PTFzbfAbu/ykIXYLQILxpw6xTaetPKRNb9tUbKdUBnDN/E2tOuVAgo1Hdd8xCzkS1tfTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JNkvtLumL2wvyRNCP5MPqiFHUnWp0gpWOfSBn8rZmGg=;
+ b=o9gX8efL8kypzYQGw84cCXY/y8F50k95D6NKa/Lao85YgwknN5CspQeGygkbgVUG7rY5Q5jP8CxKHHD1/FAyeRY0K1FT9S1o+XSxSbpsuB6A7Og+o6qlGJT31QmH3FICJ2KJkd+XKN1+/yddGUW/paMppOfOUVqcdKsZGtFHdng=
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB8PR04MB5787.eurprd04.prod.outlook.com (2603:10a6:10:ac::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Thu, 24 Jun
+ 2021 02:19:49 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::f5e8:4886:3923:e92e]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::f5e8:4886:3923:e92e%8]) with mapi id 15.20.4264.019; Thu, 24 Jun 2021
+ 02:19:49 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Lukasz Majewski <lukma@denx.de>, Andrew Lunn <andrew@lunn.ch>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Madalin Bucur (OSS)" <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Einon <mark.einon@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC 1/3] ARM: dts: imx28: Add description for L2 switch on XEA
+ board
+Thread-Topic: [RFC 1/3] ARM: dts: imx28: Add description for L2 switch on XEA
+ board
+Thread-Index: AQHXZ3S0rjpj2HsO7kKyP5U2LAA3HasgG6aAgABmNgCAARNlgIAAJB6AgACZzYCAABfeIA==
+Date:   Thu, 24 Jun 2021 02:19:49 +0000
+Message-ID: <DB8PR04MB679567B66A45FBD1C23E7371E6079@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <20210622144111.19647-1-lukma@denx.de>
+ <20210622144111.19647-2-lukma@denx.de> <YNH3mb9fyBjLf0fj@lunn.ch>
+ <20210622225134.4811b88f@ktm> <YNM0Wz1wb4dnCg5/@lunn.ch>
+ <20210623172631.0b547fcd@ktm>
+ <76159e5c-6986-3877-c0a1-47b5a17bf0f1@gmail.com>
+In-Reply-To: <76159e5c-6986-3877-c0a1-47b5a17bf0f1@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d8cacdc7-f5aa-469b-1458-08d936b68b0b
+x-ms-traffictypediagnostic: DB8PR04MB5787:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB8PR04MB57873A567297DB23F8C38522E6079@DB8PR04MB5787.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: LyQFRA/+wN1Z0ZhV6bRlAD/hIPnooihChZmgLo0EAMKO/YYYEc1RYCN1k1opdmIaMBmkOIGkZzUaV2uITralcPvBBJ2gXOh4GepBvLyYjv1T5DE9aMNVhuFF8YLns3lCNw84yviPM1hio2rK/FglHAhl2u9+gR74BgnFZ9Jw2RLe6XDHc28+Nocyp4JBA5ftf2sBw8OibDG3EXYJo5fx94tY4TEWDulj+y2zABhhSl66gyQYuIv7PaxDbzxRhamOrQGIcEkDG4tHV+nWBe/f8Xptng7vdRlSReoMbBfK0vPf74KLFI6f8DQN1TaBu+9479uYeEqo8MpQ90Y1vZUdipupYu6p7hzqmEiKG1WP1Q83za5javNX9u6apkIKk8i00J1ujsFzVSvs1EEgBwP9dIe7Bc8DAoC0OvPyoR/GrIA2iTqEAHU2yxxBmzrtMupkcm66JMNR+eyF3Ln0zvhHunWIb6Jz/oDdIFayJV03X+THTjY5iUm2Z7Ypr2dxg5CDntCD9Bd86Bd6o7qlvTG75JcRhLiALgz3085RG6Xf7fYVzmgfTlrvd+WVjnojpGOX44/RS5wX3/vfAg/K9//8Q92/khTcVVwnrNSUE7N8jc4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(376002)(396003)(39860400002)(6506007)(478600001)(66476007)(66556008)(122000001)(8936002)(55016002)(64756008)(66446008)(54906003)(110136005)(7696005)(86362001)(33656002)(9686003)(7416002)(316002)(5660300002)(38100700002)(52536014)(2906002)(66946007)(4744005)(71200400001)(26005)(8676002)(186003)(4326008)(76116006)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?rIY5Y/28s0jOKGahy7DNyPHALfdI4VWpcJf2sHnPu6BcxT0VoZNvrWu3FpGL?=
+ =?us-ascii?Q?GSLLOHDSMbzr9uTBR1FjYtCkYWMx2oPiWP5bE/1m3rl/yK7+Gi/QvyhrzXF6?=
+ =?us-ascii?Q?tTeUybSLYRuGg052wvJ2nxGaVwsU+69RBZgXY+vtoVJx4SMhaBVQPdvGodMs?=
+ =?us-ascii?Q?/Y0rZtdw4+cp7drc9RptNhPe0irWGTe5PIfgCLk4OosOzjZYOKM+eZDmTFdJ?=
+ =?us-ascii?Q?g5vfCu6uRLMyLk2X+MqYa8gf6bRWZybDjLHWmad4ohNU98Wau1PlqBMVLgTP?=
+ =?us-ascii?Q?yKcDF0zpkRTt6hT3M4dZ4OCmZWfmdl/Jt4BYDSICgR7UoXc5h5UTCLcf1L7R?=
+ =?us-ascii?Q?PRvNDz/5QwZu8ZQMJlucOkNh1+Wr3DS88NMijfK8cwtEOgjPeIVQ9tyqlZqC?=
+ =?us-ascii?Q?Qx233ZmeGULz+ZSnCiwkO5kFmsu8O4yzMwuVCN+gW8pHpbJcxHipPo+kX8qs?=
+ =?us-ascii?Q?J/0bSy2iOkndtaAAzN5SwQKdah7gXBIltGBBM+Rax28xlhn4HzM2jwlAOfZ5?=
+ =?us-ascii?Q?6N6sO7v+bTzCJM8K+TcLCJZtI5DrmWDv+75jPAHFNJRf2cZWqxBKG2eIeWIn?=
+ =?us-ascii?Q?TbgHuEZG8+Hm/pIqhjUas67EpbuqzUiA6eA/1ID5aQ/7IRCMEHvj6hj0vY8L?=
+ =?us-ascii?Q?Nx+adhD40ZYfTIDylhUC5Ymj2DIDQtcWgdhJ4pbPO5RIFa7epBN1yH6tt3RQ?=
+ =?us-ascii?Q?NCpjogFOisOywRSsjMi5ByWn2N4uZEI3owL6ANI25STJTDDQusbXEY681VEr?=
+ =?us-ascii?Q?Ua4/Pts0vaPuAQA3PQwEARwENUq0NIAb0SR6K2qvgeSaEfwxC7OUV85WzJof?=
+ =?us-ascii?Q?F7lXHU5TzNSi3zHGB0fVa73EnYE1uo7QhINrI6ajnX4DsQSznMZnd9YHMneN?=
+ =?us-ascii?Q?WyHD6kTLQuiHG961g8MYUYteHifXlFRNJvJQIMobEoLALXoQjIDK2unSbiZn?=
+ =?us-ascii?Q?Gt5WqdX6dJxNDdiJ8pTRKNR4+dS4Ow6XPLpZiZW6XwoU72hDJHzq8E3FSZ99?=
+ =?us-ascii?Q?x6LX5Kj35qTchoCEatl8GcAcdYsuyd3MiMn1cnE3ac4Sm+RVEincptce5T6G?=
+ =?us-ascii?Q?mvSYHmrsrOfsqPkWybqqRr9eKzag1mentTKBrJOtev/a8CkiXWN74rlktYVE?=
+ =?us-ascii?Q?UIcf+JofTkAD4PamCA7Gm9IGl/XE1TbSomphjDvAbvnCKTuPI+Yj7SM5AdS3?=
+ =?us-ascii?Q?x18M7xnBB1q3yGJoWBmDVtVV3ODZ6AElH8ipar9+Xo5vmHqVxepjblV3LoL8?=
+ =?us-ascii?Q?4MCciYdgWC0//8tQlIkuVOyKYdTMjrDejv3IJkijySV+62n8LqlP5V+bQzLN?=
+ =?us-ascii?Q?OIk=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8cacdc7-f5aa-469b-1458-08d936b68b0b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jun 2021 02:19:49.2978
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wiMdCtKEtbSJGoH5HdzaFZ7VcYv9WwU4ikgnZ8/SmFH29DsXCjAuod3kFfXHEN+oaul/CZTDU+6/SPPsX4hGhg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5787
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During a sequence of random 4K read operations, the performance will be
-reduced due to spending much time on entering/exiting the low power state
-between requests. We disable the low power state negotiation of GL9763E
-during a sequence of random 4K read operations to improve the performance
-and enable it again after the operations have finished.
 
-Signed-off-by: Renius Chen <reniuschengl@gmail.com>
----
- drivers/mmc/host/sdhci-pci-gli.c | 86 ++++++++++++++++++++++++++++++++
- 1 file changed, 86 insertions(+)
+Hi Lukasz, Florian, Andrew,
 
-diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-index 7ba0fd601696..26df8ec5d67c 100644
---- a/drivers/mmc/host/sdhci-pci-gli.c
-+++ b/drivers/mmc/host/sdhci-pci-gli.c
-@@ -88,6 +88,9 @@
- #define PCIE_GLI_9763E_SCR	 0x8E0
- #define   GLI_9763E_SCR_AXI_REQ	   BIT(9)
- 
-+#define PCIE_GLI_9763E_CFG       0x8A0
-+#define   GLI_9763E_CFG_LPSN_DIS   BIT(12)
-+
- #define PCIE_GLI_9763E_CFG2      0x8A4
- #define   GLI_9763E_CFG2_L1DLY     GENMASK(28, 19)
- #define   GLI_9763E_CFG2_L1DLY_MAX 0x3FF
-@@ -691,6 +694,86 @@ static void sdhci_gl9763e_dumpregs(struct mmc_host *mmc)
- 	sdhci_dumpregs(mmc_priv(mmc));
- }
- 
-+static void gl9763e_request(struct mmc_host *mmc, struct mmc_request *mrq)
-+{
-+	struct sdhci_host *host = mmc_priv(mmc);
-+	struct mmc_command *cmd;
-+	struct sdhci_pci_slot *slot = sdhci_priv(host);
-+	struct pci_dev *pdev = slot->chip->pdev;
-+	u32 value;
-+	static bool start_4k_r;
-+	static int  continuous_4k_r;
-+
-+	cmd = (mrq->sbc && !(host->flags & SDHCI_AUTO_CMD23)) ? mrq->sbc : mrq->cmd;
-+
-+	if (cmd->opcode == MMC_READ_MULTIPLE_BLOCK) {
-+		if (cmd->data->blocks == 8) {
-+			continuous_4k_r++;
-+
-+			if ((!start_4k_r) && (continuous_4k_r >= 3)) {
-+				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-+				value &= ~GLI_9763E_VHS_REV;
-+				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
-+				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-+
-+				pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
-+				value |= GLI_9763E_CFG_LPSN_DIS;
-+				pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
-+
-+				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-+				value &= ~GLI_9763E_VHS_REV;
-+				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
-+				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-+
-+				start_4k_r = true;
-+			}
-+		} else {
-+			continuous_4k_r = 0;
-+
-+			if (start_4k_r) {
-+				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-+				value &= ~GLI_9763E_VHS_REV;
-+				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
-+				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-+
-+				pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
-+				value &= ~GLI_9763E_CFG_LPSN_DIS;
-+				pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
-+
-+				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-+				value &= ~GLI_9763E_VHS_REV;
-+				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
-+				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-+
-+				start_4k_r = false;
-+			}
-+		}
-+	} else {
-+		continuous_4k_r = 0;
-+
-+		if (start_4k_r)	{
-+			pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-+			value &= ~GLI_9763E_VHS_REV;
-+			value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
-+			pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-+
-+			pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
-+			value &= ~GLI_9763E_CFG_LPSN_DIS;
-+			pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
-+
-+			pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-+			value &= ~GLI_9763E_VHS_REV;
-+			value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
-+			pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-+
-+			start_4k_r = false;
-+		}
-+	}
-+
-+	sdhci_request(mmc, mrq);
-+}
-+
-+
- static void sdhci_gl9763e_cqe_pre_enable(struct mmc_host *mmc)
- {
- 	struct cqhci_host *cq_host = mmc->cqe_private;
-@@ -848,6 +931,9 @@ static int gli_probe_slot_gl9763e(struct sdhci_pci_slot *slot)
- 	gli_pcie_enable_msi(slot);
- 	host->mmc_host_ops.hs400_enhanced_strobe =
- 					gl9763e_hs400_enhanced_strobe;
-+
-+	host->mmc_host_ops.request = gl9763e_request;
-+
- 	gli_set_gl9763e(slot);
- 	sdhci_enable_v4_mode(host);
- 
--- 
-2.27.0
+> > Maybe somebody from NXP can provide input to this discussion - for
+> > example to sched some light on FEC driver (near) future.
+>=20
+> Seems like some folks at NXP are focusing on the STMMAC controller these
+> days (dwmac from Synopsys), so maybe they have given up on having their o=
+wn
+> Ethernet MAC for lower end products.
 
+I am very happy to take participate into this topic, but now I have no expe=
+rience to DSA and i.MX28 MAC,
+so I may need some time to increase these knowledge, limited insight could =
+be put to now.
+
+Florian, Andrew could comment more and I also can learn from it :-), they a=
+re all very experienced expert.
+
+We also want to maintain FEC driver since many SoCs implemented this IP, an=
+d as I know we would also
+use it for future SoCs.
+ =20
+Best Regards,
+Joakim Zhang
