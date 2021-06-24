@@ -2,253 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB21D3B2AFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3BC33B2AE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbhFXJFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:05:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230149AbhFXJFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:05:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DAC2613E8;
-        Thu, 24 Jun 2021 09:02:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624525373;
-        bh=3wkeS6LjECniYU0Q4Rka5Hwi5+LM8FaepjAduPS6+SM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vL5xVBt/QP3BG8QuSpY+50E9kJGvHjqHztsWcguzyDQo5Q+diyjoaV0mxm4ZT3BBm
-         RLe3Agr5wSu9CFCAyinEUvLh+hYQyYiy/QVNb167C6zlfUq7reOyoekCtNOqvEK4M4
-         M0whLH/NgIywLkk1Y0geYNJX+NM8NdYXASaJgh8GzOdoL2L50MfcbO5MB2ABNYBfud
-         JyPlWE3Ohwqd9W6JP8FvnoTKY8mTFOL/CbaUE7vPoi3xL2RIwyPbpbQKJWlwxoa2LO
-         ieO7DJmEfNcg+UgqQb60jFDnB86UQZweVhCl28IzTbAVVua+5EhtTvSzJ5v5c/l7vN
-         n+W26SYn6KheQ==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lwLG7-003jsJ-2A; Thu, 24 Jun 2021 11:02:51 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v6 8/8] dts: hisilicon: add support for USB3 on Hikey 970
-Date:   Thu, 24 Jun 2021 11:01:12 +0200
-Message-Id: <24e9929fd5609d4988c93504d0b0b0f4c8a99075.1624525118.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1624525118.git.mchehab+huawei@kernel.org>
-References: <cover.1624525118.git.mchehab+huawei@kernel.org>
+        id S230147AbhFXJD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:03:58 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:56832 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229918AbhFXJDw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 05:03:52 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 04E8C1FD67;
+        Thu, 24 Jun 2021 09:01:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624525293; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gOxneZwjI52NGf5YtOkngslNEIWH7cmjZeAOERs/N1o=;
+        b=qVGFmIBZsXtc/KT5jd285fvitzFu/HscGDU/99JWXqmysYTcbcTp9+7CHCAIoQ7Zd/SQN4
+        +Pmf2DguX4xoL3fBRQ/m7U6Z6ksPr+Ksf1Khn7T7GuSn2N7GVrujAgMmsVGNcme+KhAQIX
+        OmFu0wLVuZuu+Neo77oDGjco/guIs3A=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 9C85AA3B91;
+        Thu, 24 Jun 2021 09:01:32 +0000 (UTC)
+Date:   Thu, 24 Jun 2021 11:01:31 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Jia He <justin.he@arm.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>, nd@arm.com
+Subject: Re: [PATCH v2 2/4] lib/vsprintf.c: make '%pD' print the full path of
+ file
+Message-ID: <YNRJ61m6duXjpGrp@alley>
+References: <20210623055011.22916-1-justin.he@arm.com>
+ <20210623055011.22916-3-justin.he@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210623055011.22916-3-justin.he@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the USB3 bindings for Kirin 970 phy and Hikey 970 board.
+On Wed 2021-06-23 13:50:09, Jia He wrote:
+> Previously, the specifier '%pD' is for printing dentry name of struct
+> file. It may not be perfect (by default it only prints one component.)
+> 
+> As suggested by Linus [1]:
+> > A dentry has a parent, but at the same time, a dentry really does
+> > inherently have "one name" (and given just the dentry pointers, you
+> > can't show mount-related parenthood, so in many ways the "show just
+> > one name" makes sense for "%pd" in ways it doesn't necessarily for
+> > "%pD"). But while a dentry arguably has that "one primary component",
+> > a _file_ is certainly not exclusively about that last component.
+> 
+> Hence change the behavior of '%pD' to print the full path of that file.
+> 
+> If someone invokes snprintf() with small but positive space,
+> prepend_name_with_len() moves or truncates the string partially.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../boot/dts/hisilicon/hi3670-hikey970.dts    | 107 ++++++++++++++++++
- arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  56 +++++++++
- 2 files changed, 163 insertions(+)
+Does this comment belong to the 1st patch?
+prepend_name_with_len() is not called in this patch.
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-index 5e6d7b329771..9e3dfe877ebe 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-@@ -53,6 +53,30 @@ wlan_en: wlan-en-1-8v {
- 		startup-delay-us = <70000>;
- 		enable-active-high;
- 	};
-+
-+	hikey_usbhub: hikey_usbhub {
-+		compatible = "hisilicon,kirin970_hikey_usbhub";
-+
-+		typec-vbus-gpios = <&gpio26 1 0>;
-+		otg-switch-gpios = <&gpio4 2 0>;
-+		hub_reset_en_gpio = <&gpio0 3 0>;
-+		hub-vdd-supply = <&ldo17>;
-+		usb-role-switch;
-+
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			hikey_usb_ep0: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&dwc3_role_switch>;
-+			};
-+			hikey_usb_ep1: endpoint@1 {
-+				reg = <1>;
-+				remote-endpoint = <&rt1711h_ep>;
-+			};
-+		};
-+	};
- };
- 
- /*
-@@ -430,3 +454,86 @@ &uart6 {
- 	label = "LS-UART1";
- 	status = "okay";
- };
-+
-+&usb_phy {
-+	phy-supply = <&ldo17>;
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+
-+	rt1711h: rt1711h@4e {
-+		compatible = "richtek,rt1711h";
-+		reg = <0x4e>;
-+		status = "okay";
-+		interrupt-parent = <&gpio27>;
-+		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&usb_cfg_func>;
-+
-+		usb_con: connector {
-+			compatible = "usb-c-connector";
-+			label = "USB-C";
-+			data-role = "dual";
-+			power-role = "dual";
-+			try-power-role = "sink";
-+			source-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)>;
-+			sink-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)
-+				PDO_VAR(5000, 5000, 1000)>;
-+			op-sink-microwatt = <10000000>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				port@1 {
-+					reg = <1>;
-+					usb_con_ss: endpoint {
-+						remote-endpoint = <&dwc3_ss>;
-+					};
-+				};
-+			};
-+		};
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			rt1711h_ep: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&hikey_usb_ep1>;
-+			};
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	/* USB HUB is on this bus at address 0x44 */
-+	status = "okay";
-+};
-+
-+&dwc3 { /* USB */
-+	dr_mode = "otg";
-+	maximum-speed = "super-speed";
-+	phy_type = "utmi";
-+	snps,dis-del-phy-power-chg-quirk;
-+	snps,dis_u2_susphy_quirk;
-+	snps,dis_u3_susphy_quirk;
-+	snps,tx_de_emphasis_quirk;
-+	snps,tx_de_emphasis = <1>;
-+	snps,dis-split-quirk;
-+	snps,gctl-reset-quirk;
-+	usb-role-switch;
-+	role-switch-default-mode = "host";
-+	port {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		dwc3_role_switch: endpoint@0 {
-+			reg = <0>;
-+			remote-endpoint = <&hikey_usb_ep0>;
-+		};
-+
-+		dwc3_ss: endpoint@1 {
-+			reg = <1>;
-+			remote-endpoint = <&usb_con_ss>;
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-index 8830795c8efc..6476149d99e3 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-@@ -8,6 +8,7 @@
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/clock/hi3670-clock.h>
-+#include <dt-bindings/usb/pd.h>
- 
- / {
- 	compatible = "hisilicon,hi3670";
-@@ -785,5 +786,60 @@ i2c4: i2c@fdf0d000 {
- 			pinctrl-0 = <&i2c4_pmx_func &i2c4_cfg_func>;
- 			status = "disabled";
- 		};
-+
-+		usb3_otg_bc: usb3_otg_bc@ff200000 {
-+			compatible = "syscon", "simple-mfd";
-+			reg = <0x0 0xff200000 0x0 0x1000>;
-+
-+			usb_phy: usbphy {
-+				compatible = "hisilicon,hi3670-usb-phy";
-+				#phy-cells = <0>;
-+				hisilicon,pericrg-syscon = <&crg_ctrl>;
-+				hisilicon,pctrl-syscon = <&pctrl>;
-+				hisilicon,sctrl-syscon = <&sctrl>;
-+				hisilicon,eye-diagram-param = <0xFDFEE4>;
-+				hisilicon,tx-vboost-lvl = <0x5>;
-+			};
-+		};
-+
-+		usb31_misc_rst: usb31_misc_rst_controller {
-+			compatible = "hisilicon,hi3660-reset";
-+			#reset-cells = <2>;
-+			hisi,rst-syscon = <&usb3_otg_bc>;
-+		};
-+
-+		usb3: hisi_dwc3 {
-+			compatible = "hisilicon,hi3670-dwc3";
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			ranges;
-+
-+			clocks = <&crg_ctrl HI3670_CLK_GATE_ABB_USB>,
-+				  <&crg_ctrl HI3670_HCLK_GATE_USB3OTG>,
-+				  <&crg_ctrl HI3670_CLK_GATE_USB3OTG_REF>,
-+				  <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
-+			clock-names = "clk_gate_abb_usb",
-+				      "hclk_gate_usb3otg",
-+				      "clk_gate_usb3otg_ref",
-+				      "aclk_gate_usb3dvfs";
-+
-+			assigned-clocks = <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
-+			assigned-clock-rates = <238000000>;
-+			resets = <&crg_rst 0x90 6>,
-+				 <&crg_rst 0x90 7>,
-+				 <&usb31_misc_rst 0xA0 8>,
-+				 <&usb31_misc_rst 0xA0 9>;
-+
-+			dwc3: usb@ff100000 {
-+				compatible = "snps,dwc3";
-+				reg = <0x0 0xff100000 0x0 0x100000>;
-+
-+				interrupts = <0 159 IRQ_TYPE_LEVEL_HIGH>,
-+					    <0 161 IRQ_TYPE_LEVEL_HIGH>;
-+
-+				phys = <&usb_phy>;
-+				phy-names = "usb3-phy";
-+			};
-+		};
- 	};
- };
--- 
-2.31.1
+> More
+> than that, kasprintf() will pass NULL @buf and @end as the parameters,
+> and @end - @buf can be negative in some case. Hence make it return at
+> the very beginning with false in these cases.
 
+Same here. file_d_path_name() does not return bool.
+
+Well, please mention in the commit message that %pD uses the entire
+given buffer as a scratch space. It might write something behind
+the trailing '\0'.
+
+It would make sense to warn about this also in
+Documentation/core-api/printk-formats.rst. It is a bit non-standard
+behavior.
+
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index f0c35d9b65bf..f4494129081f 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -920,13 +921,44 @@ char *dentry_name(char *buf, char *end, const struct dentry *d, struct printf_sp
+>  }
+>  
+>  static noinline_for_stack
+> -char *file_dentry_name(char *buf, char *end, const struct file *f,
+> +char *file_d_path_name(char *buf, char *end, const struct file *f,
+>  			struct printf_spec spec, const char *fmt)
+>  {
+> +	char *p;
+> +	const struct path *path;
+> +	int prepend_len, widen_len, dpath_len;
+> +
+>  	if (check_pointer(&buf, end, f, spec))
+>  		return buf;
+>  
+> -	return dentry_name(buf, end, f->f_path.dentry, spec, fmt);
+> +	path = &f->f_path;
+> +	if (check_pointer(&buf, end, path, spec))
+> +		return buf;
+> +
+> +	p = d_path_unsafe(path, buf, end - buf, &prepend_len);
+> +
+> +	/* Calculate the full d_path length, ignoring the tail '\0' */
+> +	dpath_len = end - buf - prepend_len - 1;
+> +
+> +	widen_len = max_t(int, dpath_len, spec.field_width);
+> +
+> +	/* Case 1: Already started past the buffer. Just forward @buf. */
+> +	if (buf >= end)
+> +		return buf + widen_len;
+> +
+> +	/*
+> +	 * Case 2: The entire remaining space of the buffer filled by
+> +	 * the truncated path. Still need to get moved right when
+> +	 * the filled width is greather than the full path length.
+
+s/filled/field/ ?
+
+> +	 */
+> +	if (prepend_len < 0)
+> +		return widen_string(buf + dpath_len, dpath_len, end, spec);
+
+Otherwise, it looks good to me.
+
+Best Regards,
+Petr
