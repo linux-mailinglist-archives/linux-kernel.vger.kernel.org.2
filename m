@@ -2,221 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83FA3B2CF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6351B3B2D01
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232319AbhFXKzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 06:55:33 -0400
-Received: from phobos.denx.de ([85.214.62.61]:38482 "EHLO phobos.denx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231294AbhFXKzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 06:55:32 -0400
-Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 7BACF8295B;
-        Thu, 24 Jun 2021 12:53:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1624531992;
-        bh=0kwS38FN4M1tYLgnE4YcsFV92Xu3zXJ1hbI8I6gufgM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hYNhMrJ5vF109+fw9dRg3JDWD/T+5r9V8Q8lmQHLw7H0+e/gr5RuN2guF3nAPQzOw
-         V1HtJhd7GI2Ql1A8SwyS4rKUODhbXidVnRVXdD7afo6x0amazb544y4BxLXzx//Gfy
-         PzKuzigrMHYEINDGS+vt/4qaL8DboKmePv5NPgDE0ZcLPISvPI/d86+z9Eq7/YEOdH
-         S4z9mQgjQyKlAngggNXmtkBwj6/2n0so4xacFr8bw/YX9RlX4s6xgk7qOiNUa//ST/
-         wv7p/CIedX4mBlTZMfnt58kVCjY7VLwmVVIuRRFju0VqwCmTxNHTQpnF8olK2vS9Oz
-         zCXIO8cejUkew==
-Date:   Thu, 24 Jun 2021 12:53:04 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Einon <mark.einon@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/3] net: Provide switchdev driver for NXP's More Than IP
- L2 switch
-Message-ID: <20210624125304.36636a44@ktm>
-In-Reply-To: <YNOTKl7ZKk8vhcMR@lunn.ch>
-References: <20210622144111.19647-1-lukma@denx.de>
-        <20210622144111.19647-3-lukma@denx.de>
-        <YNH7vS9FgvEhz2fZ@lunn.ch>
-        <20210623133704.334a84df@ktm>
-        <YNOTKl7ZKk8vhcMR@lunn.ch>
-Organization: denx.de
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S232288AbhFXK5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 06:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232253AbhFXK5o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 06:57:44 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C774C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 03:55:25 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id bv7-20020a17090af187b029016fb18e04cfso5272560pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 03:55:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rnIAh2hPB7B+BtBFv50UAdABz25b6rhSMrigayaoL/w=;
+        b=IWB64TBCWgtTTW17Ubh7eiZ7IP4zYCa72NohftlLNitROFeeZXycY0r+sxrjEbsr+Z
+         saKpny7PqLN81J++Pp9rJNTwPgnmlKnpRDgZ6UMlc5Ykh70/IDQPZj4dJTaRqFT42+yJ
+         y+dgpKVHv17dsiwM89c94knTQxUjqLekWZJTU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rnIAh2hPB7B+BtBFv50UAdABz25b6rhSMrigayaoL/w=;
+        b=kT4BpF5nyrMIiDpA4spNVLFbybuEcDbLQ+ZCCseglNnTgUbsVjs/Dy2mggRLrjdYMF
+         F9EgSqPgMCfjfqZ36hLcEy04ZQOkMk93kLqbNACzyCJxID7E+rws+sEz5gEJ0U2Z6aA+
+         9iDre3lmlKFyh15yI1dkvobExC7JgCKbZhwTmLm/fz4EnGs6bjHxbj1DMZVbgZoIDAhI
+         cCemyFc0VZCvR6OB2Sd29+CGTMTnzqjIAyLiHFM7IzLzYxAlyQphLFcgA9qsGdyH3VZJ
+         hZ1yfwD5V7jmvhpXckYFkXhMjEmY8Tl7ucC3Fi78+LawSslboKxA7OW9m0sRFH5Q9yAA
+         ROWw==
+X-Gm-Message-State: AOAM531ZuMHaIdp5gIUG99zzpCajwrOWWpwq1BSz3v06BOAGbGeo8uh5
+        OcCyYwjW/ZA+TtGfr4mL3LWXMx3pzcr7+w==
+X-Google-Smtp-Source: ABdhPJyKWuBj46CJmmw9hKVtXOsyxtVopzZR7lmqI2aJ0D1A586N/RMQyvb8MYE5iRIfvQXPLa4+AA==
+X-Received: by 2002:a17:902:ec8c:b029:127:756b:1ee7 with SMTP id x12-20020a170902ec8cb0290127756b1ee7mr4084234plg.4.1624532124722;
+        Thu, 24 Jun 2021 03:55:24 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:368f:686c:969:1f38])
+        by smtp.gmail.com with ESMTPSA id t7sm2212536pgh.52.2021.06.24.03.55.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 03:55:24 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     dri-devel@lists.freedesktop.org,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx@lists.freedesktop.org
+Cc:     Sean Paul <sean@poorly.run>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v6 RESEND 1/3] gpu: drm: separate panel orientation property creating and value setting
+Date:   Thu, 24 Jun 2021 18:55:15 +0800
+Message-Id: <20210624105517.3886963-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/qtYqIBs1p_KEhl/OXc+e7ue"; protocol="application/pgp-signature"
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/qtYqIBs1p_KEhl/OXc+e7ue
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+drm_dev_register() sets connector->registration_state to
+DRM_CONNECTOR_REGISTERED and dev->registered to true. If
+drm_connector_set_panel_orientation() is first called after
+drm_dev_register(), it will fail several checks and results in following
+warning.
 
-Hi Andrew,
+Add a function to create panel orientation property and set default value
+to UNKNOWN, so drivers can call this function to init the property earlier
+, and let the panel set the real value later.
 
-> > > Using volatile is generally wrong. Why do you need it? =20
-> >=20
-> > This was the code, which I took from the legacy driver. I will
-> > adjust it. =20
->=20
-> It is called 'vendor crap' for a reason.
+[    4.480976] ------------[ cut here ]------------
+[    4.485603] WARNING: CPU: 5 PID: 369 at drivers/gpu/drm/drm_mode_object.c:45 __drm_mode_object_add+0xb4/0xbc
+<snip>
+[    4.609772] Call trace:
+[    4.612208]  __drm_mode_object_add+0xb4/0xbc
+[    4.616466]  drm_mode_object_add+0x20/0x2c
+[    4.620552]  drm_property_create+0xdc/0x174
+[    4.624723]  drm_property_create_enum+0x34/0x98
+[    4.629241]  drm_connector_set_panel_orientation+0x64/0xa0
+[    4.634716]  boe_panel_get_modes+0x88/0xd8
+[    4.638802]  drm_panel_get_modes+0x2c/0x48
+[    4.642887]  panel_bridge_get_modes+0x1c/0x28
+[    4.647233]  drm_bridge_connector_get_modes+0xa0/0xd4
+[    4.652273]  drm_helper_probe_single_connector_modes+0x218/0x700
+[    4.658266]  drm_mode_getconnector+0x1b4/0x45c
+[    4.662699]  drm_ioctl_kernel+0xac/0x128
+[    4.666611]  drm_ioctl+0x268/0x410
+[    4.670002]  drm_compat_ioctl+0xdc/0xf0
+[    4.673829]  __arm64_compat_sys_ioctl+0xc8/0x100
+[    4.678436]  el0_svc_common+0xf4/0x1c0
+[    4.682174]  do_el0_svc_compat+0x28/0x3c
+[    4.686088]  el0_svc_compat+0x10/0x1c
+[    4.689738]  el0_sync_compat_handler+0xa8/0xcc
+[    4.694171]  el0_sync_compat+0x178/0x180
+[    4.698082] ---[ end trace b4f2db9d9c88610b ]---
+[    4.702721] ------------[ cut here ]------------
+[    4.707329] WARNING: CPU: 5 PID: 369 at drivers/gpu/drm/drm_mode_object.c:243 drm_object_attach_property+0x48/0xb8
+<snip>
+[    4.833830] Call trace:
+[    4.836266]  drm_object_attach_property+0x48/0xb8
+[    4.840958]  drm_connector_set_panel_orientation+0x84/0xa0
+[    4.846432]  boe_panel_get_modes+0x88/0xd8
+[    4.850516]  drm_panel_get_modes+0x2c/0x48
+[    4.854600]  panel_bridge_get_modes+0x1c/0x28
+[    4.858946]  drm_bridge_connector_get_modes+0xa0/0xd4
+[    4.863984]  drm_helper_probe_single_connector_modes+0x218/0x700
+[    4.869978]  drm_mode_getconnector+0x1b4/0x45c
+[    4.874410]  drm_ioctl_kernel+0xac/0x128
+[    4.878320]  drm_ioctl+0x268/0x410
+[    4.881711]  drm_compat_ioctl+0xdc/0xf0
+[    4.885536]  __arm64_compat_sys_ioctl+0xc8/0x100
+[    4.890142]  el0_svc_common+0xf4/0x1c0
+[    4.893879]  do_el0_svc_compat+0x28/0x3c
+[    4.897791]  el0_svc_compat+0x10/0x1c
+[    4.901441]  el0_sync_compat_handler+0xa8/0xcc
+[    4.905873]  el0_sync_compat+0x178/0x180
+[    4.909783] ---[ end trace b4f2db9d9c88610c ]---
 
-:-)
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: Sean Paul <seanpaul@chromium.org>
+---
+ drivers/gpu/drm/drm_connector.c         | 58 ++++++++++++++++++-------
+ drivers/gpu/drm/i915/display/icl_dsi.c  |  1 +
+ drivers/gpu/drm/i915/display/intel_dp.c |  1 +
+ drivers/gpu/drm/i915/display/vlv_dsi.c  |  1 +
+ include/drm/drm_connector.h             |  2 +
+ 5 files changed, 47 insertions(+), 16 deletions(-)
 
->=20
-> > > > +	for_each_available_child_of_node(p, port) {
-> > > > +		if (of_property_read_u32(port, "reg",
-> > > > &port_num))
-> > > > +			continue;
-> > > > +
-> > > > +		priv->n_ports =3D port_num;
-> > > > +
-> > > > +		fep_np =3D of_parse_phandle(port, "phy-handle",
-> > > > 0);   =20
-> > >=20
-> > > As i said, phy-handle points to a phy. It minimum, you need to
-> > > call this mac-handle. But that then makes this switch driver very
-> > > different to every other switch driver. =20
-> >=20
-> > Other drivers (DSA for example) use "ethernet" or "link" properties.
-> > Maybe those can be reused? =20
->=20
-> Not really. They have well known meanings and they are nothing like
-> what you are trying to do. You need a new name. Maybe 'mac-handle'?
+diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+index 7631f76e7f345..7189baaabf416 100644
+--- a/drivers/gpu/drm/drm_connector.c
++++ b/drivers/gpu/drm/drm_connector.c
+@@ -1210,7 +1210,7 @@ static const struct drm_prop_enum_list dp_colorspaces[] = {
+  *	INPUT_PROP_DIRECT) will still map 1:1 to the actual LCD panel
+  *	coordinates, so if userspace rotates the picture to adjust for
+  *	the orientation it must also apply the same transformation to the
+- *	touchscreen input coordinates. This property is initialized by calling
++ *	touchscreen input coordinates. This property value is set by calling
+  *	drm_connector_set_panel_orientation() or
+  *	drm_connector_set_panel_orientation_with_quirk()
+  *
+@@ -2173,8 +2173,8 @@ EXPORT_SYMBOL(drm_connector_set_vrr_capable_property);
+  * @connector: connector for which to set the panel-orientation property.
+  * @panel_orientation: drm_panel_orientation value to set
+  *
+- * This function sets the connector's panel_orientation and attaches
+- * a "panel orientation" property to the connector.
++ * This function sets the connector's panel_orientation value. If the property
++ * doesn't exist, it will return an error.
+  *
+  * Calling this function on a connector where the panel_orientation has
+  * already been set is a no-op (e.g. the orientation has been overridden with
+@@ -2205,19 +2205,11 @@ int drm_connector_set_panel_orientation(
+ 	info->panel_orientation = panel_orientation;
+ 
+ 	prop = dev->mode_config.panel_orientation_property;
+-	if (!prop) {
+-		prop = drm_property_create_enum(dev, DRM_MODE_PROP_IMMUTABLE,
+-				"panel orientation",
+-				drm_panel_orientation_enum_list,
+-				ARRAY_SIZE(drm_panel_orientation_enum_list));
+-		if (!prop)
+-			return -ENOMEM;
+-
+-		dev->mode_config.panel_orientation_property = prop;
+-	}
++	if (WARN_ON(!prop))
++		return -EINVAL;
+ 
+-	drm_object_attach_property(&connector->base, prop,
+-				   info->panel_orientation);
++	drm_object_property_set_value(&connector->base, prop,
++				      info->panel_orientation);
+ 	return 0;
+ }
+ EXPORT_SYMBOL(drm_connector_set_panel_orientation);
+@@ -2225,7 +2217,7 @@ EXPORT_SYMBOL(drm_connector_set_panel_orientation);
+ /**
+  * drm_connector_set_panel_orientation_with_quirk -
+  *	set the connector's panel_orientation after checking for quirks
+- * @connector: connector for which to init the panel-orientation property.
++ * @connector: connector for which to set the panel-orientation property.
+  * @panel_orientation: drm_panel_orientation value to set
+  * @width: width in pixels of the panel, used for panel quirk detection
+  * @height: height in pixels of the panel, used for panel quirk detection
+@@ -2252,6 +2244,40 @@ int drm_connector_set_panel_orientation_with_quirk(
+ }
+ EXPORT_SYMBOL(drm_connector_set_panel_orientation_with_quirk);
+ 
++/**
++ * drm_connector_init_panel_orientation_property -
++ * 	create the connector's panel orientation property
++ *
++ * This function attaches a "panel orientation" property to the connector
++ * and initializes its value to DRM_MODE_PANEL_ORIENTATION_UNKNOWN.
++ *
++ * The value of the property can be set by drm_connector_set_panel_orientation()
++ * or drm_connector_set_panel_orientation_with_quirk() later.
++ *
++ * Returns:
++ * Zero on success, negative errno on failure.
++ */
++int drm_connector_init_panel_orientation_property(
++	struct drm_connector *connector)
++{
++	struct drm_device *dev = connector->dev;
++	struct drm_property *prop;
++
++	prop = drm_property_create_enum(dev, DRM_MODE_PROP_IMMUTABLE,
++			"panel orientation",
++			drm_panel_orientation_enum_list,
++			ARRAY_SIZE(drm_panel_orientation_enum_list));
++	if (!prop)
++		return -ENOMEM;
++
++	dev->mode_config.panel_orientation_property = prop;
++	drm_object_attach_property(&connector->base, prop,
++				   DRM_MODE_PANEL_ORIENTATION_UNKNOWN);
++
++	return 0;
++}
++EXPORT_SYMBOL(drm_connector_init_panel_orientation_property);
++
+ int drm_connector_set_obj_prop(struct drm_mode_object *obj,
+ 				    struct drm_property *property,
+ 				    uint64_t value)
+diff --git a/drivers/gpu/drm/i915/display/icl_dsi.c b/drivers/gpu/drm/i915/display/icl_dsi.c
+index 9282978060b08..5ac4538e42833 100644
+--- a/drivers/gpu/drm/i915/display/icl_dsi.c
++++ b/drivers/gpu/drm/i915/display/icl_dsi.c
+@@ -1903,6 +1903,7 @@ static void icl_dsi_add_properties(struct intel_connector *connector)
+ 
+ 	connector->base.state->scaling_mode = DRM_MODE_SCALE_ASPECT;
+ 
++	drm_connector_init_panel_orientation_property(&connector->base);
+ 	drm_connector_set_panel_orientation_with_quirk(&connector->base,
+ 				intel_dsi_get_panel_orientation(connector),
+ 				connector->panel.fixed_mode->hdisplay,
+diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+index a5231ac3443aa..f1d664e5abb28 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp.c
++++ b/drivers/gpu/drm/i915/display/intel_dp.c
+@@ -5263,6 +5263,7 @@ static bool intel_edp_init_connector(struct intel_dp *intel_dp,
+ 	intel_panel_setup_backlight(connector, pipe);
+ 
+ 	if (fixed_mode) {
++		drm_connector_init_panel_orientation_property(connector);
+ 		drm_connector_set_panel_orientation_with_quirk(connector,
+ 				dev_priv->vbt.orientation,
+ 				fixed_mode->hdisplay, fixed_mode->vdisplay);
+diff --git a/drivers/gpu/drm/i915/display/vlv_dsi.c b/drivers/gpu/drm/i915/display/vlv_dsi.c
+index 9bee99fe54954..853855482af14 100644
+--- a/drivers/gpu/drm/i915/display/vlv_dsi.c
++++ b/drivers/gpu/drm/i915/display/vlv_dsi.c
+@@ -1632,6 +1632,7 @@ static void vlv_dsi_add_properties(struct intel_connector *connector)
+ 
+ 		connector->base.state->scaling_mode = DRM_MODE_SCALE_ASPECT;
+ 
++		drm_connector_init_panel_orientation_property(&connector->base);
+ 		drm_connector_set_panel_orientation_with_quirk(
+ 				&connector->base,
+ 				intel_dsi_get_panel_orientation(connector),
+diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+index 1922b278ffadf..4396c1c4a5dbc 100644
+--- a/include/drm/drm_connector.h
++++ b/include/drm/drm_connector.h
+@@ -1696,6 +1696,8 @@ int drm_connector_set_panel_orientation_with_quirk(
+ 	struct drm_connector *connector,
+ 	enum drm_panel_orientation panel_orientation,
+ 	int width, int height);
++int drm_connector_init_panel_orientation_property(
++	struct drm_connector *connector);
+ int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
+ 					  int min, int max);
+ 
+-- 
+2.32.0.288.g62a8d224e6-goog
 
-Ok.
-
->=20
->=20
-> > > > +		pdev =3D of_find_device_by_node(fep_np);
-> > > > +		ndev =3D platform_get_drvdata(pdev);
-> > > > +		priv->fep[port_num - 1] =3D netdev_priv(ndev);
-> > > > =20
-> > >=20
-> > > What happens when somebody puts reg=3D<42>; in DT? =20
-> >=20
-> > I do guess that this will break the code.
-> >=20
-> > However, DSA DT descriptions also rely on the exact numbering [1]
-> > (via e.g. reg property) of the ports. I've followed this paradigm. =20
->=20
-> DSA does a range check:
->=20
->         for_each_available_child_of_node(ports, port) {
->                 err =3D of_property_read_u32(port, "reg", &reg);
->                 if (err)
->                         goto out_put_node;
->=20
->                 if (reg >=3D ds->num_ports) {
->                         dev_err(ds->dev, "port %pOF index %u exceeds
-> num_ports (%zu)\n", port, reg, ds->num_ports);
->                         err =3D -EINVAL;
->                         goto out_put_node;
->                 }
->=20
-
-Ok.
-
-> > > I would say, your basic structure needs to change, to make it more
-> > > like other switchdev drivers. You need to replace the two FEC
-> > > device instances with one switchdev driver. =20
-> >=20
-> > I've used the cpsw_new.c as the example.
-> >  =20
-> > > The switchdev driver will then
-> > > instantiate the two netdevs for the two external MACs. =20
-> >=20
-> > Then there is a question - what about eth[01], which already
-> > exists? =20
->=20
-> They don't exist. cpsw_new is not used at the same time as cpsw, it
-> replaces it. This new driver would replace the FEC driver.
-
-I see.
-
-> cpsw_new
-> makes use of some of the code in the cpsw driver to implement two
-> netdevs. This new FEC switch driver would do the same, make use of
-> some of the low level code, e.g. for DMA access, MDIO bus, etc.
-
-I'm not sure if the imx28 switch is similar to one from TI (cpsw-3g)
-- it looks to me that the bypass mode for both seems to be very
-different. For example, on NXP when switch is disabled we need to
-handle two DMA[01]. When it is enabled, only one is used. The approach
-with two DMAs is best handled with FEC driver instantiation.
-
->=20
-> > To be honest - such driver for L2 switch already has been forward
-> > ported by me [2] to v4.19. =20
->=20
-> Which is fine, you can do whatever you want in your own fork. But for
-> mainline, we need a clean architecture.
-
-This code is a forward port of vendor's (Freescale) old driver. It uses
-the _wrong_ approach, but it can (still) be used in production after
-some adjustments.
-
-> I'm not convinced your code is
-> that clean,
-
-The code from [2] needs some vendor ioctl based tool (or hardcode) to
-configure the switch.=20
-
-> and how well future features can be added. Do you have
-> support for VLANS? Adding and removing entries to the lookup tables?
-> How will IGMP snooping work? How will STP work?
-
-This can be easily added with serving netstack hooks (as it is already
-done with cpsw_new) in the new switchdev based version [3] (based on
-v5.12).
-
->=20
->     Andrew
-
-Links:
-
-[3] -
-https://source.denx.de/linux/linux-imx28-l2switch/-/commits/imx28-v5.12-L2-=
-upstream-switchdev-RFC_v1
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/qtYqIBs1p_KEhl/OXc+e7ue
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmDUZBAACgkQAR8vZIA0
-zr1fjQf/bj+Weys4U7pw90bnkgZGZAKc0+5pyMUIYMeVqymm/3fkReqRmWF4eb57
-V3beyUumV8yAzZgf4nIvGf+V5g/lmS3YwYBHCyoZz9hxwBaM923bWXySrgm/1P87
-B2SpK02VSn5fpet5etL0WU7Gf0yqKvKWTvU4xKPfGauff65fWt36uO37vNnLh/DM
-/BAAWyIXC0CtEAACFUw0WpiGz3igvT3FFKQIzUhcist+ocAew2YiAwOHRnGoRRp+
-ip8gG98DcE04CTLqhHOWJggc0+0zOsjsulLkmlajywE6hX9tbOU8HTjJ+Fc74RXw
-zEoCdczJLSGE1W9N0PtgBPZxh5Kn6g==
-=mlqD
------END PGP SIGNATURE-----
-
---Sig_/qtYqIBs1p_KEhl/OXc+e7ue--
