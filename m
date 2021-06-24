@@ -2,158 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AFCB3B3145
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2ED3B3140
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231992AbhFXO2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 10:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232110AbhFXO2e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 10:28:34 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65687C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:26:11 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id w26so4874532qto.13
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:26:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=eF2C5PKSwNIz1Hk6OjorU3qtEfdzoZ8f5y1ZncpfVq4=;
-        b=NtirYk5GcJaWeM5Ci3cQMud1RkVXwj+O2x4lIiPhMHgPAe1npALe96C9De94N/JisN
-         EiZG08HB7muGGuwAXT8p3NaNJmhtZ9FlARgfyYa/rq197xk7gMqTCEyE5OvRJ88/5xU2
-         h1zzdwG/O0QABXt0U9jvA1bWAcj7bAZuD3+aEr3pmHE0ZhxyzH1XE7kBmF/zy2iq6uka
-         eFNPo4G4b1t7u4ZYkjd8YrMH1WGAYRwo7nvV3OIODo5LXlnReW9ULwbDUGxhSuzSCSPa
-         Oc/5G8hrdP5XPlxNeclr8GgJxMq/LAFwf6FUg1jtcDwuZGhiRypsFBW1/OC4iC9sbUmo
-         uIgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=eF2C5PKSwNIz1Hk6OjorU3qtEfdzoZ8f5y1ZncpfVq4=;
-        b=S7S8xH9IlIvMzZ8PEMsgwsHjxokucHMVO0gWlYtC0QoH8Xaz50N1nWj4hqW5vr7rLz
-         KSAUCw0eRj/csziH8pp+Th/cpFfCERSWMt2mD2yYPUmH+kGFXRGu60WKF7WQq2xK/Xe7
-         tJ68a7Ksi0zYSZZOEqV1jCObDUHv4ZO/oC5Vkb0N+CDxZjUqgU3hlChVvi3cHRHOmGYE
-         9msULlxVIvP+AzIfXRWUA56O8KmEr87alk6i+GYNhAlGvjZP3JhU84Q95CWywQXXjOSi
-         qzGd3KnMAaNUOFtKzMfnDDs876IJwG3GnrR1uuNQMKSWbYCUGKXbWw4IOuN37sYAb3xG
-         eH3A==
-X-Gm-Message-State: AOAM531dOZXjdJVNEt32/4WExpiJxpMwS7Ls6EfaHJrWbWGdJrCVaWKS
-        wYzGBmafiX/ACsmNZzKlXeo1+u+ngTFWCFMFAvEnwA==
-X-Google-Smtp-Source: ABdhPJxLgFfzXPHK6vcLL7zpNlT3Q675QmDxZBMaTP9WSGvZAsrzJrmYMlnoGrDXO+85MNogvb4YyEBwonpUcghFD0c=
-X-Received: by 2002:ac8:57d2:: with SMTP id w18mr5097416qta.306.1624544770432;
- Thu, 24 Jun 2021 07:26:10 -0700 (PDT)
+        id S231986AbhFXO2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 10:28:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230170AbhFXO2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 10:28:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AB7B6024A;
+        Thu, 24 Jun 2021 14:26:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624544760;
+        bh=g4nK/+OEJMNnj0M0Sp0XY47oCV+wxBV8N6nu9t8TV80=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AoaFk4wIXu15ykoDaVQ85lXeLgPoLv1GVS7whQVRfWpNulJYJ+TZ7zvXYOpYFtuk9
+         g95HwCpM7MnmA2zpKwhSaR17NVo6NZ3dh+c89kP5q0k5Q4YIXCNGbzVV9SG6dHDfwv
+         rIVvgmH+FLdOLJu4Yl7sAEMb8ais0oWVCYBIsIIs12cUp9MFElHrywLks1H2bCuTh7
+         51wWM2MrsAvjgQt11CI74Mw1j1VSsGHf8HdSK6wrkXAh+35dyuydNZW8aBsa8+U52u
+         OZ4E8ldOJkYajALOndRtFa5GLObiS36t8UTx2KPkJzY/TVI4ZvQgbVlvnDAH+WuewL
+         MHuEVUw14AHxw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lwQIq-0007Nc-70; Thu, 24 Jun 2021 16:26:00 +0200
+Date:   Thu, 24 Jun 2021 16:26:00 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH RESEND v6 6/8] mfd: hi6421-spmi-pmic: move driver from
+ staging
+Message-ID: <YNSV+N0h7NoRpo/w@hovoldconsulting.com>
+References: <cover.1624525118.git.mchehab+huawei@kernel.org>
+ <1ad2cbbd182d18ba2cae716fb5f1497b1cabbdbe.1624525118.git.mchehab+huawei@kernel.org>
+ <YNRrISOGujxcJAGR@dell>
+ <20210624143605.153e1e34@coco.lan>
+ <YNSRwIMr8+m9Sxk3@dell>
 MIME-Version: 1.0
-References: <20210624082911.5d013e8c@canb.auug.org.au> <CAPv3WKfiL+sR+iK_BjGKDhtNgjoxKEPv49bU1X9_7+v+ytdR1w@mail.gmail.com>
- <YNPt91bfjrgSt8G3@Ryzen-9-3900X.localdomain> <CA+G9fYtb07aySOpB6=wc4ip_9S4Rr2UUYNgEOG6i76g--uPryQ@mail.gmail.com>
- <20210624185430.692d4b60@canb.auug.org.au>
-In-Reply-To: <20210624185430.692d4b60@canb.auug.org.au>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Thu, 24 Jun 2021 16:25:57 +0200
-Message-ID: <CAPv3WKf6HguRC_2ckau99d4iWG-FV71kn8wiX9r5wuK335EEFw@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the net-next tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNSRwIMr8+m9Sxk3@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On Thu, Jun 24, 2021 at 03:08:00PM +0100, Lee Jones wrote:
+> On Thu, 24 Jun 2021, Mauro Carvalho Chehab wrote:
+> 
+> > Em Thu, 24 Jun 2021 12:33:28 +0100
+> > Lee Jones <lee.jones@linaro.org> escreveu:
 
-czw., 24 cze 2021 o 10:54 Stephen Rothwell <sfr@canb.auug.org.au> napisa=C5=
-=82(a):
->
-> Hi all,
->
-> On Thu, 24 Jun 2021 11:43:14 +0530 Naresh Kamboju <naresh.kamboju@linaro.=
-org> wrote:
-> >
-> > On Thu, 24 Jun 2021 at 07:59, Nathan Chancellor <nathan@kernel.org> wro=
-te:
-> > >
-> > > On Thu, Jun 24, 2021 at 12:46:48AM +0200, Marcin Wojtas wrote:
-> > > > Hi Stephen,
-> > > >
-> > > > czw., 24 cze 2021 o 00:29 Stephen Rothwell <sfr@canb.auug.org.au> n=
-apisa=C5=82(a):
-> > > > >
-> > > > > Hi all,
-> > > > >
-> > > > > Today's linux-next build (x86_64 modules_install) failed like thi=
-s:
-> > > > >
-> > > > > depmod: ../tools/depmod.c:1792: depmod_report_cycles_from_root: A=
-ssertion `is < stack_size' failed.
-> >
-> > LKFT test farm found this build error.
-> >
-> > Regressions found on mips:
-> >
-> >  - build/gcc-9-malta_defconfig
-> >  - build/gcc-10-malta_defconfig
-> >  - build/gcc-8-malta_defconfig
-> >
-> > depmod: ERROR: Cycle detected: fwnode_mdio -> of_mdio -> fwnode_mdio
-> > depmod: ERROR: Found 2 modules in dependency cycles!
-> > make[1]: *** [/builds/linux/Makefile:1875: modules_install] Error 1
-> >
-> > > > Thank you for letting us know. Not sure if related, but I just foun=
-d
-> > > > out that this code won't compile for the !CONFIG_FWNODE_MDIO. Below
-> > > > one-liner fixes it:
-> > > >
-> > > > --- a/include/linux/fwnode_mdio.h
-> > > > +++ b/include/linux/fwnode_mdio.h
-> > > > @@ -40,7 +40,7 @@ static inline int fwnode_mdiobus_register(struct =
-mii_bus *bus,
-> > > >          * This way, we don't have to keep compat bits around in dr=
-ivers.
-> > > >          */
-> > > >
-> > > > -       return mdiobus_register(mdio);
-> > > > +       return mdiobus_register(bus);
-> > > >  }
-> > > >  #endif
-> > > >
-> > > > I'm curious if this is the case. Tomorrow I'll resubmit with above,=
- so
-> > > > I'd appreciate recheck.
-> >
-> > This proposed fix did not work.
-> >
-> > > Reverting all the patches in that series fixes the issue for me.
-> >
-> > Yes.
-> > Reverting all the (6) patches in that series fixed this build problem.
-> >
-> > git log --oneline | head
-> > 3752a7bfe73e Revert "Documentation: ACPI: DSD: describe additional MAC
-> > configuration"
-> > da53528ed548 Revert "net: mdiobus: Introduce fwnode_mdbiobus_register()=
-"
-> > 479b72ae8b68 Revert "net/fsl: switch to fwnode_mdiobus_register"
-> > 92f85677aff4 Revert "net: mvmdio: add ACPI support"
-> > 3d725ff0f271 Revert "net: mvpp2: enable using phylink with ACPI"
-> > ffa8c267d44e Revert "net: mvpp2: remove unused 'has_phy' field"
-> > d61c8b66c840 Add linux-next specific files for 20210623
->
-> So I have reverted the merge of that topic branch from linux-next for
-> today.
+> > > > --- /dev/null
+> > > > +++ b/drivers/mfd/hi6421-spmi-pmic.c
+> > > > @@ -0,0 +1,316 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > +/*
+> > > > + * Device driver for regulators in HISI PMIC IC
+> > > > + *
+> > > > + * Copyright (c) 2013 Linaro Ltd.
+> > > > + * Copyright (c) 2011 Hisilicon.
+> > > > + * Copyright (c) 2020-2021 Huawei Technologies Co., Ltd  
+> > > 
+> > > Can this be updated?
+> > 
+> > Do you mean updating the copyrights to cover this year? E.g.
+> > something like this:
+> > 
+> > 	 * Copyright (c) 2013-2021 Linaro Ltd.
+> > 	 * Copyright (c) 2011-2021 Hisilicon.
+> > 	 * Copyright (c) 2020-2021 Huawei Technologies Co., Ltd  
+> > 
+> > Right? Or are you meaning something else?
+> 
+> Yes, that's it.  I know this is just a move, but to MFD, it's new.
 
-Just to understand correctly - you reverted merge from the local
-branch (I still see the commits on Dave M's net-next/master). I see a
-quick solution, but I'm wondering how I should proceed. Submit a
-correction patch to the mailing lists against the net-next? Or the
-branch is going to be reverted and I should resubmit everything as v4?
+That's not how copyright works. Unless Linaro and Hisilicon made
+nontrivial changes every year from 2011/2013 to 2021 you should not
+change those lines like this.
 
-Best regards,
-Marcin
+Johan
