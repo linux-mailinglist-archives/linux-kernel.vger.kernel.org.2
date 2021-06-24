@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46B83B3821
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F003B3825
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbhFXUtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 16:49:21 -0400
-Received: from mail-io1-f44.google.com ([209.85.166.44]:33768 "EHLO
-        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhFXUtU (ORCPT
+        id S232660AbhFXUtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 16:49:43 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:46071 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229525AbhFXUtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 16:49:20 -0400
-Received: by mail-io1-f44.google.com with SMTP id a6so10002036ioe.0;
-        Thu, 24 Jun 2021 13:47:00 -0700 (PDT)
+        Thu, 24 Jun 2021 16:49:39 -0400
+Received: by mail-io1-f54.google.com with SMTP id b7so9908049ioq.12;
+        Thu, 24 Jun 2021 13:47:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=F0x4IyKT2x+eXf6Aevlji6hFmmkziyiUYw8K70PDgcc=;
-        b=WaIhv0iy648C4MlmzPSgg8I9lrXIRBe+8KAULYY/bRermCCNnQyw2i2W36AM1jNS+k
-         4I/0KJ59FAopQEDIbByFALMFxu3gQLv1HIrGTUHQOTRwhE5vLAh3+ggqeZ2joakh2qgQ
-         hCdDOdAeIbyzw8ACdtFDP9wP3taUUYt4QrJe1OdNqeWiHlXjaLaPuVjhsDZP+qcuE+yC
-         m2KAwimnc7/iVu0UTl8q9E8qluID9Wj5N/J+OzcWg9njqf+oXTUtEvJERVVukEKM7EVI
-         WVcQDnki6WN30u7M63N/W2jXLmrXtTaz6ahlYD2TLnF3j381Ci88ZaYFu3DI0ZVJqodL
-         FG8w==
-X-Gm-Message-State: AOAM530QWpfMb/B4ZxdkB0atre/i/D4AdjFxwiRdsxCG+0b8flRC5B6e
-        SrI8zK2wVfuUN0iYUkuygg==
-X-Google-Smtp-Source: ABdhPJxP/WQNIhGKFN6SWUFmmpwOJftdPFMIatfnXDGwKcwWhakNCpsdPciM/vUKfsSrKJLq/dXC4w==
-X-Received: by 2002:a02:c6d9:: with SMTP id r25mr6248042jan.137.1624567620217;
-        Thu, 24 Jun 2021 13:47:00 -0700 (PDT)
+        bh=F0DM3/whjo1QUGn5QeSRsdPpAyvRUkqg+cmiUQ/A8CI=;
+        b=c028ezR7qIfWyd8dGeneNEwIm77vldX5MeTm+wiLSFCwMUiqTVgrtwvEfKCRL07JyM
+         jERvcF0nO3N90hzTCH8VdXKqK/DwkbVDdK565CAYZ+SUdeu5Db1F+DRcZczrDnuSUicW
+         McsbyY6MZEFCq9GO0ZMPBBVbhFlVdKDVYvp4Lj70VeV1q3gJEHZ3gbM+B9RLmBiXE9Ht
+         R6E/MczHGnMTBCJae7acA5IckIqbSBznI58HKajsOOc4wxwUcyZ1u7edT8VDYwOrJCXd
+         aH15PzOjXilVbMeg5o0Z9nCi5Tr6Wkg2+Fsq8RX1FmCXrum7NGT33oVo8NnbbXDykBJi
+         JI/Q==
+X-Gm-Message-State: AOAM530Qlsmmwc4S8wEbtkBBcNB4sqbVVo7K28ZeO8vEctUVnF/1jpDE
+        dF43TG+sN0z8Jzz42cpUgw==
+X-Google-Smtp-Source: ABdhPJyo+VknNtW7hyFaEwhsaq2IWVPZwEIsJEKawEvFtWCJUVshAn6pJ1BPu4jGxkMBP2aessW+cw==
+X-Received: by 2002:a5d:9c02:: with SMTP id 2mr5616637ioe.195.1624567638969;
+        Thu, 24 Jun 2021 13:47:18 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id q7sm1883511iob.49.2021.06.24.13.46.56
+        by smtp.gmail.com with ESMTPSA id l5sm1889744ion.44.2021.06.24.13.47.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 13:46:58 -0700 (PDT)
-Received: (nullmailer pid 1960808 invoked by uid 1000);
-        Thu, 24 Jun 2021 20:46:55 -0000
-Date:   Thu, 24 Jun 2021 14:46:55 -0600
+        Thu, 24 Jun 2021 13:47:18 -0700 (PDT)
+Received: (nullmailer pid 1961320 invoked by uid 1000);
+        Thu, 24 Jun 2021 20:47:13 -0000
+Date:   Thu, 24 Jun 2021 14:47:13 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Wenbin Mei <wenbin.mei@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        devicetree@vger.kernel.org, linux-mmc@vger.kernel.org,
-        srv_heupstream@mediatek.com, linux-kernel@vger.kernel.org,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Subject: Re: [PATCH v1] dt-bindings: mmc: change compatiable string for
- MT8195 mmc host IP
-Message-ID: <20210624204655.GA1960751@robh.at.kernel.org>
-References: <1623726033-16073-1-git-send-email-wenbin.mei@mediatek.com>
- <1623726033-16073-2-git-send-email-wenbin.mei@mediatek.com>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, bhupesh.linux@gmail.com
+Subject: Re: [PATCH v2 01/10] dt-bindings: qcom: rpmh-regulator: Add
+ compatible for SA8155p-adp board pmic
+Message-ID: <20210624204713.GA1961271@robh.at.kernel.org>
+References: <20210615074543.26700-1-bhupesh.sharma@linaro.org>
+ <20210615074543.26700-2-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1623726033-16073-2-git-send-email-wenbin.mei@mediatek.com>
+In-Reply-To: <20210615074543.26700-2-bhupesh.sharma@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 11:00:33 +0800, Wenbin Mei wrote:
-> MT8195 mmc host IP is compatible with MT8183, and currently it shows:
-> properties:
->   compatible:
->     oneOf:
-> ...
->       - items:
->          - const: mediatek,mt8192-mmc
->          - const: mediatek,mt8195-mmc
->          - const: mediatek,mt8183-mmc
-> which means the compatible string in the device tree would be:
-> 	compatible = "mediatek,mt8192-mmc", "mediatek,mt8195-mmc",
-> 		     "mediatek,mt8183-mmc";
-> The bindings is wrong and that isn't the result we want.
-> instead we want:
-> properties:
->   compatible:
->     oneOf:
-> ...
->       - items:
->          - const: mediatek,mt8192-mmc
->          - const: mediatek,mt8183-mmc
->       - items:
->          - const: mediatek,mt8195-mmc
->          - const: mediatek,mt8183-mmc
-> which would give us:
-> 	compatible = "mediatek,mt8192-mmc", "mediatek,mt8183-mmc";
-> and
-> 	compatible = "mediatek,mt8195-mmc", "mediatek,mt8183-mmc";
+On Tue, 15 Jun 2021 13:15:34 +0530, Bhupesh Sharma wrote:
+> Add compatible string for pmm8155au pmic found on
+> the SA8155p-adp board.
 > 
-> Fixes: eb9cb7227e5c (dt-bindings: mmc: Add compatible for Mediatek MT8195)
-> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Andy Gross <agross@kernel.org>
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 > ---
->  Documentation/devicetree/bindings/mmc/mtk-sd.yaml | 2 ++
->  1 file changed, 2 insertions(+)
+>  .../devicetree/bindings/regulator/qcom,rpmh-regulator.yaml       | 1 +
+>  1 file changed, 1 insertion(+)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
