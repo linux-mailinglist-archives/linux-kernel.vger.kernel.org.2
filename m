@@ -2,123 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51DAD3B2F08
+	by mail.lfdr.de (Postfix) with ESMTP id BAE4B3B2F09
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231682AbhFXMfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231718AbhFXMfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 08:35:13 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:37282 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230110AbhFXMfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 24 Jun 2021 08:35:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhFXMfI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 08:35:08 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31962C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 05:32:49 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id mj3so1826876ejb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 05:32:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1pdNyGnwu73Y/M+lRxwYbfC63xdRtvOG341evPVloL4=;
-        b=VT4Xbs/6+8YEG5ok69Cp66JqzZQH90fw7I76MXbLk3uomJANwnomPoo574oC5hjoQ4
-         EKQdDKf9yDx4L7r2cF62JOT40zbd68qIkBdugdNROO5ALrOarxqS15JpQUzu+iBlP/bO
-         FZoTBAM7u3HhTjWJ9SuTe5GD1eTpfsr8wdQVE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1pdNyGnwu73Y/M+lRxwYbfC63xdRtvOG341evPVloL4=;
-        b=qi5XZnzttGnLVTvP1IDTHj5ftkSXyhRSjcX8MlfTKpQUjlUn8lXvm4wHeLFzab1G38
-         2ABK7LqLRgdAi1hRlI9DkHFWdVEFyN32ZLsYVoV5a/lAiPVR7c1MuGUd+nTNlQRJwIdX
-         10qsxtVnUlXuQp/BZ0pSsNIdVuMWlIDzlCnhgReg/h9nXwBEvTpM9iw20QhnBkSzSPy1
-         SDWitJpZ+IJZVRlAADOLuJAHPuaINllcwW08j4NSStucarxvfnTz/pbTqic1NLWCR81t
-         jUzXi8oCZl7UtG8ojLQ0iPukpxaAwhtIFdpKUgzuP/5dRoQRJ8E1kuXC6ZXBXFKyrESl
-         y0UA==
-X-Gm-Message-State: AOAM533MhOCmHWkuhzZPgHlNlU7AfCZGnWz2UERPpwsZv2aa+f/uhru7
-        SjajaEkfhAmH0cFjIubXIuURyN8o1/5GTfQFKFeiQw==
-X-Google-Smtp-Source: ABdhPJy9346wJ7pgPh41de3TKx9jGsDYkXgGD+VTQowScqmus3DWBHWMTQtjBZGWKBfvb/2N8Rflzvh3mC8Utrm9SqA=
-X-Received: by 2002:a17:906:718b:: with SMTP id h11mr5091976ejk.418.1624537967775;
- Thu, 24 Jun 2021 05:32:47 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c1e00373e146aff8faaa8.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:1e00:373e:146a:ff8f:aaa8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6F6FA1EC046E;
+        Thu, 24 Jun 2021 14:32:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1624537969;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=w3Imzx+Dttr4Se/KutyUyF0VY+n/AzDUQ7OUjfDHAgM=;
+        b=c0DP3acQFntZSlcpq9n/Uf/3sV2iLEpv8qxPfZ5ca4KWx2A85kYx1S5tkEh2TSacFsWBLA
+        Ckh5YxtV5n2aHqKOmwJ4uTI+jT3QcukGhjTIvzwpaeVEA3hNLJQ4rlhkdt21ZPuGnwnHbb
+        FQsK+lNO5tG5+jj7PjRgC0CVGM37u/Q=
+Date:   Thu, 24 Jun 2021 14:32:43 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] x86/tools/relocs: add __printf attribute to die()
+Message-ID: <YNR7aw+C+7AJnBIG@zn.tnic>
+References: <YNRzSy3NuwBDYWwr@kroah.com>
 MIME-Version: 1.0
-References: <20210621072424.111733-1-jagan@amarulasolutions.com>
- <20210621072424.111733-3-jagan@amarulasolutions.com> <YNO0LHNVSWjrh1ZS@pendragon.ideasonboard.com>
- <CAOMZO5Ahbu4mohtMDOQOv_y5B_TDesbdYEUZTF1RL7_y-bS+RA@mail.gmail.com>
- <CAMty3ZAtObU-bf6FuxvSBaZn2cotj_NxASW9g9on-kBJ7iW3OA@mail.gmail.com> <YNR37NWkxq0mZyq5@pendragon.ideasonboard.com>
-In-Reply-To: <YNR37NWkxq0mZyq5@pendragon.ideasonboard.com>
-From:   Jagan Teki <jagan@amarulasolutions.com>
-Date:   Thu, 24 Jun 2021 18:02:36 +0530
-Message-ID: <CAMty3ZA=1xreRB+SZOwj6khH6+nLsE_ND5599xfV8J=LzGFYYQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/9] drm: bridge: Add Samsung SEC MIPI DSIM bridge driver
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Fabio Estevam <festevam@gmail.com>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Francis Laniel <francis.laniel@amarulasolutions.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Robert Foss <robert.foss@linaro.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        Milco Pratesi <milco.pratesi@engicam.com>,
-        Anthony Brandon <anthony@amarulasolutions.com>,
-        linux-phy@lists.infradead.org, Fancy Fang <chen.fang@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        NXP Linux Team <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YNRzSy3NuwBDYWwr@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+On Thu, Jun 24, 2021 at 01:58:03PM +0200, Greg Kroah-Hartman wrote:
+> There are a number of printf "mismatches" in the use of die() in
+> x86/tools/relocs.c.  Fix them up and add the printf attribute to the
+> reloc.h header file to prevent them from ever coming back.
+> 
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  arch/x86/tools/relocs.c | 21 +++++++++++----------
+>  arch/x86/tools/relocs.h |  1 +
+>  2 files changed, 12 insertions(+), 10 deletions(-)
+> 
+> Originally sent back in Feb, but it seems to have been missed:
+> 	https://lore.kernel.org/r/20210227095356.603513-1-gregkh@linuxfoundation.org
+> 
+> 
+> diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
+> index ce7188cbdae5..c3105a8c6cde 100644
+> --- a/arch/x86/tools/relocs.c
+> +++ b/arch/x86/tools/relocs.c
+> @@ -389,7 +389,8 @@ static void read_ehdr(FILE *fp)
+>  		Elf_Shdr shdr;
+>  
+>  		if (fseek(fp, ehdr.e_shoff, SEEK_SET) < 0)
+> -			die("Seek to %d failed: %s\n", ehdr.e_shoff, strerror(errno));
+> +			die("Seek to %d failed: %s\n",
+> +			    (int)ehdr.e_shoff, strerror(errno));
 
-On Thu, Jun 24, 2021 at 5:48 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Jagan,
->
-> On Thu, Jun 24, 2021 at 05:42:43PM +0530, Jagan Teki wrote:
-> > On Thu, Jun 24, 2021 at 8:18 AM Fabio Estevam wrote:
-> > > On Wed, Jun 23, 2021 at 7:23 PM Laurent Pinchart wrote:
-> > >
-> > > > Looking at the register set, it seems to match the Exynos 5433,
-> > > > supported by drivers/gpu/drm/exynos/exynos_drm_dsi.c. Can we leverage
-> > > > that driver instead of adding a new one for the same IP core ?
-> > >
-> > > Yes. there was an attempt from Michael in this direction:
-> > > https://patchwork.kernel.org/project/dri-devel/cover/20200911135413.3654800-1-m.tretter@pengutronix.de/
-> >
-> > Thanks for the reference, I will check it out and see I can send any
-> > updated versions wrt my i.MX8MM platform.
->
-> Thanks.
->
-> I had a brief look at the exynos driver, and I think it should be turned
-> into a DRM bridge as part of this rework to be used with the i.MX8MM.
->
-> Is there someone from Samsung who could assist, at least to test the
-> changes ?
+Instead of casting all those, I think you should use %zu as, apparently,
+we're using unsigned types for Elf{32,64}_Off and Elf{32,64}_Xword, etc.
 
-I have hardware to verify it on i.MX8MM but from exynos I don't have
-any contact from Samsung to suggest or test. Maybe I can add Tomasz
-Figa while sending the changes?
+Thx.
 
-I understand that there are 2 key implementations.
+-- 
+Regards/Gruss,
+    Boris.
 
-1. Adjust the exynos_drm_dsi.c by dropping component_ops as i.MX8MM
-flow with LCDIF doesn't have component_ops (make sure it works with
-exynos platform first)
-2. Sec DSIM Bridge driver common cross Exynos and i.MX8MM platform
-drivers or only one Sec DSIM bridge driver to handle both the
-platforms by differentiating compatible and driver data
-
-Any more suggestions would be appreciated?
-
-Jagan.
+https://people.kernel.org/tglx/notes-about-netiquette
