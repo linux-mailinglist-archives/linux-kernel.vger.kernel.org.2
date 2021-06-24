@@ -2,329 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CAF3B3276
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A38C3B327A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbhFXPZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 11:25:17 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:54868 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232227AbhFXPZM (ORCPT
+        id S232357AbhFXP0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 11:26:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55850 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230267AbhFXP0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 11:25:12 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 3336121A70;
-        Thu, 24 Jun 2021 15:22:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624548172; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zVVyBH4K0z3T5g6w7kw8qpunXOqk93L2d0Rd9B2wSwM=;
-        b=Yy0ppKMclBj9Nt+arDh4ff0gXE4UF+qzaI2cRs+E5JvZa0itVW40dGguEk2EDcHMhaXUUc
-        M17j0CCH9kgzv99M/yHC43WgJ6QD5NfnHLsEccYxTGURE1V1I/LxUEkHLWWPFO3rYOy2GY
-        5RWmU7IyokxHkFHlUoa/+vBuzMjvnpQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624548172;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zVVyBH4K0z3T5g6w7kw8qpunXOqk93L2d0Rd9B2wSwM=;
-        b=Jsb5OE9JgH+gpF/MVkswbWb7VlZbtwQjuS8534M3gvSsXa0xlKOcP7gAyRT6xuJPca3o64
-        mvnB6sDBCiZGSUAg==
-Received: from un68u.suse.de (unknown [10.163.42.126])
-        by relay2.suse.de (Postfix) with ESMTP id E779EA3BC5;
-        Thu, 24 Jun 2021 15:22:51 +0000 (UTC)
-From:   Mian Yousaf Kaukab <ykaukab@suse.de>
-To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
-        bruno.thomsen@gmail.com
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        biwen.li@nxp.com, Mian Yousaf Kaukab <ykaukab@suse.de>
-Subject: [PATCH v5] rtc: pcf2127: handle timestamp interrupts
-Date:   Thu, 24 Jun 2021 17:22:41 +0200
-Message-Id: <20210624152241.4476-1-ykaukab@suse.de>
-X-Mailer: git-send-email 2.26.2
+        Thu, 24 Jun 2021 11:26:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624548229;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V6782uv/lR78IFZdWPlWYnzNvjYHBRQ4Y4k+rewPDws=;
+        b=cCJrE5diLfQTcZvUvuxVxrqaiOl4tKRDuZ7QNo3pMQzvXzERM3riKOa5h3B0Fhn0umEzmI
+        1an5aPee9f+xm+C3k7DTEClH2veWkXtcyQIrL9zZdxp7zymd/gt8s8EXbTGnIX3zhFrRyP
+        Ndnf0lQttVe4cck7T5M3MYbKwIGbFQg=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-434-swQbUcOBMMyc3BXmEymThw-1; Thu, 24 Jun 2021 11:23:47 -0400
+X-MC-Unique: swQbUcOBMMyc3BXmEymThw-1
+Received: by mail-qv1-f70.google.com with SMTP id cu3-20020a05621417c3b0290272a51302bdso7389255qvb.20
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 08:23:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=V6782uv/lR78IFZdWPlWYnzNvjYHBRQ4Y4k+rewPDws=;
+        b=AWsmRasqml+9LIVLxCQaFotf2e1U/FUKfMv+Umj175oMi7kuS7guS2B3uY82yhmOe2
+         ZhK5P9jj242e3V/luZJofi8VgPnfWJaleGR4VCsQm6zZxrFjxTzFttwLJT4XjgOSWsnf
+         zyWDQXxp9k444CISnfWHABmyR55uEKM51sfeQaaBL5J3COUieFPpvNEp+QHK5Oq8rjdu
+         Pd8MsXDwl3tgwoUsMrsdYz9M4lvTCpLRZSsgJIm0uORccK7xR/Gh1gEpLxiJ8E58bnT+
+         pROHH+SYdgPycp7urLQHlTcWxUMMn4OTx9KLNDOAc8mCuuYLMFQ+U3ur9ROJxlwLmPjl
+         dF/w==
+X-Gm-Message-State: AOAM531uWpSnfEP1DigYrCN81xHfBolgfJbn6xRY+7TD4aXGfiHHGXj/
+        V/dPYkANNEbxm9Oynfe57yMNXmRhrV5R1xe8ZDmlAufLuSLPrkdZDog4SkfQ6PoFi7gD9iiEdim
+        rq7ZehxA5kp6WSWbimWsnm2hl
+X-Received: by 2002:ac8:58c5:: with SMTP id u5mr5197971qta.173.1624548227376;
+        Thu, 24 Jun 2021 08:23:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyYuNEZN+9M5YXJudVbsP8p1092eOJS1bJJ8jW9TETrlaT7t2iO4Ywmwh2AvAPDOjtmD90/qw==
+X-Received: by 2002:ac8:58c5:: with SMTP id u5mr5197943qta.173.1624548227156;
+        Thu, 24 Jun 2021 08:23:47 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id k1sm2096694qtm.49.2021.06.24.08.23.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 08:23:46 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v2 3/6] cgroup/cpuset: Add a new isolated cpus.partition
+ type
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>
+References: <20210621184924.27493-1-longman@redhat.com>
+ <20210621184924.27493-4-longman@redhat.com> <YNR/3fydXvAi3OsN@blackbook>
+Message-ID: <58c87587-417b-1498-185f-1db6bb612c82@redhat.com>
+Date:   Thu, 24 Jun 2021 11:23:45 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <YNR/3fydXvAi3OsN@blackbook>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 03623b4b041c ("rtc: pcf2127: add tamper detection support")
-added support for timestamp interrupts. However they are not being
-handled in the irq handler. If a timestamp interrupt occurs it
-results in kernel disabling the interrupt and displaying the call
-trace:
+On 6/24/21 8:51 AM, Michal Koutný wrote:
+> Hello.
+>
+> On Mon, Jun 21, 2021 at 02:49:21PM -0400, Waiman Long <longman@redhat.com> wrote:
+>>      cgroup/cpuset: Add a new isolated cpus.partition type
+>>
+>>      Cpuset v1 uses the sched_load_balance control file to determine if load
+>>      balancing should be enabled.  Cpuset v2 gets rid of sched_load_balance
+>>      as its use may require disabling load balancing at cgroup root.
+>>
+>>      For workloads that require very low latency like DPDK, the latency
+>>      jitters caused by periodic load balancing may exceed the desired
+>>      latency limit.
+>>
+>>      When cpuset v2 is in use, the only way to avoid this latency cost is to
+>>      use the "isolcpus=" kernel boot option to isolate a set of CPUs. After
+>>      the kernel boot, however, there is no way to add or remove CPUs from
+>>      this isolated set. For workloads that are more dynamic in nature, that
+>>      means users have to provision enough CPUs for the worst case situation
+>>      resulting in excess idle CPUs.
+>>
+>>      To address this issue for cpuset v2, a new cpuset.cpus.partition type
+>>      "isolated" is added which allows the creation of a cpuset partition
+>>      without load balancing. This will allow system administrators to
+>>      dynamically adjust the size of isolated partition to the current need
+>>      of the workload without rebooting the system.
+> I like this work.
+> Would it be worth generalizing the API to be on par with what isolcpus=
+> can configure? (I.e. not only load balancing but the other dimensions of
+> isolation (like the flags nohz and managed_irq now).)
+Good point, the isolated partition is equivalent to isolcpus=domain. I 
+will need to evaluate the nohz and managed_irq options to see if they 
+can be done dynamically without adding a lot of overhead. If so, we can 
+extend the functionality to cover that in future patches. Right now, 
+this is for the domain functionality only. If we can cover the nohz and 
+managed_irq options, we can deprecate isolcpus and advocate the use of 
+cgroup instead.
+>
+> I don't know if all such behaviors could be implemented dynamically
+> (likely not easy) but the API could initially implement just what you do
+> here with the "isolated" partition type.
+>
+> The variant I'm thinking of would keep just the "root" and "member"
+> partitions type and the "root" type could be additionally configured via
+> cpuset.cpus.partition.flags (for example).
+>
+> WDYT?
 
-[  121.145580] irq 78: nobody cared (try booting with the "irqpoll" option)
-...
-[  121.238087] [<00000000c4d69393>] irq_default_primary_handler threaded [<000000000a90d25b>] pcf2127_rtc_irq [rtc_pcf2127]
-[  121.248971] Disabling IRQ #78
+What I am thinking is that "isolated" means "isolated:domain" or one can 
+do "isolated:nohz,domain,manged_irq" just like the current isolcpus boot 
+option. I don't think we really need to add an extra flags control file.
 
-Handle timestamp interrupts in pcf2127_rtc_irq(). Save time stamp
-before clearing TSF1 and TSF2 flags so that it can't be overwritten.
-Set a flag to mark if the timestamp is valid and only report to sysfs
-if the flag is set. To mimic the hardware behavior, donâ€™t save
-another timestamp until the first one has been read by the userspace.
+Cheers,
+Longman
 
-However, if the alarm irq is not configured, keep the old way of
-handling timestamp interrupt in the timestamp0 sysfs calls.
-
-Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
----
-*Only compile tested due to lack of hardware availability*
-
-history:
-v5: -Add irq_enabled flag to keep track of alarm irq. Revert
-     to current way of handling timestamp interrupt in sysfs callsbacks
-     if alarm irq is not configured
-v4: -Save timestamp before clearing TSF1 and TSF2 flags
-    -Rename timstamp_valid flag to ts_valid
-v3: -Restore call to pcf2127_wdt_active_ping() in timestamp0_store().
-     It was removed by mistake.
-v2: -Add a flag to mark the occurrence of timestamp interrupt
-    -Add Biwen Li in Cc
-
- drivers/rtc/rtc-pcf2127.c | 172 +++++++++++++++++++++++++++-----------
- 1 file changed, 121 insertions(+), 51 deletions(-)
-
-diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
-index 48ce1e85deb1..5a7e673349ed 100644
---- a/drivers/rtc/rtc-pcf2127.c
-+++ b/drivers/rtc/rtc-pcf2127.c
-@@ -94,10 +94,20 @@
- #define PCF2127_WD_VAL_MAX		255
- #define PCF2127_WD_VAL_DEFAULT		60
- 
-+/* Mask for currently enabled interrupts */
-+#define PCF2127_CTRL1_IRQ_MASK (PCF2127_BIT_CTRL1_TSF1)
-+#define PCF2127_CTRL2_IRQ_MASK ( \
-+		PCF2127_BIT_CTRL2_AF | \
-+		PCF2127_BIT_CTRL2_WDTF | \
-+		PCF2127_BIT_CTRL2_TSF2)
-+
- struct pcf2127 {
- 	struct rtc_device *rtc;
- 	struct watchdog_device wdd;
- 	struct regmap *regmap;
-+	time64_t ts;
-+	bool ts_valid;
-+	bool irq_enabled;
- };
- 
- /*
-@@ -434,23 +444,92 @@ static int pcf2127_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
- 	return pcf2127_rtc_alarm_irq_enable(dev, alrm->enabled);
- }
- 
-+static int pcf2127_rtc_ts_read(struct device *dev, time64_t *ts)
-+{
-+	struct pcf2127 *pcf2127 = dev_get_drvdata(dev);
-+	struct rtc_time tm;
-+	int ret;
-+	unsigned char data[25];
-+
-+	ret = regmap_bulk_read(pcf2127->regmap, PCF2127_REG_CTRL1, data,
-+			       sizeof(data));
-+	if (ret) {
-+		dev_err(dev, "%s: read error ret=%d\n", __func__, ret);
-+		return ret;
-+	}
-+
-+	dev_dbg(dev,
-+		"%s: raw data is cr1=%02x, cr2=%02x, cr3=%02x, ts_sc=%02x, ts_mn=%02x, ts_hr=%02x, ts_dm=%02x, ts_mo=%02x, ts_yr=%02x\n",
-+		__func__, data[PCF2127_REG_CTRL1], data[PCF2127_REG_CTRL2],
-+		data[PCF2127_REG_CTRL3], data[PCF2127_REG_TS_SC],
-+		data[PCF2127_REG_TS_MN], data[PCF2127_REG_TS_HR],
-+		data[PCF2127_REG_TS_DM], data[PCF2127_REG_TS_MO],
-+		data[PCF2127_REG_TS_YR]);
-+
-+	tm.tm_sec = bcd2bin(data[PCF2127_REG_TS_SC] & 0x7F);
-+	tm.tm_min = bcd2bin(data[PCF2127_REG_TS_MN] & 0x7F);
-+	tm.tm_hour = bcd2bin(data[PCF2127_REG_TS_HR] & 0x3F);
-+	tm.tm_mday = bcd2bin(data[PCF2127_REG_TS_DM] & 0x3F);
-+	/* TS_MO register (month) value range: 1-12 */
-+	tm.tm_mon = bcd2bin(data[PCF2127_REG_TS_MO] & 0x1F) - 1;
-+	tm.tm_year = bcd2bin(data[PCF2127_REG_TS_YR]);
-+	if (tm.tm_year < 70)
-+		tm.tm_year += 100; /* assume we are in 1970...2069 */
-+
-+	ret = rtc_valid_tm(&tm);
-+	if (ret) {
-+		dev_err(dev, "Invalid timestamp. ret=%d\n", ret);
-+		return ret;
-+	}
-+
-+	*ts = rtc_tm_to_time64(&tm);
-+	return 0;
-+};
-+
-+static void pcf2127_rtc_ts_snapshot(struct device *dev)
-+{
-+	struct pcf2127 *pcf2127 = dev_get_drvdata(dev);
-+	int ret;
-+
-+	/* Let userspace read the first timestamp */
-+	if (pcf2127->ts_valid)
-+		return;
-+
-+	ret = pcf2127_rtc_ts_read(dev, &pcf2127->ts);
-+	if (!ret)
-+		pcf2127->ts_valid = true;
-+}
-+
- static irqreturn_t pcf2127_rtc_irq(int irq, void *dev)
- {
- 	struct pcf2127 *pcf2127 = dev_get_drvdata(dev);
--	unsigned int ctrl2 = 0;
-+	unsigned int ctrl1, ctrl2;
- 	int ret = 0;
- 
-+	ret = regmap_read(pcf2127->regmap, PCF2127_REG_CTRL1, &ctrl1);
-+	if (ret)
-+		return IRQ_NONE;
-+
- 	ret = regmap_read(pcf2127->regmap, PCF2127_REG_CTRL2, &ctrl2);
- 	if (ret)
- 		return IRQ_NONE;
- 
--	if (!(ctrl2 & PCF2127_BIT_CTRL2_AF))
-+	if (!(ctrl1 & PCF2127_CTRL1_IRQ_MASK || ctrl2 & PCF2127_CTRL2_IRQ_MASK))
- 		return IRQ_NONE;
- 
--	regmap_write(pcf2127->regmap, PCF2127_REG_CTRL2,
--		     ctrl2 & ~(PCF2127_BIT_CTRL2_AF | PCF2127_BIT_CTRL2_WDTF));
-+	if (ctrl1 & PCF2127_BIT_CTRL1_TSF1 || ctrl2 & PCF2127_BIT_CTRL2_TSF2)
-+		pcf2127_rtc_ts_snapshot(dev);
-+
-+	if (ctrl1 & PCF2127_CTRL1_IRQ_MASK)
-+		regmap_write(pcf2127->regmap, PCF2127_REG_CTRL1,
-+			ctrl1 & ~PCF2127_CTRL1_IRQ_MASK);
-+
-+	if (ctrl2 & PCF2127_CTRL2_IRQ_MASK)
-+		regmap_write(pcf2127->regmap, PCF2127_REG_CTRL2,
-+			ctrl2 & ~PCF2127_CTRL2_IRQ_MASK);
- 
--	rtc_update_irq(pcf2127->rtc, 1, RTC_IRQF | RTC_AF);
-+	if (ctrl2 & PCF2127_BIT_CTRL2_AF)
-+		rtc_update_irq(pcf2127->rtc, 1, RTC_IRQF | RTC_AF);
- 
- 	pcf2127_wdt_active_ping(&pcf2127->wdd);
- 
-@@ -475,18 +554,22 @@ static ssize_t timestamp0_store(struct device *dev,
- 	struct pcf2127 *pcf2127 = dev_get_drvdata(dev->parent);
- 	int ret;
- 
--	ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL1,
--				 PCF2127_BIT_CTRL1_TSF1, 0);
--	if (ret) {
--		dev_err(dev, "%s: update ctrl1 ret=%d\n", __func__, ret);
--		return ret;
--	}
-+	if (pcf2127->irq_enabled) {
-+		pcf2127->ts_valid = false;
-+	} else {
-+		ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL1,
-+			PCF2127_BIT_CTRL1_TSF1, 0);
-+		if (ret) {
-+			dev_err(dev, "%s: update ctrl1 ret=%d\n", __func__, ret);
-+			return ret;
-+		}
- 
--	ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL2,
--				 PCF2127_BIT_CTRL2_TSF2, 0);
--	if (ret) {
--		dev_err(dev, "%s: update ctrl2 ret=%d\n", __func__, ret);
--		return ret;
-+		ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL2,
-+			PCF2127_BIT_CTRL2_TSF2, 0);
-+		if (ret) {
-+			dev_err(dev, "%s: update ctrl2 ret=%d\n", __func__, ret);
-+			return ret;
-+		}
- 	}
- 
- 	ret = pcf2127_wdt_active_ping(&pcf2127->wdd);
-@@ -500,50 +583,36 @@ static ssize_t timestamp0_show(struct device *dev,
- 			       struct device_attribute *attr, char *buf)
- {
- 	struct pcf2127 *pcf2127 = dev_get_drvdata(dev->parent);
--	struct rtc_time tm;
-+	unsigned int ctrl1, ctrl2;
- 	int ret;
--	unsigned char data[25];
--
--	ret = regmap_bulk_read(pcf2127->regmap, PCF2127_REG_CTRL1, data,
--			       sizeof(data));
--	if (ret) {
--		dev_err(dev, "%s: read error ret=%d\n", __func__, ret);
--		return ret;
--	}
--
--	dev_dbg(dev,
--		"%s: raw data is cr1=%02x, cr2=%02x, cr3=%02x, ts_sc=%02x, "
--		"ts_mn=%02x, ts_hr=%02x, ts_dm=%02x, ts_mo=%02x, ts_yr=%02x\n",
--		__func__, data[PCF2127_REG_CTRL1], data[PCF2127_REG_CTRL2],
--		data[PCF2127_REG_CTRL3], data[PCF2127_REG_TS_SC],
--		data[PCF2127_REG_TS_MN], data[PCF2127_REG_TS_HR],
--		data[PCF2127_REG_TS_DM], data[PCF2127_REG_TS_MO],
--		data[PCF2127_REG_TS_YR]);
-+	time64_t ts;
- 
- 	ret = pcf2127_wdt_active_ping(&pcf2127->wdd);
- 	if (ret)
- 		return ret;
- 
--	if (!(data[PCF2127_REG_CTRL1] & PCF2127_BIT_CTRL1_TSF1) &&
--	    !(data[PCF2127_REG_CTRL2] & PCF2127_BIT_CTRL2_TSF2))
--		return 0;
-+	if (pcf2127->irq_enabled) {
-+		if (!pcf2127->ts_valid)
-+			return 0;
-+		ts = pcf2127->ts;
-+	} else {
-+		ret = regmap_read(pcf2127->regmap, PCF2127_REG_CTRL1, &ctrl1);
-+		if (ret)
-+			return 0;
- 
--	tm.tm_sec = bcd2bin(data[PCF2127_REG_TS_SC] & 0x7F);
--	tm.tm_min = bcd2bin(data[PCF2127_REG_TS_MN] & 0x7F);
--	tm.tm_hour = bcd2bin(data[PCF2127_REG_TS_HR] & 0x3F);
--	tm.tm_mday = bcd2bin(data[PCF2127_REG_TS_DM] & 0x3F);
--	/* TS_MO register (month) value range: 1-12 */
--	tm.tm_mon = bcd2bin(data[PCF2127_REG_TS_MO] & 0x1F) - 1;
--	tm.tm_year = bcd2bin(data[PCF2127_REG_TS_YR]);
--	if (tm.tm_year < 70)
--		tm.tm_year += 100; /* assume we are in 1970...2069 */
-+		ret = regmap_read(pcf2127->regmap, PCF2127_REG_CTRL2, &ctrl2);
-+		if (ret)
-+			return 0;
- 
--	ret = rtc_valid_tm(&tm);
--	if (ret)
--		return ret;
-+		if (!(ctrl1 & PCF2127_BIT_CTRL1_TSF1) &&
-+		    !(ctrl2 & PCF2127_BIT_CTRL2_TSF2))
-+			return 0;
- 
--	return sprintf(buf, "%llu\n",
--		       (unsigned long long)rtc_tm_to_time64(&tm));
-+		ret = pcf2127_rtc_ts_read(dev, &ts);
-+		if (ret)
-+			return 0;
-+	}
-+	return sprintf(buf, "%llu\n", (unsigned long long)ts);
- };
- 
- static DEVICE_ATTR_RW(timestamp0);
-@@ -594,6 +663,7 @@ static int pcf2127_probe(struct device *dev, struct regmap *regmap,
- 			dev_err(dev, "failed to request alarm irq\n");
- 			return ret;
- 		}
-+		pcf2127->irq_enabled = true;
- 	}
- 
- 	if (alarm_irq > 0 || device_property_read_bool(dev, "wakeup-source")) {
--- 
-2.26.2
 
