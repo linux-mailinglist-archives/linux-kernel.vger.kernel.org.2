@@ -2,74 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C7C3B3005
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3AC83B300C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhFXNgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:36:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57248 "EHLO mail.kernel.org"
+        id S231659AbhFXNgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:36:37 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:53700 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229878AbhFXNgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:36:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9FBE60FD9;
-        Thu, 24 Jun 2021 13:33:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624541622;
-        bh=O2I69TLhOqa5YCAAvlK2YkSpMRBWz/dmGuYy8PcAUZo=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=OpLYG3zybn8V4R1zfKzmH2mKfSVAh3286XKCokDK8lW1IOFZyzpppT+2v8uAOYdUF
-         1J2M1TSbj4+TXy4rL+I71aQ9eTISTa+yjsXMwiZV1Yqsgyaqi4PeDiKkvV8tvyXH6y
-         yaXnttJe2FrAuwTRXIkDi6p9NOShUcoldjcHPlDV3HTyJvzQpZS7VsecKhdLdu7KBX
-         mH4cK+CGwaSdjYF319AS+XzHhw8RvZlNgzPbPszm+C8FMD4DZEsvmwXqm8OnUi0Yqb
-         bq2fz+dd1SHyJlX8+3iIWZJoF/OflsVJfA8H/5o1rUQIzltPyhYi0lZSWT/E3/hoJR
-         dvNRJCxNgc1iw==
-Date:   Thu, 24 Jun 2021 15:33:39 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     =?ISO-8859-15?Q?Jos=E9_Exp=F3sito?= <jose.exposito89@gmail.com>
-cc:     benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
+        id S229878AbhFXNgf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:36:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=/QoD2olOKiTnq2WBqvcr2a3obQ9nSZsgcbVeh4n1M8o=; b=eZ+A88OWuWRVcJCGkjiY3qUVtT
+        YZXBYa4kedsiNRipnvHUTk/z0/cuWTSN0vGoadd9CyKKQ1MhFYtOkIEnFJ9vCiz5yb3Og0NcDVqUs
+        hK8JmGNRBmqZ3CdpijySE22MhseVFGWxYsI+PZCgw9Eekk01qQVH8vTVrgNBBtfXALsU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lwPUX-00AyWz-CJ; Thu, 24 Jun 2021 15:34:01 +0200
+Date:   Thu, 24 Jun 2021 15:34:01 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Einon <mark.einon@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] HID: magicmouse: register power supply
-In-Reply-To: <20210522180611.314300-1-jose.exposito89@gmail.com>
-Message-ID: <nycvar.YFH.7.76.2106241532511.18969@cbobk.fhfr.pm>
-References: <20210522180611.314300-1-jose.exposito89@gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+Subject: Re: [RFC 2/3] net: Provide switchdev driver for NXP's More Than IP
+ L2 switch
+Message-ID: <YNSJyf5vN4YuTUGb@lunn.ch>
+References: <20210622144111.19647-1-lukma@denx.de>
+ <20210622144111.19647-3-lukma@denx.de>
+ <YNH7vS9FgvEhz2fZ@lunn.ch>
+ <20210623133704.334a84df@ktm>
+ <YNOTKl7ZKk8vhcMR@lunn.ch>
+ <20210624125304.36636a44@ktm>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624125304.36636a44@ktm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 22 May 2021, José Expósito wrote:
+> I'm not sure if the imx28 switch is similar to one from TI (cpsw-3g)
+> - it looks to me that the bypass mode for both seems to be very
+> different. For example, on NXP when switch is disabled we need to
+> handle two DMA[01]. When it is enabled, only one is used. The approach
+> with two DMAs is best handled with FEC driver instantiation.
 
-> Unlike the Apple Magic Mouse 1 and the Apple Magic Trackpad 1, the
-> second generation of the devices don't report their battery status
-> automatically.
-> 
-> This patchset adds support for reporting the battery capacity and
-> charging status for the Apple Magic Mouse 2 and Apple Magic Trackpad
-> 2 both over bluetooth and USB.
-> 
-> This patch:
-> 
-> Register the required power supply structs for the Apple Magic Mouse 2
-> and the Apple Magic Trackpad 2 to be able to report battery capacity
-> and status in future patches.
-> 
-> Signed-off-by: José Expósito <jose.exposito89@gmail.com>
-> 
-> ---
-> 
-> v2: Add depends on USB_HID to Kconfig
+I don't know if it applies to the FEC, but switches often have
+registers which control which egress port an ingress port can send
+packets to. So by default, you allow CPU to port0, CPU to port1, but
+block between port0 to port1. This would give you two independent
+interface, the switch enabled, and using one DMA. When the bridge is
+configured, you simply allow port0 and send/receive packets to/from
+port1. No change to the DMA setup, etc.
 
-Hmm, why is this dependency needed in the first place, please? I think 
-trying to keep the drivers independent on transport drivers (especially in 
-cases like this, where more variants of physical transports actually 
-really do exist) is worth trying.
+> The code from [2] needs some vendor ioctl based tool (or hardcode) to
+> configure the switch. 
 
-Thanks,
+This would not be allowed. You configure switches in Linux using the
+existing user space tools. No vendor tools are used.
 
--- 
-Jiri Kosina
-SUSE Labs
+> > and how well future features can be added. Do you have
+> > support for VLANS? Adding and removing entries to the lookup tables?
+> > How will IGMP snooping work? How will STP work?
+> 
+> This can be easily added with serving netstack hooks (as it is already
+> done with cpsw_new) in the new switchdev based version [3] (based on
+> v5.12).
 
+Here i'm less convinced. I expect a fully functioning switch driver is
+going to need switch specific versions of some of the netdev ops
+functions, maybe the ethtool ops as well. It is going to want to add
+devlink ops. By hacking around with the FEC driver in the way you are,
+you might get very basic switch operation working. But as we have seen
+with cpsw, going from very basic to a fully functioning switchdev
+driver required a new driver, cpsw_new. It was getting more and more
+difficult to add features because its structure was just wrong. We
+don't want to add code to the kernel which is probably a dead end.
+
+      Andrew
