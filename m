@@ -2,171 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7523B2E24
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A723B2E2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbhFXLvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:51:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229437AbhFXLvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:51:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E399761185;
-        Thu, 24 Jun 2021 11:48:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624535321;
-        bh=tIEzJbFyzrkVCHoPFZv7EiSn5eGdWcktY1hM7567WC4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cnBL/cs5jq0gzsWpdW01qPqR4FhnbZYA5FARUzRbfbTnReSUvqYZg/5d7fMfMzzLB
-         Yi5ocgI40U2CdP0yPBgaSH4aMAy6kTVPwJQovsDfnM8E0ctEFfmI50PYyqPNdilEHT
-         wiHUoLZz+z5T3P7Nu0n1FHp0CT0+Mpa9kCcUzUXOGKpJLUcEA7B6eF0lhIA1fVOD2N
-         8hTi4ZzKBg0KOAPGGETjH9KnPn8WseTFQmhg5QfTMY6mH9TlCuMS+A5EiYaVCFxL1+
-         hxLlyRsIfAlqe3aZtbbg/Ry8xq+FvG9CW/Y0YZqD103SdYwufpVGkDaukfSWqnEWQs
-         pjV7QbcyVw3Kw==
-Date:   Thu, 24 Jun 2021 12:48:30 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Claire Chang <tientzu@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>,
-        Frank Rowand <frowand.list@gmail.com>,
+        id S230003AbhFXLwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:52:35 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:26283 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229437AbhFXLwe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 07:52:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1624535402;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=v8aLTL5mgsSe4og1YMJmxoyAgyhGxq2Ricrye2u9QiE=;
+    b=YNGJuBMl8zXfU6PKtniY5RofeZB7iScd6CKgiJQmc80X6mieGXF5doN2iS5w6JrlLo
+    9F5NQ8EsdLkG9I01tUru8eGi1fv2MuNZXXvJJEvrO09cos1K6Ongv0k5n8yWkybj4fRk
+    wHPJQZXKnaoRFi91iFrZNCAoLzSckgKuqWg8VXjIBEqVIfQPRMnVeCQ1u/ij5/nVQbNp
+    zUspgvFxtOQbv7kkc5oWUh69YoWIK2e72BvVdbzwg1+JtrF1G1cLbbSWsNnAg1F/RUhl
+    aNZsxjQPvNl0nbdLbgakmJEzOZdjhnoTjmKzI0Jh+58aRZL8SonHzgCYTH8BH3CEFQCc
+    q3CA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNzyCzy1Sfr67uExK884EC0GFGHavJShFkMdZNkE="
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+    by smtp.strato.de (RZmta 47.27.5 DYNA|AUTH)
+    with ESMTPSA id L04113x5OBo154d
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Thu, 24 Jun 2021 13:50:01 +0200 (CEST)
+Message-ID: <9590fe0e9482e212f2a3223ffae872104659cc4b.camel@chronox.de>
+Subject: Re: [PATCH v1] crypto: Make the DRBG compliant with NIST SP800-90A
+ rev1
+From:   Stephan Mueller <smueller@chronox.de>
+To:     =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        James Morris <jamorris@linux.microsoft.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Haxby <john.haxby@oracle.com>,
         Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
-        peterz@infradead.org, benh@kernel.crashing.org,
-        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
-        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
-        mingo@kernel.org, Jianxiong Gao <jxgao@google.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Saravana Kannan <saravanak@google.com>, xypron.glpk@gmx.de,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        bskeggs@redhat.com, linux-pci@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Thierry Reding <treding@nvidia.com>,
-        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
-        maarten.lankhorst@linux.intel.com, linuxppc-dev@lists.ozlabs.org,
-        jani.nikula@linux.intel.com,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        rodrigo.vivi@intel.com, Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>, bauerman@linux.ibm.com
-Subject: Re: [PATCH v14 06/12] swiotlb: Use is_swiotlb_force_bounce for
- swiotlb data bouncing
-Message-ID: <20210624114829.GB1382@willie-the-truck>
-References: <20210619034043.199220-1-tientzu@chromium.org>
- <20210619034043.199220-7-tientzu@chromium.org>
- <76c3343d-72e5-9df3-8924-5474ee698ef4@quicinc.com>
- <20210623183736.GA472@willie-the-truck>
- <19d4c7a2-744d-21e0-289c-a576e1f0e6f3@quicinc.com>
- <20210624054315.GA25381@lst.de>
- <CALiNf288ZLMhY3E8E3N+z9rkwi1viWNLm1wwMEwT4rNwh3FfwQ@mail.gmail.com>
- <364e6715-eafd-fc4a-e0af-ce2a042756b4@arm.com>
- <20210624111855.GA1382@willie-the-truck>
- <452155d2-c98e-23f6-86d6-3a2ff2e74783@arm.com>
+        Simo Sorce <simo@redhat.com>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
+        hpa@zytor.com, tytso@mit.edu
+Date:   Thu, 24 Jun 2021 13:50:00 +0200
+In-Reply-To: <afce411f-7ddb-557d-e039-83d4d84b87d7@digikod.net>
+References: <20210623120751.3033390-1-mic@digikod.net>
+         <9dbbf4e751cb4953fe63079cdc917a0bb3a91670.camel@chronox.de>
+         <a4e1c071-32af-9650-e6fd-8943b3a79bb0@linux.microsoft.com>
+         <8811360.37IJKxs2K1@positron.chronox.de>
+         <9ca2fdb4-8cee-3667-c90a-358255fb8f54@digikod.net>
+         <7acf0d4a63f7c94d8355101dd03cbfeb58c05d17.camel@chronox.de>
+         <afce411f-7ddb-557d-e039-83d4d84b87d7@digikod.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <452155d2-c98e-23f6-86d6-3a2ff2e74783@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 12:34:09PM +0100, Robin Murphy wrote:
-> On 2021-06-24 12:18, Will Deacon wrote:
-> > On Thu, Jun 24, 2021 at 12:14:39PM +0100, Robin Murphy wrote:
-> > > On 2021-06-24 07:05, Claire Chang wrote:
-> > > > On Thu, Jun 24, 2021 at 1:43 PM Christoph Hellwig <hch@lst.de> wrote:
-> > > > > 
-> > > > > On Wed, Jun 23, 2021 at 02:44:34PM -0400, Qian Cai wrote:
-> > > > > > is_swiotlb_force_bounce at /usr/src/linux-next/./include/linux/swiotlb.h:119
-> > > > > > 
-> > > > > > is_swiotlb_force_bounce() was the new function introduced in this patch here.
-> > > > > > 
-> > > > > > +static inline bool is_swiotlb_force_bounce(struct device *dev)
-> > > > > > +{
-> > > > > > +     return dev->dma_io_tlb_mem->force_bounce;
-> > > > > > +}
-> > > > > 
-> > > > > To me the crash looks like dev->dma_io_tlb_mem is NULL.  Can you
-> > > > > turn this into :
-> > > > > 
-> > > > >           return dev->dma_io_tlb_mem && dev->dma_io_tlb_mem->force_bounce;
-> > > > > 
-> > > > > for a quick debug check?
-> > > > 
-> > > > I just realized that dma_io_tlb_mem might be NULL like Christoph
-> > > > pointed out since swiotlb might not get initialized.
-> > > > However,  `Unable to handle kernel paging request at virtual address
-> > > > dfff80000000000e` looks more like the address is garbage rather than
-> > > > NULL?
-> > > > I wonder if that's because dev->dma_io_tlb_mem is not assigned
-> > > > properly (which means device_initialize is not called?).
-> > > 
-> > > What also looks odd is that the base "address" 0xdfff800000000000 is held in
-> > > a couple of registers, but the offset 0xe looks too small to match up to any
-> > > relevant structure member in that dereference chain :/
-> > 
-> > FWIW, I've managed to trigger a NULL dereference locally when swiotlb hasn't
-> > been initialised but we dereference 'dev->dma_io_tlb_mem', so I think
-> > Christoph's suggestion is needed regardless.
+Am Donnerstag, dem 24.06.2021 um 12:13 +0200 schrieb Mickaël Salaün:
 > 
-> Ack to that - for SWIOTLB_NO_FORCE, io_tlb_default_mem will remain NULL. The
-> massive jump in KernelCI baseline failures as of yesterday looks like every
-> arm64 machine with less than 4GB of RAM blowing up...
+> On 23/06/2021 21:10, Stephan Mueller wrote:
+> > Am Mittwoch, dem 23.06.2021 um 20:04 +0200 schrieb Mickaël Salaün:
+> > > 
+> > > On 23/06/2021 19:27, Stephan Müller wrote:
+> > > > Am Mittwoch, 23. Juni 2021, 19:00:29 CEST schrieb James Morris:
+> > > > 
+> > > > Hi James,
+> > > > 
+> > > > > On Wed, 23 Jun 2021, Stephan Mueller wrote:
+> > > > > > > These changes replace the use of the Linux RNG with the Jitter
+> > > > > > > RNG,
+> > > > > > > which is NIST SP800-90B compliant, to get a proper entropy input
+> > > > > > > and a
+> > > > > > > nonce as defined by FIPS.
+> > > > > > 
+> > > > > > Can you please help me understand what is missing in the current
+> > > > > > code
+> > > > > > which
+> > > > > > seemingly already has achieved this goal?
+> > > > > 
+> > > > > The advice we have is that if an attacker knows the internal state of
+> > > > > the
+> > > > > CPU, then the output of the Jitter RNG can be predicted.
+> > > > 
+> > > > Thank you for the hint. And I think such goal is worthwhile (albeit I
+> > > > have
+> > > > to 
+> > > > admit that if an attacker is able to gain the internal state of a CPU, I
+> > > > would 
+> > > > assume we have more pressing problems that a bit of entropy).
+> > > > 
+> > > > Anyways, the current code does:
+> > > > 
+> > > > - in regular mode: seed the DRBG with 384 bits of data from
+> > > > get_random_bytes
+> > > > 
+> > > > - in FIPS mode: seed the DRBG with 384 bits of data from
+> > > > get_random_bytes 
+> > > > concatenated with 384 bits from the Jitter RNG
+> > > > 
+> > > > 
+> > > > If I understand the suggested changes right, I would see the following
+> > > > changes 
+> > > > in the patch:
+> > > > 
+> > > > - in the regular case: 640 bits from get_random_bytes
+> > > 
+> > > Why 640 bits?
+> > 
+> >                 if (!reseed)
+> >                         entropylen = ((entropylen + 1) / 2) * 3;
+> > 
+> > -> Entropylen is 384 in case of a security strength of 256 bits.
+> > 
+> > Your code does the following if the Jitter RNG is not allocated (i.e. in
+> > non-
+> > fips mode):
+> > 
+> > ret = drbg_get_random_bytes(drbg, entropy, entropylen + strength);
+> > 
+> > so: entropylen + strength = 384 + 256, no?
+> 
+> Correct (for entropy + nonce + pers), I thought you were referring to
+> just the entropy + nonce part. This change is not needed for FIPS of
+> course but I changed it too to use the same algorithm and lengths as
+> when Jitter RNG is available.
+> 
+> Do you prefer to keep the current lengths (384 bits) when there is no
+> Jitter RNG? It seems to me that this change makes sense and could only
+> strengthen this case though.
+> 
+> > 
+> > > 
+> > > > 
+> > > > - in FIPS mode: 256 bits of data from get_random_bytes concatenated with
+> > > > 384
+> > > > bits from the Jitter RNG
+> > > 
+> > > In both cases there are 256 bits for the entropy input and 128 bits for
+> > > the nonce.
+> > 
+> > I see in the code path with the Jitter RNG:
+> > 
+> > ret = crypto_rng_get_bytes(drbg->jent, entropy,
+> >                                                    entropylen);
+> > 
+> > --> 384 bits from the Jitter RNG
+> > 
+> > ret = drbg_get_random_bytes(drbg, entropy + entropylen,
+> > +                                                   strength);
+> > 
+> > --> 256 bits from get_random_bytes
+> > 
+> > What am I missing here?
+> 
+> OK, it is just a misunderstanding of what is where. To simplify the code
+> (with a fixed-length entropy array) I used the "entropy" array to store
+> the entropy + nonce + the automatically generated personalization string
+> or additional input. The user-supplied personalization string or
+> additional input is stored (unchanged) in the pers drbg_string. I
+> (briefly) explained this in the comments.
+> 
+> Another difference brought by this change is that the Jitter RNG data
+> (i.e. entropy source) is used at the beginning (of the entropy array)
+> and the urandom data (i.e. random source) at the end. This strictly
+> follows the algorithm described in SP800-90Ar1 sections 8.6.1, 8.6.2,
+> 10.1.1.2 and 10.1.1.3 .
+> 
+> > 
+> > 
+> > >  If Jitter RNG is not available, then urandom is used instead,
+> > > which means that the system is not FIPS compliant.
+> > 
+> > Agreed, the existing does does exactly the same with the exception that it
+> > pulls 384 bits from get_random_bytes instead of 640 in non-FIPS mode (i.e.
+> > when the Jitter RNG is not allocated).
+> > 
+> > In FIPS mode, the current code draws 384 bits from get_random_bytes and
+> > separately 384 bits from the Jitter RNG. So, each data block from either
+> > entropy source could completely satisfy the SP800-90A requirement.
+> 
+> What is the rational of using 384 (strength * 1.5) bits to draw from
+> get_random_bytes?
+> 
+> We noticed that (as explained above) the order of these sources doesn't
+> follows SP800-90Ar1.
+> It is not clear which part and source is used for the entropy, nonce and
+> (maybe) personalization string.
+> If the random source is indeed the personalization string or the
+> additional input, then the pers length may not fit with the maximum
+> lengths specified in SP800-90Ar1 table 2 and 3.
+> 
+> > 
+> > > 
+> > > This follows the SP800-90Ar1, section 8.6.7: [a nonce shall be] "A value
+> > > with at least (security_strength/2) bits of entropy".
+> > 
+> > Agreed, but what is your code doing different than the existing code?
+> 
+> It just fits with strength/2 for the length of the nonce.
+> 
+> > > 
+> > > > 
+> > > > So, I am not fully sure what the benefit of the difference is: in FIPS
+> > > > mode 
+> > > > (where the Jitter RNG is used), the amount of data pulled from 
+> > > > get_random_bytes seems to be now reduced.
+> > > 
+> > > We can increase the amount of data pulled from get_random_bytes (how to
+> > > decide the amount?), but as we understand the document, this should be
+> > > part of the personalization string and additional input, not the nonce.
+> > 
+> > There is no need to have a personalization string or additional input. Note,
+> > those two values are intended to be provided by a caller or some other
+> > environment.
+> 
+> Right, but the intent here is to strictly follow SP800-90Ar1 (hence the
+> use of Jitter RNG for entropy and nonce) but to still use the urandom
+> source, which seems to only fit in the personalization string according
+> to SP800-90Ar1.
+> 
+> > 
+> > If you want to stuff more seed into the DRBG, you simply enlarge the seed
+> > buffer and pull more from the entropy sources. I have no objections doing
+> > that. All I am trying to point out is that the 90A standard does not require
+> > more entropy than 256 bits during initialization plus 128 bits of nonce ==
+> > 384
+> > bits of data. But the DRBGs all allow providing more data as seed.
+> 
+> Agreed, the user-supplied personalization string can be used to add more
+> data. We also want to harden the default use (i.e. without user-provided
+> personalization string) by automatically using non-entropy source
+> (urandom) though.
+> 
+> > 
+> > > I guess it may not change much according to the implementation, as for
+> > > the order of random and entropy concatenation, but these changes align
+> > > with the specifications and it should help FIPS certifications.
+> > 
+> > Are you saying the order of data from the entropy sources matters in the
+> > entropy buffer? I have not seen that in the standard, but if you say this is
+> > the goal, then allow me to understand which order you want to see?
+> > 
+> > The current code contains the order of:
+> > 
+> > <384 bits get_random_bytes> || <384 bits Jitter RNG>
+>    ^                              ^
+>    personalization string?        entropy+nonce
+> 
+> As described in SP800-90Ar1 section 10.1.1.2:
+> seed_material = entropy_input || nonce || personalization_string
+> 
+> As described in SP800-90Ar1 section 10.1.1.3:
+> seed_material = 0x01 || V || entropy_input || additional_input
+> 
+> And SP800-90Ar1 section 5 defining "X || Y" as "Concatenation of two
+> strings X and Y. X and Y are either both bitstrings, or both byte strings".
+> 
+> According to that, we would like at least:
+> <384 bits Jitter RNG> || <256 bits get_random_bytes>
+> and also enforcing the maximum length for the whole personalization
+> string and the additional input.
 
-Ok, diff below which attempts to tackle the offset issue I mentioned as
-well. Qian Cai -- please can you try with these changes?
+And I think here we found the misconception.
 
-Will
+- SP800-90A section 8.7.1 clearly marks that a personalization string is
+optional. If it is not provided, the personalization string is treated as a
+zero-bit string in the formulas you mentioned above. This is also consistent
+with the CAVP testing of DRBGs conducted by NIST which allows testing of the
+DRBG without a personalization string. See [1] as an example (search for DRBG
+and click on it to see the tested options - there you see the testing with
+zero personalization string).
 
---->8
+- SP800-90A section 9.1 specifies that the entropy_input is: "The maximum
+length of the entropy_input is implementation dependent, but shall be less
+than or equal to the specified maximum length for the selected DRBG
+mechanism". For all DRBGs except the CTR DRBG without derivation function the
+maximum length is 2^35 as defined in table 2. As we do not have a CTR DRBG
+without derivation function, we can ignore that special case.
 
-diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index 175b6c113ed8..39284ff2a6cd 100644
---- a/include/linux/swiotlb.h
-+++ b/include/linux/swiotlb.h
-@@ -116,7 +116,9 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
- 
- static inline bool is_swiotlb_force_bounce(struct device *dev)
- {
--       return dev->dma_io_tlb_mem->force_bounce;
-+       struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
-+
-+       return mem && mem->force_bounce;
- }
- 
- void __init swiotlb_exit(void);
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 44be8258e27b..0ffbaae9fba2 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -449,6 +449,7 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
-                dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
-        unsigned int nslots = nr_slots(alloc_size), stride;
-        unsigned int index, wrap, count = 0, i;
-+       unsigned int offset = swiotlb_align_offset(dev, orig_addr);
-        unsigned long flags;
- 
-        BUG_ON(!nslots);
-@@ -497,7 +498,7 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
-        for (i = index; i < index + nslots; i++) {
-                mem->slots[i].list = 0;
-                mem->slots[i].alloc_size =
--                       alloc_size - ((i - index) << IO_TLB_SHIFT);
-+                       alloc_size - (offset + ((i - index) << IO_TLB_SHIFT));
-        }
-        for (i = index - 1;
-             io_tlb_offset(i) != IO_TLB_SEGSIZE - 1 &&
+With these considerations, the current DRBG code
+
+- does not mandate a personalization string or even create one by itself but
+allows the caller to specify one
+
+- applies an entropy_input len of 512 bits during initial seeding
+
+- applies a nonce of 128 bits during initial seeding
+
+entropy_input == <384 bits get_random_bytes> || <256 bits Jitter RNG>
+
+nonce = 128 bits Jitter RNG
+
+
+You asked why 384 bits from get_random_bytes. Well, the answer is exactly to
+cover your initial concern also raised by James Morris: some folks may not
+trust the Jitter RNG. Yet we need it here as it only provides 90B compliance.
+But folks who dislike it can treat its data providing no entropy and assume
+get_random_bytes provides the entropy.
+
+As both, the get_random_bytes and Jitter RNG data is concatenated, we do not
+destroy entropy by this operation. This implies we cover different view points
+at the same time.
+
+[1]
+https://csrc.nist.gov/projects/cryptographic-algorithm-validation-program/details?validation=33056
+
+Ciao
+Stephan
+
+> 
+> Thanks,
+>  Mickaël
+
+
