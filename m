@@ -2,87 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B320C3B2FAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC5F3B2FB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbhFXNF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbhFXNF1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:05:27 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B004C061756;
-        Thu, 24 Jun 2021 06:03:08 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id v13so2915572ple.9;
-        Thu, 24 Jun 2021 06:03:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=E3eH9j6x/2bPR+R4Avd9Zya3U/JJfgeOubfcePdRb30=;
-        b=TM507lOrxyUf7DwSIdZ7SwnXqo3TOVOBtptLkJUtdPw6FUmGiD5mxOBaHx62zls0Bb
-         TuIqQC/7Itk4IJ8J79dXkgWHrjh72TtEfoI1LmnUQI/zcKb/P9uRPzRyA5BT24wRLv/R
-         Ip4zGeZ1zd8Px2QZM/+PSCFZJN6D44+7AEnUiBv3jEx9wQkRK9icAfNLGBe0ozsVm/0T
-         9XjJpBLGMC7P/68LRtijJlIPmMgyUlpDoZDGSUITbjWaAAsPhDrZTsl+vp79xS6nQt79
-         /g0Sn01KE1QUWzkLPTPy4yZvKct4KYxAAXFfakZ8z7Pfl8RVYmYbU/SGP/79FpzlWjKK
-         ktzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=E3eH9j6x/2bPR+R4Avd9Zya3U/JJfgeOubfcePdRb30=;
-        b=H7AYq/dWihGFuJLAafK3x+w1ciKJMRpB2r4Zv0RG9sRNz1py/4aersETiTRw3D4rbO
-         tipQQGMfgsqp80o1gM7ot0LPtSca4n80MolmpmXAt/mDGQ7Zr+6ytuMffC0hs6BteJyr
-         Y91SjJVESG+RCQ6ZfN2l0qFVbAyc7DhFoecSiMZrgHOxuW8tQryY0eHePcOkfpxG9T3G
-         vGxlixOSEV3g+wF2nwg2jTp2uMjuL/8PFFo7ERjHBU78Ca1VdY6Fuc5bh2XOQvnifli8
-         p4Qu8bU3a9up+7QsrHnyHFlhI+6kIPusK+REaaWwX3jxMoFNHgRrwgV+t8q2WwLy8dGj
-         9kGA==
-X-Gm-Message-State: AOAM533l38yzgrXnStu//sjq+Km1RG6uMawMuozzs3qmCWPwxdSw0e91
-        2dARZ+UJ/hJ10lQdWFaC9i4=
-X-Google-Smtp-Source: ABdhPJw/7HIeSLNQgrQDsvyahW7D55+qe5uZfS2tJQUQjAUWRCQM5f+XuC8Wy2S1cmK9CngRgiHofA==
-X-Received: by 2002:a17:902:da8c:b029:127:a075:cb with SMTP id j12-20020a170902da8cb0290127a07500cbmr1224288plx.26.1624539787903;
-        Thu, 24 Jun 2021 06:03:07 -0700 (PDT)
-Received: from [192.168.0.118] ([103.242.196.10])
-        by smtp.gmail.com with ESMTPSA id z24sm1939330pfr.79.2021.06.24.06.03.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 06:03:07 -0700 (PDT)
-Subject: Re: [question] De-registration does not remove port
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     vgupta@synopsys.com, Jiri Slaby <jirislaby@kernel.org>,
-        linux-snps-arc@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org,
-        Pavel Andrianov <andrianov@ispras.ru>
-References: <3e131267-e1b3-1b83-f8be-0577da479223@gmail.com>
- <YNLfcKFL1LkJgXAR@kroah.com>
-From:   Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
-Message-ID: <7af6c0a5-c990-5a40-104e-13f44b1cb4c5@gmail.com>
-Date:   Thu, 24 Jun 2021 18:33:01 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230151AbhFXNFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:05:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46536 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229573AbhFXNFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:05:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BA78613F3;
+        Thu, 24 Jun 2021 13:03:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624539813;
+        bh=29qJHkURQgjJSP98wmIatG7GWQL5T0I2YZMR3NrkmZA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QZpO13JkV8FGpr8VOIcI7px/Tsj6wJG/tuBt96wg1kglgrliKzKkRiPAEnsrEWzHz
+         De3kQ3eZeOOus9MyaFporWBp47g4x97oa4B5vBbb8ztwKy2ORG3xKdTpt4lIcmdOmU
+         IAz1Oe+DmF1lDAG1m/d2jXqT8ahKAPh5tyzYC7FI=
+Date:   Thu, 24 Jun 2021 15:03:30 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Zhenguo Zhao <zhenguo6858@gmail.com>
+Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tty: n_gsm: add some instructions and code for slaver
+Message-ID: <YNSCoj1sRqDTx46X@kroah.com>
+References: <1623983464-19846-1-git-send-email-zhenguo6858@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YNLfcKFL1LkJgXAR@kroah.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1623983464-19846-1-git-send-email-zhenguo6858@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 12:44 PM, Greg KH wrote:
-> On Wed, Jun 23, 2021 at 11:42:36AM +0530, Saubhik Mukherjee wrote:
->> In drivers/tty/serial/arc_uart.c, arc_serial_remove always returns 0,
->> instead of calling uart_remove_one_port to remove uart port from serial
->> core. The comment says "This will be never be called". In my understanding,
->> a port added using uart_add_one_port should be removed during
->> de-registration.
->>
->> Is there a reason for this behavior?
+On Fri, Jun 18, 2021 at 10:31:04AM +0800, Zhenguo Zhao wrote:
+> From: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
 > 
-> Did you test the code to see if that function will ever be called?
+> The gsm driver config to master or slaver by initiator,
 
-I would like to reformulate the question: Suppose arc_serial_remove is 
-never called. Then I would like to know how the driver de-registration 
-is organized since the UART port is never removed?
+I do not understand.
+
+Also, we generally do not want to use these terms anymore, please pick a
+different term to use.  Please see commit a5f526ecb075 ("CodingStyle:
+Inclusive Terminology") in the kernel tree for more information about
+this.
+
+thanks,
+
+greg k-h
