@@ -2,68 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0873B2CBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19393B2CBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbhFXKrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 06:47:37 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:8563 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232043AbhFXKre (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 06:47:34 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.19]) by rmmx-syy-dmz-app12-12012 (RichMail) with SMTP id 2eec60d4622867a-eedff; Thu, 24 Jun 2021 18:44:57 +0800 (CST)
-X-RM-TRANSID: 2eec60d4622867a-eedff
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[223.112.105.130])
-        by rmsmtp-syy-appsvr10-12010 (RichMail) with SMTP id 2eea60d46224488-ee1e5;
-        Thu, 24 Jun 2021 18:44:56 +0800 (CST)
-X-RM-TRANSID: 2eea60d46224488-ee1e5
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com
-Cc:     alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+        id S232246AbhFXKsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 06:48:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231294AbhFXKsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 06:48:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AAFB613FD;
+        Thu, 24 Jun 2021 10:45:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624531550;
+        bh=7e/uhceb4SsVfqed3rolRWCdLu/v31HwG/8C+2zCGgw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BioL4KtNRS/rKGgQ0TR8pwdsN9Wjc1OeTIiZwyJVntIAL6HrX08P91OloUEh3UfAG
+         +VxZynI4VMIMG2FEAEBq3Pm8i5pygFbCfdFC06awczRWGsLDP2fdhyzKOiGe7QvnwL
+         E7kYltndY19AdGhRWa7MEI7Bs/xegl7uYRGnwojWbC4k+IP1qvn7wZFUxXqi7AQIzK
+         u36+cds+kPEZGMfdOHc38JLdSlqqCFbMJScT/8rRzvMsgFbfnJ+bucgjcBFDhp9Szn
+         GvCNtLTGZxT65+GIzvy+fn72BMlhjTrCSIEfKVARUTHZGh/b/JwDZ+Q0pW1AayDop9
+         xA8L7Vij9W76g==
+Date:   Thu, 24 Jun 2021 12:45:45 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
         linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Subject: [PATCH] ASoC: fsl_xcvr: Omit superfluous error message in fsl_xcvr_probe()
-Date:   Thu, 24 Jun 2021 18:45:05 +0800
-Message-Id: <20210624104505.13680-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Phil Sutter <phil@nwl.cc>
+Subject: Re: Issues during assigning addresses on point to point interfaces
+Message-ID: <20210624124545.2b170258@dellmb>
+In-Reply-To: <20210606151008.7dwx5ukrlvxt4t3k@pali>
+References: <20210606151008.7dwx5ukrlvxt4t3k@pali>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the function fsl_xcvr__probe(), when get irq failed,
-the function platform_get_irq() logs an error message, so remove
-redundant message here.
+On Sun, 6 Jun 2021 17:10:08 +0200
+Pali Roh=C3=A1r <pali@kernel.org> wrote:
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
- sound/soc/fsl/fsl_xcvr.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+> Hello!
+>=20
+> Seems that there is a bug during assigning IP addresses on point to
+> point interfaces.
+>=20
+> Assigning just one local address works fine:
+>=20
+>     ip address add fe80::6 dev ppp1 --> inet6 fe80::6/128 scope link
+>=20
+> Assigning both local and remote peer address also works fine:
+>=20
+>     ip address add fe80::7 peer fe80::8 dev ppp1 ---> inet6 fe80::7
+> peer fe80::8/128 scope link
+>=20
+> But trying to assign just remote peer address does not work. Moreover
+> "ip address" call does not fail, it returns zero but instead of
+> setting remote peer address, it sets local address:
+>=20
+>     ip address add peer fe80::5 dev ppp1 --> inet6 fe80::5/128 scope
+> link
+>=20
 
-diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
-index 5e8284db857b..711d738f8de1 100644
---- a/sound/soc/fsl/fsl_xcvr.c
-+++ b/sound/soc/fsl/fsl_xcvr.c
-@@ -1190,10 +1190,8 @@ static int fsl_xcvr_probe(struct platform_device *pdev)
- 
- 	/* get IRQs */
- 	irq = platform_get_irq(pdev, 0);
--	if (irq < 0) {
--		dev_err(dev, "no irq[0]: %d\n", irq);
-+	if (irq < 0)
- 		return irq;
--	}
- 
- 	ret = devm_request_irq(dev, irq, irq0_isr, 0, pdev->name, xcvr);
- 	if (ret) {
--- 
-2.18.2
+Adding some other people to Cc in order to get their opinions.
 
+It seems this bug is there from the beginning, from commit
+caeaba79009c2 ("ipv6: add support of peer address")
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
+id=3Dcaeaba79009c2
 
+Maybe some older user-space utilities use IFA_ADDRESS instead of
+IFA_LOCAL, and this was done in order to be compatible with them?
 
+Marek
