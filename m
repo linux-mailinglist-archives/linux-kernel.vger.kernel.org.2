@@ -2,216 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D643B3178
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 433683B3179
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232071AbhFXOiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 10:38:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbhFXOiH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 10:38:07 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4385FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:35:48 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id pf4-20020a17090b1d84b029016f6699c3f2so6058573pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:35:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xQjUbQButhibbxycyEoKhGLhEwWXr4D9Ex/GYx3Y3Js=;
-        b=HHF7wfpYfcF7VvDC/veGMFqaV7NcnPO4cM4VAMUIX31K5q4g9c4/MuCUNWRgCtLARN
-         c2ha2tVL3/qnMiF2djOzQkzpZRQfa8ERhlGF/b9OCXOejVKqOcAejHelxxms36IcCQp3
-         BbV0/vHIOS/oUeb32ivbZWEg4NAD7roqTDGw8MAPDMwiS9smCn9Cr28cFNnYfd3jAqM0
-         z3Qi7eStB2YZQ/8zFxhYwaD6BVelsrnAhsymGNbZNQWi9kfhMGzzSrQ9CqOx9TEqqo+B
-         prWqScmnGxWYSNkxEuxoe4ASIwiqiX94fKRxH9EtJ134f7JLlClqUrF0sxW2/N0VIC1B
-         4SqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xQjUbQButhibbxycyEoKhGLhEwWXr4D9Ex/GYx3Y3Js=;
-        b=AS+W8Ro3jEouVMu0Rd4FVgNxjSshwDgJXFjtbE1EzKGU1+g4qoze5goMNePNFZTm+L
-         VtNR4cZYVK6+UGrSFCMPI0p9wZ46yKwkRP1MKuWJnW70hxFiXvJ3iOLFTXPKKghroTmr
-         xgOKCgBWyZrceNtDMEcz89HGYTF6QTwB8QSCm9Jru1WzrnQVyJ0oXv3f7kYRMJFOD5cE
-         AW1zGGzNcShLdLfUV55xBulKC6/6w/CZD6an/8WjK0+iaBU8Vr91cYBDc/5xBtD/4wlO
-         sbKyO3PAqnrEoOlF8+YcqbDqZa9ShFJCA3TJLIPV/i852Mp0Rp5jRBa7o0q3z6lLmkiw
-         5q4A==
-X-Gm-Message-State: AOAM531Vb6muPuQRt1urq9JW5hA2exHlNBLo/2c06jy1qcIMfB9utEzA
-        SwmlK5yNypKUCL2pnw1cz18XF6m+jPfbfPrq
-X-Google-Smtp-Source: ABdhPJxXVMS6wroOr+XVkzR6Jm+WZBTfxesdgsDwt95Q/KPFv+h4RJh8GA5ujGtijFsQ+/9/EPAcHA==
-X-Received: by 2002:a17:90a:db8a:: with SMTP id h10mr15838520pjv.50.1624545347330;
-        Thu, 24 Jun 2021 07:35:47 -0700 (PDT)
-Received: from [192.168.1.153] (163.128.178.217.shared.user.transix.jp. [217.178.128.163])
-        by smtp.gmail.com with ESMTPSA id c5sm3153788pfi.81.2021.06.24.07.35.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 07:35:46 -0700 (PDT)
-Subject: Re: [PATCH 1/1] config: Enable jh7100 SoC
-To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Sagar Shrikant Kadam <sagar.kadam@sifive.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <f22f6d7e-97ab-85db-5448-c2bcef0ea0e7@gmail.com>
- <82328d90-2769-6bd0-a28e-b501fba63d76@gmail.com>
- <20210623212145.498a8cd8@xhacker>
-From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
-Message-ID: <6bccb054-06db-bfc3-bb7a-84f1b259c219@gmail.com>
-Date:   Thu, 24 Jun 2021 23:35:42 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232158AbhFXOiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 10:38:11 -0400
+Received: from phobos.denx.de ([85.214.62.61]:43270 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230170AbhFXOiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 10:38:10 -0400
+Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 10E51829F8;
+        Thu, 24 Jun 2021 16:35:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1624545349;
+        bh=CpQwkbSEIB8lD8jjL0qfbD/TUnWJKGdixkzy6c8IDqA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HF99tVxBE2NZY/xmUk4/ydyNF3m+vXKPfRH+gavT/qU2xqco4s3NyFj5kHT41dOCc
+         A6dJGIJRkH0eTsWqUQyjL1NddsXF51Qh6qrgLiA5obCy0cAMDaAvkpbiJxPoVzmNZl
+         KGQX59rzsoKgtICePRHooP8O/g+eKKr85kisKv86Ix0o154IYUo7+IOn1fnu431PtZ
+         D8VRq/b7u0G2NjzmFgqceWvlro+fgTtEQgrRVbGSRQjdGIGx6f3d0/6uB45lMQK5a4
+         M+HTMERgJCvA3IpSpPQz60wDxABODE35/qEuxX1gXziqQ0ETKZiZ7kB6aetpBrkZCn
+         jxojtTfzLbh4g==
+Date:   Thu, 24 Jun 2021 16:35:42 +0200
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Einon <mark.einon@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 2/3] net: Provide switchdev driver for NXP's More Than IP
+ L2 switch
+Message-ID: <20210624163542.5b6d87ee@ktm>
+In-Reply-To: <YNSJyf5vN4YuTUGb@lunn.ch>
+References: <20210622144111.19647-1-lukma@denx.de>
+        <20210622144111.19647-3-lukma@denx.de>
+        <YNH7vS9FgvEhz2fZ@lunn.ch>
+        <20210623133704.334a84df@ktm>
+        <YNOTKl7ZKk8vhcMR@lunn.ch>
+        <20210624125304.36636a44@ktm>
+        <YNSJyf5vN4YuTUGb@lunn.ch>
+Organization: denx.de
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210623212145.498a8cd8@xhacker>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/VCwptMsYzcXqoWJCZpGxJJf"; protocol="application/pgp-signature"
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/2021 10:21 PM, Jisheng Zhang wrote:
-> Hi Akira,
-> 
-> On Wed, 23 Jun 2021 21:46:54 +0900
-> Akira Tsukamoto <akira.tsukamoto@gmail.com> wrote:
-> 
-> It's better to add some descriptions here.
+--Sig_/VCwptMsYzcXqoWJCZpGxJJf
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks, I will add it when the RFC is over and ready to spin the patch.
+Hi Andrew,
 
-Akira
+> > I'm not sure if the imx28 switch is similar to one from TI (cpsw-3g)
+> > - it looks to me that the bypass mode for both seems to be very
+> > different. For example, on NXP when switch is disabled we need to
+> > handle two DMA[01]. When it is enabled, only one is used. The
+> > approach with two DMAs is best handled with FEC driver
+> > instantiation. =20
+>=20
+> I don't know if it applies to the FEC, but switches often have
+> registers which control which egress port an ingress port can send
+> packets to. So by default, you allow CPU to port0, CPU to port1, but
+> block between port0 to port1. This would give you two independent
+> interface, the switch enabled, and using one DMA. When the bridge is
+> configured, you simply allow port0 and send/receive packets to/from
+> port1. No change to the DMA setup, etc.
 
-> 
->> Signed-off-by: Akira Tsukamoto <akira.tsukamoto@gmail.com>
->> ---
->>  arch/riscv/configs/defconfig | 105 +++++++++++++++++++++++++++++++++++
->>  1 file changed, 105 insertions(+)
->>
->> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
->> index 1f2be234b11c..e07d26d2743c 100644
->> --- a/arch/riscv/configs/defconfig
->> +++ b/arch/riscv/configs/defconfig
->> @@ -138,3 +138,108 @@ CONFIG_DEBUG_BLOCK_EXT_DEVT=y
->>  CONFIG_MEMTEST=y
->>  # CONFIG_SYSFS_SYSCALL is not set
->>  CONFIG_EFI=y
->> +CONFIG_FB_STARFIVE=y
->> +CONFIG_FB_STARFIVE_HDMI_ADV7513=y
->> +CONFIG_FB_STARFIVE_HDMI_TDA998X=y
->> +CONFIG_FB_STARFIVE_SEEED5INCH=y
->> +CONFIG_FB_STARFIVE_VIDEO=y
->> +CONFIG_HW_RANDOM_STARFIVE_VIC=y
-> 
-> I'm not sure which tree is this patch based. These config options are not
-> defined. I also see undefined options below. For example, SOC_STARFIVE_VIC7100
-> SOC_STARFIVE_VIC7100_I2C_GPIO and so on
-> 
->> +CONFIG_SOC_STARFIVE_VIC7100=y
->> +CONFIG_FPGA_GMAC_FLUSH_DDR=y
->> +CONFIG_MMC_DW_FLUSH_DDR=y
->> +CONFIG_USB_CDNS3_HOST_FLUSH_DMA=y
->> +CONFIG_SOC_STARFIVE_VIC7100_I2C_GPIO=y
->> +CONFIG_VIDEO_STARFIVE_VIN=y
->> +CONFIG_VIDEO_STARFIVE_VIN_SENSOR_IMX219=y
->> +CONFIG_VIDEO_STARFIVE_VIN_SENSOR_OV5640=y
->> +CONFIG_VIDEO_STARFIVE_VIN_SENSOR_SC2235=y
->> +CONFIG_RCU_CPU_STALL_TIMEOUT=60
->> +CONFIG_LOG_CPU_MAX_BUF_SHIFT=15
->> +CONFIG_PRINTK_SAFE_LOG_BUF_SHIFT=12
->> +CONFIG_PM=y
->> +CONFIG_PM_CLK=y
->> +CONFIG_EFI_BOOTLOADER_CONTROL=y
->> +CONFIG_BLK_PM=y
->> +CONFIG_IOSCHED_BFQ=y
->> +CONFIG_KSM=y
->> +CONFIG_CMA=y
->> +CONFIG_CMA_AREAS=7
->> +CONFIG_REGMAP_I2C=y
->> +CONFIG_REGMAP_IRQ=y
->> +CONFIG_MTD_OF_PARTS=y
->> +CONFIG_MTD_BLKDEVS=y
->> +CONFIG_MTD_BLOCK=y
->> +CONFIG_MTD_PARTITIONED_MASTER=y
->> +CONFIG_MTD_MAP_BANK_WIDTH_1=y
->> +CONFIG_MTD_MAP_BANK_WIDTH_2=y
->> +CONFIG_MTD_MAP_BANK_WIDTH_4=y
->> +CONFIG_MTD_CFI_I1=y
->> +CONFIG_MTD_CFI_I2=y
->> +CONFIG_MTD_SPI_NOR=y
->> +CONFIG_MTD_SPI_NOR_SWP_DISABLE_ON_VOLATILE=y
->> +CONFIG_BLK_DEV_NBD=y
->> +CONFIG_INPUT_LEDS=y
->> +CONFIG_INPUT_EVDEV=y
->> +CONFIG_SERIAL_8250_DMA=y
->> +CONFIG_SERIAL_8250_DWLIB=y
->> +CONFIG_SERIAL_8250_DW=y
->> +CONFIG_HW_RANDOM_VIRTIO=y
->> +CONFIG_I2C_CHARDEV=y
->> +CONFIG_I2C_MUX=y
->> +CONFIG_I2C_DESIGNWARE_CORE=y
->> +CONFIG_I2C_DESIGNWARE_PLATFORM=y
->> +CONFIG_SPI_MEM=y
->> +CONFIG_SPI_CADENCE_QUADSPI=y
->> +CONFIG_SPI_DESIGNWARE=y
->> +CONFIG_SPI_DW_DMA=y
->> +CONFIG_SPI_DW_MMIO=y
->> +CONFIG_SPI_SPIDEV=y
->> +CONFIG_GPIO_SYSFS=y
->> +CONFIG_GPIO_STARFIVE_VIC=y
->> +CONFIG_GPIO_TPS65086=y
->> +CONFIG_POWER_RESET_TPS65086=y
->> +CONFIG_MFD_TPS65086=y
->> +CONFIG_USB_HID=y
->> +CONFIG_USB_CDNS_SUPPORT=y
->> +CONFIG_USB_CDNS_HOST=y
->> +CONFIG_USB_CDNS3=y
->> +CONFIG_USB_CDNS3_HOST=y
->> +CONFIG_USB_ROLE_SWITCH=y
->> +CONFIG_SDIO_UART=y
->> +CONFIG_MMC_DW=y
->> +CONFIG_MMC_DW_PLTFM=y
->> +CONFIG_NEW_LEDS=y
->> +CONFIG_LEDS_CLASS=y
->> +CONFIG_LEDS_GPIO=y
->> +CONFIG_LEDS_TRIGGERS=y
->> +CONFIG_LEDS_TRIGGER_HEARTBEAT=y
->> +CONFIG_RTC_DRV_EFI=y
->> +CONFIG_DMADEVICES=y
->> +CONFIG_DMA_ENGINE=y
->> +CONFIG_DMA_VIRTUAL_CHANNELS=y
->> +CONFIG_DMA_OF=y
->> +CONFIG_DW_AXI_DMAC=y
->> +CONFIG_DW_AXI_DMAC_STARFIVE=y
->> +CONFIG_COMMON_CLK_SI544=y
->> +CONFIG_COMMON_CLK_PWM=y
->> +CONFIG_SIFIVE_L2=y
->> +CONFIG_SIFIVE_L2_FLUSH=y
->> +CONFIG_SIFIVE_L2_FLUSH_START=0x80000000
->> +CONFIG_SIFIVE_L2_FLUSH_SIZE=0x800000000
->> +CONFIG_SIFIVE_L2_IRQ_DISABLE=y
->> +CONFIG_PWM=y
->> +CONFIG_PWM_SYSFS=y
->> +CONFIG_PWM_SIFIVE_PTC=y
->> +CONFIG_RESET_CONTROLLER=y
->> +CONFIG_PROC_KCORE=y
->> +CONFIG_EFIVAR_FS=y
->> +CONFIG_ZLIB_DEFLATE=y
->> +CONFIG_DMA_CMA=y
->> +CONFIG_CMA_SIZE_MBYTES=640
->> +CONFIG_CMA_SIZE_SEL_MBYTES=y
->> +CONFIG_CMA_ALIGNMENT=8
->> +CONFIG_NET_VENDOR_STMICRO=y
->> +CONFIG_STMMAC_ETH=y
->> +CONFIG_STMMAC_PLATFORM=y
->> +CONFIG_DWMAC_GENERIC=y
->> +CONFIG_MICREL_PHY=y
-> 
-> 
+Please correct me if I misunderstood this concept - but it seems like
+you refer to the use case where the switch is enabled, and by changing
+it's "allowed internal port's" mapping it decides if frames are passed
+between engress ports (port1 and port2).
+
+	----------
+DMA0 ->	|P0    P1| -> ENET-MAC (PHY control) -> eth0 (lan1)
+	|L2 SW	 |
+	|      P2| -> ENET-MAC (PHY control) -> eth1 (lan2)
+	----------
+
+DMA1 (not used)
+
+We can use this approach when we keep always enabled L2 switch.
+
+However now in FEC we use the "bypass" mode, where:
+DMA0 -> ENET-MAC (FEC instance driver 1) -> eth0
+DMA1 -> ENET-MAC (FEC instance driver 2) -> eth1
+
+And the "bypass" mode is the default one.
+
+
+I'm just concerned how we are going to gracefully "switch" between L2
+switch and bypass configuration? In this patch series - I used the
+"hook" corresponding to 'ip link set eth[01] master br0' command.
+
+In other words - how we want to manage DMA0 and DMA1 when switch is
+enabled and disabled (in "bypass mode").
+
+>=20
+> > The code from [2] needs some vendor ioctl based tool (or hardcode)
+> > to configure the switch.  =20
+>=20
+> This would not be allowed. You configure switches in Linux using the
+> existing user space tools. No vendor tools are used.
+
+Exactly - that was the rationale to bring support for L2 switch to
+mainline kernel.
+
+>=20
+> > > and how well future features can be added. Do you have
+> > > support for VLANS? Adding and removing entries to the lookup
+> > > tables? How will IGMP snooping work? How will STP work? =20
+> >=20
+> > This can be easily added with serving netstack hooks (as it is
+> > already done with cpsw_new) in the new switchdev based version [3]
+> > (based on v5.12). =20
+>=20
+> Here i'm less convinced. I expect a fully functioning switch driver is
+> going to need switch specific versions of some of the netdev ops
+> functions, maybe the ethtool ops as well.=20
+
+Definately, the current L2 switch driver would need more work.
+
+> It is going to want to add
+> devlink ops. By hacking around with the FEC driver=20
+
+I believe that I will not touch fec_main.[hc] files more than I did in
+the=20
+"[RFC 3/3] net: imx: Adjust fec_main.c to provide support for L2
+switch"
+
+as the switch management (and hooks) are going to be added solely to=20
+drivers/net/ethernet/freescale/mtipsw/fec_mtip.[hc]. [*]
+
+This would separate L2 switch driver from the current FEC driver.
+
+> in the way you are,
+> you might get very basic switch operation working.=20
+
+Yes, this is the current status - only simple L2 switching works.
+
+> But as we have seen
+> with cpsw, going from very basic to a fully functioning switchdev
+> driver required a new driver, cpsw_new.
+
+The new driver for L2 switch has been introduced in [*]. The legacy FEC
+driver will also work without it.
+
+> It was getting more and more
+> difficult to add features because its structure was just wrong. We
+> don't want to add code to the kernel which is probably a dead end.
+>=20
+
+I cannot say for sure, but all the switch/bridge related hooks can be
+added to [*], so fec_main will not bloat.
+
+>       Andrew
+
+
+
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/VCwptMsYzcXqoWJCZpGxJJf
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmDUmD4ACgkQAR8vZIA0
+zr0RpggAq3mRIME2Sk0x29hDTFLm0+MlnZYCDVrjHK2frdhNdfnQe85cA8aUWNil
+H6WBMrYiAmimAaw5pUFPavJiAfgMETFH0tXZJ0U4BOdcNibW1yuOY32X+KyvvYpO
+z4u8N/VLAQtRJx2ZbrblxWg/9DLbKwT5h68ozH25qfn981ab7ttOeEyXNEE/RMTn
+hK2Ahx0Zbmvnd8NnR3IhJLwkSLH0C7n/BfJhG52c2DapN6BFLDHkJouAQIILATgM
+kErvq9hfruV2hqLK0Pl/nds9kHgUEwzE7VwCENbe4mkU1J0WVmEc5p+YS8AD9sxq
+fXcT+1LzO8FDZ4cMBIIQUhhw2CDskA==
+=6EYZ
+-----END PGP SIGNATURE-----
+
+--Sig_/VCwptMsYzcXqoWJCZpGxJJf--
