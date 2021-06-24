@@ -2,139 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14D23B3562
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 20:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CE33B3566
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 20:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232557AbhFXSP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 14:15:56 -0400
-Received: from mail-dm6nam12on2056.outbound.protection.outlook.com ([40.107.243.56]:58817
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232469AbhFXSPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 14:15:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZIIEQsfIYdAh02qsdq7PDDUctcl7XHaTwl4VvyxE05/fHB/svEi0Lc9vLKFsc6LDuN3s9jbYBmonTPcZ1VZ0PEUf0lDooDbmipN0H+xsSpAg9sGGkJhZ8WmsCCH2jW3BJ98G+5BkduG4LTKiwM0C0t8W/hZ71y0gcR0uKOLbX+FPgXjre2kQ7PWtf0kZBvps2ENsA69vTW10dkSPNidWBfdrTldy1E9wf6EyBn0ii1Iw9v2ccCTbzJInaPUxCTPpGHnuHGwZnKT+PAnjLXQzgSA6+TkESkTY/ZDzTM/4UiD6VQzk3RPe9mM20dpZetFAvcZ+fMlPmYj6WU7ASR+2YA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gcR9bgF05ZXm/jVUoaZN1FhJlgFnFk4qjUX1qwYT0YY=;
- b=XNhbZUm1vQXUE0JBXgJU5n3w91yQctvncDRIUfoaowF6DEOwGiMImyLFw20k8YzhQMPTMajEI4/N0A0VIwGmfYisxqfJ6ATf+71T3rhAgDkqlEAvF0LgDZZ0Uth3bas1IeqWYG2v+Cq1ooMcwdVcelKNnzWynhZrIoukDiYLWB1VP6dlqxIkMacbDdB2roOUBXEZem74L1OtFgAifvPmjZXZDnNFa6siX99xaIJEeKqUkpJZnnFCypM4cq/l/65yzOjhpq/4W6Dfhj+FHCQuupSu4TLgCcAuSrK6OWUOPu66kdHrH1nL9C+fcfgh7Bh9qMLLNjnA/5Ry0cz7icP7pg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gcR9bgF05ZXm/jVUoaZN1FhJlgFnFk4qjUX1qwYT0YY=;
- b=Z5Kx+9FlOTh/VknIPWQC9LznUjtEWI6OfGYOqkKNGGYYmY9wzuBYpLk0OZeI/LCb/bJjbzWbuaw8nLHjFDMufAFwt5heeDrw539Rniqp+KTtZmGjQVRVpx3nnJzZOqf5ystxgJlAKXX+chE0rn9Yb3H6tn1TuoSnQSBZGJpSFc4QlG1SRc6sRlQOQRA+MB9i6uxswuumqda08iwhh8oF0BrYHNmmFMCkf0vwD8OyUUw7Idzym6+EDaITg1gFxO5UUZWXMlpoFYUMekyoWeVN0H2KPl4ymZBqSGlE632BUphz6/rErHOrCDNxhotDqAU51cF6BCeT2qvzYPOY1efeOw==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5144.namprd12.prod.outlook.com (2603:10b6:208:316::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Thu, 24 Jun
- 2021 18:13:33 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4264.020; Thu, 24 Jun 2021
- 18:13:33 +0000
-Date:   Thu, 24 Jun 2021 15:13:32 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     ira.weiny@intel.com
-Cc:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Kamal Heib <kheib@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] RDMA/irdma: Remove use of kmap()
-Message-ID: <20210624181332.GB2915863@nvidia.com>
-References: <20210622061422.2633501-3-ira.weiny@intel.com>
- <20210622165622.2638628-1-ira.weiny@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622165622.2638628-1-ira.weiny@intel.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BLAPR03CA0073.namprd03.prod.outlook.com
- (2603:10b6:208:329::18) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S232570AbhFXSQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 14:16:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46987 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230450AbhFXSQU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 14:16:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624558440;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=VR9PUnGp4b6JJVTcXaW0aKG4pQaXLGBRGVmZc91YcFY=;
+        b=aYxu45KT29Up+BsaURpkrWgGN0hH0pRbPadjPM2ie6/rwPQo+3fp7enPfCg1X1FAfEvmre
+        HWifpbaaLZOPUaHcrq6iMJ+AkaeRj6HWhGEL6EHpyv+zm3LRWfIdCe3o9iPnn4ARSgjtHD
+        WWvcskxmrZELUIoOFkuAzv+nVPMrPxY=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-526-VXbputjQN1CYpXXhTL7Gcg-1; Thu, 24 Jun 2021 14:13:59 -0400
+X-MC-Unique: VXbputjQN1CYpXXhTL7Gcg-1
+Received: by mail-qt1-f198.google.com with SMTP id 5-20020ac859450000b029024ba4a903ccso7166268qtz.6
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 11:13:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VR9PUnGp4b6JJVTcXaW0aKG4pQaXLGBRGVmZc91YcFY=;
+        b=o/7BpniFyZubeqct/wV32nYqIvp4+i2vZZm+3XZmapnNjQpOBFb2Qdrdd8vP7MeE2C
+         UXR4vwb2J2k/ksDrv0y0fZSVFExGvgUjdEaKeXq0O+rxrabha7D4JJJY/p65jF9YXazE
+         pmEBeJKpaBpknFNwuKHCmzi6nwS7fafwUndkQF5oN4m6X8QjyAyg2M/loIzj4z438ruL
+         iBPbn/apb3H5NleRb9Qb8kFooqpUZypiqNUXl/psmYjOgWyTWvcyST8raZxQgEQN6ZDJ
+         A3u6Nr4/74N8oECXIHXlkOy+VYaCTwupYN35K0K73PX55wr932FeR/pDmw6ZWmK9MkY4
+         xQqg==
+X-Gm-Message-State: AOAM530fHcNjd8Y20Nx1Okdy2d7/pDvabfbZSnIB1nHqJ2esxQ2j5TpA
+        +esKN6owClzu/dke3vDuPI4mBmiEjY+1D9QfIwfsmsGXk13l+urSO/rxVLmy7vzcHNAbqUFTLlT
+        AnM8vryw25t2CG2iem1vkIxmE
+X-Received: by 2002:ac8:5a52:: with SMTP id o18mr5923661qta.1.1624558438879;
+        Thu, 24 Jun 2021 11:13:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwF6dR5JeRO/Eva1Q6mZPKqbjXTVReFbi2rg3h+UCplMmO9tvIFJA0EON78r3W/UEKeuJYahw==
+X-Received: by 2002:ac8:5a52:: with SMTP id o18mr5923636qta.1.1624558438571;
+        Thu, 24 Jun 2021 11:13:58 -0700 (PDT)
+Received: from t490s.redhat.com (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
+        by smtp.gmail.com with ESMTPSA id b7sm2529301qti.21.2021.06.24.11.13.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 11:13:58 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>, peterx@redhat.com,
+        Sean Christopherson <seanjc@google.com>
+Subject: [PATCH 0/9] KVM: X86: Some light optimizations on rmap logic
+Date:   Thu, 24 Jun 2021 14:13:47 -0400
+Message-Id: <20210624181356.10235-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.31.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BLAPR03CA0073.namprd03.prod.outlook.com (2603:10b6:208:329::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Thu, 24 Jun 2021 18:13:33 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lwTr2-00CEZG-Bt; Thu, 24 Jun 2021 15:13:32 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 564662b7-2d28-48d0-f378-08d9373bc6fa
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5144:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5144224516AA5EDBEC3FD15BC2079@BL1PR12MB5144.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ed0uVl8y9OLtKplgNdnycEK2sMYaaxWE+Cl7V77lxS4i4ysAnjI25FV7Fup9MJwuniyDjSX1wC4hMKUMZMj+85X4F3VoYa60RQD+oyiLR5n4HLtdmniAfpQ1bIycaY2EGrPZRYyXbtokXQRKOQP0NlyIo6LHZX2DR4dL5tXlobXljPOEEyQF05jpZeESHNsUnefrb5Zldv70n/DNVLWP3KLqljwjGCV0D7wjp1xvyMcC+D/3SUBvF1bdGIZpkUmD8VsdKgG/GHXaETLsJlCyOIcW8a3ajpbYWCv2nL+j9H2G1aQ+58gzEzk0rM4EmcKfzIWqXYuZWtDAa/L8J8tFxZZppgZLrZF+DUdcjVwAG5G89z/OIjKbomAvSotoRRf+JJqNdOQDL/Md9SAkHE7FNQzZC49cYr3PDnolRgkmlYveFXHWU8I8SMT1legwJal7FisdZbegYZwAXdoYDJKXnrai6PTwzktikgjni0bi4/mSezygmaDYif+mdufmp4RpPJmmwoiakTKq8jXnTsTKyUBs3nSL5v8mf7MwoAXz5REKMqLMTLq7drjyMOq+Ik0t8L6MU24C0UG11GDVCxRgciwFWIF2lrOlWFfDbHtGw/LAB2vulvHjwp2dNzEIgJb0aI2A7eI2QmVnBLKo29/js2epopvNrQnlQzfMSZzNf+oAVXqhz3A94z6HrNwCDMVhNVfTyKwF+oKIDB1uqe4o9D66ZSzY3bSIl9H+/iXyB0gyfbu4qSDdDxmAiJbbTs5pjpXyI5SA62UQr625RPeD8w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(376002)(396003)(366004)(54906003)(66946007)(66476007)(66556008)(7416002)(4326008)(1076003)(9786002)(9746002)(86362001)(4744005)(38100700002)(2906002)(8676002)(5660300002)(2616005)(8936002)(426003)(83380400001)(186003)(316002)(36756003)(478600001)(966005)(33656002)(6916009)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?IiuvtvswMpoC1McmzJLNeZ4232kEKi4+1rT9XeiAQtkhsH9F/7ucHW00lvd0?=
- =?us-ascii?Q?bYgLuQDUue0yzo1TTB7mO4rmTqFZl4ZjxejWfTYNLSaYKNWmMixnUA3343ME?=
- =?us-ascii?Q?KmM5zmI1LzJdqY56JEtY3GuK1pyvdHaba1QI6/GAXQfX/GDSgd+6/fJOhvpo?=
- =?us-ascii?Q?LjTxKYyxbRmLeqdxjbW74E1Y8YDqzoz5QSXnscygywF1QPD/WJ7tCsSwfksf?=
- =?us-ascii?Q?inPleVA5yBQpUxALhusjlqDDUT+8ySiSRpNUNn3FXc4Dqg/f6ZiP/IwzrXG3?=
- =?us-ascii?Q?2xgKj1xKky70r8ZisqvXmqtWYVd5fxEbljdxw1eQp3ScsC2q2bsFJOMkuX/i?=
- =?us-ascii?Q?qxfpAI9/uQTrwBbdlShnzUR0jHm877AgmbbJm9YzduPIYOgbUSbDFBSLVzHN?=
- =?us-ascii?Q?Pp0YH0ANVOS1zU05x2Y8X7ua4kJj003SVsuih/Lsc3/1Ny7dMKVqf6hSpYcA?=
- =?us-ascii?Q?o33VNRDDHjl+1SiQAVjPGabreYZ2/jlhRiQY8/pnOTNCuza5/vljaEzfGBoB?=
- =?us-ascii?Q?RO5PoTG+H8hn3Bs5tnvn/xyisfQ1yXRHICt5MDupv2792eei+b9i3B5Iw8vd?=
- =?us-ascii?Q?TkRJrREiZa7ZfiqZQP181/lwiUj/hUC7U59Kltl8UPXBK1oF/fg3wTIZziCS?=
- =?us-ascii?Q?xUpoAJWTzeDRfa7b4+S63+oVNlhMAqHdh2YiSwBWsINrRiCUzns8AC32MyLz?=
- =?us-ascii?Q?J8e7TZpz4SajhBlPJvugifMddxPYZjSeGRAMHxlxYJpY8Vy4DFqhXdcqw74a?=
- =?us-ascii?Q?5gkNIhOFFsBwJuEGKMrfQdbiMmT0vXGruZgeQz9540tZu1tvrQJstJ6WQaDI?=
- =?us-ascii?Q?0aIzTAZUEADqFfIEVRNOpQWjSXoItG1he4rx6NNQ+wmgHYmmAYWlDq9/QLri?=
- =?us-ascii?Q?cD18T45ITjFof+oZlQeDzR1xrsBQB7Ezc06PZY+wykyO97Gr4ieYAGWWwtTo?=
- =?us-ascii?Q?LEeWSgHQ5WHCf3eC2E50F3iX3JBuEHtrRCU1ZNd1QAd37h63tuS+XuJTflaW?=
- =?us-ascii?Q?KOPIhvK5ezU5JUC0UM4N9ViTn+Q8DqGPEjnoQabaQheB0DRALqQ7qorQDEEE?=
- =?us-ascii?Q?ERgYbKkn53KjlDIJ0zImAZZrhbAjinamzZxYr+nx0yHO+wRe2uAFnn/0yNtA?=
- =?us-ascii?Q?pxOqc4k7Te4jY08bYPSksVDqxFzOLAPW0D+/GY18mgkl048xt3SeS/yhq1o1?=
- =?us-ascii?Q?zqqwFL6PhR5TYRnhBc4ZstX3MS7JI8cqDrYSZlLMn6w2FycdKc5j8C2aclHZ?=
- =?us-ascii?Q?Ar9D8cgygHwCA2xSYRGimR94/TmsNg/nH5wj+bfKhiESoFvqiQ7IBvVp8b8e?=
- =?us-ascii?Q?dv+RvIrYSwJyzq2VNivSvpjE?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 564662b7-2d28-48d0-f378-08d9373bc6fa
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2021 18:13:33.3187
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EWBVbdWjQjEjPh/qQR1S7ime70jBtT+rMHa+h5d8SPaysX/R2acRPCudNdEDHMr9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5144
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 09:56:22AM -0700, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> kmap() is being deprecated and will break uses of device dax after PKS
-> protection is introduced.[1]
-> 
-> The kmap() used in the irdma CM driver is thread local.  Therefore
-> kmap_local_page() is sufficient to use and may provide performance benefits
-> as well.  kmap_local_page() will work with device dax and pgmap
-> protected pages.
-> 
-> Use kmap_local_page() instead of kmap().
-> 
-> [1] https://lore.kernel.org/lkml/20201009195033.3208459-59-ira.weiny@intel.com/
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
-> Changes for V2:
-> 	Move to the new irdma driver for 5.14
-> ---
->  drivers/infiniband/hw/irdma/cm.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+(This is still based on a random 5.13-rc3-ish branch, but I can rebase if n=
+eeded)=0D
+=0D
+All things started from patch 1, which introduced a new statistic to keep "=
+max=0D
+rmap entry count per vm".  At that time I was just curious about how many r=
+map=0D
+is there normally for a guest, and it surprised me a bit.=0D
+=0D
+For TDP mappings it's all fine as mostly rmap of a page is either 0 or 1=0D
+depending on faulted or not.  It turns out with EPT=3DN there seems to be a=
+ huge=0D
+number of pages that can have tens or hundreds of rmap entries even for an =
+idle=0D
+guest.  Then I continued with the rest.=0D
+=0D
+To understand better on "how much of those pages", I did patch 2-6 which=0D
+introduced the idea of per-arch per-vm debugfs nodes, and added a debug fil=
+e to=0D
+do statistics for rmap, which is similar to kvm_arch_create_vcpu_debugfs() =
+but=0D
+for vm not vcpu.=0D
+=0D
+I did notice this should be the clean approach as I also see other archs=0D
+randomly create some per-vm debugfs nodes there:=0D
+=0D
+---8<---=0D
+*** arch/arm64/kvm/vgic/vgic-debug.c:=0D
+vgic_debug_init[274]           debugfs_create_file("vgic-state", 0444, kvm-=
+>debugfs_dentry, kvm,=0D
+=0D
+*** arch/powerpc/kvm/book3s_64_mmu_hv.c:=0D
+kvmppc_mmu_debugfs_init[2115]  debugfs_create_file("htab", 0400, kvm->arch.=
+debugfs_dir, kvm,=0D
+=0D
+*** arch/powerpc/kvm/book3s_64_mmu_radix.c:=0D
+kvmhv_radix_debugfs_init[1434] debugfs_create_file("radix", 0400, kvm->arch=
+.debugfs_dir, kvm,=0D
+=0D
+*** arch/powerpc/kvm/book3s_hv.c:=0D
+debugfs_vcpu_init[2395]        debugfs_create_file("timings", 0444, vcpu->a=
+rch.debugfs_dir, vcpu,=0D
+=0D
+*** arch/powerpc/kvm/book3s_xics.c:=0D
+xics_debugfs_init[1027]        xics->dentry =3D debugfs_create_file(name, 0=
+444, powerpc_debugfs_root,=0D
+=0D
+*** arch/powerpc/kvm/book3s_xive.c:=0D
+xive_debugfs_init[2236]        xive->dentry =3D debugfs_create_file(name, S=
+_IRUGO, powerpc_debugfs_root,=0D
+=0D
+*** arch/powerpc/kvm/timing.c:=0D
+kvmppc_create_vcpu_debugfs[214] debugfs_file =3D debugfs_create_file(dbg_fn=
+ame, 0666, kvm_debugfs_dir,=0D
+---8<---=0D
+=0D
+PPC even has its own per-vm dir for that.  I think if patch 2-6 can be=0D
+considered to be accepted then the next thing to consider is to merge all t=
+hese=0D
+usages to be under the same existing per-vm dentry with their per-arch hook=
+s=0D
+introduced.=0D
+=0D
+The last 3 patches (patch 7-9) are a few optimizations of existing rmap log=
+ic.=0D
+The major test case I used is rmap_fork [1], however it's not really the id=
+eal=0D
+one to show their effect for sure as that test I wrote covers both=0D
+rmap_add/remove, while I don't have good idea on optimizing rmap_remove wit=
+hout=0D
+changing the array structure or adding much overhead (e.g. sort the array, =
+or=0D
+making a tree-like structure somehow to replace the array list).  However i=
+t=0D
+already shows some benefit with those changes, so I post them out.=0D
+=0D
+Applying patch 7-8 will bring a summary of 38% perf boost when I fork 500=0D
+childs with the test I used.  Didn't run perf test on patch 9.  More in the=
+=0D
+commit log.=0D
+=0D
+Please review, thanks.=0D
+=0D
+[1] https://github.com/xzpeter/clibs/commit/825436f825453de2ea5aaee4bdb1c92=
+281efe5b3=0D
+=0D
+Peter Xu (9):=0D
+  KVM: X86: Add per-vm stat for max rmap list size=0D
+  KVM: Introduce kvm_get_kvm_safe()=0D
+  KVM: Allow to have arch-specific per-vm debugfs files=0D
+  KVM: X86: Introduce pte_list_count() helper=0D
+  KVM: X86: Introduce kvm_mmu_slot_lpages() helpers=0D
+  KVM: X86: Introduce mmu_rmaps_stat per-vm debugfs file=0D
+  KVM: X86: MMU: Tune PTE_LIST_EXT to be bigger=0D
+  KVM: X86: Optimize pte_list_desc with per-array counter=0D
+  KVM: X86: Optimize zapping rmap=0D
+=0D
+ arch/x86/include/asm/kvm_host.h |   1 +=0D
+ arch/x86/kvm/mmu/mmu.c          |  90 +++++++++++++++++-----=0D
+ arch/x86/kvm/mmu/mmu_internal.h |   1 +=0D
+ arch/x86/kvm/x86.c              | 131 +++++++++++++++++++++++++++++++-=0D
+ include/linux/kvm_host.h        |   2 +=0D
+ virt/kvm/kvm_main.c             |  36 +++++++--=0D
+ 6 files changed, 233 insertions(+), 28 deletions(-)=0D
+=0D
+-- =0D
+2.31.1=0D
+=0D
 
-Applied to for-next, thanks
-
-Jason
