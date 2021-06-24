@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B313B2C8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A77923B2C88
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232194AbhFXKid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 06:38:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232191AbhFXKic (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 06:38:32 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8ECC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 03:36:13 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1lwMiK-0007jE-Cs; Thu, 24 Jun 2021 12:36:04 +0200
-Message-ID: <b8ce9abd075a65272bdbe6142c9cd877fa25c701.camel@pengutronix.de>
-Subject: Re: [EXT] regression due to soc_device_match not handling defer
- (Was: [PATCH v4 4/4] soc: imx8m: change to use platform driver)
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Peng Fan <peng.fan@nxp.com>,
-        Dominique MARTINET <dominique.martinet@atmark-techno.com>,
-        "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Thu, 24 Jun 2021 12:36:02 +0200
-In-Reply-To: <DB6PR0402MB27607D28703D8C3E614E2F2A884D9@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-References: <20201120101112.31819-4-alice.guo@nxp.com>
-         <YGGZJjAxA1IO+/VU@atmark-techno.com>
-         <AM6PR04MB60536EF0DEEE6EB64CF29390E27D9@AM6PR04MB6053.eurprd04.prod.outlook.com>
-         <YHeWnuDQo76rYoz5@atmark-techno.com>
-         <DB6PR0402MB27607D28703D8C3E614E2F2A884D9@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+        id S232184AbhFXKi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 06:38:27 -0400
+Received: from mail-eopbgr1410109.outbound.protection.outlook.com ([40.107.141.109]:3695
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231373AbhFXKi0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 06:38:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EsImMYv4gWjcjafK3mgo8BFhWGYqTNysoBREwR2KTyKFBXILOjQpyV/6QEmwE3xnKl0LdHlcuTQyeLJNo3leGROqErP+HHAHFQrJW2Z2xOadtwH5hQTb9rrka3tP98b6rDoPBtRBnn2CrihgWreCZSVKexdDAD/w3ORj+wgVXXzabDzBNvg51Klic+bOVB7dbhVbCy9aIHGWTtkOxqyT9DzeEZ5uYcG2VxdzJoSchea6SiXRd5aljvmgC9R94RCACorzHC45ckVx9PGhGVHKszN5Zb1YEQf7VzH+8MsV652hfpCXEwEiZCIuFsEfpi/O/ImjAbLDDzIwekPNz91qCA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NTQEGhtsyfP5QHDZWfb5sXP6nNt7vt3tPjjWQq0WpmM=;
+ b=UrebERaOwT4KMpxEI0ZZQygwbYRij9qP204G4/FWq6/hc1D74NO/4KVAF+K8FvDzFLujC7uT2kq1hiIT85Q1kVZQJNNnt6/SjFSG7PKumMbGCKWjCN4K4WD/Hr9zCPeyE3posiLh3QWUeyC33SiexM3hIQ/4EAfBTazXQ859Rz+noIj7jaJpW/vLARxzjiZKxTfjkTAemXzgye+aqurZt9UhYMcwjW0Hfp/aC7w3hiuCMupjXlIKsl9WjUFHCekCpyzaMR780M/fEKY/5rMLtmbHKUl4erUpcvYey8ob87JrkqYLGoX6k4jtbxjFj5hlIFZHKvtVv/RBv17AjSH3+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NTQEGhtsyfP5QHDZWfb5sXP6nNt7vt3tPjjWQq0WpmM=;
+ b=q2cH8f28A4BFtoOzW23T5CNmCneVgJHqK/OvJw7cCnUYNsbaxBjb3u21RI5SL+rSDsiovDOg7NiKySB3uPlecCXOVN3Pl8mp+E5WMxsBR2M1+UmVfDDFLy5R84nGru9SNbb0HW+XPFg0SIWoHxNESfJ8mPIwNnqEUFuYTZv3JT8=
+Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com (2603:1096:404:d5::22)
+ by TYAPR01MB5386.jpnprd01.prod.outlook.com (2603:1096:404:803f::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Thu, 24 Jun
+ 2021 10:36:05 +0000
+Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com
+ ([fe80::4c5d:66ee:883a:72a5]) by TY2PR01MB3692.jpnprd01.prod.outlook.com
+ ([fe80::4c5d:66ee:883a:72a5%6]) with mapi id 15.20.4242.024; Thu, 24 Jun 2021
+ 10:36:05 +0000
+From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+CC:     "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: RE: [PATCH RFC] usb: renesas_usbhs: fifo: : use proper DMAENGINE API
+ for termination
+Thread-Topic: [PATCH RFC] usb: renesas_usbhs: fifo: : use proper DMAENGINE API
+ for termination
+Thread-Index: AQHXaBb4DCoFDFqLl0Gk0IEvbdRVSKsiXRSggABNYwCAAE4ZUA==
+Date:   Thu, 24 Jun 2021 10:36:05 +0000
+Message-ID: <TY2PR01MB369273ACD098AD2868923A6ED8079@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+References: <20210623100304.3697-1-wsa+renesas@sang-engineering.com>
+ <TY2PR01MB3692C7B6E0FD027B5C3E05B5D8079@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+ <YNQd9hS+hqPYvLNp@kunai>
+In-Reply-To: <YNQd9hS+hqPYvLNp@kunai>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: sang-engineering.com; dkim=none (message not signed)
+ header.d=none;sang-engineering.com; dmarc=none action=none
+ header.from=renesas.com;
+x-originating-ip: [124.210.22.195]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 26947436-31e6-4f0d-ae70-08d936fbded9
+x-ms-traffictypediagnostic: TYAPR01MB5386:
+x-microsoft-antispam-prvs: <TYAPR01MB538622347E7F3DAE4176E91DD8079@TYAPR01MB5386.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Sm6ybspPKdcu6KWjnGUUCnThhpWBPGIxnL+uiejgwsl7aIpUqR/xoF2AGVCpVxvZLltEVglaA58d8GhFeEA6hJENhBOlQW8FMImpmHhhTAQHAMZPUl+aKTaZq39TAk3AjVQnfbqhaEyEYhoXLqzcCSBT2Bd2fLeHyLGhfcDttMNoRt/BtGiESj42vVSMZNDqxzN3C5Px/WvoTb5oNHkV5sCOHqEPZ7167Gus582GW2p0dEi5EPf4S1Zt/Q7RWDjadXNui+sX01kXntvKlp4a+4K8J3/kwEuNKDp1cQcL+bZRlMQR7S50hAipIIceJFL4KVp7GxkXRyyN9oEYcM/863B1WuOw+Gjsku5NxOMQrhNNZa+WfwAmCXfnGO1OqqEHQs7Z6z6YiQbtFo2myaEojCHaB9GAJjv9qPEmHciGw6GcWf6C0TZrFwXRj6v74J/5frYzJrynMi7eWr6Qik/7CX5h9bF5IG1+uLYCQG3skkV6idSOypxttsVQas3kzy6I50A++t/2RbXITTDXg0Rm1eIq1W7VJpbR9P+gqMOT71yXbwsG/w2EW6Bzg9uS5VQURvQhbvAx45ZfsjGYO2c0zo8+9/KDMkbzBcYboXqYgik=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3692.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(366004)(136003)(39860400002)(376002)(4744005)(64756008)(71200400001)(5660300002)(66946007)(66446008)(52536014)(76116006)(8936002)(66476007)(8676002)(66556008)(9686003)(2906002)(6506007)(86362001)(316002)(26005)(55016002)(38100700002)(55236004)(33656002)(7696005)(478600001)(122000001)(186003)(4326008)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?umoIRURi07SKkAtj8FhnD5vtItwXDJ+NP7WNPeHl9tyfqggFuAbZcGtVeEvA?=
+ =?us-ascii?Q?qgv6ysVtdVLfM86Pos7fGBl2E1LRNVdjjjwJodviRBp20PwNEZ5p8zAqxip9?=
+ =?us-ascii?Q?/YnQpy1ToanLdRU6Un9bzVkABt3GAetf0JnQNriyVtrT3Jnu4XVKujrmetiF?=
+ =?us-ascii?Q?jdTwbA/U0RlY1pYMyZKURmExFF4SrxfFHkLeZJ7Vb2NwWqFBAfDGUVlm4lxI?=
+ =?us-ascii?Q?Yo4JJTs7WUjhPi0ae+0FOv8cBcxzAVb8qTykoIGExTTD891yL6YDmCG+yuLW?=
+ =?us-ascii?Q?BVV799M/fJpRxMVZVKPiA3uic2mg9URhzabGv0U/TwwLivmHxY++sHTlq1Au?=
+ =?us-ascii?Q?BQtxGtrc95keZMvWUJKDq7twNNlX1rUjH2BUyweslpKVImA8zXMOSbQNaHJ5?=
+ =?us-ascii?Q?w7Webm+mFhZEIlwuNolHHif/1p3IjpZH7tQ42tiwMWeAm1krTJouyu6Rh0gB?=
+ =?us-ascii?Q?Ag424T6S010u8mMqYe2AZm4BLDhCHVgf7DpwZ7m5lnloiU6dCE6XXaK4hToJ?=
+ =?us-ascii?Q?430aIIDZvbrxM907e2doivOR2paJ3va+yiw/nHsF7LhbU7uumhIYdVchjxRI?=
+ =?us-ascii?Q?vjYY/aypHYX40e72BdJjd+I6Ms+4joWIyOUbOtapBwOgdTsYntXltWKYkaaR?=
+ =?us-ascii?Q?LXZHbRPBtry8W6tADdDwXu6ybEV49H8eiwy7hsPoX7vnKUSIVLMreA6XGA01?=
+ =?us-ascii?Q?6hQfWWNH95+Zxie8wuv1ycL7wwSYLQ0uv3DNJ3aKzHSaGnBo72Etvux03W8c?=
+ =?us-ascii?Q?Bb51Lm1kzH9DfczKHFVeRJUQeXScgOjVZzhGYZiekY1v263z7UbmC1rH+8F6?=
+ =?us-ascii?Q?rpZ3onROcwu+Wo/1JrVI5oz/U71Mzd5eZ7Ud5fDXHrkibdvk+OB8FHl51fDi?=
+ =?us-ascii?Q?e2hq1tZS5WAM1JXhoMPyhEBETiRJma4Stuxsdt/CMSd+ekyEMuNr4f+PYenJ?=
+ =?us-ascii?Q?bM8fkaNQ5yW9vCdI2rHMeTr5sJAoisKmfrc4eBNY1f3aFUwepxqmThsbrNO7?=
+ =?us-ascii?Q?3h403pDQynPj31r16Gd045QNkCJgSziLKl0i/FCLyBE5RSW6pF0ZIP1wExkh?=
+ =?us-ascii?Q?cv+DjF5eYFi/8GcGRAjekUefl+FgB58n6SV0ZBTbNuvQ6q7XZW57BLJxHvQZ?=
+ =?us-ascii?Q?/oGeOy/7MAyXqovWdC21pX1HTuCzOH14f85HkJv2vAoWnjitgiaQCvoVT6C1?=
+ =?us-ascii?Q?eNWsDewgHNpuhE5gdBWSWQdTuQ+A9J1qWxN5vfvObz2li7tF/0gYznQpBXyy?=
+ =?us-ascii?Q?XMD+PwAmEaCQk0kxf5gmUePfDM03G6gLmEv32Q2TWcevp1xSu+aCD0L/9SnL?=
+ =?us-ascii?Q?fH5dYOm95onRM+lZ2r21nC4Q?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3692.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26947436-31e6-4f0d-ae70-08d936fbded9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jun 2021 10:36:05.1955
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: BPXqCRICFDfj33bVYWyT9FzUOTUGWu9vxVbkg7fRQqwLaHYUFjQrPR8aHNKs8DRTJ6FbwfZiWCIgI8ysY/+dd28Sbp5tbqVR3mw0C3v4buNns4rFA9EviQhp6qRZ7oCN
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB5386
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Hi Wolfram-san,
 
-Am Donnerstag, dem 15.04.2021 um 01:33 +0000 schrieb Peng Fan:
-> > (Was: [PATCH v4 4/4] soc: imx8m: change to use platform driver)
-> > 
-> > Alice Guo (OSS) wrote on Tue, Mar 30, 2021 at 02:41:23AM +0000:
-> > > Thanks for reporting this issue, I'll check and add a fix to handle defer probe.
-> > 
-> > I haven't seen any follow up on this, have you had a chance to take a look?
-> 
-> We are trying to find a proper solution for this.
-> 
-> The proper method might be make soc_device_match return probe defer,
-> and take early soc attr into consideration, but I am not sure this would win
-> maintainer's vote.
-> 
-> > If this won't make it for 5.12 (in a couple of week probably?) would it make
-> > sense to revert 7d981405d0fd ("soc: imx8m: change to use platform
-> > driver") for now?
-> 
-> Please no. We are targeting android GKI, make driver as modules.
-> And reverting to original method will also break kexec.
-> 
-> I am on IRC #linux-imx, we could take more if you would like to.
+> From: Wolfram Sang, Sent: Thursday, June 24, 2021 2:54 PM
+>=20
+> Hi Shimoda-san,
+>=20
+> > In backporting point of view, I guess it's better to apply my fixed pat=
+ch at first,
+> > and then apply this DMAENGINE patch. But, what do you think?
+>=20
+> Yes, I agree. Could you kindly notify me when your patch is accepted
+> upstream? Or CC me on your patch?
 
-It seems this stalled. This regression totally breaks the kernel boot
-on all i.MX8M devices including the CAAM. 5.13 is about to be released,
-as the second upstream kernel release after 5.12 without a fix for this
-issue. What's the plan here?
+Thank you for your reply! I'll resend a patch with your email address on CC=
+.
 
-If there is no good solution small enough to be ported to the stable
-kernels in sight, I think the only sensible option here is to revert
-this change.
-
-Regards,
-Lucas
+Best regards,
+Yoshihiro Shimoda
 
