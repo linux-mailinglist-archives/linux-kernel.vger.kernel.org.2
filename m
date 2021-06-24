@@ -2,166 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669AF3B2D95
+	by mail.lfdr.de (Postfix) with ESMTP id D285F3B2D96
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232479AbhFXLRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:17:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56278 "EHLO
+        id S232488AbhFXLRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:17:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232338AbhFXLRh (ORCPT
+        with ESMTP id S232456AbhFXLRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:17:37 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FA7C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 04:15:17 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id d16so9615451lfn.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 04:15:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YBeXYZWV/5BphYQoBRycv7o/G0vcpUulJaPvVaWo0hY=;
-        b=be5nxis7yjUUmikvo97sgsl1dVxYeKMBAmDqgtjaJ5IA+03sIPCdzB69LSB1K9XvoV
-         IjmOl7yNCitywGNdQs6bQAd6fFOIxz9/MNhu1lIizTZymn6KU+FtSjqohDGGMdolqEHm
-         fCj7x9ElobekxfYyfhyo2ukicjHUUEJ6h28TkNJPhSI8Wg3kDsNu8/F64T3EVJmN1y2I
-         DK/yyEmbsdsZOcMc0irTDWynYHF8+RSVul+o1NZ9/JsAONc3y7ZYfxaAPHPalk0tl/bQ
-         g+0afZEGN8BAsP5J8Vi4hXK+hbV59p9+KWW3dcDSncMkCTK7gSx8jXou3A2OQZGZXYis
-         iXkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YBeXYZWV/5BphYQoBRycv7o/G0vcpUulJaPvVaWo0hY=;
-        b=duFksIA63KbCepJpC5lOKkvW+QCc12WGpRkEDczEvPfqP9LGc/9DnNfUKDkdEDOwg0
-         GFAZvKhQQORi4R1+UUsjq+VuBsmdAnRXGNM3iOqq/0OBY3uQu3ClMXh8M6FYsGSI0VXs
-         YZF3fBV/Zy9WriNuZxLXQCfUDjw1tFYEl5Ums5yJGTiU/mxYy7govy91QThT344FowbZ
-         LmBJowJOA9wBRUSwzt0PX6tgTGCDQZgpXnB4YoLo4kr1gwUkFVHXUI3eUrR+3lbosQ1c
-         Xn+snzjj9BzH/ofJAk07RKhtwrGe3HlBxAx/ho9QaS5UlSz6qbnYzvgw6uHIDcyvnomB
-         PQAw==
-X-Gm-Message-State: AOAM530DrOpX79xbW1LP1zBcKNNwE3aNkTslEjlLggHCkakzk6qPolbX
-        SJUqwvbBNwI3l+jgnNgdbNlKz2+A7xYqZIRVWqKFOg==
-X-Google-Smtp-Source: ABdhPJxXzLBF4txHG71/WJOdpAJctSJcR8nWW7QGoWwlBzbZW8b2rBbyLZw9YycJrAVOGBQ6eF8Y8XHAqlIBzmqCZQY=
-X-Received: by 2002:ac2:4acf:: with SMTP id m15mr3604469lfp.286.1624533315667;
- Thu, 24 Jun 2021 04:15:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1624266901.git.viresh.kumar@linaro.org> <09a39f5c-b47b-a931-bf23-dc43229fb2dd@quicinc.com>
- <20210623041613.v2lo3nidpgw37abl@vireshk-i7> <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
- <20210624025414.4iszkovggk6lg6hj@vireshk-i7> <CAKfTPtAXMYYrG1w-iwSWXb428FkwFArEwXQgHnjShoCEMjdYcw@mail.gmail.com>
- <20210624104734.GA11487@arm.com>
-In-Reply-To: <20210624104734.GA11487@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 24 Jun 2021 13:15:04 +0200
-Message-ID: <CAKfTPtAYuon+V96WmuLz+ekWuqVcb5k17w8ZwNuCzm2KMvZw+w@mail.gmail.com>
-Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency invariance
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Thu, 24 Jun 2021 07:17:41 -0400
+Received: from canardo.mork.no (canardo.mork.no [IPv6:2001:4641::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA249C061767;
+        Thu, 24 Jun 2021 04:15:22 -0700 (PDT)
+Received: from miraculix.mork.no ([IPv6:2a01:79d:469a:7994:53d7:1944:55a:91c0])
+        (authenticated bits=0)
+        by canardo.mork.no (8.15.2/8.15.2) with ESMTPSA id 15OBFDT7018095
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Thu, 24 Jun 2021 13:15:13 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
+        t=1624533313; bh=5b6YZR358Wi3JQ4ZkLcOC7UPJZD+b3tWEuj0//aMkNs=;
+        h=From:To:Cc:Subject:References:Date:Message-ID:From;
+        b=O0PHfPOg0NEtLdTjAcRzOnviAPE6+Qp8ZQG+7BMcaB0PpbYu6dhN1sOyWlXiVWq6x
+         s1FJiPCPYJR74dn4yRqaSjW7FfcpHR5e1Ot4ChS6M8Cfr1gaH4S8K8/SvJzOKgZ27K
+         LSOp2TFqutnCyqCmGVhBnxodi2qpBiw1HZPncFfA=
+Received: from bjorn by miraculix.mork.no with local (Exim 4.94.2)
+        (envelope-from <bjorn@mork.no>)
+        id 1lwNK7-001FQQ-Ut; Thu, 24 Jun 2021 13:15:07 +0200
+From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Stefan =?utf-8?Q?Br=C3=BCns?= <stefan.bruens@rwth-aachen.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniele Palmas <dnlplm@gmail.com>
+Subject: Re: [PATCH v2] USB: serial: qcserial: Support for SDX55 based
+ Sierra Wireless 5G modules
+Organization: m
+References: <20210611134507.8780-1-stefan.bruens@rwth-aachen.de>
+        <20210611135842.14415-1-stefan.bruens@rwth-aachen.de>
+        <YNQ0O0vhtpStp0n/@hovoldconsulting.com>
+Date:   Thu, 24 Jun 2021 13:15:07 +0200
+In-Reply-To: <YNQ0O0vhtpStp0n/@hovoldconsulting.com> (Johan Hovold's message
+        of "Thu, 24 Jun 2021 09:28:59 +0200")
+Message-ID: <87tulnms3o.fsf@miraculix.mork.no>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Virus-Scanned: clamav-milter 0.103.2 at canardo
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 at 12:48, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
->
-> Hi guys,
->
-> On Thursday 24 Jun 2021 at 11:49:53 (+0200), Vincent Guittot wrote:
-> > On Thu, 24 Jun 2021 at 04:54, Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > >
-> > > On 23-06-21, 08:57, Qian Cai wrote:
-> > > > Viresh, I am afraid I don't feel comfortable yet. I have a few new tests in
-> > > > development, and will provide an update once ready.
-> > >
-> > > Oh sure, np.
-> > >
-> > > > Also, I noticed the delivered perf is even smaller than lowest_perf (100).
-> > >
-> > > > # cat /sys/devices/system/cpu/cpu8/acpi_cppc/feedback_ctrs
-> > > >  ref:103377547901 del:54540736873
-> > > > # cat /sys/devices/system/cpu/cpu8/acpi_cppc/feedback_ctrs
-> > > >  ref:103379170101 del:54541599117
-> > > >
-> > > > 100 * (54541599117 - 54540736873) / (103379170101 - 103377547901) = 53
-> >
-> > I'm not sure that I understand your point. The formula above says that
-> > cpu8 run @ 53% of nominal performance
-> >
->
-> I think this is based on a previous example Qian had where:
->
-> /sys/devices/system/cpu/cpu0/acpi_cppc/highest_perf
-> 300
-> /sys/devices/system/cpu/cpu0/acpi_cppc/lowest_freq
-> 1000
-> /sys/devices/system/cpu/cpu0/acpi_cppc/lowest_perf
-> 100
-> /sys/devices/system/cpu/cpu0/acpi_cppc/reference_perf
-> 100
->
-> ..so the 100 is not from obtaining percentage, is the reference
-> performance.
->
-> The logic of the formula is to obtain the delivered performance when
-> knowing the number of ticks for each counter, so:
->
-> So if one gets (103379170101 - 103377547901) ticks for the counter at
-> running at 1GHz(perf 100), what is the frequency of the core, if its
-> counter ticked (54541599117 - 54540736873) times in the same interval
-> of time?
->
-> The answer is 530MHz(perf 53), which is lower than the lowest frequency
-> at 1GHz(perf 100).
+Johan Hovold <johan@kernel.org> writes:
 
-But the nominal_perf is 280 and not 100 if i'm not wrong so the perf
-value is 148 > lowest_perf in this case
+> Could you please also post the output of usb-devices (or lsusb -v) for
+> this device in MBIM mode?
+
+Yes, this would be nice to have.
+
+I suspect that this device is like other SDX55 devices we've seen, using
+class/subclass/function to map the vendor specific functions
+too. Dropping static interface numbers.  If correct, then the patch is
+bogus and the interface numbers might change based on firmware version
+and configuration.
 
 
->
->
-> > > >
-> > > > My understanding is that the delivered perf should fail into the range between
-> > > > lowest_perf and highest_perf. Is that assumption correct? This happens on
-> > > > 5.4-based kernel, so I am in process running your series on that system to see
-> > > > if there is any differences. In any case, if it is a bug it is pre-existing,
-> > > > but I'd like to understand a bit better in that front first.
-> > >
-> > > Vincent:
-> > >
-> > > Can that happen because of CPU idle ?
-> > >
->
-> Not if the counters are implemented properly. The kernel considers that
-> both reference and delivered performance counters should stop or reset
-> during idle. The kernel would not account for idle itself.
->
-> If the reference performance counter does not stop during idle, while
-> the core performance counter (delivered) does stop, the behavior above
-> should be seen very often.
->
-> Qian, do you see these small delivered performance values often or
-> seldom?
->
-> Thanks,
-> Ionela.
->
-> > > --
-> > > viresh
+Bj=C3=B8rn
