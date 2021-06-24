@@ -2,121 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534413B30F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B8B3B3104
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbhFXOKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 10:10:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50024 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231811AbhFXOKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 10:10:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5060B613EC;
-        Thu, 24 Jun 2021 14:08:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624543691;
-        bh=uLsCbbWJ3SK3wevhoHiCe4j1US9FnuTG1umOvEiwKkc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yMqPeXVCkzDSRybgiF5jY1cCGxN22NjyXUivZ2vSnkFaLZO/FmNymblMk/yBZX5TS
-         acdaQToJWVCnN4PRygYjgMJcGxuFZ3KPGj5f9qb/2zO8R/8rLnYlurV8n1swa8W6GX
-         H91Lnp/cXRafIJCSJqStJVBu0uu9T12M5DHiw1V8=
-Date:   Thu, 24 Jun 2021 16:08:09 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH RFC 0/1] get_abi.pl: add support for ABI valitation in
- runtime
-Message-ID: <YNSRyXPEynLCfCig@kroah.com>
-References: <cover.1624014140.git.mchehab+huawei@kernel.org>
+        id S231811AbhFXONT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 10:13:19 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:7502 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229878AbhFXONS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 10:13:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1624543859; x=1656079859;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=jIPt55RUzMMbkq7vhbeD6czYPulB4Zz8LFVe0v3gRZ0=;
+  b=HPrafZwejBwzC36jkSdbvaUBdQLBaQtfGa+xaiqEN//oDn9ae67TJgVg
+   ZXIdONhObbr4ReCMTBBnx/aEivFxDvcYeamgta7UWJaQfTCDEDHFmdWLy
+   xgRFgkPBIu9kR20CxGZsaLUNEcHr+WoXRoSVLx26W/JWJh1lnMehhlZ39
+   U=;
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 24 Jun 2021 07:10:59 -0700
+X-QCInternal: smtphost
+Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
+  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 24 Jun 2021 07:10:57 -0700
+Received: from [10.111.163.161] (10.80.80.8) by nasanexm03e.na.qualcomm.com
+ (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 24 Jun
+ 2021 07:10:52 -0700
+Subject: Re: [PATCH v14 06/12] swiotlb: Use is_swiotlb_force_bounce for
+ swiotlb data bouncing
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>
+CC:     Claire Chang <tientzu@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Rob Herring <robh+dt@kernel.org>, <mpe@ellerman.id.au>,
+        Joerg Roedel <joro@8bytes.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        <boris.ostrovsky@oracle.com>, <jgross@suse.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        <heikki.krogerus@linux.intel.com>,
+        <thomas.hellstrom@linux.intel.com>, <peterz@infradead.org>,
+        <benh@kernel.crashing.org>, <joonas.lahtinen@linux.intel.com>,
+        <dri-devel@lists.freedesktop.org>, <chris@chris-wilson.co.uk>,
+        <grant.likely@arm.com>, <paulus@samba.org>, <mingo@kernel.org>,
+        Jianxiong Gao <jxgao@google.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Saravana Kannan <saravanak@google.com>, <xypron.glpk@gmx.de>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        <bskeggs@redhat.com>, <linux-pci@vger.kernel.org>,
+        <xen-devel@lists.xenproject.org>,
+        Thierry Reding <treding@nvidia.com>,
+        <intel-gfx@lists.freedesktop.org>, <matthew.auld@intel.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, <airlied@linux.ie>,
+        <maarten.lankhorst@linux.intel.com>,
+        <linuxppc-dev@lists.ozlabs.org>, <jani.nikula@linux.intel.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        <rodrigo.vivi@intel.com>, Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        <bauerman@linux.ibm.com>
+References: <20210619034043.199220-1-tientzu@chromium.org>
+ <20210619034043.199220-7-tientzu@chromium.org>
+ <76c3343d-72e5-9df3-8924-5474ee698ef4@quicinc.com>
+ <20210623183736.GA472@willie-the-truck>
+ <19d4c7a2-744d-21e0-289c-a576e1f0e6f3@quicinc.com>
+ <20210624054315.GA25381@lst.de>
+ <CALiNf288ZLMhY3E8E3N+z9rkwi1viWNLm1wwMEwT4rNwh3FfwQ@mail.gmail.com>
+ <364e6715-eafd-fc4a-e0af-ce2a042756b4@arm.com>
+ <20210624111855.GA1382@willie-the-truck>
+ <452155d2-c98e-23f6-86d6-3a2ff2e74783@arm.com>
+ <20210624114829.GB1382@willie-the-truck>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <43ec9dd6-12c0-98ec-8d5d-b2904292721e@quicinc.com>
+Date:   Thu, 24 Jun 2021 10:10:51 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1624014140.git.mchehab+huawei@kernel.org>
+In-Reply-To: <20210624114829.GB1382@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanexm03c.na.qualcomm.com (10.85.0.106) To
+ nasanexm03e.na.qualcomm.com (10.85.0.48)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 01:28:36PM +0200, Mauro Carvalho Chehab wrote:
-> Hi Greg,
-> 
-> I was talking today with Jonathan Cameron today about how to ensure that
-> the ABI is not missing something.
-> 
-> While it would be doable to validate the ABI by searching __ATTR and similar
-> macros around the driver, this would probably be very complex and would
-> take a while to parse.
-> 
-> Yet, there's one way that should be quick and easier to implement:
-> 
-> Read the symbols from the current system in runtime, and check if
-> everything is declared under Documentation/ABI.
 
-Nice!
 
-> As you know, scripts/get_abi.pl has already a search command, that would
-> allow seeking for a symbol inside the ABI. Using a logic similar to that,
-> but checking for all symbols under /sys is not hard to implemenent.
-> That's what patch 1 does.
-> 
-> Right now, the results aren't exaustive (I opted this way for the RFC
-> version, as otherwise there will be too many symbols that won't match
-> the regexes generated from the What:  fields).
-> 
-> It basically reports results where the sysfs nodename matches one or
-> more What, but doesn't match the regex.
-> 
-> This implementation runs very quick on my desktop: it takes less than
-> 2 seconds to run. So, it sounds a good start to help identifying what's
-> missing.
-> 
-> One of the problems with the ABI definitions is how to define wildcards
-> there. Different ABI declarations use different notations. For this first
-> RFC version, it all the above as wildcards[1]:
-> 
-> 	<foo>
-> 	{foo}
-> 	[foo]
-> 	/.../
-> 	*
-> 
-> and convert them into:
-> 
-> 	.*
-> 
-> [1] perhaps the better would be to just use regex on What:, as this would
->     avoid extra heuristics at get_abi.pl, but this is somewhat OOT from
->     this patch.
-> 
-> One of the first results is that some /sys symbols that are present
-> on *lots* of sysfs nodes, but they aren't properly defined at ABI:
-> 
-> 	 /sys/.*/(initstate|bind|unbind)
-> 
-> (there are definitions, but those aren't covering all occurrences)
+On 6/24/2021 7:48 AM, Will Deacon wrote:
+> Ok, diff below which attempts to tackle the offset issue I mentioned as
+> well. Qian Cai -- please can you try with these changes?
 
-We should fix that up.
+This works fine.
 
-> Another problem it caught is that slab definitions are like:
-> 	 /sys/kernel/slab/cache/alloc_calls
 > 
-> Instead of using a wildcard, like:
-> 	/sys/kernel/slab/*/alloc_calls
-> or:
-> 	/sys/kernel/slab/<cache>/alloc_calls
+> Will
 > 
-> So, they don't  match the actual symbols found at the system.
-
-Then we should also fix those up.
-
-> What do you think?
-
-I like this, thanks for doing this.  We should fix up the text files to
-match what we have in a format that we can actually test for things.
-That will be very helpful to run on some devices so that I can go yell
-at driver developers :)
-
-thanks,
-
-greg k-h
+> --->8
+> 
+> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+> index 175b6c113ed8..39284ff2a6cd 100644
+> --- a/include/linux/swiotlb.h
+> +++ b/include/linux/swiotlb.h
+> @@ -116,7 +116,9 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+>  
+>  static inline bool is_swiotlb_force_bounce(struct device *dev)
+>  {
+> -       return dev->dma_io_tlb_mem->force_bounce;
+> +       struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
+> +
+> +       return mem && mem->force_bounce;
+>  }
+>  
+>  void __init swiotlb_exit(void);
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index 44be8258e27b..0ffbaae9fba2 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -449,6 +449,7 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+>                 dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
+>         unsigned int nslots = nr_slots(alloc_size), stride;
+>         unsigned int index, wrap, count = 0, i;
+> +       unsigned int offset = swiotlb_align_offset(dev, orig_addr);
+>         unsigned long flags;
+>  
+>         BUG_ON(!nslots);
+> @@ -497,7 +498,7 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+>         for (i = index; i < index + nslots; i++) {
+>                 mem->slots[i].list = 0;
+>                 mem->slots[i].alloc_size =
+> -                       alloc_size - ((i - index) << IO_TLB_SHIFT);
+> +                       alloc_size - (offset + ((i - index) << IO_TLB_SHIFT));
+>         }
+>         for (i = index - 1;
+>              io_tlb_offset(i) != IO_TLB_SEGSIZE - 1 &&
+> 
