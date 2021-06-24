@@ -2,76 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4412F3B26B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 07:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DA13B26C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 07:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhFXFXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 01:23:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46990 "EHLO mail.kernel.org"
+        id S230222AbhFXFbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 01:31:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230099AbhFXFXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 01:23:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62F78613E2;
-        Thu, 24 Jun 2021 05:20:47 +0000 (UTC)
+        id S229448AbhFXFbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 01:31:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA203613E1;
+        Thu, 24 Jun 2021 05:29:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624512048;
-        bh=qd/c/frC6rWUAJZD5GduEjUYTotUTpnUDtDJhIQdLfQ=;
+        s=korg; t=1624512545;
+        bh=CrNTDEASE0hOIuPiLp9bEqtZG5PdJqBwgm5EWk5Moa8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aFW9KZ29vmaHZDTQcoxPtJUkgq94amnviNAy//338khfAW7cvP8xbFvfcTakcrQz8
-         Ile67jXJao3fJGh635buOr7brRgbs2frLriHD8GApgYiz0j6JUJw8fOwgS6ggOrx9/
-         BnZjZA6JXlBaz4AY3O8yZRi+SvtyVTsYwAJoH6eY=
-Date:   Thu, 24 Jun 2021 07:20:44 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH 4.19 425/425] scripts: switch explicitly to Python 3
-Message-ID: <YNQWLNoMznAxx5+b@kroah.com>
-References: <20210520092131.308959589@linuxfoundation.org>
- <20210520092145.369052506@linuxfoundation.org>
- <20210520203625.GA6187@amd>
- <YKc4wSgWcnGh3Bbq@kroah.com>
- <YKc47AGJRaBn3qIQ@kroah.com>
- <20210623202529.GG8540@amd>
+        b=dgkCqd8aSzCz5aPuT31Q+mRsU5exsL1ljJgUFfQi1UaKhFhMNgCPbvd2piVCS2QJD
+         /TxeTOJJI+Kz76WmLScOvrnbQGQPgwft+l+HDUb1zXiHT/iJve3J8w26JMyoe/lt2L
+         8W1qbhYXfcSDiKszMprXGq2cKMnjyHpJGXMVFcyI=
+Date:   Thu, 24 Jun 2021 07:29:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Rocco Yue <rocco.yue@mediatek.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org,
+        wsd_upstream@mediatek.com, chao.song@mediatek.com,
+        kuohong.wang@mediatek.com
+Subject: Re: [PATCH 1/4] net: if_arp: add ARPHRD_PUREIP type
+Message-ID: <YNQYHfE09Dx5kWyg@kroah.com>
+References: <YNNtN3cdDL71SiNt@kroah.com>
+ <20210624033353.25636-1-rocco.yue@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210623202529.GG8540@amd>
+In-Reply-To: <20210624033353.25636-1-rocco.yue@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 10:25:29PM +0200, Pavel Machek wrote:
-> On Fri 2021-05-21 06:37:00, Greg Kroah-Hartman wrote:
-> > On Fri, May 21, 2021 at 06:36:18AM +0200, Greg Kroah-Hartman wrote:
-> > > On Thu, May 20, 2021 at 10:36:26PM +0200, Pavel Machek wrote:
-> > > > Hi!
-> > > > 
-> > > > > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > > > 
-> > > > > commit 51839e29cb5954470ea4db7236ef8c3d77a6e0bb upstream.
-> > > > > 
-> > > > > Some distributions are about to switch to Python 3 support only.
-> > > > > This means that /usr/bin/python, which is Python 2, is not available
-> > > > > anymore. Hence, switch scripts to use Python 3 explicitly.
-> > > > 
-> > > > I'd say this is unsuitable for -stable.
-> > > > 
-> > > > Old distributions may not have python3 installed, and we should not
-> > > > change this dependency in the middle of the series.
-> > > 
-> > > What distro that was released in 2017 (the year 4.14.0 was released) did
-> > > not have python3 on it?
+On Thu, Jun 24, 2021 at 11:33:53AM +0800, Rocco Yue wrote:
+> On Wed, 2021-06-23 at 19:19 +0200, Greg KH wrote:
+> On Wed, Jun 23, 2021 at 07:34:49PM +0800, Rocco Yue wrote:
+> >> This patch add the definition of ARPHRD_PUREIP which can for
+> >> example be used by mobile ccmni device as device type.
+> >> ARPHRD_PUREIP means that this device doesn't need kernel to
+> >> generate ipv6 link-local address in any addr_gen_mode.
+> >> 
+> >> Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
+> >> ---
+> >>  include/uapi/linux/if_arp.h | 1 +
+> >>  1 file changed, 1 insertion(+)
+> >> 
+> >> diff --git a/include/uapi/linux/if_arp.h b/include/uapi/linux/if_arp.h
+> >> index c3cc5a9e5eaf..4463c9e9e8b4 100644
+> >> --- a/include/uapi/linux/if_arp.h
+> >> +++ b/include/uapi/linux/if_arp.h
+> >> @@ -61,6 +61,7 @@
+> >>  #define ARPHRD_DDCMP    517		/* Digital's DDCMP protocol     */
+> >>  #define ARPHRD_RAWHDLC	518		/* Raw HDLC			*/
+> >>  #define ARPHRD_RAWIP    519		/* Raw IP                       */
+> >> +#define ARPHRD_PUREIP	520		/* Pure IP			*/
 > > 
-> > oops, I meant 2018, when 4.19.0 was out, wrong tree...
+> > In looking at the patches, what differs "PUREIP" from "RAWIP"?  It seems
 > 
-> In anything yocto-based, for example, you explicitely select which
-> packages you want. And changing dependencies in middle of stable
-> release is surprising and against our documentation.
+> Thanks for your review.
+> 
+> The difference between RAWIP and PUREIP is that they generate IPv6
+> link-local address and IPv6 global address in different ways.
+> 
+> RAWIP:
+> ~~~~~~
+> In the ipv6_generate_eui64() function, using RAWIP will always return 0,
+> which will cause the kernel to automatically generate an IPv6 link-local
+> address in EUI64 format and an IPv6 global address in EUI64 format.
+> 
+> PUREIP:
+> ~~~~~~~
+> After this patch set, when using PUREIP, kernel doesn't generate IPv6
+> link-local address regardless of which IN6_ADDR_GEN_MODE is used.
+> 
+> @@  static void addrconf_dev_config(struct net_device *dev)
+> +       if (dev->type == ARPHRD_PUREIP)
+> +               return;
+> 
+> And after recving RA message, kernel iterates over the link-local address
+> that exists for the interface and uses the low 64bits of the link-local
+> address to generate the IPv6 global address.
+> The general process is as follows:
+> ndisc_router_discovery() -> addrconf_prefix_rcv() -> ipv6_generate_eui64() -> ipv6_inherit_eui64()
 
-Yocto documentation does not dictate kernel development processes.
+Thanks for the explaination, why is this hardware somehow "special" in
+this way that this has never been needed before?
 
-good luck!
+thanks,
 
 greg k-h
