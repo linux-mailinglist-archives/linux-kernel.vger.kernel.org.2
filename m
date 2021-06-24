@@ -2,93 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3AC83B300C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9509C3B300E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231659AbhFXNgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:36:37 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:53700 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229878AbhFXNgf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:36:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=/QoD2olOKiTnq2WBqvcr2a3obQ9nSZsgcbVeh4n1M8o=; b=eZ+A88OWuWRVcJCGkjiY3qUVtT
-        YZXBYa4kedsiNRipnvHUTk/z0/cuWTSN0vGoadd9CyKKQ1MhFYtOkIEnFJ9vCiz5yb3Og0NcDVqUs
-        hK8JmGNRBmqZ3CdpijySE22MhseVFGWxYsI+PZCgw9Eekk01qQVH8vTVrgNBBtfXALsU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lwPUX-00AyWz-CJ; Thu, 24 Jun 2021 15:34:01 +0200
-Date:   Thu, 24 Jun 2021 15:34:01 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Einon <mark.einon@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/3] net: Provide switchdev driver for NXP's More Than IP
- L2 switch
-Message-ID: <YNSJyf5vN4YuTUGb@lunn.ch>
-References: <20210622144111.19647-1-lukma@denx.de>
- <20210622144111.19647-3-lukma@denx.de>
- <YNH7vS9FgvEhz2fZ@lunn.ch>
- <20210623133704.334a84df@ktm>
- <YNOTKl7ZKk8vhcMR@lunn.ch>
- <20210624125304.36636a44@ktm>
+        id S231738AbhFXNhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:37:00 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:42954 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231707AbhFXNg5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:36:57 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F0349501;
+        Thu, 24 Jun 2021 15:34:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1624541677;
+        bh=6qFe25lAFpYqRWkfpn2PWiku/loxGKiPTH42srro7Zk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Qg/EC/BvcI8fB4WDjBJRbqZFxWVfvjTj0Mo2NU06xm2Vb2mbBucYf5jATMamb3W3+
+         61jZd/SGn4BTObsUfDkGKr3A7MigG21yklzNfDnC1mE3ywvFojI8WiG9FuNrtisYW0
+         uLDHghKdq9PBT4CtLXwo/xt6Y43nrdmX5amcUE6o=
+Date:   Thu, 24 Jun 2021 16:34:06 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2] MEDIA: Driver for ON Semi AR0521 camera sensor
+Message-ID: <YNSJzgJ5xu2j+U2p@pendragon.ideasonboard.com>
+References: <YNHQDNdpxcY8+IV2@pendragon.ideasonboard.com>
+ <m3r1gt5hzm.fsf@t19.piap.pl>
+ <YNK5FhAXSpI1oHJV@pendragon.ideasonboard.com>
+ <m3mtrh5evo.fsf@t19.piap.pl>
+ <YNM0cZFV7/LKKFBn@pendragon.ideasonboard.com>
+ <42958029-5625-5f4d-a075-2f59a74e0fb5@ideasonboard.com>
+ <m3bl7v6er0.fsf@t19.piap.pl>
+ <YNR2OkXL+wUaKuy4@pendragon.ideasonboard.com>
+ <YNR9CS/PfG7s1e71@kroah.com>
+ <m3wnqj4ct3.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210624125304.36636a44@ktm>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <m3wnqj4ct3.fsf@t19.piap.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I'm not sure if the imx28 switch is similar to one from TI (cpsw-3g)
-> - it looks to me that the bypass mode for both seems to be very
-> different. For example, on NXP when switch is disabled we need to
-> handle two DMA[01]. When it is enabled, only one is used. The approach
-> with two DMAs is best handled with FEC driver instantiation.
-
-I don't know if it applies to the FEC, but switches often have
-registers which control which egress port an ingress port can send
-packets to. So by default, you allow CPU to port0, CPU to port1, but
-block between port0 to port1. This would give you two independent
-interface, the switch enabled, and using one DMA. When the bridge is
-configured, you simply allow port0 and send/receive packets to/from
-port1. No change to the DMA setup, etc.
-
-> The code from [2] needs some vendor ioctl based tool (or hardcode) to
-> configure the switch. 
-
-This would not be allowed. You configure switches in Linux using the
-existing user space tools. No vendor tools are used.
-
-> > and how well future features can be added. Do you have
-> > support for VLANS? Adding and removing entries to the lookup tables?
-> > How will IGMP snooping work? How will STP work?
+On Thu, Jun 24, 2021 at 03:22:48PM +0200, Krzysztof Hałasa wrote:
+> Hi Greg,
 > 
-> This can be easily added with serving netstack hooks (as it is already
-> done with cpsw_new) in the new switchdev based version [3] (based on
-> v5.12).
+> Greg KH <gregkh@linuxfoundation.org> writes:
+> 
+> > +// SPDX-License-Identifier: GPL-2.0
+> 
+> > Putting the above line on a file _IS_ a legal declaration that the file
+> > is released under GPL-2.0.  It's pretty simple :)
 
-Here i'm less convinced. I expect a fully functioning switch driver is
-going to need switch specific versions of some of the netdev ops
-functions, maybe the ethtool ops as well. It is going to want to add
-devlink ops. By hacking around with the FEC driver in the way you are,
-you might get very basic switch operation working. But as we have seen
-with cpsw, going from very basic to a fully functioning switchdev
-driver required a new driver, cpsw_new. It was getting more and more
-difficult to add features because its structure was just wrong. We
-don't want to add code to the kernel which is probably a dead end.
+Greg, on a side note, the discussion originated from
+https://lore.kernel.org/linux-media/m3r1gt5hzm.fsf@t19.piap.pl/. I'll
+quote Krzysztof so the discussion doesn't get split across multiple
+places:
 
-      Andrew
+> > To spend time reviewing this code, I want to know it will be mergeable,
+> > and that requires a SoB line. That's a blocker I'm afraid.
+> 
+> So how do you propose to solve the situation, in which my driver is
+> rejected, but another persor takes it, makes changes (btw breaking it),
+> and presents it as their own, and it's accepted? This is a paid work and
+> I'm required to put in my employer's copyright over the code.
+> I could have made this error once - but no more.
+> 
+> The code will be mergeable, as I already wrote. Why would I bother
+> otherwise? But I cannot let that history to repeat itself.
+
+Your opinion on this would be valuable too.
+
+> Do you think putting this line anywhere, in any file, does it?
+> That would be crazy.
+> 
+> How about a book, e.g. describing a patch submission process (but not
+> a copy of kernel's Documentation). The same?
+> 
+> Also - in all countries? Most of them?
+> 
+> Come on.
+> 
+> Then why would we need the Signed-off-by?
+> From my perspective, the SPDX-License-Identifier is only meaningful when
+> the file is actually a part of the kernel, or if, at least, it's been
+> presented for merge, with Signed-off-by etc.
+
+Quoting Documentation/process/submitting-patches.rst:
+
+Sign your work - the Developer's Certificate of Origin
+------------------------------------------------------
+
+To improve tracking of who did what, especially with patches that can
+percolate to their final resting place in the kernel through several
+layers of maintainers, we've introduced a "sign-off" procedure on
+patches that are being emailed around.
+
+The sign-off is a simple line at the end of the explanation for the
+patch, which certifies that you wrote it or otherwise have the right to
+pass it on as an open-source patch.  The rules are pretty simple: if you
+can certify the below:
+
+Developer's Certificate of Origin 1.1
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+By making a contribution to this project, I certify that:
+
+        (a) The contribution was created in whole or in part by me and I
+            have the right to submit it under the open source license
+            indicated in the file; or
+
+        (b) The contribution is based upon previous work that, to the best
+            of my knowledge, is covered under an appropriate open source
+            license and I have the right under that license to submit that
+            work with modifications, whether created in whole or in part
+            by me, under the same open source license (unless I am
+            permitted to submit under a different license), as indicated
+            in the file; or
+
+        (c) The contribution was provided directly to me by some other
+            person who certified (a), (b) or (c) and I have not modified
+            it.
+
+        (d) I understand and agree that this project and the contribution
+            are public and that a record of the contribution (including all
+            personal information I submit with it, including my sign-off) is
+            maintained indefinitely and may be redistributed consistent with
+            this project or the open source license(s) involved.
+
+then you just add a line saying::
+
+        Signed-off-by: Random J Developer <random@developer.example.org>
+
+
+The SoB line doesn't convey any license information, that's specified
+separately and explicitly in each file (usually in the form of an SPDX
+tag, which is just a machine-parsable, short-hand version of a full
+license header in text form).
+
+-- 
+Regards,
+
+Laurent Pinchart
