@@ -2,87 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 275AA3B32A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397513B32A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232315AbhFXPhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 11:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbhFXPg6 (ORCPT
+        id S232109AbhFXPhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 11:37:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33017 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232029AbhFXPhu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 11:36:58 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80684C061574;
-        Thu, 24 Jun 2021 08:34:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=77vhiGE0W9ZQnyqXdZKxBbTQvre+752PKaRIyl0obU8=; b=d9xkfsMKphY4uq/WU2nfEB3rv
-        Bc4P3wKOhXQ4v2PeS6ArqyTgsPe8tbX8mXenlSVszoT6VEmiDdhtL20x9oK5gyCQEmBkra293lmX9
-        t74RBGb95nr+321qg8L1PltYO+pShT6DYJP0me0fj3DBhaURNOnpwAug79IZxsA5+yYLKrc6ZdW8X
-        daH99xmiCXl5XoYXAus8zR2KExZhoUDxqxbGvn1X1XmLJG6s2O6o68qPyflStlLUMbfYGTBqqHe2r
-        WT5sqAGXrUPlRID6gIH8/Y7OWip31gjZR7NF9AaUvprJpeb34nrjaOAMRxX5bqUZhspdO+j0LuXdv
-        nIUdstqUQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45312)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lwRN8-0007tY-MW; Thu, 24 Jun 2021 16:34:32 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lwRN6-0005nj-UI; Thu, 24 Jun 2021 16:34:28 +0100
-Date:   Thu, 24 Jun 2021 16:34:28 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Ling Pei Lee <pei.lee.ling@intel.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>, davem@davemloft.net,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marek Behun <marek.behun@nic.cz>,
-        weifeng.voon@intel.com, vee.khee.wong@linux.intel.com,
-        vee.khee.wong@intel.com
-Subject: Re: [PATCH net-next] net: phy: marvell10g: enable WoL for mv2110
-Message-ID: <20210624153428.GR22278@shell.armlinux.org.uk>
-References: <20210623130929.805559-1-pei.lee.ling@intel.com>
+        Thu, 24 Jun 2021 11:37:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624548930;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f6k4ykVaPXFxqKCeveqsqgjZTsHJh+2Hx0FU9Hu8Shk=;
+        b=CzWgx2D41CtewkNoKfSXlHNvHr4JzTaydpUFctZ4grhohiyPOOiZM03jcOk+BqcQY9PARI
+        ND/EiZ7OUbRRvzed7FFSGmmjCFYZnkRwlObmggnrscauZJ4LXoRq8lHxJhyJVtNv037ugs
+        MALhEc0j8q3/V50B+B5aP17iCj4dO/Y=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-182-LvDdVF0fM5m-veF00-b02g-1; Thu, 24 Jun 2021 11:35:29 -0400
+X-MC-Unique: LvDdVF0fM5m-veF00-b02g-1
+Received: by mail-wm1-f69.google.com with SMTP id o3-20020a05600c5103b02901aeb7a4ac06so3214412wms.5
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 08:35:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=f6k4ykVaPXFxqKCeveqsqgjZTsHJh+2Hx0FU9Hu8Shk=;
+        b=Ai6k9fwRpxUeGW4Xhg2qpLGq5uw/49li74ow2pPZXQPLAfygI0K4NdEkxOCWli8JBp
+         5lob9K0pcPzVsaezSlGLyxQj0RBWJxdQmw8m3M+yv+lqwcrC8vIJ+C9vSV+xYted7guQ
+         BYmFxl09QSxcMEMEY+3WZbREJLueoH2bdy8noo/HlL3APUmm8bPLqvbz7WdIx5n7YTnw
+         NTIuBVT5+OSAms77C9hOZnNMlvNBzLNBJoVwGqqgs9QDEAcU+VfRlvzr0Ipnpj8JY3Lt
+         Qu6bhf3SpTRBe9kKBSyeT/FK2c7rU1Ty6F4F+cDjlaE9fH/jJ4Xf/QZ+iXc7CMPcG2ww
+         6KKw==
+X-Gm-Message-State: AOAM533oByTUYCgUEvA8f8zVZXZ3DsX7u4hJYhAyeydMayxWU6RZEgr1
+        KiaK6QlT6LpGC4rIweWowlgoUNIRkUD+zRrbyAjfvjRPG4IIUcfr1i3PZfOljRpioLvU9kvVTml
+        BcPqlZJ8iq7UYVP2jOaboii1E
+X-Received: by 2002:a05:6000:1251:: with SMTP id j17mr5373906wrx.122.1624548927957;
+        Thu, 24 Jun 2021 08:35:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwBnDqu4vf3bAIylFJkD7JiEEmgRW9T3VoP4swdNx5pmdzHboAZtCJNJi7bVPTY8V2i+hs/AQ==
+X-Received: by 2002:a05:6000:1251:: with SMTP id j17mr5373864wrx.122.1624548927675;
+        Thu, 24 Jun 2021 08:35:27 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id v18sm4013288wrv.24.2021.06.24.08.35.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 08:35:27 -0700 (PDT)
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        David Stevens <stevensd@chromium.org>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        James Morse <james.morse@arm.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvmarm@lists.cs.columbia.edu,
+        kvm-ppc@vger.kernel.org, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Sean Christopherson <seanjc@google.com>,
+        David Stevens <stevensd@google.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Will Deacon <will@kernel.org>
+References: <20210624035749.4054934-1-stevensd@google.com>
+ <1624530624.8jff1f4u11.astroid@bobo.none>
+ <1624534759.nj0ylor2eh.astroid@bobo.none>
+ <0d3a699a-15eb-9f1b-0735-79d14736f38c@redhat.com>
+ <1624539354.6zggpdrdbw.astroid@bobo.none>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 0/6] KVM: Remove uses of struct page from x86 and arm64
+ MMU
+Message-ID: <81d99029-ec40-19c5-5647-20607d78dab0@redhat.com>
+Date:   Thu, 24 Jun 2021 17:35:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210623130929.805559-1-pei.lee.ling@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <1624539354.6zggpdrdbw.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 09:09:29PM +0800, Ling Pei Lee wrote:
-> @@ -106,6 +107,17 @@ enum {
->  	MV_V2_TEMP_CTRL_DISABLE	= 0xc000,
->  	MV_V2_TEMP		= 0xf08c,
->  	MV_V2_TEMP_UNKNOWN	= 0x9600, /* unknown function */
-> +	MV_V2_MAGIC_PKT_WORD0	= 0xf06b,
-> +	MV_V2_MAGIC_PKT_WORD1	= 0xf06c,
-> +	MV_V2_MAGIC_PKT_WORD2	= 0xf06d,
-> +	/* Wake on LAN registers */
-> +	MV_V2_WOL_CTRL		= 0xf06e,
-> +	MV_V2_WOL_STS		= 0xf06f,
-> +	MV_V2_WOL_CLEAR_STS	= BIT(15),
-> +	MV_V2_WOL_MAGIC_PKT_EN	= BIT(0),
-> +	MV_V2_PORT_INTR_STS	= 0xf040,
-> +	MV_V2_PORT_INTR_MASK	= 0xf043,
-> +	MV_V2_WOL_INTR_EN	= BIT(8),
+On 24/06/21 14:57, Nicholas Piggin wrote:
+> KVM: Fix page ref underflow for regions with valid but non-refcounted pages
 
-Please put these new register definitions in address order. This list is
-first sorted by MMD and then by address. So these should be before the
-definition of MV_V2_TEMP_CTRL.
+It doesn't really fix the underflow, it disallows mapping them in the 
+first place.  Since in principle things can break, I'd rather be 
+explicit, so let's go with "KVM: do not allow mapping valid but 
+non-reference-counted pages".
 
-As I suspected, the 88x3310 shares this same register layout for the WOL
-and at least bit 8 of the interrupt status and enable registers.
+> It's possible to create a region which maps valid but non-refcounted
+> pages (e.g., tail pages of non-compound higher order allocations). These
+> host pages can then be returned by gfn_to_page, gfn_to_pfn, etc., family
+> of APIs, which take a reference to the page, which takes it from 0 to 1.
+> When the reference is dropped, this will free the page incorrectly.
+> 
+> Fix this by only taking a reference on the page if it was non-zero,
 
-Thanks, and thanks for reminding me to look at this today!
+s/on the page/on valid pages/ (makes clear that invalid pages are fine 
+without refcounting).
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Thank you *so* much, I'm awful at Linux mm.
+
+Paolo
+
+> which indicates it is participating in normal refcounting (and can be
+> released with put_page).
+> 
+> Signed-off-by: Nicholas Piggin<npiggin@gmail.com>
+
