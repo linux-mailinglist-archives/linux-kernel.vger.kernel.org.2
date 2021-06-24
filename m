@@ -2,151 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2E53B24C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2084A3B2500
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhFXCNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 22:13:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbhFXCNL (ORCPT
+        id S229889AbhFXC3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 22:29:09 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:42296 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229759AbhFXC3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 22:13:11 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9177FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 19:10:52 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id t19-20020a17090ae513b029016f66a73701so4925886pjy.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 19:10:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=k4QIFhqycNj8GLoDIog1T+fSxwI5JTO5+UemhkS0t2o=;
-        b=R7ELIICz9WdFf+PGQ2jd2Jt56KpGpgdj/4QUrfnuSVt9qDOiSeZ1+sg7CIfqUbvAiT
-         BWH1QCojYmnncpNYSViPShe1SstM37ttCtOYpejVyNdYGeE/u1yGV+8VOSPgf+uC0bkB
-         56aZ4Z1rFm/m9lLLqvEaf/z8jJvjdqJUhL7DHA4Oo2PmCaC0y/18re6FfDRRT0Dl749x
-         kRvLjp0Wveo0QxlOCCPcu5iOPOSwAKriMPrSTTm+NGvs9+Z5GURRdgR2KAFAcpCe3EhQ
-         4WIyQOLG2uLbH8iZwSgi2PUmd9pXfEGiA86tGVEBAQzjf4U4l8xdcQPwXswrG2ALuma4
-         lVcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=k4QIFhqycNj8GLoDIog1T+fSxwI5JTO5+UemhkS0t2o=;
-        b=US9tvmlcuA7D4Ks24yVHoF03uHW3k0QgfNcB4toqJ3Zb7oIktb1whT5cm6BJfnYJ7i
-         x1aFYE53fLcmCWz5CEAZtYj6UqRR99R3QIPKhCR/Dr0Wy9gOSDMGIRCJxD2RcEWDsRLM
-         MkC/cK5C4gysekxTlwNB91rv9CoFGY3ChS37XTM84XqqlAPYld1OSsiGMJbVDvMjRO1r
-         WkUHEnA6xo1uoZnqYybyX5z222Ts3o72brhpj2Uw+ZfMuhcigBPebl8+Zb3sbgdVp/RV
-         raGGceiJSQ9EB60LVvetFKK3uOgOfa3cKobo98SAlmaRxnLZ8s5NLegat6FRrjzLE5iR
-         MFBg==
-X-Gm-Message-State: AOAM533PzY8kbgdLk2V6+aC9wEkyH34ArzxYsQv7u6BV05eQeDvVkPqE
-        i2Tq2msrFeMumQfpJfLhhMcCbA==
-X-Google-Smtp-Source: ABdhPJyA+BlUi6sU0IPP4K9bydQuXz1y1ea9apcmprLEGbvqRPkSS7TMCoR2Ioy9JSEx0GmseMDG9w==
-X-Received: by 2002:a17:90b:11ca:: with SMTP id gv10mr12509991pjb.94.1624500652154;
-        Wed, 23 Jun 2021 19:10:52 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id r207sm988256pfc.118.2021.06.23.19.10.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 19:10:51 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3.1 1/4] cpufreq: cppc: Fix potential memleak in cppc_cpufreq_cpu_init
-Date:   Thu, 24 Jun 2021 07:40:45 +0530
-Message-Id: <445b58405e81d996fb4037223b9e81fc258a07ea.1624500522.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
-In-Reply-To: <579689469ed8a7dfd68dcbb41e9191472799a326.1624266901.git.viresh.kumar@linaro.org>
-References: <579689469ed8a7dfd68dcbb41e9191472799a326.1624266901.git.viresh.kumar@linaro.org>
+        Wed, 23 Jun 2021 22:29:08 -0400
+X-UUID: 48bcc90410ff4655987c24af4b22e157-20210624
+X-UUID: 48bcc90410ff4655987c24af4b22e157-20210624
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <mason.zhang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 343488418; Thu, 24 Jun 2021 10:26:45 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 24 Jun 2021 10:26:44 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 24 Jun 2021 10:26:43 +0800
+From:   Mason Zhang <mason.zhang@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        Mason Zhang <Mason.Zhang@mediatek.com>
+Subject: [PATCH v4 1/1] arm64: dts: mediatek: add MT6779 spi master dts node
+Date:   Thu, 24 Jun 2021 10:11:37 +0800
+Message-ID: <20210624021137.11513-1-mason.zhang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's a classic example of memleak, we allocate something, we fail and
-never free the resources.
+From: Mason Zhang <Mason.Zhang@mediatek.com>
 
-Make sure we free all resources on policy ->init() failures.
+This patch add spi master dts node for MT6779 SOC.
 
-Fixes: a28b2bfc099c ("cppc_cpufreq: replace per-cpu data array with a list")
-Tested-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Mason Zhang <Mason.Zhang@mediatek.com>
 ---
-V3->V3.1:
-- Updated "if (!ret)" to "if (ret)", the more commonly used format.
+ arch/arm64/boot/dts/mediatek/mt6779.dtsi | 112 +++++++++++++++++++++++
+ 1 file changed, 112 insertions(+)
 
- drivers/cpufreq/cppc_cpufreq.c | 28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index be4f62e2c5f1..945ab4942c1c 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -256,6 +256,16 @@ static struct cppc_cpudata *cppc_cpufreq_get_cpu_data(unsigned int cpu)
- 	return NULL;
- }
+diff --git a/arch/arm64/boot/dts/mediatek/mt6779.dtsi b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
+index 370f309d32de..c81e76865d1b 100644
+--- a/arch/arm64/boot/dts/mediatek/mt6779.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
+@@ -219,6 +219,118 @@
+ 			status = "disabled";
+ 		};
  
-+static void cppc_cpufreq_put_cpu_data(struct cpufreq_policy *policy)
-+{
-+	struct cppc_cpudata *cpu_data = policy->driver_data;
++		spi0: spi0@1100a000 {
++			compatible = "mediatek,mt6779-spi",
++				     "mediatek,mt6765-spi";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			mediatek,pad-select = <0>;
++			reg = <0 0x1100a000 0 0x1000>;
++			interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_LOW 0>;
++			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
++				<&topckgen CLK_TOP_SPI>,
++				<&infracfg_ao CLK_INFRA_SPI0>;
++			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		};
 +
-+	list_del(&cpu_data->node);
-+	free_cpumask_var(cpu_data->shared_cpu_map);
-+	kfree(cpu_data);
-+	policy->driver_data = NULL;
-+}
++		spi1: spi1@11010000 {
++			compatible = "mediatek,mt6779-spi",
++				     "mediatek,mt6765-spi";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			mediatek,pad-select = <0>;
++			reg = <0 0x11010000 0 0x1000>;
++			interrupts = <GIC_SPI 147 IRQ_TYPE_LEVEL_LOW 0>;
++			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
++				<&topckgen CLK_TOP_SPI>,
++				<&infracfg_ao CLK_INFRA_SPI1>;
++			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		};
 +
- static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- {
- 	unsigned int cpu = policy->cpu;
-@@ -309,7 +319,8 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 	default:
- 		pr_debug("Unsupported CPU co-ord type: %d\n",
- 			 policy->shared_type);
--		return -EFAULT;
-+		ret = -EFAULT;
-+		goto out;
- 	}
- 
- 	/*
-@@ -324,10 +335,16 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 	cpu_data->perf_ctrls.desired_perf =  caps->highest_perf;
- 
- 	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
--	if (ret)
-+	if (ret) {
- 		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
- 			 caps->highest_perf, cpu, ret);
-+		goto out;
-+	}
++		spi2: spi2@11012000 {
++			compatible = "mediatek,mt6779-spi",
++				     "mediatek,mt6765-spi";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			mediatek,pad-select = <0>;
++			reg = <0 0x11012000 0 0x1000>;
++			interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_LOW 0>;
++			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
++				 <&topckgen CLK_TOP_SPI>,
++				<&infracfg_ao CLK_INFRA_SPI2>;
++			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		};
 +
-+	return 0;
- 
-+out:
-+	cppc_cpufreq_put_cpu_data(policy);
- 	return ret;
- }
- 
-@@ -345,12 +362,7 @@ static int cppc_cpufreq_cpu_exit(struct cpufreq_policy *policy)
- 		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
- 			 caps->lowest_perf, cpu, ret);
- 
--	/* Remove CPU node from list and free driver data for policy */
--	free_cpumask_var(cpu_data->shared_cpu_map);
--	list_del(&cpu_data->node);
--	kfree(policy->driver_data);
--	policy->driver_data = NULL;
--
-+	cppc_cpufreq_put_cpu_data(policy);
- 	return 0;
- }
- 
++		spi3: spi3@11013000 {
++			compatible = "mediatek,mt6779-spi",
++				     "mediatek,mt6765-spi";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			mediatek,pad-select = <0>;
++			reg = <0 0x11013000 0 0x1000>;
++			interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_LOW 0>;
++			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
++				 <&topckgen CLK_TOP_SPI>,
++				 <&infracfg_ao CLK_INFRA_SPI3>;
++			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		};
++
++		spi4: spi4@11018000 {
++			compatible = "mediatek,mt6779-spi",
++				     "mediatek,mt6765-spi";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			mediatek,pad-select = <0>;
++			reg = <0 0x11018000 0 0x1000>;
++			interrupts = <GIC_SPI 156 IRQ_TYPE_LEVEL_LOW 0>;
++			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
++				 <&topckgen CLK_TOP_SPI>,
++				 <&infracfg_ao CLK_INFRA_SPI4>;
++			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		};
++
++		spi5: spi5@11019000 {
++			compatible = "mediatek,mt6779-spi",
++				     "mediatek,mt6765-spi";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			mediatek,pad-select = <0>;
++			reg = <0 0x11019000 0 0x1000>;
++			interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_LOW 0>;
++			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
++				<&topckgen CLK_TOP_SPI>,
++				<&infracfg_ao CLK_INFRA_SPI5>;
++			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		};
++
++		spi6: spi6@1101d000 {
++			compatible = "mediatek,mt6779-spi",
++				     "mediatek,mt6765-spi";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			mediatek,pad-select = <0>;
++			reg = <0 0x1101d000 0 0x1000>;
++			interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_LOW 0>;
++			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
++				 <&topckgen CLK_TOP_SPI>,
++				 <&infracfg_ao CLK_INFRA_SPI6>;
++			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		};
++
++		spi7: spi7@1101e000 {
++			compatible = "mediatek,mt6779-spi",
++				     "mediatek,mt6765-spi";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			mediatek,pad-select = <0>;
++			reg = <0 0x1101e000 0 0x1000>;
++			interrupts = <GIC_SPI 145 IRQ_TYPE_LEVEL_LOW 0>;
++			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
++				 <&topckgen CLK_TOP_SPI>,
++				 <&infracfg_ao CLK_INFRA_SPI7>;
++			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		};
++
+ 		audio: clock-controller@11210000 {
+ 			compatible = "mediatek,mt6779-audio", "syscon";
+ 			reg = <0 0x11210000 0 0x1000>;
 -- 
-2.31.1.272.g89b43f80a514
+2.18.0
 
