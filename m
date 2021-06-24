@@ -2,56 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C70C3B2FBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25E93B2FC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhFXNHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:07:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47056 "EHLO mail.kernel.org"
+        id S231367AbhFXNIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:08:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229940AbhFXNHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:07:22 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 321BA613F3;
-        Thu, 24 Jun 2021 13:05:02 +0000 (UTC)
-Date:   Thu, 24 Jun 2021 09:05:00 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     jpoimboe@redhat.com, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, joro@8bytes.org,
-        boris.ostrovsky@oracle.com, jgross@suse.com, x86@kernel.org,
-        mbenes@suse.com, dvyukov@google.com, elver@google.com
-Subject: Re: [PATCH v2 00/24] objtool/x86: noinstr vs PARAVIRT
-Message-ID: <20210624090500.3214d7d2@oasis.local.home>
-In-Reply-To: <20210624094059.886075998@infradead.org>
-References: <20210624094059.886075998@infradead.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229940AbhFXNIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:08:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D974C613C3;
+        Thu, 24 Jun 2021 13:06:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624539971;
+        bh=X5fgruXZAH6/dwtIj9BUqyJ6jlUiiRQEvoljwULOpAw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OGYINAbuGasSG7nLZAa1F5HYrm1MRw/U0QA6imTs9s2BE2lPupOdkJkq0gZ87x0Sb
+         yesHqPbqTj80zcQ+MmgtI5bRE7sFF0bQV4SBJdQRyd99mOxV4POTAfrCs9pMok1y/Q
+         M8IzFW4pQrZMldEaFQlwECzz5es9sGGbKy5izkaY=
+Date:   Thu, 24 Jun 2021 15:06:09 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Rocco Yue <rocco.yue@mediatek.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org,
+        wsd_upstream@mediatek.com, chao.song@mediatek.com,
+        kuohong.wang@mediatek.com
+Subject: Re: [PATCH 1/4] net: if_arp: add ARPHRD_PUREIP type
+Message-ID: <YNSDQbp/h/aadpmV@kroah.com>
+References: <YNRKhJB9/K4SKPdR@kroah.com>
+ <20210624122435.11887-1-rocco.yue@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624122435.11887-1-rocco.yue@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 11:40:59 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+On Thu, Jun 24, 2021 at 08:24:35PM +0800, Rocco Yue wrote:
+> On Thu, 2021-06-24 at 11:04 +0200, Greg KH wrote:
+> On Thu, Jun 24, 2021 at 02:13:10PM +0800, Rocco Yue wrote:
+> >> On Thu, 2021-06-24 at 07:29 +0200, Greg KH wrote:
+> >>> 
+> >>> Thanks for the explaination, why is this hardware somehow "special" in
+> >>> this way that this has never been needed before?
+> >>> 
+> >>> thanks,
+> >>> 
+> >>> greg k-h
+> >>> 
+> >> 
+> >> Before kernel-4.18, RAWIP was the same as PUREIP, neither of them
+> >> automatically generates an IPv6 link-local address, and the way to
+> >> generate an IPv6 global address is the same.
+> >> 
+> >> After kernel-4.18 (include 4.18 version), the behavior of RAWIP had
+> >> changed due to the following patch:
+> >> @@  static int ipv6_generate_eui64(u8 *eui, struct net_device *dev)
+> >> +	case ARPHRD_RAWIP:
+> >> +		return addrconf_ifid_rawip(eui, dev);
+> >>  	}
+> >>  	return -1;
+> >> }
+> >> 
+> >> the reason why the kernel doesn't need to generate the link-local
+> >> address automatically is as follows:
+> >> 
+> >> In the 3GPP 29.061, here is some description as follows:
+> >> "in order to avoid any conflict between the link-local address of
+> >> MS and that of the GGSN, the Interface-Identifier used by the MS to
+> >> build its link-local address shall be assigned by the GGSN. The GGSN
+> >> ensures the uniqueness of this Interface-Identifier. Then MT shall
+> >> then enforce the use of this Interface-Identifier by the TE"
+> >> 
+> >> In other words, in the cellular network, GGSN determines whether to
+> >> reply to the Router Solicitation message of UE by identifying the
+> >> low 64bits of UE interface's ipv6 link-local address.
+> >> 
+> >> When using a new kernel and RAWIP, kernel will generate an EUI64
+> >> format ipv6 link-local address, and if the device uses this address
+> >> to send RS, GGSN will not reply RA message.
+> >> 
+> >> Therefore, in that background, we came up with PUREIP to make kernel
+> >> doesn't generate a ipv6 link-local address in any address generate
+> >> mode.
+> > 
+> > Thanks for the better description.  That should go into the changelog
+> > text somewhere so that others know what is going on here with this new
+> > option.
+> >
+> 
+> Does changelog mean adding these details to the commit message ?
 
-> Steve, can I please delete TRACE_BRANCH_PROFILING and PROFILE_ALL_BRANCHES already?
+Yes please.
 
-The TRACE_BRANCH_PROFILING, I never used, so I'm happy to delete it,
-but I still use the PROFILE_ALL_BRANCHES.
+> > And are these user-visable flags documented in a man page or something
+> > else somewhere?  If not, how does userspace know about them?
+> > 
+> 
+> There are mappings of these device types value in the libc:
+> "/bionic/libc/kernel/uapi/linux/if_arp.h".
+> userspace can get it from here.
 
-But I'm curious, what's the issue with the PROFILE_ALL_BRANCHES?
+Yes, they will show up in a libc definition, but where is it documented
+in text form what the flag does?
 
-You can make it ignore files, by simply adding a:
+thanks,
 
-#define DISABLE_BRANCH_PROFILING
-
-at the top of the file (before any of the includes).
-
-So if your issue is that it makes it hard for some code, simply add
-that to the top of the file, and it should just work.
-
--- Steve
+greg k-h
