@@ -2,240 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA1B3B2C36
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423B63B2C38
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbhFXKRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 06:17:06 -0400
-Received: from lahtoruutu.iki.fi ([185.185.170.37]:47762 "EHLO
-        lahtoruutu.iki.fi" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232019AbhFXKRE (ORCPT
+        id S232182AbhFXKRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 06:17:15 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:38386 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232043AbhFXKRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 06:17:04 -0400
-Received: from hillosipuli.retiisi.eu (unknown [IPv6:2001:2003:f75d:b010::e64])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Thu, 24 Jun 2021 06:17:14 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: sailus)
-        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id D2C181B0024A;
-        Thu, 24 Jun 2021 13:14:43 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-        t=1624529684;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7C3EA1FD66;
+        Thu, 24 Jun 2021 10:14:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624529694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Cm6oRAO7Qf+up/gBztYdDymHQXRC9xRTdhrEzbUV7+w=;
-        b=SqzMHaGhTqQ7p1i6I9/0ccY8iyH/zA4RCqdbZY3AaTMS9oSqjjUBIcpWWxyqR+NA9Az/FF
-        N/Tq7wfmsyjL5VPZNgcwYHhzRwi5EWvEQ2P1HPN8xH/9wZ64441BUmmFpGYfu2CNWP9Lt8
-        HmJH1WKjJtcpnGWy/e3yon1s4wg4iDYkIjX2eWUiAQx6uKwaUPBLbO+EfkZxaw+mBpc3w9
-        OfX1IUyqgmzZYWgSRBW/bwAQgnGVO5S+BQhOSrVX3G5ti1lKgNMOYVl4p73n/CLAS0yoSE
-        M/jIaJisHHQw+3e3hm+AXWWrzJ19rebgxEUJJBwa8o7/DCsXAiqMao/AWkCjfw==
-Received: from valkosipuli.localdomain (valkosipuli.localdomain [IPv6:fd35:1bc8:1a6:d3d5::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id E0F1C634C87;
-        Thu, 24 Jun 2021 13:14:27 +0300 (EEST)
-Received: from localhost ([127.0.0.1] helo=valkosipuli.retiisi.eu)
-        by valkosipuli.localdomain with esmtp (Exim 4.92)
-        (envelope-from <sakari.ailus@iki.fi>)
-        id 1lwMNf-00019I-CK; Thu, 24 Jun 2021 13:14:43 +0300
-Date:   Thu, 24 Jun 2021 13:14:43 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH 3/5] media: v4l2-flash-led-class: drop an useless check
-Message-ID: <20210624101443.GK3@valkosipuli.retiisi.eu>
-References: <cover.1624276137.git.mchehab+huawei@kernel.org>
- <e1629ac223470630eed4096361965d154aff70b7.1624276138.git.mchehab+huawei@kernel.org>
- <20210624093153.GJ3@valkosipuli.retiisi.eu>
- <20210624115925.357f98b6@coco.lan>
+        bh=wmskX7ULKgzDGDKyyD8iLetwEAVX0RxiPXHbdGQ61uE=;
+        b=SXO0V596zOTGpvl2QkhQ7AhwKp8CSWnUX59Eia6sCNdviguLyBfzEY39AC0w3Sn61LZMTN
+        sjF/zfQgm2QKWRmUoSt6DXfAy6B7dHx1MOlv+EBnr2Gy+ICTD8ISQW+p7n0SyfmRB0sDqt
+        LilbUz3Mv5VFK4YXQsuq8mZMr4Yi2TU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624529694;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wmskX7ULKgzDGDKyyD8iLetwEAVX0RxiPXHbdGQ61uE=;
+        b=mOZXF95/V/xhX7F5hPhGet0dFO3SYf1iXV5vLsMO4jJ1OpSSh3icSE4IljtUJCa1m/IAcU
+        mHa2Ce9gWIau+8Cg==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 4893511A97;
+        Thu, 24 Jun 2021 10:14:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624529694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wmskX7ULKgzDGDKyyD8iLetwEAVX0RxiPXHbdGQ61uE=;
+        b=SXO0V596zOTGpvl2QkhQ7AhwKp8CSWnUX59Eia6sCNdviguLyBfzEY39AC0w3Sn61LZMTN
+        sjF/zfQgm2QKWRmUoSt6DXfAy6B7dHx1MOlv+EBnr2Gy+ICTD8ISQW+p7n0SyfmRB0sDqt
+        LilbUz3Mv5VFK4YXQsuq8mZMr4Yi2TU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624529694;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wmskX7ULKgzDGDKyyD8iLetwEAVX0RxiPXHbdGQ61uE=;
+        b=mOZXF95/V/xhX7F5hPhGet0dFO3SYf1iXV5vLsMO4jJ1OpSSh3icSE4IljtUJCa1m/IAcU
+        mHa2Ce9gWIau+8Cg==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id YE5YEB5b1GByWwAALh3uQQ
+        (envelope-from <ykaukab@suse.de>); Thu, 24 Jun 2021 10:14:54 +0000
+Date:   Thu, 24 Jun 2021 12:14:52 +0200
+From:   Mian Yousaf Kaukab <ykaukab@suse.de>
+To:     Bruno Thomsen <bruno.thomsen@gmail.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>, biwen.li@nxp.com
+Subject: Re: [PATCH RESEND v4] rtc: pcf2127: handle timestamp interrupts
+Message-ID: <20210624101452.GC81946@suse.de>
+References: <20210602104956.806-1-ykaukab@suse.de>
+ <CAH+2xPAL0w4Urjpxopu8g-kGveTxLXAm8EVUc8s8xpX=fb7NeQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210624115925.357f98b6@coco.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=lahtoruutu; t=1624529684;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cm6oRAO7Qf+up/gBztYdDymHQXRC9xRTdhrEzbUV7+w=;
-        b=N1mknJQazMQyjdxm03zhYg+OIaW/1jaqdjeNgQ7NAtNX2/4MJhLvVFCRi7Of8L6tYLN86G
-        I3E/1sbuBD9yZBCvH+VzHwzcV84oprxuGSfN4f/AAAftCi5RgNOGBA5Sa/wUBsiN1Lcq11
-        bUhe0nc35Wont37c4pIytgtmWuCwUGQASNBBQ1uJxYma+gcI4bRd1WlCG0NrwlNpbXhj0d
-        Z8gp3a8vNGIqPUVgJEH2QWZyUifNLW0HoG4UDn8+W9QZi4T46o+6gA1CNMaW/fp7r/f9Tc
-        5l9k0QS4Xr8A3Gea2TEyhH+cRRE8PN6DIH6HS7aWWaqyVkSQtrWxuU4FKa81wQ==
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1624529684; a=rsa-sha256;
-        cv=none;
-        b=eZm1BFR6S81Ij3D/Yc1NTw1jNBMZIDBZnWc0oruuK3iuN7116ShTi76+dC+hic9il0NUjp
-        gpRV1LvcRnxT6QpYBfue7/cJSFhEaDqRv8YeWgCr7Q/ASE5rSBHe9mrCzbMn2PX9DnYQXj
-        NupyMtvqSUXKRNU8OE2CWmFXU1X+1VoEo9b0zdhaLpk3011Foi39YWKSjPaHsSsh18fLhP
-        tOVP2psLJau0y/XfTVNyWTdw82Fu6rMUb6bwoDPD3ZLqj432H8zPnoromwDsalEuQelETS
-        8H4BCJAniSNsqb974jYUSlkkX9oRRKEBGiN38XBAEt93Uh8DPgjZ+bcslKwghA==
+In-Reply-To: <CAH+2xPAL0w4Urjpxopu8g-kGveTxLXAm8EVUc8s8xpX=fb7NeQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+On Thu, Jun 24, 2021 at 08:31:00AM +0200, Bruno Thomsen wrote:
+> Hi Mian,
+> 
+> Den ons. 2. jun. 2021 kl. 17.19 skrev Mian Yousaf Kaukab <ykaukab@suse.de>:
+> >
+> > commit 03623b4b041c ("rtc: pcf2127: add tamper detection support")
+> > added support for timestamp interrupts. However they are not being
+> > handled in the irq handler. If a timestamp interrupt occurs it
+> > results in kernel disabling the interrupt and displaying the call
+> > trace:
+> >
+> > [  121.145580] irq 78: nobody cared (try booting with the "irqpoll" option)
+> > ...
+> > [  121.238087] [<00000000c4d69393>] irq_default_primary_handler threaded [<000000000a90d25b>] pcf2127_rtc_irq [rtc_pcf2127]
+> > [  121.248971] Disabling IRQ #78
+> 
+> This must have been introduced when alarm IRQ was added, as
+> I always thought that tamper IRQ should be handled in user space
+> with gpiomon. [...]
+Correct.
+> I can see that it looks like I only added a cover letter
+> to the first 2 versions of patch series[1] and not the 3rd that got applied[2].
+> It contains a link to how the tamper timestamp feature was tested[3].
+> The script is a simple version of what is running in the product, but
+> missing D-Bus call with busctl and hardware init when booted for the
+> first time.
+With the addition of alarm IRQ a IRQ handler (pcf2127_rtc_irq) has
+been added in the driver. This handler must handle the tamper
+interrupt when alarm IRQ is configured. Otherwise an IRQ storm happens
+as described above.
+> 
+> I have just tested your patch with an upstream device tree[4] that uses
+> the tamper feature, and that does not work. Probably caused by the
+> fact that it does not use RTC alarm IRQ.
+Make sense.
+> 
+> What device tree did you see the error on? If it's not upstream can you
+> share how you configured the pcf2127 chip?
+https://elixir.bootlin.com/linux/latest/source/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts#L75
+> 
+> I am not against changing how the tamper feature works, but I would like
+> to see the upstream device tree[4] work before merging this patch.
+If you agree to handle tamper detection via an interrupt, I can send
+another revision to move initialization of tamper detection within
+'if (alarm_irq > 0)'. tamper.sh can then just poll timestamp0 and check
+return value. Rest of this patch stays the same.
 
-On Thu, Jun 24, 2021 at 11:59:25AM +0200, Mauro Carvalho Chehab wrote:
-> Em Thu, 24 Jun 2021 12:31:53 +0300
-> Sakari Ailus <sakari.ailus@iki.fi> escreveu:
+Second option is to provide support for both cases. Let me know what
+do you prefer.
 > 
-> > Hi Mauro,
-> > 
-> > Could you check if your mail client could be configured not to add junk to
-> > To: field? It often leads anything in the Cc: field being dropped.
+> /Bruno
 > 
-> I have no idea why it is doing that. I'm just using git send-email
-> here. Perhaps a git bug?
-> 
-> 	$ git --version
-> 	git version 2.31.1
-> 
-> The setup is like this one:
-> 
-> 	[sendemail]
-> 	        confirm = always
-> 	        multiedit = true
-> 	        chainreplyto = false
-> 	        aliasesfile = /home/mchehab/.addressbook
-> 	        aliasfiletype = pine
-> 	        assume8bitencoding = UTF-8
+> [1] https://patchwork.ozlabs.org/project/rtc-linux/cover/20190813153600.12406-1-bruno.thomsen@gmail.com/
+> [2] https://patchwork.ozlabs.org/project/rtc-linux/patch/20190822131936.18772-5-bruno.thomsen@gmail.com/
+> [3] https://github.com/baxeno/linux-emc-test/blob/master/tamper/tamper.sh
+> [4] https://elixir.bootlin.com/linux/latest/source/arch/arm/boot/dts/imx7d-flex-concentrator.dts
 
-I tried sending a message to myself using git send-email with an empty To:
-field and it came through just fine, with To: field remaining empty. I
-wonder if it could be the list server?
-
-It could be difficult to fix, but what I'm saying leaving the To: field
-empty now has this effect. :-I
-
-> 
-> 
-> > 
-> > On Mon, Jun 21, 2021 at 01:56:47PM +0200, Mauro Carvalho Chehab wrote:
-> > > As pointed by smatch:
-> > > 	drivers/media/v4l2-core/v4l2-flash-led-class.c:264 v4l2_flash_s_ctrl() error: we previously assumed 'fled_cdev' could be null (see line 197)
-> > > 
-> > > It is too late to check if fled_cdev is NULL there. If such check is
-> > > needed, it should be, instead, inside v4l2_flash_init().
-> > > 
-> > > On other words, if v4l2_flash->fled_cdev() is NULL at
-> > > v4l2_flash_s_ctrl(), all led_*() function calls inside the function
-> > > would try to de-reference a NULL pointer, as the logic won't prevent
-> > > it.
-> > > 
-> > > So, remove the useless check.
-> > > 
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > ---
-> > >  drivers/media/v4l2-core/v4l2-flash-led-class.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/media/v4l2-core/v4l2-flash-led-class.c b/drivers/media/v4l2-core/v4l2-flash-led-class.c
-> > > index 10ddcc48aa17..a1653c635d82 100644
-> > > --- a/drivers/media/v4l2-core/v4l2-flash-led-class.c
-> > > +++ b/drivers/media/v4l2-core/v4l2-flash-led-class.c
-> > > @@ -194,7 +194,7 @@ static int v4l2_flash_s_ctrl(struct v4l2_ctrl *c)
-> > >  {
-> > >  	struct v4l2_flash *v4l2_flash = v4l2_ctrl_to_v4l2_flash(c);
-> > >  	struct led_classdev_flash *fled_cdev = v4l2_flash->fled_cdev;
-> > > -	struct led_classdev *led_cdev = fled_cdev ? &fled_cdev->led_cdev : NULL;
-> > > +	struct led_classdev *led_cdev = &fled_cdev->led_cdev;  
-> > 
-> > fled_cdev may be NULL here. The reason is that some controls are for flash
-> > LEDs only but the same sub-device may also control an indicator. This is
-> > covered when the controls are created, so that the NULL pointer isn't
-> > dereferenced.
-> 
-> I double-checked the code: if a a NULL pointer is passed, the calls
-> to the leds framework will try to de-reference it or will return an
-> error.
-> 
-> For instance, those will return an error:
-> 
-> 	static inline int led_set_flash_strobe(struct led_classdev_flash *fled_cdev,
-> 	                                        bool state)
-> 	{
-> 	        if (!fled_cdev)
-> 	                return -EINVAL;
-> 	        return fled_cdev->ops->strobe_set(fled_cdev, state);
-> 	}
-> 
-> 	#define call_flash_op(fled_cdev, op, args...)           \
-> 	        ((has_flash_op(fled_cdev, op)) ?                        \
-> 	                        (fled_cdev->ops->op(fled_cdev, args)) : \
-> 	                        -EINVAL)
-> 
-> No big issue here (except that the function will do nothing but
-> return an error).
-> 
-> However, there are places that it will cause it to de-reference 
-> a NULL pointer:
-> 
-> 	int led_set_brightness_sync(struct led_classdev *led_cdev, unsigned int value)
-> 	{
-> 	        if (led_cdev->blink_delay_on || led_cdev->blink_delay_off)
-> 	                return -EBUSY;
-> 	
-> 	        led_cdev->brightness = min(value, led_cdev->max_brightness);
-> 
-> 	        if (led_cdev->flags & LED_SUSPENDED)
-> 	                return 0;
-> 
-> 	        return __led_set_brightness_blocking(led_cdev, led_cdev->brightness);
-> 	}
-> 
-> So, this is not a false-positive, but, instead, a real issue.
-> 
-> So, if led_cdev/fled_cdev can indeed be NULL, IMO, the right solution would be
-> to explicitly check it, and return an error, e. g.:
-> 
-> 	static int v4l2_flash_s_ctrl(struct v4l2_ctrl *c)
-> 	{
->         	struct v4l2_flash *v4l2_flash = v4l2_ctrl_to_v4l2_flash(c);
->         	struct led_classdev_flash *fled_cdev = v4l2_flash->fled_cdev;
-> 		struct led_classdev *led_cdev;
->         	struct v4l2_ctrl **ctrls = v4l2_flash->ctrls;
->         	bool external_strobe;
->         	int ret = 0;
-> 
-> 		if (!fled_cdev)
-> 			return -EINVAL;
-
-The approach is correct, but as noted, the check needs to be done later.
-
-Could you drop this patch, please?
-
-> 
-> 		led_cdev = &fled_cdev->led_cdev;
-> 
-> 		...
-> 
-> > 
-> > If you wish the false positive to be addressed while also improving the
-> > implementation, that could be done by e.g. splitting the switch into two,
-> > the part that needs fled_cdev and another that doesn't.
-> > 
-> > I can send a patch for that.
-> > 
-> > Please also cc me to V4L2 flash class patches. I noticed this one by
-> > accident only.
-> 
-> Better to add you as a reviewer at the MAINTAINERS file, to
-> ensure that you'll always be c/c on such code.
-
-There's no separate entry for flash class, just like the rest of the V4L2
-core. I think it could be worth addressing this for all the bits in V4L2
-core, but that's separate from this issue in any case.
-
--- 
-Kind regards,
-
-Sakari Ailus
+BR,
+Yousaf
