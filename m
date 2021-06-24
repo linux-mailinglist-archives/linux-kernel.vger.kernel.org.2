@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 223193B33EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 357293B33ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231735AbhFXQ2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 12:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43086 "EHLO
+        id S230239AbhFXQ35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 12:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhFXQ2q (ORCPT
+        with ESMTP id S229464AbhFXQ3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 12:28:46 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D450BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 09:26:26 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id v5so6951316ilo.5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 09:26:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nrOCyYBIJY4cdtyBPlA6E/rCcTjWDsRIrK+3PqxcHdc=;
-        b=LcHpz0yK06CBT6w7Wu1HQ7P9Vf39YiJzCWJCJ5kOatQ+sJmhGgEPL0AiKXgduYVvj6
-         cn9RdRwWut0vT0NdMkvgPG+gFMeetZlV+OseG6HUSHFqG22n05RRUVIRv7iZnbf2WAp3
-         gcz+oKeDGFTPRGxz5IETuW37Z1s44EH9oTjevsXq7l46bmFMAjveW24bBDwhjgfgB+S7
-         GIf9NY58muChBJ8Pb5b73Hh4s+tvBTZMxo46dHd9SDrX8l72WW2WBO4aI+TgxZ6y1AE5
-         /IX38IywG9gMIVF97wEAsnyjkdNkstjZDR+q3KcyupswxpFvjNJ+EVN77kcVs2arIg3F
-         9gkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nrOCyYBIJY4cdtyBPlA6E/rCcTjWDsRIrK+3PqxcHdc=;
-        b=Zi2TaHvdLowUODAnaGNWug1bwpYIYZcylv056FsOnbZb3T1G+hKHwpQGIeBlgVGgh7
-         4sEKcNhwr7jqtum/ZSIcuvXjsSmpuMo5EA/1QH2pYbkiEdzkP8jLIjOqHmpgmAkB6PIt
-         0MuJ+wWPMj4xW/GUwbhwOR8dYJl24yuqSCMGaaURGWeUQAASs6/eJrHEEM0b26W3FLsj
-         qQ1v9AUU5XR3HElip4UYTr5elpOrgmceFTZKKyKy2LZIuUgffi5pL8MkKA3TKmrABJ7r
-         oqX5O+iUIBV2rWguN3rBOHpCg5jqC3dP2w36f0dRy5pJhlR34imhu9VNFBv3+u7gur9p
-         6vLw==
-X-Gm-Message-State: AOAM533rBEy/cT1IVqH8MWtguB8rAk3sMoStg9FN9QRv5r7eGsc5Zb4Y
-        Vv/lg/kxRl/Ze0hIi5q2pvYVStOjqmMjxaGaBvcAOQ==
-X-Google-Smtp-Source: ABdhPJy56vq0P3AItM7SlxjHkvpLxbOPsxB7g29rX7O/9lL/P+Quz1SXh7l9Og1Q/ea9psKq4Vgd/h47Gwmj3dFy3ug=
-X-Received: by 2002:a92:2e08:: with SMTP id v8mr1331748ile.50.1624551986228;
- Thu, 24 Jun 2021 09:26:26 -0700 (PDT)
+        Thu, 24 Jun 2021 12:29:55 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D78C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 09:27:36 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwSCD-00BrFR-3s; Thu, 24 Jun 2021 16:27:17 +0000
+Date:   Thu, 24 Jun 2021 16:27:17 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Chen Huang <chenhuang5@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
+Message-ID: <YNSyZaZtPTmTa5P8@zeniv-ca.linux.org.uk>
+References: <da9c2fa9-a545-0c48-4490-d6134cc31425@huawei.com>
+ <20210623132223.GA96264@C02TD0UTHF1T.local>
+ <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
+ <YNP6/p/yJzLLr8M8@casper.infradead.org>
+ <YNQuZ8ykN7aR+1MP@infradead.org>
+ <YNRpYli/5/GWvaTT@casper.infradead.org>
+ <27fbb8c1-2a65-738f-6bec-13f450395ab7@arm.com>
 MIME-Version: 1.0
-References: <1623749684-65432-1-git-send-email-liuqi115@huawei.com>
- <1623749684-65432-2-git-send-email-liuqi115@huawei.com> <20210623225111.GA1057775@p14s>
- <0aac4467-3abc-026c-4989-22b87bc80dc7@huawei.com>
-In-Reply-To: <0aac4467-3abc-026c-4989-22b87bc80dc7@huawei.com>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Thu, 24 Jun 2021 10:26:13 -0600
-Message-ID: <CANLsYkyCGO6tVn7WWfw6BPJwsHPT6dbWmXHXAzEh8X-x=2ENGg@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/4] Documentation: tracing: Documentation for
- ultrasoc framework and drivers
-To:     "liuqi (BA)" <liuqi115@huawei.com>
-Cc:     Linuxarm <linuxarm@huawei.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Jonathan Zhou <jonathan.zhouwen@huawei.com>,
-        f.fangjian@huawei.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Coresight ML <coresight@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <27fbb8c1-2a65-738f-6bec-13f450395ab7@arm.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >> +Example usage of perf::
-> >> +
-> >> +     $# ./perf list pmu
-> >> +     cs_etm//                                    [Kernel PMU event]
-> >> +    $# ./perf record -e cs_etm/@sink_smb0/ -C 0 --per-thread sleep 2s
-> >> +    [ perf record: Woken up 2 times to write data ]
-> >> +    [ perf record: Captured and wrote 0.288 MB perf.data ]
-> >> +    $# ./perf report
-> >
-> > After reading all this and without looking at the rest of the patchset it seems
-> > to me this work should go under drivers/hwtracing/coresight/.
-> >
->
-> So how about drivers/hwtracing/coresight/ultrasoc?
->
+On Thu, Jun 24, 2021 at 02:22:27PM +0100, Robin Murphy wrote:
 
-It's hard to say at this time - I'll advise further once I have
-reviewed the other patches.
+> FWIW I think the only way to make the kernel behaviour any more robust here
+> would be to make the whole uaccess API more expressive, such that rather
+> than simply saying "I only got this far" it could actually differentiate
+> between stopping due to a fault which may be recoverable and worth retrying,
+> and one which definitely isn't.
 
-> > There is a lot of code to review and as such it will take me a fair amount of
-> > time to go through it all.  Comments will be scattered over several days (weeks)
-> > - I will set you know when I am done.
-> >
-> > Thanks,
-> > Mathieu
->
-> Ok, thanks for revewing this patchset
->
-> Qi
-> >
-> >> --
-> >> 2.7.4
-> >>
-> > .
-> >
->
+... and propagate that "more expressive" information through what, 3 or 4
+levels in the call chain?  
+
+From include/linux/uaccess.h:
+
+ * If raw_copy_{to,from}_user(to, from, size) returns N, size - N bytes starting
+ * at to must become equal to the bytes fetched from the corresponding area
+ * starting at from.  All data past to + size - N must be left unmodified.
+ *
+ * If copying succeeds, the return value must be 0.  If some data cannot be
+ * fetched, it is permitted to copy less than had been fetched; the only
+ * hard requirement is that not storing anything at all (i.e. returning size)
+ * should happen only when nothing could be copied.  In other words, you don't
+ * have to squeeze as much as possible - it is allowed, but not necessary.
+
+arm64 instances violate the aforementioned hard requirement.  Please, fix
+it there; it's not hard.  All you need is an exception handler in .Ltiny15
+that would fall back to (short) byte-by-byte copy if the faulting address
+happened to be unaligned.  Or just do one-byte copy, not that it had been
+considerably cheaper than a loop.  Will be cheaper than propagating that extra
+information up the call chain, let alone paying for extra ->write_begin()
+and ->write_end() for single byte in generic_perform_write().
