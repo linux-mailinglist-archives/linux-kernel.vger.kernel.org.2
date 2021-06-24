@@ -2,128 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBA33B2B30
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C343B2B35
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231489AbhFXJTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57282 "EHLO
+        id S231518AbhFXJVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231298AbhFXJTM (ORCPT
+        with ESMTP id S231298AbhFXJVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:19:12 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 355FAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 02:16:52 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id s15so7455053edt.13
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 02:16:52 -0700 (PDT)
+        Thu, 24 Jun 2021 05:21:02 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E5CC061574;
+        Thu, 24 Jun 2021 02:18:43 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id x24so9029663lfr.10;
+        Thu, 24 Jun 2021 02:18:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ToYKmnHgqk/66SzWjvRy2Lj5kh6aXbY58HiBGtTfTYc=;
-        b=ZEweUXuAJoGCGMqY3z9xEzvHeOc45CgfE+oRLPnwvWDM8sEylSod/l69pmO1wTq6Fk
-         dJ6IJffz8PwtlA84nAwOMbu/T24GwtdMUEWh7Wfy0A/5i4gI8Lx4GorjU0lFTf+6k/vp
-         waHl9OMa0UhLOi5kJckBgVUzPJL/7362ZFcIUrXc9waM3czme6JE2Mo08y5M7V+vITDj
-         FSMllieK9ieeAYx2zFLgwFaafNl51St8nhwF6tDUKXqzbB8XsjnOGrlgyKrhcMFFDR5E
-         SiRzn5cHnpY863Xr8EDmjh2FISKPY1AoSdoR/zlJVxPQyBejxzBJIxXPRJBt624oRvsJ
-         Nt6A==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B3Xs22v9YodibxgfhDWCF12VK+jYjhqQdkvlmNgIQsQ=;
+        b=tAb1yuC1N4ve1hdrHxEzX4/lqYOF7Hg11/RQ4tyJHC4blsQ9bvQHjJ3si4OodGdXzf
+         lOJbxJxNE3Vnk0VWuKb7/s5D4P+rtK+Q28AYg3eGyt+BGeKc4mxx1kb+cJB9CS/NV62I
+         99Yr9FXmcZZDxrjDcTiw9bsLz11lJDPwq+f99NJxjqXM6iy59k2qW183wdvn0DGlwWo+
+         tgz1Pm7mFbvap/WTSmSnnfnXbDuOkHAiaM+jMWx3CwDCJfjbJ5VmGcPeIN0WQri977+O
+         PcpSdq2EX6bKXQvwetrugI+nLkuGTO7vpN0m0ZyD+FmcZ6CGsibmY6nF++8BR3/oeCQh
+         adSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ToYKmnHgqk/66SzWjvRy2Lj5kh6aXbY58HiBGtTfTYc=;
-        b=PikHHE9w9aMr81I8sGElFdwkzQtwgT1T1m+ZhGp3yyHyrKTo/Lzy2HFcY2Vk2MA9aL
-         4IVxgq8yF0b1h225QQpCh2IjDocivpB4O1Cv5hwj9GWQoB9nJtevpepVsOE47d4qQC35
-         ynYTd9RyDY70JaKoAherl8KqqYuh0fJA5BWpjfA6YO8P25pVYjSy2Vsv5ajqOuEbN0kx
-         SggNDeT04LlQtdkLSlGYHM7dW7o+3xAjWTCr7aWe5NwVgFI2M1Tdca0mbyPWiqXOmoQs
-         m+4STKFA3Si1OKlTvM7H2HKdWPgHMot3AK+RZGJ8FORB5BEy4qlWWy6u8bRpI1OB+7AR
-         NGYA==
-X-Gm-Message-State: AOAM532z83JBg405Z2rGYjy3fbjKRtmNIh90tAIgIITGiqfLc1Pkk9BF
-        +MBHmnSMOaBdUKwrkOwykPyQFr8U98hS6jX72y+5
-X-Google-Smtp-Source: ABdhPJwzxlNtCT4qXONVb1tZWclCON16CNPSh2qEimKMjvYzH/fk8YJnTCoKh644GYgJY+nPjC5RJVk2i47qjgJpKlM=
-X-Received: by 2002:a05:6402:27ce:: with SMTP id c14mr5750686ede.118.1624526210663;
- Thu, 24 Jun 2021 02:16:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B3Xs22v9YodibxgfhDWCF12VK+jYjhqQdkvlmNgIQsQ=;
+        b=R2UA66RUmZ0whZOxHzB7yJTWewEwDwtZnw/Nd6hMsCDGc2u35DUjsT5qJwCEKnhZWU
+         v0/L4IGwMec/pzb5k3xpvP9DA+lfj9LLCDvZQlNTG0faeLp8Fs2A5RZfNjni7ff2NPaz
+         A9HKGt9qp0iLz5O+I/jHsLBsqQY4ennoSXrSG8RaozhvJALJKTVzENWjZx6EPLesASRA
+         5whi4hcdq4Lj+53A/D7ZDMcIt8Rc74hFZBXJN/sGLBLnwqv/C86lKP+QptOQF/Qnx4v3
+         qPo7/m5cRiijmTHPbWWchlgaXlgrra2C4uPYPMFPySFshqi5OLeYjBun9ODjlL/yPCrW
+         0dWQ==
+X-Gm-Message-State: AOAM5325DjAlMqhH+7c30WV3qII7PSaqSUjuDTlHMDrym5mrEG8p9mJS
+        jK/4dCreIlPpPlfn41DvU4Y=
+X-Google-Smtp-Source: ABdhPJxrmwO3XfwebWb1k0Q7utcGo45C3joBKBUqYNkBTmSZHt7mlcRl2aPoRQgNaCi27CkFpz5gYg==
+X-Received: by 2002:a19:5e16:: with SMTP id s22mr3267356lfb.614.1624526321660;
+        Thu, 24 Jun 2021 02:18:41 -0700 (PDT)
+Received: from localhost.localdomain ([185.188.71.122])
+        by smtp.gmail.com with ESMTPSA id l15sm234012ljc.35.2021.06.24.02.18.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 02:18:41 -0700 (PDT)
+From:   Pawel Dembicki <paweldembicki@gmail.com>
+Cc:     Daniel Gonzalez Cabanelas <dgcbueu@gmail.com>,
+        Pawel Dembicki <paweldembicki@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] power: reset: linkstation-poweroff: prepare for new devices
+Date:   Thu, 24 Jun 2021 11:18:11 +0200
+Message-Id: <20210624091813.42334-1-paweldembicki@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210615141331.407-1-xieyongji@bytedance.com> <20210615141331.407-10-xieyongji@bytedance.com>
- <adfb2be9-9ed9-ca37-ac37-4cd00bdff349@redhat.com> <CACycT3tAON+-qZev+9EqyL2XbgH5HDspOqNt3ohQLQ8GqVK=EA@mail.gmail.com>
- <1bba439f-ffc8-c20e-e8a4-ac73e890c592@redhat.com> <CACycT3uzMJS7vw6MVMOgY4rb=SPfT2srV+8DPdwUVeELEiJgbA@mail.gmail.com>
- <0aeb7cb7-58e5-1a95-d830-68edd7e8ec2e@redhat.com> <CACycT3uuooKLNnpPHewGZ=q46Fap2P4XCFirdxxn=FxK+X1ECg@mail.gmail.com>
- <e4cdee72-b6b4-d055-9aac-3beae0e5e3e1@redhat.com> <CACycT3u8=_D3hCtJR+d5BgeUQMce6S7c_6P3CVfvWfYhCQeXFA@mail.gmail.com>
- <d2334f66-907c-2e9c-ea4f-f912008e9be8@redhat.com> <CACycT3uCSLUDVpQHdrmuxSuoBDg-4n22t+N-Jm2GoNNp9JYB2w@mail.gmail.com>
- <48cab125-093b-2299-ff9c-3de8c7c5ed3d@redhat.com>
-In-Reply-To: <48cab125-093b-2299-ff9c-3de8c7c5ed3d@redhat.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Thu, 24 Jun 2021 17:16:39 +0800
-Message-ID: <CACycT3tS=10kcUCNGYm=dUZsK+vrHzDvB3FSwAzuJCu3t+QuUQ@mail.gmail.com>
-Subject: Re: Re: [PATCH v8 09/10] vduse: Introduce VDUSE - vDPA Device in Userspace
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 4:14 PM Jason Wang <jasowang@redhat.com> wrote:
->
->
-> =E5=9C=A8 2021/6/24 =E4=B8=8B=E5=8D=8812:46, Yongji Xie =E5=86=99=E9=81=
-=93:
-> >> So we need to deal with both FEATURES_OK and reset, but probably not
-> >> DRIVER_OK.
-> >>
-> > OK, I see. Thanks for the explanation. One more question is how about
-> > clearing the corresponding status bit in get_status() rather than
-> > making set_status() fail. Since the spec recommends this way for
-> > validation which is done in virtio_dev_remove() and
-> > virtio_finalize_features().
-> >
-> > Thanks,
-> > Yongji
-> >
->
-> I think you can. Or it would be even better that we just don't set the
-> bit during set_status().
->
+This commit prepare driver for another device support.
 
-Yes, that's what I mean.
+New power_off_cfg structure describes two most important things: name of
+mdio bus and pointer to register setting function. It allow to add new
+device with different mdio bus node and other phy register config.
 
-> I just realize that in vdpa_reset() we had:
->
-> static inline void vdpa_reset(struct vdpa_device *vdev)
-> {
->          const struct vdpa_config_ops *ops =3D vdev->config;
->
->          vdev->features_valid =3D false;
->          ops->set_status(vdev, 0);
-> }
->
-> We probably need to add the synchronization here. E.g re-read with a
-> timeout.
->
+Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
+---
+ drivers/power/reset/linkstation-poweroff.c | 35 ++++++++++++++++++----
+ 1 file changed, 29 insertions(+), 6 deletions(-)
 
-Looks like the timeout is already in set_status(). Do we really need a
-duplicated one here? And how to handle failure? Adding a return value
-to virtio_config_ops->reset() and passing the error to the upper
-layer?
+diff --git a/drivers/power/reset/linkstation-poweroff.c b/drivers/power/reset/linkstation-poweroff.c
+index f1e843df0e16..cb5a32f852c1 100644
+--- a/drivers/power/reset/linkstation-poweroff.c
++++ b/drivers/power/reset/linkstation-poweroff.c
+@@ -29,11 +29,21 @@
+ #define LED2_FORCE_ON					(0x8 << 8)
+ #define LEDMASK						GENMASK(11,8)
+ 
++struct power_off_cfg {
++	char *mdio_node_name;
++	void (*phy_set_reg)(bool restart);
++};
++
+ static struct phy_device *phydev;
++static const struct power_off_cfg *cfg;
+ 
+-static void mvphy_reg_intn(u16 data)
++static void linkstation_mvphy_reg_intn(bool restart)
+ {
+ 	int rc = 0, saved_page;
++	u16 data = 0;
++
++	if (restart)
++		data = MII_88E1318S_PHY_LED_TCR_FORCE_INT;
+ 
+ 	saved_page = phy_select_page(phydev, MII_MARVELL_LED_PAGE);
+ 	if (saved_page < 0)
+@@ -66,11 +76,16 @@ static void mvphy_reg_intn(u16 data)
+ 		dev_err(&phydev->mdio.dev, "Write register failed, %d\n", rc);
+ }
+ 
++static const struct power_off_cfg linkstation_power_off_cfg = {
++	.mdio_node_name = "mdio",
++	.phy_set_reg = linkstation_mvphy_reg_intn,
++};
++
+ static int linkstation_reboot_notifier(struct notifier_block *nb,
+ 				       unsigned long action, void *unused)
+ {
+ 	if (action == SYS_RESTART)
+-		mvphy_reg_intn(MII_88E1318S_PHY_LED_TCR_FORCE_INT);
++		cfg->phy_set_reg(true);
+ 
+ 	return NOTIFY_DONE;
+ }
+@@ -82,14 +97,18 @@ static struct notifier_block linkstation_reboot_nb = {
+ static void linkstation_poweroff(void)
+ {
+ 	unregister_reboot_notifier(&linkstation_reboot_nb);
+-	mvphy_reg_intn(0);
++	cfg->phy_set_reg(false);
+ 
+ 	kernel_restart("Power off");
+ }
+ 
+ static const struct of_device_id ls_poweroff_of_match[] = {
+-	{ .compatible = "buffalo,ls421d" },
+-	{ .compatible = "buffalo,ls421de" },
++	{ .compatible = "buffalo,ls421d",
++	  .data = &linkstation_power_off_cfg,
++	},
++	{ .compatible = "buffalo,ls421de",
++	  .data = &linkstation_power_off_cfg,
++	},
+ 	{ },
+ };
+ 
+@@ -97,13 +116,17 @@ static int __init linkstation_poweroff_init(void)
+ {
+ 	struct mii_bus *bus;
+ 	struct device_node *dn;
++	const struct of_device_id *match;
+ 
+ 	dn = of_find_matching_node(NULL, ls_poweroff_of_match);
+ 	if (!dn)
+ 		return -ENODEV;
+ 	of_node_put(dn);
+ 
+-	dn = of_find_node_by_name(NULL, "mdio");
++	match = of_match_node(ls_poweroff_of_match, dn);
++	cfg = match->data;
++
++	dn = of_find_node_by_name(NULL, cfg->mdio_node_name);
+ 	if (!dn)
+ 		return -ENODEV;
+ 
+-- 
+2.25.1
 
-Thanks,
-Yongji
