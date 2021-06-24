@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 321273B375A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E67F3B3762
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232894AbhFXTvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 15:51:42 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:38403 "EHLO m43-7.mailgun.net"
+        id S232954AbhFXTvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 15:51:50 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:22068 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232759AbhFXTvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 15:51:41 -0400
+        id S232935AbhFXTvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 15:51:46 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624564161; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1624564167; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=U3oyy9Wy1/W3yM/7R55rDsV8ZZWtSfsaxO4axT11yWo=; b=pyFD35BYlylBFJIn4s3uRDAPhR4T3lHt8JKo9L/3EoavxeRKxa26PEUmGXbTDtFQrRQHiWxL
- O1BhG9Zg6RHGuKhcoUbXODC4S3qpzEfNea5i2PFTC8MXXZyOsNNLVkyFFl4+xfGYAsrsT4/T
- +Z8M2nn+Jawf9EW1ON0aYMz2Hic=
+ bh=u4pGnhlk1yX1orCgA43eLgI14IsX6mWl4H/bvIgWmdU=; b=F4Yz4AIJ+qFDI/qN/Wgbb4SDYQEARUlId7D9SSoHM4ltsZVff+UHxWOrlPaqPB/nxA/CBugg
+ fkTPLAaEcR+1EZZ4VG5FfZ6GKl6s6S0SJGW8hQzyoL0j8997GKC2aDlqdRC1u3RZE1zzP3/r
+ 4m/CieBCNMpp1V32lnp24COkQDk=
 X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60d4e1b106ea41c941264ea5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Jun 2021 19:49:05
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60d4e1b87b2963a282540801 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Jun 2021 19:49:12
  GMT
 Sender: sibis=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 070B1C4323A; Thu, 24 Jun 2021 19:49:05 +0000 (UTC)
+        id 8BDD7C43144; Thu, 24 Jun 2021 19:49:10 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -37,9 +37,9 @@ Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outs
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9F3DBC4360C;
-        Thu, 24 Jun 2021 19:48:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9F3DBC4360C
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6715DC433D3;
+        Thu, 24 Jun 2021 19:48:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6715DC433D3
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
 From:   Sibi Sankar <sibis@codeaurora.org>
@@ -52,9 +52,9 @@ Cc:     ohad@wizery.com, agross@kernel.org, mathieu.poirier@linaro.org,
         linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
         dianders@chromium.org, swboyd@chromium.org,
         Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH 7/9] arm64: dts: qcom: sc7280: Add nodes to boot modem
-Date:   Fri, 25 Jun 2021 01:17:36 +0530
-Message-Id: <1624564058-24095-8-git-send-email-sibis@codeaurora.org>
+Subject: [PATCH 8/9] arm64: dts: qcom: sc7280: Add Q6V5 MSS node
+Date:   Fri, 25 Jun 2021 01:17:37 +0530
+Message-Id: <1624564058-24095-9-git-send-email-sibis@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
 References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
@@ -62,52 +62,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add miscellaneous nodes to boot the modem and support post-mortem debug
-on SC7280 SoCs.
+This patch adds Q6V5 MSS PAS remoteproc node for SC7280 SoCs.
 
 Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 ---
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 40 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 5ed7a511bfc9..3fb6a6ef39f8 100644
+index 3fb6a6ef39f8..56ea172f641f 100644
 --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
 +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -547,6 +547,11 @@
- 			#hwlock-cells = <1>;
+@@ -584,6 +584,46 @@
+ 			#power-domain-cells = <1>;
  		};
  
-+		tcsr_regs: syscon@1fc0000 {
-+			compatible = "syscon";
-+			reg = <0 0x01fc0000 0 0x30000>;
-+		};
++		remoteproc_mpss: remoteproc@4080000 {
++			compatible = "qcom,sc7280-mpss-pas";
++			reg = <0 0x04080000 0 0x10000>;
 +
- 		lpasscc: lpasscc@3000000 {
- 			compatible = "qcom,sc7280-lpasscc";
- 			reg = <0 0x03000000 0 0x40>,
-@@ -1219,6 +1224,21 @@
- 			};
- 		};
- 
-+		imem@146aa000 {
-+			compatible = "syscon", "simple-mfd";
-+			reg = <0 0x146aa000 0 0x2000>;
++			interrupts-extended = <&intc GIC_SPI 264 IRQ_TYPE_EDGE_RISING>,
++					      <&modem_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
++					      <&modem_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
++					      <&modem_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
++					      <&modem_smp2p_in 3 IRQ_TYPE_EDGE_RISING>,
++					      <&modem_smp2p_in 7 IRQ_TYPE_EDGE_RISING>;
++			interrupt-names = "wdog", "fatal", "ready", "handover",
++					  "stop-ack", "shutdown-ack";
 +
-+			#address-cells = <2>;
-+			#size-cells = <2>;
++			clocks = <&rpmhcc RPMH_CXO_CLK>;
++			clock-names = "xo";
 +
-+			ranges = <0 0x0 0 0x146aa000 0 0x2000>;
++			power-domains = <&rpmhpd SC7280_CX>,
++					<&rpmhpd SC7280_MSS>;
++			power-domain-names = "cx", "mss";
 +
-+			pil-reloc@94c {
-+				compatible = "qcom,pil-reloc-info";
-+				reg = <0 0x94c 0 0xc8>;
++			memory-region = <&mpss_mem>;
++
++			qcom,qmp = <&aoss_qmp>;
++
++			qcom,smem-states = <&modem_smp2p_out 0>;
++			qcom,smem-state-names = "stop";
++
++			status = "disabled";
++
++			glink-edge {
++				interrupts-extended = <&ipcc IPCC_CLIENT_MPSS
++							     IPCC_MPROC_SIGNAL_GLINK_QMP
++							     IRQ_TYPE_EDGE_RISING>;
++				mboxes = <&ipcc IPCC_CLIENT_MPSS
++						IPCC_MPROC_SIGNAL_GLINK_QMP>;
++				label = "modem";
++				qcom,remote-pid = <1>;
 +			};
 +		};
 +
- 		apps_smmu: iommu@15000000 {
- 			compatible = "qcom,sc7280-smmu-500", "arm,mmu-500";
- 			reg = <0 0x15000000 0 0x100000>;
+ 		stm@6002000 {
+ 			compatible = "arm,coresight-stm", "arm,primecell";
+ 			reg = <0 0x06002000 0 0x1000>,
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
