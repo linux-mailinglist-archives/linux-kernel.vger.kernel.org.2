@@ -2,105 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA353B252C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BCE23B252F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhFXCuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 22:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbhFXCuD (ORCPT
+        id S229930AbhFXCuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 22:50:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32267 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229759AbhFXCuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 22:50:03 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C671BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 19:47:44 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id t40so5678672oiw.8
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 19:47:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ow+yi5ZT4+yhby+GfBBf3KrG2XouQKIkkAjk0AAheOk=;
-        b=ERhH0v4+YARWdY1hSLOzrpBxXnOZquCYKZV829XwaZCJG7FmtMSA9CgsGdiKP5NLpz
-         kde2UBWZhwqpPxeZ7cF1Ps4nwJSbHavwA4YTfcAGJh/o+z0A9rgfcL/b7WGuCeq5BeF/
-         GxFEa3TcXgyh57b0Q00joCSmDMcLGFyVPrfxXKLOIUYjpiKHnTefOkVicP/wtX1a2fdm
-         x3a/42pUjc+ArBaq1s7CtGbJ32/AvCJhqNVOz/NCKNnO4gIQwquu2ItsobkwXE6605mm
-         0NJqZEoK/M4iLO3owkVZ/VmSxZ1M1BG2X4y0J09edxmZAB1yWCZsq2YP23ACK0OoFP3x
-         xRHw==
+        Wed, 23 Jun 2021 22:50:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624502912;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0oGgPEcoD4ONx9/UCCyiySHgdVual9P5TWTD0oYSIj8=;
+        b=Iwt1iEpUYtL+Ex60Dhrz5/TgW5QWV/JxcztXMkBeLB7E59W52Z27k3prznOILLge6o+kVR
+        oCb3Pz/ZPPNoUDF8O29mHJxLSif6HwRzUcazTIYn6QVjM7377qD3xBFf2FrGkgxEaQD9eE
+        kbUoGtL7pZPB039PBvNWxykNDvRYdhM=
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
+ [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-259-_OgjrWGvMdajFL7ozw0FLQ-1; Wed, 23 Jun 2021 22:48:30 -0400
+X-MC-Unique: _OgjrWGvMdajFL7ozw0FLQ-1
+Received: by mail-oo1-f70.google.com with SMTP id n13-20020a4ae1cd0000b029024af40d0cc4so2851082oot.7
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 19:48:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ow+yi5ZT4+yhby+GfBBf3KrG2XouQKIkkAjk0AAheOk=;
-        b=s2mFZ11J/pbYp9EVomnOZoeTamBbAVX5qpbPwnFvfQJ8s13Lh1LTMi9qA91VP5sWiq
-         oa2KerDYmakv7xEsTwDbXDj459AvAlyF3Sh7N/dMUbkof69xfaoyNiM00itp2SIXg1ks
-         iRi2NwHhVYStL0FdQGSHWpRb6wHP/6EaiWKxBN+zBytrM7Bu1mx8ZrNGjh6UAFQ8RKm7
-         MobnOacTJBAR984TIYMt//GWIo4t37KddpGsNsCELIFdaJdGWJrWC1R/wavlqm0v47fI
-         Tvk2H6Dg/hlilmsNHP/yF/drV6i1OQBufL+HVjaNjhn4IAqjkJXB8CAqJWh+6qGnU023
-         CtsA==
-X-Gm-Message-State: AOAM530oxwbtvSFv0+MuhljzyeHu2y32NCs0/h13MKqA+qxlKmcsiRwz
-        h9wTMgT6+jrnt1HRy92IR/BDEoNixhdqGFYzPG1kGQ==
-X-Google-Smtp-Source: ABdhPJxy3AvyfNYma/ANcy5DB8Nub4RuI1ghqApM551Ru7K3xbbRRdfNEcgSl3EQPg84rM15ftGKISjNniVIPiOSAVg=
-X-Received: by 2002:a05:6808:251:: with SMTP id m17mr2289913oie.77.1624502864138;
- Wed, 23 Jun 2021 19:47:44 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=0oGgPEcoD4ONx9/UCCyiySHgdVual9P5TWTD0oYSIj8=;
+        b=WVJnpjtoNh4s/c12VgziDX7fzmUwKx8JxXATUY7Jju4CgRsmysfm83pvvrPI7r2yyL
+         cvjeAetn3k9k9Neq5VcqCz8BBsR0JwMP2yW7MrtAtrHsEzGilWrURbHGxj+VTVM/615D
+         m3yRP67s0lGZc3b7XmG2i53IYQnDj44AFN+4AMJ31tod3aJgTqZVh5K4VrH0zHD+W9hS
+         ZYo/kNI5b/nVztFHNECVyaL/NCC09ipsJQiY3mzcG8wlt9UAOeJxKf4askynK5XCjYf1
+         TeYoQgnNqdqg7s53/jC8e0wy8MqlNiFvjY5cCPK0IUKADp09a6wTct5yPXbs844I0hX5
+         6ofg==
+X-Gm-Message-State: AOAM530NtYx3uX+649WSM7wIpeP2VzjaI+Ey0+wsAmYcNmA4cd8xwP++
+        jEgSYC4udDysKkHhC9Ym517Z1Fmj7ZVHbY0NZtjFKhMbrlYW3LxMOY1YvZIOeVYsKiYj3o4q9KK
+        c7OTe8CcHGjY3cBAtsmqr14Cv
+X-Received: by 2002:aca:e107:: with SMTP id y7mr5708900oig.11.1624502910104;
+        Wed, 23 Jun 2021 19:48:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz5cb15OSczinwDBZ0eLJUKGUzdOAvDD3cFOqNVD6Kdn+fqQHTToQViMwWLwXFOh+ZGRnRF1w==
+X-Received: by 2002:aca:e107:: with SMTP id y7mr5708885oig.11.1624502909883;
+        Wed, 23 Jun 2021 19:48:29 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id y7sm396157oti.80.2021.06.23.19.48.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 19:48:29 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 20:48:28 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Tian\, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "Dey\, Megha" <megha.dey@intel.com>,
+        "Raj\, Ashok" <ashok.raj@intel.com>,
+        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Jiang\, Dave" <dave.jiang@intel.com>,
+        "Liu\, Yi L" <yi.l.liu@intel.com>,
+        "Lu\, Baolu" <baolu.lu@intel.com>,
+        "Williams\, Dan J" <dan.j.williams@intel.com>,
+        "Luck\, Tony" <tony.luck@intel.com>,
+        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, KVM <kvm@vger.kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Subject: Re: Virtualizing MSI-X on IMS via VFIO
+Message-ID: <20210623204828.2bc7e6dc.alex.williamson@redhat.com>
+In-Reply-To: <87mtrgatqo.ffs@nanos.tec.linutronix.de>
+References: <20210622131217.76b28f6f.alex.williamson@redhat.com>
+        <87o8bxcuxv.ffs@nanos.tec.linutronix.de>
+        <20210623091935.3ab3e378.alex.williamson@redhat.com>
+        <MWHPR11MB18864420ACE88E060203F7818C079@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <87mtrgatqo.ffs@nanos.tec.linutronix.de>
+Organization: Red Hat
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210623032802.3377-1-jhp@endlessos.org> <162448140362.19131.3107197931445260654.git-patchwork-notify@kernel.org>
- <7f4e15bb-feb5-b4d2-57b9-c2a9b2248d4a@gmail.com>
-In-Reply-To: <7f4e15bb-feb5-b4d2-57b9-c2a9b2248d4a@gmail.com>
-From:   Jian-Hong Pan <jhp@endlessos.org>
-Date:   Thu, 24 Jun 2021 10:47:01 +0800
-Message-ID: <CAPpJ_edpVxbnPBGTrkvB8EY5mt_sgPmoMv7rBdUKUHZJnjhHNg@mail.gmail.com>
-Subject: Re: [PATCH v2] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     patchwork-bot+netdevbpf@kernel.org,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Doug Berger <opendmb@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        linux@endlessos.org, linux-rpi-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Florian Fainelli <f.fainelli@gmail.com> =E6=96=BC 2021=E5=B9=B46=E6=9C=8824=
-=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=885:19=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> On 6/23/21 1:50 PM, patchwork-bot+netdevbpf@kernel.org wrote:
-> > Hello:
+On Thu, 24 Jun 2021 04:20:31 +0200
+Thomas Gleixner <tglx@linutronix.de> wrote:
+
+> Kevin,
+> 
+> thank you very much for digging into this! You made my day!
+> 
+> On Thu, Jun 24 2021 at 00:00, Kevin Tian wrote:
+> >> From: Alex Williamson <alex.williamson@redhat.com>
+> >> To work with what we've got, the vfio API describes the limitation of
+> >> the host interfaces via the VFIO_IRQ_INFO_NORESIZE flag.  QEMU then
+> >> makes a choice in an attempt to better reflect what we can infer of the
+> >> guest programming of the device to incrementally enable vectors.  We  
 > >
-> > This patch was applied to netdev/net.git (refs/heads/master):
-> >
-> > On Wed, 23 Jun 2021 11:28:03 +0800 you wrote:
-> >> The Broadcom UniMAC MDIO bus from mdio-bcm-unimac module comes too lat=
-e.
-> >> So, GENET cannot find the ethernet PHY on UniMAC MDIO bus. This leads
-> >> GENET fail to attach the PHY as following log:
-> >>
-> >> bcmgenet fd580000.ethernet: GENET 5.0 EPHY: 0x0000
-> >> ...
-> >> could not attach to PHY
-> >> bcmgenet fd580000.ethernet eth0: failed to connect to PHY
-> >> uart-pl011 fe201000.serial: no DMA platform data
-> >> libphy: bcmgenet MII bus: probed
-> >> ...
-> >> unimac-mdio unimac-mdio.-19: Broadcom UniMAC MDIO bus
-> >>
-> >> [...]
-> >
-> > Here is the summary with links:
-> >   - [v2] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
-> >     https://git.kernel.org/netdev/net/c/b2ac9800cfe0
+> > It's a surprise to me that Qemu even doesn't look at this flag today after
+> > searching its code...  
+> 
+> Indeed.
+> 
+> git clone https://github.com/qemu/qemu.git
+> cd qemu
+> git log -p | grep NORESIZE
+> + * The NORESIZE flag indicates that the interrupt lines within the index
+> +#define VFIO_IRQ_INFO_NORESIZE		(1 << 3)
+> 
+> According to the git history of QEMU this was never used at all and I
+> don't care about the magic muck which might be in some RHT repository
+> which might make use of that.
+> 
+> Find below the proper fix for this nonsense which just wasted everyones
+> time. I'll post it officialy with a proper changelog tomorrow unless
+> Kevin beats me to it who actually unearthed this and surely earns the
+> credit.
+> 
+> Alex, I seriously have to ask what you were trying to tell us about this
+> flag and it's great value and the design related to this.
+> 
+> I'm sure you can submit the corresponding fix to qemu yourself.
+> 
+> And once you are back from lala land, can you please explain how
+> VFIO/PCI/MSIX is supposed to work in reality?
 
-This bot is interesting!!!  Good feature! :)
+It's part of the spec, there's never been a case of !NORESIZE, assuming
+NORESIZE is the safe behavior.  Sorry, there's no smoking gun here, NAK
 
-> There was feedback given that could have deserved a v3, if nothing else
-> to fix the typo in the subject, I suppose that would do though.
+> ---
+> --- a/drivers/gpu/drm/i915/gvt/kvmgt.c
+> +++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
+> @@ -1644,8 +1644,6 @@ static long intel_vgpu_ioctl(struct mdev
+>  		if (info.index == VFIO_PCI_INTX_IRQ_INDEX)
+>  			info.flags |= (VFIO_IRQ_INFO_MASKABLE |
+>  				       VFIO_IRQ_INFO_AUTOMASKED);
+> -		else
+> -			info.flags |= VFIO_IRQ_INFO_NORESIZE;
+>  
+>  		return copy_to_user((void __user *)arg, &info, minsz) ?
+>  			-EFAULT : 0;
+> --- a/drivers/vfio/pci/vfio_pci.c
+> +++ b/drivers/vfio/pci/vfio_pci.c
+> @@ -1018,8 +1018,6 @@ static long vfio_pci_ioctl(struct vfio_d
+>  		if (info.index == VFIO_PCI_INTX_IRQ_INDEX)
+>  			info.flags |= (VFIO_IRQ_INFO_MASKABLE |
+>  				       VFIO_IRQ_INFO_AUTOMASKED);
+> -		else
+> -			info.flags |= VFIO_IRQ_INFO_NORESIZE;
+>  
+>  		return copy_to_user((void __user *)arg, &info, minsz) ?
+>  			-EFAULT : 0;
+> --- a/include/uapi/linux/vfio.h
+> +++ b/include/uapi/linux/vfio.h
+> @@ -693,16 +693,6 @@ struct vfio_region_info_cap_nvlink2_lnks
+>   * automatically masked by VFIO and the user needs to unmask the line
+>   * to receive new interrupts.  This is primarily intended to distinguish
+>   * level triggered interrupts.
+> - *
+> - * The NORESIZE flag indicates that the interrupt lines within the index
+> - * are setup as a set and new subindexes cannot be enabled without first
+> - * disabling the entire index.  This is used for interrupts like PCI MSI
+> - * and MSI-X where the driver may only use a subset of the available
+> - * indexes, but VFIO needs to enable a specific number of vectors
+> - * upfront.  In the case of MSI-X, where the user can enable MSI-X and
+> - * then add and unmask vectors, it's up to userspace to make the decision
+> - * whether to allocate the maximum supported number of vectors or tear
+> - * down setup and incrementally increase the vectors as each is enabled.
+>   */
+>  struct vfio_irq_info {
+>  	__u32	argsz;
+> @@ -710,7 +700,6 @@ struct vfio_irq_info {
+>  #define VFIO_IRQ_INFO_EVENTFD		(1 << 0)
+>  #define VFIO_IRQ_INFO_MASKABLE		(1 << 1)
+>  #define VFIO_IRQ_INFO_AUTOMASKED	(1 << 2)
+> -#define VFIO_IRQ_INFO_NORESIZE		(1 << 3)
+>  	__u32	index;		/* IRQ index */
+>  	__u32	count;		/* Number of IRQs within this index */
+>  };
+> --- a/samples/vfio-mdev/mtty.c
+> +++ b/samples/vfio-mdev/mtty.c
+> @@ -1092,9 +1092,6 @@ static int mtty_get_irq_info(struct mdev
+>  	if (irq_info->index == VFIO_PCI_INTX_IRQ_INDEX)
+>  		irq_info->flags |= (VFIO_IRQ_INFO_MASKABLE |
+>  				VFIO_IRQ_INFO_AUTOMASKED);
+> -	else
+> -		irq_info->flags |= VFIO_IRQ_INFO_NORESIZE;
+> -
+>  	return 0;
+>  }
+>  
+> 
 
-I can prepare the v3 patch with Florian's suggestion!
-
-Jian-Hong Pan
