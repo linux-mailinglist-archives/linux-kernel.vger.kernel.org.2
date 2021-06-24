@@ -2,185 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B283B2864
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 09:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D638A3B2867
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 09:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbhFXHMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 03:12:18 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42634 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231705AbhFXHMI (ORCPT
+        id S231435AbhFXHPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 03:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230132AbhFXHPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 03:12:08 -0400
-Date:   Thu, 24 Jun 2021 07:09:47 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624518588;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D3GW+ce0WZL2Ug0EXQaPWCaN191B8B6D6fsuCSOotN0=;
-        b=SRKP0van25QxIvCzl+Pe5W0wYInvhHzjq3/lDVfswwJ4tKMXAQnSR8hiSx+CLHK7QC3GlN
-        COxa+lgNS4Du39sav5WQFyeAggBbBF3jZl6D0Y+FbKvKsEBTYj1UqN526hMnki0DQMoQab
-        gqiUAKs4KmeslCIDgQz4wiTy85vWxluF2UV2mJBtUGxaCc6vmqXMWgT6+fu2u1Yq4b1Ehk
-        AswO6YJiyddbX4jyJ/d6NwkmVZy7m/ShzoOQ12jg7uDoCBLjaJA0LTpuJHxz/xiQn0WkHg
-        mB4Oi5x0gJJ1G6drl/QVuPE79evMlvkyxYbGyaucw2vWXwtfXEok7bBgrJQEXQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624518588;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D3GW+ce0WZL2Ug0EXQaPWCaN191B8B6D6fsuCSOotN0=;
-        b=UtS3yx/iM8sV/ndyKJlZsOFBVf1lzhZh1yhCn6L+L1/YfBWv+P6y9lAvEOiHYSjOWbxhDy
-        CYoaCcSx+dWPzxDA==
-From:   "tip-bot2 for Like Xu" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86/intel: Fix PEBS-via-PT reload base value
- for Extended PEBS
-Cc:     Like Xu <likexu@tencent.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210621034710.31107-1-likexu@tencent.com>
-References: <20210621034710.31107-1-likexu@tencent.com>
+        Thu, 24 Jun 2021 03:15:34 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C363CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 00:13:08 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id a5-20020a7bc1c50000b02901e3bbe0939bso2933385wmj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 00:13:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=MnThaWIKUm3/QjBSHS8iUnI7ZibIjMrulezFRHkYekY=;
+        b=XoNOwq52RUGfP8DK5R6bOVIY69XuEooINPTnQOKIffhM+dmXSvqXvLYUOP9HZDuwrN
+         5ReZ91fYeBJAlZtzjI/IQ4L3QWYLYdBT6+nhhRkpDwryAIU3UqY3xhyLy0l4kONMK2+X
+         VzdSTAhaQBtCSyeht7e61/IOP6JSq8R+yYRdY/KqoD3InE9PKAB9Jb6x8WzQ1HSP5mce
+         sV0kJ/l4oEOnLXZzLupJzxtetigk+jDy9lpoLs7uSfVPvneqHcsXrtFP6l9Ny3kpwZBx
+         89VYkAn2w0gRwHXk+nrH1P/fZKVEv75fDKLJ4Qdwj8pa9/L+7bbP28AxEc1ooAV8MjPb
+         x03w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=MnThaWIKUm3/QjBSHS8iUnI7ZibIjMrulezFRHkYekY=;
+        b=kQuRKD5hZ9y9UXx7p75ywJEp9oJZrNjsOi3TLwcWVLnaBR4BRFpB2w6R5DuxDsMY72
+         S7cuj0YOUX9PHIO6E7b6cS2wbR+K0zOn4Qd25H0Xk45NevPIBH+pRW1ZWFK30BoQwEZH
+         Ww6rE5cHINYTyl+FfSJBN2kHdiilgjQuAAt1yw6H2GejcwsjD6Nzglyo9R/E4w9L3EFt
+         hZ4NS/zd1RymdPk1EOggP9UmpEwLBKt/ERWpKOBo7kpd9FS5ZIUjMSXwGDM9Q93m88OK
+         Dj6XZ0BcWM4oWXQJaX3Bo6R/nPP2/+2GxOsIa3GELIHe6guKCBfL+YQ9Fo65v9Ihd1v5
+         8L9A==
+X-Gm-Message-State: AOAM530/tahDqBNLKHVLVFj4qMdWnsHrnM2Pidm9UBM5zX6k1404lQiy
+        Q4KSaRg54S9IEdFi7HBB0p0=
+X-Google-Smtp-Source: ABdhPJzkFx174lRQ0tjjNb0RYTQcnazCmqre2SDyhkII/0SW/4h/FnF1ZEVAI8nChIXS+vkfHE+9/Q==
+X-Received: by 2002:a7b:ca48:: with SMTP id m8mr2466474wml.75.1624518787299;
+        Thu, 24 Jun 2021 00:13:07 -0700 (PDT)
+Received: from gmail.com (0526E2ED.dsl.pool.telekom.hu. [5.38.226.237])
+        by smtp.gmail.com with ESMTPSA id s62sm8009109wms.13.2021.06.24.00.13.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 00:13:06 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 24 Jun 2021 09:13:05 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] sigqueue cache fix
+Message-ID: <YNQwgTR3n3mSO9+3@gmail.com>
 MIME-Version: 1.0
-Message-ID: <162451858770.395.4853641374330968205.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+Linus,
 
-Commit-ID:     4c58d922c0877e23cc7d3d7c6bff49b85faaca89
-Gitweb:        https://git.kernel.org/tip/4c58d922c0877e23cc7d3d7c6bff49b85faaca89
-Author:        Like Xu <like.xu.linux@gmail.com>
-AuthorDate:    Mon, 21 Jun 2021 11:47:10 +08:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 23 Jun 2021 18:30:52 +02:00
+Please pull the latest core/urgent git tree from:
 
-perf/x86/intel: Fix PEBS-via-PT reload base value for Extended PEBS
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core-urgent-2021-06-24
 
-If we use the "PEBS-via-PT" feature on a platform that supports
-extended PBES, like this:
+   # HEAD: 399f8dd9a866e107639eabd3c1979cd526ca3a98 signal: Prevent sigqueue caching after task got released
 
-    perf record -c 10000 \
-    -e '{intel_pt/branch=0/,branch-instructions/aux-output/p}' uname
+Fix a memory leak in the recently introduced sigqueue cache.
 
-we will encounter the following call trace:
+ Thanks,
 
-[  250.906542] unchecked MSR access error: WRMSR to 0x14e1 (tried to write
-0x0000000000000000) at rIP: 0xffffffff88073624 (native_write_msr+0x4/0x20)
-[  250.920779] Call Trace:
-[  250.923508]  intel_pmu_pebs_enable+0x12c/0x190
-[  250.928359]  intel_pmu_enable_event+0x346/0x390
-[  250.933300]  x86_pmu_start+0x64/0x80
-[  250.937231]  x86_pmu_enable+0x16a/0x2f0
-[  250.941434]  perf_event_exec+0x144/0x4c0
-[  250.945731]  begin_new_exec+0x650/0xbf0
-[  250.949933]  load_elf_binary+0x13e/0x1700
-[  250.954321]  ? lock_acquire+0xc2/0x390
-[  250.958430]  ? bprm_execve+0x34f/0x8a0
-[  250.962544]  ? lock_is_held_type+0xa7/0x120
-[  250.967118]  ? find_held_lock+0x32/0x90
-[  250.971321]  ? sched_clock_cpu+0xc/0xb0
-[  250.975527]  bprm_execve+0x33d/0x8a0
-[  250.979452]  do_execveat_common.isra.0+0x161/0x1d0
-[  250.984673]  __x64_sys_execve+0x33/0x40
-[  250.988877]  do_syscall_64+0x3d/0x80
-[  250.992806]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  250.998302] RIP: 0033:0x7fbc971d82fb
-[  251.002235] Code: Unable to access opcode bytes at RIP 0x7fbc971d82d1.
-[  251.009303] RSP: 002b:00007fffb8aed808 EFLAGS: 00000202 ORIG_RAX: 000000000000003b
-[  251.017478] RAX: ffffffffffffffda RBX: 00007fffb8af2f00 RCX: 00007fbc971d82fb
-[  251.025187] RDX: 00005574792aac50 RSI: 00007fffb8af2f00 RDI: 00007fffb8aed810
-[  251.032901] RBP: 00007fffb8aed970 R08: 0000000000000020 R09: 00007fbc9725c8b0
-[  251.040613] R10: 6d6c61632f6d6f63 R11: 0000000000000202 R12: 00005574792aac50
-[  251.048327] R13: 00007fffb8af35f0 R14: 00005574792aafdf R15: 00005574792aafe7
+	Ingo
 
-This is because the target reload msr address is calculated
-based on the wrong base msr and the target reload msr value
-is accessed from ds->pebs_event_reset[] with the wrong offset.
+------------------>
+Thomas Gleixner (1):
+      signal: Prevent sigqueue caching after task got released
 
-According to Intel SDM Table 2-14, for extended PBES feature,
-the reload msr for MSR_IA32_FIXED_CTRx should be based on
-MSR_RELOAD_FIXED_CTRx.
 
-For fixed counters, let's fix it by overriding the reload msr
-address and its value, thus avoiding out-of-bounds access.
+ kernel/signal.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-Fixes: 42880f726c66("perf/x86/intel: Support PEBS output to PT")
-Signed-off-by: Like Xu <likexu@tencent.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210621034710.31107-1-likexu@tencent.com
----
- arch/x86/events/intel/ds.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-index 1ec8fd3..8647713 100644
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -1187,6 +1187,9 @@ static void intel_pmu_pebs_via_pt_enable(struct perf_event *event)
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
- 	struct hw_perf_event *hwc = &event->hw;
- 	struct debug_store *ds = cpuc->ds;
-+	u64 value = ds->pebs_event_reset[hwc->idx];
-+	u32 base = MSR_RELOAD_PMC0;
-+	unsigned int idx = hwc->idx;
+diff --git a/kernel/signal.c b/kernel/signal.c
+index f7c6ffcbd044..f1ecd8f0c11d 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -435,6 +435,12 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
+ 		 * Preallocation does not hold sighand::siglock so it can't
+ 		 * use the cache. The lockless caching requires that only
+ 		 * one consumer and only one producer run at a time.
++		 *
++		 * For the regular allocation case it is sufficient to
++		 * check @q for NULL because this code can only be called
++		 * if the target task @t has not been reaped yet; which
++		 * means this code can never observe the error pointer which is
++		 * written to @t->sigqueue_cache in exit_task_sigqueue_cache().
+ 		 */
+ 		q = READ_ONCE(t->sigqueue_cache);
+ 		if (!q || sigqueue_flags)
+@@ -463,13 +469,18 @@ void exit_task_sigqueue_cache(struct task_struct *tsk)
+ 	struct sigqueue *q = tsk->sigqueue_cache;
  
- 	if (!is_pebs_pt(event))
- 		return;
-@@ -1196,7 +1199,12 @@ static void intel_pmu_pebs_via_pt_enable(struct perf_event *event)
- 
- 	cpuc->pebs_enabled |= PEBS_OUTPUT_PT;
- 
--	wrmsrl(MSR_RELOAD_PMC0 + hwc->idx, ds->pebs_event_reset[hwc->idx]);
-+	if (hwc->idx >= INTEL_PMC_IDX_FIXED) {
-+		base = MSR_RELOAD_FIXED_CTR0;
-+		idx = hwc->idx - INTEL_PMC_IDX_FIXED;
-+		value = ds->pebs_event_reset[MAX_PEBS_EVENTS + idx];
-+	}
-+	wrmsrl(base + idx, value);
+ 	if (q) {
+-		tsk->sigqueue_cache = NULL;
+ 		/*
+ 		 * Hand it back to the cache as the task might
+ 		 * be self reaping which would leak the object.
+ 		 */
+ 		 kmem_cache_free(sigqueue_cachep, q);
+ 	}
++
++	/*
++	 * Set an error pointer to ensure that @tsk will not cache a
++	 * sigqueue when it is reaping it's child tasks
++	 */
++	tsk->sigqueue_cache = ERR_PTR(-1);
  }
  
- void intel_pmu_pebs_enable(struct perf_event *event)
-@@ -1204,6 +1212,7 @@ void intel_pmu_pebs_enable(struct perf_event *event)
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
- 	struct hw_perf_event *hwc = &event->hw;
- 	struct debug_store *ds = cpuc->ds;
-+	unsigned int idx = hwc->idx;
- 
- 	hwc->config &= ~ARCH_PERFMON_EVENTSEL_INT;
- 
-@@ -1222,19 +1231,18 @@ void intel_pmu_pebs_enable(struct perf_event *event)
- 		}
- 	}
- 
-+	if (idx >= INTEL_PMC_IDX_FIXED)
-+		idx = MAX_PEBS_EVENTS + (idx - INTEL_PMC_IDX_FIXED);
-+
- 	/*
- 	 * Use auto-reload if possible to save a MSR write in the PMI.
- 	 * This must be done in pmu::start(), because PERF_EVENT_IOC_PERIOD.
+ static void sigqueue_cache_or_free(struct sigqueue *q)
+@@ -481,6 +492,10 @@ static void sigqueue_cache_or_free(struct sigqueue *q)
+ 	 * is intentional when run without holding current->sighand->siglock,
+ 	 * which is fine as current obviously cannot run __sigqueue_free()
+ 	 * concurrently.
++	 *
++	 * The NULL check is safe even if current has been reaped already,
++	 * in which case exit_task_sigqueue_cache() wrote an error pointer
++	 * into current->sigqueue_cache.
  	 */
- 	if (hwc->flags & PERF_X86_EVENT_AUTO_RELOAD) {
--		unsigned int idx = hwc->idx;
--
--		if (idx >= INTEL_PMC_IDX_FIXED)
--			idx = MAX_PEBS_EVENTS + (idx - INTEL_PMC_IDX_FIXED);
- 		ds->pebs_event_reset[idx] =
- 			(u64)(-hwc->sample_period) & x86_pmu.cntval_mask;
- 	} else {
--		ds->pebs_event_reset[hwc->idx] = 0;
-+		ds->pebs_event_reset[idx] = 0;
- 	}
- 
- 	intel_pmu_pebs_via_pt_enable(event);
+ 	if (!READ_ONCE(current->sigqueue_cache))
+ 		WRITE_ONCE(current->sigqueue_cache, q);
