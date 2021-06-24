@@ -2,129 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F42F3B2746
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 08:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7B13B272E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 08:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231280AbhFXGQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 02:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44548 "EHLO
+        id S231126AbhFXGLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 02:11:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbhFXGQd (ORCPT
+        with ESMTP id S230257AbhFXGLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 02:16:33 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B50C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 23:14:14 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id s14so3013573pfg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 23:14:14 -0700 (PDT)
+        Thu, 24 Jun 2021 02:11:42 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8304C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 23:09:22 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso2816404pjp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 23:09:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=osJqntoZHJL8VeQbE2d8Gx1TrOiajWQXazXH9w70kIY=;
-        b=f09JHaTt6yY9HlwcujpzmyCJbvbUoIE0cZNa0aICkCK68T/rODYze/6/aKRkuFqgtc
-         aQSgGc4CEL1bXaOSKVo+xlBop7hH5m1EqqxXbZi8VyWUJmFL6g6BM4X4ZMkMlYffhkXb
-         itPPZk67YIl+8XjGG/C0lboNwjIIr80wXQ+NM=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Cdh5icP9dLkaJMWxCjq6qbLcVl8C1ZKeQk32n5oC1wo=;
+        b=z6SQdKR+RQn8aHynhbgyRv9q7FC8CqOH8thaal7O3TNCa7l74z5Uq+O8ZFTZgQy6TH
+         N2gRz/Q17SedgEoI6Z4XEL/3nTaSTfpmLF8aJsYEm0GbF1SLdgPMqalTlGUdvPn66Myk
+         3Q3cRb2gONrYpgz9nqjJbvcw5lxekeat4SV3mHfsPgrU78dehklhUKBP6JEQMxYbTRjw
+         KtV+kzBk4Yvy3VdKFSQcb7MfYKz2s8jPboNVM8+MknCuBXg+w+TOFtWyOxaejSkujHOX
+         SijuHx/c91cIPd1l23ngc+xwcE9GAXlFQ0LcZh15Rp2tjtoJALoB0rcaSj+TgGun9dkU
+         AORA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=osJqntoZHJL8VeQbE2d8Gx1TrOiajWQXazXH9w70kIY=;
-        b=O8bvoBuFwsauFXOWt4/PyCLgcBuahgpevfyRUP1UJ3hyqK0Vw+7BhrMIYwNrNkuTth
-         Kh5I/tioHJ42+odkKEaLVABmfqUmB0ah43zjw+qBZoX4UA6RPquVeREafSHQC3kE9Wtb
-         0XsHwECLPapHl8ULEHs2jt/AIf0mMcY3E+amhUP7KUxbCl0NuZ1CAlCj2IKX1NbOOTg8
-         svJsj5pCPo0d6DpvH10TBzx9UPUaBYg43/1/RdMbmXNMC4AfFWHE/h7DPCAeXiPWcvqP
-         hCv/oP57p70IZTBFTo0873nV8ShclNIzMgc1ggoMbMOeAwWhGT27nwJOBAPC2oL9NWxr
-         DDMA==
-X-Gm-Message-State: AOAM530lh/bqPjGX6VvgU9eLqFYydLHuMolwm2W/txs6YJDnNQZk+7xJ
-        65BETxyQuV7lIvsAWWqUpozI2ezYVyyKdw==
-X-Google-Smtp-Source: ABdhPJwEOZeeOfG7TAyj2t6gZ+N23/PGHOKllsrBsVtkf5ZFc0ZXBWl0AH6CtpkH5QdoD0RvZAe/YQ==
-X-Received: by 2002:a63:a53:: with SMTP id z19mr3231745pgk.125.1624515254032;
-        Wed, 23 Jun 2021 23:14:14 -0700 (PDT)
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com. [209.85.210.181])
-        by smtp.gmail.com with ESMTPSA id s4sm1295713pjn.31.2021.06.23.23.14.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 23:14:13 -0700 (PDT)
-Received: by mail-pf1-f181.google.com with SMTP id w71so4295123pfd.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 23:14:13 -0700 (PDT)
-X-Received: by 2002:a92:750c:: with SMTP id q12mr2332407ilc.303.1624514749926;
- Wed, 23 Jun 2021 23:05:49 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Cdh5icP9dLkaJMWxCjq6qbLcVl8C1ZKeQk32n5oC1wo=;
+        b=Ox9wt5zMSyownndSJ3qVESp4d5nv0RZoPAAFF+iAP3OFyPZjj+LwSylV4oSw65No/B
+         RxXceVwb5M8Pw6vWPy4Y6I1QXh3FI5W9IyEIGOYHGdOS/xNDKhAc2uyQxsjuUEwSEZB+
+         9VRR8lsie+vX89m7OlxuT748lf4F7EdDM63olzU0VxAj0bt/Qow1gQieTamYABZ6tYkn
+         AvTFeLWTB7J6og9bxFUQClDwEUYmHhNYYpbosXAOT5h7cud5kh7ny+EpcvF8aLL5X6UD
+         Guvc6THaOb/w8PNciZPNzgGc6r4murhAcdEeaSvGii++OxgoEoEtPckxc7sc17ZX5b8k
+         PBPw==
+X-Gm-Message-State: AOAM532uXZhLp72Ch5DQx9m6aXS6J+cRYdE8c0JpDUZIHNnvmXrVM0xM
+        PZNUwuuVgZCVwsP9rMfg3cI6
+X-Google-Smtp-Source: ABdhPJxcrzf4frIXVJQwRNVsQ4gofsCEqvAUjZu1/mxoz4rbhnkZM1RWWFsDpWNO2YUUi/tRSrwQMQ==
+X-Received: by 2002:a17:90a:bc89:: with SMTP id x9mr3644831pjr.228.1624514962040;
+        Wed, 23 Jun 2021 23:09:22 -0700 (PDT)
+Received: from workstation ([120.138.12.173])
+        by smtp.gmail.com with ESMTPSA id u7sm1325765pjd.55.2021.06.23.23.09.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 23 Jun 2021 23:09:21 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 11:39:16 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
+        ath11k@lists.infradead.org, bbhatt=codeaurora.org@codeaurora.org,
+        lilic@codeaurora.org, kangxu@codeaurora.org
+Subject: Re: [PATCH v4 4/6] ath11k: set register access length for MHI driver
+Message-ID: <20210624060916.GA21925@workstation>
+References: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
+ <1620330705-40192-5-git-send-email-bbhatt@codeaurora.org>
+ <20210521135152.GL70095@thinkpad>
+ <87h7i0juxt.fsf@codeaurora.org>
+ <37184e28dcc952ba9ad5ed0dc2c1a6da@codeaurora.org>
+ <6ed9fe90f40e5f8151d3a028abf0acd1@codeaurora.org>
+ <20210618064514.GM3682@workstation>
+ <87k0mkh4ll.fsf@codeaurora.org>
 MIME-Version: 1.0
-References: <20210619034043.199220-1-tientzu@chromium.org> <20210619034043.199220-7-tientzu@chromium.org>
- <76c3343d-72e5-9df3-8924-5474ee698ef4@quicinc.com> <20210623183736.GA472@willie-the-truck>
- <19d4c7a2-744d-21e0-289c-a576e1f0e6f3@quicinc.com> <20210624054315.GA25381@lst.de>
-In-Reply-To: <20210624054315.GA25381@lst.de>
-From:   Claire Chang <tientzu@chromium.org>
-Date:   Thu, 24 Jun 2021 14:05:39 +0800
-X-Gmail-Original-Message-ID: <CALiNf288ZLMhY3E8E3N+z9rkwi1viWNLm1wwMEwT4rNwh3FfwQ@mail.gmail.com>
-Message-ID: <CALiNf288ZLMhY3E8E3N+z9rkwi1viWNLm1wwMEwT4rNwh3FfwQ@mail.gmail.com>
-Subject: Re: [PATCH v14 06/12] swiotlb: Use is_swiotlb_force_bounce for
- swiotlb data bouncing
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Qian Cai <quic_qiancai@quicinc.com>, Will Deacon <will@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
-        peterz@infradead.org, benh@kernel.crashing.org,
-        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
-        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
-        mingo@kernel.org, Jianxiong Gao <jxgao@google.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Saravana Kannan <saravanak@google.com>, xypron.glpk@gmx.de,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        bskeggs@redhat.com, linux-pci@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Thierry Reding <treding@nvidia.com>,
-        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
-        maarten.lankhorst@linux.intel.com, linuxppc-dev@lists.ozlabs.org,
-        jani.nikula@linux.intel.com,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        rodrigo.vivi@intel.com, Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Robin Murphy <robin.murphy@arm.com>, bauerman@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87k0mkh4ll.fsf@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 1:43 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Wed, Jun 23, 2021 at 02:44:34PM -0400, Qian Cai wrote:
-> > is_swiotlb_force_bounce at /usr/src/linux-next/./include/linux/swiotlb.h:119
+On Wed, Jun 23, 2021 at 08:29:26PM +0300, Kalle Valo wrote:
+> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
+> 
+> > On Wed, Jun 16, 2021 at 10:38:01AM -0700, Bhaumik Bhatt wrote:
+> >> Hi Kalle/Mani,
+> >> 
+> >> On 2021-06-14 10:49 AM, Bhaumik Bhatt wrote:
+> >> Just got confirmation that the whole patch series was tested for functional
+> >> sanity on
+> >> Dell E7590 + QCA6390 with Ubuntu18.04 and patch 4/6 is also good to go.
+> >> 
+> >> Can you please ACK and pick up this series?
+> >> 
 > >
-> > is_swiotlb_force_bounce() was the new function introduced in this patch here.
+> > I can pick the series but I need an Ack from Kalle since it contains
+> > ath11k changes. Kalle, can you please Ack this patch?
 > >
-> > +static inline bool is_swiotlb_force_bounce(struct device *dev)
-> > +{
-> > +     return dev->dma_io_tlb_mem->force_bounce;
-> > +}
->
-> To me the crash looks like dev->dma_io_tlb_mem is NULL.  Can you
-> turn this into :
->
->         return dev->dma_io_tlb_mem && dev->dma_io_tlb_mem->force_bounce;
->
-> for a quick debug check?
+> > I'm planning to send the PR by this weekend.
+> 
+> Sorry for the late reply. Yes, as this now tested with ath11k driver
+> please take this ath11k patch via the mhi tree:
+> 
+> Acked-by: Kalle Valo <kvalo@codeaurora.org>
 
-I just realized that dma_io_tlb_mem might be NULL like Christoph
-pointed out since swiotlb might not get initialized.
-However,  `Unable to handle kernel paging request at virtual address
-dfff80000000000e` looks more like the address is garbage rather than
-NULL?
-I wonder if that's because dev->dma_io_tlb_mem is not assigned
-properly (which means device_initialize is not called?).
+Thanks for the Ack, Kalle. But I've sent the pull to Greg for 5.14. So
+once the merge window closes, I'll apply this series for 5.15.
+
+Thanks,
+Mani
+
+> 
+> -- 
+> https://patchwork.kernel.org/project/linux-wireless/list/
+> 
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
