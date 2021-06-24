@@ -2,225 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2103B2736
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 08:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B04DA3B2745
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 08:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbhFXGPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 02:15:12 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:33504 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231143AbhFXGPK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 02:15:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624515172; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ZrMHDWlFZx5T/DA/qDlkCvHV/LEE6wAJDGPH7Xn/SU4=;
- b=d9+fkVvzP5b6yCzDJ82ypf1el+IHjw2Vm/z+05zW9/A0VTbFElsl6TCbADqkEs452f7OCI4Q
- oK0O0F1+CR/4ejdNH/NFa5MwikprSdu8bIH362DTIPaQljdpGKGZaLisBJ7kIXqJrdhkTkPH
- 5gjO3f+cJ0MHb+9Y74/pjYrIu2Q=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60d42251dc4628fe7e8d8072 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Jun 2021 06:12:33
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A806BC43217; Thu, 24 Jun 2021 06:12:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4DBDAC433D3;
-        Thu, 24 Jun 2021 06:12:31 +0000 (UTC)
+        id S231248AbhFXGQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 02:16:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230518AbhFXGQa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 02:16:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26ACC061574;
+        Wed, 23 Jun 2021 23:14:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sSFHXo3Gj4dSjFJuKq0lyHYwfOL1EKEDwVgBxUfbffw=; b=t4/xd1iRSTshzW9JK+ypF4gUvU
+        DiOLXv1n179uEuNdX25CkPiklMEzjEZvgwAVqPPFECZ7cw7Xirlw9BxwbTT3+G+VFQRWgj//+tcl5
+        fBZcyFlGX0MOBtXe+2zlZBhDGeCUvKMfW7LUvpq4wYEiz3WHQH0mEuROU84c9reuI9kUN/+UAq7FI
+        IJts0WQWke3KSLvKBUeP9HswUP6IfxrKG9EtQLd70TEJluWLme7q5vD6VkXaNsA486/ZCtQXlcPhc
+        4ACaHId9qdfCOYhJCpJmucL4SGSEs2rvkE4WSwaTNDiwkyDIXQEbv3olSWfx2lh5rhY42ZRizrzIz
+        OtKHbZ2Q==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwIbX-00GFEb-EP; Thu, 24 Jun 2021 06:12:55 +0000
+Date:   Thu, 24 Jun 2021 07:12:47 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lennart Poettering <lennart@poettering.net>,
+        Luca Boccassi <bluca@debian.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tejun Heo <tj@kernel.org>,
+        Javier Gonz??lez <javier@javigon.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        JeffleXu <jefflexu@linux.alibaba.com>
+Subject: Re: [PATCH v3 3/6] block: refactor sysfs code
+Message-ID: <YNQiX08k6SGz5PvD@infradead.org>
+References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
+ <20210623105858.6978-4-mcroce@linux.microsoft.com>
+ <YNMgmK2vqQPL7PWb@infradead.org>
+ <CAFnufp3=2Jhr9NqVhE2nCLcr48UvxVww=RpWHp2wpm7DWwGuEA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 24 Jun 2021 14:12:31 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 06/10] scsi: ufs: Remove host_sem used in
- suspend/resume
-In-Reply-To: <a87e5ca5-390f-8ca0-41bf-27cdc70e3316@intel.com>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-8-git-send-email-cang@codeaurora.org>
- <ed59d61a-6951-2acd-4f89-40f8dc5015e1@intel.com>
- <9105f328ee6ce916a7f01027b0d28332@codeaurora.org>
- <a87e5ca5-390f-8ca0-41bf-27cdc70e3316@intel.com>
-Message-ID: <1b351766a6e40d0df90b3adec964eb33@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFnufp3=2Jhr9NqVhE2nCLcr48UvxVww=RpWHp2wpm7DWwGuEA@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-24 13:52, Adrian Hunter wrote:
-> On 24/06/21 5:16 am, Can Guo wrote:
->> On 2021-06-23 22:30, Adrian Hunter wrote:
->>> On 23/06/21 10:35 am, Can Guo wrote:
->>>> To protect system suspend/resume from being disturbed by error 
->>>> handling,
->>>> instead of using host_sem, let error handler call 
->>>> lock_system_sleep() and
->>>> unlock_system_sleep() which achieve the same purpose. Remove the 
->>>> host_sem
->>>> used in suspend/resume paths to make the code more readable.
->>>> 
->>>> Suggested-by: Bart Van Assche <bvanassche@acm.org>
->>>> Signed-off-by: Can Guo <cang@codeaurora.org>
->>>> ---
->>>>  drivers/scsi/ufs/ufshcd.c | 12 +++++++-----
->>>>  1 file changed, 7 insertions(+), 5 deletions(-)
->>>> 
->>>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->>>> index 3695dd2..a09e4a2 100644
->>>> --- a/drivers/scsi/ufs/ufshcd.c
->>>> +++ b/drivers/scsi/ufs/ufshcd.c
->>>> @@ -5907,6 +5907,11 @@ static void ufshcd_clk_scaling_suspend(struct 
->>>> ufs_hba *hba, bool suspend)
->>>> 
->>>>  static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
->>>>  {
->>>> +    /*
->>>> +     * It is not safe to perform error handling while suspend or 
->>>> resume is
->>>> +     * in progress. Hence the lock_system_sleep() call.
->>>> +     */
->>>> +    lock_system_sleep();
->>> 
->>> It looks to me like the system takes this lock quite early, even 
->>> before
->>> freezing tasks, so if anything needs the error handler to run it will
->>> deadlock.
->> 
->> Hi Adrian,
->> 
->> UFS/hba system suspend/resume does not invoke or call error handling 
->> in a
->> synchronous way. So, whatever UFS errors (which schedules the error 
->> handler)
->> happens during suspend/resume, error handler will just wait here till 
->> system
->> suspend/resume release the lock. Hence no worries of deadlock here.
+On Wed, Jun 23, 2021 at 09:03:40PM +0200, Matteo Croce wrote:
+> On Wed, Jun 23, 2021 at 1:53 PM Christoph Hellwig <hch@infradead.org> wrote:
+> >
+> > > -static void disk_add_events(struct gendisk *disk)
+> > > +static void disk_add_sysfs(struct gendisk *disk)
+> > >  {
+> > >       /* FIXME: error handling */
+> > > -     if (sysfs_create_files(&disk_to_dev(disk)->kobj, disk_events_attrs) < 0)
+> > > +     if (sysfs_create_files(&disk_to_dev(disk)->kobj, disk_sysfs_attrs) < 0)
+> > >               pr_warn("%s: failed to create sysfs files for events\n",
+> > >                       disk->disk_name);
+> > > +}
+> >
+> > Actually, what we need here is a way how we can setup the ->groups
+> > field of the device to include all attribute groups instead of having
+> > to call sysfs_create_files at all.
 > 
-> It looks to me like the state can change to 
-> UFSHCD_STATE_EH_SCHEDULED_FATAL
-> and since user processes are not frozen, nor file systems sync'ed, 
-> everything
-> is going to deadlock.
-> i.e.
-> I/O is blocked waiting on error handling
-> error handling is blocked waiting on lock_system_sleep()
-> suspend is blocked waiting on I/O
-> 
+> I don't get this one. You mean in general or in this series?
 
-Hi Adrian,
-
-First of all, enter_state(suspend_state_t state) uses 
-mutex_trylock(&system_transition_mutex).
-Second, even that happens, in ufshcd_queuecommand(), below logic will 
-break the cycle, by
-fast failing the PM request (below codes are from the code tip with this 
-whole series applied).
-
-         case UFSHCD_STATE_EH_SCHEDULED_FATAL:
-                 /*
-                  * ufshcd_rpm_get_sync() is used at error handling 
-preparation
-                  * stage. If a scsi cmd, e.g., the SSU cmd, is sent from 
-the
-                  * PM ops, it can never be finished if we let SCSI layer 
-keep
-                  * retrying it, which gets err handler stuck forever. 
-Neither
-                  * can we let the scsi cmd pass through, because UFS is 
-in bad
-                  * state, the scsi cmd may eventually time out, which 
-will get
-                  * err handler blocked for too long. So, just fail the 
-scsi cmd
-                  * sent from PM ops, err handler can recover PM error 
-anyways.
-                  */
-                 if (cmd->request->rq_flags & RQF_PM) {
-                         hba->force_reset = true;
-                         set_host_byte(cmd, DID_BAD_TARGET);
-                         cmd->scsi_done(cmd);
-                         goto out;
-                 }
-                 fallthrough;
-         case UFSHCD_STATE_RESET:
-
-Thanks,
-
-Can Guo.
-
->> 
->> Thanks,
->> 
->> Can Guo.
->> 
->>> 
->>>>      ufshcd_rpm_get_sync(hba);
->>>>      if 
->>>> (pm_runtime_status_suspended(&hba->sdev_ufs_device->sdev_gendev) ||
->>>>          hba->is_wlu_sys_suspended) {
->>>> @@ -5951,6 +5956,7 @@ static void 
->>>> ufshcd_err_handling_unprepare(struct ufs_hba *hba)
->>>>          ufshcd_clk_scaling_suspend(hba, false);
->>>>      ufshcd_clear_ua_wluns(hba);
->>>>      ufshcd_rpm_put(hba);
->>>> +    unlock_system_sleep();
->>>>  }
->>>> 
->>>>  static inline bool ufshcd_err_handling_should_stop(struct ufs_hba 
->>>> *hba)
->>>> @@ -9053,16 +9059,13 @@ static int ufshcd_wl_suspend(struct device 
->>>> *dev)
->>>>      ktime_t start = ktime_get();
->>>> 
->>>>      hba = shost_priv(sdev->host);
->>>> -    down(&hba->host_sem);
->>>> 
->>>>      if (pm_runtime_suspended(dev))
->>>>          goto out;
->>>> 
->>>>      ret = __ufshcd_wl_suspend(hba, UFS_SYSTEM_PM);
->>>> -    if (ret) {
->>>> +    if (ret)
->>>>          dev_err(&sdev->sdev_gendev, "%s failed: %d\n", __func__,  
->>>> ret);
->>>> -        up(&hba->host_sem);
->>>> -    }
->>>> 
->>>>  out:
->>>>      if (!ret)
->>>> @@ -9095,7 +9098,6 @@ static int ufshcd_wl_resume(struct device 
->>>> *dev)
->>>>          hba->curr_dev_pwr_mode, hba->uic_link_state);
->>>>      if (!ret)
->>>>          hba->is_wlu_sys_suspended = false;
->>>> -    up(&hba->host_sem);
->>>>      return ret;
->>>>  }
->>>>  #endif
->>>> 
+In general before we make more use of the block device provided attrs.
