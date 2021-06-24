@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6DF3B378A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB033B37A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232709AbhFXUGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 16:06:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44168 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232178AbhFXUGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 16:06:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E72CF61220;
-        Thu, 24 Jun 2021 20:04:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624565057;
-        bh=NTWckRn1poC49O7dy6r7JRVT/OR7EtV/ck2t1K7Qa8A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ied8OL+680PQ8FsfytK/XFLQhtYGL9zS3Kb7aVZ0rSJw37hspfaHZxqMvPC17GNsE
-         IJuhFB3Ry2djSV3ADpW+XcyQftMOXRL7kn/dw4s55tdd+1WIQOwZz3eJPD1bdZZp1q
-         5ajHm4XB3jMYb151n0GmNzoaaLLT8DhHYydSOt04Cyx7wVXiNxV36OrSMc8cnc2MN1
-         J/4+KiVhtvIg9kMXuwerZZ1NuGXoTtV761FInpilIo6mpOhhG8l2DvIBk+hfrQRTZV
-         mzbXCfxfHMKbF2ivQp4Y3BZXutSGB359YM5xuQ2J7WslKaQ4eqZdqEUVLvhPiA+ih7
-         6bWifVHA0PqiA==
-Date:   Thu, 24 Jun 2021 22:04:13 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2] i2c: core: Disable client irq on reboot/shutdown
-Message-ID: <YNTlPeP7UMz4FJkg@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-References: <20210604232744.1259150-1-swboyd@chromium.org>
+        id S232874AbhFXUOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 16:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232838AbhFXUOC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 16:14:02 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B6AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 13:11:42 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id h17so10278660edw.11
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 13:11:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dpe9lEwhUIwO0xWlospxCxEaXe3xRtOW0AcnGSWOsWM=;
+        b=V94FyFfUNYCwwe5Eb2/5kXStEjd/SAXTGvq9l3G716GpB3crhuLMAj4BaMF1jfEK7l
+         hV9Mh/oX2jaBezpijTHMrktNaoBzZ2MLDXYRj+Z1Tsy6ssSFue4MMET/K4ItVOa7I6ly
+         u5rW/mU/nBnbe/kLYL8ohoz+2IaV4nvB4PYLw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dpe9lEwhUIwO0xWlospxCxEaXe3xRtOW0AcnGSWOsWM=;
+        b=L/0A2h5cMXCCHvSF/sBEpkJvLkczQSgWlzUU1wD29PJF1i9ct0wZlE8JYZY+O11hu0
+         ySHywxnDaWDpZqSxot2NlupdUEhPf6AC+DbR6Pz9Mid6/EaPpfjQO3ZqSFhgyUuxtIuL
+         eBaKwohPeKunagr75Sfk125oSoFUIEkNkeXOQHco3BuJSYBdHQL5U48Lpir9ok+TrMnL
+         nb89vym5VGpm+peh2gEdJ6B0vCNo9QP0owNPPvglaYrFFsOXa3RA7IQWYZB/b3lQWsFP
+         epZfeketh65tqqWHJhJdqFNh6mhNi7TOVbXvYjcMs8rhj2AlAc7veq3dpvLcZoDYeYyn
+         pNag==
+X-Gm-Message-State: AOAM5321QhyiEJEKrzYC/4OYnPtipFoGf/Pccg0KaZW0t+cae5nsVyRo
+        uEJ7gKtGbyF338jjp+yxhtUNWZ9RCocl0siDgL4=
+X-Google-Smtp-Source: ABdhPJwK457s1su5i06Vm32k1rB4v2C+S8Fcn3hpdVvzXMWnOW8jFC18YjonYj7R4ou0+jfTdQGZog==
+X-Received: by 2002:a05:6402:1581:: with SMTP id c1mr9643991edv.213.1624565501099;
+        Thu, 24 Jun 2021 13:11:41 -0700 (PDT)
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
+        by smtp.gmail.com with ESMTPSA id b27sm1632156ejl.10.2021.06.24.13.11.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 13:11:40 -0700 (PDT)
+Received: by mail-ej1-f41.google.com with SMTP id gn32so11445159ejc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 13:11:38 -0700 (PDT)
+X-Received: by 2002:a2e:850e:: with SMTP id j14mr3525901lji.251.1624565080001;
+ Thu, 24 Jun 2021 13:04:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lK/r+RGshAVR/Cbr"
-Content-Disposition: inline
-In-Reply-To: <20210604232744.1259150-1-swboyd@chromium.org>
+References: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+ <87sg1lwhvm.fsf@disp2133> <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+ <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com> <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+ <87eed4v2dc.fsf@disp2133> <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+ <87fsxjorgs.fsf@disp2133> <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+ <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk> <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+ <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+ <87a6njf0ia.fsf@disp2133> <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
+ <87tulpbp19.fsf@disp2133> <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
+ <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133> <87czsb6q9r.fsf_-_@disp2133>
+In-Reply-To: <87czsb6q9r.fsf_-_@disp2133>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 24 Jun 2021 13:04:24 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi2OpVrBD38A5Re4=rSSWnjwg3GcmsxtAPeHVSmQZy1VA@mail.gmail.com>
+Message-ID: <CAHk-=wi2OpVrBD38A5Re4=rSSWnjwg3GcmsxtAPeHVSmQZy1VA@mail.gmail.com>
+Subject: Re: [PATCH 4/9] signal: Factor start_group_exit out of complete_signal
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I don't really mind the patch, but this patch doesn't actually do what
+it says it does.
 
---lK/r+RGshAVR/Cbr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It factors out start_group_exit_locked() - which all looks good.
 
-On Fri, Jun 04, 2021 at 04:27:44PM -0700, Stephen Boyd wrote:
-> From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
->=20
-> If an i2c client receives an interrupt during reboot or shutdown it may
-> be too late to service it by making an i2c transaction on the bus
-> because the i2c controller has already been shutdown. This can lead to
-> system hangs if the i2c controller tries to make a transfer that is
-> doomed to fail because the access to the i2c pins is already shut down,
-> or an iommu translation has been torn down so i2c controller register
-> access doesn't work.
->=20
-> Let's simply disable the irq if there isn't a shutdown callback for an
-> i2c client when there is an irq associated with the device. This will
-> make sure that irqs don't come in later than the time that we can handle
-> it. We don't do this if the i2c client device already has a shutdown
-> callback because presumably they're doing the right thing and quieting
-> the device so irqs don't come in after the shutdown callback returns.
->=20
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> [swboyd@chromium.org: Dropped newline, added commit text, added
-> interrupt.h for robot build error]
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+But then it also creates that new start_group_exit() function and
+makes the declaration for it, and nothing actually uses it. Yet.
 
-Applied to for-next, thanks!
+I'd do that second part later when you actually introduce the use in
+the next patch (5/9).
 
+Hmm?
 
---lK/r+RGshAVR/Cbr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDU5T0ACgkQFA3kzBSg
-KbZ23hAAlpBEOrTHLQ98sISGlEx9SLvsZVqzHCUPBj5ipjKB9fhp+7daqOsEIRs3
-qpFd/vQCdcBsuTasC7xQYoAw8OJAWGs5dfr3s1DUoyMyJ5YJq3ZZK+9u9IR23z2Q
-F6VOz5G6Kzwu8JGA+3tR0B8lcwMh+7ppgYv4A7DRuvzVoTTFezzR2YoPNJU8D5yR
-jCxRbPZbqNFzt/gmB1UMWI+ZQ761vhC6IcV0qhevPugO5Gvsn/u31Uq8oMEtU3u7
-U3BslPhw0CwV0YkZN3FaPmq0Huv5+tJ99oe5SvE5yLX5AVG3GhmZqRsDewBKN/m6
-x55r+Wfc4zWK+8KhERe1/1aOetbpYG/QGMX9ZrDnnPVB+oPihBGdvUY3udu8qN+V
-SUr3ZAhAdTS7c3x5JY1EQJMrMjzIIacpkgN1v7762oyxt+GEZSDIj6odT3XgqgOY
-QrKFpc2l0W47I7R3Ss/roe9+FSDgjfDXxVoAJQwcqOa13yqR6Mm22hwEF0nKFT92
-JvoQm686yPJembutX/GTA8rA/FfuXVRfDl7wDizS6qhPbqOSMESoABh+jelu+eFy
-ELmh88SX+nlHFFuS+GDT375F/lIJWAFBET4iclXhlyox0CjIDiCcvoxbX5CbdYgI
-T/P/DLU6EPqUH8sPxRS2wBHNPgkd4T3y87/a/hrDcQel6+xQCRU=
-=L/nM
------END PGP SIGNATURE-----
-
---lK/r+RGshAVR/Cbr--
+           Linus
