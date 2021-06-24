@@ -2,71 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31803B39BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 01:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91ECD3B39BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 01:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232654AbhFXX3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 19:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhFXX3I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 19:29:08 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D87C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 16:26:47 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id m15-20020a17090a5a4fb029016f385ffad0so4472693pji.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 16:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=V5EAusOWeaWjxDeOUrtt5BLE93n2Q9vwQBSAe++MbSA=;
-        b=LuKs2o+v3KoZK98VBOFYqFYckf4i7JxNqcyvcQvVSzxNemFv3kmK+cumvGX3fLHDQ6
-         0BAT+cjOP7LFnYpzDnqao193VZKjXusA4EE9u4zV1ii34xeO0mwfun0lTd2rI/zlAQmy
-         UjA5OQVG8D262peT4xFryC6GCJ/f1rtQ+IvNryawEtum5WfTeJ73qbIpXQhAnRZFwDDW
-         0mVjnOLspNKzyeBObbdlnU1gPHviKq1kndZYQ9zgu6kdZ4MZIKB4qJq0QzsmTqYEQyOi
-         ++CJG+/nmPkJFdCMJ+197AGagkNuIO1MX07q/aAt61kPgi98dxkHt6xCOAMWR8Z5IeZq
-         e9/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=V5EAusOWeaWjxDeOUrtt5BLE93n2Q9vwQBSAe++MbSA=;
-        b=E8bBwmhNmznLAS5WYFSAWcrp67vKRs0pOTXznK4A1rRuowdF39szNFcQjF7AtES5b0
-         ++N+OXKZLXf9PfEFpi0OnPb4BK045pspuUbk5j5ieQCuNDFIn+mqY6N2bqGZHI1Dv7Zc
-         j8eAn1tv/zOPTHOlQdfHKmUXEe873JPORW/baqa5NOaxc1fQ2BHNMClMoGoXLPIUVklu
-         wJ+smGJRzstUYCjvflCiiJgVOn1p1BExSSm1S4C+f8J/qbgxdql3GFe3XsBMo1/F6YdY
-         tr5i46KpKvFSed3gxEK/YgTPBpLKf7DlgqORSIB+/JPvhRKqotZpHGqMCB07qAlyGygT
-         ORNg==
-X-Gm-Message-State: AOAM5320PD1Eautcr9z9XM5MsbVetELtSGdzdDep1GJdL3QfBWSiqGlK
-        sSpc7mzPIczEWL10tyAAGXl3BmJ/o8Ajr/DMEmY=
-X-Google-Smtp-Source: ABdhPJximrp0yOojjUf5f3QHblzgslqm7TLTes2MuVaha9wIm6mwn2WvhZdtpt/mB5vHfHjKyktEG4H0dmc0ey6l36s=
-X-Received: by 2002:a17:902:e88b:b029:127:a2f4:37b5 with SMTP id
- w11-20020a170902e88bb0290127a2f437b5mr2841353plg.20.1624577207010; Thu, 24
- Jun 2021 16:26:47 -0700 (PDT)
+        id S232741AbhFXXbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 19:31:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229521AbhFXXbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 19:31:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F6726109D;
+        Thu, 24 Jun 2021 23:28:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624577322;
+        bh=ldX9RoquT9Rh15kfP3FoVZ10xacgMSNt/9jIwP+BvEY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=SsYrM7WMbzNsbAGWMcs0kcP8ECXwziLWX8RgMfJCnKWub1yrt5UXYJL9w3VUEykjL
+         3uxLK5T/08vZg1d34q7VgSuXohvkB3WpNf7zjH7ZZrPSzQxvzY7pYfO+BDG6Q+S2BK
+         HdtYhARYSiPn3GDJDU/7ZOZEdrDCNlVqWIIxeow45bKDtxQw/6g5dz7h5EFZMYEVLD
+         kOE3Gr9bm2E30hnODihqtIAvU98kS7Fzdb0V6Q8DGPF56D3k3+bMdbOZbtOZk+6m/p
+         dACxFFLrh0nqm8nIrNNU9GDxmkQ9iBe2ZK1eI4SxocJCnEZ13pPkBFluQ3h8I3I8yD
+         esQ/F6WP/heoA==
+Date:   Thu, 24 Jun 2021 18:28:41 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
+ clocks gated
+Message-ID: <20210624232841.GA3579021@bjorn-Precision-5520>
 MIME-Version: 1.0
-Received: by 2002:a17:90a:f2ca:0:0:0:0 with HTTP; Thu, 24 Jun 2021 16:26:46
- -0700 (PDT)
-Reply-To: alahmedhassan5602@gmail.com
-From:   Ahmed Hassan <florisflorber@gmail.com>
-Date:   Thu, 24 Jun 2021 23:26:46 +0000
-Message-ID: <CAFptJP9Mn6bMyK14F_XFvQNFNgmVCc6HP=wjA8v-9ZVcRXbf8g@mail.gmail.com>
-Subject: Please respond urgently
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <44c551d7-fee4-13cf-2929-6d2383dd5497@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Fri, Jun 25, 2021 at 12:18:48AM +0100, Robin Murphy wrote:
+> On 2021-06-24 22:57, Bjorn Helgaas wrote:
+> > On Tue, Jun 08, 2021 at 10:04:09AM +0200, Javier Martinez Canillas wrote:
+> > > IRQ handlers that are registered for shared interrupts can be called at
+> > > any time after have been registered using the request_irq() function.
+> > > 
+> > > It's up to drivers to ensure that's always safe for these to be called.
+> > > 
+> > > Both the "pcie-sys" and "pcie-client" interrupts are shared, but since
+> > > their handlers are registered very early in the probe function, an error
+> > > later can lead to these handlers being executed before all the required
+> > > resources have been properly setup.
+> > > 
+> > > For example, the rockchip_pcie_read() function used by these IRQ handlers
+> > > expects that some PCIe clocks will already be enabled, otherwise trying
+> > > to access the PCIe registers causes the read to hang and never return.
+> > 
+> > The read *never* completes?  That might be a bit problematic because
+> > it implies that we may not be able to recover from PCIe errors.  Most
+> > controllers will timeout eventually, log an error, and either
+> > fabricate some data (typically ~0) to complete the CPU's read or cause
+> > some kind of abort or machine check.
+> > 
+> > Just asking in case there's some controller configuration that should
+> > be tweaked.
+> 
+> If I'm following correctly, that'll be a read transaction to the native side
+> of the controller itself; it can't complete that read, or do anything else
+> either, because it's clock-gated, and thus completely oblivious (it might be
+> that if another CPU was able to enable the clocks then everything would
+> carry on as normal, or it might end up totally deadlocking the SoC
+> interconnect). I think it's safe to assume that in that state nothing of
+> importance would be happening on the PCIe side, and even if it was we'd
+> never get to know about it.
 
-I need your urgent assistance in transferring the sum of $11.3 million
-USD, to your private account Where this money can be shared between
-us. The money has been here in our Bank lying dormant for years now
-without anybody coming for the claim.
+Oh, right, that makes sense.  I was thinking about the PCIe side, but
+if the controller itself isn't working, of course we wouldn't get that
+far.
 
-By indicating your interest I will send you the full details on how
-the business will be executed.
+I would expect that the CPU itself would have some kind of timeout for
+the read, but that's far outside of the PCI world.
 
-Best Regards,
-Ahmed Hassan
+Bjorn
