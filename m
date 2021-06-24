@@ -2,137 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5C93B269B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 06:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D72B43B2662
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 06:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhFXE4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 00:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54738 "EHLO
+        id S229478AbhFXEfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 00:35:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbhFXEyv (ORCPT
+        with ESMTP id S229448AbhFXEfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 00:54:51 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43708C061574;
-        Wed, 23 Jun 2021 21:52:33 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4G9SRT4pGKz9t0T; Thu, 24 Jun 2021 14:52:21 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=gibson.dropbear.id.au; s=201602; t=1624510341;
-        bh=Y1ZXO4GOKwiZGQOUSkU62M3QSVIF13l7lSRYG/A5sd4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ihu3DMzkLAV+wjtqkkh/A0N7zBO2qjXvqPIoL5l26qdg3N4Fpa6+Mg5QnLEYJ36C+
-         E8IfzU/O8tDq34n9NEkU4Ui+voj839ng2PR0r2T7a4WXMpZu1iaIyq/8aMRgwfYmkI
-         F42I0a7ZNBzG+9PEbFmvHo8VbdxCQQktyxyZcIDM=
-Date:   Thu, 24 Jun 2021 14:29:29 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: Plan for /dev/ioasid RFC v2
-Message-ID: <YNQKKSb3onBCz+f6@yekko>
-References: <20210612105711.7ac68c83.alex.williamson@redhat.com>
- <20210614140711.GI1002214@nvidia.com>
- <20210614102814.43ada8df.alex.williamson@redhat.com>
- <MWHPR11MB1886239C82D6B66A732830B88C309@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210615101215.4ba67c86.alex.williamson@redhat.com>
- <MWHPR11MB188692A6182B1292FADB3BDB8C0F9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210616133937.59050e1a.alex.williamson@redhat.com>
- <MWHPR11MB18865DF9C50F295820D038798C0E9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <YMykBzUHmATPbmdV@8bytes.org>
- <20210618151506.GG1002214@nvidia.com>
+        Thu, 24 Jun 2021 00:35:01 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0229DC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 21:32:43 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id f10so2310052plg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 21:32:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lTTd4C04SA2E3AghdMNSGn7s0cIff6cdMlZ1vAXtDSA=;
+        b=gen7iuSa1fQaov27zr35RQ3fadV1bVakwExJvyoiz/2bAisC/EC2AoCmrVyvbgzPwD
+         4nlY18J9+uD30MzVgmESRnwG7KFHNjSUm/oMxYcJ59RgRczKUQERiJGKHqOviBzoxTL6
+         0DMxTW3MAk0v0ymifRwSsciaXB//wR52cMlxJYQytRE+5McqSQDKGO7tH4DZkxUOuSo0
+         /cwV8keRsZwMejvLjCpil20D/D9pR2P9xM7WhBEGNGM+14jxF7KzzVBhbeHotw0I9eEk
+         R6U0KXym1XeZAv1klhqYuOW+UDK8YKQP4tcXjo2hn0YGW7q4CIwqvgSLLeMY6Uo7g/9H
+         h0Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lTTd4C04SA2E3AghdMNSGn7s0cIff6cdMlZ1vAXtDSA=;
+        b=ktmQJvfhJJIun6ZeRAB88DpFKlNbRWBTIQLshNLrpiYur1ZAMxZQl8TVYbAtjms8MU
+         VJWT46E/MaSULe9YO2Bob8Yn34H1KTCno9IXjaHZZeFhuoTgkDlsxb4bIl4qyDDv9f8T
+         eTmfu/Jg387yIyvhuMo9wWF7i9O/+D7IiV8xioZ5Ybugj+GlXWgQ9BG670wPz3/x5Oed
+         UhFa9x6iEb5FUOlD2QuJeeiEBQlpGaqyyGWuuB0zEhDfP9l4F1Hvxo7VJ3tPR1pthBvb
+         6mhOL45mwxloaLbIwaU8vfArs3AkHJNIlP+EsXgya//qFlj4KGGiAJFrh8GBkx0L/sbn
+         Z3xQ==
+X-Gm-Message-State: AOAM533jn+63bEPN3GDD7IH6IAcEHsh7p8tsg2pYUcmcmxQTPUaJiEPz
+        vlVwFQm5of+K+6zJbKr0O5Td0g==
+X-Google-Smtp-Source: ABdhPJzz6vn2zWUKB2ryOpIaYUVQnrSaiXXW5UhtPCB+tqvxcPK98S7Q9smW66yPLcbeUXDhds9k9Q==
+X-Received: by 2002:a17:90a:de84:: with SMTP id n4mr8712489pjv.62.1624509162441;
+        Wed, 23 Jun 2021 21:32:42 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id 76sm1231543pfu.131.2021.06.23.21.32.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 21:32:41 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 10:02:40 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yangtao Li <tiny.windzz@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Georgi Djakov <djakov@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 2/2] dt-bindings: opp: Convert to DT schema
+Message-ID: <20210624043240.n6m3cdftz75lhm3t@vireshk-i7>
+References: <20210623230722.3545986-1-robh@kernel.org>
+ <20210623230722.3545986-3-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="yLEcQ6F0C4xJHQpz"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210618151506.GG1002214@nvidia.com>
+In-Reply-To: <20210623230722.3545986-3-robh@kernel.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks for taking it up :)
 
---yLEcQ6F0C4xJHQpz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 23-06-21, 17:07, Rob Herring wrote:
+> diff --git a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+> +$id: http://devicetree.org/schemas/opp/opp-v2-base.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Generic OPP (Operating Performance Points) Common Binding
+> +
+> +maintainers:
+> +  - Viresh Kumar <viresh.kumar@linaro.org>
+> +
+> +description: |
+> +  Devices work at voltage-current-frequency combinations and some implementations
+> +  have the liberty of choosing these. These combinations are called Operating
+> +  Performance Points aka OPPs. This document defines bindings for these OPPs
+> +  applicable across wide range of devices. For illustration purpose, this document
+> +  uses CPU as a device.
+> +
+> +  This describes the OPPs belonging to a device.
+> +
+> +select: false
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: '^opp-table(-[a-z0-9]+)?$'
+> +
+> +  opp-shared:
+> +    description:
+> +      Indicates that device nodes using this OPP Table Node's phandle switch
+> +      their DVFS state together, i.e. they share clock/voltage/current lines.
+> +      Missing property means devices have independent clock/voltage/current
+> +      lines, but they share OPP tables.
+> +    type: boolean
+> +
+> +patternProperties:
+> +  '^opp-?[0-9]+$':
+> +    type: object
+> +    description:
+> +      One or more OPP nodes describing voltage-current-frequency combinations.
+> +      Their name isn't significant but their phandle can be used to reference an
+> +      OPP. These are mandatory except for the case where the OPP table is
+> +      present only to indicate dependency between devices using the opp-shared
+> +      property.
+> +
+> +    properties:
+> +      opp-hz:
+> +        description:
+> +          Frequency in Hz, expressed as a 64-bit big-endian integer. This is a
+> +          required property for all device nodes, unless another "required"
+> +          property to uniquely identify the OPP nodes exists. Devices like power
+> +          domains must have another (implementation dependent) property.
+> +
+> +      opp-peak-kBps:
+> +        description:
+> +          Peak bandwidth in kilobytes per second, expressed as an array of
+> +          32-bit big-endian integers. Each element of the array represents the
+> +          peak bandwidth value of each interconnect path. The number of elements
+> +          should match the number of interconnect paths.
+> +        minItems: 1
+> +        maxItems: 32  # Should be enough
 
-On Fri, Jun 18, 2021 at 12:15:06PM -0300, Jason Gunthorpe wrote:
-> On Fri, Jun 18, 2021 at 03:47:51PM +0200, Joerg Roedel wrote:
-> > Hi Kevin,
-> >=20
-> > On Thu, Jun 17, 2021 at 07:31:03AM +0000, Tian, Kevin wrote:
-> > > Now let's talk about the new IOMMU behavior:
-> > >=20
-> > > -   A device is blocked from doing DMA to any resource outside of
-> > >     its group when it's probed by the IOMMU driver. This could be a
-> > >     special state w/o attaching to any domain, or a new special domain
-> > >     type which differentiates it from existing domain types (identity=
-,=20
-> > >     dma, or unmanged). Actually existing code already includes a
-> > >     IOMMU_DOMAIN_BLOCKED type but nobody uses it.
-> >=20
-> > There is a reason for the default domain to exist: Devices which require
-> > RMRR mappings to be present. You can't just block all DMA from devices
-> > until a driver takes over, we put much effort into making sure there is
-> > not even a small window in time where RMRR regions (unity mapped regions
-> > on AMD) are not mapped.
->=20
-> Yes, I think the DMA blocking can only start around/after a VFIO type
-> driver has probed() and bound to a device in the group, not much
-> different from today.
+Can we move this down, closer to opp-avg-kBps ?
 
-But as I keep saying, some forms of grouping (and DMA aliasing as Alex
-mentioned) mean that changing the domain of one device can change the
-domain of another device, unavoidably.  It may be rare with modern
-hardware, but we still can't ignore the case.
+> +
+> +      opp-microvolt:
+> +        description: |
+> +          Voltage for the OPP
+> +
+> +          A single regulator's voltage is specified with an array of size one or three.
+> +          Single entry is for target voltage and three entries are for <target min max>
+> +          voltages.
+> +
+> +          Entries for multiple regulators shall be provided in the same field separated
+> +          by angular brackets <>. The OPP binding doesn't provide any provisions to
+> +          relate the values to their power supplies or the order in which the supplies
+> +          need to be configured and that is left for the implementation specific
+> +          binding.
+> +
+> +          Entries for all regulators shall be of the same size, i.e. either all use a
+> +          single value or triplets.
+> +        minItems: 1
+> +        maxItems: 8
 
-Which means you can't DMA block until everything in the group is
-managed by a vfio-like driver.
+For consistency with rest of the doc, maybe add
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+# Should be enough regulators
 
---yLEcQ6F0C4xJHQpz
-Content-Type: application/pgp-signature; name="signature.asc"
+> +        items:
+> +          minItems: 1
+> +          maxItems: 3
+> +
+> +      opp-microamp:
+> +        description: |
+> +          The maximum current drawn by the device in microamperes considering
+> +          system specific parameters (such as transients, process, aging,
+> +          maximum operating temperature range etc.) as necessary. This may be
+> +          used to set the most efficient regulator operating mode.
+> +
+> +          Should only be set if opp-microvolt(-name)? is set for the OPP.
 
------BEGIN PGP SIGNATURE-----
+What is the significance of '?' here ?
 
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmDUCikACgkQbDjKyiDZ
-s5LTyA//bJpWtaDHUtdmpyHIrjTXkhO/p0T3/Me6MMC2aA3PiMYgq5mOYQ8rJEfX
-7kRqkNMRDLOjachD429QvNosQGm8ImsLOK7SRLQeE9BMBYB6IU7G8ig+jpTsRbRT
-qmKFuoqWalvFrP9Mct8HLY3SjT/lXke7356q11hjhKMVRWNdmwZSsX6rak8+N+cy
-sQI9Y/ZtjJVSYYA8e/FQOSsMW4AnQpDCNCQhDEU0Do6MJ+Epf92C4BiDQnBprrBJ
-GuZaoRA3tlUKb1wUYcyG1piE8aAWGUyVNxGR0h7P6CQ9qR1mLugUPEJLwS8J6ZFD
-h50XuLB9SD1WynaS3onyvugDSP8EPdnei+nAHQqyOs97zZksy6j+/066OslhEhWw
-OIMQbIC+f9WHHBABG7g4g8ZCQUY9jYPvw23gjyWDHuyQtqrCXRUE8O/9kn6fQbBM
-0jcZUEyvq5RiSnfnP3+Ja6z0bj6BL83IYkUIrVKJFwY4c19HwTk5cqYqU+lG2PRg
-hv212bYgICZXJ4QZBbzqR/1Jc5maQB/tc0LYiyrtc4GagrUOuchgN3T9mmNKe+IV
-widXRoL/4ntxuPzZnUhgcOjpHAVxC2wkv3aAfLcRVDTfu7xfU29YW84cSHbCulHK
-FZ6zhyeEY818TljNrE8LY6iCyUJqLINRaIC97bqzCvxkquXvQF4=
-=pdCD
------END PGP SIGNATURE-----
+> +
+> +          Entries for multiple regulators shall be provided in the same field
+> +          separated by angular brackets <>. If current values aren't required
+> +          for a regulator, then it shall be filled with 0. If current values
+> +          aren't required for any of the regulators, then this field is not
+> +          required. The OPP binding doesn't provide any provisions to relate the
+> +          values to their power supplies or the order in which the supplies need
+> +          to be configured and that is left for the implementation specific
+> +          binding.
+> +        minItems: 1
+> +        maxItems: 8   # Should be enough regulators
+> +        items:
+> +          minItems: 1
+> +          maxItems: 3
 
---yLEcQ6F0C4xJHQpz--
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+
+-- 
+viresh
