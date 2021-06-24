@@ -2,162 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F333B3924
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 00:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB023B3926
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 00:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232854AbhFXWZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 18:25:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54277 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229712AbhFXWY7 (ORCPT
+        id S232831AbhFXW2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 18:28:12 -0400
+Received: from mail-pf1-f171.google.com ([209.85.210.171]:42570 "EHLO
+        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229712AbhFXW2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 18:24:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624573359;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g477a7vYcPKjBKrDFYuYGrViI13ze8NFDaxSg09H1cQ=;
-        b=SZvzVfWZDgxUs16lzZoL+yzcVQ0ndXdSGGjxUDZST62VFoLqV+ODwHOArDRESz18CUdW5z
-        +Joy9dL62IZKbo7bWjbDkNCEF+toc7ivsVBDjuU8jaApx7MjjCTpLlrtVK/N12hQzugECa
-        jiFgt5q+qYxdrF9jw9t8cQDV5vTNyNw=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-485-qXCJhEJ-Psq7XK7GtZSgxg-1; Thu, 24 Jun 2021 18:22:37 -0400
-X-MC-Unique: qXCJhEJ-Psq7XK7GtZSgxg-1
-Received: by mail-oi1-f199.google.com with SMTP id n144-20020acad6960000b029023d8bff0429so896481oig.21
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 15:22:37 -0700 (PDT)
+        Thu, 24 Jun 2021 18:28:09 -0400
+Received: by mail-pf1-f171.google.com with SMTP id y4so6407457pfi.9;
+        Thu, 24 Jun 2021 15:25:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=g477a7vYcPKjBKrDFYuYGrViI13ze8NFDaxSg09H1cQ=;
-        b=OazHg+AYyP4gghtTGwqliIgqlA2YTB8M/fxTn4jOOHCZvbCWQ8QubmPYn9CeJ3iAol
-         c/SZ77tk16FCeQcX3ct4J2G18ssWq7/uXi2i/sOkaIRYK5imIUCccyH4LI/NwsVCNKq0
-         ICCTmzvlU6kR4M+nF8CDg5tody2YNNr6BrMta0rpM11uEo8cbwwSXquaH2kLlNI9pykb
-         bkso1Gm5SJfHhMDnZ2xB33+jpaXThYXZlMk3punNl3anltwivqSszCfdQwmjRc44SbIE
-         MUVoNHFBF43KNwl2ODoAEOOLiKrTtvf2PZCpyLrxrP1CYDgdNDNqtOxCPRvwBBrkJ4vn
-         H2Mw==
-X-Gm-Message-State: AOAM533nLeTs+5jZHo4pjRI0jwtqX/gDx8DhFPdHevGOFiL4HY+hjaju
-        rvktniiDl8YWlEaSk2m7NRjZa4J3Drfvp0BT6f2tOAz4EYEWr3andjCcme/y0kb2Hwc73thyhjl
-        5UQl3aQso5JWErQQ0SW7B3s+6
-X-Received: by 2002:aca:3047:: with SMTP id w68mr1880002oiw.6.1624573357104;
-        Thu, 24 Jun 2021 15:22:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzBPANrb92It2A02MpQuIyUGqsZj+J9hwey1ULiCLGhpflsYkKlL9h3yl020Nq3skcI4zeyXA==
-X-Received: by 2002:aca:3047:: with SMTP id w68mr1879989oiw.6.1624573356916;
-        Thu, 24 Jun 2021 15:22:36 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id s4sm502047oou.43.2021.06.24.15.22.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 15:22:36 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 16:22:34 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     "Tian\, Kevin" <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "Dey\, Megha" <megha.dey@intel.com>,
-        "Raj\, Ashok" <ashok.raj@intel.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Lu\, Baolu" <baolu.lu@intel.com>,
-        "Williams\, Dan J" <dan.j.williams@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, KVM <kvm@vger.kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: [PATCH] vfio/pci: Document the MSI[X] resize side effects
- properly
-Message-ID: <20210624162234.6476712c.alex.williamson@redhat.com>
-In-Reply-To: <87im23bh72.ffs@nanos.tec.linutronix.de>
-References: <20210622131217.76b28f6f.alex.williamson@redhat.com>
-        <87o8bxcuxv.ffs@nanos.tec.linutronix.de>
-        <20210623091935.3ab3e378.alex.williamson@redhat.com>
-        <MWHPR11MB18864420ACE88E060203F7818C079@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <87mtrgatqo.ffs@nanos.tec.linutronix.de>
-        <20210623204828.2bc7e6dc.alex.williamson@redhat.com>
-        <87im23bh72.ffs@nanos.tec.linutronix.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=txsE4yW8fLSVaTRFZWvuwX16MY0QYTfH/BlvYlhRx3c=;
+        b=qtrSlZHoMPbPW8UY+zHxo+CiU+b6ozjBG3dujSCqTzrl3JkKerq2Y5RVC+vZmcM8Ko
+         KUBbMS0x7705BVZ0wfbzvxGQAJOWwgTuvo5siPIxvkV4Un+uxbk9xReyxbL4wST46IKS
+         0fBWj8RRW2rQsZtZRHmW8SqHsTK1ji68rmakQs97QGlnIuVfS+pxD7cBboogXEtOjhZP
+         br00xnKpD4QucrOX/diVjaL2GKT4bg9B70UgNnFjXMqXqNByywYgOTIBrZFPb85AgCVC
+         4ktBnuafIeucHwn+dHRupdc+osaesEhihWD5UlaQzSM7oCeBKJB8pFLajvwFjxrFG7TZ
+         OnuQ==
+X-Gm-Message-State: AOAM530NOVcx+zfKrBi2zoQBIkDH7XCTGRS61RoEt03OhuaGyYC1jsoY
+        XQAeljCEpw8ood30UK3ixRhZyNk4jgM=
+X-Google-Smtp-Source: ABdhPJznjRBlthi5exphHW34zK6kQweD1W4S7z98al0RiKrGtXPy9f926UqlHDKGumqjM8Cr0yRD4w==
+X-Received: by 2002:a05:6a00:168a:b029:2fb:6bb0:aba with SMTP id k10-20020a056a00168ab02902fb6bb00abamr7360923pfc.32.1624573549206;
+        Thu, 24 Jun 2021 15:25:49 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id ml5sm8635680pjb.3.2021.06.24.15.25.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 15:25:47 -0700 (PDT)
+Subject: Re: [PATCH v4 10/10] scsi: ufs: Apply more limitations to user access
+To:     Can Guo <cang@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
+ <1624433711-9339-12-git-send-email-cang@codeaurora.org>
+ <89a3c8bf-bbfc-4a2a-73f0-a0db956fbf0e@acm.org>
+ <d9db00ef6dd4b28d0ba2019dcf026479@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <e803db99-947c-f217-e0c8-091241014086@acm.org>
+Date:   Thu, 24 Jun 2021 15:25:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <d9db00ef6dd4b28d0ba2019dcf026479@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 14:06:09 +0200
-Thomas Gleixner <tglx@linutronix.de> wrote:
-
-> The documentation of VFIO_IRQ_INFO_NORESIZE is inaccurate as it suggests
-> that it is safe to dynamically add new MSI-X vectors even when
-> previously allocated vectors are already in use and enabled.
+On 6/23/21 7:23 PM, Can Guo wrote:
+> On 2021-06-24 05:51, Bart Van Assche wrote:
+>> On 6/23/21 12:35 AM, Can Guo wrote:
+>> - During system suspend, user space software is paused before the device
+>>   driver freeze callbacks are invoked. Hence, the hba->is_sys_suspended
+>>   check can be left out.
 > 
-> Enabling additional vectors is possible according the MSI-X specification,
-> but the kernel does not have any mechanisms today to do that safely.
+> is_sys_suspended indicates that system resume failed (power/clk is OFF).
 > 
-> The only available mechanism is to teardown the already active vectors
-> and to setup the full vector set afterwards.
+>> - If a LUN is runtime suspended, it should be resumed if accessed from
+>>   user space instead of failing user space accesses. In other words, the
+>>   hba->is_wlu_sys_suspended check seems inappropriate to me.
 > 
-> This requires to temporarily disable MSI-X which redirects any interrupt
-> raised by the device during this time to the legacy PCI/INTX which is
-> not handled and the interrupt is therefore lost.
-> 
-> Update the documentation of VFIO_IRQ_INFO_NORESIZE accordingly.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  include/uapi/linux/vfio.h |   17 +++++++++++++----
->  1 file changed, 13 insertions(+), 4 deletions(-)
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -699,10 +699,19 @@ struct vfio_region_info_cap_nvlink2_lnks
->   * disabling the entire index.  This is used for interrupts like PCI MSI
->   * and MSI-X where the driver may only use a subset of the available
->   * indexes, but VFIO needs to enable a specific number of vectors
-> - * upfront.  In the case of MSI-X, where the user can enable MSI-X and
-> - * then add and unmask vectors, it's up to userspace to make the decision
-> - * whether to allocate the maximum supported number of vectors or tear
-> - * down setup and incrementally increase the vectors as each is enabled.
-> + * upfront.
-> + *
-> + * MSI cannot be resized safely when interrupts are in use already because
-> + * resizing requires temporary disablement of MSI for updating the relevant
-> + * PCI config space entries. Disabling MSI redirects an interrupt raised by
-> + * the device during this time to the unhandled legacy PCI/INTX, which
-> + * means the interrupt is lost.
-> + *
-> + * Enabling additional vectors for MSI-X is possible at least from the
-> + * perspective of the MSI-X specification, but not supported by the
-> + * exisiting PCI/MSI-X mechanisms in the kernel. The kernel provides
-> + * currently only a full teardown/setup cycle which requires to disable
-> + * MSI-X temporarily with the same side effects as for MSI.
->   */
->  struct vfio_irq_info {
->  	__u32	argsz;
-> 
+> hba->is_wlu_sys_suspended indicates that wl system resume failed, device
+> is not operational.
 
-There's good information here, but as per my other reply I think
-NORESIZE might be only a host implementation issue for both MSI and
-MSI/X.
+Hi Can,
 
-I'd also rather not focus on that existing implementation in this
-header, which is essentially the uAPI spec, because that implementation
-can change and we're unlikely to remember to update the description
-here.  We might even be describing a device that emulates MSI/X in some
-way that it's not bound by this limitation.  For example maybe Intel's
-emulation of MSI-X backed by IMS wouldn't need this flag and we could
-update QEMU to finally have a branch that avoids the teardown/setup.
-We have a flag to indicate this behavior, consequences should be
-relative to the presence of that flag.
+Thanks for the clarification. How about converting the above two answers
+into comments inside ufshcd_is_user_access_allowed()?
 
-Finally a nit, I don't really see a strong case that the existing text
-is actually inaccurate or implying some safety against lost interrupts.
-It's actually making note of the issue here already, though the more
-explicit description is welcome.  Thanks,
+Should ufshcd_is_user_access_allowed() perhaps be called after
+ufshcd_rpm_get_sync() instead of before to prevent that the value of
+hba->is_sys_suspended or hba->is_wlu_sys_suspended changes after having
+been checked and before the UFS device is accessed?
 
-Alex
+Thanks,
 
+Bart.
