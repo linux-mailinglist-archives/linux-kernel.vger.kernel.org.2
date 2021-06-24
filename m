@@ -2,112 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CABB13B2504
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5483B2522
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhFXCbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 22:31:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229758AbhFXCbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 22:31:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB35F613B0;
-        Thu, 24 Jun 2021 02:29:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624501754;
-        bh=qfes4XlTr7wZHA/gX1R4vn3ErhXUgft2vuwloOuqJH8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FAMh4+QoAuFF1jJ9kHmTbp9/ydQxbb3M5ZXBFYFE5KwhbO8otL4kipxuWZCx5CvXV
-         1g/6NvgDwplHRZuGBhTtc6SHDQxjSpk6y95eGTetqRfIvyp32Kx5Ya5T5ay344bzEE
-         D9sGb1HKg9xTiP3RmSnd4WkjUR/SLietI7dEfA5kf+f011nRkGNq5yCRB1cyr9AQmK
-         00KuXivitCPNOy5tY6Da+rcrfkF2EBc9mOkR5HmtnRsp9bCtE9HojGQ9c48JJ6RFVv
-         /P/luhRi5YV574NjTxA3YTl7IYODn5ZeuXzd5tx51WGfWxH6C91MYON63V/vMoiXJ+
-         /lOBphk8eqyUg==
-Date:   Wed, 23 Jun 2021 19:29:11 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Marcin Wojtas <mw@semihalf.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the net-next tree
-Message-ID: <YNPt91bfjrgSt8G3@Ryzen-9-3900X.localdomain>
-References: <20210624082911.5d013e8c@canb.auug.org.au>
- <CAPv3WKfiL+sR+iK_BjGKDhtNgjoxKEPv49bU1X9_7+v+ytdR1w@mail.gmail.com>
+        id S229844AbhFXCnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 22:43:09 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:51234 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229758AbhFXCnI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 22:43:08 -0400
+X-UUID: 6209376768204bd992dda09f48f4905a-20210624
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=FpWuiP30rVCaUKvHtFHlh5h0ex91DhGOfeo3AevBYqo=;
+        b=QMvhBTB2AsELE+JPQ1anOc7xgi/c1lwCL3NvYin5jaB4MKAUyA4Nh6nRodQincY/EjDndqzK/QOAUabQA6ErOnjGThhCJ8YyTkxbJRkIzTNR223+2XVE682zXzzu0pAJX2ih1qulJXAV+4ncPsUZSLzXphjDcS6jHwI9uM6dF8w=;
+X-UUID: 6209376768204bd992dda09f48f4905a-20210624
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <mason.zhang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1249882211; Thu, 24 Jun 2021 10:40:48 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 24 Jun 2021 10:40:47 +0800
+Received: from [10.15.20.246] (10.15.20.246) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 24 Jun 2021 10:40:46 +0800
+Message-ID: <1624501564.30242.7.camel@mbjsdccf07>
+Subject: Re: [PATCH v4 1/1] arm64: dts: mediatek: add MT6779 spi master dts
+ node
+From:   Mason Zhang <mason.zhang@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        <mason.zhang@mediatek.com>
+Date:   Thu, 24 Jun 2021 10:26:04 +0800
+In-Reply-To: <20210624021137.11513-1-mason.zhang@mediatek.com>
+References: <20210624021137.11513-1-mason.zhang@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPv3WKfiL+sR+iK_BjGKDhtNgjoxKEPv49bU1X9_7+v+ytdR1w@mail.gmail.com>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 12:46:48AM +0200, Marcin Wojtas wrote:
-> Hi Stephen,
-> 
-> czw., 24 cze 2021 o 00:29 Stephen Rothwell <sfr@canb.auug.org.au> napisał(a):
-> >
-> > Hi all,
-> >
-> > Today's linux-next build (x86_64 modules_install) failed like this:
-> >
-> > depmod: ../tools/depmod.c:1792: depmod_report_cycles_from_root: Assertion `is < stack_size' failed.
-> >
-> > Caused by commit
-> >
-> > 62a6ef6a996f ("net: mdiobus: Introduce fwnode_mdbiobus_register()")
-> >
-> > (I bisected to there and tested the commit before.)
-> >
-> > The actual build is an x86_64 allmodconfig, followed by a
-> > modules_install.  This happens in my cross build environment as well as
-> > a native build.
-> >
-> > $ gcc --version
-> > gcc (Debian 10.2.1-6) 10.2.1 20210110
-> > $ ld --version
-> > GNU ld (GNU Binutils for Debian) 2.35.2
-> > $ /sbin/depmod --version
-> > kmod version 28
-> > -ZSTD +XZ -ZLIB +LIBCRYPTO -EXPERIMENTAL
-> >
-> > I have no idea why that commit should caused this failure.
-> 
-> Thank you for letting us know. Not sure if related, but I just found
-> out that this code won't compile for the !CONFIG_FWNODE_MDIO. Below
-> one-liner fixes it:
-> 
-> --- a/include/linux/fwnode_mdio.h
-> +++ b/include/linux/fwnode_mdio.h
-> @@ -40,7 +40,7 @@ static inline int fwnode_mdiobus_register(struct mii_bus *bus,
->          * This way, we don't have to keep compat bits around in drivers.
->          */
-> 
-> -       return mdiobus_register(mdio);
-> +       return mdiobus_register(bus);
->  }
->  #endif
-> 
-> I'm curious if this is the case. Tomorrow I'll resubmit with above, so
-> I'd appreciate recheck.
+T24gVGh1LCAyMDIxLTA2LTI0IGF0IDEwOjExICswODAwLCBNYXNvbiBaaGFuZyB3cm90ZToNCj4g
+RnJvbTogTWFzb24gWmhhbmcgPE1hc29uLlpoYW5nQG1lZGlhdGVrLmNvbT4NCj4gDQo+IFRoaXMg
+cGF0Y2ggYWRkIHNwaSBtYXN0ZXIgZHRzIG5vZGUgZm9yIE1UNjc3OSBTT0MuDQo+IA0KPiBTaWdu
+ZWQtb2ZmLWJ5OiBNYXNvbiBaaGFuZyA8TWFzb24uWmhhbmdAbWVkaWF0ZWsuY29tPg0KPiAtLS0N
+Cj4gIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0c2kgfCAxMTIgKysrKysr
+KysrKysrKysrKysrKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCAxMTIgaW5zZXJ0aW9ucygrKQ0K
+PiANCj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0
+c2kgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210Njc3OS5kdHNpDQo+IGluZGV4IDM3
+MGYzMDlkMzJkZS4uYzgxZTc2ODY1ZDFiIDEwMDY0NA0KPiAtLS0gYS9hcmNoL2FybTY0L2Jvb3Qv
+ZHRzL21lZGlhdGVrL210Njc3OS5kdHNpDQo+ICsrKyBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVk
+aWF0ZWsvbXQ2Nzc5LmR0c2kNCj4gQEAgLTIxOSw2ICsyMTksMTE4IEBADQo+ICAJCQlzdGF0dXMg
+PSAiZGlzYWJsZWQiOw0KPiAgCQl9Ow0KPiAgDQo+ICsJCXNwaTA6IHNwaTBAMTEwMGEwMDAgew0K
+PiArCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3Nzktc3BpIiwNCj4gKwkJCQkgICAgICJt
+ZWRpYXRlayxtdDY3NjUtc3BpIjsNCj4gKwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KPiArCQkJ
+I3NpemUtY2VsbHMgPSA8MD47DQo+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+Ow0KPiAr
+CQkJcmVnID0gPDAgMHgxMTAwYTAwMCAwIDB4MTAwMD47DQo+ICsJCQlpbnRlcnJ1cHRzID0gPEdJ
+Q19TUEkgMTQzIElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCj4gKwkJCWNsb2NrcyA9IDwmdG9wY2tn
+ZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCj4gKwkJCQk8JnRvcGNrZ2VuIENMS19UT1BfU1BJ
+PiwNCj4gKwkJCQk8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9TUEkwPjsNCj4gKwkJCWNsb2NrLW5h
+bWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCj4gKwkJfTsNCj4gKw0K
+PiArCQlzcGkxOiBzcGkxQDExMDEwMDAwIHsNCj4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWss
+bXQ2Nzc5LXNwaSIsDQo+ICsJCQkJICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ICsJCQkj
+YWRkcmVzcy1jZWxscyA9IDwxPjsNCj4gKwkJCSNzaXplLWNlbGxzID0gPDA+Ow0KPiArCQkJbWVk
+aWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCj4gKwkJCXJlZyA9IDwwIDB4MTEwMTAwMDAgMCAweDEw
+MDA+Ow0KPiArCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE0NyBJUlFfVFlQRV9MRVZFTF9MT1cg
+MD47DQo+ICsJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+
+ICsJCQkJPCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQo+ICsJCQkJPCZpbmZyYWNmZ19hbyBDTEtf
+SU5GUkFfU1BJMT47DQo+ICsJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsi
+LCAic3BpLWNsayI7DQo+ICsJCX07DQo+ICsNCj4gKwkJc3BpMjogc3BpMkAxMTAxMjAwMCB7DQo+
+ICsJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KPiArCQkJCSAgICAgIm1l
+ZGlhdGVrLG10Njc2NS1zcGkiOw0KPiArCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47DQo+ICsJCQkj
+c2l6ZS1jZWxscyA9IDwwPjsNCj4gKwkJCW1lZGlhdGVrLHBhZC1zZWxlY3QgPSA8MD47DQo+ICsJ
+CQlyZWcgPSA8MCAweDExMDEyMDAwIDAgMHgxMDAwPjsNCj4gKwkJCWludGVycnVwdHMgPSA8R0lD
+X1NQSSAxNTIgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KPiArCQkJY2xvY2tzID0gPCZ0b3Bja2dl
+biBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KPiArCQkJCSA8JnRvcGNrZ2VuIENMS19UT1BfU1BJ
+PiwNCj4gKwkJCQk8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9TUEkyPjsNCj4gKwkJCWNsb2NrLW5h
+bWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCj4gKwkJfTsNCj4gKw0K
+PiArCQlzcGkzOiBzcGkzQDExMDEzMDAwIHsNCj4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWss
+bXQ2Nzc5LXNwaSIsDQo+ICsJCQkJICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ICsJCQkj
+YWRkcmVzcy1jZWxscyA9IDwxPjsNCj4gKwkJCSNzaXplLWNlbGxzID0gPDA+Ow0KPiArCQkJbWVk
+aWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCj4gKwkJCXJlZyA9IDwwIDB4MTEwMTMwMDAgMCAweDEw
+MDA+Ow0KPiArCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1MyBJUlFfVFlQRV9MRVZFTF9MT1cg
+MD47DQo+ICsJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+
+ICsJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0KPiArCQkJCSA8JmluZnJhY2ZnX2FvIENM
+S19JTkZSQV9TUEkzPjsNCj4gKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNs
+ayIsICJzcGktY2xrIjsNCj4gKwkJfTsNCj4gKw0KPiArCQlzcGk0OiBzcGk0QDExMDE4MDAwIHsN
+Cj4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQo+ICsJCQkJICAgICAi
+bWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ICsJCQkjYWRkcmVzcy1jZWxscyA9IDwxPjsNCj4gKwkJ
+CSNzaXplLWNlbGxzID0gPDA+Ow0KPiArCQkJbWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCj4g
+KwkJCXJlZyA9IDwwIDB4MTEwMTgwMDAgMCAweDEwMDA+Ow0KPiArCQkJaW50ZXJydXB0cyA9IDxH
+SUNfU1BJIDE1NiBJUlFfVFlQRV9MRVZFTF9MT1cgMD47DQo+ICsJCQljbG9ja3MgPSA8JnRvcGNr
+Z2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+ICsJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9T
+UEk+LA0KPiArCQkJCSA8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9TUEk0PjsNCj4gKwkJCWNsb2Nr
+LW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCj4gKwkJfTsNCj4g
+Kw0KPiArCQlzcGk1OiBzcGk1QDExMDE5MDAwIHsNCj4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0
+ZWssbXQ2Nzc5LXNwaSIsDQo+ICsJCQkJICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ICsJ
+CQkjYWRkcmVzcy1jZWxscyA9IDwxPjsNCj4gKwkJCSNzaXplLWNlbGxzID0gPDA+Ow0KPiArCQkJ
+bWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCj4gKwkJCXJlZyA9IDwwIDB4MTEwMTkwMDAgMCAw
+eDEwMDA+Ow0KPiArCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1NyBJUlFfVFlQRV9MRVZFTF9M
+T1cgMD47DQo+ICsJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4s
+DQo+ICsJCQkJPCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQo+ICsJCQkJPCZpbmZyYWNmZ19hbyBD
+TEtfSU5GUkFfU1BJNT47DQo+ICsJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1j
+bGsiLCAic3BpLWNsayI7DQo+ICsJCX07DQo+ICsNCj4gKwkJc3BpNjogc3BpNkAxMTAxZDAwMCB7
+DQo+ICsJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KPiArCQkJCSAgICAg
+Im1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiArCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47DQo+ICsJ
+CQkjc2l6ZS1jZWxscyA9IDwwPjsNCj4gKwkJCW1lZGlhdGVrLHBhZC1zZWxlY3QgPSA8MD47DQo+
+ICsJCQlyZWcgPSA8MCAweDExMDFkMDAwIDAgMHgxMDAwPjsNCj4gKwkJCWludGVycnVwdHMgPSA8
+R0lDX1NQSSAxNDQgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KPiArCQkJY2xvY2tzID0gPCZ0b3Bj
+a2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KPiArCQkJCSA8JnRvcGNrZ2VuIENMS19UT1Bf
+U1BJPiwNCj4gKwkJCQkgPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfU1BJNj47DQo+ICsJCQljbG9j
+ay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQo+ICsJCX07DQo+
+ICsNCj4gKwkJc3BpNzogc3BpN0AxMTAxZTAwMCB7DQo+ICsJCQljb21wYXRpYmxlID0gIm1lZGlh
+dGVrLG10Njc3OS1zcGkiLA0KPiArCQkJCSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiAr
+CQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47DQo+ICsJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCj4gKwkJ
+CW1lZGlhdGVrLHBhZC1zZWxlY3QgPSA8MD47DQo+ICsJCQlyZWcgPSA8MCAweDExMDFlMDAwIDAg
+MHgxMDAwPjsNCj4gKwkJCWludGVycnVwdHMgPSA8R0lDX1NQSSAxNDUgSVJRX1RZUEVfTEVWRUxf
+TE9XIDA+Ow0KPiArCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+
+LA0KPiArCQkJCSA8JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCj4gKwkJCQkgPCZpbmZyYWNmZ19h
+byBDTEtfSU5GUkFfU1BJNz47DQo+ICsJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNl
+bC1jbGsiLCAic3BpLWNsayI7DQo+ICsJCX07DQo+ICsNCj4gIAkJYXVkaW86IGNsb2NrLWNvbnRy
+b2xsZXJAMTEyMTAwMDAgew0KPiAgCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3NzktYXVk
+aW8iLCAic3lzY29uIjsNCj4gIAkJCXJlZyA9IDwwIDB4MTEyMTAwMDAgMCAweDEwMDA+Ow0KDQpE
+ZWFyIE1hdHRoaWFzOg0KDQoJSSdtIHNvcnJ5IHRvIGRpc3R1cmIgeW91IGFnYWluLCBNeSBjb21w
+YW55IG1haWxib3ggaGFzIGEgbGl0dGxlIGJ1ZywgaXQNCmNhdXNlZCBteSBjb21tZW50cyBhbHdh
+eXMgYXBwZWFyaW5nIGluIHRoZSBjb21taXQgbWVzc2FnZS4uLg0KCUkgaGF2ZSB1cGRhdGUgY29t
+bWl0IG1lc3NhZ2Ugbm93LCBzbyBkbyB5b3UgaGF2ZSBhbnkgb3RoZXIgY29uY2Vybg0KYWJvdXQg
+dGhpcyBwYXRjaD8gQ2FuIHlvdSBoZWxwIG1lIGdlbnRsZSBwaW5nIG9uIHRoaXMgcGF0Y2g/DQoN
+ClRoYW5rcw0KTWFzb24NCg0KDQoNCg0KDQoNCg0K
 
-I wonder if this message that I see with Arch Linux's config is related
-and maybe explains the issue a little bit more:
-
-$ curl -LSso .config https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/linux/trunk/config
-
-# do not require pahole
-$ scripts/config -d DEBUG_INFO_BTF
-
-$ make -skj"$(nproc)" INSTALL_MOD_PATH=rootfs olddefconfig all modules_install
-...
-depmod: ERROR: Cycle detected: acpi_mdio -> fwnode_mdio -> acpi_mdio
-depmod: ERROR: Found 2 modules in dependency cycles!
-...
-
-Reverting all the patches in that series fixes the issue for me.
-
-Cheers,
-Nathan
