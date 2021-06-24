@@ -2,122 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE093B3573
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 20:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3676F3B3576
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 20:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232680AbhFXSQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 14:16:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29049 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232598AbhFXSQc (ORCPT
+        id S232604AbhFXSRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 14:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbhFXSRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 14:16:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624558452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RK3peuD++IDsdruZsIC3KLTQe4djW8+2SfPfi+tnFco=;
-        b=FCnXEK4DX+BLCqWs3NjQ4FgwsIOjcnXwNgkmlpvDxL6xsTqkt7psnwDzrhV6ju6ydZPGgk
-        eK0D1GADDyFJjQx6ejIDZdDxiKKugxKotIzfMGkzpjBSQb4yGGlOK13L/KkFAFSjB0iFx2
-        ZNnOVuuUl+ivubhvkS06LNUIPestxGA=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-413-zCTR02EKP662ux3fpYXFBw-1; Thu, 24 Jun 2021 14:14:11 -0400
-X-MC-Unique: zCTR02EKP662ux3fpYXFBw-1
-Received: by mail-qt1-f199.google.com with SMTP id t6-20020ac80dc60000b029024e988e8277so7101194qti.23
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 11:14:11 -0700 (PDT)
+        Thu, 24 Jun 2021 14:17:33 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3940C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 11:15:13 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id 19so5999839qky.13
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 11:15:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=JzJBuslwkLHPNqksgBWPDVE4rBUHra0e4TjPjK87Jaw=;
+        b=TvpxSU8R52dcR8I5BCAd4YsHAgys7Fq+7+bVYG+Mxc0+juKmNgHmf2yD0cfvo5jlx8
+         86PFP1VAU0EUC8vCNNKB3R31d8oeVcxlVB1+jJxqIxrfSNkGjBz/rKHeUs8G9G7bpFH8
+         oY6cHWgIDxv7+N9TJAkWCBa86Z4qp3DiwXLTZHvISUiUUndQ89JHvMKxPU9iRtDvJPFS
+         pCgEWu73WJ5gfPUzKSICCEpYM5FENmx+/AFhy9gWcCzwCozwnnnmuufj1wWrQtyLnfeB
+         o4YF3IjJqOs5IahnAq4lwjBYx79vGTNXfLeuMGCaqO27AM9hxslmU4UJog/EQVThkU+D
+         FR/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RK3peuD++IDsdruZsIC3KLTQe4djW8+2SfPfi+tnFco=;
-        b=ZXg3jaqpaT0u7S/k6V9VSS+7bZ63TQxwCsDCex3Ode9k3Czh+c2Xbu+5z3CmeUmnlz
-         MLbd6wa1X8OkM/ZU68SfgF7qVYBnwAzXw6/7a78EzoPCDVhYtzeJJInwq0DSUoVolOuo
-         GPrJLhwWOfrLjEMea8KXumFY1RwIQcZM+l2kNe3E+NBUtbchZlGCvBbNPxPnzHotGWgf
-         rjlKk35fy3xXKYD7YmDGKIaSw8FaDyWp9E4/RQUj9YGqYMCDbe6nHra62AEiMteI+9YH
-         rfxLMsoxlya0s8Lx6xNAvg0TWTWVzRhkKfcsBr4xFPPQ5kDkgEKutzTtPkJ3diBL8j6w
-         sgrA==
-X-Gm-Message-State: AOAM530P6/1Af4GsfIfzwrjAOlAbOhvt//5fe0wiae9KI31sJTs15d+a
-        Jh/HjkhEuRcxLbNUEKvV8rC4kwrc5oNAVEu9NzITe3YV1//e1Zsj+2KAXe/QgHFA1Jgn85D3Eqz
-        kH4FGIdyCVVclasIjUxfOG/cf
-X-Received: by 2002:a05:620a:414a:: with SMTP id k10mr6879289qko.37.1624558449862;
-        Thu, 24 Jun 2021 11:14:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyPfudshlkULqYiFpi8oeG5UyKIdtfiMvQjwTiVa7KxcRjj7roYy30ZxisLFXWhxkYMz9eKBA==
-X-Received: by 2002:a05:620a:414a:: with SMTP id k10mr6879273qko.37.1624558449667;
-        Thu, 24 Jun 2021 11:14:09 -0700 (PDT)
-Received: from t490s.redhat.com (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
-        by smtp.gmail.com with ESMTPSA id b7sm2529301qti.21.2021.06.24.11.14.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 11:14:09 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>, peterx@redhat.com,
-        Sean Christopherson <seanjc@google.com>
-Subject: [PATCH 7/9] KVM: X86: MMU: Tune PTE_LIST_EXT to be bigger
-Date:   Thu, 24 Jun 2021 14:13:54 -0400
-Message-Id: <20210624181356.10235-8-peterx@redhat.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210624181356.10235-1-peterx@redhat.com>
-References: <20210624181356.10235-1-peterx@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JzJBuslwkLHPNqksgBWPDVE4rBUHra0e4TjPjK87Jaw=;
+        b=EO7LFc9fvZddypRZKRavLinv1g/mW+LtWWoQZKyhRgSSQMSlsNBo6jVThawXQ5DLWc
+         MD/S6D1fnVz/xuuu1NFJojaP5dSaGA9J6ItFi9Nl4/++J3c1oU0ypSqCFx5VmOXqS2+G
+         FWDeOTraL2Ghx0HMYw0BwAxV5FlgWgfic3edYBh9NKgiXE+4VdEM4/EbLrXqfD782le9
+         rfmQr6DR75kUy6kfIiUYg3AK4SrZ0Gl0el8NAZWeRk6IBVVazbFkzxQ1Id0BwQ5njkEb
+         z6+OnQejpd/qbfq/e2Y8rN4SyymwUbw7RdDELDv7w90VOiN+vDdZf67EVxd+dV4Z16tS
+         FdDg==
+X-Gm-Message-State: AOAM530uv8kVBLVYkzphwHNrDjEgDQWHdKYveKblLyiDUL//bSutmVxE
+        ThjJF65RjN7a4Rj9JzDU0VQ1rfkbwC4WuS4GKrjwmRENLTPoVg==
+X-Google-Smtp-Source: ABdhPJyPU3hpHd0oPNGuZHqtn+F2AjfqYyMNiVUhdShXNjjwWen/DvCI34a6HtIOXfMHSt4K7IKLbtNjyrWPUqaeSPU=
+X-Received: by 2002:a05:620a:2230:: with SMTP id n16mr7036857qkh.155.1624558512954;
+ Thu, 24 Jun 2021 11:15:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210624082911.5d013e8c@canb.auug.org.au> <CAPv3WKfiL+sR+iK_BjGKDhtNgjoxKEPv49bU1X9_7+v+ytdR1w@mail.gmail.com>
+ <YNPt91bfjrgSt8G3@Ryzen-9-3900X.localdomain> <CA+G9fYtb07aySOpB6=wc4ip_9S4Rr2UUYNgEOG6i76g--uPryQ@mail.gmail.com>
+ <20210624185430.692d4b60@canb.auug.org.au> <CAPv3WKf6HguRC_2ckau99d4iWG-FV71kn8wiX9r5wuK335EEFw@mail.gmail.com>
+ <3d6ea68a-9654-6def-9533-56640ceae69f@kernel.org>
+In-Reply-To: <3d6ea68a-9654-6def-9533-56640ceae69f@kernel.org>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Thu, 24 Jun 2021 20:15:00 +0200
+Message-ID: <CAPv3WKdjE5ywVFB+94invSLg=jG5JHBdvLQLKDTPq13+8PjqmA@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the net-next tree
+To:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently rmap array element only contains 3 entries.  However for EPT=N there
-could have a lot of guest pages that got tens of even hundreds of rmap entry.
+Hi David & Jakub,
 
-A normal distribution of a 6G guest (even if idle) shows this with rmap count
-statistics:
+czw., 24 cze 2021 o 18:40 Nathan Chancellor <nathan@kernel.org> napisa=C5=
+=82(a):
+>
+> Hi Marcin,
+>
+> On 6/24/2021 7:25 AM, Marcin Wojtas wrote:
+> > Hi Stephen,
+> >
+> > czw., 24 cze 2021 o 10:54 Stephen Rothwell <sfr@canb.auug.org.au> napis=
+a=C5=82(a):
+> >>
+> >> Hi all,
+> >>
+> >> On Thu, 24 Jun 2021 11:43:14 +0530 Naresh Kamboju <naresh.kamboju@lina=
+ro.org> wrote:
+> >>>
+> >>> On Thu, 24 Jun 2021 at 07:59, Nathan Chancellor <nathan@kernel.org> w=
+rote:
+> >>>>
+> >>>> On Thu, Jun 24, 2021 at 12:46:48AM +0200, Marcin Wojtas wrote:
+> >>>>> Hi Stephen,
+> >>>>>
+> >>>>> czw., 24 cze 2021 o 00:29 Stephen Rothwell <sfr@canb.auug.org.au> n=
+apisa=C5=82(a):
+> >>>>>>
+> >>>>>> Hi all,
+> >>>>>>
+> >>>>>> Today's linux-next build (x86_64 modules_install) failed like this=
+:
+> >>>>>>
+> >>>>>> depmod: ../tools/depmod.c:1792: depmod_report_cycles_from_root: As=
+sertion `is < stack_size' failed.
+> >>>
+> >>> LKFT test farm found this build error.
+> >>>
+> >>> Regressions found on mips:
+> >>>
+> >>>   - build/gcc-9-malta_defconfig
+> >>>   - build/gcc-10-malta_defconfig
+> >>>   - build/gcc-8-malta_defconfig
+> >>>
+> >>> depmod: ERROR: Cycle detected: fwnode_mdio -> of_mdio -> fwnode_mdio
+> >>> depmod: ERROR: Found 2 modules in dependency cycles!
+> >>> make[1]: *** [/builds/linux/Makefile:1875: modules_install] Error 1
+> >>>
+> >>>>> Thank you for letting us know. Not sure if related, but I just foun=
+d
+> >>>>> out that this code won't compile for the !CONFIG_FWNODE_MDIO. Below
+> >>>>> one-liner fixes it:
+> >>>>>
+> >>>>> --- a/include/linux/fwnode_mdio.h
+> >>>>> +++ b/include/linux/fwnode_mdio.h
+> >>>>> @@ -40,7 +40,7 @@ static inline int fwnode_mdiobus_register(struct =
+mii_bus *bus,
+> >>>>>           * This way, we don't have to keep compat bits around in d=
+rivers.
+> >>>>>           */
+> >>>>>
+> >>>>> -       return mdiobus_register(mdio);
+> >>>>> +       return mdiobus_register(bus);
+> >>>>>   }
+> >>>>>   #endif
+> >>>>>
+> >>>>> I'm curious if this is the case. Tomorrow I'll resubmit with above,=
+ so
+> >>>>> I'd appreciate recheck.
+> >>>
+> >>> This proposed fix did not work.
+> >>>
+> >>>> Reverting all the patches in that series fixes the issue for me.
+> >>>
+> >>> Yes.
+> >>> Reverting all the (6) patches in that series fixed this build problem=
+.
+> >>>
+> >>> git log --oneline | head
+> >>> 3752a7bfe73e Revert "Documentation: ACPI: DSD: describe additional MA=
+C
+> >>> configuration"
+> >>> da53528ed548 Revert "net: mdiobus: Introduce fwnode_mdbiobus_register=
+()"
+> >>> 479b72ae8b68 Revert "net/fsl: switch to fwnode_mdiobus_register"
+> >>> 92f85677aff4 Revert "net: mvmdio: add ACPI support"
+> >>> 3d725ff0f271 Revert "net: mvpp2: enable using phylink with ACPI"
+> >>> ffa8c267d44e Revert "net: mvpp2: remove unused 'has_phy' field"
+> >>> d61c8b66c840 Add linux-next specific files for 20210623
+> >>
+> >> So I have reverted the merge of that topic branch from linux-next for
+> >> today.
+> >
+> > Just to understand correctly - you reverted merge from the local
+> > branch (I still see the commits on Dave M's net-next/master). I see a
+> > quick solution, but I'm wondering how I should proceed. Submit a
+> > correction patch to the mailing lists against the net-next? Or the
+> > branch is going to be reverted and I should resubmit everything as v4?
+>
+> As far as I am aware, net and net-next are not rebased so you would need
+> to submit a fixup patch against the current net-next with a proper
+> Fixes: tag.
+>
 
-Rmap_Count:     0       1       2-3     4-7     8-15    16-31   32-63   64-127  128-255 256-511 512-1023
-Level=4K:       3089171 49005   14016   1363    235     212     15      7       0       0       0
-Level=2M:       5951    227     0       0       0       0       0       0       0       0       0
-Level=1G:       32      0       0       0       0       0       0       0       0       0       0
+TL;DR, we need to get rid of a helper routine (introduced so that to
+address review comments of v1), as it causes a depmod cycles when
+fwnode_/of_/acpi_mdio are built as modules.
+It can be done twofold:
+a. 3 commits, i.e:
+  Revert "net: mdiobus: Introduce fwnode_mdbiobus_register()"
+  Revert "net/fsl: switch to fwnode_mdiobus_register"
+  net: mvmdio: resign from fwnode_mdiobus_register
+b. Same diff but squashed.
 
-If we do some more fork some pages will grow even larger rmap counts.
+Please let me know your preference, so that I can do it properly up front.
 
-This patch makes PTE_LIST_EXT bigger so it'll be more efficient for the general
-use case of EPT=N as we do list reference less and the loops over PTE_LIST_EXT
-will be slightly more efficient; but still not too large so less waste when
-array not full.
-
-It should not affecting EPT=Y since EPT normally only has zero or one rmap
-entry for each page, so no array is even allocated.
-
-With a test case to fork 500 child and recycle them ("./rmap_fork 500" [1]),
-this patch speeds up fork time of about 22%.
-
-    Before: 367.20 (+-4.58%)
-    After:  302.00 (+-5.30%)
-
-[1] https://github.com/xzpeter/clibs/commit/825436f825453de2ea5aaee4bdb1c92281efe5b3
-
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- arch/x86/kvm/mmu/mmu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 80263ecb1de3..8888ae291cb9 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -135,8 +135,8 @@ module_param(dbg, bool, 0644);
- 
- #include <trace/events/kvm.h>
- 
--/* make pte_list_desc fit well in cache line */
--#define PTE_LIST_EXT 3
-+/* make pte_list_desc fit well in cache lines */
-+#define PTE_LIST_EXT 15
- 
- struct pte_list_desc {
- 	u64 *sptes[PTE_LIST_EXT];
--- 
-2.31.1
-
+Thanks,
+Marcin
