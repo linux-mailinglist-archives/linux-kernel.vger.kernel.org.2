@@ -2,136 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6151C3B3227
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C453B322C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232369AbhFXPDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 11:03:22 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:43334 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhFXPDV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 11:03:21 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15OF0I1n070523;
-        Thu, 24 Jun 2021 10:00:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1624546818;
-        bh=pxpiC6BVI9g4NL2xx5Bt4qIO5YjlhGqvffc+sdE9s40=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=d/BKExzlYgQhjb7mEOLnCHqbh7Jwg0po/7SK2j+9iw8KJTH8zl0YJc2UJRPUhr1pf
-         Xl6h4MelEyxRtlXlI1RmXdNzFEwBoTcsuLTWUdGm16WygZFFLDQjmJBR0WLKAgAR+b
-         KHX17RYAFD3KkF17LFfxfgdPXWdyNAa0Jv13sOYs=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15OF0IEw033674
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 24 Jun 2021 10:00:18 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 24
- Jun 2021 10:00:17 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 24 Jun 2021 10:00:17 -0500
-Received: from [10.250.232.28] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15OF0AKN061030;
-        Thu, 24 Jun 2021 10:00:11 -0500
-Subject: Re: [PATCH v6 0/7] Add SR-IOV support in PCIe Endpoint Core
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-renesas-soc@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-References: <20210616211630.GA3007203@bjorn-Precision-5520>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <0fd19e28-e0a6-fd79-672a-b588fb2763ba@ti.com>
-Date:   Thu, 24 Jun 2021 20:30:09 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232323AbhFXPE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 11:04:26 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:33018 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230249AbhFXPEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 11:04:24 -0400
+Received: from zn.tnic (p200300ec2f0c1e008510e17daa0769aa.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:1e00:8510:e17d:aa07:69aa])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5E6AD1EC0575;
+        Thu, 24 Jun 2021 17:02:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1624546924;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EbmBZjzk/a7b0Wm081210DtHfALq+LTnsgNteTuznT8=;
+        b=OUq89EdUmp9BFpAoZNUnVL+SRvmiJbO5jd1eF9IkxLfj3PFWeWyk8MsNR+403PC61u8oZG
+        9JNXqWZ3tE4cFhFolc40jG3SBcigghUA/wZ440ZWKEQ2qLBMKWreXMCqOWptXTfTwif53O
+        Hr2MuXIdh/hgTgDHPFt+7/6j2zLezOw=
+Date:   Thu, 24 Jun 2021 17:01:58 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 04/11] x86: Introduce generic protected guest
+ abstraction
+Message-ID: <YNSeZv/U6QKK8sBo@zn.tnic>
+References: <20210618225755.662725-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210618225755.662725-5-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210616211630.GA3007203@bjorn-Precision-5520>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618225755.662725-5-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo,
+On Fri, Jun 18, 2021 at 03:57:48PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> Add a generic way to check if we run with an encrypted guest,
 
-On 17/06/21 2:46 am, Bjorn Helgaas wrote:
-> On Wed, Jun 16, 2021 at 07:35:33PM +0530, Kishon Vijay Abraham I wrote:
->> Hi Lorenzo, Bjorn,
->>
->> On 17/05/21 1:17 pm, Kishon Vijay Abraham I wrote:
->>> Patch series
->>> *) Adds support to add virtual functions to enable endpoint controller
->>>    which supports SR-IOV capability
->>> *) Add support in Cadence endpoint driver to configure virtual functions
->>> *) Enable pci_endpoint_test driver to create pci_device for virtual
->>>    functions
->>>
->>> v1 of the patch series can be found at [1]
->>> v2 of the patch series can be found at [2]
->>> v3 of the patch series can be found at [3]
->>> v4 of the patch series can be found at [4]
->>> v5 of the patch series can be found at [5]
->>>
->>> Here both physical functions and virtual functions use the same
->>> pci_endpoint_test driver and existing pcitest utility can be used
->>> to test virtual functions as well.
->>>
->>> Changes from v5:
->>> *) Rebased to 5.13-rc1
->>>
->>> Changes from v4:
->>> *) Added a fix in Cadence driver which was overwriting BAR configuration
->>>    of physical function.
->>> *) Didn't include Tom's Acked-by since Cadence driver is modified in
->>>    this revision.
->>>
->>> Changes from v3:
->>> *) Fixed Rob's comment and added his Reviewed-by as suggested by him.
->>>
->>> Changes from v2:
->>> *) Fixed DT binding documentation comment by Rob
->>> *) Fixed the error check in pci-epc-core.c
->>>
->>> Changes from v1:
->>> *) Re-based and Re-worked to latest kernel 5.10.0-rc2+ (now has generic
->>>    binding for EP)
->>>
->>> [1] -> http://lore.kernel.org/r/20191231113534.30405-1-kishon@ti.com
->>> [2] -> http://lore.kernel.org/r/20201112175358.2653-1-kishon@ti.com
->>> [3] -> https://lore.kernel.org/r/20210305050410.9201-1-kishon@ti.com
->>> [4] -> http://lore.kernel.org/r/20210310160943.7606-1-kishon@ti.com
->>> [5] -> https://lore.kernel.org/r/20210419083401.31628-1-kishon@ti.com
->>
->> Can this series be merged for 5.14? It already includes Ack from Rob for
->> dt-binding changes and Ack from Tom for Cadence driver changes.
+Please use passive voice in your commit message: no "we" or "I", etc,
+and describe your changes in imperative mood.
+
+Also, pls read section "2) Describe your changes" in
+Documentation/process/submitting-patches.rst for more details.
+
+Bottom line is: personal pronouns are ambiguous in text, especially with
+so many parties/companies/etc developing the kernel so let's avoid them
+please.
+
+> without requiring x86 specific ifdefs. This can then be used in
+> non architecture specific code. 
+
+"... in arch-independent code." or so.
+
+> prot_guest_has() is used to check for protected guest feature
+> flags.
 > 
-> Sorry, I think this was assigned to me in patchwork, but Lorenzo
-> usually takes care of the endpoint stuff.  He's away this week, but no
-> doubt will look at it when he returns.
+> Originally-by: Andi Kleen <ak@linux.intel.com>
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
+> 
+> Change since v1:
+>  * Introduced PR_GUEST_TDX and PR_GUEST_SEV vendor flags as per
+>    Boris suggestion.
+>  * Replaced is_tdx_guest() with if (boot_cpu_data.x86_vendor ==
+>    X86_VENDOR_INTEL) in prot_guest_has().
+>  * Modified tdx_protected_guest_has() and sev_protected_guest_has()
+>    to support vendor flags.
 
-Can you consider merging this series for 5.14?
+...
 
-Thank You,
-Kishon
+> diff --git a/arch/x86/include/asm/protected_guest.h b/arch/x86/include/asm/protected_guest.h
+> new file mode 100644
+> index 000000000000..d47668dee6c2
+> --- /dev/null
+> +++ b/arch/x86/include/asm/protected_guest.h
+> @@ -0,0 +1,20 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/* Copyright (C) 2020 Intel Corporation */
+> +#ifndef _ASM_PROTECTED_GUEST_H
+> +#define _ASM_PROTECTED_GUEST_H 1
+
+#define _ASM_X86_PROTECTED_GUEST_H
+
+> +
+> +#include <asm/processor.h>
+> +#include <asm/tdx.h>
+> +#include <asm/sev.h>
+> +
+> +static inline bool prot_guest_has(unsigned long flag)
+> +{
+> +	if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
+> +		return tdx_protected_guest_has(flag);
+> +	else if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
+> +		return sev_protected_guest_has(flag);
+
+s/protected/prot/
+
+tdx_prot_guest_has
+sev_prot_guest_has
+
+...
+
+> @@ -18,6 +20,21 @@ static inline bool cpuid_has_tdx_guest(void)
+>  	return !memcmp("IntelTDX    ", sig, 12);
+>  }
+>  
+> +bool tdx_protected_guest_has(unsigned long flag)
+> +{
+> +	switch (flag) {
+> +	case PR_GUEST_MEM_ENCRYPT:
+> +	case PR_GUEST_MEM_ENCRYPT_ACTIVE:
+> +	case PR_GUEST_UNROLL_STRING_IO:
+> +	case PR_GUEST_SHARED_MAPPING_INIT:
+> +	case PR_GUEST_TDX:
+> +		return static_cpu_has(X86_FEATURE_TDX_GUEST);
+
+		return cpu_feature_enabled(...)
+
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
