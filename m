@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737123B243F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 02:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35F653B243B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 02:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbhFXAWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 20:22:13 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:54726 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbhFXAWL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 20:22:11 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 998B087F;
-        Thu, 24 Jun 2021 02:19:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1624493991;
-        bh=Lyd4UG+bl/FJcP2caLE6wao83RTH9G+tTygdmnYaQQM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Etz8nwNQ6PnvCM72b9Ge+gvocueZTZbz1r3oPiefghIaprV8+fQvTKGdL/89gg7Vo
-         fJAptxE4XbTvPtg7ei/ndTJNwQbfHaCncgmTpw4jIgLW85o2iBxHxzD84aRBTlKloq
-         rE7c3anCaBJ7ebzatlcK18lfHKclSa7dTUHEQvrc=
-Date:   Thu, 24 Jun 2021 03:19:21 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: display: renesas,du: Fix 'ports' reference
-Message-ID: <YNPPiSzu9THj0PnH@pendragon.ideasonboard.com>
-References: <20210623164308.2570164-1-robh@kernel.org>
+        id S229889AbhFXAVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 20:21:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229726AbhFXAVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 20:21:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 444E060FE9;
+        Thu, 24 Jun 2021 00:19:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624493967;
+        bh=AtqOXuFkUgj4Uw6L34Q2JkL/gHj3bAFNWm5XuAg3J9Y=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=sHaCwDoxOLnGsBg6LMDJfltO7Y5YHW+98bWv6JJlkaLdJwecfSrUBw3l+FPkjkJ18
+         KtseNH7ayhB9X7G74mQ+8D3Dq9Efq1Y7hYn5CzxMPdUnyAS0989W/24bp7UtsrXVYA
+         6paBpVPYIalgfoiuqh6XtlVzfui9Ce0p4yHOnoHCjn+QcmIUcseC1Y8l6239tqv4aj
+         5LSBgMKXbvWtBE9ZLT5xGmqLkYwn2adMuJEDFHgtl0F84VdJGHU0Hz7zLBPOutyV1S
+         OtCzwBxpL3JjIg596m/mGerGzJClzs98BjrgTOS1EIUGNVA3u/R8Dada7yy42mydhJ
+         qhGYQTcHTpcNQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 186885C08D8; Wed, 23 Jun 2021 17:19:27 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 17:19:27 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     aneesh.kumar@linux.ibm.com, LKML <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Marco Elver <elver@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: Build failure in -next
+Message-ID: <20210624001927.GS4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210623223015.GA315292@paulmck-ThinkPad-P17-Gen-1>
+ <CAKwvOd=Y1fhJM7NpotvjNy3OE+JtqEBy046ctwE=cqV_ge5tgw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210623164308.2570164-1-robh@kernel.org>
+In-Reply-To: <CAKwvOd=Y1fhJM7NpotvjNy3OE+JtqEBy046ctwE=cqV_ge5tgw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-Thank you for the patch.
-
-On Wed, Jun 23, 2021 at 10:43:08AM -0600, Rob Herring wrote:
-> Fix the renesas,du binding 'ports' schema which is referencing the 'port'
-> schema instead of the 'ports' schema.
+On Wed, Jun 23, 2021 at 04:39:11PM -0700, Nick Desaulniers wrote:
+> On Wed, Jun 23, 2021 at 3:30 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > Hello, Aneesh!
+> >
+> > Yesterday evening's next-20210622 testing gave me the following
+> > kernel-build error:
+> >
+> > ld: mm/mremap.o: in function `move_huge_pud':
+> > /home/git/linux-next/mm/mremap.c:372: undefined reference to `__compiletime_assert_395'
+> >
+> > Bisection landed on this commit:
+> >
+> > 257121c5aabe ("mm/mremap: convert huge PUD move to separate helper")
+> >
+> > I have no idea how this commit relates to that error message, but
+> > reverting this commit on top of next-20210622 really does get rid of
+> > the problem.
+> >
+> > The following reproducer provokes this error:
+> >
+> > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --torture lock --configs LOCK07 --build-only --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y" --kmake-arg "CC=clang-11"
+> >
+> > Run the above command in the top-level directory of your -next source
+> > tree, and using this compiler:
+> >
+> > $ clang-11 -v
+> > Ubuntu clang version 11.1.0-++20210428103817+1fdec59bffc1-1~exp1~20210428204431.166
+> > Target: x86_64-pc-linux-gnu
+> >
+> > Thoughts?
+> >
+> >                                                         Thanx, Paul
 > 
-> Fixes: 99d66127fad2 ("dt-bindings: display: renesas,du: Convert binding to YAML")
-> Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> Cc: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-renesas-soc@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> ++beers_owed; for the report and bisection. Also reported
+> https://lore.kernel.org/lkml/YM0mrZIPM+sWTDHf@Ryzen-9-3900X.localdomain/,
+> let's chat over there.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+And thank you for the redirection!
 
-Should I take the patch in my tree, or can you merge it ?
-
-> ---
->  Documentation/devicetree/bindings/display/renesas,du.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/renesas,du.yaml b/Documentation/devicetree/bindings/display/renesas,du.yaml
-> index 121596f106da..5f4345d43020 100644
-> --- a/Documentation/devicetree/bindings/display/renesas,du.yaml
-> +++ b/Documentation/devicetree/bindings/display/renesas,du.yaml
-> @@ -55,7 +55,7 @@ properties:
->      maxItems: 1
->  
->    ports:
-> -    $ref: /schemas/graph.yaml#/properties/port
-> +    $ref: /schemas/graph.yaml#/properties/ports
->      description: |
->        The connections to the DU output video ports are modeled using the OF
->        graph bindings specified in Documentation/devicetree/bindings/graph.txt.
-
--- 
-Regards,
-
-Laurent Pinchart
+							Thanx, Paul
