@@ -2,117 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E453B2A2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580B03B2A3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231899AbhFXISb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 04:18:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53738 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231740AbhFXISa (ORCPT
+        id S231893AbhFXIV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 04:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231846AbhFXIVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 04:18:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624522570;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DKQaOPGFJZZQ5vgX+LfD77sztyavfZnG8AS/L9awIW4=;
-        b=DnRt8Ux1YKZ9RbSALieNRKeSdewlu7k5UWI5+Vf4NXb09ccGJZedysMiQSuO70VP07mUvz
-        qUgkM9wABc+b9v6YhchkAqSYoPPfzYff6YixLJ6iQVYlp/lvjX5VXqmaEARKl3gW+VnEzt
-        uoHLUPqGFxYRQSEhCu7MFIJgLivUKVs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-77-c72DeYBoNoeA8_C0maJpNw-1; Thu, 24 Jun 2021 04:16:07 -0400
-X-MC-Unique: c72DeYBoNoeA8_C0maJpNw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B637A40C0;
-        Thu, 24 Jun 2021 08:16:05 +0000 (UTC)
-Received: from starship (unknown [10.40.192.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 013835D705;
-        Thu, 24 Jun 2021 08:16:01 +0000 (UTC)
-Message-ID: <d77c4792681bfc8cb7f13793b651b355ef6684de.camel@redhat.com>
-Subject: Re: [PATCH 07/10] KVM: SVM: use vmcb01 in
- svm_refresh_apicv_exec_ctrl
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Jim Mattson <jmattson@google.com>
-Date:   Thu, 24 Jun 2021 11:16:00 +0300
-In-Reply-To: <bd20da0f-eb20-48f7-3258-cd5949f12227@redhat.com>
-References: <20210623113002.111448-1-mlevitsk@redhat.com>
-         <20210623113002.111448-8-mlevitsk@redhat.com>
-         <bd20da0f-eb20-48f7-3258-cd5949f12227@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 24 Jun 2021 04:21:54 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 050B1C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:19:33 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id i24so7281689edx.4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:19:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EaNSCMGV5qh1CquvxbjGYHMLSp9S15q2vTJ0o9vKxN0=;
+        b=TLyee5ouAerT+C1yZLIoqowVjsiAD5gKsKq5chr0XpfUfnNX9rEcymsL5yVgHGxccp
+         qaGcW9AlYF5rN8uL7o2qQALyFPLy0V+h0RC2zzwP48de8tfPqULW94YsYip0NJSTSxWd
+         lskXHzb3R9kakbSUCIk4Y6fw/ig+Uuis9FwwG23rx7+SLI8c47AS6xnxsnFkHIi6ZtPi
+         NFyzbVcrIz2gy4u0OQCr+kSlT1HJJSoUy/ryDW9vkB2KeCvNjt4Vr2wzloRyq49ExR59
+         m4leYGoCzK8EWTg+xHFQ8l3fKLte4Z4McYNcniAwTwiRXomdMHG8g+BKSYw9x8qGrghS
+         oygA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EaNSCMGV5qh1CquvxbjGYHMLSp9S15q2vTJ0o9vKxN0=;
+        b=CARN4OED1jqSlydt7GvtFufrztRmcipqo5rMd0dK7cC6fFJC0U2+Kwlh5F/AInOt4p
+         3xHazPya1+69Jea8aju+A1nPTvPJk/DE+rr1IZa1i1qS19cXnrCQkqiE7ZzePaF+nHQF
+         R+dW6G61561qeLPrMW8d89vKQJt6whEwGFyAvAp8o+5zBNMqqVFh9BiDqLER2pu9y/OJ
+         QsX/QxDEctOkkkyJkQSiIowUTgWnEjZg7jLd4O0TH2Qs+N81qbiBg4j07tLV1Lcqj5bj
+         Wks3TIAft/0Wza/16vaxNGUCWGCNhHVDgAxtpoDt3p1LFcoVZykakUaCRpw+Ftz8Bs/I
+         jsrg==
+X-Gm-Message-State: AOAM5329Nww3VQfuqgtkTbT5gGJ1qXn1QCyBQn5gnTiRoZIO+r/V8IBb
+        132Ldiy5uAf4gBIDosMC04BxuA==
+X-Google-Smtp-Source: ABdhPJzr1GubAJdC6LBzt0jQgZyshEsbRCHypo5AkdW8ZDgu8j0BYpPoybkgWWZNtgpyGMqTij4hvA==
+X-Received: by 2002:a05:6402:18f6:: with SMTP id x54mr5689099edy.53.1624522772214;
+        Thu, 24 Jun 2021 01:19:32 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id o4sm1374641edc.94.2021.06.24.01.19.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 01:19:31 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, pmeerw@pmeerw.net,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH 1/2] iio: temperature: tmp006: convert probe to device-managed
+Date:   Thu, 24 Jun 2021 11:19:23 +0300
+Message-Id: <20210624081924.15897-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-23 at 23:54 +0200, Paolo Bonzini wrote:
-> On 23/06/21 13:29, Maxim Levitsky wrote:
-> > AVIC is not supported for nesting but in some corner
-> > cases it is possible to have it still be enabled,
-> > after we entered nesting, and use vmcb02.
-> > 
-> > Fix this by always using vmcb01 in svm_refresh_apicv_exec_ctrl
-> 
-> Please be more verbose about the corner case (and then the second 
-> paragraph should not be necessary anymore).
+This change converts the driver to register via devm_iio_device_register().
+For the tmp006_powerdown() hook, this uses a devm_add_action() hook to put
+the device in powerdown mode when it's unregistered.
 
-I will do it.
-The issue can happen only after patch 8 is applied, because then AVIC disable on
-the current vCPU is always deferred.
+With these changes, the remove hook can be removed.
+
+The i2c_set_clientdata() call is staying around as the private data is used
+in the PM routines.
+
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/iio/temperature/tmp006.c | 32 +++++++++++++++-----------------
+ 1 file changed, 15 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/iio/temperature/tmp006.c b/drivers/iio/temperature/tmp006.c
+index 54976c7dad92..db1ac6029c27 100644
+--- a/drivers/iio/temperature/tmp006.c
++++ b/drivers/iio/temperature/tmp006.c
+@@ -193,6 +193,17 @@ static bool tmp006_check_identification(struct i2c_client *client)
+ 	return mid == TMP006_MANUFACTURER_MAGIC && did == TMP006_DEVICE_MAGIC;
+ }
  
-I think that currently the problem in this patch can't happen because 
-kvm_request_apicv_update(..., APICV_INHIBIT_REASON_NESTED) is called on each vCPU
-from svm_vcpu_after_set_cpuid, and since it disables it on current vCPU, the
-AVIC is fully disabled on all vCPUs when we get to the first guest entry, even if nested
-(after a migration the first guest entry can be already nested)
++static int tmp006_powerdown(struct tmp006_data *data)
++{
++	return i2c_smbus_write_word_swapped(data->client, TMP006_CONFIG,
++		data->config & ~TMP006_CONFIG_MOD_MASK);
++}
++
++static void tmp006_powerdown_cleanup(void *data)
++{
++	tmp006_powerdown(data);
++}
++
+ static int tmp006_probe(struct i2c_client *client,
+ 			 const struct i2c_device_id *id)
+ {
+@@ -228,23 +239,11 @@ static int tmp006_probe(struct i2c_client *client,
+ 		return ret;
+ 	data->config = ret;
  
-After patch 8, the AVIC disable is done at guest entry where we already are in
-L2, thus we should toggle it in vmcb01, while vmcb02 shouldn't have AVIC enabled
-in the first place.
-
-Best regards,
-	Maxim Levitsky
-
-
-> 
-> Paolo
-> 
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > ---
-> >   arch/x86/kvm/svm/avic.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-> > index 1d01da64c333..a8ad78a2faa1 100644
-> > --- a/arch/x86/kvm/svm/avic.c
-> > +++ b/arch/x86/kvm/svm/avic.c
-> > @@ -646,7 +646,7 @@ static int svm_set_pi_irte_mode(struct kvm_vcpu *vcpu, bool activate)
-> >   void svm_refresh_apicv_exec_ctrl(struct kvm_vcpu *vcpu)
-> >   {
-> >   	struct vcpu_svm *svm = to_svm(vcpu);
-> > -	struct vmcb *vmcb = svm->vmcb;
-> > +	struct vmcb *vmcb = svm->vmcb01.ptr;
-> >   	bool activated = kvm_vcpu_apicv_active(vcpu);
-> >   
-> >   	if (!enable_apicv)
-> > 
-
+-	return iio_device_register(indio_dev);
+-}
+-
+-static int tmp006_powerdown(struct tmp006_data *data)
+-{
+-	return i2c_smbus_write_word_swapped(data->client, TMP006_CONFIG,
+-		data->config & ~TMP006_CONFIG_MOD_MASK);
+-}
+-
+-static int tmp006_remove(struct i2c_client *client)
+-{
+-	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+-
+-	iio_device_unregister(indio_dev);
+-	tmp006_powerdown(iio_priv(indio_dev));
++	ret = devm_add_action(&client->dev, tmp006_powerdown_cleanup, data);
++	if (ret < 0)
++		return ret;
+ 
+-	return 0;
++	return devm_iio_device_register(&client->dev, indio_dev);
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
+@@ -277,7 +276,6 @@ static struct i2c_driver tmp006_driver = {
+ 		.pm	= &tmp006_pm_ops,
+ 	},
+ 	.probe = tmp006_probe,
+-	.remove = tmp006_remove,
+ 	.id_table = tmp006_id,
+ };
+ module_i2c_driver(tmp006_driver);
+-- 
+2.31.1
 
