@@ -2,107 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32693B2D45
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B183B2D46
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232330AbhFXLL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:11:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55738 "EHLO mail.kernel.org"
+        id S232360AbhFXLMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:12:07 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:5976 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232315AbhFXLLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:11:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6C14611CE;
-        Thu, 24 Jun 2021 11:09:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624532945;
-        bh=ipdW0KmT21fOP4law8edoBBMDuUDLXiDVr4XSG7gfOE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PTm5EGY/nBGP/xGvrGLnlF+HfZsQCkVuiGdbIpPg5Gv6Bkmi+Y3g2jrY5EetWYMVl
-         1l0ddXXsiqVHXxbhPAIIeM4+nWeqKjEbXh/ZWGCa/fwzYMu6j/zfVciu4yn8jN+TnN
-         e5ZnTwQwnl1u8ehmB5v7n492Fnk0+C1DoOV5PvrU=
-Date:   Thu, 24 Jun 2021 13:09:03 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     rafael@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, andriin@fb.com, daniel@iogearbox.net,
-        atenart@kernel.org, alobakin@pm.me, weiwan@google.com,
-        ap420073@gmail.com, jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
-        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
-        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
-        rostedt@goodmis.org, peterz@infradead.org,
-        linux-block@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] sysfs: fix kobject refcount to address races with
- kobject removal
-Message-ID: <YNRnzxTabyoToKKJ@kroah.com>
-References: <20210623215007.862787-1-mcgrof@kernel.org>
+        id S232346AbhFXLMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 07:12:06 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4G9cpx3dSFzBDTt;
+        Thu, 24 Jun 2021 13:09:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id k-tcnJDoux7Z; Thu, 24 Jun 2021 13:09:45 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4G9cpw4Y8dzBDTJ;
+        Thu, 24 Jun 2021 13:09:44 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7D0A98B7E7;
+        Thu, 24 Jun 2021 13:09:44 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 0xfF4S_8GNu9; Thu, 24 Jun 2021 13:09:44 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E65E88B764;
+        Thu, 24 Jun 2021 13:09:43 +0200 (CEST)
+Subject: Re: [PATCH v2] powerpc/kprobes: Fix Oops by passing ppc_inst as a
+ pointer to emulate_step() on ppc32
+To:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <5bdc8cbc9a95d0779e27c9ddbf42b40f51f883c0.1624425798.git.christophe.leroy@csgroup.eu>
+ <1624531892.3vdz8ibfty.naveen@linux.ibm.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <b44b66f4-3e46-425b-3c8e-d5a7a180494a@csgroup.eu>
+Date:   Thu, 24 Jun 2021 13:09:38 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210623215007.862787-1-mcgrof@kernel.org>
+In-Reply-To: <1624531892.3vdz8ibfty.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 02:50:07PM -0700, Luis Chamberlain wrote:
-> It's possible today to have a device attribute read or store
-> race against device removal. This is known to happen as follows:
-> 
-> write system call -->
->   ksys_write () -->
->     vfs_write() -->
->       __vfs_write() -->
->         kernfs_fop_write_iter() -->
->           sysfs_kf_write() -->
->             dev_attr_store() -->
->               null reference
-> 
-> This happens because the dev_attr->store() callback can be
-> removed prior to its call, after dev_attr_store() was initiated.
-> The null dereference is possible because the sysfs ops can be
-> removed on module removal, for instance, when device_del() is
-> called, and a sysfs read / store is not doing any kobject reference
-> bumps either. This allows a read/store call to initiate, a
-> device_del() to kick off, and then the read/store call can be
-> gone by the time to execute it.
-> 
-> The sysfs filesystem is not doing any kobject reference bumps during a
-> read / store ops to prevent this.
-> 
-> To fix this in a simplified way, just bump the kobject reference when
-> we create a directory and remove it on directory removal.
-> 
-> The big unfortunate eye-sore is addressing the manual kobject reference
-> assumption on the networking code, which leads me to believe we should
-> end up replacing that eventually with another sort of check.
-> 
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
-> 
-> This v4 moves to fixing the race condition on dev_attr_store() and
-> dev_attr_read() to sysfs by bumping the kobject reference count
-> on directory creation / deletion as suggested by Greg.
 
-This looks good.
 
-It's late in the development cycle, I'll hold off on adding this to my
-tree until 5.14-rc1 is out because of:
+Le 24/06/2021 à 12:59, Naveen N. Rao a écrit :
+> Christophe Leroy wrote:
+>> From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+>>
+>> Trying to use a kprobe on ppc32 results in the below splat:
+>>     BUG: Unable to handle kernel data access on read at 0x7c0802a6
+>>     Faulting instruction address: 0xc002e9f0
+>>     Oops: Kernel access of bad area, sig: 11 [#1]
+>>     BE PAGE_SIZE=4K PowerPC 44x Platform
+>>     Modules linked in:
+>>     CPU: 0 PID: 89 Comm: sh Not tainted 5.13.0-rc1-01824-g3a81c0495fdb #7
+>>     NIP:  c002e9f0 LR: c0011858 CTR: 00008a47
+>>     REGS: c292fd50 TRAP: 0300   Not tainted  (5.13.0-rc1-01824-g3a81c0495fdb)
+>>     MSR:  00009000 <EE,ME>  CR: 24002002  XER: 20000000
+>>     DEAR: 7c0802a6 ESR: 00000000
+>>     <snip>
+>>     NIP [c002e9f0] emulate_step+0x28/0x324
+>>     LR [c0011858] optinsn_slot+0x128/0x10000
+>>     Call Trace:
+>>      opt_pre_handler+0x7c/0xb4 (unreliable)
+>>      optinsn_slot+0x128/0x10000
+>>      ret_from_syscall+0x0/0x28
+>>
+>> The offending instruction is:
+>>     81 24 00 00     lwz     r9,0(r4)
+>>
+>> Here, we are trying to load the second argument to emulate_step():
+>> struct ppc_inst, which is the instruction to be emulated. On ppc64,
+>> structures are passed in registers when passed by value. However, per
+>> the ppc32 ABI, structures are always passed to functions as pointers.
+>> This isn't being adhered to when setting up the call to emulate_step()
+>> in the optprobe trampoline. Fix the same.
+>>
+>> Fixes: eacf4c0202654a ("powerpc: Enable OPTPROBES on PPC32")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+>> ---
+>> v2: Rebased on powerpc/merge 7f030e9d57b8
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> 
+> Thanks for rebasing this!
+> 
+> I think git am drops everything after three dashes, so applying this patch will drop your SOB. The 
+> recommended style (*) for adding a changelog is to include it within [] before the second SOB.
+> 
 
-> Unfortunately at least the networking core has a manual refcount
-> assumption, which needs to be adjusted to account for this change.
-> This should also mean there is runtime for other kobjects which may
-> not be explored yet which may need fixing as well. We may want to
-> change the check to something else on the networking front, but its
-> not clear to me yet what to use.
+Yes, I saw that after sending the mail. Usually I add a signed-off-by with 'git --amend -s' when I 
+add the history, so it goes before the '---' I'm adding.
 
-That's crazy what networking is doing here, hopefully no one else is.
-If they are, let's shake it out in linux-next to find the problems which
-is why a good "soak" there is a good idea.
+This time I must have forgotten the '-s' so it was added by the 'git format-patch -s' which is in my 
+submit script, and so it was added at the end.
 
-thanks for making this change and sticking with it!
+It's not really a big deal, up to Michael to either move it at the right place or discard it, I 
+don't really mind. Do the easiest for you.
 
-Oh, and with this change, does your modprobe/rmmod crazy test now work?
-
-greg k-h
+Thanks
+Christophe
