@@ -2,105 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FAF3B3028
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5171D3B302A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231766AbhFXNiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:38:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58458 "EHLO mail.kernel.org"
+        id S232078AbhFXNiH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Jun 2021 09:38:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232017AbhFXNhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:37:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C60B613DC;
-        Thu, 24 Jun 2021 13:35:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624541726;
-        bh=Im8AJ/xzLG5igrCZBPvx/X/s8SqGh6KWTqyck17cCoQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JMLHRQ28OMZLW0wpvUm9Xlwqyt9Io+/duHqoiOloEkUkX/Z+6wqU/OyjDHWs6Lntt
-         5QIdEoOiCKJecySIuqaNnTytjdIkfTjeATJDukQ/7TLjS1RN5+KZWhulco76hoOX9F
-         U6o29EcMkWGSpT+pTyVkK77jJjZVWw2k/R93MySk=
-Date:   Thu, 24 Jun 2021 15:35:24 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     rafael@kernel.org, rafael.j.wysocki@intel.com, will@kernel.org,
-        robin.murphy@arm.com, joro@8bytes.org, bjorn.andersson@linaro.org,
-        ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        bhelgaas@google.com, robdclark@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        quic_c_gdjako@quicinc.com, iommu@lists.linux-foundation.org,
-        sonnyrao@chromium.org, saiprakash.ranjan@codeaurora.org,
-        linux-mmc@vger.kernel.org, vbadigan@codeaurora.org,
-        rajatja@google.com, saravanak@google.com, joel@joelfernandes.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] drivers: base: Add the concept of "pre_probe" to
- drivers
-Message-ID: <YNSKHAiS3qIOwDVA@kroah.com>
-References: <20210621235248.2521620-1-dianders@chromium.org>
- <20210621165230.1.Id4ee5788c993294f66542721fca7719c00a5d8f3@changeid>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621165230.1.Id4ee5788c993294f66542721fca7719c00a5d8f3@changeid>
+        id S232011AbhFXNhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:37:54 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 12AF061002;
+        Thu, 24 Jun 2021 13:35:35 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lwPW0-009bmk-MA; Thu, 24 Jun 2021 14:35:32 +0100
+Date:   Thu, 24 Jun 2021 14:35:32 +0100
+Message-ID: <87k0mjidwb.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v17 5/6] KVM: arm64: ioctl to fetch/store tags in a guest
+In-Reply-To: <20210621111716.37157-6-steven.price@arm.com>
+References: <20210621111716.37157-1-steven.price@arm.com>
+        <20210621111716.37157-6-steven.price@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, drjones@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 04:52:43PM -0700, Douglas Anderson wrote:
-> Right now things are a bit awkward if a driver would like a chance to
-> run before some of the more "automatic" things (pinctrl, DMA, IOMMUs,
-> ...) happen to a device. This patch aims to fix that problem by
-> introducing the concept of a "pre_probe" function that drivers can
-> implement to run before the "automatic" stuff.
+Hi Steven,
+
+On Mon, 21 Jun 2021 12:17:15 +0100,
+Steven Price <steven.price@arm.com> wrote:
 > 
-> Why would you want to run before the "automatic" stuff? The incentive
-> in my case is that I want to be able to fill in some boolean flags in
-> the "struct device" before the IOMMU init runs. It appears that the
-> strictness vs. non-strictness of a device's iommu config is determined
-> once at init time and can't be changed afterwards. However, I would
-> like to avoid hardcoding the rules for strictness in the IOMMU
-> driver. Instead I'd like to let individual drivers be able to make
-> informed decisions about the appropriateness of strictness
-> vs. non-strictness.
+> The VMM may not wish to have it's own mapping of guest memory mapped
+> with PROT_MTE because this causes problems if the VMM has tag checking
+> enabled (the guest controls the tags in physical RAM and it's unlikely
+> the tags are correct for the VMM).
 > 
-> The desire for running code pre_probe is likely not limited to my use
-> case. I believe that the list "qcom_smmu_client_of_match" is hacked
-> into the iommu driver specifically because there was no real good
-> framework for this. For the existing list it wasn't _quite_ as ugly as
-> my needs since the decision could be made solely on compatible string,
-> but it still feels like it would have been better for individual
-> drivers to run code and setup some state rather than coding up a big
-> list in the IOMMU driver.
+> Instead add a new ioctl which allows the VMM to easily read/write the
+> tags from guest memory, allowing the VMM's mapping to be non-PROT_MTE
+> while the VMM can still read/write the tags for the purpose of
+> migration.
 > 
-> Even without this patch, I believe it is possible for a driver to run
-> before the "automatic" things by registering for
-> "BUS_NOTIFY_BIND_DRIVER" in its init call, though I haven't personally
-> tested this. Using the notifier is a bit awkward, though, and I'd
-> rather avoid it. Also, using "BUS_NOTIFY_BIND_DRIVER" would require
-> drivers to stop using the convenience module_platform_driver() helper
-> and roll a bunch of boilerplate code.
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Steven Price <steven.price@arm.com>
+> ---
+>  arch/arm64/include/asm/kvm_host.h |  3 ++
+>  arch/arm64/include/asm/mte-def.h  |  1 +
+>  arch/arm64/include/uapi/asm/kvm.h | 11 +++++
+>  arch/arm64/kvm/arm.c              |  7 +++
+>  arch/arm64/kvm/guest.c            | 82 +++++++++++++++++++++++++++++++
+>  include/uapi/linux/kvm.h          |  1 +
+>  6 files changed, 105 insertions(+)
 > 
-> NOTE: the pre_probe here is listed in the driver structure. As a side
-> effect of this it will be passed a "struct device *" rather than the
-> more specific device type (like the "struct platform_device *" that
-> most platform devices get passed to their probe). Presumably this
-> won't cause trouble and it's a lot less code to write but if we need
-> to make it more symmetric that's also possible by touching more files.
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 309e36cc1b42..6a2ac4636d42 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -729,6 +729,9 @@ int kvm_arm_vcpu_arch_get_attr(struct kvm_vcpu *vcpu,
+>  int kvm_arm_vcpu_arch_has_attr(struct kvm_vcpu *vcpu,
+>  			       struct kvm_device_attr *attr);
+>  
+> +long kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
+> +				struct kvm_arm_copy_mte_tags *copy_tags);
+> +
+>  /* Guest/host FPSIMD coordination helpers */
+>  int kvm_arch_vcpu_run_map_fp(struct kvm_vcpu *vcpu);
+>  void kvm_arch_vcpu_load_fp(struct kvm_vcpu *vcpu);
+> diff --git a/arch/arm64/include/asm/mte-def.h b/arch/arm64/include/asm/mte-def.h
+> index cf241b0f0a42..626d359b396e 100644
+> --- a/arch/arm64/include/asm/mte-def.h
+> +++ b/arch/arm64/include/asm/mte-def.h
+> @@ -7,6 +7,7 @@
+>  
+>  #define MTE_GRANULE_SIZE	UL(16)
+>  #define MTE_GRANULE_MASK	(~(MTE_GRANULE_SIZE - 1))
+> +#define MTE_GRANULES_PER_PAGE	(PAGE_SIZE / MTE_GRANULE_SIZE)
+>  #define MTE_TAG_SHIFT		56
+>  #define MTE_TAG_SIZE		4
+>  #define MTE_TAG_MASK		GENMASK((MTE_TAG_SHIFT + (MTE_TAG_SIZE - 1)), MTE_TAG_SHIFT)
+> diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
+> index 24223adae150..b3edde68bc3e 100644
+> --- a/arch/arm64/include/uapi/asm/kvm.h
+> +++ b/arch/arm64/include/uapi/asm/kvm.h
+> @@ -184,6 +184,17 @@ struct kvm_vcpu_events {
+>  	__u32 reserved[12];
+>  };
+>  
+> +struct kvm_arm_copy_mte_tags {
+> +	__u64 guest_ipa;
+> +	__u64 length;
+> +	void __user *addr;
+> +	__u64 flags;
+> +	__u64 reserved[2];
+> +};
+> +
+> +#define KVM_ARM_TAGS_TO_GUEST		0
+> +#define KVM_ARM_TAGS_FROM_GUEST		1
+> +
+>  /* If you need to interpret the index values, here is the key: */
+>  #define KVM_REG_ARM_COPROC_MASK		0x000000000FFF0000
+>  #define KVM_REG_ARM_COPROC_SHIFT	16
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 28ce26a68f09..511f3716fe33 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -1359,6 +1359,13 @@ long kvm_arch_vm_ioctl(struct file *filp,
+>  
+>  		return 0;
+>  	}
+> +	case KVM_ARM_MTE_COPY_TAGS: {
+> +		struct kvm_arm_copy_mte_tags copy_tags;
+> +
+> +		if (copy_from_user(&copy_tags, argp, sizeof(copy_tags)))
+> +			return -EFAULT;
+> +		return kvm_vm_ioctl_mte_copy_tags(kvm, &copy_tags);
+> +	}
+>  	default:
+>  		return -EINVAL;
+>  	}
+> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
+> index 5cb4a1cd5603..4ddb20017b2f 100644
+> --- a/arch/arm64/kvm/guest.c
+> +++ b/arch/arm64/kvm/guest.c
+> @@ -995,3 +995,85 @@ int kvm_arm_vcpu_arch_has_attr(struct kvm_vcpu *vcpu,
+>  
+>  	return ret;
+>  }
+> +
+> +long kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
+> +				struct kvm_arm_copy_mte_tags *copy_tags)
+> +{
+> +	gpa_t guest_ipa = copy_tags->guest_ipa;
+> +	size_t length = copy_tags->length;
+> +	void __user *tags = copy_tags->addr;
+> +	gpa_t gfn;
+> +	bool write = !(copy_tags->flags & KVM_ARM_TAGS_FROM_GUEST);
+> +	int ret = 0;
+> +
+> +	if (!kvm_has_mte(kvm))
+> +		return -EINVAL;
+> +
+> +	if (copy_tags->reserved[0] || copy_tags->reserved[1])
+> +		return -EINVAL;
+> +
+> +	if (copy_tags->flags & ~KVM_ARM_TAGS_FROM_GUEST)
+> +		return -EINVAL;
+> +
+> +	if (length & ~PAGE_MASK || guest_ipa & ~PAGE_MASK)
+> +		return -EINVAL;
+> +
+> +	gfn = gpa_to_gfn(guest_ipa);
+> +
+> +	mutex_lock(&kvm->slots_lock);
+> +
+> +	while (length > 0) {
+> +		kvm_pfn_t pfn = gfn_to_pfn_prot(kvm, gfn, write, NULL);
+> +		void *maddr;
+> +		unsigned long num_tags;
+> +		struct page *page;
+> +
+> +		if (is_error_noslot_pfn(pfn)) {
+> +			ret = -EFAULT;
+> +			goto out;
+> +		}
+> +
+> +		page = pfn_to_online_page(pfn);
+> +		if (!page) {
+> +			/* Reject ZONE_DEVICE memory */
+> +			ret = -EFAULT;
+> +			goto out;
+> +		}
+> +		maddr = page_address(page);
+> +
+> +		if (!write) {
+> +			if (test_bit(PG_mte_tagged, &page->flags))
+> +				num_tags = mte_copy_tags_to_user(tags, maddr,
+> +							MTE_GRANULES_PER_PAGE);
+> +			else
+> +				/* No tags in memory, so write zeros */
+> +				num_tags = MTE_GRANULES_PER_PAGE -
+> +					clear_user(tags, MTE_GRANULES_PER_PAGE);
+> +			kvm_release_pfn_clean(pfn);
+> +		} else {
+> +			num_tags = mte_copy_tags_from_user(maddr, tags,
+> +							MTE_GRANULES_PER_PAGE);
+> +			kvm_release_pfn_dirty(pfn);
+> +		}
+> +
+> +		if (num_tags != MTE_GRANULES_PER_PAGE) {
+> +			ret = -EFAULT;
+> +			goto out;
+> +		}
+> +
+> +		/* Set the flag after checking the write completed fully */
+> +		if (write)
+> +			set_bit(PG_mte_tagged, &page->flags);
 
-No, please please no.
+This ended up catching my eye as I was merging some other patches.
 
-If a bus really wants to do crud like this, it can do it in it's own
-probe callback, the driver core doesn't need to mess with this.
+This set_bit() occurs *after* the page has been released, meaning it
+could have been evicted and reused in the interval. I plan to fix it
+as below. Please let me know if that works for you.
 
-If you need to mess with iommu values in struct device, again, do that
-in the bus core for the devices on that specific bus, that's where those
-values are supposed to be set anyway, right?
+Thanks,
 
-If the iommu drivers need to be run before a specific bus is
-initialized, then fix that there, the driver core does not need to care
-about this at all.
+	M.
 
-so a big NACK on this one, sorry.
+From a78d3206378a7101659fbc2a4bf01cb9376c4793 Mon Sep 17 00:00:00 2001
+From: Marc Zyngier <maz@kernel.org>
+Date: Thu, 24 Jun 2021 14:21:05 +0100
+Subject: [PATCH] KVM: arm64: Set the MTE tag bit before releasing the page
 
-greg k-h
+Setting a page flag without holding a reference to the page
+is living dangerously. In the tag-writing path, we drop the
+reference to the page by calling kvm_release_pfn_dirty(),
+and only then set the PG_mte_tagged bit.
+
+It would be safer to do it the other way round.
+
+Fixes: f0376edb1ddca ("KVM: arm64: Add ioctl to fetch/store tags in a guest")
+Cc: Steven Price <steven.price@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ arch/arm64/kvm/guest.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
+index 4ddb20017b2f..60815ae477cf 100644
+--- a/arch/arm64/kvm/guest.c
++++ b/arch/arm64/kvm/guest.c
+@@ -1053,6 +1053,14 @@ long kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
+ 		} else {
+ 			num_tags = mte_copy_tags_from_user(maddr, tags,
+ 							MTE_GRANULES_PER_PAGE);
++
++			/*
++			 * Set the flag after checking the write
++			 * completed fully
++			 */
++			if (num_tags == MTE_GRANULES_PER_PAGE)
++				set_bit(PG_mte_tagged, &page->flags);
++
+ 			kvm_release_pfn_dirty(pfn);
+ 		}
+ 
+@@ -1061,10 +1069,6 @@ long kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
+ 			goto out;
+ 		}
+ 
+-		/* Set the flag after checking the write completed fully */
+-		if (write)
+-			set_bit(PG_mte_tagged, &page->flags);
+-
+ 		gfn++;
+ 		tags += num_tags;
+ 		length -= PAGE_SIZE;
+-- 
+2.30.2
+
+
+-- 
+Without deviation from the norm, progress is not possible.
