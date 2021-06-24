@@ -2,87 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56463B35D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 20:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8961B3B35D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 20:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232533AbhFXSg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 14:36:27 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:31868 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232515AbhFXSgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 14:36:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624559646; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=GxBqhq5qZ6sCOlmDi4RHXLn9UxYWl42lZR0vN6cONic=; b=YR5UYrJquRH8G/D0FEVeK8H34shOWGYEkDX3wGOBszD+YthggVDmSyqyZLMkESagNyHE1n7s
- O6G6ridYhT4rWdFn/jJDDtANyAuaOX+ifXkYCtTK4IasrKB2067lr0qcWGtm0vN4ujD8+5EL
- W/BcjoDNBIwNKwpwW0RDKpRuQlI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60d4d00806ea41c941da536e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Jun 2021 18:33:44
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8B71BC43217; Thu, 24 Jun 2021 18:33:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F12E4C433D3;
-        Thu, 24 Jun 2021 18:33:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F12E4C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     bjorn.andersson@linaro.org, vkoul@kernel.org
-Cc:     agross@kernel.org, ohad@wizery.com, mathieu.poirier@linaro.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] remoteproc: qcom: pas: Add missing power-domain "mxc" for CDSP
-Date:   Fri, 25 Jun 2021 00:03:25 +0530
-Message-Id: <1624559605-29847-1-git-send-email-sibis@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S232469AbhFXSgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 14:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbhFXSgN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 14:36:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3B17C061574;
+        Thu, 24 Jun 2021 11:33:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=27gdr9GSvfO5CF3yEwKFCm7q1VtJuFO06FodmKTbgyI=; b=B5skOgOzPkjY6bdrH6eVE/ThMW
+        wb2P1xvxjFuadS+qxGqcZLTeSohMATb5xFoWLB6hWImSGJm0iTtUpo9TglE+a9db8XPmXafyFuMAj
+        4ZZeyYIKs1OlYOLOehy67kPaQq8s/1Ic7pyhs01bW960heZxbKudp2QhR7rDbnUZNQK2QyDRF46PM
+        RXrV4e63262G9BAZfkn19Q53l6zpQrvVlOglbP4WayfmgBQBi+QWMrN9nSbTZVQpTi8T8Wm/AStFF
+        Av+k203lhPZnDXTzGDZBywq+eSy0aXLMt6B6vmcVVkU7zqX3EIaOb+kSHkBWUHLmEZImvJDh2yJ0E
+        vasxs2eQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwUAV-00GslE-B3; Thu, 24 Jun 2021 18:33:42 +0000
+Date:   Thu, 24 Jun 2021 19:33:39 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 25/46] mm/writeback: Add folio_start_writeback()
+Message-ID: <YNTQA3JVoIdHWxyT@casper.infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-26-willy@infradead.org>
+ <YNL8TGV2vgHcmmwX@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNL8TGV2vgHcmmwX@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing power-domain "mxc" required by CDSP PAS remoteproc on SM8350
-SoC.
+On Wed, Jun 23, 2021 at 11:18:04AM +0200, Christoph Hellwig wrote:
+> > +static inline void set_page_writeback_keepwrite(struct page *page)
+> >  {
+> > +	folio_start_writeback_keepwrite(page_folio(page));
+> >  }
+> >  
+> > +static inline bool test_set_page_writeback(struct page *page)
+> >  {
+> > +	return set_page_writeback(page);
+> >  }
+> 
+> Shouldn't these be in folio-compat.c as well?
 
-Fixes: e8b4e9a21af7 ("remoteproc: qcom: pas: Add SM8350 PAS remoteprocs")
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-Cc: stable@vger.kernel.org
----
+Thought about it.  We only have one caller of
+set_page_writeback_keepwrite(), so it may as well get inlined there.
+And test_set_page_writeback() is just a renaming ... I'd rather
+replace the callers of test_set_page_writeback() with calls to
+the new set_page_writeback() than move it into folio-compat.
 
-The device tree and pas documentation lists mcx as a required pd for cdsp.
-Looks like it was missed while adding the proxy pds in the pas driver.
-Bjorn/Vinod you'll need to test this patch before picking it up.
-
- drivers/remoteproc/qcom_q6v5_pas.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-index b921fc26cd04..ad20065dbdea 100644
---- a/drivers/remoteproc/qcom_q6v5_pas.c
-+++ b/drivers/remoteproc/qcom_q6v5_pas.c
-@@ -661,6 +661,7 @@ static const struct adsp_data sm8350_cdsp_resource = {
- 	},
- 	.proxy_pd_names = (char*[]){
- 		"cx",
-+		"mxc",
- 		NULL
- 	},
- 	.ssr_name = "cdsp",
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+> Otherwise looks good:
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
