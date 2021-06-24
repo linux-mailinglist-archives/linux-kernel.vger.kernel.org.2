@@ -2,145 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B463B367F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 921943B3681
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232782AbhFXTEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 15:04:10 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:36464 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232758AbhFXTEJ (ORCPT
+        id S232726AbhFXTEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 15:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232760AbhFXTEJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 24 Jun 2021 15:04:09 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lwUbl-0009To-5H; Thu, 24 Jun 2021 13:01:49 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:47182 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lwUbk-003RqE-4d; Thu, 24 Jun 2021 13:01:48 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-References: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
-        <87sg1lwhvm.fsf@disp2133>
-        <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
-        <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
-        <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
-        <87eed4v2dc.fsf@disp2133>
-        <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
-        <87fsxjorgs.fsf@disp2133>
-        <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
-        <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
-        <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
-        <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
-        <87a6njf0ia.fsf@disp2133>
-        <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
-        <87tulpbp19.fsf@disp2133>
-        <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
-        <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133>
-Date:   Thu, 24 Jun 2021 14:01:40 -0500
-In-Reply-To: <875yy3850g.fsf_-_@disp2133> (Eric W. Biederman's message of
-        "Thu, 24 Jun 2021 13:57:35 -0500")
-Message-ID: <87a6nf6q97.fsf_-_@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15E1C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 12:01:49 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id m6-20020a9d1d060000b029044e2d8e855eso4706773otm.8
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 12:01:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=niCJas6DLKYQ2aRdEe9ef7yZyU9hP5wpZvDJtvC0Zfw=;
+        b=JFgdAv/Vghn65RudbuJtZe0WSoMp5z9gp8dgd1PkJOw/ZzTiMkrIWIv0EH03x+SIkY
+         B7nh/Z7QOUBTshACf3w9CzENnoO1F04STqdvQewvqM1K4Uhby9P7cJL6LYwfUatt01Rp
+         Re/e0QiqvmCrSweuO7J30L7FLhAT2wG87tC7q789iFx3SyOV9tWCN3ohoDwuylUcRNCf
+         4TlSLQqcnNSCfWuh4w/AjwzA0SFCevl02EnyM/ACnxCkT7Kajnt77lEf41GAeNRyYUTB
+         mA9SnpIhobvaYJB/Ukr/Fbq0YWh1HE4w88Qa8KKBmYAIj06ItLIa93xWu5CQ2pCX35tg
+         VnhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=niCJas6DLKYQ2aRdEe9ef7yZyU9hP5wpZvDJtvC0Zfw=;
+        b=YVXR7yf9H3GLah38SRwSQFb6wssXLANwPIl2+auHq1GEx0pqLbRdyNd6rMbsJP/DOm
+         dSEruzExLFaCC/cnsEBH4W2VNPUeAXkYqTaZobs6cEd5EqmCpGpkVaGs01/CY9U1iXJp
+         0wqQ/iDgS2BD17yFMVeMronivmgB1xzG5pBFtmbeVs3bj48xtBT9Tobc3UovuNNkVYWM
+         uD5JeQWZl96r9RYamjl0nohqkh8QFVkPkhrgXS6Bh1sLHuf5R/TF6i6EttBQEDmeQCAp
+         qjRzDqHAE4Vg4vH5odouLEtN8L/neKgTjxGxt9qZXFuKd9OP23En1LU8xccJ9jQ2b7jm
+         i0Sg==
+X-Gm-Message-State: AOAM531GUA5t8ua6YDLyGyTUtyL+w3XoeZnQ7F4nghw2QTEmfhnIm1Sj
+        1n+chYLZ++7MFFfJBnuZyQUNJA==
+X-Google-Smtp-Source: ABdhPJwNRLa5BzfvWSWwXXa9RsJN+K766evyrPB+27whsst0ko7CEOu+X9m7lixSuMQGzjMiolB8WQ==
+X-Received: by 2002:a9d:a09:: with SMTP id 9mr6003334otg.126.1624561309069;
+        Thu, 24 Jun 2021 12:01:49 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id h11sm805451oov.8.2021.06.24.12.01.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 12:01:48 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 14:01:46 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Iskren Chernev <iskren.chernev@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v1 1/2] dt-bindings: pinctrl: qcom: Add SM6115 pinctrl
+ bindings
+Message-ID: <YNTWmpqq1UGv+7pY@yoga>
+References: <20210622201054.532979-1-iskren.chernev@gmail.com>
+ <20210622201054.532979-2-iskren.chernev@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lwUbk-003RqE-4d;;;mid=<87a6nf6q97.fsf_-_@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/gBwk+RmoD5QJZcwa1NSYKgkgA35zQ/ig=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TooManySym_01,XMNoVowels,XMSubLong,
-        XM_B_SpammyWords autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 479 ms - load_scoreonly_sql: 0.20 (0.0%),
-        signal_user_changed: 10 (2.1%), b_tie_ro: 8 (1.7%), parse: 1.01 (0.2%),
-         extract_message_metadata: 11 (2.2%), get_uri_detail_list: 0.95 (0.2%),
-         tests_pri_-1000: 14 (2.9%), tests_pri_-950: 1.23 (0.3%),
-        tests_pri_-900: 0.99 (0.2%), tests_pri_-90: 235 (49.1%), check_bayes:
-        234 (48.9%), b_tokenize: 7 (1.6%), b_tok_get_all: 125 (26.2%),
-        b_comp_prob: 1.82 (0.4%), b_tok_touch_all: 97 (20.2%), b_finish: 0.78
-        (0.2%), tests_pri_0: 195 (40.7%), check_dkim_signature: 0.58 (0.1%),
-        check_dkim_adsp: 2.6 (0.5%), poll_dns_idle: 0.63 (0.1%), tests_pri_10:
-        1.80 (0.4%), tests_pri_500: 6 (1.3%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH 5/9] signal/group_exit: Use start_group_exit in place of do_group_exit
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622201054.532979-2-iskren.chernev@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue 22 Jun 15:10 CDT 2021, Iskren Chernev wrote:
 
-Make thread exiting uniform by causing all threads to pass through
-get_signal when they are exiting.  This simplifies the analysis
-of sychronization during exit and guarantees that all full set
-of registers will be available for ptrace to examine for
-threads that stop at PTRACE_EVENT_EXIT.
+> Add device tree binding Documentation details for Qualcomm SM6115 and
+> SM4250 pinctrl.
+> 
+> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
+> ---
+>  .../bindings/pinctrl/qcom,sm6115-pinctrl.yaml | 172 ++++++++++++++++++
+>  1 file changed, 172 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm6115-pinctrl.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm6115-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm6115-pinctrl.yaml
+> new file mode 100644
+> index 000000000000..461edb7c5a1d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm6115-pinctrl.yaml
+> @@ -0,0 +1,172 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/qcom,sm6115-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Technologies, Inc. SM6115, SM4250 TLMM block
+> +
+> +maintainers:
+> +  - Iskren Chernev <iskren.chernev@gmail.com>
+> +
+> +description: |
 
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- kernel/exit.c    | 4 ++--
- kernel/seccomp.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+The '|' denotes that you want to keep the formatting, but there's no
+need for that in your description.
 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index fd1c04193e18..921519d80b56 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -931,8 +931,8 @@ do_group_exit(int exit_code)
-  */
- SYSCALL_DEFINE1(exit_group, int, error_code)
- {
--	do_group_exit((error_code & 0xff) << 8);
--	/* NOTREACHED */
-+	start_group_exit((error_code & 0xff) << 8);
-+	/* get_signal will call do_exit */
- 	return 0;
- }
- 
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 5301eca670a0..b1c06fd1b205 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -1250,7 +1250,7 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
- 			if (action == SECCOMP_RET_KILL_THREAD)
- 				do_exit(SIGSYS);
- 			else
--				do_group_exit(SIGSYS);
-+				start_group_exit(SIGSYS);
- 		}
- 		return -1;
- 	}
--- 
-2.20.1
+> +  This binding describes the Top Level Mode Multiplexer block found in the
+> +  SM6115 and SM4250 platforms.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,sm4250-tlmm
+> +      - qcom,sm6115-tlmm
+> +
+> +  reg:
+> +    minItems: 3
+> +    maxItems: 3
+> +
+> +  reg-names:
+> +    items:
+> +      - const: "west"
+> +      - const: "south"
+> +      - const: "east"
+> +
+> +  interrupts:
+> +    description: Specifies the TLMM summary IRQ
+> +    maxItems: 1
+> +
+> +  interrupt-controller: true
+> +
+> +  '#interrupt-cells':
+> +    description:
+> +      Specifies the PIN numbers and Flags, as defined in defined in
+> +      include/dt-bindings/interrupt-controller/irq.h
+> +    const: 2
+> +
+> +  gpio-controller: true
+> +
+> +  '#gpio-cells':
+> +    description: Specifying the pin number and flags, as defined in
+> +      include/dt-bindings/gpio/gpio.h
+> +    const: 2
+> +
+> +  gpio-ranges:
+> +    maxItems: 1
+> +
+> +  wakeup-parent:
+> +    maxItems: 1
+> +
+> +#PIN CONFIGURATION NODES
+> +patternProperties:
+> +  '^.*$':
+> +    if:
+> +      type: object
+> +    then:
 
+This doesn't cover the ability to define pinctrl state both in immediate
+nodes and nested one level down. So please mimic how this is done in
+
+Documentation/devicetree/bindings/pinctrl/qcom,sc8180x-pinctrl.yaml
+
+> +      properties:
+> +        pins:
+> +          description:
+> +            List of gpio pins affected by the properties specified in this
+> +            subnode.
+> +          items:
+> +            oneOf:
+> +              - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-7][0-9])$"
+
+This says that gpio0-9, gpio10-99 and gpio100-179 are valid, but the
+driver only presents gpio0-112, so this should be:
+
+^gpio([0-9]|[1-9][0-9]|10[0-9]|11[0-2]$
+
+> +              - enum: [ sdc1_rclk, sdc1_clk, sdc1_cmd, sdc1_data,
+> +                        sdc2_clk, sdc2_cmd, sdc2_data, ufs_reset ]
+> +          minItems: 1
+> +          maxItems: 36
+> +
+> +        function:
+> +          description:
+> +            Specify the alternative function to be configured for the specified
+> +            pins.
+> +
+> +          enum: [ qup0, gpio, ddr_bist, phase_flag0, qdss_gpio8, atest_tsens,
+> +                  mpm_pwr, m_voc, phase_flag1, qdss_gpio9, atest_tsens2,
+> +                  phase_flag2, qdss_gpio10, dac_calib0, atest_usb10,
+> +                  phase_flag3, qdss_gpio11, dac_calib1, atest_usb11, qup1,
+> +                  cri_trng0, phase_flag4, dac_calib2, atest_usb12, cri_trng1,
+> +                  phase_flag5, dac_calib3, atest_usb13, qup2, phase_flag6,
+> +                  dac_calib4, atest_usb1, qup3, pbs_out, pll_bist, qdss_gpio,
+> +                  tsense_pwm, agera_pll, pbs0, qdss_gpio0, pbs1, qdss_gpio1,
+> +                  qup4, tgu_ch0, tgu_ch1, qup5, tgu_ch2, phase_flag7,
+> +                  qdss_gpio4, dac_calib5, tgu_ch3, phase_flag8, qdss_gpio5,
+> +                  dac_calib6, phase_flag9, qdss_gpio6, dac_calib7,
+> +                  phase_flag10, qdss_gpio7, dac_calib8, sdc2_tb, cri_trng,
+> +                  pbs2, qdss_gpio2, sdc1_tb, pbs3, qdss_gpio3, cam_mclk, pbs4,
+> +                  adsp_ext, pbs5, cci_i2c, prng_rosc, pbs6, phase_flag11,
+> +                  dac_calib9, atest_usb20, pbs7, phase_flag12, dac_calib10,
+> +                  atest_usb21, cci_timer1, gcc_gp1, pbs8, phase_flag13,
+> +                  dac_calib11, atest_usb22, cci_async, cci_timer0, pbs9,
+> +                  phase_flag14, dac_calib12, atest_usb23, pbs10, phase_flag15,
+> +                  dac_calib13, atest_usb2, vsense_trigger, qdss_cti,
+> +                  cci_timer2, phase_flag16, dac_calib14, atest_char,
+> +                  phase_flag17, dac_calib15, atest_char0, gp_pdm0,
+> +                  phase_flag18, dac_calib16, atest_char1, cci_timer3, gp_pdm1,
+> +                  phase_flag19, dac_calib17, atest_char2, gp_pdm2,
+> +                  phase_flag20, dac_calib18, atest_char3, phase_flag21,
+> +                  phase_flag22, nav_gpio, phase_flag23, phase_flag24,
+> +                  phase_flag25, pbs14, qdss_gpio14, vfr_1, pbs15, qdss_gpio15,
+> +                  pa_indicator, gsm1_tx, ssbi_wtr1, pll_bypassnl, pll_reset,
+> +                  phase_flag26, ddr_pxi0, gsm0_tx, phase_flag27, gcc_gp2,
+> +                  qdss_gpio12, ddr_pxi1, gcc_gp3, qdss_gpio13, dbg_out,
+> +                  uim2_data, uim2_clk, uim2_reset, uim2_present, uim1_data,
+> +                  uim1_clk, uim1_reset, uim1_present, dac_calib19, mdp_vsync,
+> +                  mdp_vsync_out_0, mdp_vsync_out_1, dac_calib20, dac_calib21,
+> +                  atest_bbrx1, pbs11, usb_phy, atest_bbrx0, mss_lte, pbs12,
+> +                  pbs13, wlan1_adc0, wlan1_adc1, sd_write, jitter_bist,
+> +                  atest_gpsadc_dtest0_native, atest_gpsadc_dtest1_native,
+> +                  phase_flag28, dac_calib22, ddr_pxi2, phase_flag29,
+> +                  dac_calib23, phase_flag30, dac_calib24, ddr_pxi3,
+> +                  phase_flag31, dac_calib25 ]
+> +
+> +        drive-strength:
+> +          enum: [2, 4, 6, 8, 10, 12, 14, 16]
+> +          default: 2
+> +          description:
+> +            Selects the drive strength for the specified pins, in mA.
+> +
+> +        bias-pull-down: true
+> +
+> +        bias-pull-up: true
+> +
+> +        bias-disable: true
+> +
+> +        output-high: true
+> +
+> +        output-low: true
+> +
+> +      required:
+> +        - pins
+> +        - function
+> +
+> +      additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +  - interrupt-controller
+> +  - '#interrupt-cells'
+> +  - gpio-controller
+> +  - '#gpio-cells'
+> +  - gpio-ranges
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +        #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +        pinctrl@500000 {
+> +                compatible = "qcom,sm4250-tlmm";
+> +                reg = <0x500000 0x400000>,
+> +                        <0x900000 0x400000>,
+> +                        <0xd00000 0x400000>;
+> +                reg-names = "west", "south", "east";
+> +                interrupts = <GIC_SPI 227 IRQ_TYPE_LEVEL_HIGH>;
+> +                gpio-controller;
+> +                #gpio-cells = <2>;
+> +                interrupt-controller;
+> +                #interrupt-cells = <2>;
+> +                gpio-ranges = <&tlmm 0 0 121>;
+
+You only have 114 (113 GPIOs + UFS_RESET) gpios.
+
+Doesn't the &tlmm need to be defined in the example as well?
+
+> +                wakeup-parent = <&intc>;
+
+The wakeup-parent should most likely be &pdc, but feel free to omit
+"wakup-parent" from the example if that helps.
+
+Regards,
+Bjorn
+
+> +        }
+> +
+> -- 
+> 2.31.1
+> 
