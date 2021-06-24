@@ -2,200 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981613B37F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3916E3B37F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232503AbhFXUi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 16:38:29 -0400
-Received: from mail-il1-f178.google.com ([209.85.166.178]:34530 "EHLO
-        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhFXUi2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 16:38:28 -0400
-Received: by mail-il1-f178.google.com with SMTP id s19so7676303ilj.1;
-        Thu, 24 Jun 2021 13:36:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=IeekNEyohZN6MzkTx+KjqVqtCEsePcgyWKrRxyLzyeU=;
-        b=WY/+YOQc1wG50T6XHnSqSwmleYWO7OgdbOI+qtPBTZjLSjiieJ/pjN4QLaBIH5xcdB
-         WBjAUxQ+rOYUL37oZ7qfy3pNZV/HfrttqtIE5GVnhr6yK+zChW9LYDF+dF/MOh4NrQnE
-         qLLnhBtCBtunhaBRKCNupfNb8LLyp1e+uAFHqz0lWZezMdSRqDW6V0F7kKQSsfJTKZK1
-         o4ID27TX6xCHpn1Pm9A9DsXNHQcGEIZyKcOJ60jrXivXdscN5C7UmK06ROf+HysWBBdy
-         /rwjE/AtPnuMY2eebOL+kNRJV8H1lGdRR1asetd7CYxJERaJShafGa+lDNoCtcAJ8cFX
-         N7sg==
-X-Gm-Message-State: AOAM531HePhgTLGiNh+KcEpvDRcPT7AsnEsQoSLy+HmndS1fZWniHZZr
-        +Dk8+oWTX7MOrTIshj+uFw==
-X-Google-Smtp-Source: ABdhPJz4oc9MraAAsoi//hl+eNtAShBWVt6pwObPCXgdsqt1R0tzuLvf3l3gYVGV9xs0YZaYlwG22g==
-X-Received: by 2002:a92:cbd0:: with SMTP id s16mr4891741ilq.19.1624566968324;
-        Thu, 24 Jun 2021 13:36:08 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id z19sm1870730ioc.29.2021.06.24.13.36.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 13:36:07 -0700 (PDT)
-Received: (nullmailer pid 1945446 invoked by uid 1000);
-        Thu, 24 Jun 2021 20:36:04 -0000
-Date:   Thu, 24 Jun 2021 14:36:04 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Michael Walle <michael@walle.cc>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 33/33] arm64: zynqmp: Add support for Xilinx Kria SOM
- board
-Message-ID: <20210624203604.GA1938341@robh.at.kernel.org>
-References: <cover.1623684253.git.michal.simek@xilinx.com>
- <97588ccfcdc21c53f732d3948ae85abed6539256.1623684253.git.michal.simek@xilinx.com>
+        id S232560AbhFXUjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 16:39:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:38262 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229525AbhFXUjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 16:39:20 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CB24A1042;
+        Thu, 24 Jun 2021 13:37:00 -0700 (PDT)
+Received: from [10.57.9.136] (unknown [10.57.9.136])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF4683F694;
+        Thu, 24 Jun 2021 13:36:58 -0700 (PDT)
+Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Chen Huang <chenhuang5@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <da9c2fa9-a545-0c48-4490-d6134cc31425@huawei.com>
+ <20210623132223.GA96264@C02TD0UTHF1T.local>
+ <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
+ <YNP6/p/yJzLLr8M8@casper.infradead.org> <YNQuZ8ykN7aR+1MP@infradead.org>
+ <YNRpYli/5/GWvaTT@casper.infradead.org>
+ <27fbb8c1-2a65-738f-6bec-13f450395ab7@arm.com>
+ <YNSyZaZtPTmTa5P8@zeniv-ca.linux.org.uk> <20210624185554.GC25097@arm.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <e8e87aba-22f7-d039-ceaa-a93591b04b1e@arm.com>
+Date:   Thu, 24 Jun 2021 21:36:54 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <97588ccfcdc21c53f732d3948ae85abed6539256.1623684253.git.michal.simek@xilinx.com>
+In-Reply-To: <20210624185554.GC25097@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 05:25:41PM +0200, Michal Simek wrote:
-> There are couple of revisions of SOMs (k26) and associated carrier cards
-> (kv260).
-> SOM itself has two major versions:
-> sm-k26 - SOM with EMMC
-> smk-k26 - SOM without EMMC used on starter kit with preprogrammed firmware
-> in QSPI.
+On 2021-06-24 19:55, Catalin Marinas wrote:
+> On Thu, Jun 24, 2021 at 04:27:17PM +0000, Al Viro wrote:
+>> On Thu, Jun 24, 2021 at 02:22:27PM +0100, Robin Murphy wrote:
+>>> FWIW I think the only way to make the kernel behaviour any more robust here
+>>> would be to make the whole uaccess API more expressive, such that rather
+>>> than simply saying "I only got this far" it could actually differentiate
+>>> between stopping due to a fault which may be recoverable and worth retrying,
+>>> and one which definitely isn't.
+>>
+>> ... and propagate that "more expressive" information through what, 3 or 4
+>> levels in the call chain?
+>>
+>>  From include/linux/uaccess.h:
+>>
+>>   * If raw_copy_{to,from}_user(to, from, size) returns N, size - N bytes starting
+>>   * at to must become equal to the bytes fetched from the corresponding area
+>>   * starting at from.  All data past to + size - N must be left unmodified.
+>>   *
+>>   * If copying succeeds, the return value must be 0.  If some data cannot be
+>>   * fetched, it is permitted to copy less than had been fetched; the only
+>>   * hard requirement is that not storing anything at all (i.e. returning size)
+>>   * should happen only when nothing could be copied.  In other words, you don't
+>>   * have to squeeze as much as possible - it is allowed, but not necessary.
+>>
+>> arm64 instances violate the aforementioned hard requirement.
 > 
-> SOMs are describing only devices available on the SOM or connections which
-> are described in specification (for example UART, fwuen).
+> After reading the above a few more times, I think I get it. The key
+> sentence is: not storing anything at all should happen only when nothing
+> could be copied. In the MTE case, something can still be copied.
 > 
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> ---
+>> Please, fix
+>> it there; it's not hard.  All you need is an exception handler in .Ltiny15
+>> that would fall back to (short) byte-by-byte copy if the faulting address
+>> happened to be unaligned.  Or just do one-byte copy, not that it had been
+>> considerably cheaper than a loop.  Will be cheaper than propagating that extra
+>> information up the call chain, let alone paying for extra ->write_begin()
+>> and ->write_end() for single byte in generic_perform_write().
 > 
-> Changes in v2:
-> - Use sugar syntax - reported by Geert
-> - Update copyright years
-> - Fix SD3.0 comment alignment
-> - Remove one newline from Makefile
+> Yeah, it's definitely fixable in the arch code. I misread the above
+> requirements and thought it could be fixed in the core code.
 > 
-> https://www.xilinx.com/products/som/kria.html
-> ---
->  .../devicetree/bindings/arm/xilinx.yaml       |  31 ++
->  arch/arm64/boot/dts/xilinx/Makefile           |  10 +
->  .../boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts  | 335 ++++++++++++++++++
->  .../boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts  | 318 +++++++++++++++++
->  .../boot/dts/xilinx/zynqmp-sm-k26-revA.dts    | 289 +++++++++++++++
->  .../boot/dts/xilinx/zynqmp-smk-k26-revA.dts   |  21 ++
+> Quick hack, though I think in the actual exception handling path in .S
+> more sense (and it needs the copy_to_user for symmetry):
 
-It does not appear to me that the schema matches the dts files. You did 
-check that, right?
+Hmm, if anything the asm version might be even more straightforward; I 
+think it's pretty much just this (untested):
 
->  6 files changed, 1004 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts
->  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts
->  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
->  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts
+diff --git a/arch/arm64/lib/copy_to_user.S b/arch/arm64/lib/copy_to_user.S
+index 043da90f5dd7..632bf1f9540d 100644
+--- a/arch/arm64/lib/copy_to_user.S
++++ b/arch/arm64/lib/copy_to_user.S
+@@ -62,6 +62,9 @@ EXPORT_SYMBOL(__arch_copy_to_user)
+
+         .section .fixup,"ax"
+         .align  2
+-9998:  sub     x0, end, dst                    // bytes not copied
++9998:  ldrb    w7, [x1]
++USER(9997f,    sttrb   w7, [x0])
++       add     x0, x0, #1
++9997:  sub     x0, end, dst                    // bytes not copied
+         ret
+         .previous
+
+If we can get away without trying to finish the whole copy bytewise, 
+(i.e. we don't cause any faults of our own by knowingly over-reading in 
+the routine itself), I'm more than happy with that.
+
+Robin.
+
+> diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
+> index b5f08621fa29..903f8a2a457b 100644
+> --- a/arch/arm64/include/asm/uaccess.h
+> +++ b/arch/arm64/include/asm/uaccess.h
+> @@ -415,6 +415,15 @@ extern unsigned long __must_check __arch_copy_from_user(void *to, const void __u
+>   	uaccess_ttbr0_enable();						\
+>   	__acfu_ret = __arch_copy_from_user((to),			\
+>   				      __uaccess_mask_ptr(from), (n));	\
+> +	if (__acfu_ret == n) {						\
+> +		int __cfu_err = 0;					\
+> +		char __cfu_val;						\
+> +		__raw_get_mem("ldtr", __cfu_val, (char *)from, __cfu_err);\
+> +		if (!__cfu_err) {					\
+> +			*(char *)to = __cfu_val;			\
+> +			__acfu_ret--;					\
+> +		}							\
+> +	}								\
+>   	uaccess_ttbr0_disable();					\
+>   	__acfu_ret;							\
+>   })
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/xilinx.yaml b/Documentation/devicetree/bindings/arm/xilinx.yaml
-> index a0b1ae6e3e71..1a4a03dfaf7f 100644
-> --- a/Documentation/devicetree/bindings/arm/xilinx.yaml
-> +++ b/Documentation/devicetree/bindings/arm/xilinx.yaml
-> @@ -116,6 +116,37 @@ properties:
->            - const: xlnx,zynqmp-zcu111
->            - const: xlnx,zynqmp
->  
-> +      - description: Xilinx Kria SOMs
-> +        items:
-> +          - const: xlnx,zynqmp-sm-k26-rev1
-> +          - const: xlnx,zynqmp-sm-k26-revB
-> +          - const: xlnx,zynqmp-sm-k26-revA
-
-So rev1 is compatible with revB is compatible with revA, but revA and 
-revB don't exist on their own?
-
-> +          - const: xlnx,zynqmp-sm-k26
-> +          - const: xlnx,zynqmp
-> +
-> +      - description: Xilinx Kria SOMs (starter)
-> +        items:
-> +          - const: xlnx,zynqmp-smk-k26-rev1
-> +          - const: xlnx,zynqmp-smk-k26-revB
-> +          - const: xlnx,zynqmp-smk-k26-revA
-> +          - const: xlnx,zynqmp-smk-k26
-> +          - const: xlnx,zynqmp
-> +
-> +      - description: Xilinx Kria Carrier Cards (revA/Y/Z)
-> +        items:
-> +          - const: xlnx,zynqmp-sk-kv260-revZ
-> +          - const: xlnx,zynqmp-sk-kv260-revY
-> +          - const: xlnx,zynqmp-sk-kv260-revA
-> +          - const: xlnx,zynqmp-sk-k260
-> +          - const: xlnx,zynqmp
-> +
-> +      - description: Xilinx Kria Carrier Cards (revB/1)
-> +        items:
-> +          - const: xlnx,zynqmp-sk-kv260-rev1
-> +          - const: xlnx,zynqmp-sk-kv260-revB
-> +          - const: xlnx,zynqmp-sk-k260
-> +          - const: xlnx,zynqmp
-> +
->  additionalProperties: true
->  
->  ...
-> diff --git a/arch/arm64/boot/dts/xilinx/Makefile b/arch/arm64/boot/dts/xilinx/Makefile
-> index 083ed52337fd..8e43bef2c57e 100644
-> --- a/arch/arm64/boot/dts/xilinx/Makefile
-> +++ b/arch/arm64/boot/dts/xilinx/Makefile
-> @@ -17,3 +17,13 @@ dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu104-revA.dtb
->  dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu104-revC.dtb
->  dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu106-revA.dtb
->  dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu111-revA.dtb
-> +
-> +dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-sm-k26-revA.dtb
-> +dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-smk-k26-revA.dtb
-> +
-> +som-AA-dtbs := zynqmp-sm-k26-revA.dtb zynqmp-sck-kv-g-revA.dtbo
-> +som-AB-dtbs := zynqmp-sm-k26-revA.dtb zynqmp-sck-kv-g-revB.dtbo
-> +starter-AA-dtbs := zynqmp-smk-k26-revA.dtb zynqmp-sck-kv-g-revA.dtbo
-> +starter-AB-dtbs := zynqmp-smk-k26-revA.dtb zynqmp-sck-kv-g-revB.dtbo
-> +
-> +dtb-$(CONFIG_ARCH_ZYNQMP) += som-AA.dtb som-AB.dtb starter-AA.dtb starter-AB.dtb
-> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts
-> new file mode 100644
-> index 000000000000..59d5751e0634
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts
-> @@ -0,0 +1,335 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * dts file for KV260 revA Carrier Card
-> + *
-> + * (C) Copyright 2020 - 2021, Xilinx, Inc.
-> + *
-> + * SD level shifter:
-> + * "A" – A01 board un-modified (NXP)
-> + * "Y" – A01 board modified with legacy interposer (Nexperia)
-> + * "Z" – A01 board modified with Diode interposer
-> + *
-> + * Michal Simek <michal.simek@xilinx.com>
-> + */
-> +
-> + #include <dt-bindings/gpio/gpio.h>
-> + #include <dt-bindings/net/ti-dp83867.h>
-> + #include <dt-bindings/phy/phy.h>
-> + #include <dt-bindings/pinctrl/pinctrl-zynqmp.h>
-> +
-> +/dts-v1/;
-> +/plugin/;
-> +
-> +&{/} {
-> +	compatible = "xlnx,zynqmp-sk-kv260-revA",
-> +		     "xlnx,zynqmp-sk-kv260-revY",
-> +		     "xlnx,zynqmp-sk-kv260-revZ",
-
-The order above is Z, Y, A.
-
-> +		     "xlnx,zynqmp-sk-kv260", "xlnx,zynqmp";
-> +};
+> Of course, it only fixes the MTE problem, I'll ignore the MMIO case
+> (though it may work in certain configurations like synchronous faults).
+> 
