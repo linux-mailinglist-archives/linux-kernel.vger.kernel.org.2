@@ -2,191 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3215D3B2FD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DCF3B2FD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbhFXNL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:11:56 -0400
-Received: from mga01.intel.com ([192.55.52.88]:7195 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229945AbhFXNLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:11:54 -0400
-IronPort-SDR: dd5904ovP9yVDVEZQeku83TqRhYhQstyOPb3ld1j/hXq7iBOWZ3HXeLeGNkHLc7iywMlFmOYbH
- k2gLoC7N3OOw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="229049274"
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="229049274"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 06:09:32 -0700
-IronPort-SDR: HxzSTYXQksPgutqeSE3iKfp9Xrj592UZplSuYL2yf9w+lHbS62QYhzBJO10kJz62rm97NrSuSm
- rFnbbRcQ70VA==
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="487748748"
-Received: from llvujovi-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.255.82.142])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 06:09:30 -0700
-Subject: Re: [PATCH Part1 RFC v3 20/22] x86/boot: Add Confidential Computing
- address to setup_header
-To:     Michael Roth <michael.roth@amd.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com, Andi Kleen <ak@linux.intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20210602140416.23573-1-brijesh.singh@amd.com>
- <20210602140416.23573-21-brijesh.singh@amd.com> <YMw4UZn6AujpPSZO@zn.tnic>
- <15568c80-c9a9-5602-d940-264af87bed98@amd.com> <YMy2OGwsRzrR5bwD@zn.tnic>
- <162442264313.98837.16983159316116149849@amd.com> <YNMLX6fbB3PQwSpv@zn.tnic>
- <20210624031911.eznpkbgjt4e445xj@amd.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <5706421e-c88e-bcda-e637-610b5db297d0@linux.intel.com>
-Date:   Thu, 24 Jun 2021 06:09:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210624031911.eznpkbgjt4e445xj@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S231434AbhFXNM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:12:56 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:43204 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229945AbhFXNMz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:12:55 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 8A393C09D8;
+        Thu, 24 Jun 2021 21:10:30 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P1335T140034512512768S1624540229513361_;
+        Thu, 24 Jun 2021 21:10:30 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <dde917c3c63dee57581db4e4cdf3fa57>
+X-RL-SENDER: cl@rock-chips.com
+X-SENDER: cl@rock-chips.com
+X-LOGIN-NAME: cl@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-RCPT-COUNT: 10
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   <cl@rock-chips.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, jbx6244@gmail.com, zhangqing@rock-chips.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        lee.jones@linaro.org, Liang Chen <cl@rock-chips.com>
+Subject: [RESEND PATCH v1 3/3] arm64: dts: rockchip: add pmu and qos nodes for rk3568
+Date:   Thu, 24 Jun 2021 21:10:27 +0800
+Message-Id: <20210624131027.3719-1-cl@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210624114719.1685-1-cl@rock-chips.com>
+References: <20210624114719.1685-1-cl@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Andi, Kirill (For TDX specific review)
+From: Liang Chen <cl@rock-chips.com>
 
-On 6/23/21 8:19 PM, Michael Roth wrote:
-> On Wed, Jun 23, 2021 at 12:22:23PM +0200, Borislav Petkov wrote:
->> On Tue, Jun 22, 2021 at 11:30:43PM -0500, Michael Roth wrote:
->>> Quoting Borislav Petkov (2021-06-18 10:05:28)
->>>> On Fri, Jun 18, 2021 at 08:57:12AM -0500, Brijesh Singh wrote:
->>>>> Don't have any strong reason to keep it separate, I can define a new
->>>>> type and use the setup_data to pass this information.
->>>>
->>>> setup_data is exactly for use cases like that - pass a bunch of data
->>>> to the kernel. So there's no need for a separate thing. Also see that
->>>> kernel_info thing which got added recently for read_only data.
->>>
->>> Hi Boris,
->>>
->>> There's one side-effect to this change WRT the CPUID page (which I think
->>> we're hoping to include in RFC v4).
->>>
->>> With CPUID page we need to access it very early in boot, for both
->>> boot/compressed kernel, and the uncompressed kernel. At first this was
->>> implemented by moving the early EFI table parsing code from
->>> arch/x86/kernel/boot/compressed/acpi.c into a little library to handle early
->>> EFI table parsing to fetch the Confidential Computing blob to get the CPUID
->>> page address.
->>>
->>> This was a bit messy since we needed to share that library between
->>> boot/compressed and uncompressed, and at that early stage things like
->>> fixup_pointer() are needed in some places, else even basic things like
->>> accessing EFI64_LOADER_SIGNATURE and various EFI helper functions could crash
->>> in uncompressed otherwise, so the library code needed to be fixed up
->>> accordingly.
->>>
->>> To simplify things we ended up simply keeping the early EFI table parsing in
->>> boot/compressed, and then having boot/compressed initialize
->>> setup_data.cc_blob_address so that the uncompressed kernel could access it
->>> from there (acpi does something similar with rdsp address).
->>
->> Yes, except the rsdp address is not vendor-specific but an x86 ACPI
->> thing, so pretty much omnipresent.
->>
->> Also, acpi_rsdp_addr is part of boot_params and that struct is full
->> of padding holes and obsolete members so reusing a u32 there is a lot
->> "easier" than changing the setup_header. So can you put that address in
->> boot_params instead?
-> 
-> Thanks for the suggestion! I tried something like the below and that seems to
-> work pretty well. I'm not sure if that's the best spot or not though, it
-> seems like it might be a good idea to leave some padding after eddbuf in
-> case it needs to grow in the future. I'll look into that a bit more.
-> 
-> One downside to this is we still need something in the boot protocol,
-> either via setup_data, or setup_header directly. Having it in
-> setup_header avoids the need to also have to add a field to boot_params
-> for the boot/compressed->uncompressed passing, but maybe that's not a good
-> enough justification. Perhaps if the TDX folks have similar needs though.
-> 
-> diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
-> index 1ac5acca72ce..0824c8646861 100644
-> --- a/arch/x86/include/uapi/asm/bootparam.h
-> +++ b/arch/x86/include/uapi/asm/bootparam.h
-> @@ -218,7 +218,8 @@ struct boot_params {
->          struct boot_e820_entry e820_table[E820_MAX_ENTRIES_ZEROPAGE]; /* 0x2d0 */
->          __u8  _pad8[48];                                /* 0xcd0 */
->          struct edd_info eddbuf[EDDMAXNR];               /* 0xd00 */
-> -       __u8  _pad9[276];                               /* 0xeec */
-> +       __u32 cc_blob_address;							/* 0xeec */
-> +       __u8  _pad9[272];                               /* 0xef0 */
->   } __attribute__((packed));
-> 
-> diff --git a/arch/x86/include/asm/bootparam_utils.h b/arch/x86/include/asm/bootparam_utils.h
-> index 981fe923a59f..53e9b0620d96 100644
-> --- a/arch/x86/include/asm/bootparam_utils.h
-> +++ b/arch/x86/include/asm/bootparam_utils.h
-> @@ -74,6 +74,7 @@ static void sanitize_boot_params(struct boot_params *boot_params)
->                          BOOT_PARAM_PRESERVE(hdr),
->                          BOOT_PARAM_PRESERVE(e820_table),
->                          BOOT_PARAM_PRESERVE(eddbuf),
-> +                       BOOT_PARAM_PRESERVE(cc_blob_address),
->                  };
-> 
->                  memset(&scratch, 0, sizeof(scratch));
-> 
->>
->>> Now that we're moving it to setup_data, this becomes a bit more awkward,
->>> since we need to reserve memory in boot/compressed to store the setup_data
->>> entry, then add it to the linked list to pass along to uncompressed kernel.
->>> In turn that also means we need to add an identity mapping for this in
->>> ident_map_64.c, so I'm not sure that's the best approach.
->>>
->>> So just trying to pin what the best approach is:
->>>
->>> a) move cc_blob to setup_data, and do the above-described to pass
->>>     cc_blob_address from boot/compressed to uncompressed to avoid early
->>>     EFI parsing in uncompressed
->>> b) move cc_blob to setup_data, and do the EFI table parsing in both
->>>     boot/compressed. leave setup_data allocation/init for BIOS/bootloader
->>> c) keep storing cc_blob_address in setup_header.cc_blob_address
->>> d) something else?
->>
->> Leaving in the whole text for newly CCed TDX folks in case they're going
->> to need something like that.
->>
->> And if so, then both vendors should even share the field definition.
->>
->> Dave, Sathya, you can find the whole subthread here:
->>
->> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flkml.kernel.org%2Fr%2F20210602140416.23573-21-brijesh.singh%40amd.com&amp;data=04%7C01%7Cmichael.roth%40amd.com%7C3b352c4b944c4d95bbdb08d93630d0eb%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637600405622460196%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=464O7JxibsbjC3bc0LkGcztdb4kCYH7kcQAcqohJhug%3D&amp;reserved=0
->>
->> in case you need background info on the topic at hand.
->>
->> Thx.
->>
->> -- 
->> Regards/Gruss,
->>      Boris.
->>
->> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpeople.kernel.org%2Ftglx%2Fnotes-about-netiquette&amp;data=04%7C01%7Cmichael.roth%40amd.com%7C3b352c4b944c4d95bbdb08d93630d0eb%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637600405622460196%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=ruCM7CNgPCNPkrOoiNts1ZKi5k7JSUumln7qQMP%2BMi0%3D&amp;reserved=0
+Add the power-management and QoS nodes to the core rk3568 dtsi.
 
+Signed-off-by: Liang Chen <cl@rock-chips.com>
+---
+ arch/arm64/boot/dts/rockchip/rk3568.dtsi | 229 +++++++++++++++++++++++
+ 1 file changed, 229 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568.dtsi b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
+index d225e6a45d5c..618849186c39 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
+@@ -8,6 +8,7 @@
+ #include <dt-bindings/interrupt-controller/irq.h>
+ #include <dt-bindings/phy/phy.h>
+ #include <dt-bindings/pinctrl/rockchip.h>
++#include <dt-bindings/power/rk3568-power.h>
+ #include <dt-bindings/soc/rockchip,boot-mode.h>
+ #include <dt-bindings/thermal/thermal.h>
+ 
+@@ -257,6 +258,99 @@
+ 		status = "disabled";
+ 	};
+ 
++	pmu: power-management@fdd90000 {
++		compatible = "rockchip,rk3568-pmu", "syscon", "simple-mfd";
++		reg = <0x0 0xfdd90000 0x0 0x1000>;
++
++		power: power-controller {
++			compatible = "rockchip,rk3568-power-controller";
++			#power-domain-cells = <1>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			/* These power domains are grouped by VD_GPU */
++			power-domain@RK3568_PD_GPU {
++				reg = <RK3568_PD_GPU>;
++				clocks = <&cru ACLK_GPU_PRE>,
++					 <&cru PCLK_GPU_PRE>;
++				pm_qos = <&qos_gpu>;
++				#power-domain-cells = <0>;
++			};
++
++			/* These power domains are grouped by VD_LOGIC */
++			power-domain@RK3568_PD_VI {
++				reg = <RK3568_PD_VI>;
++				clocks = <&cru HCLK_VI>,
++					 <&cru PCLK_VI>;
++				pm_qos = <&qos_isp>,
++					 <&qos_vicap0>,
++					 <&qos_vicap1>;
++				#power-domain-cells = <0>;
++			};
++
++			power-domain@RK3568_PD_VO {
++				reg = <RK3568_PD_VO>;
++				clocks = <&cru HCLK_VO>,
++					 <&cru PCLK_VO>,
++					 <&cru ACLK_VOP_PRE>;
++				pm_qos = <&qos_hdcp>,
++					 <&qos_vop_m0>,
++					 <&qos_vop_m1>;
++				#power-domain-cells = <0>;
++			};
++
++			power-domain@RK3568_PD_RGA {
++				reg = <RK3568_PD_RGA>;
++				clocks = <&cru HCLK_RGA_PRE>,
++					 <&cru PCLK_RGA_PRE>;
++				pm_qos = <&qos_ebc>,
++					 <&qos_iep>,
++					 <&qos_jpeg_dec>,
++					 <&qos_jpeg_enc>,
++					 <&qos_rga_rd>,
++					 <&qos_rga_wr>;
++				#power-domain-cells = <0>;
++			};
++
++			power-domain@RK3568_PD_VPU {
++				reg = <RK3568_PD_VPU>;
++				clocks = <&cru HCLK_VPU_PRE>;
++				pm_qos = <&qos_vpu>;
++				#power-domain-cells = <0>;
++			};
++
++			power-domain@RK3568_PD_RKVDEC {
++				clocks = <&cru HCLK_RKVDEC_PRE>;
++				reg = <RK3568_PD_RKVDEC>;
++				pm_qos = <&qos_rkvdec>;
++				#power-domain-cells = <0>;
++			};
++
++			power-domain@RK3568_PD_RKVENC {
++				reg = <RK3568_PD_RKVENC>;
++				clocks = <&cru HCLK_RKVENC_PRE>;
++				pm_qos = <&qos_rkvenc_rd_m0>,
++					 <&qos_rkvenc_rd_m1>,
++					 <&qos_rkvenc_wr_m0>;
++				#power-domain-cells = <0>;
++			};
++
++			power-domain@RK3568_PD_PIPE {
++				reg = <RK3568_PD_PIPE>;
++				clocks = <&cru PCLK_PIPE>;
++				pm_qos = <&qos_pcie2x1>,
++					 <&qos_pcie3x1>,
++					 <&qos_pcie3x2>,
++					 <&qos_sata0>,
++					 <&qos_sata1>,
++					 <&qos_sata2>,
++					 <&qos_usb3_0>,
++					 <&qos_usb3_1>;
++				#power-domain-cells = <0>;
++			};
++		};
++	};
++
+ 	sdmmc2: mmc@fe000000 {
+ 		compatible = "rockchip,rk3568-dw-mshc", "rockchip,rk3288-dw-mshc";
+ 		reg = <0x0 0xfe000000 0x0 0x4000>;
+@@ -271,6 +365,141 @@
+ 		status = "disabled";
+ 	};
+ 
++	qos_gpu: qos@fe128000 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe128000 0x0 0x20>;
++	};
++
++	qos_rkvenc_rd_m0: qos@fe138080 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe138080 0x0 0x20>;
++	};
++
++	qos_rkvenc_rd_m1: qos@fe138100 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe138100 0x0 0x20>;
++	};
++
++	qos_rkvenc_wr_m0: qos@fe138180 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe138180 0x0 0x20>;
++	};
++
++	qos_isp: qos@fe148000 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe148000 0x0 0x20>;
++	};
++
++	qos_vicap0: qos@fe148080 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe148080 0x0 0x20>;
++	};
++
++	qos_vicap1: qos@fe148100 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe148100 0x0 0x20>;
++	};
++
++	qos_vpu: qos@fe150000 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe150000 0x0 0x20>;
++	};
++
++	qos_ebc: qos@fe158000 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe158000 0x0 0x20>;
++	};
++
++	qos_iep: qos@fe158100 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe158100 0x0 0x20>;
++	};
++
++	qos_jpeg_dec: qos@fe158180 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe158180 0x0 0x20>;
++	};
++
++	qos_jpeg_enc: qos@fe158200 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe158200 0x0 0x20>;
++	};
++
++	qos_rga_rd: qos@fe158280 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe158280 0x0 0x20>;
++	};
++
++	qos_rga_wr: qos@fe158300 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe158300 0x0 0x20>;
++	};
++
++	qos_npu: qos@fe180000 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe180000 0x0 0x20>;
++	};
++
++	qos_pcie2x1: qos@fe190000 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe190000 0x0 0x20>;
++	};
++
++	qos_pcie3x1: qos@fe190080 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe190080 0x0 0x20>;
++	};
++
++	qos_pcie3x2: qos@fe190100 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe190100 0x0 0x20>;
++	};
++
++	qos_sata0: qos@fe190200 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe190200 0x0 0x20>;
++	};
++
++	qos_sata1: qos@fe190280 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe190280 0x0 0x20>;
++	};
++
++	qos_sata2: qos@fe190300 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe190300 0x0 0x20>;
++	};
++
++	qos_usb3_0: qos@fe190380 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe190380 0x0 0x20>;
++	};
++
++	qos_usb3_1: qos@fe190400 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe190400 0x0 0x20>;
++	};
++
++	qos_rkvdec: qos@fe198000 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe198000 0x0 0x20>;
++	};
++
++	qos_hdcp: qos@fe1a8000 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe1a8000 0x0 0x20>;
++	};
++
++	qos_vop_m0: qos@fe1a8080 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe1a8080 0x0 0x20>;
++	};
++
++	qos_vop_m1: qos@fe1a8100 {
++		compatible = "rockchip,rk3568-qos", "syscon";
++		reg = <0x0 0xfe1a8100 0x0 0x20>;
++	};
++
+ 	sdmmc0: mmc@fe2b0000 {
+ 		compatible = "rockchip,rk3568-dw-mshc", "rockchip,rk3288-dw-mshc";
+ 		reg = <0x0 0xfe2b0000 0x0 0x4000>;
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.17.1
+
+
+
