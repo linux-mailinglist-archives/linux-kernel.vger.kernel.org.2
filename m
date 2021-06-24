@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835623B3283
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C38A3B328D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232354AbhFXP2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 11:28:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231488AbhFXP2V (ORCPT
+        id S232406AbhFXP3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 11:29:19 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:44995 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232383AbhFXP3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 11:28:21 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADBD2C061574;
-        Thu, 24 Jun 2021 08:26:01 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id gn32so10209092ejc.2;
-        Thu, 24 Jun 2021 08:26:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ieIaXg0d6oC/tMZWj0BlA0EeOBWnm8IldZ4BgM9lmcg=;
-        b=Lwty/wp4Vra1bISTUndqed2e5HYGqHsijwO1xmvuDDMm6h3WiWXhHBMzESBdukFmH2
-         FhlUK6YEJUp9zvr1cUE6PTLrDYGhvxbnJSjsuDTau8z62lrdWfMLVRAMrNzMLlF9r7yR
-         wNm9kW7ib2j7vjYuWcBhmmFiGfXqDOPGs5vRZMIBxCna2AX8olUoST+In1ETMUDBgLww
-         0BEiDCz/nmKnF7myr9X5bb/7KTryUTz/PjN/lZmFjsZlZn8lmOlUwVAWzc2NA3WUDj1K
-         w63kYYNo0RKmRRB+3A652BCmKfK8bXGXI/hvYkTytRb0n71lrbjWBVGnE2assWjYaO/d
-         Ul8A==
+        Thu, 24 Jun 2021 11:29:18 -0400
+Received: by mail-io1-f54.google.com with SMTP id h2so8685031iob.11;
+        Thu, 24 Jun 2021 08:26:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ieIaXg0d6oC/tMZWj0BlA0EeOBWnm8IldZ4BgM9lmcg=;
-        b=l1GLXuwZbMscUvnPX+kvP4G9/glbqJy/LJLvzVcmSB8SmiVn5IAf3fedRrpx/qUnEX
-         sbL8EvfKJQ0Iu99n2akGRQF8kYjZG6u1cJfLUqnB+cOOzd4qlaaN6HfSUbM4O52Z8zA4
-         4ETblUH079GX0PEx7LwL1lF+ud9UjeAW7F+8xKuERohBaAVDXLKBIdKOFxaKLE2Kdpzb
-         hcEphamcUQLmlL35A1AekSbL1H+QNBLfv8DKuuOrF/g4mGKg0MynSFv7ZdtLQ7z+7ySb
-         PuaiEpl0sBCHvfMKxSfxRfmXiLMhWMhqlZ5BcbVYyk/ElQRnL+GK0dszJ8RygVoHJM0m
-         7asg==
-X-Gm-Message-State: AOAM533Fpjsx2oGx0KVGEiODDo9zXb/ME9N+aSQ/EafRUom0I2CuKriV
-        2hCirjVgZExFE1DTL1Goff0=
-X-Google-Smtp-Source: ABdhPJxriGh/Iy3QQ2drbGQmZD5pETZMjCptA6iQYJeb/jNH1W8BZ5qmJ09YAt196M4I3O1IZIE++g==
-X-Received: by 2002:a17:906:f283:: with SMTP id gu3mr5997636ejb.415.1624548360078;
-        Thu, 24 Jun 2021 08:26:00 -0700 (PDT)
-Received: from andreas-HP-Compaq-8200-Elite-CMT-PC.speedport.ip (p200300c64732629ba21324299f39edc4.dip0.t-ipconnect.de. [2003:c6:4732:629b:a213:2429:9f39:edc4])
-        by smtp.gmail.com with ESMTPSA id r23sm462260edv.26.2021.06.24.08.25.58
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=Lpd5za3dZjGLZkNK8IONDaXRQC0MpG6W9WKoTOpJEic=;
+        b=c8+z0hYyNafCRk6VH3Bbw52CC/Pjy0w63b9rtTFDvUr/8v3NAo7xjijexCboyV7MKk
+         EtkILEqhyVQ3iQAo8fS4gzyo1mc2GT8iPC1CwSwGoYMVzRqwHNIVu5dfCWj0NqD63HqN
+         2g7MR6gjDO71Ng22SayLyu+CQSjPn1JxKnz+uClquReJIugl+0PIyaIZSw6ntplfUkX8
+         PeStBauwpmu76bFockbkin2bto2KqVPLlgkQ5RiCcwhK9coFYF3BuqyaZEXBnnJ2DOrE
+         xf60jBNvZRENLCqEFpyXQ43QEf/rvjDb1LEAty5CV4qXdZzqNlwmV8g95yJW8/blS3CM
+         mOWw==
+X-Gm-Message-State: AOAM533fQ046n3cweNlfer+sqGLW+HWiAH5TkaCgncPd//EXb2OLuJA5
+        mPgRV2J/f/Zd1hgTh7xP1A==
+X-Google-Smtp-Source: ABdhPJzNvu/L2aSmJ8pUz8GEkVdEXFN/A4t8nbnJmWO27uA5Fk9oHVl3KzTts6kq5N/hOHu6M5y6ow==
+X-Received: by 2002:a02:600b:: with SMTP id i11mr5319850jac.86.1624548418226;
+        Thu, 24 Jun 2021 08:26:58 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id r6sm1398859ioh.27.2021.06.24.08.26.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 08:25:59 -0700 (PDT)
-From:   Andreas Hecht <andreas.e.hecht@gmail.com>
-To:     wsa@kernel.org
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andreas Hecht <andreas.e.hecht@gmail.com>
-Subject: [PATCH] i2c: i2c-dev: Add __user annotation
-Date:   Thu, 24 Jun 2021 17:25:35 +0200
-Message-Id: <20210624152535.4949-1-andreas.e.hecht@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 24 Jun 2021 08:26:57 -0700 (PDT)
+Received: (nullmailer pid 1393286 invoked by uid 1000);
+        Thu, 24 Jun 2021 15:26:48 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        linuxarm@huawei.com, devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        mauro.chehab@huawei.com, Rob Herring <robh+dt@kernel.org>,
+        linux-staging@lists.linux.dev
+In-Reply-To: <1ad2cbbd182d18ba2cae716fb5f1497b1cabbdbe.1624525118.git.mchehab+huawei@kernel.org>
+References: <cover.1624525118.git.mchehab+huawei@kernel.org> <1ad2cbbd182d18ba2cae716fb5f1497b1cabbdbe.1624525118.git.mchehab+huawei@kernel.org>
+Subject: Re: [PATCH RESEND v6 6/8] mfd: hi6421-spmi-pmic: move driver from staging
+Date:   Thu, 24 Jun 2021 09:26:48 -0600
+Message-Id: <1624548408.771970.1393285.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix Sparse warnings:
-drivers/i2c/i2c-dev.c:546:19: warning: incorrect type in assignment (different address spaces)
-drivers/i2c/i2c-dev.c:549:53: warning: incorrect type in argument 2 (different address spaces)
+On Thu, 24 Jun 2021 11:01:10 +0200, Mauro Carvalho Chehab wrote:
+> This driver is ready for mainstream. So, move it out of staging.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 134 ++++++++
+>  MAINTAINERS                                   |   7 +
+>  drivers/mfd/Kconfig                           |  16 +
+>  drivers/mfd/Makefile                          |   1 +
+>  drivers/mfd/hi6421-spmi-pmic.c                | 316 ++++++++++++++++++
+>  drivers/staging/Kconfig                       |   2 -
+>  drivers/staging/Makefile                      |   1 -
+>  drivers/staging/hikey9xx/Kconfig              |  19 --
+>  drivers/staging/hikey9xx/Makefile             |   3 -
+>  drivers/staging/hikey9xx/TODO                 |   5 -
+>  drivers/staging/hikey9xx/hi6421-spmi-pmic.c   | 316 ------------------
+>  .../hikey9xx/hisilicon,hi6421-spmi-pmic.yaml  | 134 --------
+>  12 files changed, 474 insertions(+), 480 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+>  create mode 100644 drivers/mfd/hi6421-spmi-pmic.c
+>  delete mode 100644 drivers/staging/hikey9xx/Kconfig
+>  delete mode 100644 drivers/staging/hikey9xx/Makefile
+>  delete mode 100644 drivers/staging/hikey9xx/TODO
+>  delete mode 100644 drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+>  delete mode 100644 drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
+> 
 
-compat_ptr() returns a pointer tagged __user which gets assigned to a
-pointer missing the __user annotation. The same pointer is passed to
-copy_from_user() as an argument where it is expected to have the __user
-annotation. Fix both by adding the __user annotation to the pointer.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Signed-off-by: Andreas Hecht <andreas.e.hecht@gmail.com>
----
- drivers/i2c/i2c-dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+yamllint warnings/errors:
 
-diff --git a/drivers/i2c/i2c-dev.c b/drivers/i2c/i2c-dev.c
-index 6ef38a8ee95c..cb64fe649390 100644
---- a/drivers/i2c/i2c-dev.c
-+++ b/drivers/i2c/i2c-dev.c
-@@ -526,7 +526,7 @@ static long compat_i2cdev_ioctl(struct file *file, unsigned int cmd, unsigned lo
- 		return put_user(funcs, (compat_ulong_t __user *)arg);
- 	case I2C_RDWR: {
- 		struct i2c_rdwr_ioctl_data32 rdwr_arg;
--		struct i2c_msg32 *p;
-+		struct i2c_msg32 __user *p;
- 		struct i2c_msg *rdwr_pa;
- 		int i;
- 
--- 
-2.25.1
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.example.dt.yaml:0:0: /example-0/pmic@0: failed to match any schema with compatible: ['hisilicon,hi6421-spmi']
+\ndoc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1496456
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
