@@ -2,239 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B290A3B2C5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4963B2C63
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbhFXKXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 06:23:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43848 "EHLO
+        id S232093AbhFXK25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 06:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232160AbhFXKXc (ORCPT
+        with ESMTP id S231561AbhFXK24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 06:23:32 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B24D5C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 03:21:13 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id l21-20020a05600c1d15b02901e7513b02dbso493341wms.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 03:21:13 -0700 (PDT)
+        Thu, 24 Jun 2021 06:28:56 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A13C061574;
+        Thu, 24 Jun 2021 03:26:35 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id r19so3005930qvw.5;
+        Thu, 24 Jun 2021 03:26:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=a908WLTP46nDNm7SCDuYPdnHQENHhuim4bqnFOxZpAk=;
-        b=MMa/xIIwkruT/appFbtoPVsAwuLDlAzpzSJCF3LAZuRmc7Hw9q4giEWHQQOHNG+SHx
-         2oYJmbGGQeMRhCOqPCB8MwrBOpTh91c1TMQsclbwOFu53v7tDnGmQJJsVkjlAvb3YgaS
-         NfgnefGcCvIjcgMrp9fQ/At9Za2GNL/DRzYhHdiuV62NcGw3yF5ldzSQ3Tp/RGX0Ccvg
-         HqKu52HgHW7WeAYgFi1eqPN1XrUvLkaotXM7vDJyQdXaW0MCAp4oyWC7Wyjnrmq/ow02
-         9PKpGSny2VRfIiR4vWIEm5Fy6HkJO0ustS5WnjcZRJg1O3ALA8TEooCqseWk9zmyKUIw
-         WyGA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to;
+        bh=QHA5XL2z4ba2bDn1SI+fh6o/LaSMQqQKLJBCxBSck3k=;
+        b=d+6hp2rCz8MMoOIaPRLxD+bKt/A+bFeWEVYlH8fTzLrId/ZyzWjGcjDN89QSKscmG1
+         YBZCU2GBs9vX6b07WZUzJKMjJ0+RqAxuOVJ0hme1hgo4DiVtdeHqJXqoYSIbvLCMLItu
+         +FcFSESoe0wQM3bH00jN28XrTL9OQEDOuqelyFJg1T7zFu0wB0+bQvjyCXuHv6Zo590p
+         +MR3ARY8r/DbQYF5v9s241Di1YF4vP66E0OWkPrqdEiE40taj7fJOwmk+YGcaXajQtKZ
+         IXCvGooivBqY+zdW0bCLEs1I1/JFAKMaA8U6QzgFHuJLh04TjY+512Q/ecIiceJFEJ5x
+         FPPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=a908WLTP46nDNm7SCDuYPdnHQENHhuim4bqnFOxZpAk=;
-        b=jINQew99bifgepw5M3hxhie/MgmIMEZowWvpfPWCKpbg+bIda3IvzcNiBZ6E41DncY
-         mrNOnJNjqIdG3RTuqXR6YI0/07L2x66L87nslE43Zcq+TslEop0+FsV7IYlzrmh+BU17
-         cj9TsR3D1zQSJqoggl+e38nXIA1gWBtSEzU+Q1/ydPoxX9yCZk2lXgjSoCAX8H+bRDt/
-         f8who5i7SbwayS4V12kAazv+1WFWhvLkX9MxpT9veBtWJazPDC9nKRn7AGKgE6behaC0
-         +UJ0pYWm/WwS+eL972MBj42jBPyIcRS6vsPpHEAq8/0VtAaFncGdIhEngR9O3I5/tqWD
-         QlDQ==
-X-Gm-Message-State: AOAM533QY/axL9SR5Au0nbSJ1S1hClF3wslzbKYNLWqyrAXkfRk7HmUa
-        +MQ/bfbWnW6CArvJeHu6np/NfkIg8qVD/fSF
-X-Google-Smtp-Source: ABdhPJw032EjZ6nZx0f++iW0xeOXlSOcRbN9ml8vMUHjVwjcQnRj3F9Wrq2UvdUmzN6TH7CnXi2viA==
-X-Received: by 2002:a1c:f215:: with SMTP id s21mr3412276wmc.179.1624530071940;
-        Thu, 24 Jun 2021 03:21:11 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:8bf5:5c8b:9833:401c? ([2a01:e34:ed2f:f020:8bf5:5c8b:9833:401c])
-        by smtp.googlemail.com with ESMTPSA id e15sm2873907wrm.60.2021.06.24.03.21.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 03:21:11 -0700 (PDT)
-Subject: Re: [PATCH] Fix mt7622.dtsi thermal cpu
-To:     Eric Woudstra <ericwouds@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210619121927.32699-1-ericwouds@gmail.com>
- <e30a2d01-a200-80cb-88d9-6aea62dd49f1@linaro.org>
- <56fb5540-fb86-4e6a-a596-1276026b37e5@gmail.com>
- <a4e41929-6ab4-fabb-741e-f25a5fd14e3b@linaro.org>
- <47261865-00e3-41eb-bb36-2b939f81f1e8@gmail.com>
- <fb633034-96e5-6165-b43f-290ae1a65cfd@linaro.org>
- <189b52d5-b103-43e1-a64f-1e627fbc75af@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <173e6bab-9d21-eb28-9b91-a5f80c01fd03@linaro.org>
-Date:   Thu, 24 Jun 2021 12:21:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <189b52d5-b103-43e1-a64f-1e627fbc75af@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
+        bh=QHA5XL2z4ba2bDn1SI+fh6o/LaSMQqQKLJBCxBSck3k=;
+        b=Yrh1vJgzYwlMUl6ApeCC91QsVlHzHhMmQRp0qtzmBqxx9xgcS4ycqMecdQlsSGC/Se
+         SjrDQ1piCB8MMHLNht53bpV7aigE1R0dQjQc1cdrPgcsJ1Y0ajNUN+2W2SsWGheIJJGt
+         F2lt/hyVO98bgrWOiZ9KQ1qdlpadvlzdzo1gyU96Zj2pfz+oe5Or1at2Pl1EKLBz+HXv
+         GKtIgwjH9iZMFmgKTx8KyPmLQ8hc/JMVK4x/aGsOtx26LS4aKhZNApDe7C57JXtHrBbE
+         UDNsH/t9kk8sKFY7XaOOaMXhwWms/2xem20jh7RNLQUPlP6cLEpnZj+AIncFOqoS49RK
+         SC0g==
+X-Gm-Message-State: AOAM533MkJew9HSbrAMVnnL3Lhh/VDrJn1eUIjweDu9ZE6Gg4bI16OEP
+        mMHSG7hHAupq8tL989EGGBc=
+X-Google-Smtp-Source: ABdhPJyzOCBhWMvw4oIaH/BVd+umviU6q7Sjs64gDoJ6+2Nqsa5FiJU6cAX0UNWNwI1r9VwbGIvK4A==
+X-Received: by 2002:ad4:5343:: with SMTP id v3mr4639008qvs.45.1624530395013;
+        Thu, 24 Jun 2021 03:26:35 -0700 (PDT)
+Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
+        by smtp.gmail.com with ESMTPSA id w195sm2132842qkb.127.2021.06.24.03.26.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 03:26:34 -0700 (PDT)
+From:   SeongJae Park <sj38.park@gmail.com>
+X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     SeongJae Park <sj38.park@gmail.com>,
+        SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@huawei.com,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        amit@kernel.org, benh@kernel.crashing.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Hildenbrand <david@redhat.com>, dwmw@amazon.com,
+        Marco Elver <elver@google.com>, "Du, Fan" <fan.du@intel.com>,
+        foersleo@amazon.de, greg@kroah.com,
+        Greg Thelen <gthelen@google.com>, guoju.fgj@alibaba-inc.com,
+        jgowans@amazon.com, Mel Gorman <mgorman@suse.de>, mheyne@amazon.de,
+        Minchan Kim <minchan@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, namhyung@kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        David Rientjes <rientjes@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mike Rapoport <rppt@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        sieberf@amazon.com, snu@zelle79.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        zgf574564920@gmail.com, linux-damon@amazon.com,
+        Linux MM <linux-mm@kvack.org>, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v31 01/13] mm: Introduce Data Access MONitor (DAMON)
+Date:   Thu, 24 Jun 2021 10:26:19 +0000
+Message-Id: <20210624102623.24563-1-sjpark@amazon.de>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CALvZod7byYA5jfzF3Vtr1czwWoiaHjkqn9M4e1Ajn1PP47k9=w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/06/2021 11:59, Eric Woudstra wrote:
+From: SeongJae Park <sjpark@amazon.de>
+
+On Tue, 22 Jun 2021 07:59:11 -0700 Shakeel Butt <shakeelb@google.com> wrote:
+
+> On Mon, Jun 21, 2021 at 1:31 AM SeongJae Park <sj38.park@gmail.com> wrote:
+> >
+> > From: SeongJae Park <sjpark@amazon.de>
+> >
+> > DAMON is a data access monitoring framework for the Linux kernel.  The
+> > core mechanisms of DAMON make it
+> >
+> >  - accurate (the monitoring output is useful enough for DRAM level
+> >    performance-centric memory management; It might be inappropriate for
+> >    CPU cache levels, though),
+> >  - light-weight (the monitoring overhead is normally low enough to be
+> >    applied online), and
+> >  - scalable (the upper-bound of the overhead is in constant range
+> >    regardless of the size of target workloads).
+> >
+> > Using this framework, hence, we can easily write efficient kernel space
+> > data access monitoring applications.  For example, the kernel's memory
+> > management mechanisms can make advanced decisions using this.
+> > Experimental data access aware optimization works that incurring high
+> > access monitoring overhead could again be implemented on top of this.
+> >
+> > Due to its simple and flexible interface, providing user space interface
+> > would be also easy.  Then, user space users who have some special
+> > workloads can write personalized applications for better understanding
+> > and optimizations of their workloads and systems.
+> >
+> > ===
+> >
+> > Nevertheless, this commit is defining and implementing only basic access
+> > check part without the overhead-accuracy handling core logic.  The basic
+> > access check is as below.
+> >
+> > The output of DAMON says what memory regions are how frequently accessed
+> > for a given duration.  The resolution of the access frequency is
+> > controlled by setting ``sampling interval`` and ``aggregation
+> > interval``.  In detail, DAMON checks access to each page per ``sampling
+> > interval`` and aggregates the results.  In other words, counts the
+> > number of the accesses to each region.  After each ``aggregation
+> > interval`` passes, DAMON calls callback functions that previously
+> > registered by users so that users can read the aggregated results and
+> > then clears the results.  This can be described in below simple
+> > pseudo-code::
+> >
+> >     init()
+> >     while monitoring_on:
+> >         for page in monitoring_target:
+> >             if accessed(page):
+> >                 nr_accesses[page] += 1
+> >         if time() % aggregation_interval == 0:
+> >             for callback in user_registered_callbacks:
+> >                 callback(monitoring_target, nr_accesses)
+> >             for page in monitoring_target:
+> >                 nr_accesses[page] = 0
+> >         if time() % update_interval == 0:
 > 
-> For Marvell:
+> regions_update_interval?
+
+It used the name before.  But, I changed the name in this way to use it as a
+general periodic updates of monitoring primitives.  Of course we can use the
+specific name only in this specific example, but also want to make this as
+similar to the actual code as possible.
+
+If you strongly want to rename this, please feel free to let me know.
+
 > 
-> https://www.google.com/url?sa=t&source=web&rct=j&url=https://wiki.kobol.io/helios4/files/som/brochure_a38x_microsom_2017-09-05.pdf
+> >             update()
+> >         sleep(sampling interval)
+> >
+> > The target regions constructed at the beginning of the monitoring and
+> > updated after each ``regions_update_interval``, because the target
+> > regions could be dynamically changed (e.g., mmap() or memory hotplug).
+> > The monitoring overhead of this mechanism will arbitrarily increase as
+> > the size of the target workload grows.
+> >
+> > The basic monitoring primitives for actual access check and dynamic
+> > target regions construction aren't in the core part of DAMON.  Instead,
+> > it allows users to implement their own primitives that are optimized for
+> > their use case and configure DAMON to use those.  In other words, users
+> > cannot use current version of DAMON without some additional works.
+> >
+> > Following commits will implement the core mechanisms for the
+> > overhead-accuracy control and default primitives implementations.
+> >
+> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > Reviewed-by: Leonard Foerster <foersleo@amazon.de>
+> > Reviewed-by: Fernand Sieber <sieberf@amazon.com>
 > 
-> Armada38x maximum die temperature 115 degrees Celcius. They really get hotter then 100.
+> Few nits below otherwise look good to me. You can add:
 > 
-> But for mt7622 I cannot find this value
+> Acked-by: Shakeel Butt <shakeelb@google.com>
 
-Found that:
+Thank you!
 
-https://download.kamami.pl/p579344-MT7622A_Datasheet_for_BananaPi_Only%281%29.pdf
-
-Chapter 3.3 - Thermal Characteristics
-
-Given the values I suggest:
-
- - Passive - 80°C
-
- - Hot - 90°C
-
- - Critical - 100°C
-
-And passive polling set to 250ms.
-
-It sounds like the sensor is not supporting the interrupt mode yet, so a
-big gap is needed with the Tj IMO to give the time to detect the trip
-point crossing with the polling.
-
-> ⁣Get BlueMail for Android ​
 > 
-> On Jun 23, 2021, 10:08 PM, at 10:08 PM, Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->> On 23/06/2021 20:43, Eric Woudstra wrote:
->>>
->>> I choose "hot" before, because 87 degrees seems ok to start frequency
->>> throttling. But, yes, it should be passive.
->>>
->>> 87 is still quite low if I compare this temperature with the
->>> wrt3200acm Marvell dual core arm soc. They even went above 100
->>> degrees so I feel for an arm processor inside a router box it is fine
->>> to use 87 degrees But maybe someone at Mediatek can give some more
->>> details about operating temperatures.
->>
->> Sometimes, the SoC vendor puts a high temperature in the DT just to
->> export the thermal zone and deal with it from userspace. So putting the
->> high temp allow the userspace (usually a thermal engine - Android
->> stuff)
->> to deal with the mitigation without a kernel interaction.
->>
->> Having more than 100°C could be this kind of setup. Only the operating
->> temperature from the hardware documentation will tell the safe
->> temperature for the silicon.
->>
->> IMO, 77°C is a good compromise until getting the documented temp. 87°C
->> sounds to me a bit too hot.
->>
->>> It may be possible to leave the active map in the device tree as some
->>> users of the bananapi might choose to install a fan as it is one of
->>> the options.
->>
->> The active trip only makes sense if the cooling device is a fan (or any
->> active device), so the mapping points to a fan node, like:
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git/tree/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi#n192
->>
->> If there is no such [pwm] fan output on the board, no active trip point
->> should be added.
->>
->>> ⁣Get BlueMail for Android ​
->>>
->>> On Jun 23, 2021, 5:58 PM, at 5:58 PM, Daniel Lezcano
->>> <daniel.lezcano@linaro.org> wrote:
->>>> On 23/06/2021 17:35, Eric Woudstra wrote:
->>>>> It is only useful to set 1 map with the regulated temperature for
->>>>> cpu frequency throttling. Same as in the kernel document
->>>>> example.
->>>>>
->>>>>
->>>>> It has no use to set frequency scaling on 2 different
->>>>> temperature trip points, as the lowest one makes sure the higher
->>>>> one(s) are never reached.
->>>>
->>>> I looked more closely the DT and there is a misunderstanding of
->>>> the thermal framework in the definition.
->>>>
->>>> There is one trip point with the passive type and the cpu cooling 
->>>> device, followed by a second trip point with the active type *but*
->>>> the same cpu cooling device. That is wrong.
->>>>
->>>> And finally, there is the hot trip point as a third mapping and
->>>> the same cooling device.
->>>>
->>>> The hot trip point is only there to notify userspace and let it
->>>> take an immediate action to prevent an emergency shutdown when
->>>> reaching the critical temperature.
->>>>
->>>>> It can be applied only at 1 trip point. Multiple trip points is
->>>>> only usefully for fan control to make sure the fan is not too 
->>>>> noisy when it is not necessary to be noisy.
->>>>>
->>>>>
->>>>> The CPU will almost come to a dead stop when it starts to pass
->>>>> the lowest thermal map with frequency throttling.
->>>>>
->>>>> This is why it is a bug and needs a fix, not only adjustment.
->>>>
->>>> Yes, you are right. It should be something like (verbatim copy):
->>>>
->>>> diff --git a/arch/arm64/boot/dts/mediatek/mt7622.dtsi 
->>>> b/arch/arm64/boot/dts/mediatek/mt7622.dtsi index
->>>> 890a942ec608..88c81d24f4ff 100644 ---
->>>> a/arch/arm64/boot/dts/mediatek/mt7622.dtsi +++
->>>> b/arch/arm64/boot/dts/mediatek/mt7622.dtsi @@ -136,24 +136,18 @@
->>>> secmon_reserved: secmon@43000000 {
->>>>
->>>> thermal-zones { cpu_thermal: cpu-thermal { -
->>>> polling-delay-passive = <1000>; +			polling-delay-passive = <250>; 
->>>> polling-delay = <1000>;
->>>>
->>>> thermal-sensors = <&thermal 0>;
->>>>
->>>> trips { cpu_passive: cpu-passive { -					temperature = <47000>; +
->>>> temperature = <77000>; hysteresis = <2000>; type = "passive"; };
->>>>
->>>> -				cpu_active: cpu-active { -					temperature = <67000>; -
->>>> hysteresis = <2000>; -					type = "active"; -				}; - cpu_hot:
->>>> cpu-hot { temperature = <87000>; hysteresis = <2000>; @@ -173,18
->>>> +167,6 @@ map0 { cooling-device = <&cpu0 THERMAL_NO_LIMIT
->>>> THERMAL_NO_LIMIT>, <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>; }; - 
->>>> -				map1 { -					trip = <&cpu_active>; -					cooling-device =
->>>> <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>, -							 <&cpu1
->>>> THERMAL_NO_LIMIT THERMAL_NO_LIMIT>; -				}; - -				map2 { -
->>>> trip = <&cpu_hot>; -					cooling-device = <&cpu0 THERMAL_NO_LIMIT
->>>> THERMAL_NO_LIMIT>, -							 <&cpu1 THERMAL_NO_LIMIT
->>>> THERMAL_NO_LIMIT>; -				}; }; }; };
->>>>
->>>>
->>>> -- <http://www.linaro.org/> Linaro.org │ Open source software for
->>>> ARM SoCs
->>>>
->>>> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook | 
->>>> <http://twitter.com/#!/linaroorg> Twitter | 
->>>> <http://www.linaro.org/linaro-blog/> Blog
->>>
->>
->>
->> -- 
->> <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
->>
->> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
->> <http://twitter.com/#!/linaroorg> Twitter |
->> <http://www.linaro.org/linaro-blog/> Blog
+> [...]
+> > +/*
+> > + * __damon_start() - Starts monitoring with given context.
+> > + * @ctx:       monitoring context
+> > + *
+> > + * This function should be called while damon_lock is hold.
+> > + *
+> > + * Return: 0 on success, negative error code otherwise.
+> > + */
+> > +static int __damon_start(struct damon_ctx *ctx)
+> > +{
+> > +       int err = -EBUSY;
+> > +
+> > +       mutex_lock(&ctx->kdamond_lock);
+> > +       if (!ctx->kdamond) {
+> > +               err = 0;
+> > +               ctx->kdamond_stop = false;
+> > +               ctx->kdamond = kthread_create(kdamond_fn, ctx, "kdamond.%d",
+> > +                               nr_running_ctxs);
+> > +               if (IS_ERR(ctx->kdamond))
+> > +                       err = PTR_ERR(ctx->kdamond);
+> > +               else
+> > +                       wake_up_process(ctx->kdamond);
 > 
+> Nit: You can use kthread_run() here.
+
+Ok, I will use that from the next spin.
+
+> 
+> > +       }
+> > +       mutex_unlock(&ctx->kdamond_lock);
+> > +
+> > +       return err;
+> > +}
+> > +
+> [...]
+> > +static int __damon_stop(struct damon_ctx *ctx)
+> > +{
+> > +       mutex_lock(&ctx->kdamond_lock);
+> > +       if (ctx->kdamond) {
+> > +               ctx->kdamond_stop = true;
+> > +               mutex_unlock(&ctx->kdamond_lock);
+> > +               while (damon_kdamond_running(ctx))
+> > +                       usleep_range(ctx->sample_interval,
+> > +                                       ctx->sample_interval * 2);
+> 
+> Any reason to not use kthread_stop() here?
+
+Using 'kthread_stop()' here will make the code much simpler.  But, 'kdamond'
+also stops itself when all monitoring targets became invalid (e.g., all
+monitoring target processes terminated).  However, 'kthread_stop()' is not easy
+to be used for the use case (self stopping).  It's of course possible, but it
+would make the code longer.  That's why I use 'kdamond_stop' flag here.  So,
+I'd like leave this as is.  If you think 'kthread_stop()' should be used,
+please feel free to let me know.
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Thanks,
+SeongJae Park
