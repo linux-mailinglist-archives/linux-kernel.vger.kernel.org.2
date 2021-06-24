@@ -2,80 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC3F3B3942
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 00:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6823B3948
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 00:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232896AbhFXWge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 18:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41756 "EHLO
+        id S232883AbhFXWjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 18:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232850AbhFXWgb (ORCPT
+        with ESMTP id S229671AbhFXWji (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 18:36:31 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 495A1C061574;
-        Thu, 24 Jun 2021 15:34:10 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id k5so4354898pjj.1;
-        Thu, 24 Jun 2021 15:34:10 -0700 (PDT)
+        Thu, 24 Jun 2021 18:39:38 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C5FC061574;
+        Thu, 24 Jun 2021 15:37:18 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id o22so4072340wms.0;
+        Thu, 24 Jun 2021 15:37:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0vaqx8Tu4xi2tq8ingioolTC+HDDOxaWjKj+delaC9w=;
-        b=cA253rD/7SqHLs/OV2ESl8swvlvOSpVFpwvRUsBEzy7uH9Td8vuY7qvZkRqz3icwTv
-         z5j7WrU/ngrfgs5TVqf0bdojUXLiUtf2QGHTUbDsTXKPKp/ZRRJ15C+dwkzMt2sFUwZa
-         H8esgFggpDD9y/tfsfCaJUoimkNkv2Mty9wYF2JkJwX/fn8Ko6juI30kBuFBjDTkZtum
-         F4g0QK9h1LOoQUbswLdnnutc1/VU+IyXNUeQXSvqeD+X/cz3ywjc8KGOGep+ReSlT1Xn
-         LZuXOA0pAMRJkSG4eOun2dFSgXgRcmW6edGz53dvj5vuwe7HNvvHrGryywG7ghMPsqQn
-         DadQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f2SRYuayMY0kZYP1oHuZ7/ySlD9VBDzAesA2LlWtDsw=;
+        b=CnL7z1YVqs1rxBZzxUZrZQyBRdLpb/mkgCMVeVYlsnEK/12r65doQf8tD2HRvBlEvu
+         7FelT75dcsVE4MRmZs2TSx1/PaVCQ/xBF38bQX2Q/zpMfOZeJU7qbmycRiwJ8CH57w3I
+         fAeKJfj+x7nCd0Lj5u0Yq4cftKMO5q0OxGuEfn6dRinEIpfvWAJF9MZa5zny2gWCtwyT
+         0KMGKCC/KXS/d7xjKwZDTe4n+Ml8ocqMji2zZtICzmlqWRcXe2b5YxPurd5jDVQIlglD
+         EWCIixZivh47LplyJ9BxZv2Yf52irdW0CzqwKSnFbzFK+4gHQpTfBmZqtameWu33CxOr
+         pFIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0vaqx8Tu4xi2tq8ingioolTC+HDDOxaWjKj+delaC9w=;
-        b=mz6SThRbi425YEVc9GIpo9eWkFedMtO6DEjJIL4I3bMDj3EixY46xl9bD6eyq1GT0P
-         W8LJkZxDdun4pBmEu8JOD76o2j39yN2d7JiQuaTVhnGmeETkA+CikXZrdmWMpfVMKaRk
-         aUy8wPqrCu4bLwKWR/I3Db4QaGKqectL8CO2gZwPeaK1jc7sgzX18DNOi7AXEh2fPLE1
-         TccR5xVk1BtTiRnlHhvKnSAvKRvxfeZwQk56JIh5/oM+ThtDjS4kt84n9+5hWwwjHhpf
-         Uev8/0YDZ3CC8/tt8kGL8o6yfEGPPj9QGkP8Z3j2PM2tM3O5xDeDwDcExRv4N6ECpDG8
-         m6GQ==
-X-Gm-Message-State: AOAM533GQdHpenjtQrrDLcHLD1EG5FKT+V2lYU22a8AZKiMtuWB+GWZu
-        fR2fLuBlR4BVfyJt2h74r6Q=
-X-Google-Smtp-Source: ABdhPJwWF4PslP9ZRoXix9vW6h+RX0DNFB24ihXYBvkZODshI4FoJjqCNRwzsfvtKv6Qn6mmPNV2Ng==
-X-Received: by 2002:a17:903:304e:b029:11d:41c:fa73 with SMTP id u14-20020a170903304eb029011d041cfa73mr6170726pla.82.1624574049854;
-        Thu, 24 Jun 2021 15:34:09 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id t1sm3622200pfe.61.2021.06.24.15.34.08
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f2SRYuayMY0kZYP1oHuZ7/ySlD9VBDzAesA2LlWtDsw=;
+        b=t4OFrwhuzbxtyeIGqM5dSrN4eyQxcvoKH1qR5oJjhKxa2nd8SjpjtafoeJ8zCaSfj7
+         N7cAoTju26QMxXLAH3tRjEoVG6JLFtbALlXJT3rHSbqnHelC560pK7TepKA0WQfBNTpP
+         /vFBKi3xILT1ClNEr6Oe0WsYkIXX7vNMTKsIaL8Cewpr8Xjbjg3oDvX91ipbF1Q4X4m5
+         9utFXaqSI0OU1CgGaOmxRBk4MJ0GeS6aZeCYf8pMyxG/ZBZUYVxBpNLuuGa5NNPCmg1A
+         LlH7YUNd27COhyFHMb48i7gckqnR/8l72uEKIGzUncPQ7kCogwp7GqvfZy/JB1eU5F0b
+         xi2g==
+X-Gm-Message-State: AOAM533yER96i2ZfHsHyEzyKJqf6xQk/MrYaigMiox8bBzcDaERyJBVl
+        zqHfFNztloC1jycsABHq8VA=
+X-Google-Smtp-Source: ABdhPJy1Z1zTaiPqFj/xo9ufOkLvUSPKIIFRoqFTH/JhPx3Jn0ymMdxSh/UxAtQGbLf8q+pZZ6f4Rw==
+X-Received: by 2002:a05:600c:22cf:: with SMTP id 15mr6925140wmg.177.1624574237262;
+        Thu, 24 Jun 2021 15:37:17 -0700 (PDT)
+Received: from honeypot.epfl.ch ([151.29.44.148])
+        by smtp.googlemail.com with ESMTPSA id e38sm9447999wmp.4.2021.06.24.15.37.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 15:34:09 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        Matthew Hagan <mnhagan88@gmail.com>
-Cc:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivek Unune <npcomplete13@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] ARM: dts: NSP: add MDIO bus controller node
-Date:   Thu, 24 Jun 2021 15:34:07 -0700
-Message-Id: <20210624223407.1315430-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210613094639.3242151-3-mnhagan88@gmail.com>
-References: <20210613094639.3242151-1-mnhagan88@gmail.com> <20210613094639.3242151-3-mnhagan88@gmail.com>
+        Thu, 24 Jun 2021 15:37:16 -0700 (PDT)
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Martin Liska <mliska@suse.cz>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] perf annotate: allow 's' on source code lines
+Date:   Fri, 25 Jun 2021 00:34:22 +0200
+Message-Id: <20210624223423.189550-1-rickyman7@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 13 Jun 2021 10:46:36 +0100, Matthew Hagan <mnhagan88@gmail.com> wrote:
-> This patch adds the node for the MDIO bus controller, present on the NSP
-> SoC.
-> 
-> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
-> ---
+In perf annotate, when 's' is pressed on a line containing
+source code, it shows the message "Only available for assembly
+lines".
+This patch gets rid of the error, moving the cursr to the next
+available asm line (or the closest previous one if no asm line
+is found moving forwards), before hiding source code lines.
 
-Applied to https://github.com/Broadcom/stblinux/commits/devicetree/next, thanks!
---
-Florian
+Changes in v2:
+ - handle case of no asm line found in
+   annotate_browser__find_next_asm_line by returning NULL and
+   handling error in caller.
+
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+---
+ tools/perf/ui/browsers/annotate.c | 32 ++++++++++++++++++++++++++++---
+ 1 file changed, 29 insertions(+), 3 deletions(-)
+
+diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+index ad0a70f0edaf..f5509a958e38 100644
+--- a/tools/perf/ui/browsers/annotate.c
++++ b/tools/perf/ui/browsers/annotate.c
+@@ -343,6 +343,29 @@ static void annotate_browser__calc_percent(struct annotate_browser *browser,
+ 	browser->curr_hot = rb_last(&browser->entries);
+ }
+ 
++static struct annotation_line *annotate_browser__find_next_asm_line(
++					struct annotate_browser *browser,
++					struct annotation_line *al)
++{
++	struct annotation_line *it = al;
++
++	/* find next asm line */
++	list_for_each_entry_continue(it, browser->b.top, node) {
++		if (it->idx_asm >= 0)
++			return it;
++	}
++
++	/* no asm line found forwards, try backwards */
++	it = al;
++	list_for_each_entry_continue_reverse(it, browser->b.top, node) {
++		if (it->idx_asm >= 0)
++			return it;
++	}
++
++	/* There are no asm lines */
++	return NULL;
++}
++
+ static bool annotate_browser__toggle_source(struct annotate_browser *browser)
+ {
+ 	struct annotation *notes = browser__annotation(&browser->b);
+@@ -363,9 +386,12 @@ static bool annotate_browser__toggle_source(struct annotate_browser *browser)
+ 		browser->b.index = al->idx;
+ 	} else {
+ 		if (al->idx_asm < 0) {
+-			ui_helpline__puts("Only available for assembly lines.");
+-			browser->b.seek(&browser->b, -offset, SEEK_CUR);
+-			return false;
++			/* move cursor to next asm line */
++			al = annotate_browser__find_next_asm_line(browser, al);
++			if (!al) {
++				browser->b.seek(&browser->b, -offset, SEEK_CUR);
++				return false;
++			}
+ 		}
+ 
+ 		if (al->idx_asm < offset)
+-- 
+2.31.1
+
