@@ -2,151 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F12403B2A3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6513B2A40
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231924AbhFXIV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 04:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231713AbhFXIVy (ORCPT
+        id S231906AbhFXIW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 04:22:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39640 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231821AbhFXIWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 04:21:54 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB24C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:19:34 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id mj3so736594ejb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:19:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HNUWuqrxVQTnwiFC8WouZpCK7dDNHne0/fZ7ZJMqRNQ=;
-        b=F1daisEjVlUxd1cUecOhmbxPuXNwmb5mz8qkw6FK+mOifcEWoXDMo2q2Dj6hRkWhqB
-         HR9Q/rz1q53kgfTZn5/X6PZ7+0PpTH3YfrH+0EewnrqMW8Hs+PkXAccXNSycoKhCSEkW
-         xE56jYx20Ou4V+LWVOKDA1zpu+kcbqxlT1YO8TdcxCXEBwpNB9+jkxpmENHXg3z+eV5o
-         lku/1hyhrW36UjPHgqBh4Wb8TiOJCOu5uevsvugZvoCPy7vM0nUDGSs1LLATmadiSW20
-         AsI6mQaiP25o7bIE+inNCpwoydFV8ZtuzADe4NRThBQWwDiLHlSXWPdrIdgPLEjrmwy3
-         lIlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HNUWuqrxVQTnwiFC8WouZpCK7dDNHne0/fZ7ZJMqRNQ=;
-        b=Y7JMzy0IS20jFfTSN8SJtLoe4NHoBcQ8jm7Z4w/sHb4ZgicSHM4PRDwE+Q9X0LjCeP
-         fISJqpoiIuqVFBENjAmdO2yZpwUcWAqg6xDnrNj7JTFC5CvQ9g2YlS5bhMvg3A5HBUCj
-         t6J4Kp46v7dA+2i4bV6A6LUFXfJ/NQcPf6ZTxShsSEWvRKT9rsiQxxwajuGlgtPoT55W
-         7qgUUSiKnWEdREhBPrNLI48osgTiXy8hYVuBbPQWpVkBFo6kx1iiEa7PrSf+NhBIjQ/B
-         xSeFOpZBU8N55yZm27/bIEfEMRlxfCMNQQkahl8v//G0Qx78C8ygpWJukElLKhZaMNP8
-         0+uw==
-X-Gm-Message-State: AOAM531Cf6uVWZCQsZ97WPUO39Ls8Hwq0nvn3qo9V8n6U3hDVihs19sw
-        GFgIcXjQc2KW0EebxvhzkwEUHg==
-X-Google-Smtp-Source: ABdhPJwJKq4o32mL1BlBWOyiUQjfUFhivfrsbCK6PIDU1fNJPj1aT9XVsopVj4NxX83HFkQQXMhTvg==
-X-Received: by 2002:a17:906:9419:: with SMTP id q25mr4115347ejx.341.1624522773141;
-        Thu, 24 Jun 2021 01:19:33 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id o4sm1374641edc.94.2021.06.24.01.19.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 01:19:32 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jic23@kernel.org, pmeerw@pmeerw.net,
-        Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH 2/2] iio: temperature: tmp006: make sure the chip is powered up in probe
-Date:   Thu, 24 Jun 2021 11:19:24 +0300
-Message-Id: <20210624081924.15897-2-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210624081924.15897-1-aardelean@deviqon.com>
-References: <20210624081924.15897-1-aardelean@deviqon.com>
+        Thu, 24 Jun 2021 04:22:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624522831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yzCIhgWSWB1sGxIlTQQBY+Zll9G7G2k/fD0vgf07hXQ=;
+        b=QhjDroefQcTiQLipjoThTmLc/Mnv0cybC5SxrGjb/GkQt5Qv9BgdNGyaVWWbxk7mXyTlh9
+        yoPam/i8WGDRXMfW+A8MgtcEgsoFkz7VYRTxkrjJjCHUEclCXNRngtPizhsKALNYC8NROM
+        2eHeckQKSUoGQU9APOxv6lCaJE247ZA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-276-f1BdehLZN8ywnuYFBfwzeA-1; Thu, 24 Jun 2021 04:20:30 -0400
+X-MC-Unique: f1BdehLZN8ywnuYFBfwzeA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E72B21054F9A;
+        Thu, 24 Jun 2021 08:20:28 +0000 (UTC)
+Received: from starship (unknown [10.40.192.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 189FC1001281;
+        Thu, 24 Jun 2021 08:20:25 +0000 (UTC)
+Message-ID: <83affeedb9a3d091bece8f5fdd5373342298dcd3.camel@redhat.com>
+Subject: Re: [PATCH RFC] KVM: nSVM: Fix L1 state corruption upon return from
+ SMM
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Cathy Avery <cavery@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Date:   Thu, 24 Jun 2021 11:20:24 +0300
+In-Reply-To: <82327cd1-92ca-9f6b-3af0-8215e9d21eae@redhat.com>
+References: <20210623074427.152266-1-vkuznets@redhat.com>
+         <a3918bfa-7b4f-c31a-448a-aa22a44d4dfd@redhat.com>
+         <53a9f893cb895f4b52e16c374cbe988607925cdf.camel@redhat.com>
+         <ac98150acd77f4c09167bc1bb1c552db68925cf2.camel@redhat.com>
+         <87pmwc4sh4.fsf@vitty.brq.redhat.com>
+         <5fc502b70a89e18034716166abc65caec192c19b.camel@redhat.com>
+         <YNNc9lKIzM6wlDNf@google.com> <YNNfnLsc+3qMsdlN@google.com>
+         <82327cd1-92ca-9f6b-3af0-8215e9d21eae@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the device is probed, there's no guarantee that the device is not in
-power-down mode. This can happen if the driver is unregistered and
-re-probed.
+On Wed, 2021-06-23 at 22:37 +0200, Paolo Bonzini wrote:
+> On 23/06/21 18:21, Sean Christopherson wrote:
+> > On Wed, Jun 23, 2021, Sean Christopherson wrote:
+> > > And I believe this hackery is necessary only because nested_svm_vmexit() isn't
+> > > following the architcture in the first place.  I.e. using vmcb01 to restore
+> > > host state is flat out wrong.
+> > 
+> > Ah, that's not true, using vmcb01 is allowed by "may store some or all host state
+> > in hidden on-chip memory".
+> 
+> And also, "Different implementations may choose to save the hidden parts 
+> of the host’s segment registers as well as the selectors".
+> 
+> >  From a performance perspective, I do like the SMI/RSM shenanigans.  I'm not
+> > totally opposed to the trickery since I think it will break a guest if and only
+> > if the L1 guest is also violating the APM.  And we're not fudging the spec thaat
+> > much :-)
+> 
+> Yeah, that was my reasoning as well.  Any reference to "hidden on-chip 
+> memory", plus the forbidding modifications of the host save area, sort 
+> of implies that the processor can actually flush that hidden on-chip 
+> memory for whatever reason (such as on some sleep states?!?).
+> 
+> Paolo
+> 
 
-To make sure this doesn't happen, the value of the TMP006_CONFIG register
-(which is read in the probe function and stored in the device's private
-data) is being checked to see if the MOD bits have the correct value.
+Let me explain my thoughts about this again, now that I hopefully
+understand this correctly:
 
-This is a fix for a somewhat-rare corner case. As it stands, this doesn't
-look like a high priority to go into the Fixes route.
+L1 register state is stored in VMCB01 since the CPU stores it there,
+every time L1 VMexits.
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/iio/temperature/tmp006.c | 33 +++++++++++++++++++++-----------
- 1 file changed, 22 insertions(+), 11 deletions(-)
+Now L1 is a host for L2, and therefore this is also L1 "host" state.
 
-diff --git a/drivers/iio/temperature/tmp006.c b/drivers/iio/temperature/tmp006.c
-index db1ac6029c27..e4943a0bc9aa 100644
---- a/drivers/iio/temperature/tmp006.c
-+++ b/drivers/iio/temperature/tmp006.c
-@@ -193,15 +193,23 @@ static bool tmp006_check_identification(struct i2c_client *client)
- 	return mid == TMP006_MANUFACTURER_MAGIC && did == TMP006_DEVICE_MAGIC;
- }
- 
--static int tmp006_powerdown(struct tmp006_data *data)
-+static int tmp006_power(struct device *dev, bool up)
- {
-+	struct iio_dev *indio_dev = i2c_get_clientdata(to_i2c_client(dev));
-+	struct tmp006_data *data = iio_priv(indio_dev);
-+
-+	if (up)
-+		data->config |= TMP006_CONFIG_MOD_MASK;
-+	else
-+		data->config &= ~TMP006_CONFIG_MOD_MASK;
-+
- 	return i2c_smbus_write_word_swapped(data->client, TMP006_CONFIG,
--		data->config & ~TMP006_CONFIG_MOD_MASK);
-+		data->config);
- }
- 
--static void tmp006_powerdown_cleanup(void *data)
-+static void tmp006_powerdown_cleanup(void *dev)
- {
--	tmp006_powerdown(data);
-+	tmp006_power(dev, false);
- }
- 
- static int tmp006_probe(struct i2c_client *client,
-@@ -239,7 +247,14 @@ static int tmp006_probe(struct i2c_client *client,
- 		return ret;
- 	data->config = ret;
- 
--	ret = devm_add_action(&client->dev, tmp006_powerdown_cleanup, data);
-+	if ((ret & TMP006_CONFIG_MOD_MASK) != TMP006_CONFIG_MOD_MASK) {
-+		ret = tmp006_power(&client->dev, true);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	ret = devm_add_action_or_reset(&client->dev, tmp006_powerdown_cleanup,
-+				       &client->dev);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -249,16 +264,12 @@ static int tmp006_probe(struct i2c_client *client,
- #ifdef CONFIG_PM_SLEEP
- static int tmp006_suspend(struct device *dev)
- {
--	struct iio_dev *indio_dev = i2c_get_clientdata(to_i2c_client(dev));
--	return tmp006_powerdown(iio_priv(indio_dev));
-+	return tmp006_power(dev, false);
- }
- 
- static int tmp006_resume(struct device *dev)
- {
--	struct tmp006_data *data = iio_priv(i2c_get_clientdata(
--		to_i2c_client(dev)));
--	return i2c_smbus_write_word_swapped(data->client, TMP006_CONFIG,
--		data->config | TMP006_CONFIG_MOD_MASK);
-+	return tmp006_power(dev, true);
- }
- #endif
- 
--- 
-2.31.1
+When we switch to L2, it is therefore natural to keep that state in
+vmcb01, and not copy it to VM_HSAVE_PA area.
+
+So when running SMM code in L1, since we must not corrupt this state,
+It makes sense to back it up somewhere,
+but as I said I prefer to store/migrate it out of band instead of
+saving it in the guest memory, although Paolo's reasoning that CPU
+might *sometimes* write VM_HSAVE_PA and that *sometimes* is allowed to be
+when we enter SMM,  does make sense.
+Thus I don't have a strong opinion on this anymore, as long as it works.
+
+Something else to note, just for our information is that KVM 
+these days does vmsave/vmload to VM_HSAVE_PA to store/restore 
+the additional host state, something that is frowned upon in the spec, 
+but there is some justification of doing this in the commit message,
+citing an old spec which allowed this.
+This shoudn't affect anything, but just FYI.
+
+https://patchwork.kernel.org/project/kvm/patch/20201210174814.1122585-1-michael.roth@amd.com/
+
+Best regards,
+	Maxim Levitsky
 
