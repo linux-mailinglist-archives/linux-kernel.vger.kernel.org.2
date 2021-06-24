@@ -2,265 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6053B3487
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141683B348F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232248AbhFXRSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 13:18:08 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:54210 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhFXRSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 13:18:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=kSsjxwZRslySf80Y/EKfWIecdzmcKIG4X3T8rjafjRg=; b=3gD2r8ljGNIJ2DQzUCKQoLjZ4O
-        f61BUlvCWKdfaMRjhF3qTiAeHeC1lR4PA4hegSDpogsTnTNJfIHcPAzBdpD5pu6o5LQMOD18atCi1
-        B76XwHbcJhwOLYcIQHLtDDd8OdVecB9hW2XdidxWZpX5bWVAzuc0oMGUO4d4Up1bIVh8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lwSx7-00B0SK-Fy; Thu, 24 Jun 2021 19:15:45 +0200
-Date:   Thu, 24 Jun 2021 19:15:45 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     alexandru.tachici@analog.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: Re: [PATCH 1/4] net: phy: adin1100: Add initial support for ADIN1100
- industrial PHY
-Message-ID: <YNS9wb/HjxZZA1rE@lunn.ch>
-References: <20210624145353.6910-1-alexandru.tachici@analog.com>
- <20210624145353.6910-2-alexandru.tachici@analog.com>
+        id S232156AbhFXRUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 13:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbhFXRUo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 13:20:44 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDAAC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 10:18:25 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id l11so3866581pji.5
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 10:18:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XWNwGk9GjelPq0lKH2dxtU8MIJBYkaGELFI1ssqXZTY=;
+        b=axtIMnpDVdkjRLH4nX+f7Hd/a94NGXarbbRZp9pKXtT6TpJu7knFwnxzm/B9XB9U5q
+         ADPy7uRDHNfp2pRHlI7Plj6WxokjAj3ZwsFS7vr4aASPUFiyzw/o62bdKWis8u+5oBW4
+         Vikei2WzAFO6FSuuPDtR+qxX1leJS0yoWKXB8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XWNwGk9GjelPq0lKH2dxtU8MIJBYkaGELFI1ssqXZTY=;
+        b=CStkHOQKKilNbAEbP0Dhzq4nzFQPPvA0nMDpued36uy0DAJwxJQYJ5GPfbJC6SY13R
+         iJjhWbEgqhl3hyW0fgdUhEj4nuf6LLBz9Buo37yk3pXoGycCF4qAA834++wYdB6a3fia
+         quUQBihzfCxkyQtxN5FsoBmavQSOH0cEGbZDo32rzLY+9SXzhtXpznBm7782A09xqfqr
+         im0eajVWCsoD+rINXyzVQy0HDvZfc/F6hanFyUc5/X8q9IWPrDnWFfL19VkPrB1b2Ypi
+         g33BzpbW7TtmFh7AK3gY5rfUr4lXdgiMkI977uqmynZ7E8jf7fQlNS8rnFK08MlRXw22
+         BX8A==
+X-Gm-Message-State: AOAM531cPzQmXjcOOTEaGOEVcsRiBdzX9hzcFTgUL2vci5m/d/NS/KP9
+        WrJzQjlOOYyrdOd42eOFu7cN7A==
+X-Google-Smtp-Source: ABdhPJyDDZAEVmImuYqq+gOLGeBE++WkFuVJuSBHo1MrycS/xGTXZy6Yo8US/jLhBHewMabX0cuR6g==
+X-Received: by 2002:a17:90b:4d8d:: with SMTP id oj13mr6232430pjb.184.1624555104750;
+        Thu, 24 Jun 2021 10:18:24 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:fd74:62bc:19e3:a43b])
+        by smtp.gmail.com with ESMTPSA id z9sm3365960pfa.2.2021.06.24.10.18.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 10:18:24 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
+        bjorn.andersson@linaro.org, ulf.hansson@linaro.org,
+        adrian.hunter@intel.com, bhelgaas@google.com
+Cc:     john.garry@huawei.com, robdclark@chromium.org,
+        quic_c_gdjako@quicinc.com, saravanak@google.com,
+        rajatja@google.com, saiprakash.ranjan@codeaurora.org,
+        vbadigan@codeaurora.org, linux-mmc@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        iommu@lists.linux-foundation.org, sonnyrao@chromium.org,
+        joel@joelfernandes.org, Douglas Anderson <dianders@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
+Date:   Thu, 24 Jun 2021 10:17:56 -0700
+Message-Id: <20210624171759.4125094-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624145353.6910-2-alexandru.tachici@analog.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static const int phy_10_features_array[] = {
-> +	ETHTOOL_LINK_MODE_10baseT_Full_BIT,
-> +};
 
-Since this is a T1 PHY, please add a
-ETHTOOL_LINK_MODE_10baseT1_Full_BIT definition, and use that. It looks
-like the device also supports half duplex? So add
-ETHTOOL_LINK_MODE_10baseT1_Half_BIT as well.
+The goal of this patch series is to get better SD/MMC performance on
+Qualcomm eMMC controllers and in generally nudge us forward on the
+path of allowing some devices to be in strict mode and others to be in
+non-strict mode. This patch series doesn't save the world but
+hopefully at least moves us in the right direction while accomplishing
+something useful. Specifically:
+- No attempt is made to touch the PCI subsystem or cleanup the way
+  that it requests strict vs. non-strict.
+- No fully generic mechanism is come up with that makes it super easy
+  for everyone to be in non-strict mode.
 
-What does genphy_read_abilities() determine for this device? Is there
-a standardized way to detect 10BaseT1?
+This patch conflicts with a few other patch series that are in
+flight. I've tried to call them out "after the cut" in patches. I
+assume other in flight patches will land before this one, so I'd
+expect to send a rebased version when that happens, assuming that this
+series isn't NAKed into the ground.
 
-> +
-> +#define ADIN_B10L_PCS_CNTRL			0x08e6
-> +#define   ADIN_PCS_CNTRL_B10L_LB_PCS_EN		BIT(14)
-> +
-> +#define ADIN_B10L_PMA_CNTRL			0x08f6
-> +#define   ADIN_PMA_CNTRL_B10L_LB_PMA_LOC_EN	BIT(0)
-> +
-> +#define ADIN_B10L_PMA_STAT			0x08f7
-> +#define   ADIN_PMA_STAT_B10L_LB_PMA_LOC_ABLE	BIT(13)
-> +#define   ADIN_PMA_STAT_B10L_TX_LVL_HI_ABLE	BIT(12)
-> +
-> +#define ADIN_AN_CONTROL				0x0200
-> +#define   ADIN_AN_RESTART			BIT(9)
-> +#define   ADIN_AN_EN				BIT(12)
-> +
-> +#define ADIN_AN_STATUS				0x0201
-> +#define ADIN_AN_ADV_ABILITY_L			0x0202
-> +#define ADIN_AN_ADV_ABILITY_M			0x0203
-> +#define ADIN_AN_ADV_ABILITY_H			0x0204U
-> +#define   ADIN_AN_ADV_B10L_TX_LVL_HI_ABL	BIT(13)
-> +#define   ADIN_AN_ADV_B10L_TX_LVL_HI_REQ	BIT(12)
-> +
-> +#define ADIN_AN_LP_ADV_ABILITY_L		0x0205
-> +
-> +#define ADIN_AN_LP_ADV_ABILITY_M		0x0206
-> +#define   ADIN_AN_LP_ADV_B10L			BIT(14)
-> +#define   ADIN_AN_LP_ADV_B1000			BIT(7)
-> +#define   ADIN_AN_LP_ADV_B10S_FD		BIT(6)
-> +#define   ADIN_AN_LP_ADV_B100			BIT(5)
-> +#define   ADIN_AN_LP_ADV_MST			BIT(4)
-> +
-> +#define ADIN_AN_LP_ADV_ABILITY_H		0x0207
-> +#define   ADIN_AN_LP_ADV_B10L_EEE		BIT(14)
-> +#define   ADIN_AN_LP_ADV_B10L_TX_LVL_HI_ABL	BIT(13)
-> +#define   ADIN_AN_LP_ADV_B10L_TX_LVL_HI_REQ	BIT(12)
-> +#define   ADIN_AN_LP_ADV_B10S_HD		BIT(11)
-> +
-> +#define ADIN_CRSM_SFT_RST			0x8810
-> +#define   ADIN_CRSM_SFT_RST_EN			BIT(0)
-> +
-> +#define ADIN_CRSM_SFT_PD_CNTRL			0x8812
-> +#define   ADIN_CRSM_SFT_PD_CNTRL_EN		BIT(0)
-> +
-> +#define ADIN_CRSM_STAT				0x8818
-> +#define   ADIN_CRSM_SFT_PD_RDY			BIT(1)
-> +#define   ADIN_CRSM_SYS_RDY			BIT(0)
-> +
-> +#define ADIN_MAC_IF_LOOPBACK			0x803d
-> +#define   ADIN_MAC_IF_LOOPBACK_EN		BIT(0)
-> +#define   ADIN_MAC_IF_REMOTE_LOOPBACK_EN	BIT(2)
-> +
-> +/**
-> + * struct adin_priv - ADIN PHY driver private data
-> + * tx_level_24v			set if the PHY supports 2.4V TX levels (10BASE-T1L)
-> + */
-> +struct adin_priv {
-> +	unsigned int		tx_level_24v:1;
-> +};
-> +
+Changes in v2:
+- No longer based on changes adding strictness to "struct device"
+- Updated kernel-parameters docs.
+- Patch moving check for strictness in arm-smmu new for v2.
+- Now accomplish the goal by putting rules in the IOMMU driver.
+- Reworded commit message to clarify things pointed out by Greg.
 
-> +static int adin_match_phy_device(struct phy_device *phydev)
-> +{
-> +	struct mii_bus *bus = phydev->mdio.bus;
-> +	int phy_addr = phydev->mdio.addr;
-> +	u32 id;
-> +	int rc;
-> +
-> +	mutex_lock(&bus->mdio_lock);
-> +
-> +	/* Need to call __mdiobus_read() directly here, because at this point
-> +	 * in time, the driver isn't attached to the PHY device.
-> +	 */
-> +	rc = __mdiobus_read(bus, phy_addr, MDIO_DEVID1);
-> +	if (rc < 0) {
-> +		mutex_unlock(&bus->mdio_lock);
-> +		return rc;
-> +	}
-> +
-> +	id = rc << 16;
-> +
-> +	rc = __mdiobus_read(bus, phy_addr, MDIO_DEVID2);
-> +	mutex_unlock(&bus->mdio_lock);
-> +
-> +	if (rc < 0)
-> +		return rc;
-> +
-> +	id |= rc;
-> +
-> +	switch (id) {
-> +	case PHY_ID_ADIN1100:
-> +		return 1;
-> +	default:
-> +		return 0;
-> +	}
-> +}
+Douglas Anderson (3):
+  iommu: Add per-domain strictness and combine with the global default
+  iommu/arm-smmu: Check for strictness after calling
+    impl->init_context()
+  mmc: sdhci-msm: Request non-strict IOMMU mode
 
-I must be missing something here. Why do you need this?
+ .../admin-guide/kernel-parameters.txt         |  5 ++-
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c    | 19 ++++++++
+ drivers/iommu/arm/arm-smmu/arm-smmu.c         |  6 +--
+ drivers/iommu/iommu.c                         | 43 +++++++++++++++----
+ include/linux/iommu.h                         |  7 +++
+ 5 files changed, 67 insertions(+), 13 deletions(-)
 
-> +static void adin_mii_adv_m_to_ethtool_adv_t(unsigned long *advertising, u32 adv)
-> +{
-> +	if (adv & ADIN_AN_LP_ADV_B10L)
-> +		linkmode_set_bit(ETHTOOL_LINK_MODE_10baseT_Full_BIT, advertising);
-> +	if (adv & ADIN_AN_LP_ADV_B1000) {
-> +		linkmode_set_bit(ETHTOOL_LINK_MODE_1000baseT_Half_BIT, advertising);
-> +		linkmode_set_bit(ETHTOOL_LINK_MODE_1000baseT_Full_BIT, advertising);
-> +	}
-> +	if (adv & ADIN_AN_LP_ADV_B10S_FD)
-> +		linkmode_set_bit(ETHTOOL_LINK_MODE_10baseT_Full_BIT, advertising);
-> +	if (adv & ADIN_AN_LP_ADV_B100)
-> +		linkmode_set_bit(ETHTOOL_LINK_MODE_100baseT_Full_BIT, advertising);
+-- 
+2.32.0.93.g670b81a890-goog
 
-Since this is a T1 PHY, i assume these are all T1 link modes? Please
-use ETHTOOL_LINK_MODE_1000baseT1_Half_BIT,
-ETHTOOL_LINK_MODE_100baseT1_Full_BIT, etc.
-
-
-> +static void adin_link_change_notify(struct phy_device *phydev)
-> +{
-> +	bool tx_level_24v;
-> +	bool lp_tx_level_24v;
-> +	int val, mask;
-> +
-> +	if (phydev->state != PHY_RUNNING || phydev->autoneg == AUTONEG_DISABLE)
-> +		return;
-> +
-> +	val = phy_read_mmd(phydev, MDIO_MMD_AN, ADIN_AN_LP_ADV_ABILITY_H);
-> +	if (val < 0)
-> +		return;
-> +
-> +	mask = ADIN_AN_LP_ADV_B10L_TX_LVL_HI_ABL | ADIN_AN_LP_ADV_B10L_TX_LVL_HI_REQ;
-> +	lp_tx_level_24v = (val & mask) == mask;
-> +
-> +	val = phy_read_mmd(phydev, MDIO_MMD_AN, ADIN_AN_ADV_ABILITY_H);
-> +	if (val < 0)
-> +		return;
-> +
-> +	mask = ADIN_AN_ADV_B10L_TX_LVL_HI_ABL | ADIN_AN_ADV_B10L_TX_LVL_HI_REQ;
-> +	tx_level_24v = (val & mask) == mask;
-> +
-> +	if (tx_level_24v && lp_tx_level_24v)
-> +		phydev_info(phydev, "Negotiated 2.4V TX level\n");
-> +	else
-> +		phydev_info(phydev, "Negotiated 1.0V TX level\n");>
-
-We have ETHTOOL_LINK_MODE_Autoneg_BIT to indicate autoneg is
-supported.  Maybe we should add ETHTOOL_LINK_MODE_2400mv_BIT? Are
-there other voltages defined in the standards?
-
-> +static int adin_set_powerdown_mode(struct phy_device *phydev, bool en)
-> +{
-> +	int ret, timeout;
-> +	u16 val;
-> +
-> +	if (en)
-> +		val = ADIN_CRSM_SFT_PD_CNTRL_EN;
-> +	else
-> +		val = 0;
-> +
-> +	ret = phy_write_mmd(phydev, MDIO_MMD_VEND1,
-> +			    ADIN_CRSM_SFT_PD_CNTRL, val);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	timeout = 30;
-> +	while (timeout-- > 0) {
-> +		ret = phy_read_mmd(phydev, MDIO_MMD_VEND1,
-> +				   ADIN_CRSM_STAT);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		if ((ret & ADIN_CRSM_SFT_PD_RDY) == val)
-> +			return 0;
-> +
-> +		mdelay(1);
-> +	}
-> +
-> +	return -ETIMEDOUT;
-
-We already have phy_read_poll_timeout(). Please add a
-phy_read_mmd_poll_timeout() function.
-
-> +static int adin_set_loopback(struct phy_device *phydev, bool enable)
-> +{
-> +	int ret;
-> +
-> +	if (enable)
-> +		return phy_set_bits_mmd(phydev, MDIO_MMD_PCS,
-> +					ADIN_B10L_PCS_CNTRL,
-> +					ADIN_PCS_CNTRL_B10L_LB_PCS_EN);
-> +
-> +	/* MAC interface block loopback */
-> +	ret = phy_clear_bits_mmd(phydev, MDIO_MMD_VEND1, ADIN_MAC_IF_LOOPBACK,
-> +				 ADIN_MAC_IF_LOOPBACK_EN |
-> +				 ADIN_MAC_IF_REMOTE_LOOPBACK_EN);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	/* PCS loopback (according to 10BASE-T1L spec) */
-> +	ret = phy_clear_bits_mmd(phydev, MDIO_MMD_PCS, ADIN_B10L_PCS_CNTRL,
-> +				 ADIN_PCS_CNTRL_B10L_LB_PCS_EN);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	/* PMA loopback (according to 10BASE-T1L spec) */
-> +	return phy_clear_bits_mmd(phydev, MDIO_MMD_PMAPMD, ADIN_B10L_PMA_CNTRL,
-> +				  ADIN_PMA_CNTRL_B10L_LB_PMA_LOC_EN);
-
-Why three loopbacks at the same time. The outgoing frame it going to
-hit the first loopback, and never reach the other two.
-
-    Andrew
