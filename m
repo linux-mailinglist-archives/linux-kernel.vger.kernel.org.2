@@ -2,203 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4313B2FE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE66B3B2FE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhFXNYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:24:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:57100 "EHLO foss.arm.com"
+        id S231301AbhFXNYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:24:47 -0400
+Received: from verein.lst.de ([213.95.11.211]:54550 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229881AbhFXNYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:24:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 35C48ED1;
-        Thu, 24 Jun 2021 06:22:11 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 142C43F718;
-        Thu, 24 Jun 2021 06:22:09 -0700 (PDT)
-Subject: Re: [PATCH v2] drm/panfrost:report the full raw fault information
- instead
-To:     Chunyou Tang <tangchunyou@163.com>
-Cc:     tomeu.vizoso@collabora.com, airlied@linux.ie,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        alyssa.rosenzweig@collabora.com,
-        ChunyouTang <tangchunyou@icubecorp.cn>
-References: <20210617062054.1864-1-tangchunyou@163.com>
- <2dcbb36a-b550-4c9d-cff8-73ca4b5abb11@arm.com>
- <20210619111852.00003e52@163.com>
- <23f675e9-698d-840d-104f-33aa594dcb96@arm.com>
- <20210622094000.00004f7e@163.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <04bc1306-f8a3-2e3c-b55d-030d1448fad2@arm.com>
-Date:   Thu, 24 Jun 2021 14:22:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229881AbhFXNYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:24:46 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6FB1567373; Thu, 24 Jun 2021 15:22:23 +0200 (CEST)
+Date:   Thu, 24 Jun 2021 15:22:23 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Tomer Tayar <ttayar@habana.ai>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to
+ export FD for DMA-BUF
+Message-ID: <20210624132223.GA22258@lst.de>
+References: <20210622160538.GT1096940@ziepe.ca> <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com> <20210623182435.GX1096940@ziepe.ca> <CAFCwf111O0_YB_tixzEUmaKpGAHMNvMaOes2AfMD4x68Am4Yyg@mail.gmail.com> <20210623185045.GY1096940@ziepe.ca> <CAFCwf12tW_WawFfAfrC8bgVhTRnDA7DuM+0V8w3JsUZpA2j84w@mail.gmail.com> <20210624053421.GA25165@lst.de> <9571ac7c-3a58-b013-b849-e26c3727e9b2@amd.com> <20210624081237.GA30289@lst.de> <899fe0ce-b6d7-c138-04b6-4b12405f8d93@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20210622094000.00004f7e@163.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Language: en-GB
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <899fe0ce-b6d7-c138-04b6-4b12405f8d93@amd.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/06/2021 02:40, Chunyou Tang wrote:
-> Hi Steve,
-> 	I will send a new patch with suitable subject/commit message.
-> But I send a V3 or a new patch?
+On Thu, Jun 24, 2021 at 11:52:47AM +0200, Christian K�nig wrote:
+> I've already converted a bunch of the GPU drivers, but there are at least 6 
+> GPU still needing to be fixed and on top of that comes VA-API and a few 
+> others.
+>
+> What are your plans for the DMA mapping subsystem?
 
-Send a V3 - it is a new version of this patch.
+Building a new API that allows batched DMA mapping without the scatterlist.
+The main input for my use case would be bio_vecs, but I plan to make it
+a little flexible, and the output would be a list of [dma_addr,len]
+tuples, with the API being flexible enough to just return a single
+[dma_addr,len] for the common IOMMU coalescing case.
 
-> 	I met a bug about the GPU,I have no idea about how to fix it,
-> If you can give me some suggestion,it is perfect.
-> 
-> You can see such kernel log:
-> 
-> Jun 20 10:20:13 icube kernel: [  774.566760] mvp_gpu 0000:05:00.0: GPU
-> Fault 0x00000088 (SHAREABILITY_FAULT) at 0x000000000310fd00 Jun 20
-> 10:20:13 icube kernel: [  774.566764] mvp_gpu 0000:05:00.0: There were
-> multiple GPU faults - some have not been reported Jun 20 10:20:13 icube
-> kernel: [  774.667542] mvp_gpu 0000:05:00.0: AS_ACTIVE bit stuck Jun 20
-> 10:20:13 icube kernel: [  774.767900] mvp_gpu 0000:05:00.0: AS_ACTIVE
-> bit stuck Jun 20 10:20:13 icube kernel: [  774.868546] mvp_gpu
-> 0000:05:00.0: AS_ACTIVE bit stuck Jun 20 10:20:13 icube kernel:
-> [  774.968910] mvp_gpu 0000:05:00.0: AS_ACTIVE bit stuck Jun 20
-> 10:20:13 icube kernel: [  775.069251] mvp_gpu 0000:05:00.0: AS_ACTIVE
-> bit stuck Jun 20 10:20:22 icube kernel: [  783.693971] mvp_gpu
-> 0000:05:00.0: gpu sched timeout, js=1, config=0x7300, status=0x8,
-> head=0x362c900, tail=0x362c100, sched_job=000000003252fb84
-> 
-> In
-> https://lore.kernel.org/dri-devel/20200510165538.19720-1-peron.clem@gmail.com/
-> there had a same bug like mine,and I found you at the mail list,I don't
-> know how it fixed?
+>
+>> Btw, one thing I noticed when looking over the dma-buf instances is that
+>> there is a lot of duplicated code for creating a sg_table from pages,
+>> and then mapping it.  It would be good if we could move toward common
+>> helpers instead of duplicating that all over again.
+>
+> Can you give an example?
 
-The GPU_SHAREABILITY_FAULT error means that a cache line has been
-accessed both as shareable and non-shareable and therefore coherency
-cannot be guaranteed. Although the "multiple GPU faults" means that this
-may not be the underlying cause.
+Take a look at the get_sg_table and put_sg_table helpers in udmabuf.
+Those would also be useful in armda, i915, tegra, gntdev-dmabuf, mbochs
+in one form or another.
 
-The fact that your dmesg log has PCI style identifiers ("0000:05:00.0")
-suggests this is an unusual platform - I've not previously been aware of
-a Mali device behind PCI. Is this device working with the kbase/DDK
-proprietary driver? It would be worth looking at the kbase kernel code
-for the platform to see if there is anything special done for the platform.
-
-From the dmesg logs all I can really tell is that the GPU seems unhappy
-about the memory system.
-
-Steve
-
-> I need your help!
-> 
-> thinks very much!
-> 
-> Chunyou
-> 
-> 于 Mon, 21 Jun 2021 11:45:20 +0100
-> Steven Price <steven.price@arm.com> 写道:
-> 
->> On 19/06/2021 04:18, Chunyou Tang wrote:
->>> Hi Steve,
->>> 	1,Now I know how to write the subject
->>> 	2,the low 8 bits is the exception type in spec.
->>>
->>> and you can see prnfrost_exception_name()
->>>
->>> switch (exception_code) {
->>>                 /* Non-Fault Status code */
->>> case 0x00: return "NOT_STARTED/IDLE/OK";
->>> case 0x01: return "DONE";
->>> case 0x02: return "INTERRUPTED";
->>> case 0x03: return "STOPPED";
->>> case 0x04: return "TERMINATED";
->>> case 0x08: return "ACTIVE";
->>> ........
->>> ........
->>> case 0xD8: return "ACCESS_FLAG";
->>> case 0xD9 ... 0xDF: return "ACCESS_FLAG";
->>> case 0xE0 ... 0xE7: return "ADDRESS_SIZE_FAULT";
->>> case 0xE8 ... 0xEF: return "MEMORY_ATTRIBUTES_FAULT";
->>> }
->>> return "UNKNOWN";
->>> }
->>>
->>> the exception_code in case is only 8 bits,so if fault_status
->>> in panfrost_gpu_irq_handler() don't & 0xFF,it can't get correct
->>> exception reason,it will be always UNKNOWN.
->>
->> Yes, I'm happy with the change - I just need a patch that I can apply.
->> At the moment this patch only changes the first '0x%08x' output rather
->> than the call to panfrost_exception_name() as well. So we just need a
->> patch which does:
->>
->> - fault_status & 0xFF, panfrost_exception_name(pfdev, fault_status),
->> + fault_status, panfrost_exception_name(pfdev, fault_status & 0xFF),
->>
->> along with a suitable subject/commit message describing the change. If
->> you can send me that I can apply it.
->>
->> Thanks,
->>
->> Steve
->>
->> PS. Sorry for going round in circles here - I'm trying to help you get
->> setup so you'll be able to contribute patches easily in future. An
->> important part of that is ensuring you can send a properly formatted
->> patch to the list.
->>
->> PPS. I'm still not receiving your emails directly. I don't think it's
->> a problem at my end because I'm receiving other emails, but if you can
->> somehow fix the problem you're likely to receive a faster response.
->>
->>> 于 Fri, 18 Jun 2021 13:43:24 +0100
->>> Steven Price <steven.price@arm.com> 写道:
->>>
->>>> On 17/06/2021 07:20, ChunyouTang wrote:
->>>>> From: ChunyouTang <tangchunyou@icubecorp.cn>
->>>>>
->>>>> of the low 8 bits.
->>>>
->>>> Please don't split the subject like this. The first line of the
->>>> commit should be a (very short) summary of the patch. Then a blank
->>>> line and then a longer description of what the purpose of the
->>>> patch is and why it's needed.
->>>>
->>>> Also you previously had this as part of a series (the first part
->>>> adding the "& 0xFF" in the panfrost_exception_name() call). I'm not
->>>> sure we need two patches for the single line, but as it stands this
->>>> patch doesn't apply.
->>>>
->>>> Also I'm still not receiving any emails from you directly (only via
->>>> the list), so it's possible I might have missed something you sent.
->>>>
->>>> Steve
->>>>
->>>>>
->>>>> Signed-off-by: ChunyouTang <tangchunyou@icubecorp.cn>
->>>>> ---
->>>>>  drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
->>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c
->>>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c index
->>>>> 1fffb6a0b24f..d2d287bbf4e7 100644 ---
->>>>> a/drivers/gpu/drm/panfrost/panfrost_gpu.c +++
->>>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c @@ -33,7 +33,7 @@ static
->>>>> irqreturn_t panfrost_gpu_irq_handler(int irq, void *data) address
->>>>> |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO); 
->>>>>  		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
->>>>> 0x%016llx\n",
->>>>> -			 fault_status & 0xFF,
->>>>> panfrost_exception_name(pfdev, fault_status & 0xFF),
->>>>> +			 fault_status,
->>>>> panfrost_exception_name(pfdev, fault_status & 0xFF), address);
->>>>>  
->>>>>  		if (state & GPU_IRQ_MULTIPLE_FAULT)
->>>>>
->>>
->>>
-> 
-> 
-
+Similar for variants that use a contigous regions.
