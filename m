@@ -2,136 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C91C3B2EEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3D63B2F29
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbhFXMcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 08:32:20 -0400
-Received: from mail-mw2nam12on2043.outbound.protection.outlook.com ([40.107.244.43]:22465
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229945AbhFXMcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 08:32:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fk9VMjdgUhkf7o5ymKKBCS+HsT/YGsOIPTw6HI1T+XOr3GotxCtEvO5gfjJyb5W2jfY9zHewaaqCsajn1/V4XNAI5/HcWPotl4OS+zHCdFS73kivziea8xHY0OM6O2r4ZyOFYVyj3bllTQMlay2eSXljHmYvGcZR6lRgLQCEX0h+D64yAThtJ2Wim8F06qVRmmBSzaxtJLgM4v6Qb02XRJjx4iWlVg3E74vYtgoKq9dQntyssT7pF0RjmGCw3Y4nGyrQIJODGeGu0+PbDvplP9Crpug/calhDeinNkAFiy5ywWgeLp7PbLVwpxjvpvkMwuvEt9tkD0MuTlA4EdMdnA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WVlJBI6NV8wYk2UU/uemcuMZDi50LGtf/L7IEg2irKc=;
- b=WY346GQWLhf71E43ARpFccuXd6rpQLCT9ywSMl6WVxONsZb0TPJfF54PqZOeMmioyXsWm0q8Oh4xFWcq0IGHo937H0RksJMI00r8wBOLXMTZrkLe9/BUUthfsVQcxfxxRXmSvtcxsbnBvUg9bGI9gtYwe25RYododwE0go6kUvD26XsZU/P1RlrxGi6BDNVhaUE4XPT6K/wKu5YU3jTnpawBUkW4DGmmyNVvwsvl+RFLpqL+Bfm9w5IQOChydlq+hSozwanD8EBub3R2WeJteu0L4tECAxa0EfJmynoEnAStvw/8uZ39+dJPNCL59CUNRSvVI7vYP3bheVVQNiXR7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WVlJBI6NV8wYk2UU/uemcuMZDi50LGtf/L7IEg2irKc=;
- b=UCJLbh+oZlZgtf+DY7a6A/46xPk+VtdLmreINoxoAUdKcALfPDw8W4SPtfeLrYypXRdtd/gMOt9K7qFL8JEa86dTRGzqEgDF2ZpECjHOGG34EZ45x5MHBNruqJ19ayzLSPhfZ4hSjUejpBSn8tC1NMw8P8RqrPfHUaSgIGMeV+9t97KMKDySkVhd3CCP2AWYj6uRfUAIJKPDFWaS8InkEZ4ffq40Io3UISubo2rM4PM7IBqK7cTLbKFw8OZf0l1WTIR79lgwILaTZvI6vVz9pCCYwu0OP2znTVaCFKbVBAo8FEzCtURY3uZbIe0nW2ZCI+wcvIMyeEFVC2FlhbzJHQ==
-Authentication-Results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5380.namprd12.prod.outlook.com (2603:10b6:208:314::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.20; Thu, 24 Jun
- 2021 12:29:58 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4264.020; Thu, 24 Jun 2021
- 12:29:58 +0000
-Date:   Thu, 24 Jun 2021 09:29:57 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Selvin Xavier <selvin.xavier@broadcom.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next][V2] RDMA/bnxt_re: Fix uninitialized struct bit
- field rsvd1
-Message-ID: <20210624122957.GA2879416@nvidia.com>
-References: <20210623182437.163801-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210623182437.163801-1-colin.king@canonical.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0077.namprd13.prod.outlook.com
- (2603:10b6:208:2b8::22) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S231307AbhFXMlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 08:41:46 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:58695 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229573AbhFXMlp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 08:41:45 -0400
+X-UUID: f67ee3b2ab0443539a473b3e01faec5e-20210624
+X-UUID: f67ee3b2ab0443539a473b3e01faec5e-20210624
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1818821037; Thu, 24 Jun 2021 20:39:23 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 24 Jun 2021 20:39:21 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 24 Jun 2021 20:39:20 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>, <netdev@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>,
+        <wsd_upstream@mediatek.com>, <chao.song@mediatek.com>,
+        <kuohong.wang@mediatek.com>, Rocco Yue <rocco.yue@mediatek.com>
+Subject: Re: [PATCH 1/4] net: if_arp: add ARPHRD_PUREIP type
+Date:   Thu, 24 Jun 2021 20:24:35 +0800
+Message-ID: <20210624122435.11887-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <YNRKhJB9/K4SKPdR@kroah.com>
+References: <YNRKhJB9/K4SKPdR@kroah.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0077.namprd13.prod.outlook.com (2603:10b6:208:2b8::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.8 via Frontend Transport; Thu, 24 Jun 2021 12:29:57 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lwOUX-00C56M-0Z; Thu, 24 Jun 2021 09:29:57 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a65667c7-a037-4038-3ca9-08d9370bc742
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5380:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5380AE60B4477075C6963F4CC2079@BL1PR12MB5380.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1kziq28w18eJLA6ZbRwp6w4gHf1sfQX+c2mU5orsRLK+KVoXi/lHEv+YSYYa+Zml4yOxw5D0kL1sWsA1bbCaONN6HPwO06QiNSvFm7VJbrjOCd/nnIkEPZ8CVnFqBlEhkOVNVl0+gBQJJP8oCw1lfRTOzm4otVu3TZfp4BCTUPlJI2r6OfNdFYyn1WdC2lRUAl0XTDKvX7avPdR2WBzr7vt0wxJPRLXj/jktEWzP2DkvwnFdzwGtW6CLL0kLEoDwQdpCLYC3J+8OCcxzpSgUTTdPlk8PAHabCD/vwj6PS5XTgcJddOikBHMGR/tqg5doGIlU6aMG48WSxBq+43iodvSzd/A4s6ooY6lzPlX+sC6/sGQrE7fXLocEjhOyCxJJ2otNbhixbzMbv4S7edVnHHaaJiz5hajBmG+fE0epezSnJUDvsNPVPrWo2c9laihBpc8F+dYp/zTf8CyDH5w1s10qrbgwvfdF8T0ZBQebZrnxgoMwxKHX8cT88PU7qTXWK0V/uPEKpkScn8bHpQfwyvi46hoonW3vC8GtrnIzMuJTu9BuGHzq0M5tpOYpOtOLb4KmKvYEpHyRB0DNahviQc+5xqcIjpcTFcIoszjoEnK9oB9ahU3nn5Vzxtt+9HapNzZ7IFHR0AtspQGxi4AzUw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(366004)(376002)(136003)(396003)(346002)(1076003)(8936002)(2616005)(5660300002)(478600001)(38100700002)(83380400001)(4744005)(8676002)(2906002)(6916009)(26005)(186003)(66556008)(36756003)(426003)(54906003)(316002)(9746002)(9786002)(33656002)(66946007)(4326008)(66476007)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lgvbwM93D/VlHEhV3qgg1NU+Wm8ovEaYOHY/otey2kenUDamMSZ9hBncO4k6?=
- =?us-ascii?Q?nMo0Lx/z6u7nKZwsaiDvj25cX+gR3YjgpldBrU/yC+xixI7qLq2XqJNARP0s?=
- =?us-ascii?Q?bqQ4uecg0pG1oA3LibXCnMeo7Th8S209ysOohnAV5K0dr2xNwO6bV4vfz9fC?=
- =?us-ascii?Q?ifcoEfZqDU6z87nzdGSgv5KWEMwz/mP7X2nI0+vqOEadT2Gi30mX4NEWJ3F0?=
- =?us-ascii?Q?7IZ/YQbXuj3ZLPR5Odx3aREVbAZAn1DzxEidE1KiEeT5NysJy/7ZJRHza2tB?=
- =?us-ascii?Q?+wzBxFeEoGAiBrSTIOIOngx0lAi0LLayhdGXHqpGujiIQMI+cG1zYRX5QV1l?=
- =?us-ascii?Q?Xo2PR07GwlIGNou6Cwj6/uQCX8GQ/U6hRiV4bVj3/Zd7nDWtmapb7KASDZzj?=
- =?us-ascii?Q?+Dtt8T/XJMRVQiO2/iNBrLEFBvRx7CFUKvATzLjepnwMjbN84EpomPizHfoc?=
- =?us-ascii?Q?eqiuRlfAfllzobHlsD0uNAIq1dJTdl7WoJjBW7S8l3qWWkencw+/MGlqEc2x?=
- =?us-ascii?Q?LM3Hmeg0Vwwkj6rAsNwis80ll9tmQ8+Qo3FISAqHT/d+x+CxdNAfhrw0roxj?=
- =?us-ascii?Q?mIZZvc8zhyfVbfxq9udqxIY9Ko4OUXRCF3dBBUJFpDluQrt3NPUR/HXYkxsH?=
- =?us-ascii?Q?DCcq9Ns6+34pATQoYizswEVwXNJoA7UFmicJvqks9azmBHJNgctsihatgIsO?=
- =?us-ascii?Q?Lk8gXpkCrPUQNnx1mRlPi06iIEoj26ixn5EYz8Ow4gbKyZoJXgRzxng3XIZZ?=
- =?us-ascii?Q?OIOclO70wM2RGU9wvJWXW8stSPL5aVmvn1LqZVPf+CEuH6e7gFFiQwgMd6/7?=
- =?us-ascii?Q?J/vrBVP2eSO1SnbN/N7nfU29w60k23nuxV7brreVCmiXQ2hT0oXoqe6eA/sK?=
- =?us-ascii?Q?vJWkSdijEYBijRT2mp2U5GEjMLpBx7+0i86RcI25zdAjWP4w066wjDuAeYdy?=
- =?us-ascii?Q?qvSUWI7AQZormld2jfYlYBvdG3otiU/98ldKawJw9QD118VabShCehKhPJwi?=
- =?us-ascii?Q?psttYpryiXP7dhnESM5sVcYOiWEUyLmB1kh1inOucaTAVYFVZdNR7kL2jZFS?=
- =?us-ascii?Q?f01gjd9gi+bfnzSFM5csJsZ++N+vhj8voCFWmE5IDlUUI0wYp/Lcl/eHGqfP?=
- =?us-ascii?Q?Ze+TX8xOLo3P+OLSiH3wcgOy0Tse86fbRmm/dlVGV0pBiQTLOXekyP+GXDk+?=
- =?us-ascii?Q?RRfCYFmCpnP5oSX7/imgBw8yKnbcDfIAD4443hWT2WiseUSZWSq3acoag/mo?=
- =?us-ascii?Q?qUBIyosgIjaS8274FLKP5unj6jXrQ+BC1tMvPiU9dJ98BqUwS813dH4gA1wm?=
- =?us-ascii?Q?qX4Smj6GK/DgdG9gEgqNvlp2?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a65667c7-a037-4038-3ca9-08d9370bc742
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2021 12:29:57.8931
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fUcr21tzBJlBolHkRhjEIRWaYyHp43zklkeCI0J8aJuv40Gvx5PR73YJK3lX0NR7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5380
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 07:24:37PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Thu, 2021-06-24 at 11:04 +0200, Greg KH wrote:
+On Thu, Jun 24, 2021 at 02:13:10PM +0800, Rocco Yue wrote:
+>> On Thu, 2021-06-24 at 07:29 +0200, Greg KH wrote:
+>>> 
+>>> Thanks for the explaination, why is this hardware somehow "special" in
+>>> this way that this has never been needed before?
+>>> 
+>>> thanks,
+>>> 
+>>> greg k-h
+>>> 
+>> 
+>> Before kernel-4.18, RAWIP was the same as PUREIP, neither of them
+>> automatically generates an IPv6 link-local address, and the way to
+>> generate an IPv6 global address is the same.
+>> 
+>> After kernel-4.18 (include 4.18 version), the behavior of RAWIP had
+>> changed due to the following patch:
+>> @@  static int ipv6_generate_eui64(u8 *eui, struct net_device *dev)
+>> +	case ARPHRD_RAWIP:
+>> +		return addrconf_ifid_rawip(eui, dev);
+>>  	}
+>>  	return -1;
+>> }
+>> 
+>> the reason why the kernel doesn't need to generate the link-local
+>> address automatically is as follows:
+>> 
+>> In the 3GPP 29.061, here is some description as follows:
+>> "in order to avoid any conflict between the link-local address of
+>> MS and that of the GGSN, the Interface-Identifier used by the MS to
+>> build its link-local address shall be assigned by the GGSN. The GGSN
+>> ensures the uniqueness of this Interface-Identifier. Then MT shall
+>> then enforce the use of this Interface-Identifier by the TE"
+>> 
+>> In other words, in the cellular network, GGSN determines whether to
+>> reply to the Router Solicitation message of UE by identifying the
+>> low 64bits of UE interface's ipv6 link-local address.
+>> 
+>> When using a new kernel and RAWIP, kernel will generate an EUI64
+>> format ipv6 link-local address, and if the device uses this address
+>> to send RS, GGSN will not reply RA message.
+>> 
+>> Therefore, in that background, we came up with PUREIP to make kernel
+>> doesn't generate a ipv6 link-local address in any address generate
+>> mode.
 > 
-> The bit field rsvd1 in resp is not being initialized and garbage data
-> is being copied from the stack back to userspace via the ib_copy_to_udata
-> call. Fix this by setting the entire struct resp to zero; this will ensure
-> that further new bit fields in the future will be zero'd too.
-> 
-> Addresses-Coverity: ("Uninitialized scalar variable")
-> Fixes: 879740517dab ("RDMA/bnxt_re: Update ABI to pass wqe-mode to user space")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
-> 
-> V2: set entire struct resp to zero rather than the new field. Thanks to
->     Jason Gunthorpe for suggesting this improved fix.
-> 
-> ---
->  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Thanks for the better description.  That should go into the changelog
+> text somewhere so that others know what is going on here with this new
+> option.
+>
 
-Applied to for-next, thanks
+Does changelog mean adding these details to the commit message ?
+I am willing do it.
 
-I amended it to remove the now redundant  = 0's.
+> And are these user-visable flags documented in a man page or something
+> else somewhere?  If not, how does userspace know about them?
+> 
 
-Jason
+There are mappings of these device types value in the libc:
+"/bionic/libc/kernel/uapi/linux/if_arp.h".
+userspace can get it from here.
+
+But I also failed to find a man page or a description of these
+device types.
+
+Thanks,
+Rocco
+
