@@ -2,78 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D1F3B2BC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D833B2BC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232014AbhFXJta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:49:30 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:34706 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230116AbhFXJt2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:49:28 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R741e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UdW6VbM_1624528025;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UdW6VbM_1624528025)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 24 Jun 2021 17:47:05 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Biggers <ebiggers@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        "Gilad Ben-Yossef" <gilad@benyossef.com>,
-        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH v3] pkcs7: make parser enable SM2 and SM3 algorithms combination
-Date:   Thu, 24 Jun 2021 17:47:05 +0800
-Message-Id: <20210624094705.48673-1-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.3.ge56e4f7
+        id S232027AbhFXJug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:50:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:51948 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229974AbhFXJud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 05:50:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 50A6E1042;
+        Thu, 24 Jun 2021 02:48:14 -0700 (PDT)
+Received: from localhost (unknown [10.1.195.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E40043F718;
+        Thu, 24 Jun 2021 02:48:13 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 10:48:12 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-pm@vger.kernel.org, Qian Cai <quic_qiancai@quicinc.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 4/4] cpufreq: CPPC: Add support for frequency
+ invariance
+Message-ID: <20210624094812.GA6095@arm.com>
+References: <cover.1624266901.git.viresh.kumar@linaro.org>
+ <f963d09e57115969dae32827ade5558b0467d3a0.1624266901.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f963d09e57115969dae32827ade5558b0467d3a0.1624266901.git.viresh.kumar@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support parsing the message signature of the SM2 and SM3 algorithm
-combination. This group of algorithms has been well supported. One
-of the main users is module signature verification.
+Hey,
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- crypto/asymmetric_keys/pkcs7_parser.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+On Monday 21 Jun 2021 at 14:49:37 (+0530), Viresh Kumar wrote:
+> The Frequency Invariance Engine (FIE) is providing a frequency scaling
+> correction factor that helps achieve more accurate load-tracking.
+[..]
+> +static void cppc_cpufreq_cpu_fie_exit(struct cpufreq_policy *policy)
+> +{
+> +	struct cppc_freq_invariance *cppc_fi;
+> +	int cpu;
+> +
+> +	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
+> +		return;
+> +
+> +	/* policy->cpus will be empty here, use related_cpus instead */
+> +	topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_CPPC, policy->related_cpus);
+> +
+> +	for_each_cpu(cpu, policy->related_cpus) {
+> +		cppc_fi = &per_cpu(cppc_freq_inv, cpu);
 
-diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
-index 967329e0a07b..6cf6c4552c11 100644
---- a/crypto/asymmetric_keys/pkcs7_parser.c
-+++ b/crypto/asymmetric_keys/pkcs7_parser.c
-@@ -248,6 +248,9 @@ int pkcs7_sig_note_digest_algo(void *context, size_t hdrlen,
- 	case OID_sha224:
- 		ctx->sinfo->sig->hash_algo = "sha224";
- 		break;
-+	case OID_sm3:
-+		ctx->sinfo->sig->hash_algo = "sm3";
-+		break;
- 	default:
- 		printk("Unsupported digest algo: %u\n", ctx->last_oid);
- 		return -ENOPKG;
-@@ -269,6 +272,10 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
- 		ctx->sinfo->sig->pkey_algo = "rsa";
- 		ctx->sinfo->sig->encoding = "pkcs1";
- 		break;
-+	case OID_SM2_with_SM3:
-+		ctx->sinfo->sig->pkey_algo = "sm2";
-+		ctx->sinfo->sig->encoding = "raw";
-+		break;
- 	default:
- 		printk("Unsupported pkey algo: %u\n", ctx->last_oid);
- 		return -ENOPKG;
--- 
-2.19.1.3.ge56e4f7
+Do you think it might be worth having here something like:
 
+		if (!cppc_fi->cpu_data)
+			continue;
+
+This would be to protect against cases where the platform does not boot
+with all CPUs or the module is loaded after some have already been
+offlined. Unlikely, but..
+
+> +		irq_work_sync(&cppc_fi->irq_work);
+> +		kthread_cancel_work_sync(&cppc_fi->work);
+> +	}
+> +}
+
+The rest of the code is almost the same as the original, so that is all
+from me :).
+
+Thanks,
+Ionela.
