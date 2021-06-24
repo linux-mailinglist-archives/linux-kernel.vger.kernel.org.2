@@ -2,140 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7917C3B2F8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB08F3B2F8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231467AbhFXNCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:02:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45478 "EHLO mail.kernel.org"
+        id S231805AbhFXNCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:02:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229995AbhFXNCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:02:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A02BA61003;
-        Thu, 24 Jun 2021 12:59:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624539588;
-        bh=NrylstX705yNk/gBhk/kQsLmF1qJb5ZhvHEk4pQj6ic=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qflNF5efbR1bsvxJDtWltJYXFHXia/rlBkrtnRDvntcxtztyNU3n1NBN9mFLmtbY5
-         ICtG/5sy+28vA/HT11Cr0xqTTD2yRUBhRmyPmoLqs9su58Xh4l4Y2xPzxTt/U1fRIp
-         NOr8CAvud2+PGzXgIXeuuuHUGKAzI00k/pPrWJdyI4YcCbxVqTYJS3qBQR94mqAbBP
-         0P9Hms952dYNckojVQg+t6q8A27c88A6nbo0Delje0Aqp1q6NC7th3ZDd7jMCwBSvK
-         O7pwxrsE/NB7TPAxbR7pYj80RC0Fq7JoYlijPNx7B0MM/BHQeAte9ikRjfqdSoEgiE
-         DcxcLbbq14geQ==
-Date:   Thu, 24 Jun 2021 14:59:43 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Akira Yokosawa <akiyks@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, "Wu X.C." <bobwxc@email.cn>,
-        SeongJae Park <sj38.park@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/3] docs: pdfdocs: Improve alignment of CJK
- ascii-art
-Message-ID: <20210624145943.001f8115@coco.lan>
-In-Reply-To: <386938dc-6290-239c-4b4f-c6153f3d98c5@gmail.com>
-References: <386938dc-6290-239c-4b4f-c6153f3d98c5@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S229995AbhFXNCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:02:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 312F961003;
+        Thu, 24 Jun 2021 13:00:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624539601;
+        bh=1fuYk8LvyHxK1nd8kAGgU5F/ANhdDvNqsNFMA40L9Z8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c6+/n/Zw7UQBqw0eTfWzB0uYqlZIxPtuLLplxc079DvLQxPadlXzIUT6KRn5JRE+K
+         VMxnN1jekp0h83tZoFr0vvZWPoCMvbnTTvbqY4FLtJ0S3mmci0Y79hklyeO8K5Kajz
+         juevqV5KxdFgJMIBhzJv0Z/UNeaU7MkXG9tlOPAE=
+Date:   Thu, 24 Jun 2021 14:59:59 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Zhenguo Zhao <zhenguo6858@gmail.com>
+Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tty: n_gsm: modify the doc punctuation "," to "."
+Message-ID: <YNSBz60hC2Czy95I@kroah.com>
+References: <1623981811-19505-1-git-send-email-zhenguo6858@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1623981811-19505-1-git-send-email-zhenguo6858@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 24 Jun 2021 21:06:59 +0900
-Akira Yokosawa <akiyks@gmail.com> escreveu:
+On Fri, Jun 18, 2021 at 10:03:31AM +0800, Zhenguo Zhao wrote:
+> From: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
+> 
+> End punctuation of items 5 and 6 are ".",other lists
+> should be modify to "."
+> 
+> Signed-off-by: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
+> ---
+>  Documentation/driver-api/serial/n_gsm.rst | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/driver-api/serial/n_gsm.rst b/Documentation/driver-api/serial/n_gsm.rst
+> index 87dfcd5..154c75e 100644
+> --- a/Documentation/driver-api/serial/n_gsm.rst
+> +++ b/Documentation/driver-api/serial/n_gsm.rst
+> @@ -14,11 +14,11 @@ How to use it
+>  -------------
+>  1. initialize the modem in 0710 mux mode (usually AT+CMUX= command) through
+>     its serial port. Depending on the modem used, you can pass more or less
+> -   parameters to this command,
+> +   parameters to this command.
+>  2. switch the serial line to using the n_gsm line discipline by using
+> -   TIOCSETD ioctl,
+> -3. configure the mux using GSMIOC_GETCONF / GSMIOC_SETCONF ioctl,
+> -4. obtain base gsmtty number for the used serial port,
+> +   TIOCSETD ioctl.
+> +3. configure the mux using GSMIOC_GETCONF / GSMIOC_SETCONF ioctl.
+> +4. obtain base gsmtty number for the used serial port.
+>  
 
-> Subject: [RFC PATCH 0/3] docs: pdfdocs: Improve alignment of CJK ascii-art
-> 
-> Hi all,
-> 
-> This is another attempt to improve translations' pdf output.
-> I see there is a mismatch in the font choice for CJK documents, which
-> causes poor-looking ascii-art where CJK characters and Latin letters
-> are mixed used.
-> 
-> One of noticeable examples of such ascii-art can be found in
-> Korean translation of memory-barriers.txt.
-> 
-> Hence the author of Korean translation of memory-barriers.txt is
-> in the CC list.
-> 
-> At first, I thought the issue could be fixed by simply selecting
-> "Noto Sans Mono CJK SC" as both of monofont and CJKmonofont.
-> It fixed the mis-alignment in the Chinese translation, but failed
-> in the Korean translation.
-> 
-> It turns out that Hangul characters in "Noto Sans Mono CJK SC"
-> are slightly narrower than Chinese and Japanese counterparts.
-> I have no idea why the so-called "mono" font has non-uniform
-> character widths.
-> 
-> GNU Unifont is an alternative monospace font which covers
-> almost all Unicode codepoints.
-> However, due to its bitmap-font nature, the resulting document
-> might not be acceptable to Korean readers, I guess.
-> 
-> As a compromise, Patch 2/3 enables Unifont only when it is available.
-> 
-> A comparison of some of ascii-art figures before and after this change
-> can be found in the attached PDF.
+Strangly, the use of a ',' here is correct as this is a list of things
+to do in a specific order.  If you wrote this all out at once in a
+single sentance without the numbers, a ',' would make sense.
 
-Argh! Yeah, it sounds that those translations will always be
-problematic.
+But this isn't a big deal, if you want to use '.' then please capitalize
+the first word of each item in the list.
 
-Your patch series makes sense to me (although I didn't try to
-test). Perhaps one way would be to split the translations into
-one separate book per language, although I suspect that such
-change would offer their own problems, as cross-references
-will be broken[1].
+Picky, yes, sorry.
 
-[1] There is a sphinx extension that solves it:
-	https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
-
-But not sure how easy/hard would be to setup this one.
-
-> 
-> Patch 1/3 is a preparation of Patch 2/3.
-> It converts font-availability check in python to LaTeX and make the
-> resulting LaTeX code portable across systems with different sets of
-> installed fonts.
-> 
-> Patch 3/3 is an independent white space fix (or a workaround of Sphinx
-> mis-handling of tabs behind CJK characters) in Korean translation
-> of memory-barriers.txt.
-> 
-> Any feedback is welcome!
-> 
-> Side note:
-> 
-> In Korean translation's PDF, I see there is another issue of missing
-> white spaces between Hangul "phrase groups" in normal text.
-> Looks like the pair of xelatex + xeCJK just ignores white spaces
-> between CJK characters.
-> 
-> There is a package named "xetexko", which might (or might not) be
-> a reasonable choice for Korean translation.
-> 
-> It should be possible to use a language-specific preamble once
-> we figure out the way to load per-directory Sphinx configuration
-> and move translation docs into per-language subdirectories.  
-> 
-> As I am not familiar with Korean LaTeX typesetting, I must defer to
-> those who are well aware of such conventions.
-> 
->         Thanks, Akira
-> --
-> Akira Yokosawa (3):
->   docs: pdfdocs: Refactor config for CJK document
->   docs: pdfdocs: Add font settings for CJK ascii-art
->   docs: ko_KR: Use white spaces behind CJK characters in ascii-art
-> 
->  Documentation/conf.py                         | 26 +++++++++++--------
->  .../translations/ko_KR/memory-barriers.txt    | 14 +++++-----
->  2 files changed, 22 insertions(+), 18 deletions(-)
-> 
-
-
-
-Thanks,
-Mauro
+greg k-h
