@@ -2,105 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B295A3B379C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007A73B37B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232847AbhFXUMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 16:12:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232120AbhFXUMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 16:12:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0FF9613B3;
-        Thu, 24 Jun 2021 20:10:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624565421;
-        bh=OCHElhvYoD6BDgY07IFd/eaIraH+0hiQu/h81hEMkgk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VNcrw/Oaprf5kSwI+DjcJCH39mU1U/xHDvIyVt7APT4IrFAN1t7S6SHazqetWg3FW
-         J0Tn/3G44nIEGY+OO68enuTfjTOruDR/OSHK0IFar1z4Saabh4K59xmxM4lrM4fgek
-         EwhRaLhPmUB9f5GxCuvuT8wkI69I5DYau2cfD/gvccu43qq9EmeERaWV3KE+JuU2jU
-         H008pCNb+nCha3lhCr0gNFSrchH/P4btZSgBovZAw8knnZLR/bzCS5VuhPKGj7iUuo
-         ktQZ8wcmFt4saq1wO/7i4sFVmyhu+WEj7v01VKAFY323MBItrA5avao+0bKfEs6cOY
-         gpcVCCqprKN3w==
-Date:   Thu, 24 Jun 2021 22:10:17 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+9d7dadd15b8819d73f41@syzkaller.appspotmail.com,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH] i2c: robotfuzz-osif: fix control-request directions
-Message-ID: <YNTmqcrYb9KzW8Zh@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Johan Hovold <johan@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+9d7dadd15b8819d73f41@syzkaller.appspotmail.com,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>
-References: <20210524090912.3989-1-johan@kernel.org>
- <YNL2NLSpBQqnc2bH@hovoldconsulting.com>
+        id S232675AbhFXUVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 16:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232553AbhFXUVB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 16:21:01 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E49C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 13:18:40 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id a11so12338608lfg.11
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 13:18:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QdsTxdbLy6OAQCJe+BxLmLcw7gNCvC1VuxBL+c/EdBc=;
+        b=CN50qFEZiM/KC40ZFphsMGum7u0fgQ/7PSKkzLv3Imv2qoT+m2I4xle85ef/hnSBmd
+         jQ7V9plRVWmia3duLG9JtlwtA8gRKNqUguKYIy9mayOSyo2ct58AmgGxinOrbYWP7B9+
+         tKraksvFmL2Pf/jciosSyTRbQSZ6FxNlrKsF4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QdsTxdbLy6OAQCJe+BxLmLcw7gNCvC1VuxBL+c/EdBc=;
+        b=FMGS/GjDbeGRk15BqbczavryE+0GjYo++MM5B+J7EAD768hKgKMMpYF/BHEwi1SLjn
+         +/bTcuH/oBYZtXeAapaJLsDBm8b6ET8vYDFf+Dc6/COkm6xOaIwulpXE/I6O/j2hsvNd
+         d9EirhVlL8yRc4eWGZnReQ/Q2lz/a9XTlN55FfH+aT6ma/1lYoRYW/8uGKZN5AP8A+GM
+         9NVXLOTr5usBoLUxhwEBzmiLwbickoKbOBg+lAdKgts3EiJy8AfVOdOIG/DB89cLSXmh
+         eZk4nMB/IAjRCHrbN0LCFKOM14lod08RZtWIvSo0CUpELxGDkXGr2JfUOZ9yVHDOE0QB
+         +DXw==
+X-Gm-Message-State: AOAM5305WdhLP0v1QdGFG7ti/lnyN7A/k3vaqs+u98VR+I4YeQbXnzD3
+        9TCcb7jOmMp0V0DydM6cnNoFhjquEGVgaDpO1U4=
+X-Google-Smtp-Source: ABdhPJxqHzrXw5oZA7idM3F1OUSFogfQK3I8IQ34ObhrJlb04Sxee0WlqUoAKdYosnSpXd/wE0wrJw==
+X-Received: by 2002:ac2:5ec3:: with SMTP id d3mr5375382lfq.440.1624565918901;
+        Thu, 24 Jun 2021 13:18:38 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id q21sm272907ljj.77.2021.06.24.13.18.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 13:18:38 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id j2so12358150lfg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 13:18:38 -0700 (PDT)
+X-Received: by 2002:a05:6512:baa:: with SMTP id b42mr4974557lfv.487.1624565494034;
+ Thu, 24 Jun 2021 13:11:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="MKR9idyquUPZmLcd"
-Content-Disposition: inline
-In-Reply-To: <YNL2NLSpBQqnc2bH@hovoldconsulting.com>
+References: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+ <87sg1lwhvm.fsf@disp2133> <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+ <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com> <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+ <87eed4v2dc.fsf@disp2133> <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+ <87fsxjorgs.fsf@disp2133> <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+ <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk> <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+ <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+ <87a6njf0ia.fsf@disp2133> <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
+ <87tulpbp19.fsf@disp2133> <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
+ <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133> <87y2az5bmt.fsf_-_@disp2133>
+In-Reply-To: <87y2az5bmt.fsf_-_@disp2133>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 24 Jun 2021 13:11:18 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg16ZBqtLngzE2edV8e68Qxje2kFehnKTrBBe5opcsj-w@mail.gmail.com>
+Message-ID: <CAHk-=wg16ZBqtLngzE2edV8e68Qxje2kFehnKTrBBe5opcsj-w@mail.gmail.com>
+Subject: Re: [PATCH 7/9] signal: Make individual tasks exiting a first class concept.
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 24, 2021 at 12:03 PM Eric W. Biederman
+<ebiederm@xmission.com> wrote:
+>
+> Implement start_task_exit_locked and rewrite the de_thread logic
+> in exec using it.
+>
+> Calling start_task_exit_locked is equivalent to asyncrhonously
+> calling exit(2) aka pthread_exit on a task.
 
---MKR9idyquUPZmLcd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ok, so this is the patch that makes me go "Yeah, this seems to all go together".
 
-On Wed, Jun 23, 2021 at 10:52:04AM +0200, Johan Hovold wrote:
-> On Mon, May 24, 2021 at 11:09:12AM +0200, Johan Hovold wrote:
-> > The direction of the pipe argument must match the request-type direction
-> > bit or control requests may fail depending on the host-controller-driver
-> > implementation.
-> >=20
-> > Control transfers without a data stage are treated as OUT requests by
-> > the USB stack and should be using usb_sndctrlpipe(). Failing to do so
-> > will now trigger a warning.
-> >=20
-> > Fix the OSIFI2C_SET_BIT_RATE and OSIFI2C_STOP requests which erroneously
-> > used the osif_usb_read() helper and set the IN direction bit.
-> >=20
-> > Reported-by: syzbot+9d7dadd15b8819d73f41@syzkaller.appspotmail.com
-> > Fixes: 83e53a8f120f ("i2c: Add bus driver for for OSIF USB i2c device.")
-> > Cc: stable@vger.kernel.org      # 3.14
-> > Cc: Andrew Lunn <andrew@lunn.ch>
-> > Signed-off-by: Johan Hovold <johan@kernel.org>
-> > ---
->=20
-> Wolfram, can you pick this one up for 5.14?
+The whole "start_exit()" thing seemed fairly sane as an interesting
+concept to the whole ptrace notification thing, but this one actually
+made me think it makes conceptual sense and how we had exactly that
+"start exit asynchronously" case already in zap_other_threads().
 
-Sorry, I thought Andrew was the maintainer of this driver and was
-waiting for his ack. But he is not, this driver is unmaintained. So, I
-trust you and picked it up now.
+So doing that zap_other_threads() as that async exit makes me just
+thin kthat yes, this series is the right thing, because it not only
+cleans up the ptrace condition, it makes sense in this entirely
+unrelated area too.
 
-Applied to for-current, thanks!
+So I think I'm convinced. I'd like Oleg in particular to Ack this
+series, and Al to look it over, but I do think this is the right
+direction.
 
-
---MKR9idyquUPZmLcd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDU5qgACgkQFA3kzBSg
-KbZA9BAAlhZEQnPgQHEocCgFHoL1zsrDnKA9gZn+wDnz7rH0OwCm0/lIWwB8+qxb
-UyFLr+8weobCh+gN84wlMf2CFa7gGJd+rbZotd6UE33SyCehMkO1HRiZ452W3uLn
-f64KzEkj3IR3HQ8LjijdssCveh+B0IbP6ggtQ6d6GPUbVXDINk2xdyAH+NlOr01L
-ga2oPVSH8iOGsG2BLRE84e69jVzdJ3RikE9F6SalellJLfbAurOShwpuwW2is4ym
-2bIDvdX/LFj4vlT68LVY54KBpmpXMv3/tunFMPKvJkntsURLSGZJ+6XHbwOMAixT
-6bfyE+RDSxxKp0Z3cRvsR7BQlL618Yze34SDHTCpmcvZOHAR2o9nEr9Xf/5dc5+B
-msh/2gY2H71+1aTE0o/bqzs9Igqih641uboiCYiVu+CLZ/QHij1GtfAkROV0N2Uu
-wnw42od3gc3+BhTtnbqQi4epzA9RMsLtQ3dMzWoEahIQYS23w8yqUo+IjVRiFWNE
-rNlxA5qyA/VHFBjBVAVNNC+lleAhVBC2xr/r1PqQGn0n66neakAyf73EOS0SfXER
-fmdR1/qnLfEoa+wCOVha7SwOHYbxG7tXVJw5mwjOdaNflGIc96tOdx0WdLfMJ4eE
-dnweudbMJ6MOaG60+2Qx/rCVeQdqTPSQKvN5ES3MBRwYRdvZlCo=
-=Tg0E
------END PGP SIGNATURE-----
-
---MKR9idyquUPZmLcd--
+           Linus
