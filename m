@@ -2,189 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E9B3B256C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 05:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BBC53B2572
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 05:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbhFXD2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 23:28:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35448 "EHLO
+        id S229999AbhFXD35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 23:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbhFXD2O (ORCPT
+        with ESMTP id S229850AbhFXD3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 23:28:14 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80A8C061574;
-        Wed, 23 Jun 2021 20:25:54 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id b3so2224275plg.2;
-        Wed, 23 Jun 2021 20:25:54 -0700 (PDT)
+        Wed, 23 Jun 2021 23:29:55 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5DA2C061574;
+        Wed, 23 Jun 2021 20:27:33 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id g19so2580354qvx.12;
+        Wed, 23 Jun 2021 20:27:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=55IvFqcJa09LRNYHXcgNlk2bKn9LkJhjqCoMCI2+os8=;
-        b=NZWnLr8jcto7FwMiL4jyI5wDUjCTtFw8vrJTinQkjSdOSNJ3o1fN+PAHP4kVJ6bRnz
-         AUP1NkSguM8Hu8ux4znm7Tx7f9ZiqwwLV1Lc1s3BJe9CNqTNaLHj/9vVriemygcZiGVy
-         CXuYf/ao+NZ6hkhw5ICgWpuaVwuGFJ7+W8iLKax2m2LzUypbYTTVrNN947XkCWh2Cift
-         6XVy7/wxiLuCmAmN1jRcjCrmXOjmq3Rmf2nRvRjGKkFORALYCBa4pqnl1PGHtS74OQs0
-         CbIx2pAUS6tq8gldReYq+K0o9gCibtxaW9/zTaPrCo+3iglBkqvc4hdd41vtwTJZYFuH
-         78IA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6BySdzNVQYhIv90tT7J4QnjMzf7GOediSrHJcYggFgM=;
+        b=NiyGAXctTfQJOUMhwq9YHE7SLoVzBQGApi6oEuie5hWDfW7JAPeidPRkw5yro5Fp8j
+         rxnACRroG50cblAP2Lwy9LHpcjp2aUjeOGDxMApEpKy+h9VP9GmUgLiXA2eOLbZH1HwR
+         fsMqqDc+jyqOTvOjnuwvDtAm6QY6gEGvGfAeHy29CPtPmmtcvItCBaGFL9paTrAFtcCg
+         TVD0GafbX3dIvgAPJmdlI/o9IZaEHrnp29Q2zGp+ViJdHPSz6JKB80A62JtrpY6qRtHV
+         1iEUvvxVgyVf5pQQty05upEUmtRotUbp862WPR2qjWjVKi3BoU+amT6L/yrF0Yl+xEfr
+         gKUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=55IvFqcJa09LRNYHXcgNlk2bKn9LkJhjqCoMCI2+os8=;
-        b=bY2uPCPrzC/49x/17sVZJlndHUqHj6NahNyCVppuCsgEWLNSWApao1X/11hDO7F29C
-         mY17KtjbGGhZ9/m7dbohJQkigZshC5s/Pa+Yb7MZuF8KnA1qUzgrojRmiFqh3AuH/6LM
-         jAr0MzCDKa0zqNo2Nb1uV3BNR8/opCVhnhHX5Hxr606YcU4EM74csUvjcBcBaDk9Iq0w
-         OiPnkFr8HwJDEDaNwMqRpZLhpQ1wWywRn8SCHpLX6fU81EgpCRWt1vFueoiaie15ryQS
-         6ULefe5+q/yRjpA1lnbWDnUaeW3klK5hoYp/RANXVVB2L6Bu+5WcNVTGodqcJwkpLyaU
-         duGg==
-X-Gm-Message-State: AOAM530fHR18uL3RhNF42DqKqPeWZghQY0L6BgPkAAUGRSvbz6+Qvkp/
-        pZPeEziGL9zU9Gi7CjPhRKQ=
-X-Google-Smtp-Source: ABdhPJyPdJyMThorJ/b+J+lQbEgRFJwkzf6iPGnEcFoqpAnW7jBET8/fF1am96HE7XUi/Ry60HDDRg==
-X-Received: by 2002:a17:90a:448d:: with SMTP id t13mr3055731pjg.116.1624505154300;
-        Wed, 23 Jun 2021 20:25:54 -0700 (PDT)
-Received: from gli-System-Product-Name.genesyslogic.com.tw (60-251-58-169.HINET-IP.hinet.net. [60.251.58.169])
-        by smtp.gmail.com with ESMTPSA id z15sm535607pgu.71.2021.06.23.20.25.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 20:25:53 -0700 (PDT)
-From:   Renius Chen <reniuschengl@gmail.com>
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben.Chuang@genesyslogic.com.tw,
-        Renius Chen <reniuschengl@gmail.com>
-Subject: [PATCH] [RESEND] mmc: sdhci-pci-gli: Improve Random 4K Read Performance of GL9763E
-Date:   Thu, 24 Jun 2021 11:25:43 +0800
-Message-Id: <20210624032543.101861-1-reniuschengl@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        bh=6BySdzNVQYhIv90tT7J4QnjMzf7GOediSrHJcYggFgM=;
+        b=auzoy7p9DXDa6d4Bq1LtzD/YHMl+MIded5eW9+3LpFC5ARyvbmzWVTjWsSTjph1Ckz
+         FJorm7moTr1hsB2jpZTgV1Ik+tgePvpHOwEWJtW7a6wrYowzZ+42nqGpTnXUN50BPb82
+         nSpunZXixktoQzv+75h87th9yPYIbUwq+6QUm+8cj2tY+0GJVfMaPN4fPsvFv22dFcIR
+         35jwW9WekX2dB1IuxiZao5+jC6o6gX61dOkUMLAxhTfopO1W+tg5q1dbg8yyY2+/eU3D
+         y5R1R3optaNiukrX39Sgss6OXeIxf8wIpkIvTTyjM36TmhG732beW5JFRVOfVx0Sg+H0
+         OeGg==
+X-Gm-Message-State: AOAM531GoflD2rny8FoivGos/9Zah69EeCbC2ahaSYpmoWz90myeuqr9
+        ph52fKXUunXIjFt5oS8YGvM=
+X-Google-Smtp-Source: ABdhPJxWM1d1ON/iK6uJVBtqsItIMgrH+IsQi/f6pmkpNmDlIMxJ7SGysltZuGGdxIyzMbLiV0CxlA==
+X-Received: by 2002:ad4:4852:: with SMTP id t18mr3349864qvy.33.1624505253002;
+        Wed, 23 Jun 2021 20:27:33 -0700 (PDT)
+Received: from ?IPv6:2600:1700:dfe0:49f0:d597:85ff:418f:90ba? ([2600:1700:dfe0:49f0:d597:85ff:418f:90ba])
+        by smtp.gmail.com with ESMTPSA id m187sm1463960qkd.131.2021.06.23.20.27.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 20:27:32 -0700 (PDT)
+Subject: Re: [PATCH v2] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
+To:     Jian-Hong Pan <jhp@endlessos.org>
+Cc:     patchwork-bot+netdevbpf@kernel.org,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Doug Berger <opendmb@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        linux@endlessos.org, linux-rpi-kernel@lists.infradead.org
+References: <20210623032802.3377-1-jhp@endlessos.org>
+ <162448140362.19131.3107197931445260654.git-patchwork-notify@kernel.org>
+ <7f4e15bb-feb5-b4d2-57b9-c2a9b2248d4a@gmail.com>
+ <CAPpJ_edpVxbnPBGTrkvB8EY5mt_sgPmoMv7rBdUKUHZJnjhHNg@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <20eeedec-4ec2-7aae-2e80-09b784e1693b@gmail.com>
+Date:   Wed, 23 Jun 2021 20:27:29 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <CAPpJ_edpVxbnPBGTrkvB8EY5mt_sgPmoMv7rBdUKUHZJnjhHNg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During a sequence of random 4K read operations, the performance will be
-reduced due to spending much time on entering/exiting the low power state
-between requests. We disable the low power state negotiation of GL9763E
-during a sequence of random 4K read operations to improve the performance
-and enable it again after the operations have finished.
 
-Signed-off-by: Renius Chen <reniuschengl@gmail.com>
----
- drivers/mmc/host/sdhci-pci-gli.c | 86 ++++++++++++++++++++++++++++++++
- 1 file changed, 86 insertions(+)
 
-diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-index 302a7579a9b3..0105f728ccc4 100644
---- a/drivers/mmc/host/sdhci-pci-gli.c
-+++ b/drivers/mmc/host/sdhci-pci-gli.c
-@@ -88,6 +88,9 @@
- #define PCIE_GLI_9763E_SCR	 0x8E0
- #define   GLI_9763E_SCR_AXI_REQ	   BIT(9)
- 
-+#define PCIE_GLI_9763E_CFG       0x8A0
-+#define   GLI_9763E_CFG_LPSN_DIS   BIT(12)
-+
- #define PCIE_GLI_9763E_CFG2      0x8A4
- #define   GLI_9763E_CFG2_L1DLY     GENMASK(28, 19)
- #define   GLI_9763E_CFG2_L1DLY_MID 0x54
-@@ -691,6 +694,86 @@ static void sdhci_gl9763e_dumpregs(struct mmc_host *mmc)
- 	sdhci_dumpregs(mmc_priv(mmc));
- }
- 
-+static void gl9763e_request(struct mmc_host *mmc, struct mmc_request *mrq)
-+{
-+	struct sdhci_host *host = mmc_priv(mmc);
-+	struct mmc_command *cmd;
-+	struct sdhci_pci_slot *slot = sdhci_priv(host);
-+	struct pci_dev *pdev = slot->chip->pdev;
-+	u32 value;
-+	static bool start_4k_r;
-+	static int  continuous_4k_r;
-+
-+	cmd = (mrq->sbc && !(host->flags & SDHCI_AUTO_CMD23)) ? mrq->sbc : mrq->cmd;
-+
-+	if (cmd->opcode == MMC_READ_MULTIPLE_BLOCK) {
-+		if (cmd->data->blocks == 8) {
-+			continuous_4k_r++;
-+
-+			if ((!start_4k_r) && (continuous_4k_r >= 3)) {
-+				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-+				value &= ~GLI_9763E_VHS_REV;
-+				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
-+				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-+
-+				pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
-+				value |= GLI_9763E_CFG_LPSN_DIS;
-+				pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
-+
-+				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-+				value &= ~GLI_9763E_VHS_REV;
-+				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
-+				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-+
-+				start_4k_r = true;
-+			}
-+		} else {
-+			continuous_4k_r = 0;
-+
-+			if (start_4k_r) {
-+				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-+				value &= ~GLI_9763E_VHS_REV;
-+				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
-+				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-+
-+				pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
-+				value &= ~GLI_9763E_CFG_LPSN_DIS;
-+				pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
-+
-+				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-+				value &= ~GLI_9763E_VHS_REV;
-+				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
-+				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-+
-+				start_4k_r = false;
-+			}
-+		}
-+	} else {
-+		continuous_4k_r = 0;
-+
-+		if (start_4k_r)	{
-+			pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-+			value &= ~GLI_9763E_VHS_REV;
-+			value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
-+			pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-+
-+			pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
-+			value &= ~GLI_9763E_CFG_LPSN_DIS;
-+			pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
-+
-+			pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-+			value &= ~GLI_9763E_VHS_REV;
-+			value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
-+			pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-+
-+			start_4k_r = false;
-+		}
-+	}
-+
-+	sdhci_request(mmc, mrq);
-+}
-+
-+
- static void sdhci_gl9763e_cqe_pre_enable(struct mmc_host *mmc)
- {
- 	struct cqhci_host *cq_host = mmc->cqe_private;
-@@ -848,6 +931,9 @@ static int gli_probe_slot_gl9763e(struct sdhci_pci_slot *slot)
- 	gli_pcie_enable_msi(slot);
- 	host->mmc_host_ops.hs400_enhanced_strobe =
- 					gl9763e_hs400_enhanced_strobe;
-+
-+	host->mmc_host_ops.request = gl9763e_request;
-+
- 	gli_set_gl9763e(slot);
- 	sdhci_enable_v4_mode(host);
- 
+On 6/23/2021 7:47 PM, Jian-Hong Pan wrote:
+> Florian Fainelli <f.fainelli@gmail.com> 於 2021年6月24日 週四 上午5:19寫道：
+>>
+>> On 6/23/21 1:50 PM, patchwork-bot+netdevbpf@kernel.org wrote:
+>>> Hello:
+>>>
+>>> This patch was applied to netdev/net.git (refs/heads/master):
+>>>
+>>> On Wed, 23 Jun 2021 11:28:03 +0800 you wrote:
+>>>> The Broadcom UniMAC MDIO bus from mdio-bcm-unimac module comes too late.
+>>>> So, GENET cannot find the ethernet PHY on UniMAC MDIO bus. This leads
+>>>> GENET fail to attach the PHY as following log:
+>>>>
+>>>> bcmgenet fd580000.ethernet: GENET 5.0 EPHY: 0x0000
+>>>> ...
+>>>> could not attach to PHY
+>>>> bcmgenet fd580000.ethernet eth0: failed to connect to PHY
+>>>> uart-pl011 fe201000.serial: no DMA platform data
+>>>> libphy: bcmgenet MII bus: probed
+>>>> ...
+>>>> unimac-mdio unimac-mdio.-19: Broadcom UniMAC MDIO bus
+>>>>
+>>>> [...]
+>>>
+>>> Here is the summary with links:
+>>>    - [v2] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
+>>>      https://git.kernel.org/netdev/net/c/b2ac9800cfe0
+> 
+> This bot is interesting!!!  Good feature! :)
+> 
+>> There was feedback given that could have deserved a v3, if nothing else
+>> to fix the typo in the subject, I suppose that would do though.
+> 
+> I can prepare the v3 patch with Florian's suggestion!
+
+Too late, once it's merged only fixups can be accepted, and that does 
+not include commit messages, it's alright.
 -- 
-2.27.0
-
+Florian
