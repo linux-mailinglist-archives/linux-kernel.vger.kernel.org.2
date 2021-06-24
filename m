@@ -2,133 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4AA23B2BB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:43:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D1F3B2BC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232050AbhFXJp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:45:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24265 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232019AbhFXJp5 (ORCPT
+        id S232014AbhFXJta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:49:30 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:34706 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230116AbhFXJt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:45:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624527817;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qkxHw284a/HcUQKczqJcr3hZxs0a/eNZzaMIqcieCR4=;
-        b=N2dmpoXd8h1tJ/1jVQ8EadWoXvdJ00hsKd76ingRURI7ArP7YM3OVAqgd5iCcGtLbxK3C7
-        J0rwSiQGm1W62yubsHJcsSZWAiwG+R6YTX3bMtLXDw+7oAc+B11Z/3FqYtBXdPD45Pcc9x
-        UB6haCnVbw5AnTQduuhTYeNyrGJRGKk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-250-6v0P7LZmMfGGYuYLYjQlbw-1; Thu, 24 Jun 2021 05:43:36 -0400
-X-MC-Unique: 6v0P7LZmMfGGYuYLYjQlbw-1
-Received: by mail-ed1-f69.google.com with SMTP id h11-20020a50ed8b0000b02903947b9ca1f3so3052599edr.7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 02:43:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qkxHw284a/HcUQKczqJcr3hZxs0a/eNZzaMIqcieCR4=;
-        b=oqdfDGfC232vz/KN04Sw64NtPUOF48q+ejJqHtn3Z1k8l1bOmSVhsZ7kuB0IlkleKV
-         5d1EXx4QZIO+OXCGSvAttqErIMb+iVrMFL2DfnCMlKVKr+pCwybK0K58uoxLhm1ZIfQ0
-         pahW8mLX+6Si4RNNU2L6yZKNpuz8nSL4RhW6T5v17EKXkuByM2CFK+oAzz66jGeIqgEy
-         D77zOy3edxjPPxmD58C/5Jz2Eg6mluf0lh4P9dMg9rQ27I98oAUOgEgRICosR6rG19Oo
-         s3JLq8ZOv3/E33Z1ctOqr5WvRNTVKRn4EDwH9KAFvsu9HkXhMgfNNTHBdZUCYFKSj0q6
-         qEaw==
-X-Gm-Message-State: AOAM532yS7To3zWC9mBzqYqBfN+uZJpDQOuIxQPioRKAuHsNhSMK0vQg
-        x4NlyylcII95/MEekddrKF1AWwfVPcuc2pusU9ALx/DuKTXhiWLADH3WQH2qzTl6jRDKEAtGlqt
-        4hVrvxfLDn+u47IOYrS8w2vyW
-X-Received: by 2002:a05:6402:944:: with SMTP id h4mr5798158edz.76.1624527815210;
-        Thu, 24 Jun 2021 02:43:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwD6cFFU4Uspcy5dTYBfn7A0VR+4loxnlaoo/QjHY9IN1nmjQ4mSQ+4egclMkG5+RC1oGdqOg==
-X-Received: by 2002:a05:6402:944:: with SMTP id h4mr5798117edz.76.1624527814999;
-        Thu, 24 Jun 2021 02:43:34 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id t17sm1544705edv.75.2021.06.24.02.43.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 02:43:34 -0700 (PDT)
-Subject: Re: [PATCH 1/6] KVM: x86/mmu: release audited pfns
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        David Stevens <stevensd@chromium.org>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>
-Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        James Morse <james.morse@arm.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvmarm@lists.cs.columbia.edu,
-        kvm-ppc@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Sean Christopherson <seanjc@google.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Will Deacon <will@kernel.org>
-References: <20210624035749.4054934-1-stevensd@google.com>
- <20210624035749.4054934-2-stevensd@google.com>
- <1624524156.04etgk7zmz.astroid@bobo.none>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <4816287a-b9a9-d3f4-f844-06922d696e06@redhat.com>
-Date:   Thu, 24 Jun 2021 11:43:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Thu, 24 Jun 2021 05:49:28 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R741e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UdW6VbM_1624528025;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UdW6VbM_1624528025)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 24 Jun 2021 17:47:05 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Biggers <ebiggers@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Vitaly Chikunov <vt@altlinux.org>,
+        "Gilad Ben-Yossef" <gilad@benyossef.com>,
+        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH v3] pkcs7: make parser enable SM2 and SM3 algorithms combination
+Date:   Thu, 24 Jun 2021 17:47:05 +0800
+Message-Id: <20210624094705.48673-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
-In-Reply-To: <1624524156.04etgk7zmz.astroid@bobo.none>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/06/21 10:43, Nicholas Piggin wrote:
-> Excerpts from David Stevens's message of June 24, 2021 1:57 pm:
->> From: David Stevens <stevensd@chromium.org>
-> 
-> Changelog? This looks like a bug, should it have a Fixes: tag?
+Support parsing the message signature of the SM2 and SM3 algorithm
+combination. This group of algorithms has been well supported. One
+of the main users is module signature verification.
 
-Probably has been there forever... The best way to fix the bug would be 
-to nuke mmu_audit.c, which I've threatened to do many times but never 
-followed up on.
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+---
+ crypto/asymmetric_keys/pkcs7_parser.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Paolo
-
-> Thanks,
-> Nick
-> 
->>
->> Signed-off-by: David Stevens <stevensd@chromium.org>
->> ---
->>   arch/x86/kvm/mmu/mmu_audit.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/arch/x86/kvm/mmu/mmu_audit.c b/arch/x86/kvm/mmu/mmu_audit.c
->> index cedc17b2f60e..97ff184084b4 100644
->> --- a/arch/x86/kvm/mmu/mmu_audit.c
->> +++ b/arch/x86/kvm/mmu/mmu_audit.c
->> @@ -121,6 +121,8 @@ static void audit_mappings(struct kvm_vcpu *vcpu, u64 *sptep, int level)
->>   		audit_printk(vcpu->kvm, "levels %d pfn %llx hpa %llx "
->>   			     "ent %llxn", vcpu->arch.mmu->root_level, pfn,
->>   			     hpa, *sptep);
->> +
->> +	kvm_release_pfn_clean(pfn);
->>   }
->>   
->>   static void inspect_spte_has_rmap(struct kvm *kvm, u64 *sptep)
->> -- 
->> 2.32.0.93.g670b81a890-goog
->>
->>
-> 
+diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
+index 967329e0a07b..6cf6c4552c11 100644
+--- a/crypto/asymmetric_keys/pkcs7_parser.c
++++ b/crypto/asymmetric_keys/pkcs7_parser.c
+@@ -248,6 +248,9 @@ int pkcs7_sig_note_digest_algo(void *context, size_t hdrlen,
+ 	case OID_sha224:
+ 		ctx->sinfo->sig->hash_algo = "sha224";
+ 		break;
++	case OID_sm3:
++		ctx->sinfo->sig->hash_algo = "sm3";
++		break;
+ 	default:
+ 		printk("Unsupported digest algo: %u\n", ctx->last_oid);
+ 		return -ENOPKG;
+@@ -269,6 +272,10 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
+ 		ctx->sinfo->sig->pkey_algo = "rsa";
+ 		ctx->sinfo->sig->encoding = "pkcs1";
+ 		break;
++	case OID_SM2_with_SM3:
++		ctx->sinfo->sig->pkey_algo = "sm2";
++		ctx->sinfo->sig->encoding = "raw";
++		break;
+ 	default:
+ 		printk("Unsupported pkey algo: %u\n", ctx->last_oid);
+ 		return -ENOPKG;
+-- 
+2.19.1.3.ge56e4f7
 
