@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64843B2B5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F39253B2B6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbhFXJ3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:29:15 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59470 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbhFXJ3N (ORCPT
+        id S231887AbhFXJbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231742AbhFXJbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:29:13 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 0E5B11FD67;
-        Thu, 24 Jun 2021 09:26:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624526814; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RZyOP0C7F0XqPPPuvo2PjV5DVfUtOrFQsZ8R5CvApEg=;
-        b=puUrylTGuwUK7U4t0meYfv/ls3Jneaz2guT1qMpP+itr7K9jYXbAFn6iv4Dfa4b24elcdf
-        IKsOWMI1MPmcJsbaSit3TTUjwaldXaBlugSgATzAe41izPH8iRFB4wxWdgD+caLPj2w4UZ
-        QG0p3exnzUZXxtnWgxyqq+qIfCyjadg=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 2EAA6A3BC5;
-        Thu, 24 Jun 2021 09:26:51 +0000 (UTC)
-Date:   Thu, 24 Jun 2021 11:26:53 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jia He <justin.he@arm.com>, Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>, nd@arm.com
-Subject: Re: [PATCH v5 1/4] fs: introduce helper d_path_unsafe()
-Message-ID: <YNRP3QjSK8ayzCzC@alley>
-References: <20210622140634.2436-1-justin.he@arm.com>
- <20210622140634.2436-2-justin.he@arm.com>
- <YNH1d0aAu1WRiua1@smile.fi.intel.com>
+        Thu, 24 Jun 2021 05:31:42 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B995C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 02:29:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tyy6oGPDtSV9dFs168w/OuRhaDOFXHofllzuyVaRCEQ=; b=lVGtM5BxpvBqXHCJtXY8Lm+Lkc
+        mTIbmW23XvbA4/r89s4H7FCCveAUi3c+08nxekHfnkYzsp8Ng2PRgtG8DXeXp9P75JAD4G7UZSAmT
+        WLWqJUy0/nx3JwmgicgO9N6FrFy+4HLmN3Te7whg9CdgUEZ21etPOjHbIJQW5AMP3f9KVFNPiBG9Q
+        DgNtIhQh8HW+yiUIi3ArUMZJurmVzYwXb8NTEt5rsEj/fenJ2uN9TwzOGDv9TPKfltvMNqYTqChZl
+        gifSyfstIVDkAotlhSX+Uw3Rae7MP/yMxfwZmEuICSALAKPMFHLX4i1fWxHA10RL6Okgqq1yD94hB
+        Bv2eb5iQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwLfD-00BBtc-P3; Thu, 24 Jun 2021 09:28:54 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6198630022B;
+        Thu, 24 Jun 2021 11:28:48 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4094F200B392A; Thu, 24 Jun 2021 11:28:48 +0200 (CEST)
+Date:   Thu, 24 Jun 2021 11:28:48 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     changhuaixin <changhuaixin@linux.alibaba.com>
+Cc:     luca.abeni@santannapisa.it, anderson@cs.unc.edu, baruah@wustl.edu,
+        Benjamin Segall <bsegall@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        dtcccc@linux.alibaba.com, Juri Lelli <juri.lelli@redhat.com>,
+        khlebnikov@yandex-team.ru,
+        open list <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Odin Ugedal <odin@uged.al>, Odin Ugedal <odin@ugedal.com>,
+        pauld@redhead.com, Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Shanpei Chen <shanpeic@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>, tommaso.cucinotta@santannapisa.it,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        xiyou.wangcong@gmail.com
+Subject: Re: [PATCH v6 1/3] sched/fair: Introduce the burstable CFS controller
+Message-ID: <YNRQUK74hIqq3nyX@hirez.programming.kicks-ass.net>
+References: <20210621092800.23714-1-changhuaixin@linux.alibaba.com>
+ <20210621092800.23714-2-changhuaixin@linux.alibaba.com>
+ <YNHjZqbtzoOy8w87@hirez.programming.kicks-ass.net>
+ <653A9CDE-2786-4174-9335-75F16B8631C0@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNH1d0aAu1WRiua1@smile.fi.intel.com>
+In-Reply-To: <653A9CDE-2786-4174-9335-75F16B8631C0@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-06-22 17:36:39, Andy Shevchenko wrote:
-> On Tue, Jun 22, 2021 at 10:06:31PM +0800, Jia He wrote:
-> > This helper is similar to d_path() except that it doesn't take any
-> > seqlock/spinlock. It is typical for debugging purposes. Besides,
-> > an additional return value *prenpend_len* is used to get the full
-> > path length of the dentry, ingoring the tail '\0'.
-> > the full path length = end - buf - prepend_length - 1
-> 
-> Missed period at the end of sentence.
-> 
-> > Previously it will skip the prepend_name() loop at once in
-> > __prepen_path() when the buffer length is not enough or even negative.
-> > prepend_name_with_len() will get the full length of dentry name
-> > together with the parent recursively regardless of the buffer length.
-> 
-> > If someone invokes snprintf() with small but positive space,
-> > prepend_name_with_len() moves and copies the string partially.
-> > 
-> > More than that, kasprintf() will pass NULL _buf_ and _end_ as the
-> > parameters. Hence return at the very beginning with false in this case.
-> 
-> These two paragraphs are talking about printf() interface, while patch has
-> nothing to do with it. Please, rephrase in a way that it doesn't refer to the
-> particular callers. Better to mention them in the corresponding printf()
-> patch(es).
+On Thu, Jun 24, 2021 at 04:48:54PM +0800, changhuaixin wrote:
+> Hi, apart from the document issues Odin has replied, is there anything to improve for the other two patches?
 
-The two paragraphs are actually repeated in the 2nd
-patch. Unfortunately, they do not make sense there either because they
-comment code that is modified in this patch.
+I don't like the second patch much; but I've not had enough time to
+actually think about anything yet, so I can't really make
+recommendations :/
 
-We could describe it here a generic way. For example:
-
-  prepend_name_with_len() moves and copies the path when the given
-  buffer is not big enough. It cuts off the end of the path.
-  It returns immediately when there is no buffer at all.
-
-
-Best Regards,
-Petr
+I'll try and get to it..
