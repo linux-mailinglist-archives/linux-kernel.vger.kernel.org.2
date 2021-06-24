@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755C53B3981
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 00:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB863B3987
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 00:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbhFXWw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 18:52:28 -0400
+        id S232994AbhFXWwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 18:52:36 -0400
 Received: from mail.kernel.org ([198.145.29.99]:54528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232695AbhFXWwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 18:52:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 286386135C;
-        Thu, 24 Jun 2021 22:49:54 +0000 (UTC)
+        id S232850AbhFXWwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 18:52:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56124613BD;
+        Thu, 24 Jun 2021 22:49:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624574994;
-        bh=Do7JpeaMbcTZFmYRsJ6KflWqZQ5cEUS3jxE0VeBISec=;
+        s=k20201202; t=1624574995;
+        bh=LqSbUvnklLbaikHJmUbHetSoNII9E7rRJugAzbxIQ/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KftG9LTMBq4EBxfDAXYFRYxvIic6GLpckd4GFs34LxG3LaieSh9UxRngbGqtcXXdI
-         vDM+/kNx0FmKddqDDZYBmlWS1dxDQMpqasyV2BC3MOGzfjJ7HvIQpKxttYbiXMh2ew
-         vQ5gpGK5kOJNIUXHTqipaHbBaJancGP3D6QxVO1lUOry391v7443wcAyUsRcqc0B7p
-         WY9YitbrfNtAuF0uGe4CeYP0uy+4pMNMBKGDtFW96bPCaktQ/HJVUXjdWMyNzQ8vh4
-         +ptCcBOMMyScAhiy4YdeQEaAE7HfPfE94IWsQ2S7iV9pXvgxBx3/jd4A+A5tIwps5/
-         y8w8X9ODdp9Mg==
+        b=Pc5IcxrnR1APWm0YnMbiv7pPi8B76nCkRiCQQLM0/PoI+uFR2187LksHycNw3NMh2
+         aONs9EVaxpRtDRshl00FqUK4dh5DjOJHwj3pCz5wapg2sBUCuqL/2fKVx+6I5GPrTm
+         e8qOBeHaykSqFsdm13RkoeMxrEUbtXDysYtYcyeBCXL0O41KWLlFNMTVNSPakJIOdA
+         vvg1JyTJJs50v2agaa1BMCpbtYX1v1O78YuSB+jlouuz7VIc0DSyMcgL9anE4JC9Uk
+         ZSJAdRMzkSoGhLrepfQO1TMoSx+uQGyYcw8M8T0MNDEKb+b3TWoPBnHpLHFDQ2DmaR
+         IRStHzcdKIqrg==
 Received: by pali.im (Postfix)
-        id DC8858A3; Fri, 25 Jun 2021 00:49:53 +0200 (CEST)
+        id 13BEF8A3; Fri, 25 Jun 2021 00:49:55 +0200 (CEST)
 From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -37,9 +37,9 @@ Cc:     Andrew Lunn <andrew@lunn.ch>,
         =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
         linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 03/10] serial: mvebu-uart: correctly calculate minimal possible baudrate
-Date:   Fri, 25 Jun 2021 00:49:02 +0200
-Message-Id: <20210624224909.6350-4-pali@kernel.org>
+Subject: [PATCH 04/10] dt-bindings: mvebu-uart: fix documentation
+Date:   Fri, 25 Jun 2021 00:49:03 +0200
+Message-Id: <20210624224909.6350-5-pali@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210624224909.6350-1-pali@kernel.org>
 References: <20210624224909.6350-1-pali@kernel.org>
@@ -50,54 +50,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For default (x16) scheme which is currently used by mvebu-uart.c driver,
-maximal divisor of UART base clock is 1023*16. Therefore there is limit for
-minimal supported baudrate. This change calculate it correctly and prevents
-setting invalid divisor 0 into hardware registers.
+Both UARTs support higher baudrates and are not limited to baudrate 230400.
+Only current kernel driver implementation has limitation for both UARTs in
+maximal baudrate 230400. This limitation will be removed in next patches.
+So remove incorrect information about (hardware) limitation from bindings.
+
+UART1 (standard variant with DT node name 'uart0') has register space
+0x12000-0x12018 and not whole size 0x200. So fix also this in example.
 
 Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 68a0db1d7da2 ("serial: mvebu-uart: add function to change baudrate")
+Fixes: d160c3413478 ("dt-bindings: mvebu-uart: update documentation with extended UART")
 ---
- drivers/tty/serial/mvebu-uart.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/serial/mvebu-uart.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
-index dc0c26824ddb..f8b0016db847 100644
---- a/drivers/tty/serial/mvebu-uart.c
-+++ b/drivers/tty/serial/mvebu-uart.c
-@@ -481,7 +481,7 @@ static void mvebu_uart_set_termios(struct uart_port *port,
- 				   struct ktermios *old)
- {
- 	unsigned long flags;
--	unsigned int baud;
-+	unsigned int baud, min_baud, max_baud;
- 
- 	spin_lock_irqsave(&port->lock, flags);
- 
-@@ -500,16 +500,21 @@ static void mvebu_uart_set_termios(struct uart_port *port,
- 		port->ignore_status_mask |= STAT_RX_RDY(port) | STAT_BRK_ERR;
- 
- 	/*
-+	 * Maximal divisor is 1023 * 16 when using default (x16) scheme.
- 	 * Maximum achievable frequency with simple baudrate divisor is 230400.
- 	 * Since the error per bit frame would be of more than 15%, achieving
- 	 * higher frequencies would require to implement the fractional divisor
- 	 * feature.
- 	 */
--	baud = uart_get_baud_rate(port, termios, old, 0, 230400);
-+	min_baud = DIV_ROUND_UP(port->uartclk, 1023 * 16);
-+	max_baud = 230400;
-+
-+	baud = uart_get_baud_rate(port, termios, old, min_baud, max_baud);
- 	if (mvebu_uart_baud_rate_set(port, baud)) {
- 		/* No clock available, baudrate cannot be changed */
- 		if (old)
--			baud = uart_get_baud_rate(port, old, NULL, 0, 230400);
-+			baud = uart_get_baud_rate(port, old, NULL,
-+						  min_baud, max_baud);
- 	} else {
- 		tty_termios_encode_baud_rate(termios, baud, baud);
- 		uart_update_timeout(port, termios->c_cflag, baud);
+diff --git a/Documentation/devicetree/bindings/serial/mvebu-uart.txt b/Documentation/devicetree/bindings/serial/mvebu-uart.txt
+index b7e0e32b9ac6..2d0dbdf32d1d 100644
+--- a/Documentation/devicetree/bindings/serial/mvebu-uart.txt
++++ b/Documentation/devicetree/bindings/serial/mvebu-uart.txt
+@@ -5,10 +5,10 @@ Required properties:
+ - compatible:
+     - "marvell,armada-3700-uart" for the standard variant of the UART
+       (32 bytes FIFO, no DMA, level interrupts, 8-bit access to the
+-      FIFO, baudrate limited to 230400).
++      FIFO), called also UART1.
+     - "marvell,armada-3700-uart-ext" for the extended variant of the
+       UART (128 bytes FIFO, DMA, front interrupts, 8-bit or 32-bit
+-      accesses to the FIFO, baudrate unlimited by the dividers).
++      accesses to the FIFO), called also UART2.
+ - reg: offset and length of the register set for the device.
+ - clocks: UART reference clock used to derive the baudrate. If no clock
+       is provided (possible only with the "marvell,armada-3700-uart"
+@@ -33,7 +33,7 @@ Required properties:
+ Example:
+ 	uart0: serial@12000 {
+ 		compatible = "marvell,armada-3700-uart";
+-		reg = <0x12000 0x200>;
++		reg = <0x12000 0x18>;
+ 		clocks = <&xtalclk>;
+ 		interrupts =
+ 		<GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
 -- 
 2.20.1
 
