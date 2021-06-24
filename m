@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44FB43B32BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183423B32C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232493AbhFXPjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 11:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232434AbhFXPjE (ORCPT
+        id S232206AbhFXPnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 11:43:25 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45664 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230008AbhFXPnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 11:39:04 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826A7C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 08:36:45 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id v12so3140607plo.10
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 08:36:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oSmcLkLaYmb30K4x2o5V0PgF5sReFf2n8jT9UaERRsg=;
-        b=bSQo4DhU2KuL3CjUZN64j4WcwdggQch/R7XnEdix2NVuOf40qPGfYHBno8Xm619GAr
-         wg2kvoNy4VPNerE1UJQqTO/mn+wSl2WW8B9f7dL8xOzOgdg74JEfehGKdbWSQ0+1rr/t
-         2LEY4HKbsscIOGINiR9uO5OVpBxOglyxXqSvwqqzzZpKt1BhIehu/QDEuFSbgcAbmd1A
-         2Vn5BfcWryEpw7ny/6e9BAwB13V5uLq3/TeIlPL3nNBaDSZ9vfocg3yuStOuQjDnW2a3
-         vbLINUOPqFtht9Zb0kQj2xFTxtidhP/wmPjkGUm290ZvEfhGiSSc1t+MN7azCayA+NIy
-         PYiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oSmcLkLaYmb30K4x2o5V0PgF5sReFf2n8jT9UaERRsg=;
-        b=hBA5OnJVNcHqMobDp41itI0jBgT+o1fVP4k5Hk/OQrRzqfhkz0MDc+wQCeeD1Lncf6
-         0qoQ0GAG4I5hoamt1/hGs8C7K6H2Rbti1FTP0nWQQLrWgS/0pvmToLSnXrPsZhPnBueY
-         MX7Zid8JMlcTcrPj7Uifxfg1tbYaKdGtw/ZJLq65pMyqvfCtpzfaMfBY+xGKGtzhn4pY
-         3GFTPGjA2Jjwr5tjw9jUDv8ZuRgu+PHu8nqKZh1F9WhPF8UXcbpEp40kqYLXq12MG/kb
-         nQb9OOFoYaxBaN6xSrp0YczE7ApvUsYUeWxIazJkfQVv79AjRJ7huFCl8BsfCDpYc991
-         NnAA==
-X-Gm-Message-State: AOAM533IXIf8/oidvJEZQZDbF5+2Rny6VF7IBIzXJ2E/EXpqFf9JGnNR
-        MZLem5czgeWNOO6t6omOg5l3vw==
-X-Google-Smtp-Source: ABdhPJxfmbtVti63yi0rwniZ/V3vp7ddChowhbbwk916pZwapRYWPu+wwBqr+2N8fYjWJaOb0U93+Q==
-X-Received: by 2002:a17:90a:8542:: with SMTP id a2mr14115924pjw.185.1624549004763;
-        Thu, 24 Jun 2021 08:36:44 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id p1sm3132065pfp.137.2021.06.24.08.36.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 08:36:44 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 15:36:40 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        David Stevens <stevensd@chromium.org>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        James Morse <james.morse@arm.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvmarm@lists.cs.columbia.edu,
-        kvm-ppc@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 1/6] KVM: x86/mmu: release audited pfns
-Message-ID: <YNSmiOsmJin4UPcG@google.com>
-References: <20210624035749.4054934-1-stevensd@google.com>
- <20210624035749.4054934-2-stevensd@google.com>
- <1624524156.04etgk7zmz.astroid@bobo.none>
- <4816287a-b9a9-d3f4-f844-06922d696e06@redhat.com>
+        Thu, 24 Jun 2021 11:43:23 -0400
+Date:   Thu, 24 Jun 2021 15:41:02 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624549263;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NzA/hd3X5EAN6+Q/fB2qSxvWVQFzwGmUDPOJni4vE38=;
+        b=q83DmRDKvmqXoRm2Za8PRgMlAOTHm8F8IvKTwv042D6tRw5UavR1wyqrHQi6FzpeB9yQIV
+        GJlWmdYyU6orcyQMiXos5BJB5u8iTmmP+2r1GxJLN1AqnYnCd0SYqFPcdCM31ytx4j4PXq
+        AyMIdSkjlCFNj0bSe5Wy/daU8VYE2NGS7FP86MDqXPyVnbQOq7pT5XtMJfDcolz9V3pTkF
+        gKTVPDphOatm6Gxv0fYdb6cM0uvCE+iuauPCSSLE/nZhV8HSWHgO0/Xx4qTlehQlShJUO0
+        NWHgzNOk/t3hZCvxMcUyQgXXk+YwXCJDtARx5/f4m64L+U7oH1Axr7zIrwPshg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624549263;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NzA/hd3X5EAN6+Q/fB2qSxvWVQFzwGmUDPOJni4vE38=;
+        b=pF5QzB61S0ImOU/ErduuinkoY/gCc+VePXFj5LdExwmGKpjr2M16/EtMvSggLb5QkTZTKo
+        q5y2ZGvX43l0q9BA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/fpu] x86/fpu/xstate: Clear xstate header in
+ copy_xstate_to_uabi_buf() again
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <875yy3wb8h.ffs@nanos.tec.linutronix.de>
+References: <875yy3wb8h.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4816287a-b9a9-d3f4-f844-06922d696e06@redhat.com>
+Message-ID: <162454926209.395.6930680604405562644.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021, Paolo Bonzini wrote:
-> On 24/06/21 10:43, Nicholas Piggin wrote:
-> > Excerpts from David Stevens's message of June 24, 2021 1:57 pm:
-> > > From: David Stevens <stevensd@chromium.org>
-> > 
-> > Changelog? This looks like a bug, should it have a Fixes: tag?
-> 
-> Probably has been there forever... The best way to fix the bug would be to
-> nuke mmu_audit.c, which I've threatened to do many times but never followed
-> up on.
+The following commit has been merged into the x86/fpu branch of tip:
 
-Yar.  It has only survived because it hasn't required any maintenance.
+Commit-ID:     93c2cdc975aab53c222472c5b96c2d41dbeb350c
+Gitweb:        https://git.kernel.org/tip/93c2cdc975aab53c222472c5b96c2d41dbeb350c
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Thu, 24 Jun 2021 17:09:18 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 24 Jun 2021 17:19:51 +02:00
+
+x86/fpu/xstate: Clear xstate header in copy_xstate_to_uabi_buf() again
+
+The change which made copy_xstate_to_uabi_buf() usable for
+[x]fpregs_get() removed the zeroing of the header which means the
+header, which is copied to user space later, contains except for the
+xfeatures member, random stack content.
+
+Add the memset() back to zero it before usage.
+
+Fixes: eb6f51723f03 ("x86/fpu: Make copy_xstate_to_kernel() usable for [x]fpregs_get()")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/875yy3wb8h.ffs@nanos.tec.linutronix.de
+---
+ arch/x86/kernel/fpu/xstate.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+index 21a10a6..c8def1b 100644
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -982,6 +982,7 @@ void copy_xstate_to_uabi_buf(struct membuf to, struct task_struct *tsk,
+ 	unsigned int zerofrom;
+ 	int i;
+ 
++	memset(&header, 0, sizeof(header));
+ 	header.xfeatures = xsave->header.xfeatures;
+ 
+ 	/* Mask out the feature bits depending on copy mode */
