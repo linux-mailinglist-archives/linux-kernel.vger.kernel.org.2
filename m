@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC423B33D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7807B3B33D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbhFXQXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 12:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
+        id S230008AbhFXQXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 12:23:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230480AbhFXQXs (ORCPT
+        with ESMTP id S231895AbhFXQXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 12:23:48 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D1BC061574;
+        Thu, 24 Jun 2021 12:23:50 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE817C061756;
         Thu, 24 Jun 2021 09:21:29 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id hz1so10474315ejc.1;
-        Thu, 24 Jun 2021 09:21:28 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id gn32so10485580ejc.2;
+        Thu, 24 Jun 2021 09:21:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NuMe55P+TSN90iFcn8h08HfAcManWaQKAl9XfEn/uQE=;
-        b=SZ6LvCUG3OX627cXClI5uJbOeJoJwfiOwRvsofhO740Abe2n2MC49LxNInzn/M4QLo
-         MKI5RqzblyGSNDylXAPCeyaGPDlLEgIIa1AiQOBle7IHbD1avIHlYxjjiUdcowYVpg1e
-         LggzDQngZIXFxr8gOATwDHzPUjhgyR/GjD30WzEv4lZBP1p7UN3fHeixo0LRc5JVlNUL
-         OddmNX0a3hxstQL7SzE0Gegl91q0f3oKiYWnhpx2ez1JyVsIXcgH9PCcprw9xBB4qrAV
-         p7HalKtKQwudgikbOQt2RrJRUkf//4xPR4QH1MaTmm6zD2/ti67PX4azbwG5ecPbGzLM
-         98Dw==
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ZoEaJeij2CjQ38SedyVevTWFQALRHJHQ48oG5DEREuE=;
+        b=NPhcwXUypwt+/5f6w4gVqMcUtxw+jCaeLBptMwwA4U0ON7mImgJ5cGGAVRPxLnW/Y3
+         oU77IrjilSL8Bn9IX3UJYShVsqd8cZqO5CraafPRCajpcfKt0/7zzWqgONLd70JOOyzn
+         1EeY24huaGzC0TmrAwvkHdxmJ65IqA+WJlxk9ofzs+ojHv7OQVNYfNkeHlR8DtDMuoHZ
+         0QEoFu73MYlMMzmx1mOMmWmdLu8WAapar+crHCCyeJtbov3pjGGxPlUrFfSd1a7ur3Yv
+         4NfvOCcCvKDiUNIQDIptxDAYhA0bAW0bkAkmrJeY3yDCr90I33cmETkhn/PYLrj20ekq
+         3eXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=NuMe55P+TSN90iFcn8h08HfAcManWaQKAl9XfEn/uQE=;
-        b=UIp5JBDCvApPZESp4ElEIIS9QC4OcedTqZR+RAfJ1z5XcdodaNC8Sx+RsiQ61pCXys
-         UQeeksDGgfls2Zxl4j4hPznoUvea9j4TGQcymi45x7hpGqiQ1HZTQaAX6ZcOQ8NIzARr
-         nrizuWfbPWHHP+cTO1HqI+iBx+5SnO2S3MLcsdCTz8PkGnS5AcwoP2a5CKJpC9CeFBxn
-         zm7wvy0XLQOXgeywnb8fc2ycYPu43YGvKp5oXWp5OAHDS4tQ4pG0wdpFFjwu3ekpEfnt
-         ZyxuDIi709mJ+t1wdNC0LcaiTgZZodSruCcoe89dIRyUVlgR3fqgReycz3dJ5te3O/aD
-         U89A==
-X-Gm-Message-State: AOAM532PNaK7BdHnMHyJQGkL8gfjo4+dPyR2f2jUJUO7HsLnkEbLLspJ
-        cz7pEE2D6TSaGgJRYmmevBKUZBrbJFvo4A==
-X-Google-Smtp-Source: ABdhPJwOFIzd6fHW1kJLsiuz7iDdx4PyJmlXzjBpKRA7k2yfodo30VC7JyWWAJ25NYKbmPzl8Jq/ww==
-X-Received: by 2002:a17:906:6c97:: with SMTP id s23mr6094625ejr.248.1624551687584;
-        Thu, 24 Jun 2021 09:21:27 -0700 (PDT)
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=ZoEaJeij2CjQ38SedyVevTWFQALRHJHQ48oG5DEREuE=;
+        b=XISCXU8MKk4oEc1Agmz5zTgln+AxcTLPW6wC8huydhLxbRpvWLkQ7d1R6mScIXcIKh
+         5x508CrtSOh1YKzUnp7qJ5g8VLfvCg5d2i+HiMMh+MI0fl4qhQscAbSc5grKkk4CoVvn
+         3AwTl8nFPPin3WuhT9MdA0w9ioAD3Bb9ru1RLKMrNlhTlzwCSFkVuLkbFwtmtdSx5K68
+         bHB6/Kdw4vAtHVCOkGWHA1KSZMBkP/ym66Mc1Cp/g2SXCCd9aObmkIJbraqPzJEAaxXK
+         weXDHe21g5CWj+ma48MXBMqu3jL5CS8cqn6l23tkE2yerhHFO199QBm831JMeub+qgE+
+         mmHw==
+X-Gm-Message-State: AOAM531qPdP2xYQ1XPP/ZfsbfoWviGIahhlgf71GmFIMaxlTr3gv/TfJ
+        MjZAGeoGk0DI5Na0vkG75o8=
+X-Google-Smtp-Source: ABdhPJyWConNpcqnRPV0RUtZ5Ucq1s8Ro2fg26AcHFL62HggGS6J32KWDOy8uuJhhifCbWakT3yynQ==
+X-Received: by 2002:a17:907:da4:: with SMTP id go36mr5999414ejc.21.1624551688346;
+        Thu, 24 Jun 2021 09:21:28 -0700 (PDT)
 Received: from stitch.. ([82.192.166.82])
-        by smtp.gmail.com with ESMTPSA id p18sm1332832edu.8.2021.06.24.09.21.26
+        by smtp.gmail.com with ESMTPSA id p18sm1332832edu.8.2021.06.24.09.21.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 09:21:27 -0700 (PDT)
+        Thu, 24 Jun 2021 09:21:28 -0700 (PDT)
 Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
 From:   Emil Renner Berthing <esmil@mailme.dk>
 To:     Jean Delvare <jdelvare@suse.com>,
@@ -58,10 +58,12 @@ To:     Jean Delvare <jdelvare@suse.com>,
 Cc:     Emil Renner Berthing <kernel@esmil.dk>,
         linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/2] hwmon: Add StarFive JH7100 temperature sensor
-Date:   Thu, 24 Jun 2021 18:21:06 +0200
-Message-Id: <20210624162108.832518-1-esmil@mailme.dk>
+Subject: [PATCH v2 1/2] dt-bindings: hwmon: add starfive,jh7100-temp bindings
+Date:   Thu, 24 Jun 2021 18:21:07 +0200
+Message-Id: <20210624162108.832518-2-esmil@mailme.dk>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210624162108.832518-1-esmil@mailme.dk>
+References: <20210624162108.832518-1-esmil@mailme.dk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -70,48 +72,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Emil Renner Berthing <kernel@esmil.dk>
 
-This adds a driver for the temperature sensor on the JH7100, a RISC-V
-SoC by StarFive Technology Co. Ltd., and most likely also the upcoming
-JH7110 version.
+Add bindings for the temperature sensor on the StarFive JH7100 SoC.
 
-The SoC is used on the BeagleV Starlight board:
-https://github.com/beagleboard/beaglev-starlight
-
-Support for this SoC is not yet upstreamed, but is actively worked on,
-so it should only be a matter of time before that happens.
-
-v2:
-* Fix checkpatch.pl --strict warnings
-  - Add myself to MAINTAINERS
-  - Fix multiline comments
-  - Use proper case and whitespace for #defines
-  - Add comment to sfctemp::lock mutex.
-* Remaining comments by Guenter Roeck
-  - Add Documentation/hwmon/sfctemp.rst
-  - Use devm_add_action() and devm_hwmon_device_register_with_info()
-    instead of a driver .remove function.
-  - Don't do test conversion at probe time.
-  - #include <linux/io.h>
-  - Remove unused #defines
-  - Use int return variable in sfctemp_convert().
-* Add Samin's Signed-off-by to patch 2/2
-
-Emil Renner Berthing (2):
-  dt-bindings: hwmon: add starfive,jh7100-temp bindings
-  hwmon: (sfctemp) Add StarFive JH7100 temperature sensor
-
- .../bindings/hwmon/starfive,jh7100-temp.yaml  |  43 +++
- Documentation/hwmon/index.rst                 |   1 +
- Documentation/hwmon/sfctemp.rst               |  32 ++
- MAINTAINERS                                   |   8 +
- drivers/hwmon/Kconfig                         |  10 +
- drivers/hwmon/Makefile                        |   1 +
- drivers/hwmon/sfctemp.c                       | 288 ++++++++++++++++++
- 7 files changed, 383 insertions(+)
+Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+---
+ .../bindings/hwmon/starfive,jh7100-temp.yaml  | 43 +++++++++++++++++++
+ 1 file changed, 43 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/hwmon/starfive,jh7100-temp.yaml
- create mode 100644 Documentation/hwmon/sfctemp.rst
- create mode 100644 drivers/hwmon/sfctemp.c
 
+diff --git a/Documentation/devicetree/bindings/hwmon/starfive,jh7100-temp.yaml b/Documentation/devicetree/bindings/hwmon/starfive,jh7100-temp.yaml
+new file mode 100644
+index 000000000000..5ca52c08d142
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/starfive,jh7100-temp.yaml
+@@ -0,0 +1,43 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/hwmon/starfive,jh7100-temp.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: StarFive JH7100 Temperature Sensor
++
++maintainers:
++  - Emil Renner Berthing <kernel@esmil.dk>
++
++description: |
++  StarFive Technology Co. JH7100 embedded temperature sensor
++
++properties:
++  compatible:
++    enum:
++      - starfive,jh7100-temp
++
++  reg:
++    maxItems: 1
++
++  '#thermal-sensor-cells':
++    const: 0
++
++  interrupts:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    tmon: tmon@124a0000 {
++        compatible = "starfive,jh7100-temp";
++        reg = <0x124a0000 0x10000>;
++        #thermal-sensor-cells = <0>;
++        interrupts = <122>;
++    };
 -- 
 2.32.0
 
