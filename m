@@ -2,97 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF803B2EA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A15B3B2EA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhFXMN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 08:13:26 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:40696 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhFXMNY (ORCPT
+        id S230252AbhFXMNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 08:13:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230028AbhFXMNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 08:13:24 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 59BB9532;
-        Thu, 24 Jun 2021 14:11:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1624536664;
-        bh=ga5tn9+ve4Rfsq6XPWUZUxag7McM+mFPUJEaueRLLfA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a/66g1Kay6NxbZC1Pmmtm7sURU3SXaYXhxTgjCkmRSZrQk769iNKu4Zrz0Wne3UWV
-         w6xEuLV/RAJAWAgy6cQHP60VGRwIAXF6qMtcAxgFsuj3sLOqTttirKCbDwlaXU2vO7
-         5wbmpbQDyvvWn4wa6nA9/c1M2i9/AL788AUBdFuw=
-Date:   Thu, 24 Jun 2021 15:10:34 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
-Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [RFC v2] MEDIA: Driver for ON Semi AR0521 camera sensor
-Message-ID: <YNR2OkXL+wUaKuy4@pendragon.ideasonboard.com>
-References: <m3wnqm5eqo.fsf@t19.piap.pl>
- <YNHQDNdpxcY8+IV2@pendragon.ideasonboard.com>
- <m3r1gt5hzm.fsf@t19.piap.pl>
- <YNK5FhAXSpI1oHJV@pendragon.ideasonboard.com>
- <m3mtrh5evo.fsf@t19.piap.pl>
- <YNM0cZFV7/LKKFBn@pendragon.ideasonboard.com>
- <42958029-5625-5f4d-a075-2f59a74e0fb5@ideasonboard.com>
- <m3bl7v6er0.fsf@t19.piap.pl>
+        Thu, 24 Jun 2021 08:13:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57336C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 05:11:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QH9oNP4WxmW/vqhGxs1tvug21wBWTRQZH4Pz9lfIN0w=; b=fCAvHGokMgzygcSaFz3S9lmVOO
+        q0dtFwlNDb6upr5nxand1xWi4g7sykXK08St9vEnu5zsOqVVESgQO5OK3sozKz2MdRukHMDbJ6x1W
+        NM1tnDSi/oevECgfaVqHsQYqDQZYkgaY8inkBm+0CD/cYzV4J4LkBtsjWDCLubwdk6CLLz8hDDYkV
+        YBG2YwZTIqZ7I0PG/rEwzPH5JSBoxLjels54hDDj7oJc/7AaazqK5mcIZd0HFCJu0MRCuDrxOQfSv
+        FLppucvxAGePCIABaV6ZRhREoyFVRv5A6evXuwvDFv0V7Q7qNcKU+8SIYbFqvirpngMhJ5kn2q1+p
+        7UyuCEeg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwOC3-00GYDo-SO; Thu, 24 Jun 2021 12:10:58 +0000
+Date:   Thu, 24 Jun 2021 13:10:51 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Baoquan He <bhe@redhat.com>, Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        rientjes@google.com, rppt@linux.ibm.com, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, kexec@lists.infradead.org,
+        iommu@lists.linux-foundation.org, m.szyprowski@samsung.com
+Subject: Re: [PATCH RFC 0/2] dma-pool: allow user to disable atomic pool
+Message-ID: <YNR2S02hWS2hwNiz@infradead.org>
+References: <20210624052010.5676-1-bhe@redhat.com>
+ <YNQ258KHlzlajqo/@infradead.org>
+ <20210624092930.GA802261@MiWiFi-R3L-srv>
+ <8b3d4e02-6e94-ad59-a480-fed8e55c009a@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <m3bl7v6er0.fsf@t19.piap.pl>
+In-Reply-To: <8b3d4e02-6e94-ad59-a480-fed8e55c009a@arm.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Thu, Jun 24, 2021 at 11:47:31AM +0100, Robin Murphy wrote:
+> Hmm, I think the Kconfig reshuffle has actually left a slight wrinkle here.
+> For DMA_DIRECT_REMAP=y we can assume an atomic pool is always needed, since
+> that was the original behaviour anyway. However the implications of
+> AMD_MEM_ENCRYPT=y are different - even if support is enabled, it still
+> should only be relevant if mem_encrypt_active(), so it probably does make
+> sense to have an additional runtime gate on that.
 
-CC'ing Greg to get his expert opinion on the topic.
-
-On Thu, Jun 24, 2021 at 06:57:55AM +0200, Krzysztof Hałasa wrote:
-> Hi Kieran, and others,
-> 
-> Kieran Bingham <kieran.bingham@ideasonboard.com> writes:
-> 
-> >>> The work is not published under GPL.
-> >
-> > This seems like an odd thing to say when your patch explicitly contains:
-> >
-> >> +++ b/drivers/media/i2c/ar0521.c
-> >> @@ -0,0 +1,1060 @@
-> >> +// SPDX-License-Identifier: GPL-2.0
-> 
-> Such tags have meaning only in the kernel context, when signed-off etc.
-> Alone, they aren't legal statements, especially when I explicitly state
-> that it's not signed-off-by me yet. Nevertheless...
-> 
-> Obviously, this code was always meant to be GPLed and it seems really
-> crazy to me that we even have to have such conversations - about
-> a non issue, at least from my POV.
-> 
-> The fact is that 6 years ago I wrote driver for a SDTV frame grabber -
-> and another developer "took" the development from me, and published as
-> his own. This wasn't probably illegal - after all my driver was covered
-> by the GPL from the start. But was it really how we all want things to
-> work in Linux? With such experience, is anybody surprised I want to
-> avoid this history repeating itself?
-> 
-> For other patches I don't care about such formalities, but this driver
-> is a work paid by an external entity and it would be unfortunate to
-> end up the same way as the tw686x driver.
-> 
-> 
-> I stated multiple times I will sign this code off when it's accepted.
-> Is it really a problem? Really?
-> 
-> If so... perhaps there is some other way?
-> 
-> I'd hate to think that the next time I'm to keep my code unpublished.
-
--- 
-Regards,
-
-Laurent Pinchart
+Yeah, a check for that would probably be useful.
