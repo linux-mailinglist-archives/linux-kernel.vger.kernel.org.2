@@ -2,79 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A693B342F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 644373B3436
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbhFXQxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 12:53:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbhFXQxr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 12:53:47 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91193C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 09:51:27 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so3860339pjo.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 09:51:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jz6S10IZvedV4y2N6FCYpRq0S+pqAraI9WxeXGHARr4=;
-        b=lu5u4UhFrYXI8TIgX+1Qp0tyWIEkDBvZq3fg5PgYYJVj0CL7DQMYKgV9okcTlkFEv1
-         A385B+qbzg4ZPUsfimPc6c2oMvIyBQmgjlgQUV3gV/1hkI6eEL7o0OtX7arjZknACx0K
-         wJDgN0gpaXA9tItc+HOqnAGFt3f6RYUZt/zgI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jz6S10IZvedV4y2N6FCYpRq0S+pqAraI9WxeXGHARr4=;
-        b=fg1yoTMtCHzk/olIfGXF7TAxoN2pYE6l0DyKC2m2THcMMOkdrBCMrFWlJ2DKfF0JNk
-         7Kjnxz6vjfKOZuFC2VX5xCHRGisZIq+qsNAiEwl7VjSRXK5/M4nWBkz+YtgOXeSZr3r1
-         q02sefahwWeNlLA7p+NFSQ8wOHkDQb/UasxYyeyPmV4dzeLsnfNQDhU63179TV8MiUhq
-         7xXd7VxLnFMkQb38exPJSO7WwS539ctSMwBMI+enpcGYYRWCDrfcSZI4ydK9TNscy73S
-         5PcVuJJrIysDcr8PDtvBjqob2jROgRWZtKdS5iQi2uSZv27Ew8Pn+LWTYpaqXzSOQmsd
-         SNPw==
-X-Gm-Message-State: AOAM533mvBOGKyf9FqawKtK6h0bEjlcxLryaysXbVuTmDzyIU8sCdo7N
-        ltpdD3APbHNqRsMx8SXaYwrjzi9yIvD/hA==
-X-Google-Smtp-Source: ABdhPJwovNVl5CDsYmTE7Ynu8XPYgBppz9ug+rH39FUWZGxLHfv4Nwl26xTwLvaJOqb9MlOV0c3PqA==
-X-Received: by 2002:a17:90b:3794:: with SMTP id mz20mr15878900pjb.23.1624553487012;
-        Thu, 24 Jun 2021 09:51:27 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:dda9:4015:5d1f:23fe])
-        by smtp.gmail.com with UTF8SMTPSA id q8sm3374524pfc.51.2021.06.24.09.51.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 09:51:26 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 09:51:25 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
-        rjw@rjwysocki.net, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [Patch v2 5/5] arm64: boot: dts: qcom: sdm845: Remove passive
- trip points for thermal zones 0-7
-Message-ID: <YNS4DeHdxWY1XvvT@google.com>
-References: <20210624115813.3613290-1-thara.gopinath@linaro.org>
- <20210624115813.3613290-6-thara.gopinath@linaro.org>
+        id S232236AbhFXQyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 12:54:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229881AbhFXQyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 12:54:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C31D96140A;
+        Thu, 24 Jun 2021 16:51:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624553502;
+        bh=8VJ9gHpfNusEy0hnsToOzf7TUZAq4xvU5hO1AlbgRro=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Pq5SVqGhwbOimMrJsmsORyiGbAYYOTTL6ujg1C56oBKp9zZJhsWzg/zNRpvAVCL1t
+         W4iw9z/Znfp6VjndwmcbTgWTviXGQA7kExYTPH2HiU0L1F8rrW9y0rnTUy5BrHlqM5
+         FZL8G89I7CwqGIIunZk2ANNGuue/yUF6qRZvGEro=
+Date:   Thu, 24 Jun 2021 18:51:39 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Rocco Yue <rocco.yue@mediatek.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org,
+        wsd_upstream@mediatek.com, chao.song@mediatek.com,
+        kuohong.wang@mediatek.com
+Subject: Re: [PATCH 4/4] drivers: net: mediatek: initial implementation of
+ ccmni
+Message-ID: <YNS4GzYHpxMWIH+1@kroah.com>
+References: <YNR5QuYqknaZS9+j@kroah.com>
+ <20210624155501.10024-1-rocco.yue@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210624115813.3613290-6-thara.gopinath@linaro.org>
+In-Reply-To: <20210624155501.10024-1-rocco.yue@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 07:58:13AM -0400, Thara Gopinath wrote:
+On Thu, Jun 24, 2021 at 11:55:02PM +0800, Rocco Yue wrote:
+> On Thu, 2021-06-24 at 14:23 +0200, Greg KH wrote:
+> On Thu, Jun 24, 2021 at 07:53:49PM +0800, Rocco Yue wrote:
+> >> 
+> >> without MTK ap ccci driver (modem driver), ccmni_rx_push() and
+> >> ccmni_hif_hook() are not be used.
+> >> 
+> >> Both of them are exported as symbols because MTK ap ccci driver
+> >> will be compiled to the ccci.ko file.
+> > 
+> > But I do not see any code in this series that use these symbols.  We can
+> 
+> will delete these symbols.
+> 
+> > not have exports that no one uses.  Please add the driver to this patch
+> > series when you resend it.
+> > 
+> 
+> I've just took a look at what the Linux staging tree is. It looks like
+> a good choice for the current ccmni driver.
+> 
+> honstly, If I simply upload the relevant driver code B that calls
+> A (e.g. ccmni_rx_push), there is still a lack of code to call B.
+> This seems to be a continuty problem, unless all drivers codes are
+> uploaded (e.g. power on modem, get hardware status, complete tx/rx flow).
 
-> Subject: arm64: boot: dts: qcom: sdm845: Remove passive trip points for thermal zones 0-7
+Great, send it all!  Why is it different modules, it's only for one
+chunk of hardware, no need to split it up into tiny pieces.  That way
+only causes it to be more code overall.
 
-The patch doesn't remove the passive trip points (anymore?), but the cooling
-maps/devices. Also talking about 'thermal zones 0-7' doesn't really convey
-any useful information (and the enumeration could potentially change in the
-future), better talk about the CPU thermal zones.
+> >> In addition, the code of MTK's modem driver is a bit complicated,
+> >> because this part has more than 30,000 lines of code and contains
+> >> more than 10 modules. We are completeing the upload of this huge
+> >> code step by step. Our original intention was to upload the ccmni
+> >> driver that directly interacts with the kernel first, and then
+> >> complete the code from ccmni to the bottom layer one by one from
+> >> top to bottom. We expect the completion period to be about 1 year.
+> > 
+> > Again, we can not add code to the kernel that is not used, sorry.  That
+> > would not make any sense, would you want to maintain such a thing?
+> > 
+> > And 30k of code seems a bit excesive for a modem driver.   Vendors find
+> > that when they submit code for inclusion in the kernel tree, in the end,
+> > they end up 1/3 the original size, so 10k is reasonable.
+> > 
+> > I can also take any drivers today into the drivers/staging/ tree, and
+> > you can do the cleanups there as well as getting help from others.
+> > 
+> > 1 year seems like a long time to do "cleanup", good luck!
+> > 
+> 
+> Thanks~
+> 
+> Can I resend patch set as follows:
+> (1) supplement the details of pureip for patch 1/4;
+> (2) the document of ccmni.rst still live in the Documentation/...
+> (3) modify ccmni and move it into the drivers/staging/...
 
-> Now that Limits h/w is enabled to monitor thermal events around cpus and
-> throttle the cpu frequencies, remove cpufreq cooling device for the cpus which
-> does software throttling of cpu frequencies.
+for drivers/staging/ the code needs to be "self contained" in that it
+does not require adding anything outside of the directory for it.
+
+If you still require this core networking change, that needs to be
+accepted first by the networking developers and maintainers.
+
+thanks,
+
+greg k-h
