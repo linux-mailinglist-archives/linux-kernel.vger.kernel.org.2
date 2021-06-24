@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D873B2D16
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052123B2D1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbhFXK7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 06:59:43 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42860 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232146AbhFXK7m (ORCPT
+        id S232277AbhFXLBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:01:41 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:49118 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232136AbhFXLBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 06:59:42 -0400
+        Thu, 24 Jun 2021 07:01:40 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id AEBE31FD66;
-        Thu, 24 Jun 2021 10:57:22 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AC15E21960;
+        Thu, 24 Jun 2021 10:59:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624532242; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1624532360; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=aohsVJHp2dukzVgy3sPiqd3EnFTV33oF5VxC8G9YysI=;
-        b=Jcp82zKzZ1UZdg/P7lzRA4469RSfb1U6pS4SWeFFfqvPfSrSj2zXc4G81N4pBhPCq7Vv3u
-        poQDP2+j+VUAbvMGQyoDILDVqegTLoB+vD4SV3BSjtPAnYDLZsjBsZviIosn6xy4oc3iXm
-        TmmbqIFywoqv5xJK8Vvw2ut/I4Wwj+o=
+        bh=JeGbvav2KX0N6TKtaCjgJzmWnZBAz2NrIaizJm6Yj5Y=;
+        b=ugoQ9gedis0Z2347YexieOqhf2e7oAEFGMUFWSHcQVbUi+Ffa9gIcgOTbc0na338qirR4K
+        a/3fiHY6M/oo93OfiDWygFs/nCGJ/34NPFeTllHX96zqnR8ZhNEj00KUbJ381jGlmPM1OC
+        xKOiS1MUXstvGw8qyA9QeWhtdscjIdw=
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 59DC111A97;
-        Thu, 24 Jun 2021 10:57:22 +0000 (UTC)
+        by imap.suse.de (Postfix) with ESMTP id 5597A11A97;
+        Thu, 24 Jun 2021 10:59:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624532242; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1624532360; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=aohsVJHp2dukzVgy3sPiqd3EnFTV33oF5VxC8G9YysI=;
-        b=Jcp82zKzZ1UZdg/P7lzRA4469RSfb1U6pS4SWeFFfqvPfSrSj2zXc4G81N4pBhPCq7Vv3u
-        poQDP2+j+VUAbvMGQyoDILDVqegTLoB+vD4SV3BSjtPAnYDLZsjBsZviIosn6xy4oc3iXm
-        TmmbqIFywoqv5xJK8Vvw2ut/I4Wwj+o=
+        bh=JeGbvav2KX0N6TKtaCjgJzmWnZBAz2NrIaizJm6Yj5Y=;
+        b=ugoQ9gedis0Z2347YexieOqhf2e7oAEFGMUFWSHcQVbUi+Ffa9gIcgOTbc0na338qirR4K
+        a/3fiHY6M/oo93OfiDWygFs/nCGJ/34NPFeTllHX96zqnR8ZhNEj00KUbJ381jGlmPM1OC
+        xKOiS1MUXstvGw8qyA9QeWhtdscjIdw=
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id W93QFBJl1GDFcgAALh3uQQ
-        (envelope-from <jgross@suse.com>); Thu, 24 Jun 2021 10:57:22 +0000
-Subject: Re: [PATCH v2 16/24] x86/xen: Make get_debugreg() noinstr
+        id f+G6E4hl1GCvcwAALh3uQQ
+        (envelope-from <jgross@suse.com>); Thu, 24 Jun 2021 10:59:20 +0000
+Subject: Re: [PATCH v2 17/24] x86/xen: Make set_debugreg() noinstr
 To:     Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
         tglx@linutronix.de
 Cc:     linux-kernel@vger.kernel.org, joro@8bytes.org,
         boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
         rostedt@goodmis.org, dvyukov@google.com, elver@google.com
 References: <20210624094059.886075998@infradead.org>
- <20210624095148.625523645@infradead.org>
+ <20210624095148.687755639@infradead.org>
 From:   Juergen Gross <jgross@suse.com>
-Message-ID: <3da9f8b0-af99-769a-1898-df33a07aca0a@suse.com>
-Date:   Thu, 24 Jun 2021 12:57:21 +0200
+Message-ID: <3d761650-6bf1-e3cd-c690-a297b8344978@suse.com>
+Date:   Thu, 24 Jun 2021 12:59:19 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210624095148.625523645@infradead.org>
+In-Reply-To: <20210624095148.687755639@infradead.org>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="J8bk5f2Q43YW8pMXEsHlIyXo6SpL79Nn5"
+ boundary="cUq6LP8o3ffjkkzq7yNwI6eYFhanz9J4E"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---J8bk5f2Q43YW8pMXEsHlIyXo6SpL79Nn5
-Content-Type: multipart/mixed; boundary="3IVDPmWs4EH0D2XPN194Tra35y1izLgN7";
+--cUq6LP8o3ffjkkzq7yNwI6eYFhanz9J4E
+Content-Type: multipart/mixed; boundary="0ztxYIXREyWGV7mwGDx3E181V1EFN1OpF";
  protected-headers="v1"
 From: Juergen Gross <jgross@suse.com>
 To: Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
@@ -72,26 +72,26 @@ To: Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
 Cc: linux-kernel@vger.kernel.org, joro@8bytes.org,
  boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
  rostedt@goodmis.org, dvyukov@google.com, elver@google.com
-Message-ID: <3da9f8b0-af99-769a-1898-df33a07aca0a@suse.com>
-Subject: Re: [PATCH v2 16/24] x86/xen: Make get_debugreg() noinstr
+Message-ID: <3d761650-6bf1-e3cd-c690-a297b8344978@suse.com>
+Subject: Re: [PATCH v2 17/24] x86/xen: Make set_debugreg() noinstr
 References: <20210624094059.886075998@infradead.org>
- <20210624095148.625523645@infradead.org>
-In-Reply-To: <20210624095148.625523645@infradead.org>
+ <20210624095148.687755639@infradead.org>
+In-Reply-To: <20210624095148.687755639@infradead.org>
 
---3IVDPmWs4EH0D2XPN194Tra35y1izLgN7
+--0ztxYIXREyWGV7mwGDx3E181V1EFN1OpF
 Content-Type: multipart/mixed;
- boundary="------------B2ECC5B34A12B840F5C08541"
+ boundary="------------9ABA92879B65400380CAEEF8"
 Content-Language: en-US
 
 This is a multi-part message in MIME format.
---------------B2ECC5B34A12B840F5C08541
+--------------9ABA92879B65400380CAEEF8
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
 On 24.06.21 11:41, Peter Zijlstra wrote:
-> vmlinux.o: warning: objtool: pv_ops[1]: xen_get_debugreg
-> vmlinux.o: warning: objtool: pv_ops[1]: native_get_debugreg
-> vmlinux.o: warning: objtool: exc_debug()+0x25: call to pv_ops[1]() leav=
+> vmlinux.o: warning: objtool: pv_ops[2]: xen_set_debugreg
+> vmlinux.o: warning: objtool: pv_ops[2]: native_set_debugreg
+> vmlinux.o: warning: objtool: exc_debug()+0x3b: call to pv_ops[2]() leav=
 es .noinstr.text section
 >=20
 > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
@@ -101,7 +101,8 @@ Reviewed-by: Juergen Gross <jgross@suse.com>
 
 Juergen
 
---------------B2ECC5B34A12B840F5C08541
+
+--------------9ABA92879B65400380CAEEF8
 Content-Type: application/pgp-keys;
  name="OpenPGP_0xB0DE9DD628BF132F.asc"
 Content-Transfer-Encoding: quoted-printable
@@ -193,24 +194,24 @@ ZDn8R38=3D
 =3D2wuH
 -----END PGP PUBLIC KEY BLOCK-----
 
---------------B2ECC5B34A12B840F5C08541--
+--------------9ABA92879B65400380CAEEF8--
 
---3IVDPmWs4EH0D2XPN194Tra35y1izLgN7--
+--0ztxYIXREyWGV7mwGDx3E181V1EFN1OpF--
 
---J8bk5f2Q43YW8pMXEsHlIyXo6SpL79Nn5
+--cUq6LP8o3ffjkkzq7yNwI6eYFhanz9J4E
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmDUZREFAwAAAAAACgkQsN6d1ii/Ey8K
-wQf+IwhEp3/KX3DiA5MwwoVaXqpnvmOLzFgoIBEL3/r6ykMan/aVBKoElZ2ePZew/JANsRJDJDWS
-zwzGm3Uxt2UhGwFM/Tna/C7ULz5Lv4e2aZ2Qp99XFsX+BoKoFZ/es1frwTQg0Yl0yE5W/0O5FWow
-0mROEoZKdtD7fKpVsA/aFW+zQRZNvt7n5TvDMRp5s1fU/80UXh8Cn0nTWnb5FawFUf+fw+JY/kbW
-WJGeznqTwXPJrNhWNh50ZoL+jtDgcndqkxlvXGYdu3ECzmIzr/Xw9bx0Dgcqbs3HoAmSoL2Ymr/Q
-DdIaQXTYsFZfBa0HMx6vQe4vMMx2nGLbxiMfj/6vfg==
-=ds7y
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmDUZYcFAwAAAAAACgkQsN6d1ii/Ey8x
+cwgAnPZ0edPB1lsFodNA44a0kQG3l6upcI3WN+I4P4eJiLlux2zkL/Ws+vDmGwwSw6l98jezBeI5
+In/n9h+dIBWRf4LJiWgju9Syd5BEzzdlqZ6ncMzNepLxokicKmafnJzD5z/wTWs0albuxDPMb3Uu
+htEGUXkK6wv9B/Vkh6QCJF5fDYcRDLUGvL4cBEf6DgCuEl6fQo6NCxy2KmkkyMspC7523LRT1xQ7
+0V13WtaD/Carzm9dbDWtT9a6cJgQ0Nlls0VyD83rFGDYwDfB2+EIunJ84SHBB3hlgZb3KR8YpE9g
+hzzVkPGQFvns0VJR3d0M4EwHBxlQq7e25pf3W+uwTQ==
+=bB99
 -----END PGP SIGNATURE-----
 
---J8bk5f2Q43YW8pMXEsHlIyXo6SpL79Nn5--
+--cUq6LP8o3ffjkkzq7yNwI6eYFhanz9J4E--
