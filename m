@@ -2,80 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B04DA3B2745
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 08:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569BA3B2761
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 08:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhFXGQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 02:16:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbhFXGQa (ORCPT
+        id S231239AbhFXGaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 02:30:21 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:45797 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231132AbhFXGaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 02:16:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26ACC061574;
-        Wed, 23 Jun 2021 23:14:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sSFHXo3Gj4dSjFJuKq0lyHYwfOL1EKEDwVgBxUfbffw=; b=t4/xd1iRSTshzW9JK+ypF4gUvU
-        DiOLXv1n179uEuNdX25CkPiklMEzjEZvgwAVqPPFECZ7cw7Xirlw9BxwbTT3+G+VFQRWgj//+tcl5
-        fBZcyFlGX0MOBtXe+2zlZBhDGeCUvKMfW7LUvpq4wYEiz3WHQH0mEuROU84c9reuI9kUN/+UAq7FI
-        IJts0WQWke3KSLvKBUeP9HswUP6IfxrKG9EtQLd70TEJluWLme7q5vD6VkXaNsA486/ZCtQXlcPhc
-        4ACaHId9qdfCOYhJCpJmucL4SGSEs2rvkE4WSwaTNDiwkyDIXQEbv3olSWfx2lh5rhY42ZRizrzIz
-        OtKHbZ2Q==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwIbX-00GFEb-EP; Thu, 24 Jun 2021 06:12:55 +0000
-Date:   Thu, 24 Jun 2021 07:12:47 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lennart Poettering <lennart@poettering.net>,
-        Luca Boccassi <bluca@debian.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        Javier Gonz??lez <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>
-Subject: Re: [PATCH v3 3/6] block: refactor sysfs code
-Message-ID: <YNQiX08k6SGz5PvD@infradead.org>
-References: <20210623105858.6978-1-mcroce@linux.microsoft.com>
- <20210623105858.6978-4-mcroce@linux.microsoft.com>
- <YNMgmK2vqQPL7PWb@infradead.org>
- <CAFnufp3=2Jhr9NqVhE2nCLcr48UvxVww=RpWHp2wpm7DWwGuEA@mail.gmail.com>
+        Thu, 24 Jun 2021 02:30:19 -0400
+X-UUID: e3c7c8f1ed7e4f5fb9d9096946be6d03-20210624
+X-UUID: e3c7c8f1ed7e4f5fb9d9096946be6d03-20210624
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 744569985; Thu, 24 Jun 2021 14:27:56 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 24 Jun 2021 14:27:55 +0800
+Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 24 Jun 2021 14:27:53 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        David Ahern <dsahern@gmail.com>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>, <netdev@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>,
+        <wsd_upstream@mediatek.com>, <chao.song@mediatek.com>,
+        <kuohong.wang@mediatek.com>, Rocco Yue <rocco.yue@mediatek.com>
+Subject: Re: [PATCH 1/4] net: if_arp: add ARPHRD_PUREIP type
+Date:   Thu, 24 Jun 2021 14:13:10 +0800
+Message-ID: <20210624061310.12315-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <YNQYHfE09Dx5kWyg@kroah.com>
+References: <YNQYHfE09Dx5kWyg@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFnufp3=2Jhr9NqVhE2nCLcr48UvxVww=RpWHp2wpm7DWwGuEA@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 09:03:40PM +0200, Matteo Croce wrote:
-> On Wed, Jun 23, 2021 at 1:53 PM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > > -static void disk_add_events(struct gendisk *disk)
-> > > +static void disk_add_sysfs(struct gendisk *disk)
-> > >  {
-> > >       /* FIXME: error handling */
-> > > -     if (sysfs_create_files(&disk_to_dev(disk)->kobj, disk_events_attrs) < 0)
-> > > +     if (sysfs_create_files(&disk_to_dev(disk)->kobj, disk_sysfs_attrs) < 0)
-> > >               pr_warn("%s: failed to create sysfs files for events\n",
-> > >                       disk->disk_name);
-> > > +}
-> >
-> > Actually, what we need here is a way how we can setup the ->groups
-> > field of the device to include all attribute groups instead of having
-> > to call sysfs_create_files at all.
+On Thu, 2021-06-24 at 07:29 +0200, Greg KH wrote:
 > 
-> I don't get this one. You mean in general or in this series?
+> Thanks for the explaination, why is this hardware somehow "special" in
+> this way that this has never been needed before?
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-In general before we make more use of the block device provided attrs.
+Before kernel-4.18, RAWIP was the same as PUREIP, neither of them
+automatically generates an IPv6 link-local address, and the way to
+generate an IPv6 global address is the same.
+
+After kernel-4.18 (include 4.18 version), the behavior of RAWIP had
+changed due to the following patch:
+@@  static int ipv6_generate_eui64(u8 *eui, struct net_device *dev)
++	case ARPHRD_RAWIP:
++		return addrconf_ifid_rawip(eui, dev);
+ 	}
+ 	return -1;
+}
+
+the reason why the kernel doesn't need to generate the link-local
+address automatically is as follows:
+
+In the 3GPP 29.061, here is some description as follows:
+"in order to avoid any conflict between the link-local address of
+MS and that of the GGSN, the Interface-Identifier used by the MS to
+build its link-local address shall be assigned by the GGSN. The GGSN
+ensures the uniqueness of this Interface-Identifier. Then MT shall
+then enforce the use of this Interface-Identifier by the TE"
+
+In other words, in the cellular network, GGSN determines whether to
+reply to the Router Solicitation message of UE by identifying the
+low 64bits of UE interface's ipv6 link-local address.
+
+When using a new kernel and RAWIP, kernel will generate an EUI64
+format ipv6 link-local address, and if the device uses this address
+to send RS, GGSN will not reply RA message.
+
+Therefore, in that background, we came up with PUREIP to make kernel
+doesn't generate a ipv6 link-local address in any address generate
+mode.
+
+Thanks,
+Rocco
+
