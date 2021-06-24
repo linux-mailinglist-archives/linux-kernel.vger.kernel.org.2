@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2EFD3B2D3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C913B2D42
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232356AbhFXLKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:10:12 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49648 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232118AbhFXLKL (ORCPT
+        id S232314AbhFXLLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:11:03 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:43604 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232118AbhFXLLC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:10:11 -0400
+        Thu, 24 Jun 2021 07:11:02 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8B65F21961;
-        Thu, 24 Jun 2021 11:07:51 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C090E1FD35;
+        Thu, 24 Jun 2021 11:08:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624532871; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1624532922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=8ha1PJf820T+vUwtb++qBmEddr0hVoVi8kgdp0LflP0=;
-        b=WUuvE3JC0UW9ya3ljvwyBb4yvelCsHzBeay3KBT9l4mATBAAIlL4ZV/Uk8wtFGiUpDGY8s
-        CTSTP5BV3sJ5ov7g8i5r+VTHGTYYBzHc7m6h7Qcf0+DwuYZOHFs8L3xbeL/tLQ6SC37CKi
-        hs45jo5z8itAMhEMqc2eJfrycN4FzZ0=
+        bh=W/KNUeGKOT5LCdO8lk6Idcre+ExNvWweRmDv24FBjVs=;
+        b=ETUp6PQiBPVqQWqxYHNKuLHrsOoUwdOJi/5i4XElkYnx9+E+TYLOYgS2Gc5nwFZeo1jI8S
+        zNBCkRciELIZq1TUD8ogM8r1H6ySg+qJeubkjArSktERUcYnlrxAi5HCoe5sJ45pR3Bju+
+        M/4ZvVYe0mbjeJogCJ1x7MsJbUwQZ20=
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 4482E11A97;
-        Thu, 24 Jun 2021 11:07:51 +0000 (UTC)
+        by imap.suse.de (Postfix) with ESMTP id 7E48811A97;
+        Thu, 24 Jun 2021 11:08:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624532871; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1624532922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=8ha1PJf820T+vUwtb++qBmEddr0hVoVi8kgdp0LflP0=;
-        b=WUuvE3JC0UW9ya3ljvwyBb4yvelCsHzBeay3KBT9l4mATBAAIlL4ZV/Uk8wtFGiUpDGY8s
-        CTSTP5BV3sJ5ov7g8i5r+VTHGTYYBzHc7m6h7Qcf0+DwuYZOHFs8L3xbeL/tLQ6SC37CKi
-        hs45jo5z8itAMhEMqc2eJfrycN4FzZ0=
+        bh=W/KNUeGKOT5LCdO8lk6Idcre+ExNvWweRmDv24FBjVs=;
+        b=ETUp6PQiBPVqQWqxYHNKuLHrsOoUwdOJi/5i4XElkYnx9+E+TYLOYgS2Gc5nwFZeo1jI8S
+        zNBCkRciELIZq1TUD8ogM8r1H6ySg+qJeubkjArSktERUcYnlrxAi5HCoe5sJ45pR3Bju+
+        M/4ZvVYe0mbjeJogCJ1x7MsJbUwQZ20=
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id U6gOD4dn1GADeAAALh3uQQ
-        (envelope-from <jgross@suse.com>); Thu, 24 Jun 2021 11:07:51 +0000
-Subject: Re: [PATCH v2 18/24] x86/xen: Make save_fl() noinstr
+        id l2m5Hbpn1GB7eAAALh3uQQ
+        (envelope-from <jgross@suse.com>); Thu, 24 Jun 2021 11:08:42 +0000
+Subject: Re: [PATCH v2 19/24] x86/xen: Make hypercall_page noinstr
 To:     Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
         tglx@linutronix.de
 Cc:     linux-kernel@vger.kernel.org, joro@8bytes.org,
         boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
         rostedt@goodmis.org, dvyukov@google.com, elver@google.com
 References: <20210624094059.886075998@infradead.org>
- <20210624095148.749712274@infradead.org>
+ <20210624095148.810950584@infradead.org>
 From:   Juergen Gross <jgross@suse.com>
-Message-ID: <771600d0-d5eb-32ec-e546-5c9dc494550e@suse.com>
-Date:   Thu, 24 Jun 2021 13:07:50 +0200
+Message-ID: <c5f61ac7-d270-f667-1d0f-2128058c16d4@suse.com>
+Date:   Thu, 24 Jun 2021 13:08:42 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210624095148.749712274@infradead.org>
+In-Reply-To: <20210624095148.810950584@infradead.org>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="JmPKorcEuSqKnexEPpxykEiqCX7bJie7B"
+ boundary="lVdUQmGP34ZuEXOSyMSTk54PdHsCdw9x4"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---JmPKorcEuSqKnexEPpxykEiqCX7bJie7B
-Content-Type: multipart/mixed; boundary="AJRhHoFVcbe4Va4YlVlTFx6tAQnB7QXqt";
+--lVdUQmGP34ZuEXOSyMSTk54PdHsCdw9x4
+Content-Type: multipart/mixed; boundary="pQZ7wip8D0GsodwyY815RJtKVhR62b2Wl";
  protected-headers="v1"
 From: Juergen Gross <jgross@suse.com>
 To: Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
@@ -72,28 +72,29 @@ To: Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
 Cc: linux-kernel@vger.kernel.org, joro@8bytes.org,
  boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
  rostedt@goodmis.org, dvyukov@google.com, elver@google.com
-Message-ID: <771600d0-d5eb-32ec-e546-5c9dc494550e@suse.com>
-Subject: Re: [PATCH v2 18/24] x86/xen: Make save_fl() noinstr
+Message-ID: <c5f61ac7-d270-f667-1d0f-2128058c16d4@suse.com>
+Subject: Re: [PATCH v2 19/24] x86/xen: Make hypercall_page noinstr
 References: <20210624094059.886075998@infradead.org>
- <20210624095148.749712274@infradead.org>
-In-Reply-To: <20210624095148.749712274@infradead.org>
+ <20210624095148.810950584@infradead.org>
+In-Reply-To: <20210624095148.810950584@infradead.org>
 
---AJRhHoFVcbe4Va4YlVlTFx6tAQnB7QXqt
+--pQZ7wip8D0GsodwyY815RJtKVhR62b2Wl
 Content-Type: multipart/mixed;
- boundary="------------DFC82CDD0B40518E37C4E260"
+ boundary="------------1437A8F298F127E32429BAE4"
 Content-Language: en-US
 
 This is a multi-part message in MIME format.
---------------DFC82CDD0B40518E37C4E260
+--------------1437A8F298F127E32429BAE4
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
 On 24.06.21 11:41, Peter Zijlstra wrote:
-> vmlinux.o: warning: objtool: pv_ops[30]: native_save_fl
-> vmlinux.o: warning: objtool: pv_ops[30]: __raw_callee_save_xen_save_fl
-> vmlinux.o: warning: objtool: pv_ops[30]: xen_save_fl_direct
-> vmlinux.o: warning: objtool: lockdep_hardirqs_off()+0x73: call to pv_op=
-s[30]() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: xen_set_debugreg()+0x3: call to hypercall_=
+page() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: xen_get_debugreg()+0x3: call to hypercall_=
+page() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: xen_irq_enable()+0x24: call to hypercall_p=
+age() leaves .noinstr.text section
 >=20
 > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
@@ -102,7 +103,7 @@ Reviewed-by: Juergen Gross <jgross@suse.com>
 
 Juergen
 
---------------DFC82CDD0B40518E37C4E260
+--------------1437A8F298F127E32429BAE4
 Content-Type: application/pgp-keys;
  name="OpenPGP_0xB0DE9DD628BF132F.asc"
 Content-Transfer-Encoding: quoted-printable
@@ -194,24 +195,24 @@ ZDn8R38=3D
 =3D2wuH
 -----END PGP PUBLIC KEY BLOCK-----
 
---------------DFC82CDD0B40518E37C4E260--
+--------------1437A8F298F127E32429BAE4--
 
---AJRhHoFVcbe4Va4YlVlTFx6tAQnB7QXqt--
+--pQZ7wip8D0GsodwyY815RJtKVhR62b2Wl--
 
---JmPKorcEuSqKnexEPpxykEiqCX7bJie7B
+--lVdUQmGP34ZuEXOSyMSTk54PdHsCdw9x4
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmDUZ4YFAwAAAAAACgkQsN6d1ii/Ey/g
-hQf/Wiw1gHcdMY1v4LUjvdWOVCLKCV/QGNFRLqbWoHX8JBI1tsNLrmOBl4KPzTQBYwfW0bdBFbuy
-pA5T95o5v2/0Tj8suw9ZDINAxIRTLVQiGVTLKsIpI2vK5NdVdlp1D/vQFtj3VGvdro1sZlwVAvdP
-cKxl9Ajc4l1XiRyIrLHtoH8C3jBv/gGdllOjBJBI0qQhs6q1FhHgq3KyfRRl6qwnynTm0qBqqasM
-ahNIL1Qr3bGYFjk1DLCk7XermA9ESUiimjjsRJTYixoswO9rHXG3PH8A9cWOxhKqKj+gQs8TOR+r
-i9Wu8ooGaNeVMoDufFk6K4p2Ti7I2bkoXBUS6p0V4w==
-=5nEP
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmDUZ7oFAwAAAAAACgkQsN6d1ii/Ey+g
+aQf9HdovIlzypG8QQs0AZacKAcmNfJLKqjkpoSaGN/XsQwcPwf0xd/dK8s7eGALPn64Sd7JsOUbE
+riedNsGk4xcCjEFzT+QlFQuOxHyEVN40jXn04GQAfdlJVfMyRqkhMxx88/JpBi61DjdHkiMaOJWc
+R8c+7jAvhZ0liYmq89+oW+2rPCubiQSiM7wfXTw0msak/AZTpoxQ6Q0EhLEqFqzawGwDiGRKGJfL
+erVEaXn7Fam3EkVlViPS8Ds4jHGZhoXhOIMGmRb/AM98OaMWv4pb5fzOMS+iPhRVCS+6IcEMyKm4
+jlilwdEYtdy69NfVOHyOYN7BFjXxXuXUOS0C11W7tA==
+=lRou
 -----END PGP SIGNATURE-----
 
---JmPKorcEuSqKnexEPpxykEiqCX7bJie7B--
+--lVdUQmGP34ZuEXOSyMSTk54PdHsCdw9x4--
