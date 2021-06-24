@@ -2,70 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42AFE3B38FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 23:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 711683B3901
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 23:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232744AbhFXWAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 18:00:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34936 "EHLO mail.kernel.org"
+        id S232849AbhFXWBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 18:01:16 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:38623 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229589AbhFXWAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 18:00:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00831613B9;
-        Thu, 24 Jun 2021 21:57:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624571877;
-        bh=yVk9OWhsYOUvvXi+eu9rDTIcKsexzhSWaaaSYGYVEWs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=bHbi53wf4EUCWV/VckTBBkgagYzQIdjlzw3hcwmfMZfsbYZSE4G0Othlk82OPvcZi
-         mTEx1LgDjqNpWsw7u/wWPfhnX171bPwXZlPLByNKd2MAj8OYJctlnftGgyeTNf/vth
-         TQZAgILapC5f3WM5jzMoBYOSMct2ATOCDOPDpXj6uDP1GHbaDHra10TGXLV5cp0eeA
-         9o3UJCFoK9B2eXWiaufN4zDbHO/7TJ/GUTRU/E6lBcF8YfsNAxN5rNFHLPb3BhYZIL
-         7RkKaM3A9/4ObdekMM6p0pDuF0bnJ8f3JhCuFhK4V12QZgbyB0Kdjb5i0xSx58rS1e
-         uRlaHLRc8ceiQ==
-Date:   Thu, 24 Jun 2021 16:57:50 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
- clocks gated
-Message-ID: <20210624215750.GA3556174@bjorn-Precision-5520>
+        id S232591AbhFXWBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 18:01:11 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G9vCt3bN8z9sRf;
+        Fri, 25 Jun 2021 07:58:50 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624571930;
+        bh=U0+KUgO34r3NW2Q6CiftK/OXjLeBJhn9Qmn2QRgn5tY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BDC4T2hTSpsBWSI0gypR2f1KiKAUTONw69UKYVzEg+c9eDEZM/FbWAsMG2wLUhjlG
+         y8x3YR2KJ2UG+W1XBy69c8U7XBv5V9gmP0JtXW+3Fn8JiUNt+/kJWG763adYwiYOAl
+         CvO+USUZPqbJkRaXfaVm5qbst5HnO6vhG9YU+6wAw/q5zlHwTlh1Tbo5GUjk1lFH3R
+         jdHYQvvoEYaQIsjq13el7kwAW2GOZY09Ex1jssrRtUnnx2C35scip0l+dafF66y0GD
+         EevqH2VsvyuGLKMstlsiOWKV9pAeZGMVJRkuiTaXYnzQOloc5oBaqVrUR5lwrhxqCQ
+         P/9hng8nokGNw==
+Date:   Fri, 25 Jun 2021 07:58:49 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commits in the kvm tree
+Message-ID: <20210625075849.3cff81da@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608080409.1729276-1-javierm@redhat.com>
+Content-Type: multipart/signed; boundary="Sig_/6TC.a9LQ+qj5JmqmZBQfcEb";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 10:04:09AM +0200, Javier Martinez Canillas wrote:
-> IRQ handlers that are registered for shared interrupts can be called at
-> any time after have been registered using the request_irq() function.
-> 
-> It's up to drivers to ensure that's always safe for these to be called.
-> 
-> Both the "pcie-sys" and "pcie-client" interrupts are shared, but since
-> their handlers are registered very early in the probe function, an error
-> later can lead to these handlers being executed before all the required
-> resources have been properly setup.
-> 
-> For example, the rockchip_pcie_read() function used by these IRQ handlers
-> expects that some PCIe clocks will already be enabled, otherwise trying
-> to access the PCIe registers causes the read to hang and never return.
+--Sig_/6TC.a9LQ+qj5JmqmZBQfcEb
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The read *never* completes?  That might be a bit problematic because
-it implies that we may not be able to recover from PCIe errors.  Most
-controllers will timeout eventually, log an error, and either
-fabricate some data (typically ~0) to complete the CPU's read or cause
-some kind of abort or machine check.
+Hi all,
 
-Just asking in case there's some controller configuration that should
-be tweaked.
+Commits
+
+  df40a7ffa871 ("KVM: debugfs: Reuse binary stats descriptors")
+  01bb3b73038a ("KVM: selftests: Add selftest for KVM statistics data binar=
+y interface")
+  a4b86b00ad24 ("KVM: stats: Add documentation for binary statistics interf=
+ace")
+  da28cb6cd042 ("KVM: stats: Support binary stats retrieval for a VCPU")
+  170a9e1294a7 ("KVM: stats: Support binary stats retrieval for a VM")
+
+are missing a Signed-off-by from their committers.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/6TC.a9LQ+qj5JmqmZBQfcEb
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDVABkACgkQAVBC80lX
+0GyFAwf8Cy9ZJmKu1L6wrKhssUkK494mC41fud1JLXoYEz5OhOnqTnDxYGcbzY6P
+4yZ/S+ircfRnqquvvlUgoX+edG2qCXuZSQvaBN0oChhmkJ5wIMe4Suf+bjCMMfFX
+U8pyfwGhp+t57eNSv8ZoOWK3RJxkGApK/y8/FZeAVq5LA8QDfehHNbTu8v7hGw0c
+pCZOyGgrnDe6sPrrjt0+IV/Exb1YyfZWGYdTpPUXWEESFmP8sjweSSP1oRh4vTlt
+YXYaGJ1XYBXDXo58Sq6XPiq9AzjABVNYLR7gY0vKUOQKQB51SbVJkztOUpWqs/iu
+qrg2DDaGcXbRR46qA0vYZb30c0zOKQ==
+=/v/O
+-----END PGP SIGNATURE-----
+
+--Sig_/6TC.a9LQ+qj5JmqmZBQfcEb--
