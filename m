@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6573B2B73
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24553B2B78
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231936AbhFXJd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:33:56 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:57041 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhFXJdy (ORCPT
+        id S231987AbhFXJeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:34:22 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:52516 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231970AbhFXJeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:33:54 -0400
-Received: from [192.168.1.155] ([77.7.27.132]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1M1aQN-1lzNx301vv-0038oh; Thu, 24 Jun 2021 11:30:02 +0200
-Subject: Re: [PATCH 09/14] d_path: introduce struct prepend_buffer
-To:     Justin He <Justin.He@arm.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <YKRfI29BBnC255Vp@zeniv-ca.linux.org.uk>
- <20210519004901.3829541-1-viro@zeniv.linux.org.uk>
- <20210519004901.3829541-9-viro@zeniv.linux.org.uk>
- <AM6PR08MB4376D92F354CD17445DC4EC1F7089@AM6PR08MB4376.eurprd08.prod.outlook.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <f9908c77-77e2-03fd-25a4-f7ce9802535e@metux.net>
-Date:   Thu, 24 Jun 2021 11:29:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 24 Jun 2021 05:34:20 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15O9Vlns002948;
+        Thu, 24 Jun 2021 09:31:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=yQ5M4SHM0BfFTHs4PPzwWpd1szbr4vVmioMOXnO1cO0=;
+ b=bQaiF/bi8p43MLn5iZDRoOoq6Hrn3KvbBkgiorU7QzKrM08VPzjWdv2DvHzDp8JCSv2G
+ BEoRJwvGlkIyPgeUkzN3U0VQTdiIQZhDc6bHsg0DR24Q58ID2a5JxeYb3ko+H7jOWIZp
+ F4LNIrL7BrdzOt5y1bHd/ah73FhTzOzle4++vvGE6GKDz+e9YCxr4C4iNI94KupqmZhP
+ f1147zRKDtuuOi/t+oovTqHcG+gaMT/5M8UP8c3q1znrD6WPfKaus0tNUJATzxX9ZZwZ
+ qVx29e5shw0FM5VUNuAQB1nJu9T0bgcJhObHlgx3EbfwqtoTFCDh6JWsMJoMlTGGcexP lw== 
+Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39c8tw9hqe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Jun 2021 09:31:47 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15O9Vhvh186376;
+        Thu, 24 Jun 2021 09:31:43 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 3995q0gxqe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Jun 2021 09:31:43 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15O9VhTf186348;
+        Thu, 24 Jun 2021 09:31:43 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 3995q0gxpq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Jun 2021 09:31:43 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15O9VeBW025519;
+        Thu, 24 Jun 2021 09:31:41 GMT
+Received: from kadam (/102.222.70.252)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 24 Jun 2021 09:31:40 +0000
+Date:   Thu, 24 Jun 2021 12:31:33 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Yizhuo <yzhai003@ucr.edu>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] media: atomisp: fix the uninitialized use and rename
+ "retvalue"
+Message-ID: <20210624093133.GD2040@kadam>
+References: <20210624031719.11157-1-yzhai003@ucr.edu>
 MIME-Version: 1.0
-In-Reply-To: <AM6PR08MB4376D92F354CD17445DC4EC1F7089@AM6PR08MB4376.eurprd08.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:sfvpKXDvULCjkaT9y937Ne5z1GzyOh9VPvzaOLJhF711BVKrxXE
- f7pUlG4so5Lu5QVaxlpQ2EL9HlPzxRK+AUMobdzoHIoDqRHY1aZB144FoW/ZwiXoEgl48ze
- AGdnd2i+XzkZyMjmzkqaZNScRJjYVhQ245nlW5NIEt2vw7fLjJq9X4kI4JwNVnJv+1YTwOq
- dC5faiBRfFkNqGZh+sv/A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:veNOQNF1Dic=:Bw67innQLSKyp38PPApyoz
- qkcVF04DbgFNG6/wlk4Q6bSVdWbcXxklL5Rt32Vr1L0tXBqbrTfJAgsnBZkCHfqdYwIinD2xs
- Tn0x1VjHNWOT+9rOglTzxbnuSByKb2XDsa6CXqGPYo5cbiGdC/8aehbtBsftzci2SCZYBip/k
- TOrplAElsbpsxalCqChiK4APit7eK4g+l0Joen26PAMan8wD1N8j0ysMN2vVYdbk2qIYXUke/
- lyNh9KE70mmCBoteyuN5vBMikoAhincbsmp9SEjqiKS5De4DkIY1QH9UVxItKrIDlaI9pfEHD
- VZ5TJdTSlKliAEIdjj2G0dsofuk8GpnoYWg37blWDuMwESvj7/iSFa0bKbCaWiMuxuvEdD7Fr
- FBJJoe/Ulm0jSvmdh1WGloCnW7AbngUjUCVesgkNH780rg5CiIJ/Tz0YqFQ2mHTCPdKIjuywk
- eKqI1GOY3s6TzBTc8J/QXuYAs15vPEGjpuCWjpDXmCcCQk9UNe3Nubc+AIumK6pQTogzKJoam
- ZNIOVYJtMSeljuF3KU57jY=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624031719.11157-1-yzhai003@ucr.edu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: f8qJNJp0lkgxrrmAuCR6Z5m5CitlvNX-
+X-Proofpoint-GUID: f8qJNJp0lkgxrrmAuCR6Z5m5CitlvNX-
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi folks,
+On Thu, Jun 24, 2021 at 03:17:17AM +0000, Yizhuo wrote:
+> Inside function mt9m114_detect(), variable "retvalue" could
+> be uninitialized if mt9m114_read_reg() returns error, however, it
+> is used in the later if statement, which is potentially unsafe.
+> 
+> The local variable "retvalue" is renamed to "model" to avoid
+> confusion.
+> 
+> Signed-off-by: Yizhuo <yzhai003@ucr.edu>
 
-<snip>
+Please add a Fixes tag.
 
->>         We've a lot of places where we have pairs of form (pointer to end
->> of buffer, amount of space left in front of that).  These sit in pairs of
->> variables located next to each other and usually passed by reference.
->> Turn those into instances of new type (struct prepend_buffer) and pass
->> reference to the pair instead of pairs of references to its fields.
->>
->> Declared and initialized by DECLARE_BUFFER(name, buf, buflen).
->>
->> extract_string(prepend_buffer) returns the buffer contents if
->> no overflow has happened, ERR_PTR(ENAMETOOLONG) otherwise.
->> All places where we used to have that boilerplate converted to use
->> of that helper.
+regards,
+dan carpenter
 
-this smells like a generic enough thing to go into lib, doesn't it ?
-
-
---mtx
-
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
