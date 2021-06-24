@@ -2,232 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF143B2441
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 02:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17293B2449
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 02:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbhFXA3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 20:29:33 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:24954 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229726AbhFXA3b (ORCPT
+        id S229881AbhFXAjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 20:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229726AbhFXAja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 20:29:31 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15O0Hgvw024521;
-        Thu, 24 Jun 2021 00:26:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=A+Kg3NKFuCRXUcUKiwQoogv4HKbViDrAO3+Yh1vgito=;
- b=IvstXP7LcfGjikixoPVLnmaoYFOOva/M+v7YCJygQK7trBe0cUbemKAJ35bKrkRwrc8G
- 1PgHMtuzDK53JQqs9gtuSw2DY4bZaEYlss+cwURSFzXwQJnzAhR2jdHBgptGJIkmW2z0
- Z6Vb4IcUJzyViKpSVCKt5AqO8XOLY4V0SD+Eq1syl+iAmu7lfKSk0bx8ubiYnOYIoJnZ
- s0QZoOvAsVU8ae1/ibVpN2O/+1fYII1FpBWiouF7ioMCUKCknFxpfH+NTUhMiBinksSa
- icizmK9aQUjhCzgorcbgOb2slBMKlPJqyYlZtwJkMG3sbPJaqTmSIqzTEiukw1a2vent 4A== 
-Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39byjyj5k0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Jun 2021 00:26:33 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15O0QWo5083123;
-        Thu, 24 Jun 2021 00:26:32 GMT
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2042.outbound.protection.outlook.com [104.47.51.42])
-        by userp3020.oracle.com with ESMTP id 399tbv8kmw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Jun 2021 00:26:32 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B9UHZ28136xRwNaaPvLbOqgFVSeiihQ/13kqqSRKp1qjLRpZRPD999vMGy4S8SXAYsKT277rFtOaJBBs768GIVfToCoaAyy9XavUMI7og/mNPJT6UgPGAwnL+PCAs8oOUzS+41/oOUJ/8Je8oJQpZYg+0krqa54P7bZk4Faw5qTZ9GWXdZRvEV9wyKahuFPo5vPyJLwDBj4HmdCOxEYjIY4h93rvMTFO6ee121CaGCpPpT6hK5t9axFjWswXb3NV15H/wQXfJxOnBfld049axl4pFSgGJ02sIGZPCaRtoKVrtBoP3LEazaFx7qkYxeiv5t3JDxRdTI7DokVp07B6mQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A+Kg3NKFuCRXUcUKiwQoogv4HKbViDrAO3+Yh1vgito=;
- b=eXlqDa7RrYX4Z4XKVVUogL/q799LV5Jvn2MGtWaPG1dFA6w1O6vSmisTxYCfci0PVWEpYjhzqQ5HjYZE0kBOTcJDu4Op7b5XYl5347XctvfRrjmGhvoINCacTCu38bfMOImlVFO29WxMsACl0ZrM0wddeL8TC0sCzCrn3KoXDOtoslRHtYLPxsbjn+/ezfwZQBXI0acFODnjrx2diECG01GoSzIOaXkiL6ogShxQvbsD8OAQN+gKM6NSAW5KisUdAGv5doGmkrctAwIZJQw5sk3Z6cLfoMRWNxTCuDP7VtwDAbhr4XgK+TzdmmhCbBivxlmIFoe7qGjHnyEsW7JcQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 23 Jun 2021 20:39:30 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3F4C061574;
+        Wed, 23 Jun 2021 17:37:11 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id 13-20020a17090a08cdb029016eed209ca4so2402761pjn.1;
+        Wed, 23 Jun 2021 17:37:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A+Kg3NKFuCRXUcUKiwQoogv4HKbViDrAO3+Yh1vgito=;
- b=LZzlcmLt4kK40UMetMgaXtSEnCvKNu25lUosbtyZQV02BuWqyMge+dr+PD6fdCTQyTg56f/8NEFgnuTORNgzlhnRyjRbko5Oy9Wdeegy3PkEwM3hJ+5O18nlwJn8KEt37UxOKI7/daK89UN7Qwle24KF782vumQ0DpZvKuQMBrk=
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=oracle.com;
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by SJ0PR10MB5423.namprd10.prod.outlook.com (2603:10b6:a03:301::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19; Thu, 24 Jun
- 2021 00:26:30 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::5d11:ae6d:24b6:e838]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::5d11:ae6d:24b6:e838%4]) with mapi id 15.20.4242.025; Thu, 24 Jun 2021
- 00:26:30 +0000
-Subject: Re: [External] [PATCH 2/2] hugetlb: address ref count racing in
- prep_compound_gigantic_page
-To:     Muchun Song <songmuchun@bytedance.com>,
-        Naoya Horiguchi <nao.horiguchi@gmail.com>
-Cc:     Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Youquan Song <youquan.song@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jan Kara <jack@suse.cz>, John Hubbard <jhubbard@nvidia.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210622021423.154662-1-mike.kravetz@oracle.com>
- <20210622021423.154662-3-mike.kravetz@oracle.com>
- <CAMZfGtVMn3daKrJwZMaVOGOaJU+B4dS--x_oPmGQMD=c=QNGEg@mail.gmail.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <39674952-44fc-8386-39b7-9e0862aaa991@oracle.com>
-Date:   Wed, 23 Jun 2021 17:26:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <CAMZfGtVMn3daKrJwZMaVOGOaJU+B4dS--x_oPmGQMD=c=QNGEg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Eqh+49vXDZS6SaYXY+bpU/7GeTuaaMqXxbB85C2tCPE=;
+        b=B6NW8IjUsI+6Grs3UDOUQN2s3b2c6hOgjNnz2iH41lh/FONk4yu7NsVzIP4SlaC4+7
+         fy++BpZKP4nHWbat2E483Sioco3fXRsZWwVfQmor0Ur/UlVepiPn8Rpgj6hKIKEO7eFX
+         HNxqk5PrqB9S5vofQQZ2zu9LOF4oYc+DlpaElfb5p4Ix5ccEYYP0V8nH7fAJOA/Yh8Yo
+         enNYc1ERbsrXBn0jjq4orvTlbF7b0YSTx2dm0ljp1ENB0poRidVS7P7KQNvEnOsm86R8
+         iUkO6ZMVlWZyuo72tpnGZh97fLRyPZrsNzkBMgc8kpGV5vnpigMoBzHLmEvNZOzLALdL
+         zuBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Eqh+49vXDZS6SaYXY+bpU/7GeTuaaMqXxbB85C2tCPE=;
+        b=FPMV/bFooe3RkbmArU8hRUYE4MFhoW0C2HRolklrjfX8AQ163gp0rcgcTn8z4Nj/vL
+         LPuTXO42xdVNUyVNXuvDi233aTFmEsLWsy/6UO4EkSvO+rdZDxvQakH7XULQeXIZQC+z
+         q+m0SMqHABV8kgygCsNESy8V6M9BjVwttz6gUMkW/je6CcxbFAsePXsbvxpPM0xFkpfC
+         QWJBPHGZ/logj6nEB59RUyDJWU1ccIm86bTJzaCsH05F83zJ9IMdQhHsgpqNu89oA+2e
+         rTWZPvjMwcKnqsLetgEVxY/0KSyyn/q8JH4YgcFueYxousW1OPKm/lqs8JFi4QBf7ojH
+         iAkA==
+X-Gm-Message-State: AOAM5322HUEHMhy3j33tnuJ2g4rQ6Sg7LxinmLYibuVtRWM4Eh8ZWrcz
+        dadErlEdMnK77TAlhDjUP/29h4KEuyU=
+X-Google-Smtp-Source: ABdhPJw4nS7VsA39W5qub6XK3PVjED0p7Wp7syo2iGsj4oLZwQi3paKmnCJw2F5Xv/CRVugdwxBC7A==
+X-Received: by 2002:a17:90b:14d1:: with SMTP id jz17mr12083410pjb.45.1624495030610;
+        Wed, 23 Jun 2021 17:37:10 -0700 (PDT)
+Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id d189sm860002pfa.28.2021.06.23.17.37.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 17:37:10 -0700 (PDT)
+Subject: Re: [RFC 1/3] ARM: dts: imx28: Add description for L2 switch on XEA
+ board
+To:     Lukasz Majewski <lukma@denx.de>, Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Einon <mark.einon@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org
+References: <20210622144111.19647-1-lukma@denx.de>
+ <20210622144111.19647-2-lukma@denx.de> <YNH3mb9fyBjLf0fj@lunn.ch>
+ <20210622225134.4811b88f@ktm> <YNM0Wz1wb4dnCg5/@lunn.ch>
+ <20210623172631.0b547fcd@ktm>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <76159e5c-6986-3877-c0a1-47b5a17bf0f1@gmail.com>
+Date:   Wed, 23 Jun 2021 17:36:59 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210623172631.0b547fcd@ktm>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [50.38.35.18]
-X-ClientProxiedBy: MW4PR03CA0180.namprd03.prod.outlook.com
- (2603:10b6:303:8d::35) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.112] (50.38.35.18) by MW4PR03CA0180.namprd03.prod.outlook.com (2603:10b6:303:8d::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Thu, 24 Jun 2021 00:26:29 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1fc82e1a-523a-49ce-a2c1-08d936a6b63a
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB5423:
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB5423388242EAD716902D8732E2079@SJ0PR10MB5423.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9IzlF2rXHS/nqgvCvhQDnNFmsAKU5RqLDKExg7IHYiiMfyh/SLwAGGHcFMimiVxlD6gteYCQ3tbMjYQbU82NaIMax2n7am4xR3eekWdPDaxPgavlSZYXQvus+3IJHc7Dv/TWjbGJqKB1ZVHqQP6suSJt3Q2CqXNdKQEHzpo+w5OOJl4z42spWibJ1sUlk3WnJ6vkOsIQFNdL7exOQYzXz6be/LWT6LtSww6yNf4H1JLTOJdyCaqehIa1KDVEe1w1KbP568Q6iGAcvojG+nKdz00DF40qiinrym6ewyDseVdTjAW3WuUxkqK/LpbfPJVMSeaQcmJ9vpP8ZRk835spNKndWeELR/ECI+u4xIT1Sv2FF5DwQ+A/M9ehrAEcZsPNT1IPTf8idKiv4yk2DYnh8Q2vama1i1MJgphg6CV17ZVP85gTb3c+nwj8r83PQxEcNtu5BPXiIJ3e21d7rmxQWLhbTe0YxQw9v9Y+U//w6YOYyFLuYAHpblPGMh2a/W8C6VoGcPWhvKEYuul86Wb5fChoceY9NSuA/Bim/RKV2C6BonyM9Zk72kiFpQ5tHghKeeMmESYMrmOjc1qujFnEudzhipUnnzdeeEOYPJrKGn+TajG0q5vTGbX//hbobW3299jWYPPd6BHqQA1kPY0hDDvUS3oc620eQE+EDogaCORDoTaQSAsyrzHRy5FT+tC5yms1HQqrD060hJC7xVrocw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(136003)(396003)(376002)(366004)(66556008)(66476007)(66946007)(26005)(16526019)(186003)(53546011)(2906002)(8936002)(478600001)(6486002)(38100700002)(7416002)(83380400001)(54906003)(31686004)(8676002)(110136005)(86362001)(38350700002)(956004)(31696002)(2616005)(4326008)(52116002)(5660300002)(36756003)(316002)(16576012)(44832011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bE5VQ1RLUExRaytqVTY0RTJTeCtKbGpTZDVWNVJmVTlaeXFibmd5U3pGUUR4?=
- =?utf-8?B?eVZrZ2xFd1pTMGdrbEozVDZYSXhKeXNLRzJHN0hWYktRTDZuK0tnNjRoTDdv?=
- =?utf-8?B?L2ZjUmZ1SGNoei84c2F6a1I4TWxqYU1DLy9GOXRTazMrZnE3dmovVzVqbFFX?=
- =?utf-8?B?ZHNJa3J5Z0pMUlpwQmdFYUFERk1QUXNXZWROeTFWMjNBN0RnNTBhUUIzT0tn?=
- =?utf-8?B?UTNHeW5UMndEYjBxUFdGVWpwTCtnQ09xTHdVVmtlKzE1c3RVSFY2ckJtb1Mv?=
- =?utf-8?B?MXpOOFZmaXEzOHZucXZUZTdyRTlGb0EwMC9wQ0ZDU1VMWmdUekk0MnVYWTFO?=
- =?utf-8?B?aDh6TEJvd21rUlVDb3pqdnlEeDE1UXlTQ2hNdmNtZW5qWXBVeTliRnFaWHZI?=
- =?utf-8?B?RGxiTkcwcmJKWTZVcEZyZ0Q5aE5NT0RoOHlpZElRbmNFTElyRkxHRXVJWVpS?=
- =?utf-8?B?c1VDdlROZGFRV0FqNGZkOGhaOVdzSk4zdktkdGtYUTU5cFlrZmp6L3hDRkpy?=
- =?utf-8?B?NzdKZUgzRjZjT2ozLzYyd3NBNmkrbUQvdjBEMmd0a0hnbFJmWSttRUNGdXM3?=
- =?utf-8?B?RUdkQlcyTUFFTERkeWVYamJjYXZ2WXFWaXNmY3QxbVRsOVlITDAreWFMUVh0?=
- =?utf-8?B?SGNqSGxuNS8vOG9FOFZGdEc1aXQ0Z3ozWFhrVTRWbGVQR3gwU0JGUkQ0ZTI5?=
- =?utf-8?B?c3VTbFUxVU9PaDZZd08rSVdnbVVGT1VobzE2M2FhMkVCUUtNZjJDcldtcDh1?=
- =?utf-8?B?bnRwN2NrSVNpRnpQZmJWSHI0SW5adHRoVXNUNU9RaFZOdjB3NUlKcTRsSzBw?=
- =?utf-8?B?OWoxRFJIbUNCVkk3bE1HUlhhcVp6QXgyeUxRV0NhSGRZaFFYVjlVMU0wZmto?=
- =?utf-8?B?M2t2UEZZckdMYzg2VDJ3OUpjbFZyNGluVGN1MHF6VXp0VUxVUkh6VFl5NjFW?=
- =?utf-8?B?K0FmWHo5Z1Q2RnRpb2YwdzRETm5kVTFNOUFSbXRkd0lrb2VMSTNTQTFQM3J1?=
- =?utf-8?B?cERmOE5lTXY0Y1lVRXZMQWRzencxdzBZdXhjclRHaGxlOEpSZDhaSEJiRUtl?=
- =?utf-8?B?dlJCY2VuUmN2NlUvdVMrS0wwdStIcnMxSURkc1hRemcrM2laVWVjcnVtWVVW?=
- =?utf-8?B?NkZuVDRqKy8yU0xoZkQ0Q0RrY2orb3BJb2RUbklJSjI0dGxxOWN6SzI1Q2dm?=
- =?utf-8?B?M0hmV3lSczYrdE5xaTRVWDNDYmhtOVIwMFd0Unl6cWZmRHIxNDJOM2lZTHhT?=
- =?utf-8?B?V3pTV3hlYzBVcFVCN01qUHNBanRMc0pXVFVYajJWTTNpREdYV2diUkV2L2RC?=
- =?utf-8?B?c0JRUFQvVVNESnl6SlhqbHBHQzBWK3lkMzN5UWFoNXRZOWZSMUhyREJ2SzhM?=
- =?utf-8?B?dEtVUjZPdVhzN0tad3VHODdVNWdwS2wwYk1TM3F5Vng1QmsvQWZhaHppempF?=
- =?utf-8?B?VmdraXFEdTZvTDNLUFBpWUJicXRwUy9lMTRSYk5nNzdqZHJCNFV0WE5yS2dI?=
- =?utf-8?B?MzIzcHV6d0ptVUV6TDdsTEJWWFpqbFdBZkg2U0Y4WVhsNmFMS2J2eThmWC9V?=
- =?utf-8?B?YWRXYVNvcEdhSkFWczJzUlc2LzlJOTFweWF2N3YrWEZaUEEwYzEyTHpuQjQv?=
- =?utf-8?B?bVg1eDFsMHJlSndTTHplZitld2QxT3p5cEljeEZtRjk0TUZsUEtRc0NQNmtk?=
- =?utf-8?B?ZnpvSTNraVF1cUNzQ0JFeHhpc2UvWUFrYlBwYzJaSkdFeFdqV2I5R25JTytV?=
- =?utf-8?Q?jGA0WG3F7l2iU/LnJ+gnsztRafVYu91Ro5GnMW6?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1fc82e1a-523a-49ce-a2c1-08d936a6b63a
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2021 00:26:30.2031
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wqsWXCp24R0ITiFDqyaq7XHLfWhwDvNooZQB9MG8my6LcwxHpvlhggLMgT3Lbi/FK8KEbs1v1oA/L9LG7Mzonw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5423
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10024 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
- spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106240000
-X-Proofpoint-GUID: n1RML2SEZE4iF9MNOoVTKmDsF9cEJKjS
-X-Proofpoint-ORIG-GUID: n1RML2SEZE4iF9MNOoVTKmDsF9cEJKjS
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc: Naoya
 
-On 6/23/21 1:00 AM, Muchun Song wrote:
-> On Tue, Jun 22, 2021 at 10:15 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+
+On 6/23/2021 8:26 AM, Lukasz Majewski wrote:
+> Hi Andrew,
+> 
+>> On Tue, Jun 22, 2021 at 10:51:34PM +0200, Lukasz Majewski wrote:
+>>> Hi Andrew,
+>>>
+>>>> On Tue, Jun 22, 2021 at 04:41:09PM +0200, Lukasz Majewski wrote:
+>>>>> The 'eth_switch' node is now extendfed to enable support for L2
+>>>>> switch.
+>>>>>
+>>>>> Moreover, the mac[01] nodes are defined as well and linked to
+>>>>> the former with 'phy-handle' property.
+>>>>
+>>>> A phy-handle points to a phy, not a MAC! Don't abuse a well known
+>>>> DT property like this.
+>>>
+>>> Ach.... You are right. I will change it.
+>>>
+>>> Probably 'ethernet' property or 'link' will fit better?
 >>
->> In [1], Jann Horn points out a possible race between
->> prep_compound_gigantic_page and __page_cache_add_speculative.  The
->> root cause of the possible race is prep_compound_gigantic_page
->> uncondittionally setting the ref count of pages to zero.  It does this
->> because prep_compound_gigantic_page is handed a 'group' of pages from an
->> allocator and needs to convert that group of pages to a compound page.
->> The ref count of each page in this 'group' is one as set by the
->> allocator.  However, the ref count of compound page tail pages must be
->> zero.
+>> You should first work on the overall architecture. I suspect you will
+>> end up with something more like the DSA binding, and not have the FEC
+>> nodes at all. Maybe the MDIO busses will appear under the switch?
 >>
->> The potential race comes about when ref counted pages are returned from
->> the allocator.  When this happens, other mm code could also take a
->> reference on the page.  __page_cache_add_speculative is one such
->> example.  Therefore, prep_compound_gigantic_page can not just set the
->> ref count of pages to zero as it does today.  Doing so would lose the
->> reference taken by any other code.  This would lead to BUGs in code
->> checking ref counts and could possibly even lead to memory corruption.
+>> Please don't put minimal changes to the FEC driver has your first
+>> goal. We want an architecture which is similar to other switchdev
+>> drivers. Maybe look at drivers/net/ethernet/ti/cpsw_new.c.
 > 
-> Hi Mike,
+> I'm a bit confused - as I thought that with switchdev API I could just
+> extend the current FEC driver to add bridge offload.
+> This patch series shows that it is doable with little changes
+> introduced.
+
+Regardless of how you end up implementing the switching part in the 
+driver, one thing that you can use is the same DT binding as what DSA 
+uses as far as representing ports of the Ethernet controller. That means 
+that ports should ideally be embedded into an 'ethernet-ports' container 
+node, and you describe each port individually as sub-nodes and provide, 
+when appropriate 'phy-handle' and 'phy-mode' properties to describe how 
+the Ethernet PHYs are connected.
+
 > 
-> Well. It takes me some time to get the race. It also makes me think more
-> about this. See the below code snippet in gather_surplus_pages().
+> However, now it looks like I would need to replace FEC driver and
+> rewrite it in a way similar to cpsw_new.c, so the switchdev could be
+> used for both cases - with and without L2 switch offload.
 > 
->         zeroed = put_page_testzero(page);
->        VM_BUG_ON_PAGE(!zeroed, page);
->         enqueue_huge_page(h, page);
+> This would be probably conceptually correct, but i.MX FEC driver has
+> several issues to tackle:
 > 
-> The VM_BUG_ON_PAGE() can be triggered because of the similar
-> race, right? IIUC, we also should fix this.
+> - On some SoCs (vf610, imx287, etc.) the ENET-MAC ports don't have the
+>    same capabilities (eth1 is a bit special)
+> 
+> - Without switch we need to use DMA0 and DMA1 in the "bypass" switch
+>    mode (default). When switch is enabled we only use DMA0. The former
+>    case is best fitted with FEC driver instantiation. The latter with
+>    DSA or switchdev.
+> 
+>> The cpsw
+>> driver has an interesting past, it did things the wrong way for a long
+>> time, but the new switchdev driver has an architecture similar to what
+>> the FEC driver could be like.
+>>
+>> 	Andrew
+> 
+> Maybe somebody from NXP can provide input to this discussion - for
+> example to sched some light on FEC driver (near) future.
 
-Thanks for taking a look at this Muchun.
-
-I believe you are correct.  Page allocators (even buddy) will hand back
-a ref counted head page.  Any other code 'could' take a reference on the
-head page before the pages are made into a hugetlb page.  Once the pages
-becomes a hugetlb page (PageHuge() true), then only hugetlb specific
-code should be modifying the ref count.  So, it seems the 'race window'
-is from the time the pages are returned from a low level allocator until
-the time the pages become a hugetlb page.  Does that sound correct?
-
-If we want to check for and handle such a race, we would need to do so
-in prep_new_huge_page.  After setting the descructor we would need to
-check for an increased ref count (> 1).  Not sure if we would need a
-memory barrier or some other type synchronization for this?  This of
-course means that prep_new_huge_page could return an error, and we would
-need to deal with that in all callers.
-
-I went back and looked at those lines in gather_surplus_pages
-
-		zeroed = put_page_testzero(page);
-		VM_BUG_ON_PAGE(!zeroed, page);
-		enqueue_huge_page(h, page);
-
-They were first added as part of alloc_buddy_huge_page with commit
-2668db9111bb - hugetlb: correct page count for surplus huge pages.
-It appears the reason for the VM_BUG_ON is because prior hugetlb code
-forgot to account for the ref count provided by the buddy allocator.
-The VM_BUG_ON may have been added mostly as a sanity check for hugetlb
-ref count management.
-
-I wonder if we have ever hit that VM_BUG_ON in the 13 years it has been
-in the code?  I know you recently spotted the potential race with memory
-error handling and Naoya fixed up the memory error code.
-
-I'm OK with modifying prep_new_huge_page, but it is going to be a bit
-messy (like this patch).  I wonder if there are other less intrusive
-ways to address this potential issue?
+Seems like some folks at NXP are focusing on the STMMAC controller these 
+days (dwmac from Synopsys), so maybe they have given up on having their 
+own Ethernet MAC for lower end products.
 -- 
-Mike Kravetz
+Florian
