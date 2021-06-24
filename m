@@ -2,109 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A733B3940
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 00:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC3F3B3942
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 00:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232879AbhFXWgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 18:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41672 "EHLO
+        id S232896AbhFXWge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 18:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhFXWgN (ORCPT
+        with ESMTP id S232850AbhFXWgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 18:36:13 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0111C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 15:33:53 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id m15-20020a17090a5a4fb029016f385ffad0so4406675pji.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 15:33:53 -0700 (PDT)
+        Thu, 24 Jun 2021 18:36:31 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 495A1C061574;
+        Thu, 24 Jun 2021 15:34:10 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id k5so4354898pjj.1;
+        Thu, 24 Jun 2021 15:34:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PHR4j2h2rOVtlrAiNcYi9OQO+yd/4fA9sq0SL3O5RKQ=;
-        b=iu8gCBRuL6cV7l7ZrtAdMuWYVJ92vky7nyiGSX48wVr5Ec5e+8hcrFzCzXJQWfnh1P
-         QZlfYzkXDmAU6fmWcMEpY6Bt6T+fBl+Vd11LAdDI0btDxgSfLCRndKuWWdMY4ayTyoBt
-         xbjSMLPC9I3csBXIoDN9Utuqxb6mcd9lFhzL54XtDH/g+tTgag2xzYcIof82gTur1RRX
-         37W21PH6vpi3G1L5rZffK5HCAksBK14sZd2QUrJxJpYAqDYYdrDdBWZuEtpWbWovUhAu
-         mkFXN59LHVWORovr80eYj9120eo1L04z1dDawqg/v1fxJDcaFUogpe0SBROhHPtJz2iX
-         O26g==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0vaqx8Tu4xi2tq8ingioolTC+HDDOxaWjKj+delaC9w=;
+        b=cA253rD/7SqHLs/OV2ESl8swvlvOSpVFpwvRUsBEzy7uH9Td8vuY7qvZkRqz3icwTv
+         z5j7WrU/ngrfgs5TVqf0bdojUXLiUtf2QGHTUbDsTXKPKp/ZRRJ15C+dwkzMt2sFUwZa
+         H8esgFggpDD9y/tfsfCaJUoimkNkv2Mty9wYF2JkJwX/fn8Ko6juI30kBuFBjDTkZtum
+         F4g0QK9h1LOoQUbswLdnnutc1/VU+IyXNUeQXSvqeD+X/cz3ywjc8KGOGep+ReSlT1Xn
+         LZuXOA0pAMRJkSG4eOun2dFSgXgRcmW6edGz53dvj5vuwe7HNvvHrGryywG7ghMPsqQn
+         DadQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PHR4j2h2rOVtlrAiNcYi9OQO+yd/4fA9sq0SL3O5RKQ=;
-        b=I3zGbA1t65h0rGvTdebwv7oVHD2GtKIUc+dnbaR7SCr9M0rySyMyJ1lv5XagsUTaFp
-         zcWOAblsYLldnrN9I82/Sp5s898BliSNG0r7a7vx66QLIMB2gDRT69+5Zevq7Ex7fZ8h
-         3uOWvD07pXzHeTS/hllO+JDiIrdI6t/w2d2Furfw28uIhLQszoLhRnK3I0M+DKYrD3+i
-         5iSAbnP9SelVra76COaNWzKOmBKDEbze6I8xyyA5SoU5O57Dcs93Ngmpm77DbW6urh2q
-         8qKlaUTs4xBNvM+Ii5oG1KJnRAPrfxHOs30F6zv3nAFYHd4ewoq4D/vqIhPumarFSfR8
-         Ioog==
-X-Gm-Message-State: AOAM533zEMzP6bUdFDkxY/YjlRilISVBI6iK9xbNuSjUzA8BGRprd6Ak
-        7A2TUMLkmIbPwKMaM1Ry8iu8nkkFwleNfA==
-X-Google-Smtp-Source: ABdhPJzbPpNFsgn7eKZFndlwq1QREGtEsWkKYJrDYzmLY4T/ngRcz014t6Au6rVpVGJ/wrI9Ztcj0g==
-X-Received: by 2002:a17:90b:1191:: with SMTP id gk17mr7609490pjb.95.1624574033291;
-        Thu, 24 Jun 2021 15:33:53 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id h22sm3397732pju.22.2021.06.24.15.33.52
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0vaqx8Tu4xi2tq8ingioolTC+HDDOxaWjKj+delaC9w=;
+        b=mz6SThRbi425YEVc9GIpo9eWkFedMtO6DEjJIL4I3bMDj3EixY46xl9bD6eyq1GT0P
+         W8LJkZxDdun4pBmEu8JOD76o2j39yN2d7JiQuaTVhnGmeETkA+CikXZrdmWMpfVMKaRk
+         aUy8wPqrCu4bLwKWR/I3Db4QaGKqectL8CO2gZwPeaK1jc7sgzX18DNOi7AXEh2fPLE1
+         TccR5xVk1BtTiRnlHhvKnSAvKRvxfeZwQk56JIh5/oM+ThtDjS4kt84n9+5hWwwjHhpf
+         Uev8/0YDZ3CC8/tt8kGL8o6yfEGPPj9QGkP8Z3j2PM2tM3O5xDeDwDcExRv4N6ECpDG8
+         m6GQ==
+X-Gm-Message-State: AOAM533GQdHpenjtQrrDLcHLD1EG5FKT+V2lYU22a8AZKiMtuWB+GWZu
+        fR2fLuBlR4BVfyJt2h74r6Q=
+X-Google-Smtp-Source: ABdhPJwWF4PslP9ZRoXix9vW6h+RX0DNFB24ihXYBvkZODshI4FoJjqCNRwzsfvtKv6Qn6mmPNV2Ng==
+X-Received: by 2002:a17:903:304e:b029:11d:41c:fa73 with SMTP id u14-20020a170903304eb029011d041cfa73mr6170726pla.82.1624574049854;
+        Thu, 24 Jun 2021 15:34:09 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id t1sm3622200pfe.61.2021.06.24.15.34.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 15:33:52 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 22:33:49 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Thu, 24 Jun 2021 15:34:09 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     bcm-kernel-feedback-list@broadcom.com,
+        Matthew Hagan <mnhagan88@gmail.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivek Unune <npcomplete13@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] KVM: x86: WARN and reject loading KVM if NX is
- supported but not enabled
-Message-ID: <YNUITW5fsaQe4JSo@google.com>
-References: <20210615164535.2146172-1-seanjc@google.com>
- <20210615164535.2146172-4-seanjc@google.com>
+Subject: Re: [PATCH 3/4] ARM: dts: NSP: add MDIO bus controller node
+Date:   Thu, 24 Jun 2021 15:34:07 -0700
+Message-Id: <20210624223407.1315430-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210613094639.3242151-3-mnhagan88@gmail.com>
+References: <20210613094639.3242151-1-mnhagan88@gmail.com> <20210613094639.3242151-3-mnhagan88@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615164535.2146172-4-seanjc@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021, Sean Christopherson wrote:
-> WARN if NX is reported as supported but not enabled in EFER.  All flavors
-> of the kernel, including non-PAE 32-bit kernels, set EFER.NX=1 if NX is
-> supported, even if NX usage is disable via kernel command line.
-
-Ugh, I misread .Ldefault_entry in head_32.S, it skips over the entire EFER code
-if PAE=0.  Apparently I didn't test this with non-PAE paging and EPT?
-
-Paolo, I'll send a revert since it's in kvm/next, but even better would be if
-you can drop the patch :-)  Lucky for me you didn't pick up patch 4/4 that
-depends on this...
-
-I'll revisit this mess in a few weeks.
-
-> on NX being enabled if it's supported, e.g. KVM will generate illegal NPT
-> entries if nx_huge_pages is enabled and NX is supported but not enabled.
+On Sun, 13 Jun 2021 10:46:36 +0100, Matthew Hagan <mnhagan88@gmail.com> wrote:
+> This patch adds the node for the MDIO bus controller, present on the NSP
+> SoC.
 > 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
 > ---
->  arch/x86/kvm/x86.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index acc28473dec7..1f6595df45de 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10981,6 +10981,9 @@ int kvm_arch_hardware_setup(void *opaque)
->  	int r;
->  
->  	rdmsrl_safe(MSR_EFER, &host_efer);
-> +	if (WARN_ON_ONCE(boot_cpu_has(X86_FEATURE_NX) &&
-> +			 !(host_efer & EFER_NX)))
-> +		return -EIO;
->  
->  	if (boot_cpu_has(X86_FEATURE_XSAVES))
->  		rdmsrl(MSR_IA32_XSS, host_xss);
-> -- 
-> 2.32.0.272.g935e593368-goog
-> 
+
+Applied to https://github.com/Broadcom/stblinux/commits/devicetree/next, thanks!
+--
+Florian
