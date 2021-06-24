@@ -2,85 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EEF3B34D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E8F3B34D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232446AbhFXRfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 13:35:01 -0400
-Received: from mail-pl1-f170.google.com ([209.85.214.170]:37549 "EHLO
-        mail-pl1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhFXRe6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 13:34:58 -0400
-Received: by mail-pl1-f170.google.com with SMTP id y21so3324426plb.4;
-        Thu, 24 Jun 2021 10:32:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7mkCkEwXQBHYc4yoTuGzapJQixnK7les2iDpwlzJsuo=;
-        b=NdDxU8/6SN3l+4qljsFjZ4gHMKksDEQPmLgiiBqm9NcXx8vTGNvhxC+nKf3LpiYlNW
-         gL151sqWWu6PfHDIgAzpxJK8iOD5gLdpBRqWEvhsmMo3+17o7z6GpQ/rYH+2uDBBDg9g
-         sk0+koYvwL9MW9w2i4NOWeFtlNcpvqNkwxm+4nwGS6WmAbLxIxtDsbK4u3/O0UoKIIB8
-         ihis5nauAkFIOfCcmLpLEg3XlgWwi7Ryuglo/S9U5IdVxuJxrAbpbHstO3E5SScRaOiZ
-         UYdZE9m6CgrR0qUt5YF25xdly708MDa3gpN3wvCxmW6FaYE25GD4nJEWVlDpqRqKl4o6
-         7CJA==
-X-Gm-Message-State: AOAM532m21JgHrX/dDx4Et0cv6p0K78VUdeKKD9fO7eMPrN4qtz1KDJO
-        EDleOfHTDyGESxQAP0IdgyJ+c1lHHL5IeQ==
-X-Google-Smtp-Source: ABdhPJyH4XqAg6hLJhMqZ3dMwRiI23X1p+PVWJycWy/irAG5i5R8Hsp0UPJpiZE9nWKXuPtateldQA==
-X-Received: by 2002:a17:902:e545:b029:111:6990:4103 with SMTP id n5-20020a170902e545b029011169904103mr5192664plf.63.1624555957778;
-        Thu, 24 Jun 2021 10:32:37 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id 18sm8741183pje.22.2021.06.24.10.32.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 10:32:37 -0700 (PDT)
-Subject: Re: [PATCH v4 01/10] scsi: ufs: Rename flags pm_op_in_progress and
- is_sys_suspended
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-2-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <71e7d714-8cb9-1f57-9035-e43c147b5c61@acm.org>
-Date:   Thu, 24 Jun 2021 10:32:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232464AbhFXRfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 13:35:38 -0400
+Received: from mga04.intel.com ([192.55.52.120]:50610 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232300AbhFXRfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 13:35:36 -0400
+IronPort-SDR: fRtc21APspthfnf+ujFHn+Z7r8s/hPFczoRqrRYMbVKCqitlo5zmbwXv3weoMNyXC6BE/eK0Ri
+ FyBJWdBdhulw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="205697915"
+X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
+   d="scan'208";a="205697915"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 10:33:17 -0700
+IronPort-SDR: T6QP3XGN0GQuKz7CwDHdgLZdYc95SClxGqWxQZA7qhlHbbtFltF92CQTLciwnWNeGWyRBYphVO
+ gmQpbDbrMwuA==
+X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
+   d="scan'208";a="455151445"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 10:33:17 -0700
+Date:   Thu, 24 Jun 2021 10:33:16 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Kamal Heib <kheib@redhat.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V3] RDMA/siw: Convert siw_tx_hdt() to kmap_local_page()
+Message-ID: <20210624173316.GA2799309@iweiny-DESK2.sc.intel.com>
+References: <20210623221543.2799198-1-ira.weiny@intel.com>
+ <20210622203432.2715659-1-ira.weiny@intel.com>
+ <OF739F2480.B35209F8-ON002586FE.00569A1A-002586FE.00569A24@ch.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <1624433711-9339-2-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OF739F2480.B35209F8-ON002586FE.00569A1A-002586FE.00569A24@ch.ibm.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 12:35 AM, Can Guo wrote:
-> Rename pm_op_in_progress and is_sys_suspended to wlu_pm_op_in_progress and
-> is_wlu_sys_suspended accordingly.
+On Thu, Jun 24, 2021 at 03:45:55PM +0000, Bernard Metzler wrote:
+> 
+> >@@ -593,7 +601,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
+> >struct socket *s)
+> > 	} else {
+> > 		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
+> > 				    hdr_len + data_len + trl_len);
+> >-		siw_unmap_pages(page_array, kmap_mask);
+> >+		siw_unmap_pages(iov, kmap_mask, seg+1);
+> 
+> seg+1 is one to many, since the last segment references the iWarp
+> trailer (CRC). There are 2 reason for this multi-segment processing
+> in the transmit path. (1) efficiency and (2) MTU based packet framing.
+> The iov contains the complete iWarp frame with header, (potentially
+> multiple) data fragments, and the CRC. It gets pushed to TCP in one
+> go, praying for iWarp framing stays intact (which most time works).
+> So the code can collect data form multiple SGE's of a WRITE or
+> SEND and tries putting those into one frame, if MTU allows, and
+> adds header and trailer. 
+>
+> The last segment (seg + 1) references the CRC, which is never kmap'ed.
 
-Can the pm_op_in_progress variable be removed if the UFS driver checks whether
-q->rpm_status == RPM_SUSPENDING || q->rpm_status == RPM_RESUMING instead of
-using pm_op_in_progress? The fewer state variables we maintain the lower the
-chance that these are inconsistent or incorrect. See also block/blk-pm.c for
-the code that sets q->rpm_status.
+siw_unmap_pages() take a length and seg is the index...
 
-Thanks,
+But ok so a further optimization...
 
-Bart.
+Fair enough.
+
+> 
+> I'll try the code next days, but it looks good otherwise!
+ 
+I believe this will work though.
+
+Ira
+
+> Thanks very much!
+> > 	}
+> > 	if (rv < (int)hdr_len) {
+> > 		/* Not even complete hdr pushed or negative rv */
+> >-- 
+> >2.28.0.rc0.12.gb6a658bd00c9
+> >
+> >
