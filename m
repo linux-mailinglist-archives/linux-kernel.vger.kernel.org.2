@@ -2,189 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 794493B351A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3193B351F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 20:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232457AbhFXSBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 14:01:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229721AbhFXSBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 14:01:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB35A613C5;
-        Thu, 24 Jun 2021 17:59:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624557556;
-        bh=xpXE1TP1jsJRvYTsfkb6duwlS1QeIAIixaUeKvmTCvE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=QrK51EWNK8noEsl5rgWQ/xOdpgMGyZ2cd8nlM5hRwz6wqQ8/ZG+9a1ceATTlV00i5
-         15MYIG3wcCqnFhFIYT+CQ2x7A/pbuf9vL89UYZevYB31wckieoyHxVOWpksYWoBShO
-         9132EieRo29zX9Zl9wMs4DzmUv8T+a2shj/uQ8hzo8gahSXvC8ZFK3oZ8qjAUmSR29
-         xAkqINNwMRiO3w7+Xjx9wH81ncjt6JoEnGXM0YFYeivQDyBlrepb4Oo53emcEVsTve
-         rfUaQzdtAReXiI36ZG8efJTzSqmM3vlC+VDwYo2JShC8PnhXJooo91o3KZjA+EoCCt
-         aRfH1p8URpCtA==
-Date:   Thu, 24 Jun 2021 12:59:09 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v7 4/8] PCI/sysfs: Allow userspace to query and set
- device reset mechanism
-Message-ID: <20210624175909.GA3542781@bjorn-Precision-5520>
+        id S232477AbhFXSCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 14:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbhFXSCv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 14:02:51 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F80CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 11:00:30 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id k8so8918807lja.4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 11:00:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9Kwj1QVd2jDusMQC8gwXFpHAaH6OWMrxw5QqC/i3GEc=;
+        b=ZvlAH+2XrG33AkkWLeySsdyAhMe+zndJGCq97RXX8FNBxVn/QFKSKBS/WQDciMKoi0
+         2UWwwdo2k2OpIiljEH57P/K7FzQXg5l5M+YbWDaDlFVqz985ucWewefublUs3fgJJF8X
+         fLk0g9rIyzFsVOABL1tk77nnK/ENlWeLT/J/Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9Kwj1QVd2jDusMQC8gwXFpHAaH6OWMrxw5QqC/i3GEc=;
+        b=sGlfnwocjMmQO5cgb3GGLZK6tpOuj7rHzU04FWZAJKyiLURsNbnMO1GUx06iNpxmWn
+         BAGsNcK3OcsRGbNg5guLhN1AuJQlXOcScJoiwj3GxO2trdlDBUY4xbNjC0LMkoIim3Gv
+         hv0m4nvUqnmdr7Q6ae0lw1mi7bNt6ycJZDGpXSQlVHxwDAWnJfNaQNO7yn3OHtpYtWkg
+         R4XLPFH4vRJgXjxsj2/Z2+e1MPltRDCc1z/u0lhJp37568Iu6SRKCQiemibgYvP+MrQA
+         +lnXmapyLk1avyi6iA7yMwa/tQZlye3KXe4jq9osmmtKxnUPBGv6UnMqEdAyaIlzJ+K2
+         wG6w==
+X-Gm-Message-State: AOAM530zBWBPg1NMM6ms+4X96WvPC79j779KRkOlSzYHC5/0+kU2s9tC
+        IKjb2LCIU35LPYz5qxrGn9qMJOcVZQ352oGa
+X-Google-Smtp-Source: ABdhPJz84Bn9Unk6nnSTz5rhQ8wt89M5y9db8k5hOm+bdJnc5GQXRUbbFvbccSwlD0/kXgUq/6RqJg==
+X-Received: by 2002:a2e:5714:: with SMTP id l20mr4999421ljb.259.1624557628703;
+        Thu, 24 Jun 2021 11:00:28 -0700 (PDT)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id y5sm286191lfa.148.2021.06.24.11.00.28
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 11:00:28 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id t17so11813911lfq.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 11:00:28 -0700 (PDT)
+X-Received: by 2002:a05:6512:15a2:: with SMTP id bp34mr4614034lfb.40.1624557627041;
+ Thu, 24 Jun 2021 11:00:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624172806.ay6dak2wdtv3nruj@archlinux>
+References: <20210624123251.191299-1-ulf.hansson@linaro.org>
+In-Reply-To: <20210624123251.191299-1-ulf.hansson@linaro.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 24 Jun 2021 11:00:11 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whn_yTjV=YAU4xMBkLEb+E76zUKM_Xy5ZwMp_504wqR9A@mail.gmail.com>
+Message-ID: <CAHk-=whn_yTjV=YAU4xMBkLEb+E76zUKM_Xy5ZwMp_504wqR9A@mail.gmail.com>
+Subject: Re: [GIT PULL] MMC fixes for v5.13-rc8
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 10:58:06PM +0530, Amey Narkhede wrote:
-> On 21/06/24 11:56AM, Bjorn Helgaas wrote:
-> > On Thu, Jun 24, 2021 at 08:42:42PM +0530, Amey Narkhede wrote:
-> > > On 21/06/24 07:15AM, Bjorn Helgaas wrote:
-> > > > On Tue, Jun 08, 2021 at 11:18:53AM +0530, Amey Narkhede wrote:
-> > > > > Add reset_method sysfs attribute to enable user to
-> > > > > query and set user preferred device reset methods and
-> > > > > their ordering.
-> > > >
-> > > > > +		Writing the name or comma separated list of names of any of
-> > > > > +		the device supported reset methods to this file will set the
-> > > > > +		reset methods and their ordering to be used when resetting
-> > > > > +		the device.
-> > > >
-> > > > > +	while ((name = strsep(&options, ",")) != NULL) {
-> > > > > +		if (sysfs_streq(name, ""))
-> > > > > +			continue;
-> > > > > +
-> > > > > +		name = strim(name);
-> > > > > +
-> > > > > +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++) {
-> > > > > +			if (reset_methods[i] &&
-> > > > > +			    sysfs_streq(name, pci_reset_fn_methods[i].name)) {
-> > > > > +				reset_methods[i] = prio--;
-> > > > > +				break;
-> > > > > +			}
-> > > > > +		}
-> > > > > +
-> > > > > +		if (i == PCI_RESET_METHODS_NUM) {
-> > > > > +			kfree(options);
-> > > > > +			return -EINVAL;
-> > > > > +		}
-> > > > > +	}
-> > > >
-> > > > Asking again since we didn't get this clarified before.  The above
-> > > > tells me that "reset_methods" allows the user to control the
-> > > > *order* in which we try reset methods.
-> > > >
-> > > > Consider the following two uses:
-> > > >
-> > > >   (1) # echo bus,flr > reset_methods
-> > > >
-> > > >   (2) # echo flr,bus > reset_methods
-> > > >
-> > > > Do these have the same effect or not?
-> > > >
-> > > They have different effect.
-> >
-> > I asked about this because Shanker's idea [1] of using two bitmaps
-> > only keeps track of which resets are *enabled*.  It does not keep
-> > track of the *ordering*.  Since you want to control the ordering, I
-> > think we need more state than just the supported/enabled bitmaps.
-> >
-> > > > If "reset_methods" allows control over the order, I expect them to
-> > > > be different: (1) would try a bus reset and, if the bus reset
-> > > > failed, an FLR, while (2) would try an FLR and, if the FLR failed,
-> > > > a bus reset.
-> > >
-> > > Exactly you are right.
-> > >
-> > > Now the point I was presenting was with new encoding we have to
-> > > write list of *all of the supported reset methods* in order for
-> > > example, in above example flr,bus or bus,flr. We can't just write
-> > > 'flr' or 'bus' then switch back to writing flr,bus/bus,flr (these
-> > > have different effect as mentioned earlier).
-> >
-> > It sounds like you're saying this sequence can't work:
-> >
-> >   # echo flr > reset_methods
+On Thu, Jun 24, 2021 at 5:32 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
 >
-> # dev->reset_methods = [3, 0, 0, ..]
->
-> >   # echo bus,flr > reset_methods
->
-> # to get dev->reset_methods = [6, 3, 0, ...]
-> we'll need to probe reset methods here.
->
-> > But I'm afraid you'll have to walk me through the reasons why this
-> > can't be made to work.
->
-> I wrote incomplete description. It can work but we'll need to probe
-> everytime which involves reading different capabilities(PCI_CAP_ID_AF,
-> PCI_PM_CTRL etc) from device. With current encoding we just have to
-> probe at the begining.
->
-> > > Basically with new encoding an user can't write subset of reset
-> > > methods they have to write list of *all* supported methods
-> > > everytime.
-> >
-> > Why does the user have to write all supported methods?  Is that to
-> > preserve the fact that "cat reset_methods" always shows all the
-> > supported methods so the user knows what's available?
-> >
-> > I'm wondering why we can't do something like this (pidgin code):
-> >
-> >   if (option == "default") {
-> >     pci_init_reset_methods(dev);
-> >     return;
-> >   }
-> >
-> >   n = 0;
-> >   foreach method in option {
-> >     i = lookup_reset_method(method);
-> >     if (pci_reset_methods[i].reset_fn(dev, PROBE) == 0)
->
-> Repeatedly calling probe might have some impact as it involves reading
-> device registers as explained earlier.
->
-> >       dev->reset_methods[n++] = i;           # method i supported
-> >   }
-> >   dev->reset_methods[n++] = 0;               # end of supported methods
-> >
-> > If we did something like the above, the user could always find the
-> > list of all methods supported by a device by doing this:
-> >
-> >   # echo default > reset_methods
-> >   # cat reset_methods
->
-> This is one solution for current problem with new encoding.
->
-> > Yes, this does call the "probe" methods several times.  I don't think
-> > that's necessarily a problem.
->
-> I thought this would be a problem because of your earlier suggestion
-> of caching flr capability to avoid probing multiple times. In this case
-> we'll need to read different device registers multiple times. With
-> current encoding we don't have to do that multiple times.
+> Neil Armstrong (1):
+>       mmc: meson-gx: use memcpy_to/fromio for dram-access-quirk
 
-I don't think it's a problem to run "probe" methods when we're setting
-the enabled reset methods (either at enumeration-time or when we write
-to "reset_methods").  These are low-frequency events and I don't think
-there's any performance issue.
+Ugh. How horribly ugly.
 
-I don't think we should have to run "probe" methods every time we call
-pci_reset_function().
+Why is that 'host->dram_access_quirk' test _inside_ the loop, rather
+than be something like
 
-I suggested a dev->has_flr bit for two reasons:
+        if (host->dram_access_quirk)
+                return sg_copy_to_buffer(data->sg, data->sg_len,
+                                host->bounce_buf, xfer_bytes);
 
-  1) It avoids reading PCI_EXP_DEVCAP every time a driver calls
-     pcie_reset_flr(), and
+at the top of the function, with meson_mmc_copy_buffer() then only
+handling the mmio case?
 
-  2) It gives a nice opportunity for quirks to disable FLR for devices
-     where it's broken.
+No, I don't know this code, I'm just looking at the patch and going
+"that looks really ugly".
 
-> > [1] https://lore.kernel.org/r/1fb0a184-908c-5f98-ef6d-74edc602c2e0@nvidia.com
+Anyway, I've pulled it, but I thought I'd voice my reaction to it..
+
+              Linus
