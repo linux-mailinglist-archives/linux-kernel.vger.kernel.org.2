@@ -2,475 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893553B2D6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628493B2D6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232317AbhFXLPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:15:45 -0400
-Received: from mail-vs1-f45.google.com ([209.85.217.45]:37842 "EHLO
-        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232118AbhFXLPn (ORCPT
+        id S232391AbhFXLQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:16:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50505 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232350AbhFXLQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:15:43 -0400
-Received: by mail-vs1-f45.google.com with SMTP id x12so3225865vsp.4;
-        Thu, 24 Jun 2021 04:13:24 -0700 (PDT)
+        Thu, 24 Jun 2021 07:16:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624533231;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GQbQQeIrRdDv283QxkkrMQqh6kQDdmhKMptxE1wKs5Q=;
+        b=d+fX4qNGjIVjaLJiK5+MRR6ftmf+WLW32LA6IvvLh/o1kpE1W0t6zzDrJGjMSfzXTbePF3
+        jnK5DqCyFp7mQQPTL/l4v5XjDwdaFK7IODBRWrgDiNIyQBzvHKaa9GLRChRsozLFX/GD9b
+        Tkvpyoxntx+I6932sjiOjYjCc+wSfog=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-424-nD5nWWLQP_6OOSH7fPs_3w-1; Thu, 24 Jun 2021 07:13:49 -0400
+X-MC-Unique: nD5nWWLQP_6OOSH7fPs_3w-1
+Received: by mail-wm1-f72.google.com with SMTP id i82-20020a1c22550000b02901d64e84b3c9so1505680wmi.5
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 04:13:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nu41oDwPqoOra5POcHkDZFZos8FE8RZ+rwyu8YCLFd8=;
-        b=Ayab4vcuSkQfmRDXD+mb7z39LEQdj0VL8qaPv1VacabJuP8on9SnhNmqGP9DB/sqHx
-         +LtGKqgbHlUSk+43LVQcrb1z6bVxneaWYh6yPQ+CSFmCoE4j8rj0mcFmROsn5UZRjs6o
-         5NtblI3MfTTZN5ZEVh0LcoCmmi7hcOHTu4+yjZmzU1MaRFIf6rUvi146miK+iG8LWk6I
-         2VpmTpNDckmUUNvBhV1EbrOkFLZnHPNKc1vOyS0YQnPOwh1FhSp8bloaCHtaWxps32Hx
-         aKFefE2ozK8G/wXFV5U8nMKOZOSyq2gGF5omHizJyowFHAqAQvwZos52nq9XKZ2VTLBC
-         EynA==
-X-Gm-Message-State: AOAM5300TRX6LTcabUM+qVPFq88Cq8/V8sQzkIEeqm+OTzdbpidnsH8f
-        eefBqBymN0aZ3O592RBU4iZaUt3kJMCoRj1Aw+g=
-X-Google-Smtp-Source: ABdhPJwCequCoFGzWxgks/i5AyBMpLJCkXXKAPMOjIY9MzCt06Wa8zqmXgSjgdhYD0zU3/Bd7vOyYLX6rlMsO3mDBzU=
-X-Received: by 2002:a05:6102:301c:: with SMTP id s28mr1310837vsa.18.1624533203443;
- Thu, 24 Jun 2021 04:13:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210616132641.29087-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210616132641.29087-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210616132641.29087-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 24 Jun 2021 13:13:12 +0200
-Message-ID: <CAMuHMdU4=dRZQKbAx0=zLWCjd7sPRjLtE3KEJP_-8qjjakCBXw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] pinctrl: renesas: Add RZ/G2L pin and gpio controller
- core wrapper
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=GQbQQeIrRdDv283QxkkrMQqh6kQDdmhKMptxE1wKs5Q=;
+        b=s7KFwDojoQbk1vUp7rsdGYf7Kf817Hh0BFB8CkIHO8QPOsyIsFU825gQonegjKRdqr
+         FOYzbwOZfkMSjfj3kTqkTtXNe0zd7lh7BJUB0VzB30vyHe0n2bUBIoFBFS/tj4FpPC1T
+         CPn/EAJnWC/c0Jn5MEGAcsUmUYTSztY50vMr09si4mcXXIDb6jB1rdj1D35OO1gMllb0
+         2c6ubdVajVgkun8cJuTCsANhXmdhKC+E3hweStM6CZKcM0aIxtMD9vjNcduQUaOuSax+
+         arg+KzSL83DCiva9V6cw4S7Vd9hx24jpHDHnMLzdNLxzYQes6gUC67KMwafZguIzJSzy
+         x7yA==
+X-Gm-Message-State: AOAM5304OIQ7/4RR6k02VW9n3wftYUrJHxPrpZCCHP2QnDWl2k/M23I4
+        rYEmIzFb2p3e0x3SFJwPna5SkTz7qFRffxC5vHT6KFjCJuEktiNtltFVRyJ89uWy0xqD3hgJeQ8
+        fSG0g9DyYp3+yR09uaSfrslu7
+X-Received: by 2002:adf:a2d1:: with SMTP id t17mr3840776wra.74.1624533228386;
+        Thu, 24 Jun 2021 04:13:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwSnSI2gHRoJbdKSxlynk+kdGKf1GaZhZAlelWhFkUglT+nA21yQy20pZ9W2Ucqey8KT3Gh/Q==
+X-Received: by 2002:adf:a2d1:: with SMTP id t17mr3840758wra.74.1624533228196;
+        Thu, 24 Jun 2021 04:13:48 -0700 (PDT)
+Received: from ?IPv6:2a0c:5a80:3d14:2800:933d:abfc:d8e4:637f? ([2a0c:5a80:3d14:2800:933d:abfc:d8e4:637f])
+        by smtp.gmail.com with ESMTPSA id z3sm8173497wmi.29.2021.06.24.04.13.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 04:13:47 -0700 (PDT)
+Message-ID: <3974817ea942f616b77450914aa23b181b062d87.camel@redhat.com>
+Subject: Re: [PATCH] iio: chemical: atlas-sensor: Avoid using irq_work
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio <linux-iio@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
+        Matt Ranostay <matt.ranostay@konsulko.com>
+Date:   Thu, 24 Jun 2021 13:13:47 +0200
+In-Reply-To: <CAHp75VcG-0L+qG5JirWH21bnpVwRv_wfjM6Sfd2pJrq4-OqJ0Q@mail.gmail.com>
+References: <20210624100046.1037159-1-nsaenzju@redhat.com>
+         <CAHp75VcG-0L+qG5JirWH21bnpVwRv_wfjM6Sfd2pJrq4-OqJ0Q@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+Hi Andy, thanks for the review.
 
-On Wed, Jun 16, 2021 at 3:27 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add core support for pin and gpio controller.
->
-> Based on a patch in the BSP by Hien Huynh <hien.huynh.px@renesas.com>.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> ---
->  drivers/pinctrl/renesas/Kconfig         |  11 +
->  drivers/pinctrl/renesas/Makefile        |   1 +
->  drivers/pinctrl/renesas/pinctrl-rzg2l.c | 530 ++++++++++++++++++++++++
->  drivers/pinctrl/renesas/pinctrl-rzg2l.h |  94 +++++
->  4 files changed, 636 insertions(+)
->  create mode 100644 drivers/pinctrl/renesas/pinctrl-rzg2l.c
->  create mode 100644 drivers/pinctrl/renesas/pinctrl-rzg2l.h
->
-> diff --git a/drivers/pinctrl/renesas/Kconfig b/drivers/pinctrl/renesas/Kconfig
-> index 4b84a744ae87..2b4ac226ce35 100644
-> --- a/drivers/pinctrl/renesas/Kconfig
-> +++ b/drivers/pinctrl/renesas/Kconfig
-> @@ -176,6 +176,17 @@ config PINCTRL_RZA2
->         help
->           This selects GPIO and pinctrl driver for Renesas RZ/A2 platforms.
->
-> +config PINCTRL_RZG2L
-> +       bool "pin control support for RZ/G2L family"
+On Thu, 2021-06-24 at 13:39 +0300, Andy Shevchenko wrote:
+> On Thu, Jun 24, 2021 at 1:01 PM Nicolas Saenz Julienne
+> <nsaenzju@redhat.com> wrote:
+> > 
+> > The atlas sensor driver currently registers a threaded IRQ handler whose
+> > sole responsibility is to trigger an irq_work which will in turn run
+> > iio_trigger_poll() in IRQ context.
+> > 
+> > This seems overkill given the fact that there already was a opportunity
+> 
+> an opportunity
 
-As this is selected by PINCTRL_PFC_R9A07G044, it should probably be
-invisible, i.e. add "if COMPILE_TEST"?
+Thanks, noted.
 
-> +       depends on OF
-> +       depends on ARCH_R9A07G044 || COMPILE_TEST
+> > @@ -474,7 +465,7 @@ static irqreturn_t atlas_interrupt_handler(int irq, void *private)
+> >         struct iio_dev *indio_dev = private;
+> >         struct atlas_data *data = iio_priv(indio_dev);
+> > 
+> > -       irq_work_queue(&data->work);
+> > +       iio_trigger_poll(data->trig);
+> 
+> Have you considered dropping atlas_interrupt_trigger_ops() altogether?
 
-Hence no need for this dependency.
+Not really, but it makes sense as a separate patch. I'll take care of it.
 
-> +       select GPIOLIB
-> +       select GENERIC_PINCTRL_GROUPS
-> +       select GENERIC_PINMUX_FUNCTIONS
-> +       select GENERIC_PINCONF
-> +       help
-> +         This enables common pin control functionality for platforms based on RZ/G2L family.
-> +
->  config PINCTRL_PFC_R8A77470
->         bool "pin control support for RZ/G1C" if COMPILE_TEST
->         select PINCTRL_SH_PFC
-> diff --git a/drivers/pinctrl/renesas/Makefile b/drivers/pinctrl/renesas/Makefile
-> index 353563228dc2..7d9238a9ef57 100644
-> --- a/drivers/pinctrl/renesas/Makefile
-> +++ b/drivers/pinctrl/renesas/Makefile
-> @@ -46,6 +46,7 @@ obj-$(CONFIG_PINCTRL_PFC_SHX3)                += pfc-shx3.o
->
->  obj-$(CONFIG_PINCTRL_RZA1)     += pinctrl-rza1.o
->  obj-$(CONFIG_PINCTRL_RZA2)     += pinctrl-rza2.o
-> +obj-$(CONFIG_PINCTRL_RZG2L)    += pinctrl-rzg2l.o
->  obj-$(CONFIG_PINCTRL_RZN1)     += pinctrl-rzn1.o
->
->  ifeq ($(CONFIG_COMPILE_TEST),y)
-> diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> new file mode 100644
-> index 000000000000..b9730b53fd85
-> --- /dev/null
-> +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> @@ -0,0 +1,530 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Renesas RZ/G2L Pin Control and GPIO driver core
-> + *
-> + * Copyright (C) 2021 Renesas Electronics Corporation.
-> + */
-> +
-> +#include <linux/of.h>
-> +#include <linux/of_irq.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/io.h>
-> +
-> +#include "pinctrl-rzg2l.h"
-> +
-> +#define DRV_NAME       "pinctrl-rzg2l"
-> +
-> +#define P(n)                   (0x0000 + 0x10 + (n))
-> +#define PM(n)                  (0x0100 + 0x20 + (n) * 2)
-> +#define PMC(n)                 (0x0200 + 0x10 + (n))
-> +#define PFC(n)                 (0x0400 + 0x40 + (n) * 4)
-> +#define PIN(n)                 (0x0800 + 0x10 + (n))
-> +#define PWPR                   (0x3014)
-> +
-> +#define PWPR_B0WI              BIT(7)  /* Bit Write Disable */
-> +#define PWPR_PFCWE             BIT(6)  /* PFC Register Write Enable */
-> +
-> +#define PM_MASK                        0x03
-> +#define PFC_MASK               0x07
-> +
-> +#define PM_INPUT               0x1
-> +#define PM_OUTPUT              0x2
-> +#define PM_OUTPUT_INPUT                0x3
-> +
-> +#define GPIOF_OUTPUT                   0
-> +#define GPIOF_INPUT                    1
-> +#define GPIOF_BIDIRECTION              2
-> +#define GPIOF_HI_Z                     3
+> 
+> >         if (client->irq > 0) {
+> >                 /* interrupt pin toggles on new conversion */
+> >                 ret = devm_request_threaded_irq(&client->dev, client->irq,
+> 
+> > -                               NULL, atlas_interrupt_handler,
+> > +                               atlas_interrupt_handler, NULL,
+> 
+> So, you move it from threaded IRQ to be a hard IRQ handler (we have a
+> separate call for this).
 
-Please drop these, and use GPIO_LINE_DIRECTION_{IN,OUT} instead.
+Noted.
 
-> +
-> +#define RZG2L_PIN_ID_TO_PORT(id)       ((id) / RZG2L_MAX_PINS_PER_PORT)
-> +#define RZG2L_PIN_ID_TO_PIN(id)                ((id) % RZG2L_MAX_PINS_PER_PORT)
-> +
-> +struct rzg2l_pinctrl {
-> +       struct pinctrl_dev              *pctrl_dev;
-> +       struct pinctrl_desc             pctrl_desc;
-> +
-> +       void __iomem                    *base;
-> +       struct device                   *dev;
-> +       struct clk                      *clk;
-> +
-> +       struct gpio_chip                gpio_chip;
-> +       struct pinctrl_gpio_range       gpio_range;
-> +
-> +       const struct rzg2l_pin_soc      *psoc;
-> +
-> +       spinlock_t                      lock;
-> +       unsigned int                    nports;
-> +};
-> +
-> +static void rzg2l_pinctrl_set_pfc_mode(struct rzg2l_pinctrl *pctrl,
-> +                                      int pins, unsigned long pfc_mode)
+> Can you guarantee that handling of those events will be fast enough?
 
-unsigned int pfc_mode?
+Do you mean the events triggered in iio_trigger_poll()? If so the amount of
+time spent in IRQ context is going to be the same regardless of whether it's
+handled through atlas' IRQ or later in irq_work IPI (or softirq context on some
+weird platforms).
 
-> +{
-> +       u32 port = RZG2L_PIN_ID_TO_PORT(pins);
-> +       u8 bit = RZG2L_PIN_ID_TO_PIN(pins);
-> +       unsigned long flags;
-> +       u32 reg32, mask32;
-> +       u16 reg16, mask16;
-> +       u8 reg8;
-> +
-> +       spin_lock_irqsave(&pctrl->lock, flags);
-> +
-> +       /* Set pin to 'Non-use (Hi-Z input protection)'  */
-> +       reg16 = readw(pctrl->base + PM(port));
-> +       mask16 = PM_MASK << (bit * 2);
-> +       reg16 = reg16 & ~mask16;
+-- 
+Nicolás Sáenz
 
-reg16 &= ...
-
-Perhaps drop the mask16:
-
-    reg16 &= ~(PM_MASK << (bit * 2));
-
-> +       writew(reg16, pctrl->base + PM(port));
-> +
-> +       /* Temporarily switch to GPIO mode with PMC register */
-> +       reg8 = readb(pctrl->base + PMC(port));
-> +       writeb(reg8 & ~BIT(bit), pctrl->base + PMC(port));
-> +
-> +       /* Set the PWPR register to allow PFC register to write */
-> +       writel(0x00, pctrl->base + PWPR);        /* B0WI=0, PFCWE=0 */
-> +       writel(PWPR_PFCWE, pctrl->base + PWPR);  /* B0WI=0, PFCWE=1 */
-> +
-> +       /* Select Pin function mode with PFC register */
-> +       reg32 = readl(pctrl->base + PFC(port));
-> +       mask32 = PFC_MASK << (bit * 4);
-> +       reg32 = reg32 & ~mask32;
-
-reg32 &= ...
-
-Perhaps drop the mask32, too?
-
-> +       pfc_mode = pfc_mode << (bit * 4);
-
-pfc_mode <<= ...
-
-> +       writel(reg32 | pfc_mode, pctrl->base + PFC(port));
-
-Or just drop the line before, and do:
-
-    writel(reg32 | (pfc_mode << (bit * 4)), pctrl->base + PFC(port));
-
-> +
-> +       /* Set the PWPR register to be write-protected */
-> +       writel(0x00, pctrl->base + PWPR);        /* B0WI=0, PFCWE=0 */
-> +       writel(PWPR_B0WI, pctrl->base + PWPR);  /* B0WI=1, PFCWE=0 */
-> +
-> +       /* Switch to Peripheral pin function with PMC register */
-> +       reg8 = readb(pctrl->base + PMC(port));
-> +       writeb(reg8 | BIT(bit), pctrl->base + PMC(port));
-> +
-> +       spin_unlock_irqrestore(&pctrl->lock, flags);
-> +};
-> +
-> +static int rzg2l_pinctrl_set_mux(struct pinctrl_dev *pctldev,
-> +                                unsigned int func_selector,
-> +                                unsigned int group_selector)
-> +{
-> +       struct rzg2l_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
-> +       struct function_desc *func;
-> +       struct group_desc *group;
-> +       unsigned long data;
-> +       int *pins;
-> +       int i;
-
-unsigned int i
-
-> +
-> +       func = pinmux_generic_get_function(pctldev, func_selector);
-> +       if (!func)
-> +               return -EINVAL;
-> +       group = pinctrl_generic_get_group(pctldev, group_selector);
-> +       if (!group)
-> +               return -EINVAL;
-> +
-> +       pins = group->pins;
-> +       data = (unsigned long)group->data;
-> +
-> +       dev_dbg(pctldev->dev, "enable function %s group %s\n",
-> +               func->name, group->name);
-> +
-> +       for (i = 0; i < group->num_pins; i++)
-> +               rzg2l_pinctrl_set_pfc_mode(pctrl, *(pins + i), data);
-
-pins[i]
-
-> +
-> +       return 0;
-> +};
-> +
-> +static const struct pinctrl_ops rzg2l_pinctrl_pctlops = {
-> +       .get_groups_count = pinctrl_generic_get_group_count,
-> +       .get_group_name = pinctrl_generic_get_group_name,
-> +       .get_group_pins = pinctrl_generic_get_group_pins,
-> +       .dt_node_to_map = pinconf_generic_dt_node_to_map_all,
-> +       .dt_free_map = pinconf_generic_dt_free_map,
-> +};
-> +
-> +static const struct pinmux_ops rzg2l_pinctrl_pmxops = {
-> +       .get_functions_count = pinmux_generic_get_function_count,
-> +       .get_function_name = pinmux_generic_get_function_name,
-> +       .get_function_groups = pinmux_generic_get_function_groups,
-> +       .set_mux = rzg2l_pinctrl_set_mux,
-> +       .strict = true,
-> +};
-> +
-> +static int rzg2l_pinctrl_add_groups(struct rzg2l_pinctrl *pctrl)
-> +{
-> +       int ret, i;
-
-unsigned int i
-
-> +
-> +       for (i = 0; i < pctrl->psoc->ngroups; i++) {
-> +               const struct group_desc *group = pctrl->psoc->groups + i;
-> +
-> +               ret = pinctrl_generic_add_group(pctrl->pctrl_dev, group->name,
-> +                                               group->pins, group->num_pins,
-> +                                               group->data);
-> +               if (ret < 0) {
-> +                       dev_err(pctrl->dev, "Failed to register group %s\n",
-> +                               group->name);
-
-This can really only fail in case of out-of-memory, or if group->name
-is NULL, so I don't think there's a need to print an error message.
-
-> +                       return ret;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int rzg2l_pinctrl_add_functions(struct rzg2l_pinctrl *pctrl)
-> +{
-> +       int ret, i;
-
-unsigned int i
-
-
-> +
-> +       for (i = 0; i < pctrl->psoc->nfuncs; i++) {
-> +               const struct function_desc *func = pctrl->psoc->funcs + i;
-> +
-> +               ret = pinmux_generic_add_function(pctrl->pctrl_dev, func->name,
-> +                                                 func->group_names,
-> +                                                 func->num_group_names,
-> +                                                 func->data);
-> +               if (ret < 0) {
-> +                       dev_err(pctrl->dev, "Failed to register function %s\n",
-> +                               func->name);
-
-This can really only fail in case of out-of-memory, or if func->name
-is NULL, so I don't think there's a need to print an error message.
-
-> +                       return ret;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +}
-
-> +static void rzg2l_gpio_set_direction(struct rzg2l_pinctrl *pctrl, u32 port,
-> +                                    u8 bit, bool output)
-> +{
-> +       unsigned long flags;
-> +       u16 reg16;
-> +
-> +       spin_lock_irqsave(&pctrl->lock, flags);
-> +
-> +       reg16 = readw(pctrl->base + PM(port));
-> +       reg16 = reg16 & ~(PM_MASK << (bit * 2));
-
-reg16 &= ...
-
-or just combine with the line before?
-
-> +
-> +       if (output)
-> +               writew(reg16 | (PM_OUTPUT << (bit * 2)),
-> +                      pctrl->base + PM(port));
-> +       else
-> +               writew(reg16 | (PM_INPUT << (bit * 2)),
-> +                      pctrl->base + PM(port));
-
-This can be simplified to
-
-        if (output)
-                reg16 |= PM_OUTPUT << (bit * 2);
-        else
-                reg16 |= PM_INPUT << (bit * 2);
-        writew(reg16, pctrl->base + PM(port));
-
-or perhaps even shortened to:
-
-        reg16 |= (output ? PM_OUTPUT : PM_INPUT) << (bit * 2);
-        writew(reg16, pctrl->base + PM(port));
-
-
-> +
-> +       spin_unlock_irqrestore(&pctrl->lock, flags);
-> +}
-> +
-> +static int rzg2l_gpio_get_direction(struct gpio_chip *chip, unsigned int offset)
-> +{
-> +       struct rzg2l_pinctrl *pctrl = gpiochip_get_data(chip);
-> +       u32 port = RZG2L_PIN_ID_TO_PORT(offset);
-> +       u8 bit = RZG2L_PIN_ID_TO_PIN(offset);
-> +
-> +       if (!(readb(pctrl->base + PMC(port)) & BIT(bit))) {
-> +               u16 reg16;
-> +
-> +               reg16 = readw(pctrl->base + PM(port));
-> +               reg16 = (reg16 >> (bit * 2)) & PM_MASK;
-> +               if (reg16 == PM_OUTPUT)
-> +                       return GPIOF_OUTPUT;
-> +               else if (reg16 == PM_INPUT)
-> +                       return GPIOF_INPUT;
-> +               else if (reg16 == PM_OUTPUT_INPUT)
-> +                       return GPIOF_BIDIRECTION;
-> +               else
-> +                       return GPIOF_HI_Z;
-
-These should return either GPIO_LINE_DIRECTION_OUT or
-GPIO_LINE_DIRECTION_IN. No other non-error values are defined for
-the .get_direction() callback.
-
-> +       } else {
-> +               return -EINVAL;
-> +       }
-> +}
-
-> +static int rzg2l_gpio_direction_output(struct gpio_chip *chip,
-> +                                      unsigned int offset, int value)
-> +{
-> +       struct rzg2l_pinctrl *pctrl = gpiochip_get_data(chip);
-> +       u32 port = RZG2L_PIN_ID_TO_PORT(offset);
-> +       u8 bit = RZG2L_PIN_ID_TO_PIN(offset);
-> +
-> +       rzg2l_gpio_set_direction(pctrl, port, bit, true);
-> +       rzg2l_gpio_set(chip, offset, value);
-
-Probably the order of these two operations should be reversed, to
-avoid glitches.
-
-> +
-> +       return 0;
-> +}
-> +
-> +static int rzg2l_gpio_get(struct gpio_chip *chip, unsigned int offset)
-> +{
-> +       struct rzg2l_pinctrl *pctrl = gpiochip_get_data(chip);
-> +       u32 port = RZG2L_PIN_ID_TO_PORT(offset);
-> +       u8 bit = RZG2L_PIN_ID_TO_PIN(offset);
-> +       u16 reg16;
-> +
-> +       reg16 = readw(pctrl->base + PM(port));
-> +       reg16 = (reg16 >> (bit * 2)) & PM_MASK;
-> +
-> +       if (reg16 == PM_INPUT || reg16 == PM_OUTPUT_INPUT)
-
-BTW, how do you configure a pin for PM_OUTPUT_INPUT?
-
-> +               return !!(readb(pctrl->base + PIN(port)) & BIT(bit));
-> +       else if (reg16 == PM_OUTPUT)
-> +               return !!(readb(pctrl->base + P(port)) & BIT(bit));
-> +       else
-> +               return -EINVAL;
-> +}
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
