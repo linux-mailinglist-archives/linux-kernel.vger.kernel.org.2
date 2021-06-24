@@ -2,91 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B853B26FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 07:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76643B26E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 07:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbhFXFtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 01:49:09 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:60775 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229448AbhFXFtI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 01:49:08 -0400
-X-UUID: 027d604e39da4368812a6d71af8a717e-20210624
-X-UUID: 027d604e39da4368812a6d71af8a717e-20210624
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <rocco.yue@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1321433158; Thu, 24 Jun 2021 13:46:46 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 24 Jun 2021 13:46:45 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 24 Jun 2021 13:46:44 +0800
-From:   Rocco Yue <rocco.yue@mediatek.com>
-To:     David Ahern <dsahern@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>, <netdev@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>,
-        <wsd_upstream@mediatek.com>, <chao.song@mediatek.com>,
-        <kuohong.wang@mediatek.com>, Rocco Yue <rocco.yue@mediatek.com>
-Subject: Re: [PATCH 1/4] net: if_arp: add ARPHRD_PUREIP type
-Date:   Thu, 24 Jun 2021 13:31:59 +0800
-Message-ID: <20210624053159.22345-1-rocco.yue@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <020403ac-0c2a-4ad8-236b-d32e59aef772@gmail.com>
-References: <020403ac-0c2a-4ad8-236b-d32e59aef772@gmail.com>
+        id S230159AbhFXFgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 01:36:44 -0400
+Received: from verein.lst.de ([213.95.11.211]:53067 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229448AbhFXFgn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 01:36:43 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 02FF167373; Thu, 24 Jun 2021 07:34:22 +0200 (CEST)
+Date:   Thu, 24 Jun 2021 07:34:21 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Tomer Tayar <ttayar@habana.ai>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to
+ export FD for DMA-BUF
+Message-ID: <20210624053421.GA25165@lst.de>
+References: <20210622152343.GO1096940@ziepe.ca> <3fabe8b7-7174-bf49-5ffe-26db30968a27@amd.com> <20210622154027.GS1096940@ziepe.ca> <09df4a03-d99c-3949-05b2-8b49c71a109e@amd.com> <20210622160538.GT1096940@ziepe.ca> <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com> <20210623182435.GX1096940@ziepe.ca> <CAFCwf111O0_YB_tixzEUmaKpGAHMNvMaOes2AfMD4x68Am4Yyg@mail.gmail.com> <20210623185045.GY1096940@ziepe.ca> <CAFCwf12tW_WawFfAfrC8bgVhTRnDA7DuM+0V8w3JsUZpA2j84w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf12tW_WawFfAfrC8bgVhTRnDA7DuM+0V8w3JsUZpA2j84w@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-23 at 23:15 -0600, David Ahern wrote:
-On 6/23/21 9:33 PM, Rocco Yue wrote:
->> 
->> The difference between RAWIP and PUREIP is that they generate IPv6
->> link-local address and IPv6 global address in different ways.
->> 
->> RAWIP:
->> ~~~~~~
->> In the ipv6_generate_eui64() function, using RAWIP will always return 0,
->> which will cause the kernel to automatically generate an IPv6 link-local
->> address in EUI64 format and an IPv6 global address in EUI64 format.
->> 
->> PUREIP:
->> ~~~~~~~
->> After this patch set, when using PUREIP, kernel doesn't generate IPv6
->> link-local address regardless of which IN6_ADDR_GEN_MODE is used.
->> 
->> @@  static void addrconf_dev_config(struct net_device *dev)
->> +       if (dev->type == ARPHRD_PUREIP)
->> +               return;
->> 
->> And after recving RA message, kernel iterates over the link-local address
->> that exists for the interface and uses the low 64bits of the link-local
->> address to generate the IPv6 global address.
->> The general process is as follows:
->> ndisc_router_discovery() -> addrconf_prefix_rcv() ->
->> ipv6_generate_eui64() -> ipv6_inherit_eui64()
->> 
-> 
-> please add that to the commit message.
+On Wed, Jun 23, 2021 at 10:00:29PM +0300, Oded Gabbay wrote:
+> I understand the argument and I agree that for the generic case, the
+> top of the stack can't assume anything.
+> Having said that, in this case the SGL is encapsulated inside a dma-buf object.
 
-Thanks for your reminding, will do.
-
-Thanks,
-Rocco
-
+But the scatterlist is defined to have a valid page.  If in dma-bufs you
+can't do that dmabufs are completely broken.  Apparently the gpu folks
+can somehow live with that and deal with the pitfals, but for dma-buf
+users outside of their little fiefdom were they arbitrarily break rules
+it simply is not acceptable.
