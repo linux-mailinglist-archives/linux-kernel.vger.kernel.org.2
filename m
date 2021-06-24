@@ -2,112 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4773B3031
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BB93B3034
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhFXNjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:39:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59246 "EHLO mail.kernel.org"
+        id S231800AbhFXNkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:40:10 -0400
+Received: from mga11.intel.com ([192.55.52.93]:46863 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230257AbhFXNjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:39:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3EA2613EB;
-        Thu, 24 Jun 2021 13:36:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624541817;
-        bh=g0zux5mruXr8HgwB0J/Fg2ET0cGWJ+eO/WgbobZer78=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MnmTzlvS04mRBfahmUtH3yzTTGvsVHhdNFYf3l3iseIf39pEAh4JE4jSnyR2UppWJ
-         CDpwlF/glmCJ4fKm3UqgkdW9J4VDJN6bDrCrvdl4aUyTlaywsra5opQSPuC8Ozkxpg
-         dZ1ObbX9YCUcZNB/d6C7WJAWNrp7h6ETzueX1SH0=
-Date:   Thu, 24 Jun 2021 15:36:54 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     rafael@kernel.org, rafael.j.wysocki@intel.com, will@kernel.org,
-        robin.murphy@arm.com, joro@8bytes.org, bjorn.andersson@linaro.org,
-        ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        bhelgaas@google.com, robdclark@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        quic_c_gdjako@quicinc.com, iommu@lists.linux-foundation.org,
-        sonnyrao@chromium.org, saiprakash.ranjan@codeaurora.org,
-        linux-mmc@vger.kernel.org, vbadigan@codeaurora.org,
-        rajatja@google.com, saravanak@google.com, joel@joelfernandes.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/6] drivers: base: Add bits to struct device to control
- iommu strictness
-Message-ID: <YNSKdhMACa9LFuVN@kroah.com>
-References: <20210621235248.2521620-1-dianders@chromium.org>
- <20210621165230.2.Icfe7cbb2cc86a38dde0ee5ba240e0580a0ec9596@changeid>
+        id S230257AbhFXNkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:40:09 -0400
+IronPort-SDR: xPtQV2aRHDAQ1iX37jpFaWV+CtO5tqF+u36IdqefQm3EqzP6gv5wcLNm9xVWrZtg4aWQeIWWUu
+ JTojFaFC2GbA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="204461080"
+X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
+   d="scan'208";a="204461080"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 06:37:48 -0700
+IronPort-SDR: hsyGtgr1AkJRH4vCogDTqIzy7Ov7yFK+kAqoWLOXWKfc1jljhbW57Tw7VoslPX0MHPLjPPvZXz
+ 7fLYWm9E2Zsw==
+X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
+   d="scan'208";a="487757005"
+Received: from dfuxbrum-mobl.ger.corp.intel.com (HELO [10.13.13.106]) ([10.13.13.106])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 06:37:46 -0700
+Subject: Re: [Intel-wired-lan] [PATCH] e1000e: Fix an error handling path in
+ 'e1000_probe()'
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, kuba@kernel.org, jeffrey.t.kirsher@intel.com
+Cc:     netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org
+References: <2651bb1778490c45d963122619fe3403fdf6b9de.1623819901.git.christophe.jaillet@wanadoo.fr>
+From:   "Fuxbrumer, Dvora" <dvorax.fuxbrumer@linux.intel.com>
+Message-ID: <c2ed2d13-6949-3f78-a28f-752cff8b08ee@linux.intel.com>
+Date:   Thu, 24 Jun 2021 16:37:44 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621165230.2.Icfe7cbb2cc86a38dde0ee5ba240e0580a0ec9596@changeid>
+In-Reply-To: <2651bb1778490c45d963122619fe3403fdf6b9de.1623819901.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 04:52:44PM -0700, Douglas Anderson wrote:
-> How to control the "strictness" of an IOMMU is a bit of a mess right
-> now. As far as I can tell, right now:
-> * You can set the default to "non-strict" and some devices (right now,
->   only PCI devices) can request to run in "strict" mode.
-> * You can set the default to "strict" and no devices in the system are
->   allowed to run as "non-strict".
+On 6/16/2021 08:05, Christophe JAILLET wrote:
+> If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
+> must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
+> call, as already done in the remove function.
 > 
-> I believe this needs to be improved a bit. Specifically:
-> * We should be able to default to "strict" mode but let devices that
->   claim to be fairly low risk request that they be run in "non-strict"
->   mode.
-> * We should allow devices outside of PCIe to request "strict" mode if
->   the system default is "non-strict".
-> 
-> I believe the correct way to do this is two bits in "struct
-> device". One allows a device to force things to "strict" mode and the
-> other allows a device to _request_ "non-strict" mode. The asymmetry
-> here is on purpose. Generally if anything in the system makes a
-> request for strictness of something then we want it strict. Thus
-> drivers can only request (but not force) non-strictness.
-> 
-> It's expected that the strictness fields can be filled in by the bus
-> code like in the patch ("PCI: Indicate that we want to force strict
-> DMA for untrusted devices") or by using the new pre_probe concept
-> introduced in the patch ("drivers: base: Add the concept of
-> "pre_probe" to drivers").
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Fixes: 111b9dc5c981 ("e1000e: add aer support")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
+>   drivers/net/ethernet/intel/e1000e/netdev.c | 1 +
+>   1 file changed, 1 insertion(+)
 > 
->  include/linux/device.h | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index f1a00040fa53..c1b985e10c47 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -449,6 +449,15 @@ struct dev_links_info {
->   *		and optionall (if the coherent mask is large enough) also
->   *		for dma allocations.  This flag is managed by the dma ops
->   *		instance from ->dma_supported.
-> + * @force_strict_iommu: If set to %true then we should force this device to
-> + *			iommu.strict regardless of the other defaults in the
-> + *			system. Only has an effect if an IOMMU is in place.
-
-Why would you ever NOT want to do this?
-
-> + * @request_non_strict_iommu: If set to %true and there are no other known
-> + *			      reasons to make the iommu.strict for this device,
-> + *			      then default to non-strict mode. This implies
-> + *			      some belief that the DMA master for this device
-> + *			      won't abuse the DMA path to compromise the kernel.
-> + *			      Only has an effect if an IOMMU is in place.
-
-This feels in contrast to the previous field you just added, how do they
-both interact?  Would an enum work better?
-
-thanks,
-
-greg k-h
+Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
