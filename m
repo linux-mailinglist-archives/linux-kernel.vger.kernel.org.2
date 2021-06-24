@@ -2,234 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A033B3992
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 00:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DF23B3998
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 00:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232904AbhFXW4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 18:56:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35968 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229643AbhFXW4N (ORCPT
+        id S232855AbhFXXBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 19:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232300AbhFXXBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 18:56:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624575233;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7r+X1wvVKiDgmMsGCMuXmUq9oap3F+bJKVEdUAVTkX0=;
-        b=eZLzUL3NUQRyJkGvvoaEE/9+PJ9SJVyAqIAZxpSL0dcZWRT3c0i4CfF+2qgF/BUMTn88Qh
-        NPkTQQP19Nsjw0wtnpX6wXijzao3d9fQqUOYqfg/DLEDDbDcDh04tXI7z3V/kcBl7Yfcfk
-        En5Rufvs6ZW65X3zgOWBoDEOd0O4rv8=
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
- [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-119-adktU8pBNvyGUaGmeUKs7Q-1; Thu, 24 Jun 2021 18:53:52 -0400
-X-MC-Unique: adktU8pBNvyGUaGmeUKs7Q-1
-Received: by mail-io1-f70.google.com with SMTP id v21-20020a5d90550000b0290439ea50822eso5558594ioq.9
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 15:53:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7r+X1wvVKiDgmMsGCMuXmUq9oap3F+bJKVEdUAVTkX0=;
-        b=trGnn7F9GcpBEZPGtK5/qoEuKM83ZDuCd5J9Dbxe5IAkmbIxIjIBbm1PziC9V7yqmN
-         Tm8KSTMvg6mEj2JyA3JtwPnOwEAZyCbE0rN23ycAwyzmPv4agYt9vnS9Rlm1ensrLGNq
-         mleGF1Gx+t9wF7ZICVbKJZt1neNzJF/1yDdZioByYOXcQ1WioMo+gN6n25zVQkNPeiBN
-         Z6CmEFgVeTEfN4wpNGrPDBFFtVI5xmAbv4Af8Z6ewZpKldWFaGBfPAhQebYa3pfX+C0k
-         IQ3vyEVNYA1PkBeDmIn8YVHa2ihLDIbmGt3KduyMIxKIDSEG5Lsogln1hfI72YTCwavM
-         XPxg==
-X-Gm-Message-State: AOAM533BdyACUfMxv/NMzdBP17zo2GG0Lg4nOjCDlSrEsnZqihnCicYI
-        k3uYyu9mn/CvxfWOCpEgsVwoaXWLFvvWER7gWfrkMQjbsYAwB4bbtZcbdQsN2wwYXj5g/hUUYJw
-        7g4gCNC/j5R4GzaoDWHcNvfan
-X-Received: by 2002:a92:c704:: with SMTP id a4mr5388337ilp.157.1624575231828;
-        Thu, 24 Jun 2021 15:53:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwT4W+cer0THjmGy28gbUs6250CbTBm3uu+V0S1jl/n5W3lpuvzpMhAaD1iJueN5ox+E0DV4g==
-X-Received: by 2002:a92:c704:: with SMTP id a4mr5388326ilp.157.1624575231648;
-        Thu, 24 Jun 2021 15:53:51 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
-        by smtp.gmail.com with ESMTPSA id a18sm2355666ilc.31.2021.06.24.15.53.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 15:53:50 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 18:53:49 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [PATCH 8/9] KVM: X86: Optimize pte_list_desc with per-array
- counter
-Message-ID: <YNUM/W9uXWficCiN@t490s>
-References: <20210624181356.10235-1-peterx@redhat.com>
- <20210624181520.11012-1-peterx@redhat.com>
+        Thu, 24 Jun 2021 19:01:37 -0400
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0432C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 15:59:17 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id A56BE3F4E6;
+        Fri, 25 Jun 2021 00:59:13 +0200 (CEST)
+Subject: Re: [PATCH V3 3/3] mailbox: qcom-apcs: Add SM6125 compatible
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CABb+yY3BYYC2na8EFunEeu0XCfLXrUQon=hF3q5p=+FUoigoyw@mail.gmail.com>
+ <CAL_JsqLWqtAtqLRF-MAnq80NMfD0a+CfWPv8JWjjNTJFgMjCxg@mail.gmail.com>
+ <CABb+yY0sdSinTm788pMFrqEZ6QMC2OwCP7Kkto+pG9h1aGMzwQ@mail.gmail.com>
+ <CAL_JsqKdoMwpL_tYC7VQRAG2AC5nR4diShMQCgDseObcgU+egQ@mail.gmail.com>
+ <YNEiUMBqGAx1zLVX@yoga>
+ <CABb+yY2wy4iSKjn+SihQ=FE=YwcEzUNOpGw_CV22Anzgbba8hA@mail.gmail.com>
+ <YNFKpvhXyZbs8RE1@yoga>
+ <CABb+yY3RpQYvNBHvpwZearpBPph0uj8YQwX2qu=TX=QAO6OFBw@mail.gmail.com>
+ <YNFegmmCzk6JUTN+@yoga> <9aae3092-2e2b-9261-f4e7-864b873eb2d4@somainline.org>
+ <YNT0HPOJEoJYipyE@yoga>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <b0ed9294-e4e1-3185-d81f-63e6e8d45692@somainline.org>
+Date:   Fri, 25 Jun 2021 00:59:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210624181520.11012-1-peterx@redhat.com>
+In-Reply-To: <YNT0HPOJEoJYipyE@yoga>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 02:15:20PM -0400, Peter Xu wrote:
-> Add a counter field into pte_list_desc, so as to simplify the add/remove/loop
-> logic.  E.g., we don't need to loop over the array any more for most reasons.
+Il 24/06/21 23:07, Bjorn Andersson ha scritto:
+> On Tue 22 Jun 09:36 CDT 2021, AngeloGioacchino Del Regno wrote:
 > 
-> This will make more sense after we've switched the array size to be larger
-> otherwise the counter will be a waste.
+>> Il 22/06/21 05:52, Bjorn Andersson ha scritto:
+>>> On Mon 21 Jun 22:34 CDT 2021, Jassi Brar wrote:
+>>>
+>>>> On Mon, Jun 21, 2021 at 9:27 PM Bjorn Andersson
+>>>> <bjorn.andersson@linaro.org> wrote:
+>>>>>
+>>>>> On Mon 21 Jun 20:00 CDT 2021, Jassi Brar wrote:
+>>>>>
+>>>>>> On Mon, Jun 21, 2021 at 6:35 PM Bjorn Andersson
+>>>>>> <bjorn.andersson@linaro.org> wrote:
+>>>>>>>
+>>>>>>> On Mon 21 Jun 18:19 CDT 2021, Rob Herring wrote:
+>>>>>>>
+>>>>>>>> On Mon, Jun 21, 2021 at 5:10 PM Jassi Brar <jassisinghbrar@gmail.com> wrote:
+>>>>>>>>>
+>>>>>>>>> On Mon, Jun 21, 2021 at 2:46 PM Rob Herring <robh+dt@kernel.org> wrote:
+>>>>>>>>>>
+>>>>>>>>>> On Sun, Jun 20, 2021 at 10:03 PM Jassi Brar <jassisinghbrar@gmail.com> wrote:
+>>>>>>>>>>>
+>>>>>>>>>>> On Sat, Jun 12, 2021 at 4:46 AM Martin Botka
+>>>>>>>>>>> <martin.botka@somainline.org> wrote:
+>>>>>>>>>>>>
+>>>>>>>>>>>> This commit adds compatible for the SM6125 SoC
+>>>>>>>>>>>>
+>>>>>>>>>>>> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+>>>>>>>>>>>> ---
+>>>>>>>>>>>> Changes in V2:
+>>>>>>>>>>>> None
+>>>>>>>>>>>> Changes in V3:
+>>>>>>>>>>>> Change compatible to apcs-hmss-global
+>>>>>>>>>>>>    drivers/mailbox/qcom-apcs-ipc-mailbox.c | 5 +++++
+>>>>>>>>>>>>    1 file changed, 5 insertions(+)
+>>>>>>>>>>>>
+>>>>>>>>>>>> diff --git a/drivers/mailbox/qcom-apcs-ipc-mailbox.c b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+>>>>>>>>>>>> index f25324d03842..f24c5ad8d658 100644
+>>>>>>>>>>>> --- a/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+>>>>>>>>>>>> +++ b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+>>>>>>>>>>>> @@ -57,6 +57,10 @@ static const struct qcom_apcs_ipc_data sdm660_apcs_data = {
+>>>>>>>>>>>>           .offset = 8, .clk_name = NULL
+>>>>>>>>>>>>    };
+>>>>>>>>>>>>
+>>>>>>>>>>>> +static const struct qcom_apcs_ipc_data sm6125_apcs_data = {
+>>>>>>>>>>>> +       .offset = 8, .clk_name = NULL
+>>>>>>>>>>>> +};
+>>>>>>>>>>>> +
+>>>>>>>>>>>>    static const struct qcom_apcs_ipc_data apps_shared_apcs_data = {
+>>>>>>>>>>>>           .offset = 12, .clk_name = NULL
+>>>>>>>>>>>>    };
+>>>>>>>>>>>> @@ -166,6 +170,7 @@ static const struct of_device_id qcom_apcs_ipc_of_match[] = {
+>>>>>>>>>>>>           { .compatible = "qcom,sc8180x-apss-shared", .data = &apps_shared_apcs_data },
+>>>>>>>>>>>>           { .compatible = "qcom,sdm660-apcs-hmss-global", .data = &sdm660_apcs_data },
+>>>>>>>>>>>>           { .compatible = "qcom,sdm845-apss-shared", .data = &apps_shared_apcs_data },
+>>>>>>>>>>>> +       { .compatible = "qcom,sm6125-apcs-hmss-global", .data = &sm6125_apcs_data },
+>>>>>>>>>>>>           { .compatible = "qcom,sm8150-apss-shared", .data = &apps_shared_apcs_data },
+>>>>>>>>>>>>           { .compatible = "qcom,sdx55-apcs-gcc", .data = &sdx55_apcs_data },
+>>>>>>>>>>>>           {}
+>>>>>>>>>>>>
+>>>>>>>>>>> These all are basically different names for the same controller.
+>>>>>>>>>>> The 'offset' is a configuration parameter and the 'clock', when NULL,
+>>>>>>>>>>> is basically some "always-on" clock.
+>>>>>>>>>>> I am sure we wouldn't be doing it, if the controller was third-party.
+>>>>>>>>>>
+>>>>>>>>>> If newer implementations are 'the same', then they should have a
+>>>>>>>>>> fallback compatible to the existing one that is the same and no driver
+>>>>>>>>>> change is needed. If the differences are board or instance (within an
+>>>>>>>>>> SoC) specific, then a DT property would be appropriate.
+>>>>>>>>>>
+>>>>>>>>> The controllers (13 now) only differ by the 'offset' where the
+>>>>>>>>> registers are mapped. Clock-name is a pure s/w artifact.
+>>>>>>>>> So, maybe we could push all these in DT.
+>>>>>>>>
+>>>>>>>> Why is 'reg' not used for the offset?
+>>>>>>>>
+>>>>>>>
+>>>>>>> The DT node and its "reg" describes the whole IP block.
+>>>>>>>
+>>>>>>> The particular register that we care of has, as you can see, moved
+>>>>>>> around during the various platforms and some incarnations of this IP
+>>>>>>> block provides controls for CPU-related clocks as well.
+>>>>>>>
+>>>>>>> We can certainly have the multiple compatible points to the same
+>>>>>>> apcs_data, but I'm not able to spot a reasonable "catch-all compatible"
+>>>>>>> given that I don't see any natural groupings.
+>>>>>>>
+>>>>>> Any platform that comes later may reuse the already available compatible.
+>>>>>> For example drop this patch and reuse "qcom,sdm660-apcs-hmss-global" ?
+>>>>>>
+>>>>>
+>>>>> The problem is that this would change the meaning of
+>>>>> "qcom,sdm660-apcs-hmss-global" from meaning "The apcs hmss global block
+>>>>> _in_ sdm660" to "any random apcs block with the mailbox register at
+>>>>> offset 8".
+>>>>>
+>>>> To me, the deeper problem seems to be naming a controller "The apcs
+>>>> hmss global block _in_ sdm660" just because the h/w manual hasn't
+>>>> given a name to it.  But that is okay too, if we name the subsequent
+>>>> controllers as "the same as one in sdm660" and provide the h/w
+>>>> configuration 'offset' via a DT property.
+>>>>
+>>>
+>>> As I said, I'd need to dig through the hardware documentation for the
+>>> various platforms to see if I can find what the common denominators are.
+>>> We've always seen this as "the apcs hmss global block _in_ <platform>".
+>>>
+>>>>>>>> In any case, we can't really get rid of the first 13 instances though...
+>>>>>>>>
+>>>>>>>
+>>>>>>> Right, we have the problem that we have DTBs out there that relies on
+>>>>>>> these compatibles, but as Jassi requests we'd have to start describing
+>>>>>>> the internal register layout in DT - which this binding purposefully
+>>>>>>> avoids.
+>>>>>>>
+>>>>>> Not these strings, but 'offset' and 'clock-name' as optional
+>>>>>> properties that new platforms can use.
+>>>>>>
+>>>>>
+>>>>> Relying on completely generic compatibles to match the driver and then
+>>>>> distinguish each platform using additional properties is exactly what
+>>>>> Qualcomm does downstream.  The community has clarified countless times
+>>>>> that this is not the way to write DT bindings.
+>>>>>
+>>>> Yes, and I don't suggest it otherwise. For h/w quirks and
+>>>> extra/missing features, it does make sense to have different
+>>>> compatibles.
+>>>>
+>>>
+>>> But what you're suggesting assumes that they are the same and that we're
+>>> done implementing all the software for this block. The platform specific
+>>> compatible allows us to postpone that question.
+>>>
+>>>> However, for _trivial_ variations let us get that value from DT.
+>>>> 'offset' is anyway a h/w property.
+>>>> That way we won't be distinguishing platforms using dt properties, but
+>>>> only support different platforms seamlessly.
+>>>>
+>>>
+>>> As I said previously, this goes against the direction provided by the DT
+>>> maintainers. If a property is platform specific this should be expressed
+>>> by the compatible.
+>>>
+>>>> On second thought, we have grown from 2 to 13 aliases in 4 yrs. I only
+>>>> have to ignore 3 times/annum to lead a peaceful life ;)
+>>>>
+>>>
+>>> True, but I'll try to find some time to see if we have some reuse of the
+>>> IP block to allow us to use some generic compatible.
+>>>
+>>> We'd still need a patch in the DT binding for every single platform, but
+>>> we should be able to avoid the compatible additions in the driver.
+>>>
+>>
+>> Hello Jassi, Bjorn
+>>
+>> I've read the entire thread and I can't say that Jassi is entirely wrong
+>> but I also agree with Bjorn on this matter.
+>>
+>> This driver is here to "simply" manage the register offset in the APCS
+>> IP, which is a pretty straightforward operation.
+>> If you check in this driver, you will see that there's not much
+>> duplication between the various qcom_apcs_ipc_data that we have for
+>> all the different SoCs.
+>>
+>> Checking further, we can effectively reduce the amount of compatibles
+>> in this driver by simply removing some "duplicated" instances and in
+>> particular:
+>> ipq6018, ipq8074, msm8916, msm8994, msm8998, sdm660
+>>
+>> and eventually replacing them with either of:
+>> - 8bits_apcs_data    qcom,apcs-apps-global-8bit
+>>                       qcom,apcs-kpss-global-8bit
 > 
-> Initially I wanted to store a tail pointer at the head of the array list so we
-> don't need to traverse the list at least for pushing new ones (if without the
-> counter we traverse both the list and the array).  However that'll need
-> slightly more change without a huge lot benefit, e.g., after we grow entry
-> numbers per array the list traversing is not so expensive.
+> I don't like those compatibles, simply because the binding is supposed
+> to describe the hardware block, not the fact that Linux _currently_ only
+> pokes this one register.
 > 
-> So let's be simple but still try to get as much benefit as we can with just
-> these extra few lines of changes (not to mention the code looks easier too
-> without looping over arrays).
-> 
-> I used the same a test case to fork 500 child and recycle them ("./rmap_fork
-> 500" [1]), this patch further speeds up the total fork time of about 14%, which
-> is a total of 38% of vanilla kernel:
-> 
->         Vanilla:      367.20 (+-4.58%)
->         3->15 slots:  302.00 (+-5.30%)
->         Add counter:  265.20 (+-9.88%)
-> 
-> [1] https://github.com/xzpeter/clibs/commit/825436f825453de2ea5aaee4bdb1c92281efe5b3
-> 
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c | 26 ++++++++++++++++----------
->  1 file changed, 16 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 8888ae291cb9..b21e52dfc27b 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -136,10 +136,15 @@ module_param(dbg, bool, 0644);
->  #include <trace/events/kvm.h>
->  
->  /* make pte_list_desc fit well in cache lines */
-> -#define PTE_LIST_EXT 15
-> +#define PTE_LIST_EXT 14
->  
->  struct pte_list_desc {
->  	u64 *sptes[PTE_LIST_EXT];
-> +	/*
-> +	 * Stores number of entries stored in the pte_list_desc.  No need to be
-> +	 * u64 but just for easier alignment.  When PTE_LIST_EXT, means full.
-> +	 */
-> +	u64 spte_count;
->  	struct pte_list_desc *more;
->  };
->  
-> @@ -830,7 +835,7 @@ static int pte_list_add(struct kvm_vcpu *vcpu, u64 *spte,
->  			struct kvm_rmap_head *rmap_head)
->  {
->  	struct pte_list_desc *desc;
-> -	int i, count = 0;
-> +	int count = 0;
->  
->  	if (!rmap_head->val) {
->  		rmap_printk("%p %llx 0->1\n", spte, *spte);
-> @@ -840,24 +845,24 @@ static int pte_list_add(struct kvm_vcpu *vcpu, u64 *spte,
->  		desc = mmu_alloc_pte_list_desc(vcpu);
->  		desc->sptes[0] = (u64 *)rmap_head->val;
->  		desc->sptes[1] = spte;
-> +		desc->spte_count = 2;
->  		rmap_head->val = (unsigned long)desc | 1;
->  		++count;
->  	} else {
->  		rmap_printk("%p %llx many->many\n", spte, *spte);
->  		desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
-> -		while (desc->sptes[PTE_LIST_EXT-1]) {
-> +		while (desc->spte_count == PTE_LIST_EXT) {
->  			count += PTE_LIST_EXT;
-> -
->  			if (!desc->more) {
->  				desc->more = mmu_alloc_pte_list_desc(vcpu);
->  				desc = desc->more;
-> +				desc->spte_count = 0;
->  				break;
->  			}
->  			desc = desc->more;
->  		}
-> -		for (i = 0; desc->sptes[i]; ++i)
-> -			++count;
-> -		desc->sptes[i] = spte;
-> +		count += desc->spte_count;
-> +		desc->sptes[desc->spte_count++] = spte;
->  	}
->  	return count;
->  }
-> @@ -873,8 +878,10 @@ pte_list_desc_remove_entry(struct kvm_rmap_head *rmap_head,
->  		;
->  	desc->sptes[i] = desc->sptes[j];
->  	desc->sptes[j] = NULL;
-> +	desc->spte_count--;
->  	if (j != 0)
->  		return;
-> +	WARN_ON_ONCE(desc->spte_count);
->  	if (!prev_desc && !desc->more)
->  		rmap_head->val = 0;
->  	else
-> @@ -930,7 +937,7 @@ static void pte_list_remove(struct kvm_rmap_head *rmap_head, u64 *sptep)
->  unsigned int pte_list_count(struct kvm_rmap_head *rmap_head)
->  {
->  	struct pte_list_desc *desc;
-> -	unsigned int i, count = 0;
-> +	unsigned int count = 0;
->  
->  	if (!rmap_head->val)
->  		return 0;
-> @@ -940,8 +947,7 @@ unsigned int pte_list_count(struct kvm_rmap_head *rmap_head)
->  	desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
->  
->  	while (desc) {
-> -		for (i = 0; (i < PTE_LIST_EXT) && desc->sptes[i]; i++)
-> -			count++;
-> +		count += desc->spte_count;
->  		desc = desc->more;
->  	}
 
-I think I still missed another loop in pte_list_desc_remove_entry() that we can
-drop.  With some other cleanups, I plan to squash below into this patch too..
+Since you've immediately misunderstood my naming, yeah, that wouldn't be
+the best thing to use as a compatible.
 
----8<---
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 719fb6fd0aa0..2d8c56eb36f8 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -872,16 +872,13 @@ pte_list_desc_remove_entry(struct kvm_rmap_head *rmap_head,
-                           struct pte_list_desc *desc, int i,
-                           struct pte_list_desc *prev_desc)
- {
--       int j;
-+       int j = desc->spte_count - 1;
- 
--       for (j = PTE_LIST_EXT - 1; !desc->sptes[j] && j > i; --j)
--               ;
-        desc->sptes[i] = desc->sptes[j];
-        desc->sptes[j] = NULL;
-        desc->spte_count--;
--       if (j != 0)
-+       if (desc->spte_count)
-                return;
--       WARN_ON_ONCE(desc->spte_count);
-        if (!prev_desc && !desc->more)
-                rmap_head->val = 0;
-        else
-@@ -913,7 +910,7 @@ static void __pte_list_remove(u64 *spte, struct kvm_rmap_head *rmap_head)
-                desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
-                prev_desc = NULL;
-                while (desc) {
--                       for (i = 0; i < PTE_LIST_EXT && desc->sptes[i]; ++i) {
-+                       for (i = 0; i < desc->spte_count; ++i) {
-                                if (desc->sptes[i] == spte) {
-                                        pte_list_desc_remove_entry(rmap_head,
-                                                        desc, i, prev_desc);
----8<---
+> We could probably "qcom,apss-global" as a catch-all for at least sc7180,
+> sc7280, sdm845, sm8150, sm8250 and sm8350.
+> 
 
--- 
-Peter Xu
+Doesn't look like a bad idea, but if we want to *enforce* writing also
+the platform-specific compatible, I can see patch series going back
+and forth and getting refused because this will not be really understood
+by everyone, I think.
+In this case, if writing the platform compatible is something mandatory,
+the only way to really make sure to avoid losing time with reviews like
+"[...] here you have to write also the platform compatible", is to just
+keep the thing as it is.
+
+> But look at 8996 and 8998, both named "something-hmss-something", with
+> different register layout. And a quick glance seems to indicate that
+> sdm660 isn't a hmss after all :/
+> 
+
+Starting from the fact that I don't clearly remember what-when-why of
+my research done more than one year ago, I do remember that conclusion
+was that, in this regard, SDM630/660 were "mostly the same" as MSM8998.
+In any case, this is something that, at this point, is better get
+verified, maybe.
+
+> But introducing qcom,apss-global should catch a bunch of the newer
+> platforms.
+> 
+> 
+> On the DT binding side we still need the platform-specific ones and we
+> need each one to be added to the binding regardless of the catch-all in
+> the driver.
+> 
+> Regards,
+> Bjorn
+> 
+>> - more_appropriate_name_apcs_data qcom,(...blah)
+>>
+>> This would mean that we would have to use a generic "qcom,apcs-clk" as
+>> the clk_name, but no other modifications would be done, apart checking
+>> the return value to choose whether to print or not the dev_err when the
+>> clock name is specified but not present in dt, since the driver is
+>> already actually covering this case.
+>>
+>> That would make us able to reduce the compatibles from 6 to 2, relative
+>> to the aforementioned SoC specific bindings.
+>> I'm positive that, through time, when new SoCs arrive, we would avoid
+>> getting this compatible list to be megabytes long...
+>>
+>> Right now it's not an issue, but since Qualcomm SoCs are now being very
+>> actively upstreamed, I can see this coming in the future, somehow.
+>>
+>>
+>> Of course this means that we're getting some fair amount of patch-noise
+>> in the mailing lists, since all qcom dtsi files will have to be changed,
+>> but that shouldn't really be a problem, I guess.
+>>
+>> I'm sure that I'm not the only one with such a "wow-idea" in mind :)
+>>
+>> Yours,
+>> - Angelo
+>>
+>>> Regards,
+>>> Bjorn
+>>>
+>>
 
