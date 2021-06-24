@@ -2,114 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007A73B37B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9653B37A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232675AbhFXUVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 16:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232553AbhFXUVB (ORCPT
+        id S232860AbhFXUNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 16:13:44 -0400
+Received: from mail-io1-f45.google.com ([209.85.166.45]:33666 "EHLO
+        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232178AbhFXUNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 16:21:01 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E49C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 13:18:40 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id a11so12338608lfg.11
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 13:18:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QdsTxdbLy6OAQCJe+BxLmLcw7gNCvC1VuxBL+c/EdBc=;
-        b=CN50qFEZiM/KC40ZFphsMGum7u0fgQ/7PSKkzLv3Imv2qoT+m2I4xle85ef/hnSBmd
-         jQ7V9plRVWmia3duLG9JtlwtA8gRKNqUguKYIy9mayOSyo2ct58AmgGxinOrbYWP7B9+
-         tKraksvFmL2Pf/jciosSyTRbQSZ6FxNlrKsF4=
+        Thu, 24 Jun 2021 16:13:43 -0400
+Received: by mail-io1-f45.google.com with SMTP id a6so9885337ioe.0;
+        Thu, 24 Jun 2021 13:11:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QdsTxdbLy6OAQCJe+BxLmLcw7gNCvC1VuxBL+c/EdBc=;
-        b=FMGS/GjDbeGRk15BqbczavryE+0GjYo++MM5B+J7EAD768hKgKMMpYF/BHEwi1SLjn
-         +/bTcuH/oBYZtXeAapaJLsDBm8b6ET8vYDFf+Dc6/COkm6xOaIwulpXE/I6O/j2hsvNd
-         d9EirhVlL8yRc4eWGZnReQ/Q2lz/a9XTlN55FfH+aT6ma/1lYoRYW/8uGKZN5AP8A+GM
-         9NVXLOTr5usBoLUxhwEBzmiLwbickoKbOBg+lAdKgts3EiJy8AfVOdOIG/DB89cLSXmh
-         eZk4nMB/IAjRCHrbN0LCFKOM14lod08RZtWIvSo0CUpELxGDkXGr2JfUOZ9yVHDOE0QB
-         +DXw==
-X-Gm-Message-State: AOAM5305WdhLP0v1QdGFG7ti/lnyN7A/k3vaqs+u98VR+I4YeQbXnzD3
-        9TCcb7jOmMp0V0DydM6cnNoFhjquEGVgaDpO1U4=
-X-Google-Smtp-Source: ABdhPJxqHzrXw5oZA7idM3F1OUSFogfQK3I8IQ34ObhrJlb04Sxee0WlqUoAKdYosnSpXd/wE0wrJw==
-X-Received: by 2002:ac2:5ec3:: with SMTP id d3mr5375382lfq.440.1624565918901;
-        Thu, 24 Jun 2021 13:18:38 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id q21sm272907ljj.77.2021.06.24.13.18.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 13:18:38 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id j2so12358150lfg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 13:18:38 -0700 (PDT)
-X-Received: by 2002:a05:6512:baa:: with SMTP id b42mr4974557lfv.487.1624565494034;
- Thu, 24 Jun 2021 13:11:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S9irpCnuj1ZxG7TlFe7Eh6Y0jfUyNIBwZnYE8DiyvqU=;
+        b=nz8JxyZIJdhnkxFTCz63RbZMK+WQTv/lwOp2U3JMvhLiZNyBsCLv1QBNA3+wDmoYJv
+         NSljCHcMiHfkhiZaMi3NMfr4EUHyx/F3caHk2lvt2droGD9p4Rj0fik/TdNAGS7xjby5
+         mR75v4FeEvKFT6+6AX2iiYn+avUGgNvUFfAshmQak0ywdTkOFDcbOhe1FipExJdw4ceg
+         5ilLCn9LCy6Rtd+9wNadQKz3Dwut0CaExk7aoeWWypgSmbsgweMTEdlD6/Yr2IssOtbD
+         0DFNyWD7s57W5bYyHC+QNXX/jVe6o3ugMb0akH1eg/VC4iLYEFAti7nsk1HjsTLS9LqW
+         5txA==
+X-Gm-Message-State: AOAM530dnoWkkj/7PbarmzK4aVgDO2kUHJf6k3XeUuCcq4oa+HEmsm8w
+        EE6yLgD+alL/VCIiTP8F4OciJLwk/g==
+X-Google-Smtp-Source: ABdhPJyXmKDgOwuseRMR7wsWDhzG+o9xoMFIcJHgRJ2CRkwT3ZBOp4K08i0OO8HA5azAlDTA+hTrsw==
+X-Received: by 2002:a02:5b45:: with SMTP id g66mr6351558jab.62.1624565483419;
+        Thu, 24 Jun 2021 13:11:23 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id p25sm2086831ioj.18.2021.06.24.13.11.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 13:11:22 -0700 (PDT)
+Received: (nullmailer pid 1911579 invoked by uid 1000);
+        Thu, 24 Jun 2021 20:11:18 -0000
+Date:   Thu, 24 Jun 2021 14:11:18 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        martin.botka@somainline.org, ~postmarketos/upstreaming@lists.sr.ht,
+        angelogioacchino.delregno@somainline.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        jamipkettunen@somainline.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, marijn.suijten@somainline.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: pinctrl: qcom: Add bindings for
+ MDM9607
+Message-ID: <20210624201118.GA1911377@robh.at.kernel.org>
+References: <20210624191743.617073-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
-References: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
- <87sg1lwhvm.fsf@disp2133> <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
- <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com> <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
- <87eed4v2dc.fsf@disp2133> <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
- <87fsxjorgs.fsf@disp2133> <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
- <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk> <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
- <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
- <87a6njf0ia.fsf@disp2133> <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
- <87tulpbp19.fsf@disp2133> <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
- <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133> <87y2az5bmt.fsf_-_@disp2133>
-In-Reply-To: <87y2az5bmt.fsf_-_@disp2133>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 24 Jun 2021 13:11:18 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg16ZBqtLngzE2edV8e68Qxje2kFehnKTrBBe5opcsj-w@mail.gmail.com>
-Message-ID: <CAHk-=wg16ZBqtLngzE2edV8e68Qxje2kFehnKTrBBe5opcsj-w@mail.gmail.com>
-Subject: Re: [PATCH 7/9] signal: Make individual tasks exiting a first class concept.
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624191743.617073-1-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 12:03 PM Eric W. Biederman
-<ebiederm@xmission.com> wrote:
->
-> Implement start_task_exit_locked and rewrite the de_thread logic
-> in exec using it.
->
-> Calling start_task_exit_locked is equivalent to asyncrhonously
-> calling exit(2) aka pthread_exit on a task.
+On Thu, 24 Jun 2021 21:17:40 +0200, Konrad Dybcio wrote:
+> Document the newly added MDM9607 pinctrl driver.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> ---
+> Changes since v3:
+> - Use the correct compatible in the example
+> 
+>  .../pinctrl/qcom,mdm9607-pinctrl.yaml         | 133 ++++++++++++++++++
+>  1 file changed, 133 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,mdm9607-pinctrl.yaml
+> 
 
-Ok, so this is the patch that makes me go "Yeah, this seems to all go together".
-
-The whole "start_exit()" thing seemed fairly sane as an interesting
-concept to the whole ptrace notification thing, but this one actually
-made me think it makes conceptual sense and how we had exactly that
-"start exit asynchronously" case already in zap_other_threads().
-
-So doing that zap_other_threads() as that async exit makes me just
-thin kthat yes, this series is the right thing, because it not only
-cleans up the ptrace condition, it makes sense in this entirely
-unrelated area too.
-
-So I think I'm convinced. I'd like Oleg in particular to Ack this
-series, and Al to look it over, but I do think this is the right
-direction.
-
-           Linus
+Reviewed-by: Rob Herring <robh@kernel.org>
