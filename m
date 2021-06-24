@@ -2,248 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29023B2C2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F283B2C31
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232119AbhFXKPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 06:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232063AbhFXKPd (ORCPT
+        id S232151AbhFXKQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 06:16:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44051 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232065AbhFXKQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 06:15:33 -0400
-Received: from smtp-bc0a.mail.infomaniak.ch (smtp-bc0a.mail.infomaniak.ch [IPv6:2001:1600:4:17::bc0a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37820C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 03:13:14 -0700 (PDT)
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4G9bYd1MqGzMpst8;
-        Thu, 24 Jun 2021 12:13:09 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4G9bYZ71Kvzlh8T6;
-        Thu, 24 Jun 2021 12:13:06 +0200 (CEST)
-Subject: Re: [PATCH v1] crypto: Make the DRBG compliant with NIST SP800-90A
- rev1
-To:     Stephan Mueller <smueller@chronox.de>,
-        James Morris <jamorris@linux.microsoft.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Haxby <john.haxby@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Simo Sorce <simo@redhat.com>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
-        hpa@zytor.com, tytso@mit.edu
-References: <20210623120751.3033390-1-mic@digikod.net>
- <9dbbf4e751cb4953fe63079cdc917a0bb3a91670.camel@chronox.de>
- <a4e1c071-32af-9650-e6fd-8943b3a79bb0@linux.microsoft.com>
- <8811360.37IJKxs2K1@positron.chronox.de>
- <9ca2fdb4-8cee-3667-c90a-358255fb8f54@digikod.net>
- <7acf0d4a63f7c94d8355101dd03cbfeb58c05d17.camel@chronox.de>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <afce411f-7ddb-557d-e039-83d4d84b87d7@digikod.net>
-Date:   Thu, 24 Jun 2021 12:13:20 +0200
-User-Agent: 
+        Thu, 24 Jun 2021 06:16:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624529638;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qgeFYkU0pR1Q1xO1W6kYeH0XfpPQ577wwQcLewdoy9I=;
+        b=b0fBbGzUviuQWfG53+goimeZRXTChoucFs+qI1i9RJR4XZyTa1ZGw8UqJzSyIcMkGTMFVg
+        6VoaTSU+n5SwskP/dAJiEJGwagjVmCVvXn217lhglUDClZ7cXy2m4yIbxh9luqdTYwC7cW
+        dr+e+S3qgEhuu9aB4i6O79C31zvuLZ0=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-517-CwO61s2JOT2L-gt_fgplBA-1; Thu, 24 Jun 2021 06:13:56 -0400
+X-MC-Unique: CwO61s2JOT2L-gt_fgplBA-1
+Received: by mail-wr1-f71.google.com with SMTP id v9-20020a5d4a490000b029011a86baa40cso2017601wrs.7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 03:13:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qgeFYkU0pR1Q1xO1W6kYeH0XfpPQ577wwQcLewdoy9I=;
+        b=eRh35VtoWuNT0m/gsDgjHbqZYSgL7PLIbH9pT2eV/4PqF5qk5C+x4Dlh/0aFs0wOD1
+         j5BnINe8fxAC1/4z+PuNViJe4Go8lrIrx+tBll6mPxPoM9DoTyc+kS6xwFjLmk6DgDx+
+         kRKsUk9Y1T27VovazRkwXfrn0jr5JAWsZJmjbak6HE7haRaOmnNkBY34trwXSROFRq4T
+         afptx/+v/3pcHpgIeW11L0e6Yj4hvuU+D2/q8IVC+rxmvMc3leFGB56JIauI0fotE1BG
+         wfdo3H8deQoTaKwM5kylmjLHOmgIK8tKP8S/evGLJFmY9cT13qykAhu5HDnFEsYa9vXm
+         mbTw==
+X-Gm-Message-State: AOAM533Wfe55f8oOau7pMwoD+XnBVZqabFeNF8EXP6SQNXCZ2EXMnkMm
+        4aYoOt74jyp5yf6tEuX1nEmOshLYQEjoYrpcu9MIy4wWmVd7cE3kLV7eEAOHEfIcTz1Mwq8ESHe
+        cBDcvRzHeakVmRxK1KwPsocQ1
+X-Received: by 2002:adf:e80c:: with SMTP id o12mr3526086wrm.425.1624529635767;
+        Thu, 24 Jun 2021 03:13:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwystGI+L9gOrbELlIiJWJblqcplIdniKN++kkqVaKxE8NfJktozv1x7SoGv2eSTMa2UzUKpw==
+X-Received: by 2002:adf:e80c:: with SMTP id o12mr3526053wrm.425.1624529635607;
+        Thu, 24 Jun 2021 03:13:55 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id q19sm8207562wmc.44.2021.06.24.03.13.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 03:13:55 -0700 (PDT)
+Subject: Re: [PATCH 2/6] KVM: mmu: also return page from gfn_to_pfn
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        David Stevens <stevensd@chromium.org>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        James Morse <james.morse@arm.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvmarm@lists.cs.columbia.edu,
+        kvm-ppc@vger.kernel.org, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Sean Christopherson <seanjc@google.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Will Deacon <will@kernel.org>
+References: <20210624035749.4054934-1-stevensd@google.com>
+ <20210624035749.4054934-3-stevensd@google.com>
+ <1624524331.zsin3qejl9.astroid@bobo.none>
+ <201b68a7-10ea-d656-0c1e-5511b1f22674@redhat.com>
+ <1624528342.s2ezcyp90x.astroid@bobo.none>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <bbbd7334-5311-a7b4-5dec-8bc606f1d6c9@redhat.com>
+Date:   Thu, 24 Jun 2021 12:13:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <7acf0d4a63f7c94d8355101dd03cbfeb58c05d17.camel@chronox.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1624528342.s2ezcyp90x.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 24/06/21 11:57, Nicholas Piggin wrote:
+>> Needing kvm_pfn_page_unwrap is a sign that something might be buggy, so
+>> it's a good idea to move the short name to the common case and the ugly
+>> kvm_pfn_page_unwrap(gfn_to_pfn(...)) for the weird one.  In fact I'm not
+>> sure there should be any kvm_pfn_page_unwrap in the end.
+>
+> If all callers were updated that is one thing, but from the changelog
+> it sounds like that would not happen and there would be some gfn_to_pfn
+> users left over.
 
-On 23/06/2021 21:10, Stephan Mueller wrote:
-> Am Mittwoch, dem 23.06.2021 um 20:04 +0200 schrieb Mickaël Salaün:
->>
->> On 23/06/2021 19:27, Stephan Müller wrote:
->>> Am Mittwoch, 23. Juni 2021, 19:00:29 CEST schrieb James Morris:
->>>
->>> Hi James,
->>>
->>>> On Wed, 23 Jun 2021, Stephan Mueller wrote:
->>>>>> These changes replace the use of the Linux RNG with the Jitter RNG,
->>>>>> which is NIST SP800-90B compliant, to get a proper entropy input and a
->>>>>> nonce as defined by FIPS.
->>>>>
->>>>> Can you please help me understand what is missing in the current code
->>>>> which
->>>>> seemingly already has achieved this goal?
->>>>
->>>> The advice we have is that if an attacker knows the internal state of the
->>>> CPU, then the output of the Jitter RNG can be predicted.
->>>
->>> Thank you for the hint. And I think such goal is worthwhile (albeit I have
->>> to 
->>> admit that if an attacker is able to gain the internal state of a CPU, I
->>> would 
->>> assume we have more pressing problems that a bit of entropy).
->>>
->>> Anyways, the current code does:
->>>
->>> - in regular mode: seed the DRBG with 384 bits of data from get_random_bytes
->>>
->>> - in FIPS mode: seed the DRBG with 384 bits of data from get_random_bytes 
->>> concatenated with 384 bits from the Jitter RNG
->>>
->>>
->>> If I understand the suggested changes right, I would see the following
->>> changes 
->>> in the patch:
->>>
->>> - in the regular case: 640 bits from get_random_bytes
->>
->> Why 640 bits?
-> 
->  		if (!reseed)
->  			entropylen = ((entropylen + 1) / 2) * 3;
-> 
-> -> Entropylen is 384 in case of a security strength of 256 bits.
-> 
-> Your code does the following if the Jitter RNG is not allocated (i.e. in non-
-> fips mode):
-> 
-> ret = drbg_get_random_bytes(drbg, entropy, entropylen + strength);
-> 
-> so: entropylen + strength = 384 + 256, no?
+In this patches there are, so yeah the plan is to always change the 
+callers to the new way.
 
-Correct (for entropy + nonce + pers), I thought you were referring to
-just the entropy + nonce part. This change is not needed for FIPS of
-course but I changed it too to use the same algorithm and lengths as
-when Jitter RNG is available.
+> But yes in the end you would either need to make gfn_to_pfn never return
+> a page found via follow_pte, or change all callers to the new way. If
+> the plan is for the latter then I guess that's fine.
 
-Do you prefer to keep the current lengths (384 bits) when there is no
-Jitter RNG? It seems to me that this change makes sense and could only
-strengthen this case though.
-
-> 
->>
->>>
->>> - in FIPS mode: 256 bits of data from get_random_bytes concatenated with 384
->>> bits from the Jitter RNG
->>
->> In both cases there are 256 bits for the entropy input and 128 bits for
->> the nonce.
-> 
-> I see in the code path with the Jitter RNG:
-> 
-> ret = crypto_rng_get_bytes(drbg->jent, entropy,
->  						   entropylen);
-> 
-> --> 384 bits from the Jitter RNG
-> 
-> ret = drbg_get_random_bytes(drbg, entropy + entropylen,
-> +						    strength);
-> 
-> --> 256 bits from get_random_bytes
-> 
-> What am I missing here?
-
-OK, it is just a misunderstanding of what is where. To simplify the code
-(with a fixed-length entropy array) I used the "entropy" array to store
-the entropy + nonce + the automatically generated personalization string
-or additional input. The user-supplied personalization string or
-additional input is stored (unchanged) in the pers drbg_string. I
-(briefly) explained this in the comments.
-
-Another difference brought by this change is that the Jitter RNG data
-(i.e. entropy source) is used at the beginning (of the entropy array)
-and the urandom data (i.e. random source) at the end. This strictly
-follows the algorithm described in SP800-90Ar1 sections 8.6.1, 8.6.2,
-10.1.1.2 and 10.1.1.3 .
-
-> 
-> 
->>  If Jitter RNG is not available, then urandom is used instead,
->> which means that the system is not FIPS compliant.
-> 
-> Agreed, the existing does does exactly the same with the exception that it
-> pulls 384 bits from get_random_bytes instead of 640 in non-FIPS mode (i.e.
-> when the Jitter RNG is not allocated).
-> 
-> In FIPS mode, the current code draws 384 bits from get_random_bytes and
-> separately 384 bits from the Jitter RNG. So, each data block from either
-> entropy source could completely satisfy the SP800-90A requirement.
-
-What is the rational of using 384 (strength * 1.5) bits to draw from
-get_random_bytes?
-
-We noticed that (as explained above) the order of these sources doesn't
-follows SP800-90Ar1.
-It is not clear which part and source is used for the entropy, nonce and
-(maybe) personalization string.
-If the random source is indeed the personalization string or the
-additional input, then the pers length may not fit with the maximum
-lengths specified in SP800-90Ar1 table 2 and 3.
-
-> 
->>
->> This follows the SP800-90Ar1, section 8.6.7: [a nonce shall be] "A value
->> with at least (security_strength/2) bits of entropy".
-> 
-> Agreed, but what is your code doing different than the existing code?
-
-It just fits with strength/2 for the length of the nonce.
-
->>
->>>
->>> So, I am not fully sure what the benefit of the difference is: in FIPS mode 
->>> (where the Jitter RNG is used), the amount of data pulled from 
->>> get_random_bytes seems to be now reduced.
->>
->> We can increase the amount of data pulled from get_random_bytes (how to
->> decide the amount?), but as we understand the document, this should be
->> part of the personalization string and additional input, not the nonce.
-> 
-> There is no need to have a personalization string or additional input. Note,
-> those two values are intended to be provided by a caller or some other
-> environment.
-
-Right, but the intent here is to strictly follow SP800-90Ar1 (hence the
-use of Jitter RNG for entropy and nonce) but to still use the urandom
-source, which seems to only fit in the personalization string according
-to SP800-90Ar1.
-
-> 
-> If you want to stuff more seed into the DRBG, you simply enlarge the seed
-> buffer and pull more from the entropy sources. I have no objections doing
-> that. All I am trying to point out is that the 90A standard does not require
-> more entropy than 256 bits during initialization plus 128 bits of nonce == 384
-> bits of data. But the DRBGs all allow providing more data as seed.
-
-Agreed, the user-supplied personalization string can be used to add more
-data. We also want to harden the default use (i.e. without user-provided
-personalization string) by automatically using non-entropy source
-(urandom) though.
-
-> 
->> I guess it may not change much according to the implementation, as for
->> the order of random and entropy concatenation, but these changes align
->> with the specifications and it should help FIPS certifications.
-> 
-> Are you saying the order of data from the entropy sources matters in the
-> entropy buffer? I have not seen that in the standard, but if you say this is
-> the goal, then allow me to understand which order you want to see?
-> 
-> The current code contains the order of:
-> 
-> <384 bits get_random_bytes> || <384 bits Jitter RNG>
-   ^                              ^
-   personalization string?        entropy+nonce
-
-As described in SP800-90Ar1 section 10.1.1.2:
-seed_material = entropy_input || nonce || personalization_string
-
-As described in SP800-90Ar1 section 10.1.1.3:
-seed_material = 0x01 || V || entropy_input || additional_input
-
-And SP800-90Ar1 section 5 defining "X || Y" as "Concatenation of two
-strings X and Y. X and Y are either both bitstrings, or both byte strings".
-
-According to that, we would like at least:
-<384 bits Jitter RNG> || <256 bits get_random_bytes>
-and also enforcing the maximum length for the whole personalization
-string and the additional input.
-
-Thanks,
- Mickaël
