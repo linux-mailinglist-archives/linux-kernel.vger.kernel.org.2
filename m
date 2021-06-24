@@ -2,97 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2FA13B253C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EEBB3B253A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbhFXC7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 22:59:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbhFXC7N (ORCPT
+        id S229818AbhFXC7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 22:59:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49508 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229916AbhFXC66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 22:59:13 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E689C061574;
-        Wed, 23 Jun 2021 19:56:55 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id l11so2594714pji.5;
-        Wed, 23 Jun 2021 19:56:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a4f7LucUmwk1fs1/j6b+mHE2Wk/ES6e/RtiKDnV2oVM=;
-        b=jvHWPz+7fwYV/KxX1NYTkBsmIiSsvkc7wgBTpLkO10iIJObO0E+2+iQy3UD9kJHVHk
-         sETrqwbHmhG/HTguyik+wF+UhG5eWwx02lHhXKUsjg9iCfUdOq5u07r4C3p7JR0Ni5sp
-         5ySkaN7pAo2QJzUmSBl0UFisxhl298QcsUiVhRvqf36YLc7JWJzpIZ3uzTVsFfkAyGA9
-         CpkGq/EtPhvEf/idkYvHNHTUSomO6zY8A703K70cIMUIvgJTh0q/KQvGpjxLTAGXSf+V
-         kqI9+pCLwYYPPJ4GlujFCrilHGSv8ATZ90l5jMx7YOfdHOqDXTpqMRmg3N/FQhVUFVci
-         3Iqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a4f7LucUmwk1fs1/j6b+mHE2Wk/ES6e/RtiKDnV2oVM=;
-        b=Ly+WJT46/zpuHEZ90YlKNZ5gBDvAFwI6pu/K5aU0wAvMMb0hRcjXKSq1MM0MLmXpEV
-         cL7tHYhWcRy6/JWCgRgSpWUYKZVokrHrO0m5zpCviRVEEo4XBJb1EInbJ6+geONcqr4A
-         SjyvYA/6kDtf4c6C6reKGag7CZixNPMj+C3+Z+H0VFRYHOqiOzS9pNx1eCa0iWy4S3pG
-         GuITKbEOz1pCd4YK8hCXVifFw+lIeyM3Grgp2vFYkQd9e+qTNUpb8lK8nc5meDTrB2Z9
-         D5domUBsy/c+JOFe51IdniAAjaE6QRdjYJlAO/YafSqqNdSq+3ANKVMNbJW7MTYpJHJm
-         Xs+w==
-X-Gm-Message-State: AOAM530nZKQs565tcmWuxK0WePWqBDjrwBBYLHzRkun8IFIC2fW1QrVw
-        HHHpBB65C33WsZ3RufA2de4=
-X-Google-Smtp-Source: ABdhPJz3H0LKYO4d7CHYIe6f69eBXOh4LlmP5C92YyhBWRIEAQA0j/m9OXcGsACr7xhigfZpVYNp/A==
-X-Received: by 2002:a17:90b:a0c:: with SMTP id gg12mr2826179pjb.138.1624503415074;
-        Wed, 23 Jun 2021 19:56:55 -0700 (PDT)
-Received: from gli-System-Product-Name.genesyslogic.com.tw (220-128-190-163.HINET-IP.hinet.net. [220.128.190.163])
-        by smtp.gmail.com with ESMTPSA id a23sm1034089pfk.146.2021.06.23.19.56.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 19:56:54 -0700 (PDT)
-From:   Renius Chen <reniuschengl@gmail.com>
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben.Chuang@genesyslogic.com.tw,
-        Renius Chen <reniuschengl@gmail.com>
-Subject: [PATCH] mmc: sdhci-pci-gli: Finetune GL9763E L1 Entry Delay
-Date:   Thu, 24 Jun 2021 10:56:47 +0800
-Message-Id: <20210624025647.101387-1-reniuschengl@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 23 Jun 2021 22:58:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624503400;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2eSA6/HlHvadNSOU/l/uauEc2fo4rHElHGAVhTWFqfg=;
+        b=N3vYaqOwNubFpJdMQ5GNh+YtJrEQF0koG66Vef6j8JzIiLVL0JKjaW5GlMRiaaNGSXJvj0
+        tc7JDw4nN6iE+31Lg3s65UxPpDTeAep+iZdup51dmRheDURkvKzROBewL5zUxXnQ2IFrf7
+        g0aIR8/VW0MTGE88YZRBKuzS7n4dJ+g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-475-pBXycZq0PzWfpTXSRvXuVQ-1; Wed, 23 Jun 2021 22:56:36 -0400
+X-MC-Unique: pBXycZq0PzWfpTXSRvXuVQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 49F86802C88;
+        Thu, 24 Jun 2021 02:56:35 +0000 (UTC)
+Received: from [10.64.54.70] (vpn2-54-70.bne.redhat.com [10.64.54.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 64B0A1001281;
+        Thu, 24 Jun 2021 02:56:33 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH] Documentation, dt, numa: Add note to empty NUMA node
+To:     Randy Dunlap <rdunlap@infradead.org>, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        drjones@redhat.com, shan.gavin@gmail.com
+References: <20210624033740.20862-1-gshan@redhat.com>
+ <a6cdc518-3bd7-2b66-acd0-c4d53d360eae@infradead.org>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <435d4707-3871-26fe-e0e4-df93931ba49d@redhat.com>
+Date:   Thu, 24 Jun 2021 14:58:02 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <a6cdc518-3bd7-2b66-acd0-c4d53d360eae@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Finetune the L1 entry delay to 20us for better balance of performance and
-battery life.
+On 6/24/21 12:14 PM, Randy Dunlap wrote:
+> On 6/23/21 8:37 PM, Gavin Shan wrote:
+>> The empty NUMA nodes, where no memory resides in, are allowed. For
+>> these empty NUMA nodes, the 'len' of 'reg' property is zero. These
+>> empty NUMA node IDs are still valid and parsed. I finds difficulty
+>> to get where it's properly documented.
+>>
+>> So lets add note to empty NUMA nodes in the NUMA binding doc.
+>>
+>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>> ---
+>>   Documentation/devicetree/bindings/numa.txt | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/numa.txt b/Documentation/devicetree/bindings/numa.txt
+>> index 21b35053ca5a..c564705c0eac 100644
+>> --- a/Documentation/devicetree/bindings/numa.txt
+>> +++ b/Documentation/devicetree/bindings/numa.txt
+>> @@ -109,6 +109,10 @@ Example:
+>>   Dual socket system consists of 2 boards connected through ccn bus and
+>>   each board having one socket/soc of 8 cpus, memory and pci bus.
+>>   
+>> +Note that the empty NUMA nodes, which no memory resides in, are allowed
+> 
+> Missing period at end of the sentence above.
+> 
 
-Signed-off-by: Renius Chen <reniuschengl@gmail.com>
----
- drivers/mmc/host/sdhci-pci-gli.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Oh, Yes. Thanks, Randy. I will replace "resides in" with "resides in period"
+in v2.
 
-diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-index 302a7579a9b3..4e3c0561354d 100644
---- a/drivers/mmc/host/sdhci-pci-gli.c
-+++ b/drivers/mmc/host/sdhci-pci-gli.c
-@@ -90,7 +90,7 @@
- 
- #define PCIE_GLI_9763E_CFG2      0x8A4
- #define   GLI_9763E_CFG2_L1DLY     GENMASK(28, 19)
--#define   GLI_9763E_CFG2_L1DLY_MID 0x54
-+#define   GLI_9763E_CFG2_L1DLY_MID 0x50
- 
- #define PCIE_GLI_9763E_MMC_CTRL  0x960
- #define   GLI_9763E_HS400_SLOW     BIT(3)
-@@ -810,7 +810,7 @@ static void gli_set_gl9763e(struct sdhci_pci_slot *slot)
- 
- 	pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG2, &value);
- 	value &= ~GLI_9763E_CFG2_L1DLY;
--	/* set ASPM L1 entry delay to 21us */
-+	/* set ASPM L1 entry delay to 20us */
- 	value |= FIELD_PREP(GLI_9763E_CFG2_L1DLY, GLI_9763E_CFG2_L1DLY_MID);
- 	pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG2, value);
- 
--- 
-2.27.0
+>> +Their NUMA node IDs are still valid so that memory can be added into these
+>> +NUMA nodes through hotplug afterwards.
+>> +
+>>   	memory@c00000 {
+>>   		device_type = "memory";
+>>   		reg = <0x0 0xc00000 0x0 0x80000000>;
+
+By the way, I have one more question to check with you if I can. I'm not sure
+if dummy and invalid 'unit-address' is allowed in the empty memory node name,
+which follows the format "memory@unit-address'.
+
+(1) The 'unit-address' is same thing as to 'base address' for memory node,
+     as specified in device-tree specification. I'm not sure if 'base address'
+     can be dummy and invalid one since empty memory node doesn't have memory
+     at all.
+
+     https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#node-names
+
+(2) I don't find the 'unit-address' is used in linux, but I'm not sure other
+     software component like firmware uses it or not.
+
+Thanks,
+Gavin
 
