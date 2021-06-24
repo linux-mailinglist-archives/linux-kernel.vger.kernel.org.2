@@ -2,218 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBA13B2D47
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF1A3B2D4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232371AbhFXLMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:12:09 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:43640 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232346AbhFXLMI (ORCPT
+        id S232387AbhFXLMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232300AbhFXLMg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:12:08 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1DCA61FD40;
-        Thu, 24 Jun 2021 11:09:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624532989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0lYtaw6yYAp1oFlEni71/hKXPj3QrMQ7pc1LAODKz4k=;
-        b=c8NE66u8mVqypYKA48pYuKWEhrTaMy2PrmYxh8t0mRkxAhh0LunJSNCIGfhx+z0D5aOGFW
-        //OUlMvnTitDpsDeZK2XEodLlPB3ce0nrq+QTyK2GB+koVWhSvrro0GO2h8JaIqby+k6pa
-        SQKP1sBqP0y7n+NHf/78UpHz2JXQSFs=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id B21D211A97;
-        Thu, 24 Jun 2021 11:09:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624532989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0lYtaw6yYAp1oFlEni71/hKXPj3QrMQ7pc1LAODKz4k=;
-        b=c8NE66u8mVqypYKA48pYuKWEhrTaMy2PrmYxh8t0mRkxAhh0LunJSNCIGfhx+z0D5aOGFW
-        //OUlMvnTitDpsDeZK2XEodLlPB3ce0nrq+QTyK2GB+koVWhSvrro0GO2h8JaIqby+k6pa
-        SQKP1sBqP0y7n+NHf/78UpHz2JXQSFs=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id C2p9Kfxn1GAXeQAALh3uQQ
-        (envelope-from <jgross@suse.com>); Thu, 24 Jun 2021 11:09:48 +0000
-Subject: Re: [PATCH v2 20/24] x86/xen: Make irq_enable() noinstr
-To:     Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
-        tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, joro@8bytes.org,
-        boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
-        rostedt@goodmis.org, dvyukov@google.com, elver@google.com
-References: <20210624094059.886075998@infradead.org>
- <20210624095148.872254932@infradead.org>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <4a591b12-be63-8446-5389-454e7c47f1e6@suse.com>
-Date:   Thu, 24 Jun 2021 13:09:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 24 Jun 2021 07:12:36 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB923C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 04:10:17 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id f16so3048269qvs.7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 04:10:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7Kmszu6cucNqXB6Mb5j/8fAwFEGVFfmkw2+JHwAEEiM=;
+        b=nJXky57xz0x7I98tBot6BTTDCKBhipY4/W6TqjIq+rVlcwTaEuRGYRH1yUZIm1Lw2T
+         55Fmn5qymxCIssEPmdIMUdq7zKex8WslkjYAL90d3NuPTV31HSb2fFdgYjzmGzXJSYFz
+         HyTSZ8wJ+QqJ0WpV2h3XuIl0x5tzxexO9r4JuWk+4Q/FQ6EqrsKz/rh9+CsQO6w+KP0Z
+         tSLR4QA0KgKnmez5FcxiKGoFUYGYW7OO1CXW+CZuxYoH7ZGSIfL4ukqwI4xPMJC6SMGW
+         mMNpg8Ly9LIR3nWr/eiUDh/cQCOd3Yh1cXmJlI5uDKBSfLXQQldQ7FtcHK+FVPZRkTtv
+         jU6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7Kmszu6cucNqXB6Mb5j/8fAwFEGVFfmkw2+JHwAEEiM=;
+        b=ir4CDgH0/rGqlDKgfFuXmfUBBK6LcMX3knb7Zhx+Pyd/1a4v2ZDxU2r+sLW7ZMp1NN
+         FuYk/zWSibhmieFfm8s8Du9ht37RaNWSJwLdtBlnwiq00K7vIrgakAn1adtXn3DV0xLE
+         KLYtegYEKHZEBzfZ14W7Mnw2NWvfj9DpW0INymk7lPmk5/Cti7GDyxWQVu4Xg39NSUzZ
+         J5n4+cuOGIE5KkNxIvfneoGSIfAskVD/l+52BQvXZnI67abFUKccjEvT0qTclWjjjbyZ
+         CrXdM2GnzODQQPfG4Y2Bel7QxkTNR5J83/5PAyd9ZZzQjNp2rcLsHgbRW1f7Sui4YrF3
+         T66Q==
+X-Gm-Message-State: AOAM5327lhOBEwijO0cMIexMTYu+kF3Na3SGWJR2WUJ71PbP0GgP0ma3
+        CV9u9Zlv+ImGvL5LvWWX6080YKISZCRF1P0Yh66Egw==
+X-Google-Smtp-Source: ABdhPJyuxLHvPFObd6POVT1jQHPEMa7EDK7m2QCVQAR5KroPHQHCehDC1xr8EBrrm9iNLl6RKXNuS6GApbblGPAcBDM=
+X-Received: by 2002:a05:6214:8ed:: with SMTP id dr13mr4792385qvb.59.1624533016863;
+ Thu, 24 Jun 2021 04:10:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210624095148.872254932@infradead.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="6Psy89zVKyAsNd3O1WTizREjrcXhFA2HP"
+References: <20210621173028.3541424-1-mw@semihalf.com> <20210621173028.3541424-3-mw@semihalf.com>
+ <YNOYFFgB5UNdSYeI@lunn.ch> <CAPv3WKdR-NJ8oPo5JHb9rztYdQUZA=D3sLyf07D5n5oOm=UfjA@mail.gmail.com>
+In-Reply-To: <CAPv3WKdR-NJ8oPo5JHb9rztYdQUZA=D3sLyf07D5n5oOm=UfjA@mail.gmail.com>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Thu, 24 Jun 2021 13:10:04 +0200
+Message-ID: <CAPv3WKdSNZzvDS5-FNK4eTMfRt6xuk6xYJ6eQf0N01Q4OhRS9Q@mail.gmail.com>
+Subject: Re: [net-next: PATCH v3 2/6] net: mdiobus: Introduce fwnode_mdbiobus_register()
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Jon Nettleton <jon@solid-run.com>,
+        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
+        lenb@kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---6Psy89zVKyAsNd3O1WTizREjrcXhFA2HP
-Content-Type: multipart/mixed; boundary="ivoafKbVCGfW3I7iFDmMjDDPuTFcvwRKe";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
- tglx@linutronix.de
-Cc: linux-kernel@vger.kernel.org, joro@8bytes.org,
- boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
- rostedt@goodmis.org, dvyukov@google.com, elver@google.com
-Message-ID: <4a591b12-be63-8446-5389-454e7c47f1e6@suse.com>
-Subject: Re: [PATCH v2 20/24] x86/xen: Make irq_enable() noinstr
-References: <20210624094059.886075998@infradead.org>
- <20210624095148.872254932@infradead.org>
-In-Reply-To: <20210624095148.872254932@infradead.org>
+Hi,
 
---ivoafKbVCGfW3I7iFDmMjDDPuTFcvwRKe
-Content-Type: multipart/mixed;
- boundary="------------EC033FFC013DF1AA87BDBCD7"
-Content-Language: en-US
+czw., 24 cze 2021 o 00:10 Marcin Wojtas <mw@semihalf.com> napisa=C5=82(a):
+>
+> Hi,
+>
+> =C5=9Br., 23 cze 2021 o 22:22 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a=
+):
+> >
+> > On Mon, Jun 21, 2021 at 07:30:24PM +0200, Marcin Wojtas wrote:
+> > > This patch introduces a new helper function that
+> > > wraps acpi_/of_ mdiobus_register() and allows its
+> > > usage via common fwnode_ interface.
+> > >
+> > > Fall back to raw mdiobus_register() in case CONFIG_FWNODE_MDIO
+> > > is not enabled, in order to satisfy compatibility
+> > > in all future user drivers.
+> > >
+> > > Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+> > > ---
+> > >  include/linux/fwnode_mdio.h    | 12 +++++++++++
+> > >  drivers/net/mdio/fwnode_mdio.c | 22 ++++++++++++++++++++
+> > >  2 files changed, 34 insertions(+)
+> > >
+> > > diff --git a/include/linux/fwnode_mdio.h b/include/linux/fwnode_mdio.=
+h
+> > > index faf603c48c86..13d4ae8fee0a 100644
+> > > --- a/include/linux/fwnode_mdio.h
+> > > +++ b/include/linux/fwnode_mdio.h
+> > > @@ -16,6 +16,7 @@ int fwnode_mdiobus_phy_device_register(struct mii_b=
+us *mdio,
+> > >  int fwnode_mdiobus_register_phy(struct mii_bus *bus,
+> > >                               struct fwnode_handle *child, u32 addr);
+> > >
+> > > +int fwnode_mdiobus_register(struct mii_bus *bus, struct fwnode_handl=
+e *fwnode);
+> > >  #else /* CONFIG_FWNODE_MDIO */
+> > >  int fwnode_mdiobus_phy_device_register(struct mii_bus *mdio,
+> > >                                      struct phy_device *phy,
+> > > @@ -30,6 +31,17 @@ static inline int fwnode_mdiobus_register_phy(stru=
+ct mii_bus *bus,
+> > >  {
+> > >       return -EINVAL;
+> > >  }
+> > > +
+> > > +static inline int fwnode_mdiobus_register(struct mii_bus *bus,
+> > > +                                       struct fwnode_handle *fwnode)
+> > > +{
+> > > +     /*
+> > > +      * Fall back to mdiobus_register() function to register a bus.
+> > > +      * This way, we don't have to keep compat bits around in driver=
+s.
+> > > +      */
+> > > +
+> > > +     return mdiobus_register(mdio);
+> > > +}
+> > >  #endif
+> >
+> > I looked at this some more, and in the end i decided it was O.K.
+> >
+> > > +/**
+> > > + * fwnode_mdiobus_register - bring up all the PHYs on a given MDIO b=
+us and
+> > > + *   attach them to it.
+> > > + * @bus: Target MDIO bus.
+> > > + * @fwnode: Pointer to fwnode of the MDIO controller.
+> > > + *
+> > > + * Return values are determined accordingly to acpi_/of_ mdiobus_reg=
+ister()
+> > > + * operation.
+> > > + */
+> > > +int fwnode_mdiobus_register(struct mii_bus *bus, struct fwnode_handl=
+e *fwnode)
+> > > +{
+> > > +     if (is_acpi_node(fwnode))
+> > > +             return acpi_mdiobus_register(bus, fwnode);
+> > > +     else if (is_of_node(fwnode))
+> > > +             return of_mdiobus_register(bus, to_of_node(fwnode));
+> > > +     else
+> > > +             return -EINVAL;
+> >
+> > I wounder if here you should call mdiobus_register(mdio), rather than
+> > -EINVAL?
+> >
+> > I don't have a strong opinion.
+>
+> Currently (and in foreseeable future) we support only DT/ACPI as a
+> firmware description, reaching the last "else" means something really
+> wrong. The case of lack of DT/ACPI and the fallback is handled on the
+> include/linux/fwnode_mdio.h level.
+>
+> >
+> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> >
 
-This is a multi-part message in MIME format.
---------------EC033FFC013DF1AA87BDBCD7
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Unfortunately I have to withdraw this patch, as well as xgmac_mdio
+one. In case the fwnode_/of_/acpi_mdio are built as modules, we get a
+cycle dependency during depmod phase of modules_install, eg.:
 
-On 24.06.21 11:41, Peter Zijlstra wrote:
-> vmlinux.o: warning: objtool: pv_ops[32]: native_irq_enable
-> vmlinux.o: warning: objtool: pv_ops[32]: __raw_callee_save_xen_irq_enab=
-le
-> vmlinux.o: warning: objtool: pv_ops[32]: xen_irq_enable_direct
-> vmlinux.o: warning: objtool: lock_is_held_type()+0xfe: call to pv_ops[3=
-2]() leaves .noinstr.text section
->=20
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+depmod: ERROR: Cycle detected: fwnode_mdio -> of_mdio -> fwnode_mdio
+depmod: ERROR: Found 2 modules in dependency cycles!
 
-Reviewed-by: Juergen Gross <jgross@suse.com>
+OR:
 
+depmod: ERROR: Cycle detected: acpi_mdio -> fwnode_mdio -> acpi_mdio
+depmod: ERROR: Found 2 modules in dependency cycles!
 
-Juergen
+The proper solution would be to merge contents of
+acpi_mdiobus_register and of_mdiobus_register inside the common
+fwnode_mdiobus_register (so that the former would only call the
+latter). However this change seems feasible, but I'd expect it to be a
+patchset bigger than this one alone and deserves its own thorough
+review and testing, as it would affect huge amount of current
+of_mdiobus_register users.
 
+Given above, for now I will resubmit this patchset in the shape as
+proposed in v1, i.e. using the 'if' condition explicitly in mvmdio
+driver.
 
---------------EC033FFC013DF1AA87BDBCD7
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------EC033FFC013DF1AA87BDBCD7--
-
---ivoafKbVCGfW3I7iFDmMjDDPuTFcvwRKe--
-
---6Psy89zVKyAsNd3O1WTizREjrcXhFA2HP
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmDUZ/wFAwAAAAAACgkQsN6d1ii/Ey85
-igf/W8QjkR29eTDbtJbsZXrnbqfxBw4OgQfYObjv05vmgbeJVslnASVviyoqgJd7S4gJxUIk2grt
-Kgu4ktaw1yBGKWiTLUIQIW7SvYTnyphdKsbsDD1SWVK9KW6avR9QmHt85ODeudnhEV/Z0tGNiwF5
-LlTNKzZGOVG6AtBxkzoCQMmBGO/lN7gn+6mwT1K8yqY+ueiklMZVcE8tsFqGIyDUWjlqPF1tFVMG
-Y3eWKKwQY4ZVa42GGIae3fJyTbJHa5KcfDK3FRWKOilLtBtSSjmKgHDWnlRq84FFrtn+b6Oh2gfK
-WMo3/h8sYOhmPXMAkPy5NfsXqLSlN1ZhkwX2z5oWgw==
-=uX6e
------END PGP SIGNATURE-----
-
---6Psy89zVKyAsNd3O1WTizREjrcXhFA2HP--
+Best regards,
+Marcin
