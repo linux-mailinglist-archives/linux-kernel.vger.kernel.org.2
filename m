@@ -2,126 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A733B34DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D89123B34E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232438AbhFXRiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 13:38:06 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:48069 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231488AbhFXRiF (ORCPT
+        id S232390AbhFXRjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 13:39:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbhFXRjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 13:38:05 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id 873C92B012D5;
-        Thu, 24 Jun 2021 13:35:44 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 24 Jun 2021 13:35:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=syn1YILhAfK3M/UNb+KP9SgoCkI
-        TBzoHQzyI1Q73vlo=; b=lnHQSXciF28N2qox0++TGJ7z2pNBKwXXr715ocOib1C
-        /zbFNcR8d5m+nqByCu8sKDg4nmYQF7ShRs90jzg4dxjPA5C7lW5+rpjLc38tUmuP
-        Buenm2LWdZxo/1exDKxsSZpZgK6HeTQ15jFvHJFYiqa8BcR1emqJpa4+s64jN6Av
-        j1+p+lKjIuvLtMoNCpy8jVUF+LZ8tHbhC/apkyiiH0aJCOTxFYL9QdXSZmavNQWf
-        ubxqBZvY0Igqh4+cPzFyqy3eHcZjlC9HMF54+11lg//oHrJlKkUnDcTXZm5Zch1i
-        /lNgQi6eSe/8mehmAEshT+TmhKHGODQTuNRj9MnkQtw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=syn1YI
-        LhAfK3M/UNb+KP9SgoCkITBzoHQzyI1Q73vlo=; b=mpcDVh/s/HyxIxzVM1jJ1u
-        FB6Sr7YTGTzQ6akhRP7xVCROkJ0Tx3KE4gE+43slyrbjYUOEJmBJHHmbMg8STp9N
-        bUa1nRXitB6dTYFbSTF/URODu+LAYD7Hw+rTboQlZURDsQZCsuE1e9ICRxdDWFCg
-        aC8UEtE/7OLNLXB57hx6sEWnA4grlapCAqb8Xxr2PdmeD3ctuKb+7M60HSeOiZVd
-        2LL5GdBe3kYk5Zt6t67rv2LVjdSFAgsz/HdgBXRpHCVlBEi8OKbeBYrCx5nGYi9S
-        FfWZZbNf0XV3oxA7UC+Qpx2hbJwpD8xrS/ZZd4v8n+5UpoG1TmRevhTOnwom+xBA
-        ==
-X-ME-Sender: <xms:b8LUYBpcofhVmQzO2KhMFMnxOfqZfp7e5U6XwV2tAUh9ZUmWutlg4g>
-    <xme:b8LUYDqvYZG_e0WiElln-CsRxk8KvaYQOn7JI5bX8p4mE-OhCrpPYNpzs34aYJF2Y
-    v5mJBm-WBfDuA>
-X-ME-Received: <xmr:b8LUYOMP3nbZ3qjP5Pcfw21z9XhLr-bKKPsQuDSm5eswOX0iNRJgvwOHWV6yx7NJ72QPB0UlVCtq5YA7adQIt2bDlUApO4Je>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeghedgudduhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
-    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
-    hhrdgtohhm
-X-ME-Proxy: <xmx:b8LUYM4h-uL00MH2ayDb1BherWcdPiRb8ferIGjiU944oobxpdzSxw>
-    <xmx:b8LUYA49C2mvJ0mX2Gw2kDL0pGa6LXxvU7WQwEpLenAXMwK6TrsQXQ>
-    <xmx:b8LUYEgvcsB49pPUbHIhRliZKBGtCbVETRLnjD-AztJB5K8PVF_R2g>
-    <xmx:cMLUYMq7RIzNdRaffHQ4hnbwfjJU6SacefRuUsVO-FPjMuy1GZjUxvrMMFA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 24 Jun 2021 13:35:42 -0400 (EDT)
-Date:   Thu, 24 Jun 2021 19:35:39 +0200
-From:   Greg KH <greg@kroah.com>
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>, peterz@infradead.org,
-        mingo@redhat.com, linux-kernel@vger.kernel.org, eranian@google.com,
-        namhyung@kernel.org, acme@kernel.org, jolsa@redhat.com
-Subject: Re: [PATCH 2/7] perf: Create a symlink for a PMU
-Message-ID: <YNTCa5QO1YMy8fJ0@kroah.com>
-References: <1624497729-158864-1-git-send-email-kan.liang@linux.intel.com>
- <1624497729-158864-3-git-send-email-kan.liang@linux.intel.com>
- <YNQckpOuw80uCUa1@kroah.com>
- <d25a0556-325f-9af0-a495-b9f222d63e10@linux.intel.com>
- <YNSWtCSjJy8CytOL@kroah.com>
- <1e536604-cf93-0f09-401e-2073924c5582@linux.intel.com>
- <YNSlVPcjHInk4un6@kroah.com>
- <33bccec9-c4c4-d52b-9ee4-9a09e7353812@linux.intel.com>
+        Thu, 24 Jun 2021 13:39:14 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CB0C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 10:36:55 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id w71so5803204pfd.4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 10:36:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PeRKsgy74/XMQSubNA8psgjoWJKBQi8NTy2S1z7EZtA=;
+        b=N/X8xyzRMvKBxZFAr3CR8HD6HGsZwVBeIe1wh3HdrE8VLQVtSsen5KkxX2ZdLIVwAT
+         Ko+DoSRx662BsfDGZPoGFnWai4VGGC8J+GL8KPN/UKFYlAr96orvk5HXFA5kWJ45ZtpT
+         t7GkirUt+ls5zr4SR2UZToo9tZ91JhYCzI2/QC96FkNcHfZEhXFg4/WY4J59U0TSTdxo
+         q+NfcdszvkjEd9hzVIwNvYCWRDDydMgIUrf5oF+x6yuvhDB9WvmDXlrmJrvc82rdMc4s
+         ea+njS9uyYa2eOeokpSTb66SogV6aLjpq02mSLTPc9R7V0TwgnsZYVZ/DlnBp2UdV1vx
+         ei1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PeRKsgy74/XMQSubNA8psgjoWJKBQi8NTy2S1z7EZtA=;
+        b=fq2ZKOvtatyJiLa94DK2mf1oayeLiehWDcJ63yMISbxiVSq8fnBx/hOvGiOCf1X/yz
+         114JWdTlzMIJRuFxTglvPKxy8gzBu9ML0pBfJUUmKwwuclWRF9CDrDPF8C1zCzAICNWj
+         WMo+fma6fCbPBRapwPeqbUiy/eu7MphghHYaIStN/soO4y1ockpjEr8kAn6VF7N2qICc
+         tXBA2yqN0zLyxNJgxqp4Ld9UJykwtPzkOi2XVCT0M66uIkTYBUgyzldw2kQureD+Tjnw
+         i4AjqrOZr9b2kNGTMkGw0FURzhbm3Kh3IAafMKhJO8bTaAPqkV47ZB6FnbD5B1lPqvN2
+         5ErQ==
+X-Gm-Message-State: AOAM5313LbaWXzzbEVg7L19/FQogwSzNkp5PW4hYpKgaJgqG75ccyFyN
+        1djvteGzOFxQ9gafpLSkXrg=
+X-Google-Smtp-Source: ABdhPJxQicAOfILG7//WbS8jTvHjFyObfpk6flCAdE492wQCWFsR/cO1tsK16a0MK2WxvOVGGOAlRg==
+X-Received: by 2002:a63:5c04:: with SMTP id q4mr5637097pgb.127.1624556215056;
+        Thu, 24 Jun 2021 10:36:55 -0700 (PDT)
+Received: from nuc10 (104.36.148.139.aurocloud.com. [104.36.148.139])
+        by smtp.gmail.com with ESMTPSA id y1sm3542572pfe.72.2021.06.24.10.36.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 10:36:54 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 10:36:50 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: kmemleak memory scanning
+Message-ID: <YNTCsqQUaYnlXGbO@nuc10>
+References: <YMe8ktUsdtwFKHuF@nuc10>
+ <CACT4Y+ZjSbioNS8oPwUcyOrLhB6-Sf-WZmadAoAm0H-JYRLo1g@mail.gmail.com>
+ <YMpCEu9yM5Ppj5jj@nuc10>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <33bccec9-c4c4-d52b-9ee4-9a09e7353812@linux.intel.com>
+In-Reply-To: <YMpCEu9yM5Ppj5jj@nuc10>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 01:07:14PM -0400, Liang, Kan wrote:
+On Wed, Jun 16, 2021 at 11:25:22AM -0700, Rustam Kovhaev wrote:
+> On Tue, Jun 15, 2021 at 07:15:24AM +0200, Dmitry Vyukov wrote:
+> > On Mon, Jun 14, 2021 at 10:31 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
+> > >
+> > > hello Catalin, Andrew!
+> > >
+> > > while troubleshooting a false positive syzbot kmemleak report i have
+> > > noticed an interesting behavior in kmemleak and i wonder whether it is
+> > > behavior by design and should be documented, or maybe something to
+> > > improve.
+> > > apologies if some of the questions do not make sense, i am still going
+> > > through kmemleak code..
+> > >
+> > > a) kmemleak scans struct page (kmemleak.c:1462), but it does not scan
+> > > the actual contents (page_address(page)) of the page.
+> > > if we allocate an object with kmalloc(), then allocate page with
+> > > alloc_page(), and if we put kmalloc pointer somewhere inside that page,
+> > > kmemleak will report kmalloc pointer as a false positive.
+> > > should we improve kmemleak and make it scan page contents?
+> > > or will this bring too many false negatives?
+> > 
+> > Hi Rustam,
+> > 
+> > Nice debugging!
+> > I assume lots of pages are allocated for slab and we don't want to
+> > scan the whole page if only a few slab objects are alive on the page.
+> > However alloc_pages() can be called by end kernel code as well.
+> > I grepped for any kmemleak annotations around existing calls to
+> > alloc_pages, but did not find any...
+> > Does it require an explicit kmemleak_alloc() after allocating the page
+> > and kmemleak_free () before freeing the page?
 > 
+> hi Dmitry, thank you!
+> yes, as Catalin has pointed out, there are a few places where we call
+> kmemleak_alloc()/kmemleak_free() explicitly in order for the pages to be
+> scanned, like in blk_mq_alloc_rqs()
 > 
-> On 6/24/2021 11:31 AM, Greg KH wrote:
-> > On Thu, Jun 24, 2021 at 08:24:29AM -0700, Andi Kleen wrote:
-> > > 
-> > > On 6/24/2021 7:29 AM, Greg KH wrote:
-> > > > On Thu, Jun 24, 2021 at 07:24:31AM -0700, Andi Kleen wrote:
-> > > > > > But first off, why is this symlink suddenly needed?  What is so special
-> > > > > > about this new hardware that it breaks the existing model?
-> > > > > The driver can be in two modes:
-> > > > > 
-> > > > > - Driver fully knows the hardware and puts in the correct Linux names
-> > > > > 
-> > > > > - Driver doesn't know the hardware but is in a fallback mode where it only
-> > > > > looks at a discovery table. There we don't have the correct names, just an
-> > > > > numeric identifier for the different hardware sub components.
-> > > > Why does this matter?  Why would the driver not "know" the hardware?  If
-> > > > it doesn't know it, why would it bind to it?
-> > > 
-> > > It's a similar concept as a PCI class. How to have a driver that can handle
-> > > future hardware, but with some restrictions
-> > 
-> > But this is NOT how busses work in the driver model.
-> > 
-> > PCI classes are great, but we do NOT suddenly add a symlink in sysfs if
-> > a driver goes from being handled by "generic_pci_type_foo" to
-> > "vendor_foo".  Userspace can handle the change and life goes on.
-> > 
-> > > The perf CPU PMU has had a similar concept for a long time. The driver can
-> > > be either in architectural mode (with a subset of features), or be fully
-> > > enabled. This allows users who are on an older kernel to still use at least
-> > > a subset of the functionality.
-> > 
-> > So a device name will move from "generic" to "specific", right?
+> > If there are more than one use case for this, I guess we could add
+> > some GFP flag for this maybe.
 > 
-> We'd like to keep both names.
+> and this way kernel users won't have to use kmemleak fuctions mentioned
+> above including some or most kmemleak_not_leak() calls and basically
+> kmemleak will be kind of "transparent" to them? and they will only need
+> to use the GFP flag to instruct kmemleak to scan the page contents?
+> it sounds like a good idea to me..
+> 
 
-That is not how sysfs and the driver model works, sorry.  You don't get
-to keep both names, otherwise sysfs would be even more of a mess than it
-currently is.  What happens if you need "another" name in the future?
-When do you stop?
+i've been thinking about this and it seems like in the scenario where we
+want kmemleak to scan only some part of the page, we will have to either
+do separate alloc_page() calls with different flags or use 
+kmemleak_scan_area() to limit the memory scan area. maybe this approach
+won't simplify things and will produce more code instead of reducing it
 
-this isn't ok, please do it right.
-
-greg k-h
