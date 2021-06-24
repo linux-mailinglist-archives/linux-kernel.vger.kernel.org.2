@@ -2,88 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3F33B2965
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 09:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5763B2970
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 09:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231672AbhFXHhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 03:37:43 -0400
-Received: from out0.migadu.com ([94.23.1.103]:25753 "EHLO out0.migadu.com"
+        id S231690AbhFXHjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 03:39:10 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:50846 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231638AbhFXHhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 03:37:41 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1624520121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=WtRNll+ZJ6pXyBsiyWqUKQEx5bX3swnM8hdPj0hfXss=;
-        b=lErlhr+TcTRagg7IABfZGUyPVw+Qi/P5cwBaUzq1w8Ct35xluH5GLEl/L/VU8ixUjWmUoO
-        FLOcvBhaT2rDq9At38K8HWD+vtbm7khOA0nX+S8F+owBg8VTu9MtkuPEy2DUU5DafNysS8
-        vUu5tFCcXAPHhghkdQKONVnYMMXhN9M=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     oneukum@suse.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH] usbnet: add usbnet_event_names[] for kevent
-Date:   Thu, 24 Jun 2021 15:35:08 +0800
-Message-Id: <20210624073508.10094-1-yajun.deng@linux.dev>
+        id S231659AbhFXHjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 03:39:09 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1lwJud-0006Fi-MC; Thu, 24 Jun 2021 15:36:35 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1lwJuV-0004gc-1b; Thu, 24 Jun 2021 15:36:27 +0800
+Date:   Thu, 24 Jun 2021 15:36:27 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     stable@vger.kernel.org,
+        Breno =?iso-8859-1?Q?Leit=E3o?= <leitao@debian.org>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] crypto: nx: Fix memcpy() over-reading in nonce
+Message-ID: <20210624073626.GC17892@gondor.apana.org.au>
+References: <20210616203459.1248036-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616203459.1248036-1-keescook@chromium.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify the netdev_dbg content from int to char * in usbnet_defer_kevent(),
-this looks more readable.
+On Wed, Jun 16, 2021 at 01:34:59PM -0700, Kees Cook wrote:
+> Fix typo in memcpy() where size should be CTR_RFC3686_NONCE_SIZE.
+> 
+> Fixes: 030f4e968741 ("crypto: nx - Fix reentrancy bugs")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  drivers/crypto/nx/nx-aes-ctr.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
- drivers/net/usb/usbnet.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
-index 57a5a025255c..264b5048d0fb 100644
---- a/drivers/net/usb/usbnet.c
-+++ b/drivers/net/usb/usbnet.c
-@@ -74,6 +74,23 @@ MODULE_PARM_DESC (msg_level, "Override default message level");
- 
- /*-------------------------------------------------------------------------*/
- 
-+static const char * const usbnet_event_names[] = {
-+	[EVENT_TX_HALT]		   = "EVENT_TX_HALT",
-+	[EVENT_RX_HALT]		   = "EVENT_RX_HALT",
-+	[EVENT_RX_MEMORY]	   = "EVENT_RX_MEMORY",
-+	[EVENT_STS_SPLIT]	   = "EVENT_STS_SPLIT",
-+	[EVENT_LINK_RESET]	   = "EVENT_LINK_RESET",
-+	[EVENT_RX_PAUSED]	   = "EVENT_RX_PAUSED",
-+	[EVENT_DEV_ASLEEP]	   = "EVENT_DEV_ASLEEP",
-+	[EVENT_DEV_OPEN]	   = "EVENT_DEV_OPEN",
-+	[EVENT_DEVICE_REPORT_IDLE] = "EVENT_DEVICE_REPORT_IDLE",
-+	[EVENT_NO_RUNTIME_PM]	   = "EVENT_NO_RUNTIME_PM",
-+	[EVENT_RX_KILL]		   = "EVENT_RX_KILL",
-+	[EVENT_LINK_CHANGE]	   = "EVENT_LINK_CHANGE",
-+	[EVENT_SET_RX_MODE]	   = "EVENT_SET_RX_MODE",
-+	[EVENT_NO_IP_ALIGN]	   = "EVENT_NO_IP_ALIGN",
-+};
-+
- /* handles CDC Ethernet and many other network "bulk data" interfaces */
- int usbnet_get_endpoints(struct usbnet *dev, struct usb_interface *intf)
- {
-@@ -452,9 +469,9 @@ void usbnet_defer_kevent (struct usbnet *dev, int work)
- {
- 	set_bit (work, &dev->flags);
- 	if (!schedule_work (&dev->kevent))
--		netdev_dbg(dev->net, "kevent %d may have been dropped\n", work);
-+		netdev_dbg(dev->net, "kevent %s may have been dropped\n", usbnet_event_names[work]);
- 	else
--		netdev_dbg(dev->net, "kevent %d scheduled\n", work);
-+		netdev_dbg(dev->net, "kevent %s scheduled\n", usbnet_event_names[work]);
- }
- EXPORT_SYMBOL_GPL(usbnet_defer_kevent);
- 
+Patch applied.  Thanks.
 -- 
-2.32.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
