@@ -2,77 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE66B3B2FE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B42C3B2FEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231301AbhFXNYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:24:47 -0400
-Received: from verein.lst.de ([213.95.11.211]:54550 "EHLO verein.lst.de"
+        id S231455AbhFXNYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:24:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:57134 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229881AbhFXNYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:24:46 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 6FB1567373; Thu, 24 Jun 2021 15:22:23 +0200 (CEST)
-Date:   Thu, 24 Jun 2021 15:22:23 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Tomer Tayar <ttayar@habana.ai>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to
- export FD for DMA-BUF
-Message-ID: <20210624132223.GA22258@lst.de>
-References: <20210622160538.GT1096940@ziepe.ca> <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com> <20210623182435.GX1096940@ziepe.ca> <CAFCwf111O0_YB_tixzEUmaKpGAHMNvMaOes2AfMD4x68Am4Yyg@mail.gmail.com> <20210623185045.GY1096940@ziepe.ca> <CAFCwf12tW_WawFfAfrC8bgVhTRnDA7DuM+0V8w3JsUZpA2j84w@mail.gmail.com> <20210624053421.GA25165@lst.de> <9571ac7c-3a58-b013-b849-e26c3727e9b2@amd.com> <20210624081237.GA30289@lst.de> <899fe0ce-b6d7-c138-04b6-4b12405f8d93@amd.com>
+        id S229878AbhFXNYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:24:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D710ED1;
+        Thu, 24 Jun 2021 06:22:34 -0700 (PDT)
+Received: from [10.57.9.136] (unknown [10.57.9.136])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2BD2F3F718;
+        Thu, 24 Jun 2021 06:22:32 -0700 (PDT)
+Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
+To:     Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Chen Huang <chenhuang5@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <da9c2fa9-a545-0c48-4490-d6134cc31425@huawei.com>
+ <20210623132223.GA96264@C02TD0UTHF1T.local>
+ <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
+ <YNP6/p/yJzLLr8M8@casper.infradead.org> <YNQuZ8ykN7aR+1MP@infradead.org>
+ <YNRpYli/5/GWvaTT@casper.infradead.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <27fbb8c1-2a65-738f-6bec-13f450395ab7@arm.com>
+Date:   Thu, 24 Jun 2021 14:22:27 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <899fe0ce-b6d7-c138-04b6-4b12405f8d93@amd.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <YNRpYli/5/GWvaTT@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 11:52:47AM +0200, Christian König wrote:
-> I've already converted a bunch of the GPU drivers, but there are at least 6 
-> GPU still needing to be fixed and on top of that comes VA-API and a few 
-> others.
->
-> What are your plans for the DMA mapping subsystem?
+On 2021-06-24 12:15, Matthew Wilcox wrote:
+> On Thu, Jun 24, 2021 at 08:04:07AM +0100, Christoph Hellwig wrote:
+>> On Thu, Jun 24, 2021 at 04:24:46AM +0100, Matthew Wilcox wrote:
+>>> On Thu, Jun 24, 2021 at 11:10:41AM +0800, Chen Huang wrote:
+>>>> In userspace, I perform such operation:
+>>>>
+>>>>   	fd = open("/tmp/test", O_RDWR | O_SYNC);
+>>>>          access_address = (char *)mmap(NULL, uio_size, PROT_READ, MAP_SHARED, uio_fd, 0);
+>>>>          ret = write(fd, access_address + 2, sizeof(long));
+>>>
+>>> ... you know that accessing this at unaligned offsets isn't going to
+>>> work.  It's completely meaningless.  Why are you trying to do it?
+>>
+>> We still should not cause an infinite loop in kernel space due to a
+>> a userspace programmer error.
+> 
+> They're running as root and they've mapped some device memory.  We can't
+> save them from themself.  Imagine if they'd done this to the NVMe BAR.
 
-Building a new API that allows batched DMA mapping without the scatterlist.
-The main input for my use case would be bio_vecs, but I plan to make it
-a little flexible, and the output would be a list of [dma_addr,len]
-tuples, with the API being flexible enough to just return a single
-[dma_addr,len] for the common IOMMU coalescing case.
+FWIW I think the only way to make the kernel behaviour any more robust 
+here would be to make the whole uaccess API more expressive, such that 
+rather than simply saying "I only got this far" it could actually 
+differentiate between stopping due to a fault which may be recoverable 
+and worth retrying, and one which definitely isn't.
 
->
->> Btw, one thing I noticed when looking over the dma-buf instances is that
->> there is a lot of duplicated code for creating a sg_table from pages,
->> and then mapping it.  It would be good if we could move toward common
->> helpers instead of duplicating that all over again.
->
-> Can you give an example?
+Unless maybe there's the possibility to abandon a syscall and SIGBUS the 
+process directly from the uaccess fixup path, but even to my limited 
+knowledge that seems unlikely.
 
-Take a look at the get_sg_table and put_sg_table helpers in udmabuf.
-Those would also be useful in armda, i915, tegra, gntdev-dmabuf, mbochs
-in one form or another.
+(I'm not counting "cap the number of retries to a very large value to 
+guarantee *eventual* failure" as robust, but I suppose it's a potential 
+option too)
 
-Similar for variants that use a contigous regions.
+Robin.
