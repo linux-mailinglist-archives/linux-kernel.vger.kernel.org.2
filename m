@@ -2,123 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 628493B2D6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8433B2D76
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbhFXLQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:16:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50505 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232350AbhFXLQK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:16:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624533231;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GQbQQeIrRdDv283QxkkrMQqh6kQDdmhKMptxE1wKs5Q=;
-        b=d+fX4qNGjIVjaLJiK5+MRR6ftmf+WLW32LA6IvvLh/o1kpE1W0t6zzDrJGjMSfzXTbePF3
-        jnK5DqCyFp7mQQPTL/l4v5XjDwdaFK7IODBRWrgDiNIyQBzvHKaa9GLRChRsozLFX/GD9b
-        Tkvpyoxntx+I6932sjiOjYjCc+wSfog=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-424-nD5nWWLQP_6OOSH7fPs_3w-1; Thu, 24 Jun 2021 07:13:49 -0400
-X-MC-Unique: nD5nWWLQP_6OOSH7fPs_3w-1
-Received: by mail-wm1-f72.google.com with SMTP id i82-20020a1c22550000b02901d64e84b3c9so1505680wmi.5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 04:13:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=GQbQQeIrRdDv283QxkkrMQqh6kQDdmhKMptxE1wKs5Q=;
-        b=s7KFwDojoQbk1vUp7rsdGYf7Kf817Hh0BFB8CkIHO8QPOsyIsFU825gQonegjKRdqr
-         FOYzbwOZfkMSjfj3kTqkTtXNe0zd7lh7BJUB0VzB30vyHe0n2bUBIoFBFS/tj4FpPC1T
-         CPn/EAJnWC/c0Jn5MEGAcsUmUYTSztY50vMr09si4mcXXIDb6jB1rdj1D35OO1gMllb0
-         2c6ubdVajVgkun8cJuTCsANhXmdhKC+E3hweStM6CZKcM0aIxtMD9vjNcduQUaOuSax+
-         arg+KzSL83DCiva9V6cw4S7Vd9hx24jpHDHnMLzdNLxzYQes6gUC67KMwafZguIzJSzy
-         x7yA==
-X-Gm-Message-State: AOAM5304OIQ7/4RR6k02VW9n3wftYUrJHxPrpZCCHP2QnDWl2k/M23I4
-        rYEmIzFb2p3e0x3SFJwPna5SkTz7qFRffxC5vHT6KFjCJuEktiNtltFVRyJ89uWy0xqD3hgJeQ8
-        fSG0g9DyYp3+yR09uaSfrslu7
-X-Received: by 2002:adf:a2d1:: with SMTP id t17mr3840776wra.74.1624533228386;
-        Thu, 24 Jun 2021 04:13:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwSnSI2gHRoJbdKSxlynk+kdGKf1GaZhZAlelWhFkUglT+nA21yQy20pZ9W2Ucqey8KT3Gh/Q==
-X-Received: by 2002:adf:a2d1:: with SMTP id t17mr3840758wra.74.1624533228196;
-        Thu, 24 Jun 2021 04:13:48 -0700 (PDT)
-Received: from ?IPv6:2a0c:5a80:3d14:2800:933d:abfc:d8e4:637f? ([2a0c:5a80:3d14:2800:933d:abfc:d8e4:637f])
-        by smtp.gmail.com with ESMTPSA id z3sm8173497wmi.29.2021.06.24.04.13.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 04:13:47 -0700 (PDT)
-Message-ID: <3974817ea942f616b77450914aa23b181b062d87.camel@redhat.com>
-Subject: Re: [PATCH] iio: chemical: atlas-sensor: Avoid using irq_work
-From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Matt Ranostay <matt.ranostay@konsulko.com>
-Date:   Thu, 24 Jun 2021 13:13:47 +0200
-In-Reply-To: <CAHp75VcG-0L+qG5JirWH21bnpVwRv_wfjM6Sfd2pJrq4-OqJ0Q@mail.gmail.com>
-References: <20210624100046.1037159-1-nsaenzju@redhat.com>
-         <CAHp75VcG-0L+qG5JirWH21bnpVwRv_wfjM6Sfd2pJrq4-OqJ0Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
+        id S232380AbhFXLRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:17:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:54180 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232118AbhFXLRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 07:17:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3321E1063;
+        Thu, 24 Jun 2021 04:14:52 -0700 (PDT)
+Received: from [10.57.9.136] (unknown [10.57.9.136])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 72B7B3F718;
+        Thu, 24 Jun 2021 04:14:44 -0700 (PDT)
+Subject: Re: [PATCH v14 06/12] swiotlb: Use is_swiotlb_force_bounce for
+ swiotlb data bouncing
+To:     Claire Chang <tientzu@chromium.org>, Christoph Hellwig <hch@lst.de>
+Cc:     Qian Cai <quic_qiancai@quicinc.com>, Will Deacon <will@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
+        peterz@infradead.org, benh@kernel.crashing.org,
+        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
+        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
+        mingo@kernel.org, Jianxiong Gao <jxgao@google.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Saravana Kannan <saravanak@google.com>, xypron.glpk@gmx.de,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        bskeggs@redhat.com, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Thierry Reding <treding@nvidia.com>,
+        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
+        maarten.lankhorst@linux.intel.com, linuxppc-dev@lists.ozlabs.org,
+        jani.nikula@linux.intel.com,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        rodrigo.vivi@intel.com, Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>, bauerman@linux.ibm.com
+References: <20210619034043.199220-1-tientzu@chromium.org>
+ <20210619034043.199220-7-tientzu@chromium.org>
+ <76c3343d-72e5-9df3-8924-5474ee698ef4@quicinc.com>
+ <20210623183736.GA472@willie-the-truck>
+ <19d4c7a2-744d-21e0-289c-a576e1f0e6f3@quicinc.com>
+ <20210624054315.GA25381@lst.de>
+ <CALiNf288ZLMhY3E8E3N+z9rkwi1viWNLm1wwMEwT4rNwh3FfwQ@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <364e6715-eafd-fc4a-e0af-ce2a042756b4@arm.com>
+Date:   Thu, 24 Jun 2021 12:14:39 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALiNf288ZLMhY3E8E3N+z9rkwi1viWNLm1wwMEwT4rNwh3FfwQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy, thanks for the review.
-
-On Thu, 2021-06-24 at 13:39 +0300, Andy Shevchenko wrote:
-> On Thu, Jun 24, 2021 at 1:01 PM Nicolas Saenz Julienne
-> <nsaenzju@redhat.com> wrote:
-> > 
-> > The atlas sensor driver currently registers a threaded IRQ handler whose
-> > sole responsibility is to trigger an irq_work which will in turn run
-> > iio_trigger_poll() in IRQ context.
-> > 
-> > This seems overkill given the fact that there already was a opportunity
+On 2021-06-24 07:05, Claire Chang wrote:
+> On Thu, Jun 24, 2021 at 1:43 PM Christoph Hellwig <hch@lst.de> wrote:
+>>
+>> On Wed, Jun 23, 2021 at 02:44:34PM -0400, Qian Cai wrote:
+>>> is_swiotlb_force_bounce at /usr/src/linux-next/./include/linux/swiotlb.h:119
+>>>
+>>> is_swiotlb_force_bounce() was the new function introduced in this patch here.
+>>>
+>>> +static inline bool is_swiotlb_force_bounce(struct device *dev)
+>>> +{
+>>> +     return dev->dma_io_tlb_mem->force_bounce;
+>>> +}
+>>
+>> To me the crash looks like dev->dma_io_tlb_mem is NULL.  Can you
+>> turn this into :
+>>
+>>          return dev->dma_io_tlb_mem && dev->dma_io_tlb_mem->force_bounce;
+>>
+>> for a quick debug check?
 > 
-> an opportunity
+> I just realized that dma_io_tlb_mem might be NULL like Christoph
+> pointed out since swiotlb might not get initialized.
+> However,  `Unable to handle kernel paging request at virtual address
+> dfff80000000000e` looks more like the address is garbage rather than
+> NULL?
+> I wonder if that's because dev->dma_io_tlb_mem is not assigned
+> properly (which means device_initialize is not called?).
 
-Thanks, noted.
+What also looks odd is that the base "address" 0xdfff800000000000 is 
+held in a couple of registers, but the offset 0xe looks too small to 
+match up to any relevant structure member in that dereference chain :/
 
-> > @@ -474,7 +465,7 @@ static irqreturn_t atlas_interrupt_handler(int irq, void *private)
-> >         struct iio_dev *indio_dev = private;
-> >         struct atlas_data *data = iio_priv(indio_dev);
-> > 
-> > -       irq_work_queue(&data->work);
-> > +       iio_trigger_poll(data->trig);
-> 
-> Have you considered dropping atlas_interrupt_trigger_ops() altogether?
-
-Not really, but it makes sense as a separate patch. I'll take care of it.
-
-> 
-> >         if (client->irq > 0) {
-> >                 /* interrupt pin toggles on new conversion */
-> >                 ret = devm_request_threaded_irq(&client->dev, client->irq,
-> 
-> > -                               NULL, atlas_interrupt_handler,
-> > +                               atlas_interrupt_handler, NULL,
-> 
-> So, you move it from threaded IRQ to be a hard IRQ handler (we have a
-> separate call for this).
-
-Noted.
-
-> Can you guarantee that handling of those events will be fast enough?
-
-Do you mean the events triggered in iio_trigger_poll()? If so the amount of
-time spent in IRQ context is going to be the same regardless of whether it's
-handled through atlas' IRQ or later in irq_work IPI (or softirq context on some
-weird platforms).
-
--- 
-Nicolás Sáenz
-
+Robin.
