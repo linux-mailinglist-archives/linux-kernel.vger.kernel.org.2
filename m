@@ -2,121 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8BD3B326A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495953B3270
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbhFXPUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 11:20:21 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:52566 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231708AbhFXPUT (ORCPT
+        id S231932AbhFXPX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 11:23:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230008AbhFXPXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 11:20:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1624547880; x=1656083880;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=sAbysC06T03vfpgx6gVyg0DlqzJgM/bP3q40WfRjb4s=;
-  b=uRFa1slBw5oyJZ49W/dnFjqTk57wdYLIVgShLt7zCLCZt3Rqz4WavV1c
-   EVjURL1PBWnPtXwS7t+lghSSV4XHOfd29OUcryC1bdcXOK/5I6b7wSo9J
-   SJtTcmBrDeQbOgQoTUg/cO8cxknYpYsRzFWwjJ54aBp/cszZnyJoq5TZ9
-   E=;
-Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 24 Jun 2021 08:18:00 -0700
-X-QCInternal: smtphost
-Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
-  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 24 Jun 2021 08:18:00 -0700
-Received: from [10.111.163.161] (10.80.80.8) by nasanexm03e.na.qualcomm.com
- (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 24 Jun
- 2021 08:17:56 -0700
-Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
- invariance
-To:     Ionela Voinescu <ionela.voinescu@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-CC:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thu, 24 Jun 2021 11:23:55 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05C2C061574;
+        Thu, 24 Jun 2021 08:21:36 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id g3so769956qth.11;
+        Thu, 24 Jun 2021 08:21:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to;
+        bh=XTZcBFmJD64rk0L0Ti7cLCSZOK6HZ1i75AWgRbmnkT0=;
+        b=DTWibfbFd03qYiZGv8C80cChp1eOSQiI21lvhjpC4tj8lC6nSetbmAiFCyXo/JicEh
+         4ObQ/MekbB9/HJ7I02SIaLcRG4zjb8XHfRZrGU9yglcYCZqR7aLVGINU3CAJR+QIcBRo
+         1+P8j5KD/T7x37XHZBfSlFJnn7fj19cACdYFSRfeYdWX9PfVXaZ7iJ4o8hnKUUQoBVFS
+         whvHg8Pnq+tjsTgU4wi+QTL8yHMvRugPSrEw3oIMlwRNrKGByzIgxOjkGKTQwIJpKbu7
+         /HCWvj92kEF3aHp0D6gzJi5ACJRbGVajYxGvEEE/haNiMe7urLOSNTyH0B9FUZUXTC68
+         LRdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
+        bh=XTZcBFmJD64rk0L0Ti7cLCSZOK6HZ1i75AWgRbmnkT0=;
+        b=WN/nMbHgy0iLZOf5MkWcVaMFId3XDy6jSS5iNDPbb3f+DYkhcSaK1w1rGfHeQ3o1rx
+         ZkJC+6EnAqwJ3rkhZFlFC66jTMms0EBe5cECqa5q2jyks9a4CUFdf9BvDEy1qoZNmKye
+         wD536wuTpLtJf4jzHgxArxAV32jV73+hXueeDahRXZo+BrByWUfArwRRXahCnOmNIF48
+         9ckXLMN044Swrza6nw619ukOxd/uYbpwHHM2GJuj4ZZsYg7OsqJLvr6OTvy6QRL46wd1
+         EvGaqm5ASQ3TPa2y3bDJmnOKuHa59deQU5eHHS737jJV5Fhek9gMlDGSkuG3vqg6Sy2B
+         B7/w==
+X-Gm-Message-State: AOAM531lrWqjeIcCMz1ILfHLhgyYZ5NzCe9EcVSh3DRcgkI/zUNSjDr/
+        HnVwXSn/5x3GtJACjREEndA=
+X-Google-Smtp-Source: ABdhPJwuYrd3WsqGm7dLq9ddX8OCu6a+36K8C3d4Ru9zdbUjafqg7nYbhAE1pOb+IQPgZNSujUy5jQ==
+X-Received: by 2002:ac8:5ec3:: with SMTP id s3mr5372912qtx.312.1624548095857;
+        Thu, 24 Jun 2021 08:21:35 -0700 (PDT)
+Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
+        by smtp.gmail.com with ESMTPSA id 6sm2849236qks.0.2021.06.24.08.21.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 08:21:35 -0700 (PDT)
+From:   SeongJae Park <sj38.park@gmail.com>
+X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     SeongJae Park <sj38.park@gmail.com>, Jonathan.Cameron@huawei.com,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        amit@kernel.org, benh@kernel.crashing.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Hildenbrand <david@redhat.com>, dwmw@amazon.com,
+        Marco Elver <elver@google.com>, "Du, Fan" <fan.du@intel.com>,
+        foersleo@amazon.de, greg@kroah.com,
+        Greg Thelen <gthelen@google.com>, guoju.fgj@alibaba-inc.com,
+        jgowans@amazon.com, Mel Gorman <mgorman@suse.de>, mheyne@amazon.de,
+        Minchan Kim <minchan@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, namhyung@kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        David Rientjes <rientjes@google.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-References: <cover.1624266901.git.viresh.kumar@linaro.org>
- <09a39f5c-b47b-a931-bf23-dc43229fb2dd@quicinc.com>
- <20210623041613.v2lo3nidpgw37abl@vireshk-i7>
- <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
- <20210624025414.4iszkovggk6lg6hj@vireshk-i7>
- <CAKfTPtAXMYYrG1w-iwSWXb428FkwFArEwXQgHnjShoCEMjdYcw@mail.gmail.com>
- <20210624104734.GA11487@arm.com>
-From:   Qian Cai <quic_qiancai@quicinc.com>
-Message-ID: <daf1ddf5-6f57-84a8-2ada-90590c0c94b5@quicinc.com>
-Date:   Thu, 24 Jun 2021 11:17:55 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210624104734.GA11487@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanexm03e.na.qualcomm.com (10.85.0.48)
+        Mike Rapoport <rppt@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        sieberf@amazon.com, snu@zelle79.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        zgf574564920@gmail.com, linux-damon@amazon.com,
+        Linux MM <linux-mm@kvack.org>, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v31 05/13] mm/damon: Implement primitives for the virtual memory address spaces
+Date:   Thu, 24 Jun 2021 15:21:30 +0000
+Message-Id: <20210624152130.877-1-sjpark@amazon.de>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CALvZod5dFVxJVFUP4zBCC97C7rr5pGjRZQoixzs=GcNRAosKgw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: SeongJae Park <sjpark@amazon.de>
 
+On Thu, 24 Jun 2021 07:42:44 -0700 Shakeel Butt <shakeelb@google.com> wrote:
 
-On 6/24/2021 6:48 AM, Ionela Voinescu wrote:
-> Not if the counters are implemented properly. The kernel considers that
-> both reference and delivered performance counters should stop or reset
-> during idle. The kernel would not account for idle itself.
+> On Thu, Jun 24, 2021 at 3:26 AM SeongJae Park <sj38.park@gmail.com> wrote:
+> >
+> [...]
+> > > > +/*
+> > > > + * Get the three regions in the given target (task)
+> > > > + *
+> > > > + * Returns 0 on success, negative error code otherwise.
+> > > > + */
+> > > > +static int damon_va_three_regions(struct damon_target *t,
+> > > > +                               struct damon_addr_range regions[3])
+> > > > +{
+> > > > +       struct mm_struct *mm;
+> > > > +       int rc;
+> > > > +
+> > > > +       mm = damon_get_mm(t);
+> > > > +       if (!mm)
+> > > > +               return -EINVAL;
+> > > > +
+> > > > +       mmap_read_lock(mm);
+> > > > +       rc = __damon_va_three_regions(mm->mmap, regions);
+> > > > +       mmap_read_unlock(mm);
+> > >
+> > > This is being called for each target every second by default. Seems
+> > > too aggressive. Applications don't change their address space every
+> > > second. I would recommend to default ctx->primitive_update_interval to
+> > > a higher default value.
+> >
+> > Good point.  If there are many targets and each target has a huge number of
+> > VMAs, the overhead could be high.  Nevertheless, I couldn't find the overhead
+> > in my test setup.  Also, it seems someone are already started exploring DAMON
+> > patchset with the default value. and usages from others.  Silently changing the
+> > default value could distract such people.  So, if you think it's ok, I'd like
+> > to change the default value only after someone finds the overhead from their
+> > usages and asks a change.
+> >
+> > If you disagree or you found the overhead from your usage, please feel free to
+> > let me know.
+> >
 > 
-> If the reference performance counter does not stop during idle, while
-> the core performance counter (delivered) does stop, the behavior above
-> should be seen very often.
-> 
-> Qian, do you see these small delivered performance values often or
-> seldom?
+> mmap lock is a source contention in the real world workloads. We do
+> observe in our fleet and many others (like Facebook) do complain on
+> this issue. This is the whole motivation behind SFP, maple tree and
+> many other mmap lock scalability work. I would be really careful to
+> add another source of contention on mmap lock. Yes, the user can
+> change this interval themselves but we should not burden them with
+> this internal knowledge like "oh if you observe high mmap contention
+> you may want to increase this specific interval". We should set a good
+> default value to avoid such situations (most of the time).
 
-Ionela, so I managed to upgrade the kernel on the system to today's linux-next which suppose to include this series. The delivered perf is now 280. However, scaling_min_freq (200 MHz) is not equal to lowest_perf (100).
+Thank you for this nice clarification.  I can understand your concern because I
+also worked for an HTM-based solution of the scalability issue before.
 
-scaling_driver: acpi_cppc
-scaling_governor: schedutil
+However, I have neither strong preference nor confidence for the new default
+value at the moment.  Could you please recommend one if you have?
 
-Is that normal because lowest_nonlinear_perf is 200? 
 
-Also, on this pretty idle system, 158 of 160 CPUs are always running in max freq (280 MHz). The other 2 are running in 243 and 213 MHz according to scaling_cur_freq. Apparently, "schedutil" does not work proper on this system. I am going to try other governors to narrow down the issue a bit.
-
-FYI, here is the acpi_cppc registers reading:
-
-/sys/devices/system/cpu/cpu0/acpi_cppc/feedback_ctrs
-ref:160705801 del:449594095
-/sys/devices/system/cpu/cpu0/acpi_cppc/highest_perf
-300
-/sys/devices/system/cpu/cpu0/acpi_cppc/lowest_freq
-1000
-/sys/devices/system/cpu/cpu0/acpi_cppc/lowest_nonlinear_perf
-200
-/sys/devices/system/cpu/cpu0/acpi_cppc/lowest_perf
-100
-/sys/devices/system/cpu/cpu0/acpi_cppc/nominal_freq
-2800
-/sys/devices/system/cpu/cpu0/acpi_cppc/nominal_perf
-280
-/sys/devices/system/cpu/cpu0/acpi_cppc/reference_perf
-100
-/sys/devices/system/cpu/cpu0/acpi_cppc/wraparound_time
-18446744073709551615
+Thanks,
+SeongJae Park
