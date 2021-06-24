@@ -2,179 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 787443B2C76
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B853B2C7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232124AbhFXKcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 06:32:17 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33011 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231964AbhFXKcP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 06:32:15 -0400
-Received: from mail-pj1-f70.google.com ([209.85.216.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <po-hsu.lin@canonical.com>)
-        id 1lwMcO-0006y4-4V
-        for linux-kernel@vger.kernel.org; Thu, 24 Jun 2021 10:29:56 +0000
-Received: by mail-pj1-f70.google.com with SMTP id g19-20020a17090adb13b029016f4a877b4fso5669757pjv.8
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 03:29:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fp8p7HZuUA7dLzTxrkrRGItFpn1kDPBrup/d3fPNHEw=;
-        b=mC34K0ooQZVh1yJSr6g0kkZp+ESGDVm5wWkkAFOv30XFltR/OMNS2MJu2aENS4sTKD
-         OOmx4R98rQvLnE3ahAc6xcWwRAUd7Yf6dsUUsJFImW5vW5Ozsb9BcBhtGP7vHfYqjHp2
-         oD/mIYM4xijWk9ftyw8HJZt64r3KFzEKD+d+lVv9NZq5O6GFfogPWS8hMNWEWvtwmxj4
-         w5Ls0I1Gbq93yEcHkxEbEyMIwir+rJ7sZrN07RWLSSB5fXlSpLiJOilB+3k5JZ/oc9ID
-         8pnbiA7Blok+xtdPdotY1J0fA9E/rXoPbeSd8e7+7gQGj1JR2e9kEI74gWLolz7L/NCt
-         3j1Q==
-X-Gm-Message-State: AOAM532ws+i1/lYaoJTWSw6eHUJrclYroeHuOAr71+rB19DDR1TQZwLX
-        OgnTw3R8NudE1VYcJ98Avi8VXDCf3XyVuHMaEb+lJ4ufLkaD4A5XRuxXsRbs2G7lVAbOlKOeKdN
-        pFv7SRXNf0wDRon2uj+Y5JtF61G4ulA43RWc6WGGCWn8hjVhbXNRzMKAT
-X-Received: by 2002:a65:6659:: with SMTP id z25mr4096762pgv.291.1624530583634;
-        Thu, 24 Jun 2021 03:29:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyh/cf8E3LbmxFWhYziPJsbPcYAWsD13MA8K3m3YL5HGEeA5Swn7XRMlE4u/QR2fNpWrqPm8L1B4ZB3DSp0psU=
-X-Received: by 2002:a65:6659:: with SMTP id z25mr4096713pgv.291.1624530583241;
- Thu, 24 Jun 2021 03:29:43 -0700 (PDT)
+        id S232140AbhFXKf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 06:35:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231517AbhFXKfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 06:35:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2E8161358;
+        Thu, 24 Jun 2021 10:32:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624530774;
+        bh=5veRctjnSL/jrcMhupA+suH7OAIQylpXsv4ZVHXTaUY=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=lW15ZReRIowI7E/XQoLbVPxbT9ssHWVDkyy8FUEh/bonEGlgW1ifDeWjpCGCUlSlJ
+         hMDuRxa+Sp5y6wfNFZAoCr+EtbzaP8pn+6KYH6t39sNkj62oZ/LGJhdr0R8tL2uTab
+         UVMOo7lEdAQDEZEiFwRaEtp2cz9AVk/TUOrWDFajAKDiSJP8nH2j/spbm7NA9YamQq
+         Haazi0CpuGnWM625TasQsZEmAJbZMSeaj3HEKSqL17keeW3zoWS2GE6rWG8J83r69N
+         7m2Ak0j2zu7qeaxGsc+4C06sWGt6LXWowAs0CKHQEyyYpeM+aGfyB1BTHp6cCFLC1Z
+         4sg3xi7XvAaKQ==
+Message-ID: <1224262b5f6ec7d646b85ed43b55b64063c35ecf.camel@kernel.org>
+Subject: Re: [GIT PULL] netfs, afs: Fix write_begin/end
+From:   Jeff Layton <jlayton@kernel.org>
+To:     David Howells <dhowells@redhat.com>, torvalds@linux-foundation.org
+Cc:     Andrew W Elble <aweits@rit.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, ceph-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-cachefs@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 24 Jun 2021 06:32:51 -0400
+In-Reply-To: <2842348.1624308062@warthog.procyon.org.uk>
+References: <2842348.1624308062@warthog.procyon.org.uk>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
-References: <17fc60a3-cc50-7cff-eb46-904c2f0c416e@canonical.com>
- <20201118235015.GB6015@geo.homenetwork> <20201119003319.GA6805@geo.homenetwork>
- <CAKfTPtBYm8UtBBnbc7qddA2_OAa3vwH=KoHNgvsQJ9zO2KocYQ@mail.gmail.com>
- <7c9462c9-8908-8592-0727-9117d4173724@canonical.com> <CAKfTPtAfzxbm0qM+8r2i+3jWjpJ2OLbU4F1WE8GrzTZH6Ck7FA@mail.gmail.com>
-In-Reply-To: <CAKfTPtAfzxbm0qM+8r2i+3jWjpJ2OLbU4F1WE8GrzTZH6Ck7FA@mail.gmail.com>
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date:   Thu, 24 Jun 2021 18:29:29 +0800
-Message-ID: <CAMy_GT88PgfH9F4Mo95wPSCTpGYJfRFpruc1QYg77t=HPBDaLQ@mail.gmail.com>
-Subject: Re: [PATCH v3] sched/fair: fix unthrottle_cfs_rq for leaf_cfs_rq list
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Tao Zhou <t1zhou@163.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        SeongJae Park <sjpark@amazon.com>,
-        Ben Segall <bsegall@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Tao Zhou <zohooouoto@zoho.com.cn>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Tao Zhou <ouwen210@hotmail.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>,
-        Gavin Guo <gavin.guo@canonical.com>, halves@canonical.com,
-        nivedita.singhvi@canonical.com,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "# v4 . 16+" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Vincent,
+On Mon, 2021-06-21 at 21:41 +0100, David Howells wrote:
+> Hi Linus,
+> 
+> Could you pull this please?  It includes patches to fix netfs_write_begin()
+> and afs_write_end() in the following ways:
+> 
+>  (1) In netfs_write_begin(), extract the decision about whether to skip a
+>      page out to its own helper and have that clear around the region to be
+>      written, but not clear that region.  This requires the filesystem to
+>      patch it up afterwards if the hole doesn't get completely filled.
+> 
+>  (2) Use offset_in_thp() in (1) rather than manually calculating the offset
+>      into the page.
+> 
+>  (3) Due to (1), afs_write_end() now needs to handle short data write into
+>      the page by generic_perform_write().  I've adopted an analogous
+>      approach to ceph of just returning 0 in this case and letting the
+>      caller go round again.
+> 
+> It also adds a note that (in the future) the len parameter may extend
+> beyond the page allocated.  This is because the page allocation is deferred
+> to write_begin() and that gets to decide what size of THP to allocate.
+> 
+> Thanks,
+> David
+> 
+> Link: https://lore.kernel.org/r/20210613233345.113565-1-jlayton@kernel.org/
+> Link: https://lore.kernel.org/r/162367681795.460125.11729955608839747375.stgit@warthog.procyon.org.uk/ # v1
+> Link: https://lore.kernel.org/r/162391823192.1173366.9740514875196345746.stgit@warthog.procyon.org.uk/ # v2
+> Link: https://lore.kernel.org/r/162429000639.2770648.6368710175435880749.stgit@warthog.procyon.org.uk/ # v3
+> 
+> Changes
+> =======
+> 
+> ver #3:
+>    - Drop the bits that make afs take account of len exceeding the end of
+>      the page in afs_write_begin/end().
+> 
+> ver #2:
+>    - Removed a var that's no longer used (spotted by the kernel test robot)
+>    - Removed a forgotten "noinline".
+> 
+> ver #1:
+>    - Prefixed the Jeff's new helper with "netfs_".
+>    - Don't call zero_user_segments() for a full-page write.
+>    - Altered the beyond-last-page check to avoid a DIV.
+>    - Removed redundant zero-length-file check.
+>    - Added patches to fix afs.
+> 
+> ---
+> The following changes since commit 009c9aa5be652675a06d5211e1640e02bbb1c33d:
+> 
+>   Linux 5.13-rc6 (2021-06-13 14:43:10 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/netfs-fixes-20210621
+> 
+> for you to fetch changes up to 827a746f405d25f79560c7868474aec5aee174e1:
+> 
+>   netfs: fix test for whether we can skip read when writing beyond EOF (2021-06-21 21:24:07 +0100)
+> 
+> ----------------------------------------------------------------
+> netfslib fixes
+> 
+> ----------------------------------------------------------------
+> David Howells (1):
+>       afs: Fix afs_write_end() to handle short writes
+> 
+> Jeff Layton (1):
+>       netfs: fix test for whether we can skip read when writing beyond EOF
+> 
+>  fs/afs/write.c         | 11 +++++++++--
+>  fs/netfs/read_helper.c | 49 ++++++++++++++++++++++++++++++++++++-------------
+>  2 files changed, 45 insertions(+), 15 deletions(-)
+> 
 
-sorry to resurrect this thread again,
-I was trying to backport this patch and corresponding fixes to our
-Ubuntu 4.15 kernel [1] to fix an issue report by LTP cfs_bandwidth01
-test[2], my colleague Guilherme told me there once a discussion about
-backporting this on this thread.
+Hi Linus,
 
-You mentioned here this should not be backported to earlier stable
-kernel, I am curious if there is any specific reason of it? Too risky
-maybe?
-Thanks!
-PHLin
+Is there some reason you haven't pulled these fixes? The netfs fix in
+particular fixes a data corruption bug in cephfs, so we're quite keen to
+get that in before v5.13 ships.
 
-[1] https://lists.ubuntu.com/archives/kernel-team/2021-June/121571.html
-[2] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
+Thanks,
+-- 
+Jeff Layton <jlayton@kernel.org>
 
-
-On Thu, Nov 19, 2020 at 9:25 PM Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
->
-> On Thu, 19 Nov 2020 at 12:36, Guilherme G. Piccoli
-> <gpiccoli@canonical.com> wrote:
-> >
-> >
-> >
-> > On 19/11/2020 05:36, Vincent Guittot wrote:
-> > > On Thu, 19 Nov 2020 at 01:36, Tao Zhou <t1zhou@163.com> wrote:
-> > >>
-> > >> On Thu, Nov 19, 2020 at 07:50:15AM +0800, Tao Zhou wrote:
-> > >>> On Wed, Nov 18, 2020 at 07:56:38PM -0300, Guilherme G. Piccoli wrote:
-> > >>>> Hi Vincent (and all CCed), I'm sorry to ping about such "old" patch, but
-> > >>>> we experienced a similar condition to what this patch addresses; it's an
-> > >>>> older kernel (4.15.x) but when suggesting the users to move to an
-> > >>>> updated 5.4.x kernel, we noticed that this patch is not there, although
-> > >>>> similar ones are (like [0] and [1]).
-> > >>>>
-> > >>>> So, I'd like to ask if there's any particular reason to not backport
-> > >>>> this fix to stable kernels, specially the longterm 5.4. The main reason
-> > >>>> behind the question is that the code is very complex for non-experienced
-> > >>>> scheduler developers, and I'm afraid in suggesting such backport to 5.4
-> > >>>> and introduce complex-to-debug issues.
-> > >>>>
-> > >>>> Let me know your thoughts Vincent (and all CCed), thanks in advance.
-> > >>>> Cheers,
-> > >>>>
-> > >>>>
-> > >>>> Guilherme
-> > >>>>
-> > >>>>
-> > >>>> P.S. For those that deleted this thread from the email client, here's a
-> > >>>> link:
-> > >>>> https://lore.kernel.org/lkml/20200513135528.4742-1-vincent.guittot@linaro.org/
-> > >>>>
-> > >>>>
-> > >>>> [0]
-> > >>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fe61468b2cb
-> > >>>>
-> > >>>> [1]
-> > >>>> https://lore.kernel.org/lkml/20200506141821.GA9773@lorien.usersys.redhat.com/
-> > >>>> <- great thread BTW!
-> > >>>
-> > >>> 'sched/fair: Fix unthrottle_cfs_rq() for leaf_cfs_rq list" failed to apply to
-> > >>> 5.4-stable tree'
-> > >>>
-> > >>> You could check above. But I do not have the link about this. Can't search it
-> > >>> on LKML web: https://lore.kernel.org/lkml/
-> > >>>
-> > >>> BTW: 'ouwen210@hotmail.com' and 'zohooouoto@zoho.com.cn' all is myself.
-> > >>>
-> > >>> Sorry for the confusing..
-> > >>>
-> > >>> Thanks.
-> > >>
-> > >> Sorry again. I forget something. It is in the stable.
-> > >>
-> > >> Here it is:
-> > >>
-> > >>   https://lore.kernel.org/stable/159041776924279@kroah.com/
-> > >
-> > > I think it has never been applied to stable.
-> > > As you mentioned, the backport has been sent :
-> > > https://lore.kernel.org/stable/20200525172709.GB7427@vingu-book/
-> > >
-> > > I received another emailed in September and pointed out to the
-> > > backport : https://www.spinics.net/lists/stable/msg410445.html
-> > >
-> > >
-> > >>
-> >
-> > Thanks a lot Tao and Vincent! Nice to know that you already worked the
-> > backport, gives much more confidence when the author does that heheh
-> >
-> > So, this should go to stable 5.4.y, but not 4.19.y IIUC?
->
-> Yeah. they should be backported up to v5.1 but not earlier
->
-> Regards,
-> Vincent
->
-> > Cheers,
-> >
-> >
-> > Guilherme
