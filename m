@@ -2,144 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BC33B2AE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 047853B2AE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhFXJD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:03:58 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56832 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbhFXJDw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:03:52 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 04E8C1FD67;
-        Thu, 24 Jun 2021 09:01:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624525293; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gOxneZwjI52NGf5YtOkngslNEIWH7cmjZeAOERs/N1o=;
-        b=qVGFmIBZsXtc/KT5jd285fvitzFu/HscGDU/99JWXqmysYTcbcTp9+7CHCAIoQ7Zd/SQN4
-        +Pmf2DguX4xoL3fBRQ/m7U6Z6ksPr+Ksf1Khn7T7GuSn2N7GVrujAgMmsVGNcme+KhAQIX
-        OmFu0wLVuZuu+Neo77oDGjco/guIs3A=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 9C85AA3B91;
+        id S230098AbhFXJDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:03:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229889AbhFXJDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 05:03:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9283C613BE;
         Thu, 24 Jun 2021 09:01:32 +0000 (UTC)
-Date:   Thu, 24 Jun 2021 11:01:31 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Jia He <justin.he@arm.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>, nd@arm.com
-Subject: Re: [PATCH v2 2/4] lib/vsprintf.c: make '%pD' print the full path of
- file
-Message-ID: <YNRJ61m6duXjpGrp@alley>
-References: <20210623055011.22916-1-justin.he@arm.com>
- <20210623055011.22916-3-justin.he@arm.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624525292;
+        bh=YnyWkWEizzBW+4L6vyTdV/hlaYvEAtpeYkBydMQ2mow=;
+        h=Date:From:To:Cc:Subject:From;
+        b=aQwL/UrAMMlnmYoIM+R5MOrDefVKmYZm/yxt9D8zGy5sUDzyDVtb3TdNzXSjgvRMj
+         djKQmw5pwgYL9fZi0I266mgA/Jhm3s8qsb5+/cvflZx3N4hZP9j7y84v0vXE/HYorV
+         heTSRcxGg9xCZdI2HO7qWQlxVNnCvuFOCMoJcYgwQrsotfywVvH9fF1ZdAVjFb8dPq
+         PMKdp1NerfmZ91nbQC38JPNV0MJKUgU30x90awHGZkS5DtLgm9DF5RmCFqcoszyRr+
+         zaAsUbaaDLM+m5jmaMxhfOvjWvDMs6G9tRseAJXOj23d7HB8Js0mf/W4uSUU+HBzQa
+         D38fo3WJG/urQ==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lwLEq-0006iJ-OO; Thu, 24 Jun 2021 11:01:32 +0200
+Date:   Thu, 24 Jun 2021 11:01:32 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] USB-serial updates for 5.14-rc1
+Message-ID: <YNRJ7D7kVwaLWXe5@hovoldconsulting.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210623055011.22916-3-justin.he@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-06-23 13:50:09, Jia He wrote:
-> Previously, the specifier '%pD' is for printing dentry name of struct
-> file. It may not be perfect (by default it only prints one component.)
-> 
-> As suggested by Linus [1]:
-> > A dentry has a parent, but at the same time, a dentry really does
-> > inherently have "one name" (and given just the dentry pointers, you
-> > can't show mount-related parenthood, so in many ways the "show just
-> > one name" makes sense for "%pd" in ways it doesn't necessarily for
-> > "%pD"). But while a dentry arguably has that "one primary component",
-> > a _file_ is certainly not exclusively about that last component.
-> 
-> Hence change the behavior of '%pD' to print the full path of that file.
-> 
-> If someone invokes snprintf() with small but positive space,
-> prepend_name_with_len() moves or truncates the string partially.
+Hi Greg,
 
-Does this comment belong to the 1st patch?
-prepend_name_with_len() is not called in this patch.
+Here are the USB serial updates for 5.14-rc1.
 
-> More
-> than that, kasprintf() will pass NULL @buf and @end as the parameters,
-> and @end - @buf can be negative in some case. Hence make it return at
-> the very beginning with false in these cases.
+Note that you'll get a merge conflict in cp210x between 
 
-Same here. file_d_path_name() does not return bool.
+	6f7ec77cc8b6 ("USB: serial: cp210x: fix alternate function for CP2102N QFN20")
 
-Well, please mention in the commit message that %pD uses the entire
-given buffer as a scratch space. It might write something behind
-the trailing '\0'.
+which is already in your tree and
 
-It would make sense to warn about this also in
-Documentation/core-api/printk-formats.rst. It is a bit non-standard
-behavior.
+	8051334e901f ("USB: serial: cp210x: add support for GPIOs on CP2108")
 
-> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> index f0c35d9b65bf..f4494129081f 100644
-> --- a/lib/vsprintf.c
-> +++ b/lib/vsprintf.c
-> @@ -920,13 +921,44 @@ char *dentry_name(char *buf, char *end, const struct dentry *d, struct printf_sp
->  }
->  
->  static noinline_for_stack
-> -char *file_dentry_name(char *buf, char *end, const struct file *f,
-> +char *file_d_path_name(char *buf, char *end, const struct file *f,
->  			struct printf_spec spec, const char *fmt)
->  {
-> +	char *p;
-> +	const struct path *path;
-> +	int prepend_len, widen_len, dpath_len;
-> +
->  	if (check_pointer(&buf, end, f, spec))
->  		return buf;
->  
-> -	return dentry_name(buf, end, f->f_path.dentry, spec, fmt);
-> +	path = &f->f_path;
-> +	if (check_pointer(&buf, end, path, spec))
-> +		return buf;
-> +
-> +	p = d_path_unsafe(path, buf, end - buf, &prepend_len);
-> +
-> +	/* Calculate the full d_path length, ignoring the tail '\0' */
-> +	dpath_len = end - buf - prepend_len - 1;
-> +
-> +	widen_len = max_t(int, dpath_len, spec.field_width);
-> +
-> +	/* Case 1: Already started past the buffer. Just forward @buf. */
-> +	if (buf >= end)
-> +		return buf + widen_len;
-> +
-> +	/*
-> +	 * Case 2: The entire remaining space of the buffer filled by
-> +	 * the truncated path. Still need to get moved right when
-> +	 * the filled width is greather than the full path length.
+This was also reported by Stephen here
 
-s/filled/field/ ?
+	https://lore.kernel.org/r/20210617150224.19213166@canb.auug.org.au
 
-> +	 */
-> +	if (prepend_len < 0)
-> +		return widen_string(buf + dpath_len, dpath_len, end, spec);
+and the resolution should be straight forward.
 
-Otherwise, it looks good to me.
+Let me know if you prefer I pull in Linus's rc:s like you do to resolve any
+issues like this in the future.
 
-Best Regards,
-Petr
+Johan
+
+
+
+The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
+
+  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git tags/usb-serial-5.14-rc1
+
+for you to fetch changes up to 8051334e901f2f7ab9fa30a15b74cdc8e58dfde2:
+
+  USB: serial: cp210x: add support for GPIOs on CP2108 (2021-06-16 17:40:01 +0200)
+
+----------------------------------------------------------------
+USB-serial updates for 5.14-rc1
+
+Here are the USB-serial updates for 5.14-rc1, including:
+
+ - gpio support for CP2108
+ - chars_in_buffer and write_room return-value updates
+ - chars_in_buffer and write_room clean ups
+
+Included are also various clean ups.
+
+All have been in linux-next with no reported issues.
+
+----------------------------------------------------------------
+Jiri Slaby (2):
+      USB: serial: make usb_serial_driver::write_room return uint
+      USB: serial: make usb_serial_driver::chars_in_buffer return uint
+
+Johan Hovold (6):
+      USB: serial: digi_acceleport: reduce chars_in_buffer over-reporting
+      USB: serial: digi_acceleport: add chars_in_buffer locking
+      USB: serial: io_edgeport: drop buffer-callback sanity checks
+      USB: serial: mos7720: drop buffer-callback sanity checks
+      USB: serial: mos7840: drop buffer-callback return-value comments
+      USB: serial: drop irq-flags initialisations
+
+Pho Tran (1):
+      USB: serial: cp210x: add support for GPIOs on CP2108
+
+ drivers/usb/serial/cp210x.c           | 189 ++++++++++++++++++++++++++++++----
+ drivers/usb/serial/cyberjack.c        |   4 +-
+ drivers/usb/serial/cypress_m8.c       |  16 +--
+ drivers/usb/serial/digi_acceleport.c  |  46 ++++-----
+ drivers/usb/serial/garmin_gps.c       |   2 +-
+ drivers/usb/serial/generic.c          |  12 +--
+ drivers/usb/serial/io_edgeport.c      |  39 ++-----
+ drivers/usb/serial/io_ti.c            |  12 +--
+ drivers/usb/serial/ir-usb.c           |   6 +-
+ drivers/usb/serial/keyspan.c          |   4 +-
+ drivers/usb/serial/kobil_sct.c        |   4 +-
+ drivers/usb/serial/metro-usb.c        |  12 +--
+ drivers/usb/serial/mos7720.c          |  29 ++----
+ drivers/usb/serial/mos7840.c          |  17 ++-
+ drivers/usb/serial/opticon.c          |   6 +-
+ drivers/usb/serial/oti6858.c          |  12 +--
+ drivers/usb/serial/quatech2.c         |   6 +-
+ drivers/usb/serial/sierra.c           |   8 +-
+ drivers/usb/serial/ti_usb_3410_5052.c |  16 +--
+ drivers/usb/serial/usb-wwan.h         |   4 +-
+ drivers/usb/serial/usb_wwan.c         |  12 +--
+ include/linux/usb/serial.h            |   8 +-
+ 22 files changed, 286 insertions(+), 178 deletions(-)
