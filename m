@@ -2,94 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACAF33B39B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 01:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BEE3B39B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 01:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232871AbhFXXVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 19:21:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:41494 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229643AbhFXXVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 19:21:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A7000ED1;
-        Thu, 24 Jun 2021 16:18:55 -0700 (PDT)
-Received: from [10.57.9.136] (unknown [10.57.9.136])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D58623F718;
-        Thu, 24 Jun 2021 16:18:53 -0700 (PDT)
-Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
- clocks gated
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rockchip@lists.infradead.org
-References: <20210624215750.GA3556174@bjorn-Precision-5520>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <44c551d7-fee4-13cf-2929-6d2383dd5497@arm.com>
-Date:   Fri, 25 Jun 2021 00:18:48 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S232861AbhFXXXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 19:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhFXXXJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 19:23:09 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F747C061574;
+        Thu, 24 Jun 2021 16:20:48 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id a5-20020a7bc1c50000b02901e3bbe0939bso4694230wmj.0;
+        Thu, 24 Jun 2021 16:20:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tynx7/ji7qxXMIJIZtJuHZtyFCUB2offXSh0P39+R2s=;
+        b=KcHjN4jUwD8Dd8a9LQS+FhJXk/im8QA5pS/XRMIoKSXIEptGpP2BK42ygSG6TckkIz
+         nNvxWu725La9xMqxCdfw/n5pBLrqecdkyZYu2b1ypuWyOEZhzwXIcs/JHv9wFWk48oPc
+         LuvXm3l1OmXIhJm1sfhhh7m073uGs7U9XdxY1SjpKmuGA1wecdt2GGCgsPiVKp6oHZAR
+         66FkdgqhVMqweyDvuxE9GlkoPXav2KZGNwFDIpmIpA9E/cETcwxR0tQ26Cu2dsPI9iHl
+         TBcP/Z9JT10ThTZtLnlMsfhxj6G8bDAYCkiQot5cX+zV/xj7nIDurjA4+NWa4tm7fAD4
+         Weig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tynx7/ji7qxXMIJIZtJuHZtyFCUB2offXSh0P39+R2s=;
+        b=jfiaCiC4OM1pebDFT14zZkV8w5oS4jeELxsA15wc2jUmNBN3w4QfALVM1CMZ/QX9oe
+         RKyoHM48q9bYoyUhkGEcAwPNRmlvWgAa81LSP/Mk61TjHJcztDSY5DrLoLe4gB/FAkIh
+         EjtnTxCVjDr7bjM38e7xUd7c/9xoe4N4oICl1xwj/27JDBg8N6LjPkH9rHaqK5GILFrV
+         xVNmrUEI8yW+bLwoOc5o+AOE92ptJeOPknyLBk4Qef8qFYdlPM9JWOLdJRX5TWQg5oiR
+         d7dA6f5QhfJEmwnxpu1zCW+2km7C5mL82g3TSsGYMgYLItIAlIkcy0jjkpHnfYAejjpQ
+         unkg==
+X-Gm-Message-State: AOAM530Z+2N86RCDWHlt2AotUG+CFVYHDW1KyDwo+aa0YEP4HzxDPetc
+        u8GazGyVJxWMn7RFX60WXyE=
+X-Google-Smtp-Source: ABdhPJwAYhz7MV69FZpF2/qyo/m6EeR1vg9UQ3nif0zGzpbYTPjdnC+EAKTTlBbsNcdam8iNw+sXWQ==
+X-Received: by 2002:a05:600c:2e53:: with SMTP id q19mr7184074wmf.147.1624576846969;
+        Thu, 24 Jun 2021 16:20:46 -0700 (PDT)
+Received: from honeypot.epfl.ch ([151.29.44.148])
+        by smtp.googlemail.com with ESMTPSA id r10sm4368658wrq.17.2021.06.24.16.20.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 16:20:46 -0700 (PDT)
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] perf session: add missing evlist__delete when deleting a session
+Date:   Fri, 25 Jun 2021 01:19:25 +0200
+Message-Id: <20210624231926.212208-1-rickyman7@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210624215750.GA3556174@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-24 22:57, Bjorn Helgaas wrote:
-> On Tue, Jun 08, 2021 at 10:04:09AM +0200, Javier Martinez Canillas wrote:
->> IRQ handlers that are registered for shared interrupts can be called at
->> any time after have been registered using the request_irq() function.
->>
->> It's up to drivers to ensure that's always safe for these to be called.
->>
->> Both the "pcie-sys" and "pcie-client" interrupts are shared, but since
->> their handlers are registered very early in the probe function, an error
->> later can lead to these handlers being executed before all the required
->> resources have been properly setup.
->>
->> For example, the rockchip_pcie_read() function used by these IRQ handlers
->> expects that some PCIe clocks will already be enabled, otherwise trying
->> to access the PCIe registers causes the read to hang and never return.
-> 
-> The read *never* completes?  That might be a bit problematic because
-> it implies that we may not be able to recover from PCIe errors.  Most
-> controllers will timeout eventually, log an error, and either
-> fabricate some data (typically ~0) to complete the CPU's read or cause
-> some kind of abort or machine check.
-> 
-> Just asking in case there's some controller configuration that should
-> be tweaked.
+ASan reports a memory leak caused by evlist not being deleted on exit in
+perf-report, perf-script and perf-data.
+The problem is caused by evlist->session not being deleted, which is
+allocated in perf_session__read_header, called in perf_session__new if
+perf_data is in read mode.
+In case of write mode, the session->evlist is filled by the caller.
+This patch solves the problem by calling evlist__delete in
+perf_session__delete if perf_data is in read mode.
 
-If I'm following correctly, that'll be a read transaction to the native 
-side of the controller itself; it can't complete that read, or do 
-anything else either, because it's clock-gated, and thus completely 
-oblivious (it might be that if another CPU was able to enable the clocks 
-then everything would carry on as normal, or it might end up totally 
-deadlocking the SoC interconnect). I think it's safe to assume that in 
-that state nothing of importance would be happening on the PCIe side, 
-and even if it was we'd never get to know about it.
+Changes in v2:
+ - call evlist__delete from within perf_session__delete
 
-The only relevant configuration would be "don't turn the clocks off if 
-you're using the thing", which in actual operation can be taken for 
-granted. It's a fairly typical bug to register an IRQ as shared but 
-assume in the handler that you'll only ever be called for your own 
-device's IRQ while it's powered up/clocked/etc. in its normal 
-operational state, hence CONFIG_DEBUG_SHIRQ helps flush those kinds of 
-unreliable assumptions out.
+v1: https://lore.kernel.org/lkml/20210621234317.235545-1-rickyman7@gmail.com/
 
-Robin.
+ASan report follows:
 
-(this reminds me of the "fun" I once had where a machine was locking up 
-during boot, but simply connecting an external debugger to find out 
-exactly where it was stuck happened to automatically enable the 
-offending power domain and un-stick it)
+$ ./perf script report flamegraph
+=================================================================
+==227640==ERROR: LeakSanitizer: detected memory leaks
+
+<SNIP unrelated>
+
+Indirect leak of 2704 byte(s) in 1 object(s) allocated from:
+    #0 0x4f4137 in calloc (/home/user/linux/tools/perf/perf+0x4f4137)
+    #1 0xbe3d56 in zalloc /home/user/linux/tools/lib/perf/../../lib/zalloc.c:8:9
+    #2 0x7f999e in evlist__new /home/user/linux/tools/perf/util/evlist.c:77:26
+    #3 0x8ad938 in perf_session__read_header /home/user/linux/tools/perf/util/header.c:3797:20
+    #4 0x8ec714 in perf_session__open /home/user/linux/tools/perf/util/session.c:109:6
+    #5 0x8ebe83 in perf_session__new /home/user/linux/tools/perf/util/session.c:213:10
+    #6 0x60c6de in cmd_script /home/user/linux/tools/perf/builtin-script.c:3856:12
+    #7 0x7b2930 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
+    #8 0x7b120f in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
+    #9 0x7b2493 in run_argv /home/user/linux/tools/perf/perf.c:409:2
+    #10 0x7b0c89 in main /home/user/linux/tools/perf/perf.c:539:3
+    #11 0x7f5260654b74  (/lib64/libc.so.6+0x27b74)
+
+Indirect leak of 568 byte(s) in 1 object(s) allocated from:
+    #0 0x4f4137 in calloc (/home/user/linux/tools/perf/perf+0x4f4137)
+    #1 0xbe3d56 in zalloc /home/user/linux/tools/lib/perf/../../lib/zalloc.c:8:9
+    #2 0x80ce88 in evsel__new_idx /home/user/linux/tools/perf/util/evsel.c:268:24
+    #3 0x8aed93 in evsel__new /home/user/linux/tools/perf/util/evsel.h:210:9
+    #4 0x8ae07e in perf_session__read_header /home/user/linux/tools/perf/util/header.c:3853:11
+    #5 0x8ec714 in perf_session__open /home/user/linux/tools/perf/util/session.c:109:6
+    #6 0x8ebe83 in perf_session__new /home/user/linux/tools/perf/util/session.c:213:10
+    #7 0x60c6de in cmd_script /home/user/linux/tools/perf/builtin-script.c:3856:12
+    #8 0x7b2930 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
+    #9 0x7b120f in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
+    #10 0x7b2493 in run_argv /home/user/linux/tools/perf/perf.c:409:2
+    #11 0x7b0c89 in main /home/user/linux/tools/perf/perf.c:539:3
+    #12 0x7f5260654b74  (/lib64/libc.so.6+0x27b74)
+
+Indirect leak of 264 byte(s) in 1 object(s) allocated from:
+    #0 0x4f4137 in calloc (/home/user/linux/tools/perf/perf+0x4f4137)
+    #1 0xbe3d56 in zalloc /home/user/linux/tools/lib/perf/../../lib/zalloc.c:8:9
+    #2 0xbe3e70 in xyarray__new /home/user/linux/tools/lib/perf/xyarray.c:10:23
+    #3 0xbd7754 in perf_evsel__alloc_id /home/user/linux/tools/lib/perf/evsel.c:361:21
+    #4 0x8ae201 in perf_session__read_header /home/user/linux/tools/perf/util/header.c:3871:7
+    #5 0x8ec714 in perf_session__open /home/user/linux/tools/perf/util/session.c:109:6
+    #6 0x8ebe83 in perf_session__new /home/user/linux/tools/perf/util/session.c:213:10
+    #7 0x60c6de in cmd_script /home/user/linux/tools/perf/builtin-script.c:3856:12
+    #8 0x7b2930 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
+    #9 0x7b120f in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
+    #10 0x7b2493 in run_argv /home/user/linux/tools/perf/perf.c:409:2
+    #11 0x7b0c89 in main /home/user/linux/tools/perf/perf.c:539:3
+    #12 0x7f5260654b74  (/lib64/libc.so.6+0x27b74)
+
+Indirect leak of 32 byte(s) in 1 object(s) allocated from:
+    #0 0x4f4137 in calloc (/home/user/linux/tools/perf/perf+0x4f4137)
+    #1 0xbe3d56 in zalloc /home/user/linux/tools/lib/perf/../../lib/zalloc.c:8:9
+    #2 0xbd77e0 in perf_evsel__alloc_id /home/user/linux/tools/lib/perf/evsel.c:365:14
+    #3 0x8ae201 in perf_session__read_header /home/user/linux/tools/perf/util/header.c:3871:7
+    #4 0x8ec714 in perf_session__open /home/user/linux/tools/perf/util/session.c:109:6
+    #5 0x8ebe83 in perf_session__new /home/user/linux/tools/perf/util/session.c:213:10
+    #6 0x60c6de in cmd_script /home/user/linux/tools/perf/builtin-script.c:3856:12
+    #7 0x7b2930 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
+    #8 0x7b120f in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
+    #9 0x7b2493 in run_argv /home/user/linux/tools/perf/perf.c:409:2
+    #10 0x7b0c89 in main /home/user/linux/tools/perf/perf.c:539:3
+    #11 0x7f5260654b74  (/lib64/libc.so.6+0x27b74)
+
+Indirect leak of 7 byte(s) in 1 object(s) allocated from:
+    #0 0x4b8207 in strdup (/home/user/linux/tools/perf/perf+0x4b8207)
+    #1 0x8b4459 in evlist__set_event_name /home/user/linux/tools/perf/util/header.c:2292:16
+    #2 0x89d862 in process_event_desc /home/user/linux/tools/perf/util/header.c:2313:3
+    #3 0x8af319 in perf_file_section__process /home/user/linux/tools/perf/util/header.c:3651:9
+    #4 0x8aa6e9 in perf_header__process_sections /home/user/linux/tools/perf/util/header.c:3427:9
+    #5 0x8ae3e7 in perf_session__read_header /home/user/linux/tools/perf/util/header.c:3886:2
+    #6 0x8ec714 in perf_session__open /home/user/linux/tools/perf/util/session.c:109:6
+    #7 0x8ebe83 in perf_session__new /home/user/linux/tools/perf/util/session.c:213:10
+    #8 0x60c6de in cmd_script /home/user/linux/tools/perf/builtin-script.c:3856:12
+    #9 0x7b2930 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
+    #10 0x7b120f in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
+    #11 0x7b2493 in run_argv /home/user/linux/tools/perf/perf.c:409:2
+    #12 0x7b0c89 in main /home/user/linux/tools/perf/perf.c:539:3
+    #13 0x7f5260654b74  (/lib64/libc.so.6+0x27b74)
+
+SUMMARY: AddressSanitizer: 3728 byte(s) leaked in 7 allocation(s).
+
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+---
+ tools/perf/util/session.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+index e59242c361ce..c36464d94387 100644
+--- a/tools/perf/util/session.c
++++ b/tools/perf/util/session.c
+@@ -301,8 +301,11 @@ void perf_session__delete(struct perf_session *session)
+ 	perf_session__release_decomp_events(session);
+ 	perf_env__exit(&session->header.env);
+ 	machines__exit(&session->machines);
+-	if (session->data)
++	if (session->data) {
++		if (perf_data__is_read(session->data))
++			evlist__delete(session->evlist);
+ 		perf_data__close(session->data);
++	}
+ 	free(session);
+ }
+ 
+-- 
+2.31.1
+
