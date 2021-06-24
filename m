@@ -2,115 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8573B2DCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA8E3B2DC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbhFXL1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232274AbhFXL12 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:27:28 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F90DC061574;
-        Thu, 24 Jun 2021 04:25:10 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso3262976pjp.5;
-        Thu, 24 Jun 2021 04:25:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AvRzk6yM4BX1NO5XMxEtdArbNT4paDVtHU1ZzBJEtC0=;
-        b=ZucTXTtcuQRo5/mqSnG5JDGiaO/6AySlJbTTkNZd2961RYCpQdnDAV5hu58lP286uN
-         rbA/vwA0GuvmfyP4ZcD8GOwqUc87JKfkdwxFOkH0JeyyegY96WQfxaq402f2n+9eCVOg
-         SUSojswAsqdRzDtBnt2j+6HaEZc7FGS9tSHMPapzxbLrfgMSLxU0UluJ57wTPbwjov/a
-         21kmEUPlVqZTtNCGZbJeySWFfsKE9gD/fZuOZ87xAuvC2a5y/+8RcMu3u9fbaV1V4ZGK
-         3iNNtyqFv7TpU7Wi+g7Wo0lU1tN96jiotb375rgyKj8H1kEdkHMdZpFrc4PEUle6xTNi
-         fVDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AvRzk6yM4BX1NO5XMxEtdArbNT4paDVtHU1ZzBJEtC0=;
-        b=cVnIJ73GJflDJM8WrOVuUrMiugVYSvMY6LMHO6K6tdAhvLwB6Ka8KythWsjlBq7TQF
-         z9Bp0vste/BOd1y3qVDi5idjCDDfzfJZW2Wkbc2tgVwmX0fXB1r51w5oqR4rAL3smgIf
-         uJBoZju3fy+NvaTrRCVoEUODPmWXoD+pcA9ZlBxDQml5L2jdvbZpTYHRayDHPjY8cK4R
-         Qses62xZsoPWsDhfiHMUp6v3Rqq1s910/x6Jc8QfJ/1M5fWFqM/LT9Oqe47H7GsSWZP2
-         pp82P1VLQIq6IPBYWTGWckNp5PENYxGtSErdDSWrVapySNJMy40XQTxMlS0Ec+uZjUKG
-         ageg==
-X-Gm-Message-State: AOAM532annqIeD59AoUIzRXuseSn/Mkc/C60hjrI4zjngJnLhSNs6RgR
-        TMiJRmaVODUBNuq539hdHxA=
-X-Google-Smtp-Source: ABdhPJz/EGT07gFEDdUsHICmy8CCAGTPDKKFllLVjQePTtBP+V7Guimcr/NEVqCw8G9dWlpLubZvVw==
-X-Received: by 2002:a17:903:31d3:b029:ee:bccd:e686 with SMTP id v19-20020a17090331d3b02900eebccde686mr3907255ple.1.1624533909744;
-        Thu, 24 Jun 2021 04:25:09 -0700 (PDT)
-Received: from localhost ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id w11sm2227719pgp.60.2021.06.24.04.25.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 04:25:08 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Thu, 24 Jun 2021 19:22:45 +0800
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     linux-staging@lists.linux.dev, netdev@vger.kernel.org,
-        Benjamin Poirier <benjamin.poirier@gmail.com>,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
+        id S232468AbhFXLZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:25:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:54470 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232394AbhFXLZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 07:25:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B47F21063;
+        Thu, 24 Jun 2021 04:23:33 -0700 (PDT)
+Received: from localhost (unknown [10.1.195.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 542573F718;
+        Thu, 24 Jun 2021 04:23:33 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 12:23:31 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC 13/19] staging: qlge: rewrite do while loop as for loop in
- qlge_sem_spinlock
-Message-ID: <20210624112245.zgvkcxyu7hzrzc23@Rk>
-References: <20210621134902.83587-1-coiby.xu@gmail.com>
- <20210621134902.83587-14-coiby.xu@gmail.com>
- <20210622072036.GK1861@kadam>
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
+ invariance
+Message-ID: <20210624112331.GA22416@arm.com>
+References: <cover.1624266901.git.viresh.kumar@linaro.org>
+ <09a39f5c-b47b-a931-bf23-dc43229fb2dd@quicinc.com>
+ <20210623041613.v2lo3nidpgw37abl@vireshk-i7>
+ <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
+ <20210624025414.4iszkovggk6lg6hj@vireshk-i7>
+ <CAKfTPtAXMYYrG1w-iwSWXb428FkwFArEwXQgHnjShoCEMjdYcw@mail.gmail.com>
+ <20210624104734.GA11487@arm.com>
+ <CAKfTPtAYuon+V96WmuLz+ekWuqVcb5k17w8ZwNuCzm2KMvZw+w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210622072036.GK1861@kadam>
+In-Reply-To: <CAKfTPtAYuon+V96WmuLz+ekWuqVcb5k17w8ZwNuCzm2KMvZw+w@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 10:20:36AM +0300, Dan Carpenter wrote:
->On Mon, Jun 21, 2021 at 09:48:56PM +0800, Coiby Xu wrote:
->> Since wait_count=30 > 0, the for loop is equivalent to do while
->> loop. This commit also replaces 100 with UDELAY_DELAY.
->>
->> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
->> ---
->>  drivers/staging/qlge/qlge_main.c | 7 ++++---
->>  1 file changed, 4 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
->> index c5e161595b1f..2d2405be38f5 100644
->> --- a/drivers/staging/qlge/qlge_main.c
->> +++ b/drivers/staging/qlge/qlge_main.c
->> @@ -140,12 +140,13 @@ static int qlge_sem_trylock(struct qlge_adapter *qdev, u32 sem_mask)
->>  int qlge_sem_spinlock(struct qlge_adapter *qdev, u32 sem_mask)
->>  {
->>  	unsigned int wait_count = 30;
->> +	int count;
->>
->> -	do {
->> +	for (count = 0; count < wait_count; count++) {
->>  		if (!qlge_sem_trylock(qdev, sem_mask))
->>  			return 0;
->> -		udelay(100);
->> -	} while (--wait_count);
->> +		udelay(UDELAY_DELAY);
->
->This is an interesting way to silence the checkpatch udelay warning.  ;)
+On Thursday 24 Jun 2021 at 13:15:04 (+0200), Vincent Guittot wrote:
+> On Thu, 24 Jun 2021 at 12:48, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
+> >
+> > Hi guys,
+> >
+> > On Thursday 24 Jun 2021 at 11:49:53 (+0200), Vincent Guittot wrote:
+> > > On Thu, 24 Jun 2021 at 04:54, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > > >
+> > > > On 23-06-21, 08:57, Qian Cai wrote:
+> > > > > Viresh, I am afraid I don't feel comfortable yet. I have a few new tests in
+> > > > > development, and will provide an update once ready.
+> > > >
+> > > > Oh sure, np.
+> > > >
+> > > > > Also, I noticed the delivered perf is even smaller than lowest_perf (100).
+> > > >
+> > > > > # cat /sys/devices/system/cpu/cpu8/acpi_cppc/feedback_ctrs
+> > > > >  ref:103377547901 del:54540736873
+> > > > > # cat /sys/devices/system/cpu/cpu8/acpi_cppc/feedback_ctrs
+> > > > >  ref:103379170101 del:54541599117
+> > > > >
+> > > > > 100 * (54541599117 - 54540736873) / (103379170101 - 103377547901) = 53
+> > >
+> > > I'm not sure that I understand your point. The formula above says that
+> > > cpu8 run @ 53% of nominal performance
+> > >
+> >
+> > I think this is based on a previous example Qian had where:
+> >
+> > /sys/devices/system/cpu/cpu0/acpi_cppc/highest_perf
+> > 300
+> > /sys/devices/system/cpu/cpu0/acpi_cppc/lowest_freq
+> > 1000
+> > /sys/devices/system/cpu/cpu0/acpi_cppc/lowest_perf
+> > 100
+> > /sys/devices/system/cpu/cpu0/acpi_cppc/reference_perf
+> > 100
+> >
+> > ..so the 100 is not from obtaining percentage, is the reference
+> > performance.
+> >
+> > The logic of the formula is to obtain the delivered performance when
+> > knowing the number of ticks for each counter, so:
+> >
+> > So if one gets (103379170101 - 103377547901) ticks for the counter at
+> > running at 1GHz(perf 100), what is the frequency of the core, if its
+> > counter ticked (54541599117 - 54540736873) times in the same interval
+> > of time?
+> >
+> > The answer is 530MHz(perf 53), which is lower than the lowest frequency
+> > at 1GHz(perf 100).
+> 
+> But the nominal_perf is 280 and not 100 if i'm not wrong so the perf
+> value is 148 > lowest_perf in this case
+> 
 
-I didn't know this could silence the warning :)
+Nominal performance has no meaning here. The reference counter ticks
+with the frequency equivalent to reference performance.
 
->
->regards,
->dan carpenter
->
+Nominal performance is the maximum performance when !boost. Highest
+performance is the maximum performance available including boost
+frequencies. So nominal performance has no impact in these translations
+from counter values to delivered performance.
 
--- 
-Best regards,
-Coiby
+Hope it helps,
+Ionela.
+
+> 
+> >
+> >
+> > > > >
+> > > > > My understanding is that the delivered perf should fail into the range between
+> > > > > lowest_perf and highest_perf. Is that assumption correct? This happens on
+> > > > > 5.4-based kernel, so I am in process running your series on that system to see
+> > > > > if there is any differences. In any case, if it is a bug it is pre-existing,
+> > > > > but I'd like to understand a bit better in that front first.
+> > > >
+> > > > Vincent:
+> > > >
+> > > > Can that happen because of CPU idle ?
+> > > >
+> >
+> > Not if the counters are implemented properly. The kernel considers that
+> > both reference and delivered performance counters should stop or reset
+> > during idle. The kernel would not account for idle itself.
+> >
+> > If the reference performance counter does not stop during idle, while
+> > the core performance counter (delivered) does stop, the behavior above
+> > should be seen very often.
+> >
+> > Qian, do you see these small delivered performance values often or
+> > seldom?
+> >
+> > Thanks,
+> > Ionela.
+> >
+> > > > --
+> > > > viresh
