@@ -2,104 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF883B7215
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 732253B724E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233680AbhF2Md5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 08:33:57 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:40042 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233655AbhF2Mdy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 08:33:54 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4292C226C9;
-        Tue, 29 Jun 2021 12:31:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624969886; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JYdod1Jl3r0ZKD72T4epi0bSja0sCKQ3Knam8SHOrXI=;
-        b=17psiHPvIhgmVbM+cUCSHTOP4LYqLwUTJpo17O0GiOMsVwnbZQfp6N+Esjy64iLXUnz4mj
-        oiV0N//COGEqeDrfvioZQgQDmjpisgpFshDMjivwkL6xbYwvsN/99bpP0cT2OiwXbGozhE
-        6fOWF7lHYNmDjIs0th/H3CIkt7j2omU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624969886;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JYdod1Jl3r0ZKD72T4epi0bSja0sCKQ3Knam8SHOrXI=;
-        b=DB9SexW3tuHSpBBvFMe4hAj5CaGiaeTvQ1aV24x+bhEJFr4YSp4VKHQfFdduEriuDDvQxD
-        vyiiigQgZDNO6hCQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 0F5F711906;
-        Tue, 29 Jun 2021 12:31:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624969886; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JYdod1Jl3r0ZKD72T4epi0bSja0sCKQ3Knam8SHOrXI=;
-        b=17psiHPvIhgmVbM+cUCSHTOP4LYqLwUTJpo17O0GiOMsVwnbZQfp6N+Esjy64iLXUnz4mj
-        oiV0N//COGEqeDrfvioZQgQDmjpisgpFshDMjivwkL6xbYwvsN/99bpP0cT2OiwXbGozhE
-        6fOWF7lHYNmDjIs0th/H3CIkt7j2omU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624969886;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JYdod1Jl3r0ZKD72T4epi0bSja0sCKQ3Knam8SHOrXI=;
-        b=DB9SexW3tuHSpBBvFMe4hAj5CaGiaeTvQ1aV24x+bhEJFr4YSp4VKHQfFdduEriuDDvQxD
-        vyiiigQgZDNO6hCQ==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id xXfYAp4S22D3SQAALh3uQQ
-        (envelope-from <hare@suse.de>); Tue, 29 Jun 2021 12:31:26 +0000
-Subject: Re: [PATCH 1/2] nvme-fc: Update hardware queues before using them
-To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>
-References: <20210625101649.49296-1-dwagner@suse.de>
- <20210625101649.49296-2-dwagner@suse.de>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <11737f53-8959-3d83-6be8-feca7fa40be7@suse.de>
-Date:   Tue, 29 Jun 2021 14:31:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S233753AbhF2MwN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Jun 2021 08:52:13 -0400
+Received: from [218.75.92.58] ([218.75.92.58]:65081 "EHLO WIN-VTPUBHNS72V"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232685AbhF2MwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 08:52:11 -0400
+Received: from [192.168.43.47] (Unknown [197.210.85.75])
+        by WIN-VTPUBHNS72V with ESMTPA
+        ; Thu, 24 Jun 2021 20:46:28 +0800
+Message-ID: <BB6C75F3-7A7E-471A-A698-EDBB4143C62F@WIN-VTPUBHNS72V>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-In-Reply-To: <20210625101649.49296-2-dwagner@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: URGENT ATTENTION
+To:     Recipients <wjjt@wjjt.cn>
+From:   "Andres Auchincloss" <wjjt@wjjt.cn>
+Date:   Thu, 24 Jun 2021 14:45:57 +0200
+Reply-To: andresauchincloss926@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/25/21 12:16 PM, Daniel Wagner wrote:
-> In case the number of hardware queues changes, do the update the
-> tagset and ctx to hctx first before using the mapping to recreate and
-> connnect the IO queues.
-> 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
->   drivers/nvme/host/fc.c | 16 ++++++++--------
->   1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+Hi,
 
-Cheers,
+I will like to use this opportunity to wish you a productive time in 2021 and also confide in you to finalize this transaction of mutual benefits. It may seem strange to you, but it is real. This is a transaction that has no risk at all, due process shall be followed and it shall be carried out under the ambit of the financial laws. Being the Chief Financial Officer, BP Plc. I want to trust and put in your care Eighteen Million British Pounds Sterling, The funds were acquired from an over-invoiced payment from a past contract executed in one of my departments.
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+I can't successfully achieve this transaction without presenting you as foreign contractor who will provide a bank account to receive the funds.
+
+Documentation for the claim of the funds will be legally processed and documented, so I will need your full cooperation on this matter for our mutual benefits. We will discuss details if you are interested to work with me to secure this funds. I will appreciate your prompt response in every bit of our communication. Stay Blessed and Stay Safe.
+
+
+
+Best Regards
+
+
+
+
+Tel: +1 (587) 770-0485
+Andres .B. Auchincloss
+Chief financial officerBP Petroleum p.l.c.
+
+
+
+
+                                  Copyright �? 1996-2021
+
