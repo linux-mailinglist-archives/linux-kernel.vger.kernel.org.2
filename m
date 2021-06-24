@@ -2,168 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453983B2E01
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3013B2E05
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhFXLju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:39:50 -0400
-Received: from meesny.iki.fi ([195.140.195.201]:53016 "EHLO meesny.iki.fi"
+        id S229630AbhFXLo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:44:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229505AbhFXLjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:39:48 -0400
-X-Greylist: delayed 45043 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Jun 2021 07:39:48 EDT
-Received: from hillosipuli.retiisi.eu (unknown [IPv6:2001:2003:f75d:b010::e64])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sailus)
-        by meesny.iki.fi (Postfix) with ESMTPSA id 3C860200BB;
-        Thu, 24 Jun 2021 14:37:27 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
-        t=1624534648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fs4kJDRUqNJIfjnGjOlgzuJwkDxbw7N1uDMlg37pA4M=;
-        b=DforvN1ll7fSVHcRQG+/kA7MMztwpnq4t/J25iIUtiCE3P1sKgOIjKZ3JfxD9i7CSaVhGV
-        k7pB7w7mcR+U8+7r1GgQCyG1FgiwJBhRX5YvjkRpNfc/N94opi8NFIJloOH6WccJ1h87Jv
-        tSdHV/VyLwk9WWyfGxBOVlQcI+sjfVk=
-Received: from valkosipuli.localdomain (valkosipuli.localdomain [IPv6:fd35:1bc8:1a6:d3d5::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 4CFB0634C87;
-        Thu, 24 Jun 2021 14:37:11 +0300 (EEST)
-Received: from localhost ([127.0.0.1] helo=valkosipuli.retiisi.eu)
-        by valkosipuli.localdomain with esmtp (Exim 4.92)
-        (envelope-from <sakari.ailus@iki.fi>)
-        id 1lwNfj-00019x-1Z; Thu, 24 Jun 2021 14:37:27 +0300
-Date:   Thu, 24 Jun 2021 14:37:27 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH 3/5] media: v4l2-flash-led-class: drop an useless check
-Message-ID: <20210624113726.GM3@valkosipuli.retiisi.eu>
-References: <cover.1624276137.git.mchehab+huawei@kernel.org>
- <e1629ac223470630eed4096361965d154aff70b7.1624276138.git.mchehab+huawei@kernel.org>
- <20210624093153.GJ3@valkosipuli.retiisi.eu>
- <20210624115925.357f98b6@coco.lan>
- <20210624101443.GK3@valkosipuli.retiisi.eu>
- <20210624133238.006c7b64@coco.lan>
+        id S229445AbhFXLoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 07:44:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81A15613B9;
+        Thu, 24 Jun 2021 11:42:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624534923;
+        bh=qJmXgN7CIXV0tAhUIHPht8LddBB9hfJphL9CMTVxFb8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VlEpJ2aKToVGA22EHZeTVKlQFXxm7cxvLCefs+NKe/FGOi15cc0+MGRNK1Euf2Oi5
+         9MTzqZNJSeeCF5lbTPZmQpImOvopB8MPsbFOg1MfGGy38d6bd3gRIjgM7wN4YRt9t5
+         vNzYIzadfI+zb2rnb+Nni0mnqO9bN32nKDskPkEw=
+Date:   Thu, 24 Jun 2021 13:42:00 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "philipp.deppenwiese@immu.ne" <philipp.deppenwiese@immu.ne>
+Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via
+ sysfs
+Message-ID: <YNRviIrdvrjAMCXG@kroah.com>
+References: <20210622142334.14883-1-hans-gert.dahmen@immu.ne>
+ <5ee9e467bfbf49d29cb54679d2dce1c3@AcuMS.aculab.com>
+ <d61176a0-67cf-268f-8c31-8de8739753c3@immu.ne>
+ <YNMrpzZgH4KECykk@kroah.com>
+ <7f076743-3dd6-d397-d3cc-8c31e080695c@immu.ne>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210624133238.006c7b64@coco.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Seal: i=1; s=meesny; d=iki.fi; t=1624534648; a=rsa-sha256; cv=none;
-        b=LPjSGdWQaRAY1M1wSn2NS2JeH5SWEfVWlboe5JQ0TJHj2CltduF/YY84IeqBz3slUqTs5R
-        fdGNT2lwYSf71qKnQpJq3krNC+OTlt9LbautQ3nbkC4/SZ1brfjXgc+6J36H5dAlPIktj9
-        OIuieGi87P+nwac4n7rzf27gdeNVYmI=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=meesny; t=1624534648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fs4kJDRUqNJIfjnGjOlgzuJwkDxbw7N1uDMlg37pA4M=;
-        b=K4NoTLK7BpeCkdRvjdUscyzQ+desl9uFkl6uZLWAMHRdEK31Q0+onhFWowAwkIDKqJ0bPe
-        PmH4rzT8ot1q4QkS97V89xFn7u9BdC5sAzXVF/sSTRG7SnLa/WzbvEMJ8iabIOZZ6oRG/7
-        LlxEbFXULVM8o/CMSnXmzRS7Gis+tjI=
+In-Reply-To: <7f076743-3dd6-d397-d3cc-8c31e080695c@immu.ne>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 01:32:38PM +0200, Mauro Carvalho Chehab wrote:
-> Em Thu, 24 Jun 2021 13:14:43 +0300
-> Sakari Ailus <sakari.ailus@iki.fi> escreveu:
+On Thu, Jun 24, 2021 at 01:20:28PM +0200, Hans-Gert Dahmen wrote:
 > 
-> > Hi Mauro,
+> On 23.06.21 14:40, gregkh@linuxfoundation.org wrote:
+> > > On Wed, Jun 23, 2021 at 02:17:54PM +0200, Hans-Gert Dahmen wrote:
+> > > Hi,
+> > > Yes. The window is part of the DMI interface and the south bridge or PCH
+> > > converts the bus cycles to SPI reads. It is because this region contains the
+> > > reset vector address of your CPU and the very first instruction it executes
+> > > after a reset when the internal setup is done will actually be loaded from
+> > > the serial SPI bus. It is AFAIK part of AMD's original 64-bit specification.
+> > The point is that you will never be able to do this for all devices.
+> > You should ONLY be allowed to have this module bind to the hardware that
+> > you KNOW it will work with.
 > > 
-> > On Thu, Jun 24, 2021 at 11:59:25AM +0200, Mauro Carvalho Chehab wrote:
-> > > Em Thu, 24 Jun 2021 12:31:53 +0300
-> > > Sakari Ailus <sakari.ailus@iki.fi> escreveu:
-> > >   
-> > > > Hi Mauro,
-> > > > 
-> > > > Could you check if your mail client could be configured not to add junk to
-> > > > To: field? It often leads anything in the Cc: field being dropped.  
-> > > 
-> > > I have no idea why it is doing that. I'm just using git send-email
-> > > here. Perhaps a git bug?
-> > > 
-> > > 	$ git --version
-> > > 	git version 2.31.1
-> > > 
-> > > The setup is like this one:
-> > > 
-> > > 	[sendemail]
-> > > 	        confirm = always
-> > > 	        multiedit = true
-> > > 	        chainreplyto = false
-> > > 	        aliasesfile = /home/mchehab/.addressbook
-> > > 	        aliasfiletype = pine
-> > > 	        assume8bitencoding = UTF-8  
-> > 
-> > I tried sending a message to myself using git send-email with an empty To:
-> > field and it came through just fine, with To: field remaining empty. I
-> > wonder if it could be the list server?
+> > So please work off of a DMI table, or some such hardware description,
+> > instead of just blindly enabling it for all systems.
 > 
-> It seems so.
+> I was referring to the DMI/QPI/PCI interface that connects the ICH/PCH/south
+> bridge to the CPU. I have gone through all datasheets of intel ICH and PCH
+> and they state that the address range from 0xff000000 through 0xffffffff is
+> a fixed mapping that cannot be changed (no BAR) except for the original ICH
+> (dating back to 1999) where the window is only 8MB. The original ICH is for
+> 32-bit systems only so all 64-bit Intel systems that exist have this
+> feature. I have talked to somebody who works with future Intel hardware and
+> the person indicated that it is not likely to change.
 > 
-> > > So, this is not a false-positive, but, instead, a real issue.
-> > > 
-> > > So, if led_cdev/fled_cdev can indeed be NULL, IMO, the right solution would be
-> > > to explicitly check it, and return an error, e. g.:
-> > > 
-> > > 	static int v4l2_flash_s_ctrl(struct v4l2_ctrl *c)
-> > > 	{
-> > >         	struct v4l2_flash *v4l2_flash = v4l2_ctrl_to_v4l2_flash(c);
-> > >         	struct led_classdev_flash *fled_cdev = v4l2_flash->fled_cdev;
-> > > 		struct led_classdev *led_cdev;
-> > >         	struct v4l2_ctrl **ctrls = v4l2_flash->ctrls;
-> > >         	bool external_strobe;
-> > >         	int ret = 0;
-> > > 
-> > > 		if (!fled_cdev)
-> > > 			return -EINVAL;  
-> > 
-> > The approach is correct, but as noted, the check needs to be done later.
-> 
-> > I checked that the same pattern is used throughout much of the file. I
-> > suppose if smatch isn't happy with this instance, it may not be happy with
-> > the rest either. Admittedly, the pattern isn't entirely trouble-free, as it
-> > requires the parts of the file to be in sync.
-> >
-> > Addressing this takes probably a few patches at least.
-> 
-> See, the main issue is not the smatch report, but the point that, on
-> some cases, it will de-reference a NULL pointer.
+> This is why I made the module depend on X86_64. I still have to do the same
+> complete research for AMD systems which is a little harder to do, so I am
+> proposing to check if the root complex has Intel's vendor ID and only load
+> the module on 64-bit Intel systems until I can confirm the same behavior for
+> all 64-bit AMD systems. Then I could check if the root complex is Intel or
+> AMD. Would that suffice as "some such hardware description"?
 
-It does not, since the controls aren't added for devices that do not have
-these parts to control. For instance, if there's no flash LED, the flash
-related controls aren't created. So this is primariy a static checker
-issue, and secondarily perhaps an issue of the cleanness of the code. But
-much of that originates from how the LED flash API connects with the V4L2
-flash API.
+That would help, yes.  Especially given the other types of Intel-like
+cpus we are seeing in the wild these days (not all the world is Intel
+and AMD...)
 
-> 
-> And yeah, the same pattern is everywhere within the core.
-> 
-> IMO, the right fix would be to ensure that fled_cdev will always
-> be not NULL, but if there are good reasons why this can't happen,
-> extra checks are needed along the core (or at leds core), in order
-> to prevent de-referencing NULL pointers.
-> 
-> > 
-> > Could you drop this patch, please?
-> 
-> Just dropped from media_stage. It didn't reach media_tree.
+But what is this really going to be used for?  What userspace tools need
+this type of direct access to do something useful?
 
-Thanks.
+thanks,
 
--- 
-Sakari Ailus
+greg k-h
