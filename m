@@ -2,89 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BEC3B2B80
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817B03B2B9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbhFXJjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:39:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230299AbhFXJjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:39:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F93F6112D;
-        Thu, 24 Jun 2021 09:37:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624527442;
-        bh=jsDGWCDLGzsT5JajHINSRUN4a5PAlDEfxYxcZcF0zwc=;
-        h=Date:From:To:cc:Subject:From;
-        b=c+n4Z8J6IQEwAaZ8RLOv9H70UhqOOySZvE/UUJXn7kvhpk2LlmphaTGRSBn+V6baK
-         snTcWvrvis4/i1FPQCRkJhp2Q6Z3TbzrBDg9JQu9/3hKdCB7HsJRoWKHQjH15Hqemc
-         QWJBtixZgc8LZ79IYbVqc3oZ0U4qKV9SYHrh3LT0K0x2ezzxE0sZkwPiB1J6kqmWoe
-         3sP5mwvG5jXMpo/hZgVAzn6nzXik8CVUDUngDFwilbGJ3RWAGebd8546ePeao7/trz
-         1Ulwch2aBG1sW5z2QpJuDbVja9En1jpfkwtanDnh7HkQN9pXv+y2qHvwM7vE4dqy5M
-         Z28VgiAaUo4BA==
-Date:   Thu, 24 Jun 2021 11:37:18 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        =?ISO-8859-15?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>
-cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Vojtech Pavlik <vojtech@ucw.cz>
-Subject: [PATCH] drm/amdgpu: Avoid printing of stack contents on firmware
- load error
-Message-ID: <nycvar.YFH.7.76.2106241135440.18969@cbobk.fhfr.pm>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S232031AbhFXJmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:42:43 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:44728 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231761AbhFXJmj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 05:42:39 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15O9bWII017277;
+        Thu, 24 Jun 2021 11:40:04 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=selector1;
+ bh=WH9sfPG0sFNA7LnkNWxq7q/+Vqhs13duVaMd5M0INYY=;
+ b=Hg3ALsols4wy7O2HRn45cNFK+aUozudy/C4XBAz6QG321NCgkr2CHAW8ANqUFYlu2UwR
+ MDC6+oflaB10l41ia56nZ+AE65Qgz+ANGcCtx6Cn5I8jinupBgrUTtLeV3Tfcd4/HidI
+ LszdQjJSGdLaJVP87Ip4U1oJvGUmrXUNhxEmhU/pc8WVjx/GNm7InL+BVh7aC13zQ6+K
+ ZLM2TbKCkJTiR5Ps9fKrh44rtXjPyh1RCXF5hXcig68/7mcEmS3fLjeDkezyUZ5c8VCx
+ MokpZHQQqHp9ERQhZjDtWMJiXhopjNZfc+Lk6YsK8ve1WgM1ds1CHrP6agK0nzWaRd3U 1A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 39cp5us8mp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Jun 2021 11:40:04 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C0B49100034;
+        Thu, 24 Jun 2021 11:40:02 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A759721B518;
+        Thu, 24 Jun 2021 11:40:02 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 24 Jun 2021 11:40:01
+ +0200
+From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
+To:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        Pierre-Yves Mordret <pierre-yves.mordret@foss.st.com>
+Subject: [PATCH 0/2] STM32 DMA alternative REQ/ACK protocol support
+Date:   Thu, 24 Jun 2021 11:39:57 +0200
+Message-ID: <20210624093959.142265-1-amelie.delaunay@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-24_06:2021-06-24,2021-06-24 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Kosina <jkosina@suse.cz>
+Default REQ/ACK protocol consists in maintaining ACK signal up to the
+removal of REQuest and the transfer completion.
+In case of alternative REQ/ACK protocol, ACK de-assertion does not wait the
+removal of the REQuest, but only the transfer completion.
+Due to a possible DMA stream lock when transferring data to/from STM32
+USART/UART, add support to select alternative REQ/ACK protocol.
 
-In case when psp_init_asd_microcode() fails to load ASD microcode file, 
-psp_v12_0_init_microcode() tries to print the firmware filename that 
-failed to load before bailing out.
+Amelie Delaunay (2):
+  dt-bindings: dma: add alternative REQ/ACK protocol selection in
+    stm32-dma
+  dmaengine: stm32-dma: add alternate REQ/ACK protocol management
 
-This is wrong because:
-
-- the firmware filename it would want it print is an incorrect one as
-  psp_init_asd_microcode() and psp_v12_0_init_microcode() are loading
-  different filenames
-- it tries to print fw_name, but that's not yet been initialized by that
-  time, so it prints random stack contents, e.g.
-
-    amdgpu 0000:04:00.0: Direct firmware load for amdgpu/renoir_asd.bin failed with error -2
-    amdgpu 0000:04:00.0: amdgpu: fail to initialize asd microcode
-    amdgpu 0000:04:00.0: amdgpu: psp v12.0: Failed to load firmware "\xfeTO\x8e\xff\xff"
-
-Fix that by bailing out immediately, instead of priting the bogus error 
-message.
-
-Reported-by: Vojtech Pavlik <vojtech@ucw.cz>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
----
- drivers/gpu/drm/amd/amdgpu/psp_v12_0.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/psp_v12_0.c b/drivers/gpu/drm/amd/amdgpu/psp_v12_0.c
-index c4828bd3264b..5b21e22ad4b9 100644
---- a/drivers/gpu/drm/amd/amdgpu/psp_v12_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/psp_v12_0.c
-@@ -67,7 +67,7 @@ static int psp_v12_0_init_microcode(struct psp_context *psp)
- 
- 	err = psp_init_asd_microcode(psp, chip_name);
- 	if (err)
--		goto out;
-+		return err;
- 
- 	snprintf(fw_name, sizeof(fw_name), "amdgpu/%s_ta.bin", chip_name);
- 	err = request_firmware(&adev->psp.ta_fw, fw_name, adev->dev);
--- 
-2.12.3
-
+ Documentation/devicetree/bindings/dma/st,stm32-dma.yaml | 7 +++++++
+ drivers/dma/stm32-dma.c                                 | 8 ++++++--
+ 2 files changed, 13 insertions(+), 2 deletions(-)
 
 -- 
-Jiri Kosina
-SUSE Labs
+2.25.1
 
