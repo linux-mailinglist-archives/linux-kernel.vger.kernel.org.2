@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B42C3B2FEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A573B2FED
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbhFXNYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:24:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:57134 "EHLO foss.arm.com"
+        id S231552AbhFXNZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:25:10 -0400
+Received: from ni.piap.pl ([195.187.100.5]:45460 "EHLO ni.piap.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229878AbhFXNYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:24:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D710ED1;
-        Thu, 24 Jun 2021 06:22:34 -0700 (PDT)
-Received: from [10.57.9.136] (unknown [10.57.9.136])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2BD2F3F718;
-        Thu, 24 Jun 2021 06:22:32 -0700 (PDT)
-Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
-To:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Chen Huang <chenhuang5@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mm <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <da9c2fa9-a545-0c48-4490-d6134cc31425@huawei.com>
- <20210623132223.GA96264@C02TD0UTHF1T.local>
- <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
- <YNP6/p/yJzLLr8M8@casper.infradead.org> <YNQuZ8ykN7aR+1MP@infradead.org>
- <YNRpYli/5/GWvaTT@casper.infradead.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <27fbb8c1-2a65-738f-6bec-13f450395ab7@arm.com>
-Date:   Thu, 24 Jun 2021 14:22:27 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S229878AbhFXNZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:25:08 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ni.piap.pl (Postfix) with ESMTPSA id 3C3E94A007F;
+        Thu, 24 Jun 2021 15:22:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 3C3E94A007F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1624540968; bh=UsDh/IJPYJff3yt6zKCVvTurJG0QrYahYd5eIUIqSMg=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=Y6jXQqfhM4XLXqiAmer0t2lvAx/3Tl5MBQjZAJ3LtRtv9jAGJ8/UW/kOPzMP2M876
+         aXttucDrQh7b26M2tKHBi1kccjPKzHcnyZxEOkmJz+cgQyrq3uLhp6O9TTKfErwPp8
+         Z5UBpS8CQQwBy/qGH85A33g/BHLuCbRSK/jh6GNs=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2] MEDIA: Driver for ON Semi AR0521 camera sensor
+References: <m3wnqm5eqo.fsf@t19.piap.pl>
+        <YNHQDNdpxcY8+IV2@pendragon.ideasonboard.com>
+        <m3r1gt5hzm.fsf@t19.piap.pl>
+        <YNK5FhAXSpI1oHJV@pendragon.ideasonboard.com>
+        <m3mtrh5evo.fsf@t19.piap.pl>
+        <YNM0cZFV7/LKKFBn@pendragon.ideasonboard.com>
+        <42958029-5625-5f4d-a075-2f59a74e0fb5@ideasonboard.com>
+        <m3bl7v6er0.fsf@t19.piap.pl>
+        <YNR2OkXL+wUaKuy4@pendragon.ideasonboard.com>
+        <YNR9CS/PfG7s1e71@kroah.com>
+Sender: khalasa@piap.pl
+Date:   Thu, 24 Jun 2021 15:22:48 +0200
+In-Reply-To: <YNR9CS/PfG7s1e71@kroah.com> (Greg KH's message of "Thu, 24 Jun
+        2021 14:39:37 +0200")
+Message-ID: <m3wnqj4ct3.fsf@t19.piap.pl>
 MIME-Version: 1.0
-In-Reply-To: <YNRpYli/5/GWvaTT@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 4
+X-KLMS-Message-Action: skipped
+X-KLMS-AntiSpam-Status: not scanned, whitelist
+X-KLMS-AntiPhishing: not scanned, whitelist
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-24 12:15, Matthew Wilcox wrote:
-> On Thu, Jun 24, 2021 at 08:04:07AM +0100, Christoph Hellwig wrote:
->> On Thu, Jun 24, 2021 at 04:24:46AM +0100, Matthew Wilcox wrote:
->>> On Thu, Jun 24, 2021 at 11:10:41AM +0800, Chen Huang wrote:
->>>> In userspace, I perform such operation:
->>>>
->>>>   	fd = open("/tmp/test", O_RDWR | O_SYNC);
->>>>          access_address = (char *)mmap(NULL, uio_size, PROT_READ, MAP_SHARED, uio_fd, 0);
->>>>          ret = write(fd, access_address + 2, sizeof(long));
->>>
->>> ... you know that accessing this at unaligned offsets isn't going to
->>> work.  It's completely meaningless.  Why are you trying to do it?
->>
->> We still should not cause an infinite loop in kernel space due to a
->> a userspace programmer error.
-> 
-> They're running as root and they've mapped some device memory.  We can't
-> save them from themself.  Imagine if they'd done this to the NVMe BAR.
+Hi Greg,
 
-FWIW I think the only way to make the kernel behaviour any more robust 
-here would be to make the whole uaccess API more expressive, such that 
-rather than simply saying "I only got this far" it could actually 
-differentiate between stopping due to a fault which may be recoverable 
-and worth retrying, and one which definitely isn't.
+Greg KH <gregkh@linuxfoundation.org> writes:
 
-Unless maybe there's the possibility to abandon a syscall and SIGBUS the 
-process directly from the uaccess fixup path, but even to my limited 
-knowledge that seems unlikely.
+> +// SPDX-License-Identifier: GPL-2.0
 
-(I'm not counting "cap the number of retries to a very large value to 
-guarantee *eventual* failure" as robust, but I suppose it's a potential 
-option too)
+> Putting the above line on a file _IS_ a legal declaration that the file
+> is released under GPL-2.0.  It's pretty simple :)
 
-Robin.
+Do you think putting this line anywhere, in any file, does it?
+That would be crazy.
+
+How about a book, e.g. describing a patch submission process (but not
+a copy of kernel's Documentation). The same?
+
+Also - in all countries? Most of them?
+
+Come on.
+
+Then why would we need the Signed-off-by?
+From my perspective, the SPDX-License-Identifier is only meaningful when
+the file is actually a part of the kernel, or if, at least, it's been
+presented for merge, with Signed-off-by etc.
+--=20
+Krzysztof Ha=C5=82asa
+
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
