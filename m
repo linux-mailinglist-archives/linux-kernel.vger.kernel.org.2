@@ -2,157 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECA33B2BDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C463B2BEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232016AbhFXJ4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:56:23 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:46174 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232055AbhFXJ4U (ORCPT
+        id S232177AbhFXJ5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:57:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27739 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232178AbhFXJ5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:56:20 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 6439E1C0B79; Thu, 24 Jun 2021 11:54:00 +0200 (CEST)
-Date:   Thu, 24 Jun 2021 11:53:59 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     kernel list <linux-kernel@vger.kernel.org>,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, intel-gfx@lists.freedesktop.org
-Subject: 5.13-rc6 on thinkpad X220: graphics hangs with recent mainline
-Message-ID: <20210624095359.GA29649@duo.ucw.cz>
+        Thu, 24 Jun 2021 05:57:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624528512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iTSSAgK7aaghb7ToUQUO/0vYqBsE2JOeFkxWgsEco9g=;
+        b=gNTs9CmJO+TRe1dyQCDAsPsghzAwC7W6d29LJ1l29HMqCu4lB/3MvTpdkx8qO26iivj2zZ
+        HrMpp3KvGyxcl4zg6tzxo3CZSnQzzlv7NpBr+vh2kSccxZZ5dVSDhKlR/xaCdJKpJwSaWf
+        brnqcyTB7QbRM+88M5cy/tnFJbmLeKc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-5SSWgA9GPSCnSLccV1-bUg-1; Thu, 24 Jun 2021 05:55:08 -0400
+X-MC-Unique: 5SSWgA9GPSCnSLccV1-bUg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 49D218C5EC2;
+        Thu, 24 Jun 2021 09:55:07 +0000 (UTC)
+Received: from work (unknown [10.40.193.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 549CF5C1BB;
+        Thu, 24 Jun 2021 09:55:05 +0000 (UTC)
+Date:   Thu, 24 Jun 2021 11:55:01 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Junxiao Bi <junxiao.bi@oracle.com>
+Subject: Re: [PATCH] ext4: use ext4_grp_locked_error in mb_find_extent
+Message-ID: <20210624095501.jkd7iwu5bljw7xao@work>
+References: <20210623232114.34457-1-stephen.s.brennan@oracle.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="7JfCtLOvnd9MIVvH"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210623232114.34457-1-stephen.s.brennan@oracle.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 23, 2021 at 04:21:14PM -0700, Stephen Brennan wrote:
+> Commit 5d1b1b3f492f ("ext4: fix BUG when calling ext4_error with locked
+> block group") introduces ext4_grp_locked_error to handle unlocking a
+> group in error cases. Otherwise, there is a possibility of a sleep while
+> atomic. However, since 43c73221b3b1 ("ext4: replace BUG_ON with WARN_ON
+> in mb_find_extent()"), mb_find_extent() has contained a ext4_error()
+> call while a group spinlock is held. Replace this with
+> ext4_grp_locked_error.
+> 
+> Fixes: 43c73221b3b1 ("ext4: replace BUG_ON with WARN_ON in mb_find_extent()")
+> Cc: <stable@vger.kernel.org> # 4.14+
+> Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+> Reviewed-by: Junxiao Bi <junxiao.bi@oracle.com>
 
---7JfCtLOvnd9MIVvH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Good catch, looks good to me.
 
-Hi!
+Reviewed-by: Lukas Czerner <lczerner@redhat.com>
 
-I'm getting graphics problems with 5.13-rc:
+Thanks!
+-Lukas
 
-Debian 10.9, X, chromium and flightgear is in use. Things were more
-stable than this with previous kernels.
+> ---
+>  fs/ext4/mballoc.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index c2c22c2baac0..089c958aa2c3 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -1909,10 +1909,11 @@ static int mb_find_extent(struct ext4_buddy *e4b, int block,
+>  	if (ex->fe_start + ex->fe_len > EXT4_CLUSTERS_PER_GROUP(e4b->bd_sb)) {
+>  		/* Should never happen! (but apparently sometimes does?!?) */
+>  		WARN_ON(1);
+> -		ext4_error(e4b->bd_sb, "corruption or bug in mb_find_extent "
+> -			   "block=%d, order=%d needed=%d ex=%u/%d/%d@%u",
+> -			   block, order, needed, ex->fe_group, ex->fe_start,
+> -			   ex->fe_len, ex->fe_logical);
+> +		ext4_grp_locked_error(e4b->bd_sb, e4b->bd_group, 0, 0,
+> +			"corruption or bug in mb_find_extent "
+> +			"block=%d, order=%d needed=%d ex=%u/%d/%d@%u",
+> +			block, order, needed, ex->fe_group, ex->fe_start,
+> +			ex->fe_len, ex->fe_logical);
+>  		ex->fe_len = 0;
+>  		ex->fe_start = 0;
+>  		ex->fe_group = 0;
+> -- 
+> 2.30.2
+> 
 
-Any ideas?
-
-Best regards,
-								Pavel
-
-[185233.329693] wlp3s0: deauthenticated from 5c:f4:ab:10:d2:bb (Reason: 16=
-=3DGROUP_KEY_HANDSHAKE_TIMEOUT)
-[185234.040352] wlp3s0: authenticate with 5c:f4:ab:10:d2:bb
-[185234.043836] wlp3s0: send auth to 5c:f4:ab:10:d2:bb (try 1/3)
-[185234.046652] wlp3s0: authenticated
-[185234.049087] wlp3s0: associate with 5c:f4:ab:10:d2:bb (try 1/3)
-[185234.052667] wlp3s0: RX AssocResp from 5c:f4:ab:10:d2:bb (capab=3D0x411 =
-status=3D0 aid=3D1)
-[185234.055398] wlp3s0: associated
-[185300.784992] i915 0000:00:02.0: [drm] Resetting chip for stopped heartbe=
-at on rcs0
-[185300.888694] i915 0000:00:02.0: [drm] fgfs[27370] context reset due to G=
-PU hang
-[185472.274563] usb 2-1.1: USB disconnect, device number 3
-[185472.274578] usb 2-1.1.2: USB disconnect, device number 5
-[185472.281518] hid-generic 0003:04F2:0111.0003: usb_submit_urb(ctrl) faile=
-d: -19
-[185472.299837] hid-generic 0003:04F2:0111.0003: usb_submit_urb(ctrl) faile=
-d: -19
-[185472.305986] hid-generic 0003:04F2:0111.0003: usb_submit_urb(ctrl) faile=
-d: -19
-[185472.328012] hid-generic 0003:04F2:0111.0003: usb_submit_urb(ctrl) faile=
-d: -19
-[185472.333738] usb 2-1.1.3: USB disconnect, device number 6
-[185673.454821] usb 2-1.1: new high-speed USB device number 7 using ehci-pci
-[185673.563486] usb 2-1.1: New USB device found, idVendor=3D1a40, idProduct=
-=3D0101, bcdDevice=3D 1.11
-[185673.563502] usb 2-1.1: New USB device strings: Mfr=3D0, Product=3D1, Se=
-rialNumber=3D0
-[185673.563509] usb 2-1.1: Product: USB 2.0 Hub
-[185673.564488] hub 2-1.1:1.0: USB hub found
-[185673.564595] hub 2-1.1:1.0: 4 ports detected
-=2E..
-[207277.385543] wlp3s0: deauthenticated from 5c:f4:ab:10:d2:bb (Reason: 16=
-=3DGROUP_KEY_HANDSHAKE_TIMEOUT)
-[207278.062061] wlp3s0: authenticate with 5c:f4:ab:10:d2:bb
-[207278.068175] wlp3s0: send auth to 5c:f4:ab:10:d2:bb (try 1/3)
-[207278.070985] wlp3s0: authenticated
-[207278.075545] wlp3s0: associate with 5c:f4:ab:10:d2:bb (try 1/3)
-[207278.080793] wlp3s0: RX AssocResp from 5c:f4:ab:10:d2:bb (capab=3D0x411 =
-status=3D0 aid=3D1)
-[207278.084081] wlp3s0: associated
-[207564.046469] i915 0000:00:02.0: [drm] Resetting chip for stopped heartbe=
-at on rcs0
-[207564.150293] i915 0000:00:02.0: [drm] fgfs[25729] context reset due to G=
-PU hang
-[209075.178776] wlp3s0: deauthenticated from 5c:f4:ab:10:d2:bb (Reason: 16=
-=3DGROUP_KEY_HANDSHAKE_TIMEOUT)
-[209075.841872] wlp3s0: authenticate with 5c:f4:ab:10:d2:bb
-[209075.845305] wlp3s0: send auth to 5c:f4:ab:10:d2:bb (try 1/3)
-[209075.851186] wlp3s0: authenticated
-[209075.852537] wlp3s0: associate with 5c:f4:ab:10:d2:bb (try 1/3)
-[209075.855972] wlp3s0: RX AssocResp from 5c:f4:ab:10:d2:bb (capab=3D0x411 =
-status=3D0 aid=3D1)
-[209075.858522] wlp3s0: associated
-[210159.723726] PM: suspend entry (deep)
-[210159.741497] Filesystems sync: 0.017 seconds
-[210159.743585] Freezing user space processes ... (elapsed 0.009 seconds) d=
-one.
-[210159.753345] OOM killer disabled.
-[210159.753349] Freezing remaining freezable tasks ... (elapsed 0.003 secon=
-ds) done.
-[210159.757357] printk: Suspending console(s) (use no_console_suspend to de=
-bug)
-[210159.945365] sd 2:0:0:0: [sdb] Synchronizing SCSI cache
-[210159.945443] sd 0:0:0:0: [sda] Synchronizing SCSI cache
-[210159.945651] sd 0:0:0:0: [sda] Stopping disk
-[210159.947225] sd 2:0:0:0: [sdb] Stopping disk
-[210160.019791] wlp3s0: deauthenticating from 5c:f4:ab:10:d2:bb by local ch=
-oice (Reason: 3=3DDEAUTH_LEAVING)
-[210160.021158] e1000e: EEE TX LPI TIMER: 00000011
-[210161.245106] PM: suspend devices took 1.488 seconds
-[210161.266601] ACPI: EC: interrupt blocked
-[210161.305431] ACPI: Preparing to enter system sleep state S3
-[210161.313532] ACPI: EC: event blocked
-[210161.313535] ACPI: EC: EC stopped
-[210161.313537] PM: Saving platform NVS memory
-[210161.313548] Disabling non-boot CPUs ...
-=2E..
-[224698.957159] wlp3s0: associated
-[229707.724067] wlp3s0: deauthenticated from 5c:f4:ab:10:d2:bb (Reason: 16=
-=3DGROUP_KEY_HANDSHAKE_TIMEOUT)
-[229708.370607] wlp3s0: authenticate with 5c:f4:ab:10:d2:bb
-[229708.373732] wlp3s0: send auth to 5c:f4:ab:10:d2:bb (try 1/3)
-[229708.376501] wlp3s0: authenticated
-[229708.379997] wlp3s0: associate with 5c:f4:ab:10:d2:bb (try 1/3)
-[229708.383773] wlp3s0: RX AssocResp from 5c:f4:ab:10:d2:bb (capab=3D0x411 =
-status=3D0 aid=3D1)
-[229708.386423] wlp3s0: associated
-[229756.518759] i915 0000:00:02.0: [drm] Resetting chip for stopped heartbe=
-at on rcs0
-[229756.622596] i915 0000:00:02.0: [drm] fgfs[2648] context reset due to GP=
-U hang
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---7JfCtLOvnd9MIVvH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYNRWNwAKCRAw5/Bqldv6
-8n4yAJ989SGpxrjxzHaH1f2PKCNVIuxQ4gCfeap8C3sLbT45u4y7vTmk1LpsGTM=
-=l7gv
------END PGP SIGNATURE-----
-
---7JfCtLOvnd9MIVvH--
