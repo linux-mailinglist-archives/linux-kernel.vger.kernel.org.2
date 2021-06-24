@@ -2,132 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9E33B35ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 20:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 678AD3B3618
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 20:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232636AbhFXSny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 14:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbhFXSnw (ORCPT
+        id S232429AbhFXSvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 14:51:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56797 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230450AbhFXSvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 14:43:52 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470E7C061574;
-        Thu, 24 Jun 2021 11:41:31 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id i24so9946553edx.4;
-        Thu, 24 Jun 2021 11:41:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FqeVLsZbI+b7YMNFAgaFj21i7SM7xU+D1QxAYv/hv9E=;
-        b=O+DFNT4ShO+03GG0VF0Zm8jfSJNDh2NpS2sx5CDivncDZJ6rY9f3sgx+6q/6oC13Gv
-         8T1v8SNGcuziOpR+wqR3n3vpBZbMwi09et4eAD4kd5mOl9hjx+yRILqvrHOCRfDDLqVT
-         bRDFAYSl5pjhTjuysAR8qekrmg9KgrDks2OMRvt1YxvDcEMrSkzzFItj5nTkl6171kD3
-         brbdBd+Q1RaVxXlDwDRF6vEldI0HpkG2lZ5BP14PKhfRcTDhtNEU8KsZ98zWvuMowMgl
-         F1diY9yB3dWWicVp7hgF5zpobwCU6YFFoPeQzkR9oRskYKJZ1qG4OV+9/OwlYzR4snyA
-         gK2A==
+        Thu, 24 Jun 2021 14:51:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624560522;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CNg9Wq5m1VbMd3O85AU7blSYJl1f6ygn421IFBSPGw4=;
+        b=EeSeWpMAJ28kVDu79WY3tBJEuJAmOJDwLaFXGFawglyot9RbBfTYL9fnboNXT0LhzWW0Fi
+        CIXcROwIbhMnYdtJYwRIrTxYQk5qZWieMo94yD2wO+2dhsabSf2EinBJz4SRFjGBiOPIgD
+        PIq9aRNF6rlSVVAa5fN2tRni5ox76wM=
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
+ [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-126-_KzBev5kPc2j4A3lqV4sUg-1; Thu, 24 Jun 2021 14:48:41 -0400
+X-MC-Unique: _KzBev5kPc2j4A3lqV4sUg-1
+Received: by mail-oo1-f70.google.com with SMTP id r130-20020a4a37880000b029024987ad471cso4274772oor.17
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 11:48:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FqeVLsZbI+b7YMNFAgaFj21i7SM7xU+D1QxAYv/hv9E=;
-        b=Oy7XHYCkhIgyROU2oLbgCSeIpvjvYjC8SOi3BCj2800uK8UGuh4ykd1W9qSHwz4W4b
-         lGFwTnBdv353f9LBi4POq4kTitidpEO7qgrbyGFCkkPyQbm281NJ34pLg5P7FOvaXLU/
-         RaGkWvg6v1eUb2BPpwTdKAPLVZfMfSZHGZNxkN5UtuJoVeAYYuRNJ1R/yFBpC9NPRebr
-         ogp/PsJ8J3PgRDeevoRmVAPK1M9nQVkLnEVc4JFG27Ub7xvPLtSrDhAQXups3o6k4rF6
-         IwqlTEfhFEcsk0EAp11gAOEJCTDpv4z1aEEefH/RMjv5UawJlUzTBub+Vfemu1le4KQf
-         wwQQ==
-X-Gm-Message-State: AOAM530KdBKE7A0mjIvMotDgghufJurEjjPnrswWvLoNaQdbvenkYNLR
-        ApLbOccuC+HR6E6pddyFmII=
-X-Google-Smtp-Source: ABdhPJzi3PKyfCY+DvBFjP2sN7A1iP+R1dKr1Awa9cmDiqkiZfR6l6B/vpRHHMPC5duU4KL52fYbiA==
-X-Received: by 2002:a05:6402:2551:: with SMTP id l17mr9131824edb.15.1624560089913;
-        Thu, 24 Jun 2021 11:41:29 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f29:3800:108e:1fbd:e1c9:8645? (p200300ea8f293800108e1fbde1c98645.dip0.t-ipconnect.de. [2003:ea:8f29:3800:108e:1fbd:e1c9:8645])
-        by smtp.googlemail.com with ESMTPSA id b19sm2366380edd.10.2021.06.24.11.41.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 11:41:29 -0700 (PDT)
-To:     Andre Przywara <andre.przywara@arm.com>, nic_swsd@realtek.com
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sayanta Pattanayak <sayanta.pattanayak@arm.com>
-References: <20210624154945.19177-1-andre.przywara@arm.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH v2] r8169: Avoid duplicate sysfs entry creation error
-Message-ID: <bb2e4938-0a7c-1b02-25f5-5615d3a1b1c7@gmail.com>
-Date:   Thu, 24 Jun 2021 20:41:25 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CNg9Wq5m1VbMd3O85AU7blSYJl1f6ygn421IFBSPGw4=;
+        b=OeXCmTHZ4XXlRbI9jpOB2i0EkYGZLXOeG6j5a8KmlY/MKk2mhP5MyYQ1ZVqp9ou6Hm
+         U3ygfmptgXhh8aruk6YLGTM26jF4cSx/a5PmUMiATjJkVP+43DVWRHBrN7/tFb+OrukS
+         c+I1qUDxvowKLaPbAfhcUsoiJZtt18v+208Of8IBsSul143Hdq2nJyEiD0MN29/GCtzW
+         YeJQrImTmGSOIsm/eUn297N3RJ39zTu5rGScRz2PZFGOMc25Se1gqXa4jFH7HRNRAtNc
+         6O+MtTz2+tMy/ulNd0zLh/iwDDRJLJtEn7zOQjpY01Ey83yW97HNTQNJuFlkaRTx2yno
+         9Fig==
+X-Gm-Message-State: AOAM5329Ss7oTcpL2qgE3yxB1vXOEF8jKII8ZEGdXaSTv2/vwMQJx7Fm
+        Yk5UIR3j8BNdj08dXZWBVakPCtvGNhRGqcl7zOyg1sRWjFRr5n97bQBWWxow5ubzBv8x41McFjL
+        pEhZeyqhcXe2nYLD+xT5cbOV+
+X-Received: by 2002:a4a:9863:: with SMTP id z32mr5585644ooi.37.1624560520524;
+        Thu, 24 Jun 2021 11:48:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxU0ze/kEarHzCX2HjFxCcEH4B/4H0wuysel+p0dtbgq8Vkn1XmNwRZVrwk4jcuz9r/80IzYQ==
+X-Received: by 2002:a4a:9863:: with SMTP id z32mr5585630ooi.37.1624560520315;
+        Thu, 24 Jun 2021 11:48:40 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id 26sm799626ooy.46.2021.06.24.11.48.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 11:48:39 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 12:48:38 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Amey Narkhede <ameynarkhede03@gmail.com>,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v7 1/8] PCI: Add pcie_reset_flr to follow calling
+ convention of other reset methods
+Message-ID: <20210624124838.4accc23c.alex.williamson@redhat.com>
+In-Reply-To: <20210624161559.GA3532867@bjorn-Precision-5520>
+References: <20210624152809.m3glwh6lxckykt33@archlinux>
+        <20210624161559.GA3532867@bjorn-Precision-5520>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210624154945.19177-1-andre.przywara@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.06.2021 17:49, Andre Przywara wrote:
-> From: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
-> 
-> When registering the MDIO bus for a r8169 device, we use the PCI B/D/F
-> specifier as a (seemingly) unique device identifier.
-> However the very same BDF number can be used on another PCI segment,
-> which makes the driver fail probing:
-> 
-> [ 27.544136] r8169 0002:07:00.0: enabling device (0000 -> 0003)
-> [ 27.559734] sysfs: cannot create duplicate filename '/class/mdio_bus/r8169-700'
-> ....…
-> [ 27.684858] libphy: mii_bus r8169-700 failed to register
-> [ 27.695602] r8169: probe of 0002:07:00.0 failed with error -22
-> 
-> Add the segment number to the device name to make it more unique.
-> 
-> This fixes operation on an ARM N1SDP board, where two boards might be
-> connected together to form an SMP system, and all on-board devices show
-> up twice, just on different PCI segments.
-> 
-> Signed-off-by: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
-> [Andre: expand commit message, use pci_domain_nr()]
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> ---
-> Now compile-tested on ARM, arm64, ppc64, sparc64, mips64, hppa, x86-64,
-> i386.
-> 
-Good. Patch is missing the net vs. net-next annotation, therefore the
-remaining question is whether to treat this as a fix. Seems nobody but
-you was affected so far, therefore handling it as an improvement should
-be fine as well.
+On Thu, 24 Jun 2021 11:15:59 -0500
+Bjorn Helgaas <helgaas@kernel.org> wrote:
 
-If you need this change on previous kernel versions:
-Add net annotation and add a Fixes tag (I think when driver was switched
-to phylib with 4.19). Else add a net-next annotation.
+> [+to Alex]
+> 
+> On Thu, Jun 24, 2021 at 08:58:09PM +0530, Amey Narkhede wrote:
+> > On 21/06/24 07:23AM, Bjorn Helgaas wrote:  
+> > > On Tue, Jun 08, 2021 at 11:18:50AM +0530, Amey Narkhede wrote:  
+> > > > Currently there is separate function pcie_has_flr() to probe if pcie flr is
+> > > > supported by the device which does not match the calling convention
+> > > > followed by reset methods which use second function argument to decide
+> > > > whether to probe or not.  Add new function pcie_reset_flr() that follows
+> > > > the calling convention of reset methods.  
+> > >  
+> > > > +/**
+> > > > + * pcie_reset_flr - initiate a PCIe function level reset
+> > > > + * @dev: device to reset
+> > > > + * @probe: If set, only check if the device can be reset this way.
+> > > > + *
+> > > > + * Initiate a function level reset on @dev.
+> > > > + */
+> > > > +int pcie_reset_flr(struct pci_dev *dev, int probe)
+> > > > +{
+> > > > +	u32 cap;
+> > > > +
+> > > > +	if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
+> > > > +		return -ENOTTY;
+> > > > +
+> > > > +	pcie_capability_read_dword(dev, PCI_EXP_DEVCAP, &cap);
+> > > > +	if (!(cap & PCI_EXP_DEVCAP_FLR))
+> > > > +		return -ENOTTY;
+> > > > +
+> > > > +	if (probe)
+> > > > +		return 0;
+> > > > +
+> > > > +	return pcie_flr(dev);
+> > > > +}  
+> > >
+> > > Tangent: I've been told before, but I can't remember why we need the
+> > > "probe" interface.  Since we're looking at this area again, can we add
+> > > a comment to clarify this?
+> > >
+> > > Every time I read this, I wonder why we can't just get rid of the
+> > > probe and attempt a reset.  If it fails because it's not supported, we
+> > > could just try the next one in the list.  
+> > 
+> > Part of the reason is to have same calling convention as other reset
+> > methods and other reason is devices that run in VMs where various
+> > capabilities can be hidden or have quirks for avoiding known troublesome
+> > combination of device features as Alex explained here
+> > https://lore.kernel.org/linux-pci/20210624151242.ybew2z5rseuusj7v@archlinux/T/#mb67c09a2ce08ce4787652e4c0e7b9e5adf1df57a
+> > 
+> > On the side note as you suggested earlier to cache flr capability
+> > earlier the PCI_EXP_DEVCAP reading code won't be there in next version
+> > so its just trivial check(dev->has_flr).  
+> 
+> Sorry, I didn't make my question clear.  I'm not asking why we're
+> adding a "probe" argument to pcie_reset_flr() to make it consistent
+> with pci_af_flr(), pci_pm_reset(), pci_parent_bus_reset(), etc.  I
+> like making the interfaces consistent.
+> 
+> What I'm asking here is why the "probe" argument exists for *any* of
+> these interfaces and why pci_probe_reset_function() exists.
+> 
+> This is really more a question for Alex since it's a historical
+> question, not anything directly related to your series.  I'm not
+> proposing *removing* the "probe" argument; I know it exists for a
+> reason because I've asked about it before.  But I forgot the answer,
+> which makes me think a hint in the code would be useful.
 
-See the following link for details:
-https://www.kernel.org/doc/Documentation/networking/netdev-FAQ.txt
+Heh [1]
 
-> Changes v1 ... v2:
-> - use pci_domain_nr() wrapper to fix compilation on various arches
-> 
->  drivers/net/ethernet/realtek/r8169_main.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-> index 2c89cde7da1e..5f7f0db7c502 100644
-> --- a/drivers/net/ethernet/realtek/r8169_main.c
-> +++ b/drivers/net/ethernet/realtek/r8169_main.c
-> @@ -5086,7 +5086,8 @@ static int r8169_mdio_register(struct rtl8169_private *tp)
->  	new_bus->priv = tp;
->  	new_bus->parent = &pdev->dev;
->  	new_bus->irq[0] = PHY_MAC_INTERRUPT;
-> -	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x", pci_dev_id(pdev));
-> +	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x-%x",
-> +		 pci_domain_nr(pdev->bus), pci_dev_id(pdev));
->  
->  	new_bus->read = r8169_mdio_read_reg;
->  	new_bus->write = r8169_mdio_write_reg;
-> 
+That might be what you're recalling, but in that case I was adding
+exported symbols that allowed probing bus vs slot reset because the
+scope of affected devices is different.  My use case is testing whether
+the user owns all the affected devices, so it's really not a
+test-by-doing opportunity.
+
+For these single-function scoped resets, as in the reply to [1]
+pci_probe_reset_function() isn't exported and the only caller is
+internal PCI code to determine whether to create the 'reset' sysfs
+attribute.  Sure, as it exists today we could reset the device and test
+whether it worked to get that value, that's what vfio-pci does now
+before we give the device to the user, but the critical difference is
+that in the vfio case we always want to flush any state that might be
+leaked to the user and at device init time, doing so only invites
+issues.
+
+This series obviously expands the scope of probing, we don't just want
+to know that there's at least one method available to us, but precisely
+which ones.  It's rather impractical to try to reset a function a half
+dozen different ways on boot for the possibility that the admin might
+want to manipulate the reset order later.  And oh gosh, if we don't
+cache the methods supported and re-test-by-doing when the attribute is
+written, let's just not go there.  Thanks,
+
+Alex
+
+[1]https://lore.kernel.org/linux-pci/CAErSpo625CTnxZvy-gmy8VzxT4favF4s=_giU6nGey_N=VwK5A@mail.gmail.com/
 
