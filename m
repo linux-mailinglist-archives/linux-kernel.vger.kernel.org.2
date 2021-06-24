@@ -2,63 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CDD3B256D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 05:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E9B3B256C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 05:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhFXD2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 23:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35546 "EHLO
+        id S229886AbhFXD2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 23:28:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbhFXD2h (ORCPT
+        with ESMTP id S229758AbhFXD2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 23:28:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C568CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 20:26:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nyTPVWQigA5b5LTXeTBvmNaJcqPEw9/9blpnGa8JzHY=; b=pOesFcYObMXN92+ab0Ltvyvie4
-        KRTMHZMvAsvWJuKFOiJDymZOlIHDjqc59KDoQhmGnqujA/34gQr9fvUFSOLIygdCcL6Raw/ENk3M7
-        8sipgSPfGUzqUFdid8gW0eNtWlnmjSwbo9ecdNVWgc0TwnwZNJlI8F/+2sRYF//nzuu4w/h94sMOc
-        tOvrGVjZTkeiyag+frtveayVKCmr6NaLImJGU/wTHCjN/iV/3PNJYGksyE07BvIEnbl6LYnLG5g76
-        7ssBzFmqkrVWohquIQFbV1IicSzADO6Bqr8JOTrv5ZX7iPutjyGZKshP/I8bLlPvQCjHJ8V4zagme
-        rip70Jbw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwFyw-00G7yn-HB; Thu, 24 Jun 2021 03:25:08 +0000
-Date:   Thu, 24 Jun 2021 04:24:46 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Chen Huang <chenhuang5@huawei.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mm <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
-Message-ID: <YNP6/p/yJzLLr8M8@casper.infradead.org>
-References: <da9c2fa9-a545-0c48-4490-d6134cc31425@huawei.com>
- <20210623132223.GA96264@C02TD0UTHF1T.local>
- <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
+        Wed, 23 Jun 2021 23:28:14 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80A8C061574;
+        Wed, 23 Jun 2021 20:25:54 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id b3so2224275plg.2;
+        Wed, 23 Jun 2021 20:25:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=55IvFqcJa09LRNYHXcgNlk2bKn9LkJhjqCoMCI2+os8=;
+        b=NZWnLr8jcto7FwMiL4jyI5wDUjCTtFw8vrJTinQkjSdOSNJ3o1fN+PAHP4kVJ6bRnz
+         AUP1NkSguM8Hu8ux4znm7Tx7f9ZiqwwLV1Lc1s3BJe9CNqTNaLHj/9vVriemygcZiGVy
+         CXuYf/ao+NZ6hkhw5ICgWpuaVwuGFJ7+W8iLKax2m2LzUypbYTTVrNN947XkCWh2Cift
+         6XVy7/wxiLuCmAmN1jRcjCrmXOjmq3Rmf2nRvRjGKkFORALYCBa4pqnl1PGHtS74OQs0
+         CbIx2pAUS6tq8gldReYq+K0o9gCibtxaW9/zTaPrCo+3iglBkqvc4hdd41vtwTJZYFuH
+         78IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=55IvFqcJa09LRNYHXcgNlk2bKn9LkJhjqCoMCI2+os8=;
+        b=bY2uPCPrzC/49x/17sVZJlndHUqHj6NahNyCVppuCsgEWLNSWApao1X/11hDO7F29C
+         mY17KtjbGGhZ9/m7dbohJQkigZshC5s/Pa+Yb7MZuF8KnA1qUzgrojRmiFqh3AuH/6LM
+         jAr0MzCDKa0zqNo2Nb1uV3BNR8/opCVhnhHX5Hxr606YcU4EM74csUvjcBcBaDk9Iq0w
+         OiPnkFr8HwJDEDaNwMqRpZLhpQ1wWywRn8SCHpLX6fU81EgpCRWt1vFueoiaie15ryQS
+         6ULefe5+q/yRjpA1lnbWDnUaeW3klK5hoYp/RANXVVB2L6Bu+5WcNVTGodqcJwkpLyaU
+         duGg==
+X-Gm-Message-State: AOAM530fHR18uL3RhNF42DqKqPeWZghQY0L6BgPkAAUGRSvbz6+Qvkp/
+        pZPeEziGL9zU9Gi7CjPhRKQ=
+X-Google-Smtp-Source: ABdhPJyPdJyMThorJ/b+J+lQbEgRFJwkzf6iPGnEcFoqpAnW7jBET8/fF1am96HE7XUi/Ry60HDDRg==
+X-Received: by 2002:a17:90a:448d:: with SMTP id t13mr3055731pjg.116.1624505154300;
+        Wed, 23 Jun 2021 20:25:54 -0700 (PDT)
+Received: from gli-System-Product-Name.genesyslogic.com.tw (60-251-58-169.HINET-IP.hinet.net. [60.251.58.169])
+        by smtp.gmail.com with ESMTPSA id z15sm535607pgu.71.2021.06.23.20.25.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 20:25:53 -0700 (PDT)
+From:   Renius Chen <reniuschengl@gmail.com>
+To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben.Chuang@genesyslogic.com.tw,
+        Renius Chen <reniuschengl@gmail.com>
+Subject: [PATCH] [RESEND] mmc: sdhci-pci-gli: Improve Random 4K Read Performance of GL9763E
+Date:   Thu, 24 Jun 2021 11:25:43 +0800
+Message-Id: <20210624032543.101861-1-reniuschengl@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 11:10:41AM +0800, Chen Huang wrote:
-> In userspace, I perform such operation:
-> 
->  	fd = open("/tmp/test", O_RDWR | O_SYNC);
->         access_address = (char *)mmap(NULL, uio_size, PROT_READ, MAP_SHARED, uio_fd, 0);
->         ret = write(fd, access_address + 2, sizeof(long));
+During a sequence of random 4K read operations, the performance will be
+reduced due to spending much time on entering/exiting the low power state
+between requests. We disable the low power state negotiation of GL9763E
+during a sequence of random 4K read operations to improve the performance
+and enable it again after the operations have finished.
 
-... you know that accessing this at unaligned offsets isn't going to
-work.  It's completely meaningless.  Why are you trying to do it?
+Signed-off-by: Renius Chen <reniuschengl@gmail.com>
+---
+ drivers/mmc/host/sdhci-pci-gli.c | 86 ++++++++++++++++++++++++++++++++
+ 1 file changed, 86 insertions(+)
+
+diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+index 302a7579a9b3..0105f728ccc4 100644
+--- a/drivers/mmc/host/sdhci-pci-gli.c
++++ b/drivers/mmc/host/sdhci-pci-gli.c
+@@ -88,6 +88,9 @@
+ #define PCIE_GLI_9763E_SCR	 0x8E0
+ #define   GLI_9763E_SCR_AXI_REQ	   BIT(9)
+ 
++#define PCIE_GLI_9763E_CFG       0x8A0
++#define   GLI_9763E_CFG_LPSN_DIS   BIT(12)
++
+ #define PCIE_GLI_9763E_CFG2      0x8A4
+ #define   GLI_9763E_CFG2_L1DLY     GENMASK(28, 19)
+ #define   GLI_9763E_CFG2_L1DLY_MID 0x54
+@@ -691,6 +694,86 @@ static void sdhci_gl9763e_dumpregs(struct mmc_host *mmc)
+ 	sdhci_dumpregs(mmc_priv(mmc));
+ }
+ 
++static void gl9763e_request(struct mmc_host *mmc, struct mmc_request *mrq)
++{
++	struct sdhci_host *host = mmc_priv(mmc);
++	struct mmc_command *cmd;
++	struct sdhci_pci_slot *slot = sdhci_priv(host);
++	struct pci_dev *pdev = slot->chip->pdev;
++	u32 value;
++	static bool start_4k_r;
++	static int  continuous_4k_r;
++
++	cmd = (mrq->sbc && !(host->flags & SDHCI_AUTO_CMD23)) ? mrq->sbc : mrq->cmd;
++
++	if (cmd->opcode == MMC_READ_MULTIPLE_BLOCK) {
++		if (cmd->data->blocks == 8) {
++			continuous_4k_r++;
++
++			if ((!start_4k_r) && (continuous_4k_r >= 3)) {
++				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
++				value &= ~GLI_9763E_VHS_REV;
++				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
++				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
++
++				pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
++				value |= GLI_9763E_CFG_LPSN_DIS;
++				pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
++
++				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
++				value &= ~GLI_9763E_VHS_REV;
++				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
++				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
++
++				start_4k_r = true;
++			}
++		} else {
++			continuous_4k_r = 0;
++
++			if (start_4k_r) {
++				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
++				value &= ~GLI_9763E_VHS_REV;
++				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
++				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
++
++				pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
++				value &= ~GLI_9763E_CFG_LPSN_DIS;
++				pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
++
++				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
++				value &= ~GLI_9763E_VHS_REV;
++				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
++				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
++
++				start_4k_r = false;
++			}
++		}
++	} else {
++		continuous_4k_r = 0;
++
++		if (start_4k_r)	{
++			pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
++			value &= ~GLI_9763E_VHS_REV;
++			value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
++			pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
++
++			pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
++			value &= ~GLI_9763E_CFG_LPSN_DIS;
++			pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
++
++			pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
++			value &= ~GLI_9763E_VHS_REV;
++			value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
++			pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
++
++			start_4k_r = false;
++		}
++	}
++
++	sdhci_request(mmc, mrq);
++}
++
++
+ static void sdhci_gl9763e_cqe_pre_enable(struct mmc_host *mmc)
+ {
+ 	struct cqhci_host *cq_host = mmc->cqe_private;
+@@ -848,6 +931,9 @@ static int gli_probe_slot_gl9763e(struct sdhci_pci_slot *slot)
+ 	gli_pcie_enable_msi(slot);
+ 	host->mmc_host_ops.hs400_enhanced_strobe =
+ 					gl9763e_hs400_enhanced_strobe;
++
++	host->mmc_host_ops.request = gl9763e_request;
++
+ 	gli_set_gl9763e(slot);
+ 	sdhci_enable_v4_mode(host);
+ 
+-- 
+2.27.0
+
