@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E8F3B34D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF6E3B34DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbhFXRfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 13:35:38 -0400
-Received: from mga04.intel.com ([192.55.52.120]:50610 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232300AbhFXRfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 13:35:36 -0400
-IronPort-SDR: fRtc21APspthfnf+ujFHn+Z7r8s/hPFczoRqrRYMbVKCqitlo5zmbwXv3weoMNyXC6BE/eK0Ri
- FyBJWdBdhulw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="205697915"
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="205697915"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 10:33:17 -0700
-IronPort-SDR: T6QP3XGN0GQuKz7CwDHdgLZdYc95SClxGqWxQZA7qhlHbbtFltF92CQTLciwnWNeGWyRBYphVO
- gmQpbDbrMwuA==
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="455151445"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 10:33:17 -0700
-Date:   Thu, 24 Jun 2021 10:33:16 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Kamal Heib <kheib@redhat.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V3] RDMA/siw: Convert siw_tx_hdt() to kmap_local_page()
-Message-ID: <20210624173316.GA2799309@iweiny-DESK2.sc.intel.com>
-References: <20210623221543.2799198-1-ira.weiny@intel.com>
- <20210622203432.2715659-1-ira.weiny@intel.com>
- <OF739F2480.B35209F8-ON002586FE.00569A1A-002586FE.00569A24@ch.ibm.com>
+        id S232316AbhFXRhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 13:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229721AbhFXRhK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 13:37:10 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF60C061574;
+        Thu, 24 Jun 2021 10:34:51 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id mj3so3336498ejb.4;
+        Thu, 24 Jun 2021 10:34:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+1dHCIjVGu+VUQzg64ApXX1v4ulkFxMzGJoEo7mlEN8=;
+        b=AARHRFZK4+BCpIFSAR4Ai01+dvIC2tHWRomTVTb1qj8A98A4rj7a7RL0a1YxshGXjS
+         ylJERtxccirnh2JtFVERSbZqjqFkZv151h58DU7fxtNvk1ymxTwBWWxeK4CRSorRYFX3
+         ZH3KmSFqkl+0HpUw+VOEJPP+aZsXVDgdooZjimavAs28OTJ+5nW7jqV+w2VtbIyI875S
+         JDEA8jR5UG1z465hHft34VuKxHIYrEfwcZwk6JTrJ/qGaWKaRZPXFasqE5z8e2nzzQMG
+         uXVmd7OVicFr2VZlaFpLatGxVSRkMPTjImm4rK45atjpd8bgjoYlhpjMHni+J2lrE74m
+         44vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+1dHCIjVGu+VUQzg64ApXX1v4ulkFxMzGJoEo7mlEN8=;
+        b=YULjqUZyxxazIk8p+0A/+qIXMwMwKdDJDfAPBrh+IUiB2lRqcaJOulpFqach9816zQ
+         qIxoKUoZqcWZ4UTgEGMV00HJim2I1YbCuaC0+BLJfA9wvl4ax3b8SBiWvHT1WlCA4T2W
+         0KMl0wrGO3DFi0KjjSwv2EajNCT4HiKQRWVxIE3Y1e+c7AYTIq3cyFtj83vmINI+kHNr
+         oY9ZDRkRpJpCJwUcARgwWqvHLoM6yoQLtR75oK6KAWjj0bJ9cSADENQaLWpybz3QWptx
+         FJVLdOrVOqtfJ9nuiLYwhwqKLeEYuGehzVeYaebXyIWMfGy9YEM93Su726nTWFOuh7JF
+         Dd0w==
+X-Gm-Message-State: AOAM533cPMkcaPFR4UUePffJVONIA7m2J+YNUB8EwzUclj7lPbdoZxqb
+        TB9tzfCVyW9KOqG8Eeb5HB5pMjynjP5nsK3jCOM=
+X-Google-Smtp-Source: ABdhPJwtErtzq1+hHcQMB5rM9v6vcBduXUsJyHaoWqc3HwRhLcDrty3aCQ7bdHIlsFcpiQypqmQkzot764eK+TZffv8=
+X-Received: by 2002:a17:906:3d3:: with SMTP id c19mr6297403eja.202.1624556090041;
+ Thu, 24 Jun 2021 10:34:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OF739F2480.B35209F8-ON002586FE.00569A1A-002586FE.00569A24@ch.ibm.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20210621100519.10257-1-colin.king@canonical.com>
+In-Reply-To: <20210621100519.10257-1-colin.king@canonical.com>
+From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date:   Fri, 25 Jun 2021 02:34:38 +0900
+Message-ID: <CAKFNMomw60BGObwF2ZOFriFwPnEk5hFZgC-5vJwJjPnrW3RyPw@mail.gmail.com>
+Subject: Re: [PATCH] nilfs2: remove redundant continue statement in a while-loop
+To:     Colin King <colin.king@canonical.com>
+Cc:     linux-nilfs <linux-nilfs@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 03:45:55PM +0000, Bernard Metzler wrote:
-> 
-> >@@ -593,7 +601,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
-> >struct socket *s)
-> > 	} else {
-> > 		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
-> > 				    hdr_len + data_len + trl_len);
-> >-		siw_unmap_pages(page_array, kmap_mask);
-> >+		siw_unmap_pages(iov, kmap_mask, seg+1);
-> 
-> seg+1 is one to many, since the last segment references the iWarp
-> trailer (CRC). There are 2 reason for this multi-segment processing
-> in the transmit path. (1) efficiency and (2) MTU based packet framing.
-> The iov contains the complete iWarp frame with header, (potentially
-> multiple) data fragments, and the CRC. It gets pushed to TCP in one
-> go, praying for iWarp framing stays intact (which most time works).
-> So the code can collect data form multiple SGE's of a WRITE or
-> SEND and tries putting those into one frame, if MTU allows, and
-> adds header and trailer. 
+Thank you.  This change is correct also in view of the expected
+behavior of the function
+(it really is unnecessary).
+I will send this to upstream.
+
+Regards,
+Ryusuke Konishi
+
+On Mon, Jun 21, 2021 at 7:05 PM Colin King <colin.king@canonical.com> wrote:
 >
-> The last segment (seg + 1) references the CRC, which is never kmap'ed.
-
-siw_unmap_pages() take a length and seg is the index...
-
-But ok so a further optimization...
-
-Fair enough.
-
-> 
-> I'll try the code next days, but it looks good otherwise!
- 
-I believe this will work though.
-
-Ira
-
-> Thanks very much!
-> > 	}
-> > 	if (rv < (int)hdr_len) {
-> > 		/* Not even complete hdr pushed or negative rv */
-> >-- 
-> >2.28.0.rc0.12.gb6a658bd00c9
-> >
-> >
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The continue statement at the end of the while-loop is redundant,
+> remove it.
+>
+> Addresses-Coverity: ("Continue has no effect")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  fs/nilfs2/btree.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/fs/nilfs2/btree.c b/fs/nilfs2/btree.c
+> index f42ab57201e7..ab9ec073330f 100644
+> --- a/fs/nilfs2/btree.c
+> +++ b/fs/nilfs2/btree.c
+> @@ -738,7 +738,6 @@ static int nilfs_btree_lookup_contig(const struct nilfs_bmap *btree,
+>                         if (ptr2 != ptr + cnt || ++cnt == maxblocks)
+>                                 goto end;
+>                         index++;
+> -                       continue;
+>                 }
+>                 if (level == maxlevel)
+>                         break;
+> --
+> 2.31.1
+>
