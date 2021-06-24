@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5053B2531
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB9A3B2536
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhFXCvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 22:51:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55548 "EHLO
+        id S229850AbhFXC4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 22:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbhFXCvE (ORCPT
+        with ESMTP id S229758AbhFXC4i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 22:51:04 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE980C061574;
-        Wed, 23 Jun 2021 19:48:44 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id i13so7603913lfc.7;
-        Wed, 23 Jun 2021 19:48:44 -0700 (PDT)
+        Wed, 23 Jun 2021 22:56:38 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCF5C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 19:54:19 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id y14so3467116pgs.12
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 19:54:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5gXOkfW5QLdmxd3Wj2w+c9EViV9eI5MsnrUKf2z8FYs=;
-        b=RUUtNGr5bfoevPXn+E3jhYX17ZhytUijcdcizuV5g4jQ4csAcRk/aeza4+qR2lvWm2
-         nApl7i4P87KW/V3VmdWmT5rnNucE6KyVawrkZY/mYM6BrTB22om8kojGB0aoqBrGivyD
-         ablP9MZHGlP/9wsmaXfsHq6WuEEMnrJMmmoJHij/4TS+w5DTgKyVWjOVbirOyDH7zKC4
-         CW0N7U316rWwH6l4ydjxnV6Tes4O/Wgx6zcPcGySg2HNEfV5tFcYL5ymVYDAjIkY8+fZ
-         mPEekWg9dqIadP4zouGwK4hPDmzZAQ0OO5uNK8m4HyR0np44kKJi6eE+jR92wFXrpABb
-         UElA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=EZtiIZXLAbCl5jLHqK1+lf6V6SP0mpZsmLqgJ+RTBrs=;
+        b=KoqtnfhMV/W89LhqRLh+1OYFx2USIS1tsVLx3UrSx4S2C7B0Z4mLY8a+2OXNMx5q+0
+         K6V3ArCZj2DR+pxF/qc+VOp+NAyw/e6CHy+3iPOA1T1QJ9LHi17n/GNeNXmMkbi84CbB
+         UGdafLOOKt+P/JHZ/Pj+ZgVbU2KeiBHjBIJdscNugzv0do1i6lzsLmW19hk7eaJfR/ET
+         hrH1Lx6GC4RFbsPHWa6BQWyBpSdkGPUqpZrh4CvwuK4SGDxZoAJApRko0f8PVZK+k7qC
+         Eh2yyjxIA/OY69soXQVe9K8Wx0sQi8k1L4SyE/iPoR7JunGU44NThR9AE3YEokZKGiQW
+         YDGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5gXOkfW5QLdmxd3Wj2w+c9EViV9eI5MsnrUKf2z8FYs=;
-        b=pF5vNfpcLJUFdxZ7B3rgWzN4gd0+aIoag2Vw6VWW6YF8vm6nElAJdpZoGDZtn/kdfD
-         A1RufWed6f5sOsdgX99Lj7/VZYpu9k1AegCxhEmQls5H8nKnhcFyLzhNtPfDr4qFZnbH
-         G9nn1GCVSoDVH8XwZdO6QDSnwsH1Kt/0GzOmgheKwdiBLIXxa4DVxtCn/dCN6sQNzH1Q
-         m8XWUCt8xb9xaCx2zVpPA3UYihuJJd0u8PkuXGYTk4ONd31xOenSSW6Ga560rofxvJd8
-         /0yV/UYrnuFsGu+6wp46FkYzU9A5gEonShGtiSiE/zOIxDxoJc6d4TDGfc4XN4sMqgVZ
-         SPhA==
-X-Gm-Message-State: AOAM533CwNYpBOaTtjRWHk6EGcpME/V1ymlf6VvefPyfTHIKmICFtZU+
-        6sjmbgecLm6Ol5wcFas/sqp3yqjL2J3CZ3vyWoVFs0x+Iad5Zw==
-X-Google-Smtp-Source: ABdhPJx3C4pME09Z+lCozESHkQ/9SDrguEu+2in3VcwEc05cxMVQ7T7rVyGEQn/CiFUVy/CuhM/rCWbxw+m+VilD2fQ=
-X-Received: by 2002:a05:6512:3b24:: with SMTP id f36mr1930656lfv.443.1624502923336;
- Wed, 23 Jun 2021 19:48:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EZtiIZXLAbCl5jLHqK1+lf6V6SP0mpZsmLqgJ+RTBrs=;
+        b=Eads2FBb14/pYaUeLftzqmqyxeVoDaDm+S4duW04bFuCpJN/GcATwoTyC3+AVf1OVc
+         RDaIjrWm31HvH/2lHsfBGJRSD36LnLqemM+DpcrgwlS4Xp40wc8lStjdomyW+5qSrXDG
+         9Awf7298NsCN2FJwuRQywjYlU2a71y9ihfv21zTdhsW6UXC9QilLq/5azQhLgwTZ6wLI
+         0qmdc9OqV9aXHowTgo26bofJCjMU2DHLOE5lEIsYPz7aBX7SAiWedCd2M7Lm7sVGDhGY
+         czYwd0Wu9gfHq1QZDI5FmZxRKzMkQjA5ixDBrdKh2yshA3BVVQFYQI4o+Egz3+sokDoU
+         MwyA==
+X-Gm-Message-State: AOAM533Lt4I3KPX6jefQEgZGfGR7wqcXWJQXx3K+b21RxFL7GzlxGFvD
+        qU7bZOqTExZtLqqUBShQKlRKJA==
+X-Google-Smtp-Source: ABdhPJzpz4Wdmkby5CYYPfvOjumLHTc525MdbSaDIp32RKEwPpxu3eR2dbF6bbqAhfzcT/S5BC265Q==
+X-Received: by 2002:a65:6a12:: with SMTP id m18mr2561679pgu.229.1624503258102;
+        Wed, 23 Jun 2021 19:54:18 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id y7sm6524339pja.8.2021.06.23.19.54.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 19:54:17 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 08:24:14 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Will Deacon <will@kernel.org>, linux-pm@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
+ invariance
+Message-ID: <20210624025414.4iszkovggk6lg6hj@vireshk-i7>
+References: <cover.1624266901.git.viresh.kumar@linaro.org>
+ <09a39f5c-b47b-a931-bf23-dc43229fb2dd@quicinc.com>
+ <20210623041613.v2lo3nidpgw37abl@vireshk-i7>
+ <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
 MIME-Version: 1.0
-References: <20210621072424.111733-1-jagan@amarulasolutions.com>
- <20210621072424.111733-3-jagan@amarulasolutions.com> <YNO0LHNVSWjrh1ZS@pendragon.ideasonboard.com>
-In-Reply-To: <YNO0LHNVSWjrh1ZS@pendragon.ideasonboard.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 23 Jun 2021 23:48:32 -0300
-Message-ID: <CAOMZO5Ahbu4mohtMDOQOv_y5B_TDesbdYEUZTF1RL7_y-bS+RA@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/9] drm: bridge: Add Samsung SEC MIPI DSIM bridge driver
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Michael Tretter <m.tretter@pengutronix.de>
-Cc:     Jagan Teki <jagan@amarulasolutions.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Francis Laniel <francis.laniel@amarulasolutions.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        Tomasz Figa <t.figa@samsung.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Robert Foss <robert.foss@linaro.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        Milco Pratesi <milco.pratesi@engicam.com>,
-        Anthony Brandon <anthony@amarulasolutions.com>,
-        linux-phy@lists.infradead.org, Fancy Fang <chen.fang@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        NXP Linux Team <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jagan/Laurent,
+On 23-06-21, 08:57, Qian Cai wrote:
+> Viresh, I am afraid I don't feel comfortable yet. I have a few new tests in
+> development, and will provide an update once ready.
 
-On Wed, Jun 23, 2021 at 7:23 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
+Oh sure, np.
 
-> Looking at the register set, it seems to match the Exynos 5433,
-> supported by drivers/gpu/drm/exynos/exynos_drm_dsi.c. Can we leverage
-> that driver instead of adding a new one for the same IP core ?
+> Also, I noticed the delivered perf is even smaller than lowest_perf (100).
 
-Yes. there was an attempt from Michael in this direction:
-https://patchwork.kernel.org/project/dri-devel/cover/20200911135413.3654800-1-m.tretter@pengutronix.de/
+> # cat /sys/devices/system/cpu/cpu8/acpi_cppc/feedback_ctrs
+>  ref:103377547901 del:54540736873
+> # cat /sys/devices/system/cpu/cpu8/acpi_cppc/feedback_ctrs
+>  ref:103379170101 del:54541599117
+> 
+> 100 * (54541599117 - 54540736873) / (103379170101 - 103377547901) = 53
+> 
+> My understanding is that the delivered perf should fail into the range between
+> lowest_perf and highest_perf. Is that assumption correct? This happens on
+> 5.4-based kernel, so I am in process running your series on that system to see
+> if there is any differences. In any case, if it is a bug it is pre-existing,
+> but I'd like to understand a bit better in that front first.
 
-Cheers
+Vincent:
+
+Can that happen because of CPU idle ?
+
+-- 
+viresh
