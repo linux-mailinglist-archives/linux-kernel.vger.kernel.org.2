@@ -2,109 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B560F3B2BAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691863B2BB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232021AbhFXJpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:45:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56922 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231971AbhFXJo6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:44:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624527759;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jyD4vH5kMZavgg+0al23ybbW1mNcrfB3c+Wxr6kYX38=;
-        b=Dg09Q1JBF1FT2yGNlpUzg5ZmMVjnOBAvUUr/3l3rEgNzCEWl6NxXAbpZOaTky7eftJRdKJ
-        oLpHNwtWiHd3s5w1WybrIvw/U5xAXkcr7IYk7Yf6x3VaO8BxsZglrteqpEmK2bmTaeJjz8
-        YWZIaYY8hOjiyj/sr/s0Lnv4p8Zlgy0=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-126-hbzunVB9MtOHisGwD-jRnQ-1; Thu, 24 Jun 2021 05:42:38 -0400
-X-MC-Unique: hbzunVB9MtOHisGwD-jRnQ-1
-Received: by mail-ed1-f71.google.com with SMTP id m4-20020a0564024304b0290394d27742e4so3023679edc.10
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 02:42:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jyD4vH5kMZavgg+0al23ybbW1mNcrfB3c+Wxr6kYX38=;
-        b=hNN/IP/qfmk+gTPVUHXIZ+CL3LS8uiGEm8k+Bs6HeBXqFeM8QBny6idbLk5a+YuK3Q
-         Tk3+OE36+y+M7SIZmtFhC/W5xq7T43j/ah+K2hkzm3gnwTTzLBEDqwGvbfTkc6fJcwVs
-         zwF1Gwonf6JO+kwr7UR3ssug4cFk3cMseb108kDBOoHXZDdXy3owoXlmAEwM/0AeST1i
-         aPIGue07psNFWNb0et5wd6D5K4TJbD04kMIY5UwtULkoyj9GGmCChrDAMOPY27I1qZkE
-         1/0bcxUGU4uxtPb4aEqDdDmCcLgQnar3OQi/6+/JJwaDPXIUrIHpEs4fVv+pNNHG93Zu
-         26Mg==
-X-Gm-Message-State: AOAM531pMFjlOlnJ0PRPPFxNhILJO43TTGJIjMTO6YVXlvRbXAzXM0Ys
-        d0NaRZ5lW23FwBOEdZmhEZFK8uu0O/adKalgKTdmjLXAm/eTeskEVddAIE3hfWhVdVtvoeBAp8K
-        ZkifMAOSDTMwc7n75MBCqDJwp
-X-Received: by 2002:a05:6402:54c:: with SMTP id i12mr5909967edx.64.1624527756950;
-        Thu, 24 Jun 2021 02:42:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzUADYaxbQu5a0ZM6V5UX0tysDgP0Lb+XMxpzsUfVTNQ4yl7MEG7UQrmtC4bLiXvUVljS3Ohw==
-X-Received: by 2002:a05:6402:54c:: with SMTP id i12mr5909945edx.64.1624527756727;
-        Thu, 24 Jun 2021 02:42:36 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id jz27sm944475ejc.33.2021.06.24.02.42.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 02:42:35 -0700 (PDT)
-Subject: Re: [PATCH 2/6] KVM: mmu: also return page from gfn_to_pfn
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        David Stevens <stevensd@chromium.org>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>
-Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        James Morse <james.morse@arm.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvmarm@lists.cs.columbia.edu,
-        kvm-ppc@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Sean Christopherson <seanjc@google.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Will Deacon <will@kernel.org>
-References: <20210624035749.4054934-1-stevensd@google.com>
- <20210624035749.4054934-3-stevensd@google.com>
- <1624524331.zsin3qejl9.astroid@bobo.none>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <201b68a7-10ea-d656-0c1e-5511b1f22674@redhat.com>
-Date:   Thu, 24 Jun 2021 11:42:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S232026AbhFXJp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:45:29 -0400
+Received: from ozlabs.org ([203.11.71.1]:44267 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232019AbhFXJp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 05:45:27 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G9Ztt4WqQz9sTD;
+        Thu, 24 Jun 2021 19:43:02 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624527782;
+        bh=yPZLqecUFGHJ+NbTFBmlIZG1g77dm4bQ8ig1z964FC8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=PHT3xPfiV7iyCpg6wptMT3I7HU9cf7SF1/+b6BS6yjex4OOuSfF6ixVyK5MtmXzLj
+         JCoWOXCWhaaA1BonZhvry4xVlnyPPaFyR3jDGILSgMCvSQnM8TZT1NeLig8uUXDXGj
+         d3TQZbe/OrX7Fm8Ehemp/GS19ck9bzuspcfoinl3FMpoVXlAYQfSHhU13jmS7DU55o
+         uWMRFiiPGmUDAQM3qOTGD1ip39WAzhug9wFHYaofDhJt5UKaFy0tUDXfb5E5QHwb8u
+         X04y5CMDgDSP3UpSFBe05Gy/Vrn6Zp1kD8P98ILg+19OY/faaxw9h1TAPW5T2SGpX8
+         K+zH7EQPoxJkw==
+Date:   Thu, 24 Jun 2021 19:43:01 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Gavin Shan <gshan@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the akpm-current tree
+Message-ID: <20210624194301.7474ce76@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <1624524331.zsin3qejl9.astroid@bobo.none>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/dd+DKH2tN9D2Qpqh+uivl5A";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/06/21 10:52, Nicholas Piggin wrote:
->> For now, wrap all calls to gfn_to_pfn functions in the new helper
->> function. Callers which don't need the page struct will be updated in
->> follow-up patches.
-> Hmm. You mean callers that do need the page will be updated? Normally
-> if there will be leftover users that don't need the struct page then
-> you would go the other way and keep the old call the same, and add a new
-> one (gfn_to_pfn_page) just for those that need it.
+--Sig_/dd+DKH2tN9D2Qpqh+uivl5A
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Needing kvm_pfn_page_unwrap is a sign that something might be buggy, so 
-it's a good idea to move the short name to the common case and the ugly 
-kvm_pfn_page_unwrap(gfn_to_pfn(...)) for the weird one.  In fact I'm not 
-sure there should be any kvm_pfn_page_unwrap in the end.
+Hi all,
 
-Paolo
+After merging the akpm-current tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
+mm/page_reporting.c:14:37: error: initializer element is not constant
+   14 | unsigned int page_reporting_order =3D pageblock_order;
+      |                                     ^~~~~~~~~~~~~~~
+
+Caused by commit
+
+  223f64d9e679 ("mm/page_reporting: export reporting order as module parame=
+ter")
+
+pageblock_order is defined to be various things depending on CONFIG_
+symbols.
+
+I have reverted that commit (and the following three) for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/dd+DKH2tN9D2Qpqh+uivl5A
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDUU6UACgkQAVBC80lX
+0GwMGQf8CN6nwK6xFRlplOE2v2Z7CSCelhBLxoywuKKcELDzlR1D8KxDi9LMYXyY
+RfOAAwDyiOiphs/X5bdQLiGWDvVIJPKscEijYNlGSsWmISRAy1/ypjsxvTssOn1q
+PtYmGKOwA4Tpqgd64CQ6H5QxF3ypOyYKDbwUCbodq2Rynx2Me4dnY7ignIgIq7iw
+B9Xn8YLsp5OitKyTVZNCj6YSRJtkqXz37/ChslVlCjZbn4VIbYFEFe5/P9MY7pD7
+lVWeS2G1VSH4t72tPsgzqF7moljlF0mNt5d7+rrouC5n2lX8QnKxVHxzoiHs4gOj
+iw4LWRJJCKkNTghZwZI53nsOQDAXrw==
+=OAfd
+-----END PGP SIGNATURE-----
+
+--Sig_/dd+DKH2tN9D2Qpqh+uivl5A--
