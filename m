@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BADC3B33BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CE43B33BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231417AbhFXQS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 12:18:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33780 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231321AbhFXQSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 12:18:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBA20613B3;
-        Thu, 24 Jun 2021 16:16:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624551366;
-        bh=LRAKIyItqZRjNgN2DEdMSx4GcyvU1DlflvVaoGixOWw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=mlGWialXvl3ChYUFloKtM214TrVMealpz6qozA9XzuCppW+VMdwwEpbnyWWFR7PvT
-         YCVTKrFx7/XYPElpLNGoKrpzTCe1YwngiYm582FDGo1Lb0j6oKKUWQWP2160wNDS8Y
-         X5md3nm7VwKoffkQ7R+pqB+aXZJKZHypi3ZEL52AZmvW4CL8VROI0G7KkykOGt6tCf
-         cuFevnCK5ZAJ8RAT+G35pUoC7E0N+opfC8FKm8GUIOYsUc1VhCUxzfPkyb1KB7RtyU
-         iu313vgXCwx3LDAvJvXpOwCgqgQwBYMas5W++/NGeoYsT9j6ugKxUYXJtYMykZWrqn
-         GxI9MqBtgqIJA==
-Date:   Thu, 24 Jun 2021 11:15:59 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-Cc:     Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v7 1/8] PCI: Add pcie_reset_flr to follow calling
- convention of other reset methods
-Message-ID: <20210624161559.GA3532867@bjorn-Precision-5520>
+        id S229940AbhFXQUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 12:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229525AbhFXQUq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 12:20:46 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDDEC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 09:18:26 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwS37-00Br5k-1Q; Thu, 24 Jun 2021 16:17:53 +0000
+Date:   Thu, 24 Jun 2021 16:17:53 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Chen Huang <chenhuang5@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
+Message-ID: <YNSwMRscemv3CBpf@zeniv-ca.linux.org.uk>
+References: <da9c2fa9-a545-0c48-4490-d6134cc31425@huawei.com>
+ <20210623132223.GA96264@C02TD0UTHF1T.local>
+ <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
+ <YNP6/p/yJzLLr8M8@casper.infradead.org>
+ <YNQuZ8ykN7aR+1MP@infradead.org>
+ <YNRpYli/5/GWvaTT@casper.infradead.org>
+ <20210624150911.GA25097@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210624152809.m3glwh6lxckykt33@archlinux>
+In-Reply-To: <20210624150911.GA25097@arm.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+to Alex]
+On Thu, Jun 24, 2021 at 04:09:11PM +0100, Catalin Marinas wrote:
+> On Thu, Jun 24, 2021 at 12:15:46PM +0100, Matthew Wilcox wrote:
+> > On Thu, Jun 24, 2021 at 08:04:07AM +0100, Christoph Hellwig wrote:
+> > > On Thu, Jun 24, 2021 at 04:24:46AM +0100, Matthew Wilcox wrote:
+> > > > On Thu, Jun 24, 2021 at 11:10:41AM +0800, Chen Huang wrote:
+> > > > > In userspace, I perform such operation:
+> > > > > 
+> > > > >  	fd = open("/tmp/test", O_RDWR | O_SYNC);
+> > > > >         access_address = (char *)mmap(NULL, uio_size, PROT_READ, MAP_SHARED, uio_fd, 0);
+> > > > >         ret = write(fd, access_address + 2, sizeof(long));
+> > > > 
+> > > > ... you know that accessing this at unaligned offsets isn't going to
+> > > > work.  It's completely meaningless.  Why are you trying to do it?
+> > > 
+> > > We still should not cause an infinite loop in kernel space due to a
+> > > a userspace programmer error.
+> > 
+> > They're running as root and they've mapped some device memory.  We can't
+> > save them from themself.  Imagine if they'd done this to the NVMe BAR.
 
-On Thu, Jun 24, 2021 at 08:58:09PM +0530, Amey Narkhede wrote:
-> On 21/06/24 07:23AM, Bjorn Helgaas wrote:
-> > On Tue, Jun 08, 2021 at 11:18:50AM +0530, Amey Narkhede wrote:
-> > > Currently there is separate function pcie_has_flr() to probe if pcie flr is
-> > > supported by the device which does not match the calling convention
-> > > followed by reset methods which use second function argument to decide
-> > > whether to probe or not.  Add new function pcie_reset_flr() that follows
-> > > the calling convention of reset methods.
-> >
-> > > +/**
-> > > + * pcie_reset_flr - initiate a PCIe function level reset
-> > > + * @dev: device to reset
-> > > + * @probe: If set, only check if the device can be reset this way.
-> > > + *
-> > > + * Initiate a function level reset on @dev.
-> > > + */
-> > > +int pcie_reset_flr(struct pci_dev *dev, int probe)
-> > > +{
-> > > +	u32 cap;
-> > > +
-> > > +	if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
-> > > +		return -ENOTTY;
-> > > +
-> > > +	pcie_capability_read_dword(dev, PCI_EXP_DEVCAP, &cap);
-> > > +	if (!(cap & PCI_EXP_DEVCAP_FLR))
-> > > +		return -ENOTTY;
-> > > +
-> > > +	if (probe)
-> > > +		return 0;
-> > > +
-> > > +	return pcie_flr(dev);
-> > > +}
-> >
-> > Tangent: I've been told before, but I can't remember why we need the
-> > "probe" interface.  Since we're looking at this area again, can we add
-> > a comment to clarify this?
-> >
-> > Every time I read this, I wonder why we can't just get rid of the
-> > probe and attempt a reset.  If it fails because it's not supported, we
-> > could just try the next one in the list.
-> 
-> Part of the reason is to have same calling convention as other reset
-> methods and other reason is devices that run in VMs where various
-> capabilities can be hidden or have quirks for avoiding known troublesome
-> combination of device features as Alex explained here
-> https://lore.kernel.org/linux-pci/20210624151242.ybew2z5rseuusj7v@archlinux/T/#mb67c09a2ce08ce4787652e4c0e7b9e5adf1df57a
-> 
-> On the side note as you suggested earlier to cache flr capability
-> earlier the PCI_EXP_DEVCAP reading code won't be there in next version
-> so its just trivial check(dev->has_flr).
+> We could change raw_copy_from_user() to fall back to 1-byte read in case
+> of a fault or fix this corner case in the generic code. A quick hack,
+> re-attempting the access with one byte:
 
-Sorry, I didn't make my question clear.  I'm not asking why we're
-adding a "probe" argument to pcie_reset_flr() to make it consistent
-with pci_af_flr(), pci_pm_reset(), pci_parent_bus_reset(), etc.  I
-like making the interfaces consistent.
+No.  If nothing else, iov_iter_single_seg_count() is a bad kludge.
+What's more, this "do a single-byte copy" fallback is punishing
+a much more common case (memory pressure evicting the page) for the sake
+of a corner case specific to one architecture that should've been dealt
+with in its raw_copy_from_user().
 
-What I'm asking here is why the "probe" argument exists for *any* of
-these interfaces and why pci_probe_reset_function() exists.
+NAKed-by: Al Viro <viro@zeniv.linux.org.uk>
 
-This is really more a question for Alex since it's a historical
-question, not anything directly related to your series.  I'm not
-proposing *removing* the "probe" argument; I know it exists for a
-reason because I've asked about it before.  But I forgot the answer,
-which makes me think a hint in the code would be useful.
-
-Bjorn
+For some context, see include/linux/uaccess.h and description of requirements
+for raw_copy_from_user() in there.
