@@ -2,109 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 223393B2B47
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4A73B2B67
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbhFXJYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:24:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58470 "EHLO
+        id S231967AbhFXJam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbhFXJYU (ORCPT
+        with ESMTP id S231446AbhFXJak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:24:20 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8449BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 02:22:00 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id d11so5881929wrm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 02:22:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eil13llqRA8gYhUtxKkI3REM+ezUGVLrIHE4Cv2dVF8=;
-        b=uhjdive/O7I2WAuxOtK/E1s2j/zgeRvQzfihlEW8X/mI6MelZSIx1sNhvw83vrwVS3
-         8Nd+BLc0014wUTXeUJ4A7kgZHjUUuqF6+lO7crQJs+StROQx///ECIVDXxq75RLqkqQv
-         /0NUlGqw5GahfYINcQAmor72L2Jwodfhcg0Fx5szchgiP8SjcpMehH/ME8mGH9kOTb78
-         OiM5Nt6fe90IR9LKc4lOSnE6kYMAjlIBqLh4eGFqb+Rt2ZPGJ5CS1T/7Njt7KYKOCf8t
-         ne5KgG8W6X8pjnoIysVJUC9abq8vmjkvWwA8SBS28kT5giu0J55ePt3PQlrmDFAuj+fe
-         12DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eil13llqRA8gYhUtxKkI3REM+ezUGVLrIHE4Cv2dVF8=;
-        b=pEx0YQykj0U4P7HiC+pJ1qNlTuoYW6ZGay7QDY6Qe5e7TcNeyylJsr/NJed5xyGc63
-         cxscgsYJVkVWCTQ40wlHOwkLLjiK6mbSGF5jAE8m//o13Q9VESnPhzRnHZR+Crs3mwbd
-         5bDhZ4nIjSWwTcbxp8i0vJtwIfyoNj28wRcYqpeQwh+y2Otn/jgeadfAgV1eeoJwfovH
-         1JZqzFE4X3XxG9hb0bBE+7rD8B2CvGEkHZLfNpf7DCtuccvmVZZdfb5GLY23MScrMtWz
-         ttRo8TOdSmhEh52FTj5mFS8QLYAjGSrT7c3xMfsN2sPBHE9RA8BdOelo89dvr3EnDOmE
-         OxNQ==
-X-Gm-Message-State: AOAM531VYgnnZK0lonYsOuvAdznc5UBwfCjn58v8GU843yliV/ZJOFd0
-        Y1tpUTgNWGV/9U/NG8Pjsdwr4A==
-X-Google-Smtp-Source: ABdhPJztlTt5zmiHbLHkei3r2qRcSGTuDwQiJ31CFKymrlQ3Ku1mjf4fKdAVOaYllWr2BwpDAXBP0A==
-X-Received: by 2002:a5d:4dd2:: with SMTP id f18mr3260555wru.86.1624526518958;
-        Thu, 24 Jun 2021 02:21:58 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id u18sm2235066wmj.15.2021.06.24.02.21.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 02:21:58 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH] ASoC: qcom: lpass-cpu: mark IRQ_CLEAR register as volatile and readable
-Date:   Thu, 24 Jun 2021 10:21:53 +0100
-Message-Id: <20210624092153.5771-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 24 Jun 2021 05:30:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EFDC061756;
+        Thu, 24 Jun 2021 02:28:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=dHjovZ7JZsV7a9rYd8UT8geIkI3WgRfMZGr/ANSnQfc=; b=hHT9l1sfvrpi3bnViNFQ2GWsK3
+        r5ce1EX9rE5gACCBCZ22LjM4UW8ya+hjfeNbOpOej6CaawF4Q4LlDNbYscJ1AerCoai1ZYBFeEfDD
+        8Uet7RciNtzvHdEpMwlg0F6NLjDOJESf8OQcCgqjPI1N3DtX0T3myDI72m/8Ne8jtnicOMtds/x5U
+        YOxVZbX5uGZfPdDoqzuxxotXTUOlBGUbUS3rdI6jPayBkHaa5D+8ZVXMl7ccxVreIopu08zMqxO2y
+        AnsU606yN4UN4wn7Nvf7PvmT2Az2QdbhkfS1n7cndx83ngvsJNjl39b4QTTuxUk6z9bKktd4vJO7b
+        O5c0gCAg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwLdd-00GOuh-G2; Thu, 24 Jun 2021 09:27:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C0B08300258;
+        Thu, 24 Jun 2021 11:27:07 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id A054B2B64C060; Thu, 24 Jun 2021 11:27:07 +0200 (CEST)
+Message-ID: <20210624092156.332208049@infradead.org>
+User-Agent: quilt/0.66
+Date:   Thu, 24 Jun 2021 11:21:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     rjw@rjwysocki.net, oleg@redhat.com, mingo@kernel.org,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, mgorman@suse.de, Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, tj@kernel.org,
+        linux-pm@vger.kernel.org
+Subject: [PATCH v2 0/4] Freezer rewrite
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently IRQ_CLEAR register is marked as write-only, however using
-regmap_update_bits on this register will have some side effects.
-so mark IRQ_CLEAR register appropriately as readable and volatile.
+Hi all,
 
-Fixes: da0363f7bfd3 ("ASoC: qcom: Fix for DMA interrupt clear reg overwriting")
-Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Tested-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/lpass-cpu.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Now with a completely different approach to freezing the special states.
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 0b9cbf2ce505..8998697cd1e1 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -525,6 +525,8 @@ static bool lpass_cpu_regmap_readable(struct device *dev, unsigned int reg)
- 			return true;
- 
- 	for (i = 0; i < v->irq_ports; ++i) {
-+		if (reg == LPAIF_IRQCLEAR_REG(v, i))
-+			return true;
- 		if (reg == LPAIF_IRQEN_REG(v, i))
- 			return true;
- 		if (reg == LPAIF_IRQSTAT_REG(v, i))
-@@ -566,9 +568,12 @@ static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
- 	struct lpass_variant *v = drvdata->variant;
- 	int i;
- 
--	for (i = 0; i < v->irq_ports; ++i)
-+	for (i = 0; i < v->irq_ports; ++i) {
-+		if (reg == LPAIF_IRQCLEAR_REG(v, i))
-+			return true;
- 		if (reg == LPAIF_IRQSTAT_REG(v, i))
- 			return true;
-+	}
- 
- 	for (i = 0; i < v->rdma_channels; ++i)
- 		if (reg == LPAIF_RDMACURR_REG(v, i))
--- 
-2.21.0
+Patches go on top of tip/master, as they depend on the
+task_struct::state rename.
 
