@@ -2,186 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 854603B3199
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E23F3B3187
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbhFXOmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 10:42:31 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8438 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbhFXOm3 (ORCPT
+        id S232203AbhFXOji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 10:39:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55502 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230249AbhFXOjh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 10:42:29 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G9jQ62lWmzZlVj;
-        Thu, 24 Jun 2021 22:37:02 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 24 Jun 2021 22:40:04 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 24 Jun 2021 22:40:03 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <salil.mehta@huawei.com>, <lipeng321@huawei.com>,
-        <huangguangbin2@huawei.com>
-Subject: [PATCH net-next 3/3] net: hns3: add support for link diagnosis info in debugfs
-Date:   Thu, 24 Jun 2021 22:36:45 +0800
-Message-ID: <1624545405-37050-4-git-send-email-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1624545405-37050-1-git-send-email-huangguangbin2@huawei.com>
-References: <1624545405-37050-1-git-send-email-huangguangbin2@huawei.com>
+        Thu, 24 Jun 2021 10:39:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624545438;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9h8u0xPq+lyz4kG2IM71OZjooGkjqLutHSguaAe0NLE=;
+        b=L/EnulhFts90OqL3t75ZoF/oByYLU7TJVLJIA6Amny2EhIQt105gheCFMCNDB+L43H9v7A
+        lwNR4b9yygOrUbwaMuajG19U5OScBYQAJug3eTb4qeDOVEA9UW7DvbRWdubXjVf7iJVyvN
+        wsOge5XlCjEmhcZOD9j/D1eZq9ayk44=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-372-cZjemzorMzWbcdm2eYo7Cg-1; Thu, 24 Jun 2021 10:37:16 -0400
+X-MC-Unique: cZjemzorMzWbcdm2eYo7Cg-1
+Received: by mail-oi1-f197.google.com with SMTP id k11-20020a54440b0000b02901f3e6a011b4so3857768oiw.23
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:37:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=9h8u0xPq+lyz4kG2IM71OZjooGkjqLutHSguaAe0NLE=;
+        b=tkqiUeE28nyzd0bybcFbWlZym8fWjnS6fNPoB1PEEiaX15OMrDTrX/mjqWHYuX8p89
+         SxViUAtYVHQ4zljkJGBXUeNGMyV1xsj9XPt11Lkv48WBsvYRENA+VXdaSg9omO+BU9nO
+         KgARL7AfZVII8tQDguNWW0/5OzoZCGcquteuB7auB8aRV/trd/GzcaA7mcK7RgHgR+f0
+         K9iqSHWufIW0Tm7HyB034QkoOI0+9Q+QFUVhitsBSRJpQHG0KVJ0e4Eq8coOuwreyJpH
+         IlXgFejDH25KLNBhkkm3CKavWz/wM8ASqYsskAHToHYDq0+TnJ2XJui45WSSsqZrzO48
+         8jrg==
+X-Gm-Message-State: AOAM531Sj5hY3k25PJ5fd0qFagEofkQ5OrusuPyc+4hquEdzVGiU72o1
+        QgSz4pfXZBGQAQZQrGdAEDme/gd8OhBhc4zq4OBVXowX8JruhVu5E9MwP+Rl/IjspL99zC/Gnve
+        iHSgkHq+WsDbCcxkyLk1DTdRa
+X-Received: by 2002:a05:6808:60e:: with SMTP id y14mr7361127oih.105.1624545436103;
+        Thu, 24 Jun 2021 07:37:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzw2Crh/+XLQyWazz2/WmdZ58gp6OxY8shHXD3gklt/l5Xl579uOibcqZlSSEOhwX2KHZdxAg==
+X-Received: by 2002:a05:6808:60e:: with SMTP id y14mr7361113oih.105.1624545435916;
+        Thu, 24 Jun 2021 07:37:15 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 2sm692895ota.58.2021.06.24.07.37.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 07:37:15 -0700 (PDT)
+Subject: Re: [PATCH v3 1/7] fpga-mgr: wrap the write_init() op
+To:     Xu Yilun <yilun.xu@intel.com>,
+        Russ Weight <russell.h.weight@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     hao.wu@intel.com, mdf@kernel.org, michal.simek@xilinx.com,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210623182410.3787784-1-trix@redhat.com>
+ <20210623182410.3787784-3-trix@redhat.com>
+ <20210624075414.GA44700@yilunxu-OptiPlex-7050>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <02bd1acf-6b8d-7ca1-6a9c-c3f6d3a2071c@redhat.com>
+Date:   Thu, 24 Jun 2021 07:37:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210624075414.GA44700@yilunxu-OptiPlex-7050>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to know reason why link down, add a debugfs file
-"link_diagnosis_info" to get link faults from firmware, and each bit
-represents one kind of fault.
 
-usage example:
-$ cat link_diagnosis_info
-Reference clock lost
-SFP is absent
+On 6/24/21 12:54 AM, Xu Yilun wrote:
+> On Wed, Jun 23, 2021 at 11:24:04AM -0700, trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> An FPGA manager should not be required to provide a
+>> write_init() op if there is nothing for it do.
+>> So add a wrapper and move the op checking.
+>> Default to success.
+>>
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+>> ---
+>>   drivers/fpga/fpga-mgr.c | 14 +++++++++++---
+>>   1 file changed, 11 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
+>> index ecb4c3c795fa5..87bbb940c9504 100644
+>> --- a/drivers/fpga/fpga-mgr.c
+>> +++ b/drivers/fpga/fpga-mgr.c
+>> @@ -69,6 +69,14 @@ void fpga_image_info_free(struct fpga_image_info *info)
+>>   }
+>>   EXPORT_SYMBOL_GPL(fpga_image_info_free);
+>>   
+>> +static int fpga_mgr_write_init(struct fpga_manager *mgr,
+>> +			       struct fpga_image_info *info,
+>> +			       const char *buf, size_t count)
+>> +{
+>> +	if (mgr->mops && mgr->mops->write_init)
+> Maybe we don't have to check mgr->mops, it is already checked on
+> creation.
 
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hnae3.h        |  1 +
- drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c |  8 +++
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h |  3 ++
- .../ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c | 58 ++++++++++++++++++++++
- 4 files changed, 70 insertions(+)
+The check was on purpose because my earlier patchset responding to 
+problems with sec-mgr.
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-index e0b7c3c44e7b..34e5eb65c7b1 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-@@ -294,6 +294,7 @@ enum hnae3_dbg_cmd {
- 	HNAE3_DBG_CMD_MAC_TNL_STATUS,
- 	HNAE3_DBG_CMD_SERV_INFO,
- 	HNAE3_DBG_CMD_UMV_INFO,
-+	HNAE3_DBG_CMD_LINK_DIAGNOSIS_INFO,
- 	HNAE3_DBG_CMD_UNKNOWN,
- };
- 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-index 532523069d74..6a0385b5f80a 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-@@ -337,6 +337,14 @@ static struct hns3_dbg_cmd_info hns3_dbg_cmd[] = {
- 		.buf_len = HNS3_DBG_READ_LEN,
- 		.init = hns3_dbg_common_file_init,
- 	},
-+	{
-+		.name = "link_diagnosis_info",
-+		.cmd = HNAE3_DBG_CMD_LINK_DIAGNOSIS_INFO,
-+		.dentry = HNS3_DBG_DENTRY_COMMON,
-+		.buf_len = HNS3_DBG_READ_LEN,
-+		.init = hns3_dbg_common_file_init,
-+	},
-+
- };
- 
- static struct hns3_dbg_cap_info hns3_dbg_cap[] = {
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
-index 18bde77ef944..8e5be127909b 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
-@@ -316,6 +316,9 @@ enum hclge_opcode_type {
- 	/* PHY command */
- 	HCLGE_OPC_PHY_LINK_KSETTING	= 0x7025,
- 	HCLGE_OPC_PHY_REG		= 0x7026,
-+
-+	/* Query link diagnosis info command */
-+	HCLGE_OPC_QUERY_LINK_DIAGNOSIS	= 0x702A,
- };
- 
- #define HCLGE_TQP_REG_OFFSET		0x80000
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-index 288788186ecc..e6d8d070711d 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-@@ -2301,6 +2301,60 @@ static int hclge_dbg_dump_mac_mc(struct hclge_dev *hdev, char *buf, int len)
- 	return 0;
- }
- 
-+/* The order of each reason is defined by firmware, so don't change the order */
-+static const char * const link_down_reason[] = {
-+	"Reference clock lost",
-+	"SFP tx is disabled",
-+	"SFP is absent",
-+	"PHY power down",
-+	"Serdes analog loss of signal",
-+	"Auto negotiation failed",
-+	"Link training failed",
-+	"Remote fault",
-+	"I2C bus error",
-+	"BER is too high",
-+};
-+
-+static int hclge_dbg_dump_link_diagnosis_info(struct hclge_dev *hdev, char *buf,
-+					      int len)
-+{
-+#define HCLGE_DBG_BIT_LEN_PER_WORD		32
-+
-+	u16 word_index, bit_index, i;
-+	struct hclge_desc desc;
-+	int pos = 0;
-+	u32 data;
-+	int ret;
-+
-+	if (hdev->ae_dev->dev_version <= HNAE3_DEVICE_VERSION_V2) {
-+		dev_err(&hdev->pdev->dev, "Operation not supported\n");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	hclge_cmd_setup_basic_desc(&desc, HCLGE_OPC_QUERY_LINK_DIAGNOSIS, true);
-+	ret = hclge_cmd_send(&hdev->hw, &desc, 1);
-+	if (ret) {
-+		dev_err(&hdev->pdev->dev,
-+			"failed to query link diagnosis info, ret = %d\n", ret);
-+		return ret;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(link_down_reason); i++) {
-+		word_index = i / HCLGE_DBG_BIT_LEN_PER_WORD;
-+		bit_index = i % HCLGE_DBG_BIT_LEN_PER_WORD;
-+
-+		data = le32_to_cpu(desc.data[word_index]);
-+		if (hnae3_get_bit(data, bit_index))
-+			pos += scnprintf(buf + pos, len - pos, "%s\n",
-+					 link_down_reason[i]);
-+	}
-+
-+	if (!pos)
-+		pos += scnprintf(buf + pos, len - pos, "No error\n");
-+
-+	return 0;
-+}
-+
- static const struct hclge_dbg_func hclge_dbg_cmd_func[] = {
- 	{
- 		.cmd = HNAE3_DBG_CMD_TM_NODES,
-@@ -2446,6 +2500,10 @@ static const struct hclge_dbg_func hclge_dbg_cmd_func[] = {
- 		.cmd = HNAE3_DBG_CMD_UMV_INFO,
- 		.dbg_dump = hclge_dbg_dump_umv_info,
- 	},
-+	{
-+		.cmd = HNAE3_DBG_CMD_LINK_DIAGNOSIS_INFO,
-+		.dbg_dump = hclge_dbg_dump_link_diagnosis_info,
-+	},
- };
- 
- int hclge_dbg_read_cmd(struct hnae3_handle *handle, enum hnae3_dbg_cmd cmd,
--- 
-2.8.1
+Focusing on Greg's comment that why can't sec-mgr be done with existing 
+code,
+
+I think the sec-mgr can be folded into the exiting fpga-mgr via a new 
+set of ops.
+
+the 'generalize fpga_mgr_load' patchset set has two sets of ops,
+
+one for existing partial reconfiguration
+
+and one for reimaging the whole board, what the sec-mgr is doing.
+
+Since dfl has the only instance of need, it would have the only reimage ops.
+
+The check at creation has been deferred to at use.
+
+other targets could have null ops.
+
+Having maybe null ops means the wrappers need to check.
+
+Here is a ref to the earlier patchset
+
+https://lore.kernel.org/linux-fpga/20210524162721.2220782-1-trix@redhat.com/
+
+I'll respin 'generalize fpga_mgr_load' within the context this patchset 
+to give you some more context.
+
+It will test is the check is needed and give folks a chance to comment 
+if this a way sec-mgr should go.
+
+Tom
+
+
+>
+> The same concern to all the following patches.
+>
+> Thanks,
+> Yilun
+>
+>> +		return  mgr->mops->write_init(mgr, info, buf, count);
+>> +	return 0;
+>> +}
+>>   /*
+>>    * Call the low level driver's write_init function.  This will do the
+>>    * device-specific things to get the FPGA into the state where it is ready to
+>> @@ -83,9 +91,9 @@ static int fpga_mgr_write_init_buf(struct fpga_manager *mgr,
+>>   
+>>   	mgr->state = FPGA_MGR_STATE_WRITE_INIT;
+>>   	if (!mgr->mops->initial_header_size)
+>> -		ret = mgr->mops->write_init(mgr, info, NULL, 0);
+>> +		ret = fpga_mgr_write_init(mgr, info, NULL, 0);
+>>   	else
+>> -		ret = mgr->mops->write_init(
+>> +		ret = fpga_mgr_write_init(
+>>   		    mgr, info, buf, min(mgr->mops->initial_header_size, count));
+>>   
+>>   	if (ret) {
+>> @@ -569,7 +577,7 @@ struct fpga_manager *fpga_mgr_create(struct device *parent, const char *name,
+>>   	int id, ret;
+>>   
+>>   	if (!mops || !mops->write_complete || !mops->state ||
+>> -	    !mops->write_init || (!mops->write && !mops->write_sg) ||
+>> +	    (!mops->write && !mops->write_sg) ||
+>>   	    (mops->write && mops->write_sg)) {
+>>   		dev_err(parent, "Attempt to register without fpga_manager_ops\n");
+>>   		return NULL;
+>> -- 
+>> 2.26.3
 
