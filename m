@@ -2,83 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E673B2F94
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B320C3B2FAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhFXNEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:04:31 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:43225 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229945AbhFXNE3 (ORCPT
+        id S231262AbhFXNF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231157AbhFXNF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:04:29 -0400
-X-UUID: 102aa1da9340406f9c392988c8142640-20210624
-X-UUID: 102aa1da9340406f9c392988c8142640-20210624
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 736026807; Thu, 24 Jun 2021 21:02:06 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 24 Jun 2021 21:02:05 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 24 Jun 2021 21:02:04 +0800
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Subject: [PATCH v2] drm/mediatek: adjust rdma fifo threshold calculate formula
-Date:   Thu, 24 Jun 2021 21:02:02 +0800
-Message-ID: <1624539722-29000-2-git-send-email-yongqiang.niu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1624539722-29000-1-git-send-email-yongqiang.niu@mediatek.com>
-References: <1624539722-29000-1-git-send-email-yongqiang.niu@mediatek.com>
+        Thu, 24 Jun 2021 09:05:27 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B004C061756;
+        Thu, 24 Jun 2021 06:03:08 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id v13so2915572ple.9;
+        Thu, 24 Jun 2021 06:03:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=E3eH9j6x/2bPR+R4Avd9Zya3U/JJfgeOubfcePdRb30=;
+        b=TM507lOrxyUf7DwSIdZ7SwnXqo3TOVOBtptLkJUtdPw6FUmGiD5mxOBaHx62zls0Bb
+         TuIqQC/7Itk4IJ8J79dXkgWHrjh72TtEfoI1LmnUQI/zcKb/P9uRPzRyA5BT24wRLv/R
+         Ip4zGeZ1zd8Px2QZM/+PSCFZJN6D44+7AEnUiBv3jEx9wQkRK9icAfNLGBe0ozsVm/0T
+         9XjJpBLGMC7P/68LRtijJlIPmMgyUlpDoZDGSUITbjWaAAsPhDrZTsl+vp79xS6nQt79
+         /g0Sn01KE1QUWzkLPTPy4yZvKct4KYxAAXFfakZ8z7Pfl8RVYmYbU/SGP/79FpzlWjKK
+         ktzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=E3eH9j6x/2bPR+R4Avd9Zya3U/JJfgeOubfcePdRb30=;
+        b=H7AYq/dWihGFuJLAafK3x+w1ciKJMRpB2r4Zv0RG9sRNz1py/4aersETiTRw3D4rbO
+         tipQQGMfgsqp80o1gM7ot0LPtSca4n80MolmpmXAt/mDGQ7Zr+6ytuMffC0hs6BteJyr
+         Y91SjJVESG+RCQ6ZfN2l0qFVbAyc7DhFoecSiMZrgHOxuW8tQryY0eHePcOkfpxG9T3G
+         vGxlixOSEV3g+wF2nwg2jTp2uMjuL/8PFFo7ERjHBU78Ca1VdY6Fuc5bh2XOQvnifli8
+         p4Qu8bU3a9up+7QsrHnyHFlhI+6kIPusK+REaaWwX3jxMoFNHgRrwgV+t8q2WwLy8dGj
+         9kGA==
+X-Gm-Message-State: AOAM533l38yzgrXnStu//sjq+Km1RG6uMawMuozzs3qmCWPwxdSw0e91
+        2dARZ+UJ/hJ10lQdWFaC9i4=
+X-Google-Smtp-Source: ABdhPJw/7HIeSLNQgrQDsvyahW7D55+qe5uZfS2tJQUQjAUWRCQM5f+XuC8Wy2S1cmK9CngRgiHofA==
+X-Received: by 2002:a17:902:da8c:b029:127:a075:cb with SMTP id j12-20020a170902da8cb0290127a07500cbmr1224288plx.26.1624539787903;
+        Thu, 24 Jun 2021 06:03:07 -0700 (PDT)
+Received: from [192.168.0.118] ([103.242.196.10])
+        by smtp.gmail.com with ESMTPSA id z24sm1939330pfr.79.2021.06.24.06.03.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 06:03:07 -0700 (PDT)
+Subject: Re: [question] De-registration does not remove port
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     vgupta@synopsys.com, Jiri Slaby <jirislaby@kernel.org>,
+        linux-snps-arc@lists.infradead.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org,
+        Pavel Andrianov <andrianov@ispras.ru>
+References: <3e131267-e1b3-1b83-f8be-0577da479223@gmail.com>
+ <YNLfcKFL1LkJgXAR@kroah.com>
+From:   Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+Message-ID: <7af6c0a5-c990-5a40-104e-13f44b1cb4c5@gmail.com>
+Date:   Thu, 24 Jun 2021 18:33:01 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <YNLfcKFL1LkJgXAR@kroah.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the orginal formula will caused rdma fifo threshold config overflow
+On 6/23/21 12:44 PM, Greg KH wrote:
+> On Wed, Jun 23, 2021 at 11:42:36AM +0530, Saubhik Mukherjee wrote:
+>> In drivers/tty/serial/arc_uart.c, arc_serial_remove always returns 0,
+>> instead of calling uart_remove_one_port to remove uart port from serial
+>> core. The comment says "This will be never be called". In my understanding,
+>> a port added using uart_add_one_port should be removed during
+>> de-registration.
+>>
+>> Is there a reason for this behavior?
+> 
+> Did you test the code to see if that function will ever be called?
 
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-index 728aaad..bef3f04 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-@@ -164,10 +164,10 @@ void mtk_rdma_config(struct device *dev, unsigned int width,
- 	/*
- 	 * Enable FIFO underflow since DSI and DPI can't be blocked.
- 	 * Keep the FIFO pseudo size reset default of 8 KiB. Set the
--	 * output threshold to 6 microseconds with 7/6 overhead to
--	 * account for blanking, and with a pixel depth of 4 bytes:
-+	 * output threshold to 70% of max fifo size to make sure the
-+	 * threhold will not overflow
- 	 */
--	threshold = width * height * vrefresh * 4 * 7 / 1000000;
-+	threshold = rdma_fifo_size * 7 / 10;
- 	reg = RDMA_FIFO_UNDERFLOW_EN |
- 	      RDMA_FIFO_PSEUDO_SIZE(rdma_fifo_size) |
- 	      RDMA_OUTPUT_VALID_FIFO_THRESHOLD(threshold);
--- 
-1.8.1.1.dirty
-
+I would like to reformulate the question: Suppose arc_serial_remove is 
+never called. Then I would like to know how the driver de-registration 
+is organized since the UART port is never removed?
