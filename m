@@ -2,155 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17293B2449
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 02:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DAA43B244C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 02:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbhFXAjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 20:39:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
+        id S229890AbhFXAnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 20:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhFXAja (ORCPT
+        with ESMTP id S229755AbhFXAnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 20:39:30 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3F4C061574;
-        Wed, 23 Jun 2021 17:37:11 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 13-20020a17090a08cdb029016eed209ca4so2402761pjn.1;
-        Wed, 23 Jun 2021 17:37:11 -0700 (PDT)
+        Wed, 23 Jun 2021 20:43:00 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14763C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 17:40:41 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id d19so5400426oic.7
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 17:40:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linuxfoundation.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Eqh+49vXDZS6SaYXY+bpU/7GeTuaaMqXxbB85C2tCPE=;
-        b=B6NW8IjUsI+6Grs3UDOUQN2s3b2c6hOgjNnz2iH41lh/FONk4yu7NsVzIP4SlaC4+7
-         fy++BpZKP4nHWbat2E483Sioco3fXRsZWwVfQmor0Ur/UlVepiPn8Rpgj6hKIKEO7eFX
-         HNxqk5PrqB9S5vofQQZ2zu9LOF4oYc+DlpaElfb5p4Ix5ccEYYP0V8nH7fAJOA/Yh8Yo
-         enNYc1ERbsrXBn0jjq4orvTlbF7b0YSTx2dm0ljp1ENB0poRidVS7P7KQNvEnOsm86R8
-         iUkO6ZMVlWZyuo72tpnGZh97fLRyPZrsNzkBMgc8kpGV5vnpigMoBzHLmEvNZOzLALdL
-         zuBQ==
+        bh=8aXNnJPgzFasgRQ/3SZjZxHB/iETrErIxFti8LCKPuw=;
+        b=WaocPTyfDGVh9mLxAuyWMDCc0iZt0OY5B0UMEUpVasi85XWfRxg82NX3/0H4ZjKXcQ
+         NPJRoYB3S6TQOiiz5UzaWct2FYfX+sIa91Zic1jKpg4IuGww7HWKxLGQ3uBfqtWa11AF
+         QTHorlW9bTAWxgOJVcE8Q895b8vrbq/x/8Vos=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Eqh+49vXDZS6SaYXY+bpU/7GeTuaaMqXxbB85C2tCPE=;
-        b=FPMV/bFooe3RkbmArU8hRUYE4MFhoW0C2HRolklrjfX8AQ163gp0rcgcTn8z4Nj/vL
-         LPuTXO42xdVNUyVNXuvDi233aTFmEsLWsy/6UO4EkSvO+rdZDxvQakH7XULQeXIZQC+z
-         q+m0SMqHABV8kgygCsNESy8V6M9BjVwttz6gUMkW/je6CcxbFAsePXsbvxpPM0xFkpfC
-         QWJBPHGZ/logj6nEB59RUyDJWU1ccIm86bTJzaCsH05F83zJ9IMdQhHsgpqNu89oA+2e
-         rTWZPvjMwcKnqsLetgEVxY/0KSyyn/q8JH4YgcFueYxousW1OPKm/lqs8JFi4QBf7ojH
-         iAkA==
-X-Gm-Message-State: AOAM5322HUEHMhy3j33tnuJ2g4rQ6Sg7LxinmLYibuVtRWM4Eh8ZWrcz
-        dadErlEdMnK77TAlhDjUP/29h4KEuyU=
-X-Google-Smtp-Source: ABdhPJw4nS7VsA39W5qub6XK3PVjED0p7Wp7syo2iGsj4oLZwQi3paKmnCJw2F5Xv/CRVugdwxBC7A==
-X-Received: by 2002:a17:90b:14d1:: with SMTP id jz17mr12083410pjb.45.1624495030610;
-        Wed, 23 Jun 2021 17:37:10 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id d189sm860002pfa.28.2021.06.23.17.37.04
+        bh=8aXNnJPgzFasgRQ/3SZjZxHB/iETrErIxFti8LCKPuw=;
+        b=f6YCRN6/dVq/jyZ7oyagJh1a4cGXMpc17xVh1mvLMMu90vlaLkmdLPvbOUtVchp7lv
+         EFe+7j38I+MHrouKvgrWYhppGoQFJ0u9fS4hinEWGymmyg4nqphA04p0Vxu4/sSRTrlh
+         GfPfrwqYKTNVS/tecMKHHIY9SUlZ4HPs1PcguSiIC6mT0BcH8wVPml+MhZkVn3q4F33v
+         KmQbNY/HZhDMe8SkHoO2qhOYEalJOSVxGI1RU41V7e66Z4AcG8wJoqiXcQjBGhcTdJBa
+         QbJ5KwTTTpGd/dDjgPZWsGUHo6DL1WzhR99Se9bboHbOnd2lD75kStrD70Lpsk4IQw5z
+         zB2w==
+X-Gm-Message-State: AOAM532Q8CeHz1NbwsjcFP0bBXmXmeEp+jghy+zAwDYKQlhjUJTr7U7J
+        Q5o57vqVhYI2zJxVfB4Y/Gm7SG/9mdTwEA==
+X-Google-Smtp-Source: ABdhPJySlB33W2z668j7Dkn6kxnqb+RezaTEux7Oz+cmN+pHAbGFZE2M5Nyvs0HY/kx97yoNlisVXA==
+X-Received: by 2002:a05:6808:4c2:: with SMTP id a2mr5108035oie.73.1624495240315;
+        Wed, 23 Jun 2021 17:40:40 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id c11sm290426oot.25.2021.06.23.17.40.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 17:37:10 -0700 (PDT)
-Subject: Re: [RFC 1/3] ARM: dts: imx28: Add description for L2 switch on XEA
- board
-To:     Lukasz Majewski <lukma@denx.de>, Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Einon <mark.einon@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org
-References: <20210622144111.19647-1-lukma@denx.de>
- <20210622144111.19647-2-lukma@denx.de> <YNH3mb9fyBjLf0fj@lunn.ch>
- <20210622225134.4811b88f@ktm> <YNM0Wz1wb4dnCg5/@lunn.ch>
- <20210623172631.0b547fcd@ktm>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <76159e5c-6986-3877-c0a1-47b5a17bf0f1@gmail.com>
-Date:   Wed, 23 Jun 2021 17:36:59 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 23 Jun 2021 17:40:39 -0700 (PDT)
+Subject: Re: [PATCH] selftests/sgx: remove checks for file execute permissions
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, tim.gardner@canonical.com,
+        jarkko@kernel.org, shuah@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210621190556.4B5DCBB1@viggo.jf.intel.com>
+ <121f7215-f11d-2533-b736-9f18516c3220@intel.com>
+ <1f46324e-2cbe-f4a7-65d5-24b22a8b36b1@intel.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <a3c10daf-6531-5b09-c6fd-77ae02afdce0@linuxfoundation.org>
+Date:   Wed, 23 Jun 2021 18:40:38 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210623172631.0b547fcd@ktm>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <1f46324e-2cbe-f4a7-65d5-24b22a8b36b1@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/23/2021 8:26 AM, Lukasz Majewski wrote:
-> Hi Andrew,
-> 
->> On Tue, Jun 22, 2021 at 10:51:34PM +0200, Lukasz Majewski wrote:
->>> Hi Andrew,
->>>
->>>> On Tue, Jun 22, 2021 at 04:41:09PM +0200, Lukasz Majewski wrote:
->>>>> The 'eth_switch' node is now extendfed to enable support for L2
->>>>> switch.
->>>>>
->>>>> Moreover, the mac[01] nodes are defined as well and linked to
->>>>> the former with 'phy-handle' property.
->>>>
->>>> A phy-handle points to a phy, not a MAC! Don't abuse a well known
->>>> DT property like this.
->>>
->>> Ach.... You are right. I will change it.
->>>
->>> Probably 'ethernet' property or 'link' will fit better?
+On 6/21/21 3:18 PM, Dave Hansen wrote:
+> On 6/21/21 2:08 PM, Reinette Chatre wrote:
 >>
->> You should first work on the overall architecture. I suspect you will
->> end up with something more like the DSA binding, and not have the FEC
->> nodes at all. Maybe the MDIO busses will appear under the switch?
+>> Thank you very much for fixing this. With this applied the SGX tests are
+>> able to run again on my system.
 >>
->> Please don't put minimal changes to the FEC driver has your first
->> goal. We want an architecture which is similar to other switchdev
->> drivers. Maybe look at drivers/net/ethernet/ti/cpsw_new.c.
-> 
-> I'm a bit confused - as I thought that with switchdev API I could just
-> extend the current FEC driver to add bridge offload.
-> This patch series shows that it is doable with little changes
-> introduced.
-
-Regardless of how you end up implementing the switching part in the 
-driver, one thing that you can use is the same DT binding as what DSA 
-uses as far as representing ports of the Ethernet controller. That means 
-that ports should ideally be embedded into an 'ethernet-ports' container 
-node, and you describe each port individually as sub-nodes and provide, 
-when appropriate 'phy-handle' and 'phy-mode' properties to describe how 
-the Ethernet PHYs are connected.
-
-> 
-> However, now it looks like I would need to replace FEC driver and
-> rewrite it in a way similar to cpsw_new.c, so the switchdev could be
-> used for both cases - with and without L2 switch offload.
-> 
-> This would be probably conceptually correct, but i.MX FEC driver has
-> several issues to tackle:
-> 
-> - On some SoCs (vf610, imx287, etc.) the ENET-MAC ports don't have the
->    same capabilities (eth1 is a bit special)
-> 
-> - Without switch we need to use DMA0 and DMA1 in the "bypass" switch
->    mode (default). When switch is enabled we only use DMA0. The former
->    case is best fitted with FEC driver instantiation. The latter with
->    DSA or switchdev.
-> 
->> The cpsw
->> driver has an interesting past, it did things the wrong way for a long
->> time, but the new switchdev driver has an architecture similar to what
->> the FEC driver could be like.
+>> Tested-by: Reinette Chatre <reinette.chatre@intel.com>
 >>
->> 	Andrew
+>> I think it is missing a "Signed-off-by".
 > 
-> Maybe somebody from NXP can provide input to this discussion - for
-> example to sched some light on FEC driver (near) future.
+> Right you are.  I think I've done this twice in a row for one-off
+> patches.  Sheesh.
+> 
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> 
+> If anyone wants a resend with this included, please let me know.
+> 
 
-Seems like some folks at NXP are focusing on the STMMAC controller these 
-days (dwmac from Synopsys), so maybe they have given up on having their 
-own Ethernet MAC for lower end products.
--- 
-Florian
+Thanks to b4/patchwork - no need to resend. I have the signed-off-by
+in the downloaded patch.
+
+Thank you all. Now applied to linux-kselftest next for 5.14-rc1
+
+-- Shuah
