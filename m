@@ -2,177 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCCC73B2D7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0843B2D2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232404AbhFXLRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:17:24 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:28095 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232313AbhFXLRX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:17:23 -0400
-Received: from epcas3p4.samsung.com (unknown [182.195.41.22])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210624111503epoutp028e75176080d7cbcb9110cb68a1fdad4f~LgG6Z7lFl2408524085epoutp02a
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 11:15:03 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210624111503epoutp028e75176080d7cbcb9110cb68a1fdad4f~LgG6Z7lFl2408524085epoutp02a
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624533303;
-        bh=TfEZZc9ab3EX8GDCcUOjQlKbundDIRlyhpyAuYo5Gec=;
-        h=Subject:Reply-To:From:To:In-Reply-To:Date:References:From;
-        b=C8yNhVZzlok8HC24xs4I+T9Pqp7gb7BzeUUK0P+u/NcHqoSd35AH1+B3udz3Fc8pj
-         sfAF1EMvMIb+Vp2Hwp3k0ueU3cpBHzsUv80/RzIdOg+WFMzb5WXZzonG4Uxu0BVoGX
-         0yUGPJPJnUnihqxLCzrVjT9ohMu3vgvl5+1mLKzA=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas3p3.samsung.com (KnoxPortal) with ESMTP id
-        20210624111502epcas3p3d3ac20e7a16fdb09688b60bdc42c1459~LgG5yaKtP1346013460epcas3p3F;
-        Thu, 24 Jun 2021 11:15:02 +0000 (GMT)
-Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp1.localdomain
-        (Postfix) with ESMTP id 4G9cx22vQ3z4x9Q1; Thu, 24 Jun 2021 11:15:02 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH] scsi: ufs: Refactor ufshcd_is_intr_aggr_allowed()
-Reply-To: keosung.park@samsung.com
-Sender: Keoseong Park <keosung.park@samsung.com>
-From:   Keoseong Park <keosung.park@samsung.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        "joe@perches.com" <joe@perches.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        "satyat@google.com" <satyat@google.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Joao Pinto <jpinto@synopsys.com>,
-        Pedro Sousa <sousa@synopsys.com>,
-        Pedro Sousa <pedrom.sousa@synopsys.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <42c2978f-f0ca-3efb-7762-cac813a0a5fe@intel.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1891546521.01624533302400.JavaMail.epsvc@epcpadp3>
-Date:   Thu, 24 Jun 2021 19:44:10 +0900
-X-CMS-MailID: 20210624104410epcms2p10eb50121b93afb64ee98fe10aa385fea
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210621085158epcms2p46170ba48174547df00b9720dbc843110
-References: <42c2978f-f0ca-3efb-7762-cac813a0a5fe@intel.com>
-        <ed6d8c44-295e-aaa7-4b5f-7929c1c797d1@intel.com>
-        <1891546521.01624267081897.JavaMail.epsvc@epcpadp4>
-        <37380050.31624517282371.JavaMail.epsvc@epcpadp4>
-        <CGME20210621085158epcms2p46170ba48174547df00b9720dbc843110@epcms2p1>
+        id S232297AbhFXLF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:05:26 -0400
+Received: from phobos.denx.de ([85.214.62.61]:59514 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232118AbhFXLFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 07:05:24 -0400
+Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 2414F8295B;
+        Thu, 24 Jun 2021 13:03:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1624532584;
+        bh=fGm0T8Lbml34Qr9AAhqKQL63kLABeHqysjK/Yo91Ga8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=j6UMUqtNHAsp37BhkwS1I4m7ZyxFMN2gvlGLEu3988FvoHhmSnbeeRM1Hy28WIAuv
+         ES7KNIbMnh4a+W9jTqvBBr+YNaVFAtPh8P21j5kwL7ZpEf2Tm2OoG8NYOPiKbWtMWf
+         4qJ/0I/MxoLcwzyv29+y1Wxe9/HkWDURky4tui3BtZHxhXABBf9DR/MBp6MxhH3pRZ
+         1MlzGqkCCmDpefQumYOMddx1ljcSyiUUS5B9dEGg+eP/vlljla8I7L1gEC3HUc+zV0
+         u577hvPtHjDmOGKjE9FDp60sajRI7kUMwm/4maNjf+LjnhF9LHGBAbQWQKvlrQ8fRJ
+         BzZWr6L4Xt22g==
+Date:   Thu, 24 Jun 2021 13:03:03 +0200
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Einon <mark.einon@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 1/3] ARM: dts: imx28: Add description for L2 switch on XEA
+ board
+Message-ID: <20210624130303.69234c5f@ktm>
+In-Reply-To: <76159e5c-6986-3877-c0a1-47b5a17bf0f1@gmail.com>
+References: <20210622144111.19647-1-lukma@denx.de>
+        <20210622144111.19647-2-lukma@denx.de>
+        <YNH3mb9fyBjLf0fj@lunn.ch>
+        <20210622225134.4811b88f@ktm>
+        <YNM0Wz1wb4dnCg5/@lunn.ch>
+        <20210623172631.0b547fcd@ktm>
+        <76159e5c-6986-3877-c0a1-47b5a17bf0f1@gmail.com>
+Organization: denx.de
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/dBIl/ADP18V9J//d45PAqlF"; protocol="application/pgp-signature"
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On 24/06/21 9:41 am, Keoseong Park wrote:
->>> On 21/06/21 11:51 am, Keoseong Park wrote:
->>>> Change conditional compilation to IS_ENABLED macro,
->>>> and simplify if else statement to return statement.
->>>> No functional change.
->>>>
->>>> Signed-off-by: Keoseong Park <keosung.park@samsung.com>
->>>> ---
->>>>  drivers/scsi/ufs/ufshcd.h | 17 ++++++++---------
->>>>  1 file changed, 8 insertions(+), 9 deletions(-)
->>>>
->>>> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
->>>> index c98d540ac044..6d239a855753 100644
->>>> --- a/drivers/scsi/ufs/ufshcd.h
->>>> +++ b/drivers/scsi/ufs/ufshcd.h
->>>> @@ -893,16 +893,15 @@ static inline bool ufshcd_is_rpm_autosuspend_allowed(struct ufs_hba *hba)
->>>>  
->>>>  static inline bool ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
->>>>  {
->>>> -/* DWC UFS Core has the Interrupt aggregation feature but is not detectable*/
->>>> -#ifndef CONFIG_SCSI_UFS_DWC
->>>> -	if ((hba->caps & UFSHCD_CAP_INTR_AGGR) &&
->>>> -	    !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR))
->>>> +	/*
->>>> +	 * DWC UFS Core has the Interrupt aggregation feature
->>>> +	 * but is not detectable.
->>>> +	 */
->>>> +	if (IS_ENABLED(CONFIG_SCSI_UFS_DWC))
->>>
->>> Why is this needed?  It seems like you could just set UFSHCD_CAP_INTR_AGGR
->>> and clear UFSHCD_QUIRK_BROKEN_INTR_AGGR instead?
->> 
->> Hello Adrian,
->> Sorry for late reply.
->> 
->> The code that returns true when CONFIG_SCSI_UFS_DWC is set in the original code 
->> is only changed using the IS_ENABLED macro.
->> (Linux kernel coding style, 21) Conditional Compilation)
->> 
->> When CONFIG_SCSI_UFS_DWC is not defined, the code for checking quirk 
->> and caps has been moved to the newly added return statement below.
->
->Looking closer I cannot find CONFIG_SCSI_UFS_DWC at all.  It seems like it
->never existed.
->
->Why should we not remove the code related to CONFIG_SCSI_UFS_DWC entirely?
+--Sig_/dBIl/ADP18V9J//d45PAqlF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-You're right. What do you think of deleting the code related to CONFIG_SCSI_UFS_DWC 
-and changing it to the patch below?
+On Wed, 23 Jun 2021 17:36:59 -0700
+Florian Fainelli <f.fainelli@gmail.com> wrote:
 
----
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index c98d540ac044..c9faca237290 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -893,16 +893,8 @@ static inline bool ufshcd_is_rpm_autosuspend_allowed(struct ufs_hba *hba)
+> On 6/23/2021 8:26 AM, Lukasz Majewski wrote:
+> > Hi Andrew,
+> >  =20
+> >> On Tue, Jun 22, 2021 at 10:51:34PM +0200, Lukasz Majewski wrote: =20
+> >>> Hi Andrew,
+> >>> =20
+> >>>> On Tue, Jun 22, 2021 at 04:41:09PM +0200, Lukasz Majewski wrote:
+> >>>> =20
+> >>>>> The 'eth_switch' node is now extendfed to enable support for L2
+> >>>>> switch.
+> >>>>>
+> >>>>> Moreover, the mac[01] nodes are defined as well and linked to
+> >>>>> the former with 'phy-handle' property. =20
+> >>>>
+> >>>> A phy-handle points to a phy, not a MAC! Don't abuse a well known
+> >>>> DT property like this. =20
+> >>>
+> >>> Ach.... You are right. I will change it.
+> >>>
+> >>> Probably 'ethernet' property or 'link' will fit better? =20
+> >>
+> >> You should first work on the overall architecture. I suspect you
+> >> will end up with something more like the DSA binding, and not have
+> >> the FEC nodes at all. Maybe the MDIO busses will appear under the
+> >> switch?
+> >>
+> >> Please don't put minimal changes to the FEC driver has your first
+> >> goal. We want an architecture which is similar to other switchdev
+> >> drivers. Maybe look at drivers/net/ethernet/ti/cpsw_new.c. =20
+> >=20
+> > I'm a bit confused - as I thought that with switchdev API I could
+> > just extend the current FEC driver to add bridge offload.
+> > This patch series shows that it is doable with little changes
+> > introduced. =20
+>=20
+> Regardless of how you end up implementing the switching part in the=20
+> driver, one thing that you can use is the same DT binding as what DSA=20
+> uses as far as representing ports of the Ethernet controller. That
+> means that ports should ideally be embedded into an 'ethernet-ports'
+> container node, and you describe each port individually as sub-nodes
+> and provide, when appropriate 'phy-handle' and 'phy-mode' properties
+> to describe how the Ethernet PHYs are connected.
 
- static inline bool ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
- {
--/* DWC UFS Core has the Interrupt aggregation feature but is not detectable*/
--#ifndef CONFIG_SCSI_UFS_DWC
--       if ((hba->caps & UFSHCD_CAP_INTR_AGGR) &&
--           !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR))
--               return true;
--       else
--               return false;
--#else
--return true;
--#endif
-+       return (hba->caps & UFSHCD_CAP_INTR_AGGR) &&
-+               !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR);
- }
+I see. Thanks for the explanation.
 
->
->
->> 
->> Thanks,
->> Keoseong
->> 
->>>
->>>>  		return true;
->>>> -	else
->>>> -		return false;
->>>> -#else
->>>> -return true;
->>>> -#endif
->>>> +
->>>> +	return (hba->caps & UFSHCD_CAP_INTR_AGGR) &&
->>>> +		!(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR);
->>>>  }
->>>>  
->>>>  static inline bool ufshcd_can_aggressive_pc(struct ufs_hba *hba)
->>>>
->>>
->
+>=20
+> >=20
+> > However, now it looks like I would need to replace FEC driver and
+> > rewrite it in a way similar to cpsw_new.c, so the switchdev could be
+> > used for both cases - with and without L2 switch offload.
+> >=20
+> > This would be probably conceptually correct, but i.MX FEC driver has
+> > several issues to tackle:
+> >=20
+> > - On some SoCs (vf610, imx287, etc.) the ENET-MAC ports don't have
+> > the same capabilities (eth1 is a bit special)
+> >=20
+> > - Without switch we need to use DMA0 and DMA1 in the "bypass" switch
+> >    mode (default). When switch is enabled we only use DMA0. The
+> > former case is best fitted with FEC driver instantiation. The
+> > latter with DSA or switchdev.
+> >  =20
+> >> The cpsw
+> >> driver has an interesting past, it did things the wrong way for a
+> >> long time, but the new switchdev driver has an architecture
+> >> similar to what the FEC driver could be like.
+> >>
+> >> 	Andrew =20
+> >=20
+> > Maybe somebody from NXP can provide input to this discussion - for
+> > example to sched some light on FEC driver (near) future. =20
+>=20
+> Seems like some folks at NXP are focusing on the STMMAC controller
+> these days (dwmac from Synopsys), so maybe they have given up on
+> having their own Ethernet MAC for lower end products.
+
+For example, the imx287 SoC is still active product and is supposed
+to be produced for at least 15 years after release.=20
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/dBIl/ADP18V9J//d45PAqlF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmDUZmcACgkQAR8vZIA0
+zr0riAgAmguR7l9mkDSlLUcd2kv7qDGfA2yM3+qNNMWQe4dsNuyQbHAkp/snyQ2g
+Cnk6x6K0YJJrFLSIQ8B0id3xxtAC9tHUKXortj0orb1ut7p62I40ZgPjbjqIs+Je
+1tJfklU1Zzs3REnPD/VhKjZ5pl4ZgWrU1pUQL178eniMEecQpnTTiIoHhwyoURDg
+LUZp7lmb3QTwGZQIyzL3MhqA2jb7XUC0MEv+MlJJIooDeTPNfdxr9GzUOy+DJGxw
+16/YJpIsHDU9XH8Fyxue4DOC7e4k3JXlLFcRZTMdr9e+mljEp/wDv8yqBQHajRGl
+3VSbL4Nzv5VKJpmTTRpOu1RdJHDIyQ==
+=m1KK
+-----END PGP SIGNATURE-----
+
+--Sig_/dBIl/ADP18V9J//d45PAqlF--
