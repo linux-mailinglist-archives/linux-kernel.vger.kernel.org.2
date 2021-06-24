@@ -2,111 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4903B387C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 23:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A64F3B3882
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 23:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232797AbhFXVUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 17:20:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49108 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232741AbhFXVU0 (ORCPT
+        id S232809AbhFXVVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 17:21:09 -0400
+Received: from mail-io1-f53.google.com ([209.85.166.53]:35489 "EHLO
+        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232300AbhFXVVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 17:20:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624569485;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QEL5AZ4mSr0YqB6XpyjJsxT+Qv98DMEzNJZysot2Lnw=;
-        b=ZwiE+HjbygU4UT7UJqDB+kuXKYSD0docsyNbPgzNRfuNoEbFAfrMJs1t8qLaMhxfAdpcEk
-        7ZdVQR6JUrixw/0CuD0qJG7RdAFClzkKc+VrU75Z5Bv9RluteZf7mTR9FN4AU3Lo854Q4E
-        ncN1GTGXg1Sv1dcM9TGcFBZtCvtDRZE=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-129-Qq3LNbHoPFe0Zo6hz8oK3w-1; Thu, 24 Jun 2021 17:18:02 -0400
-X-MC-Unique: Qq3LNbHoPFe0Zo6hz8oK3w-1
-Received: by mail-oi1-f199.google.com with SMTP id j20-20020aca17140000b02901f3ef48ce7dso4566771oii.12
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 14:18:02 -0700 (PDT)
+        Thu, 24 Jun 2021 17:21:08 -0400
+Received: by mail-io1-f53.google.com with SMTP id d9so10058021ioo.2;
+        Thu, 24 Jun 2021 14:18:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QEL5AZ4mSr0YqB6XpyjJsxT+Qv98DMEzNJZysot2Lnw=;
-        b=oAt8YvosvTYM4ZVR1zQ3/wFDK8bqH3BqtrQd0JVv7hC+rTz2mgRHzs6gtT+5lhpXUm
-         5X7P2FJRBA3drCno41oKMQD25RKiROzyGsRzKcLv2yp/J0z6zsakfq7jV/ynhys6Rds7
-         DoW8VVXF2X204uc17fMy7uHq/HsMSuE1oJO2rAfXJX4F0gsk5pE7bnMTgFFyS6WGI2A+
-         dKhSk8ri0yF4pV53aNOUnSjUj23nrvP/8aZqr40go9Z6rzuId5/jxXTckxdXS66nKf6R
-         fzQXU46KFFkqT33TUc9I4vXtBC1812OyLHikMjCNknnNVb7AuqvJ5vquzJqAc+OrdIV/
-         F8jQ==
-X-Gm-Message-State: AOAM531i4y1KSnn6BeTsTw4s+DDBQQ940Xt7JGxaYvcQ8KU8RgdPjgLy
-        CHI0ewGVrXYW30zI16qj4xvOTOCRQrwXVQonVi+zlCbjtjROWUrYj2JGufMx5GbnrDelxNQ1hS3
-        8OLBB54FcV34WIj9Do+T5yT4D
-X-Received: by 2002:a05:6830:270b:: with SMTP id j11mr6370719otu.161.1624569481796;
-        Thu, 24 Jun 2021 14:18:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzOtcE8iHvqrMnsAhoUJeiWnBz2O5EA2IJu/b1p2L7kvKl5sId+fviItFlU87dzuMw8Y+u/bg==
-X-Received: by 2002:a05:6830:270b:: with SMTP id j11mr6370708otu.161.1624569481664;
-        Thu, 24 Jun 2021 14:18:01 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 94sm915513otj.33.2021.06.24.14.17.59
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nZlEZYSKc3oO2sTQkZ0lk3b/QG+ychRfrA05xmk4U1A=;
+        b=S9mO+Ie4ZueK+eIZmi9PHmzIHxq8FqgXyj5SRnnDbNCSfvF++yv3vvw9P9rvAFpBcZ
+         4Oqld4Cgdt/D3eYWdP3DGl3IC8e6qCKd/2LBjKQrkXtwgZSw859HVA3wrMUMkmcSXAO5
+         v2DuC27CMGInCkTb6YEHootw6tk16jizGUjXfqzV9yntHOXshwULrMgpLNzPvCuhBMnZ
+         m30KpeupPGYUyW033UIsg92qcmSsIANWVNkXqu2SGWSSn0FZsxeSVFNxXs1yj4vMGTqw
+         p+F0C2bjulLVd0Q93ji6OV0BV7dvYSi/USdhQkAZup33uiL3uI1gqlo7yUGZxx1zvC/t
+         G7+g==
+X-Gm-Message-State: AOAM532d52MBNnztglv7XsDTbuT2JLKJ1N9//AGINaNvVH5cP71OShqO
+        VJGivUjrOPun3JHFqdyAFg==
+X-Google-Smtp-Source: ABdhPJzWuI2kqqnHoUDw9mpmjIrbsr+DLFmdTJdQ/gieXMaJDSNkZftGMwMsNtLpUiOyjbx4P1WTTg==
+X-Received: by 2002:a05:6602:2014:: with SMTP id y20mr5816080iod.166.1624569527549;
+        Thu, 24 Jun 2021 14:18:47 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id w7sm2572890ilu.74.2021.06.24.14.18.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 14:18:00 -0700 (PDT)
-From:   trix@redhat.com
-To:     mdf@kernel.org, hao.wu@intel.com, michal.simek@xilinx.com
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH v4 5/5] fpga: fpga-mgr: simplify mops check in wrappers
-Date:   Thu, 24 Jun 2021 14:17:27 -0700
-Message-Id: <20210624211727.501019-7-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210624211727.501019-1-trix@redhat.com>
-References: <20210624211727.501019-1-trix@redhat.com>
+        Thu, 24 Jun 2021 14:18:46 -0700 (PDT)
+Received: (nullmailer pid 2003352 invoked by uid 1000);
+        Thu, 24 Jun 2021 21:18:44 -0000
+Date:   Thu, 24 Jun 2021 15:18:44 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, jonathan@marek.ca,
+        tdas@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@linaro.org>
+Subject: Re: [RFC v1 05/11] dt-bindings: clock: Add QCOM SM8350 display clock
+ bindings
+Message-ID: <20210624211844.GA1997615@robh.at.kernel.org>
+References: <20210616141107.291430-1-robert.foss@linaro.org>
+ <20210616141107.291430-6-robert.foss@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616141107.291430-6-robert.foss@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Wed, Jun 16, 2021 at 04:11:01PM +0200, Robert Foss wrote:
+> Add device tree bindings for display clock controller for
+> Qualcomm Technology Inc's SM8350 SoC.
+> 
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> ---
+>  .../bindings/clock/qcom,dispcc-sm8x50.yaml    |  6 +-
+>  .../dt-bindings/clock/qcom,dispcc-sm8350.h    | 77 +++++++++++++++++++
+>  2 files changed, 81 insertions(+), 2 deletions(-)
+>  create mode 100644 include/dt-bindings/clock/qcom,dispcc-sm8350.h
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+> index 0cdf53f41f84..c10eefd024f6 100644
+> --- a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+> +++ b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+> @@ -4,24 +4,26 @@
+>  $id: http://devicetree.org/schemas/clock/qcom,dispcc-sm8x50.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: Qualcomm Display Clock & Reset Controller Binding for SM8150/SM8250
+> +title: Qualcomm Display Clock & Reset Controller Binding for SM8150/SM8250/SM8350
+>  
+>  maintainers:
+>    - Jonathan Marek <jonathan@marek.ca>
+>  
+>  description: |
+>    Qualcomm display clock control module which supports the clocks, resets and
+> -  power domains on SM8150 and SM8250.
+> +  power domains on SM8150, SM8250 and SM8350.
+>  
+>    See also:
+>      dt-bindings/clock/qcom,dispcc-sm8150.h
+>      dt-bindings/clock/qcom,dispcc-sm8250.h
+> +    dt-bindings/clock/qcom,dispcc-sm8350.h
+>  
+>  properties:
+>    compatible:
+>      enum:
+>        - qcom,sm8150-dispcc
+>        - qcom,sm8250-dispcc
+> +      - qcom,sm8350-dispcc
+>  
+>    clocks:
+>      items:
+> diff --git a/include/dt-bindings/clock/qcom,dispcc-sm8350.h b/include/dt-bindings/clock/qcom,dispcc-sm8350.h
+> new file mode 100644
+> index 000000000000..361ef27de585
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/qcom,dispcc-sm8350.h
+> @@ -0,0 +1,77 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
 
-The mops value is checked in fpga_mgr_create,
-do not check it twice.
+I'm tired of saying this for QCom bindings given it's been QCom I've 
+gotten complaints on DT licensing, but dual license please. Spread the 
+word.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/fpga/fpga-mgr.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+I'm sure if someone audited licenses of headers and dts files they'd 
+find a mess.
 
-diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
-index 2abb7043858dc..21b4fd34b1dbf 100644
---- a/drivers/fpga/fpga-mgr.c
-+++ b/drivers/fpga/fpga-mgr.c
-@@ -28,14 +28,14 @@ struct fpga_mgr_devres {
- /* mops wrappers */
- static inline enum fpga_mgr_states fpga_mgr_state(struct fpga_manager *mgr)
- {
--	if (mgr->mops && mgr->mops->state)
-+	if (mgr->mops->state)
- 		return  mgr->mops->state(mgr);
- 	return FPGA_MGR_STATE_UNKNOWN;
- }
- 
- static inline u64 fpga_mgr_status(struct fpga_manager *mgr)
- {
--	if (mgr->mops && mgr->mops->status)
-+	if (mgr->mops->status)
- 		return mgr->mops->status(mgr);
- 	return 0;
- }
-@@ -93,7 +93,7 @@ static inline int fpga_mgr_write_complete(struct fpga_manager *mgr,
- 
- static inline void fpga_mgr_fpga_remove(struct fpga_manager *mgr)
- {
--	if (mgr->mops && mgr->mops->fpga_remove)
-+	if (mgr->mops->fpga_remove)
- 		mgr->mops->fpga_remove(mgr);
- }
- 
--- 
-2.26.3
-
+Rob
