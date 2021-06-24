@@ -2,108 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA463B29CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 09:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A2F3B29C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 09:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbhFXIBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 04:01:52 -0400
-Received: from mga01.intel.com ([192.55.52.88]:49749 "EHLO mga01.intel.com"
+        id S231774AbhFXH44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 03:56:56 -0400
+Received: from uho.ysoft.cz ([81.19.3.130]:32101 "EHLO uho.ysoft.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231630AbhFXIBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 04:01:51 -0400
-IronPort-SDR: fhe5lwq18lnTVNxHH0U78HKGyXNDx1WaGPIlwJx+AWlAmSU5Cr42m/H6DnHq/kvg3A4Aore4ge
- ho54yKqv6gXg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="229006955"
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="229006955"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 00:59:31 -0700
-IronPort-SDR: 9rrIp9l+o5YU/gZbNNmGk1pTfaV91pCI7CzngOK5/quyOfaBZ+JjbMuY1JCYe2jLtrc3uYBsBu
- /jGvwOe8AXHA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="557249382"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by fmsmga001.fm.intel.com with ESMTP; 24 Jun 2021 00:59:28 -0700
-Date:   Thu, 24 Jun 2021 15:54:14 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     trix@redhat.com
-Cc:     hao.wu@intel.com, mdf@kernel.org, michal.simek@xilinx.com,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 1/7] fpga-mgr: wrap the write_init() op
-Message-ID: <20210624075414.GA44700@yilunxu-OptiPlex-7050>
-References: <20210623182410.3787784-1-trix@redhat.com>
- <20210623182410.3787784-3-trix@redhat.com>
+        id S231630AbhFXH4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 03:56:53 -0400
+Received: from [10.0.28.232] (unknown [10.0.28.232])
+        by uho.ysoft.cz (Postfix) with ESMTP id BC3ADA569F;
+        Thu, 24 Jun 2021 09:54:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
+        s=20160406-ysoft-com; t=1624521272;
+        bh=NLbC23T/7+8xoV0rmoXID7prCSKbvpa0QbG1PLnUIew=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=TEC7utTQy3A7Yr8msK6gXy1ad1IgOVo/x4eSaE4l954cF7MCxyH68lLTofBWWCOs+
+         e1rJa/UDIA2MB8wv1dFQcxuOJru11Y0gty+hTtT/UdQAv0OeA8Y+kfZpUHvB02lo6V
+         qFit4l2SxdKK51tolQ0c7V/fiCOVoqTqVphjSTuY=
+Subject: Re: [RFC 2/2] ARM: dts: imx6dl-yapp4: Fix lp5562 driver probe
+To:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        stable@vger.kernel.org
+References: <1621003477-11250-1-git-send-email-michal.vokac@ysoft.com>
+ <1621003477-11250-3-git-send-email-michal.vokac@ysoft.com>
+ <20210623201347.GC8540@amd>
+From:   =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>
+Message-ID: <bca714c6-9bdd-ae20-9427-c2ea77a31f99@ysoft.com>
+Date:   Thu, 24 Jun 2021 09:54:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210623182410.3787784-3-trix@redhat.com>
+In-Reply-To: <20210623201347.GC8540@amd>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 11:24:04AM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
+On 23. 06. 21 22:13, Pavel Machek wrote:
+> On Fri 2021-05-14 16:44:37, Michal Vokáč wrote:
+>> Since the LED multicolor framework support was added in commit
+>> 92a81562e695 ("leds: lp55xx: Add multicolor framework support to lp55xx")
+>> LEDs on this platform stopped working.
+>>
+>> Author of the framework attempted to accommodate this DT to the
+>> framework in commit b86d3d21cd4c ("ARM: dts: imx6dl-yapp4: Add reg property
+>> to the lp5562 channel node") but that is not sufficient. A color property
+>> is now required even if the multicolor framework is not used, otherwise
+>> the driver probe fails:
+>>
+>>    lp5562: probe of 1-0030 failed with error -22
+>>
+>> Add the color property to fix this and remove the actually unused white
+>> channel.
+>>
+>> Fixes: b86d3d21cd4c ("ARM: dts: imx6dl-yapp4: Add reg property to the lp5562 channel node")
 > 
-> An FPGA manager should not be required to provide a
-> write_init() op if there is nothing for it do.
-> So add a wrapper and move the op checking.
-> Default to success.
+> I believe this is for arm maintainers to take...
+
+Hi Pavel,
+
+Thank you for your reply.
+As described in the cover letter, my primary intention was to bring
+attention to the problem. Addition of the multicolor framework broke
+devicetree forward compatibility. The old devicetrees does not work
+with newer kernels. Addition of the multicolor framework caused the
+color property to become a required one even if the framework is
+not enabled in kernel config nor used in the dts. So the reality and
+the dt-bindings documentation do not match.
+
+IMO this could be fixed in two ways. First is adapt the dt-binding
+documentation to match the reality. State that the color property is
+always required. With this we need to fix all the examples and dts
+files by adding the color property. This is quite tricky because we
+do not always know the color and it also becomes required for the
+led-controller node. See the error reported by Rob's bot for patch 1/2:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/leds/leds-lp55xx.example.dt.yaml: led-controller@32: 'color' is a required property
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml
+
+Second option is to fix this in the LED driver. The driver should not
+require the color property if the multicolor framework is not enabled.
+
+I would really like to know Rob's opinion here.
+  
+>> diff --git a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
+>> index 7d2c72562c73..3107bf7fbce5 100644
+>> --- a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
+>> +++ b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
+>> @@ -5,6 +5,7 @@
+>>   #include <dt-bindings/gpio/gpio.h>
+>>   #include <dt-bindings/interrupt-controller/irq.h>
+>>   #include <dt-bindings/input/input.h>
+>> +#include <dt-bindings/leds/common.h>
+>>   #include <dt-bindings/pwm/pwm.h>
+>>   
+>>   / {
+>> @@ -271,6 +272,7 @@
+>>   			led-cur = /bits/ 8 <0x20>;
+>>   			max-cur = /bits/ 8 <0x60>;
+>>   			reg = <0>;
+>> +			color = <LED_COLOR_ID_RED>;
+>>   		};
+>>   
+>>   		chan@1 {
+>> @@ -278,6 +280,7 @@
+>>   			led-cur = /bits/ 8 <0x20>;
+>>   			max-cur = /bits/ 8 <0x60>;
+>>   			reg = <1>;
+>> +			color = <LED_COLOR_ID_GREEN>;
+>>   		};
+>>   
+>>   		chan@2 {
+>> @@ -285,13 +288,7 @@
+>>   			led-cur = /bits/ 8 <0x20>;
+>>   			max-cur = /bits/ 8 <0x60>;
+>>   			reg = <2>;
+>> -		};
+>> -
+>> -		chan@3 {
+>> -			chan-name = "W";
+>> -			led-cur = /bits/ 8 <0x0>;
+>> -			max-cur = /bits/ 8 <0x0>;
+>> -			reg = <3>;
+>> +			color = <LED_COLOR_ID_BLUE>;
+>>   		};
+>>   	};
+>>   
 > 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/fpga/fpga-mgr.c | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
-> index ecb4c3c795fa5..87bbb940c9504 100644
-> --- a/drivers/fpga/fpga-mgr.c
-> +++ b/drivers/fpga/fpga-mgr.c
-> @@ -69,6 +69,14 @@ void fpga_image_info_free(struct fpga_image_info *info)
->  }
->  EXPORT_SYMBOL_GPL(fpga_image_info_free);
->  
-> +static int fpga_mgr_write_init(struct fpga_manager *mgr,
-> +			       struct fpga_image_info *info,
-> +			       const char *buf, size_t count)
-> +{
-> +	if (mgr->mops && mgr->mops->write_init)
+> What is going on here? "White" channel seems to have disappeared?
 
-Maybe we don't have to check mgr->mops, it is already checked on
-creation.
+Yes, it is described in the commit message. I know this is not optimal.
+The white channel is actually not used on this platform. So the right
+approach would be to add the white color property in this fix commit
+and remove the whole chan@3 node in next commit. I can do it that way.
 
-The same concern to all the following patches.
-
-Thanks,
-Yilun
-
-> +		return  mgr->mops->write_init(mgr, info, buf, count);
-> +	return 0;
-> +}
->  /*
->   * Call the low level driver's write_init function.  This will do the
->   * device-specific things to get the FPGA into the state where it is ready to
-> @@ -83,9 +91,9 @@ static int fpga_mgr_write_init_buf(struct fpga_manager *mgr,
->  
->  	mgr->state = FPGA_MGR_STATE_WRITE_INIT;
->  	if (!mgr->mops->initial_header_size)
-> -		ret = mgr->mops->write_init(mgr, info, NULL, 0);
-> +		ret = fpga_mgr_write_init(mgr, info, NULL, 0);
->  	else
-> -		ret = mgr->mops->write_init(
-> +		ret = fpga_mgr_write_init(
->  		    mgr, info, buf, min(mgr->mops->initial_header_size, count));
->  
->  	if (ret) {
-> @@ -569,7 +577,7 @@ struct fpga_manager *fpga_mgr_create(struct device *parent, const char *name,
->  	int id, ret;
->  
->  	if (!mops || !mops->write_complete || !mops->state ||
-> -	    !mops->write_init || (!mops->write && !mops->write_sg) ||
-> +	    (!mops->write && !mops->write_sg) ||
->  	    (mops->write && mops->write_sg)) {
->  		dev_err(parent, "Attempt to register without fpga_manager_ops\n");
->  		return NULL;
-> -- 
-> 2.26.3
+Michal
