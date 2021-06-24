@@ -2,59 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BB93B3034
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6133B303A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231800AbhFXNkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:40:10 -0400
-Received: from mga11.intel.com ([192.55.52.93]:46863 "EHLO mga11.intel.com"
+        id S231516AbhFXNkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:40:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230257AbhFXNkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:40:09 -0400
-IronPort-SDR: xPtQV2aRHDAQ1iX37jpFaWV+CtO5tqF+u36IdqefQm3EqzP6gv5wcLNm9xVWrZtg4aWQeIWWUu
- JTojFaFC2GbA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="204461080"
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="204461080"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 06:37:48 -0700
-IronPort-SDR: hsyGtgr1AkJRH4vCogDTqIzy7Ov7yFK+kAqoWLOXWKfc1jljhbW57Tw7VoslPX0MHPLjPPvZXz
- 7fLYWm9E2Zsw==
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="487757005"
-Received: from dfuxbrum-mobl.ger.corp.intel.com (HELO [10.13.13.106]) ([10.13.13.106])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 06:37:46 -0700
-Subject: Re: [Intel-wired-lan] [PATCH] e1000e: Fix an error handling path in
- 'e1000_probe()'
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org, jeffrey.t.kirsher@intel.com
-Cc:     netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org
-References: <2651bb1778490c45d963122619fe3403fdf6b9de.1623819901.git.christophe.jaillet@wanadoo.fr>
-From:   "Fuxbrumer, Dvora" <dvorax.fuxbrumer@linux.intel.com>
-Message-ID: <c2ed2d13-6949-3f78-a28f-752cff8b08ee@linux.intel.com>
-Date:   Thu, 24 Jun 2021 16:37:44 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229878AbhFXNkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:40:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3923361002;
+        Thu, 24 Jun 2021 13:38:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624541900;
+        bh=+IAFywe/fQNi3yGadTzdfNAMDo97W+pVUgJlXiEOuT8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zgrt8sAOUKv4aq0TAmi/6ugV5pAIMt9nN5X2GqMqbVzBs0rIDqvfl9v3Rw1sNMKsl
+         cRDDLduiEb/vFKo2y+shFY6Vy4cmO6ixmrSknVR0tUeE958MWQGMl6xMx87iTN1jxp
+         Om9wOnn1JosUsE5Xd3Ttb53ewALmoSYK+bzQ7qmc=
+Date:   Thu, 24 Jun 2021 15:38:18 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     rafael@kernel.org, rafael.j.wysocki@intel.com, will@kernel.org,
+        robin.murphy@arm.com, joro@8bytes.org, bjorn.andersson@linaro.org,
+        ulf.hansson@linaro.org, adrian.hunter@intel.com,
+        bhelgaas@google.com, robdclark@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        quic_c_gdjako@quicinc.com, iommu@lists.linux-foundation.org,
+        sonnyrao@chromium.org, saiprakash.ranjan@codeaurora.org,
+        linux-mmc@vger.kernel.org, vbadigan@codeaurora.org,
+        rajatja@google.com, saravanak@google.com, joel@joelfernandes.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] PCI: Indicate that we want to force strict DMA for
+ untrusted devices
+Message-ID: <YNSKyu/a8S3Qywbc@kroah.com>
+References: <20210621235248.2521620-1-dianders@chromium.org>
+ <20210621165230.3.I7accc008905590bb2b46f40f91a4aeda5b378007@changeid>
 MIME-Version: 1.0
-In-Reply-To: <2651bb1778490c45d963122619fe3403fdf6b9de.1623819901.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621165230.3.I7accc008905590bb2b46f40f91a4aeda5b378007@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/2021 08:05, Christophe JAILLET wrote:
-> If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
-> must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
-> call, as already done in the remove function.
+On Mon, Jun 21, 2021 at 04:52:45PM -0700, Douglas Anderson wrote:
+> At the moment the generic IOMMU framework reaches into the PCIe device
+> to check the "untrusted" state and uses this information to figure out
+> if it should be running the IOMMU in strict or non-strict mode. Let's
+> instead set the new boolean in "struct device" to indicate when we
+> want forced strictness.
 > 
-> Fixes: 111b9dc5c981 ("e1000e: add aer support")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->   drivers/net/ethernet/intel/e1000e/netdev.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
+> NOTE: we still continue to set the "untrusted" bit in PCIe since that
+> apparently is used for more than just IOMMU strictness. It probably
+> makes sense for a later patchset to clarify all of the other needs we
+> have for "untrusted" PCIe devices (perhaps add more booleans into the
+> "struct device") so we can fully eliminate the need for the IOMMU
+> framework to reach into a PCIe device.
+
+It feels like the iommu code should not be messing with pci devices at
+all, please don't do this.
+
+Why does this matter?  Why wouldn't a pci device use "strict" iommu at
+all times?  What happens if it does not?  Why are PCI devices special?
+
+greg k-h
