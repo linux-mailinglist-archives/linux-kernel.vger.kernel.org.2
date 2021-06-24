@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6863B2548
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 05:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F8B3B254B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 05:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhFXDKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 23:10:52 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:6550 "EHLO
+        id S229999AbhFXDLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 23:11:00 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:11328 "EHLO
         mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229759AbhFXDKt (ORCPT
+        by vger.kernel.org with ESMTP id S229928AbhFXDKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 23:10:49 -0400
+        Wed, 23 Jun 2021 23:10:55 -0400
 Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15O36LQb027553;
-        Thu, 24 Jun 2021 03:08:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2020-01-29;
- bh=OtS+u9b8LmwQYXh45YHCoC0x0b5J2XPtKcZReqY1i9Y=;
- b=vg0m181L2PCOSsblhKFAmQaR3JtbmFtvp0l9aIvRipnshrWeGgY317gM+VDBu7uQgsk5
- fl9yiduBjEfY/OA9DYZVJ0m1laLFVmEbsdq+BOtX7UrbvYSLCmxgg9Q4L9ywV7hSN3mG
- RbTJcWcT10fp8egu3A7beWmuHuiCmmN3GR2N6sqFbeGNjVQHdeoqcfia3GRbK3eSTYIq
- x0HffacUhUzr68DChTZrjEdxZ9DrR9g3jbXSY3J68pgTkxEI/EqWesuK5E+KHSAALSIa
- JuKVPtzB3OCq8KI/Wr96YWQQzxyF5fvLV7Wzu9dG5KGO7hVbgQBYN7E+75wLJSjdZvVJ tA== 
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15O36xGl028306;
+        Thu, 24 Jun 2021 03:08:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2020-01-29; bh=N3ua3Y70ZKiRuFePQ5YrILWJBN/jJWlkLQRq8b/6hAc=;
+ b=LQtMcmMv/WZUh9XNPqQc1Kwusbs3LZatzB9b7JeWI3VI0IscxxYlaFUalXkUvENdh8Ju
+ kQG4ybjuaqPqyS7a7YaG0a1Qky/vEFy8g6PF7u9uqCq53nzm+hSOtpv5IzCTsPKCz3XR
+ Bo5lG9Cll779UO+w1A6U5S2WQ5lb7iDX+5FoUndH04W54VY5YojXCAXJAMTkZF54NheK
+ CLu/SKIp0LQc0pY5HcWspK3RSD8m1hjDPZmL+csp0Ma71J5mdO0JCKeKXi2h078Pd0kN
+ +z6wYjRHT5sLcaKXVe6qVQvMGjVYqn1m+qFMvJB14pK7gTgWUhvqifNJaafK4yBVC+iF fQ== 
 Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39cd2krb3v-1
+        by mx0b-00069f02.pphosted.com with ESMTP id 39cd2krb3w-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Thu, 24 Jun 2021 03:08:19 +0000
 Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15O31Xug096615;
-        Thu, 24 Jun 2021 03:08:18 GMT
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15O31Xuh096615;
+        Thu, 24 Jun 2021 03:08:19 GMT
 Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2175.outbound.protection.outlook.com [104.47.55.175])
-        by aserp3020.oracle.com with ESMTP id 3998d9xm8h-1
+        by aserp3020.oracle.com with ESMTP id 3998d9xm8h-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Thu, 24 Jun 2021 03:08:18 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V4AjHq2JMbaV1l86rzdsIq2oRV4hWLVAe3YfQoiFqkKUS3gPzdZU58Ste3U2X82Lr1VmeJTsAG+u4q4Hv6XbeOf3wFBstOn6E76bhm8+CUIw0ilTOFkxDXhIqBfbDgO/r8CWgKKvzfw7GQio49JKYE5L1O4ISwK605+f8FyGnHVXjQxtjBr506f9bYggMvynnI0XCMXThkkkOrR9X74kEw3aP1kY+Df9tRIMr/Bs34qA5/Tbbath6cv2YQHe8FCXkfMaxERG9RN4d3BL8TAYAIBSJ8kpWWYh9+vqQp9yOfqFZU/RwiXyD6txS6DOmvsTC+auIRgSAVSVbtEohZnpJQ==
+ b=e2GX1NtvAKVCJrnRVw2+VGyyP2t+DkBTm6oS0x2wFEQv86ORfF2JBCLJhsJtnhu64YY4EWOb7JRhfe6L6fQCUuyaBshSqW4IYY7Vtr6w+GU23oDtK3ZMbM/sNAc6mhh4JqfCf64gD6XO0yCvSH1iHIcXJvqo0mNLp+NOKjbVqTv1Jn0ygZ4k0GgghauMB4pRj+ztnHZdOZMxf9+g9v9IZQ8MOsSQHkMLqGWMNVZ0W+mkO29DCtNfMBHJgRSDsud2B0xlGXT2iT8ZXdpYE8OJo28icBYGSkr6hqmzMp09u5TBW+yjKg90m11yPabWGgBeHHaSM1ZvOWvAENwae8H2Eg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OtS+u9b8LmwQYXh45YHCoC0x0b5J2XPtKcZReqY1i9Y=;
- b=HOsDxlqmesd6PYtyNc2yn+D6W13GteUC/JowPVA0z9zBmepQcN8/VttWnWF2wRi12SzM09D/5cK/P0CMU0LU0h3gBdmBXujY3Ri+QlbtO4r67C6Xe9WxO9wO+NfVaPo/ZlpEGrhdIaiozETvlLsi57pipVRNuuJQKaprTkFoICL4/0lA0RG6VXKK0Jx4kAXxtuD6n0HACYy71/tG8hZ3j1oJ8NDGE8RwuuLj06eTTXp1yVDZqN4izDM63LW6xkft42PWz6VeEwj58AeEZLihJ33o9C3do3fmHB72o6O53nLzG0ddT6jbVpIyXtd3axt8nMn+4ypBgZ0dByhUL9DA+g==
+ bh=N3ua3Y70ZKiRuFePQ5YrILWJBN/jJWlkLQRq8b/6hAc=;
+ b=VBEGiF5DHRwY0If4n82j4p2E6VNyVn/NN0o7qOrjHCWd1rOmUE3vtjPzqaqhEXJ8u+133YyJTw+jFBFju6r7Fnz04WGaHmtqUsku//tq2+ax6uPmvyNu0y7awig3dM+K38TnkAg2o82BHa/551Wb9RmVc0iWcXdWSO9ac+Ow+ZnzICB1nyN4qF/kMeDmqxqRLBOX/7QTa7R3yauXF70QL1Vz6FbFyt7HOKOv/HcBboKf2Hwa6oNLJ4vA3GGcelXdnYCmSxDwsUo4S5SPRI2k7ru+qNkUcYOVoqxtR44xduuj7RCMaA70ciEE4v+2QlE6iaRJBsf0VgC0hfJdURmE3Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OtS+u9b8LmwQYXh45YHCoC0x0b5J2XPtKcZReqY1i9Y=;
- b=WsRyxG/t9XzGxr5Xyu9NecKxIInAA0BQz9xao5IW0cHfI5BGPnpfbT2V1OpN9abQ0pGLiixbBSiTDKqh+LlP1O8CeXZ/aV3VnSFUhI9L1mJ8hhYOaHV4nL8f3kvtyo+h5LJu1cz0cf5NwbJ9Kz0R0LgndYK2PtuRwHHGa8QyuOc=
+ bh=N3ua3Y70ZKiRuFePQ5YrILWJBN/jJWlkLQRq8b/6hAc=;
+ b=aDXW9g6lz6VyYD1zf9S8CLLTchqKW+bYJsTNtgNp7QDe5K21pD+8qE0qhFgTSNUS9FVblpz61VWTlvkqhGC7gcFMoMldhaximheX43J0IzPQpDB22kFBGoEYS296Gghy0f1yX1WjhGFE5HW8Pr2WpaLVkyVcNTKQJvpyiYNkcuM=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
 Received: from BYAPR10MB3573.namprd10.prod.outlook.com (2603:10b6:a03:11e::32)
  by BYAPR10MB2837.namprd10.prod.outlook.com (2603:10b6:a03:81::28) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Thu, 24 Jun
- 2021 03:08:15 +0000
+ 2021 03:08:17 +0000
 Received: from BYAPR10MB3573.namprd10.prod.outlook.com
  ([fe80::b09d:e36a:4258:d3d0]) by BYAPR10MB3573.namprd10.prod.outlook.com
  ([fe80::b09d:e36a:4258:d3d0%7]) with mapi id 15.20.4242.025; Thu, 24 Jun 2021
- 03:08:15 +0000
+ 03:08:17 +0000
 From:   Mike Christie <michael.christie@oracle.com>
 To:     linux-kernel@vger.kernel.org,
         virtualization@lists.linux-foundation.org, mst@redhat.com,
         sgarzare@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
         christian@brauner.io, akpm@linux-foundation.org,
         peterz@infradead.org, christian.brauner@ubuntu.com
-Subject: [PATCH 0/3] kthread: pass in user and check RLIMIT_NPROC
-Date:   Wed, 23 Jun 2021 22:08:01 -0500
-Message-Id: <20210624030804.4932-1-michael.christie@oracle.com>
+Cc:     Mike Christie <michael.christie@oracle.com>
+Subject: [PATCH 1/3] kthread: allow caller to pass in user_struct
+Date:   Wed, 23 Jun 2021 22:08:02 -0500
+Message-Id: <20210624030804.4932-2-michael.christie@oracle.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210624030804.4932-1-michael.christie@oracle.com>
+References: <20210624030804.4932-1-michael.christie@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-Originating-IP: [73.88.28.6]
@@ -79,68 +82,223 @@ X-ClientProxiedBy: DM5PR2001CA0008.namprd20.prod.outlook.com
  (2603:10b6:a03:11e::32)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (73.88.28.6) by DM5PR2001CA0008.namprd20.prod.outlook.com (2603:10b6:4:16::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Thu, 24 Jun 2021 03:08:14 +0000
+Received: from localhost.localdomain (73.88.28.6) by DM5PR2001CA0008.namprd20.prod.outlook.com (2603:10b6:4:16::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Thu, 24 Jun 2021 03:08:15 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b9a87bc2-40b1-4208-a711-08d936bd4f06
+X-MS-Office365-Filtering-Correlation-Id: 4bd5324c-5ac7-4b0c-4cf1-08d936bd4ff7
 X-MS-TrafficTypeDiagnostic: BYAPR10MB2837:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB28374C04CE0DE060BD80762DF1079@BYAPR10MB2837.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR10MB283721F8E2AAEF4EC430D911F1079@BYAPR10MB2837.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uzlICyCpoRna8A/x37hsLA7/xhwMrunM1QGPcWKuFwerrSR9VtkmXhTwRvsfwSZ83nQKPVVrN7Gik/3SjzJi6ulf7q4Pw9K2S+On/XUdl0aOTd7ln6bFSnPBH+/wQJndAS97hYeTcIEfxOiaqbKwH24+t6yPdSawllD8aP54PQIdU9cmCJG1IAc+kO7tRsOmDk9bWX4bePX1KCFKOK51o6HoFdfAeXPhjozzThYtXnY/1wqv0G1IgSEjsIxDJhrasbKZ39aW6T7sH5ylDDacObb6ti3rFBCxNh8DC4Mz+kdUdWkHJD9f5CeU0CnC7zUIDslPobgLInvbNWAYXv++46agsQITiM2OfSwcQsI5a0DWMzMouxPcCX5ol/l8W72LJyMEWrNOMYKEkdhdY05HKLkbZcTUCHMjpSeO8XgJxeIHfqMvMiAdzKFM7bH53QoyX5buSpzUOSqMHJwiV/Q2tcdYCjCUYRhkJXX+tqbugHzwPOzpiHLP0IgLsgpTncH4c/lyOhuYuT6eCsriO79fz8qrc4NBdsVXNp3uXGXcBCv2MGFP91/wqW+0pfJ8TJIEeWEsAi1XPbHIVRRnRKxOk/aKs6lJpW+/Y6Xq1RnvRnLMUSK1Uu7ht/OhgQpr3/Z8WPeWHqmAyyxSNkhfVV4TTDLGOy6g37yj0RYZmBUxOKOhRFX0S6dMWBXuY2ttfAogdCqLwy3R4PjLmBwX0sDd4w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3573.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(136003)(346002)(376002)(39860400002)(66946007)(66476007)(66556008)(5660300002)(4744005)(2906002)(2616005)(6512007)(26005)(6506007)(316002)(186003)(52116002)(16526019)(956004)(1076003)(7416002)(8676002)(478600001)(38350700002)(38100700002)(921005)(83380400001)(6666004)(8936002)(6486002)(36756003)(86362001)(69590400013);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Coxzz4ho6TdG/MKgZ6Ggfrq1NVUG2T44S6uWc6CJ6vaJ6TYGcg7b4IA8bL2QlEWk2YfcI1NLU3mkHeR4bjRRjqP6hFj6MUzVfTKvcfas8A3eKWUkQe/kUt0Yl0dd/xGhsBuo8ftFMAyru4jB0OZOVbW8FHBFr/CZ4mT45vDtEoLWDJLCfAu5rOeXCw54XxqABVngfeVuSsNCZmQD5V4ToC1mjXTY9JYuG/AAN3jST6jsOB2xA6ihAG+PkjhGG76Z2UXBmg/gmOos4q3Es5h9yhm4zA/7JJUGadZqQ27GTctxAQR07ZJd/9A5ned5zbyRfRtzlHY+MhGLMbJ3e+sU+5jrcVJza8TXN+zz9Qm3VZBabfKRIpSMqqrWaTv0UPYj4uTFOdm3ibz/vk66tzRWqptwTg41Aoh+rrjEVHMXl5vzeF4harOdwMi6CR9j9cjE26RD/xuSDbn1UTOAlvuaPqHt+e3L+ijghSqHjloiQUYJQrLc4W14IiT4QoF4W5yr/K3eYOEq+r2DKYP3feX4XqVPEO1zLaesE13xuhHi78wm5LAdDvvRno8T0gh2WKfEAVQ8bejjPj6VPWZPKc3CLPYzD6CywrlA6WK5xJDy1cZkPNBVX43LiSTMjg2td0icaGGLEE2niRwlpgRFCk1r+c4l82uxGY+7DgUtlWMH3tF3VTuapegjHv8P2R9byel3wPARIr86k+PCxE64lEcmNQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3573.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(136003)(346002)(376002)(39860400002)(66946007)(66476007)(66556008)(5660300002)(2906002)(2616005)(6512007)(4326008)(26005)(6506007)(316002)(186003)(52116002)(16526019)(956004)(1076003)(7416002)(8676002)(478600001)(38350700002)(38100700002)(921005)(83380400001)(6666004)(8936002)(6486002)(107886003)(36756003)(86362001)(69590400013);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3m+FJEiC0tZNY5nvHI5Lv8sBYVhMgCAtjkeLfyr5hVgoXuHk3/OCmjnCmIAM?=
- =?us-ascii?Q?+4erI8Fei/Sg1NSE/kRuz75e3UXmG7OHyukEh7k+1sm+Xv96XHAjq1Bhl5vI?=
- =?us-ascii?Q?aA/KQCJ4U+eHMQqJyp7dk6WqN8SlY1O68R55XP9rc0mLSTEv5ExeW1aBuevv?=
- =?us-ascii?Q?Qbli9uaUAHW18QppWXCkR1reex9OtW1CGFSNzApAVAi/ky7Bi/HwqtthLBdo?=
- =?us-ascii?Q?/HJNyeCHr0I8MSNXSfNPnxFW1jH+3lDX/+UrFrs44j0bkHH50Oj+kkJQs5zV?=
- =?us-ascii?Q?hJr+nfBR1tL3ct1D+FeClg9bbgbGzg091d/UfHP082uveqiyBTzmDqp/NroA?=
- =?us-ascii?Q?lRcUvU+mGsg4x28LSt8T3ecTrw33Vbm5UdIfeI4ePGU+1UrJrhfXN0SoP5Vn?=
- =?us-ascii?Q?K4gOpREz9EzZ+7thTlUsDKjbeBcUqI+LUTTJhUOv8EtoobBSEQVBvbNnLFoG?=
- =?us-ascii?Q?1zjmC4RRTuwY3y9SCGWvckMl7Ek2lSKZQLZmGJLn7Sep9lz4tpMmZdQ0CM0A?=
- =?us-ascii?Q?ZDqg0xdsWwfzw0PuwRYlMGUxM8Jk8cQ69QpUjFC6gyIx8FbZVQHO1gpw9BYE?=
- =?us-ascii?Q?k3ZkV274zNt676WhUEKF+dYCpC4YvkQMEhBItmh73LCqFwULSrWfJrlGYuOL?=
- =?us-ascii?Q?XodONsDEb0AOxVwroX3Aeq46Dw8iDgMEXFCLHevz/ZUoAAEXqMuemYWWEqc4?=
- =?us-ascii?Q?dS7Ski0Cp0dtE0HNedv8o46ZRdvr/F4OAFrmaPNXCnNpMITnBj56YrQPeGgt?=
- =?us-ascii?Q?SBE8wlohOQKf1m5IPQToRTrxpUIg/cSc+r36zN8QzjFDbE/gd9qFrQ3dzJAA?=
- =?us-ascii?Q?QpzNOUWj1ogeUn0VBADIZwT1yE64VyLo6RKGvmaZESD6FNk9vIYwHVAfikKx?=
- =?us-ascii?Q?WApacLCCcU2sQplm6+Vyju7lBCussvX5ed/FrEgHRyV4b+S8SV9IgyyRXb5M?=
- =?us-ascii?Q?GriIjPju0EKbcBFLXkhPiVKeqS6xop+Osb0MXYMxdV9eHcOJ40ZCGa5ECsnR?=
- =?us-ascii?Q?eOqAL2/I4NMMWG3z82TrLCgdB7fGmg/qpCEV7eBwtRRwZXbZ9tG+I/yAkAVw?=
- =?us-ascii?Q?iL0dapVtiggW2ELww/5sZaH1aKlHR4zkhPQ0b8j8M/hUFL77u8pfKP2QKCej?=
- =?us-ascii?Q?J29Vao1uh8ft3Je7vrGKf0q3DUEN4sooZbkUwv8hkLzyNgUqkenIiXK7SIGL?=
- =?us-ascii?Q?2ermtkwNpIcSABn/r+sSr0cmckg0crj5Sgt8YX1xK+nEa2ZJmENhoFg6NdU5?=
- =?us-ascii?Q?fC5y0PG3PAvYiVuk1L4jERMQgzAmytflTY0ZUp4mVFsbm9nxh1/61aZMYG4z?=
- =?us-ascii?Q?QVhzLKuDaS2rZtrS7EoTDWsX?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8GBC5q3vE/gn93HQgaYZh5PPHqiSjIVbqH8f2ac+8kMNJtk7EhaFdMJWOJUZ?=
+ =?us-ascii?Q?9FHH8yFicylJfnEtiwN3pc4OxWTC9b0kuh6SnP+YkVcbfChwDQ02ok9TZdvs?=
+ =?us-ascii?Q?Jm9n/Lh4yIKSVrzOw/Bamfma5r2Xa7YBVScGfUtNIsPzhTb5xoJbI9UACmGr?=
+ =?us-ascii?Q?a4iF1p/IlyVcpPVClqy4S2zFIqkw0Cqx9MuAen6GW18eZiBaj6zFQg3IS9kg?=
+ =?us-ascii?Q?2VPgWIDzWtVnnXHLg6sNcH75xroIs01Q7lpsqeLcMDz4u8avv7oGqHRjCzY0?=
+ =?us-ascii?Q?0v1FogaH4Q03X5fSJrmUMEd/eLKRrfj1LCZsBZy+ffXe4joB/Gu5odViQQP3?=
+ =?us-ascii?Q?P6zBfaq/WiTINrEZ3YAL+JYHa8E/UoTB3x1JXM78vE1Y6Lkv29ls6zgiKHUN?=
+ =?us-ascii?Q?xAL82R+OGHheUo3oJ0MHxMZT7yfabNpgDaFHP9yBNl6oj+qqwoHv64OTuNaT?=
+ =?us-ascii?Q?ye2j5RLGphruejQE+8JEXD2mGiw+x3hdeF7Hopb4I4ZKxOaPRGUAu1vzRKhV?=
+ =?us-ascii?Q?TyAyNpmXbYaHahaFNe7uEHY+e4otJD7tJ8IPK/9tqKEVahbRXzN9E2FWD0E4?=
+ =?us-ascii?Q?qJ4mLUNC8dOrdUp8XuPcc+LbqzxlCzpWkK8R0rjZzeKxcRCfR7qQiCpgNl56?=
+ =?us-ascii?Q?0++okjxHrJTCH6iM8lHHF6cXgCv0PyUcEyii7fYnhlFn8WMvY3u1voy8HqY9?=
+ =?us-ascii?Q?e9JAPuc2YMSjRtHjt2vpqSsqRldDa3oCooddL1MTcxrTChpG1Tfm9iNhoBT/?=
+ =?us-ascii?Q?Rrq4+f8NhCz0Y9fNha+vU/dd8FGVlh0+UoxDvQ4AtTCQtqFoUcgON1/rMrph?=
+ =?us-ascii?Q?AzMf83PtFnMvBabG3A307MUUpG9XRBq8m3oKcvpRvfYyOnNrxpkM8niYvDh5?=
+ =?us-ascii?Q?NegPdOXFXDpZjAGJc8KIQTA3qcDOXvemPLyBmi4rp9G8aH0tT4U0ybvoNnSm?=
+ =?us-ascii?Q?lA3P7RWXGEf3TQePXcBNyUPeVuk79tErBywcayhIx+5YmQwaJmWJUQPjCB12?=
+ =?us-ascii?Q?ZhWuz8tAhQ/sakEwuMFIqpnIC2q2/P2SAUCqB9VrzxhFqCO6+bLaG+6QqkTg?=
+ =?us-ascii?Q?5bTDP1lMYbVDq9G1SWMw6htHF5r/36XF6c6r2VX8LNL4t6+eXs6vrRYWBHPA?=
+ =?us-ascii?Q?er/u+Um0BW5mDR08q5WrPTu2zGLwfqEdUCHnnGBKAeTu2tBri12D10SQryLp?=
+ =?us-ascii?Q?zQFwJHTN9b9za1TgyM0N8hpWUv65hJggg5T8DlqG9FjsiuQsEN1BIn+6uqNE?=
+ =?us-ascii?Q?220TTOQvVT4uFgpTVde8g6ORhIaKnvvhtdgE3aG6n+Z+Qh7ew+Lwc39R5ukx?=
+ =?us-ascii?Q?l579PqxmVRo+F3z0gX2E9H7l?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b9a87bc2-40b1-4208-a711-08d936bd4f06
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4bd5324c-5ac7-4b0c-4cf1-08d936bd4ff7
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3573.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2021 03:08:15.6508
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2021 03:08:17.3498
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lFoOVylEKu4sNhSJQorNyLgG6/MFHT5o+Hn75keH9vqjarK+QcmFq4IRmeflXlInbgouVw6C3AgE3ktxSGNxT3/Imzl1lDVmpLkTF9rnvmg=
+X-MS-Exchange-CrossTenant-UserPrincipalName: zy0vJNzD+joKVp7xPRuWQMoNX7Sc+o8G1dE0sQvs6D/1dKqxUX/tv6c67U/3dO9QUS2zhW3sTsoxS2LGPyRbg+onkk0UcfL1uWaoXwG6dAk=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2837
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10024 signatures=668682
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 adultscore=0
- mlxlogscore=970 phishscore=0 suspectscore=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 suspectscore=0 bulkscore=0 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
  definitions=main-2106240016
-X-Proofpoint-GUID: vOqMv72YK3jhLlyhOyPorZn4O9224N5i
-X-Proofpoint-ORIG-GUID: vOqMv72YK3jhLlyhOyPorZn4O9224N5i
+X-Proofpoint-GUID: Iq6TDWJeuwJbrLd-YoD_tYbhc-8GIMAr
+X-Proofpoint-ORIG-GUID: Iq6TDWJeuwJbrLd-YoD_tYbhc-8GIMAr
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vhost driver will create a kthread when userspace does a
-VHOST_SET_OWNER ioctl, but the thread is charged to the kthreadd thread.
-We can then end up violating the userspace process's RLIMIT_NPROC. This
-patchset allows drivers to pass in the user to charge/check.
+Currently, the kthreadd's user_struct has its processes checked against
+the RLIMIT_NPROC limit. In cases like for vhost where the driver is making
+a thread for userspace, we want the userspace process to have its processes
+count checked and incremented.
 
-The patches were made over Linus's current tree.
+This patch allows the kthread code to take a user_struct and pass it to
+copy_process. The next patches will then convert the fork/cred code.
 
+Signed-off-by: Mike Christie <michael.christie@oracle.com>
+---
+ include/linux/kthread.h    |  5 ++++
+ include/linux/sched/task.h |  2 ++
+ kernel/kthread.c           | 58 ++++++++++++++++++++++++++++++++------
+ 3 files changed, 56 insertions(+), 9 deletions(-)
 
+diff --git a/include/linux/kthread.h b/include/linux/kthread.h
+index 2484ed97e72f..3c64bd8bf34c 100644
+--- a/include/linux/kthread.h
++++ b/include/linux/kthread.h
+@@ -28,6 +28,11 @@ struct task_struct *kthread_create_on_node(int (*threadfn)(void *data),
+ 	kthread_create_on_node(threadfn, data, NUMA_NO_NODE, namefmt, ##arg)
+ 
+ 
++struct task_struct *kthread_create_for_user(int (*threadfn)(void *data),
++					    void *data,
++					    struct user_struct *user,
++					    const char namefmt[], ...);
++
+ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
+ 					  void *data,
+ 					  unsigned int cpu,
+diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
+index ef02be869cf2..357e95679e33 100644
+--- a/include/linux/sched/task.h
++++ b/include/linux/sched/task.h
+@@ -34,6 +34,8 @@ struct kernel_clone_args {
+ 	int io_thread;
+ 	struct cgroup *cgrp;
+ 	struct css_set *cset;
++	/* User to check RLIMIT_NPROC against */
++	struct user_struct *user;
+ };
+ 
+ /*
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index fe3f2a40d61e..9e7e4d04664f 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -41,6 +41,7 @@ struct kthread_create_info
+ 	int (*threadfn)(void *data);
+ 	void *data;
+ 	int node;
++	struct user_struct *user;
+ 
+ 	/* Result passed back to kthread_create() from kthreadd. */
+ 	struct task_struct *result;
+@@ -327,13 +328,21 @@ int tsk_fork_get_node(struct task_struct *tsk)
+ 
+ static void create_kthread(struct kthread_create_info *create)
+ {
++	/* We want our own signal handler (we take no signals by default). */
++	struct kernel_clone_args clone_args = {
++		.flags		= CLONE_FS | CLONE_FILES | CLONE_VM |
++				  CLONE_UNTRACED,
++		.exit_signal	= SIGCHLD,
++		.stack		= (unsigned long)kthread,
++		.stack_size	= (unsigned long)create,
++		.user		= create->user,
++	};
+ 	int pid;
+ 
+ #ifdef CONFIG_NUMA
+ 	current->pref_node_fork = create->node;
+ #endif
+-	/* We want our own signal handler (we take no signals by default). */
+-	pid = kernel_thread(kthread, create, CLONE_FS | CLONE_FILES | SIGCHLD);
++	pid = kernel_clone(&clone_args);
+ 	if (pid < 0) {
+ 		/* If user was SIGKILLed, I release the structure. */
+ 		struct completion *done = xchg(&create->done, NULL);
+@@ -347,11 +356,11 @@ static void create_kthread(struct kthread_create_info *create)
+ 	}
+ }
+ 
+-static __printf(4, 0)
++static __printf(5, 0)
+ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+-						    void *data, int node,
+-						    const char namefmt[],
+-						    va_list args)
++					     void *data, int node,
++					     struct user_struct *user,
++					     const char namefmt[], va_list args)
+ {
+ 	DECLARE_COMPLETION_ONSTACK(done);
+ 	struct task_struct *task;
+@@ -364,6 +373,7 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+ 	create->data = data;
+ 	create->node = node;
+ 	create->done = &done;
++	create->user = user;
+ 
+ 	spin_lock(&kthread_create_lock);
+ 	list_add_tail(&create->list, &kthread_create_list);
+@@ -444,13 +454,43 @@ struct task_struct *kthread_create_on_node(int (*threadfn)(void *data),
+ 	va_list args;
+ 
+ 	va_start(args, namefmt);
+-	task = __kthread_create_on_node(threadfn, data, node, namefmt, args);
++	task = __kthread_create_on_node(threadfn, data, node, NULL, namefmt,
++					args);
+ 	va_end(args);
+ 
+ 	return task;
+ }
+ EXPORT_SYMBOL(kthread_create_on_node);
+ 
++/**
++ * kthread_create_for_user - create a kthread and check @user's RLIMIT_NPROC
++ * @threadfn: the function to run until signal_pending(current).
++ * @data: data ptr for @threadfn.
++ * @user: user_struct that will have its RLIMIT_NPROC checked
++ * @namefmt: printf-style name for the thread.
++ *
++ * This will create a kthread on the current node, leaving it in the stopped
++ * state.  This is just a helper for kthread_create_on_node() that will check
++ * @user's process count against its RLIMIT_NPROC.  See the
++ * kthread_create_on_node() documentation for more details.
++ */
++struct task_struct *kthread_create_for_user(int (*threadfn)(void *data),
++					    void *data,
++					    struct user_struct *user,
++					    const char namefmt[], ...)
++{
++	struct task_struct *task;
++	va_list args;
++
++	va_start(args, namefmt);
++	task = __kthread_create_on_node(threadfn, data, NUMA_NO_NODE, user,
++					namefmt, args);
++	va_end(args);
++
++	return task;
++}
++EXPORT_SYMBOL(kthread_create_for_user);
++
+ static void __kthread_bind_mask(struct task_struct *p, const struct cpumask *mask, long state)
+ {
+ 	unsigned long flags;
+@@ -785,8 +825,8 @@ __kthread_create_worker(int cpu, unsigned int flags,
+ 	if (cpu >= 0)
+ 		node = cpu_to_node(cpu);
+ 
+-	task = __kthread_create_on_node(kthread_worker_fn, worker,
+-						node, namefmt, args);
++	task = __kthread_create_on_node(kthread_worker_fn, worker, node, NULL,
++					namefmt, args);
+ 	if (IS_ERR(task))
+ 		goto fail_task;
+ 
+-- 
+2.25.1
 
