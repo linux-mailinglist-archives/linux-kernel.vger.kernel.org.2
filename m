@@ -2,171 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA42D3B2837
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 09:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7F63B2839
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 09:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbhFXHJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 03:09:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
+        id S231444AbhFXHJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 03:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231436AbhFXHIB (ORCPT
+        with ESMTP id S231460AbhFXHJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 03:08:01 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18A8C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 00:05:41 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id m15so2787230qvc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 00:05:41 -0700 (PDT)
+        Thu, 24 Jun 2021 03:09:33 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16054C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 00:06:51 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id m3so3189107wms.4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 00:06:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=uyb2tZAPltFwu0/3f+8N1Whypmr/BCkiRPdpo/+aATQ=;
-        b=1k4BwsViMRanh9l3pCxYXbVk+Oyx377MNyaN+A7H1GoOF1uRYXQGng5Of4MMTa9UU3
-         vORjZS6xeUVPxvspcQ+l+7w1fTkM0/00RGXBi45WRT5KU/9WAV/KPULzqMKBijts9khK
-         F/lF/vsX/G4rPWOQsLPLocaEyCyCWwzGBf8kLIPp+hHU3hyhLJl3VUbudhMPApe30AUw
-         RCSulmDgTqH92L5VXwVSOkzK+czifbqwhrLaP/jTRp1bG/lKc1y127f3Ieh+WAUpA4nc
-         IaehzvKKDdPzLdpQu/ioAXIcbwjbMwFLZwax+0y3VVLjhiGZ1wN5ESUfl8EJFlxVCzcG
-         c9lQ==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=viRPAsNP7Rd7d9L2Z0QK25s7MR3CwIQCAzrWD9QFcVk=;
+        b=M7zq+Qj+3Dnl63YIISq3AUpLw2T8mAG7KCom1oq8DyISRdjbE1g2HjkIvuZLZ9B9z1
+         P3ycGwf7DRV/zsq/cmHMEqofTj2C9Ei+kiv+vDcpOah/qUS9wF8SkuAsJ7RQu2NrQDuN
+         gg7P/Uyq/wMHG9BdhIFyoTGBeWh+sNIf9Hs0M8rQVP0aqPL/o2q8Ul23/4BQ++oXKH2A
+         atmxVBZD+CPato2L29MqtglTId9W8xo0Lmy0CxWdPCRfMIKVyUWDrK4BPoSDjxP6xuZZ
+         zuXEtRtCEeL8K6ZAWc3UeqL9QZTu3TsoBljlzMEBsUTZV+VOknEjI/eq02a9WgsUalDk
+         yHdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=uyb2tZAPltFwu0/3f+8N1Whypmr/BCkiRPdpo/+aATQ=;
-        b=s/iENe+B7xAOOlAwospt/43h7pjOZ0W/xuxOmOQPiRkXKljyCzOW6kgarvkoT53F9Q
-         heITfvBfIVUfHTVhYXvlutkb7PD1yhKx3/AdN5tBeAiRSy+Muog+HbQgl0gPlNBGtwCJ
-         DGJGN1cp4dw1O7hm1tceU8+v/knNOmC1SGQP15aAu7+zThU6pg7GkqyCZpOLZSCnrKwo
-         iGz1hYK9Yidskl3EsVIz5u+XMmoheR4vePw28QkeWI5BbREhwGjx0OPWYIXVv+RTE0Wo
-         jKr7TP5V5qETzl2G3g2hqHP/ma7D3KV5A177+omF6u52z1qDfG/Gn/ob835qg8CuHCSw
-         kMOg==
-X-Gm-Message-State: AOAM533ADdIdDeTEDycc1OZ8SsCO5mWGZyAchU52rtZI8CBrulb6nNuv
-        mMnkU3gSPYhdWO3V2Aw0svjvbb5F9TaylDIYszAzQQ==
-X-Google-Smtp-Source: ABdhPJyGJSZUCvOO+Zj3YeyJ93PvQJ+8PxOIr1FJk6NHef4t2hFw140HmPxZ6bPSrcxq2Ngz0CZqAkTIcWAnx9n6EWM=
-X-Received: by 2002:a05:6214:a0f:: with SMTP id dw15mr4071409qvb.10.1624518340902;
- Thu, 24 Jun 2021 00:05:40 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=viRPAsNP7Rd7d9L2Z0QK25s7MR3CwIQCAzrWD9QFcVk=;
+        b=rvOnYtaDIRUoH6Vth3F6SkY/V7CJwkCBSJtbZB4DWcrxlLthXqOcLgN1+dB1jxjPf+
+         cE4MQq5ai57eprzCqVBN2V2juyjAL99mtxseG6PyLn1uv9ii2FxbHeYnInjSGjFTBIci
+         WdBMArUGGuFjipK1PBEjQ1RdN3Ib+NldKTm7TWcWkZA2eAaxMeGCrLHZ/mD9de4ugsiW
+         gICBi0fR7AAO4a51mZwCczI8Alq0pGlKOpeOtmfr5/uGLJZodDFFfer2JOG6k+B5nlb7
+         5LaUMOwbtKeOJ4HSXakZNg4ZIE9eHbgLd7lnp2bL6ZKVxrk3gqYEpDZX9sKcUbYh6QQz
+         +f1w==
+X-Gm-Message-State: AOAM5333ywBoJ1ja+cCLQf3QfAYAbvXk7z7th7l3eKbzY3qCsKwIa2kM
+        816/MLd4qkgBC+hHHq3JqZyTNaiB3Lc=
+X-Google-Smtp-Source: ABdhPJzCo8guzg62ZU08iJDtcGnB7yY0ixiImTiOSPnHHWC6mGKT+hMJbQeetUGOBSvaV2TkZG17Tw==
+X-Received: by 2002:a1c:a101:: with SMTP id k1mr2454091wme.17.1624518409756;
+        Thu, 24 Jun 2021 00:06:49 -0700 (PDT)
+Received: from gmail.com (0526E2ED.dsl.pool.telekom.hu. [5.38.226.237])
+        by smtp.gmail.com with ESMTPSA id h6sm8149933wmc.40.2021.06.24.00.06.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 00:06:49 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 24 Jun 2021 09:06:47 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] scheduler fix
+Message-ID: <YNQvB82UKfDV57eE@gmail.com>
 MIME-Version: 1.0
-References: <20210624082911.5d013e8c@canb.auug.org.au> <CAPv3WKfiL+sR+iK_BjGKDhtNgjoxKEPv49bU1X9_7+v+ytdR1w@mail.gmail.com>
- <YNPt91bfjrgSt8G3@Ryzen-9-3900X.localdomain> <CA+G9fYtb07aySOpB6=wc4ip_9S4Rr2UUYNgEOG6i76g--uPryQ@mail.gmail.com>
-In-Reply-To: <CA+G9fYtb07aySOpB6=wc4ip_9S4Rr2UUYNgEOG6i76g--uPryQ@mail.gmail.com>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Thu, 24 Jun 2021 09:05:28 +0200
-Message-ID: <CAPv3WKdPxhS6_kAe5Z=sJcss=kYf4CR4DThLL_Sdete3Hk95Dg@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the net-next tree
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+Linus,
+
+Please pull the latest sched/urgent git tree from:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-urgent-2021-06-24
+
+   # HEAD: fdaba61ef8a268d4136d0a113d153f7a89eb9984 sched/fair: Ensure that the CFS parent is added after unthrottling
+
+A last minute cgroup bandwidth scheduling fix for a recently
+introduced logic fail which triggered a kernel warning by
+LTP's cfs_bandwidth01.
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Rik van Riel (1):
+      sched/fair: Ensure that the CFS parent is added after unthrottling
 
 
-czw., 24 cze 2021 o 08:13 Naresh Kamboju <naresh.kamboju@linaro.org> napisa=
-=C5=82(a):
->
-> Hi Marcin,
->
-> On Thu, 24 Jun 2021 at 07:59, Nathan Chancellor <nathan@kernel.org> wrote=
-:
-> >
-> > On Thu, Jun 24, 2021 at 12:46:48AM +0200, Marcin Wojtas wrote:
-> > > Hi Stephen,
-> > >
-> > > czw., 24 cze 2021 o 00:29 Stephen Rothwell <sfr@canb.auug.org.au> nap=
-isa=C5=82(a):
-> > > >
-> > > > Hi all,
-> > > >
-> > > > Today's linux-next build (x86_64 modules_install) failed like this:
-> > > >
-> > > > depmod: ../tools/depmod.c:1792: depmod_report_cycles_from_root: Ass=
-ertion `is < stack_size' failed.
->
-> LKFT test farm found this build error.
->
-> Regressions found on mips:
->
->  - build/gcc-9-malta_defconfig
->  - build/gcc-10-malta_defconfig
->  - build/gcc-8-malta_defconfig
->
-> depmod: ERROR: Cycle detected: fwnode_mdio -> of_mdio -> fwnode_mdio
-> depmod: ERROR: Found 2 modules in dependency cycles!
-> make[1]: *** [/builds/linux/Makefile:1875: modules_install] Error 1
->
-> > > Thank you for letting us know. Not sure if related, but I just found
-> > > out that this code won't compile for the !CONFIG_FWNODE_MDIO. Below
-> > > one-liner fixes it:
-> > >
-> > > --- a/include/linux/fwnode_mdio.h
-> > > +++ b/include/linux/fwnode_mdio.h
-> > > @@ -40,7 +40,7 @@ static inline int fwnode_mdiobus_register(struct mi=
-i_bus *bus,
-> > >          * This way, we don't have to keep compat bits around in driv=
-ers.
-> > >          */
-> > >
-> > > -       return mdiobus_register(mdio);
-> > > +       return mdiobus_register(bus);
-> > >  }
-> > >  #endif
-> > >
-> > > I'm curious if this is the case. Tomorrow I'll resubmit with above, s=
-o
-> > > I'd appreciate recheck.
->
-> This proposed fix did not work.
->
-> > Reverting all the patches in that series fixes the issue for me.
->
-> Yes.
-> Reverting all the (6) patches in that series fixed this build problem.
->
-> git log --oneline | head
-> 3752a7bfe73e Revert "Documentation: ACPI: DSD: describe additional MAC
-> configuration"
-> da53528ed548 Revert "net: mdiobus: Introduce fwnode_mdbiobus_register()"
-> 479b72ae8b68 Revert "net/fsl: switch to fwnode_mdiobus_register"
-> 92f85677aff4 Revert "net: mvmdio: add ACPI support"
-> 3d725ff0f271 Revert "net: mvpp2: enable using phylink with ACPI"
-> ffa8c267d44e Revert "net: mvpp2: remove unused 'has_phy' field"
-> d61c8b66c840 Add linux-next specific files for 20210623
->
-> steps to reproduce, config and build log located here in this link,
-> https://builds.tuxbuild.com/1uNjGjPUAI4XwwcwKFr5FUxkwzy/
->
+ kernel/sched/fair.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-Thank you for your reports. I'm currently trying to reproduce and come
-back with a fix asap.
-
-Best regards,
-Marcin
-
->
-> # TuxMake is a command line tool and Python library that provides
-> # portable and repeatable Linux kernel builds across a variety of
-> # architectures, toolchains, kernel configurations, and make targets.
-> #
-> # TuxMake supports the concept of runtimes.
-> # See https://docs.tuxmake.org/runtimes/, for that to work it requires
-> # that you install podman or docker on your system.
-> #
-> # To install tuxmake on your system globally:
-> # sudo pip3 install -U tuxmake
-> #
-> # See https://docs.tuxmake.org/ for complete documentation.
->
->
-> tuxmake --runtime podman --target-arch mips --toolchain gcc-10
-> --kconfig malta_defconfig
->
->
-> - Naresh
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index bfaa6e1f6067..23663318fb81 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3298,6 +3298,31 @@ static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
+ 
+ #ifdef CONFIG_SMP
+ #ifdef CONFIG_FAIR_GROUP_SCHED
++/*
++ * Because list_add_leaf_cfs_rq always places a child cfs_rq on the list
++ * immediately before a parent cfs_rq, and cfs_rqs are removed from the list
++ * bottom-up, we only have to test whether the cfs_rq before us on the list
++ * is our child.
++ * If cfs_rq is not on the list, test whether a child needs its to be added to
++ * connect a branch to the tree  * (see list_add_leaf_cfs_rq() for details).
++ */
++static inline bool child_cfs_rq_on_list(struct cfs_rq *cfs_rq)
++{
++	struct cfs_rq *prev_cfs_rq;
++	struct list_head *prev;
++
++	if (cfs_rq->on_list) {
++		prev = cfs_rq->leaf_cfs_rq_list.prev;
++	} else {
++		struct rq *rq = rq_of(cfs_rq);
++
++		prev = rq->tmp_alone_branch;
++	}
++
++	prev_cfs_rq = container_of(prev, struct cfs_rq, leaf_cfs_rq_list);
++
++	return (prev_cfs_rq->tg->parent == cfs_rq->tg);
++}
+ 
+ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+ {
+@@ -3313,6 +3338,9 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+ 	if (cfs_rq->avg.runnable_sum)
+ 		return false;
+ 
++	if (child_cfs_rq_on_list(cfs_rq))
++		return false;
++
+ 	return true;
+ }
+ 
