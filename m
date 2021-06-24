@@ -2,68 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7263B3778
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0C53B377A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232851AbhFXUBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 16:01:07 -0400
-Received: from mga06.intel.com ([134.134.136.31]:27339 "EHLO mga06.intel.com"
+        id S232881AbhFXUBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 16:01:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232554AbhFXUBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 16:01:06 -0400
-IronPort-SDR: prDRVVIt83sAT4ea1DdrH8IRNjsNYdzKC5AX34QeXmJuwmGrELAAUjqmh1s0pMi5Zn5+1zMHsH
- nGypccPWypmw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="268682515"
-X-IronPort-AV: E=Sophos;i="5.83,297,1616482800"; 
-   d="scan'208";a="268682515"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 12:58:39 -0700
-IronPort-SDR: 9kxQzp6jeZmOIo5W0vvGj+HLZ5lymwQKayMgXxAO3XSx+C1pp2yhYHcsk0VR3FPe9/HKBPUZg+
- a416MsUFmuHw==
-X-IronPort-AV: E=Sophos;i="5.83,297,1616482800"; 
-   d="scan'208";a="487896188"
-Received: from rsharon-mobl1.ger.corp.intel.com (HELO [10.214.203.125]) ([10.214.203.125])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 12:58:32 -0700
-Subject: Re: [Intel-wired-lan] [PATCH] igc: change default return of
- igc_read_phy_reg()
-To:     trix@redhat.com, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
-        jeffrey.t.kirsher@intel.com, sasha.neftin@intel.com
-Cc:     netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        id S232554AbhFXUBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 16:01:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7ABE613B3;
+        Thu, 24 Jun 2021 19:58:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624564733;
+        bh=fiS4onLy74TZFhJjBt1SUXmu1BzjLf+B0VLAgfbZnlM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RLop2xxIAYpwLqQvdjg05VjLbfHz/U0kTTIak+DtduLg57CdnOWA9+MBuE7NwciQH
+         9L5GUhmEDy1ELiHSkYDWnLCOJ8izr9v4tIuauTo2W+INXVhXoPEzDqb+D2FtEqG5Iz
+         AH6o16psRLhswTT5utlq/zzb/p1WfDC42nu802eATFUuxR0m07119zytuyzXosT0UH
+         G0X/KvFYJ2NLcvLElkf2Bi7ASvuIrckEXnJeEJQ+8+QSvTMh21fnDCnP8sH7yMguXA
+         Alc/nLVHYgLnYJ+mrX6TqFm0Jdat+zR6BujP+98E5WLUntsL0HviLBS0gfTJGZR8hq
+         6llo6wRH6/jsQ==
+Date:   Thu, 24 Jun 2021 21:58:48 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Kwon Tae-young <tykwon@m2i.co.kr>
+Cc:     Oleksij Rempel <linux@rempel-privat.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-References: <20210521195019.2078661-1-trix@redhat.com>
-From:   "Fuxbrumer, Dvora" <dvorax.fuxbrumer@linux.intel.com>
-Message-ID: <1c0592d7-7d54-7834-61d4-f6b3183b5cf2@linux.intel.com>
-Date:   Thu, 24 Jun 2021 22:58:28 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Subject: Re: [PATCH] i2c/imx: Fix some checkpatch warnings
+Message-ID: <YNTj+OIox6X2gjpQ@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Kwon Tae-young <tykwon@m2i.co.kr>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210623083643.395-1-tykwon@m2i.co.kr>
 MIME-Version: 1.0
-In-Reply-To: <20210521195019.2078661-1-trix@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xKVUc1DBTSjJTp3T"
+Content-Disposition: inline
+In-Reply-To: <20210623083643.395-1-tykwon@m2i.co.kr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/21/2021 22:50, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> Static analysis reports this problem
-> 
-> igc_main.c:4944:20: warning: The left operand of '&'
->    is a garbage value
->      if (!(phy_data & SR_1000T_REMOTE_RX_STATUS) &&
->            ~~~~~~~~ ^
-> 
-> pyy_data is set by the call to igc_read_phy_reg() only if
-> there is a read_reg() op, else it is unset and a 0 is
-> returned.  Change the return to -EOPNOTSUPP.
-> 
-> Fixes: 208983f099d9 ("igc: Add watchdog")
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->   drivers/net/ethernet/intel/igc/igc.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
+
+--xKVUc1DBTSjJTp3T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jun 23, 2021 at 05:36:43PM +0900, Kwon Tae-young wrote:
+> Fix the following warnings reported by checkpatch::
+> drivers/i2c/busses/i2c-imx.c:173: WARNING: Prefer 'unsigned int' to bare =
+use of 'unsigned'
+> drivers/i2c/busses/i2c-imx.c:175: WARNING: Prefer 'unsigned int' to bare =
+use of 'unsigned'
+> drivers/i2c/busses/i2c-imx.c:176: WARNING: Prefer 'unsigned int' to bare =
+use of 'unsigned'
+> drivers/i2c/busses/i2c-imx.c:177: WARNING: Prefer 'unsigned int' to bare =
+use of 'unsigned'
+> drivers/i2c/busses/i2c-imx.c:455: WARNING: Unnecessary ftrace-like loggin=
+g - prefer using ftrace
+> drivers/i2c/busses/i2c-imx.c:602: WARNING: Unnecessary ftrace-like loggin=
+g - prefer using ftrace
+> drivers/i2c/busses/i2c-imx.c:638: WARNING: Unnecessary ftrace-like loggin=
+g - prefer using ftrace
+> drivers/i2c/busses/i2c-imx.c:1170: WARNING: Unnecessary ftrace-like loggi=
+ng - prefer using ftrace
+> drivers/i2c/busses/i2c-imx.c:1374: WARNING: Unnecessary ftrace-like loggi=
+ng - prefer using ftrace
+> drivers/i2c/busses/i2c-imx.c:1398: WARNING: Prefer strscpy over strlcpy -=
+ see: https://lore.kernel.org/r/CAHk-=3DwgfRnXz0W3D37d01q3JFkr_i_uTL=3DV6A6=
+G1oUZcprmknw@mail.gmail.com/
+>=20
+> Signed-off-by: Kwon Tae-young <tykwon@m2i.co.kr>
+
+Applied to for-next, thanks!
+
+
+--xKVUc1DBTSjJTp3T
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDU4/cACgkQFA3kzBSg
+KbaMsRAAjjoZ0oTZauLvAtVL+zarVERUz4QDv8gPOQuhLVMJrdiIL4ajPoL4XXgU
+s8sHXpLWRL/a+q4f0Dx301UGRviu+/zH3qhoCTlzLRlP4+367QsGmGUlIxqR1nIQ
+Mml+qqxx0R2i9ziW12n3jBB4JJU6Rk1jZSIJ+FrRHmPSusqsW/G8uGoUDjW2EPuP
+AUN8QuYDFlZCfjV8TLxCxMHoKKUpGKAohWgp85YqgHDaQPkEztHRiB0HU2hi6IjD
+K1ORqKKtP8WypgFeq5EMemTAheSs8XkKAlPGtqt4d1e2+i+IQdRW3qspujHkSKNj
+7AJavB3N03EnOhgl6d8aGWT9xC6EOFVUfmAIxlyIbtszZAeARmdyM7X5T9z++8hR
+3StM5DY9Ww31N8D73ta8A9IGahXN5sGcsBkR0HDF4ku8PKQm9JD8DjBPGEltJ0RJ
+6AjQSTW9ShvsbFtXgwoX8W3EUg4AojdIHh4Qimmgj6/vVZH9OGkry0YKQAjn/6BF
+03yDHf7xjPxL0H+no2kdRLLzuebr2BRKJk73wwvfcfpg7qL5v5GZG6RL+59pcmW6
+pcgcIwNgaqG+ifXvp6vmjpVNELmjGhPMXPl3tHu0YCj2NtUicIndwmoXK2pHchrs
+mWLpq3NtfGM77Wr1D8RIC9lrNCxBvjAc2SQlGDnqzGeVlr8FftI=
+=0Xo2
+-----END PGP SIGNATURE-----
+
+--xKVUc1DBTSjJTp3T--
