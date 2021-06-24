@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39503B29D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947793B29DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231831AbhFXIIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 04:08:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
+        id S231845AbhFXIJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 04:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231699AbhFXIIB (ORCPT
+        with ESMTP id S231699AbhFXIJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 04:08:01 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC25EC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:05:41 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id h17so7202920edw.11
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:05:41 -0700 (PDT)
+        Thu, 24 Jun 2021 04:09:17 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D9AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:06:58 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id s6so7194653edu.10
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:06:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=deviqon.com; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=umBwtkhrSHwFrljnPOuOKVRuZZ2n2cUtpGj8YFIOkIA=;
-        b=SKIPoc5iG3fG5SA7nspUWpIbsVLYK+y2Z8tpzc5T8g1shNPVxgDPcp9coziLuilLN4
-         0VrTM6heBFZzmR+QZNt1+KDjwUU0fWaWKFtwvXGw/WtWztdXKynH1ClKl1VLr9t/IAwC
-         /I/+M3jFowOCx5TdigFfBmqXXpIjGUiSlIU3XzcO7q192C2CblXwfODT7a8i0WVD0Sfa
-         zZtMQejZh6cwX2uv23TNwZTxlE5D1PEG7w8x7vVKgSVsgWUxQW5t0w7xaqhcWTPJ5h1/
-         267OmKVKThlgwgE21nvP0lMEj/yH9tWKXYVKyxykGPa+Gdl3CU7jJcrs5oSKZJr0gx9I
-         ScmQ==
+        bh=C4nA73tTn4BEbsExo9rREISfJYQH8bIha0KgZwwYk0U=;
+        b=gqFYvfIiExTkr0Wh6JaJzaLvhcoFitp2BuZafaKV3a5/j/cHyXbJfII9T+NRhZpCZB
+         QSVcdnVjQ9QZ0s0irS6RbkDNmPDV5KunLc30362xlLluuLr6ZmZhfdqFjcgd7k1I8gsz
+         R7LvQzHX4C3rbHGRKpGXtvjTiF0+LGmVpDocRuEDSrlGML98Yei0D3bZB3/da9Tn7V0/
+         xTK2SaY1kkpfDc+VZwHSmbsU8LRfRGoHix1t8y2ncU6GVH/SeznTO54NvZKwH2hx2PK6
+         7JB/Zd6lc84XiMGDO5B6vIjZEMuC3o6wMpwWRANN8mEN0vZPDLAr/lKkCAPzOtyj9a6c
+         mGwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=umBwtkhrSHwFrljnPOuOKVRuZZ2n2cUtpGj8YFIOkIA=;
-        b=Lhod38814mpDYYsVXE2dSEWR/RWt8KrVy5stasj0dsoqNibiGLWTrYE2kfUmgDXts9
-         Yz9U+QQH4ur+ovjCMeqZ41vjVpkRPNgfOrpEsFxVSkk7VbBPa8d+bWeqxtOAFVHkT7m3
-         SZr1Sj9IgvSBUp//Yt9M1XwOMRvnnumqKn126wKfu+PN1E6QOeIofbsduG1MBHLqQxxd
-         rgXwMe0rtSrqxges43y+1Synx2tRa/20zmqbQ+nkq+pEUUepBsla0YdHLvNHjMS70GKg
-         Ce/4TzoLpDPwkRCycrHIDG6Hh7XW/WiuzE5NPzc6Gxb77igHm3RcTd8zr8x/E7wsyYhN
-         XxqA==
-X-Gm-Message-State: AOAM5301fp9qg9bU5oRGJaNAAZMa092MSEWTC5dBtqKwVP1BB2NdUodY
-        zj7VXvxVB0vch3Q96Un+rOq9Sg==
-X-Google-Smtp-Source: ABdhPJwbcV7DdSZZdd3qTmrqphcMBwjXE5Kd8vp3+PXO3x3KpuZCmZuXz/eDq2BegFMy0PLypzagBQ==
-X-Received: by 2002:a05:6402:138c:: with SMTP id b12mr5498588edv.268.1624521938886;
-        Thu, 24 Jun 2021 01:05:38 -0700 (PDT)
+        bh=C4nA73tTn4BEbsExo9rREISfJYQH8bIha0KgZwwYk0U=;
+        b=WuY9IxKzIs+s49ElbqyBwNPInwibgWolUFHwYoJK/zufE11FS6RDnNkoASewJtShq8
+         MLsXaySF0q7lzbsi0pOjHtDta05cDFQO2OvtAaIA1kf26R4LtGe9RKSWgqC6O/yk2zI2
+         GL4lJdUIy6dwlpECVExMxAJB7FIOp8FXvYClpoI6Yfk49qx4ozKZT2D13sur9byx+PjD
+         KoKS+hpJhP30raMctSKh9nU1HruF02KwN+FL+BI2oXBoBRZK+uVMraNbiOvywrXs8ic5
+         qr0LdD4glylLXu3lxqCi+qE4jvmuu19P9xSDy/6VH00j9ezTfWzErupJdhw5XDVdaWQj
+         rygw==
+X-Gm-Message-State: AOAM531PZLzvpFG1iYdiH4BOQ+HM/cZVNQf3xGMrjjKnhel62DuzFNvZ
+        34gVLD/mgG8n0bJh2+uy5eoR5Q==
+X-Google-Smtp-Source: ABdhPJzMpliokcDsWHyd2dx274CTFrJ/Yt1GGC9oim3kUcuRKQlnG+0ssdEZQEqZq7fCxumFcdzPlw==
+X-Received: by 2002:aa7:cb90:: with SMTP id r16mr5457088edt.121.1624522017126;
+        Thu, 24 Jun 2021 01:06:57 -0700 (PDT)
 Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id w10sm1405936edv.34.2021.06.24.01.05.38
+        by smtp.gmail.com with ESMTPSA id n15sm1392785eds.28.2021.06.24.01.06.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 01:05:38 -0700 (PDT)
+        Thu, 24 Jun 2021 01:06:56 -0700 (PDT)
 From:   Alexandru Ardelean <aardelean@deviqon.com>
 To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH] iio: light: tcs3414: convert probe to device-managed routines
-Date:   Thu, 24 Jun 2021 11:05:34 +0300
-Message-Id: <20210624080534.9209-1-aardelean@deviqon.com>
+Subject: [PATCH] iio: potentiometer: max5481: convert probe to device-managed
+Date:   Thu, 24 Jun 2021 11:06:41 +0300
+Message-Id: <20210624080641.9953-1-aardelean@deviqon.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -61,105 +61,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change converts the driver to use only device-managed init routines in
-the probe function of the driver.
+The change converts the probe function to use the
+devm_iio_device_register() function.
 
-This way, we no longer need the tcs3414_remove() hook.
-We still need to keep the i2c_set_clientdata() call, as that's being used
-for the PM routines.
+Before calling that, we need to register an action to store the wiper back
+to non-volatile memory when the device is de-registered.
 
-And lastly, a devm_add_action_or_reset() hook is added to call the
-powerdown handler when the chip is uninitialized or the probe fails.
+We don't need to do this if the probe fails, because the only place where
+the probe can fail now is devm_iio_device_register() and that shouldn't
+create an IIO device (for userspace to poke at) if it fails.
 
 Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 ---
- drivers/iio/light/tcs3414.c | 48 +++++++++++++++----------------------
- 1 file changed, 19 insertions(+), 29 deletions(-)
+ drivers/iio/potentiometer/max5481.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/iio/light/tcs3414.c b/drivers/iio/light/tcs3414.c
-index 0593abd600ec..b87222141429 100644
---- a/drivers/iio/light/tcs3414.c
-+++ b/drivers/iio/light/tcs3414.c
-@@ -267,6 +267,18 @@ static const struct iio_buffer_setup_ops tcs3414_buffer_setup_ops = {
- 	.predisable = tcs3414_buffer_predisable,
+diff --git a/drivers/iio/potentiometer/max5481.c b/drivers/iio/potentiometer/max5481.c
+index 6e22b538091f..098d144a8fdd 100644
+--- a/drivers/iio/potentiometer/max5481.c
++++ b/drivers/iio/potentiometer/max5481.c
+@@ -125,6 +125,11 @@ static const struct of_device_id max5481_match[] = {
  };
+ MODULE_DEVICE_TABLE(of, max5481_match);
  
-+static int tcs3414_powerdown(struct tcs3414_data *data)
++static void max5481_wiper_save(void *data)
 +{
-+	return i2c_smbus_write_byte_data(data->client, TCS3414_CONTROL,
-+		data->control & ~(TCS3414_CONTROL_POWER |
-+		TCS3414_CONTROL_ADC_EN));
++	max5481_write_cmd(data, MAX5481_COPY_AB_TO_NV, 0);
 +}
 +
-+static void tcs3414_powerdown_cleanup(void *data)
-+{
-+	tcs3414_powerdown(data);
-+}
-+
- static int tcs3414_probe(struct i2c_client *client,
- 			   const struct i2c_device_id *id)
+ static int max5481_probe(struct spi_device *spi)
  {
-@@ -309,6 +321,11 @@ static int tcs3414_probe(struct i2c_client *client,
+ 	struct iio_dev *indio_dev;
+@@ -136,7 +141,6 @@ static int max5481_probe(struct spi_device *spi)
+ 	if (!indio_dev)
+ 		return -ENOMEM;
+ 
+-	spi_set_drvdata(spi, indio_dev);
+ 	data = iio_priv(indio_dev);
+ 
+ 	data->spi = spi;
+@@ -158,18 +162,11 @@ static int max5481_probe(struct spi_device *spi)
  	if (ret < 0)
  		return ret;
  
-+	ret = devm_add_action_or_reset(&client->dev, tcs3414_powerdown_cleanup,
-+				       data);
-+	if (ret < 0)
-+		return ret;
-+
- 	data->timing = TCS3414_INTEG_12MS; /* free running */
- 	ret = i2c_smbus_write_byte_data(data->client, TCS3414_TIMING,
- 		data->timing);
-@@ -320,38 +337,12 @@ static int tcs3414_probe(struct i2c_client *client,
- 		return ret;
- 	data->gain = ret;
- 
--	ret = iio_triggered_buffer_setup(indio_dev, NULL,
-+	ret = devm_iio_triggered_buffer_setup(&client->dev, indio_dev, NULL,
- 		tcs3414_trigger_handler, &tcs3414_buffer_setup_ops);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = iio_device_register(indio_dev);
--	if (ret < 0)
--		goto buffer_cleanup;
--
--	return 0;
--
--buffer_cleanup:
--	iio_triggered_buffer_cleanup(indio_dev);
--	return ret;
+-	return iio_device_register(indio_dev);
 -}
 -
--static int tcs3414_powerdown(struct tcs3414_data *data)
+-static int max5481_remove(struct spi_device *spi)
 -{
--	return i2c_smbus_write_byte_data(data->client, TCS3414_CONTROL,
--		data->control & ~(TCS3414_CONTROL_POWER |
--		TCS3414_CONTROL_ADC_EN));
--}
--
--static int tcs3414_remove(struct i2c_client *client)
--{
--	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+-	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+-	struct max5481_data *data = iio_priv(indio_dev);
 -
 -	iio_device_unregister(indio_dev);
--	iio_triggered_buffer_cleanup(indio_dev);
--	tcs3414_powerdown(iio_priv(indio_dev));
--
--	return 0;
-+	return devm_iio_device_register(&client->dev, indio_dev);
++	ret = devm_add_action(&spi->dev, max5481_wiper_save, data);
++	if (ret < 0)
++		return ret;
+ 
+-	/* save wiper reg to NV reg */
+-	return max5481_write_cmd(data, MAX5481_COPY_AB_TO_NV, 0);
++	return devm_iio_device_register(&spi->dev, indio_dev);
  }
  
- #ifdef CONFIG_PM_SLEEP
-@@ -385,7 +376,6 @@ static struct i2c_driver tcs3414_driver = {
- 		.pm	= &tcs3414_pm_ops,
+ static const struct spi_device_id max5481_id_table[] = {
+@@ -187,7 +184,6 @@ static struct spi_driver max5481_driver = {
+ 		.of_match_table = max5481_match,
  	},
- 	.probe		= tcs3414_probe,
--	.remove		= tcs3414_remove,
- 	.id_table	= tcs3414_id,
+ 	.probe = max5481_probe,
+-	.remove = max5481_remove,
+ 	.id_table = max5481_id_table,
  };
- module_i2c_driver(tcs3414_driver);
+ 
 -- 
 2.31.1
 
