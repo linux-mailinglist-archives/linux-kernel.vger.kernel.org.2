@@ -2,83 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58103B26EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 07:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3643B26EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 07:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbhFXFny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 01:43:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54058 "EHLO mail.kernel.org"
+        id S230312AbhFXFpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 01:45:41 -0400
+Received: from verein.lst.de ([213.95.11.211]:53120 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230110AbhFXFnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 01:43:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 615A2613E7;
-        Thu, 24 Jun 2021 05:41:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624513294;
-        bh=zwAa1oXvtNsRyT1TQaWBA4D9GsM7gx8Hoa3hx2a/zOs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TKEuNgpfLnosXquFxao5Ko9V7ZiB578/IVUed7uSE/JUglaFf9fuTiT8wB3hxtBdG
-         3+k09I8x13S2WP9KQp8lqf0/icasPjUz/oKlSoWG0Rl4kimvneQDV4E9Df9u0mZcTU
-         /Jl+F56OXGBRLsJXLVLerNGISJwVzdpGVdT2YaDo=
-Date:   Thu, 24 Jun 2021 07:41:30 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     kan.liang@linux.intel.com
-Cc:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, eranian@google.com,
-        namhyung@kernel.org, acme@kernel.org, jolsa@redhat.com,
-        ak@linux.intel.com, rafael.j.wysocki@intel.com
-Subject: Re: [PATCH 1/7] driver core: Add a way to get to bus devices kset
-Message-ID: <YNQbCtP7/2rF9Pnl@kroah.com>
-References: <1624497729-158864-1-git-send-email-kan.liang@linux.intel.com>
- <1624497729-158864-2-git-send-email-kan.liang@linux.intel.com>
+        id S230093AbhFXFpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 01:45:40 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6EF7567373; Thu, 24 Jun 2021 07:43:15 +0200 (CEST)
+Date:   Thu, 24 Jun 2021 07:43:15 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     Will Deacon <will@kernel.org>, Claire Chang <tientzu@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
+        peterz@infradead.org, benh@kernel.crashing.org,
+        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
+        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
+        mingo@kernel.org, jxgao@google.com, sstabellini@kernel.org,
+        Saravana Kannan <saravanak@google.com>, xypron.glpk@gmx.de,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        bskeggs@redhat.com, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Thierry Reding <treding@nvidia.com>,
+        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
+        linux-devicetree <devicetree@vger.kernel.org>, daniel@ffwll.ch,
+        airlied@linux.ie, maarten.lankhorst@linux.intel.com,
+        linuxppc-dev@lists.ozlabs.org, jani.nikula@linux.intel.com,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        rodrigo.vivi@intel.com, bhelgaas@google.com,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        thomas.lendacky@amd.com, Robin Murphy <robin.murphy@arm.com>,
+        bauerman@linux.ibm.com
+Subject: Re: [PATCH v14 06/12] swiotlb: Use is_swiotlb_force_bounce for
+ swiotlb data bouncing
+Message-ID: <20210624054315.GA25381@lst.de>
+References: <20210619034043.199220-1-tientzu@chromium.org> <20210619034043.199220-7-tientzu@chromium.org> <76c3343d-72e5-9df3-8924-5474ee698ef4@quicinc.com> <20210623183736.GA472@willie-the-truck> <19d4c7a2-744d-21e0-289c-a576e1f0e6f3@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1624497729-158864-2-git-send-email-kan.liang@linux.intel.com>
+In-Reply-To: <19d4c7a2-744d-21e0-289c-a576e1f0e6f3@quicinc.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 06:22:03PM -0700, kan.liang@linux.intel.com wrote:
-> From: Kan Liang <kan.liang@linux.intel.com>
+On Wed, Jun 23, 2021 at 02:44:34PM -0400, Qian Cai wrote:
+> is_swiotlb_force_bounce at /usr/src/linux-next/./include/linux/swiotlb.h:119
 > 
-> Add an accessor function to get to the bus devices kset associated with
-> a struct bus_type.
+> is_swiotlb_force_bounce() was the new function introduced in this patch here.
 > 
-> The user of this is the following perf changes, which will need to get
-> to the kobj of the 'devices' directory of a certain bus.
-
-What "following perf changes"?
-
-Nothing should be messing with the kobject of a bus, where are those
-patches?
-
-> Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> Cc: gregkh@linuxfoundation.org
-> Cc: rafael.j.wysocki@intel.com
-> ---
->  drivers/base/bus.c         | 6 ++++++
->  include/linux/device/bus.h | 1 +
->  2 files changed, 7 insertions(+)
-> 
-> diff --git a/drivers/base/bus.c b/drivers/base/bus.c
-> index 36d0c65..3d621a8 100644
-> --- a/drivers/base/bus.c
-> +++ b/drivers/base/bus.c
-> @@ -899,6 +899,12 @@ struct kset *bus_get_kset(struct bus_type *bus)
->  }
->  EXPORT_SYMBOL_GPL(bus_get_kset);
->  
-> +struct kset *bus_get_devices_kset(struct bus_type *bus)
+> +static inline bool is_swiotlb_force_bounce(struct device *dev)
 > +{
-> +	return bus->p->devices_kset;
+> +	return dev->dma_io_tlb_mem->force_bounce;
 > +}
-> +EXPORT_SYMBOL_GPL(bus_get_devices_kset);
 
-No, sorry, this feels really wrong, why does anyone care about the bus
-kset?
+To me the crash looks like dev->dma_io_tlb_mem is NULL.  Can you
+turn this into :
 
-thanks,
+	return dev->dma_io_tlb_mem && dev->dma_io_tlb_mem->force_bounce;
 
-greg k-h
+for a quick debug check?
