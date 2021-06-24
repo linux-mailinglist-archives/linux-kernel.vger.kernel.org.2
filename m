@@ -2,152 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9E13B2ACE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BBB3B2AD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhFXI47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 04:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
+        id S230021AbhFXJA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbhFXI45 (ORCPT
+        with ESMTP id S229379AbhFXJAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 04:56:57 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE10C061574;
-        Thu, 24 Jun 2021 01:54:38 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G9Ypx0hW8z9sX2;
-        Thu, 24 Jun 2021 18:54:33 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624524874;
-        bh=QVw365DMsvwcIhQnqzCSRuPl780dS01pENxqnUncAC8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DeVESwJuuciIXHDy/kswL3tXLepX50sCPNUIYXJUv2JlCM9essXCrR7CZdw7pEay/
-         38v/AHqMoDMva5/+5795B2bKK/2pBNuqWGvhzVKoWXy+O0vBLceoCriquBqjmgCM8o
-         4IOl7PSMZAxcXXn2Ei5yDRTqyYXPw42W1YFkze4LkWJkj1B9ZIdharHZwYmYXwfOz5
-         IzYa8Nf3aAsc9AE+VX9z4JwW6bbEkJZGbwBclYGPrAvEOArGhL0e3r7zaKuKFSINrt
-         GLoPN65vj0jqlrT7yRyZC7pKRYaMjsLsxr3ETbq0NswkKz5F4UJcnrKJg3PBuva4tb
-         PjemlP0Dp7TrA==
-Date:   Thu, 24 Jun 2021 18:54:30 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Marcin Wojtas <mw@semihalf.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        lkft-triage@lists.linaro.org
-Subject: Re: linux-next: build failure after merge of the net-next tree
-Message-ID: <20210624185430.692d4b60@canb.auug.org.au>
-In-Reply-To: <CA+G9fYtb07aySOpB6=wc4ip_9S4Rr2UUYNgEOG6i76g--uPryQ@mail.gmail.com>
-References: <20210624082911.5d013e8c@canb.auug.org.au>
-        <CAPv3WKfiL+sR+iK_BjGKDhtNgjoxKEPv49bU1X9_7+v+ytdR1w@mail.gmail.com>
-        <YNPt91bfjrgSt8G3@Ryzen-9-3900X.localdomain>
-        <CA+G9fYtb07aySOpB6=wc4ip_9S4Rr2UUYNgEOG6i76g--uPryQ@mail.gmail.com>
+        Thu, 24 Jun 2021 05:00:25 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4AFC061574;
+        Thu, 24 Jun 2021 01:58:06 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id s14so3323219pfg.0;
+        Thu, 24 Jun 2021 01:58:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=tKGKGI76BKfQVO8CY1clLxpyySv3vaB3aNh7NWcPhFU=;
+        b=hr3gPiWSs1kzsoT0RN4D0/9u1oAQb1rzWVWLp59xVCkmpZThGbP8ZZHdbz3ZoRByYE
+         Q+bBx6g9vlzubm3xmDqrFRZB2+oF9y38fRVeD/lgeXJbzeuitriXAAYQ0N8Gc/HydmS9
+         h/5/U9gCncS2FPi6hlzNOXRrtw9yomYF3Wegfa7y5BMTxxqMjVRS/4Rtc+vsfYrwyiXs
+         LyEAUsbj+aFGjgwEVS9b0hjW6sOv/s+/X+xMkec2Brf1nwlIC4mUivbzM9KBmc/1CmOo
+         TCEnNnCh1Rmp7Wm6gBzXbz6S+8yTRr+T+rSaRDpuwEYfFxSOn4uIuwntNiH62vmZwJdo
+         +iuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=tKGKGI76BKfQVO8CY1clLxpyySv3vaB3aNh7NWcPhFU=;
+        b=ks5V5HoFfYHrZqnvVUP3SZpsCYaSwBSX8Tkf8LynNcGR2I7B8anfGvu9jIpNNn07Cc
+         2fvBB7QXPs2olhF3NYIH6wOB0xMZWEcMbdhW2Xyj36BabeMF/p41BXG2wEbgh93qS6fm
+         JvZz+Jc89Opb/TUaYjvP1pVzgNlNIwmWJO9yChnVjLJxfXOnu3ahEe2zmKJH/8YkHg7u
+         M47b5E4GnIrGU+MvnPRaMu3smhSGwzK5bs7xEuI3AMRnOxg3fTsg3kuK4ErjTDGA+Bde
+         22SMOA+qhngfUzR7adjDi4U0An6nps/khed6YjZjTNFsVsm2x4PkSrXfx8b6mpScKQo6
+         YWoA==
+X-Gm-Message-State: AOAM53224IMDWWPPmWgUVNhFaFXO7G1uaj2T4V34ytRMdyrE+d78jl1L
+        Jciy/UEvTH/xvEW5LU3tdxQ=
+X-Google-Smtp-Source: ABdhPJw6tjizzTpMBwm3ffTzeTydtLNTRDVWzEX8o5A/u6n7JmgIJ0z9ctLYNOtrV24IDSrsfT+37Q==
+X-Received: by 2002:a63:4e4c:: with SMTP id o12mr3895360pgl.95.1624525086186;
+        Thu, 24 Jun 2021 01:58:06 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id u12sm2003479pjc.0.2021.06.24.01.58.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 01:58:05 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 18:58:00 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 3/6] KVM: x86/mmu: avoid struct page in MMU
+To:     Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Stevens <stevensd@chromium.org>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        James Morse <james.morse@arm.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvmarm@lists.cs.columbia.edu,
+        kvm-ppc@vger.kernel.org, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Sean Christopherson <seanjc@google.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Will Deacon <will@kernel.org>
+References: <20210624035749.4054934-1-stevensd@google.com>
+        <20210624035749.4054934-4-stevensd@google.com>
+In-Reply-To: <20210624035749.4054934-4-stevensd@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mhH9ao.Lz9CU8hIfwZCfJwi";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Message-Id: <1624524744.2sr7o7ix86.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mhH9ao.Lz9CU8hIfwZCfJwi
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Excerpts from David Stevens's message of June 24, 2021 1:57 pm:
+> From: David Stevens <stevensd@chromium.org>
+>  out_unlock:
+>  	if (is_tdp_mmu_root(vcpu->kvm, vcpu->arch.mmu->root_hpa))
+>  		read_unlock(&vcpu->kvm->mmu_lock);
+>  	else
+>  		write_unlock(&vcpu->kvm->mmu_lock);
+> -	kvm_release_pfn_clean(pfn);
+> +	if (pfnpg.page)
+> +		put_page(pfnpg.page);
+>  	return r;
+>  }
 
-Hi all,
+How about
 
-On Thu, 24 Jun 2021 11:43:14 +0530 Naresh Kamboju <naresh.kamboju@linaro.or=
-g> wrote:
->
-> On Thu, 24 Jun 2021 at 07:59, Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > On Thu, Jun 24, 2021 at 12:46:48AM +0200, Marcin Wojtas wrote: =20
-> > > Hi Stephen,
-> > >
-> > > czw., 24 cze 2021 o 00:29 Stephen Rothwell <sfr@canb.auug.org.au> nap=
-isa=C5=82(a): =20
-> > > >
-> > > > Hi all,
-> > > >
-> > > > Today's linux-next build (x86_64 modules_install) failed like this:
-> > > >
-> > > > depmod: ../tools/depmod.c:1792: depmod_report_cycles_from_root: Ass=
-ertion `is < stack_size' failed. =20
->=20
-> LKFT test farm found this build error.
->=20
-> Regressions found on mips:
->=20
->  - build/gcc-9-malta_defconfig
->  - build/gcc-10-malta_defconfig
->  - build/gcc-8-malta_defconfig
->=20
-> depmod: ERROR: Cycle detected: fwnode_mdio -> of_mdio -> fwnode_mdio
-> depmod: ERROR: Found 2 modules in dependency cycles!
-> make[1]: *** [/builds/linux/Makefile:1875: modules_install] Error 1
->=20
-> > > Thank you for letting us know. Not sure if related, but I just found
-> > > out that this code won't compile for the !CONFIG_FWNODE_MDIO. Below
-> > > one-liner fixes it:
-> > >
-> > > --- a/include/linux/fwnode_mdio.h
-> > > +++ b/include/linux/fwnode_mdio.h
-> > > @@ -40,7 +40,7 @@ static inline int fwnode_mdiobus_register(struct mi=
-i_bus *bus,
-> > >          * This way, we don't have to keep compat bits around in driv=
-ers.
-> > >          */
-> > >
-> > > -       return mdiobus_register(mdio);
-> > > +       return mdiobus_register(bus);
-> > >  }
-> > >  #endif
-> > >
-> > > I'm curious if this is the case. Tomorrow I'll resubmit with above, so
-> > > I'd appreciate recheck. =20
->=20
-> This proposed fix did not work.
->=20
-> > Reverting all the patches in that series fixes the issue for me. =20
->=20
-> Yes.
-> Reverting all the (6) patches in that series fixed this build problem.
->=20
-> git log --oneline | head
-> 3752a7bfe73e Revert "Documentation: ACPI: DSD: describe additional MAC
-> configuration"
-> da53528ed548 Revert "net: mdiobus: Introduce fwnode_mdbiobus_register()"
-> 479b72ae8b68 Revert "net/fsl: switch to fwnode_mdiobus_register"
-> 92f85677aff4 Revert "net: mvmdio: add ACPI support"
-> 3d725ff0f271 Revert "net: mvpp2: enable using phylink with ACPI"
-> ffa8c267d44e Revert "net: mvpp2: remove unused 'has_phy' field"
-> d61c8b66c840 Add linux-next specific files for 20210623
+  kvm_release_pfn_page_clean(pfnpg);
 
-So I have reverted the merge of that topic branch from linux-next for
-today.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/mhH9ao.Lz9CU8hIfwZCfJwi
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDUSEYACgkQAVBC80lX
-0Gzz2gf/e/CC/T0vUnT03R0VhJjT14jGuzHdxzq475CAfQetDb1jUPkejMsMvRmU
-cbQSODJ2wAhqzZz5YWPP3Pz89nuZ6w8SIZoSZTcsOnpPjx+CcdI2WsRrkJJsBV/H
-TjBL/r1zg0f8Cbyu71J5WpDTAsyO/YTRwBqk9Mx8NYuEzdrQUIQHLerE2zLwla0g
-5X6HDk6YuYeB95+Zslu9jyftGvLJKtrz0OPLr7IJyBf1ibQKrY6+d7tArX8yBYrc
-ZZe9Yqd9nPlkIb2ESybvdOtD2veo61pWsuOZe8zr6v0CiaGegGHOAlG0FKxsfS1L
-ZJHT7wh6Q73cttVqxgZ/oPIzTHhirA==
-=jwKn
------END PGP SIGNATURE-----
-
---Sig_/mhH9ao.Lz9CU8hIfwZCfJwi--
+Thanks,
+Nick
