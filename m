@@ -2,193 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE3B3B24BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2E53B24C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbhFXCMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 22:12:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46974 "EHLO
+        id S229938AbhFXCNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 22:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbhFXCMo (ORCPT
+        with ESMTP id S229844AbhFXCNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 22:12:44 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0684AC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 19:10:25 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id u11so5644922oiv.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 19:10:24 -0700 (PDT)
+        Wed, 23 Jun 2021 22:13:11 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9177FC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 19:10:52 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id t19-20020a17090ae513b029016f66a73701so4925886pjy.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 19:10:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lVMx0aLboEd+DY9Nn5ud8IvPS215FXHota98NrfM/gk=;
-        b=gXLVsqIaMUXTWEm8qJCTsTizHPer17xpHWSQtH9QUCSEbKB4L2kFDgdwnl9mw0xMsb
-         3S3YLyuFrRQXlAiRgwulIdOWoQoIqRCGb9QqXwltscU2JyMtFkEod6cHCbe+sG74rC+S
-         J4vGitYn8iou2m67zf5PKtiYuZlHQPxBhcY8zeEN/BUWNoC0CDpXNHJDvR9wum081JM2
-         F4jij1kPtR0mFihli4Kp19DU5pryo3ZKeJC05r/sa44GEbyJ+UNIjzsNK+BnweI3o5Ip
-         /3/PtNkC45FrkNcSmYDOCy1Rew8QkdAdVrwv0PnTyfyeZ5yIOIwLgz1tuqzH5Kao8o0Z
-         0bhQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=k4QIFhqycNj8GLoDIog1T+fSxwI5JTO5+UemhkS0t2o=;
+        b=R7ELIICz9WdFf+PGQ2jd2Jt56KpGpgdj/4QUrfnuSVt9qDOiSeZ1+sg7CIfqUbvAiT
+         BWH1QCojYmnncpNYSViPShe1SstM37ttCtOYpejVyNdYGeE/u1yGV+8VOSPgf+uC0bkB
+         56aZ4Z1rFm/m9lLLqvEaf/z8jJvjdqJUhL7DHA4Oo2PmCaC0y/18re6FfDRRT0Dl749x
+         kRvLjp0Wveo0QxlOCCPcu5iOPOSwAKriMPrSTTm+NGvs9+Z5GURRdgR2KAFAcpCe3EhQ
+         4WIyQOLG2uLbH8iZwSgi2PUmd9pXfEGiA86tGVEBAQzjf4U4l8xdcQPwXswrG2ALuma4
+         lVcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lVMx0aLboEd+DY9Nn5ud8IvPS215FXHota98NrfM/gk=;
-        b=USCjD5GJaja+9t075TcBxMcXaehj2HkIEtp0X4mGBUHG1EpbLZzvz+gJ02fLIdredK
-         xUYPDxVPqPmavNZiJSZUnhuYRbiNRG/otXP2+CeZB6OEM2g1Xs4XEtNZS26BzOhXStZl
-         Ayc2YLv0/zQB+57xCaaUyEnHlyAP7hUxC0x59lT3EEztbghqf7rP6TA9bHbUf94c4Fj+
-         MapLCKmO4Z2Qk1IyDuPl1rdXzQbjIVJA43ec5Ql8ryrNL4TvxRafS8fdLSbrL6JfPKe+
-         2dffcgnFM3UtnTT54bFhj7B26mhZzDIOyqFTtjLTTf4EsjUPT1OoTVuWUzx5E4CieMLx
-         ia3Q==
-X-Gm-Message-State: AOAM532W798fvrTaO3qL4XCWop3sLO9Dv4d560I9uOb0q2pQ9kkz4opY
-        h8AupSUuiUf3wnpzPecbvsqyWA==
-X-Google-Smtp-Source: ABdhPJyCo237ujxep1rxcr99QcnPerQ+VAICG1zF4Vb10nPWCjQqTL7U4EIr6vK37TKLhZC/thV0mg==
-X-Received: by 2002:a05:6808:8fb:: with SMTP id d27mr5710094oic.115.1624500624350;
-        Wed, 23 Jun 2021 19:10:24 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id e23sm389492otk.67.2021.06.23.19.10.23
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=k4QIFhqycNj8GLoDIog1T+fSxwI5JTO5+UemhkS0t2o=;
+        b=US9tvmlcuA7D4Ks24yVHoF03uHW3k0QgfNcB4toqJ3Zb7oIktb1whT5cm6BJfnYJ7i
+         x1aFYE53fLcmCWz5CEAZtYj6UqRR99R3QIPKhCR/Dr0Wy9gOSDMGIRCJxD2RcEWDsRLM
+         MkC/cK5C4gysekxTlwNB91rv9CoFGY3ChS37XTM84XqqlAPYld1OSsiGMJbVDvMjRO1r
+         WkUHEnA6xo1uoZnqYybyX5z222Ts3o72brhpj2Uw+ZfMuhcigBPebl8+Zb3sbgdVp/RV
+         raGGceiJSQ9EB60LVvetFKK3uOgOfa3cKobo98SAlmaRxnLZ8s5NLegat6FRrjzLE5iR
+         MFBg==
+X-Gm-Message-State: AOAM533PzY8kbgdLk2V6+aC9wEkyH34ArzxYsQv7u6BV05eQeDvVkPqE
+        i2Tq2msrFeMumQfpJfLhhMcCbA==
+X-Google-Smtp-Source: ABdhPJyA+BlUi6sU0IPP4K9bydQuXz1y1ea9apcmprLEGbvqRPkSS7TMCoR2Ioy9JSEx0GmseMDG9w==
+X-Received: by 2002:a17:90b:11ca:: with SMTP id gv10mr12509991pjb.94.1624500652154;
+        Wed, 23 Jun 2021 19:10:52 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id r207sm988256pfc.118.2021.06.23.19.10.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 19:10:23 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 21:10:21 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-pwm <linux-pwm@vger.kernel.org>
-Subject: Re: [PATCH v4 1/2] pwm: Introduce single-PWM of_xlate function
-Message-ID: <YNPpjV+9mhF2eABj@yoga>
-References: <20210623032755.1170809-1-bjorn.andersson@linaro.org>
- <CAD=FV=VbWu-zK=uuuYRBnddao4X5ELT29L=Dn_mBLG57kzuK4A@mail.gmail.com>
+        Wed, 23 Jun 2021 19:10:51 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V3.1 1/4] cpufreq: cppc: Fix potential memleak in cppc_cpufreq_cpu_init
+Date:   Thu, 24 Jun 2021 07:40:45 +0530
+Message-Id: <445b58405e81d996fb4037223b9e81fc258a07ea.1624500522.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
+In-Reply-To: <579689469ed8a7dfd68dcbb41e9191472799a326.1624266901.git.viresh.kumar@linaro.org>
+References: <579689469ed8a7dfd68dcbb41e9191472799a326.1624266901.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=VbWu-zK=uuuYRBnddao4X5ELT29L=Dn_mBLG57kzuK4A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 23 Jun 17:19 CDT 2021, Doug Anderson wrote:
+It's a classic example of memleak, we allocate something, we fail and
+never free the resources.
 
-> Hi,
-> 
-> On Tue, Jun 22, 2021 at 8:28 PM Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
-> >
-> > The existing pxa driver and the upcoming addition of PWM support in the
-> > TI sn565dsi86 DSI/eDP bridge driver both has a single PWM channel and
-> > thereby a need for a of_xlate function with the period as its single
-> > argument.
-> >
-> > Introduce a common helper function in the core that can be used as
-> > of_xlate by such drivers and migrate the pxa driver to use this.
-> >
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> >
-> > Changes since v3:
-> > - None
-> >
-> > Changes since v2:
-> > - None
-> >
-> >  drivers/pwm/core.c    | 26 ++++++++++++++++++++++++++
-> >  drivers/pwm/pwm-pxa.c | 16 +---------------
-> >  include/linux/pwm.h   |  2 ++
-> >  3 files changed, 29 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-> > index a42999f877d2..5e9c876fccc4 100644
-> > --- a/drivers/pwm/core.c
-> > +++ b/drivers/pwm/core.c
-> > @@ -152,6 +152,32 @@ of_pwm_xlate_with_flags(struct pwm_chip *pc, const struct of_phandle_args *args)
-> >  }
-> >  EXPORT_SYMBOL_GPL(of_pwm_xlate_with_flags);
-> >
-> > +struct pwm_device *
-> > +of_pwm_single_xlate(struct pwm_chip *pc, const struct of_phandle_args *args)
-> 
-> It's probably up to PWM folks, but to make it symmetric to
-> of_pwm_xlate_with_flags() I probably would have named it with the
-> "_with_flags" suffix.
-> 
+Make sure we free all resources on policy ->init() failures.
 
-I don't see a reason for having the no-flags variant of this, but you're
-right in that it does look more uniform.
+Fixes: a28b2bfc099c ("cppc_cpufreq: replace per-cpu data array with a list")
+Tested-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+V3->V3.1:
+- Updated "if (!ret)" to "if (ret)", the more commonly used format.
 
-> 
-> > +{
-> > +       struct pwm_device *pwm;
-> > +
-> > +       if (pc->of_pwm_n_cells < 1)
-> > +               return ERR_PTR(-EINVAL);
-> > +
-> > +       /* validate that one cell is specified, optionally with flags */
-> > +       if (args->args_count != 1 && args->args_count != 2)
-> > +               return ERR_PTR(-EINVAL);
-> 
-> I don't know all the rules for attempted forward compatibility, but
-> unless there's a strong reason I'd expect to match the rules for
-> of_pwm_xlate_with_flags(). That function doesn't consider it to be an
-> error if either "pc->of_pwm_n_cells" or "args->args_count" is bigger
-> than you need. Unless there's a reason to be inconsistent, it seems
-> like we should be consistent between the two functions. That would
-> make the test:
-> 
-> if (args->args_count < 1)
->   return ERR_PTR(-EINVAL);
-> 
+ drivers/cpufreq/cppc_cpufreq.c | 28 ++++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
 
-My crystal ball is foggy, but I guess I could follow suite even though I
-don't see what that might be.
+diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+index be4f62e2c5f1..945ab4942c1c 100644
+--- a/drivers/cpufreq/cppc_cpufreq.c
++++ b/drivers/cpufreq/cppc_cpufreq.c
+@@ -256,6 +256,16 @@ static struct cppc_cpudata *cppc_cpufreq_get_cpu_data(unsigned int cpu)
+ 	return NULL;
+ }
+ 
++static void cppc_cpufreq_put_cpu_data(struct cpufreq_policy *policy)
++{
++	struct cppc_cpudata *cpu_data = policy->driver_data;
++
++	list_del(&cpu_data->node);
++	free_cpumask_var(cpu_data->shared_cpu_map);
++	kfree(cpu_data);
++	policy->driver_data = NULL;
++}
++
+ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+ {
+ 	unsigned int cpu = policy->cpu;
+@@ -309,7 +319,8 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+ 	default:
+ 		pr_debug("Unsupported CPU co-ord type: %d\n",
+ 			 policy->shared_type);
+-		return -EFAULT;
++		ret = -EFAULT;
++		goto out;
+ 	}
+ 
+ 	/*
+@@ -324,10 +335,16 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+ 	cpu_data->perf_ctrls.desired_perf =  caps->highest_perf;
+ 
+ 	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
+-	if (ret)
++	if (ret) {
+ 		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
+ 			 caps->highest_perf, cpu, ret);
++		goto out;
++	}
++
++	return 0;
+ 
++out:
++	cppc_cpufreq_put_cpu_data(policy);
+ 	return ret;
+ }
+ 
+@@ -345,12 +362,7 @@ static int cppc_cpufreq_cpu_exit(struct cpufreq_policy *policy)
+ 		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
+ 			 caps->lowest_perf, cpu, ret);
+ 
+-	/* Remove CPU node from list and free driver data for policy */
+-	free_cpumask_var(cpu_data->shared_cpu_map);
+-	list_del(&cpu_data->node);
+-	kfree(policy->driver_data);
+-	policy->driver_data = NULL;
+-
++	cppc_cpufreq_put_cpu_data(policy);
+ 	return 0;
+ }
+ 
+-- 
+2.31.1.272.g89b43f80a514
 
-> 
-> > +
-> > +       pwm = pwm_request_from_chip(pc, 0, NULL);
-> > +       if (IS_ERR(pwm))
-> > +               return pwm;
-> > +
-> > +       pwm->args.period = args->args[0];
-> > +       pwm->args.polarity = PWM_POLARITY_NORMAL;
-> > +
-> > +       if (args->args_count == 2 && args->args[2] & PWM_POLARITY_INVERTED)
-> 
-> Similar to above, should this be ">= 2" rather than "== 2" ?
-> 
-> I also notice that in commit cf38c978cf1d ("pwm: Make
-> of_pwm_xlate_with_flags() work with #pwm-cells = <2>") Uwe added a
-> check for "pc->of_pwm_n_cells" in of_pwm_xlate_with_flags() right
-> around here. You're not checking it in your function.
-> 
-> I _think_ your code is fine because I can't see how "args->args_count"
-> could ever be greater than "pc->of_pwm_n_cells" but maybe I'm not
-> seeing something. Assuming your code is correct then maybe the right
-> thing to do is to remove the extra check from
-> of_pwm_xlate_with_flags() to make the two functions more similar.
-> 
-
-I guess the way of_pwm_xlate_with_flags() is written the optional flags
-will only be considered if the driver has stated that it supports the
-3rd field.
-
-The way I wrote this means that I don't care if the drivers supports
-flags I will pick up that INVERTED bit. I suppose this means that if a
-driver where to increment of_pwm_n_cells we suddenly start to care about
-a cell that we previously never looked at...
-
-But it would be consistent to follow this, and I don't really have an
-opinion about these nuances.
-
-Thanks for your feedback Doug.
-
-Regards,
-Bjorn
