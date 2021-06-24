@@ -2,82 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B103B2EDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5537D3B2EE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhFXMZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 08:25:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35022 "EHLO mail.kernel.org"
+        id S231438AbhFXMZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 08:25:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhFXMZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 08:25:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A700613EC;
-        Thu, 24 Jun 2021 12:23:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624537390;
-        bh=rmf7ragLQsx12kP7udAKSz/Aa/cGJBbFX2RgFPlayrM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=RHYvYSsoliCiIFyHs9ZZD4iSKUyuMQNOHiydFyIMIFrP7pLsdONMzGClKOPfa7ekD
-         pIf03P9gjPEe5395F8Bfc/KWlTU5rd0gdJgGC/8rp1IOiM9jU17yrR2IwCiIEh+JNB
-         jukIzCqD2xczuyyYJvWsLgN0TaxLRdkT+Qp/CcEUQkpWkZVIYG3t76Py+U9zn2SlWN
-         gvbefrPzqLZAcV4w8Mcb4U3VdLS+9hV7mYBM7hRylpESq2lqAxrQ7XmgFsts2Waybx
-         15kHsEMzJg4zOCCnD2XGncZqA4OZbMTEhW/2IXAuAXTFwdw2rijwrMaTOxeKUtmfmH
-         3kH39qM0Msn3w==
-Date:   Thu, 24 Jun 2021 07:23:09 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v7 1/8] PCI: Add pcie_reset_flr to follow calling
- convention of other reset methods
-Message-ID: <20210624122309.GA3518896@bjorn-Precision-5520>
+        id S229573AbhFXMZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 08:25:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 937C861209;
+        Thu, 24 Jun 2021 12:23:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624537413;
+        bh=JTsUy6jEymu4qp5qGCh4JVhR5yjdg1Lz3myy2L5OZJU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QvClQ3g2Htt0PFAENbaUhP8J94m0ztjO+UjJ/8v1MDWqUWSbTiiXYg2gxvP15Coxm
+         FkDdN64l6rzNumPsxbxhBgsv6hJ1RtC9K7lOnuO9v1B0756lA6iqnGwQ3TneWrbSOG
+         Ty5Nr9Krggxb5ET4emDq8Dfm/J67T2CioXuvCGqA=
+Date:   Thu, 24 Jun 2021 14:23:30 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Rocco Yue <rocco.yue@mediatek.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org,
+        wsd_upstream@mediatek.com, chao.song@mediatek.com,
+        kuohong.wang@mediatek.com
+Subject: Re: [PATCH 1/4] net: if_arp: add ARPHRD_PUREIP type
+Message-ID: <YNR5QuYqknaZS9+j@kroah.com>
+References: <YNNv1AxDNBdPcQ1U@kroah.com>
+ <20210624115349.2264-1-rocco.yue@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210608054857.18963-2-ameynarkhede03@gmail.com>
+In-Reply-To: <20210624115349.2264-1-rocco.yue@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 11:18:50AM +0530, Amey Narkhede wrote:
-> Currently there is separate function pcie_has_flr() to probe if pcie flr is
-> supported by the device which does not match the calling convention
-> followed by reset methods which use second function argument to decide
-> whether to probe or not.  Add new function pcie_reset_flr() that follows
-> the calling convention of reset methods.
+On Thu, Jun 24, 2021 at 07:53:49PM +0800, Rocco Yue wrote:
+> >> +/* exposed API
+> >> + * receive incoming datagrams from the Modem and push them to the
+> >> + * kernel networking system
+> >> + */
+> >> +int ccmni_rx_push(unsigned int ccmni_idx, struct sk_buff *skb)
+> > 
+> > Ah, so this driver doesn't really do anything on its own, as there is no
+> > modem driver for it.
+> > 
+> > So without a modem driver, it will never be used?  Please submit the
+> > modem driver at the same time, otherwise it's impossible to review this
+> > correctly.
+> > 
+> 
+> without MTK ap ccci driver (modem driver), ccmni_rx_push() and
+> ccmni_hif_hook() are not be used.
+> 
+> Both of them are exported as symbols because MTK ap ccci driver
+> will be complied to the ccci.ko file.
 
-> +/**
-> + * pcie_reset_flr - initiate a PCIe function level reset
-> + * @dev: device to reset
-> + * @probe: If set, only check if the device can be reset this way.
-> + *
-> + * Initiate a function level reset on @dev.
-> + */
-> +int pcie_reset_flr(struct pci_dev *dev, int probe)
-> +{
-> +	u32 cap;
-> +
-> +	if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
-> +		return -ENOTTY;
-> +
-> +	pcie_capability_read_dword(dev, PCI_EXP_DEVCAP, &cap);
-> +	if (!(cap & PCI_EXP_DEVCAP_FLR))
-> +		return -ENOTTY;
-> +
-> +	if (probe)
-> +		return 0;
-> +
-> +	return pcie_flr(dev);
-> +}
+But I do not see any code in this series that use these symbols.  We can
+not have exports that no one uses.  Please add the driver to this patch
+series when you resend it.
 
-Tangent: I've been told before, but I can't remember why we need the
-"probe" interface.  Since we're looking at this area again, can we add
-a comment to clarify this?
+> In addition, the code of MTK's modem driver is a bit complicated,
+> because this part has more than 30,000 lines of code and contains
+> more than 10 modules. We are completeing the upload of this huge
+> code step by step. Our original intention was to upload the ccmni
+> driver that directly interacts with the kernel first, and then
+> complete the code from ccmni to the bottom layer one by one from
+> top to bottom. We expect the completion period to be about 1 year.
 
-Every time I read this, I wonder why we can't just get rid of the
-probe and attempt a reset.  If it fails because it's not supported, we
-could just try the next one in the list.
+Again, we can not add code to the kernel that is not used, sorry.  That
+would not make any sense, would you want to maintain such a thing?
+
+And 30k of code seems a bit excesive for a modem driver.   Vendors find
+that when they submit code for inclusion in the kernel tree, in the end,
+they end up 1/3 the original size, so 10k is reasonable.
+
+I can also take any drivers today into the drivers/staging/ tree, and
+you can do the cleanups there as well as getting help from others.
+
+1 year seems like a long time to do "cleanup", good luck!
+
+> > +++ b/drivers/net/ethernet/mediatek/ccmni/ccmni.h
+> > 
+> > Why do you have a .h file for a single .c file?  that shouldn't be
+> > needed.
+> 
+> I add a .h file to facilitate subsequent code expansion. If it's
+> not appropriate to do this here, I can add the content of .h into
+> .c file.
+
+If nothing other than a single .c file needs it, put it into that .c
+file please.
+
+thanks,
+
+greg k-h
