@@ -2,98 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764CD3B26A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 06:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4046D3B26AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 07:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbhFXFAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 01:00:19 -0400
-Received: from ni.piap.pl ([195.187.100.5]:59546 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229448AbhFXFAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 01:00:18 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ni.piap.pl (Postfix) with ESMTPSA id CBC724A0053;
-        Thu, 24 Jun 2021 06:57:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl CBC724A0053
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1624510675; bh=1+x2vyCs8rgYAY9/WSnCwIrmAShCjXegb413Mj6W5Cw=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=CoW8UcETb1paLYhduyr8kVucKF7ICfcneHVWcRorzic2HQNMplzE6D8RKMcFgrUYF
-         Cqfet2S2dzW5wXaYsqfylyrRcx2aIHS3v9vnSDNL+kmNTSBLabKO8h3yYYp1uEtkUt
-         o2lRz8PzhnLi1pu9lBLbOPbwR8S2Fk6qK2JtxG9s=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [RFC v2] MEDIA: Driver for ON Semi AR0521 camera sensor
-References: <m3wnqm5eqo.fsf@t19.piap.pl>
-        <YNHQDNdpxcY8+IV2@pendragon.ideasonboard.com>
-        <m3r1gt5hzm.fsf@t19.piap.pl>
-        <YNK5FhAXSpI1oHJV@pendragon.ideasonboard.com>
-        <m3mtrh5evo.fsf@t19.piap.pl>
-        <YNM0cZFV7/LKKFBn@pendragon.ideasonboard.com>
-        <42958029-5625-5f4d-a075-2f59a74e0fb5@ideasonboard.com>
-Sender: khalasa@piap.pl
-Date:   Thu, 24 Jun 2021 06:57:55 +0200
-In-Reply-To: <42958029-5625-5f4d-a075-2f59a74e0fb5@ideasonboard.com> (Kieran
-        Bingham's message of "Wed, 23 Jun 2021 15:27:09 +0100")
-Message-ID: <m3bl7v6er0.fsf@t19.piap.pl>
+        id S230114AbhFXFR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 01:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhFXFR0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 01:17:26 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A39C061574;
+        Wed, 23 Jun 2021 22:15:07 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id n99-20020a9d206c0000b029045d4f996e62so4391065ota.4;
+        Wed, 23 Jun 2021 22:15:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ygVK/gHTe32gLfYg+HdMiky3oi3YqC6Bf5Vvmj5Zl+8=;
+        b=sBvyWoSY43NEdsQuD2mpylbcW+pJ2OA/rEmAizwqasIEpG7j1cRvGQdQqkQOkkEPoD
+         jpE3P/r6WjYYSBbhSZBQH6KGNMohNQcO6+z0iK2Y95X5k2ZgaK7/kVwW21/1M+cZLOLm
+         +pn6HwIxlO4hGsf5ZyX5tUteSuhW447ykhqPhjxNjA2CpPvDIuWE0ZHcKy0SJZ4TMHSg
+         xnowYIvUE235ox1gs2Dvrv6cr1JQaAvNcLP4tx15fIPWZ7xE52ILxsqbcgn65ydkxTP5
+         IMNUkvi+5B9Qm7Ecw4HlIRVwE4W6ToiloA4yHh0q5xsFy3CKA58Lox3+wgbW4c+YcAHb
+         UevQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ygVK/gHTe32gLfYg+HdMiky3oi3YqC6Bf5Vvmj5Zl+8=;
+        b=QW+0+pCUrM/1LjCNEA64uLhtEKrvZO7DLtV++B7Li2zFN1TYsxEHnwdBYJtyLgh1Nq
+         H2Tw5iFsj2scwEKB6YagkEL5aw1HxHII4+lsrqPeTDRiMaGmoUhQrAj7msduIto323v6
+         BI52A/sxgn3FIcCCJ25iP5Xdq9X+rsg6+1e4F0RkBzStcL8XUdJpSmT9/wn9v4WnLj/n
+         avVsNo86FSNobD3443l+Pcb54yafP/MOwkZEmAbZ+eTZ0nMv+UHCgdE15QTCpnIX9yFn
+         SpVC6bDUUHzj1Y/KcoKvzRuYHfx9903KnNPTIMa1y2lu+qHKmlm9LOSUd7bwfdWly0Ay
+         JCaw==
+X-Gm-Message-State: AOAM530fg++bvMgXNOaZt8TJx2UkWzuOnzDLtyakeyXOTTuzRP1B8gqb
+        Sgz6Uz7ZFE+Q7oBjsUnLgRY=
+X-Google-Smtp-Source: ABdhPJzFTXWfeFhKgI+SmmsouB3/cWaqzN1wX0lKKpc8lOfLNfz97zh7StsBeRMv+x1D6+Quas1v3Q==
+X-Received: by 2002:a05:6830:4cf:: with SMTP id s15mr3108209otd.72.1624511706557;
+        Wed, 23 Jun 2021 22:15:06 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.38])
+        by smtp.googlemail.com with ESMTPSA id 61sm62037otl.30.2021.06.23.22.15.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 22:15:06 -0700 (PDT)
+Subject: Re: [PATCH 1/4] net: if_arp: add ARPHRD_PUREIP type
+To:     Rocco Yue <rocco.yue@mediatek.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org,
+        wsd_upstream@mediatek.com, chao.song@mediatek.com,
+        kuohong.wang@mediatek.com
+References: <YNNtN3cdDL71SiNt@kroah.com>
+ <20210624033353.25636-1-rocco.yue@mediatek.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <020403ac-0c2a-4ad8-236b-d32e59aef772@gmail.com>
+Date:   Wed, 23 Jun 2021 23:15:03 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210624033353.25636-1-rocco.yue@mediatek.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 4
-X-KLMS-Message-Action: skipped
-X-KLMS-AntiSpam-Status: not scanned, whitelist
-X-KLMS-AntiPhishing: not scanned, whitelist
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran, and others,
+On 6/23/21 9:33 PM, Rocco Yue wrote:
+> 
+> The difference between RAWIP and PUREIP is that they generate IPv6
+> link-local address and IPv6 global address in different ways.
+> 
+> RAWIP:
+> ~~~~~~
+> In the ipv6_generate_eui64() function, using RAWIP will always return 0,
+> which will cause the kernel to automatically generate an IPv6 link-local
+> address in EUI64 format and an IPv6 global address in EUI64 format.
+> 
+> PUREIP:
+> ~~~~~~~
+> After this patch set, when using PUREIP, kernel doesn't generate IPv6
+> link-local address regardless of which IN6_ADDR_GEN_MODE is used.
+> 
+> @@  static void addrconf_dev_config(struct net_device *dev)
+> +       if (dev->type == ARPHRD_PUREIP)
+> +               return;
+> 
+> And after recving RA message, kernel iterates over the link-local address
+> that exists for the interface and uses the low 64bits of the link-local
+> address to generate the IPv6 global address.
+> The general process is as follows:
+> ndisc_router_discovery() -> addrconf_prefix_rcv() -> ipv6_generate_eui64() -> ipv6_inherit_eui64()
+> 
 
-Kieran Bingham <kieran.bingham@ideasonboard.com> writes:
-
->>> The work is not published under GPL.
->
-> This seems like an odd thing to say when your patch explicitly contains:
->
->> +++ b/drivers/media/i2c/ar0521.c
->> @@ -0,0 +1,1060 @@
->> +// SPDX-License-Identifier: GPL-2.0
-
-Such tags have meaning only in the kernel context, when signed-off etc.
-Alone, they aren't legal statements, especially when I explicitly state
-that it's not signed-off-by me yet. Nevertheless...
-
-Obviously, this code was always meant to be GPLed and it seems really
-crazy to me that we even have to have such conversations - about
-a non issue, at least from my POV.
-
-The fact is that 6 years ago I wrote driver for a SDTV frame grabber -
-and another developer "took" the development from me, and published as
-his own. This wasn't probably illegal - after all my driver was covered
-by the GPL from the start. But was it really how we all want things to
-work in Linux? With such experience, is anybody surprised I want to
-avoid this history repeating itself?
-
-For other patches I don't care about such formalities, but this driver
-is a work paid by an external entity and it would be unfortunate to
-end up the same way as the tw686x driver.
-
-
-I stated multiple times I will sign this code off when it's accepted.
-Is it really a problem? Really?
-
-If so... perhaps there is some other way?
-
-I'd hate to think that the next time I'm to keep my code unpublished.
---=20
-Krzysztof Ha=C5=82asa
-
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
+please add that to the commit message.
