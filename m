@@ -2,168 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AFD3B254A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 05:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304DF3B254D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 05:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhFXDK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 23:10:56 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:7206 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229812AbhFXDKu (ORCPT
+        id S229930AbhFXDNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 23:13:04 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:8317 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229796AbhFXDNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 23:10:50 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15O36LQc027553;
-        Thu, 24 Jun 2021 03:08:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2020-01-29; bh=+5pf712eDs/LVXP3jsOVTOPjxuVMYBxMmA020f8K7Jk=;
- b=g7M+6awGnFh7Nh/ypTSnTIq+j3Me4tyKPxi+5Sk/9ZtFHM4U9wHJFDNE38W6FFmVtA7S
- F3TrToRv1mWJi0zJHcm4QRObm+0tYan3tKLUoJKiDYInJN20I/mAf9PLnq8EHn8wJN31
- wGVl2M3j/RVCaXRebxpV+Qi5hw3WPStoTkYo3RrOd6lVDOOSZxg6yGoGHNz6O4lSXi2d
- vm/81pm0DkLtnBqDUT/zc/GJzrPsiLvyPlSpHNw/doWFPJZf7wFCEJ9nVDXLDKh2jAUr
- YTcQukww9QrvLuqERwIEop077x5KGGs8jBXpnNY+QqBC5+LSQfhxXtcnjUdFU9roT2Pf mw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39cd2krb3y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Jun 2021 03:08:22 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15O31J1s094310;
-        Thu, 24 Jun 2021 03:08:21 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
-        by userp3030.oracle.com with ESMTP id 3995q0571v-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Jun 2021 03:08:21 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K3c5GPyri9K3YYggXO2zKS9fdbsxWSKBy+FFF6SoWudTEAixKmKsb0GKKu2cmdvJhZE2n8QM6gdKyuQXduKvhWDl+q63B7kS0mwVj+iSqZyzPnEnVq2izLZd3Sl54aOl63p9ejQn7gu4+KXDuwXBnZqpARrEzANYCvll/c0YsE10HiOhH1aWV+qjxTI5ggqmdhjJRmYlba2hBnflmskv8Gsj2zz/pbWPXzQ42J+6PYdwtEem7tqFvR2Yr0ygHaAmA3OWL9iXyRBYhRRD3YEnUBNxR++6XYIbcZ1j7DfF5Q7+vTApUxLxH0xTsmQ5W6Ykd6mg0Ab8KeQLWMvOCgT0nw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+5pf712eDs/LVXP3jsOVTOPjxuVMYBxMmA020f8K7Jk=;
- b=ncL9Lx2PR+sp1pyf3P4Y5d7q9/xU4bGv1ZiUgFoD0vgOlqdwtJwyyLhifT8wzlRWICGLfnpL3AZlY+bx6fr8b4XAUTLs5Q+4MzTnUBo2fsSNPjKRCL14brXTn+88ThZhNQ/3H+F9R43q9Fupj68eb02kWZFSPATManZz+F9/Dz7KkLFeN4hLr+yUWCHoj+6+SXVM1aMxg8nGAaSxDS5j3BPBNOnOOejwRjcVBLih2cX7q/jm3BpXSLzyz7BBjnU/Vs29lzqz6w33UbQ23OcGJZMFFrQ99i5ZJdRLvJW/iMer/x95ao5nnzVZN0z30STi+CLNpyFy/rHXMBn0XBnI3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+5pf712eDs/LVXP3jsOVTOPjxuVMYBxMmA020f8K7Jk=;
- b=GClWq83f5ZCgB/JECQtiruaUytxMeH9M1Kz+ciYD7SLix0dfB8pvo0MeEXoqOkabnUSf+vo6GjNETdBcOMlU6Mwby46JK9MBeWRMt9y0u4TqHT8bYYvVU4k8+yEYxnVBUSk78e7/hML8HTvBcYxO1PIzwX6IS9K/6138j+wdrbY=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB3573.namprd10.prod.outlook.com (2603:10b6:a03:11e::32)
- by BYAPR10MB2837.namprd10.prod.outlook.com (2603:10b6:a03:81::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Thu, 24 Jun
- 2021 03:08:20 +0000
-Received: from BYAPR10MB3573.namprd10.prod.outlook.com
- ([fe80::b09d:e36a:4258:d3d0]) by BYAPR10MB3573.namprd10.prod.outlook.com
- ([fe80::b09d:e36a:4258:d3d0%7]) with mapi id 15.20.4242.025; Thu, 24 Jun 2021
- 03:08:20 +0000
-From:   Mike Christie <michael.christie@oracle.com>
-To:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, mst@redhat.com,
-        sgarzare@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
-        christian@brauner.io, akpm@linux-foundation.org,
-        peterz@infradead.org, christian.brauner@ubuntu.com
-Cc:     Mike Christie <michael.christie@oracle.com>
-Subject: [PATCH 3/3] vhost: pass kthread user to check RLIMIT_NPROC
-Date:   Wed, 23 Jun 2021 22:08:04 -0500
-Message-Id: <20210624030804.4932-4-michael.christie@oracle.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210624030804.4932-1-michael.christie@oracle.com>
-References: <20210624030804.4932-1-michael.christie@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [73.88.28.6]
-X-ClientProxiedBy: DM5PR2001CA0008.namprd20.prod.outlook.com
- (2603:10b6:4:16::18) To BYAPR10MB3573.namprd10.prod.outlook.com
- (2603:10b6:a03:11e::32)
+        Wed, 23 Jun 2021 23:13:04 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G9Q5R5tljz70gq;
+        Thu, 24 Jun 2021 11:06:35 +0800 (CST)
+Received: from dggema756-chm.china.huawei.com (10.1.198.198) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 24 Jun 2021 11:10:43 +0800
+Received: from [10.174.177.134] (10.174.177.134) by
+ dggema756-chm.china.huawei.com (10.1.198.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 24 Jun 2021 11:10:42 +0800
+Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
+To:     Mark Rutland <mark.rutland@arm.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Al Viro" <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        "open list" <linux-kernel@vger.kernel.org>
+References: <da9c2fa9-a545-0c48-4490-d6134cc31425@huawei.com>
+ <20210623132223.GA96264@C02TD0UTHF1T.local>
+From:   Chen Huang <chenhuang5@huawei.com>
+Message-ID: <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
+Date:   Thu, 24 Jun 2021 11:10:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (73.88.28.6) by DM5PR2001CA0008.namprd20.prod.outlook.com (2603:10b6:4:16::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Thu, 24 Jun 2021 03:08:19 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3aed8617-8173-4202-0fe6-08d936bd51fb
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2837:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR10MB2837D7023BBA979DAE193E85F1079@BYAPR10MB2837.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /Pd7DLe7i4q0k7yYrM8MfFg6IVar4z9i3VyrYuhQqyR5wH+eH3pYd8WPSrX1i1I+AVYJGebibcLw/8RZ2G8tpP/BJtU7yEgcuFu5fj+VLkAhP8d03thCSZNkAb5zmErp6lpVY3mDW/mrcVkdOy1WTA5HBzvtv2xUsy0jOEeU6dSTDdosenj1mwH6TC9ECL0LCnNdsmb/rhtfWYIiyuWNszCehpnsAvHqfyAsizpaEd9HiGDEfXvxVzEqlf3hSo4YETrCl6cCdWtgyf/a65eyNWH8tbSnmw7+5C05UKITutuPwU0MBRyMP5PhWSiFU5zk2Z5eqMqZac9gcjZKa+odLsjWMzzKBNtkNdHBnP3Nlrk0IL9SrlBjv85pC0yhHRSuEeqYMAHz/jPG25nBLSbtkLdBHUUw9q78GQ6kJ6Vp+R4/I4tx/8aSbFgVaXiksxt86mSeb18fTtTf1bupmrnc3xnYsWpQWaiRkjpGl+ZTlqE3mqTZfdFOyv6YMV9GMN+Ltjc1qHVPuyoP6c5+JUI0ZdALryQdlvd4jYZBOABg4D1GVWhcjBxTrnpcFpdvnG+BdXPyea8RcWjItr3+O6Tx9fRD12vrnN4v+26shJ28IbyTLIp4Cvps6rnfUWJHIbcAlBrrQiSOba9yYnU0xMCS0XsqFbzfMF5L1VQl+y8RsU78w/z4sA6c7FXYD+SmlmcV0o4MbksA1lnjFhqXXRX2Rw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3573.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(136003)(346002)(376002)(39860400002)(66946007)(66476007)(66556008)(5660300002)(4744005)(2906002)(2616005)(6512007)(4326008)(26005)(6506007)(316002)(186003)(52116002)(16526019)(956004)(1076003)(7416002)(8676002)(478600001)(38350700002)(38100700002)(921005)(83380400001)(6666004)(8936002)(6486002)(107886003)(36756003)(86362001)(69590400013);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rgFvD4oduyr9BnR50pZTX7QL0zYOWZO+oK+g14/5VfqayHjzSrN8sT2l8FsU?=
- =?us-ascii?Q?UAI7ynsy0cfKxn5k9Bs2LYtUmGg5dWdjdgfSmPqet2D2OoVGYEivZB8T/eSd?=
- =?us-ascii?Q?8Z2YSYfE/IdWDLTVm5hCEddk4iYSzJ7Sg+eGJKfjB0UQ2vZL8aYbgE9CVMbs?=
- =?us-ascii?Q?ictowocguRrtXVFH+VNtC+iTZl+351jSzWBwZNsKVCG3vDPH4KE0++DYD21g?=
- =?us-ascii?Q?tI7ZpoyMzj50Bkah2gHe14I8hl4bwhGkvd+LI4Y+BMOZlmEyHIr+M6gpXTyd?=
- =?us-ascii?Q?Cp6YOvJ5p6ulFCNHy4+n8fFVlwhn5DERvfutr/IzRJ9SAObFGfvMzLFKsyk8?=
- =?us-ascii?Q?QCFEb3kvcA4CdYfGAd3YyXM0pk2NWxjg0NhrzldqEDDnrTeop9NZd4oJfOod?=
- =?us-ascii?Q?rcSJirdEormDg5cRvX+Ndn2XY69Wpf9sqF6ZdujKMTVYwKHWQXXWVVNDzVxh?=
- =?us-ascii?Q?AbHheL4N6zBroxg5TzIsPMKeqcAVP+0GpdAbNe9T25AG78Hx5ysas+sqdUf2?=
- =?us-ascii?Q?ChNvUxt6HmxzSrJrhwHohsRcqnUvTG/aD3yljrPCBiV9+Pn4BUIzExPv4I2/?=
- =?us-ascii?Q?qbG/oToXMwq7CaM9hjkZ/zyEvGgiZouqlG3fV9QoMPWU6sSgSXD3Yx82LatG?=
- =?us-ascii?Q?e52YU0kWX2d7G/NT+q7Fxbsq1s6ecsYtgRMKX7upgcxFEUewi3Ge5mQen7gD?=
- =?us-ascii?Q?4GzuEm85gsEcaJF3XbYEGL20ZsWNDppV0364B+v3DYZR0mSosxivcQ32Xpkd?=
- =?us-ascii?Q?1l5MRW6zgxcGk7agRgCNSXn0yHQT7A7MfUce720oRg2sSoLaa9pphyRvwIEr?=
- =?us-ascii?Q?btd7MFsU4eolNu86LIyDSc4sP7XR2g2ba9WRe11bcV+6Tv3c0CQKt8OxNyex?=
- =?us-ascii?Q?SgMR+6NIq1r3d9J+JrE5YHB/eIagu8Rswy3vJOYC8FmrIXaGsGSAXuh1KMvA?=
- =?us-ascii?Q?hxOf4bZR9KmCvjvD4VNfy0aQHzqSbrPO9Xc8EoreNZvYuP5GJas6nFVM4xO4?=
- =?us-ascii?Q?/zVmfXsuHLT2YfdjeIL9TDAx0fpG4oyNP+6GmG9fuinDw+7YHJ30SC8vHoRW?=
- =?us-ascii?Q?Dou9oJzJnr/dvvKl1nUGHeK4ck+dawEDE4nLmI2jb0kgz5gLYQOPSruh/FbB?=
- =?us-ascii?Q?X2sRHuprUfXvHNoirgJiA970yAPm2JR2sZHhmbQ4kY0XRYaeiskfUxch3bid?=
- =?us-ascii?Q?/MRn668SMRDLuve4JvhZnCmhQbILswRVPVuXZBQiiox5lJFm/1Rfjy4ZeuNi?=
- =?us-ascii?Q?ouG0U9IA6yk3GdrtReQQkjXzGkd9HheN8Yh7N11yNBTj+qC1QNzsKfy6TUsv?=
- =?us-ascii?Q?w9eLyFWsuOKQZ6RqZgHbThqV?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3aed8617-8173-4202-0fe6-08d936bd51fb
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3573.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2021 03:08:20.3701
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vc2NTQI620WnJNGR2x44roCDsFOTIsLOqxYW1fgf4UXT6qnKZlIBichNHZ02A0zmZCQiBHDMEyWC0A4kTO/PCUGlH5xmQoCzTHo7x3iOFJw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2837
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10024 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 suspectscore=0
- phishscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106240016
-X-Proofpoint-GUID: 0yQOwICY1MVL53I_QJtRRG66iOUZfK2b
-X-Proofpoint-ORIG-GUID: 0yQOwICY1MVL53I_QJtRRG66iOUZfK2b
+In-Reply-To: <20210623132223.GA96264@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.134]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema756-chm.china.huawei.com (10.1.198.198)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This has vhost pass in the user to the kthread API, so the process doing
-the ioctl has its RLIMIT_NPROC checked and its processes count
-incremented.
 
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
----
- drivers/vhost/vhost.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index 5ccb0705beae..141cca6fd50a 100644
---- a/drivers/vhost/vhost.c
-+++ b/drivers/vhost/vhost.c
-@@ -595,8 +595,9 @@ long vhost_dev_set_owner(struct vhost_dev *dev)
- 
- 	dev->kcov_handle = kcov_common_handle();
- 	if (dev->use_worker) {
--		worker = kthread_create(vhost_worker, dev,
--					"vhost-%d", current->pid);
-+		worker = kthread_create_for_user(vhost_worker, dev,
-+						 current->real_cred->user,
-+						 "vhost-%d", current->pid);
- 		if (IS_ERR(worker)) {
- 			err = PTR_ERR(worker);
- 			goto err_worker;
--- 
-2.25.1
+ÔÚ 2021/6/23 21:22, Mark Rutland Ð´µÀ:
+> On Wed, Jun 23, 2021 at 10:39:31AM +0800, Chen Huang wrote:
+>> When we access a device memory in userspace, then perform an unaligned write to a file.
+>> For example, we register a uio device and mmap the device, then perform an write to a
+>> file, like that:
+>>
+>> 	device_addr = mmap(device_fd);
+>> 	write(file_fd, device_addr + unaligned_num, size);
+> 
+> What exactly is this device, and why do you want the kernel to do a
+> direct memcpy from MMIO? Why can't you copy that in userspace (where you
+> have knowledge of the device), then pass the copy to a syscall?
+>
+I'm sorry for not describing the problem well. It's an uio device:
 
+static struct device_driver uio_dummy_driver = {
+    .name = "uio_with_name",
+    .bus = &platform_bus_type,
+    .probe = drv_uio_with_name_probe,
+    .remove = drv_uio_with_name_remove,
+};
+
+static int drv_uio_with_name_probe(struct device *dev)
+{
+    uio_with_name_info.mem[0].addr = 0xa0000000;
+    uio_with_name_info.mem[0].memtype = UIO_MEM_PHYS;
+    uio_with_name_info.mem[0].size = 0x1000;
+
+    if (__uio_register_device(THIS_MODULE, dev, &uio_with_name_info)) {
+        printk("__uio_register_device failed\n");
+        return -ENODEV;
+    }
+    printk("UIO init end.\n");
+    return 0;
+}
+
+In userspace, I perform such operation:
+
+ 	fd = open("/tmp/test", O_RDWR | O_SYNC);
+        access_address = (char *)mmap(NULL, uio_size, PROT_READ, MAP_SHARED, uio_fd, 0);
+        ret = write(fd, access_address + 2, sizeof(long));
+
+> Ignoring the lockup below, this isn't going to work in general, since
+> uaccess routines do not guarantee alignment, single-copy, access sizes,
+> monotonically increasing addresses, etc. Any one of those can cause a
+> device to raise an external abort which may or may not be synchronous.
+> 
+> It does not make sense to tell the kernel to access this, since the
+> kernel cannot know how to access it safely, and we can;t do that without
+> knowledge of the device that we do not have.
+> 
+> Thanks,
+> Mark.
+> 
+>> 	
+>> We found that the infinite loop happened in generic_perform_write function:
+>>
+>> again:
+>> 	copied = copy_page_from_iter_atomic(); //copied = 0
+>> 	status = ops->write_end(); //status = 0
+>> 	if (status == 0)
+>> 		goto again;
+>>
+>> In copy_page_from_iter_atomic, the copyin() function finally call
+>> __arch_copy_from_user which create an exception table entry for 'insn'.
+>> Then when kernel handles the alignment_fault, it will not panic. As the
+>> arm64 memory model spec said, when the address is not a multiple of the
+>> element size, the access is unaligned. Unaligned accesses are allowed to
+>> addresses marked as Normal, but not to Device regions. An unaligned access
+>> to a Device region will trigger an exception (alignment fault).
+>> 	
+>> do_alignment_fault
+>>     do_bad_area
+>> 	__do_kernel_fault
+>>            fixup_exception
+>>
+>> But that fixup cann't handle the unaligned copy, so the
+>> copy_page_from_iter_atomic returns 0 and traps in loop.
+>>
+>> Reported-by: Chen Huang <chenhuang5@huawei.com>
+> .
+> 
