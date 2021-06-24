@@ -2,73 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C14E3B3045
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EADC3B3047
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231666AbhFXNnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:43:01 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:53750 "EHLO vps0.lunn.ch"
+        id S231585AbhFXNn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:43:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229995AbhFXNnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:43:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=kJoNj9EV1XTA3nOzVNZZ5d15uvZW2jJVc5PSAJpiypM=; b=niF93v22kDwoh3YOc+RIXkezY3
-        Yfa1uVichJuoJb6DQzSf+5cCFhhk/qibdhVqv6VqWLUiozFRA40y3NLKPFyTFrmgmO7YDUZmM9mzn
-        iE1sg6CaSuLwuIjEb+uQTwX04CAa4DVit6fNjGEx3NSdHdhnqtB5YRGNwO7HX9hT4sOg=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lwPac-00AycZ-7y; Thu, 24 Jun 2021 15:40:18 +0200
-Date:   Thu, 24 Jun 2021 15:40:18 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Voon, Weifeng" <weifeng.voon@intel.com>
-Cc:     "Ling, Pei Lee" <pei.lee.ling@intel.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
-        Wong Vee Khee <vee.khee.wong@linux.intel.com>,
-        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
-        "Tan, Tee Min" <tee.min.tan@intel.com>,
-        "Sit, Michael Wei Hong" <michael.wei.hong.sit@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next V1 3/4] net: stmmac: Reconfigure the PHY WOL
- settings in stmmac_resume()
-Message-ID: <YNSLQpNsNhLkK8an@lunn.ch>
-References: <20210621094536.387442-1-pei.lee.ling@intel.com>
- <20210621094536.387442-4-pei.lee.ling@intel.com>
- <YNCOqGCDgSOy/yTP@lunn.ch>
- <CH0PR11MB53806E2DC74B2B9BE8F84D7088089@CH0PR11MB5380.namprd11.prod.outlook.com>
- <YNONPZAfmdyBMoL5@lunn.ch>
- <CH0PR11MB538084AFEA548F4B453C624F88079@CH0PR11MB5380.namprd11.prod.outlook.com>
+        id S229995AbhFXNn5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:43:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EBB4613DC;
+        Thu, 24 Jun 2021 13:41:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624542098;
+        bh=Q5XRw5adCPiypuyfJm2Co5msCh8O+vpMzbd2IR4nRVQ=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=Lxm30UuqsD3x3QIxS/+whFGWM8MZ5TVS8XfAbeii9nTTpojKCNiSuXQenKP89SSrC
+         QBBdX07zCuVyPZxTiITVDKxAGbsluHSXjaXlMzYnqYw30uPP3QdddLad3fKIOSDJYn
+         qM5OIrtV0/DS/9J7wo7zMpydVKMEWz4hEixW8XbGkBIX1DCfk319GGWYUCAXhGiS3c
+         tKRROSmQjParnI+Jrvj/AnC6rUg41dRWksMO7DOkMXnMacyOD8Uq+eLOUyiDZtSDpF
+         Pdr2KWOOEWfdrJGXyXEqvL0cB8YTJs0h75hh+yz6Y/Aj3puJCJyThCDIcvWTMptzxS
+         2eVCLl5TzkTZg==
+Date:   Thu, 24 Jun 2021 15:41:30 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>
+cc:     linux-input@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] HID: input: Add support for Programmable Buttons
+In-Reply-To: <20210615214103.1031479-1-linux@weissschuh.net>
+Message-ID: <nycvar.YFH.7.76.2106241541190.18969@cbobk.fhfr.pm>
+References: <20210615214103.1031479-1-linux@weissschuh.net>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CH0PR11MB538084AFEA548F4B453C624F88079@CH0PR11MB5380.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> No, the interrupt will not be discarded. If the PHY is in interrupt mode, the
-> interrupt handler will triggers and ISR will clear the WOL status bit. 
-> The condition here is when the PHY is in polling mode, the PHY driver does not
-> have any other mechanism to clear the WOL interrupt status bit.
-> Hence, we need to go through the PHY set_wol() again. 
+On Tue, 15 Jun 2021, Thomas Weißschuh wrote:
 
-I would say you have a broken setup. If you are explicitly using the
-interrupt as a wakeup source, you need to be servicing the
-interrupt. You cannot use polled mode.
+> Map them to KEY_MACRO# event codes.
+> 
+> These buttons are defined by HID as follows:
+> "The user defines the function of these buttons to control software applications or GUI objects."
+> 
+> This matches the semantics of the KEY_MACRO# input event codes that Linux supports.
+> 
+> Also add support for HID "Named Array" collections.
+> Also add hid-debug support for KEY_MACRO#.
+> 
+> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> ---
+> 
+> ---
+> 
+> v1: https://lore.kernel.org/linux-input/20210519160349.609690-1-linux@weissschuh.net/
+> 
+> v1 -> v2: Only handle the 30 keys known
+> 
+> v2: https://lore.kernel.org/linux-input/20210519174345.614467-1-linux@weissschuh.net/
+> 
+> v2 -> v3:
+>  * Use hex constants for consistency
+>  * Validate that the button is part of a "Programmable Buttons" Named Array.
+>    Otherwise the condition would also apply to "Function Buttons".
+>  * Ignore non-"Programmable Buttons" buttons.
+> 
+> v3: https://lore.kernel.org/linux-input/20210520084805.685486-1-linux@weissschuh.net/
+> 
+> v3 -> v4:
+>  * Mention new support for HID "Named Array" collections in commit message.
+>  * Mention new support KEY_MACRO# in hid-debug.
 
-	   Andrew
+Applied, thank you.
+
+-- 
+Jiri Kosina
+SUSE Labs
+
