@@ -2,103 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 929CC3B2CD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF923B2CD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232281AbhFXKug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 06:50:36 -0400
-Received: from mga12.intel.com ([192.55.52.136]:40968 "EHLO mga12.intel.com"
+        id S232258AbhFXKub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 06:50:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:53630 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232254AbhFXKue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 06:50:34 -0400
-IronPort-SDR: pBGr1bc1vInlTQAPtpuc7mlvw3x7pufkzoAaH2P31bHBRsd0ZEJv3IjU+K+U5R1wbdh+gD2WUY
- 20Wq6Nw7sZkQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="187132570"
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="187132570"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 03:48:14 -0700
-IronPort-SDR: eEghCN/Qvia56WaoGh3LGi+jefvIHH1Kk8fQi7G0evpIAh7cBuF62uih7BxUW5iBA/D+5as8au
- couLtI9FV+IA==
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="624148275"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 03:48:10 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lwMty-004ycA-BM; Thu, 24 Jun 2021 13:48:06 +0300
-Date:   Thu, 24 Jun 2021 13:48:06 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Jia He <justin.he@arm.com>, Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>, nd@arm.com
-Subject: Re: [PATCH v5 1/4] fs: introduce helper d_path_unsafe()
-Message-ID: <YNRi5tZFjjpI2Fi3@smile.fi.intel.com>
-References: <20210622140634.2436-1-justin.he@arm.com>
- <20210622140634.2436-2-justin.he@arm.com>
- <YNH1d0aAu1WRiua1@smile.fi.intel.com>
- <YNRP3QjSK8ayzCzC@alley>
+        id S232139AbhFXKu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 06:50:28 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 90EA231B;
+        Thu, 24 Jun 2021 03:48:09 -0700 (PDT)
+Received: from localhost (unknown [10.1.195.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F9173F718;
+        Thu, 24 Jun 2021 03:48:09 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 11:48:07 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
+ invariance
+Message-ID: <20210624104734.GA11487@arm.com>
+References: <cover.1624266901.git.viresh.kumar@linaro.org>
+ <09a39f5c-b47b-a931-bf23-dc43229fb2dd@quicinc.com>
+ <20210623041613.v2lo3nidpgw37abl@vireshk-i7>
+ <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
+ <20210624025414.4iszkovggk6lg6hj@vireshk-i7>
+ <CAKfTPtAXMYYrG1w-iwSWXb428FkwFArEwXQgHnjShoCEMjdYcw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNRP3QjSK8ayzCzC@alley>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAKfTPtAXMYYrG1w-iwSWXb428FkwFArEwXQgHnjShoCEMjdYcw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 11:26:53AM +0200, Petr Mladek wrote:
-> On Tue 2021-06-22 17:36:39, Andy Shevchenko wrote:
-> > On Tue, Jun 22, 2021 at 10:06:31PM +0800, Jia He wrote:
-> > > This helper is similar to d_path() except that it doesn't take any
-> > > seqlock/spinlock. It is typical for debugging purposes. Besides,
-> > > an additional return value *prenpend_len* is used to get the full
-> > > path length of the dentry, ingoring the tail '\0'.
-> > > the full path length = end - buf - prepend_length - 1
-> > 
-> > Missed period at the end of sentence.
-> > 
-> > > Previously it will skip the prepend_name() loop at once in
-> > > __prepen_path() when the buffer length is not enough or even negative.
-> > > prepend_name_with_len() will get the full length of dentry name
-> > > together with the parent recursively regardless of the buffer length.
-> > 
-> > > If someone invokes snprintf() with small but positive space,
-> > > prepend_name_with_len() moves and copies the string partially.
-> > > 
-> > > More than that, kasprintf() will pass NULL _buf_ and _end_ as the
-> > > parameters. Hence return at the very beginning with false in this case.
-> > 
-> > These two paragraphs are talking about printf() interface, while patch has
-> > nothing to do with it. Please, rephrase in a way that it doesn't refer to the
-> > particular callers. Better to mention them in the corresponding printf()
-> > patch(es).
+Hi guys,
+
+On Thursday 24 Jun 2021 at 11:49:53 (+0200), Vincent Guittot wrote:
+> On Thu, 24 Jun 2021 at 04:54, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > On 23-06-21, 08:57, Qian Cai wrote:
+> > > Viresh, I am afraid I don't feel comfortable yet. I have a few new tests in
+> > > development, and will provide an update once ready.
+> >
+> > Oh sure, np.
+> >
+> > > Also, I noticed the delivered perf is even smaller than lowest_perf (100).
+> >
+> > > # cat /sys/devices/system/cpu/cpu8/acpi_cppc/feedback_ctrs
+> > >  ref:103377547901 del:54540736873
+> > > # cat /sys/devices/system/cpu/cpu8/acpi_cppc/feedback_ctrs
+> > >  ref:103379170101 del:54541599117
+> > >
+> > > 100 * (54541599117 - 54540736873) / (103379170101 - 103377547901) = 53
 > 
-> The two paragraphs are actually repeated in the 2nd
-> patch. Unfortunately, they do not make sense there either because they
-> comment code that is modified in this patch.
+> I'm not sure that I understand your point. The formula above says that
+> cpu8 run @ 53% of nominal performance
 > 
-> We could describe it here a generic way. For example:
-> 
->   prepend_name_with_len() moves and copies the path when the given
->   buffer is not big enough. It cuts off the end of the path.
->   It returns immediately when there is no buffer at all.
 
-Yes, that's my point, but sorry if I made it unclear.
+I think this is based on a previous example Qian had where:
 
--- 
-With Best Regards,
-Andy Shevchenko
+/sys/devices/system/cpu/cpu0/acpi_cppc/highest_perf
+300
+/sys/devices/system/cpu/cpu0/acpi_cppc/lowest_freq
+1000
+/sys/devices/system/cpu/cpu0/acpi_cppc/lowest_perf
+100
+/sys/devices/system/cpu/cpu0/acpi_cppc/reference_perf
+100
+
+..so the 100 is not from obtaining percentage, is the reference
+performance.
+
+The logic of the formula is to obtain the delivered performance when
+knowing the number of ticks for each counter, so:
+
+So if one gets (103379170101 - 103377547901) ticks for the counter at
+running at 1GHz(perf 100), what is the frequency of the core, if its
+counter ticked (54541599117 - 54540736873) times in the same interval
+of time?
+
+The answer is 530MHz(perf 53), which is lower than the lowest frequency
+at 1GHz(perf 100).
 
 
+> > >
+> > > My understanding is that the delivered perf should fail into the range between
+> > > lowest_perf and highest_perf. Is that assumption correct? This happens on
+> > > 5.4-based kernel, so I am in process running your series on that system to see
+> > > if there is any differences. In any case, if it is a bug it is pre-existing,
+> > > but I'd like to understand a bit better in that front first.
+> >
+> > Vincent:
+> >
+> > Can that happen because of CPU idle ?
+> >
+
+Not if the counters are implemented properly. The kernel considers that
+both reference and delivered performance counters should stop or reset
+during idle. The kernel would not account for idle itself.
+
+If the reference performance counter does not stop during idle, while
+the core performance counter (delivered) does stop, the behavior above
+should be seen very often.
+
+Qian, do you see these small delivered performance values often or
+seldom?
+
+Thanks,
+Ionela.
+
+> > --
+> > viresh
