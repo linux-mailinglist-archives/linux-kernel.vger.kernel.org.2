@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D423B343C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECBA3B3444
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232136AbhFXRAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 13:00:03 -0400
-Received: from mail-pl1-f172.google.com ([209.85.214.172]:41604 "EHLO
-        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbhFXRAC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 13:00:02 -0400
-Received: by mail-pl1-f172.google.com with SMTP id y13so3266335plc.8;
-        Thu, 24 Jun 2021 09:57:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TfRjZvIBnPtJhX/lgcvHWYZI8ch0mIRl4NSCn+C67WM=;
-        b=Ys+Iyin2PUlvbC8bgxiZog9SBj3J3DPNJ1UnXwwtOIa005SPcB+Gz0JGfhs5svRPQu
-         n+Faaq7PuV+VluOAv5IQBAg8u4Y8ZfslG6Pz6FYHqCGmCxuhA9W0v8ZijQaF8awKfc+n
-         WpSaoCHeKKcXwG4t5RLsqFJUI4eNE7yPcs6ZDmPbUgcNfO4++fWhNtBKm0pwo8NXxvo6
-         NXNUQjdf/lmtWEzZseKuC0BitD5KE/tG5OzwRJTtN5DPbpLN7Et+MmSuFN9ssMHAElF8
-         LHReSqHO4/kWbPnTIOU3aQlZWBasS+kGtNGguwEKhxcf95uwQz/6BNGlGEPEUo8jR1iN
-         WQhw==
-X-Gm-Message-State: AOAM533u8iqnDc9WACfj3OP+r7uR5+sMyRlEySoxyEfrQEzdKGFLn3Vo
-        l96YwUDYInTTlaBD350YTPRUvB/24IU=
-X-Google-Smtp-Source: ABdhPJyva/tfDQP/x1AkV7nS3quqJUIsvyAIEb59eMLgNPdJFSnNBOYNQt62WwGAPlhnQmy8KAfMEw==
-X-Received: by 2002:a17:90a:6be6:: with SMTP id w93mr6321800pjj.171.1624553862063;
-        Thu, 24 Jun 2021 09:57:42 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id k20sm8937899pji.3.2021.06.24.09.57.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 09:57:41 -0700 (PDT)
-Subject: Re: [PATCH v4 09/10] scsi: ufs: Update the fast abort path in
- ufshcd_abort() for PM requests
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-11-git-send-email-cang@codeaurora.org>
- <b28d71a7-3839-2c07-2630-6196ea10951f@acm.org>
- <5ff72cfab707b571ef395d52931edd0f@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <da7f134c-3a2a-e3b9-72a1-56a19f720c70@acm.org>
-Date:   Thu, 24 Jun 2021 09:57:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232024AbhFXRC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 13:02:59 -0400
+Received: from mga03.intel.com ([134.134.136.65]:41012 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229445AbhFXRC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 13:02:58 -0400
+IronPort-SDR: 2qg1F7AqXMLaduBvZ9EDqAEMEP2Qgny62S8tBcP3pzyPF6zC27tytp69JNMYReZaUkgk/2hKZY
+ T4bLPDkx2TbQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="207552777"
+X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
+   d="scan'208";a="207552777"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 10:00:29 -0700
+IronPort-SDR: vNQhrnzkoU+nttCQvWuDFgP9ciM245PNH7OvUhhQTYmvsowoak6ujOAO5lfoBE9tW8J0Oxyve5
+ yWYxPI3kP4zw==
+X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
+   d="scan'208";a="407097549"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 10:00:27 -0700
+Date:   Thu, 24 Jun 2021 10:03:16 -0700
+From:   Jacob Pan <jacob.jun.pan@intel.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, KVM <kvm@vger.kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>, jacob.jun.pan@intel.com
+Subject: Re: Virtualizing MSI-X on IMS via VFIO
+Message-ID: <20210624100316.1c1c4c6f@jacob-builder>
+In-Reply-To: <MWHPR11MB1886E14C57689A253D9B40C08C079@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <20210622131217.76b28f6f.alex.williamson@redhat.com>
+        <87o8bxcuxv.ffs@nanos.tec.linutronix.de>
+        <MWHPR11MB1886811339F7873A8E34549A8C089@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <87bl7wczkp.ffs@nanos.tec.linutronix.de>
+        <MWHPR11MB1886BB017C6C53A8061DDEE28C089@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <87tuloawm0.ffs@nanos.tec.linutronix.de>
+        <MWHPR11MB1886E14C57689A253D9B40C08C079@MWHPR11MB1886.namprd11.prod.outlook.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <5ff72cfab707b571ef395d52931edd0f@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 9:16 PM, Can Guo wrote:
-> On 2021-06-24 05:33, Bart Van Assche wrote:
->> On 6/23/21 12:35 AM, Can Guo wrote:
->>> @@ -2737,7 +2737,7 @@ static int ufshcd_queuecommand(struct Scsi_Host
->>> *host, struct scsi_cmnd *cmd)
->>>           * err handler blocked for too long. So, just fail the scsi cmd
->>>           * sent from PM ops, err handler can recover PM error anyways.
->>>           */
->>> -        if (hba->wlu_pm_op_in_progress) {
->>> +        if (cmd->request->rq_flags & RQF_PM) {
->>>              hba->force_reset = true;
->>>              set_host_byte(cmd, DID_BAD_TARGET);
->>>              cmd->scsi_done(cmd);
->>
->> I'm still concerned that the above code may trigger data corruption. I
->> prefer that the above code is removed instead of being modified.
-> 
-> Removing the change will lead to deadlock when error handling prepare
-> calls pm_runtime_get_sync().
-> 
-> RQF_PM is only given to requests sent from power management operations,
-> during which the specific device/LU is suspending/resuming, meaning no
-> data transaction is ongoing. How can fast failing a PM request trigger
-> data corruption?
+Hi Kevin,
 
-Right, the above code only affects power management requests so there is
-no risk for data corruption.
+On Wed, 23 Jun 2021 19:41:24 -0700, "Tian, Kevin" <kevin.tian@intel.com>
+wrote:
+
+> > > 1)  Fix the lost interrupt issue in existing MSI virtualization flow;
+> > >  
+> >
+> > That _cannot_ be fixed without a hypercall. See my reply to Alex.  
+> 
+> The lost interrupt issue was caused due to resizing based on stale
+> impression of vector exhaustion.
+
+Is it possible to mitigate the lost interrupt by always injecting an IRQ
+after unmask? Either in VFIO layer, or let QEMU do that after the second
+VFIO_DEVICE_SET_IRQS in step 4.b of your original email.
+
+After all, spurious interrupts should be tolerated and unmasking MSI-x
+should be rare. I am not suggesting this as an alternative to the real fix,
+just a stop gap.
 
 Thanks,
 
-Bart.
+Jacob
