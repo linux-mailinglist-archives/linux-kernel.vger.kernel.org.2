@@ -2,84 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7893B3B342B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A693B342F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbhFXQvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 12:51:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49716 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhFXQv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 12:51:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63551613EE;
-        Thu, 24 Jun 2021 16:49:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624553346;
-        bh=MeqLZfUB8tx3ZzyZcTQy1E/T0mhq/q0VqTm0Q8WZCNY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S/EszYzIkqMhReBJSrnSYZCczK+E9eWU7RMshVz5JFn2GPzr2Jz86oyEQbFMC/eJy
-         jYPQ9dOJ7G7q72pqNAlCLQOiZsF/3+Lj7385Y6s1+2iTeOFyV600ntL11bQPofiPw9
-         q/XqAdDjItAu957n+hOD14NQIOqy+6jEi+ZFZsfc=
-Date:   Thu, 24 Jun 2021 18:49:04 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH v7 3/8] staging: hi6421-spmi-pmic: do some additional
- cleanups
-Message-ID: <YNS3gICIOD/HOx2N@kroah.com>
-References: <cover.1624542940.git.mchehab+huawei@kernel.org>
- <08b3d0eb4256c4fad25652f2aeb701b81d11ece2.1624542940.git.mchehab+huawei@kernel.org>
- <YNSWIUzO1FYDAxyS@kroah.com>
- <20210624174322.0fe582f0@coco.lan>
+        id S231761AbhFXQxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 12:53:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229881AbhFXQxr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 12:53:47 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91193C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 09:51:27 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so3860339pjo.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 09:51:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jz6S10IZvedV4y2N6FCYpRq0S+pqAraI9WxeXGHARr4=;
+        b=lu5u4UhFrYXI8TIgX+1Qp0tyWIEkDBvZq3fg5PgYYJVj0CL7DQMYKgV9okcTlkFEv1
+         A385B+qbzg4ZPUsfimPc6c2oMvIyBQmgjlgQUV3gV/1hkI6eEL7o0OtX7arjZknACx0K
+         wJDgN0gpaXA9tItc+HOqnAGFt3f6RYUZt/zgI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jz6S10IZvedV4y2N6FCYpRq0S+pqAraI9WxeXGHARr4=;
+        b=fg1yoTMtCHzk/olIfGXF7TAxoN2pYE6l0DyKC2m2THcMMOkdrBCMrFWlJ2DKfF0JNk
+         7Kjnxz6vjfKOZuFC2VX5xCHRGisZIq+qsNAiEwl7VjSRXK5/M4nWBkz+YtgOXeSZr3r1
+         q02sefahwWeNlLA7p+NFSQ8wOHkDQb/UasxYyeyPmV4dzeLsnfNQDhU63179TV8MiUhq
+         7xXd7VxLnFMkQb38exPJSO7WwS539ctSMwBMI+enpcGYYRWCDrfcSZI4ydK9TNscy73S
+         5PcVuJJrIysDcr8PDtvBjqob2jROgRWZtKdS5iQi2uSZv27Ew8Pn+LWTYpaqXzSOQmsd
+         SNPw==
+X-Gm-Message-State: AOAM533mvBOGKyf9FqawKtK6h0bEjlcxLryaysXbVuTmDzyIU8sCdo7N
+        ltpdD3APbHNqRsMx8SXaYwrjzi9yIvD/hA==
+X-Google-Smtp-Source: ABdhPJwovNVl5CDsYmTE7Ynu8XPYgBppz9ug+rH39FUWZGxLHfv4Nwl26xTwLvaJOqb9MlOV0c3PqA==
+X-Received: by 2002:a17:90b:3794:: with SMTP id mz20mr15878900pjb.23.1624553487012;
+        Thu, 24 Jun 2021 09:51:27 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:dda9:4015:5d1f:23fe])
+        by smtp.gmail.com with UTF8SMTPSA id q8sm3374524pfc.51.2021.06.24.09.51.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 09:51:26 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 09:51:25 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        rjw@rjwysocki.net, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [Patch v2 5/5] arm64: boot: dts: qcom: sdm845: Remove passive
+ trip points for thermal zones 0-7
+Message-ID: <YNS4DeHdxWY1XvvT@google.com>
+References: <20210624115813.3613290-1-thara.gopinath@linaro.org>
+ <20210624115813.3613290-6-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210624174322.0fe582f0@coco.lan>
+In-Reply-To: <20210624115813.3613290-6-thara.gopinath@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 05:43:22PM +0200, Mauro Carvalho Chehab wrote:
-> Em Thu, 24 Jun 2021 16:26:41 +0200
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> 
-> > On Thu, Jun 24, 2021 at 04:01:32PM +0200, Mauro Carvalho Chehab wrote:
-> > > Before moving this driver out of staging, do a couple of
-> > > cleanups, in order to make the driver clearer.
-> > > 
-> > > No functional changes.
-> > > 
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > ---
-> > >  drivers/staging/hikey9xx/hi6421-spmi-pmic.c   | 122 ++++++++++--------
-> > >  .../hikey9xx/hisilicon,hi6421-spmi-pmic.yaml  |   7 +-
-> > >  2 files changed, 71 insertions(+), 58 deletions(-)
-> > > 
-> > > diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-> > > index 626140cb96f2..252b731e272d 100644
-> > > --- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-> > > +++ b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-> > > @@ -2,9 +2,9 @@
-> > >  /*
-> > >   * Device driver for regulators in HISI PMIC IC
-> > >   *
-> > > - * Copyright (c) 2013 Linaro Ltd.
-> > > - * Copyright (c) 2011 Hisilicon.
-> > > - * Copyright (c) 2020-2021 Huawei Technologies Co., Ltd
-> > > + * Copyright (c) 2013- Linaro Ltd.
-> > > + * Copyright (c) 2011- Hisilicon.  
-> > 
-> > What does the "-" mean here?  That does not mean from 2013-present.
-> 
-> I'm pretty sure I found some copyright notes using this convention
-> somewhere to mean "2013-present".
+On Thu, Jun 24, 2021 at 07:58:13AM -0400, Thara Gopinath wrote:
 
-That is not a valid copyright date assignment listing.  There is no way
-to say something like this as it does not make any sense.  The years
-need to be listed individually or as a range.
+> Subject: arm64: boot: dts: qcom: sdm845: Remove passive trip points for thermal zones 0-7
 
-thanks,
+The patch doesn't remove the passive trip points (anymore?), but the cooling
+maps/devices. Also talking about 'thermal zones 0-7' doesn't really convey
+any useful information (and the enumeration could potentially change in the
+future), better talk about the CPU thermal zones.
 
-greg k-h
+> Now that Limits h/w is enabled to monitor thermal events around cpus and
+> throttle the cpu frequencies, remove cpufreq cooling device for the cpus which
+> does software throttling of cpu frequencies.
