@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0536D3B3396
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15D53B339E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhFXQLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 12:11:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhFXQLj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 12:11:39 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918AEC061574;
-        Thu, 24 Jun 2021 09:09:19 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id c7so9305857edn.6;
-        Thu, 24 Jun 2021 09:09:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=NhXbcWrm933uql/n/aBmpwjEP8OaVS7r8CFi6W764Qg=;
-        b=VZiCjLICEcJDJap5vKQBCc3Qflk3UIzrL5NRG54tE6sEHHyIiEORHnWYQYhGU6WWgu
-         aDwFIjguK7HxzaRzxMfkfGl6u2zrQnJdYMcYVUYlBFazUWm+IhZ1JCHXihG9BALmb35U
-         ujz1VYjEuxriiyZ2iospFGwSKru0bD9+yxd3VvARVFx4autzgPtdPDt6HukzuM+veJR7
-         KVqUYu6JBAQbPga4okVnH8aRrY7y5fgGbDgDKVA+6w050uaFWaFrxBSUdPNOJli6tOFc
-         iotb3wOzRbQY1edGOqvlMQ48ZSca2nV6jzs2IL+GMIu9i4ENHM1Au2N9JzIED4Lmj7Kx
-         I2CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=NhXbcWrm933uql/n/aBmpwjEP8OaVS7r8CFi6W764Qg=;
-        b=TorDZ32eSS1SGhzzKaR5/d6jjCK/K85AIIl9PeNuXL4lysnl9Ieviw3VJj/k0edKB7
-         ccNP51Z1Og/cKOPn6/ilzFg9bbdZTFdzkIB5RhL4FWWjtSSGsuncj8Ol5XAi6YI1y4Hr
-         BeREYRZvOTcSu+GXs6TbpZetuYqpb2yIAoZm1qDpTg6wcximB36+C/Bpz8t3p9/Vyo83
-         zzU13C7JqeDeFpPjpUDvqKflYPwPO9nU+IFovugvPuQPtJ4aEgzDXv9k3KZyIhvr8LVp
-         350RnxyBJ/HHsLXOeMRbeiL952AVYtArmofOWlNQ1AWTWWsTQLOMesJqvvnwm07qznsb
-         jhLw==
-X-Gm-Message-State: AOAM532mx1WNCE3IV7eLdX+VoTowg4PTKczpWPrL1U1r/xk7k6kBml2V
-        Hq6GJbOXxsyGQ3xrdef4dH4mywKvfpMQ0enO12tGthV6VCeyYw==
-X-Google-Smtp-Source: ABdhPJyHv3bFXE94qKF4P2jRHaesfIj8LSinkd90w1J4itsRJl2LWlKJS88uPRXvKA6do6N6MinjVkevV4aDe4q8yEE=
-X-Received: by 2002:a05:6402:3507:: with SMTP id b7mr8403605edd.66.1624550957782;
- Thu, 24 Jun 2021 09:09:17 -0700 (PDT)
+        id S230257AbhFXQOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 12:14:08 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:54050 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229445AbhFXQOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 12:14:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=2zpxTskXtsSrCKrJdGxNHyEuYUkfYqVGKXrVSQNH2cg=; b=pCQpVOtxgMgXa5fmttOeaZCDS2
+        eGEAjIw+HJKlpBXv/y99EkzIEDk4LGG/2LWIobnETdlypWtlDiUJUMK2saxMzDiKGUZreG1Xyl3tP
+        Uyl81+u4qfj7XRxtu4TROreTRUb9p300x+w1Bd8UAXvj6C+7FgtTu7hlWUgMB71VSNas=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lwRx6-00Azym-DF; Thu, 24 Jun 2021 18:11:40 +0200
+Date:   Thu, 24 Jun 2021 18:11:40 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Einon <mark.einon@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 2/3] net: Provide switchdev driver for NXP's More Than IP
+ L2 switch
+Message-ID: <YNSuvJsD0HSSshOJ@lunn.ch>
+References: <20210622144111.19647-1-lukma@denx.de>
+ <20210622144111.19647-3-lukma@denx.de>
+ <YNH7vS9FgvEhz2fZ@lunn.ch>
+ <20210623133704.334a84df@ktm>
+ <YNOTKl7ZKk8vhcMR@lunn.ch>
+ <20210624125304.36636a44@ktm>
+ <YNSJyf5vN4YuTUGb@lunn.ch>
+ <20210624163542.5b6d87ee@ktm>
 MIME-Version: 1.0
-References: <CAOuPNLiZL4wXc__+Zx+m7TMjUjNq10tykHow3R9AvCknSNR6bQ@mail.gmail.com>
-In-Reply-To: <CAOuPNLiZL4wXc__+Zx+m7TMjUjNq10tykHow3R9AvCknSNR6bQ@mail.gmail.com>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Thu, 24 Jun 2021 21:39:06 +0530
-Message-ID: <CAOuPNLhoLBwksNt+tJ2=hZr-TGHZgEiu7dgk66BUsraGA16Juw@mail.gmail.com>
-Subject: Re: Query: UBIFS: How to detect empty volumes
-To:     open list <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624163542.5b6d87ee@ktm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Jun 24, 2021 at 04:35:42PM +0200, Lukasz Majewski wrote:
+> Hi Andrew,
+> 
+> > > I'm not sure if the imx28 switch is similar to one from TI (cpsw-3g)
+> > > - it looks to me that the bypass mode for both seems to be very
+> > > different. For example, on NXP when switch is disabled we need to
+> > > handle two DMA[01]. When it is enabled, only one is used. The
+> > > approach with two DMAs is best handled with FEC driver
+> > > instantiation.  
+> > 
+> > I don't know if it applies to the FEC, but switches often have
+> > registers which control which egress port an ingress port can send
+> > packets to. So by default, you allow CPU to port0, CPU to port1, but
+> > block between port0 to port1. This would give you two independent
+> > interface, the switch enabled, and using one DMA. When the bridge is
+> > configured, you simply allow port0 and send/receive packets to/from
+> > port1. No change to the DMA setup, etc.
+> 
+> Please correct me if I misunderstood this concept - but it seems like
+> you refer to the use case where the switch is enabled, and by changing
+> it's "allowed internal port's" mapping it decides if frames are passed
+> between engress ports (port1 and port2).
 
-I have one basic query related to UBIFS volumes on a system with NAND partition.
-In short, how to detect a particular empty volume inside a system
-partition while flashing the partition image?
-
-Suppose I have one big system partition that consists of 4-5 ubi
-volumes inside it with varying sizes.
-Lets say:
--- System Partition (ubi image)
-    - rootfs volume (ro, squashfs)
-    - data volume (rw, ubifs)
-    - firmware volume (ro, ubifs)
-    - some-other volume (ro, squashfs)
-
-Consider that all these could be flashed together as part of
-system.ubi image in a single shot from the bootloader.
-Now, suppose, one of the volume image (say firmware) is missing or
-remains empty (as you know we can have empty volumes).
-
-So, during system image flashing, we wanted to detect if one of the
-volume (firmware) is empty.
-Since this is an important volume, so we wanted to detect if this
-volume is empty/missing we will abort flashing the system partition.
-As there is no point in booting the system without this partition.
-
-So, I am exploring options, how can this be detected ?
-I mean is there any kind of magic number or header information which
-we can read to detect a particular empty volume ?
-Can we get any information from just "system.ubi" image to indicate
-about the volume information ?
-Also it could be possible that 2 or more volumes are empty, but we are
-only concerned about one particular volume (firmware), so how to
-detect particular volume ?
-
-If anyone has any thoughts about this requirement, please share your opinion.
+Correct.
 
 
-Thanks,
-Pintu
+> 	----------
+> DMA0 ->	|P0    P1| -> ENET-MAC (PHY control) -> eth0 (lan1)
+> 	|L2 SW	 |
+> 	|      P2| -> ENET-MAC (PHY control) -> eth1 (lan2)
+> 	----------
+> 
+> DMA1 (not used)
+> 
+> We can use this approach when we keep always enabled L2 switch.
+> 
+> However now in FEC we use the "bypass" mode, where:
+> DMA0 -> ENET-MAC (FEC instance driver 1) -> eth0
+> DMA1 -> ENET-MAC (FEC instance driver 2) -> eth1
+> 
+> And the "bypass" mode is the default one.
+
+Which is not a problem, when you refactor the FEC into a library and a
+driver, plus add a new switch driver. When the FEC loads, it uses
+bypass mode, the switch disabled. When the new switch driver loads, it
+always enables the switch, but disables communication between the two
+ports until they both join the same bridge.
+
+But i doubt we are actually getting anywhere. You say you don't have
+time to write a new driver. I'm not convinced you can hack the FEC
+like you are suggesting and not end up in the mess the cpsw had,
+before they wrote a new driver.
+
+       Andrew
