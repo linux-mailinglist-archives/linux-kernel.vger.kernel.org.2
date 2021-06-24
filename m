@@ -2,84 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0FB3B32DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C3A3B32DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232476AbhFXPwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 11:52:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:60944 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232053AbhFXPwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 11:52:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 46B81ED1;
-        Thu, 24 Jun 2021 08:50:19 -0700 (PDT)
-Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE2033F719;
-        Thu, 24 Jun 2021 08:50:17 -0700 (PDT)
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Heiner Kallweit <hkallweit1@gmail.com>, nic_swsd@realtek.com
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sayanta Pattanayak <sayanta.pattanayak@arm.com>
-Subject: [PATCH v2] r8169: Avoid duplicate sysfs entry creation error
-Date:   Thu, 24 Jun 2021 16:49:45 +0100
-Message-Id: <20210624154945.19177-1-andre.przywara@arm.com>
-X-Mailer: git-send-email 2.14.1
+        id S232313AbhFXPyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 11:54:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231294AbhFXPyd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 11:54:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DDFC061574;
+        Thu, 24 Jun 2021 08:52:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RhOughdPQBT8FH1TMb9mE3gkCHTQi+TVzms17GvbwF4=; b=rgTJ5jhkLChatsb8/9DhxRKKlK
+        XqXuAqqgu0z7SI+WEhiWiUDaik6wSA4GU/op+TcncBjx/2cuXPqSOsuYPA1mf4UvEBWh81tWuHIRZ
+        DsMXSjsH3nOuoEuOU/pOMPihqSv7zMZJ9ylt4JfjWd/kb5msg5HIOxQJ4C5GgWoP3Xy8rEeSFcTjU
+        i5haAaP+y/afjxw887oqx8TIsmyxzxu5CJqBZ52B4Qa3SkrfXnZaj15eAUlA3d1v8CSHfla0dYJGh
+        wQlxkX3VfkbHCFIJ9jU8D0MliVK2EWIXq+pActYJoxUhWd8l0izXSTGs0+0p27ihIb48SxXUK8L6A
+        10ohojPQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwRe3-00GjYi-NI; Thu, 24 Jun 2021 15:52:03 +0000
+Date:   Thu, 24 Jun 2021 16:51:59 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 02/46] mm: Add folio_rmapping()
+Message-ID: <YNSqHzKM5oi2XSxZ@casper.infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-3-willy@infradead.org>
+ <YNLpStcUTkcHG0R9@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNLpStcUTkcHG0R9@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
+On Wed, Jun 23, 2021 at 09:56:58AM +0200, Christoph Hellwig wrote:
+> > +static inline void *folio_rmapping(struct folio *folio)
+> 
+> This name, just like the old one is not exaclty descriptive.  I guess the
+> r stands for raw somehow?  As a casual contributor to the fringes of the
+> MM I would have no idea when to use it.
+> 
+> All this of course also applies to the existing (__)page_rmapping, but
+> maybe this is a good time to sort it out.
 
-When registering the MDIO bus for a r8169 device, we use the PCI B/D/F
-specifier as a (seemingly) unique device identifier.
-However the very same BDF number can be used on another PCI segment,
-which makes the driver fail probing:
+Yes, good point.  I don't like the name rmapping either, since
+we already have rmap which has nothing to do with this.  I'll
+leave page_rmapping() alone for now; no need to add that churn.
+I think they all become calls to folio_raw_mapping() later.
 
-[ 27.544136] r8169 0002:07:00.0: enabling device (0000 -> 0003)
-[ 27.559734] sysfs: cannot create duplicate filename '/class/mdio_bus/r8169-700'
-....…
-[ 27.684858] libphy: mii_bus r8169-700 failed to register
-[ 27.695602] r8169: probe of 0002:07:00.0 failed with error -22
+> >  
+> >  struct anon_vma *page_anon_vma(struct page *page)
+> >  {
+> > +	struct folio *folio = page_folio(page);
+> > +	unsigned long mapping = (unsigned long)folio->mapping;
+> >  
+> >  	if ((mapping & PAGE_MAPPING_FLAGS) != PAGE_MAPPING_ANON)
+> >  		return NULL;
+> > +	return folio_rmapping(folio);
+> 
+> It feelds kinda silly to not just open code folio_rmapping here
+> given that we alredy went half the way. 
 
-Add the segment number to the device name to make it more unique.
+Yeah, I thought about that too.  Done:
 
-This fixes operation on an ARM N1SDP board, where two boards might be
-connected together to form an SMP system, and all on-board devices show
-up twice, just on different PCI segments.
-
-Signed-off-by: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
-[Andre: expand commit message, use pci_domain_nr()]
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
----
-Now compile-tested on ARM, arm64, ppc64, sparc64, mips64, hppa, x86-64,
-i386.
-
-Changes v1 ... v2:
-- use pci_domain_nr() wrapper to fix compilation on various arches
-
- drivers/net/ethernet/realtek/r8169_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index 2c89cde7da1e..5f7f0db7c502 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -5086,7 +5086,8 @@ static int r8169_mdio_register(struct rtl8169_private *tp)
- 	new_bus->priv = tp;
- 	new_bus->parent = &pdev->dev;
- 	new_bus->irq[0] = PHY_MAC_INTERRUPT;
--	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x", pci_dev_id(pdev));
-+	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x-%x",
-+		 pci_domain_nr(pdev->bus), pci_dev_id(pdev));
- 
- 	new_bus->read = r8169_mdio_read_reg;
- 	new_bus->write = r8169_mdio_write_reg;
--- 
-2.17.5
+-       return folio_rmapping(folio);
++       return (void *)(mapping - PAGE_MAPPING_ANON);
 
