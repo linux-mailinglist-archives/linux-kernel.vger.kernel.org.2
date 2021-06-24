@@ -2,112 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0C53B377A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA4BF3B3783
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232881AbhFXUBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 16:01:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41750 "EHLO mail.kernel.org"
+        id S232897AbhFXUC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 16:02:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232554AbhFXUBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 16:01:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7ABE613B3;
-        Thu, 24 Jun 2021 19:58:52 +0000 (UTC)
+        id S232759AbhFXUCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 16:02:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 96DD2613C2;
+        Thu, 24 Jun 2021 20:00:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624564733;
-        bh=fiS4onLy74TZFhJjBt1SUXmu1BzjLf+B0VLAgfbZnlM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RLop2xxIAYpwLqQvdjg05VjLbfHz/U0kTTIak+DtduLg57CdnOWA9+MBuE7NwciQH
-         9L5GUhmEDy1ELiHSkYDWnLCOJ8izr9v4tIuauTo2W+INXVhXoPEzDqb+D2FtEqG5Iz
-         AH6o16psRLhswTT5utlq/zzb/p1WfDC42nu802eATFUuxR0m07119zytuyzXosT0UH
-         G0X/KvFYJ2NLcvLElkf2Bi7ASvuIrckEXnJeEJQ+8+QSvTMh21fnDCnP8sH7yMguXA
-         Alc/nLVHYgLnYJ+mrX6TqFm0Jdat+zR6BujP+98E5WLUntsL0HviLBS0gfTJGZR8hq
-         6llo6wRH6/jsQ==
-Date:   Thu, 24 Jun 2021 21:58:48 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Kwon Tae-young <tykwon@m2i.co.kr>
-Cc:     Oleksij Rempel <linux@rempel-privat.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c/imx: Fix some checkpatch warnings
-Message-ID: <YNTj+OIox6X2gjpQ@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Kwon Tae-young <tykwon@m2i.co.kr>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210623083643.395-1-tykwon@m2i.co.kr>
+        s=k20201202; t=1624564804;
+        bh=iqW6OKBD+Pd54AIhc1V9/0r7UUpEJ54FfBFonNp4wlQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=oO0ysNuqPIwg2+FIj618DpHbY3F9IM19JHT03HnM2bg2fLL9mt2LeQKyLud9xlY21
+         zSflRO4c20dChYfj5BAZVGjwOte81EnxtHgtC9OmYnWvRYyhZDImJX3lUl22WSi9eJ
+         HZ83SW57j5kSiwoLxBHA1hZ9fK/H1FCCSuWXO/cPLEzEBoqlyKnRCYFu3071Z1i/vV
+         R1O2mWpDKI6oOCQVQaQYGVhM7+0RfE+odUPeQ4rlim2J0xuZX3Qjsr7xOwkPfLVVEQ
+         70caBPBDFoMTuihe3TPz2hF9G0u4hfaMv0tUUNe63ponVWDxdSnwJHUxew+HW++O2f
+         tIJizK1qU5h6g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 908D9609AC;
+        Thu, 24 Jun 2021 20:00:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xKVUc1DBTSjJTp3T"
-Content-Disposition: inline
-In-Reply-To: <20210623083643.395-1-tykwon@m2i.co.kr>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/2] Document the NXP SJA1110 switch as supported
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162456480458.15446.9074214993699449470.git-patchwork-notify@kernel.org>
+Date:   Thu, 24 Jun 2021 20:00:04 +0000
+References: <20210624145524.944878-1-olteanv@gmail.com>
+In-Reply-To: <20210624145524.944878-1-olteanv@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        f.fainelli@gmail.com, andrew@lunn.ch, vivien.didelot@gmail.com,
+        corbet@lwn.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, vladimir.oltean@nxp.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
---xKVUc1DBTSjJTp3T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed, Jun 23, 2021 at 05:36:43PM +0900, Kwon Tae-young wrote:
-> Fix the following warnings reported by checkpatch::
-> drivers/i2c/busses/i2c-imx.c:173: WARNING: Prefer 'unsigned int' to bare =
-use of 'unsigned'
-> drivers/i2c/busses/i2c-imx.c:175: WARNING: Prefer 'unsigned int' to bare =
-use of 'unsigned'
-> drivers/i2c/busses/i2c-imx.c:176: WARNING: Prefer 'unsigned int' to bare =
-use of 'unsigned'
-> drivers/i2c/busses/i2c-imx.c:177: WARNING: Prefer 'unsigned int' to bare =
-use of 'unsigned'
-> drivers/i2c/busses/i2c-imx.c:455: WARNING: Unnecessary ftrace-like loggin=
-g - prefer using ftrace
-> drivers/i2c/busses/i2c-imx.c:602: WARNING: Unnecessary ftrace-like loggin=
-g - prefer using ftrace
-> drivers/i2c/busses/i2c-imx.c:638: WARNING: Unnecessary ftrace-like loggin=
-g - prefer using ftrace
-> drivers/i2c/busses/i2c-imx.c:1170: WARNING: Unnecessary ftrace-like loggi=
-ng - prefer using ftrace
-> drivers/i2c/busses/i2c-imx.c:1374: WARNING: Unnecessary ftrace-like loggi=
-ng - prefer using ftrace
-> drivers/i2c/busses/i2c-imx.c:1398: WARNING: Prefer strscpy over strlcpy -=
- see: https://lore.kernel.org/r/CAHk-=3DwgfRnXz0W3D37d01q3JFkr_i_uTL=3DV6A6=
-G1oUZcprmknw@mail.gmail.com/
->=20
-> Signed-off-by: Kwon Tae-young <tykwon@m2i.co.kr>
+On Thu, 24 Jun 2021 17:55:22 +0300 you wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+> 
+> Now that most of the basic work for SJA1110 support has been done in the
+> sja1105 DSA driver, let's add the missing documentation bits to make it
+> clear that the driver can be used.
+> 
+> Vladimir Oltean (2):
+>   Documentation: net: dsa: add details about SJA1110
+>   net: dsa: sja1105: document the SJA1110 in the Kconfig
+> 
+> [...]
 
-Applied to for-next, thanks!
+Here is the summary with links:
+  - [net-next,1/2] Documentation: net: dsa: add details about SJA1110
+    https://git.kernel.org/netdev/net-next/c/44531076338f
+  - [net-next,2/2] net: dsa: sja1105: document the SJA1110 in the Kconfig
+    https://git.kernel.org/netdev/net-next/c/75e994709f8a
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
---xKVUc1DBTSjJTp3T
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDU4/cACgkQFA3kzBSg
-KbaMsRAAjjoZ0oTZauLvAtVL+zarVERUz4QDv8gPOQuhLVMJrdiIL4ajPoL4XXgU
-s8sHXpLWRL/a+q4f0Dx301UGRviu+/zH3qhoCTlzLRlP4+367QsGmGUlIxqR1nIQ
-Mml+qqxx0R2i9ziW12n3jBB4JJU6Rk1jZSIJ+FrRHmPSusqsW/G8uGoUDjW2EPuP
-AUN8QuYDFlZCfjV8TLxCxMHoKKUpGKAohWgp85YqgHDaQPkEztHRiB0HU2hi6IjD
-K1ORqKKtP8WypgFeq5EMemTAheSs8XkKAlPGtqt4d1e2+i+IQdRW3qspujHkSKNj
-7AJavB3N03EnOhgl6d8aGWT9xC6EOFVUfmAIxlyIbtszZAeARmdyM7X5T9z++8hR
-3StM5DY9Ww31N8D73ta8A9IGahXN5sGcsBkR0HDF4ku8PKQm9JD8DjBPGEltJ0RJ
-6AjQSTW9ShvsbFtXgwoX8W3EUg4AojdIHh4Qimmgj6/vVZH9OGkry0YKQAjn/6BF
-03yDHf7xjPxL0H+no2kdRLLzuebr2BRKJk73wwvfcfpg7qL5v5GZG6RL+59pcmW6
-pcgcIwNgaqG+ifXvp6vmjpVNELmjGhPMXPl3tHu0YCj2NtUicIndwmoXK2pHchrs
-mWLpq3NtfGM77Wr1D8RIC9lrNCxBvjAc2SQlGDnqzGeVlr8FftI=
-=0Xo2
------END PGP SIGNATURE-----
-
---xKVUc1DBTSjJTp3T--
