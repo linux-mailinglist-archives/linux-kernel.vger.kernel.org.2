@@ -2,102 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C463B2BEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6063B2C03
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232177AbhFXJ5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:57:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27739 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232178AbhFXJ5b (ORCPT
+        id S232082AbhFXKAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 06:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231974AbhFXKAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:57:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624528512;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iTSSAgK7aaghb7ToUQUO/0vYqBsE2JOeFkxWgsEco9g=;
-        b=gNTs9CmJO+TRe1dyQCDAsPsghzAwC7W6d29LJ1l29HMqCu4lB/3MvTpdkx8qO26iivj2zZ
-        HrMpp3KvGyxcl4zg6tzxo3CZSnQzzlv7NpBr+vh2kSccxZZ5dVSDhKlR/xaCdJKpJwSaWf
-        brnqcyTB7QbRM+88M5cy/tnFJbmLeKc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-5SSWgA9GPSCnSLccV1-bUg-1; Thu, 24 Jun 2021 05:55:08 -0400
-X-MC-Unique: 5SSWgA9GPSCnSLccV1-bUg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 49D218C5EC2;
-        Thu, 24 Jun 2021 09:55:07 +0000 (UTC)
-Received: from work (unknown [10.40.193.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 549CF5C1BB;
-        Thu, 24 Jun 2021 09:55:05 +0000 (UTC)
-Date:   Thu, 24 Jun 2021 11:55:01 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Stephen Brennan <stephen.s.brennan@oracle.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Junxiao Bi <junxiao.bi@oracle.com>
-Subject: Re: [PATCH] ext4: use ext4_grp_locked_error in mb_find_extent
-Message-ID: <20210624095501.jkd7iwu5bljw7xao@work>
-References: <20210623232114.34457-1-stephen.s.brennan@oracle.com>
+        Thu, 24 Jun 2021 06:00:23 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8790DC061574;
+        Thu, 24 Jun 2021 02:58:03 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id w71so4725250pfd.4;
+        Thu, 24 Jun 2021 02:58:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=2/FXkDvvz78LZzi8vEuw9P0gxvIPqn8+9Qh994D56qo=;
+        b=EhX2h/EGnTWqdqRQbpZlpJcgT0oJJ6o7Nef8q7EtPvI99smF5fr4TIG1Xp5CmTthMl
+         XHQzIJWggbxJUXpq8OIPTnYOso57K6OBKZR9lvcFT5+8SBJA9849ahv3W1ndrCYtoccT
+         yygIYTNJlnGOy5EhAkMecjcGkX/PpQmk6jKwKuAM0vg6/CjPiKQtp4B/woWoN5Oxyu7M
+         ua8ZUETzbjTOqOpCOLZ+ZXZ4cbXcI88NdWfpPkU+Dnz/3z1CLTZvVnhoG0DpsDAi9bV1
+         nK9pW2bxw2DMCvsnbAXlJB/lKwAPvP15NgJgI5cnQ6vQYvzhGuulMUnoZMx6s+4VaanO
+         Eqdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=2/FXkDvvz78LZzi8vEuw9P0gxvIPqn8+9Qh994D56qo=;
+        b=I9I+2OiO6x90DSdzE2/+u34W0RL5pju25egcTYnBRXEbeEn+eItzhqfuXHLN1nyfdG
+         zHh7yfbdwbQ6CN2dAU+5GI7NhoWXGWKkML/yM+5JESCKHYQUigGJjFYmu7Zu4sM1iUaP
+         Lgc6yyFrwQiWBgDJ58YQ86fJPQdLxMhEF00oN9r/utwsoi02gI7npGdRIyFNGoF+e/Gy
+         C5ILp2gJnz5V4c6/FT58Bfu6YR1FydDYfppsPGUvn6mSZ5OmIUH67BJ2zuJYgusfA9Pa
+         oKQ30oOaODL8QlT5w+PTeMR2hOL2vynck3cPE2hasDS6ovg0BIlVklXd6XGC6BhcElNB
+         9vSQ==
+X-Gm-Message-State: AOAM53296s1cmH/B9fuYn+FHy4xvzL/cf7DDu5mAzd3NLUX+K/3ATddj
+        uilZu52pyBlYHl5qL7d3jao=
+X-Google-Smtp-Source: ABdhPJzzKwhLHCAEARj7N7XbHWSLsSDNrl/BU7M36fXftqZpKf9BHg/7Rmx6MuG9ZeVpPhgC2xWSpQ==
+X-Received: by 2002:a62:1857:0:b029:302:fb56:df52 with SMTP id 84-20020a6218570000b0290302fb56df52mr4317733pfy.3.1624528683047;
+        Thu, 24 Jun 2021 02:58:03 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id y20sm2759510pfb.207.2021.06.24.02.58.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 02:58:02 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 19:57:57 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 2/6] KVM: mmu: also return page from gfn_to_pfn
+To:     Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Stevens <stevensd@chromium.org>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        James Morse <james.morse@arm.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvmarm@lists.cs.columbia.edu,
+        kvm-ppc@vger.kernel.org, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Sean Christopherson <seanjc@google.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Will Deacon <will@kernel.org>
+References: <20210624035749.4054934-1-stevensd@google.com>
+        <20210624035749.4054934-3-stevensd@google.com>
+        <1624524331.zsin3qejl9.astroid@bobo.none>
+        <201b68a7-10ea-d656-0c1e-5511b1f22674@redhat.com>
+In-Reply-To: <201b68a7-10ea-d656-0c1e-5511b1f22674@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210623232114.34457-1-stephen.s.brennan@oracle.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Message-Id: <1624528342.s2ezcyp90x.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 04:21:14PM -0700, Stephen Brennan wrote:
-> Commit 5d1b1b3f492f ("ext4: fix BUG when calling ext4_error with locked
-> block group") introduces ext4_grp_locked_error to handle unlocking a
-> group in error cases. Otherwise, there is a possibility of a sleep while
-> atomic. However, since 43c73221b3b1 ("ext4: replace BUG_ON with WARN_ON
-> in mb_find_extent()"), mb_find_extent() has contained a ext4_error()
-> call while a group spinlock is held. Replace this with
-> ext4_grp_locked_error.
-> 
-> Fixes: 43c73221b3b1 ("ext4: replace BUG_ON with WARN_ON in mb_find_extent()")
-> Cc: <stable@vger.kernel.org> # 4.14+
-> Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
-> Reviewed-by: Junxiao Bi <junxiao.bi@oracle.com>
+Excerpts from Paolo Bonzini's message of June 24, 2021 7:42 pm:
+> On 24/06/21 10:52, Nicholas Piggin wrote:
+>>> For now, wrap all calls to gfn_to_pfn functions in the new helper
+>>> function. Callers which don't need the page struct will be updated in
+>>> follow-up patches.
+>> Hmm. You mean callers that do need the page will be updated? Normally
+>> if there will be leftover users that don't need the struct page then
+>> you would go the other way and keep the old call the same, and add a new
+>> one (gfn_to_pfn_page) just for those that need it.
+>=20
+> Needing kvm_pfn_page_unwrap is a sign that something might be buggy, so=20
+> it's a good idea to move the short name to the common case and the ugly=20
+> kvm_pfn_page_unwrap(gfn_to_pfn(...)) for the weird one.  In fact I'm not=20
+> sure there should be any kvm_pfn_page_unwrap in the end.
 
-Good catch, looks good to me.
+If all callers were updated that is one thing, but from the changelog
+it sounds like that would not happen and there would be some gfn_to_pfn
+users left over.
 
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+But yes in the end you would either need to make gfn_to_pfn never return
+a page found via follow_pte, or change all callers to the new way. If=20
+the plan is for the latter then I guess that's fine.
 
-Thanks!
--Lukas
-
-> ---
->  fs/ext4/mballoc.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index c2c22c2baac0..089c958aa2c3 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -1909,10 +1909,11 @@ static int mb_find_extent(struct ext4_buddy *e4b, int block,
->  	if (ex->fe_start + ex->fe_len > EXT4_CLUSTERS_PER_GROUP(e4b->bd_sb)) {
->  		/* Should never happen! (but apparently sometimes does?!?) */
->  		WARN_ON(1);
-> -		ext4_error(e4b->bd_sb, "corruption or bug in mb_find_extent "
-> -			   "block=%d, order=%d needed=%d ex=%u/%d/%d@%u",
-> -			   block, order, needed, ex->fe_group, ex->fe_start,
-> -			   ex->fe_len, ex->fe_logical);
-> +		ext4_grp_locked_error(e4b->bd_sb, e4b->bd_group, 0, 0,
-> +			"corruption or bug in mb_find_extent "
-> +			"block=%d, order=%d needed=%d ex=%u/%d/%d@%u",
-> +			block, order, needed, ex->fe_group, ex->fe_start,
-> +			ex->fe_len, ex->fe_logical);
->  		ex->fe_len = 0;
->  		ex->fe_start = 0;
->  		ex->fe_group = 0;
-> -- 
-> 2.30.2
-> 
-
+Thanks,
+Nick
