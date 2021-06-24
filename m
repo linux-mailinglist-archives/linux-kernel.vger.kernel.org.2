@@ -2,199 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82793B2587
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 05:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 277F63B2588
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 05:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbhFXDhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 23:37:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23343 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229850AbhFXDhU (ORCPT
+        id S229954AbhFXDlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 23:41:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229774AbhFXDlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 23:37:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624505701;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5QohIO9QZ56POeZsL8ywMd6mageIeyr6m/mT20FPwPo=;
-        b=IvnMUpI8ARjUQ2px4raVHAzkZtw8Xe8nNM9kftL3XfBjKTJcrecktPUp7p9IcpR5MXDNGR
-        DE5AgIzEme5gS3gO8raxa67tqctDueaqX9ZfAub2jdg0bSe8pbw5yfGlIiIvz+ic3rtRao
-        E5g34nLDd19n6b7XaBsRfiqUYH2+tX8=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-548-Ya7Chmu6MqSbEfOWbdWPlQ-1; Wed, 23 Jun 2021 23:35:00 -0400
-X-MC-Unique: Ya7Chmu6MqSbEfOWbdWPlQ-1
-Received: by mail-pf1-f200.google.com with SMTP id i13-20020aa78b4d0000b02902ea019ef670so3106144pfd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 20:34:59 -0700 (PDT)
+        Wed, 23 Jun 2021 23:41:04 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC69C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 20:38:45 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id c8so4020000pfp.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 20:38:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CVWElybcMrVlFZEvuz6VJdeudyns0hLjfyTboPZWo+0=;
+        b=XRQ1UFVyRFNZNGRsxtPwmHKKKv5wVxnp/XI3NVo6+vchT/UyHu1vFPPdzzRvokNxLG
+         pCjAQiKw6T46dmvvTHBd8cxsHPCuqgqwJfobh3x2Pn3V5fFXaoGL3FQ6Q7gAuFqw4g/D
+         tHyT7ekx+HlC45ZkTmEdTxQ2S3Edq+hEQKa9UcLtjGj3L+KCxpw65+LgJxdbeweD1qm6
+         ifnbOVkD2rV7+2X6cAgdcI+I6Bkj7IlJq9EVMEO+4FG5Mdoed5DQgbQrs6bCi4ESqf8H
+         vUmwxrhS9EZq8WNUv5DD/bdo05sOqgG1WYeVN3N0M8BcKyCwVFqU3NFHda/WpBRNWiet
+         o+Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=5QohIO9QZ56POeZsL8ywMd6mageIeyr6m/mT20FPwPo=;
-        b=IjH+HP21PsgSAdPtkgFXPjng2vRR7eZxnq1VmloJ8f9w3vq8YXB+wWy1+h8jXAM00B
-         x2CdfroSbrjdj7cqAaQsLq8tDXYenHLQSd/VHTC/88AHHfims6y+lmQOVj21CdPvbYA5
-         2zrs555+2tP1677XszM3Y0CPQWHl5IjVX7ROlcBuatmZSBFKebZW3oDB6VM+E3JaA0Dc
-         9l5u2yt8koZU7sc56IuQiSmFv79mcTM7ojzVUOby+sWiViJmz7ZZXcPMlMBffpig9jBO
-         817448QTmI5/fEUwWH+3DG9Mc8p9Qx9oxMm+11SuM/BX91Lq/ZjDdRGtta6x1IcRWRkz
-         UEiw==
-X-Gm-Message-State: AOAM532K6Vcx7DKSq4C9HEbgheUZTORFwsGn7xzVl7l7209RGXrNwFq/
-        LNKN48GVb7pE09HE2zKsuwUgKLPaDM+Wl+MivN5GbYI/Mv7uDJmwyqYsnq7qHEFJ8JW3yds2V1v
-        3Gi5tiPu+Rk9IkTzV+5sxuVmnY8m/p40O6jkTZ4VOdQ5uBlp/wPSIACCwPZp3y/CEOGs7kJeWD4
-        CT
-X-Received: by 2002:a17:90b:1191:: with SMTP id gk17mr2989122pjb.95.1624505698754;
-        Wed, 23 Jun 2021 20:34:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxoEDvRxknwye7AvfyEaKP6cKcvSDe8Ou4kXVMU8NQ9OSeQD22thwiDze8XxBwVGv+OJzWxjg==
-X-Received: by 2002:a17:90b:1191:: with SMTP id gk17mr2989081pjb.95.1624505698416;
-        Wed, 23 Jun 2021 20:34:58 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id a15sm1101133pff.128.2021.06.23.20.34.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 20:34:57 -0700 (PDT)
-Subject: Re: [PATCH v8 09/10] vduse: Introduce VDUSE - vDPA Device in
- Userspace
-To:     Yongji Xie <xieyongji@bytedance.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210615141331.407-1-xieyongji@bytedance.com>
- <20210615141331.407-10-xieyongji@bytedance.com>
- <adfb2be9-9ed9-ca37-ac37-4cd00bdff349@redhat.com>
- <CACycT3tAON+-qZev+9EqyL2XbgH5HDspOqNt3ohQLQ8GqVK=EA@mail.gmail.com>
- <1bba439f-ffc8-c20e-e8a4-ac73e890c592@redhat.com>
- <CACycT3uzMJS7vw6MVMOgY4rb=SPfT2srV+8DPdwUVeELEiJgbA@mail.gmail.com>
- <0aeb7cb7-58e5-1a95-d830-68edd7e8ec2e@redhat.com>
- <CACycT3uuooKLNnpPHewGZ=q46Fap2P4XCFirdxxn=FxK+X1ECg@mail.gmail.com>
- <e4cdee72-b6b4-d055-9aac-3beae0e5e3e1@redhat.com>
- <CACycT3u8=_D3hCtJR+d5BgeUQMce6S7c_6P3CVfvWfYhCQeXFA@mail.gmail.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <d2334f66-907c-2e9c-ea4f-f912008e9be8@redhat.com>
-Date:   Thu, 24 Jun 2021 11:34:46 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CVWElybcMrVlFZEvuz6VJdeudyns0hLjfyTboPZWo+0=;
+        b=YheDlDHmmrFLur3qUjs6qr3LCJqK3AO/XkPn7YAkBEg4kmLZYiCaetCywFoKB4/Uzu
+         MT8JSKcMPdkhL9jLNKnqaXOpkN7CPgb+Q+F+QN90xwVB/b+L72MkVRnFG24UDOfswR1J
+         Dxnt2K7xLvz+arJ+GV6RjCz/JBJ4icR+goyMvhn9nHsQx+GDkcNd5SSdclQw3fWG+VzC
+         2KaVhLL/hgHj5BIN/Daav9bmdlufKsAkJTanSsPzJkRMyt6FY8UBHbB/cPk0ZcT6wqAd
+         ZAXVHXm0f9QWvcHu1ghHZDOkZmvsAskmfDwiDqlBRX+VnEAcQDdLtveBSq7881HUeD2q
+         pylg==
+X-Gm-Message-State: AOAM532ft79J4SVsTjKC/lHSoV20eG9Zw5PLZb1IrVJcycNnhmj3Gdsr
+        eeOVE7xbytPA8q8pKJnzdjGrTDH2QH0nkOzKpgwHfw==
+X-Google-Smtp-Source: ABdhPJzJxUPsffBJjpirJgEDkvON8ayGRvsw6/E7EbW0LiXCMufsP62kGOVQtTg+y/PExUadM49df9OguzL68DfgwiE=
+X-Received: by 2002:a65:63ce:: with SMTP id n14mr2725499pgv.273.1624505925137;
+ Wed, 23 Jun 2021 20:38:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACycT3u8=_D3hCtJR+d5BgeUQMce6S7c_6P3CVfvWfYhCQeXFA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210622021423.154662-1-mike.kravetz@oracle.com>
+ <20210622021423.154662-3-mike.kravetz@oracle.com> <CAMZfGtVMn3daKrJwZMaVOGOaJU+B4dS--x_oPmGQMD=c=QNGEg@mail.gmail.com>
+ <39674952-44fc-8386-39b7-9e0862aaa991@oracle.com>
+In-Reply-To: <39674952-44fc-8386-39b7-9e0862aaa991@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 24 Jun 2021 11:38:08 +0800
+Message-ID: <CAMZfGtXQg__eDh39g0aXhvtD-91PkXJGeNFY_cJgC8X8q-11tA@mail.gmail.com>
+Subject: Re: [External] [PATCH 2/2] hugetlb: address ref count racing in prep_compound_gigantic_page
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Youquan Song <youquan.song@intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jan Kara <jack@suse.cz>, John Hubbard <jhubbard@nvidia.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2021/6/23 下午1:50, Yongji Xie 写道:
-> On Wed, Jun 23, 2021 at 11:31 AM Jason Wang <jasowang@redhat.com> wrote:
->>
->> 在 2021/6/22 下午4:14, Yongji Xie 写道:
->>> On Tue, Jun 22, 2021 at 3:50 PM Jason Wang <jasowang@redhat.com> wrote:
->>>> 在 2021/6/22 下午3:22, Yongji Xie 写道:
->>>>>> We need fix a way to propagate the error to the userspace.
->>>>>>
->>>>>> E.g if we want to stop the deivce, we will delay the status reset until
->>>>>> we get respose from the userspace?
->>>>>>
->>>>> I didn't get how to delay the status reset. And should it be a DoS
->>>>> that we want to fix if the userspace doesn't give a response forever?
->>>> You're right. So let's make set_status() can fail first, then propagate
->>>> its failure via VHOST_VDPA_SET_STATUS.
->>>>
->>> OK. So we only need to propagate the failure in the vhost-vdpa case, right?
->>
->> I think not, we need to deal with the reset for virtio as well:
->>
->> E.g in register_virtio_devices(), we have:
->>
->>           /* We always start by resetting the device, in case a previous
->>            * driver messed it up.  This also tests that code path a
->> little. */
->>         dev->config->reset(dev);
->>
->> We probably need to make reset can fail and then fail the
->> register_virtio_device() as well.
->>
-> OK, looks like virtio_add_status() and virtio_device_ready()[1] should
-> be also modified if we need to propagate the failure in the
-> virtio-vdpa case. Or do we only need to care about the reset case?
+On Thu, Jun 24, 2021 at 8:26 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
 >
-> [1] https://lore.kernel.org/lkml/20210517093428.670-1-xieyongji@bytedance.com/
+> Cc: Naoya
+>
+> On 6/23/21 1:00 AM, Muchun Song wrote:
+> > On Tue, Jun 22, 2021 at 10:15 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+> >>
+> >> In [1], Jann Horn points out a possible race between
+> >> prep_compound_gigantic_page and __page_cache_add_speculative.  The
+> >> root cause of the possible race is prep_compound_gigantic_page
+> >> uncondittionally setting the ref count of pages to zero.  It does this
+> >> because prep_compound_gigantic_page is handed a 'group' of pages from an
+> >> allocator and needs to convert that group of pages to a compound page.
+> >> The ref count of each page in this 'group' is one as set by the
+> >> allocator.  However, the ref count of compound page tail pages must be
+> >> zero.
+> >>
+> >> The potential race comes about when ref counted pages are returned from
+> >> the allocator.  When this happens, other mm code could also take a
+> >> reference on the page.  __page_cache_add_speculative is one such
+> >> example.  Therefore, prep_compound_gigantic_page can not just set the
+> >> ref count of pages to zero as it does today.  Doing so would lose the
+> >> reference taken by any other code.  This would lead to BUGs in code
+> >> checking ref counts and could possibly even lead to memory corruption.
+> >
+> > Hi Mike,
+> >
+> > Well. It takes me some time to get the race. It also makes me think more
+> > about this. See the below code snippet in gather_surplus_pages().
+> >
+> >         zeroed = put_page_testzero(page);
+> >        VM_BUG_ON_PAGE(!zeroed, page);
+> >         enqueue_huge_page(h, page);
+> >
+> > The VM_BUG_ON_PAGE() can be triggered because of the similar
+> > race, right? IIUC, we also should fix this.
+>
+> Thanks for taking a look at this Muchun.
+>
+> I believe you are correct.  Page allocators (even buddy) will hand back
+> a ref counted head page.  Any other code 'could' take a reference on the
+> head page before the pages are made into a hugetlb page.  Once the pages
+> becomes a hugetlb page (PageHuge() true), then only hugetlb specific
+> code should be modifying the ref count.  So, it seems the 'race window'
+> is from the time the pages are returned from a low level allocator until
+> the time the pages become a hugetlb page.  Does that sound correct?
 
+I have a question about this, why should the ref count of the hugetlb page
+be managed by the hugetlb specific code? What if we broke this rule? If so,
+we can fix this issue easily.
 
-My understanding is DRIVER_OK is not something that needs to be validated:
+CPU0:                                   CPU1:
+page = xas_load()
+// the page is freed to the buddy
+                                        page = alloc_surplus_huge_page()
+                                        if (put_page_testzero(page))
+                                                enqueue_huge_page(h, page)
+page_cache_get_speculative(page)
+if (unlikely(page != xas_reload(&xas)))
+        // this can help us free the hugetlb page to pool
+        put_page(page)
 
-"
-
-DRIVER_OK (4)
-Indicates that the driver is set up and ready to drive the device.
-
-"
-
-Since the spec doesn't require to re-read the and check if DRIVER_OK is 
-set in 3.1.1 Driver Requirements: Device Initialization.
-
-It's more about "telling the device that driver is ready."
-
-But we don have some status bit that requires the synchronization with 
-the device.
-
-1) FEATURES_OK, spec requires to re-read the status bit to check whether 
-or it it was set by the device:
-
-"
-
-Re-read device status to ensure the FEATURES_OK bit is still set: 
-otherwise, the device does not support our subset of features and the 
-device is unusable.
-
-"
-
-This is useful for some device which can only support a subset of the 
-features. E.g a device that can only work for packed virtqueue. This 
-means the current design of set_features won't work, we need either:
-
-1a) relay the set_features request to userspace
-
-or
-
-1b) introduce a mandated_device_features during device creation and 
-validate the driver features during the set_features(), and don't set 
-FEATURES_OK if they don't match.
-
-
-2) Some transports (PCI) requires to re-read the status to ensure the 
-synchronization.
-
-"
-
-After writing 0 to device_status, the driver MUST wait for a read of 
-device_status to return 0 before reinitializing the device.
-
-"
-
-So we need to deal with both FEATURES_OK and reset, but probably not 
-DRIVER_OK.
-
-Thanks
-
+If someone gets the page successfully before we put the page in the
+gather_surplus_pages, then it will help us add the hugetlb page
+to the pool when it calls put_page().
 
 >
-> Thanks,
-> Yongji
->
+> If we want to check for and handle such a race, we would need to do so
+> in prep_new_huge_page.  After setting the descructor we would need to
+> check for an increased ref count (> 1).  Not sure if we would need a
+> memory barrier or some other type synchronization for this?  This of
+> course means that prep_new_huge_page could return an error, and we would
+> need to deal with that in all callers.
 
+As described above, IIUC, we do not need to change the behavior
+of prep_new_huge_page. We just need to change gather_surplus_pages
+like below. Just my thoughts about this, maybe I am wrong.
+
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index c3b2a8a494d6..8a1a75534543 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -2160,17 +2160,11 @@ static int gather_surplus_pages(struct hstate
+*h, long delta)
+
+        /* Free the needed pages to the hugetlb pool */
+        list_for_each_entry_safe(page, tmp, &surplus_list, lru) {
+-               int zeroed;
+-
+                if ((--needed) < 0)
+                        break;
+-               /*
+-                * This page is now managed by the hugetlb allocator and has
+-                * no users -- drop the buddy allocator's reference.
+-                */
+-               zeroed = put_page_testzero(page);
+-               VM_BUG_ON_PAGE(!zeroed, page);
+-               enqueue_huge_page(h, page);
++
++               if (put_page_testzero(page))
++                       enqueue_huge_page(h, page);
+        }
+ free:
+        spin_unlock_irq(&hugetlb_lock);
+
+
+>
+> I went back and looked at those lines in gather_surplus_pages
+>
+>                 zeroed = put_page_testzero(page);
+>                 VM_BUG_ON_PAGE(!zeroed, page);
+>                 enqueue_huge_page(h, page);
+>
+> They were first added as part of alloc_buddy_huge_page with commit
+> 2668db9111bb - hugetlb: correct page count for surplus huge pages.
+> It appears the reason for the VM_BUG_ON is because prior hugetlb code
+> forgot to account for the ref count provided by the buddy allocator.
+> The VM_BUG_ON may have been added mostly as a sanity check for hugetlb
+> ref count management.
+>
+> I wonder if we have ever hit that VM_BUG_ON in the 13 years it has been
+> in the code?  I know you recently spotted the potential race with memory
+> error handling and Naoya fixed up the memory error code.
+>
+> I'm OK with modifying prep_new_huge_page, but it is going to be a bit
+> messy (like this patch).  I wonder if there are other less intrusive
+> ways to address this potential issue?
+> --
+> Mike Kravetz
