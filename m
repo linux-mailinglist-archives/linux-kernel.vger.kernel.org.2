@@ -2,101 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB023B3926
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 00:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952BE3B3929
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 00:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232831AbhFXW2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 18:28:12 -0400
-Received: from mail-pf1-f171.google.com ([209.85.210.171]:42570 "EHLO
-        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhFXW2J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 18:28:09 -0400
-Received: by mail-pf1-f171.google.com with SMTP id y4so6407457pfi.9;
-        Thu, 24 Jun 2021 15:25:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=txsE4yW8fLSVaTRFZWvuwX16MY0QYTfH/BlvYlhRx3c=;
-        b=qtrSlZHoMPbPW8UY+zHxo+CiU+b6ozjBG3dujSCqTzrl3JkKerq2Y5RVC+vZmcM8Ko
-         KUBbMS0x7705BVZ0wfbzvxGQAJOWwgTuvo5siPIxvkV4Un+uxbk9xReyxbL4wST46IKS
-         0fBWj8RRW2rQsZtZRHmW8SqHsTK1ji68rmakQs97QGlnIuVfS+pxD7cBboogXEtOjhZP
-         br00xnKpD4QucrOX/diVjaL2GKT4bg9B70UgNnFjXMqXqNByywYgOTIBrZFPb85AgCVC
-         4ktBnuafIeucHwn+dHRupdc+osaesEhihWD5UlaQzSM7oCeBKJB8pFLajvwFjxrFG7TZ
-         OnuQ==
-X-Gm-Message-State: AOAM530NOVcx+zfKrBi2zoQBIkDH7XCTGRS61RoEt03OhuaGyYC1jsoY
-        XQAeljCEpw8ood30UK3ixRhZyNk4jgM=
-X-Google-Smtp-Source: ABdhPJznjRBlthi5exphHW34zK6kQweD1W4S7z98al0RiKrGtXPy9f926UqlHDKGumqjM8Cr0yRD4w==
-X-Received: by 2002:a05:6a00:168a:b029:2fb:6bb0:aba with SMTP id k10-20020a056a00168ab02902fb6bb00abamr7360923pfc.32.1624573549206;
-        Thu, 24 Jun 2021 15:25:49 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id ml5sm8635680pjb.3.2021.06.24.15.25.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 15:25:47 -0700 (PDT)
-Subject: Re: [PATCH v4 10/10] scsi: ufs: Apply more limitations to user access
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-12-git-send-email-cang@codeaurora.org>
- <89a3c8bf-bbfc-4a2a-73f0-a0db956fbf0e@acm.org>
- <d9db00ef6dd4b28d0ba2019dcf026479@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <e803db99-947c-f217-e0c8-091241014086@acm.org>
-Date:   Thu, 24 Jun 2021 15:25:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232800AbhFXW33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 18:29:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229521AbhFXW32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 18:29:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53ECC61375;
+        Thu, 24 Jun 2021 22:27:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624573628;
+        bh=KWZRyJ0iEyvtpktbnQcV6kk8yj6NL7oIa4RExWmzxgY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FLbDGTWCNQYhuKT94MciN1sHgQdOJpDWDOP5uQN65ginI0e89WsAUEstER2utdbA6
+         AZnYdjmmIDrYxLd+kdYsMRtMzq9D47cKBuJE2O0Gjn4BcdDcugqABJZTGb5uQ0TFk5
+         WEXbQ5ut6aMx6nwHdcbosFlIEBjYBbsods00dkNoX7nGLNZt5uuIyFOmZ3b1iWql02
+         fqZD66A8PEPyCpi0Q8JkTKQL92xlElE5UGbpBzklN0fsmC+doPKz7teVzB1Z9+wHTV
+         oz3u65yC37pN06l/jrieX+wQKlexExoSz0swjAYEeoQ1c2OfAHlroCoBhzrpzj63hR
+         BSOb5igqyRx7Q==
+Received: by pali.im (Postfix)
+        id D3CF28A3; Fri, 25 Jun 2021 00:27:05 +0200 (CEST)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>
+Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        "Remi Pommarel" <repk@triplefau.lt>, Xogium <contact@xogium.me>,
+        "Tomasz Maciej Nowak" <tmn505@gmail.com>,
+        Nadav Haklai <nadavh@marvell.com>,
+        Kostya Porotchkin <kostap@marvell.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [RESEND PATCH 0/5] PCI: aardvark: Initialization fixes
+Date:   Fri, 25 Jun 2021 00:26:16 +0200
+Message-Id: <20210624222621.4776-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <d9db00ef6dd4b28d0ba2019dcf026479@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 7:23 PM, Can Guo wrote:
-> On 2021-06-24 05:51, Bart Van Assche wrote:
->> On 6/23/21 12:35 AM, Can Guo wrote:
->> - During system suspend, user space software is paused before the device
->>   driver freeze callbacks are invoked. Hence, the hba->is_sys_suspended
->>   check can be left out.
-> 
-> is_sys_suspended indicates that system resume failed (power/clk is OFF).
-> 
->> - If a LUN is runtime suspended, it should be resumed if accessed from
->>   user space instead of failing user space accesses. In other words, the
->>   hba->is_wlu_sys_suspended check seems inappropriate to me.
-> 
-> hba->is_wlu_sys_suspended indicates that wl system resume failed, device
-> is not operational.
+Per Lorenzo's request [1] I'm resending [2] some other aardvark patches
+which fixes initialization.
 
-Hi Can,
+The last patch 5/5 is the new and was not in previous patch series [2].
+Please see detailed description and additional comment after --- section.
 
-Thanks for the clarification. How about converting the above two answers
-into comments inside ufshcd_is_user_access_allowed()?
+[1] - https://lore.kernel.org/linux-pci/20210603151605.GA18917@lpieralisi/
+[2] - https://lore.kernel.org/linux-pci/20210506153153.30454-1-pali@kernel.org/
 
-Should ufshcd_is_user_access_allowed() perhaps be called after
-ufshcd_rpm_get_sync() instead of before to prevent that the value of
-hba->is_sys_suspended or hba->is_wlu_sys_suspended changes after having
-been checked and before the UFS device is accessed?
+Pali Rohár (5):
+  PCI: aardvark: Fix link training
+  PCI: Add PCI_EXP_DEVCTL_PAYLOAD_* macros
+  PCI: aardvark: Fix PCIe Max Payload Size setting
+  PCI: aardvark: Implement workaround for the readback value of VEND_ID
+  PCI: aardvark: Implement workaround for PCIe Completion Timeout
 
-Thanks,
+ drivers/pci/controller/pci-aardvark.c | 138 ++++++++++----------------
+ include/uapi/linux/pci_regs.h         |   6 ++
+ 2 files changed, 60 insertions(+), 84 deletions(-)
 
-Bart.
+-- 
+2.20.1
+
