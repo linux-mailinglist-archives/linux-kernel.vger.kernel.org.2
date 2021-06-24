@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23EB73B289A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 09:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A80D3B289E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 09:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231567AbhFXHaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 03:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32898 "EHLO
+        id S231615AbhFXHbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 03:31:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbhFXHaI (ORCPT
+        with ESMTP id S231434AbhFXHbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 03:30:08 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3558C061574;
-        Thu, 24 Jun 2021 00:27:49 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c1e0051d60f689d4f0453.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:1e00:51d6:f68:9d4f:453])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2CEBD1EC0253;
-        Thu, 24 Jun 2021 09:27:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1624519667;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Tk8bS/1GVIXPT0HJ7nIwptwsGI5hts/jHchSoFxDYwk=;
-        b=LI0h9MmccHlICbtRqQhCC3gRJh4OKEODp3Chzd+32gPVF3K9RZOvUCpqfOF7Ds7k0dTR42
-        Pu2uxB3uG0wcizcYUsLG3RGmRR66qZaNYd+x9mNYFTvgAEy+OiP+lpgWjJjEGUkO7KQz33
-        qu3nAYVYpp+HzJ3neF4aZ/ZyH67DiO8=
-Date:   Thu, 24 Jun 2021 09:27:41 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com
-Subject: Re: [PATCH Part1 RFC v3 20/22] x86/boot: Add Confidential Computing
- address to setup_header
-Message-ID: <YNQz7ZxEaSWjcjO2@zn.tnic>
-References: <20210602140416.23573-1-brijesh.singh@amd.com>
- <20210602140416.23573-21-brijesh.singh@amd.com>
- <YMw4UZn6AujpPSZO@zn.tnic>
- <15568c80-c9a9-5602-d940-264af87bed98@amd.com>
- <YMy2OGwsRzrR5bwD@zn.tnic>
- <162442264313.98837.16983159316116149849@amd.com>
- <YNMLX6fbB3PQwSpv@zn.tnic>
- <20210624031911.eznpkbgjt4e445xj@amd.com>
+        Thu, 24 Jun 2021 03:31:12 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2641FC061574;
+        Thu, 24 Jun 2021 00:28:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=G1JEYhqSFm1y2jZMFU+nvmNL2Z9dp8rh+B2bQpR6PGs=; b=TwQAIQDP5X5MeSdELo3dCno+l
+        GWR6CZDtYBvm3Z0tZr35Uk1Snw1t7656q1c6wGjuE14zHCsVCbBf5GQ+bU5QPBTZdM8vV/LMZQ61b
+        VaBr/0GWgw+VH9n1HWb2ECmuJnSD/naSePsiGf6HVCP3xtuUjJ0iMZH6KeHWLetmKj16mLhm0PED/
+        MSUhqYvNntfh6wBQ1gkj7/GufgMz+y2GmH1m2E/OpJZMSpkn4hmlblvQTAsugwLuXdYOI+3YkzFPE
+        1e6BHE2ZBLsGhdjgvTzu1XXLgMhroHuJeUHwsZFp42tG+0oiaREwjqXDeiSmXYlwV+J7hiYkE2RM2
+        lM/jWuGvg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45296)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lwJn1-0007JR-4G; Thu, 24 Jun 2021 08:28:43 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lwJmw-0005WS-P9; Thu, 24 Jun 2021 08:28:38 +0100
+Date:   Thu, 24 Jun 2021 08:28:38 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     13145886936@163.com
+Cc:     tony@atomide.com, linux-arm-kernel@lists.infradead.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>
+Subject: Re: [PATCH] ARM: omap2: remove unneeded variable: "errata"
+Message-ID: <20210624072838.GA1343@shell.armlinux.org.uk>
+References: <20210624032751.24315-1-13145886936@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210624031911.eznpkbgjt4e445xj@amd.com>
+In-Reply-To: <20210624032751.24315-1-13145886936@163.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 10:19:11PM -0500, Michael Roth wrote:
-> One downside to this is we still need something in the boot protocol,
-> either via setup_data, or setup_header directly.
+On Wed, Jun 23, 2021 at 08:27:51PM -0700, 13145886936@163.com wrote:
+> From: gushengxian <gushengxian@yulong.com>
+> 
+> Remove unneeded variable: "errata".
+> 
+> Signed-off-by: gushengxian <gushengxian@yulong.com>
 
-Huh, now I'm confused. You gave the acpi_rsdp_addr example and I thought
-that should be enough, that's why I suggested boot_params.
+NAK.
 
-Maybe you should point me to the code which does what you need so that I
-can get a better idea...
+> diff --git a/arch/arm/mach-omap2/dma.c b/arch/arm/mach-omap2/dma.c
+> index dfc9b21ff19b..ba4a48e3d264 100644
+> --- a/arch/arm/mach-omap2/dma.c
+> +++ b/arch/arm/mach-omap2/dma.c
+> @@ -79,7 +79,6 @@ static const struct omap_dma_reg reg_map[] = {
+>  
+>  static unsigned configure_dma_errata(void)
+>  {
+> -	unsigned errata = 0;
+>  
+>  	/*
+>  	 * Errata applicable for OMAP2430ES1.0 and all omap2420
+> @@ -158,7 +157,7 @@ static unsigned configure_dma_errata(void)
+>  	if (cpu_is_omap34xx() && (omap_type() != OMAP2_DEVICE_TYPE_GP))
+>  		SET_DMA_ERRATA(DMA_ROMCODE_BUG);
+>  
+> -	return errata;
+> +	return 0;
 
-> Having it in setup_header avoids the need to also have to add a field
-> to boot_params for the boot/compressed->uncompressed passing, but
-> maybe that's not a good enough justification. Perhaps if the TDX folks
-> have similar needs though.
+It is _not_ "unneeded" and you clearly have not compiled the resulting
+code from your patch.
 
-Yes, reportedly they do so I guess the solution should be
-vendor-agnostic. Let's see what they need first.
+#define SET_DMA_ERRATA(id)              (errata |= (id))
 
-Thx.
+errata is used inside the SET_DMA_ERRATA() macro. Hence, building
+mach-omap2/dma.c would have failed.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
