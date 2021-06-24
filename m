@@ -2,98 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3619B3B246F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 03:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 496D23B2475
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 03:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhFXBUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 21:20:12 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:52714 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229758AbhFXBUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 21:20:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=PdTZfjbDLW3Cs289v9r6/DX24+QzrM8LQPMtC/3ieo8=; b=i8
-        hjm9V7PNk1vC2AXCq0+MfwTJgsDnzL0+p3Syo7Jyn3rCr5w2brgW9PDy64weIrAQB2tbsJBX2NqOP
-        6aqL+6YO+jF4R8KkyJK3+FrMbJVBpYqssT48M9RTCjeSlV12lnQmYLMdUy8eYhweg3NVNvTBOATnj
-        IPmLhky/gkxjtwk=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lwE06-00AuuW-Iq; Thu, 24 Jun 2021 03:17:50 +0200
-Date:   Thu, 24 Jun 2021 03:17:50 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Marcin Wojtas <mw@semihalf.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
-        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
-        Jon Nettleton <jon@solid-run.com>,
-        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
-        lenb@kernel.org
-Subject: Re: [net-next: PATCH v3 5/6] net: mvpp2: enable using phylink with
- ACPI
-Message-ID: <YNPdPlYV5qwnJBdW@lunn.ch>
-References: <20210621173028.3541424-1-mw@semihalf.com>
- <20210621173028.3541424-6-mw@semihalf.com>
- <YNObfrJN0Qk5RO+x@lunn.ch>
- <CAPv3WKfdCwq=AYhARGxfRA92XcZjXYwdOj6_JLP+wOmPV8xxzQ@mail.gmail.com>
+        id S229995AbhFXBUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 21:20:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229958AbhFXBUv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 21:20:51 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46275C061574;
+        Wed, 23 Jun 2021 18:18:33 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624497511;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l8alYlJ/aC0q6Bux+3r/DpEUt8CzurFkdXS4F7DcxVI=;
+        b=z3LmLaVtyuGn+lmaBRc4qrfYhyIqCoRAopORFutB0XdZT946mxJPmu6S6T+CLZkji53l0S
+        PJ7Rb8HsiqbYcuHKdmwG2eJyi0wdg/9g5uMpttMHqw86YEDv04z7ZBZvHeycWVI67cIhPh
+        JM7E9SYilTTh7BoC96HHv9/H2+MKJYIYvhyS3yrI23bEFgKy/S9Zg5oIwupVvp4EsKBgfq
+        pc/pcL44EC49ML3Wx3/R+gW2rZw1dEceW4/kKnYnpMCfQ+NbQT/VsWYwuhorveAC6IMU6X
+        CinQwe7jw9v2jqXUYCARuSK5S6qP3D3WEUmmQPx1yz3XeeIH3CXXNx1T7bdjwQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624497511;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l8alYlJ/aC0q6Bux+3r/DpEUt8CzurFkdXS4F7DcxVI=;
+        b=h2l5tdIdZ5vItC7muztVNSqWBsJ9hr23CnBq0yPWyarCsoucn1qzKL7+Q7y+uBXJH9OW/q
+        WCb0tm4A5U3R9KBA==
+To:     "Tian\, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Dey\, Megha" <megha.dey@intel.com>,
+        "Raj\, Ashok" <ashok.raj@intel.com>,
+        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Jiang\, Dave" <dave.jiang@intel.com>,
+        "Liu\, Yi L" <yi.l.liu@intel.com>,
+        "Lu\, Baolu" <baolu.lu@intel.com>,
+        "Williams\, Dan J" <dan.j.williams@intel.com>,
+        "Luck\, Tony" <tony.luck@intel.com>,
+        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, KVM <kvm@vger.kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Subject: RE: Virtualizing MSI-X on IMS via VFIO
+In-Reply-To: <MWHPR11MB1886BB017C6C53A8061DDEE28C089@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <20210622131217.76b28f6f.alex.williamson@redhat.com> <87o8bxcuxv.ffs@nanos.tec.linutronix.de> <MWHPR11MB1886811339F7873A8E34549A8C089@MWHPR11MB1886.namprd11.prod.outlook.com> <87bl7wczkp.ffs@nanos.tec.linutronix.de> <MWHPR11MB1886BB017C6C53A8061DDEE28C089@MWHPR11MB1886.namprd11.prod.outlook.com>
+Date:   Thu, 24 Jun 2021 03:18:31 +0200
+Message-ID: <87tuloawm0.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPv3WKfdCwq=AYhARGxfRA92XcZjXYwdOj6_JLP+wOmPV8xxzQ@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 11:45:04PM +0200, Marcin Wojtas wrote:
-> Hi,
-> 
-> śr., 23 cze 2021 o 22:37 Andrew Lunn <andrew@lunn.ch> napisał(a):
-> >
-> > > +static bool mvpp2_use_acpi_compat_mode(struct fwnode_handle *port_fwnode)
-> > > +{
-> > > +     if (!is_acpi_node(port_fwnode))
-> > > +             return false;
-> > > +
-> > > +     return (!fwnode_property_present(port_fwnode, "phy-handle") &&
-> > > +             !fwnode_property_present(port_fwnode, "managed") &&
-> > > +             !fwnode_get_named_child_node(port_fwnode, "fixed-link"));
-> >
-> > I'm not too sure about this last one. You only use fixed-link when
-> > connecting to an Ethernet switch. I doubt anybody will try ACPI and a
-> > switch. It has been agreed, ACPI is for simple hardware, and you need
-> > to use DT for advanced hardware configurations.
-> >
-> > What is your use case for fixed-link?
-> >
-> 
-> Regardless of the "simple hardware" definition or whether DSA + ACPI
-> feasibility, you can still have e.g. the switch left in "unmanaged"
-> mode (or whatever the firmware configures), connected via fixed-link
-> to the MAC. The same effect as booting with DT, but not loading the
-> DSA/switch driver - the "CPU port" can be used as a normal netdev
-> interface.
+Kevin!
 
-You can do this, but i would not recommend it. Without having STP,
-your network is going to be vulnerable to broadcast storms killing
-your network.
+On Wed, Jun 23 2021 at 23:37, Kevin Tian wrote:
+>> From: Thomas Gleixner <tglx@linutronix.de>
+>> > Curious about irte entry when IRQ remapping is enabled. Is it also
+>> > allocated at request_irq()?
+>> 
+>> Good question. No, it has to be allocated right away. We stick the
+>> shutdown vector into the IRTE and then request_irq() will update it with
+>> the real one.
+>
+> There are max 64K irte entries per Intel VT-d. Do we consider it as
+> a limited resource in this new model, though it's much more than
+> CPU vectors?
 
-> I'd also prefer to have all 3 major interface types supported in
-> phylink, explicitly checked in the driver - it has not been supported
-> yet, but can be in the future, so let's have them covered in the
-> backward compatibility check.
+It's surely a limited resource. For me 64k entries seems to be plenty,
+but what do I know. I'm not a virtualization wizard.
 
-Maybe i'm not understanding this correctly, but isn't this condition
-enforcing there must be a fixed link in order to use the new ACPI
-binding? But i expect most boards never need a fixed-link, it is
-optional after all.
+> Back to earlier discussion about guest ims support, you explained a layered
+> model where the paravirt interface sits between msi domain and vector
+> domain to get addr/data pair from the host. In this way it could provide
+> a feedback mechanism for both msi and ims devices, thus not specific
+> to ims only. Then considering the transition window where not all guest
+> OSes may support paravirt interface at the same time (or there are
+> multiple paravirt interfaces which takes time for host to support all), 
+> would below staging approach still makes sense?
+>
+> 1)  Fix the lost interrupt issue in existing MSI virtualization flow;
 
-	 Andrew
+That _cannot_ be fixed without a hypercall. See my reply to Alex.
+
+> 2)  Virtualize MSI-X on IMS, bearing the same request_irq() problem;
+
+That solves what? Maybe your perceived roadmap problem, but certainly
+not any technical problem in the right way. Again: See my reply to Alex.
+
+> 3)  Develop a paravirt interface to solve request_irq() problem for
+>     both msi and ims devices;
+
+First of all it's not a request_irq() problem: It's a plain resource
+management problem which requires proper interaction between host and
+guest.
+
+And yes, it _is_ the correct answer to the problem and as I outlined in
+my reply to Alex already it is _not_ rocket science and it won't make a
+significant difference on your timeline because it's straight forward
+and solves the problem properly with the added benefit to solve existing
+problems which should and could have been solved long ago.
+
+I don't care at all about the time you are wasting with half baken
+thoughts about avoiding to do the right thing, but I very much care
+about my time wasted to debunk them.
+
+Thanks,
+
+        tglx
