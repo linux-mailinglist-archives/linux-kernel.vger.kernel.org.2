@@ -2,62 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D3B3B39D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 01:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3643B39DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 01:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbhFXXst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 19:48:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57652 "EHLO
+        id S232981AbhFXXuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 19:50:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhFXXss (ORCPT
+        with ESMTP id S229521AbhFXXuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 19:48:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4A8C061574;
-        Thu, 24 Jun 2021 16:46:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QRrsLI7GGtnqIpUE1NhSb681pP7OUT+FkfN9iRVIhgw=; b=GJ0asLtE8az/ZgBHMAI9w7Prf9
-        L8WTI6fB1EWZRk/qyvEREMqkwJ8oywPKhvvgUyUDoAuQTHIrV8iDR4fYiUe1l9UoYKJRDkO5um6gh
-        GUf86KTBuZhSqe0iSC8d6BUCqdKniy7grkD91FLG/Hef7gDnCXp3j8d2Ymc7iCaSKvVObDSHGIhls
-        oHkxLDdhceP/dTqsszWlTnQ72hg0QMcJvR9TtJXio2dVUT0ys6IxASFmxoi2hWrfiZBlMsT70jhCt
-        08Ey8o1J97NPj00WRZA9qWrmqiGSD/3dcovCMX1cPFwL58IDh9gR9GY8vW6w+xW1lSgDtsQfHv+Va
-        834cJ0Hg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwZ2v-00H7K5-3Q; Thu, 24 Jun 2021 23:46:12 +0000
-Date:   Fri, 25 Jun 2021 00:46:09 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 36/46] mm/filemap: Add readahead_folio()
-Message-ID: <YNUZQWvhSnVK0IUe@casper.infradead.org>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-37-willy@infradead.org>
- <YNMDzHwIA4neIPDD@infradead.org>
+        Thu, 24 Jun 2021 19:50:17 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49DA6C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 16:47:58 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id y13so3788232plc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 16:47:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3TTTSx9oGUkYkJu7+ALA0wTUTD3ZhTwQcOChtOj/Zk4=;
+        b=dcIRON5mUNGGXsf2qIr0RoyLHTz85BI5k4nQGGFwzXCBXEB42N+25XKBb545MiCh3n
+         X333TJJd8CA4KI/l8oLU2FXmJikjTnS6jtwgwOm6EdOj8jCE7Ngospb91nsnjDN3vTdK
+         Gm/Q6MidDco7j/BnrWV3jeDWdYp2T6ieCy59xZyGulffeuufjD4EP2Utcme5V8XUtWap
+         xMjqyYVxaRbhvRfbPYnGpw2YEpquVd3V1g8HsD4LwCJNgyd/pto8Ok5edEEJ9TZKMBj9
+         eJiujwLn/t/g1xBc0xs/JJxKrIuFVN8g3MsNqzmK6FC9GedID/DrTRn8iujNY/Ey5D0A
+         eicg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3TTTSx9oGUkYkJu7+ALA0wTUTD3ZhTwQcOChtOj/Zk4=;
+        b=Vy78RWfSlbX96rp3x5DZBSDKuP4XX6IZJwH79Ah3tOjqgikYze/NntfpmLhZzYU7ns
+         nyp2Auq4T//CyhXZ15kNKH7+736nj3B5eBHrlqD7A1Nvfr3YKLkLBIZAyprPJGRT98CB
+         H7gkakaUtbWEWjnLLX3sFmBHybmIontHdDJC1IW28CfE789A8GLxbMd/9ncz44NjPDWU
+         NvuLZao4/5ityf9/G6Pyjp0eAUChyhYgiJMPhKbto2sx/AiH6fHbOtJqKtud8gfxnma/
+         sNuIsuiDfNOelv3pLYAwyjafbop521lSe5l/xbZpwaztac/RbVHO7hQ8zzlOGZkrf4DA
+         hFoA==
+X-Gm-Message-State: AOAM5304JfSCRQnUQUd+zHnPAT6OjYLBir28fAlpHSp6CYl6o0r5OeUi
+        8VKFIxA9RV4hZ64TZ5sQPe3xPg==
+X-Google-Smtp-Source: ABdhPJxbrYHlucGt9IM/FGL//GXHXhmKX1X4kkHmCVcpQUo2hMtRCP8UQRXgeap/GV6eKwcSeaIgZA==
+X-Received: by 2002:a17:902:d50b:b029:121:b5c8:b246 with SMTP id b11-20020a170902d50bb0290121b5c8b246mr6347367plg.51.1624578477622;
+        Thu, 24 Jun 2021 16:47:57 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id d129sm2648854pfd.218.2021.06.24.16.47.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 16:47:57 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 23:47:53 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH 0/7] KVM: x86: guest MAXPHYADDR and C-bit fixes
+Message-ID: <YNUZqRK3ZMdsNdt4@google.com>
+References: <20210623230552.4027702-1-seanjc@google.com>
+ <324a95ee-b962-acdf-9bd7-b8b23b9fb991@amd.com>
+ <c2d7a69a-386e-6f44-71c2-eb9a243c3a78@amd.com>
+ <YNTBdvWxwyx3T+Cs@google.com>
+ <2b79e962-b7de-4617-000d-f85890b7ea2c@amd.com>
+ <7e3a90c0-75a1-b8fe-dbcf-bda16502ace9@amd.com>
+ <YNUEA8n61WO89voW@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNMDzHwIA4neIPDD@infradead.org>
+In-Reply-To: <YNUEA8n61WO89voW@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 11:50:04AM +0200, Christoph Hellwig wrote:
-> On Tue, Jun 22, 2021 at 01:15:41PM +0100, Matthew Wilcox (Oracle) wrote:
-> > The pointers stored in the page cache are folios, by definition.
-> > This change comes with a behaviour change -- callers of readahead_folio()
-> > are no longer required to put the page reference themselves.  This matches
-> > how readpage works, rather than matching how readpages used to work.
+On Thu, Jun 24, 2021, Sean Christopherson wrote:
+> On Thu, Jun 24, 2021, Tom Lendacky wrote:
+> > On 6/24/21 12:39 PM, Tom Lendacky wrote:
+> > > 
+> > > 
+> > > On 6/24/21 12:31 PM, Sean Christopherson wrote:
+> > >> On Thu, Jun 24, 2021, Tom Lendacky wrote:
+> > >>>>
+> > >>>> Here's an explanation of the physical address reduction for bare-metal and
+> > >>>> guest.
+> > >>>>
+> > >>>> With MSR 0xC001_0010[SMEE] = 0:
+> > >>>>   No reduction in host or guest max physical address.
+> > >>>>
+> > >>>> With MSR 0xC001_0010[SMEE] = 1:
+> > >>>> - Reduction in the host is enumerated by CPUID 0x8000_001F_EBX[11:6],
+> > >>>>   regardless of whether SME is enabled in the host or not. So, for example
+> > >>>>   on EPYC generation 2 (Rome) you would see a reduction from 48 to 43.
+> > >>>> - There is no reduction in physical address in a legacy guest (non-SEV
+> > >>>>   guest), so the guest can use a 48-bit physical address
+> > >>
+> > >> So the behavior I'm seeing is either a CPU bug or user error.  Can you verify
+> > >> the unexpected #PF behavior to make sure I'm not doing something stupid?
+> > > 
+> > > Yeah, I saw that in patch #3. Let me see what I can find out. I could just
+> > > be wrong on that myself - it wouldn't be the first time.
+> > 
+> > From patch #3:
+> >   SVM: KVM: CPU #PF @ rip = 0x409ca4, cr2 = 0xc0000000, pfec = 0xb
+> >   KVM: guest PTE = 0x181023 @ GPA = 0x180000, level = 4
+> >   KVM: guest PTE = 0x186023 @ GPA = 0x181000, level = 3
+> >   KVM: guest PTE = 0x187023 @ GPA = 0x186000, level = 2
+> >   KVM: guest PTE = 0xffffbffff003 @ GPA = 0x187000, level = 1
+> >   SVM: KVM: GPA = 0x7fffbffff000
+> > 
+> > I think you may be hitting a special HT region that is at the top 12GB of
+> > the 48-bit memory range and is reserved, even for GPAs. Can you somehow
+> > get the test to use an address below 0xfffd_0000_0000? That would show
+> > that bit 47 is valid for the legacy guest while staying out of the HT region.
 > 
-> The way this stores and retrieves different but compatible types from the
-> same xarray is a little nasty.  But I guess we'll have to live with it for
-> now, so:
+> I can make that happen.
 
-I think that's mostly fixed up by the end of this series.  I think
-there's still a few bits which are currently postponed to series 4
-(eg uses of __page_cache_alloc followed by add_to_page_cache_lru).
+Ah, hilarious.  That indeed does the trick.  0xfffd00000000 = #PF,
+0xfffcfffff000 = good.
 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+I'll send a revert shortly.  There's another C-bit bug that needs fixing, too :-/
+The unconditional __sme_clr() in npf_interception() is wrong and breaks non-SEV
+guests.  Based on this from the APM
+
+  If the C-bit is an address bit, this bit is masked from the guest
+  physical address when it is translated through the nested page tables.
+  Consequently, the hypervisor does not need to be aware of which pages
+  the guest has chosen to mark private.
+
+I assume it's not needed for SEV either?  I'm about to find out shortly, but if
+you happen to know for sure... :-)
