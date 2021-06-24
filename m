@@ -2,81 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6574C3B259E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 05:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB093B25B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 05:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbhFXDqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 23:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbhFXDqF (ORCPT
+        id S230014AbhFXDzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 23:55:16 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:11091 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229850AbhFXDzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 23:46:05 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC0EC061574;
-        Wed, 23 Jun 2021 20:43:46 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id e33so3589652pgm.3;
-        Wed, 23 Jun 2021 20:43:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Fwh833srj12QAX2haTEqWT0V0OlCa/leSx47S6U0FNE=;
-        b=hGxnyq2XiX8H7w5esy1UtDOY5y32a+0A8lBcJDwanK1YH2UuuZcdJ+D6VykggYGIzt
-         Mx8F6o3dxXLtxrEwFENljHNFiI97JyhNIhq9aFK5NC5qr9pPep1c0zmflW5UaTxXnrOo
-         iEWH64hPZhu/c4qTuJ7sg85UupzGMZ6cwU/9ZPayY9zgPCRLWvoQXqyKPzbywMQ3sD+6
-         +a9NTOa+NtDaBQHvYM6hqIJf569nnMeEIhXKdQVZ76vC7WbLB9pI0Eeh64+CBZhX4kcs
-         khumk8pQZ4NX6VwjXhQ9yel4I4NcLIkBF0MkOjRfNcgsOLRbp666M1VupC2XAbbm6/8N
-         bjVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Fwh833srj12QAX2haTEqWT0V0OlCa/leSx47S6U0FNE=;
-        b=YBCz6UH3+1OTEm8TUD7QLyDH9Gr+k/JSb2UqgECX1GiCBGq05fPz86qyGR6VJ+xWOy
-         durs4D6tqlchtQdEyRrcGtuzExzfBD3xrvk69yHTweUfLxWPQmfVHJ+9D5HUNrYE4DqB
-         Ec2eV9uTngO6LgsokyyrCzphvsgYVWSI6vcTdhY7KcscVXNIIANPRy9Tr7hRf3iMziuD
-         zsW5Vjyq5PbzwBOHXDOoUPzCKagQXeERfiyM7rjajAb5LQH6uiqza2F3L4r91ACeVYdL
-         eBd6koLxGBN2cxId+KHwVZWhhXIn7vVCPp+cBE6MD2D4+Z4UwOoUedKFMqI/S6wQwYsV
-         j8dw==
-X-Gm-Message-State: AOAM530zRO6qcUDCLnJ1HoGK4n/cfBKhc4tZm9y0LMyCv5jibGdrktzZ
-        UdmmCbJqN4ENFioKmMVSesqfBe3Z4G0=
-X-Google-Smtp-Source: ABdhPJzblbgMHSmmEfohmmRVc6UZo66eh5zRAnZw8CihxH8rp9ppLVtbHAibTU2w535Ss9nONxBEEw==
-X-Received: by 2002:a05:6a00:1acd:b029:2fb:81a4:b06 with SMTP id f13-20020a056a001acdb02902fb81a40b06mr2907867pfv.36.1624506226222;
-        Wed, 23 Jun 2021 20:43:46 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:35:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id 11sm1103686pfh.182.2021.06.23.20.43.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 20:43:45 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 20:43:43 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     min.li.xe@renesas.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net 2/2] ptp: idt82p33: implement double dco time
- correction
-Message-ID: <20210624034343.GB6853@hoboy.vegasvil.org>
-References: <1624459585-31233-1-git-send-email-min.li.xe@renesas.com>
- <1624459585-31233-2-git-send-email-min.li.xe@renesas.com>
+        Wed, 23 Jun 2021 23:55:15 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G9R3P4xY6zZhXR;
+        Thu, 24 Jun 2021 11:49:53 +0800 (CST)
+Received: from dggema756-chm.china.huawei.com (10.1.198.198) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 24 Jun 2021 11:52:55 +0800
+Received: from [10.174.177.134] (10.174.177.134) by
+ dggema756-chm.china.huawei.com (10.1.198.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 24 Jun 2021 11:52:54 +0800
+Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        "open list" <linux-kernel@vger.kernel.org>
+References: <da9c2fa9-a545-0c48-4490-d6134cc31425@huawei.com>
+ <20210623132223.GA96264@C02TD0UTHF1T.local>
+ <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
+ <YNP6/p/yJzLLr8M8@casper.infradead.org>
+From:   Chen Huang <chenhuang5@huawei.com>
+Message-ID: <e5730b44-6aae-c486-8495-d170fdf9baa1@huawei.com>
+Date:   Thu, 24 Jun 2021 11:52:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1624459585-31233-2-git-send-email-min.li.xe@renesas.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YNP6/p/yJzLLr8M8@casper.infradead.org>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.134]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema756-chm.china.huawei.com (10.1.198.198)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 10:46:25AM -0400, min.li.xe@renesas.com wrote:
-> +static int idt82p33_start_ddco(struct idt82p33_channel *channel, s32 delta_ns)
-> +{
-> +	s32 current_ppm = channel->current_freq;
-> +	u32 duration_ms = MSEC_PER_SEC;
 
-What happens if user space makes a new adjustment before this
-completes?
 
-After all, some PTP profiles update the clock several times per
-second.
+ÔÚ 2021/6/24 11:24, Matthew Wilcox Ð´µÀ:
+> On Thu, Jun 24, 2021 at 11:10:41AM +0800, Chen Huang wrote:
+>> In userspace, I perform such operation:
+>>
+>>  	fd = open("/tmp/test", O_RDWR | O_SYNC);
+>>         access_address = (char *)mmap(NULL, uio_size, PROT_READ, MAP_SHARED, uio_fd, 0);
+>>         ret = write(fd, access_address + 2, sizeof(long));
+> 
+> ... you know that accessing this at unaligned offsets isn't going to
+> work.  It's completely meaningless.  Why are you trying to do it?
+> .
+> 
 
-Thanks,
-Richard
+Yeah, it's a wrong usage of access. But maybe it's still a problem
+an userspace operation  makes the kernel crash.
