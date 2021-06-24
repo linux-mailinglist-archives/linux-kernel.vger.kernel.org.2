@@ -2,108 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7427D3B2F30
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9183A3B2F3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231601AbhFXMmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 08:42:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47714 "EHLO
+        id S231807AbhFXMn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 08:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbhFXMmT (ORCPT
+        with ESMTP id S231426AbhFXMnY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 08:42:19 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF66C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 05:40:00 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id i6so5076715pfq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 05:40:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C38GYrWeEqn9ryL7zps8yOxhcW8ssLvsptRrONqKIew=;
-        b=oPHof5ahVU78lKBca6qSqBEQlupAPft1mjL6zU5f5XTLP3hsB+DIYJgVYGTFXO6uv5
-         zhvPSREczIT7PDEXa3sIyUoWEq/w4ltJZ3MAsDlmuwMPk6LbjaIuIM5Pg6MzJLhQMsgm
-         BnnSvLMro1v1EzB+FOCmPvDuoq22wScXkFU0siaNsM03AqvMIFkiNGhPVhfIyGMemeMp
-         fLQhwZtfI1cc8SePf+M9eV2vm+O+eoRCfCm4lFO3WJrNO4HZL5f7zki+It+g/Zgywz8b
-         TQmklY4V+GYUKWn3gnRQSTp8NZc7w4bFBwqgyOZhJln+mwe/sdL1vWNeLlupJC9JFa8Z
-         cojw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C38GYrWeEqn9ryL7zps8yOxhcW8ssLvsptRrONqKIew=;
-        b=qYr2hxULNTCp2XfXbEiIOrHNQO+OTHUFBKi3j9SE1EHmj+JZg4pLfMQuRSz4Ezap8V
-         urJLNyYMzWMyjSl3xIRZirLkBPOo4KiDQRgsZ2GzC8YEph0bQ5C1gk/XWVgL15fOVaqn
-         3jeUJMIA2Ai9JhxmlCxZYMn3mZmWMS4iCSsa3x4h1BQCXaqZpR/+XMbqCJlI+vPEM4sG
-         74Y+DhW1109j5b4FTV2PTO2VFAfWCWDU+I6t+skw0cggWQqsvillA/esaGfBU/shpgCR
-         1PtC6QrDgXDL4ifW8jxn9D9eI7R10lWbDBgLK+5sJQkcFV3L4C89Cz/KFdxPhlmOm8Yi
-         V/FQ==
-X-Gm-Message-State: AOAM531dZa3rwzymQkDslrGtkk+IoclDXp6UjOYIRBN4pCPjfY6T+rPG
-        gRWzjNgrMHczuZuAKzyqmrTbK+2pZ5XWVKIIBOA=
-X-Google-Smtp-Source: ABdhPJwNnlaCJfFXIZrf+/lJ+Uih3hNkHuFBDvDdGKPZwqvnwUBK9Jg3kLd41iC+VIEjROxK5sKynkZqpLbeeUGdPdI=
-X-Received: by 2002:a62:b502:0:b029:2ec:a539:e29b with SMTP id
- y2-20020a62b5020000b02902eca539e29bmr4753939pfe.37.1624538399388; Thu, 24 Jun
- 2021 05:39:59 -0700 (PDT)
+        Thu, 24 Jun 2021 08:43:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA061C061574;
+        Thu, 24 Jun 2021 05:41:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NN6FKb8fPaN7gGJFuuyURG3SMUtb7yV2e8j5LT6i1CA=; b=c73U/Jn9nmNnoFXgk5w0aPdcCG
+        BftiYykBW+yTTr9GVDRoqPOJXM9Zi/Hp79OKPUXvlXzLhkOThVq6pJtp7aNR0J/ioGrbmfC/5SaXS
+        /RA8W7h12lyJL3deQi/Lo18qODhdfGbm0Ws8fPUEQZADgrtyW7gOmUNhodxcRXhN2y+P138gYnIgZ
+        DU/3J6U/m4ls2hVy+1xrW0BMF49OMtRVqzK5j/6m2VxNbRRO5sDTd/SuxD/1jIDVCcjpUcxx9b4Vp
+        OXqDAM2dIS/X1IDZlueT5Q2FP6+jHHJeYoIsg5VSc9+KVqvyqhM+WoCnHhPiBBa7KVSPyCUx6J0MQ
+        ue94sXuQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwOeJ-00GZlL-PY; Thu, 24 Jun 2021 12:40:14 +0000
+Date:   Thu, 24 Jun 2021 13:40:03 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     edwardh <edwardh@synology.com>
+Cc:     axboe@kernel.dk, neilb@suse.com, hch@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        s3t@synology.com, bingjingc@synology.com, cccheng@synology.com,
+        Wade Liang <wadel@synology.com>
+Subject: Re: [PATCH v4] block: fix trace completion for chained bio
+Message-ID: <YNR9I7zsCJ8s0Drh@infradead.org>
+References: <20210624123030.27014-1-edwardh@synology.com>
 MIME-Version: 1.0
-References: <20210203091306.140518-1-jagan@amarulasolutions.com>
- <CANwerB1Bev8Ljta9OyO6vAKsQqHHmaJnjV1YRGmY4bVk_J6xZA@mail.gmail.com> <CAMty3ZAY7Ez9UYvfftSmqLEVWgN7xE5HevqfWirmrExZH=RMWA@mail.gmail.com>
-In-Reply-To: <CAMty3ZAY7Ez9UYvfftSmqLEVWgN7xE5HevqfWirmrExZH=RMWA@mail.gmail.com>
-From:   Jonathan Liu <net147@gmail.com>
-Date:   Thu, 24 Jun 2021 22:39:48 +1000
-Message-ID: <CANwerB1AiiT3oXCpwP83M1=ES9M-yQoLuZO5f=eVxA42MkEbiA@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: dw-mipi-dsi: Move drm_bridge_add into probe
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Heiko Stubner <heiko@sntech.de>,
-        Yannick Fertre <yannick.fertre@st.com>,
-        Philippe Cornu <philippe.cornu@st.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Vincent Abriou <vincent.abriou@st.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-amarula <linux-amarula@amarulasolutions.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624123030.27014-1-edwardh@synology.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jagan,
+On Thu, Jun 24, 2021 at 08:30:30PM +0800, edwardh wrote:
+> From: Edward Hsieh <edwardh@synology.com>
+> 
+> For chained bio, trace_block_bio_complete in bio_endio is currently called
+> only by the parent bio once upon all chained bio completed.
+> However, the sector and size for the parent bio are modified in bio_split.
+> Therefore, the size and sector of the complete events might not match the
+> queue events in blktrace.
+> 
+> The original fix of bio completion trace <fbbaf700e7b1> ("block: trace
+> completion of all bios.") wants multiple complete events to correspond
+> to one queue event but missed this.
+> 
+> The issue can be reproduced by md/raid5 read with bio cross chunks.
+> 
+> To fix, move trace completion into the loop for every chained bio to call.
+> 
+> Fixes: fbbaf700e7b1 ("block: trace completion of all bios.")
+> Reviewed-by: Wade Liang <wadel@synology.com>
+> Reviewed-by: BingJing Chang <bingjingc@synology.com>
+> Signed-off-by: Edward Hsieh <edwardh@synology.com>
 
-On Thu, 24 Jun 2021 at 22:34, Jagan Teki <jagan@amarulasolutions.com> wrote:
->
-> Hi Jonathan,
->
-> On Fri, Jun 18, 2021 at 6:40 PM Jonathan Liu <net147@gmail.com> wrote:
-> >
-> > Hi Jagan,
-> >
-> > On Wed, 3 Feb 2021 at 09:13, Jagan Teki <jagan@amarulasolutions.com> wrote:
-> > > @@ -1167,6 +1151,20 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
-> > >         dw_mipi_dsi_debugfs_init(dsi);
-> > >         pm_runtime_enable(dev);
-> > >
-> > > +       ret = drm_of_find_panel_or_bridge(dev->of_node, 1, 0,
-> > > +                                         &panel, &bridge);
-> > > +       if (ret)
-> > > +               return ERR_PTR(ret);
-> >
-> > On RK3399 if the error is EPROBE_DEFER, __dw_mipi_dsi_probe can be
-> > called again and result in the following errors:
-> > [    0.717589] debugfs: Directory 'ff960000.mipi' with parent '/'
-> > already present!
-> > [    0.717601] dw-mipi-dsi-rockchip ff960000.mipi: failed to create debugfs root
-> > [    0.717606] dw-mipi-dsi-rockchip ff960000.mipi: Unbalanced pm_runtime_enable!
->
-> Is this when you test bridge on rk3399 or panel?
+Looks good,
 
-MIPI-DSI to LVDS bridge.
-
-Regards,
-Jonathan
+Reviewed-by: Christoph Hellwig <hch@lst.de>
