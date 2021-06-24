@@ -2,91 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2233B340C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3EE13B340A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232075AbhFXQmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 12:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232005AbhFXQmb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 12:42:31 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE62C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 09:40:11 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwSOK-00BrRG-Mi; Thu, 24 Jun 2021 16:39:48 +0000
-Date:   Thu, 24 Jun 2021 16:39:48 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Chen Huang <chenhuang5@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mm <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
-Message-ID: <YNS1VN2okAHo3b+0@zeniv-ca.linux.org.uk>
-References: <da9c2fa9-a545-0c48-4490-d6134cc31425@huawei.com>
- <20210623132223.GA96264@C02TD0UTHF1T.local>
- <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
- <YNP6/p/yJzLLr8M8@casper.infradead.org>
- <YNQuZ8ykN7aR+1MP@infradead.org>
- <YNRpYli/5/GWvaTT@casper.infradead.org>
- <27fbb8c1-2a65-738f-6bec-13f450395ab7@arm.com>
- <YNSyZaZtPTmTa5P8@zeniv-ca.linux.org.uk>
- <7896a3c7-2e14-d0f4-dbb9-286b6f7181b5@arm.com>
+        id S231970AbhFXQma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 12:42:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229445AbhFXQm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 12:42:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E903F613CA;
+        Thu, 24 Jun 2021 16:40:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624552810;
+        bh=lJTybvnfd2Dl4R3uXC3jF8lbmzNbn81U7eS8WWOTCEg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=YTvqcNLd570mrY4dCrXUXRSK4l/MRHXMtYDEDucJucojPYRInb+tgsrIhfB6DUJ7w
+         Gxph2m8AAZqhJnVycJzP0B4pqLOxTXebq/quL9g/CZYIeRIJQQ3bmPBmftGgSLJkkp
+         2+rLtA6nTs3FqOhIEkCh73SEP1aDrEGwabsMKFNs3oaylaZzaCR6WUBt3ljfCbnhk+
+         Wg42sTwmWtw/aCiAx+ZkDtwKijd9ZpZE3WiWorGUoFLbOM814jGV1HTn6UhjDgWYHy
+         LbMYNWJOufe5Hb8dGENk1DmbZDcaIYjf7HuQuh5k4VcHhz0Y7jzYKduZl3c9qzY4LK
+         C04Oi0lijykig==
+Subject: Re: linux-next: build failure after merge of the net-next tree
+To:     Marcin Wojtas <mw@semihalf.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+References: <20210624082911.5d013e8c@canb.auug.org.au>
+ <CAPv3WKfiL+sR+iK_BjGKDhtNgjoxKEPv49bU1X9_7+v+ytdR1w@mail.gmail.com>
+ <YNPt91bfjrgSt8G3@Ryzen-9-3900X.localdomain>
+ <CA+G9fYtb07aySOpB6=wc4ip_9S4Rr2UUYNgEOG6i76g--uPryQ@mail.gmail.com>
+ <20210624185430.692d4b60@canb.auug.org.au>
+ <CAPv3WKf6HguRC_2ckau99d4iWG-FV71kn8wiX9r5wuK335EEFw@mail.gmail.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <3d6ea68a-9654-6def-9533-56640ceae69f@kernel.org>
+Date:   Thu, 24 Jun 2021 09:40:08 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7896a3c7-2e14-d0f4-dbb9-286b6f7181b5@arm.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <CAPv3WKf6HguRC_2ckau99d4iWG-FV71kn8wiX9r5wuK335EEFw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 05:38:35PM +0100, Robin Murphy wrote:
-> On 2021-06-24 17:27, Al Viro wrote:
-> > On Thu, Jun 24, 2021 at 02:22:27PM +0100, Robin Murphy wrote:
-> > 
-> > > FWIW I think the only way to make the kernel behaviour any more robust here
-> > > would be to make the whole uaccess API more expressive, such that rather
-> > > than simply saying "I only got this far" it could actually differentiate
-> > > between stopping due to a fault which may be recoverable and worth retrying,
-> > > and one which definitely isn't.
-> > 
-> > ... and propagate that "more expressive" information through what, 3 or 4
-> > levels in the call chain?
-> > 
-> >  From include/linux/uaccess.h:
-> > 
-> >   * If raw_copy_{to,from}_user(to, from, size) returns N, size - N bytes starting
-> >   * at to must become equal to the bytes fetched from the corresponding area
-> >   * starting at from.  All data past to + size - N must be left unmodified.
-> >   *
-> >   * If copying succeeds, the return value must be 0.  If some data cannot be
-> >   * fetched, it is permitted to copy less than had been fetched; the only
-> >   * hard requirement is that not storing anything at all (i.e. returning size)
-> >   * should happen only when nothing could be copied.  In other words, you don't
-> >   * have to squeeze as much as possible - it is allowed, but not necessary.
-> > 
-> > arm64 instances violate the aforementioned hard requirement.  Please, fix
-> > it there; it's not hard.  All you need is an exception handler in .Ltiny15
-> > that would fall back to (short) byte-by-byte copy if the faulting address
-> > happened to be unaligned.  Or just do one-byte copy, not that it had been
-> > considerably cheaper than a loop.  Will be cheaper than propagating that extra
-> > information up the call chain, let alone paying for extra ->write_begin()
-> > and ->write_end() for single byte in generic_perform_write().
-> 
-> And what do we do if we then continue to fault with an external abort
-> because whatever it is that warranted being mapped as Device-type memory in
-> the first place doesn't support byte accesses?
+Hi Marcin,
 
-If it does not support byte access, it would've failed on fault-in.
+On 6/24/2021 7:25 AM, Marcin Wojtas wrote:
+> Hi Stephen,
+> 
+> czw., 24 cze 2021 o 10:54 Stephen Rothwell <sfr@canb.auug.org.au> napisał(a):
+>>
+>> Hi all,
+>>
+>> On Thu, 24 Jun 2021 11:43:14 +0530 Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>>>
+>>> On Thu, 24 Jun 2021 at 07:59, Nathan Chancellor <nathan@kernel.org> wrote:
+>>>>
+>>>> On Thu, Jun 24, 2021 at 12:46:48AM +0200, Marcin Wojtas wrote:
+>>>>> Hi Stephen,
+>>>>>
+>>>>> czw., 24 cze 2021 o 00:29 Stephen Rothwell <sfr@canb.auug.org.au> napisał(a):
+>>>>>>
+>>>>>> Hi all,
+>>>>>>
+>>>>>> Today's linux-next build (x86_64 modules_install) failed like this:
+>>>>>>
+>>>>>> depmod: ../tools/depmod.c:1792: depmod_report_cycles_from_root: Assertion `is < stack_size' failed.
+>>>
+>>> LKFT test farm found this build error.
+>>>
+>>> Regressions found on mips:
+>>>
+>>>   - build/gcc-9-malta_defconfig
+>>>   - build/gcc-10-malta_defconfig
+>>>   - build/gcc-8-malta_defconfig
+>>>
+>>> depmod: ERROR: Cycle detected: fwnode_mdio -> of_mdio -> fwnode_mdio
+>>> depmod: ERROR: Found 2 modules in dependency cycles!
+>>> make[1]: *** [/builds/linux/Makefile:1875: modules_install] Error 1
+>>>
+>>>>> Thank you for letting us know. Not sure if related, but I just found
+>>>>> out that this code won't compile for the !CONFIG_FWNODE_MDIO. Below
+>>>>> one-liner fixes it:
+>>>>>
+>>>>> --- a/include/linux/fwnode_mdio.h
+>>>>> +++ b/include/linux/fwnode_mdio.h
+>>>>> @@ -40,7 +40,7 @@ static inline int fwnode_mdiobus_register(struct mii_bus *bus,
+>>>>>           * This way, we don't have to keep compat bits around in drivers.
+>>>>>           */
+>>>>>
+>>>>> -       return mdiobus_register(mdio);
+>>>>> +       return mdiobus_register(bus);
+>>>>>   }
+>>>>>   #endif
+>>>>>
+>>>>> I'm curious if this is the case. Tomorrow I'll resubmit with above, so
+>>>>> I'd appreciate recheck.
+>>>
+>>> This proposed fix did not work.
+>>>
+>>>> Reverting all the patches in that series fixes the issue for me.
+>>>
+>>> Yes.
+>>> Reverting all the (6) patches in that series fixed this build problem.
+>>>
+>>> git log --oneline | head
+>>> 3752a7bfe73e Revert "Documentation: ACPI: DSD: describe additional MAC
+>>> configuration"
+>>> da53528ed548 Revert "net: mdiobus: Introduce fwnode_mdbiobus_register()"
+>>> 479b72ae8b68 Revert "net/fsl: switch to fwnode_mdiobus_register"
+>>> 92f85677aff4 Revert "net: mvmdio: add ACPI support"
+>>> 3d725ff0f271 Revert "net: mvpp2: enable using phylink with ACPI"
+>>> ffa8c267d44e Revert "net: mvpp2: remove unused 'has_phy' field"
+>>> d61c8b66c840 Add linux-next specific files for 20210623
+>>
+>> So I have reverted the merge of that topic branch from linux-next for
+>> today.
+> 
+> Just to understand correctly - you reverted merge from the local
+> branch (I still see the commits on Dave M's net-next/master). I see a
+> quick solution, but I'm wondering how I should proceed. Submit a
+> correction patch to the mailing lists against the net-next? Or the
+> branch is going to be reverted and I should resubmit everything as v4?
+
+As far as I am aware, net and net-next are not rebased so you would need 
+to submit a fixup patch against the current net-next with a proper 
+Fixes: tag.
+
+Cheers,
+Nathan
