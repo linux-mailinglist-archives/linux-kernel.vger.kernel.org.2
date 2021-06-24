@@ -2,142 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E743B3086
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 732B83B306B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231880AbhFXNyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:54:11 -0400
-Received: from mx1.tq-group.com ([93.104.207.81]:1088 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231949AbhFXNyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:54:10 -0400
-X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Jun 2021 09:54:09 EDT
+        id S231304AbhFXNs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:48:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229940AbhFXNsy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:48:54 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB248C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 06:46:35 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id g22so8243675iom.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 06:46:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1624542711; x=1656078711;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=szCWv6rsjrqr8YsJLJS5iNF5+J9XJY8kgMjMYUHaMwc=;
-  b=Ow2BJvt4o3mu6sOsZhrFnFxpGnPuGRsY+nBFAoju+G0qN8zjGO3683X7
-   Oez1iH21KWOxJzJ9viOuVVODeWxJV+oDUPiegDWuZxjfwrwm1LbDS2soC
-   KOxTOFdNl32KE/26nZWLFjitK6W3vjuO8ZJC3tuDk9uqE/sdv+xejRl4Z
-   VEOngt0guOkuChSuPYexaj2IHpflw4TTi2sWghHh/LvBCb6aKWKTrz/rI
-   n3NMCl/LH3LUuBR2Tdz5J3Yu9dNs/q++TEK/34MsjWe6qa+mk4Ym6Rcgz
-   zXT3gqQL2Xzs+QmkYdIF8hwtByCZPpEhKsMuEHgKosWQEc99h9Qm/1vGP
-   w==;
-IronPort-SDR: mE1l8zJr8HtmH7IbMXs/kHRDB3lrXT+qwBToX101h3ON8MWIwkWicIgY0Z7vtUbZryzWGAe8dH
- ouR+W/1Wyom4DFcSudhtdUcKspOOKbiaMy3oBjvpat0Wpes0BvB/dXSf/cbhLUaOvoOrFrLXfs
- AljoPnU8Jmco47ZJLDkW5a4n1aQNibuSLw7l7Yr7NLD/CHxicWZvMEH+z17GiUOlmyT1jrOyWL
- rTWYAvy071OUmzx9DTtIMMHyZXxpwHXe/wMIMl9SFEbZhxu5nxyhOlET03JTmsCkiB2xEWJB/w
- uR8=
-X-IronPort-AV: E=Sophos;i="5.83,296,1616454000"; 
-   d="scan'208";a="18131940"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 24 Jun 2021 15:44:40 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Thu, 24 Jun 2021 15:44:40 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Thu, 24 Jun 2021 15:44:40 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1624542280; x=1656078280;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=szCWv6rsjrqr8YsJLJS5iNF5+J9XJY8kgMjMYUHaMwc=;
-  b=ISnQcVdUYZc9wXMLbjE74r+PQnCebYHZ8NjwV9Yu4kRHKqMTPBnSkDNV
-   8HLaZ5qz+HIbilhUVwr9+523Hw8kpsBIvGxzJ8MTD0kCcPn3fW65Cp1KC
-   0ksaaLizF5jtpdkd8mUQqw2RYzQ0uGoqock5DsqHchISINpgfk8bqOdFh
-   TTnwGWG+BtHm1+oq1ZZ9VU29COAE6LiOcLqLOPSIIO82RpYfSuQpt2J4R
-   7soP15QpUqm1Ulwp58y9piJOIH/PUwFnTBpX0oqyNCl6gyYCRtsocucKD
-   zGXa7gu0b2XMkXztzqrGIEvsgNSoN4+g/2cdWi4xDt0YVtzux+t3oEFE4
-   g==;
-IronPort-SDR: KUdEmWQI2DueMle10kmfrcuruxrLFzwlunxRPp5U8qv8za1so+E5pg3pztc1KrPhhZuuNoL4oy
- j8h+fNqxpKPUw4tACodznBrhN65KLXzIosoLiYW8mWHpQ/SLKvFGMahzEeilTKzyhVrSFErGoB
- tnRAVLOdXR9HTEf85WfCxLUwO5b6rdD52N7F8nR67p4vSVbokEbv8aj4urdsmD0rw5d4L3/ZKF
- vs5N8ByvzfnLGorLkF+PeJJksh37FtJZC0Uk8NJaq4orrIlI7t6Ih4I6wR2jcTGQDK9zSNimc+
- 8nw=
-X-IronPort-AV: E=Sophos;i="5.83,296,1616454000"; 
-   d="scan'208";a="18131938"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 24 Jun 2021 15:44:40 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 53EB3280070;
-        Thu, 24 Jun 2021 15:44:40 +0200 (CEST)
-Message-ID: <53e222fdbb3d488a99bb24d0205b064d3fe662b0.camel@ew.tq-group.com>
-Subject: Re: [PATCH 1/3] gpio: tqmx86: really make IRQ optional
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Thu, 24 Jun 2021 15:44:38 +0200
-In-Reply-To: <CAHp75VcuD49UgkXCrPL3VKiOsx4qSDsf=zB2vp6yVS1aJCuc2w@mail.gmail.com>
-References: <cover.1617189926.git.matthias.schiffer@ew.tq-group.com>
-         <11a8323c249ae6ea7584402ab0fb74551b6a4b7d.1617189926.git.matthias.schiffer@ew.tq-group.com>
-         <CAHp75Vcc3CNXguMK-ZhRfvfjVBQBbcGEYK_+WQAmb_Sw5-Derw@mail.gmail.com>
-         <4c143c8ee65fe52840ccbb4e1b422b6e473563d9.camel@ew.tq-group.com>
-         <CAHp75VfVCTj170S_4Lh9JyDYFfUQLjTtnU=O-iXgUVXcycLxwg@mail.gmail.com>
-         <38b1191ce594d9fefe9e0e98b3fa8ca0a23ee3ea.camel@ew.tq-group.com>
-         <CAHp75VcuD49UgkXCrPL3VKiOsx4qSDsf=zB2vp6yVS1aJCuc2w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a9KALi4Q0j9NQDn38Zn125Upiw5tfdm6x6aVj537r44=;
+        b=d1wt/Z1zzlI1vpplfic6XsSKvtk0aC3zrWwPb3PYg9V6FI24gGMjVnkJV1gOVDks42
+         t+bC9p8H4x4eBgbwCjpCuA5rEtRv77NxCB3NMKYMzHOjbqJDAUOIqRDPMRVszGVLDVIf
+         mryiyPGeRje/DMNN+RAE2i14wH2KdweCPSQGvkMB1gXPak9XIGrgeTioD3JKHsyn606W
+         R++Q3Eg2pT6TPBkQw1U9ZtGEgcZ/FiYtQVWayH5fvT5/K2z+V8mVuC09YHntXJk4E0ne
+         7DWBAJxgpGhhnDdW3ViyqbY0coBJIduaZyjafSh5VCHopjEaaPqCgPQrI1nk0aLcDCjv
+         jUlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a9KALi4Q0j9NQDn38Zn125Upiw5tfdm6x6aVj537r44=;
+        b=uenRaUKBe+MZEktQU+OgvN1UIeiv96zSIJxBoUBGSMB0Rk2mDQKk4lge1AsFEqLeVW
+         pLX1Mve1bi1X8uxZ/yheLekaTtwivfTv1H0FMUyGjQ9rYlKh7MkKOx+yK8EtBqyKdzVZ
+         e913mgny6dmQN2sTxqeRU+V071vwJg8J2rOyHL083DCUuybPB+AU6Qf47NhrPmBr21F0
+         gPPOaEeRd6zc9BV2fCXA7bPVhmnyzv8oK8DC5AOTHyxXb0uaJnpHqhx76IsVuf/k1FLV
+         jJFVRniKI7xS3daH63CPQIvyDVz4bj20tYu5iTqHRQDounxidy3+gIcxqNuMa5ubSdz+
+         Iuew==
+X-Gm-Message-State: AOAM531pyoyL8qDT+Oev1SU5Bmj03aJtU6eVR+uYdt303eL084dtFOhx
+        ELR9LSHoIoaf0osIDPlxUj8=
+X-Google-Smtp-Source: ABdhPJzr3GXRVhGB1PAy4fWRfrWyyDIYM32Nl6oHaOSynj4ICv27ADomHA9aI5Pl+itwEdnL/2kwQA==
+X-Received: by 2002:a5d:914f:: with SMTP id y15mr4254636ioq.196.1624542395343;
+        Thu, 24 Jun 2021 06:46:35 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id d10sm1990272ilc.71.2021.06.24.06.46.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 06:46:34 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 5D3F027C0054;
+        Thu, 24 Jun 2021 09:46:33 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Thu, 24 Jun 2021 09:46:33 -0400
+X-ME-Sender: <xms:uIzUYK4gyqqQhhFSEHCg38LyLb27MfNL4tiEuox2JX-Vro12keETTg>
+    <xme:uIzUYD5ayp0VZAd__I4SMmeaOspJijv4ghGjUF_1ZrZKYSXhGITjdiL2VFkLsqyRN
+    fvUCgNHP2YWBfdhVA>
+X-ME-Received: <xmr:uIzUYJd4xOjUAvInEgjQUqdeBw25OQiMT3XjJMz5VgDeBoEYAhIj5hwN66t1mQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeghedgieelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
+    dttddtvdenucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehg
+    mhgrihhlrdgtohhmqeenucggtffrrghtthgvrhhnpedvleeigedugfegveejhfejveeuve
+    eiteejieekvdfgjeefudehfefhgfegvdegjeenucevlhhushhtvghrufhiiigvpedtnecu
+    rfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrsh
+    honhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghn
+    gheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:uIzUYHJuFgLmEkjDjOpUhz4-9XSy1YIhjaUPDIZJ6gqtLg1_jgwExQ>
+    <xmx:uIzUYOI2I_ShyED_Kz7MtNhg6nbQb0aYk3f0A2aSSKXa8L4i2I1-Fw>
+    <xmx:uIzUYIwGjKvGZkPOFtwOiO7PJrhh91-SmaRd-6O7zROnGhWmPNSB5A>
+    <xmx:uYzUYG8N2at6ahDEXDPoggOEU874DJ5J1EARoTMmquXNwhYBkQ8drA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 24 Jun 2021 09:46:32 -0400 (EDT)
+Date:   Thu, 24 Jun 2021 21:45:49 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Xiongwei Song <sxwjean@me.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, linux-kernel@vger.kernel.org,
+        Xiongwei Song <sxwjean@gmail.com>
+Subject: Re: [PATCH v2 3/3] locking/lockdep: Print possible warning after
+ counting deps
+Message-ID: <YNSMjZmuuuphg+aa@boqun-archlinux>
+References: <20210618145534.438816-1-sxwjean@me.com>
+ <20210618145534.438816-4-sxwjean@me.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618145534.438816-4-sxwjean@me.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-03-31 at 17:03 +0300, Andy Shevchenko wrote:
-> On Wed, Mar 31, 2021 at 4:36 PM Matthias Schiffer
-> <matthias.schiffer@ew.tq-group.com> wrote:
-> > 
-> > On Wed, 2021-03-31 at 15:39 +0300, Andy Shevchenko wrote:
-> > > On Wed, Mar 31, 2021 at 3:37 PM Matthias Schiffer
-> > > <matthias.schiffer@ew.tq-group.com> wrote:
-> > > > On Wed, 2021-03-31 at 15:29 +0300, Andy Shevchenko wrote:
+On Fri, Jun 18, 2021 at 10:55:34PM +0800, Xiongwei Song wrote:
+> From: Xiongwei Song <sxwjean@gmail.com>
 > 
-> ...
+> The graph walk might hit error when counting dependencies. Once the
+> return value is negative, print a warning to reminder users.
 > 
-> > > > I don't understand which part of the code is dead now. I assume the
-> > > > `return irq` case is still useful for unexpected errors, or things like
-> > > > EPROBE_DEFER? I'm not sure if EPROBE_DEFER is relevant for this driver,
-> > > > but just ignoring the error code completely doesn't seem right to me.
-> > > 
-> > > platform_get_irq() AFAIK won't ever return such a code.
-> > > So, basically your conditional is always false.
-> > > 
-> > > I would like to see the code path which makes my comment wrong.
-> > > 
-> > 
-> > EPROBE_DEFER appears a few times in platform_get_irq_optional()
-> > (drivers/base/platform.c), but it's possible that this is only relevant
-> > for OF-based platforms and not x86.
+> However, lockdep_unlock() would be called twice if we call print_bfs_bug()
+> directly in __lockdep_count_*_deps(), so as the suggestion from Boqun:
+> "
+> Here print_bfs_bug() will eventually call debug_locks_off_graph_unlock()
+> to release the graph lock, and the caller (lockdep_count_fowards_deps())
+> will also call graph_unlock() afterwards, and that means we unlock
+> *twice* if a BFS error happens... although in that case, lockdep should
+> stop working so messing up with the graph lock may not hurt anything,
+> but still, I don't think we want to do that.
 > 
-> Ah, okay, that's something I haven't paid attention to.
+> So probably you can open-code __lockdep_count_forward_deps() into
+> lockdep_count_forwards_deps(), and call print_bfs_bug() or
+> graph_unlock() accordingly. The body of __lockdep_count_forward_deps()
+> is really small, so I think it's OK to open-code it into its caller.
+> "
+> we put the code in __lockdep_count_*_deps() into lockdep_count_*_deps().
 > 
-> So the root cause of the your case is platform_get_irq_optional|()
-> return code. I'm wondering why it can't return 0 instead of absent
-> IRQ? Perhaps you need to fix it instead of lurking into each caller.
+> Suggested-by: Waiman Long <longman@redhat.com>
+> Suggested-by: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+
+Thanks!
+
+Regards,
+Boqun
+
+> ---
+>  kernel/locking/lockdep.c | 45 +++++++++++++++++++---------------------
+>  1 file changed, 21 insertions(+), 24 deletions(-)
 > 
-
-
-Hi Andy,
-
-what's the plan here? "driver core: platform: Make
-platform_get_irq_optional() optional" had to be reverted because it
-broke existing users of platform_get_irq_optional(). I'm not convinced
-that a slightly more convenient API is worth going through the trouble
-of fixing them all - I know we don't care much about out-of-tree
-modules, but subtly changing the behaviour of such a function doesn't
-seem like a good idea to me even if we review all in-tree users.
-
-Should I just rebase my patches with the existing ENXIO handing (and
-fix up the other issues that were noted), or do you intend to give the
-platform_get_irq_optional() revamp another try?
-
-Kind regards,
-Matthias
-
+> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> index cb94097014d8..c29453b1df50 100644
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -2024,55 +2024,52 @@ static bool noop_count(struct lock_list *entry, void *data)
+>  	return false;
+>  }
+>  
+> -static unsigned long __lockdep_count_forward_deps(struct lock_list *this)
+> -{
+> -	unsigned long  count = 0;
+> -	struct lock_list *target_entry;
+> -
+> -	__bfs_forwards(this, (void *)&count, noop_count, NULL, &target_entry);
+> -
+> -	return count;
+> -}
+>  unsigned long lockdep_count_forward_deps(struct lock_class *class)
+>  {
+> -	unsigned long ret, flags;
+> +	unsigned long count = 0, flags;
+>  	struct lock_list this;
+> +	struct lock_list *target_entry;
+> +	enum bfs_result result;
+>  
+>  	__bfs_init_root(&this, class);
+>  
+>  	raw_local_irq_save(flags);
+>  	lockdep_lock();
+> -	ret = __lockdep_count_forward_deps(&this);
+> -	lockdep_unlock();
+> -	raw_local_irq_restore(flags);
+>  
+> -	return ret;
+> -}
+> +	result = __bfs_forwards(&this, (void *)&count, noop_count, NULL, &target_entry);
+>  
+> -static unsigned long __lockdep_count_backward_deps(struct lock_list *this)
+> -{
+> -	unsigned long  count = 0;
+> -	struct lock_list *target_entry;
+> +	if (bfs_error(result))
+> +		print_bfs_bug(result);
+> +	else
+> +		lockdep_unlock();
+>  
+> -	__bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
+> +	raw_local_irq_restore(flags);
+>  
+>  	return count;
+>  }
+>  
+>  unsigned long lockdep_count_backward_deps(struct lock_class *class)
+>  {
+> -	unsigned long ret, flags;
+> +	unsigned long  count = 0, flags;
+>  	struct lock_list this;
+> +	struct lock_list *target_entry;
+> +	enum bfs_result result;
+>  
+>  	__bfs_init_root(&this, class);
+>  
+>  	raw_local_irq_save(flags);
+>  	lockdep_lock();
+> -	ret = __lockdep_count_backward_deps(&this);
+> -	lockdep_unlock();
+> +
+> +	result = __bfs_backwards(&this, (void *)&count, noop_count, NULL, &target_entry);
+> +
+> +	if (bfs_error(result))
+> +		print_bfs_bug(result);
+> +	else
+> +		lockdep_unlock();
+> +
+>  	raw_local_irq_restore(flags);
+>  
+> -	return ret;
+> +	return count;
+>  }
+>  
+>  /*
+> -- 
+> 2.30.2
+> 
