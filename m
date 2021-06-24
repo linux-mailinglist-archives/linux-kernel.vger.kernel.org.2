@@ -2,130 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DF13B2754
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 08:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD023B275A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 08:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbhFXGTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 02:19:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231159AbhFXGTw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 02:19:52 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F040BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 23:17:32 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id q190so11652608qkd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 23:17:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gpCoMJNcwo6BKQ1tLaUlLybi9fJgrUjAD4JF+W4r3lg=;
-        b=sNr3SNpmAo1kxL1IKJAIsx/vaGJNMJ+BN+8n+0MOxiF1CEd3Qf+nV9+q8tSr9Hd02l
-         xdK5UkMUTrMW6imUhODbCsht8K0hT8ez4nSJfgcuZNKK9FURaoSgVXSF4yg4syBiKvgC
-         GvGxPsRacmv6tT4ZId31zIBn+h8ClmmSvA/2CzBRSd+mKoxLbAO1igqm96SPU9Yikj5Q
-         /eqSQXqP5X99erLLJ+i1yIJiy0f+2UQH7MdTTcyqsEPC6uZQYI/DCTNyoZGIQe79Hh0V
-         rPsj15Qf37Oh+sLCrdVCdrmgCKCNqFXGAj6hZ6MbxGwDiZhRkKKrGYStQIMVEt1npki8
-         ltYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gpCoMJNcwo6BKQ1tLaUlLybi9fJgrUjAD4JF+W4r3lg=;
-        b=R54GDWcz4UOkAiUFANHyJoKC6hEgmI1vzHUi/ysvBWOWP4zyEPZz3NIj+1CvsNxIzM
-         61l7V+f2vD/UrK1Dq2Y+kLCzCEe2d8Qdq+gxDpAhschDGxwZFAO/19ULMhtZdoRogwP/
-         GIdngffXqQzwGLez6JaHwXdJCGbhzx6U30pW/oxZQGgeekoeFwpqPFK5IWtyVlekoHdH
-         HrpOKmC68X29MhYVQziQ0myPVaHVcgYssiC570LT+DPcc950faCnZL/wg4jtRb2lxOnA
-         tkeCrO/b7EU+cuzn6SuoH7Kl0Jkcv8Aeub6cFXRPwsmOmS2Z3nARbwnHvkZxe+0J47IM
-         mEtA==
-X-Gm-Message-State: AOAM5301Apzr9mv9/XaV3oc/glSOhIFKgPXEeFrDb5JXnhtppOzWLmNi
-        2nuUJDvEVTBbBaYDuBSi3+6bFNrL370P8ckHh/wbbQ==
-X-Google-Smtp-Source: ABdhPJzJm0Vd4Kck8UenE+ylHTWGX8ozBrgBq4586l62wheY8gYTHLERpu4nbaeHlpd4gJW3e4mB+XNZW7iB6BkXTJE=
-X-Received: by 2002:a25:e911:: with SMTP id n17mr2742830ybd.48.1624515450316;
- Wed, 23 Jun 2021 23:17:30 -0700 (PDT)
+        id S231176AbhFXGZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 02:25:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230397AbhFXGZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 02:25:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FF95613EC;
+        Thu, 24 Jun 2021 06:23:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624515791;
+        bh=gSOLRpys7/I6tHKjxLQhKmFMO1O29ImcyVQatrMGc9M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iHAcw5D3jk57lgAw73SkmsFOWyPSODiJRTAoWSKLAeQrvB3UZq2CH22myCxPzN/Ag
+         3y6xycvS1MrUv9Z5TEk3iHws6r65Ho2pS+DhPU/kK3zDX4/aq3k94GtqRTJDf+Cuzl
+         vLwtGmsM4IJAHngmT3lHQgWeqRWepc36pfwN4/5ZwQmWWNJCyzN08d+Afq+fywajta
+         cVT9s196/lYw10hPRH0A0buwR/CRhgpnQEUDLpeUDomVURcWBv0KtgLtmhOGVjRm8u
+         R/fhn4K/bXr/m5GYi84tHSHpm6dubhV8lqmQ5BprNNjJclCgU4dvlDZb3lf9qsYIZS
+         lA+CwU9YTw3vQ==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     alfalco@gmail.com, Borislav Petkov <bp@alien8.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        robert.shteynfeld@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/page_alloc: fix memory map initialization for descending nodes
+Date:   Thu, 24 Jun 2021 09:23:05 +0300
+Message-Id: <20210624062305.10940-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20210623192837.13792eae@gmail.com> <0000000000008a8f9c05c571668c@google.com>
-In-Reply-To: <0000000000008a8f9c05c571668c@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 24 Jun 2021 08:17:18 +0200
-Message-ID: <CACT4Y+YqOot7SqTXmTJZ3qD16ZBtbOMbKSCseHHzes-DzsPPzw@mail.gmail.com>
-Subject: Re: [syzbot] WARNING: zero-size vmalloc in corrupted
-To:     syzbot <syzbot+c2f6f09fe907a838effb@syzkaller.appspotmail.com>
-Cc:     Pavel Skripkin <paskripkin@gmail.com>, akpm@linux-foundation.org,
-        coreteam@netfilter.org, davem@davemloft.net, dsahern@kernel.org,
-        fw@strlen.de, kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 6:28 PM syzbot
-<syzbot+c2f6f09fe907a838effb@syzkaller.appspotmail.com> wrote:
->
-> > On Wed, 23 Jun 2021 19:19:28 +0300
-> > Pavel Skripkin <paskripkin@gmail.com> wrote:
-> >
-> >> On Wed, 23 Jun 2021 02:15:23 -0700
-> >> syzbot <syzbot+c2f6f09fe907a838effb@syzkaller.appspotmail.com> wrote:
-> >>
-> >> > Hello,
-> >> >
-> >> > syzbot found the following issue on:
-> >> >
-> >> > HEAD commit:    13311e74 Linux 5.13-rc7
-> >> > git tree:       upstream
-> >> > console output:
-> >> > https://syzkaller.appspot.com/x/log.txt?x=15d01e58300000 kernel
-> >> > config:  https://syzkaller.appspot.com/x/.config?x=42ecca11b759d96c
-> >> > dashboard link:
-> >> > https://syzkaller.appspot.com/bug?extid=c2f6f09fe907a838effb syz
-> >> > repro:
-> >> > https://syzkaller.appspot.com/x/repro.syz?x=14bb89e8300000 C
-> >> > reproducer:
-> >> > https://syzkaller.appspot.com/x/repro.c?x=17cc51b8300000
-> >> >
-> >> > The issue was bisected to:
-> >> >
-> >> > commit f9006acc8dfe59e25aa75729728ac57a8d84fc32
-> >> > Author: Florian Westphal <fw@strlen.de>
-> >> > Date:   Wed Apr 21 07:51:08 2021 +0000
-> >> >
-> >> >     netfilter: arp_tables: pass table pointer via nf_hook_ops
-> >> >
-> >> > bisection log:
-> >> > https://syzkaller.appspot.com/x/bisect.txt?x=13b88400300000 final
-> >> > oops:
-> >> > https://syzkaller.appspot.com/x/report.txt?x=10788400300000 console
-> >> > output: https://syzkaller.appspot.com/x/log.txt?x=17b88400300000
-> >> >
-> >>
-> >> This one is similar to previous zero-size vmalloc, I guess :)
-> >>
-> >> #syz test
-> >> git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> >> master
-> >>
-> >>
-> >
-> > Hah, I didn't notice that this one is already fixed by me. But the
-> > patch is in the media tree, it's not upstreamed yet:
-> >
-> > https://git.linuxtv.org/media_tree.git/commit/?id=c680ed46e418e9c785d76cf44eb33bfd1e8cf3f6
-> >
-> > So,
-> >
-> > #syz dup: WARNING: zero-size vmalloc in dvb_dmx_init
->
-> Can't dup bug to a bug in different reporting (upstream->internal).Please dup syzbot bugs only onto syzbot bugs for the same kernel/reporting.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-I think we can say:
+On systems with memory nodes sorted in descending order, for instance
+Dell Precision WorkStation T5500, the struct pages for higher PFNs and
+respectively lower nodes, could be overwritten by the initialization of
+struct pages corresponding to the holes in the memory sections.
 
-#syz dup: WARNING in __vmalloc_node_range
-https://syzkaller.appspot.com/bug?id=3c558412597cc402fd7fbb250ca30d04d46c8c60
+For example for the below memory layout
 
-as that was the original bug report.
+[    0.245624] Early memory node ranges
+[    0.248496]   node   1: [mem 0x0000000000001000-0x0000000000090fff]
+[    0.251376]   node   1: [mem 0x0000000000100000-0x00000000dbdf8fff]
+[    0.254256]   node   1: [mem 0x0000000100000000-0x0000001423ffffff]
+[    0.257144]   node   0: [mem 0x0000001424000000-0x0000002023ffffff]
+
+the range 0x1424000000 - 0x1428000000 in the beginning of node 0 starts in
+the middle of a section and will be considered as a hole during the
+initialization of the last section in node 1.
+
+Reorder order of the memory map initialization so that the outer loop will
+always iterate over populated memory regions in the ascending order and the
+inner loop will select the zone corresponding to the PFN range.
+
+This way initialization of the struct pages for the memory holes will
+be always done for the ranges that are actually not populated.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=213073
+Fixes: 0740a50b9baa ("mm/page_alloc.c: refactor initialization of struct page for holes in memory layout")
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+ include/linux/mm.h |  1 -
+ mm/page_alloc.c    | 94 ++++++++++++++++++++++++++++------------------
+ 2 files changed, 58 insertions(+), 37 deletions(-)
+
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 8ae31622deef..9afb8998e7e5 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2474,7 +2474,6 @@ extern void set_dma_reserve(unsigned long new_dma_reserve);
+ extern void memmap_init_range(unsigned long, int, unsigned long,
+ 		unsigned long, unsigned long, enum meminit_context,
+ 		struct vmem_altmap *, int migratetype);
+-extern void memmap_init_zone(struct zone *zone);
+ extern void setup_per_zone_wmarks(void);
+ extern int __meminit init_per_zone_wmark_min(void);
+ extern void mem_init(void);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index d1f5de1c1283..f6ea180ae119 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -6396,7 +6396,7 @@ void __ref memmap_init_zone_device(struct zone *zone,
+ 		return;
+ 
+ 	/*
+-	 * The call to memmap_init_zone should have already taken care
++	 * The call to memmap_init should have already taken care
+ 	 * of the pages reserved for the memmap, so we can just jump to
+ 	 * the end of that region and start processing the device pages.
+ 	 */
+@@ -6461,7 +6461,7 @@ static void __meminit zone_init_free_lists(struct zone *zone)
+ /*
+  * Only struct pages that correspond to ranges defined by memblock.memory
+  * are zeroed and initialized by going through __init_single_page() during
+- * memmap_init_zone().
++ * memmap_init_zone_range().
+  *
+  * But, there could be struct pages that correspond to holes in
+  * memblock.memory. This can happen because of the following reasons:
+@@ -6480,9 +6480,9 @@ static void __meminit zone_init_free_lists(struct zone *zone)
+  *   zone/node above the hole except for the trailing pages in the last
+  *   section that will be appended to the zone/node below.
+  */
+-static u64 __meminit init_unavailable_range(unsigned long spfn,
+-					    unsigned long epfn,
+-					    int zone, int node)
++static void __init init_unavailable_range(unsigned long spfn,
++					  unsigned long epfn,
++					  int zone, int node)
+ {
+ 	unsigned long pfn;
+ 	u64 pgcnt = 0;
+@@ -6498,56 +6498,77 @@ static u64 __meminit init_unavailable_range(unsigned long spfn,
+ 		pgcnt++;
+ 	}
+ 
+-	return pgcnt;
++	if (pgcnt)
++		pr_info("On node %d, zone %s: %lld pages in unavailable ranges",
++			node, zone_names[zone], pgcnt);
+ }
+ #else
+-static inline u64 init_unavailable_range(unsigned long spfn, unsigned long epfn,
+-					 int zone, int node)
++static inline void init_unavailable_range(unsigned long spfn,
++					  unsigned long epfn,
++					  int zone, int node)
+ {
+-	return 0;
+ }
+ #endif
+ 
+-void __meminit __weak memmap_init_zone(struct zone *zone)
++static void __init memmap_init_zone_range(struct zone *zone,
++					  unsigned long start_pfn,
++					  unsigned long end_pfn,
++					  unsigned long *hole_pfn)
+ {
+ 	unsigned long zone_start_pfn = zone->zone_start_pfn;
+ 	unsigned long zone_end_pfn = zone_start_pfn + zone->spanned_pages;
+-	int i, nid = zone_to_nid(zone), zone_id = zone_idx(zone);
+-	static unsigned long hole_pfn;
++	int nid = zone_to_nid(zone), zone_id = zone_idx(zone);
++
++	start_pfn = clamp(start_pfn, zone_start_pfn, zone_end_pfn);
++	end_pfn = clamp(end_pfn, zone_start_pfn, zone_end_pfn);
++
++	if (start_pfn >= end_pfn)
++		return;
++
++	memmap_init_range(end_pfn - start_pfn, nid, zone_id, start_pfn,
++			  zone_end_pfn, MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
++
++	if (*hole_pfn < start_pfn)
++		init_unavailable_range(*hole_pfn, start_pfn, zone_id, nid);
++
++	*hole_pfn = end_pfn;
++}
++
++static void __init memmap_init(void)
++{
+ 	unsigned long start_pfn, end_pfn;
+-	u64 pgcnt = 0;
++	unsigned long hole_pfn = 0;
++	int i, j, zone_id, nid;
+ 
+-	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
+-		start_pfn = clamp(start_pfn, zone_start_pfn, zone_end_pfn);
+-		end_pfn = clamp(end_pfn, zone_start_pfn, zone_end_pfn);
++	for_each_mem_pfn_range(i, MAX_NUMNODES, &start_pfn, &end_pfn, &nid) {
++		struct pglist_data *node = NODE_DATA(nid);
++
++		for (j = 0; j < MAX_NR_ZONES; j++) {
++			struct zone *zone = node->node_zones + j;
+ 
+-		if (end_pfn > start_pfn)
+-			memmap_init_range(end_pfn - start_pfn, nid,
+-					zone_id, start_pfn, zone_end_pfn,
+-					MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
++			if (!populated_zone(zone))
++				continue;
+ 
+-		if (hole_pfn < start_pfn)
+-			pgcnt += init_unavailable_range(hole_pfn, start_pfn,
+-							zone_id, nid);
+-		hole_pfn = end_pfn;
++			memmap_init_zone_range(zone, start_pfn, end_pfn,
++					       &hole_pfn);
++			zone_id = j;
++		}
+ 	}
+ 
+ #ifdef CONFIG_SPARSEMEM
+ 	/*
+-	 * Initialize the hole in the range [zone_end_pfn, section_end].
+-	 * If zone boundary falls in the middle of a section, this hole
+-	 * will be re-initialized during the call to this function for the
+-	 * higher zone.
++	 * Initialize the memory map for hole in the range [memory_end,
++	 * section_end].
++	 * Append the pages in this hole to the highest zone in the last
++	 * node.
++	 * The call to init_unavailable_range() is outside the ifdef to
++	 * silence the compiler warining about zone_id set but not used;
++	 * for FLATMEM it is is nop anyway
+ 	 */
+-	end_pfn = round_up(zone_end_pfn, PAGES_PER_SECTION);
++	end_pfn = round_up(end_pfn, PAGES_PER_SECTION);
+ 	if (hole_pfn < end_pfn)
+-		pgcnt += init_unavailable_range(hole_pfn, end_pfn,
+-						zone_id, nid);
+ #endif
+-
+-	if (pgcnt)
+-		pr_info("  %s zone: %llu pages in unavailable ranges\n",
+-			zone->name, pgcnt);
++		init_unavailable_range(hole_pfn, end_pfn, zone_id, nid);
+ }
+ 
+ static int zone_batchsize(struct zone *zone)
+@@ -7250,7 +7271,6 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
+ 		set_pageblock_order();
+ 		setup_usemap(zone);
+ 		init_currently_empty_zone(zone, zone->zone_start_pfn, size);
+-		memmap_init_zone(zone);
+ 	}
+ }
+ 
+@@ -7776,6 +7796,8 @@ void __init free_area_init(unsigned long *max_zone_pfn)
+ 			node_set_state(nid, N_MEMORY);
+ 		check_for_memory(pgdat, nid);
+ 	}
++
++	memmap_init();
+ }
+ 
+ static int __init cmdline_parse_core(char *p, unsigned long *core,
+-- 
+2.28.0
+
