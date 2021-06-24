@@ -2,179 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DD33B2DF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248663B2DF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbhFXLho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232363AbhFXLhn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:37:43 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54444C061574;
-        Thu, 24 Jun 2021 04:35:24 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id e20so4515636pgg.0;
-        Thu, 24 Jun 2021 04:35:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=99mlqRPqpltRyIkzBDkulZzreBwoyXNFz/QwaO6c5sE=;
-        b=Lf7JdQpgE2BtfLvOWENxboAEdbIjgofEaFcEYibdAaOZbp6axxSsrmM7ZEZbC9hsSe
-         v2tpFvZbeYB9S7fFZOZ32OdCuh7fC9/GLLeRPIn+yPxPeLyT5+81FmZEad3GLTuzjouy
-         +/yaMzSgrpLcKWaBMi5Kex42f77V8mHnjdF5zn8gW7x2KRFUKWyYGOr+doAXzot82msd
-         AfLww2TPCtHIfZG9Cvyzh2a+5yTHjn4X3bNPSOeORUZacw5UjFdINBTmZ3p1bRS04FOR
-         CaCYVE2QUlDRb94iXpg+/VdRfxYlKcMyqeSQKMhAZ5QdpUAnRsNh6r3IxpvAkP8Ye2cH
-         JbHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=99mlqRPqpltRyIkzBDkulZzreBwoyXNFz/QwaO6c5sE=;
-        b=P3woGY1ltCuhLM2NcHMSZ9x38DfYlWS31NowJuM78+uehtYRXR4SP/MY12uIzx+gHo
-         ODXmhC1uelsHmkjH6+XhSUU2+oQ3fKnp9dI4Wc+SjurHX4tn6TeAdBD99aIxUpOu3g+q
-         qqOqHZOQrWrRETnNzUmaDc8F4fl5hP6VPRiAqJTnwHg6kvKkr5I2LqOoz58cNDlvjyyh
-         VHOXIoNVk3FM6W/7hRQ/XmQUh477aUi9W3ARQdo6xN+EJH++K0f1nzIRsfiGmAFYb41B
-         4fs/xA5WHLyewiA9zrnplxJXaI13jn9Tsh8bh7tyrvMsBADkPAyqnMHkQJC+a1Vy4A6W
-         Yyzw==
-X-Gm-Message-State: AOAM533fzfrwDa6aDhf4JWYOlFphGUtSsI1N3mSCk67SgOQoI/14vhPL
-        ywBsTlHilI4aoyjdo15kV7k=
-X-Google-Smtp-Source: ABdhPJyrrBQto0sQiE2RBettf8+KQU8CW527ig2S7ZxcNAMdt6g2Nn3Q3xxjp0WGkGg2YTioe9VMCQ==
-X-Received: by 2002:a63:a80b:: with SMTP id o11mr4389582pgf.53.1624534523886;
-        Thu, 24 Jun 2021 04:35:23 -0700 (PDT)
-Received: from localhost ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id d2sm2116944pgh.59.2021.06.24.04.35.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 04:35:23 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Thu, 24 Jun 2021 19:33:53 +0800
-To:     Benjamin Poirier <benjamin.poirier@gmail.com>
-Cc:     linux-staging@lists.linux.dev, netdev@vger.kernel.org,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC 06/19] staging: qlge: disable flow control by default
-Message-ID: <20210624113353.mdcalrw77d4he4j5@Rk>
-References: <20210621134902.83587-1-coiby.xu@gmail.com>
- <20210621134902.83587-7-coiby.xu@gmail.com>
- <YNGWHxYF5UkPk2U5@d3>
+        id S232440AbhFXLgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:36:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:54654 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232363AbhFXLgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 07:36:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 884CA11FB;
+        Thu, 24 Jun 2021 04:34:21 -0700 (PDT)
+Received: from [10.57.9.136] (unknown [10.57.9.136])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 361C23F718;
+        Thu, 24 Jun 2021 04:34:14 -0700 (PDT)
+Subject: Re: [PATCH v14 06/12] swiotlb: Use is_swiotlb_force_bounce for
+ swiotlb data bouncing
+To:     Will Deacon <will@kernel.org>
+Cc:     Claire Chang <tientzu@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
+        peterz@infradead.org, benh@kernel.crashing.org,
+        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
+        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
+        mingo@kernel.org, Jianxiong Gao <jxgao@google.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Saravana Kannan <saravanak@google.com>, xypron.glpk@gmx.de,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        bskeggs@redhat.com, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Thierry Reding <treding@nvidia.com>,
+        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
+        maarten.lankhorst@linux.intel.com, linuxppc-dev@lists.ozlabs.org,
+        jani.nikula@linux.intel.com,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        rodrigo.vivi@intel.com, Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>, bauerman@linux.ibm.com
+References: <20210619034043.199220-1-tientzu@chromium.org>
+ <20210619034043.199220-7-tientzu@chromium.org>
+ <76c3343d-72e5-9df3-8924-5474ee698ef4@quicinc.com>
+ <20210623183736.GA472@willie-the-truck>
+ <19d4c7a2-744d-21e0-289c-a576e1f0e6f3@quicinc.com>
+ <20210624054315.GA25381@lst.de>
+ <CALiNf288ZLMhY3E8E3N+z9rkwi1viWNLm1wwMEwT4rNwh3FfwQ@mail.gmail.com>
+ <364e6715-eafd-fc4a-e0af-ce2a042756b4@arm.com>
+ <20210624111855.GA1382@willie-the-truck>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <452155d2-c98e-23f6-86d6-3a2ff2e74783@arm.com>
+Date:   Thu, 24 Jun 2021 12:34:09 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YNGWHxYF5UkPk2U5@d3>
+In-Reply-To: <20210624111855.GA1382@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 04:49:51PM +0900, Benjamin Poirier wrote:
->On 2021-06-21 21:48 +0800, Coiby Xu wrote:
->> According to the TODO item,
->> > * the flow control implementation in firmware is buggy (sends a flood of pause
->> >   frames, resets the link, device and driver buffer queues become
->> >   desynchronized), disable it by default
+On 2021-06-24 12:18, Will Deacon wrote:
+> On Thu, Jun 24, 2021 at 12:14:39PM +0100, Robin Murphy wrote:
+>> On 2021-06-24 07:05, Claire Chang wrote:
+>>> On Thu, Jun 24, 2021 at 1:43 PM Christoph Hellwig <hch@lst.de> wrote:
+>>>>
+>>>> On Wed, Jun 23, 2021 at 02:44:34PM -0400, Qian Cai wrote:
+>>>>> is_swiotlb_force_bounce at /usr/src/linux-next/./include/linux/swiotlb.h:119
+>>>>>
+>>>>> is_swiotlb_force_bounce() was the new function introduced in this patch here.
+>>>>>
+>>>>> +static inline bool is_swiotlb_force_bounce(struct device *dev)
+>>>>> +{
+>>>>> +     return dev->dma_io_tlb_mem->force_bounce;
+>>>>> +}
+>>>>
+>>>> To me the crash looks like dev->dma_io_tlb_mem is NULL.  Can you
+>>>> turn this into :
+>>>>
+>>>>           return dev->dma_io_tlb_mem && dev->dma_io_tlb_mem->force_bounce;
+>>>>
+>>>> for a quick debug check?
+>>>
+>>> I just realized that dma_io_tlb_mem might be NULL like Christoph
+>>> pointed out since swiotlb might not get initialized.
+>>> However,  `Unable to handle kernel paging request at virtual address
+>>> dfff80000000000e` looks more like the address is garbage rather than
+>>> NULL?
+>>> I wonder if that's because dev->dma_io_tlb_mem is not assigned
+>>> properly (which means device_initialize is not called?).
 >>
->> Currently, qlge_mpi_port_cfg_work calls qlge_mb_get_port_cfg which gets
->> the link config from the firmware and saves it to qdev->link_config. By
->> default, flow control is enabled. This commit writes the
->> save the pause parameter of qdev->link_config and don't let it
->> overwritten by link settings of current port. Since qdev->link_config=0
->> when qdev is initialized, this could disable flow control by default and
->> the pause parameter value could also survive MPI resetting,
->>     $ ethtool -a enp94s0f0
->>     Pause parameters for enp94s0f0:
->>     Autonegotiate:  off
->>     RX:             off
->>     TX:             off
->>
->> The follow control can be enabled manually,
->>
->>     $ ethtool -A enp94s0f0 rx on tx on
->>     $ ethtool -a enp94s0f0
->>     Pause parameters for enp94s0f0:
->>     Autonegotiate:  off
->>     RX:             on
->>     TX:             on
->>
->> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
->> ---
->>  drivers/staging/qlge/TODO       |  3 ---
->>  drivers/staging/qlge/qlge_mpi.c | 11 ++++++++++-
->>  2 files changed, 10 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/staging/qlge/TODO b/drivers/staging/qlge/TODO
->> index b7a60425fcd2..8c84160b5993 100644
->> --- a/drivers/staging/qlge/TODO
->> +++ b/drivers/staging/qlge/TODO
->> @@ -4,9 +4,6 @@
->>    ql_build_rx_skb(). That function is now used exclusively to handle packets
->>    that underwent header splitting but it still contains code to handle non
->>    split cases.
->> -* the flow control implementation in firmware is buggy (sends a flood of pause
->> -  frames, resets the link, device and driver buffer queues become
->> -  desynchronized), disable it by default
->>  * some structures are initialized redundantly (ex. memset 0 after
->>    alloc_etherdev())
->>  * the driver has a habit of using runtime checks where compile time checks are
->> diff --git a/drivers/staging/qlge/qlge_mpi.c b/drivers/staging/qlge/qlge_mpi.c
->> index 2630ebf50341..0f1c7da80413 100644
->> --- a/drivers/staging/qlge/qlge_mpi.c
->> +++ b/drivers/staging/qlge/qlge_mpi.c
->> @@ -806,6 +806,7 @@ int qlge_mb_get_port_cfg(struct qlge_adapter *qdev)
->>  {
->>  	struct mbox_params mbc;
->>  	struct mbox_params *mbcp = &mbc;
->> +	u32 saved_pause_link_config = 0;
->
->Initialization is not needed given the code below, 
+>> What also looks odd is that the base "address" 0xdfff800000000000 is held in
+>> a couple of registers, but the offset 0xe looks too small to match up to any
+>> relevant structure member in that dereference chain :/
+> 
+> FWIW, I've managed to trigger a NULL dereference locally when swiotlb hasn't
+> been initialised but we dereference 'dev->dma_io_tlb_mem', so I think
+> Christoph's suggestion is needed regardless.
 
-Thanks for the spotting this issue!
+Ack to that - for SWIOTLB_NO_FORCE, io_tlb_default_mem will remain NULL. 
+The massive jump in KernelCI baseline failures as of yesterday looks 
+like every arm64 machine with less than 4GB of RAM blowing up...
 
-> in fact the
->declaration can be moved to the block below.
+Robin.
 
-I thought I need to put the declaration in the beginning of the
-function. But it seems Linux kernel coding style doesn't require it.
-I'll move it to the else block below then.
-
->
->>  	int status = 0;
->>
->>  	memset(mbcp, 0, sizeof(struct mbox_params));
->> @@ -826,7 +827,15 @@ int qlge_mb_get_port_cfg(struct qlge_adapter *qdev)
->>  	} else	{
->>  		netif_printk(qdev, drv, KERN_DEBUG, qdev->ndev,
->>  			     "Passed Get Port Configuration.\n");
->> -		qdev->link_config = mbcp->mbox_out[1];
->> +		/*
->> +		 * Don't let the pause parameter be overwritten by
->> +		 *
->> +		 * In this way, follow control can be disabled by default
->> +		 * and the setting could also survive the MPI reset
->> +		 */
->
->It seems this comment is incomplete. Also, it's "flow control", not
->"follow control".
-
-Ah, yes. I should state it as "Don't let the pause parameter be 
-overwritten by be overwritten by the firmware.". And thanks for
-correcting the typo.
->
->> +		saved_pause_link_config = qdev->link_config & CFG_PAUSE_STD;
->> +		qdev->link_config = ~CFG_PAUSE_STD & mbcp->mbox_out[1];
->> +		qdev->link_config |= saved_pause_link_config;
->>  		qdev->max_frame_size = mbcp->mbox_out[2];
->>  	}
->>  	return status;
->> --
->> 2.32.0
->>
-
--- 
-Best regards,
-Coiby
+> But I agree that it won't help
+> with the issue reported by Qian Cai.
+> 
+> Qian Cai: please can you share your .config and your command line?
+> 
+> Thanks,
+> 
+> Will
+> 
