@@ -2,153 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3F93B31CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBE33B31CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231608AbhFXO4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 10:56:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230249AbhFXO4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 10:56:43 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5627E60C3E;
-        Thu, 24 Jun 2021 14:54:24 +0000 (UTC)
-Date:   Thu, 24 Jun 2021 10:54:22 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yun Zhou <yun.zhou@windriver.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        <kernel-hardening@lists.openwall.com>, <ying.xue@windriver.com>,
-        <ps-ccm-rr@windriver.com>
-Subject: Re: [PATCH] seq_buf: let seq_buf_putmem_hex support len larger than
- 8
-Message-ID: <20210624105422.5c8aaf4d@oasis.local.home>
-In-Reply-To: <20210624131646.17878-1-yun.zhou@windriver.com>
-References: <20210624131646.17878-1-yun.zhou@windriver.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232146AbhFXO5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 10:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230170AbhFXO5P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 10:57:15 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11765C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:54:55 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id n20so8934752edv.8
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:54:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zDkuOJgh5C+WDvt537xufC47ONbIjJXep0BnGb2gBVw=;
+        b=t9RkEIBOrAGkGWMdPyS5yH5Xiwep9OjZjnF0UMNlBoJvK3vwY8+92jPQIVd/nEoHmG
+         A7WzPHR7uYwqhi5t7RmUnbqvefir1G1vOQHAsz6autNr++V9sYiUoucE7oyYUNoqhkL+
+         TF6We/J0y9R090jUgImLbCsgJbm2j/F/O2Qv7IRQhdLQSkX2Yle0cMRuTE4J+JNMUy/9
+         ONkkRYjo9ENONlTY8uRzKNMmE6n4e7+NHv58vJEKfI1ypZPxYP4wiE/pP9sWOxpgb7y7
+         swqmpH4OI3qQGEPiK+RASk2EBo4IEs1YD5trfV2oF+3byXgswnzxpDJkh8x03zKet5Q8
+         dOAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zDkuOJgh5C+WDvt537xufC47ONbIjJXep0BnGb2gBVw=;
+        b=V1Rf1ExmyezdB0E7EsURNieaUR3YaH7r9PTC6U4rkkoDM0CE9thT4p9I8i2Bg0uJ5z
+         6VgJP03G6voOWWkBkbfrvfFkjMelVhnw5siXZshpHI5H8qjRI2+hPDgy0o4sukPI5III
+         xGHEHMau+f5FxENnLP1JnNj5e2RDq7JmOSPbNuKxbvmhuUgvaPYkQGzrL+S+aLZFi7Az
+         tXL6cUBJfbmrgMinQ2zzyiwaPJXbIZ4iuEaeE7wboYsdGIV0pa+Ipirr97mGxOckk2/h
+         q5ZyD5FI+s2Cvt/uhiVHWBmpMpB7sY0FMx60BTmJol/B+PNb3lilMRU1Yhn/y4GCBmpq
+         zNhw==
+X-Gm-Message-State: AOAM532Dxd6FMiYhC2ErnOKwC4ajH7sXP725hRSXj+dj6KpK7D0leaDL
+        GZ/L8v7U1Y50bIhkTXW0uaQ9u05IrdvQKeA5Sls=
+X-Google-Smtp-Source: ABdhPJz7flfGG4Jo9YL8PvaGhSQvFXCvoM7XYKaKr0PGFS8TRqS5Q+S2stv2YD2ZGvEAzlYAii4X7wQ36jtMzKbV69Q=
+X-Received: by 2002:a50:fc90:: with SMTP id f16mr7829930edq.254.1624546493652;
+ Thu, 24 Jun 2021 07:54:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210617194154.2397-1-linux.amoon@gmail.com> <20210617194154.2397-7-linux.amoon@gmail.com>
+ <CAFBinCCE+6G7QtDoxfbcZVVRf-MDX-epSo=_k_PJZgWX+_Whvg@mail.gmail.com>
+ <CANAwSgRqixugUr-t2OheLBVwD=EOkaLqxnGkT-Bx=p_A4Nyr8Q@mail.gmail.com>
+ <CAFBinCALsnpbJGEb4LBLd_jy3E8fOZAQaacz-P7ijfkeyYg2dA@mail.gmail.com>
+ <CANAwSgRABOyWYJPrrw64Wa6j2D94T4tybn7MHGCTbBowt7UncA@mail.gmail.com> <CAFBinCD91eYNXSqnmDKoAvJHWqqRbXVjnaq9RuRNCnip9kKqkw@mail.gmail.com>
+In-Reply-To: <CAFBinCD91eYNXSqnmDKoAvJHWqqRbXVjnaq9RuRNCnip9kKqkw@mail.gmail.com>
+From:   Anand Moon <linux.amoon@gmail.com>
+Date:   Thu, 24 Jun 2021 20:24:42 +0530
+Message-ID: <CANAwSgRzY+699aSS9MVGAJYVR6_0Ni75JPhO9=LKunHQK0p=oA@mail.gmail.com>
+Subject: Re: [RFCv1 6/8] phy: amlogic: meson8b-usb2: Use phy reset callback function
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 21:16:46 +0800
-Yun Zhou <yun.zhou@windriver.com> wrote:
+Hi Martin,
 
-> I guess the original intention of seq_buf_putmem_hex is to dump the raw
+On Wed, 23 Jun 2021 at 01:42, Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
+>
+> Hi Anand,
+>
+> On Mon, Jun 21, 2021 at 9:16 AM Anand Moon <linux.amoon@gmail.com> wrote:
+> [...]
+> > Ok Thanks for the inputs. got your point.
+> >
+> > I was also looking into Amlogic source code for reset. (aml_cbus_update_bits)
+> > [0] https://github.com/khadas/linux/blob/khadas-vims-4.9.y/drivers/amlogic/usb/phy/phy-aml-new-usb.c
+> > is there some feature to iomap the USB with cbus?
+> for that specific code: that's what we do inside drivers/reset/reset-meson.c
+> Amlogic's vendor kernel uses an increment of 4 bytes per value, so
+> 0x1102 translates to 0x4408
+>
+> then in mainline's meson8b.dtsi we have:
+>     compatible = "amlogic,meson8b-reset";
+>     reg = <0x4404 0x9c>;
+> as you can see 0x4408 is part of the reset controller node.
+>
+> next in include/dt-bindings/reset/amlogic,meson8b-reset.h we have:
+>     #define RESET_USB_OTG                 34
+>
+> the register used for reset line 34 is translated using:
+>     0x4404 (first register) + 4 (4 * reset line / 32 = 1) = 0x4408
+> then the bit inside this register is translated using:
+>     reset line % 32 = 2
+>
+> that's how we express aml_cbus_update_bits(0x1102, 0x1<<2, 0x1<<2); in
+> the mainline kernel (by going through the reset subsystem)
+>
 
-A little background, this was originally introduced in 2008:
+Thank you very much for clearing my long-standing doubt on *reset
+logic* on Amlogic SoC.
 
- 5e3ca0ec76fce ("ftrace: introduce the "hex" output method")
+> [...]
+> > > > > > -       priv->reset = devm_reset_control_get_optional_shared(&pdev->dev, NULL);
+> > > > > > +       priv->reset = devm_reset_control_get_optional_shared(&pdev->dev, "phy");
+> > > > > I think this breaks compatibility with existing .dtbs and our
+> > > > > dt-bindings (as we're not documenting a "reset-names" property).
+> > > > > What is the goal of this one?
+> > > > >
+> > > >
+> > > > OK, If we pass NULL over here there is the possibility
+> > > > USB phy will not get registered.
+> > > I don't understand why - with NULL everything is working fine for me.
+> > > Also no matter which name you give to the reset line (in reset-names),
+> > > it will be the same reset line in all cases. If it's the same reset
+> > > line before and after: why is this needed?
+> > >
+> > I need to investigate this reset feature. With my setup with current changes
+> > after I update the below.
+> > -       priv->reset = devm_reset_control_get_optional_shared(&pdev->dev, "phy");
+> > +       priv->reset = devm_reset_control_get_optional_shared(&pdev->dev, NULL);
+> >         if (PTR_ERR(priv->reset) == -EPROBE_DEFER)
+> >                 return PTR_ERR(priv->reset);
+> >
+> > Reset will break the USB initialization, see below output.
+> interesting, I have not seen that USB problem before and neither is
+> Kernel CI seeing it: [0]
+> Is it only happening with this patch or did you also see it before?
+>
+Yes, it could happen with this patch but It could be also linked to
+reorder the phy configuration.
+See below logs, when core reset fails on USB PHY no USB is getting registered.
 
-And commit ad0a3b68114e8 ("trace: add build-time check to avoid overrunning hex buffer")
+[    1.267620] dwc2 c9040000.usb: mapped PA c9040000 to VA (ptrval)
+[    1.267768] dwc2 c9040000.usb: Looking up vusb_d-supply from device tree
+[    1.267783] dwc2 c9040000.usb: Looking up vusb_d-supply property in
+node /soc/usb@c9040000 failed
+[    1.267814] dwc2 c9040000.usb: supply vusb_d not found, using dummy regulator
+[    1.267940] dwc2 c9040000.usb: Looking up vusb_a-supply from device tree
+[    1.267954] dwc2 c9040000.usb: Looking up vusb_a-supply property in
+node /soc/usb@c9040000 failed
+[    1.267975] dwc2 c9040000.usb: supply vusb_a not found, using dummy regulator
+[    1.268037] dwc2 c9040000.usb: registering common handler for irq35
+[    1.268090] dwc2 c9040000.usb: Looking up vbus-supply from device tree
+[    1.268102] dwc2 c9040000.usb: Looking up vbus-supply property in
+node /soc/usb@c9040000 failed
+[    1.269267] dwc2 c9040000.usb: Core Release: 3.10a (snpsid=4f54310a)
+[    1.273185] dwc2 c9040000.usb: dwc2_core_reset: HANG! Soft Reset
+timeout GRSTCTL_CSFTRST
+[    1.273510] dwc2: probe of c9040000.usb failed with error -16
+[    1.275474] dwc2 c90c0000.usb: mapped PA c90c0000 to VA (ptrval)
+[    1.275603] dwc2 c90c0000.usb: Looking up vusb_d-supply from device tree
+[    1.275617] dwc2 c90c0000.usb: Looking up vusb_d-supply property in
+node /soc/usb@c90c0000 failed
+[    1.275646] dwc2 c90c0000.usb: supply vusb_d not found, using dummy regulator
+[    1.275784] dwc2 c90c0000.usb: Looking up vusb_a-supply from device tree
+[    1.275798] dwc2 c90c0000.usb: Looking up vusb_a-supply property in
+node /soc/usb@c90c0000 failed
+[    1.275819] dwc2 c90c0000.usb: supply vusb_a not found, using dummy regulator
+[    1.275877] dwc2 c90c0000.usb: registering common handler for irq36
+[    1.275930] dwc2 c90c0000.usb: Looking up vbus-supply from device tree
+[    1.275942] dwc2 c90c0000.usb: Looking up vbus-supply property in
+node /soc/usb@c90c0000 failed
+[    1.277125] dwc2 c90c0000.usb: Core Release: 3.10a (snpsid=4f54310a)
+[    1.281042] dwc2 c90c0000.usb: dwc2_core_reset: HANG! Soft Reset
+timeout GRSTCTL_CSFTRST
+[    1.281353] dwc2: probe of c90c0000.usb failed with error -16
 
-changed HEX_CHARS from a hardcoded 17 to a way to decided what the max
-long is.
-
- #define HEX_CHARS              (MAX_MEMHEX_BYTES*2 + 1)
-
-
-> memory to seq_buf according to 64 bits integer number. It tries to output
-> numbers in reverse, with the high bits in the front and the low bits in
-> the back. If the length of the raw memory is equal to 8, e.g.
-> "01 23 45 67 89 ab cd ef" in memory, it will be dumped as "efcdab8967452301".
-
-Note, it only does that for little endian machines.
-
-> 
-> But if the length of the raw memory is larger than 8, the first value of
-> start_len will larger than 8, than seq_buf will save the last data, not
-> the eighth one, e.g. "01 23 45 67 89 ab cd ef 11" in memory, it will be
-> dumped as "11efcdab8967452301". I think it is not the original
-> intention of the function.
-> 
-> More seriously, if the length of the raw memory is larger than 9, the
-> start_len will be larger than 9, then hex will overflow, and the stack will be
-> corrupted. I do not kown if it can be exploited by hacker. But I am sure
-> it will cause kernel panic when the length of memory is more than 32 bytes.
-> 
-> [  448.551471] Unable to handle kernel paging request at virtual address 3438376c
-> [  448.558678] pgd = 6eaf278e
-> [  448.561376] [3438376c] *pgd=00000000
-> [  448.564945] Internal error: Oops: 5 [#2] PREEMPT ARM
-> [  448.569899] Modules linked in:
-> [  448.572951] CPU: 0 PID: 368 Comm: cat Tainted: G        W        4.18.40-yocto-standard #18
-> [  448.581374] Hardware name: Xilinx Zynq Platform
-> [  448.585901] PC is at trace_seq_putmem_hex+0x6c/0x84
-> [  448.590768] LR is at 0x20643032
-> [  448.593901] pc : [<c009a85c>]    lr : [<20643032>]    psr: 60000093
-> [  448.600159] sp : d980dc08  ip : 00000020  fp : c05f58cc
-> [  448.605375] r10: c05e5f30  r9 : 00000031  r8 : 00000000
-> [  448.610584] r7 : 20643032  r6 : 37663666  r5 : 36343730  r4 : 34383764
-> [  448.617103] r3 : 00001000  r2 : 00000042  r1 : d980dc00  r0 : 00000000
-> ...
-> [  448.907962] [<c009a85c>] (trace_seq_putmem_hex) from [<c010b008>] (trace_raw_output_write+0x58/0x9c)
-> [  448.917094] [<c010b008>] (trace_raw_output_write) from [<c00964c0>] (print_trace_line+0x144/0x3e8)
-> [  448.926050] [<c00964c0>] (print_trace_line) from [<c0098710>] (ftrace_dump+0x204/0x254)
-> [  448.934053] [<c0098710>] (ftrace_dump) from [<c0098780>] (trace_die_handler+0x20/0x34)
-> [  448.941975] [<c0098780>] (trace_die_handler) from [<c003cff8>] (notifier_call_chain+0x48/0x6c)
-> [  448.950581] [<c003cff8>] (notifier_call_chain) from [<c003d19c>] (__atomic_notifier_call_chain+0x3c/0x50)
-> [  448.960142] [<c003d19c>] (__atomic_notifier_call_chain) from [<c003d1cc>] (atomic_notifier_call_chain+0x1c/0x24)
-> [  448.970306] [<c003d1cc>] (atomic_notifier_call_chain) from [<c003d204>] (notify_die+0x30/0x3c)
-> [  448.978908] [<c003d204>] (notify_die) from [<c001361c>] (die+0xc4/0x258)
-> [  448.985604] [<c001361c>] (die) from [<c00173e8>] (__do_kernel_fault.part.0+0x5c/0x7c)
-> [  448.993438] [<c00173e8>] (__do_kernel_fault.part.0) from [<c043a270>] (do_page_fault+0x158/0x394)
-> [  449.002305] [<c043a270>] (do_page_fault) from [<c00174dc>] (do_DataAbort+0x40/0xec)
-> [  449.009959] [<c00174dc>] (do_DataAbort) from [<c0009970>] (__dabt_svc+0x50/0x80)
-> 
-> Additionally, the address of data ptr keeps in the same value in multiple
-> loops, the value of data buffer will not be picked forever.
-
-So the bug looks like it was there since the original code was
-introduced in 2008! There's two variables being increased in that loop
-(i and j), and i follows the raw data, and j follows what is being
-written into the buffer. The bug is that we are comparing the HEX_CHARS
-to 'i' when we really should be comparing it to 'j'! As if 'j' goes
-bigger than HEX_CHARS, it will overflow the destination buffer.
-
-And, it should be noted, that this is to read a single word (long) and
-not more. Thus, the "date += start_len" shouldn't be needed.
-
-Could you send another patch that makes it only process a single word
-and exit?
-
-I'll tag it for stable when you do.
-
-Thanks!
-
--- Steve
-
-
-> 
-> Signed-off-by: Yun Zhou <yun.zhou@windriver.com>
-> ---
->  lib/seq_buf.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/lib/seq_buf.c b/lib/seq_buf.c
-> index 6aabb609dd87..948c8b55f666 100644
-> --- a/lib/seq_buf.c
-> +++ b/lib/seq_buf.c
-> @@ -229,7 +229,7 @@ int seq_buf_putmem_hex(struct seq_buf *s, const void *mem,
->  	WARN_ON(s->size == 0);
->  
->  	while (len) {
-> -		start_len = min(len, HEX_CHARS - 1);
-> +		start_len = min(len, MAX_MEMHEX_BYTES);
->  #ifdef __BIG_ENDIAN
->  		for (i = 0, j = 0; i < start_len; i++) {
->  #else
-> @@ -248,6 +248,8 @@ int seq_buf_putmem_hex(struct seq_buf *s, const void *mem,
->  		seq_buf_putmem(s, hex, j);
->  		if (seq_buf_has_overflowed(s))
->  			return -1;
-> +
-> +		data += start_len;
->  	}
->  	return 0;
->  }
-
+>
+> Best regards,
+> Martin
+>
+>
+> [0] https://storage.staging.kernelci.org/next/master/next-20210617/arm/multi_v7_defconfig+ltp-ima/gcc-8/lab-baylibre/baseline-meson8b-odroidc1.html
