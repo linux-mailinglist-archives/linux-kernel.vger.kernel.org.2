@@ -2,323 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6AA3B2D99
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA983B2D9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbhFXLS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:18:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60558 "EHLO mail.kernel.org"
+        id S232392AbhFXLTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:19:23 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:34553 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232227AbhFXLSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:18:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 152ED6124C;
-        Thu, 24 Jun 2021 11:16:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624533395;
-        bh=VqtZFxJX1DDdRqa4BEp8kCGGfSx/r0wT8Rgi7OK6hcc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hJMsnPFCOUrGbUj2xasIlwRmJHWI795bv30AAUIUlauTvfSsb5sj5gSA1e8JsIUIs
-         u/tQ8ZzaIzTCmlaOa+Xw36y/B4ERtUfT3z5uPyOnLa8CGtdlGB2HH8/TdZAMJfHovh
-         hckyP3ou9SOLtF/CDsRNFHfR06eeOAjRbCYgfckhbIpz3Vhn4SGZOsKl/Utt8fpXR2
-         iKHfRCdKv2mWFt2+dmc2uvg0tJPKlhozda9bv+xHdednQDjBfBg9EUSF0TKYatDVD8
-         1jY0bLblceEh9ZdS/U1aknK+8C7eiOJRdWElFVnSzdC9VQg3vrVEDA5ZIFPk2pmMMf
-         nOsMfsogusr1w==
-Date:   Thu, 24 Jun 2021 16:46:32 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Viresh Kumar <vireshk@kernel.org>
-Subject: Re: [PATCH v2 1/1] dmaengine: dw: Program xBAR hardware for Elkhart
- Lake
-Message-ID: <YNRpkMMDE5B9NY9J@matsya>
-References: <20210614133018.66931-1-andriy.shevchenko@linux.intel.com>
+        id S232310AbhFXLTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 07:19:21 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G9czH6788z9sTD;
+        Thu, 24 Jun 2021 21:16:59 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624533421;
+        bh=Dn5VASjZWmEO2v/Guxjpa0+M1l0Gqt4A1n1jTK5ya0c=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ckwfQwc9hRxHKl1N3dzNgnenEYVC5Vx5whpK7ANnDH1EWzb0ulpka+ukPt/4JcVds
+         Jp+AxfIwEe2/JI9hJ+UWyTsMZ1u9CCU+gg879o43PN+GyJ77Me9b7BWoqX5r9nmQj7
+         lmyaFJ/G5JfsNwT8cfIA/6BreGEbIlDeMBFX7Kz5i0MwGOgF+K9FIw/wcOUe/GBwoG
+         lfnmUHm+PQD6k+J0vh6PHwaJ+haG8BOrwQmcGbpQLoByxpFJtLSQghedfXeKiVDCxK
+         oVnCxUU5DEbKTA5eKFFY29+bUuwSWcSRT4GTaMGi05bXnMF/IUTh27b4tj6+yLFOBR
+         iBCgfuIIselrA==
+Date:   Thu, 24 Jun 2021 21:16:59 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the tip tree
+Message-ID: <20210624211659.3ab5b2bd@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210614133018.66931-1-andriy.shevchenko@linux.intel.com>
+Content-Type: multipart/signed; boundary="Sig_/z23IHINlmhn1M1S8YtNEM7v";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-06-21, 16:30, Andy Shevchenko wrote:
-> Intel Elkhart Lake PSE DMA implementation is integrated with crossbar IP
-> in order to serve more hardware than there are DMA request lines available.
-> 
-> Due to this, program xBAR hardware to make flexible support of PSE peripheral.
-> 
-> The Device-to-Device has not been tested and it's not supported by DMA Engine,
-> but it's left in the code for the sake of documenting hardware features.
+--Sig_/z23IHINlmhn1M1S8YtNEM7v
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Kernel does not like to keep dead code, please remove this. It can be
-added back when we have users
+Hi all,
 
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> v2: updated year, added explanation about D2D code, renamed func (Vinod)
->  drivers/dma/dw/idma32.c              | 149 ++++++++++++++++++++++++++-
->  drivers/dma/dw/internal.h            |  16 +++
->  drivers/dma/dw/pci.c                 |   6 +-
->  drivers/dma/dw/platform.c            |   6 +-
->  include/linux/platform_data/dma-dw.h |   3 +
->  5 files changed, 171 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/dma/dw/idma32.c b/drivers/dma/dw/idma32.c
-> index 3ce44de25d33..22af77a3276d 100644
-> --- a/drivers/dma/dw/idma32.c
-> +++ b/drivers/dma/dw/idma32.c
-> @@ -1,15 +1,155 @@
->  // SPDX-License-Identifier: GPL-2.0
-> -// Copyright (C) 2013,2018 Intel Corporation
-> +// Copyright (C) 2013,2018,2020-2021 Intel Corporation
->  
->  #include <linux/bitops.h>
->  #include <linux/dmaengine.h>
->  #include <linux/errno.h>
-> +#include <linux/io.h>
-> +#include <linux/pci.h>
->  #include <linux/slab.h>
->  #include <linux/types.h>
->  
->  #include "internal.h"
->  
-> -static void idma32_initialize_chan(struct dw_dma_chan *dwc)
-> +#define DMA_CTL_CH(x)			(0x1000 + (x) * 4)
-> +#define DMA_SRC_ADDR_FILLIN(x)		(0x1100 + (x) * 4)
-> +#define DMA_DST_ADDR_FILLIN(x)		(0x1200 + (x) * 4)
-> +#define DMA_XBAR_SEL(x)			(0x1300 + (x) * 4)
-> +#define DMA_REGACCESS_CHID_CFG		(0x1400)
-> +
-> +#define CTL_CH_TRANSFER_MODE_MASK	GENMASK(1, 0)
-> +#define CTL_CH_TRANSFER_MODE_S2S	0
-> +#define CTL_CH_TRANSFER_MODE_S2D	1
-> +#define CTL_CH_TRANSFER_MODE_D2S	2
-> +#define CTL_CH_TRANSFER_MODE_D2D	3
-> +#define CTL_CH_RD_RS_MASK		GENMASK(4, 3)
-> +#define CTL_CH_WR_RS_MASK		GENMASK(6, 5)
-> +#define CTL_CH_RD_NON_SNOOP_BIT		BIT(8)
-> +#define CTL_CH_WR_NON_SNOOP_BIT		BIT(9)
-> +
-> +#define XBAR_SEL_DEVID_MASK		GENMASK(15, 0)
-> +#define XBAR_SEL_RX_TX_BIT		BIT(16)
-> +#define XBAR_SEL_RX_TX_SHIFT		16
-> +
-> +#define REGACCESS_CHID_MASK		GENMASK(2, 0)
-> +
-> +static unsigned int idma32_get_slave_devfn(struct dw_dma_chan *dwc)
-> +{
-> +	struct device *slave = dwc->chan.slave;
-> +
-> +	if (!slave || !dev_is_pci(slave))
-> +		return 0;
-> +
-> +	return to_pci_dev(slave)->devfn;
-> +}
-> +
-> +static void idma32_initialize_chan_xbar(struct dw_dma_chan *dwc)
-> +{
-> +	struct dw_dma *dw = to_dw_dma(dwc->chan.device);
-> +	void __iomem *misc = __dw_regs(dw);
-> +	u32 cfghi = 0, cfglo = 0;
-> +	u8 dst_id, src_id;
-> +	u32 value;
-> +
-> +	/* DMA Channel ID Configuration register must be programmed first */
-> +	value = readl(misc + DMA_REGACCESS_CHID_CFG);
-> +
-> +	value &= ~REGACCESS_CHID_MASK;
-> +	value |= dwc->chan.chan_id;
-> +
-> +	writel(value, misc + DMA_REGACCESS_CHID_CFG);
-> +
-> +	/* Configure channel attributes */
-> +	value = readl(misc + DMA_CTL_CH(dwc->chan.chan_id));
-> +
-> +	value &= ~(CTL_CH_RD_NON_SNOOP_BIT | CTL_CH_WR_NON_SNOOP_BIT);
-> +	value &= ~(CTL_CH_RD_RS_MASK | CTL_CH_WR_RS_MASK);
-> +	value &= ~CTL_CH_TRANSFER_MODE_MASK;
-> +
-> +	switch (dwc->direction) {
-> +	case DMA_MEM_TO_MEM:
-> +		value |= CTL_CH_TRANSFER_MODE_D2D;
-> +		break;
-> +	case DMA_MEM_TO_DEV:
-> +		value |= CTL_CH_TRANSFER_MODE_D2S;
-> +		value |= CTL_CH_WR_NON_SNOOP_BIT;
-> +		break;
-> +	case DMA_DEV_TO_MEM:
-> +		value |= CTL_CH_TRANSFER_MODE_S2D;
-> +		value |= CTL_CH_RD_NON_SNOOP_BIT;
-> +		break;
-> +	case DMA_DEV_TO_DEV:
-> +		value |= CTL_CH_WR_NON_SNOOP_BIT | CTL_CH_RD_NON_SNOOP_BIT;
-> +		value |= CTL_CH_TRANSFER_MODE_S2S;
-> +		break;
-> +	default:
-> +		return;
-> +	}
-> +
-> +	writel(value, misc + DMA_CTL_CH(dwc->chan.chan_id));
-> +
-> +	/* Configure crossbar selection */
-> +	value = readl(misc + DMA_XBAR_SEL(dwc->chan.chan_id));
-> +
-> +	/* DEVFN selection */
-> +	value &= ~XBAR_SEL_DEVID_MASK;
-> +	value |= idma32_get_slave_devfn(dwc);
-> +
-> +	switch (dwc->direction) {
-> +	case DMA_MEM_TO_MEM:
-> +		break;
-> +	case DMA_MEM_TO_DEV:
-> +		value |= XBAR_SEL_RX_TX_BIT;
-> +		break;
-> +	case DMA_DEV_TO_MEM:
-> +		value &= ~XBAR_SEL_RX_TX_BIT;
-> +		break;
-> +	case DMA_DEV_TO_DEV:
-> +		break;
-> +	default:
-> +		return;
-> +	}
-> +
-> +	writel(value, misc + DMA_XBAR_SEL(dwc->chan.chan_id));
-> +
-> +	/* Configure DMA channel low and high registers */
-> +	switch (dwc->direction) {
-> +	case DMA_MEM_TO_MEM:
-> +		dst_id = dwc->chan.chan_id;
-> +		src_id = dwc->chan.chan_id;
-> +		break;
-> +	case DMA_MEM_TO_DEV:
-> +		dst_id = dwc->chan.chan_id;
-> +		src_id = dwc->dws.src_id;
-> +		break;
-> +	case DMA_DEV_TO_MEM:
-> +		dst_id = dwc->dws.dst_id;
-> +		src_id = dwc->chan.chan_id;
-> +		break;
-> +	case DMA_DEV_TO_DEV:
-> +		dst_id = dwc->dws.src_id;
-> +		src_id = dwc->dws.dst_id;
-> +		break;
-> +	default:
-> +		return;
-> +	}
-> +
-> +	/* Set default burst alignment */
-> +	cfglo |= IDMA32C_CFGL_DST_BURST_ALIGN | IDMA32C_CFGL_SRC_BURST_ALIGN;
-> +
-> +	/* Low 4 bits of the request lines */
-> +	cfghi |= IDMA32C_CFGH_DST_PER(dst_id & 0xf);
-> +	cfghi |= IDMA32C_CFGH_SRC_PER(src_id & 0xf);
-> +
-> +	/* Request line extension (2 bits) */
-> +	cfghi |= IDMA32C_CFGH_DST_PER_EXT(dst_id >> 4 & 0x3);
-> +	cfghi |= IDMA32C_CFGH_SRC_PER_EXT(src_id >> 4 & 0x3);
-> +
-> +	channel_writel(dwc, CFG_LO, cfglo);
-> +	channel_writel(dwc, CFG_HI, cfghi);
-> +}
-> +
-> +static void idma32_initialize_chan_generic(struct dw_dma_chan *dwc)
->  {
->  	u32 cfghi = 0;
->  	u32 cfglo = 0;
-> @@ -134,7 +274,10 @@ int idma32_dma_probe(struct dw_dma_chip *chip)
->  		return -ENOMEM;
->  
->  	/* Channel operations */
-> -	dw->initialize_chan = idma32_initialize_chan;
-> +	if (chip->pdata->quirks & DW_DMA_QUIRK_XBAR_PRESENT)
-> +		dw->initialize_chan = idma32_initialize_chan_xbar;
-> +	else
-> +		dw->initialize_chan = idma32_initialize_chan_generic;
->  	dw->suspend_chan = idma32_suspend_chan;
->  	dw->resume_chan = idma32_resume_chan;
->  	dw->prepare_ctllo = idma32_prepare_ctllo;
-> diff --git a/drivers/dma/dw/internal.h b/drivers/dma/dw/internal.h
-> index 2e1c52eefdeb..563ce73488db 100644
-> --- a/drivers/dma/dw/internal.h
-> +++ b/drivers/dma/dw/internal.h
-> @@ -74,4 +74,20 @@ static __maybe_unused const struct dw_dma_chip_pdata idma32_chip_pdata = {
->  	.remove = idma32_dma_remove,
->  };
->  
-> +static const struct dw_dma_platform_data xbar_pdata = {
-> +	.nr_channels = 8,
-> +	.chan_allocation_order = CHAN_ALLOCATION_ASCENDING,
-> +	.chan_priority = CHAN_PRIORITY_ASCENDING,
-> +	.block_size = 131071,
-> +	.nr_masters = 1,
-> +	.data_width = {4},
-> +	.quirks = DW_DMA_QUIRK_XBAR_PRESENT,
-> +};
-> +
-> +static __maybe_unused const struct dw_dma_chip_pdata xbar_chip_pdata = {
-> +	.pdata = &xbar_pdata,
-> +	.probe = idma32_dma_probe,
-> +	.remove = idma32_dma_remove,
-> +};
-> +
->  #endif /* _DMA_DW_INTERNAL_H */
-> diff --git a/drivers/dma/dw/pci.c b/drivers/dma/dw/pci.c
-> index 1142aa6f8c4a..26a3f926da02 100644
-> --- a/drivers/dma/dw/pci.c
-> +++ b/drivers/dma/dw/pci.c
-> @@ -120,9 +120,9 @@ static const struct pci_device_id dw_pci_id_table[] = {
->  	{ PCI_VDEVICE(INTEL, 0x22c0), (kernel_ulong_t)&dw_dma_chip_pdata },
->  
->  	/* Elkhart Lake iDMA 32-bit (PSE DMA) */
-> -	{ PCI_VDEVICE(INTEL, 0x4bb4), (kernel_ulong_t)&idma32_chip_pdata },
-> -	{ PCI_VDEVICE(INTEL, 0x4bb5), (kernel_ulong_t)&idma32_chip_pdata },
-> -	{ PCI_VDEVICE(INTEL, 0x4bb6), (kernel_ulong_t)&idma32_chip_pdata },
-> +	{ PCI_VDEVICE(INTEL, 0x4bb4), (kernel_ulong_t)&xbar_chip_pdata },
-> +	{ PCI_VDEVICE(INTEL, 0x4bb5), (kernel_ulong_t)&xbar_chip_pdata },
-> +	{ PCI_VDEVICE(INTEL, 0x4bb6), (kernel_ulong_t)&xbar_chip_pdata },
->  
->  	/* Haswell */
->  	{ PCI_VDEVICE(INTEL, 0x9c60), (kernel_ulong_t)&dw_dma_chip_pdata },
-> diff --git a/drivers/dma/dw/platform.c b/drivers/dma/dw/platform.c
-> index 0585d749d935..246118955877 100644
-> --- a/drivers/dma/dw/platform.c
-> +++ b/drivers/dma/dw/platform.c
-> @@ -149,9 +149,9 @@ static const struct acpi_device_id dw_dma_acpi_id_table[] = {
->  	{ "808622C0", (kernel_ulong_t)&dw_dma_chip_pdata },
->  
->  	/* Elkhart Lake iDMA 32-bit (PSE DMA) */
-> -	{ "80864BB4", (kernel_ulong_t)&idma32_chip_pdata },
-> -	{ "80864BB5", (kernel_ulong_t)&idma32_chip_pdata },
-> -	{ "80864BB6", (kernel_ulong_t)&idma32_chip_pdata },
-> +	{ "80864BB4", (kernel_ulong_t)&xbar_chip_pdata },
-> +	{ "80864BB5", (kernel_ulong_t)&xbar_chip_pdata },
-> +	{ "80864BB6", (kernel_ulong_t)&xbar_chip_pdata },
->  
->  	{ }
->  };
-> diff --git a/include/linux/platform_data/dma-dw.h b/include/linux/platform_data/dma-dw.h
-> index b34a094b2258..b11b0c8bc5da 100644
-> --- a/include/linux/platform_data/dma-dw.h
-> +++ b/include/linux/platform_data/dma-dw.h
-> @@ -52,6 +52,7 @@ struct dw_dma_slave {
->   * @max_burst: Maximum value of burst transaction size supported by hardware
->   *	       per channel (in units of CTL.SRC_TR_WIDTH/CTL.DST_TR_WIDTH).
->   * @protctl: Protection control signals setting per channel.
-> + * @quirks: Optional platform quirks.
->   */
->  struct dw_dma_platform_data {
->  	unsigned int	nr_channels;
-> @@ -71,6 +72,8 @@ struct dw_dma_platform_data {
->  #define CHAN_PROTCTL_CACHEABLE		BIT(2)
->  #define CHAN_PROTCTL_MASK		GENMASK(2, 0)
->  	unsigned char	protctl;
-> +#define DW_DMA_QUIRK_XBAR_PRESENT	BIT(0)
-> +	unsigned int	quirks;
->  };
->  
->  #endif /* _PLATFORM_DATA_DMA_DW_H */
-> -- 
-> 2.30.2
+In commit
 
--- 
-~Vinod
+  d7d607096ae6 ("sched/rt: Fix Deadline utilization tracking during policy =
+change")
+
+Fixes tag
+
+  Fixes: 3727e0e ("sched/dl: Add dl_rq utilization tracking")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+
+In commit
+
+  fecfcbc288e9 ("sched/rt: Fix RT utilization tracking during policy change=
+")
+
+Fixes tag
+
+  Fixes: 371bf427 ("sched/rt: Add rt_rq utilization tracking")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+
+This can be fixed for the future by setting core.abbrev to 12 (or more)
+or (for git v2.11 or later) just making sure it is not set (or set to
+"auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/z23IHINlmhn1M1S8YtNEM7v
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDUaasACgkQAVBC80lX
+0GwIjwf8DJYfxwUpr83jsWb7Tc6z7b1qG2UQA5gjZVeTONvTOGoyWYYhfJnwTGq8
+MuU13BVSk1BYtSe0yCW7XVzkd9CWdVB35nN9bTI9nzZ0/UD0h81n25gkPxqS5yuV
+SilYzkP7NAMLUML2jfXvpAtcyyUebn0Ao9MIPy3PzQ/7UtCVJxSRpZNSltfT2kZM
+9oo62KtCM+ze9+2QuawaKs5n4q2nBgNnli5/L1p5tHFZoVfusu3QEPXFY5lT4L7O
+nJZlAuYtmps9BOtw9HNPCc+ZAvY75kOBbTR/r7fA00KT//DLPQWQd6akONtVqWhQ
+Qhj7ItXXqIW/pznHI1u3yH+NEC5fnA==
+=yRry
+-----END PGP SIGNATURE-----
+
+--Sig_/z23IHINlmhn1M1S8YtNEM7v--
