@@ -2,143 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7798B3B31BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB4A3B31BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbhFXOuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 10:50:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbhFXOuR (ORCPT
+        id S232072AbhFXOvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 10:51:54 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:44460 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231194AbhFXOvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 10:50:17 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AEC9C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:47:58 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso3623518pjp.5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:47:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IrG0wOJ5P1GDUb+N+U96ej0QrbrzyokARjLQb7OkIzM=;
-        b=PllruDXKPfp5ngayDBicU57D3b5d9Ho9G0eKRxR3h4KSjbdiHBNEqdth7FeaMmv48/
-         JnQQpErBny0euY8EgBE9kI0Ooy7wQ43yZ8mOp5Vq9zrPz2cnopGTyq5W9RDPljqaOzPA
-         UpG/1Cgqv2k7Jp+16NpjHgsr6arxjASe1mC4JOonbhd5AFV7tVenezfWrytURA4O7NjP
-         TMx6DOlHjFnnYlpJg25AFFhxb7MYGTZAMI/7htRv+Bykl2Bx2yfjCECdKVneaEB6MauM
-         TvdWfSaxIF5wxk6EnlZ3huT5m1kJoHrQLlzoLk2b+FRn9tgod+u9Hd1ZuwQekXxJLUk3
-         uXOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IrG0wOJ5P1GDUb+N+U96ej0QrbrzyokARjLQb7OkIzM=;
-        b=CcVnSSEneghdVBzMHb3Ff3AK4A2hWZ6V7KbHGraO7LpZzSAPaR636B3Vjl/hOJnF8K
-         0uFhr+MnLRb/NCgWFohBrrYzNWvql659dkdz4Sbsl4oaAc6h+6LoTAIJ1IZOn27ewiDA
-         sW0Bc5Klm1Hu+vk7ToaIiK2l3PW9Ms9yhuspo6jXbh1SZIapyfg2+NTmHhLkYhxqO5A0
-         7zDX3pbfk2MA9hpjl3tPNXg5Vesz6EHEh1dl5SmgcO/XyZgnI/liEKO9Ej6h17Wlfy/b
-         8zPOTg2IvKtAGI86IVCo4x2kOZCqFy6ZmjxMIjXS1rZvWuFStGnR2nrbBj75ZfkKMLRs
-         gIVg==
-X-Gm-Message-State: AOAM533Rz4zn6fqmxPztQ9KOm9zcsQY5m7GS2AYz63LQxw1JGgxc8HTq
-        f7MUQoFqp9p18AJYbzUf/Nfo
-X-Google-Smtp-Source: ABdhPJxcIW3X52gLYnHUODRyuXIH49B1VqMlFBV7YVfbRIBVgWvMUf2mQe5qRDvbB6Ubs2TX2+/Yfg==
-X-Received: by 2002:a17:90a:7c43:: with SMTP id e3mr5725560pjl.5.1624546077116;
-        Thu, 24 Jun 2021 07:47:57 -0700 (PDT)
-Received: from workstation ([120.138.12.173])
-        by smtp.gmail.com with ESMTPSA id ne11sm8422359pjb.40.2021.06.24.07.47.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 24 Jun 2021 07:47:56 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 20:17:52 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, stable@vger.kernel.org,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>
-Subject: Re: [PATCH 1/8] bus: mhi: core: Validate channel ID when processing
- command completions
-Message-ID: <20210624144752.GD6108@workstation>
-References: <20210621161616.77524-1-manivannan.sadhasivam@linaro.org>
- <20210621161616.77524-2-manivannan.sadhasivam@linaro.org>
- <YNSNtQxVaegArG2f@kroah.com>
- <20210624143248.GC6108@workstation>
- <YNSZNxMjX/vNvae+@kroah.com>
+        Thu, 24 Jun 2021 10:51:49 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 422A31FD97;
+        Thu, 24 Jun 2021 14:49:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624546169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5Ign43XeMpHmxep3PS/AYugOaZqefaSJ02AcjVPwEHM=;
+        b=Lpfsv0ZXIrwaoon9xkE3tJ+qhGb1S6jmx1qTAAAexHj3ASpCFW5TKHtQmjYt3hMasjR7fZ
+        0/sucOsNVLyQrQk+Xi8bF3MK+GhYrMl+COXkvb7JwPZrCA+XTEBhIL+d0JKaM7ED00sK8N
+        N+kwd6i+KX6gNiDJHVpoQay6wGtL3Wk=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 6BA58A3BB4;
+        Thu, 24 Jun 2021 14:49:27 +0000 (UTC)
+Date:   Thu, 24 Jun 2021 16:49:27 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Yue Hu <huyue2@yulong.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, kexec@lists.infradead.org
+Subject: Re: [PATCH printk v3 3/6] printk: remove safe buffers
+Message-ID: <YNSbd68YJ+0wxayx@alley>
+References: <20210624111148.5190-1-john.ogness@linutronix.de>
+ <20210624111148.5190-4-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNSZNxMjX/vNvae+@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210624111148.5190-4-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 04:39:51PM +0200, Greg KH wrote:
-> On Thu, Jun 24, 2021 at 08:02:48PM +0530, Manivannan Sadhasivam wrote:
-> > On Thu, Jun 24, 2021 at 03:50:45PM +0200, Greg KH wrote:
-> > > On Mon, Jun 21, 2021 at 09:46:09PM +0530, Manivannan Sadhasivam wrote:
-> > > > From: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> > > > 
-> > > > MHI reads the channel ID from the event ring element sent by the
-> > > > device which can be any value between 0 and 255. In order to
-> > > > prevent any out of bound accesses, add a check against the maximum
-> > > > number of channels supported by the controller and those channels
-> > > > not configured yet so as to skip processing of that event ring
-> > > > element.
-> > > > 
-> > > > Cc: stable@vger.kernel.org
-> > > > Fixes: 1d3173a3bae7 ("bus: mhi: core: Add support for processing events from client device")
-> > > > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> > > > Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
-> > > > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > > Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-> > > > Link: https://lore.kernel.org/r/1619481538-4435-1-git-send-email-bbhatt@codeaurora.org
-> > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > > ---
-> > > >  drivers/bus/mhi/core/main.c | 15 ++++++++++-----
-> > > >  1 file changed, 10 insertions(+), 5 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> > > > index 22acde118bc3..ed07421c4870 100644
-> > > > --- a/drivers/bus/mhi/core/main.c
-> > > > +++ b/drivers/bus/mhi/core/main.c
-> > > > @@ -773,11 +773,16 @@ static void mhi_process_cmd_completion(struct mhi_controller *mhi_cntrl,
-> > > >  	cmd_pkt = mhi_to_virtual(mhi_ring, ptr);
-> > > >  
-> > > >  	chan = MHI_TRE_GET_CMD_CHID(cmd_pkt);
-> > > > -	mhi_chan = &mhi_cntrl->mhi_chan[chan];
-> > > > -	write_lock_bh(&mhi_chan->lock);
-> > > > -	mhi_chan->ccs = MHI_TRE_GET_EV_CODE(tre);
-> > > > -	complete(&mhi_chan->completion);
-> > > > -	write_unlock_bh(&mhi_chan->lock);
-> > > > +	WARN_ON(chan >= mhi_cntrl->max_chan);
-> > > 
-> > > What can ever trigger this WARN_ON()?  Do you mean to reboot a machine
-> > > if panic-on-warn is set?
-> > > 
-> > > If this can actually happen, then check for it and recover properly,
-> > > don't just blindly warn and then keep on going.
-> > > 
-> > 
-> > We can't do much here other than warning the user and dropping the
-> > command.
+On Thu 2021-06-24 13:17:45, John Ogness wrote:
+> With @logbuf_lock removed, the high level printk functions for
+> storing messages are lockless. Messages can be stored from any
+> context, so there is no need for the NMI and safe buffers anymore.
+> Remove the NMI and safe buffers.
 > 
-> But you didn't warn anyone.  Well, you rebooted the machine, is that ok?
-> If this can be triggered by a user, this should never happen.
+> Although the safe buffers are removed, the NMI and safe context
+> tracking is still in place. In these contexts, store the message
+> immediately but still use irq_work to defer the console printing.
 > 
-> Do not use WARN_ON() ever please.
-> 
-> > There is no recovery possible because, the device has sent the command
-> > completion event on a wrong channel. It can't happen usually unless a
-> > malcious device sits on the other end.
-> 
-> Then just eat the message and move on, please do not crash the box.
-> 
+> Since printk recursion tracking is in place, safe context tracking
+> for most of printk is not needed. Remove it. Only safe context
+> tracking relating to the console lock is left in place. This is
+> because the console lock is needed for the actual printing.
 
-Okay. We'll spit an error message and drop the event.
+Feel free to use:
 
-Thanks,
-Mani
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-> thanks,
-> 
-> gre k-h
+There are some comments below.
+
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -1852,7 +1839,7 @@ static int console_trylock_spinning(void)
+>  	if (console_trylock())
+>  		return 1;
+>  
+> -	printk_safe_enter_irqsave(flags);
+> +	local_irq_save(flags);
+>  
+>  	raw_spin_lock(&console_owner_lock);
+
+This spin_lock is in the printk() path. We must make sure that
+it does not cause deadlock.
+
+printk_safe_enter_irqsave(flags) prevented the recursion because
+it deferred the console handling.
+
+One danger might be a lockdep report triggered by
+raw_spin_lock(&console_owner_lock) itself. But it should be safe.
+lockdep is checked before the lock is actually taken
+and lockdep should disable itself before printing anything.
+
+Another danger might be any printk() called under the lock.
+The code just compares and assigns values to some variables
+(static, on stack) so we should be on the safe side.
+
+Well, I would feel more comfortable if we add printk_safe_enter_irqsave()
+back around the sections guarded by this lock. It can be done
+in a separate patch. The code looks safe at the moment.
+
+
+> @@ -2664,9 +2648,9 @@ void console_unlock(void)
+>  
+>  	for (;;) {
+>  		size_t ext_len = 0;
+> +		int handover;
+>  		size_t len;
+>  
+> -		printk_safe_enter_irqsave(flags);
+>  skip:
+>  		if (!prb_read_valid(prb, console_seq, &r))
+>  			break;
+> @@ -2716,19 +2700,22 @@ void console_unlock(void)
+>  		 * were to occur on another CPU, it may wait for this one to
+>  		 * finish. This task can not be preempted if there is a
+>  		 * waiter waiting to take over.
+> +		 *
+> +		 * Interrupts are disabled because the hand over to a waiter
+> +		 * must not be interrupted until the hand over is completed
+> +		 * (@console_waiter is cleared).
+>  		 */
+> +		local_irq_save(flags);
+>  		console_lock_spinning_enable();
+
+Same here. console_lock_spinning_enable() takes console_owner_lock.
+I would feel more comfortable if we added printk_safe_enter_irqsave(flags)
+inside console_lock_spinning_enable() around the locked code. The code
+is safe at the moment but...
+
+>  
+>  		stop_critical_timings();	/* don't trace print latency */
+>  		call_console_drivers(ext_text, ext_len, text, len);
+>  		start_critical_timings();
+>  
+> -		if (console_lock_spinning_disable_and_check()) {
+> -			printk_safe_exit_irqrestore(flags);
+> +		handover = console_lock_spinning_disable_and_check();
+
+Same here. Also console_lock_spinning_disable_and_check() takes
+console_owner_lock. It looks safe at the moment but...
+
+
+> +		local_irq_restore(flags);
+> +		if (handover)
+>  			return;
+> -		}
+> -
+> -		printk_safe_exit_irqrestore(flags);
+>  
+>  		if (do_cond_resched)
+>  			cond_resched();
+
+> --- a/kernel/printk/printk_safe.c
+> +++ b/kernel/printk/printk_safe.c
+> @@ -369,7 +70,10 @@ asmlinkage int vprintk(const char *fmt, va_list args)
+>  	 * Use the main logbuf even in NMI. But avoid calling console
+>  	 * drivers that might have their own locks.
+>  	 */
+> -	if ((this_cpu_read(printk_context) & PRINTK_NMI_DIRECT_CONTEXT_MASK)) {
+> +	if (this_cpu_read(printk_context) &
+> +	    (PRINTK_NMI_DIRECT_CONTEXT_MASK |
+> +	     PRINTK_NMI_CONTEXT_MASK |
+> +	     PRINTK_SAFE_CONTEXT_MASK)) {
+>  		unsigned long flags;
+>  		int len;
+>  
+
+There is the following code right below:
+
+		printk_safe_enter_irqsave(flags);
+		len = vprintk_store(0, LOGLEVEL_DEFAULT, NULL, fmt, args);
+		printk_safe_exit_irqrestore(flags);
+		defer_console_output();
+		return len;
+
+printk_safe_enter_irqsave(flags) is not needed here. Any nested
+printk() ends here as well.
+
+Against this can be done in a separate patch. Well, the commit message
+mentions that the printk_safe context is removed everywhere except
+for the code manipulating console lock. But is it just a detail.
+
+Best Regards,
+Petr
