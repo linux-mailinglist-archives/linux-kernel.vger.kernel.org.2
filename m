@@ -2,119 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6D53B39CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 01:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D3B3B39D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 01:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232908AbhFXXrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 19:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57320 "EHLO
+        id S232912AbhFXXst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 19:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232845AbhFXXrS (ORCPT
+        with ESMTP id S229585AbhFXXss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 19:47:18 -0400
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA014C061766
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 16:44:58 -0700 (PDT)
-Received: by mail-oo1-xc2f.google.com with SMTP id b17-20020a4aba110000b029024c219a3d83so913148oop.10
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 16:44:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/IZo+xMlntd1OPotYsAVSJXAdOf8XBCFm8hpgOD3AFg=;
-        b=AfbC8GUOrGiQ8wmQ44iEw4DbrAILKvySD0JZd8pYtbCZY+ekpRhYJmeY9a9vlLZO0W
-         TLhSAmN2KJ0v5+kL3d5oSjkPIhRsBHoa5yjedwB/iE2GW3V5jiQR5yQTNGNKt45aj0IX
-         RhaZfVSTvkWIPxrDVNYG0iuatUSYpf8ZEfSyLoo7rxPEMXkex0D6LI/ZKthaqXsZ7T9/
-         iAS5EbMp+vVOVpPSd6pjrYRihgMaPAc6kP1kZX/LgKh/6YwUa+U4+neU88eOL72zNn30
-         BUMICqoJfoLnHIxAXKooFmy5UK1eIMFjMLE6EdXkN91pao8KfVTcPkfQNE6Dq/wlPjyl
-         i6kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/IZo+xMlntd1OPotYsAVSJXAdOf8XBCFm8hpgOD3AFg=;
-        b=az+Y/vgrUZjqDkW7ac0Y/tQ0XT6YEcRZ8Tbl63H7Z+xzha6jfKeGzkOwKoawvndDo7
-         OAqo/mgJVitCnO78dKFEm3D53YnfajPZouEG7mlQGhNrPkbyPllyD7yEMUVdqEO4LLpr
-         P8418l2wan9syireuGgibt3dukjy+GiWzvtwhczNbjESbscfukrD2kmYxLFNkVcHCBTk
-         PkshTs4RrUoz4z/idoISsoObSHMyN4XjvGNI+czTPb2QGXqwz0ZSTRcdob+07lD02WHB
-         r2rVyfRVecawUvpW22wilTweMpZkKtz7/bW72p+wrO2jHFVWskaccXcjwdt8t/meRlzy
-         XWsg==
-X-Gm-Message-State: AOAM530LtcQj3xL3xCQXXKypN/HwCBDcAUg0OttWJZtYDWVYE4hZxrwX
-        vsOvyb0MKzc6RrmxPlePFZn9XQ==
-X-Google-Smtp-Source: ABdhPJwMXtC7tWjEChYW9HirB1ul2n/Er3ur/GzHXRcQfV3ZScePSyTVNBRmWl7SHAjdME54L0HrIA==
-X-Received: by 2002:a4a:cb06:: with SMTP id r6mr6597797ooq.15.1624578297522;
-        Thu, 24 Jun 2021 16:44:57 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 35sm980557oti.65.2021.06.24.16.44.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 16:44:57 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 18:44:54 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Marek Behun <marek.behun@nic.cz>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Yassine Oudjana <y.oudjana@protonmail.com>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-Subject: Re: [PATCH v9 1/2] dt-bindings: leds: Add Qualcomm Light Pulse
- Generator binding
-Message-ID: <YNUY9ncs34E6aJMe@yoga>
-References: <20210623035039.772660-1-bjorn.andersson@linaro.org>
- <20210625011932.6354e397@thinkpad>
+        Thu, 24 Jun 2021 19:48:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4A8C061574;
+        Thu, 24 Jun 2021 16:46:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QRrsLI7GGtnqIpUE1NhSb681pP7OUT+FkfN9iRVIhgw=; b=GJ0asLtE8az/ZgBHMAI9w7Prf9
+        L8WTI6fB1EWZRk/qyvEREMqkwJ8oywPKhvvgUyUDoAuQTHIrV8iDR4fYiUe1l9UoYKJRDkO5um6gh
+        GUf86KTBuZhSqe0iSC8d6BUCqdKniy7grkD91FLG/Hef7gDnCXp3j8d2Ymc7iCaSKvVObDSHGIhls
+        oHkxLDdhceP/dTqsszWlTnQ72hg0QMcJvR9TtJXio2dVUT0ys6IxASFmxoi2hWrfiZBlMsT70jhCt
+        08Ey8o1J97NPj00WRZA9qWrmqiGSD/3dcovCMX1cPFwL58IDh9gR9GY8vW6w+xW1lSgDtsQfHv+Va
+        834cJ0Hg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwZ2v-00H7K5-3Q; Thu, 24 Jun 2021 23:46:12 +0000
+Date:   Fri, 25 Jun 2021 00:46:09 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 36/46] mm/filemap: Add readahead_folio()
+Message-ID: <YNUZQWvhSnVK0IUe@casper.infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-37-willy@infradead.org>
+ <YNMDzHwIA4neIPDD@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210625011932.6354e397@thinkpad>
+In-Reply-To: <YNMDzHwIA4neIPDD@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 24 Jun 18:19 CDT 2021, Marek Behun wrote:
-
-> On Tue, 22 Jun 2021 20:50:38 -0700
-> Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
+On Wed, Jun 23, 2021 at 11:50:04AM +0200, Christoph Hellwig wrote:
+> On Tue, Jun 22, 2021 at 01:15:41PM +0100, Matthew Wilcox (Oracle) wrote:
+> > The pointers stored in the page cache are folios, by definition.
+> > This change comes with a behaviour change -- callers of readahead_folio()
+> > are no longer required to put the page reference themselves.  This matches
+> > how readpage works, rather than matching how readpages used to work.
 > 
-> > +++ b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
-> 
-> The file name should be based on one of the compatible strings, for
-> example the first one:
->   qcom,pm8150b-lpg.yaml
-> 
+> The way this stores and retrieves different but compatible types from the
+> same xarray is a little nasty.  But I guess we'll have to live with it for
+> now, so:
 
-The majority of the files in leds/ are named leds-*.yaml, is this a new
-scheme for LED bindings?
+I think that's mostly fixed up by the end of this series.  I think
+there's still a few bits which are currently postponed to series 4
+(eg uses of __page_cache_alloc followed by add_to_page_cache_lru).
 
-> > +      led@1 {
-> > +        reg = <1>;
-> > +        label = "green:user1";
-> > +      };
-> 
-> `label` is deprecated,
-
-Sorry, I missed the comment in the middle of the description about this.
-Is there any particular reason why this isn't marked deprecated: true?
-
-> please don't use in new bindings in examples.
-> Instead use color, function and function-enumerator, i.e.
-> 
->   color = <LED_COLOR_ID_GREEN>;
->   function = LED_FUNCTION_xxx;
->   function-enumerator = <N>;
-> 
-
-Can you point me to something helping me regarding what "function" to
-use?
-
-For this particular devboard that the example comes from I have 4 LEDs
-that are named "user1", "user2", "user3" and "user4" in the board
-documentation. I can make up whatever for the example, but I would like
-to get the following dts additions follow the expected guidelines.
-
-Regards,
-Bjorn
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
