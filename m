@@ -2,147 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299C43B2EC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB853B2EBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbhFXMUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 08:20:14 -0400
-Received: from mail-co1nam11on2052.outbound.protection.outlook.com ([40.107.220.52]:1344
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231247AbhFXMUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 08:20:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GRWO04XoFsS2pd8UEPxJ4+J6TLhlXZs9phcETtx+cGgREy5HVIf15vNI/CHo/MfumLS2qQ4wTDKdP9cLJWTdRavR4Ek2LYnZzF94BCVgklrLEtPhwjxSBQfo9qda7AJADn3Rq9EtNWMufusGb90d4J8hCMZJ45h/cK5fdng8UPcaZxhfeBZQ99JFd+zahtQiiEHmnd/r2YiGVqMvQmMXZhy4vsO5u8cgpz6q0ErXGMpW9IdOc0rUoDlAcmkdPKffPG7lOq9B3724D+pwf/CVrtKseirYwvRFho23piwUA2deN8a1Y8gq3+BI4DiCEZC50pChE02j+35cHMX4JDffdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GUxnbZnjlx5+Up8acUATpYz5cHAbBdRpSaf1Ew1Gj/4=;
- b=CquP6r01yVv8sAJBcfDiw3KMv196+eOHwHH8tDtwLlStwQ9qnZ4+NXL3EbF0PvBn+fLwQ9/3S3mIkKsUTVAb5/Uz209rcz4vgIAFrgqMY+JEh5tCd2yjcjujeK53H/KBCkitin8zJxgymHpr1I0PMd+Ca5Nkv6ria4zRgdGS8nixa1l34+Ub6wUoaStZhGZcC/c7H8ffLmHwcwz42NBkxzD2W/YqVlLFoQjnXnk7f+f1WMq5Bwf6miy3zSGj1lRQoYrYYLf1LzkjU7fSid5MEIXsAAccoWdfRXFX9h3McS7U/+g3+J7/1Obivts6A4NisF9uAJnp2ghX6GpLFVNGIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=baylibre.com smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
+        id S231243AbhFXMTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 08:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229448AbhFXMTQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 08:19:16 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C74C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 05:16:56 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id k8so7446452lja.4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 05:16:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GUxnbZnjlx5+Up8acUATpYz5cHAbBdRpSaf1Ew1Gj/4=;
- b=LX50xH7nP0FswNdz2zS2fG9WPmEk/qMTq9wNnOSyflKm4ap5wDbiD9lOuUNmDGOx0MlRV+Nh5DhcE7jnJYTnNXatQuM7hoUOXno4bPS3ZtKcClCWQ1CpApgCbTiXVwjvfmsVl29VBOCIPldcvPSHnhyfgxEkdGCLf82qj0nwNa8=
-Received: from DM5PR08CA0059.namprd08.prod.outlook.com (2603:10b6:4:60::48) by
- SN6PR02MB4752.namprd02.prod.outlook.com (2603:10b6:805:8f::33) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4264.18; Thu, 24 Jun 2021 12:17:46 +0000
-Received: from DM3NAM02FT010.eop-nam02.prod.protection.outlook.com
- (2603:10b6:4:60:cafe::8a) by DM5PR08CA0059.outlook.office365.com
- (2603:10b6:4:60::48) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend
- Transport; Thu, 24 Jun 2021 12:17:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; baylibre.com; dkim=none (message not signed)
- header.d=none;baylibre.com; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- DM3NAM02FT010.mail.protection.outlook.com (10.13.5.124) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4264.18 via Frontend Transport; Thu, 24 Jun 2021 12:17:45 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 24 Jun 2021 05:17:31 -0700
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 24 Jun 2021 05:17:31 -0700
-Envelope-to: mturquette@baylibre.com,
- sboyd@kernel.org,
- lee.jones@linaro.org,
- kristo@kernel.org,
- quanyang.wang@windriver.com,
- linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Received: from [172.19.2.91] (port=51016 helo=xsjjollys50.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <rajan.vaja@xilinx.com>)
-        id 1lwOIV-0003F7-Id; Thu, 24 Jun 2021 05:17:31 -0700
-From:   Rajan Vaja <rajan.vaja@xilinx.com>
-To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <michal.simek@xilinx.com>, <lee.jones@linaro.org>,
-        <kristo@kernel.org>, <quanyang.wang@windriver.com>
-CC:     <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Rajan Vaja <rajan.vaja@xilinx.com>
-Subject: [PATCH v5 4/4] clk: zynqmp: Handle divider specific read only flag
-Date:   Thu, 24 Jun 2021 05:16:33 -0700
-Message-ID: <20210624121633.22179-5-rajan.vaja@xilinx.com>
-X-Mailer: git-send-email 2.32.0.93.g670b81a
-In-Reply-To: <20210624121633.22179-1-rajan.vaja@xilinx.com>
-References: <20210624121633.22179-1-rajan.vaja@xilinx.com>
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nd2G7MEytYnI4W67in1ikvPZSnOK3PwT1ikArpu7gco=;
+        b=WcFBE/AsZX87uV7wUy87EHLefUVJ0UMT74cgFOZKxanSipUOfmycTfbNfMbJSNN6yg
+         YbkiGqZBtosEGCSfEYu+RgIFr1Xq5Dz6Z0JKBeKbT+B2tv21mQYkawc/YiRj4LLgznDY
+         jNGT3OlJFSC3/FrOgsUMHE1NPd9Yt3MYNljK7j1yp8zCW4hppc2w25Z1cNS2QCXjT0CH
+         XUT1GhS3VJiVt53Wm8Rpw+xc7E3PsmLif0CH6J+gigftZ+UqNKnoePNLbQyRr82MHYfn
+         q1U0h/6ZuOlXkOVgFxQshBNu/F8qwZ1eUrjOGlbsMHGYsH6ARckYitB/nsxaA9WjNb80
+         qZGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nd2G7MEytYnI4W67in1ikvPZSnOK3PwT1ikArpu7gco=;
+        b=UuPQ36g3wbjfDHDDJDx8v9ADtQDUfZkx6DaKTATYcAof91m6bxHGIsjZuu90Fmny/h
+         VPSSNGMpND7IBlgZEMODklvfk+seIlfHcPFBKg6eO39tlbOaY5iXVS9w6NwRpziB284y
+         jxPUPcYGUFvhLPxrCow70STatwJ+20CGyJn83fRL2yqN5Q13g7FY3gY3iJAt0//xTswo
+         n79ljOXSpunN40Tjx0tB+yg9osTjjxCx8wuF9pOTE+STP5ZzgOZQLJQZTf+y5WJdPZGk
+         S/n0N3alRn9hAwR3MO5OfhIRGyo/oU5WkeUp6+Qn2sH80ZH4J4nmVpcedDwY0f3l4xzx
+         6r+A==
+X-Gm-Message-State: AOAM530SDRYGnw+3a4VXxaDe5QS/wr/CEqzOOKfxfvRtyZHw3oXvv9D4
+        G2rEoOdQNemCvAhmcQmaQMCAcuUi4MoD1SIq03c9cA==
+X-Google-Smtp-Source: ABdhPJyd1nY9igewmqR6GV5DMHGugxKGdvxQIkNT7Vul62AFBUU4MwPk2kiQYwK39u4JH7OL1c6vanQzb2gRRPZFKYY=
+X-Received: by 2002:a2e:824e:: with SMTP id j14mr1450738ljh.445.1624537014742;
+ Thu, 24 Jun 2021 05:16:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 886c15f7-e621-4864-3dd9-08d9370a132a
-X-MS-TrafficTypeDiagnostic: SN6PR02MB4752:
-X-Microsoft-Antispam-PRVS: <SN6PR02MB4752DAA461FA95AEA0483AB0B7079@SN6PR02MB4752.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:489;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FBGJe18OrC11T+sHHVYBHR27xpdaRFI+BMXo3SAQEhran46/d+owZ7iaPf5VwNVVfaUIted0Otop06ngWL6ug5vKb1D5Yesz2rQxymaO4Ex9V28DDmLB69dwiu9SikYWlcsLorPhCKLvb5ZEUBpcrchT2Qh1BKOlo+I7xBUbVOhkpo4ymADwCVeP5NwbUV/BqW/MSCJTkb+rDM+3JNHEWWy4IyhVGMy85Knrkx0nzhoZqE+qu//BHdwiSFIAucLVSfxBv6fY+qE9juBNW3aYDbpE8MB1VlOO3KcPMR9+qq09wr1qFavwWmvjSQy5pMPJTQ89Y+GmfMQfX3Sg9edKT/To3FcBWOZSCiQDmeBz/0imMGzgibRP+lrXyI1NnkXUJoeQAtjwEs85nRgZvoe4Ctzl8GmcymVZNZyf8QaavUe/3x53I6mYcji/h+T/WORm70yk1sBeJRxOhccKHZVeb9pU4zScFcdDh2XnPGnGLAW4eSKdCZU3r3OqgOrETwvrUnS5AJnFC5NnTHUiqTnginY1MmOrJMbJ1Caem6QFdUzuYwiikn3GboM8pkjkEnSig0bYSxGaPPDhRByARpx421xnE1DzGYIfSsaZDIXP6qWboR1QPiKsXklyw1j0eYTblnv91Q+1KGpvMaLbdZuKVhKITq3WqLgwgf+9vxj/bBa8jpwVeAAe6vs3E/P9UJo4
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(39840400004)(376002)(46966006)(36840700001)(82310400003)(83380400001)(2906002)(7636003)(356005)(2616005)(36860700001)(47076005)(426003)(70586007)(44832011)(70206006)(336012)(26005)(107886003)(1076003)(7696005)(110136005)(316002)(8936002)(8676002)(9786002)(36906005)(5660300002)(54906003)(4326008)(36756003)(186003)(478600001)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2021 12:17:45.9482
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 886c15f7-e621-4864-3dd9-08d9370a132a
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT010.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB4752
+References: <20210624111815.57937-1-odin@uged.al>
+In-Reply-To: <20210624111815.57937-1-odin@uged.al>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 24 Jun 2021 14:16:43 +0200
+Message-ID: <CAKfTPtCiq6jMZwp-9s8wN80rg57fphm5PxH_519XjfAt213tGg@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Ensure _sum and _avg values stay consistent
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for divider specific read only CCF flag
-(CLK_DIVIDER_READ_ONLY).
+On Thu, 24 Jun 2021 at 13:21, Odin Ugedal <odin@uged.al> wrote:
+>
+> The _sum and _avg values are in general sync together with the PELT
+> divider. They are however not always completely in perfect sync,
+> resulting in situations where _sum gets to zero while _avg stays
+> positive. Such situations are undesirable.
+>
+> This comes from the fact that PELT will increase period_contrib, also
+> increasing the PELT divider, without updating _sum and _avg values to
+> stay in perfect sync where (_sum == _avg * divider). However, such PELT
 
-Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
----
- drivers/clk/zynqmp/divider.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+_sum is always synced and updated with PELT contrib and _avg is only
+updated when crossing the 1024us period boundary. The problem here is
+that the contribution to _sum can be null (not running or sleeping
+state) whereas the formula "_avg * divider" assumes that all
+contributions in the current period are not null. So "_avg * divider"
+overestimates _sum.
 
-diff --git a/drivers/clk/zynqmp/divider.c b/drivers/clk/zynqmp/divider.c
-index c07423e03bc8..cb49281f9cf9 100644
---- a/drivers/clk/zynqmp/divider.c
-+++ b/drivers/clk/zynqmp/divider.c
-@@ -256,6 +256,11 @@ static const struct clk_ops zynqmp_clk_divider_ops = {
- 	.set_rate = zynqmp_clk_divider_set_rate,
- };
- 
-+static const struct clk_ops zynqmp_clk_divider_ro_ops = {
-+	.recalc_rate = zynqmp_clk_divider_recalc_rate,
-+	.round_rate = zynqmp_clk_divider_round_rate,
-+};
-+
- /**
-  * zynqmp_clk_get_max_divisor() - Get maximum supported divisor from firmware.
-  * @clk_id:		Id of clock
-@@ -334,7 +339,10 @@ struct clk_hw *zynqmp_clk_register_divider(const char *name,
- 		return ERR_PTR(-ENOMEM);
- 
- 	init.name = name;
--	init.ops = &zynqmp_clk_divider_ops;
-+	if (nodes->type_flag & CLK_DIVIDER_READ_ONLY)
-+		init.ops = &zynqmp_clk_divider_ro_ops;
-+	else
-+		init.ops = &zynqmp_clk_divider_ops;
- 
- 	init.flags = zynqmp_clk_map_common_ccf_flags(nodes->flag);
- 
--- 
-2.32.0.93.g670b81a
+Another solution would be to underestimate _sum and use _avg
+*LOAD_AVG_MAX - 1024" when subtracting some _sum and keep using
+LOAD_AVG_MAX - 1024 + avg->period_contrib when adding _sum.  Note,
+that this doesn't make any real difference at the end for the patch
+below because we don't save any multiplication operation anyway
 
+So after updating the commit message
+
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+
+> change will never lower _sum, making it impossible to end up in a
+> situation where _sum is zero and _avg is not.
+>
+> Therefore, we need to ensure that when subtracting load outside PELT,
+> that when _sum is zero, _avg is also set to zero. This occurs when
+> (_sum < _avg * divider), and the subtracted (_avg * divider) is bigger
+> or equal to the current _sum, while the subtracted _avg is smaller than
+> the current _avg.
+>
+> Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Signed-off-by: Odin Ugedal <odin@uged.al>
+> ---
+>
+> Reports and discussion can be found here:
+>
+> https://lore.kernel.org/lkml/2ED1BDF5-BC0C-47CD-8F33-9A46C738F8CF@linux.vnet.ibm.com/
+> https://lore.kernel.org/lkml/CA+G9fYsMXELmjGUzw4SY1bghTYz_PeR2diM6dRp2J37bBZzMSA@mail.gmail.com/
+>
+>  kernel/sched/fair.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index bfaa6e1f6067..def48bc2e90b 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -3688,15 +3688,15 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
+>
+>                 r = removed_load;
+>                 sub_positive(&sa->load_avg, r);
+> -               sub_positive(&sa->load_sum, r * divider);
+> +               sa->load_sum = sa->load_avg * divider;
+>
+>                 r = removed_util;
+>                 sub_positive(&sa->util_avg, r);
+> -               sub_positive(&sa->util_sum, r * divider);
+> +               sa->util_sum = sa->util_avg * divider;
+>
+>                 r = removed_runnable;
+>                 sub_positive(&sa->runnable_avg, r);
+> -               sub_positive(&sa->runnable_sum, r * divider);
+> +               sa->runnable_sum = sa->runnable_avg * divider;
+>
+>                 /*
+>                  * removed_runnable is the unweighted version of removed_load so we
+> --
+> 2.32.0
+>
