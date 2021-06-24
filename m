@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C053B34C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2233B34D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232395AbhFXRbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 13:31:01 -0400
-Received: from mga06.intel.com ([134.134.136.31]:15611 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231895AbhFXRa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 13:30:57 -0400
-IronPort-SDR: zxY2z98lR9Q6OOYBZOjzUsb871GI4+A5+gauT4TsqSr3CvgdiOKtzwqBWMga5pFwadPPzpXFGn
- kcmdCUXJ6xvw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="268655974"
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="268655974"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 10:28:37 -0700
-IronPort-SDR: pfqi8IyNc1kLyRraXJy4cf9ux2sSSTnXkaeEdhiUSIjkj6PPI7+6RdoFYzxCrJM1FD11phBTSK
- FnpIf0hZm45A==
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="406715603"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.74.185]) ([10.209.74.185])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 10:28:36 -0700
-Subject: Re: [PATCH 2/7] perf: Create a symlink for a PMU
-To:     Greg KH <greg@kroah.com>
-Cc:     kan.liang@linux.intel.com, peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, eranian@google.com,
-        namhyung@kernel.org, acme@kernel.org, jolsa@redhat.com
-References: <1624497729-158864-1-git-send-email-kan.liang@linux.intel.com>
- <1624497729-158864-3-git-send-email-kan.liang@linux.intel.com>
- <YNQckpOuw80uCUa1@kroah.com>
- <d25a0556-325f-9af0-a495-b9f222d63e10@linux.intel.com>
- <YNSWtCSjJy8CytOL@kroah.com>
- <1e536604-cf93-0f09-401e-2073924c5582@linux.intel.com>
- <YNSlVPcjHInk4un6@kroah.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <29d5f315-578f-103c-9523-ae890e29c7e7@linux.intel.com>
-Date:   Thu, 24 Jun 2021 10:28:36 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232408AbhFXReA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 13:34:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbhFXRd6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 13:33:58 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE033C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 10:31:39 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id x16so5750994pfa.13
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 10:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NXamga020V8fjrq0TD0oEXX5F6d6dS3uFOlZ6LFMVgk=;
+        b=aZifHySwD6uqla8CbsEA8UeI3E6CaFVu27HO+tY9wsjDTSz58+wBjYyT2qmY2igqRO
+         P/+L8s8JSxztaIRiXP5K7COaLxoOODkvnk3Y/QwDhy/sV41HLoD+NIg6LjRU6z0XoYRa
+         1esbz2gpJdzoIb8O4yqgP66KsMBFIytRIL56eSR8GXw2eXAvq/+qmpZ0KZ+dFubW+1hJ
+         3B0a7hdU/lj2FsfDhSTa0AIVDPP+EhcFmeFWnVSXOHts9/+FlxDAo+QNrCa5qAAHXVxU
+         /mOoTwXjEM4OgBy24EwpN6TtRwZA8Lwg12Pfc1YOPBMjBclFs1W8Jiia2vKB2v3rdITL
+         JCmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NXamga020V8fjrq0TD0oEXX5F6d6dS3uFOlZ6LFMVgk=;
+        b=QQIMegG8xL804hy0oPq8i/H/40tYs35PccTGUh4PZtXJi+6Zv+h6BZ35oQbdm+++lt
+         xv4PTHHcjqS6hjU4MyDFC1dQRrVluiDc6JG1hIAmnKtL0kBls+oaL3br6BfIlzASy3/f
+         vaTUy2zKGn76v4j2WuG9/k4vP3eKh7thKo+WuHQw1XlzMfxKA6wuoL/1ePKPYKy9BkMO
+         KZ7Zi3L83lvnmBAd3YeAuwS4x5re+vZ3kggXOAh8S1rM6CkW+I4cX3LdhbLS/bG/dioM
+         1NZpFiJuj8s7QSWVUJ2y3lXdjjeV1h/lOOePD59DDhCCQhPhfHcWyfiyROl/9KBGsXqc
+         eRJQ==
+X-Gm-Message-State: AOAM5313LbPITTCQAZT2jMfV15bVdHnCFcOxwmEa3hnxT3A47dGk4xfz
+        B8NX9dGuhjS9n7WLauHbqcQp2w==
+X-Google-Smtp-Source: ABdhPJzZUXZwE3+5MgxJcPLiUKe38W/ONBPOJbcLxp4oI7xcGJlN2iewrx4qCOjx/mxGoBtq+RPMOQ==
+X-Received: by 2002:a65:6914:: with SMTP id s20mr5641081pgq.420.1624555899193;
+        Thu, 24 Jun 2021 10:31:39 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id oc9sm2714548pjb.43.2021.06.24.10.31.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 10:31:38 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 17:31:34 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH 0/7] KVM: x86: guest MAXPHYADDR and C-bit fixes
+Message-ID: <YNTBdvWxwyx3T+Cs@google.com>
+References: <20210623230552.4027702-1-seanjc@google.com>
+ <324a95ee-b962-acdf-9bd7-b8b23b9fb991@amd.com>
+ <c2d7a69a-386e-6f44-71c2-eb9a243c3a78@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <YNSlVPcjHInk4un6@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c2d7a69a-386e-6f44-71c2-eb9a243c3a78@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 24, 2021, Tom Lendacky wrote:
+> > 
+> > Here's an explanation of the physical address reduction for bare-metal and
+> > guest.
+> > 
+> > With MSR 0xC001_0010[SMEE] = 0:
+> >   No reduction in host or guest max physical address.
+> > 
+> > With MSR 0xC001_0010[SMEE] = 1:
+> > - Reduction in the host is enumerated by CPUID 0x8000_001F_EBX[11:6],
+> >   regardless of whether SME is enabled in the host or not. So, for example
+> >   on EPYC generation 2 (Rome) you would see a reduction from 48 to 43.
+> > - There is no reduction in physical address in a legacy guest (non-SEV
+> >   guest), so the guest can use a 48-bit physical address
 
-> But this is NOT how busses work in the driver model.
->
-> PCI classes are great, but we do NOT suddenly add a symlink in sysfs if
-> a driver goes from being handled by "generic_pci_type_foo" to
-> "vendor_foo".  Userspace can handle the change and life goes on.
+So the behavior I'm seeing is either a CPU bug or user error.  Can you verify
+the unexpected #PF behavior to make sure I'm not doing something stupid?
 
-In perf this is exposed to the user command line, and lots of people 
-configure their own events, so it's very common in scripts. To use the 
-pmu you have to use something like perf stat -a -e uncore_foo/.../. So 
-it's not a single thing that could be patched up.
+Thanks!
 
-The perf tools supports PMUs abstractly and doesn't have special 
-handling for every PMU. Also the perf design was always that the kernel 
-should provide these abstractions with the user tool being (mostly) 
-generic and abstract.
-
-
-> So a device name will move from "generic" to "specific", right?
->
-> Why does a bus have to do with any of this?
-
-The perf pmus are in /sys/devices, so the symlinks for compatibility 
-have to be created there.
-
-
-> But a driver does not caer.  And if perf does not care, who cares?
-
-
-The users who write scripts that specify the perf events on the perf 
-command line.
-
-
--Andi
-
-
+> > - There is a reduction of only the encryption bit in an SEV guest, so
+> >   the guest can use up to a 47-bit physical address. This is why the
+> >   Qemu command line sev-guest option uses a value of 1 for the
+> >   "reduced-phys-bits" parameter.
+> > 
+> 
+> The guest statements all assume that NPT is enabled.
+> 
+> Thanks,
+> Tom
