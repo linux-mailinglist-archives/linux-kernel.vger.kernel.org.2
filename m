@@ -2,217 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96AB23B2C0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2989C3B2C13
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232070AbhFXKGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 06:06:19 -0400
-Received: from mga18.intel.com ([134.134.136.126]:52591 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231881AbhFXKGS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 06:06:18 -0400
-IronPort-SDR: rpJwz4ERxENruDSv7g6pMZzM00wDlGGsDcMMcJsYc69nLzUH3ZnScjrlaYlxeuAaoqhPUMUwvE
- eZfrc+ye0kUg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="194738786"
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="194738786"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 03:03:58 -0700
-IronPort-SDR: EZFr0o2iJMtyMajNsOv4UYp8tL2KNzH18vhirEAdDPwruAyYp/naOXVVjq/NYto447QEbxyiVU
- ftS7ETtf8RyA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="406592728"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by orsmga006.jf.intel.com with ESMTP; 24 Jun 2021 03:03:54 -0700
-Subject: Re: [PATCH v4 06/10] scsi: ufs: Remove host_sem used in
- suspend/resume
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-8-git-send-email-cang@codeaurora.org>
- <ed59d61a-6951-2acd-4f89-40f8dc5015e1@intel.com>
- <9105f328ee6ce916a7f01027b0d28332@codeaurora.org>
- <a87e5ca5-390f-8ca0-41bf-27cdc70e3316@intel.com>
- <1b351766a6e40d0df90b3adec964eb33@codeaurora.org>
- <a654d2ef-b333-1c56-42c6-3d69e9f44bd0@intel.com>
- <3970b015e444c1f1714c7e7bd4c44651@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <f1c997f3-66e4-3f1f-08f5-83449b65c397@intel.com>
-Date:   Thu, 24 Jun 2021 13:04:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232123AbhFXKHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 06:07:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231881AbhFXKHU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 06:07:20 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C943C061574;
+        Thu, 24 Jun 2021 03:04:56 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id y13so2688118plc.8;
+        Thu, 24 Jun 2021 03:04:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u7fPDE7LS6LL4lJCgFRVnUdJTM9D+3lnAYDmthQFD0o=;
+        b=WX6vLCad8z3+5opUAFaXnP6l1Df7woOtV0OS8fh/DXdYYvFkAQj6aD75E5TXZFuiQc
+         V7Sd25aIg+Ahe2xmXX9+7AWqIRpQnwPqftP2WUcHiaCqGq3I1/qM78UO4vaOZgX4i7v7
+         Go83omeoaJPqYZ2Ygt1vlf3OMoNEH0ssoDj4JbT4Y4PMMUslJfPMVmcvpzdhJSCxQ++d
+         +WFnC08cvIBPdl+PHUvlbPSyQbnTK+MJBPkRtvaHJKJXW6a/avqX9Q2qMuG0yAOD0Nlw
+         usazRK1PMI3yA6GStVE9RTsmw9jqA/CUoVQbVatoVNBkZQygnHGOxXDNJdfvSUGAtzug
+         ZlJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u7fPDE7LS6LL4lJCgFRVnUdJTM9D+3lnAYDmthQFD0o=;
+        b=d/+2HKxZsEcWe9EpBOFLyCsVH6aKsLFAdcgtbd3t2/dAb68Kf5FB+PZ7dphrKH3Lxm
+         kIzacxb49DgRbtq/2+3QuGtleakZwQ7v/Sa3Tyu11Fms+2w39kMcDOacw0Slzut8CCyy
+         DJDIcnti0JN7MoiEShuLFPd8FLuXyabw3hs1c8Rx4kWN4XelQ0bEalvyz1ueTfp84i+r
+         0yTx/1fZAwHKFXLIWF4Ktag6BTgR3ujUleTCbMTnzRd2c5/9GHgIR4ePpqxAjimgeR/x
+         SlLsmHjDM4haPxP3RGQas6wB/uZkNK7EI0175AXgV4rRtvArrXJg1OR/W90vN7C8zbdH
+         tiuw==
+X-Gm-Message-State: AOAM5327Fe468wEPwdWErtyAj82pdqK7+vOYigk8gWQhjGPlL31a0mL3
+        bonY3O4wstCNqZIEal6ysIssaxxod+xJvRo+UTw=
+X-Google-Smtp-Source: ABdhPJxDN/nCwpF1k5jpxywlWf3ktR2tQ8glFj6UCpUsjRGUrF7+L+T6ZOewfYc66uNinW5gLm+qnPHjz81UPa9oAwc=
+X-Received: by 2002:a17:902:fe0a:b029:11d:81c9:3adf with SMTP id
+ g10-20020a170902fe0ab029011d81c93adfmr3669404plj.0.1624529095960; Thu, 24 Jun
+ 2021 03:04:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3970b015e444c1f1714c7e7bd4c44651@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210520092131.308959589@linuxfoundation.org> <20210520092145.369052506@linuxfoundation.org>
+ <20210520203625.GA6187@amd> <YKc4wSgWcnGh3Bbq@kroah.com> <YKc47AGJRaBn3qIQ@kroah.com>
+ <20210623202529.GG8540@amd>
+In-Reply-To: <20210623202529.GG8540@amd>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 24 Jun 2021 13:04:18 +0300
+Message-ID: <CAHp75VdsYVcPfgLUy5Gu=Q8t9zKyJ_=Ut0-__5WnxCjDhZQ-kA@mail.gmail.com>
+Subject: Re: [PATCH 4.19 425/425] scripts: switch explicitly to Python 3
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/06/21 9:31 am, Can Guo wrote:
-> On 2021-06-24 14:23, Adrian Hunter wrote:
->> On 24/06/21 9:12 am, Can Guo wrote:
->>> On 2021-06-24 13:52, Adrian Hunter wrote:
->>>> On 24/06/21 5:16 am, Can Guo wrote:
->>>>> On 2021-06-23 22:30, Adrian Hunter wrote:
->>>>>> On 23/06/21 10:35 am, Can Guo wrote:
->>>>>>> To protect system suspend/resume from being disturbed by error handling,
->>>>>>> instead of using host_sem, let error handler call lock_system_sleep() and
->>>>>>> unlock_system_sleep() which achieve the same purpose. Remove the host_sem
->>>>>>> used in suspend/resume paths to make the code more readable.
->>>>>>>
->>>>>>> Suggested-by: Bart Van Assche <bvanassche@acm.org>
->>>>>>> Signed-off-by: Can Guo <cang@codeaurora.org>
->>>>>>> ---
->>>>>>>  drivers/scsi/ufs/ufshcd.c | 12 +++++++-----
->>>>>>>  1 file changed, 7 insertions(+), 5 deletions(-)
->>>>>>>
->>>>>>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->>>>>>> index 3695dd2..a09e4a2 100644
->>>>>>> --- a/drivers/scsi/ufs/ufshcd.c
->>>>>>> +++ b/drivers/scsi/ufs/ufshcd.c
->>>>>>> @@ -5907,6 +5907,11 @@ static void ufshcd_clk_scaling_suspend(struct ufs_hba *hba, bool suspend)
->>>>>>>
->>>>>>>  static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
->>>>>>>  {
->>>>>>> +    /*
->>>>>>> +     * It is not safe to perform error handling while suspend or resume is
->>>>>>> +     * in progress. Hence the lock_system_sleep() call.
->>>>>>> +     */
->>>>>>> +    lock_system_sleep();
->>>>>>
->>>>>> It looks to me like the system takes this lock quite early, even before
->>>>>> freezing tasks, so if anything needs the error handler to run it will
->>>>>> deadlock.
->>>>>
->>>>> Hi Adrian,
->>>>>
->>>>> UFS/hba system suspend/resume does not invoke or call error handling in a
->>>>> synchronous way. So, whatever UFS errors (which schedules the error handler)
->>>>> happens during suspend/resume, error handler will just wait here till system
->>>>> suspend/resume release the lock. Hence no worries of deadlock here.
->>>>
->>>> It looks to me like the state can change to UFSHCD_STATE_EH_SCHEDULED_FATAL
->>>> and since user processes are not frozen, nor file systems sync'ed, everything
->>>> is going to deadlock.
->>>> i.e.
->>>> I/O is blocked waiting on error handling
->>>> error handling is blocked waiting on lock_system_sleep()
->>>> suspend is blocked waiting on I/O
->>>>
->>>
->>> Hi Adrian,
->>>
->>> First of all, enter_state(suspend_state_t state) uses mutex_trylock(&system_transition_mutex).
->>
->> Yes, in the case I am outlining it gets the mutex.
->>
->>> Second, even that happens, in ufshcd_queuecommand(), below logic will break the cycle, by
->>> fast failing the PM request (below codes are from the code tip with this whole series applied).
->>
->> It won't get that far because the suspend will be waiting to sync filesystems.
->> Filesystems will be waiting on I/O.
->> I/O will be waiting on the error handler.
->> The error handler will be waiting on system_transition_mutex.
->> But system_transition_mutex is already held by PM core.
-> 
-> Hi Adrian,
-> 
-> You are right.... I missed the action of syncing filesystems...
-> 
-> Using back host_sem in suspend_prepare()/resume_complete() won't have this
-> problem of deadlock, right?
+On Wed, Jun 23, 2021 at 11:28 PM Pavel Machek <pavel@ucw.cz> wrote:
+> On Fri 2021-05-21 06:37:00, Greg Kroah-Hartman wrote:
+> > On Fri, May 21, 2021 at 06:36:18AM +0200, Greg Kroah-Hartman wrote:
+> > > On Thu, May 20, 2021 at 10:36:26PM +0200, Pavel Machek wrote:
 
-I am not sure, but what was problem that the V3 patch was fixing?
-Can you give an example?
+...
 
-> 
-> Thanks,
-> 
-> Can Guo.
-> 
->>
->>>
->>>         case UFSHCD_STATE_EH_SCHEDULED_FATAL:
->>>                 /*
->>>                  * ufshcd_rpm_get_sync() is used at error handling preparation
->>>                  * stage. If a scsi cmd, e.g., the SSU cmd, is sent from the
->>>                  * PM ops, it can never be finished if we let SCSI layer keep
->>>                  * retrying it, which gets err handler stuck forever. Neither
->>>                  * can we let the scsi cmd pass through, because UFS is in bad
->>>                  * state, the scsi cmd may eventually time out, which will get
->>>                  * err handler blocked for too long. So, just fail the scsi cmd
->>>                  * sent from PM ops, err handler can recover PM error anyways.
->>>                  */
->>>                 if (cmd->request->rq_flags & RQF_PM) {
->>>                         hba->force_reset = true;
->>>                         set_host_byte(cmd, DID_BAD_TARGET);
->>>                         cmd->scsi_done(cmd);
->>>                         goto out;
->>>                 }
->>>                 fallthrough;
->>>         case UFSHCD_STATE_RESET:
->>>
->>> Thanks,
->>>
->>> Can Guo.
->>>
->>>>>
->>>>> Thanks,
->>>>>
->>>>> Can Guo.
->>>>>
->>>>>>
->>>>>>>      ufshcd_rpm_get_sync(hba);
->>>>>>>      if (pm_runtime_status_suspended(&hba->sdev_ufs_device->sdev_gendev) ||
->>>>>>>          hba->is_wlu_sys_suspended) {
->>>>>>> @@ -5951,6 +5956,7 @@ static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
->>>>>>>          ufshcd_clk_scaling_suspend(hba, false);
->>>>>>>      ufshcd_clear_ua_wluns(hba);
->>>>>>>      ufshcd_rpm_put(hba);
->>>>>>> +    unlock_system_sleep();
->>>>>>>  }
->>>>>>>
->>>>>>>  static inline bool ufshcd_err_handling_should_stop(struct ufs_hba *hba)
->>>>>>> @@ -9053,16 +9059,13 @@ static int ufshcd_wl_suspend(struct device *dev)
->>>>>>>      ktime_t start = ktime_get();
->>>>>>>
->>>>>>>      hba = shost_priv(sdev->host);
->>>>>>> -    down(&hba->host_sem);
->>>>>>>
->>>>>>>      if (pm_runtime_suspended(dev))
->>>>>>>          goto out;
->>>>>>>
->>>>>>>      ret = __ufshcd_wl_suspend(hba, UFS_SYSTEM_PM);
->>>>>>> -    if (ret) {
->>>>>>> +    if (ret)
->>>>>>>          dev_err(&sdev->sdev_gendev, "%s failed: %d\n", __func__,  ret);
->>>>>>> -        up(&hba->host_sem);
->>>>>>> -    }
->>>>>>>
->>>>>>>  out:
->>>>>>>      if (!ret)
->>>>>>> @@ -9095,7 +9098,6 @@ static int ufshcd_wl_resume(struct device *dev)
->>>>>>>          hba->curr_dev_pwr_mode, hba->uic_link_state);
->>>>>>>      if (!ret)
->>>>>>>          hba->is_wlu_sys_suspended = false;
->>>>>>> -    up(&hba->host_sem);
->>>>>>>      return ret;
->>>>>>>  }
->>>>>>>  #endif
->>>>>>>
+> > > > Old distributions may not have python3 installed, and we should not
+> > > > change this dependency in the middle of the series.
+> > >
+> > > What distro that was released in 2017 (the year 4.14.0 was released) did
+> > > not have python3 on it?
+> >
+> > oops, I meant 2018, when 4.19.0 was out, wrong tree...
+>
+> In anything yocto-based, for example, you explicitely select which
+> packages you want. And changing dependencies in middle of stable
+> release is surprising and against our documentation.
 
+How is this all relevant?
+
+Scripts where the interpreter changed are not supposed to be used
+outside of the (kernel) development process. No user should really
+rely on those scripts to produce anything at any point of time or even
+be there.
+
+-- 
+With Best Regards,
+Andy Shevchenko
