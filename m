@@ -2,74 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F193B383A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3203A3B3845
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 23:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232647AbhFXVAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 17:00:01 -0400
-Received: from mail-io1-f43.google.com ([209.85.166.43]:33770 "EHLO
-        mail-io1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhFXU77 (ORCPT
+        id S232658AbhFXVDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 17:03:53 -0400
+Received: from mail-lf1-f43.google.com ([209.85.167.43]:44927 "EHLO
+        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232650AbhFXVDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 16:59:59 -0400
-Received: by mail-io1-f43.google.com with SMTP id a6so10040017ioe.0;
-        Thu, 24 Jun 2021 13:57:39 -0700 (PDT)
+        Thu, 24 Jun 2021 17:03:50 -0400
+Received: by mail-lf1-f43.google.com with SMTP id a11so12526059lfg.11
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 14:01:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0G//iXfmLjHJhdeWozxCE+pBIDu3xsRQjXHcxBVgZT4=;
-        b=o4JKFmJso+EM0OOs47qWt2Iul5tz1m1h/yZfdi3qcwvt40iNS8IjcR0WftwdL/Fsxn
-         SZL92ZUrcJwRhWg6zbNlYiMhVjsrR8U0gIAoCF7yXzxEQNUyV52q2GexKoCtE3xP/O3/
-         BMDp01tBvgbjIQ+/RRijvVneX5QeacRkqrc9XhTnYQ3tOs3fenOlom+3IflVSCGKCL+J
-         eIkgC/us+2un1fMRqYGfPOkkBqksm/xESrj3V60/cnlE0DRu9M3AKUqoAjdNGmIHU+lA
-         /JTBwv5dyQ480EgFEsJws3MM4/JnivRzVdmjIsN3Eryo/H48BassPv8nIR33hkii+wzv
-         IvRg==
-X-Gm-Message-State: AOAM531YhwDLOrgEmVbGeaqVKK1fWbWPskb5Mdc6AEmJMRVHsy2GeaZd
-        /SGDvTpswWJEfeTBCd0GDQ==
-X-Google-Smtp-Source: ABdhPJw2ZAUafe7foiqb04xU050uSi3YrSk7ZfH4ImmNIn0Puw0JTpem16JMUE5HpUpQPQgQyLWxhA==
-X-Received: by 2002:a6b:b74a:: with SMTP id h71mr4092370iof.58.1624568259321;
-        Thu, 24 Jun 2021 13:57:39 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id u14sm2404901iln.43.2021.06.24.13.57.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 13:57:38 -0700 (PDT)
-Received: (nullmailer pid 1975209 invoked by uid 1000);
-        Thu, 24 Jun 2021 20:57:35 -0000
-Date:   Thu, 24 Jun 2021 14:57:35 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Cc:     Nicolas Boichat <drinkcat@chromium.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        devicetree@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH v2 2/4] dt-bindings: power: Add MT8195 power
- domains
-Message-ID: <20210624205735.GA1975175@robh.at.kernel.org>
-References: <20210616000659.28347-1-chun-jie.chen@mediatek.com>
- <20210616000659.28347-3-chun-jie.chen@mediatek.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h/Bp2DliPtf8XYSAsJMUD0UUuyfxa9Clsvcb4YJwCwk=;
+        b=MkD1GA3C3fwwnLFLoagax6dFf6csgBdVUlyZbAyL4luJwYWpVt+qM370e6nYW3nM9p
+         Ut3XvGjuMT7HjMbQl9lHy6Gs0B4lUTbmKSYbCUzdeRYlNNsCQmu4AEUYcw60uFg1Dvda
+         m+k8Dzka49NtnLI+Qna9+O4kZvNd8tkTg+oE7u4goRrvoU0tygJ9hXZWmJueL87Z2RU+
+         m7W9U4wKtS+viAyxQBdGmbL1rkrjo3uVXqVudQqdhkVvbrtU+Ik1N8vyQswRlZoomjH5
+         dVweHvRoGZQi70FanpFvWkpdxOyh5n3ge0YiIETCnF3XQYoNaKKhPNT/3kPKUmFYPgnN
+         3Rcg==
+X-Gm-Message-State: AOAM533oi4XHTJQ2Zny5OmF/29Wbvc0Hk4Rd52g4YPlAdDVGY+daaV26
+        D5hAeyjRMluvJuYK5cVwrOQX1KUDjXha2uSW+e8=
+X-Google-Smtp-Source: ABdhPJxZrPKwPZDKxboBUad/Rzy0WtGSNShiSfwcnJD9rQ3VzOUQcKbuhbf6QpA3HD/w32wvYRlXgltwWicsmlYpyVA=
+X-Received: by 2002:ac2:50da:: with SMTP id h26mr5086437lfm.635.1624568489742;
+ Thu, 24 Jun 2021 14:01:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616000659.28347-3-chun-jie.chen@mediatek.com>
+References: <20210622071221.128271-1-namhyung@kernel.org> <20210622071221.128271-4-namhyung@kernel.org>
+ <C2ABEEDF-04AF-4AB5-BA6C-C8AC5E8579C6@fb.com> <CAM9d7ci3kS+=ObL_mfx1Qi2rQ7SYRjdLQLJ5+SVmRUsaUepj_w@mail.gmail.com>
+ <D5859F92-8AB6-4327-9D5F-A67DB14CB493@fb.com>
+In-Reply-To: <D5859F92-8AB6-4327-9D5F-A67DB14CB493@fb.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 24 Jun 2021 14:01:18 -0700
+Message-ID: <CAM9d7cgw5ZtuvA2wwEdVU1rL6Hra2Cy4BTHx0rKsNE_ickjN+Q@mail.gmail.com>
+Subject: Re: [PATCH 3/3] perf stat: Enable BPF counter with --for-each-cgroup
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 08:06:56 +0800, Chun-Jie Chen wrote:
-> Add power domains dt-bindings for MT8195.
-> 
-> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
-> ---
->  .../power/mediatek,power-controller.yaml      |  2 +
->  include/dt-bindings/power/mt8195-power.h      | 51 +++++++++++++++++++
->  2 files changed, 53 insertions(+)
->  create mode 100644 include/dt-bindings/power/mt8195-power.h
-> 
+On Thu, Jun 24, 2021 at 9:20 AM Song Liu <songliubraving@fb.com> wrote:
+> >>> +
+> >>> +// single set of global perf events to measure
+> >>> +struct {
+> >>> +     __uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
+> >>> +     __uint(key_size, sizeof(__u32));
+> >>> +     __uint(value_size, sizeof(int));
+> >>> +     __uint(max_entries, 1);
+> >>> +} events SEC(".maps");
+> >>> +
+> >>> +// from logical cpu number to event index
+> >>> +// useful when user wants to count subset of cpus
+> >>> +struct {
+> >>> +     __uint(type, BPF_MAP_TYPE_HASH);
+> >>> +     __uint(key_size, sizeof(__u32));
+> >>> +     __uint(value_size, sizeof(__u32));
+> >>> +     __uint(max_entries, 1);
+> >>> +} cpu_idx SEC(".maps");
+> >>
+> >> How about we make cpu_idx a percpu array and use 0,1 for
+> >> disable/enable profiling on this cpu?
+> >
+> > No, it's to calculate an index to the cgrp_readings map which
+> > has the event x cpu x cgroup number of elements.
+> >
+> > It controls enabling events with a global (bss) variable.
+>
+> If we make cgrp_idx a per cpu array, we probably don't need the
+> cpu_idx map?
 
-Acked-by: Rob Herring <robh@kernel.org>
+Right.
+
+>
+> >
+> >>
+> >>> +
+> >>> +// from cgroup id to event index
+> >>> +struct {
+> >>> +     __uint(type, BPF_MAP_TYPE_HASH);
+> >>> +     __uint(key_size, sizeof(__u64));
+> >>> +     __uint(value_size, sizeof(__u32));
+> >>> +     __uint(max_entries, 1);
+> >>> +} cgrp_idx SEC(".maps");
+> >>> +
+> >>> +// per-cpu event snapshots to calculate delta
+> >>> +struct {
+> >>> +     __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
+> >>> +     __uint(key_size, sizeof(__u32));
+> >>> +     __uint(value_size, sizeof(struct bpf_perf_event_value));
+> >>> +} prev_readings SEC(".maps");
+> >>> +
+> >>> +// aggregated event values for each cgroup
+> >>> +// will be read from the user-space
+> >>> +struct {
+> >>> +     __uint(type, BPF_MAP_TYPE_ARRAY);
+> >>> +     __uint(key_size, sizeof(__u32));
+> >>> +     __uint(value_size, sizeof(struct bpf_perf_event_value));
+> >>> +} cgrp_readings SEC(".maps");
+> >>
+> >> Maybe also make this a percpu array? This should make the BPF program
+> >> faster.
+> >
+> > Maybe.  But I don't know how to access the elements
+> > in a per-cpu map from userspace.
+>
+> Please refer to bperf__read() reading accum_readings. Basically, we read
+> one index of all CPUs with one bpf_map_lookup_elem().
+
+Thanks!  So when I use a per-cpu array with 3 elements, I can access
+to cpu/elem entries in a row like below, right?
+
+  0/0, 0/1, 0/2, 1/0, 1/1, 1/2, 2/0, 2/1, 2/2, 3/0, ...
+
+Thanks,
+Namhyung
