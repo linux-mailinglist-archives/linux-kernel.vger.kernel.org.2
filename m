@@ -2,182 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C943B325B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8BD3B326A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbhFXPRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 11:17:02 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45510 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbhFXPRB (ORCPT
+        id S232191AbhFXPUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 11:20:21 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:52566 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231708AbhFXPUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 11:17:01 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624547680;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=NIkP5GnQOhkJ5OQDu9J0jh1rUD1xYTF9U9nmzJJ+nx4=;
-        b=Oazwc6H+zXQ2ppEwCdrAAwnE6rYdGnY5Zayhq+2pEX3pC+rlLRFLtauBi8fShZZVMIKe08
-        fZYyS1L53e7yZgvwNEROmDvl5kJwV5y+hNHax/kVdYz+i1dfFVyPJ9qu8T+IYblGkLjROR
-        c1eU1uWYmEDlQNNuPXIDkipjxel/Ax5rLU2im+SHBHLPJp30DZX288hfHYK6cRZNYZLAWP
-        kJcux6AWtjH2XQKk+YtieliyOzD82w///k3ouJ+2NccJ8bfHmihPCUUHdlu7FRSycnyT6f
-        lpZrmAV+1RbwKdNW/CRi1WSVc1Zer7DS8Cjs2uHlWxTS6fSQU49lYzJkP4+yTQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624547680;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=NIkP5GnQOhkJ5OQDu9J0jh1rUD1xYTF9U9nmzJJ+nx4=;
-        b=MHJJTBAa+0xt/ewGZKyVuQN5JKA0SpAY6qwr/rHtBz3sXKN+xqWA1hSr9ZhvJ1l9qMXBQy
-        82ABeChYHniy9nAw==
-To:     "Tian\, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Dey\, Megha" <megha.dey@intel.com>,
-        "Raj\, Ashok" <ashok.raj@intel.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Lu\, Baolu" <baolu.lu@intel.com>,
-        "Williams\, Dan J" <dan.j.williams@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, KVM <kvm@vger.kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
+        Thu, 24 Jun 2021 11:20:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1624547880; x=1656083880;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=sAbysC06T03vfpgx6gVyg0DlqzJgM/bP3q40WfRjb4s=;
+  b=uRFa1slBw5oyJZ49W/dnFjqTk57wdYLIVgShLt7zCLCZt3Rqz4WavV1c
+   EVjURL1PBWnPtXwS7t+lghSSV4XHOfd29OUcryC1bdcXOK/5I6b7wSo9J
+   SJtTcmBrDeQbOgQoTUg/cO8cxknYpYsRzFWwjJ54aBp/cszZnyJoq5TZ9
+   E=;
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 24 Jun 2021 08:18:00 -0700
+X-QCInternal: smtphost
+Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 24 Jun 2021 08:18:00 -0700
+Received: from [10.111.163.161] (10.80.80.8) by nasanexm03e.na.qualcomm.com
+ (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 24 Jun
+ 2021 08:17:56 -0700
+Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
+ invariance
+To:     Ionela Voinescu <ionela.voinescu@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+CC:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Subject: RE: Virtualizing MSI-X on IMS via VFIO
-In-Reply-To: <MWHPR11MB1886E14C57689A253D9B40C08C079@MWHPR11MB1886.namprd11.prod.outlook.com>
-Date:   Thu, 24 Jun 2021 17:14:39 +0200
-Message-ID: <8735t7wazk.ffs@nanos.tec.linutronix.de>
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+References: <cover.1624266901.git.viresh.kumar@linaro.org>
+ <09a39f5c-b47b-a931-bf23-dc43229fb2dd@quicinc.com>
+ <20210623041613.v2lo3nidpgw37abl@vireshk-i7>
+ <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
+ <20210624025414.4iszkovggk6lg6hj@vireshk-i7>
+ <CAKfTPtAXMYYrG1w-iwSWXb428FkwFArEwXQgHnjShoCEMjdYcw@mail.gmail.com>
+ <20210624104734.GA11487@arm.com>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <daf1ddf5-6f57-84a8-2ada-90590c0c94b5@quicinc.com>
+Date:   Thu, 24 Jun 2021 11:17:55 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210624104734.GA11487@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanexm03e.na.qualcomm.com (10.85.0.48)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kevin!
 
-On Thu, Jun 24 2021 at 02:41, Kevin Tian wrote:
->> From: Thomas Gleixner <tglx@linutronix.de>
->> On Wed, Jun 23 2021 at 23:37, Kevin Tian wrote:
 
->> > 1)  Fix the lost interrupt issue in existing MSI virtualization flow;
->> 
->> That _cannot_ be fixed without a hypercall. See my reply to Alex.
->
-> The lost interrupt issue was caused due to resizing based on stale 
-> impression of vector exhaustion.
->
-> With your explanation this issue can be partially fixed by having Qemu 
-> allocate all possible irqs when guest enables msi-x and never resizes 
-> it before guest disables msi-x.
+On 6/24/2021 6:48 AM, Ionela Voinescu wrote:
+> Not if the counters are implemented properly. The kernel considers that
+> both reference and delivered performance counters should stop or reset
+> during idle. The kernel would not account for idle itself.
+> 
+> If the reference performance counter does not stop during idle, while
+> the core performance counter (delivered) does stop, the behavior above
+> should be seen very often.
+> 
+> Qian, do you see these small delivered performance values often or
+> seldom?
 
-Yes, that works with all the downsides attached to it.
+Ionela, so I managed to upgrade the kernel on the system to today's linux-next which suppose to include this series. The delivered perf is now 280. However, scaling_min_freq (200 MHz) is not equal to lowest_perf (100).
 
-> The remaining problem is no feedback to block guest request_irq()
-> in case of vector shortage. This has to be solved via paravirt interface
-> but fixing lost interrupt alone is still a step forward for guest which
-> doesn't implement the paravirt interface.
+scaling_driver: acpi_cppc
+scaling_governor: schedutil
 
-Fair enough.
+Is that normal because lowest_nonlinear_perf is 200? 
 
-> At any time guest OSes can be categorized into three classes:
->
-> a)   doesn't implement any paravirt interface for vector allocation;
->
-> b)   implement one paravirt interface that has been supported by KVM;
->
-> c)   implement one paravirt interface which has not been supported by KVM;
->
-> The transition phase from c) to b) is undefined, but it does exist more
-> or less. For example a windows guest will never implement the interface
-> defined between Linux guest and Linux host. It will have its own hyperv
-> variation which likely takes time for KVM to emulate and claim support.
->
-> Transition from a) to b) or a) to c) is a guest-side choice. It's not
-> controlled by the host world.
+Also, on this pretty idle system, 158 of 160 CPUs are always running in max freq (280 MHz). The other 2 are running in 243 and 213 MHz according to scaling_cur_freq. Apparently, "schedutil" does not work proper on this system. I am going to try other governors to narrow down the issue a bit.
 
-That's correct.
+FYI, here is the acpi_cppc registers reading:
 
-> Here I didn't further differentiate whether a guest OS support ims, since
-> once a supported paravirt interface is in place both msi and ims can get
-> necessary feedback info from the host side. 
->
-> Then let's look at the host side:
->
-> 1) kernel versions before we conduct any discussed change:
->
->          This is a known broken world as you explained. irq resizing could
->          lead to lost interrupts in all three guest classes. The only mitigation 
->          is to document this limitation somewhere.
->
->          We'll not enable ims based on this broken framework.
->
-> 2) kernel versions after we make a clean refactoring:
->
->          a) For guest OS which doesn't implement paravirt interface:
->          c) For guest OS which implement a paravirt interface not 
->              supported by KVM:
->
->              You confirmed that recent kernels (since 4.15+) all uses
->              reservation mode to avoid vector exhaustion. So VFIO can
->              define a new protocol asking its userspace to disable resizing
->              by allocating all possible irqs when guest msix is enabled. This
->              is one step forward by fixing the lost interrupt issue and is what
->              the step-1) in my proposal tries to achieve.
-
-After studying the MSI-X specification again, I think there is another
-option to solve this for MSI-X, i.e. the dynamic sizing part:
-
-MSI requires to disable MSI in order to update the number of enabled
-vectors in the control word.
-
-MSI-X does not have that requirement as there is no 'number of used
-vectors' control field. MSI-X provides a fixed sized vector table and
-enabling MSI-X "activates" the full table.
-
-System software has to set proper messages in the table and eventually
-associate the table entries to device (sub)functions if that's not
-hardwired in the device and controlled by queue enablement etc.
-
-According to the specification there is no requirement for masked table
-entries to contain a valid message:
-
- "Mask Bit: ... When this bit is set, the function is prohibited from
-                sending a message using this MSI-X Table entry."
-
-which means that the function must reread the table entry when the mask
-bit in the vector control word is cleared.
-
-So instead of tearing down the whole set and then bringing it up again,
-which is wrong, the kernel could allocate an interrupt descriptor and
-append an MSI entry, write the table entry and unmask it afterwards.
-
-There are a couple of things to get there:
-
- 1) MSI descriptor list handling.
-
-    The msi descriptor list of a device is assumed to be unmutable after
-    pci_enable_msix() has successfully enabled all of it, which means
-    that there is no serialization in place.
-
-    IIRC, the original attempt to glue IMS into the existing MSI
-    management had a patch to add the required protections. That part
-    could be dusted off.
-
- 2) Provide the required functionality in the MSI irq domain
-    infrastructure
-
- 3) Expose this functionality through a proper interface.
-
-That's append only of course.
-
-It's not clear to me whether this is worth the effort, but at least it
-is a viable solution if memory consumption, IRTE consumption is an
-actual concern.
-
-Thanks,
-
-        tglx
+/sys/devices/system/cpu/cpu0/acpi_cppc/feedback_ctrs
+ref:160705801 del:449594095
+/sys/devices/system/cpu/cpu0/acpi_cppc/highest_perf
+300
+/sys/devices/system/cpu/cpu0/acpi_cppc/lowest_freq
+1000
+/sys/devices/system/cpu/cpu0/acpi_cppc/lowest_nonlinear_perf
+200
+/sys/devices/system/cpu/cpu0/acpi_cppc/lowest_perf
+100
+/sys/devices/system/cpu/cpu0/acpi_cppc/nominal_freq
+2800
+/sys/devices/system/cpu/cpu0/acpi_cppc/nominal_perf
+280
+/sys/devices/system/cpu/cpu0/acpi_cppc/reference_perf
+100
+/sys/devices/system/cpu/cpu0/acpi_cppc/wraparound_time
+18446744073709551615
