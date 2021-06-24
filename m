@@ -2,229 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6343B266D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 06:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C29AB3B2672
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 06:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhFXEsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 00:48:11 -0400
-Received: from mga09.intel.com ([134.134.136.24]:62483 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229448AbhFXEsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 00:48:09 -0400
-IronPort-SDR: wRUGTyHbq727K0mV9z+2hFUsdZHFYOv9kRZS4MiSagESykDiYf7vXzU6hPKy9qnemx1wqxn+81
- 6J10TRY+hWSA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="207332727"
-X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
-   d="scan'208";a="207332727"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 21:45:50 -0700
-IronPort-SDR: iUCW69lMqmZAOi1zPlIC7+tmzJafz30CBu++hPNjoMxUjKwrGJfYICMbxDfeJXBT5xQOCXUDrS
- q3UDU0n37wfg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
-   d="scan'208";a="454905574"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga008.fm.intel.com with ESMTP; 23 Jun 2021 21:45:50 -0700
-Received: from fmsmsx604.amr.corp.intel.com (10.18.126.84) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Wed, 23 Jun 2021 21:45:49 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
- via Frontend Transport; Wed, 23 Jun 2021 21:45:49 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.177)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.4; Wed, 23 Jun 2021 21:45:49 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CdzJdq6VdQEzhBlzgeXfwNtVA2g3J6z6AigzHIOfvSx3c5rAmzfBpz2NU8yUse9zzI0bjsVMhxezaqTof1tzetzl817dPnlgDhcwKFz9MGS7oqUaslY6nwv7fzpZNozv5JaDs9WqiAlk7RSloHQCgJo7184Mi3NND8QWs4nmngXzWCPlLWu0hBkpTvZSihPtcGg2ZIwvXaYQwOKurgQgMgxY7Uqf/8A9wsV4ZJclB85BtN2ySCiVbvDYjYtaWjsj/9BqM/OIkOjpkygXFFFhjqK55XwtvVNnz05zB/BnfYelu8oJT9SINNHWWAgU8ivvOk8GnvhsaiNEo7oDdYU1dA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Dvk9hhAXQ5a+c6igZs5RyY2S4nUn9vAOtnHSJiyHwPE=;
- b=V37DJrXs78eZKP5qxBYcuVBUOP0sRJnypEbUzikviwbQf0daiMzGb/BTBcsIrnZNhWWJdm/m4PkhrtdMKA7Aaij3GqsGWaULgQcLMB8RXPVYz8yVMcotAKEjkkDy8Yxd0ScCR9UGGaGILnSllJDeIUoohjMaNfV7g2i9Z56cZoizLl6yMQ0Jj0eI1V2j1ZU8rBOAaD7FIgChYpePii9e6gKb2+AXk+IqB+v9/WTXV9dNOsb+Lq82OxVYaerngxAcQynui+Cq8vka7a5f53+nCvJKNqS6yTVuJ/9f08xBnWG36/idlkPZuI/FdTwyE9GelLgl9DZSTtt7f8vab9+wHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Dvk9hhAXQ5a+c6igZs5RyY2S4nUn9vAOtnHSJiyHwPE=;
- b=gHeJhLf4dlXuHEDeX5V2xR+p6eUSwTwep2Wgps1QLnjATvPn/d7eMjG3jHzcSXqWHzAvzfQ4AEUTjt7vf/v88//+rYhMo5vSJOJtYquFpuPokzR0544FiMMzdSfgTDmMFsSacErlhcCAoiO6ATFLXbz8XgEwRYCTSHYhyQIzhrI=
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
- by DM6PR11MB2889.namprd11.prod.outlook.com (2603:10b6:5:72::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.23; Thu, 24 Jun
- 2021 04:45:43 +0000
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::3dc3:868b:cec3:513b]) by DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::3dc3:868b:cec3:513b%6]) with mapi id 15.20.4264.019; Thu, 24 Jun 2021
- 04:45:43 +0000
-From:   "Wu, Hao" <hao.wu@intel.com>
-To:     "Xu, Yilun" <yilun.xu@intel.com>,
-        =?iso-8859-1?Q?Martin_Hundeb=F8ll?= <mhu@silicom.dk>
-CC:     Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        =?iso-8859-1?Q?Martin_Hundeb=F8ll?= <mhu@geanix.com>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        Debarati Biswas <debaratix.biswas@intel.com>,
-        "Weight, Russell H" <russell.h.weight@intel.com>
-Subject: RE: [PATCH 2/4] fpga: dfl: Move DFH header register macros to
-  linux/dfl.h
-Thread-Topic: [PATCH 2/4] fpga: dfl: Move DFH header register macros to
-  linux/dfl.h
-Thread-Index: AQHXaKX26fHcMFRuKUe6sbK+IT+SDqsikQtw
-Date:   Thu, 24 Jun 2021 04:45:43 +0000
-Message-ID: <DM6PR11MB3819B96AC0E54AF96EDE728485079@DM6PR11MB3819.namprd11.prod.outlook.com>
-References: <20210621070621.431482-1-mhu@silicom.dk>
- <20210621070621.431482-3-mhu@silicom.dk>
- <DM6PR11MB3819FE54D2C399DDBBC38FBA850A9@DM6PR11MB3819.namprd11.prod.outlook.com>
- <20210622052205.GB27046@yilunxu-OptiPlex-7050>
- <DM6PR11MB3819B9B2F357B9B03F7707B685099@DM6PR11MB3819.namprd11.prod.outlook.com>
- <0257dcaf-348a-375d-6ed8-657974208e30@silicom.dk>
- <20210624030120.GA42039@yilunxu-OptiPlex-7050>
-In-Reply-To: <20210624030120.GA42039@yilunxu-OptiPlex-7050>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.102.204.51]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7d576d09-ef3b-4afe-cebe-08d936caed24
-x-ms-traffictypediagnostic: DM6PR11MB2889:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB28891A07F1A81ED7A666DCB885079@DM6PR11MB2889.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: B9T+8jW7l2TLSFKhsPjHpFRqhqJjhYQON/nge1XjKfqejraZM5xmtPTid5geMnOkTmEnk7JoIm/6z668m3pWGcohK7DeeNpjUmGwG19n+RRFEIq8T+ypi6K0Aj/IQ5+UVEBjIdRQVntrnNnO2ZBMbbqFPAREfGMLxaq/L+mn9nq2ttnpqNsVS/3oHPAKIkJxcD98m6Ff/c7uQAU4TuaNQg+bEfafYvALKlEqywGnNKKEWFeYTOgD9uLah+ETgENjnpzTvf1C2x9RsHjftdUUwXyqv+YQ3KQhDr4JyiOuOycP2LZCrwnWgUXl09TIz8nXfzSc8wnryH+ODNHbysMGn2PCDh4cGIHKIWWwum+LKFXe3lgLxz+gs9RlvLBuKUBdiL19pJqMFSLWT/YeEOxL3J5o+d2e6QzUX8JB02hPaVGK6qFT4nGHi3zof3sgmyXwaPnEwKV31Sbxy7Z18bJEabZ8rDFZtvUQ1efsMDVdPa8CGc16Vq5Qy7TQ/8TEsZapIsJJc9nrxyxIaLFMZoe/3v4SaHOTAo9hpoTxUfPPlEMWId6QTShfWJNLsE+bvprNRoEjdNF0ZX0PgpMr2jC/cWoFi1N7PuRM1nEIzZVtkQ5DJoyJIrBkv3KWEXQirdOBfyrWv7aHScwwdXhesuTNbg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(396003)(346002)(39860400002)(366004)(71200400001)(4326008)(5660300002)(478600001)(52536014)(86362001)(186003)(38100700002)(8936002)(6506007)(9686003)(55016002)(7696005)(122000001)(8676002)(107886003)(54906003)(26005)(66476007)(66556008)(66446008)(7416002)(64756008)(110136005)(66574015)(2906002)(76116006)(66946007)(316002)(83380400001)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?qQbGLRI+FtlED4zrnnjYwWOdwPf24pBVkDvWCZshTDnIDkdlTLsY1fKG4a?=
- =?iso-8859-1?Q?9b1GVreiktRheAXZR5Zna/7WL82CzJawX9nD0CUHR0FdzhxNcUgLo6ee7l?=
- =?iso-8859-1?Q?oC6kYdFhk9gW3iXracq0YrxcB2EC67GEyDIxiAFRA1o3PxxZYIr9RFO3MS?=
- =?iso-8859-1?Q?kgcYkGJ/mPkXsSP9DaV69HnyLjvH7LkK0I4qdqQKZV1mp62AUXUAyjWC6+?=
- =?iso-8859-1?Q?KoX55PzOWuOIcqVP/yCZtwX11zyeCEbrYR2Ei0zFSDlsMFwpI5kvCkBgeZ?=
- =?iso-8859-1?Q?hSz0HVzfouo53+8s4RmD7XS7qQ34wd1WQGz6xKQB6ctt+y9ogWFy8JPjsE?=
- =?iso-8859-1?Q?oWShuLDEzjj/TIWSa2K4/v+ExoENMl95HBrTePi5vCebgpdX//JqeGtrZd?=
- =?iso-8859-1?Q?xT20pXDnsI2LC11f81uV3mBbzt+fTEU74vfzho2yNifjPn9pFAITsEH7rs?=
- =?iso-8859-1?Q?BzP4z/IT78Jx06kPXQeVdZ4ysx/zF1bkcugs7smVZU7Jtfs8XvDxGVfwm+?=
- =?iso-8859-1?Q?YhZEZ3dzsQrUvAq18BF9wT0SHVDukkHcIfTGeKJBs2l8Mv2jjNikTbDErq?=
- =?iso-8859-1?Q?1cLobDeMX1gRT5pkXu+nJzgkHvlCkjCbFgBQBf+BjEg1KW8Qq76anDY94k?=
- =?iso-8859-1?Q?JO8VYH7DAUw8s6YrpQxPX+tdlEe8h/XQK8z6FuMAwZ/HT/QUfulatGr6fH?=
- =?iso-8859-1?Q?Gzh0rzCsz6wpqoZM8bP6UqQki9xekRv5XdVbFRCgGwxwrZ044rBFB4qWtK?=
- =?iso-8859-1?Q?31EylzGkR7p/0YBNI0JwTTY/Wn5spIn+MMtFFrkA3xhWYiXtlIrO7Bd8vG?=
- =?iso-8859-1?Q?QGEOGza70pgVc2aqkgDcd89cyvQ/PmW07C1mVR1BpusidDXW3e2ZlOiiFW?=
- =?iso-8859-1?Q?H6aa47f+s0+UEIJZQwRPKlfhgkFTQWDkqXVXTdTNsCSclL66kHZwgOQ5tb?=
- =?iso-8859-1?Q?C2/0V4elhM0SHlQXwtTMU9TbVu6ua61kBUyWjbjP0fztkSFAJkUZk8grH1?=
- =?iso-8859-1?Q?FTwaqWlAuVahiCYO05pPdBwJ/akNwlQ4HJypIIbNKF8HhznEJdBTZDbEqg?=
- =?iso-8859-1?Q?BaPCNuwnE8L08+unozBLsuIkhdPSt8zGvdzOxmjE55ODCh7BeQfYT8VFYY?=
- =?iso-8859-1?Q?tcLcYOaMxcpretVwqKkpQ4nN47VSWlPt48DFvt4F8nng6c0OZm5SnaF49D?=
- =?iso-8859-1?Q?32AcSIRveGhgXYQEO7crnPHxuXETXm8c7xPn4uL8bpH327GZDvCruHdE4N?=
- =?iso-8859-1?Q?/raCdQB6WpyFX7h+izvUPliDiwl1L4Q7RGstRlV+asuqCDuhQkOPNN/ITF?=
- =?iso-8859-1?Q?Ce539TsJK6FVvCp3Kbkia9uc2hYjQmSjW8fuTx80DeLpJv82vY1q+NEyxK?=
- =?iso-8859-1?Q?D680iPUYqJ?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S230104AbhFXEtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 00:49:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230046AbhFXEtC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 00:49:02 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC21C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 21:46:43 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id hc16so7329433ejc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 21:46:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qV+mylXL/2SS4mJCMLehWyslEuC3Qq8x/PXCguBgY/I=;
+        b=yLsRfVae0FF0DXCc80Qe7rbCzVIrdmQDyeaVXSgU7731bg1QMqw4lgqLCxjyZUZjwu
+         TDH7cb0lIajOurwizpXzJMb1Ld/YEZ/vOZ/tKUWon1ytyFmk7qtEyniUaT9wfomHXaCZ
+         Q5k7DOlqy4oW2+TRbKidZkfTZk1foP9dbr9CEZLKOgBzOUjNXSWZEPhSFmyl+eKMt16P
+         UetkLAJ4Ll73DccWxMTSvwQYbyiWwHF4SXeF68p10765hT8FeXCxeTOqWo6XDYYUASaW
+         U0fLxWjMmOWM2r455SZayrz6m1rBoWQox1axwCaI6sMaC6VcTv4xi2V6T6wMsgxpGUUR
+         4qsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qV+mylXL/2SS4mJCMLehWyslEuC3Qq8x/PXCguBgY/I=;
+        b=Cyv4FThg0mR37ntrPlkA+Xf2lc/eybLdAwJDgRXVbSSMm9b6b6EP7xsaPCQFnkPz9w
+         nlm/IjyOH0vo7Yu29jN+K6SnriBfEd3rvMthXBjCYJBNsd8dgCZPYD7INLPKji/TLOum
+         WHN6xZ2xFP2ph0L4b59YGH3cE8QyShYfkrXly6lyhEnnhxT997QojVBhPZ3DutUZEWDw
+         9qUwO03nnz5NigbqvztZ46AW9iMxB8zRIH3xSZiVpQfOiHP8CR7Oq+lys1xWsGoaqyOm
+         FpmbewkT9tB9thll2LALf2uXwMqxceWgY093NcVu2Hmcqk7ISlAuu3xtXAJtZW/d4tly
+         3iXg==
+X-Gm-Message-State: AOAM530vEEhu0hQIO05lJHPhvqOPyzNTZDh3VEVdjm4eK863MfkTr9ZF
+        fj7YWKjwwDI7yXtQMV7ebk2Qi4Yn1sGrn+7Wl4Ko
+X-Google-Smtp-Source: ABdhPJxLv6gMYjF4IzwXDzBGPms1QJcwsfrq54qSD0tH6LJ386sUw0R2U1ERHQHkfRm0DArekdU8YwZzZP3+ubsA+P4=
+X-Received: by 2002:a17:906:3c4a:: with SMTP id i10mr3283231ejg.372.1624510001769;
+ Wed, 23 Jun 2021 21:46:41 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3819.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d576d09-ef3b-4afe-cebe-08d936caed24
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jun 2021 04:45:43.7902
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 227P/dDrQRLlppF9atBynnnzngkTNmX1E+WCuXomEoadcgYL39lNqgMF7e+vHgzqMXMSD97GNdOjoM8ccS23YA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2889
-X-OriginatorOrg: intel.com
+References: <20210615141331.407-1-xieyongji@bytedance.com> <20210615141331.407-10-xieyongji@bytedance.com>
+ <adfb2be9-9ed9-ca37-ac37-4cd00bdff349@redhat.com> <CACycT3tAON+-qZev+9EqyL2XbgH5HDspOqNt3ohQLQ8GqVK=EA@mail.gmail.com>
+ <1bba439f-ffc8-c20e-e8a4-ac73e890c592@redhat.com> <CACycT3uzMJS7vw6MVMOgY4rb=SPfT2srV+8DPdwUVeELEiJgbA@mail.gmail.com>
+ <0aeb7cb7-58e5-1a95-d830-68edd7e8ec2e@redhat.com> <CACycT3uuooKLNnpPHewGZ=q46Fap2P4XCFirdxxn=FxK+X1ECg@mail.gmail.com>
+ <e4cdee72-b6b4-d055-9aac-3beae0e5e3e1@redhat.com> <CACycT3u8=_D3hCtJR+d5BgeUQMce6S7c_6P3CVfvWfYhCQeXFA@mail.gmail.com>
+ <d2334f66-907c-2e9c-ea4f-f912008e9be8@redhat.com>
+In-Reply-To: <d2334f66-907c-2e9c-ea4f-f912008e9be8@redhat.com>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Thu, 24 Jun 2021 12:46:30 +0800
+Message-ID: <CACycT3uCSLUDVpQHdrmuxSuoBDg-4n22t+N-Jm2GoNNp9JYB2w@mail.gmail.com>
+Subject: Re: Re: [PATCH v8 09/10] vduse: Introduce VDUSE - vDPA Device in Userspace
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Wed, Jun 23, 2021 at 01:56:59PM +0200, Martin Hundeb=F8ll wrote:
+On Thu, Jun 24, 2021 at 11:35 AM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> =E5=9C=A8 2021/6/23 =E4=B8=8B=E5=8D=881:50, Yongji Xie =E5=86=99=E9=81=93=
+:
+> > On Wed, Jun 23, 2021 at 11:31 AM Jason Wang <jasowang@redhat.com> wrote=
+:
+> >>
+> >> =E5=9C=A8 2021/6/22 =E4=B8=8B=E5=8D=884:14, Yongji Xie =E5=86=99=E9=81=
+=93:
+> >>> On Tue, Jun 22, 2021 at 3:50 PM Jason Wang <jasowang@redhat.com> wrot=
+e:
+> >>>> =E5=9C=A8 2021/6/22 =E4=B8=8B=E5=8D=883:22, Yongji Xie =E5=86=99=E9=
+=81=93:
+> >>>>>> We need fix a way to propagate the error to the userspace.
+> >>>>>>
+> >>>>>> E.g if we want to stop the deivce, we will delay the status reset =
+until
+> >>>>>> we get respose from the userspace?
+> >>>>>>
+> >>>>> I didn't get how to delay the status reset. And should it be a DoS
+> >>>>> that we want to fix if the userspace doesn't give a response foreve=
+r?
+> >>>> You're right. So let's make set_status() can fail first, then propag=
+ate
+> >>>> its failure via VHOST_VDPA_SET_STATUS.
+> >>>>
+> >>> OK. So we only need to propagate the failure in the vhost-vdpa case, =
+right?
+> >>
+> >> I think not, we need to deal with the reset for virtio as well:
+> >>
+> >> E.g in register_virtio_devices(), we have:
+> >>
+> >>           /* We always start by resetting the device, in case a previo=
+us
+> >>            * driver messed it up.  This also tests that code path a
+> >> little. */
+> >>         dev->config->reset(dev);
+> >>
+> >> We probably need to make reset can fail and then fail the
+> >> register_virtio_device() as well.
+> >>
+> > OK, looks like virtio_add_status() and virtio_device_ready()[1] should
+> > be also modified if we need to propagate the failure in the
+> > virtio-vdpa case. Or do we only need to care about the reset case?
 > >
-> >
-> > On 22/06/2021 09.39, Wu, Hao wrote:
-> > > > On Mon, Jun 21, 2021 at 06:19:15PM +0800, Wu, Hao wrote:
-> > > > > > Subject: [PATCH 2/4] fpga: dfl: Move DFH header register macros=
- to
-> > > > linux/dfl.h
-> > > > > >
-> > > > > > From: Debarati Biswas <debaratix.biswas@intel.com>
-> > > > > >
-> > > > > > Device Feature List (DFL) drivers may be defined in subdirector=
-ies other
-> > > > > > than drivers/fpga, and each DFL driver should have access to th=
-e Device
-> > > > > > Feature Header (DFH) register, which contains revision and type
-> > > > > > information. This change moves the macros specific to the DFH r=
-egister
-> > > > > > from drivers/fpga/dfl.h to include/linux/dfl.h.
-> > > > >
-> > > > > Looks like it requires to access the revision info in the next pa=
-tch,
-> because
-> > > > > current dfl_device doesn't expose related information.
-> > > > >
-> > > > > @Yilun, do you have any concern to expose those info via dfl_devi=
-ce?
-> > > >
-> > > > Exposing these header register definitions are good to me. These re=
-gisters
-> > > > are in DFL device's MMIO region, so it is good to share these info =
-with
-> > > > all DFL drivers.
-> > >
-> > > I mean expose revision via dfl_device, as dfl core already reads the =
-DFL
-> > > header, it sounds duplicate read in each dfl device driver. And if we
-> > > consider this as a common need from dfl device driver, then the code
-> > > can be moved to a common place as well.
-> > >
-> > > I hope from dfl device driver side, it doesn't need to know details o=
-f
-> > > how DFH register is defined, only simple way from dfl device data
-> > > structure or some simple helper function, then dfl device driver coul=
-d
-> > > know all common information from DFH.
-> > >
-> > > How do you think?
->=20
-> It's good idea.
->=20
-> >
-> > struct dfl_device {} already has "u16 type" and "u16 feature_id", so it=
- would
-> make sense to add "u8 feature_rev" as well?
->=20
-> I think we may name it "u8 revision".
+> > [1] https://lore.kernel.org/lkml/20210517093428.670-1-xieyongji@bytedan=
+ce.com/
+>
+>
+> My understanding is DRIVER_OK is not something that needs to be validated=
+:
+>
+> "
+>
+> DRIVER_OK (4)
+> Indicates that the driver is set up and ready to drive the device.
+>
+> "
+>
+> Since the spec doesn't require to re-read the and check if DRIVER_OK is
+> set in 3.1.1 Driver Requirements: Device Initialization.
+>
+> It's more about "telling the device that driver is ready."
+>
+> But we don have some status bit that requires the synchronization with
+> the device.
+>
+> 1) FEATURES_OK, spec requires to re-read the status bit to check whether
+> or it it was set by the device:
+>
+> "
+>
+> Re-read device status to ensure the FEATURES_OK bit is still set:
+> otherwise, the device does not support our subset of features and the
+> device is unusable.
+>
+> "
+>
+> This is useful for some device which can only support a subset of the
+> features. E.g a device that can only work for packed virtqueue. This
+> means the current design of set_features won't work, we need either:
+>
+> 1a) relay the set_features request to userspace
+>
+> or
+>
+> 1b) introduce a mandated_device_features during device creation and
+> validate the driver features during the set_features(), and don't set
+> FEATURES_OK if they don't match.
+>
+>
+> 2) Some transports (PCI) requires to re-read the status to ensure the
+> synchronization.
+>
+> "
+>
+> After writing 0 to device_status, the driver MUST wait for a read of
+> device_status to return 0 before reinitializing the device.
+>
+> "
+>
+> So we need to deal with both FEATURES_OK and reset, but probably not
+> DRIVER_OK.
+>
 
-Sounds good.
+OK, I see. Thanks for the explanation. One more question is how about
+clearing the corresponding status bit in get_status() rather than
+making set_status() fail. Since the spec recommends this way for
+validation which is done in virtio_dev_remove() and
+virtio_finalize_features().
 
-Then we don't have to expose detailed registers information to such header =
-file.
-dfl_device data structure + helper function should be enough. : )
-
-Thanks
-Hao
-
->=20
-> Thanks,
-> Yilun
->=20
-> >
-> > // Martin
+Thanks,
+Yongji
