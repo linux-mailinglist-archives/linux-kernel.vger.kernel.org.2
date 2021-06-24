@@ -2,215 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127723B2D57
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 834C03B2D58
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232367AbhFXLNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:13:52 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:50232 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232331AbhFXLNu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:13:50 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0093521970;
-        Thu, 24 Jun 2021 11:11:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624533091; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C8xk+6w9JqFXwtlsnUw1KNkb5kEZym+an9Ememep/Bk=;
-        b=imnNJ2/YjFtkkA1jnRA7o/25FHvnGHEU3gq9qMUVfvqyxizxgh+EAUsj8r+08ininr74JA
-        Ssd8s/gEyQgUlClUG408JshnxR0XyYIS5KHCTt5Ir9QhbABAbYKwqJmwJNztG+pi4q6m1b
-        RN1dO0Vma45P6OYhEe54xamV4YIJ0+c=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 9F5E111A97;
-        Thu, 24 Jun 2021 11:11:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624533090; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C8xk+6w9JqFXwtlsnUw1KNkb5kEZym+an9Ememep/Bk=;
-        b=DgHHiMUksE8Q0UGovWDfl0KSaHL8m7tCueytLkdaLdlFfrbO5nIVo2xnOcJcaTXG925fqA
-        c4U20XQeUuFm1UrhChKu1Y+KzhIPuq0Ps0YAHEWtMSPv/CrdZD518ip6aR35xmSU/DgrEa
-        /jbt91Bg26U9GVhPuDQ9uhjtOetr5FY=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id 4QzfJGJo1GAvegAALh3uQQ
-        (envelope-from <jgross@suse.com>); Thu, 24 Jun 2021 11:11:30 +0000
-Subject: Re: [PATCH v2 22/24] x86/xen: Mark xen_force_evtchn_callback()
- noinstr
-To:     Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
-        tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, joro@8bytes.org,
-        boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
-        rostedt@goodmis.org, dvyukov@google.com, elver@google.com
-References: <20210624094059.886075998@infradead.org>
- <20210624095148.996055323@infradead.org>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <b1aaf531-8ecf-72ea-f04c-d551f6ae7979@suse.com>
-Date:   Thu, 24 Jun 2021 13:11:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S232409AbhFXLOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:14:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232370AbhFXLN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 07:13:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0FA5613C5;
+        Thu, 24 Jun 2021 11:11:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624533100;
+        bh=wlpnGzEf9wfERug0IBvtFXj4DlJaCEfDg1sXXiXDqKI=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=usTgsiBRszfcGmqCm2fFYG2GmJzsTUIwLIg42RYwA8AaUCwpSWeHuWRNbMOE6iluA
+         NEtY8lPCsCr3FfXHaRhIYNipYpaHbfzzU9BLNfzW/DkhELC/CQCErBvg+17p2N1SIJ
+         PnQZ5EQONww/BUKf8nu47LYZGTN3K0C5m+ipEF0bgzdbTitn+tubwc6pAUS52ptAAv
+         CD9yAaiSpa+mW4Qrabr+llj3oKXenkR4G9lRzc3Kt3D7otNMl+x8SPyKFcipV+Epz7
+         nuGOHcRcQ+2VImBaEzcurk0sSUz6+82jGwevh1flwQi7GhTWOd33DP03PQqSxjklTT
+         Yur0m1CO+XORg==
+Date:   Thu, 24 Jun 2021 13:11:36 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?ISO-8859-15?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>
+cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Vojtech Pavlik <vojtech@ucw.cz>
+Subject: [PATCH v2] drm/amdgpu: Avoid printing of stack contents on firmware
+ load error
+In-Reply-To: <YNRnDTD1fdpZOXB8@suse.com>
+Message-ID: <nycvar.YFH.7.76.2106241310000.18969@cbobk.fhfr.pm>
+References: <nycvar.YFH.7.76.2106241135440.18969@cbobk.fhfr.pm> <YNRnDTD1fdpZOXB8@suse.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20210624095148.996055323@infradead.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="PIBrwHI3jqxieCWphgvh8rhvsF3qctHSx"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---PIBrwHI3jqxieCWphgvh8rhvsF3qctHSx
-Content-Type: multipart/mixed; boundary="96lzMohBXcbr7WfIQoh0i9DXjsKdTki0r";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
- tglx@linutronix.de
-Cc: linux-kernel@vger.kernel.org, joro@8bytes.org,
- boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
- rostedt@goodmis.org, dvyukov@google.com, elver@google.com
-Message-ID: <b1aaf531-8ecf-72ea-f04c-d551f6ae7979@suse.com>
-Subject: Re: [PATCH v2 22/24] x86/xen: Mark xen_force_evtchn_callback()
- noinstr
-References: <20210624094059.886075998@infradead.org>
- <20210624095148.996055323@infradead.org>
-In-Reply-To: <20210624095148.996055323@infradead.org>
+From: Jiri Kosina <jkosina@suse.cz>
 
---96lzMohBXcbr7WfIQoh0i9DXjsKdTki0r
-Content-Type: multipart/mixed;
- boundary="------------0F0EC9880AAF7065F3AC9D36"
-Content-Language: en-US
+In case when psp_init_asd_microcode() fails to load ASD microcode file, 
+psp_v12_0_init_microcode() tries to print the firmware filename that 
+failed to load before bailing out.
 
-This is a multi-part message in MIME format.
---------------0F0EC9880AAF7065F3AC9D36
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+This is wrong because:
 
-On 24.06.21 11:41, Peter Zijlstra wrote:
-> vmlinux.o: warning: objtool: check_events()+0xd: call to xen_force_evtc=
-hn_callback() leaves .noinstr.text section
->=20
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+- the firmware filename it would want it print is an incorrect one as
+  psp_init_asd_microcode() and psp_v12_0_init_microcode() are loading
+  different filenames
+- it tries to print fw_name, but that's not yet been initialized by that
+  time, so it prints random stack contents, e.g.
 
-Reviewed-by: Juergen Gross <jgross@suse.com>
+    amdgpu 0000:04:00.0: Direct firmware load for amdgpu/renoir_asd.bin failed with error -2
+    amdgpu 0000:04:00.0: amdgpu: fail to initialize asd microcode
+    amdgpu 0000:04:00.0: amdgpu: psp v12.0: Failed to load firmware "\xfeTO\x8e\xff\xff"
 
+Fix that by bailing out immediately, instead of priting the bogus error
+message.
 
-Juergen
+Reported-by: Vojtech Pavlik <vojtech@ucw.cz>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+---
 
---------------0F0EC9880AAF7065F3AC9D36
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+v1 -> v2: remove now-unused label
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+ drivers/gpu/drm/amd/amdgpu/psp_v12_0.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+diff --git a/drivers/gpu/drm/amd/amdgpu/psp_v12_0.c b/drivers/gpu/drm/amd/amdgpu/psp_v12_0.c
+index c4828bd3264b..b0ee77ee80b9 100644
+--- a/drivers/gpu/drm/amd/amdgpu/psp_v12_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/psp_v12_0.c
+@@ -67,7 +67,7 @@ static int psp_v12_0_init_microcode(struct psp_context *psp)
+ 
+ 	err = psp_init_asd_microcode(psp, chip_name);
+ 	if (err)
+-		goto out;
++		return err;
+ 
+ 	snprintf(fw_name, sizeof(fw_name), "amdgpu/%s_ta.bin", chip_name);
+ 	err = request_firmware(&adev->psp.ta_fw, fw_name, adev->dev);
+@@ -80,7 +80,7 @@ static int psp_v12_0_init_microcode(struct psp_context *psp)
+ 	} else {
+ 		err = amdgpu_ucode_validate(adev->psp.ta_fw);
+ 		if (err)
+-			goto out2;
++			goto out;
+ 
+ 		ta_hdr = (const struct ta_firmware_header_v1_0 *)
+ 				 adev->psp.ta_fw->data;
+@@ -105,10 +105,9 @@ static int psp_v12_0_init_microcode(struct psp_context *psp)
+ 
+ 	return 0;
+ 
+-out2:
++out:
+ 	release_firmware(adev->psp.ta_fw);
+ 	adev->psp.ta_fw = NULL;
+-out:
+ 	if (err) {
+ 		dev_err(adev->dev,
+ 			"psp v12.0: Failed to load firmware \"%s\"\n",
+-- 
+2.12.3
 
---------------0F0EC9880AAF7065F3AC9D36--
-
---96lzMohBXcbr7WfIQoh0i9DXjsKdTki0r--
-
---PIBrwHI3jqxieCWphgvh8rhvsF3qctHSx
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmDUaGIFAwAAAAAACgkQsN6d1ii/Ey+T
-Hwf/Um9+U7LKP6n7go6rllgV9xJyNqZ6hPDUR3vMc79NoscBLmdT9y1u/9BgR6qrZOHmwuUM9rzL
-a5qjctx7boR7yBUk5osmjPZ7rpsMwHlwJMkxHId5H2RJ95M17HZ1BB0BdqKkj6xxbhO3MmC0STIj
-m/lNeoS2b20IIRFHyM5JfFqyIv4AAz0D67dBFy4x4+jyHLodmilRb1l0zf3EJG1JfvKb8lKMWV6b
-ocIxyJgbGGVujz8IUmyorsc1pLo6XuSSNvWBxK9neXjGlnBBWLhTYQYCe2JFkBYjAnWaDqkwEM/X
-Flaqx+kDPrwRcivYz6tOsRxf98PZs/0MYDyjnQhNYg==
-=Tt+3
------END PGP SIGNATURE-----
-
---PIBrwHI3jqxieCWphgvh8rhvsF3qctHSx--
