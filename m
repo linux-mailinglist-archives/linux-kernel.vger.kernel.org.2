@@ -2,171 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD1E3B3718
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64003B371A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232735AbhFXTjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 15:39:46 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:52368 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232370AbhFXTjo (ORCPT
+        id S232761AbhFXTkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 15:40:02 -0400
+Received: from mail-il1-f169.google.com ([209.85.166.169]:39525 "EHLO
+        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232370AbhFXTkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 15:39:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624563445; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=pEIljgjbyxiDPsO/y5TwtNBbYAlF3iUVjTjJ/9pWIWI=; b=IGWAXDOrBPS5R3qtL0xTPwRb477s5E/OtpAKfB0cJxbO1PfKKBAwBBMfZKZla/SfBDquxhuK
- JVHgttTu6fFqWFG7fV57UbA8F1I4MwdD3XdRCfw3diLtQc/uYoO/RaMyCk787OIJkzWsH+tD
- jRBNZUNHH95tl8XHzHqUhW5ICGw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 60d4dee54ca9face34f7e1f4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Jun 2021 19:37:09
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 72BB5C433F1; Thu, 24 Jun 2021 19:37:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 46219C433F1;
-        Thu, 24 Jun 2021 19:37:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 46219C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        linux-kernel@vger.kernel.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v3] bus: mhi: core: Add support for processing priority of event ring
-Date:   Thu, 24 Jun 2021 12:36:58 -0700
-Message-Id: <1624563418-9804-1-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Thu, 24 Jun 2021 15:40:00 -0400
+Received: by mail-il1-f169.google.com with SMTP id o10so2594832ils.6;
+        Thu, 24 Jun 2021 12:37:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BWhye/6S8g9hGkNXlGHIocDBMqgPBs5Mtuh6KXd+3tY=;
+        b=jxrJI4r7OcGQPSZXSl1K+tW26yjcwk95SAIafUljIHcXa+n9Zp9ofGGO9JSNd7dmtL
+         kQ4k9OmcmAd3+caHoiYYVB2rqkT2D/k+IJgzrO2+fBFzZPKAjOogINah6te/YsqzXEVM
+         j0E9jSyeCGBIYFycqF5HBzULWnWHcEheHdXPE0Fb8XUtHeedRRPXwSTN9bvUXXkwi4K/
+         DvgBS0jNphwVW6AgUBIdN9Dmh5e6ny+7LQSwx9DVyIyGqymlGXKX6vx8QYvgfZekXNmD
+         Ad0ZFq1peQJKQZ2X+arUZQ1becNF+29CKcvGfCAWsMZ27CVnCrsqtPeoCCGaxpRe4P2l
+         wEdg==
+X-Gm-Message-State: AOAM53085Y6B7JSQDib5tb5k2iPmhp59T/wGaUiR0MN/m9WSxL3Ohp/8
+        YFIEkSoMzCyveTvGM2bmEA==
+X-Google-Smtp-Source: ABdhPJwSd8/oiajVe2YqxqKTvKQy/jjMa32+1wKg7yUUaZPVJEVf6zw3457IUh+MYcOR6C1/0RkKgA==
+X-Received: by 2002:a92:c686:: with SMTP id o6mr4676515ilg.278.1624563460923;
+        Thu, 24 Jun 2021 12:37:40 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id d194sm1544999iof.37.2021.06.24.12.37.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 12:37:39 -0700 (PDT)
+Received: (nullmailer pid 1861539 invoked by uid 1000);
+        Thu, 24 Jun 2021 19:37:35 -0000
+Date:   Thu, 24 Jun 2021 13:37:35 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Anup Patel <anup.patel@wdc.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [RFC PATCH v1 09/10] dt-bindings: timer: Add ACLINT MSWI and
+ SSWI bindings
+Message-ID: <20210624193735.GA1847423@robh.at.kernel.org>
+References: <20210612160422.330705-1-anup.patel@wdc.com>
+ <20210612160422.330705-10-anup.patel@wdc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210612160422.330705-10-anup.patel@wdc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hemant Kumar <hemantk@codeaurora.org>
+On Sat, Jun 12, 2021 at 09:34:21PM +0530, Anup Patel wrote:
+> We add DT bindings documentation for the ACLINT MSWI and SSWI
+> devices found on RISC-V SOCs.
+> 
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> ---
+>  .../riscv,aclint-swi.yaml                     | 82 +++++++++++++++++++
+>  1 file changed, 82 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml b/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
+> new file mode 100644
+> index 000000000000..bed15411c18f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
+> @@ -0,0 +1,82 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/interrupt-controller/riscv,aclint-swi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: RISC-V ACLINT Software Interrupt Devices
+> +
+> +maintainers:
+> +  - Anup Patel <anup.patel@wdc.com>
+> +
+> +description:
+> +  RISC-V SOCs include an implementation of the M-level software interrupt
+> +  (MSWI) device and the S-level software interrupt (SSWI) device defined
+> +  in the RISC-V Advanced Core Local Interruptor (ACLINT) specification.
+> +
+> +  The ACLINT MSWI (and SSWI) devices are documented in the RISC-V ACLINT
+> +  specification located at
+> +  https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc.
+> +
+> +  The ACLINT MSWI and SSWI devices directly connect to the M-level and
+> +  S-level software interrupt lines of various HARTs (or CPUs) respectively
+> +  so the RISC-V per-HART (or per-CPU) local interrupt controller is the
+> +  parent interrupt controller for the ACLINT MSWI and SSWI devices.
+> +
+> +allOf:
+> +  - $ref: /schemas/interrupt-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - riscv,aclint-mswi
+> +          - riscv,aclint-sswi
+> +
+> +    description:
+> +      Should be "<vendor>,<chip>-aclint-mswi" and "riscv,aclint-mswi" OR
+> +      "<vendor>,<chip>-aclint-sswi" and "riscv,aclint-sswi".
 
-Event ring priorities are currently set to 1 and are unused.
-Default processing priority for event rings is set to regular
-tasklet. Controllers can choose to use high priority tasklet
-scheduling for certain event rings critical for processing such
-as ones transporting control information if they wish to avoid
-system scheduling delays for those packets. In order to support
-these use cases, allow controllers to set event ring priority to
-high. This patch only adds support and does not enable usage of
-these priorities.
+Don't write descriptions that should be schemas.
 
-Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
----
- drivers/bus/mhi/core/internal.h |  2 +-
- drivers/bus/mhi/core/main.c     | 19 ++++++++++++++++---
- include/linux/mhi.h             | 14 ++++++++++++--
- 3 files changed, 29 insertions(+), 6 deletions(-)
+Is there no vendor or specific implementation yet?
 
-diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-index 672052f..666e102 100644
---- a/drivers/bus/mhi/core/internal.h
-+++ b/drivers/bus/mhi/core/internal.h
-@@ -535,7 +535,7 @@ struct mhi_event {
- 	u32 intmod;
- 	u32 irq;
- 	int chan; /* this event ring is dedicated to a channel (optional) */
--	u32 priority;
-+	enum mhi_er_priority priority;
- 	enum mhi_er_data_type data_type;
- 	struct mhi_ring ring;
- 	struct db_cfg db_cfg;
-diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-index 8ac73f9..bfc9776 100644
---- a/drivers/bus/mhi/core/main.c
-+++ b/drivers/bus/mhi/core/main.c
-@@ -425,10 +425,11 @@ void mhi_create_devices(struct mhi_controller *mhi_cntrl)
- 	}
- }
- 
--irqreturn_t mhi_irq_handler(int irq_number, void *dev)
-+irqreturn_t mhi_irq_handler(int irq_number, void *priv)
- {
--	struct mhi_event *mhi_event = dev;
-+	struct mhi_event *mhi_event = priv;
- 	struct mhi_controller *mhi_cntrl = mhi_event->mhi_cntrl;
-+	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 	struct mhi_event_ctxt *er_ctxt =
- 		&mhi_cntrl->mhi_ctxt->er_ctxt[mhi_event->er_index];
- 	struct mhi_ring *ev_ring = &mhi_event->ring;
-@@ -454,8 +455,20 @@ irqreturn_t mhi_irq_handler(int irq_number, void *dev)
- 
- 		if (mhi_dev)
- 			mhi_notify(mhi_dev, MHI_CB_PENDING_DATA);
--	} else {
-+
-+		return IRQ_HANDLED;
-+	}
-+
-+	switch (mhi_event->priority) {
-+	case MHI_ER_PRIORITY_HI:
-+		tasklet_hi_schedule(&mhi_event->task);
-+		break;
-+	case MHI_ER_PRIORITY_DEFAULT:
- 		tasklet_schedule(&mhi_event->task);
-+		break;
-+	default:
-+		dev_err(dev, "Skip event of unknown priority\n");
-+		break;
- 	}
- 
- 	return IRQ_HANDLED;
-diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-index 86cea52..62ddead 100644
---- a/include/linux/mhi.h
-+++ b/include/linux/mhi.h
-@@ -198,6 +198,16 @@ enum mhi_er_data_type {
- };
- 
- /**
-+ * enum mhi_er_priority - Event ring processing priority
-+ * @MHI_ER_PRIORITY_DEFAULT: processed by regular tasklet
-+ * @MHI_ER_PRIORITY_HI: processed by hi-priority tasklet
-+ */
-+enum mhi_er_priority {
-+	MHI_ER_PRIORITY_DEFAULT,
-+	MHI_ER_PRIORITY_HI,
-+};
-+
-+/**
-  * enum mhi_db_brst_mode - Doorbell mode
-  * @MHI_DB_BRST_DISABLE: Burst mode disable
-  * @MHI_DB_BRST_ENABLE: Burst mode enable
-@@ -250,7 +260,7 @@ struct mhi_channel_config {
-  * @irq_moderation_ms: Delay irq for additional events to be aggregated
-  * @irq: IRQ associated with this ring
-  * @channel: Dedicated channel number. U32_MAX indicates a non-dedicated ring
-- * @priority: Priority of this ring. Use 1 for now
-+ * @priority: Processing priority of this ring.
-  * @mode: Doorbell mode
-  * @data_type: Type of data this ring will process
-  * @hardware_event: This ring is associated with hardware channels
-@@ -262,7 +272,7 @@ struct mhi_event_config {
- 	u32 irq_moderation_ms;
- 	u32 irq;
- 	u32 channel;
--	u32 priority;
-+	enum mhi_er_priority priority;
- 	enum mhi_db_brst_mode mode;
- 	enum mhi_er_data_type data_type;
- 	bool hardware_event;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+You can write "pattern: '.*,.*-aclint-sswi$' as an entry with a comment 
+to add specific compatibles.
 
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  "#interrupt-cells":
+> +    const: 0
+> +
+> +  interrupts-extended:
+> +    minItems: 1
+
+maxItems? 
+
+> +
+> +  interrupt-controller: true
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts-extended
+> +  - interrupt-controller
+> +  - "#interrupt-cells"
+> +
+> +examples:
+> +  - |
+> +    // Example 1 (RISC-V MSWI device used by Linux RISC-V NoMMU kernel):
+> +
+> +    interrupt-controller@2000000 {
+> +      compatible = "riscv,aclint-mswi";
+> +      interrupts-extended = <&cpu1intc 3 &cpu2intc 3 &cpu3intc 3 &cpu4intc 3>;
+
+format as: <&cpu1intc 3>, <&cpu2intc 3>, <&cpu3intc 3>, <&cpu4intc 3>
+
+> +      reg = <0x2000000 0x4000>;
+> +      interrupt-controller;
+> +      #interrupt-cells = <0>;
+> +    };
+> +
+> +  - |
+> +    // Example 2 (RISC-V SSWI device used by Linux RISC-V MMU kernel):
+> +
+> +    interrupt-controller@2100000 {
+> +      compatible = "riscv,aclint-sswi";
+> +      interrupts-extended = <&cpu1intc 1 &cpu2intc 1 &cpu3intc 1 &cpu4intc 1>;
+> +      reg = <0x2100000 0x4000>;
+> +      interrupt-controller;
+> +      #interrupt-cells = <0>;
+> +    };
+> +...
+> -- 
+> 2.25.1
+> 
+> 
