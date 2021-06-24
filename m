@@ -2,100 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FC83B327B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D727C3B3280
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbhFXP0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 11:26:51 -0400
-Received: from mga06.intel.com ([134.134.136.31]:4331 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230267AbhFXP0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 11:26:50 -0400
-IronPort-SDR: E+Y0tTwqkK5cdEMvcEBHn5GFK7Hz3U5GjxfXeJeh9nX1EVA+Bdh9de8sjMsC2GI4lGLz7sHvqk
- sh+WcOxY+Fww==
-X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="268624437"
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="268624437"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 08:24:31 -0700
-IronPort-SDR: WeYcpIYIGZ0Iolpx3hu1/ws0feOR88g8kF9VpgvlgGBiihVEUUbjt8ao/KONBna1qfDcQy3DqS
- fpA2RtakuTeA==
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="406676683"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.74.185]) ([10.209.74.185])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 08:24:30 -0700
-Subject: Re: [PATCH 2/7] perf: Create a symlink for a PMU
-To:     Greg KH <greg@kroah.com>
-Cc:     kan.liang@linux.intel.com, peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, eranian@google.com,
-        namhyung@kernel.org, acme@kernel.org, jolsa@redhat.com
-References: <1624497729-158864-1-git-send-email-kan.liang@linux.intel.com>
- <1624497729-158864-3-git-send-email-kan.liang@linux.intel.com>
- <YNQckpOuw80uCUa1@kroah.com>
- <d25a0556-325f-9af0-a495-b9f222d63e10@linux.intel.com>
- <YNSWtCSjJy8CytOL@kroah.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <1e536604-cf93-0f09-401e-2073924c5582@linux.intel.com>
-Date:   Thu, 24 Jun 2021 08:24:29 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232372AbhFXP1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 11:27:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28840 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230267AbhFXP1j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 11:27:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624548320;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=yv7m1AvCn7O6dTH1q9vdjmlX/RhwF6AeGVa6Oa4+0Qw=;
+        b=hc+MkdR+M9lbcshIxpzaf8acpDNrC3LOd3ZS/LDdnwPvYfmIph+6vLEcnbwcbXiZSVuN3v
+        xNVLSgIBA4ZdwKfH2jPuaMqVYgxsBlBCYNyA8tXNPcloVtUkP4MeGqHnl1wR5AWtUzmt1E
+        2JmQ9+Ta0OrtY0ORPj/lscgUfZzl8Ac=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-154-plgwknH7PNyknvTaS5j_iw-1; Thu, 24 Jun 2021 11:25:18 -0400
+X-MC-Unique: plgwknH7PNyknvTaS5j_iw-1
+Received: by mail-ej1-f71.google.com with SMTP id f1-20020a1709064941b02903f6b5ef17bfso2124927ejt.20
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 08:25:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yv7m1AvCn7O6dTH1q9vdjmlX/RhwF6AeGVa6Oa4+0Qw=;
+        b=CIIuPu6gGtuEz6tMsdcYqxIr9IPRzefAU04TvO9eJenXkfV+pzwJ2R24QqOEn45HRx
+         OecmGdsGBuzELwvZg7JtuPdJWqpWYJRF++YUdlQvp5PYh5DqaNIqA7Eo/Z4wOljncBLG
+         bG6M7FmSWfDvcT4+roIY28eHmhXU5Go33BGb++WFNpCNNMBykWifJmfjEVFw4Lf6lgS2
+         N13cL/sSk+Ev8LkHFShljRov0n9eUmZy7bJTc6QiLa17JQKoz4r/3AVu3NrgBqgZ4kLz
+         1kxs1FVYyuVhlhhM9pRYdoJAjgHjMV1HfVkQH3OokagdBwrg/n9OuJr9UYaJfPNdkT5r
+         z0nw==
+X-Gm-Message-State: AOAM533sTV9d3MwVVtIUXQFlCamT9mTCL2rY4va8QGUoBVkr2+Ofhxta
+        ek4FAD7n2t9fD5W0hCJlyjsv+2rblGC/eYUZKt7tT9+tfxzSvtJHQc66yfmd97GAroEpKwSrAaJ
+        Unac+G36daiJV1niBAjjALQjC
+X-Received: by 2002:a17:906:22c6:: with SMTP id q6mr5836125eja.275.1624548317667;
+        Thu, 24 Jun 2021 08:25:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxDFvu9eksuXynDzV/xksZCJe2btC6g1NOCWnVD/di1wd6CsF0Z7byzAfEPlhofKBrJp+8MwA==
+X-Received: by 2002:a17:906:22c6:: with SMTP id q6mr5836107eja.275.1624548317485;
+        Thu, 24 Jun 2021 08:25:17 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8308:b105:dd00:d067:83f0:d612:b70f])
+        by smtp.gmail.com with ESMTPSA id a2sm1399830ejp.1.2021.06.24.08.25.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 08:25:17 -0700 (PDT)
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Pavel Emelyanov <xemul@parallels.com>,
+        linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Robert O'Callahan <roc@ocallahan.org>
+Subject: [RFC PATCH] userfaultfd: open userfaultfds with O_RDONLY
+Date:   Thu, 24 Jun 2021 17:25:15 +0200
+Message-Id: <20210624152515.1844133-1-omosnace@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <YNSWtCSjJy8CytOL@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Since userfaultfd doesn't implement a write operation, it is more
+appropriate to open it read-only.
 
-On 6/24/2021 7:29 AM, Greg KH wrote:
-> On Thu, Jun 24, 2021 at 07:24:31AM -0700, Andi Kleen wrote:
->>> But first off, why is this symlink suddenly needed?  What is so special
->>> about this new hardware that it breaks the existing model?
->> The driver can be in two modes:
->>
->> - Driver fully knows the hardware and puts in the correct Linux names
->>
->> - Driver doesn't know the hardware but is in a fallback mode where it only
->> looks at a discovery table. There we don't have the correct names, just an
->> numeric identifier for the different hardware sub components.
-> Why does this matter?  Why would the driver not "know" the hardware?  If
-> it doesn't know it, why would it bind to it?
+When userfaultfds are opened read-write like it is now, and such fd is
+passed from one process to another, SELinux will check both read and
+write permissions for the target process, even though it can't actually
+do any write operation on the fd later.
 
-It's a similar concept as a PCI class. How to have a driver that can 
-handle future hardware, but with some restrictions
+Inspired by the following bug report, which has hit the SELinux scenario
+described above:
+https://bugzilla.redhat.com/show_bug.cgi?id=1974559
 
-The perf CPU PMU has had a similar concept for a long time. The driver 
-can be either in architectural mode (with a subset of features), or be 
-fully enabled. This allows users who are on an older kernel to still use 
-at least a subset of the functionality.
+Reported-by: Robert O'Callahan <roc@ocallahan.org>
+Fixes: 86039bd3b4e6 ("userfaultfd: add new syscall to provide memory externalization")
+Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+---
 
-It will bind as long as the discovery table is there.
+I marked this as RFC, because I'm not sure if this has any unwanted side
+effects. I only ran this patch through selinux-testsuite, which has a
+simple userfaultfd subtest, and a reproducer from the Bugzilla report.
 
->
->> In the later mode the numeric identifier is used in sysfs, in the former
->> case the full Linux name. But we want to keep some degree of Linux user
->> space compatibility between the two, that is why the full mode creates a
->> symlink from the "numeric" name. This way the (ugly) identifiers needed for
->> the fallback mode work everywhere.
-> So what _exactly_ does the symlink do here?  What is it from->to?
+Please tell me whether this makes sense and/or if it passes any
+userfaultfd tests you guys might have.
 
-It's from numeric identifier to full perf name
+ fs/userfaultfd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-In fallback mode there is no symlink, only the numeric identifier.
-
-
->
-> And where is it being documented?  What userspace tool needs to be fixed
-> up so that the symlink can be removed?
-
-The names are visible in the perf command lines. Perf supports either 
-name without changes. So it's not about fixing a specific tool, but 
-about using the drivers in both modes, with limited compatibility 
-between the two.
-
-Yes probably it needs better documentation.
-
--Andi
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index 14f92285d04f..24e14c36068f 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -986,7 +986,7 @@ static int resolve_userfault_fork(struct userfaultfd_ctx *new,
+ 	int fd;
+ 
+ 	fd = anon_inode_getfd_secure("[userfaultfd]", &userfaultfd_fops, new,
+-			O_RDWR | (new->flags & UFFD_SHARED_FCNTL_FLAGS), inode);
++			O_RDONLY | (new->flags & UFFD_SHARED_FCNTL_FLAGS), inode);
+ 	if (fd < 0)
+ 		return fd;
+ 
+@@ -2088,7 +2088,7 @@ SYSCALL_DEFINE1(userfaultfd, int, flags)
+ 	mmgrab(ctx->mm);
+ 
+ 	fd = anon_inode_getfd_secure("[userfaultfd]", &userfaultfd_fops, ctx,
+-			O_RDWR | (flags & UFFD_SHARED_FCNTL_FLAGS), NULL);
++			O_RDONLY | (flags & UFFD_SHARED_FCNTL_FLAGS), NULL);
+ 	if (fd < 0) {
+ 		mmdrop(ctx->mm);
+ 		kmem_cache_free(userfaultfd_ctx_cachep, ctx);
+-- 
+2.31.1
 
