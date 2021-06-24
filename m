@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 907453B5E8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC67F3B5E8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233087AbhF1NCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 09:02:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232598AbhF1NCM (ORCPT
+        id S233094AbhF1NEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 09:04:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57924 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232598AbhF1NEN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 09:02:12 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01699C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:59:47 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id d19so21878160oic.7
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:59:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jtoR+dB4s4toiUlJR30gbikEjrU3dQvTd9Mbu6LSkCg=;
-        b=II1Rc0H4xco8ao/KIg5FWdiCn9iRpJw8ptvKaRvYzjd4Dyfg08crCTYnYXpKvj4PcE
-         Uv2qfCsuDIwzG6G6UtDbNIFj0sRvS1LhNSmHVdlqnTfX7qSJBH/OOtpPR87z/ztSb6Jh
-         uIwsbzPdrhZsLchZRSS546bD/dpU/kic1dFrte4lQbfHUBgej2MymsPDn4zwFTR04vBj
-         BSwtIWl/zw+R01rToGAuYRusqazr5sfbItYHXQb4ONvwau8hJPcy1h3tdaLj8YIv4CUB
-         P3QnEFhEUXWg52UHacp7ylm02aTW8wOzgFOPFTsO7qyHHGR2EdVFk4izgd2/oKhi1q7K
-         +7jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=jtoR+dB4s4toiUlJR30gbikEjrU3dQvTd9Mbu6LSkCg=;
-        b=VYZWuexwGAdvnIm9aTQyn6gsb1Q/XeIorWrr61eyD3xfKO+skse916lmJpEc9s236D
-         JPX6LFnCFz1ryDvxLJ04tEls5TpOPvXin6ugRsYvNekZ9d7CkD8YWE8y5dxzrkIjXJhO
-         RpXejbvDeLoVngUyEdnCQie3o4YooJ+wPRvrUYxGhEUVIus4ncHIGfZkH9C4zgf+IsDV
-         83kXV5t8cRvPC84f1FxKNF+jGRmjOef1zEInVP5iG+dVenZrkJIFZsKWN/T8Up1ib3tj
-         gu/XpFGpSB4MtilywnzJFUtnKu8C0gnb9kvEuoKR3QcheEISKoBbmexkfkbks16t+xCo
-         r+2A==
-X-Gm-Message-State: AOAM532oObmYhIFdrqak2sR++lhVDMbV0CKRAD8BVitXkjyICqMptShx
-        mVeb/MQyITYR+tuMAVpKDqWlu42fYxw=
-X-Google-Smtp-Source: ABdhPJxw7EM/E+ozN6fScq8T4OE+RsuYqqx64+EVZCRFv71Tz/f17sAOWllGfZGB6JjX49vAeKeGdg==
-X-Received: by 2002:aca:d413:: with SMTP id l19mr1151593oig.88.1624885186358;
-        Mon, 28 Jun 2021 05:59:46 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w5sm3068194oiv.7.2021.06.28.05.59.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 05:59:45 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 28 Jun 2021 05:59:44 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.13
-Message-ID: <20210628125944.GA4085561@roeck-us.net>
-References: <CAHk-=wj7E9iTGHbqfgtaTAM09WrVzwXjda2_D59MT8D_1=54Rg@mail.gmail.com>
+        Mon, 28 Jun 2021 09:04:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624885307;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yN2gKWfYSS2BvZ25yeJRmT/Gg0ySnY/1p9C8SnCeINA=;
+        b=OA4wX64iYjbdmkNautWRTk0RzLM5vE0kIi6uDrVajqw906sY9o3oCEcFH42vTqVY5CzdKM
+        9XQK7zHpU6zrzse0arU4c8vnqsVeYFOoYjC1Wa/2Rc+1jJk1ntQEOik+7ErfDiQ63TXEGl
+        ZPQlvlgJq+L7o5wGLut12twwFrWLo80=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-274-6udnZiKlNlmnouAkGCPhCg-1; Mon, 28 Jun 2021 09:01:45 -0400
+X-MC-Unique: 6udnZiKlNlmnouAkGCPhCg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E7FA3804308;
+        Mon, 28 Jun 2021 13:01:43 +0000 (UTC)
+Received: from localhost (ovpn-112-170.ams2.redhat.com [10.36.112.170])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 30B7B5C1CF;
+        Mon, 28 Jun 2021 13:01:40 +0000 (UTC)
+Date:   Thu, 24 Jun 2021 10:40:52 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Mike Christie <michael.christie@oracle.com>
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, mst@redhat.com,
+        sgarzare@redhat.com, jasowang@redhat.com, christian@brauner.io,
+        akpm@linux-foundation.org, peterz@infradead.org,
+        christian.brauner@ubuntu.com
+Subject: Re: [PATCH 0/3] kthread: pass in user and check RLIMIT_NPROC
+Message-ID: <YNRTJFHxSlUSEqL5@stefanha-x1.localdomain>
+References: <20210624030804.4932-1-michael.christie@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tAINK5wpSU1Wy0aE"
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wj7E9iTGHbqfgtaTAM09WrVzwXjda2_D59MT8D_1=54Rg@mail.gmail.com>
+In-Reply-To: <20210624030804.4932-1-michael.christie@oracle.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 27, 2021 at 03:45:50PM -0700, Linus Torvalds wrote:
-> So we had quite the calm week since rc7, and I see no reason to delay
-> 5.13. The shortlog for the week is tiny, with just 88 non-merge
-> commits (and a few of those are just reverts).  It's a fairly random
-> mix of fixes, and being so small I'd just suggest people scan the
-> appended shortlog for what happened.
-> 
-> Of course, if the last week was small and calm, 5.13 overall is
-> actually fairly large. In fact, it's one of the bigger 5.x releases,
-> with over 16k commits (over 17k if you count merges), from over 2k
-> developers. But it's a "big all over" kind of thing, not something
-> particular that stands out as particularly unusual. Some of the extra
-> size might just be because 5.12 had that extra rc week.
-> 
-> And with 5.13 out the door, that obviously means that the merge window
-> for 5.14 will be starting tomorrow. I already have a few pull requests
-> for it pending, but as usual, I'd ask people to give the final 5.13 at
-> least a quick test before moving on to the exciting new pending
-> stuff..
-> 
-Build results:
-	total: 151 pass: 151 fail: 0
-Qemu test results:
-	total: 462 pass: 462 fail: 0
 
-Guenter
+--tAINK5wpSU1Wy0aE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jun 23, 2021 at 10:08:01PM -0500, Mike Christie wrote:
+> The vhost driver will create a kthread when userspace does a
+> VHOST_SET_OWNER ioctl, but the thread is charged to the kthreadd thread.
+> We can then end up violating the userspace process's RLIMIT_NPROC. This
+> patchset allows drivers to pass in the user to charge/check.
+>=20
+> The patches were made over Linus's current tree.
+
+Makes sense from a vhost perspective and for future users, but I'm not
+familiar with the kthread internals:
+
+Acked-by: Stefan Hajnoczi <stefanha@redhat.com>
+
+--tAINK5wpSU1Wy0aE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmDUUyQACgkQnKSrs4Gr
+c8h3ugf/SnO91w5rQo5ExA9DoePrMOZqkuNg6cgYqUlV25038PRp49kMp9I9fUXD
+JuoebkNTOpavvl1JtW8auitS2pQkvkdLb4VkmzqgGBgQROmpik5sH7H9QACCh0oh
+huSYZVkw9PTEyo6fMnKr97+RoGncP/hORtADOuS8VfoMjhADfl0d/QIwBIilOmEA
+72x1CQQzVhzmgOp7wK7uBgWGDzA7RoesQHpQhtOidvmwnpSIIa3GZJwn58jM/NJK
++SScwhri8pg/zUGI0wboBpX7HCbkp3U5qF84WiOksuYSFZ3ojnqao9WTdXOVSbdK
+3DO/IaTA19tStIHHvcBdAiUuRohZXg==
+=dvls
+-----END PGP SIGNATURE-----
+
+--tAINK5wpSU1Wy0aE--
+
