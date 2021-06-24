@@ -2,231 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A743B29D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12EDA3B29D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbhFXIGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 04:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
+        id S231815AbhFXIH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 04:07:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231630AbhFXIGB (ORCPT
+        with ESMTP id S231788AbhFXIHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 04:06:01 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8FCC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:03:41 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id d16so8750624lfn.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:03:41 -0700 (PDT)
+        Thu, 24 Jun 2021 04:07:25 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3FE5C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:05:05 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id gn32so8143494ejc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:05:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N4CQMerLOdaAc4Hp8r/ylioEm8qMWMB9NcwlnCoMYt4=;
-        b=Txpr7P4/dr5mfulPl4Iblb+a6OmJv2BS3ilqkDBiR3aY6YEBxmX93idQ4TcTIg715w
-         79kJrtetCmc40gIF+TETshVrXFsT42T1OLOkqjkYBK9QKr4DsZ6TBFZFOxhi5scVxrem
-         CQ40sGJmg02kwh/5EYmWegjEvJxCj2k7YRiOJKb0DkKtJkkJ3eXZjst4NxaaewqHRCMD
-         lL6+FUNpTAmEG/nawNEMIyhuC26NAMmg0tO3yxGAUtuyh+iogEearhWWI5gz6MY2cFsa
-         p/2PjDW22aJEj16kU+hdWCoSzn5xBU6zmbmMC6+kTh8htYP9/Up3NXrjdfVys8z5OrOm
-         MiWQ==
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=97Lb3vGMIjKXqd/UtI7VBtf2c74YiMaSq0XnAt5KpaE=;
+        b=bL/1IMGnIaFaBMD4p6YgIIScJ5++Psz7wzCNg3iFNlr3zcAQbsgNib2eXdXTDnC7SL
+         WpgHL9hUR3rBbtLw0SjKk4DEvgNdg/6XOzV2VCZ2hQmMyhj8VNGDUr6hhLlQ0zIe4QEK
+         Aj/9q86Irg+Hbm2869gETRNyNQZRD0nXpWkQtAmwdEj2roO0/YP+raCyTOiKuFZy7dJk
+         mhvBxgi66I6YM5HvuhgVn2kb7Ww+lEu/HzLDdW4yQrUEYjxVHqsAhQCRHpaGH0qY88tc
+         sYRzLI6lCz48oWqZEHSF0g8iQIsDCHkSNXThkss/XoSxqWH9Rv/l3IklYjl8E1CRLEau
+         SsGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N4CQMerLOdaAc4Hp8r/ylioEm8qMWMB9NcwlnCoMYt4=;
-        b=SCsvrzYBZrqj5z/UD3L7yG1bkBG29fWqHKDC3ofPOknBDc/GdTI18vV9xPTBzW0Ue9
-         OSLqiHSqWvdrBeCSmYKh97KOqnoj2/o4wHW5G1SHJq/Jr/SZFHRQUzdGgLLOiKVxgNbr
-         nupMnlJo4q84BgCwYZ3wnak0BKqhGpyMD43PgrHEdbsWoyLV00lANoeYqQVFa47ynvsW
-         EvSDAi8GrbwzmX4d+/czKRgrF0vdDbctPhj7PSVyVFQKMCg6vozrs0niksQXo4daywba
-         mdvohM4cI0z5wHTojCA1iOQ3cmeXvmNL7yI60iY1z4pFddTh5yHObGTUuwqSqDIromIf
-         lREw==
-X-Gm-Message-State: AOAM5337a2S99AvtNuxEVi+dxO+hrx+QeEqwoUKI68NEcjs5AtxlqiWL
-        DzxZZrGXq9UiVAoVU8f8uLjY6/JvPREgK2/nkIk=
-X-Google-Smtp-Source: ABdhPJzLUcP2fTKnv3FpcMuRdoYQK91JVRskCMlPifB0F0OhuqPNx66iHpbJFnHrb9Vq9laCRymXhlYow7wGTG+UgY0=
-X-Received: by 2002:a05:6512:63:: with SMTP id i3mr2927457lfo.587.1624521819796;
- Thu, 24 Jun 2021 01:03:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=97Lb3vGMIjKXqd/UtI7VBtf2c74YiMaSq0XnAt5KpaE=;
+        b=YX9tNOCZePgiMm3zVKRb6/iGxu8eMGm9WOg1RQoebBM8qciRg3ODKWpfUQkuPkVipW
+         ss6xr7ESpxd8h4ZA8czbRPH37EBR346hFHhYCVQAY0JRvHbH4x8zSWhWk7C8A0R2u65Y
+         vANuwkLBnhks2/FxrzSvFn8HDzdS404Y/ZPlo3agQP8dKBA03++7UHR6bKSp1eYJ4Nzz
+         dD5WrhQH0re1fNtisL6fZbwSRAvBO8muQAtMpWbwaBRHfz1d9j2UKRFH21jzqp8ibrLG
+         NNBAkUmvSXh2FPCdDGS1Qnl22HSJH7XuHbWDLuFegIlH4G2NZxqD+LXKAcXWPRvDwW8D
+         hdfA==
+X-Gm-Message-State: AOAM530/SFsqrXjmehKnkp8gpPszZXG0w/rOZ9MqKCYB1u8ZYtHAi+xS
+        ncBeN3bscikVM+nHvNUWvWK4lQ==
+X-Google-Smtp-Source: ABdhPJy/CiXHr2K8yoHjsGx6Pfpl32sd2xb4XwkG3Ex6eminxcBH/8HJOgMmH2aTWOXE4V3su42okA==
+X-Received: by 2002:a17:907:1b22:: with SMTP id mp34mr4079709ejc.408.1624521904372;
+        Thu, 24 Jun 2021 01:05:04 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id j19sm1390060edw.43.2021.06.24.01.05.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 01:05:03 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] iio: accel: adxl345: convert probe to device-managed functions
+Date:   Thu, 24 Jun 2021 11:04:40 +0300
+Message-Id: <20210624080441.8710-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210618145534.438816-1-sxwjean@me.com> <20210618145534.438816-4-sxwjean@me.com>
-In-Reply-To: <20210618145534.438816-4-sxwjean@me.com>
-From:   Xiongwei Song <sxwjean@gmail.com>
-Date:   Thu, 24 Jun 2021 16:03:12 +0800
-Message-ID: <CAEVVKH-X5XHHf-WVyM=GFvU+MrphLb3TDk4HC_2c+6uyMV0y1g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] locking/lockdep: Print possible warning after
- counting deps
-To:     Xiongwei Song <sxwjean@me.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, Boqun Feng <boqun.feng@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi experts & Boqun,
+This driver has two parts, one for i2c and one for spi, since the chip can
+operate with both wire protocols.
 
-Any comments here?
+The core file has a common adxl345_core_remove() function which puts the
+chip into a powerdown state. This can be implemented with a
+devm_add_action_or_reset() hook.
 
-I did a test for the series, got the results below:
+Doing that means we can register the IIO device with
+devm_iio_device_register() and get rid of the adxl345_core_remove()
+function.
 
-/ # cat /proc/lockdep
-all lock classes:
-ffffffffa6b63c90 FD:   37 BD:    1 +.+.: cgroup_mutex
- -> [ffffffffa6b78d70] pcpu_alloc_mutex
- -> [ffff8a783d5e8760] lock#2
- -> [ffffffffa6b8dc90] iattr_mutex
- -> [ffffffffa6b8de10] kernfs_mutex
- -> [ffffffffa6b63ab8] cgroup_file_kn_lock
- -> [ffffffffa6b63bd8] css_set_lock
- -> [ffffffffa6b65770] freezer_mutex
+The dev_set_drvdata() call can be removed as there is no other user of this
+private data anymore.
 
-ffffffffa6b54fd8 FD:    1 BD:   56 -...: (console_sem).lock
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/iio/accel/adxl345.h      |  1 -
+ drivers/iio/accel/adxl345_core.c | 29 +++++++++--------------------
+ drivers/iio/accel/adxl345_i2c.c  |  6 ------
+ drivers/iio/accel/adxl345_spi.c  |  6 ------
+ 4 files changed, 9 insertions(+), 33 deletions(-)
 
-ffffffffa6b54f80 FD:   68 BD:   11 +.+.: console_lock
- -> [ffffffffa6a74d58] console_owner_lock
- -> [ffffffffa6a74da0] console_owner
- -> [ffffffffa6a6a2f8] resource_lock
- -> [ffffffffa8013710] &zone->lock
- -> [ffffffffa6bea758] kbd_event_lock
- -> [ffffffffa6be12f8] vga_lock
- -> [ffffffffa6b54fd8] (console_sem).lock
- -> [ffffffffa6b54f38] syslog_lock
- -> [ffffffffa6b802e0] fs_reclaim
- -> [ffffffffa8042500] &x->wait#5
- -> [ffffffffa6bfdc70] gdp_mutex
- -> [ffffffffa80328a0] &k->list_lock
- -> [ffff8a783d5e8760] lock#2
- -> [ffffffffa6b8dc90] iattr_mutex
- -> [ffffffffa6b8de10] kernfs_mutex
- -> [ffffffffa6be2838] bus_type_sem
- -> [ffffffffa6b8e018] sysfs_symlink_target_lock
- -> [ffffffffa80421a0] &dev->power.lock
- -> [ffffffffa6c01110] dpm_list_mtx
- -> [ffffffffa6bdedd0] uevent_sock_mutex
- -> [ffffffffa8032cb0] subsys mutex#7
- -> [ffffffffa6c00958] req_lock
- -> [ffffffffa74e4ce0] &p->pi_lock
- -> [ffffffffa80423e0] &x->wait#7
- -> [ffffffffa74e7f70] &rq->__lock
- -> [ffffffffa8036c30] subsys mutex#19
+diff --git a/drivers/iio/accel/adxl345.h b/drivers/iio/accel/adxl345.h
+index 384497776b67..af0fdd02c4f2 100644
+--- a/drivers/iio/accel/adxl345.h
++++ b/drivers/iio/accel/adxl345.h
+@@ -15,6 +15,5 @@ enum adxl345_device_type {
+ 
+ int adxl345_core_probe(struct device *dev, struct regmap *regmap,
+ 		       enum adxl345_device_type type, const char *name);
+-int adxl345_core_remove(struct device *dev);
+ 
+ #endif /* _ADXL345_H_ */
+diff --git a/drivers/iio/accel/adxl345_core.c b/drivers/iio/accel/adxl345_core.c
+index 312866530065..4b275051ef61 100644
+--- a/drivers/iio/accel/adxl345_core.c
++++ b/drivers/iio/accel/adxl345_core.c
+@@ -208,6 +208,11 @@ static const struct iio_info adxl345_info = {
+ 	.write_raw_get_fmt	= adxl345_write_raw_get_fmt,
+ };
+ 
++static void adxl345_powerdown(void *regmap)
++{
++	regmap_write(regmap, ADXL345_REG_POWER_CTL, ADXL345_POWER_CTL_STANDBY);
++}
++
+ int adxl345_core_probe(struct device *dev, struct regmap *regmap,
+ 		       enum adxl345_device_type type, const char *name)
+ {
+@@ -233,7 +238,6 @@ int adxl345_core_probe(struct device *dev, struct regmap *regmap,
+ 		return -ENOMEM;
+ 
+ 	data = iio_priv(indio_dev);
+-	dev_set_drvdata(dev, indio_dev);
+ 	data->regmap = regmap;
+ 	data->type = type;
+ 	/* Enable full-resolution mode */
+@@ -260,29 +264,14 @@ int adxl345_core_probe(struct device *dev, struct regmap *regmap,
+ 		return ret;
+ 	}
+ 
+-	ret = iio_device_register(indio_dev);
+-	if (ret < 0) {
+-		dev_err(dev, "iio_device_register failed: %d\n", ret);
+-		regmap_write(data->regmap, ADXL345_REG_POWER_CTL,
+-			     ADXL345_POWER_CTL_STANDBY);
+-	}
++	ret = devm_add_action_or_reset(dev, adxl345_powerdown, data->regmap);
++	if (ret < 0)
++		return ret;
+ 
+-	return ret;
++	return devm_iio_device_register(dev, indio_dev);
+ }
+ EXPORT_SYMBOL_GPL(adxl345_core_probe);
+ 
+-int adxl345_core_remove(struct device *dev)
+-{
+-	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+-	struct adxl345_data *data = iio_priv(indio_dev);
+-
+-	iio_device_unregister(indio_dev);
+-
+-	return regmap_write(data->regmap, ADXL345_REG_POWER_CTL,
+-			    ADXL345_POWER_CTL_STANDBY);
+-}
+-EXPORT_SYMBOL_GPL(adxl345_core_remove);
+-
+ MODULE_AUTHOR("Eva Rachel Retuya <eraretuya@gmail.com>");
+ MODULE_DESCRIPTION("ADXL345 3-Axis Digital Accelerometer core driver");
+ MODULE_LICENSE("GPL v2");
+diff --git a/drivers/iio/accel/adxl345_i2c.c b/drivers/iio/accel/adxl345_i2c.c
+index 1561364ae296..a431cba216e6 100644
+--- a/drivers/iio/accel/adxl345_i2c.c
++++ b/drivers/iio/accel/adxl345_i2c.c
+@@ -38,11 +38,6 @@ static int adxl345_i2c_probe(struct i2c_client *client,
+ 				  id->name);
+ }
+ 
+-static int adxl345_i2c_remove(struct i2c_client *client)
+-{
+-	return adxl345_core_remove(&client->dev);
+-}
+-
+ static const struct i2c_device_id adxl345_i2c_id[] = {
+ 	{ "adxl345", ADXL345 },
+ 	{ "adxl375", ADXL375 },
+@@ -65,7 +60,6 @@ static struct i2c_driver adxl345_i2c_driver = {
+ 		.of_match_table = adxl345_of_match,
+ 	},
+ 	.probe		= adxl345_i2c_probe,
+-	.remove		= adxl345_i2c_remove,
+ 	.id_table	= adxl345_i2c_id,
+ };
+ 
+diff --git a/drivers/iio/accel/adxl345_spi.c b/drivers/iio/accel/adxl345_spi.c
+index da4591c7ef23..ea559ac2e87d 100644
+--- a/drivers/iio/accel/adxl345_spi.c
++++ b/drivers/iio/accel/adxl345_spi.c
+@@ -42,11 +42,6 @@ static int adxl345_spi_probe(struct spi_device *spi)
+ 	return adxl345_core_probe(&spi->dev, regmap, id->driver_data, id->name);
+ }
+ 
+-static int adxl345_spi_remove(struct spi_device *spi)
+-{
+-	return adxl345_core_remove(&spi->dev);
+-}
+-
+ static const struct spi_device_id adxl345_spi_id[] = {
+ 	{ "adxl345", ADXL345 },
+ 	{ "adxl375", ADXL375 },
+@@ -69,7 +64,6 @@ static struct spi_driver adxl345_spi_driver = {
+ 		.of_match_table = adxl345_of_match,
+ 	},
+ 	.probe		= adxl345_spi_probe,
+-	.remove		= adxl345_spi_remove,
+ 	.id_table	= adxl345_spi_id,
+ };
+ 
+-- 
+2.31.1
 
-I compared the TOP 3 of deps count output, the results are completely
-same with/without the series patch.
-
-Regards,
-Xiongwei
-
-
-On Fri, Jun 18, 2021 at 10:56 PM Xiongwei Song <sxwjean@me.com> wrote:
->
-> From: Xiongwei Song <sxwjean@gmail.com>
->
-> The graph walk might hit error when counting dependencies. Once the
-> return value is negative, print a warning to reminder users.
->
-> However, lockdep_unlock() would be called twice if we call print_bfs_bug()
-> directly in __lockdep_count_*_deps(), so as the suggestion from Boqun:
-> "
-> Here print_bfs_bug() will eventually call debug_locks_off_graph_unlock()
-> to release the graph lock, and the caller (lockdep_count_fowards_deps())
-> will also call graph_unlock() afterwards, and that means we unlock
-> *twice* if a BFS error happens... although in that case, lockdep should
-> stop working so messing up with the graph lock may not hurt anything,
-> but still, I don't think we want to do that.
->
-> So probably you can open-code __lockdep_count_forward_deps() into
-> lockdep_count_forwards_deps(), and call print_bfs_bug() or
-> graph_unlock() accordingly. The body of __lockdep_count_forward_deps()
-> is really small, so I think it's OK to open-code it into its caller.
-> "
-> we put the code in __lockdep_count_*_deps() into lockdep_count_*_deps().
->
-> Suggested-by: Waiman Long <longman@redhat.com>
-> Suggested-by: Boqun Feng <boqun.feng@gmail.com>
-> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
-> ---
->  kernel/locking/lockdep.c | 45 +++++++++++++++++++---------------------
->  1 file changed, 21 insertions(+), 24 deletions(-)
->
-> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> index cb94097014d8..c29453b1df50 100644
-> --- a/kernel/locking/lockdep.c
-> +++ b/kernel/locking/lockdep.c
-> @@ -2024,55 +2024,52 @@ static bool noop_count(struct lock_list *entry, void *data)
->         return false;
->  }
->
-> -static unsigned long __lockdep_count_forward_deps(struct lock_list *this)
-> -{
-> -       unsigned long  count = 0;
-> -       struct lock_list *target_entry;
-> -
-> -       __bfs_forwards(this, (void *)&count, noop_count, NULL, &target_entry);
-> -
-> -       return count;
-> -}
->  unsigned long lockdep_count_forward_deps(struct lock_class *class)
->  {
-> -       unsigned long ret, flags;
-> +       unsigned long count = 0, flags;
->         struct lock_list this;
-> +       struct lock_list *target_entry;
-> +       enum bfs_result result;
->
->         __bfs_init_root(&this, class);
->
->         raw_local_irq_save(flags);
->         lockdep_lock();
-> -       ret = __lockdep_count_forward_deps(&this);
-> -       lockdep_unlock();
-> -       raw_local_irq_restore(flags);
->
-> -       return ret;
-> -}
-> +       result = __bfs_forwards(&this, (void *)&count, noop_count, NULL, &target_entry);
->
-> -static unsigned long __lockdep_count_backward_deps(struct lock_list *this)
-> -{
-> -       unsigned long  count = 0;
-> -       struct lock_list *target_entry;
-> +       if (bfs_error(result))
-> +               print_bfs_bug(result);
-> +       else
-> +               lockdep_unlock();
->
-> -       __bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
-> +       raw_local_irq_restore(flags);
->
->         return count;
->  }
->
->  unsigned long lockdep_count_backward_deps(struct lock_class *class)
->  {
-> -       unsigned long ret, flags;
-> +       unsigned long  count = 0, flags;
->         struct lock_list this;
-> +       struct lock_list *target_entry;
-> +       enum bfs_result result;
->
->         __bfs_init_root(&this, class);
->
->         raw_local_irq_save(flags);
->         lockdep_lock();
-> -       ret = __lockdep_count_backward_deps(&this);
-> -       lockdep_unlock();
-> +
-> +       result = __bfs_backwards(&this, (void *)&count, noop_count, NULL, &target_entry);
-> +
-> +       if (bfs_error(result))
-> +               print_bfs_bug(result);
-> +       else
-> +               lockdep_unlock();
-> +
->         raw_local_irq_restore(flags);
->
-> -       return ret;
-> +       return count;
->  }
->
->  /*
-> --
-> 2.30.2
->
