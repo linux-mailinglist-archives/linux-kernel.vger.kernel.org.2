@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D533B26E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 07:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58103B26EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 07:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbhFXFm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 01:42:28 -0400
-Received: from verein.lst.de ([213.95.11.211]:53084 "EHLO verein.lst.de"
+        id S230304AbhFXFny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 01:43:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229448AbhFXFm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 01:42:27 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 5BF4867373; Thu, 24 Jun 2021 07:40:04 +0200 (CEST)
-Date:   Thu, 24 Jun 2021 07:40:03 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Tomer Tayar <ttayar@habana.ai>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to
- export FD for DMA-BUF
-Message-ID: <20210624054003.GB25165@lst.de>
-References: <20210622154027.GS1096940@ziepe.ca> <09df4a03-d99c-3949-05b2-8b49c71a109e@amd.com> <20210622160538.GT1096940@ziepe.ca> <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com> <20210623182435.GX1096940@ziepe.ca> <CAFCwf111O0_YB_tixzEUmaKpGAHMNvMaOes2AfMD4x68Am4Yyg@mail.gmail.com> <20210623185045.GY1096940@ziepe.ca> <CAFCwf12tW_WawFfAfrC8bgVhTRnDA7DuM+0V8w3JsUZpA2j84w@mail.gmail.com> <20210623193456.GZ1096940@ziepe.ca> <CAFCwf13vM2T-eJUu42ht5jdXpRCF3UZh0Ow=vwN9QqZ=KNUBsQ@mail.gmail.com>
+        id S230110AbhFXFnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 01:43:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 615A2613E7;
+        Thu, 24 Jun 2021 05:41:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624513294;
+        bh=zwAa1oXvtNsRyT1TQaWBA4D9GsM7gx8Hoa3hx2a/zOs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TKEuNgpfLnosXquFxao5Ko9V7ZiB578/IVUed7uSE/JUglaFf9fuTiT8wB3hxtBdG
+         3+k09I8x13S2WP9KQp8lqf0/icasPjUz/oKlSoWG0Rl4kimvneQDV4E9Df9u0mZcTU
+         /Jl+F56OXGBRLsJXLVLerNGISJwVzdpGVdT2YaDo=
+Date:   Thu, 24 Jun 2021 07:41:30 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     kan.liang@linux.intel.com
+Cc:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, eranian@google.com,
+        namhyung@kernel.org, acme@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com, rafael.j.wysocki@intel.com
+Subject: Re: [PATCH 1/7] driver core: Add a way to get to bus devices kset
+Message-ID: <YNQbCtP7/2rF9Pnl@kroah.com>
+References: <1624497729-158864-1-git-send-email-kan.liang@linux.intel.com>
+ <1624497729-158864-2-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFCwf13vM2T-eJUu42ht5jdXpRCF3UZh0Ow=vwN9QqZ=KNUBsQ@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <1624497729-158864-2-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 10:39:48PM +0300, Oded Gabbay wrote:
-> hmm, I thought using dma_map_resource will solve the IOMMU issues, no ?
-> We talked about it yesterday, and you said that it will "work"
-> (although I noticed a tone of reluctance when you said that).
+On Wed, Jun 23, 2021 at 06:22:03PM -0700, kan.liang@linux.intel.com wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
 > 
-> If I use dma_map_resource to set the addresses inside the SGL before I
-> export the dma-buf, and guarantee no one will use the SGL in the
-> dma-buf for any other purpose than device p2p, what else is needed ?
+> Add an accessor function to get to the bus devices kset associated with
+> a struct bus_type.
+> 
+> The user of this is the following perf changes, which will need to get
+> to the kobj of the 'devices' directory of a certain bus.
 
-dma_map_resource works in the sense of that helps with mapping an
-arbitrary phys_addr_t for DMA.  It does not take various pitfalls of
-PCI P2P into account, such as the offset between the CPU physical
-address and the PCIe bus address, or the whole support of mapping between
-two devices behding a switch and not going through the limited root
-port support.
+What "following perf changes"?
 
-Comparing dma_direct_map_resource/iommu_dma_map_resource with
-with pci_p2pdma_map_sg_attrs/__pci_p2pdma_map_sg should make that
-very clear.
+Nothing should be messing with the kobject of a bus, where are those
+patches?
 
-So if you want a non-page based mapping you need a "resource"-level
-version of pci_p2pdma_map_sg_attrs.  Which totall doable, and in fact
-mostly trivial.  But no one has even looked into providing one and just
-keeps arguing.
+> Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> Cc: gregkh@linuxfoundation.org
+> Cc: rafael.j.wysocki@intel.com
+> ---
+>  drivers/base/bus.c         | 6 ++++++
+>  include/linux/device/bus.h | 1 +
+>  2 files changed, 7 insertions(+)
+> 
+> diff --git a/drivers/base/bus.c b/drivers/base/bus.c
+> index 36d0c65..3d621a8 100644
+> --- a/drivers/base/bus.c
+> +++ b/drivers/base/bus.c
+> @@ -899,6 +899,12 @@ struct kset *bus_get_kset(struct bus_type *bus)
+>  }
+>  EXPORT_SYMBOL_GPL(bus_get_kset);
+>  
+> +struct kset *bus_get_devices_kset(struct bus_type *bus)
+> +{
+> +	return bus->p->devices_kset;
+> +}
+> +EXPORT_SYMBOL_GPL(bus_get_devices_kset);
+
+No, sorry, this feels really wrong, why does anyone care about the bus
+kset?
+
+thanks,
+
+greg k-h
