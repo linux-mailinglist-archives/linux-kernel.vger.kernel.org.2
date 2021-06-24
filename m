@@ -2,86 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D353B33B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BADC3B33BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhFXQSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 12:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhFXQSV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 12:18:21 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E806FC061574;
-        Thu, 24 Jun 2021 09:16:01 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id s17-20020a17090a8811b029016e89654f93so6239959pjn.1;
-        Thu, 24 Jun 2021 09:16:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZiDQnFW1mi3okwHaS+e+SImAJ13yTfe8NvkJt2OVSpU=;
-        b=jwsAfKyVrpVBMxgh2LcwXgPb2LsA+daQ0Pfiz2wGhvFO2HUYH2Awk/AKFmHmbxCQWr
-         Gwooxo97rcqJRQnkz8/FnEGD3soF26WXeJd+0SNODs7i+vU1SEpTSVXQhCP1DVqFt9Gx
-         4f+wFR+Cw7KXqfiEFQI5Zeb3Q+NHhDFkgUnKhVWGV4KxE6YbOfhQSUnZ8MEHeTF7bW+n
-         yk7tSFOdD/5x9ur1Cm6WxDLMHfilrsFbJUv1li2CH6JTH+T/KOMw8nunoVSMUhWrw2gL
-         igKIKZ7sfyxDbj7A/r0h4XF2xPvch5HtjaYv9LfdfSh/Clkw10oWOJgWHvsXqIa8aw8Y
-         K4BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZiDQnFW1mi3okwHaS+e+SImAJ13yTfe8NvkJt2OVSpU=;
-        b=IFHIfnkZ4x+D1xkJKuYypQMqxqkKUoiDAQPSFSBQq2orpAdPK3256HoNCb+R5fahnp
-         onhq87dwSI8yHYQirHGagPRUnhTmywBkb4xtWTGjKgpKgov4iHuO26oARCKmYUfuoe7a
-         nbmnkPA25JflRjRYqhMuJm2KoyxoTz+yicArvkXQ4Lqkuxu1bzXD5IHjIY1A4es2hDl/
-         n15BPlrXzMigIAo5mt+naD33wSeNuvoVxo7/Eyu/aNb9Jm0QmMse52hH4fu8sziq66Nz
-         KeUfMpliYhkCtkl17gDeYG/e/1o2K2l7Q7+VyqMMphByjDH6qIG7ZQVWiR+maNa1pvUv
-         VjCw==
-X-Gm-Message-State: AOAM5315NYrwwr8rFlvcsKryp7Cw1gkYYoPsOsPVOFuPegLc+0gLqPSM
-        m8qYAx8JBK7trK1woAXmTaQzTaNrkQs=
-X-Google-Smtp-Source: ABdhPJyWK22OqMv1lrNcxYGWDs16Ewo9gHHXpG+JsqbmIHeiSbZtxwtjiAl+gyT0Tc6kOq5rarIk/g==
-X-Received: by 2002:a17:90b:1bcb:: with SMTP id oa11mr6104216pjb.29.1624551361524;
-        Thu, 24 Jun 2021 09:16:01 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:35:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id z6sm2906628pgs.24.2021.06.24.09.16.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 09:16:01 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 09:15:58 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Min Li <min.li.xe@renesas.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net 2/2] ptp: idt82p33: implement double dco time
- correction
-Message-ID: <20210624161558.GD15473@hoboy.vegasvil.org>
-References: <1624459585-31233-1-git-send-email-min.li.xe@renesas.com>
- <1624459585-31233-2-git-send-email-min.li.xe@renesas.com>
- <20210624034343.GB6853@hoboy.vegasvil.org>
- <OS3PR01MB659335F4857D1FD1E8977C24BA079@OS3PR01MB6593.jpnprd01.prod.outlook.com>
+        id S231417AbhFXQS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 12:18:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231321AbhFXQSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 12:18:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBA20613B3;
+        Thu, 24 Jun 2021 16:16:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624551366;
+        bh=LRAKIyItqZRjNgN2DEdMSx4GcyvU1DlflvVaoGixOWw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=mlGWialXvl3ChYUFloKtM214TrVMealpz6qozA9XzuCppW+VMdwwEpbnyWWFR7PvT
+         YCVTKrFx7/XYPElpLNGoKrpzTCe1YwngiYm582FDGo1Lb0j6oKKUWQWP2160wNDS8Y
+         X5md3nm7VwKoffkQ7R+pqB+aXZJKZHypi3ZEL52AZmvW4CL8VROI0G7KkykOGt6tCf
+         cuFevnCK5ZAJ8RAT+G35pUoC7E0N+opfC8FKm8GUIOYsUc1VhCUxzfPkyb1KB7RtyU
+         iu313vgXCwx3LDAvJvXpOwCgqgQwBYMas5W++/NGeoYsT9j6ugKxUYXJtYMykZWrqn
+         GxI9MqBtgqIJA==
+Date:   Thu, 24 Jun 2021 11:15:59 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v7 1/8] PCI: Add pcie_reset_flr to follow calling
+ convention of other reset methods
+Message-ID: <20210624161559.GA3532867@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <OS3PR01MB659335F4857D1FD1E8977C24BA079@OS3PR01MB6593.jpnprd01.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210624152809.m3glwh6lxckykt33@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 02:40:52PM +0000, Min Li wrote:
-> > What happens if user space makes a new adjustment before this completes?
-> > 
-> > After all, some PTP profiles update the clock several times per second.
-> > 
-> > Thanks,
-> > Richard
-> 
-> Hi Richard
-> 
-> In that case, adjtime would simply return without doing anything as in
+[+to Alex]
 
-This is not what user space expects.
+On Thu, Jun 24, 2021 at 08:58:09PM +0530, Amey Narkhede wrote:
+> On 21/06/24 07:23AM, Bjorn Helgaas wrote:
+> > On Tue, Jun 08, 2021 at 11:18:50AM +0530, Amey Narkhede wrote:
+> > > Currently there is separate function pcie_has_flr() to probe if pcie flr is
+> > > supported by the device which does not match the calling convention
+> > > followed by reset methods which use second function argument to decide
+> > > whether to probe or not.  Add new function pcie_reset_flr() that follows
+> > > the calling convention of reset methods.
+> >
+> > > +/**
+> > > + * pcie_reset_flr - initiate a PCIe function level reset
+> > > + * @dev: device to reset
+> > > + * @probe: If set, only check if the device can be reset this way.
+> > > + *
+> > > + * Initiate a function level reset on @dev.
+> > > + */
+> > > +int pcie_reset_flr(struct pci_dev *dev, int probe)
+> > > +{
+> > > +	u32 cap;
+> > > +
+> > > +	if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
+> > > +		return -ENOTTY;
+> > > +
+> > > +	pcie_capability_read_dword(dev, PCI_EXP_DEVCAP, &cap);
+> > > +	if (!(cap & PCI_EXP_DEVCAP_FLR))
+> > > +		return -ENOTTY;
+> > > +
+> > > +	if (probe)
+> > > +		return 0;
+> > > +
+> > > +	return pcie_flr(dev);
+> > > +}
+> >
+> > Tangent: I've been told before, but I can't remember why we need the
+> > "probe" interface.  Since we're looking at this area again, can we add
+> > a comment to clarify this?
+> >
+> > Every time I read this, I wonder why we can't just get rid of the
+> > probe and attempt a reset.  If it fails because it's not supported, we
+> > could just try the next one in the list.
+> 
+> Part of the reason is to have same calling convention as other reset
+> methods and other reason is devices that run in VMs where various
+> capabilities can be hidden or have quirks for avoiding known troublesome
+> combination of device features as Alex explained here
+> https://lore.kernel.org/linux-pci/20210624151242.ybew2z5rseuusj7v@archlinux/T/#mb67c09a2ce08ce4787652e4c0e7b9e5adf1df57a
+> 
+> On the side note as you suggested earlier to cache flr capability
+> earlier the PCI_EXP_DEVCAP reading code won't be there in next version
+> so its just trivial check(dev->has_flr).
 
-Thanks,
-Richard
+Sorry, I didn't make my question clear.  I'm not asking why we're
+adding a "probe" argument to pcie_reset_flr() to make it consistent
+with pci_af_flr(), pci_pm_reset(), pci_parent_bus_reset(), etc.  I
+like making the interfaces consistent.
+
+What I'm asking here is why the "probe" argument exists for *any* of
+these interfaces and why pci_probe_reset_function() exists.
+
+This is really more a question for Alex since it's a historical
+question, not anything directly related to your series.  I'm not
+proposing *removing* the "probe" argument; I know it exists for a
+reason because I've asked about it before.  But I forgot the answer,
+which makes me think a hint in the code would be useful.
+
+Bjorn
