@@ -2,126 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E5F3B306F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA533B3073
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbhFXNtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbhFXNtd (ORCPT
+        id S231702AbhFXNvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:51:15 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17628 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231405AbhFXNvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:49:33 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0F6C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 06:47:14 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id d21-20020a9d72d50000b02904604cda7e66so3827125otk.7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 06:47:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lHDdRelRavgSMuX+Enz3gXsuxhtxhRdSm3eh5ONAu3A=;
-        b=k9V9jxYg0dvoRJOriAawKtVtjOqMWqF4nEv7gjAXDwn+RKtFtuzJXvjhWPai9PDksO
-         opachs3IPXV3BAnrUPIUooraB3dCYpwC1YtLm2hmz28/g9cYtgytDjOHJjvkT3U+UUsF
-         wDEqBrHAus7CYgNQ+GjzRjfRnJPU31pAG3A5U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lHDdRelRavgSMuX+Enz3gXsuxhtxhRdSm3eh5ONAu3A=;
-        b=fulCsZ+uuhGRi1Jp5M8NtC8BpaP8Xv+N271+V7VdkvyEghrEDXFaIX4pv+asjF3ADW
-         cHzoYjusE6RC5VkgGI5VnFGkduWXcPBhy+uZyLspf7bVywLHOQhJFxYbt9hb2hCHtjIn
-         RZs3Rgo6embUK81uFb3YBFUgWNXPc8TwaJqq67xJKWy70G5jc2uRQs5flYO8vAL2AEm0
-         CB1CfNgGLyuCncQZ4tddmTZ+I3kjaNkREvRSPj0s4o+tuet01yMWr7uOxm23Q64UVqVe
-         WQVbHqLhW5i9MqSq+AH9HuBQPWLfaCRX5Oda9lby5qilyDVhxBlJwaTjehsTH4+5jnlC
-         JwIg==
-X-Gm-Message-State: AOAM533wGG2Xa00UYyeefB8E6HwXT49sIZhpdWg5lGHr8t606RBbTt8f
-        PeqmpSWmWT0gsxKW98wDLmYzhkX1G13pLQ==
-X-Google-Smtp-Source: ABdhPJztrpDYbUyVlG/KKppxCHYagJgUkeYTNBWyR/WePio7BLj29pqqFqsOdhPJOxjr1Qdg6Mr5Ow==
-X-Received: by 2002:a05:6830:821:: with SMTP id t1mr4859142ots.227.1624542433341;
-        Thu, 24 Jun 2021 06:47:13 -0700 (PDT)
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com. [209.85.161.50])
-        by smtp.gmail.com with ESMTPSA id p5sm628249oip.35.2021.06.24.06.47.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 06:47:13 -0700 (PDT)
-Received: by mail-oo1-f50.google.com with SMTP id x22-20020a4a62160000b0290245cf6b7feeso1613441ooc.13
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 06:47:13 -0700 (PDT)
-X-Received: by 2002:a25:8082:: with SMTP id n2mr5091144ybk.79.1624542421816;
- Thu, 24 Jun 2021 06:47:01 -0700 (PDT)
+        Thu, 24 Jun 2021 09:51:14 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15ODWwaD016438;
+        Thu, 24 Jun 2021 09:48:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type : subject :
+ from : in-reply-to : date : cc : message-id : references : to :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=N455BUTjpf71iv1l8JoIEFYzXp+Fe2eQfoCt7EG6fUk=;
+ b=fE4kdTOmnuH3pyPtRWkhiRuZVRivklyOEwqEjJwsNTbQyAENYxJwRNqRoOsJYOe8PlZ0
+ Kt0EEYf1TGX8s3KNY6SBfrny5511Fif8aD34ZV8pstys6XgWnKUmgmIYXSKE/C8PWFL6
+ qy2dP+YAxVwK6/puqTIa/ZgPTQ2FYAkzuivHLOM9OmG+/Kw1tzT1vLZryYY1HtBkai/C
+ pP43fo29ZI82Ffcv0B2m2jURdqtbOTOJXCTGSCcqWWi2GbVkd1GbpDR9Ius4uKUD5whm
+ mfSYSFoyCKnaHizHBXdeI9vgPHVTEeo10JWdg4I5yhlLvX+/bzhbqqBs7QHiqiucVpRu Xw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39ctbtt5hp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Jun 2021 09:48:17 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15ODXApg017384;
+        Thu, 24 Jun 2021 09:48:16 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39ctbtt5gw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Jun 2021 09:48:16 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15ODmFuL003128;
+        Thu, 24 Jun 2021 13:48:15 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma01fra.de.ibm.com with ESMTP id 3998789eax-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Jun 2021 13:48:14 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15ODmCS434996534
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Jun 2021 13:48:12 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 90617A4040;
+        Thu, 24 Jun 2021 13:48:12 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5B32CA404D;
+        Thu, 24 Jun 2021 13:48:10 +0000 (GMT)
+Received: from smtpclient.apple (unknown [9.102.30.53])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 24 Jun 2021 13:48:10 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Subject: Re: [PATCH] sched/fair: Ensure _sum and _avg values stay consistent
+From:   Sachin Sant <sachinp@linux.vnet.ibm.com>
+In-Reply-To: <20210624111815.57937-1-odin@uged.al>
+Date:   Thu, 24 Jun 2021 19:18:09 +0530
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org
+Message-Id: <5EA7BE86-F610-424F-B443-69C87944E48A@linux.vnet.ibm.com>
+References: <20210624111815.57937-1-odin@uged.al>
+To:     Odin Ugedal <odin@uged.al>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: DT7KN5PCDIdhRgMWDmXHEE0NEhPqxhcS
+X-Proofpoint-ORIG-GUID: andZG3ch7CYG3m-LpLEJVyj3X6WqY5EM
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210621235248.2521620-1-dianders@chromium.org>
- <20210621165230.3.I7accc008905590bb2b46f40f91a4aeda5b378007@changeid> <YNSKyu/a8S3Qywbc@kroah.com>
-In-Reply-To: <YNSKyu/a8S3Qywbc@kroah.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 24 Jun 2021 06:46:50 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VQEM=Gtzrkd-s_ufzi_Y7b1GPCOVROftmjLDWiMEd0qA@mail.gmail.com>
-Message-ID: <CAD=FV=VQEM=Gtzrkd-s_ufzi_Y7b1GPCOVROftmjLDWiMEd0qA@mail.gmail.com>
-Subject: Re: [PATCH 3/6] PCI: Indicate that we want to force strict DMA for
- untrusted devices
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Clark <robdclark@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-pci@vger.kernel.org, quic_c_gdjako@quicinc.com,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        Sonny Rao <sonnyrao@chromium.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Rajat Jain <rajatja@google.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-24_11:2021-06-24,2021-06-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ spamscore=0 mlxscore=0 lowpriorityscore=0 clxscore=1011 malwarescore=0
+ phishscore=0 impostorscore=0 mlxlogscore=999 priorityscore=1501
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106240074
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Thu, Jun 24, 2021 at 6:38 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Mon, Jun 21, 2021 at 04:52:45PM -0700, Douglas Anderson wrote:
-> > At the moment the generic IOMMU framework reaches into the PCIe device
-> > to check the "untrusted" state and uses this information to figure out
-> > if it should be running the IOMMU in strict or non-strict mode. Let's
-> > instead set the new boolean in "struct device" to indicate when we
-> > want forced strictness.
-> >
-> > NOTE: we still continue to set the "untrusted" bit in PCIe since that
-> > apparently is used for more than just IOMMU strictness. It probably
-> > makes sense for a later patchset to clarify all of the other needs we
-> > have for "untrusted" PCIe devices (perhaps add more booleans into the
-> > "struct device") so we can fully eliminate the need for the IOMMU
-> > framework to reach into a PCIe device.
->
-> It feels like the iommu code should not be messing with pci devices at
-> all, please don't do this.
 
-I think it's generally agreed that having the IOMMU code reach into
-the PCIe code is pretty non-ideal, but that's not something that my
-patch series added. The IOMMU code already has special cases to reach
-into PCIe devices to decide strictness. I was actually trying to
-reduce the amount of it.
+> On 24-Jun-2021, at 4:48 PM, Odin Ugedal <odin@uged.al> wrote:
+>=20
+> The _sum and _avg values are in general sync together with the PELT
+> divider. They are however not always completely in perfect sync,
+> resulting in situations where _sum gets to zero while _avg stays
+> positive. Such situations are undesirable.
+>=20
+> This comes from the fact that PELT will increase period_contrib, also
+> increasing the PELT divider, without updating _sum and _avg values to
+> stay in perfect sync where (_sum =3D=3D _avg * divider). However, such PE=
+LT
+> change will never lower _sum, making it impossible to end up in a
+> situation where _sum is zero and _avg is not.
+>=20
+> Therefore, we need to ensure that when subtracting load outside PELT,
+> that when _sum is zero, _avg is also set to zero. This occurs when
+> (_sum < _avg * divider), and the subtracted (_avg * divider) is bigger
+> or equal to the current _sum, while the subtracted _avg is smaller than
+> the current _avg.
+>=20
+> Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Signed-off-by: Odin Ugedal <odin@uged.al>
+> ---
+>=20
 
-> Why does this matter?  Why wouldn't a pci device use "strict" iommu at
-> all times?  What happens if it does not?  Why are PCI devices special?
+Thank You for the fix. Works for me.
 
-This is something pre-existing in Linux. In my patch series I was
-trying to make PCI devices less special and take some of the concepts
-from there and expand them, but in a cleaner way. It sounds like in my
-v2 I should steer away from this and leave the existing PCI hacks
-alone.
+Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
 
--Doug
+Thanks
+-Sachin
+
+> Reports and discussion can be found here:
+>=20
+> https://lore.kernel.org/lkml/2ED1BDF5-BC0C-47CD-8F33-9A46C738F8CF@linux.v=
+net.ibm.com/
+> https://lore.kernel.org/lkml/CA+G9fYsMXELmjGUzw4SY1bghTYz_PeR2diM6dRp2J37=
+bBZzMSA@mail.gmail.com/
+>=20
+> kernel/sched/fair.c | 6 +++---
+> 1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index bfaa6e1f6067..def48bc2e90b 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -3688,15 +3688,15 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cf=
+s_rq)
+>=20
+> 		r =3D removed_load;
+> 		sub_positive(&sa->load_avg, r);
+> -		sub_positive(&sa->load_sum, r * divider);
+> +		sa->load_sum =3D sa->load_avg * divider;
+>=20
+> 		r =3D removed_util;
+> 		sub_positive(&sa->util_avg, r);
+> -		sub_positive(&sa->util_sum, r * divider);
+> +		sa->util_sum =3D sa->util_avg * divider;
+>=20
+> 		r =3D removed_runnable;
+> 		sub_positive(&sa->runnable_avg, r);
+> -		sub_positive(&sa->runnable_sum, r * divider);
+> +		sa->runnable_sum =3D sa->runnable_avg * divider;
+>=20
+> 		/*
+> 		 * removed_runnable is the unweighted version of removed_load so we
+> --=20
+> 2.32.0
+>=20
+
