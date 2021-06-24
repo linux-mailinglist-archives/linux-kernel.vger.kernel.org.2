@@ -2,261 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187F63B31C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DC13B31C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232249AbhFXOwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 10:52:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49106 "EHLO
+        id S232209AbhFXOwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 10:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232196AbhFXOv6 (ORCPT
+        with ESMTP id S231194AbhFXOw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 10:51:58 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF2BC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:49:39 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id h23so3623051pjv.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:49:39 -0700 (PDT)
+        Thu, 24 Jun 2021 10:52:29 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7459CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:50:10 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id s14so4087306pfg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:50:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XnmckKq8dgTGOIdOM2n9ve+pT1O+xT/ae6PiB67Krp4=;
-        b=J/46JE4rYBco92WvjIgWNLPt5sDHkTLgO3KgZB7D5WxI0D2I3RpbP76jJTLWJG6G7z
-         oZglvt68ONuX7lq+LL6cgQd+Gh4KeXc+Y+PCO311v3/F9lwVJKgaLwHMxSreD7hwUvTR
-         6c9jHrubOHxj/Aeb8J6tCM+gPFR2VG3fCWLbIw8I55TU9L75wxSlHc7pxyt/LtMgOvx1
-         BDti8ety3D2nzzNn9yy68XyHiIZrWXc38RumKsRv6zl4gJcoGZixg3rfn3dgGhvZlOUx
-         QGguV5xnp3QAoMOLgH/pmt+EVR40mK8nUdMPs88SPs0w6ASJ1Ecuefq9NrLoQa+9dCkB
-         0/UQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6gRbND3XlnFRjxaAFjazt4t2CTzeQHjH9Rv+KQ2khaQ=;
+        b=CN5a8joLkzaqbmkYg56qrlGLFVf//X5GU2u3nXsLilDK0o9UwUxDsjPfHaiUrylnYL
+         LVkpGs+tG0w3i2+pxdoBC3hn37adQF3+PUoLENdcSbAR9Sy2NPwSjiR7NXqobp7zzupJ
+         d0rkicbffZnYLXFVQ/YEQqxiqeJjdZFea0XP0NstQdI29GcNnGery+czH40BXP7v68ql
+         RBEmAq2C7wyp96U+HaIZANcOLxTSb2g/TPV8yQCc9npS+6q6zUq1JsEyV5lKd4+lw8I2
+         LCjP0S+0XzvaKqkIIgbuxF6YNu9sgsCE142m7ziZ0wiGZOsOREpdAtUCCJIi00c1KRC/
+         vB8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XnmckKq8dgTGOIdOM2n9ve+pT1O+xT/ae6PiB67Krp4=;
-        b=gJ75sLs1WuimTQYM5CP4jA8wVHA+caGppsQGrXt0YOH1GvwNYXnsBdjHbCMpAB+Hpn
-         iXdb99kuNiV/dhg67aHEfz7mM+UjYFW7wqFIRCM5p7GpViMWhhjiK71rKKZUyaKL6hKv
-         bDPt2vSgk8Zgmspp8iSJMJ6DNmoAGhdzcfyLlmgeAlwqAw6GVjtfVNyNPl5W4FYI5se1
-         cHPwj1Sw6TnaSezMA/BAqrCMzgClKQ/EBQmLxpuZIF3Dc5B+qLteW85kx4dFmVkwYusQ
-         ClCiM44dPtDhXIYOfKk6ZRCurXTNV3NE34vSW5Bo2238u4nWXn7LcbhcRC+Pc2oCHd8+
-         q9FQ==
-X-Gm-Message-State: AOAM533Xinr0e6en9ZD+r8BRkY38sZyLGoLr+ACYoOvYRsIArySOdIxt
-        keMowKjT/uGkGQ4g6lRVbh6GphPpFHK3l39g
-X-Google-Smtp-Source: ABdhPJxz982h5e4ZJSZq8f5nwVySEDe1bxRB41qoGssApXk372VWg37oK3TF7ih+CYYUkOQEBtLbGg==
-X-Received: by 2002:a17:90a:8a13:: with SMTP id w19mr5799916pjn.227.1624546178622;
-        Thu, 24 Jun 2021 07:49:38 -0700 (PDT)
-Received: from [192.168.1.153] (163.128.178.217.shared.user.transix.jp. [217.178.128.163])
-        by smtp.gmail.com with ESMTPSA id y21sm2836572pgc.93.2021.06.24.07.49.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 07:49:38 -0700 (PDT)
-Subject: Re: [PATCH 1/1] config: Enable jh7100 SoC
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Sagar Shrikant Kadam <sagar.kadam@sifive.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <f22f6d7e-97ab-85db-5448-c2bcef0ea0e7@gmail.com>
- <82328d90-2769-6bd0-a28e-b501fba63d76@gmail.com> <20210623190801.GB493015@x1>
-From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
-Message-ID: <d84539b7-e46d-f767-246b-85c20899ab94@gmail.com>
-Date:   Thu, 24 Jun 2021 23:49:35 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6gRbND3XlnFRjxaAFjazt4t2CTzeQHjH9Rv+KQ2khaQ=;
+        b=k7av6puEMhFHzNC2QguV3MDXWI8w9/456DKPTMpd1zirLgtwVQ5NJ5n/xU6VHemqV3
+         n2q81Zy7nGYoYeNgTDJue70zEm1T00CZ50W9VorSIg1lyid+NHkYd+6J6FzZdSX4EZJv
+         cupZSdjahy21U8g4juf1AuUnUTZWs8RiTSkq3+F7cumCWXm+RhB/pORHaZ7e65AeiVtE
+         NIN0wqxaMZ7u5RHq4i/7slDBXEKVMmtLzNu+IOLwfR+9N/kw+/1vMjVzbtLx8n7s2KZg
+         Ak09MWGD4P2+pELVoT6WBxd40fgN3yAzRRiiUHqtLRHn239RE/WRgl35TMTQYnqffCWn
+         oc9g==
+X-Gm-Message-State: AOAM533jO4f/AdFOToteyeeyJTRcs/7P2F+LnJj+I+SPeI/+6gN4Df9r
+        PZ90FjGfI2JyS3YACxPlhqtQXz7oyBDZ
+X-Google-Smtp-Source: ABdhPJxGK1UjuX/vighv2ORISjGThUrb8ytgGnsIeZ62mStFW21XjjolJzYWV54+ToUH7EwAQpqzAQ==
+X-Received: by 2002:aa7:82cb:0:b029:2e6:f397:d248 with SMTP id f11-20020aa782cb0000b02902e6f397d248mr5551594pfn.52.1624546209966;
+        Thu, 24 Jun 2021 07:50:09 -0700 (PDT)
+Received: from workstation ([120.138.12.173])
+        by smtp.gmail.com with ESMTPSA id g38sm2616315pgg.63.2021.06.24.07.50.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 24 Jun 2021 07:50:09 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 20:20:06 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org
+Subject: Re: [PATCH 6/8] bus: mhi: core: Add support for processing priority
+ of event ring
+Message-ID: <20210624145006.GE6108@workstation>
+References: <20210621161616.77524-1-manivannan.sadhasivam@linaro.org>
+ <20210621161616.77524-7-manivannan.sadhasivam@linaro.org>
+ <YNSOXaWt3YX3yDQC@kroah.com>
+ <20210624142453.GB6108@workstation>
+ <YNSZZhGSZ0lFgS+U@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210623190801.GB493015@x1>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNSZZhGSZ0lFgS+U@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 24, 2021 at 04:40:38PM +0200, Greg KH wrote:
+> On Thu, Jun 24, 2021 at 07:54:53PM +0530, Manivannan Sadhasivam wrote:
+> > On Thu, Jun 24, 2021 at 03:53:33PM +0200, Greg KH wrote:
+> > > On Mon, Jun 21, 2021 at 09:46:14PM +0530, Manivannan Sadhasivam wrote:
+> > > > From: Hemant Kumar <hemantk@codeaurora.org>
+> > > > 
+> > > > Event ring priorities are currently set to 1 and are unused.
+> > > > Default processing priority for event rings is set to regular
+> > > > tasklet. Controllers can choose to use high priority tasklet
+> > > > scheduling for certain event rings critical for processing such
+> > > > as ones transporting control information if they wish to avoid
+> > > > system scheduling delays for those packets. In order to support
+> > > > these use cases, allow controllers to set event ring priority to
+> > > > high.
+> > > > 
+> > > > Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+> > > > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> > > > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > Link: https://lore.kernel.org/r/1624053903-24653-2-git-send-email-bbhatt@codeaurora.org
+> > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > ---
+> > > >  drivers/bus/mhi/core/init.c | 3 +--
+> > > >  drivers/bus/mhi/core/main.c | 9 +++++++--
+> > > >  include/linux/mhi.h         | 2 +-
+> > > >  3 files changed, 9 insertions(+), 5 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> > > > index c81b377fca8f..444676034bf0 100644
+> > > > --- a/drivers/bus/mhi/core/init.c
+> > > > +++ b/drivers/bus/mhi/core/init.c
 
+[...]
 
-On 6/24/2021 4:08 AM, Drew Fustini wrote:
-> On Wed, Jun 23, 2021 at 09:46:54PM +0900, Akira Tsukamoto wrote:
->>
->> Signed-off-by: Akira Tsukamoto <akira.tsukamoto@gmail.com>
->> ---
->>  arch/riscv/configs/defconfig | 105 +++++++++++++++++++++++++++++++++++
->>  1 file changed, 105 insertions(+)
->>
->> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+> > That's because, "1" was used from the beginning by the controller drivers
+> > as the regular priority. And I thought of using "0" as high priority so
+> > that we can leave the controller drivers unmodified.
 > 
-> Thanks for submitting this so we can review and discuss.
+> There's no problem modifying everyone, how much work is that?
 > 
->> index 1f2be234b11c..e07d26d2743c 100644
->> --- a/arch/riscv/configs/defconfig
->> +++ b/arch/riscv/configs/defconfig
->> @@ -138,3 +138,108 @@ CONFIG_DEBUG_BLOCK_EXT_DEVT=y
->>  CONFIG_MEMTEST=y
->>  # CONFIG_SYSFS_SYSCALL is not set
->>  CONFIG_EFI=y
->> +CONFIG_FB_STARFIVE=y
->> +CONFIG_FB_STARFIVE_HDMI_ADV7513=y
->> +CONFIG_FB_STARFIVE_HDMI_TDA998X=y
->> +CONFIG_FB_STARFIVE_SEEED5INCH=y
->> +CONFIG_FB_STARFIVE_VIDEO=y
-> 
-> These should be dropped as they are vendor drivers that will never be
-> upstream as fbdev is deprecated [1]. StarFive is working on DRM driver
-> but that is a couple months away from being ready.
 
-I will remove fbdev. And enable DRM driver only when them become ready.
+I thought of minimizing the diff if we can avoid...err
 
+> > > Shouldn't this be a boolean, or if not, an enumerated type so that
+> > > people can read the code over time?
+> > > 
+> > 
+> > Bhaumik proposed an enum but I wanted 0/1 so that the controller drivers
+> > can be untouched. Also, I don't see any immediate requirement for other
+> > priorities.
+> > 
+> > Will make it a bool then.
 > 
->> +CONFIG_HW_RANDOM_STARFIVE_VIC=y
->> +CONFIG_SOC_STARFIVE_VIC7100=y
+> Rename it when you change it so that you know you catch all existing
+> users.
 > 
-> Before this gets merged upstream, we need to switch over to using JH7100
-> instead of VIC.
-> 
-> For those not familiar, VIC was the StarFive internal project name but
-> the product is named JH7100 [2].
 
-I will wait to enable the configs above until the patches rename them
-and become upstream ready.
+Okay. Bhaumik, can you please use the enum (as you did)?
 
-> 
->> +CONFIG_FPGA_GMAC_FLUSH_DDR=y
->> +CONFIG_MMC_DW_FLUSH_DDR=y
->> +CONFIG_USB_CDNS3_HOST_FLUSH_DMA=y
->> +CONFIG_SOC_STARFIVE_VIC7100_I2C_GPIO=y
-> 
-> This config is being used in as a vendor hack in i2c_dw_configure_gpio()
-> drivers/i2c/busses/i2c-designware-master.c [3].
-> 
-> It's possible we may be able to eliminate this once I have completed
-> gpio and pinctrl drivers. Either way, this option will never be used in
-> an upstream kernel.
+Thanks,
+Mani
 
-Sure, I will remove them and try it since I think your drivers were
-in the Esmil branch.
-
+> thanks,
 > 
->> +CONFIG_VIDEO_STARFIVE_VIN=y
->> +CONFIG_VIDEO_STARFIVE_VIN_SENSOR_IMX219=y
->> +CONFIG_VIDEO_STARFIVE_VIN_SENSOR_OV5640=y
->> +CONFIG_VIDEO_STARFIVE_VIN_SENSOR_SC2235=y
-> 
-> These should be dropped as they are vendor drivers that do not use V4L2
-> and are not upstreamable [4]. StarFive is working on proper V4L2 drivers
-> but that is a couple months away from being ready.
-
-Thanks, I will also wait for the v4l2 being ready.
-
-Akira
-
-> 
->> +CONFIG_RCU_CPU_STALL_TIMEOUT=60
->> +CONFIG_LOG_CPU_MAX_BUF_SHIFT=15
->> +CONFIG_PRINTK_SAFE_LOG_BUF_SHIFT=12
->> +CONFIG_PM=y
->> +CONFIG_PM_CLK=y
->> +CONFIG_EFI_BOOTLOADER_CONTROL=y
->> +CONFIG_BLK_PM=y
->> +CONFIG_IOSCHED_BFQ=y
->> +CONFIG_KSM=y
->> +CONFIG_CMA=y
->> +CONFIG_CMA_AREAS=7
->> +CONFIG_REGMAP_I2C=y
->> +CONFIG_REGMAP_IRQ=y
->> +CONFIG_MTD_OF_PARTS=y
->> +CONFIG_MTD_BLKDEVS=y
->> +CONFIG_MTD_BLOCK=y
->> +CONFIG_MTD_PARTITIONED_MASTER=y
->> +CONFIG_MTD_MAP_BANK_WIDTH_1=y
->> +CONFIG_MTD_MAP_BANK_WIDTH_2=y
->> +CONFIG_MTD_MAP_BANK_WIDTH_4=y
->> +CONFIG_MTD_CFI_I1=y
->> +CONFIG_MTD_CFI_I2=y
->> +CONFIG_MTD_SPI_NOR=y
->> +CONFIG_MTD_SPI_NOR_SWP_DISABLE_ON_VOLATILE=y
->> +CONFIG_BLK_DEV_NBD=y
->> +CONFIG_INPUT_LEDS=y
->> +CONFIG_INPUT_EVDEV=y
->> +CONFIG_SERIAL_8250_DMA=y
->> +CONFIG_SERIAL_8250_DWLIB=y
->> +CONFIG_SERIAL_8250_DW=y
->> +CONFIG_HW_RANDOM_VIRTIO=y
->> +CONFIG_I2C_CHARDEV=y
->> +CONFIG_I2C_MUX=y
->> +CONFIG_I2C_DESIGNWARE_CORE=y
->> +CONFIG_I2C_DESIGNWARE_PLATFORM=y
->> +CONFIG_SPI_MEM=y
->> +CONFIG_SPI_CADENCE_QUADSPI=y
->> +CONFIG_SPI_DESIGNWARE=y
->> +CONFIG_SPI_DW_DMA=y
->> +CONFIG_SPI_DW_MMIO=y
->> +CONFIG_SPI_SPIDEV=y
->> +CONFIG_GPIO_SYSFS=y
->> +CONFIG_GPIO_STARFIVE_VIC=y
-> 
-> I am working on upstreamable version of the GPIO driver and will submit
-> RFC soon. This will be called CONFIG_GPIO_STARFIVE_JH7100.
-> 
->> +CONFIG_GPIO_TPS65086=y
->> +CONFIG_POWER_RESET_TPS65086=y
->> +CONFIG_MFD_TPS65086=y
->> +CONFIG_USB_HID=y
->> +CONFIG_USB_CDNS_SUPPORT=y
->> +CONFIG_USB_CDNS_HOST=y
->> +CONFIG_USB_CDNS3=y
->> +CONFIG_USB_CDNS3_HOST=y
->> +CONFIG_USB_ROLE_SWITCH=y
->> +CONFIG_SDIO_UART=y
->> +CONFIG_MMC_DW=y
->> +CONFIG_MMC_DW_PLTFM=y
->> +CONFIG_NEW_LEDS=y
->> +CONFIG_LEDS_CLASS=y
->> +CONFIG_LEDS_GPIO=y
->> +CONFIG_LEDS_TRIGGERS=y
->> +CONFIG_LEDS_TRIGGER_HEARTBEAT=y
->> +CONFIG_RTC_DRV_EFI=y
->> +CONFIG_DMADEVICES=y
->> +CONFIG_DMA_ENGINE=y
->> +CONFIG_DMA_VIRTUAL_CHANNELS=y
->> +CONFIG_DMA_OF=y
->> +CONFIG_DW_AXI_DMAC=y
->> +CONFIG_DW_AXI_DMAC_STARFIVE=y
->> +CONFIG_COMMON_CLK_SI544=y
->> +CONFIG_COMMON_CLK_PWM=y
->> +CONFIG_SIFIVE_L2=y
->> +CONFIG_SIFIVE_L2_FLUSH=y
->> +CONFIG_SIFIVE_L2_FLUSH_START=0x80000000
->> +CONFIG_SIFIVE_L2_FLUSH_SIZE=0x800000000
->> +CONFIG_SIFIVE_L2_IRQ_DISABLE=y
->> +CONFIG_PWM=y
->> +CONFIG_PWM_SYSFS=y
->> +CONFIG_PWM_SIFIVE_PTC=y
->> +CONFIG_RESET_CONTROLLER=y
->> +CONFIG_PROC_KCORE=y
->> +CONFIG_EFIVAR_FS=y
->> +CONFIG_ZLIB_DEFLATE=y
->> +CONFIG_DMA_CMA=y
->> +CONFIG_CMA_SIZE_MBYTES=640
->> +CONFIG_CMA_SIZE_SEL_MBYTES=y
->> +CONFIG_CMA_ALIGNMENT=8
->> +CONFIG_NET_VENDOR_STMICRO=y
->> +CONFIG_STMMAC_ETH=y
->> +CONFIG_STMMAC_PLATFORM=y
->> +CONFIG_DWMAC_GENERIC=y
->> +CONFIG_MICREL_PHY=y
->> -- 
->> 2.17.1
->>
->>
-> 
-> Thanks,
-> Drew
-> 
-> [1] https://github.com/starfive-tech/linux/tree/beaglev/drivers/video/fbdev/starfive
-> [2] https://github.com/starfive-tech/beaglev_doc/
-> [3] https://github.com/starfive-tech/linux/blob/beaglev/drivers/i2c/busses/i2c-designware-master.c#L170
-> [4] https://github.com/starfive-tech/linux/tree/beaglev/drivers/media/platform/starfive
-> 
+> greg k-h
