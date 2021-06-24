@@ -2,143 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 734883B3693
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813783B3697
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbhFXTGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 15:06:21 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:56512 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232750AbhFXTGU (ORCPT
+        id S232786AbhFXTGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 15:06:38 -0400
+Received: from mail-io1-f47.google.com ([209.85.166.47]:33696 "EHLO
+        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232417AbhFXTGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 15:06:20 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lwUdr-00GQMb-MZ; Thu, 24 Jun 2021 13:03:59 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:47234 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lwUdq-003SFv-2Z; Thu, 24 Jun 2021 13:03:59 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-References: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
-        <87sg1lwhvm.fsf@disp2133>
-        <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
-        <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
-        <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
-        <87eed4v2dc.fsf@disp2133>
-        <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
-        <87fsxjorgs.fsf@disp2133>
-        <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
-        <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
-        <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
-        <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
-        <87a6njf0ia.fsf@disp2133>
-        <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
-        <87tulpbp19.fsf@disp2133>
-        <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
-        <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133>
-Date:   Thu, 24 Jun 2021 14:03:50 -0500
-In-Reply-To: <875yy3850g.fsf_-_@disp2133> (Eric W. Biederman's message of
-        "Thu, 24 Jun 2021 13:57:35 -0500")
-Message-ID: <87k0mj5bl5.fsf_-_@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 24 Jun 2021 15:06:37 -0400
+Received: by mail-io1-f47.google.com with SMTP id a6so9642696ioe.0;
+        Thu, 24 Jun 2021 12:04:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RNyR7WJkBi+j5cZSpglBt7CMB4kjHG9lY9GO1xbTvDI=;
+        b=ZXo45QX8U+A3TzQIo/cFley6OfM/RGH+0OaTOvkH5lk8DWrb9vjPp/hRVJ9GvXcGT8
+         3rlmtYMEDedPdvaA3h37SkbOZCkTVA9tj7e/Xqhv1vzNqrYnyRQS2hGxLmNVxU/p+BdO
+         vXsmldTMyIaJaMfjHippUWsDE/edgxCPQJH7XENNwH+aifidA1MwWq9M8CL2baPjLjpu
+         ZLqf/8WGGDQyKiXrZn4M7eoZ6KTBmJ4ktu99GXjCm5OAUZye5XboXiT5NNKQzdyY+2K8
+         i7UPzjwSZlhl/oSYg08IxnZDcF7MqzwXfH41zuRMfLe6T/1k3x/IPSRCNrVgSkaa/N4X
+         M93A==
+X-Gm-Message-State: AOAM532Nu6VnO5d1KyIONjody+jE/1IZzeMZAOTGMSdMf3KrmQsVMyM4
+        EIaziIyAmFU7ru6JvMlxiA==
+X-Google-Smtp-Source: ABdhPJwXCSzJsbLCsA/ceit/PNBn7MfOoeDC+bW/W0gnmgK2bxUazXXMLP+69M/mtI5Mukc063Xldg==
+X-Received: by 2002:a5d:9549:: with SMTP id a9mr5209403ios.152.1624561456623;
+        Thu, 24 Jun 2021 12:04:16 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id t21sm1773281ioj.10.2021.06.24.12.04.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 12:04:15 -0700 (PDT)
+Received: (nullmailer pid 1817466 invoked by uid 1000);
+        Thu, 24 Jun 2021 19:04:09 -0000
+Date:   Thu, 24 Jun 2021 13:04:09 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jon Lin <jon.lin@rock-chips.com>
+Cc:     linux-spi@vger.kernel.org, broonie@kernel.org, heiko@sntech.de,
+        jbx6244@gmail.com, hjc@rock-chips.com, yifeng.zhao@rock-chips.com,
+        sugar.zhang@rock-chips.com, linux-rockchip@lists.infradead.org,
+        linux-mtd@lists.infradead.org, p.yadav@ti.com,
+        macroalpha82@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
+Subject: Re: [PATCH v8 1/9] dt-bindings: rockchip-sfc: Bindings for Rockchip
+ serial flash controller
+Message-ID: <20210624190409.GA1815079@robh.at.kernel.org>
+References: <20210611061134.31369-1-jon.lin@rock-chips.com>
+ <20210611061134.31369-2-jon.lin@rock-chips.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lwUdq-003SFv-2Z;;;mid=<87k0mj5bl5.fsf_-_@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/3wyY4A5bofMhmT8OEDykV2ogWm09ejcw=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TooManySym_01,XMNoVowels,XM_B_SpammyWords
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1037 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 9 (0.9%), b_tie_ro: 7 (0.7%), parse: 0.91 (0.1%),
-        extract_message_metadata: 10 (1.0%), get_uri_detail_list: 0.73 (0.1%),
-        tests_pri_-1000: 14 (1.3%), tests_pri_-950: 1.33 (0.1%),
-        tests_pri_-900: 1.21 (0.1%), tests_pri_-90: 100 (9.6%), check_bayes:
-        97 (9.4%), b_tokenize: 6 (0.6%), b_tok_get_all: 7 (0.6%), b_comp_prob:
-        2.1 (0.2%), b_tok_touch_all: 77 (7.4%), b_finish: 1.41 (0.1%),
-        tests_pri_0: 889 (85.7%), check_dkim_signature: 0.65 (0.1%),
-        check_dkim_adsp: 2.8 (0.3%), poll_dns_idle: 0.77 (0.1%), tests_pri_10:
-        2.3 (0.2%), tests_pri_500: 8 (0.7%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH 9/9] signal: Move PTRACE_EVENT_EXIT into get_signal
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210611061134.31369-2-jon.lin@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 11, 2021 at 02:11:26PM +0800, Jon Lin wrote:
+> From: Chris Morgan <macromorgan@hotmail.com>
+> 
+> Add bindings for the Rockchip serial flash controller. New device
+> specific parameter of rockchip,sfc-no-dma included in documentation.
+> 
+> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+> ---
+> 
+> Changes in v8:
+> - Fix indent 4 to 2 in yaml
 
-This ensures that we always have all full set of registers available when
-PTRACE_EVENT_EXIT is called.  Something that is not guaranteed for callers
-of do_exit.
+My comments from v7 remain.
 
-Additionally this guarantees PTRACE_EVENT_EXIT will not cause havoc
-with abnormal exits.
-
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- kernel/exit.c   | 2 --
- kernel/signal.c | 2 ++
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 51e0c82b3f7d..309f1d71e340 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -763,8 +763,6 @@ void __noreturn do_exit(long code)
- 	profile_task_exit(tsk);
- 	kcov_task_exit(tsk);
- 
--	ptrace_event(PTRACE_EVENT_EXIT, code);
--
- 	validate_creds_for_do_exit(tsk);
- 
- 	/*
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 63fda9b6bbf9..7214331836bc 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2890,6 +2890,8 @@ bool get_signal(struct ksignal *ksig)
- 		if (exit_code & 0x7f)
- 			current->flags |= PF_SIGNALED;
- 
-+		ptrace_event(PTRACE_EVENT_EXIT, exit_code);
-+
- 		/*
- 		 * PF_IO_WORKER threads will catch and exit on fatal signals
- 		 * themselves. They have cleanup that must be performed, so
--- 
-2.20.1
-
+> 
+> Changes in v7:
+> - Fix up the sclk_sfc parent error in rk3036
+> - Unify to "rockchip,sfc" compatible id because all the feature update
+>   will have a new IP version, so the driver is used for the SFC IP in
+>   all SoCs
+> - Change to use node "sfc" to name the SFC pinctrl group
+> - Add subnode reg property check
+> - Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
+> - Limit max_iosize to 32KB
+> 
+> Changes in v6:
+> - Add support in device trees for rv1126(Declared in series 5 but not
+>   submitted)
+> - Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
+>   affect interpretation and has been widely used
+> - Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
+> - Simplify the code, such as remove "rockchip_sfc_register_all"(Declared
+>   in series 5 but not submitted)
+> - Support SFC ver4 ver5(Declared in series 5 but not submitted)
+> - Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
+> - Change to use devm_spi_alloc_master and spi_unregister_master
+> 
+> Changes in v5:
+> - Add support in device trees for rv1126
+> - Support sfc tx_dual, tx_quad
+> - Simplify the code, such as remove "rockchip_sfc_register_all"
+> - Support SFC ver4 ver5
+> 
+> Changes in v4:
+> - Changing patch back to an "RFC". An engineer from Rockchip
+>   reached out to me to let me know they are working on this patch for
+>   upstream, I am submitting this v4 for the community to see however
+>   I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
+>   soon and these are the ones we should pursue for mainlining. Jon's
+>   patch series should include support for more hardware than this
+>   series.
+> - Clean up documentation more and ensure it is correct per
+>   make dt_binding_check.
+> - Add support in device trees for rk3036, rk3308, and rv1108.
+> - Add ahb clock (hclk_sfc) support for rk3036.
+> - Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
+> - Change IRQ code to only mark IRQ as handled if it handles the
+>   specific IRQ (DMA transfer finish) it is supposed to handle.
+> 
+> Changes in v3:
+> - Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
+> - Changed the compatible string from rockchip,sfc to
+>   rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
+>   driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
+>   RV1108 SoCs, and possibly more. However, I am currently only able
+>   to test this on a PX30 (an RK3326). The technical reference manuals
+>   appear to list the same registers for each device.
+> - Corrected devicetree documentation for formatting and to note these
+>   changes.
+> - Replaced the maintainer with Heiko Stuebner and myself, as we will
+>   take ownership of this going forward.
+> - Noted that the device (per the reference manual) supports 4 CS, but
+>   I am only able to test a single CS (CS 0).
+> - Reordered patches to comply with upstream rules.
+> 
+> Changes in v2:
+> - Reimplemented driver using spi-mem subsystem.
+> - Removed power management code as I couldn't get it working properly.
+> - Added device tree bindings for Odroid Go Advance.
+> 
+> Changes in v1:
+> hanges made in this new series versus the v8 of the old series:
+> - Added function to read spi-rx-bus-width from device tree, in the
+>   event that the SPI chip supports 4x mode but only has 2 pins
+>   wired (such as the Odroid Go Advance).
+> - Changed device tree documentation from txt to yaml format.
+> - Made "reset" message a dev_dbg from a dev_info.
+> - Changed read and write fifo functions to remove redundant checks.
+> - Changed the write and read from relaxed to non-relaxed when
+>   starting the DMA transfer or reading the DMA IRQ.
+> - Changed from dma_coerce_mask_and_coherent to just
+>   dma_set_mask_and_coherent.
+> - Changed name of get_if_type to rockchip_sfc_get_if_type.
+> 
+>  .../devicetree/bindings/spi/rockchip-sfc.yaml | 88 +++++++++++++++++++
+>  1 file changed, 88 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+> new file mode 100644
+> index 000000000000..162993a97290
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+> @@ -0,0 +1,88 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/rockchip-sfc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Rockchip Serial Flash Controller (SFC)
+> +
+> +maintainers:
+> +  - Heiko Stuebner <heiko@sntech.de>
+> +  - Chris Morgan <macromorgan@hotmail.com>
+> +
+> +allOf:
+> +  - $ref: spi-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: rockchip,sfc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: Bus Clock
+> +      - description: Module Clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: clk_sfc
+> +      - const: hclk_sfc
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  rockchip,sfc-no-dma:
+> +    description: Disable DMA and utilize FIFO mode only
+> +    type: boolean
+> +
+> +patternProperties:
+> +  "^flash@[0-3]$":
+> +    type: object
+> +    properties:
+> +      reg:
+> +        minimum: 0
+> +        maximum: 3
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/px30-cru.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/power/px30-power.h>
+> +
+> +    sfc: spi@ff3a0000 {
+> +        compatible = "rockchip,sfc";
+> +        reg = <0xff3a0000 0x4000>;
+> +        interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
+> +        clock-names = "clk_sfc", "hclk_sfc";
+> +        pinctrl-0 = <&sfc_clk &sfc_cs &sfc_bus2>;
+> +        pinctrl-names = "default";
+> +        power-domains = <&power PX30_PD_MMC_NAND>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        flash@0 {
+> +            compatible = "jedec,spi-nor";
+> +            reg = <0>;
+> +            spi-max-frequency = <108000000>;
+> +            spi-rx-bus-width = <2>;
+> +            spi-tx-bus-width = <2>;
+> +        };
+> +    };
+> +
+> +...
+> -- 
+> 2.17.1
+> 
+> 
+> 
+> 
