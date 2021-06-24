@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2233B34D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87EEF3B34D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbhFXReA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 13:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhFXRd6 (ORCPT
+        id S232446AbhFXRfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 13:35:01 -0400
+Received: from mail-pl1-f170.google.com ([209.85.214.170]:37549 "EHLO
+        mail-pl1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbhFXRe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 13:33:58 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE033C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 10:31:39 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id x16so5750994pfa.13
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 10:31:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NXamga020V8fjrq0TD0oEXX5F6d6dS3uFOlZ6LFMVgk=;
-        b=aZifHySwD6uqla8CbsEA8UeI3E6CaFVu27HO+tY9wsjDTSz58+wBjYyT2qmY2igqRO
-         P/+L8s8JSxztaIRiXP5K7COaLxoOODkvnk3Y/QwDhy/sV41HLoD+NIg6LjRU6z0XoYRa
-         1esbz2gpJdzoIb8O4yqgP66KsMBFIytRIL56eSR8GXw2eXAvq/+qmpZ0KZ+dFubW+1hJ
-         3B0a7hdU/lj2FsfDhSTa0AIVDPP+EhcFmeFWnVSXOHts9/+FlxDAo+QNrCa5qAAHXVxU
-         /mOoTwXjEM4OgBy24EwpN6TtRwZA8Lwg12Pfc1YOPBMjBclFs1W8Jiia2vKB2v3rdITL
-         JCmA==
+        Thu, 24 Jun 2021 13:34:58 -0400
+Received: by mail-pl1-f170.google.com with SMTP id y21so3324426plb.4;
+        Thu, 24 Jun 2021 10:32:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NXamga020V8fjrq0TD0oEXX5F6d6dS3uFOlZ6LFMVgk=;
-        b=QQIMegG8xL804hy0oPq8i/H/40tYs35PccTGUh4PZtXJi+6Zv+h6BZ35oQbdm+++lt
-         xv4PTHHcjqS6hjU4MyDFC1dQRrVluiDc6JG1hIAmnKtL0kBls+oaL3br6BfIlzASy3/f
-         vaTUy2zKGn76v4j2WuG9/k4vP3eKh7thKo+WuHQw1XlzMfxKA6wuoL/1ePKPYKy9BkMO
-         KZ7Zi3L83lvnmBAd3YeAuwS4x5re+vZ3kggXOAh8S1rM6CkW+I4cX3LdhbLS/bG/dioM
-         1NZpFiJuj8s7QSWVUJ2y3lXdjjeV1h/lOOePD59DDhCCQhPhfHcWyfiyROl/9KBGsXqc
-         eRJQ==
-X-Gm-Message-State: AOAM5313LbPITTCQAZT2jMfV15bVdHnCFcOxwmEa3hnxT3A47dGk4xfz
-        B8NX9dGuhjS9n7WLauHbqcQp2w==
-X-Google-Smtp-Source: ABdhPJzZUXZwE3+5MgxJcPLiUKe38W/ONBPOJbcLxp4oI7xcGJlN2iewrx4qCOjx/mxGoBtq+RPMOQ==
-X-Received: by 2002:a65:6914:: with SMTP id s20mr5641081pgq.420.1624555899193;
-        Thu, 24 Jun 2021 10:31:39 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id oc9sm2714548pjb.43.2021.06.24.10.31.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 10:31:38 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 17:31:34 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH 0/7] KVM: x86: guest MAXPHYADDR and C-bit fixes
-Message-ID: <YNTBdvWxwyx3T+Cs@google.com>
-References: <20210623230552.4027702-1-seanjc@google.com>
- <324a95ee-b962-acdf-9bd7-b8b23b9fb991@amd.com>
- <c2d7a69a-386e-6f44-71c2-eb9a243c3a78@amd.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7mkCkEwXQBHYc4yoTuGzapJQixnK7les2iDpwlzJsuo=;
+        b=NdDxU8/6SN3l+4qljsFjZ4gHMKksDEQPmLgiiBqm9NcXx8vTGNvhxC+nKf3LpiYlNW
+         gL151sqWWu6PfHDIgAzpxJK8iOD5gLdpBRqWEvhsmMo3+17o7z6GpQ/rYH+2uDBBDg9g
+         sk0+koYvwL9MW9w2i4NOWeFtlNcpvqNkwxm+4nwGS6WmAbLxIxtDsbK4u3/O0UoKIIB8
+         ihis5nauAkFIOfCcmLpLEg3XlgWwi7Ryuglo/S9U5IdVxuJxrAbpbHstO3E5SScRaOiZ
+         UYdZE9m6CgrR0qUt5YF25xdly708MDa3gpN3wvCxmW6FaYE25GD4nJEWVlDpqRqKl4o6
+         7CJA==
+X-Gm-Message-State: AOAM532m21JgHrX/dDx4Et0cv6p0K78VUdeKKD9fO7eMPrN4qtz1KDJO
+        EDleOfHTDyGESxQAP0IdgyJ+c1lHHL5IeQ==
+X-Google-Smtp-Source: ABdhPJyH4XqAg6hLJhMqZ3dMwRiI23X1p+PVWJycWy/irAG5i5R8Hsp0UPJpiZE9nWKXuPtateldQA==
+X-Received: by 2002:a17:902:e545:b029:111:6990:4103 with SMTP id n5-20020a170902e545b029011169904103mr5192664plf.63.1624555957778;
+        Thu, 24 Jun 2021 10:32:37 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id 18sm8741183pje.22.2021.06.24.10.32.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 10:32:37 -0700 (PDT)
+Subject: Re: [PATCH v4 01/10] scsi: ufs: Rename flags pm_op_in_progress and
+ is_sys_suspended
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
+ <1624433711-9339-2-git-send-email-cang@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <71e7d714-8cb9-1f57-9035-e43c147b5c61@acm.org>
+Date:   Thu, 24 Jun 2021 10:32:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c2d7a69a-386e-6f44-71c2-eb9a243c3a78@amd.com>
+In-Reply-To: <1624433711-9339-2-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021, Tom Lendacky wrote:
-> > 
-> > Here's an explanation of the physical address reduction for bare-metal and
-> > guest.
-> > 
-> > With MSR 0xC001_0010[SMEE] = 0:
-> >   No reduction in host or guest max physical address.
-> > 
-> > With MSR 0xC001_0010[SMEE] = 1:
-> > - Reduction in the host is enumerated by CPUID 0x8000_001F_EBX[11:6],
-> >   regardless of whether SME is enabled in the host or not. So, for example
-> >   on EPYC generation 2 (Rome) you would see a reduction from 48 to 43.
-> > - There is no reduction in physical address in a legacy guest (non-SEV
-> >   guest), so the guest can use a 48-bit physical address
+On 6/23/21 12:35 AM, Can Guo wrote:
+> Rename pm_op_in_progress and is_sys_suspended to wlu_pm_op_in_progress and
+> is_wlu_sys_suspended accordingly.
 
-So the behavior I'm seeing is either a CPU bug or user error.  Can you verify
-the unexpected #PF behavior to make sure I'm not doing something stupid?
+Can the pm_op_in_progress variable be removed if the UFS driver checks whether
+q->rpm_status == RPM_SUSPENDING || q->rpm_status == RPM_RESUMING instead of
+using pm_op_in_progress? The fewer state variables we maintain the lower the
+chance that these are inconsistent or incorrect. See also block/blk-pm.c for
+the code that sets q->rpm_status.
 
-Thanks!
+Thanks,
 
-> > - There is a reduction of only the encryption bit in an SEV guest, so
-> >   the guest can use up to a 47-bit physical address. This is why the
-> >   Qemu command line sev-guest option uses a value of 1 for the
-> >   "reduced-phys-bits" parameter.
-> > 
-> 
-> The guest statements all assume that NPT is enabled.
-> 
-> Thanks,
-> Tom
+Bart.
