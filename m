@@ -2,90 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45D5B3B38CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 23:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878AD3B38D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 23:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232805AbhFXVgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 17:36:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51896 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232760AbhFXVgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 17:36:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E239613C8;
-        Thu, 24 Jun 2021 21:34:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624570442;
-        bh=IdVDiP6+1WGD69KpQ4ecO/tfD5bBRFQpZYGTE4VGzkg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fmmttLlBHOX/lXoEZQuJ0H2dwBDmAXPubMF8us5jmhTju1TPEsnnwfgb0M3VRmUIU
-         XfpkBR4bA7bjYxAMGMFI4yvyauaWGLBU9m6pcByF7EU9y5zxYkm64uJQZPkloicoSV
-         /dh99vPYceqmaZLiYiWJkwkeolU8eWZPxF9HuCQ+xnhgNTN2MUoe6T7Gq7uYXI9sXF
-         MInstLluHiBQ0xQeeurgCLCwP3cq0lXI47ZnD8wj6Z1iu2xpVzHGjYy1Mqq6MGgfOo
-         PaTZABsDo+le9spomSJU75yYTK/aTBubEjM8fXvs19yqhjPg8Z0CUxJAVvx5ZXSKYq
-         4Kmo9E31uus9g==
-Received: by pali.im (Postfix)
-        id 6019552D; Thu, 24 Jun 2021 23:34:02 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH 3/3] PCI: aardvark: Increase polling delay to 1.5s while waiting for PIO response
-Date:   Thu, 24 Jun 2021 23:33:45 +0200
-Message-Id: <20210624213345.3617-4-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210624213345.3617-1-pali@kernel.org>
-References: <20210624213345.3617-1-pali@kernel.org>
+        id S232677AbhFXVgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 17:36:47 -0400
+Received: from mail-il1-f172.google.com ([209.85.166.172]:46984 "EHLO
+        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232460AbhFXVgp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 17:36:45 -0400
+Received: by mail-il1-f172.google.com with SMTP id i12so7770055ila.13;
+        Thu, 24 Jun 2021 14:34:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lA9u/NU6RXqXrtO+WlVIvTvKekwJRd3nPzF7YBgfJeI=;
+        b=NsQOVq/116pZ8WOdBwAmJ3264eqBjxCyXK70juND4ZwAeOID9ZKaKsumYMAQSJpcrD
+         y9iJCgn4p7nVGVSdNxBccgleWObRMhjtHvgl+wb71qf/nm6kPlFFptnCkBWUnirDOcf3
+         PsckGJ/HIKIlWp6OtXc13jnRRPdjOTPdRCTCLOh9sA+b0sRB+/ti4N9x2OmsEVWIeO6w
+         D+FkW6JNXka5K6ZWkJXAY9NV9JGUMvbD7JeFBNeZ/p1pfIkK1jdXjbRtLRnqmP1SsMKn
+         gZxNLRhaw7pblyYQcMilPmVs6yGBcJy6bHgMVSOMEeV662znAlUyDhDuTYPcU5vluZsO
+         c+1g==
+X-Gm-Message-State: AOAM530YNoOmTUBLooj+EPwpH6KQRVcs2LKD6CmNWfFhgwVV/R4dtU8h
+        okalISu52HlXCIhuv40jP5kA97DJBA==
+X-Google-Smtp-Source: ABdhPJxP+3zxw6fnxzDP+ne8xz4SO2x8bXnM36vvMiioO4ws8dPCA0v8WTJALCRARGKJfh1BiNnYBw==
+X-Received: by 2002:a05:6e02:1147:: with SMTP id o7mr3727553ill.97.1624570465718;
+        Thu, 24 Jun 2021 14:34:25 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id c22sm2022425ioz.24.2021.06.24.14.34.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 14:34:24 -0700 (PDT)
+Received: (nullmailer pid 2024761 invoked by uid 1000);
+        Thu, 24 Jun 2021 21:34:21 -0000
+Date:   Thu, 24 Jun 2021 15:34:21 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Olivier Dautricourt <olivier.dautricourt@orolia.com>
+Cc:     Stefan Roese <sr@denx.de>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        dmaengine@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: dma: altera-msgdma: make response port
+ optional
+Message-ID: <20210624213421.GA2024713@robh.at.kernel.org>
+References: <cover.1623898678.git.olivier.dautricourt@orolia.com>
+ <fb28146a23a182be9e5435c1d3e5cac36b372294.1623898678.git.olivier.dautricourt@orolia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fb28146a23a182be9e5435c1d3e5cac36b372294.1623898678.git.olivier.dautricourt@orolia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Measurements in different conditions showed that aardvark hardware PIO
-response can take up to 1.44s. Increase wait timeout from 1ms to 1.5s to
-ensure that we do not miss responses from hardware. After 1.44s hardware
-returns errors (e.g. Completer abort).
+On Thu, 17 Jun 2021 21:52:32 +0200, Olivier Dautricourt wrote:
+> Response port is not required in some configuration of the IP core.
+> 
+> Signed-off-by: Olivier Dautricourt <olivier.dautricourt@orolia.com>
+> ---
+>  Documentation/devicetree/bindings/dma/altr,msgdma.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
 
-The previous two patches fixed checking for PIO status, so now we can use
-it to also catch errors which are reported by hardware after 1.44s.
-
-After applying this patch, kernel can detect and print PIO errors to dmesg:
-
-    [    6.879999] advk-pcie d0070000.pcie: Non-posted PIO Response Status: CA, 0xe00 @ 0x100004
-    [    6.896436] advk-pcie d0070000.pcie: Posted PIO Response Status: COMP_ERR, 0x804 @ 0x100004
-    [    6.913049] advk-pcie d0070000.pcie: Posted PIO Response Status: COMP_ERR, 0x804 @ 0x100010
-    [    6.929663] advk-pcie d0070000.pcie: Non-posted PIO Response Status: CA, 0xe00 @ 0x100010
-    [    6.953558] advk-pcie d0070000.pcie: Posted PIO Response Status: COMP_ERR, 0x804 @ 0x100014
-    [    6.970170] advk-pcie d0070000.pcie: Non-posted PIO Response Status: CA, 0xe00 @ 0x100014
-    [    6.994328] advk-pcie d0070000.pcie: Posted PIO Response Status: COMP_ERR, 0x804 @ 0x100004
-
-Without this patch kernel prints only a generic error to dmesg:
-
-    [    5.246847] advk-pcie d0070000.pcie: config read/write timed out
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Cc: stable@vger.kernel.org # 7fbcb5da811b ("PCI: aardvark: Don't rely on jiffies while holding spinlock")
----
- drivers/pci/controller/pci-aardvark.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-index a37ba86f1b2d..3f3c72927afb 100644
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -166,7 +166,7 @@
- #define PCIE_CONFIG_WR_TYPE0			0xa
- #define PCIE_CONFIG_WR_TYPE1			0xb
- 
--#define PIO_RETRY_CNT			500
-+#define PIO_RETRY_CNT			750000 /* 1.5 s */
- #define PIO_RETRY_DELAY			2 /* 2 us*/
- 
- #define LINK_WAIT_MAX_RETRIES		10
--- 
-2.20.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
