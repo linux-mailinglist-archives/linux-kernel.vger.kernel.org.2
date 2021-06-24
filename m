@@ -2,161 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0311B3B3251
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0893B3252
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbhFXPLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 11:11:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230170AbhFXPLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 11:11:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66DDD613C3;
-        Thu, 24 Jun 2021 15:09:14 +0000 (UTC)
-Date:   Thu, 24 Jun 2021 16:09:11 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Chen Huang <chenhuang5@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mm <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
-Message-ID: <20210624150911.GA25097@arm.com>
-References: <da9c2fa9-a545-0c48-4490-d6134cc31425@huawei.com>
- <20210623132223.GA96264@C02TD0UTHF1T.local>
- <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
- <YNP6/p/yJzLLr8M8@casper.infradead.org>
- <YNQuZ8ykN7aR+1MP@infradead.org>
- <YNRpYli/5/GWvaTT@casper.infradead.org>
+        id S231846AbhFXPLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 11:11:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230170AbhFXPLl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 11:11:41 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2137DC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 08:09:22 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624547359;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FTPlyZZs2FifZdWVdfP+4lRr0rUdIdp2WuY312j4FxU=;
+        b=dWm5bAU5Yi8VXV54HsAgewZPVFT1A7YVHCbV8escPtdtiL1VVZWIA18mVnbFPDYVLD7edG
+        9D7bj6UUVO4hYYLjMGnN6vblJK5vQnLrbWqHVRmjgf9owdzP2OdM4I0/X0Xtx6kk+5RKPI
+        AZphiR61J3EEm3MoyDzsFJKw0xLnEwNyctZPnU54B9rQDD8AvwzOADDdvXtQdNKN8GOXxf
+        fDLyXAo7la+xnow8i5DiG821HY1wG1njpHeCmyhoo1pDtEbaHt8iicEu5quS2AB3CA/FyY
+        +9vKU1aFpVYr9cMjrnrw1U9rLDjImj8CpJ3kskayGx47TvFRkS5od3U5svXqtg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624547359;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FTPlyZZs2FifZdWVdfP+4lRr0rUdIdp2WuY312j4FxU=;
+        b=aMFOn1Si3DEwaZA2o/cCytSgjlbAzhjoympaByADi3+VuzjxGevC84wyC75t5/gq33jUu+
+        93n1ZubSIGJKpIDA==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Chang Seok Bae <chang.seok.bae@intel.com>,
+        Megha Dey <megha.dey@linux.intel.com>,
+        Oliver Sang <oliver.sang@intel.com>
+Subject: [PATCH] x86/fpu/xstate: Clear xstate header in copy_xstate_to_uabi_buf() again
+In-Reply-To: <20210623121452.805327286@linutronix.de>
+References: <20210623120127.327154589@linutronix.de> <20210623121452.805327286@linutronix.de>
+Date:   Thu, 24 Jun 2021 17:09:18 +0200
+Message-ID: <875yy3wb8h.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNRpYli/5/GWvaTT@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 12:15:46PM +0100, Matthew Wilcox wrote:
-> On Thu, Jun 24, 2021 at 08:04:07AM +0100, Christoph Hellwig wrote:
-> > On Thu, Jun 24, 2021 at 04:24:46AM +0100, Matthew Wilcox wrote:
-> > > On Thu, Jun 24, 2021 at 11:10:41AM +0800, Chen Huang wrote:
-> > > > In userspace, I perform such operation:
-> > > > 
-> > > >  	fd = open("/tmp/test", O_RDWR | O_SYNC);
-> > > >         access_address = (char *)mmap(NULL, uio_size, PROT_READ, MAP_SHARED, uio_fd, 0);
-> > > >         ret = write(fd, access_address + 2, sizeof(long));
-> > > 
-> > > ... you know that accessing this at unaligned offsets isn't going to
-> > > work.  It's completely meaningless.  Why are you trying to do it?
-> > 
-> > We still should not cause an infinite loop in kernel space due to a
-> > a userspace programmer error.
-> 
-> They're running as root and they've mapped some device memory.  We can't
-> save them from themself.  Imagine if they'd done this to the NVMe BAR.
+The change which made copy_xstate_to_uabi_buf() usable for
+[x]fpregs_get() removed the zeroing of the header which means the
+header, which is copied to user space later, contains except for the
+xfeatures member random stack content.
 
-Ignoring the MMIO case for now, I can trigger the same infinite loop
-with MTE (memory tagging), something like:
+Add the memset() back to zero it before usage.
 
-	char *a;
+Fixes: eb6f51723f03 ("x86/fpu: Make copy_xstate_to_kernel() usable for [x]fpregs_get()")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+Changelog summary: I'm a moron.
+---
+ arch/x86/kernel/fpu/xstate.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-	a = mmap(0, page_sz, PROT_READ | PROT_WRITE | PROT_MTE,
-		 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-	/* tag 0 is the default, set tag 1 for the next 16 bytes */
-	set_tag((unsigned long)(a + 16) | (1UL << 56));
-
-	/* uaccess to a[16] expected to fail */
-	bytes = write(fd, a + 14, 8);
-
-The iov_iter_fault_in_readable() check succeeds since a[14] has tag 0.
-However, the copy_from_user() attempts an unaligned 8-byte load which
-fails because of the mismatched tag from a[16]. The loop continues
-indefinitely.
-
-copy_from_user() is not required to squeeze in as much as possible. So I
-think the 1-byte read per page via iov_iter_fault_in_readable() is not
-sufficient to guarantee progress unless copy_from_user() also reads at
-least 1 byte.
-
-We could change raw_copy_from_user() to fall back to 1-byte read in case
-of a fault or fix this corner case in the generic code. A quick hack,
-re-attempting the access with one byte:
-
-------------------8<-------------------------
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 66f7e9fdfbc4..67059071460c 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -3686,8 +3686,18 @@ ssize_t generic_perform_write(struct file *file,
- 			 * because not all segments in the iov can be copied at
- 			 * once without a pagefault.
- 			 */
--			bytes = min_t(unsigned long, PAGE_SIZE - offset,
--						iov_iter_single_seg_count(i));
-+			unsigned long single_seg_bytes =
-+				min_t(unsigned long, PAGE_SIZE - offset,
-+				      iov_iter_single_seg_count(i));
-+
-+			/*
-+			 * Check for intra-page faults (arm64 MTE, SPARC ADI)
-+			 * and fall back to single byte.
-+			 */
-+			if (bytes > single_seg_bytes)
-+				bytes = single_seg_bytes;
-+			else
-+				bytes = 1;
- 			goto again;
- 		}
- 		pos += copied;
-------------------8<-------------------------
-
-Or a slightly different hack, trying to detect if the first segment was
-crossing a page boundary:
-
-------------------8<-------------------------
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 66f7e9fdfbc4..7d1c03f5f559 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -3678,16 +3678,24 @@ ssize_t generic_perform_write(struct file *file,
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -982,6 +982,7 @@ void copy_xstate_to_uabi_buf(struct memb
+ 	unsigned int zerofrom;
+ 	int i;
  
- 		iov_iter_advance(i, copied);
- 		if (unlikely(copied == 0)) {
-+			struct iovec v = iov_iter_iovec(i);
-+
- 			/*
- 			 * If we were unable to copy any data at all, we must
--			 * fall back to a single segment length write.
-+			 * fall back to a single segment length write or a
-+			 * single byte write (for intra-page faults - arm64
-+			 * MTE or SPARC ADI).
- 			 *
- 			 * If we didn't fallback here, we could livelock
--			 * because not all segments in the iov can be copied at
--			 * once without a pagefault.
-+			 * because not all segments in the iov or data within
-+			 * a segment can be copied at once without a fault.
- 			 */
--			bytes = min_t(unsigned long, PAGE_SIZE - offset,
--						iov_iter_single_seg_count(i));
-+			if (((unsigned long)v.iov_base & PAGE_MASK) ==
-+			    ((unsigned long)(v.iov_base + bytes) & PAGE_MASK))
-+				bytes = 1;
-+			else
-+				bytes = min_t(unsigned long, PAGE_SIZE - offset,
-+					      iov_iter_single_seg_count(i));
- 			goto again;
- 		}
- 		pos += copied;
-------------------8<-------------------------
-
--- 
-Catalin
++	memset(&header, 0, sizeof(header));
+ 	header.xfeatures = xsave->header.xfeatures;
+ 
+ 	/* Mask out the feature bits depending on copy mode */
