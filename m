@@ -2,112 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0358F3B39C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 01:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCEAD3B39CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 01:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232890AbhFXXhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 19:37:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229521AbhFXXhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 19:37:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D13836137D;
-        Thu, 24 Jun 2021 23:34:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624577692;
-        bh=cFcIRSs+l1wpkVLSYjkwgNxYxHAbpyjM6dC702Ch3+s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R57W2wJgiu7M5tjbORxxmFZF8SVr1VmX//sWX4FdBJ7N2wdqBLQNXOCR7wm4NRvFF
-         M4bO2zCBN4v5TlCb49ZuqpbG6KI0c6XGqq9F1EBhgE7kqoB/iilybz7AxIOYUKTErG
-         OYwLMC41L0hlxjof72PR/iA2cPpWpx2KMUwZ4kIj1i0VxUGWkuz1K8AEKWvp9SrbUR
-         +6TYwSMmsraBuk5UFHzmhOfcTfTI1i9HpWanxGJRMNyeenKkyRRxFEvh7p8Z2BBi8H
-         m4wdzByWeeacE75cVlju8tlaWfoZfBDgBvUey4vHHh0/Th0N38RtOKDXyB1a/bd3CJ
-         V1nQcJvl/YIIw==
-Received: by pali.im (Postfix)
-        id 0A3BB8A3; Fri, 25 Jun 2021 01:34:48 +0200 (CEST)
-Date:   Fri, 25 Jun 2021 01:34:48 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
-Message-ID: <20210624233448.ouvczfbogmtnbrye@pali>
-References: <20210622115604.GA25503@lpieralisi>
- <20210622121649.ouiaecdvwutgdyy5@pali>
- <18a104a9-2cb8-7535-a5b2-f5f049adff47@lucaceresoli.net>
- <4d4c0d4d-41b4-4756-5189-bffa15f88406@ti.com>
- <20210622205220.ypu22tuxhpdn2jwz@pali>
- <2873969e-ac56-a41f-0cc9-38e387542aa1@lucaceresoli.net>
- <20210622211901.ikulpy32d6qlr4yw@pali>
- <588741e4-b085-8ae2-3311-27037c040a57@lucaceresoli.net>
- <20210622222328.3lfgkrhsdy6izedv@pali>
- <CACRpkdai2cvoNFR8yH2MHP+R27nQm1HZNK4-mJ50mE7DHrBmXw@mail.gmail.com>
+        id S232695AbhFXXou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 19:44:50 -0400
+Received: from mail-pg1-f172.google.com ([209.85.215.172]:41611 "EHLO
+        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhFXXor (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 19:44:47 -0400
+Received: by mail-pg1-f172.google.com with SMTP id u190so6062967pgd.8;
+        Thu, 24 Jun 2021 16:42:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Q4KvsDRCAo0bmbM75TlWBAKQaF/UlLGslOyWVCtR9PY=;
+        b=LzoLVUuJkJqMV3aP66SH6rdtNsRzRkS8+Byt97nyaadlvtUmX80TCgK402NMzbHVxH
+         djGVhkFFMG7OdbzmSU+d4HX5GpN6cESU0ry8xVQyoBhX4AXuTsMxW37NZlcB2uDrcdjn
+         xfz4EguhfJ7Ty7jDP+V5+tHU8ReGhemY7yCubU+yJWav8lCGorzUwoPgezXmkRGIfEhh
+         tA4/uWBW09t9WDZIsTdhjr0Dbv1WmlZMy5YbrkvU3XKjPGLls1FyviMTT0phAExYyB0U
+         QFYt4387D90hYTf6gIz7ANKtf1AgaU7clyymKW3PFekcqMJ+JitGVgc5HfBX/+l+k/ir
+         HU3g==
+X-Gm-Message-State: AOAM532aPm2mvSTtc+Z4ePCuBcMLERdx5BE7rAMvGuieu4ZyMMHWQlmF
+        UWJzQqGVvVZPnXqaNbYjwvKR3jfJ/JqEQQ==
+X-Google-Smtp-Source: ABdhPJwnsnFl9ZagfiALgc+cYcg05o/+hOblazqtfmyqQDTIJBW4DbXSCmxOpnf8C2bCPebs3J1TMw==
+X-Received: by 2002:a05:6a00:1146:b029:2fe:d681:fbcc with SMTP id b6-20020a056a001146b02902fed681fbccmr7665994pfm.31.1624578146818;
+        Thu, 24 Jun 2021 16:42:26 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id n33sm3343362pgm.55.2021.06.24.16.42.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 16:42:25 -0700 (PDT)
+Subject: Re: [PATCH v4 01/10] scsi: ufs: Rename flags pm_op_in_progress and
+ is_sys_suspended
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
+ <1624433711-9339-2-git-send-email-cang@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <cb39c5d7-c21d-66b1-0a86-f9154f73a94e@acm.org>
+Date:   Thu, 24 Jun 2021 16:42:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <1624433711-9339-2-git-send-email-cang@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdai2cvoNFR8yH2MHP+R27nQm1HZNK4-mJ50mE7DHrBmXw@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 25 June 2021 01:18:43 Linus Walleij wrote:
-> On Wed, Jun 23, 2021 at 12:23 AM Pali Rohár <pali@kernel.org> wrote:
-> 
-> > Lorenzo asked a good question how GPIO drives PERST#. And maybe it would
-> > be a good idea to unify all pci controller drivers to use same GPIO
-> > value for asserting PERST# pin. If it is possible. As we can see it is a
-> > big mess.
-> >
-> > Personally I would like to a see two helper functions like
-> >
-> >   void pcie_assert_perst(struct gpio_desc *gpio);
-> >   void pcie_deassert_perst(struct gpio_desc *gpio);
-> >
-> > which pci controller driver will use and we will not more handle active
-> > high / low state or polarity inversion and meditate if gpio set to zero
-> > means assert or de-assert.
-> 
-> GPIO descriptors (as are used in this driver) are supposed to hide
-> and encapsulate polarity inversion so:
-> 
-> gpiod_set_value(gpiod, 1) == assert the line
-> gpiod_set_value(gpiod, 0) == de-assert the line
+On 6/23/21 12:35 AM, Can Guo wrote:
+> Rename pm_op_in_progress and is_sys_suspended to wlu_pm_op_in_progress and
+> is_wlu_sys_suspended accordingly.
 
-Problem is that some pci controller drivers (e.g. pci-j721e.c or
-pcie-rockchip-host.c) expects that gpiod_set_value_cansleep(gpiod, 1)
-de-asserts the line and it is already used in this way.
+Can the is_wlu_sys_suspended member variable be removed by checking
+dev->power.is_suspended where dev represents the WLUN?
 
-Which is opposite of the behavior which you wrote above.
+Thanks,
 
-> Whether the line is asserted by physically driving the line low or
-> high should not be a concern, that is handled in the machine
-> description, we support OF, ACPI and even board files to
-> define this.
-> 
-> I would use gpiod_set_value() directly as above and maybe
-> add some comments explaining what is going on and that
-> the resulting polarity inversion is handled inside gpiolib.
-> 
-> Because of common misunderstandings we have pondered to just
-> search/replace the last argument of gpiod_set_value() from
-> an (int value) to a (bool asserted) to make things clear.
-> I just never get around to do that.
-
-I would suggest to define enum/macro with word ASSERT and DEASSERT in
-its name instead of just true/false boolean or 0/1 int.
-
-In case of this PERST# misunderstanding, having assert/deassert in name
-should really help.
-
-> 
-> Yours,
-> Linus Walleij
+Bart.
