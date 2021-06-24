@@ -2,112 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8873B2C93
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5CC3B2C9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232176AbhFXKmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 06:42:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbhFXKmT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 06:42:19 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79DEC061574;
-        Thu, 24 Jun 2021 03:40:00 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id c5so4792726pfv.8;
-        Thu, 24 Jun 2021 03:40:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v2nueDFN3sIUezwAZTq4ZWYAx08fjXKv4iNtaPXarDA=;
-        b=mhmJm3rC5l98CLp97BJhCX6M5px6gRr0k5qBRMbEmQMmZs//HLTPQ1IAHBYs8TlzWC
-         XDgyddHepQofYbWc/+LAEXMIihPPX8XQ0uoC54Kqfbg/S1thl+NkJpK1nJ3jXZSdP67D
-         QXoxcD+Rc8A1izn5yZrr00MK9OASLRpLickqFT5tXH10RGq1lTYxHketHxBnH5/lTGmf
-         V3bmxsmwzWZImT8+Dr2NPBKxOdP6zVQC/TYW0URB+aN93d4DplGReIVJ/3Y16PcK/izY
-         yO6P8lDtmc7QCWp4Fp6RAe2dbzpeDcCs0kFLpagRSsDVZa4wgOybzyiO1qj3EZZ3P8TX
-         md2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v2nueDFN3sIUezwAZTq4ZWYAx08fjXKv4iNtaPXarDA=;
-        b=kNg3IQxVglrbOkrXKpe530plUo7SO/8kZFinjOW5B9b3yghWTas1dN5+QS6IAjpN5Z
-         BCE8Bu8j7KVErjmEPIpzpoqANH02TsWW+D7M6ywhoIqRmSTyWLPYBdQfXDSfVetLLltF
-         ImYCJ6D7KbhF6Yj0d/mf9DSr84vYMGEtIImW6kC5702aucZQ8PhIx+GP2uvxLoqA6UPJ
-         QuXBel3guvvjYTioMjjxlePFxEYJI7WQx95w/Wx6dYbMYVLWHFJLj4AfnBQyAo7kdNUb
-         BsTfK4bk3GjM7+TaiKY9oyfyNDEguucKB67pxeofl0peKkFZZ+qWejGXSSmMmwcwZ9At
-         XIFA==
-X-Gm-Message-State: AOAM532Fu2NdT6g1wMNsR8X9KN3eOpsq2d9oFzcKrIVpKFHHlaXx4Glc
-        I7VI/qflb+V0706rI/JBTsdDEgkfHBKQbz4gQOg=
-X-Google-Smtp-Source: ABdhPJwPOnctZ3dJHDJ4KduItbbDZUCLsUq5ipRDaV8PWp32E7mzKYiwf16T6sdcPH7NzadTMdXGGcOPkeb0JF99vK8=
-X-Received: by 2002:a63:fd16:: with SMTP id d22mr4168264pgh.203.1624531200201;
- Thu, 24 Jun 2021 03:40:00 -0700 (PDT)
+        id S231952AbhFXKnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 06:43:37 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:45745 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230008AbhFXKnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 06:43:33 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624531274; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=/2Zk5R1tA/Y+vHgERNReTA4Bg9VjltrQTBXdKggxMXc=; b=MPDX0vYsCQdBgxP0MrinDCQeg1dHh4arQFuj5xEoFr5gXe93yzETsNcJAWdqYARKOsLATMrf
+ /v6xyJjTeZxfv4vUKCgUVs1wjcv5iooPtsd2lZX/GgsJ8+84J1RJGT49uGlCwjicZ1uHxxCb
+ gToJtNEoOaSbtQsJ21K/vWsxEZU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60d46149ec0b18a745e9d3ba (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Jun 2021 10:41:13
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2BA47C4338A; Thu, 24 Jun 2021 10:41:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 00543C433F1;
+        Thu, 24 Jun 2021 10:41:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 00543C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Liwei Song <liwei.song@windriver.com>
+Cc:     Luca Coelho <luciano.coelho@intel.com>,
+        David <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iwlwifi: select MAC80211_LEDS conditionally
+References: <20210624100823.854-1-liwei.song@windriver.com>
+Date:   Thu, 24 Jun 2021 13:41:05 +0300
+In-Reply-To: <20210624100823.854-1-liwei.song@windriver.com> (Liwei Song's
+        message of "Thu, 24 Jun 2021 18:08:23 +0800")
+Message-ID: <87sg17ilz2.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210624100046.1037159-1-nsaenzju@redhat.com>
-In-Reply-To: <20210624100046.1037159-1-nsaenzju@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 24 Jun 2021 13:39:23 +0300
-Message-ID: <CAHp75VcG-0L+qG5JirWH21bnpVwRv_wfjM6Sfd2pJrq4-OqJ0Q@mail.gmail.com>
-Subject: Re: [PATCH] iio: chemical: atlas-sensor: Avoid using irq_work
-To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Matt Ranostay <matt.ranostay@konsulko.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 1:01 PM Nicolas Saenz Julienne
-<nsaenzju@redhat.com> wrote:
+Liwei Song <liwei.song@windriver.com> writes:
+
+> MAC80211_LEDS depends on LEDS_CLASS=y or LEDS_CLASS=MAC80211,
+> add condition to enable it in iwlwifi/Kconfig to avoid below
+> compile warning when LEDS_CLASS was set to m:
 >
-> The atlas sensor driver currently registers a threaded IRQ handler whose
-> sole responsibility is to trigger an irq_work which will in turn run
-> iio_trigger_poll() in IRQ context.
+> WARNING: unmet direct dependencies detected for MAC80211_LEDS
+>   Depends on [n]: NET [=y] && WIRELESS [=y] && MAC80211 [=y] && (LEDS_CLASS [=m]=y || LEDS_CLASS [=m]=MAC80211 [=y])
+>   Selected by [m]:
+>   - IWLWIFI_LEDS [=y] && NETDEVICES [=y] && WLAN [=y] && WLAN_VENDOR_INTEL [=y] && IWLWIFI [=m] && (LEDS_CLASS [=m]=y || LEDS_CLASS [=m]=IWLWIFI [=m]) && (IWLMVM [=m] || IWLDVM [=m])
 >
-> This seems overkill given the fact that there already was a opportunity
+> Signed-off-by: Liwei Song <liwei.song@windriver.com>
 
-an opportunity
-
-> to run iio_trigger_poll() in IRQ context in the top half of the IRQ
-> handler. So make use of it, ultimately avoiding a context switch, an
-> IPI, and reducing latency.
-
-...
-
-> @@ -474,7 +465,7 @@ static irqreturn_t atlas_interrupt_handler(int irq, void *private)
->         struct iio_dev *indio_dev = private;
->         struct atlas_data *data = iio_priv(indio_dev);
->
-> -       irq_work_queue(&data->work);
-> +       iio_trigger_poll(data->trig);
-
-Have you considered dropping atlas_interrupt_trigger_ops() altogether?
-
->         return IRQ_HANDLED;
-
-...
-
->         if (client->irq > 0) {
->                 /* interrupt pin toggles on new conversion */
->                 ret = devm_request_threaded_irq(&client->dev, client->irq,
-
-> -                               NULL, atlas_interrupt_handler,
-> +                               atlas_interrupt_handler, NULL,
-
-So, you move it from threaded IRQ to be a hard IRQ handler (we have a
-separate call for this).
-Can you guarantee that handling of those events will be fast enough?
-
->                                 IRQF_TRIGGER_RISING |
->                                 IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
->                                 "atlas_irq",
-
+Is this is a new regression or an old bug? What commit caused this?
 
 -- 
-With Best Regards,
-Andy Shevchenko
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
