@@ -2,113 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4B23B2F73
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E2D3B2F75
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231742AbhFXM5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 08:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231262AbhFXM5J (ORCPT
+        id S231765AbhFXM6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 08:58:07 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60536 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230236AbhFXM6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 08:57:09 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC5FC061574;
-        Thu, 24 Jun 2021 05:54:50 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c1e00b0ee742129e64455.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:1e00:b0ee:7421:29e6:4455])
+        Thu, 24 Jun 2021 08:58:06 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 92BE421986;
+        Thu, 24 Jun 2021 12:55:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624539346; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dLLHFzfm50RSkiAjN/HrgY4nObJsrbvcWNrlMkDYW74=;
+        b=mG7SQoudASw5dBgrwS/TBK1WY4Bj6UX2q4Ha6iipzhvRZIJD7gzd/pUbIG6NA5mlUTnGUB
+        3OFlMSdOKjSnj83aAyuyISUNPa+jmkMQ++cO0K7+4mn5DpFnbqTBnVf8596uhV4jLR5YLx
+        mteyO7Ay3U2gdMa+d2Z3OUwDF9oNcc8=
+Received: from suse.cz (unknown [10.100.224.162])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 935E01EC034B;
-        Thu, 24 Jun 2021 14:54:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1624539288;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=exWGaN5nlDIIfjw6LKdL5i6bEdP3AlfmgKU5Qi35VZs=;
-        b=OH1tJ1FWIwOyqk5pV85F5ISFN32aCDPduQ56E4e2jBVYcAbLhc0k5JTE+UAy+Gb/l4bjer
-        2TbZqRl2XDUp7GrXFn0hfpBqzyIwDdJKoBHOLDBPQ3gyuslhsDz2N/IZaxZ/JW9Kqam6h6
-        qOAkZxpCS9rabjOWu5AiS3lx0aUfhL0=
-Date:   Thu, 24 Jun 2021 14:54:44 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com
-Subject: Re: [PATCH Part1 RFC v3 20/22] x86/boot: Add Confidential Computing
- address to setup_header
-Message-ID: <YNSAlJnXMjigpqu1@zn.tnic>
-References: <20210602140416.23573-1-brijesh.singh@amd.com>
- <20210602140416.23573-21-brijesh.singh@amd.com>
- <YMw4UZn6AujpPSZO@zn.tnic>
- <15568c80-c9a9-5602-d940-264af87bed98@amd.com>
- <YMy2OGwsRzrR5bwD@zn.tnic>
- <162442264313.98837.16983159316116149849@amd.com>
- <YNMLX6fbB3PQwSpv@zn.tnic>
- <20210624031911.eznpkbgjt4e445xj@amd.com>
- <YNQz7ZxEaSWjcjO2@zn.tnic>
- <20210624123447.zbfkohbtdusey66w@amd.com>
+        by relay1.suse.de (Postfix) with ESMTPS id 6713B25CCD;
+        Thu, 24 Jun 2021 12:55:46 +0000 (UTC)
+Date:   Thu, 24 Jun 2021 14:55:45 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v3 2/6] printk: track/limit recursion
+Message-ID: <YNSA0cuioVGMPe0d@alley>
+References: <20210624111148.5190-1-john.ogness@linutronix.de>
+ <20210624111148.5190-3-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210624123447.zbfkohbtdusey66w@amd.com>
+In-Reply-To: <20210624111148.5190-3-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 07:34:47AM -0500, Michael Roth wrote:
-> Well, that's sufficient for the boot/compressed->uncompressed parameter
-> passing, but wouldn't actual bootloaders still need something in
-> setup_data/setup_header to pass in the CC blob (for things like non-EFI
-> environments/containers)? I was under the impression that using
-> boot_params directly was more of a legacy/ad-hoc thing, is that
-> accurate?
+On Thu 2021-06-24 13:17:44, John Ogness wrote:
+> Currently the printk safe buffers provide a form of recursion
+> protection by redirecting to the safe buffers whenever printk() is
+> recursively called.
+> 
+> In preparation for removal of the safe buffers, provide an alternate
+> explicit recursion protection. Recursion is limited to 3 levels
+> per-CPU and per-context.
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-/me goes and rereads your early mail.
+It looks pretty straightforward.
 
-I'm more confused.
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-You're talking about parsing an EFI table early which contains the
-ccblob and in it is the CPUID page.
-
-Now above you say, "non-EFI environments".
-
-I'm guessing you want to support both so you want to either parse an EFI
-table on EFI environments or pass the blob in a different way in non-EFI
-envs. Yes, no?
-
-Also, you want to pass the previously parsed CPUID page address to
-kernel proper. For that I suggested to use boot_params.
-
-What else?
-
-How about you explain in a lot more detail what exactly the requirements
-and the use cases are so that we can have a common base to discuss it
-on.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Best Regards,
+Petr
