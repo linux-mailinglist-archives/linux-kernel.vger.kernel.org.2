@@ -2,111 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4046D3B26AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 07:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC933B26B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 07:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhFXFR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 01:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhFXFR0 (ORCPT
+        id S230130AbhFXFTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 01:19:36 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:33311 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229853AbhFXFTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 01:17:26 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A39C061574;
-        Wed, 23 Jun 2021 22:15:07 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id n99-20020a9d206c0000b029045d4f996e62so4391065ota.4;
-        Wed, 23 Jun 2021 22:15:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ygVK/gHTe32gLfYg+HdMiky3oi3YqC6Bf5Vvmj5Zl+8=;
-        b=sBvyWoSY43NEdsQuD2mpylbcW+pJ2OA/rEmAizwqasIEpG7j1cRvGQdQqkQOkkEPoD
-         jpE3P/r6WjYYSBbhSZBQH6KGNMohNQcO6+z0iK2Y95X5k2ZgaK7/kVwW21/1M+cZLOLm
-         +pn6HwIxlO4hGsf5ZyX5tUteSuhW447ykhqPhjxNjA2CpPvDIuWE0ZHcKy0SJZ4TMHSg
-         xnowYIvUE235ox1gs2Dvrv6cr1JQaAvNcLP4tx15fIPWZ7xE52ILxsqbcgn65ydkxTP5
-         IMNUkvi+5B9Qm7Ecw4HlIRVwE4W6ToiloA4yHh0q5xsFy3CKA58Lox3+wgbW4c+YcAHb
-         UevQ==
+        Thu, 24 Jun 2021 01:19:34 -0400
+Received: by mail-il1-f198.google.com with SMTP id r8-20020a92cd880000b02901ee2da1ca6eso3376407ilb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 22:17:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ygVK/gHTe32gLfYg+HdMiky3oi3YqC6Bf5Vvmj5Zl+8=;
-        b=QW+0+pCUrM/1LjCNEA64uLhtEKrvZO7DLtV++B7Li2zFN1TYsxEHnwdBYJtyLgh1Nq
-         H2Tw5iFsj2scwEKB6YagkEL5aw1HxHII4+lsrqPeTDRiMaGmoUhQrAj7msduIto323v6
-         BI52A/sxgn3FIcCCJ25iP5Xdq9X+rsg6+1e4F0RkBzStcL8XUdJpSmT9/wn9v4WnLj/n
-         avVsNo86FSNobD3443l+Pcb54yafP/MOwkZEmAbZ+eTZ0nMv+UHCgdE15QTCpnIX9yFn
-         SpVC6bDUUHzj1Y/KcoKvzRuYHfx9903KnNPTIMa1y2lu+qHKmlm9LOSUd7bwfdWly0Ay
-         JCaw==
-X-Gm-Message-State: AOAM530fg++bvMgXNOaZt8TJx2UkWzuOnzDLtyakeyXOTTuzRP1B8gqb
-        Sgz6Uz7ZFE+Q7oBjsUnLgRY=
-X-Google-Smtp-Source: ABdhPJzFTXWfeFhKgI+SmmsouB3/cWaqzN1wX0lKKpc8lOfLNfz97zh7StsBeRMv+x1D6+Quas1v3Q==
-X-Received: by 2002:a05:6830:4cf:: with SMTP id s15mr3108209otd.72.1624511706557;
-        Wed, 23 Jun 2021 22:15:06 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.38])
-        by smtp.googlemail.com with ESMTPSA id 61sm62037otl.30.2021.06.23.22.15.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 22:15:06 -0700 (PDT)
-Subject: Re: [PATCH 1/4] net: if_arp: add ARPHRD_PUREIP type
-To:     Rocco Yue <rocco.yue@mediatek.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org,
-        wsd_upstream@mediatek.com, chao.song@mediatek.com,
-        kuohong.wang@mediatek.com
-References: <YNNtN3cdDL71SiNt@kroah.com>
- <20210624033353.25636-1-rocco.yue@mediatek.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <020403ac-0c2a-4ad8-236b-d32e59aef772@gmail.com>
-Date:   Wed, 23 Jun 2021 23:15:03 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=a81u++oh9Pymi9za1s3ypkv0h8XEnKJ5RZuU4f/BFec=;
+        b=TGF3BTjYTRUjBUzAsGdIRrPkiq/ZVyENAtd5gm3gIg9uvc4AQfyLyu7Xzbg6zmMZYr
+         zBsyOJEOlpxIpgcYMif/oK7jcfH9BcRVYzLOKUSuoOOS8YigZiZ2KhJsG1MbBQDlzSdI
+         OzL8q+vtSDdY0zyV0jyGSjC+LaYEHlt7B2IwNenuuogHnSE9Eoe1dGFwUiIHYf4+/WUU
+         vtnvCyrnuUjtwBzHfVJ8RlxP52RWdmKw/mF7Prq+H+Tyb3jXtZQMBQSdaDdwMedZR7O6
+         dhg6YzGu0u9KTg5pbKIcrZlMBXWnTsw3oUWX4JVhgMYzo8Lf2CfXkRZzrEpB18rz49Ti
+         Yfhw==
+X-Gm-Message-State: AOAM531VlX7HzC1GCm3SNJy3nQaHhfhNdog6wO+Oa81N647MfZZ4x10S
+        /4muBMNT28SgxELySXau6z8v5vPPxTlDTD+VPiVq5rtFvLTX
+X-Google-Smtp-Source: ABdhPJyTuZiNhr6gvdFfBm/ajJWD30CNwXz1+WuBVFi0bwZzODg1U/2AaOweFNXPpNZtFIgWayvObs0kOv9VixQydFh7IGZr+EmY
 MIME-Version: 1.0
-In-Reply-To: <20210624033353.25636-1-rocco.yue@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6602:1243:: with SMTP id o3mr2625484iou.13.1624511836281;
+ Wed, 23 Jun 2021 22:17:16 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 22:17:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ef5d1b05c57c2262@google.com>
+Subject: [syzbot] KASAN: out-of-bounds Read in do_exit
+From:   syzbot <syzbot+b80bbdcca4c4dfaa189e@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, ast@kernel.org, christian@brauner.io,
+        ebiederm@xmission.com, jnewsome@torproject.org,
+        linux-kernel@vger.kernel.org, minchan@kernel.org, oleg@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 9:33 PM, Rocco Yue wrote:
-> 
-> The difference between RAWIP and PUREIP is that they generate IPv6
-> link-local address and IPv6 global address in different ways.
-> 
-> RAWIP:
-> ~~~~~~
-> In the ipv6_generate_eui64() function, using RAWIP will always return 0,
-> which will cause the kernel to automatically generate an IPv6 link-local
-> address in EUI64 format and an IPv6 global address in EUI64 format.
-> 
-> PUREIP:
-> ~~~~~~~
-> After this patch set, when using PUREIP, kernel doesn't generate IPv6
-> link-local address regardless of which IN6_ADDR_GEN_MODE is used.
-> 
-> @@  static void addrconf_dev_config(struct net_device *dev)
-> +       if (dev->type == ARPHRD_PUREIP)
-> +               return;
-> 
-> And after recving RA message, kernel iterates over the link-local address
-> that exists for the interface and uses the low 64bits of the link-local
-> address to generate the IPv6 global address.
-> The general process is as follows:
-> ndisc_router_discovery() -> addrconf_prefix_rcv() -> ipv6_generate_eui64() -> ipv6_inherit_eui64()
-> 
+Hello,
 
-please add that to the commit message.
+syzbot found the following issue on:
+
+HEAD commit:    9ed13a17 Merge tag 'net-5.13-rc7' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=116c517bd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bf635d6d1c7ebabc
+dashboard link: https://syzkaller.appspot.com/bug?extid=b80bbdcca4c4dfaa189e
+compiler:       Debian clang version 11.0.1-2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b80bbdcca4c4dfaa189e@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: out-of-bounds in stack_not_used include/linux/sched/task_stack.h:101 [inline]
+BUG: KASAN: out-of-bounds in check_stack_usage kernel/exit.c:711 [inline]
+BUG: KASAN: out-of-bounds in do_exit+0x1c6b/0x23d0 kernel/exit.c:869
+Read of size 8 at addr ffffc90017d60400 by task loop0/31717
+
+CPU: 0 PID: 31717 Comm: loop0 Not tainted 5.13.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x202/0x31e lib/dump_stack.c:120
+ print_address_description+0x5f/0x3b0 mm/kasan/report.c:233
+ __kasan_report mm/kasan/report.c:419 [inline]
+ kasan_report+0x15c/0x200 mm/kasan/report.c:436
+ stack_not_used include/linux/sched/task_stack.h:101 [inline]
+ check_stack_usage kernel/exit.c:711 [inline]
+ do_exit+0x1c6b/0x23d0 kernel/exit.c:869
+ kthread+0x3b8/0x3c0 kernel/kthread.c:315
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+
+Memory state around the buggy address:
+ ffffc90017d60300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffffc90017d60380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffffc90017d60400: 07 07 07 07 07 07 07 07 00 00 00 00 00 00 00 00
+                   ^
+ ffffc90017d60480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffffc90017d60500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
