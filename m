@@ -2,151 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C69B3B3439
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D423B343C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbhFXQ6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 12:58:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229464AbhFXQ6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 12:58:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B495613DA;
-        Thu, 24 Jun 2021 16:56:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624553763;
-        bh=sPdX9JSZ1QoBwl0KfaUR+wv694Ee5eRmqS36z7b9xLE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Y8VKK6YfBzQJ5MhCmGisCYNGxAEJbmeCGqp6JDtqL1rHm6xMTH2ly+SR12Xg95ZRs
-         L9LysdnV3xJDkEPmtFRvwPtSI5MKmyHfjcPuAwNpZ44IBM6fJTKC+HwRd3urc16v+m
-         t20LiXv916JkNUd7ukxN9jFpOwCfvY1/RP9cIErSfEzpyqsIMK6coBcP7TjNVo16kn
-         BIvtog8pJD1Uu33hPLOGEL1BlWo3dRljri26DLGj2RWrxjKrMqTDZXrpjoNVcccKEz
-         71lZvicUQz0oyAQFU9oRaw3xLvr8xOnx/9Cm10gFGVwEU4beK6A6SnoqYWA+yoj07t
-         +++fGisxNK/NQ==
-Date:   Thu, 24 Jun 2021 11:56:01 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v7 4/8] PCI/sysfs: Allow userspace to query and set
- device reset mechanism
-Message-ID: <20210624165601.GA3535644@bjorn-Precision-5520>
+        id S232136AbhFXRAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 13:00:03 -0400
+Received: from mail-pl1-f172.google.com ([209.85.214.172]:41604 "EHLO
+        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229721AbhFXRAC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 13:00:02 -0400
+Received: by mail-pl1-f172.google.com with SMTP id y13so3266335plc.8;
+        Thu, 24 Jun 2021 09:57:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TfRjZvIBnPtJhX/lgcvHWYZI8ch0mIRl4NSCn+C67WM=;
+        b=Ys+Iyin2PUlvbC8bgxiZog9SBj3J3DPNJ1UnXwwtOIa005SPcB+Gz0JGfhs5svRPQu
+         n+Faaq7PuV+VluOAv5IQBAg8u4Y8ZfslG6Pz6FYHqCGmCxuhA9W0v8ZijQaF8awKfc+n
+         WpSaoCHeKKcXwG4t5RLsqFJUI4eNE7yPcs6ZDmPbUgcNfO4++fWhNtBKm0pwo8NXxvo6
+         NXNUQjdf/lmtWEzZseKuC0BitD5KE/tG5OzwRJTtN5DPbpLN7Et+MmSuFN9ssMHAElF8
+         LHReSqHO4/kWbPnTIOU3aQlZWBasS+kGtNGguwEKhxcf95uwQz/6BNGlGEPEUo8jR1iN
+         WQhw==
+X-Gm-Message-State: AOAM533u8iqnDc9WACfj3OP+r7uR5+sMyRlEySoxyEfrQEzdKGFLn3Vo
+        l96YwUDYInTTlaBD350YTPRUvB/24IU=
+X-Google-Smtp-Source: ABdhPJyva/tfDQP/x1AkV7nS3quqJUIsvyAIEb59eMLgNPdJFSnNBOYNQt62WwGAPlhnQmy8KAfMEw==
+X-Received: by 2002:a17:90a:6be6:: with SMTP id w93mr6321800pjj.171.1624553862063;
+        Thu, 24 Jun 2021 09:57:42 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id k20sm8937899pji.3.2021.06.24.09.57.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 09:57:41 -0700 (PDT)
+Subject: Re: [PATCH v4 09/10] scsi: ufs: Update the fast abort path in
+ ufshcd_abort() for PM requests
+To:     Can Guo <cang@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
+ <1624433711-9339-11-git-send-email-cang@codeaurora.org>
+ <b28d71a7-3839-2c07-2630-6196ea10951f@acm.org>
+ <5ff72cfab707b571ef395d52931edd0f@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <da7f134c-3a2a-e3b9-72a1-56a19f720c70@acm.org>
+Date:   Thu, 24 Jun 2021 09:57:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624151242.ybew2z5rseuusj7v@archlinux>
+In-Reply-To: <5ff72cfab707b571ef395d52931edd0f@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 08:42:42PM +0530, Amey Narkhede wrote:
-> On 21/06/24 07:15AM, Bjorn Helgaas wrote:
-> > On Tue, Jun 08, 2021 at 11:18:53AM +0530, Amey Narkhede wrote:
-> > > Add reset_method sysfs attribute to enable user to
-> > > query and set user preferred device reset methods and
-> > > their ordering.
-> >
-> > > +		Writing the name or comma separated list of names of any of
-> > > +		the device supported reset methods to this file will set the
-> > > +		reset methods and their ordering to be used when resetting
-> > > +		the device.
-> >
-> > > +	while ((name = strsep(&options, ",")) != NULL) {
-> > > +		if (sysfs_streq(name, ""))
-> > > +			continue;
-> > > +
-> > > +		name = strim(name);
-> > > +
-> > > +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++) {
-> > > +			if (reset_methods[i] &&
-> > > +			    sysfs_streq(name, pci_reset_fn_methods[i].name)) {
-> > > +				reset_methods[i] = prio--;
-> > > +				break;
-> > > +			}
-> > > +		}
-> > > +
-> > > +		if (i == PCI_RESET_METHODS_NUM) {
-> > > +			kfree(options);
-> > > +			return -EINVAL;
-> > > +		}
-> > > +	}
-> >
-> > Asking again since we didn't get this clarified before.  The above
-> > tells me that "reset_methods" allows the user to control the
-> > *order* in which we try reset methods.
-> >
-> > Consider the following two uses:
-> >
-> >   (1) # echo bus,flr > reset_methods
-> >
-> >   (2) # echo flr,bus > reset_methods
-> >
-> > Do these have the same effect or not?
-> >
-> They have different effect.
-
-I asked about this because Shanker's idea [1] of using two bitmaps
-only keeps track of which resets are *enabled*.  It does not keep
-track of the *ordering*.  Since you want to control the ordering, I
-think we need more state than just the supported/enabled bitmaps.
-
-> > If "reset_methods" allows control over the order, I expect them to
-> > be different: (1) would try a bus reset and, if the bus reset
-> > failed, an FLR, while (2) would try an FLR and, if the FLR failed,
-> > a bus reset.
->
-> Exactly you are right.
+On 6/23/21 9:16 PM, Can Guo wrote:
+> On 2021-06-24 05:33, Bart Van Assche wrote:
+>> On 6/23/21 12:35 AM, Can Guo wrote:
+>>> @@ -2737,7 +2737,7 @@ static int ufshcd_queuecommand(struct Scsi_Host
+>>> *host, struct scsi_cmnd *cmd)
+>>>           * err handler blocked for too long. So, just fail the scsi cmd
+>>>           * sent from PM ops, err handler can recover PM error anyways.
+>>>           */
+>>> -        if (hba->wlu_pm_op_in_progress) {
+>>> +        if (cmd->request->rq_flags & RQF_PM) {
+>>>              hba->force_reset = true;
+>>>              set_host_byte(cmd, DID_BAD_TARGET);
+>>>              cmd->scsi_done(cmd);
+>>
+>> I'm still concerned that the above code may trigger data corruption. I
+>> prefer that the above code is removed instead of being modified.
 > 
-> Now the point I was presenting was with new encoding we have to
-> write list of *all of the supported reset methods* in order for
-> example, in above example flr,bus or bus,flr. We can't just write
-> 'flr' or 'bus' then switch back to writing flr,bus/bus,flr (these
-> have different effect as mentioned earlier).
+> Removing the change will lead to deadlock when error handling prepare
+> calls pm_runtime_get_sync().
+> 
+> RQF_PM is only given to requests sent from power management operations,
+> during which the specific device/LU is suspending/resuming, meaning no
+> data transaction is ongoing. How can fast failing a PM request trigger
+> data corruption?
 
-It sounds like you're saying this sequence can't work:
+Right, the above code only affects power management requests so there is
+no risk for data corruption.
 
-  # echo flr > reset_methods
-  # echo bus,flr > reset_methods
+Thanks,
 
-But I'm afraid you'll have to walk me through the reasons why this
-can't be made to work.
-
-> Basically with new encoding an user can't write subset of reset
-> methods they have to write list of *all* supported methods
-> everytime.
-
-Why does the user have to write all supported methods?  Is that to
-preserve the fact that "cat reset_methods" always shows all the
-supported methods so the user knows what's available?
-
-I'm wondering why we can't do something like this (pidgin code):
-
-  if (option == "default") {
-    pci_init_reset_methods(dev);
-    return;
-  }
-
-  n = 0;
-  foreach method in option {
-    i = lookup_reset_method(method);
-    if (pci_reset_methods[i].reset_fn(dev, PROBE) == 0)
-      dev->reset_methods[n++] = i;           # method i supported
-  }
-  dev->reset_methods[n++] = 0;               # end of supported methods
-
-If we did something like the above, the user could always find the
-list of all methods supported by a device by doing this:
-
-  # echo default > reset_methods
-  # cat reset_methods
-
-Yes, this does call the "probe" methods several times.  I don't think
-that's necessarily a problem.
-
-Bjorn
-
-[1] https://lore.kernel.org/r/1fb0a184-908c-5f98-ef6d-74edc602c2e0@nvidia.com
+Bart.
