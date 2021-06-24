@@ -2,268 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51683B29E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FFE13B29EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231856AbhFXIJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 04:09:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23878 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231740AbhFXIJc (ORCPT
+        id S231858AbhFXIJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 04:09:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231740AbhFXIJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 04:09:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624522032;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lg6FsVmW6Dwu+F5jAmgn4jE+j0Socukp7qnrsHN3PZo=;
-        b=BkIbqmjQNKnMe7XRD/xrfCuHqFCiPHMuCPMY6H+J2ELCZy/fwLl+j/8ZhkUZ+OiWHlGgmv
-        lS09Lj8pVj+1TpC1kR/f3GpaxnM0il8idWTgAROI39pLedQ1O4yz0iOpTERoB/NKfaOweq
-        SKf25bSKfKtz+SE14ILuBYTgjY87cKk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-237-SgRoSPBvNjW5cni_-eyb5w-1; Thu, 24 Jun 2021 04:07:11 -0400
-X-MC-Unique: SgRoSPBvNjW5cni_-eyb5w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7F9491084F54;
-        Thu, 24 Jun 2021 08:07:08 +0000 (UTC)
-Received: from starship (unknown [10.40.192.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CCBA35D6A1;
-        Thu, 24 Jun 2021 08:07:03 +0000 (UTC)
-Message-ID: <43ef1a1ea488977db11d40ec9672b524ec816112.camel@redhat.com>
-Subject: Re: [PATCH 02/10] KVM: x86: APICv: fix race in
- kvm_request_apicv_update on SVM
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Jim Mattson <jmattson@google.com>
-Date:   Thu, 24 Jun 2021 11:07:02 +0300
-In-Reply-To: <6c4a69ce-595e-d5a1-7b4e-e6ce1afe1252@redhat.com>
-References: <20210623113002.111448-1-mlevitsk@redhat.com>
-         <20210623113002.111448-3-mlevitsk@redhat.com>
-         <6c4a69ce-595e-d5a1-7b4e-e6ce1afe1252@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 24 Jun 2021 04:09:36 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA82C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:07:17 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id m3so3297862wms.4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:07:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=bQUxqYvEQbwrTWwOlp2uFZwQKid1HyK+PsBGEywKHpY=;
+        b=g6764K3VIcCw92DYKTdMZuBHRgJ72tPzvbRx1mXxynnKxSX0ZOL/65BNZDSUJpTh5B
+         ahvO8Kn2ie7YcNnKfdK9B1fUVZIOgcTVuaiJunJarY4AG+iP3fIDjzHBNfw0AeE8lA3h
+         w9aLIh8v24GhWDVOVJUkgPG9WnJHKyueyTvMjZg3Ra9WfkhEwmTsaJxPsBCGm3mdN7QK
+         lLCEh+1ihXvlpbmVaeVmLethjuHjqrAd0kEaIDE76t1BQH+yLORTShklKl3DHbOa9H1v
+         5TEe3mH/tWOaNJgxcauZXQY9lAexoWY6HcNRmtBY2IsSmsdGqjWLVkDM20T8qGkccUfr
+         PEjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=bQUxqYvEQbwrTWwOlp2uFZwQKid1HyK+PsBGEywKHpY=;
+        b=E9YbISgs4aAW1UYVte66XgChP4wjNyLqfxIEOcAq4XuLxgcArhLA8ebn/xgBqvJCyq
+         aYr98uMwZwSo520jmGQNuBFaf7yaoL7EPxB95jrp5h3TV4asAMQoKfBxsVWHpTqY9kIg
+         37+QnUIf6iIss9x4aSPpXXOqq7qQZHC1iMSqUHPKCnqebzJLPeE1cDeRSBswZZZ7W2FS
+         4VR752pr8aYiPf6U1Auuu8ZkEAz4jQYhYLRFXg9YOc4Sw3t+YAviJP1Z/KNBdj1+gNG8
+         r6efW2r0gcVn0TteuMm2fCU8fsG+SnhV0i1hDM2eqjyQU9JkgceUGYknXyyddfcO/Cuc
+         YcpA==
+X-Gm-Message-State: AOAM532aIp1ezijqkw71FNhfAQ5xyiZflESmP2ZJ1Xh4KahXv6FkD4kJ
+        i9mq31Q3cHm7QuVq4M/b7XnYvg==
+X-Google-Smtp-Source: ABdhPJwsOTnSwpzVm8hMKH9H6prTnCOoRYe7RmNEfVUVOEm1yvJUlMngkwEynAChqq727y+Stp+d5Q==
+X-Received: by 2002:a1c:2601:: with SMTP id m1mr2810880wmm.185.1624522035835;
+        Thu, 24 Jun 2021 01:07:15 -0700 (PDT)
+Received: from dell (92.40.180.82.threembb.co.uk. [92.40.180.82])
+        by smtp.gmail.com with ESMTPSA id g15sm2309146wri.75.2021.06.24.01.07.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 01:07:15 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 09:07:12 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH v6 6/8] mfd: hi6421-spmi-pmic: move driver from staging
+Message-ID: <YNQ9MPXTamQL46uT@dell>
+References: <cover.1624442566.git.mchehab+huawei@kernel.org>
+ <1ad2cbbd182d18ba2cae716fb5f1497b1cabbdbe.1624442566.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1ad2cbbd182d18ba2cae716fb5f1497b1cabbdbe.1624442566.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-23 at 23:50 +0200, Paolo Bonzini wrote:
-> On 23/06/21 13:29, Maxim Levitsky wrote:
-> > +	kvm_block_guest_entries(kvm);
-> > +
-> >   	trace_kvm_apicv_update_request(activate, bit);
-> >   	if (kvm_x86_ops.pre_update_apicv_exec_ctrl)
-> >   		static_call(kvm_x86_pre_update_apicv_exec_ctrl)(kvm, activate);
-> > @@ -9243,6 +9245,8 @@ void kvm_request_apicv_update(struct kvm *kvm, bool activate, ulong bit)
-> >   	except = kvm_get_running_vcpu();
-> >   	kvm_make_all_cpus_request_except(kvm, KVM_REQ_APICV_UPDATE,
-> >   					 except);
-> > +
-> > +	kvm_allow_guest_entries(kvm);
+On Wed, 23 Jun 2021, Mauro Carvalho Chehab wrote:
+
+> This driver is ready for mainstream. So, move it out of staging.
 > 
-> Doesn't this cause a busy loop during synchronize_rcu?
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../mfd}/hisilicon,hi6421-spmi-pmic.yaml      |  0
+>  MAINTAINERS                                   |  7 +++++++
+>  drivers/mfd/Kconfig                           | 16 ++++++++++++++++
+>  drivers/mfd/Makefile                          |  1 +
+>  .../hikey9xx => mfd}/hi6421-spmi-pmic.c       |  0
 
-Hi,
+I can't review a hidden patch.
 
-If you mean busy loop on other vcpus, then the answer is sadly yes.
-Other option is to use a mutex, which is what I did in a former
-version of this patch, but at last minute I decided that this
-way it was done in this patch would be simplier. 
-AVIC updates don't happen often.
-Also with a request, the KVM_REQ_APICV_UPDATE can be handled in parallel,
-while mutex enforces unneeded mutual execution of it.
+Please re-submit without '-M'.
 
+TIA
 
->   It should be 
-> possible to request the vmexit of other CPUs from 
-> avic_update_access_page, and do a lock/unlock of kvm->slots_lock to wait 
-> for the memslot to be updated.
+>  drivers/staging/Kconfig                       |  2 --
+>  drivers/staging/Makefile                      |  1 -
+>  drivers/staging/hikey9xx/Kconfig              | 19 -------------------
+>  drivers/staging/hikey9xx/Makefile             |  3 ---
+>  drivers/staging/hikey9xx/TODO                 |  5 -----
+>  10 files changed, 24 insertions(+), 30 deletions(-)
+>  rename {drivers/staging/hikey9xx => Documentation/devicetree/bindings/mfd}/hisilicon,hi6421-spmi-pmic.yaml (100%)
+>  rename drivers/{staging/hikey9xx => mfd}/hi6421-spmi-pmic.c (100%)
+>  delete mode 100644 drivers/staging/hikey9xx/Kconfig
+>  delete mode 100644 drivers/staging/hikey9xx/Makefile
+>  delete mode 100644 drivers/staging/hikey9xx/TODO
 
-This would still keep the race. The other vCPUs must not enter the guest mode
-from the moment the memslot update was started and until the KVM_REQ_APICV_UPDATE
-is raised.
- 
-If I were to do any kind of synchronization in avic_update_access_page, then I will
-have to drop the lock/request there, and from this point and till the common code
-raises the KVM_REQ_APICV_UPDATE there is a possibility of a vCPU reentering the
-guest mode without updating its AVIC.
- 
- 
-Here is an older version of this patch that does use mutex instead. 
-Please let me know if you prefer it.
-
-I copy pasted it here, thus its likely not to apply as my email client
-probably destroys whitespace.
-  
-Thanks for the review,
-	Best regards,
-		Maxim Levitsky
-
-
---
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index fdc6b8a4348f..b7dc7fd7b63d 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9183,11 +9183,8 @@ void kvm_make_scan_ioapic_request(struct kvm *kvm)
- 	kvm_make_all_cpus_request(kvm, KVM_REQ_SCAN_IOAPIC);
- }
- 
--void kvm_vcpu_update_apicv(struct kvm_vcpu *vcpu)
-+void __kvm_vcpu_update_apicv(struct kvm_vcpu *vcpu)
- {
--	if (!lapic_in_kernel(vcpu))
--		return;
--
- 	vcpu->arch.apicv_active = kvm_apicv_activated(vcpu->kvm);
- 	kvm_apic_update_apicv(vcpu);
- 	static_call(kvm_x86_refresh_apicv_exec_ctrl)(vcpu);
-@@ -9201,6 +9198,16 @@ void kvm_vcpu_update_apicv(struct kvm_vcpu *vcpu)
- 	if (!vcpu->arch.apicv_active)
- 		kvm_make_request(KVM_REQ_EVENT, vcpu);
- }
-+
-+void kvm_vcpu_update_apicv(struct kvm_vcpu *vcpu)
-+{
-+	if (!lapic_in_kernel(vcpu))
-+		return;
-+
-+	mutex_lock(&vcpu->kvm->apicv_update_lock);
-+	__kvm_vcpu_update_apicv(vcpu);
-+	mutex_unlock(&vcpu->kvm->apicv_update_lock);
-+}
- EXPORT_SYMBOL_GPL(kvm_vcpu_update_apicv);
- 
- /*
-@@ -9213,30 +9220,26 @@ EXPORT_SYMBOL_GPL(kvm_vcpu_update_apicv);
- void kvm_request_apicv_update(struct kvm *kvm, bool activate, ulong bit)
- {
- 	struct kvm_vcpu *except;
--	unsigned long old, new, expected;
-+	unsigned long old, new;
- 
- 	if (!kvm_x86_ops.check_apicv_inhibit_reasons ||
- 	    !static_call(kvm_x86_check_apicv_inhibit_reasons)(bit))
- 		return;
- 
--	old = READ_ONCE(kvm->arch.apicv_inhibit_reasons);
--	do {
--		expected = new = old;
--		if (activate)
--			__clear_bit(bit, &new);
--		else
--			__set_bit(bit, &new);
--		if (new == old)
--			break;
--		old = cmpxchg(&kvm->arch.apicv_inhibit_reasons, expected, new);
--	} while (old != expected);
-+	mutex_lock(&kvm->apicv_update_lock);
-+
-+	old = new = kvm->arch.apicv_inhibit_reasons;
-+	if (activate)
-+		__clear_bit(bit, &new);
-+	else
-+		__set_bit(bit, &new);
-+
-+	WRITE_ONCE(kvm->arch.apicv_inhibit_reasons, new);
- 
- 	if (!!old == !!new)
--		return;
-+		goto out;
- 
- 	trace_kvm_apicv_update_request(activate, bit);
--	if (kvm_x86_ops.pre_update_apicv_exec_ctrl)
--		static_call(kvm_x86_pre_update_apicv_exec_ctrl)(kvm, activate);
- 
- 	/*
- 	 * Sending request to update APICV for all other vcpus,
-@@ -9244,10 +9247,24 @@ void kvm_request_apicv_update(struct kvm *kvm, bool activate, ulong bit)
- 	 * waiting for another #VMEXIT to handle the request.
- 	 */
- 	except = kvm_get_running_vcpu();
-+
-+	/*
-+	 * on SVM, raising the KVM_REQ_APICV_UPDATE request while holding the
-+	 *  apicv_update_lock ensures that we kick all vCPUs out of the
-+	 *  guest mode and let them wait until the AVIC memslot update
-+	 *  has completed.
-+	 */
-+
- 	kvm_make_all_cpus_request_except(kvm, KVM_REQ_APICV_UPDATE,
- 					 except);
-+
-+	if (kvm_x86_ops.pre_update_apicv_exec_ctrl)
-+		static_call(kvm_x86_pre_update_apicv_exec_ctrl)(kvm, activate);
-+
- 	if (except)
--		kvm_vcpu_update_apicv(except);
-+		__kvm_vcpu_update_apicv(except);
-+out:
-+	mutex_unlock(&kvm->apicv_update_lock);
- }
- EXPORT_SYMBOL_GPL(kvm_request_apicv_update);
- 
-@@ -9454,8 +9471,11 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 		 */
- 		if (kvm_check_request(KVM_REQ_HV_STIMER, vcpu))
- 			kvm_hv_process_stimers(vcpu);
--		if (kvm_check_request(KVM_REQ_APICV_UPDATE, vcpu))
-+		if (kvm_check_request(KVM_REQ_APICV_UPDATE, vcpu)) {
-+			srcu_read_unlock(&vcpu->kvm->srcu, vcpu->srcu_idx);
- 			kvm_vcpu_update_apicv(vcpu);
-+			vcpu->srcu_idx = srcu_read_lock(&vcpu->kvm->srcu);
-+		}
- 		if (kvm_check_request(KVM_REQ_APF_READY, vcpu))
- 			kvm_check_async_pf_completion(vcpu);
- 		if (kvm_check_request(KVM_REQ_MSR_FILTER_CHANGED, vcpu))
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 37cbb56ccd09..0364d35d43dc 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -524,6 +524,7 @@ struct kvm {
- #endif /* KVM_HAVE_MMU_RWLOCK */
- 
- 	struct mutex slots_lock;
-+	struct mutex apicv_update_lock;
- 
- 	/*
- 	 * Protects the arch-specific fields of struct kvm_memory_slots in
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index ed4d1581d502..ba5d5d9ebc64 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -943,6 +943,7 @@ static struct kvm *kvm_create_vm(unsigned long type)
- 	mutex_init(&kvm->irq_lock);
- 	mutex_init(&kvm->slots_lock);
- 	mutex_init(&kvm->slots_arch_lock);
-+	mutex_init(&kvm->apicv_update_lock);
- 	INIT_LIST_HEAD(&kvm->devices);
- 
- 	BUILD_BUG_ON(KVM_MEM_SLOTS_NUM > SHRT_MAX);
-
-
-
-> 
-> (As an aside, I'd like to get rid of KVM_REQ_MCLOCK_IN_PROGRESS in 5.15...).
-> 
-> Paolo
-> 
-
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
