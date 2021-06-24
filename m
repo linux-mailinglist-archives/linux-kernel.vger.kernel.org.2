@@ -2,55 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7EBF3B274E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 08:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DF13B2754
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 08:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhFXGRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 02:17:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44856 "EHLO
+        id S231128AbhFXGTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 02:19:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbhFXGRt (ORCPT
+        with ESMTP id S231159AbhFXGTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 02:17:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5376AC061574;
-        Wed, 23 Jun 2021 23:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cLzuPmWnT7cLiujhn4thtNqmsI+9nqkAPBiidz+Pv7g=; b=LnNOHZHtKXbwjS5bWMZWiVWL3Z
-        AKCrIW0Xtsm+v5LCP0DX3MYeglxC5rgZk4Mr1XS/fx8ucOsAXd23y4YBcSkZZCQx5ap4LZvpvOfrU
-        d5RdB6hYOUomIsh4reA72drdYZabPXDblv2uagadZOhcYpeOeaxNDImsuXDIZgc/6X62VXbB0jubU
-        mJxnJLPS2dyJJ9USrazptFdP4S4/dJjJji524AlybvVN5Ku5aLKxCGPknQd08G67u6OBrEimTLTbi
-        LZrEpPI4ZX7eOdxIUbpelNAT1KWinoRuA9MAD43B7ROOMHCsO+zytEWRCcxYBOUTUvTafnE1m4yR1
-        Z/RQ4iuA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwIdI-00GFN6-4h; Thu, 24 Jun 2021 06:14:56 +0000
-Date:   Thu, 24 Jun 2021 07:14:36 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+cf89d662483d6a1a0790@syzkaller.appspotmail.com
-Subject: Re: [RESEND PATCH] loop: fix setting arbitrarily large block size
-Message-ID: <YNQizOHDSM0Y2Lz/@infradead.org>
-References: <20210622161019.130090-1-chouhan.shreyansh630@gmail.com>
- <20210623050933.140572-1-chouhan.shreyansh630@gmail.com>
+        Thu, 24 Jun 2021 02:19:52 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F040BC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 23:17:32 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id q190so11652608qkd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 23:17:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gpCoMJNcwo6BKQ1tLaUlLybi9fJgrUjAD4JF+W4r3lg=;
+        b=sNr3SNpmAo1kxL1IKJAIsx/vaGJNMJ+BN+8n+0MOxiF1CEd3Qf+nV9+q8tSr9Hd02l
+         xdK5UkMUTrMW6imUhODbCsht8K0hT8ez4nSJfgcuZNKK9FURaoSgVXSF4yg4syBiKvgC
+         GvGxPsRacmv6tT4ZId31zIBn+h8ClmmSvA/2CzBRSd+mKoxLbAO1igqm96SPU9Yikj5Q
+         /eqSQXqP5X99erLLJ+i1yIJiy0f+2UQH7MdTTcyqsEPC6uZQYI/DCTNyoZGIQe79Hh0V
+         rPsj15Qf37Oh+sLCrdVCdrmgCKCNqFXGAj6hZ6MbxGwDiZhRkKKrGYStQIMVEt1npki8
+         ltYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gpCoMJNcwo6BKQ1tLaUlLybi9fJgrUjAD4JF+W4r3lg=;
+        b=R54GDWcz4UOkAiUFANHyJoKC6hEgmI1vzHUi/ysvBWOWP4zyEPZz3NIj+1CvsNxIzM
+         61l7V+f2vD/UrK1Dq2Y+kLCzCEe2d8Qdq+gxDpAhschDGxwZFAO/19ULMhtZdoRogwP/
+         GIdngffXqQzwGLez6JaHwXdJCGbhzx6U30pW/oxZQGgeekoeFwpqPFK5IWtyVlekoHdH
+         HrpOKmC68X29MhYVQziQ0myPVaHVcgYssiC570LT+DPcc950faCnZL/wg4jtRb2lxOnA
+         tkeCrO/b7EU+cuzn6SuoH7Kl0Jkcv8Aeub6cFXRPwsmOmS2Z3nARbwnHvkZxe+0J47IM
+         mEtA==
+X-Gm-Message-State: AOAM5301Apzr9mv9/XaV3oc/glSOhIFKgPXEeFrDb5JXnhtppOzWLmNi
+        2nuUJDvEVTBbBaYDuBSi3+6bFNrL370P8ckHh/wbbQ==
+X-Google-Smtp-Source: ABdhPJzJm0Vd4Kck8UenE+ylHTWGX8ozBrgBq4586l62wheY8gYTHLERpu4nbaeHlpd4gJW3e4mB+XNZW7iB6BkXTJE=
+X-Received: by 2002:a25:e911:: with SMTP id n17mr2742830ybd.48.1624515450316;
+ Wed, 23 Jun 2021 23:17:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210623050933.140572-1-chouhan.shreyansh630@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210623192837.13792eae@gmail.com> <0000000000008a8f9c05c571668c@google.com>
+In-Reply-To: <0000000000008a8f9c05c571668c@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 24 Jun 2021 08:17:18 +0200
+Message-ID: <CACT4Y+YqOot7SqTXmTJZ3qD16ZBtbOMbKSCseHHzes-DzsPPzw@mail.gmail.com>
+Subject: Re: [syzbot] WARNING: zero-size vmalloc in corrupted
+To:     syzbot <syzbot+c2f6f09fe907a838effb@syzkaller.appspotmail.com>
+Cc:     Pavel Skripkin <paskripkin@gmail.com>, akpm@linux-foundation.org,
+        coreteam@netfilter.org, davem@davemloft.net, dsahern@kernel.org,
+        fw@strlen.de, kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 10:39:33AM +0530, Shreyansh Chouhan wrote:
-> REASON FOR RESEND: Fixed spelling of the Reported-by tag.
+On Wed, Jun 23, 2021 at 6:28 PM syzbot
+<syzbot+c2f6f09fe907a838effb@syzkaller.appspotmail.com> wrote:
+>
+> > On Wed, 23 Jun 2021 19:19:28 +0300
+> > Pavel Skripkin <paskripkin@gmail.com> wrote:
+> >
+> >> On Wed, 23 Jun 2021 02:15:23 -0700
+> >> syzbot <syzbot+c2f6f09fe907a838effb@syzkaller.appspotmail.com> wrote:
+> >>
+> >> > Hello,
+> >> >
+> >> > syzbot found the following issue on:
+> >> >
+> >> > HEAD commit:    13311e74 Linux 5.13-rc7
+> >> > git tree:       upstream
+> >> > console output:
+> >> > https://syzkaller.appspot.com/x/log.txt?x=15d01e58300000 kernel
+> >> > config:  https://syzkaller.appspot.com/x/.config?x=42ecca11b759d96c
+> >> > dashboard link:
+> >> > https://syzkaller.appspot.com/bug?extid=c2f6f09fe907a838effb syz
+> >> > repro:
+> >> > https://syzkaller.appspot.com/x/repro.syz?x=14bb89e8300000 C
+> >> > reproducer:
+> >> > https://syzkaller.appspot.com/x/repro.c?x=17cc51b8300000
+> >> >
+> >> > The issue was bisected to:
+> >> >
+> >> > commit f9006acc8dfe59e25aa75729728ac57a8d84fc32
+> >> > Author: Florian Westphal <fw@strlen.de>
+> >> > Date:   Wed Apr 21 07:51:08 2021 +0000
+> >> >
+> >> >     netfilter: arp_tables: pass table pointer via nf_hook_ops
+> >> >
+> >> > bisection log:
+> >> > https://syzkaller.appspot.com/x/bisect.txt?x=13b88400300000 final
+> >> > oops:
+> >> > https://syzkaller.appspot.com/x/report.txt?x=10788400300000 console
+> >> > output: https://syzkaller.appspot.com/x/log.txt?x=17b88400300000
+> >> >
+> >>
+> >> This one is similar to previous zero-size vmalloc, I guess :)
+> >>
+> >> #syz test
+> >> git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> >> master
+> >>
+> >>
+> >
+> > Hah, I didn't notice that this one is already fixed by me. But the
+> > patch is in the media tree, it's not upstreamed yet:
+> >
+> > https://git.linuxtv.org/media_tree.git/commit/?id=c680ed46e418e9c785d76cf44eb33bfd1e8cf3f6
+> >
+> > So,
+> >
+> > #syz dup: WARNING: zero-size vmalloc in dvb_dmx_init
+>
+> Can't dup bug to a bug in different reporting (upstream->internal).Please dup syzbot bugs only onto syzbot bugs for the same kernel/reporting.
 
-That goes under a "---" deliminator.
+I think we can say:
 
-Except for that:
+#syz dup: WARNING in __vmalloc_node_range
+https://syzkaller.appspot.com/bug?id=3c558412597cc402fd7fbb250ca30d04d46c8c60
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+as that was the original bug report.
