@@ -2,166 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DAC23B24E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CABB13B2504
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbhFXCZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 22:25:27 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:52426 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229906AbhFXCZZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 22:25:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624501387; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Wbj0g0OsECqzVg7j+YUqU2RzLznVnn89S4KbNLzazb0=;
- b=expH7PjGPkd7qb5w5YMJ0unDPRUZQ449TD23oT0lBcyxtFulad9NthFE+Eli3xvXu/VfpAMF
- w1g8ecaj2LjWbVyoxbdmlie4S5/i+7XdWU42MlMz9aiZnaplx/g63qwKNibLbbA/FUfirLLT
- 6MjTMXqBR3K9bLlBkam4vQr/kuw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60d3ec880090905e16612b6c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Jun 2021 02:23:04
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 74768C43151; Thu, 24 Jun 2021 02:23:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E2CF8C433D3;
-        Thu, 24 Jun 2021 02:23:01 +0000 (UTC)
+        id S229913AbhFXCbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 22:31:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229758AbhFXCbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 22:31:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB35F613B0;
+        Thu, 24 Jun 2021 02:29:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624501754;
+        bh=qfes4XlTr7wZHA/gX1R4vn3ErhXUgft2vuwloOuqJH8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FAMh4+QoAuFF1jJ9kHmTbp9/ydQxbb3M5ZXBFYFE5KwhbO8otL4kipxuWZCx5CvXV
+         1g/6NvgDwplHRZuGBhTtc6SHDQxjSpk6y95eGTetqRfIvyp32Kx5Ya5T5ay344bzEE
+         D9sGb1HKg9xTiP3RmSnd4WkjUR/SLietI7dEfA5kf+f011nRkGNq5yCRB1cyr9AQmK
+         00KuXivitCPNOy5tY6Da+rcrfkF2EBc9mOkR5HmtnRsp9bCtE9HojGQ9c48JJ6RFVv
+         /P/luhRi5YV574NjTxA3YTl7IYODn5ZeuXzd5tx51WGfWxH6C91MYON63V/vMoiXJ+
+         /lOBphk8eqyUg==
+Date:   Wed, 23 Jun 2021 19:29:11 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the net-next tree
+Message-ID: <YNPt91bfjrgSt8G3@Ryzen-9-3900X.localdomain>
+References: <20210624082911.5d013e8c@canb.auug.org.au>
+ <CAPv3WKfiL+sR+iK_BjGKDhtNgjoxKEPv49bU1X9_7+v+ytdR1w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 24 Jun 2021 10:23:01 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 10/10] scsi: ufs: Apply more limitations to user access
-In-Reply-To: <89a3c8bf-bbfc-4a2a-73f0-a0db956fbf0e@acm.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-12-git-send-email-cang@codeaurora.org>
- <89a3c8bf-bbfc-4a2a-73f0-a0db956fbf0e@acm.org>
-Message-ID: <d9db00ef6dd4b28d0ba2019dcf026479@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPv3WKfiL+sR+iK_BjGKDhtNgjoxKEPv49bU1X9_7+v+ytdR1w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart,
-
-On 2021-06-24 05:51, Bart Van Assche wrote:
-> On 6/23/21 12:35 AM, Can Guo wrote:
->> +int ufshcd_get_user_access(struct ufs_hba *hba)
->> +__acquires(&hba->host_sem)
->> +{
->> +	down(&hba->host_sem);
->> +	if (!ufshcd_is_user_access_allowed(hba)) {
->> +		up(&hba->host_sem);
->> +		return -EBUSY;
->> +	}
->> +	if (ufshcd_rpm_get_sync(hba)) {
->> +		ufshcd_rpm_put_sync(hba);
->> +		up(&hba->host_sem);
->> +		return -EBUSY;
->> +	}
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL_GPL(ufshcd_get_user_access);
->> +
->> +void ufshcd_put_user_access(struct ufs_hba *hba)
->> +__releases(&hba->host_sem)
->> +{
->> +	ufshcd_rpm_put_sync(hba);
->> +	up(&hba->host_sem);
->> +}
->> +EXPORT_SYMBOL_GPL(ufshcd_put_user_access);
+On Thu, Jun 24, 2021 at 12:46:48AM +0200, Marcin Wojtas wrote:
+> Hi Stephen,
 > 
-> Please indent __acquires() and __releases() annotations by one tab as 
-> is
-> done elsewhere in the kernel.
-
-OK.
-
+> czw., 24 cze 2021 o 00:29 Stephen Rothwell <sfr@canb.auug.org.au> napisał(a):
+> >
+> > Hi all,
+> >
+> > Today's linux-next build (x86_64 modules_install) failed like this:
+> >
+> > depmod: ../tools/depmod.c:1792: depmod_report_cycles_from_root: Assertion `is < stack_size' failed.
+> >
+> > Caused by commit
+> >
+> > 62a6ef6a996f ("net: mdiobus: Introduce fwnode_mdbiobus_register()")
+> >
+> > (I bisected to there and tested the commit before.)
+> >
+> > The actual build is an x86_64 allmodconfig, followed by a
+> > modules_install.  This happens in my cross build environment as well as
+> > a native build.
+> >
+> > $ gcc --version
+> > gcc (Debian 10.2.1-6) 10.2.1 20210110
+> > $ ld --version
+> > GNU ld (GNU Binutils for Debian) 2.35.2
+> > $ /sbin/depmod --version
+> > kmod version 28
+> > -ZSTD +XZ -ZLIB +LIBCRYPTO -EXPERIMENTAL
+> >
+> > I have no idea why that commit should caused this failure.
 > 
->>  static inline bool ufshcd_is_user_access_allowed(struct ufs_hba *hba)
->>  {
->> -	return !hba->shutting_down;
->> +	return !hba->shutting_down && !hba->is_sys_suspended &&
->> +		!hba->is_wlu_sys_suspended &&
->> +		hba->ufshcd_state == UFSHCD_STATE_OPERATIONAL;
->>  }
+> Thank you for letting us know. Not sure if related, but I just found
+> out that this code won't compile for the !CONFIG_FWNODE_MDIO. Below
+> one-liner fixes it:
 > 
-> Is my understanding of the following correct?
-> - ufshcd_is_user_access_allowed() is not in the hot path and hence
->   should not be inline.
-
-OK.
-
-> - The hba->shutting_down member variable is set from inside a shutdown
->   callback. Hence, the hba->shutting_down test can be left out since
->   no UFS sysfs attributes are accessed after shutdown has started.
-
-We see that user can still access UFS sysfs during shutdown if shutdown
-is invoked by: reboot -f, hence the check.
-
-> - During system suspend, user space software is paused before the 
-> device
->   driver freeze callbacks are invoked. Hence, the hba->is_sys_suspended
->   check can be left out.
-
-is_sys_suspended indicates that system resume failed (power/clk is OFF).
-
-> - If a LUN is runtime suspended, it should be resumed if accessed from
->   user space instead of failing user space accesses. In other words, 
-> the
->   hba->is_wlu_sys_suspended check seems inappropriate to me.
-
-hba->is_wlu_sys_suspended indicates that wl system resume failed, device
-is not operational.
-
-> - If the HBA is not in an operational state, user space accesses
->   should be blocked until error handling has finished. After error
->   handling has finished, the user space access should fail if and only
->   if error handling failed.
+> --- a/include/linux/fwnode_mdio.h
+> +++ b/include/linux/fwnode_mdio.h
+> @@ -40,7 +40,7 @@ static inline int fwnode_mdiobus_register(struct mii_bus *bus,
+>          * This way, we don't have to keep compat bits around in drivers.
+>          */
 > 
-
-Yes, which is why ufshcd_get_user_access() acquires host_sem first and
-checks the OPERATOINAL flag here. host_sem shall make sure that user
-space accesses should be blocked until error handling has finished.
-
-Thanks,
-
-Can Guo.
-
-> Thanks,
+> -       return mdiobus_register(mdio);
+> +       return mdiobus_register(bus);
+>  }
+>  #endif
 > 
-> Bart.
+> I'm curious if this is the case. Tomorrow I'll resubmit with above, so
+> I'd appreciate recheck.
+
+I wonder if this message that I see with Arch Linux's config is related
+and maybe explains the issue a little bit more:
+
+$ curl -LSso .config https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/linux/trunk/config
+
+# do not require pahole
+$ scripts/config -d DEBUG_INFO_BTF
+
+$ make -skj"$(nproc)" INSTALL_MOD_PATH=rootfs olddefconfig all modules_install
+...
+depmod: ERROR: Cycle detected: acpi_mdio -> fwnode_mdio -> acpi_mdio
+depmod: ERROR: Found 2 modules in dependency cycles!
+...
+
+Reverting all the patches in that series fixes the issue for me.
+
+Cheers,
+Nathan
