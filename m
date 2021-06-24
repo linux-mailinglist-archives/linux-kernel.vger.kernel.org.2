@@ -2,87 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9612B3B2865
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 09:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 023353B2857
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 09:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbhFXHND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 03:13:03 -0400
-Received: from mga02.intel.com ([134.134.136.20]:26654 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231132AbhFXHNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 03:13:02 -0400
-IronPort-SDR: /bnUzpuKdF477EUPdeh2cD2VRj9TeDMctRwVY6N4aErR/NRChmTiYCXyoqkmjJNvRNu1qvdFct
- i57eKhZP/99g==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="194551615"
-X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
-   d="scan'208";a="194551615"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 00:10:33 -0700
-IronPort-SDR: Ti6ZIlimv7yKLXc57TzFml+Lf5gYDpHvKIbNtEk2+k5+qWrff45T74rObrfMHAtb9zKZIuGi2c
- 52XqxFrtoCqg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
-   d="scan'208";a="487644671"
-Received: from e3-z238.sh.intel.com ([10.239.154.113])
-  by orsmga001.jf.intel.com with ESMTP; 24 Jun 2021 00:10:29 -0700
-From:   Zhou JianFeng <jianfeng.zhou@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, H Peter Anvin <hpa@zytor.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Zhou JianFeng <jianfeng.zhou@intel.com>
-Subject: [PATCH] x86/apic: use MSR programmming interface to read APIC register in x2APIC mode
-Date:   Thu, 24 Jun 2021 15:08:04 +0800
-Message-Id: <20210624070804.935474-1-jianfeng.zhou@intel.com>
-X-Mailer: git-send-email 2.27.0
+        id S231394AbhFXHMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 03:12:03 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8436 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231722AbhFXHLz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 03:11:55 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G9WQK1F5nzZklD;
+        Thu, 24 Jun 2021 15:06:33 +0800 (CST)
+Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 24 Jun 2021 15:09:34 +0800
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
+ dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 24 Jun 2021 15:09:34 +0800
+From:   Zenghui Yu <yuzenghui@huawei.com>
+To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <pbonzini@redhat.com>, <vkuznets@redhat.com>
+CC:     <wanghaibin.wang@huawei.com>, Zenghui Yu <yuzenghui@huawei.com>
+Subject: [PATCH] KVM: selftests: Fix mapping length truncation in m{,un}map()
+Date:   Thu, 24 Jun 2021 15:09:31 +0800
+Message-ID: <20210624070931.565-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.185.179]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema764-chm.china.huawei.com (10.1.198.206)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Memory-mapped interface is only supported when operating in xAPIC mode.
+max_mem_slots is now declared as uint32_t. The result of (0x200000 * 32767)
+is unexpectedly truncated to be 0xffe00000, whilst we actually need to
+allocate about, 63GB. Cast max_mem_slots to size_t in both mmap() and
+munmap() to fix the length truncation.
 
-When x2APIC mode enabled, the following calling will read APIC register by
-memory-mapping interface in x2APIC mode:
-    default_setup_apic_routing()
-        x2apic_cluster_probe()
-            init_x2apic_ldr()
-                apic_read(APIC_LDR)
-The APIC id read by apic_read(APIC_LDR) is invalid(0xffffffff in my tests),
-and will lead to MCE(machine check exception) when RAS(Reliability
-Availability Serviceability) enabled.
+We'll otherwise see the failure on arm64 thanks to the access_ok() checking
+in __kvm_set_memory_region(), as the unmapped VA happen to go beyond the
+task's allowed address space.
 
-Read APIC id by using programming interface in x2APIC mode.
+ # ./set_memory_region_test
+Allowed number of memory slots: 32767
+Adding slots 0..32766, each memory region with 2048K size
+==== Test Assertion Failure ====
+  set_memory_region_test.c:391: ret == 0
+  pid=94861 tid=94861 errno=22 - Invalid argument
+     1	0x00000000004015a7: test_add_max_memory_regions at set_memory_region_test.c:389
+     2	 (inlined by) main at set_memory_region_test.c:426
+     3	0x0000ffffb8e67bdf: ?? ??:0
+     4	0x00000000004016db: _start at :?
+  KVM_SET_USER_MEMORY_REGION IOCTL failed,
+  rc: -1 errno: 22 slot: 2615
 
-Signed-off-by: Zhou JianFeng <jianfeng.zhou@intel.com>
+Fixes: 3bf0fcd75434 ("KVM: selftests: Speed up set_memory_region_test")
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
 ---
- arch/x86/kernel/apic/x2apic_cluster.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ tools/testing/selftests/kvm/set_memory_region_test.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/apic/x2apic_cluster.c b/arch/x86/kernel/apic/x2apic_cluster.c
-index f4da9bb69a88..311a844bb779 100644
---- a/arch/x86/kernel/apic/x2apic_cluster.c
-+++ b/arch/x86/kernel/apic/x2apic_cluster.c
-@@ -100,9 +100,14 @@ static u32 x2apic_calc_apicid(unsigned int cpu)
- static void init_x2apic_ldr(void)
- {
- 	struct cluster_mask *cmsk = this_cpu_read(cluster_masks);
--	u32 cluster, apicid = apic_read(APIC_LDR);
-+	u32 cluster, apicid;
- 	unsigned int cpu;
+diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
+index d79d58eada9f..85b18bb8f762 100644
+--- a/tools/testing/selftests/kvm/set_memory_region_test.c
++++ b/tools/testing/selftests/kvm/set_memory_region_test.c
+@@ -376,7 +376,7 @@ static void test_add_max_memory_regions(void)
+ 	pr_info("Adding slots 0..%i, each memory region with %dK size\n",
+ 		(max_mem_slots - 1), MEM_REGION_SIZE >> 10);
  
-+	if (x2apic_enabled())
-+		apicid = native_apic_msr_read(APIC_LDR);
-+	else
-+		apicid = apic_read(APIC_LDR);
-+
- 	this_cpu_write(x86_cpu_to_logical_apicid, apicid);
+-	mem = mmap(NULL, MEM_REGION_SIZE * max_mem_slots + alignment,
++	mem = mmap(NULL, (size_t)max_mem_slots * MEM_REGION_SIZE + alignment,
+ 		   PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+ 	TEST_ASSERT(mem != MAP_FAILED, "Failed to mmap() host");
+ 	mem_aligned = (void *)(((size_t) mem + alignment - 1) & ~(alignment - 1));
+@@ -401,7 +401,7 @@ static void test_add_max_memory_regions(void)
+ 	TEST_ASSERT(ret == -1 && errno == EINVAL,
+ 		    "Adding one more memory slot should fail with EINVAL");
  
- 	if (cmsk)
+-	munmap(mem, MEM_REGION_SIZE * max_mem_slots + alignment);
++	munmap(mem, (size_t)max_mem_slots * MEM_REGION_SIZE + alignment);
+ 	munmap(mem_extra, MEM_REGION_SIZE);
+ 	kvm_vm_free(vm);
+ }
 -- 
-2.27.0
+2.19.1
 
