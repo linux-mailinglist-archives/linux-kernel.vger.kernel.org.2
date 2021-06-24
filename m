@@ -2,85 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ADFD3B2CE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 467133B2CEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232299AbhFXKwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 06:52:09 -0400
-Received: from mga11.intel.com ([192.55.52.93]:35377 "EHLO mga11.intel.com"
+        id S232272AbhFXKyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 06:54:23 -0400
+Received: from m12-17.163.com ([220.181.12.17]:53635 "EHLO m12-17.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232191AbhFXKwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 06:52:08 -0400
-IronPort-SDR: w2IF1V6UF0o+iSWS7neQO8zQEvB9dSUnXtYcNzNYMfrlpEuOAXX/UHtdqi1rcc0T+04gJTGNp1
- y8gBkbtQoMxw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="204438803"
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="204438803"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 03:49:49 -0700
-IronPort-SDR: bloUs6MTuopNNLA1Xl4hUG6pB2P7g9WQuQTLWQKu4SZmVZ3c4WP5g+1xC3v1QQDtzb2ljbVg9o
- IHTrS/tto6Ug==
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="487710028"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 03:49:43 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lwMvT-004yd4-Bm; Thu, 24 Jun 2021 13:49:39 +0300
-Date:   Thu, 24 Jun 2021 13:49:39 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Jia He <justin.he@arm.com>, Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>, nd@arm.com
-Subject: Re: [PATCH v2 2/4] lib/vsprintf.c: make '%pD' print the full path of
- file
-Message-ID: <YNRjQ5dJpSYWbbRP@smile.fi.intel.com>
-References: <20210623055011.22916-1-justin.he@arm.com>
- <20210623055011.22916-3-justin.he@arm.com>
- <YNRJ61m6duXjpGrp@alley>
+        id S231294AbhFXKyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 06:54:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=pTZr7
+        M934qJGS/p1VktboAnozAKaukgQzPAAMTI6ZEU=; b=UOUztijBMBM3Zq1mnCao5
+        dW7/IisIuq7M2swceN4Rnbf5nery55FgRvjlpHerkwB+rQwFAG3jIcBIVYaOWKy/
+        3piYjSZLqVX6BvycqPIoa+wqSTJGpg/H2uZRxJgfY7W+goGLoSMzAKUfsS14qgf0
+        6BCMA8JuXxwo9UIB71T55c=
+Received: from localhost.localdomain (unknown [218.17.89.92])
+        by smtp13 (Coremail) with SMTP id EcCowAC31ZXNY9RgiGNQ9Q--.32474S2;
+        Thu, 24 Jun 2021 18:51:58 +0800 (CST)
+From:   lijian_8010a29@163.com
+To:     broonie@kernel.org
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lijian <lijian@yulong.com>
+Subject: [PATCH] spi: spi-topcliff-pch: Fixed the possible null pointer exception issue
+Date:   Thu, 24 Jun 2021 18:50:56 +0800
+Message-Id: <20210624105056.167233-1-lijian_8010a29@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNRJ61m6duXjpGrp@alley>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EcCowAC31ZXNY9RgiGNQ9Q--.32474S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7KF1xtw4UWry8Ar1fCryrtFb_yoW8GF1xpF
+        WDGa1qyrWrAF4kJFnrXFWUuFn8W3s7WryUu342kwnIvr18tryDtF4Utr97trWayF4IqF4a
+        yr4IvryYq3ZYyF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bYL05UUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbi3w67UGB0GoFjRAAAsS
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 11:01:31AM +0200, Petr Mladek wrote:
-> On Wed 2021-06-23 13:50:09, Jia He wrote:
+From: lijian <lijian@yulong.com>
 
-...
+The 'data->pkt_tx_buff' is used after called
+‘kfree(data->pkt_tx_buff)’,it may be null when it is called,
+and null pointer exception may occur,
+so judgment is added when using 'data->pkt_tx_buff'.
 
-> > If someone invokes snprintf() with small but positive space,
-> > prepend_name_with_len() moves or truncates the string partially.
-> 
-> Does this comment belong to the 1st patch?
-> prepend_name_with_len() is not called in this patch.
-> 
-> > More
-> > than that, kasprintf() will pass NULL @buf and @end as the parameters,
-> > and @end - @buf can be negative in some case. Hence make it return at
-> > the very beginning with false in these cases.
-> 
-> Same here. file_d_path_name() does not return bool.
+Signed-off-by: lijian <lijian@yulong.com>
+---
+ drivers/spi/spi-topcliff-pch.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-It was my (apparently unclear) suggestion either to move it here, or be
-rewritten in generic way as you suggested in the other thread.
-
+diff --git a/drivers/spi/spi-topcliff-pch.c b/drivers/spi/spi-topcliff-pch.c
+index b8870784fc6e..a5ac59f2eb80 100644
+--- a/drivers/spi/spi-topcliff-pch.c
++++ b/drivers/spi/spi-topcliff-pch.c
+@@ -599,7 +599,7 @@ static void pch_spi_set_tx(struct pch_spi_data *data, int *bpw)
+ 	}
+ 
+ 	/* copy Tx Data */
+-	if (data->cur_trans->tx_buf != NULL) {
++	if ((data->cur_trans->tx_buf != NULL) && (data->pkt_tx_buff != NULL)) {
+ 		if (*bpw == 8) {
+ 			tx_buf = data->cur_trans->tx_buf;
+ 			for (j = 0; j < data->bpw_len; j++)
+@@ -621,8 +621,10 @@ static void pch_spi_set_tx(struct pch_spi_data *data, int *bpw)
+ 		__func__);
+ 	pch_spi_writereg(data->master, PCH_SSNXCR, SSN_LOW);
+ 
+-	for (j = 0; j < n_writes; j++)
+-		pch_spi_writereg(data->master, PCH_SPDWR, data->pkt_tx_buff[j]);
++	if (data->pkt_tx_buff != NULL) {
++		for (j = 0; j < n_writes; j++)
++			pch_spi_writereg(data->master, PCH_SPDWR, data->pkt_tx_buff[j]);
++	}
+ 
+ 	/* update tx_index */
+ 	data->tx_index = j;
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
 
 
