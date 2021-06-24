@@ -2,86 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382363B2DD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48A73B2DE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbhFXL3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:29:17 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:50802 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232274AbhFXL3Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:29:16 -0400
-X-UUID: 0ce6463091c0444ab97f96ae2ebd7c3d-20210624
-X-UUID: 0ce6463091c0444ab97f96ae2ebd7c3d-20210624
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <yee.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 967540757; Thu, 24 Jun 2021 19:26:54 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 24 Jun 2021 19:26:53 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 24 Jun 2021 19:26:53 +0800
-From:   <yee.lee@mediatek.com>
-To:     <andreyknvl@gmail.com>
-CC:     <wsd_upstream@mediatek.com>, Yee Lee <yee.lee@mediatek.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:KASAN" <kasan-dev@googlegroups.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v2 1/1] kasan: Add memzero init for unaligned size under SLUB debug
-Date:   Thu, 24 Jun 2021 19:26:21 +0800
-Message-ID: <20210624112624.31215-2-yee.lee@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210624112624.31215-1-yee.lee@mediatek.com>
-References: <20210624112624.31215-1-yee.lee@mediatek.com>
+        id S232489AbhFXLfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:35:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232274AbhFXLfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 07:35:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B94A6611AC;
+        Thu, 24 Jun 2021 11:32:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624534363;
+        bh=Y+Vf4VwRcwhSeuhX9p+YbNjJ8eKw5Zw6LgeNCgP26Dk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=e8JLhPlNi/B0OhSjGcmDPbLsgG2UVYFi1piUidCT+0atJw/5LMGPUThvl92IT4iaJ
+         7SxgeeUO59vbphFzXcH1+SbM6wG5D+wD+MYaekfGJuqsx7Ivxq13Yl6MKbQ0Xe6+pw
+         bkYK8byY+/Z0IRmBzSmBFiKVEBGNJTziKsHnzQ7vImIpsGWs07EFEr+82yvZqWnYjO
+         w+GFROs0nHNqbONOjn2CQXCqUP139mSw8gGfCWQ+NrRm3aaD61VpDVb7SWepgoqasF
+         Vo1QTZZsUa9LmY7rAzZ+I+brZoOmaC+keFKd6CK5HSbo5j8rlv/BcZ9DjEEASzvNko
+         po8GdYccGVVzg==
+Date:   Thu, 24 Jun 2021 13:32:38 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 3/5] media: v4l2-flash-led-class: drop an useless check
+Message-ID: <20210624133238.006c7b64@coco.lan>
+In-Reply-To: <20210624101443.GK3@valkosipuli.retiisi.eu>
+References: <cover.1624276137.git.mchehab+huawei@kernel.org>
+        <e1629ac223470630eed4096361965d154aff70b7.1624276138.git.mchehab+huawei@kernel.org>
+        <20210624093153.GJ3@valkosipuli.retiisi.eu>
+        <20210624115925.357f98b6@coco.lan>
+        <20210624101443.GK3@valkosipuli.retiisi.eu>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yee Lee <yee.lee@mediatek.com>
+Em Thu, 24 Jun 2021 13:14:43 +0300
+Sakari Ailus <sakari.ailus@iki.fi> escreveu:
 
-Issue: when SLUB debug is on, hwtag kasan_unpoison() would overwrite
-the redzone of object with unaligned size.
+> Hi Mauro,
+> 
+> On Thu, Jun 24, 2021 at 11:59:25AM +0200, Mauro Carvalho Chehab wrote:
+> > Em Thu, 24 Jun 2021 12:31:53 +0300
+> > Sakari Ailus <sakari.ailus@iki.fi> escreveu:
+> >   
+> > > Hi Mauro,
+> > > 
+> > > Could you check if your mail client could be configured not to add junk to
+> > > To: field? It often leads anything in the Cc: field being dropped.  
+> > 
+> > I have no idea why it is doing that. I'm just using git send-email
+> > here. Perhaps a git bug?
+> > 
+> > 	$ git --version
+> > 	git version 2.31.1
+> > 
+> > The setup is like this one:
+> > 
+> > 	[sendemail]
+> > 	        confirm = always
+> > 	        multiedit = true
+> > 	        chainreplyto = false
+> > 	        aliasesfile = /home/mchehab/.addressbook
+> > 	        aliasfiletype = pine
+> > 	        assume8bitencoding = UTF-8  
+> 
+> I tried sending a message to myself using git send-email with an empty To:
+> field and it came through just fine, with To: field remaining empty. I
+> wonder if it could be the list server?
 
-An additional memzero_explicit() path is added to replacing init by
-hwtag instruction for those unaligned size at SLUB debug mode.
+It seems so.
 
-Signed-off-by: Yee Lee <yee.lee@mediatek.com>
----
- mm/kasan/kasan.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+> > So, this is not a false-positive, but, instead, a real issue.
+> > 
+> > So, if led_cdev/fled_cdev can indeed be NULL, IMO, the right solution would be
+> > to explicitly check it, and return an error, e. g.:
+> > 
+> > 	static int v4l2_flash_s_ctrl(struct v4l2_ctrl *c)
+> > 	{
+> >         	struct v4l2_flash *v4l2_flash = v4l2_ctrl_to_v4l2_flash(c);
+> >         	struct led_classdev_flash *fled_cdev = v4l2_flash->fled_cdev;
+> > 		struct led_classdev *led_cdev;
+> >         	struct v4l2_ctrl **ctrls = v4l2_flash->ctrls;
+> >         	bool external_strobe;
+> >         	int ret = 0;
+> > 
+> > 		if (!fled_cdev)
+> > 			return -EINVAL;  
+> 
+> The approach is correct, but as noted, the check needs to be done later.
 
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 8f450bc28045..d1054f35838f 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -387,6 +387,12 @@ static inline void kasan_unpoison(const void *addr, size_t size, bool init)
- 
- 	if (WARN_ON((unsigned long)addr & KASAN_GRANULE_MASK))
- 		return;
-+#if IS_ENABLED(CONFIG_SLUB_DEBUG)
-+	if (init && ((unsigned long)size & KASAN_GRANULE_MASK)) {
-+		init = false;
-+		memzero_explicit((void *)addr, size);
-+	}
-+#endif
- 	size = round_up(size, KASAN_GRANULE_SIZE);
- 
- 	hw_set_mem_tag_range((void *)addr, size, tag, init);
--- 
-2.18.0
+> I checked that the same pattern is used throughout much of the file. I
+> suppose if smatch isn't happy with this instance, it may not be happy with
+> the rest either. Admittedly, the pattern isn't entirely trouble-free, as it
+> requires the parts of the file to be in sync.
+>
+> Addressing this takes probably a few patches at least.
 
+See, the main issue is not the smatch report, but the point that, on
+some cases, it will de-reference a NULL pointer.
+
+And yeah, the same pattern is everywhere within the core.
+
+IMO, the right fix would be to ensure that fled_cdev will always
+be not NULL, but if there are good reasons why this can't happen,
+extra checks are needed along the core (or at leds core), in order
+to prevent de-referencing NULL pointers.
+
+> 
+> Could you drop this patch, please?
+
+Just dropped from media_stage. It didn't reach media_tree.
+
+> > > Please also cc me to V4L2 flash class patches. I noticed this one by
+> > > accident only.  
+> > 
+> > Better to add you as a reviewer at the MAINTAINERS file, to
+> > ensure that you'll always be c/c on such code.  
+> 
+> There's no separate entry for flash class, just like the rest of the V4L2
+> core. I think it could be worth addressing this for all the bits in V4L2
+> core, but that's separate from this issue in any case.
+
+It makes sense to add entries at MAINTAINERS, but yeah, this
+is OOT here.
+
+Thanks,
+Mauro
