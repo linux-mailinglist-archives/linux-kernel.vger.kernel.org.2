@@ -2,159 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA8E3B2DC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05363B2DCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232468AbhFXLZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:25:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:54470 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232394AbhFXLZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:25:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B47F21063;
-        Thu, 24 Jun 2021 04:23:33 -0700 (PDT)
-Received: from localhost (unknown [10.1.195.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 542573F718;
-        Thu, 24 Jun 2021 04:23:33 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 12:23:31 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
- invariance
-Message-ID: <20210624112331.GA22416@arm.com>
-References: <cover.1624266901.git.viresh.kumar@linaro.org>
- <09a39f5c-b47b-a931-bf23-dc43229fb2dd@quicinc.com>
- <20210623041613.v2lo3nidpgw37abl@vireshk-i7>
- <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
- <20210624025414.4iszkovggk6lg6hj@vireshk-i7>
- <CAKfTPtAXMYYrG1w-iwSWXb428FkwFArEwXQgHnjShoCEMjdYcw@mail.gmail.com>
- <20210624104734.GA11487@arm.com>
- <CAKfTPtAYuon+V96WmuLz+ekWuqVcb5k17w8ZwNuCzm2KMvZw+w@mail.gmail.com>
+        id S232482AbhFXL0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:26:34 -0400
+Received: from mail-vs1-f47.google.com ([209.85.217.47]:44731 "EHLO
+        mail-vs1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232350AbhFXL0d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 07:26:33 -0400
+Received: by mail-vs1-f47.google.com with SMTP id y21so851816vsm.11;
+        Thu, 24 Jun 2021 04:24:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lVDFM2egDpvqnDo30q1IPYbxI0B4Ih+sEd5+e011q5M=;
+        b=mNjwajiMNZjOetYajKbUpKEGvcRF3iFrynkLyKwl0+/AtMDJSjtH7JWbic/8L5aZ/L
+         rW/USZJ+DNTnLdLc5EFCqsPOd/C7ZnTjwABrE1crsurxRbt1omg8vP7oj1CiK0FXTJD3
+         gXXy4k8TT3e1IYsoAmO9i21WElYgnmmn2iQDL4eOfMHZoAQ1Aq6YIjmB3BpGAb9Pshk9
+         CBDMLwSAH94Hwq0Fq0IrzmTvRCWX6MbnKgmgi7YeBVY+JTqcCE4ulTFXp5N4KnQl6OoZ
+         pLi+XLTGut+NvvUujiJ1Q+ISYgI5ji8+iBLIizs2Pd8T0CElsAaOkM5p2YNVN/eI+i69
+         BBtA==
+X-Gm-Message-State: AOAM531TILFuH8UcbHohxeKyUfWYhDWYO0q9c3+HnHWObbMfe1+zZHW2
+        G/rEg3wmdE4YclIBSuV8tCECvto4s/DibAkfIXE=
+X-Google-Smtp-Source: ABdhPJwA1CABlFUl6laeiRuNOWNPw1TAWvmkoUaSFwr8okRvwOZJ8lcaUCWt+U/3kUZmWvhrxPVt0Bck8wAPZnaurNE=
+X-Received: by 2002:a05:6102:301c:: with SMTP id s28mr1364307vsa.18.1624533854391;
+ Thu, 24 Jun 2021 04:24:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtAYuon+V96WmuLz+ekWuqVcb5k17w8ZwNuCzm2KMvZw+w@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210616132641.29087-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210616132641.29087-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210616132641.29087-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 24 Jun 2021 13:24:03 +0200
+Message-ID: <CAMuHMdX67Ghrw4mHt6hT+QrMtEjuOTtirHWv17Eix4XnnwMHkw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] pinctrl: renesas: Add pins/groups/functions for I2C,
+ SCIF and USB supported by RZ/G2L SoC
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 24 Jun 2021 at 13:15:04 (+0200), Vincent Guittot wrote:
-> On Thu, 24 Jun 2021 at 12:48, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
-> >
-> > Hi guys,
-> >
-> > On Thursday 24 Jun 2021 at 11:49:53 (+0200), Vincent Guittot wrote:
-> > > On Thu, 24 Jun 2021 at 04:54, Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > > >
-> > > > On 23-06-21, 08:57, Qian Cai wrote:
-> > > > > Viresh, I am afraid I don't feel comfortable yet. I have a few new tests in
-> > > > > development, and will provide an update once ready.
-> > > >
-> > > > Oh sure, np.
-> > > >
-> > > > > Also, I noticed the delivered perf is even smaller than lowest_perf (100).
-> > > >
-> > > > > # cat /sys/devices/system/cpu/cpu8/acpi_cppc/feedback_ctrs
-> > > > >  ref:103377547901 del:54540736873
-> > > > > # cat /sys/devices/system/cpu/cpu8/acpi_cppc/feedback_ctrs
-> > > > >  ref:103379170101 del:54541599117
-> > > > >
-> > > > > 100 * (54541599117 - 54540736873) / (103379170101 - 103377547901) = 53
-> > >
-> > > I'm not sure that I understand your point. The formula above says that
-> > > cpu8 run @ 53% of nominal performance
-> > >
-> >
-> > I think this is based on a previous example Qian had where:
-> >
-> > /sys/devices/system/cpu/cpu0/acpi_cppc/highest_perf
-> > 300
-> > /sys/devices/system/cpu/cpu0/acpi_cppc/lowest_freq
-> > 1000
-> > /sys/devices/system/cpu/cpu0/acpi_cppc/lowest_perf
-> > 100
-> > /sys/devices/system/cpu/cpu0/acpi_cppc/reference_perf
-> > 100
-> >
-> > ..so the 100 is not from obtaining percentage, is the reference
-> > performance.
-> >
-> > The logic of the formula is to obtain the delivered performance when
-> > knowing the number of ticks for each counter, so:
-> >
-> > So if one gets (103379170101 - 103377547901) ticks for the counter at
-> > running at 1GHz(perf 100), what is the frequency of the core, if its
-> > counter ticked (54541599117 - 54540736873) times in the same interval
-> > of time?
-> >
-> > The answer is 530MHz(perf 53), which is lower than the lowest frequency
-> > at 1GHz(perf 100).
-> 
-> But the nominal_perf is 280 and not 100 if i'm not wrong so the perf
-> value is 148 > lowest_perf in this case
-> 
+Hi Prabhakar,
 
-Nominal performance has no meaning here. The reference counter ticks
-with the frequency equivalent to reference performance.
+On Wed, Jun 16, 2021 at 3:27 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add pins/groups/functions for I2C, SCIF and USB supported by RZ/G2L SoC and
+> bind it with RZ/G2L PFC core.
+>
+> Based on a patch in the BSP by Hien Huynh <hien.huynh.px@renesas.com>.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Nominal performance is the maximum performance when !boost. Highest
-performance is the maximum performance available including boost
-frequencies. So nominal performance has no impact in these translations
-from counter values to delivered performance.
+Thanks for your patch!
 
-Hope it helps,
-Ionela.
+> --- /dev/null
+> +++ b/drivers/pinctrl/renesas/pfc-r9a07g044.c
+> @@ -0,0 +1,362 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * R9A07G044 processor support - pinctrl GPIO hardware block.
+> + *
+> + * Copyright (C) 2021 Renesas Electronics Corp.
+> + */
+> +
+> +#include "pinctrl-rzg2l.h"
+> +
+> +#define RZG2L_GPIO_PIN_CONF    (0)
+> +
+> +static const struct {
+> +       struct pinctrl_pin_desc pin_gpio[392];
+> +} pinmux_pins = {
+> +       .pin_gpio = {
+> +               RZ_G2L_PINCTRL_PIN_GPIO(0, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(1, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(2, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(3, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(4, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(5, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(6, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(7, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(8, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(9, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(10, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(11, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(12, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(13, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(14, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(15, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(16, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(17, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(18, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(19, RZG2L_GPIO_PIN_CONF),
 
-> 
-> >
-> >
-> > > > >
-> > > > > My understanding is that the delivered perf should fail into the range between
-> > > > > lowest_perf and highest_perf. Is that assumption correct? This happens on
-> > > > > 5.4-based kernel, so I am in process running your series on that system to see
-> > > > > if there is any differences. In any case, if it is a bug it is pre-existing,
-> > > > > but I'd like to understand a bit better in that front first.
-> > > >
-> > > > Vincent:
-> > > >
-> > > > Can that happen because of CPU idle ?
-> > > >
-> >
-> > Not if the counters are implemented properly. The kernel considers that
-> > both reference and delivered performance counters should stop or reset
-> > during idle. The kernel would not account for idle itself.
-> >
-> > If the reference performance counter does not stop during idle, while
-> > the core performance counter (delivered) does stop, the behavior above
-> > should be seen very often.
-> >
-> > Qian, do you see these small delivered performance values often or
-> > seldom?
-> >
-> > Thanks,
-> > Ionela.
-> >
-> > > > --
-> > > > viresh
+RZG2L_GPIO_PIN_CONF is 0, ike all of the below?
+
+> +               RZ_G2L_PINCTRL_PIN_GPIO(20, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(21, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(22, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(23, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(24, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(25, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(26, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(27, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(28, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(29, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(30, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(31, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(32, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(33, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(34, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(35, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(36, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(37, 0),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(38, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(39, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(40, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(41, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(42, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(43, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(44, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(45, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(46, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(47, RZG2L_GPIO_PIN_CONF),
+> +               RZ_G2L_PINCTRL_PIN_GPIO(48, RZG2L_GPIO_PIN_CONF),
+> +       },
+> +};
+
+Doesn't the above belong in pinctrl-rzg2l.c?
+
+> +
+> +/* - RIIC2 ------------------------------------------------------------------ */
+> +static int i2c2_a_pins[] = {
+> +       /* SDA, SCL */
+> +       RZ_G2L_PIN(3, 0), RZ_G2L_PIN(3, 1),
+> +};
+> +static int i2c2_b_pins[] = {
+> +       /* SDA, SCL */
+> +       RZ_G2L_PIN(19, 0), RZ_G2L_PIN(19, 1),
+> +};
+> +static int i2c2_c_pins[] = {
+> +       /* SDA, SCL */
+> +       RZ_G2L_PIN(42, 3), RZ_G2L_PIN(42, 4),
+> +};
+> +static int i2c2_d_pins[] = {
+> +       /* SDA, SCL */
+> +       RZ_G2L_PIN(46, 0), RZ_G2L_PIN(46, 1),
+> +};
+> +static int i2c2_e_pins[] = {
+> +       /* SDA, SCL */
+> +       RZ_G2L_PIN(48, 0), RZ_G2L_PIN(48, 1),
+> +};
+
+[...]
+
+> +static struct group_desc pinmux_groups[] = {
+> +       RZ_G2L_PINCTRL_PIN_GROUP(i2c2_a, 2),
+> +       RZ_G2L_PINCTRL_PIN_GROUP(i2c2_b, 4),
+> +       RZ_G2L_PINCTRL_PIN_GROUP(i2c2_c, 1),
+> +       RZ_G2L_PINCTRL_PIN_GROUP(i2c2_d, 4),
+> +       RZ_G2L_PINCTRL_PIN_GROUP(i2c2_e, 3),
+
+[...]
+
+As RZ/G2L, unlike R-Car, does not have the concept of pin groups, I'm
+wondering why you are defining these groups? The pin function list
+spreadsheet also doesn't have the "a" to "e" names of the possible
+alternatives.
+While I agree it makes it a little bit easier to describe in DT the
+use of a group with lots of pins, it does prevent other use cases.
+As register configuration is per-pin, I believe the hardware supports
+the use of pins from multiple groups (e.g. SDA from the first group,
+and SCL from the second group), and thus the board designer may decide
+to make use of that.
+
+With pinmux_pins[] moved, and the groups removed, this file becomes
+empty?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
