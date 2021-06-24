@@ -2,116 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02CA3B3291
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7633B3295
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232445AbhFXP3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 11:29:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231819AbhFXP3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 11:29:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50CB3613DA;
-        Thu, 24 Jun 2021 15:27:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624548439;
-        bh=9oXNZ4LONOItdd4Iwzgt2g0W7nQL9dFt8yuG4eI83PA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pimteVpqN76owi61qo8qtVG82hSx2tn1YevOIFbJLVwp1O0djvB3U2OUUd1o9W+X+
-         vcqDkjUk9nEkym/BIzsjNGXb2m1uGm0NR6avAC8C/ASvfDyMS50COYsiLxtLZM4fuM
-         0Br5GrSP3B1/S9F+JJxcjUs+TBiEbJDxiGbtmLBQ=
-Date:   Thu, 24 Jun 2021 17:27:17 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, stable@vger.kernel.org,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>
-Subject: Re: [PATCH 1/8] bus: mhi: core: Validate channel ID when processing
- command completions
-Message-ID: <YNSkVZ4PzkDqX/g+@kroah.com>
-References: <20210621161616.77524-1-manivannan.sadhasivam@linaro.org>
- <20210621161616.77524-2-manivannan.sadhasivam@linaro.org>
- <YNSNtQxVaegArG2f@kroah.com>
- <20210624143248.GC6108@workstation>
- <YNSZNxMjX/vNvae+@kroah.com>
- <20210624144752.GD6108@workstation>
+        id S232361AbhFXPae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 11:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231708AbhFXPac (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 11:30:32 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C48ECC061574;
+        Thu, 24 Jun 2021 08:28:12 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id g192so5456381pfb.6;
+        Thu, 24 Jun 2021 08:28:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Q2gPlbxZIu0s2pp6ayJgQnoK8WTCgbC9z/0R22rI7LA=;
+        b=hQX23N294SlJ3Va9DqB9y9whZlmWswxGS0Zaj1oObBt2Y9ymGHliiplpfi3/NRXbWz
+         Z7ef0HCQZOY4/7YhyTc5nECnIjsIm2Y159MvDm/u5VeUKW39c0CXfvFW9lqLyZa1aF0l
+         lWeLAH+VXY+vTEIaqiIgrgxwUubLRPlMT7w/LXdFLUX7UuxOcRu7dTIIA/X0Q3YtqEY6
+         pJP0ox++dod96lJvzInz2A2TMQTDFY/EXA6zTChEU4pOpRCcdiez8zDN32vLbPaSLEGq
+         BgLCvLJo4tzt8wLVZQDu6aIbQQeWpu7S2Ajet3jez2VVRhi26k9Rc/89jZhPG7pEi2NY
+         kmmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Q2gPlbxZIu0s2pp6ayJgQnoK8WTCgbC9z/0R22rI7LA=;
+        b=bXQKlQuDtD65pv5KuP7c8m1mBlpjhvJiq653yHbfxewkFv5V1bxNdRkR5YcHpJGKqL
+         A2srGWmXTfGUMLdcusnG9h/V9UzrYL4uVNAsImGJeehTNsexrWlMspiX/rXrCSRTZM1X
+         /muvWAgvwZNInXyXvD+Y2F6K4mD65cDOytjYTty9R8rAlwYu9Eg1la27pV6B7UUH7JEc
+         yjGnqY4BL2cxI3y5Gt7cWP/dv4G9E6sh2C2h97KtbmpLUAeH1rhwHCAEYTAr/e+DQQuX
+         yoc8yR2V6XxOHVpPZf7axxLroQ2Iyxd3CpYZGjng4jMS2GbocaN3VnbI/wPlXIz9cGCl
+         lbKA==
+X-Gm-Message-State: AOAM533jOhjx5wpiA28F1aiVPmKBVZ6W7A+mReORp9yd1BdkTlv6epvw
+        VpiFiUkv7iblM0Qqo0ZAngU=
+X-Google-Smtp-Source: ABdhPJwmceMxhr6RsXl0aCSiYeaB/BVCTVe5LMoG0ibCbU1T+OhWgLWjJ/ZDfa6Y1tJIrSxHkwAAoQ==
+X-Received: by 2002:a63:7985:: with SMTP id u127mr5259787pgc.228.1624548492228;
+        Thu, 24 Jun 2021 08:28:12 -0700 (PDT)
+Received: from localhost ([103.248.31.165])
+        by smtp.gmail.com with ESMTPSA id v13sm3669552pja.44.2021.06.24.08.28.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 08:28:11 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 20:58:09 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v7 1/8] PCI: Add pcie_reset_flr to follow calling
+ convention of other reset methods
+Message-ID: <20210624152809.m3glwh6lxckykt33@archlinux>
+References: <20210608054857.18963-2-ameynarkhede03@gmail.com>
+ <20210624122309.GA3518896@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210624144752.GD6108@workstation>
+In-Reply-To: <20210624122309.GA3518896@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 08:17:52PM +0530, Manivannan Sadhasivam wrote:
-> On Thu, Jun 24, 2021 at 04:39:51PM +0200, Greg KH wrote:
-> > On Thu, Jun 24, 2021 at 08:02:48PM +0530, Manivannan Sadhasivam wrote:
-> > > On Thu, Jun 24, 2021 at 03:50:45PM +0200, Greg KH wrote:
-> > > > On Mon, Jun 21, 2021 at 09:46:09PM +0530, Manivannan Sadhasivam wrote:
-> > > > > From: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> > > > > 
-> > > > > MHI reads the channel ID from the event ring element sent by the
-> > > > > device which can be any value between 0 and 255. In order to
-> > > > > prevent any out of bound accesses, add a check against the maximum
-> > > > > number of channels supported by the controller and those channels
-> > > > > not configured yet so as to skip processing of that event ring
-> > > > > element.
-> > > > > 
-> > > > > Cc: stable@vger.kernel.org
-> > > > > Fixes: 1d3173a3bae7 ("bus: mhi: core: Add support for processing events from client device")
-> > > > > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> > > > > Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
-> > > > > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > > > Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-> > > > > Link: https://lore.kernel.org/r/1619481538-4435-1-git-send-email-bbhatt@codeaurora.org
-> > > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > > > ---
-> > > > >  drivers/bus/mhi/core/main.c | 15 ++++++++++-----
-> > > > >  1 file changed, 10 insertions(+), 5 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> > > > > index 22acde118bc3..ed07421c4870 100644
-> > > > > --- a/drivers/bus/mhi/core/main.c
-> > > > > +++ b/drivers/bus/mhi/core/main.c
-> > > > > @@ -773,11 +773,16 @@ static void mhi_process_cmd_completion(struct mhi_controller *mhi_cntrl,
-> > > > >  	cmd_pkt = mhi_to_virtual(mhi_ring, ptr);
-> > > > >  
-> > > > >  	chan = MHI_TRE_GET_CMD_CHID(cmd_pkt);
-> > > > > -	mhi_chan = &mhi_cntrl->mhi_chan[chan];
-> > > > > -	write_lock_bh(&mhi_chan->lock);
-> > > > > -	mhi_chan->ccs = MHI_TRE_GET_EV_CODE(tre);
-> > > > > -	complete(&mhi_chan->completion);
-> > > > > -	write_unlock_bh(&mhi_chan->lock);
-> > > > > +	WARN_ON(chan >= mhi_cntrl->max_chan);
-> > > > 
-> > > > What can ever trigger this WARN_ON()?  Do you mean to reboot a machine
-> > > > if panic-on-warn is set?
-> > > > 
-> > > > If this can actually happen, then check for it and recover properly,
-> > > > don't just blindly warn and then keep on going.
-> > > > 
-> > > 
-> > > We can't do much here other than warning the user and dropping the
-> > > command.
-> > 
-> > But you didn't warn anyone.  Well, you rebooted the machine, is that ok?
-> > If this can be triggered by a user, this should never happen.
-> > 
-> > Do not use WARN_ON() ever please.
-> > 
-> > > There is no recovery possible because, the device has sent the command
-> > > completion event on a wrong channel. It can't happen usually unless a
-> > > malcious device sits on the other end.
-> > 
-> > Then just eat the message and move on, please do not crash the box.
-> > 
-> 
-> Okay. We'll spit an error message and drop the event.
+On 21/06/24 07:23AM, Bjorn Helgaas wrote:
+> On Tue, Jun 08, 2021 at 11:18:50AM +0530, Amey Narkhede wrote:
+> > Currently there is separate function pcie_has_flr() to probe if pcie flr is
+> > supported by the device which does not match the calling convention
+> > followed by reset methods which use second function argument to decide
+> > whether to probe or not.  Add new function pcie_reset_flr() that follows
+> > the calling convention of reset methods.
+>
+> > +/**
+> > + * pcie_reset_flr - initiate a PCIe function level reset
+> > + * @dev: device to reset
+> > + * @probe: If set, only check if the device can be reset this way.
+> > + *
+> > + * Initiate a function level reset on @dev.
+> > + */
+> > +int pcie_reset_flr(struct pci_dev *dev, int probe)
+> > +{
+> > +	u32 cap;
+> > +
+> > +	if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
+> > +		return -ENOTTY;
+> > +
+> > +	pcie_capability_read_dword(dev, PCI_EXP_DEVCAP, &cap);
+> > +	if (!(cap & PCI_EXP_DEVCAP_FLR))
+> > +		return -ENOTTY;
+> > +
+> > +	if (probe)
+> > +		return 0;
+> > +
+> > +	return pcie_flr(dev);
+> > +}
+>
+> Tangent: I've been told before, but I can't remember why we need the
+> "probe" interface.  Since we're looking at this area again, can we add
+> a comment to clarify this?
+>
+> Every time I read this, I wonder why we can't just get rid of the
+> probe and attempt a reset.  If it fails because it's not supported, we
+> could just try the next one in the list.
 
-If this can be triggered by a user, don't provide a way to DoS the
-kernel error log.
+Part of the reason is to have same calling convention as other reset
+methods and other reason is devices that run in VMs where various
+capabilities can be hidden or have quirks for avoiding known troublesome
+combination of device features as Alex explained here
+https://lore.kernel.org/linux-pci/20210624151242.ybew2z5rseuusj7v@archlinux/T/#mb67c09a2ce08ce4787652e4c0e7b9e5adf1df57a
 
-thanks,
+On the side note as you suggested earlier to cache flr capability
+earlier the PCI_EXP_DEVCAP reading code won't be there in next version
+so its just trivial check(dev->has_flr).
 
-greg k-h
+Thanks,
+Amey
