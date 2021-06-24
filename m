@@ -2,176 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 258B83B3051
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5713B3052
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231854AbhFXNpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:45:08 -0400
-Received: from mga17.intel.com ([192.55.52.151]:58487 "EHLO mga17.intel.com"
+        id S231474AbhFXNpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:45:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:57694 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229995AbhFXNpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:45:06 -0400
-IronPort-SDR: nn2MIhyhL5NW5Z3V+3vCPOP44a8ipYAGb/z5z9Lji5smoldhBVlA/M2MmhonH9tj5pcQg6UQ1i
- 6apbTg/OyHhw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="187849764"
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="187849764"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 06:42:45 -0700
-IronPort-SDR: YVydjBX0YkVAhLh+YMD18XTmbFpHR21zKnhNrxE0oaEHiBi9/M3tMpJYUok7tlhXE14j+MwZ07
- jTfscbHMjaxA==
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="487758610"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.211.177]) ([10.254.211.177])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 06:42:38 -0700
-Cc:     baolu.lu@linux.intel.com, Jason Gunthorpe <jgg@nvidia.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-To:     David Gibson <david@gibson.dropbear.id.au>
-References: <MWHPR11MB188699D0B9C10EB51686C4138C389@MWHPR11MB1886.namprd11.prod.outlook.com>
- <YMCy48Xnt/aphfh3@8bytes.org> <20210609123919.GA1002214@nvidia.com>
- <14d884a8-13bc-b2ba-7020-94b219e3e2d9@linux.intel.com>
- <YMrcLcTL+cUKd1a5@yekko>
- <b9c48526-8b8f-ff9e-4ece-4a39f476e3b7@linux.intel.com>
- <YNQEClb1nptFBIRB@yekko>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: Plan for /dev/ioasid RFC v2
-Message-ID: <b77b9ffc-166e-3019-0328-59d20a437fd5@linux.intel.com>
-Date:   Thu, 24 Jun 2021 21:42:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S231304AbhFXNpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:45:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B519ED1;
+        Thu, 24 Jun 2021 06:43:00 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BE6453F882;
+        Thu, 24 Jun 2021 06:42:57 -0700 (PDT)
+Subject: Re: [PATCH v17 5/6] KVM: arm64: ioctl to fetch/store tags in a guest
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Andrew Jones <drjones@redhat.com>
+References: <20210621111716.37157-1-steven.price@arm.com>
+ <20210621111716.37157-6-steven.price@arm.com> <87k0mjidwb.wl-maz@kernel.org>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <b5666753-0ea5-c6e9-766a-0eac2dad08a2@arm.com>
+Date:   Thu, 24 Jun 2021 14:42:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YNQEClb1nptFBIRB@yekko>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87k0mjidwb.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/24 12:03, David Gibson wrote:
-> On Fri, Jun 18, 2021 at 01:21:47PM +0800, Lu Baolu wrote:
->> Hi David,
+On 24/06/2021 14:35, Marc Zyngier wrote:
+> Hi Steven,
+> 
+> On Mon, 21 Jun 2021 12:17:15 +0100,
+> Steven Price <steven.price@arm.com> wrote:
 >>
->> On 6/17/21 1:22 PM, David Gibson wrote:
->>>> The iommu_group can guarantee the isolation among different physical
->>>> devices (represented by RIDs). But when it comes to sub-devices (ex. mdev or
->>>> vDPA devices represented by RID + SSID), we have to rely on the
->>>> device driver for isolation. The devices which are able to generate sub-
->>>> devices should either use their own on-device mechanisms or use the
->>>> platform features like Intel Scalable IOV to isolate the sub-devices.
->>> This seems like a misunderstanding of groups.  Groups are not tied to
->>> any PCI meaning.  Groups are the smallest unit of isolation, no matter
->>> what is providing that isolation.
->>>
->>> If mdevs are isolated from each other by clever software, even though
->>> they're on the same PCI device they are in different groups from each
->>> other*by definition*.  They are also in a different group from their
->>> parent device (however the mdevs only exist when mdev driver is
->>> active, which implies that the parent device's group is owned by the
->>> kernel).
+>> The VMM may not wish to have it's own mapping of guest memory mapped
+>> with PROT_MTE because this causes problems if the VMM has tag checking
+>> enabled (the guest controls the tags in physical RAM and it's unlikely
+>> the tags are correct for the VMM).
 >>
->> You are right. This is also my understanding of an "isolation group".
+>> Instead add a new ioctl which allows the VMM to easily read/write the
+>> tags from guest memory, allowing the VMM's mapping to be non-PROT_MTE
+>> while the VMM can still read/write the tags for the purpose of
+>> migration.
 >>
->> But, as I understand it, iommu_group is only the isolation group visible
->> to IOMMU. When we talk about sub-devices (sw-mdev or mdev w/ pasid),
->> only the device and device driver knows the details of isolation, hence
->> iommu_group could not be extended to cover them. The device drivers
->> should define their own isolation groups.
-> So, "iommu group" isn't a perfect name.  It came about because
-> originally the main mechanism for isolation was the IOMMU, so it was
-> typically the IOMMU's capabilities that determined if devices were
-> isolated.  However it was always known that there could be other
-> reasons for failure of isolation.  To simplify the model we decided
-> that we'd put things into the same group if they were non-isolated for
-> any reason.
-
-Yes.
-
-> 
-> The kernel has no notion of "isolation group" as distinct from "iommu
-> group".  What are called iommu groups in the kernel now*are*
-> "isolation groups" and that was always the intention - it's just not a
-> great name.
-
-Fair enough.
-
-> 
->> Otherwise, the device driver has to fake an iommu_group and add hacky
->> code to link the related IOMMU elements (iommu device, domain, group
->> etc.) together. Actually this is part of the problem that this proposal
->> tries to solve.
-> Yeah, that's not ideal.
-> 
->>>> Under above conditions, different sub-device from a same RID device
->>>> could be able to use different IOASID. This seems to means that we can't
->>>> support mixed mode where, for example, two RIDs share an iommu_group and
->>>> one (or both) of them have sub-devices.
->>> That doesn't necessarily follow.  mdevs which can be successfully
->>> isolated by their mdev driver are in a different group from their
->>> parent device, and therefore need not be affected by whether the
->>> parent device shares a group with some other physical device.  They
->>> *might*   be, but that's up to the mdev driver to determine based on
->>> what it can safely isolate.
->>>
->> If we understand it as multiple levels of isolation, can we classify the
->> devices into the following categories?
+>> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+>> Signed-off-by: Steven Price <steven.price@arm.com>
+>> ---
+>>  arch/arm64/include/asm/kvm_host.h |  3 ++
+>>  arch/arm64/include/asm/mte-def.h  |  1 +
+>>  arch/arm64/include/uapi/asm/kvm.h | 11 +++++
+>>  arch/arm64/kvm/arm.c              |  7 +++
+>>  arch/arm64/kvm/guest.c            | 82 +++++++++++++++++++++++++++++++
+>>  include/uapi/linux/kvm.h          |  1 +
+>>  6 files changed, 105 insertions(+)
 >>
->> 1) Legacy devices
->>     - devices without device-level isolation
->>     - multiple devices could sit in a single iommu_group
->>     - only a single I/O address space could be bound to IOMMU
-> I'm not really clear on what that last statement means.
-
-I mean a single iommu_domain should be used by all devices sharing a
-single iommu_group.
-
+>> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+>> index 309e36cc1b42..6a2ac4636d42 100644
+>> --- a/arch/arm64/include/asm/kvm_host.h
+>> +++ b/arch/arm64/include/asm/kvm_host.h
+>> @@ -729,6 +729,9 @@ int kvm_arm_vcpu_arch_get_attr(struct kvm_vcpu *vcpu,
+>>  int kvm_arm_vcpu_arch_has_attr(struct kvm_vcpu *vcpu,
+>>  			       struct kvm_device_attr *attr);
+>>  
+>> +long kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
+>> +				struct kvm_arm_copy_mte_tags *copy_tags);
+>> +
+>>  /* Guest/host FPSIMD coordination helpers */
+>>  int kvm_arch_vcpu_run_map_fp(struct kvm_vcpu *vcpu);
+>>  void kvm_arch_vcpu_load_fp(struct kvm_vcpu *vcpu);
+>> diff --git a/arch/arm64/include/asm/mte-def.h b/arch/arm64/include/asm/mte-def.h
+>> index cf241b0f0a42..626d359b396e 100644
+>> --- a/arch/arm64/include/asm/mte-def.h
+>> +++ b/arch/arm64/include/asm/mte-def.h
+>> @@ -7,6 +7,7 @@
+>>  
+>>  #define MTE_GRANULE_SIZE	UL(16)
+>>  #define MTE_GRANULE_MASK	(~(MTE_GRANULE_SIZE - 1))
+>> +#define MTE_GRANULES_PER_PAGE	(PAGE_SIZE / MTE_GRANULE_SIZE)
+>>  #define MTE_TAG_SHIFT		56
+>>  #define MTE_TAG_SIZE		4
+>>  #define MTE_TAG_MASK		GENMASK((MTE_TAG_SHIFT + (MTE_TAG_SIZE - 1)), MTE_TAG_SHIFT)
+>> diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
+>> index 24223adae150..b3edde68bc3e 100644
+>> --- a/arch/arm64/include/uapi/asm/kvm.h
+>> +++ b/arch/arm64/include/uapi/asm/kvm.h
+>> @@ -184,6 +184,17 @@ struct kvm_vcpu_events {
+>>  	__u32 reserved[12];
+>>  };
+>>  
+>> +struct kvm_arm_copy_mte_tags {
+>> +	__u64 guest_ipa;
+>> +	__u64 length;
+>> +	void __user *addr;
+>> +	__u64 flags;
+>> +	__u64 reserved[2];
+>> +};
+>> +
+>> +#define KVM_ARM_TAGS_TO_GUEST		0
+>> +#define KVM_ARM_TAGS_FROM_GUEST		1
+>> +
+>>  /* If you need to interpret the index values, here is the key: */
+>>  #define KVM_REG_ARM_COPROC_MASK		0x000000000FFF0000
+>>  #define KVM_REG_ARM_COPROC_SHIFT	16
+>> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+>> index 28ce26a68f09..511f3716fe33 100644
+>> --- a/arch/arm64/kvm/arm.c
+>> +++ b/arch/arm64/kvm/arm.c
+>> @@ -1359,6 +1359,13 @@ long kvm_arch_vm_ioctl(struct file *filp,
+>>  
+>>  		return 0;
+>>  	}
+>> +	case KVM_ARM_MTE_COPY_TAGS: {
+>> +		struct kvm_arm_copy_mte_tags copy_tags;
+>> +
+>> +		if (copy_from_user(&copy_tags, argp, sizeof(copy_tags)))
+>> +			return -EFAULT;
+>> +		return kvm_vm_ioctl_mte_copy_tags(kvm, &copy_tags);
+>> +	}
+>>  	default:
+>>  		return -EINVAL;
+>>  	}
+>> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
+>> index 5cb4a1cd5603..4ddb20017b2f 100644
+>> --- a/arch/arm64/kvm/guest.c
+>> +++ b/arch/arm64/kvm/guest.c
+>> @@ -995,3 +995,85 @@ int kvm_arm_vcpu_arch_has_attr(struct kvm_vcpu *vcpu,
+>>  
+>>  	return ret;
+>>  }
+>> +
+>> +long kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
+>> +				struct kvm_arm_copy_mte_tags *copy_tags)
+>> +{
+>> +	gpa_t guest_ipa = copy_tags->guest_ipa;
+>> +	size_t length = copy_tags->length;
+>> +	void __user *tags = copy_tags->addr;
+>> +	gpa_t gfn;
+>> +	bool write = !(copy_tags->flags & KVM_ARM_TAGS_FROM_GUEST);
+>> +	int ret = 0;
+>> +
+>> +	if (!kvm_has_mte(kvm))
+>> +		return -EINVAL;
+>> +
+>> +	if (copy_tags->reserved[0] || copy_tags->reserved[1])
+>> +		return -EINVAL;
+>> +
+>> +	if (copy_tags->flags & ~KVM_ARM_TAGS_FROM_GUEST)
+>> +		return -EINVAL;
+>> +
+>> +	if (length & ~PAGE_MASK || guest_ipa & ~PAGE_MASK)
+>> +		return -EINVAL;
+>> +
+>> +	gfn = gpa_to_gfn(guest_ipa);
+>> +
+>> +	mutex_lock(&kvm->slots_lock);
+>> +
+>> +	while (length > 0) {
+>> +		kvm_pfn_t pfn = gfn_to_pfn_prot(kvm, gfn, write, NULL);
+>> +		void *maddr;
+>> +		unsigned long num_tags;
+>> +		struct page *page;
+>> +
+>> +		if (is_error_noslot_pfn(pfn)) {
+>> +			ret = -EFAULT;
+>> +			goto out;
+>> +		}
+>> +
+>> +		page = pfn_to_online_page(pfn);
+>> +		if (!page) {
+>> +			/* Reject ZONE_DEVICE memory */
+>> +			ret = -EFAULT;
+>> +			goto out;
+>> +		}
+>> +		maddr = page_address(page);
+>> +
+>> +		if (!write) {
+>> +			if (test_bit(PG_mte_tagged, &page->flags))
+>> +				num_tags = mte_copy_tags_to_user(tags, maddr,
+>> +							MTE_GRANULES_PER_PAGE);
+>> +			else
+>> +				/* No tags in memory, so write zeros */
+>> +				num_tags = MTE_GRANULES_PER_PAGE -
+>> +					clear_user(tags, MTE_GRANULES_PER_PAGE);
+>> +			kvm_release_pfn_clean(pfn);
+>> +		} else {
+>> +			num_tags = mte_copy_tags_from_user(maddr, tags,
+>> +							MTE_GRANULES_PER_PAGE);
+>> +			kvm_release_pfn_dirty(pfn);
+>> +		}
+>> +
+>> +		if (num_tags != MTE_GRANULES_PER_PAGE) {
+>> +			ret = -EFAULT;
+>> +			goto out;
+>> +		}
+>> +
+>> +		/* Set the flag after checking the write completed fully */
+>> +		if (write)
+>> +			set_bit(PG_mte_tagged, &page->flags);
 > 
->> 2) Modern devices
->>     - devices capable of device-level isolation
-> This will*typically*  be true of modern devices, but I don't think we
-> can really make it a hard API distinction.  Legacy or buggy bridges
-> can force modern devices into the same group as each other.  Modern
-> devices are not immune from bugs which would force lack of isolation
-> (e.g. forgotten debug registers on function 0 which affect other
-> functions).
+> This ended up catching my eye as I was merging some other patches.
+> 
+> This set_bit() occurs *after* the page has been released, meaning it
+> could have been evicted and reused in the interval. I plan to fix it
+> as below. Please let me know if that works for you.
+> 
+> Thanks,
+> 
+> 	M.
+> 
+> From a78d3206378a7101659fbc2a4bf01cb9376c4793 Mon Sep 17 00:00:00 2001
+> From: Marc Zyngier <maz@kernel.org>
+> Date: Thu, 24 Jun 2021 14:21:05 +0100
+> Subject: [PATCH] KVM: arm64: Set the MTE tag bit before releasing the page
+> 
+> Setting a page flag without holding a reference to the page
+> is living dangerously. In the tag-writing path, we drop the
+> reference to the page by calling kvm_release_pfn_dirty(),
+> and only then set the PG_mte_tagged bit.
+> 
+> It would be safer to do it the other way round.
+> 
+> Fixes: f0376edb1ddca ("KVM: arm64: Add ioctl to fetch/store tags in a guest")
+> Cc: Steven Price <steven.price@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+
+Well spotted - I'd originally had the set_bit there - but moved it down
+when I realised it should only be set if the mte_copy_tags_from_user()
+completed successfully. Obviously I hadn't noticed that the page
+reference had gone by that point.
+
+Thanks for fixing it. FWIW:
+
+Reviewed-by: Steven Price <steven.price@arm.com>
+
+> ---
+>  arch/arm64/kvm/guest.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
+> index 4ddb20017b2f..60815ae477cf 100644
+> --- a/arch/arm64/kvm/guest.c
+> +++ b/arch/arm64/kvm/guest.c
+> @@ -1053,6 +1053,14 @@ long kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
+>  		} else {
+>  			num_tags = mte_copy_tags_from_user(maddr, tags,
+>  							MTE_GRANULES_PER_PAGE);
+> +
+> +			/*
+> +			 * Set the flag after checking the write
+> +			 * completed fully
+> +			 */
+> +			if (num_tags == MTE_GRANULES_PER_PAGE)
+> +				set_bit(PG_mte_tagged, &page->flags);
+> +
+>  			kvm_release_pfn_dirty(pfn);
+>  		}
+>  
+> @@ -1061,10 +1069,6 @@ long kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
+>  			goto out;
+>  		}
+>  
+> -		/* Set the flag after checking the write completed fully */
+> -		if (write)
+> -			set_bit(PG_mte_tagged, &page->flags);
+> -
+>  		gfn++;
+>  		tags += num_tags;
+>  		length -= PAGE_SIZE;
 > 
 
-Yes.
-
-I am thinking whether it's feasible to change "bind/attach a device to
-an IOASID" to "bind/attach an isolated unit to an IOASID". An isolated
-unit could be
-
-1) an iommu_ group including single or multiple devices;
-2) a physical device which have a 1-device iommu group + device ID
-    (PASID/subStreamID) which represents an isolated subdevice inside the
-    physical one.
-3) anything that we might have in the future.
-
-A handler which represents the connection between device and iommu is
-returned on any successful binding. This handler could be used to
-GET_INFO and attach/detach after binding.
-
-Best regards,
-baolu
