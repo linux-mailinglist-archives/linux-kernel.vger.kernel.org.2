@@ -2,168 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21A03B2DB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E3F3B2DBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232459AbhFXLWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232355AbhFXLWw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:22:52 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 923BBC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 04:20:31 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id hq39so8926901ejc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 04:20:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=immu-ne.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9yqHOvEXFM5M+Xh9I7gVovXRkNcEd0z6OPYCZF+Zvx4=;
-        b=SODSE+qrhT+5SDdE6Sg3O+6saTYoIJXJ22chH7cmAo4NJWjtuGVrWzBVojhOkSb7Mp
-         BZG/KAwV6WegPEFmbvuH0gbj9vQk2Qaba7p0uCqMngNihMceMkancFe2Dvxtg2MYggCq
-         O6ID05w0/pq5SPj01u/fz7h+r5VkFoz0vZo1NptS2v1cYDLuDnt/FRnv4riy7pz9iIxs
-         +nvs8I4eGlXiUNeUVBB+LZkNR2fK8vUVU1MKaw3KcyDafNcq+IIUCmbibXVD0gOJ3PEe
-         KHN5SKbW9Ge7vLhQZUDxqXNsLOjSSqZiqe1i10rPj+n3isvvENxIVkf3KY+wVvwJrEPC
-         zXjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9yqHOvEXFM5M+Xh9I7gVovXRkNcEd0z6OPYCZF+Zvx4=;
-        b=dUP5P6ctb5Lt8UpdoV0YZlx3g+cUz+A1xv7uibnS7a2PApWWCxx/900Oa4z4Gvwt8d
-         YToPyLB+cz212zVc1UCKEAQ9SKrPQcEKSKgRzZUo1eqaCSTjeHff6ycrs1GY3C3w3Lr9
-         fT+19ELtHK31Spd4zXNlhZjMkXfb5F8D9k5MjO24grX52fYNWElIWW3j/Na5efFfkCfh
-         7iWkBf2rjiYH2CubrfasPHf6T529pB7TQ+1IBCBxeHjM5rx6A49Oew2sg+iiDxM3/rsf
-         KvU6n33fC8sCwVeSBOBjTSBEuDmEh85tSvzWO7JaZu77fAg3mcrlBqlKng8BAUJOqZlE
-         3xIQ==
-X-Gm-Message-State: AOAM532e3R9M2mwofQZClLqwS/E5HV6mYpTH1uLuyp/Xe2G7Z4+EE07P
-        VUq11VxePin7urJN/SWa/jsb0A==
-X-Google-Smtp-Source: ABdhPJz79mtywF82KyD7BNgyK4ywqk9jjP8J0SBKHBzgNCAa3dfxIkNGsnl1Aqjli7K++4A1Fk8yhA==
-X-Received: by 2002:a17:906:dbd5:: with SMTP id yc21mr4858497ejb.223.1624533629949;
-        Thu, 24 Jun 2021 04:20:29 -0700 (PDT)
-Received: from [172.25.20.242] (b2b-78-94-0-50.unitymedia.biz. [78.94.0.50])
-        by smtp.gmail.com with ESMTPSA id hx27sm1043820ejc.75.2021.06.24.04.20.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 04:20:29 -0700 (PDT)
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via
- sysfs
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "philipp.deppenwiese@immu.ne" <philipp.deppenwiese@immu.ne>
-References: <20210622142334.14883-1-hans-gert.dahmen@immu.ne>
- <5ee9e467bfbf49d29cb54679d2dce1c3@AcuMS.aculab.com>
- <d61176a0-67cf-268f-8c31-8de8739753c3@immu.ne> <YNMrpzZgH4KECykk@kroah.com>
-From:   Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
-Message-ID: <7f076743-3dd6-d397-d3cc-8c31e080695c@immu.ne>
-Date:   Thu, 24 Jun 2021 13:20:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232465AbhFXLX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:23:58 -0400
+Received: from phobos.denx.de ([85.214.62.61]:51020 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232005AbhFXLX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 07:23:57 -0400
+Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 39BF58295B;
+        Thu, 24 Jun 2021 13:21:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1624533696;
+        bh=WZ94MCj4P+1Tk4h3F6uSezgDTShoq+YXMzbRU4lNdl0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PQljBxM3U7Mwv1StnBH3q2AmOPZ3PGkD6TS8yT3nkYx9SZVR5O4K7ITVan/aSo8Ee
+         CWOik36TaaA2kTppomLMpshRTtqwtmzgircbjHrVMAnmz4VSXEiIulzI0BLFNDZCEK
+         7OdMhkg26Ge0LTHvdz6rz99rTvMO17wFbmSRb4vycBjd7V2HJA1ROp3CP7773T7iDR
+         7ih48a4UnB9YT2r2eq9EFRfryEpq02rw31Xnq69pw7+mnQaLGWhTdRk1C9I4bo8pzu
+         UngHAd4NdV5y3RxgW8QXx/GrH1XNVctHG7nwmBIyl5quSX54yJYU/IPfnf76mda+Wt
+         cV3wS6JvSRKCg==
+Date:   Thu, 24 Jun 2021 13:21:29 +0200
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Madalin Bucur (OSS)" <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Einon <mark.einon@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC 1/3] ARM: dts: imx28: Add description for L2 switch on XEA
+ board
+Message-ID: <20210624132129.1ade0614@ktm>
+In-Reply-To: <DB8PR04MB679567B66A45FBD1C23E7371E6079@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <20210622144111.19647-1-lukma@denx.de>
+        <20210622144111.19647-2-lukma@denx.de>
+        <YNH3mb9fyBjLf0fj@lunn.ch>
+        <20210622225134.4811b88f@ktm>
+        <YNM0Wz1wb4dnCg5/@lunn.ch>
+        <20210623172631.0b547fcd@ktm>
+        <76159e5c-6986-3877-c0a1-47b5a17bf0f1@gmail.com>
+        <DB8PR04MB679567B66A45FBD1C23E7371E6079@DB8PR04MB6795.eurprd04.prod.outlook.com>
+Organization: denx.de
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YNMrpzZgH4KECykk@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/kZDyde/N75IDMut=SSq/AH7"; protocol="application/pgp-signature"
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/kZDyde/N75IDMut=SSq/AH7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 23.06.21 14:40, gregkh@linuxfoundation.org wrote:
->> On Wed, Jun 23, 2021 at 02:17:54PM +0200, Hans-Gert Dahmen wrote:
->> Hi,
->> Yes. The window is part of the DMI interface and the south bridge or PCH
->> converts the bus cycles to SPI reads. It is because this region contains the
->> reset vector address of your CPU and the very first instruction it executes
->> after a reset when the internal setup is done will actually be loaded from
->> the serial SPI bus. It is AFAIK part of AMD's original 64-bit specification.
-> The point is that you will never be able to do this for all devices.
-> You should ONLY be allowed to have this module bind to the hardware that
-> you KNOW it will work with.
-> 
-> So please work off of a DMI table, or some such hardware description,
-> instead of just blindly enabling it for all systems.
+Hi Joakim,
 
-I was referring to the DMI/QPI/PCI interface that connects the 
-ICH/PCH/south bridge to the CPU. I have gone through all datasheets of 
-intel ICH and PCH and they state that the address range from 0xff000000 
-through 0xffffffff is a fixed mapping that cannot be changed (no BAR) 
-except for the original ICH (dating back to 1999) where the window is 
-only 8MB. The original ICH is for 32-bit systems only so all 64-bit 
-Intel systems that exist have this feature. I have talked to somebody 
-who works with future Intel hardware and the person indicated that it is 
-not likely to change.
+> Hi Lukasz, Florian, Andrew,
+>=20
+> > > Maybe somebody from NXP can provide input to this discussion - for
+> > > example to sched some light on FEC driver (near) future. =20
+> >=20
+> > Seems like some folks at NXP are focusing on the STMMAC controller
+> > these days (dwmac from Synopsys), so maybe they have given up on
+> > having their own Ethernet MAC for lower end products. =20
+>=20
+> I am very happy to take participate into this topic, but now I have
+> no experience to DSA and i.MX28 MAC, so I may need some time to
+> increase these knowledge, limited insight could be put to now.
 
-This is why I made the module depend on X86_64. I still have to do the 
-same complete research for AMD systems which is a little harder to do, 
-so I am proposing to check if the root complex has Intel's vendor ID and 
-only load the module on 64-bit Intel systems until I can confirm the 
-same behavior for all 64-bit AMD systems. Then I could check if the root 
-complex is Intel or AMD. Would that suffice as "some such hardware 
-description"?
+Ok. No problem :-)
 
-Here are my public sources:
+>=20
+> Florian, Andrew could comment more and I also can learn from it :-),
+> they are all very experienced expert.
 
-ICH0 Datasheet Chapter 6.3 and Table 6-5
-https://www.tautec-electronics.de/Datenblaetter/Schaltkreise/FW82801AA.pdf
+The main purpose of several RFCs for the L2 switch drivers (for DSA [1]
+and switchdev [2]) was to gain feedback from community as soon as
+possible (despite that the driver lacks some features - like VLAN, FDB,
+etc).
 
-ICH2 Datasheet Chapter 6.4 and Table 6-4
-https://www.intel.com/content/dam/doc/datasheet/82801ba-i-o-controller-hub-2-82801bam-i-o-controller-hub-2-mobile-datasheet.pdf
+>=20
+> We also want to maintain FEC driver since many SoCs implemented this
+> IP, and as I know we would also use it for future SoCs.
+>  =20
 
-ICH3 Datasheet Chapter 6.4 and Table 6-5
-https://www.intel.com/content/dam/doc/datasheet/82801ca-io-controller-hub-3-datasheet.pdf
+Florian, Andrew, please correct me if I'm wrong, but my impression is
+that upstreaming the support for L2 switch on iMX depends on FEC driver
+being rewritten to support switchdev?
 
-ICH4 Datasheet Chapter 6.4 and Table 6-5
-https://www.intel.com/content/dam/www/public/us/en/documents/datasheets/82801db-io-controller-hub-4-datasheet.pdf
+If yes, then unfortunately, I don't have time and resources to perform
+that task - that is why I have asked if NXP has any plans to update the
+FEC (fec_main.c) driver.
 
-ICH5 Datasheet Chapter 6.4 and Table 133
-https://www.intel.com/content/dam/doc/datasheet/82801eb-82801er-io-controller-hub-datasheet.pdf
 
-ICH6 Datasheet Chapter 6.4 and Table 6-4
-https://www.intel.com/content/dam/doc/datasheet/io-controller-hub-6-datasheet.pdf
+Joakim, do you have any plans to re-factor the legacy FEC driver
+(fec_main.c) and introduce new one, which would support the switchdev?
 
-ICH7 Datasheet Chapter 6.4 and Table 6-4
-https://www.intel.com/content/dam/doc/datasheet/i-o-controller-hub-7-datasheet.pdf
+If NXP is not planning to update the driver, then maybe it would be
+worth to consider adding driver from [2] to mainline? Then I could
+finish it and provide all required features.
 
-ICH8 Datasheet Chapter 6.4 and Table 102
-https://www.intel.com/content/dam/www/public/us/en/documents/datasheets/io-controller-hub-8-datasheet.pdf
 
-ICH9 Datasheet Chapter 9.4 and Table 9-4
-https://www.intel.com/content/dam/doc/datasheet/io-controller-hub-9-datasheet.pdf
+Links:
+[1] -
+https://source.denx.de/linux/linux-imx28-l2switch/-/commits/imx28-v5.12-L2-=
+upstream-DSA-RFC_v1
+[2] -
+https://source.denx.de/linux/linux-imx28-l2switch/-/commits/imx28-v5.12-L2-=
+upstream-switchdev-RFC_v1
 
-ICH10 Datasheet Chapter 9.4 and Table 9-4
-https://theswissbay.ch/pdf/Datasheets/Intel/io-controller-hub-10-family-datasheet.pdf
+> Best Regards,
+> Joakim Zhang
 
-PCH Intel 5 Series Datasheet Chapter 9.4 and Table 9-4
-https://www.intel.com/content/dam/www/public/us/en/documents/datasheets/5-chipset-3400-chipset-datasheet.pdf
 
-PCH Intel 6 Series Datasheet Chapter 9.4 and Table 9-4
-https://www.intel.com/content/dam/www/public/us/en/documents/datasheets/6-chipset-c200-chipset-datasheet.pdf
 
-PCH Intel 7 Series Datasheet Chapter 9.4 and Table 9-4
-https://www.intel.com/content/dam/www/public/us/en/documents/datasheets/7-series-chipset-pch-datasheet.pdf
 
-PCH Intel 8 Series Datasheet Chapter 9.4 and Table 9-4
-https://www.intel.com/content/dam/www/public/us/en/documents/datasheets/8-series-chipset-pch-datasheet.pdf
+Best regards,
 
-PCH Intel 9 Series Datasheet Chapter 9.4 and Table 9-4
-https://www.intel.com/content/dam/www/public/us/en/documents/datasheets/9-series-chipset-pch-datasheet.pdf
+Lukasz Majewski
 
-PCH Intel 100 Series Datasheet Vol 1 Chapter 4.3 and Table 4-4
-https://www.intel.com/content/dam/www/public/us/en/documents/datasheets/100-series-chipset-datasheet-vol-1.pdf
+--
 
-PCH Intel 200 Series Datasheet Vol 1 Chapter 4.3 and Table 4-4
-https://www.mouser.com/datasheet/2/612/200-series-chipset-pch-datasheet-vol-1-1391746.pdf
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
 
-PCH Intel 300 Series Datasheet Vol 1 Chapter 4.3 and Table 4-4
-https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/300-series-chipset-on-package-pch-datasheet-vol-1.pdf
+--Sig_/kZDyde/N75IDMut=SSq/AH7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-PCH Intel 400 Series Datasheet Vol 1 Chapter 4.2 and Table 8
-https://images-eu.ssl-images-amazon.com/images/I/B1TDsSyARKS.pdf
+-----BEGIN PGP SIGNATURE-----
 
-Hans-Gert Dahmen
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmDUarkACgkQAR8vZIA0
+zr06nwf9G3OmyXuWlJdIM3Nl2cegkp7d1CLCHKra/d6RG6rtaMZEoF/bWU6XLAf2
++F+8UwamTxsqNgH0MYQ28KYoGjOTdq6fhN5tJbwin30oUkTfMzsWfANVSaZL3WLL
+LR9EOWZ2e9qzFnq5608+WIwEe8VPg3TxmeiDctM7vZ0cOqL9jOeMcoI73DTfNTRB
+wOEu6Pu6NjQeXEPJQ/+JJfw1KGHinFXc2RJRpPM5cW6QM+3FbmIe5y8KhEu8tD2x
+UFPOfYSi9dck8IeFVk40Eo/2OXpSi0arPJMoH7K2Pxtcg8zreXLAjsU+0azNBfl6
+Y85uaWBHWTBnPPiLLqY2WCgX8rBwZg==
+=zkQk
+-----END PGP SIGNATURE-----
+
+--Sig_/kZDyde/N75IDMut=SSq/AH7--
