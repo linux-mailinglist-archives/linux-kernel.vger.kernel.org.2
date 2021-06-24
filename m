@@ -2,94 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1990E3B3720
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A363B3723
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232747AbhFXTmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 15:42:21 -0400
-Received: from mail-io1-f49.google.com ([209.85.166.49]:35331 "EHLO
-        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232370AbhFXTmT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 15:42:19 -0400
-Received: by mail-io1-f49.google.com with SMTP id d9so9719868ioo.2;
-        Thu, 24 Jun 2021 12:40:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7k/6fGcD1pYsnikYJBx82GWh8GFdpDDIHWZK1LATGcg=;
-        b=KZJT79ofgs6XxiOjuXA8zo7/a5z0CVrWowks8IrMMBTkqauhnXCxqWzv+r1JnyBWcF
-         xO8kDvieC1lKaRat0xAmatCLYB8KwhXyvy86C/w9ANTXmHLCqDPQ0aVD4BZobBehUHuM
-         0B1VUDczVwDA0cyJdS8bdaWwtNLPo89MKvomkY802yuD0C4Ol1abhAOwmZHB6b55SVTf
-         w5Dsbp2rPeynlpnRprcPUvCtP/3KZ+kHfPpoqjRrseqFlg4skYlkfoT0Zr16b/rf/BIp
-         e3rnAb+2xeGd5S3RExGmbpy5jKIIzRP/nEhvLVLG7LNHP0GO6GUw81c5yJl4DMgehglf
-         1GtQ==
-X-Gm-Message-State: AOAM5325caP3fP+cT1YvvQq7YY8hblcvewncvRFE6K1k+OnDES8uEx9y
-        3AmtcL4oGX7HlYyRWIshtw==
-X-Google-Smtp-Source: ABdhPJwPta/rVrlBdiXZV1erKAb8YG9ZEmulwZOe6xWKvFSZAbUcBPGnBU6xZfFY9JyU1BEbNB+5GQ==
-X-Received: by 2002:a6b:cf15:: with SMTP id o21mr5565814ioa.9.1624563599723;
-        Thu, 24 Jun 2021 12:39:59 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id b6sm2290192ils.68.2021.06.24.12.39.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 12:39:58 -0700 (PDT)
-Received: (nullmailer pid 1864678 invoked by uid 1000);
-        Thu, 24 Jun 2021 19:39:54 -0000
-Date:   Thu, 24 Jun 2021 13:39:54 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] clk: qcom: Add MSM8976/56 Global Clock Controller
- (GCC) driver
-Message-ID: <20210624193954.GA1862253@robh.at.kernel.org>
-References: <20210612204317.11691-1-konrad.dybcio@somainline.org>
- <20210612204317.11691-2-konrad.dybcio@somainline.org>
+        id S232757AbhFXTm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 15:42:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232797AbhFXTmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 15:42:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id C4F606120D;
+        Thu, 24 Jun 2021 19:40:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624563603;
+        bh=cbdtrZVfiwSx1BaoUyVwN2/LjCkbvHY/EXZd1PeuDQM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=p8VG0q2m3C329EQtJSoh4JXwgs5uRsuMF1s4Tb0Im8wt1eirT8MfaxxwzG4AmTkIJ
+         k02k2cevcrUmROnT+tsxqCUpE4QVqy7VKkcazZeGFLth/KPXH9GShpYiPNvisDLnzA
+         xOIA/soYxPwvUyVeRRiWeuHRd/15TKs+14XE5sqzWHRkJTOry8wDXiJDD4cVmiVcJ9
+         4rhbKscFeMo/aZPJXoI9QuWbLAlLjeQUH+HHM12XKzPnMkXT8r0Fxf+8nUJ3DyRvBc
+         E25e0EpSEStADQeWg/QsQVCmhrwbJGEYcn7PvWis6WdE+abO0D+ckFPupaiTRA/dXa
+         80U2xeHvUpQZw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B972360A4D;
+        Thu, 24 Jun 2021 19:40:03 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210612204317.11691-2-konrad.dybcio@somainline.org>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] usbnet: add usbnet_event_names[] for kevent
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162456360375.4921.13140580289490455852.git-patchwork-notify@kernel.org>
+Date:   Thu, 24 Jun 2021 19:40:03 +0000
+References: <20210624073508.10094-1-yajun.deng@linux.dev>
+In-Reply-To: <20210624073508.10094-1-yajun.deng@linux.dev>
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     oneukum@suse.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 10:43:16PM +0200, Konrad Dybcio wrote:
-> From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Hello:
+
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Thu, 24 Jun 2021 15:35:08 +0800 you wrote:
+> Modify the netdev_dbg content from int to char * in usbnet_defer_kevent(),
+> this looks more readable.
 > 
-> Add support for the global clock controller found on MSM8956
-> and MSM8976 SoCs.
-> Since the multimedia clocks are actually in the GCC on these
-> SoCs, this will allow drivers to probe and control basically
-> all the required clocks.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> Co-developed-by: Marijn Suijten <marijn.suijten@somainline.org>
-> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> Co-developed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 > ---
-> Changes since v1:
-> - Remove the bool in probe function
-> - Clean up ".name =" clk lookup
-> - Add a comment under gpll0_vote clarifying that it's crucial
-> - Removed CLK_GET_RATE_NOCACHE from display clocks, it still works \o/
-> 
->  drivers/clk/qcom/Kconfig                     |    8 +
->  drivers/clk/qcom/Makefile                    |    1 +
->  drivers/clk/qcom/gcc-msm8976.c               | 4173 ++++++++++++++++++
->  include/dt-bindings/clock/qcom,gcc-msm8976.h |  243 +
+>  drivers/net/usb/usbnet.c | 21 +++++++++++++++++++--
+>  1 file changed, 19 insertions(+), 2 deletions(-)
 
-This belongs in the binding patch and dual license it please.
+Here is the summary with links:
+  - usbnet: add usbnet_event_names[] for kevent
+    https://git.kernel.org/netdev/net-next/c/478890682ff7
 
->  4 files changed, 4425 insertions(+)
->  create mode 100644 drivers/clk/qcom/gcc-msm8976.c
->  create mode 100644 include/dt-bindings/clock/qcom,gcc-msm8976.h
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
