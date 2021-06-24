@@ -2,126 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11D23B2DBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF5B3B2DA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232414AbhFXLYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232530AbhFXLYP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:24:15 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC3AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 04:21:55 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id p7so9681345lfg.4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 04:21:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=esYbPkZY+mNiFhPIhgBGY1PmVNh7PO+rv7V8GnoEFCg=;
-        b=X/HQaJrIZ06jeuSz3cH4rp7eZAK3xlI/dyWeZfUwpdtm7SYCcQL66lo6aRE8yPGfxv
-         KPkvFf+8nsnANFx9PR7AHklQad3m/kQ1x0R8xBfGB1RuIirsV4wG+IfrqKXXUF7P+hp6
-         yBdAeOeawtiM+pG0wZLewjSfHrUsaNEiQYhZoj0okho/wcGP+L+RMUNj0FvbVxJ7/L6J
-         4IU5n0kgSJ635dRv6NieClAxiApvvHqYmpmmWz7ue0jGjWXfYVMeQxP9Dsuz9Y84H5mw
-         7sJuKSy7KvU+50WYBipIKaDydW0vDRBz4j2IYWqFK6uxb4wBZWKqT4vz+z/4+rjshX9Z
-         piMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=esYbPkZY+mNiFhPIhgBGY1PmVNh7PO+rv7V8GnoEFCg=;
-        b=RtFE9lrS3nvxBfn0DB4n4lSgnaZH2JkOnDreBHy7gHcZHKYgGyw4MZ1eBJFxZSfL8M
-         XZ0IvI4+1HZRcDWzd5v3UzeXJ1dZJHfzLmKxOWRGE0Yaups4bYVeU45CQW6cZuq+eQlN
-         JHLbnBWnz7Y3oaxwJo/oeUVh3kOdCEyCAKoAOTFkUJOfxdfpNrpCuwK3NeiR4npsCOJq
-         wDXzl8Rbx6HgcAWlVPt3S42dR8qvgZSh3cjU7CGjBVjLCv8LFF/EMSM+FfVt/qiAdYwK
-         3OpjgVbqyNHBlRoieWwTzMEyJYzbQzylql6L/CF36BzL6gVI+vwGesghCvPS/c6Ts+h8
-         ko3A==
-X-Gm-Message-State: AOAM533ZTqM7U04NGtCjgTWh6ek38cmPymrYHs5pJYWuE6xARgeR6cEK
-        z5pF0q/V/abs5U0OFXGONxkrPA==
-X-Google-Smtp-Source: ABdhPJwJaCL6DqaFALLWUimas3bankdPahP9aJuuerfgUeQbOQcd0JWWjc68rLVWtTOHdkGj1AAXqw==
-X-Received: by 2002:ac2:4d2d:: with SMTP id h13mr3519828lfk.456.1624533713869;
-        Thu, 24 Jun 2021 04:21:53 -0700 (PDT)
-Received: from localhost.localdomain (ti0005a400-2351.bb.online.no. [80.212.254.60])
-        by smtp.gmail.com with ESMTPSA id q21sm196923lfp.233.2021.06.24.04.21.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 04:21:53 -0700 (PDT)
-From:   Odin Ugedal <odin@uged.al>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Sachin Sant <sachinp@linux.vnet.ibm.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org, Odin Ugedal <odin@uged.al>
-Subject: [PATCH] sched/fair: Ensure _sum and _avg values stay consistent
-Date:   Thu, 24 Jun 2021 13:18:15 +0200
-Message-Id: <20210624111815.57937-1-odin@uged.al>
-X-Mailer: git-send-email 2.32.0
+        id S232426AbhFXLV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:21:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232005AbhFXLV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 07:21:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D5C7613C1;
+        Thu, 24 Jun 2021 11:18:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624533547;
+        bh=fyQk9K7V5mi+iulKCuVouHY96p/8l9exJzzlUIeSpn8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bw4AVsGwRrbnlqsX5CZZBCGVkLRWbVSBBROzH0cW0WxgQnoyiN2SkbZT9Y0qsOq8u
+         JL8IIrlYNHTHfBROv+myGIoSXn3V0Qajeyu6WrQ15CejRET9x4mwWpuBCwWkKgfe+I
+         +cOMFFna8tPSjLTq48KMyVkK5wGgtDdocNICZALKyCcFBQrrDac4GVZrs41lrwovdH
+         A7+mTUl4b8SpYL5RZSXQGAdCk4J4xBM23HuRVgN0YiE8QMME9/0wtATNSKneCXnM3U
+         aM6IUBXxfGBIajg731amXfhwP7wHdtJMySWai/ROQfVX1amjwBJVAnH3akjkMUY271
+         lYvk5WkbaBLcQ==
+Date:   Thu, 24 Jun 2021 12:18:56 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Claire Chang <tientzu@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
+        peterz@infradead.org, benh@kernel.crashing.org,
+        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
+        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
+        mingo@kernel.org, Jianxiong Gao <jxgao@google.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Saravana Kannan <saravanak@google.com>, xypron.glpk@gmx.de,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        bskeggs@redhat.com, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Thierry Reding <treding@nvidia.com>,
+        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
+        maarten.lankhorst@linux.intel.com, linuxppc-dev@lists.ozlabs.org,
+        jani.nikula@linux.intel.com,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        rodrigo.vivi@intel.com, Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>, bauerman@linux.ibm.com
+Subject: Re: [PATCH v14 06/12] swiotlb: Use is_swiotlb_force_bounce for
+ swiotlb data bouncing
+Message-ID: <20210624111855.GA1382@willie-the-truck>
+References: <20210619034043.199220-1-tientzu@chromium.org>
+ <20210619034043.199220-7-tientzu@chromium.org>
+ <76c3343d-72e5-9df3-8924-5474ee698ef4@quicinc.com>
+ <20210623183736.GA472@willie-the-truck>
+ <19d4c7a2-744d-21e0-289c-a576e1f0e6f3@quicinc.com>
+ <20210624054315.GA25381@lst.de>
+ <CALiNf288ZLMhY3E8E3N+z9rkwi1viWNLm1wwMEwT4rNwh3FfwQ@mail.gmail.com>
+ <364e6715-eafd-fc4a-e0af-ce2a042756b4@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <364e6715-eafd-fc4a-e0af-ce2a042756b4@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The _sum and _avg values are in general sync together with the PELT
-divider. They are however not always completely in perfect sync,
-resulting in situations where _sum gets to zero while _avg stays
-positive. Such situations are undesirable.
+On Thu, Jun 24, 2021 at 12:14:39PM +0100, Robin Murphy wrote:
+> On 2021-06-24 07:05, Claire Chang wrote:
+> > On Thu, Jun 24, 2021 at 1:43 PM Christoph Hellwig <hch@lst.de> wrote:
+> > > 
+> > > On Wed, Jun 23, 2021 at 02:44:34PM -0400, Qian Cai wrote:
+> > > > is_swiotlb_force_bounce at /usr/src/linux-next/./include/linux/swiotlb.h:119
+> > > > 
+> > > > is_swiotlb_force_bounce() was the new function introduced in this patch here.
+> > > > 
+> > > > +static inline bool is_swiotlb_force_bounce(struct device *dev)
+> > > > +{
+> > > > +     return dev->dma_io_tlb_mem->force_bounce;
+> > > > +}
+> > > 
+> > > To me the crash looks like dev->dma_io_tlb_mem is NULL.  Can you
+> > > turn this into :
+> > > 
+> > >          return dev->dma_io_tlb_mem && dev->dma_io_tlb_mem->force_bounce;
+> > > 
+> > > for a quick debug check?
+> > 
+> > I just realized that dma_io_tlb_mem might be NULL like Christoph
+> > pointed out since swiotlb might not get initialized.
+> > However,  `Unable to handle kernel paging request at virtual address
+> > dfff80000000000e` looks more like the address is garbage rather than
+> > NULL?
+> > I wonder if that's because dev->dma_io_tlb_mem is not assigned
+> > properly (which means device_initialize is not called?).
+> 
+> What also looks odd is that the base "address" 0xdfff800000000000 is held in
+> a couple of registers, but the offset 0xe looks too small to match up to any
+> relevant structure member in that dereference chain :/
 
-This comes from the fact that PELT will increase period_contrib, also
-increasing the PELT divider, without updating _sum and _avg values to
-stay in perfect sync where (_sum == _avg * divider). However, such PELT
-change will never lower _sum, making it impossible to end up in a
-situation where _sum is zero and _avg is not.
+FWIW, I've managed to trigger a NULL dereference locally when swiotlb hasn't
+been initialised but we dereference 'dev->dma_io_tlb_mem', so I think
+Christoph's suggestion is needed regardless. But I agree that it won't help
+with the issue reported by Qian Cai.
 
-Therefore, we need to ensure that when subtracting load outside PELT,
-that when _sum is zero, _avg is also set to zero. This occurs when
-(_sum < _avg * divider), and the subtracted (_avg * divider) is bigger
-or equal to the current _sum, while the subtracted _avg is smaller than
-the current _avg.
+Qian Cai: please can you share your .config and your command line?
 
-Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Signed-off-by: Odin Ugedal <odin@uged.al>
----
+Thanks,
 
-Reports and discussion can be found here:
-
-https://lore.kernel.org/lkml/2ED1BDF5-BC0C-47CD-8F33-9A46C738F8CF@linux.vnet.ibm.com/
-https://lore.kernel.org/lkml/CA+G9fYsMXELmjGUzw4SY1bghTYz_PeR2diM6dRp2J37bBZzMSA@mail.gmail.com/
-
- kernel/sched/fair.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index bfaa6e1f6067..def48bc2e90b 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3688,15 +3688,15 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
- 
- 		r = removed_load;
- 		sub_positive(&sa->load_avg, r);
--		sub_positive(&sa->load_sum, r * divider);
-+		sa->load_sum = sa->load_avg * divider;
- 
- 		r = removed_util;
- 		sub_positive(&sa->util_avg, r);
--		sub_positive(&sa->util_sum, r * divider);
-+		sa->util_sum = sa->util_avg * divider;
- 
- 		r = removed_runnable;
- 		sub_positive(&sa->runnable_avg, r);
--		sub_positive(&sa->runnable_sum, r * divider);
-+		sa->runnable_sum = sa->runnable_avg * divider;
- 
- 		/*
- 		 * removed_runnable is the unweighted version of removed_load so we
--- 
-2.32.0
-
+Will
