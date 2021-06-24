@@ -2,107 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 001043B261F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 06:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598DA3B2654
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 06:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbhFXETc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 00:19:32 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:24135 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhFXETa (ORCPT
+        id S229944AbhFXEay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 00:30:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbhFXEax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 00:19:30 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624508232; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=6xloiwpG87/uJvUK4exXuYaUArkN/R59tp9MRa1/bhg=;
- b=pOCQnKDgWySWYmKp7ixtFgAsEeKTCgHTIgTccZjAktBcI5WQSfH0ioGGVxqzQRPE9SgLJ6Dq
- k19K7SI3dKQDHasH3ZDdd6/atqPluxovLuRuITpSB1s6FRyNoyuhelPwCh4DqGZscrdZPHtQ
- vMLYXQty6YfM8hS7eTvVTi6cdVk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60d40733d2559fe3928a49fa (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Jun 2021 04:16:51
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 832CDC43144; Thu, 24 Jun 2021 04:16:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AAC89C433D3;
-        Thu, 24 Jun 2021 04:16:50 +0000 (UTC)
+        Thu, 24 Jun 2021 00:30:53 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CBFC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 21:28:34 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id w21so11061151qkb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 21:28:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Vf6iRayWkpLOoYUf7pNtG+CaRTyVw0JAqulSitMDQO0=;
+        b=XhlMv+xUBROxE3lM6Rw1CgXO1kddD8cgUoOHPx8CrrP4EyoU4DEd7SG1RL9I+0DYan
+         boJUZwUYrjArp3SWtAGk9E+FeS6qz4WFyjdbkPcDaZ6Ojv9o8/zJPPYdzKO3qy5vBtEQ
+         HXmGW25TeHi/8kTi8dJmCqS/q5sIDUcuof6X0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Vf6iRayWkpLOoYUf7pNtG+CaRTyVw0JAqulSitMDQO0=;
+        b=TC8vqmdqLAM9f62Ux5IdBguc5ssxLB3cBN2Bjt156QI1Tr3keNIfVFjU/aFP4yjKL7
+         3CvOYt9D3kKtwRJJco07i/uOC++JfGRaDXCTP7jEbOwOQTMWAyddLyNUgkPV1C8vD2h1
+         Mw910If1cAlIISIwfoviu1Nm5B8OaGH/V/lvaluXp4gq1O7N7AH5K9asObUQ2WaEqd1A
+         VW6cfVzODqAYnWhJXAqbn6zbp4wAdA95taubqgtGYRW5Dh5mwMBwt4AnBYJs4kCLMjKN
+         OkDddYW13vvcowDM42yx05dTXln7BMKHXYZntN7tGoGgyHjTDibFtp+TAkYIYDN2VboU
+         sH9w==
+X-Gm-Message-State: AOAM532GEoCaS1xa8u9WPmUcPlqNYbOOSBqI3BH6aLbU0OUTBrL7mSDO
+        YsZWzMGPWMXu6Xrq7SyQWffaBlo02fNRxCiFiWuTLg==
+X-Google-Smtp-Source: ABdhPJzN6yIAnrutP4mXY4YUqxFUME7cFcfwCCdv9KLoP/1Ux65U8D0qn4SKiYpFY+s6pSHfO29nSf+YvOucHrB1PFc=
+X-Received: by 2002:a05:620a:1a87:: with SMTP id bl7mr3690332qkb.232.1624508913860;
+ Wed, 23 Jun 2021 21:28:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 24 Jun 2021 12:16:50 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 09/10] scsi: ufs: Update the fast abort path in
- ufshcd_abort() for PM requests
-In-Reply-To: <b28d71a7-3839-2c07-2630-6196ea10951f@acm.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-11-git-send-email-cang@codeaurora.org>
- <b28d71a7-3839-2c07-2630-6196ea10951f@acm.org>
-Message-ID: <5ff72cfab707b571ef395d52931edd0f@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210624035749.4054934-1-stevensd@google.com> <20210624035749.4054934-7-stevensd@google.com>
+In-Reply-To: <20210624035749.4054934-7-stevensd@google.com>
+From:   David Stevens <stevensd@chromium.org>
+Date:   Thu, 24 Jun 2021 13:28:23 +0900
+Message-ID: <CAD=HUj6C455sDhBUdQ_Kev=DPpdLRDDycumqfh8kjvredGh=hw@mail.gmail.com>
+Subject: Re: [PATCH 6/6] drm/i915/gvt: use gfn_to_pfn's page instead of pfn
+To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        David Stevens <stevensd@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart,
+Please ignore this last patch. It was put together as an afterthought
+and wasn't properly tested.
 
-On 2021-06-24 05:33, Bart Van Assche wrote:
-> On 6/23/21 12:35 AM, Can Guo wrote:
->> @@ -2737,7 +2737,7 @@ static int ufshcd_queuecommand(struct Scsi_Host 
->> *host, struct scsi_cmnd *cmd)
->>  		 * err handler blocked for too long. So, just fail the scsi cmd
->>  		 * sent from PM ops, err handler can recover PM error anyways.
->>  		 */
->> -		if (hba->wlu_pm_op_in_progress) {
->> +		if (cmd->request->rq_flags & RQF_PM) {
->>  			hba->force_reset = true;
->>  			set_host_byte(cmd, DID_BAD_TARGET);
->>  			cmd->scsi_done(cmd);
-> 
-> I'm still concerned that the above code may trigger data corruption. I
-> prefer that the above code is removed instead of being modified.
+-David
 
-Removing the change will lead to deadlock when error handling prepare
-calls pm_runtime_get_sync().
-
-RQF_PM is only given to requests sent from power management operations,
-during which the specific device/LU is suspending/resuming, meaning no
-data transaction is ongoing. How can fast failing a PM request trigger
-data corruption?
-
-Thanks,
-
-Can Guo.
-
-> 
-> Thanks,
-> 
-> Bart.
+On Thu, Jun 24, 2021 at 12:59 PM David Stevens <stevensd@chromium.org> wrote:
+>
+> Return struct page instead of pfn from gfn_to_mfn. This function is only
+> used to determine if the page is a transparent hugepage, to enable 2MB
+> huge gtt shadowing. Returning the page directly avoids the risk of
+> calling pfn_to_page on a VM_IO|VM_PFNMAP pfn.
+>
+> This change also properly releases the reference on the page returned by
+> gfn_to_pfn.
+>
+> Signed-off-by: David Stevens <stevensd@google.com>
+> ---
+>  drivers/gpu/drm/i915/gvt/gtt.c       | 12 ++++++++----
+>  drivers/gpu/drm/i915/gvt/hypercall.h |  3 ++-
+>  drivers/gpu/drm/i915/gvt/kvmgt.c     | 12 ++++--------
+>  drivers/gpu/drm/i915/gvt/mpt.h       |  8 ++++----
+>  4 files changed, 18 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/i915/gvt/gtt.c b/drivers/gpu/drm/i915/gvt/gtt.c
+> index 9478c132d7b6..b2951c560582 100644
+> --- a/drivers/gpu/drm/i915/gvt/gtt.c
+> +++ b/drivers/gpu/drm/i915/gvt/gtt.c
+> @@ -1160,16 +1160,20 @@ static int is_2MB_gtt_possible(struct intel_vgpu *vgpu,
+>         struct intel_gvt_gtt_entry *entry)
+>  {
+>         struct intel_gvt_gtt_pte_ops *ops = vgpu->gvt->gtt.pte_ops;
+> -       unsigned long pfn;
+> +       struct page *page;
+> +       bool is_trans_huge;
+>
+>         if (!HAS_PAGE_SIZES(vgpu->gvt->gt->i915, I915_GTT_PAGE_SIZE_2M))
+>                 return 0;
+>
+> -       pfn = intel_gvt_hypervisor_gfn_to_mfn(vgpu, ops->get_pfn(entry));
+> -       if (pfn == INTEL_GVT_INVALID_ADDR)
+> +       page = intel_gvt_hypervisor_gfn_to_mfn_page(vgpu, ops->get_pfn(entry));
+> +       if (!page)
+>                 return -EINVAL;
+>
+> -       return PageTransHuge(pfn_to_page(pfn));
+> +       is_trans_huge = PageTransHuge(page);
+> +       put_page(page);
+> +
+> +       return is_trans_huge;
+>  }
+>
+>  static int split_2MB_gtt_entry(struct intel_vgpu *vgpu,
+> diff --git a/drivers/gpu/drm/i915/gvt/hypercall.h b/drivers/gpu/drm/i915/gvt/hypercall.h
+> index b79da5124f83..017190ff52d5 100644
+> --- a/drivers/gpu/drm/i915/gvt/hypercall.h
+> +++ b/drivers/gpu/drm/i915/gvt/hypercall.h
+> @@ -60,7 +60,8 @@ struct intel_gvt_mpt {
+>                         unsigned long len);
+>         int (*write_gpa)(unsigned long handle, unsigned long gpa, void *buf,
+>                          unsigned long len);
+> -       unsigned long (*gfn_to_mfn)(unsigned long handle, unsigned long gfn);
+> +       struct page *(*gfn_to_mfn_page)(unsigned long handle,
+> +                                       unsigned long gfn);
+>
+>         int (*dma_map_guest_page)(unsigned long handle, unsigned long gfn,
+>                                   unsigned long size, dma_addr_t *dma_addr);
+> diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
+> index b829ff67e3d9..1e97ae813ed0 100644
+> --- a/drivers/gpu/drm/i915/gvt/kvmgt.c
+> +++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
+> @@ -1928,21 +1928,17 @@ static int kvmgt_inject_msi(unsigned long handle, u32 addr, u16 data)
+>         return -EFAULT;
+>  }
+>
+> -static unsigned long kvmgt_gfn_to_pfn(unsigned long handle, unsigned long gfn)
+> +static struct page *kvmgt_gfn_to_page(unsigned long handle, unsigned long gfn)
+>  {
+>         struct kvmgt_guest_info *info;
+>         kvm_pfn_t pfn;
+>
+>         if (!handle_valid(handle))
+> -               return INTEL_GVT_INVALID_ADDR;
+> +               return NULL;
+>
+>         info = (struct kvmgt_guest_info *)handle;
+>
+> -       pfn = kvm_pfn_page_unwrap(gfn_to_pfn(info->kvm, gfn));
+> -       if (is_error_noslot_pfn(pfn))
+> -               return INTEL_GVT_INVALID_ADDR;
+> -
+> -       return pfn;
+> +       return gfn_to_pfn(info->kvm, gfn).page;
+>  }
+>
+>  static int kvmgt_dma_map_guest_page(unsigned long handle, unsigned long gfn,
+> @@ -2112,7 +2108,7 @@ static const struct intel_gvt_mpt kvmgt_mpt = {
+>         .disable_page_track = kvmgt_page_track_remove,
+>         .read_gpa = kvmgt_read_gpa,
+>         .write_gpa = kvmgt_write_gpa,
+> -       .gfn_to_mfn = kvmgt_gfn_to_pfn,
+> +       .gfn_to_mfn_page = kvmgt_gfn_to_page,
+>         .dma_map_guest_page = kvmgt_dma_map_guest_page,
+>         .dma_unmap_guest_page = kvmgt_dma_unmap_guest_page,
+>         .dma_pin_guest_page = kvmgt_dma_pin_guest_page,
+> diff --git a/drivers/gpu/drm/i915/gvt/mpt.h b/drivers/gpu/drm/i915/gvt/mpt.h
+> index 550a456e936f..9169b83cf0f6 100644
+> --- a/drivers/gpu/drm/i915/gvt/mpt.h
+> +++ b/drivers/gpu/drm/i915/gvt/mpt.h
+> @@ -214,17 +214,17 @@ static inline int intel_gvt_hypervisor_write_gpa(struct intel_vgpu *vgpu,
+>  }
+>
+>  /**
+> - * intel_gvt_hypervisor_gfn_to_mfn - translate a GFN to MFN
+> + * intel_gvt_hypervisor_gfn_to_mfn_page - translate a GFN to MFN page
+>   * @vgpu: a vGPU
+>   * @gpfn: guest pfn
+>   *
+>   * Returns:
+> - * MFN on success, INTEL_GVT_INVALID_ADDR if failed.
+> + * struct page* on success, NULL if failed.
+>   */
+> -static inline unsigned long intel_gvt_hypervisor_gfn_to_mfn(
+> +static inline unsigned long intel_gvt_hypervisor_gfn_to_mfn_page(
+>                 struct intel_vgpu *vgpu, unsigned long gfn)
+>  {
+> -       return intel_gvt_host.mpt->gfn_to_mfn(vgpu->handle, gfn);
+> +       return intel_gvt_host.mpt->gfn_to_mfn_page(vgpu->handle, gfn);
+>  }
+>
+>  /**
+> --
+> 2.32.0.93.g670b81a890-goog
+>
