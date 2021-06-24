@@ -2,53 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F42E3B2960
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 09:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3F33B2965
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 09:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbhFXHhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 03:37:01 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:50842 "EHLO deadmen.hmeau.com"
+        id S231672AbhFXHhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 03:37:43 -0400
+Received: from out0.migadu.com ([94.23.1.103]:25753 "EHLO out0.migadu.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231386AbhFXHg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 03:36:59 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1lwJsg-0006Cm-Kh; Thu, 24 Jun 2021 15:34:34 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1lwJsc-0004gG-CK; Thu, 24 Jun 2021 15:34:30 +0800
-Date:   Thu, 24 Jun 2021 15:34:30 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Zaibo Xu <xuzaibo@huawei.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] crypto: hisilicon/sec: Fix spelling mistake
- "fallbcak" -> "fallback"
-Message-ID: <20210624073430.GB17892@gondor.apana.org.au>
-References: <20210615101153.9298-1-colin.king@canonical.com>
+        id S231638AbhFXHhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 03:37:41 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1624520121;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=WtRNll+ZJ6pXyBsiyWqUKQEx5bX3swnM8hdPj0hfXss=;
+        b=lErlhr+TcTRagg7IABfZGUyPVw+Qi/P5cwBaUzq1w8Ct35xluH5GLEl/L/VU8ixUjWmUoO
+        FLOcvBhaT2rDq9At38K8HWD+vtbm7khOA0nX+S8F+owBg8VTu9MtkuPEy2DUU5DafNysS8
+        vUu5tFCcXAPHhghkdQKONVnYMMXhN9M=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     oneukum@suse.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH] usbnet: add usbnet_event_names[] for kevent
+Date:   Thu, 24 Jun 2021 15:35:08 +0800
+Message-Id: <20210624073508.10094-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615101153.9298-1-colin.king@canonical.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 11:11:53AM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> There is a spelling mistake in a dev_err message. Fix it.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/crypto/hisilicon/sec2/sec_crypto.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Modify the netdev_dbg content from int to char * in usbnet_defer_kevent(),
+this looks more readable.
 
-Patch applied.  Thanks.
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ drivers/net/usb/usbnet.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
+index 57a5a025255c..264b5048d0fb 100644
+--- a/drivers/net/usb/usbnet.c
++++ b/drivers/net/usb/usbnet.c
+@@ -74,6 +74,23 @@ MODULE_PARM_DESC (msg_level, "Override default message level");
+ 
+ /*-------------------------------------------------------------------------*/
+ 
++static const char * const usbnet_event_names[] = {
++	[EVENT_TX_HALT]		   = "EVENT_TX_HALT",
++	[EVENT_RX_HALT]		   = "EVENT_RX_HALT",
++	[EVENT_RX_MEMORY]	   = "EVENT_RX_MEMORY",
++	[EVENT_STS_SPLIT]	   = "EVENT_STS_SPLIT",
++	[EVENT_LINK_RESET]	   = "EVENT_LINK_RESET",
++	[EVENT_RX_PAUSED]	   = "EVENT_RX_PAUSED",
++	[EVENT_DEV_ASLEEP]	   = "EVENT_DEV_ASLEEP",
++	[EVENT_DEV_OPEN]	   = "EVENT_DEV_OPEN",
++	[EVENT_DEVICE_REPORT_IDLE] = "EVENT_DEVICE_REPORT_IDLE",
++	[EVENT_NO_RUNTIME_PM]	   = "EVENT_NO_RUNTIME_PM",
++	[EVENT_RX_KILL]		   = "EVENT_RX_KILL",
++	[EVENT_LINK_CHANGE]	   = "EVENT_LINK_CHANGE",
++	[EVENT_SET_RX_MODE]	   = "EVENT_SET_RX_MODE",
++	[EVENT_NO_IP_ALIGN]	   = "EVENT_NO_IP_ALIGN",
++};
++
+ /* handles CDC Ethernet and many other network "bulk data" interfaces */
+ int usbnet_get_endpoints(struct usbnet *dev, struct usb_interface *intf)
+ {
+@@ -452,9 +469,9 @@ void usbnet_defer_kevent (struct usbnet *dev, int work)
+ {
+ 	set_bit (work, &dev->flags);
+ 	if (!schedule_work (&dev->kevent))
+-		netdev_dbg(dev->net, "kevent %d may have been dropped\n", work);
++		netdev_dbg(dev->net, "kevent %s may have been dropped\n", usbnet_event_names[work]);
+ 	else
+-		netdev_dbg(dev->net, "kevent %d scheduled\n", work);
++		netdev_dbg(dev->net, "kevent %s scheduled\n", usbnet_event_names[work]);
+ }
+ EXPORT_SYMBOL_GPL(usbnet_defer_kevent);
+ 
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.32.0
+
