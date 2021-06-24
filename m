@@ -2,159 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031243B3791
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B703B3795
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231969AbhFXUKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 16:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
+        id S232816AbhFXUMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 16:12:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232120AbhFXUKR (ORCPT
+        with ESMTP id S232120AbhFXUMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 16:10:17 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABFBC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 13:07:58 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id k11so9824079ioa.5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 13:07:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qz6S88JwspsIJOU6srz7SjZZfMOghWPodV7th4gTqJI=;
-        b=DBe5RqaWh60s4URJNHa/A9dkeUzH+4ew9K5BnJsTe0X5FMouEsLt0FSHrWnQBWKcis
-         J4Qh1u4Ru9w6VRWma4Kjx/5rHRh4RKQGMjx/L3VU8yKSab0GTwG9eo6H0Gd1Rcyex7YG
-         tcnl47DhQM11j+BXAX/ehshk9JcJgytDlReUHiD6YsTWn9Vtq8aCIaXrJ7RKevC9EK73
-         MOFMNqaGGZT4IS6AFf4GI5JbirBtvEupPTTXayexssstN28rV3nKNdnbrHJja83y4+GT
-         BlNkHLNh2OycJNytkhO2riQj/Zg+AzTEs4/CKeq5DmlQkysvjEaTttGfalLKfHJTdWC/
-         iBAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qz6S88JwspsIJOU6srz7SjZZfMOghWPodV7th4gTqJI=;
-        b=AUZnrSOKOIQQhl11Fi11usQ0+7WUVlDNN4N3qLHSbwIksGTObVMv5RcgVvNN6dRbba
-         1/zhnx/ScInf4ndq8ll/se1zxNZQqEJB23yP9Fm5+trNT2yMGxT0x17ez5lTqz9YyUVO
-         fjRBeWuPz/dqtJ5APqmWWgDJn56JB8kwfKq0o051deABcVwcjC44LcQRiby/MryhOMb1
-         sh4W8CFtEmAGsdUqKcJ1x8sOF4T14UouWBjZJgDHvdjimarXFHfnfdVeRnwAn6GvKfhV
-         3bWH13t2zCp6MCfPTPSZTPTZ38t+8mwqvAPMx4FhXc4ovuMizXOBVJPXEhqzY5jN+9Gu
-         9UHw==
-X-Gm-Message-State: AOAM531PpKmX85MK4f98lXHjxwqTNuwS76Ql/mpLlNG8w/1OJECwfMl6
-        WZzgs8R1rOgidiekEgd8qSbgkg==
-X-Google-Smtp-Source: ABdhPJyieK5EKt5gwlKUEbGLKNxa2pw84fYucqWXtwHbZqsf2/1Z5JHipcN4YExhEj4U7yoGn9A4HQ==
-X-Received: by 2002:a05:6638:3d3:: with SMTP id r19mr6302403jaq.78.1624565278051;
-        Thu, 24 Jun 2021 13:07:58 -0700 (PDT)
-Received: from [192.168.1.171] (bras-base-kntaon1617w-grc-24-174-92-115-23.dsl.bell.ca. [174.92.115.23])
-        by smtp.googlemail.com with ESMTPSA id c3sm2293979ils.54.2021.06.24.13.07.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 13:07:57 -0700 (PDT)
-Subject: Re: [PATCH net-next] net/sched: cls_flower: fix resetting of ether
- proto mask
-To:     Boris Sukholitko <boris.sukholitko@broadcom.com>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jiri@resnulli.us, idosch@idosch.org, ilya.lifshits@broadcom.com
-References: <20210617161435.8853-1-vadym.kochan@plvision.eu>
- <20210617164155.li3fct6ad45a6j7h@skbuf>
- <20210617195102.h3bg6khvaogc2vwh@skbuf> <20210621083037.GA9665@builder>
- <f18e6fee-8724-b246-adf9-53cc47f9520b@mojatatu.com>
- <20210622131314.GA14973@builder>
- <451abd22-4c81-2821-e8d4-4f305697890c@mojatatu.com>
- <20210622152218.GA1608@noodle>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Message-ID: <7d0367ab-22e4-522a-11ef-8fb376672b54@mojatatu.com>
-Date:   Thu, 24 Jun 2021 16:07:56 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 24 Jun 2021 16:12:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D2EBC061574;
+        Thu, 24 Jun 2021 13:09:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TslytEABRAuGLwApOpB2eV0hV6tM9WN7rQO1mwwAm9Q=; b=VnuZe33ZCG6YtDDCyvIW38X5hK
+        SA8usqSLWqIuP4suL8eBPp7llFhujIG+ExUb1xRWBhvH0dYWCtKVwHzRo82/DRZHoQirtqpjwr2XX
+        CTBP4XE77K4V9+MVCLVbLETVyb5RgL4D1Lep2BK2dZHFOLQViSMJcPMgJlR7gc0Modq2Ik8UUca4J
+        qtlP02qsK08DKGd2qoMgLv0nrVpAwptaNcvQm4sBT0Dvo+fNGvhaYP/AnB6m/YbUA3GbMXGAdC2dS
+        erKQ8K1RhmF9MZGOK9pBJ6W7CbNK70VNwa7maqEDCZieRQHvIBDH0cnqfiWCfzlDgAWZqJKKQqnV2
+        8ngaGEPQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwVf8-00Gx5E-4j; Thu, 24 Jun 2021 20:09:27 +0000
+Date:   Thu, 24 Jun 2021 21:09:22 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 31/46] mm/writeback: Add folio_clear_dirty_for_io()
+Message-ID: <YNTmcnc5iV12re0L@casper.infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-32-willy@infradead.org>
+ <YNMCOE0C6f8Nfvl6@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210622152218.GA1608@noodle>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNMCOE0C6f8Nfvl6@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Boris,
-
-Apologies for the latency.
-
-On 2021-06-22 11:22 a.m., Boris Sukholitko wrote:
-> On Tue, Jun 22, 2021 at 10:17:45AM -0400, Jamal Hadi Salim wrote:
-
-[..]
-
->>> Do you by any chance have some naming suggestion? Does
->>> vlan_pure_ethtype sound ok? What about vlan_{orig, pkt, raw, hdr}_ethtype?
->>>
->>
->> The distinction is in getting the inner vs outer proto, correct?
+On Wed, Jun 23, 2021 at 11:43:20AM +0200, Christoph Hellwig wrote:
+> On Tue, Jun 22, 2021 at 01:15:36PM +0100, Matthew Wilcox (Oracle) wrote:
+> > Transform clear_page_dirty_for_io() into folio_clear_dirty_for_io()
+> > and add a compatibility wrapper.  Also move the declaration to pagemap.h
+> > as this is page cache functionality that doesn't need to be used by the
+> > rest of the kernel.
+> > 
+> > Increases the size of the kernel by 79 bytes.  While we remove a few
+> > calls to compound_head(), we add a call to folio_nr_pages() to get the
+> > stats correct.
 > 
-> Yes. To be more explicit: the outer protocol (ETH_P_PPP_SES in this case) is
-> invisible to the user due to __skb_flow_dissect drilling down
-> to find the inner protocol.
+> ... for the eventual support of multi-page folios.
 
-Ok, seems this is going to be problematic for flower for more than
-just ETH_P_PPP_SES, no? i.e anything that has an inner proto.
-IIUC, basically what you end up seeing in fl_classify() is
-the PPP protocol that is extracted by the dissector?
-
-> Yes. Talking specifically about flower's fl_classify and the following
-> rule (0x8864 is ETH_P_PPP_SES):
-> 
-> tc filter add dev eth0 ingress protocol 0x8864 flower action simple sdata hi6
-> 
-> skb_flow_dissect sets skb_key.basic.n_proto to the inner protocol
-> contained inside the PPP tunnel. fl_mask_lookup will fail finding the
-> outer protocol configured by the user.
-> 
-
-For vlans it seems that flower tries to "rectify" the situation
-with skb_protocol() (that why i pointed to that function) - but the
-situation in this case cant be rectified inside fl_classify().
-
-Just quick glance of the dissector code though seems to indicate
-skb->protocol is untouched, no? i.e if you have a simple pppoe with
-ppp protocol == ipv4, skb->protocol should still be 0x8864 on it
-(even when skb_key.basic.n_proto has ipv4).
-
-
-> It looks to me that there is no way to match on outer protocol such as
-> ETH_P_PPP_SES at least in flower. Although other filters (e.g. matchall)
-> will work, VLAN packets containing ETH_P_PPP_SES will require flower and
-> still will not match.
-
-This is a consequence of flower using flow_dissector and flow
-dissector loosing information..
-
->> This is because when vlan offloading was merged it skewed
->> things a little and we had to live with that.
->>
->> Flower is unique in its use of the dissector which other classifiers
->> dont. Is this resolvable by having the fix in the  dissector?
-> 
-> Yes, the solution suggested by Vladimir and elaborated by myself
-> involves extending the dissector to keep the outer protocol and having
-> flower eth_type match on it. This is the "plan" being quoted above.
-> 
- >
-> I believe this is the solution for the non-vlan tagged traffic. For the
-> vlans we already have [c]vlan_ethtype keys taken. Therefore we'll need
-> new [c]vlan_outer_ethtype keys.
-> 
-
-I think that would work in the short term but what happens when you
-have vlan in vlan carrying pppoe? i.e how much max nesting can you
-assume and what would you call these fields?
-
-cheers,
-jamal
-
+Added.
