@@ -2,311 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8963B2E1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7523B2E24
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhFXLtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:49:50 -0400
-Received: from lucky1.263xmail.com ([211.157.147.134]:55394 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbhFXLtr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:49:47 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id BE92BCF143;
-        Thu, 24 Jun 2021 19:47:23 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P1335T140034770458368S1624535240956933_;
-        Thu, 24 Jun 2021 19:47:24 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <a32019c46775ec16adf6e96cc96db277>
-X-RL-SENDER: cl@rock-chips.com
-X-SENDER: cl@rock-chips.com
-X-LOGIN-NAME: cl@rock-chips.com
-X-FST-TO: heiko@sntech.de
-X-RCPT-COUNT: 10
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   <cl@rock-chips.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, jbx6244@gmail.com, zhangqing@rock-chips.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        lee.jones@linaro.org, Liang Chen <cl@rock-chips.com>
-Subject: [PATCH v1 3/3] arm64: dts: rockchip: add pmu and qos nodes for rk3568
-Date:   Thu, 24 Jun 2021 19:47:19 +0800
-Message-Id: <20210624114719.1685-4-cl@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210624114719.1685-1-cl@rock-chips.com>
-References: <20210624114719.1685-1-cl@rock-chips.com>
+        id S229974AbhFXLvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:51:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229437AbhFXLvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 07:51:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E399761185;
+        Thu, 24 Jun 2021 11:48:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624535321;
+        bh=tIEzJbFyzrkVCHoPFZv7EiSn5eGdWcktY1hM7567WC4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cnBL/cs5jq0gzsWpdW01qPqR4FhnbZYA5FARUzRbfbTnReSUvqYZg/5d7fMfMzzLB
+         Yi5ocgI40U2CdP0yPBgaSH4aMAy6kTVPwJQovsDfnM8E0ctEFfmI50PYyqPNdilEHT
+         wiHUoLZz+z5T3P7Nu0n1FHp0CT0+Mpa9kCcUzUXOGKpJLUcEA7B6eF0lhIA1fVOD2N
+         8hTi4ZzKBg0KOAPGGETjH9KnPn8WseTFQmhg5QfTMY6mH9TlCuMS+A5EiYaVCFxL1+
+         hxLlyRsIfAlqe3aZtbbg/Ry8xq+FvG9CW/Y0YZqD103SdYwufpVGkDaukfSWqnEWQs
+         pjV7QbcyVw3Kw==
+Date:   Thu, 24 Jun 2021 12:48:30 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Claire Chang <tientzu@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
+        peterz@infradead.org, benh@kernel.crashing.org,
+        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
+        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
+        mingo@kernel.org, Jianxiong Gao <jxgao@google.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Saravana Kannan <saravanak@google.com>, xypron.glpk@gmx.de,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        bskeggs@redhat.com, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Thierry Reding <treding@nvidia.com>,
+        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
+        maarten.lankhorst@linux.intel.com, linuxppc-dev@lists.ozlabs.org,
+        jani.nikula@linux.intel.com,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        rodrigo.vivi@intel.com, Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>, bauerman@linux.ibm.com
+Subject: Re: [PATCH v14 06/12] swiotlb: Use is_swiotlb_force_bounce for
+ swiotlb data bouncing
+Message-ID: <20210624114829.GB1382@willie-the-truck>
+References: <20210619034043.199220-1-tientzu@chromium.org>
+ <20210619034043.199220-7-tientzu@chromium.org>
+ <76c3343d-72e5-9df3-8924-5474ee698ef4@quicinc.com>
+ <20210623183736.GA472@willie-the-truck>
+ <19d4c7a2-744d-21e0-289c-a576e1f0e6f3@quicinc.com>
+ <20210624054315.GA25381@lst.de>
+ <CALiNf288ZLMhY3E8E3N+z9rkwi1viWNLm1wwMEwT4rNwh3FfwQ@mail.gmail.com>
+ <364e6715-eafd-fc4a-e0af-ce2a042756b4@arm.com>
+ <20210624111855.GA1382@willie-the-truck>
+ <452155d2-c98e-23f6-86d6-3a2ff2e74783@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <452155d2-c98e-23f6-86d6-3a2ff2e74783@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liang Chen <cl@rock-chips.com>
+On Thu, Jun 24, 2021 at 12:34:09PM +0100, Robin Murphy wrote:
+> On 2021-06-24 12:18, Will Deacon wrote:
+> > On Thu, Jun 24, 2021 at 12:14:39PM +0100, Robin Murphy wrote:
+> > > On 2021-06-24 07:05, Claire Chang wrote:
+> > > > On Thu, Jun 24, 2021 at 1:43 PM Christoph Hellwig <hch@lst.de> wrote:
+> > > > > 
+> > > > > On Wed, Jun 23, 2021 at 02:44:34PM -0400, Qian Cai wrote:
+> > > > > > is_swiotlb_force_bounce at /usr/src/linux-next/./include/linux/swiotlb.h:119
+> > > > > > 
+> > > > > > is_swiotlb_force_bounce() was the new function introduced in this patch here.
+> > > > > > 
+> > > > > > +static inline bool is_swiotlb_force_bounce(struct device *dev)
+> > > > > > +{
+> > > > > > +     return dev->dma_io_tlb_mem->force_bounce;
+> > > > > > +}
+> > > > > 
+> > > > > To me the crash looks like dev->dma_io_tlb_mem is NULL.  Can you
+> > > > > turn this into :
+> > > > > 
+> > > > >           return dev->dma_io_tlb_mem && dev->dma_io_tlb_mem->force_bounce;
+> > > > > 
+> > > > > for a quick debug check?
+> > > > 
+> > > > I just realized that dma_io_tlb_mem might be NULL like Christoph
+> > > > pointed out since swiotlb might not get initialized.
+> > > > However,  `Unable to handle kernel paging request at virtual address
+> > > > dfff80000000000e` looks more like the address is garbage rather than
+> > > > NULL?
+> > > > I wonder if that's because dev->dma_io_tlb_mem is not assigned
+> > > > properly (which means device_initialize is not called?).
+> > > 
+> > > What also looks odd is that the base "address" 0xdfff800000000000 is held in
+> > > a couple of registers, but the offset 0xe looks too small to match up to any
+> > > relevant structure member in that dereference chain :/
+> > 
+> > FWIW, I've managed to trigger a NULL dereference locally when swiotlb hasn't
+> > been initialised but we dereference 'dev->dma_io_tlb_mem', so I think
+> > Christoph's suggestion is needed regardless.
+> 
+> Ack to that - for SWIOTLB_NO_FORCE, io_tlb_default_mem will remain NULL. The
+> massive jump in KernelCI baseline failures as of yesterday looks like every
+> arm64 machine with less than 4GB of RAM blowing up...
 
-Add the power-management and QoS nodes to the core rk3568 dtsi.
+Ok, diff below which attempts to tackle the offset issue I mentioned as
+well. Qian Cai -- please can you try with these changes?
 
-Signed-off-by: Liang Chen <cl@rock-chips.com>
----
- arch/arm64/boot/dts/rockchip/rk3568.dtsi | 229 +++++++++++++++++++++++
- 1 file changed, 229 insertions(+)
+Will
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3568.dtsi b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-index d225e6a45d5c..2737f26775ff 100644
---- a/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-@@ -8,6 +8,7 @@
- #include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/phy/phy.h>
- #include <dt-bindings/pinctrl/rockchip.h>
-+#include <dt-bindings/power/rk3568-power.h>
- #include <dt-bindings/soc/rockchip,boot-mode.h>
- #include <dt-bindings/thermal/thermal.h>
+--->8
+
+diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+index 175b6c113ed8..39284ff2a6cd 100644
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -116,7 +116,9 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
  
-@@ -257,6 +258,234 @@
- 		status = "disabled";
- 	};
+ static inline bool is_swiotlb_force_bounce(struct device *dev)
+ {
+-       return dev->dma_io_tlb_mem->force_bounce;
++       struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
++
++       return mem && mem->force_bounce;
+ }
  
-+	pmu: power-management@fdd90000 {
-+		compatible = "rockchip,rk3568-pmu", "syscon", "simple-mfd";
-+		reg = <0x0 0xfdd90000 0x0 0x1000>;
-+
-+		power: power-controller {
-+			compatible = "rockchip,rk3568-power-controller";
-+			#power-domain-cells = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			/* These power domains are grouped by VD_GPU */
-+			power-domain@RK3568_PD_GPU {
-+				reg = <RK3568_PD_GPU>;
-+				clocks = <&cru ACLK_GPU_PRE>,
-+					 <&cru PCLK_GPU_PRE>;
-+				pm_qos = <&qos_gpu>;
-+				#power-domain-cells = <0>;
-+			};
-+
-+			/* These power domains are grouped by VD_LOGIC */
-+			power-domain@RK3568_PD_VI {
-+				reg = <RK3568_PD_VI>;
-+				clocks = <&cru HCLK_VI>,
-+					 <&cru PCLK_VI>;
-+				pm_qos = <&qos_isp>,
-+					 <&qos_vicap0>,
-+					 <&qos_vicap1>;
-+				#power-domain-cells = <0>;
-+			};
-+
-+			power-domain@RK3568_PD_VO {
-+				reg = <RK3568_PD_VO>;
-+				clocks = <&cru HCLK_VO>,
-+					 <&cru PCLK_VO>,
-+					 <&cru ACLK_VOP_PRE>;
-+				pm_qos = <&qos_hdcp>,
-+					 <&qos_vop_m0>,
-+					 <&qos_vop_m1>;
-+				#power-domain-cells = <0>;
-+			};
-+
-+			power-domain@RK3568_PD_RGA {
-+				reg = <RK3568_PD_RGA>;
-+				clocks = <&cru HCLK_RGA_PRE>,
-+					 <&cru PCLK_RGA_PRE>;
-+				pm_qos = <&qos_ebc>,
-+					 <&qos_iep>,
-+					 <&qos_jpeg_dec>,
-+					 <&qos_jpeg_enc>,
-+					 <&qos_rga_rd>,
-+					 <&qos_rga_wr>;
-+				#power-domain-cells = <0>;
-+			};
-+
-+			power-domain@RK3568_PD_VPU {
-+				reg = <RK3568_PD_VPU>;
-+				clocks = <&cru HCLK_VPU_PRE>;
-+				pm_qos = <&qos_vpu>;
-+				#power-domain-cells = <0>;
-+			};
-+
-+			power-domain@RK3568_PD_RKVDEC {
-+				clocks = <&cru HCLK_RKVDEC_PRE>;
-+				reg = <RK3568_PD_RKVDEC>;
-+				pm_qos = <&qos_rkvdec>;
-+				#power-domain-cells = <0>;
-+			};
-+
-+			power-domain@RK3568_PD_RKVENC {
-+				reg = <RK3568_PD_RKVENC>;
-+				clocks = <&cru HCLK_RKVENC_PRE>;
-+				pm_qos = <&qos_rkvenc_rd_m0>,
-+					 <&qos_rkvenc_rd_m1>,
-+					 <&qos_rkvenc_wr_m0>;
-+				#power-domain-cells = <0>;
-+			};
-+
-+			power-domain@RK3568_PD_PIPE {
-+				reg = <RK3568_PD_PIPE>;
-+				clocks = <&cru PCLK_PIPE>;
-+				pm_qos = <&qos_pcie2x1>,
-+					 <&qos_pcie3x1>,
-+					 <&qos_pcie3x2>,
-+					 <&qos_sata0>,
-+					 <&qos_sata1>,
-+					 <&qos_sata2>,
-+					 <&qos_usb3_0>,
-+					 <&qos_usb3_1>;
-+				#power-domain-cells = <0>;
-+			};
-+		};
-+	};
-+
-+	qos_gpu: qos@fe128000 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe128000 0x0 0x20>;
-+	};
-+
-+	qos_rkvenc_rd_m0: qos@fe138080 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe138080 0x0 0x20>;
-+	};
-+
-+	qos_rkvenc_rd_m1: qos@fe138100 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe138100 0x0 0x20>;
-+	};
-+
-+	qos_rkvenc_wr_m0: qos@fe138180 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe138180 0x0 0x20>;
-+	};
-+
-+	qos_isp: qos@fe148000 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe148000 0x0 0x20>;
-+	};
-+
-+	qos_vicap0: qos@fe148080 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe148080 0x0 0x20>;
-+	};
-+
-+	qos_vicap1: qos@fe148100 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe148100 0x0 0x20>;
-+	};
-+
-+	qos_vpu: qos@fe150000 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe150000 0x0 0x20>;
-+	};
-+
-+	qos_ebc: qos@fe158000 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe158000 0x0 0x20>;
-+	};
-+
-+	qos_iep: qos@fe158100 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe158100 0x0 0x20>;
-+	};
-+
-+	qos_jpeg_dec: qos@fe158180 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe158180 0x0 0x20>;
-+	};
-+
-+	qos_jpeg_enc: qos@fe158200 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe158200 0x0 0x20>;
-+	};
-+
-+	qos_rga_rd: qos@fe158280 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe158280 0x0 0x20>;
-+	};
-+
-+	qos_rga_wr: qos@fe158300 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe158300 0x0 0x20>;
-+	};
-+
-+	qos_npu: qos@fe180000 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe180000 0x0 0x20>;
-+	};
-+
-+	qos_pcie2x1: qos@fe190000 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe190000 0x0 0x20>;
-+	};
-+
-+	qos_pcie3x1: qos@fe190080 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe190080 0x0 0x20>;
-+	};
-+
-+	qos_pcie3x2: qos@fe190100 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe190100 0x0 0x20>;
-+	};
-+
-+	qos_sata0: qos@fe190200 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe190200 0x0 0x20>;
-+	};
-+
-+	qos_sata1: qos@fe190280 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe190280 0x0 0x20>;
-+	};
-+
-+	qos_sata2: qos@fe190300 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe190300 0x0 0x20>;
-+	};
-+
-+	qos_usb3_0: qos@fe190380 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe190380 0x0 0x20>;
-+	};
-+
-+	qos_usb3_1: qos@fe190400 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe190400 0x0 0x20>;
-+	};
-+
-+	qos_rkvdec: qos@fe198000 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe198000 0x0 0x20>;
-+	};
-+
-+	qos_hdcp: qos@fe1a8000 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe1a8000 0x0 0x20>;
-+	};
-+
-+	qos_vop_m0: qos@fe1a8080 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe1a8080 0x0 0x20>;
-+	};
-+
-+	qos_vop_m1: qos@fe1a8100 {
-+		compatible = "rockchip,rk3568-qos", "syscon";
-+		reg = <0x0 0xfe1a8100 0x0 0x20>;
-+	};
-+
- 	sdmmc2: mmc@fe000000 {
- 		compatible = "rockchip,rk3568-dw-mshc", "rockchip,rk3288-dw-mshc";
- 		reg = <0x0 0xfe000000 0x0 0x4000>;
--- 
-2.17.1
-
-
-
+ void __init swiotlb_exit(void);
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 44be8258e27b..0ffbaae9fba2 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -449,6 +449,7 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+                dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
+        unsigned int nslots = nr_slots(alloc_size), stride;
+        unsigned int index, wrap, count = 0, i;
++       unsigned int offset = swiotlb_align_offset(dev, orig_addr);
+        unsigned long flags;
+ 
+        BUG_ON(!nslots);
+@@ -497,7 +498,7 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+        for (i = index; i < index + nslots; i++) {
+                mem->slots[i].list = 0;
+                mem->slots[i].alloc_size =
+-                       alloc_size - ((i - index) << IO_TLB_SHIFT);
++                       alloc_size - (offset + ((i - index) << IO_TLB_SHIFT));
+        }
+        for (i = index - 1;
+             io_tlb_offset(i) != IO_TLB_SEGSIZE - 1 &&
