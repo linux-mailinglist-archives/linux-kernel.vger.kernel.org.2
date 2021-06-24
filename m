@@ -2,59 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE0A3B3351
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB013B339B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232443AbhFXQAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 12:00:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232348AbhFXQAp (ORCPT
+        id S230267AbhFXQMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 12:12:23 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:51564 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229445AbhFXQMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 12:00:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C42C4C061574;
-        Thu, 24 Jun 2021 08:58:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5SsNt/I69pkIIwALnIwaHK6F5Hk6SuiLKMVHSsDe2Xw=; b=YXQBLqNPNqi7Xp4GbmtgEOT+hv
-        Az/Yb5b1ypKxI6nTu7z8z286kZl9KlziYJWdBfY+IApxJMjpuYPZDYvCFkRhMTZ1f3YApu8FhUgGT
-        bM9DRQ5M+oHa/CPr8yCC96MMEquryO1rzogBU7mvjhRfWjasDBH7N4ZrPGuSITvPsdCApULKcDKhp
-        1m2Mt7355XSegr/FwbJ7xrvE4gquBnpUsQR2vJXUj/BI/p+xcZCbLdWOh3penEtepM978zTGso/1T
-        wgrgyiQMMZqRK2pCZ3feUXi3AhQejuRDScpVhdudFjGU5tDR6D8X7cirYiWuA+sfHpGCcEKEfD2P/
-        9YTFeHsg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwRjN-00GjtA-Ty; Thu, 24 Jun 2021 15:57:56 +0000
-Date:   Thu, 24 Jun 2021 16:57:29 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 05/46] mm: Add arch_make_folio_accessible()
-Message-ID: <YNSraZoSxNTCZf5b@casper.infradead.org>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-6-willy@infradead.org>
- <YNLqJXTG6HwKRvdh@infradead.org>
+        Thu, 24 Jun 2021 12:12:20 -0400
+X-UUID: 8279eec4480b4048a414ccc5cbd21ae2-20210625
+X-UUID: 8279eec4480b4048a414ccc5cbd21ae2-20210625
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 2104162736; Fri, 25 Jun 2021 00:09:59 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 25 Jun 2021 00:09:58 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 25 Jun 2021 00:09:56 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>, <netdev@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>,
+        <wsd_upstream@mediatek.com>, <chao.song@mediatek.com>,
+        <kuohong.wang@mediatek.com>, Rocco Yue <rocco.yue@mediatek.com>
+Subject: Re: [PATCH 4/4] drivers: net: mediatek: initial implementation of ccmni
+Date:   Thu, 24 Jun 2021 23:55:02 +0800
+Message-ID: <20210624155501.10024-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <YNR5QuYqknaZS9+j@kroah.com>
+References: <YNR5QuYqknaZS9+j@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNLqJXTG6HwKRvdh@infradead.org>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 10:00:37AM +0200, Christoph Hellwig wrote:
-> On Tue, Jun 22, 2021 at 01:15:10PM +0100, Matthew Wilcox (Oracle) wrote:
-> > As a default implementation, call arch_make_page_accessible n times.
-> > If an architecture can do better, it can override this.
-> > 
-> > Also move the default implementation of arch_make_page_accessible()
-> > from gfp.h to mm.h.
+On Thu, 2021-06-24 at 14:23 +0200, Greg KH wrote:
+On Thu, Jun 24, 2021 at 07:53:49PM +0800, Rocco Yue wrote:
+>> 
+>> without MTK ap ccci driver (modem driver), ccmni_rx_push() and
+>> ccmni_hif_hook() are not be used.
+>> 
+>> Both of them are exported as symbols because MTK ap ccci driver
+>> will be compiled to the ccci.ko file.
 > 
-> Can we wait with introducing arch hooks until we have an actual user
-> lined up?
+> But I do not see any code in this series that use these symbols.  We can
 
-This one gets used in __folio_end_writeback() which is patch 24 in this
-series.
+will delete these symbols.
+
+> not have exports that no one uses.  Please add the driver to this patch
+> series when you resend it.
+> 
+
+I've just took a look at what the Linux staging tree is. It looks like
+a good choice for the current ccmni driver.
+
+honstly, If I simply upload the relevant driver code B that calls
+A (e.g. ccmni_rx_push), there is still a lack of code to call B.
+This seems to be a continuty problem, unless all drivers codes are
+uploaded (e.g. power on modem, get hardware status, complete tx/rx flow).
+
+>> In addition, the code of MTK's modem driver is a bit complicated,
+>> because this part has more than 30,000 lines of code and contains
+>> more than 10 modules. We are completeing the upload of this huge
+>> code step by step. Our original intention was to upload the ccmni
+>> driver that directly interacts with the kernel first, and then
+>> complete the code from ccmni to the bottom layer one by one from
+>> top to bottom. We expect the completion period to be about 1 year.
+> 
+> Again, we can not add code to the kernel that is not used, sorry.  That
+> would not make any sense, would you want to maintain such a thing?
+> 
+> And 30k of code seems a bit excesive for a modem driver.   Vendors find
+> that when they submit code for inclusion in the kernel tree, in the end,
+> they end up 1/3 the original size, so 10k is reasonable.
+> 
+> I can also take any drivers today into the drivers/staging/ tree, and
+> you can do the cleanups there as well as getting help from others.
+> 
+> 1 year seems like a long time to do "cleanup", good luck!
+> 
+
+Thanks~
+
+Can I resend patch set as follows:
+(1) supplement the details of pureip for patch 1/4;
+(2) the document of ccmni.rst still live in the Documentation/...
+(3) modify ccmni and move it into the drivers/staging/...
+
+>>> +++ b/drivers/net/ethernet/mediatek/ccmni/ccmni.h
+>>> 
+>>> Why do you have a .h file for a single .c file?  that shouldn't be
+>>> needed.
+>> 
+>> I add a .h file to facilitate subsequent code expansion. If it's
+>> not appropriate to do this here, I can add the content of .h into
+>> .c file.
+> 
+> If nothing other than a single .c file needs it, put it into that .c
+> file please.
+
+will do.
+
+Thanks,
+Rocco
+
