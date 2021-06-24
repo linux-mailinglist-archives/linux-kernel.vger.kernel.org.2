@@ -2,165 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1C43B24D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 375543B24D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhFXCS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 22:18:57 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:64693 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229822AbhFXCSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 22:18:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624500997; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=80wRw21hYrKAh7JPxu/zpapRJZdQHIOHCkh9C+b3tEc=;
- b=GpT0HsJM73iZLJ6VIaPPbOdhfVE+ddUkxGU0tIG0npdONdlQPOGdk2p4CI81AGcwnHI0IuaQ
- qEvTbNFd7Mc8y7BQNSDNtzRF5+8gvCk4uRXQTGbhdfj3t+FYUlvnedQ+bhcJagWfDx0/SP74
- S+52c0AUht+exo6anmu9qP/L3PQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60d3eaee01dd9a94315a9b48 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Jun 2021 02:16:14
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 425E9C43143; Thu, 24 Jun 2021 02:16:14 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S229949AbhFXCTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 22:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229822AbhFXCTE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 22:19:04 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8851C061574;
+        Wed, 23 Jun 2021 19:16:45 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 10DB5C433F1;
-        Thu, 24 Jun 2021 02:16:13 +0000 (UTC)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G9Nzq6j8nz9sX2;
+        Thu, 24 Jun 2021 12:16:39 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624501002;
+        bh=FY9bPQtgTRPc1Bcpcqtr0qfazMka2vKx91DBMBcpNbI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=N1gZpdEDpV4KQ9OkH/j2XCPQwERL52BYCnPl1z00668R+daWvalE35wJBVbUWEWUj
+         QMqCJo53JdftKt8nYt+jMvFia0rQQLbI9aN/ILkN1LdZMAfbD1UwCd9/CcMfS6Zx7j
+         QAkywIlPXSaPz2o4nodqhrY93Kndhxg1vLsYDi8ZbMBkCzB+wYLOMfzi5MbQThsun3
+         eCE6IZymq8mJx1KufyitNi0Off5Ybu4H/TTNnfOO2wfXCBuhazHuFYPP6yX99nsXSh
+         1JL3z8QYeVlsABcqqwicN3dAF4WyjCB4E1xWMwe+HVz7LnfsjtDXHqPX89WIRDCKwX
+         enExavto+aTTw==
+Date:   Thu, 24 Jun 2021 12:16:39 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        Wireless <linux-wireless@vger.kernel.org>
+Cc:     Luca Coelho <luciano.coelho@intel.com>,
+        Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the wireless-drivers-next
+ tree
+Message-ID: <20210624121639.6d89a9b8@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 24 Jun 2021 10:16:12 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 06/10] scsi: ufs: Remove host_sem used in
- suspend/resume
-In-Reply-To: <ed59d61a-6951-2acd-4f89-40f8dc5015e1@intel.com>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-8-git-send-email-cang@codeaurora.org>
- <ed59d61a-6951-2acd-4f89-40f8dc5015e1@intel.com>
-Message-ID: <9105f328ee6ce916a7f01027b0d28332@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: multipart/signed; boundary="Sig_/W4hkBcwaqEdyC7l9sQ=G.nr";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-23 22:30, Adrian Hunter wrote:
-> On 23/06/21 10:35 am, Can Guo wrote:
->> To protect system suspend/resume from being disturbed by error 
->> handling,
->> instead of using host_sem, let error handler call lock_system_sleep() 
->> and
->> unlock_system_sleep() which achieve the same purpose. Remove the 
->> host_sem
->> used in suspend/resume paths to make the code more readable.
->> 
->> Suggested-by: Bart Van Assche <bvanassche@acm.org>
->> Signed-off-by: Can Guo <cang@codeaurora.org>
->> ---
->>  drivers/scsi/ufs/ufshcd.c | 12 +++++++-----
->>  1 file changed, 7 insertions(+), 5 deletions(-)
->> 
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index 3695dd2..a09e4a2 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -5907,6 +5907,11 @@ static void ufshcd_clk_scaling_suspend(struct 
->> ufs_hba *hba, bool suspend)
->> 
->>  static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
->>  {
->> +	/*
->> +	 * It is not safe to perform error handling while suspend or resume 
->> is
->> +	 * in progress. Hence the lock_system_sleep() call.
->> +	 */
->> +	lock_system_sleep();
-> 
-> It looks to me like the system takes this lock quite early, even before
-> freezing tasks, so if anything needs the error handler to run it will
-> deadlock.
+--Sig_/W4hkBcwaqEdyC7l9sQ=G.nr
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi Adrian,
+Hi all,
 
-UFS/hba system suspend/resume does not invoke or call error handling in 
-a
-synchronous way. So, whatever UFS errors (which schedules the error 
-handler)
-happens during suspend/resume, error handler will just wait here till 
-system
-suspend/resume release the lock. Hence no worries of deadlock here.
+After merging the wireless-drivers-next tree, today's linux-next build
+(x86_64 allmodconfig) produced this warning:
 
-Thanks,
+drivers/net/wireless/intel/iwlwifi/fw/acpi.c:720:12: warning: 'iwl_acpi_eva=
+l_dsm_func' defined but not used [-Wunused-function]
+  720 | static u32 iwl_acpi_eval_dsm_func(struct device *dev, enum iwl_dsm_=
+funcs_rev_0 eval_func)
+      |            ^~~~~~~~~~~~~~~~~~~~~~
 
-Can Guo.
+Introduced by commit
 
-> 
->>  	ufshcd_rpm_get_sync(hba);
->>  	if (pm_runtime_status_suspended(&hba->sdev_ufs_device->sdev_gendev) 
->> ||
->>  	    hba->is_wlu_sys_suspended) {
->> @@ -5951,6 +5956,7 @@ static void ufshcd_err_handling_unprepare(struct 
->> ufs_hba *hba)
->>  		ufshcd_clk_scaling_suspend(hba, false);
->>  	ufshcd_clear_ua_wluns(hba);
->>  	ufshcd_rpm_put(hba);
->> +	unlock_system_sleep();
->>  }
->> 
->>  static inline bool ufshcd_err_handling_should_stop(struct ufs_hba 
->> *hba)
->> @@ -9053,16 +9059,13 @@ static int ufshcd_wl_suspend(struct device 
->> *dev)
->>  	ktime_t start = ktime_get();
->> 
->>  	hba = shost_priv(sdev->host);
->> -	down(&hba->host_sem);
->> 
->>  	if (pm_runtime_suspended(dev))
->>  		goto out;
->> 
->>  	ret = __ufshcd_wl_suspend(hba, UFS_SYSTEM_PM);
->> -	if (ret) {
->> +	if (ret)
->>  		dev_err(&sdev->sdev_gendev, "%s failed: %d\n", __func__,  ret);
->> -		up(&hba->host_sem);
->> -	}
->> 
->>  out:
->>  	if (!ret)
->> @@ -9095,7 +9098,6 @@ static int ufshcd_wl_resume(struct device *dev)
->>  		hba->curr_dev_pwr_mode, hba->uic_link_state);
->>  	if (!ret)
->>  		hba->is_wlu_sys_suspended = false;
->> -	up(&hba->host_sem);
->>  	return ret;
->>  }
->>  #endif
->> 
+  7119f02b5d34 ("iwlwifi: mvm: support BIOS enable/disable for 11ax in Russ=
+ia")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/W4hkBcwaqEdyC7l9sQ=G.nr
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDT6wcACgkQAVBC80lX
+0GzHUAf/fnNlc172wY+YLLv6TuTErmpfi2I4m/OeqmWzQJqUs4Anh95ATuMHkojp
+fUH9tI0AlNzFacWdAZQnY34wYq8MS30czipF66p7c6XdY1NG1iGLD3QfBKoTZglk
+noT6+KEeG2OEa4b3rrTYfMWKTErrTGQrbVosoRfokFiz0uVaDbetibbuEIJ4OgaP
+SRvcd9ecGEPPf+ieOTYSWy9V3nBTG9ZjLUVM9SbF31fiPOxcJAekVq99Z1k+Kyp5
+bCkxpRTgwaxQ3is8qUwXdBzyPbtE187BKL2O/ZSIjzfPReZVqT/4jQCKlXj5Zx+r
+Uls/7MzQYK1m4xMnHmIGnvE+5XreQA==
+=rm5X
+-----END PGP SIGNATURE-----
+
+--Sig_/W4hkBcwaqEdyC7l9sQ=G.nr--
