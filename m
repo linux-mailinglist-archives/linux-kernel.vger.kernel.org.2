@@ -2,138 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EAEF3B2B76
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD253B2B7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbhFXJeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:34:16 -0400
-Received: from lahtoruutu.iki.fi ([185.185.170.37]:40780 "EHLO
-        lahtoruutu.iki.fi" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhFXJeO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:34:14 -0400
-Received: from hillosipuli.retiisi.eu (dsl-hkibng32-54fb5d-176.dhcp.inet.fi [84.251.93.176])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sailus)
-        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 982391B0024A;
-        Thu, 24 Jun 2021 12:31:53 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-        t=1624527113;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0iGvap/eV/2zN+OduewABmqhwVAmw9j6ZCNs+E9n+7s=;
-        b=Bwyq8etvkB/0uY3kyLMjJ0NwenO7cKiLkoZace9ArWOSysAA4bfxPWS7cbEfI8jucNkdrX
-        3domcPovaTvxKZGysxvgpgyQdcj2aC2bv6FHRkP2qmG4JHlsswR6Gi43Eer3GA40renpgV
-        FFdUv3KVNSpIczMU5mrOx+lCZUfBE0d0Tp857HYh7Q3mBveImln9KUSbRRCPvYFueFlGY0
-        /E2RZ7aSDEHDLZ4fel2hfQ++s8Y/m4+bq0HzzTbXnurMA8ElUtiPH8+y9HR494t+eJcQ4E
-        paYzM81mEFtQ2bohdw7tjYWIU46Wy9lq0xUnrtfX1634uPPft+/JfpdfzT/8Wg==
-Received: from valkosipuli.localdomain (valkosipuli.localdomain [IPv6:fd35:1bc8:1a6:d3d5::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 45BEB634C87;
-        Thu, 24 Jun 2021 12:31:38 +0300 (EEST)
-Received: from localhost ([127.0.0.1] helo=valkosipuli.retiisi.eu)
-        by valkosipuli.localdomain with esmtp (Exim 4.92)
-        (envelope-from <sakari.ailus@iki.fi>)
-        id 1lwLiD-00018j-LB; Thu, 24 Jun 2021 12:31:53 +0300
-Date:   Thu, 24 Jun 2021 12:31:53 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH 3/5] media: v4l2-flash-led-class: drop an useless check
-Message-ID: <20210624093153.GJ3@valkosipuli.retiisi.eu>
-References: <cover.1624276137.git.mchehab+huawei@kernel.org>
- <e1629ac223470630eed4096361965d154aff70b7.1624276138.git.mchehab+huawei@kernel.org>
+        id S231959AbhFXJfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:35:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:51546 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230299AbhFXJfc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 05:35:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B07481042;
+        Thu, 24 Jun 2021 02:33:13 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 41F6C3F718;
+        Thu, 24 Jun 2021 02:33:12 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 2/2] sched: Plug race between SCA, hotplug and migration_cpu_stop()
+In-Reply-To: <20210622135140.GA31071@willie-the-truck>
+References: <20210526205751.842360-1-valentin.schneider@arm.com> <20210526205751.842360-3-valentin.schneider@arm.com> <87h7ihfrlf.mognet@arm.com> <20210602152629.GF31179@willie-the-truck> <87bl8of3x8.mognet@arm.com> <20210622135140.GA31071@willie-the-truck>
+Date:   Thu, 24 Jun 2021 10:33:07 +0100
+Message-ID: <87v9638v58.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e1629ac223470630eed4096361965d154aff70b7.1624276138.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=lahtoruutu; t=1624527113;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0iGvap/eV/2zN+OduewABmqhwVAmw9j6ZCNs+E9n+7s=;
-        b=ADnv+RUlGBaMwtBb94n6it4QAk7BC1zxy4gLpiYqYxKoxRYZ97sFroqHlCblk7LiqTvHq1
-        zs/YeJnQDaZATf7vxOm6rV1oWnV7qSPZLuoqztwUesOUfM0xPht0OwLuMvckO9iv6uNlxq
-        xr8urOWpE1iDytBNR2QkJ9gBaINaoFGO03UWZLVx2ry4hyUNAgfIGopDdQneY7fg1kUUpr
-        lyCT4WgtlR43poAoZT+8PAalqBpe4MhY/zSb2dgAgK+XZcn9dp/8IVvwl0dhrDXdsUAARv
-        69aeDe0QmM6dopX8mVRUZuPCjT02UIJdplIDaWRmuO9wW3SwxgrdCvnH8Sgy3Q==
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1624527113; a=rsa-sha256;
-        cv=none;
-        b=an+WbC0hAzt6h4+MOeIXZTnD48xR25ndkJxgHSBgwJKS3NBfOGH5+EdYMHoiahmtIlFpG0
-        /7F5JKVWPXyRHW/VB5u48s5KCji1bFBbgqiZrurXbohC/eNBriRjMXNGPnFlaHPpsr6FRs
-        rtsa3zqHX1dfIp3xULibuBmtV64MyrcUCTbIDaZpnjwqP1ToUdB5f6VjyFnx5bi7RP40uT
-        fhpqyj3DFBlr+E/9PIbk61JXP5I/swMisr6UvIMbANqkxIxSUSWkBHOo0xOTFMvRLrBIYG
-        tSS9d0Hl8J2DPHjrGuY0vUlg3dWoyy8HU0WnChBGcdDLiIBRjnsR5jwbpYYO/w==
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+Hi,
 
-Could you check if your mail client could be configured not to add junk to
-To: field? It often leads anything in the Cc: field being dropped.
+On 22/06/21 14:51, Will Deacon wrote:
+> Hi Valentin,
+>
+> I've been looking at this on and off and I'm afraid I'm still not convinced,
+> almost certainly due to my own ignorance, but hey :)
+>
 
-On Mon, Jun 21, 2021 at 01:56:47PM +0200, Mauro Carvalho Chehab wrote:
-> As pointed by smatch:
-> 	drivers/media/v4l2-core/v4l2-flash-led-class.c:264 v4l2_flash_s_ctrl() error: we previously assumed 'fled_cdev' could be null (see line 197)
-> 
-> It is too late to check if fled_cdev is NULL there. If such check is
-> needed, it should be, instead, inside v4l2_flash_init().
-> 
-> On other words, if v4l2_flash->fled_cdev() is NULL at
-> v4l2_flash_s_ctrl(), all led_*() function calls inside the function
-> would try to de-reference a NULL pointer, as the logic won't prevent
-> it.
-> 
-> So, remove the useless check.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/media/v4l2-core/v4l2-flash-led-class.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-flash-led-class.c b/drivers/media/v4l2-core/v4l2-flash-led-class.c
-> index 10ddcc48aa17..a1653c635d82 100644
-> --- a/drivers/media/v4l2-core/v4l2-flash-led-class.c
-> +++ b/drivers/media/v4l2-core/v4l2-flash-led-class.c
-> @@ -194,7 +194,7 @@ static int v4l2_flash_s_ctrl(struct v4l2_ctrl *c)
->  {
->  	struct v4l2_flash *v4l2_flash = v4l2_ctrl_to_v4l2_flash(c);
->  	struct led_classdev_flash *fled_cdev = v4l2_flash->fled_cdev;
-> -	struct led_classdev *led_cdev = fled_cdev ? &fled_cdev->led_cdev : NULL;
-> +	struct led_classdev *led_cdev = &fled_cdev->led_cdev;
+Nah, this thing is nasty, I still haven't regrown the hair I lost from last
+time I stared at it.
 
-fled_cdev may be NULL here. The reason is that some controls are for flash
-LEDs only but the same sub-device may also control an indicator. This is
-covered when the controls are created, so that the NULL pointer isn't
-dereferenced.
+> On Wed, Jun 02, 2021 at 08:43:31PM +0100, Valentin Schneider wrote:
+>> Harumph...
+>>
+>> So something like all CPUs but one are running their take_cpu_down()
+>> callback because one is still running migration_cpu_stop(), i.e.:
+>>
+>>   CPU0                   CPU1                ...             CPUN
+>>   <stopper>              <stopper>                           <stopper>
+>>     migration_cpu_stop()   take_cpu_down()@MULTI_STOP_PREPARE    take_cpu_down()@MULTI_STOP_PREPARE
+>>
+>> If CPU0 hits that else if (pending) condition, it'll queue a
+>> migration_cpu_stop() elsewhere (say CPU1), then run the take_cpu_down()
+>> callback which follows in its work->list.
+>>
+>> If the CPU being brought down is anything else than CPU1, it shouldn't
+>> really matter. If it *is* CPU1, then I think we've got some guarantees.
+>>
+>> Namely, there's no (read: there shouldn't be any) way for a task to
+>> still be on CPU1 at this point; per sched_cpu_wait_empty(),
+>> migration-disabled tasks and pcpu kthreads must vacate the CPU before it
+>> then (migrate_disable regions must be bounded, and pcpu kthreads are
+>> expected to be moved away by their respective owners).
+>
+> I agree with that, but the stopper is still running on CPU1 and so
+> migration_cpu_stop() could still queue work there after sched_cpu_wait_empty()
+> has returned but before stop_machine_park(), afaict.
+>
 
-If you wish the false positive to be addressed while also improving the
-implementation, that could be done by e.g. splitting the switch into two,
-the part that needs fled_cdev and another that doesn't.
+Right, the stopper should flush its work before parking itself - in the
+above scenario migration_cpu_stop() is already on CPU1's work list when it
+finishes running take_cpu_down(), so that should run before any parking
+happens.
 
-I can send a patch for that.
+> Actually, it looks like migration_cpu_stop() ignores the return value of
+> stop_one_cpu_nowait(), so if the stopper thread has been parked I think
+> we'll quietly do nothing there as well.
+>
 
-Please also cc me to V4L2 flash class patches. I noticed this one by
-accident only.
+There's a handful of loosely related cogs (including those added by the
+patch) that *I think* give us sufficient guarantees this can't happen. Let
+me try to structure this somehow, and please point out any inane bit.
 
->  	struct v4l2_ctrl **ctrls = v4l2_flash->ctrls;
->  	bool external_strobe;
->  	int ret = 0;
+1) Per the synchronize_rcu() in CPUHP_AP_ACTIVE.teardown(), the return
+   value of is_cpu_allowed(p, cpu) is stable within a migration_cpu_stop()
+   invocation for any p allowed on *active* CPUs.
+2) Per the serialization of stopper callbacks, the return value of
+   is_cpu_allowed(p, cpu) is stable within a migration_cpu_stop()
+   invocation for any p allowed on *online* CPUs: migration_cpu_stop()
+   has to complete before any CPU can do an online -> !online transition.
 
--- 
-Kind regards,
+  (I would also add here that I don't expect any task to be migrated to an
+  !active && online dying CPU via migration_cpu_stop(): the only tasks
+  allowed on such CPUs are pcpu kthreads, which will be parked rather than
+  migrated, and migrate_disabled() tasks which, unsurprisingly, aren't
+  migrated - they just get to *stay* on their CPU longer than regular tasks)
 
-Sakari Ailus
+3) Per 1) + 2), the move_queued_task() call in migration_cpu_stop() cannot
+   silently fail.
+
+
+4) No task other than a hotplug thread or a stopper thread may run on a
+   CPU beyond CPUHP_AP_SCHED_WAIT_EMPTY.teardown()
+5) Per 4), no (queued) task p passed to migration_cpu_stop() can have
+   task_cpu(p) be a dying CPU with hotplug state below
+   CPUHP_AP_SCHED_WAIT_EMPTY.
+6) Per 5), migration_cpu_stop() cannot invoke stop_one_cpu_nowait() on a
+   CPU with a parked stopper.
+7) Per 6), migration_cpu_stop() self-queuing cannot be silently discarded
+   and will always end up executed
+
+Per 3) + 7), we're good?
