@@ -2,165 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE5B3B3837
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A00C73B3838
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 22:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232484AbhFXU6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 16:58:50 -0400
-Received: from mail-io1-f50.google.com ([209.85.166.50]:38900 "EHLO
-        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232284AbhFXU6s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 16:58:48 -0400
-Received: by mail-io1-f50.google.com with SMTP id k11so9981583ioa.5;
-        Thu, 24 Jun 2021 13:56:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AwKzwVZyZHTmtCuefIf9ZctjwvA1YdIvDb/Jjt0151Y=;
-        b=a+kfwXf7Iv2Jg4WPU0w/9EUscV4zGtCRAX4a8/ws8cfE5a6JG3MqkqSI3umdvpaRUS
-         w2jas7HgtIf+JwsjcZ7vE5BhHk/bjDs/n8hYGdAh0fKUAXOt6N/o96PQO1OT2YOGsF39
-         mvspfSJxJLZz2dWFKENauFFbm/KAB1CjrOEh20K7Dw1YhStAqbk4w2dapRZKs9sH++L7
-         qdFM4/WdrGW0cQ8orgwOmus+O8c3Sw98vTTfUPcti8dNInJ5/NpuGQVVwBIwrL9fvNe0
-         YzQXgIRLv52rHuHqXuwhjm/BQVt0bLvxger94zLxO+T2PlnWhDCbTbXoS6RYRFaNZfat
-         v34Q==
-X-Gm-Message-State: AOAM5310XWZphGH2XCfts3spcli4xXguudovpi/Ap+iNztpZ4tvwZXZD
-        1Q1E6n2sADCHpDfZfv75aQ==
-X-Google-Smtp-Source: ABdhPJzSnzjuSPNk+15BYzQuFXuFQ77PQGJHmcrRrpWubR8bkwxHWRKW397mBo0RCO37kVQl/3+4aA==
-X-Received: by 2002:a6b:760e:: with SMTP id g14mr5622985iom.119.1624568187189;
-        Thu, 24 Jun 2021 13:56:27 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id b23sm1978903ior.4.2021.06.24.13.56.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 13:56:26 -0700 (PDT)
-Received: (nullmailer pid 1973492 invoked by uid 1000);
-        Thu, 24 Jun 2021 20:56:22 -0000
-Date:   Thu, 24 Jun 2021 14:56:22 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     lee.jones@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
-        linux-imx@nxp.com, kernel@pengutronix.de,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alistair23@gmail.com
-Subject: Re: [PATCH v6 1/5] dt-bindings: mfd: Initial commit of
- silergy,sy7636a.yaml
-Message-ID: <20210624205622.GA1968619@robh.at.kernel.org>
-References: <20210615103400.946-1-alistair@alistair23.me>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615103400.946-1-alistair@alistair23.me>
+        id S232596AbhFXU7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 16:59:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229525AbhFXU7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 16:59:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 475FF60FF1;
+        Thu, 24 Jun 2021 20:57:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1624568244;
+        bh=u/gehyKLEMLPDqkaXJpcfLQFYkfHJRSEg6Syn2xn4YI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=d375zGYlRkEZ2Yb4UxAtr5w7JBXVAWDc0shJglPVjCxKXOoatFiaMGjvNe7jXcm+t
+         khcbiaVCziTXa4PhCK/5rwOdmvOb2UTcR0eJGPDhhmVE4pD/nzy05Cm0BzLyjFerZN
+         7BK1it2C9BX7LoB51jRIwMSnVd30rIzbE/WjILsA=
+Date:   Thu, 24 Jun 2021 13:57:23 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     alfalco@gmail.com, Borislav Petkov <bp@alien8.de>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        robert.shteynfeld@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/page_alloc: fix memory map initialization for
+ descending nodes
+Message-Id: <20210624135723.3b2b25de43e22ab4275ea273@linux-foundation.org>
+In-Reply-To: <20210624062305.10940-1-rppt@kernel.org>
+References: <20210624062305.10940-1-rppt@kernel.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 08:33:56PM +1000, Alistair Francis wrote:
-> Initial support for the Silergy SY7636A Power Management chip
-> and regulator.
+On Thu, 24 Jun 2021 09:23:05 +0300 Mike Rapoport <rppt@kernel.org> wrote:
+
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> ---
->  .../bindings/mfd/silergy,sy7636a.yaml         | 73 +++++++++++++++++++
->  1 file changed, 73 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+> On systems with memory nodes sorted in descending order, for instance
+> Dell Precision WorkStation T5500, the struct pages for higher PFNs and
+> respectively lower nodes, could be overwritten by the initialization of
+> struct pages corresponding to the holes in the memory sections.
 > 
-> diff --git a/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml b/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
-> new file mode 100644
-> index 000000000000..9e50f57d5e8d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
-> @@ -0,0 +1,73 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/silergy,sy7636a.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: silergy sy7636a PMIC
-> +
-> +maintainers:
-> +  - Alistair Francis <alistair@alistair23.me>
-> +
-> +properties:
-> +  compatible:
-> +    const: silergy,sy7636a
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  '#thermal-sensor-cells':
-> +    const: 0
-> +
-> +  epd-pwr-good-gpios:
-> +    description:
-> +      Specifying the power good GPIOs. As defined in bindings/gpio.txt.
-
-Drop the 2nd sentence.
-
-> +    maxItems: 1
-> +
-> +  regulators:
-> +    type: object
-> +
-> +    properties:
-> +      compatible:
-> +        const: silergy,sy7636a-regulator
-> +
-> +      "vcom":
-
-Don't need quotes.
-
-> +        type: object
-> +        $ref: /schemas/regulator/regulator.yaml#
-> +
-> +      regulator-name:
-> +        const: "vcom"
-
-Don't need quotes.
-
-Doesn't this belong in the 'vcom' node? You need another 'properties' 
-and this under it.
-
-
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#thermal-sensor-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      pmic@62 {
-> +        compatible = "silergy,sy7636a";
-> +        reg = <0x62>;
-> +        status = "okay";
-
-Don't show status in examples.
-
-> +        pinctrl-names = "default";
-> +        pinctrl-0 = <&pinctrl_epdpmic>;
-> +        #thermal-sensor-cells = <0>;
-> +
-> +        regulators {
-> +          compatible = "silergy,sy7636a-regulator";
-> +          reg_epdpmic: vcom {
-> +            regulator-name = "vcom";
-> +            regulator-boot-on;
-> +          };
-> +        };
-> +      };
-> +    };
-> +...
-> -- 
-> 2.31.1
+> For example for the below memory layout
 > 
+> [    0.245624] Early memory node ranges
+> [    0.248496]   node   1: [mem 0x0000000000001000-0x0000000000090fff]
+> [    0.251376]   node   1: [mem 0x0000000000100000-0x00000000dbdf8fff]
+> [    0.254256]   node   1: [mem 0x0000000100000000-0x0000001423ffffff]
+> [    0.257144]   node   0: [mem 0x0000001424000000-0x0000002023ffffff]
 > 
+> the range 0x1424000000 - 0x1428000000 in the beginning of node 0 starts in
+> the middle of a section and will be considered as a hole during the
+> initialization of the last section in node 1.
+> 
+> Reorder order of the memory map initialization so that the outer loop will
+> always iterate over populated memory regions in the ascending order and the
+> inner loop will select the zone corresponding to the PFN range.
+> 
+> This way initialization of the struct pages for the memory holes will
+> be always done for the ranges that are actually not populated.
+
+Changelog doesn't tell us what are the user-visible effects of the bug.
+
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=213073
+
+But that does.  Panic during boot.
+
+> Fixes: 0740a50b9baa ("mm/page_alloc.c: refactor initialization of struct page for holes in memory layout")
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+
+So I think we want a cc:stable here?
+
+
