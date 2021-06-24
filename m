@@ -2,77 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4743B2E91
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9523B2E8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhFXMId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 08:08:33 -0400
-Received: from pb-smtp20.pobox.com ([173.228.157.52]:56649 "EHLO
-        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbhFXMIb (ORCPT
+        id S229437AbhFXMIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 08:08:32 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44424 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229573AbhFXMI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 08:08:31 -0400
-Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id AA71512757B;
-        Thu, 24 Jun 2021 08:06:12 -0400 (EDT)
-        (envelope-from tdavies@darkphysics.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
-        :to:cc:subject:message-id:mime-version:content-type; s=sasl; bh=
-        j8rQrshbvNd0uPBvyfgmlh5xUyZNgnP8aHq0npBHc5s=; b=G+v8TewOzwdjp0p2
-        Bxphv8Q4GtPYbQs8WVKwxwl81dDKU1V5ujoCh7seUuur9Wnzvz7aPj7bKZ9mpjOa
-        iGPwWcKusE2aKpo/GhleoF69nefnjciVHMANq4/kLELhNQVeZjqsG7cQrxRKzPld
-        xpCNOhd8wQ5zS+I2EEHxzqgdkF4=
-Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id A39FC12757A;
-        Thu, 24 Jun 2021 08:06:12 -0400 (EDT)
-        (envelope-from tdavies@darkphysics.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=darkphysics.net;
- h=date:from:to:cc:subject:message-id:mime-version:content-type;
- s=2019-09.pbsmtp; bh=j8rQrshbvNd0uPBvyfgmlh5xUyZNgnP8aHq0npBHc5s=;
- b=r0qsKzRmXhFkMDXQtG5r6Xp3zx+XwDutAKZMEvyflZw/I5pevQU8DQ9Gvb17QnMwEcJdRzZUT6tEo211qdZwm+0xrAY/4a1wFMCONS9I3/eMEtHzmToINfL1mszSw8X6aPAtTyF450yzg+4+62wflpwlASy32chPsGEC5pRAPn0=
-Received: from oatmeal.darkphysics (unknown [24.19.107.226])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id 015CC127579;
-        Thu, 24 Jun 2021 08:06:09 -0400 (EDT)
-        (envelope-from tdavies@darkphysics.net)
-Date:   Thu, 24 Jun 2021 05:06:01 -0700
-From:   Tree Davies <tdavies@darkphysics.net>
-To:     tdavies@darkphysics.net, netdev@vger.kernel.org
-Cc:     intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH v1 1/1] net/e1000e: Fix spelling mistake "The" -> "This"
-Message-ID: <20210624120511.GA6221@oatmeal.darkphysics>
+        Thu, 24 Jun 2021 08:08:29 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624536369;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7UpP1CcjI5eMSbTnXKpzEkX6EJ+vShXJKxQp9lhmMeQ=;
+        b=awuejK0ObYDEC0wLXFlvbSRa4YRf1NvN/VzSsUj3Om68jgq6wcme5a1Lz06oOt4WmhzyTj
+        MukHv52C41DpnCRr6h5UM/iShPWG1+syWSdy1U6EhKC4GrX7lTWj9gPD1c5Ac23EdaSHh8
+        veeve45x8UQUOYLdWSZiWbE1ynmvKDbOTNVtvucEAIchjnCy2F7eSxoMbSF7ZaXgZGubDQ
+        fbUIeiuYAZCfMuWOyE40Tvo3SyhFeD1yEMmygq09eXqvu76xIt3kl8PAN9d7hN37Rwe9Nj
+        3CDs5vo4yYCOB4nF4qoJ/FGCiwRkMmwUzIlxQejWQ3Me91EE0/v076AJipGi8g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624536369;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7UpP1CcjI5eMSbTnXKpzEkX6EJ+vShXJKxQp9lhmMeQ=;
+        b=oUXs2E5BYK59QdXkYHYYQlN8/0l3eT+VtEij9b3sSSkUtoDBCiT87+icEjBuqx9VNAMDoc
+        1BuO0nJM2LS9vMAw==
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     "Tian\, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "Dey\, Megha" <megha.dey@intel.com>,
+        "Raj\, Ashok" <ashok.raj@intel.com>,
+        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Jiang\, Dave" <dave.jiang@intel.com>,
+        "Liu\, Yi L" <yi.l.liu@intel.com>,
+        "Lu\, Baolu" <baolu.lu@intel.com>,
+        "Williams\, Dan J" <dan.j.williams@intel.com>,
+        "Luck\, Tony" <tony.luck@intel.com>,
+        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, KVM <kvm@vger.kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Subject: [PATCH] vfio/pci: Document the MSI[X] resize side effects properly
+In-Reply-To: <20210623204828.2bc7e6dc.alex.williamson@redhat.com>
+References: <20210622131217.76b28f6f.alex.williamson@redhat.com> <87o8bxcuxv.ffs@nanos.tec.linutronix.de> <20210623091935.3ab3e378.alex.williamson@redhat.com> <MWHPR11MB18864420ACE88E060203F7818C079@MWHPR11MB1886.namprd11.prod.outlook.com> <87mtrgatqo.ffs@nanos.tec.linutronix.de> <20210623204828.2bc7e6dc.alex.williamson@redhat.com>
+Date:   Thu, 24 Jun 2021 14:06:09 +0200
+Message-ID: <87im23bh72.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Pobox-Relay-ID: 9026903A-D4E4-11EB-B14D-D5C30F5B5667-45285927!pb-smtp20.pobox.com
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a spelling mistake in the comment block.
+The documentation of VFIO_IRQ_INFO_NORESIZE is inaccurate as it suggests
+that it is safe to dynamically add new MSI-X vectors even when
+previously allocated vectors are already in use and enabled.
 
-Signed-off-by: Tree Davies <tdavies@darkphysics.net>
+Enabling additional vectors is possible according the MSI-X specification,
+but the kernel does not have any mechanisms today to do that safely.
+
+The only available mechanism is to teardown the already active vectors
+and to setup the full vector set afterwards.
+
+This requires to temporarily disable MSI-X which redirects any interrupt
+raised by the device during this time to the legacy PCI/INTX which is
+not handled and the interrupt is therefore lost.
+
+Update the documentation of VFIO_IRQ_INFO_NORESIZE accordingly.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/net/ethernet/intel/e1000e/netdev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
-index 88e9035b75cf..ff267cf75ef8 100644
---- a/drivers/net/ethernet/intel/e1000e/netdev.c
-+++ b/drivers/net/ethernet/intel/e1000e/netdev.c
-@@ -7674,7 +7674,7 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
-  * @pdev: PCI device information struct
-  *
-  * e1000_remove is called by the PCI subsystem to alert the driver
-- * that it should release a PCI device.  The could be caused by a
-+ * that it should release a PCI device.  This could be caused by a
-  * Hot-Plug event, or because the driver is going to be removed from
-  * memory.
-  **/
--- 
-2.20.1
-
+ include/uapi/linux/vfio.h |   17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
+--- a/include/uapi/linux/vfio.h
++++ b/include/uapi/linux/vfio.h
+@@ -699,10 +699,19 @@ struct vfio_region_info_cap_nvlink2_lnks
+  * disabling the entire index.  This is used for interrupts like PCI MSI
+  * and MSI-X where the driver may only use a subset of the available
+  * indexes, but VFIO needs to enable a specific number of vectors
+- * upfront.  In the case of MSI-X, where the user can enable MSI-X and
+- * then add and unmask vectors, it's up to userspace to make the decision
+- * whether to allocate the maximum supported number of vectors or tear
+- * down setup and incrementally increase the vectors as each is enabled.
++ * upfront.
++ *
++ * MSI cannot be resized safely when interrupts are in use already because
++ * resizing requires temporary disablement of MSI for updating the relevant
++ * PCI config space entries. Disabling MSI redirects an interrupt raised by
++ * the device during this time to the unhandled legacy PCI/INTX, which
++ * means the interrupt is lost.
++ *
++ * Enabling additional vectors for MSI-X is possible at least from the
++ * perspective of the MSI-X specification, but not supported by the
++ * exisiting PCI/MSI-X mechanisms in the kernel. The kernel provides
++ * currently only a full teardown/setup cycle which requires to disable
++ * MSI-X temporarily with the same side effects as for MSI.
+  */
+ struct vfio_irq_info {
+ 	__u32	argsz;
