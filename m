@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443193B32D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0FB3B32DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232431AbhFXPuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 11:50:37 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:33033 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232313AbhFXPuf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 11:50:35 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UdXlSez_1624549692;
-Received: from bogon(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UdXlSez_1624549692)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 24 Jun 2021 23:48:14 +0800
-Date:   Thu, 24 Jun 2021 23:48:11 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>
-Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "joseph.qi@linux.alibaba.com" <joseph.qi@linux.alibaba.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "agruenba@redhat.com" <agruenba@redhat.com>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
-Subject: Re: [PATCH v2 2/2] nfs: NFSv3: fix SGID bit dropped when inheriting
- ACLs
-Message-ID: <YNSpOw8I/y4p3lmT@bogon>
-References: <1624430335-10322-1-git-send-email-hsiangkao@linux.alibaba.com>
- <1624430335-10322-2-git-send-email-hsiangkao@linux.alibaba.com>
- <26c10bd670d4a4672470baf2c30db7af7b7aa593.camel@hammerspace.com>
+        id S232476AbhFXPwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 11:52:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:60944 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232053AbhFXPwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 11:52:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 46B81ED1;
+        Thu, 24 Jun 2021 08:50:19 -0700 (PDT)
+Received: from localhost.localdomain (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE2033F719;
+        Thu, 24 Jun 2021 08:50:17 -0700 (PDT)
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Heiner Kallweit <hkallweit1@gmail.com>, nic_swsd@realtek.com
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sayanta Pattanayak <sayanta.pattanayak@arm.com>
+Subject: [PATCH v2] r8169: Avoid duplicate sysfs entry creation error
+Date:   Thu, 24 Jun 2021 16:49:45 +0100
+Message-Id: <20210624154945.19177-1-andre.przywara@arm.com>
+X-Mailer: git-send-email 2.14.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <26c10bd670d4a4672470baf2c30db7af7b7aa593.camel@hammerspace.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Trond,
+From: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
 
-On Thu, Jun 24, 2021 at 01:13:50PM +0000, Trond Myklebust wrote:
-> On Wed, 2021-06-23 at 14:38 +0800, Gao Xiang wrote:
-> > generic/444 fails with NFSv3 as shown above, "
-> >      QA output created by 444
-> >      drwxrwsr-x
-> >     -drwxrwsr-x
-> >     +drwxrwxr-x
-> > ", which tests "SGID inheritance with default ACLs" fs regression
-> > and looks after the following commits:
-> > 
-> > a3bb2d558752 ("ext4: Don't clear SGID when inheriting ACLs")
-> > 073931017b49 ("posix_acl: Clear SGID bit when setting file
-> > permissions")
-> > 
-> > commit 055ffbea0596 ("[PATCH] NFS: Fix handling of the umask when
-> > an NFSv3 default acl is present.") sets acls explicitly when
-> > when files are created in a directory that has a default ACL.
-> > However, after commit a3bb2d558752 and 073931017b49, SGID can be
-> > dropped if user is not member of the owning group with
-> > set_posix_acl() called.
-> > 
-> > Since underlayfs will handle ACL inheritance when creating
-> > files in a directory that has the default ACL and the umask is
-> > supposed to be ignored for such case. Therefore, I think no need
-> > to set acls explicitly (to avoid SGID bit cleared) but only apply
-> > client umask if the default ACL of the parent directory doesn't
-> > exist.
-> 
-> Hmm... Has this patch been tested with a Solaris server? Your assertion
-> above appears to be true for Linux servers, but this code needs to
-> interoperate with non-Linux draft posix acl compatible servers too.
+When registering the MDIO bus for a r8169 device, we use the PCI B/D/F
+specifier as a (seemingly) unique device identifier.
+However the very same BDF number can be used on another PCI segment,
+which makes the driver fail probing:
 
-Sigh.. I'm not quite sure about the Solaris side since I don't have
-the environment. In principle, I just think ACL inheritance should
-be an underlayfs behavior rather than some nfs-specific behavior
-so I assume no risk with this patch applied.
+[ 27.544136] r8169 0002:07:00.0: enabling device (0000 -> 0003)
+[ 27.559734] sysfs: cannot create duplicate filename '/class/mdio_bus/r8169-700'
+....…
+[ 27.684858] libphy: mii_bus r8169-700 failed to register
+[ 27.695602] r8169: probe of 0002:07:00.0 failed with error -22
 
-With my premature short-time glance about illumos nfs client
-implementation, I don't find such setacl call  (correct me if
-I'm missing...) 
-https://github.com/illumos/illumos-gate/blob/9ecd05bdc59e4a1091c51ce68cce2028d5ba6fd1/usr/src/uts/common/fs/nfs/nfs3_vnops.c#L2224
+Add the segment number to the device name to make it more unique.
 
-(And if someone has such Solaris environment, it would be much
- helpful to check this...)
+This fixes operation on an ARM N1SDP board, where two boards might be
+connected together to form an SMP system, and all on-board devices show
+up twice, just on different PCI segments.
 
-> 
-> I've already taken the other patch in this series, since that one
-> appears correct, and doesn't have any interoperability consequences.
+Signed-off-by: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
+[Andre: expand commit message, use pci_domain_nr()]
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+---
+Now compile-tested on ARM, arm64, ppc64, sparc64, mips64, hppa, x86-64,
+i386.
 
-Thanks all!
+Changes v1 ... v2:
+- use pci_domain_nr() wrapper to fix compilation on various arches
 
-Thanks,
-Gao Xiang
+ drivers/net/ethernet/realtek/r8169_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> 
-> -- 
-> Trond Myklebust
-> Linux NFS client maintainer, Hammerspace
-> trond.myklebust@hammerspace.com
-> 
-> 
+diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+index 2c89cde7da1e..5f7f0db7c502 100644
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -5086,7 +5086,8 @@ static int r8169_mdio_register(struct rtl8169_private *tp)
+ 	new_bus->priv = tp;
+ 	new_bus->parent = &pdev->dev;
+ 	new_bus->irq[0] = PHY_MAC_INTERRUPT;
+-	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x", pci_dev_id(pdev));
++	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x-%x",
++		 pci_domain_nr(pdev->bus), pci_dev_id(pdev));
+ 
+ 	new_bus->read = r8169_mdio_read_reg;
+ 	new_bus->write = r8169_mdio_write_reg;
+-- 
+2.17.5
+
