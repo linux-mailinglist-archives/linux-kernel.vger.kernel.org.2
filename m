@@ -2,163 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42293B3515
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794493B351A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232186AbhFXSBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 14:01:14 -0400
-Received: from mga11.intel.com ([192.55.52.93]:6394 "EHLO mga11.intel.com"
+        id S232457AbhFXSBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 14:01:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229464AbhFXSBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 14:01:13 -0400
-IronPort-SDR: p49exp2brmX0Du/kH35v1JzfwUVzNkV8QZr+jQ8ePMCyaswD/BSL3lDJi4n036Y6Rxi+bkYO4U
- whvlWNXzrCEA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="204520654"
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="204520654"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 10:58:53 -0700
-IronPort-SDR: kr5zBp9niZ2W2eP6TwnJa/lvwFr4KebFIGQgTnMM41AeBeS+p81QllHKR/8OV/QJ0LfKypEvZ1
- 7zpxfSc7yyZA==
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="487861512"
-Received: from llvujovi-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.255.82.142])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 10:58:51 -0700
-Subject: Re: [PATCH v3 04/11] x86: Introduce generic protected guest
- abstraction
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20210618225755.662725-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210618225755.662725-5-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YNSeZv/U6QKK8sBo@zn.tnic>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <a7096a91-f052-7e06-cd10-79dfeb600d0f@linux.intel.com>
-Date:   Thu, 24 Jun 2021 10:58:51 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229721AbhFXSBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 14:01:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB35A613C5;
+        Thu, 24 Jun 2021 17:59:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624557556;
+        bh=xpXE1TP1jsJRvYTsfkb6duwlS1QeIAIixaUeKvmTCvE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=QrK51EWNK8noEsl5rgWQ/xOdpgMGyZ2cd8nlM5hRwz6wqQ8/ZG+9a1ceATTlV00i5
+         15MYIG3wcCqnFhFIYT+CQ2x7A/pbuf9vL89UYZevYB31wckieoyHxVOWpksYWoBShO
+         9132EieRo29zX9Zl9wMs4DzmUv8T+a2shj/uQ8hzo8gahSXvC8ZFK3oZ8qjAUmSR29
+         xAkqINNwMRiO3w7+Xjx9wH81ncjt6JoEnGXM0YFYeivQDyBlrepb4Oo53emcEVsTve
+         rfUaQzdtAReXiI36ZG8efJTzSqmM3vlC+VDwYo2JShC8PnhXJooo91o3KZjA+EoCCt
+         aRfH1p8URpCtA==
+Date:   Thu, 24 Jun 2021 12:59:09 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v7 4/8] PCI/sysfs: Allow userspace to query and set
+ device reset mechanism
+Message-ID: <20210624175909.GA3542781@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <YNSeZv/U6QKK8sBo@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624172806.ay6dak2wdtv3nruj@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 24, 2021 at 10:58:06PM +0530, Amey Narkhede wrote:
+> On 21/06/24 11:56AM, Bjorn Helgaas wrote:
+> > On Thu, Jun 24, 2021 at 08:42:42PM +0530, Amey Narkhede wrote:
+> > > On 21/06/24 07:15AM, Bjorn Helgaas wrote:
+> > > > On Tue, Jun 08, 2021 at 11:18:53AM +0530, Amey Narkhede wrote:
+> > > > > Add reset_method sysfs attribute to enable user to
+> > > > > query and set user preferred device reset methods and
+> > > > > their ordering.
+> > > >
+> > > > > +		Writing the name or comma separated list of names of any of
+> > > > > +		the device supported reset methods to this file will set the
+> > > > > +		reset methods and their ordering to be used when resetting
+> > > > > +		the device.
+> > > >
+> > > > > +	while ((name = strsep(&options, ",")) != NULL) {
+> > > > > +		if (sysfs_streq(name, ""))
+> > > > > +			continue;
+> > > > > +
+> > > > > +		name = strim(name);
+> > > > > +
+> > > > > +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++) {
+> > > > > +			if (reset_methods[i] &&
+> > > > > +			    sysfs_streq(name, pci_reset_fn_methods[i].name)) {
+> > > > > +				reset_methods[i] = prio--;
+> > > > > +				break;
+> > > > > +			}
+> > > > > +		}
+> > > > > +
+> > > > > +		if (i == PCI_RESET_METHODS_NUM) {
+> > > > > +			kfree(options);
+> > > > > +			return -EINVAL;
+> > > > > +		}
+> > > > > +	}
+> > > >
+> > > > Asking again since we didn't get this clarified before.  The above
+> > > > tells me that "reset_methods" allows the user to control the
+> > > > *order* in which we try reset methods.
+> > > >
+> > > > Consider the following two uses:
+> > > >
+> > > >   (1) # echo bus,flr > reset_methods
+> > > >
+> > > >   (2) # echo flr,bus > reset_methods
+> > > >
+> > > > Do these have the same effect or not?
+> > > >
+> > > They have different effect.
+> >
+> > I asked about this because Shanker's idea [1] of using two bitmaps
+> > only keeps track of which resets are *enabled*.  It does not keep
+> > track of the *ordering*.  Since you want to control the ordering, I
+> > think we need more state than just the supported/enabled bitmaps.
+> >
+> > > > If "reset_methods" allows control over the order, I expect them to
+> > > > be different: (1) would try a bus reset and, if the bus reset
+> > > > failed, an FLR, while (2) would try an FLR and, if the FLR failed,
+> > > > a bus reset.
+> > >
+> > > Exactly you are right.
+> > >
+> > > Now the point I was presenting was with new encoding we have to
+> > > write list of *all of the supported reset methods* in order for
+> > > example, in above example flr,bus or bus,flr. We can't just write
+> > > 'flr' or 'bus' then switch back to writing flr,bus/bus,flr (these
+> > > have different effect as mentioned earlier).
+> >
+> > It sounds like you're saying this sequence can't work:
+> >
+> >   # echo flr > reset_methods
+>
+> # dev->reset_methods = [3, 0, 0, ..]
+>
+> >   # echo bus,flr > reset_methods
+>
+> # to get dev->reset_methods = [6, 3, 0, ...]
+> we'll need to probe reset methods here.
+>
+> > But I'm afraid you'll have to walk me through the reasons why this
+> > can't be made to work.
+>
+> I wrote incomplete description. It can work but we'll need to probe
+> everytime which involves reading different capabilities(PCI_CAP_ID_AF,
+> PCI_PM_CTRL etc) from device. With current encoding we just have to
+> probe at the begining.
+>
+> > > Basically with new encoding an user can't write subset of reset
+> > > methods they have to write list of *all* supported methods
+> > > everytime.
+> >
+> > Why does the user have to write all supported methods?  Is that to
+> > preserve the fact that "cat reset_methods" always shows all the
+> > supported methods so the user knows what's available?
+> >
+> > I'm wondering why we can't do something like this (pidgin code):
+> >
+> >   if (option == "default") {
+> >     pci_init_reset_methods(dev);
+> >     return;
+> >   }
+> >
+> >   n = 0;
+> >   foreach method in option {
+> >     i = lookup_reset_method(method);
+> >     if (pci_reset_methods[i].reset_fn(dev, PROBE) == 0)
+>
+> Repeatedly calling probe might have some impact as it involves reading
+> device registers as explained earlier.
+>
+> >       dev->reset_methods[n++] = i;           # method i supported
+> >   }
+> >   dev->reset_methods[n++] = 0;               # end of supported methods
+> >
+> > If we did something like the above, the user could always find the
+> > list of all methods supported by a device by doing this:
+> >
+> >   # echo default > reset_methods
+> >   # cat reset_methods
+>
+> This is one solution for current problem with new encoding.
+>
+> > Yes, this does call the "probe" methods several times.  I don't think
+> > that's necessarily a problem.
+>
+> I thought this would be a problem because of your earlier suggestion
+> of caching flr capability to avoid probing multiple times. In this case
+> we'll need to read different device registers multiple times. With
+> current encoding we don't have to do that multiple times.
 
+I don't think it's a problem to run "probe" methods when we're setting
+the enabled reset methods (either at enumeration-time or when we write
+to "reset_methods").  These are low-frequency events and I don't think
+there's any performance issue.
 
-On 6/24/21 8:01 AM, Borislav Petkov wrote:
-> On Fri, Jun 18, 2021 at 03:57:48PM -0700, Kuppuswamy Sathyanarayanan wrote:
->> Add a generic way to check if we run with an encrypted guest,
-> 
-> Please use passive voice in your commit message: no "we" or "I", etc,
-> and describe your changes in imperative mood.
-> 
-> Also, pls read section "2) Describe your changes" in
-> Documentation/process/submitting-patches.rst for more details.
-> 
-> Bottom line is: personal pronouns are ambiguous in text, especially with
-> so many parties/companies/etc developing the kernel so let's avoid them
-> please.
+I don't think we should have to run "probe" methods every time we call
+pci_reset_function().
 
-I will fix this in next version. I will make sure to follow it in future
-submissions.
+I suggested a dev->has_flr bit for two reasons:
 
-> 
->> without requiring x86 specific ifdefs. This can then be used in
->> non architecture specific code.
-> 
-> "... in arch-independent code." or so.
+  1) It avoids reading PCI_EXP_DEVCAP every time a driver calls
+     pcie_reset_flr(), and
 
-I will fix this in next version.
+  2) It gives a nice opportunity for quirks to disable FLR for devices
+     where it's broken.
 
-> 
->> prot_guest_has() is used to check for protected guest feature
->> flags.
->>
->> Originally-by: Andi Kleen <ak@linux.intel.com>
->> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->> ---
->>
->> Change since v1:
->>   * Introduced PR_GUEST_TDX and PR_GUEST_SEV vendor flags as per
->>     Boris suggestion.
->>   * Replaced is_tdx_guest() with if (boot_cpu_data.x86_vendor ==
->>     X86_VENDOR_INTEL) in prot_guest_has().
->>   * Modified tdx_protected_guest_has() and sev_protected_guest_has()
->>     to support vendor flags.
-> 
-> ...
-> 
->> diff --git a/arch/x86/include/asm/protected_guest.h b/arch/x86/include/asm/protected_guest.h
->> new file mode 100644
->> index 000000000000..d47668dee6c2
->> --- /dev/null
->> +++ b/arch/x86/include/asm/protected_guest.h
->> @@ -0,0 +1,20 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/* Copyright (C) 2020 Intel Corporation */
->> +#ifndef _ASM_PROTECTED_GUEST_H
->> +#define _ASM_PROTECTED_GUEST_H 1
-> 
-> #define _ASM_X86_PROTECTED_GUEST_H
-> 
->> +
->> +#include <asm/processor.h>
->> +#include <asm/tdx.h>
->> +#include <asm/sev.h>
->> +
->> +static inline bool prot_guest_has(unsigned long flag)
->> +{
->> +	if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
->> +		return tdx_protected_guest_has(flag);
->> +	else if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
->> +		return sev_protected_guest_has(flag);
-> 
-> s/protected/prot/
-> 
-> tdx_prot_guest_has
-> sev_prot_guest_has
-
-Ok. I will make this change in next version.
-
-> 
-> ...
-> 
->> @@ -18,6 +20,21 @@ static inline bool cpuid_has_tdx_guest(void)
->>   	return !memcmp("IntelTDX    ", sig, 12);
->>   }
->>   
->> +bool tdx_protected_guest_has(unsigned long flag)
->> +{
->> +	switch (flag) {
->> +	case PR_GUEST_MEM_ENCRYPT:
->> +	case PR_GUEST_MEM_ENCRYPT_ACTIVE:
->> +	case PR_GUEST_UNROLL_STRING_IO:
->> +	case PR_GUEST_SHARED_MAPPING_INIT:
->> +	case PR_GUEST_TDX:
->> +		return static_cpu_has(X86_FEATURE_TDX_GUEST);
-> 
-> 		return cpu_feature_enabled(...)
-
-I will use it in next version.
-
-> 
-> 
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+> > [1] https://lore.kernel.org/r/1fb0a184-908c-5f98-ef6d-74edc602c2e0@nvidia.com
