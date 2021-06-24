@@ -2,404 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484003B2AA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C18D3B2AA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhFXIrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 04:47:36 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:57977 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbhFXIrf (ORCPT
+        id S229955AbhFXIr7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Jun 2021 04:47:59 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:58837 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229573AbhFXIr5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 04:47:35 -0400
-Received: from mail-ed1-f70.google.com ([209.85.208.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lwKz5-0006dd-Al
-        for linux-kernel@vger.kernel.org; Thu, 24 Jun 2021 08:45:15 +0000
-Received: by mail-ed1-f70.google.com with SMTP id y18-20020a0564022712b029038ffac1995eso2981314edd.12
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 01:45:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/H5wTbSkDb5EG/Plv5JL5DZ/eP+KuDuMv9Q+6+2CdC4=;
-        b=gDrQzcUxAIX+UnJ59jfqAiidsCrt1hfG9xjT+MD70bBRXtlQIQagQRUpPAPa226dYH
-         CHvJv3K/VDzfF9KGjYSYeXaqlOP4qrU2Zilpaofh+2Iyz7SXELOs5up6YznVEnt3in0A
-         Pld6/DuZyEL5cC4YgGKR9rYzeLdbzzGsN0anRwSgWRPurl8BsOYmXKYhonLCQ6w5ssgF
-         BfGKcSjFtfSIT6VYKw6XSj93lieVa4CAX1tyhuGXMoewAcpeZz6dbPMSex8Gzlpymo/Q
-         3slGFsQEm93Z69HQvhLA7uvMj95Po1vp6u8NwBB5uuOr7+OmYot3Gzyb8VYVzd9I6EGE
-         DMIg==
-X-Gm-Message-State: AOAM530a4m3Q1JmhmvzPcmMsFtTchmlZAsQxcSQBe6CvqR/I+c0F/knh
-        14B+9RGJvoCoA9nol/taON1vvnn+p6V4jjY43pCJJy5IrUu5FC5ZWpBe50bSS9zNGUYlAmQP+SB
-        2BwSJOfHp4cZOLROb/luVIKAMoQ5kowUrhLGYU3Gw3g==
-X-Received: by 2002:a05:6402:397:: with SMTP id o23mr2732324edv.217.1624524315080;
-        Thu, 24 Jun 2021 01:45:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxBszcTjCXG3oCAfyucufMKcECl+4nvSj4Djz126QLLoge/Hq3VB1rseLQvg0Nks1FoQysqPg==
-X-Received: by 2002:a05:6402:397:: with SMTP id o23mr2732302edv.217.1624524314897;
-        Thu, 24 Jun 2021 01:45:14 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id u12sm881642eje.40.2021.06.24.01.45.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 01:45:14 -0700 (PDT)
-Subject: Re: [RFC PATCH 4/9] phy: samsung: Add SEC DSIM DPHY driver
-To:     Jagan Teki <jagan@amarulasolutions.com>,
-        Peng Fan <peng.fan@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Tomasz Figa <t.figa@samsung.com>,
-        Fancy Fang <chen.fang@nxp.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
-        linux-amarula@amarulasolutions.com,
-        Anthony Brandon <anthony@amarulasolutions.com>,
-        Francis Laniel <francis.laniel@amarulasolutions.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Milco Pratesi <milco.pratesi@engicam.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-References: <20210621072424.111733-1-jagan@amarulasolutions.com>
- <20210621072424.111733-5-jagan@amarulasolutions.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <ef55499c-4edc-60fe-d936-83a2df78ee88@canonical.com>
-Date:   Thu, 24 Jun 2021 10:45:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210621072424.111733-5-jagan@amarulasolutions.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Thu, 24 Jun 2021 04:47:57 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R771e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0UdVdJ.e_1624524334;
+Received: from 30.240.109.243(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0UdVdJ.e_1624524334)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 24 Jun 2021 16:45:35 +0800
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v6 1/3] sched/fair: Introduce the burstable CFS controller
+From:   changhuaixin <changhuaixin@linux.alibaba.com>
+In-Reply-To: <CAFpoUr1Q-DuvXhPtX=bNdjg6xVcyBF=Qm8kz+HG7pGtNtu9X4A@mail.gmail.com>
+Date:   Thu, 24 Jun 2021 16:45:33 +0800
+Cc:     changhuaixin <changhuaixin@linux.alibaba.com>,
+        luca.abeni@santannapisa.it, anderson@cs.unc.edu, baruah@wustl.edu,
+        Benjamin Segall <bsegall@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        dtcccc@linux.alibaba.com, Juri Lelli <juri.lelli@redhat.com>,
+        khlebnikov@yandex-team.ru,
+        open list <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        pauld@redhead.com, Peter Zijlstra <peterz@infradead.org>,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Shanpei Chen <shanpeic@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>, tommaso.cucinotta@santannapisa.it,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        xiyou.wangcong@gmail.com
+Content-Transfer-Encoding: 8BIT
+Message-Id: <2D5B4FA3-88BC-4BD2-9F58-72C9ABC667B0@linux.alibaba.com>
+References: <20210621092800.23714-1-changhuaixin@linux.alibaba.com>
+ <20210621092800.23714-2-changhuaixin@linux.alibaba.com>
+ <CAFpoUr1Q-DuvXhPtX=bNdjg6xVcyBF=Qm8kz+HG7pGtNtu9X4A@mail.gmail.com>
+To:     Odin Ugedal <odin@uged.al>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/06/2021 09:24, Jagan Teki wrote:
-> Samsung SEC MIPI DSIM DPHY controller is part of registers
-> available in SEC MIPI DSIM bridge for NXP's i.MX8M Mini and
-> Nano Processors.
+
+
+> On Jun 22, 2021, at 11:27 PM, Odin Ugedal <odin@uged.al> wrote:
 > 
-> Add phy driver for it.
+> Hi,
 > 
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
->  drivers/phy/samsung/Kconfig             |   9 +
->  drivers/phy/samsung/Makefile            |   1 +
->  drivers/phy/samsung/phy-sec-dsim-dphy.c | 236 ++++++++++++++++++++++++
->  3 files changed, 246 insertions(+)
->  create mode 100644 drivers/phy/samsung/phy-sec-dsim-dphy.c
-
-You add a driver for a Samsung's component, so please Cc respective
-folks. They might help you with it or provide comments to avoid
-duplication of drivers/code:
-
-Around phy:
-Marek Szyprowski <m.szyprowski@samsung.com>
-Jaehoon Chung <jh80.chung@samsung.com>
-
-Around MIPI/DRM:
-Inki Dae <inki.dae@samsung.com>
-Seung-Woo Kim <sw0312.kim@samsung.com>
-Andrzej Hajda <a.hajda@samsung.com>
-
-and:
-linux-samsung-soc@vger.kernel.org
-
+> Just some more thoughts.
 > 
-> diff --git a/drivers/phy/samsung/Kconfig b/drivers/phy/samsung/Kconfig
-> index e20d2fcc9fe7..e80d40d1278c 100644
-> --- a/drivers/phy/samsung/Kconfig
-> +++ b/drivers/phy/samsung/Kconfig
-> @@ -103,3 +103,12 @@ config PHY_EXYNOS5250_SATA
->  	  Exynos5250 based SoCs.This SerDes/Phy supports SATA 1.5 Gb/s,
->  	  SATA 3.0 Gb/s, SATA 6.0 Gb/s speeds. It supports one SATA host
->  	  port to accept one SATA device.
-> +
-> +config PHY_SEC_DSIM_DPHY
-
-SEC is not a codename of a project/product/silicon. It is a company
-name, so basically you called this "PHY_SAMSUNG_DSIM_DPHY" which is too
-generic.
-
-> +	tristate "Samsung SEC MIPI DSIM DPHY driver"
-
-What is Samsung SEC? Either Samsung or SEC, not both.
-
-> +	depends on OF && HAS_IOMEM
-> +	select GENERIC_PHY
-> +	select REGMAP_MMIO
-> +	help
-> +          Enable this to add support for the SEC MIPI DSIM DPHY as found
-> +          on NXP's i.MX8M Mini and Nano family of SOCs.
-> diff --git a/drivers/phy/samsung/Makefile b/drivers/phy/samsung/Makefile
-> index 3959100fe8a2..4d46c7ec0072 100644
-> --- a/drivers/phy/samsung/Makefile
-> +++ b/drivers/phy/samsung/Makefile
-> @@ -11,3 +11,4 @@ phy-exynos-usb2-$(CONFIG_PHY_EXYNOS5250_USB2)	+= phy-exynos5250-usb2.o
->  phy-exynos-usb2-$(CONFIG_PHY_S5PV210_USB2)	+= phy-s5pv210-usb2.o
->  obj-$(CONFIG_PHY_EXYNOS5_USBDRD)	+= phy-exynos5-usbdrd.o
->  obj-$(CONFIG_PHY_EXYNOS5250_SATA)	+= phy-exynos5250-sata.o
-> +obj-$(CONFIG_PHY_SEC_DSIM_DPHY)		+= phy-sec-dsim-dphy.o
-> diff --git a/drivers/phy/samsung/phy-sec-dsim-dphy.c b/drivers/phy/samsung/phy-sec-dsim-dphy.c
-> new file mode 100644
-> index 000000000000..31de4a774b5f
-> --- /dev/null
-> +++ b/drivers/phy/samsung/phy-sec-dsim-dphy.c
-> @@ -0,0 +1,236 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Copyright (C) 2018 NXP
-> + * Copyright (C) 2021 Amarula Solutions(India)
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/phy/phy.h>
-> +#include <linux/regmap.h>
-> +
-> +#define DSI_PHYCTRL_B1			0x00
-> +#define DSI_PHYCTRL_B2			0x04
-> +#define DSI_PHYCTRL_M1			0x08
-> +#define DSI_PHYCTRL_M2			0x0c
-> +#define DSI_PHYTIMING			0x10
-> +#define DSI_PHYTIMING1			0x14
-> +#define DSI_PHYTIMING2			0x18
-> +
-> +/* phytiming */
-> +#define M_TLPXCTL_MASK			GENMASK(15, 8)
-
-What is the "M_" prefix for?
-
-> +#define M_TLPXCTL(x)			FIELD_PREP(M_TLPXCTL_MASK, (x))
-> +#define M_THSEXITCTL_MASK		GENMASK(7, 0)
-> +#define M_THSEXITCTL(x)			FIELD_PREP(M_THSEXITCTL_MASK, (x))
-> +
-> +/* phytiming1 */
-> +#define M_TCLKPRPRCTL_MASK		GENMASK(31, 24)
-> +#define M_TCLKPRPRCTL(x)		FIELD_PREP(M_TCLKPRPRCTL_MASK, (x))
-> +#define M_TCLKZEROCTL_MASK		GENMASK(23, 16)
-> +#define M_TCLKZEROCTL(x)		FIELD_PREP(M_TCLKZEROCTL_MASK, (x))
-> +#define M_TCLKPOSTCTL_MASK		GENMASK(15, 8)
-> +#define M_TCLKPOSTCTL(x)		FIELD_PREP(M_TCLKPOSTCTL_MASK, (x))
-> +#define M_TCLKTRAILCTL_MASK		GENMASK(7, 0)
-> +#define M_TCLKTRAILCTL(x)		FIELD_PREP(M_TCLKTRAILCTL_MASK, (x))
-> +
-> +/* phytiming2 */
-> +#define M_THSPRPRCTL_MASK		GENMASK(23, 16)
-> +#define M_THSPRPRCTL(x)			FIELD_PREP(M_THSPRPRCTL_MASK, (x))
-> +#define M_THSZEROCTL_MASK		GENMASK(15, 8)
-> +#define M_THSZEROCTL(x)			FIELD_PREP(M_THSZEROCTL_MASK, (x))
-> +#define M_THSTRAILCTL_MASK		GENMASK(7, 0)
-> +#define M_THSTRAILCTL(x)		FIELD_PREP(M_THSTRAILCTL_MASK, (x))
-> +
-> +struct dsim_dphy_plat_data {
-
-Remove the m_ prefix. Please document all fields.
-
-> +	unsigned int m_tlpxctl;
-> +	unsigned int m_thsexitctl;
-> +	unsigned int m_tclkprprctl;
-> +	unsigned int m_tclkzeroctl;
-> +	unsigned int m_tclkpostctl;
-> +	unsigned int m_tclktrailctl;
-> +	unsigned int m_thsprprctl;
-> +	unsigned int m_thszeroctl;
-> +	unsigned int m_thstrailctl;
-> +};
-> +
-> +struct dsim_dphy {
-> +	struct regmap *regmap;
-> +	struct clk *phy_ref_clk;
-> +	const struct dsim_dphy_plat_data *pdata;
-> +};
-> +
-> +static const struct regmap_config dsim_dphy_regmap_config = {
-> +	.reg_bits = 8,
-> +	.val_bits = 32,
-> +	.reg_stride = 4,
-> +	.max_register = DSI_PHYTIMING2,
-> +	.name = "mipi-dphy",
-> +};
-> +
-> +static int dsim_dphy_init(struct phy *phy)
-> +{
-> +	struct dsim_dphy *dphy = phy_get_drvdata(phy);
-> +	const struct dsim_dphy_plat_data *pdata = dphy->pdata;
-> +	u32 reg;
-> +
-> +	/* phytiming */
-> +	regmap_read(dphy->regmap, DSI_PHYTIMING, &reg);
-> +
-> +	reg &= ~M_TLPXCTL_MASK;
-> +	reg |= M_TLPXCTL(pdata->m_tlpxctl);
-> +	reg &= ~M_THSEXITCTL_MASK;
-> +	reg |= M_THSEXITCTL(pdata->m_thsexitctl);
-> +	regmap_write(dphy->regmap, DSI_PHYTIMING, reg);
-> +
-> +	/* phytiming1 */
-> +	regmap_read(dphy->regmap, DSI_PHYTIMING1, &reg);
-> +
-> +	reg &= ~M_TCLKPRPRCTL_MASK;
-> +	reg |= M_TCLKPRPRCTL(pdata->m_tclkprprctl);
-> +	reg &= ~M_TCLKZEROCTL_MASK;
-> +	reg |= M_TCLKZEROCTL(pdata->m_tclkzeroctl);
-> +	reg &= ~M_TCLKPOSTCTL_MASK;
-> +	reg |= M_TCLKPOSTCTL(pdata->m_tclkpostctl);
-> +	reg &= ~M_TCLKTRAILCTL_MASK;
-> +	reg |= M_TCLKTRAILCTL(pdata->m_tclktrailctl);
-> +	regmap_write(dphy->regmap, DSI_PHYTIMING1, reg);
-> +
-> +	/* phytiming2 */
-> +	regmap_read(dphy->regmap, DSI_PHYTIMING2, &reg);
-> +
-> +	reg &= ~M_THSPRPRCTL_MASK;
-> +	reg |= M_THSPRPRCTL(pdata->m_thsprprctl);
-> +	reg &= ~M_THSZEROCTL_MASK;
-> +	reg |= M_THSZEROCTL(pdata->m_thszeroctl);
-> +	reg &= ~M_THSTRAILCTL_MASK;
-> +	reg |= M_THSTRAILCTL(pdata->m_thstrailctl);
-> +	regmap_write(dphy->regmap, DSI_PHYTIMING2, reg);
-> +
-> +	return 0;
-> +}
-> +
-> +static int dsim_dphy_exit(struct phy *phy)
-> +{
-> +	return 0;
-> +}
-> +
-> +static int dsim_dphy_power_on(struct phy *phy)
-> +{
-> +	struct dsim_dphy *dphy = phy_get_drvdata(phy);
-> +	int ret;
-> +
-> +	ret = clk_prepare_enable(dphy->phy_ref_clk);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return ret;
-> +}
-> +
-> +static int dsim_dphy_power_off(struct phy *phy)
-> +{
-> +	struct dsim_dphy *dphy = phy_get_drvdata(phy);
-> +
-> +	clk_disable_unprepare(dphy->phy_ref_clk);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct phy_ops dsim_dphy_phy_ops = {
-> +	.init = dsim_dphy_init,
-> +	.exit = dsim_dphy_exit,
-> +	.power_on = dsim_dphy_power_on,
-> +	.power_off = dsim_dphy_power_off,
-> +	.owner = THIS_MODULE,
-> +};
-> +
-> +static const struct dsim_dphy_plat_data imx8mm_dphy_plat_data = {
-> +	/* phytiming */
-> +	.m_tlpxctl	= 0x06,
-> +	.m_thsexitctl	= 0x0b,
-> +	/* phytiming1 */
-> +	.m_tclkprprctl	= 0x07,
-> +	.m_tclkzeroctl	= 0x26,
-> +	.m_tclkpostctl	= 0x0d,
-> +	.m_tclktrailctl	= 0x08,
-> +	/* phytimings2 */
-> +	.m_thsprprctl	= 0x08,
-> +	.m_thszeroctl	= 0x0d,
-> +	.m_thstrailctl	= 0x0b,
-> +};
-> +
-> +static const struct of_device_id dsim_dphy_of_match[] = {
-> +	{
-> +		.compatible = "fsl,imx8mm-sec-dsim-dphy",
-> +		.data = &imx8mm_dphy_plat_data,
-> +	},
-> +	{ /* sentinel */ },
-> +};
-> +MODULE_DEVICE_TABLE(of, dsim_dphy_of_match);
-> +
-> +static int dsim_dphy_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct device_node *np = dev->of_node;
-> +	struct phy_provider *phy_provider;
-> +	struct dsim_dphy *dphy;
-> +	struct phy *phy;
-> +	void __iomem *base;
-> +
-> +	if (!np)
-> +		return -ENODEV;
-
-How can this driver bind without 'np'? How is it possible?
-
-> +
-> +	dphy = devm_kzalloc(dev, sizeof(*dphy), GFP_KERNEL);
-> +	if (!dphy)
-> +		return -ENOMEM;
-> +
-> +	dphy->pdata = of_device_get_match_data(&pdev->dev);
-> +	if (!dphy->pdata)
-> +		return -EINVAL;
-> +
-> +	base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(base))
-> +		return PTR_ERR(base);
-> +
-> +	dphy->regmap = devm_regmap_init_mmio(&pdev->dev, base,
-> +					     &dsim_dphy_regmap_config);
-> +	if (IS_ERR(dphy->regmap)) {
-> +		dev_err(dev, "failed create the DPHY regmap\n");
-> +		return PTR_ERR(dphy->regmap);
-> +	}
-> +
-> +	dphy->phy_ref_clk = devm_clk_get(&pdev->dev, "phy_ref");
-> +	if (IS_ERR(dphy->phy_ref_clk)) {
-> +		dev_err(dev, "failed to get phy_ref clock\n");
-> +		return PTR_ERR(dphy->phy_ref_clk);
-> +	}
-> +
-> +	dev_set_drvdata(dev, dphy);
-> +
-> +	phy = devm_phy_create(dev, np, &dsim_dphy_phy_ops);
-> +	if (IS_ERR(phy)) {
-> +		dev_err(dev, "failed to create phy %ld\n", PTR_ERR(phy));
-> +		return PTR_ERR(phy);
-> +	}
-> +	phy_set_drvdata(phy, dphy);
-> +
-> +	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
-> +
-> +	return PTR_ERR_OR_ZERO(phy_provider);
-> +}
-> +
-> +static struct platform_driver dsim_dphy_driver = {
-> +	.probe	= dsim_dphy_probe,
-> +	.driver = {
-> +		.name = "sec-dsim-dphy",
-
-"sec" it's too generic, what if next time we have another one from
-Samsung? sec2? Please choose a name matching the actual component.
-
-> +		.of_match_table	= dsim_dphy_of_match,
-> +	}
-> +};
-> +module_platform_driver(dsim_dphy_driver);
-> +
-> +MODULE_AUTHOR("Jagan Teki <jagan@amarulasolutions.com>");
-> +MODULE_DESCRIPTION("Samsung SEC MIPI DSIM DPHY driver");> +MODULE_LICENSE("GPL");
+> man. 21. jun. 2021 kl. 11:28 skrev Huaixin Chang
+> <changhuaixin@linux.alibaba.com>:
+>> 
+>> The CFS bandwidth controller limits CPU requests of a task group to
+>> quota during each period. However, parallel workloads might be bursty
+>> so that they get throttled even when their average utilization is under
+>> quota. And they are latency sensitive at the same time so that
+>> throttling them is undesired.
+>> 
+>> We borrow time now against our future underrun, at the cost of increased
+>> interference against the other system users. All nicely bounded.
+>> 
+>> Traditional (UP-EDF) bandwidth control is something like:
+>> 
+>>  (U = \Sum u_i) <= 1
+>> 
+>> This guaranteeds both that every deadline is met and that the system is
+>> stable. After all, if U were > 1, then for every second of walltime,
+>> we'd have to run more than a second of program time, and obviously miss
+>> our deadline, but the next deadline will be further out still, there is
+>> never time to catch up, unbounded fail.
+>> 
+>> This work observes that a workload doesn't always executes the full
+>> quota; this enables one to describe u_i as a statistical distribution.
+>> 
+>> For example, have u_i = {x,e}_i, where x is the p(95) and x+e p(100)
+>> (the traditional WCET). This effectively allows u to be smaller,
+>> increasing the efficiency (we can pack more tasks in the system), but at
+>> the cost of missing deadlines when all the odds line up. However, it
+>> does maintain stability, since every overrun must be paired with an
+>> underrun as long as our x is above the average.
+>> 
+>> That is, suppose we have 2 tasks, both specify a p(95) value, then we
+>> have a p(95)*p(95) = 90.25% chance both tasks are within their quota and
+>> everything is good. At the same time we have a p(5)p(5) = 0.25% chance
+>> both tasks will exceed their quota at the same time (guaranteed deadline
+>> fail). Somewhere in between there's a threshold where one exceeds and
+>> the other doesn't underrun enough to compensate; this depends on the
+>> specific CDFs.
+>> 
+>> At the same time, we can say that the worst case deadline miss, will be
+>> \Sum e_i; that is, there is a bounded tardiness (under the assumption
+>> that x+e is indeed WCET).
+>> 
+>> The benefit of burst is seen when testing with schbench. Default value of
+>> kernel.sched_cfs_bandwidth_slice_us(5ms) and CONFIG_HZ(1000) is used.
+>> 
+>>        mkdir /sys/fs/cgroup/cpu/test
+>>        echo $$ > /sys/fs/cgroup/cpu/test/cgroup.procs
+>>        echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_quota_us
+>>        echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_burst_us
+>> 
+>>        ./schbench -m 1 -t 3 -r 20 -c 80000 -R 10
+>> 
+>> The average CPU usage is at 80%. I run this for 10 times, and got long tail
+>> latency for 6 times and got throttled for 8 times.
+> 
+> I don't think this is the best example of the benefit given by burst.
+> If you double the period, to 200ms, all throttling is mitigated for this
+> example. Doubling the period is ~the same as having burst=quota (not 100%)
+> the same. It would be interesting to also see other workloads referred to here,
+> and how they behave with a double in period vs "100%" burst. (eg. 50% burst
+> is the ~the same as going from 100ms period to 150%).
+> 
+> The same way, using a 50ms period and 100% burst would cause throttling
+> here as well.
+> 
+> For certain workloads using about 100% of their quota constantly, then a short
+> burst over, would certainly benefit from this. However, those workloads should
+> then probably have a higher quota as well, also mitigating that problem, unless
+> we want it to be throttled.
+> 
+> Timing issues for refilling the cfs_b can also cause some throttling, and
+> naturally giving more runtime will "fix" those issues, but I think there
+> are better ways of solving it than adding new APIs.
+> 
+> 
+> Overall, my biggest issue with this approach is that it would be hard for users
+> to reason about what burst is, and what it "fixes", especially compared to
+> the period length. I think a lot of people would benefit from using longer
+> periods than 100ms when they have way more processes than the ratio between
+> the quota and the period. I therefore think it would be best to use examples
+> for when to use burst where a period change would not fix the issue.
 > 
 
+Hi,
 
-Best regards,
-Krzysztof
+Maybe using burst and changing period can be used at the same time, and burst feature
+is not designed to replace changing period anyway. However I suggest burst shall be
+considered prior to changing period, as doubling the period doubles the WCET. That is to say,
+using burst avoids throttling and improved WCET in some way, compared to using larger periods
+only.
+
+
+> 
+>> Tail latencies are shown below, and it wasn't the worst case.
+>> 
+>>        Latency percentiles (usec)
+>>                50.0000th: 19872
+>>                75.0000th: 21344
+>>                90.0000th: 22176
+>>                95.0000th: 22496
+>>                *99.0000th: 22752
+>>                99.5000th: 22752
+>>                99.9000th: 22752
+>>                min=0, max=22727
+>>        rps: 9.90 p95 (usec) 22496 p99 (usec) 22752 p95/cputime 28.12% p99/cputime 28.44%
+>> 
+>> The interferenece when using burst is valued by the possibilities for
+>> missing the deadline and the average WCET. Test results showed that when
+>> there many cgroups or CPU is under utilized, the interference is
+>> limited. More details are shown in:
+>> https://lore.kernel.org/lkml/5371BD36-55AE-4F71-B9D7-B86DC32E3D2B@linux.alibaba.com/
+>> 
+>> Co-developed-by: Shanpei Chen <shanpeic@linux.alibaba.com>
+>> Signed-off-by: Shanpei Chen <shanpeic@linux.alibaba.com>
+>> Co-developed-by: Tianchen Ding <dtcccc@linux.alibaba.com>
+>> Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
+>> Signed-off-by: Huaixin Chang <changhuaixin@linux.alibaba.com>
+>> ---
+> 
+> Anyways, this should also probably scale burst together with period and quota
+> when the period is too short. Something like the diff below, as well as
+> updating the message.
+> 
+> 
+> Thanks
+> Odin
+> 
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index bfaa6e1f6067..ab809bd11785 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -5277,6 +5277,7 @@ static enum hrtimer_restart
+> sched_cfs_period_timer(struct hrtimer *timer)
+>                        if (new < max_cfs_quota_period) {
+>                                cfs_b->period = ns_to_ktime(new);
+>                                cfs_b->quota *= 2;
+> +                               cfs_b->burst *= 2;
+> 
+>                                pr_warn_ratelimited(
+>        "cfs_period_timer[cpu%d]: period too short, scaling up (new
+> cfs_period_us = %lld, cfs_quota_us = %lld)\n",
+
