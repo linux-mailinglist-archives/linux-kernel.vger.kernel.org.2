@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE26F3B2A14
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB633B2A1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 10:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbhFXIPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 04:15:02 -0400
-Received: from verein.lst.de ([213.95.11.211]:53546 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231705AbhFXIPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 04:15:01 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 01CD167373; Thu, 24 Jun 2021 10:12:38 +0200 (CEST)
-Date:   Thu, 24 Jun 2021 10:12:37 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Tomer Tayar <ttayar@habana.ai>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to
- export FD for DMA-BUF
-Message-ID: <20210624081237.GA30289@lst.de>
-References: <20210622154027.GS1096940@ziepe.ca> <09df4a03-d99c-3949-05b2-8b49c71a109e@amd.com> <20210622160538.GT1096940@ziepe.ca> <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com> <20210623182435.GX1096940@ziepe.ca> <CAFCwf111O0_YB_tixzEUmaKpGAHMNvMaOes2AfMD4x68Am4Yyg@mail.gmail.com> <20210623185045.GY1096940@ziepe.ca> <CAFCwf12tW_WawFfAfrC8bgVhTRnDA7DuM+0V8w3JsUZpA2j84w@mail.gmail.com> <20210624053421.GA25165@lst.de> <9571ac7c-3a58-b013-b849-e26c3727e9b2@amd.com>
+        id S231864AbhFXIPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 04:15:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26152 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231705AbhFXIPo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 04:15:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624522405;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=93B83MuKOnXGcqD1yFOtENeDWjr0pRle6LMuQcAX/kM=;
+        b=VkymZTh1tKzXqrudqv1fH5n9AFS6+vGQOTJthOvgRgqu4U0GETHE7szEDojmEchQsvMCSr
+        FcYkM2169he6SMssKra2mF+6RoswaGa0lX1/Tj2Oe34kdEknEz8Duc0Z6Rg+kQocruLxJE
+        dkwZgJl7RiR5blNAOmRBDvWH+y54EJI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-J-l8AB2jOXa24-G9obNLqA-1; Thu, 24 Jun 2021 04:13:24 -0400
+X-MC-Unique: J-l8AB2jOXa24-G9obNLqA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 80E485074B;
+        Thu, 24 Jun 2021 08:13:22 +0000 (UTC)
+Received: from starship (unknown [10.40.192.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EC8DE5D9F0;
+        Thu, 24 Jun 2021 08:13:18 +0000 (UTC)
+Message-ID: <153cf16c78578079d168c754ef451b1f3ecd5220.camel@redhat.com>
+Subject: Re: [PATCH 04/10] KVM: SVM: add warning for mistmatch between AVIC
+ state and AVIC access page state
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Jim Mattson <jmattson@google.com>
+Date:   Thu, 24 Jun 2021 11:13:17 +0300
+In-Reply-To: <6617e1f2-23dd-9132-d866-7780663533c3@redhat.com>
+References: <20210623113002.111448-1-mlevitsk@redhat.com>
+         <20210623113002.111448-5-mlevitsk@redhat.com>
+         <6617e1f2-23dd-9132-d866-7780663533c3@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9571ac7c-3a58-b013-b849-e26c3727e9b2@amd.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 10:07:14AM +0200, Christian König wrote:
-> The key point is that accessing the underlying pages even when DMA-bufs are 
-> backed by system memory is illegal. Daniel even created a patch which 
-> mangles the page pointers in sg_tables used by DMA-buf to make sure that 
-> people don't try to use them.
+On Wed, 2021-06-23 at 23:53 +0200, Paolo Bonzini wrote:
+> On 23/06/21 13:29, Maxim Levitsky wrote:
+> > It is never a good idea to enter a guest when the AVIC state doesn't match
+> > the state of the AVIC MMIO memory slot.
+> > 
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > ---
+> >   arch/x86/kvm/svm/svm.c | 3 +++
+> >   1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> > index 12c06ea28f5c..50405c561394 100644
+> > --- a/arch/x86/kvm/svm/svm.c
+> > +++ b/arch/x86/kvm/svm/svm.c
+> > @@ -3780,6 +3780,9 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+> >   
+> >   	pre_svm_run(vcpu);
+> >   
+> > +	WARN_ON_ONCE(vcpu->kvm->arch.apic_access_memslot_enabled !=
+> > +		     kvm_vcpu_apicv_active(vcpu));
+> > +
+> >   	sync_lapic_to_cr8(vcpu);
+> >   
+> >   	if (unlikely(svm->asid != svm->vmcb->control.asid)) {
+> > 
+> 
+> For patches 4-6, can the warnings actually fire without the fix in patch 2?
+> 
+> Paolo
+> 
 
-Which is another goddamn layering violation of a subsystem that has no
-business at all poking into the scatterlist structure, yes.
+Hi!
 
-> So the conclusion is that using sg_table in the DMA-buf framework was just 
-> the wrong data structure and we should have invented a new one.
+The warning in patch 4 does fire, not often but it does. Patch 2 fixes it.
+The guest usually boots though few lost APIC writes don't always cause it to hang.
 
-I think so.
+Plus the warning is also triggered when the AVIC state is mismatched the other way
+around, that is when AVIC is enabled but memslot is disabled, which probably
+doesn't cause issues.
 
-> But then people would have complained that we have a duplicated 
-> infrastructure (which is essentially true).
+Warning in patch 5 is mostly theoretical, until patch 8 is applied.
+They can happen if AVIC is toggled on one vCPU for some reason, while another vCPU
+asks for an interrupt window.
 
-I doubt it.  At least if you had actually talked to the relevant people.
-Which seems to be a major issue with what is going on GPU land.
+Patch 6 doesn't fix a warning, but rather a case which most likely can't happen
+till patch 8 is applied, but still is correct.
 
-> My best plan to get out of this mess is that we change the DMA-buf 
-> interface to use an array of dma_addresses instead of the sg_table object 
-> and I have already been working on this actively the last few month.
+Best regards,
+	Maxim Levitsky
 
-Awesome!  I have a bit of related work on the DMA mapping subsystems, so
-let's sync up as soon as you have some first sketches.
-
-Btw, one thing I noticed when looking over the dma-buf instances is that
-there is a lot of duplicated code for creating a sg_table from pages,
-and then mapping it.  It would be good if we could move toward common
-helpers instead of duplicating that all over again.
