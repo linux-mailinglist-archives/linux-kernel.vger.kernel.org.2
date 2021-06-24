@@ -2,116 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66963B34BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC133B34C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232452AbhFXR1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 13:27:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:34864 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhFXR1T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 13:27:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1800ED1;
-        Thu, 24 Jun 2021 10:24:59 -0700 (PDT)
-Received: from [10.57.9.136] (unknown [10.57.9.136])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 609573F719;
-        Thu, 24 Jun 2021 10:24:57 -0700 (PDT)
-Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Chen Huang <chenhuang5@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mm <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <da9c2fa9-a545-0c48-4490-d6134cc31425@huawei.com>
- <20210623132223.GA96264@C02TD0UTHF1T.local>
- <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
- <YNP6/p/yJzLLr8M8@casper.infradead.org> <YNQuZ8ykN7aR+1MP@infradead.org>
- <YNRpYli/5/GWvaTT@casper.infradead.org>
- <27fbb8c1-2a65-738f-6bec-13f450395ab7@arm.com>
- <YNSyZaZtPTmTa5P8@zeniv-ca.linux.org.uk>
- <7896a3c7-2e14-d0f4-dbb9-286b6f7181b5@arm.com>
- <YNS1VN2okAHo3b+0@zeniv-ca.linux.org.uk>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <1aa40be9-2a47-007a-990f-a7eea6721a23@arm.com>
-Date:   Thu, 24 Jun 2021 18:24:52 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S232273AbhFXRac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 13:30:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229573AbhFXRa3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 13:30:29 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCDD8C061574;
+        Thu, 24 Jun 2021 10:28:09 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id t9so5303176pgn.4;
+        Thu, 24 Jun 2021 10:28:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Aaw37jAPjEH9fknpMLD7D8CrB6Ci5AT0QfUiiI7nv3E=;
+        b=MUyWN+8oUn3IVQSjpzrM78+p0DxwevxQKw5Ltf4e0r7NZLDQgEQwCzYlhg6yhqvFJj
+         kvxw19QQXlIOudNc+uKRr14Pi1P+QMIGY2fvpzmxFSYR+kF0CfXYlsbgpi5hl3KmpM0O
+         /8vJ9gPB/kN1utHjyR1/q3XlMphmYBBnDk4JR0N9azV90Rt+w+1rEMqh1/VBb3qObEf2
+         TU0cXmk3atCsFRa1YdFq8sEbaOotefHlPvKUAxG8kgWCIwkyqWHwjj8bprnmllTVCyE9
+         n/tevZNhq+MZ68p34tuwvlnYaKMOvRrxr6GtSiwVAB1fHowjgNkDqxOY1QfCGOziPaLK
+         gZaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Aaw37jAPjEH9fknpMLD7D8CrB6Ci5AT0QfUiiI7nv3E=;
+        b=G7U3kQB2lp1kja3BUj30yZjybiQoXzpoRNhbreEORRyxlsPG0+qmwzwXI0XjF9pUmu
+         M3K5wGkqXCCFxI+sesAzZvt+dsJiyShW2hDULWFkNfRkuHx8M9f45nktXU3AyV52c/JH
+         /0t46r/T3nE/MFDiNIHwhhdXu5qJqbHxe8XSIHULjdIDt/9x8dKH8WsV9AaCFa5noaYJ
+         LfmBb0Phs+658mDerBKBjOcMHREqgfG496GEiVkQkcTJ6aj8wfLAkJedre0I2vSN2AZ+
+         L/B3a0VyTBtcGZlvJ2dzbZpTIaLxYwTXybee077yv/sWe24MKhFYMdfIfXbn7bGA1EH6
+         qfmg==
+X-Gm-Message-State: AOAM533uwrvnc6C5Gqh6bVhUo7cuqGrB40EFhKj0odb7Kyp+WbmhgK6H
+        l/l6vFJMzcaOnpOKvC1aMCo=
+X-Google-Smtp-Source: ABdhPJw1sqp/qIfwIsG1YDSTrgE/MCafjTjUt58wM/NRG6zeHymFMwDXSLDDJrl/WrBwk1WkXAUPWA==
+X-Received: by 2002:a62:1782:0:b029:2f7:dcbe:c292 with SMTP id 124-20020a6217820000b02902f7dcbec292mr6254221pfx.63.1624555689138;
+        Thu, 24 Jun 2021 10:28:09 -0700 (PDT)
+Received: from localhost ([103.248.31.165])
+        by smtp.gmail.com with ESMTPSA id y21sm3091075pgc.93.2021.06.24.10.28.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 10:28:08 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 22:58:06 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v7 4/8] PCI/sysfs: Allow userspace to query and set
+ device reset mechanism
+Message-ID: <20210624172806.ay6dak2wdtv3nruj@archlinux>
+References: <20210624151242.ybew2z5rseuusj7v@archlinux>
+ <20210624165601.GA3535644@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <YNS1VN2okAHo3b+0@zeniv-ca.linux.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624165601.GA3535644@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-24 17:39, Al Viro wrote:
-> On Thu, Jun 24, 2021 at 05:38:35PM +0100, Robin Murphy wrote:
->> On 2021-06-24 17:27, Al Viro wrote:
->>> On Thu, Jun 24, 2021 at 02:22:27PM +0100, Robin Murphy wrote:
->>>
->>>> FWIW I think the only way to make the kernel behaviour any more robust here
->>>> would be to make the whole uaccess API more expressive, such that rather
->>>> than simply saying "I only got this far" it could actually differentiate
->>>> between stopping due to a fault which may be recoverable and worth retrying,
->>>> and one which definitely isn't.
->>>
->>> ... and propagate that "more expressive" information through what, 3 or 4
->>> levels in the call chain?
->>>
->>>   From include/linux/uaccess.h:
->>>
->>>    * If raw_copy_{to,from}_user(to, from, size) returns N, size - N bytes starting
->>>    * at to must become equal to the bytes fetched from the corresponding area
->>>    * starting at from.  All data past to + size - N must be left unmodified.
->>>    *
->>>    * If copying succeeds, the return value must be 0.  If some data cannot be
->>>    * fetched, it is permitted to copy less than had been fetched; the only
->>>    * hard requirement is that not storing anything at all (i.e. returning size)
->>>    * should happen only when nothing could be copied.  In other words, you don't
->>>    * have to squeeze as much as possible - it is allowed, but not necessary.
->>>
->>> arm64 instances violate the aforementioned hard requirement.  Please, fix
->>> it there; it's not hard.  All you need is an exception handler in .Ltiny15
->>> that would fall back to (short) byte-by-byte copy if the faulting address
->>> happened to be unaligned.  Or just do one-byte copy, not that it had been
->>> considerably cheaper than a loop.  Will be cheaper than propagating that extra
->>> information up the call chain, let alone paying for extra ->write_begin()
->>> and ->write_end() for single byte in generic_perform_write().
->>
->> And what do we do if we then continue to fault with an external abort
->> because whatever it is that warranted being mapped as Device-type memory in
->> the first place doesn't support byte accesses?
-> 
-> If it does not support byte access, it would've failed on fault-in.
-
-OK, if I'm understanding the code correctly and fault-in touches the 
-exact byte that copy_to_user() is going to start on, and faulting 
-anywhere *after* that byte is still OK, then that seems mostly workable, 
-although there are still potential corner cases like a device register 
-accepting byte reads but not byte writes.
-
-Basically if privileged userspace is going to do dumb things with 
-mmap()ed MMIO, the kernel can't *guarantee* to save it from itself 
-without a hell of a lot of invasive work for no other gain. Sure we can 
-add some extra fallback paths in our arch code for a best-effort attempt 
-to mitigate alignment faults - revamping the usercopy routines is on my 
-to-do list so I'll bear this in mind, and I think it's basically the 
-same idea we mooted some time ago for tag faults anyway - but I'm sure 
-someone will inevitably still find some new way to trip it up. 
-Fortunately on modern systems many of the aforementioned dumb things 
-won't actually fault synchronously, so even if triggered by a usercopy 
-accesses the payback will come slightly later via asynchronous SError 
-and be considerably more terminal.
+On 21/06/24 11:56AM, Bjorn Helgaas wrote:
+> On Thu, Jun 24, 2021 at 08:42:42PM +0530, Amey Narkhede wrote:
+> > On 21/06/24 07:15AM, Bjorn Helgaas wrote:
+> > > On Tue, Jun 08, 2021 at 11:18:53AM +0530, Amey Narkhede wrote:
+> > > > Add reset_method sysfs attribute to enable user to
+> > > > query and set user preferred device reset methods and
+> > > > their ordering.
+> > >
+> > > > +		Writing the name or comma separated list of names of any of
+> > > > +		the device supported reset methods to this file will set the
+> > > > +		reset methods and their ordering to be used when resetting
+> > > > +		the device.
+> > >
+> > > > +	while ((name = strsep(&options, ",")) != NULL) {
+> > > > +		if (sysfs_streq(name, ""))
+> > > > +			continue;
+> > > > +
+> > > > +		name = strim(name);
+> > > > +
+> > > > +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++) {
+> > > > +			if (reset_methods[i] &&
+> > > > +			    sysfs_streq(name, pci_reset_fn_methods[i].name)) {
+> > > > +				reset_methods[i] = prio--;
+> > > > +				break;
+> > > > +			}
+> > > > +		}
+> > > > +
+> > > > +		if (i == PCI_RESET_METHODS_NUM) {
+> > > > +			kfree(options);
+> > > > +			return -EINVAL;
+> > > > +		}
+> > > > +	}
+> > >
+> > > Asking again since we didn't get this clarified before.  The above
+> > > tells me that "reset_methods" allows the user to control the
+> > > *order* in which we try reset methods.
+> > >
+> > > Consider the following two uses:
+> > >
+> > >   (1) # echo bus,flr > reset_methods
+> > >
+> > >   (2) # echo flr,bus > reset_methods
+> > >
+> > > Do these have the same effect or not?
+> > >
+> > They have different effect.
+>
+> I asked about this because Shanker's idea [1] of using two bitmaps
+> only keeps track of which resets are *enabled*.  It does not keep
+> track of the *ordering*.  Since you want to control the ordering, I
+> think we need more state than just the supported/enabled bitmaps.
+>
+> > > If "reset_methods" allows control over the order, I expect them to
+> > > be different: (1) would try a bus reset and, if the bus reset
+> > > failed, an FLR, while (2) would try an FLR and, if the FLR failed,
+> > > a bus reset.
+> >
+> > Exactly you are right.
+> >
+> > Now the point I was presenting was with new encoding we have to
+> > write list of *all of the supported reset methods* in order for
+> > example, in above example flr,bus or bus,flr. We can't just write
+> > 'flr' or 'bus' then switch back to writing flr,bus/bus,flr (these
+> > have different effect as mentioned earlier).
+>
+> It sounds like you're saying this sequence can't work:
+>
+>   # echo flr > reset_methods
+# dev->reset_methods = [3, 0, 0, ..]
+>   # echo bus,flr > reset_methods
+# to get dev->reset_methods = [6, 3, 0, ...]
+we'll need to probe reset methods here.
+>
+> But I'm afraid you'll have to walk me through the reasons why this
+> can't be made to work.
+I wrote incomplete description. It can work but we'll need to probe
+everytime which involves reading different capabilities(PCI_CAP_ID_AF,
+PCI_PM_CTRL etc) from device. With current encoding we just have to
+probe at the begining.
+>
+> > Basically with new encoding an user can't write subset of reset
+> > methods they have to write list of *all* supported methods
+> > everytime.
+>
+> Why does the user have to write all supported methods?  Is that to
+> preserve the fact that "cat reset_methods" always shows all the
+> supported methods so the user knows what's available?
+>
+> I'm wondering why we can't do something like this (pidgin code):
+>
+>   if (option == "default") {
+>     pci_init_reset_methods(dev);
+>     return;
+>   }
+>
+>   n = 0;
+>   foreach method in option {
+>     i = lookup_reset_method(method);
+>     if (pci_reset_methods[i].reset_fn(dev, PROBE) == 0)
+Repeatedly calling probe might have some impact as it involves reading
+device registers as explained earlier.
+>       dev->reset_methods[n++] = i;           # method i supported
+>   }
+>   dev->reset_methods[n++] = 0;               # end of supported methods
+>
+> If we did something like the above, the user could always find the
+> list of all methods supported by a device by doing this:
+>
+>   # echo default > reset_methods
+>   # cat reset_methods
+>
+This is one solution for current problem with new encoding.
+> Yes, this does call the "probe" methods several times.  I don't think
+> that's necessarily a problem.
+I thought this would be a problem because of your earlier suggestion
+of caching flr capability to avoid probing multiple times. In this case
+we'll need to read different device registers multiple times. With
+current encoding we don't have to do that multiple times.
 
 Thanks,
-Robin.
+Amey
+>
+> Bjorn
+>
+> [1] https://lore.kernel.org/r/1fb0a184-908c-5f98-ef6d-74edc602c2e0@nvidia.com
