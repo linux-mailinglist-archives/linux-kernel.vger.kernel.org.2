@@ -2,216 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052123B2D1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F24443B2D1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbhFXLBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:01:41 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49118 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232136AbhFXLBk (ORCPT
+        id S232303AbhFXLCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:02:25 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7355 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232136AbhFXLCY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:01:40 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AC15E21960;
-        Thu, 24 Jun 2021 10:59:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624532360; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JeGbvav2KX0N6TKtaCjgJzmWnZBAz2NrIaizJm6Yj5Y=;
-        b=ugoQ9gedis0Z2347YexieOqhf2e7oAEFGMUFWSHcQVbUi+Ffa9gIcgOTbc0na338qirR4K
-        a/3fiHY6M/oo93OfiDWygFs/nCGJ/34NPFeTllHX96zqnR8ZhNEj00KUbJ381jGlmPM1OC
-        xKOiS1MUXstvGw8qyA9QeWhtdscjIdw=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 5597A11A97;
-        Thu, 24 Jun 2021 10:59:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624532360; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JeGbvav2KX0N6TKtaCjgJzmWnZBAz2NrIaizJm6Yj5Y=;
-        b=ugoQ9gedis0Z2347YexieOqhf2e7oAEFGMUFWSHcQVbUi+Ffa9gIcgOTbc0na338qirR4K
-        a/3fiHY6M/oo93OfiDWygFs/nCGJ/34NPFeTllHX96zqnR8ZhNEj00KUbJ381jGlmPM1OC
-        xKOiS1MUXstvGw8qyA9QeWhtdscjIdw=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id f+G6E4hl1GCvcwAALh3uQQ
-        (envelope-from <jgross@suse.com>); Thu, 24 Jun 2021 10:59:20 +0000
-Subject: Re: [PATCH v2 17/24] x86/xen: Make set_debugreg() noinstr
-To:     Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
-        tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, joro@8bytes.org,
-        boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
-        rostedt@goodmis.org, dvyukov@google.com, elver@google.com
-References: <20210624094059.886075998@infradead.org>
- <20210624095148.687755639@infradead.org>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <3d761650-6bf1-e3cd-c690-a297b8344978@suse.com>
-Date:   Thu, 24 Jun 2021 12:59:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 24 Jun 2021 07:02:24 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15OAXOtp028164;
+        Thu, 24 Jun 2021 06:59:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : message-id : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=seR004U7BS151tIWRK/UQWFcTx1CFnM1fGVnMoFtlFY=;
+ b=YphTG24n0KllvWfsANDhmaqChXPU5couFpjUU6wTnmII18l2NTQVuACP8KHnZtI5GAIU
+ /wIttwzVZuqT5CwUHfEvQvgxsfj2YXzHJQBFAaZDw4P386qMG1J16Tueqtq67rxk6tRO
+ oeqj4KIFYX/HH6k0kEfCWwi9N3tOgsAjlP1iof7QNnu+XCZBwHJsOASVwXtSMw6jCP9f
+ GvM0WyEBIyab4tnnPwv78UWNTyU5tRiNYy/Irs/kpNOuci5mMrwR5NJ0LRVbXXOYPyGR
+ Q0FgkfWsu33JpUVlm0n1hnaalcg37qQbP7LVhSAjodA1wFILb2qCClLN2DJbMvNFMELc pw== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39cpu1v3ba-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Jun 2021 06:59:36 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15OAx3wb024246;
+        Thu, 24 Jun 2021 10:59:34 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03fra.de.ibm.com with ESMTP id 3998789cc3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Jun 2021 10:59:34 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15OAw7FV33161620
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Jun 2021 10:58:07 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2DD574C04A;
+        Thu, 24 Jun 2021 10:59:32 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AA6B04C04E;
+        Thu, 24 Jun 2021 10:59:31 +0000 (GMT)
+Received: from localhost (unknown [9.85.126.249])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 24 Jun 2021 10:59:31 +0000 (GMT)
+Date:   Thu, 24 Jun 2021 16:29:30 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Subject: Re: [PATCH v2] powerpc/kprobes: Fix Oops by passing ppc_inst as a
+ pointer to emulate_step() on ppc32
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <5bdc8cbc9a95d0779e27c9ddbf42b40f51f883c0.1624425798.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <5bdc8cbc9a95d0779e27c9ddbf42b40f51f883c0.1624425798.git.christophe.leroy@csgroup.eu>
+User-Agent: astroid/v0.15-23-gcdc62b30
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1624531892.3vdz8ibfty.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 7Kj5BgczmA_qe273mY4-7D7mNHcbxbmm
+X-Proofpoint-ORIG-GUID: 7Kj5BgczmA_qe273mY4-7D7mNHcbxbmm
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <20210624095148.687755639@infradead.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="cUq6LP8o3ffjkkzq7yNwI6eYFhanz9J4E"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-24_06:2021-06-24,2021-06-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 mlxlogscore=801 suspectscore=0 malwarescore=0 phishscore=0
+ spamscore=0 clxscore=1011 impostorscore=0 mlxscore=0 lowpriorityscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106240056
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---cUq6LP8o3ffjkkzq7yNwI6eYFhanz9J4E
-Content-Type: multipart/mixed; boundary="0ztxYIXREyWGV7mwGDx3E181V1EFN1OpF";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
- tglx@linutronix.de
-Cc: linux-kernel@vger.kernel.org, joro@8bytes.org,
- boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
- rostedt@goodmis.org, dvyukov@google.com, elver@google.com
-Message-ID: <3d761650-6bf1-e3cd-c690-a297b8344978@suse.com>
-Subject: Re: [PATCH v2 17/24] x86/xen: Make set_debugreg() noinstr
-References: <20210624094059.886075998@infradead.org>
- <20210624095148.687755639@infradead.org>
-In-Reply-To: <20210624095148.687755639@infradead.org>
-
---0ztxYIXREyWGV7mwGDx3E181V1EFN1OpF
-Content-Type: multipart/mixed;
- boundary="------------9ABA92879B65400380CAEEF8"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------9ABA92879B65400380CAEEF8
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 24.06.21 11:41, Peter Zijlstra wrote:
-> vmlinux.o: warning: objtool: pv_ops[2]: xen_set_debugreg
-> vmlinux.o: warning: objtool: pv_ops[2]: native_set_debugreg
-> vmlinux.o: warning: objtool: exc_debug()+0x3b: call to pv_ops[2]() leav=
-es .noinstr.text section
+Christophe Leroy wrote:
+> From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 >=20
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Trying to use a kprobe on ppc32 results in the below splat:
+>     BUG: Unable to handle kernel data access on read at 0x7c0802a6
+>     Faulting instruction address: 0xc002e9f0
+>     Oops: Kernel access of bad area, sig: 11 [#1]
+>     BE PAGE_SIZE=3D4K PowerPC 44x Platform
+>     Modules linked in:
+>     CPU: 0 PID: 89 Comm: sh Not tainted 5.13.0-rc1-01824-g3a81c0495fdb #7
+>     NIP:  c002e9f0 LR: c0011858 CTR: 00008a47
+>     REGS: c292fd50 TRAP: 0300   Not tainted  (5.13.0-rc1-01824-g3a81c0495=
+fdb)
+>     MSR:  00009000 <EE,ME>  CR: 24002002  XER: 20000000
+>     DEAR: 7c0802a6 ESR: 00000000
+>     <snip>
+>     NIP [c002e9f0] emulate_step+0x28/0x324
+>     LR [c0011858] optinsn_slot+0x128/0x10000
+>     Call Trace:
+>      opt_pre_handler+0x7c/0xb4 (unreliable)
+>      optinsn_slot+0x128/0x10000
+>      ret_from_syscall+0x0/0x28
+>=20
+> The offending instruction is:
+>     81 24 00 00     lwz     r9,0(r4)
+>=20
+> Here, we are trying to load the second argument to emulate_step():
+> struct ppc_inst, which is the instruction to be emulated. On ppc64,
+> structures are passed in registers when passed by value. However, per
+> the ppc32 ABI, structures are always passed to functions as pointers.
+> This isn't being adhered to when setting up the call to emulate_step()
+> in the optprobe trampoline. Fix the same.
+>=20
+> Fixes: eacf4c0202654a ("powerpc: Enable OPTPROBES on PPC32")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> ---
+> v2: Rebased on powerpc/merge 7f030e9d57b8
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-Reviewed-by: Juergen Gross <jgross@suse.com>
+Thanks for rebasing this!
+
+I think git am drops everything after three dashes, so applying this=20
+patch will drop your SOB. The recommended style (*) for adding a=20
+changelog is to include it within [] before the second SOB.
 
 
-Juergen
+- Naveen
 
+(*) https://www.kernel.org/doc/html/latest/maintainer/modifying-patches.html
 
---------------9ABA92879B65400380CAEEF8
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------9ABA92879B65400380CAEEF8--
-
---0ztxYIXREyWGV7mwGDx3E181V1EFN1OpF--
-
---cUq6LP8o3ffjkkzq7yNwI6eYFhanz9J4E
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmDUZYcFAwAAAAAACgkQsN6d1ii/Ey8x
-cwgAnPZ0edPB1lsFodNA44a0kQG3l6upcI3WN+I4P4eJiLlux2zkL/Ws+vDmGwwSw6l98jezBeI5
-In/n9h+dIBWRf4LJiWgju9Syd5BEzzdlqZ6ncMzNepLxokicKmafnJzD5z/wTWs0albuxDPMb3Uu
-htEGUXkK6wv9B/Vkh6QCJF5fDYcRDLUGvL4cBEf6DgCuEl6fQo6NCxy2KmkkyMspC7523LRT1xQ7
-0V13WtaD/Carzm9dbDWtT9a6cJgQ0Nlls0VyD83rFGDYwDfB2+EIunJ84SHBB3hlgZb3KR8YpE9g
-hzzVkPGQFvns0VJR3d0M4EwHBxlQq7e25pf3W+uwTQ==
-=bB99
------END PGP SIGNATURE-----
-
---cUq6LP8o3ffjkkzq7yNwI6eYFhanz9J4E--
