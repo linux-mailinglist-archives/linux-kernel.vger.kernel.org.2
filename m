@@ -2,196 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4953B3348
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 161043B3305
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbhFXP7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 11:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36328 "EHLO
+        id S232507AbhFXP6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 11:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232600AbhFXP7r (ORCPT
+        with ESMTP id S232500AbhFXP62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 11:59:47 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA76C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 08:57:28 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id h23so3747012pjv.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 08:57:28 -0700 (PDT)
+        Thu, 24 Jun 2021 11:58:28 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FC8C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 08:56:08 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id bb20so3734549pjb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 08:56:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xfRvKXXPDGozL9xpkc2RXgCWY6OxEYfQN41+lxoFnvY=;
-        b=kEshnj7M08k1T5XsbOYdzjZbq7nVnmjng6eJnfjl4lHMzaAZWk6m94BUgoAkO9vE9h
-         LGUHt/CR+GHi3cdJm3u8om1RbudjT01C0RCIVYBXBb3iKIFLf6Hz/aFd03GLLTot9C9q
-         is4g5Rc9w98QwWpmpTahpJ12S/0U2a21x3Eus=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uIiql1BdK0KN1vEcz6LaOBJV1Hbz8F0F5x5kSRn1/hQ=;
+        b=myi4BcePr2SxyvO6FD/KI7+94QoXAUpid+fsm3JZMGUD7H+UqppJ0hbcrhs00aA5ZL
+         MRF1IXoaQEFarG+k4XjIg+znZlEYeE5hLVYh6wZFUcRwnaFju0+kSwnGyU3u0XxU1fZ0
+         eaxPIfBKD/OiiJ2U4keU8e2zvMJHxEArcfnr/RPbY0lotE2VdU1fu0Kn7LutxGntKft5
+         wRyb5NxdYjJTSPQuut65YO7SFNgwDDlP3e3FACfEK/I0MZ3H5VsytNUvfT6YI3hmCnHA
+         e57+/bXttqwWizqxEvxbXTeTOZqVIjCa2/I7BoJE3AkTOFPq4STse8RCBkwyny3l97yp
+         WBzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xfRvKXXPDGozL9xpkc2RXgCWY6OxEYfQN41+lxoFnvY=;
-        b=f1T0HnFBZmAKCFyiDC9UHn+wDGdmJaqpuFOlwduvEF3Ubdp/ENP7xTJ6oV0G9tEdyY
-         C6oxKN8KOS55S0rYkrzmYtY9pLxksR6SMpbYKfYA4shGR/jOxKZ5D3JRX0gegykEty+q
-         sh8gBHkP8Ea3IMDw9GU3aCrjF1YO80/OGoQsNB2ePBqw3oo0jAR1wgdcmf0OSqKeDVYY
-         TVfTGXUZ8+oVuUXoS+yh8Ga5bQIbILbXkbjB0bFCKUYWM7LU8jzH43YbwK+CRpT8PgfO
-         2OtQEVclXTKYgkRMSNFJDAHakYGE1iiZygH9YsSzIH6W+KHOVyUMwY0CiauODd53Uimr
-         KBow==
-X-Gm-Message-State: AOAM5300kTgMs5mNIqT6g+QKLUDBe0Uz3HL9zkqr7iGwka2CYLv9pHTo
-        HKJ+QF4Bktgm7mJuHYtJwipn1w==
-X-Google-Smtp-Source: ABdhPJzInUpAy17snFNN0CGcBB/ghyLU73coTfwG0l77wDEHQQH9RWDi8n5UN9ZkYoU3wlPKMD5xpQ==
-X-Received: by 2002:a17:90b:2282:: with SMTP id kx2mr5939882pjb.60.1624550248050;
-        Thu, 24 Jun 2021 08:57:28 -0700 (PDT)
-Received: from localhost ([2401:fa00:95:205:165a:99ec:42d5:d8b])
-        by smtp.gmail.com with UTF8SMTPSA id n6sm2862924pgt.7.2021.06.24.08.57.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 08:57:27 -0700 (PDT)
-From:   Claire Chang <tientzu@chromium.org>
-To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        tientzu@chromium.org, daniel@ffwll.ch, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, jxgao@google.com,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com,
-        thomas.lendacky@amd.com, quic_qiancai@quicinc.com
-Subject: [PATCH v15 12/12] of: Add plumbing for restricted DMA pool
-Date:   Thu, 24 Jun 2021 23:55:26 +0800
-Message-Id: <20210624155526.2775863-13-tientzu@chromium.org>
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-In-Reply-To: <20210624155526.2775863-1-tientzu@chromium.org>
-References: <20210624155526.2775863-1-tientzu@chromium.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uIiql1BdK0KN1vEcz6LaOBJV1Hbz8F0F5x5kSRn1/hQ=;
+        b=qZF6LnwRk9bSpz/fwr9D4eyKnAlan+mLyCPFU1ewR7+N95HZW4Yc7aoI8cuFmBDlOo
+         jlXb9jfNQ9aaf1Yk4PimkmfvvCCCd3XAZBPoToj3X2eKdNJ9zk2f9RjEzWwQnNlS4F/k
+         oHxVqAfbIxd2emaQpmA/8x+DVviLVBfoIepel6D6rd5X4UCG6fkzzAEZfIKSXVYfFVxm
+         QbYsRqZEcskB/L77zvtoTBC3x24PYYvDucQMy6MmJIfVTc80A9hY74rxuHx0GekYD1a/
+         RTlNW/fbfoFRMF1CC03FKUppVFIrBIaa1sWNMSzTOmHIcEUz4D8YfOX6MfxYFM+M0BwN
+         nGpA==
+X-Gm-Message-State: AOAM533vLhCPkQ0ZPdGzoe+LOuxbd/SIJTWxuXy/H2aPlid2cZ175rvh
+        nEdmxRN2FH9pmB5lSmT/eKN1IEL7Lib7
+X-Google-Smtp-Source: ABdhPJxK8+gLbRAwn8nUuwGDGWzpweVrlt/7Sd2UCgvVr2knMTD4eGISuidKKzripm40ueO627udIA==
+X-Received: by 2002:a17:90a:5312:: with SMTP id x18mr15699217pjh.25.1624550168335;
+        Thu, 24 Jun 2021 08:56:08 -0700 (PDT)
+Received: from thinkpad ([120.138.12.173])
+        by smtp.gmail.com with ESMTPSA id b5sm2880023pgh.41.2021.06.24.08.56.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 08:56:07 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 21:26:02 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, stable@vger.kernel.org,
+        Jeffrey Hugo <quic_jhugo@quicinc.com>
+Subject: Re: [PATCH 1/8] bus: mhi: core: Validate channel ID when processing
+ command completions
+Message-ID: <20210624155602.GA28535@thinkpad>
+References: <20210621161616.77524-1-manivannan.sadhasivam@linaro.org>
+ <20210621161616.77524-2-manivannan.sadhasivam@linaro.org>
+ <YNSNtQxVaegArG2f@kroah.com>
+ <20210624143248.GC6108@workstation>
+ <YNSZNxMjX/vNvae+@kroah.com>
+ <20210624144752.GD6108@workstation>
+ <YNSkVZ4PzkDqX/g+@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNSkVZ4PzkDqX/g+@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a device is not behind an IOMMU, we look up the device node and set
-up the restricted DMA when the restricted-dma-pool is presented.
+On Thu, Jun 24, 2021 at 05:27:17PM +0200, Greg KH wrote:
+> On Thu, Jun 24, 2021 at 08:17:52PM +0530, Manivannan Sadhasivam wrote:
+> > On Thu, Jun 24, 2021 at 04:39:51PM +0200, Greg KH wrote:
+> > > On Thu, Jun 24, 2021 at 08:02:48PM +0530, Manivannan Sadhasivam wrote:
+> > > > On Thu, Jun 24, 2021 at 03:50:45PM +0200, Greg KH wrote:
+> > > > > On Mon, Jun 21, 2021 at 09:46:09PM +0530, Manivannan Sadhasivam wrote:
+> > > > > > From: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> > > > > > 
+> > > > > > MHI reads the channel ID from the event ring element sent by the
+> > > > > > device which can be any value between 0 and 255. In order to
+> > > > > > prevent any out of bound accesses, add a check against the maximum
+> > > > > > number of channels supported by the controller and those channels
+> > > > > > not configured yet so as to skip processing of that event ring
+> > > > > > element.
+> > > > > > 
+> > > > > > Cc: stable@vger.kernel.org
+> > > > > > Fixes: 1d3173a3bae7 ("bus: mhi: core: Add support for processing events from client device")
+> > > > > > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> > > > > > Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+> > > > > > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > > > Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+> > > > > > Link: https://lore.kernel.org/r/1619481538-4435-1-git-send-email-bbhatt@codeaurora.org
+> > > > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > > > ---
+> > > > > >  drivers/bus/mhi/core/main.c | 15 ++++++++++-----
+> > > > > >  1 file changed, 10 insertions(+), 5 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> > > > > > index 22acde118bc3..ed07421c4870 100644
+> > > > > > --- a/drivers/bus/mhi/core/main.c
+> > > > > > +++ b/drivers/bus/mhi/core/main.c
+> > > > > > @@ -773,11 +773,16 @@ static void mhi_process_cmd_completion(struct mhi_controller *mhi_cntrl,
+> > > > > >  	cmd_pkt = mhi_to_virtual(mhi_ring, ptr);
+> > > > > >  
+> > > > > >  	chan = MHI_TRE_GET_CMD_CHID(cmd_pkt);
+> > > > > > -	mhi_chan = &mhi_cntrl->mhi_chan[chan];
+> > > > > > -	write_lock_bh(&mhi_chan->lock);
+> > > > > > -	mhi_chan->ccs = MHI_TRE_GET_EV_CODE(tre);
+> > > > > > -	complete(&mhi_chan->completion);
+> > > > > > -	write_unlock_bh(&mhi_chan->lock);
+> > > > > > +	WARN_ON(chan >= mhi_cntrl->max_chan);
+> > > > > 
+> > > > > What can ever trigger this WARN_ON()?  Do you mean to reboot a machine
+> > > > > if panic-on-warn is set?
+> > > > > 
+> > > > > If this can actually happen, then check for it and recover properly,
+> > > > > don't just blindly warn and then keep on going.
+> > > > > 
+> > > > 
+> > > > We can't do much here other than warning the user and dropping the
+> > > > command.
+> > > 
+> > > But you didn't warn anyone.  Well, you rebooted the machine, is that ok?
+> > > If this can be triggered by a user, this should never happen.
+> > > 
+> > > Do not use WARN_ON() ever please.
+> > > 
+> > > > There is no recovery possible because, the device has sent the command
+> > > > completion event on a wrong channel. It can't happen usually unless a
+> > > > malcious device sits on the other end.
+> > > 
+> > > Then just eat the message and move on, please do not crash the box.
+> > > 
+> > 
+> > Okay. We'll spit an error message and drop the event.
+> 
+> If this can be triggered by a user, don't provide a way to DoS the
+> kernel error log.
+> 
 
-Signed-off-by: Claire Chang <tientzu@chromium.org>
-Tested-by: Stefano Stabellini <sstabellini@kernel.org>
-Tested-by: Will Deacon <will@kernel.org>
----
- drivers/of/address.c    | 33 +++++++++++++++++++++++++++++++++
- drivers/of/device.c     |  3 +++
- drivers/of/of_private.h |  6 ++++++
- 3 files changed, 42 insertions(+)
+The term "user" is a bit vague here. Only a malcious device sits on the PCIe
+bus that claims a defined VID/PID can trigger this error. And we do need to tell
+the user of the host machine that the device tried to do something wrong.
 
-diff --git a/drivers/of/address.c b/drivers/of/address.c
-index 73ddf2540f3f..cdf700fba5c4 100644
---- a/drivers/of/address.c
-+++ b/drivers/of/address.c
-@@ -8,6 +8,7 @@
- #include <linux/logic_pio.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/pci.h>
- #include <linux/pci_regs.h>
- #include <linux/sizes.h>
-@@ -1022,6 +1023,38 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
- 	of_node_put(node);
- 	return ret;
- }
-+
-+int of_dma_set_restricted_buffer(struct device *dev, struct device_node *np)
-+{
-+	struct device_node *node, *of_node = dev->of_node;
-+	int count, i;
-+
-+	count = of_property_count_elems_of_size(of_node, "memory-region",
-+						sizeof(u32));
-+	/*
-+	 * If dev->of_node doesn't exist or doesn't contain memory-region, try
-+	 * the OF node having DMA configuration.
-+	 */
-+	if (count <= 0) {
-+		of_node = np;
-+		count = of_property_count_elems_of_size(
-+			of_node, "memory-region", sizeof(u32));
-+	}
-+
-+	for (i = 0; i < count; i++) {
-+		node = of_parse_phandle(of_node, "memory-region", i);
-+		/*
-+		 * There might be multiple memory regions, but only one
-+		 * restricted-dma-pool region is allowed.
-+		 */
-+		if (of_device_is_compatible(node, "restricted-dma-pool") &&
-+		    of_device_is_available(node))
-+			return of_reserved_mem_device_init_by_idx(dev, of_node,
-+								  i);
-+	}
-+
-+	return 0;
-+}
- #endif /* CONFIG_HAS_DMA */
- 
- /**
-diff --git a/drivers/of/device.c b/drivers/of/device.c
-index 6cb86de404f1..e68316836a7a 100644
---- a/drivers/of/device.c
-+++ b/drivers/of/device.c
-@@ -165,6 +165,9 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
- 
- 	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
- 
-+	if (!iommu)
-+		return of_dma_set_restricted_buffer(dev, np);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(of_dma_configure_id);
-diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
-index d9e6a324de0a..25cebbed5f02 100644
---- a/drivers/of/of_private.h
-+++ b/drivers/of/of_private.h
-@@ -161,12 +161,18 @@ struct bus_dma_region;
- #if defined(CONFIG_OF_ADDRESS) && defined(CONFIG_HAS_DMA)
- int of_dma_get_range(struct device_node *np,
- 		const struct bus_dma_region **map);
-+int of_dma_set_restricted_buffer(struct device *dev, struct device_node *np);
- #else
- static inline int of_dma_get_range(struct device_node *np,
- 		const struct bus_dma_region **map)
- {
- 	return -ENODEV;
- }
-+static inline int of_dma_set_restricted_buffer(struct device *dev,
-+					       struct device_node *np)
-+{
-+	return -ENODEV;
-+}
- #endif
- 
- #endif /* _LINUX_OF_PRIVATE_H */
--- 
-2.32.0.288.g62a8d224e6-goog
+So I guess the error log is fine here?
 
+Thanks,
+Mani
+
+> thanks,
+> 
+> greg k-h
