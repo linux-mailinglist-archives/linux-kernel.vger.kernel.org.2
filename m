@@ -2,99 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 474453B2B01
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9680D3B2B08
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 11:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhFXJGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 05:06:01 -0400
-Received: from mga12.intel.com ([192.55.52.136]:33521 "EHLO mga12.intel.com"
+        id S231429AbhFXJGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 05:06:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231350AbhFXJF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:05:59 -0400
-IronPort-SDR: /A05oRYfUCpMz5wIYMJEjN6F+NsGcKOm+FnWG7X+RJryyGLjxW4aVRMc+/8PgcnvGqFALDnrsk
- 3WPXaKdfDjgA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="187118772"
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="187118772"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 02:03:29 -0700
-IronPort-SDR: 9sgqSddcUApgXSDBIBuHa5IupkRdAekgMzrMhq0yI7+6jybo1JcX141ZHzVvlBihWe5kJR9YA2
- cRl5j2wBkRgQ==
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="406579431"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 02:03:26 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 9C8482036A;
-        Thu, 24 Jun 2021 12:03:24 +0300 (EEST)
-Date:   Thu, 24 Jun 2021 12:03:24 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Yizhuo <yzhai003@ucr.edu>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] media: atomisp: fix the uninitialized use and rename
- "retvalue"
-Message-ID: <20210624090324.GL3@paasikivi.fi.intel.com>
-References: <20210624031719.11157-1-yzhai003@ucr.edu>
+        id S230013AbhFXJG1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 05:06:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DCAE613DC;
+        Thu, 24 Jun 2021 09:04:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624525448;
+        bh=rby+ZPgSSxK8+RzLEO6EAEviTD7NAgOLS/9KpTQJ4FU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YwvmEv3TARAfMjBW8u0BmYQnLofpa8rvMy3sGduJ2AW5d4eg6GWV6H7og8F0G+vTV
+         5f3ZCXj78qe5lizHerdHMjDRZXlMwvBNzuwctQrXCK0bjoZaJu5cPlJBSM417NzGqO
+         YinHgu09t22NltJkxV+4C25ZsjzZtgAP9awWL/XE=
+Date:   Thu, 24 Jun 2021 11:04:04 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Rocco Yue <rocco.yue@mediatek.com>
+Cc:     David Ahern <dsahern@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org,
+        wsd_upstream@mediatek.com, chao.song@mediatek.com,
+        kuohong.wang@mediatek.com
+Subject: Re: [PATCH 1/4] net: if_arp: add ARPHRD_PUREIP type
+Message-ID: <YNRKhJB9/K4SKPdR@kroah.com>
+References: <YNQYHfE09Dx5kWyg@kroah.com>
+ <20210624061310.12315-1-rocco.yue@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210624031719.11157-1-yzhai003@ucr.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210624061310.12315-1-rocco.yue@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 03:17:17AM +0000, Yizhuo wrote:
-> Inside function mt9m114_detect(), variable "retvalue" could
-> be uninitialized if mt9m114_read_reg() returns error, however, it
-> is used in the later if statement, which is potentially unsafe.
+On Thu, Jun 24, 2021 at 02:13:10PM +0800, Rocco Yue wrote:
+> On Thu, 2021-06-24 at 07:29 +0200, Greg KH wrote:
+> > 
+> > Thanks for the explaination, why is this hardware somehow "special" in
+> > this way that this has never been needed before?
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > 
 > 
-> The local variable "retvalue" is renamed to "model" to avoid
-> confusion.
+> Before kernel-4.18, RAWIP was the same as PUREIP, neither of them
+> automatically generates an IPv6 link-local address, and the way to
+> generate an IPv6 global address is the same.
 > 
-> Signed-off-by: Yizhuo <yzhai003@ucr.edu>
-> ---
->  drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> index f5de81132177..b02a8cd3dde7 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> @@ -1533,16 +1533,20 @@ static struct v4l2_ctrl_config mt9m114_controls[] = {
->  static int mt9m114_detect(struct mt9m114_device *dev, struct i2c_client *client)
->  {
->  	struct i2c_adapter *adapter = client->adapter;
-> -	u32 retvalue;
-> +	u32 model;
-> +	int ret;
->  
->  	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
->  		dev_err(&client->dev, "%s: i2c error", __func__);
->  		return -ENODEV;
+> After kernel-4.18 (include 4.18 version), the behavior of RAWIP had
+> changed due to the following patch:
+> @@  static int ipv6_generate_eui64(u8 *eui, struct net_device *dev)
+> +	case ARPHRD_RAWIP:
+> +		return addrconf_ifid_rawip(eui, dev);
 >  	}
-> -	mt9m114_read_reg(client, MISENSOR_16BIT, (u32)MT9M114_PID, &retvalue);
-> -	dev->real_model_id = retvalue;
-> +	ret = mt9m114_read_reg(client, MISENSOR_16BIT,
-> +			       (u32)MT9M114_PID, &model);
+>  	return -1;
+> }
+> 
+> the reason why the kernel doesn't need to generate the link-local
+> address automatically is as follows:
+> 
+> In the 3GPP 29.061, here is some description as follows:
+> "in order to avoid any conflict between the link-local address of
+> MS and that of the GGSN, the Interface-Identifier used by the MS to
+> build its link-local address shall be assigned by the GGSN. The GGSN
+> ensures the uniqueness of this Interface-Identifier. Then MT shall
+> then enforce the use of this Interface-Identifier by the TE"
+> 
+> In other words, in the cellular network, GGSN determines whether to
+> reply to the Router Solicitation message of UE by identifying the
+> low 64bits of UE interface's ipv6 link-local address.
+> 
+> When using a new kernel and RAWIP, kernel will generate an EUI64
+> format ipv6 link-local address, and if the device uses this address
+> to send RS, GGSN will not reply RA message.
+> 
+> Therefore, in that background, we came up with PUREIP to make kernel
+> doesn't generate a ipv6 link-local address in any address generate
+> mode.
 
-Thanks for the update.
+Thanks for the better description.  That should go into the changelog
+text somewhere so that others know what is going on here with this new
+option.
 
-The cast seems to be there still.
+And are these user-visable flags documented in a man page or something
+else somewhere?  If not, how does userspace know about them?
 
-> +	if (ret)
-> +		return ret;
-> +	dev->real_model_id = model;
->  
-> -	if (retvalue != MT9M114_MOD_ID) {
-> +	if (model != MT9M114_MOD_ID) {
->  		dev_err(&client->dev, "%s: failed: client->addr = %x\n",
->  			__func__, client->addr);
->  		return -ENODEV;
+thanks,
 
--- 
-Sakari Ailus
+greg k-h
