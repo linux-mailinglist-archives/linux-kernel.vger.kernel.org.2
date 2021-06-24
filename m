@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796723B3742
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663853B3772
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 21:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232814AbhFXTu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 15:50:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37534 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232684AbhFXTuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 15:50:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F857613EE;
-        Thu, 24 Jun 2021 19:48:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624564115;
-        bh=OQezVEYhjFzcaI+rY4Y9xK11XSOl6xBaI9YhRYP+A/Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PPzTml/HBEqAdBJS1HbmPktPntsFfj6Ia/h0qQwELXQTaAh3LPlpbcnGE89MUGeB+
-         eo1j4ygYLZG2xSfA5YRw/O6wziArR3yR4QI1B6C1iJY3/qxVO9Itt+1hNmhdVN/aon
-         ln1KIuiwp9NeA4BHgunUmHF4xkqClZ2Rtjgc41/FEmHBvA6/ioVLOhppU+vfEwlOJf
-         QR887xJeVVyzrPjw/Ny+hPsccAcxkrnOS99qN2umfv26L0HZ8peeJbmt0133HljLiF
-         C+bt75yN/UDabUty+g7zNxOjKbLv4Y35hStDld0WC8HxTXDXTW1/fQFcDiX8eXpZyx
-         OocOL6QCfH0uw==
-Date:   Thu, 24 Jun 2021 21:48:31 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Andreas Hecht <andreas.e.hecht@gmail.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: i2c-dev: Add __user annotation
-Message-ID: <YNThj3wA0P7/twn3@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Andreas Hecht <andreas.e.hecht@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210624152535.4949-1-andreas.e.hecht@gmail.com>
+        id S232817AbhFXT7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 15:59:46 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:48621 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232178AbhFXT7n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 15:59:43 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lwVTT-00047p-DD; Thu, 24 Jun 2021 19:57:19 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] netfilter: nf_tables: Fix dereference of null pointer flow
+Date:   Thu, 24 Jun 2021 20:57:18 +0100
+Message-Id: <20210624195718.170796-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9fA+NkiHXMciafc6"
-Content-Disposition: inline
-In-Reply-To: <20210624152535.4949-1-andreas.e.hecht@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
---9fA+NkiHXMciafc6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In the case where chain->flags & NFT_CHAIN_HW_OFFLOAD is false then
+nft_flow_rule_create is not called and flow is NULL. The subsequent
+error handling execution via label err_destroy_flow_rule will lead
+to a null pointer dereference on flow when calling nft_flow_rule_destroy.
+Since the error path to err_destroy_flow_rule has to cater for null
+and non-null flows, only call nft_flow_rule_destroy if flow is non-null
+to fix this issue.
 
-On Thu, Jun 24, 2021 at 05:25:35PM +0200, Andreas Hecht wrote:
-> Fix Sparse warnings:
-> drivers/i2c/i2c-dev.c:546:19: warning: incorrect type in assignment (diff=
-erent address spaces)
-> drivers/i2c/i2c-dev.c:549:53: warning: incorrect type in argument 2 (diff=
-erent address spaces)
->=20
-> compat_ptr() returns a pointer tagged __user which gets assigned to a
-> pointer missing the __user annotation. The same pointer is passed to
-> copy_from_user() as an argument where it is expected to have the __user
-> annotation. Fix both by adding the __user annotation to the pointer.
->=20
-> Signed-off-by: Andreas Hecht <andreas.e.hecht@gmail.com>
+Addresses-Coverity: ("Explicity null dereference")
+Fixes: 3c5e44622011 ("netfilter: nf_tables: memleak in hw offload abort path")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ net/netfilter/nf_tables_api.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Nice catch. Applied to for-current, thanks!
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 390d4466567f..de182d1f7c4e 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -3446,7 +3446,8 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+ 	return 0;
+ 
+ err_destroy_flow_rule:
+-	nft_flow_rule_destroy(flow);
++	if (flow)
++		nft_flow_rule_destroy(flow);
+ err_release_rule:
+ 	nf_tables_rule_release(&ctx, rule);
+ err_release_expr:
+-- 
+2.31.1
 
-
---9fA+NkiHXMciafc6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDU4YsACgkQFA3kzBSg
-KbZ1ug/+IrIJz/aSwJSEQI+BMw0FLJYPznzSZzTlMQq4rmUaUGSj2/kZ137bZht9
-yIOrK6wa2PTjpyt6M/f4ixv7GAWM6e8peAITZllHbvur+Qx6v6BsxCytSJDcvdtW
-IQtppQWVHaqBU+U97XIh9FzK6uOHcnr3nUB4FlkE4G85EnfImU/fDMfbdDg2fPsk
-1D+hIZo9qfun+BB+AhRUvMhaFoLCIUNPHbZVYN/P0rOup8/pAylVj/reHmYIm3qy
-lYP0+wA5ZuQR78zIj/OUdE2JHs3cfISmLf1223gFUSvHAWdTkS9D8obn0HEWRmsf
-DQSFE1xaSWIIQ/wCI1Igjyg/zsQMWZTrTQhrqKBNEfoeASntGUlHwsbEMhxEwuQT
-xBLtkiSQo4hHmYkSmcf5ZNfWIgU+L7A1NFUqytBMMtzAnh1H5XDN5hKw2LhbZIZp
-nWwd6Q1wIUKZ4RRKy2TVqZ/tN6CCob8Zh92TsTf1/KAntPH/nTSKYj20cJfvPNXx
-ICI1SZ8qstp50Qgb8EVZzW4AWDomgZNXxHBhUM/+cYIU9j/cijqOxUEUHbjYaG2J
-ZuEnUvwIzyrP9zmy5Av/BP0WDMzxdWNztFSVioM6IUELifi83Z2fcKku7hqopzt7
-rtSdhntowts/yCTAyMDGUm4ZFEesGnRxCCKXcp5ryh8hvhIrurQ=
-=Ah+d
------END PGP SIGNATURE-----
-
---9fA+NkiHXMciafc6--
