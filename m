@@ -2,146 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359203B38E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 23:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A213B38EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 23:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232742AbhFXVrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 17:47:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31014 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232582AbhFXVq7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 17:46:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624571079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KeRdAwcNNl3UNvL7gS+calQEfq/daIB3UMQMP8GOsv4=;
-        b=bbW6ZxMuplvDq3GG/TyPgLH7c5PO9Zs7IK+skv0zqxA9adW8e2WhG93VtRr29JDciYA7Gp
-        7WpzN3JKMespXKtGUZsq358cprVyTchBCF6wGhmRhBogubU8NmYK9gv0ko8RNm+opQAMa+
-        Dribj8IkVt53ZtWPIDGE46gSm6asaZo=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-535-nr-LvkRGNxS0lWFFZ6i6IQ-1; Thu, 24 Jun 2021 17:44:37 -0400
-X-MC-Unique: nr-LvkRGNxS0lWFFZ6i6IQ-1
-Received: by mail-ot1-f70.google.com with SMTP id l18-20020a9d70920000b029044977534021so4304356otj.12
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 14:44:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KeRdAwcNNl3UNvL7gS+calQEfq/daIB3UMQMP8GOsv4=;
-        b=VzSbKfYeeDVi+CfF/pSL5gMY2RZu5ZmVI7Rxnc4km318roNl+z2mQ2gTFsDsLEz1Hw
-         s8e8r5tV/DqXQH9NCoKPBi1VcHC0rRInxx9coVL1PP02pizS4AkC6vYSstz9/RitqtuR
-         aISqjh2PUUeXQE5MVkA1mod/1DPy0tOyK9dF/3D8UKYJT0I4Ca9XCP2ttykvhUIuCyrX
-         lTn7zueHiQ3j2XGiRmwNZhqSiz07v5EfzDespZJi8Ha1RE6GiB5vTTF8kH5qTMEPIa3g
-         uud1Q+E0LDt5ACtzw5XXlUQppuvOymigWI0m+oc//kVo4fmZiYmg5HZyHQn6oHXUVXWW
-         M/4A==
-X-Gm-Message-State: AOAM532NlA3+1RqKVJko0a3nwoN3yQD8GJVGLln5nUps/iAvADtwWUQv
-        hC/BWirPziM5eM2LFFlsIBI3k5vQpGKFFAvoKW8Rvhw5sFtAm3qQF93p0SLUU9eCn0mmyDdiBtW
-        Y2qSzNGsASBSynePDDEqQ7hmG
-X-Received: by 2002:a4a:9406:: with SMTP id h6mr6294561ooi.36.1624571077065;
-        Thu, 24 Jun 2021 14:44:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzngiFzeX+3Rrv7eQ1vM0Kx3YaNV3sTAHNzRmpbmS5NNJhsYj+dxbfIvYWf90i4dBccSyp6dw==
-X-Received: by 2002:a4a:9406:: with SMTP id h6mr6294544ooi.36.1624571076823;
-        Thu, 24 Jun 2021 14:44:36 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id x187sm931911oia.17.2021.06.24.14.44.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 14:44:36 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 15:44:34 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     "Tian\, Kevin" <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "Dey\, Megha" <megha.dey@intel.com>,
-        "Raj\, Ashok" <ashok.raj@intel.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Lu\, Baolu" <baolu.lu@intel.com>,
-        "Williams\, Dan J" <dan.j.williams@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, KVM <kvm@vger.kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: Virtualizing MSI-X on IMS via VFIO
-Message-ID: <20210624154434.11809b8f.alex.williamson@redhat.com>
-In-Reply-To: <8735t7wazk.ffs@nanos.tec.linutronix.de>
-References: <MWHPR11MB1886E14C57689A253D9B40C08C079@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <8735t7wazk.ffs@nanos.tec.linutronix.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S232791AbhFXVrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 17:47:43 -0400
+Received: from ozlabs.org ([203.11.71.1]:58181 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232582AbhFXVrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 17:47:40 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G9twG4vyMz9sWc;
+        Fri, 25 Jun 2021 07:45:18 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624571119;
+        bh=VWRgsKGXs+kf4/GDRzLPQ68mIjEHYRO3f7+CVc1LDWQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=oFYiMF8J/INuMyv8WE7t81EJWa74FqXaaYUK9E+Awuz0QCEZR344mnq5MLhisTW/q
+         +su2dkXZ/4A6iRLj2VfTgEZiXhE1e6MH29BXLsrnUR28oTWz2TchGgXuBySPaHGMkv
+         8YRefE1aC8OLZSHM4ph7CJVGAxiH8k7+uu2NOa52LKj3Wq3G38DvnyZs9Nupl4BqJ+
+         SweSNvHAMh67g9cdx3V91e6oLUd9YP+HIbE/f//GqDZUOa6qcjet84aDUqtHjZ5w6r
+         W9nVG9GXgcAJ7eFqOLGfJmpn3YSjzF6nJWlFgwlgaEb9y21YxdFS0vGd+FNrZzTTIg
+         s1Kp02RFWKWIA==
+Date:   Fri, 25 Jun 2021 07:45:17 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the net tree
+Message-ID: <20210625074517.685fb0f7@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/AYD8r9ygZRo2/172wzLr+4M";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 17:14:39 +0200
-Thomas Gleixner <tglx@linutronix.de> wrote:
+--Sig_/AYD8r9ygZRo2/172wzLr+4M
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> After studying the MSI-X specification again, I think there is another
-> option to solve this for MSI-X, i.e. the dynamic sizing part:
-> 
-> MSI requires to disable MSI in order to update the number of enabled
-> vectors in the control word.
+Hi all,
 
-Exactly what part of the spec requires this?  This is generally the
-convention I expect too, and there are complications around contiguous
-vectors and data field alignment, but I'm not actually able to find a
-requirement in the spec that MSI Enable must be 0 when modifying other
-writable fields or that writable fields are latched when MSI Enable is
-set.
+In commit
 
-> MSI-X does not have that requirement as there is no 'number of used
-> vectors' control field. MSI-X provides a fixed sized vector table and
-> enabling MSI-X "activates" the full table.
-> 
-> System software has to set proper messages in the table and eventually
-> associate the table entries to device (sub)functions if that's not
-> hardwired in the device and controlled by queue enablement etc.
-> 
-> According to the specification there is no requirement for masked table
-> entries to contain a valid message:
-> 
->  "Mask Bit: ... When this bit is set, the function is prohibited from
->                 sending a message using this MSI-X Table entry."
-> 
-> which means that the function must reread the table entry when the mask
-> bit in the vector control word is cleared.
+  0ec13aff058a ("Revert "ibmvnic: simplify reset_long_term_buff function"")
 
-What is a "valid" message as far as the device is concerned?  "Valid"
-is meaningful to system software and hardware, the device doesn't care.
+Fixes tag
 
-Like MSI above, I think the real question is when is the data latched
-by the hardware.  For MSI-X this seems to be addressed in (PCIe 5.0
-spec) 6.1.4.2 MSI-X Configuration:
+  Fixes: 1c7d45e7b2c ("ibmvnic: simplify reset_long_term_buff function")
 
-  Software must not modify the Address, Data, or Steering Tag fields of
-  an entry while it is unmasked.
+has these problem(s):
 
-Followed by 6.1.4.5 Per-vector Masking and Function Masking:
+  - SHA1 should be at least 12 digits long
 
-  For MSI-X, a Function is permitted to cache Address and Data values
-  from unmasked MSI-X Table entries. However, anytime software unmasks
-  a currently masked MSI-X Table entry either by Clearing its Mask bit
-  or by Clearing the Function Mask bit, the Function must update any
-  Address or Data values that it cached from that entry. If software
-  changes the Address or Data value of an entry while the entry is
-  unmasked, the result is undefined.
+This can be fixed for the future by setting core.abbrev to 12 (or more)
+or (for git v2.11 or later) just making sure it is not set (or set to
+"auto").
 
-So caching/latching occurs on unmask for MSI-X, but I can't find
-similar statements for MSI.  If you have, please note them.  It's
-possible MSI is per interrupt.
+--=20
+Cheers,
+Stephen Rothwell
 
-Anyway, at least MSI-X if not also MSI could have a !NORESIZE
-implementation, which is why this flag exists in vfio.  Thanks,
+--Sig_/AYD8r9ygZRo2/172wzLr+4M
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Alex
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDU/O0ACgkQAVBC80lX
+0GzhNwf+NojG313N29VJ5wIFTgpU8tivr9xiKfLduNAAhKMygb2iRFozu5F/z9+V
+57qwkGjqPbqEZl9HwIsKy4JPEGtuXX/L1nKgne8ZdVkkPK+6eAGOiprbt4X0/vIE
+g3nUDxzLgBJAsebLh7rFE/27nlwq9wfTitYk+s/LRIEL6RRAvZUzJlmt9reAuPAN
+bEGkuHs561JIBs6lMMd4hHZtGQJoJ797DBTyeDroz8BMxw4wWXQJ6TkywGkb9DRc
+kktnk3pT9awHaJ6zK50PjMgXP4cr/LJb3w3t7JX9mK6ef3KJ0ZWSxj/E3ji6ckqS
+v2Hmo8bLXbCbAAPHSs2mVP2iACMd3g==
+=xfRV
+-----END PGP SIGNATURE-----
+
+--Sig_/AYD8r9ygZRo2/172wzLr+4M--
