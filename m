@@ -2,89 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007A03B2D53
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 127723B2D57
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232419AbhFXLNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:13:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232331AbhFXLNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:13:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23FD0613C5;
-        Thu, 24 Jun 2021 11:10:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624533053;
-        bh=5unXQcGdHXGPpEFQQQrkEbjDJEEaT7SqNyX7wbWI3LM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Dg/Wn6YISmWoO6sovfHAK+pCBZbEZurug6JecfKC/DQ8F+3PJKySz2UKT0h3YocN4
-         n54UMhjA8+VQBvGO0q7HFz9PMkjgmq81nA9/egYvPkX/rv5+p7QMDf89OG49Y1NHaK
-         zDqzZkvvpgmIO8LhD9lAHhBbgOZEwu1jpGQ1KL9l4LlQdeAq7U+7P2YYrAnc8dh/ca
-         Y5wDCWYuOcuRHlVwhXS4QT5kZjglarp+tSK3rJ9Uwv0Xfrw9+gzesH0uPQE8YsR6Z1
-         L6pRUkf/uU7y4GVlIHSAYHFmrnrkTkRduwZgoox8vc8ZVFP4GdK/IHGp2lv4lkz/4d
-         4VZnKGvjTgdVQ==
-Date:   Thu, 24 Jun 2021 13:10:48 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Krzysztof =?UTF-8?B?SGHFgmFzYQ==?= <khalasa@piap.pl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC v2] MEDIA: Driver for ON Semi AR0521 camera sensor
-Message-ID: <20210624131048.1272f272@coco.lan>
-In-Reply-To: <YNHQDNdpxcY8+IV2@pendragon.ideasonboard.com>
-References: <m3wnqm5eqo.fsf@t19.piap.pl>
-        <YNHQDNdpxcY8+IV2@pendragon.ideasonboard.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S232367AbhFXLNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:13:52 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:50232 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232331AbhFXLNu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 07:13:50 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0093521970;
+        Thu, 24 Jun 2021 11:11:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624533091; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C8xk+6w9JqFXwtlsnUw1KNkb5kEZym+an9Ememep/Bk=;
+        b=imnNJ2/YjFtkkA1jnRA7o/25FHvnGHEU3gq9qMUVfvqyxizxgh+EAUsj8r+08ininr74JA
+        Ssd8s/gEyQgUlClUG408JshnxR0XyYIS5KHCTt5Ir9QhbABAbYKwqJmwJNztG+pi4q6m1b
+        RN1dO0Vma45P6OYhEe54xamV4YIJ0+c=
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 9F5E111A97;
+        Thu, 24 Jun 2021 11:11:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624533090; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C8xk+6w9JqFXwtlsnUw1KNkb5kEZym+an9Ememep/Bk=;
+        b=DgHHiMUksE8Q0UGovWDfl0KSaHL8m7tCueytLkdaLdlFfrbO5nIVo2xnOcJcaTXG925fqA
+        c4U20XQeUuFm1UrhChKu1Y+KzhIPuq0Ps0YAHEWtMSPv/CrdZD518ip6aR35xmSU/DgrEa
+        /jbt91Bg26U9GVhPuDQ9uhjtOetr5FY=
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id 4QzfJGJo1GAvegAALh3uQQ
+        (envelope-from <jgross@suse.com>); Thu, 24 Jun 2021 11:11:30 +0000
+Subject: Re: [PATCH v2 22/24] x86/xen: Mark xen_force_evtchn_callback()
+ noinstr
+To:     Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
+        tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, joro@8bytes.org,
+        boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
+        rostedt@goodmis.org, dvyukov@google.com, elver@google.com
+References: <20210624094059.886075998@infradead.org>
+ <20210624095148.996055323@infradead.org>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <b1aaf531-8ecf-72ea-f04c-d551f6ae7979@suse.com>
+Date:   Thu, 24 Jun 2021 13:11:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210624095148.996055323@infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="PIBrwHI3jqxieCWphgvh8rhvsF3qctHSx"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 22 Jun 2021 14:57:00 +0300
-Laurent Pinchart <laurent.pinchart@ideasonboard.com> escreveu:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--PIBrwHI3jqxieCWphgvh8rhvsF3qctHSx
+Content-Type: multipart/mixed; boundary="96lzMohBXcbr7WfIQoh0i9DXjsKdTki0r";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
+ tglx@linutronix.de
+Cc: linux-kernel@vger.kernel.org, joro@8bytes.org,
+ boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
+ rostedt@goodmis.org, dvyukov@google.com, elver@google.com
+Message-ID: <b1aaf531-8ecf-72ea-f04c-d551f6ae7979@suse.com>
+Subject: Re: [PATCH v2 22/24] x86/xen: Mark xen_force_evtchn_callback()
+ noinstr
+References: <20210624094059.886075998@infradead.org>
+ <20210624095148.996055323@infradead.org>
+In-Reply-To: <20210624095148.996055323@infradead.org>
 
-> Hi Krzysztof,
+--96lzMohBXcbr7WfIQoh0i9DXjsKdTki0r
+Content-Type: multipart/mixed;
+ boundary="------------0F0EC9880AAF7065F3AC9D36"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------0F0EC9880AAF7065F3AC9D36
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 24.06.21 11:41, Peter Zijlstra wrote:
+> vmlinux.o: warning: objtool: check_events()+0xd: call to xen_force_evtc=
+hn_callback() leaves .noinstr.text section
 >=20
-> Thank you for the patch.
->=20
-> On Tue, Jun 22, 2021 at 01:18:55PM +0200, Krzysztof Ha=C5=82asa wrote:
-> > Changes from v1:
-> > - added power management (power supplies, no chip initialization in
-> >   probe()).
-> > - added [HV]BLANK v4l2 ctrl interface (the "interval" interface is
-> >   still implemented for better timing control)
-> > - many fixes, including ones requested by Laurent Pinchart.
-> >=20
-> > The driver has been extensively tested in an i.MX6-based system.
-> >=20
-> > Not yet signed off - this will change of course. Please do not merge
-> > yet, however comments about being ready (or not) to be merged are
-> > welcome. =20
->=20
-> To spend time reviewing this code, I want to know it will be mergeable,
-> and that requires a SoB line. That's a blocker I'm afraid.
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-If:
-	- the driver is in good shape, e. g. no coding style issues,
-	  it uses the right kAPI at the right way, etc;
-	- the driver is based on the current media_tree.git tree;
-	- if you're willing to be responsible during the review process;
-	- you would provide maintainance support for the driver if
-	  bugs are reported;
-	- the driver has a valid Signed-off-by;
-
-then the driver is mergeable.
-
-Media maintainers need a SoB in order to be able to review, as
-driver review takes a lot of time and efforts from reviewers, and
-the time they spend reviewing a driver prevents them to do their
-(paid) work.=20
-
-That's said, on a very quick check, it sounds that this driver requires
-some work. For instance, it is based on an v4l2_subdev_pad_config,
-which was recently replaced upstream.
+Reviewed-by: Juergen Gross <jgross@suse.com>
 
 
-Thanks,
-Mauro
+Juergen
+
+--------------0F0EC9880AAF7065F3AC9D36
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------0F0EC9880AAF7065F3AC9D36--
+
+--96lzMohBXcbr7WfIQoh0i9DXjsKdTki0r--
+
+--PIBrwHI3jqxieCWphgvh8rhvsF3qctHSx
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmDUaGIFAwAAAAAACgkQsN6d1ii/Ey+T
+Hwf/Um9+U7LKP6n7go6rllgV9xJyNqZ6hPDUR3vMc79NoscBLmdT9y1u/9BgR6qrZOHmwuUM9rzL
+a5qjctx7boR7yBUk5osmjPZ7rpsMwHlwJMkxHId5H2RJ95M17HZ1BB0BdqKkj6xxbhO3MmC0STIj
+m/lNeoS2b20IIRFHyM5JfFqyIv4AAz0D67dBFy4x4+jyHLodmilRb1l0zf3EJG1JfvKb8lKMWV6b
+ocIxyJgbGGVujz8IUmyorsc1pLo6XuSSNvWBxK9neXjGlnBBWLhTYQYCe2JFkBYjAnWaDqkwEM/X
+Flaqx+kDPrwRcivYz6tOsRxf98PZs/0MYDyjnQhNYg==
+=Tt+3
+-----END PGP SIGNATURE-----
+
+--PIBrwHI3jqxieCWphgvh8rhvsF3qctHSx--
