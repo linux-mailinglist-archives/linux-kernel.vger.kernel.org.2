@@ -2,102 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA983B2D9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11D23B2DBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 13:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhFXLTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 07:19:23 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:34553 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232310AbhFXLTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 07:19:21 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G9czH6788z9sTD;
-        Thu, 24 Jun 2021 21:16:59 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624533421;
-        bh=Dn5VASjZWmEO2v/Guxjpa0+M1l0Gqt4A1n1jTK5ya0c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ckwfQwc9hRxHKl1N3dzNgnenEYVC5Vx5whpK7ANnDH1EWzb0ulpka+ukPt/4JcVds
-         Jp+AxfIwEe2/JI9hJ+UWyTsMZ1u9CCU+gg879o43PN+GyJ77Me9b7BWoqX5r9nmQj7
-         lmyaFJ/G5JfsNwT8cfIA/6BreGEbIlDeMBFX7Kz5i0MwGOgF+K9FIw/wcOUe/GBwoG
-         lfnmUHm+PQD6k+J0vh6PHwaJ+haG8BOrwQmcGbpQLoByxpFJtLSQghedfXeKiVDCxK
-         oVnCxUU5DEbKTA5eKFFY29+bUuwSWcSRT4GTaMGi05bXnMF/IUTh27b4tj6+yLFOBR
-         iBCgfuIIselrA==
-Date:   Thu, 24 Jun 2021 21:16:59 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the tip tree
-Message-ID: <20210624211659.3ab5b2bd@canb.auug.org.au>
+        id S232414AbhFXLYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 07:24:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232530AbhFXLYP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 07:24:15 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC3AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 04:21:55 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id p7so9681345lfg.4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 04:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=uged.al; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=esYbPkZY+mNiFhPIhgBGY1PmVNh7PO+rv7V8GnoEFCg=;
+        b=X/HQaJrIZ06jeuSz3cH4rp7eZAK3xlI/dyWeZfUwpdtm7SYCcQL66lo6aRE8yPGfxv
+         KPkvFf+8nsnANFx9PR7AHklQad3m/kQ1x0R8xBfGB1RuIirsV4wG+IfrqKXXUF7P+hp6
+         yBdAeOeawtiM+pG0wZLewjSfHrUsaNEiQYhZoj0okho/wcGP+L+RMUNj0FvbVxJ7/L6J
+         4IU5n0kgSJ635dRv6NieClAxiApvvHqYmpmmWz7ue0jGjWXfYVMeQxP9Dsuz9Y84H5mw
+         7sJuKSy7KvU+50WYBipIKaDydW0vDRBz4j2IYWqFK6uxb4wBZWKqT4vz+z/4+rjshX9Z
+         piMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=esYbPkZY+mNiFhPIhgBGY1PmVNh7PO+rv7V8GnoEFCg=;
+        b=RtFE9lrS3nvxBfn0DB4n4lSgnaZH2JkOnDreBHy7gHcZHKYgGyw4MZ1eBJFxZSfL8M
+         XZ0IvI4+1HZRcDWzd5v3UzeXJ1dZJHfzLmKxOWRGE0Yaups4bYVeU45CQW6cZuq+eQlN
+         JHLbnBWnz7Y3oaxwJo/oeUVh3kOdCEyCAKoAOTFkUJOfxdfpNrpCuwK3NeiR4npsCOJq
+         wDXzl8Rbx6HgcAWlVPt3S42dR8qvgZSh3cjU7CGjBVjLCv8LFF/EMSM+FfVt/qiAdYwK
+         3OpjgVbqyNHBlRoieWwTzMEyJYzbQzylql6L/CF36BzL6gVI+vwGesghCvPS/c6Ts+h8
+         ko3A==
+X-Gm-Message-State: AOAM533ZTqM7U04NGtCjgTWh6ek38cmPymrYHs5pJYWuE6xARgeR6cEK
+        z5pF0q/V/abs5U0OFXGONxkrPA==
+X-Google-Smtp-Source: ABdhPJwJaCL6DqaFALLWUimas3bankdPahP9aJuuerfgUeQbOQcd0JWWjc68rLVWtTOHdkGj1AAXqw==
+X-Received: by 2002:ac2:4d2d:: with SMTP id h13mr3519828lfk.456.1624533713869;
+        Thu, 24 Jun 2021 04:21:53 -0700 (PDT)
+Received: from localhost.localdomain (ti0005a400-2351.bb.online.no. [80.212.254.60])
+        by smtp.gmail.com with ESMTPSA id q21sm196923lfp.233.2021.06.24.04.21.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 04:21:53 -0700 (PDT)
+From:   Odin Ugedal <odin@uged.al>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org, Odin Ugedal <odin@uged.al>
+Subject: [PATCH] sched/fair: Ensure _sum and _avg values stay consistent
+Date:   Thu, 24 Jun 2021 13:18:15 +0200
+Message-Id: <20210624111815.57937-1-odin@uged.al>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/z23IHINlmhn1M1S8YtNEM7v";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/z23IHINlmhn1M1S8YtNEM7v
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The _sum and _avg values are in general sync together with the PELT
+divider. They are however not always completely in perfect sync,
+resulting in situations where _sum gets to zero while _avg stays
+positive. Such situations are undesirable.
 
-Hi all,
+This comes from the fact that PELT will increase period_contrib, also
+increasing the PELT divider, without updating _sum and _avg values to
+stay in perfect sync where (_sum == _avg * divider). However, such PELT
+change will never lower _sum, making it impossible to end up in a
+situation where _sum is zero and _avg is not.
 
-In commit
+Therefore, we need to ensure that when subtracting load outside PELT,
+that when _sum is zero, _avg is also set to zero. This occurs when
+(_sum < _avg * divider), and the subtracted (_avg * divider) is bigger
+or equal to the current _sum, while the subtracted _avg is smaller than
+the current _avg.
 
-  d7d607096ae6 ("sched/rt: Fix Deadline utilization tracking during policy =
-change")
+Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Signed-off-by: Odin Ugedal <odin@uged.al>
+---
 
-Fixes tag
+Reports and discussion can be found here:
 
-  Fixes: 3727e0e ("sched/dl: Add dl_rq utilization tracking")
+https://lore.kernel.org/lkml/2ED1BDF5-BC0C-47CD-8F33-9A46C738F8CF@linux.vnet.ibm.com/
+https://lore.kernel.org/lkml/CA+G9fYsMXELmjGUzw4SY1bghTYz_PeR2diM6dRp2J37bBZzMSA@mail.gmail.com/
 
-has these problem(s):
+ kernel/sched/fair.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-  - SHA1 should be at least 12 digits long
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index bfaa6e1f6067..def48bc2e90b 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3688,15 +3688,15 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
+ 
+ 		r = removed_load;
+ 		sub_positive(&sa->load_avg, r);
+-		sub_positive(&sa->load_sum, r * divider);
++		sa->load_sum = sa->load_avg * divider;
+ 
+ 		r = removed_util;
+ 		sub_positive(&sa->util_avg, r);
+-		sub_positive(&sa->util_sum, r * divider);
++		sa->util_sum = sa->util_avg * divider;
+ 
+ 		r = removed_runnable;
+ 		sub_positive(&sa->runnable_avg, r);
+-		sub_positive(&sa->runnable_sum, r * divider);
++		sa->runnable_sum = sa->runnable_avg * divider;
+ 
+ 		/*
+ 		 * removed_runnable is the unweighted version of removed_load so we
+-- 
+2.32.0
 
-In commit
-
-  fecfcbc288e9 ("sched/rt: Fix RT utilization tracking during policy change=
-")
-
-Fixes tag
-
-  Fixes: 371bf427 ("sched/rt: Add rt_rq utilization tracking")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-
-This can be fixed for the future by setting core.abbrev to 12 (or more)
-or (for git v2.11 or later) just making sure it is not set (or set to
-"auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/z23IHINlmhn1M1S8YtNEM7v
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDUaasACgkQAVBC80lX
-0GwIjwf8DJYfxwUpr83jsWb7Tc6z7b1qG2UQA5gjZVeTONvTOGoyWYYhfJnwTGq8
-MuU13BVSk1BYtSe0yCW7XVzkd9CWdVB35nN9bTI9nzZ0/UD0h81n25gkPxqS5yuV
-SilYzkP7NAMLUML2jfXvpAtcyyUebn0Ao9MIPy3PzQ/7UtCVJxSRpZNSltfT2kZM
-9oo62KtCM+ze9+2QuawaKs5n4q2nBgNnli5/L1p5tHFZoVfusu3QEPXFY5lT4L7O
-nJZlAuYtmps9BOtw9HNPCc+ZAvY75kOBbTR/r7fA00KT//DLPQWQd6akONtVqWhQ
-Qhj7ItXXqIW/pznHI1u3yH+NEC5fnA==
-=yRry
------END PGP SIGNATURE-----
-
---Sig_/z23IHINlmhn1M1S8YtNEM7v--
