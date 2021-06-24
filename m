@@ -2,117 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F613B2CB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0873B2CBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232267AbhFXKp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 06:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232253AbhFXKpy (ORCPT
+        id S232216AbhFXKrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 06:47:37 -0400
+Received: from cmccmta3.chinamobile.com ([221.176.66.81]:8563 "EHLO
+        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232043AbhFXKre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 06:45:54 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BA0C061574;
-        Thu, 24 Jun 2021 03:43:36 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id pf4-20020a17090b1d84b029016f6699c3f2so5658934pjb.0;
-        Thu, 24 Jun 2021 03:43:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=Ntmvbr4Rsn/lopxAADIIDgcNErNmU/zbadQcByBiYK4=;
-        b=Uzc43caEhY2Ti31+lpHHW0AZ5sLCVj6W+n4t/ez5IgVzQkVZOibK2DIWQ0+CAuzt9U
-         PpuIA4kDsyK3chDvHhxE+YawXhAPb2eWGecCvYilJeif5bW1AWaPBDm7W4vYjxTYq4eX
-         vsAbVyUYfQJDK46zRrnjfoRU3RdSuUfndWfij+20vPjPzE9a8Ky+gzwBiWuGHYujrH97
-         b1g8G9j+MqQ6oKRgvSqRRvZdf9oww+7IytooiBQtjKLAdCQfMAXpO/dc/FMWyHkr12JS
-         ZqabhMCopqc94H8G+WPpptqvIqeO4Wfi2qlPKFQXomh5RWpLJ4WGRgIbJ4SL7OebaZ9b
-         Cu7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=Ntmvbr4Rsn/lopxAADIIDgcNErNmU/zbadQcByBiYK4=;
-        b=eFyxICiHRI7bWqzwL/86eToP3VqrqX/XH9cZ9pfZrrc4HrpvyX09PGs8Q8iZakxK5f
-         OcAmkDRzYGQ1t558DgOX3HCKGbdKme0AvcZa2nNJPsc9vdohgZqBBc6W2agfv4k5xgAh
-         Nsq+Pb2vYB+D48bJv2fb/51+mcVVJUrS+sUZcq4XM0z/nYqFc9ocphXL6N1bZLiIjeZW
-         iZYA1EXhGC8lB16+tNZrn+E4r0xA1tHHehrfzoLo/2wbpaGXE0llHEX2QANsTCFlnjiG
-         ueYZTCItJ1vIbycJ6plOilans8J3qBidR9lPHVIT6F37GO5n6y8PhsDeUEJBHU+VeRuj
-         3SgA==
-X-Gm-Message-State: AOAM531ugFbTbb8f5C74MnWI6Tc/L6Ak47WBDQB9gNY0dfn1iheLj8ML
-        EQLKMUz856uli34pERus2Cc=
-X-Google-Smtp-Source: ABdhPJwSbcPeLeFEknq5SPs1K9/7wAZ9//Y8XUJsBm0HOgxDXNJ+d8W1kIX2/TWCimMS0wf9W28w6Q==
-X-Received: by 2002:a17:90a:ce87:: with SMTP id g7mr14492750pju.189.1624531415692;
-        Thu, 24 Jun 2021 03:43:35 -0700 (PDT)
-Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
-        by smtp.gmail.com with ESMTPSA id n12sm2540624pfu.5.2021.06.24.03.43.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 03:43:35 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 20:43:29 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 3/6] KVM: x86/mmu: avoid struct page in MMU
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        James Morse <james.morse@arm.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvmarm@lists.cs.columbia.edu,
-        kvm-ppc@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        David Stevens <stevensd@chromium.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Will Deacon <will@kernel.org>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>
-References: <20210624035749.4054934-1-stevensd@google.com>
-        <20210624035749.4054934-4-stevensd@google.com>
-        <1624524744.2sr7o7ix86.astroid@bobo.none> <87mtrfinks.wl-maz@kernel.org>
-In-Reply-To: <87mtrfinks.wl-maz@kernel.org>
+        Thu, 24 Jun 2021 06:47:34 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.19]) by rmmx-syy-dmz-app12-12012 (RichMail) with SMTP id 2eec60d4622867a-eedff; Thu, 24 Jun 2021 18:44:57 +0800 (CST)
+X-RM-TRANSID: 2eec60d4622867a-eedff
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[223.112.105.130])
+        by rmsmtp-syy-appsvr10-12010 (RichMail) with SMTP id 2eea60d46224488-ee1e5;
+        Thu, 24 Jun 2021 18:44:56 +0800 (CST)
+X-RM-TRANSID: 2eea60d46224488-ee1e5
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH] ASoC: fsl_xcvr: Omit superfluous error message in fsl_xcvr_probe()
+Date:   Thu, 24 Jun 2021 18:45:05 +0800
+Message-Id: <20210624104505.13680-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Message-Id: <1624531381.4bht02wxsj.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Marc Zyngier's message of June 24, 2021 8:06 pm:
-> On Thu, 24 Jun 2021 09:58:00 +0100,
-> Nicholas Piggin <npiggin@gmail.com> wrote:
->>=20
->> Excerpts from David Stevens's message of June 24, 2021 1:57 pm:
->> > From: David Stevens <stevensd@chromium.org>
->> >  out_unlock:
->> >  	if (is_tdp_mmu_root(vcpu->kvm, vcpu->arch.mmu->root_hpa))
->> >  		read_unlock(&vcpu->kvm->mmu_lock);
->> >  	else
->> >  		write_unlock(&vcpu->kvm->mmu_lock);
->> > -	kvm_release_pfn_clean(pfn);
->> > +	if (pfnpg.page)
->> > +		put_page(pfnpg.page);
->> >  	return r;
->> >  }
->>=20
->> How about
->>=20
->>   kvm_release_pfn_page_clean(pfnpg);
->=20
-> I'm not sure. I always found kvm_release_pfn_clean() ugly, because it
-> doesn't mark the page 'clean'. I find put_page() more correct.
->=20
-> Something like 'kvm_put_pfn_page()' would make more sense, but I'm so
-> bad at naming things that I could just as well call it 'bob()'.
+In the function fsl_xcvr__probe(), when get irq failed,
+the function platform_get_irq() logs an error message, so remove
+redundant message here.
 
-That seems like a fine name to me. A little better than bob.
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+---
+ sound/soc/fsl/fsl_xcvr.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Thanks,
-Nick
+diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+index 5e8284db857b..711d738f8de1 100644
+--- a/sound/soc/fsl/fsl_xcvr.c
++++ b/sound/soc/fsl/fsl_xcvr.c
+@@ -1190,10 +1190,8 @@ static int fsl_xcvr_probe(struct platform_device *pdev)
+ 
+ 	/* get IRQs */
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0) {
+-		dev_err(dev, "no irq[0]: %d\n", irq);
++	if (irq < 0)
+ 		return irq;
+-	}
+ 
+ 	ret = devm_request_irq(dev, irq, irq0_isr, 0, pdev->name, xcvr);
+ 	if (ret) {
+-- 
+2.18.2
+
+
+
