@@ -2,69 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9A23B3071
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE283B307C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 15:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbhFXNvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 09:51:04 -0400
-Received: from mga01.intel.com ([192.55.52.88]:10479 "EHLO mga01.intel.com"
+        id S231405AbhFXNxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 09:53:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229878AbhFXNvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:51:02 -0400
-IronPort-SDR: xzLlZI5+kEBqArLOYeRMZftr+x53l8+aDKmt/ne4//faJpN15hn5kUNYiiOeAsDr/BMUZxtNKw
- +vpi5CjrWf5w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="229055471"
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="229055471"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 06:48:43 -0700
-IronPort-SDR: l/LDOrqJ72DELXn8h3blCTXre0OjHXcLW7jOXTExR2GpjargMW6Z0fIDG0uAgNnLcrop+9H+5b
- FntMzwRXa6eg==
-X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
-   d="scan'208";a="445310086"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 06:48:42 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lwPig-0050va-Ba; Thu, 24 Jun 2021 16:48:38 +0300
-Date:   Thu, 24 Jun 2021 16:48:38 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Viresh Kumar <vireshk@kernel.org>
-Subject: Re: [PATCH v2 1/1] dmaengine: dw: Program xBAR hardware for Elkhart
- Lake
-Message-ID: <YNSNNmd/OYxUDGhW@smile.fi.intel.com>
-References: <20210614133018.66931-1-andriy.shevchenko@linux.intel.com>
- <YNRpkMMDE5B9NY9J@matsya>
+        id S229878AbhFXNxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:53:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACE4F613C7;
+        Thu, 24 Jun 2021 13:50:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624542648;
+        bh=PI0GARfg9sF2LDn+ZRFhnJyGiPmktprzIN0jKCHNYiU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gPZqRVWafqMPZrVexzVhsxE2duBXI641s/PD9f33KpDJVVOnfxSsZk2i2gYlZlfpN
+         K7REhiEzNdBLQZCoBKYfHO1rEbrXg3UkRfoiTUurjBmcyMLT+95VYeZ4hJvkn5Pi4n
+         JnqvSohSjzMg7PbTQSQmRtHECnfkgy4/fQm7Y56A=
+Date:   Thu, 24 Jun 2021 15:50:45 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, stable@vger.kernel.org,
+        Jeffrey Hugo <quic_jhugo@quicinc.com>
+Subject: Re: [PATCH 1/8] bus: mhi: core: Validate channel ID when processing
+ command completions
+Message-ID: <YNSNtQxVaegArG2f@kroah.com>
+References: <20210621161616.77524-1-manivannan.sadhasivam@linaro.org>
+ <20210621161616.77524-2-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNRpkMMDE5B9NY9J@matsya>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210621161616.77524-2-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 04:46:32PM +0530, Vinod Koul wrote:
-> On 14-06-21, 16:30, Andy Shevchenko wrote:
-> > Intel Elkhart Lake PSE DMA implementation is integrated with crossbar IP
-> > in order to serve more hardware than there are DMA request lines available.
-> > 
-> > Due to this, program xBAR hardware to make flexible support of PSE peripheral.
-> > 
-> > The Device-to-Device has not been tested and it's not supported by DMA Engine,
-> > but it's left in the code for the sake of documenting hardware features.
+On Mon, Jun 21, 2021 at 09:46:09PM +0530, Manivannan Sadhasivam wrote:
+> From: Bhaumik Bhatt <bbhatt@codeaurora.org>
 > 
-> Kernel does not like to keep dead code, please remove this. It can be
-> added back when we have users
+> MHI reads the channel ID from the event ring element sent by the
+> device which can be any value between 0 and 255. In order to
+> prevent any out of bound accesses, add a check against the maximum
+> number of channels supported by the controller and those channels
+> not configured yet so as to skip processing of that event ring
+> element.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 1d3173a3bae7 ("bus: mhi: core: Add support for processing events from client device")
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+> Link: https://lore.kernel.org/r/1619481538-4435-1-git-send-email-bbhatt@codeaurora.org
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/bus/mhi/core/main.c | 15 ++++++++++-----
+>  1 file changed, 10 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> index 22acde118bc3..ed07421c4870 100644
+> --- a/drivers/bus/mhi/core/main.c
+> +++ b/drivers/bus/mhi/core/main.c
+> @@ -773,11 +773,16 @@ static void mhi_process_cmd_completion(struct mhi_controller *mhi_cntrl,
+>  	cmd_pkt = mhi_to_virtual(mhi_ring, ptr);
+>  
+>  	chan = MHI_TRE_GET_CMD_CHID(cmd_pkt);
+> -	mhi_chan = &mhi_cntrl->mhi_chan[chan];
+> -	write_lock_bh(&mhi_chan->lock);
+> -	mhi_chan->ccs = MHI_TRE_GET_EV_CODE(tre);
+> -	complete(&mhi_chan->completion);
+> -	write_unlock_bh(&mhi_chan->lock);
+> +	WARN_ON(chan >= mhi_cntrl->max_chan);
 
-I would rather keep it as documentation (converted to comment perhaps).
-In any case, it seems the suitable point of time to contribute will be
-already after v5.14-rc1.
+What can ever trigger this WARN_ON()?  Do you mean to reboot a machine
+if panic-on-warn is set?
 
--- 
-With Best Regards,
-Andy Shevchenko
+If this can actually happen, then check for it and recover properly,
+don't just blindly warn and then keep on going.
 
+thanks,
 
+greg k-h
