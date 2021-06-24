@@ -2,107 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA313B2E99
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946B93B2EA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 14:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhFXMKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 08:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
+        id S231216AbhFXMLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 08:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhFXMKE (ORCPT
+        with ESMTP id S229448AbhFXMLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 08:10:04 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CCFC061574;
-        Thu, 24 Jun 2021 05:07:45 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id u2so2855396plf.3;
-        Thu, 24 Jun 2021 05:07:45 -0700 (PDT)
+        Thu, 24 Jun 2021 08:11:13 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04827C061767;
+        Thu, 24 Jun 2021 05:08:53 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id c5so4980461pfv.8;
+        Thu, 24 Jun 2021 05:08:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vBxveQ9N2SiHUkclKJH/HA64qFAKR8WNPJmuZ/pFIiY=;
-        b=HBAdg9JPWu2WDbkjPTTpX8fQkUl+3hz1sMtctKP8bWlNXEdN6jM8rgW/0f+wI1BLlI
-         OT5hg/mz7F/91BPZ0U3KPBN997l5Gp+Gv5Kt4cG5NFiBQjnYbmP7MHRtaCshyGS6SKqW
-         YZVE0WuVT8symEDo3PpFVnY90tb48cEMrk79a7NscGPosJh8TY/H3icndWFDGR8a5jz4
-         U91t2IWXgN6oTcFg/i5eiT34IxtDffJDfLXT/uDcNl9IQ5e7kCR8GZnfgk8ngURHYkTQ
-         pwRI6G/SB6EYnBegmbneSTbguE1dSU6/ixaXUA9Gz4ihIy/XsDn4VJ96nFqHjtvHeaJd
-         XJ6A==
+        bh=1HIae1IsTpNnOLreRylFk4etMZm5amtWa1pmqvSZnbI=;
+        b=BU698jLDNATJW6K6T1wqHj8gJs1B/N/MXT3RyNcUyJ+CRBqFWVSHBBSHRCC9Nt2RhY
+         BuWxOee+vntpLjNRZSvAd0VL/cEhXmDVciNiyDsIdjtGEMLesgbuO8VN1EPJiEjVVkeX
+         GUY5MXTDZ13VCyRnjSaPrKrNOV5LUHf6bCbPyRQMKs7uyHyjbo03pIGzOO+5R7c4mvMJ
+         s3F0St50qe4dG1e1qTS7xxss7XEE90hjoQUcngLQqHSYQPDCAtShv76gw3bEKpZ+wm/F
+         wWMARP6xL44vr+FV+GJATF206EB+M1ijehcALssmEkzNaXTTeqyVziAy+QpChrgHXQly
+         8NqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=vBxveQ9N2SiHUkclKJH/HA64qFAKR8WNPJmuZ/pFIiY=;
-        b=NO83245Y4wzFehBlU1V8OOiw3LQpCxfLtdeNfOK7bXsCX85tJ6kri1gG49k2LP3THq
-         hC50MHVTQALyK9o8OUU6O+nv4xVs7NCgJ9kdB92clUgkHLmwEvdO0wj96hL9/aclm7l2
-         lZ2dF8yj/AVf1vsqEinmsEjJ9pOhsbaVXWLrJHGnr0JHbI7VSP+J/lXtsNhugWu061iV
-         KgN0/qhbAHlI4pfRelKAmnbmhxCzJgt8QN9OyUbjCto9wtKJztZGs5BRw5ZDKaHh1VYj
-         Uvp+MaZRX+LMY9y8gDtDQ4PfbWecS+AjGzjgeVcryDj2QkWwpwGfRb/GvSy6Lz9to1ev
-         jl9g==
-X-Gm-Message-State: AOAM531+C5L046HBGYq91FazNaLuyCwIFmCcy6SCw45gb2BAYczjCBX/
-        Oe6AoerrDCPoqfLiiR6y77NPUHDSP/D9PKNl
-X-Google-Smtp-Source: ABdhPJxQdyVPVORJqtAMTJxM6jHWNAAbe2Bc300nUdn1s8q+/j8eVGDlQqguYhsY4xr11nXj3AxbUg==
-X-Received: by 2002:a17:90a:f488:: with SMTP id bx8mr13165441pjb.91.1624536464573;
-        Thu, 24 Jun 2021 05:07:44 -0700 (PDT)
-Received: from [192.168.0.118] ([103.242.196.10])
-        by smtp.gmail.com with ESMTPSA id u4sm2859893pfu.27.2021.06.24.05.07.41
+        bh=1HIae1IsTpNnOLreRylFk4etMZm5amtWa1pmqvSZnbI=;
+        b=WYbLXo3NTxdOiMFTCS+nBbf/Zqm3BrJ9HKB/WXgIRvK8zwnQZd/5c9hqMR44t+KndO
+         BpmAhW4QQ7NzJPWQnxP1rfOFLZ72tSEBpc6SIdUwW7wviWt9GAkQB4eIOjV7f0a504Jd
+         sJ8mHMzdusLKVlGgrnhDgrEU/vxgOwACXzB3/XgUlcBjvAl4XXzGzlHAWniBA0Jr6KO1
+         m/37EbVHZFte75wIPoRecmpg0IhGmTyckjTmCcTtl7hw5mE3mjcCf9rSp0kYcGR96rVC
+         gHf7O+kQBfZpU54AQXn78oq6R6gly/yZmMAJnNx11XrGtezZl2kNMYWQlFxBoZJuRN8n
+         Qwig==
+X-Gm-Message-State: AOAM530C8kinFOOHrzscaxbzU/NuY+6fH3c8YJ9n6Fmybt4kH4bX0BjZ
+        UbFgOO6fBERO4W4nlmkgbqk=
+X-Google-Smtp-Source: ABdhPJxbM57+WaQXftV0IBJ3FOSmK0pLsvwcVVpBQo6DPJ5c8+lQF8BYK02Rbj5gasrCDEpg549iLQ==
+X-Received: by 2002:a63:6e87:: with SMTP id j129mr4490153pgc.45.1624536532533;
+        Thu, 24 Jun 2021 05:08:52 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id lb14sm8237455pjb.5.2021.06.24.05.08.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 05:07:44 -0700 (PDT)
-From:   Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
-Subject: Re: [PATCH] tty: serial: owl: Fix data race in owl_uart_remove
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org, andrianov@ispras.ru
-References: <20210617110443.6526-1-saubhik.mukherjee@gmail.com>
- <YMswdqNpjb9n1pdW@kroah.com> <ceebf511-9971-6deb-a6dd-458d69de2bbd@gmail.com>
- <YNLfxMZZ0a80qKLg@hovoldconsulting.com>
-Message-ID: <a9d43126-acd7-efb0-bf1a-86b06965f0e2@gmail.com>
-Date:   Thu, 24 Jun 2021 17:37:38 +0530
+        Thu, 24 Jun 2021 05:08:52 -0700 (PDT)
+Subject: [RFC PATCH 1/3] docs: pdfdocs: Refactor config for CJK document
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Akira Yokosawa <akiyks@gmail.com>
+References: <386938dc-6290-239c-4b4f-c6153f3d98c5@gmail.com>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <45a7b96a-bc27-ade4-716a-c319715e1b4d@gmail.com>
+Date:   Thu, 24 Jun 2021 21:08:49 +0900
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YNLfxMZZ0a80qKLg@hovoldconsulting.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <386938dc-6290-239c-4b4f-c6153f3d98c5@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/21 12:46 PM, Johan Hovold wrote:
-> On Wed, Jun 23, 2021 at 11:06:53AM +0530, Saubhik Mukherjee wrote:
->> On 6/17/21 4:52 PM, Greg KH wrote:
->>> On Thu, Jun 17, 2021 at 04:34:43PM +0530, Saubhik Mukherjee wrote:
->>>> Suppose the driver is registered and a UART port is added. Once an
->>>> application opens the port, owl_uart_startup is called which registers
->>>> the interrupt handler owl_uart_irq.
->>>>
->>>> We could have the following race condition:
->>>>
->>>> When device is removed, owl_uart_remove is called, which calls
->>>> uart_remove_one_port, which calls owl_uart_release_port, which writes
->>>> NULL to port->membase. At this point parallely, an interrupt could be
->>>> handled by owl_uart_irq which reads port->membase.
->>>>
->>>> This is because it is possible to remove device without closing a port.
->>>> Thus, we need to check it and call owl_uart_shutdown in owl_uart_remove.
-> 
-> No, this makes no sense at all. The port is deregistered and hung up by
-> uart_remove_one_port() (and the interrupt line is consequently disabled
-> by the driver) before it is released so this can never happen.
+To make generated LaTeX code portable across systems with different sets
+of available fonts, convert font-availability check in python code to
+LaTeX code by using a conditional command provided by the "fontspec"
+package.
 
-Thanks for the reply. I am not sure I understand. I could not find any 
-interrupt disabling in owl_uart_remove. Could you point out where/how is 
-the interrupt line is disabled before releasing the port?
+This will help those who want to run Sphinx on one machine/container
+and run latexmk on other machines/containers with different font
+configurations.
 
-A related question question was asked in 
-https://lore.kernel.org/linux-serial/YMcpBXd1vtipueQi@kroah.com/.
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+---
+ Documentation/conf.py | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
 
->>>> Found by Linux Driver Verification project (linuxtesting.org).
-> 
-> And you clearly did not test this, which you should mention.
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index 7d92ec3e5b6e..22f083bafaae 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -358,26 +358,23 @@ latex_elements = {
+ # At least one book (translations) may have Asian characters
+ # with are only displayed if xeCJK is used
+ 
+-cjk_cmd = check_output(['fc-list', '--format="%{family[0]}\n"']).decode('utf-8', 'ignore')
+-if cjk_cmd.find("Noto Sans CJK SC") >= 0:
+-    latex_elements['preamble']  += '''
++latex_elements['preamble']  += '''
++    \\IfFontExistsTF{Noto Sans CJK SC}{
+ 	% This is needed for translations
+-        \\usepackage{xeCJK}
+-        \\setCJKmainfont{Noto Sans CJK SC}
++	\\usepackage{xeCJK}
++	\\setCJKmainfont{Noto Sans CJK SC}
+ 	% Define custom macros to on/off CJK
+ 	\\newcommand{\\kerneldocCJKon}{\\makexeCJKactive}
+ 	\\newcommand{\\kerneldocCJKoff}{\\makexeCJKinactive}
+-	% To customize \sphinxtableofcontents
++	% Inactivate CJK after tableofcontents (using etoolbox)
+ 	\\usepackage{etoolbox}
+-	% Inactivate CJK after tableofcontents
+ 	\\apptocmd{\\sphinxtableofcontents}{\\kerneldocCJKoff}{}{}
+-     '''
+-else:
+-    latex_elements['preamble']  += '''
++    }{ % No CJK font
+ 	% Custom macros to on/off CJK (Dummy)
+ 	\\newcommand{\\kerneldocCJKon}{}
+ 	\\newcommand{\\kerneldocCJKoff}{}
+-     '''
++    }
++'''
+ 
+ # Fix reference escape troubles with Sphinx 1.4.x
+ if major == 1:
+-- 
+2.17.1
 
-This race warning was found by a static analysis tool. The code changes 
-are untested.
+
