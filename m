@@ -2,109 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470433B3510
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42293B3515
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbhFXR60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 13:58:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbhFXR6Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 13:58:25 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925CFC061574;
-        Thu, 24 Jun 2021 10:56:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+lCWAzHT0zMddatwrqDn8e1lQqfHJedYY57ABfGlHwc=; b=pvK2anu38wzGGJsCrk+UBnBOv3
-        Cl7PZXe5/ulT2lrl2M4kwSDp13WuLYtoucaCzdDzZhpV7a3KIwfy3qVEykV9+mrj945DQvGayJXWo
-        oA5f0LS78tJ7Q1JsoagwTGyi81ASVgfPyOjhL4KHsXcdFFaa5SzfXU/fVS1jcqNbqfpXz2tWOK3iK
-        FMy0vBVLUhWEQ34w98V1q078Q5d539maXwd4qkKifnEr6yzr6eL5+x8OQ7NZeyObdUrfJLP7cTU3+
-        kbEyVsyTNCXRKLFS+0LzJxIKtHmwEE9NB2FEiG6EJqZH4Nza6sMYO3KoYhoVuBFDutLENi7hqVFmB
-        ACRrptxg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwTZi-00GqIQ-AO; Thu, 24 Jun 2021 17:55:44 +0000
-Date:   Thu, 24 Jun 2021 18:55:38 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 19/46] mm/migrate: Add folio_migrate_flags()
-Message-ID: <YNTHGqKOu3d1/sCC@casper.infradead.org>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-20-willy@infradead.org>
- <YNLwxF1T+wAQ+1em@infradead.org>
+        id S232186AbhFXSBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 14:01:14 -0400
+Received: from mga11.intel.com ([192.55.52.93]:6394 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229464AbhFXSBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 14:01:13 -0400
+IronPort-SDR: p49exp2brmX0Du/kH35v1JzfwUVzNkV8QZr+jQ8ePMCyaswD/BSL3lDJi4n036Y6Rxi+bkYO4U
+ whvlWNXzrCEA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="204520654"
+X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
+   d="scan'208";a="204520654"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 10:58:53 -0700
+IronPort-SDR: kr5zBp9niZ2W2eP6TwnJa/lvwFr4KebFIGQgTnMM41AeBeS+p81QllHKR/8OV/QJ0LfKypEvZ1
+ 7zpxfSc7yyZA==
+X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
+   d="scan'208";a="487861512"
+Received: from llvujovi-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.255.82.142])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 10:58:51 -0700
+Subject: Re: [PATCH v3 04/11] x86: Introduce generic protected guest
+ abstraction
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20210618225755.662725-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210618225755.662725-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YNSeZv/U6QKK8sBo@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <a7096a91-f052-7e06-cd10-79dfeb600d0f@linux.intel.com>
+Date:   Thu, 24 Jun 2021 10:58:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNLwxF1T+wAQ+1em@infradead.org>
+In-Reply-To: <YNSeZv/U6QKK8sBo@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 10:28:52AM +0200, Christoph Hellwig wrote:
-> >  	/*
-> >  	 * Please do not reorder this without considering how mm/ksm.c's
-> >  	 * get_ksm_page() depends upon ksm_migrate_page() and PageSwapCache().
-> >  	 */
-> > -	if (PageSwapCache(page))
-> > -		ClearPageSwapCache(page);
-> > -	ClearPagePrivate(page);
-> > -	set_page_private(page, 0);
-> > +	if (folio_swapcache(folio))
-> > +		folio_clear_swapcache_flag(folio);
-> > +	folio_clear_private_flag(folio);
-> > +
-> > +	/* page->private contains hugetlb specific flags */
-> > +	if (!folio_hugetlb(folio))
-> > +		folio->private = NULL;
+
+
+On 6/24/21 8:01 AM, Borislav Petkov wrote:
+> On Fri, Jun 18, 2021 at 03:57:48PM -0700, Kuppuswamy Sathyanarayanan wrote:
+>> Add a generic way to check if we run with an encrypted guest,
 > 
-> Ymmm. Dosn't the ->private handling change now?  Given that you
-> added a comment it seems intentional, but I do not understand why
-> it changes as part of the conversion.
+> Please use passive voice in your commit message: no "we" or "I", etc,
+> and describe your changes in imperative mood.
+> 
+> Also, pls read section "2) Describe your changes" in
+> Documentation/process/submitting-patches.rst for more details.
+> 
+> Bottom line is: personal pronouns are ambiguous in text, especially with
+> so many parties/companies/etc developing the kernel so let's avoid them
+> please.
 
-Oooh.  I was based on linux-next, and Linus asked me to stop doing that.
-So I rebased on -rc4 (ish), but I inadvertently brought back some of the
-changes which are currently in mmotm.  This one is from:
+I will fix this in next version. I will make sure to follow it in future
+submissions.
 
-    mm: hugetlb: alloc the vmemmap pages associated with each HugeTLB page
+> 
+>> without requiring x86 specific ifdefs. This can then be used in
+>> non architecture specific code.
+> 
+> "... in arch-independent code." or so.
 
-which contains:
+I will fix this in next version.
 
--       set_page_private(page, 0);
-+
-+       /* page->private contains hugetlb specific flags */
-+       if (!PageHuge(page))
-+               set_page_private(page, 0);
+> 
+>> prot_guest_has() is used to check for protected guest feature
+>> flags.
+>>
+>> Originally-by: Andi Kleen <ak@linux.intel.com>
+>> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>> ---
+>>
+>> Change since v1:
+>>   * Introduced PR_GUEST_TDX and PR_GUEST_SEV vendor flags as per
+>>     Boris suggestion.
+>>   * Replaced is_tdx_guest() with if (boot_cpu_data.x86_vendor ==
+>>     X86_VENDOR_INTEL) in prot_guest_has().
+>>   * Modified tdx_protected_guest_has() and sev_protected_guest_has()
+>>     to support vendor flags.
+> 
+> ...
+> 
+>> diff --git a/arch/x86/include/asm/protected_guest.h b/arch/x86/include/asm/protected_guest.h
+>> new file mode 100644
+>> index 000000000000..d47668dee6c2
+>> --- /dev/null
+>> +++ b/arch/x86/include/asm/protected_guest.h
+>> @@ -0,0 +1,20 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/* Copyright (C) 2020 Intel Corporation */
+>> +#ifndef _ASM_PROTECTED_GUEST_H
+>> +#define _ASM_PROTECTED_GUEST_H 1
+> 
+> #define _ASM_X86_PROTECTED_GUEST_H
+> 
+>> +
+>> +#include <asm/processor.h>
+>> +#include <asm/tdx.h>
+>> +#include <asm/sev.h>
+>> +
+>> +static inline bool prot_guest_has(unsigned long flag)
+>> +{
+>> +	if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
+>> +		return tdx_protected_guest_has(flag);
+>> +	else if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
+>> +		return sev_protected_guest_has(flag);
+> 
+> s/protected/prot/
+> 
+> tdx_prot_guest_has
+> sev_prot_guest_has
 
-So, good catch, glad you're reviewing it so closely.  I'll fix this up
-as part of rebasing this patch set on top of 14-rc1.  Obviously this
-second patch set isn't for merging during this merge window, but I do
-hope it can go into 5.15's merge window.
+Ok. I will make this change in next version.
 
-The only API change I intentionally brought back was:
+> 
+> ...
+> 
+>> @@ -18,6 +20,21 @@ static inline bool cpuid_has_tdx_guest(void)
+>>   	return !memcmp("IntelTDX    ", sig, 12);
+>>   }
+>>   
+>> +bool tdx_protected_guest_has(unsigned long flag)
+>> +{
+>> +	switch (flag) {
+>> +	case PR_GUEST_MEM_ENCRYPT:
+>> +	case PR_GUEST_MEM_ENCRYPT_ACTIVE:
+>> +	case PR_GUEST_UNROLL_STRING_IO:
+>> +	case PR_GUEST_SHARED_MAPPING_INIT:
+>> +	case PR_GUEST_TDX:
+>> +		return static_cpu_has(X86_FEATURE_TDX_GUEST);
+> 
+> 		return cpu_feature_enabled(...)
 
-    mm: memcontrol: remove the pgdata parameter of mem_cgroup_page_lruvec
+I will use it in next version.
 
-You'll notice that my patches have:
+> 
+> 
 
-+static inline struct lruvec *mem_cgroup_folio_lruvec(struct folio *folio)
-+{
-+       return mem_cgroup_page_lruvec(&folio->page, folio_pgdat(folio));
-+}
-
-where mmotm has:
-
--static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
--                                               struct pglist_data *pgdat)
-+static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page)
- {
-+       pg_data_t *pgdat = page_pgdat(page);
-
-
-Probably I should have cherry-picked those prereq patches into my tree
-to ease the rebasing (like I did our changes to set_page_dirty), but
-I'm not 100% confident I'll get all their prereq patches.
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
