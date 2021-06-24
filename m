@@ -2,120 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496D23B2475
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 03:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8D03B2480
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 03:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhFXBUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 21:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhFXBUv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 21:20:51 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46275C061574;
-        Wed, 23 Jun 2021 18:18:33 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624497511;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l8alYlJ/aC0q6Bux+3r/DpEUt8CzurFkdXS4F7DcxVI=;
-        b=z3LmLaVtyuGn+lmaBRc4qrfYhyIqCoRAopORFutB0XdZT946mxJPmu6S6T+CLZkji53l0S
-        PJ7Rb8HsiqbYcuHKdmwG2eJyi0wdg/9g5uMpttMHqw86YEDv04z7ZBZvHeycWVI67cIhPh
-        JM7E9SYilTTh7BoC96HHv9/H2+MKJYIYvhyS3yrI23bEFgKy/S9Zg5oIwupVvp4EsKBgfq
-        pc/pcL44EC49ML3Wx3/R+gW2rZw1dEceW4/kKnYnpMCfQ+NbQT/VsWYwuhorveAC6IMU6X
-        CinQwe7jw9v2jqXUYCARuSK5S6qP3D3WEUmmQPx1yz3XeeIH3CXXNx1T7bdjwQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624497511;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l8alYlJ/aC0q6Bux+3r/DpEUt8CzurFkdXS4F7DcxVI=;
-        b=h2l5tdIdZ5vItC7muztVNSqWBsJ9hr23CnBq0yPWyarCsoucn1qzKL7+Q7y+uBXJH9OW/q
-        WCb0tm4A5U3R9KBA==
-To:     "Tian\, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Dey\, Megha" <megha.dey@intel.com>,
-        "Raj\, Ashok" <ashok.raj@intel.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Lu\, Baolu" <baolu.lu@intel.com>,
-        "Williams\, Dan J" <dan.j.williams@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, KVM <kvm@vger.kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Subject: RE: Virtualizing MSI-X on IMS via VFIO
-In-Reply-To: <MWHPR11MB1886BB017C6C53A8061DDEE28C089@MWHPR11MB1886.namprd11.prod.outlook.com>
-References: <20210622131217.76b28f6f.alex.williamson@redhat.com> <87o8bxcuxv.ffs@nanos.tec.linutronix.de> <MWHPR11MB1886811339F7873A8E34549A8C089@MWHPR11MB1886.namprd11.prod.outlook.com> <87bl7wczkp.ffs@nanos.tec.linutronix.de> <MWHPR11MB1886BB017C6C53A8061DDEE28C089@MWHPR11MB1886.namprd11.prod.outlook.com>
-Date:   Thu, 24 Jun 2021 03:18:31 +0200
-Message-ID: <87tuloawm0.ffs@nanos.tec.linutronix.de>
+        id S229864AbhFXB0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 21:26:54 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:52734 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229758AbhFXB0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Jun 2021 21:26:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=jVNl6CYZ01C5i4KBiOlGFn8//idNYh9yzFXxk2AnPuQ=; b=am
+        1v1G+/9ktIZjtXECprM9EcvCf16/b1RAJ+Y2ThcFk/IFEXf8qRh1LfpMjTD1LcUyeSp6hR4mxNFzB
+        +mCRc+Ys3EAC1CPRXVWnPplak+/BWbY+I+rr4hsTezt20lvxhJathWEVojr/LddoOfLBC6PGFKgOK
+        64yGtaYe+27Z9gM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lwE6b-00Aux1-0D; Thu, 24 Jun 2021 03:24:33 +0200
+Date:   Thu, 24 Jun 2021 03:24:32 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Jon Nettleton <jon@solid-run.com>,
+        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
+        lenb@kernel.org
+Subject: Re: [net-next: PATCH v3 4/6] net: mvmdio: add ACPI support
+Message-ID: <YNPe0JyCuHxOQBPZ@lunn.ch>
+References: <20210621173028.3541424-1-mw@semihalf.com>
+ <20210621173028.3541424-5-mw@semihalf.com>
+ <YNOZfB4pBRrOYETA@lunn.ch>
+ <CAPv3WKc5G07Te2yK+zJo=M0w-fmPVDZ3_YgNoO-BbssWHLtU7Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPv3WKc5G07Te2yK+zJo=M0w-fmPVDZ3_YgNoO-BbssWHLtU7Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kevin!
+On Wed, Jun 23, 2021 at 11:58:14PM +0200, Marcin Wojtas wrote:
+> śr., 23 cze 2021 o 22:28 Andrew Lunn <andrew@lunn.ch> napisał(a):
+> >
+> > On Mon, Jun 21, 2021 at 07:30:26PM +0200, Marcin Wojtas wrote:
+> > > This patch introducing ACPI support for the mvmdio driver by adding
+> > > acpi_match_table with two entries:
+> > >
+> > > * "MRVL0100" for the SMI operation
+> > > * "MRVL0101" for the XSMI mode
+> >
+> > Same as the freescale MDIO bus driver, you should add
+> >
+> > depends on FWNODE_MDIO
+> >
+> > Otherwise you might find randconfig builds end up with it disabled,
+> > and then linker errors.
+> >
+> 
+> The CONFIG_MVMDIO is selected by CONFIG_MV643XX_ETH and actually there
+> is a real example of the previously discussed fallback to the
+> mdiobus_register() (without DT/ACPI and now FWNODE_MDIO). I just
+> checked and successfully built the kernel out of the dove_defconfig. I
+> only needed below fix, that will be submitted in v4:
 
-On Wed, Jun 23 2021 at 23:37, Kevin Tian wrote:
->> From: Thomas Gleixner <tglx@linutronix.de>
->> > Curious about irte entry when IRQ remapping is enabled. Is it also
->> > allocated at request_irq()?
->> 
->> Good question. No, it has to be allocated right away. We stick the
->> shutdown vector into the IRTE and then request_irq() will update it with
->> the real one.
->
-> There are max 64K irte entries per Intel VT-d. Do we consider it as
-> a limited resource in this new model, though it's much more than
-> CPU vectors?
+You could be correct, but i've seen randconfig builds find issues. So
+i tend to add dependencies to avoid possible problems.  Such problem
+reports tend to come weeks later, when Arnd does such builds.
 
-It's surely a limited resource. For me 64k entries seems to be plenty,
-but what do I know. I'm not a virtualization wizard.
-
-> Back to earlier discussion about guest ims support, you explained a layered
-> model where the paravirt interface sits between msi domain and vector
-> domain to get addr/data pair from the host. In this way it could provide
-> a feedback mechanism for both msi and ims devices, thus not specific
-> to ims only. Then considering the transition window where not all guest
-> OSes may support paravirt interface at the same time (or there are
-> multiple paravirt interfaces which takes time for host to support all), 
-> would below staging approach still makes sense?
->
-> 1)  Fix the lost interrupt issue in existing MSI virtualization flow;
-
-That _cannot_ be fixed without a hypercall. See my reply to Alex.
-
-> 2)  Virtualize MSI-X on IMS, bearing the same request_irq() problem;
-
-That solves what? Maybe your perceived roadmap problem, but certainly
-not any technical problem in the right way. Again: See my reply to Alex.
-
-> 3)  Develop a paravirt interface to solve request_irq() problem for
->     both msi and ims devices;
-
-First of all it's not a request_irq() problem: It's a plain resource
-management problem which requires proper interaction between host and
-guest.
-
-And yes, it _is_ the correct answer to the problem and as I outlined in
-my reply to Alex already it is _not_ rocket science and it won't make a
-significant difference on your timeline because it's straight forward
-and solves the problem properly with the added benefit to solve existing
-problems which should and could have been solved long ago.
-
-I don't care at all about the time you are wasting with half baken
-thoughts about avoiding to do the right thing, but I very much care
-about my time wasted to debunk them.
-
-Thanks,
-
-        tglx
+	Andrew
