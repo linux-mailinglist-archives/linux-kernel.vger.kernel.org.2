@@ -2,136 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF843B27A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 08:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0DE3B2791
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 08:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231354AbhFXGuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 02:50:24 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:33012 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhFXGuX (ORCPT
+        id S231379AbhFXGpD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Jun 2021 02:45:03 -0400
+Received: from de-smtp-delivery-105.mimecast.com ([194.104.111.105]:25226 "EHLO
+        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231145AbhFXGpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 02:50:23 -0400
-Received: from epcas3p3.samsung.com (unknown [182.195.41.21])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210624064803epoutp023f83db4e0536b10d7ff8ba235d915280~LcdylPG6X1066910669epoutp02H
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 06:48:03 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210624064803epoutp023f83db4e0536b10d7ff8ba235d915280~LcdylPG6X1066910669epoutp02H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624517283;
-        bh=QIcr6Oc41EqkBdEds/yY4VF9Nkh1nPuSWQc5lqgGKhg=;
-        h=Subject:Reply-To:From:To:In-Reply-To:Date:References:From;
-        b=P14oXzdb6twjGMxlqz/GQTv+cUHzwf4XAex+DHlY9gHZ2Hsi6ohWWZwhBKYOgdiqx
-         a/ZPCPpNsB1Yj16eVTggZw7T0RL3AlWAU8BsrvIeQbaztq61M4z+8WKSkR6z1Gdkdm
-         de6k1yXspgh9tbW5nfr/A3YqO33asWKN+BwTOSCo=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas3p3.samsung.com (KnoxPortal) with ESMTP id
-        20210624064802epcas3p3d8d9feae68fc3877e0c93c5ce8b03ab0~Lcdx_PYFp1683716837epcas3p3Z;
-        Thu, 24 Jun 2021 06:48:02 +0000 (GMT)
-Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp2.localdomain
-        (Postfix) with ESMTP id 4G9W0y2l05z4x9QR; Thu, 24 Jun 2021 06:48:02 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH] scsi: ufs: Refactor ufshcd_is_intr_aggr_allowed()
-Reply-To: keosung.park@samsung.com
-Sender: Keoseong Park <keosung.park@samsung.com>
-From:   Keoseong Park <keosung.park@samsung.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        "joe@perches.com" <joe@perches.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        "satyat@google.com" <satyat@google.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Thu, 24 Jun 2021 02:45:03 -0400
+Received: from GBR01-LO2-obe.outbound.protection.outlook.com
+ (mail-lo2gbr01lp2051.outbound.protection.outlook.com [104.47.21.51]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-24-oAgHv0DaNfa77PcUzd0RGw-1; Thu, 24 Jun 2021 08:42:42 +0200
+X-MC-Unique: oAgHv0DaNfa77PcUzd0RGw-1
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
+ by CWXP265MB2007.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:83::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Thu, 24 Jun
+ 2021 06:42:41 +0000
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::259d:65ac:ae6d:409d]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::259d:65ac:ae6d:409d%9]) with mapi id 15.20.4264.020; Thu, 24 Jun 2021
+ 06:42:41 +0000
+From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <ed6d8c44-295e-aaa7-4b5f-7929c1c797d1@intel.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <37380050.31624517282371.JavaMail.epsvc@epcpadp4>
-Date:   Thu, 24 Jun 2021 15:41:08 +0900
-X-CMS-MailID: 20210624064108epcms2p11f1f3c58d9fbcecf9d3fec5b4ae01d71
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210621085158epcms2p46170ba48174547df00b9720dbc843110
-References: <ed6d8c44-295e-aaa7-4b5f-7929c1c797d1@intel.com>
-        <1891546521.01624267081897.JavaMail.epsvc@epcpadp4>
-        <CGME20210621085158epcms2p46170ba48174547df00b9720dbc843110@epcms2p1>
+Subject: Re: [PATCH] kobject: Safe return of kobject_get_path with NULL
+Thread-Topic: [PATCH] kobject: Safe return of kobject_get_path with NULL
+Thread-Index: AQHXaD5guylz4e+fzky/qfcToJhYzKshs5UAgAEBc6c=
+Date:   Thu, 24 Jun 2021 06:42:41 +0000
+Message-ID: <CWXP265MB26809893E168B75CF57ECC86C4079@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+References: <CWXP265MB2680094534A5559B0A904B76C4089@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<YNNPHvFWoeI4UwEZ@kroah.com>
+In-Reply-To: <YNNPHvFWoeI4UwEZ@kroah.com>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [185.80.168.10]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e38ba1a5-c374-4af3-acd2-08d936db43ce
+x-ms-traffictypediagnostic: CWXP265MB2007:
+x-microsoft-antispam-prvs: <CWXP265MB2007F595EF9669197A348E02C4079@CWXP265MB2007.GBRP265.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: RNS6rIjY0NcY3gi1Lc/VqqlCPKYnz/7gR+g4fzh6PoRHr8msB+03Opizbh8gS/NIUbksp5nV00Zq5nXX0ouRujvmmWPqtHqYsijLli0mVbsbqpiYLyl9RwvEGAAWpwC9c3dEKLk2NJP5kHOJDT1H68ZVN2KtKaZBKbBIgbLuimkhBsyqi1WPgV0qOtD4biKocEbQaTWSdmi+jplV/8JBpeS+enq1jCgf35ZvgKX5OiAKrEJIkF6weMyFT9ciQncn9BwWOwecjnhUPN+xV6PK0K5ITb19NjQCiQnRk7M+QDlg7rUe3NW2o7IQSmDA+LozdTFDvQAjw7Se6QjYNzlxkuNWlpvfRSXfH6LJ/VYIUiW48jzaKwVtRZ7OActA3NK9TdePRFNxviFNmGqfuFzq3MtVlmydIfHyRzKRnma6E9IhGe+0LzDNxNBLbt6HDMMnppKumtnRa4jbPDF6rojFWxY5RKLCD8Bdh3ALHSFK2un7KI2o3V2sibYkXqro6PkSBLRKklfJRPdvA2d/NoiZfdQYa47uXYAmEc0A3TUdv564Y7DM9CJcYmTehbSepb1WZ/79n4SzSclYTRuf7Lw70OmRCnbQTJ18FJARaQxpAzc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(366004)(136003)(346002)(396003)(376002)(39830400003)(8936002)(8676002)(66446008)(66946007)(64756008)(66556008)(66476007)(86362001)(7696005)(71200400001)(52536014)(2906002)(55016002)(9686003)(91956017)(38100700002)(76116006)(122000001)(33656002)(5660300002)(26005)(186003)(110136005)(6506007)(478600001)(316002);DIR:OUT;SFP:1101
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?hqsjGnPXV7pT00ZooQjY5UEo+87hx7xD+jGtMm4BM7GTXvr0FR8s6GSN4o?=
+ =?iso-8859-1?Q?D9/6d67hEc9zpPM2xbROCfTGh9ivgDX39Isu5DpCBnujhHqcT8KbdY+oiw?=
+ =?iso-8859-1?Q?DQDqM424WGD9gd3dk5tpUY/TwMsjnlDGH5EcYdXKERLeQu5Ul0b+mLDrsa?=
+ =?iso-8859-1?Q?YWR2eOrtQ+Lsn3iY3GdCjSZoHAmnRLMWfZvyni4YxsuIJAAVRbAMJYGEqA?=
+ =?iso-8859-1?Q?ruKn9hqOs/dIXNMHGmWKnA+0yzROMGpgiVDYyPOcaJxqu8LCBiUMqLAU+B?=
+ =?iso-8859-1?Q?dELKD01DKZWWQKrmbVnCDpTd2SogmfhOYzggEQySzRo47QJDeSCeo1MJ7A?=
+ =?iso-8859-1?Q?0oegO0VJ3B0FQAXlgJ7G0CGuIDha9u8sZr/XwxThvsvpegxS4ybUg5jA9P?=
+ =?iso-8859-1?Q?vDm8NBSTPFVCVdswYf3umpVyjOBo/yZX2Vf4/e1oNxXmc2FdqleVY9gIiY?=
+ =?iso-8859-1?Q?S0/GxQtNXyUvfOmQnoRdSssQdErxGHbMtglCQK5bUbySAg94GhBo8A6KmP?=
+ =?iso-8859-1?Q?zan8wT5zDAV92Bmi2o7MdpdLNfop1XRz4D4k6oeSI4ZjvtKKRB8rhtGuay?=
+ =?iso-8859-1?Q?MMHawQzCWH3xdBg2u8p5KKdOhvliebHsCuuPrcN09Mf8N07JLlFOyES++1?=
+ =?iso-8859-1?Q?VcNN3gJqKVS2XtKjqJW56zOLdtyVSfpcJ/gg4PHnnS5QmsKMqhONJVom6N?=
+ =?iso-8859-1?Q?HV/vdnn6m+MZ2YzOaGkHU7Gwqr2LA85EIUWisfQRVs4d8MJssaA/1S2xEY?=
+ =?iso-8859-1?Q?avQAI+4U86n25oG29nFFg4SFh4JeEO88Eg+y2ya0LZONdaEtEBkia8uEzk?=
+ =?iso-8859-1?Q?3l037T1je1LVVtoxs0Utdz5WOwrILWu+xfJM7DMy1F1963A6F5LIazVC7p?=
+ =?iso-8859-1?Q?uRc3lkit95QW7Yv2LZloTzLVroeI52mBYsI939jn080YJLOa50AQd1Ft3G?=
+ =?iso-8859-1?Q?+KRk8Nivw/MjDq7TqENexsNz7WWnHnboW9aFQi9D1yqX4umpUqGkVCJero?=
+ =?iso-8859-1?Q?CKqfJj6Z7zrZHNCOoXBS1shHuP9HWoElTM2K77R7kXqLrqZumUb5OKwZIw?=
+ =?iso-8859-1?Q?+lqG31itwmCdzFW/7EnAb0uKt/vSKGyBaaS9+JUA7m8xob6S6kLlrVaY+0?=
+ =?iso-8859-1?Q?Nc6zmuA1BMdq3CDfQ9eJCDajX0PC57sW0lbnLuT9YEOdEBUl3m/m5Fh7Vc?=
+ =?iso-8859-1?Q?MyOrbGZeyt0q04mnowLz6NlCWHC9lRLRs214DL30Zc+CJqhrUvnnRI2s5L?=
+ =?iso-8859-1?Q?HIhc5epfm64sN8idQIuhQ4HT3rRqNUqpz0BiQesOYFh8v1FZhZAmrMsW84?=
+ =?iso-8859-1?Q?2/CxlUvzDd8GWodz3UnpWIzjKbGiiUV34SHwrUY62GAk3po=3D?=
+x-ms-exchange-transport-forked: True
+MIME-Version: 1.0
+X-OriginatorOrg: hyperstone.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: e38ba1a5-c374-4af3-acd2-08d936db43ce
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jun 2021 06:42:41.2284
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5GudH2fPqBZfqv8t27BzhfwHEV/GzupRDhmRekkAhKOiIex/XpXhCBXLx1UVOInlle3yFw2rR0cd5whvDtzmUQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB2007
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hyperstone.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On 21/06/21 11:51 am, Keoseong Park wrote:
->> Change conditional compilation to IS_ENABLED macro,
->> and simplify if else statement to return statement.
->> No functional change.
+Hey Greg,
+
+>> Prevent NULL dereference within get_kobj_path_length
 >> 
->> Signed-off-by: Keoseong Park <keosung.park@samsung.com>
->> ---
->>  drivers/scsi/ufs/ufshcd.h | 17 ++++++++---------
->>  1 file changed, 8 insertions(+), 9 deletions(-)
->> 
->> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
->> index c98d540ac044..6d239a855753 100644
->> --- a/drivers/scsi/ufs/ufshcd.h
->> +++ b/drivers/scsi/ufs/ufshcd.h
->> @@ -893,16 +893,15 @@ static inline bool ufshcd_is_rpm_autosuspend_allowed(struct ufs_hba *hba)
->>  
->>  static inline bool ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
->>  {
->> -/* DWC UFS Core has the Interrupt aggregation feature but is not detectable*/
->> -#ifndef CONFIG_SCSI_UFS_DWC
->> -	if ((hba->caps & UFSHCD_CAP_INTR_AGGR) &&
->> -	    !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR))
->> +	/*
->> +	 * DWC UFS Core has the Interrupt aggregation feature
->> +	 * but is not detectable.
->> +	 */
->> +	if (IS_ENABLED(CONFIG_SCSI_UFS_DWC))
+>> Calling kobject_get_path could provoke a NULL dereference
+>> if NULL was passed. while fill_kobj_path will return
+>> with a sane 0 for NULL, kobjet_get_path_length did not.
 >
->Why is this needed?  It seems like you could just set UFSHCD_CAP_INTR_AGGR
->and clear UFSHCD_QUIRK_BROKEN_INTR_AGGR instead?
+>Who passes NULL into that function?  Shouldn't that be fixed first?
 
-Hello Adrian,
-Sorry for late reply.
+It seems to me like here specifically it was a sd_open on some no longer
+existing device. I agree, but could not find a fix for that, and even if, it might
+not have been in the current tree.
+But when looking at the kobject code it felt like it was meant to be safe for
+NULL, (like any parent in the tree can be NULL), but the do while does hide that
+a bit.
+So is it not meant to be safe?
+I will try to find the sd_open issue some more, but cannot reproduce the issue
+consistently enough right now.
 
-The code that returns true when CONFIG_SCSI_UFS_DWC is set in the original code 
-is only changed using the IS_ENABLED macro.
-(Linux kernel coding style, 21) Conditional Compilation)
 
-When CONFIG_SCSI_UFS_DWC is not defined, the code for checking quirk 
-and caps has been moved to the newly added return statement below.
+>Pleaase always run your patches through checkpatch.pl so you do not get
+>maintainers asking you to use checkpatch.pl...
 
-Thanks,
-Keoseong
+I did, so please tell me what part bothers you, so I can get that fixed, either in v2
+or maybe even in checkpatch.pl?
+(Only thing I spotted now is the kobjet typo)
 
->
->>  		return true;
->> -	else
->> -		return false;
->> -#else
->> -return true;
->> -#endif
->> +
->> +	return (hba->caps & UFSHCD_CAP_INTR_AGGR) &&
->> +		!(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR);
->>  }
->>  
->>  static inline bool ufshcd_can_aggressive_pc(struct ufs_hba *hba)
->> 
->
+Regards,
+Christian
+Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+Managing Directors: Dr. Jan Peter Berns.
+Commercial register of local courts: Freiburg HRB381782
+
