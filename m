@@ -2,179 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2084A3B2500
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26CF3B24C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 04:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhFXC3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Jun 2021 22:29:09 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:42296 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229759AbhFXC3I (ORCPT
+        id S229952AbhFXCO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Jun 2021 22:14:29 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:43298 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229812AbhFXCOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Jun 2021 22:29:08 -0400
-X-UUID: 48bcc90410ff4655987c24af4b22e157-20210624
-X-UUID: 48bcc90410ff4655987c24af4b22e157-20210624
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 343488418; Thu, 24 Jun 2021 10:26:45 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 24 Jun 2021 10:26:44 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 24 Jun 2021 10:26:43 +0800
-From:   Mason Zhang <mason.zhang@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        Mason Zhang <Mason.Zhang@mediatek.com>
-Subject: [PATCH v4 1/1] arm64: dts: mediatek: add MT6779 spi master dts node
-Date:   Thu, 24 Jun 2021 10:11:37 +0800
-Message-ID: <20210624021137.11513-1-mason.zhang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Wed, 23 Jun 2021 22:14:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624500724; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Ibr7ATXXDdGRj26ITAaHjj7gFL18k0W8orTknu55oeI=;
+ b=DoFY2R3hTqCPlooqf46VNwvsXEw5JtfFZSdQvCwLDRkFxuaQqh1WqAL+8ctr4J29X76gkMuP
+ i31CnMb5o/RNOf2rIc6i/DPzDw/wzjXmsoWaw9BINY08QQz87wvrVuIzzKswsCqTEoi+8cZJ
+ Uzo04ETyUoB1Ie6NRY0sGmZX7RE=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60d3e9e32a2a9a9761ffb9b7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Jun 2021 02:11:47
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EB1AAC43143; Thu, 24 Jun 2021 02:11:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DA17DC433F1;
+        Thu, 24 Jun 2021 02:11:45 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 24 Jun 2021 10:11:45 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 03/10] scsi: ufs: Update the return value of supplier
+ pm ops
+In-Reply-To: <59b0c04a-298a-4eae-7938-8170835c00b7@acm.org>
+References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
+ <1624433711-9339-4-git-send-email-cang@codeaurora.org>
+ <59b0c04a-298a-4eae-7938-8170835c00b7@acm.org>
+Message-ID: <1b9c53737fbd4a93ced02abe1441f12b@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mason Zhang <Mason.Zhang@mediatek.com>
+On 2021-06-24 05:08, Bart Van Assche wrote:
+> On 6/23/21 12:35 AM, Can Guo wrote:
+>> rpm_get_suppliers() is returning an error only if the error is 
+>> negative.
+>> However, ufshcd_wl_resume() may return a positive error code, e.g., 
+>> when
+>> hibern8 or SSU cmd fails. Make the positive return value a negative 
+>> error
+>> code so that consumers are aware of any resume failure from their 
+>> supplier.
+>> Make the same change to ufshcd_wl_suspend() just to keep symmetry.
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> ---
+>>  drivers/scsi/ufs/ufshcd.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index abe5f2d..ee70522 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -8922,7 +8922,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba 
+>> *hba, enum ufs_pm_op pm_op)
+>>  		ufshcd_release(hba);
+>>  	}
+>>  	hba->wlu_pm_op_in_progress = false;
+>> -	return ret;
+>> +	return ret <= 0 ? ret : -EINVAL;
+>>  }
+>> 
+>>  static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op 
+>> pm_op)
+>> @@ -9009,7 +9009,7 @@ static int __ufshcd_wl_resume(struct ufs_hba 
+>> *hba, enum ufs_pm_op pm_op)
+>>  	hba->clk_gating.is_suspended = false;
+>>  	ufshcd_release(hba);
+>>  	hba->wlu_pm_op_in_progress = false;
+>> -	return ret;
+>> +	return ret <= 0 ? ret : -EINVAL;
+>>  }
+> 
+> I think the above patch shows that indicating failure by either
+> returning a positive or a negative value is a booby trap. Please modify
+> ufshcd_send_request_sense() and ufshcd_set_dev_pwr_mode() such that
+> these return a value that is either zero or negative. Are there any
+> other functions than that need to be modified?
 
-This patch add spi master dts node for MT6779 SOC.
+Yes, there are more of them - both enter/exit_hibern8() and 
+reset_and_restore()
+can return positive values. I will modify all of them in next ver.
 
-Signed-off-by: Mason Zhang <Mason.Zhang@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt6779.dtsi | 112 +++++++++++++++++++++++
- 1 file changed, 112 insertions(+)
+Thanks,
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt6779.dtsi b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-index 370f309d32de..c81e76865d1b 100644
---- a/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-@@ -219,6 +219,118 @@
- 			status = "disabled";
- 		};
- 
-+		spi0: spi0@1100a000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x1100a000 0 0x1000>;
-+			interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_LOW 0>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				<&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI0>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi1: spi1@11010000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11010000 0 0x1000>;
-+			interrupts = <GIC_SPI 147 IRQ_TYPE_LEVEL_LOW 0>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				<&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI1>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi2: spi2@11012000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11012000 0 0x1000>;
-+			interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_LOW 0>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI2>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi3: spi3@11013000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11013000 0 0x1000>;
-+			interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_LOW 0>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI3>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi4: spi4@11018000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11018000 0 0x1000>;
-+			interrupts = <GIC_SPI 156 IRQ_TYPE_LEVEL_LOW 0>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI4>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi5: spi5@11019000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11019000 0 0x1000>;
-+			interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_LOW 0>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				<&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI5>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi6: spi6@1101d000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x1101d000 0 0x1000>;
-+			interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_LOW 0>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI6>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi7: spi7@1101e000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x1101e000 0 0x1000>;
-+			interrupts = <GIC_SPI 145 IRQ_TYPE_LEVEL_LOW 0>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI7>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
- 		audio: clock-controller@11210000 {
- 			compatible = "mediatek,mt6779-audio", "syscon";
- 			reg = <0 0x11210000 0 0x1000>;
--- 
-2.18.0
+Can Guo.
 
+> 
+> Thanks,
+> 
+> Bart.
