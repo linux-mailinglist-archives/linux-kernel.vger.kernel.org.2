@@ -2,74 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CAAF3B3426
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5E53B342A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 18:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbhFXQs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 12:48:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:34092 "EHLO foss.arm.com"
+        id S231717AbhFXQui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 12:50:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhFXQsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 12:48:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23092ED1;
-        Thu, 24 Jun 2021 09:46:36 -0700 (PDT)
-Received: from [10.57.13.86] (unknown [10.57.13.86])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B88E03F719;
-        Thu, 24 Jun 2021 09:46:33 -0700 (PDT)
-Subject: Re: [PATCH v1 3/3] perf cs-etm: Remove callback
- cs_etm_find_snapshot()
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Denis Nikitin <denik@google.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-References: <20210528161552.654907-1-leo.yan@linaro.org>
- <20210528161552.654907-4-leo.yan@linaro.org>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <4aa2cfcc-0dc2-4884-2ae4-7e977d3c60ad@arm.com>
-Date:   Thu, 24 Jun 2021 17:46:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229525AbhFXQuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 12:50:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51F66613F9;
+        Thu, 24 Jun 2021 16:48:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624553297;
+        bh=GrP1fgouFxOKm/VlGOFI6pOTMfhEfIvrEUVvbotYtUc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W19jJtm3tk98f7a41VuwovLnLP8SQMIRSqCLQGGYVyq74rhHruL+e+whkz7KwihCR
+         KhDsaPNrbcOQ9QMNnFiXhLfwAua28ZqtXW7cjgQgoiyM72VIcF4p3ad76FEAo2TR5A
+         hkD1j1M4DxtrN/onHGv5LuG3kSxgijLvFafGiHR4=
+Date:   Thu, 24 Jun 2021 18:48:15 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Loic Poulain <loic.poulain@linaro.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH 4/8] bus: mhi: Add inbound buffers allocation flag
+Message-ID: <YNS3T6Tp4oc66zFh@kroah.com>
+References: <20210621161616.77524-1-manivannan.sadhasivam@linaro.org>
+ <20210621161616.77524-5-manivannan.sadhasivam@linaro.org>
+ <YNSN6Yjk/P05ql8G@kroah.com>
+ <CAMZdPi9=F0agD=5eSmVngmDRXNhb7TstQzgMSXFoJzkuRVFtjQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210528161552.654907-4-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZdPi9=F0agD=5eSmVngmDRXNhb7TstQzgMSXFoJzkuRVFtjQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 28/05/2021 17:15, Leo Yan wrote:
-> The callback cs_etm_find_snapshot() is invoked for snapshot mode, its
-> main purpose is to find the correct AUX trace data and returns "head"
-> and "old" (we can call "old" as "old head") to the caller, the caller
-> __auxtrace_mmap__read() uses these two pointers to decide the AUX trace
-> data size.
-> > cs_etm_find_snapshot() should be removed with below reasons:
+On Thu, Jun 24, 2021 at 05:39:58PM +0200, Loic Poulain wrote:
+> Hi Greg,
 > 
-> - The first thing in cs_etm_find_snapshot() is to check if the head has
->   wrapped around, if it is not, directly bails out.  The checking is
->   pointless, this is because the "head" and "old" pointers both are
->   monotonical increasing so they never wrap around.
+> On Thu, 24 Jun 2021 at 15:51, Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Mon, Jun 21, 2021 at 09:46:12PM +0530, Manivannan Sadhasivam wrote:
+> > > From: Loic Poulain <loic.poulain@linaro.org>
+> > >
+> > > Currently, the MHI controller driver defines which channels should
+> > > have their inbound buffers allocated and queued. But ideally, this is
+> > > something that should be decided by the MHI device driver instead,
+> > > which actually deals with that buffers.
+> > >
+> > > Add a flag parameter to mhi_prepare_for_transfer allowing to specify
+> > > if buffers have to be allocated and queued by the MHI stack.
+> > >
+> > > Keep auto_queue flag for now, but should be removed at some point.
+> > >
+> > > Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+> > > Tested-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> > > Reviewed-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> > > Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+> > > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > Acked-by: Jakub Kicinski <kuba@kernel.org>
+> > > Link: https://lore.kernel.org/r/1621603519-16773-1-git-send-email-loic.poulain@linaro.org
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> [...]
+> > > +/**
+> > > + * enum mhi_chan_flags - MHI channel flags
+> > > + * @MHI_CH_INBOUND_ALLOC_BUFS: Automatically allocate and queue inbound buffers
+> > > + */
+> > > +enum mhi_chan_flags {
+> > > +     MHI_CH_INBOUND_ALLOC_BUFS = BIT(0),
+> >
+> > Why is an enumerated type a bitfield?
+> >
+> > Please just use integers for enumerated types.
 > 
-For patch 3:
+> This 'trick' for listing flags is used in other places like drm,
+> mac80211, etc...: grep -r "BIT(0)," ./include/
 
-Reviewed-by: James Clark <james.clark@arm.com>
-Tested-by: James Clark <james.clark@arm.com>
+An enum is a list of values that are unique.  Not values you can mush
+together into a single variable and look at the bit masks of.
 
-I think it's a good simplification and it also fixes the duplicate buffers
-issue. And I agree with the reasoning about the pointer increasing monotonically.
+> I don't understand why it would not be right? should we simply use
+> a list of defines for this?
 
+What are you using this for?  If you are going to combine them, then
+yes, use #defines.
+
+thanks,
+
+greg k-h
