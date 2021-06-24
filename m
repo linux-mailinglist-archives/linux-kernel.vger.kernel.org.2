@@ -2,185 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D0A3B2699
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 06:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3FF3B268C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 06:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbhFXEz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 00:55:59 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:35245 "EHLO ozlabs.org"
+        id S230232AbhFXEyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 00:54:55 -0400
+Received: from yyz.mikelr.com ([170.75.163.43]:34262 "EHLO yyz.mikelr.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230121AbhFXEyv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 00:54:51 -0400
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4G9SRT5RZJz9t1s; Thu, 24 Jun 2021 14:52:21 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=gibson.dropbear.id.au; s=201602; t=1624510341;
-        bh=CUOvolS00mt6fsyyOcaBeHpDD1l35MwCPi+iWoJuI20=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e+t14wM8FUhdgZVe3bPvZMI676YD8wnW8ic6Am/0whGW4VYhlxJ2x750ZLghvljKa
-         pYU9Vmqh+k0qSi+vs9n+kCUu6e4pjtqwaMMUw1A0otHxPj0N10CtjgTB4tg+0kutjy
-         TWZMThky96oa00b4SxnlTGrcqPApbZCJf2wwIb5E=
-Date:   Thu, 24 Jun 2021 14:50:45 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: Plan for /dev/ioasid RFC v2
-Message-ID: <YNQPJfNixs23RaJm@yekko>
-References: <YMDjfmJKUDSrbZbo@8bytes.org>
- <20210609101532.452851eb.alex.williamson@redhat.com>
- <20210609102722.5abf62e1.alex.williamson@redhat.com>
- <20210609184940.GH1002214@nvidia.com>
- <20210610093842.6b9a4e5b.alex.williamson@redhat.com>
- <BN6PR11MB187579A2F88C77ED2131CEF08C349@BN6PR11MB1875.namprd11.prod.outlook.com>
- <20210611153850.7c402f0b.alex.williamson@redhat.com>
- <MWHPR11MB1886C2A0A8AA3000EBD5F8E18C319@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210614133819.GH1002214@nvidia.com>
- <MWHPR11MB1886A6B3AC4AD249405E5B178C309@MWHPR11MB1886.namprd11.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="eoUsj9hAKr/fBY8i"
-Content-Disposition: inline
-In-Reply-To: <MWHPR11MB1886A6B3AC4AD249405E5B178C309@MWHPR11MB1886.namprd11.prod.outlook.com>
+        id S229991AbhFXEyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 00:54:49 -0400
+Received: from glidewell.ykf.mikelr.com (198-84-194-208.cpe.teksavvy.com [198.84.194.208])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by yyz.mikelr.com (Postfix) with ESMTPSA id 440C34FA6A;
+        Thu, 24 Jun 2021 00:52:08 -0400 (EDT)
+From:   Mikel Rychliski <mikel@mikelr.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     Mikel Rychliski <mikel@mikelr.com>
+Subject: [PATCH v3] drm/radeon: Fix NULL dereference when updating memory stats
+Date:   Thu, 24 Jun 2021 00:51:20 -0400
+Message-Id: <20210624045121.15643-1-mikel@mikelr.com>
+X-Mailer: git-send-email 2.13.7
+In-Reply-To: <085b7f51-15b8-42e0-fcf0-66da839542c8@amd.com>
+References: <085b7f51-15b8-42e0-fcf0-66da839542c8@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+radeon_ttm_bo_destroy() is attempting to access the resource object to
+update memory counters. However, the resource object is already freed when
+ttm calls this function via the destroy callback. This causes an oops when
+a bo is freed:
 
---eoUsj9hAKr/fBY8i
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+	BUG: kernel NULL pointer dereference, address: 0000000000000010
+	RIP: 0010:radeon_ttm_bo_destroy+0x2c/0x100 [radeon]
+	Call Trace:
+	 radeon_bo_unref+0x1a/0x30 [radeon]
+	 radeon_gem_object_free+0x33/0x50 [radeon]
+	 drm_gem_object_release_handle+0x69/0x70 [drm]
+	 drm_gem_handle_delete+0x62/0xa0 [drm]
+	 ? drm_mode_destroy_dumb+0x40/0x40 [drm]
+	 drm_ioctl_kernel+0xb2/0xf0 [drm]
+	 drm_ioctl+0x30a/0x3c0 [drm]
+	 ? drm_mode_destroy_dumb+0x40/0x40 [drm]
+	 radeon_drm_ioctl+0x49/0x80 [radeon]
+	 __x64_sys_ioctl+0x8e/0xd0
 
-On Tue, Jun 15, 2021 at 01:21:35AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Monday, June 14, 2021 9:38 PM
-> >=20
-> > On Mon, Jun 14, 2021 at 03:09:31AM +0000, Tian, Kevin wrote:
-> >=20
-> > > If a device can be always blocked from accessing memory in the IOMMU
-> > > before it's bound to a driver or more specifically before the driver
-> > > moves it to a new security context, then there is no need for VFIO
-> > > to track whether IOASIDfd has taken over ownership of the DMA
-> > > context for all devices within a group.
-> >=20
-> > I've been assuming we'd do something like this, where when a device is
-> > first turned into a VFIO it tells the IOMMU layer that this device
-> > should be DMA blocked unless an IOASID is attached to
-> > it. Disconnecting an IOASID returns it to blocked.
->=20
-> Or just make sure a device is in block-DMA when it's unbound from a
-> driver or a security context.
+Avoid the issue by updating the counters in the delete_mem_notify callback
+instead. Also, fix memory statistic updating in radeon_bo_move() to
+identify the source type correctly. The source type needs to be saved
+before the move, because the moved from object may be altered by the move.
 
-So I'm not entirely clear here if you're envisaging putting the device
-into no-DMA mode by altering the IOMMU setup or by quiescing it at the
-register level (e.g. by resetting it).  But, neither approach allows
-you to safely put a device into no-DMA mode if users have access to
-another device in the group.
+Fixes: bfa3357ef9ab ("drm/ttm: allocate resource object instead of embedding it v2")
+Signed-off-by: Mikel Rychliski <mikel@mikelr.com>
+---
+ drivers/gpu/drm/radeon/radeon_object.c | 29 ++++++++++++-----------------
+ drivers/gpu/drm/radeon/radeon_object.h |  2 +-
+ drivers/gpu/drm/radeon/radeon_ttm.c    | 13 ++++++++++---
+ 3 files changed, 23 insertions(+), 21 deletions(-)
 
-The IOMMU approach doesn't work, because the IOMMU may not be able to
-distinguish the two devices from each other.
+diff --git a/drivers/gpu/drm/radeon/radeon_object.c b/drivers/gpu/drm/radeon/radeon_object.c
+index bfaaa3c969a3..56ede9d63b12 100644
+--- a/drivers/gpu/drm/radeon/radeon_object.c
++++ b/drivers/gpu/drm/radeon/radeon_object.c
+@@ -49,23 +49,23 @@ static void radeon_bo_clear_surface_reg(struct radeon_bo *bo);
+  * function are calling it.
+  */
+ 
+-static void radeon_update_memory_usage(struct radeon_bo *bo,
+-				       unsigned mem_type, int sign)
++static void radeon_update_memory_usage(struct ttm_buffer_object *bo,
++				       unsigned int mem_type, int sign)
+ {
+-	struct radeon_device *rdev = bo->rdev;
++	struct radeon_device *rdev = radeon_get_rdev(bo->bdev);
+ 
+ 	switch (mem_type) {
+ 	case TTM_PL_TT:
+ 		if (sign > 0)
+-			atomic64_add(bo->tbo.base.size, &rdev->gtt_usage);
++			atomic64_add(bo->base.size, &rdev->gtt_usage);
+ 		else
+-			atomic64_sub(bo->tbo.base.size, &rdev->gtt_usage);
++			atomic64_sub(bo->base.size, &rdev->gtt_usage);
+ 		break;
+ 	case TTM_PL_VRAM:
+ 		if (sign > 0)
+-			atomic64_add(bo->tbo.base.size, &rdev->vram_usage);
++			atomic64_add(bo->base.size, &rdev->vram_usage);
+ 		else
+-			atomic64_sub(bo->tbo.base.size, &rdev->vram_usage);
++			atomic64_sub(bo->base.size, &rdev->vram_usage);
+ 		break;
+ 	}
+ }
+@@ -76,8 +76,6 @@ static void radeon_ttm_bo_destroy(struct ttm_buffer_object *tbo)
+ 
+ 	bo = container_of(tbo, struct radeon_bo, tbo);
+ 
+-	radeon_update_memory_usage(bo, bo->tbo.resource->mem_type, -1);
+-
+ 	mutex_lock(&bo->rdev->gem.mutex);
+ 	list_del_init(&bo->list);
+ 	mutex_unlock(&bo->rdev->gem.mutex);
+@@ -727,24 +725,21 @@ int radeon_bo_check_tiling(struct radeon_bo *bo, bool has_moved,
+ }
+ 
+ void radeon_bo_move_notify(struct ttm_buffer_object *bo,
+-			   bool evict,
++			   unsigned int old_type,
+ 			   struct ttm_resource *new_mem)
+ {
+ 	struct radeon_bo *rbo;
+ 
++	radeon_update_memory_usage(bo, old_type, -1);
++	if (new_mem)
++		radeon_update_memory_usage(bo, new_mem->mem_type, 1);
++
+ 	if (!radeon_ttm_bo_is_radeon_bo(bo))
+ 		return;
+ 
+ 	rbo = container_of(bo, struct radeon_bo, tbo);
+ 	radeon_bo_check_tiling(rbo, 0, 1);
+ 	radeon_vm_bo_invalidate(rbo->rdev, rbo);
+-
+-	/* update statistics */
+-	if (!new_mem)
+-		return;
+-
+-	radeon_update_memory_usage(rbo, bo->resource->mem_type, -1);
+-	radeon_update_memory_usage(rbo, new_mem->mem_type, 1);
+ }
+ 
+ vm_fault_t radeon_bo_fault_reserve_notify(struct ttm_buffer_object *bo)
+diff --git a/drivers/gpu/drm/radeon/radeon_object.h b/drivers/gpu/drm/radeon/radeon_object.h
+index 1739c6a142cd..1afc7992ef91 100644
+--- a/drivers/gpu/drm/radeon/radeon_object.h
++++ b/drivers/gpu/drm/radeon/radeon_object.h
+@@ -161,7 +161,7 @@ extern void radeon_bo_get_tiling_flags(struct radeon_bo *bo,
+ extern int radeon_bo_check_tiling(struct radeon_bo *bo, bool has_moved,
+ 				bool force_drop);
+ extern void radeon_bo_move_notify(struct ttm_buffer_object *bo,
+-				  bool evict,
++				  unsigned int old_type,
+ 				  struct ttm_resource *new_mem);
+ extern vm_fault_t radeon_bo_fault_reserve_notify(struct ttm_buffer_object *bo);
+ extern int radeon_bo_get_surface_reg(struct radeon_bo *bo);
+diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon/radeon_ttm.c
+index ad2a5a791bba..a06d4cc2fb1c 100644
+--- a/drivers/gpu/drm/radeon/radeon_ttm.c
++++ b/drivers/gpu/drm/radeon/radeon_ttm.c
+@@ -199,7 +199,7 @@ static int radeon_bo_move(struct ttm_buffer_object *bo, bool evict,
+ 	struct ttm_resource *old_mem = bo->resource;
+ 	struct radeon_device *rdev;
+ 	struct radeon_bo *rbo;
+-	int r;
++	int r, old_type;
+ 
+ 	if (new_mem->mem_type == TTM_PL_TT) {
+ 		r = radeon_ttm_tt_bind(bo->bdev, bo->ttm, new_mem);
+@@ -216,6 +216,9 @@ static int radeon_bo_move(struct ttm_buffer_object *bo, bool evict,
+ 	if (WARN_ON_ONCE(rbo->tbo.pin_count > 0))
+ 		return -EINVAL;
+ 
++	/* Save old type for statistics update */
++	old_type = old_mem->mem_type;
++
+ 	rdev = radeon_get_rdev(bo->bdev);
+ 	if (old_mem->mem_type == TTM_PL_SYSTEM && bo->ttm == NULL) {
+ 		ttm_bo_move_null(bo, new_mem);
+@@ -261,7 +264,7 @@ static int radeon_bo_move(struct ttm_buffer_object *bo, bool evict,
+ out:
+ 	/* update statistics */
+ 	atomic64_add(bo->base.size, &rdev->num_bytes_moved);
+-	radeon_bo_move_notify(bo, evict, new_mem);
++	radeon_bo_move_notify(bo, old_type, new_mem);
+ 	return 0;
+ }
+ 
+@@ -682,7 +685,11 @@ bool radeon_ttm_tt_is_readonly(struct radeon_device *rdev,
+ static void
+ radeon_bo_delete_mem_notify(struct ttm_buffer_object *bo)
+ {
+-	radeon_bo_move_notify(bo, false, NULL);
++	unsigned int old_type = TTM_PL_SYSTEM;
++
++	if (bo->resource)
++		old_type = bo->resource->mem_type;
++	radeon_bo_move_notify(bo, old_type, NULL);
+ }
+ 
+ static struct ttm_device_funcs radeon_bo_driver = {
+-- 
+2.13.7
 
-The register approach doesn't work, because even if you successfully
-quiesce the device, the user could poke it indirectly via the other
-device in the group, pulling it out of quiescent mode.
-
-> Then no need to explicitly tell IOMMU layer=20
-> to do so when it's bound to a new driver.
->=20
-> Currently the default domain type applies even when a device is not
-> bound. This implies that if iommu=3Dpassthrough a device is always=20
-> allowed to access arbitrary system memory with or without a driver.
-> I feel the current domain type (identity, dma, unmanged) should apply
-> only when a driver is loaded...
-
-A whole group has to be in the same DMA context at the same time.
-That's the definition of a group.
-
-> > > If this works I didn't see the need for vfio to keep the sequence.
-> > > VFIO still keeps group fd to claim ownership of all devices in a
-> > > group.
-> >=20
-> > As Alex says you still have to deal with the problem that device A in
-> > a group can gain control of device B in the same group.
->=20
-> There is no isolation in the group then how could vfio prevent device
-> A from gaining control of device B? for example when both are attached
-> to the same GPA address space with device MMIO bar included, devA
-> can do p2p to devB. It's all user's policy how to deal with devices within
-> the group.=20
->=20
-> >=20
-> > This means device A and B can not be used from to two different
-> > security contexts.
->=20
-> It depends on how the security context is defined. From iommu layer
-> p.o.v, an IOASID is a security context which isolates a device from
-> the rest of the system (but not the sibling in the same group). As you
-> suggested earlier, it's completely sane if an user wants to attach
-> devices in a group to different IOASIDs. Here I just talk about this fact.
->=20
-> >=20
-> > If the /dev/iommu FD is the security context then the tracking is
-> > needed there.
-> >=20
->=20
-> As I replied to Alex, my point is that VFIO doesn't need to know the
-> attaching status of each device in a group before it can allow user to
-> access a device. As long as a device in a group either in block DMA
-> or switch to a new address space created via /dev/iommu FD, there's
-> no problem to allow user accessing it. User cannot do harm to the
-> world outside of the group. User knows there is no isolation within
-> the group. that is it.
->=20
-> Thanks
-> Kevin
->=20
-
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---eoUsj9hAKr/fBY8i
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmDUDyMACgkQbDjKyiDZ
-s5KjaA/9EPMEsLemYo6QFgWL2LNDDKTanMJQkWieLTfB4rSTop8+qdgEyXKOIOZu
-Iv8nkPNdJy3ylIYKWWYi2mxMNaTR+qHDGFRLc9WK1m++oqM3Q7laNOt39QZ5Uy1P
-VCDc9dYIvKz+XAL9ihYV/i07LDHhec/0CvbEC7EDRnCQRoTZTEaPW7zsQmB4juR/
-X3WLPrrvQJKIT9s49MJd7ZSLwBVn9+sdXU+DjqmhuZZBTyFTdesNvGCd5lpbCM9D
-vKDKufOB8jRe1CyXuVfFPiIWpj5y8ixRvgOpGvt2DPODwurIWl0yDhLHAezyhoW7
-6igINNFVQhk0cVEHuyBUFUknzLg4gdoxgcGeNhYRkRsGLbFyiCIyxzTLVPQJ5/NS
-EQvt7zAIMjgYIFVL8QDimf+QZbD3NtGr8DiDMYGJtb2LCDpdbHQ8BG4Zk7D1Gdd0
-M1Dw5xiuUHsOVr+FLal2KUybESDq104z432KhmPo2Cj3zUrjp57M9FmrN3CWmXAG
-/+Gu6O+k2xvQwR4tFag7dGtAr4BlxUf4ja2DThPGVkmTe/EKYaRZ5YEWuozI62oR
-rJSJLbR4mnqf8mcQzawrBwp37SJlypo2m/1FtgYnuPHUjUJf21uvGHw3v4KD9rO/
-iX5lcN/pPE+j7WvY0WfK9tv9HlTbLn57EoQm97z9k3j7s6Az0oY=
-=log0
------END PGP SIGNATURE-----
-
---eoUsj9hAKr/fBY8i--
