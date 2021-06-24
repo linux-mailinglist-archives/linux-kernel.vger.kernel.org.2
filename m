@@ -2,114 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE903B34F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 362AE3B34FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 19:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232214AbhFXRs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 13:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbhFXRsv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 13:48:51 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD2FC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 10:46:31 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id k6so5791402pfk.12
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 10:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=znmbspe43gdGgRV/upQrZxOnaNJ/GmfYqjXiwM9oleo=;
-        b=ELA+YbvkUh75ll+mDif4Kq+XgYyX0/XvX6qHn5DIZ3JSdG7TIpCzYTJ7CNH0KRs3JQ
-         Qgkx5zASyU7ccV7yFcYLKO98UIOlSU5t+3oC08J51aQ6VDKmSsmosrLP5mK5XKZH4DOB
-         rc3sA+6PfyO7SBkqCTHaxwRQ27zE+saKJVPSYZHYjWq2lEfUYOLFqXc2sZ2Ik+iPfLd1
-         +PNPOaXQeDUQOdkgYW1f99+LpTjBPMyir979HxcahAH9czGxYic2o+kRWVQPLdp7iHiA
-         dkMXuOkUP8YzBUGP5HW3nSC2tU3ODM4u6gwHL+4RLZB1cqymZxwwHxcn0u5rX2uf3IqK
-         neKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=znmbspe43gdGgRV/upQrZxOnaNJ/GmfYqjXiwM9oleo=;
-        b=cV+iGw8ouDc/7ZpnmJSJTVe9YBF3JQ1LWw5idb4goCkCU1zgL+FGiNSeaeHuOOFIhz
-         mYZPC7fIDHLswuOh37kPw6AT+roYW0Qj9XI5Uisl4mrvLVkKTe6UQ+6uirnwuG7o5HgC
-         PvbToRodLRhTuYipYZe2aBkLPiUl2aTjmNX+Py1WAAez7H6lqg0mS+fTZI1MA7jfUlIM
-         nZMP+fE/u69741j8ad+cgrGPKNnDbVKx2ug8hRZvJA2eEYhFNOUoPVo+uv4r5MNO5Iuu
-         ed/00iD/c5yrlXGBYm/57dNpNaDMXIOKTDNGQ4BokP5qK2j8zzHOiscFHmdhsDWFrmF9
-         R9XA==
-X-Gm-Message-State: AOAM533dynr/MnWfxRlZMzIxFBMlNBr3QaAhiY7GaavGCP9WZOefdwdL
-        CYOKWu22AzcfM9DG8LgTLrYdKg==
-X-Google-Smtp-Source: ABdhPJxf+CO3FV4JwefrjcjX8xn2R1SEQls6s7OcO66HWYSqfY+is1vM4MpBeNGGwNYjEfn94z3eKg==
-X-Received: by 2002:a62:830e:0:b029:306:3c52:2a74 with SMTP id h14-20020a62830e0000b02903063c522a74mr6305156pfe.50.1624556791303;
-        Thu, 24 Jun 2021 10:46:31 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:52cc])
-        by smtp.gmail.com with ESMTPSA id x6sm8861654pjn.53.2021.06.24.10.46.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 10:46:30 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 13:46:27 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] memcg: periodically flush the memcg stats
-Message-ID: <YNTE88wHs4Ac/DKp@cmpxchg.org>
-References: <20210615174435.4174364-1-shakeelb@google.com>
- <20210615174435.4174364-2-shakeelb@google.com>
- <YMj/s26uF+cQOB2D@cmpxchg.org>
- <CALvZod6Hpema0uMcnMGPS+_2iZuxc8JqkjHRVBeEGp-vdcpPYA@mail.gmail.com>
+        id S232304AbhFXRuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 13:50:39 -0400
+Received: from mga11.intel.com ([192.55.52.93]:5533 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231878AbhFXRui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 13:50:38 -0400
+IronPort-SDR: pXPvStwiVrOuzd4iLw66/Av1vU6QQnUbTrfmL6whpSMvHKEzx9y4wRy+5J1eKQgvtyN6rsHfvf
+ /K6lqPi5Ygmw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="204519125"
+X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
+   d="scan'208";a="204519125"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 10:48:17 -0700
+IronPort-SDR: 5uD0mUMXjivznVlfZbkscdPadzCBOaOAdkikCgAxQYCyj4wn0UMtX6l00gCoaKcABxHRAA7dtj
+ z3BtgWzNkktQ==
+X-IronPort-AV: E=Sophos;i="5.83,296,1616482800"; 
+   d="scan'208";a="453513319"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2021 10:48:16 -0700
+From:   ira.weiny@intel.com
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Kamal Heib <kheib@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V4] RDMA/siw: Convert siw_tx_hdt() to kmap_local_page()
+Date:   Thu, 24 Jun 2021 10:48:14 -0700
+Message-Id: <20210624174814.2822896-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+In-Reply-To: <20210623221543.2799198-1-ira.weiny@intel.com>
+References: <20210623221543.2799198-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod6Hpema0uMcnMGPS+_2iZuxc8JqkjHRVBeEGp-vdcpPYA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Shakeel,
+From: Ira Weiny <ira.weiny@intel.com>
 
-Sorry about the delay.
+kmap() is being deprecated and will break uses of device dax after PKS
+protection is introduced.[1]
 
-On Tue, Jun 15, 2021 at 02:52:37PM -0700, Shakeel Butt wrote:
-> On Tue, Jun 15, 2021 at 12:29 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > The way the global vmstat implementation manages error is doing both:
-> > ratelimiting and timelimiting. It uses percpu batching to limit the
-> > error when it gets busy, and periodic flushing to limit the length of
-> > time consumers of those stats could be stuck trying to reach a state
-> > that the batching would otherwise prevent from being reflected.
-> >
-> > Maybe we can use a combination of ratelimiting and timelimiting too?
-> >
-> > We shouldn't flush on every fault, but what about a percpu ratelimit
-> > that would at least bound the error to NR_CPU instead of nr_cgroups?
-> >
-> 
-> Couple questions here:
-> 
-> First, to convert the error bound to NR_CPU from nr_cgroups, I think
-> we have to move from (delta > threshold) comparison to
-> (num_update_events > threshold). Previously an increment event
-> followed by decrement would keep the delta to 0 (or same) but after
-> this change num_update_events would be 2. Is that ok?
+The use of kmap() in siw_tx_hdt() is all thread local therefore
+kmap_local_page() is a sufficient replacement and will work with pgmap
+protected pages when those are implemented.
 
-Yeah, I think that's fine. Or at least I can't think of a real-world
-application that would inc and dec the same counter over and over and
-so would do much better with delta spilling over event ratelimiting.
+siw_tx_hdt() tracks pages used in a page_array.  It uses that array to
+unmap pages which were mapped on function exit.  Not all entries in the
+array are mapped and this is tracked in kmap_mask.
 
-And the ratelimiting should already ensure by itself that the cost is
-at least acceptable when continuously updating and reading counters.
+kunmap_local() takes a mapped address rather than a page.  Alter
+siw_unmap_pages() to take the iov array to reuse the iov_base address of
+each mapping.  Use PAGE_MASK to get the proper address for
+kunmap_local().
 
-> Second, do we want to synchronously flush the stats when we cross the
-> threshold on update or asynchronously by queuing the flush with zero
-> delay?
+kmap_local_page() mappings are tracked in a stack and must be unmapped
+in the opposite order they were mapped in.  Because segments are mapped
+into the page array in increasing index order, modify siw_unmap_pages()
+to unmap pages in decreasing order.
 
-I think flushing by worker is better because we can see updates from
-all sorts of contexts with all sorts of locks held. That could make
-for some difficult dependencies and latency sources when serializing
-those on cgroup_rstat_lock.
+Use kmap_local_page() instead of kmap() to map pages in the page_array.
+
+[1] https://lore.kernel.org/lkml/20201009195033.3208459-59-ira.weiny@intel.com/
+
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
+---
+Changes for V4:
+	From Bernard
+		Further optimize siw_unmap_pages() by eliminating the
+		CRC page from the iov array.
+
+Changes for V3:
+	From Bernard
+		Use 'p' in kmap_local_page()
+		Use seg as length to siw_unmap_pages()
+
+Changes for V2:
+	From Bernard
+		Reuse iov[].iov_base rather than declaring another array
+		of pointers and preserve the use of kmap_mask to know
+		which iov's were kmapped.
+---
+ drivers/infiniband/sw/siw/siw_qp_tx.c | 30 +++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
+index db68a10d12cd..1f4e60257700 100644
+--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
++++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+@@ -396,13 +396,20 @@ static int siw_0copy_tx(struct socket *s, struct page **page,
+ 
+ #define MAX_TRAILER (MPA_CRC_SIZE + 4)
+ 
+-static void siw_unmap_pages(struct page **pp, unsigned long kmap_mask)
++static void siw_unmap_pages(struct kvec *iov, unsigned long kmap_mask, int len)
+ {
+-	while (kmap_mask) {
+-		if (kmap_mask & BIT(0))
+-			kunmap(*pp);
+-		pp++;
+-		kmap_mask >>= 1;
++	int i;
++
++	/*
++	 * Work backwards through the array to honor the kmap_local_page()
++	 * ordering requirements.
++	 */
++	for (i = (len-1); i >= 0; i--) {
++		if (kmap_mask & BIT(i)) {
++			unsigned long addr = (unsigned long)iov[i].iov_base;
++
++			kunmap_local((void *)(addr & PAGE_MASK));
++		}
+ 	}
+ }
+ 
+@@ -498,7 +505,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 					p = siw_get_upage(mem->umem,
+ 							  sge->laddr + sge_off);
+ 				if (unlikely(!p)) {
+-					siw_unmap_pages(page_array, kmap_mask);
++					siw_unmap_pages(iov, kmap_mask, seg);
+ 					wqe->processed -= c_tx->bytes_unsent;
+ 					rv = -EFAULT;
+ 					goto done_crc;
+@@ -506,11 +513,12 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 				page_array[seg] = p;
+ 
+ 				if (!c_tx->use_sendpage) {
+-					iov[seg].iov_base = kmap(p) + fp_off;
+-					iov[seg].iov_len = plen;
++					void *kaddr = kmap_local_page(p);
+ 
+ 					/* Remember for later kunmap() */
+ 					kmap_mask |= BIT(seg);
++					iov[seg].iov_base = kaddr + fp_off;
++					iov[seg].iov_len = plen;
+ 
+ 					if (do_crc)
+ 						crypto_shash_update(
+@@ -542,7 +550,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 
+ 			if (++seg > (int)MAX_ARRAY) {
+ 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
+-				siw_unmap_pages(page_array, kmap_mask);
++				siw_unmap_pages(iov, kmap_mask, seg-1);
+ 				wqe->processed -= c_tx->bytes_unsent;
+ 				rv = -EMSGSIZE;
+ 				goto done_crc;
+@@ -593,7 +601,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 	} else {
+ 		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
+ 				    hdr_len + data_len + trl_len);
+-		siw_unmap_pages(page_array, kmap_mask);
++		siw_unmap_pages(iov, kmap_mask, seg);
+ 	}
+ 	if (rv < (int)hdr_len) {
+ 		/* Not even complete hdr pushed or negative rv */
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
+
