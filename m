@@ -2,180 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E23F3B3187
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C473B3189
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbhFXOji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 10:39:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55502 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230249AbhFXOjh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 10:39:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624545438;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9h8u0xPq+lyz4kG2IM71OZjooGkjqLutHSguaAe0NLE=;
-        b=L/EnulhFts90OqL3t75ZoF/oByYLU7TJVLJIA6Amny2EhIQt105gheCFMCNDB+L43H9v7A
-        lwNR4b9yygOrUbwaMuajG19U5OScBYQAJug3eTb4qeDOVEA9UW7DvbRWdubXjVf7iJVyvN
-        wsOge5XlCjEmhcZOD9j/D1eZq9ayk44=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-372-cZjemzorMzWbcdm2eYo7Cg-1; Thu, 24 Jun 2021 10:37:16 -0400
-X-MC-Unique: cZjemzorMzWbcdm2eYo7Cg-1
-Received: by mail-oi1-f197.google.com with SMTP id k11-20020a54440b0000b02901f3e6a011b4so3857768oiw.23
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 07:37:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=9h8u0xPq+lyz4kG2IM71OZjooGkjqLutHSguaAe0NLE=;
-        b=tkqiUeE28nyzd0bybcFbWlZym8fWjnS6fNPoB1PEEiaX15OMrDTrX/mjqWHYuX8p89
-         SxViUAtYVHQ4zljkJGBXUeNGMyV1xsj9XPt11Lkv48WBsvYRENA+VXdaSg9omO+BU9nO
-         KgARL7AfZVII8tQDguNWW0/5OzoZCGcquteuB7auB8aRV/trd/GzcaA7mcK7RgHgR+f0
-         K9iqSHWufIW0Tm7HyB034QkoOI0+9Q+QFUVhitsBSRJpQHG0KVJ0e4Eq8coOuwreyJpH
-         IlXgFejDH25KLNBhkkm3CKavWz/wM8ASqYsskAHToHYDq0+TnJ2XJui45WSSsqZrzO48
-         8jrg==
-X-Gm-Message-State: AOAM531Sj5hY3k25PJ5fd0qFagEofkQ5OrusuPyc+4hquEdzVGiU72o1
-        QgSz4pfXZBGQAQZQrGdAEDme/gd8OhBhc4zq4OBVXowX8JruhVu5E9MwP+Rl/IjspL99zC/Gnve
-        iHSgkHq+WsDbCcxkyLk1DTdRa
-X-Received: by 2002:a05:6808:60e:: with SMTP id y14mr7361127oih.105.1624545436103;
-        Thu, 24 Jun 2021 07:37:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzw2Crh/+XLQyWazz2/WmdZ58gp6OxY8shHXD3gklt/l5Xl579uOibcqZlSSEOhwX2KHZdxAg==
-X-Received: by 2002:a05:6808:60e:: with SMTP id y14mr7361113oih.105.1624545435916;
-        Thu, 24 Jun 2021 07:37:15 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 2sm692895ota.58.2021.06.24.07.37.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 07:37:15 -0700 (PDT)
-Subject: Re: [PATCH v3 1/7] fpga-mgr: wrap the write_init() op
-To:     Xu Yilun <yilun.xu@intel.com>,
-        Russ Weight <russell.h.weight@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     hao.wu@intel.com, mdf@kernel.org, michal.simek@xilinx.com,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210623182410.3787784-1-trix@redhat.com>
- <20210623182410.3787784-3-trix@redhat.com>
- <20210624075414.GA44700@yilunxu-OptiPlex-7050>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <02bd1acf-6b8d-7ca1-6a9c-c3f6d3a2071c@redhat.com>
-Date:   Thu, 24 Jun 2021 07:37:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210624075414.GA44700@yilunxu-OptiPlex-7050>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S232095AbhFXOlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 10:41:17 -0400
+Received: from mail-eopbgr1400135.outbound.protection.outlook.com ([40.107.140.135]:30688
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230008AbhFXOlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 10:41:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZxlZP5/qfPN6Ktm6+rBfyL6vhULuS8I0spjgSUwfsvUinRGyPNxESqBiG1jJA+ab1J+SACLPKN65C4kJ/X0jq6btLjL0S5UMP9AGrFRO+oK2QikUXkQ0xSI0OsqRQ62Oyzx8JmZ6WZ7Ku6ZzCQPX+4hYb+0lw9tu4YiON3AUsmMHgRp9+TpL90BthGKwADRolGGodfL6mf0o7KbUVYzJZ5aNfZyBlkKLwkVvraAwHQuG6zLIgou7VkwxKBxiQHMw944Vb71vRWPHr6NMG0/xRAFpu/H/g4AZxU5UwjPLE5z5u3IO6LQw2mJX6nTcM9WHWrJS2WSKLH1k+GiYL8wMBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Mzkds1e0hWi2cnycu5HnZ2TJyaZqX16ajKWp6RVFRDk=;
+ b=gNtU2NwFwgXbd17t6E9G1/7+NIzN9nL8EWV9b0496Xzho/S12gbyoJ2TlUeF3xNNeAw4J5r3ZPHLXv2+U/A69VbjRYSmf62WT5rIBE9sCy2zUmBBLGnhC+YQK7bt4rF4x7kgnaVZLqQxse1NbvAnurtyyN1yqEKnlNjqbE4/mlz7jq+Bt99nyE/LMaIdZ4pFQLQYZP6GepWOYlDoGHJfV2YGGs61ttGg/qdOasYkT2UYnc+4+ImATybkL1npxuSvMHK7UW+uRCz9zDx4GZWU5YEC7TCx6C5Bshyg9GzVCXmOF0vqyzK1pWrAkfeZrcQYwYg8aEdhswX1xCvS8bSz/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Mzkds1e0hWi2cnycu5HnZ2TJyaZqX16ajKWp6RVFRDk=;
+ b=oxpTL54qoBYJC8O+thF4bRsNCaUFlM02hAs7HZEo8y1nxRC5PJjH9uP46JA62rEclVyjHjKgf2Mh4dz/IboTHFsvQDvTAgNekH4/nT7b0zzN60ly9makw7BF8A4IVkGrHseYhwtPXEfRk/iYi/DV1dmfZFO0Rm18VM0SHIG4wr8=
+Received: from OS3PR01MB6593.jpnprd01.prod.outlook.com (2603:1096:604:101::7)
+ by OSBPR01MB3142.jpnprd01.prod.outlook.com (2603:1096:604:21::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Thu, 24 Jun
+ 2021 14:38:46 +0000
+Received: from OS3PR01MB6593.jpnprd01.prod.outlook.com
+ ([fe80::a53c:198f:9145:903b]) by OS3PR01MB6593.jpnprd01.prod.outlook.com
+ ([fe80::a53c:198f:9145:903b%8]) with mapi id 15.20.4264.020; Thu, 24 Jun 2021
+ 14:38:46 +0000
+From:   Min Li <min.li.xe@renesas.com>
+To:     Richard Cochran <richardcochran@gmail.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net 1/2] ptp: idt82p33: optimize idt82p33_adjtime
+Thread-Topic: [PATCH net 1/2] ptp: idt82p33: optimize idt82p33_adjtime
+Thread-Index: AQHXaD6QH3kS+d8DxUyFpooG2wAFo6sihNkAgAC1sPA=
+Date:   Thu, 24 Jun 2021 14:38:46 +0000
+Message-ID: <OS3PR01MB6593D3DCF7CE756E260548B3BA079@OS3PR01MB6593.jpnprd01.prod.outlook.com>
+References: <1624459585-31233-1-git-send-email-min.li.xe@renesas.com>
+ <20210624034026.GA6853@hoboy.vegasvil.org>
+In-Reply-To: <20210624034026.GA6853@hoboy.vegasvil.org>
+Accept-Language: en-CA, en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=renesas.com;
+x-originating-ip: [72.140.114.230]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e92db02c-57fd-4b85-d672-08d9371dc61d
+x-ms-traffictypediagnostic: OSBPR01MB3142:
+x-microsoft-antispam-prvs: <OSBPR01MB3142B89FFCEE4EAE6F549A1ABA079@OSBPR01MB3142.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: lTu/3UzSFt8ya7kSevOWzpWlYYzVIdDdd0u5RhapYXymjAcMYrSTKtrmooTyoqZOrwZxc+xAu4bUR/Fq7FFfpiMvvlomwJ95o5EMiVmoSSE0hjt7irDUJb1aeu2gncTUXKv4PS3CvZ7meDKsf47kUvv0ndsc+aO0+jjV7+zK2FQoFSC4hbRF+nM3Mu8Ai+yYLBl9oJpbL3hwI1lnQjzabANCJjnSCBcgsduB7JpXtsYDeQawTkrYtC92RyftYXFV1wYQOK3wtasgCz8KMxWjg1yvd/ufXkPg+6gy2b3ijiPxPfrXXk706OLBWzzBJv0pR83mVxIE8SZI6yiHM0gz7HgIUNSoDaQWQehT7fw/ETJKaw3ExR9kqPMBZ5b/VsvUrGLcBs3JTfHLvayaPX4AoEYQAJkMPYJVaTUqSVNmKz2QSQ3e6//y5Li9+wIs5nfnxmkabcNa5Ia9Et7B2/sKLMrQmrCjCIfleuux6Oz8sWo4ejCwodY03RaG4eLs/0XChp/uKWAIQVsAqWZbZ3rXF58FRskmOaks6WTlwJAtCke0EL1/B68n8s9/uSIBNW0iv7YK+zpQ5lXrNrF2tjGd3Vm7OEovbh2nx89ARNa3dk/cXbrBzlgsEqiLyg1t59AtQzX2jqC9wYMcSQLB+WBr6g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB6593.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(396003)(39850400004)(136003)(376002)(6506007)(53546011)(83380400001)(5660300002)(7696005)(55016002)(26005)(9686003)(316002)(54906003)(8676002)(8936002)(6916009)(186003)(2906002)(66556008)(66946007)(66476007)(52536014)(66446008)(478600001)(86362001)(76116006)(4326008)(64756008)(71200400001)(33656002)(122000001)(38100700002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?tJI9khrz7FtE53poteWUUgfJEIBSsaQn2CrlfoZXJyHDsAvtLnn8UAlBYD1c?=
+ =?us-ascii?Q?LidpI9I7d1H/cwFCvxz2Ci3b5glryjGphqiheDFV72CC+a77pRs74OxNIepu?=
+ =?us-ascii?Q?svIheM/sm+OW7+ePOqD+cS0O6TrTWDugfpIvp680EUa3JzCBzHoY2SI15cgu?=
+ =?us-ascii?Q?LWiNExfp5ml0yDVwcrXwYyV0huDR3qaOMAXBQlfJ5hl3lfOxnjSD/g15vNdR?=
+ =?us-ascii?Q?3Ua6ssz+TEegVRnNBHaUdBU8lA15NsrTok7jn5ByJAM6gC2G1/9fuplF0pSA?=
+ =?us-ascii?Q?wgb4l8xT4SNhMn+LwRTtC7blp+pJ/5GSbzJXt5g0v3yB4qvRxP2Bpqx7LXkl?=
+ =?us-ascii?Q?9Fa2ro2g2jv0qEzVcIuacLJ4iFh5xrLfn14GX+y2bBt0uF/mil+lcnNaALG9?=
+ =?us-ascii?Q?7rYoRK0wYrPQ+5DR0Od1eECP50wz4U1RDaBe+JyfLnw0EqtVktEqfPiti4Ka?=
+ =?us-ascii?Q?WIg3GoEZUyfimCueXQhg6icb433gnmIMMv5cBBNmPNuAKW97cQCLBaqELBE9?=
+ =?us-ascii?Q?d+4nOpMarYnjrkjgptxCEHT5w7a4SSklpYsBNWjLk6iKUjALCOTxoCSuGKdH?=
+ =?us-ascii?Q?QaCETd+pzBU+uc2ixuekT6Ahnck3slNhR9kAj9nAVG18O7y2GThwmCVsps0H?=
+ =?us-ascii?Q?evxn6Tw+O/Ktkn4jECBTCxluIRZK90ugxmFBoVOAaIibRfI/jwcmK3EOV6u7?=
+ =?us-ascii?Q?q2s5MVFa0ZrRVXe9hv7i2/u7/v/vPE4cWhWlR6ScrpPpldS06MIuzk1+mFpM?=
+ =?us-ascii?Q?Uz51IFY6I5BR/+4stlfr/iad8tWsBXxgxHECG4yyciI29kHMSBqrG5T//C8b?=
+ =?us-ascii?Q?UA6bdszPBOlL388Yu6VtwgMWLUCimFe49/ctLdbOR56phqfGRj3gM2eL0M42?=
+ =?us-ascii?Q?GM4gXz/+Qo8HKvmbykZX1KPKK6zR4qF+vjRQi9SDT5edm4qRXlA/MYXGbLxO?=
+ =?us-ascii?Q?rynaLDxE5OK2pqprauPcVtdBhGWa6/5GLxGCkRv7DuvIWiwpIA62E72EX3Y4?=
+ =?us-ascii?Q?75UA5IKoxMvrY6/4iPeQNhHcag//3ydJJTRylD+ygvwv79xh0pdAAONAyBz8?=
+ =?us-ascii?Q?q4ZpZHtxme8pzW7ZqTHuJ7+5BxgWbdAR2R8xMj4KnzX+eI1pdc4OV6pkveuV?=
+ =?us-ascii?Q?SXMPmrrQGTb0G+xiW4yaETE2hrKHqfCIL2buqf7yhiOzuH3NHcLbWpXSACjy?=
+ =?us-ascii?Q?8uGdvvXPL5WUdPSi7xx1eL5xY8ZT+2ExF1nLQxWGorA8Zg8SeydyFcUmNbCl?=
+ =?us-ascii?Q?ywrrUI7/rAEug7bhfN0bmjocSlEv+9dIxiw39Va8gtblkiZTROGjqlAn3IN7?=
+ =?us-ascii?Q?fDW2qU9bHhtGjXXPMtSx5cpD?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB6593.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e92db02c-57fd-4b85-d672-08d9371dc61d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jun 2021 14:38:46.5824
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FadfH2YSjM0I/E90Qwul4Dr5Vb51jpQVIzFGG/ZedWyoRMKfi7lSnEDX/M4ML81VRdb8tLeSUHKy80q3RRJJkw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB3142
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 6/24/21 12:54 AM, Xu Yilun wrote:
-> On Wed, Jun 23, 2021 at 11:24:04AM -0700, trix@redhat.com wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> An FPGA manager should not be required to provide a
->> write_init() op if there is nothing for it do.
->> So add a wrapper and move the op checking.
->> Default to success.
->>
->> Signed-off-by: Tom Rix <trix@redhat.com>
->> ---
->>   drivers/fpga/fpga-mgr.c | 14 +++++++++++---
->>   1 file changed, 11 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
->> index ecb4c3c795fa5..87bbb940c9504 100644
->> --- a/drivers/fpga/fpga-mgr.c
->> +++ b/drivers/fpga/fpga-mgr.c
->> @@ -69,6 +69,14 @@ void fpga_image_info_free(struct fpga_image_info *info)
->>   }
->>   EXPORT_SYMBOL_GPL(fpga_image_info_free);
->>   
->> +static int fpga_mgr_write_init(struct fpga_manager *mgr,
->> +			       struct fpga_image_info *info,
->> +			       const char *buf, size_t count)
->> +{
->> +	if (mgr->mops && mgr->mops->write_init)
-> Maybe we don't have to check mgr->mops, it is already checked on
-> creation.
-
-The check was on purpose because my earlier patchset responding to 
-problems with sec-mgr.
-
-Focusing on Greg's comment that why can't sec-mgr be done with existing 
-code,
-
-I think the sec-mgr can be folded into the exiting fpga-mgr via a new 
-set of ops.
-
-the 'generalize fpga_mgr_load' patchset set has two sets of ops,
-
-one for existing partial reconfiguration
-
-and one for reimaging the whole board, what the sec-mgr is doing.
-
-Since dfl has the only instance of need, it would have the only reimage ops.
-
-The check at creation has been deferred to at use.
-
-other targets could have null ops.
-
-Having maybe null ops means the wrappers need to check.
-
-Here is a ref to the earlier patchset
-
-https://lore.kernel.org/linux-fpga/20210524162721.2220782-1-trix@redhat.com/
-
-I'll respin 'generalize fpga_mgr_load' within the context this patchset 
-to give you some more context.
-
-It will test is the check is needed and give folks a chance to comment 
-if this a way sec-mgr should go.
-
-Tom
-
-
->
-> The same concern to all the following patches.
->
+> -----Original Message-----
+> From: Richard Cochran <richardcochran@gmail.com>
+> Sent: June 23, 2021 11:40 PM
+> To: Min Li <min.li.xe@renesas.com>
+> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH net 1/2] ptp: idt82p33: optimize idt82p33_adjtime
+>=20
+> On Wed, Jun 23, 2021 at 10:46:24AM -0400, min.li.xe@renesas.com wrote:
+> > From: Min Li <min.li.xe@renesas.com>
+> >
+> > The current adjtime implementation is read-modify-write and
+> > immediately triggered, which is not accurate due to slow i2c bus
+> > access. Therefore, we will use internally generated 1 PPS pulse as
+> > trigger, which will improve adjtime accuracy significantly. On the
+> > other hand, the new trigger will not change TOD immediately but delay i=
+t
+> to the next 1 PPS pulse.
+>=20
+> Delaying the adjustment by one second (in the worst case) will cause
+> problems.  User space expects the adjustment to happen before the call to
+> adjtimex() returns.
+>=20
+> In the case of PTP, if new Sync messages arrive before the delayed
+> adjustment completes, there will be a HUGE offset error, and that will hu=
+rt
+> the PI servo.
+>=20
+> So it is better to accept a less accurate jump then to delay the adjustme=
+nt.
+>=20
 > Thanks,
-> Yilun
->
->> +		return  mgr->mops->write_init(mgr, info, buf, count);
->> +	return 0;
->> +}
->>   /*
->>    * Call the low level driver's write_init function.  This will do the
->>    * device-specific things to get the FPGA into the state where it is ready to
->> @@ -83,9 +91,9 @@ static int fpga_mgr_write_init_buf(struct fpga_manager *mgr,
->>   
->>   	mgr->state = FPGA_MGR_STATE_WRITE_INIT;
->>   	if (!mgr->mops->initial_header_size)
->> -		ret = mgr->mops->write_init(mgr, info, NULL, 0);
->> +		ret = fpga_mgr_write_init(mgr, info, NULL, 0);
->>   	else
->> -		ret = mgr->mops->write_init(
->> +		ret = fpga_mgr_write_init(
->>   		    mgr, info, buf, min(mgr->mops->initial_header_size, count));
->>   
->>   	if (ret) {
->> @@ -569,7 +577,7 @@ struct fpga_manager *fpga_mgr_create(struct device *parent, const char *name,
->>   	int id, ret;
->>   
->>   	if (!mops || !mops->write_complete || !mops->state ||
->> -	    !mops->write_init || (!mops->write && !mops->write_sg) ||
->> +	    (!mops->write && !mops->write_sg) ||
->>   	    (mops->write && mops->write_sg)) {
->>   		dev_err(parent, "Attempt to register without fpga_manager_ops\n");
->>   		return NULL;
->> -- 
->> 2.26.3
+> Richard
 
+Hi Richard
+
+Thanks for the review
+
+For linuxptp/ptp4l, we can use step_window to adapt to the slow adjtime.
+
+I have tested this change with ptp4l for by setting step_window to 48 (assu=
+ming 16 packets per second)
+for both 8265.2/8275.1 and they performed well.
+
+Min
