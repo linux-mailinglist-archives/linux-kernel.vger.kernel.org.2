@@ -2,212 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D30C3B38AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 23:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767433B38B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 23:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232716AbhFXVb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 17:31:26 -0400
-Received: from mail-io1-f48.google.com ([209.85.166.48]:35354 "EHLO
-        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232029AbhFXVbW (ORCPT
+        id S232720AbhFXVde convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Jun 2021 17:33:34 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:35392 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232582AbhFXVdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 17:31:22 -0400
-Received: by mail-io1-f48.google.com with SMTP id d9so10093618ioo.2;
-        Thu, 24 Jun 2021 14:29:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=y+ykEWYcQLjlgpcIIfyX0n0bLIPZS2IJ5iGmNYAn4LQ=;
-        b=SKhEXP4aVWo52jFKi4xUQMNGM3dqz1kXhPguTqTu0V6oKfOgdAghTRxMj71iJyNkUX
-         TbLMQDeqVLgBU8iyWt96AEy+KnlDjwYBp3pm0oVqwZ5RxcFHkXr4POde15FHbwJ+fuIK
-         TNe+VKHwylY++radweUt76+78F/vxx1ZjF7Iopi6UgIsP5Qmi0/KVxvha0/fbAxmrx97
-         rJ8IkZ4PR4YxyRzWYz/cT4IeHxuRc+QM6qff1jS0kdQ5JtdK8yMwhELYTwTiccrq9Z41
-         qpycGZCHzQS0e4QVfzrIS/AjUZxaDr3sFpaxt1EzXJ45xdz4uyu2Z/AO4Q8tA1rx0za+
-         j2oA==
-X-Gm-Message-State: AOAM531GI7xFrqMv8Ij9NHtBjjXPetQSOAxsWZVN0GktUHA8fdJ/sDNo
-        DbivPZupOsFfK77Hv5Pgrw==
-X-Google-Smtp-Source: ABdhPJxhsWo9K1agrJ//pvcpy6h/mSqqSv/FoLKL8s07k45EF5g8iQyCAq+n+lb59bzOfKRkUO748g==
-X-Received: by 2002:a02:3781:: with SMTP id r123mr3387819jar.26.1624570142442;
-        Thu, 24 Jun 2021 14:29:02 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id q8sm2118264iot.30.2021.06.24.14.28.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 14:29:01 -0700 (PDT)
-Received: (nullmailer pid 2017356 invoked by uid 1000);
-        Thu, 24 Jun 2021 21:28:53 -0000
-Date:   Thu, 24 Jun 2021 15:28:53 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jamin Lin <jamin_lin@aspeedtech.com>
-Cc:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jean Delvare <jdelvare@suse.de>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Khalil Blaiech <kblaiech@mellanox.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        =?UTF-8?B?QmVuY2UgQ3PDs2vDoXM=?= <bence98@sch.bme.hu>,
-        Mike Rapoport <rppt@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        chiawei_wang@aspeedtech.com, troy_lee@aspeedtech.com,
-        steven_lee@aspeedtech.com
-Subject: Re: [PATCH 2/3] dt-bindings: i2c-new: Add bindings for AST2600 I2C
-Message-ID: <20210624212853.GA2013136@robh.at.kernel.org>
-References: <20210617094424.27123-1-jamin_lin@aspeedtech.com>
- <20210617094424.27123-3-jamin_lin@aspeedtech.com>
+        Thu, 24 Jun 2021 17:33:32 -0400
+Received: from [77.244.183.192] (port=63848 helo=[192.168.178.41])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1lwWwI-000Dnu-Sg; Thu, 24 Jun 2021 23:31:10 +0200
+Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linus.walleij@linaro.org, linux-pci@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+References: <8207a53c-4de9-d0e5-295a-c165e7237e36@lucaceresoli.net>
+ <20210622110627.aqzxxtf2j3uxfeyl@pali> <20210622115604.GA25503@lpieralisi>
+ <20210622121649.ouiaecdvwutgdyy5@pali>
+ <18a104a9-2cb8-7535-a5b2-f5f049adff47@lucaceresoli.net>
+ <4d4c0d4d-41b4-4756-5189-bffa15f88406@ti.com>
+ <20210622205220.ypu22tuxhpdn2jwz@pali>
+ <2873969e-ac56-a41f-0cc9-38e387542aa1@lucaceresoli.net>
+ <20210622211901.ikulpy32d6qlr4yw@pali>
+ <588741e4-b085-8ae2-3311-27037c040a57@lucaceresoli.net>
+ <20210622222328.3lfgkrhsdy6izedv@pali>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <51be082a-ff10-8a19-5648-f279aabcac51@lucaceresoli.net>
+Date:   Thu, 24 Jun 2021 23:31:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617094424.27123-3-jamin_lin@aspeedtech.com>
+In-Reply-To: <20210622222328.3lfgkrhsdy6izedv@pali>
+Content-Type: text/plain; charset=utf-8
+Content-Language: it-IT
+Content-Transfer-Encoding: 8BIT
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 05:43:39PM +0800, Jamin Lin wrote:
-> AST2600 support the new register set of I2C controller
-> Add bindings document to support the new driver of I2C
-> 
-> Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
-> ---
->  .../bindings/i2c/aspeed,new-i2c.yaml          | 107 ++++++++++++++++++
->  1 file changed, 107 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/i2c/aspeed,new-i2c.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/i2c/aspeed,new-i2c.yaml b/Documentation/devicetree/bindings/i2c/aspeed,new-i2c.yaml
-> new file mode 100644
-> index 000000000000..2c264596b138
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/i2c/aspeed,new-i2c.yaml
-> @@ -0,0 +1,107 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/i2c/aspeed,new-i2c.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: ASPEED I2C on the AST26XX SoCs Device Tree Bindings
-> +
-> +description: |
-> +  ASPEED I2C controller support the new register set since AST26XX
-> +  The i2c-global-regs device is used to enable new register set
-> +
-> +maintainers:
-> +  - Ryan Chen <ryan_chen@aspeedtech.com>
-> +
-> +allOf:
-> +  - $ref: /schemas/i2c/i2c-controller.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - aspeed,ast2600-i2c-bus
-> +      - items:
-> +          - enum:
-> +              - aspeed,ast2600-i2c-global
+Hi Pali,
 
-This is not an i2c controller and a separate block, so it belongs in 
-its own binding doc.
-
-> +          - const: syscon
-> +
-> +  reg:
-> +    minItems: 1
-> +    maxItems: 2
-
-Drop maxItems. 2 is implied by items length.
-
-> +    items:
-> +      - description: address offset and range of bus
-> +      - description: address offset and range of bus buffer
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +    description:
-> +      root clock of bus, should reference the APB
-> +      clock in the second cell
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  bus-frequency:
-> +    minimum: 100
-> +    maximum: 5000000
-> +    default: 100000
-> +    description: frequency of the bus clock in Hz defaults to 100 kHz when not
-> +      specified
-> +
-> +  multi-master:
-> +    type: boolean
-> +    description:
-> +      states that there is another master active on this bus
-> +
-> +  buff-mode:
-> +    type: boolean
-> +    description:
-> +      buffer mode data transfer
-> +
-> +  byte-mode:
-> +    type: boolean
-> +    description:
-> +      byte mode tata transfer
-> +
-> +  smbus-alert:
-> +    type: boolean
-> +    description:
-> +      smbus alert protocol
-> +
-> +required:
-> +  - reg
-> +  - compatible
-> +  - clocks
-> +  - resets
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/interrupt-controller/aspeed-scu-ic.h>
-> +    #include <dt-bindings/clock/ast2600-clock.h>
-> +
-> +    i2c_gr: i2c-global-regs@0 {
-> +      compatible = "aspeed,ast2600-i2c-global", "syscon";
-> +      reg = <0x0 0x20>;
-> +      clocks = <&syscon ASPEED_CLK_APB2>;
-> +      resets = <&syscon ASPEED_RESET_I2C>;
-> +    };
-> +
-> +    i2c0: i2c-bus@80 {
-> +      compatible = "aspeed,ast2600-i2c-bus";
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      #interrupt-cells = <1>;
-> +      reg = <0x80 0x80>, <0xC00 0x20>;
-> +      clocks = <&syscon ASPEED_CLK_APB2>;
-> +      resets = <&syscon ASPEED_RESET_I2C>;
-> +      interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
-> +      bus-frequency = <100000>;
-> +    };
-> -- 
-> 2.17.1
+On 23/06/21 00:23, Pali Rohár wrote:
+> On Tuesday 22 June 2021 23:36:35 Luca Ceresoli wrote:
+>> Hi Pali,
+>>
+>> On 22/06/21 23:19, Pali Rohár wrote:
+>>> On Tuesday 22 June 2021 23:08:07 Luca Ceresoli wrote:
+>>>> On 22/06/21 22:52, Pali Rohár wrote:
+>>>>> On Tuesday 22 June 2021 19:27:37 Kishon Vijay Abraham I wrote:
+>>>>>> Hi Luca, Pali,
+>>>>>>
+>>>>>> On 22/06/21 7:01 pm, Luca Ceresoli wrote:
+>>>>>>> Hi,
+>>>>>>>
+>>>>>>> On 22/06/21 14:16, Pali Rohár wrote:
+>>>>>>>> On Tuesday 22 June 2021 12:56:04 Lorenzo Pieralisi wrote:
+>>>>>>>>> [Adding Linus for GPIO discussion, thread:
+>>>>>>>>> https://lore.kernel.org/linux-pci/20210531090540.2663171-1-luca@lucaceresoli.net]
+>>>>>>>>>
+>>>>>>>>> On Tue, Jun 22, 2021 at 01:06:27PM +0200, Pali Rohár wrote:
+>>>>>>>>>> Hello!
+>>>>>>>>>>
+>>>>>>>>>> On Tuesday 22 June 2021 12:57:22 Luca Ceresoli wrote:
+>>>>>>>>>>> Nothing happened after a few weeks... I understand that knowing the
+>>>>>>>>>>> correct reset timings is relevant, but unfortunately I cannot help much
+>>>>>>>>>>> in finding out the correct values.
+>>>>>>>>>>>
+>>>>>>>>>>> However I'm wondering what should happen to this patch. It *does* fix a
+>>>>>>>>>>> real bug, but potentially with an incorrect or non-optimal usleep range.
+>>>>>>>>>>> Do we really want to ignore a bugfix because we are not sure about how
+>>>>>>>>>>> long this delay should be?
+>>>>>>>>>>
+>>>>>>>>>> As there is no better solution right now, I'm fine with your patch. But
+>>>>>>>>>> patch needs to be approved by Lorenzo, so please wait for his final
+>>>>>>>>>> answer.
+>>>>>>>>>
+>>>>>>>>> I am not a GPIO expert and I have a feeling this is platform specific
+>>>>>>>>> beyond what the PCI specification can actually define architecturally.
+>>>>>>>>
+>>>>>>>> In my opinion timeout is not platform specific as I wrote in email:
+>>>>>>>> https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
+>>>>>>>>
+>>>>>>>> My experiments already proved that some PCIe cards needs to be in reset
+>>>>>>>> state for some minimal time otherwise they cannot be enumerated. And it
+>>>>>>>> does not matter to which platform you connect those (endpoint) cards.
+>>>>>>>>
+>>>>>>>> I do not think that timeout itself is platform specific. GPIO controls
+>>>>>>>> PERST# pin and therefore specified sleep value directly drives how long
+>>>>>>>> is card on the other end of PCIe slot in Warm Reset state. PCIe CEM spec
+>>>>>>>> directly says that PERST# signal controls PCIe Warm Reset.
+>>>>>>>>
+>>>>>>>> What is here platform specific thing is that PERST# signal is controlled
+>>>>>>>> by GPIO. But value of signal (high / low) and how long is in signal in
+>>>>>>>> which state for me sounds like not an platform specific thing, but as
+>>>>>>>> PCIe / CEM related.
+>>>>>>>
+>>>>>>> That's exactly my understanding of this matter. At least for the dra7xx
+>>>>>>> controller it works exactly like this, PERSTn# is nothing but a GPIO
+>>>>>>> output from the SoC that drives the PERSTn# input of the external chip
+>>>>>>> without affecting the controller directly.
+>>>>>>>
+>>>>>>
+>>>>>> While the patch itself is correct, this kind-of changes the behavior on
+>>>>>> already upstreamed platforms. Previously the driver expected #PERST to
+>>>>>> be asserted be external means (or default power-up state) and only takes
+>>>>>> care of de-asserting the #PERST line.
+>>>>>>
+>>>>>> There are 2 platforms that will be impacted due to this change
+>>>>>> 1) arch/arm/boot/dts/am57xx-beagle-x15-common.dtsi (has an inverter on
+>>>>>> GPIO line)
+>>>>>> 2) arch/arm/boot/dts/am571x-idk.dts (directly connected to #PERST)
+>>>>>>
+>>>>>> For 1), gpiod_set_value(reset, 0) will assert the PERST line due to the
+>>>>>> inverter (and GPIO_ACTIVE_LOW)
+>>>>>> For 2), gpiod_set_value(reset, 0) will assert the PERST line because we
+>>>>>> have GPIO_ACTIVE_HIGH
+>>>>>
+>>>>> Ou! This is a problem in DT. It needs to be defined in a way that state
+>>>>> is same for every DTS device which uses this driver.
+>>>>
+>>>> Why?
+>>>
+>>> I'm starting to be confused by triple or more negations (asserting,
+>>> signal inverter, active low)...
+>>>
+>>> In your patch is GPIO set value to 0 and Kishon wrote that GPIO set
+>>> value to 0 for those two boards assert PERST# line. Asserting PERST#
+>>> line cause endpoint PCIe card to be in reset state. And in pci-dra7xx.c
+>>> driver there is no other code which de-asserts PERST# line.
+>>>
+>>> So based on all this information I deduced that your patch will cause
+>>> putting PCIe cards into reset state (forever) and therefore they would
+>>> not work.
+>>>
+>>> Or do I have here some mistake?
+>>
+>> Uhm, at time time in the night I'm not sure I can do much more than
+>> adding a few notes on top of the commit message. I hope it helps anyway.
+>>
+>> The PCIe PERSTn reset pin is active low and should be asserted, then
+>> deasserted.
+>>
+>> The current implementation only drives the pin once in "HIGH" position,
+>> thus presumably it was intended to deassert the pin. This has two problems:
+>>
+>>   1) it assumes the pin was asserted by other means before loading the
+>>      driver [Note: Kishon confirmed so far]
 > 
+> This is easily solvable. Just assert PERST# pin explicitly via
+> gpiod_set_value() call prior calling that sleep function. And it would
+> work whatever state that pin has at init time. This has advantage that
+> reader of that code does not need to do too much investigation to check
+> at which state is GPIO at probe time and what implication it has...
+
+I agree, it's what my patch does.
+
+> Some other driver are doing it too, e.g. pci-aardvark.c.
 > 
+> Due to fact that also bootloader may use PCIe bus (maybe not now, but in
+> future; like it happened with pci-aardvark after introducing boot
+> support from NVMe disks), initial state may change.
+> 
+>>   2) it has the wrong polarity, since "HIGH" means "active", and the pin is
+>>      presumably configured as active low coherently with the PCIe
+>>      convention, thus it is driven physically to 0, keeping the device
+>>      under reset unless the pin is configured as active high.
+>>      [Note: the curren 2 DTS files pointed to by Kishon have different
+>>       polarities]
+>>
+>> Fix both problems by:
+>>
+>>   1) keeping devm_gpiod_get_optional(dev, NULL, GPIOD_OUT_HIGH) as is, but
+>>      assuming the pin is correctly configured as "active low" this now
+>>      becomes a reset assertion
+>>   2) adding gpiod_set_value(reset, 0) after a delay to deassert reset
+>> [Note: this is exactly the current idea, but with the additional need to
+>> fix (=invert) the current polarities in DT]
+> 
+> Lorenzo asked a good question how GPIO drives PERST#. And maybe it would
+> be a good idea to unify all pci controller drivers to use same GPIO
+> value for asserting PERST# pin. If it is possible. As we can see it is a
+> big mess.
+
+I might be short-righted, but I can think of only one way the code
+should look like in controller drivers. Which is, unsurprisingly, what
+my patch does:
+
+  /* 1 == assert reset == put device under reset */
+  gpiod_set_value(reset, 1);
+  /* or: devm_gpiod_get_optional(..., GPIOD_OUT_HIGH); */
+
+  usleep_range(/* values under discussion */);
+
+  /* 0 == deassert reset == release device from reset */
+  gpiod_set_value(reset, 0);
+
+The PCI controller driver should and can't care about any line
+inversion. It's board-dependent, and as such it should be marked in
+device tree (or ACPI or whatever -- I'm assuming ACPI can describe this it).
+
+Am I overlooking anything?
+-- 
+Luca
+
