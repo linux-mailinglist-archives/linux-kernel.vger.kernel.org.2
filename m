@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A21B3B2CEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D6A3B2CF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 12:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbhFXKxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 06:53:40 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42632 "EHLO
+        id S232290AbhFXKyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 06:54:36 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:42650 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231294AbhFXKxj (ORCPT
+        with ESMTP id S231294AbhFXKyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 06:53:39 -0400
+        Thu, 24 Jun 2021 06:54:35 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BB50F1FD35;
-        Thu, 24 Jun 2021 10:51:19 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8561B1FD35;
+        Thu, 24 Jun 2021 10:52:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624531879; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1624531935; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0WBngdM/kKGG4TeJhVtcyUyOfgd7Jqf8emZ2iaIQ6K0=;
-        b=ElubG+IUqna8MUoq7Enb69A6Z2K9LoWe+sNVRmbfzhhvFSSYwZGD3VMH8Kfr3Zot21I+Hx
-        QyLNk03evrCYlRX23wmJR5nhAIilVCY0qlguqBvcoL78ZclL2VO+4fQANJRVKozm0+9/po
-        lAvTa9LQBwpl+ThoZDgdKnAspR68Uhs=
+        bh=uMzJQYsC331SJMFtxlaOvrL00G3kTtTLQk2qAxEl6es=;
+        b=W+FTKXu3HL/gIIUV2EFFwEp/2604tECyLwdYi5rC7gGb8q4faHjpKSBu694pTDE0duaHii
+        HLehoXekWkiA1uY2FUT3+uZm0G9l66P/1mAyrAmT03ceFaPb/lD+DvdTdTo13tVY2Pw023
+        Yba2AZlvNa9taANdzqpj+cEPgiWVhhc=
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 7C42911A97;
-        Thu, 24 Jun 2021 10:51:19 +0000 (UTC)
+        by imap.suse.de (Postfix) with ESMTP id 4528C11A97;
+        Thu, 24 Jun 2021 10:52:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624531879; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1624531935; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0WBngdM/kKGG4TeJhVtcyUyOfgd7Jqf8emZ2iaIQ6K0=;
-        b=ElubG+IUqna8MUoq7Enb69A6Z2K9LoWe+sNVRmbfzhhvFSSYwZGD3VMH8Kfr3Zot21I+Hx
-        QyLNk03evrCYlRX23wmJR5nhAIilVCY0qlguqBvcoL78ZclL2VO+4fQANJRVKozm0+9/po
-        lAvTa9LQBwpl+ThoZDgdKnAspR68Uhs=
+        bh=uMzJQYsC331SJMFtxlaOvrL00G3kTtTLQk2qAxEl6es=;
+        b=W+FTKXu3HL/gIIUV2EFFwEp/2604tECyLwdYi5rC7gGb8q4faHjpKSBu694pTDE0duaHii
+        HLehoXekWkiA1uY2FUT3+uZm0G9l66P/1mAyrAmT03ceFaPb/lD+DvdTdTo13tVY2Pw023
+        Yba2AZlvNa9taANdzqpj+cEPgiWVhhc=
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id CHT2HKdj1GBVbwAALh3uQQ
-        (envelope-from <jgross@suse.com>); Thu, 24 Jun 2021 10:51:19 +0000
-Subject: Re: [PATCH v2 12/24] x86/paravirt: Mark arch_local_irq_*()
- __always_inline
+        id PKzGD99j1GDfbwAALh3uQQ
+        (envelope-from <jgross@suse.com>); Thu, 24 Jun 2021 10:52:15 +0000
+Subject: Re: [PATCH v2 13/24] x86/paravirt: Use PVOP_* for paravirt calls
 To:     Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
         tglx@linutronix.de
 Cc:     linux-kernel@vger.kernel.org, joro@8bytes.org,
         boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
         rostedt@goodmis.org, dvyukov@google.com, elver@google.com
 References: <20210624094059.886075998@infradead.org>
- <20210624095148.373073648@infradead.org>
+ <20210624095148.437720419@infradead.org>
 From:   Juergen Gross <jgross@suse.com>
-Message-ID: <20ec3a66-36fa-d839-844d-055ad13e7901@suse.com>
-Date:   Thu, 24 Jun 2021 12:51:18 +0200
+Message-ID: <f2996a2b-3cf1-5e25-25a7-44ff25d83fbd@suse.com>
+Date:   Thu, 24 Jun 2021 12:52:14 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210624095148.373073648@infradead.org>
+In-Reply-To: <20210624095148.437720419@infradead.org>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="JQ7ygop8GzWNIBhgNy4bG5knsXSz9WKsL"
+ boundary="FFLsigBbQYuCpzR6aVEpGkcIMmUszVMoy"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---JQ7ygop8GzWNIBhgNy4bG5knsXSz9WKsL
-Content-Type: multipart/mixed; boundary="m4QxypbeP4k9BMrPivZozu9z5lAwl04Ev";
+--FFLsigBbQYuCpzR6aVEpGkcIMmUszVMoy
+Content-Type: multipart/mixed; boundary="brVjSgWd4XRfrLLMVnO6r8lpFpD5CfkMh";
  protected-headers="v1"
 From: Juergen Gross <jgross@suse.com>
 To: Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
@@ -73,41 +72,24 @@ To: Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com,
 Cc: linux-kernel@vger.kernel.org, joro@8bytes.org,
  boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
  rostedt@goodmis.org, dvyukov@google.com, elver@google.com
-Message-ID: <20ec3a66-36fa-d839-844d-055ad13e7901@suse.com>
-Subject: Re: [PATCH v2 12/24] x86/paravirt: Mark arch_local_irq_*()
- __always_inline
+Message-ID: <f2996a2b-3cf1-5e25-25a7-44ff25d83fbd@suse.com>
+Subject: Re: [PATCH v2 13/24] x86/paravirt: Use PVOP_* for paravirt calls
 References: <20210624094059.886075998@infradead.org>
- <20210624095148.373073648@infradead.org>
-In-Reply-To: <20210624095148.373073648@infradead.org>
+ <20210624095148.437720419@infradead.org>
+In-Reply-To: <20210624095148.437720419@infradead.org>
 
---m4QxypbeP4k9BMrPivZozu9z5lAwl04Ev
+--brVjSgWd4XRfrLLMVnO6r8lpFpD5CfkMh
 Content-Type: multipart/mixed;
- boundary="------------251CA5D933F6A3749EB5BFE4"
+ boundary="------------F445952802DAA0167510A8B9"
 Content-Language: en-US
 
 This is a multi-part message in MIME format.
---------------251CA5D933F6A3749EB5BFE4
+--------------F445952802DAA0167510A8B9
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
 On 24.06.21 11:41, Peter Zijlstra wrote:
-> vmlinux.o: warning: objtool: lockdep_hardirqs_on()+0x72: call to arch_l=
-ocal_save_flags() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: lockdep_hardirqs_off()+0x73: call to arch_=
-local_save_flags() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: match_held_lock()+0x11f: call to arch_loca=
-l_save_flags() leaves .noinstr.text section
->=20
-> vmlinux.o: warning: objtool: lock_is_held_type()+0x4e: call to arch_loc=
-al_irq_save() leaves .noinstr.text section
->=20
-> vmlinux.o: warning: objtool: lock_is_held_type()+0x65: call to arch_loc=
-al_irq_disable() leaves .noinstr.text section
->=20
-> vmlinux.o: warning: objtool: lock_is_held_type()+0xfe: call to arch_loc=
-al_irq_enable() leaves .noinstr.text section
->=20
-> It makes no sense to not inline these things.
+> Doing unconditional indirect calls through the pv_ops vector is weird.
 >=20
 > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
@@ -116,7 +98,7 @@ Reviewed-by: Juergen Gross <jgross@suse.com>
 
 Juergen
 
---------------251CA5D933F6A3749EB5BFE4
+--------------F445952802DAA0167510A8B9
 Content-Type: application/pgp-keys;
  name="OpenPGP_0xB0DE9DD628BF132F.asc"
 Content-Transfer-Encoding: quoted-printable
@@ -208,24 +190,24 @@ ZDn8R38=3D
 =3D2wuH
 -----END PGP PUBLIC KEY BLOCK-----
 
---------------251CA5D933F6A3749EB5BFE4--
+--------------F445952802DAA0167510A8B9--
 
---m4QxypbeP4k9BMrPivZozu9z5lAwl04Ev--
+--brVjSgWd4XRfrLLMVnO6r8lpFpD5CfkMh--
 
---JQ7ygop8GzWNIBhgNy4bG5knsXSz9WKsL
+--FFLsigBbQYuCpzR6aVEpGkcIMmUszVMoy
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmDUY6YFAwAAAAAACgkQsN6d1ii/Ey+9
-fQf/emnfCUFCvSK1MJ3Am2PWOS8SlMRoRJGY/+5gyP4LUApIpBdfnFpluVP4XGA/ym9wjzluq3aX
-3VyZl1OIjwc4XT+nm3sd6WQ3GD0VT9diq1U5w7yO1V3GRyuq2mvjuteHXQrTnmZv3wOI/eXMhN4p
-tik5ifHJoyGVS7ZT+tyGcSbJ3ZkuTeGlUIe0Y+a4p68esr48Y2LOAb73QS0OjtisrLZE6Zq4kxE9
-iX2r1YFqL6GIzXG6SpjjueYrI5LnbxZgFfOxKzqFeqi8nDNpfgPk2Q+yL9IkP3g+DWuqPURuHkk2
-8Ai8fZAe81+LYCKlKp070gB/jtGni1q2mZmKzimQIg==
-=wigj
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmDUY94FAwAAAAAACgkQsN6d1ii/Ey95
+Bgf6A3iSNr5tPtLhTcl3mFzz7QMSk5ErdWOrX88+8rnxCZTp3LV1lafqNRQ2IAdySwInGcssX+n1
+eoXAy5QRs9aErq7ivzVZAkCmXWMES9RoujPKq3OWPGUYtI1ug06YMMFS95mOeHTb8Q8eUdX7jsjG
+P/4yUQw6e+1GgWN9Udt8BJvpAMNQVVOYYoo+sIbfloMw0YO00I+Vonq46OKO/OXLwm8gHg4Z3lKR
+cJG9ueSFGZEpKtbnCrs/TYUQEzK1zhuMjlco1IDQnyvL2taGNQ0fmh/OC8pheGhIrAXrAu/A/SoG
+CedrhjrUWaQo5evTD3RU1HEiX30Zx4RkacterZ9duA==
+=xeT9
 -----END PGP SIGNATURE-----
 
---JQ7ygop8GzWNIBhgNy4bG5knsXSz9WKsL--
+--FFLsigBbQYuCpzR6aVEpGkcIMmUszVMoy--
