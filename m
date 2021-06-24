@@ -2,145 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7BB33B311C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 864AC3B311D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 16:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbhFXOSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 10:18:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbhFXOSE (ORCPT
+        id S232006AbhFXOSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 10:18:15 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5423 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230170AbhFXOSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 10:18:04 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C873C061574;
-        Thu, 24 Jun 2021 07:15:44 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id d21-20020a9d72d50000b02904604cda7e66so3925435otk.7;
-        Thu, 24 Jun 2021 07:15:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nZjVyzZsb81wztakP7Xrxylxn59FboylSwahYy/4064=;
-        b=sY+1LZiod5ob1CQgRJB49BxZQt5g2B77cLoV3iMQxICp1nnaVf8oxKjngOrjsyWZ3z
-         rUGnAOSRVwdaLMMXdQlAQK7DSb/IF+r9BXtlfS8oAtNnZ7JJUubjKT3HSMfIQevmAU1G
-         dDpivzr2g3iyUhCBKwBBzRyNkiEXnUh99SEWPoXB2tLgq66EnL3fuOoQWkXNsaJTyuli
-         HWJhJ2FBaGGvXpAtxs1QaFQdcF17CLjK1FERXD0xqFDukik5gF9F1vlqPibrsBnHWx+/
-         R4Zl/ETxWJisg0MV4BnBAzCV1oUxytzlKMhU+ITxS6RoDl/BcqVzvYS+baeqgyebHU84
-         d5Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=nZjVyzZsb81wztakP7Xrxylxn59FboylSwahYy/4064=;
-        b=IgVZNJ595K9u8+hcW2HUzGt/MWic3sm3dv4OlifJdk0fBHdvDPqEiElYyLru4iWpYM
-         tr46Ml/S9EFib7DjrodVoYN9VzPwH0XuicO+A7Zh/D7/OXmtZY4VCi28uLP2ihhAKQEV
-         9saa40HTtnBqtQP58L+LknpR2YHnsptcGzeoXivV/n5epa8FXsANOtAw1OLROgJ4ItO2
-         B9Mm8tvOQaifnD++qDHjZfoem+Vlx6xlHTgvcQVHqXx/HuoXMMVXARt5BTAcvN9nNcXw
-         1zlnnTpYgX8AbLbZYYaQamtZS6q2dcVoyiN/o+rupSoYPIshvUvFmhaA6aoZJBJgEKJU
-         CTag==
-X-Gm-Message-State: AOAM531Tg9uiknpIW0O8ZC9376kqByEMrfPG+2fjyPtP0BWYs9cE30qy
-        WvT0xP5d3vnfN5GHD31rPHI=
-X-Google-Smtp-Source: ABdhPJyOYwSFZ9SagWIpjFLYG7gIV01mU7gqgRWWiAKmJAFo2SFbLpyPScHulTrk8tZi5uVy9kG5Kg==
-X-Received: by 2002:a9d:6508:: with SMTP id i8mr4596161otl.368.1624544143599;
-        Thu, 24 Jun 2021 07:15:43 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l2sm726900otl.27.2021.06.24.07.15.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 07:15:43 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 24 Jun 2021 07:15:41 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] hwmon: Support set_trips() of thermal device ops
-Message-ID: <20210624141541.GA3709721@roeck-us.net>
-References: <20210623042231.16008-1-digetx@gmail.com>
- <20210623042231.16008-3-digetx@gmail.com>
+        Thu, 24 Jun 2021 10:18:14 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G9hst3KXjz72F0;
+        Thu, 24 Jun 2021 22:12:34 +0800 (CST)
+Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 24 Jun 2021 22:15:51 +0800
+Received: from [10.67.102.67] (10.67.102.67) by dggemi759-chm.china.huawei.com
+ (10.1.198.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 24
+ Jun 2021 22:15:50 +0800
+Subject: Re: [PATCH net-next 2/3] net: hns3: add support for TX push mode
+To:     Will Deacon <will@kernel.org>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <catalin.marinas@arm.com>, <maz@kernel.org>,
+        <mark.rutland@arm.com>, <dbrazdil@google.com>,
+        <qperret@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <lipeng321@huawei.com>,
+        <peterz@infradead.org>
+References: <1624360271-17525-1-git-send-email-huangguangbin2@huawei.com>
+ <1624360271-17525-3-git-send-email-huangguangbin2@huawei.com>
+ <20210622121611.GB30757@willie-the-truck>
+From:   "huangguangbin (A)" <huangguangbin2@huawei.com>
+Message-ID: <ea9f2737-6639-b9ce-9472-bb3c04581734@huawei.com>
+Date:   Thu, 24 Jun 2021 22:15:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210623042231.16008-3-digetx@gmail.com>
+In-Reply-To: <20210622121611.GB30757@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.67]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggemi759-chm.china.huawei.com (10.1.198.145)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 07:22:31AM +0300, Dmitry Osipenko wrote:
-> Support set_trips() callback of thermal device ops. This allows HWMON
-> device to operatively notify thermal core about temperature changes, which
-> is very handy to have in a case where HWMON sensor is used by CPU thermal
-> zone that performs passive cooling and emergency shutdown on overheat.
-> Thermal core will be able to react faster to temperature changes.
-> 
-> The set_trips() callback is entirely optional. If HWMON sensor doesn't
-> support setting thermal trips, then the callback is a NO-OP. The dummy
-> callback has no effect on the thermal core. The temperature trips are
-> either complement the temperature polling mechanism of thermal core or
-> replace the polling if sensor can set the trips and polling is disabled
-> by a particular device in a device-tree.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-Applied.
 
+On 2021/6/22 20:16, Will Deacon wrote:
+> On Tue, Jun 22, 2021 at 07:11:10PM +0800, Guangbin Huang wrote:
+>> From: Huazhong Tan <tanhuazhong@huawei.com>
+>>
+>> For the device that supports the TX push capability, the BD can
+>> be directly copied to the device memory. However, due to hardware
+>> restrictions, the push mode can be used only when there are no
+>> more than two BDs, otherwise, the doorbell mode based on device
+>> memory is used.
+>>
+>> Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
+>> Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
+>> ---
+>>   drivers/net/ethernet/hisilicon/hns3/hnae3.h        |  1 +
+>>   drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    | 83 ++++++++++++++++++++--
+>>   drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |  6 ++
+>>   drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |  2 +
+>>   .../net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c |  2 +
+>>   .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    | 11 ++-
+>>   .../ethernet/hisilicon/hns3/hns3pf/hclge_main.h    |  8 +++
+>>   .../ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.c   |  2 +
+>>   .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c  | 11 ++-
+>>   .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.h  |  8 +++
+>>   10 files changed, 126 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+>> index 0b202f4def83..3979d5d2e842 100644
+>> --- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+>> +++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+>> @@ -163,6 +163,7 @@ struct hnae3_handle;
+>>   
+>>   struct hnae3_queue {
+>>   	void __iomem *io_base;
+>> +	void __iomem *mem_base;
+>>   	struct hnae3_ae_algo *ae_algo;
+>>   	struct hnae3_handle *handle;
+>>   	int tqp_index;		/* index in a handle */
+>> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+>> index cdb5f14fb6bc..8649bd8e1b57 100644
+>> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+>> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+>> @@ -2002,9 +2002,77 @@ static int hns3_fill_skb_to_desc(struct hns3_enet_ring *ring,
+>>   	return bd_num;
+>>   }
+>>   
+>> +static void hns3_tx_push_bd(struct hns3_enet_ring *ring, int num)
+>> +{
+>> +#define HNS3_BYTES_PER_64BIT		8
+>> +
+>> +	struct hns3_desc desc[HNS3_MAX_PUSH_BD_NUM] = {};
+>> +	int offset = 0;
+>> +
+>> +	/* make sure everything is visible to device before
+>> +	 * excuting tx push or updating doorbell
+>> +	 */
+>> +	dma_wmb();
+>> +
+>> +	do {
+>> +		int idx = (ring->next_to_use - num + ring->desc_num) %
+>> +			  ring->desc_num;
+>> +
+>> +		u64_stats_update_begin(&ring->syncp);
+>> +		ring->stats.tx_push++;
+>> +		u64_stats_update_end(&ring->syncp);
+>> +		memcpy(&desc[offset], &ring->desc[idx],
+>> +		       sizeof(struct hns3_desc));
+>> +		offset++;
+>> +	} while (--num);
+>> +
+>> +	__iowrite64_copy(ring->tqp->mem_base, desc,
+>> +			 (sizeof(struct hns3_desc) * HNS3_MAX_PUSH_BD_NUM) /
+>> +			 HNS3_BYTES_PER_64BIT);
+>> +
+>> +#if defined(CONFIG_ARM64)
+>> +	dgh();
+>> +#endif
+> 
+> It looks a bit weird putting this at the end of the function, given that
+> it's supposed to do something to a pair of accesses. Please can you explain
+> what it's doing, and also provide some numbers to show that it's worthwhile
+> (given that it's a performance hint not a correctness thing afaict).
+> 
+When the driver writes the device space mapped to the WriteCombine,
+CPU combines into the cacheline unit by using the merge window mechanism
+and delivers the cacheline to the device. However, even if the cacheline
+is full, the device space is delivered only after the merge window
+ends. (There is about 10ns delay at 3G frequency). To reduce the delay,
+the WriteCombine needs to be flushed explicitly. This is why the DGH
+needs to be invoked here.
+
+>> +}
+>> +
+>> +static void hns3_tx_mem_doorbell(struct hns3_enet_ring *ring)
+>> +{
+>> +#define HNS3_MEM_DOORBELL_OFFSET	64
+>> +
+>> +	__le64 bd_num = cpu_to_le64((u64)ring->pending_buf);
+>> +
+>> +	/* make sure everything is visible to device before
+>> +	 * excuting tx push or updating doorbell
+>> +	 */
+>> +	dma_wmb();
+>> +
+>> +	__iowrite64_copy(ring->tqp->mem_base + HNS3_MEM_DOORBELL_OFFSET,
+>> +			 &bd_num, 1);
+>> +	u64_stats_update_begin(&ring->syncp);
+>> +	ring->stats.tx_mem_doorbell += ring->pending_buf;
+>> +	u64_stats_update_end(&ring->syncp);
+>> +
+>> +#if defined(CONFIG_ARM64)
+>> +	dgh();
+>> +#endif
+> 
+> Same here.
+> 
+> Thanks,
+> 
+> Will
+> .
+> 
 Thanks,
-Guenter
 
-> ---
->  drivers/hwmon/hwmon.c | 36 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 36 insertions(+)
-> 
-> diff --git a/drivers/hwmon/hwmon.c b/drivers/hwmon/hwmon.c
-> index fd47ab4e6892..8d3b1dae31df 100644
-> --- a/drivers/hwmon/hwmon.c
-> +++ b/drivers/hwmon/hwmon.c
-> @@ -153,8 +153,44 @@ static int hwmon_thermal_get_temp(void *data, int *temp)
->  	return 0;
->  }
->  
-> +static int hwmon_thermal_set_trips(void *data, int low, int high)
-> +{
-> +	struct hwmon_thermal_data *tdata = data;
-> +	struct hwmon_device *hwdev = to_hwmon_device(tdata->dev);
-> +	const struct hwmon_chip_info *chip = hwdev->chip;
-> +	const struct hwmon_channel_info **info = chip->info;
-> +	unsigned int i;
-> +	int err;
-> +
-> +	if (!chip->ops->write)
-> +		return 0;
-> +
-> +	for (i = 0; info[i] && info[i]->type != hwmon_temp; i++)
-> +		continue;
-> +
-> +	if (!info[i])
-> +		return 0;
-> +
-> +	if (info[i]->config[tdata->index] & HWMON_T_MIN) {
-> +		err = chip->ops->write(tdata->dev, hwmon_temp,
-> +				       hwmon_temp_min, tdata->index, low);
-> +		if (err && err != -EOPNOTSUPP)
-> +			return err;
-> +	}
-> +
-> +	if (info[i]->config[tdata->index] & HWMON_T_MAX) {
-> +		err = chip->ops->write(tdata->dev, hwmon_temp,
-> +				       hwmon_temp_max, tdata->index, high);
-> +		if (err && err != -EOPNOTSUPP)
-> +			return err;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static const struct thermal_zone_of_device_ops hwmon_thermal_ops = {
->  	.get_temp = hwmon_thermal_get_temp,
-> +	.set_trips = hwmon_thermal_set_trips,
->  };
->  
->  static void hwmon_thermal_remove_sensor(void *data)
+Guangbin
+.
