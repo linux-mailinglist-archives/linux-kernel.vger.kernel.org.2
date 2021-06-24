@@ -2,121 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D727C3B3280
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E523B3281
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 17:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbhFXP1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 11:27:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28840 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230267AbhFXP1j (ORCPT
+        id S232389AbhFXP1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 11:27:49 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48766 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232383AbhFXP1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 11:27:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624548320;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=yv7m1AvCn7O6dTH1q9vdjmlX/RhwF6AeGVa6Oa4+0Qw=;
-        b=hc+MkdR+M9lbcshIxpzaf8acpDNrC3LOd3ZS/LDdnwPvYfmIph+6vLEcnbwcbXiZSVuN3v
-        xNVLSgIBA4ZdwKfH2jPuaMqVYgxsBlBCYNyA8tXNPcloVtUkP4MeGqHnl1wR5AWtUzmt1E
-        2JmQ9+Ta0OrtY0ORPj/lscgUfZzl8Ac=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-154-plgwknH7PNyknvTaS5j_iw-1; Thu, 24 Jun 2021 11:25:18 -0400
-X-MC-Unique: plgwknH7PNyknvTaS5j_iw-1
-Received: by mail-ej1-f71.google.com with SMTP id f1-20020a1709064941b02903f6b5ef17bfso2124927ejt.20
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 08:25:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yv7m1AvCn7O6dTH1q9vdjmlX/RhwF6AeGVa6Oa4+0Qw=;
-        b=CIIuPu6gGtuEz6tMsdcYqxIr9IPRzefAU04TvO9eJenXkfV+pzwJ2R24QqOEn45HRx
-         OecmGdsGBuzELwvZg7JtuPdJWqpWYJRF++YUdlQvp5PYh5DqaNIqA7Eo/Z4wOljncBLG
-         bG6M7FmSWfDvcT4+roIY28eHmhXU5Go33BGb++WFNpCNNMBykWifJmfjEVFw4Lf6lgS2
-         N13cL/sSk+Ev8LkHFShljRov0n9eUmZy7bJTc6QiLa17JQKoz4r/3AVu3NrgBqgZ4kLz
-         1kxs1FVYyuVhlhhM9pRYdoJAjgHjMV1HfVkQH3OokagdBwrg/n9OuJr9UYaJfPNdkT5r
-         z0nw==
-X-Gm-Message-State: AOAM533sTV9d3MwVVtIUXQFlCamT9mTCL2rY4va8QGUoBVkr2+Ofhxta
-        ek4FAD7n2t9fD5W0hCJlyjsv+2rblGC/eYUZKt7tT9+tfxzSvtJHQc66yfmd97GAroEpKwSrAaJ
-        Unac+G36daiJV1niBAjjALQjC
-X-Received: by 2002:a17:906:22c6:: with SMTP id q6mr5836125eja.275.1624548317667;
-        Thu, 24 Jun 2021 08:25:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxDFvu9eksuXynDzV/xksZCJe2btC6g1NOCWnVD/di1wd6CsF0Z7byzAfEPlhofKBrJp+8MwA==
-X-Received: by 2002:a17:906:22c6:: with SMTP id q6mr5836107eja.275.1624548317485;
-        Thu, 24 Jun 2021 08:25:17 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8308:b105:dd00:d067:83f0:d612:b70f])
-        by smtp.gmail.com with ESMTPSA id a2sm1399830ejp.1.2021.06.24.08.25.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 08:25:17 -0700 (PDT)
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Pavel Emelyanov <xemul@parallels.com>,
-        linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Robert O'Callahan <roc@ocallahan.org>
-Subject: [RFC PATCH] userfaultfd: open userfaultfds with O_RDONLY
-Date:   Thu, 24 Jun 2021 17:25:15 +0200
-Message-Id: <20210624152515.1844133-1-omosnace@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 24 Jun 2021 11:27:47 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7FBCE1FD8F;
+        Thu, 24 Jun 2021 15:25:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624548327; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yc3h6TajWdbkUMkxCeO1oeYy15hHaSS3fkBWzEv4p5Y=;
+        b=nGgd2eRmxU5On5RUmq8CvZeFQNx+NZV0PJ5S3xjs/ySYMa415OZYI0UKPessMxdLLCLKcE
+        idDp4Ci+kPtewPgvXBPIsxMWoasYKANJnMhGRa/qLe9rVJxklhoU3f+sp5ap3RZlTFJFRZ
+        s1+hToSz9/iF5DsJN7jZV0Zuhpmc4Ug=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 53CF8A3BD2;
+        Thu, 24 Jun 2021 15:25:27 +0000 (UTC)
+Date:   Thu, 24 Jun 2021 17:25:27 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v3 6/6] printk: syslog: close window between wait
+ and read
+Message-ID: <YNSj59rKfGARoWRD@alley>
+References: <20210624111148.5190-1-john.ogness@linutronix.de>
+ <20210624111148.5190-7-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624111148.5190-7-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since userfaultfd doesn't implement a write operation, it is more
-appropriate to open it read-only.
+On Thu 2021-06-24 13:17:48, John Ogness wrote:
+> Syslog's SYSLOG_ACTION_READ is supposed to block until the next
+> syslog record can be read, and then it should read that record.
+> However, because @syslog_lock is not held between waking up and
+> reading the record, another reader could read the record first,
+> thus causing SYSLOG_ACTION_READ to return with a value of 0, never
+> having read _anything_.
+> 
+> By holding @syslog_lock between waking up and reading, it can be
+> guaranteed that SYSLOG_ACTION_READ blocks until it successfully
+> reads a syslog record (or a real error occurs).
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> ---
+>  kernel/printk/printk.c | 50 +++++++++++++++++++++++++++++++-----------
+>  1 file changed, 37 insertions(+), 13 deletions(-)
+> 
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index 90954cb5a0ab..4737804d6c6d 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -1542,8 +1570,13 @@ static int syslog_print(char __user *buf, int size)
+>  		len += n;
+>  		size -= n;
+>  		buf += n;
+> -	}
+>  
+> +		if (!size)
+> +			break;
 
-When userfaultfds are opened read-write like it is now, and such fd is
-passed from one process to another, SELinux will check both read and
-write permissions for the target process, even though it can't actually
-do any write operation on the fd later.
+This looks like an unrelated optimization. If I get it correctly,
+it does not change the existing behavior. The next cycle would
+end up with n == 0 and break anyway.
 
-Inspired by the following bug report, which has hit the SELinux scenario
-described above:
-https://bugzilla.redhat.com/show_bug.cgi?id=1974559
+It would have been better to do it in a separate patch or do not do
+it at all or at least mention it in the commit message.
 
-Reported-by: Robert O'Callahan <roc@ocallahan.org>
-Fixes: 86039bd3b4e6 ("userfaultfd: add new syscall to provide memory externalization")
-Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
----
+> +
+> +		mutex_lock(&syslog_lock);
+> +	}
+> +out:
+>  	kfree(text);
+>  	return len;
+>  }
 
-I marked this as RFC, because I'm not sure if this has any unwanted side
-effects. I only ran this patch through selinux-testsuite, which has a
-simple userfaultfd subtest, and a reproducer from the Bugzilla report.
+The patch itself makes sense. It somehow fixes a long standing race.
+Even though the result still might be racy. The lock is released
+when each record is copied to the user-provided buffer.
 
-Please tell me whether this makes sense and/or if it passes any
-userfaultfd tests you guys might have.
+I do not want to block it because of details. Feel free to use:
 
- fs/userfaultfd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index 14f92285d04f..24e14c36068f 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -986,7 +986,7 @@ static int resolve_userfault_fork(struct userfaultfd_ctx *new,
- 	int fd;
- 
- 	fd = anon_inode_getfd_secure("[userfaultfd]", &userfaultfd_fops, new,
--			O_RDWR | (new->flags & UFFD_SHARED_FCNTL_FLAGS), inode);
-+			O_RDONLY | (new->flags & UFFD_SHARED_FCNTL_FLAGS), inode);
- 	if (fd < 0)
- 		return fd;
- 
-@@ -2088,7 +2088,7 @@ SYSCALL_DEFINE1(userfaultfd, int, flags)
- 	mmgrab(ctx->mm);
- 
- 	fd = anon_inode_getfd_secure("[userfaultfd]", &userfaultfd_fops, ctx,
--			O_RDWR | (flags & UFFD_SHARED_FCNTL_FLAGS), NULL);
-+			O_RDONLY | (flags & UFFD_SHARED_FCNTL_FLAGS), NULL);
- 	if (fd < 0) {
- 		mmdrop(ctx->mm);
- 		kmem_cache_free(userfaultfd_ctx_cachep, ctx);
--- 
-2.31.1
+but I would feel more comfortable if we handled the optimization one
+of the suggested way.
 
+Best Regards,
+Petr
