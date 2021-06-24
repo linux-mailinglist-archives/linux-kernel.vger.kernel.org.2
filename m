@@ -2,83 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401E13B35C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 20:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56463B35D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Jun 2021 20:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232728AbhFXSci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 14:32:38 -0400
-Received: from mail-io1-f53.google.com ([209.85.166.53]:40764 "EHLO
-        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232690AbhFXSc1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 14:32:27 -0400
-Received: by mail-io1-f53.google.com with SMTP id r12so9461609ioa.7;
-        Thu, 24 Jun 2021 11:30:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N0G6ilA7dVREtDoZc6dY5LMaWm93UIO096LNTjkIjUY=;
-        b=Xwwl1w5MQ2ybAy0FyxsqkTuO/C9axfAITLh+I9PnugiZFyU4CN+LIpMfzlK0DMRXJo
-         Du5Gimb5wgrY3v0RUXWxOcI6vs03i6MyHIRHu7xGbWiEGtCwMbr05Elcwnq9ZVmj1m8K
-         kVJe7MRCykyukR3eFn7cxIEtQoP8SoJaRHWpVXpmwUKNfoOZNbfzqXSUTHxDGyXuhbgl
-         b4l08Rdeoqv1s7vZpOPJAP3Oez1EaeiBUb++bu6tFBDLHDeX/y9XzS57PpzCSphk1rnu
-         nkljIh4WV135EELu7O74oLrTYuHIrsqCEr5zqNiFCXzbf95WL6rKhTWw6APrkwWIrdPK
-         eOQQ==
-X-Gm-Message-State: AOAM532XcYwa1MwggQu3dI+begyFL8mZ1ifphF7nhWTI4JwLVTmUWfdy
-        z2NtlXpmKkFqOGtMbeFloQ==
-X-Google-Smtp-Source: ABdhPJxPT0YnkliWRfRNtKT8GfUaQFZh1HlciM8usKxfxVUGuN0ur8P1dVgQwhBDw1Gj5GqD3qxkdw==
-X-Received: by 2002:a05:6638:22b8:: with SMTP id z24mr5803245jas.45.1624559407452;
-        Thu, 24 Jun 2021 11:30:07 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id k3sm1910660ilv.83.2021.06.24.11.30.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 11:30:06 -0700 (PDT)
-Received: (nullmailer pid 1766658 invoked by uid 1000);
-        Thu, 24 Jun 2021 18:30:02 -0000
-Date:   Thu, 24 Jun 2021 12:30:02 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Mauri Sandberg <maukka@ext.kapsi.fi>
-Cc:     sandberg@mailfence.com, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, andy.shevchenko@gmail.com,
-        robh+dt@kernel.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, drew@beagleboard.org,
-        devicetree@vger.kernel.org, geert+renesas@glider.be
-Subject: Re: [PATCH v5 1/2] dt-bindings: gpio-cascade: add documentation
-Message-ID: <20210624183002.GA1766624@robh.at.kernel.org>
-References: <20210325122832.119147-1-sandberg@mailfence.com>
- <20210621172053.107045-1-maukka@ext.kapsi.fi>
- <20210621172053.107045-2-maukka@ext.kapsi.fi>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621172053.107045-2-maukka@ext.kapsi.fi>
+        id S232533AbhFXSg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 14:36:27 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:31868 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232515AbhFXSgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 14:36:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624559646; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=GxBqhq5qZ6sCOlmDi4RHXLn9UxYWl42lZR0vN6cONic=; b=YR5UYrJquRH8G/D0FEVeK8H34shOWGYEkDX3wGOBszD+YthggVDmSyqyZLMkESagNyHE1n7s
+ O6G6ridYhT4rWdFn/jJDDtANyAuaOX+ifXkYCtTK4IasrKB2067lr0qcWGtm0vN4ujD8+5EL
+ W/BcjoDNBIwNKwpwW0RDKpRuQlI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60d4d00806ea41c941da536e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Jun 2021 18:33:44
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8B71BC43217; Thu, 24 Jun 2021 18:33:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F12E4C433D3;
+        Thu, 24 Jun 2021 18:33:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F12E4C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     bjorn.andersson@linaro.org, vkoul@kernel.org
+Cc:     agross@kernel.org, ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>,
+        stable@vger.kernel.org
+Subject: [PATCH] remoteproc: qcom: pas: Add missing power-domain "mxc" for CDSP
+Date:   Fri, 25 Jun 2021 00:03:25 +0530
+Message-Id: <1624559605-29847-1-git-send-email-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Jun 2021 20:20:52 +0300, Mauri Sandberg wrote:
-> Add documentation for a general GPIO cascade. It allows building
-> one-to-many cascades of GPIO lines using multiplexer to choose
-> the cascaded line.
-> 
-> Signed-off-by: Mauri Sandberg <maukka@ext.kapsi.fi>
-> ---
-> v4 -> v5:
->  - renamed gpio-mux-input -> gpio-cascade
->  - changed vague term 'pin' to 'upstream line'
->  - added more verbose description for the module
->  - added missing 'mux-controls' entry
->  - dropped Tested-by and Reviewed-by due to changes in bindings
-> v3 -> v4:
->  - Changed author email
->  - Included Tested-by and Reviewed-by from Drew
-> v2 -> v3: added a complete example on dual 4-way multiplexer
-> v1 -> v2: added a little bit more text in the binding documenation
-> ---
->  .../bindings/gpio/gpio-cascade.yaml           | 103 ++++++++++++++++++
->  1 file changed, 103 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-cascade.yaml
-> 
+Add missing power-domain "mxc" required by CDSP PAS remoteproc on SM8350
+SoC.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Fixes: e8b4e9a21af7 ("remoteproc: qcom: pas: Add SM8350 PAS remoteprocs")
+Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+Cc: stable@vger.kernel.org
+---
+
+The device tree and pas documentation lists mcx as a required pd for cdsp.
+Looks like it was missed while adding the proxy pds in the pas driver.
+Bjorn/Vinod you'll need to test this patch before picking it up.
+
+ drivers/remoteproc/qcom_q6v5_pas.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
+index b921fc26cd04..ad20065dbdea 100644
+--- a/drivers/remoteproc/qcom_q6v5_pas.c
++++ b/drivers/remoteproc/qcom_q6v5_pas.c
+@@ -661,6 +661,7 @@ static const struct adsp_data sm8350_cdsp_resource = {
+ 	},
+ 	.proxy_pd_names = (char*[]){
+ 		"cx",
++		"mxc",
+ 		NULL
+ 	},
+ 	.ssr_name = "cdsp",
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
