@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE31A3B4871
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BE03B4874
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhFYRvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 13:51:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36606 "EHLO mail.kernel.org"
+        id S231134AbhFYRvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 13:51:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230288AbhFYRv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 13:51:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id EAE016199B;
-        Fri, 25 Jun 2021 17:49:07 +0000 (UTC)
+        id S230236AbhFYRv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 13:51:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 27EEA61960;
+        Fri, 25 Jun 2021 17:49:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1624643348;
-        bh=fFZMlJLGPYQgewS1zoJMpUxXrNrlQPvtuU6N7lX8RVI=;
+        bh=/E+wUt683cQYtaQIcI5IhpiVwmB/gvMJDEtDrCI6waA=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=kYoBs2LoRqXE2cPeIzOmJUFDQq9afzp43mBSr52Zi1wsqb0Ayt5KcDiz43UGMGDAx
-         UmuZC0y8eKJnOURbSA/v6dD18q6RNpQC+BJqLEDlHiM0faHtF3KOgS8DgqBDAX8nOY
-         d653/tuiOT3mEsko/17SMS/5j5zJmk8PSDsPeCcNp9J+GkUydLjAAp84fKMPzEFS0B
-         oO3AxseUIVRTVedDAukoN1MLa9gBNtB6mvkQW2Vsgm9HzD7tvN4uSeehxI3UiAJtR/
-         yqukrIzPDPtuXxkijA+87rRT6/isBxeuwVYFgyzHSIJpkIvZEi2tWeXba5oH6G2tWr
-         P6qoEKPl/LwUQ==
+        b=vMDfHszTcYqGqqOKiUOs077OWdOSEvakBtE2EaZIGOCXkmxnnw2lDEnk2FxZ3UIRh
+         UQH7lHRO3SC3sPuwFUZm/8NPpAEnJv/Doxx8RpWGUrxZ2+5oamEKxohy+Z+tZLLL4D
+         CXSYoTXQNTN2aKCa2E3QVuQevcvIXNg/U8Dm/NMom1EJ8pqPeP+y2wUWo8W+Qz878+
+         dkruuNaXJLGTj8snHOClbO6ITbr/kB2Z3Y1yQu09aaIUpTLNMtnzbmwTbq4C9gsNrR
+         8rYuDlv82a2zLBcMwY4FQF7IEfw/wC3Ju69NWv9XwVT4yykBqOTTIZghjn/LgRiPEb
+         26cWbzov4qrMw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E0BA660A38;
-        Fri, 25 Jun 2021 17:49:07 +0000 (UTC)
-Subject: Re: [GIT PULL] x86/urgent for v5.13
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2213B60A37;
+        Fri, 25 Jun 2021 17:49:08 +0000 (UTC)
+Subject: Re: [PULL REQUEST] i2c for v5.13
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YNWZrnCpcCtlJBt7@zn.tnic>
-References: <YNWZrnCpcCtlJBt7@zn.tnic>
+In-Reply-To: <YNX3G9fQKWX+45gJ@shikoro>
+References: <YNX3G9fQKWX+45gJ@shikoro>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YNWZrnCpcCtlJBt7@zn.tnic>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.13
-X-PR-Tracked-Commit-Id: f9dfb5e390fab2df9f7944bb91e7705aba14cd26
+X-PR-Tracked-Message-Id: <YNX3G9fQKWX+45gJ@shikoro>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
+X-PR-Tracked-Commit-Id: 4ca070ef0dd885616ef294d269a9bf8e3b258e1a
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 94ca94bbbb5f50180ecaac31566dfe5ed44c7994
-Message-Id: <162464334791.2214.11747637048209748795.pr-tracker-bot@kernel.org>
-Date:   Fri, 25 Jun 2021 17:49:07 +0000
-To:     Borislav Petkov <bp@suse.de>
+X-PR-Merge-Commit-Id: 55fcd4493da5ac8a0f7a0b3b5ae8448aee2041bb
+Message-Id: <162464334813.2214.5459677175527044020.pr-tracker-bot@kernel.org>
+Date:   Fri, 25 Jun 2021 17:49:08 +0000
+To:     Wolfram Sang <wsa@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 25 Jun 2021 10:54:06 +0200:
+The pull request you sent on Fri, 25 Jun 2021 17:32:43 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.13
+> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/94ca94bbbb5f50180ecaac31566dfe5ed44c7994
+https://git.kernel.org/torvalds/c/55fcd4493da5ac8a0f7a0b3b5ae8448aee2041bb
 
 Thank you!
 
