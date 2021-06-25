@@ -2,307 +2,633 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189713B4011
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 257343B4017
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbhFYJLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:11:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbhFYJLc (ORCPT
+        id S230498AbhFYJOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:14:54 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:54260 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229956AbhFYJOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:11:32 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB2AC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:09:10 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id g3so2692083qth.11
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:09:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CHnGT5QuEyUKkdaahfFZsjrbdLDLTbdxUu0DbSFSSSU=;
-        b=bv4PhmEfn0fMkfk50wisACED5b4PgNX9hiS8DzjH2xAdvV+6KlOPml+KC3aXk7+UvL
-         IB2LBBMOcC5H1r2qns/Gk+44iN9g59ZcFXsN+fEtrWCFz9AapRvu5qafTjdphbX1OebD
-         jz8RMKQnmX9LhqUN/2hqyKKEK2idsaOwlhKzlqv6EQFNfkQMo9Krzd2ejzhEkA16NAb3
-         jW8pkGYM9f71dphXAXF2wIaY4lHNfFQ//9b1on9lym0+XESHYavJ9HNmzpUUxySgGEZ2
-         dj4Q/otxIFlmuEZ+5GIcZxVJXvrBTV211wun4Nk7PWDpmY2VJyVCIyeZ236BSY+sdNZV
-         C6pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CHnGT5QuEyUKkdaahfFZsjrbdLDLTbdxUu0DbSFSSSU=;
-        b=dtL0d1edtEnzvVxAkYXptYmnxXu3Cfm4cmvPoh3D2WrQQ1JOXx4D7xsbJnhUJR85y5
-         VCygzQPIPGcMjr9aJaIGq8E6iDOJD9qH8EEimkM/d1pgOLHMm/Bjj+1kevz2/ZP/iJei
-         lnAepP0qzB3NBJQsbpgZk/OA4y6vUdWeREPtF0Yf5FCgMxugXMgHqP5TlALgri+YxZru
-         yb1vvUXzibEhQavjCA+fx2X2sTgK1B7MHe6LRwoqDRsvx46k4VxfhiQoRLgH27VNgLX8
-         FzLkSIZmatyhdwvWS+l4CgWsuMEv/Q9E0NvcBmWBz6CqKFaIQZinADZlTOKF0ciwhQ1v
-         gjlg==
-X-Gm-Message-State: AOAM530dLNTHzY9lglFb9Zy46afLMjwyQ0MKfTfALhT+Hgm+Ny4XSBck
-        3O28SdVXaWbbgDXb6OOjMPM3pe1E510wqvOO8HwEbQ==
-X-Google-Smtp-Source: ABdhPJwbx6HcABSkeSVt+ujmXwe7Mqh15lLm6N47d4Hr7PtrB1ZImxR9/wfXe7+SsH0gzpdpQ6oiY2zBopCorTqKt80=
-X-Received: by 2002:a05:622a:15cc:: with SMTP id d12mr8479648qty.67.1624612149402;
- Fri, 25 Jun 2021 02:09:09 -0700 (PDT)
+        Fri, 25 Jun 2021 05:14:52 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 5FF061F444DB
+Subject: Re: [RESEND PATCH v2 1/4] soc: mediatek: pm-domains: Move power
+ status offset to power domain data
+To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20210616000659.28347-1-chun-jie.chen@mediatek.com>
+ <20210616000659.28347-2-chun-jie.chen@mediatek.com>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <4d3e2438-3a74-a111-90bc-a2b6d370e692@collabora.com>
+Date:   Fri, 25 Jun 2021 11:12:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <000000000000e61e2105c58fea48@google.com> <20210625085140.1735-1-hdanton@sina.com>
-In-Reply-To: <20210625085140.1735-1-hdanton@sina.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 25 Jun 2021 11:08:57 +0200
-Message-ID: <CACT4Y+YzgaZjLCOjvhcDC5YRjjF2OBp1XE-vS5+AZOmwmneg0Q@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in v4l2_ioctl (2)
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     syzbot <syzbot+19c5a4b75931e8d63aab@syzkaller.appspotmail.com>,
-        ezequiel@collabora.com, hverkuil-cisco@xs4all.nl,
-        lijian@yulong.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, mchehab@kernel.org,
-        sakari.ailus@linux.intel.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210616000659.28347-2-chun-jie.chen@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 10:52 AM Hillf Danton <hdanton@sina.com> wrote:
->
-> On Thu, 24 Jun 2021 21:53:15 -0700
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    a1f92694 Add linux-next specific files for 20210518
-> > git tree:       linux-next
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=12cb6184300000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=d612e75ffd53a6d3
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=19c5a4b75931e8d63aab
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13f87f20300000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11f82d34300000
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+19c5a4b75931e8d63aab@syzkaller.appspotmail.com
-> >
-> > ==================================================================
-> > BUG: KASAN: use-after-free in v4l2_ioctl+0x1f1/0x250 drivers/media/v4l2-core/v4l2-dev.c:364
-> > Read of size 8 at addr ffff88801dc54398 by task v4l_id/25000
-> >
-> > CPU: 0 PID: 25000 Comm: v4l_id Not tainted 5.13.0-rc2-next-20210518-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > Call Trace:
-> >  __dump_stack lib/dump_stack.c:88 [inline]
-> >  dump_stack_lvl+0x13e/0x1d6 lib/dump_stack.c:129
-> >  print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:233
-> >  __kasan_report mm/kasan/report.c:419 [inline]
-> >  kasan_report.cold+0x83/0xdf mm/kasan/report.c:436
-> >  v4l2_ioctl+0x1f1/0x250 drivers/media/v4l2-core/v4l2-dev.c:364
-> >  vfs_ioctl fs/ioctl.c:51 [inline]
-> >  __do_sys_ioctl fs/ioctl.c:1069 [inline]
-> >  __se_sys_ioctl fs/ioctl.c:1055 [inline]
-> >  __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
-> >  do_syscall_64+0x31/0xb0 arch/x86/entry/common.c:47
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > RIP: 0033:0x7f30112bb017
-> > Code: 00 00 00 48 8b 05 81 7e 2b 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 51 7e 2b 00 f7 d8 64 89 01 48
-> > RSP: 002b:00007ffcfc119d68 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> > RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f30112bb017
-> > RDX: 00007ffcfc119d70 RSI: 0000000080685600 RDI: 0000000000000003
-> > RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-> > R10: 0000000000000002 R11: 0000000000000246 R12: 000055f2227cb8d0
-> > R13: 00007ffcfc119ed0 R14: 0000000000000000 R15: 0000000000000000
-> >
-> > Allocated by task 12321:
-> >  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
-> >  kasan_set_track mm/kasan/common.c:46 [inline]
-> >  set_alloc_info mm/kasan/common.c:431 [inline]
-> >  ____kasan_kmalloc mm/kasan/common.c:510 [inline]
-> >  ____kasan_kmalloc mm/kasan/common.c:469 [inline]
-> >  __kasan_kmalloc+0x9b/0xd0 mm/kasan/common.c:519
-> >  kmalloc include/linux/slab.h:590 [inline]
-> >  kzalloc include/linux/slab.h:720 [inline]
-> >  stk_camera_probe+0x7d/0xc50 drivers/media/usb/stkwebcam/stk-webcam.c:1281
-> >  usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
-> >  really_probe+0x291/0xf60 drivers/base/dd.c:576
-> >  driver_probe_device+0x298/0x410 drivers/base/dd.c:763
-> >  __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
-> >  bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
-> >  __device_attach+0x228/0x4a0 drivers/base/dd.c:938
-> >  bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
-> >  device_add+0xbe0/0x2100 drivers/base/core.c:3320
-> >  usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2164
-> >  usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
-> >  usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
-> >  really_probe+0x291/0xf60 drivers/base/dd.c:576
-> >  driver_probe_device+0x298/0x410 drivers/base/dd.c:763
-> >  __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
-> >  bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
-> >  __device_attach+0x228/0x4a0 drivers/base/dd.c:938
-> >  bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
-> >  device_add+0xbe0/0x2100 drivers/base/core.c:3320
-> >  usb_new_device.cold+0x721/0x1058 drivers/usb/core/hub.c:2556
-> >  hub_port_connect drivers/usb/core/hub.c:5276 [inline]
-> >  hub_port_connect_change drivers/usb/core/hub.c:5416 [inline]
-> >  port_event drivers/usb/core/hub.c:5562 [inline]
-> >  hub_event+0x2357/0x4330 drivers/usb/core/hub.c:5644
-> >  process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
-> >  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
-> >  kthread+0x3b1/0x4a0 kernel/kthread.c:313
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> >
-> > Freed by task 16814:
-> >  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
-> >  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
-> >  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
-> >  ____kasan_slab_free mm/kasan/common.c:363 [inline]
-> >  ____kasan_slab_free mm/kasan/common.c:328 [inline]
-> >  __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:371
-> >  kasan_slab_free include/linux/kasan.h:212 [inline]
-> >  slab_free_hook mm/slub.c:1623 [inline]
-> >  slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1648
-> >  slab_free mm/slub.c:3208 [inline]
-> >  kfree+0xeb/0x650 mm/slub.c:4274
-> >  usb_unbind_interface+0x1d8/0x8d0 drivers/usb/core/driver.c:458
-> >  __device_release_driver+0x3bd/0x6f0 drivers/base/dd.c:1181
-> >  device_release_driver_internal drivers/base/dd.c:1212 [inline]
-> >  device_release_driver+0x26/0x40 drivers/base/dd.c:1235
-> >  bus_remove_device+0x2eb/0x5a0 drivers/base/bus.c:533
-> >  device_del+0x502/0xd40 drivers/base/core.c:3508
-> >  usb_disable_device+0x35b/0x7b0 drivers/usb/core/message.c:1413
-> >  usb_disconnect.cold+0x27a/0x78e drivers/usb/core/hub.c:2219
-> >  hub_port_connect drivers/usb/core/hub.c:5127 [inline]
-> >  hub_port_connect_change drivers/usb/core/hub.c:5416 [inline]
-> >  port_event drivers/usb/core/hub.c:5562 [inline]
-> >  hub_event+0x1c9c/0x4330 drivers/usb/core/hub.c:5644
-> >  process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
-> >  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
-> >  kthread+0x3b1/0x4a0 kernel/kthread.c:313
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> >
-> > The buggy address belongs to the object at ffff88801dc54000
-> >  which belongs to the cache kmalloc-4k of size 4096
-> > The buggy address is located 920 bytes inside of
-> >  4096-byte region [ffff88801dc54000, ffff88801dc55000)
-> > The buggy address belongs to the page:
-> > page:ffffea0000771400 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1dc50
-> > head:ffffea0000771400 order:3 compound_mapcount:0 compound_pincount:0
-> > flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-> > raw: 00fff00000010200 0000000000000000 0000000100000001 ffff888011042140
-> > raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
-> > page dumped because: kasan: bad access detected
-> > page_owner tracks the page as allocated
-> > page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd2040(__GFP_IO|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 11559, ts 1619924100847, free_ts 1619644095689
-> >  prep_new_page mm/page_alloc.c:2377 [inline]
-> >  get_page_from_freelist+0x125c/0x2ed0 mm/page_alloc.c:4038
-> >  __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5239
-> >  alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
-> >  alloc_slab_page mm/slub.c:1686 [inline]
-> >  allocate_slab+0x2c2/0x4c0 mm/slub.c:1826
-> >  new_slab mm/slub.c:1889 [inline]
-> >  new_slab_objects mm/slub.c:2635 [inline]
-> >  ___slab_alloc+0x4ba/0x820 mm/slub.c:2798
-> >  __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2838
-> >  slab_alloc_node mm/slub.c:2920 [inline]
-> >  slab_alloc mm/slub.c:2962 [inline]
-> >  __kmalloc+0x312/0x330 mm/slub.c:4112
-> >  kmalloc include/linux/slab.h:595 [inline]
-> >  tomoyo_realpath_from_path+0xc3/0x620 security/tomoyo/realpath.c:254
-> >  tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
-> >  tomoyo_path_perm+0x21b/0x400 security/tomoyo/file.c:822
-> >  security_inode_getattr+0xcf/0x140 security/security.c:1332
-> >  vfs_getattr fs/stat.c:139 [inline]
-> >  vfs_statx+0x164/0x390 fs/stat.c:207
-> >  vfs_fstatat fs/stat.c:225 [inline]
-> >  vfs_lstat include/linux/fs.h:3384 [inline]
-> >  __do_sys_newlstat+0x91/0x110 fs/stat.c:380
-> >  do_syscall_64+0x31/0xb0 arch/x86/entry/common.c:47
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > page last free stack trace:
-> >  reset_page_owner include/linux/page_owner.h:24 [inline]
-> >  free_pages_prepare mm/page_alloc.c:1305 [inline]
-> >  __free_pages_ok+0x4cb/0xf30 mm/page_alloc.c:1586
-> >  qlink_free mm/kasan/quarantine.c:146 [inline]
-> >  qlist_free_all+0x5a/0xc0 mm/kasan/quarantine.c:165
-> >  kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:272
-> >  __kasan_slab_alloc+0x8e/0xa0 mm/kasan/common.c:441
-> >  kasan_slab_alloc include/linux/kasan.h:236 [inline]
-> >  slab_post_alloc_hook mm/slab.h:512 [inline]
-> >  slab_alloc_node mm/slub.c:2954 [inline]
-> >  slab_alloc mm/slub.c:2962 [inline]
-> >  kmem_cache_alloc+0x285/0x4a0 mm/slub.c:2967
-> >  getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
-> >  getname_flags include/linux/audit.h:319 [inline]
-> >  getname fs/namei.c:209 [inline]
-> >  __do_sys_unlink fs/namei.c:4139 [inline]
-> >  __se_sys_unlink fs/namei.c:4137 [inline]
-> >  __x64_sys_unlink+0xb1/0x100 fs/namei.c:4137
-> >  do_syscall_64+0x31/0xb0 arch/x86/entry/common.c:47
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >
-> > Memory state around the buggy address:
-> >  ffff88801dc54280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >  ffff88801dc54300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > >ffff88801dc54380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >                             ^
-> >  ffff88801dc54400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >  ffff88801dc54480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > ==================================================================
->
-> Given the uaf in the ioctl path, open count is needed and should be
-> maintained by stk and is implemented in the diff below with mutex - it
-> is locked at file open time, released at file release time and aquired
-> at disconnect time.
->
-> This can be a quick fix to the uaf, though, lights on why the video_get(vdev)
-> in v4l2_open() fails to prevent stk camera from going home too early are
-> welcome. Is it the fault on the driver side without an eye on open count?
->
-> +++ x/drivers/media/usb/stkwebcam/stk-webcam.c
-> @@ -624,8 +624,10 @@ static int v4l_stk_open(struct file *fp)
->                 dev->first_init = 0;
->
->         err = v4l2_fh_open(fp);
-> -       if (!err)
-> +       if (!err) {
->                 usb_autopm_get_interface(dev->interface);
-> +               mutex_trylock(&dev->free_mutex);
+Hi Chun-Jie Chen,
 
-I haven't read all of it, but doing mutex_trylock w/o checking the
-return value looks very fishy. Can it ever be the right thing to
-do?... E.g. the next line we unconditionally do mutex_unlock, are we
-potentially unlocking a non-locked mutex?
+Thank you for your patch.
 
+On 16/6/21 2:06, Chun-Jie Chen wrote:
+> MT8195 has more than 32 power domains so it needs
+> two set of pwr_sta and pwr_sta2nd registers,
+> so move the register offset from soc data into power domain data.
+> 
+> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
 
-> +       }
->         mutex_unlock(&dev->lock);
->         return err;
->  }
-> @@ -633,6 +635,7 @@ static int v4l_stk_open(struct file *fp)
->  static int v4l_stk_release(struct file *fp)
->  {
->         struct stk_camera *dev = video_drvdata(fp);
-> +       int rc;
->
->         mutex_lock(&dev->lock);
->         if (dev->owner == fp) {
-> @@ -645,7 +648,9 @@ static int v4l_stk_release(struct file *
->
->         usb_autopm_put_interface(dev->interface);
->         mutex_unlock(&dev->lock);
-> -       return v4l2_fh_release(fp);
-> +       rc = v4l2_fh_release(fp);
-> +       mutex_unlock(&dev->free_mutex);
-> +       return rc;
->  }
->
->  static ssize_t stk_read(struct file *fp, char __user *buf,
-> @@ -1306,6 +1311,7 @@ static int stk_camera_probe(struct usb_i
->
->         spin_lock_init(&dev->spinlock);
->         mutex_init(&dev->lock);
-> +       mutex_init(&dev->free_mutex);
->         init_waitqueue_head(&dev->wait_frame);
->         dev->first_init = 1; /* webcam LED management */
->
-> @@ -1385,6 +1391,8 @@ static void stk_camera_disconnect(struct
->         video_unregister_device(&dev->vdev);
->         v4l2_ctrl_handler_free(&dev->hdl);
->         v4l2_device_unregister(&dev->v4l2_dev);
-> +       mutex_lock(&dev->free_mutex);
-> +       mutex_unlock(&dev->free_mutex);
->         kfree(dev);
->  }
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+PS: Please remove all the private mailing list from the Cc, or add in Bcc instead.
+
+> ---
+>  drivers/soc/mediatek/mt8167-pm-domains.h | 16 +++++++--
+>  drivers/soc/mediatek/mt8173-pm-domains.h | 22 ++++++++++--
+>  drivers/soc/mediatek/mt8183-pm-domains.h | 32 +++++++++++++++--
+>  drivers/soc/mediatek/mt8192-pm-domains.h | 44 ++++++++++++++++++++++--
+>  drivers/soc/mediatek/mtk-pm-domains.c    |  4 +--
+>  drivers/soc/mediatek/mtk-pm-domains.h    |  4 +--
+>  6 files changed, 110 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/soc/mediatek/mt8167-pm-domains.h b/drivers/soc/mediatek/mt8167-pm-domains.h
+> index 15559ddf26e4..4d6c32759606 100644
+> --- a/drivers/soc/mediatek/mt8167-pm-domains.h
+> +++ b/drivers/soc/mediatek/mt8167-pm-domains.h
+> @@ -18,6 +18,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
+>  		.name = "mm",
+>  		.sta_mask = PWR_STATUS_DISP,
+>  		.ctl_offs = SPM_DIS_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.bp_infracfg = {
+> @@ -30,6 +32,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
+>  		.name = "vdec",
+>  		.sta_mask = PWR_STATUS_VDEC,
+>  		.ctl_offs = SPM_VDE_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.caps = MTK_SCPD_ACTIVE_WAKEUP,
+> @@ -38,6 +42,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
+>  		.name = "isp",
+>  		.sta_mask = PWR_STATUS_ISP,
+>  		.ctl_offs = SPM_ISP_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = GENMASK(13, 12),
+>  		.caps = MTK_SCPD_ACTIVE_WAKEUP,
+> @@ -46,6 +52,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
+>  		.name = "mfg_async",
+>  		.sta_mask = MT8167_PWR_STATUS_MFG_ASYNC,
+>  		.ctl_offs = SPM_MFG_ASYNC_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = 0,
+>  		.sram_pdn_ack_bits = 0,
+>  		.bp_infracfg = {
+> @@ -57,6 +65,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
+>  		.name = "mfg_2d",
+>  		.sta_mask = MT8167_PWR_STATUS_MFG_2D,
+>  		.ctl_offs = SPM_MFG_2D_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = GENMASK(15, 12),
+>  	},
+> @@ -64,6 +74,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
+>  		.name = "mfg",
+>  		.sta_mask = PWR_STATUS_MFG,
+>  		.ctl_offs = SPM_MFG_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = GENMASK(15, 12),
+>  	},
+> @@ -71,6 +83,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
+>  		.name = "conn",
+>  		.sta_mask = PWR_STATUS_CONN,
+>  		.ctl_offs = SPM_CONN_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = 0,
+>  		.caps = MTK_SCPD_ACTIVE_WAKEUP,
+> @@ -85,8 +99,6 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
+>  static const struct scpsys_soc_data mt8167_scpsys_data = {
+>  	.domains_data = scpsys_domain_data_mt8167,
+>  	.num_domains = ARRAY_SIZE(scpsys_domain_data_mt8167),
+> -	.pwr_sta_offs = SPM_PWR_STATUS,
+> -	.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  };
+>  
+>  #endif /* __SOC_MEDIATEK_MT8167_PM_DOMAINS_H */
+> diff --git a/drivers/soc/mediatek/mt8173-pm-domains.h b/drivers/soc/mediatek/mt8173-pm-domains.h
+> index 654c717e5467..a4f58c2b44b1 100644
+> --- a/drivers/soc/mediatek/mt8173-pm-domains.h
+> +++ b/drivers/soc/mediatek/mt8173-pm-domains.h
+> @@ -15,6 +15,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+>  		.name = "vdec",
+>  		.sta_mask = PWR_STATUS_VDEC,
+>  		.ctl_offs = SPM_VDE_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  	},
+> @@ -22,6 +24,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+>  		.name = "venc",
+>  		.sta_mask = PWR_STATUS_VENC,
+>  		.ctl_offs = SPM_VEN_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = GENMASK(15, 12),
+>  	},
+> @@ -29,6 +33,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+>  		.name = "isp",
+>  		.sta_mask = PWR_STATUS_ISP,
+>  		.ctl_offs = SPM_ISP_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = GENMASK(13, 12),
+>  	},
+> @@ -36,6 +42,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+>  		.name = "mm",
+>  		.sta_mask = PWR_STATUS_DISP,
+>  		.ctl_offs = SPM_DIS_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.bp_infracfg = {
+> @@ -47,6 +55,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+>  		.name = "venc_lt",
+>  		.sta_mask = PWR_STATUS_VENC_LT,
+>  		.ctl_offs = SPM_VEN2_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = GENMASK(15, 12),
+>  	},
+> @@ -54,6 +64,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+>  		.name = "audio",
+>  		.sta_mask = PWR_STATUS_AUDIO,
+>  		.ctl_offs = SPM_AUDIO_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = GENMASK(15, 12),
+>  	},
+> @@ -61,6 +73,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+>  		.name = "usb",
+>  		.sta_mask = PWR_STATUS_USB,
+>  		.ctl_offs = SPM_USB_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = GENMASK(15, 12),
+>  		.caps = MTK_SCPD_ACTIVE_WAKEUP,
+> @@ -69,6 +83,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+>  		.name = "mfg_async",
+>  		.sta_mask = PWR_STATUS_MFG_ASYNC,
+>  		.ctl_offs = SPM_MFG_ASYNC_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = 0,
+>  	},
+> @@ -76,6 +92,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+>  		.name = "mfg_2d",
+>  		.sta_mask = PWR_STATUS_MFG_2D,
+>  		.ctl_offs = SPM_MFG_2D_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = GENMASK(13, 12),
+>  	},
+> @@ -83,6 +101,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+>  		.name = "mfg",
+>  		.sta_mask = PWR_STATUS_MFG,
+>  		.ctl_offs = SPM_MFG_PWR_CON,
+> +		.pwr_sta_offs = SPM_PWR_STATUS,
+> +		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  		.sram_pdn_bits = GENMASK(13, 8),
+>  		.sram_pdn_ack_bits = GENMASK(21, 16),
+>  		.bp_infracfg = {
+> @@ -97,8 +117,6 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+>  static const struct scpsys_soc_data mt8173_scpsys_data = {
+>  	.domains_data = scpsys_domain_data_mt8173,
+>  	.num_domains = ARRAY_SIZE(scpsys_domain_data_mt8173),
+> -	.pwr_sta_offs = SPM_PWR_STATUS,
+> -	.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND,
+>  };
+>  
+>  #endif /* __SOC_MEDIATEK_MT8173_PM_DOMAINS_H */
+> diff --git a/drivers/soc/mediatek/mt8183-pm-domains.h b/drivers/soc/mediatek/mt8183-pm-domains.h
+> index 98a9940d05fb..71b8757e552d 100644
+> --- a/drivers/soc/mediatek/mt8183-pm-domains.h
+> +++ b/drivers/soc/mediatek/mt8183-pm-domains.h
+> @@ -15,6 +15,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>  		.name = "audio",
+>  		.sta_mask = PWR_STATUS_AUDIO,
+>  		.ctl_offs = 0x0314,
+> +		.pwr_sta_offs = 0x0180,
+> +		.pwr_sta2nd_offs = 0x0184,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = GENMASK(15, 12),
+>  	},
+> @@ -22,6 +24,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>  		.name = "conn",
+>  		.sta_mask = PWR_STATUS_CONN,
+>  		.ctl_offs = 0x032c,
+> +		.pwr_sta_offs = 0x0180,
+> +		.pwr_sta2nd_offs = 0x0184,
+>  		.sram_pdn_bits = 0,
+>  		.sram_pdn_ack_bits = 0,
+>  		.bp_infracfg = {
+> @@ -33,6 +37,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>  		.name = "mfg_async",
+>  		.sta_mask = PWR_STATUS_MFG_ASYNC,
+>  		.ctl_offs = 0x0334,
+> +		.pwr_sta_offs = 0x0180,
+> +		.pwr_sta2nd_offs = 0x0184,
+>  		.sram_pdn_bits = 0,
+>  		.sram_pdn_ack_bits = 0,
+>  	},
+> @@ -40,6 +46,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>  		.name = "mfg",
+>  		.sta_mask = PWR_STATUS_MFG,
+>  		.ctl_offs = 0x0338,
+> +		.pwr_sta_offs = 0x0180,
+> +		.pwr_sta2nd_offs = 0x0184,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.caps = MTK_SCPD_DOMAIN_SUPPLY,
+> @@ -48,6 +56,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>  		.name = "mfg_core0",
+>  		.sta_mask = BIT(7),
+>  		.ctl_offs = 0x034c,
+> +		.pwr_sta_offs = 0x0180,
+> +		.pwr_sta2nd_offs = 0x0184,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  	},
+> @@ -55,6 +65,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>  		.name = "mfg_core1",
+>  		.sta_mask = BIT(20),
+>  		.ctl_offs = 0x0310,
+> +		.pwr_sta_offs = 0x0180,
+> +		.pwr_sta2nd_offs = 0x0184,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  	},
+> @@ -62,6 +74,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>  		.name = "mfg_2d",
+>  		.sta_mask = PWR_STATUS_MFG_2D,
+>  		.ctl_offs = 0x0348,
+> +		.pwr_sta_offs = 0x0180,
+> +		.pwr_sta2nd_offs = 0x0184,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.bp_infracfg = {
+> @@ -75,6 +89,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>  		.name = "disp",
+>  		.sta_mask = PWR_STATUS_DISP,
+>  		.ctl_offs = 0x030c,
+> +		.pwr_sta_offs = 0x0180,
+> +		.pwr_sta2nd_offs = 0x0184,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.bp_infracfg = {
+> @@ -94,6 +110,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>  		.name = "cam",
+>  		.sta_mask = BIT(25),
+>  		.ctl_offs = 0x0344,
+> +		.pwr_sta_offs = 0x0180,
+> +		.pwr_sta2nd_offs = 0x0184,
+>  		.sram_pdn_bits = GENMASK(9, 8),
+>  		.sram_pdn_ack_bits = GENMASK(13, 12),
+>  		.bp_infracfg = {
+> @@ -117,6 +135,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>  		.name = "isp",
+>  		.sta_mask = PWR_STATUS_ISP,
+>  		.ctl_offs = 0x0308,
+> +		.pwr_sta_offs = 0x0180,
+> +		.pwr_sta2nd_offs = 0x0184,
+>  		.sram_pdn_bits = GENMASK(9, 8),
+>  		.sram_pdn_ack_bits = GENMASK(13, 12),
+>  		.bp_infracfg = {
+> @@ -140,6 +160,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>  		.name = "vdec",
+>  		.sta_mask = BIT(31),
+>  		.ctl_offs = 0x0300,
+> +		.pwr_sta_offs = 0x0180,
+> +		.pwr_sta2nd_offs = 0x0184,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.bp_smi = {
+> @@ -153,6 +175,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>  		.name = "venc",
+>  		.sta_mask = PWR_STATUS_VENC,
+>  		.ctl_offs = 0x0304,
+> +		.pwr_sta_offs = 0x0180,
+> +		.pwr_sta2nd_offs = 0x0184,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = GENMASK(15, 12),
+>  		.bp_smi = {
+> @@ -166,6 +190,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>  		.name = "vpu_top",
+>  		.sta_mask = BIT(26),
+>  		.ctl_offs = 0x0324,
+> +		.pwr_sta_offs = 0x0180,
+> +		.pwr_sta2nd_offs = 0x0184,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.bp_infracfg = {
+> @@ -193,6 +219,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>  		.name = "vpu_core0",
+>  		.sta_mask = BIT(27),
+>  		.ctl_offs = 0x33c,
+> +		.pwr_sta_offs = 0x0180,
+> +		.pwr_sta2nd_offs = 0x0184,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = GENMASK(13, 12),
+>  		.bp_infracfg = {
+> @@ -211,6 +239,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>  		.name = "vpu_core1",
+>  		.sta_mask = BIT(28),
+>  		.ctl_offs = 0x0340,
+> +		.pwr_sta_offs = 0x0180,
+> +		.pwr_sta2nd_offs = 0x0184,
+>  		.sram_pdn_bits = GENMASK(11, 8),
+>  		.sram_pdn_ack_bits = GENMASK(13, 12),
+>  		.bp_infracfg = {
+> @@ -230,8 +260,6 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>  static const struct scpsys_soc_data mt8183_scpsys_data = {
+>  	.domains_data = scpsys_domain_data_mt8183,
+>  	.num_domains = ARRAY_SIZE(scpsys_domain_data_mt8183),
+> -	.pwr_sta_offs = 0x0180,
+> -	.pwr_sta2nd_offs = 0x0184
+>  };
+>  
+>  #endif /* __SOC_MEDIATEK_MT8183_PM_DOMAINS_H */
+> diff --git a/drivers/soc/mediatek/mt8192-pm-domains.h b/drivers/soc/mediatek/mt8192-pm-domains.h
+> index 543dda70de01..558c4ee4784a 100644
+> --- a/drivers/soc/mediatek/mt8192-pm-domains.h
+> +++ b/drivers/soc/mediatek/mt8192-pm-domains.h
+> @@ -15,6 +15,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "audio",
+>  		.sta_mask = BIT(21),
+>  		.ctl_offs = 0x0354,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.bp_infracfg = {
+> @@ -28,6 +30,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "conn",
+>  		.sta_mask = PWR_STATUS_CONN,
+>  		.ctl_offs = 0x0304,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = 0,
+>  		.sram_pdn_ack_bits = 0,
+>  		.bp_infracfg = {
+> @@ -50,6 +54,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "mfg0",
+>  		.sta_mask = BIT(2),
+>  		.ctl_offs = 0x0308,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  	},
+> @@ -57,6 +63,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "mfg1",
+>  		.sta_mask = BIT(3),
+>  		.ctl_offs = 0x030c,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.bp_infracfg = {
+> @@ -82,6 +90,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "mfg2",
+>  		.sta_mask = BIT(4),
+>  		.ctl_offs = 0x0310,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  	},
+> @@ -89,6 +99,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "mfg3",
+>  		.sta_mask = BIT(5),
+>  		.ctl_offs = 0x0314,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  	},
+> @@ -96,6 +108,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "mfg4",
+>  		.sta_mask = BIT(6),
+>  		.ctl_offs = 0x0318,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  	},
+> @@ -103,6 +117,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "mfg5",
+>  		.sta_mask = BIT(7),
+>  		.ctl_offs = 0x031c,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  	},
+> @@ -110,6 +126,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "mfg6",
+>  		.sta_mask = BIT(8),
+>  		.ctl_offs = 0x0320,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  	},
+> @@ -117,6 +135,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "disp",
+>  		.sta_mask = BIT(20),
+>  		.ctl_offs = 0x0350,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.bp_infracfg = {
+> @@ -146,6 +166,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "ipe",
+>  		.sta_mask = BIT(14),
+>  		.ctl_offs = 0x0338,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.bp_infracfg = {
+> @@ -163,6 +185,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "isp",
+>  		.sta_mask = BIT(12),
+>  		.ctl_offs = 0x0330,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.bp_infracfg = {
+> @@ -180,6 +204,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "isp2",
+>  		.sta_mask = BIT(13),
+>  		.ctl_offs = 0x0334,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.bp_infracfg = {
+> @@ -197,6 +223,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "mdp",
+>  		.sta_mask = BIT(19),
+>  		.ctl_offs = 0x034c,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.bp_infracfg = {
+> @@ -214,6 +242,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "venc",
+>  		.sta_mask = BIT(17),
+>  		.ctl_offs = 0x0344,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.bp_infracfg = {
+> @@ -231,6 +261,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "vdec",
+>  		.sta_mask = BIT(15),
+>  		.ctl_offs = 0x033c,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.bp_infracfg = {
+> @@ -248,6 +280,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "vdec2",
+>  		.sta_mask = BIT(16),
+>  		.ctl_offs = 0x0340,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  	},
+> @@ -255,6 +289,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "cam",
+>  		.sta_mask = BIT(23),
+>  		.ctl_offs = 0x035c,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  		.bp_infracfg = {
+> @@ -284,6 +320,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "cam_rawa",
+>  		.sta_mask = BIT(24),
+>  		.ctl_offs = 0x0360,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  	},
+> @@ -291,6 +329,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "cam_rawb",
+>  		.sta_mask = BIT(25),
+>  		.ctl_offs = 0x0364,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  	},
+> @@ -298,6 +338,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  		.name = "cam_rawc",
+>  		.sta_mask = BIT(26),
+>  		.ctl_offs = 0x0368,
+> +		.pwr_sta_offs = 0x016c,
+> +		.pwr_sta2nd_offs = 0x0170,
+>  		.sram_pdn_bits = GENMASK(8, 8),
+>  		.sram_pdn_ack_bits = GENMASK(12, 12),
+>  	},
+> @@ -306,8 +348,6 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8192[] = {
+>  static const struct scpsys_soc_data mt8192_scpsys_data = {
+>  	.domains_data = scpsys_domain_data_mt8192,
+>  	.num_domains = ARRAY_SIZE(scpsys_domain_data_mt8192),
+> -	.pwr_sta_offs = 0x016c,
+> -	.pwr_sta2nd_offs = 0x0170,
+>  };
+>  
+>  #endif /* __SOC_MEDIATEK_MT8192_PM_DOMAINS_H */
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
+> index 0af00efa0ef8..2689f02d7a41 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.c
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
+> @@ -60,10 +60,10 @@ static bool scpsys_domain_is_on(struct scpsys_domain *pd)
+>  	struct scpsys *scpsys = pd->scpsys;
+>  	u32 status, status2;
+>  
+> -	regmap_read(scpsys->base, scpsys->soc_data->pwr_sta_offs, &status);
+> +	regmap_read(scpsys->base, pd->data->pwr_sta_offs, &status);
+>  	status &= pd->data->sta_mask;
+>  
+> -	regmap_read(scpsys->base, scpsys->soc_data->pwr_sta2nd_offs, &status2);
+> +	regmap_read(scpsys->base, pd->data->pwr_sta2nd_offs, &status2);
+>  	status2 &= pd->data->sta_mask;
+>  
+>  	/* A domain is on when both status bits are set. */
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.h b/drivers/soc/mediatek/mtk-pm-domains.h
+> index 21a4e113bbec..8b86ed22ca56 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.h
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.h
+> @@ -94,13 +94,13 @@ struct scpsys_domain_data {
+>  	u8 caps;
+>  	const struct scpsys_bus_prot_data bp_infracfg[SPM_MAX_BUS_PROT_DATA];
+>  	const struct scpsys_bus_prot_data bp_smi[SPM_MAX_BUS_PROT_DATA];
+> +	int pwr_sta_offs;
+> +	int pwr_sta2nd_offs;
+>  };
+>  
+>  struct scpsys_soc_data {
+>  	const struct scpsys_domain_data *domains_data;
+>  	int num_domains;
+> -	int pwr_sta_offs;
+> -	int pwr_sta2nd_offs;
+>  };
+>  
+>  #endif /* __SOC_MEDIATEK_MTK_PM_DOMAINS_H */
+> 
