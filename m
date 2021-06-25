@@ -2,138 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C801B3B3E43
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE493B3E45
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbhFYIMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:12:30 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:43655 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229748AbhFYIM2 (ORCPT
+        id S230037AbhFYINb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:13:31 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:60282 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229890AbhFYIN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:12:28 -0400
-Received: from [77.244.183.192] (port=64458 helo=[192.168.178.41])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1lwguc-000GX1-Pd; Fri, 25 Jun 2021 10:10:06 +0200
-Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-References: <20210531090540.2663171-1-luca@lucaceresoli.net>
- <20210531133211.llyiq3jcfy25tmz4@pali>
- <8ff1c54f-bb29-1e40-8342-905e34361e1c@lucaceresoli.net>
- <9fdbada4-4902-cec1-f283-0d12e1d4ac64@ti.com>
- <20210531162242.jm73yzntzmilsvbg@pali>
- <8207a53c-4de9-d0e5-295a-c165e7237e36@lucaceresoli.net>
- <20210622110627.aqzxxtf2j3uxfeyl@pali> <20210622115604.GA25503@lpieralisi>
- <20210622121649.ouiaecdvwutgdyy5@pali>
- <18a104a9-2cb8-7535-a5b2-f5f049adff47@lucaceresoli.net>
- <4d4c0d4d-41b4-4756-5189-bffa15f88406@ti.com>
- <CACRpkdYp17MLavG_OMSHmS5DfMGLXrfK11nDfJX86rM9LJ9DtQ@mail.gmail.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <e9ab9c22-f73b-fe72-820a-4f2825c3dabc@lucaceresoli.net>
-Date:   Fri, 25 Jun 2021 10:10:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 25 Jun 2021 04:13:29 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id F3CE51FE5E;
+        Fri, 25 Jun 2021 08:11:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624608668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rVIH1esBD9VFAEJAEFqDktBcj3lfhTJUdrlqCqIPwYg=;
+        b=hZll+1qbTsCnNd40Zvjw/ueHvgCu6TwSoeM1JMbultQ1CDID9mrC/m7pbIIY7YPZHUgmx9
+        KG8oFxWGxy6BzYNYKMU1pwU1IblwBT7Gr1Y+L1jl9YCCOqTt58N1bl1ET7O6UNIX4Un+Uk
+        6HZma729QTHDpGWGhtfdVxMM5coJBhk=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id C6906A3C0D;
+        Fri, 25 Jun 2021 08:11:07 +0000 (UTC)
+Date:   Fri, 25 Jun 2021 10:11:07 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 13/46] mm/memcg: Convert commit_charge() to take a
+ folio
+Message-ID: <YNWPm/IC97CHLr8O@dhcp22.suse.cz>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-14-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdYp17MLavG_OMSHmS5DfMGLXrfK11nDfJX86rM9LJ9DtQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622121551.3398730-14-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Tue 22-06-21 13:15:18, Matthew Wilcox wrote:
+> The memcg_data is only set on the head page, so enforce that by
+> typing it as a folio.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-On 25/06/21 01:11, Linus Walleij wrote:
-> On Tue, Jun 22, 2021 at 3:57 PM Kishon Vijay Abraham I <kishon@ti.com> wrote:
-> 
->> While the patch itself is correct, this kind-of changes the behavior on
->> already upstreamed platforms. Previously the driver expected #PERST to
->> be asserted be external means (or default power-up state) and only takes
->> care of de-asserting the #PERST line.
->>
->> There are 2 platforms that will be impacted due to this change
->> 1) arch/arm/boot/dts/am57xx-beagle-x15-common.dist (has an inverter on
->> GPIO line)
->> 2) arch/arm/boot/dts/am571x-idk.dts (directly connected to #PERST)
->>
->> For 1), gpiod_set_value(reset, 0) will assert the PERST line due to the
->> inverter (and GPIO_ACTIVE_LOW)
->> For 2), gpiod_set_value(reset, 0) will assert the PERST line because we
->> have GPIO_ACTIVE_HIGH
-> 
-> The presence of an inverter makes it necessary to model this the right
-> way to get out of the situation.
-> 
->> So this patch should have to be accompanied with DT changes (and this
->> patch also breaks old DT compatibility).
-> 
-> There are ways to deal with this perfectly. It may or may not be worth
-> the extra work. But I can show how it is done.
-> 
-> Make the patch to the driver that assumes driving the gpio descriptor
-> to 1 (asserted) has the desired effect.
-> 
-> In this patch, I would include a hunk that fixes the above device trees,
-> so they are correct from this point. This is one of the few cases where
-> I think it warrants to fix the driver and the DTS file at the same time,
-> but the DTS can also be patched separately because of the described
-> solution below:
-> 
-> To avoid regressions with old device trees, add code to
-> drivers/gpio/gpiolib-of.c in function of_gpio_flags_quirks()
-> to react to the old incorrect device trees. This is where we
-> stockpile OF errors and bug fixes.
-> 
-> This needs to be pretty elaborate. It begins like this:
-> 
-> if (IS_ENABLED(CONFIG_PCI) &&
->       (of_machine_is_compatible("ti,am572x-beagle-x15") ||
->       of_machine_is_compatible("ti,am5718-idk")) &&
->       of_node_name_eq(np, "pcie")) {
->       /* ... add code to check and enforce the flags ... */
-> }
-> 
-> You see the idea here. Include this in the patch to make the
-> Perfect(TM) solution to this problem both fixing all device trees
-> in place and dealing with the old erroneous ones using some
-> elaborate code.
-> 
-> There are plenty of examples on how to detect warn and
-> modify flags in of_gpio_flags_quirks() make it clear and add
-> some warning prints and comments. Keep me and Bartosz
-> in the loop. It'll look fine in the end.
+Acked-by: Michal Hocko <mhocko@suse.com>
+Thanks!
 
-Thanks for thaking the time to explain this in detail!
-
-As I volounteered to write the patch, and since I'm lazy, I was going to
-vote for the former solution. But to be honest the latter has some good
-reason to exist as it handles the case of kernel upgrade without DT
-upgrade...
-
-My bad, this two-liner patch is growing so big. :-)
+> ---
+>  mm/memcontrol.c | 27 +++++++++++++--------------
+>  1 file changed, 13 insertions(+), 14 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 7423cb11eb88..7939e4e9118d 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2700,9 +2700,9 @@ static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  }
+>  #endif
+>  
+> -static void commit_charge(struct page *page, struct mem_cgroup *memcg)
+> +static void commit_charge(struct folio *folio, struct mem_cgroup *memcg)
+>  {
+> -	VM_BUG_ON_PAGE(page_memcg(page), page);
+> +	VM_BUG_ON_FOLIO(folio_memcg(folio), folio);
+>  	/*
+>  	 * Any of the following ensures page's memcg stability:
+>  	 *
+> @@ -2711,7 +2711,7 @@ static void commit_charge(struct page *page, struct mem_cgroup *memcg)
+>  	 * - lock_page_memcg()
+>  	 * - exclusive reference
+>  	 */
+> -	page->memcg_data = (unsigned long)memcg;
+> +	folio->memcg_data = (unsigned long)memcg;
+>  }
+>  
+>  static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
+> @@ -6506,7 +6506,8 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
+>  static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
+>  			       gfp_t gfp)
+>  {
+> -	unsigned int nr_pages = thp_nr_pages(page);
+> +	struct folio *folio = page_folio(page);
+> +	unsigned int nr_pages = folio_nr_pages(folio);
+>  	int ret;
+>  
+>  	ret = try_charge(memcg, gfp, nr_pages);
+> @@ -6514,7 +6515,7 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
+>  		goto out;
+>  
+>  	css_get(&memcg->css);
+> -	commit_charge(page, memcg);
+> +	commit_charge(folio, memcg);
+>  
+>  	local_irq_disable();
+>  	mem_cgroup_charge_statistics(memcg, nr_pages);
+> @@ -6771,21 +6772,21 @@ void mem_cgroup_uncharge_list(struct list_head *page_list)
+>   */
+>  void mem_cgroup_migrate(struct page *oldpage, struct page *newpage)
+>  {
+> +	struct folio *newfolio = page_folio(newpage);
+>  	struct mem_cgroup *memcg;
+> -	unsigned int nr_pages;
+> +	unsigned int nr_pages = folio_nr_pages(newfolio);
+>  	unsigned long flags;
+>  
+>  	VM_BUG_ON_PAGE(!PageLocked(oldpage), oldpage);
+> -	VM_BUG_ON_PAGE(!PageLocked(newpage), newpage);
+> -	VM_BUG_ON_PAGE(PageAnon(oldpage) != PageAnon(newpage), newpage);
+> -	VM_BUG_ON_PAGE(PageTransHuge(oldpage) != PageTransHuge(newpage),
+> -		       newpage);
+> +	VM_BUG_ON_FOLIO(!folio_locked(newfolio), newfolio);
+> +	VM_BUG_ON_FOLIO(PageAnon(oldpage) != folio_anon(newfolio), newfolio);
+> +	VM_BUG_ON_FOLIO(compound_nr(oldpage) != nr_pages, newfolio);
+>  
+>  	if (mem_cgroup_disabled())
+>  		return;
+>  
+>  	/* Page cache replacement: new page already charged? */
+> -	if (page_memcg(newpage))
+> +	if (folio_memcg(newfolio))
+>  		return;
+>  
+>  	memcg = page_memcg(oldpage);
+> @@ -6794,14 +6795,12 @@ void mem_cgroup_migrate(struct page *oldpage, struct page *newpage)
+>  		return;
+>  
+>  	/* Force-charge the new page. The old one will be freed soon */
+> -	nr_pages = thp_nr_pages(newpage);
+> -
+>  	page_counter_charge(&memcg->memory, nr_pages);
+>  	if (do_memsw_account())
+>  		page_counter_charge(&memcg->memsw, nr_pages);
+>  
+>  	css_get(&memcg->css);
+> -	commit_charge(newpage, memcg);
+> +	commit_charge(newfolio, memcg);
+>  
+>  	local_irq_save(flags);
+>  	mem_cgroup_charge_statistics(memcg, nr_pages);
+> -- 
+> 2.30.2
 
 -- 
-Luca
+Michal Hocko
+SUSE Labs
