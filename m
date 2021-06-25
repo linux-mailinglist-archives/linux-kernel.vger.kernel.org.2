@@ -2,127 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43AD3B3C8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9B23B3C91
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbhFYGUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 02:20:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30284 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230192AbhFYGT4 (ORCPT
+        id S233192AbhFYGUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 02:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233181AbhFYGUS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 02:19:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624601856;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DluuXyEXbo7ekrnZZANuEGrKYi0ROoHqwgYQSQdvpuQ=;
-        b=RVUaJV4rW6V+BEUS0KXAumu2wlqOwuoydDDp+F1qhbl4fVCMvA12nm8xeNvDclOUUrSVeX
-        ZPe/urX/qEQujRi1J+L9p5KvTmrEjRDehZiSxFyReHVyhyOI/0D4yRBD1KTHnfPVRdm43a
-        dPRlSd6ciX/LEYO0cZnUKhvgEH/dCdY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-o31io9nmNeWVMxnLQIIOMA-1; Fri, 25 Jun 2021 02:17:34 -0400
-X-MC-Unique: o31io9nmNeWVMxnLQIIOMA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 261F0804140;
-        Fri, 25 Jun 2021 06:17:33 +0000 (UTC)
-Received: from [10.64.54.233] (vpn2-54-233.bne.redhat.com [10.64.54.233])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9BAC05D6AB;
-        Fri, 25 Jun 2021 06:17:25 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH v5 0/4] mm/page_reporting: Make page reporting work on
- arm64 with 64KB page size
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        alexander.duyck@gmail.com, david@redhat.com,
-        akpm@linux-foundation.org, anshuman.khandual@arm.com,
-        catalin.marinas@arm.com, will@kernel.org, shan.gavin@gmail.com
-References: <20210625042150.46964-1-gshan@redhat.com>
- <20210625015826-mutt-send-email-mst@kernel.org>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <f5f3a7df-6a20-2835-7d49-9c3f10ef8978@redhat.com>
-Date:   Fri, 25 Jun 2021 16:17:22 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Fri, 25 Jun 2021 02:20:18 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0ADFC061574;
+        Thu, 24 Jun 2021 23:17:57 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id h17so11863000edw.11;
+        Thu, 24 Jun 2021 23:17:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OXD1nFT9T+bpMKYpL0JBavvAN5ulnBIHUSuyvaKQlW4=;
+        b=vaba2H5cgu7Xx1X891XBNDFnQvnWJYGck060oiXxaYazK/YHpzqwgP1LYoCTfCAeNw
+         7UtONnqYBEINag7wsvSxStQv5m1ddN4HGe6bb8YWxmqGyBdOrucxwklcqvBssiz6nivm
+         fK3Tk6HHiP7IN9uTggiXVmCasW0kz+8jk8U7RZBUKxWuG72ugNB+dZNQ4ecVVsV4+LvE
+         p7cMco9vtZ8brMozZ1B8u7/ms1uxmQAdDI/kqw8QvR4WnjjcJ7ZRPKGgm87YYBKoiTgL
+         HyCtkUJC1Fq/7d09yNBirSGTzaV8HWb1Dpjh9YePoDj/OEWjFO88rWYkLeQXZPjUtOra
+         hCYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OXD1nFT9T+bpMKYpL0JBavvAN5ulnBIHUSuyvaKQlW4=;
+        b=YHEDEnfV3JFOr3kPMY2upzIXQrIyFlek89vmHHLWyG5vygmtwv/BZUM/nd1HIXg65Q
+         XWTa0uaH+NbX1f2oYRiAC7wANj8gPLcXNQEgolaRt1N8Flv65hg0nyE19tr5E3TIbDNF
+         vtXyMUcCT5kNJgjpJdpdSfcnEFnsRaWb+QIAS6vaqfKAZJourEc7/ruN1+5oVoQnwT99
+         9g1VIERPn85MDczUclmnMezbuY9C+sEwISlQF56eSDX87QdHWFppMOsYyLjG6zfZVRN0
+         AIEI1JDFmYgD8UtfczWenrUracWaTbypTJUhKuYxN4DaYpEUvrLclJwHeHBgw52uuYUy
+         jtQA==
+X-Gm-Message-State: AOAM5325IqGi/VnQYDQrBwN/S3iubRfNCQtGiWPzQ2AEeCZg59s4thbU
+        S7COyNGrEOeRQGCBSJCoYsI=
+X-Google-Smtp-Source: ABdhPJyfn1or367EG02dA6X/MR5ebjFu64dBDvYaOl9nk6hXypF6iHMOvw6uA2AR/FOJOPIFHMFBwQ==
+X-Received: by 2002:a05:6402:2210:: with SMTP id cq16mr12295912edb.261.1624601876248;
+        Thu, 24 Jun 2021 23:17:56 -0700 (PDT)
+Received: from [192.168.74.106] (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
+        by smtp.gmail.com with ESMTPSA id hy5sm2259429ejc.72.2021.06.24.23.17.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 23:17:55 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] Add Pinctrl for SM4250 and SM6115
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+References: <20210625051138.2997854-1-iskren.chernev@gmail.com>
+From:   Iskren Chernev <iskren.chernev@gmail.com>
+Message-ID: <e1e447f5-b0a2-e8a1-5d84-28dc29c50824@gmail.com>
+Date:   Fri, 25 Jun 2021 09:17:54 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210625015826-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210625051138.2997854-1-iskren.chernev@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/25/21 3:58 PM, Michael S. Tsirkin wrote:
-> On Fri, Jun 25, 2021 at 12:21:46PM +0800, Gavin Shan wrote:
->> The page reporting threshold is currently equal to @pageblock_order, which
->> is 13 and 512MB on arm64 with 64KB base page size selected. The page
->> reporting won't be triggered if the freeing page can't come up with a free
->> area like that huge. The condition is hard to be met, especially when the
->> system memory becomes fragmented.
->>
->> This series intends to solve the issue by having page reporting threshold
->> as 5 (2MB) on arm64 with 64KB base page size. The patches are organized as:
->>
->>     PATCH[1/4] Fix some coding style in __page_reporting_request().
->>     PATCH[2/4] Represents page reporting order with variable so that it can
->>                be exported as module parameter.
->>     PATCH[3/4] Allows the device driver (e.g. virtio_balloon) to specify
->>                the page reporting order when the device info is registered.
->>     PATCH[4/4] Specifies the page reporting order to 5, corresponding to
->>                2MB in size on ARM64 when 64KB base page size is used.
+Please discard this version, there is v3 addressing all points from Rob and Bjorn.
+
+On 6/25/21 8:11 AM, Iskren Chernev wrote:
+> This patch adds support for the TLMM block on QCom SM4250 and SM6115, codename
+> bengal. The code is taken from OnePlus repo [1], and the keyword bengal
+> corresponds to sm4250 and sm6115, so I'm adding both compat strings.
 > 
-> I sent comments on v4. They still apply I think. Want me to repeat them
-> here?
+> [1]: https://github.com/OnePlusOSS/android_kernel_oneplus_sm4250
 > 
-
-Thanks for your comments, Michael. I've replied to your comments
-through v4. There are some future work as Alex and David pointed
-out before: In order to remove the hack in virtio-memballoon, the
-VMM needs to report the page reporting order. I will keep working
-on this when I have spare time.
-
-Thanks,
-Gavin
-
->> Changelog
->> =========
->> v5:
->>     * Restore @page_reporting_order to @pageblock_order when
->>       device is registered in PATCH[2/4] to keep "git bisect"
->>       friendly at least.                                           (Alex)
->> v4:
->>     * Set @page_reporting_order to MAX_ORDER. Its value is
->>       specified by the driver or falls back to @pageblock_order
->>       when page reporting device is registered.                    (Alex)
->>     * Include "module.h" in page_reporting.c                       (Andrew)
->> v3:
->>     * Avoid overhead introduced by function all                    (Alex)
->>     * Export page reporting order as module parameter              (Gavin)
->> v2:
->>     * Rewrite the patches as Alex suggested                        (Alex)
->>
->> Gavin Shan (4):
->>    mm/page_reporting: Fix code style in __page_reporting_request()
->>    mm/page_reporting: Export reporting order as module parameter
->>    mm/page_reporting: Allow driver to specify reporting
->>    virtio_balloon: Specify page reporting order if needed
->>
->>   .../admin-guide/kernel-parameters.txt         |  6 +++++
->>   drivers/virtio/virtio_balloon.c               | 17 ++++++++++++++
->>   include/linux/page_reporting.h                |  3 +++
->>   mm/page_reporting.c                           | 22 +++++++++++++++----
->>   mm/page_reporting.h                           |  5 ++---
->>   5 files changed, 46 insertions(+), 7 deletions(-)
->>
->> -- 
->> 2.23.0
+> v1: https://lkml.org/lkml/2021/6/22/1163
 > 
-
+> Changes from v1:
+> - fix binding example
+> - fix cover letter text
+> 
+> Iskren Chernev (2):
+>   dt-bindings: pinctrl: qcom: Add SM6115 pinctrl bindings
+>   drivers: qcom: pinctrl: Add pinctrl driver for sm6115
+> 
+>  .../bindings/pinctrl/qcom,sm6115-pinctrl.yaml |  172 ++
+>  drivers/pinctrl/qcom/Kconfig                  |    9 +
+>  drivers/pinctrl/qcom/Makefile                 |    1 +
+>  drivers/pinctrl/qcom/pinctrl-sm6115.c         | 1482 +++++++++++++++++
+>  4 files changed, 1664 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm6115-pinctrl.yaml
+>  create mode 100644 drivers/pinctrl/qcom/pinctrl-sm6115.c
+> 
+> 
+> base-commit: e71e3a48a7e89fa71fb70bf4602367528864d2ff
+> --
+> 2.32.0
+> 
