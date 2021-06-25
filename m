@@ -2,75 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123973B4AE5
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 01:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8163B4AE8
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 01:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhFYX0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 19:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbhFYX0C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 19:26:02 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1BAC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 16:23:40 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id f10so5513744plg.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 16:23:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=I++Hou46KR2uj9FywP1lXIkCQRmcDSf2J7N01SOGghw=;
-        b=PVPsHGryXepq++jasKNZrwOxRq0wtzSBiiAzjetks/D7Qtf5JoJYTLiNHxfdTg6YY5
-         dnvjh/XfZ6UVkTR6gO5T3jXtO1e+ahuZGiYy4laO6YaPH4XzAUq1qRXANzz33dMm5Tv6
-         QCOHiTC7H98VU25JFlCI50vR8+ybayijKvMZg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I++Hou46KR2uj9FywP1lXIkCQRmcDSf2J7N01SOGghw=;
-        b=ZRMoTQsq9gnfuLfko78tqaGwX+6YRtAoSI/Zdix/6eMA3ukFCQpNMB0ycOMc9RhdqR
-         DWLU4CKaKa24QPzH/08XRMpkp1UpFyz/xRJ+fY9TPp7vrGFzIhGMQ1Nwo1BUPUf/7CBz
-         66iWHta2drx8JffA9BWkgWCllO2cUmgagfW24zRh+n8RNIu9IABEMhMBNDEN2NBJ7AO8
-         qobMe3iaM4bI7qEEbdeK27unHLP/dL376drnKzU+gpMU9aQMgVU68R7uezNsWq1iyHQr
-         fkgRxXj/i8L1NmNVZsYu7C83BzrXdORrO40LeUJd3/BVGZ2spwGGmFxJsB0mQb4HqCVM
-         STMQ==
-X-Gm-Message-State: AOAM533zcciWtrsWobCWQACttfcLTwUWHwqvFbufyO5n+XXFltc1TOUu
-        pOgf70k/1iTknC7x4xeDkh+B5A==
-X-Google-Smtp-Source: ABdhPJxjkafwQnqg424OpXjqQy03Ybb/oMQ3swvwysUOB5GqLJ1DNO98wJV+qB0cT5tMvqS4kG8Wlg==
-X-Received: by 2002:a17:903:230d:b029:127:9144:db9e with SMTP id d13-20020a170903230db02901279144db9emr11110808plh.3.1624663419950;
-        Fri, 25 Jun 2021 16:23:39 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:cc13:a7dd:f4b5:2160])
-        by smtp.gmail.com with UTF8SMTPSA id c184sm6643949pfa.38.2021.06.25.16.23.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 16:23:39 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 16:23:37 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org, will@kernel.org,
-        saiprakash.ranjan@codeaurora.org, ohad@wizery.com,
-        agross@kernel.org, mathieu.poirier@linaro.org,
-        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
-        dianders@chromium.org, swboyd@chromium.org
-Subject: Re: [PATCH 2/9] remoteproc: qcom: pas: Add SC7280 Modem support
-Message-ID: <YNZleW/fLA6jPcn8@google.com>
-References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
- <1624564058-24095-3-git-send-email-sibis@codeaurora.org>
+        id S229994AbhFYX0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 19:26:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229948AbhFYX0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 19:26:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7C4461949;
+        Fri, 25 Jun 2021 23:23:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624663428;
+        bh=mQonIn9Qw3twlW/qLBFdWqCM5XghMvbXhD8NlsWqsag=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=uQN+cWOy8JWXA7KBS3viSA5z48M+/YWZmMcYsnf71Rd7KXwC5LD8JgabgPgBTSKYW
+         vZCLB+lea7pgMWPQovkgFqLXCB8mudQUuBEMvyE1Pd3yN5C0Q4RnMCZHPO0tq1z3ji
+         UMgW2UbsQD04bOSeoVEPjKXD4jj7+nfZCBIfeQCeytzMBwKrXFuY2A/mxHsvyn4JxE
+         vNGVdMWBHbkBbQ4H0KWPn0MCpezkZjRxcF3uO45JCXvW0FqUBupJIo0vm8GeRnA57j
+         RYZHnuHCumHtDhuf6gCQhvrT7Nd6aS5zawAmPVCW5CRos6UEqYk5p2FT3qiIjnjRc1
+         Lgi2kDHbZneBg==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1624564058-24095-3-git-send-email-sibis@codeaurora.org>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210624084737.42336-1-aardelean@deviqon.com>
+References: <20210624084737.42336-1-aardelean@deviqon.com>
+Subject: Re: [PATCH] clk: tegra: clk-tegra124-dfll-fcpu: don't use devm functions for regulator
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     pdeschrijver@nvidia.com, pgaikwad@nvidia.com,
+        mturquette@baylibre.com, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, Alexandru Ardelean <aardelean@deviqon.com>
+To:     Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Date:   Fri, 25 Jun 2021 16:23:46 -0700
+Message-ID: <162466342649.3259633.211016165907683345@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 01:17:31AM +0530, Sibi Sankar wrote:
-> Add support for booting the Modem DSP found on QTI SC7280 SoCs.
-> 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+Quoting Alexandru Ardelean (2021-06-24 01:47:37)
+> The purpose of the device-managed functions is to bind the life-time of an
+> object to that of a parent device object.
+>=20
+> This is not the case for the 'vdd-cpu' regulator in this driver. A
+> reference is obtained via devm_regulator_get() and immediately released
+> with devm_regulator_put().
+>=20
+> In this case, the usage of devm_ functions is slightly excessive, as the
+> un-managed versions of these functions is a little cleaner (and slightly
+> more economical in terms of allocation).
+>=20
+> This change converts the devm_regulator_{get,put}() to
+> regulator_{get,put}() in the get_alignment_from_regulator() function of
+> this driver.
+>=20
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> ---
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Applied to clk-next
