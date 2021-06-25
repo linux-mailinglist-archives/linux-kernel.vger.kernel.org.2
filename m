@@ -2,118 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F043B3A0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC9C3B3A12
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233015AbhFYAMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 20:12:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34514 "EHLO
+        id S232934AbhFYAQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 20:16:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233026AbhFYAM3 (ORCPT
+        with ESMTP id S229521AbhFYAQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 20:12:29 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA10C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:10:09 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id a11so13265122lfg.11
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:10:09 -0700 (PDT)
+        Thu, 24 Jun 2021 20:16:18 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8242BC061574;
+        Thu, 24 Jun 2021 17:13:57 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id h15so13249853lfv.12;
+        Thu, 24 Jun 2021 17:13:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=FNTTrJ3FL1iq3YniplXZ8119Emiw8hp3FUgBfyLOtsY=;
-        b=H/gWxWmhKDTGjRX15XTwo2KDADDg2PfwLeK8QAkQyJmNyuli18P+1mAV6lo10NgW+y
-         VPNgQmBidtxHzk1bciUp4km2D5CazJCt/SL3vWjLfdaXvJzxdJF2c4PhoyuvQCxOl4tF
-         KHhJXfveAViSCT4QZ6IH6n2KCo0MwAKTJD5uByEFEoi+heEJi9+R4v44lNRxE9hv+8yx
-         uh0aMKqEBItpBCuLvmKqzUT8DCqEypJSLjGaUEIQgjyaDVfWYcazrjn2uDN0vLp0WRdg
-         jynSvZhtlLomKu7cFBoX/D11D+s0FCTlyPJiVbsDYM4dHFTXWgrCCPfI8EIVLqWYuT7E
-         yztQ==
+        bh=Y7tPKPvRNk7wzvHDimxSf6Hb5LyFrU2QdlsP0vbUrqg=;
+        b=Skb/DiI9n9rky1ySpHofEY98q3c8i52bkZjSf0+qsIwAp2xJyvcvh4qCu4X554l1Q3
+         jtEH0XIWjzR7ijgQK3IyGRPNrxNoqPtQV3UpZcG5I8OQKSSEStZSB1V/r++0Qt52egyQ
+         GvZZca+++ho4tthUN3i7tV4Nw6jX5MM4IO6bqlQL3Jnk3CTpqqw3Ef/S0yODaxWQT6nU
+         Js2m9gop+93Liq5X1dwOFpTsR3DLsx9YDERAoqpwmV21kQdAdgp5X6Slq44ZxJSrXZj/
+         jRUgHoC1HEhOpkCCEBhxnuMlMp4Kdad5Ht7SRSN3AxCQ9JWTsdXy9lHBjhGeiYpWhjat
+         DyqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FNTTrJ3FL1iq3YniplXZ8119Emiw8hp3FUgBfyLOtsY=;
-        b=ZokBrMaOb7BbybcUAYpfxNZvEFRk1rDc0Z6xzrGWxmEf8YpQ82IhYbPEgjvnd6MJrb
-         EGLmiKkW3CsMh+kUghTlkDZ29oHLf6IaMRZgKFTQOR0cG95F2Z3zuOIBsCn3CN+cd6t1
-         wDcZTcqfVh+oSJ+pzHipvUPyY82KPrwv9vdjNTTUCCh+T/LYYLlsBxpF+yfvjuzPUGBG
-         tQtaQwkrEWC4cqPOu95W4SXWTMK+47DjvogAMH/7IAgxEpfqWRR5mAxMktf3dEAE4fDS
-         9Djg6Of7fQ31dObug6MffoSh9jXKgFXFlMilWq/lvZt9lNduoNhpfnuQKgTYneawqm9J
-         xX6g==
-X-Gm-Message-State: AOAM531g40k3BK9C+TmTuEwthjK0rRYes85xdvqX6Ai6qUeyBunQ1yL+
-        Cme9f9bJHVEma7DiW1rK3ywrnRqZMzkqAFDNp7MCGg==
-X-Google-Smtp-Source: ABdhPJzhpdZ+qRb8l4M1S8NIRcHZuamvKemb8/lfE8nfui9Lb+u/kx6k4mY8D8H38j6ZEeiQ6LWsZQZbCm6ko+gfuM0=
-X-Received: by 2002:a05:6512:3f08:: with SMTP id y8mr5640261lfa.649.1624579808001;
- Thu, 24 Jun 2021 17:10:08 -0700 (PDT)
+        bh=Y7tPKPvRNk7wzvHDimxSf6Hb5LyFrU2QdlsP0vbUrqg=;
+        b=a0SjPswoJ0Rr0sbn5XNqf5DRC6kdfwgLZWE/wsKnlyM5jJg6oZj0HTFCdOAPEIARKp
+         XPE+op3DS9IxGZoxgTw6+b6P2d1rLrlOmK0tM70yD3ypl1qCPU0Tp6neAc7Hr7e4S70K
+         gBiDZKrvixC/wAqzNn5S2RjpVr0LpGLiwMt6vgnX5vgoWK64o7dV1F3M1THzAlpPqvwa
+         68E95Hk1bFXfKp8RCX3o4qeajsMxDii2pDcpRgC1AHHbaPotuqPygAshOL2WG6IHQwD+
+         WynK6SZMA3XaSyw0bFNEm4mYizmiBh7alLNjqUWAetI0Pa5tCIBlM0NT1er/++OKrZpT
+         Zirw==
+X-Gm-Message-State: AOAM533Hc3AGmUW9DYGjaA8mA4nE5elqSBbbFTfp942qBqIJmSB3lZ0L
+        oMCy3rtl0iksTokO349cZm9A5+IkCzdfzRowve8=
+X-Google-Smtp-Source: ABdhPJy0sAOhx8ZiWu5Mj2RkaPOW9KoA7w6HvdYF1993awXMvcQm0estIa+hJDIacn1Jup6Gh6uAuyLH+Pw+VxH71Ro=
+X-Received: by 2002:a05:6512:b8d:: with SMTP id b13mr5698867lfv.524.1624580035808;
+ Thu, 24 Jun 2021 17:13:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210622115604.GA25503@lpieralisi> <20210622121649.ouiaecdvwutgdyy5@pali>
- <18a104a9-2cb8-7535-a5b2-f5f049adff47@lucaceresoli.net> <4d4c0d4d-41b4-4756-5189-bffa15f88406@ti.com>
- <20210622205220.ypu22tuxhpdn2jwz@pali> <2873969e-ac56-a41f-0cc9-38e387542aa1@lucaceresoli.net>
- <20210622211901.ikulpy32d6qlr4yw@pali> <588741e4-b085-8ae2-3311-27037c040a57@lucaceresoli.net>
- <20210622222328.3lfgkrhsdy6izedv@pali> <CACRpkdai2cvoNFR8yH2MHP+R27nQm1HZNK4-mJ50mE7DHrBmXw@mail.gmail.com>
- <20210624233448.ouvczfbogmtnbrye@pali>
-In-Reply-To: <20210624233448.ouvczfbogmtnbrye@pali>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 25 Jun 2021 02:09:56 +0200
-Message-ID: <CACRpkdZyMr-8Qmf3S7R+RcWe5shhnMeBoEsJoQdREimpB-xw+g@mail.gmail.com>
-Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+References: <20210618105526.265003-1-zenczykowski@gmail.com> <CACAyw9-UnQODTf+=xEmexpWE6zhYUQfp7go76bEEc_A1rAyd7Q@mail.gmail.com>
+In-Reply-To: <CACAyw9-UnQODTf+=xEmexpWE6zhYUQfp7go76bEEc_A1rAyd7Q@mail.gmail.com>
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Date:   Thu, 24 Jun 2021 17:13:44 -0700
+Message-ID: <CAHo-OoyxD=4gYvnrYPwJ_Lyb-JoR6n2Ehvrq6jKoQbmP5JJdpA@mail.gmail.com>
+Subject: Re: [PATCH bpf] Revert "bpf: program: Refuse non-O_RDWR flags in BPF_OBJ_GET"
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linux Network Development Mailing List 
+        <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Greg Kroah-Hartman <gregkh@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 1:34 AM Pali Roh=C3=A1r <pali@kernel.org> wrote:
+Reposting since apparently my reply only went to Lorenz.
 
-> > gpiod_set_value(gpiod, 1) =3D=3D assert the line
-> > gpiod_set_value(gpiod, 0) =3D=3D de-assert the line
+On Wed, Jun 23, 2021 at 1:45 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
 >
-> Problem is that some pci controller drivers (e.g. pci-j721e.c or
-> pcie-rockchip-host.c) expects that gpiod_set_value_cansleep(gpiod, 1)
-> de-asserts the line and it is already used in this way.
+> On Fri, 18 Jun 2021 at 11:55, Maciej =C5=BBenczykowski
+> <zenczykowski@gmail.com> wrote:
+> >
+> > From: Maciej =C5=BBenczykowski <maze@google.com>
+> >
+> > This reverts commit d37300ed182131f1757895a62e556332857417e5.
+> >
+> > This breaks Android userspace which expects to be able to
+> > fetch programs with just read permissions.
+> >
+> > See: https://cs.android.com/android/platform/superproject/+/master:fram=
+eworks/libs/net/common/native/bpf_syscall_wrappers/include/BpfSyscallWrappe=
+rs.h;drc=3D7005c764be23d31fa1d69e826b4a2f6689a8c81e;l=3D124
 >
-> Which is opposite of the behavior which you wrote above.
+> As a follow up, what does Android expect to be able to do with this
+> read only FD?
 
-I sketched a way out of the problem using a quirk in
-gpiolib in another response. We have a few of these
-cases where we have to code our way out of mistakes,
-such things happen.
-
-The problem is common, and due to the fact that device tree
-authors ignores the flag GPIO_ACTIVE_HIGH (which has
-been around since the early days of device tree on PowerPC)
-instead they opt to do the inversion in code. Which violates the
-contract that the DT should describe the hardware.
-
-The ambition of the DT specifications/schemas are to be operating
-system independent, and this kind of stuff creates a situation
-where other operating systems can't use the specification without
-also going and looking at how Linux has implemented stuff.
-Which is against the ambition of the device tree work.
-
-> I would suggest to define enum/macro with word ASSERT and DEASSERT in
-> its name instead of just true/false boolean or 0/1 int.
->
-> In case of this PERST# misunderstanding, having assert/deassert in name
-> should really help.
-
-Hm that looks useful, Bart &co what do you think?
-
-#define GPIOD_ASSERTED 1
-#define GPIOD_DEASSERTED 0
-
-in consumer.h, would that be helpful for users?
-
-Yours,
-Linus Walleij
+I'm not actually sure of all the use cases, but at a bare minimum:
+We use it for iptables xt_bpf, and to attach to cgroup net hooks and
+tc bpf hooks.
+There's also some still incomplete support for xdp.
+There's also non-networking stuff like gpu memory tracking and
+tracepoints that I know very little about - probably something perf
+related.
+So I think the answer is that mostly we expect to be able to attach it
+to places (iptables/cgroup/tc/xdp/....others...??)
