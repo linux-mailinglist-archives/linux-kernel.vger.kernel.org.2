@@ -2,110 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55BA73B447C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED963B4487
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhFYNeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 09:34:25 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:27913 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229615AbhFYNeX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 09:34:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1624627923; x=1656163923;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=c92uEGAxnyrw7O3VecCM/YRAymsWQVHnDR1PxIKS3zQ=;
-  b=Nm/8Pu6RAEeRpS68bW+L2CFSDv/t9Q7Za7hJ4oaSqXDtT+8AoVgaDAsb
-   TC7nHa9/FJXltEFYNb0Wws4oVZmZA6FZKr21ms2v3U5PZEG6Vii7jyhp4
-   FwjP12ZVnbnoRcZsrHDGPqBhHdKIVZOwURwwYaKi5VYpUSeAfAgaEdAby
-   0=;
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 25 Jun 2021 06:32:02 -0700
-X-QCInternal: smtphost
-Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
-  by ironmsg01-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 25 Jun 2021 06:32:02 -0700
-Received: from [10.111.161.13] (10.80.80.8) by nasanexm03e.na.qualcomm.com
- (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 25 Jun
- 2021 06:31:59 -0700
-Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
- invariance
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-CC:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-References: <cover.1624266901.git.viresh.kumar@linaro.org>
- <09a39f5c-b47b-a931-bf23-dc43229fb2dd@quicinc.com>
- <20210623041613.v2lo3nidpgw37abl@vireshk-i7>
- <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
- <20210624025414.4iszkovggk6lg6hj@vireshk-i7>
- <CAKfTPtAXMYYrG1w-iwSWXb428FkwFArEwXQgHnjShoCEMjdYcw@mail.gmail.com>
- <20210624104734.GA11487@arm.com>
- <daf1ddf5-6f57-84a8-2ada-90590c0c94b5@quicinc.com>
- <20210625102113.GB15540@arm.com>
-From:   Qian Cai <quic_qiancai@quicinc.com>
-Message-ID: <1f83d787-a796-0db3-3c2f-1ca616eb1979@quicinc.com>
-Date:   Fri, 25 Jun 2021 09:31:58 -0400
+        id S231655AbhFYNgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 09:36:12 -0400
+Received: from mga09.intel.com ([134.134.136.24]:60695 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231405AbhFYNgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 09:36:11 -0400
+IronPort-SDR: Am3T49/h7rIhnOGgtdOhGsZ3bJMSJYibh3fqfGRZ39srSeAqX2FbEa/7WnTT7snEh+K395I6vF
+ i2udpRoHzoig==
+X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="207604412"
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="207604412"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 06:33:43 -0700
+IronPort-SDR: pztxzw/tCs55ZqO+mK7NNFEZa88UeagOOL+KYB7M7VWD5tFBDxDZofh9GSLXTr6wKIDGGifYKq
+ Y1ExdhqKNxqg==
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="488184911"
+Received: from aantonov-mobl.ccr.corp.intel.com (HELO [10.249.230.200]) ([10.249.230.200])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 06:33:40 -0700
+Subject: Re: [PATCH] x86: eas should not be NULL when it is referenced
+To:     "Liang, Kan" <kan.liang@linux.intel.com>, 13145886936@163.com,
+        tglx@linutronix.de, bp@alien8.de, x86@kernel.org
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20210624070442.34291-1-13145886936@163.com>
+ <40e66cf9-398b-20d7-ce4d-433be6e08921@linux.intel.com>
+ <f313e0d9-b18e-5dd8-cadf-ee0a689f20ea@linux.intel.com>
+From:   Alexander Antonov <alexander.antonov@linux.intel.com>
+Message-ID: <f3e4b37b-ff84-ac4f-ff56-f03313a22cda@linux.intel.com>
+Date:   Fri, 25 Jun 2021 16:33:31 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210625102113.GB15540@arm.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <f313e0d9-b18e-5dd8-cadf-ee0a689f20ea@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanexm03e.na.qualcomm.com (10.85.0.48) To
- nasanexm03e.na.qualcomm.com (10.85.0.48)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Kan,
+> On 6/24/2021 3:03 PM, Liang, Kan wrote:
+>> I think the NULL pointer dereference of eas should not happen, 
+>> because die is -1 if eas is NULL. But the whole error handling path 
+>> looks fragile.
+>>
+>> We already fixed one issue caused by it in commit ID f797f05d917f 
+>> ("perf/x86/intel/uncore: Fix for iio mapping on Skylake Server")
+>> https://lore.kernel.org/lkml/160149233331.7002.10919231011379055356.tip-bot2@tip-bot2/ 
+>>
+>>
+>> Maybe something as below?
+>>
+>>  From 3de81ba3b04262ef3346297d82f6c4ffb4af7029 Mon Sep 17 00:00:00 2001
+>> From: Kan Liang <kan.liang@linux.intel.com>
+>> Date: Thu, 24 Jun 2021 11:17:57 -0700
+>> Subject: [PATCH] perf/x86/intel/uncore: Clean up error handling path 
+>> of iio mapping
+>>
+>> The error handling path of iio mapping looks fragile. We already fixed
+>> one issue caused by it, commit ID f797f05d917f ("perf/x86/intel/uncore:
+>> Fix for iio mapping on Skylake Server"). Clean up the error handling
+>> path and make the code robust.
+I didn't catch why does the current error handling path look fragile?
+Are there cases when it works incorrect?
 
-
-On 6/25/2021 6:21 AM, Ionela Voinescu wrote:
->> scaling_driver: acpi_cppc
->                   ^^^^^^^^^
-> I suppose you mean "cppc-cpufreq"?
-> 
-> "acpi_cppc" is not a scaling driver option.
-
-Ionela, yes. Sorry about that.
-
-> So your CPUs run at frequencies between 200MHz and 280MHz?
-
-2000 to 2800 MHz.
-
-> Based on your acpi_cppc information below I would have assumed 2GHz as
-> lowest nonlinear and 2.8GHz as nominal. The reason for this is that
-> according to the ACPI spec the frequency values in the _CPC objects are
-> supposed to be in MHz, so 2800 MHz for nominal frequency would be
-> 2.8GHz.
-> 
-> When you try more governors, make sure to check out the difference
-> between scaling_cur_freq and cpuinfo_cur_freq at [2]. The first gives
-> you the frequency that the governor (schedutil) is asking for, while the
-> second is giving you the current frequency obtained from the counters.
-> 
-> So to check the actual frequency the cores are running at, please check
-> cpuinfo_cur_freq.
-
-The problem is that all CPUs are never scaling down. "cpuinfo_cur_freq" and "scaling_cur_freq" are always the 2800 MHz on all CPUs on this idle system. This looks like a regression somewhere as in 5.4-based kernel, I can see "cpuinfo_cur_freq" can go down to 2000 MHz in the same scenario. I'll bisect a bit unless you have better ideas?
+Thanks,
+Alexander
+>>
+>> Reported-by: gushengxian <gushengxian@yulong.com>
+>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+>> ---
+>>   arch/x86/events/intel/uncore_snbep.c | 6 ++++--
+>>   1 file changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/x86/events/intel/uncore_snbep.c 
+>> b/arch/x86/events/intel/uncore_snbep.c
+>> index 7622762..6d4a5a9 100644
+>> --- a/arch/x86/events/intel/uncore_snbep.c
+>> +++ b/arch/x86/events/intel/uncore_snbep.c
+>> @@ -3802,11 +3802,11 @@ pmu_iio_set_mapping(struct intel_uncore_type 
+>> *type, struct attribute_group *ag)
+>>       /* One more for NULL. */
+>>       attrs = kcalloc((uncore_max_dies() + 1), sizeof(*attrs), 
+>> GFP_KERNEL);
+>>       if (!attrs)
+>> -        goto err;
+>> +        goto clear_topology;
+>>
+>>       eas = kcalloc(uncore_max_dies(), sizeof(*eas), GFP_KERNEL);
+>>       if (!eas)
+>> -        goto err;
+>> +        goto clear_attrs;
+>>
+>>       for (die = 0; die < uncore_max_dies(); die++) {
+>>           sprintf(buf, "die%ld", die);
+>> @@ -3827,7 +3827,9 @@ pmu_iio_set_mapping(struct intel_uncore_type 
+>> *type, struct attribute_group *ag)
+>>       for (; die >= 0; die--)
+>>           kfree(eas[die].attr.attr.name);
+>>       kfree(eas);
+>> +clear_attrs:
+>>       kfree(attrs);
+>> +clear_topology:
+>>       kfree(type->topology);
+>>   clear_attr_update:
+>>       type->attr_update = NULL;
