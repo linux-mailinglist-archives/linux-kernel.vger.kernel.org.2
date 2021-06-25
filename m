@@ -2,98 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC9C3B3A12
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D88F3B3A16
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232934AbhFYAQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 20:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhFYAQS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 20:16:18 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8242BC061574;
-        Thu, 24 Jun 2021 17:13:57 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id h15so13249853lfv.12;
-        Thu, 24 Jun 2021 17:13:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Y7tPKPvRNk7wzvHDimxSf6Hb5LyFrU2QdlsP0vbUrqg=;
-        b=Skb/DiI9n9rky1ySpHofEY98q3c8i52bkZjSf0+qsIwAp2xJyvcvh4qCu4X554l1Q3
-         jtEH0XIWjzR7ijgQK3IyGRPNrxNoqPtQV3UpZcG5I8OQKSSEStZSB1V/r++0Qt52egyQ
-         GvZZca+++ho4tthUN3i7tV4Nw6jX5MM4IO6bqlQL3Jnk3CTpqqw3Ef/S0yODaxWQT6nU
-         Js2m9gop+93Liq5X1dwOFpTsR3DLsx9YDERAoqpwmV21kQdAdgp5X6Slq44ZxJSrXZj/
-         jRUgHoC1HEhOpkCCEBhxnuMlMp4Kdad5Ht7SRSN3AxCQ9JWTsdXy9lHBjhGeiYpWhjat
-         DyqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Y7tPKPvRNk7wzvHDimxSf6Hb5LyFrU2QdlsP0vbUrqg=;
-        b=a0SjPswoJ0Rr0sbn5XNqf5DRC6kdfwgLZWE/wsKnlyM5jJg6oZj0HTFCdOAPEIARKp
-         XPE+op3DS9IxGZoxgTw6+b6P2d1rLrlOmK0tM70yD3ypl1qCPU0Tp6neAc7Hr7e4S70K
-         gBiDZKrvixC/wAqzNn5S2RjpVr0LpGLiwMt6vgnX5vgoWK64o7dV1F3M1THzAlpPqvwa
-         68E95Hk1bFXfKp8RCX3o4qeajsMxDii2pDcpRgC1AHHbaPotuqPygAshOL2WG6IHQwD+
-         WynK6SZMA3XaSyw0bFNEm4mYizmiBh7alLNjqUWAetI0Pa5tCIBlM0NT1er/++OKrZpT
-         Zirw==
-X-Gm-Message-State: AOAM533Hc3AGmUW9DYGjaA8mA4nE5elqSBbbFTfp942qBqIJmSB3lZ0L
-        oMCy3rtl0iksTokO349cZm9A5+IkCzdfzRowve8=
-X-Google-Smtp-Source: ABdhPJy0sAOhx8ZiWu5Mj2RkaPOW9KoA7w6HvdYF1993awXMvcQm0estIa+hJDIacn1Jup6Gh6uAuyLH+Pw+VxH71Ro=
-X-Received: by 2002:a05:6512:b8d:: with SMTP id b13mr5698867lfv.524.1624580035808;
- Thu, 24 Jun 2021 17:13:55 -0700 (PDT)
+        id S232949AbhFYARo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 20:17:44 -0400
+Received: from mout.gmx.net ([212.227.15.18]:33103 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229585AbhFYARm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 20:17:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1624580116;
+        bh=Dk/xnFQD/pCMBlbWxyk+SIVEEtZV15dB6a0OvtJAc3E=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=gw34a4ltD7yjpe9+7hRH8Txp3fqHnKkVg5mgF76OoHXky36yRfJjgyT0iqkWTUEOY
+         mFB83dfO1MywWRBAtURlPgIfHdH50xMeGIJQ2+slvhCAz0/6PuAWUM3dEYEASnfm7h
+         uFJCyTQPR+3Ku1JmYLqfLzlABPFCj7t3pHlURQLU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([149.172.234.120]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M6Db0-1luOhn3pE0-006fON; Fri, 25
+ Jun 2021 02:15:15 +0200
+Subject: Re: [PATCH v2] serial: amba-pl011: add RS485 support
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux@armlinux.org.uk, jirislaby@kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210618145153.1906-1-LinoSanfilippo@gmx.de>
+ <YNSA1H0cFKiPUn6N@kroah.com>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <5d7a4351-2adc-ea31-3290-91d91bd5a5d4@gmx.de>
+Date:   Fri, 25 Jun 2021 02:15:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210618105526.265003-1-zenczykowski@gmail.com> <CACAyw9-UnQODTf+=xEmexpWE6zhYUQfp7go76bEEc_A1rAyd7Q@mail.gmail.com>
-In-Reply-To: <CACAyw9-UnQODTf+=xEmexpWE6zhYUQfp7go76bEEc_A1rAyd7Q@mail.gmail.com>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Date:   Thu, 24 Jun 2021 17:13:44 -0700
-Message-ID: <CAHo-OoyxD=4gYvnrYPwJ_Lyb-JoR6n2Ehvrq6jKoQbmP5JJdpA@mail.gmail.com>
-Subject: Re: [PATCH bpf] Revert "bpf: program: Refuse non-O_RDWR flags in BPF_OBJ_GET"
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Network Development Mailing List 
-        <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Greg Kroah-Hartman <gregkh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YNSA1H0cFKiPUn6N@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:9FnTjOIomPTa98q+ugEDAo7F5w87ZpdPys/4PdghkTw1lEQ1/P4
+ MJlt7oFr+QCZqsxG0+2UxmcVPqVRAdVGpEiwjpg5zKEdI4bv/s5axATMTWa6zKKE18uzJkS
+ GknsC1csZeIKxVp0uYrM9klTIOGb36rmHUIec2s0gCG6jdUm+av5O/zlmN4ZVAn2h6tvPca
+ M4WKAMuY7odu0/+hW574Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Lk9pEEESwSo=:VPqO6H5qblnkk9e2BHZEjt
+ /vo+x9dwfQHoqEGkR00vze230Aw6PYUz5v3P4C5SD5/cxVi4N06wzwLgsGfuE7tiYTh3av/zY
+ J8NUpeYjfqRdcu0vU1W9M4cQzRf49uwndHi06OPB6mB1TnLIP1MAqdzxSe3G29NJqGs3YwNg4
+ HjMSflmES0TSSJ+kciqFvzUHgr9iJGQz7FRFT53asGEINBFOWXxPVTThVLRlmPUmcdBIXGCGO
+ JmUoCxfjy2gDInTURH87WleBsLW91dw84yCkYlA1T8HX3eX772oTM1nziESx3bnY2MpUdIqwc
+ A+HRpRZOtqL4M5ERoBfSFIYwn80nzhqqiMl9ZNwXus+185Qlc4i7iuO3+ELLTn99YtYliUILr
+ SRVk/djEUGYd+IrR3Ycc9S/glqjsBlD7OhIxDb5kkHIBcfdZVBN87/0/CQD/+94/SIZ+QqQSF
+ gOhrgyJA9lRJlGhP/jVcS0LFCQjWnv8ta4287NUnYJ5IWndbnrMVuG06pDQzlVrVWUD8EVoqp
+ OuOsGlyC53r3aiaF/AF8BJ1cgJjK33ti3UpDoZEr3vZzKI/yEGW5SKtjASy2KazGfmDqd3tiF
+ MWLPQBTLeXOgvmKawcA8FRAkWIqLd0+Sp2o8m8WrZFb0p01BV6n4cdoD8DufNV3O9Pw7K2aqz
+ YJkxyJrjJ3XTr2lhGfbjdXDJhvXMGE38EkpF2jcjbvebcx6sHFSZpwcEcPV6OXkx5FLrvV1te
+ Jf4esD9ZBoZdmweml7OTqTqv7HZ9KQb+TyPUaZU5YZ1qfEj5W4g5XGRwI78CWkZDx1wXtixlJ
+ M65oUthQ8ERs1FF1ltviHu+4asPAe/i+a+iqvTmDpMH8VORsCJ2oC0cX9FsTMjBfBNgNBPpjy
+ NU2sM9HztZuDWwXchQ1iXwPCPe6HJ7QNBRxNMud6wT69liUtJarUGi/YM5sxVZ3uj0Q6mHaVg
+ X8B9A0jSbkYwuRb8yiEQ4/y/yXfRDAPde45APLc7vhVBpFJNhGov2a//kTxt7kAxvhEoGiloN
+ GDNXUnRUn7oXsmmrWmLgJ0rt+dSBjM0wSuP0k2qbAoFVbLqcnc6hcmqVaZQ8xXbEcrxw9Ny0B
+ xGDuVc7X22rbLZxIfl5tCwtYaFJKRPpiew7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reposting since apparently my reply only went to Lorenz.
 
-On Wed, Jun 23, 2021 at 1:45 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
->
-> On Fri, 18 Jun 2021 at 11:55, Maciej =C5=BBenczykowski
-> <zenczykowski@gmail.com> wrote:
-> >
-> > From: Maciej =C5=BBenczykowski <maze@google.com>
-> >
-> > This reverts commit d37300ed182131f1757895a62e556332857417e5.
-> >
-> > This breaks Android userspace which expects to be able to
-> > fetch programs with just read permissions.
-> >
-> > See: https://cs.android.com/android/platform/superproject/+/master:fram=
-eworks/libs/net/common/native/bpf_syscall_wrappers/include/BpfSyscallWrappe=
-rs.h;drc=3D7005c764be23d31fa1d69e826b4a2f6689a8c81e;l=3D124
->
-> As a follow up, what does Android expect to be able to do with this
-> read only FD?
 
-I'm not actually sure of all the use cases, but at a bare minimum:
-We use it for iptables xt_bpf, and to attach to cgroup net hooks and
-tc bpf hooks.
-There's also some still incomplete support for xdp.
-There's also non-networking stuff like gpu memory tracking and
-tracepoints that I know very little about - probably something perf
-related.
-So I think the answer is that mostly we expect to be able to attach it
-to places (iptables/cgroup/tc/xdp/....others...??)
+Hi,
+
+On 24.06.21 at 14:55, Greg KH wrote:
+>>
+>> +static int pl011_rs485_tx_stop(struct uart_amba_port *uap)
+>> +{
+>> +	struct uart_port *port =3D &uap->port;
+>> +	u32 cr;
+>> +
+>> +	/* Wait until hardware tx queue is empty */
+>> +	while (!pl011_tx_empty(port))
+>> +		udelay(uap->rs485_tx_drain_interval);
+>
+> No way out if the hardware doesn't ever empty?  Shouldn't you have an
+> "upper bound" on this loop somehow?
+
+Yes, indeed. I will fix this.
+
+>
+>> +
+>> +	if (port->rs485.delay_rts_after_send)
+>> +		mdelay(port->rs485.delay_rts_after_send);
+>> +
+>> +	cr =3D pl011_read(uap, REG_CR);
+>> +
+>> +	if (port->rs485.flags & SER_RS485_RTS_AFTER_SEND)
+>> +		cr &=3D ~UART011_CR_RTS;
+>> +	else
+>> +		cr |=3D UART011_CR_RTS;
+>
+> Blank line here please.
+
+Ok.
+
+>
+>> +	/* Disable the transmitter and reenable the transceiver */
+>> +	cr &=3D ~UART011_CR_TXE;
+>> +	cr |=3D UART011_CR_RXE;
+>> +	pl011_write(cr, uap, REG_CR);
+>> +
+>> +	uap->rs485_tx_started =3D false;
+>> +
+>> +	return 0;
+>
+> Why does this function return a value if it can not fail and you do not
+> check the return value of it?
+
+>> +}
+>> +
+>>  static void pl011_stop_tx(struct uart_port *port)
+>>  {
+>>  	struct uart_amba_port *uap =3D
+>> @@ -1290,6 +1322,9 @@ static void pl011_stop_tx(struct uart_port *port)
+>>  	uap->im &=3D ~UART011_TXIM;
+>>  	pl011_write(uap->im, uap, REG_IMSC);
+>>  	pl011_dma_tx_stop(uap);
+>> +
+>> +	if ((port->rs485.flags & SER_RS485_ENABLED) && uap->rs485_tx_started)
+>> +		pl011_rs485_tx_stop(uap);
+>
+> So, no check :(
+>
+
+Ah, right. The return value is a leftover from an earlier version of the f=
+unction. I will
+correct this in the next patch version.
+
+>
+>>  }
+>>
+>>  static bool pl011_tx_chars(struct uart_amba_port *uap, bool from_irq);
+>> @@ -1380,6 +1415,31 @@ static bool pl011_tx_char(struct uart_amba_port =
+*uap, unsigned char c,
+>>  	return true;
+>>  }
+>>
+>> +static void pl011_rs485_tx_start(struct uart_amba_port *uap)
+>> +{
+>> +	struct uart_port *port =3D &uap->port;
+>> +	u32 cr;
+>> +
+>> +	/* Enable transmitter */
+>> +	cr =3D pl011_read(uap, REG_CR);
+>> +	cr |=3D UART011_CR_TXE;
+>
+> Blank line please.
+>
+
+Ok.
+
+>> +
+>>  	spin_lock_irqsave(&port->lock, flags);
+>>
+>>  	/*
+>>  	 * Update the per-port timeout.
+>>  	 */
+>>  	uart_update_timeout(port, termios->c_cflag, baud);
+>
+> Blank line
+>
+
+Ok.
+
+>>
+>> +static int pl011_rs485_config(struct uart_port *port,
+>> +			      struct serial_rs485 *rs485)
+>> +{
+>> +	struct uart_amba_port *uap =3D
+>> +		container_of(port, struct uart_amba_port, port);
+>> +
+>> +	/* pick sane settings if the user hasn't */
+>> +	if (!!(rs485->flags & SER_RS485_RTS_ON_SEND) =3D=3D
+>
+> Why the !! in an if statement?
+>
+>> +	    !!(rs485->flags & SER_RS485_RTS_AFTER_SEND)) {
+>
+> Same here, why?
+>
+
+This was copied from serial8250_em485_config(). But I think we can simply =
+use
+
+	if (rs485->flags & SER_RS485_RTS_AFTER_SEND)
+		rs485->flags &=3D ~SER_RS485_RTS_ON_SEND;
+	else
+		rs485->flags |=3D SER_RS485_RTS_ON_SEND;
+
+instead. I will adjust the code accordingly.
+
+>> +
+>> +	if (port->rs485.flags & SER_RS485_ENABLED)
+>> +		pl011_rs485_tx_stop(uap);
+>> +
+>> +	/* Set new configuration */
+>> +	port->rs485 =3D *rs485;
+>
+> Blank line please.
+>
+
+Ok.
+
+>
+> thanks,
+>
+> greg k-h
+>
+
+Thank you for the review!
+
+Regards,
+Lino
