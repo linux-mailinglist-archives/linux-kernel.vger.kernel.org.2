@@ -2,75 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213B33B448D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0123B4497
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231735AbhFYNgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 09:36:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231693AbhFYNgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 09:36:17 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB31760FE9;
-        Fri, 25 Jun 2021 13:33:55 +0000 (UTC)
-Date:   Fri, 25 Jun 2021 09:33:54 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v3 6/6] printk: syslog: close window between wait
- and read
-Message-ID: <20210625093354.12384711@oasis.local.home>
-In-Reply-To: <20210624111148.5190-7-john.ogness@linutronix.de>
-References: <20210624111148.5190-1-john.ogness@linutronix.de>
-        <20210624111148.5190-7-john.ogness@linutronix.de>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231700AbhFYNhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 09:37:01 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:43773 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231579AbhFYNg6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 09:36:58 -0400
+Received: from 118-169-44-162.dynamic-ip.hinet.net ([118.169.44.162] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <jeremy.szu@canonical.com>)
+        id 1lwlyO-0001E6-KA; Fri, 25 Jun 2021 13:34:21 +0000
+From:   Jeremy Szu <jeremy.szu@canonical.com>
+To:     tiwai@suse.com
+Cc:     Jeremy Szu <jeremy.szu@canonical.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Kailang Yang <kailang@realtek.com>,
+        Hui Wang <hui.wang@canonical.com>,
+        Jian-Hong Pan <jhp@endlessos.org>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Sami Loone <sami@loone.fi>,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs for HP EliteBook 830 G8 Notebook PC
+Date:   Fri, 25 Jun 2021 21:34:13 +0800
+Message-Id: <20210625133414.26760-1-jeremy.szu@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 13:17:48 +0206
-John Ogness <john.ogness@linutronix.de> wrote:
+The HP EliteBook 830 G8 Notebook PC using ALC285 codec which using 0x04 to
+control mute LED and 0x01 to control micmute LED.
+Therefore, add a quirk to make it works.
 
-> +	 * @syslog_lock is held when entering the read loop to prevent
-> +	 * another reader from modifying @syslog_seq.
+Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-You should add to the above comment:
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 49f4cac8b05e..1ea9853bbb09 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8366,6 +8366,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
++	SND_PCI_QUIRK(0x103c, 0x880d, "HP EliteBook 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8846, "HP EliteBook 850 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8847, "HP EliteBook x360 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x884b, "HP EliteBook 840 Aero G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+-- 
+2.31.1
 
-	 * And the @syslog_lock is released before exiting the loop.
-
-Because it's not normal to enter a loop locked, and have it unlocked
-when exiting the loop. And I can envision in the future, someone might
-add a break (for error) while still holding the lock.
-
--- Steve
-
-> +	 */
-> +
-> +	for (;;) {
->  		size_t n;
->  		size_t skip;
->  
-> -		mutex_lock(&syslog_lock);
->  		if (!prb_read_valid(prb, syslog_seq, &r)) {
->  			mutex_unlock(&syslog_lock);
->  			break;
-> @@ -1542,8 +1570,13 @@ static int syslog_print(char __user *buf, int size)
->  		len += n;
->  		size -= n;
->  		buf += n;
-> -	}
->  
-> +		if (!size)
-> +			break;
-> +
-> +		mutex_lock(&syslog_lock);
-> +	}
