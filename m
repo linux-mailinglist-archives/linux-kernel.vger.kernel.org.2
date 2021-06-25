@@ -2,112 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6F53B484C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A211C3B4851
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbhFYRlo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Jun 2021 13:41:44 -0400
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:43832 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhFYRln (ORCPT
+        id S230112AbhFYRpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 13:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhFYRpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 13:41:43 -0400
-Received: by mail-ua1-f46.google.com with SMTP id f1so3841713uaj.10;
-        Fri, 25 Jun 2021 10:39:21 -0700 (PDT)
+        Fri, 25 Jun 2021 13:45:17 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A788DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 10:42:56 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id k30-20020a05600c1c9eb02901d4d33c5ca0so913623wms.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 10:42:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YMKlpyW2/43uGs0P+FeoGQBHis6+kuFUJ6JvmkPAJ3o=;
+        b=mhbhFBVtJK8c62GyU0FDJF3kT0tkdzRiSz4OQc3ivIJwjNs1dTjdwJY5SfrglAeK/3
+         IFI/bGZyYtHNgyTOlSJbazLIh57Q+o++NUgDya2rfNh5awdjxOfruXfTVJRLP57wLRVE
+         FvaeW9fApr706cuJgHeRzJ7ulLFWwRLo8/IEOszOWLqDXjyDoS/H9YLytGseNX8HmauK
+         7tDB4ptEHvD9gh9rvcZ0ljIEFAWfQtSJgKf77CWFVDC2uQmSI3Y5OUz477Awn5g69Shh
+         ovotEqtJd+sFJ6N1Fp+5ics2evGvuqb5kYfVCtnFxPPgOqDSPXVchj2PgDVKWl1IIRI0
+         2TSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hMsdHKSeztMKrPHZ8nbG2VqyYL9zlmEgt8jO+8+YC2U=;
-        b=nUT56JRIdUCvJchDRgYdezS6g2Mz2vgennpByZqYJ7owEBc+9VM2PnXG79nAkTBfQ2
-         p0T1RnMP1ccbTykEwe1EPLyc0/XOdu507SZtCQID7JXToNkGi3+HWj50SL7Ozbo/pD0S
-         CFtgxpWFr8hVEJVxd2c0ZiGgrmw3NhvEo1QRbt0sZL6R4PPtyvcCf5+UNxlcUGYB9MJs
-         WMD8BrK9Z9poKuObRd4od38nxpQOML7y0efn44yAdiire3uG3Ug2wL2g+zvKIKM43cJY
-         4E+FtBRyTMj1dFW+YnCqCFuFmfjipkyhLRhVKStVHmwcl6qIBvF36nTqaCfhzHCfzHGJ
-         R00Q==
-X-Gm-Message-State: AOAM531AvKHpb6yfsgknp72vai1RZUnaCddcNiMMCLsKddNnVfl4XEly
-        1LfprtrRU+ckKRPhjFPaLaGodobHvboAc6C5ZOY=
-X-Google-Smtp-Source: ABdhPJxRW0SpvuDwLgk+xlyHuwdQP6YsYhgHSWcPS2hlfsTa42T+RD8pDpSwzmpkvZj5EGbrv9yxCxRv6cquJ3wmzXs=
-X-Received: by 2002:ab0:3734:: with SMTP id s20mr13225318uag.106.1624642761311;
- Fri, 25 Jun 2021 10:39:21 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YMKlpyW2/43uGs0P+FeoGQBHis6+kuFUJ6JvmkPAJ3o=;
+        b=RgLeaewUS0UonogmzRlE756LESTWN7niAmO6oZ1jZDiTBHiqFpVlJI46D/1OFPX9+V
+         Fpa/VrB7BSsccn2a2uOZng4b3LEfFzBDB6SZbwRdXLPx+Cj+vf/HM51YOSKv2H6PHb/G
+         evvEV93/zEv9YDGHtt+r0BoVzLHScOPYWPgBSmqB+CbyKB8rm/PtlVAuUFTJANmmbEV4
+         03PztU/oxXg7+vhDFpCjVO/VW1yqPgxTJNjepXhXfTgsKsUDg6RubB5q6k9BthBKyvBJ
+         m90PKzeu0VHc2vaIjT5K888DtifLs/8QNA9WrLW5Bn9vkgj/8inSU0hADG8F1VAMKp+n
+         YJCw==
+X-Gm-Message-State: AOAM532xDCb9woxh0TY7lhpKYC+iO82hptgMaRxEMvjrdBdgcXzILKk4
+        h12bXiPZjBGxPGZlBpS/NoS9wg==
+X-Google-Smtp-Source: ABdhPJxlx4jibs6+pOrr95H3d7IW3Zr4NwfvBbIbbQ1V7v+31jKYDz7J2v5RqJAfYxc+ZEb4XQAe6A==
+X-Received: by 2002:a1c:9d55:: with SMTP id g82mr11911094wme.152.1624642975305;
+        Fri, 25 Jun 2021 10:42:55 -0700 (PDT)
+Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
+        by smtp.gmail.com with ESMTPSA id c8sm6449973wri.91.2021.06.25.10.42.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 10:42:54 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 18:42:52 +0100
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH 00/23] staging: rtl8188eu: remove include/rtw_debug.h
+Message-ID: <YNYVnHREicwAL+Jf@equinox>
+References: <20210625000756.6313-1-phil@philpotter.co.uk>
+ <20210625124356.GJ2040@kadam>
 MIME-Version: 1.0
-References: <20210624224909.6350-1-pali@kernel.org> <20210625143617.12826-1-pali@kernel.org>
- <20210625143617.12826-8-pali@kernel.org> <CAMuHMdUCEHtqNk-nGJhPK_=NrgSoRhmC99J9pdGqQxcWpoFqGg@mail.gmail.com>
- <20210625153803.u6uesckcqyvvo7dl@pali> <20210625155008.GB16901@1wt.eu>
-In-Reply-To: <20210625155008.GB16901@1wt.eu>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 25 Jun 2021 19:39:10 +0200
-Message-ID: <CAMuHMdWfE7UKkp6=MdAVgHywFjDK3SN4m9+d_6AmJTB=qBEqFw@mail.gmail.com>
-Subject: Re: [PATCH v2 07/11] math64: New DIV_U64_ROUND_CLOSEST helper
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210625124356.GJ2040@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Willy,
-
-On Fri, Jun 25, 2021 at 5:50 PM Willy Tarreau <w@1wt.eu> wrote:
-> On Fri, Jun 25, 2021 at 05:38:03PM +0200, Pali Rohár wrote:
-> > On Friday 25 June 2021 17:22:31 Geert Uytterhoeven wrote:
-> > > > +/*
-> > > > + * DIV_U64_ROUND_CLOSEST - unsigned 64bit divide with 32bit divisor rounded to nearest integer
-> > > > + * @dividend: unsigned 64bit dividend
-> > > > + * @divisor: unsigned 32bit divisor
-> > > > + *
-> > > > + * Divide unsigned 64bit dividend by unsigned 32bit divisor
-> > > > + * and round to closest integer.
-> > > > + *
-> > > > + * Return: dividend / divisor rounded to nearest integer
-> > > > + */
-> > > > +#define DIV_U64_ROUND_CLOSEST(dividend, divisor)       \
-> > > > +       ({ u32 _tmp = (divisor); div_u64((u64)(dividend) + _tmp / 2, _tmp); })
-> > >
-> > > Given "dividend" should already be an unsigned 64-bit value, I don't
-> > > think the cast to "u64" is needed. Similar macros in this file also
-> > > don't have the cast.
-> >
-> > It is just to ensure that plus operation between dividend and _tmp is
-> > evaluated in 64-bit context to prevent overflow. Just a case when user
-> > calls this macro with 32-bit dividend param. As it is a macro (and not
-> > inline function) type is not automatically enforced.
+On Fri, Jun 25, 2021 at 03:43:56PM +0300, Dan Carpenter wrote:
+> Looks good.
+> 
+> I feel like the kbuild warnings could be addressed in later patches.
+> 
+> It seems as if some of the error handling in this driver is "pretend to
+> print an error message (but it's actually dead code)".  Which is
+> probably not the correct way to handle errors...  :/  But that's not
+> something introduced by this patch.
+> 
+> Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> regards,
+> dan carpenter
 >
-> I agree, a large u32 argument added to _tmp/2 could overflow and remain
-> 32 bits, yielding an incorrect result. The cast is mandatory here (and
-> will either emit no code, or be useful).
 
-Fair enough.
-So we want to add a cast to DIV64_U64_ROUND_CLOSEST() above, too?
+Dear Dan,
 
-> The only trap I'm seeing is if a negative signed int is passed in dividend,
-> it will be sign-extended and will give a large u64 value. A preliminary
-> u32 cast could avoid this but would break valid u64 arguments, and I'd
-> claim we never know what the user wants if this happens in the first place.
+Thank you for your feedback, and have a great weekend.
 
-Yep.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Regards,
+Phil
