@@ -2,74 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8FB3B3E90
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0CB93B3EB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhFYIZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:25:00 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34780 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbhFYIY5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:24:57 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 19BC81FE51;
-        Fri, 25 Jun 2021 08:22:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624609356; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6j5UUPbp80KQx259gxzigIUBiH85y3fXeRQnL4FGxyE=;
-        b=Dhb7Y63OC8TVHDN7zGu1RHvcDlY1wqTUjtMi8EnhruCN+0m4q7o42N+LdUp1ZWXsjq1Y7w
-        Il4CNaYxInOmgguS1uks/h2y2oYV+0CyQdxss6zn3BgSREeHdWZu3n9hZXYZUxaIES+NGI
-        floF6i3vzn4Jh/C0pra19/nANjk3MkQ=
-Received: from suse.cz (unknown [10.100.201.86])
+        id S230327AbhFYIZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:25:12 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:45564 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230288AbhFYIZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 04:25:11 -0400
+Received: from zn.tnic (p200300ec2f0dae006074d507cc15d98f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:ae00:6074:d507:cc15:d98f])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id E0190A3BF0;
-        Fri, 25 Jun 2021 08:22:35 +0000 (UTC)
-Date:   Fri, 25 Jun 2021 10:22:35 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 14/46] mm/memcg: Add folio_charge_cgroup()
-Message-ID: <YNWSS/FvuyCpRxej@dhcp22.suse.cz>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-15-willy@infradead.org>
- <YNLtmC9qd8Xxkxsc@infradead.org>
- <YNS2EvYub46WdVaq@casper.infradead.org>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 03A561EC0595;
+        Fri, 25 Jun 2021 10:22:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1624609370;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=ngS9/xaOq2j9sm1ukqlh8eLbQuE4QtBlvWHyCPVz8dI=;
+        b=iX4RN6cZLg7J2WFIMFVdMsLrQoyzrM/Ee5qR4P2+kPelgQhM7p3KbaT2Bx+Nd1lhfEQLu3
+        BAeTPvFAuZByhchV4/7TJQ2Y+Vdnf7ZtHxZU/lt2YtVNrX+Wh/Dzovb8isWjCd+0xaxTxy
+        Q17KzUD+CBDOQ3z3KitW1UXlqRbk4bY=
+Date:   Fri, 25 Jun 2021 10:22:44 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org, seanjc@google.com,
+        dave.hansen@intel.com, tglx@linutronix.de, mingo@redhat.com,
+        Yang Zhong <yang.zhong@intel.com>
+Subject: Re: [PATCH v2] x86/sgx: Add missing xa_destroy() when virtual EPC is
+ destroyed
+Message-ID: <YNWR+oSGfulOWziI@zn.tnic>
+References: <20210616003634.320206-1-kai.huang@intel.com>
+ <20210623132844.heleuoxogrpz3cpm@kernel.org>
+ <925090f035b8e749ea7aca8c857690c8afba7349.camel@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YNS2EvYub46WdVaq@casper.infradead.org>
+In-Reply-To: <925090f035b8e749ea7aca8c857690c8afba7349.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 24-06-21 17:42:58, Matthew Wilcox wrote:
-> On Wed, Jun 23, 2021 at 10:15:20AM +0200, Christoph Hellwig wrote:
-> > On Tue, Jun 22, 2021 at 01:15:19PM +0100, Matthew Wilcox (Oracle) wrote:
-> > > mem_cgroup_charge() already assumed it was being passed a non-tail
-> > > page (and looking at the callers, that's true; it's called for freshly
-> > > allocated pages).  The only real change here is that folio_nr_pages()
-> > > doesn't compile away like thp_nr_pages() does as folio support
-> > > is not conditional on transparent hugepage support.  Reimplement
-> > > mem_cgroup_charge() as a wrapper around folio_charge_cgroup().
-> > 
-> > Maybe rename __mem_cgroup_charge to __folio_charge_cgroup as well?
-> 
-> Oh, yeah, should have done that.  Thanks.
+On Fri, Jun 25, 2021 at 01:45:35PM +1200, Kai Huang wrote:
+> Should we consider to get this into 5.13, since it is a fix?
 
-I would stick with __mem_cgroup_charge here. Not that I would insist but the
-folio nature is quite obvious from the parameter already.
+We have considered it, have queued it, you're on Cc on the tip-bot
+notification:
 
-Btw. memcg_check_events doesn't really need the page argument. A nid
-should be sufficient and your earlier patch is already touching the
-softlimit code so maybe it would be worth changing this page -> folio ->
-page back and forth.
+https://lkml.kernel.org/r/162377378414.19906.6678244614782222506.tip-bot2@tip-bot2
+
+In the meantime, that fix landed upstream and will be in 5.13:
+
+4692bc775d21 ("x86/sgx: Add missing xa_destroy() when virtual EPC is destroyed")
 
 -- 
-Michal Hocko
-SUSE Labs
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
