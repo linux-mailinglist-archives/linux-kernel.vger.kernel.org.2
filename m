@@ -2,115 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED963B4487
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 213B33B448D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231655AbhFYNgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 09:36:12 -0400
-Received: from mga09.intel.com ([134.134.136.24]:60695 "EHLO mga09.intel.com"
+        id S231735AbhFYNgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 09:36:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231405AbhFYNgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 09:36:11 -0400
-IronPort-SDR: Am3T49/h7rIhnOGgtdOhGsZ3bJMSJYibh3fqfGRZ39srSeAqX2FbEa/7WnTT7snEh+K395I6vF
- i2udpRoHzoig==
-X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="207604412"
-X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
-   d="scan'208";a="207604412"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 06:33:43 -0700
-IronPort-SDR: pztxzw/tCs55ZqO+mK7NNFEZa88UeagOOL+KYB7M7VWD5tFBDxDZofh9GSLXTr6wKIDGGifYKq
- Y1ExdhqKNxqg==
-X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
-   d="scan'208";a="488184911"
-Received: from aantonov-mobl.ccr.corp.intel.com (HELO [10.249.230.200]) ([10.249.230.200])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 06:33:40 -0700
-Subject: Re: [PATCH] x86: eas should not be NULL when it is referenced
-To:     "Liang, Kan" <kan.liang@linux.intel.com>, 13145886936@163.com,
-        tglx@linutronix.de, bp@alien8.de, x86@kernel.org
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210624070442.34291-1-13145886936@163.com>
- <40e66cf9-398b-20d7-ce4d-433be6e08921@linux.intel.com>
- <f313e0d9-b18e-5dd8-cadf-ee0a689f20ea@linux.intel.com>
-From:   Alexander Antonov <alexander.antonov@linux.intel.com>
-Message-ID: <f3e4b37b-ff84-ac4f-ff56-f03313a22cda@linux.intel.com>
-Date:   Fri, 25 Jun 2021 16:33:31 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231693AbhFYNgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 09:36:17 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB31760FE9;
+        Fri, 25 Jun 2021 13:33:55 +0000 (UTC)
+Date:   Fri, 25 Jun 2021 09:33:54 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v3 6/6] printk: syslog: close window between wait
+ and read
+Message-ID: <20210625093354.12384711@oasis.local.home>
+In-Reply-To: <20210624111148.5190-7-john.ogness@linutronix.de>
+References: <20210624111148.5190-1-john.ogness@linutronix.de>
+        <20210624111148.5190-7-john.ogness@linutronix.de>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <f313e0d9-b18e-5dd8-cadf-ee0a689f20ea@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Kan,
-> On 6/24/2021 3:03 PM, Liang, Kan wrote:
->> I think the NULL pointer dereference of eas should not happen, 
->> because die is -1 if eas is NULL. But the whole error handling path 
->> looks fragile.
->>
->> We already fixed one issue caused by it in commit ID f797f05d917f 
->> ("perf/x86/intel/uncore: Fix for iio mapping on Skylake Server")
->> https://lore.kernel.org/lkml/160149233331.7002.10919231011379055356.tip-bot2@tip-bot2/ 
->>
->>
->> Maybe something as below?
->>
->>  From 3de81ba3b04262ef3346297d82f6c4ffb4af7029 Mon Sep 17 00:00:00 2001
->> From: Kan Liang <kan.liang@linux.intel.com>
->> Date: Thu, 24 Jun 2021 11:17:57 -0700
->> Subject: [PATCH] perf/x86/intel/uncore: Clean up error handling path 
->> of iio mapping
->>
->> The error handling path of iio mapping looks fragile. We already fixed
->> one issue caused by it, commit ID f797f05d917f ("perf/x86/intel/uncore:
->> Fix for iio mapping on Skylake Server"). Clean up the error handling
->> path and make the code robust.
-I didn't catch why does the current error handling path look fragile?
-Are there cases when it works incorrect?
+On Thu, 24 Jun 2021 13:17:48 +0206
+John Ogness <john.ogness@linutronix.de> wrote:
 
-Thanks,
-Alexander
->>
->> Reported-by: gushengxian <gushengxian@yulong.com>
->> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
->> ---
->>   arch/x86/events/intel/uncore_snbep.c | 6 ++++--
->>   1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/x86/events/intel/uncore_snbep.c 
->> b/arch/x86/events/intel/uncore_snbep.c
->> index 7622762..6d4a5a9 100644
->> --- a/arch/x86/events/intel/uncore_snbep.c
->> +++ b/arch/x86/events/intel/uncore_snbep.c
->> @@ -3802,11 +3802,11 @@ pmu_iio_set_mapping(struct intel_uncore_type 
->> *type, struct attribute_group *ag)
->>       /* One more for NULL. */
->>       attrs = kcalloc((uncore_max_dies() + 1), sizeof(*attrs), 
->> GFP_KERNEL);
->>       if (!attrs)
->> -        goto err;
->> +        goto clear_topology;
->>
->>       eas = kcalloc(uncore_max_dies(), sizeof(*eas), GFP_KERNEL);
->>       if (!eas)
->> -        goto err;
->> +        goto clear_attrs;
->>
->>       for (die = 0; die < uncore_max_dies(); die++) {
->>           sprintf(buf, "die%ld", die);
->> @@ -3827,7 +3827,9 @@ pmu_iio_set_mapping(struct intel_uncore_type 
->> *type, struct attribute_group *ag)
->>       for (; die >= 0; die--)
->>           kfree(eas[die].attr.attr.name);
->>       kfree(eas);
->> +clear_attrs:
->>       kfree(attrs);
->> +clear_topology:
->>       kfree(type->topology);
->>   clear_attr_update:
->>       type->attr_update = NULL;
+> +	 * @syslog_lock is held when entering the read loop to prevent
+> +	 * another reader from modifying @syslog_seq.
+
+You should add to the above comment:
+
+	 * And the @syslog_lock is released before exiting the loop.
+
+Because it's not normal to enter a loop locked, and have it unlocked
+when exiting the loop. And I can envision in the future, someone might
+add a break (for error) while still holding the lock.
+
+-- Steve
+
+> +	 */
+> +
+> +	for (;;) {
+>  		size_t n;
+>  		size_t skip;
+>  
+> -		mutex_lock(&syslog_lock);
+>  		if (!prb_read_valid(prb, syslog_seq, &r)) {
+>  			mutex_unlock(&syslog_lock);
+>  			break;
+> @@ -1542,8 +1570,13 @@ static int syslog_print(char __user *buf, int size)
+>  		len += n;
+>  		size -= n;
+>  		buf += n;
+> -	}
+>  
+> +		if (!size)
+> +			break;
+> +
+> +		mutex_lock(&syslog_lock);
+> +	}
