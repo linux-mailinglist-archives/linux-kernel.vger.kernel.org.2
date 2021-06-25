@@ -2,124 +2,439 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2C63B45DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAA33B45E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231983AbhFYOkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:40:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:57492 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232000AbhFYOjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:39:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E6D61042;
-        Fri, 25 Jun 2021 07:37:15 -0700 (PDT)
-Received: from localhost (e108754-lin.cambridge.arm.com [10.1.195.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F26903F694;
-        Fri, 25 Jun 2021 07:37:14 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 15:37:13 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
- invariance
-Message-ID: <20210625143713.GA7092@arm.com>
-References: <cover.1624266901.git.viresh.kumar@linaro.org>
- <09a39f5c-b47b-a931-bf23-dc43229fb2dd@quicinc.com>
- <20210623041613.v2lo3nidpgw37abl@vireshk-i7>
- <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
- <20210624025414.4iszkovggk6lg6hj@vireshk-i7>
- <CAKfTPtAXMYYrG1w-iwSWXb428FkwFArEwXQgHnjShoCEMjdYcw@mail.gmail.com>
- <20210624104734.GA11487@arm.com>
- <daf1ddf5-6f57-84a8-2ada-90590c0c94b5@quicinc.com>
- <20210625102113.GB15540@arm.com>
- <1f83d787-a796-0db3-3c2f-1ca616eb1979@quicinc.com>
+        id S232009AbhFYOkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232008AbhFYOkI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 10:40:08 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B15AC061787
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:37:29 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id o33-20020a05600c5121b02901e360c98c08so6871010wms.5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:37:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a54s3kRK1gHHJoxRicx7YBCMCuENKO69Im5EEaH+1gY=;
+        b=dA+hY/x1Xv9luzyQaNIYrP6U5eJlSwyGhcldIe7t/9hAHb0m5bZN5vUsjusd5La4cx
+         X5W/vD90qAsX013Ab8TZg+0HfHHynvfOBC1uXN0daDGwDHYqwI33WHReBDz7G0ZYHbVN
+         DO4RE0Ry5CsPJWncr7425hZYtecOO9fccS8Zd9DJ2g1ZdMS/xz0ngN1+jhvQdYGbnPCp
+         d7kOOdCjrSUgijN/8lkpnZ4a88Y84GrRohbgrVqRR5WBdUjvoLyb/719kDH5AdMKJLy7
+         l37qOid6j7FqfbBNunlA0bTb6HPF1XOX2wGsDJGnpKnVfvURwIk/YOfucbry/YsSH90A
+         xkXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a54s3kRK1gHHJoxRicx7YBCMCuENKO69Im5EEaH+1gY=;
+        b=hJxoO0wm19xUHblMkPZvAEyWTkE33bxT73giOCtufT7GSp5FNCCnE+g6Mgn3D5CbvU
+         I01EfS/2Kj2g1hBQTL3ETVNSrqE2jxplx38CNZ5lWmhD6vs+3fn4PR7pzstLf9cfEQKo
+         27ypDCnDoxRQqroAmJvquh8MoJ9Ye2eMPoCc6e5SpCMxLVZLrF7+Izj5YMca8JpnCSZz
+         NJGX9BxYQrgIHbv57zMo5rjsNxSo1SXGtY1w5q3KTE/9JrBxiG4yXjawq5k8suk2u+2W
+         bo3Nfv1gztxGWRSMq7ieW9TkUp7xo6wIUPcsdlrHQ2esT5+P9rE5zsU8ETFMj7UDqecV
+         yXew==
+X-Gm-Message-State: AOAM533rPTEAd+UPM933JU188DIVAhN9u/iB5a8akhZZUuW60NW1XhN3
+        3VrVFRKvpcxsKCbCcop1cblLGDhAT6EDft/ckbeWKQ==
+X-Google-Smtp-Source: ABdhPJyNP4YeTS0oe1EjcgKWFOK1ApDpR9FFSXM3A+7vflvNYUJ6CoMpDaHkDCGLwNbEh+dtD5Do6V2p95ehjRokhKc=
+X-Received: by 2002:a05:600c:218c:: with SMTP id e12mr11086109wme.92.1624631847643;
+ Fri, 25 Jun 2021 07:37:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1f83d787-a796-0db3-3c2f-1ca616eb1979@quicinc.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210414191903.18349-1-mike.leach@linaro.org> <20210414191903.18349-6-mike.leach@linaro.org>
+ <dfbb1acf-b174-1990-33d3-39e2ab746959@arm.com> <CANLsYkyR-kUO7CiK4vuw+DNFMxCCsLN24s3mZ2Uw4vAq5aPD3g@mail.gmail.com>
+In-Reply-To: <CANLsYkyR-kUO7CiK4vuw+DNFMxCCsLN24s3mZ2Uw4vAq5aPD3g@mail.gmail.com>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Fri, 25 Jun 2021 15:37:16 +0100
+Message-ID: <CAJ9a7Vjsmu88ZY1h11o13VMu9C9gaBr_8HEmSa5iAH3NvwM=NA@mail.gmail.com>
+Subject: Re: [PATCH v7 05/10] coresight: syscfg: Add API to activate and
+ enable configurations
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Branislav Rankov <branislav.rankov@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Yabin Cui <yabinc@google.com>, Jon Corbet <corbet@lwn.net>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nd <nd@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
+HI Branislav, Mathieu,
 
-On Friday 25 Jun 2021 at 09:31:58 (-0400), Qian Cai wrote:
-> 
-> 
-> On 6/25/2021 6:21 AM, Ionela Voinescu wrote:
-> >> scaling_driver: acpi_cppc
-> >                   ^^^^^^^^^
-> > I suppose you mean "cppc-cpufreq"?
-> > 
-> > "acpi_cppc" is not a scaling driver option.
-> 
-> Ionela, yes. Sorry about that.
-> 
-> > So your CPUs run at frequencies between 200MHz and 280MHz?
-> 
-> 2000 to 2800 MHz.
-> 
+I have started to look into this as a top priority.
 
-Thank you for the clarification.
+However, when I enable the CONFIG_DEBUG_ option my board fails to boot
+at all. (Dragonboard DB410c), so the resolution make take a little
+time.
 
-> > Based on your acpi_cppc information below I would have assumed 2GHz as
-> > lowest nonlinear and 2.8GHz as nominal. The reason for this is that
-> > according to the ACPI spec the frequency values in the _CPC objects are
-> > supposed to be in MHz, so 2800 MHz for nominal frequency would be
-> > 2.8GHz.
-> > 
-> > When you try more governors, make sure to check out the difference
-> > between scaling_cur_freq and cpuinfo_cur_freq at [2]. The first gives
-> > you the frequency that the governor (schedutil) is asking for, while the
-> > second is giving you the current frequency obtained from the counters.
-> > 
-> > So to check the actual frequency the cores are running at, please check
-> > cpuinfo_cur_freq.
-> 
-> The problem is that all CPUs are never scaling down. "cpuinfo_cur_freq"
-> and "scaling_cur_freq" are always the 2800 MHz on all CPUs on this idle
-> system. This looks like a regression somewhere as in 5.4-based kernel,
-> I can see "cpuinfo_cur_freq" can go down to 2000 MHz in the same
-> scenario. I'll bisect a bit unless you have better ideas?
+At this point I am assuming that the mutex will need to be replaced by
+a spinlock - so a re-design + v8 set may well be required.
 
-Quick questions for you:
+Regards
 
-1. When you say you tried a 5.4 kernel, did you try it with these
-patches backported? They also have some dependencies with the recent
-changes in the arch topology driver and cpufreq so they would not be
-straight forward to backport.
+Mike
 
-If the 5.4 kernel you tried did not have these patches, it might be best
-to try next/master that has these patches, but with
-CONFIG_ACPI_CPPC_CPUFREQ_FIE=n, just to eliminate the possibility that
-an incorrect frequency scale factor here would affect utilization that
-would then affect the schedutil frequency selection. I would not expect
-this behavior even if the scale factor was wrong, but it would be good
-to rule out.
+On Mon, 14 Jun 2021 at 18:03, Mathieu Poirier
+<mathieu.poirier@linaro.org> wrote:
+>
+> Hi Branislav,
+>
+> On Thu, 10 Jun 2021 at 05:05, Branislav Rankov <branislav.rankov@arm.com> wrote:
+> >
+> >
+> > On 4/14/21 8:18 PM, Mike Leach wrote:
+> > > Configurations are first activated, then when any coresight device is
+> > > enabled, the active configurations are checked and any matching
+> > > one is enabled.
+> > >
+> > > This patch provides the activation / enable API.
+> > >
+> > > Signed-off-by: Mike Leach <mike.leach@linaro.org>
+> > > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > > ---
+> > >   .../hwtracing/coresight/coresight-config.h    |   2 +
+> > >   .../hwtracing/coresight/coresight-syscfg.c    | 172 ++++++++++++++++++
+> > >   .../hwtracing/coresight/coresight-syscfg.h    |   8 +
+> > >   include/linux/coresight.h                     |   2 +
+> > >   4 files changed, 184 insertions(+)
+> > >
+> > > diff --git a/drivers/hwtracing/coresight/coresight-config.h b/drivers/hwtracing/coresight/coresight-config.h
+> > > index 0667581822c1..25eb6c632692 100644
+> > > --- a/drivers/hwtracing/coresight/coresight-config.h
+> > > +++ b/drivers/hwtracing/coresight/coresight-config.h
+> > > @@ -127,6 +127,7 @@ struct cscfg_feature_desc {
+> > >    * @nr_total_params:        Sum of all parameters declared by used features
+> > >    * @presets:                Array of preset values.
+> > >    * @event_ea:               Extended attribute for perf event value
+> > > + * @active_cnt:              ref count for activate on this configuration.
+> > >    *
+> > >    */
+> > >   struct cscfg_config_desc {
+> > > @@ -139,6 +140,7 @@ struct cscfg_config_desc {
+> > >       int nr_total_params;
+> > >       const u64 *presets; /* nr_presets * nr_total_params */
+> > >       struct dev_ext_attribute *event_ea;
+> > > +     atomic_t active_cnt;
+> > >   };
+> > >
+> > >   /**
+> > > diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
+> > > index e35f8c0ac2f8..b234e45c153f 100644
+> > > --- a/drivers/hwtracing/coresight/coresight-syscfg.c
+> > > +++ b/drivers/hwtracing/coresight/coresight-syscfg.c
+> > > @@ -283,6 +283,7 @@ static int cscfg_load_config(struct cscfg_config_desc *config_desc)
+> > >               return err;
+> > >
+> > >       list_add(&config_desc->item, &cscfg_mgr->config_desc_list);
+> > > +     atomic_set(&config_desc->active_cnt, 0);
+> > >       return 0;
+> > >   }
+> > >
+> > > @@ -468,6 +469,176 @@ void cscfg_unregister_csdev(struct coresight_device *csdev)
+> > >   }
+> > >   EXPORT_SYMBOL_GPL(cscfg_unregister_csdev);
+> > >
+> > > +/**
+> > > + * cscfg_csdev_reset_feats - reset features for a CoreSight device.
+> > > + *
+> > > + * Resets all parameters and register values for any features loaded
+> > > + * into @csdev to their default values.
+> > > + *
+> > > + * @csdev: The CoreSight device.
+> > > + */
+> > > +void cscfg_csdev_reset_feats(struct coresight_device *csdev)
+> > > +{
+> > > +     struct cscfg_feature_csdev *feat_csdev;
+> > > +
+> > > +     mutex_lock(&cscfg_csdev_mutex);
+> > > +     if (list_empty(&csdev->feature_csdev_list))
+> > > +             goto unlock_exit;
+> > > +
+> > > +     list_for_each_entry(feat_csdev, &csdev->feature_csdev_list, node)
+> > > +             cscfg_reset_feat(feat_csdev);
+> > > +
+> > > +unlock_exit:
+> > > +     mutex_unlock(&cscfg_csdev_mutex);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(cscfg_csdev_reset_feats);
+> > > +
+> > > +/**
+> > > + * cscfg_activate_config -  Mark a configuration descriptor as active.
+> > > + *
+> > > + * This will be seen when csdev devices are enabled in the system.
+> > > + * Only activated configurations can be enabled on individual devices.
+> > > + * Activation protects the configuration from alteration or removal while
+> > > + * active.
+> > > + *
+> > > + * Selection by hash value - generated from the configuration name when it
+> > > + * was loaded and added to the cs_etm/configurations file system for selection
+> > > + * by perf.
+> > > + *
+> > > + * Increments the configuration descriptor active count and the global active
+> > > + * count.
+> > > + *
+> > > + * @cfg_hash: Hash value of the selected configuration name.
+> > > + */
+> > > +int cscfg_activate_config(unsigned long cfg_hash)
+> > > +{
+> > > +     struct cscfg_config_desc *config_desc;
+> > > +     int err = -EINVAL;
+> > > +
+> > > +     mutex_lock(&cscfg_mutex);
+> > > +
+> > > +     list_for_each_entry(config_desc, &cscfg_mgr->config_desc_list, item) {
+> > > +             if ((unsigned long)config_desc->event_ea->var == cfg_hash) {
+> > > +                     /*
+> > > +                      * increment the global active count - control changes to
+> > > +                      * active configurations
+> > > +                      */
+> > > +                     atomic_inc(&cscfg_mgr->sys_active_cnt);
+> > > +
+> > > +                     /*
+> > > +                      * mark the descriptor as active so enable config on a
+> > > +                      * device instance will use it
+> > > +                      */
+> > > +                     atomic_inc(&config_desc->active_cnt);
+> > > +
+> > > +                     err = 0;
+> > > +                     dev_dbg(cscfg_device(), "Activate config %s.\n", config_desc->name);
+> > > +                     break;
+> > > +             }
+> > > +     }
+> > > +     mutex_unlock(&cscfg_mutex);
+> > > +
+> > > +     return err;
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(cscfg_activate_config);
+> > > +
+> > > +/**
+> > > + * cscfg_deactivate_config -  Mark a config descriptor as inactive.
+> > > + *
+> > > + * Decrement the configuration and global active counts.
+> > > + *
+> > > + * @cfg_hash: Hash value of the selected configuration name.
+> > > + */
+> > > +void cscfg_deactivate_config(unsigned long cfg_hash)
+> > > +{
+> > > +     struct cscfg_config_desc *config_desc;
+> > > +
+> > > +     mutex_lock(&cscfg_mutex);
+> > > +
+> > > +     list_for_each_entry(config_desc, &cscfg_mgr->config_desc_list, item) {
+> > > +             if ((unsigned long)config_desc->event_ea->var == cfg_hash) {
+> > > +                     atomic_dec(&config_desc->active_cnt);
+> > > +                     atomic_dec(&cscfg_mgr->sys_active_cnt);
+> > > +                     dev_dbg(cscfg_device(), "Deactivate config %s.\n", config_desc->name);
+> > > +                     break;
+> > > +             }
+> > > +     }
+> > > +     mutex_unlock(&cscfg_mutex);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(cscfg_deactivate_config);
+> > > +
+> > > +/**
+> > > + * cscfg_csdev_enable_active_config - Enable matching active configuration for device.
+> > > + *
+> > > + * Enables the configuration selected by @cfg_hash if the configuration is supported
+> > > + * on the device and has been activated.
+> > > + *
+> > > + * If active and supported the CoreSight device @csdev will be programmed with the
+> > > + * configuration, using @preset parameters.
+> > > + *
+> > > + * Should be called before driver hardware enable for the requested device, prior to
+> > > + * programming and enabling the physical hardware.
+> > > + *
+> > > + * @csdev:   CoreSight device to program.
+> > > + * @cfg_hash:        Selector for the configuration.
+> > > + * @preset:  Preset parameter values to use, 0 for current / default values.
+> > > + */
+> > > +int cscfg_csdev_enable_active_config(struct coresight_device *csdev,
+> > > +                                  unsigned long cfg_hash, int preset)
+> > > +{
+> > > +     struct cscfg_config_csdev *config_csdev_active = NULL, *config_csdev_item;
+> > > +     const struct cscfg_config_desc *config_desc;
+> > > +     int err = 0;
+> > > +
+> > > +     /* quickly check global count */
+> > > +     if (!atomic_read(&cscfg_mgr->sys_active_cnt))
+> > > +             return 0;
+> > > +
+> > > +     mutex_lock(&cscfg_csdev_mutex);
+> > > +     list_for_each_entry(config_csdev_item, &csdev->config_csdev_list, node) {
+> > > +             config_desc = config_csdev_item->config_desc;
+> > > +             if ((atomic_read(&config_desc->active_cnt)) &&
+> > > +                 ((unsigned long)config_desc->event_ea->var == cfg_hash)) {
+> > > +                     config_csdev_active = config_csdev_item;
+> > > +                     break;
+> > > +             }
+> > > +     }
+> > > +     if (config_csdev_active) {
+> > > +             err = cscfg_csdev_enable_config(config_csdev_active, preset);
+> > > +             if (!err)
+> > > +                     csdev->active_cscfg_ctxt = (void *)config_csdev_active;
+> > > +     }
+> > > +     mutex_unlock(&cscfg_csdev_mutex);
+> > > +     return err;
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(cscfg_csdev_enable_active_config);
+> > > +
+> > > +/**
+> > > + * cscfg_csdev_disable_active_config - disable an active config on the device.
+> > > + *
+> > > + * Disables the active configuration on the CoreSight device @csdev.
+> > > + * Disable will save the values of any registers marked in the configurations
+> > > + * as save on disable.
+> > > + *
+> > > + * Should be called after driver hardware disable for the requested device,
+> > > + * after disabling the physical hardware and reading back registers.
+> > > + *
+> > > + * @csdev: The CoreSight device.
+> > > + */
+> > > +void cscfg_csdev_disable_active_config(struct coresight_device *csdev)
+> > > +{
+> > > +     struct cscfg_config_csdev *config_csdev;
+> > > +
+> > > +     mutex_lock(&cscfg_csdev_mutex);
+> >
+> > This line seems to cause a bug report when the kernel is compiled with CONFIG_DEBUG_ATOMIC_SLEEP=y
+> >
+> > I have tested this by applying the series to 5.10 kernel on Dragonboard 845c.
+> >
+> > It only happens when strobing is used.
+>
+> Thanks for reporting this.  Unfortunately Mike is away and likely
+> won't be able to look at this in time for the merge window.  As such I
+> backed out the complex configuration feature from the next branch but
+> that code is still available on next-complex-configuration.
+>
+> Thanks,
+> Mathieu
+>
+> >
+> > The report is this:
+> >
+> > [13431.885395] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:283
+> > [13431.893919] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 3525, name: perf
+> > [13431.901882] CPU: 0 PID: 3525 Comm: perf Tainted: G        W         5.10.0-rc5-17282-g923b456a55fb #124
+> > [13431.911436] Hardware name: Thundercomm Dragonboard 845c (DT)
+> > [13431.917450] Call trace:
+> > [13431.919938]  dump_backtrace+0x0/0x1a0
+> > [13431.923644]  show_stack+0x18/0x68
+> > [13431.927008]  dump_stack+0xd0/0x12c
+> > [13431.930444]  ___might_sleep+0xf0/0x130
+> > [13431.934228]  __might_sleep+0x54/0x90
+> > [13431.937945]  mutex_lock+0x28/0x80
+> > [13431.941468]  cscfg_csdev_disable_active_config+0x24/0x50
+> > [13431.946952]  etm4_disable+0xf0/0x100
+> > [13431.950571]  etm_event_stop+0xb8/0x130
+> > [13431.954380]  etm_event_del+0x14/0x20
+> > [13431.958008]  event_sched_out.isra.0+0x84/0x1c8
+> > [13431.962496]  group_sched_out.part.0+0x44/0xc8
+> > [13431.967010]  __perf_event_disable+0xe4/0x198
+> > [13431.971549]  event_function+0x8c/0xe8
+> > [13431.975256]  remote_function+0x64/0x78
+> > [13431.979161]  generic_exec_single+0xa0/0x100
+> > [13431.983876]  smp_call_function_single+0x158/0x1d8
+> > [13431.988629]  event_function_call+0x128/0x138
+> > [13431.992942]  _perf_event_disable+0x48/0x70
+> > [13431.997082]  perf_event_for_each_child+0x3c/0x90
+> > [13432.001751]  _perf_ioctl+0x198/0x4a8
+> > [13432.005359]  perf_ioctl+0x4c/0x78
+> > [13432.008715]  __arm64_sys_ioctl+0xa8/0xf0
+> > [13432.012835]  el0_svc_common.constprop.0+0x78/0x1a0
+> > [13432.017767]  do_el0_svc+0x24/0x90
+> > [13432.021616]  el0_sync_handler+0x160/0x168
+> > [13432.025670]  el0_sync+0x174/0x180
+> >
+> >
+> > > +     config_csdev = (struct cscfg_config_csdev *)csdev->active_cscfg_ctxt;
+> > > +     if (config_csdev) {
+> > > +             cscfg_csdev_disable_config(config_csdev);
+> > > +             csdev->active_cscfg_ctxt = NULL;
+> > > +     }
+> > > +     mutex_unlock(&cscfg_csdev_mutex);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(cscfg_csdev_disable_active_config);
+> > > +
+> > >   /* Initialise system configuration management device. */
+> > >
+> > >   struct device *cscfg_device(void)
+> > > @@ -536,6 +707,7 @@ int __init cscfg_init(void)
+> > >       INIT_LIST_HEAD(&cscfg_mgr->csdev_desc_list);
+> > >       INIT_LIST_HEAD(&cscfg_mgr->feat_desc_list);
+> > >       INIT_LIST_HEAD(&cscfg_mgr->config_desc_list);
+> > > +     atomic_set(&cscfg_mgr->sys_active_cnt, 0);
+> > >
+> > >       dev_info(cscfg_device(), "CoreSight Configuration manager initialised");
+> > >       return 0;
+> > > diff --git a/drivers/hwtracing/coresight/coresight-syscfg.h b/drivers/hwtracing/coresight/coresight-syscfg.h
+> > > index 5bcae3b374c6..a52775890670 100644
+> > > --- a/drivers/hwtracing/coresight/coresight-syscfg.h
+> > > +++ b/drivers/hwtracing/coresight/coresight-syscfg.h
+> > > @@ -24,12 +24,14 @@
+> > >    * @csdev_desc_list:        List of coresight devices registered with the configuration manager.
+> > >    * @feat_desc_list: List of feature descriptors to load into registered devices.
+> > >    * @config_desc_list:       List of system configuration descriptors to load into registered devices.
+> > > + * @sys_active_cnt:  Total number of active config descriptor references.
+> > >    */
+> > >   struct cscfg_manager {
+> > >       struct device dev;
+> > >       struct list_head csdev_desc_list;
+> > >       struct list_head feat_desc_list;
+> > >       struct list_head config_desc_list;
+> > > +     atomic_t sys_active_cnt;
+> > >   };
+> > >
+> > >   /* get reference to dev in cscfg_manager */
+> > > @@ -61,5 +63,11 @@ int cscfg_load_config_sets(struct cscfg_config_desc **cfg_descs,
+> > >   int cscfg_register_csdev(struct coresight_device *csdev, u32 match_flags,
+> > >                        struct cscfg_csdev_feat_ops *ops);
+> > >   void cscfg_unregister_csdev(struct coresight_device *csdev);
+> > > +int cscfg_activate_config(unsigned long cfg_hash);
+> > > +void cscfg_deactivate_config(unsigned long cfg_hash);
+> > > +void cscfg_csdev_reset_feats(struct coresight_device *csdev);
+> > > +int cscfg_csdev_enable_active_config(struct coresight_device *csdev,
+> > > +                                  unsigned long cfg_hash, int preset);
+> > > +void cscfg_csdev_disable_active_config(struct coresight_device *csdev);
+> > >
+> > >   #endif /* CORESIGHT_SYSCFG_H */
+> > > diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+> > > index 6fb516e1b22e..a348049ee08b 100644
+> > > --- a/include/linux/coresight.h
+> > > +++ b/include/linux/coresight.h
+> > > @@ -222,6 +222,7 @@ struct coresight_sysfs_link {
+> > >    * @has_conns_grp: Have added a "connections" group for sysfs links.
+> > >    * @feature_csdev_list: List of complex feature programming added to the device.
+> > >    * @config_csdev_list:  List of system configurations added to the device.
+> > > + * @active_cscfg_ctxt:  Context information for current active system configuration.
+> > >    */
+> > >   struct coresight_device {
+> > >       struct coresight_platform_data *pdata;
+> > > @@ -246,6 +247,7 @@ struct coresight_device {
+> > >       /* system configuration and feature lists */
+> > >       struct list_head feature_csdev_list;
+> > >       struct list_head config_csdev_list;
+> > > +     void *active_cscfg_ctxt;
+> > >   };
+> > >
+> > >   /*
+> > >
 
-2. Is your platform booting with all CPUs? Are any hotplug operations
-done in your scenario?
 
-Thanks,
-Ionela.
+
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
