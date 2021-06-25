@@ -2,103 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37EBE3B484D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6F53B484C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbhFYRoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 13:44:14 -0400
-Received: from mga14.intel.com ([192.55.52.115]:49800 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229531AbhFYRoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 13:44:13 -0400
-IronPort-SDR: mAcWzs3W1tPR5KuaIsGhf3E3IIe8vOPRpLJU+Ga3ZLVV78F277SOTf4evYHJqJdiXzHw+Qqaip
- Qm5vLMHc7mFw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="207534083"
-X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; 
-   d="scan'208";a="207534083"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 10:41:51 -0700
-IronPort-SDR: y+zZJUuUktTWp0baZaYD7IMxqtb/RtRBCiJBYQdZkGw1HTGpkSzMi2LF/HlAlm4qhu+SIlMyNK
- Fcn1TvWBOqdA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; 
-   d="scan'208";a="624584369"
-Received: from alison-desk.jf.intel.com ([10.54.74.53])
-  by orsmga005.jf.intel.com with ESMTP; 25 Jun 2021 10:41:49 -0700
-Date:   Fri, 25 Jun 2021 10:37:10 -0700
-From:   Alison Schofield <alison.schofield@intel.com>
-To:     13145886936@163.com
-Cc:     dan.j.williams@intel.com, vishal.l.verma@intel.com,
-        dave.jiang@intel.com, ira.weiny@intel.com, nvdimm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
-Subject: Re: [PATCH] tools/testing/nvdimm: NULL check before vfree() is not
- needed
-Message-ID: <20210625173710.GA14491@alison-desk.jf.intel.com>
-References: <20210625072700.22662-1-13145886936@163.com>
+        id S229982AbhFYRlo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Jun 2021 13:41:44 -0400
+Received: from mail-ua1-f46.google.com ([209.85.222.46]:43832 "EHLO
+        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhFYRln (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 13:41:43 -0400
+Received: by mail-ua1-f46.google.com with SMTP id f1so3841713uaj.10;
+        Fri, 25 Jun 2021 10:39:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hMsdHKSeztMKrPHZ8nbG2VqyYL9zlmEgt8jO+8+YC2U=;
+        b=nUT56JRIdUCvJchDRgYdezS6g2Mz2vgennpByZqYJ7owEBc+9VM2PnXG79nAkTBfQ2
+         p0T1RnMP1ccbTykEwe1EPLyc0/XOdu507SZtCQID7JXToNkGi3+HWj50SL7Ozbo/pD0S
+         CFtgxpWFr8hVEJVxd2c0ZiGgrmw3NhvEo1QRbt0sZL6R4PPtyvcCf5+UNxlcUGYB9MJs
+         WMD8BrK9Z9poKuObRd4od38nxpQOML7y0efn44yAdiire3uG3Ug2wL2g+zvKIKM43cJY
+         4E+FtBRyTMj1dFW+YnCqCFuFmfjipkyhLRhVKStVHmwcl6qIBvF36nTqaCfhzHCfzHGJ
+         R00Q==
+X-Gm-Message-State: AOAM531AvKHpb6yfsgknp72vai1RZUnaCddcNiMMCLsKddNnVfl4XEly
+        1LfprtrRU+ckKRPhjFPaLaGodobHvboAc6C5ZOY=
+X-Google-Smtp-Source: ABdhPJxRW0SpvuDwLgk+xlyHuwdQP6YsYhgHSWcPS2hlfsTa42T+RD8pDpSwzmpkvZj5EGbrv9yxCxRv6cquJ3wmzXs=
+X-Received: by 2002:ab0:3734:: with SMTP id s20mr13225318uag.106.1624642761311;
+ Fri, 25 Jun 2021 10:39:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625072700.22662-1-13145886936@163.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210624224909.6350-1-pali@kernel.org> <20210625143617.12826-1-pali@kernel.org>
+ <20210625143617.12826-8-pali@kernel.org> <CAMuHMdUCEHtqNk-nGJhPK_=NrgSoRhmC99J9pdGqQxcWpoFqGg@mail.gmail.com>
+ <20210625153803.u6uesckcqyvvo7dl@pali> <20210625155008.GB16901@1wt.eu>
+In-Reply-To: <20210625155008.GB16901@1wt.eu>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 25 Jun 2021 19:39:10 +0200
+Message-ID: <CAMuHMdWfE7UKkp6=MdAVgHywFjDK3SN4m9+d_6AmJTB=qBEqFw@mail.gmail.com>
+Subject: Re: [PATCH v2 07/11] math64: New DIV_U64_ROUND_CLOSEST helper
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Willy,
 
-Hi Gushengxian,
+On Fri, Jun 25, 2021 at 5:50 PM Willy Tarreau <w@1wt.eu> wrote:
+> On Fri, Jun 25, 2021 at 05:38:03PM +0200, Pali Rohár wrote:
+> > On Friday 25 June 2021 17:22:31 Geert Uytterhoeven wrote:
+> > > > +/*
+> > > > + * DIV_U64_ROUND_CLOSEST - unsigned 64bit divide with 32bit divisor rounded to nearest integer
+> > > > + * @dividend: unsigned 64bit dividend
+> > > > + * @divisor: unsigned 32bit divisor
+> > > > + *
+> > > > + * Divide unsigned 64bit dividend by unsigned 32bit divisor
+> > > > + * and round to closest integer.
+> > > > + *
+> > > > + * Return: dividend / divisor rounded to nearest integer
+> > > > + */
+> > > > +#define DIV_U64_ROUND_CLOSEST(dividend, divisor)       \
+> > > > +       ({ u32 _tmp = (divisor); div_u64((u64)(dividend) + _tmp / 2, _tmp); })
+> > >
+> > > Given "dividend" should already be an unsigned 64-bit value, I don't
+> > > think the cast to "u64" is needed. Similar macros in this file also
+> > > don't have the cast.
+> >
+> > It is just to ensure that plus operation between dividend and _tmp is
+> > evaluated in 64-bit context to prevent overflow. Just a case when user
+> > calls this macro with 32-bit dividend param. As it is a macro (and not
+> > inline function) type is not automatically enforced.
+>
+> I agree, a large u32 argument added to _tmp/2 could overflow and remain
+> 32 bits, yielding an incorrect result. The cast is mandatory here (and
+> will either emit no code, or be useful).
 
-The code change looks good.  A couple of cleanups noted below...
-(same feedback on next patch too)
+Fair enough.
+So we want to add a cast to DIV64_U64_ROUND_CLOSEST() above, too?
 
+> The only trap I'm seeing is if a negative signed int is passed in dividend,
+> it will be sign-extended and will give a large u64 value. A preliminary
+> u32 cast could avoid this but would break valid u64 arguments, and I'd
+> claim we never know what the user wants if this happens in the first place.
 
-On Fri, Jun 25, 2021 at 12:27:00AM -0700, 13145886936@163.com wrote:
-> From: gushengxian <gushengxian@yulong.com>
-> 
-> NULL check before vfree() is not needed.
+Yep.
 
-The commit message needs to say what was done, not the why.
-Example: "[PATCH] tools/testing/nvdimm: Remove NULL test before vfree"
+Gr{oetje,eeting}s,
 
-Then, the commit log explains why this should be done.
-Example: "This NULL test is redundant since vfree() checks for NULL."
+                        Geert
 
-Coccinelle reports this vfree() case. If you did use Coccinelle
-to find it, please mention that in the commit log.
-Example: "Reported by Coccinelle."
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-> 
-> Signed-off-by: gushengxian <gushengxian@yulong.com>
-
-The email addresses don't match (13145886936@163.com,
-gushengxian@yulong.com) and it's not clear that you are using your
-full, legal name in the 'name line.
-
-You can find more info on this feedback at:
-https://kernelnewbies.org/FirstKernelPatch
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html
-
-Alison
-
-> ---
->  tools/testing/nvdimm/test/nfit.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/nvdimm/test/nfit.c b/tools/testing/nvdimm/test/nfit.c
-> index 54f367cbadae..cb86f0cbb11c 100644
-> --- a/tools/testing/nvdimm/test/nfit.c
-> +++ b/tools/testing/nvdimm/test/nfit.c
-> @@ -1641,8 +1641,8 @@ static void *__test_alloc(struct nfit_test *t, size_t size, dma_addr_t *dma,
->   err:
->  	if (*dma && size >= DIMM_SIZE)
->  		gen_pool_free(nfit_pool, *dma, size);
-> -	if (buf)
-> -		vfree(buf);
-> +
-> +	vfree(buf);
->  	kfree(nfit_res);
->  	return NULL;
->  }
-> -- 
-> 2.25.1
-> 
-> 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
