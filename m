@@ -2,76 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D26F33B4A26
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 23:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 711483B4A2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 23:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbhFYV3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 17:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbhFYV3h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 17:29:37 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9792AC061767
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 14:27:16 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id x16so8420061pfa.13
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 14:27:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xRxE71rC/IWPeumP7C1MZE8K9Wv2pifNDPEqkqJ42DQ=;
-        b=fRwIMlDaWV0fntevPeIwqIuwZA9SOE+D3GJyYH4A5O3MEchBAxYKHVqyzp+eXW4VT6
-         wkaJlszvY8HnkF2duefyJC1I3qVf+p1ig/BgstcUWTRUVWul6Oo3rP7bs9ApaUaWR57a
-         i1sqycmWuqiX4+9R/GcLQAbrcWSMKP3JcKrGbbxKYF74XMqLPxckIlosyP1sfnD5unHM
-         G4t5VwXQ0Z91lF1lVVeeYJGmplujg8vw5ac9Uczs83849SpRl9uKdLtYz6IAxTGck7vD
-         yGl4xBs5TFy7nkqOqJEwPi/srgDSom6k7oU2oYvhoXlul5zFOmjkXkOvhoEoTQXSC1dN
-         Xxuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xRxE71rC/IWPeumP7C1MZE8K9Wv2pifNDPEqkqJ42DQ=;
-        b=mf94EkLfJ6LUZhIE7TuBX8FoA+nXqHw1YWiWrt0kFj3tHtjhKSdvrczB0GmgTB1gCh
-         Va0b3W2q0fpPM/wVnJpSPef8uCQTNslsAK7RTNqlfZRXRLE1zVHe1LZWELTA8SwHh6In
-         lYMvY9EylHi+7ak2qLKKmzhpQskZIy4TRTenBupmyVWLG0yBkgxhpNGht68Apjyb01QZ
-         H91YkTuR5640jmClbynYHqUSZ0FMQbUCDWZbhCOF6a1jTXl6J2Hx+BvhR1cMxN5Rze1Q
-         rh7Cxhdhm/+gcIy17Th2EeK4c4wm5FA/NJozvkNZOgycaeBpywHc6Zb6gPvwtELwNZfE
-         UF+A==
-X-Gm-Message-State: AOAM532pDxMPVqOW43LK3JF+hg6EyXzgSUXnRJE5UYo6G4pfF6CwUl6u
-        HR+rwLmh70wL/rSLxVXwaQc/LFqCAFuvdh+XsJ5vQw==
-X-Google-Smtp-Source: ABdhPJwCGwSk6BZTuRmUOtwJhakAAFLWcIBXw8yjzjt+AT3O/BJZ7dHeP6UboGbcWP27Q9QqLf2aHP6UNR6pscUXNeo=
-X-Received: by 2002:a63:d0d:: with SMTP id c13mr11573133pgl.384.1624656435782;
- Fri, 25 Jun 2021 14:27:15 -0700 (PDT)
+        id S229850AbhFYVbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 17:31:24 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:61796 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229796AbhFYVbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 17:31:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624656539; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=2ytQZ0GiePJNRSQsX0zaH9qhbTUbXKraxZXQz57Le9Q=; b=SBVckKtwfuyugOqyonXu7Yxdn88gw3dZLi+l9tL5SD0WgZtvwvfGK9A+kZaNf4QXh/pUezuJ
+ C8FEJIIuFQxBFXi1/VMswbQ7BO87pw+eQNWCZ7UYEcUypT+wQYu2MMGksUbr/g0VBfjLdnkn
+ 8ueb+ysd0mtOefiYe9LBDZUh2Ro=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 60d64a9bdc4628fe7e690567 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 25 Jun 2021 21:28:59
+ GMT
+Sender: mdtipton=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 29625C433D3; Fri, 25 Jun 2021 21:28:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hu-mdtipton-lv.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdtipton)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 29059C433F1;
+        Fri, 25 Jun 2021 21:28:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 29059C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mdtipton@codeaurora.org
+From:   Mike Tipton <mdtipton@codeaurora.org>
+To:     djakov@kernel.org
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        saravanak@google.com, okukatla@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mike Tipton <mdtipton@codeaurora.org>
+Subject: [PATCH 0/4] interconnect: Fix sync-state issues
+Date:   Fri, 25 Jun 2021 14:28:35 -0700
+Message-Id: <20210625212839.24155-1-mdtipton@codeaurora.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <cover.1623824363.git.mchehab+huawei@kernel.org> <6fde409079959a95b62b9b2692503608d7ff0dbd.1623824363.git.mchehab+huawei@kernel.org>
-In-Reply-To: <6fde409079959a95b62b9b2692503608d7ff0dbd.1623824363.git.mchehab+huawei@kernel.org>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Fri, 25 Jun 2021 14:27:04 -0700
-Message-ID: <CAFd5g443AK+vxaupGiBQC5wB-5PG+5vV11y1NjevUh8don+VJQ@mail.gmail.com>
-Subject: Re: [PATCH v2 10/29] docs: dev-tools: kunit: avoid using ReST
- :doc:`foo` markup
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, David Gow <davidgow@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 11:27 PM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> The :doc:`foo` tag is auto-generated via automarkup.py.
-> So, use the filename at the sources, instead of :doc:`foo`.
->
-> Reviewed-by: David Gow <davidgow@google.com>
-> Acked-by: Brendan Higgins <brendanhiggins@google.com>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+These patches fix a couple of sync-state bugs that either cause the initial BW
+floors to be ignored entirely, or to be never removed after sync-state is
+called.
 
-Hi, can you please rebase and resend your patch on top of
+Mike Tipton (4):
+  interconnect: Zero initial BW after sync-state
+  interconnect: Always call pre_aggregate before aggregate
+  interconnect: qcom: icc-rpmh: Ensure floor BW is enforced for all nodes
+  interconnect: qcom: icc-rpmh: Add BCMs to commit list in pre_aggregate
 
-https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/log/?h=kunit-fixes
+ drivers/interconnect/core.c          |  7 ++++++-
+ drivers/interconnect/qcom/icc-rpmh.c | 20 ++++++++++----------
+ 2 files changed, 16 insertions(+), 11 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
