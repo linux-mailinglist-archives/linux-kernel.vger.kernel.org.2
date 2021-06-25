@@ -2,140 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D7B3B3F1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 921F63B3F1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhFYI2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:28:07 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43090 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhFYI2G (ORCPT
+        id S230083AbhFYI3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:29:18 -0400
+Received: from lucky1.263xmail.com ([211.157.147.130]:49898 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhFYI3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:28:06 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 0FDE821C23;
-        Fri, 25 Jun 2021 08:25:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624609545; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cUgka/jsXYIFlXbsTn7ZrQFiKrwsVaDLpTN3DoUyc8s=;
-        b=ngqGKScsP6EcFXD7BqS3u6wNiM2QXjXyEZDAsYJIz/N7snZjq9Cs7k8OHMGrubkvk2h/j/
-        4Xic9S+liB6jhxJwCZ5tZ/DdGOudRwgv7f6T7Uhisv9N2FYzvZ4Aq5Xfg/zTkVzNE/M+9l
-        cDwui4toG+ThcADmQ1NlVfaDQhhR+9g=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id D5AC4A3BB4;
-        Fri, 25 Jun 2021 08:25:44 +0000 (UTC)
-Date:   Fri, 25 Jun 2021 10:25:44 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 15/46] mm/memcg: Add folio_uncharge_cgroup()
-Message-ID: <YNWTCG3s910H3to2@dhcp22.suse.cz>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-16-willy@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622121551.3398730-16-willy@infradead.org>
+        Fri, 25 Jun 2021 04:29:17 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 1F07CD5B29;
+        Fri, 25 Jun 2021 16:26:45 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P12363T139709984536320S1624609601822117_;
+        Fri, 25 Jun 2021 16:26:44 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <978473b6890bd908bcaa94c0dbf5d258>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 19
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     linux-spi@vger.kernel.org
+Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org
+Subject: [RFC PATCH v9 00/10] Add Rockchip SFC(serial flash controller) support
+Date:   Fri, 25 Jun 2021 16:26:29 +0800
+Message-Id: <20210625082639.32688-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 22-06-21 13:15:20, Matthew Wilcox wrote:
-> Reimplement mem_cgroup_uncharge() as a wrapper around
-> folio_uncharge_cgroup().
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Similar to the previous patch. Is there any reason why we cannot simply
-stick with mem_cgroup_{un}charge and only change the parameter to folio?
 
-> ---
->  include/linux/memcontrol.h |  5 +++++
->  mm/folio-compat.c          |  5 +++++
->  mm/memcontrol.c            | 14 +++++++-------
->  3 files changed, 17 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index a50e5cee6d2c..d4b2bc939eee 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -705,6 +705,7 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
->  }
->  
->  int folio_charge_cgroup(struct folio *, struct mm_struct *, gfp_t);
-> +void folio_uncharge_cgroup(struct folio *);
->  
->  int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask);
->  int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
-> @@ -1224,6 +1225,10 @@ static inline int folio_charge_cgroup(struct folio *folio,
->  	return 0;
->  }
->  
-> +static inline void folio_uncharge_cgroup(struct folio *folio)
-> +{
-> +}
-> +
->  static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
->  				    gfp_t gfp_mask)
->  {
-> diff --git a/mm/folio-compat.c b/mm/folio-compat.c
-> index 1d71b8b587f8..d229b979b00d 100644
-> --- a/mm/folio-compat.c
-> +++ b/mm/folio-compat.c
-> @@ -54,4 +54,9 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp)
->  {
->  	return folio_charge_cgroup(page_folio(page), mm, gfp);
->  }
-> +
-> +void mem_cgroup_uncharge(struct page *page)
-> +{
-> +	folio_uncharge_cgroup(page_folio(page));
-> +}
->  #endif
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 69638f84d11b..a6befc0843e7 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6717,24 +6717,24 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
->  }
->  
->  /**
-> - * mem_cgroup_uncharge - uncharge a page
-> - * @page: page to uncharge
-> + * folio_uncharge_cgroup - Uncharge a folio.
-> + * @folio: Folio to uncharge.
->   *
-> - * Uncharge a page previously charged with mem_cgroup_charge().
-> + * Uncharge a folio previously charged with folio_charge_cgroup().
->   */
-> -void mem_cgroup_uncharge(struct page *page)
-> +void folio_uncharge_cgroup(struct folio *folio)
->  {
->  	struct uncharge_gather ug;
->  
->  	if (mem_cgroup_disabled())
->  		return;
->  
-> -	/* Don't touch page->lru of any random page, pre-check: */
-> -	if (!page_memcg(page))
-> +	/* Don't touch folio->lru of any random page, pre-check: */
-> +	if (!folio_memcg(folio))
->  		return;
->  
->  	uncharge_gather_clear(&ug);
-> -	uncharge_page(page, &ug);
-> +	uncharge_page(&folio->page, &ug);
->  	uncharge_batch(&ug);
->  }
->  
-> -- 
-> 2.30.2
+Changes in v9:
+- Seperate DMA IRQ setting and wait_completion from DMA fifo transfer
+  function to make dma_status_poll be possible(Which I will implement
+  in u-boot)
+- Add SFC Kconfig detail comment
+- Seperate FDT binding docs and includes from rk3036 sfc_hclk patch
+- Seperate FDT binding docs and includes from rk3036 sfc_hclk patch
+
+Changes in v8:
+- Fix indent 4 to 2 in yaml
+
+Changes in v7:
+- Fix up the sclk_sfc parent error in rk3036
+- Unify to "rockchip,sfc" compatible id because all the feature update
+  will have a new IP version, so the driver is used for the SFC IP in
+  all SoCs
+- Change to use node "sfc" to name the SFC pinctrl group
+- Add subnode reg property check
+- Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
+- Limit max_iosize to 32KB
+
+Changes in v6:
+- Add support in device trees for rv1126(Declared in series 5 but not
+  submitted)
+- Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
+  affect interpretation and has been widely used
+- Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
+- Simplify the code, such as remove "rockchip_sfc_register_all"(Declared
+  in series 5 but not submitted)
+- Support SFC ver4 ver5(Declared in series 5 but not submitted)
+- Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
+- Change to use devm_spi_alloc_master and spi_unregister_master
+
+Changes in v5:
+- Add support in device trees for rv1126
+- Support sfc tx_dual, tx_quad
+- Simplify the code, such as remove "rockchip_sfc_register_all"
+- Support SFC ver4 ver5
+
+Changes in v4:
+- Changing patch back to an "RFC". An engineer from Rockchip
+  reached out to me to let me know they are working on this patch for
+  upstream, I am submitting this v4 for the community to see however
+  I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
+  soon and these are the ones we should pursue for mainlining. Jon's
+  patch series should include support for more hardware than this
+  series.
+- Clean up documentation more and ensure it is correct per
+  make dt_binding_check.
+- Add support in device trees for rk3036, rk3308, and rv1108.
+- Add ahb clock (hclk_sfc) support for rk3036.
+- Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
+- Change IRQ code to only mark IRQ as handled if it handles the
+  specific IRQ (DMA transfer finish) it is supposed to handle.
+
+Changes in v3:
+- Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
+- Changed the compatible string from rockchip,sfc to
+  rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
+  driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
+  RV1108 SoCs, and possibly more. However, I am currently only able
+  to test this on a PX30 (an RK3326). The technical reference manuals
+  appear to list the same registers for each device.
+- Corrected devicetree documentation for formatting and to note these
+  changes.
+- Replaced the maintainer with Heiko Stuebner and myself, as we will
+  take ownership of this going forward.
+- Noted that the device (per the reference manual) supports 4 CS, but
+  I am only able to test a single CS (CS 0).
+- Reordered patches to comply with upstream rules.
+
+Changes in v2:
+- Reimplemented driver using spi-mem subsystem.
+- Removed power management code as I couldn't get it working properly.
+- Added device tree bindings for Odroid Go Advance.
+
+Changes in v1:
+hanges made in this new series versus the v8 of the old series:
+- Added function to read spi-rx-bus-width from device tree, in the
+  event that the SPI chip supports 4x mode but only has 2 pins
+  wired (such as the Odroid Go Advance).
+- Changed device tree documentation from txt to yaml format.
+- Made "reset" message a dev_dbg from a dev_info.
+- Changed read and write fifo functions to remove redundant checks.
+- Changed the write and read from relaxed to non-relaxed when
+  starting the DMA transfer or reading the DMA IRQ.
+- Changed from dma_coerce_mask_and_coherent to just
+  dma_set_mask_and_coherent.
+- Changed name of get_if_type to rockchip_sfc_get_if_type.
+
+Chris Morgan (8):
+  dt-bindings: rockchip-sfc: Bindings for Rockchip serial flash
+    controller
+  spi: rockchip-sfc: add rockchip serial flash controller
+  arm64: dts: rockchip: Add SFC to PX30
+  clk: rockchip:  add dt-binding for hclk_sfc on rk3036
+  arm: dts: rockchip: Add SFC to RK3036
+  arm: dts: rockchip: Add SFC to RV1108
+  arm64: dts: rockchip: Add SFC to RK3308
+  arm64: dts: rockchip: Enable SFC for Odroid Go Advance
+
+Jon Lin (2):
+  clk: rockchip: rk3036: fix up the sclk_sfc parent error
+  clk: rockchip: Add support for hclk_sfc on rk3036
+
+ .../devicetree/bindings/spi/rockchip-sfc.yaml |  88 +++
+ arch/arm/boot/dts/rk3036.dtsi                 |  42 ++
+ arch/arm/boot/dts/rv1108.dtsi                 |  37 +
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |  38 +
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi      |  37 +
+ .../boot/dts/rockchip/rk3326-odroid-go2.dts   |  16 +
+ drivers/clk/rockchip/clk-rk3036.c             |   5 +-
+ drivers/spi/Kconfig                           |  12 +
+ drivers/spi/Makefile                          |   1 +
+ drivers/spi/spi-rockchip-sfc.c                | 682 ++++++++++++++++++
+ include/dt-bindings/clock/rk3036-cru.h        |   1 +
+ 11 files changed, 957 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+ create mode 100644 drivers/spi/spi-rockchip-sfc.c
 
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
+
+
