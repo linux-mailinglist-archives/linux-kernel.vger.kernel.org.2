@@ -2,169 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E563B3F2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E634F3B3F35
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhFYI3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:29:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50518 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230296AbhFYI3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:29:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 547306142F;
-        Fri, 25 Jun 2021 08:27:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624609632;
-        bh=Kos9VnFUN507rQDs5MKz7+ZcHB/B2hvN/GIaET9yztc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bXQuv8eveyCrQVMp25K/PTGX9Dq+Cgxgk8H7lngi/c2x0pJotNvQsrkN/+6Flpuci
-         XRbKOrGVYiKcaOfkRlYXZdf4OBs2+2GucH/9tWJoqBtHKEC5QXwpztB5+WpDdxndfC
-         HN4GOb33LCxoxEMBUPa0eyiHj3ym2pcB0Rzoas80qq7CResdnpCSK/MrnrconevZLp
-         t+IFwD1+sU1lQpFd0NCayyDdsm0ZjkVGh6paJMuzQNiMo54R1/FPxTyW3T+Kk5B9cw
-         gq55U6V8g6qVspJO9RMEpG8A11DENvHtQBynEeuSRYMVKfOXJXL37opcPkiHEblRXR
-         3hYqRfMhQWRXQ==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Yuri Nudelman <ynudelman@habana.ai>
-Subject: [PATCH 2/2] habanalabs: allow fail on inability to respect hint
-Date:   Fri, 25 Jun 2021 11:27:06 +0300
-Message-Id: <20210625082706.9884-2-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210625082706.9884-1-ogabbay@kernel.org>
-References: <20210625082706.9884-1-ogabbay@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230363AbhFYIaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:30:03 -0400
+Received: from lucky1.263xmail.com ([211.157.147.133]:35088 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229886AbhFYIaB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 04:30:01 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 8AD43D5720;
+        Fri, 25 Jun 2021 16:27:39 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P12363T139709684631296S1624609657045376_;
+        Fri, 25 Jun 2021 16:27:39 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <9ba90d13750c853d99f65b9df4668e3d>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 20
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     linux-spi@vger.kernel.org
+Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
+Subject: [RFC PATCH v9 05/10] clk: rockchip:  add dt-binding for hclk_sfc on rk3036
+Date:   Fri, 25 Jun 2021 16:27:30 +0800
+Message-Id: <20210625082735.562-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210625082639.32688-1-jon.lin@rock-chips.com>
+References: <20210625082639.32688-1-jon.lin@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuri Nudelman <ynudelman@habana.ai>
+From: Chris Morgan <macromorgan@hotmail.com>
 
-A new user flag is required to make memory map hint mandatory, in
-contrast to the current situation where it is best effort.
-This is due to the requirement to map certain data to specific
-pre-determined device virtual address ranges.
+Add dt-binding for hclk_sfc on rk3036
 
-Signed-off-by: Yuri Nudelman <ynudelman@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
 ---
- drivers/misc/habanalabs/common/memory.c | 45 +++++++++++++++++++++++--
- include/uapi/misc/habanalabs.h          |  1 +
- 2 files changed, 43 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
-index d9429b98313a..d54fdd04be5b 100644
---- a/drivers/misc/habanalabs/common/memory.c
-+++ b/drivers/misc/habanalabs/common/memory.c
-@@ -564,6 +564,7 @@ static inline bool is_hint_crossing_range(enum hl_va_range_type range_type,
-  * @hint_addr: hint for requested address by the user.
-  * @va_block_align: required alignment of the virtual block start address.
-  * @range_type: va range type (host, dram)
-+ * @flags: additional memory flags, currently only uses HL_MEM_FORCE_HINT
-  *
-  * This function does the following:
-  * - Iterate on the virtual block list to find a suitable virtual block for the
-@@ -574,7 +575,8 @@ static inline bool is_hint_crossing_range(enum hl_va_range_type range_type,
- static u64 get_va_block(struct hl_device *hdev,
- 				struct hl_va_range *va_range,
- 				u64 size, u64 hint_addr, u32 va_block_align,
--				enum hl_va_range_type range_type)
-+				enum hl_va_range_type range_type,
-+				u32 flags)
- {
- 	struct hl_vm_va_block *va_block, *new_va_block = NULL;
- 	struct asic_fixed_properties *prop = &hdev->asic_prop;
-@@ -584,6 +586,7 @@ static u64 get_va_block(struct hl_device *hdev,
- 	bool add_prev = false;
- 	bool is_align_pow_2  = is_power_of_2(va_range->page_size);
- 	bool is_hint_dram_addr = hl_is_dram_va(hdev, hint_addr);
-+	bool force_hint = flags & HL_MEM_FORCE_HINT;
- 
- 	if (is_align_pow_2)
- 		align_mask = ~((u64)va_block_align - 1);
-@@ -603,6 +606,15 @@ static u64 get_va_block(struct hl_device *hdev,
- 		(!is_align_pow_2 && is_hint_dram_addr &&
- 			do_div(tmp_hint_addr, va_range->page_size))) {
- 
-+		if (force_hint) {
-+			/* Hint must be repected, so here we just fail.
-+			 */
-+			dev_err(hdev->dev,
-+				"Hint address 0x%llx is not page aligned - cannot be respected\n",
-+				hint_addr);
-+			return 0;
-+		}
-+
- 		dev_dbg(hdev->dev,
- 			"Hint address 0x%llx will be ignored because it is not aligned\n",
- 			hint_addr);
-@@ -660,6 +672,17 @@ static u64 get_va_block(struct hl_device *hdev,
- 		goto out;
- 	}
- 
-+	if (force_hint && reserved_valid_start != hint_addr) {
-+		/* Hint address must be respected. If we are here - this means
-+		 * we could not respect it.
-+		 */
-+		dev_err(hdev->dev,
-+			"Hint address 0x%llx could not be respected\n",
-+			hint_addr);
-+		reserved_valid_start = 0;
-+		goto out;
-+	}
-+
- 	/*
- 	 * Check if there is some leftover range due to reserving the new
- 	 * va block, then return it to the main virtual addresses list.
-@@ -712,7 +735,8 @@ u64 hl_reserve_va_block(struct hl_device *hdev, struct hl_ctx *ctx,
- 		enum hl_va_range_type type, u32 size, u32 alignment)
- {
- 	return get_va_block(hdev, ctx->va_range[type], size, 0,
--			max(alignment, ctx->va_range[type]->page_size), type);
-+			max(alignment, ctx->va_range[type]->page_size),
-+			type, 0);
- }
- 
- /**
-@@ -1145,9 +1169,24 @@ static int map_device_va(struct hl_ctx *ctx, struct hl_mem_in *args,
- 		goto hnode_err;
- 	}
- 
-+	if (hint_addr && phys_pg_pack->offset) {
-+		if (args->flags & HL_MEM_FORCE_HINT) {
-+			/* If hint must be repected, since we can't - just fail.
-+			 */
-+			dev_err(hdev->dev,
-+				"Hint address 0x%llx cannot be respected because source memory is not aligned 0x%x\n",
-+				hint_addr, phys_pg_pack->offset);
-+			rc = -EINVAL;
-+			goto va_block_err;
-+		}
-+		dev_dbg(hdev->dev,
-+			"Hint address 0x%llx will be ignored because source memory is not aligned 0x%x\n",
-+			hint_addr, phys_pg_pack->offset);
-+	}
-+
- 	ret_vaddr = get_va_block(hdev, va_range, phys_pg_pack->total_size,
- 					hint_addr, va_block_align,
--					va_range_type);
-+					va_range_type, args->flags);
- 	if (!ret_vaddr) {
- 		dev_err(hdev->dev, "no available va block for handle %u\n",
- 				handle);
-diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
-index a47a731e4527..18765eb75b65 100644
---- a/include/uapi/misc/habanalabs.h
-+++ b/include/uapi/misc/habanalabs.h
-@@ -813,6 +813,7 @@ union hl_wait_cs_args {
- #define HL_MEM_CONTIGUOUS	0x1
- #define HL_MEM_SHARED		0x2
- #define HL_MEM_USERPTR		0x4
-+#define HL_MEM_FORCE_HINT	0x8
- 
- struct hl_mem_in {
- 	union {
+Changes in v9:
+- Seperate FDT binding docs and includes from rk3036 sfc_hclk patch
+
+Changes in v8: None
+Changes in v7: None
+Changes in v6: None
+Changes in v5: None
+Changes in v4: None
+Changes in v3: None
+Changes in v2: None
+Changes in v1: None
+
+ include/dt-bindings/clock/rk3036-cru.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/dt-bindings/clock/rk3036-cru.h b/include/dt-bindings/clock/rk3036-cru.h
+index 35a5a01f9697..a96a9870ad59 100644
+--- a/include/dt-bindings/clock/rk3036-cru.h
++++ b/include/dt-bindings/clock/rk3036-cru.h
+@@ -81,6 +81,7 @@
+ #define HCLK_OTG0		449
+ #define HCLK_OTG1		450
+ #define HCLK_NANDC		453
++#define HCLK_SFC		454
+ #define HCLK_SDMMC		456
+ #define HCLK_SDIO		457
+ #define HCLK_EMMC		459
 -- 
-2.25.1
+2.17.1
+
+
 
