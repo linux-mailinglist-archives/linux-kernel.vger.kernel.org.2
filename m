@@ -2,127 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2843B3DA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6248B3B3DAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhFYHkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 03:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhFYHkM (ORCPT
+        id S230085AbhFYHkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 03:40:55 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34700 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229906AbhFYHkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 03:40:12 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4DDC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 00:37:50 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id c7-20020a17090ad907b029016faeeab0ccso7460010pjv.4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 00:37:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=16WTMv4TM6XRqCXu1WqfhwXLGUuF1I5eSAZgF8nuzNU=;
-        b=j1IBKqLi1jF1pVyyqujoaaEyDD956vhQFsW4IqQOy9pFHxew6pDCRuHqUYQPzXhgIV
-         rZzKBOewFTMPizmmlwFMEzkUu3wwxGe2e89oLtXslKb8oDVXALVjACeulmB5NJhacKR6
-         l2tBxaC35ppPnNjz4UkRwFuKRG263fy/OfW/I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=16WTMv4TM6XRqCXu1WqfhwXLGUuF1I5eSAZgF8nuzNU=;
-        b=rGpvE6TF7YWep8iHlBrsX6C0E752zMo9ZhhO2r8qesfPNrgZDtJNY9TQhL7xHmuEnP
-         mGiid//KqpRNxfYfsLNcnk8K56Mai3tKjYmDfJKKvBMTCVRCOUx/RKubz3B8vd+d0jEn
-         FZPT+Eeqj32Z82chtkpLB4pjZ4MSbz1FzQj7rIQM05xx0vqOH6a1mdFWZg9LjXvj5ATE
-         vBxprjP0PDc0//W2sPu8SaWinl43rip6yrLNP8uL4BURqGxbOJCk6s3iaCX8Q0DVEOlp
-         G8GXbwYb4fb3DGYjeNWT9CjxNH/vfy0ivYlGY21P5N2m9SqQZ+rSrbVW/hs/JaYsQJzr
-         Dvfg==
-X-Gm-Message-State: AOAM53146ZqcJ7hK2AN8+qyFbISrCDohEEIWSdHe8+bhwHGj/SWEl/Du
-        qUlqIdp0ESUlJHxE5P+z/IVrDA==
-X-Google-Smtp-Source: ABdhPJyNGzGIGPRke+4sy9vknoJlahbCbtDrQ1Pof1+x3qW6lrR+9qBg5laf4ZCLScq2FNWqiUDGlQ==
-X-Received: by 2002:a17:90b:b18:: with SMTP id bf24mr9795691pjb.220.1624606670432;
-        Fri, 25 Jun 2021 00:37:50 -0700 (PDT)
-Received: from localhost ([2401:fa00:8f:203:1492:9d4f:19fa:df61])
-        by smtp.gmail.com with UTF8SMTPSA id j10sm4395324pjb.36.2021.06.25.00.37.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 00:37:50 -0700 (PDT)
-From:   David Stevens <stevensd@chromium.org>
-X-Google-Original-From: David Stevens <stevensd@google.com>
-To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Nick Piggin <npiggin@gmail.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        kvm@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        David Stevens <stevensd@chromium.org>
-Subject: [PATCH v2 5/5] KVM: mmu: remove over-aggressive warnings
-Date:   Fri, 25 Jun 2021 16:36:16 +0900
-Message-Id: <20210625073616.2184426-6-stevensd@google.com>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-In-Reply-To: <20210625073616.2184426-1-stevensd@google.com>
-References: <20210625073616.2184426-1-stevensd@google.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 25 Jun 2021 03:40:49 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3B2F721C01;
+        Fri, 25 Jun 2021 07:38:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624606708; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nnuofijrl6RYEFo+SFPGi5DMa5lFhRBvWdO4DS6T/+U=;
+        b=vEuo9NsyGr+cpk9/T9Oi+8amIT5p6qH1c8/d+FX686CYu0U//vzniKvYnHilyV8Id69HOj
+        hg5Q8ux54N44TOI55Z5LGIpYvMovuz7RlKMKqR5KgvT4Tn5zLWMfvZv7/CGQak42rrqLFP
+        X6OOzpIQrThIzWsL9FGN5HwvTYVdxHk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624606708;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nnuofijrl6RYEFo+SFPGi5DMa5lFhRBvWdO4DS6T/+U=;
+        b=WTKkbJVi6TeYOQSW2lEK8FsvSkE2tasxsltYBEAL13LnawAU2wmKPEGGb26GdUsVKe9UvI
+        /LDYfu8+WMBiLbDw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 02865A3BB4;
+        Fri, 25 Jun 2021 07:38:27 +0000 (UTC)
+Date:   Fri, 25 Jun 2021 09:38:27 +0200
+Message-ID: <s5hfsx6l7gs.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     clemens@ladisch.de, o-takashi@sakamocchi.jp, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] ALSA: firewire-lib: Fix 'amdtp_domain_start()' when no AMDTP_OUT_STREAM stream is found
+In-Reply-To: <9c9a53a4905984a570ba5672cbab84f2027dedc1.1624560484.git.christophe.jaillet@wanadoo.fr>
+References: <9c9a53a4905984a570ba5672cbab84f2027dedc1.1624560484.git.christophe.jaillet@wanadoo.fr>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Stevens <stevensd@chromium.org>
+On Thu, 24 Jun 2021 20:49:36 +0200,
+Christophe JAILLET wrote:
+> 
+> The intent here is to return an error code if we don't find what we are
+> looking for in the 'list_for_each_entry()' loop.
+> 
+> 's' is not NULL if the list is empty or if we scan the complete list.
+> Introduce a new 'found' variable to handle such cases.
+> 
+> Fixes: 60dd49298ec5 ("ALSA: firewire-lib: handle several AMDTP streams in callback handler of IRQ target")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Remove two warnings that require ref counts for pages to be non-zero, as
-mapped pfns from follow_pfn may not have an initialized ref count.
+Applied now.  Thanks.
 
-Signed-off-by: David Stevens <stevensd@chromium.org>
----
- arch/x86/kvm/mmu/mmu.c | 7 -------
- virt/kvm/kvm_main.c    | 2 +-
- 2 files changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index dd5cb6e33591..0c47245594c6 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -607,13 +607,6 @@ static int mmu_spte_clear_track_bits(u64 *sptep)
- 
- 	pfn = spte_to_pfn(old_spte);
- 
--	/*
--	 * KVM does not hold the refcount of the page used by
--	 * kvm mmu, before reclaiming the page, we should
--	 * unmap it from mmu first.
--	 */
--	WARN_ON(!kvm_is_reserved_pfn(pfn) && !page_count(pfn_to_page(pfn)));
--
- 	if (is_accessed_spte(old_spte))
- 		kvm_set_pfn_accessed(pfn);
- 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 1de8702845ac..ce7126bab4b0 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -168,7 +168,7 @@ bool kvm_is_zone_device_pfn(kvm_pfn_t pfn)
- 	 * the device has been pinned, e.g. by get_user_pages().  WARN if the
- 	 * page_count() is zero to help detect bad usage of this helper.
- 	 */
--	if (!pfn_valid(pfn) || WARN_ON_ONCE(!page_count(pfn_to_page(pfn))))
-+	if (!pfn_valid(pfn) || !page_count(pfn_to_page(pfn)))
- 		return false;
- 
- 	return is_zone_device_page(pfn_to_page(pfn));
--- 
-2.32.0.93.g670b81a890-goog
+Takashi
 
+
+> ---
+> We could test with" if (list_entry_is_head(s, &d->streams, list))"
+> instead, but I find it much less readable.
+> ---
+>  sound/firewire/amdtp-stream.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+> index aad9778d1c4d..9be2260e4ca2 100644
+> --- a/sound/firewire/amdtp-stream.c
+> +++ b/sound/firewire/amdtp-stream.c
+> @@ -1943,6 +1943,7 @@ int amdtp_domain_start(struct amdtp_domain *d, unsigned int tx_init_skip_cycles,
+>  	unsigned int events_per_period = d->events_per_period;
+>  	unsigned int queue_size;
+>  	struct amdtp_stream *s;
+> +	bool found = false;
+>  	int err;
+>  
+>  	if (replay_seq) {
+> @@ -1955,10 +1956,12 @@ int amdtp_domain_start(struct amdtp_domain *d, unsigned int tx_init_skip_cycles,
+>  
+>  	// Select an IT context as IRQ target.
+>  	list_for_each_entry(s, &d->streams, list) {
+> -		if (s->direction == AMDTP_OUT_STREAM)
+> +		if (s->direction == AMDTP_OUT_STREAM) {
+> +			found = true;
+>  			break;
+> +		}
+>  	}
+> -	if (!s)
+> +	if (!found)
+>  		return -ENXIO;
+>  	d->irq_target = s;
+>  
+> -- 
+> 2.30.2
+> 
