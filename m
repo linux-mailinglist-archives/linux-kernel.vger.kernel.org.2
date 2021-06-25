@@ -2,83 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941F73B4332
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9426A3B433D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhFYMb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 08:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231273AbhFYMbo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 08:31:44 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF8BC061574;
-        Fri, 25 Jun 2021 05:29:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=sz0HFy97Sa2PQlVcns192PnKYImMp6PXF6QClznrDck=; b=b+RwXfLs/rhAp4aY2Yvho2UYh
-        luH0JJMHXYuV8C+3Cc1/n3catAqX99bs1kmRHn32KOUwPttIV1B+kBTCkaZJjmrPD9+oQKB4EQJSQ
-        zEpk1iEptToEkIHAf7+e2iH2G9QCFabjjBe9x7bmxgdkzn2rRbpVmH34ByaxZEH+B9+cQ4DNr07t+
-        KbPThT0j70AIka2yJ6PIBdzdKv3WZNSGbq5X/f5H4XxJb3l7Qk5y/hVxcRahKxAucx9FDoXHzEPnj
-        IlHWtghAB9Wd+DLa3PJjdYLdoRR/4rI68V/HJ/gn07YoUOmDd2oL5XcFOMmJYRBuAwuqUtTZeU8I9
-        edjy7OVqA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45348)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lwkxR-0000hV-Pn; Fri, 25 Jun 2021 13:29:17 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lwkxR-0006fu-A3; Fri, 25 Jun 2021 13:29:17 +0100
-Date:   Fri, 25 Jun 2021 13:29:17 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>, thomas.petazzoni@bootlin.com,
-        herve.codina@bootlin.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ARM: dts: imx6qdl-sr-som: Increase the PHY reset
- duration to 10ms
-Message-ID: <20210625122917.GW22278@shell.armlinux.org.uk>
-References: <20210625121353.3698240-1-maxime.chevallier@bootlin.com>
+        id S231336AbhFYMc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 08:32:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231273AbhFYMch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 08:32:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4C9361463;
+        Fri, 25 Jun 2021 12:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624624216;
+        bh=236dSGX7ExOVPv4h0UeOksGQ8SgYCOQ7aXD3NGK83S0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bCaWwZtC9a0kNjsO191mUbtUcojnviRFMJnXBZ/UQc+wZDgM8hUcreC3qNCEkirNE
+         bbLWlaMbJfBXlg05V08tS0sV+lbJ6mjPNoN7Y8AT15UfxghYQbA3zVDmQkdENHWUeg
+         aoWWbni5r3mbAZmV1yWyb6Qtn3Rm3bH4e4imD6DcErBaFTOVYzmckxYQM6wCi00qxL
+         IKspsHt2W8+A5P7LrhMSB0wLC0J5AtiueFbpUWEKsYqOURtPkRdQJiwA+N05SkMbY0
+         yNml1K+qGwoAZk+3C0lKdhaf1wsPR1zKe7fVETOXT9FqPpHlh5Z2ca5kWomvg9Dx6c
+         8Pdmk/dzJ5M/g==
+Date:   Fri, 25 Jun 2021 13:30:05 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Claire Chang <tientzu@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
+        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
+        jxgao@google.com, joonas.lahtinen@linux.intel.com,
+        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        matthew.auld@intel.com, rodrigo.vivi@intel.com,
+        thomas.hellstrom@linux.intel.com, thomas.lendacky@amd.com,
+        quic_qiancai@quicinc.com
+Subject: Re: [PATCH v15 00/12] Restricted DMA
+Message-ID: <20210625123004.GA3170@willie-the-truck>
+References: <20210624155526.2775863-1-tientzu@chromium.org>
+ <YNTa1C5uvz+qWryf@char.us.oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210625121353.3698240-1-maxime.chevallier@bootlin.com>
+In-Reply-To: <YNTa1C5uvz+qWryf@char.us.oracle.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 02:13:53PM +0200, Maxime Chevallier wrote:
-> The AR803x PHY used on this modules seems to require the reset line to
-> be asserted for around 10ms in order to avoid rare cases where the PHY
-> gets stuck in an incoherent state that prevents it to function
-> correctly.
+On Thu, Jun 24, 2021 at 03:19:48PM -0400, Konrad Rzeszutek Wilk wrote:
+> On Thu, Jun 24, 2021 at 11:55:14PM +0800, Claire Chang wrote:
+> > This series implements mitigations for lack of DMA access control on
+> > systems without an IOMMU, which could result in the DMA accessing the
+> > system memory at unexpected times and/or unexpected addresses, possibly
+> > leading to data leakage or corruption.
+> > 
+> > For example, we plan to use the PCI-e bus for Wi-Fi and that PCI-e bus is
+> > not behind an IOMMU. As PCI-e, by design, gives the device full access to
+> > system memory, a vulnerability in the Wi-Fi firmware could easily escalate
+> > to a full system exploit (remote wifi exploits: [1a], [1b] that shows a
+> > full chain of exploits; [2], [3]).
+> > 
+> > To mitigate the security concerns, we introduce restricted DMA. Restricted
+> > DMA utilizes the existing swiotlb to bounce streaming DMA in and out of a
+> > specially allocated region and does memory allocation from the same region.
+> > The feature on its own provides a basic level of protection against the DMA
+> > overwriting buffer contents at unexpected times. However, to protect
+> > against general data leakage and system memory corruption, the system needs
+> > to provide a way to restrict the DMA to a predefined memory region (this is
+> > usually done at firmware level, e.g. MPU in ATF on some ARM platforms [4]).
+> > 
+> > [1a] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_4.html
+> > [1b] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_11.html
+> > [2] https://blade.tencent.com/en/advisories/qualpwn/
+> > [3] https://www.bleepingcomputer.com/news/security/vulnerabilities-found-in-highly-popular-firmware-for-wifi-chips/
+> > [4] https://github.com/ARM-software/arm-trusted-firmware/blob/master/plat/mediatek/mt8183/drivers/emi_mpu/emi_mpu.c#L132
+> > 
+> > v15:
+> > - Apply Will's diff (https://lore.kernel.org/patchwork/patch/1448957/#1647521)
+> >   to fix the crash reported by Qian.
+> > - Add Stefano's Acked-by tag for patch 01/12 from v14
 > 
-> The previous value of 2ms was found to be problematic on some setups,
-> causing intermittent issues where the PHY would be unresponsive
-> every once in a while on some sytems, with a low occurrence (it typically
-> took around 30 consecutive reboots to encounter the issue).
+> That all should be now be on
 > 
-> Bumping the delay to the 10ms makes the issue dissapear, with more than
-> 2500 consecutive reboots performed without the issue showing-up.
-> 
-> Fixes: 208d7baf8085 ("ARM: imx: initial SolidRun HummingBoard support")
-> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
-> Tested-by: Hervé Codina <herve.codina@bootlin.com>
+> https://git.kernel.org/pub/scm/linux/kernel/git/konrad/swiotlb.git/
+> devel/for-linus-5.14 (and linux-next)
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Thanks Konrad!
 
-Thanks!
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Will
