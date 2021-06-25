@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD1B3B449F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BA73B447C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231717AbhFYNjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 09:39:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbhFYNjL (ORCPT
+        id S231694AbhFYNeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 09:34:25 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:27913 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229615AbhFYNeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 09:39:11 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 91A4EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 06:36:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=V/Pda2TGK88NZgYN0v2vuctHbNL3/pWKOS
-        4YEYben7Y=; b=yBCujCdEENyRlL5Ag7328rzO/xHR8FXbiKBut08Aok9qwoIfcN
-        2Gamw2lAF6wKdnl6uHwqyCZW3TJm5Zc8/Stsgq8qHTTSqt9XIoRanjB/zGSjtIf2
-        nOek42UVJKOfhLAVVP9Z3/NdMHDpoLdgU6PP/ordJY6iq+h5gHuWGvNYA=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDn6YHq29VgDxI0AQ--.11530S2;
-        Fri, 25 Jun 2021 21:36:42 +0800 (CST)
-Date:   Fri, 25 Jun 2021 21:31:04 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Alexandre Ghiti <alex@ghiti.fr>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -fixes] riscv: Fix PTDUMP output now BPF region moved
- back to module region
-Message-ID: <20210625213104.1e48d544@xhacker>
-In-Reply-To: <20210624121721.2828421-1-alex@ghiti.fr>
-References: <20210624121721.2828421-1-alex@ghiti.fr>
+        Fri, 25 Jun 2021 09:34:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1624627923; x=1656163923;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=c92uEGAxnyrw7O3VecCM/YRAymsWQVHnDR1PxIKS3zQ=;
+  b=Nm/8Pu6RAEeRpS68bW+L2CFSDv/t9Q7Za7hJ4oaSqXDtT+8AoVgaDAsb
+   TC7nHa9/FJXltEFYNb0Wws4oVZmZA6FZKr21ms2v3U5PZEG6Vii7jyhp4
+   FwjP12ZVnbnoRcZsrHDGPqBhHdKIVZOwURwwYaKi5VYpUSeAfAgaEdAby
+   0=;
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 25 Jun 2021 06:32:02 -0700
+X-QCInternal: smtphost
+Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
+  by ironmsg01-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 25 Jun 2021 06:32:02 -0700
+Received: from [10.111.161.13] (10.80.80.8) by nasanexm03e.na.qualcomm.com
+ (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 25 Jun
+ 2021 06:31:59 -0700
+Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
+ invariance
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+CC:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+References: <cover.1624266901.git.viresh.kumar@linaro.org>
+ <09a39f5c-b47b-a931-bf23-dc43229fb2dd@quicinc.com>
+ <20210623041613.v2lo3nidpgw37abl@vireshk-i7>
+ <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
+ <20210624025414.4iszkovggk6lg6hj@vireshk-i7>
+ <CAKfTPtAXMYYrG1w-iwSWXb428FkwFArEwXQgHnjShoCEMjdYcw@mail.gmail.com>
+ <20210624104734.GA11487@arm.com>
+ <daf1ddf5-6f57-84a8-2ada-90590c0c94b5@quicinc.com>
+ <20210625102113.GB15540@arm.com>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <1f83d787-a796-0db3-3c2f-1ca616eb1979@quicinc.com>
+Date:   Fri, 25 Jun 2021 09:31:58 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210625102113.GB15540@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygDn6YHq29VgDxI0AQ--.11530S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZFWrCFWkCw4DAryrWF17ZFb_yoWDXFX_Kw
-        18Gas3XrW7tw1F9F4fCFs3urnay34vqFZ3Gw10q3s7A3yrCFnxKa1xtF15XrnxZrZ3GFWr
-        Jr97XrWIqr42vjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbrkYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCF
-        s4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
-        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
-        JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r
-        4j6FyUMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1U
-        YxBIdaVFxhVjvjDU0xZFpf9x07j1VbkUUUUU=
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanexm03e.na.qualcomm.com (10.85.0.48) To
+ nasanexm03e.na.qualcomm.com (10.85.0.48)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 14:17:21 +0200
-Alexandre Ghiti <alex@ghiti.fr> wrote:
 
-> BPF region was moved back to the region below the kernel at the end of the
-> module region in commit 3a02764c372c ("riscv: Ensure BPF_JIT_REGION_START
-> aligned with PMD size"), so reflect this change in kernel page table
-> output.
 
-Nice catch!
-
+On 6/25/2021 6:21 AM, Ionela Voinescu wrote:
+>> scaling_driver: acpi_cppc
+>                   ^^^^^^^^^
+> I suppose you mean "cppc-cpufreq"?
 > 
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> "acpi_cppc" is not a scaling driver option.
 
-Reviewed-by: Jisheng Zhang <jszhang@kernel.org>
+Ionela, yes. Sorry about that.
 
-> ---
->  arch/riscv/mm/ptdump.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> So your CPUs run at frequencies between 200MHz and 280MHz?
+
+2000 to 2800 MHz.
+
+> Based on your acpi_cppc information below I would have assumed 2GHz as
+> lowest nonlinear and 2.8GHz as nominal. The reason for this is that
+> according to the ACPI spec the frequency values in the _CPC objects are
+> supposed to be in MHz, so 2800 MHz for nominal frequency would be
+> 2.8GHz.
 > 
-> diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
-> index 0536ac84b730..22d6555d89dc 100644
-> --- a/arch/riscv/mm/ptdump.c
-> +++ b/arch/riscv/mm/ptdump.c
-> @@ -98,8 +98,8 @@ static struct addr_marker address_markers[] = {
->  	{0, "vmalloc() end"},
->  	{0, "Linear mapping"},
->  #ifdef CONFIG_64BIT
-> -	{0, "Modules mapping"},
-> -	{0, "Kernel mapping (kernel, BPF)"},
-> +	{0, "Modules/BPF mapping"},
-> +	{0, "Kernel mapping"},
->  #endif
->  	{-1, NULL},
->  };
+> When you try more governors, make sure to check out the difference
+> between scaling_cur_freq and cpuinfo_cur_freq at [2]. The first gives
+> you the frequency that the governor (schedutil) is asking for, while the
+> second is giving you the current frequency obtained from the counters.
+> 
+> So to check the actual frequency the cores are running at, please check
+> cpuinfo_cur_freq.
 
-
+The problem is that all CPUs are never scaling down. "cpuinfo_cur_freq" and "scaling_cur_freq" are always the 2800 MHz on all CPUs on this idle system. This looks like a regression somewhere as in 5.4-based kernel, I can see "cpuinfo_cur_freq" can go down to 2000 MHz in the same scenario. I'll bisect a bit unless you have better ideas?
