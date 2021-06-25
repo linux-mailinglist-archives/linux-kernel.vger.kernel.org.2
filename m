@@ -2,274 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6FB33B422E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC1E3B4232
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230456AbhFYLKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 07:10:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
+        id S230126AbhFYLLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:11:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhFYLKG (ORCPT
+        with ESMTP id S229573AbhFYLLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 07:10:06 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A50CC061574;
-        Fri, 25 Jun 2021 04:07:46 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id h2so12892296edt.3;
-        Fri, 25 Jun 2021 04:07:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=in-reply-to:references:thread-topic:user-agent:mime-version
-         :content-transfer-encoding:subject:from:date:to:cc:message-id;
-        bh=zS+Sy2JuyXUjHyIS0w19cZln6zoHhOgeM0Qhc+/cXBs=;
-        b=R9EzdJqKI8fn9iZhp0YgJ8pfmVFefMTQMKVqSscunCMLjkjqYZfF3rRvJKIsiNHY2R
-         SzPAZOKlqWsCCjE8VOAunUzBWWUL2M/ep75WyXHfk0Ro8KUSvcPLV6Dxt6FObgsyB8eg
-         JHL8+fxD/v9BEALcIQDv7HS/g/dgsLKOOxgfqMf1vSsWcXD/HjtTMg0PJrQWnuNHO6nq
-         jWyi32oA/WGhWp1ww+q4UuecpGmmCBaqbDqaEGciBpqeuY/GTpgVEiPl52bBTr9w6Ttf
-         JfRYrpXFPCRvLReavNC2tBgVdoxqFX/7GxPADzdV1No0Ln2xvCdvBGiXvuiqr8Bx97Id
-         W8RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:in-reply-to:references:thread-topic:user-agent
-         :mime-version:content-transfer-encoding:subject:from:date:to:cc
-         :message-id;
-        bh=zS+Sy2JuyXUjHyIS0w19cZln6zoHhOgeM0Qhc+/cXBs=;
-        b=UbwJ/DzR7KsjdvMNO4/Ava6ixSKBjq6wOz4AxeBAd75/Sahe12nePTe1J90q9iVtKs
-         Y1BW85jWtwiZbT3UB/2TITvmYy0tC/Fb59/Hu4Pt6wdiSARFvATfSueldtWudhIT+sO0
-         3lbPDwLxSFhL/XgVJ00ixriXKZrhyQaVcc3cW3VXpsbO3XyRwJ/BaFdM5IPGZICxR9wk
-         GWPA8xMUl8NJXy+cXrgePuhlzuamjH0FtbNxE1Y1ANmH93tqXLs2WVmhE7emz5CEFH+2
-         JYNZDBzFCuK4oM2FJPbFTi8lMkRNFT80i92AjSpezLJPQoqy/nVrbauqyn0SwBIqNRHC
-         n1gQ==
-X-Gm-Message-State: AOAM533SpQ9EumDdyaQUMzolZSAZTycxBYXyRnSiMHv45DCmbcBT5JiL
-        5Lko2bjhwKnnvEDy7cqoUPg=
-X-Google-Smtp-Source: ABdhPJxAA2PYThH5HCe4nhv2JuPudiiWFmx883/ndYXLhIfPMVK4qdlr8pZNqHIVId0VJm5M1V6Ppg==
-X-Received: by 2002:a05:6402:31b4:: with SMTP id dj20mr14094807edb.186.1624619264824;
-        Fri, 25 Jun 2021 04:07:44 -0700 (PDT)
-Received: from [10.73.177.209] ([89.205.226.136])
-        by smtp.gmail.com with ESMTPSA id j19sm2626800ejo.3.2021.06.25.04.07.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 04:07:44 -0700 (PDT)
-In-Reply-To: <trinity-2eb7c0ac-d9dc-446c-8907-69b5f4df6838-1624618996538@3c-app-gmx-bs66>
-References: <20210619121927.32699-1-ericwouds@gmail.com> <e30a2d01-a200-80cb-88d9-6aea62dd49f1@linaro.org> <56fb5540-fb86-4e6a-a596-1276026b37e5@gmail.com> <a4e41929-6ab4-fabb-741e-f25a5fd14e3b@linaro.org> <47261865-00e3-41eb-bb36-2b939f81f1e8@gmail.com> <fb633034-96e5-6165-b43f-290ae1a65cfd@linaro.org> <189b52d5-b103-43e1-a64f-1e627fbc75af@gmail.com> <173e6bab-9d21-eb28-9b91-a5f80c01fd03@linaro.org> <3dd22cf2-1186-4870-aa49-e5cddc18c6e9@gmail.com> <trinity-7580d955-3187-41e5-9297-1ac8f628a9d5-1624609003739@3c-app-gmx-bs66> <8b27246b-721e-fa0e-5c2b-b1b4b4d6fdd3@linaro.org> <trinity-2eb7c0ac-d9dc-446c-8907-69b5f4df6838-1624618996538@3c-app-gmx-bs66>
-X-Referenced-Uid: 5607
-Thread-Topic: Aw: Re:  Re: [PATCH] Fix mt7622.dtsi thermal cpu
-X-Blue-Identity: !l=334&o=43&fo=5970&pl=224&po=0&qs=PREFIX&f=HTML&m=!%3ANzRiZDk5M2QtNTJhNy00MTE4LThlNmYtYTk2ZDg2NDQzNGU0%3ASU5CT1g%3D%3ANTYwNw%3D%3D%3AANSWERED&p=195&q=SHOW
-X-Is-Generated-Message-Id: true
-User-Agent: Android
+        Fri, 25 Jun 2021 07:11:35 -0400
+Received: from smtp-190a.mail.infomaniak.ch (smtp-190a.mail.infomaniak.ch [IPv6:2001:1600:4:17::190a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD43EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 04:09:12 -0700 (PDT)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4GBDlq2Rv0zMq45w;
+        Fri, 25 Jun 2021 13:09:11 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4GBDln20D4zlmrrr;
+        Fri, 25 Jun 2021 13:09:09 +0200 (CEST)
+Subject: Re: [PATCH v1] crypto: Make the DRBG compliant with NIST SP800-90A
+ rev1
+To:     Stephan Mueller <smueller@chronox.de>,
+        James Morris <jamorris@linux.microsoft.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        John Haxby <john.haxby@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Simo Sorce <simo@redhat.com>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
+        hpa@zytor.com, tytso@mit.edu
+References: <20210623120751.3033390-1-mic@digikod.net>
+ <9dbbf4e751cb4953fe63079cdc917a0bb3a91670.camel@chronox.de>
+ <a4e1c071-32af-9650-e6fd-8943b3a79bb0@linux.microsoft.com>
+ <8811360.37IJKxs2K1@positron.chronox.de>
+ <9ca2fdb4-8cee-3667-c90a-358255fb8f54@digikod.net>
+ <7acf0d4a63f7c94d8355101dd03cbfeb58c05d17.camel@chronox.de>
+ <afce411f-7ddb-557d-e039-83d4d84b87d7@digikod.net>
+ <9590fe0e9482e212f2a3223ffae872104659cc4b.camel@chronox.de>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <248b1aae-effc-f511-03af-65a71f176cf1@digikod.net>
+Date:   Fri, 25 Jun 2021 13:09:26 +0200
+User-Agent: 
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Local-Message-Id: <52767351-83da-41e2-a746-3407ee9c73e8@gmail.com>
-Content-Type: text/plain;
- charset=UTF-8
-Subject: Re:  Re: [PATCH] Fix mt7622.dtsi thermal cpu
-From:   Eric Woudstra <ericwouds@gmail.com>
-Date:   Fri, 25 Jun 2021 13:07:42 +0200
-To:     Frank Wunderlich <frank-w@public-files.de>
-CC:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sean Wang <sean.wang@mediatek.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Daniel Golle <daniel@makrotopia.org>
-Message-ID: <52767351-83da-41e2-a746-3407ee9c73e8@gmail.com>
+In-Reply-To: <9590fe0e9482e212f2a3223ffae872104659cc4b.camel@chronox.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I choose "hot* with CPU, because it was the best temperature=2E But it shou=
-ld really be passive only with the cooling device CPU but with a much highe=
-r temperature=2E For me 87 degrees is fine and tested=2E But for mainline w=
-e would better ask Mediatek for the correct maximum temperature=2E
 
-=E2=81=
-=A3Get BlueMail for Android =E2=80=8B
+On 24/06/2021 13:50, Stephan Mueller wrote:
+> Am Donnerstag, dem 24.06.2021 um 12:13 +0200 schrieb Mickaël Salaün:
+>>
+>> On 23/06/2021 21:10, Stephan Mueller wrote:
+>>> Am Mittwoch, dem 23.06.2021 um 20:04 +0200 schrieb Mickaël Salaün:
+>>>>
+>>>> On 23/06/2021 19:27, Stephan Müller wrote:
+>>>>> Am Mittwoch, 23. Juni 2021, 19:00:29 CEST schrieb James Morris:
+>>>>>
+>>>>> Hi James,
+>>>>>
+>>>>>> On Wed, 23 Jun 2021, Stephan Mueller wrote:
+>>>>>>>> These changes replace the use of the Linux RNG with the Jitter
+>>>>>>>> RNG,
+>>>>>>>> which is NIST SP800-90B compliant, to get a proper entropy input
+>>>>>>>> and a
+>>>>>>>> nonce as defined by FIPS.
+>>>>>>>
+>>>>>>> Can you please help me understand what is missing in the current
+>>>>>>> code
+>>>>>>> which
+>>>>>>> seemingly already has achieved this goal?
+>>>>>>
+>>>>>> The advice we have is that if an attacker knows the internal state of
+>>>>>> the
+>>>>>> CPU, then the output of the Jitter RNG can be predicted.
+>>>>>
+>>>>> Thank you for the hint. And I think such goal is worthwhile (albeit I
+>>>>> have
+>>>>> to 
+>>>>> admit that if an attacker is able to gain the internal state of a CPU, I
+>>>>> would 
+>>>>> assume we have more pressing problems that a bit of entropy).
+>>>>>
+>>>>> Anyways, the current code does:
+>>>>>
+>>>>> - in regular mode: seed the DRBG with 384 bits of data from
+>>>>> get_random_bytes
+>>>>>
+>>>>> - in FIPS mode: seed the DRBG with 384 bits of data from
+>>>>> get_random_bytes 
+>>>>> concatenated with 384 bits from the Jitter RNG
+>>>>>
+>>>>>
+>>>>> If I understand the suggested changes right, I would see the following
+>>>>> changes 
+>>>>> in the patch:
+>>>>>
+>>>>> - in the regular case: 640 bits from get_random_bytes
+>>>>
+>>>> Why 640 bits?
+>>>
+>>>                 if (!reseed)
+>>>                         entropylen = ((entropylen + 1) / 2) * 3;
+>>>
+>>> -> Entropylen is 384 in case of a security strength of 256 bits.
+>>>
+>>> Your code does the following if the Jitter RNG is not allocated (i.e. in
+>>> non-
+>>> fips mode):
+>>>
+>>> ret = drbg_get_random_bytes(drbg, entropy, entropylen + strength);
+>>>
+>>> so: entropylen + strength = 384 + 256, no?
+>>
+>> Correct (for entropy + nonce + pers), I thought you were referring to
+>> just the entropy + nonce part. This change is not needed for FIPS of
+>> course but I changed it too to use the same algorithm and lengths as
+>> when Jitter RNG is available.
+>>
+>> Do you prefer to keep the current lengths (384 bits) when there is no
+>> Jitter RNG? It seems to me that this change makes sense and could only
+>> strengthen this case though.
+>>
+>>>
+>>>>
+>>>>>
+>>>>> - in FIPS mode: 256 bits of data from get_random_bytes concatenated with
+>>>>> 384
+>>>>> bits from the Jitter RNG
+>>>>
+>>>> In both cases there are 256 bits for the entropy input and 128 bits for
+>>>> the nonce.
+>>>
+>>> I see in the code path with the Jitter RNG:
+>>>
+>>> ret = crypto_rng_get_bytes(drbg->jent, entropy,
+>>>                                                    entropylen);
+>>>
+>>> --> 384 bits from the Jitter RNG
+>>>
+>>> ret = drbg_get_random_bytes(drbg, entropy + entropylen,
+>>> +                                                   strength);
+>>>
+>>> --> 256 bits from get_random_bytes
+>>>
+>>> What am I missing here?
+>>
+>> OK, it is just a misunderstanding of what is where. To simplify the code
+>> (with a fixed-length entropy array) I used the "entropy" array to store
+>> the entropy + nonce + the automatically generated personalization string
+>> or additional input. The user-supplied personalization string or
+>> additional input is stored (unchanged) in the pers drbg_string. I
+>> (briefly) explained this in the comments.
+>>
+>> Another difference brought by this change is that the Jitter RNG data
+>> (i.e. entropy source) is used at the beginning (of the entropy array)
+>> and the urandom data (i.e. random source) at the end. This strictly
+>> follows the algorithm described in SP800-90Ar1 sections 8.6.1, 8.6.2,
+>> 10.1.1.2 and 10.1.1.3 .
+>>
+>>>
+>>>
+>>>>  If Jitter RNG is not available, then urandom is used instead,
+>>>> which means that the system is not FIPS compliant.
+>>>
+>>> Agreed, the existing does does exactly the same with the exception that it
+>>> pulls 384 bits from get_random_bytes instead of 640 in non-FIPS mode (i.e.
+>>> when the Jitter RNG is not allocated).
+>>>
+>>> In FIPS mode, the current code draws 384 bits from get_random_bytes and
+>>> separately 384 bits from the Jitter RNG. So, each data block from either
+>>> entropy source could completely satisfy the SP800-90A requirement.
+>>
+>> What is the rational of using 384 (strength * 1.5) bits to draw from
+>> get_random_bytes?
+>>
+>> We noticed that (as explained above) the order of these sources doesn't
+>> follows SP800-90Ar1.
+>> It is not clear which part and source is used for the entropy, nonce and
+>> (maybe) personalization string.
+>> If the random source is indeed the personalization string or the
+>> additional input, then the pers length may not fit with the maximum
+>> lengths specified in SP800-90Ar1 table 2 and 3.
+>>
+>>>
+>>>>
+>>>> This follows the SP800-90Ar1, section 8.6.7: [a nonce shall be] "A value
+>>>> with at least (security_strength/2) bits of entropy".
+>>>
+>>> Agreed, but what is your code doing different than the existing code?
+>>
+>> It just fits with strength/2 for the length of the nonce.
+>>
+>>>>
+>>>>>
+>>>>> So, I am not fully sure what the benefit of the difference is: in FIPS
+>>>>> mode 
+>>>>> (where the Jitter RNG is used), the amount of data pulled from 
+>>>>> get_random_bytes seems to be now reduced.
+>>>>
+>>>> We can increase the amount of data pulled from get_random_bytes (how to
+>>>> decide the amount?), but as we understand the document, this should be
+>>>> part of the personalization string and additional input, not the nonce.
+>>>
+>>> There is no need to have a personalization string or additional input. Note,
+>>> those two values are intended to be provided by a caller or some other
+>>> environment.
+>>
+>> Right, but the intent here is to strictly follow SP800-90Ar1 (hence the
+>> use of Jitter RNG for entropy and nonce) but to still use the urandom
+>> source, which seems to only fit in the personalization string according
+>> to SP800-90Ar1.
+>>
+>>>
+>>> If you want to stuff more seed into the DRBG, you simply enlarge the seed
+>>> buffer and pull more from the entropy sources. I have no objections doing
+>>> that. All I am trying to point out is that the 90A standard does not require
+>>> more entropy than 256 bits during initialization plus 128 bits of nonce ==
+>>> 384
+>>> bits of data. But the DRBGs all allow providing more data as seed.
+>>
+>> Agreed, the user-supplied personalization string can be used to add more
+>> data. We also want to harden the default use (i.e. without user-provided
+>> personalization string) by automatically using non-entropy source
+>> (urandom) though.
+>>
+>>>
+>>>> I guess it may not change much according to the implementation, as for
+>>>> the order of random and entropy concatenation, but these changes align
+>>>> with the specifications and it should help FIPS certifications.
+>>>
+>>> Are you saying the order of data from the entropy sources matters in the
+>>> entropy buffer? I have not seen that in the standard, but if you say this is
+>>> the goal, then allow me to understand which order you want to see?
+>>>
+>>> The current code contains the order of:
+>>>
+>>> <384 bits get_random_bytes> || <384 bits Jitter RNG>
+>>    ^                              ^
+>>    personalization string?        entropy+nonce
+>>
+>> As described in SP800-90Ar1 section 10.1.1.2:
+>> seed_material = entropy_input || nonce || personalization_string
+>>
+>> As described in SP800-90Ar1 section 10.1.1.3:
+>> seed_material = 0x01 || V || entropy_input || additional_input
+>>
+>> And SP800-90Ar1 section 5 defining "X || Y" as "Concatenation of two
+>> strings X and Y. X and Y are either both bitstrings, or both byte strings".
+>>
+>> According to that, we would like at least:
+>> <384 bits Jitter RNG> || <256 bits get_random_bytes>
+>> and also enforcing the maximum length for the whole personalization
+>> string and the additional input.
+> 
+> And I think here we found the misconception.
+> 
+> - SP800-90A section 8.7.1 clearly marks that a personalization string is
+> optional. If it is not provided, the personalization string is treated as a
+> zero-bit string in the formulas you mentioned above. This is also consistent
+> with the CAVP testing of DRBGs conducted by NIST which allows testing of the
+> DRBG without a personalization string. See [1] as an example (search for DRBG
+> and click on it to see the tested options - there you see the testing with
+> zero personalization string).
+> 
+> - SP800-90A section 9.1 specifies that the entropy_input is: "The maximum
+> length of the entropy_input is implementation dependent, but shall be less
+> than or equal to the specified maximum length for the selected DRBG
+> mechanism". For all DRBGs except the CTR DRBG without derivation function the
+> maximum length is 2^35 as defined in table 2. As we do not have a CTR DRBG
+> without derivation function, we can ignore that special case.
+> 
+> With these considerations, the current DRBG code
+> 
+> - does not mandate a personalization string or even create one by itself but
+> allows the caller to specify one
 
-On Jun 25, 2021, 1:03 PM, at 1:03 PM=
-, Frank Wunderlich <frank-w@public-files=2Ede> wrote:
->Hi
->
->> Gesendet: Fr=
-eitag, 25=2E Juni 2021 um 11:57 Uhr
->> Von: "Daniel Lezcano" <daniel=2Elezc=
-ano@linaro=2Eorg>
->
->> You should not add the fan in the mt7622=2Edtsi itse=
-lf but in the board
->> specific file where there is a fan output on it=2E m=
-t7622=2Edtsi is
->supposed
->> to be the SoC itself AFAICT=2E
->>
->> For insta=
-nce:
->>
->>
->https://git=2Ekernel=2Eorg/pub/scm/linux/kernel/git/thermal/lin=
-ux=2Egit/tree/arch/arm64/boot/dts/rockchip/rk3399-sapphire=2Edtsi#n39
->>
->>=
+OK
 
->https://git=2Ekernel=2Eorg/pub/scm/linux/kernel/git/thermal/linux=2Egit/t=
-ree/arch/arm64/boot/dts/rockchip/rk3399-sapphire=2Edtsi#n164
->
->> > @@ -170=
-,14 +177,12 @@
->> >  			cooling-maps {
->> >  				map0 {
->> >  					trip =3D=
- <&cpu_passive>;
->> > -					cooling-device =3D <&cpu0 THERMAL_NO_LIMIT THER=
-MAL_NO_LIMIT>,
->> > -							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
->> =
-> +					cooling-device =3D <&fan0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
->> > =
- 				};
->>
->> fan =3D=3D active trip point
->>
->> This is referring to the p=
-assive trip point=2E So it should point to
->the
->> CPU as it is now=2E Note=
- the order of mitigation is inverted regarding
->the
->> proposal description=
-=2E
->
->but we need to disable the passive trip as cpu-trotteling starts
->th=
-ere=2E=2E=2Ethe higher temperature trips are currently not reached
->
->summa=
-ry
->
->moving fan and cpu_thermal-override to bananapi-r64=2Edts
->
->passive-=
-trip: cooling-device =3D <&cpu0/1 0 0> as in erics Patch
->active trip: cool=
-ing-device =3D <&fan0 THERMAL_NO_LIMIT
->THERMAL_NO_LIMIT>;
->the other 2 unc=
-hanged
->
->but i suggest changing the temperature points in mt7622 dtsi as t=
-his is
->SoC specific
->
->so basicly:
->
->--- a/arch/arm64/boot/dts/mediatek/m=
-t7622=2Edtsi
->+++ b/arch/arm64/boot/dts/mediatek/mt7622=2Edtsi
->@@ -143,13 =
-+143,13 @@ cpu_thermal: cpu-thermal {
->
->                        trips {
-> =
-                               cpu_passive: cpu-passive {
->-               =
-                        temperature =3D <47000>;
->+                        =
-               temperature =3D <70000>;
->                                  =
-      hysteresis =3D <2000>;
->                                        type =
-=3D "passive";
->                                };
->
->                     =
-           cpu_active: cpu-active {
->-                                     =
-  temperature =3D <67000>;
->+                                       tempera=
-ture =3D <80000>;
->                                        hysteresis =3D <=
-2000>;
->                                        type =3D "active";
->       =
-                         };
->@@ -170,8 +170,8 @@ cpu-crit {
->              =
-          cooling-maps {
->                                map0 {
->         =
-                               trip =3D <&cpu_passive>;
->-                 =
-                      cooling-device =3D <&cpu0
->THERMAL_NO_LIMIT THERMAL_N=
-O_LIMIT>,
->-                                                        <&cpu1
-=
->THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
->+                                    =
-   cooling-device =3D <&cpu0 0 0>,
->+                                      =
-                  <&cpu1 0 0>;
->                                };
->
->     =
-                           map1 {
->@@ -428,6 +428,7 @@ uart3: serial@110050=
-00 {
->        pwm: pwm@11006000 {
->                compatible =3D "mediatek=
-,mt7622-pwm";
->                reg =3D <0 0x11006000 0 0x1000>;
->+         =
-      #pwm-cells =3D <3>;
->                interrupts =3D <GIC_SPI 77 IRQ_T=
-YPE_LEVEL_LOW>;
->                clocks =3D <&topckgen CLK_TOP_PWM_SEL>,
-> =
-                        <&pericfg CLK_PERI_PWM_PD>,
->
->--- a/arch/arm64/boo=
-t/dts/mediatek/mt7622-bananapi-bpi-r64=2Edts
->+++ b/arch/arm64/boot/dts/med=
-iatek/mt7622-bananapi-bpi-r64=2Edts
->@@ -37,6 +37,13 @@ cpu@1 {
->          =
-      };
->        };
->
->+       fan0: pwm-fan {
->+               compatible=
- =3D "pwm-fan";
->+               #cooling-cells =3D <2>;
->+               p=
-wms =3D <&pwm 2 10000 0>;
->+               cooling-levels =3D <0 102 170 23=
-0>;
->+       };
->+
->        gpio-keys {
->                compatible =3D "gp=
-io-keys";
->
->@@ -582,6 +589,29 @@ &u3phy {
->        status =3D "okay";
-> };=
+> 
+> - applies an entropy_input len of 512 bits during initial seeding
+> 
+> - applies a nonce of 128 bits during initial seeding
+> 
+> entropy_input == <384 bits get_random_bytes> || <256 bits Jitter RNG>
 
->
->+&cpu_thermal {
->+       cooling-maps {
->+               map1 {
->+     =
-                  trip =3D <&cpu_active>;
->+                       cooling-=
-device =3D <&fan0 THERMAL_NO_LIMIT
->THERMAL_NO_LIMIT>;
->+               };
-=
->+       };
->+};
->+
-> &uart0 {
->        pinctrl-names =3D "default";
->     =
-   pinctrl-0 =3D <&uart0_pins>;
+We think that using "<384 bits get_random_bytes> || " makes this DRBG
+non-compliant with SP800-90A rev1 because get_random_bytes doesn't use a
+vetted conditioning component (but ChaCha20 instead):
 
+SP800-90Ar1, section 8.6.5 says "A DRBG mechanism requires an approved
+randomness source during instantiation and reseeding [...]. An approved
+randomness source is an entropy source that conforms to [SP 800-90B], or
+an RBG that conforms to [SP 800-90C] − either a DRBG or an NRBG".
+The FIPS 140-2 Implementation Guidance
+(https://csrc.nist.gov/csrc/media/projects/cryptographic-module-validation-program/documents/fips140-2/fips1402ig.pdf),
+section 7.19 says "As of November 7, 2020, all newly submitted modules
+requiring an entropy evaluation must demonstrate compliance to SP 800-90B".
+In resolution 3 it says "all processing of the raw data output from the
+noise sources that happens before it is ultimately output from the
+entropy source *shall* occur within a conditioning chain". Data from
+get_random_bytes may come from multiple noise sources, but they are
+hashed with ChaCha20.
+In resolution 6 it says "a vetted conditioning component may optionally
+take a finite amount of supplemental data [...] in addition to the data
+from the primary noise source", which would be OK if get_random_bytes
+used a vetted algorithm, but it is not the case for now.
+
+
+> 
+> nonce = 128 bits Jitter RNG
+
+OK
+
+> 
+> 
+> You asked why 384 bits from get_random_bytes. Well, the answer is exactly to
+> cover your initial concern also raised by James Morris: some folks may not
+> trust the Jitter RNG. Yet we need it here as it only provides 90B compliance.
+> But folks who dislike it can treat its data providing no entropy and assume
+> get_random_bytes provides the entropy.
+
+Agreed, this is the reason we want to keep using urandom, but not as the
+entropy input.
+
+> 
+> As both, the get_random_bytes and Jitter RNG data is concatenated, we do not
+> destroy entropy by this operation. This implies we cover different view points
+> at the same time.
+
+The entropy is not destroyed but doesn't seems compliant with the
+specification (and IG).
+
+> 
+> [1]
+> https://csrc.nist.gov/projects/cryptographic-algorithm-validation-program/details?validation=33056
+> 
+> Ciao
+> Stephan
+> 
+>>
+>> Thanks,
+>>  Mickaël
+> 
+> 
