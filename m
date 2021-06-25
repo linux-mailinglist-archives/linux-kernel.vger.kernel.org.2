@@ -2,107 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 703BF3B470D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C883B4711
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhFYP5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 11:57:47 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45728 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbhFYP5p (ORCPT
+        id S230025AbhFYP6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 11:58:18 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:39679 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229738AbhFYP6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 11:57:45 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        Fri, 25 Jun 2021 11:58:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624636556; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=k+52SBszcH483ZRUtcU+yiloL+pyVt9AUiozgNhX+3M=;
+ b=UWRPRZMVGbSaqNDgeuOGH1BqJ310Gt4IDNb2Ow+BEnxejQgPWcFxn3KyIUkNhaszM1GeoxMP
+ RFN3IsRF8HaXd0bC3JrYryysnDK4kzGfinrewBx3ZDj8135AcYD1lFTFiDWQWQoWUIDOg/Bt
+ ef39CT5x7KQ088TcFYYKBKk4tZc=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60d5fc7ed2559fe392b4bc22 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 25 Jun 2021 15:55:42
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6D9EAC43460; Fri, 25 Jun 2021 15:55:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1A6A821CEA;
-        Fri, 25 Jun 2021 15:55:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624636524; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1HmjupcRz3JaQfNq8HfL9gsd0zczzHm8Vkl0SLmvU3I=;
-        b=Cfo47BpXwTuQyIkermF36Mz6Go/NxmItV2XTmAuUvXXYB2AQwW4PPZ53ShpoAhVlOH+pJO
-        PEQFOPS4ryan0JBVlJl8uw02JGPeJmiXZefue/JSb2Tc2/nuqrY+39WqrmInIsgdcDmrw6
-        ittbSCEihOI1rEfSTJWdZMFeDCQgbiU=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id E03A111A97;
-        Fri, 25 Jun 2021 15:55:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624636524; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1HmjupcRz3JaQfNq8HfL9gsd0zczzHm8Vkl0SLmvU3I=;
-        b=Cfo47BpXwTuQyIkermF36Mz6Go/NxmItV2XTmAuUvXXYB2AQwW4PPZ53ShpoAhVlOH+pJO
-        PEQFOPS4ryan0JBVlJl8uw02JGPeJmiXZefue/JSb2Tc2/nuqrY+39WqrmInIsgdcDmrw6
-        ittbSCEihOI1rEfSTJWdZMFeDCQgbiU=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id 2n7IM2v81WAYPQAALh3uQQ
-        (envelope-from <mkoutny@suse.com>); Fri, 25 Jun 2021 15:55:23 +0000
-Date:   Fri, 25 Jun 2021 17:55:22 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Philipp Hahn <pmhahn+lkml@pmhahn.de>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
-Subject: Re: Prevent inode/dentry trashing?
-Message-ID: <YNX8anv2yCnkVPXy@blackbook>
-References: <ce330972-78e6-4347-9735-72ee7bb21ef5@pmhahn.de>
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2765CC433F1;
+        Fri, 25 Jun 2021 15:55:41 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="GRfnHW8roRpdCmLl"
-Content-Disposition: inline
-In-Reply-To: <ce330972-78e6-4347-9735-72ee7bb21ef5@pmhahn.de>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 25 Jun 2021 08:55:41 -0700
+From:   khsieh@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>, robdclark@gmail.com,
+        sean@poorly.run, vkoul@kernel.org, agross@kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64/dts/qcom/sc7180: Add Display Port dt node
+In-Reply-To: <YNKiB3ZEtOQ+T/MX@yoga>
+References: <CAE-0n50-X03sMyJdsw7s=Ue0dWXBo=iHOc0HxDQm5yh2J-uS3A@mail.gmail.com>
+ <YL/uj+t+BFkII1Fh@yoga>
+ <CAE-0n50WP25kRQkWMVdDZGsZWBXwfbVSTFKyBLF7f8Mp3x2Wfg@mail.gmail.com>
+ <YL/wWdRs6e/eECiC@yoga>
+ <CAE-0n51GM65rZVJgXuHy6FerJorHeHKf2W31GijG8sDEhaX_KQ@mail.gmail.com>
+ <YL/41hWz8xB+jSeO@yoga> <21dc5c9fc2efdc1a0ba924354bfd9d75@codeaurora.org>
+ <CAE-0n52J_mLsmXLS+skZn2u3k9dhn+GcHeXi0B2BeQyQxEUL9A@mail.gmail.com>
+ <YM0THrlJlv7ADW8w@builder.lan>
+ <CAE-0n53Zr-w5m-eFhLM2BVmphcYb_M4=s5je3Y7Lg6=onNo=uA@mail.gmail.com>
+ <YNKiB3ZEtOQ+T/MX@yoga>
+Message-ID: <b157a691a1cb8f860219ca3b2c335411@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---GRfnHW8roRpdCmLl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello Phillip.
-
-On Mon, Jun 07, 2021 at 02:39:35PM +0200, Philipp Hahn <pmhahn+lkml@pmhahn.=
-de> wrote:
-> The trashed caches affect all other processes running in parallel or the
-> first processes started each morning.
->=20
-> Is it possible to prevent inode/dentry trashing for example by limiting t=
-he
-> cache per process(-group)?
-
-Yes. Unless you have disabled it with CONFIG_MEMCG_KMEM or
-cgroup.memory=3Dnokmem, dentries and inodes are charged to respective
-cgroups. And you can limit overall memory of a cgroup, see
-memory.{max,high} attributes. (You suggest this inode/dentry consumption
-is dominant enough to affect other jobs, so the limit would keep it
-constrained as you intend).
-
-HTH,
-Michal
-
---GRfnHW8roRpdCmLl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmDV/GQACgkQia1+riC5
-qShfZA//ZacjmyfT7nNWjlUA6bEyGPVXkjxHZedOUfWqCr2SGXbwd57ND+ROHSwA
-EbSVYP3TaN7+BJBPrL3y8NjnKFaRJsLosiRiKsA6VWS9pibmgVKzSiW5H5aS03/S
-nl6GDIp0mt8sg2DDjn/raS+AopLt/iD7awWIT8LAugfs2h4AueUZ/kC01Cmzja7F
-5F5C2vG1T8pKinSMow3OCtZVMmMl18U+JEFiNWKqrQkMlAHu6GlwUTIEtEc6X4hS
-h/GKJ/xplD/avp1rjJSr+FUFZG4+jPTnQu0LqUdwR80VEO9gdiSvavJCARCjbKvb
-54qPhiPtovHk9UfZJe8fcN807cdYNrWNHY0n6/Z2M/28oq6gF81Ra7Ig4/3I2DfU
-qT6+vXrvjF7ZEO9y8okJiGfdpYInlsJbNIQvkjaL156Uz70HLosGFsg5NAnYY0Mc
-9HJXhnIQCRke4O/JccAAftxdmDoPVDmJvl7QMMD7D2AoGVEALv8XTzdxpequUK/q
-PFW4qoelNaEx2NNs01Wzr76fphdav5zWn1+ctdGRbKCyAAv2ZMTLwNut4p1K58gg
-CZpYLN6S8fioX45P4uRaO6VTbWf+o5W+URJM06n/o94ha+cRlIU7uonqb3gx0eU2
-ucM216qE2TT/NdqAqfE3sWAKaM1BhA8HNNpMsiZgwGEbOIUFdRE=
-=I/eJ
------END PGP SIGNATURE-----
-
---GRfnHW8roRpdCmLl--
+On 2021-06-22 19:52, Bjorn Andersson wrote:
+> On Tue 22 Jun 15:23 CDT 2021, Stephen Boyd wrote:
+> 
+>> Quoting Bjorn Andersson (2021-06-18 14:41:50)
+>> > On Fri 18 Jun 15:49 CDT 2021, Stephen Boyd wrote:
+>> >
+>> > > Quoting khsieh@codeaurora.org (2021-06-10 09:54:05)
+>> > > > On 2021-06-08 16:10, Bjorn Andersson wrote:
+>> > > > > On Tue 08 Jun 17:44 CDT 2021, Stephen Boyd wrote:
+>> > > > >
+>> > > > >> Honestly I suspect the DP PHY is _not_ in the CX domain as CX is for
+>> > > > >> digital logic. Probably the PLL is the hardware that has some minimum
+>> > > > >> CX
+>> > > > >> requirement, and that flows down into the various display clks like
+>> > > > >> the
+>> > > > >> link clk that actually clock the DP controller hardware. The mdss_gdsc
+>> > > > >> probably gates CX for the display subsystem (mdss) so if we had proper
+>> > > > >> corner aggregation logic we could indicate that mdss_gdsc is a child
+>> > > > >> of
+>> > > > >> the CX domain and then make requests from the DP driver for particular
+>> > > > >> link frequencies on the mdss_gdsc and then have that bubble up to CX
+>> > > > >> appropriately. I don't think any of that sort of code is in place
+>> > > > >> though, right?
+>> > > > >
+>> > > > > I haven't checked sc7180, but I'm guessing that it's following the
+>> > > > > other
+>> > > > > modern platforms, where all the MDSS related pieces (including e.g.
+>> > > > > dispcc) lives in the MMCX domain, which is separate from CX.
+>> > > > >
+>> > > > > So the parent of MDSS_GDSC should be MMCX, while Kuogee's answer (and
+>> > > > > the dp-opp-table) tells us that the PLL lives in the CX domain.
+>> > >
+>> > > Isn't MMCX a "child" of CX? At least my understanding is that MMCX is
+>> > > basically a GDSC that clamps all of multimedia hardware block power
+>> > > logic so that the leakage is minimized when multimedia isn't in use,
+>> > > i.e. the device is suspended. In terms of bumping up the voltage we have
+>> > > to pin that on CX though as far as I know because that's the only power
+>> > > domain that can actually change voltage, while MMCX merely gates that
+>> > > voltage for multimedia.
+>> > >
+>> >
+>> > No, MMCX is a separate rail from CX, which powers the display blocks and
+>> > is parent of MDSS_GDSC. But I see in rpmhpd that sc7180 is not one of
+>> > these platforms, so I presume this means that the displayport controller
+>> > thereby sits in MDSS_GDSC parented by CX.
+>> >
+>> > But in line with what you're saying, the naming of the supplies to the
+>> > QMP indicates that the power for the PLLs is static. As such the only
+>> > moving things would be the clock rates in the DP controller and as such
+>> > that's what needs to scale the voltage.
+>> >
+>> > So if the resources we're scaling is the clocks in the DP controller
+>> > then the gist of the patch is correct. The only details I see is that
+>> > the DP controller actually sits in MDSS_GDSC - while it should control
+>> > the level of its parent (CX). Not sure if we can describe that in a
+>> > simple way.
+>> 
+>> Right. I'm not sure things could be described any better right now. If
+>> we need to change this to be MDSS_GDSC power domain and control the
+>> level of the parent then I suppose we'll have to make some sort of DT
+>> change and pair that with a driver change. Maybe if that happens we 
+>> can
+>> just pick a new compatible and leave the old code in place.
+>> 
+> 
+> I would prefer that we stay away from making up a new compatible for
+> that, but let's see when we get there.
+> 
+>> Are you happy enough with this current patch?
+>> 
+> 
+> Yes, I think this looks good.
+> 
+>> >
+>> >
+>> > PS. Why does the node name of the opp-table have to be globally unique?
+>> 
+>> Presumably the opp table node name can be 'opp-table' as long as it
+>> lives under the node that's using it. If the opp table is at / or /soc
+>> then it will need to be unique. I'd prefer just 'opp-table' if 
+>> possible.
+> 
+> I asked the same question (if it has to be globally unique) in the 
+> patch
+> adding sdhci nodes for sc7280 and I didn't get a sufficient answer...
+> 
+> So now I do want to know why "opp-table" wouldn't be sufficient name 
+> for
+> these device-internal nodes.
+> 
+my opinion is dp_opp_table is more consistency with mdp and dsi.
+Either one is fine. Please let me know asap.
+> Regards,
+> Bjorn
