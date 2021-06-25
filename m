@@ -2,306 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C876B3B4787
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0C13B478E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbhFYQmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 12:42:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhFYQmT (ORCPT
+        id S229812AbhFYQuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 12:50:11 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3306 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhFYQuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 12:42:19 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A37C061767
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 09:39:58 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id t9so8060331pgn.4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 09:39:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SBlU3FmazlByBy7OHLdn1ScUHY89iP5N5Z0k4Z9L/VM=;
-        b=hEL46Gg5Tb/L+hmyNJUMKOARy2IhwsQNOeZuydpIngFzU8V/bhjN45zsHBsz7kuviY
-         dVFzJbI5jequMkHRz91ltno55g0xIHhNXJKUyAbY4CM8tWB4FKyXZ8oLDzr6DyD5QZse
-         Mq2UHiHfLJ3xfQSp5yilfjqZ3V/1r/uv/xijI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SBlU3FmazlByBy7OHLdn1ScUHY89iP5N5Z0k4Z9L/VM=;
-        b=XkyT0YPqm4NuTg0tizkIPWU1GeHXnwh6Lz1VJB/S2cQP0Fuxwh+AX8Vjv+f0Zmf0Kk
-         Q63/ox3AJjJiZWZwLyoF0FQx6NLa7jhCzAg+B9I5WAWu60uq139q4jV2r46P4vhCq2Sw
-         Rz4B6tLUwz+gKghZfEZZ24DiEw//322W801vA7HlDRuAPzibeY6/2EgW9ZjleLRONluK
-         h4AEIhxZiKxvKGr6sddH0gG/mFtWIZRAK1CvZ5hUcI3O4xXrmCV5MFv1Tf33vcxGqBFs
-         cX38xpxyIYFgDu1VxGVcRj0VONqdrLr9nKPZW1WGW3xmc/IZt7N9PvfvRynlOKzJopiU
-         lmyA==
-X-Gm-Message-State: AOAM533Q40ycwPxviSiTEwsiNf9C66V6g94hX4z8d4sbgoK0qYRBcdae
-        Nmgcwz30gGBRUVt+4JdBFEjQjg==
-X-Google-Smtp-Source: ABdhPJwp9EQbysYWlsvBRzN2DZlXYyVDXXNV+frWB56nArpzWdTzmCavnqZXAJIqk/FRUol53TE5Tw==
-X-Received: by 2002:a62:6d07:0:b029:2e9:1e3c:ad54 with SMTP id i7-20020a626d070000b02902e91e3cad54mr11456357pfc.46.1624639198128;
-        Fri, 25 Jun 2021 09:39:58 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:cc13:a7dd:f4b5:2160])
-        by smtp.gmail.com with UTF8SMTPSA id 71sm6731020pfw.13.2021.06.25.09.39.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 09:39:57 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 09:39:55 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org, will@kernel.org,
-        saiprakash.ranjan@codeaurora.org, ohad@wizery.com,
-        agross@kernel.org, mathieu.poirier@linaro.org,
-        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
-        dianders@chromium.org, swboyd@chromium.org
-Subject: Re: [PATCH 5/9] remoteproc: mss: q6v5-mss: Add modem support on
- SC7280
-Message-ID: <YNYG200n8Zh9vDWL@google.com>
-References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
- <1624564058-24095-6-git-send-email-sibis@codeaurora.org>
- <YNUkw5GDrHwTVcC5@google.com>
- <73f9814fb4f3aa2abeee0ece3aa26312@codeaurora.org>
+        Fri, 25 Jun 2021 12:50:11 -0400
+Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GBMyt5Wztz6L4vj;
+        Sat, 26 Jun 2021 00:34:14 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 25 Jun 2021 18:47:47 +0200
+Received: from [10.47.26.115] (10.47.26.115) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 25 Jun
+ 2021 17:47:47 +0100
+Subject: Re: [PATCH v14 0/6] iommu: Enhance IOMMU default DMA mode build
+ options
+To:     "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "corbet@lwn.net" <corbet@lwn.net>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
+        "chenxiang (M)" <chenxiang66@hisilicon.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+References: <1624016058-189713-1-git-send-email-john.garry@huawei.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <1b75de8f-a2e3-6297-0f56-b2f1548495b0@huawei.com>
+Date:   Fri, 25 Jun 2021 17:41:09 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <73f9814fb4f3aa2abeee0ece3aa26312@codeaurora.org>
+In-Reply-To: <1624016058-189713-1-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.26.115]
+X-ClientProxiedBy: lhreml723-chm.china.huawei.com (10.201.108.74) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sibi,
-
-On Fri, Jun 25, 2021 at 07:51:38PM +0530, Sibi Sankar wrote:
-> Hey Matthias,
-> Thanks for taking time to review the patch
-> series.
+On 18/06/2021 12:34, John Garry wrote:
+> This is a reboot of Zhen Lei's series from a couple of years ago, which
+> never made it across the line.
 > 
-> On 2021-06-25 06:05, Matthias Kaehlcke wrote:
-> > Hi Sibi,
-> > 
-> > On Fri, Jun 25, 2021 at 01:17:34AM +0530, Sibi Sankar wrote:
-> > > Add out of reset sequence support for modem sub-system on SC7280 SoCs.
-> > > It requires access to an additional set of qaccept registers, external
-> > > power/clk control registers and halt vq6 register to put the modem
-> > > back
-> > > into reset.
-> > > 
-> > > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> > > ---
-> > >  drivers/remoteproc/qcom_q6v5_mss.c | 245
-> > > ++++++++++++++++++++++++++++++++++++-
-> > >  1 file changed, 241 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/remoteproc/qcom_q6v5_mss.c
-> > > b/drivers/remoteproc/qcom_q6v5_mss.c
-> > > index 5d21084004cb..4e32811e0025 100644
-> > > --- a/drivers/remoteproc/qcom_q6v5_mss.c
-> > > +++ b/drivers/remoteproc/qcom_q6v5_mss.c
-> > > @@ -77,6 +77,14 @@
-> > > 
-> > >  #define HALT_ACK_TIMEOUT_US		100000
-> > > 
-> > > +/* QACCEPT Register Offsets */
-> > > +#define QACCEPT_ACCEPT_REG		0x0
-> > > +#define QACCEPT_ACTIVE_REG		0x4
-> > > +#define QACCEPT_DENY_REG		0x8
-> > > +#define QACCEPT_REQ_REG			0xC
-> > > +
-> > > +#define QACCEPT_TIMEOUT_US		50
-> > > +
-> > >  /* QDSP6SS_RESET */
-> > >  #define Q6SS_STOP_CORE			BIT(0)
-> > >  #define Q6SS_CORE_ARES			BIT(1)
-> > > @@ -143,6 +151,9 @@ struct rproc_hexagon_res {
-> > >  	bool has_alt_reset;
-> > >  	bool has_mba_logs;
-> > >  	bool has_spare_reg;
-> > > +	bool has_qaccept_regs;
-> > > +	bool has_ext_cntl_regs;
-> > > +	bool has_vq6;
-> > >  };
-> > > 
-> > >  struct q6v5 {
-> > > @@ -158,8 +169,18 @@ struct q6v5 {
-> > >  	u32 halt_q6;
-> > >  	u32 halt_modem;
-> > >  	u32 halt_nc;
-> > > +	u32 halt_vq6;
-> > >  	u32 conn_box;
-> > > 
-> > > +	u32 qaccept_mdm;
-> > > +	u32 qaccept_cx;
-> > > +	u32 qaccept_axi;
-> > > +
-> > > +	u32 axim1_clk_off;
-> > > +	u32 crypto_clk_off;
-> > > +	u32 force_clk_on;
-> > > +	u32 rscc_disable;
-> > > +
-> > >  	struct reset_control *mss_restart;
-> > >  	struct reset_control *pdc_reset;
-> > > 
-> > > @@ -201,6 +222,9 @@ struct q6v5 {
-> > >  	bool has_alt_reset;
-> > >  	bool has_mba_logs;
-> > >  	bool has_spare_reg;
-> > > +	bool has_qaccept_regs;
-> > > +	bool has_ext_cntl_regs;
-> > > +	bool has_vq6;
-> > >  	int mpss_perm;
-> > >  	int mba_perm;
-> > >  	const char *hexagon_mdt_image;
-> > > @@ -213,6 +237,7 @@ enum {
-> > >  	MSS_MSM8996,
-> > >  	MSS_MSM8998,
-> > >  	MSS_SC7180,
-> > > +	MSS_SC7280,
-> > >  	MSS_SDM845,
-> > >  };
-> > > 
-> > > @@ -473,6 +498,12 @@ static int q6v5_reset_assert(struct q6v5 *qproc)
-> > >  		regmap_update_bits(qproc->conn_map, qproc->conn_box,
-> > >  				   AXI_GATING_VALID_OVERRIDE, 0);
-> > >  		ret = reset_control_deassert(qproc->mss_restart);
-> > > +	} else if (qproc->has_ext_cntl_regs) {
-> > > +		regmap_write(qproc->conn_map, qproc->rscc_disable, 0);
-> > > +		reset_control_assert(qproc->pdc_reset);
-> > > +		reset_control_assert(qproc->mss_restart);
-> > > +		reset_control_deassert(qproc->pdc_reset);
-> > > +		ret = reset_control_deassert(qproc->mss_restart);
-> > >  	} else {
-> > >  		ret = reset_control_assert(qproc->mss_restart);
-> > >  	}
-> > > @@ -490,7 +521,7 @@ static int q6v5_reset_deassert(struct q6v5 *qproc)
-> > >  		ret = reset_control_reset(qproc->mss_restart);
-> > >  		writel(0, qproc->rmb_base + RMB_MBA_ALT_RESET);
-> > >  		reset_control_deassert(qproc->pdc_reset);
-> > > -	} else if (qproc->has_spare_reg) {
-> > > +	} else if (qproc->has_spare_reg || qproc->has_ext_cntl_regs) {
-> > >  		ret = reset_control_reset(qproc->mss_restart);
-> > >  	} else {
-> > >  		ret = reset_control_deassert(qproc->mss_restart);
-> > > @@ -604,7 +635,7 @@ static int q6v5proc_reset(struct q6v5 *qproc)
-> > >  		}
-> > > 
-> > >  		goto pbl_wait;
-> > > -	} else if (qproc->version == MSS_SC7180) {
-> > > +	} else if (qproc->version == MSS_SC7180 || qproc->version ==
-> > > MSS_SC7280) {
-> > >  		val = readl(qproc->reg_base + QDSP6SS_SLEEP);
-> > >  		val |= Q6SS_CBCR_CLKEN;
-> > >  		writel(val, qproc->reg_base + QDSP6SS_SLEEP);
-> > > @@ -787,6 +818,82 @@ static int q6v5proc_reset(struct q6v5 *qproc)
-> > >  	return ret;
-> > >  }
-> > > 
-> > > +static int q6v5proc_enable_qchannel(struct q6v5 *qproc, struct
-> > > regmap *map, u32 offset)
-> > > +{
-> > > +	unsigned int val;
-> > > +	int ret;
-> > > +
-> > > +	if (!qproc->has_qaccept_regs)
-> > > +		return 0;
-> > > +
-> > > +	if (qproc->has_ext_cntl_regs) {
-> > > +		regmap_write(qproc->conn_map, qproc->rscc_disable, 0);
-> > > +		regmap_write(qproc->conn_map, qproc->force_clk_on, 1);
-> > > +
-> > > +		ret = regmap_read_poll_timeout(qproc->halt_map,
-> > > qproc->axim1_clk_off, val,
-> > > +					       !val, 1, Q6SS_CBCR_TIMEOUT_US);
-> > > +		if (ret) {
-> > > +			dev_err(qproc->dev, "failed to enable axim1 clock\n");
-> > > +			return -ETIMEDOUT;
-> > > +		}
-> > > +	}
-> > > +
-> > > +	regmap_write(map, offset + QACCEPT_REQ_REG, 1);
-> > > +
-> > > +	/* Wait for accept */
-> > > +	ret = regmap_read_poll_timeout(map, offset + QACCEPT_ACCEPT_REG,
-> > > val, val, 5,
-> > > +				       QACCEPT_TIMEOUT_US);
-> > > +	if (ret) {
-> > > +		dev_err(qproc->dev, "qchannel enable failed\n");
-> > > +		return -ETIMEDOUT;
-> > > +	}
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static void q6v5proc_disable_qchannel(struct q6v5 *qproc, struct
-> > > regmap *map, u32 offset)
-> > > +{
-> > > +	int ret;
-> > > +	unsigned int val, retry;
-> > > +	unsigned int nretry = 10;
-> > > +	bool takedown_complete = false;
-> > > +
-> > > +	if (!qproc->has_qaccept_regs)
-> > > +		return;
-> > > +
-> > > +	while (!takedown_complete && nretry) {
-> > > +		nretry--;
-> > > +
-> > > +		regmap_read_poll_timeout(map, offset + QACCEPT_ACTIVE_REG, val,
-> > > !val, 5,
-> > > +					 QACCEPT_TIMEOUT_US);
-> > > +
-> > > +		regmap_write(map, offset + QACCEPT_REQ_REG, 0);
+> I still think that it has some value, so taking up the mantle.
 > 
-> Sure I'll add more comments to this func.
-> After lowering the request ^^ we wait
-> for deny to go high or accept to go low.
-> If it's the former then we do a request
-> high and repeat the entire process again.
-> If it's the latter then its considered
-> that the takedown is success.
-
-The above essentially is a transcript of the code into prose. For a reader
-who isn't familiar with the hardware and might not have access to the
-corresponding documentation the exact roles of the ACCEPT registers might
-not be evident.
-
-I was looking for something slightly higher level, a one liner here and
-there might be enough. E.g. something like 'request to disable the channel
-denied, re-enable it' in the loop below, if that is semantically correct.
-Is there a typical reason why such a request would be denied, maybe because
-the channel was busy? Also why is re-enabling actually required if the
-request to disable was denied?
-
-> Let me know if you feel any other parts of the patch requires more
-comments as well.
-
-For now it's mainly the code involving the ACCEPT registers and
-_disable_channel() in particular.
-
+> Motivation:
+> Allow lazy mode be default mode for DMA domains for all ARCHs, and not
+> only those who hardcode it (to be lazy). For ARM64, currently we must use
+> a kernel command line parameter to use lazy mode, which is less than
+> ideal.
 > 
-> > > +
-> > > +		retry = 10;
-> > > +		while (retry) {
-> > > +			usleep_range(5, 10);
-> > > +			retry--;
-> > > +			ret = regmap_read(map, offset + QACCEPT_DENY_REG, &val);
-> > > +			if (!ret && val) {
-> > > +				regmap_write(map, offset + QACCEPT_REQ_REG, 1);
-> > > +				break;
-> > > +			}
-> > > +
-> > > +			ret = regmap_read(map, offset + QACCEPT_ACCEPT_REG, &val);
-> > > +			if (!ret && !val) {
-> > > +				takedown_complete = true;
-> > > +				break;
-> > > +			}
-> > 
-> > A bit of commentary in this branch would do no harm. From the code flow
-> > I can guess that disabling the channel failed when QACCEPT_DENY_REG !=
-> > 0,
-> > and hence the channel is re-enabled (?) for the next try, and apparently
-> > things are fine when QACCEPT_ACCEPT_REG is 0 after disabling the
-> > channel.
-> > Would be good to be a bit more explicit about what all that actually
-> > means.
+> I have now included the print for strict/lazy mode, which I originally
+> sent in:
+> https://lore.kernel.org/linux-iommu/72eb3de9-1d1c-ae46-c5a9-95f26525d435@huawei.com/
+> 
+> There was some concern there about drivers and their custom prints
+> conflicting with the print in that patch, but I think that it
+> should be ok.
+> 
+> Based on next-20210611 + "iommu: Update "iommu.strict" documentation"
+
+Hi Joerg, Will,
+
+We think that this series is ready to go.
+
+There would be a build conflict with the following:
+https://lore.kernel.org/linux-iommu/20210616100500.174507-1-namit@vmware.com/
+
+So please let us know where you stand on it, so that could be resolved.
+
+Robin and Baolu have kindly reviewed all the patches, apart from the AMD 
+one.
+
+Thanks,
+John
