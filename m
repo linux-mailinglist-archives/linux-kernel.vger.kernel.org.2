@@ -2,238 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8E93B469A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD7E3B469D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhFYPaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 11:30:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhFYPaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 11:30:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA5116193F;
-        Fri, 25 Jun 2021 15:27:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624634861;
-        bh=lwR2g6gRk+aJ4xVmniL5GuaewpPGjDCLk9yE/FrMrt8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BTsUejnuJPzvuMHBjXJuP3F/q+Vl24rM4YE4aW0cU8bcpBo+uxdMY+JzNyfJhPjV5
-         OSjMNQ6dyGuNYCJHeWOxWyScxTD90ynDFjAX3hI2/cJ3xjt+XraKFhUDf6e1mg9M1C
-         cb5+2sm6RVG4/smYydQWBfnZVXKu2LM/tJ5WkJMLcfVRvz2QgwHTzgL1XFi/ZE/HXy
-         7XMztvarBt0LrP1xL5aRgd0RxHXB7wiGjHorXggBS6LWOZD/WGVn/q5RPjV0Rqno9r
-         isK02Y1xwzHhG959IYkj/DsqiOzZZCbRFcO/ej0vf76hmHQEeNmtzookjoxNHR2D8t
-         MKex1lkplbZ4A==
-Received: by pali.im (Postfix)
-        id 9D34FA7D; Fri, 25 Jun 2021 17:27:37 +0200 (CEST)
-Date:   Fri, 25 Jun 2021 17:27:37 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Cc:     Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Phil Sutter <phil@nwl.cc>
-Subject: Re: Issues during assigning addresses on point to point interfaces
-Message-ID: <20210625152737.6gslduccvguyrr77@pali>
-References: <20210606151008.7dwx5ukrlvxt4t3k@pali>
- <20210624124545.2b170258@dellmb>
- <d3995a21-d9fe-9393-a10e-8eddccec2f47@6wind.com>
- <20210625084031.c33yovvximtabmf4@pali>
- <d3dd210c-bf0f-7b48-6562-23e87c2ad55a@6wind.com>
+        id S229882AbhFYPa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 11:30:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhFYPaZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 11:30:25 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4B8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:28:04 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id m15-20020a17090a5a4fb029016f385ffad0so5770424pji.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:28:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sknCMKkRE/6+TRziL/nLaMcGUMQ1W7V3hpPpOph2UyI=;
+        b=ljkuN8uKvvq0RlfQM/0l3qkDQ3HysP4yNNo32ZyOt93p6SxAVBmOM1kEkWcTCvsQMq
+         fvvbYijD318W4X+Mb2CXZTVpfD2IuOVv0NaAEqSvmEqPda5fAi9yyHaeJwCUPZiJn+x5
+         cmTsODugZUeYc11K9CE2Kh1eT3/VdRwfcPECdT4oVTc3fmG2TLRPa/EJ7LhFDBIOC27n
+         SRDrXpBDx6+79A02CnltRUioBgr5FsAVDGXMw5/O/ICFI8ZgsOghLkEjPQRzMXli/XfB
+         wdqwCMWvzZ6FrJRfBHaNhrPz5WK6HHJE0v3MovSSdwVFMEcPRm6F9PrkvuOCIEG0eiwa
+         vGuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sknCMKkRE/6+TRziL/nLaMcGUMQ1W7V3hpPpOph2UyI=;
+        b=frNrB5arZ0af7eYWscRW/m7hTrDpvS48VBzLDL43+WyQzljLBPJugvCNeBcgmbLyMK
+         oDB3IlAyXtmJfZP/ECk22A7MOojZp6lHPeWGDULmyjWNmBiXQvNCVp3qE9BFJBfZp64m
+         m/87z6nVZN0pvlk62hVeQJdfBRO9T9KrDMiDLYIbWO8R8f0Oe+ZCViRh1CFD9HZu39zk
+         FanNjCgGD1Bn1p/FZSJzRR8jWlDzxFwA/ExlNdYHHlBxcKEGGqqutDrpZqynrRKWo2NF
+         1Re9jIRv2QkPuHjTzR6pi/97c5rOVy0oQThzUrs6yRZ+wcagWW6/+M/HhwKZm6wJ8azh
+         d7Sw==
+X-Gm-Message-State: AOAM5311MaIkjzSoORNsW7KhRyCygbL5h0Op0GjcVt3VSJcq9Vs0bV3k
+        VOYrY6l+RijGBhcpblaHyLEs60DIBAK5ydT1
+X-Google-Smtp-Source: ABdhPJzMI9uX/oyM5J7Z7jIdmBDIkF+cCiVotP8YvqmDkbj47kmbcKBsg7UjhNLOCpWY9b0JJihSAg==
+X-Received: by 2002:a17:90b:300c:: with SMTP id hg12mr21684174pjb.46.1624634883938;
+        Fri, 25 Jun 2021 08:28:03 -0700 (PDT)
+Received: from nuc10 (104.36.148.139.aurocloud.com. [104.36.148.139])
+        by smtp.gmail.com with ESMTPSA id c2sm5685379pjv.10.2021.06.25.08.28.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 08:28:03 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 08:27:59 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: kmemleak memory scanning
+Message-ID: <YNX1/6FS4z0eVaLF@nuc10>
+References: <YMe8ktUsdtwFKHuF@nuc10>
+ <CACT4Y+ZjSbioNS8oPwUcyOrLhB6-Sf-WZmadAoAm0H-JYRLo1g@mail.gmail.com>
+ <YMpCEu9yM5Ppj5jj@nuc10>
+ <YNTCsqQUaYnlXGbO@nuc10>
+ <20210625150132.GF20835@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d3dd210c-bf0f-7b48-6562-23e87c2ad55a@6wind.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210625150132.GF20835@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 25 June 2021 17:06:21 Nicolas Dichtel wrote:
-> Le 25/06/2021 à 10:40, Pali Rohár a écrit :
-> > On Thursday 24 June 2021 14:57:41 Nicolas Dichtel wrote:
-> >> Le 24/06/2021 à 12:45, Marek Behún a écrit :
-> >>> On Sun, 6 Jun 2021 17:10:08 +0200
-> >>> Pali Rohár <pali@kernel.org> wrote:
-> >>>
-> >>>> Hello!
-> >>>>
-> >>>> Seems that there is a bug during assigning IP addresses on point to
-> >>>> point interfaces.
-> >>>>
-> >>>> Assigning just one local address works fine:
-> >>>>
-> >>>>     ip address add fe80::6 dev ppp1 --> inet6 fe80::6/128 scope link
-> >>>>
-> >>>> Assigning both local and remote peer address also works fine:
-> >>>>
-> >>>>     ip address add fe80::7 peer fe80::8 dev ppp1 ---> inet6 fe80::7
-> >>>> peer fe80::8/128 scope link
-> >>>>
-> >>>> But trying to assign just remote peer address does not work. Moreover
-> >>>> "ip address" call does not fail, it returns zero but instead of
-> >>>> setting remote peer address, it sets local address:
-> >>>>
-> >>>>     ip address add peer fe80::5 dev ppp1 --> inet6 fe80::5/128 scope
-> >>>> link
-> >>>>
-> >>>
-> >>> Adding some other people to Cc in order to get their opinions.
-> >>>
-> >>> It seems this bug is there from the beginning, from commit
-> >>> caeaba79009c2 ("ipv6: add support of peer address")
-> >>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=caeaba79009c2
-> >>>
-> >>> Maybe some older user-space utilities use IFA_ADDRESS instead of
-> >>> IFA_LOCAL, and this was done in order to be compatible with them?
-> >> If I remember well, there was an issue in the uAPI.
-> >> IFA_LOCAL is supposed to be the address of the interface and IFA_ADDRESS is
-> >> supposed to be the endpoint of a point-to-point interface.
-> >> However, in case of IPv6, it was not the case. In netlink messages generated by
-> >> the kernel, IFA_ADDRESS was used instead of IFA_LOCAL.
-> >> The patch tried to keep the backward compatibility and the symmetry between msg
-> >> from userland and notification from the kernel.
+Hi Catalin,
+
+On Fri, Jun 25, 2021 at 04:01:33PM +0100, Catalin Marinas wrote:
+> On Thu, Jun 24, 2021 at 10:36:50AM -0700, Rustam Kovhaev wrote:
+> > On Wed, Jun 16, 2021 at 11:25:22AM -0700, Rustam Kovhaev wrote:
+> > > On Tue, Jun 15, 2021 at 07:15:24AM +0200, Dmitry Vyukov wrote:
+> > > > On Mon, Jun 14, 2021 at 10:31 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
+> > > > >
+> > > > > hello Catalin, Andrew!
+> > > > >
+> > > > > while troubleshooting a false positive syzbot kmemleak report i have
+> > > > > noticed an interesting behavior in kmemleak and i wonder whether it is
+> > > > > behavior by design and should be documented, or maybe something to
+> > > > > improve.
+> > > > > apologies if some of the questions do not make sense, i am still going
+> > > > > through kmemleak code..
+> > > > >
+> > > > > a) kmemleak scans struct page (kmemleak.c:1462), but it does not scan
+> > > > > the actual contents (page_address(page)) of the page.
+> > > > > if we allocate an object with kmalloc(), then allocate page with
+> > > > > alloc_page(), and if we put kmalloc pointer somewhere inside that page,
+> > > > > kmemleak will report kmalloc pointer as a false positive.
+> > > > > should we improve kmemleak and make it scan page contents?
+> > > > > or will this bring too many false negatives?
+> > > > 
+> > > > Hi Rustam,
+> > > > 
+> > > > Nice debugging!
+> > > > I assume lots of pages are allocated for slab and we don't want to
+> > > > scan the whole page if only a few slab objects are alive on the page.
+> > > > However alloc_pages() can be called by end kernel code as well.
+> > > > I grepped for any kmemleak annotations around existing calls to
+> > > > alloc_pages, but did not find any...
+> > > > Does it require an explicit kmemleak_alloc() after allocating the page
+> > > > and kmemleak_free () before freeing the page?
+> > > 
+> > > hi Dmitry, thank you!
+> > > yes, as Catalin has pointed out, there are a few places where we call
+> > > kmemleak_alloc()/kmemleak_free() explicitly in order for the pages to be
+> > > scanned, like in blk_mq_alloc_rqs()
+> > > 
+> > > > If there are more than one use case for this, I guess we could add
+> > > > some GFP flag for this maybe.
+> > > 
+> > > and this way kernel users won't have to use kmemleak fuctions mentioned
+> > > above including some or most kmemleak_not_leak() calls and basically
+> > > kmemleak will be kind of "transparent" to them? and they will only need
+> > > to use the GFP flag to instruct kmemleak to scan the page contents?
+> > > it sounds like a good idea to me..
+> > > 
 > > 
-> > Hello Nicolas!
-> > 
-> > See my original email where I put also rtnetlink packets (how strace see
-> > them). Seems that there is a bug in handling them (or bug in iproute2)
-> > as setting just peer (remote) IPv6 address is ignored:
-> > https://lore.kernel.org/netdev/20210606151008.7dwx5ukrlvxt4t3k@pali/
-> > 
-> > Do you have any idea if this is affected by that "issue in the uAPI"?
-> > And what is the way how to fix it?
-> What about forcing IFA_LOCAL address to :: in your case?
+> > i've been thinking about this and it seems like in the scenario where we
+> > want kmemleak to scan only some part of the page, we will have to either
+> > do separate alloc_page() calls with different flags or use 
+> > kmemleak_scan_area() to limit the memory scan area. maybe this approach
+> > won't simplify things and will produce more code instead of reducing it
+> 
+> Since page allocation is not tracked by kmemleak, you can always do an
+> explicit kmemleak_alloc() call with a smaller size than a full page.
+> 
+right, but if i understood Dmitry's idea correctly, he was thinking
+about using a new GFP flag, like GFP_KMEMLEAK, and burying
+kmemleak_alloc() in page allocator
 
-It does not work. ip address returns error:
-
-    $ sudo ip address add :: peer fe80::8 dev ppp0
-    RTNETLINK answers: Cannot assign requested address
-
-Here is strace output:
-
-    sendmsg(3, {
-        msg_name={
-            sa_family=AF_NETLINK,
-            nl_pid=0,
-            nl_groups=00000000
-        },
-        msg_namelen=12,
-        msg_iov=[{
-            iov_base={
-                {
-                    len=64,
-                    type=RTM_NEWADDR,
-                    flags=NLM_F_REQUEST|NLM_F_ACK|NLM_F_EXCL|NLM_F_CREATE,
-                    seq=1624633811,
-                    pid=0
-                },
-                {
-                    ifa_family=AF_INET6,
-                    ifa_prefixlen=128,
-                    ifa_flags=0,
-                    ifa_scope=RT_SCOPE_UNIVERSE,
-                    ifa_index=if_nametoindex("ppp0")
-                },
-                [
-                    {
-                        {
-                            nla_len=20,
-                            nla_type=IFA_LOCAL
-                        },
-                        inet_pton(AF_INET6, "::")
-                    },
-                    {
-                        {
-                            nla_len=20,
-                            nla_type=IFA_ADDRESS
-                        },
-                        inet_pton(AF_INET6, "fe80::8")
-                    }
-                ]
-            },
-            iov_len=64
-        }],
-        msg_iovlen=1,
-        msg_controllen=0,
-        msg_flags=0
-    }, 0) = 64
-
-    recvmsg(3, {
-        msg_name={
-            sa_family=AF_NETLINK,
-            nl_pid=0,
-            nl_groups=00000000
-        },
-        msg_namelen=12,
-        msg_iov=[{
-            iov_base=NULL,
-            iov_len=0
-        }],
-        msg_iovlen=1,
-        msg_controllen=0,
-        msg_flags=MSG_TRUNC
-    }, MSG_PEEK|MSG_TRUNC) = 84
-
-    recvmsg(3, {
-        msg_name={
-            sa_family=AF_NETLINK,
-            nl_pid=0, nl_groups=00000000
-        },
-        msg_namelen=12,
-        msg_iov=[{
-            iov_base={
-                {
-                    len=84,
-                    type=NLMSG_ERROR,
-                    flags=0,
-                    seq=1624633811,
-                    pid=3698
-                },
-                {
-                    error=-EADDRNOTAVAIL,
-                    msg={
-                        {
-                            len=64,
-                            type=RTM_NEWADDR,
-                            flags=NLM_F_REQUEST|NLM_F_ACK|NLM_F_EXCL|NLM_F_CREATE,
-                            seq=1624633811,
-                            pid=0
-                        },
-                        {
-                            ifa_family=AF_INET6,
-                            ifa_prefixlen=128,
-                            ifa_flags=0,
-                            ifa_scope=RT_SCOPE_UNIVERSE,
-                            ifa_index=if_nametoindex("ppp0")
-                        },
-                        [
-                            {
-                                {
-                                    nla_len=20,
-                                    nla_type=IFA_LOCAL
-                                },
-                                inet_pton(AF_INET6, "::")
-                            },
-                            {
-                                {
-                                    nla_len=20,
-                                    nla_type=IFA_ADDRESS
-                                },
-                                inet_pton(AF_INET6, "fe80::8")
-                            }
-                        ]
-                    }
-                }
-            },
-            iov_len=84
-        }],
-        msg_iovlen=1,
-        msg_controllen=0,
-        msg_flags=0
-    }, 0) = 84
