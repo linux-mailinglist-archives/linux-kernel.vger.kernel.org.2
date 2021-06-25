@@ -2,125 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1723B3C95
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D18D3B3C72
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233206AbhFYGV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 02:21:28 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:35066 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231406AbhFYGVY (ORCPT
+        id S233159AbhFYGHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 02:07:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52315 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231923AbhFYGHO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 02:21:24 -0400
-X-UUID: 7bbb680ed00b4f3abb56ac188873f7bb-20210625
-X-UUID: 7bbb680ed00b4f3abb56ac188873f7bb-20210625
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <rocco.yue@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1601443592; Fri, 25 Jun 2021 14:19:01 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 25 Jun 2021 14:18:59 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 25 Jun 2021 14:18:58 +0800
-From:   Rocco Yue <rocco.yue@mediatek.com>
-To:     Dan Williams <dcbw@redhat.com>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>, <netdev@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>,
-        <wsd_upstream@mediatek.com>, <chao.song@mediatek.com>,
-        <kuohong.wang@mediatek.com>, Rocco Yue <rocco.yue@mediatek.com>
-Subject: Re: [PATCH 1/4] net: if_arp: add ARPHRD_PUREIP type
-Date:   Fri, 25 Jun 2021 14:04:11 +0800
-Message-ID: <20210625060411.23853-1-rocco.yue@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <0548d1daa7e1eee9d8202481668bbe4975c9b33d.camel@redhat.com>
-References: <0548d1daa7e1eee9d8202481668bbe4975c9b33d.camel@redhat.com>
+        Fri, 25 Jun 2021 02:07:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624601093;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=N1pzwVD62x/6KZDBAhY2ZWGnUYF4mbkQPcI7uLK8T28=;
+        b=ftGMY7xrPaRrp6QW5tcKkfeMe8Q7/qvEgwCOOPejuREA8sM97ZpM3Ah1C4g18m/a2oULcC
+        ggE3jrVevj0fKiH/n23jehGvxYYHMdOBbYFYQjspjwC3XpV3Y7V7iSoBpLzK4YQI5TVTZ6
+        v4AiUSxK3pRMfBPKWC7IpHUqxvMU8uk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-225-8y7uJH48NPiSN0NkmBP_tQ-1; Fri, 25 Jun 2021 02:04:52 -0400
+X-MC-Unique: 8y7uJH48NPiSN0NkmBP_tQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A7998802C87;
+        Fri, 25 Jun 2021 06:04:50 +0000 (UTC)
+Received: from [10.64.54.233] (vpn2-54-233.bne.redhat.com [10.64.54.233])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C800D19C44;
+        Fri, 25 Jun 2021 06:04:40 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH v4 3/4] mm/page_reporting: Allow driver to specify
+ reporting order
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        alexander.duyck@gmail.com, david@redhat.com,
+        akpm@linux-foundation.org, anshuman.khandual@arm.com,
+        catalin.marinas@arm.com, will@kernel.org, shan.gavin@gmail.com
+References: <20210625014710.42954-1-gshan@redhat.com>
+ <20210625014710.42954-4-gshan@redhat.com>
+ <20210625014653-mutt-send-email-mst@kernel.org>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <c1710727-36c5-37e3-2075-fcdf63cd9eed@redhat.com>
+Date:   Fri, 25 Jun 2021 16:04:38 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <20210625014653-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-06-24 at 11:14 -0500, Dan Williams wrote:
-On Thu, 2021-06-24 at 14:13 +0800, Rocco Yue wrote:
->> On Thu, 2021-06-24 at 07:29 +0200, Greg KH wrote:
->> 
->> Before kernel-4.18, RAWIP was the same as PUREIP, neither of them
->> automatically generates an IPv6 link-local address, and the way to
->> generate an IPv6 global address is the same.
+On 6/25/21 3:48 PM, Michael S. Tsirkin wrote:
+> On Fri, Jun 25, 2021 at 09:47:09AM +0800, Gavin Shan wrote:
+>> The page reporting order (threshold) is sticky to @pageblock_order
+>> by default. The page reporting can never be triggered because the
+>> freeing page can't come up with a free area like that huge. The
+>> situation becomes worse when the system memory becomes heavily
+>> fragmented.
+>>
+>> For example, the following configurations are used on ARM64 when 64KB
+>> base page size is enabled. In this specific case, the page reporting
+>> won't be triggered until the freeing page comes up with a 512MB free
+>> area. That's hard to be met, especially when the system memory becomes
+>> heavily fragmented.
+>>
+>>     PAGE_SIZE:          64KB
+>>     HPAGE_SIZE:         512MB
+>>     pageblock_order:    13       (512MB)
+>>     MAX_ORDER:          14
+>>
+>> This allows the drivers to specify the page reporting order when the
+>> page reporting device is registered. It falls back to @pageblock_order
+>> if it's not specified by the driver. The existing users (hv_balloon
+>> and virtio_balloon) don't specify it and @pageblock_order is still
+>> taken as their page reporting order. So this shouldn't introduce any
+>> functional changes.
+>>
+>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>> Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+>> ---
+>>   include/linux/page_reporting.h | 3 +++
+>>   mm/page_reporting.c            | 6 ++++++
+>>   2 files changed, 9 insertions(+)
+>>
+>> diff --git a/include/linux/page_reporting.h b/include/linux/page_reporting.h
+>> index 3b99e0ec24f2..fe648dfa3a7c 100644
+>> --- a/include/linux/page_reporting.h
+>> +++ b/include/linux/page_reporting.h
+>> @@ -18,6 +18,9 @@ struct page_reporting_dev_info {
+>>   
+>>   	/* Current state of page reporting */
+>>   	atomic_t state;
+>> +
+>> +	/* Minimal order of page reporting */
+>> +	unsigned int order;
+>>   };
+>>   
+>>   /* Tear-down and bring-up for page reporting devices */
+>> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
+>> index 34bf4d26c2c4..382958eef8a9 100644
+>> --- a/mm/page_reporting.c
+>> +++ b/mm/page_reporting.c
+>> @@ -329,6 +329,12 @@ int page_reporting_register(struct page_reporting_dev_info *prdev)
+>>   		goto err_out;
+>>   	}
+>>   
+>> +	/*
+>> +	 * Update the page reporting order if it's specified by driver.
+>> +	 * Otherwise, it falls back to @pageblock_order.
+>> +	 */
+>> +	page_reporting_order = prdev->order ? : pageblock_order;
+>> +
 > 
-> This distinction seems confusing from a kernel standpoint if it only
-> changes how v6 IIDs are determined. Do we really need something that's
-
-Hi Dan,
-
-Thanks for your comment,
-
-In the cellular network, v6 IID is important, If the device use the
-link-local address formed by the incorrect IID to send RS message to
-the network, based on 3GPP, GGSN will not reply solicited RA message.
-It will lead to the device can get ipv6 address prefix and ipv6 route.
-
-Maybe the table below is a little bit clearer
-
-three device type: ARPHRD_RAWIP , ARPHRD_PUREIP, ARPHRD_NONE
-three mode: IN6_ADDR_GEN_MODE_EUI64 , IN6_ADDR_GEN_MODE_NONE, IN6_ADDR_GEN_MODE_STABLE_PRIVACY
-
-ipv6 link-local address generate behavior in the kernel:
-+---------+-------------------+---------------------+----------------+
-|         | MODE_EUI64        | MODE_STABLE_PRIVACY | MODE_NONE      |
-+---------+-------------------+---------------------+----------------+
-| RAWIP   | fe80::(eui64-id)  | fe80::(privacy-id)  | no address gen |
-+---------+-------------------+---------------------+----------------+
-| PUREIP  | no address gen    | no address gen      | no address gen |
-+---------+-------------------+---------------------+----------------+
-| NONE    | fe80::(random-id) | fe80::(privacy-id)  | no address gen |
-+---------+-------------------+---------------------+----------------+
-
-ipv6 global address generate behavior in the kernel:
-+---------+-------------------+---------------------+-------------------+
-|         | MODE_EUI64        | MODE_STABLE_PRIVACY | MODE_NONE         |   
-+---------+-------------------+---------------------+-------------------+
-| RAWIP   | prefix+(eui64-id) | prefix+(privacy-id) | prefix+(eui64-id) |
-+---------+-------------------+---------------------+-------------------+
-| PUREIP  | prefix+(GGSN-id)  | prefix+(privacy-id) | prefix+(GGSN-id)  |
-+---------+-------------------+---------------------+-------------------+
-| NONE    | prefix+(random-id)| prefix+(privacy-id) | prefix+(random-id)|
-+---------+-------------------+---------------------+-------------------+
-
-> also reflected to userspace (in struct ifinfomsg -> ifi_type) if the
-> kernel is handling the behavior that's different? Why should userspace
-> care?
+> Hmm. So on ARM achitectures with 64K pages, the command line parameter
+> is silently ignored?
+> 
+> Isn't this a problem?
 > 
 
-In my opinion, userspace program cares about it because the kernel behaves
-differently for different device types.
-userspace can get the device type of the interface through ioctl, such as
-the following code weblink:
-https://cs.android.com/android/platform/superproject/+/master:system/netd/server/OffloadUtils.cpp;drc=master;l=41?q=ARPHRD_RAWIP&ss=android%2Fplatform%2Fsuperproject&start=11
+It's fine as the command line parameter is used as debugging purpose.
+Besides, it can be changed by writing to the following file:
 
-> I'm also curious why this isn't an issue for the ipa/rmnet (Qualcomm)
-> modem drivers. There's probably a good reason, but would be good to
-> know what that is from Alex Elder or Loic or Bjorn...
-> 
-> Dan
+    /sys/module/page_reporting/parameters/page_reporting_order
 
-MediaTek and Qualcomm has different hardware or modem design.
-For the MediaTek platform, device send the RS message that generated by
-the kernel to the GGSN.
+
+>>   	/* initialize state and work structures */
+>>   	atomic_set(&prdev->state, PAGE_REPORTING_IDLE);
+>>   	INIT_DELAYED_WORK(&prdev->work, &page_reporting_process);
+>> -- 
+>> 2.23.0
 
 Thanks,
-Rocco
+Gavin
+
