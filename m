@@ -2,126 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD5A3B3A3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AAF3B3A41
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbhFYArp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 20:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
+        id S232978AbhFYAt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 20:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhFYAro (ORCPT
+        with ESMTP id S229521AbhFYAt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 20:47:44 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4905FC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:45:24 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id k11so10619425ioa.5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:45:24 -0700 (PDT)
+        Thu, 24 Jun 2021 20:49:56 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4115C061574;
+        Thu, 24 Jun 2021 17:47:35 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id q192so6661342pfc.7;
+        Thu, 24 Jun 2021 17:47:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=OgwpmCa+NGiSxZz9RWiJKCvZzwfB/ohD5NMjDOTctOY=;
-        b=oWOgFRreIS+mHG14+LHjt1kSti9Ox9ff76J+4GC4bmLXEr9DRfn5RwTi/YHwIxph4i
-         HkPwh4lLT4elGpQ99ioAK/s6YhcvWwYZb4V8pVDt0qyEGBdiPhFtCzt9oGn9fOV5Cccu
-         viheBNKt4x8TMH7rpITCvnRLENeveGdYzjXRe5m4vIfJ3lvxVpNbmaCMxNxZZ6l0Xujo
-         6We6Ps+OC6sY/ONgMeGkU58RbCpFFSUrWof0hQXTKutyGQoJvge7OmYuQs1Qu2hGcdDf
-         VrCZUexfPz65+aEu1r4cQmhNtDSURDHMio6TgyN7Cfd9zPOAUQMrMHphQhkDMv/WI3v1
-         1gSg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=8B//zImoFREh/Fl/sfCs/fTYt5LIydvNJamavm5crDo=;
+        b=fChoQ8YOJIJWOvywMQFN+OeVkjRs1GAQiSUaVGPXAWzbGNwgVtGIArBYmVPF2iMANZ
+         Kjb+jS4jhh7fg/kTNhHUcyj4cdqijHKYmipL0Ez2/sNyzDluX6qcpQfbVzZX46wSEKe6
+         WB1qzEFHdeqEczVjSvGI35HHNdI9uwIXTewNcuFVR/FQAfm/BXBdmnycKRrdZfOVXYzb
+         4JtBEh1QzIziVqij7djz98e6E4xEM3MrQuRphCKQS4LgI9cm+94rVGQvSqryFG7XxHpG
+         zW9V6LaeuukLBn5oCTGz0LGOqzbR8pXpZgpeTNR6WV7GBpMyga1bLSGGrfRcCIlNZlWJ
+         dRvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OgwpmCa+NGiSxZz9RWiJKCvZzwfB/ohD5NMjDOTctOY=;
-        b=XlcdHsgoaACJYt4YLe5aEmnEKtHxvmwXVvewvmGMG7ipwtkBCj3ftzvymOwIzX36aL
-         pnphsTeF0g3tqiOC5ANnSZuxThP/mS/6uB9YlDRTtjn0Ra48huRjeLNrBfFcdm/OzYtw
-         EwCAjZQB6HABmfDuKISj3JLdFahMn25Bo+bqd8ptHlStIMiI4O/dD7ibXZttDKrb89U9
-         fJnXN6BFvfGIVGA5xWIarOmZ9yXJiInzXafLe+rxh+OxTsNpw3gMGHXOaS1d/+26Rrit
-         14R++vOeb5qKy7fjGudxjy9fy3z6rZoWFCRcvtDwP21LfcDF1qoYEZyGu59bTnYZzliJ
-         SV0w==
-X-Gm-Message-State: AOAM531FrEpTLrMQpOfHML4T3rKpm0tBZ9qVH3NLuTRHGYD+VcaCSaaE
-        a9Mjye5lPsXGFhp0wzyghxdbtC/xyW3hRg==
-X-Google-Smtp-Source: ABdhPJwHPvLnB6E5qRf562QB5T/8z3YpVo9e9usZFY5ycExpYeg6eKONunZzYkifJiGdlaMicpkyAg==
-X-Received: by 2002:a05:6602:2433:: with SMTP id g19mr6468394iob.100.1624581923556;
-        Thu, 24 Jun 2021 17:45:23 -0700 (PDT)
-Received: from [192.168.1.134] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id r6sm2128965ioh.27.2021.06.24.17.45.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 17:45:23 -0700 (PDT)
-Subject: Re: [PATCH v4] io_uring: reduce latency by reissueing the operation
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <9e8441419bb1b8f3c3fcc607b2713efecdef2136.1624364038.git.olivier@trillion01.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <16c91f57-9b6f-8837-94af-f096d697f5fb@kernel.dk>
-Date:   Thu, 24 Jun 2021 18:45:21 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=8B//zImoFREh/Fl/sfCs/fTYt5LIydvNJamavm5crDo=;
+        b=jglx1dvgGPH1deuK8/dx9TeA4ZaZqQu8SBjFoR+xE02hRytKfLbthUEfLodD8B1jLI
+         dcSv+8+tP3KBhZmqWPeBsDvP3vOKqgviLLTBP0QUhonSxefmlL/TnufxcpSoiNEJgcJE
+         GVeFjhge+MxBD7XWHqWsKBekcgspitVfcSlPtHspWCXjLxTDZDjJ3jxRLR+Zu6iUDJBm
+         SKGK4cYWh0mb0l5oOydyAmYI+FJEM62yM63Dn1IUF+aNlGG1WLUN1eRTDj6acwquyp7i
+         aB0hGCjUty/m/fny+xJhsDyPmw7kgooHjFcdg+VjOC3UKgH03ip9E48yOxPS18ol7+DQ
+         QrmQ==
+X-Gm-Message-State: AOAM533v/gp3y4SixZCFjX417T/UdN/9UQtUjd/ZKZ+IBfPJlwnL1moK
+        /NbZxzOBoAqRe76BVRRhX6A=
+X-Google-Smtp-Source: ABdhPJwON/Fs62ZvX5ajW1fuMBTnaaYI5fvdSlynTEE/cGVNseETu0dhn7AIV11BWy83gDWQW1Cx0A==
+X-Received: by 2002:a63:904b:: with SMTP id a72mr7146183pge.66.1624582055212;
+        Thu, 24 Jun 2021 17:47:35 -0700 (PDT)
+Received: from nuc ([202.133.196.196])
+        by smtp.gmail.com with ESMTPSA id x20sm3957374pfh.112.2021.06.24.17.47.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 17:47:34 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 08:47:30 +0800
+From:   Du Cheng <ducheng2@gmail.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: Suppress WARN on inability to sanitize EPC if
+ ksgxd is stopped
+Message-ID: <YNUnoqUsU2b1GC2C@nuc>
+References: <20210616004458.2192889-1-seanjc@google.com>
+ <YMmUHRGwXSIYJTDf@nuc>
+ <20210623133219.v6c62zwtj5qowib3@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <9e8441419bb1b8f3c3fcc607b2713efecdef2136.1624364038.git.olivier@trillion01.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210623133219.v6c62zwtj5qowib3@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/21 6:17 AM, Olivier Langlois wrote:
-> It is quite frequent that when an operation fails and returns EAGAIN,
-> the data becomes available between that failure and the call to
-> vfs_poll() done by io_arm_poll_handler().
+Le Wed, Jun 23, 2021 at 04:32:19PM +0300, Jarkko Sakkinen a écrit :
+> On Wed, Jun 16, 2021 at 02:03:09PM +0800, Du Cheng wrote:
+> > Le Tue, Jun 15, 2021 at 05:44:58PM -0700, Sean Christopherson a écrit :
+> > > Don't WARN on having unsanitized EPC pages if ksgxd is stopped early,
+> > > e.g. if sgx_init() realizes there will be no downstream consumers of EPC.
+> > > If ksgxd is stopped early, EPC pages may be left on the dirty list, but
+> > > that's ok because ksgxd is only stopped if SGX initialization failed or
+> > > if the kernel is going down.  In either case, the EPC won't be used.
+> > > 
+> > > This bug was exposed by the addition of KVM support, but has existed and
+> > > was hittable since the original sanitization code was added.  Prior to
+> > > adding KVM support, if Launch Control was not fully enabled, e.g. when
+> > > running on older hardware, sgx_init() bailed immediately before spawning
+> > > ksgxd because X86_FEATURE_SGX was cleared if X86_FEATURE_SGX_LC was
+> > > unsupported.
+> > > 
+> > > With KVM support, sgx_drv_init() handles the X86_FEATURE_SGX_LC check
+> > > manually, so now there's any easy-to-hit case where sgx_init() will spawn
+> > > ksgxd and _then_ fail to initialize, which results in sgx_init() stopping
+> > > ksgxd before it finishes sanitizing the EPC.
+> > > 
+> > > Prior to KVM support, the bug was much harder to hit because it basically
+> > > required char device registration to fail.
+> > > 
+> > > Reported-by: Du Cheng <ducheng2@gmail.com>
+> > > Fixes: e7e0545299d8 ("x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections")
+> > > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > > ---
+> > > 
+> > > Lightly tested due to lack of hardware.  I hacked the flow to verify that
+> > > stopping early will leave work pending, and that rechecking should_stop()
+> > > suppress the resulting WARN.
+> > > 
+> > >  arch/x86/kernel/cpu/sgx/main.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> > > index ad904747419e..fbad2b9625a5 100644
+> > > --- a/arch/x86/kernel/cpu/sgx/main.c
+> > > +++ b/arch/x86/kernel/cpu/sgx/main.c
+> > > @@ -425,7 +425,7 @@ static int ksgxd(void *p)
+> > >  	__sgx_sanitize_pages(&sgx_dirty_page_list);
+> > >  
+> > >  	/* sanity check: */
+> > > -	WARN_ON(!list_empty(&sgx_dirty_page_list));
+> > > +	WARN_ON(!list_empty(&sgx_dirty_page_list) && !kthread_should_stop());
+> > >  
+> > >  	while (!kthread_should_stop()) {
+> > >  		if (try_to_freeze())
+> > > -- 
+> > > 2.32.0.272.g935e593368-goog
+> > > 
+> > 
+> > I applied this patch on 5.13-rc6, and it no longer causes to trigger WARN_ON()
+> > on my NUC:
+> > 
+> > ```
+> > 
+> > [    0.669411] PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
+> > [    0.669412] software IO TLB: mapped [mem 0x0000000017cb9000-0x000000001bcb9000] (64MB)
+> > [    0.672788] platform rtc_cmos: registered platform RTC device (no PNP device found)
+> > [    0.672805] sgx: EPC section 0x30200000-0x35f7ffff
+> > [    0.674239] Initialise system trusted keyrings
+> > [    0.674254] Key type blacklist registered
+> > 
+> > ```
+> > 
+> > Regards,
+> > Du Cheng
 > 
-> Detecting the situation and reissuing the operation is much faster
-> than going ahead and push the operation to the io-wq.
+> Can you thus give a tested-by for this?
 > 
-> Performance improvement testing has been performed with:
-> Single thread, 1 TCP connection receiving a 5 Mbps stream, no sqpoll.
-> 
-> 4 measurements have been taken:
-> 1. The time it takes to process a read request when data is already available
-> 2. The time it takes to process by calling twice io_issue_sqe() after vfs_poll() indicated that data was available
-> 3. The time it takes to execute io_queue_async_work()
-> 4. The time it takes to complete a read request asynchronously
-> 
-> 2.25% of all the read operations did use the new path.
-> 
-> ready data (baseline)
-> avg	3657.94182918628
-> min	580
-> max	20098
-> stddev	1213.15975908162
-> 
-> reissue	completion
-> average	7882.67567567568
-> min	2316
-> max	28811
-> stddev	1982.79172973284
-> 
-> insert io-wq time
-> average	8983.82276995305
-> min	3324
-> max	87816
-> stddev	2551.60056552038
-> 
-> async time completion
-> average	24670.4758861127
-> min	10758
-> max	102612
-> stddev	3483.92416873804
-> 
-> Conclusion:
-> On average reissuing the sqe with the patch code is 1.1uSec faster and
-> in the worse case scenario 59uSec faster than placing the request on
-> io-wq
-> 
-> On average completion time by reissuing the sqe with the patch code is
-> 16.79uSec faster and in the worse case scenario 73.8uSec faster than
-> async completion.
+> /Jarkko
 
-Thanks for respinning with a (much) better commit message. Applied.
+Certainly.
 
--- 
-Jens Axboe
+Tested-by: Du Cheng <ducheng2@gmail.com>
 
