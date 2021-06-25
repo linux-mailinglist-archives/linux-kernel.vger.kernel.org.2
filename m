@@ -2,103 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666873B40E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 264263B40E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231410AbhFYJxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbhFYJx1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:53:27 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A89C061760;
-        Fri, 25 Jun 2021 02:51:05 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id b3so9896933wrm.6;
-        Fri, 25 Jun 2021 02:51:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=i3RskP7ABczDPV/xayjgJz+jTz8nS+XbtsVOlwA5TU0=;
-        b=OcddEErbfOY6ExeISiSk7YFKrdvt8iiNzITQZIQpXEkMFnsJBVqW6omdPQrj+MI4t+
-         RQxMHVEsgRlByVTOZLNnx8ReJ5cL6+GL4mfOd29Q6fKLvHTOoJGy/JtTc+kjoUaErCMY
-         MbpC6MfUnN93kmPSghr5n0mdemefm14+Hke2HLaB5JxDQSO9JVYY1SD3M792mgnld594
-         /oR2Wxdaq2z2oRKgO5NCU08fOKj5PIjCwFb/a8SX0aeOH8dr2VoNRXbUvdaspjq93OFt
-         Gs7R5u9rjXb1Yjvs8rUHbtg6qvYUaTD8GqGlbB9g2wpu8fjfIXCjju4FMm+HT8HZEMNy
-         oLeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=i3RskP7ABczDPV/xayjgJz+jTz8nS+XbtsVOlwA5TU0=;
-        b=UVQFsjju3loVMg43Ztnw44EfstAqpm4E1YZIVsLGhUG0MjJhgkFnlFVzs/q7yNBB/W
-         DNSjKFvzffEkf4osk/CBzh7GdWOpPPVppYLoaeUbcfaJzrIpYlNqkUG4f5/T35h0dgTm
-         b118HLOpFsn1yWDXsGQ9d03HVMMGCl1+1sp86/Tf7wPK4t0eiTdWgNaV7X7OZ3cTbCIZ
-         sPcsxetusory+a/udUXpSpacdTTNKixbCohC89JxFfnOdEZ0L2SR0Xch5Ttm9q8EbUtI
-         sbG1KldN4lA/R1rwD30ud/U4hEf8tjjI7XG1merytcHANxER6FWt4evzmvcxp3j9YgHq
-         /G1A==
-X-Gm-Message-State: AOAM531M2JWhTbFqxY7x6sjX1eIbOE6Z66hNC2mg6zWbMxbp5ZUsOMyE
-        tIMk8xRe7X72auTnx2rPTvo=
-X-Google-Smtp-Source: ABdhPJyS2uk3MmSY2uN1krFSfu+xoBlyO0DZF7uSh/HopQ+aQVgpEfA/mvIw5qtHdIqKnhxkRiipWw==
-X-Received: by 2002:a5d:638b:: with SMTP id p11mr10104727wru.380.1624614664376;
-        Fri, 25 Jun 2021 02:51:04 -0700 (PDT)
-Received: from cluster5 ([80.76.206.81])
-        by smtp.gmail.com with ESMTPSA id t11sm5628277wrz.7.2021.06.25.02.51.03
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Fri, 25 Jun 2021 02:51:03 -0700 (PDT)
-From:   Matthew Hagan <mnhagan88@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Matthew Hagan <mnhagan88@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v4 4/4] dt-bindings: arm: bcm: NSP: add Meraki MX64/MX65
-Date:   Fri, 25 Jun 2021 10:49:51 +0100
-Message-Id: <20210625095000.3358973-5-mnhagan88@gmail.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210625095000.3358973-1-mnhagan88@gmail.com>
-References: <20210625095000.3358973-1-mnhagan88@gmail.com>
+        id S231406AbhFYJxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:53:36 -0400
+Received: from mga01.intel.com ([192.55.52.88]:37060 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231417AbhFYJxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 05:53:34 -0400
+IronPort-SDR: V2eKwfBIKMKGnaetBzcg9iMk2Ois7WB5kTUP5wIKqdm7R6iBMlxSC49Puzow7OF+s0skhnVCFY
+ 86Op8hESV9Jg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="229236326"
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="229236326"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 02:51:13 -0700
+IronPort-SDR: FR+/45s0NXxOPKeJXkvJ7pbsi3bIt+RopVJzBqpX/90W+xlF/radYKIfRX41XjYP18kShxiQWl
+ qsGo5Q63ZVKw==
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="488124270"
+Received: from junyuton-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.170.209])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 02:51:09 -0700
+Date:   Fri, 25 Jun 2021 17:51:06 +0800
+From:   Yu Zhang <yu.c.zhang@linux.intel.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
+Subject: Re: [PATCH 09/54] KVM: x86/mmu: Unconditionally zap unsync SPs when
+ creating >4k SP at GFN
+Message-ID: <20210625095106.mvex6n23lsnnsowe@linux.intel.com>
+References: <20210622175739.3610207-1-seanjc@google.com>
+ <20210622175739.3610207-10-seanjc@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622175739.3610207-10-seanjc@google.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bindings for the Meraki MX64/MX65 series.
+While reading the sync pages code, I just realized that patch
+https://lkml.org/lkml/2021/2/9/212 has not be merged in upstream(
+though it is irrelevant to this one). May I ask the reason? Thanks!
 
-Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
----
- Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml b/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml
-index 78dfa315f3d0..7d184ba7d180 100644
---- a/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml
-+++ b/Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml
-@@ -62,6 +62,12 @@ properties:
-           - enum:
-               - brcm,bcm958625hr
-               - brcm,bcm958625k
-+              - meraki,mx64
-+              - meraki,mx64-a0
-+              - meraki,mx64w
-+              - meraki,mx64w-a0
-+              - meraki,mx65
-+              - meraki,mx65w
-           - const: brcm,bcm58625
-           - const: brcm,nsp
- 
--- 
-2.26.3
+B.R.
+Yu
 
