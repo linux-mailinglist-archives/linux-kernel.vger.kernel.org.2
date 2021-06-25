@@ -2,268 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7D23B44E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02233B44E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbhFYN5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 09:57:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
+        id S231455AbhFYN6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 09:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbhFYN5B (ORCPT
+        with ESMTP id S229573AbhFYN62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 09:57:01 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41FA6C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 06:54:38 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id j1so10675268wrn.9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 06:54:38 -0700 (PDT)
+        Fri, 25 Jun 2021 09:58:28 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17C8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 06:56:07 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id g22so12660602iom.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 06:56:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=immu-ne.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OmCF3EXb79cyqT+KimnXpzyEkNABaXMyM+9GlcyEQiU=;
-        b=Cn7TowtSV9T4Ntsf6eY0RiSHWGXO4sfKEqPPbknw9K5xKGNq+AetNtec17dzLp/8Wa
-         bHEW+XqiCCVLGF6v2oddg0LDr5zOtqaoPqME7vc6j74DKpvxSLtI+d1ZrhrxvmrajPOG
-         7mz8M/YN3e2s3CIdfm5UAb8Bs/AapS0BW8EakgBpN/7h9kEuBwkkECzdcYzl4jHwbvcU
-         jIfVEaEyOB01zV7w1BMp+BUS1z2YuPGPw0cBl/TKwHGzV426WGDsxgnKDQvaOKNPiDTQ
-         C4xy6S1UgU0fCIK8Kn/XhpT7NOSDRL/n8j1W3ojZq2UeDg/THakKPft0RDIBhOOAO/vC
-         6x7w==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=81n+GTbzc4AbJWlslSC8YP9E9oQstMauU2nWKw3pJ48=;
+        b=C07lXPGcgLjNS5ptvUVl4aP6RXrfXrW/QrTdytAQHQ8nV0L6nBltmmnYnVpROwsfFc
+         tinKHD2qufaHNTg7fiRQFhNPl8NTFhdxWSAcjllSlxyLhvaFxueRyP+Ow34iRQug1Ymx
+         mrRPq11+rdnuXs0/y4mVuz9p7TMp8UiI4Ij6g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OmCF3EXb79cyqT+KimnXpzyEkNABaXMyM+9GlcyEQiU=;
-        b=CyAlFyydGQ2fJH5zbJRPl4mSLGsN2+Yt6g7r1Z88qVTOo5yz23A1s4hvzb4LdbM3d7
-         lT/BZei+2Kummufy3U+ouRpa9GM15PqPRJkNsrhL3EADupHDc4Oq4b6B5xgXFydePq3v
-         pz9szqrvK0tu7eTya7OD95uuQYElQCSxueiTz+iN6VjRs2R0kvwg07qL8FD6VDv92x6a
-         4uPA2py6VtaK5gvNtGwszIdnLbsGzKEdoMznyROY6e8efxlbGKEYbX9OasYvdwUwES51
-         xjEA6OEAqdXLY/RjPynuOj3+MuE+YqXhMszHEqa6/c+Rw/hzZJlgHxCLPuUqXbGcW6Hx
-         3PPw==
-X-Gm-Message-State: AOAM533whZY7D3PPpA/gCAVhZX4jpX8FoKKObwmsnJoP4b2NjJFuqYEo
-        lug8Az0MjpMDon8Peef3CjcCCA==
-X-Google-Smtp-Source: ABdhPJwZI6fBG7TGVWyWkr7vFFGShuSNny50y2wd79o8ixzJqk6Oyg+ubbTUUbDe98vdjzSnurasTA==
-X-Received: by 2002:adf:e485:: with SMTP id i5mr11214582wrm.214.1624629277257;
-        Fri, 25 Jun 2021 06:54:37 -0700 (PDT)
-Received: from [172.25.20.242] (b2b-78-94-0-50.unitymedia.biz. [78.94.0.50])
-        by smtp.gmail.com with ESMTPSA id f13sm6139535wrt.86.2021.06.25.06.54.36
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=81n+GTbzc4AbJWlslSC8YP9E9oQstMauU2nWKw3pJ48=;
+        b=de9y35QEAFHQKyTE2wrw3nKZe09m738UUFclDcUk1IIW2Jc7eaDSdochvlDX6TbInQ
+         Or/tB/d5iZYJ9Rcysc+PWah5R42A/haFeWMDGx3R8UYvOBaOWi1cUPnrBJhxH+M0oTK8
+         50U5O9qA65hi0ntGFZOXbkudhpCBnGHvAKdecGfMwd6OmYketMeTw4cOX2QfjwLu/722
+         8gFBaJXVefFjW2VNcdpeNAsqD+bRFOk/Hq3dxtk/QdiFKNQ1M5YDtT6sjIO92jP9beTe
+         seltOgsKIc4Yz/TAmSiRx7iU8Rv/PHtPV71g5FXhNGyKDbEDS/r3L9EN2hnvYrh/7DDP
+         5r6g==
+X-Gm-Message-State: AOAM5308qtzz/tPVfdUb4jY4gB/fYXAq5dvLqbHw9WQTKy3JKL1T4EC8
+        gWWF/81CbU050V0/qoF5Qfz2+PcXKWL+iw==
+X-Google-Smtp-Source: ABdhPJwwsAiGDL/cohjvTg0pxKyggFtGXXkqjlR2RaIIpnRvpOInAqc6Q//3/GJKgkNxJ8Q/uD5F1g==
+X-Received: by 2002:a6b:4905:: with SMTP id u5mr8525288iob.55.1624629367131;
+        Fri, 25 Jun 2021 06:56:07 -0700 (PDT)
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com. [209.85.166.170])
+        by smtp.gmail.com with ESMTPSA id a6sm3471738ili.21.2021.06.25.06.56.06
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 06:54:37 -0700 (PDT)
-Subject: Re: [PATCH] firmware: export x86_64 platform flash bios region via
- sysfs
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        philipp.deppenwiese@immu.ne, platform-driver-x86@vger.kernel.org
-References: <20210622142334.14883-1-hans-gert.dahmen@immu.ne>
- <YNJB4HoRa6qWgOJC@kroah.com>
-From:   Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
-Message-ID: <8b29585e-ace7-35ef-0317-99663f82024c@immu.ne>
-Date:   Fri, 25 Jun 2021 15:54:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 25 Jun 2021 06:56:06 -0700 (PDT)
+Received: by mail-il1-f170.google.com with SMTP id s19so9780901ilj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 06:56:06 -0700 (PDT)
+X-Received: by 2002:a92:2a05:: with SMTP id r5mr7197734ile.69.1624629365800;
+ Fri, 25 Jun 2021 06:56:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YNJB4HoRa6qWgOJC@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210618122923.385938-1-ribalda@chromium.org> <20210618122923.385938-22-ribalda@chromium.org>
+ <CANiDSCvNvJ_xyuqgvvFv6aZGSm=H-9=SeV6wp5C_0-acm+wC=A@mail.gmail.com> <820809c2-a564-8a79-c279-7570c3bcc801@xs4all.nl>
+In-Reply-To: <820809c2-a564-8a79-c279-7570c3bcc801@xs4all.nl>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Fri, 25 Jun 2021 15:55:54 +0200
+X-Gmail-Original-Message-ID: <CANiDSCvwQvDYKNqxAZjtAKY6CGNrnn21LMoNnsg7FrrDiooi-A@mail.gmail.com>
+Message-ID: <CANiDSCvwQvDYKNqxAZjtAKY6CGNrnn21LMoNnsg7FrrDiooi-A@mail.gmail.com>
+Subject: Re: [PATCH v10 21/21] media: uvcvideo: Return -EACCES to inactive controls
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, tfiga@chromium.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Hans
 
-this is the first time I am working on the Linux kernel, so please 
-excuse that I overlooked some things.
+On Fri, 25 Jun 2021 at 13:07, Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+>
+> On 25/06/2021 12:29, Ricardo Ribalda wrote:
+> > Hi Hans
+> >
+> > Did you have some hardware that did not work fine without this patch?
+> > Am I remembering correctly?
+>
+> Yes, that's correct. It's one of my webcams, but I can't remember which one
+> it is. You probably want me to test this v10?
+>
+> Regards,
 
-On 22.06.21 22:02, Greg KH wrote:
-> On Tue, Jun 22, 2021 at 04:23:34PM +0200, Hans-Gert Dahmen wrote:
->> Make the 16MiB long memory-mapped BIOS region of the platform SPI flash
->> on X86_64 system available via /sys/kernel/firmware/flash_mmap/bios_region
->> for pen-testing, security analysis and malware detection on kernels
->> which restrict module loading and/or access to /dev/mem.
->>
->> It will be used by the open source Converged Security Suite.
->> https://github.com/9elements/converged-security-suite
->>
->> Signed-off-by: Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
->> ---
->>   drivers/firmware/Kconfig             |  9 ++++
->>   drivers/firmware/Makefile            |  1 +
->>   drivers/firmware/x86_64_flash_mmap.c | 65 ++++++++++++++++++++++++++++
->>   3 files changed, 75 insertions(+)
->>   create mode 100644 drivers/firmware/x86_64_flash_mmap.c
->>
->> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
->> index db0ea2d2d75a..bd77ca2b4fa6 100644
->> --- a/drivers/firmware/Kconfig
->> +++ b/drivers/firmware/Kconfig
->> @@ -296,6 +296,15 @@ config TURRIS_MOX_RWTM
->>   	  other manufacturing data and also utilize the Entropy Bit Generator
->>   	  for hardware random number generation.
->>   
->> +config X86_64_FLASH_MMAP
->> +	tristate "Export platform flash memory-mapped BIOS region"
->> +	depends on X86_64
->> +	help
->> +	  Export the memory-mapped BIOS region of the platform SPI flash as
->> +	  a read-only sysfs binary attribute on X86_64 systems. The first 16MiB
->> +	  will be accessible via /sys/kernel/firmware/flash_mmap/bios_region
->> +	  for security and malware analysis for example.
-> 
-> Module name information here?
-> 
-> Can this be auto-loaded based on hardware-specific values somewhere?
-> Otherwise it just looks like if this module loads, it will "always
-> work"?
-> 
-> And why would you want to map the bios into userspace?
-> 
-> What bios, UEFI?
-> 
-> And you need a Documentation/ABI/ update for new sysfs files.
+That would be awesome. Thanks!
 
-The core use-case is security analysis and detecting BIOS/UEFI malware. 
-It is going to be used by the open-source Converged Security Suite 
-developed by Facebook, Google and 9elements security. The CSS dissects 
-UEFI binaries and checks it for common vulnerabilities.
+>
+>         Hans
+>
+> >
+> > Thanks!
+> >
+> > On Fri, 18 Jun 2021 at 14:29, Ricardo Ribalda <ribalda@chromium.org> wrote:
+> >>
+> >> If a control is inactive return -EACCES to let the userspace know that
+> >> the value will not be applied automatically when the control is active
+> >> again.
+> >>
+> >> Also make sure that query_v4l2_ctrl doesn't return an error.
+> >>
+> >> Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> >> Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> >> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> >> ---
+> >>  drivers/media/usb/uvc/uvc_ctrl.c | 73 +++++++++++++++++++++-----------
+> >>  1 file changed, 49 insertions(+), 24 deletions(-)
+> >>
+> >> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> >> index da44d5c0b9ad..4f80c06d3c43 100644
+> >> --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> >> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> >> @@ -1104,13 +1104,36 @@ static const char *uvc_map_get_name(const struct uvc_control_mapping *map)
+> >>         return "Unknown Control";
+> >>  }
+> >>
+> >> +static bool uvc_ctrl_is_inactive(struct uvc_video_chain *chain,
+> >> +                                struct uvc_control *ctrl,
+> >> +                                struct uvc_control_mapping *mapping)
+> >> +{
+> >> +       struct uvc_control_mapping *master_map = NULL;
+> >> +       struct uvc_control *master_ctrl = NULL;
+> >> +       s32 val;
+> >> +       int ret;
+> >> +
+> >> +       if (!mapping->master_id)
+> >> +               return false;
+> >> +
+> >> +       __uvc_find_control(ctrl->entity, mapping->master_id, &master_map,
+> >> +                          &master_ctrl, 0);
+> >> +
+> >> +       if (!master_ctrl || !(master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR))
+> >> +               return false;
+> >> +
+> >> +       ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
+> >> +       if (ret < 0 || val == mapping->master_manual)
+> >> +               return false;
+> >> +
+> >> +       return true;
+> >> +}
+> >> +
+> >>  static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+> >>         struct uvc_control *ctrl,
+> >>         struct uvc_control_mapping *mapping,
+> >>         struct v4l2_queryctrl *v4l2_ctrl)
+> >>  {
+> >> -       struct uvc_control_mapping *master_map = NULL;
+> >> -       struct uvc_control *master_ctrl = NULL;
+> >>         const struct uvc_menu_info *menu;
+> >>         unsigned int i;
+> >>
+> >> @@ -1126,18 +1149,8 @@ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+> >>         if (!(ctrl->info.flags & UVC_CTRL_FLAG_SET_CUR))
+> >>                 v4l2_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
+> >>
+> >> -       if (mapping->master_id)
+> >> -               __uvc_find_control(ctrl->entity, mapping->master_id,
+> >> -                                  &master_map, &master_ctrl, 0);
+> >> -       if (master_ctrl && (master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR)) {
+> >> -               s32 val;
+> >> -               int ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
+> >> -               if (ret < 0)
+> >> -                       return ret;
+> >> -
+> >> -               if (val != mapping->master_manual)
+> >> -                               v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
+> >> -       }
+> >> +       if (uvc_ctrl_is_inactive(chain, ctrl, mapping))
+> >> +               v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
+> >>
+> >>         if (!ctrl->cached) {
+> >>                 int ret = uvc_ctrl_populate_cache(chain, ctrl);
+> >> @@ -1660,25 +1673,37 @@ static int uvc_ctrl_commit_entity(struct uvc_device *dev,
+> >>         return 0;
+> >>  }
+> >>
+> >> -static int uvc_ctrl_find_ctrl_idx(struct uvc_entity *entity,
+> >> -                                 struct v4l2_ext_controls *ctrls,
+> >> -                                 struct uvc_control *uvc_control)
+> >> +static int uvc_ctrl_commit_error(struct uvc_video_chain *chain,
+> >> +                                struct uvc_entity *entity,
+> >> +                                struct v4l2_ext_controls *ctrls,
+> >> +                                struct uvc_control *err_control,
+> >> +                                int ret)
+> >>  {
+> >>         struct uvc_control_mapping *mapping;
+> >>         struct uvc_control *ctrl_found;
+> >>         unsigned int i;
+> >>
+> >> -       if (!entity)
+> >> -               return ctrls->count;
+> >> +       if (!entity) {
+> >> +               ctrls->error_idx = ctrls->count;
+> >> +               return ret;
+> >> +       }
+> >>
+> >>         for (i = 0; i < ctrls->count; i++) {
+> >>                 __uvc_find_control(entity, ctrls->controls[i].id, &mapping,
+> >>                                    &ctrl_found, 0);
+> >> -               if (uvc_control == ctrl_found)
+> >> -                       return i;
+> >> +               if (err_control == ctrl_found)
+> >> +                       break;
+> >>         }
+> >> +       ctrls->error_idx = i;
+> >> +
+> >> +       /* We could not find the control that failed. */
+> >> +       if (i == ctrls->count)
+> >> +               return ret;
+> >> +
+> >> +       if (uvc_ctrl_is_inactive(chain, err_control, mapping))
+> >> +               return -EACCES;
+> >>
+> >> -       return ctrls->count;
+> >> +       return ret;
+> >>  }
+> >>
+> >>  int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
+> >> @@ -1701,8 +1726,8 @@ int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
+> >>                 uvc_ctrl_send_events(handle, ctrls->controls, ctrls->count);
+> >>  done:
+> >>         if (ret < 0 && ctrls)
+> >> -               ctrls->error_idx = uvc_ctrl_find_ctrl_idx(entity, ctrls,
+> >> -                                                         err_ctrl);
+> >> +               ret = uvc_ctrl_commit_error(chain, entity, ctrls, err_ctrl,
+> >> +                                           ret);
+> >>         mutex_unlock(&chain->ctrl_mutex);
+> >>         return ret;
+> >>  }
+> >> --
+> >> 2.32.0.288.g62a8d224e6-goog
+> >>
+> >
+> >
+>
 
-The current state is that there are some drivers to access the SPI flash 
-bit they are in a questionable state and often don't work. Using this 
-memory mapped region works most of the time without requiring a real 
-hardware driver and significantly lowers the barrier to asses UEFI 
-security of systems deployed in the wild.
 
-In another mail I have shown that this can safely be done on Intel 
-systems so I will make this module load on Intel systems for now and 
-also fix the documentation.
-
-> 
-> 
->> +
->>   source "drivers/firmware/broadcom/Kconfig"
->>   source "drivers/firmware/google/Kconfig"
->>   source "drivers/firmware/efi/Kconfig"
->> diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
->> index 5e013b6a3692..eb7483c5a2ac 100644
->> --- a/drivers/firmware/Makefile
->> +++ b/drivers/firmware/Makefile
->> @@ -21,6 +21,7 @@ obj-$(CONFIG_QCOM_SCM)		+= qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
->>   obj-$(CONFIG_TI_SCI_PROTOCOL)	+= ti_sci.o
->>   obj-$(CONFIG_TRUSTED_FOUNDATIONS) += trusted_foundations.o
->>   obj-$(CONFIG_TURRIS_MOX_RWTM)	+= turris-mox-rwtm.o
->> +obj-$(CONFIG_X86_64_FLASH_MMAP)	+= x86_64_flash_mmap.o
->>   
->>   obj-y				+= arm_scmi/
->>   obj-y				+= broadcom/
->> diff --git a/drivers/firmware/x86_64_flash_mmap.c b/drivers/firmware/x86_64_flash_mmap.c
->> new file mode 100644
->> index 000000000000..f9d871a8b516
->> --- /dev/null
->> +++ b/drivers/firmware/x86_64_flash_mmap.c
->> @@ -0,0 +1,65 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Export the memory-mapped BIOS region of the platform SPI flash as
->> + * a read-only sysfs binary attribute on X86_64 systems.
->> + *
->> + * Copyright © 2021 immune GmbH
->> + */
->> +
->> +#include <linux/version.h>
->> +#include <linux/init.h>
->> +#include <linux/module.h>
->> +#include <linux/io.h>
->> +#include <linux/sysfs.h>
->> +#include <linux/kobject.h>
->> +
->> +#define FLASH_REGION_START 0xFF000000ULL
->> +#define FLASH_REGION_SIZE 0x1000000ULL
-> 
-> Where do these values come from?
-
-I have listed the relevant Intel datasheets in another mail in this thread.
-
-> 
->> +#define FLASH_REGION_MASK (FLASH_REGION_SIZE - 1)
->> +
->> +struct kobject *kobj_ref;
-> 
-> Only 1?  Not per-hardware-device?
-
-Yes, there is only one BIOS/UEFI that is configured to actively boot the 
-system. This method is not suitable to access shadow flash chips or 
-other wild things that mainboard manufacturers did in the past.
-
-> 
->> +
->> +static ssize_t bios_region_read(struct file *file, struct kobject *kobj,
->> +				struct bin_attribute *bin_attr, char *buffer,
->> +				loff_t offset, size_t count)
->> +{
->> +	resource_size_t pa = FLASH_REGION_START + (offset & FLASH_REGION_MASK);
->> +	void __iomem *va = ioremap(pa, PAGE_SIZE);
-> 
-> Why PAGE_SIZE?
-
-Please correct me if I'm wrong: the documentation is sparse and from 
-what I could see in the sources it appears that binary attributes pass a 
-page sized buffer around. I was assuming that the offset parameter would 
-be page aligned.
-
-> 
->> +
->> +	memcpy_fromio(buffer, va, PAGE_SIZE);
->> +	iounmap(va);
->> +
->> +	return min(count, PAGE_SIZE);
->> +}
->> +
->> +BIN_ATTR_RO(bios_region, FLASH_REGION_SIZE);
->> +
->> +static int __init flash_mmap_init(void)
->> +{
->> +	int ret = 0;
->> +
->> +	kobj_ref = kobject_create_and_add("flash_mmap", firmware_kobj);
->> +	ret = sysfs_create_bin_file(kobj_ref, &bin_attr_bios_region);
-> 
-> You just raced with userspace and lost :(
-
-I have taken inspiration from other modules. The documentation doesn't 
-say a lot. Could somebody point me to a proper example somewhere in the 
-source?
-
-> 
-> Please make a sysfs attribute part of a default "group" for a kobject.
-> But as you are using a "raw" kobject here, that feels really wrong to
-> me.  Isn't this some sort of platform device really?  Why not go that
-> way, why tie this to the firmware subsystem?
-> 
-
-What this module provides read access to is the firmware. I am new to 
-Linux kernel development and found it quite hard to decide where to put 
-this. Suggestions are welcome.
-
->> +	if (ret) {
->> +		pr_err("sysfs_create_bin_file failed\n");
->> +		goto error;
->> +	}
->> +
->> +	return ret;
-> 
-> So this just "always works"?  That feels VERY dangerous.
-
-Will change that.
-
-> 
-> As this is a x86 thing, you should also cc: the x86 maintainers.
-
-Will do.
-
-> 
-> thanks,
-> 
-> greg k-h
-> 
-
-Hans-Gert Dahmen
+-- 
+Ricardo Ribalda
