@@ -2,90 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6783B3FE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7DD3B3FE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbhFYJAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:00:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27187 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230072AbhFYJAQ (ORCPT
+        id S230505AbhFYJAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:00:53 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:54072 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229956AbhFYJAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:00:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624611475;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z7hC2aDaEZMwZuCypCIswjUuv9JA1ZXi3BbgeUjua2c=;
-        b=JLWESkJ1kRXWyQdhixV4wsvckfdw5rgISRfpADGxDC5gWyNvFzOWugTkqv9SY9hyQBVEKL
-        CKJe2eqRqMxGsHZZcm5M8o0zYs5XodsHpyb9crcaidhgguHGTpPH6NxBhyFBzZXZ9Id7NM
-        ydWUlILCUDE4mKUK5yULM5EywMwfkzw=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-555-OQ94ZYe9MayeHPwigXf2mw-1; Fri, 25 Jun 2021 04:57:54 -0400
-X-MC-Unique: OQ94ZYe9MayeHPwigXf2mw-1
-Received: by mail-ej1-f69.google.com with SMTP id jw19-20020a17090776b3b0290481592f1fc4so2875542ejc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 01:57:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Z7hC2aDaEZMwZuCypCIswjUuv9JA1ZXi3BbgeUjua2c=;
-        b=aS7Ns5wC4ZXzHa/IC4s3MKICsgmRjak/J9Sw60d1/B1P0XI6SnSSbAlXz7BiEkJfKE
-         Uh9iaOAz0H6htYLpDmKs4XlYWRTvVgEHqDBbWOQUSFZR8Br1gGhybTyfefTZ0LRXEgwB
-         wRWvaTEYytHFRsb2i6vLw9k9vL2TC2uLLkcRH9S7AkLLcSEWJ8TfhIWLju3kcawFlmbK
-         kpRq4/POZjUWjYrAN9pXQPru15nqebmUp9XjEBYq12EIBhWE4kI86e/TeqmtQFJ9H2U0
-         WzCjgs/R8mDzzvA20XZfFztq1IG+tgii6Nt3G6ZBGkU7+v8rQKEoxq5zPHSGfg2HVgl+
-         vOYA==
-X-Gm-Message-State: AOAM530HJigjK5dZSMWJGcQB9e4g2bESQo0IlAR5sombH+RTXCC+dwHs
-        Eyn3/g4TnhVYSpEx4Jz/OnV18s+YFxCxbKOZRRbIDyT3LkoKI8GxU8avbyIGmuZ1VPs2/RQxAMn
-        Rn1OH04eFyv8OoqIuH5pEcl0z
-X-Received: by 2002:aa7:c648:: with SMTP id z8mr1097317edr.384.1624611473119;
-        Fri, 25 Jun 2021 01:57:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJysSqfGdK5bBctBEQT5D4lGEIgTGtqG/WbIFUmNaQcm+60RoRS+vvF3iacOwH1FhxuIliPxYA==
-X-Received: by 2002:aa7:c648:: with SMTP id z8mr1097302edr.384.1624611473014;
-        Fri, 25 Jun 2021 01:57:53 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id qq26sm2408826ejb.6.2021.06.25.01.57.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 01:57:52 -0700 (PDT)
-Subject: Re: [PATCH 05/54] Revert "KVM: x86/mmu: Drop
- kvm_mmu_extended_role.cr4_la57 hack"
-To:     Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
-References: <20210622175739.3610207-1-seanjc@google.com>
- <20210622175739.3610207-6-seanjc@google.com>
- <20210625084644.ort4oojvd27oy4ca@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <09a49caf-6ff5-295b-d1ab-023549f6a23b@redhat.com>
-Date:   Fri, 25 Jun 2021 10:57:51 +0200
+        Fri, 25 Jun 2021 05:00:49 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 625721F44485
+Subject: Re: [RESEND PATCH v2 2/4] dt-bindings: power: Add MT8195 power
+ domains
+To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20210616000659.28347-1-chun-jie.chen@mediatek.com>
+ <20210616000659.28347-3-chun-jie.chen@mediatek.com>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <d55142b4-082b-7fbc-dc9a-3dd2d1fca645@collabora.com>
+Date:   Fri, 25 Jun 2021 10:58:25 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210625084644.ort4oojvd27oy4ca@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210616000659.28347-3-chun-jie.chen@mediatek.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/06/21 10:47, Yu Zhang wrote:
->> But if L1 is crafty, it can load a new CR4 on VM-Exit and toggle LA57
->> without having to bounce through an unpaged section.  L1 can also load a
->
-> May I ask how this is done by the guest? Thanks!
+Hi Chun-Jie Chen,
 
-It can set HOST_CR3 and HOST_CR4 to a value that is different from the 
-one on vmentry.
+Thank you for your patch.
 
-Paolo
+On 16/6/21 2:06, Chun-Jie Chen wrote:
+> Add power domains dt-bindings for MT8195.
+> 
+> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
 
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+> ---
+>  .../power/mediatek,power-controller.yaml      |  2 +
+>  include/dt-bindings/power/mt8195-power.h      | 51 +++++++++++++++++++
+>  2 files changed, 53 insertions(+)
+>  create mode 100644 include/dt-bindings/power/mt8195-power.h
+> 
+> diff --git a/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+> index f234a756c193..d6ebd77d28a7 100644
+> --- a/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+> +++ b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+> @@ -27,6 +27,7 @@ properties:
+>        - mediatek,mt8173-power-controller
+>        - mediatek,mt8183-power-controller
+>        - mediatek,mt8192-power-controller
+> +      - mediatek,mt8195-power-controller
+>  
+>    '#power-domain-cells':
+>      const: 1
+> @@ -64,6 +65,7 @@ patternProperties:
+>                "include/dt-bindings/power/mt8173-power.h" - for MT8173 type power domain.
+>                "include/dt-bindings/power/mt8183-power.h" - for MT8183 type power domain.
+>                "include/dt-bindings/power/mt8192-power.h" - for MT8192 type power domain.
+> +              "include/dt-bindings/power/mt8195-power.h" - for MT8195 type power domain.
+>          maxItems: 1
+>  
+>        clocks:
+> diff --git a/include/dt-bindings/power/mt8195-power.h b/include/dt-bindings/power/mt8195-power.h
+> new file mode 100644
+> index 000000000000..43fd36e1f538
+> --- /dev/null
+> +++ b/include/dt-bindings/power/mt8195-power.h
+> @@ -0,0 +1,51 @@
+> +/* SPDX-License-Identifier: GPL-2.0
+> + *
+> + * Copyright (c) 2021 MediaTek Inc.
+> + * Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+> + */
+> +
+> +#ifndef _DT_BINDINGS_POWER_MT8195_POWER_H
+> +#define _DT_BINDINGS_POWER_MT8195_POWER_H
+> +
+> +#define MT8195_POWER_DOMAIN_PCIE_MAC_P0		0
+> +#define MT8195_POWER_DOMAIN_PCIE_MAC_P1		1
+> +#define MT8195_POWER_DOMAIN_PCIE_PHY		2
+> +#define MT8195_POWER_DOMAIN_SSUSB_PCIE_PHY	3
+> +#define MT8195_POWER_DOMAIN_CSI_RX_TOP		4
+> +#define MT8195_POWER_DOMAIN_ETHER		5
+> +#define MT8195_POWER_DOMAIN_ADSP		6
+> +#define MT8195_POWER_DOMAIN_AUDIO		7
+> +#define MT8195_POWER_DOMAIN_AUDIO_ASRC		8
+> +#define MT8195_POWER_DOMAIN_NNA			9
+> +#define MT8195_POWER_DOMAIN_NNA0		10
+> +#define MT8195_POWER_DOMAIN_NNA1		11
+> +#define MT8195_POWER_DOMAIN_MFG0		12
+> +#define MT8195_POWER_DOMAIN_MFG1		13
+> +#define MT8195_POWER_DOMAIN_MFG2		14
+> +#define MT8195_POWER_DOMAIN_MFG3		15
+> +#define MT8195_POWER_DOMAIN_MFG4		16
+> +#define MT8195_POWER_DOMAIN_MFG5		17
+> +#define MT8195_POWER_DOMAIN_MFG6		18
+> +#define MT8195_POWER_DOMAIN_VPPSYS0		19
+> +#define MT8195_POWER_DOMAIN_VDOSYS0		20
+> +#define MT8195_POWER_DOMAIN_VPPSYS1		21
+> +#define MT8195_POWER_DOMAIN_VDOSYS1		22
+> +#define MT8195_POWER_DOMAIN_DP_TX		23
+> +#define MT8195_POWER_DOMAIN_EPD_TX		24
+> +#define MT8195_POWER_DOMAIN_HDMI_TX		25
+> +#define MT8195_POWER_DOMAIN_HDMI_RX		26
+> +#define MT8195_POWER_DOMAIN_WPESYS		27
+> +#define MT8195_POWER_DOMAIN_VDEC0		28
+> +#define MT8195_POWER_DOMAIN_VDEC1		29
+> +#define MT8195_POWER_DOMAIN_VDEC2		30
+> +#define MT8195_POWER_DOMAIN_VENC		31
+> +#define MT8195_POWER_DOMAIN_VENC_CORE1		32
+> +#define MT8195_POWER_DOMAIN_IMG			33
+> +#define MT8195_POWER_DOMAIN_DIP			34
+> +#define MT8195_POWER_DOMAIN_IPE			35
+> +#define MT8195_POWER_DOMAIN_CAM			36
+> +#define MT8195_POWER_DOMAIN_CAM_RAWA		37
+> +#define MT8195_POWER_DOMAIN_CAM_RAWB		38
+> +#define MT8195_POWER_DOMAIN_CAM_MRAW		39
+> +
+> +#endif /* _DT_BINDINGS_POWER_MT8195_POWER_H */
+> 
