@@ -2,128 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354243B41B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2383B41BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhFYKf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 06:35:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:52588 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229956AbhFYKfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 06:35:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F6D7ED1;
-        Fri, 25 Jun 2021 03:33:30 -0700 (PDT)
-Received: from localhost (unknown [10.1.195.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E2C473F719;
-        Fri, 25 Jun 2021 03:33:29 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 11:33:28 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3.1 1/4] cpufreq: cppc: Fix potential memleak in
- cppc_cpufreq_cpu_init
-Message-ID: <20210625103328.GD15540@arm.com>
-References: <579689469ed8a7dfd68dcbb41e9191472799a326.1624266901.git.viresh.kumar@linaro.org>
- <445b58405e81d996fb4037223b9e81fc258a07ea.1624500522.git.viresh.kumar@linaro.org>
+        id S230379AbhFYKgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 06:36:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231283AbhFYKgq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 06:36:46 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11EB2C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:34:26 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id m9so3896533ybp.8
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:34:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dmRoCA65RV/48lXb3m2W6DafsVGVfuNgmtDKbzVBlOA=;
+        b=FWC1UozMFhPqEhM/hP+0y5unvamFh2uadP93DvbTr2PyYZf/kVCF3ETNEZqEX8zTMB
+         oIl80SOor1haIN3P9b/UQkx6fTTs7v9lnF4gvBhpRK85zzD3U5OIIveCV2JUx6UmCBui
+         A1Up9ynYHTTM5KXy+cP1HKCUiRRKFBCqEGhbFWeC92EqwNghmAfdP7ts0TEv6SqjDdJo
+         U5bglVx+8fc04q13Nez+t2G0Q/sRLHE6d2SpVr9qgTb4dpV/fj5BAQ0EHKpbA2mwnU8z
+         hWAMZbljrgeZOURPYcC0dwnU5PS8MhIwF/OMMt3tvZGAgg2swVIxSbdKPoxqwhFis+Ps
+         pABw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dmRoCA65RV/48lXb3m2W6DafsVGVfuNgmtDKbzVBlOA=;
+        b=bzDbsh2DVP7HG5vatyKynriz3LS1YkqFvGMTslm4oPaSo/vi/LODuCWfcHQ6Prdhn6
+         4RKUYgbPEKxgOhheIm4REX/F6UjN7rERTEfLx5zlSZ+iHZlhzsZUaE7Eb3mOJqrh2qH/
+         Og+lPrExvm16iYYiZkdjwVSOp5hoJJQakkc70O1R53a8jP1fgF8GrcKwBCTBZ2S9U5E8
+         4geCB1605/s5nEJg3H1Gq2IItVVijIuuySWlu5WYhPC9igxAT1XRRwu5UvhShic3coHv
+         KvdQ0G0sKlsnF2RbmTiE5OmSpWZR6uPEIxUaas2+5mQuCpuoYF9uh8Mk78GgCLvjKy9O
+         rBww==
+X-Gm-Message-State: AOAM533YZh08feJ1bacPbPsOmQg1ObbKODprkl3QAMwSTKejBx9Lc1Rw
+        AO8UW1chf9XPuvzHczFT4hhhyK2lomhzgkyimz7DuA==
+X-Google-Smtp-Source: ABdhPJxbFIO0pNolVnUaaWoQ6RTnzn35uYITFDDGruDFy0XC7E5sj/9OtjT5EajI6aCgtMbCf8DtfpJd/Ny8AINHHfQ=
+X-Received: by 2002:a25:738e:: with SMTP id o136mr11354409ybc.469.1624617265375;
+ Fri, 25 Jun 2021 03:34:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <445b58405e81d996fb4037223b9e81fc258a07ea.1624500522.git.viresh.kumar@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210624101517.15167-1-wjc@cdjrlc.com>
+In-Reply-To: <20210624101517.15167-1-wjc@cdjrlc.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 25 Jun 2021 12:34:14 +0200
+Message-ID: <CAMpxmJUsnAYbAyY8OaO6fm27Sj+itxge4PqBdefUBXv5WK7Tqw@mail.gmail.com>
+Subject: Re: [PATCH v2] gpio: mxs: Prefer unsigned int to bare use of unsigned
+To:     Jinchao Wang <wjc@cdjrlc.com>
+Cc:     "andy.shevchenko" <andy.shevchenko@gmail.com>,
+        shawnguo <shawnguo@kernel.org>,
+        "s.hauer" <s.hauer@pengutronix.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 24 Jun 2021 at 07:40:45 (+0530), Viresh Kumar wrote:
-> It's a classic example of memleak, we allocate something, we fail and
-> never free the resources.
-> 
-> Make sure we free all resources on policy ->init() failures.
-> 
-> Fixes: a28b2bfc099c ("cppc_cpufreq: replace per-cpu data array with a list")
-> Tested-by: Vincent Guittot <vincent.guittot@linaro.org>
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+On Thu, Jun 24, 2021 at 12:15 PM Jinchao Wang <wjc@cdjrlc.com> wrote:
+>
+> Fix checkpatch warnings:
+>     WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+>
+> Signed-off-by: Jinchao Wang <wjc@cdjrlc.com>
 > ---
-> V3->V3.1:
-> - Updated "if (!ret)" to "if (ret)", the more commonly used format.
-> 
->  drivers/cpufreq/cppc_cpufreq.c | 28 ++++++++++++++++++++--------
->  1 file changed, 20 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index be4f62e2c5f1..945ab4942c1c 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -256,6 +256,16 @@ static struct cppc_cpudata *cppc_cpufreq_get_cpu_data(unsigned int cpu)
->  	return NULL;
+> - changes for v2:
+> - Use full prefix
+>
+> ---
+>  drivers/gpio/gpio-mxs.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-mxs.c b/drivers/gpio/gpio-mxs.c
+> index 524b668eb1ac..31a336b86ff2 100644
+> --- a/drivers/gpio/gpio-mxs.c
+> +++ b/drivers/gpio/gpio-mxs.c
+> @@ -229,14 +229,14 @@ static int mxs_gpio_init_gc(struct mxs_gpio_port *port, int irq_base)
+>         return rv;
 >  }
->  
-> +static void cppc_cpufreq_put_cpu_data(struct cpufreq_policy *policy)
-> +{
-> +	struct cppc_cpudata *cpu_data = policy->driver_data;
-> +
-> +	list_del(&cpu_data->node);
-> +	free_cpumask_var(cpu_data->shared_cpu_map);
-> +	kfree(cpu_data);
-> +	policy->driver_data = NULL;
-> +}
-> +
->  static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>
+> -static int mxs_gpio_to_irq(struct gpio_chip *gc, unsigned offset)
+> +static int mxs_gpio_to_irq(struct gpio_chip *gc, unsigned int offset)
 >  {
->  	unsigned int cpu = policy->cpu;
-> @@ -309,7 +319,8 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->  	default:
->  		pr_debug("Unsupported CPU co-ord type: %d\n",
->  			 policy->shared_type);
-> -		return -EFAULT;
-> +		ret = -EFAULT;
-> +		goto out;
->  	}
->  
->  	/*
-> @@ -324,10 +335,16 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->  	cpu_data->perf_ctrls.desired_perf =  caps->highest_perf;
->  
->  	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
-> -	if (ret)
-> +	if (ret) {
->  		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
->  			 caps->highest_perf, cpu, ret);
-> +		goto out;
-> +	}
-> +
-> +	return 0;
->  
-> +out:
-> +	cppc_cpufreq_put_cpu_data(policy);
->  	return ret;
+>         struct mxs_gpio_port *port = gpiochip_get_data(gc);
+>
+>         return irq_find_mapping(port->domain, offset);
 >  }
->  
-> @@ -345,12 +362,7 @@ static int cppc_cpufreq_cpu_exit(struct cpufreq_policy *policy)
->  		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
->  			 caps->lowest_perf, cpu, ret);
->  
-> -	/* Remove CPU node from list and free driver data for policy */
-> -	free_cpumask_var(cpu_data->shared_cpu_map);
-> -	list_del(&cpu_data->node);
-> -	kfree(policy->driver_data);
-> -	policy->driver_data = NULL;
-> -
-> +	cppc_cpufreq_put_cpu_data(policy);
->  	return 0;
->  }
->  
-> -- 
-> 2.31.1.272.g89b43f80a514
-> 
+>
+> -static int mxs_gpio_get_direction(struct gpio_chip *gc, unsigned offset)
+> +static int mxs_gpio_get_direction(struct gpio_chip *gc, unsigned int offset)
+>  {
+>         struct mxs_gpio_port *port = gpiochip_get_data(gc);
+>         u32 mask = 1 << offset;
+> --
+> 2.31.1
+>
 
-Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
+Applied, thanks!
 
-Many thanks for the changes,
-Ionela.
-
+Bartosz
