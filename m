@@ -2,246 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5403B426B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2E93B4270
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhFYLX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 07:23:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42862 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229458AbhFYLXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 07:23:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B04C16147E;
-        Fri, 25 Jun 2021 11:21:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624620095;
-        bh=XG6sWGf+ywXRBvy3yOOyGZ2Ixhj+khw+9AMf73Acy/4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TVhMwdMKoU1+Iz0AxUizueL8aXt47d8ZUzNb72STRceK2tG5sm2U+jF/9dYqcmuFl
-         YVWSCtsDgecmXnV8WXB227N6dLtySn1xXsYMxnNMp/Ehbef29JPpzkAnfrs3L0RIHT
-         z1Q5AHYhpZI9zWZwImGs4ibJ0XHZLw2Qj9fHXS86gWebgqjyj9FnizGX10GVJRIlGC
-         uY2XVtdlHwUzLOVhFVQd7IZ9CWHzG570j2B3EHgGq+MbiLJ5L0P3G2Nw76TdGpCjDo
-         cob3n66oHHBj4wAvetYNospFALOYnkyNHgODd+kLX77DCh0Ya3YTTmGfcyvkZAypmC
-         dPiHReCoeUtzw==
-Received: by pali.im (Postfix)
-        id 64AEA60E; Fri, 25 Jun 2021 13:21:32 +0200 (CEST)
-Date:   Fri, 25 Jun 2021 13:21:32 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH 2/3] PCI: aardvark: Fix checking for PIO status
-Message-ID: <20210625112132.r7p7gqcyajpnnvjp@pali>
-References: <20210624213345.3617-1-pali@kernel.org>
- <20210624213345.3617-3-pali@kernel.org>
- <20210625110429.GA17337@lpieralisi>
+        id S231302AbhFYLY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231193AbhFYLY2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 07:24:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECEDC061574;
+        Fri, 25 Jun 2021 04:22:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MxqlUJ3JEfvJSuTDy3ct+hOA2fZl3KeDyOJOsYrfY68=; b=Hp2byn0nwonbL4cSpb44RHkEAn
+        /xjABFgKBSHHs71Zy3+jk4RP8KylyuCDr/yegMw1x5fZmik5LvECBXAAKSxEaDMcUAZ3/d6BHRRA3
+        g9BGyT+AhulwBcbzMEJY2RY7BAA9/E7JIQUpm5+AlPFt1iw0yiZD5HB/x5COrzaWbhlV1S15R7s/p
+        v51nItC8j2CxoQ99R0CL7MQS1t4ZC06mocFYB++dWcnZDVyXMno+cDSQyEcoqv5jKwJ7lIvdn3eHj
+        DOGCf0S3Y+X2gJbSsipB0IRvyyZ0ms0/1iuBF80YA6+Eat/6pfrRgs3ut2ecgqpK2uvkAE6jJn+Og
+        EFniDs9A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwjts-0001Iu-OL; Fri, 25 Jun 2021 11:21:36 +0000
+Date:   Fri, 25 Jun 2021 12:21:32 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 15/46] mm/memcg: Add folio_uncharge_cgroup()
+Message-ID: <YNW8PLZvX/Od+Ldn@casper.infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-16-willy@infradead.org>
+ <YNWTCG3s910H3to2@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210625110429.GA17337@lpieralisi>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <YNWTCG3s910H3to2@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 25 June 2021 12:04:29 Lorenzo Pieralisi wrote:
-> On Thu, Jun 24, 2021 at 11:33:44PM +0200, Pali Rohár wrote:
-> 
-> [...]
-> 
-> > -static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
-> > +static int advk_pcie_check_pio_status(struct advk_pcie *pcie, u32 *val)
-> >  {
-> >  	struct device *dev = &pcie->pdev->dev;
-> >  	u32 reg;
-> > @@ -472,15 +476,50 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
-> >  	status = (reg & PIO_COMPLETION_STATUS_MASK) >>
-> >  		PIO_COMPLETION_STATUS_SHIFT;
-> >  
-> > -	if (!status)
-> > -		return;
-> > -
-> > +	/*
-> > +	 * According to HW spec, the PIO status check sequence as below:
-> > +	 * 1) even if COMPLETION_STATUS(bit9:7) indicates successful,
-> > +	 *    it still needs to check Error Status(bit11), only when this bit
-> > +	 *    indicates no error happen, the operation is successful.
-> > +	 * 2) value Unsupported Request(1) of COMPLETION_STATUS(bit9:7) only
-> > +	 *    means a PIO write error, and for PIO read it is successful with
-> > +	 *    a read value of 0xFFFFFFFF.
-> > +	 * 3) value Completion Retry Status(CRS) of COMPLETION_STATUS(bit9:7)
-> > +	 *    only means a PIO write error, and for PIO read it is successful
-> > +	 *    with a read value of 0xFFFF0001.
-> > +	 * 4) value Completer Abort (CA) of COMPLETION_STATUS(bit9:7) means
-> > +	 *    error for both PIO read and PIO write operation.
-> > +	 * 5) other errors are indicated as 'unknown'.
-> > +	 */
-> >  	switch (status) {
-> > +	case PIO_COMPLETION_STATUS_OK:
-> > +		if (reg & PIO_ERR_STATUS) {
-> > +			strcomp_status = "COMP_ERR";
-> > +			break;
-> > +		}
-> > +		/* Get the read result */
-> > +		if (val)
-> > +			*val = advk_readl(pcie, PIO_RD_DATA);
-> > +		/* No error */
-> > +		strcomp_status = NULL;
-> > +		break;
-> >  	case PIO_COMPLETION_STATUS_UR:
-> > -		strcomp_status = "UR";
-> > +		if (val) {
-> > +			/* For reading, UR is not an error status */
-> > +			*val = CFG_RD_UR_VAL;
-> > +			strcomp_status = NULL;
-> > +		} else {
-> > +			strcomp_status = "UR";
-> > +		}
-> >  		break;
-> >  	case PIO_COMPLETION_STATUS_CRS:
-> > -		strcomp_status = "CRS";
-> > +		if (val) {
-> > +			/* For reading, CRS is not an error status */
-> > +			*val = CFG_RD_CRS_VAL;
-> 
-> Need Bjorn's input on this.
-
-Ok.
-
-> I don't think this is what is expected from
-> from a root complex according to the PCI specifications (depending on
-> whether CSR software visibility is supported or not).
-
-This patch / logic was written and reviewed by Marvell people as is
-mentioned in commit description. But I was not able to get any feedback
-from them about aardvark, so I have not put them into recipients of this
-patch...
-
-> Here we are fabricating a CRS completion value for all PCI config read
-> transactions that are hitting a CRS completion status (and that's not
-> the expected behaviour according to the PCI specifications and I don't
-> think that's correct).
-
-I see what what you mean. I think that for PCI_VENDOR_ID read request it
-is correct. But question is what we should return for other read
-requests.
-
-> > +			strcomp_status = NULL;
-> > +		} else {
-> > +			strcomp_status = "CRS";
-> > +		}
-> >  		break;
-> >  	case PIO_COMPLETION_STATUS_CA:
-> >  		strcomp_status = "CA";
-> > @@ -490,6 +529,9 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
-> >  		break;
-> >  	}
-> >  
-> > +	if (!strcomp_status)
-> > +		return 0;
-> > +
-> >  	if (reg & PIO_NON_POSTED_REQ)
-> >  		str_posted = "Non-posted";
-> >  	else
-> > @@ -497,6 +539,8 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
-> >  
-> >  	dev_err(dev, "%s PIO Response Status: %s, %#x @ %#x\n",
-> >  		str_posted, strcomp_status, reg, advk_readl(pcie, PIO_ADDR_LS));
-> > +
-> > +	return -EFAULT;
-> >  }
-> >  
-> >  static int advk_pcie_wait_pio(struct advk_pcie *pcie)
-> > @@ -703,8 +747,17 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
-> >  						 size, val);
-> >  
-> >  	if (advk_pcie_pio_is_running(pcie)) {
-> > -		*val = 0xffffffff;
-> > -		return PCIBIOS_SET_FAILED;
-> > +		/*
-> > +		 * For PCI_VENDOR_ID register, return Completion Retry Status
-> > +		 * so caller tries to issue the request again insted of failing
-> > +		 */
-> > +		if (where == PCI_VENDOR_ID) {
-> > +			*val = CFG_RD_CRS_VAL;
-> > +			return PCIBIOS_SUCCESSFUL;
-> 
-> Mmmm..here we are faking a CRS completion value to coerce the kernel
-> into believing a CRS completion was received (which is not necessarily
-> true) ?
-
-This part of patch was written by me. I chose to return "fake CRS" to
-let kernel / software to issue a new PCI_VENDOR_ID read request again
-after timeout. After some timeout previous PIO transfer should complete
-and therefore advk_pcie_pio_is_running returns false.
-
-> if advk_pcie_pio_is_running(pcie) == true, is that an HW error ?
-
-No. It indicates that software (kernel) was impatient for previous
-config read / write request and did not wait for previous completion. So
-at the time when kernel tried to issue a new (this) config read request,
-previous one was still running (advk_pcie_pio_is_running returned true)
-and therefore driver was not able to issue a new config read request.
-
-In patch 3/3 I increased wait timeout so this situation when
-advk_pcie_pio_is_running returns true should not happen. Or rather to
-say, I was not able to reproduce it anymore.
-
-> Lorenzo
-> 
-> > +		} else {
-> > +			*val = 0xffffffff;
-> > +			return PCIBIOS_SET_FAILED;
-> > +		}
-> >  	}
-> >  
-> >  	/* Program the control register */
-> > @@ -729,15 +782,27 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
-> >  	advk_writel(pcie, 1, PIO_START);
-> >  
-> >  	ret = advk_pcie_wait_pio(pcie);
-> > +	if (ret < 0) {
-> > +		/*
-> > +		 * For PCI_VENDOR_ID register, return Completion Retry Status
-> > +		 * so caller tries to issue the request again instead of failing
-> > +		 */
-> > +		if (where == PCI_VENDOR_ID) {
-> > +			*val = CFG_RD_CRS_VAL;
-> > +			return PCIBIOS_SUCCESSFUL;
-> > +		} else {
-> > +			*val = 0xffffffff;
-> > +			return PCIBIOS_SET_FAILED;
-> > +		}
-> > +	}
-> > +
-> > +	/* Check PIO status and get the read result */
-> > +	ret = advk_pcie_check_pio_status(pcie, val);
-> >  	if (ret < 0) {
-> >  		*val = 0xffffffff;
-> >  		return PCIBIOS_SET_FAILED;
-> >  	}
-> >  
-> > -	advk_pcie_check_pio_status(pcie);
-> > -
-> > -	/* Get the read result */
-> > -	*val = advk_readl(pcie, PIO_RD_DATA);
-> >  	if (size == 1)
-> >  		*val = (*val >> (8 * (where & 3))) & 0xff;
-> >  	else if (size == 2)
-> > @@ -801,7 +866,9 @@ static int advk_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
-> >  	if (ret < 0)
-> >  		return PCIBIOS_SET_FAILED;
-> >  
-> > -	advk_pcie_check_pio_status(pcie);
-> > +	ret = advk_pcie_check_pio_status(pcie, NULL);
-> > +	if (ret < 0)
-> > +		return PCIBIOS_SET_FAILED;
-> >  
-> >  	return PCIBIOS_SUCCESSFUL;
-> >  }
-> > -- 
-> > 2.20.1
+On Fri, Jun 25, 2021 at 10:25:44AM +0200, Michal Hocko wrote:
+> On Tue 22-06-21 13:15:20, Matthew Wilcox wrote:
+> > Reimplement mem_cgroup_uncharge() as a wrapper around
+> > folio_uncharge_cgroup().
 > > 
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> 
+> Similar to the previous patch. Is there any reason why we cannot simply
+> stick with mem_cgroup_{un}charge and only change the parameter to folio?
+
+There are a dozen callers of mem_cgroup_charge() and most of them
+aren't quite ready to convert to folios at this point in the patch
+series.  So either we need a new name for the variant that takes a
+folio, or we need to play fun games with _Generic to allow
+mem_cgroup_charge() to take either a folio or a page, or we convert
+all callers to open-code their call to page_folio, like this:
+
+-	if (mem_cgroup_charge(vmf->cow_page, vma->vm_mm, GFP_KERNEL)) {
++	if (mem_cgroup_charge(page_folio(vmf->cow_page), vma->vm_mm,
++			GFP_KERNEL)) {
+
+I've generally gone with creating compat functions to minimise the
+merge conflicts when people are adding new callers or changing code near
+existing ones.  But if you don't like the new name, we have options.
+
+> > ---
+> >  include/linux/memcontrol.h |  5 +++++
+> >  mm/folio-compat.c          |  5 +++++
+> >  mm/memcontrol.c            | 14 +++++++-------
+> >  3 files changed, 17 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index a50e5cee6d2c..d4b2bc939eee 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -705,6 +705,7 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
+> >  }
+> >  
+> >  int folio_charge_cgroup(struct folio *, struct mm_struct *, gfp_t);
+> > +void folio_uncharge_cgroup(struct folio *);
+> >  
+> >  int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask);
+> >  int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
+> > @@ -1224,6 +1225,10 @@ static inline int folio_charge_cgroup(struct folio *folio,
+> >  	return 0;
+> >  }
+> >  
+> > +static inline void folio_uncharge_cgroup(struct folio *folio)
+> > +{
+> > +}
+> > +
+> >  static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
+> >  				    gfp_t gfp_mask)
+> >  {
+> > diff --git a/mm/folio-compat.c b/mm/folio-compat.c
+> > index 1d71b8b587f8..d229b979b00d 100644
+> > --- a/mm/folio-compat.c
+> > +++ b/mm/folio-compat.c
+> > @@ -54,4 +54,9 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp)
+> >  {
+> >  	return folio_charge_cgroup(page_folio(page), mm, gfp);
+> >  }
+> > +
+> > +void mem_cgroup_uncharge(struct page *page)
+> > +{
+> > +	folio_uncharge_cgroup(page_folio(page));
+> > +}
+> >  #endif
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 69638f84d11b..a6befc0843e7 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -6717,24 +6717,24 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+> >  }
+> >  
+> >  /**
+> > - * mem_cgroup_uncharge - uncharge a page
+> > - * @page: page to uncharge
+> > + * folio_uncharge_cgroup - Uncharge a folio.
+> > + * @folio: Folio to uncharge.
+> >   *
+> > - * Uncharge a page previously charged with mem_cgroup_charge().
+> > + * Uncharge a folio previously charged with folio_charge_cgroup().
+> >   */
+> > -void mem_cgroup_uncharge(struct page *page)
+> > +void folio_uncharge_cgroup(struct folio *folio)
+> >  {
+> >  	struct uncharge_gather ug;
+> >  
+> >  	if (mem_cgroup_disabled())
+> >  		return;
+> >  
+> > -	/* Don't touch page->lru of any random page, pre-check: */
+> > -	if (!page_memcg(page))
+> > +	/* Don't touch folio->lru of any random page, pre-check: */
+> > +	if (!folio_memcg(folio))
+> >  		return;
+> >  
+> >  	uncharge_gather_clear(&ug);
+> > -	uncharge_page(page, &ug);
+> > +	uncharge_page(&folio->page, &ug);
+> >  	uncharge_batch(&ug);
+> >  }
+> >  
+> > -- 
+> > 2.30.2
+> 
+> -- 
+> Michal Hocko
+> SUSE Labs
