@@ -2,138 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B15B83B4543
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD613B4545
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231484AbhFYON5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:13:57 -0400
-Received: from mga12.intel.com ([192.55.52.136]:31447 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229700AbhFYONz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:13:55 -0400
-IronPort-SDR: dKRdloxFPRB34hDLR5J6p0GLTWFpx6tuMrifuil8S4Z8NnrRCtQirLyFb4QhQmZTpPFWEfVWwd
- VHtchbre9Ciw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="187364188"
-X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; 
-   d="scan'208";a="187364188"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 07:11:34 -0700
-IronPort-SDR: aIJApmKyt7GrSCUnqHMTUlwlmG1DSBQKfI4ZHaTBXnskDAxynnYC3IDvU2Z3aBriXSXFcBDbIx
- ffR9veJkE3iA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; 
-   d="scan'208";a="407397304"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga003.jf.intel.com with ESMTP; 25 Jun 2021 07:11:34 -0700
-Received: from [10.212.190.24] (kliang2-MOBL.ccr.corp.intel.com [10.212.190.24])
+        id S231635AbhFYOOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:14:17 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:58370 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231501AbhFYOOQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 10:14:16 -0400
+Received: from localhost.localdomain (unknown [IPv6:2a01:e0a:4cb:a870:42b6:51ca:7d52:50ad])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 8F7D158060A;
-        Fri, 25 Jun 2021 07:11:33 -0700 (PDT)
-Subject: Re: [PATCH] x86: eas should not be NULL when it is referenced
-To:     Alexander Antonov <alexander.antonov@linux.intel.com>,
-        13145886936@163.com, tglx@linutronix.de, bp@alien8.de,
-        x86@kernel.org
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210624070442.34291-1-13145886936@163.com>
- <40e66cf9-398b-20d7-ce4d-433be6e08921@linux.intel.com>
- <f313e0d9-b18e-5dd8-cadf-ee0a689f20ea@linux.intel.com>
- <f3e4b37b-ff84-ac4f-ff56-f03313a22cda@linux.intel.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <7d4862ae-7ac6-11e8-5c8d-74610eabd5b5@linux.intel.com>
-Date:   Fri, 25 Jun 2021 10:11:32 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2DD131F4474C;
+        Fri, 25 Jun 2021 15:11:51 +0100 (BST)
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     hverkuil@xs4all.nl, ezequiel@collabora.com, p.zabel@pengutronix.de,
+        mchehab@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
+        andrzej.p@collabora.com, jc@kynesim.co.uk,
+        jernej.skrabec@gmail.com, nicolas@ndufresne.ca, cphealy@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v4 0/9]  Additional features for Hantro HEVC
+Date:   Fri, 25 Jun 2021 16:11:34 +0200
+Message-Id: <20210625141143.577998-1-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <f3e4b37b-ff84-ac4f-ff56-f03313a22cda@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+version 4:
+ - Log file descriptor in trace point.
+ - Add documentation about how use the trace points in Hantro driver.
+ - Fix typos.
+ - Make sure that 10 bits output format (i.e. P010) is only enumerated
+   when encoded input stream is 10 bits.
+ - Create ops structure for variant to store their specific functions.
+ - Rename scaling ops to enumare_framesizes
 
+Run fluster on this version: the results are the same 70 over 147 streams OK.
+Test streams with embedded scaling list are now decoded and the output
+is correct for our eyes but the values of the pixels (y, u and V) are
+different from the values of the reference (decoded for FFMPEG) so the
+stream of still KO. When decoded with GStreamer or vendor stack the
+pixels values are the same but not matching with FFMPEG.
 
-On 6/25/2021 9:33 AM, Alexander Antonov wrote:
-> Hello Kan,
->> On 6/24/2021 3:03 PM, Liang, Kan wrote:
->>> I think the NULL pointer dereference of eas should not happen, 
->>> because die is -1 if eas is NULL. But the whole error handling path 
->>> looks fragile.
->>>
->>> We already fixed one issue caused by it in commit ID f797f05d917f 
->>> ("perf/x86/intel/uncore: Fix for iio mapping on Skylake Server")
->>> https://lore.kernel.org/lkml/160149233331.7002.10919231011379055356.tip-bot2@tip-bot2/ 
->>>
->>>
->>> Maybe something as below?
->>>
->>>  From 3de81ba3b04262ef3346297d82f6c4ffb4af7029 Mon Sep 17 00:00:00 2001
->>> From: Kan Liang <kan.liang@linux.intel.com>
->>> Date: Thu, 24 Jun 2021 11:17:57 -0700
->>> Subject: [PATCH] perf/x86/intel/uncore: Clean up error handling path 
->>> of iio mapping
->>>
->>> The error handling path of iio mapping looks fragile. We already fixed
->>> one issue caused by it, commit ID f797f05d917f ("perf/x86/intel/uncore:
->>> Fix for iio mapping on Skylake Server"). Clean up the error handling
->>> path and make the code robust.
-> I didn't catch why does the current error handling path look fragile?
-> Are there cases when it works incorrect?
->
+Compressed help to increase the performance of the whole stack, it could
+be up to 50 fps (against 45 fps) on IMX8MQ.
+The impact of compressed frames is confirmed when using perf to monitor
+the number of memory accesses with or without compression feature.
+The following command
+perf stat -a -e imx8_ddr0/cycles/,imx8_ddr0/read-cycles/,imx8_ddr0/write-cycles/ gst-launch-1.0 filesrc location=Jockey_3840x2160_120fps_420_8bit_HEVC_RAW.hevc ! queue ! h265parse ! v4l2slh265dec ! fakesink
 
+give us these results
+without compression feature:
+ Performance counter stats for 'system wide':
 
-I don't think it causes any severe problem for now, e.g., crash, because 
-current code checks die before the dereference.
-But I think it violates the Linux kernel coding style (one err bug) and 
-may bring potential issues.
+       14965816743      imx8_ddr0/cycles/                                           
+         889197312      imx8_ddr0/read-cycles/                                      
+        1819348862      imx8_ddr0/write-cycles/                                     
 
-https://www.kernel.org/doc/html/v4.10/process/coding-style.html
+      18.707373001 seconds time elapsed
 
-Thanks,
-Kan
+with compression feature:
+Performance counter stats for 'system wide':
 
-> Thanks,
-> Alexander
->>>
->>> Reported-by: gushengxian <gushengxian@yulong.com>
->>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
->>> ---
->>>   arch/x86/events/intel/uncore_snbep.c | 6 ++++--
->>>   1 file changed, 4 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/arch/x86/events/intel/uncore_snbep.c 
->>> b/arch/x86/events/intel/uncore_snbep.c
->>> index 7622762..6d4a5a9 100644
->>> --- a/arch/x86/events/intel/uncore_snbep.c
->>> +++ b/arch/x86/events/intel/uncore_snbep.c
->>> @@ -3802,11 +3802,11 @@ pmu_iio_set_mapping(struct intel_uncore_type 
->>> *type, struct attribute_group *ag)
->>>       /* One more for NULL. */
->>>       attrs = kcalloc((uncore_max_dies() + 1), sizeof(*attrs), 
->>> GFP_KERNEL);
->>>       if (!attrs)
->>> -        goto err;
->>> +        goto clear_topology;
->>>
->>>       eas = kcalloc(uncore_max_dies(), sizeof(*eas), GFP_KERNEL);
->>>       if (!eas)
->>> -        goto err;
->>> +        goto clear_attrs;
->>>
->>>       for (die = 0; die < uncore_max_dies(); die++) {
->>>           sprintf(buf, "die%ld", die);
->>> @@ -3827,7 +3827,9 @@ pmu_iio_set_mapping(struct intel_uncore_type 
->>> *type, struct attribute_group *ag)
->>>       for (; die >= 0; die--)
->>>           kfree(eas[die].attr.attr.name);
->>>       kfree(eas);
->>> +clear_attrs:
->>>       kfree(attrs);
->>> +clear_topology:
->>>       kfree(type->topology);
->>>   clear_attr_update:
->>>       type->attr_update = NULL;
+       13750218243      imx8_ddr0/cycles/                                           
+         402428744      imx8_ddr0/read-cycles/                                      
+        1255676693      imx8_ddr0/write-cycles/                                     
+
+      17.188320061 seconds time elapsed
+
+As expected the number of read/write cycles are really lower when compression
+is used.
+Thanks to Chris for perf command line :-)
+
+version 3:
+ - Change trace file name to hantro_trace.h
+
+version 2:
+ - Fix structure name in ext-ctrls-codec.rst
+ - Define the value for compression storage size
+ - Add comments about registers usage
+ - Add documentation about P010 padding
+
+Basic HEVC support has been added to Hantro driver in this pull request:
+https://www.spinics.net/lists/linux-media/msg193744.html
+
+Thanks to that it is now possible to support more features for this driver.
+
+The first patch allow to log the hardware performance per macroblock.
+The second patch makes the driver use compressed reference frames to
+reduce memory bandwidth consumption.
+Patches 3 to 5 allow to decode and produce 10-bits P010 frames.
+Patch 6 make usage of G2 post processor to scale down the frames.
+Patches 7 and 8 add the support of HEVC scaling matrix by adding a new
+control.
+
+All these patches enhance the HEVC support for Hantro (G2) hardware.
+Unluckily they almost all touch the same pieces of code, where buffer
+size, offset and addresses are set, so they have to be in this order.
+They depend of the series pushed in this pull request:
+https://www.spinics.net/lists/linux-media/msg193744.html
+
+Benjamin
+
+ 
+Benjamin Gaignard (9):
+  media: hantro: Trace hevc hw cycles performance register
+  media: hantro: Add support of compressed reference buffers
+  media: hantro: hevc: Allow 10-bits encoded streams
+  media: Add P010 video format
+  media: hantro: hevc: Allow to produce 10-bit frames
+  media: hantro: create ops for variants
+  media: hantro: enumerate scaled output formats
+  media: hevc: Add scaling matrix control
+  media: hantro: Add scaling lists feature
+
+ Documentation/admin-guide/media/hantro.rst    |  14 ++
+ .../admin-guide/media/v4l-drivers.rst         |   1 +
+ .../media/v4l/ext-ctrls-codec.rst             |  45 +++++
+ .../media/v4l/pixfmt-yuv-planar.rst           |  78 +++++++-
+ .../media/v4l/vidioc-queryctrl.rst            |   6 +
+ drivers/media/v4l2-core/v4l2-common.c         |   1 +
+ drivers/media/v4l2-core/v4l2-ctrls-core.c     |   6 +
+ drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   4 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |   1 +
+ drivers/staging/media/hantro/hantro.h         |  21 +-
+ drivers/staging/media/hantro/hantro_drv.c     |  22 ++-
+ .../staging/media/hantro/hantro_g2_hevc_dec.c | 186 ++++++++++++++++--
+ drivers/staging/media/hantro/hantro_g2_regs.h |  12 ++
+ drivers/staging/media/hantro/hantro_hevc.c    |  69 ++++++-
+ drivers/staging/media/hantro/hantro_hw.h      |   8 +
+ drivers/staging/media/hantro/hantro_trace.h   |  41 ++++
+ drivers/staging/media/hantro/hantro_v4l2.c    |  41 +++-
+ drivers/staging/media/hantro/imx8m_vpu_hw.c   |  22 ++-
+ .../staging/media/hantro/rockchip_vpu_hw.c    |  30 ++-
+ .../staging/media/hantro/sama5d4_vdec_hw.c    |   6 +-
+ include/media/hevc-ctrls.h                    |  11 ++
+ include/uapi/linux/videodev2.h                |   1 +
+ 22 files changed, 580 insertions(+), 46 deletions(-)
+ create mode 100644 Documentation/admin-guide/media/hantro.rst
+ create mode 100644 drivers/staging/media/hantro/hantro_trace.h
+
+-- 
+2.25.1
+
