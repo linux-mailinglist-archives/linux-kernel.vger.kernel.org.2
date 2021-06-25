@@ -2,124 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8766D3B48F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 20:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 677BA3B48F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 20:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhFYSsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 14:48:14 -0400
-Received: from mail-pg1-f180.google.com ([209.85.215.180]:34498 "EHLO
-        mail-pg1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhFYSsM (ORCPT
+        id S229940AbhFYStU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 14:49:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhFYStT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 14:48:12 -0400
-Received: by mail-pg1-f180.google.com with SMTP id p9so8615951pgb.1;
-        Fri, 25 Jun 2021 11:45:51 -0700 (PDT)
+        Fri, 25 Jun 2021 14:49:19 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF5FCC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 11:46:58 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id u190so8612881pgd.8
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 11:46:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KgcXfUUuQCs0/iO26PCYoAGLqCAbhUEbyDxWxRQoxww=;
+        b=PADYuEfVwFxDfjYMKOWL1f03SzIWUwC8XYvJ4X2L6FhEYqnzrvIECBZocVesj0SNuc
+         446bFwK0ugtbTnbIhfwMj2W8E9yx5WHQZ3sLY7oXUl777eH7bPvcw5M6BiwDv/zCqEPo
+         2q3BUsQ+dKtattDJh3XuSsZseXFQTPQjvd2WJe2Va68xjwxtqDLA+r7GHegAIO5fqXTy
+         Bwh7NNSBT4Splsi4QB01sRWrDnv49gmLvVmVj4VXI7N020rmvwaKOZ9tS4fm4E8oRzsm
+         NO1CLSqtONeXaE3v92X2FW/0SqK8gnZDL5D3CbisbXDYSX0mtekBXya48oDdqC1WJahR
+         188g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=s8UZjhb/9CTUZ4W5sRC8vDKWtYjlkIwbCG+US3rg5/o=;
-        b=O/UYK96rweYFtX4B82TzuNmHqx73NnqGN0x7XxZBtZIWUgvfPAQsOG6GG7wLFRtUpP
-         5vFH8oU0r03DzQEx2RyQzu9SaVk4nITTEIb1FreyCPeKAZwpBkFUga2g1n/MyplGRyAT
-         erH6hDLD/PDFIG6jEzCa7R9Fz51uvINC/hzHmmkwWILq0DxmM2x7jMyIc9Wn4SHwT3Hk
-         5q1oN6ywdnuWjE+/hNuRkyiLoygq8wOND1Qegz8NcSpZ2hNQGtPAgiGDU2CWnSyieHCC
-         7h//tbQr94C7dwIr/NS/Yn2kIjmwWAy/9EYXwzIr0VV1NVd1jhf38m9Yg7dVHqa/eOKb
-         4ZSA==
-X-Gm-Message-State: AOAM531BhnGysnmZqa88N+3Jfx9ufN/W9Ywf+8cvyt9vmaB2jaXNitiB
-        F5w37cDmZ1xbfn5aD4LpDFw=
-X-Google-Smtp-Source: ABdhPJxzAChRS2n8hKWTgSwH4cke8OUtk7PAqyskbcDRB28irTzBPwzJLYgLuqxS5EzAFxFFuOofBg==
-X-Received: by 2002:a63:a53:: with SMTP id z19mr10612129pgk.125.1624646750764;
-        Fri, 25 Jun 2021 11:45:50 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id z6sm6147347pgs.24.2021.06.25.11.45.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 11:45:50 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 11:45:49 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>
-Cc:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] mfd: intel-m10-bmc: add n5010 variant
-Message-ID: <YNYkXVgS4YBgahjw@epycbox.lan>
-References: <20210625074213.654274-1-martin@geanix.com>
- <20210625074213.654274-5-martin@geanix.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KgcXfUUuQCs0/iO26PCYoAGLqCAbhUEbyDxWxRQoxww=;
+        b=YsEX94T1aSdL21Ko25j8KbjpFMHjlu/TO8WvXhWtRGcotaINweE+7iatQwz+6W4hvc
+         6rNwYIKCkRdE7I2QWB+2MyILLWW/koO4j3npKYfrqARr6C4A5K8/Ldpg1aer5uE8I0y+
+         xXmqrPtcFaxycoRpGIg9cYoQCq0rXxNy2vMI/pf1zjzMxMfnr9q61//LF2+eZqFlX9c+
+         1RvywHj+KLxvsi/MD1xwfsq4dWSS8hVmyG0U/mRb/3mlwohhXoq3HKUdzLKvpSUQbeqi
+         5YZmSaGUELcU0y3wsiqNsEaWY0LS6dBRKRtbklDnwofgTfxGIOnrxYJEfhLRdJ4x9TE5
+         owQA==
+X-Gm-Message-State: AOAM531HzX26M1W/FcLkUXzn7i0gt1jdi9P1q00WKYz6vznggnAI4NDl
+        O6c4iWZgBxapdHej8VzfZOV+Zx3hos5o8BxcpqcShg==
+X-Google-Smtp-Source: ABdhPJxdEtEgzbqyiiIFrQrsnrWINaKaD3LnJ9eJXirP6xsYK8Bx2LwuHLSsY0ArMGJ1NtvLvN/v3ft5powYch+MsrM=
+X-Received: by 2002:aa7:8e18:0:b029:2ec:a754:570e with SMTP id
+ c24-20020aa78e180000b02902eca754570emr11850613pfr.38.1624646817919; Fri, 25
+ Jun 2021 11:46:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210625074213.654274-5-martin@geanix.com>
+References: <20210625195232.3a307e53@canb.auug.org.au> <CAGS_qxq4_G7dbefETo57hUZgD+A3QK7rxiY=Nk=m0xZGt35zGw@mail.gmail.com>
+ <4f1fc11b-64a6-984f-ede3-d4ce5c0ac3e3@linuxfoundation.org>
+In-Reply-To: <4f1fc11b-64a6-984f-ede3-d4ce5c0ac3e3@linuxfoundation.org>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Fri, 25 Jun 2021 11:46:46 -0700
+Message-ID: <CAFd5g46jjCzRjRWL3oYSb9Xhe6VY8U=0-MfgG-Y=NxQNoK++vA@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the kunit-fixes tree
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Daniel Latypov <dlatypov@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        David Gow <davidgow@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 09:42:12AM +0200, Martin Hundebøll wrote:
-> From: Martin Hundebøll <mhu@silicom.dk>
-> 
->  The m10-bmc is used on the Silicom N5010 PAC too, so add it to list of
->  m10bmc types.
-> 
-> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
-Acked-by: Moritz Fischer <mdf@kernel.org>
-> ---
-> 
-> Changes since v1:
->  * Patch split out to separate mfd changes
-> 
->  drivers/mfd/intel-m10-bmc.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mfd/intel-m10-bmc.c b/drivers/mfd/intel-m10-bmc.c
-> index 1a9bfb7f48cd..8db3bcf5fccc 100644
-> --- a/drivers/mfd/intel-m10-bmc.c
-> +++ b/drivers/mfd/intel-m10-bmc.c
-> @@ -15,7 +15,8 @@
->  
->  enum m10bmc_type {
->  	M10_N3000,
-> -	M10_D5005
-> +	M10_D5005,
-> +	M10_N5010,
->  };
->  
->  static struct mfd_cell m10bmc_d5005_subdevs[] = {
-> @@ -28,6 +29,10 @@ static struct mfd_cell m10bmc_pacn3000_subdevs[] = {
->  	{ .name = "n3000bmc-secure" },
->  };
->  
-> +static struct mfd_cell m10bmc_n5010_subdevs[] = {
-> +	{ .name = "n5010bmc-hwmon" },
-> +};
-> +
->  static const struct regmap_range m10bmc_regmap_range[] = {
->  	regmap_reg_range(M10BMC_LEGACY_BUILD_VER, M10BMC_LEGACY_BUILD_VER),
->  	regmap_reg_range(M10BMC_SYS_BASE, M10BMC_SYS_END),
-> @@ -192,6 +197,10 @@ static int intel_m10_bmc_spi_probe(struct spi_device *spi)
->  		cells = m10bmc_d5005_subdevs;
->  		n_cell = ARRAY_SIZE(m10bmc_d5005_subdevs);
->  		break;
-> +	case M10_N5010:
-> +		cells = m10bmc_n5010_subdevs;
-> +		n_cell = ARRAY_SIZE(m10bmc_n5010_subdevs);
-> +		break;
->  	default:
->  		return -ENODEV;
->  	}
-> @@ -207,6 +216,7 @@ static int intel_m10_bmc_spi_probe(struct spi_device *spi)
->  static const struct spi_device_id m10bmc_spi_id[] = {
->  	{ "m10-n3000", M10_N3000 },
->  	{ "m10-d5005", M10_D5005 },
-> +	{ "m10-n5010", M10_N5010 },
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(spi, m10bmc_spi_id);
-> -- 
-> 2.31.0
-> 
+On Fri, Jun 25, 2021 at 11:12 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>
+> On 6/25/21 11:53 AM, Daniel Latypov wrote:
+> > On Fri, Jun 25, 2021 at 2:52 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >>
+> >> Hi all,
+> >>
+> >> After merging the kunit-fixes tree, today's linux-next build (powerpc
+> >> allyesconfig) failed like this:
+> >>
+> >> lib/kunit/executor.c:26:1: error: expected identifier or '(' before '+' token
+> >>     26 | +kunit_filter_subsuite(struct kunit_suite * const * const subsuite,
+> >>        | ^
+> >> lib/kunit/executor.c: At top level:
+> >> lib/kunit/executor.c:140:10: fatal error: executor_test.c: No such file or directory
+> >>    140 | #include "executor_test.c"
+> >>        |          ^~~~~~~~~~~~~~~~~
+> >>
+> >> Caused by commit
+> >>
+> >>    c9d80ffc5a0a ("kunit: add unit test for filtering suites by names")
+> >
+> > For posterity, David sent out a patch addressing this here:
+> > https://lore.kernel.org/linux-kselftest/20210625111603.358518-1-davidgow@google.com/
+> >
+>
+> It is all fixed now. When I applied this patch yesterday, I needed to
+> fix merge conflicts. When I did that the newly added file was left
+> behind.
+>
+> Build didn't find it since the file was in the repo. Oh well. So much
+> for trying to save you a rebase.
+>
+> Sorry for the trouble. It should all be squared away now. Build and
+> exec tested it for sanity.
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit-fixes&id=1d71307a6f94df3750f8f884545a769e227172fe
+
+I just pulled and tested and can confirm it is working for me now.
+
+Thanks!
