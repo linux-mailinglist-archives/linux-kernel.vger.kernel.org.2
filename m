@@ -2,49 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87573B3CA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 686363B3C9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbhFYG07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 02:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbhFYG06 (ORCPT
+        id S233188AbhFYGY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 02:24:28 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:52022 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233143AbhFYGY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 02:26:58 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC62C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 23:24:38 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4GB6RR5r7hz9sX5; Fri, 25 Jun 2021 16:24:35 +1000 (AEST)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Oliver O'Halloran <oohall@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-In-Reply-To: <20210616134303.58185-1-andriy.shevchenko@linux.intel.com>
-References: <20210616134303.58185-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v2 1/1] powerpc/papr_scm: Properly handle UUID types and API
-Message-Id: <162460208882.3247425.8141718563854989207.b4-ty@ellerman.id.au>
-Date:   Fri, 25 Jun 2021 16:21:28 +1000
+        Fri, 25 Jun 2021 02:24:26 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 538731F442C0
+Subject: Re: [PATCH 0/9] LKDTM: Improvements for kernelci.org
+To:     Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     David Laight <David.Laight@ACULAB.COM>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        kernelci@groups.io, linux-kselftest@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>
+References: <20210623203936.3151093-1-keescook@chromium.org>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <030c022b-985a-16eb-b9d7-73b6fed2d5a9@collabora.com>
+Date:   Fri, 25 Jun 2021 07:22:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210623203936.3151093-1-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 16:43:03 +0300, Andy Shevchenko wrote:
-> Parse to and export from UUID own type, before dereferencing.
-> This also fixes wrong comment (Little Endian UUID is something else)
-> and should eliminate the direct strict types assignments.
+On 23/06/2021 21:39, Kees Cook wrote:
+> This is a bunch of LKDTM clean-ups to improve and expand testing,
+> given feedback from testing at kernelci.org. Adds a few new tests as
+> well.
+> 
+> (If a pull-request is preferred, please let me know.)
+> 
+> Thanks!
+> 
+> -Kees
+> 
+> Kees Cook (9):
+>   selftests/lkdtm: Avoid needing explicit sub-shell
+>   selftests/lkdtm: Fix expected text for CR4 pinning
+>   selftests/lkdtm: Fix expected text for free poison
+>   lkdtm/bugs: XFAIL UNALIGNED_LOAD_STORE_WRITE
+>   lkdtm/heap: Add vmalloc linear overflow test
+>   lkdtm: Enable DOUBLE_FAULT on all architectures
+>   lkdtm: Add CONFIG hints in errors where possible
+>   selftests/lkdtm: Enable various testable CONFIGs
+>   lkdtm/heap: Add init_on_alloc tests
 
-Applied to powerpc/next.
+Tested-by: "kernelci.org bot" <bot@kernelci.org>
 
-[1/1] powerpc/papr_scm: Properly handle UUID types and API
-      https://git.kernel.org/powerpc/c/0e8554b5d7801b0aebc6c348a0a9f7706aa17b3b
 
-cheers
+This whole series was tested on top of next-20210623, here are a
+couple of sample results from KernelCI staging:
+
+Clang 13 on AMD x86_64:
+https://staging.kernelci.org/test/plan/id/60d4a5ce3d2bc535d924bf25/
+
+GCC 8 on Intel x86_64:
+https://staging.kernelci.org/test/plan/id/60d570711a3d6beefe24bf26/
+
+And this is where the series was applied:
+https://github.com/kernelci/linux/commits/a9f4387015268e426c77fd51ed846c9756938828
+
+
+Thanks,
+Guillaume
