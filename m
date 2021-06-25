@@ -2,142 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9C53B4A22
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 23:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0763B4A21
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 23:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhFYV3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 17:29:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50056 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229940AbhFYV3B (ORCPT
+        id S229926AbhFYV27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 17:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhFYV24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 17:29:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624656400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=U5JMFqwvnJzjcO6eOQllRPvApgbp6PzTgwXB8WE2yLw=;
-        b=ebqzdPwag8vBmrcfHLNO2zPv9XOaiFDo7eb1uNzCBdbX9tWs1PCnhR/e/ruPJbTwtvffgR
-        C/PO07qyS4BdFeqEE9bUDkUtt6vdGGkwaNnh/CPjq1HIH43DUjPfaiP7jUHzkqXjIaroAF
-        N9bei+txGcnCH45RGvYn4SJidoNATD8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-206-QZHdCQNiNXuqdRC_v7fxhQ-1; Fri, 25 Jun 2021 17:26:38 -0400
-X-MC-Unique: QZHdCQNiNXuqdRC_v7fxhQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B735618A0765;
-        Fri, 25 Jun 2021 21:26:37 +0000 (UTC)
-Received: from [172.30.41.16] (ovpn-112-106.phx2.redhat.com [10.3.112.106])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EA68869290;
-        Fri, 25 Jun 2021 21:26:11 +0000 (UTC)
-Subject: [PATCH] vfio/mtty: Enforce available_instances
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     alex.williamson@redhat.com
-Cc:     kwankhede@nvidia.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cohuck@redhat.com, jgg@nvidia.com
-Date:   Fri, 25 Jun 2021 15:26:11 -0600
-Message-ID: <162465624894.3338367.12935940647049917981.stgit@omen>
-User-Agent: StGit/1.0-8-g6af9-dirty
+        Fri, 25 Jun 2021 17:28:56 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACB7C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 14:26:33 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id a11so18495680lfg.11
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 14:26:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7t7D/1J/bOKgBQ+E9q4Uy0N2GZHjAbWkoMyygvcYg8Y=;
+        b=X7p8RIA2xPal9jCN6NmRKzdl1VHHJFNPhLAFX0APZphiwG/aMwD704fy688xj/3cUm
+         ae/VP1vEl4Uxh1Z0R+27u31XVSGL1dSYDyR1vecv2hnLmxHTocNYVUblMBaCZitENkC9
+         ODliPZAmuUesicpdUPmRt1FL12g+y7BOVzw7jla1JjeY7BVNJb13oB88mMoeSxRwEWS/
+         fhCOm8U5PLn10k7L/CxUE/xBgS+Xol707SQHcj5Fi+cOi6vX3k9jBXHhgTTRnoVtNlQu
+         133/sAJkefCob8PomQIq8STX24PxKNAt9XlGUUb36XQvphmsMoKGzyZ0kDEogz6n3JHw
+         rQbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7t7D/1J/bOKgBQ+E9q4Uy0N2GZHjAbWkoMyygvcYg8Y=;
+        b=r4xvAbZ/KwrQu/Wv66GvxmTEfiW1QgtnC01jGPWNOFyT3Xn2Hc7Wp9+MdIrEqw8xo3
+         o3ckIY0AM+yuWE9v3ae07cEz++m5le0ivRCwqVxD3EAxoK1tOBSAP80tvI5X/Eau4ZbL
+         beW4NNOhgxx8qR9BP5eWrO8K8E3abStiO0pkEm3juWOiVaFnX/21KwY+uqrL0Sa0q7rX
+         yWES18+z+45dI5xnDKQX0coRc6+gwRooGHYJUhKxkCH+GCtztzuhCcWNP03ZHSEY2HTZ
+         NXmzO+dl8ztEPujbbZPmo64AiUTuS5SIFkL6poEZguL0hU0b/NxXFS3bqfea6j65XyBm
+         WKzw==
+X-Gm-Message-State: AOAM5315xHh6Ig0tfc8DMdCnW5yBKqFHgloLyleTvoq5F0YswCVUdfsN
+        z8do3dO+YS9i1W5Kfl5Ca8ZjgVxnLfr+sw==
+X-Google-Smtp-Source: ABdhPJzyJsmvcyRKSkjbbb0IYNhkZj+n4BR7pYe1DCLl6o1t/q+vPZOxQ7EOWGKdCGqRpU/qWKl72A==
+X-Received: by 2002:ac2:48b1:: with SMTP id u17mr9549252lfg.646.1624656391311;
+        Fri, 25 Jun 2021 14:26:31 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.225.155])
+        by smtp.gmail.com with ESMTPSA id t30sm605776lfg.289.2021.06.25.14.26.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 14:26:30 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH] net: ethernet: fix UAF in ltq_etop_init
+Date:   Sat, 26 Jun 2021 00:26:28 +0300
+Message-Id: <20210625212628.14514-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sample mtty mdev driver doesn't actually enforce the number of
-device instances it claims are available.  Implement this properly.
+In ltq_etop_init() netdev was used after free_netdev():
 
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+err_netdev:
+	unregister_netdev(dev);
+	free_netdev(dev);
+err_hw:
+	ltq_etop_hw_exit(dev);
+	return err;
+
+It causes use-after-free read/write in ltq_etop_hw_exit().
+Fix it by rewriting error handling path in this function. No logic
+changes, only small refactoring.
+
+Fixes: ("MIPS: Lantiq: Add ethernet driver")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
+ drivers/net/ethernet/lantiq_etop.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-Applies to vfio next branch + Jason's atomic conversion
-
- samples/vfio-mdev/mtty.c |   22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
-
-diff --git a/samples/vfio-mdev/mtty.c b/samples/vfio-mdev/mtty.c
-index ffbaf07a17ea..8b26fecc4afe 100644
---- a/samples/vfio-mdev/mtty.c
-+++ b/samples/vfio-mdev/mtty.c
-@@ -144,7 +144,7 @@ struct mdev_state {
- 	int nr_ports;
- };
+diff --git a/drivers/net/ethernet/lantiq_etop.c b/drivers/net/ethernet/lantiq_etop.c
+index 2d0c52f7106b..807a671ebcf8 100644
+--- a/drivers/net/ethernet/lantiq_etop.c
++++ b/drivers/net/ethernet/lantiq_etop.c
+@@ -553,8 +553,10 @@ ltq_etop_init(struct net_device *dev)
  
--static atomic_t mdev_used_ports;
-+static atomic_t mdev_avail_ports = ATOMIC_INIT(MAX_MTTYS);
- 
- static const struct file_operations vd_fops = {
- 	.owner          = THIS_MODULE,
-@@ -707,11 +707,20 @@ static int mtty_probe(struct mdev_device *mdev)
- {
- 	struct mdev_state *mdev_state;
- 	int nr_ports = mdev_get_type_group_id(mdev) + 1;
-+	int avail_ports = atomic_read(&mdev_avail_ports);
- 	int ret;
- 
-+	do {
-+		if (avail_ports < nr_ports)
-+			return -ENOSPC;
-+	} while (!atomic_try_cmpxchg(&mdev_avail_ports,
-+				     &avail_ports, avail_ports - nr_ports));
-+
- 	mdev_state = kzalloc(sizeof(struct mdev_state), GFP_KERNEL);
--	if (mdev_state == NULL)
-+	if (mdev_state == NULL) {
-+		atomic_add(nr_ports, &mdev_avail_ports);
- 		return -ENOMEM;
+ 	dev->watchdog_timeo = 10 * HZ;
+ 	err = ltq_etop_hw_init(dev);
+-	if (err)
+-		goto err_hw;
++	if (err) {
++		ltq_etop_hw_exit(dev);
++		return err;
 +	}
+ 	ltq_etop_change_mtu(dev, 1500);
  
- 	vfio_init_group_dev(&mdev_state->vdev, &mdev->dev, &mtty_dev_ops);
+ 	memcpy(&mac, &priv->pldata->mac, sizeof(struct sockaddr));
+@@ -580,9 +582,8 @@ ltq_etop_init(struct net_device *dev)
  
-@@ -724,6 +733,7 @@ static int mtty_probe(struct mdev_device *mdev)
- 
- 	if (mdev_state->vconfig == NULL) {
- 		kfree(mdev_state);
-+		atomic_add(nr_ports, &mdev_avail_ports);
- 		return -ENOMEM;
- 	}
- 
-@@ -735,9 +745,9 @@ static int mtty_probe(struct mdev_device *mdev)
- 	ret = vfio_register_group_dev(&mdev_state->vdev);
- 	if (ret) {
- 		kfree(mdev_state);
-+		atomic_add(nr_ports, &mdev_avail_ports);
- 		return ret;
- 	}
--	atomic_add(mdev_state->nr_ports, &mdev_used_ports);
- 
- 	dev_set_drvdata(&mdev->dev, mdev_state);
- 	return 0;
-@@ -746,12 +756,13 @@ static int mtty_probe(struct mdev_device *mdev)
- static void mtty_remove(struct mdev_device *mdev)
- {
- 	struct mdev_state *mdev_state = dev_get_drvdata(&mdev->dev);
-+	int nr_ports = mdev_state->nr_ports;
- 
--	atomic_sub(mdev_state->nr_ports, &mdev_used_ports);
- 	vfio_unregister_group_dev(&mdev_state->vdev);
- 
- 	kfree(mdev_state->vconfig);
- 	kfree(mdev_state);
-+	atomic_add(nr_ports, &mdev_avail_ports);
+ err_netdev:
+ 	unregister_netdev(dev);
+-	free_netdev(dev);
+-err_hw:
+ 	ltq_etop_hw_exit(dev);
++	free_netdev(dev);
+ 	return err;
  }
  
- static int mtty_reset(struct mdev_state *mdev_state)
-@@ -1271,8 +1282,7 @@ static ssize_t available_instances_show(struct mdev_type *mtype,
- {
- 	unsigned int ports = mtype_get_type_group_id(mtype) + 1;
- 
--	return sprintf(buf, "%d\n",
--		       (MAX_MTTYS - atomic_read(&mdev_used_ports)) / ports);
-+	return sprintf(buf, "%d\n", atomic_read(&mdev_avail_ports) / ports);
- }
- 
- static MDEV_TYPE_ATTR_RO(available_instances);
-
+-- 
+2.32.0
 
