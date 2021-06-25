@@ -2,77 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE8F3B460A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2FC3B460E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbhFYOt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:49:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52330 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229782AbhFYOtz (ORCPT
+        id S231774AbhFYOuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:50:02 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58572 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231723AbhFYOuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:49:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624632454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=HetBqryaCtuqSOesjWS+ekhM/U9bvM+uJkprgmLod24=;
-        b=M9crMfgjbo+SNNMakY57W5y7E3Jks0jyYNHCGnyYr8iK78LIEvOicfTnSDXFgXVXIor+h0
-        uaXiI6wRt9fLRp/rpdY8fPerw6VxDz0PmZFlx8Ib93Ux5e9LF5IsBGbUzlGi+iNVbj/SeY
-        QV9tKhWKH2X6yY+tSzk/Hp1yCQEa5NY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-311-MKuWO-NCMtCw5hL63jBO9A-1; Fri, 25 Jun 2021 10:47:32 -0400
-X-MC-Unique: MKuWO-NCMtCw5hL63jBO9A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 25 Jun 2021 10:50:01 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 32DDB804140;
-        Fri, 25 Jun 2021 14:47:31 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D407E5D6A8;
-        Fri, 25 Jun 2021 14:47:30 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] Final batch of KVM changes for Linux 5.13
-Date:   Fri, 25 Jun 2021 10:47:30 -0400
-Message-Id: <20210625144730.32703-1-pbonzini@redhat.com>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8923C1FEB9;
+        Fri, 25 Jun 2021 14:47:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624632459; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3p/On6fxHbGfSoHEo45QdpoOPSq8wVMdaUq/e8JoVzM=;
+        b=V6ru4Mh7I4N9RUtnfdD/F1oqSMcxR0NwfguTHDRgm7jLX1iGu9ywsAgYmLHMaX0ue7CM2h
+        HsotDztIV9C6/zeL6JPC5htFaQThnNqOThsBU4wSJg3zshzFPFLkBEHa7OD92x+a+LVuqs
+        7uvRx1Tho+a9wZ/F9qQQKbqhSaCDv6c=
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 40A4311A97;
+        Fri, 25 Jun 2021 14:47:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624632459; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3p/On6fxHbGfSoHEo45QdpoOPSq8wVMdaUq/e8JoVzM=;
+        b=V6ru4Mh7I4N9RUtnfdD/F1oqSMcxR0NwfguTHDRgm7jLX1iGu9ywsAgYmLHMaX0ue7CM2h
+        HsotDztIV9C6/zeL6JPC5htFaQThnNqOThsBU4wSJg3zshzFPFLkBEHa7OD92x+a+LVuqs
+        7uvRx1Tho+a9wZ/F9qQQKbqhSaCDv6c=
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id uOaLDovs1WDnHwAALh3uQQ
+        (envelope-from <mkoutny@suse.com>); Fri, 25 Jun 2021 14:47:39 +0000
+Date:   Fri, 25 Jun 2021 16:47:37 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, Chris Down <chris@chrisdown.name>,
+        Jens Axboe <axboe@kernel.dk>,
+        Shakeel Butt <shakeelb@google.com>
+Subject: Re: [PATCH 2/3] mm: Charge active memcg when no mm is set
+Message-ID: <YNXsid0Wg5X9/hAC@blackbook>
+References: <20210610173944.1203706-1-schatzberg.dan@gmail.com>
+ <20210610173944.1203706-3-schatzberg.dan@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="U5WOJVgZJrEeE8ml"
+Content-Disposition: inline
+In-Reply-To: <20210610173944.1203706-3-schatzberg.dan@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
 
-The following changes since commit 13311e74253fe64329390df80bed3f07314ddd61:
+--U5WOJVgZJrEeE8ml
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  Linux 5.13-rc7 (2021-06-20 15:03:15 -0700)
+On Thu, Jun 10, 2021 at 10:39:43AM -0700, Dan Schatzberg <schatzberg.dan@gm=
+ail.com> wrote:
+> @@ -926,8 +937,17 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_=
+struct *mm)
+>  	 * counting is disabled on the root level in the
+>  	 * cgroup core. See CSS_NO_REF.
+>  	 */
+> -	if (unlikely(!mm))
+> -		return root_mem_cgroup;
+> +	if (unlikely(!mm)) {
+> +		memcg =3D active_memcg();
+> +		if (unlikely(memcg)) {
+> +			/* remote memcg must hold a ref */
+> +			css_get(&memcg->css);
+> +			return memcg;
+> +		}
+> +		mm =3D current->mm;
+> +		if (unlikely(!mm))
+> +			return root_mem_cgroup;
+> +	}
 
-are available in the Git repository at:
+With the change in __add_to_page_cache_locked() all page cache charges
+will supply null mm, so the first !mm unlikely hint may not be warranted
+anymore. Just an interesting point, generally, I'm adding
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus-urgent
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
 
-for you to fetch changes up to f8be156be163a052a067306417cd0ff679068c97:
+--U5WOJVgZJrEeE8ml
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-  KVM: do not allow mapping valid but non-reference-counted pages (2021-06-24 11:55:11 -0400)
+-----BEGIN PGP SIGNATURE-----
 
-----------------------------------------------------------------
-A selftests fix for ARM, and the fix for page reference count underflow.
-This is a very small fix that was provided by Nick Piggin and tested
-by myself.
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmDV7IUACgkQia1+riC5
+qSirkA/7BTqxM98NGuM6kg3YoDN9bafGVLtaEZ2J3nRIXBJpWkyGxDpmaRsEAq8B
+SDejdzmPaIsNlgn3+POS5ozNnhqVXh0/oZ/09Cs68TCGNQk/pZaZeyBitqhP+1MW
+MoNiFqifltGHeyfr6EupwmYp1qsvQHCeiIwrEZ1TJjxG9WZd0xPcVv3dtdFZ2euW
+3p303SgVvQ3TytBvDQ5ORpTmFKQO/td1khxtFv7XcTXyMoaTu9EbBVFCxIb16oCk
+xaGLmQuCMyv6m2uZONDq/WhMKHUQOVEooBz4pZg/sR2T3swSYVj6q+x/NbbNk/MP
+nXZ8TN8IgedfvKKyBPwn4JxOU2zxgoaa07fHvhYdHBHY+PhB0rLuQ/XLoJm8RozE
+3DpSSSi0x5I+2jXajeJ9vfjjKj+B1sq66tST5N9ZJ1NfCr7JAtTgwv3F7sR90cIJ
+W9d+ZqvtVuAsbU0aQA0Tqexvu+IlERRij4dXzrk5ewOz8CDxcdoyPXnANVLniSAc
+rXir95NJNIksHOpXyCyF9qOY5nqdIJeYpG9bZYqWojnVhkDJfj0K7O4HZ79EtxLY
+U/I5+MvvhY6unE8O9Jc6F+/ctC0IY26boMzT14nSepJOcqtBLmX0v5VTRNgwK4PT
+ZiDOTsKgnEn6o/A0O203BEcvuzl2t2WMFam+1lkHLS5ZtZMNOuY=
+=EYsZ
+-----END PGP SIGNATURE-----
 
-----------------------------------------------------------------
-Nicholas Piggin (1):
-      KVM: do not allow mapping valid but non-reference-counted pages
-
-Zenghui Yu (1):
-      KVM: selftests: Fix mapping length truncation in m{,un}map()
-
- tools/testing/selftests/kvm/set_memory_region_test.c |  4 ++--
- virt/kvm/kvm_main.c                                  | 19 +++++++++++++++++--
- 2 files changed, 19 insertions(+), 4 deletions(-)
-
+--U5WOJVgZJrEeE8ml--
