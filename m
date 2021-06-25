@@ -2,136 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9DC3B4734
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 154923B4736
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbhFYQKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 12:10:45 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:17917 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229445AbhFYQKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 12:10:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624637303; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=/KpohStlUJvTiEQ4iqkocQH8jbpoCZ87P2EttCttYgQ=;
- b=ajT5S++8Vh7uld1on3qFscXSZyyYmIDFUkRK+F3QKQf5HKlymS1xGfq/ErYNI5mKDIHFvD5d
- SiPOwSV4iuk9b54P3Ab+FEmjaPsc39aUaZuFGYIp397V2e9ObSFJOHgHHelbsesqitBn6u08
- JjsAX3YAje4hTSt1AbO6r2DcthE=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60d5ff5cd2559fe392ca54d0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 25 Jun 2021 16:07:56
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C86BCC4338A; Fri, 25 Jun 2021 16:07:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 96F94C433F1;
-        Fri, 25 Jun 2021 16:07:54 +0000 (UTC)
+        id S229915AbhFYQLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 12:11:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbhFYQLe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 12:11:34 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46E9C061574;
+        Fri, 25 Jun 2021 09:09:12 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id o5so13141165iob.4;
+        Fri, 25 Jun 2021 09:09:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=36ggmQ4tI+OtGXGakhOyfceWLv+royieh4bzkBLSgcA=;
+        b=MPcazxvbedSKAHiw3HRnfPaIYcdxylc/tVc5IdYRP6gSpdDEdFh8QzC3FNGIiqHB9l
+         B3cSfQSIvctIFWPUM4QqzWFu5bsOYdrPKwToIowJN+IEzA0P6/yAM3i0ng5x4Kxaa2uB
+         /kYVhg5Kc46xN2s/R1cXkPLZpplA6TTsSvfmpeugU19aOHo5MHtGwpc58sm/j5sjrP01
+         dOYLN5TCfcg6vRfAjsnnq2iaxegm9+3NzTvC3GmyAc+ZhQMZOtASboy1bQw+RxtQOXb0
+         Xuv+BXXcVa19HCYdkQbKOcaPHblgYdPt9gcki4xVcHCC0AmCds9qO/VTIdHvx1l0TA8x
+         BQwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=36ggmQ4tI+OtGXGakhOyfceWLv+royieh4bzkBLSgcA=;
+        b=hXDVIylH5sD2zePqUoCNSgxFIij1ts3CMEg9LySvcJ11TwbQXSkwZZSp4Q6/aTe81I
+         UOFjkfOD6ai8a9PFXSkZ/3V41rYnZoGlvMSSTYjOhB3xonoJT6x2Ujq1F4bH695syDLW
+         c/cdBjHhfPWxAYvdE4eNwM/GkBNjWuOGAygCcueY2tvHXqos4Q3vi4OCcaKR9miQEHCF
+         3y2T1SzpGnEFo9K8BN9kFyHRgr5Q8H5N4MbFeQNXGGampkWewOtvIDhbAOMcBGL1mhVg
+         Rkg6bn7iyCd1STXw2z1ZCVYLZ4VfnMnJWrA9b+KfJ5gAAdzQY1Z58w4ZEkFHoq57YfLk
+         OxSQ==
+X-Gm-Message-State: AOAM530IsyLVuionk+T4nLE0kqBWKOd5YrnAwNMp4y1DQjTwo8j2tV3z
+        43RKFe1hHy6W2HOn37ubxYEXUhsivCmc1Q==
+X-Google-Smtp-Source: ABdhPJzXBtlugblj7JrJQeQQu9Ye6ZhsIZFTMqGPFGblj385mgTTocy9u9ClbeIj+SsPPC9PkMrGzg==
+X-Received: by 2002:a5e:980e:: with SMTP id s14mr9307720ioj.133.1624637351972;
+        Fri, 25 Jun 2021 09:09:11 -0700 (PDT)
+Received: from fionn.redhat.com (bras-base-rdwyon0600w-grc-08-184-147-142-18.dsl.bell.ca. [184.147.142.18])
+        by smtp.gmail.com with ESMTPSA id w7sm3930492ilu.74.2021.06.25.09.09.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 09:09:11 -0700 (PDT)
+Sender: John Kacur <jkacur@gmail.com>
+From:   John Kacur <jkacur@redhat.com>
+To:     RT <linux-rt-users@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Cc:     Clark Williams <williams@redhat.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Johnathan Schwender <schwenderjonathan@gmail.com>,
+        Peter Xu <peterx@redhat.com>, John Kacur <jkacur@redhat.com>
+Subject: [ANNOUNCE] rt-tests-2.0
+Date:   Fri, 25 Jun 2021 12:08:01 -0400
+Message-Id: <20210625160801.9283-1-jkacur@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 25 Jun 2021 09:07:54 -0700
-From:   abhinavk@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Lyude Paul <lyude@redhat.com>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [Freedreno] [PATCH] drm/msm/dp: Add missing drm_device
- backpointer
-In-Reply-To: <20210625034721.1287948-1-bjorn.andersson@linaro.org>
-References: <20210625034721.1287948-1-bjorn.andersson@linaro.org>
-Message-ID: <b585ae0c9e2e241f7f0494ae09809392@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-24 20:47, Bjorn Andersson wrote:
-> '6cba3fe43341 ("drm/dp: Add backpointer to drm_device in drm_dp_aux")'
-> introduced a mandator drm_device backpointer in struct drm_dp_aux, but
-mandatory
-> missed the msm DP driver. Fix this.
-> 
-> Fixes: 6cba3fe43341 ("drm/dp: Add backpointer to drm_device in 
-> drm_dp_aux")
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-apart from that nit,
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/dp/dp_aux.c     | 3 ++-
->  drivers/gpu/drm/msm/dp/dp_aux.h     | 2 +-
->  drivers/gpu/drm/msm/dp/dp_display.c | 2 +-
->  3 files changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c 
-> b/drivers/gpu/drm/msm/dp/dp_aux.c
-> index 4a3293b590b0..88659ed200b9 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
-> @@ -441,7 +441,7 @@ void dp_aux_deinit(struct drm_dp_aux *dp_aux)
->  	dp_catalog_aux_enable(aux->catalog, false);
->  }
-> 
-> -int dp_aux_register(struct drm_dp_aux *dp_aux)
-> +int dp_aux_register(struct drm_dp_aux *dp_aux, struct drm_device 
-> *drm_dev)
->  {
->  	struct dp_aux_private *aux;
->  	int ret;
-> @@ -455,6 +455,7 @@ int dp_aux_register(struct drm_dp_aux *dp_aux)
-> 
->  	aux->dp_aux.name = "dpu_dp_aux";
->  	aux->dp_aux.dev = aux->dev;
-> +	aux->dp_aux.drm_dev = drm_dev;
->  	aux->dp_aux.transfer = dp_aux_transfer;
->  	ret = drm_dp_aux_register(&aux->dp_aux);
->  	if (ret) {
-> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.h 
-> b/drivers/gpu/drm/msm/dp/dp_aux.h
-> index 0728cc09c9ec..7ef0d83b483a 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_aux.h
-> +++ b/drivers/gpu/drm/msm/dp/dp_aux.h
-> @@ -9,7 +9,7 @@
->  #include "dp_catalog.h"
->  #include <drm/drm_dp_helper.h>
-> 
-> -int dp_aux_register(struct drm_dp_aux *dp_aux);
-> +int dp_aux_register(struct drm_dp_aux *dp_aux, struct drm_device 
-> *drm_dev);
->  void dp_aux_unregister(struct drm_dp_aux *dp_aux);
->  void dp_aux_isr(struct drm_dp_aux *dp_aux);
->  void dp_aux_init(struct drm_dp_aux *dp_aux);
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
-> b/drivers/gpu/drm/msm/dp/dp_display.c
-> index c26562bd85fe..2f0a5c13f251 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -259,7 +259,7 @@ static int dp_display_bind(struct device *dev,
-> struct device *master,
->  		return rc;
->  	}
-> 
-> -	rc = dp_aux_register(dp->aux);
-> +	rc = dp_aux_register(dp->aux, drm);
->  	if (rc) {
->  		DRM_ERROR("DRM DP AUX register failed\n");
->  		return rc;
+I'm pleased to announce rt-tests-2.0
+
+This release contains some interesting new features.
+
+Daniel Wagner has been very busy doing more work to unify the various
+programs in the rt-tests suite, and adding a feature to optionally
+generate json output. Thanks for this great work Daniel
+
+Jonathan Schwender added a cool new feature to specify the affinity of
+the main thread separately from the measurement threads.
+
+We had a few missteps too, we have long required libnuma for building
+cyclictest but not at runtime. Unfortunately there were some patches
+that broke the ability of cyclictest to run without libnuma, however I
+am aware of the situtation and working to fix this.
+
+Finally, the so called stable version branch has been dead a long time,
+and the branch name unstable/devel/latest was the version that people
+were using. That name was confusing though, "unstable"
+meant that we were allowed to change the api, not that the code was
+somehow unstable. In any case, in order to remove this confusion, I have
+created a new default branch - main. I have deleted the "master" branch
+which only contained a README file anyway as part of the community's
+conscious language effort.
+
+I decided that this new release was worthy of a bump-up to version v2.0
+We could probably use a round of mostly testing and bug fixing for the
+next release.
+
+Bug reports, testing, patches are always appreaciated.
+
+Enjoy!
+
+Clone
+git://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
+https://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
+https://kernel.googlesource.com/pub/scm/utils/rt-tests/rt-tests.git
+
+Branch: main
+
+Tag: v2.0
+
+Tarballs are available here:
+https://kernel.org/pub/linux/utils/rt-tests
+
+Older version tarballs are available here:
+https://kernel.org/pub/linux/utils/rt-tests/older
+
+
+Daniel Wagner (77):
+  cyclictest: Always use libnuma
+  cyclictest: Use affinity_mask for steering thread placement
+  pip_stress: De-constify prio_min
+  ptsematest: Return correct exit code when showing help
+  cyclictest: Remove libnuma API version 1 support
+  cyclicdeadline: Add missing step command line argument
+  cyclicdeadline: Remove unused struct thread_param
+  cyclictest: Move verbose message into main
+  signaltest: Always use libnuma
+  rt-numa: Use error message helpers
+  oslat: Use cpuset size as upper bound
+  rt-tests: Rename error.h to rt-error.h
+  rt-utils: Add JSON common header output helper
+  cyclictest: Add JSON output feature
+  cyclicdeadline: Add JSON output feature
+  pmqtest: Add JSON output feature
+  ptsematest: Add JSON output feature
+  svsematest: Add JSON output feature
+  oslat: Add JSON output feature
+  rt-migrate-test: Add JSON output feature
+  oslat: Add quiet command line option
+  signaltest: Add JSON output feature
+  sigwaittest: Add JSON output feature
+  cyclictest: Fix printf format specifier
+  cyclicdeadline.c: Fix printf format specifier
+  cyclictest: Remove unused include header
+  cyclicdeadline: Remove unused include header
+  signaltest: Add missing --output usage info
+  rt-util: Add rt_init function
+  cyclictest: Initialize rt-util
+  oslat: Initialize rt-util
+  pmqtest: Initialize rt-util
+  ptsematest: Initialize rt-util
+  rt-migrate-test: Initialize rt-util
+  cyclicdeadline: Initialize rt-util
+  signaltest: Initialize rt-util
+  sigwaittest: Initialize rt-util
+  svematest: Initialize rt-util
+  rt-util: Remove superfluous arguments from rt_write_json
+  rt-util: Introduce rt_test_start()
+  cyclictest: Record start of test execution
+  oslat: Record start of test execution
+  pmqtest: Record start of test execution
+  ptesematest: Record start of test execution
+  rt-migrate-test: Record start of test execution
+  cyclicdeadline: Record start of test execution
+  signaltest: Record start of test execution
+  sigwaittest: Record start of test execution
+  svsematest: Record start of test execution
+  rt-util: Add return_code to common section of JSON output
+  pi_stress: Prepare command line parser for long options only
+  pi_stress: Add JSON output feature
+  ssdd: Add quiet command line option
+  ssdd: Add JSON output feature
+  cyclicdeadline: Fix JSON output format
+  cyclictest: Rename command line option --output to --json
+  oslat: Rename command line option --output to --json
+  pi_stress: Rename command line option --output to --json
+  pmqtest: Rename command line option --output to --json
+  ptsematest: Rename command line option --output to --json
+  rt-migrate-test: Rename command line option --output to --json
+  cyclicdeadline: Rename command line option --output to --json
+  signaltest: Rename command line option --output to --json
+  sigwaittest: Rename command line option --output to --json
+  ssdd: Rename command line option --output to --json
+  svsematest: Rename command line option --output to --json
+  cyclictest: Add --json to man page
+  oslat: Add --json to man page
+  pi_stress: Add --json to man page
+  pmqtest: Add --json to man page
+  ptsematest: Add --json to man page
+  rt-migrate-test: Add --json to man page
+  cyclicdeadline: Add --json to man page
+  signaltest: Add --json to man page
+  sigwaittest: Add --json to man page
+  ssdd: Add --json to man page
+  svematest: Add --json to man page
+
+John Kacur (11):
+  rt-tests: rm scripts/do-git-push
+  rt-tests: oslat: print version string
+  rt-tests: oslat: Allocate memory for cpu_set
+  Revert "cyclictest: Use affinity_mask for steering thread placement"
+  Revert "cyclictest: Always use libnuma"
+  Revert "signaltest: Always use libnuma"
+  rt-tests: Don't assume numa is available at runtime
+  rt-tests: remove rt_numa_bitmask_count in rt_numa.h
+  rt-tests: cyclicdeadline.c: Remove dead code
+  rt-tests: cyclictest: Add entry for mainaffinity in the manpage
+  rt-tests: Change VERSION to 2.0
+
+Jonathan Schwender (3):
+  cyclictest: Fix --affinity when intermediate CPUs are offline
+  cyclictest: Move main pid setaffinity handling into a function
+  Subject: [PATCH v4 2/2] cyclictest: Add --mainaffinity=[CPUSET]
+    option.
+
+Peter Xu (1):
+  oslat: Fix --cpu-list won't allow to schedule on all possible cores
+
+ Makefile                              |   4 +-
+ scripts/do-git-push                   | 115 --------------------
+ src/cyclictest/cyclictest.8           |  10 +-
+ src/cyclictest/cyclictest.c           | 110 ++++++++++++++++----
+ src/cyclictest/rt_numa.h              |  14 +--
+ src/include/pip_stress.h              |   5 +-
+ src/include/{error.h => rt-error.h}   |   0
+ src/include/rt-utils.h                |   8 ++
+ src/lib/{error.c => rt-error.c}       |   2 +-
+ src/lib/rt-numa.c                     |  23 ++--
+ src/lib/rt-utils.c                    | 114 +++++++++++++++++++-
+ src/oslat/oslat.8                     |   8 +-
+ src/oslat/oslat.c                     | 143 +++++++++++++++++++------
+ src/pi_tests/pi_stress.8              |   8 +-
+ src/pi_tests/pi_stress.c              |  68 +++++++++---
+ src/pi_tests/pip_stress.c             |   2 +-
+ src/pmqtest/pmqtest.8                 |   5 +-
+ src/pmqtest/pmqtest.c                 | 144 +++++++++++++++++++++-----
+ src/ptsematest/ptsematest.8           |   5 +-
+ src/ptsematest/ptsematest.c           | 130 +++++++++++++++++++----
+ src/rt-migrate-test/rt-migrate-test.8 |   6 +-
+ src/rt-migrate-test/rt-migrate-test.c | 122 ++++++++++++++++++----
+ src/sched_deadline/cyclicdeadline.8   |   5 +-
+ src/sched_deadline/cyclicdeadline.c   | 102 +++++++++++-------
+ src/signaltest/signaltest.8           |   5 +-
+ src/signaltest/signaltest.c           | 119 ++++++++++++++++-----
+ src/sigwaittest/sigwaittest.8         |   5 +-
+ src/sigwaittest/sigwaittest.c         | 121 ++++++++++++++++++----
+ src/ssdd/ssdd.8                       |   5 +-
+ src/ssdd/ssdd.c                       |  43 ++++++--
+ src/svsematest/svsematest.8           |   5 +-
+ src/svsematest/svsematest.c           | 129 +++++++++++++++++++----
+ 32 files changed, 1178 insertions(+), 407 deletions(-)
+ delete mode 100755 scripts/do-git-push
+ rename src/include/{error.h => rt-error.h} (100%)
+ rename src/lib/{error.c => rt-error.c} (98%)
+
+-- 
+2.31.1
+
