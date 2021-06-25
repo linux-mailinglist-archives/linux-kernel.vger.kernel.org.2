@@ -2,179 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A658D3B49EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 23:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5858F3B49F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 23:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhFYVJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 17:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbhFYVJ6 (ORCPT
+        id S229929AbhFYVKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 17:10:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25272 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229890AbhFYVKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 17:09:58 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B932C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 14:07:36 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0dae0029e536978a2ce722.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:ae00:29e5:3697:8a2c:e722])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 29BF11EC05A0;
-        Fri, 25 Jun 2021 23:07:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1624655255;
+        Fri, 25 Jun 2021 17:10:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624655297;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=4Dhe8/CAj5PZCZSBsa0GRqc4jLrXUf6ZA1ktPfUMj38=;
-        b=lVT9Su4T0hg8fFQUfoItYeFKmx9oadggibbEId2g5K1l2AuZ4VZIPX90/9SzKzYficEb75
-        l2VkCmuliWIDmQHBmox4EnSBc1hWEUGY40N0CK9lRR3LGqPPy+2zVmx9cn0PaUy3B0bJHj
-        UUcArFsd09Oa5xerDOJOiHjttQ34y4c=
-Date:   Fri, 25 Jun 2021 23:07:28 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH] x86/tools/relocs: add __printf attribute to die()
-Message-ID: <YNZFkG/tuHkwpyug@zn.tnic>
-References: <YNRzSy3NuwBDYWwr@kroah.com>
- <YNR7aw+C+7AJnBIG@zn.tnic>
- <YNXG472lXPHlbuCF@kroah.com>
- <YNXkVBcmBvZL7khv@zn.tnic>
- <F8B4FDC6-851F-4EC5-A308-BBAB52A75EF3@zytor.com>
- <YNYJ9vVQPVWqCvVq@zn.tnic>
- <1EFF7FE1-D341-41DF-8681-D386A1BD6F7A@zytor.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=8ZDICObM3KXek2Hb3yoYurGVvyXCqbMuKZU9WccmR1E=;
+        b=KvHhZjFgH9Cd6rtx6NiHrlqW3qPdD0vT9QQX1gOOMROggpqitnbc72ZGX7xQry1eLUzab3
+        tvQULrE0N1bOGPVrEQe4j85RHAY/2BDjSCCFAkZGEFBkKyDyVSOwYBstpUSaMYhAIOBWTf
+        Ij1Mh8QXXeZFQBIxoi+G+XCs9VqyE7c=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-22-s92TOBs9Mr-8Yy6E60_q0g-1; Fri, 25 Jun 2021 17:08:16 -0400
+X-MC-Unique: s92TOBs9Mr-8Yy6E60_q0g-1
+Received: by mail-lj1-f200.google.com with SMTP id f14-20020a2e6a0e0000b0290172cfbb4a24so3262775ljc.6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 14:08:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8ZDICObM3KXek2Hb3yoYurGVvyXCqbMuKZU9WccmR1E=;
+        b=bYhgnzum2asSaAHA8Dqp/zNBmfH6z6Ra7F5lxfHDxhu93v01rzKgvN0ydHWAAoG8qZ
+         McvNZPYFAnB614h3b4XyRBExjIRqMe7SbMOVbJtH5O+v0gp+lgYRXUh4zfFY/LI6t2pb
+         vxnyBAvHe3RkHqRGbbXuRonOYuLb4OkInP/U3nS1owlYoP/OUTtuC4tl6dUpZYKWBxeQ
+         6mGzANgwsoxdAR+vcc059MH0vkzXZ9LMEzBtQABxAgcZlZAmoVlPN5YELzA9qyAlHWaE
+         SUqvyYSroT1TFiGnUR36a9o7ByT0WhoC/YeGiy6va6aDts/1XyM3BOYvSb1q38iX1mcM
+         XnEQ==
+X-Gm-Message-State: AOAM530zQZ3X4rGDaqPeyamM3q+e5lXpy82i9mtGsSybXfsIbS8IBMd6
+        fnMMenMJPjQqSi5qtRCklcMKgR1DQsZ7VGSuVMrlhWbhPzbm8fS7fuv6ajWP16lyAlB92yjLJoY
+        0wqEzF/99GEwhntTCcZafigyAkxHfhnYHg2TJIDHS
+X-Received: by 2002:a19:520b:: with SMTP id m11mr9732661lfb.548.1624655295023;
+        Fri, 25 Jun 2021 14:08:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxUexlIFHXeeKXO03SmwGePdENz2CjY0tC2d9T70zel0UdMzzrYS7rF2Shg08+5Cqm1V6fr5JNcCCdgzQuLKqk=
+X-Received: by 2002:a19:520b:: with SMTP id m11mr9732628lfb.548.1624655294717;
+ Fri, 25 Jun 2021 14:08:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1EFF7FE1-D341-41DF-8681-D386A1BD6F7A@zytor.com>
+References: <20210617182242.8637-1-nitesh@redhat.com> <20210617182242.8637-15-nitesh@redhat.com>
+ <YNBHQvo1uDfBbr5c@unreal>
+In-Reply-To: <YNBHQvo1uDfBbr5c@unreal>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Fri, 25 Jun 2021 17:08:03 -0400
+Message-ID: <CAFki+L=2nVA3FB03BjuXbj+di28LhVUzo9P9WoJyxoQFggt0VQ@mail.gmail.com>
+Subject: Re: [PATCH v1 14/14] net/mlx4: Use irq_update_affinity_hint
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-pci@vger.kernel.org,
+        tglx@linutronix.de, jesse.brandeburg@intel.com,
+        robin.murphy@arm.com, mtosatti@redhat.com, mingo@kernel.org,
+        jbrandeb@kernel.org, frederic@kernel.org, juri.lelli@redhat.com,
+        abelits@marvell.com, bhelgaas@google.com, rostedt@goodmis.org,
+        peterz@infradead.org, davem@davemloft.net,
+        akpm@linux-foundation.org, sfr@canb.auug.org.au,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
+        chris.friesen@windriver.com, maz@kernel.org, nhorman@tuxdriver.com,
+        pjwaskiewicz@gmail.com, sassmann@redhat.com, thenzl@redhat.com,
+        kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
+        shivasharan.srikanteshwara@broadcom.com,
+        sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com, james.smart@broadcom.com,
+        dick.kennedy@broadcom.com, jkc@redhat.com, faisal.latif@intel.com,
+        shiraz.saleem@intel.com, tariqt@nvidia.com, ahleihel@redhat.com,
+        kheib@redhat.com, borisp@nvidia.com, saeedm@nvidia.com,
+        benve@cisco.com, govind@gmx.com, jassisinghbrar@gmail.com,
+        luobin9@huawei.com, ajit.khaparde@broadcom.com,
+        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 01:38:51PM -0700, H. Peter Anvin wrote:
-> 64-bit cross build on a 32-bit platform... or Windows.
+On Mon, Jun 21, 2021 at 4:02 AM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> On Thu, Jun 17, 2021 at 02:22:42PM -0400, Nitesh Narayan Lal wrote:
+> > The driver uses irq_set_affinity_hint() to update the affinity_hint mask
+> > that is consumed by the userspace to distribute the interrupts. However,
+> > under the hood irq_set_affinity_hint() also applies the provided cpumask
+> > (if not NULL) as the affinity for the given interrupt which is an
+> > undocumented side effect.
+> >
+> > To remove this side effect irq_set_affinity_hint() has been marked
+> > as deprecated and new interfaces have been introduced. Hence, replace the
+> > irq_set_affinity_hint() with the new interface irq_update_affinity_hint()
+> > that only updates the affinity_hint pointer.
+> >
+> > Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+> > ---
+> >  drivers/net/ethernet/mellanox/mlx4/eq.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/mellanox/mlx4/eq.c b/drivers/net/ethernet/mellanox/mlx4/eq.c
+> > index 9e48509ed3b2..f549d697ca95 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx4/eq.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx4/eq.c
+> > @@ -244,9 +244,9 @@ static void mlx4_set_eq_affinity_hint(struct mlx4_priv *priv, int vec)
+> >           cpumask_empty(eq->affinity_mask))
+> >               return;
+> >
+> > -     hint_err = irq_set_affinity_hint(eq->irq, eq->affinity_mask);
+> > +     hint_err = irq_update_affinity_hint(eq->irq, eq->affinity_mask);
+> >       if (hint_err)
+> > -             mlx4_warn(dev, "irq_set_affinity_hint failed, err %d\n", hint_err);
+> > +             mlx4_warn(dev, "irq_update_affinity_hint failed, err %d\n", hint_err);
+> >  }
+> >  #endif
+> >
+> > @@ -1124,7 +1124,7 @@ static void mlx4_free_irqs(struct mlx4_dev *dev)
+> >               if (eq_table->eq[i].have_irq) {
+> >                       free_cpumask_var(eq_table->eq[i].affinity_mask);
+> >  #if defined(CONFIG_SMP)
+> > -                     irq_set_affinity_hint(eq_table->eq[i].irq, NULL);
+> > +                     irq_update_affinity_hint(eq_table->eq[i].irq, NULL);
+> >  #endif
+>
+> This #if/endif can be deleted.
 
-Meh, nobody cares about those... :)
+I think we also can get rid of the other #if/endif CONFIG_SMP
+occurrences that are present around mlx4_set_eq_affinity_hint()
+definition and call, isn't it?
+There is already a check-in interrupt.h so doing it again in the
+driver looks like an unwanted repetition IMHO.
 
-Hmm, so looking at the PRI* inttypes.h things again, they're C99 and
-they kinda look more elegant as they don't make us cast stuff.
+>
+> Thanks,
+> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+>
 
-So how does that look?
-
----
-
-diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-index 04c5a44b9682..2582991ba216 100644
---- a/arch/x86/tools/relocs.c
-+++ b/arch/x86/tools/relocs.c
-@@ -26,6 +26,9 @@ static struct relocs relocs32;
- #if ELF_BITS == 64
- static struct relocs relocs32neg;
- static struct relocs relocs64;
-+#define FMT PRIu64
-+#else
-+#define FMT PRIu32
- #endif
- 
- struct section {
-@@ -389,7 +392,7 @@ static void read_ehdr(FILE *fp)
- 		Elf_Shdr shdr;
- 
- 		if (fseek(fp, ehdr.e_shoff, SEEK_SET) < 0)
--			die("Seek to %d failed: %s\n", ehdr.e_shoff, strerror(errno));
-+			die("Seek to %" FMT " failed: %s\n", ehdr.e_shoff, strerror(errno));
- 
- 		if (fread(&shdr, sizeof(shdr), 1, fp) != 1)
- 			die("Cannot read initial ELF section header: %s\n", strerror(errno));
-@@ -412,17 +415,17 @@ static void read_shdrs(FILE *fp)
- 
- 	secs = calloc(shnum, sizeof(struct section));
- 	if (!secs) {
--		die("Unable to allocate %d section headers\n",
-+		die("Unable to allocate %ld section headers\n",
- 		    shnum);
- 	}
- 	if (fseek(fp, ehdr.e_shoff, SEEK_SET) < 0) {
--		die("Seek to %d failed: %s\n",
--			ehdr.e_shoff, strerror(errno));
-+		die("Seek to %" FMT " failed: %s\n",
-+		    ehdr.e_shoff, strerror(errno));
- 	}
- 	for (i = 0; i < shnum; i++) {
- 		struct section *sec = &secs[i];
- 		if (fread(&shdr, sizeof(shdr), 1, fp) != 1)
--			die("Cannot read ELF section headers %d/%d: %s\n",
-+			die("Cannot read ELF section headers %d/%ld: %s\n",
- 			    i, shnum, strerror(errno));
- 		sec->shdr.sh_name      = elf_word_to_cpu(shdr.sh_name);
- 		sec->shdr.sh_type      = elf_word_to_cpu(shdr.sh_type);
-@@ -450,12 +453,12 @@ static void read_strtabs(FILE *fp)
- 		}
- 		sec->strtab = malloc(sec->shdr.sh_size);
- 		if (!sec->strtab) {
--			die("malloc of %d bytes for strtab failed\n",
--				sec->shdr.sh_size);
-+			die("malloc of %" FMT " bytes for strtab failed\n",
-+			    sec->shdr.sh_size);
- 		}
- 		if (fseek(fp, sec->shdr.sh_offset, SEEK_SET) < 0) {
--			die("Seek to %d failed: %s\n",
--				sec->shdr.sh_offset, strerror(errno));
-+			die("Seek to %" FMT " failed: %s\n",
-+			    sec->shdr.sh_offset, strerror(errno));
- 		}
- 		if (fread(sec->strtab, 1, sec->shdr.sh_size, fp)
- 		    != sec->shdr.sh_size) {
-@@ -475,12 +478,12 @@ static void read_symtabs(FILE *fp)
- 		}
- 		sec->symtab = malloc(sec->shdr.sh_size);
- 		if (!sec->symtab) {
--			die("malloc of %d bytes for symtab failed\n",
--				sec->shdr.sh_size);
-+			die("malloc of %" FMT " bytes for symtab failed\n",
-+			    sec->shdr.sh_size);
- 		}
- 		if (fseek(fp, sec->shdr.sh_offset, SEEK_SET) < 0) {
--			die("Seek to %d failed: %s\n",
--				sec->shdr.sh_offset, strerror(errno));
-+			die("Seek to %" FMT " failed: %s\n",
-+			    sec->shdr.sh_offset, strerror(errno));
- 		}
- 		if (fread(sec->symtab, 1, sec->shdr.sh_size, fp)
- 		    != sec->shdr.sh_size) {
-@@ -508,12 +511,12 @@ static void read_relocs(FILE *fp)
- 		}
- 		sec->reltab = malloc(sec->shdr.sh_size);
- 		if (!sec->reltab) {
--			die("malloc of %d bytes for relocs failed\n",
--				sec->shdr.sh_size);
-+			die("malloc of %" FMT " bytes for relocs failed\n",
-+			    sec->shdr.sh_size);
- 		}
- 		if (fseek(fp, sec->shdr.sh_offset, SEEK_SET) < 0) {
--			die("Seek to %d failed: %s\n",
--				sec->shdr.sh_offset, strerror(errno));
-+			die("Seek to %" FMT " failed: %s\n",
-+			    sec->shdr.sh_offset, strerror(errno));
- 		}
- 		if (fread(sec->reltab, 1, sec->shdr.sh_size, fp)
- 		    != sec->shdr.sh_size) {
-diff --git a/arch/x86/tools/relocs.h b/arch/x86/tools/relocs.h
-index 43c83c0fd22c..4c49c82446eb 100644
---- a/arch/x86/tools/relocs.h
-+++ b/arch/x86/tools/relocs.h
-@@ -17,6 +17,7 @@
- #include <regex.h>
- #include <tools/le_byteshift.h>
- 
-+__attribute__((__format__(printf, 1, 2)))
- void die(char *fmt, ...) __attribute__((noreturn));
- 
- #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 -- 
-Regards/Gruss,
-    Boris.
+Thanks
+Nitesh
 
-https://people.kernel.org/tglx/notes-about-netiquette
