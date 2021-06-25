@@ -2,227 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651F23B42BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44673B42BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbhFYLzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 07:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhFYLzf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 07:55:35 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863C1C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 04:53:13 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 8so4205322ybn.9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 04:53:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pP+uL+ZWPlylJuCwLYmeBf3hd9pchiAlxhNsWG9VKd8=;
-        b=KI1MeyBQ0OBl6ysBQsjxlAlxN4+16jJsj7oFhcxexxNLciNx5K1id+8qbdz2CR8k0C
-         6XSMZcbErWcn4eulyTJN0ThuR3PGvZJj+LpHm4TvQr3GdEgipVR5RpPJl8bCK4VhgsFs
-         Zw02nmI1syIpkpD2cyLE377l02EmeILnZHiSSCW+FZRM2pFPU2+pofD964HNnNaz33ky
-         4nszfUbJIPjew2Xl2yv7JVrNDFK/TRIA02un2DHDi6msZ4tqufjQ2U6M+vRgRPWcmtp1
-         97TcafseGaFThhUAMjvn6R/xZ0ic0eTWeDbNRRNGvqaxHjd6aKTK/m18uVm7gbyz0A3o
-         YpWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pP+uL+ZWPlylJuCwLYmeBf3hd9pchiAlxhNsWG9VKd8=;
-        b=OjvjWqjqR/TiR8oYfLAaVPGiSaFTRXIqQCG6Owq9Y2ybWxmSZBzWbxUFk4DrbQDNeC
-         6KlNCtk/rexPFEflyt3Xe0xOJVfG9bxjr0I376M+4KEd/5BcADFl1tY68T5x/SSvJXtW
-         IUvlkH1jAa437dzNbJWYVwYiA1qdqQ8Zf8z//QauDVFCEkcNbH7XDKjzmeKUrw6s7jau
-         l41bbyZConUh7g+xzr6NBw+Lj56BViSfq+uhdNsj7ge5+uJOsXXsPzxsgEm1PKvhOQvJ
-         O3Zv6xxlorpsFFvdmKjikeORQy+SyGEt472B9zr8wrbx6SvdMipy54iUN5wMYj2zdaBI
-         cMpA==
-X-Gm-Message-State: AOAM532AB0mbg4TymnSepvCWiRzmDqOwKL0rwDFa4smgIwMBsN9c7eIo
-        mgyxGkbHI7WlYYRXHNhRtjn0tx71cPC0udG+gCvBOA==
-X-Google-Smtp-Source: ABdhPJyKERDk5E8TZFH2G2z8aCTJEgSAzS0YG0S+bfy5QafnCuqsvZrWraIDdIfxtKwzxBh8Bn9i+JhnOXKELMvtlJ0=
-X-Received: by 2002:a25:d68e:: with SMTP id n136mr11794028ybg.302.1624621992612;
- Fri, 25 Jun 2021 04:53:12 -0700 (PDT)
+        id S230161AbhFYL41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:56:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229498AbhFYL4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 07:56:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAC7D61464;
+        Fri, 25 Jun 2021 11:54:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624622045;
+        bh=eKwvSIEBtV9yZ29mPOO8grGRX6O2AyCWp0i7Tkuc/eM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QFSo0RtCEX5GX6dxNXbQPazYaVXnToZoTw5wAT9kzABmT8tlQbNsI1XLHqgD94n8i
+         OVyd/zpV1wDiEjb7Jjf72vfpx/tR91Omxa/B+VTUci7uCDvoBLoSVJBGVtVAY8T8Pp
+         XuOMj1cBGeeONi3D8PXntWB+tqzF2qXfZlO4Kr139M4Qy1rHg0LgR5KPQNBM+pA8Ye
+         85iPWTiuNn3Z6kAPZ0q8vwytmfGfK62g+9swaY+lqTUxR/n858VD7ckLYkLXAn7Fz7
+         OV/EBGLBwEMvY3YXZvFdRAIyYB6y5ALIJLwKYxRNSI4YCEgz4/jOuHJpOpyAqCJXA4
+         yrlT5YcDA1j1A==
+Received: by pali.im (Postfix)
+        id 7061360E; Fri, 25 Jun 2021 13:54:02 +0200 (CEST)
+Date:   Fri, 25 Jun 2021 13:54:02 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Koen Vandeputte <koen.vandeputte@citymesh.com>
+Cc:     Petr =?utf-8?Q?=C5=A0tetiar?= <ynezz@true.cz>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Yinghai Lu <yinghai@kernel.org>
+Subject: Re: PCI: Race condition in pci_create_sysfs_dev_files
+Message-ID: <20210625115402.jwga35xmknmo4vdk@pali>
+References: <20200909112850.hbtgkvwqy2rlixst@pali>
+ <20201006222222.GA3221382@bjorn-Precision-5520>
+ <20201007081227.d6f6otfsnmlgvegi@pali>
+ <20210407142538.GA12387@meh.true.cz>
+ <20210407145147.bvtubdmz4k6nulf7@pali>
+ <20210407153041.GA17046@meh.true.cz>
+ <cd4812f0-1de3-0582-936c-ba30906595af@citymesh.com>
 MIME-Version: 1.0
-References: <20210619073551.13703-1-sergio.paracuellos@gmail.com>
-In-Reply-To: <20210619073551.13703-1-sergio.paracuellos@gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 25 Jun 2021 13:53:01 +0200
-Message-ID: <CAMpxmJUvMTevyhkvq0YXg5d=G5qBzhi0mz0w0TjUuWCCvnnRCQ@mail.gmail.com>
-Subject: Re: [PATCH] gpio: mt7621: support gpio-line-names property
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        git@johnthomson.fastmail.com.au,
-        LKML <linux-kernel@vger.kernel.org>, neil@brown.name,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
-        Nicholas Mc Guire <hofrat@osadl.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cd4812f0-1de3-0582-936c-ba30906595af@citymesh.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19, 2021 at 9:35 AM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
->
-> The default handling of the gpio-line-names property by the
-> gpiolib-of implementation does not work with the multiple
-> gpiochip banks per device structure used by the gpio-mt7621
-> driver.
->
-> This commit adds driver level support for the device tree
-> property so that GPIO lines can be assigned friendly names.
->
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> ---
-> Hi,
->
-> This driver has three gpiochips with 32 gpios each. Core implmentation
-> got gpio's repeated along each gpio chip if chip.names is not assigned.
-> To avoid this behaviour driver will set this names as empty or
-> with desired friendly line names. Consider the following sample with
-> minimal entries for the first chip with this patch changes applied:
->
-> &gpio {
->     gpio-line-names = "", "", "", "",
->                       "", "", "SFP LOS", "extcon port5 PoE compat",
->                       "SFP module def0", "LED blue SFP", "SFP tx disable", "",
->                       "switch USB power", "mode", "", "buzzer",
->                       "LED blue pwr", "switch port5 PoE out", "reset";
-> };
->
-> gpioinfo
-> gpiochip0 - 32 lines:
->   line   0:      unnamed       unused  output  active-high
->   line   1:      unnamed       unused   input  active-high
->   line   2:      unnamed       unused   input  active-high
->   line   3:      unnamed       unused   input  active-high
->   line   4:      unnamed       unused   input  active-high
->   line   5:      unnamed       unused   input  active-high
->   line   6:    "SFP LOS"        "los"   input  active-high [used]
->   line   7: "extcon port5 PoE compat" unused input active-high
->   line   8: "SFP module def0" "mod-def0" input active-low [used]
->   line   9: "LED blue SFP" "blue:sfp" output active-high [used]
->   line  10: "SFP tx disable" "tx-disable" output active-high [used]
->   line  11:      unnamed       unused  output  active-high
->   line  12: "switch USB power" "usb_power" output active-high [used]
->   line  13:       "mode"       "mode"   input  active-high [used]
->   line  14:      unnamed       unused   input  active-high
->   line  15:     "buzzer"     "buzzer"  output  active-high [used]
->   line  16: "LED blue pwr" "blue:pwr" output active-high [used]
->   line  17: "switch port5 PoE out" "sysfs" input active-high [used]
->   line  18:      "reset"      "reset"   input  active-high [used]
->   line  19:      unnamed       unused   input  active-high
->   line  20:      unnamed       unused   input  active-high
->   line  21:      unnamed       unused   input  active-high
->   line  22:      unnamed       unused   input  active-high
->   line  23:      unnamed       unused   input  active-high
->   line  24:      unnamed       unused   input  active-high
->   line  25:      unnamed       unused   input  active-high
->   line  26:      unnamed       unused   input  active-high
->   line  27:      unnamed       unused   input  active-high
->   line  28:      unnamed       unused   input  active-high
->   line  29:      unnamed       unused   input  active-high
->   line  30:      unnamed       unused   input  active-high
->   line  31:      unnamed       unused   input  active-high
-> gpiochip1 - 32 lines:
->   line   0:      unnamed       unused   input  active-high
->   line   1:      unnamed       unused   input  active-high
->   ...
->   line  31:      unnamed       unused   input  active-high
-> gpiochip2 - 32 lines:
->   line   0:      unnamed       unused   input  active-high
->   line   1:      unnamed       unused   input  active-high
->   ...
->   line  31:      unnamed       unused   input  active-high
->
-> To avoid gpiochip1 and gpiochip2 entries repeated with this
-> minimal lines definition change, we assign empty reserved
-> 'names' in driver code.
->
-> Note that we also don't want to to prevent the driver from
-> succeeding at probe due to an error in the gpio-line-names
-> property and the ENODATA error is considered a valid result
-> to terminate any further labeling so there is no need for
-> an error message in that case. Other error results are
-> unexpected so an error message indicating the consequence
-> of the error is appropriate here.
->
-> Thanks in advance for your time.
->
-> Best regards,
->     Sergio Paracuellos
->
->  drivers/gpio/gpio-mt7621.c | 41 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
->
-> diff --git a/drivers/gpio/gpio-mt7621.c b/drivers/gpio/gpio-mt7621.c
-> index 82fb20dca53a..b5f8fd8e928a 100644
-> --- a/drivers/gpio/gpio-mt7621.c
-> +++ b/drivers/gpio/gpio-mt7621.c
-> @@ -206,6 +206,45 @@ mediatek_gpio_xlate(struct gpio_chip *chip,
->         return gpio % MTK_BANK_WIDTH;
->  }
->
-> +static void
-> +mediatek_gpio_set_names(struct device *dev, struct mtk_gc *rg)
-> +{
-> +       struct device_node *np = dev->of_node;
-> +       const char **names;
-> +       int nstrings, base;
-> +       unsigned int i;
-> +
-> +       names = devm_kcalloc(dev, MTK_BANK_WIDTH, sizeof(*names),
-> +                            GFP_KERNEL);
-> +       if (!names)
-> +               return;
+Hello!
 
-While the ENODATA bit makes sense, not failing after an OOM in a
-driver is wrong. Please return the error code here.
+On Friday 25 June 2021 13:29:00 Koen Vandeputte wrote:
+> Hi all,
+> 
+> 
+> Adding some more info regarding this issue:
+> 
+> I've cooked up this simple patch to get some more info:
+> 
+> 
+> Index: linux-5.10.44/drivers/pci/pci-sysfs.c
+> ===================================================================
+> --- linux-5.10.44.orig/drivers/pci/pci-sysfs.c
+> +++ linux-5.10.44/drivers/pci/pci-sysfs.c
+> @@ -1335,6 +1335,8 @@ int __must_check pci_create_sysfs_dev_fi
+>      int rom_size;
+>      struct bin_attribute *attr;
+> 
+> +    dump_stack();
+> +
+>      if (!sysfs_initialized)
+>          return -EACCES;
+> 
+> 
+> Which shows this:
+> 
+> 
+> [    1.847384] Key type .fscrypt registered
+> [    1.854288] pci 0000:01:00.0: PCI bridge to [bus 02-05]
+> [    1.859242] Key type fscrypt-provisioning registered
+> [    1.863252] pci 0000:01:00.0:   bridge window [mem 0x01100000-0x011fffff]
+> [    1.874096] Key type encrypted registered
+> [    1.879290] pci 0000:00:00.0: PCI bridge to [bus 01-ff]
+> [    1.879306] pci 0000:00:00.0:   bridge window [mem 0x01100000-0x012fffff]
+> 
+> --> patch kicking in here showing first creation now
+> 
+> [    1.879346] CPU: 1 PID: 7 Comm: kworker/u4:0 Not tainted 5.10.44 #0
+> [    1.913354] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+> [    1.919908] Workqueue: events_unbound async_run_entry_fn
+> [    1.925255] [<8010d5e0>] (unwind_backtrace) from [<801099f0>]
+> (show_stack+0x10/0x14)
+> [    1.933008] [<801099f0>] (show_stack) from [<804ab92c>]
+> (dump_stack+0x94/0xa8)
+> [    1.940249] [<804ab92c>] (dump_stack) from [<804ea96c>]
+> (pci_create_sysfs_dev_files+0x10/0x28c)
+> [    1.948969] [<804ea96c>] (pci_create_sysfs_dev_files) from [<804dc648>]
+> (pci_bus_add_device+0x20/0x84)
+> [    1.958287] [<804dc648>] (pci_bus_add_device) from [<804dc6d8>]
+> (pci_bus_add_devices+0x2c/0x70)
+> [    1.966996] [<804dc6d8>] (pci_bus_add_devices) from [<804dffc8>]
+> (pci_host_probe+0x40/0x94)
+> [    1.975362] [<804dffc8>] (pci_host_probe) from [<804fd5f0>]
+> (dw_pcie_host_init+0x1c0/0x3fc)
+> [    1.983720] [<804fd5f0>] (dw_pcie_host_init) from [<804fdcb0>]
+> (imx6_pcie_probe+0x358/0x63c)
+> [    1.992179] [<804fdcb0>] (imx6_pcie_probe) from [<8054c79c>]
+> (platform_drv_probe+0x48/0x98)
+> [    2.000542] [<8054c79c>] (platform_drv_probe) from [<8054a9fc>]
+> (really_probe+0xfc/0x4dc)
+> [    2.008732] [<8054a9fc>] (really_probe) from [<8054b0bc>]
+> (driver_probe_device+0x5c/0xb4)
+> [    2.016916] [<8054b0bc>] (driver_probe_device) from [<8054b1bc>]
+> (__driver_attach_async_helper+0xa8/0xac)
+> [    2.026497] [<8054b1bc>] (__driver_attach_async_helper) from [<8014beec>]
+> (async_run_entry_fn+0x44/0x108)
+> [    2.036082] [<8014beec>] (async_run_entry_fn) from [<80141b64>]
+> (process_one_work+0x1d8/0x43c)
+> [    2.044704] [<80141b64>] (process_one_work) from [<80141e2c>]
+> (worker_thread+0x64/0x5b0)
+> [    2.052802] [<80141e2c>] (worker_thread) from [<80147698>]
+> (kthread+0x148/0x14c)
+> [    2.060207] [<80147698>] (kthread) from [<80100148>]
+> (ret_from_fork+0x14/0x2c)
+> [    2.067433] Exception stack(0x81075fb0 to 0x81075ff8)
+> [    2.072493] 5fa0:                                     00000000 00000000
+> 00000000 00000000
+> [    2.080678] 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000
+> 00000000 00000000
+> [    2.088864] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> 
+> --> getting called again ..  different caller this time .. seems unimportant
+> ?
+> 
+> [    2.095490] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.44 #0
+> [    2.095924] pcieport 0000:00:00.0: PME: Signaling with IRQ 307
+> [    2.101510] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+> [    2.113883] [<8010d5e0>] (unwind_backtrace) from [<801099f0>]
+> (show_stack+0x10/0x14)
+> [    2.121638] [<801099f0>] (show_stack) from [<804ab92c>]
+> (dump_stack+0x94/0xa8)
+> [    2.128875] [<804ab92c>] (dump_stack) from [<804ea96c>]
+> (pci_create_sysfs_dev_files+0x10/0x28c)
+> [    2.137588] [<804ea96c>] (pci_create_sysfs_dev_files) from [<80b1b920>]
+> (pci_sysfs_init+0x34/0x54)
+> [    2.146559] [<80b1b920>] (pci_sysfs_init) from [<80101820>]
+> (do_one_initcall+0x54/0x1e8)
+> [    2.154667] [<80101820>] (do_one_initcall) from [<80b01108>]
+> (kernel_init_freeable+0x23c/0x290)
+> [    2.163386] [<80b01108>] (kernel_init_freeable) from [<80837e3c>]
+> (kernel_init+0x8/0x118)
+> [    2.171578] [<80837e3c>] (kernel_init) from [<80100148>]
+> (ret_from_fork+0x14/0x2c)
+> [    2.179151] Exception stack(0x81053fb0 to 0x81053ff8)
+> [    2.184210] 3fa0:                                     00000000 00000000
+> 00000000 00000000
+> [    2.192393] 3fc0: 00000000 00000000 00000000 00000000 00000000 00000000
+> 00000000 00000000
+> [    2.200575] 3fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> 
+> --> And then finally, the error occurs as it's already been added before. 
+> same cpu and same PID trying to add the same stuff again to sysfs
 
-Bartosz
+This just proves that you have hit this race condition.
 
-> +
-> +       base = rg->bank * MTK_BANK_WIDTH;
-> +       nstrings = of_property_count_strings(np, "gpio-line-names");
-> +       if (nstrings <= base)
-> +               goto assign_names;
-> +
-> +       for (i = 0; i < MTK_BANK_WIDTH; i++) {
-> +               const char *name;
-> +               int ret;
-> +
-> +               ret = of_property_read_string_index(np, "gpio-line-names",
-> +                                                   base + i, &name);
-> +               if (ret) {
-> +                       if (ret != -ENODATA)
-> +                               dev_err(dev, "unable to name line %d: %d\n",
-> +                                       base + i, ret);
-> +                       break;
-> +               }
-> +
-> +               if (*name)
-> +                       names[i] = name;
-> +       }
-> +
-> +assign_names:
-> +       rg->chip.names = names;
-> +}
-> +
->  static int
->  mediatek_gpio_bank_probe(struct device *dev,
->                          struct device_node *node, int bank)
-> @@ -241,6 +280,8 @@ mediatek_gpio_bank_probe(struct device *dev,
->         if (!rg->chip.label)
->                 return -ENOMEM;
->
-> +       mediatek_gpio_set_names(dev, rg);
-> +
->         rg->irq_chip.name = dev_name(dev);
->         rg->irq_chip.parent_device = dev;
->         rg->irq_chip.irq_unmask = mediatek_gpio_irq_unmask;
-> --
-> 2.25.1
->
+> [    2.207200] CPU: 1 PID: 7 Comm: kworker/u4:0 Not tainted 5.10.44 #0
+> [    2.207263] sysfs: cannot create duplicate filename
+> '/devices/platform/soc/1ffc000.pcie/pci0000:00/0000:00:00.0/config' <------
+> [    2.213478] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+> [    2.230798] Workqueue: events_unbound async_run_entry_fn
+> [    2.236129] [<8010d5e0>] (unwind_backtrace) from [<801099f0>]
+> (show_stack+0x10/0x14)
+> [    2.243882] [<801099f0>] (show_stack) from [<804ab92c>]
+> (dump_stack+0x94/0xa8)
+> [    2.251118] [<804ab92c>] (dump_stack) from [<804ea96c>]
+> (pci_create_sysfs_dev_files+0x10/0x28c)
+> [    2.259837] [<804ea96c>] (pci_create_sysfs_dev_files) from [<804dc648>]
+> (pci_bus_add_device+0x20/0x84)
+> [    2.269153] [<804dc648>] (pci_bus_add_device) from [<804dc6d8>]
+> (pci_bus_add_devices+0x2c/0x70)
+> [    2.277861] [<804dc6d8>] (pci_bus_add_devices) from [<804dc70c>]
+> (pci_bus_add_devices+0x60/0x70)
+> [    2.286656] [<804dc70c>] (pci_bus_add_devices) from [<804dffc8>]
+> (pci_host_probe+0x40/0x94)
+> [    2.295018] [<804dffc8>] (pci_host_probe) from [<804fd5f0>]
+> (dw_pcie_host_init+0x1c0/0x3fc)
+> [    2.303377] [<804fd5f0>] (dw_pcie_host_init) from [<804fdcb0>]
+> (imx6_pcie_probe+0x358/0x63c)
+> [    2.311832] [<804fdcb0>] (imx6_pcie_probe) from [<8054c79c>]
+> (platform_drv_probe+0x48/0x98)
+> [    2.320196] [<8054c79c>] (platform_drv_probe) from [<8054a9fc>]
+> (really_probe+0xfc/0x4dc)
+> [    2.328382] [<8054a9fc>] (really_probe) from [<8054b0bc>]
+> (driver_probe_device+0x5c/0xb4)
+> [    2.336567] [<8054b0bc>] (driver_probe_device) from [<8054b1bc>]
+> (__driver_attach_async_helper+0xa8/0xac)
+> [    2.346145] [<8054b1bc>] (__driver_attach_async_helper) from [<8014beec>]
+> (async_run_entry_fn+0x44/0x108)
+> [    2.355727] [<8014beec>] (async_run_entry_fn) from [<80141b64>]
+> (process_one_work+0x1d8/0x43c)
+> [    2.364350] [<80141b64>] (process_one_work) from [<80141e2c>]
+> (worker_thread+0x64/0x5b0)
+> [    2.372449] [<80141e2c>] (worker_thread) from [<80147698>]
+> (kthread+0x148/0x14c)
+> [    2.379853] [<80147698>] (kthread) from [<80100148>]
+> (ret_from_fork+0x14/0x2c)
+> [    2.387077] Exception stack(0x81075fb0 to 0x81075ff8)
+> [    2.392134] 5fa0:                                     00000000 00000000
+> 00000000 00000000
+> [    2.400317] 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000
+> 00000000 00000000
+> [    2.408498] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> 
+> 
+> 
+> Any idea?
+> 
+> Thanks,
+> 
+> Koen
+> 
+
+It is same race condition which I described in the first email of this
+email thread. I described exactly when it happens. I'm not able to
+trigger it with new kernels but as we know race conditions are hard to
+trigger...
+
+So result is that we know about it, just fix is not ready yet as it is
+not easy to fix it.
+
+Krzysztof has been working on fixing it, so maybe can provide an
+update...
