@@ -2,101 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDBB3B3CCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 274BA3B3CD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhFYGpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 02:45:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56009 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230404AbhFYGo5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 02:44:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624603356;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=G9jRj0tpYxmkhpGWsyUbyAZnE8Gx5cKf3gFKh8399ko=;
-        b=A4Q0NnSaVK36qAeSNRrojEuxxUNMwgK4qaMCzNX1BeVzY8hRGG96ZwXN9cMHo4kaKIFhw2
-        4kgQXDifLXjqBgIbZbB6xyV2xx/M3DhRPc2BtMqzvH36+FQo2tte/CgMOstddA2kO1R+y4
-        6Ve+Xxlaw42UHn04RH/oy5V26VOyYHA=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-299-2rOvPHCtPwSG6cShjSaxOg-1; Fri, 25 Jun 2021 02:42:35 -0400
-X-MC-Unique: 2rOvPHCtPwSG6cShjSaxOg-1
-Received: by mail-wr1-f72.google.com with SMTP id v8-20020a5d43c80000b029011a94e052f2so3137396wrr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 23:42:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=G9jRj0tpYxmkhpGWsyUbyAZnE8Gx5cKf3gFKh8399ko=;
-        b=dKseaLZa5ZwDLq9NbBYXByMUurXGWjsdo7x4tUApcgWI2DpQSSDvcbXVxr74PkDBvU
-         32uue60KNcbvDMrPAWd20o+p4aqTEGEIu4A5ya69xJOm8nd9DtUQdbbGrzRdyzF1+owa
-         x/MKQeBNc+BFEfFjVWO17jNCtjzCueKHPPQ1X0maPRNLZAUrAtYzD8/yRJLw6+5+svzI
-         iiaJeFwaDH4iJxhWhhmNAKLA8XJIRhk+H68GZtJmzdYU5l7ggxbK7u0Aj8W0xk3CjJoq
-         nJGG9wRWQLG3cJZPN7Nufs3hx8qAPJ6eqSYHTs7t+6wXDLehQXKYJJguagxfgZ9y7PGr
-         ph5w==
-X-Gm-Message-State: AOAM531WKfHwzKLHofUV7cSugm6QqCPdp0h9P/8Z9GfdC8Yg//ulzETG
-        54BABFEOI/uwWJSS2dRbfbCAqCP67FKjnFJNGuZZXoTT0Y+b1JBkpcEvmoqUfZBGKRpZ7J+OOiR
-        JpM1la1R5CDCaJAb/JoYGtSpm
-X-Received: by 2002:a5d:6b82:: with SMTP id n2mr8884401wrx.206.1624603354054;
-        Thu, 24 Jun 2021 23:42:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw92gxo6icRkyIW2W9jDfsnK0lVx5O0U/fJfH24QR4NPITd1aULbry65dD0d5lmfFtShv6qCw==
-X-Received: by 2002:a5d:6b82:: with SMTP id n2mr8884384wrx.206.1624603353946;
-        Thu, 24 Jun 2021 23:42:33 -0700 (PDT)
-Received: from redhat.com ([77.124.79.210])
-        by smtp.gmail.com with ESMTPSA id v18sm5762831wrv.24.2021.06.24.23.42.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 23:42:33 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 02:42:04 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, jasowang@redhat.com,
-        brouer@redhat.com, paulmck@kernel.org, peterz@infradead.org,
-        will@kernel.org, shuah@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linuxarm@openeuler.org
-Subject: Re: [PATCH net-next v2 0/2] add benchmark selftest and optimization
- for ptr_ring
-Message-ID: <20210625024131-mutt-send-email-mst@kernel.org>
-References: <1624591136-6647-1-git-send-email-linyunsheng@huawei.com>
+        id S229738AbhFYG5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 02:57:55 -0400
+Received: from m32-153.88.com ([43.250.32.153]:55746 "EHLO email.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229437AbhFYG5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 02:57:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=Date:From:To; bh=IbXXHF+XTLAX3HDF7anDNuHXZoZnR21DQTRBt
+        iFP+ME=; b=mgnRk4On89L1/qKMVzoT3oucjrQLIKlfE4abvE8NMx4NX7TVl64mC
+        vlr1cdbQTmRRIDF99mLd4R5NQxyvmfYJSdTFfc8DFqyB7/vHj2Qy7d21pXaVTFoN
+        1COuiNwjZ12//5/RxTEb/u23UUSwu8Vw8HJnPmT0lDVQa4BofkG6NU=
+Received: from bobwxc.top (unknown [120.238.248.220])
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgBHHfzcfdVgmlgqAA--.22568S2;
+        Fri, 25 Jun 2021 14:55:26 +0800 (CST)
+Date:   Fri, 25 Jun 2021 14:55:24 +0800
+From:   "Wu X.C." <bobwxc@email.cn>
+To:     Akira Yokosawa <akiyks@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        SeongJae Park <sj38.park@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/3] docs: pdfdocs: Improve alignment of CJK ascii-art
+Message-ID: <20210625065524.GA11219@bobwxc.top>
+References: <386938dc-6290-239c-4b4f-c6153f3d98c5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1624591136-6647-1-git-send-email-linyunsheng@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <386938dc-6290-239c-4b4f-c6153f3d98c5@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CM-TRANSID: GiKnCgBHHfzcfdVgmlgqAA--.22568S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuF1DWry3AFyktr18Xr1DWrg_yoW5uw4DpF
+        W3Wwnxt3Z5tr1j9ws7Xw4UuF1ruw4fCr15Ja42qw1fCr95CrySkr4xtas0vF9rCr1fXFyU
+        Zw4jva15ZFZrA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUqSb7Iv0xC_Kw4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
+        v20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j6r4UM28EF7xvwVC2
+        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4
+        CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4U
+        Jr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCF04
+        k20xvE74AGY7Cv6cx26F4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
+        wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc4
+        0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AK
+        xVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr
+        1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU-KZXDUUU
+        U
+X-Originating-IP: [120.238.248.220]
+X-CM-SenderInfo: pere453f6hztlloou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 11:18:54AM +0800, Yunsheng Lin wrote:
-> Patch 1: add a selftest app to benchmark the performance
->          of ptr_ring.
-> Patch 2: make __ptr_ring_empty() checking more reliable
->          and use the just added selftest to benchmark the
->          performance impact.
+On Thu, Jun 24, 2021 at 09:06:59PM +0900, Akira Yokosawa wrote:
+> Subject: [RFC PATCH 0/3] docs: pdfdocs: Improve alignment of CJK ascii-art
 > 
-> V2: add patch 1 and add performance data for patch 2.
+> Hi all,
 
-Thanks for the patches!
-There are some things to improve there - I sent comments
-in response to invididual patches.
+Hi Akira,
 
-> Yunsheng Lin (2):
->   selftests/ptr_ring: add benchmark application for ptr_ring
->   ptr_ring: make __ptr_ring_empty() checking more reliable
 > 
->  MAINTAINERS                                      |   5 +
->  include/linux/ptr_ring.h                         |  25 ++-
->  tools/testing/selftests/ptr_ring/Makefile        |   6 +
->  tools/testing/selftests/ptr_ring/ptr_ring_test.c | 249 +++++++++++++++++++++++
->  tools/testing/selftests/ptr_ring/ptr_ring_test.h | 150 ++++++++++++++
->  5 files changed, 426 insertions(+), 9 deletions(-)
->  create mode 100644 tools/testing/selftests/ptr_ring/Makefile
->  create mode 100644 tools/testing/selftests/ptr_ring/ptr_ring_test.c
->  create mode 100644 tools/testing/selftests/ptr_ring/ptr_ring_test.h
+> This is another attempt to improve translations' pdf output.
+> I see there is a mismatch in the font choice for CJK documents, which
+> causes poor-looking ascii-art where CJK characters and Latin letters
+> are mixed used.
+> 
+> One of noticeable examples of such ascii-art can be found in
+> Korean translation of memory-barriers.txt.
+> 
+> Hence the author of Korean translation of memory-barriers.txt is
+> in the CC list.
+> 
+> At first, I thought the issue could be fixed by simply selecting
+> "Noto Sans Mono CJK SC" as both of monofont and CJKmonofont.
+> It fixed the mis-alignment in the Chinese translation, but failed
+> in the Korean translation.
+> 
+> It turns out that Hangul characters in "Noto Sans Mono CJK SC"
+> are slightly narrower than Chinese and Japanese counterparts.
+> I have no idea why the so-called "mono" font has non-uniform
+> character widths.
+> 
+> GNU Unifont is an alternative monospace font which covers
+> almost all Unicode codepoints.
+> However, due to its bitmap-font nature, the resulting document
+> might not be acceptable to Korean readers, I guess.
+
+OK, it works.
+
+But I still want to say that the display effect of Unifont is really
+not good. Unifont's lattice is too small, and only one size.
+http://fars.ee/QA1k.jpg	    http://fars.ee/GAAv.jpg
+Looks like computers 20 years ago, LOL :)
+
+It there any chance to use other fonts, like *Sarasa Mono* ?
+                                              等距更紗黑體
+Looks more beautifull http://fars.ee/DTT6.jpg
+But I guess not many people installed it.
+
+> 
+> As a compromise, Patch 2/3 enables Unifont only when it is available.
+> 
+> A comparison of some of ascii-art figures before and after this change
+> can be found in the attached PDF.
+> 
+> Patch 1/3 is a preparation of Patch 2/3.
+> It converts font-availability check in python to LaTeX and make the
+> resulting LaTeX code portable across systems with different sets of
+> installed fonts.
+> 
+> Patch 3/3 is an independent white space fix (or a workaround of Sphinx
+> mis-handling of tabs behind CJK characters) in Korean translation
+> of memory-barriers.txt.
+> 
+> Any feedback is welcome!
+> 
+> Side note:
+> 
+> In Korean translation's PDF, I see there is another issue of missing
+> white spaces between Hangul "phrase groups" in normal text.
+> Looks like the pair of xelatex + xeCJK just ignores white spaces
+> between CJK characters.
+
+Yes, xeCJK ignores spaces between CJK characters by default.
+
+> 
+> There is a package named "xetexko", which might (or might not) be
+> a reasonable choice for Korean translation.
+> 
+> It should be possible to use a language-specific preamble once
+> we figure out the way to load per-directory Sphinx configuration
+> and move translation docs into per-language subdirectories.  
+> 
+> As I am not familiar with Korean LaTeX typesetting, I must defer to
+> those who are well aware of such conventions.
+> 
+>         Thanks, Akira
+> --
+> Akira Yokosawa (3):
+>   docs: pdfdocs: Refactor config for CJK document
+>   docs: pdfdocs: Add font settings for CJK ascii-art
+>   docs: ko_KR: Use white spaces behind CJK characters in ascii-art
+> 
+>  Documentation/conf.py                         | 26 +++++++++++--------
+>  .../translations/ko_KR/memory-barriers.txt    | 14 +++++-----
+>  2 files changed, 22 insertions(+), 18 deletions(-)
 > 
 > -- 
-> 2.7.4
+> 2.17.1
+> 
+
+Thanks,
+	Wu X.C.
 
