@@ -2,172 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5ADA3B4A1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 23:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861193B4A20
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 23:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbhFYVZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 17:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhFYVZh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 17:25:37 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AF0C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 14:23:16 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id b3so5374029plg.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 14:23:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4TQ23cTuZIs4A0SaruHtk3JijVaWX+yFgeWkG756PMY=;
-        b=1uUld2yigI2hael1Mc9O8lBvA0enTvB5RmJ8p1a47LpwUo7A5iaReMSPHE+O1OzMH7
-         TczYWlkSpaCN3NqRnMQBKwSBZdiOfA7s2cfeh+L6ZzFq5WvRUkPpF48bH/oWRif0rn3H
-         JDTa2OWjcqJ4hUiC0gHEuCqhllbWhdhfuUWGwdkawbNks+X0YBW3AgW6KrLMPGcpsqqt
-         s7VxP8p5ZPe8Q0Q8Rk5O8RfvywDyucYoywiffyZGPikfDJq1kc5Adtrk5qXrcXuDx0wn
-         id06OB4EWCY09bai5FsQHY21Wn/TS84rdzl7Qbj6uBj5tiCm+IHACaecH8AQWFaC0cLo
-         nb2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4TQ23cTuZIs4A0SaruHtk3JijVaWX+yFgeWkG756PMY=;
-        b=O7F+RZoAKW6l2baBey0czP+IUcaFZJ7BKpYOKquCCfX9Inv4v0rMp5msZSDo/Wdwcd
-         I7MuO0bkGVMXRlChRZ9WK93XfpjWFix/fn0heqb+M+6WMItJ4282jD8D+UN8j3/1c+bb
-         S4l+okoUW4yQ0YkZy4fpiGIMVC5KNgs6FSA5txyq8qX8sc2rTNczsLHwHaXqpX8q48wm
-         l6p/fdqx8NMXkS1nw3GpV3r9tp0ooRMZ0ST4epj3Gue2vRh92bJe5OrUNx6SX8DTAsKe
-         zF1gukPF0+gXGR2qrqd+A8kK1P35qIp3dFk9Woz/My+8vw2iXQOrUhj9Fr5V0LZolhR7
-         km5A==
-X-Gm-Message-State: AOAM531MdrKDV/iZolgI09bHLlvh4YktpX3mlioULU+XmdGc0nk5rfyN
-        guqY9DSkZ0hr2ALyDoswlwMLHxUZ76i0AwrzS10w4w==
-X-Google-Smtp-Source: ABdhPJwFNOgoPe90uDMmfd1g/GFbhjQoCstJvRVqJogay7DoZ3cIH+osgvptoCwioyEurt6jBY/PNdJzeVYS0w2Quxk=
-X-Received: by 2002:a17:902:446:b029:120:1fd:adbf with SMTP id
- 64-20020a1709020446b029012001fdadbfmr11098119ple.52.1624656195859; Fri, 25
- Jun 2021 14:23:15 -0700 (PDT)
+        id S229826AbhFYV2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 17:28:31 -0400
+Received: from mga04.intel.com ([192.55.52.120]:47814 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229531AbhFYV2b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 17:28:31 -0400
+IronPort-SDR: xIEHgWMoVnXINFQM7I2gxD6nQsSZhC1L/18GYwSctBZCOadoTItBTDyenuBA9vRj59Hu8DtKJo
+ y3VvEwJIs4Sg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="205919399"
+X-IronPort-AV: E=Sophos;i="5.83,300,1616482800"; 
+   d="scan'208";a="205919399"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 14:26:09 -0700
+IronPort-SDR: E7NeyZWlo+oG2/9YeHGVoiw1Igcek2+UnZWqb4erPmHcAYdnuQnROWFLFodT0O932pwxqyE6K9
+ 7Sl/agd/w2oQ==
+X-IronPort-AV: E=Sophos;i="5.83,300,1616482800"; 
+   d="scan'208";a="488331356"
+Received: from dakateri-mobl1.amr.corp.intel.com (HELO [10.212.144.220]) ([10.212.144.220])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 14:26:08 -0700
+Subject: Re: [PATCH -V9 2/9] mm/migrate: update node demotion order during on
+ hotplug events
+To:     Huang Ying <ying.huang@intel.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Wei Xu <weixugc@google.com>, Zi Yan <ziy@nvidia.com>,
+        osalvador <osalvador@suse.de>,
+        David Rientjes <rientjes@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>
+References: <20210625073204.1005986-1-ying.huang@intel.com>
+ <20210625073204.1005986-3-ying.huang@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <baa3a6c9-7aa2-74d9-93ad-68e861afafcd@intel.com>
+Date:   Fri, 25 Jun 2021 14:26:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210427083019.110184-1-wangwensheng4@huawei.com>
- <e838d8b5-84f1-5532-6f22-e4b729124e1c@redhat.com> <20210623230939.GA2963480@hori.linux.bs1.fc.nec.co.jp>
-In-Reply-To: <20210623230939.GA2963480@hori.linux.bs1.fc.nec.co.jp>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 25 Jun 2021 14:23:05 -0700
-Message-ID: <CAPcyv4h5a5AYscsyC40_5bc6j1kmjMFWJ_0MFAGEx1EPS9Tmrw@mail.gmail.com>
-Subject: Re: [PATCH] mm/sparse: Fix flags overlap in section_mem_map
-To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>
-Cc:     Wang Wensheng <wangwensheng4@huawei.com>,
-        David Hildenbrand <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rui.xiang@huawei.com" <rui.xiang@huawei.com>,
-        =?UTF-8?B?SEFHSU8gS0FaVUhJVE8o6JCp5bC+IOS4gOS7gSk=?= 
-        <k-hagio-ab@nec.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210625073204.1005986-3-ying.huang@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 4:10 PM HORIGUCHI NAOYA(=E5=A0=80=E5=8F=A3=E3=80=80=
-=E7=9B=B4=E4=B9=9F)
-<naoya.horiguchi@nec.com> wrote:
->
-> On Tue, Apr 27, 2021 at 11:05:17AM +0200, David Hildenbrand wrote:
-> > On 27.04.21 10:30, Wang Wensheng wrote:
-> > > The section_mem_map member of struct mem_section stores some flags an=
-d
-> > > the address of struct page array of the mem_section.
-> > >
-> > > Additionally the node id of the mem_section is stored during early bo=
-ot,
-> > > where the struct page array has not been allocated. In other words, t=
-he
-> > > higher bits of section_mem_map are used for two purpose, and the node=
- id
-> > > should be clear properly after the early boot.
-> > >
-> > > Currently the node id field is overlapped with the flag field and can=
-not
-> > > be clear properly. That overlapped bits would then be treated as
-> > > mem_section flags and may lead to unexpected side effects.
-> > >
-> > > Define SECTION_NID_SHIFT using order_base_2 to ensure that the node i=
-d
-> > > field always locates after flags field. That's why the overlap occurs=
- -
-> > > forgetting to increase SECTION_NID_SHIFT when adding new mem_section
-> > > flag.
-> > >
-> > > Fixes: 326e1b8f83a4 ("mm/sparsemem: introduce a SECTION_IS_EARLY flag=
-")
-> > > Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
-> > > ---
-> > >   include/linux/mmzone.h | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> > > index 47946ce..b01694d 100644
-> > > --- a/include/linux/mmzone.h
-> > > +++ b/include/linux/mmzone.h
-> > > @@ -1325,7 +1325,7 @@ extern size_t mem_section_usage_size(void);
-> > >   #define SECTION_TAINT_ZONE_DEVICE (1UL<<4)
-> > >   #define SECTION_MAP_LAST_BIT              (1UL<<5)
-> > >   #define SECTION_MAP_MASK          (~(SECTION_MAP_LAST_BIT-1))
-> > > -#define SECTION_NID_SHIFT          3
-> > > +#define SECTION_NID_SHIFT          order_base_2(SECTION_MAP_LAST_BIT=
-)
-> > >   static inline struct page *__section_mem_map_addr(struct mem_sectio=
-n *section)
-> > >   {
-> > >
-> >
-> > Well, all sections around during boot that have an early NID are early =
-...
-> > so it's not an issue with SECTION_IS_EARLY, no? I mean, it's ugly, but =
-not
-> > broken.
-> >
-> > But it's an issue with SECTION_TAINT_ZONE_DEVICE, AFAIKT.
-> > sparse_init_one_section() would leave the bit set if the nid happens to=
- have
-> > that bit set (e.g., node 2,3). It's semi-broken then, because we force =
-all
-> > pfn_to_online_page() through the slow path.
-> >
-> >
-> > That whole section flag setting code is fragile.
->
-> Hi Wensheng, David,
->
-> This patch seems not accepted or updated yet, so what's going on?
->
-> We recently saw the exact issue on testing crash utilities with latest
-> kernels on 4 NUMA node system.  SECTION_TAINT_ZONE_DEVICE seems to be
-> set wrongly, and makedumpfile could fail due to this. So we need a fix.
->
-> I thought of another approach like below before finding this thread,
-> so if you are fine, I'd like to submit a patch with this. And if you
-> like going with order_base_2() approach, I'm glad to ack this patch.
->
->   --- a/include/linux/mmzone.h
->   +++ b/include/linux/mmzone.h
->   @@ -1358,14 +1358,15 @@ extern size_t mem_section_usage_size(void);
->     *      which results in PFN_SECTION_SHIFT equal 6.
->     * To sum it up, at least 6 bits are available.
->     */
->   +#define SECTION_MAP_LAST_SHIFT         5
->    #define SECTION_MARKED_PRESENT         (1UL<<0)
->    #define SECTION_HAS_MEM_MAP            (1UL<<1)
->    #define SECTION_IS_ONLINE              (1UL<<2)
->    #define SECTION_IS_EARLY               (1UL<<3)
->    #define SECTION_TAINT_ZONE_DEVICE      (1UL<<4)
->   -#define SECTION_MAP_LAST_BIT           (1UL<<5)
->   +#define SECTION_MAP_LAST_BIT           (1UL<<SECTION_MAP_LAST_SHIFT)
->    #define SECTION_MAP_MASK               (~(SECTION_MAP_LAST_BIT-1))
->   -#define SECTION_NID_SHIFT              3
->   +#define SECTION_NID_SHIFT              SECTION_MAP_LAST_SHIFT
+On 6/25/21 12:31 AM, Huang Ying wrote:
+> Changes since 20210618:
+>  * moved RCU part to the prev patch in series.
 
-Rather than make it dynamic, why not just make it 6 directly since
-that matches the comment about the maximum number of flags available.
+The changes look great to me.  I think it ends up making the series more
+clear.  Thanks, Ying!
