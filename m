@@ -2,135 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4342F3B3E47
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DAF43B3E4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbhFYIOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
+        id S229962AbhFYISB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:18:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbhFYIOD (ORCPT
+        with ESMTP id S229764AbhFYISA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:14:03 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8320C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 01:11:42 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624608700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MtTpvCaDpTpRwJ7zZBGx4YUucpXj870woqm40fqmy5w=;
-        b=rk4+OTUMLGh8+vYEkhJLLEhf4TnI5agvbTZXqsZmRQexJIlvqLWXt4HZAAxJ9iAmYjfKiF
-        94l2i5qRAE8wDzBTzSpjPuObOZVADYYPhJ9agOG0KlICQMglXOIzfNinu25lRsULuK5q0t
-        K1K0T3qoa5amuyzHWwmS3j2oOMCs4yU1o8gquZVUnZbDegcUdh11Tt4gNYRnv1CI7VO6ib
-        /gJLY7eloHF/pclW1LM5oGAGgynaomeSYu0AjUcIn7q5hx1oxB4MCtLHIvKFnV57hc6moI
-        5J9Az8HLDcWu/IaibgYjD8jLpInlGU6/e2VLJ5kzuh3gsP9qXc5MJxZ6P+pvDw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624608700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MtTpvCaDpTpRwJ7zZBGx4YUucpXj870woqm40fqmy5w=;
-        b=Fo2+zSwBgRNxvmap/sIXPsg2rM1I0gI0dFvfVC6JtNK537Htv471XCF4TVM5xJjbSFfC8M
-        LvrZN+2CKuETsbCQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Fri, 25 Jun 2021 04:18:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D15C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 01:15:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rm+JBREWSoPp+eGQlwLQzs0H9esWidtlooHK2hgns4w=; b=XldmmK2DLpgAF4FpYtgEttHm7+
+        YRsBDRNgJe4edQWG2iUNJh30O0fy019MerrqhWk7VWSMl7DpV4mG2VbStMkjbW6dvl+sDr0BpqVT3
+        D8Mpkjuh24vGupzRwG/sAahuJ9x3IYBvBX4V6gVbmypY/7zPK/1CA6v9aiu0Kv7J/FCdfrABkOiK0
+        EdqY8P82TLKTiEV9iHmz0mSR1MYHJglAzwMmMK8v7DWxs8Ab7rKqpavtm6cWV6uy39/OIP7vufCs7
+        vHe/sCjOcXpCBgmPlE+TOdSfjWxnbQZtGh7mPlc5j1AwymXm5eARnH6me+TS0zG1QDMRqzUFglug8
+        3557h4QA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwgzG-00HS0n-3c; Fri, 25 Jun 2021 08:14:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A2682300252;
+        Fri, 25 Jun 2021 10:14:53 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5EC2020171CE8; Fri, 25 Jun 2021 10:14:53 +0200 (CEST)
+Date:   Fri, 25 Jun 2021 10:14:53 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Don <joshdon@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v3 6/6] printk: syslog: close window between wait and read
-In-Reply-To: <YNSj59rKfGARoWRD@alley>
-References: <20210624111148.5190-1-john.ogness@linutronix.de> <20210624111148.5190-7-john.ogness@linutronix.de> <YNSj59rKfGARoWRD@alley>
-Date:   Fri, 25 Jun 2021 10:17:40 +0206
-Message-ID: <87zgvetlc3.fsf@jogness.linutronix.de>
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paul Turner <pjt@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steve Sistare <steven.sistare@oracle.com>,
+        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched: cgroup SCHED_IDLE support
+Message-ID: <YNWQfZfMNyEsiKTb@hirez.programming.kicks-ass.net>
+References: <20210608231132.32012-1-joshdon@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608231132.32012-1-joshdon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-24, Petr Mladek <pmladek@suse.com> wrote:
->> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
->> index 90954cb5a0ab..4737804d6c6d 100644
->> --- a/kernel/printk/printk.c
->> +++ b/kernel/printk/printk.c
->> @@ -1542,8 +1570,13 @@ static int syslog_print(char __user *buf, int size)
->>  		len += n;
->>  		size -= n;
->>  		buf += n;
->> -	}
->>  
->> +		if (!size)
->> +			break;
->
-> This looks like an unrelated optimization. If I get it correctly, it
-> does not change the existing behavior.
+On Tue, Jun 08, 2021 at 04:11:32PM -0700, Josh Don wrote:
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 8ab69d01dab4..a82f5d3b85d3 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -10234,6 +10234,18 @@ static int cpu_weight_nice_write_s64(struct cgroup_subsys_state *css,
+>  
+>  	return sched_group_set_shares(css_tg(css), scale_load(weight));
+>  }
+> +
+> +static s64 cpu_idle_read_s64(struct cgroup_subsys_state *css,
+> +			       struct cftype *cft)
+> +{
+> +	return css_tg(css)->idle;
+> +}
+> +
+> +static int cpu_idle_write_s64(struct cgroup_subsys_state *css,
+> +				struct cftype *cft, s64 idle)
+> +{
+> +	return sched_group_set_idle(css_tg(css), idle);
+> +}
+>  #endif
+>  
+>  static void __maybe_unused cpu_period_quota_print(struct seq_file *sf,
+> @@ -10306,6 +10318,12 @@ static struct cftype cpu_files[] = {
+>  		.read_s64 = cpu_weight_nice_read_s64,
+>  		.write_s64 = cpu_weight_nice_write_s64,
+>  	},
+> +	{
+> +		.name = "idle",
+> +		.flags = CFTYPE_NOT_ON_ROOT,
+> +		.read_s64 = cpu_idle_read_s64,
+> +		.write_s64 = cpu_idle_write_s64,
+> +	},
+>  #endif
+>  #ifdef CONFIG_CFS_BANDWIDTH
+>  	{
 
-It was a necessary change in order to preserve the existing logic but
-allow the lock to be held when enterring the loop. Before the patch we
-have:
+You should probably also make cpu_weight_*write_?64() return -EINVAL when
+IDLE. Similar to how SCHED_IDLE doesn't do nice.
 
-        ...get seq to read...
-
-        while (size > 0) {
-            mutex_lock(&syslog_lock);
-            ...read record...
-            mutex_unlock(&syslog_lock);
-            ...copy record...
-       }
-
-After the patch we enter the loop with the lock already held. So this
-changes the code to:
-
-        mutex_lock(&syslog_lock);
-        ...get seq to read...
-
-        for (;;) {
-            ...read record...
-            mutex_unlock(&syslog_lock);
-            ...copy record...
-           
-            if (!size)
-                break;
-            mutex_lock(&syslog_lock);               
-        }
-
-Note that @size always starts with >0, so there is no need to check it
-at the beginning of the loop. And checking for !0 instead of >0 is also
-ok, since @size will never be less than zero.
-
-> The next cycle would end up with n == 0 and break anyway.
-
-Doing an extra loop of reading more data and sprinting it into the
-temporary buffer even though we know the user buffer is not desirable.
-
-If you insisted on keeping the "while (size > 0)" loop, then there would
-be an unnecessary lock/unlock call and the code gets even more complex.
-
-I could add some comments to the implementation if you prefer.
-
-> The patch itself makes sense. It somehow fixes a long standing race.
-> Even though the result still might be racy. The lock is released
-> when each record is copied to the user-provided buffer.
-
-I do not understand this conclusion. The existing race is
-real. SYSLOG_ACTION_READ could return with no data, not because there is
-no records available, but because the race was hit. With this patch that
-race is closed: SYSLOG_ACTION_READ will either return with data or with
-an error.
-
-You claim the result is still racy, but I do not know what you are
-referring to. If you have multiple readers, they will get different
-records (and record pieces), but collectively no data would be lost and
-no data would be redundant. And no readers would return from
-SYSLOG_ACTION_READ without data.
-
-> I would feel more comfortable if we handled the optimization one of
-> the suggested way.
-
-There is no optimization here. Perhaps you have missed that the loop
-changes from "while (size > 0)" to "for (;;)".
-
-John Ogness
