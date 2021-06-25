@@ -2,134 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3ED43B49BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 22:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4923B49C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 22:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhFYU22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 16:28:28 -0400
-Received: from m.b4.vu ([203.16.231.148]:53606 "EHLO m.b4.vu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhFYU21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 16:28:27 -0400
-Received: by m.b4.vu (Postfix, from userid 1000)
-        id E89B461E5F02; Sat, 26 Jun 2021 05:56:04 +0930 (ACST)
-Date:   Sat, 26 Jun 2021 05:56:04 +0930
-From:   "Geoffrey D. Bennett" <g@b4.vu>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v4] ALSA: usb-audio: scarlett2: Fix for loop increment in
- scarlett2_usb_get_config
-Message-ID: <20210625202604.GB23780@m.b4.vu>
-References: <20210625200549.1061113-1-nathan@kernel.org>
- <20210625201150.1523987-1-nathan@kernel.org>
+        id S229885AbhFYUhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 16:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229629AbhFYUhD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 16:37:03 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24EA6C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 13:34:41 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id i4so6555427ybe.2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 13:34:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f7/u1McoJBT3/3b6BeTVTbv4r7hZzqsmMtPeO7kEfA0=;
+        b=IujKgBy4SRh8y32WMXXsoJaKLrAM50QYXrZihWnYdP30Kk1o4cwhpvmZqVW5DJ85n3
+         SqWrOQLBRNsEPV0peR9qUGd8nM13KtbWeyDYzH8jY6CxLmhrRc1TR7Lj7XM2cn9HraIq
+         jx7zmqUY+5BijIE5ZhfQLUY/bKZd8VgZ1KC4FXchRY/wG/LxgVtkReD4Vph35amCXQkU
+         5QeOoir6Ihv+wyv7mUzcSYiEE2icwaY9lk73Oxx4JiF3ET8gpslU06Q5QJzMwi7OPnXh
+         07nMN5Eah2ePMwQD+3At48Q9R+1mF71GqnjZZHDCeYoAupK1jtvSYOzikYBDiQLike6T
+         /ldw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f7/u1McoJBT3/3b6BeTVTbv4r7hZzqsmMtPeO7kEfA0=;
+        b=qa3e4mqu6SzC+cKraE+vo/5wc2iR9y51yXiQ2pAWVV+Uj0YhhF6ueWrnYtOnL3TeeG
+         F8kLahTHtwuyQy1FcNF1MIPlRBif1AC8SfoT5o7BsFMpE+ajoI4ymwY2PnxKNpLL6Jki
+         d0U7/RuWrsZ9H0FrvjpUV1A+6dQTIan5bMC4l9jifo9iHZs45/hqmAoRfWvWMIRPWAwH
+         pENBCv0rBe0l71hJLVmP+InKk1a9eT/mtBoX2CH4dvcmfz3ODvIdt5wFs5Bq0vbnIUZR
+         +lfhylQPIQpnfuo89dMeSRE6xlA56wUNkHQbUuLvPJv4sOzo1Fh0xdn1lZigZlngqaae
+         zXrA==
+X-Gm-Message-State: AOAM5316UfwGE9rV2HjTnBot3iZMasFIIkp5P4RfYJ9YzY0ITPqObOGc
+        YDz3qx+MYTOBLjGQ1ePCIWjIHGi56pq5b9AucbTtoGsiaiqD7w==
+X-Google-Smtp-Source: ABdhPJyQ1Uww6bFqPyT6OxNVC35nNHd/xsudQl0jSRiJFArSRIHmSzTZfQT7LHSJc4Y5Ktzoy1mIn+MCA7e6R1tVx7o=
+X-Received: by 2002:a25:6c8a:: with SMTP id h132mr14208913ybc.422.1624653280403;
+ Fri, 25 Jun 2021 13:34:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625201150.1523987-1-nathan@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <YNYz+hVeqsQmiEqN@localhost.localdomain>
+In-Reply-To: <YNYz+hVeqsQmiEqN@localhost.localdomain>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 25 Jun 2021 22:34:29 +0200
+Message-ID: <CANiq72=qtAcsyReu85AVT-cSf3dcvbnTpQYEF1JhxCRP0WgHUw@mail.gmail.com>
+Subject: Re: [PATCH] ELF: add and use SUPRESS_WARN_UNUSED_RESULT
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 01:11:51PM -0700, Nathan Chancellor wrote:
-> Clang warns:
-> 
-> sound/usb/mixer_scarlett_gen2.c:1189:32: warning: expression result
-> unused [-Wunused-value]
->                         for (i = 0; i < count; i++, (u16 *)buf++)
->                                                     ^      ~~~~~
-> 1 warning generated.
-> 
-> It appears the intention was to cast the void pointer to a u16 pointer
-> so that the data could be iterated through like an array of u16 values.
-> However, the cast happens after the increment because a cast is an
-> rvalue, whereas the post-increment operator only works on lvalues, so
-> the loop does not iterate as expected.
+On Fri, Jun 25, 2021 at 9:52 PM Alexey Dobriyan <adobriyan@gmail.com> wrote:
+>
+> +/*
+> + * "(void)" is enough for clang but not for gcc.
+> + */
+> +#define SUPRESS_WARN_UNUSED_RESULT     (void)!
 
-Your note about no bug which was added in v2 went missing in v3:
+While it is related to the attribute, this macro is not an attribute,
+so please add it somewhere else.
 
-> > the loop does not iterate as expected. This is not a bug in practice
-> > because count is not greater than one at the moment but this could
-> > change in the future so this should be fixed.
+By the way, the name has a typo.
 
-> Replace the cast with a temporary variable of the proper type, which is
-> less error prone and fixes the iteration. Do the same thing for the
-> 'u8 *' below this if block.
-> 
-> Fixes: ac34df733d2d ("ALSA: usb-audio: scarlett2: Update get_config to do endian conversion")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1408
-> Acked-by: Geoffrey D. Bennett <g@b4.vu>
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
-> 
-> v1 -> v2:
-> 
-> * Use temporary variables of proper type rather than casting, as
->   requested by Takashi.
-> 
-> * Mention that there is not a bug at the moment per Geoffrey's comment.
-> 
-> v2 -> v3:
-> 
-> * Restrict scope of buf_16 more, as requested by Geoffrey.
-> 
-> * Add Geoffrey's ack.
-> 
-> v3 -> v4:
-> 
-> * Fix stray newline added below
-> 
->   if (config_item->size >= 8) {
-> 
->   leftover from buf_16's declaration.
-> 
->  sound/usb/mixer_scarlett_gen2.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
-> index fcba682cd422..161d832cafef 100644
-> --- a/sound/usb/mixer_scarlett_gen2.c
-> +++ b/sound/usb/mixer_scarlett_gen2.c
-> @@ -1177,6 +1177,7 @@ static int scarlett2_usb_get_config(
->  	const struct scarlett2_config *config_item =
->  		&scarlett2_config_items[info->has_mixer][config_item_num];
->  	int size, err, i;
-> +	u8 *buf_8;
->  	u8 value;
->  
->  	/* For byte-sized parameters, retrieve directly into buf */
-> @@ -1185,9 +1186,12 @@ static int scarlett2_usb_get_config(
->  		err = scarlett2_usb_get(mixer, config_item->offset, buf, size);
->  		if (err < 0)
->  			return err;
-> -		if (size == 2)
-> -			for (i = 0; i < count; i++, (u16 *)buf++)
-> -				*(u16 *)buf = le16_to_cpu(*(__le16 *)buf);
-> +		if (size == 2) {
-> +			u16 *buf_16 = buf;
-> +
-> +			for (i = 0; i < count; i++, buf_16++)
-> +				*buf_16 = le16_to_cpu(*(__le16 *)buf_16);
-> +		}
->  		return 0;
->  	}
->  
-> @@ -1197,8 +1201,9 @@ static int scarlett2_usb_get_config(
->  		return err;
->  
->  	/* then unpack from value into buf[] */
-> +	buf_8 = buf;
->  	for (i = 0; i < 8 && i < count; i++, value >>= 1)
-> -		*(u8 *)buf++ = value & 1;
-> +		*buf_8++ = value & 1;
->  
->  	return 0;
->  }
-> 
-> base-commit: 0cbbeaf370221fc469c95945dd3c1198865c5fe4
-> -- 
-> 2.32.0.93.g670b81a890
-> 
+Cheers,
+Miguel
