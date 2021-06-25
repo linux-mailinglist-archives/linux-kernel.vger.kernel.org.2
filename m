@@ -2,82 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6113D3B4007
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A46353B4004
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230513AbhFYJJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:09:16 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:14730 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230526AbhFYJJN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:09:13 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15P92VtW007281;
-        Fri, 25 Jun 2021 09:05:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=NZWJv2xcbxD1nxp9+aq9ApwvBM61K+hAFTVm04AAlxo=;
- b=mAyiUL6gbde5gEqazg/Bxb72lclHE1OqXwJ/cwmheyBiiB0/RN8euYX2yyNTSgGGSd96
- 8TahK6dXpafdic0+TC+ynCXU2D2rnsoqtPzxY2goj5iPaxTleZDkpmeTz2a70W2mP4yM
- TlZrjIFsDjDRqqDbtkD4AM/OhHBuCfUd35SIxfYDMofE1yan4QejDbnnjtrqfnUnv/+b
- 4RndWtPkBZKlP29otGhBzoALNqB3nl/6cpiMufAToCiz7QCeBCmuUN0ifW2XO+rpnC4p
- lIjs3dxRQndUGKYFZjqjvHsQWnWmHh8+17V599PPDHLQFrTcNanUsRlrzrZ6vm0lD1dN mQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39d24a8wxp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Jun 2021 09:05:59 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15P8xajb119590;
-        Fri, 25 Jun 2021 09:05:58 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 39d243702m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Jun 2021 09:05:58 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15P90xQ8124911;
-        Fri, 25 Jun 2021 09:05:57 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 39d243701y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Jun 2021 09:05:57 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15P95l7J031960;
-        Fri, 25 Jun 2021 09:05:52 GMT
-Received: from kadam (/102.222.70.252)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 25 Jun 2021 02:05:46 -0700
-Date:   Fri, 25 Jun 2021 12:05:39 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        clemens@ladisch.de, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ALSA: firewire-lib: Fix 'amdtp_domain_start()' when no
- AMDTP_OUT_STREAM stream is found
-Message-ID: <20210625090538.GG2040@kadam>
-References: <9c9a53a4905984a570ba5672cbab84f2027dedc1.1624560484.git.christophe.jaillet@wanadoo.fr>
- <YNTzrtrmDBdg2ec6@workstation>
+        id S231281AbhFYJIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:08:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231273AbhFYJIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 05:08:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F42B61429;
+        Fri, 25 Jun 2021 09:06:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624611960;
+        bh=JRVtn2LF05O4zsE0yUfn3O6+raSRPmcoBZK9SlvE3Ek=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PI8vE6yPun5p4JI5lqgqmoj6wFcIKcxACiN0n0/ZqHEgn94A8GTyrSmQiOucWmEem
+         wagx0jY9FU0oNSkLNbPC59J3f7u8E3D6Jia9fiaWsFS2oe3ZnPGQDWo1KHjjl5qvlc
+         QHTnZT1TqLP06ybaXUpfI1KcDzW3NwX3ceo4GnpypoPjF56tWZ9m+yXl1xNcSgePpE
+         psFHRxRdPMIWawB6OsvISLD5D3L2lTSKPAeO2gsKU/D+S22vIwwjmyOMe90lsAqKVw
+         pc+sL92BFmuOOpfHsfYX4YZQF9Xx7jx0T5fEw10EXx2yD5eeqX19DPiszNhtvyWdKm
+         OS90IuLCsK5mQ==
+Received: by mail-ed1-f42.google.com with SMTP id r7so12379523edv.12;
+        Fri, 25 Jun 2021 02:06:00 -0700 (PDT)
+X-Gm-Message-State: AOAM531SwGPG7A9l+hRM1hcHWOeK5IZcnOgA85fZohrP85beCj2sELbq
+        FqXQ0JfOM/jmlw3EK/A30NjErcV4riiqbpbFKA==
+X-Google-Smtp-Source: ABdhPJxab4jkrfzwFP+D7IPG+I+O5aPJXlWlmFnx/IiQeIs3tugbHdgiEvdUB5GE3e2v6Hzy6jf90PdaVKtT5o0Hc94=
+X-Received: by 2002:a05:6402:4cf:: with SMTP id n15mr13597628edw.162.1624611958809;
+ Fri, 25 Jun 2021 02:05:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNTzrtrmDBdg2ec6@workstation>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: T9AK70S8GuSoI4Tm38q7WxPBlNMpYa3r
-X-Proofpoint-ORIG-GUID: T9AK70S8GuSoI4Tm38q7WxPBlNMpYa3r
+References: <YNHg5NuJILrrBIZ/@mwanda>
+In-Reply-To: <YNHg5NuJILrrBIZ/@mwanda>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Fri, 25 Jun 2021 17:05:48 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__qnvFX4NB0G878S_J-mug4sTfynAukLGSD1xoMHKGdqA@mail.gmail.com>
+Message-ID: <CAAOTY__qnvFX4NB0G878S_J-mug4sTfynAukLGSD1xoMHKGdqA@mail.gmail.com>
+Subject: Re: [PATCH] mailbox: mtk-cmdq: Fix uninitialized variable in cmdq_mbox_flush()
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 06:05:50AM +0900, Takashi Sakamoto wrote:
-> 
-> In kernel v5.10 or later, we can use 'list_entry_is_head()' macro added
-> by a commit e130816164e2 ("include/linux/list.h: add a macro to test if
-> entry is pointing to the head").
+Hi, Dan:
 
-Someone needs to backport that all the way back...
+Dan Carpenter <dan.carpenter@oracle.com> =E6=96=BC 2021=E5=B9=B46=E6=9C=882=
+2=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=889:09=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> The "cb" pointer needs to be initialized before can assign
+> "data.data =3D cb->data;".
 
-regards,
-dan carpenter
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
+>
+> Fixes: 4a3cb0303984 ("mailbox: mtk-cmdq: Use mailbox rx_callback")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  drivers/mailbox/mtk-cmdq-mailbox.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmd=
+q-mailbox.c
+> index 301e65b9527a..67a42b514429 100644
+> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
+> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+> @@ -455,10 +455,10 @@ static int cmdq_mbox_flush(struct mbox_chan *chan, =
+unsigned long timeout)
+>
+>         list_for_each_entry_safe(task, tmp, &thread->task_busy_list,
+>                                  list_entry) {
+> +               cb =3D &task->pkt->async_cb;
+>                 data.sta =3D -ECONNABORTED;
+>                 data.data =3D cb->data;
+>                 data.pkt =3D task->pkt;
+> -               cb =3D &task->pkt->async_cb;
+>                 if (cb->cb)
+>                         cb->cb(data);
+>
+> --
+> 2.30.2
+>
