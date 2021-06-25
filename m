@@ -2,156 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2E93B4270
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944543B426E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbhFYLY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 07:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbhFYLY2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 07:24:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECEDC061574;
-        Fri, 25 Jun 2021 04:22:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MxqlUJ3JEfvJSuTDy3ct+hOA2fZl3KeDyOJOsYrfY68=; b=Hp2byn0nwonbL4cSpb44RHkEAn
-        /xjABFgKBSHHs71Zy3+jk4RP8KylyuCDr/yegMw1x5fZmik5LvECBXAAKSxEaDMcUAZ3/d6BHRRA3
-        g9BGyT+AhulwBcbzMEJY2RY7BAA9/E7JIQUpm5+AlPFt1iw0yiZD5HB/x5COrzaWbhlV1S15R7s/p
-        v51nItC8j2CxoQ99R0CL7MQS1t4ZC06mocFYB++dWcnZDVyXMno+cDSQyEcoqv5jKwJ7lIvdn3eHj
-        DOGCf0S3Y+X2gJbSsipB0IRvyyZ0ms0/1iuBF80YA6+Eat/6pfrRgs3ut2ecgqpK2uvkAE6jJn+Og
-        EFniDs9A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwjts-0001Iu-OL; Fri, 25 Jun 2021 11:21:36 +0000
-Date:   Fri, 25 Jun 2021 12:21:32 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 15/46] mm/memcg: Add folio_uncharge_cgroup()
-Message-ID: <YNW8PLZvX/Od+Ldn@casper.infradead.org>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-16-willy@infradead.org>
- <YNWTCG3s910H3to2@dhcp22.suse.cz>
+        id S231153AbhFYLYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:24:23 -0400
+Received: from mout.gmx.net ([212.227.15.19]:37499 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229458AbhFYLYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 07:24:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1624620116;
+        bh=xiBdkAQS5W6nSZvOpWi4b/JamF6NrcqN871sbG/YZiM=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=D3XljyM1hSXtdBaLRMRpv7qjpkvCtGeQd73NqbK6J3qNWepvlnVmku/hMVQWIdcs7
+         7LB9EPHwPqMX6ajc8WjNBUqcznS8cffVJ5JfoiZwfZ53Xre+vUeVo5FR8aBFtAmY0g
+         GPI/x1/zdsOx8CDyWaNtvOKR350NrDFaD3zI207o=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [87.130.101.138] ([87.130.101.138]) by web-mail.gmx.net
+ (3c-app-gmx-bs05.server.lan [172.19.170.54]) (via HTTP); Fri, 25 Jun 2021
+ 13:21:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNWTCG3s910H3to2@dhcp22.suse.cz>
+Message-ID: <trinity-163a08b4-6e39-4d15-bde2-815342f13fc4-1624620116191@3c-app-gmx-bs05>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, linux@armlinux.org.uk,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] serial: amba-pl011: add RS485 support
+Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 25 Jun 2021 13:21:56 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <db436292-4115-0755-57d8-d63986f84453@kernel.org>
+References: <20210618145153.1906-1-LinoSanfilippo@gmx.de>
+ <YNSA1H0cFKiPUn6N@kroah.com> <5d7a4351-2adc-ea31-3290-91d91bd5a5d4@gmx.de>
+ <db436292-4115-0755-57d8-d63986f84453@kernel.org>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:t13vIl16khdstcPYHAPyke7bWV2T38BoLGJQ6MO3Y+sD5YMDA7zNe208y+GBCGh6Iqdih
+ fdcpgn4J9jOxq3nQnVqn9KcQSx9WzAYpy0iP2IRLskCffzz4zfKMtHXRxG1/zvOG5Qcmz7BLumod
+ nxawCM2cIzR/TLbrzR551Af+0EEnvq2e+913J+hRLn78aU0I/I+FHP/89OaXIjSZlMPqTYqZsDth
+ 5Mr3nIoQvQSyTWPRgQUopXTosMjlrBZinfl+groqjgL/HUWdwSllziFaBAGaM7hJV3ETolqRw2Mc
+ 8U=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:11NdH7Sil5g=:7LuhUINLhb5nAk8/8jwzyP
+ W1JHaz1PGfm9rmQ8UETxxVYdDWgLmi7OSVpn2OiHw9/nGYUJn7B1eiZEN/i9U7e9sbFigb3HZ
+ Ykw+EqbIsFF+cCKSVhfWgdBSIbCbiDp3N2cTOUj7nUHVcDntszinFKbnlF2gQu6QV1mtXDabI
+ GaTWqV05gLf4x6V4LeeS1W7PvSRJ02GuVI8x8D/Ca9aZzc5CLzCfaKzfk7p35CFD19G2Y2fgb
+ VTzim7A1vzq3XniDlWhkprgrB3LfFZ8WDEfCFaskEEa6XMuTMa4nSgWxQ68k/0pdJiOx7bDVp
+ rtzaEvtZA81n8wepE46mw3U/aoPPPWu46BfLsFSYux7r98DAKBE3BlIZc8GFnUe5Sp9oKz/+r
+ Oq59ZnpiCq2+lwAuYBRqCoA5laK1SzoQdWGDtllao8Dt75s9gSULCKC3c2RQ6dk8cbmUuzs4J
+ ibVEFyGHj63VAG6B4HGix1SkaIg+3vyv/HMr1NpT34XcWmk33qZMimTt66fi0vXfUgsiPIrq9
+ jaBvKIiYxUrmJ4NY6/K0DRX0N/vHIAN4RmhrB1ph8FTm5xfEzmCcd5MX2hfEQNDwtHmf5UDfG
+ 0P0xJ42S8tVA7h3PLmKokQw0XlQd67TlVlFtTA0RGnJauw8BWQIbrd2hdQrofhtmCjVTN/Z4G
+ LrAUIBCHiw9G0syVo8o29K0rbhtY2y/pXGkwgCiicnC32slBhhnTzZj+QmmjAjBw4BkViVChu
+ Lyf+HzSd20ko2AOANvcERK3YYHSWXZIkAz08kO3YhGbSfHoL7JTzI9oNexMHzzsY6oziDNBtC
+ +KcL7Eh+s6hw/YkFU75aSknL2Zm/PEk4Y3e7eF3GECSK2SKXsg=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 10:25:44AM +0200, Michal Hocko wrote:
-> On Tue 22-06-21 13:15:20, Matthew Wilcox wrote:
-> > Reimplement mem_cgroup_uncharge() as a wrapper around
-> > folio_uncharge_cgroup().
-> > 
-> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> 
-> Similar to the previous patch. Is there any reason why we cannot simply
-> stick with mem_cgroup_{un}charge and only change the parameter to folio?
 
-There are a dozen callers of mem_cgroup_charge() and most of them
-aren't quite ready to convert to folios at this point in the patch
-series.  So either we need a new name for the variant that takes a
-folio, or we need to play fun games with _Generic to allow
-mem_cgroup_charge() to take either a folio or a page, or we convert
-all callers to open-code their call to page_folio, like this:
+Hi,
 
--	if (mem_cgroup_charge(vmf->cow_page, vma->vm_mm, GFP_KERNEL)) {
-+	if (mem_cgroup_charge(page_folio(vmf->cow_page), vma->vm_mm,
-+			GFP_KERNEL)) {
+> On 25. 06. 21, 2:15, Lino Sanfilippo wrote:
+> >>> +static int pl011_rs485_config(struct uart_port *port,
+> >>> +			      struct serial_rs485 *rs485)
+> >>> +{
+> >>> +	struct uart_amba_port *uap =3D
+> >>> +		container_of(port, struct uart_amba_port, port);
+> >>> +
+> >>> +	/* pick sane settings if the user hasn't */
+> >>> +	if (!!(rs485->flags & SER_RS485_RTS_ON_SEND) =3D=3D
+> >>
+> >> Why the !! in an if statement?
+> >>
+> >>> +	    !!(rs485->flags & SER_RS485_RTS_AFTER_SEND)) {
+> >>
+> >> Same here, why?
+> >>
+> >
+> > This was copied from serial8250_em485_config(). But I think we can sim=
+ply use
+> >
+> > 	if (rs485->flags & SER_RS485_RTS_AFTER_SEND)
+> > 		rs485->flags &=3D ~SER_RS485_RTS_ON_SEND;
+> > 	else
+> > 		rs485->flags |=3D SER_RS485_RTS_ON_SEND;
+> >
+> > instead. I will adjust the code accordingly.
+>
+> This is different. You want to set ON_SEND when none is set. And unset
+> AFTER_SEND when both are set. In your code, when both are set, you leave
+> AFTER_SEND.
+>
+> regards,
+> --
+> js
+> suse labs
+>
 
-I've generally gone with creating compat functions to minimise the
-merge conflicts when people are adding new callers or changing code near
-existing ones.  But if you don't like the new name, we have options.
+Thats right, the logic has slightly changed. I thought this does not matte=
+r as long as
+we make sure that exactly one of both ON_SEND or AFTER_SEND is set. We can=
+ stick with the logic
+in serial8250_em485_config() (i.e. always set ON_SEND and delete AFTER_SEN=
+D in case
+of an invalid setting), but I think this will require more than the four l=
+ines that we
+have now (especially if we want to avoid the !!).
 
-> > ---
-> >  include/linux/memcontrol.h |  5 +++++
-> >  mm/folio-compat.c          |  5 +++++
-> >  mm/memcontrol.c            | 14 +++++++-------
-> >  3 files changed, 17 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index a50e5cee6d2c..d4b2bc939eee 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -705,6 +705,7 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
-> >  }
-> >  
-> >  int folio_charge_cgroup(struct folio *, struct mm_struct *, gfp_t);
-> > +void folio_uncharge_cgroup(struct folio *);
-> >  
-> >  int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask);
-> >  int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
-> > @@ -1224,6 +1225,10 @@ static inline int folio_charge_cgroup(struct folio *folio,
-> >  	return 0;
-> >  }
-> >  
-> > +static inline void folio_uncharge_cgroup(struct folio *folio)
-> > +{
-> > +}
-> > +
-> >  static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-> >  				    gfp_t gfp_mask)
-> >  {
-> > diff --git a/mm/folio-compat.c b/mm/folio-compat.c
-> > index 1d71b8b587f8..d229b979b00d 100644
-> > --- a/mm/folio-compat.c
-> > +++ b/mm/folio-compat.c
-> > @@ -54,4 +54,9 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp)
-> >  {
-> >  	return folio_charge_cgroup(page_folio(page), mm, gfp);
-> >  }
-> > +
-> > +void mem_cgroup_uncharge(struct page *page)
-> > +{
-> > +	folio_uncharge_cgroup(page_folio(page));
-> > +}
-> >  #endif
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 69638f84d11b..a6befc0843e7 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -6717,24 +6717,24 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
-> >  }
-> >  
-> >  /**
-> > - * mem_cgroup_uncharge - uncharge a page
-> > - * @page: page to uncharge
-> > + * folio_uncharge_cgroup - Uncharge a folio.
-> > + * @folio: Folio to uncharge.
-> >   *
-> > - * Uncharge a page previously charged with mem_cgroup_charge().
-> > + * Uncharge a folio previously charged with folio_charge_cgroup().
-> >   */
-> > -void mem_cgroup_uncharge(struct page *page)
-> > +void folio_uncharge_cgroup(struct folio *folio)
-> >  {
-> >  	struct uncharge_gather ug;
-> >  
-> >  	if (mem_cgroup_disabled())
-> >  		return;
-> >  
-> > -	/* Don't touch page->lru of any random page, pre-check: */
-> > -	if (!page_memcg(page))
-> > +	/* Don't touch folio->lru of any random page, pre-check: */
-> > +	if (!folio_memcg(folio))
-> >  		return;
-> >  
-> >  	uncharge_gather_clear(&ug);
-> > -	uncharge_page(page, &ug);
-> > +	uncharge_page(&folio->page, &ug);
-> >  	uncharge_batch(&ug);
-> >  }
-> >  
-> > -- 
-> > 2.30.2
-> 
-> -- 
-> Michal Hocko
-> SUSE Labs
+Thanks,
+Lino
+
+
+
+
+
+
