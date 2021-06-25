@@ -2,169 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F8B3B3D07
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71363B3D0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbhFYHMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 03:12:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39077 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229448AbhFYHMC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 03:12:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624604981;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FLtazXb3G6fRRX9xtmGZQwP57cBRAMVoE8LLTV4/QLo=;
-        b=iXnT9CmgRRkvDdsgkj8ZUasrWgmBoN2MLWqTQGuRtSebE8Xu6Pmc3/jXJX1X1PbkQw6Kwg
-        Z7GrS6fHBX2UDSEKFTRfprHEOCyae1FMazIJXXdQkSKB6+O+KVNS+6xw9JHCauUrXyD15w
-        jon1XfdCdcN5NQHpdpYg9yScVxjBpIE=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-krDYR4dIMK-Lp0L2f8fM3A-1; Fri, 25 Jun 2021 03:09:40 -0400
-X-MC-Unique: krDYR4dIMK-Lp0L2f8fM3A-1
-Received: by mail-wr1-f70.google.com with SMTP id x5-20020adff0c50000b029011a7be832b7so3137138wro.18
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 00:09:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FLtazXb3G6fRRX9xtmGZQwP57cBRAMVoE8LLTV4/QLo=;
-        b=IH2ywZMiPYoByZHn4VAUrAFodB1BCspBjhre0shlFXJutVTQuOWpYSFXaVkxQlPmLZ
-         3afjChnmDjcpcyv8mpWrYQaZOa1lOudDN/0X29q7XPr1qbjLvy787NUN4AY8f9VBlrt/
-         oeNDwI755fhqgqXvKBoY5KazAF77l83KrSwCwleF6YdZIeUqb2p4GutXsb9erbTEXvLp
-         VIbpePBrcNj6iQUpMT5/pfIxB8NED4RNNqsLn8gvwuKcM8g6l9K5kMbAw++9WIF5mCSx
-         lLzaNw7MyTm2v8mDHtp4devnOy9cvVDSEK3mGefFr0veP0mYiaYUK62CG4cdcURK4YKk
-         w/kA==
-X-Gm-Message-State: AOAM531V55iOy8crTKX8zPUxB1QWiLD5bALZ0NocIHij8CzWqooKIsMF
-        5+Y5Ht1mbIXHoEo5JGxvvubNmo8fk2oUb8rAncxUxer3CVsSDOUALLRlMwxya2P2bO/lzih+GKt
-        nWHshfprBPHmYOlztmeCVoo08
-X-Received: by 2002:a1c:4b04:: with SMTP id y4mr8928272wma.186.1624604979081;
-        Fri, 25 Jun 2021 00:09:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwEZC10pOGlNPzeVGtuSNOzeepcf5gnuWto136WmaedGGkMX3t/mR9Y/5SHRge1PZWfwCJHYw==
-X-Received: by 2002:a1c:4b04:: with SMTP id y4mr8928243wma.186.1624604978853;
-        Fri, 25 Jun 2021 00:09:38 -0700 (PDT)
-Received: from [192.168.1.101] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id i18sm1603468wrw.55.2021.06.25.00.09.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 00:09:38 -0700 (PDT)
-Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
- clocks gated
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        rfi@lists.rocketboards.org, Jingoo Han <jingoohan1@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org
-References: <20210624224040.GA3567297@bjorn-Precision-5520>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-Message-ID: <5bee3702-595b-f57b-f962-28644b7e646f@redhat.com>
-Date:   Fri, 25 Jun 2021 09:09:36 +0200
+        id S229813AbhFYHOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 03:14:25 -0400
+Received: from mail-eopbgr140107.outbound.protection.outlook.com ([40.107.14.107]:37349
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229437AbhFYHOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 03:14:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oa3Uwch4k/HCj0R2Yo0Weaw+zS45pDDcZQJovUAJO6YKFJmo4QGJnnH5VXNtV+1WsPf8NM/KISQQgyHxZr+OTNNYBXJYTsFJ3iFXi61oilCWw9noPPn/35uIFIcGsci3yLSs8GaS7zJx9Kzw4BL6fbZ2p4715GJ8N24NbBzbNZ5j6P5HR+hsQi/rX0d0e0TCuZ/nK4T3KV3xJOOBBue6QsxcTbnUXatKUtS7acSsAhtM33rWd+Lb4YfkkGIeMYtoZqObNBCknvsrDz1kk1q3g6oc7p6ItMjgwpM1chngEvGBMMzRAE9c/waHG6rpLNSGPxwTovQ4OJTXJva8pK3ygQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eIP2tlR8+uGiubpTNefYfrnLQZQAmFeDUegixDfiJ5I=;
+ b=NIuyWGfaJgQDjSuUc1mzThdPucMuHummfVNi7uCuroWQyUgauVYp8ilFrSnvIUhoP6+89WAa0ou8kCgnSeQDyv8d55LYYSeIC3yNeV5EAJxWpkdppQAUf6PmaZnGfRqeVyarnGHz21thm6nVIFs0phgRScpOPvQzhRNCOCy0GTFEfjZwuRSn8oYU8uUTp/ny8LvtcIatSw7TvVTMlLi/L8AH51S8mzt3gtgrNMQ+GmYFW/xpyLKN/u/o5/GwKbs0oQlSIdnHa8IZchmOc5zYtLRXzR3zYL3HbofpxE2sha0Kv0j2E8U+eBxYkiPel6Z7EATVFYXORDi83oENxSlNrg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=silicom.dk; dmarc=pass action=none header.from=silicom.dk;
+ dkim=pass header.d=silicom.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=SILICOMLTD.onmicrosoft.com; s=selector2-SILICOMLTD-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eIP2tlR8+uGiubpTNefYfrnLQZQAmFeDUegixDfiJ5I=;
+ b=ZjV+01rt9AZkSrGJxCcmBuyJ94zzn6EgH36j3Rsvr2jr2fBgYt6JaQzI7eUXLnxM7S646mLXOkW8ZhbSfpheMMqhdJqdB3k/YEpJh1vu8LhEEREyDSP+oFCruo5Zuutx5hPGt0uk+V6HuhoVSFF9My2y1y6uv0PA4XAEskecfns=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=silicom.dk;
+Received: from AM0PR0402MB3426.eurprd04.prod.outlook.com
+ (2603:10a6:208:22::15) by AM0PR04MB7028.eurprd04.prod.outlook.com
+ (2603:10a6:208:19a::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.22; Fri, 25 Jun
+ 2021 07:11:59 +0000
+Received: from AM0PR0402MB3426.eurprd04.prod.outlook.com
+ ([fe80::50fd:f133:3592:292e]) by AM0PR0402MB3426.eurprd04.prod.outlook.com
+ ([fe80::50fd:f133:3592:292e%7]) with mapi id 15.20.4242.025; Fri, 25 Jun 2021
+ 07:11:59 +0000
+Subject: Re: [PATCH 0/4] fpga/mfd/hwmon: Initial support for Silicom N5010 PAC
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-spi@vger.kernel.org
+References: <20210621070621.431482-1-mhu@silicom.dk>
+ <20210621083856.GA24178@yilunxu-OptiPlex-7050>
+From:   =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>
+Message-ID: <fad06784-45b1-e139-4f93-b7d2777c3e07@silicom.dk>
+Date:   Fri, 25 Jun 2021 09:11:58 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
+In-Reply-To: <20210621083856.GA24178@yilunxu-OptiPlex-7050>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US-large
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [85.184.138.169]
+X-ClientProxiedBy: AM6PR05CA0030.eurprd05.prod.outlook.com
+ (2603:10a6:20b:2e::43) To AM0PR0402MB3426.eurprd04.prod.outlook.com
+ (2603:10a6:208:22::15)
 MIME-Version: 1.0
-In-Reply-To: <20210624224040.GA3567297@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.8.20] (85.184.138.169) by AM6PR05CA0030.eurprd05.prod.outlook.com (2603:10a6:20b:2e::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Fri, 25 Jun 2021 07:11:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0bad1540-43a3-4524-8165-08d937a88630
+X-MS-TrafficTypeDiagnostic: AM0PR04MB7028:
+X-Microsoft-Antispam-PRVS: <AM0PR04MB7028E49F09D78CA312A61FFBD5069@AM0PR04MB7028.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VbiJi6Va6VLNqKNVG52asmWbOhbAEqEXQGk20wUs/LrS29qlW8mDJbC2d3d9QWfin4WxXzS5b4Ull5lwln1tjnPQByzK1ztHRo2sSKF6y+GZIxfMFRbOnZ30Nf4ey83qWHJL1Y1zybJvzPuEJNZrsLhmwhw4m7VabWLvUjDEnrntNowwbgnUXmvWMFuU38IlAfrO4scsYgt1oCnzkdPHDhTJU15geHKXsJtcDvxQaX9YjAlN4dtxW1ZDKUN9PcO7i6P85YWsCvyeMIg9G6OTWs8Pgnb/cKq/wNssNtmLHwUUXYbEIWKENzIkMeMSJIpAUfwLHlqGEf49snAdWiK5scULX9UChc8tQthhKqEouHGfHGautDLU2F1dkdqkivNAIcrvLsizBnYH/sfGdL6kAHJVuXAx8LJEzwzJSaJ/ncSqlnWppzNW4BAdNjdBt6wpIwakLfO8tfD580D9dBJpnFMfWOzw4QtiAZcCcIFYP8kodAoO4wzlRBNPFRXqYXW9RDilwITFh7ONWjaC7zDGLw7X/HTFJ4SU4dGpJB0OCAhoI9GQSkT9+OrXYomzlEf8+40vc+hZtniPdKkQXQ6dEuos+QuOCS9lJiIy1Pe7xq7DGq5RAYoHDxaRc5ES/dRi7O+IozSleof3H0GXLf6qnrOT0vVIzxtRifUJ0rIXAAdeAevzxooZFs7HBavMUVZDkSFjqT2lmUFr7Oo7z+WjuJrMnbO/1n1pjy4ypH6tubA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR0402MB3426.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(396003)(39840400004)(346002)(6916009)(26005)(38100700002)(31696002)(7416002)(66574015)(86362001)(8976002)(83380400001)(8936002)(2906002)(5660300002)(66946007)(8676002)(66476007)(66556008)(16526019)(186003)(6486002)(316002)(36756003)(478600001)(54906003)(2616005)(4326008)(16576012)(31686004)(956004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c3p0UmNCTUVUL0hLeFpjS1UyTUFxTjg3aXJGOWdIR2owRWxrRDRoQThEamRJ?=
+ =?utf-8?B?dTI1NkQ2RHo5c1VUMllSZzBaT3VXWWhIbTJaTzc3RHc3bVl1RlBUKzJiM1E3?=
+ =?utf-8?B?clZSL0pEQWxlU0ZzbDJWWERNQmt3cnlKOWlPUERoa2x0NFpGVmUwUlM1azRj?=
+ =?utf-8?B?U1d6VnFNdDlkT2JDaW1JdjA3TExsVDhHUFFack5XbnpBNnRDMkxjamdpdDJD?=
+ =?utf-8?B?alNBL2wrMElKV0lxd0YwWDdQVUsvN2E5ZVQvR0tZdXFDSGFFKzlKMlR0amVs?=
+ =?utf-8?B?cmFwNTFINndvbFkzYksraHZYMWF2TzF0SW9WbXcxbTZ5VnlKRzRMUTYxdVVT?=
+ =?utf-8?B?UVRWZWtWTnFPazQrWXRUcVgybVQxamtqS3JCbjM3Zzg0N1lXWXo2amR6dlND?=
+ =?utf-8?B?aVNPWTN5Q1Y3SHFOUFM0dnhveDhVeFJkRXNmaCt2ZlBKRVk2YnBHRFNKeXNJ?=
+ =?utf-8?B?c2gveWhFVWNaQ1ZJaFNKQWZCdmxqVDBtN0NwK0tQcXM5OVZ1VFN5S0xNeDJH?=
+ =?utf-8?B?dmtTamhiQjVOaXp5WkRzWUFMbVJ1eXdJYkVqQXdWSmZkWFlTSENBaVJxUHdj?=
+ =?utf-8?B?YzBWeVg4QVpjeEcwR2crY1U4KzJHSzRoaml3YzBvZ3dSQlhzdm5NV2hhdDFr?=
+ =?utf-8?B?bnBKNGZCanZHYTFVd21QaDFFanBWNDczS0cxYk1hZFo3TXJqVkdaOW1jRVBI?=
+ =?utf-8?B?U3pFRGtEYkNBQmhGOTc2VTA2Q0VCVTB2Y1JnUDhJZ3hVRXZQNE04aGpPSXlo?=
+ =?utf-8?B?WWo5ZXh4ajltZDRZY1VXOW1FU0pEVlRWUmxqUTF2L2t1YmNUYU5vTk1LWGVy?=
+ =?utf-8?B?ZVYrVFdkTEhONnZXQjlSQ0F0RHdEa24rRHJvMFJHUmFSWlY5VGx5U1NMaFlV?=
+ =?utf-8?B?bjVubHM0dEJ4YjR1RDc0bUw3R0h2ckhQSU43aHJFbDlHbFk0TUgvNXdxSnZy?=
+ =?utf-8?B?b2FuU1E0UlQ5NVBPVGFZL0dUQWN4dzhmK3dWVHFieklMV0Ztem9zeStWRkxJ?=
+ =?utf-8?B?RUhuQ1dUa1BRZ3VWS2tSUVh1R0ErNEhBdno4cWQwcHk1S0t0dExuN2p2ZFMx?=
+ =?utf-8?B?QkdWS1pSV2VSWEN3RjRsR0dqUUdVdzNEQWdNMjdIL3dEaHFJZ01OdnJvZ3pD?=
+ =?utf-8?B?V3lZNDJNckhnZ0lJc3ZuWElUZjR2Vy96Mk1XeWJ6MTNXVWd3ai9HZy95alpl?=
+ =?utf-8?B?cnBKUzJZQjZwT29GU1ZJeGw3ZU9EVW1BUkFzMWtOQWJtazVBQUZpc0FwYUFR?=
+ =?utf-8?B?ZDlDY1RYdnJoQytkbEhKbm1hSjkyQzYxMjM1SUU2S01OQUZDUnFJTUxQeW5N?=
+ =?utf-8?B?SWdFWE90dVNqaVFuR09IdDlHV0dISld0eGh2M1NOWTE4Q3AzOWxnT0dJWk90?=
+ =?utf-8?B?cnJ0d2huenAvS01pcnpIbUxsTGZTdHR6MVFjamh6ajFLa0d2cmFPMzVZeXlh?=
+ =?utf-8?B?Z0ozdmwvK2NxWGppY3l0NVV4S0g5SEFsMEx6RXQwTEQvb3FGY2lPMldJR3M5?=
+ =?utf-8?B?YkgvakNiMm42NjdiTmorWjRLbGxnTDVOcDFTakNmSWczR2tMMFp6VFFJUmli?=
+ =?utf-8?B?Qk1pQjI3N3dFUThpQVZtbVNzZWdwUjNzd1dEWC9wVGdRSWVReXo1TTFsOThI?=
+ =?utf-8?B?MGlzM3ZVUTRMUG5FTm16enFwYzAxNEY2MzA3V3NVcmtXdnNvVytnbjNMTG5h?=
+ =?utf-8?B?TlBUeSs4Z1BtanhDSFJNTFEwNTNNQzlBOWl2bGd5R3hYdFJHMXNWNHNYMjdh?=
+ =?utf-8?Q?MhVY10nilllANJO0Et7dkIri/7TmgDJ1iYfahlq?=
+X-OriginatorOrg: silicom.dk
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0bad1540-43a3-4524-8165-08d937a88630
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR0402MB3426.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jun 2021 07:11:59.6154
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: c9e326d8-ce47-4930-8612-cc99d3c87ad1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4TmLoyHAIJpTUlGNc8mUAgVPGQrtUtQbuC8cZDFEtYl7+BVMIDi/41ya+kZkSFax
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7028
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Bjorn,
+Hi Yilun,
 
-On 6/25/21 12:40 AM, Bjorn Helgaas wrote:
-> [+cc Michal, Ley Foon, Jingoo, Thierry, Jonathan]
+On 21/06/2021 10.38, Xu Yilun wrote:
+> On Mon, Jun 21, 2021 at 09:06:17AM +0200, Martin Hundebøll wrote:
+>> From: Martin Hundebøll <mhu@geanix.com>
+>>
+>> This is an initial set of patches for the Silciom N5010 programmable
+>> accelerated card adding support for reading out sensors.
 > 
-> On Tue, Jun 08, 2021 at 10:04:09AM +0200, Javier Martinez Canillas wrote:
->> IRQ handlers that are registered for shared interrupts can be called at
->> any time after have been registered using the request_irq() function.
->>
->> It's up to drivers to ensure that's always safe for these to be called.
->>
->> Both the "pcie-sys" and "pcie-client" interrupts are shared, but since
->> their handlers are registered very early in the probe function, an error
->> later can lead to these handlers being executed before all the required
->> resources have been properly setup.
->>
->> For example, the rockchip_pcie_read() function used by these IRQ handlers
->> expects that some PCIe clocks will already be enabled, otherwise trying
->> to access the PCIe registers causes the read to hang and never return.
->>
->> The CONFIG_DEBUG_SHIRQ option tests if drivers are able to cope with their
->> shared interrupt handlers being called, by generating a spurious interrupt
->> just before a shared interrupt handler is unregistered.
->>
->> But this means that if the option is enabled, any error in the probe path
->> of this driver could lead to one of the IRQ handlers to be executed.
+> Seems the card is a variant of d5005, just changes the layout of the
+> sensors in BMC. It may not worth a dedicated PCI DID, and pass
+> down the info all the way from
+>    pcie -> dfl -> spi-altera -> m10bmc -> m10bmc-hwmon
 > 
-> I'm not an IRQ expert, but I think this is an issue regardless of
-> CONFIG_DEBUG_SHIRQ, isn't it?  Anything used by an IRQ handler should
-> be initialized before the handler is registered.  CONFIG_DEBUG_SHIRQ
-> is just a way to help find latent problems.
->
+> Is it possible we just have some version check in m10bmc?
 
-Yes, it's an issue regardless. It's just that this debug option tests if the
-drivers aren't making the wrong assumption, exactly to find issues like this.
+I think not.
 
->> In a rockpro64 board, the following sequence of events happens:
+The n501x is a Silicom card, and d5005 is from Intel. The Max10 based BMC
+is quite similar, which is why we use a feature revision to differentiate,
+but the main FPGA register layout is a different story.
+
+// Martin
+
 >>
->>   1) "pcie-sys" IRQ is requested and its handler registered.
->>   2) "pcie-client" IRQ is requested and its handler registered.
->>   3) probe later fails due readl_poll_timeout() returning a timeout.
->>   4) the "pcie-sys" IRQ is unregistered.
->>   5) CONFIG_DEBUG_SHIRQ triggers a spurious interrupt.
->>   6) "pcie-client" IRQ handler is called for this spurious interrupt.
->>   7) IRQ handler tries to read PCIE_CLIENT_INT_STATUS with clocks gated.
->>   8) the machine hangs because rockchip_pcie_read() call never returns.
+>> I'm not really sure if these should be taken through each of the
+>> affected trees separately, or just by fpga collectively?
 >>
->> To avoid cases like this, the handlers don't have to be registered until
->> very late in the probe function, once all the resources have been setup.
+>> Based on current master.
 >>
->> So let's just move all the IRQ init before the pci_host_probe() call, that
->> will prevent issues like this and seems to be the correct thing to do too.
-> 
-> Previously we registered rockchip_pcie_subsys_irq_handler() and
-> rockchip_pcie_client_irq_handler() before the PCIe clocks were
-> enabled.  That's a problem because they depend on those clocks being
-> enabled, and your patch fixes that.
->
-> rockchip_pcie_legacy_int_handler() depends on rockchip->irq_domain,
-> which isn't initialized until rockchip_pcie_init_irq_domain().
-> Previously we registered rockchip_pcie_legacy_int_handler() as the
-> handler for the "legacy" IRQ before rockchip_pcie_init_irq_domain().
-> 
-> I think you patch *also* fixes that problem, right?
->
-
-Correct, that's why I moved the initialization and IRQ enable after that.
- 
-> I think this is also an issue with the following other drivers.  They all
-> set the handler to something that uses an IRQ domain before they
-> actually initialize the domain:
-
-Yes, I agreed with your assessment and also noticed that others drivers have
-similar issues. I just don't have any of those platforms to try to reproduce
-the bugs and test a fix.
-
-Best regards,
--- 
-Javier Martinez Canillas
-Software Engineer
-New Platform Technologies Enablement team
-RHEL Engineering
-
+>> // Martin
+>>
+>> Debarati Biswas (1):
+>>    fpga: dfl: Move DFH header register macros to linux/dfl.h
+>>
+>> Martin Hundebøll (3):
+>>    fpga: dfl: pci: add device IDs for Silicom N501x PAC cards
+>>    spi: spi-altera-dfl: support n5010 feature revision
+>>    hwmon: intel-m10-bmc: add sensor support for Silicom N5010 card
+>>
+>>   drivers/fpga/dfl-pci.c              |   5 ++
+>>   drivers/fpga/dfl.h                  |  48 +-----------
+>>   drivers/hwmon/intel-m10-bmc-hwmon.c | 116 ++++++++++++++++++++++++++++
+>>   drivers/mfd/intel-m10-bmc.c         |  12 ++-
+>>   drivers/spi/spi-altera-dfl.c        |  15 +++-
+>>   include/linux/dfl.h                 |  52 +++++++++++++
+>>   6 files changed, 198 insertions(+), 50 deletions(-)
+>>
+>> -- 
+>> 2.31.0
