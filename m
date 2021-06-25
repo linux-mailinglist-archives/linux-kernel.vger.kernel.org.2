@@ -2,286 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8307F3B4034
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E480C3B403D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231247AbhFYJWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:22:36 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:11096 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230326AbhFYJWe (ORCPT
+        id S231189AbhFYJX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:23:59 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:37592 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230234AbhFYJX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:22:34 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GBBGY2K64zZjCd;
-        Fri, 25 Jun 2021 17:17:09 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 25 Jun 2021 17:20:11 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 25 Jun
- 2021 17:20:11 +0800
-Subject: Re: [PATCH net-next v2 2/2] ptr_ring: make __ptr_ring_empty()
- checking more reliable
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <jasowang@redhat.com>,
-        <brouer@redhat.com>, <paulmck@kernel.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <shuah@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linuxarm@openeuler.org>
-References: <1624591136-6647-1-git-send-email-linyunsheng@huawei.com>
- <1624591136-6647-3-git-send-email-linyunsheng@huawei.com>
- <20210625023749-mutt-send-email-mst@kernel.org>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <77615160-6f4f-64bf-7de9-b0adaddd5f06@huawei.com>
-Date:   Fri, 25 Jun 2021 17:20:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Fri, 25 Jun 2021 05:23:58 -0400
+Received: from mail-ed1-f69.google.com ([209.85.208.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lwi1o-0002ez-LA
+        for linux-kernel@vger.kernel.org; Fri, 25 Jun 2021 09:21:36 +0000
+Received: by mail-ed1-f69.google.com with SMTP id r6-20020a05640216c6b0290394ed90b605so4739476edx.20
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:21:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QsPyFBqPfdmelbWnXguclm9JevGGaBII5W3HvpNQ+C8=;
+        b=iystfuagfTYYUaX5LeL6qVtwZR9OfZQi8vmKofg83MbGx9SESpF8yuIrniieLiuHnU
+         JM3nTJ8qLlNnekYDldcJ57eiiOo/PsVhKfTM67lwovyL/K6NaIpGLqxdv3PRCrrzq9ad
+         ABp2O/eQUwfPKRTKeWkS9agII/fyxSWxV6YnV0cFs1EVTMe6xCfZyaqn5CFfqjZAGRtx
+         Lnzow1oXj1WcyP33a9a7ts9lyHWBiTuv/TwUWEATylyZi4JuQiXHroHk4jiB8cP1Kzz4
+         yoPNuv2KRvp3ngmLdBMq9n/rkvIKDSYJYj6ZHHK3Wl9yh7pktxtJDKW4Xewku9UeXqrL
+         u7Nw==
+X-Gm-Message-State: AOAM5335eI5/gfVRheJZwEEtVjw3qG5GeY07LM4e8p34f2QkqNnReM48
+        TDjtf0JdZ2vJFNQR+jz6IXWzfdhxmYMqb5KD9akaKWfbaewI9Y/qtUweDOFPRiGrB/gKjJRlggA
+        uQzvNvFZvB8Aje4vEmOJbXQtQzckzRGd5BpEGwPFByA==
+X-Received: by 2002:aa7:d34f:: with SMTP id m15mr12772186edr.311.1624612896127;
+        Fri, 25 Jun 2021 02:21:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw+TM38F4Yr0eNdERAI2zb41U3+ytlASbW0YpW0+yf9XGf8E0tFDX/OQzorcP9sXyGgE3SWQg==
+X-Received: by 2002:aa7:d34f:: with SMTP id m15mr12772163edr.311.1624612895982;
+        Fri, 25 Jun 2021 02:21:35 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id hz14sm2415400ejc.107.2021.06.25.02.21.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jun 2021 02:21:35 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [RFC PATCH 2/9] drm: bridge: Add Samsung SEC MIPI DSIM bridge
+ driver
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Jagan Teki <jagan@amarulasolutions.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Peng Fan <peng.fan@nxp.com>,
+        Francis Laniel <francis.laniel@amarulasolutions.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Robert Foss <robert.foss@linaro.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        Milco Pratesi <milco.pratesi@engicam.com>,
+        Anthony Brandon <anthony@amarulasolutions.com>,
+        linux-phy@lists.infradead.org, Fancy Fang <chen.fang@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        NXP Linux Team <linux-imx@nxp.com>
+References: <20210621072424.111733-1-jagan@amarulasolutions.com>
+ <20210621072424.111733-3-jagan@amarulasolutions.com>
+ <YNO0LHNVSWjrh1ZS@pendragon.ideasonboard.com>
+ <CAOMZO5Ahbu4mohtMDOQOv_y5B_TDesbdYEUZTF1RL7_y-bS+RA@mail.gmail.com>
+ <CAMty3ZAtObU-bf6FuxvSBaZn2cotj_NxASW9g9on-kBJ7iW3OA@mail.gmail.com>
+ <YNR37NWkxq0mZyq5@pendragon.ideasonboard.com>
+Message-ID: <fdd446c6-c8ce-9dae-f7ac-e06241f76250@canonical.com>
+Date:   Fri, 25 Jun 2021 11:21:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210625023749-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YNR37NWkxq0mZyq5@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/25 14:39, Michael S. Tsirkin wrote:
-> On Fri, Jun 25, 2021 at 11:18:56AM +0800, Yunsheng Lin wrote:
->> Currently r->queue[] is cleared after r->consumer_head is moved
->> forward, which makes the __ptr_ring_empty() checking called in
->> page_pool_refill_alloc_cache() unreliable if the checking is done
->> after the r->queue clearing and before the consumer_head moving
->> forward.
->>
->> Move the r->queue[] clearing after consumer_head moving forward
->> to make __ptr_ring_empty() checking more reliable.
->>
->> As a side effect of above change, a consumer_head checking is
->> avoided for the likely case, and it has noticeable performance
->> improvement when it is tested using the ptr_ring_test selftest
->> added in the previous patch.
->>
->> Using "taskset -c 1 ./ptr_ring_test -s 1000 -m 0 -N 100000000"
->> to test the case of single thread doing both the enqueuing and
->> dequeuing:
->>
->>  arch     unpatched           patched       delta
->> arm64      4648 ms            4464 ms       +3.9%
->>  X86       2562 ms            2401 ms       +6.2%
->>
->> Using "taskset -c 1-2 ./ptr_ring_test -s 1000 -m 1 -N 100000000"
->> to test the case of one thread doing enqueuing and another thread
->> doing dequeuing concurrently, also known as single-producer/single-
->> consumer:
->>
->>  arch      unpatched             patched         delta
->> arm64   3624 ms + 3624 ms   3462 ms + 3462 ms    +4.4%
->>  x86    2758 ms + 2758 ms   2547 ms + 2547 ms    +7.6%
-> 
-> Nice but it's small - could be a fluke.
-> How many tests did you run? What is the variance?
-> Did you try pinning to different CPUs to observe numa effects?
-> Please use perf or some other modern tool for this kind
-> of benchmark. Thanks!
+On Thu, 24 Jun 2021 at 14:19, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Jagan,
+>
+> On Thu, Jun 24, 2021 at 05:42:43PM +0530, Jagan Teki wrote:
+> > On Thu, Jun 24, 2021 at 8:18 AM Fabio Estevam wrote:
+> > > On Wed, Jun 23, 2021 at 7:23 PM Laurent Pinchart wrote:
+> > >
+> > > > Looking at the register set, it seems to match the Exynos 5433,
+> > > > supported by drivers/gpu/drm/exynos/exynos_drm_dsi.c. Can we leverage
+> > > > that driver instead of adding a new one for the same IP core ?
+> > >
+> > > Yes. there was an attempt from Michael in this direction:
+> > > https://patchwork.kernel.org/project/dri-devel/cover/20200911135413.3654800-1-m.tretter@pengutronix.de/
+> >
+> > Thanks for the reference, I will check it out and see I can send any
+> > updated versions wrt my i.MX8MM platform.
+>
+> Thanks.
+>
+> I had a brief look at the exynos driver, and I think it should be turned
+> into a DRM bridge as part of this rework to be used with the i.MX8MM.
+>
+> Is there someone from Samsung who could assist, at least to test the
+> changes ?
 
-The result is quite stable, and retest using perf stat：
+Yes, I mentioned few guys in reply to PHY. Around the DRM drivers you
+can get in touch with:
+Inki Dae <inki.dae@samsung.com>
+Seung-Woo Kim <sw0312.kim@samsung.com>
+Marek Szyprowski <m.szyprowski@samsung.com>
+Andrzej Hajda <a.hajda@samsung.com>
 
----------------unpatched ptr_ring.c begin----------------------------------
+The easiest testing of the display stack would be on Hardkernel's Odroid
+XU4 (https://www.hardkernel.com/shop/odroid-xu4-special-price/) however
+you will not test the DSI/DSIM directly (it has only HDMI port).
 
-perf stat ./ptr_ring_test -s 1000 -m 0 -N 100000000
-ptr_ring(size:1000) perf simple test for 100000000 times, took 2385198 us
-
- Performance counter stats for './ptr_ring_test -s 1000 -m 0 -N 100000000':
-
-           2385.49 msec task-clock                #    1.000 CPUs utilized
-                26      context-switches          #    0.011 K/sec
-                 0      cpu-migrations            #    0.000 K/sec
-                57      page-faults               #    0.024 K/sec
-        6202023521      cycles                    #    2.600 GHz
-       17424187640      instructions              #    2.81  insn per cycle
-   <not supported>      branches
-           6506477      branch-misses
-
-       2.385785170 seconds time elapsed
-
-       2.384014000 seconds user
-       0.000000000 seconds sys
-
-
-root@(none):~# perf stat ./ptr_ring_test -s 1000 -m 0 -N 100000000
-ptr_ring(size:1000) perf simple test for 100000000 times, took 2383385 us
-
- Performance counter stats for './ptr_ring_test -s 1000 -m 0 -N 100000000':
-
-           2383.67 msec task-clock                #    1.000 CPUs utilized
-                26      context-switches          #    0.011 K/sec
-                 0      cpu-migrations            #    0.000 K/sec
-                57      page-faults               #    0.024 K/sec
-        6197278066      cycles                    #    2.600 GHz
-       17424207772      instructions              #    2.81  insn per cycle
-   <not supported>      branches
-           6495766      branch-misses
-
-       2.383941170 seconds time elapsed
-
-       2.382215000 seconds user
-       0.000000000 seconds sys
-
-
-root@(none):~# perf stat ./ptr_ring_test -s 1000 -m 0 -N 100000000
-ptr_ring(size:1000) perf simple test for 100000000 times, took 2390858 us
-
- Performance counter stats for './ptr_ring_test -s 1000 -m 0 -N 100000000':
-
-           2391.16 msec task-clock                #    1.000 CPUs utilized
-                25      context-switches          #    0.010 K/sec
-                 0      cpu-migrations            #    0.000 K/sec
-                57      page-faults               #    0.024 K/sec
-        6216704120      cycles                    #    2.600 GHz
-       17424243041      instructions              #    2.80  insn per cycle
-   <not supported>      branches
-           6483886      branch-misses
-
-       2.391420440 seconds time elapsed
-
-       2.389647000 seconds user
-       0.000000000 seconds sys
-
-
-root@(none):~# perf stat ./ptr_ring_test -s 1000 -m 0 -N 100000000
-ptr_ring(size:1000) perf simple test for 100000000 times, took 2389810 us
-
- Performance counter stats for './ptr_ring_test -s 1000 -m 0 -N 100000000':
-
-           2390.10 msec task-clock                #    1.000 CPUs utilized
-                26      context-switches          #    0.011 K/sec
-                 0      cpu-migrations            #    0.000 K/sec
-                58      page-faults               #    0.024 K/sec
-        6213995715      cycles                    #    2.600 GHz
-       17424227499      instructions              #    2.80  insn per cycle
-   <not supported>      branches
-           6474069      branch-misses
-
-       2.390367070 seconds time elapsed
-
-       2.388644000 seconds user
-       0.000000000 seconds sys
-
----------------unpatched ptr_ring.c end----------------------------------
-
-
-
----------------patched ptr_ring.c begin----------------------------------
-root@(none):~# perf stat ./ptr_ring_test_opt -s 1000 -m 0 -N 100000000
-ptr_ring(size:1000) perf simple test for 100000000 times, took 2198894 us
-
- Performance counter stats for './ptr_ring_test_opt -s 1000 -m 0 -N 100000000':
-
-           2199.18 msec task-clock                #    1.000 CPUs utilized
-                23      context-switches          #    0.010 K/sec
-                 0      cpu-migrations            #    0.000 K/sec
-                56      page-faults               #    0.025 K/sec
-        5717671859      cycles                    #    2.600 GHz
-       16124164124      instructions              #    2.82  insn per cycle
-   <not supported>      branches
-           6564829      branch-misses
-
-       2.199445990 seconds time elapsed
-
-       2.197859000 seconds user
-       0.000000000 seconds sys
-
-
-root@(none):~# perf stat ./ptr_ring_test_opt -s 1000 -m 0 -N 100000000
-ptr_ring(size:1000) perf simple test for 100000000 times, took 2222337 us
-
- Performance counter stats for './ptr_ring_test_opt -s 1000 -m 0 -N 100000000':
-
-           2222.63 msec task-clock                #    1.000 CPUs utilized
-                23      context-switches          #    0.010 K/sec
-                 0      cpu-migrations            #    0.000 K/sec
-                57      page-faults               #    0.026 K/sec
-        5778632853      cycles                    #    2.600 GHz
-       16124210769      instructions              #    2.79  insn per cycle
-   <not supported>      branches
-           6603904      branch-misses
-
-       2.222901020 seconds time elapsed
-
-       2.221312000 seconds user
-       0.000000000 seconds sys
-
-
-root@(none):~# perf stat ./ptr_ring_test_opt -s 1000 -m 0 -N 100000000
-ptr_ring(size:1000) perf simple test for 100000000 times, took 2251980 us
-
- Performance counter stats for './ptr_ring_test_opt -s 1000 -m 0 -N 100000000':
-
-           2252.28 msec task-clock                #    1.000 CPUs utilized
-                25      context-switches          #    0.011 K/sec
-                 0      cpu-migrations            #    0.000 K/sec
-                57      page-faults               #    0.025 K/sec
-        5855668335      cycles                    #    2.600 GHz
-       16124310588      instructions              #    2.75  insn per cycle
-   <not supported>      branches
-           6777279      branch-misses
-
-       2.252543340 seconds time elapsed
-
-       2.250897000 seconds user
-       0.000000000 seconds sys
-
-
-root@(none):~#
-root@(none):~# perf stat ./ptr_ring_test_opt -s 1000 -m 0 -N 100000000
-ptr_ring(size:1000) perf simple test for 100000000 times, took 2209415 us
-
- Performance counter stats for './ptr_ring_test_opt -s 1000 -m 0 -N 100000000':
-
-           2209.70 msec task-clock                #    1.000 CPUs utilized
-                24      context-switches          #    0.011 K/sec
-                 0      cpu-migrations            #    0.000 K/sec
-                58      page-faults               #    0.026 K/sec
-        5745003772      cycles                    #    2.600 GHz
-       16124198886      instructions              #    2.81  insn per cycle
-   <not supported>      branches
-           6508414      branch-misses
-
-       2.209973960 seconds time elapsed
-
-       2.208354000 seconds user
-       0.000000000 seconds sys
-
-
-root@(none):~# perf stat ./ptr_ring_test_opt -s 1000 -m 0 -N 100000000
-ptr_ring(size:1000) perf simple test for 100000000 times, took 2211409 us
-
- Performance counter stats for './ptr_ring_test_opt -s 1000 -m 0 -N 100000000':
-
-           2211.70 msec task-clock                #    1.000 CPUs utilized
-                24      context-switches          #    0.011 K/sec
-                 0      cpu-migrations            #    0.000 K/sec
-                57      page-faults               #    0.026 K/sec
-        5750136694      cycles                    #    2.600 GHz
-       16124176577      instructions              #    2.80  insn per cycle
-   <not supported>      branches
-           6553023      branch-misses
-
-       2.211968470 seconds time elapsed
-
-       2.210303000 seconds user
-       0.000000000 seconds sys
-
----------------patched ptr_ring.c end----------------------------------
-
-> 
->>
-
-
+Best regards,
+Krzysztof
+Best regards,
+Krzysztof
