@@ -2,135 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED463B404C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23523B406F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbhFYJZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
+        id S231601AbhFYJ13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231341AbhFYJZx (ORCPT
+        with ESMTP id S231501AbhFYJ1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:25:53 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CEE66C061787;
-        Fri, 25 Jun 2021 02:23:29 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 337D492009E; Fri, 25 Jun 2021 11:23:29 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 2CCF592009D;
-        Fri, 25 Jun 2021 11:23:29 +0200 (CEST)
-Date:   Fri, 25 Jun 2021 11:23:29 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-cc:     x86@kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] x86/PCI: Also match function number in $PIR table
-In-Reply-To: <alpine.DEB.2.21.2106240147570.37803@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2106251056390.37803@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2106240147570.37803@angie.orcam.me.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Fri, 25 Jun 2021 05:27:06 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB3EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:24:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dMY13I84dJhIYMfvS1RIUCTZQHlkbDFJwuVqw/xla9o=; b=Bage5B+IKEi/d2/kEmdBJUTaIL
+        uduNNAFJLqp9bRKi2mrC5OrNptagawKlKMLhLahxCPCm8nyr5JuH4TZ8IUgyogE8lDw2Di7UplKXC
+        qZ4DH1fSKtx3kbOksdqZVZAnjfHpX2PzYWSMVtqUKdQzXn1MPg+fefw53N3nqnsB86eWHl6U+gmkb
+        U1fqob3AQbIErtLGCpWnDCPUfoUj8JopyTqGj/t5+HcVsnWy1v1JCo4Z4aFj/a026QHa6j25we8gB
+        ySlJndqNAxalHky7S8evCZpQmLcwmRBrCIngc9KwG8f5XUHdlT1HbTiR/7A0ZZC4uAXIFZt3opRoo
+        70yepG2w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwi4P-00BWpS-6g; Fri, 25 Jun 2021 09:24:24 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 74DD0300252;
+        Fri, 25 Jun 2021 11:24:22 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 51EAA200B392D; Fri, 25 Jun 2021 11:24:22 +0200 (CEST)
+Date:   Fri, 25 Jun 2021 11:24:22 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Josh Don <joshdon@google.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paul Turner <pjt@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steve Sistare <steven.sistare@oracle.com>,
+        Tejun Heo <tj@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] sched: cgroup SCHED_IDLE support
+Message-ID: <YNWgxrX4xfa8l0oF@hirez.programming.kicks-ass.net>
+References: <20210608231132.32012-1-joshdon@google.com>
+ <e3fc3338-c469-0c0c-ada2-a0bbc9f969fe@arm.com>
+ <CABk29Nu=mxz3tugjhDV9xCF7DRsMi9U747H+BqubviEva36RUw@mail.gmail.com>
+ <7222c20a-5cbb-d443-a2fd-19067652a38e@arm.com>
+ <CABk29NtVRG8cotfbK=R0kKXuKCnkEG514H=6ncri=CM8Qr9uiQ@mail.gmail.com>
+ <f48b5233-ce60-7e1a-02e6-1bfbcc852271@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f48b5233-ce60-7e1a-02e6-1bfbcc852271@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Contrary to the PCI BIOS specification[1] some systems include the PCI 
-function number for onboard devices in their $PIR table.  Consequently 
-the wrong entry can be matched leading to interrupt routing failures.
+On Tue, Jun 15, 2021 at 12:06:57PM +0200, Dietmar Eggemann wrote:
 
-For example the Tyan Tomcat IV S1564D board has:
+> I agree. `cpu.idle = 1` is like setting the task policy to SCHED_IDLE.
+> And there is even the `cpu.weight.nice` to support the `task - tg`
+> analogy on nice values.
+> 
+> I'm just wondering if integrating this into `cpu.weight` and friends
+> would be better to make the code behind this easier to grasp.
 
-00:07.1 slot=00
- 0:00/deb8
- 1:00/deb8
- 2:00/deb8
- 3:00/deb8
-
-00:07.2 slot=00
- 0:00/deb8
- 1:00/deb8
- 2:00/deb8
- 3:63/deb8
-
-for its IDE interface and USB controller functions of the 82371SB PIIX3 
-southbridge.  Consequently the first entry matches causing the inability 
-to route the USB interrupt in the `noapic' mode, in which case we need 
-to rely on the interrupt line set by the BIOS:
-
-uhci_hcd 0000:00:07.2: runtime IRQ mapping not provided by arch
-uhci_hcd 0000:00:07.2: PCI INT D not routed
-uhci_hcd 0000:00:07.2: enabling bus mastering
-uhci_hcd 0000:00:07.2: UHCI Host Controller
-uhci_hcd 0000:00:07.2: new USB bus registered, assigned bus number 1
-uhci_hcd 0000:00:07.2: irq 11, io base 0x00006000
-
-Try to match the PCI device and function combined then and if that fails 
-move on to PCI device matching only.  Compliant systems will only have a 
-single $PIR table entry per PCI device, so this update does not change 
-the semantics with them, while systems that have several entries for 
-individual functions of a single PCI device each will match the correct 
-entry:
-
-uhci_hcd 0000:00:07.2: runtime IRQ mapping not provided by arch
-uhci_hcd 0000:00:07.2: PCI INT D -> PIRQ 63, mask deb8, excl 0c20
-uhci_hcd 0000:00:07.2: PCI INT D -> newirq 11
-uhci_hcd 0000:00:07.2: found PCI INT D -> IRQ 11
-uhci_hcd 0000:00:07.2: sharing IRQ 11 with 0000:00:11.0
-uhci_hcd 0000:00:07.2: enabling bus mastering
-uhci_hcd 0000:00:07.2: UHCI Host Controller
-uhci_hcd 0000:00:07.2: new USB bus registered, assigned bus number 1
-uhci_hcd 0000:00:07.2: irq 11, io base 0x00006000
-
-[1] "PCI BIOS Specification", Revision 2.1, PCI Special Interest Group,
-    August 26, 1994, Table 4-1 "Layout of IRQ routing table entry.", p.
-    12
-
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
----
- arch/x86/pci/irq.c |   19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
-
-linux-x86-pirq-fn.diff
-Index: linux-macro-ide/arch/x86/pci/irq.c
-===================================================================
---- linux-macro-ide.orig/arch/x86/pci/irq.c
-+++ linux-macro-ide/arch/x86/pci/irq.c
-@@ -948,18 +948,29 @@ static void __init pirq_find_router(stru
- 	/* The device remains referenced for the kernel lifetime */
- }
- 
-+/*
-+ * We're supposed to match on the PCI device only and not the function,
-+ * but some BIOSes build their tables with the PCI function included
-+ * for motherboard devices, so if a complete match is found, then give
-+ * it precedence over a slot match.
-+ */
- static struct irq_info *pirq_get_info(struct pci_dev *dev)
- {
- 	struct irq_routing_table *rt = pirq_table;
- 	int entries = (rt->size - sizeof(struct irq_routing_table)) /
- 		sizeof(struct irq_info);
-+	struct irq_info *slotinfo = NULL;
- 	struct irq_info *info;
- 
- 	for (info = rt->slots; entries--; info++)
--		if (info->bus == dev->bus->number &&
--			PCI_SLOT(info->devfn) == PCI_SLOT(dev->devfn))
--			return info;
--	return NULL;
-+		if (info->bus == dev->bus->number) {
-+			if (info->devfn == dev->devfn)
-+				return info;
-+			if (!slotinfo &&
-+			    PCI_SLOT(info->devfn) == PCI_SLOT(dev->devfn))
-+				slotinfo = info;
-+		}
-+	return slotinfo;
- }
- 
- static int pcibios_lookup_irq(struct pci_dev *dev, int assign)
+Magic weight values are dodgy imo. Easiest to have an explicit idle knob
+which then disables the weight knobs.
