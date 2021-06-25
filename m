@@ -2,93 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EFB3B47F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF55F3B47F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhFYRET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 13:04:19 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:47780 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229630AbhFYRER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 13:04:17 -0400
-Received: from zn.tnic (p200300ec2f0dae00689ae3531874a6f6.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:ae00:689a:e353:1874:a6f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4E9001EC059E;
-        Fri, 25 Jun 2021 19:01:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1624640515;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=pu13lrRI0VXpD1HEqkvclBljYf9ytk96hnSQt+aGmXw=;
-        b=H1Yh4uzkPMKaMMOc+J9XbxrYO+z86o2WWlQVVxl82WbgjTqaiX3mkttyZllUnBddq7N0N5
-        Ukg5SxlpmjgUH+BM5DHkGprnwGt82c60n9RwtC8HblbAy8IVmFIKukkbfNCcCN5GRRyjPm
-        wkzuNTYqCqf0MUdFLijx97OgboDYlW8=
-Date:   Fri, 25 Jun 2021 19:01:54 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     Michael Roth <michael.roth@amd.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com
-Subject: Re: [PATCH Part1 RFC v3 20/22] x86/boot: Add Confidential Computing
- address to setup_header
-Message-ID: <YNYMAkoSoMnfhBnJ@zn.tnic>
-References: <YMy2OGwsRzrR5bwD@zn.tnic>
- <162442264313.98837.16983159316116149849@amd.com>
- <YNMLX6fbB3PQwSpv@zn.tnic>
- <20210624031911.eznpkbgjt4e445xj@amd.com>
- <YNQz7ZxEaSWjcjO2@zn.tnic>
- <20210624123447.zbfkohbtdusey66w@amd.com>
- <YNSAlJnXMjigpqu1@zn.tnic>
- <20210624141111.pzvb6gk5lzfelx26@amd.com>
- <YNXs1XRu31dFiR2Z@zn.tnic>
- <8faad91a-f229-dee3-0e1f-0b613596db17@amd.com>
+        id S230025AbhFYRHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 13:07:42 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:40074 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229630AbhFYRHk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 13:07:40 -0400
+Received: from [192.168.254.32] (unknown [47.187.214.213])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D7D1320B6C50;
+        Fri, 25 Jun 2021 10:05:18 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D7D1320B6C50
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1624640719;
+        bh=UD+BcbDrEM2gSB6paV5YXzW78vc08XXoCGTvEEINV80=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=X1zzO73pT7lIAH1H7ftc3htOKEyCYdRZg/ULZnydJNZyYzIw5egr9/DXNmILLHur1
+         kpCC2DiQecmwU91SeljGYC8jawn/gCBMcY3cEk9CTm5uVEM+H7feWSI80BqWtjJh+M
+         I7fJgV3KSIz0q2Cegvg8udOQ8vteE14TNmxlJoNc=
+Subject: Re: [RFC PATCH v5 1/2] arm64: Introduce stack trace reliability
+ checks in the unwinder
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, jpoimboe@redhat.com,
+        ardb@kernel.org, nobuta.keiya@fujitsu.com, catalin.marinas@arm.com,
+        will@kernel.org, jmorris@namei.org, pasha.tatashin@soleen.com,
+        jthierry@redhat.com, linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <ea0ef9ed6eb34618bcf468fbbf8bdba99e15df7d>
+ <20210526214917.20099-1-madvenka@linux.microsoft.com>
+ <20210526214917.20099-2-madvenka@linux.microsoft.com>
+ <20210624144021.GA17937@C02TD0UTHF1T.local>
+ <da0a2d95-a8cd-7b39-7bba-41cfa8782eaa@linux.microsoft.com>
+ <20210625155127.GC4492@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <d9451984-d3fe-405f-f2e6-6571acd518e9@linux.microsoft.com>
+Date:   Fri, 25 Jun 2021 12:05:18 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8faad91a-f229-dee3-0e1f-0b613596db17@amd.com>
+In-Reply-To: <20210625155127.GC4492@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 10:24:01AM -0500, Brijesh Singh wrote:
-> In the case of EFI, the CC blob structure is dynamically allocated
-> and passed through the EFI configuration table. The grub will not
-> know what value to pass in the cmdline unless we improve it to read
-> the EFI configuration table and rebuild the cmdline.
 
-Or simply parse the EFI table.
 
-To repeat my question: why do you need the CC blob in the boot kernel?
+On 6/25/21 10:51 AM, Mark Brown wrote:
+> On Fri, Jun 25, 2021 at 10:39:57AM -0500, Madhavan T. Venkataraman wrote:
+>> On 6/24/21 9:40 AM, Mark Rutland wrote:
+> 
+>>> At a high-level, I'm on-board with keeping track of this per unwind
+>>> step, but if we do that then I want to be abel to use this during
+>>> regular unwinds (e.g. so that we can have a backtrace idicate when a
+>>> step is not reliable, like x86 does with '?'), and to do that we need to
+>>> be a little more accurate.
+> 
+>> The only consumer of frame->reliable is livepatch. So, in retrospect, my
+>> original per-frame reliability flag was an overkill. I was just trying to
+>> provide extra per-frame debug information which is not really a requirement
+>> for livepatch.
+> 
+> It's not a requirement for livepatch but if it's there a per frame
+> reliability flag would have other uses - for example Mark has mentioned
+> the way x86 prints a ? next to unreliable entries in oops output for
+> example, that'd be handy for people debugging issues and would have the
+> added bonus of ensuring that there's more constant and widespread
+> exercising of the reliability stuff than if it's just used for livepatch
+> which is a bit niche.
+> 
 
-Then, how does it work then in the !EFI case?
+I agree. That is why I introduced the per-frame flag.
 
-The script glue that starts the lightweight container goes and
-"prepares" that blob and passes it to guest kernel? In which case
-setup_data should do the job, methinks.
+So, let us try a different approach.
 
--- 
-Regards/Gruss,
-    Boris.
+First, let us get rid of the frame->reliable flag from this patch series. That flag
+can be implemented when all of the pieces are in place for per-frame debug and tracking.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+For consumers such as livepatch that don't really care about per-frame stuff, let us
+solve it more cleanly via the return value of unwind_frame().
+
+Currently, the return value from unwind_frame() is a tri-state return value which is
+somewhat confusing.
+
+	0	means continue unwinding
+	-error	means stop unwinding. However,
+			-ENOENT means successful termination
+			Other values mean an error has happened.
+
+Instead, let unwind_frame() return one of 3 values:
+
+enum {
+	UNWIND_CONTINUE,
+	UNWIND_CONTINUE_WITH_ERRORS,
+	UNWIND_STOP,
+};
+
+All consumers will stop unwinding upon seeing UNWIND_STOP.
+
+Livepatch type consumers will stop unwinding upon seeing anything other than UNWIND_CONTINUE.
+
+Debug type consumers can choose to continue upon seeing UNWIND_CONTINUE_WITH_ERRORS.
+
+When we eventually implement per-frame stuff, debug consumers can examine the
+frame for more information when they see UNWIND_CONTINUE_WITH_ERRORS.
+
+This way, my patch series does not have a dependency on the per-frame enhancements.
+
+>> So, let us separate the two. I will rename frame->reliable to frame->livepatch_safe.
+>> This will apply to the whole stacktrace and not to every frame.
+> 
+> I'd rather keep it as reliable, even with only the livepatch usage I
+> think it's clearer.
+> 
+
+See suggestion above.
+
+>> Finally, it might be a good idea to perform reliability checks even in
+>> start_backtrace() so we don't assume that the starting frame is reliable even
+>> if the caller passes livepatch_safe=true. What do you think?
+> 
+> That makes sense to me.
+> 
+
+Thanks.
+
+Madhavan
