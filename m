@@ -2,143 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31DFA3B483E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FE33B4842
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbhFYRdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 13:33:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42054 "EHLO
+        id S229970AbhFYRfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 13:35:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhFYRdM (ORCPT
+        with ESMTP id S229531AbhFYRfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 13:33:12 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C292C061574;
-        Fri, 25 Jun 2021 10:30:51 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id p9so8294169pgb.1;
-        Fri, 25 Jun 2021 10:30:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AEVXAtzRdBnXjTYBUkXKyLLq/QP8vZTU+6eBNnFCfNY=;
-        b=JsNQ1EOdCmRHmdIUMwk7W+3dSlif5ZBdGuIrCU8FRyUfISBFd88dg511IEs/lMsHdL
-         LV9N0ecJcHXNEXDQfGQkEGsfuJjznIUkVg+8s+omlLDP3TxJ6A5yMAIE+CZQBjJyIEVz
-         Rz9/drioEC6VrGur/BAVgAjVXvPI67EKYTP5d/jXaLn952AjsxZdMsWVI1Mpr5KJaN4z
-         68wrlMzUIS7LmmgVj5IfkfOuTLDSRCqB9SuTV+kZif8MzkFwQD7WvGx610ND2q966zcW
-         WYqQRK1QWoog9mca9wdW1eP93dN4aGk5DFi8kdrS78VttsAP7Y5lVigkE7uRfxFQuysm
-         SAqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AEVXAtzRdBnXjTYBUkXKyLLq/QP8vZTU+6eBNnFCfNY=;
-        b=I4nbjTYREcCtsRoDHsd1op2TgKjJZyhMpfA1Kr5f5zxM+2xGRHcseVKjOuPMV13r+j
-         x1qCdP9ixJTwuUQOkgmUe6PpUk1wt05mUqqzu0xe5dGPMwlI12oxyz6WE3+VmgqRnPIB
-         djW1/fiRK6/zlR2rJ5LONqBus+H3LN3nVMdz8DHlDt4rJhFRd5LZHVFAweU2DR4BH2FE
-         wgjeDu+LPHeCfPyN9M5WMd1369XuNDPbcLDeCoawqdEWF0ER7pRG2o8Jcalmt1+BbvMW
-         kgxJZtTTG9n0R1XZFjQujianSCrd7eIMqQQbKi9ZfLvP+sSfS2WSl10tohqngPgSsBNz
-         ql6g==
-X-Gm-Message-State: AOAM5326TwwVaz7g6l1Maz7IdAr+xgHAF6Fb8MC0+zJH0H7aLe7ksBhC
-        keulOouQHwKN6yXVvFQyTsg=
-X-Google-Smtp-Source: ABdhPJzluJfbq3Os5qaSBw+XQr/q4Y3cVOkWhKV4j4z/zfh1dpyOtoQhTFB7QOgto30AvTYLOOyS1Q==
-X-Received: by 2002:a63:fc51:: with SMTP id r17mr8472427pgk.403.1624642250621;
-        Fri, 25 Jun 2021 10:30:50 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id s13sm6216158pgi.36.2021.06.25.10.30.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 10:30:49 -0700 (PDT)
-Subject: Re: [PATCH v4 2/4] ARM: dts: NSP: Add DT files for Meraki MX64 series
-To:     Matthew Hagan <mnhagan88@gmail.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Olof Johansson <olof@lixom.net>, SoC Team <soc@kernel.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <20210625095000.3358973-1-mnhagan88@gmail.com>
- <20210625095000.3358973-3-mnhagan88@gmail.com>
- <CAK8P3a3NAOgBa1j+Zsm6FwSm2ux49rFcnTEYJJsmSF8TggRnYA@mail.gmail.com>
- <bbf38c31-ed75-69d2-39ed-94f324b1f220@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <21e895e9-0211-0c97-5e9e-781e6d2fe6dd@gmail.com>
-Date:   Fri, 25 Jun 2021 10:30:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 25 Jun 2021 13:35:48 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46FCC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 10:33:27 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lwphf-0004IA-M0; Fri, 25 Jun 2021 19:33:19 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lwphd-0005va-3n; Fri, 25 Jun 2021 19:33:17 +0200
+Date:   Fri, 25 Jun 2021 19:33:16 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org
+Cc:     Zou Wei <zou_wei@huawei.com>, thierry.reding@gmail.com,
+        lee.jones@linaro.org, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] pwm: img: Fix PM reference leak in img_pwm_enable()
+Message-ID: <20210625173316.pfsk7rvlplv4bzef@pengutronix.de>
+References: <1620791837-16138-1-git-send-email-zou_wei@huawei.com>
+ <20210512045222.2yjm6yxikznohlmn@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <bbf38c31-ed75-69d2-39ed-94f324b1f220@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nw3jy26dwfiaqji6"
+Content-Disposition: inline
+In-Reply-To: <20210512045222.2yjm6yxikznohlmn@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/25/21 10:26 AM, Matthew Hagan wrote:
-> On 25/06/2021 10:59, Arnd Bergmann wrote:
-> 
->> On Fri, Jun 25, 2021 at 11:52 AM Matthew Hagan <mnhagan88@gmail.com> wrote:
->>> MX64 & MX64W Hardware info:
->>>   - CPU: Broadcom BCM58625 Cortex A9 @ 1200Mhz
->>>   - RAM: 2 GB (4 x 4Gb SK Hynix H5TC4G83CFR)
->>>   - Storage: 1 GB (Micron MT29F8G08ABACA)
->>>   - Networking: BCM58625 internal switch (5x 1GbE ports)
->>>   - USB: 1x USB2.0
->>>   - Serial: Internal header
->>>   - WLAN(MX64W only): 2x Broadcom BCM43520KMLG on the PCI bus
->>>
->>> This patch adds the Meraki MX64 series-specific bindings. Since some
->>> devices make use of the older A0 SoC, changes need to be made to
->>> accommodate this case, including removal of coherency options and
->>> modification to the secondary-boot-reg.
->>>
->>> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
->> Removing the dma-coherent flags in the dts file seemed really odd until
->> I read the text above. It would seem more logical to me to have a .dtsi file
->> that has all the a0 revision specific changes, and include that from the
->> dts file.
-> 
-> How about having separate bcm-nsp-ax and bcm-nsp-bx dtsi files with the
-> appropriate secondary-boot-reg and dma-coherent (or lack of)
-> properties, which then include bcm-nsp.dtsi. Thus we can also avoid use
-> of /delete-property/. Would this be preferable?
 
-Is there any way that the Ax platforms could use a small shim between
-the boot loader and the kernel which could all of the necessary DT
-adaptation so the kernel only contains a single Device Tree source?
+--nw3jy26dwfiaqji6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Using something like this:
+Hello Rafael, Kevin and Ulf,
 
-https://github.com/zonque/pxa-impedance-matcher/
+On Wed, May 12, 2021 at 06:52:22AM +0200, Uwe Kleine-K=F6nig wrote:
+> Hello,
+>=20
+> On Wed, May 12, 2021 at 11:57:17AM +0800, Zou Wei wrote:
+> > pm_runtime_get_sync will increment pm usage counter even it failed.
+> > Forgetting to putting operation will result in reference leak here.
+> > Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+> > counter balanced.
+> >=20
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> > ---
+> >  drivers/pwm/pwm-img.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
+> > index cc37054..11b16ec 100644
+> > --- a/drivers/pwm/pwm-img.c
+> > +++ b/drivers/pwm/pwm-img.c
+> > @@ -156,7 +156,7 @@ static int img_pwm_enable(struct pwm_chip *chip, st=
+ruct pwm_device *pwm)
+> >  	struct img_pwm_chip *pwm_chip =3D to_img_pwm_chip(chip);
+> >  	int ret;
+> > =20
+> > -	ret =3D pm_runtime_get_sync(chip->dev);
+> > +	ret =3D pm_runtime_resume_and_get(chip->dev);
+> >  	if (ret < 0)
+> >  		return ret;
+>=20
+> This patch looks right with my limited understanding of pm_runtime. A
+> similar issue in this driver was fixed in commit
+>=20
+> 	ca162ce98110 ("pwm: img: Call pm_runtime_put() in pm_runtime_get_sync() =
+failed case")
+>=20
+> where (even though the commit log talks about pm_runtime_put()) a call
+> to pm_runtime_put_autosuspend() was added in the error path.
+>=20
+> I added the PM guys to Cc, maybe they can advise about the right thing
+> to do here. Does it make sense to use the same idiom in both
+> img_pwm_enable() and img_pwm_config()?
 
-could be useful.
+Can you give some feedback here?
 
-> 
->>
->> On the other hand, the /chosen, /aliases and  /memory nodes that you have
->> in the .dtsi file should probably get moved into the .dts files, as these tend
->> to be board specific settings, even if the examples you have are all
->> the same.
-> 
-> I did not come across any convention regarding this, though there are
-> plenty of cases where the /chosen, /aliases and /memory nodes are
-> defined in a .dtsi file and used by multiple similar boards. Also note
-> in this case /aliases is defined in bcm-nsp.dtsi, not by me. Would we
-> not prefer to avoid having 6x duplication?
-> 
->>        Arnd
->>
-> Matthew
-> 
+Best regards
+Uwe
 
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
--- 
-Florian
+--nw3jy26dwfiaqji6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDWE1kACgkQwfwUeK3K
+7AlMHAf/Seh27QiCuoDAcLlJ+osf/17c6RGJV3u5TfaG84noBRtpFr5rz8bKOQMT
+UJ/ElYO8+dIcwhxvnp6ZUuHl3x7faYThWxvQxGn4qSUN5qw2N6gpjoQ3r6HEaPU0
+vk/DdsxgXGv1g3LT3jkPM6t5lkGS9b6wQZhUxzO9ybsJNzYnK+1h8wqWr9Wz723P
+tVfFGiEiGvHpCY7B3f93AKiAQmJKIHsbg9w/p5GVeNOs/ipgqAGzvRra9uw941mY
+ItQSWvCloxcuCDpYFJLlQPzH41O3YgruK3QP4YD+raLoberxAmzQIGmTAjqWC4UG
+YbSq8uAkzioI+BT3Rd3UYjXdWBd3SA==
+=Jgez
+-----END PGP SIGNATURE-----
+
+--nw3jy26dwfiaqji6--
