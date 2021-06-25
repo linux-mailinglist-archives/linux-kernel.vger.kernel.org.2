@@ -2,131 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F73D3B48E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 20:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A52DC3B48E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 20:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbhFYSqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 14:46:06 -0400
-Received: from m.b4.vu ([203.16.231.148]:53592 "EHLO m.b4.vu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229531AbhFYSqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 14:46:06 -0400
-Received: by m.b4.vu (Postfix, from userid 1000)
-        id EC5B861E5F02; Sat, 26 Jun 2021 04:13:42 +0930 (ACST)
-Date:   Sat, 26 Jun 2021 04:13:42 +0930
-From:   "Geoffrey D. Bennett" <g@b4.vu>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v2] ALSA: usb-audio: scarlett2: Fix for loop increment in
- scarlett2_usb_get_config
-Message-ID: <20210625184342.GA23780@m.b4.vu>
-References: <s5heecql74j.wl-tiwai@suse.de>
- <20210625175418.2019892-1-nathan@kernel.org>
+        id S229924AbhFYSqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 14:46:19 -0400
+Received: from mail-pg1-f177.google.com ([209.85.215.177]:42526 "EHLO
+        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229907AbhFYSqQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 14:46:16 -0400
+Received: by mail-pg1-f177.google.com with SMTP id d12so8594611pgd.9;
+        Fri, 25 Jun 2021 11:43:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=kbpUGJ1ICfe8Cma32JnfA8ZpyYprdQstkb1ohWtXITA=;
+        b=gOIhleCyYlLS7NPhN5Q6mvVjx7jBfWHt0DvTVM0zONaF8Gs9kurSFiRbgb4CkjNfVO
+         ScxNFavwuLPnf2AH3LFrPTQJKQGDZ1qVKbBAUPrgW6suuzFtCePTqFD6ATbDZkhe6c9z
+         /aoSkL0xCZMU2icArdDBFFCx7wWAkhH7mI26XDMvFKLG7iZoMb5yABl0+PqfWBCYEodz
+         3D9KkEoZj1aYBYDcKpUDc/40wdwity83OptRn5bhBBCcmPBGb5tyjzncGQUnC4aGLrpC
+         GduvRcZ5TgtYEDTXoPccKwUMapJu+rvvS8dcdpLiZ4CEoOkimXB9l1Iu6WcNynW+nX7m
+         c6sQ==
+X-Gm-Message-State: AOAM53223japviRtEuaee3pqmvxpgO/gFbIHPuvLsd0qpl3KbBPE19dr
+        vmGeMdQMh2ZKQ6JmeZhDAuA=
+X-Google-Smtp-Source: ABdhPJyOW1h27OC4EoTJBIl4yccnn3O482+Xstx5OPceVYRc0g5osH9ZjthN4zXqZpyOPJ2srZUncA==
+X-Received: by 2002:a63:5a56:: with SMTP id k22mr10834065pgm.169.1624646634253;
+        Fri, 25 Jun 2021 11:43:54 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id t14sm6923592pfe.45.2021.06.25.11.43.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 11:43:53 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 11:43:52 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>
+Cc:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] fpga: dfl: pci: add device IDs for Silicom N501x
+ PAC cards
+Message-ID: <YNYj6CrRqQZhXlYN@epycbox.lan>
+References: <20210625074213.654274-1-martin@geanix.com>
+ <20210625074213.654274-2-martin@geanix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210625175418.2019892-1-nathan@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210625074213.654274-2-martin@geanix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 10:54:19AM -0700, Nathan Chancellor wrote:
-> Clang warns:
+On Fri, Jun 25, 2021 at 09:42:09AM +0200, Martin Hundebøll wrote:
+> From: Martin Hundebøll <mhu@silicom.dk>
 > 
-> sound/usb/mixer_scarlett_gen2.c:1189:32: warning: expression result
-> unused [-Wunused-value]
->                         for (i = 0; i < count; i++, (u16 *)buf++)
->                                                     ^      ~~~~~
-> 1 warning generated.
+> This adds the approved PCI Express Device IDs for the Silicom PAC N5010
+> and N5011 cards (aka. Silicom Lightning Creek cards).
 > 
-> It appears the intention was to cast the void pointer to a u16 pointer
-> so that the data could be iterated through like an array of u16 values.
-> However, the cast happens after the increment because a cast is an
-> rvalue, whereas the post-increment operator only works on lvalues, so
-> the loop does not iterate as expected. This is not a bug in practice
-> because count is not greater than one at the moment but this could
-> change in the future so this should be fixed.
+> The N5010 features an FPGA that manages/interfaces four QSFP ports, and
+> allows on-board custom packet processing/filtering/routing, based on
+> logic loaded with user-provided FPGA bitstreams.
 > 
-> Replace the cast with a temporary variable of the proper type, which is
-> less error prone and fixes the iteration. Do the same thing for the
-> 'u8 *' below this if block.
+> The N5011 cards adds a PCIe switch that exposes, in addition to the FPGA
+> itself, two Intel E810 (aka Columbiaville) ethernet controllers. With
+> this, packets can be forwarded from the FPGA to the host for further
+> processing.
 > 
-> Fixes: ac34df733d2d ("ALSA: usb-audio: scarlett2: Update get_config to do endian conversion")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1408
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
+> Acked-by: Wu Hao <hao.wu@intel.com>
 > ---
 > 
-> v1 -> v2:
+> Changes since v1:
+>  * Commit message is updated with card description
+>  * Added Hao's Acked-by
 > 
-> * Use temporary variables of proper type rather than casting, as
->   requested by Takashi. I did not include Geoffrey's ack for this
->   reason.
+>  drivers/fpga/dfl-pci.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> * Mention that there is not a bug at the moment per Geoffrey's comment.
-> 
->  sound/usb/mixer_scarlett_gen2.c | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
-> index fcba682cd422..b13903bed330 100644
-> --- a/sound/usb/mixer_scarlett_gen2.c
-> +++ b/sound/usb/mixer_scarlett_gen2.c
-> @@ -1177,17 +1177,22 @@ static int scarlett2_usb_get_config(
->  	const struct scarlett2_config *config_item =
->  		&scarlett2_config_items[info->has_mixer][config_item_num];
->  	int size, err, i;
-> +	u8 *buf_8;
->  	u8 value;
->  
->  	/* For byte-sized parameters, retrieve directly into buf */
->  	if (config_item->size >= 8) {
-> +		u16 *buf_16;
+> diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
+> index b44523ea8c91..4d68719e608f 100644
+> --- a/drivers/fpga/dfl-pci.c
+> +++ b/drivers/fpga/dfl-pci.c
+> @@ -74,6 +74,9 @@ static void cci_pci_free_irq(struct pci_dev *pcidev)
+>  #define PCIE_DEVICE_ID_PF_DSC_1_X		0x09C4
+>  #define PCIE_DEVICE_ID_INTEL_PAC_N3000		0x0B30
+>  #define PCIE_DEVICE_ID_INTEL_PAC_D5005		0x0B2B
+> +#define PCIE_DEVICE_ID_SILICOM_PAC_N5010	0x1000
+> +#define PCIE_DEVICE_ID_SILICOM_PAC_N5011	0x1001
 > +
-
-I would prefer that the u16 *buf_16 declaration above be removed from
-there...
-
->  		size = config_item->size / 8 * count;
->  		err = scarlett2_usb_get(mixer, config_item->offset, buf, size);
->  		if (err < 0)
->  			return err;
-> -		if (size == 2)
-> -			for (i = 0; i < count; i++, (u16 *)buf++)
-> -				*(u16 *)buf = le16_to_cpu(*(__le16 *)buf);
-> +		if (size == 2) {
-> +			buf_16 = buf;
-
-...and combined with the assignment here, like: u16 *buf_16 = buf;
-
-Regardless:
-
-Acked-by: Geoffrey D. Bennett <g@b4.vu>
-
-And, thanks again!
-
-> +			for (i = 0; i < count; i++, buf_16++)
-> +				*buf_16 = le16_to_cpu(*(__le16 *)buf_16);
-> +		}
->  		return 0;
->  	}
->  
-> @@ -1197,8 +1202,9 @@ static int scarlett2_usb_get_config(
->  		return err;
->  
->  	/* then unpack from value into buf[] */
-> +	buf_8 = buf;
->  	for (i = 0; i < 8 && i < count; i++, value >>= 1)
-> -		*(u8 *)buf++ = value & 1;
-> +		*buf_8++ = value & 1;
->  
->  	return 0;
->  }
-> 
-> base-commit: 0cbbeaf370221fc469c95945dd3c1198865c5fe4
+>  /* VF Device */
+>  #define PCIE_DEVICE_ID_VF_INT_5_X		0xBCBF
+>  #define PCIE_DEVICE_ID_VF_INT_6_X		0xBCC1
+> @@ -90,6 +93,8 @@ static struct pci_device_id cci_pcie_id_tbl[] = {
+>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_INTEL_PAC_N3000),},
+>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_INTEL_PAC_D5005),},
+>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_INTEL_PAC_D5005_VF),},
+> +	{PCI_DEVICE(PCI_VENDOR_ID_SILICOM_DENMARK, PCIE_DEVICE_ID_SILICOM_PAC_N5010),},
+> +	{PCI_DEVICE(PCI_VENDOR_ID_SILICOM_DENMARK, PCIE_DEVICE_ID_SILICOM_PAC_N5011),},
+>  	{0,}
+>  };
+>  MODULE_DEVICE_TABLE(pci, cci_pcie_id_tbl);
 > -- 
-> 2.32.0.93.g670b81a890
+> 2.31.0
 > 
+Applied to for-next.
+
+Thanks
