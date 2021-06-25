@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357D33B3C14
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BD53B3C17
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233140AbhFYFWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 01:22:19 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:56123 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230139AbhFYFWS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 01:22:18 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 3EF0558059A;
-        Fri, 25 Jun 2021 01:19:58 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Fri, 25 Jun 2021 01:19:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=XLolmk+8PLMR+wcUsuHwHJRfzOO
-        LDvGMmVm9jx8vVKU=; b=DffSXefl/b2ZWRYSW1Q5QZlvyVhO4t5ZxMccwRyppDr
-        Yq1t3Igh4B2ZJEmg2379WCvHeNivuPqi7ZncRYjzU6MaDhIz/q/2lHqoepBc7Qos
-        xA8UT5fT+zg7nyrTy3UmbFg9DdQSUU0NnKxGMWtxuiXLY1T4t+Z0bsldo33+Rs59
-        1cQbY3oWbQRQjuotLYGJBC/RiBpj0oN0BDPxBK5gV8eSzdUjbiyf++YAjRkiW3tj
-        IBKj2i5Pfhg5A3FWbvf/xAdK1UBduvc79lur5LiRglvCWc7s5287iAysqiv5uK+L
-        54wXxkukajMxXNTkUnZP63EoLWSlVCK46E+ZFPGILEw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=XLolmk
-        +8PLMR+wcUsuHwHJRfzOOLDvGMmVm9jx8vVKU=; b=nOnDMj6tAfoLkpPSymRiyK
-        oW3O7cHuSlLgoXF4it5O+G2WwHslYTPQiPxjveGxtr0zWMTPZEF6fZk7Iz3vCu7e
-        YcqZm9WthrS6lfa9kEPzBRBxiuRLO6j0ID+Eo1A4+wmkq5ZXuzDEYu2XOojL+LT/
-        qN1MyvUymGzmuTZdgbwCPbWsW3InuZQwdSNfq1BEfVUrzCI4+8Ocdn5EnNBcJbbq
-        hS7wPg+FLJE7Zxz6Om/gOw/1/1QUQOl+LipU0XQPqAYHRB1GNd2P1walZTGVm3LI
-        H6PdHPWCUem+vuI54h0HaHdt78Y146yAUJ1LdZ5+rOxZbW8cZd7TstLeCr/33Ewg
-        ==
-X-ME-Sender: <xms:fWfVYGh8Xel1k6h8ia54UL14-3oBP44Nox4qYbX68ScGqGv5FbmISQ>
-    <xme:fWfVYHCEaYJU09-NJcuvqX2CDCQlqunfcAMioBytkKmGsPgxiSp0bXV3rGgQZy4fk
-    NPxGr6ho7vdlQ>
-X-ME-Received: <xmr:fWfVYOFbioKCbmP-rApn-Udz1N31aVrHOQPqRxkyhtP9GNHIgRsXEMNJ3bsGdXcU-GUy_UXENbYUEjyfNH2YDuCmRdy6xiUK>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeegiedgleehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
-    drtghomh
-X-ME-Proxy: <xmx:fWfVYPSwxPl_UC4fL0cP416zu1basml9fqgRgL3c2dH7Z5kovYCSlA>
-    <xmx:fWfVYDxU7gRxna0EhTYGW02RSrbz77WaCow9D_iwFb06kbWQheGzJw>
-    <xmx:fWfVYN5hXmm1b6T0V07nfm-8p1rsuBJ_W7Hj4iijl-7vp-czn1Lgzw>
-    <xmx:fmfVYAg1Og3XA07Lsy6dXE6iBFPCCluQ7DTEiy8fvlWWbnMr4E6L-g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 25 Jun 2021 01:19:56 -0400 (EDT)
-Date:   Fri, 25 Jun 2021 07:19:52 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     kan.liang@linux.intel.com, peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, eranian@google.com,
-        namhyung@kernel.org, acme@kernel.org, jolsa@redhat.com
-Subject: Re: [PATCH 2/7] perf: Create a symlink for a PMU
-Message-ID: <YNVneO6exCS4ETRt@kroah.com>
-References: <1624497729-158864-1-git-send-email-kan.liang@linux.intel.com>
- <1624497729-158864-3-git-send-email-kan.liang@linux.intel.com>
- <YNQckpOuw80uCUa1@kroah.com>
- <d25a0556-325f-9af0-a495-b9f222d63e10@linux.intel.com>
- <YNSWtCSjJy8CytOL@kroah.com>
- <1e536604-cf93-0f09-401e-2073924c5582@linux.intel.com>
- <YNSlVPcjHInk4un6@kroah.com>
- <29d5f315-578f-103c-9523-ae890e29c7e7@linux.intel.com>
+        id S233153AbhFYFWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 01:22:39 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:49679 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230228AbhFYFWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 01:22:38 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GB51C5PTyz9sT6;
+        Fri, 25 Jun 2021 15:20:14 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624598416;
+        bh=v9Sz1AU5rpnqUdoM7nrNk4xBnk8C9iV3y7lBBvJh+tk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=E+kukCoDZyvBsnOaINvmk775PzqxHf4UorAxLPnt8zZUGMFwHrqqV1Dl92uCdXXrq
+         qsYVWHR/tJ2+pOpfuFHUQTEEROvTH2HxO7bdqvY5gmZtpfaJyEQa20uwLooPXn0NuE
+         KMdUs/s5Ny20MTZ3YNH2pGXSy6mtwgB+NIwnEwvThM+Cpfu7keEWIBoF/ZBxq1jNiW
+         vc73nyHBlxgcPy1GoCK9TQufGBSD9FoB6QyQSY8usjMIT9WhZYhCh7xvyGNu+LhI/m
+         5za90UB0Gl/IdLw4ifIm9gCoHVDt6G+37RoRygoeXhKwoo6H4Q3YRHnbPnWpQyuUAE
+         hfpaYIIOQqSGw==
+Date:   Fri, 25 Jun 2021 15:20:13 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christoffer Dall <cdall@cs.columbia.edu>,
+        Marc Zyngier <maz@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
+Cc:     Aaron Lewis <aaronlewis@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Steven Price <steven.price@arm.com>
+Subject: linux-next: manual merge of the kvm-arm tree with the kvm tree
+Message-ID: <20210625152013.7e121403@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <29d5f315-578f-103c-9523-ae890e29c7e7@linux.intel.com>
+Content-Type: multipart/signed; boundary="Sig_/T5mANbF8pk9bFU+ifqAdmRY";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 10:28:36AM -0700, Andi Kleen wrote:
-> > But a driver does not caer.  And if perf does not care, who cares?
-> 
-> The users who write scripts that specify the perf events on the perf command
-> line.
+--Sig_/T5mANbF8pk9bFU+ifqAdmRY
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Great, then as you have deemed the device name part of your documented
-api, then keep it stable as that is what you decided to do a long time
-ago when it was created.
+Hi all,
 
-thanks,
+Today's linux-next merge of the kvm-arm tree got a conflict in:
 
-greg k-h
+  include/uapi/linux/kvm.h
+
+between commits:
+
+  cb082bfab59a ("KVM: stats: Add fd-based API to read binary stats data")
+  19238e75bd8e ("kvm: x86: Allow userspace to handle emulation errors")
+
+from the kvm tree and commit:
+
+  ea7fc1bb1cd1 ("KVM: arm64: Introduce MTE VM feature")
+
+from the kvm-arm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/uapi/linux/kvm.h
+index 68c9e6d8bbda,da1edd2b4046..000000000000
+--- a/include/uapi/linux/kvm.h
++++ b/include/uapi/linux/kvm.h
+@@@ -1105,12 -1083,7 +1105,13 @@@ struct kvm_ppc_resize_hpt=20
+  #define KVM_CAP_SGX_ATTRIBUTE 196
+  #define KVM_CAP_VM_COPY_ENC_CONTEXT_FROM 197
+  #define KVM_CAP_PTP_KVM 198
+ -#define KVM_CAP_ARM_MTE 199
+ +#define KVM_CAP_HYPERV_ENFORCE_CPUID 199
+ +#define KVM_CAP_SREGS2 200
+ +#define KVM_CAP_EXIT_HYPERCALL 201
+ +#define KVM_CAP_PPC_RPT_INVALIDATE 202
+ +#define KVM_CAP_BINARY_STATS_FD 203
+ +#define KVM_CAP_EXIT_ON_EMULATION_FAILURE 204
+++#define KVM_CAP_ARM_MTE 205
+ =20
+  #ifdef KVM_CAP_IRQ_ROUTING
+ =20
+
+--Sig_/T5mANbF8pk9bFU+ifqAdmRY
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDVZ40ACgkQAVBC80lX
+0GxcIAf+N9mDfqjtOVAEM7rCQ1twwNgmLH8aqAlBgpXDjVzX/5DHUq7aY3d0Zfpm
+vOzerWE4wNLERyH8ZgQ6DodS7esT2+9Ax6LbvsMh6Iz78r7p39fMkTJbt7ooPMs/
+sYDVdTMZxp03+1Pyy1OWIOutccaAo5dnJIJvg6+39/ajfnONm0mvMsFeqiUoux1U
+pcKgroDuFOP8AOqcJVMf6HBLyGNJuvYW5aRH6FNOVEsNrwVVrvd7wIPS6ZJxWNKC
+aWHP8dhrQpQRtxo+Wde5a0MBeJRgrLxHx/wiT+utTz1zn+URK33k5BEnsrqpCU/L
+nKmMKceJq9vULb5VtmG7rA9LrMmc1A==
+=G7Sv
+-----END PGP SIGNATURE-----
+
+--Sig_/T5mANbF8pk9bFU+ifqAdmRY--
