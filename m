@@ -2,131 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E480C3B403D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0B23B4040
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhFYJX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:23:59 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37592 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbhFYJX6 (ORCPT
+        id S231216AbhFYJYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:24:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230217AbhFYJYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:23:58 -0400
-Received: from mail-ed1-f69.google.com ([209.85.208.69])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lwi1o-0002ez-LA
-        for linux-kernel@vger.kernel.org; Fri, 25 Jun 2021 09:21:36 +0000
-Received: by mail-ed1-f69.google.com with SMTP id r6-20020a05640216c6b0290394ed90b605so4739476edx.20
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:21:36 -0700 (PDT)
+        Fri, 25 Jun 2021 05:24:50 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B70C061574;
+        Fri, 25 Jun 2021 02:22:30 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id a127so7539498pfa.10;
+        Fri, 25 Jun 2021 02:22:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YAnu7UbmGFWWvf2Od6m+5K4nXXnoDnqOfGGMRpLMN+Y=;
+        b=qVCrM+68EuPyS/PF2y8PUDTi7cWYE63LtJoTHjGAd+R8D2lbU7MX7xIjXgF+348vfp
+         aVbARNgB19w12aDYb9SiHDbSBG7A6v8TwENdow0vZPFHT+OtJWINFJv747O+tMSQxVff
+         IfCsD9HIJgrmkHl6ye0MEBlK28X+Mkr7WYTQKyIMcaqlvfN2rbpvfpQo89YjmEZHV+jk
+         1uXfyf9gguHVeBMLEtMZ5GKcccKOhGOsB2g+UMuBOrO+1Yu7lFy1Oy/zOUezXGzGNJM1
+         T3z3HMHuJPoJvZ7L3KcJjv/d8wxb5fg9CmCJ4tsuvOwHfEgLHe+TwUAbthHJtcyzU3lc
+         bOeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=QsPyFBqPfdmelbWnXguclm9JevGGaBII5W3HvpNQ+C8=;
-        b=iystfuagfTYYUaX5LeL6qVtwZR9OfZQi8vmKofg83MbGx9SESpF8yuIrniieLiuHnU
-         JM3nTJ8qLlNnekYDldcJ57eiiOo/PsVhKfTM67lwovyL/K6NaIpGLqxdv3PRCrrzq9ad
-         ABp2O/eQUwfPKRTKeWkS9agII/fyxSWxV6YnV0cFs1EVTMe6xCfZyaqn5CFfqjZAGRtx
-         Lnzow1oXj1WcyP33a9a7ts9lyHWBiTuv/TwUWEATylyZi4JuQiXHroHk4jiB8cP1Kzz4
-         yoPNuv2KRvp3ngmLdBMq9n/rkvIKDSYJYj6ZHHK3Wl9yh7pktxtJDKW4Xewku9UeXqrL
-         u7Nw==
-X-Gm-Message-State: AOAM5335eI5/gfVRheJZwEEtVjw3qG5GeY07LM4e8p34f2QkqNnReM48
-        TDjtf0JdZ2vJFNQR+jz6IXWzfdhxmYMqb5KD9akaKWfbaewI9Y/qtUweDOFPRiGrB/gKjJRlggA
-        uQzvNvFZvB8Aje4vEmOJbXQtQzckzRGd5BpEGwPFByA==
-X-Received: by 2002:aa7:d34f:: with SMTP id m15mr12772186edr.311.1624612896127;
-        Fri, 25 Jun 2021 02:21:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw+TM38F4Yr0eNdERAI2zb41U3+ytlASbW0YpW0+yf9XGf8E0tFDX/OQzorcP9sXyGgE3SWQg==
-X-Received: by 2002:aa7:d34f:: with SMTP id m15mr12772163edr.311.1624612895982;
-        Fri, 25 Jun 2021 02:21:35 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id hz14sm2415400ejc.107.2021.06.25.02.21.35
+        bh=YAnu7UbmGFWWvf2Od6m+5K4nXXnoDnqOfGGMRpLMN+Y=;
+        b=L7Q2lqw//H/UL1Gj88+N5/DRdoBwXQREFAQlt/2zJ8tSmv7ILS1A/vdwkv7ZvXRwdU
+         BX83dBGO16FmV+nE/YMFf1/XbUHSMbMqeUW5fL+TyllIbtmz/tTXRzUtYYYSfDIhggtB
+         vZpf37KfgTVoQmTJo2jQSg5z+xGzcIvCAKCNRo+w5+sx3y9m9gwirTfktg86nRxECpbh
+         3Dkhg19ZMwjHensUNxL7wkFnzcFVSWo91m7rvsdBxKVXDQdvU5ttU5uAegPhSF7nhEIQ
+         eHxXPbs0RvdY8+fnEnOF1fRGEn71lmgjnJFxbEfNdsKoF7hCkSZKMk1N+0hA/WW4JstT
+         WBNQ==
+X-Gm-Message-State: AOAM531n3hB4HgElbo/Q3Z7a5gjNfE1Uq8K3qMhKiIZaVbsnIZQl8nc3
+        iWwz+zkbbPzrysEShqiu+gcy1jawQVI=
+X-Google-Smtp-Source: ABdhPJz4ufuu92PJKZ55P8S5SooymhgbUS1PhwJQKyh/+CxU7usG9yTV3+Ai3V0UUKt6nL7lAXCSVg==
+X-Received: by 2002:a63:5619:: with SMTP id k25mr8944799pgb.92.1624612949641;
+        Fri, 25 Jun 2021 02:22:29 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id 201sm5259919pfz.125.2021.06.25.02.22.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 02:21:35 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [RFC PATCH 2/9] drm: bridge: Add Samsung SEC MIPI DSIM bridge
- driver
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Jagan Teki <jagan@amarulasolutions.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Francis Laniel <francis.laniel@amarulasolutions.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Robert Foss <robert.foss@linaro.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        Milco Pratesi <milco.pratesi@engicam.com>,
-        Anthony Brandon <anthony@amarulasolutions.com>,
-        linux-phy@lists.infradead.org, Fancy Fang <chen.fang@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        NXP Linux Team <linux-imx@nxp.com>
-References: <20210621072424.111733-1-jagan@amarulasolutions.com>
- <20210621072424.111733-3-jagan@amarulasolutions.com>
- <YNO0LHNVSWjrh1ZS@pendragon.ideasonboard.com>
- <CAOMZO5Ahbu4mohtMDOQOv_y5B_TDesbdYEUZTF1RL7_y-bS+RA@mail.gmail.com>
- <CAMty3ZAtObU-bf6FuxvSBaZn2cotj_NxASW9g9on-kBJ7iW3OA@mail.gmail.com>
- <YNR37NWkxq0mZyq5@pendragon.ideasonboard.com>
-Message-ID: <fdd446c6-c8ce-9dae-f7ac-e06241f76250@canonical.com>
-Date:   Fri, 25 Jun 2021 11:21:34 +0200
+        Fri, 25 Jun 2021 02:22:29 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/3] docs: pdfdocs: Improve alignment of CJK ascii-art
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Wu X.C." <bobwxc@email.cn>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        SeongJae Park <sj38.park@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <386938dc-6290-239c-4b4f-c6153f3d98c5@gmail.com>
+ <20210625065524.GA11219@bobwxc.top> <20210625095059.7f97fd62@coco.lan>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <ae0a7623-7ec4-937b-4b93-8435f2e94eb9@gmail.com>
+Date:   Fri, 25 Jun 2021 18:22:26 +0900
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YNR37NWkxq0mZyq5@pendragon.ideasonboard.com>
+In-Reply-To: <20210625095059.7f97fd62@coco.lan>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 at 14:19, Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Jagan,
->
-> On Thu, Jun 24, 2021 at 05:42:43PM +0530, Jagan Teki wrote:
-> > On Thu, Jun 24, 2021 at 8:18 AM Fabio Estevam wrote:
-> > > On Wed, Jun 23, 2021 at 7:23 PM Laurent Pinchart wrote:
-> > >
-> > > > Looking at the register set, it seems to match the Exynos 5433,
-> > > > supported by drivers/gpu/drm/exynos/exynos_drm_dsi.c. Can we leverage
-> > > > that driver instead of adding a new one for the same IP core ?
-> > >
-> > > Yes. there was an attempt from Michael in this direction:
-> > > https://patchwork.kernel.org/project/dri-devel/cover/20200911135413.3654800-1-m.tretter@pengutronix.de/
-> >
-> > Thanks for the reference, I will check it out and see I can send any
-> > updated versions wrt my i.MX8MM platform.
->
-> Thanks.
->
-> I had a brief look at the exynos driver, and I think it should be turned
-> into a DRM bridge as part of this rework to be used with the i.MX8MM.
->
-> Is there someone from Samsung who could assist, at least to test the
-> changes ?
+On Fri, 25 Jun 2021 09:50:59 +0200, Mauro Carvalho Chehab wrote:
+> Em Fri, 25 Jun 2021 14:55:24 +0800
+> "Wu X.C." <bobwxc@email.cn> escreveu:
+>=20
+>> On Thu, Jun 24, 2021 at 09:06:59PM +0900, Akira Yokosawa wrote:
+>>> Subject: [RFC PATCH 0/3] docs: pdfdocs: Improve alignment of CJK asci=
+i-art
+>>>
+>>> Hi all, =20
+>>
+>> Hi Akira,
+>>
+>>>
+>>> This is another attempt to improve translations' pdf output.
+>>> I see there is a mismatch in the font choice for CJK documents, which=
 
-Yes, I mentioned few guys in reply to PHY. Around the DRM drivers you
-can get in touch with:
-Inki Dae <inki.dae@samsung.com>
-Seung-Woo Kim <sw0312.kim@samsung.com>
-Marek Szyprowski <m.szyprowski@samsung.com>
-Andrzej Hajda <a.hajda@samsung.com>
+>>> causes poor-looking ascii-art where CJK characters and Latin letters
+>>> are mixed used.
+>>>
+>>> One of noticeable examples of such ascii-art can be found in
+>>> Korean translation of memory-barriers.txt.
+>>>
+>>> Hence the author of Korean translation of memory-barriers.txt is
+>>> in the CC list.
+>>>
+>>> At first, I thought the issue could be fixed by simply selecting
+>>> "Noto Sans Mono CJK SC" as both of monofont and CJKmonofont.
+>>> It fixed the mis-alignment in the Chinese translation, but failed
+>>> in the Korean translation.
+>>>
+>>> It turns out that Hangul characters in "Noto Sans Mono CJK SC"
+>>> are slightly narrower than Chinese and Japanese counterparts.
+>>> I have no idea why the so-called "mono" font has non-uniform
+>>> character widths.
+>>>
+>>> GNU Unifont is an alternative monospace font which covers
+>>> almost all Unicode codepoints.
+>>> However, due to its bitmap-font nature, the resulting document
+>>> might not be acceptable to Korean readers, I guess. =20
+>>
+>> OK, it works.
+>>
+>> But I still want to say that the display effect of Unifont is really
+>> not good. Unifont's lattice is too small, and only one size.
+>> http://fars.ee/QA1k.jpg	    http://fars.ee/GAAv.jpg
+>> Looks like computers 20 years ago, LOL :)
+>>
+>> It there any chance to use other fonts, like *Sarasa Mono* ?
+>>                                               =E7=AD=89=E8=B7=9D=E6=9B=
+=B4=E7=B4=97=E9=BB=91=E9=AB=94
+>> Looks more beautifull http://fars.ee/DTT6.jpg
+>> But I guess not many people installed it.
 
-The easiest testing of the display stack would be on Hardkernel's Odroid
-XU4 (https://www.hardkernel.com/shop/odroid-xu4-special-price/) however
-you will not test the DSI/DSIM directly (it has only HDMI port).
+Thank you for the nice suggestion.
+Yes, Hangul characters in "Sarasa Mono" have the same widths.
 
-Best regards,
-Krzysztof
-Best regards,
-Krzysztof
+>=20
+> Does Sarasa mono looks nice for Japanese, Chinese and Korean
+> (plus latin)?
+
+Yes, I tested "Sarasa Mono SC" and it covers all CJK fonts.
+The SC variant has Simple Chinese glyph where other languages
+have their own preferred glyph, but that is same in "Noto Sans
+Mono SC".
+
+Currently, there is no verbatim/literal blocks in the Japanese
+translation, so I tested with only a short Japanese sentence.
+
+I'll post a v2 which uses "Sarasa Mono SC" instead of Unifont.
+
+>=20
+> If so, I guess it shouldn't be a problem to use it, as the
+> ./scripts/sphinx-pre-install can be patched to recommend
+> its install.
+
+One minor problem might be that the Sarasa font needs manual
+download (and install).
+
+        Thanks, Akira
+
+>=20
+> Thanks,
+> Mauro
+>=20
+
