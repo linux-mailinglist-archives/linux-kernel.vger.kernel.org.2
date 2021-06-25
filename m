@@ -2,115 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CAC3B41CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9AA23B41CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbhFYKjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 06:39:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33526 "EHLO
+        id S231477AbhFYKkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 06:40:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbhFYKjv (ORCPT
+        with ESMTP id S231416AbhFYKkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 06:39:51 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E9FC061574;
-        Fri, 25 Jun 2021 03:37:31 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GBD3C1SqGz9sTD;
-        Fri, 25 Jun 2021 20:37:27 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624617448;
-        bh=MDs1d5OjuVPEzQFRdOecd263uXy8HZ/JFlAGkDJbExE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CbJMU2natuEevX5cJvgjSN9XNW/vylUIQIQES1OuZi3zBuIiA7oO8MSyyn6WcU+Xe
-         jfPrNugDSf3wyQHu49nRlnKnbCtlxjq8KxODlx9S7GuvZToA0krAXOGswXjOYY88qF
-         dh3lF1bZGwhHY51qfKyClYpgBNVUG2ClCqOPtMj3Ltnt26zcfi2hI0rNbhaCgjMswO
-         YsOzvNCWcRoZ/1ufRPh4Ypu5/hRjJoWODfw1C9CR5vW2X4/cIqdFsm1+j1h+1DFLCh
-         1b2WT7L7FI17kZarShBhDD0hFyjrn17uTH1V7FZPIsrFGTrQGe50YoLlLEHrU16vAI
-         SeqxbOLPyjLuQ==
-Date:   Fri, 25 Jun 2021 20:37:26 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Marco Elver <elver@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: linux-next: manual merge of the akpm-current tree with the kspp
- tree
-Message-ID: <20210625203726.00383b81@canb.auug.org.au>
+        Fri, 25 Jun 2021 06:40:07 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74F7C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:37:45 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id m9so3908351ybp.8
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:37:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j6XeqvwioJzGji6/V4D6QblypBkwkFKvIMSZgeY/xpU=;
+        b=vFu+Y+G+MND1bMG9cj4xq1Madmq4tXHM9sgxuP/oSedGnbq6z3JXPItCBzh2SPnH7+
+         DhyJVzxS7YduipJrSNzKfhTYgsyiZn8/BEEAVa0q3OrKuy1DsRjOv4BWu1JwjW3BttoW
+         GdVjjWm9otv8up6jKnaKJSXVexm966YvB4B4vOb15gzoG6h/hCsRNcvfcx67axMy8A1C
+         EMNW6uqJdt2+Y0/qhwWS+fqoedAIoCngT1eu+MUFO2gC2l0nVkBu8eaIj7XCsCNmI8iz
+         I22IrowsSfiuFCc2SyRFoZr3QNfV29b9OPvWeeqDKYBL1Es7GTFM7uRSZ45CVBsQI8D/
+         R/nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j6XeqvwioJzGji6/V4D6QblypBkwkFKvIMSZgeY/xpU=;
+        b=cUJG31MOzAP+DNrrkWTRq9KCiOoGoWuhLmG6sE7KCPgICzX/V/J0aZyL9Sl1WQX52l
+         KcZ28NhLDhKugWyJXS0egoy2xEvUk9V574M57DJ2PZgGJYIDvGUBMD5wYjL7xWuitheX
+         atwhkRHoe81Y8sXsYJkjxiT/EPr2imr8QPu9O76zME5/zklIOk80+rGWPLYVzQnXsEcV
+         ejyrVRm3ERSCd+xHT7/kz9MuRHlflvQTJ3HAVBgq0PPqkqvg0hBVl+XqksvuBLydHhRe
+         oRMUCAD7hNvUKho35kfA7nHv+D1frqyxtUywYjbrUJ37Wh05r+gmjqCkbaUBdQWJpclv
+         yQYA==
+X-Gm-Message-State: AOAM5336+bL8qZfYANkFkaLYnfrwX35kyO5DjBPllBUpAc9s42yOlqnD
+        KUqPYeDnJ1pmuYKh7O+IfLLJupmhhs1Qd0DTXPjA+g==
+X-Google-Smtp-Source: ABdhPJxc93bfE1vaCKQGKslN7h1GqLpHt52fBEz+aUCkpB4CjQFVdiFg5tvFcEtt80z/I3CW0n7HpE8/Y7ekn33y+uw=
+X-Received: by 2002:a25:738e:: with SMTP id o136mr11371053ybc.469.1624617465175;
+ Fri, 25 Jun 2021 03:37:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/VL.Owz5Z8OaqqHp6NGWG/RF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <cover.1623824363.git.mchehab+huawei@kernel.org> <506a41353937c455c2e79b5960b0976edc8aa9e9.1623824363.git.mchehab+huawei@kernel.org>
+In-Reply-To: <506a41353937c455c2e79b5960b0976edc8aa9e9.1623824363.git.mchehab+huawei@kernel.org>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 25 Jun 2021 12:37:34 +0200
+Message-ID: <CAMpxmJVAgFcSoVE5jE9hPT=o_7o+fpvG-gGfxS+3=S3K91tnDg@mail.gmail.com>
+Subject: Re: [PATCH v2 14/29] docs: driver-api: gpio: using-gpio.rst: avoid
+ using ReST :doc:`foo` markup
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/VL.Owz5Z8OaqqHp6NGWG/RF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jun 16, 2021 at 8:27 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> The :doc:`foo` tag is auto-generated via automarkup.py.
+> So, use the filename at the sources, instead of :doc:`foo`.
+>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/driver-api/gpio/using-gpio.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/driver-api/gpio/using-gpio.rst b/Documentation/driver-api/gpio/using-gpio.rst
+> index dda069444032..64c8d3f76c3a 100644
+> --- a/Documentation/driver-api/gpio/using-gpio.rst
+> +++ b/Documentation/driver-api/gpio/using-gpio.rst
+> @@ -9,13 +9,13 @@ with them.
+>
+>  For examples of already existing generic drivers that will also be good
+>  examples for any other kernel drivers you want to author, refer to
+> -:doc:`drivers-on-gpio`
+> +Documentation/driver-api/gpio/drivers-on-gpio.rst
+>
+>  For any kind of mass produced system you want to support, such as servers,
+>  laptops, phones, tablets, routers, and any consumer or office or business goods
+>  using appropriate kernel drivers is paramount. Submit your code for inclusion
+>  in the upstream Linux kernel when you feel it is mature enough and you will get
+> -help to refine it, see :doc:`../../process/submitting-patches`.
+> +help to refine it, see Documentation/process/submitting-patches.rst.
+>
+>  In Linux GPIO lines also have a userspace ABI.
+>
+> --
+> 2.31.1
+>
 
-Hi all,
+Applied, thanks!
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
-
-  include/linux/compiler_types.h
-
-between commit:
-
-  380d53c45ff2 ("compiler_attributes.h: define __no_profile, add to noinstr=
-")
-
-from the kspp tree and commit:
-
-  120ae5440ef0 ("kcov: add __no_sanitize_coverage to fix noinstr for all ar=
-chitectures")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/linux/compiler_types.h
-index d509169860f1,cc2bee7f0977..000000000000
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@@ -210,7 -210,7 +210,7 @@@ struct ftrace_likely_data=20
-  /* Section for code which can't be instrumented at all */
-  #define noinstr								\
-  	noinline notrace __attribute((__section__(".noinstr.text")))	\
-- 	__no_kcsan __no_sanitize_address __no_profile
- -	__no_kcsan __no_sanitize_address __no_sanitize_coverage
-++	__no_kcsan __no_sanitize_address __no_sanitize_coverage __no_profile
- =20
-  #endif /* __KERNEL__ */
- =20
-
---Sig_/VL.Owz5Z8OaqqHp6NGWG/RF
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDVseYACgkQAVBC80lX
-0GzTUQf+MTBe1mmGtC1LnO9LUdqYlwlTTjZ+z0m9XE2Sva+2xNuv+9Sj6/sEvTyp
-tYdp0Ee093elOXbOiFTM298A9ipDl/0mrzZZgq2j6aVo5y0GlnRCTfbDnZZzZle0
-xEHNtTTAqANg3CoR4VO3ZS8fUNtkGPuQaTB/PV6K91hbskHfpmWRnlgjH9bcc1Wb
-2jXezluqlwEDX7jv5ZsGbvntjEEcqBkpwXLjsS5jdoVN2AbclNgH9u+kwoekvleg
-kq9SiCnHXL4J6BoNtf0QDC6u+j/ROOCajruW0RHaS5kRtIMb0caVxqK5eDEo0SPC
-Ze6fCmQALCR+PCxBXmqcF0Jm6Kdc4g==
-=M2ug
------END PGP SIGNATURE-----
-
---Sig_/VL.Owz5Z8OaqqHp6NGWG/RF--
+Bartosz
