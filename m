@@ -2,102 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0439E3B3CB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8729D3B3CB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233169AbhFYGeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 02:34:31 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5077 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhFYGea (ORCPT
+        id S233207AbhFYGex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 02:34:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23296 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233199AbhFYGew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 02:34:30 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GB6V604KZzXkxY;
-        Fri, 25 Jun 2021 14:26:54 +0800 (CST)
-Received: from [10.174.177.120] (10.174.177.120) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 25 Jun 2021 14:32:06 +0800
-Subject: Re: [Phishing Risk] [External] [PATCH 2/3] mm/zsmalloc.c: combine two
- atomic ops in zs_pool_dec_isolated()
-To:     Muchun Song <songmuchun@bytedance.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>, <ngupta@vflare.org>,
-        <senozhatsky@chromium.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-References: <20210624123930.1769093-1-linmiaohe@huawei.com>
- <20210624123930.1769093-3-linmiaohe@huawei.com>
- <CAMZfGtUNtR3ZPv4m5bBCGdE5GuMR5Bw18_n7YzqB4s6QHyV+Pg@mail.gmail.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <1b38b33f-316e-1816-216f-9923f612ceb6@huawei.com>
-Date:   Fri, 25 Jun 2021 14:32:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 25 Jun 2021 02:34:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624602751;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dADiFgcXa4r/30YVc717dGwDJQ0AW/eVDuxFNmSHG1A=;
+        b=O7kA5DTcd6rBqPpwdX1NLEmFABJGJbwaQFsmAyFS6p/0s2bjjj851w811ph8v7BziVT6Kv
+        8ou7Nc1/I+/yQ/0WtLCJ62f94OqX//wUL38CuSRl2D5rt9E9EOxEWYpzHqcupxUnQi/MXL
+        UgN9oDSJIY4vYWR0Q4tUL56kO15imkk=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-326-MOGEQk3aNmS2vU94jtCyYQ-1; Fri, 25 Jun 2021 02:32:27 -0400
+X-MC-Unique: MOGEQk3aNmS2vU94jtCyYQ-1
+Received: by mail-wr1-f70.google.com with SMTP id k3-20020a5d62830000b029011a69a4d069so3108931wru.21
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 23:32:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dADiFgcXa4r/30YVc717dGwDJQ0AW/eVDuxFNmSHG1A=;
+        b=YeGlYtLyCO3ToY3UDRpXPPopMropuz1v9ElgauwiussoWytSPW/Ao/e4GUcrfy0fdf
+         dLm+k768NrnTiK8n6JrIn7soWLIsXGTt+/zsRvZr9dVap2ufgQk+6PWYnTUJNkT/naKt
+         IIji7mw/cQ5TS2UTIHlaArP3CAiKPf2WAugP0+/dQ36Jd4ubG+X4uOLnkVVKMT1HNYvd
+         eabiFzjyCV2rhOYwfdB00NMrIpBOMv84RyZB0tLXvrxhzyXeH6VleVGKTABUhLnhVWIw
+         q+DB+fPHlWgomdTjZrVsOjWEp0shu6YwijwI8yoKSjUKsfxoatsZBzvIMti+7M3p6Q04
+         m5Sw==
+X-Gm-Message-State: AOAM531BJwW0o6M/s0pQhz7kN3K+5ty9JyN7QMrXy6Hrd5FkcEMsmbgZ
+        Erjn4DFwotaNTmhBbhwrfe9G9Q8VFTRx0MJCWC/12nnYGqXgudt2zrtIkpItPU7tF0vqxjWGUXm
+        ytxjtuvLr1ZpTVfCR9qujQDWc
+X-Received: by 2002:a05:600c:198f:: with SMTP id t15mr8745045wmq.27.1624602746802;
+        Thu, 24 Jun 2021 23:32:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzblmcYdLQ+0WpUsYPYtWzDLkJrZbxNg+n/ZbamaCoqfpz8Q7AbqWYWLo4IhalIfmQpSr+JXw==
+X-Received: by 2002:a05:600c:198f:: with SMTP id t15mr8745031wmq.27.1624602746619;
+        Thu, 24 Jun 2021 23:32:26 -0700 (PDT)
+Received: from redhat.com ([77.124.79.210])
+        by smtp.gmail.com with ESMTPSA id o203sm5427481wmo.36.2021.06.24.23.32.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 23:32:25 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 02:32:22 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, jasowang@redhat.com,
+        brouer@redhat.com, paulmck@kernel.org, peterz@infradead.org,
+        will@kernel.org, shuah@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linuxarm@openeuler.org
+Subject: Re: [PATCH net-next v2 2/2] ptr_ring: make __ptr_ring_empty()
+ checking more reliable
+Message-ID: <20210625022128-mutt-send-email-mst@kernel.org>
+References: <1624591136-6647-1-git-send-email-linyunsheng@huawei.com>
+ <1624591136-6647-3-git-send-email-linyunsheng@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMZfGtUNtR3ZPv4m5bBCGdE5GuMR5Bw18_n7YzqB4s6QHyV+Pg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.120]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1624591136-6647-3-git-send-email-linyunsheng@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/25 13:01, Muchun Song wrote:
-> On Thu, Jun 24, 2021 at 8:40 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
->>
->> atomic_long_dec_and_test() is equivalent to atomic_long_dec() and
->> atomic_long_read() == 0. Use it to make code more succinct.
-> 
-> Actually, they are not equal. atomic_long_dec_and_test implies a
-> full memory barrier around it but atomic_long_dec and atomic_long_read
-> don't.
-> 
+On Fri, Jun 25, 2021 at 11:18:56AM +0800, Yunsheng Lin wrote:
+> Currently r->queue[] is cleared after r->consumer_head is moved
+> forward, which makes the __ptr_ring_empty() checking called in
+> page_pool_refill_alloc_cache() unreliable if the checking is done
+> after the r->queue clearing and before the consumer_head moving
+> forward.
 
-Many thanks for comment. They are indeed not completely equal as you said.
-What I mean is they can do the same things we want in this specified context.
-Thanks again.
 
-> That RMW operations that have a return value is equal to the following.
+Well the documentation for __ptr_ring_empty clearly states is
+is not guaranteed to be reliable.
+
+ *
+ * NB: This is only safe to call if ring is never resized.
+ *
+ * However, if some other CPU consumes ring entries at the same time, the value
+ * returned is not guaranteed to be correct.
+ *
+ * In this case - to avoid incorrectly detecting the ring
+ * as empty - the CPU consuming the ring entries is responsible
+ * for either consuming all ring entries until the ring is empty,
+ * or synchronizing with some other CPU and causing it to
+ * re-test __ptr_ring_empty and/or consume the ring enteries
+ * after the synchronization point.
+ *
+
+Is it then the case that page_pool_refill_alloc_cache violates
+this requirement? How?
+
+It looks like you are trying to make the guarantee stronger and ensure
+no false positives.
+
+If yes please document this as such, update the comment so all
+code can be evaluated with the eye towards whether the new stronger
+guarantee is maintained. In particular I think I see at least one
+issue with this immediately.
+
+
+> Move the r->queue[] clearing after consumer_head moving forward
+> to make __ptr_ring_empty() checking more reliable.
 > 
-> smp_mb__before_atomic()
-> non-RMW operations or RMW operations that have no return value
-> smp_mb__after_atomic()
+> As a side effect of above change, a consumer_head checking is
+> avoided for the likely case, and it has noticeable performance
+> improvement when it is tested using the ptr_ring_test selftest
+> added in the previous patch.
 > 
-> Thanks.
+> Using "taskset -c 1 ./ptr_ring_test -s 1000 -m 0 -N 100000000"
+> to test the case of single thread doing both the enqueuing and
+> dequeuing:
 > 
->>
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->> ---
->>  mm/zsmalloc.c | 3 +--
->>  1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
->> index 1476289b619f..0b4b23740d78 100644
->> --- a/mm/zsmalloc.c
->> +++ b/mm/zsmalloc.c
->> @@ -1828,13 +1828,12 @@ static void putback_zspage_deferred(struct zs_pool *pool,
->>  static inline void zs_pool_dec_isolated(struct zs_pool *pool)
->>  {
->>         VM_BUG_ON(atomic_long_read(&pool->isolated_pages) <= 0);
->> -       atomic_long_dec(&pool->isolated_pages);
->>         /*
->>          * There's no possibility of racing, since wait_for_isolated_drain()
->>          * checks the isolated count under &class->lock after enqueuing
->>          * on migration_wait.
->>          */
->> -       if (atomic_long_read(&pool->isolated_pages) == 0 && pool->destroying)
->> +       if (atomic_long_dec_and_test(&pool->isolated_pages) && pool->destroying)
->>                 wake_up_all(&pool->migration_wait);
->>  }
->>
->> --
->> 2.23.0
->>
-> .
+>  arch     unpatched           patched       delta
+> arm64      4648 ms            4464 ms       +3.9%
+>  X86       2562 ms            2401 ms       +6.2%
 > 
+> Using "taskset -c 1-2 ./ptr_ring_test -s 1000 -m 1 -N 100000000"
+> to test the case of one thread doing enqueuing and another thread
+> doing dequeuing concurrently, also known as single-producer/single-
+> consumer:
+> 
+>  arch      unpatched             patched         delta
+> arm64   3624 ms + 3624 ms   3462 ms + 3462 ms    +4.4%
+>  x86    2758 ms + 2758 ms   2547 ms + 2547 ms    +7.6%
+> 
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> ---
+> V2: Add performance data.
+> ---
+>  include/linux/ptr_ring.h | 25 ++++++++++++++++---------
+>  1 file changed, 16 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/ptr_ring.h b/include/linux/ptr_ring.h
+> index 808f9d3..db9c282 100644
+> --- a/include/linux/ptr_ring.h
+> +++ b/include/linux/ptr_ring.h
+> @@ -261,8 +261,7 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
+>  	/* Note: we must keep consumer_head valid at all times for __ptr_ring_empty
+>  	 * to work correctly.
+>  	 */
+> -	int consumer_head = r->consumer_head;
+> -	int head = consumer_head++;
+> +	int consumer_head = r->consumer_head + 1;
+>  
+>  	/* Once we have processed enough entries invalidate them in
+>  	 * the ring all at once so producer can reuse their space in the ring.
+> @@ -271,19 +270,27 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
+>  	 */
+>  	if (unlikely(consumer_head - r->consumer_tail >= r->batch ||
+>  		     consumer_head >= r->size)) {
+> +		int tail = r->consumer_tail;
+> +
+> +		if (unlikely(consumer_head >= r->size)) {
+> +			r->consumer_tail = 0;
+> +			WRITE_ONCE(r->consumer_head, 0);
+> +		} else {
+> +			r->consumer_tail = consumer_head;
+> +			WRITE_ONCE(r->consumer_head, consumer_head);
+> +		}
+> +
+>  		/* Zero out entries in the reverse order: this way we touch the
+>  		 * cache line that producer might currently be reading the last;
+>  		 * producer won't make progress and touch other cache lines
+>  		 * besides the first one until we write out all entries.
+>  		 */
+> -		while (likely(head >= r->consumer_tail))
+> -			r->queue[head--] = NULL;
+> -		r->consumer_tail = consumer_head;
+> -	}
+> -	if (unlikely(consumer_head >= r->size)) {
+> -		consumer_head = 0;
+> -		r->consumer_tail = 0;
+> +		while (likely(--consumer_head >= tail))
+> +			r->queue[consumer_head] = NULL;
+> +
+> +		return;
+
+
+So if now we need this to be reliable then
+we also need smp_wmb before writing r->queue[consumer_head],
+there could be other gotchas.
+
+>  	}
+> +
+>  	/* matching READ_ONCE in __ptr_ring_empty for lockless tests */
+>  	WRITE_ONCE(r->consumer_head, consumer_head);
+>  }
+> -- 
+> 2.7.4
 
