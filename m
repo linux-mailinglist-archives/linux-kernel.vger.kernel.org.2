@@ -2,111 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51683B496D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 21:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A4F3B496F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 21:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhFYTyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 15:54:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23064 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230021AbhFYTyn (ORCPT
+        id S230037AbhFYTy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 15:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230036AbhFYTyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 15:54:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624650741;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4aYp4hJz/EjjMi3xPniOC0g0VH/UB+PZgaBhiQVtvD8=;
-        b=BqH653PKyq0iNNLLhK9q4nM0xF9m4J+pZScFsx+sTQ6UsbVdiKfqi1NVHjCJNVlls9N27R
-        a9nHW13/tQE94R6jYedKRlz3mcSI2MjvKejU/AvDhFaE7g2rU1jvmNeY8B8kivzCiKa3r9
-        xKB3fz2kQVaOQGcW/q6sja1Cw1HPfao=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-352-F7rhvN8yOHyhtdm2U79DNA-1; Fri, 25 Jun 2021 15:52:20 -0400
-X-MC-Unique: F7rhvN8yOHyhtdm2U79DNA-1
-Received: by mail-oo1-f70.google.com with SMTP id e10-20020a4ab14a0000b029020e1573bdb7so6433687ooo.9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 12:52:20 -0700 (PDT)
+        Fri, 25 Jun 2021 15:54:52 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1333DC061768
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 12:52:30 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id j2so11790065wrs.12
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 12:52:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=R1sPVb24QilWqLHIqUgt0l84EMiK0aAZKehJOEAfqIw=;
+        b=sUcOAlOwaRtDve98pj4j/qlWAUXszs6aDCHkj59F9X7GFysrcajLvfpY8la8WmbTee
+         Q7cD1DAoqZofS53Erri/rpNOm6BQ1q1IkMQIXKzXU0/fNwBsmYFleerusygpW3546Dhb
+         WVGIVxaPF5CSWRaNWLbiFsroe/sHX5QO349bGmluGAR2mzAPfGIQD4KqrDEx4vMV86cV
+         QPD9LY4MQ2EnYVVEj0Naq/NLvIvr2NOwUKk27KpNuzmlixbVbpw/Oq/sKTakGII+Dqi6
+         DtQw8zCiw6Vr5SfPGZtOiLWWuRfEUSvzuddS8AIqPxdBxfO2wHi8eyE/OoDferMOdd3o
+         RwIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4aYp4hJz/EjjMi3xPniOC0g0VH/UB+PZgaBhiQVtvD8=;
-        b=qcwYU0Rka4QaZGFHAqc4t8jhwFSGzuzt9wTBtSQEkiM8euWcYKzvcUlyMYXML+iKFt
-         Zf7CnlXM+n3r+z2Bj9aCsjMzgB1E3Zg09KvCkzknbY5Im74/NFUQun6A2Kbm0RXrmR0Q
-         y1sTWWxsSkaChM6estCTpQjUWFwDP44ElQJdCYDGbFluDUhn0TlXtlknhZcfaLZPRkaA
-         lvUS38JeNUiAiZg8nshkc9LDgZE8NZgObZFkcuhJ7f7rNNGm3ExeYsEONseRXWtcmbet
-         SLB3OiD1ZFP8A3L8bhFxD4ehC6XRvm0+naFUhl/4BVe6vn3TFvlkqw8mDt5mgXOF+IUC
-         LqDw==
-X-Gm-Message-State: AOAM533CLSA/ldq4NqSb2cxvQHCvOgnVohFBrXBlEHV2Vk/bjYdlqxHg
-        dbL8Uir+n/cXNyLYBHa3oxXr3NqKBRu+NPpRlPyMjYPhhc8csjq14POEf57o1/URPU/xPFudK63
-        ly8hErh3xUxQbrkL8Iii6nv1V
-X-Received: by 2002:a05:6808:bc1:: with SMTP id o1mr12878394oik.176.1624650739896;
-        Fri, 25 Jun 2021 12:52:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJypIr38r6Xwat7SHOutFdWdtMBZB5yIHYyEpbFVr7YNiZOiaRsU1APN36mLAM8st0Os4NeZUA==
-X-Received: by 2002:a05:6808:bc1:: with SMTP id o1mr12878390oik.176.1624650739792;
-        Fri, 25 Jun 2021 12:52:19 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id o25sm1535446ood.20.2021.06.25.12.52.18
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=R1sPVb24QilWqLHIqUgt0l84EMiK0aAZKehJOEAfqIw=;
+        b=l6fEHl7yDaCNjLctIMh9edv2tkM6JelLS09Fm3lOBn2414ylAMTi9sMit+vGR9cioP
+         AS7qKwBEp8Z42dCS/G/GulHdrleOmJoy37+hpTW+/FQI/8gK7SIq9Bqxg5tW+bt/uKgz
+         TpRqOSawtp0vzZ/+oGVUj5w5dIf6kur8orWs+2DoeXP3FqaFe184BnkuRiy1vSpMjA2/
+         WycZRAGB6KVdF1GaycrnIIDFKps+9sFQ7IccGSDftwvfjdGkBzQ4aejtksj24Xp4Mm7F
+         qhseRqvhHtrwi+Crw/Lem/tjeCzYRp7VOFxrBRKVTuFWN8cM9aSqv5Kx5S9WWJ7euIzW
+         J3ZQ==
+X-Gm-Message-State: AOAM530jvCVhgczOTP9Vj/2baFzE+4uQBQdJYwQT+8pY+GjyfFy8Lq/5
+        dp9pGal3sceal4Wz/44Fy4gWs8LUPQ==
+X-Google-Smtp-Source: ABdhPJyDxIKaa8MJEROid4/7JKSdxQ7ixrP1wJ35THU5rXjohLxKCbZArfQPBrKW7s28EAKwirFOfw==
+X-Received: by 2002:adf:b35a:: with SMTP id k26mr13298221wrd.26.1624650748739;
+        Fri, 25 Jun 2021 12:52:28 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.252.229])
+        by smtp.gmail.com with ESMTPSA id r12sm7689618wrx.63.2021.06.25.12.52.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 12:52:19 -0700 (PDT)
-From:   trix@redhat.com
-To:     hao.wu@intel.com, mdf@kernel.org, michal.simek@xilinx.com
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH v4 7/7] fpga-mgr: wrap the write_sg() op
-Date:   Fri, 25 Jun 2021 12:51:48 -0700
-Message-Id: <20210625195148.837230-9-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210625195148.837230-1-trix@redhat.com>
-References: <20210625195148.837230-1-trix@redhat.com>
+        Fri, 25 Jun 2021 12:52:28 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 22:52:26 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>
+Subject: [PATCH] ELF: add and use SUPRESS_WARN_UNUSED_RESULT
+Message-ID: <YNYz+hVeqsQmiEqN@localhost.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+Last write to the "error" variable in load_elf_binary() is dead write.
 
-An FPGA manager should not be required to provide a
-write_sg function. Move the op check to the wrapper.
-Default to -EOPNOTSUP so its users will fail
-gracefully.
+Add and use SUPRESS_WARN_UNUSED_RESULT macro to express intent better.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
+Credit goes to Ed Catmur:
+
+	https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66425#c34
+
+Macro doesn't work for WUR functions returning structures and unions,
+but it will work once gcc copies clang.
+
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 ---
- drivers/fpga/fpga-mgr.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
-index 077c0f9edbe4c..aa30889e23208 100644
---- a/drivers/fpga/fpga-mgr.c
-+++ b/drivers/fpga/fpga-mgr.c
-@@ -83,6 +83,14 @@ static inline int fpga_mgr_write_init(struct fpga_manager *mgr,
- 	return 0;
- }
- 
-+static inline int fpga_mgr_write_sg(struct fpga_manager *mgr,
-+				    struct sg_table *sgt)
-+{
-+	if (mgr->mops->write_sg)
-+		return  mgr->mops->write_sg(mgr, sgt);
-+	return -EOPNOTSUPP;
-+}
-+
- /**
-  * fpga_image_info_alloc - Allocate an FPGA image info struct
-  * @dev: owning device
-@@ -225,7 +233,7 @@ static int fpga_mgr_buf_load_sg(struct fpga_manager *mgr,
- 	/* Write the FPGA image to the FPGA. */
- 	mgr->state = FPGA_MGR_STATE_WRITE;
- 	if (mgr->mops->write_sg) {
--		ret = mgr->mops->write_sg(mgr, sgt);
-+		ret = fpga_mgr_write_sg(mgr, sgt);
- 	} else {
- 		struct sg_mapping_iter miter;
- 
--- 
-2.26.3
+ fs/binfmt_elf.c                     |    3 ++-
+ include/linux/compiler_attributes.h |    4 ++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -1290,7 +1290,8 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ 		   and some applications "depend" upon this behavior.
+ 		   Since we do not have the power to recompile these, we
+ 		   emulate the SVr4 behavior. Sigh. */
+-		error = vm_mmap(NULL, 0, PAGE_SIZE, PROT_READ | PROT_EXEC,
++		SUPRESS_WARN_UNUSED_RESULT
++		vm_mmap(NULL, 0, PAGE_SIZE, PROT_READ | PROT_EXEC,
+ 				MAP_FIXED | MAP_PRIVATE, 0);
+ 	}
+ 
+--- a/include/linux/compiler_attributes.h
++++ b/include/linux/compiler_attributes.h
+@@ -284,6 +284,10 @@
+  * clang: https://clang.llvm.org/docs/AttributeReference.html#nodiscard-warn-unused-result
+  */
+ #define __must_check                    __attribute__((__warn_unused_result__))
++/*
++ * "(void)" is enough for clang but not for gcc.
++ */
++#define SUPRESS_WARN_UNUSED_RESULT	(void)!
+ 
+ /*
+  *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-weak-function-attribute
