@@ -2,102 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A033B4AEA
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 01:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED773B4AEF
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 01:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhFYXdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 19:33:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49650 "EHLO mail.kernel.org"
+        id S229929AbhFYXdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 19:33:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229826AbhFYXdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 19:33:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 832336194C;
-        Fri, 25 Jun 2021 23:30:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1624663840;
-        bh=P/dzjEvY1zOQ2OCiVRU0Wn/VeWEHzTH9g4jio6B3WGM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VUpBcT3i0DMg9YOYVF4k/fv9DWM8P4YQgk0OC5MTCggFnScDr0fJe1yvj+c2n59hH
-         XDv+VwdYDpbPkLONMxp81XxXXWsmQb3+0rNL83q/LFG4+ynpwk+EyPownB0r7EbIsS
-         XheBnHHFxBU81Z6oviee4+SBqrO6XHDdU+QZSPvc=
-Date:   Fri, 25 Jun 2021 16:30:40 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2] ELF: add and use SUPPRESS_WARN_UNUSED_RESULT
-Message-Id: <20210625163040.a15af04872959da9af161fca@linux-foundation.org>
-In-Reply-To: <YNZG6N0W/7gjG7Gm@localhost.localdomain>
-References: <YNYz+hVeqsQmiEqN@localhost.localdomain>
-        <YNZG6N0W/7gjG7Gm@localhost.localdomain>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229884AbhFYXdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 19:33:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2D306194F;
+        Fri, 25 Jun 2021 23:31:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624663874;
+        bh=gx4z69JK8B1m24jj5p5HkcPmeM5Zoi7oy/pqkyg5PL4=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=bW1wwQttYOmlwa2rjEEnr0Mp8iZGp75nskWzdpChMTN2VWb0sp1T+Ia8aJXaXGhGY
+         un7RUgy+mm97xnWOF65Q4B6RqdFm6a+394mzULPtJhAxxj04zW5roHFwrh7VvXoq3B
+         TTLLCk3WIf0Amk0Tg7MBdWszPXbREWQ06DwAVqGhLysupAg1zAP8Eu42RZ6Vd6VqrV
+         Z1r8ejjjmIdN9PiQZGCBAue/YW41Yu3xVWeTmugS8/IfxgArHlzkWfq1LuoFDGRTZm
+         LYtn3JUrAMp48yw45ZmVwm0B/dlrAw50GtLhXlz9TC776zq7Fl2orM1bjoZXp1tp8K
+         sJ8EuysqygPBg==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210617082759.1008-1-thunder.leizhen@huawei.com>
+References: <20210617082759.1008-1-thunder.leizhen@huawei.com>
+Subject: Re: [PATCH 1/1] clk: tegra: tegra124-emc: Fix possible memory leak
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Date:   Fri, 25 Jun 2021 16:31:13 -0700
+Message-ID: <162466387362.3259633.2364843071785127818@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Jun 2021 00:13:12 +0300 Alexey Dobriyan <adobriyan@gmail.com> wrote:
+Quoting Zhen Lei (2021-06-17 01:27:59)
+> When krealloc() fails to expand the memory and returns NULL, the original
+> memory is not released. In this case, the original "timings" scale should
+> be maintained.
+>=20
+> Fixes: 888ca40e2843 ("clk: tegra: emc: Support multiple RAM codes")
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
 
-> Last write to the "error" variable in load_elf_binary() is dead write.
-> 
-> Add and use SUPPRESS_WARN_UNUSED_RESULT macro to express intent better.
-> 
-> Credit goes to Ed Catmur:
-> 
-> 	https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66425#c34
-> 
-> Macro doesn't work for WUR functions returning structures and unions,
-> but it will work when gcc copies clang.
-> 
-> ...
->
-> --- a/fs/binfmt_elf.c
-> +++ b/fs/binfmt_elf.c
-> @@ -1290,7 +1290,8 @@ static int load_elf_binary(struct linux_binprm *bprm)
->  		   and some applications "depend" upon this behavior.
->  		   Since we do not have the power to recompile these, we
->  		   emulate the SVr4 behavior. Sigh. */
-> -		error = vm_mmap(NULL, 0, PAGE_SIZE, PROT_READ | PROT_EXEC,
-> +		SUPPRESS_WARN_UNUSED_RESULT
-> +		vm_mmap(NULL, 0, PAGE_SIZE, PROT_READ | PROT_EXEC,
->  				MAP_FIXED | MAP_PRIVATE, 0);
->  	}
->  
-> --- a/include/linux/compiler_attributes.h
-> +++ b/include/linux/compiler_attributes.h
-> @@ -284,6 +284,10 @@
->   * clang: https://clang.llvm.org/docs/AttributeReference.html#nodiscard-warn-unused-result
->   */
->  #define __must_check                    __attribute__((__warn_unused_result__))
-> +/*
-> + * "(void)" is enough for clang but not for gcc.
-> + */
-> +#define SUPPRESS_WARN_UNUSED_RESULT	(void)!
+Looks correct, but when does krealloc() return NULL? My read of the
+kerneldoc is that it would return the original memory if the new
+allocation "failed".
 
-That macro is rather ugly.  Hopefully we won't really need it - how
-many such sites are there in a full kernel build anyway?
-
-I can't imagine who added this to load_elf_binary():
-
-	if (current->personality & MMAP_PAGE_ZERO) {
-		/* Why this, you ask???  Well SVr4 maps page 0 as read-only,
-		   and some applications "depend" upon this behavior.
-		   Since we do not have the power to recompile these, we
-		   emulate the SVr4 behavior. Sigh. */
-		error = vm_mmap(NULL, 0, PAGE_SIZE, PROT_READ | PROT_EXEC,
-				MAP_FIXED | MAP_PRIVATE, 0);
-	}
-
-I think it was there before most of us were born.  The comment has a
-torvaldsy/viroey feel to it.
-
-Do we really care about userspace which relies upon an SVR4 quirk?  I
-guess it's too hard to prove the no case, so it stays.
-
-But given that the loader is being asked to map this page, shouldn't we
-handle this error (fail the exec) if the mapping attempt failed?  That
-seems better behavior than permitting some creaky old application to
-blunder into a mysterious crash?
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
