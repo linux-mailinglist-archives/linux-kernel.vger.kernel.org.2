@@ -2,159 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D803B45EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D043B45F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbhFYOm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhFYOmW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:42:22 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C46C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:40:01 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id w21so19221760qkb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:40:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nD0kmHbZLR2o/dbFfrzrGrzfR5OtIwAqoz1ygGc2h+s=;
-        b=nv/+OmObXOKpNySnuPU8XXYQ2sewmOTy/d8Mu+gtHbKjwkut9RVbv4YwA8mNuvofy6
-         hxCoGmNhiVTc9Ly4Q/GYsUma8KKh/hVoA3HqUTLtOFuDuhGx/FMFkw2bjlnYxC8ddJS6
-         xMx3LywCIwx93m7AUHOW92CZaS2+sL69nycap5WUnUVs3sbSqcgNrn0QgRSjghCz+nM5
-         YFuBbjN9Il5WnWErhClRIeJ/pCyDd4UgsbHPhEDhhLy88Jm8b+XPG5U/mohkAw2oHtn9
-         Zb/htY4rtv+mkpM3yC3l39mQGQlCSwbPIBPILNhZMA/AmWpxsMz0PU97fSdK21qtbl2t
-         TKkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nD0kmHbZLR2o/dbFfrzrGrzfR5OtIwAqoz1ygGc2h+s=;
-        b=CovG1sudLc0z4mQB968ryLEluRavXXpN3rk9Gl6fLbkUhGzPzQRNIOJvB0OKuCpOvn
-         VLIHjeayF3Hf+MPyp12AvmfJ+bJOOFaPJo8413ea527V3oZGANNQvZUl/Byk0nPqHr/I
-         /w5V0QN2w/UrEYgJL9bnvz8gYuvTdkcWo9kSgZ0umlWIZ28q2+Ct7NwuuJvdB5qflXSf
-         HlclozugWW6KaBDWi4Qus49mLsM/iOzwB5p05IcPPSHpdyUpY9NKJSPaGIWLIUDJ2NT7
-         y85yaxN2wT45N3ZIrMGErdt34QFVwZd4tmdHNuyoJxHhhXm/1dal+hHkY4tNqk/szoxe
-         YRLA==
-X-Gm-Message-State: AOAM533U7qvsPdze4wNsW+GfT55yGWImbCpmlaPv+svkBQZvV5fmPMFH
-        hfbgQPHKt3yF4qMn5wSwPlerkhiMgYAVEurelPIzFg==
-X-Google-Smtp-Source: ABdhPJwIKdkG6REaQnMI3b4892OFPe5iz3O2v4BNAFDSWslZRy2rXcH2TIFHeZGdPJ5F3ITUzS06ala7PFSvCrNXAgk=
-X-Received: by 2002:a37:9d93:: with SMTP id g141mr11934052qke.350.1624632000188;
- Fri, 25 Jun 2021 07:40:00 -0700 (PDT)
+        id S231617AbhFYOnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:43:10 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:55916 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231521AbhFYOnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 10:43:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=w4IQO6DFVyzsolvAWmphYfHy/rPQ4YAG/FamYX4clww=; b=aAf3o6P+jbEuvDCewlGhAv0jYi
+        Zc2Sx7la0Q//AkKE293wyg0aHPhF9/9XBKoM9dwYLoMZggjZkrwhJmSejyann22FOYQMZcc+/arjS
+        N2RR5RRYjrLbq0aTs5r+4flsIKxF7rNwDt7cJuR3TPQ1DTM62X1cZtrWif9Vf2BBpGT4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lwn0H-00B79E-MB; Fri, 25 Jun 2021 16:40:21 +0200
+Date:   Fri, 25 Jun 2021 16:40:21 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Einon <mark.einon@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 2/3] net: Provide switchdev driver for NXP's More Than IP
+ L2 switch
+Message-ID: <YNXq1bp7XH8jRyx0@lunn.ch>
+References: <20210622144111.19647-1-lukma@denx.de>
+ <20210622144111.19647-3-lukma@denx.de>
+ <YNH7vS9FgvEhz2fZ@lunn.ch>
+ <20210623133704.334a84df@ktm>
+ <YNOTKl7ZKk8vhcMR@lunn.ch>
+ <20210624125304.36636a44@ktm>
+ <YNSJyf5vN4YuTUGb@lunn.ch>
+ <20210624163542.5b6d87ee@ktm>
+ <YNSuvJsD0HSSshOJ@lunn.ch>
+ <20210625115935.132922ff@ktm>
 MIME-Version: 1.0
-References: <000000000000ef5d1b05c57c2262@google.com> <87fsx7akyf.fsf@disp2133>
-In-Reply-To: <87fsx7akyf.fsf@disp2133>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 25 Jun 2021 16:39:46 +0200
-Message-ID: <CACT4Y+YM8wONCrOq75-TFwA86Sg5gRHDK81LQH_O_+yWsdTr=g@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: out-of-bounds Read in do_exit
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     syzbot <syzbot+b80bbdcca4c4dfaa189e@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, ast@kernel.org, christian@brauner.io,
-        jnewsome@torproject.org, linux-kernel@vger.kernel.org,
-        minchan@kernel.org, oleg@redhat.com,
-        syzkaller-bugs@googlegroups.com, Ingo Molnar <mingo@kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210625115935.132922ff@ktm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 7:31 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> syzbot <syzbot+b80bbdcca4c4dfaa189e@syzkaller.appspotmail.com> writes:
->
-> > Hello,
-> >
-> > syzbot found the following issue on:
->
-> This looks like dueling debug mechanism.  At a quick glance
-> stack_no_used is deliberately looking for an uninitialized part of the
-> stack.
->
-> Perhaps the fix is to make KASAN and DEBUG_STACK_USAGE impossible to
-> select at the same time in Kconfig?
+> I do believe that I can just extend the L2 switch driver (fec_mtip.c
+> file to be precise) to provide full blown L2 switch functionality
+> without touching the legacy FEC more than in this patch set.
+> 
+> Would you consider applying this patch series then?
 
-+kasan-dev
+What is most important is the ABI. If something is merged now, we need
+to ensure it does not block later refactoring to a clean new
+driver. The DT binding is considered ABI. So the DT binding needs to
+be like a traditional switchdev driver. Florian already pointed out,
+you can use a binding very similar to DSA. ti,cpsw-switch.yaml is
+another good example.
 
-Hi Eric,
+So before considering merging your changes, i would like to see a
+usable binding.
 
-Thanks for looking into this.
+I also don't remember seeing support for STP. Without that, your
+network has broadcast storm problems when there are loops. So i would
+like to see the code needed to put ports into blocking, listening,
+learning, and forwarding states.
 
-I see several strange things about this KASAN report:
-1. KASAN is not supposed to leave unused stack memory as "poisoned".
-Function entry poisons its own frame and function exit unpoisions it.
-Longjmp-like things can leave unused stack poisoned. We have
-kasan_unpoison_task_stack_below() for these, so maybe we are missing
-this annotation somewhere.
-
-2. This stand-alone shadow pattern "07 07 07 07 07 07 07 07" looks fishy.
-It means there are 7 good bytes, then 1 poisoned byte, then 7 good
-bytes and so on. I am not sure what can leave such a pattern. Both
-heap and stack objects have larger redzones in between. I am not sure
-about globals, but stack should not overlap with globals (and there
-are no modules on syzbot).
-
-So far this happened only once and no reproducer. If nobody sees
-anything obvious, I would say we just wait for more info.
-
-
-
-> > HEAD commit:    9ed13a17 Merge tag 'net-5.13-rc7' of git://git.kernel.org/..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=116c517bd00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=bf635d6d1c7ebabc
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=b80bbdcca4c4dfaa189e
-> > compiler:       Debian clang version 11.0.1-2
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+b80bbdcca4c4dfaa189e@syzkaller.appspotmail.com
-> >
-> > ==================================================================
-> > BUG: KASAN: out-of-bounds in stack_not_used include/linux/sched/task_stack.h:101 [inline]
-> > BUG: KASAN: out-of-bounds in check_stack_usage kernel/exit.c:711 [inline]
-> > BUG: KASAN: out-of-bounds in do_exit+0x1c6b/0x23d0 kernel/exit.c:869
-> > Read of size 8 at addr ffffc90017d60400 by task loop0/31717
-> >
-> > CPU: 0 PID: 31717 Comm: loop0 Not tainted 5.13.0-rc6-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > Call Trace:
-> >  __dump_stack lib/dump_stack.c:79 [inline]
-> >  dump_stack+0x202/0x31e lib/dump_stack.c:120
-> >  print_address_description+0x5f/0x3b0 mm/kasan/report.c:233
-> >  __kasan_report mm/kasan/report.c:419 [inline]
-> >  kasan_report+0x15c/0x200 mm/kasan/report.c:436
-> >  stack_not_used include/linux/sched/task_stack.h:101 [inline]
-> >  check_stack_usage kernel/exit.c:711 [inline]
-> >  do_exit+0x1c6b/0x23d0 kernel/exit.c:869
-> >  kthread+0x3b8/0x3c0 kernel/kthread.c:315
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> >
-> >
-> > Memory state around the buggy address:
-> >  ffffc90017d60300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> >  ffffc90017d60380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> >>ffffc90017d60400: 07 07 07 07 07 07 07 07 00 00 00 00 00 00 00 00
-> >                    ^
-> >  ffffc90017d60480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> >  ffffc90017d60500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > ==================================================================
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/87fsx7akyf.fsf%40disp2133.
+	  Andrew
