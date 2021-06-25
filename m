@@ -2,118 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3756A3B48C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 20:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 749723B48CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 20:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbhFYS3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 14:29:32 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41388 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229531AbhFYS3a (ORCPT
+        id S229885AbhFYSce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 14:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhFYScd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 14:29:30 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15PIHfKK066681;
-        Fri, 25 Jun 2021 14:27:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=j+O/cYCsFsuCEcRnngzouHlCzfCZ1Z52WLywB4Dg6VI=;
- b=pujvexLTn5Z1jhQ38Nusv+0EOCH7mHFlyG01EJymf+fIp/YPPSC+aEINwop0eDx7NJI5
- vkU1o16IvxqasSu0w5mawTkG0zF3jLd1krbGWkEE52Iqax14cE5VU+E24q1vr7HL/xyG
- MUNXohU0nPvGTtkKcA+9G5QsOydBK8vZsddOXfG6R1KRcQiPHi1o4/fnv3e596mFaHU5
- 0R1Ld9FA8cG+0qL3Xm3+K0EchhpuBS/SH2Nx9fBQrUWtDzUDZuXf7LBriBJ/NyKeZHzq
- 6KWJicseC/6G12IskZrnQm8JoQ66iBPLgaDAV+pXR6i8e/05AZSkFEH3MXeYQeHPJKNl 7A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39dma009dr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Jun 2021 14:27:05 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15PIHr5G067038;
-        Fri, 25 Jun 2021 14:27:04 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39dma009cm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Jun 2021 14:27:04 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15PIIHHi004448;
-        Fri, 25 Jun 2021 18:27:02 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 3997uhb5n3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Jun 2021 18:27:02 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15PIQxO429295034
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Jun 2021 18:27:00 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DE8DBAE058;
-        Fri, 25 Jun 2021 18:26:59 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 09F8CAE053;
-        Fri, 25 Jun 2021 18:26:57 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.9.226])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 25 Jun 2021 18:26:56 +0000 (GMT)
-Message-ID: <25951cc27ce8a42893e98f9ea442296ae04b6988.camel@linux.ibm.com>
-Subject: Re: [RFC][PATCH 01/12] ima: Add digest, algo, measured parameters
- to ima_measure_critical_data()
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, Prakhar Srivastava <prsriva02@gmail.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Date:   Fri, 25 Jun 2021 14:26:55 -0400
-In-Reply-To: <20210625165614.2284243-2-roberto.sassu@huawei.com>
-References: <20210625165614.2284243-1-roberto.sassu@huawei.com>
-         <20210625165614.2284243-2-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 42B1uptXA-wFAtKBlzryfp64uWpnOmi4
-X-Proofpoint-GUID: ta77Re1fJ_j3pnVE_gpDpee0U3H_Snnk
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-25_07:2021-06-25,2021-06-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 malwarescore=0 clxscore=1011 spamscore=0 phishscore=0
- mlxlogscore=999 priorityscore=1501 impostorscore=0 mlxscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106250105
+        Fri, 25 Jun 2021 14:32:33 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A505EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 11:30:11 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id g4so20196030qkl.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 11:30:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ahjwf9HqwEUWxfT27RhcaX1vAqu39xvQmFxCmdymgYk=;
+        b=bcJmnLILLrzdC40glkAg3vuavgVVrwsOURCkguA1DaLF+T+a8GL3UNaz8hq0BiHr4Z
+         8EtWMIOGbouieDhHgj2gB+A2jWssbCAz7y/BuZT3gSxxzMIyrDtfu4gdP4N/D2ETMSN1
+         nxoMA4BLlmOPprt4k6b7PaeJLZgiUInRZq6v0DyB8lUozh4pQrBPfmFWefCkYrivekv5
+         xCfCBEycYSQ4yjxtthonW/rGCTB1lHysVh8O8hYIA+qaVfGu1pQPOwRYe6pTZ3axggdU
+         VrzNwuS6CQqDGQMK40TbKn2xOfGufayiZBj6CxAfE+uaBduxRkmFaDbduq4Pu7/UljyK
+         L6dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ahjwf9HqwEUWxfT27RhcaX1vAqu39xvQmFxCmdymgYk=;
+        b=K2KWQAVd1lKsZG1daGcfAoxQEjaSH6OSt1OJvaNNLPr8Rvf3ZU9azVM/9N+8poQIJm
+         JIG+CqRbzDioRimoUUHdMnR7ZNMzmw5ujvh96LVQYkhSO2DonPBQrGrnAWCOSMU+A5zW
+         0foLgY7xIE6wBxbG5YpAblDZ/+rXanaDQMeXPcjW/xfjO8yF7eo15xIlqdqos5Dcmrq/
+         O44YXNVW3Wc+vI3xPzPFxy/aW7ayHimKadic04oTaIhOIhpimRS4STNTiuvVSlQchEAE
+         EcjF5+AO4kz3gcT+qGNViprTd6dwOdUtyl9epITlqc4JVdmaUcanep/O6rIYQobbZMfb
+         UsSg==
+X-Gm-Message-State: AOAM530PgWslfQG/jM7DQxKP5Z4/T94K/U3L5PtylrgLga/ctUbGNls6
+        Lk9AWU2T3Od8kpidJNeDgMyFbg==
+X-Google-Smtp-Source: ABdhPJx447qGBHdeQmiSJ8K60QjlehV4Ec4hD8sNWp3QYYcv21yKlryC3Z9/n8ORV/uPsantb0hF5Q==
+X-Received: by 2002:a37:44f:: with SMTP id 76mr13025187qke.161.1624645810318;
+        Fri, 25 Jun 2021 11:30:10 -0700 (PDT)
+Received: from kerneldevvm.. (5.6.a.8.a.a.b.f.c.9.4.c.a.9.a.a.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0:aa9a:c49c:fbaa:8a65])
+        by smtp.gmail.com with ESMTPSA id l1sm974449qkc.93.2021.06.25.11.30.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 11:30:09 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, dan.carpenter@oracle.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [PATCH] staging: rtl8188eu: remove set but unused variable from rtw_get_sec_ie
+Date:   Fri, 25 Jun 2021 19:30:07 +0100
+Message-Id: <20210625183007.7065-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-06-25 at 18:56 +0200, Roberto Sassu wrote:
-> ima_measure_critical_data() allows any caller in the kernel to provide a
-> buffer, so that is measured by IMA if an appropriate policy is set. Some
-> information that could be useful to the callers are the digest of the
-> buffer included in the new measurement entry, the digest algorithm and
-> whether the buffer was measured.
-> 
-> This patch modifies the definition of ima_measure_critical_data() to
-> include three new parameters: digest, algo and measured. If they are NULL,
-> the function behaves as before and just measures the buffer, if requested
-> with the IMA policy. Otherwise, it also writes the digest, algorithm and
-> whether the buffer is measured to the provided pointers.
-> 
-> If the pointers are not NULL, the digest is calculated also if there is no
-> matching rule in the IMA policy.
+Remove set but unused variable 'sec_idx' from the rtw_get_sec_ie
+function inside core/rtw_ieee80211.c, to fix a kernel test robot warning
+introduced by recent removal of erroneous debug statements.
 
-As much as possible, let's not define additional
-ima_measure_critical_data() arguments.  Probably the only new variable
-really need is "digest".  The hash algorithm doesn't change.  How about
-defining and exporting a new function to return the system defined
-ima_hash_algo.  In terms of failure, have ima_measure_critical_data()
-return errno.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+---
+ drivers/staging/rtl8188eu/core/rtw_ieee80211.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-thanks,
-
-Mimi
+diff --git a/drivers/staging/rtl8188eu/core/rtw_ieee80211.c b/drivers/staging/rtl8188eu/core/rtw_ieee80211.c
+index e431914db008..ce82b866c633 100644
+--- a/drivers/staging/rtl8188eu/core/rtw_ieee80211.c
++++ b/drivers/staging/rtl8188eu/core/rtw_ieee80211.c
+@@ -465,7 +465,7 @@ int rtw_parse_wpa2_ie(u8 *rsn_ie, int rsn_ie_len, int *group_cipher, int *pairwi
+ 
+ void rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie, u16 *wpa_len)
+ {
+-	u8 authmode, sec_idx;
++	u8 authmode;
+ 	u8 wpa_oui[4] = {0x0, 0x50, 0xf2, 0x01};
+ 	uint cnt;
+ 
+@@ -473,8 +473,6 @@ void rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie
+ 
+ 	cnt = _TIMESTAMP_ + _BEACON_ITERVAL_ + _CAPABILITY_;
+ 
+-	sec_idx = 0;
+-
+ 	while (cnt < in_len) {
+ 		authmode = in_ie[cnt];
+ 
+-- 
+2.31.1
 
