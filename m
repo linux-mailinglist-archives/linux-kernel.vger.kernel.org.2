@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EFA3B4B1A
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 01:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6983B4B5A
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 01:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhFYXtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 19:49:15 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:57673 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229826AbhFYXtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 19:49:14 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GBYZ30Gk2z9sTD;
-        Sat, 26 Jun 2021 09:46:50 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1624664811;
-        bh=mqjtE2ltdfXhC7NObFmQQYR+R0sNSDV94cZ9C2sgJWE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=LotHKufoVc972Qccm3q9JON0ByoiUAiSMVe5SwPkRZJDpTsdVD4cw+v/nY/gkR8v2
-         QJNiSgqIiURMw9S1b23S//wFYWf/NEd5LsAPc+rUtf4P2+dr6mXZwPdnvSBmGyu3CY
-         YXQ8Kg9+i4EmilyMjUDOWaVwLB3lpjG7rnQMr0gvN3WxVGUMpMnSAuJt+oVbk9ciPh
-         RL0+3YcIUfM6V1l/gTtnbZRchDGQ0guwYpa7zskCrtrZljUZuLtfmI/9olnNjRsYk/
-         EU/uxByT8/fsTMz9VgeQUGEGCiiN4ipVhN9rbDj2/tZtSh/cXw5CEvayeXs8EuELwe
-         Z/qQlfPPksi5Q==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        akpm@linux-foundation.org
-Cc:     linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Oliver O'Halloran <oohall@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Paul Mackerras <paulus@samba.org>, dja@axtens.net,
-        Steven Price <steven.price@arm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH v2 1/4] mm: pagewalk: Fix walk for hugepage tables
-In-Reply-To: <217a6b38-a6ac-84d5-e3dc-257331431bb2@csgroup.eu>
-References: <cover.1618828806.git.christophe.leroy@csgroup.eu>
- <db6981c69f96a8c9c6dcf688b7f485e15993ddef.1618828806.git.christophe.leroy@csgroup.eu>
- <d22d196a-45ea-0960-b748-caab0e996c7c@csgroup.eu>
- <874kdm1rim.fsf@mpe.ellerman.id.au>
- <217a6b38-a6ac-84d5-e3dc-257331431bb2@csgroup.eu>
-Date:   Sat, 26 Jun 2021 09:46:47 +1000
-Message-ID: <87pmw9zevs.fsf@mpe.ellerman.id.au>
+        id S229933AbhFYXwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 19:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229844AbhFYXwh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 19:52:37 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42AD8C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 16:50:13 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 6-20020a9d07860000b02903e83bf8f8fcso11095162oto.12
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 16:50:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I34DkDhLMaQ/IyLbrDClxn0QZlzBHTfOEHBz/yqlVfc=;
+        b=wfjj0O/BibC4pWY5gur3PvLflfcyoYaAOeM3UxN6Xisgx/cH6d2jktONw480QDdXUI
+         M8qqhGDOFzE3l2kMi64/+1mtfaYabD7j4LGtbShPO9Zv8nt5+/nauNCnRmpyu2TSsc8I
+         ZLwydVAWCbE6hqgfzg+ZqKZhr2zLykmHdtvE61I7a1FngDJvu6zkUNnSExnSEqbR58Dy
+         jE+j6vrnpw8YYCDY2xYOGKByZmzviYoBTizD5CbPtuxb2gsTDaRz2V27Q/sNbddt5//Z
+         yp1kOjzkMYIGvFxJjCrrqTOOJ2cmbtGZmhJ6fmuttGFzdGiRlufIlyiI4tGMSunbG2fs
+         Yw2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I34DkDhLMaQ/IyLbrDClxn0QZlzBHTfOEHBz/yqlVfc=;
+        b=fm9pNWM2M40RHRQQEXcrsKocseja4zH3Sy1irpog0lL3b76blgXvSkGxqOLNzotA54
+         FgED80MEjVmWJR8Iaa0sH9p4ckkai4Yw4AZ2BDo6xqkSsuuKg3wD8f1up62kL/opno+c
+         +UuYtcrLOdRGiWiGm/mpna/KEC6Cl5f62W+Ouv6Xkw2nkoK6z4REd6KzgZzJ5szqeG1F
+         6dPqnPsgNgvYU3xTCT2beZRfTGXGa5vWOmSJV0AUOeXrFnkiTlK9GcsuL1k3PITumE6B
+         8rQ/gbAkU49dKydRX6e+1NgfBjlMjVk94seSPE6vYgtThFDS1ghwYhhzJwqKXQwMUj9i
+         iosQ==
+X-Gm-Message-State: AOAM533C2Sapf9XMV1Ox71ZekP+0OmKoA/GnUPc/PXzPlko/N416NU1r
+        QHcJdDGxhAzcLSEQQY8lY9AsrQ==
+X-Google-Smtp-Source: ABdhPJw9quTI7eTdpwwKWWqat+ZcFO8Ubt/qtPbjFl3A0ZlFwU3gkX0iv/Xy6pyGJtGQEYPY9RC8nA==
+X-Received: by 2002:a05:6830:2112:: with SMTP id i18mr8342838otc.332.1624665012671;
+        Fri, 25 Jun 2021 16:50:12 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id c205sm1654814oib.20.2021.06.25.16.50.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 16:50:12 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Georgi Djakov <djakov@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] interconnect: Sanity check that node isn't already on list
+Date:   Fri, 25 Jun 2021 16:49:03 -0700
+Message-Id: <20210625234903.1324755-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Le 25/06/2021 =C3=A0 06:45, Michael Ellerman a =C3=A9crit=C2=A0:
->> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>> Hi Michael,
->>>
->>> Le 19/04/2021 =C3=A0 12:47, Christophe Leroy a =C3=A9crit=C2=A0:
->>>> Pagewalk ignores hugepd entries and walk down the tables
->>>> as if it was traditionnal entries, leading to crazy result.
->>>>
->>>> Add walk_hugepd_range() and use it to walk hugepage tables.
->>>
->>> I see you took patch 2 and 3 of the series.
->>=20
->> Yeah I decided those were bug fixes so could be taken separately.
->>=20
->>> Do you expect Andrew to take patch 1 via mm tree, and then you'll take
->>> patch 4 once mm tree is merged ?
->>=20
->> I didn't feel I could take patch 1 via the powerpc tree without risking
->> conflicts.
->>=20
->> Andrew could take patch 1 and 4 via mm, though he might not want to pick
->> them up this late.
->
-> Patch 4 needs patches 2 and 3 and doesn't apply without them so it is not=
- that easy.
+Broken interconnect providers might add the same node multiple times or
+in multiple providers, which causes strange errors as the provider's
+node list is later traversed.
 
-Ah duh, sorry.
+Detect that a node already has an associated provider, complain and
+reject the addition of the node, to aid the developer.
 
-> Maybe Andrew you can take patch 1 now and then Michael you can take patch=
- 4 at anytime during 5.15=20
-> preparation without any conflict risk ?
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ drivers/interconnect/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Yeah that would work.
+diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
+index 8a1e70e00876..fcb5d8eefb51 100644
+--- a/drivers/interconnect/core.c
++++ b/drivers/interconnect/core.c
+@@ -959,6 +959,9 @@ EXPORT_SYMBOL_GPL(icc_link_destroy);
+  */
+ void icc_node_add(struct icc_node *node, struct icc_provider *provider)
+ {
++	if (WARN_ON(node->provider))
++		return;
++
+ 	mutex_lock(&icc_lock);
+ 
+ 	node->provider = provider;
+-- 
+2.29.2
 
->> I guess step one would be to repost 1 and 4 as a new series. Either they
->> can go via mm, or for 5.15 I could probably take them both as long as I
->> pick them up early enough.
->>=20
->
-> I'll first repost patch 1 as standalone and see what happens.
-
-Thanks.
-
-cheers
