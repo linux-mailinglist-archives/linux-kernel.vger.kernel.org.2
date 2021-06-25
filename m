@@ -2,72 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8BD3B47EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6693B47F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhFYRCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 13:02:41 -0400
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:44832 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229723AbhFYRCi (ORCPT
+        id S230104AbhFYRGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 13:06:02 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3320 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229630AbhFYRGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 13:02:38 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id D07041280C63;
-        Fri, 25 Jun 2021 10:00:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1624640416;
-        bh=7UQfTm0gZW2yxFLwp3168eDhzZoKMAzyPjTiPK+nGB0=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=Sl3wwCAdv6zxpH0eBfheb/7EAwxeLMTNYjArvJ40vmBkHP4Zc9mK65A/9DrWVoLQA
-         X42K0DJSAZZdxG0OkRKgNz2u8/ecaZjsQzQ2FZ2ZWAkw0Iu7aCDZ3obApi/I0+twYo
-         d5hvVcpy0xL24/XJ+tSUYibMSd3mrpIX6YuvZDZc=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 6vGj3iDrFs_2; Fri, 25 Jun 2021 10:00:16 -0700 (PDT)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 7AA061280B27;
-        Fri, 25 Jun 2021 10:00:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1624640416;
-        bh=7UQfTm0gZW2yxFLwp3168eDhzZoKMAzyPjTiPK+nGB0=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=Sl3wwCAdv6zxpH0eBfheb/7EAwxeLMTNYjArvJ40vmBkHP4Zc9mK65A/9DrWVoLQA
-         X42K0DJSAZZdxG0OkRKgNz2u8/ecaZjsQzQ2FZ2ZWAkw0Iu7aCDZ3obApi/I0+twYo
-         d5hvVcpy0xL24/XJ+tSUYibMSd3mrpIX6YuvZDZc=
-Message-ID: <214c41fae1f1b148e5b04a58c1b018fb091d7e83.camel@HansenPartnership.com>
-Subject: Re: linux-mm@kvack.org - limping on a backup
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Benjamin LaHaise <ben@communityfibre.ca>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 25 Jun 2021 10:00:15 -0700
-In-Reply-To: <20210622145954.GA4058@kvack.org>
-References: <20210622145954.GA4058@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Fri, 25 Jun 2021 13:06:01 -0400
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GBNS74xbPz6G8LK;
+        Sat, 26 Jun 2021 00:56:07 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 25 Jun 2021 19:03:38 +0200
+Received: from localhost.localdomain (10.69.192.58) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 25 Jun 2021 18:03:35 +0100
+From:   John Garry <john.garry@huawei.com>
+To:     <martin.petersen@oracle.com>, <jejb@linux.ibm.com>
+CC:     <bvanassche@acm.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <hch@lst.de>, <hare@suse.de>,
+        <ming.lei@redhat.com>, John Garry <john.garry@huawei.com>
+Subject: [PATCH] scsi: Delete scsi_{get,free}_host_dev()
+Date:   Sat, 26 Jun 2021 00:58:34 +0800
+Message-ID: <1624640314-93055-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-06-22 at 10:59 -0400, Benjamin LaHaise wrote:
-> FYI: the filesystem hosting kanga.kvack.org which hosts 
-> linux-mm@kvack.org
-> and a few other assorted things was damaged around 9:17am.  The
-> mailing list is back up and running from a March 2nd backup for
-> now.  The problem is either a bad SSD or a btrfs bug, however no
-> crash dump was captured to help with debugging.  New hardware will be
-> deployed this afternoon after an attempt at data recovery is made.
+Functions scsi_{get,free}_host_dev() no longer have any in-tree users, so
+delete them.
 
-Perhaps it's time to move this list over to vger or the linux.dev
-infrastructure now that it's being brought up?  We already migrated the
-containers list without too much pain.
+Signed-off-by: John Garry <john.garry@huawei.com>
+---
+An alt agenda of this patch is to get clarification on whether this API
+should be used for Hannes' reserved commands series.
 
-Regards,
+Originally the recommendation was to use it, but now it seems to be to
+not use it:
+https://lore.kernel.org/linux-scsi/55918d68-7385-0153-0bd9-d822d3ce4c21@suse.de/
 
-James
-
+diff --git a/drivers/scsi/scsi_scan.c b/drivers/scsi/scsi_scan.c
+index b059bf2b61d4..8e52ce545af3 100644
+--- a/drivers/scsi/scsi_scan.c
++++ b/drivers/scsi/scsi_scan.c
+@@ -1896,60 +1896,3 @@ void scsi_forget_host(struct Scsi_Host *shost)
+ 	spin_unlock_irqrestore(shost->host_lock, flags);
+ }
+ 
+-/**
+- * scsi_get_host_dev - Create a scsi_device that points to the host adapter itself
+- * @shost: Host that needs a scsi_device
+- *
+- * Lock status: None assumed.
+- *
+- * Returns:     The scsi_device or NULL
+- *
+- * Notes:
+- *	Attach a single scsi_device to the Scsi_Host - this should
+- *	be made to look like a "pseudo-device" that points to the
+- *	HA itself.
+- *
+- *	Note - this device is not accessible from any high-level
+- *	drivers (including generics), which is probably not
+- *	optimal.  We can add hooks later to attach.
+- */
+-struct scsi_device *scsi_get_host_dev(struct Scsi_Host *shost)
+-{
+-	struct scsi_device *sdev = NULL;
+-	struct scsi_target *starget;
+-
+-	mutex_lock(&shost->scan_mutex);
+-	if (!scsi_host_scan_allowed(shost))
+-		goto out;
+-	starget = scsi_alloc_target(&shost->shost_gendev, 0, shost->this_id);
+-	if (!starget)
+-		goto out;
+-
+-	sdev = scsi_alloc_sdev(starget, 0, NULL);
+-	if (sdev)
+-		sdev->borken = 0;
+-	else
+-		scsi_target_reap(starget);
+-	put_device(&starget->dev);
+- out:
+-	mutex_unlock(&shost->scan_mutex);
+-	return sdev;
+-}
+-EXPORT_SYMBOL(scsi_get_host_dev);
+-
+-/**
+- * scsi_free_host_dev - Free a scsi_device that points to the host adapter itself
+- * @sdev: Host device to be freed
+- *
+- * Lock status: None assumed.
+- *
+- * Returns:     Nothing
+- */
+-void scsi_free_host_dev(struct scsi_device *sdev)
+-{
+-	BUG_ON(sdev->id != sdev->host->this_id);
+-
+-	__scsi_remove_device(sdev);
+-}
+-EXPORT_SYMBOL(scsi_free_host_dev);
+-
+diff --git a/include/scsi/scsi_host.h b/include/scsi/scsi_host.h
+index 75363707b73f..bc9c45ced145 100644
+--- a/include/scsi/scsi_host.h
++++ b/include/scsi/scsi_host.h
+@@ -797,16 +797,6 @@ void scsi_host_busy_iter(struct Scsi_Host *,
+ 
+ struct class_container;
+ 
+-/*
+- * These two functions are used to allocate and free a pseudo device
+- * which will connect to the host adapter itself rather than any
+- * physical device.  You must deallocate when you are done with the
+- * thing.  This physical pseudo-device isn't real and won't be available
+- * from any high-level drivers.
+- */
+-extern void scsi_free_host_dev(struct scsi_device *);
+-extern struct scsi_device *scsi_get_host_dev(struct Scsi_Host *);
+-
+ /*
+  * DIF defines the exchange of protection information between
+  * initiator and SBC block device.
+-- 
+2.26.2
 
