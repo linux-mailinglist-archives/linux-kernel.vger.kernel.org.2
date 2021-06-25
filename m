@@ -2,137 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 139A73B3F66
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7FC3B3F5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbhFYIhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:37:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbhFYIhx (ORCPT
+        id S230108AbhFYIgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:36:08 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:11095 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229839AbhFYIgG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:37:53 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D515C061574;
-        Fri, 25 Jun 2021 01:35:32 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso5103587pjp.5;
-        Fri, 25 Jun 2021 01:35:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qMxz+BXwsGn8gwergLkFOAK6vzjs3xm3i+d6yFgzGzU=;
-        b=TqOKoDAfEhm0IK32lKiC5rsoS+A+D0FW4WQg93hSnioHpUfst4Sx1jSz2cHyzdJ9Hj
-         +YtjJwrLSYA/j03IRmQ77IVtxdVkV+nHLCfBO18dRQQf7uGc18rNhHZTkJbHcfZsK6i+
-         AOj6InWaD7CKSvdnjA9o2uzosBv3krYeD8JlmzlFEo+Y6TX1WX1kLPkIVDSgQWEIQWo6
-         Tri5LA1CqDfqKVi9xFmoL9rBMkJCUF8xPu/xcW8xWO/tXoaw5mhQ3xZSkJ/zk4AruiDW
-         +QQHyfn0oFrGOg/P2DrITqUxVm6bYXBOlXsII3UsdXTrrIDQ2nhir30dDwqW5X08RRQr
-         zluw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qMxz+BXwsGn8gwergLkFOAK6vzjs3xm3i+d6yFgzGzU=;
-        b=smH+AXtfuIJK/WcLWj6t3tkbV9m9GVIyQFOIJdFleJxsBVHOUDKp1vrfD8IrMc/V8y
-         cJn5ol7eGciP32Omf+iYfvz4n2PpbIL43FvG4aOjnSAoXygxEnhTXZUGYdtTpww0Sy4s
-         qk+zNFVr2MY1U6XQ41Zqiv5CRQBHXZANNco47ZGBlgl/yoUF+TaShG50h10zHGTW4JKa
-         jV94vcPHxyS9cvp+K2Sezt6Pf+ZDevZtsmRymqtNxNi46eLg0z9gat7NF80/4ZxKEe3j
-         ExYy/oqCfSfZzIJis+adhbJ33p+uBE6n+9UzDBBg+fxonlvR6HE65XtKvu1r5Q2+UCvN
-         dKEA==
-X-Gm-Message-State: AOAM532tQdFiOf/DuQvxtLGCsjxWVvXWGmXt8FTiTmcANLVBVCKMZIRW
-        oWHXjYmifysoCtXCNePYWfg=
-X-Google-Smtp-Source: ABdhPJzWE40oAWUpIUXepiPIeHKByuypK2Y9CgEsI3TnIJxp6l4fKG8eQsjGZO4uq0dZou6D9XBmrw==
-X-Received: by 2002:a17:90a:d082:: with SMTP id k2mr20414113pju.15.1624610131979;
-        Fri, 25 Jun 2021 01:35:31 -0700 (PDT)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id k1sm4876102pfa.30.2021.06.25.01.35.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 01:35:31 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: yang.yang29@zte.com.cn
-To:     mcgrof@kernel.org
-Cc:     keescook@chromium.org, yzaikin@google.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Yang Yang <yang.yang29@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] sysctl: fix permission check while owner isn't GLOBAL_ROOT_UID
-Date:   Fri, 25 Jun 2021 01:33:38 -0700
-Message-Id: <20210625083338.384184-1-yang.yang29@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Fri, 25 Jun 2021 04:36:06 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GB9Dx51skzZjdq;
+        Fri, 25 Jun 2021 16:30:41 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 25 Jun 2021 16:33:41 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 25 Jun
+ 2021 16:33:41 +0800
+Subject: Re: [PATCH net-next v2 2/2] ptr_ring: make __ptr_ring_empty()
+ checking more reliable
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <jasowang@redhat.com>,
+        <brouer@redhat.com>, <paulmck@kernel.org>, <peterz@infradead.org>,
+        <will@kernel.org>, <shuah@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linuxarm@openeuler.org>
+References: <1624591136-6647-1-git-send-email-linyunsheng@huawei.com>
+ <1624591136-6647-3-git-send-email-linyunsheng@huawei.com>
+ <20210625022128-mutt-send-email-mst@kernel.org>
+ <c6975b2d-2b4a-5b3f-418c-1a59607b9864@huawei.com>
+ <20210625032508-mutt-send-email-mst@kernel.org>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <4ced872f-da7a-95a3-2ef1-c281dfb84425@huawei.com>
+Date:   Fri, 25 Jun 2021 16:33:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210625032508-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme709-chm.china.huawei.com (10.1.199.105) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yang <yang.yang29@zte.com.cn>
+On 2021/6/25 15:30, Michael S. Tsirkin wrote:
+> On Fri, Jun 25, 2021 at 03:21:33PM +0800, Yunsheng Lin wrote:
+>> On 2021/6/25 14:32, Michael S. Tsirkin wrote:
+>>> On Fri, Jun 25, 2021 at 11:18:56AM +0800, Yunsheng Lin wrote:
+>>>> Currently r->queue[] is cleared after r->consumer_head is moved
+>>>> forward, which makes the __ptr_ring_empty() checking called in
+>>>> page_pool_refill_alloc_cache() unreliable if the checking is done
+>>>> after the r->queue clearing and before the consumer_head moving
+>>>> forward.
+>>>
+>>>
+>>> Well the documentation for __ptr_ring_empty clearly states is
+>>> is not guaranteed to be reliable.
+>>
+>> Yes, this patch does not make __ptr_ring_empty() strictly reliable
+>> without taking the r->consumer_lock, as the disscuission in [1].
+>>
+>> 1. https://patchwork.kernel.org/project/netdevbpf/patch/1622032173-11883-1-git-send-email-linyunsheng@huawei.com/#24207011
+>>
+>>>
+>>>  *
+>>>  * NB: This is only safe to call if ring is never resized.
+>>>  *
+>>>  * However, if some other CPU consumes ring entries at the same time, the value
+>>>  * returned is not guaranteed to be correct.
+>>>  *
+>>>  * In this case - to avoid incorrectly detecting the ring
+>>>  * as empty - the CPU consuming the ring entries is responsible
+>>>  * for either consuming all ring entries until the ring is empty,
+>>>  * or synchronizing with some other CPU and causing it to
+>>>  * re-test __ptr_ring_empty and/or consume the ring enteries
+>>>  * after the synchronization point.
+>>>  *
+>>>
+>>> Is it then the case that page_pool_refill_alloc_cache violates
+>>> this requirement? How?
+>>
+>> As my understanding:
+>> page_pool_refill_alloc_cache() uses __ptr_ring_empty() to avoid
+>> taking r->consumer_lock, when the above data race happens, it will
+>> exit out and allocate page from the page allocator instead of reusing
+>> the page in ptr_ring, which *may* not be happening if __ptr_ring_empty()
+>> is more reliable.
+> 
+> Question is how do we know it's more reliable?
+> It would be nice if we did actually made it more reliable,
+> as it is we are just shifting races around.
+> 
+> 
+>>>
+>>> It looks like you are trying to make the guarantee stronger and ensure
+>>> no false positives.
+>>>
+>>> If yes please document this as such, update the comment so all
+>>> code can be evaluated with the eye towards whether the new stronger
+>>> guarantee is maintained. In particular I think I see at least one
+>>> issue with this immediately.
+>>>
+>>>
+>>>> Move the r->queue[] clearing after consumer_head moving forward
+>>>> to make __ptr_ring_empty() checking more reliable.
+>>>>
+>>>> As a side effect of above change, a consumer_head checking is
+>>>> avoided for the likely case, and it has noticeable performance
+>>>> improvement when it is tested using the ptr_ring_test selftest
+>>>> added in the previous patch.
+>>>>
+>>>> Using "taskset -c 1 ./ptr_ring_test -s 1000 -m 0 -N 100000000"
+>>>> to test the case of single thread doing both the enqueuing and
+>>>> dequeuing:
+>>>>
+>>>>  arch     unpatched           patched       delta
+>>>> arm64      4648 ms            4464 ms       +3.9%
+>>>>  X86       2562 ms            2401 ms       +6.2%
+>>>>
+>>>> Using "taskset -c 1-2 ./ptr_ring_test -s 1000 -m 1 -N 100000000"
+>>>> to test the case of one thread doing enqueuing and another thread
+>>>> doing dequeuing concurrently, also known as single-producer/single-
+>>>> consumer:
+>>>>
+>>>>  arch      unpatched             patched         delta
+>>>> arm64   3624 ms + 3624 ms   3462 ms + 3462 ms    +4.4%
+>>>>  x86    2758 ms + 2758 ms   2547 ms + 2547 ms    +7.6%
+>>>>
+>>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>>>> ---
+>>>> V2: Add performance data.
+>>>> ---
+>>>>  include/linux/ptr_ring.h | 25 ++++++++++++++++---------
+>>>>  1 file changed, 16 insertions(+), 9 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/ptr_ring.h b/include/linux/ptr_ring.h
+>>>> index 808f9d3..db9c282 100644
+>>>> --- a/include/linux/ptr_ring.h
+>>>> +++ b/include/linux/ptr_ring.h
+>>>> @@ -261,8 +261,7 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
+>>>>  	/* Note: we must keep consumer_head valid at all times for __ptr_ring_empty
+>>>>  	 * to work correctly.
+>>>>  	 */
+>>>> -	int consumer_head = r->consumer_head;
+>>>> -	int head = consumer_head++;
+>>>> +	int consumer_head = r->consumer_head + 1;
+>>>>  
+>>>>  	/* Once we have processed enough entries invalidate them in
+>>>>  	 * the ring all at once so producer can reuse their space in the ring.
+>>>> @@ -271,19 +270,27 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
+>>>>  	 */
+>>>>  	if (unlikely(consumer_head - r->consumer_tail >= r->batch ||
+>>>>  		     consumer_head >= r->size)) {
+>>>> +		int tail = r->consumer_tail;
+>>>> +
+>>>> +		if (unlikely(consumer_head >= r->size)) {
+>>>> +			r->consumer_tail = 0;
+>>>> +			WRITE_ONCE(r->consumer_head, 0);
+>>>> +		} else {
+>>>> +			r->consumer_tail = consumer_head;
+>>>> +			WRITE_ONCE(r->consumer_head, consumer_head);
+>>>> +		}
+>>>> +
+>>>>  		/* Zero out entries in the reverse order: this way we touch the
+>>>>  		 * cache line that producer might currently be reading the last;
+>>>>  		 * producer won't make progress and touch other cache lines
+>>>>  		 * besides the first one until we write out all entries.
+>>>>  		 */
+>>>> -		while (likely(head >= r->consumer_tail))
+>>>> -			r->queue[head--] = NULL;
+>>>> -		r->consumer_tail = consumer_head;
+>>>> -	}
+>>>> -	if (unlikely(consumer_head >= r->size)) {
+>>>> -		consumer_head = 0;
+>>>> -		r->consumer_tail = 0;
+>>>> +		while (likely(--consumer_head >= tail))
+>>>> +			r->queue[consumer_head] = NULL;
+>>>> +
+>>>> +		return;
+>>>
+>>>
+>>> So if now we need this to be reliable then
+>>> we also need smp_wmb before writing r->queue[consumer_head],
+>>> there could be other gotchas.
+>>
+>> Yes, This patch does not make it strictly reliable.
+>> T think I could mention that in the commit log?
+> 
+> OK so it's not that it makes it more reliable - this patch simply makes
+> a possible false positive less likely while making  a false negative
+> more likely. Our assumption is that a false negative is cheaper then?
+> 
+> How do we know that it is?
+> 
+> And even if we prove the ptr_ring itself is faster now,
+> how do we know what affects callers in a better way a
+> false positive or a false negative?
+> 
+> I would rather we worked on actually making it reliable
+> e.g. if we can guarantee no false positives, that would be
+> a net win.
+I thought deeper about the case you mentioned above, it
+seems for the above to happen, the consumer_head need to
+be rolled back to zero and incremented to the point when
+caller of __ptr_ring_empty() is still *not* able to see the
+r->queue[] which has been set to NULL in __ptr_ring_discard_one().
 
-With user namespace enabled, root in container can't modify
-/proc/sys/net/ipv4/ip_forward. While /proc/sys/net/ipv4/ip_forward
-belongs to root and mode is 644. Since root in container may
-be non-root in host, but test_perm() doesn't consider about it.
+It seems smp_wmb() only need to be done once when consumer_head
+is rolled back to zero, and maybe that is enough to make sure the
+case you mentioned is fixed too?
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
----
- fs/proc/proc_sysctl.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+And the smp_wmb() is only done once in a round of producing/
+consuming, so the performance impact should be minimized?(of
+course we need to test it too).
 
-diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-index dea0f5ee540c..71d7b2c2c8e3 100644
---- a/fs/proc/proc_sysctl.c
-+++ b/fs/proc/proc_sysctl.c
-@@ -400,18 +400,19 @@ static void next_entry(struct ctl_table_header **phead, struct ctl_table **pentr
-  * some sysctl variables are readonly even to root.
-  */
- 
--static int test_perm(int mode, int op)
-+static int test_perm(struct inode *inode, int mode, int op)
- {
--	if (uid_eq(current_euid(), GLOBAL_ROOT_UID))
-+	if (uid_eq(current_euid(), inode->i_uid))
- 		mode >>= 6;
--	else if (in_egroup_p(GLOBAL_ROOT_GID))
-+	else if (in_egroup_p(inode->i_gid))
- 		mode >>= 3;
- 	if ((op & ~mode & (MAY_READ|MAY_WRITE|MAY_EXEC)) == 0)
- 		return 0;
- 	return -EACCES;
- }
- 
--static int sysctl_perm(struct ctl_table_header *head, struct ctl_table *table, int op)
-+static int sysctl_perm(struct inode *inode,
-+	struct ctl_table_header *head, struct ctl_table *table, int op)
- {
- 	struct ctl_table_root *root = head->root;
- 	int mode;
-@@ -421,7 +422,7 @@ static int sysctl_perm(struct ctl_table_header *head, struct ctl_table *table, i
- 	else
- 		mode = table->mode;
- 
--	return test_perm(mode, op);
-+	return test_perm(inode, mode, op);
- }
- 
- static struct inode *proc_sys_make_inode(struct super_block *sb,
-@@ -554,7 +555,7 @@ static ssize_t proc_sys_call_handler(struct kiocb *iocb, struct iov_iter *iter,
- 	 * and won't be until we finish.
- 	 */
- 	error = -EPERM;
--	if (sysctl_perm(head, table, write ? MAY_WRITE : MAY_READ))
-+	if (sysctl_perm(inode, head, table, write ? MAY_WRITE : MAY_READ))
- 		goto out;
- 
- 	/* if that can happen at all, it should be -EINVAL, not -EISDIR */
-@@ -803,7 +804,7 @@ static int proc_sys_permission(struct user_namespace *mnt_userns,
- 	if (!table) /* global root - r-xr-xr-x */
- 		error = mask & MAY_WRITE ? -EACCES : 0;
- 	else /* Use the permissions on the sysctl table entry */
--		error = sysctl_perm(head, table, mask & ~MAY_NOT_BLOCK);
-+		error = sysctl_perm(inode, head, table, mask & ~MAY_NOT_BLOCK);
- 
- 	sysctl_head_finish(head);
- 	return error;
--- 
-2.25.1
+> 
+>>
+>>>
+>>>>  	}
+>>>> +
+>>>>  	/* matching READ_ONCE in __ptr_ring_empty for lockless tests */
+>>>>  	WRITE_ONCE(r->consumer_head, consumer_head);
+>>>>  }
+>>>> -- 
+>>>> 2.7.4
+>>>
+>>>
+>>> .
+>>>
+> 
+> 
+> .
+> 
 
