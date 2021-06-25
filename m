@@ -2,118 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D523B453B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959C73B453F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbhFYOGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbhFYOGH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:06:07 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE43C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:03:45 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id n2so4168509eju.11
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:03:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KCBPWXjUtJqDX481tplGmByedXmi+6SSSYQlopDVlm8=;
-        b=g2xI4G+YbXPOBweU0Dfhxgv8sAgTFjbLRxRY9HnhBIJ7t5750aZ2AnfPNLCZChITxz
-         e9Yo/swOJ5U1cF9kBUv8dI/7589kD4AZiZBgJwj+exGZnoVksbjpyl7e0/BN5vAQfWv6
-         /VXekcwiU8mYzSd1XvznpHZOiHKkHaZiSiQ+oCpAVQCWkYKQs79Xt0o7EPj4sXlIUNO3
-         1WhKzAfHJucTboztqcpWrkg3AIrya5Bjw25wWjYqzOZSch6BNQkAuqg7m1wQhDCzFOTI
-         V2Ulu0v2PpcsdfkXJBJ29grL9PL7XZ9xga6QgiyEoU5CU3O4wWbre7BvkL66xvJL9OiJ
-         UNtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KCBPWXjUtJqDX481tplGmByedXmi+6SSSYQlopDVlm8=;
-        b=n+ukTLneJxaIeVGC/O75n9lxNJZ4JK1cu07hqlR01RocEuhsTRX72BRYswQypPOJNF
-         dUH2Yd/UgKchZ/ieREY/DulzuK46HEv6EpaeFJOdxB2Du7vAUZYeHrZVMWebm0llr5y1
-         7+653Le1dXCdGAZXxhhSROHatTzc4SOIH76dpIeMFpe6YEFyGDBEL8Tv58MfGVZUa/bL
-         QX1tIccq7a/tzQQQzN47ltp0C98nzyQB+ZEx0+8Jpg+wJKY6K7P5MFr9z8SangWeNw8W
-         tIlCmGvbmeF/L3DiKE8ZSqMuzmPKvNzVYYM+IJkfprhWs3mxr+BI8ar8UT4Gb4zfQ0SB
-         UKJw==
-X-Gm-Message-State: AOAM5333oJUywMeC+uT1mBn7XMLHnswG53qK+Jp9cQbeLNoqwrq/lhEr
-        o9KFi+/nhkCM+oxgW4p/eD6fVLO1IZq8Txx31AA=
-X-Google-Smtp-Source: ABdhPJwRxAwp1s4YjTUqcX/AAdgKGNstFB5jd3lyos+3LPa3ijtjUuFxbmNzJUzvo6qSGiT+GSa9ZkA6wg579vc/N0Q=
-X-Received: by 2002:a17:906:6d16:: with SMTP id m22mr11315367ejr.333.1624629824272;
- Fri, 25 Jun 2021 07:03:44 -0700 (PDT)
+        id S231512AbhFYOKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:10:23 -0400
+Received: from mga18.intel.com ([134.134.136.126]:46294 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229700AbhFYOKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 10:10:22 -0400
+IronPort-SDR: 7ZMf++IdR4xil9pRjqruaDZ/mN8e+S7dO2c3skUYMzbSQvs52bZymuvB3v1vSo9QGRqid6zA72
+ yhXJEQNmIzEw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="194969151"
+X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; 
+   d="scan'208";a="194969151"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 07:08:01 -0700
+IronPort-SDR: 7/vj2hf4lxY5fR3zx931tpwPzxjmnlNIXT0n93Eqq81FQsS3r/kapvJOlQkmSULMqeRHUnqopl
+ zLs7jcAGSJHQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; 
+   d="scan'208";a="407396110"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 25 Jun 2021 07:08:00 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lwmUx-0007CO-7f; Fri, 25 Jun 2021 14:07:59 +0000
+Date:   Fri, 25 Jun 2021 22:07:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: arch/powerpc/kvm/powerpc.c:1141:7: warning: Redundant assignment of
+ 'gpr' to itself. [selfAssignment]
+Message-ID: <202106252219.3RFYWdTc-lkp@intel.com>
 MIME-Version: 1.0
-References: <20210624112624.31215-1-yee.lee@mediatek.com> <20210624112624.31215-2-yee.lee@mediatek.com>
-In-Reply-To: <20210624112624.31215-2-yee.lee@mediatek.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Fri, 25 Jun 2021 17:03:21 +0300
-Message-ID: <CA+fCnZe0fng4-53U1=5MiYszCMi97twKut3eQNaNHgPV2HOVug@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] kasan: Add memzero init for unaligned size under
- SLUB debug
-To:     yee.lee@mediatek.com
-Cc:     wsd_upstream@mediatek.com,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:KASAN" <kasan-dev@googlegroups.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 2:26 PM <yee.lee@mediatek.com> wrote:
->
-> From: Yee Lee <yee.lee@mediatek.com>
->
-> Issue: when SLUB debug is on, hwtag kasan_unpoison() would overwrite
-> the redzone of object with unaligned size.
->
-> An additional memzero_explicit() path is added to replacing init by
-> hwtag instruction for those unaligned size at SLUB debug mode.
->
-> Signed-off-by: Yee Lee <yee.lee@mediatek.com>
-> ---
->  mm/kasan/kasan.h | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index 8f450bc28045..d1054f35838f 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -387,6 +387,12 @@ static inline void kasan_unpoison(const void *addr, size_t size, bool init)
->
->         if (WARN_ON((unsigned long)addr & KASAN_GRANULE_MASK))
->                 return;
-> +#if IS_ENABLED(CONFIG_SLUB_DEBUG)
+Hi Cédric,
 
-Is this an issue only with SLUB? SLAB also uses redzones.
+First bad commit (maybe != root cause):
 
-> +       if (init && ((unsigned long)size & KASAN_GRANULE_MASK)) {
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   44db63d1ad8d71c6932cbe007eb41f31c434d140
+commit: 9236f57a9e51c72ce426ccd2e53e123de7196a0f KVM: PPC: Make the VMX instruction emulation routines static
+date:   5 months ago
+compiler: powerpc64-linux-gcc (GCC) 9.3.0
 
-This needs a comment along the lines of:
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-/* Explicitly initialize the memory with the precise object size to
-avoid overwriting the SLAB redzone. This disables initialization in
-the arch code and may thus lead to performance penalty. The penalty is
-accepted since SLAB redzones aren't enabled in production builds. */
 
-> +               init = false;
-> +               memzero_explicit((void *)addr, size);
-> +       }
-> +#endif
->         size = round_up(size, KASAN_GRANULE_SIZE);
->
->         hw_set_mem_tag_range((void *)addr, size, tag, init);
-> --
-> 2.18.0
->
+cppcheck warnings: (new ones prefixed by >>)
+>> arch/powerpc/kvm/powerpc.c:1141:7: warning: Redundant assignment of 'gpr' to itself. [selfAssignment]
+     gpr = sp_to_dp(gpr);
+         ^
+>> arch/powerpc/kvm/powerpc.c:1341:7: warning: Redundant assignment of 'val' to itself. [selfAssignment]
+     val = dp_to_sp(val);
+         ^
+
+vim +/gpr +1141 arch/powerpc/kvm/powerpc.c
+
+6f63e81bda98cb Bin Lu               2017-02-21  1112  
+8c99d34578628b Tianjia Zhang        2020-04-27  1113  static void kvmppc_complete_mmio_load(struct kvm_vcpu *vcpu)
+bbf45ba57eaec5 Hollis Blanchard     2008-04-16  1114  {
+8c99d34578628b Tianjia Zhang        2020-04-27  1115  	struct kvm_run *run = vcpu->run;
+3f649ab728cda8 Kees Cook            2020-06-03  1116  	u64 gpr;
+bbf45ba57eaec5 Hollis Blanchard     2008-04-16  1117  
+8e5b26b55a8b6a Alexander Graf       2010-01-08  1118  	if (run->mmio.len > sizeof(gpr)) {
+bbf45ba57eaec5 Hollis Blanchard     2008-04-16  1119  		printk(KERN_ERR "bad MMIO length: %d\n", run->mmio.len);
+bbf45ba57eaec5 Hollis Blanchard     2008-04-16  1120  		return;
+bbf45ba57eaec5 Hollis Blanchard     2008-04-16  1121  	}
+bbf45ba57eaec5 Hollis Blanchard     2008-04-16  1122  
+d078eed35de386 David Gibson         2015-02-03  1123  	if (!vcpu->arch.mmio_host_swabbed) {
+bbf45ba57eaec5 Hollis Blanchard     2008-04-16  1124  		switch (run->mmio.len) {
+b104d06632d089 Alexander Graf       2010-02-19  1125  		case 8: gpr = *(u64 *)run->mmio.data; break;
+8e5b26b55a8b6a Alexander Graf       2010-01-08  1126  		case 4: gpr = *(u32 *)run->mmio.data; break;
+8e5b26b55a8b6a Alexander Graf       2010-01-08  1127  		case 2: gpr = *(u16 *)run->mmio.data; break;
+8e5b26b55a8b6a Alexander Graf       2010-01-08  1128  		case 1: gpr = *(u8 *)run->mmio.data; break;
+bbf45ba57eaec5 Hollis Blanchard     2008-04-16  1129  		}
+bbf45ba57eaec5 Hollis Blanchard     2008-04-16  1130  	} else {
+bbf45ba57eaec5 Hollis Blanchard     2008-04-16  1131  		switch (run->mmio.len) {
+d078eed35de386 David Gibson         2015-02-03  1132  		case 8: gpr = swab64(*(u64 *)run->mmio.data); break;
+d078eed35de386 David Gibson         2015-02-03  1133  		case 4: gpr = swab32(*(u32 *)run->mmio.data); break;
+d078eed35de386 David Gibson         2015-02-03  1134  		case 2: gpr = swab16(*(u16 *)run->mmio.data); break;
+8e5b26b55a8b6a Alexander Graf       2010-01-08  1135  		case 1: gpr = *(u8 *)run->mmio.data; break;
+bbf45ba57eaec5 Hollis Blanchard     2008-04-16  1136  		}
+bbf45ba57eaec5 Hollis Blanchard     2008-04-16  1137  	}
+8e5b26b55a8b6a Alexander Graf       2010-01-08  1138  
+6f63e81bda98cb Bin Lu               2017-02-21  1139  	/* conversion between single and double precision */
+6f63e81bda98cb Bin Lu               2017-02-21  1140  	if ((vcpu->arch.mmio_sp64_extend) && (run->mmio.len == 4))
+6f63e81bda98cb Bin Lu               2017-02-21 @1141  		gpr = sp_to_dp(gpr);
+6f63e81bda98cb Bin Lu               2017-02-21  1142  
+3587d5348ced08 Alexander Graf       2010-02-19  1143  	if (vcpu->arch.mmio_sign_extend) {
+3587d5348ced08 Alexander Graf       2010-02-19  1144  		switch (run->mmio.len) {
+3587d5348ced08 Alexander Graf       2010-02-19  1145  #ifdef CONFIG_PPC64
+3587d5348ced08 Alexander Graf       2010-02-19  1146  		case 4:
+3587d5348ced08 Alexander Graf       2010-02-19  1147  			gpr = (s64)(s32)gpr;
+3587d5348ced08 Alexander Graf       2010-02-19  1148  			break;
+3587d5348ced08 Alexander Graf       2010-02-19  1149  #endif
+3587d5348ced08 Alexander Graf       2010-02-19  1150  		case 2:
+3587d5348ced08 Alexander Graf       2010-02-19  1151  			gpr = (s64)(s16)gpr;
+3587d5348ced08 Alexander Graf       2010-02-19  1152  			break;
+3587d5348ced08 Alexander Graf       2010-02-19  1153  		case 1:
+3587d5348ced08 Alexander Graf       2010-02-19  1154  			gpr = (s64)(s8)gpr;
+3587d5348ced08 Alexander Graf       2010-02-19  1155  			break;
+3587d5348ced08 Alexander Graf       2010-02-19  1156  		}
+3587d5348ced08 Alexander Graf       2010-02-19  1157  	}
+3587d5348ced08 Alexander Graf       2010-02-19  1158  
+b3c5d3c2a49602 Alexander Graf       2012-01-07  1159  	switch (vcpu->arch.io_gpr & KVM_MMIO_REG_EXT_MASK) {
+b3c5d3c2a49602 Alexander Graf       2012-01-07  1160  	case KVM_MMIO_REG_GPR:
+b104d06632d089 Alexander Graf       2010-02-19  1161  		kvmppc_set_gpr(vcpu, vcpu->arch.io_gpr, gpr);
+b104d06632d089 Alexander Graf       2010-02-19  1162  		break;
+b3c5d3c2a49602 Alexander Graf       2012-01-07  1163  	case KVM_MMIO_REG_FPR:
+2e6baa46b4ae78 Simon Guo            2018-05-21  1164  		if (vcpu->kvm->arch.kvm_ops->giveup_ext)
+2e6baa46b4ae78 Simon Guo            2018-05-21  1165  			vcpu->kvm->arch.kvm_ops->giveup_ext(vcpu, MSR_FP);
+2e6baa46b4ae78 Simon Guo            2018-05-21  1166  
+efff19122315f1 Paul Mackerras       2013-10-15  1167  		VCPU_FPR(vcpu, vcpu->arch.io_gpr & KVM_MMIO_REG_MASK) = gpr;
+b104d06632d089 Alexander Graf       2010-02-19  1168  		break;
+287d5611fab5a4 Alexander Graf       2010-04-01  1169  #ifdef CONFIG_PPC_BOOK3S
+b3c5d3c2a49602 Alexander Graf       2012-01-07  1170  	case KVM_MMIO_REG_QPR:
+b3c5d3c2a49602 Alexander Graf       2012-01-07  1171  		vcpu->arch.qpr[vcpu->arch.io_gpr & KVM_MMIO_REG_MASK] = gpr;
+b104d06632d089 Alexander Graf       2010-02-19  1172  		break;
+b3c5d3c2a49602 Alexander Graf       2012-01-07  1173  	case KVM_MMIO_REG_FQPR:
+efff19122315f1 Paul Mackerras       2013-10-15  1174  		VCPU_FPR(vcpu, vcpu->arch.io_gpr & KVM_MMIO_REG_MASK) = gpr;
+b3c5d3c2a49602 Alexander Graf       2012-01-07  1175  		vcpu->arch.qpr[vcpu->arch.io_gpr & KVM_MMIO_REG_MASK] = gpr;
+b104d06632d089 Alexander Graf       2010-02-19  1176  		break;
+6f63e81bda98cb Bin Lu               2017-02-21  1177  #endif
+6f63e81bda98cb Bin Lu               2017-02-21  1178  #ifdef CONFIG_VSX
+6f63e81bda98cb Bin Lu               2017-02-21  1179  	case KVM_MMIO_REG_VSX:
+2e6baa46b4ae78 Simon Guo            2018-05-21  1180  		if (vcpu->kvm->arch.kvm_ops->giveup_ext)
+2e6baa46b4ae78 Simon Guo            2018-05-21  1181  			vcpu->kvm->arch.kvm_ops->giveup_ext(vcpu, MSR_VSX);
+2e6baa46b4ae78 Simon Guo            2018-05-21  1182  
+da2a32b876e979 Simon Guo            2018-05-21  1183  		if (vcpu->arch.mmio_copy_type == KVMPPC_VSX_COPY_DWORD)
+6f63e81bda98cb Bin Lu               2017-02-21  1184  			kvmppc_set_vsr_dword(vcpu, gpr);
+da2a32b876e979 Simon Guo            2018-05-21  1185  		else if (vcpu->arch.mmio_copy_type == KVMPPC_VSX_COPY_WORD)
+6f63e81bda98cb Bin Lu               2017-02-21  1186  			kvmppc_set_vsr_word(vcpu, gpr);
+da2a32b876e979 Simon Guo            2018-05-21  1187  		else if (vcpu->arch.mmio_copy_type ==
+6f63e81bda98cb Bin Lu               2017-02-21  1188  				KVMPPC_VSX_COPY_DWORD_LOAD_DUMP)
+6f63e81bda98cb Bin Lu               2017-02-21  1189  			kvmppc_set_vsr_dword_dump(vcpu, gpr);
+da2a32b876e979 Simon Guo            2018-05-21  1190  		else if (vcpu->arch.mmio_copy_type ==
+94dd7fa1c0b75e Simon Guo            2018-05-21  1191  				KVMPPC_VSX_COPY_WORD_LOAD_DUMP)
+94dd7fa1c0b75e Simon Guo            2018-05-21  1192  			kvmppc_set_vsr_word_dump(vcpu, gpr);
+6f63e81bda98cb Bin Lu               2017-02-21  1193  		break;
+09f984961c137c Jose Ricardo Ziviani 2018-02-03  1194  #endif
+09f984961c137c Jose Ricardo Ziviani 2018-02-03  1195  #ifdef CONFIG_ALTIVEC
+09f984961c137c Jose Ricardo Ziviani 2018-02-03  1196  	case KVM_MMIO_REG_VMX:
+2e6baa46b4ae78 Simon Guo            2018-05-21  1197  		if (vcpu->kvm->arch.kvm_ops->giveup_ext)
+2e6baa46b4ae78 Simon Guo            2018-05-21  1198  			vcpu->kvm->arch.kvm_ops->giveup_ext(vcpu, MSR_VEC);
+2e6baa46b4ae78 Simon Guo            2018-05-21  1199  
+acc9eb9305fecd Simon Guo            2018-05-21  1200  		if (vcpu->arch.mmio_copy_type == KVMPPC_VMX_COPY_DWORD)
+09f984961c137c Jose Ricardo Ziviani 2018-02-03  1201  			kvmppc_set_vmx_dword(vcpu, gpr);
+acc9eb9305fecd Simon Guo            2018-05-21  1202  		else if (vcpu->arch.mmio_copy_type == KVMPPC_VMX_COPY_WORD)
+acc9eb9305fecd Simon Guo            2018-05-21  1203  			kvmppc_set_vmx_word(vcpu, gpr);
+acc9eb9305fecd Simon Guo            2018-05-21  1204  		else if (vcpu->arch.mmio_copy_type ==
+acc9eb9305fecd Simon Guo            2018-05-21  1205  				KVMPPC_VMX_COPY_HWORD)
+acc9eb9305fecd Simon Guo            2018-05-21  1206  			kvmppc_set_vmx_hword(vcpu, gpr);
+acc9eb9305fecd Simon Guo            2018-05-21  1207  		else if (vcpu->arch.mmio_copy_type ==
+acc9eb9305fecd Simon Guo            2018-05-21  1208  				KVMPPC_VMX_COPY_BYTE)
+acc9eb9305fecd Simon Guo            2018-05-21  1209  			kvmppc_set_vmx_byte(vcpu, gpr);
+09f984961c137c Jose Ricardo Ziviani 2018-02-03  1210  		break;
+873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  1211  #endif
+873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  1212  #ifdef CONFIG_KVM_BOOK3S_HV_POSSIBLE
+873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  1213  	case KVM_MMIO_REG_NESTED_GPR:
+873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  1214  		if (kvmppc_need_byteswap(vcpu))
+873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  1215  			gpr = swab64(gpr);
+873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  1216  		kvm_vcpu_write_guest(vcpu, vcpu->arch.nested_io_gpr, &gpr,
+873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  1217  				     sizeof(gpr));
+873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  1218  		break;
+287d5611fab5a4 Alexander Graf       2010-04-01  1219  #endif
+b104d06632d089 Alexander Graf       2010-02-19  1220  	default:
+b104d06632d089 Alexander Graf       2010-02-19  1221  		BUG();
+b104d06632d089 Alexander Graf       2010-02-19  1222  	}
+bbf45ba57eaec5 Hollis Blanchard     2008-04-16  1223  }
+bbf45ba57eaec5 Hollis Blanchard     2008-04-16  1224  
+
+:::::: The code at line 1141 was first introduced by commit
+:::::: 6f63e81bda98cbb549b01faf978884692ded438d KVM: PPC: Book3S: Add MMIO emulation for FP and VSX instructions
+
+:::::: TO: Bin Lu <lblulb@linux.vnet.ibm.com>
+:::::: CC: Paul Mackerras <paulus@ozlabs.org>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
