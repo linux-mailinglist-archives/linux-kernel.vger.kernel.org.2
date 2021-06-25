@@ -2,114 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 078853B4313
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E43273B4335
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbhFYMYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 08:24:21 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45434 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhFYMYS (ORCPT
+        id S231292AbhFYMcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 08:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231273AbhFYMce (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 08:24:18 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D04B421C99;
-        Fri, 25 Jun 2021 12:21:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624623716; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pAj1upETTIyHAZ/PkSRbshacc33JaBnwwpRJoNDa32c=;
-        b=xyc6A4xctkd1tWu+GXqPEdu8UDgKldkATgON6UUtpNfDsstz8y7+RMNMAPpMdKgiD/Koce
-        F8x6TQD1OA2Geetl2U4zF2ZnQNM82njAjVvey26iyUOURCUX2JRuXuoNFTO0BliMlAZ0vq
-        XmkRALVOoiaGm9frJudpdSZvVXlMy6A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624623716;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pAj1upETTIyHAZ/PkSRbshacc33JaBnwwpRJoNDa32c=;
-        b=kfcmTV4mrN8XaQoL843ZMEYuw2Xgtc3ZZTjlz7IJmlEXmhN0pJSl7OlAy4Lk/v/iW5Cwjs
-        X1lvSo5naec9mnCQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id BEB6511A97;
-        Fri, 25 Jun 2021 12:21:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624623716; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pAj1upETTIyHAZ/PkSRbshacc33JaBnwwpRJoNDa32c=;
-        b=xyc6A4xctkd1tWu+GXqPEdu8UDgKldkATgON6UUtpNfDsstz8y7+RMNMAPpMdKgiD/Koce
-        F8x6TQD1OA2Geetl2U4zF2ZnQNM82njAjVvey26iyUOURCUX2JRuXuoNFTO0BliMlAZ0vq
-        XmkRALVOoiaGm9frJudpdSZvVXlMy6A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624623716;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pAj1upETTIyHAZ/PkSRbshacc33JaBnwwpRJoNDa32c=;
-        b=kfcmTV4mrN8XaQoL843ZMEYuw2Xgtc3ZZTjlz7IJmlEXmhN0pJSl7OlAy4Lk/v/iW5Cwjs
-        X1lvSo5naec9mnCQ==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id /xKJLWTK1WBmRQAALh3uQQ
-        (envelope-from <dwagner@suse.de>); Fri, 25 Jun 2021 12:21:56 +0000
-Date:   Fri, 25 Jun 2021 14:21:56 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>
-Subject: Re: [PATCH 0/2] Handle update hardware queues and queue freeze more
- carefully
-Message-ID: <20210625122156.x5yzoobuaaec5hss@beryllium.lan>
-References: <20210625101649.49296-1-dwagner@suse.de>
+        Fri, 25 Jun 2021 08:32:34 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE5EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 05:30:11 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id s6so13110252edu.10
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 05:30:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hkmPicKD/hvE1nW5aGFrwYzV3suaN7+QqIgid14W1RM=;
+        b=aWvdXe5XxuJLs+y354C+rsFcCJrwk505J9mYe2YmMAclBBs2MP0Coj5KIDV+XKEA74
+         tNOpNcSkfYwDCNq42gfGUHqhblf9oQCoBb1nf+tMD1JgmWHuwn7n3GSPVh/tlTT67rbf
+         IxA4e85MG5sBV+WK66wRf4Nvq1zI8YyaO8OkJFg4cGzqnNdGMfnRIPQEV7WmwoCKaw4d
+         IqVOdr2bj4h2OwJw1VYCkxk32f18+USZj1Iyt7aGV/4wIE5r7M3WwK0+eeH93WyFFQsf
+         5DVhDsKOW09q09E7C4Q+yMR1TUaEJ7fHuDEbAsClMOhBAMGDGvh3SiUO4b5U5snbESCo
+         EUIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hkmPicKD/hvE1nW5aGFrwYzV3suaN7+QqIgid14W1RM=;
+        b=As8HAL1LiBTzbGKDdsb+7v8B+eNIo+dgkI6Hju19xKICSbJhjRfxEFvicTbw8TtCZw
+         ZqZUDC6KV0tdgUec2s7IcincWo5QzqH9a/uR0WlLsycGBjzTe6HH3IJt/aKMr42b1MVK
+         G/qCl9t8BBxM/Gz+dUW3zzOybbHeLpZtP3gHg9AWjqI1KpjMji8wWB2rT15qcVH+1axe
+         s/z6axH/H2h9zjDxs1kgsd3YMmC4953+jUFEFXb51hET0vqL1Z3mM70J6ny5BJKIemIJ
+         a6Rjb2Xb2PSlChAFWrtbpZhr/nIIxxZ3biGt4d5EYqhnHiQpGoUMm61pvP2I/e+yy/Aa
+         5pMQ==
+X-Gm-Message-State: AOAM531gAY29vPHF0J/Q5fjUhRzY7fKLfd4t4bK2UQJxmktn+09+yxHF
+        21U168Y1ouSI++metiwoq0MHJ3F7AJcLuzPe1qU=
+X-Google-Smtp-Source: ABdhPJwPT/qy7C/aB1WutrPy1ijeD+Bpz4Z5XsDs/7bMLIKfKtRBDE+jdCe5aVttOF3YSTuO53b2pw==
+X-Received: by 2002:aa7:c70d:: with SMTP id i13mr14284574edq.249.1624624210315;
+        Fri, 25 Jun 2021 05:30:10 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id c15sm3884351edu.19.2021.06.25.05.30.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 05:30:09 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     lgirdwood@gmail.com, broonie@kernel.org,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH 0/4] regulator: devres: remove unused device-managed unregister APIs
+Date:   Fri, 25 Jun 2021 15:23:20 +0300
+Message-Id: <20210625122324.327585-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625101649.49296-1-dwagner@suse.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 12:16:47PM +0200, Daniel Wagner wrote:
-> this is a followup on the crash I reported in
-> 
->   https://lore.kernel.org/linux-block/20210608183339.70609-1-dwagner@suse.de/
-> 
-> By moving the hardware check up the crash was gone. Unfortuntatly, I
-> don't understand why this fixes the crash. The per-cpu access is
-> crashing but I can't see why the blk_mq_update_nr_hw_queues() is
-> fixing this problem.
-> 
-> Even though I can't explain why it fixes it, I think it makes sense to
-> update the hardware queue mapping bevore we recreate the IO
-> queues. Thus I avoided in the commit message to say it fixes
-> something.
+These APIs aren't used anywhere and most-likely exist because of the
+general principle of C APIs, where if an API function does an
+allocation/registration, it must also have an equivalent
+deallocation/deregistration counterpart.
+    
+For devm_ functions this isn't all that true (for all cases), as the idea
+of these function is to provide an auto-cleanup logic on drivers/system
+de-init.
+    
+Removing these discourages any weird logic that could be created with
+such an API functions.
 
-I just discussed this with Hannes and we figured out how the crash is
-fixed by moving the blk_mq_update_nr_hw_queues() before the
-nvme_fc_create_hw_io_queues()/nvme_fc_connect_io_queues().
+Alexandru Ardelean (4):
+  regulator: devres: remove devm_regulator_unregister_notifier()
+    function
+  regulator: devres: remove devm_regulator_unregister() function
+  regulator: devres: remove
+    devm_regulator_bulk_unregister_supply_alias()
+  regulator: devres: unexport devm_regulator_unregister_supply_alias()
 
-First of all, blk_mq_update_nr_hw_queues() operates on the normal
-tag_set and not the admin_tag_set. That means when we move the
-blk_mq_update_nr_hw_queues() before the nvme_fc_connect_io_queues(), we
-update the mapping to only CPUs and hwctx which are available. When we
-then do the connect call nvmf_connect_io_queue() we will only allocate
-tags from queues which are not in the BLK_MQ_S_INACTIVE anymore. Hence
-we skip the blk_mq_put_tag() call.
+ drivers/regulator/devres.c         | 105 +----------------------------
+ include/linux/regulator/consumer.h |  23 -------
+ include/linux/regulator/driver.h   |   1 -
+ 3 files changed, 2 insertions(+), 127 deletions(-)
 
-> Also during testing I observed the we hang indivinetly in
-> blk_mq_freeze_queue_wait(). Again I can't explain why we get stuck
-> there but given a common pattern for the nvme_wait_freeze() is to use
-> it with a timeout I think the timeout should be used too :)
+-- 
+2.31.1
 
-The nvme_wait_freeeze() is probably not needed at all,
-__blk_mq_update_nr_hw_queues() already calls blk_mq_freeze_queue(). So
-there this is not needed at all. Furthermore, if we move
-blk_mq_update_nr_hw_queues() in front of nvme_fc_create_hw_io_queues()
-there can't be any pending I/Os because there are not queues.
