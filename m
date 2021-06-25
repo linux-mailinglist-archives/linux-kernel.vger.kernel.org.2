@@ -2,152 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10AAF3B3A41
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 184873B3A44
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232978AbhFYAt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 20:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42976 "EHLO
+        id S232947AbhFYAvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 20:51:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhFYAt4 (ORCPT
+        with ESMTP id S229521AbhFYAvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 20:49:56 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4115C061574;
-        Thu, 24 Jun 2021 17:47:35 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id q192so6661342pfc.7;
-        Thu, 24 Jun 2021 17:47:35 -0700 (PDT)
+        Thu, 24 Jun 2021 20:51:46 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4331AC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:49:26 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id b7so10587912ioq.12
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:49:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=8B//zImoFREh/Fl/sfCs/fTYt5LIydvNJamavm5crDo=;
-        b=fChoQ8YOJIJWOvywMQFN+OeVkjRs1GAQiSUaVGPXAWzbGNwgVtGIArBYmVPF2iMANZ
-         Kjb+jS4jhh7fg/kTNhHUcyj4cdqijHKYmipL0Ez2/sNyzDluX6qcpQfbVzZX46wSEKe6
-         WB1qzEFHdeqEczVjSvGI35HHNdI9uwIXTewNcuFVR/FQAfm/BXBdmnycKRrdZfOVXYzb
-         4JtBEh1QzIziVqij7djz98e6E4xEM3MrQuRphCKQS4LgI9cm+94rVGQvSqryFG7XxHpG
-         zW9V6LaeuukLBn5oCTGz0LGOqzbR8pXpZgpeTNR6WV7GBpMyga1bLSGGrfRcCIlNZlWJ
-         dRvA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3PR/UUWyRo3W86jHkTCrMGfl2K4mSiZxkeLBFZAP1Fk=;
+        b=zp1bHW9KUWJi4ZFV5WTYC81AR3omUkBmmTvp02R4K5SuzzL9ksQP/V2cIMR8kZVb6s
+         D1mYoyckpBqtKh7OAa0aniIP0CzD1qKNjmt/LusyOXdHyD2jjQhCOPnoXpAPnr8N2dSI
+         NqlYnAm/pSqaFCjQlVXQN2vZBEdI0UJ1i3WNpKmM4z/fdM+HV69bQTmo3VpbNBaocFfq
+         BiKSIq5wpFEb8w3aSeLguSW8mhc4vV5UBXeNYT7N7/0oRrPFpMYP3GALhw5gElYAH1pZ
+         rxqEqIVu3lzPOTNSAyBjKP3X9nelKqfUV7w820XEvJ7mRDR6qiyJhjbzzdshQztlfxWq
+         Cmrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=8B//zImoFREh/Fl/sfCs/fTYt5LIydvNJamavm5crDo=;
-        b=jglx1dvgGPH1deuK8/dx9TeA4ZaZqQu8SBjFoR+xE02hRytKfLbthUEfLodD8B1jLI
-         dcSv+8+tP3KBhZmqWPeBsDvP3vOKqgviLLTBP0QUhonSxefmlL/TnufxcpSoiNEJgcJE
-         GVeFjhge+MxBD7XWHqWsKBekcgspitVfcSlPtHspWCXjLxTDZDjJ3jxRLR+Zu6iUDJBm
-         SKGK4cYWh0mb0l5oOydyAmYI+FJEM62yM63Dn1IUF+aNlGG1WLUN1eRTDj6acwquyp7i
-         aB0hGCjUty/m/fny+xJhsDyPmw7kgooHjFcdg+VjOC3UKgH03ip9E48yOxPS18ol7+DQ
-         QrmQ==
-X-Gm-Message-State: AOAM533v/gp3y4SixZCFjX417T/UdN/9UQtUjd/ZKZ+IBfPJlwnL1moK
-        /NbZxzOBoAqRe76BVRRhX6A=
-X-Google-Smtp-Source: ABdhPJwON/Fs62ZvX5ajW1fuMBTnaaYI5fvdSlynTEE/cGVNseETu0dhn7AIV11BWy83gDWQW1Cx0A==
-X-Received: by 2002:a63:904b:: with SMTP id a72mr7146183pge.66.1624582055212;
-        Thu, 24 Jun 2021 17:47:35 -0700 (PDT)
-Received: from nuc ([202.133.196.196])
-        by smtp.gmail.com with ESMTPSA id x20sm3957374pfh.112.2021.06.24.17.47.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 17:47:34 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 08:47:30 +0800
-From:   Du Cheng <ducheng2@gmail.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/sgx: Suppress WARN on inability to sanitize EPC if
- ksgxd is stopped
-Message-ID: <YNUnoqUsU2b1GC2C@nuc>
-References: <20210616004458.2192889-1-seanjc@google.com>
- <YMmUHRGwXSIYJTDf@nuc>
- <20210623133219.v6c62zwtj5qowib3@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3PR/UUWyRo3W86jHkTCrMGfl2K4mSiZxkeLBFZAP1Fk=;
+        b=UHWXLhIDDuNbNTfHPY14Bmq3sqL6w8tiyBX5iMzwE3bHhstj9f/bf8ZqRHS2igMKBc
+         dyuNIW5f/gHpYIE5cmhwoudKDtCU5exLXKxDu3c930I3PDlmUopH04RfRItiyyiNto0x
+         PyKRGcTW4VW19MCT7/nxjK4pkoNLn12NZ3efZjpiS0GywKNlgOfmJ5xBXGxY0LYDhUp3
+         nn93kfOe/Eq59DD4nZfcz+dnw/JhXSHJz6YHHDcYEGDCcT4DjohsTMvxQMELoURFT/c/
+         WdJvNt8VGRRhocTIKYkQ/OnReoY+5YKU33mAD6loBxXjff+AZgDV4hjjFoznwyaeao/A
+         ZLKw==
+X-Gm-Message-State: AOAM532ufSoVC51wON1OXKSKIesX+Ud1NHLrayQZsIqGxhQ4d04TRu0K
+        AAfGCcQhReyOWPPxx0IuOjnM3w==
+X-Google-Smtp-Source: ABdhPJzl3Ao3+69Nt+XJsgbEnmxvRKyJfWDOB6efG73px9/nSiJE70wm/ddnuIFkkRoTTREqJA1ejA==
+X-Received: by 2002:a05:6602:12:: with SMTP id b18mr6007226ioa.115.1624582165656;
+        Thu, 24 Jun 2021 17:49:25 -0700 (PDT)
+Received: from [192.168.1.134] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id h18sm2595750ilr.86.2021.06.24.17.49.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 17:49:25 -0700 (PDT)
+Subject: Re: [PATCH] ata: rb532_cf: remove redundant codes
+To:     13145886936@163.com
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>
+References: <20210622115507.359017-1-13145886936@163.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <d69296c5-faf3-24f7-bf3a-faede4ed79e5@kernel.dk>
+Date:   Thu, 24 Jun 2021 18:49:24 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210622115507.359017-1-13145886936@163.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210623133219.v6c62zwtj5qowib3@kernel.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Wed, Jun 23, 2021 at 04:32:19PM +0300, Jarkko Sakkinen a écrit :
-> On Wed, Jun 16, 2021 at 02:03:09PM +0800, Du Cheng wrote:
-> > Le Tue, Jun 15, 2021 at 05:44:58PM -0700, Sean Christopherson a écrit :
-> > > Don't WARN on having unsanitized EPC pages if ksgxd is stopped early,
-> > > e.g. if sgx_init() realizes there will be no downstream consumers of EPC.
-> > > If ksgxd is stopped early, EPC pages may be left on the dirty list, but
-> > > that's ok because ksgxd is only stopped if SGX initialization failed or
-> > > if the kernel is going down.  In either case, the EPC won't be used.
-> > > 
-> > > This bug was exposed by the addition of KVM support, but has existed and
-> > > was hittable since the original sanitization code was added.  Prior to
-> > > adding KVM support, if Launch Control was not fully enabled, e.g. when
-> > > running on older hardware, sgx_init() bailed immediately before spawning
-> > > ksgxd because X86_FEATURE_SGX was cleared if X86_FEATURE_SGX_LC was
-> > > unsupported.
-> > > 
-> > > With KVM support, sgx_drv_init() handles the X86_FEATURE_SGX_LC check
-> > > manually, so now there's any easy-to-hit case where sgx_init() will spawn
-> > > ksgxd and _then_ fail to initialize, which results in sgx_init() stopping
-> > > ksgxd before it finishes sanitizing the EPC.
-> > > 
-> > > Prior to KVM support, the bug was much harder to hit because it basically
-> > > required char device registration to fail.
-> > > 
-> > > Reported-by: Du Cheng <ducheng2@gmail.com>
-> > > Fixes: e7e0545299d8 ("x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections")
-> > > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > > ---
-> > > 
-> > > Lightly tested due to lack of hardware.  I hacked the flow to verify that
-> > > stopping early will leave work pending, and that rechecking should_stop()
-> > > suppress the resulting WARN.
-> > > 
-> > >  arch/x86/kernel/cpu/sgx/main.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> > > index ad904747419e..fbad2b9625a5 100644
-> > > --- a/arch/x86/kernel/cpu/sgx/main.c
-> > > +++ b/arch/x86/kernel/cpu/sgx/main.c
-> > > @@ -425,7 +425,7 @@ static int ksgxd(void *p)
-> > >  	__sgx_sanitize_pages(&sgx_dirty_page_list);
-> > >  
-> > >  	/* sanity check: */
-> > > -	WARN_ON(!list_empty(&sgx_dirty_page_list));
-> > > +	WARN_ON(!list_empty(&sgx_dirty_page_list) && !kthread_should_stop());
-> > >  
-> > >  	while (!kthread_should_stop()) {
-> > >  		if (try_to_freeze())
-> > > -- 
-> > > 2.32.0.272.g935e593368-goog
-> > > 
-> > 
-> > I applied this patch on 5.13-rc6, and it no longer causes to trigger WARN_ON()
-> > on my NUC:
-> > 
-> > ```
-> > 
-> > [    0.669411] PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
-> > [    0.669412] software IO TLB: mapped [mem 0x0000000017cb9000-0x000000001bcb9000] (64MB)
-> > [    0.672788] platform rtc_cmos: registered platform RTC device (no PNP device found)
-> > [    0.672805] sgx: EPC section 0x30200000-0x35f7ffff
-> > [    0.674239] Initialise system trusted keyrings
-> > [    0.674254] Key type blacklist registered
-> > 
-> > ```
-> > 
-> > Regards,
-> > Du Cheng
+On 6/22/21 5:55 AM, 13145886936@163.com wrote:
+> From: gushengxian <gushengxian@yulong.com>
 > 
-> Can you thus give a tested-by for this?
-> 
-> /Jarkko
+> The codes "dev_err(&pdev->dev, "no IRQ resource found\n");" is
+> redundant because platform_get_irq() already prints an error.
 
-Certainly.
+Applied, thanks.
 
-Tested-by: Du Cheng <ducheng2@gmail.com>
+-- 
+Jens Axboe
 
