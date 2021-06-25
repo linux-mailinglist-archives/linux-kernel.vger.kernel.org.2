@@ -2,92 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1078F3B3CB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0439E3B3CB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233180AbhFYGap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 02:30:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42902 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230097AbhFYGao (ORCPT
+        id S233169AbhFYGeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 02:34:31 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5077 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230097AbhFYGea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 02:30:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624602503;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sIoHe1dv/Px9G99hVUaTNA02aE7yvWh4n1fZW/mQPxM=;
-        b=HKZgJcYsYvpuNQhtIrXinUw3LBJUc0nWczQKo2fr0uwacWNyw4nMya7ChpGk/09obeN5Ar
-        WFHktVrslHH53o1LxTOM83FL0vLddcFweucue/NGXVIgRki9hmJUwCRu89Ac2/SjF7+R6V
-        I8BJ2aZ1SWwrfLo+Zz+fIa5Nb1tAh1w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-463-m6s6sbZIOrmKzWjswvEP_A-1; Fri, 25 Jun 2021 02:28:21 -0400
-X-MC-Unique: m6s6sbZIOrmKzWjswvEP_A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63E5418414A1;
-        Fri, 25 Jun 2021 06:28:20 +0000 (UTC)
-Received: from [10.64.54.233] (vpn2-54-233.bne.redhat.com [10.64.54.233])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1DE405D6A8;
-        Fri, 25 Jun 2021 06:28:17 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: linux-next: build failure after merge of the akpm-current tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210624194301.7474ce76@canb.auug.org.au>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <0b1d5003-830e-b284-0fca-cc62d9192b65@redhat.com>
-Date:   Fri, 25 Jun 2021 16:28:15 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Fri, 25 Jun 2021 02:34:30 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GB6V604KZzXkxY;
+        Fri, 25 Jun 2021 14:26:54 +0800 (CST)
+Received: from [10.174.177.120] (10.174.177.120) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 25 Jun 2021 14:32:06 +0800
+Subject: Re: [Phishing Risk] [External] [PATCH 2/3] mm/zsmalloc.c: combine two
+ atomic ops in zs_pool_dec_isolated()
+To:     Muchun Song <songmuchun@bytedance.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>, <ngupta@vflare.org>,
+        <senozhatsky@chromium.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+References: <20210624123930.1769093-1-linmiaohe@huawei.com>
+ <20210624123930.1769093-3-linmiaohe@huawei.com>
+ <CAMZfGtUNtR3ZPv4m5bBCGdE5GuMR5Bw18_n7YzqB4s6QHyV+Pg@mail.gmail.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <1b38b33f-316e-1816-216f-9923f612ceb6@huawei.com>
+Date:   Fri, 25 Jun 2021 14:32:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210624194301.7474ce76@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <CAMZfGtUNtR3ZPv4m5bBCGdE5GuMR5Bw18_n7YzqB4s6QHyV+Pg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Originating-IP: [10.174.177.120]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
-
-On 6/24/21 7:43 PM, Stephen Rothwell wrote:
-> Hi all,
+On 2021/6/25 13:01, Muchun Song wrote:
+> On Thu, Jun 24, 2021 at 8:40 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>>
+>> atomic_long_dec_and_test() is equivalent to atomic_long_dec() and
+>> atomic_long_read() == 0. Use it to make code more succinct.
 > 
-> After merging the akpm-current tree, today's linux-next build (powerpc
-> ppc64_defconfig) failed like this:
-> 
-> mm/page_reporting.c:14:37: error: initializer element is not constant
->     14 | unsigned int page_reporting_order = pageblock_order;
->        |                                     ^~~~~~~~~~~~~~~
-> 
-> Caused by commit
-> 
->    223f64d9e679 ("mm/page_reporting: export reporting order as module parameter")
-> 
-> pageblock_order is defined to be various things depending on CONFIG_
-> symbols.
-> 
-> I have reverted that commit (and the following three) for today.
+> Actually, they are not equal. atomic_long_dec_and_test implies a
+> full memory barrier around it but atomic_long_dec and atomic_long_read
+> don't.
 > 
 
-Yes, Please drop this series for now.
+Many thanks for comment. They are indeed not completely equal as you said.
+What I mean is they can do the same things we want in this specified context.
+Thanks again.
 
-The v3 was applied and caused the build error. Actually, we need
-v5, which was posted couple of hours ago.
-
-    v5: https://lkml.org/lkml/2021/6/24/1137
-
-Thanks,
-Gavin
+> That RMW operations that have a return value is equal to the following.
+> 
+> smp_mb__before_atomic()
+> non-RMW operations or RMW operations that have no return value
+> smp_mb__after_atomic()
+> 
+> Thanks.
+> 
+>>
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  mm/zsmalloc.c | 3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+>> index 1476289b619f..0b4b23740d78 100644
+>> --- a/mm/zsmalloc.c
+>> +++ b/mm/zsmalloc.c
+>> @@ -1828,13 +1828,12 @@ static void putback_zspage_deferred(struct zs_pool *pool,
+>>  static inline void zs_pool_dec_isolated(struct zs_pool *pool)
+>>  {
+>>         VM_BUG_ON(atomic_long_read(&pool->isolated_pages) <= 0);
+>> -       atomic_long_dec(&pool->isolated_pages);
+>>         /*
+>>          * There's no possibility of racing, since wait_for_isolated_drain()
+>>          * checks the isolated count under &class->lock after enqueuing
+>>          * on migration_wait.
+>>          */
+>> -       if (atomic_long_read(&pool->isolated_pages) == 0 && pool->destroying)
+>> +       if (atomic_long_dec_and_test(&pool->isolated_pages) && pool->destroying)
+>>                 wake_up_all(&pool->migration_wait);
+>>  }
+>>
+>> --
+>> 2.23.0
+>>
+> .
+> 
 
