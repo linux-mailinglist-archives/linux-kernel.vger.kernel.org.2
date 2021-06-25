@@ -2,163 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510FA3B46DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CFE53B46DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbhFYPsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 11:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbhFYPsJ (ORCPT
+        id S230037AbhFYPsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 11:48:24 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44476 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230008AbhFYPsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 11:48:09 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D615C061767
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:45:47 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id o6so19597477qkh.4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:45:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mwj/CahjscU+y04bpHECBUvebi/V1MfEC2fzu395QLo=;
-        b=nGN4vMQZ8P1icKs0xdH3WkkvUZPThVxP/td0QdTl39qQJOP6NhKPS3e9RK+pI4LHdI
-         a2dGLPdCebQ+VeD0V/jh4Im7m46MIeigsGvBjy27GgG8SjVOPd5CYbtHw/86Fuegahfu
-         bXsWZDt7oTfEtuHt0FwS+6OS5EtwpT4QDzW4mBvC9IJeN3L+rPP9lRWeHKB0ww7eFHGx
-         681j/vv0uF6uiKG5FzsFC9hoMRqsUCpf2zmHWadlm/SUeUsuo/TX7+U1sThnPRH+9wKP
-         HESKor79vVfbqqfmzqJP7qFeNN0zL9YYJAK98R83MaIf4fqTQGLSOTS3FSwgK+w1+pMO
-         qopA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mwj/CahjscU+y04bpHECBUvebi/V1MfEC2fzu395QLo=;
-        b=JC7jHrzpL8mz3w6D3Ks5CziSRUTmIKvSEvlo5MmBlDsjtiVEJySEz3iGP3+tx9TAca
-         +pPVUXCqdDGFPfXE23V1YJ0Iu8vcatHSzGpgVTOWvZ7V0dVk6rDYkFkh4XQeM4hMnPrU
-         yb6618IkXpSbRmT1kpYTPN013HvJsw/25vNIEW30BG/2/iN87M0I0V8lRJUFuFYq8M6P
-         EzV8eBP09O5n913qcXPsQCo0/Ol9A60z7qYAwIfVAqXP76jTI9hmcjmAag0P2VGH50dw
-         e5FYMkR5+xXhDNATp/4UZoVWNElGJRXuZ3drfYyQx1xvt2yV2aLe5mCn+KYrTGoYh8lE
-         qjjw==
-X-Gm-Message-State: AOAM531WityznyOtUVpg0ggmywmAxHjvBR/05ZVUkhFFNrx6PAtWPPXl
-        7cBg3O9znxCUWJv17jh+2DYOGA==
-X-Google-Smtp-Source: ABdhPJwWTpsA8qfT4xts8nRvl/v0ZS30IZkHdZR0u40CfAR/R+mZvZlElQB5EgtIN1cIYBwALUmv8Q==
-X-Received: by 2002:a37:a254:: with SMTP id l81mr11818502qke.90.1624635946664;
-        Fri, 25 Jun 2021 08:45:46 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id s8sm3805562qtk.96.2021.06.25.08.45.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 08:45:46 -0700 (PDT)
-Subject: Re: [Patch v2 1/5] firmware: qcom_scm: Introduce SCM calls to access
- LMh
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
-        rjw@rjwysocki.net, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210624115813.3613290-1-thara.gopinath@linaro.org>
- <20210624115813.3613290-2-thara.gopinath@linaro.org>
- <YNTFdCPU2saMCT/y@google.com>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <9f302951-e65b-8b4f-7608-8b96e8d341a6@linaro.org>
-Date:   Fri, 25 Jun 2021 11:45:43 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 25 Jun 2021 11:48:22 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 19C2521B9C;
+        Fri, 25 Jun 2021 15:46:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624635961; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=iYJr7cKmMYd/Cux85e0fi7gLs7DofWnGamSfIvMEazI=;
+        b=O+xW6j7hCynDQ6rKtYlMGdQbANT7dTyfpheYyz+ilkDmElfPymsy3Wss+f2GoId3I9ll7S
+        Ax6BYge+sjiGBe5vN8UulVWnIsaXIyZBJhXUG4NjKumhTRRqjgQlelm8N0lIN48DvIjCA+
+        1qVuM4rSJr/AbbfedJlC7jkE5Nk7R6s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624635961;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=iYJr7cKmMYd/Cux85e0fi7gLs7DofWnGamSfIvMEazI=;
+        b=vEzU7Yyby42GW+UGL1CG3HYXnEEDugtPgG2ex+SBQJiVHfHuHbHelfZ3oUpeyVzlKhDk6t
+        XBaCyH4bi8PeFJBg==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 9D04E11A97;
+        Fri, 25 Jun 2021 15:46:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624635961; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=iYJr7cKmMYd/Cux85e0fi7gLs7DofWnGamSfIvMEazI=;
+        b=O+xW6j7hCynDQ6rKtYlMGdQbANT7dTyfpheYyz+ilkDmElfPymsy3Wss+f2GoId3I9ll7S
+        Ax6BYge+sjiGBe5vN8UulVWnIsaXIyZBJhXUG4NjKumhTRRqjgQlelm8N0lIN48DvIjCA+
+        1qVuM4rSJr/AbbfedJlC7jkE5Nk7R6s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624635961;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=iYJr7cKmMYd/Cux85e0fi7gLs7DofWnGamSfIvMEazI=;
+        b=vEzU7Yyby42GW+UGL1CG3HYXnEEDugtPgG2ex+SBQJiVHfHuHbHelfZ3oUpeyVzlKhDk6t
+        XBaCyH4bi8PeFJBg==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id AQRqIzj61WBmOQAALh3uQQ
+        (envelope-from <lhenriques@suse.de>); Fri, 25 Jun 2021 15:46:00 +0000
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id dbfb3c6a;
+        Fri, 25 Jun 2021 15:45:59 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Jeff Layton <jlayton@kernel.org>, Ilya Dryomov <idryomov@gmail.com>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luis Henriques <lhenriques@suse.de>, stable@vger.kernel.org
+Subject: [RFC PATCH] ceph: reduce contention in ceph_check_delayed_caps()
+Date:   Fri, 25 Jun 2021 16:45:59 +0100
+Message-Id: <20210625154559.8148-1-lhenriques@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <YNTFdCPU2saMCT/y@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Function ceph_check_delayed_caps() is called from the mdsc->delayed_work
+workqueue and it can be kept looping for quite some time if caps keep being
+added back to the mdsc->cap_delay_list.  This may result in the watchdog
+tainting the kernel with the softlockup flag.
 
+This patch re-arranges the loop through the caps list so that it initially
+removes all the caps from list, adding them to a temporary list.  And then, with
+less locking contention, it will eventually call the ceph_check_caps() for each
+inode.  Any caps added to the list in the meantime will be handled in the next
+run.
 
-On 6/24/21 1:48 PM, Matthias Kaehlcke wrote:
-> On Thu, Jun 24, 2021 at 07:58:09AM -0400, Thara Gopinath wrote:
->> Introduce SCM calls to access/configure limits management hardware(LMH).
->>
->> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
->> ---
->>
->> v1->v2:
->> 	Changed the input parameters in qcom_scm_lmh_dcvsh from payload_buf and
->> 	payload_size to payload_fn, payload_reg, payload_val as per Bjorn's review
->> 	comments.
->>
->>   drivers/firmware/qcom_scm.c | 54 +++++++++++++++++++++++++++++++++++++
->>   drivers/firmware/qcom_scm.h |  4 +++
->>   include/linux/qcom_scm.h    | 14 ++++++++++
->>   3 files changed, 72 insertions(+)
->>
->> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
->> index ee9cb545e73b..19e9fb91d084 100644
->> --- a/drivers/firmware/qcom_scm.c
->> +++ b/drivers/firmware/qcom_scm.c
->> @@ -1147,6 +1147,60 @@ int qcom_scm_qsmmu500_wait_safe_toggle(bool en)
->>   }
->>   EXPORT_SYMBOL(qcom_scm_qsmmu500_wait_safe_toggle);
->>   
->> +bool qcom_scm_lmh_dcvsh_available(void)
->> +{
->> +	return __qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_LMH, QCOM_SCM_LMH_LIMIT_DCVSH);
->> +}
->> +EXPORT_SYMBOL(qcom_scm_lmh_dcvsh_available);
->> +
->> +int qcom_scm_lmh_profile_change(u32 profile_id)
->> +{
->> +	struct qcom_scm_desc desc = {
->> +		.svc = QCOM_SCM_SVC_LMH,
->> +		.cmd = QCOM_SCM_LMH_LIMIT_PROFILE_CHANGE,
->> +		.arginfo = QCOM_SCM_ARGS(1, QCOM_SCM_VAL),
->> +		.args[0] = profile_id,
->> +		.owner = ARM_SMCCC_OWNER_SIP,
->> +	};
->> +
->> +	return qcom_scm_call(__scm->dev, &desc, NULL);
->> +}
->> +EXPORT_SYMBOL(qcom_scm_lmh_profile_change);
->> +
->> +int qcom_scm_lmh_dcvsh(u32 payload_fn, u32 payload_reg, u32 payload_val,
->> +		       u64 limit_node, u32 node_id, u64 version)
->> +{
->> +	dma_addr_t payload_phys;
->> +	u32 *payload_buf;
->> +	int payload_size = 5 * sizeof(u32);
->> +
->> +	struct qcom_scm_desc desc = {
->> +		.svc = QCOM_SCM_SVC_LMH,
->> +		.cmd = QCOM_SCM_LMH_LIMIT_DCVSH,
->> +		.arginfo = QCOM_SCM_ARGS(5, QCOM_SCM_RO, QCOM_SCM_VAL, QCOM_SCM_VAL,
->> +					QCOM_SCM_VAL, QCOM_SCM_VAL),
->> +		.args[1] = payload_size,
->> +		.args[2] = limit_node,
->> +		.args[3] = node_id,
->> +		.args[4] = version,
->> +		.owner = ARM_SMCCC_OWNER_SIP,
->> +	};
->> +
->> +	payload_buf = dma_alloc_coherent(__scm->dev, payload_size, &payload_phys, GFP_KERNEL);
->> +	if (!payload_buf)
->> +		return -ENOMEM;
->> +
->> +	payload_buf[0] = payload_fn;
->> +	payload_buf[1] = 0;
->> +	payload_buf[2] = payload_reg;
->> +	payload_buf[3] = 1;
->> +	payload_buf[4] = payload_val;
->> +
->> +	desc.args[0] = payload_phys;
->> +	return qcom_scm_call(__scm->dev, &desc, NULL);
-> 
-> dma_free_coherent()?
+Cc: stable@vger.kernel.org
+Signed-off-by: Luis Henriques <lhenriques@suse.de>
+---
+Hi Jeff!
 
-yep.. A free should be done here. Will fix it
+So, I've not based this patch on top of your patchset that gets rid of
+ceph_async_iput() so that it will make it easier to backport it for stable
+kernels.  Of course I'm not 100% this classifies as stable material.
 
-> 
+Other than that, I've been testing this patch and I couldn't see anything
+breaking.  Let me know what you think.
 
--- 
-Warm Regards
-Thara (She/Her/Hers)
+(I *think* I've seen a tracker bug for this in the past but I couldn't
+find it.  I guess it could be added as a 'Link:' tag.)
+
+Cheers,
+--
+Luis
+
+ fs/ceph/caps.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+index a5e93b185515..727e41e3b939 100644
+--- a/fs/ceph/caps.c
++++ b/fs/ceph/caps.c
+@@ -4229,6 +4229,7 @@ void ceph_check_delayed_caps(struct ceph_mds_client *mdsc)
+ {
+ 	struct inode *inode;
+ 	struct ceph_inode_info *ci;
++	LIST_HEAD(caps_list);
+ 
+ 	dout("check_delayed_caps\n");
+ 	spin_lock(&mdsc->cap_delay_lock);
+@@ -4239,19 +4240,23 @@ void ceph_check_delayed_caps(struct ceph_mds_client *mdsc)
+ 		if ((ci->i_ceph_flags & CEPH_I_FLUSH) == 0 &&
+ 		    time_before(jiffies, ci->i_hold_caps_max))
+ 			break;
+-		list_del_init(&ci->i_cap_delay_list);
++		list_move_tail(&ci->i_cap_delay_list, &caps_list);
++	}
++	spin_unlock(&mdsc->cap_delay_lock);
+ 
++	while (!list_empty(&caps_list)) {
++		ci = list_first_entry(&caps_list,
++				      struct ceph_inode_info,
++				      i_cap_delay_list);
++		list_del_init(&ci->i_cap_delay_list);
+ 		inode = igrab(&ci->vfs_inode);
+ 		if (inode) {
+-			spin_unlock(&mdsc->cap_delay_lock);
+ 			dout("check_delayed_caps on %p\n", inode);
+ 			ceph_check_caps(ci, 0, NULL);
+ 			/* avoid calling iput_final() in tick thread */
+ 			ceph_async_iput(inode);
+-			spin_lock(&mdsc->cap_delay_lock);
+ 		}
+ 	}
+-	spin_unlock(&mdsc->cap_delay_lock);
+ }
+ 
+ /*
