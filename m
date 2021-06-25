@@ -2,91 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4EE3B3E2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E7C3B3E31
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbhFYIH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:07:59 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59804 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhFYIH6 (ORCPT
+        id S230025AbhFYIIU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Jun 2021 04:08:20 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:33479 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229799AbhFYIIQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:07:58 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 073A81FE4B;
-        Fri, 25 Jun 2021 08:05:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624608337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zcKRugiQvtyy62Ukgu1W5M8aUXyIgtq7LR6SD9mke1g=;
-        b=XtVADPq0THcmtBiqyCLp58Xj8c1uHH3YCFEiYP7MRwbd4BP++b68Cj95158F+4ZlVsuX8L
-        ETJoDakF1T7ntRNQrNIs08+qqanBR6SleRr7CTXpExPvUV88U7IDJh704Khsw+G5pJOV10
-        JnJxNb+Gcx5LlcnV0uB97EbjEb5LD+Q=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C0CA2A3BEB;
-        Fri, 25 Jun 2021 08:05:36 +0000 (UTC)
-Date:   Fri, 25 Jun 2021 10:05:35 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 12/46] mm/memcg: Use the node id in
- mem_cgroup_update_tree()
-Message-ID: <YNWOT2iAyo6xtR17@dhcp22.suse.cz>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-13-willy@infradead.org>
- <YNLs+CXPpULk8Y/3@infradead.org>
- <YNSwqfX1EwJccIeu@casper.infradead.org>
+        Fri, 25 Jun 2021 04:08:16 -0400
+Received: from [77.244.183.192] (port=64446 helo=[192.168.178.41])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1lwgqY-000EWi-K3; Fri, 25 Jun 2021 10:05:54 +0200
+Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+References: <20210622115604.GA25503@lpieralisi>
+ <20210622121649.ouiaecdvwutgdyy5@pali>
+ <18a104a9-2cb8-7535-a5b2-f5f049adff47@lucaceresoli.net>
+ <4d4c0d4d-41b4-4756-5189-bffa15f88406@ti.com>
+ <20210622205220.ypu22tuxhpdn2jwz@pali>
+ <2873969e-ac56-a41f-0cc9-38e387542aa1@lucaceresoli.net>
+ <20210622211901.ikulpy32d6qlr4yw@pali>
+ <588741e4-b085-8ae2-3311-27037c040a57@lucaceresoli.net>
+ <20210622222328.3lfgkrhsdy6izedv@pali>
+ <CACRpkdai2cvoNFR8yH2MHP+R27nQm1HZNK4-mJ50mE7DHrBmXw@mail.gmail.com>
+ <20210624233448.ouvczfbogmtnbrye@pali>
+ <CACRpkdZyMr-8Qmf3S7R+RcWe5shhnMeBoEsJoQdREimpB-xw+g@mail.gmail.com>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <20966897-c2c9-92e2-c73e-78e0e8acc13d@lucaceresoli.net>
+Date:   Fri, 25 Jun 2021 10:05:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNSwqfX1EwJccIeu@casper.infradead.org>
+In-Reply-To: <CACRpkdZyMr-8Qmf3S7R+RcWe5shhnMeBoEsJoQdREimpB-xw+g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8BIT
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 24-06-21 17:19:53, Matthew Wilcox wrote:
-> On Wed, Jun 23, 2021 at 10:12:40AM +0200, Christoph Hellwig wrote:
-> > On Tue, Jun 22, 2021 at 01:15:17PM +0100, Matthew Wilcox (Oracle) wrote:
-> > >  static struct mem_cgroup_per_node *
-> > > -mem_cgroup_page_nodeinfo(struct mem_cgroup *memcg, struct page *page)
-> > > +mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
-> > >  {
-> > > -	int nid = page_to_nid(page);
-> > > -
-> > >  	return memcg->nodeinfo[nid];
-> > >  }
-> > 
-> > I'd just kill this function entirely and open code it into the only
-> > caller
+Hi,
+
+On 25/06/21 02:09, Linus Walleij wrote:
+> On Fri, Jun 25, 2021 at 1:34 AM Pali Rohár <pali@kernel.org> wrote:
 > 
-> Done.
+>>> gpiod_set_value(gpiod, 1) == assert the line
+>>> gpiod_set_value(gpiod, 0) == de-assert the line
+>>
+>> Problem is that some pci controller drivers (e.g. pci-j721e.c or
+>> pcie-rockchip-host.c) expects that gpiod_set_value_cansleep(gpiod, 1)
+>> de-asserts the line and it is already used in this way.
+>>
+>> Which is opposite of the behavior which you wrote above.
+> 
+> I sketched a way out of the problem using a quirk in
+> gpiolib in another response. We have a few of these
+> cases where we have to code our way out of mistakes,
+> such things happen.
+> 
+> The problem is common, and due to the fact that device tree
+> authors ignores the flag GPIO_ACTIVE_HIGH (which has
+> been around since the early days of device tree on PowerPC)
+> instead they opt to do the inversion in code. Which violates the
+> contract that the DT should describe the hardware.
+> 
+> The ambition of the DT specifications/schemas are to be operating
+> system independent, and this kind of stuff creates a situation
+> where other operating systems can't use the specification without
+> also going and looking at how Linux has implemented stuff.
+> Which is against the ambition of the device tree work.
+> 
+>> I would suggest to define enum/macro with word ASSERT and DEASSERT in
+>> its name instead of just true/false boolean or 0/1 int.
+>>
+>> In case of this PERST# misunderstanding, having assert/deassert in name
+>> should really help.
+> 
+> Hm that looks useful, Bart &co what do you think?
+> 
+> #define GPIOD_ASSERTED 1
+> #define GPIOD_DEASSERTED 0
+> 
+> in consumer.h, would that be helpful for users?
 
-This makes sense.
-
-> > > -	mctz = soft_limit_tree_from_page(page);
-> > > +	mctz = soft_limit_tree_node(nid);
-> > 
-> > And while were at it, soft_limit_tree_node seems like a completely
-> > pointless helper that does nothing but obsfucating the code.  While
-> > you touch this area it might be worth to spin another patch to just
-> > remove it as well.
-
-Yeah, the whole soft limit reclaim code is kinda pain to even look at.
-Opencoding those two will certainly not make it worse so fine with me.
-
-> I'm scared that if I touch this file too much, people will start to
-> think I know something about memcgs.  Happy to add it on; cc'ing
-> maintainers.
-
-get_maintainers will surely notice ;)
+Looks like a good idea to me. It would help making people aware that
+gpiod_set_value() & co do _not_ take a physical line value. It's done
+that way since ages, it's documented, yet many developers are still
+unaware of that...
 
 -- 
-Michal Hocko
-SUSE Labs
+Luca
+
