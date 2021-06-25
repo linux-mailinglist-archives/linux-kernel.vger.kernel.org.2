@@ -2,154 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE493B3E45
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4342F3B3E47
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbhFYINb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:13:31 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:60282 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhFYIN3 (ORCPT
+        id S230048AbhFYIOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhFYIOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:13:29 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id F3CE51FE5E;
-        Fri, 25 Jun 2021 08:11:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624608668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Fri, 25 Jun 2021 04:14:03 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8320C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 01:11:42 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624608700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=rVIH1esBD9VFAEJAEFqDktBcj3lfhTJUdrlqCqIPwYg=;
-        b=hZll+1qbTsCnNd40Zvjw/ueHvgCu6TwSoeM1JMbultQ1CDID9mrC/m7pbIIY7YPZHUgmx9
-        KG8oFxWGxy6BzYNYKMU1pwU1IblwBT7Gr1Y+L1jl9YCCOqTt58N1bl1ET7O6UNIX4Un+Uk
-        6HZma729QTHDpGWGhtfdVxMM5coJBhk=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C6906A3C0D;
-        Fri, 25 Jun 2021 08:11:07 +0000 (UTC)
-Date:   Fri, 25 Jun 2021 10:11:07 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 13/46] mm/memcg: Convert commit_charge() to take a
- folio
-Message-ID: <YNWPm/IC97CHLr8O@dhcp22.suse.cz>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-14-willy@infradead.org>
+        bh=MtTpvCaDpTpRwJ7zZBGx4YUucpXj870woqm40fqmy5w=;
+        b=rk4+OTUMLGh8+vYEkhJLLEhf4TnI5agvbTZXqsZmRQexJIlvqLWXt4HZAAxJ9iAmYjfKiF
+        94l2i5qRAE8wDzBTzSpjPuObOZVADYYPhJ9agOG0KlICQMglXOIzfNinu25lRsULuK5q0t
+        K1K0T3qoa5amuyzHWwmS3j2oOMCs4yU1o8gquZVUnZbDegcUdh11Tt4gNYRnv1CI7VO6ib
+        /gJLY7eloHF/pclW1LM5oGAGgynaomeSYu0AjUcIn7q5hx1oxB4MCtLHIvKFnV57hc6moI
+        5J9Az8HLDcWu/IaibgYjD8jLpInlGU6/e2VLJ5kzuh3gsP9qXc5MJxZ6P+pvDw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624608700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MtTpvCaDpTpRwJ7zZBGx4YUucpXj870woqm40fqmy5w=;
+        b=Fo2+zSwBgRNxvmap/sIXPsg2rM1I0gI0dFvfVC6JtNK537Htv471XCF4TVM5xJjbSFfC8M
+        LvrZN+2CKuETsbCQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v3 6/6] printk: syslog: close window between wait and read
+In-Reply-To: <YNSj59rKfGARoWRD@alley>
+References: <20210624111148.5190-1-john.ogness@linutronix.de> <20210624111148.5190-7-john.ogness@linutronix.de> <YNSj59rKfGARoWRD@alley>
+Date:   Fri, 25 Jun 2021 10:17:40 +0206
+Message-ID: <87zgvetlc3.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622121551.3398730-14-willy@infradead.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 22-06-21 13:15:18, Matthew Wilcox wrote:
-> The memcg_data is only set on the head page, so enforce that by
-> typing it as a folio.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+On 2021-06-24, Petr Mladek <pmladek@suse.com> wrote:
+>> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+>> index 90954cb5a0ab..4737804d6c6d 100644
+>> --- a/kernel/printk/printk.c
+>> +++ b/kernel/printk/printk.c
+>> @@ -1542,8 +1570,13 @@ static int syslog_print(char __user *buf, int size)
+>>  		len += n;
+>>  		size -= n;
+>>  		buf += n;
+>> -	}
+>>  
+>> +		if (!size)
+>> +			break;
+>
+> This looks like an unrelated optimization. If I get it correctly, it
+> does not change the existing behavior.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
-Thanks!
+It was a necessary change in order to preserve the existing logic but
+allow the lock to be held when enterring the loop. Before the patch we
+have:
 
-> ---
->  mm/memcontrol.c | 27 +++++++++++++--------------
->  1 file changed, 13 insertions(+), 14 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 7423cb11eb88..7939e4e9118d 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2700,9 +2700,9 @@ static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
->  }
->  #endif
->  
-> -static void commit_charge(struct page *page, struct mem_cgroup *memcg)
-> +static void commit_charge(struct folio *folio, struct mem_cgroup *memcg)
->  {
-> -	VM_BUG_ON_PAGE(page_memcg(page), page);
-> +	VM_BUG_ON_FOLIO(folio_memcg(folio), folio);
->  	/*
->  	 * Any of the following ensures page's memcg stability:
->  	 *
-> @@ -2711,7 +2711,7 @@ static void commit_charge(struct page *page, struct mem_cgroup *memcg)
->  	 * - lock_page_memcg()
->  	 * - exclusive reference
->  	 */
-> -	page->memcg_data = (unsigned long)memcg;
-> +	folio->memcg_data = (unsigned long)memcg;
->  }
->  
->  static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
-> @@ -6506,7 +6506,8 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
->  static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
->  			       gfp_t gfp)
->  {
-> -	unsigned int nr_pages = thp_nr_pages(page);
-> +	struct folio *folio = page_folio(page);
-> +	unsigned int nr_pages = folio_nr_pages(folio);
->  	int ret;
->  
->  	ret = try_charge(memcg, gfp, nr_pages);
-> @@ -6514,7 +6515,7 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
->  		goto out;
->  
->  	css_get(&memcg->css);
-> -	commit_charge(page, memcg);
-> +	commit_charge(folio, memcg);
->  
->  	local_irq_disable();
->  	mem_cgroup_charge_statistics(memcg, nr_pages);
-> @@ -6771,21 +6772,21 @@ void mem_cgroup_uncharge_list(struct list_head *page_list)
->   */
->  void mem_cgroup_migrate(struct page *oldpage, struct page *newpage)
->  {
-> +	struct folio *newfolio = page_folio(newpage);
->  	struct mem_cgroup *memcg;
-> -	unsigned int nr_pages;
-> +	unsigned int nr_pages = folio_nr_pages(newfolio);
->  	unsigned long flags;
->  
->  	VM_BUG_ON_PAGE(!PageLocked(oldpage), oldpage);
-> -	VM_BUG_ON_PAGE(!PageLocked(newpage), newpage);
-> -	VM_BUG_ON_PAGE(PageAnon(oldpage) != PageAnon(newpage), newpage);
-> -	VM_BUG_ON_PAGE(PageTransHuge(oldpage) != PageTransHuge(newpage),
-> -		       newpage);
-> +	VM_BUG_ON_FOLIO(!folio_locked(newfolio), newfolio);
-> +	VM_BUG_ON_FOLIO(PageAnon(oldpage) != folio_anon(newfolio), newfolio);
-> +	VM_BUG_ON_FOLIO(compound_nr(oldpage) != nr_pages, newfolio);
->  
->  	if (mem_cgroup_disabled())
->  		return;
->  
->  	/* Page cache replacement: new page already charged? */
-> -	if (page_memcg(newpage))
-> +	if (folio_memcg(newfolio))
->  		return;
->  
->  	memcg = page_memcg(oldpage);
-> @@ -6794,14 +6795,12 @@ void mem_cgroup_migrate(struct page *oldpage, struct page *newpage)
->  		return;
->  
->  	/* Force-charge the new page. The old one will be freed soon */
-> -	nr_pages = thp_nr_pages(newpage);
-> -
->  	page_counter_charge(&memcg->memory, nr_pages);
->  	if (do_memsw_account())
->  		page_counter_charge(&memcg->memsw, nr_pages);
->  
->  	css_get(&memcg->css);
-> -	commit_charge(newpage, memcg);
-> +	commit_charge(newfolio, memcg);
->  
->  	local_irq_save(flags);
->  	mem_cgroup_charge_statistics(memcg, nr_pages);
-> -- 
-> 2.30.2
+        ...get seq to read...
 
--- 
-Michal Hocko
-SUSE Labs
+        while (size > 0) {
+            mutex_lock(&syslog_lock);
+            ...read record...
+            mutex_unlock(&syslog_lock);
+            ...copy record...
+       }
+
+After the patch we enter the loop with the lock already held. So this
+changes the code to:
+
+        mutex_lock(&syslog_lock);
+        ...get seq to read...
+
+        for (;;) {
+            ...read record...
+            mutex_unlock(&syslog_lock);
+            ...copy record...
+           
+            if (!size)
+                break;
+            mutex_lock(&syslog_lock);               
+        }
+
+Note that @size always starts with >0, so there is no need to check it
+at the beginning of the loop. And checking for !0 instead of >0 is also
+ok, since @size will never be less than zero.
+
+> The next cycle would end up with n == 0 and break anyway.
+
+Doing an extra loop of reading more data and sprinting it into the
+temporary buffer even though we know the user buffer is not desirable.
+
+If you insisted on keeping the "while (size > 0)" loop, then there would
+be an unnecessary lock/unlock call and the code gets even more complex.
+
+I could add some comments to the implementation if you prefer.
+
+> The patch itself makes sense. It somehow fixes a long standing race.
+> Even though the result still might be racy. The lock is released
+> when each record is copied to the user-provided buffer.
+
+I do not understand this conclusion. The existing race is
+real. SYSLOG_ACTION_READ could return with no data, not because there is
+no records available, but because the race was hit. With this patch that
+race is closed: SYSLOG_ACTION_READ will either return with data or with
+an error.
+
+You claim the result is still racy, but I do not know what you are
+referring to. If you have multiple readers, they will get different
+records (and record pieces), but collectively no data would be lost and
+no data would be redundant. And no readers would return from
+SYSLOG_ACTION_READ without data.
+
+> I would feel more comfortable if we handled the optimization one of
+> the suggested way.
+
+There is no optimization here. Perhaps you have missed that the loop
+changes from "while (size > 0)" to "for (;;)".
+
+John Ogness
