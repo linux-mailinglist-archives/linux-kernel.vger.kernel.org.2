@@ -2,102 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82563B464E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208893B4654
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbhFYPHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 11:07:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35577 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231772AbhFYPHR (ORCPT
+        id S231680AbhFYPIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 11:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230235AbhFYPIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 11:07:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624633496;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=orhFcVG1MGfwHWjH/fTT6Go2RQIksRFTwjLRhmT/3hw=;
-        b=QtWWQOiAtyDbjjWDZFg+xoCyXM8jaN3dpbdL30rBdySyranjjprftfvwCYQYYvQyBf3aZX
-        3k0mh4CfgjzvGIIBXJM2oaSVz48k+r7fTOUuMPtdmWre2YRtVSoW3mf7x+19KFNceqSHN6
-        SjKpsU5yBrIZmrdUl2lhuhRBksZxw2s=
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-571-weF-dVimNVGjEEkoZSHhZw-1; Fri, 25 Jun 2021 11:04:55 -0400
-X-MC-Unique: weF-dVimNVGjEEkoZSHhZw-1
-Received: by mail-io1-f71.google.com with SMTP id w22-20020a5ed6160000b02904f28b1d759dso141074iom.8
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:04:55 -0700 (PDT)
+        Fri, 25 Jun 2021 11:08:45 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0592AC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:06:24 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id k30-20020a05600c1c9eb02901d4d33c5ca0so627230wms.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:06:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=6wind.com; s=google;
+        h=reply-to:subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AFFwYFTP3Uiktk5LoVFc2lRWhraIysj4KMrrrDOrInc=;
+        b=P1s3LcZ35xxohi3PKxblm3ZXKDXGGzDkcnlPU5geHtyQ4hXcPoOeiYDJZMJgTteGob
+         mVAGgmCZP6Wb8GEe8O/G7+XQf1cbopGoMqS/27hrsWVxzdfVLNBc0mxDIp7JXQZTpDNF
+         T7pPuiZ2NI2ghkry1y3AsLmeAwLBRsXMxOHn3uJawHZebQkdrTJfwmE/S9rDN8cLnuIx
+         sy5slRGXoyfa4dmI+TNj+qzPUNvKl1hhDzZZYi1qGbjuMJ1hBd2mzRynEOrKwg9RrG7N
+         atTcCICJY7+sThyXF3Vn+gFZMieJjXIUHUs7LBI5m87cmmRHYq4emCcx4Chgwm2lrpNO
+         sgUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=orhFcVG1MGfwHWjH/fTT6Go2RQIksRFTwjLRhmT/3hw=;
-        b=QZNgj8eGYJY6rZ+YEIovY7QxzqMx/KmiivKClUuCrxwhxu7CgGOm1qeaxPJ5z0Y5Ul
-         +q2upeAjHge+H7l03VKieK13KJbfVBnBzLPQicuyIyS+gqsuv4HyYJdQoLwPwOMZzfIs
-         ctp1lpMMKOpENB7yZFz8ahnb67JWouwl8+26QldjvBLW31CFiJoG4hi2F01nthvgF3LD
-         w1w9yGqMdWYjavvNUWE5I594c5riJXZ0Nzf/XJ8K74ZuvYqAfEND6L0tlMay7A6KO2vV
-         BR71j3Bcyn53vBNNyMpeXL3O2EMiGEQQMHKI3irARTciQAGAMfUomcSWSxDSM3zM+3XK
-         uY4w==
-X-Gm-Message-State: AOAM532UcUohlc0lZQJMiMA1ulqYXANoWgMajZHx7dBDUwpDNwZei537
-        /Z1a8+7dxnRKF88Xx7zUsFlyBf3ybaK3TWrN1sZS6ALRAIPOB9V4CijUNOo9JS2jt4LSQqEEd5A
-        UE5bOM/RzsbcvSeZaIWeqvac4
-X-Received: by 2002:a02:a99e:: with SMTP id q30mr9857374jam.69.1624633494316;
-        Fri, 25 Jun 2021 08:04:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwYvbFfAcxRLHUHXohN+O9jy6GPQekGuKcwjY7hFxQZ6CQzhObIbZVnZpOn59v+E7YfDtNaBQ==
-X-Received: by 2002:a02:a99e:: with SMTP id q30mr9857343jam.69.1624633494192;
-        Fri, 25 Jun 2021 08:04:54 -0700 (PDT)
-Received: from redhat.com (c-73-14-100-188.hsd1.co.comcast.net. [73.14.100.188])
-        by smtp.gmail.com with ESMTPSA id b23sm3437974ior.4.2021.06.25.08.04.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 08:04:53 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 09:04:51 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     bhelgaas@google.com, cohuck@redhat.com, jgg@ziepe.ca,
-        kevin.tian@intel.com, eric.auger@redhat.com,
-        giovanni.cabiddu@intel.com, mjrosato@linux.ibm.com,
-        jannh@google.com, kvm@vger.kernel.org, linux-pci@vger.kernel.org,
-        schnelle@linux.ibm.com, minchan@kernel.org,
-        gregkh@linuxfoundation.org, rafael@kernel.org, jeyu@kernel.org,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
-        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
-        rostedt@goodmis.org, peterz@infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] vfio: export and make use of pci_dev_trylock()
-Message-ID: <20210625090452.65474656.alex.williamson@redhat.com>
-In-Reply-To: <20210623022824.308041-1-mcgrof@kernel.org>
-References: <20210623022824.308041-1-mcgrof@kernel.org>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=AFFwYFTP3Uiktk5LoVFc2lRWhraIysj4KMrrrDOrInc=;
+        b=LTH6URZZpH8gkbRwV0djM5ev35DG+b/pHv3H02vnT3F9/wbVkUNcmFPjnd7vs9jjt3
+         3j/TWvoby/O10W/tebr2TPKrGxPnUO261PkIyWi9XF0uFuzhEgCW/rRG1q4SGldmKbHl
+         6W+p2ff1GxjI+H+/v9iT4llNJAuf8Tfb+YA/RQmb81XDfa25iEqwOEXurPA6xsMGqJ/x
+         hdZbU1yzA4W1EBhjqhZtkHKz5ZZK1er5eNX9WZRSCt3gUnT1y2qwJytVv9o16BH+lfgQ
+         GXFyHpMtp2NwvybGDfdJYqqQiO+vm6+Zx/kRjh53fWPyroWaBHQNCUI5xdXTeZwHsQhC
+         Hwqw==
+X-Gm-Message-State: AOAM533lTYNL3BtFkL9L12S1lqb6nwQwxaP30Ou1EBOBg/LKiX4NZbDh
+        QO1Nds5QCZeYd2Y4OWCAt8HvMQ==
+X-Google-Smtp-Source: ABdhPJyayEd0vyYgrtjzwe7ivwYNTBU+ScQy+7S2q6GsOLNEiG5RX3U5GBNRY02yeoLqhve0W/iudw==
+X-Received: by 2002:a7b:cc99:: with SMTP id p25mr11192117wma.19.1624633582544;
+        Fri, 25 Jun 2021 08:06:22 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:410:bb00:78f3:e334:978:3783? ([2a01:e0a:410:bb00:78f3:e334:978:3783])
+        by smtp.gmail.com with ESMTPSA id o2sm6326711wrp.53.2021.06.25.08.06.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jun 2021 08:06:22 -0700 (PDT)
+Reply-To: nicolas.dichtel@6wind.com
+Subject: Re: Issues during assigning addresses on point to point interfaces
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+Cc:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Phil Sutter <phil@nwl.cc>
+References: <20210606151008.7dwx5ukrlvxt4t3k@pali>
+ <20210624124545.2b170258@dellmb>
+ <d3995a21-d9fe-9393-a10e-8eddccec2f47@6wind.com>
+ <20210625084031.c33yovvximtabmf4@pali>
+From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Organization: 6WIND
+Message-ID: <d3dd210c-bf0f-7b48-6562-23e87c2ad55a@6wind.com>
+Date:   Fri, 25 Jun 2021 17:06:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210625084031.c33yovvximtabmf4@pali>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Jun 2021 19:28:22 -0700
-Luis Chamberlain <mcgrof@kernel.org> wrote:
-
-> This v2 series addreses the changes requested by Bjorn, namely:
+Le 25/06/2021 à 10:40, Pali Rohár a écrit :
+> On Thursday 24 June 2021 14:57:41 Nicolas Dichtel wrote:
+>> Le 24/06/2021 à 12:45, Marek Behún a écrit :
+>>> On Sun, 6 Jun 2021 17:10:08 +0200
+>>> Pali Rohár <pali@kernel.org> wrote:
+>>>
+>>>> Hello!
+>>>>
+>>>> Seems that there is a bug during assigning IP addresses on point to
+>>>> point interfaces.
+>>>>
+>>>> Assigning just one local address works fine:
+>>>>
+>>>>     ip address add fe80::6 dev ppp1 --> inet6 fe80::6/128 scope link
+>>>>
+>>>> Assigning both local and remote peer address also works fine:
+>>>>
+>>>>     ip address add fe80::7 peer fe80::8 dev ppp1 ---> inet6 fe80::7
+>>>> peer fe80::8/128 scope link
+>>>>
+>>>> But trying to assign just remote peer address does not work. Moreover
+>>>> "ip address" call does not fail, it returns zero but instead of
+>>>> setting remote peer address, it sets local address:
+>>>>
+>>>>     ip address add peer fe80::5 dev ppp1 --> inet6 fe80::5/128 scope
+>>>> link
+>>>>
+>>>
+>>> Adding some other people to Cc in order to get their opinions.
+>>>
+>>> It seems this bug is there from the beginning, from commit
+>>> caeaba79009c2 ("ipv6: add support of peer address")
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=caeaba79009c2
+>>>
+>>> Maybe some older user-space utilities use IFA_ADDRESS instead of
+>>> IFA_LOCAL, and this was done in order to be compatible with them?
+>> If I remember well, there was an issue in the uAPI.
+>> IFA_LOCAL is supposed to be the address of the interface and IFA_ADDRESS is
+>> supposed to be the endpoint of a point-to-point interface.
+>> However, in case of IPv6, it was not the case. In netlink messages generated by
+>> the kernel, IFA_ADDRESS was used instead of IFA_LOCAL.
+>> The patch tried to keep the backward compatibility and the symmetry between msg
+>> from userland and notification from the kernel.
 > 
->   - moved the new forward declarations next to pci_cfg_access_lock()
->     as requested
->   - modify the subject patch for the first PCI patch
+> Hello Nicolas!
 > 
-> Luis Chamberlain (2):
->   PCI: Export pci_dev_trylock() and pci_dev_unlock()
->   vfio: use the new pci_dev_trylock() helper to simplify try lock
+> See my original email where I put also rtnetlink packets (how strace see
+> them). Seems that there is a bug in handling them (or bug in iproute2)
+> as setting just peer (remote) IPv6 address is ignored:
+> https://lore.kernel.org/netdev/20210606151008.7dwx5ukrlvxt4t3k@pali/
 > 
->  drivers/pci/pci.c           |  6 ++++--
->  drivers/vfio/pci/vfio_pci.c | 11 ++++-------
->  include/linux/pci.h         |  3 +++
->  3 files changed, 11 insertions(+), 9 deletions(-)
-> 
-
-Applied to vfio next branch for v5.14 with Bjorn's Ack, thanks!
-
-Alex
-
+> Do you have any idea if this is affected by that "issue in the uAPI"?
+> And what is the way how to fix it?
+What about forcing IFA_LOCAL address to :: in your case?
