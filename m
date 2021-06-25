@@ -2,107 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B0E3B469F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06123B46AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbhFYPed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 11:34:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhFYPec (ORCPT
+        id S230137AbhFYPfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 11:35:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46711 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230008AbhFYPer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 11:34:32 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B79CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:32:11 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id p8-20020a7bcc880000b02901dbb595a9f1so6112228wma.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:32:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=6wind.com; s=google;
-        h=reply-to:subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mFzT6pv8CC87cHK04Jv1CeT+CD9fTxFZC5Ewe+N2u6w=;
-        b=gQrCisuq9gjWqBNWWKG7GepHgNrfhn+FOh73iZdGcRt00yUL0Vj7uhpwoHP/HIHkdo
-         UXwKN/jKsjkHUJywh1EueezAxT4Cr3bNrCi9ze6hBESIRM2ItMvO7p+0+321gp5lrMhp
-         /xzjHHN84l6+emHuoOq2SlRMlOe6RcU1t0IQYlTDgo44yGGrt3huvmB7neSV7Bx4U5W7
-         uEjgC7tyYxlFEARE7x9lY/++4JD848cYNZBiNNkuU/t7UJBZEr/RjE+T3hZhXER1+IcE
-         eTlQFPTH7ItNXtDrGG0WjkVjCgyYCQEp/BD0yy/Att/uy5AF8forzFwoUBUXBOR/BzhP
-         stQg==
+        Fri, 25 Jun 2021 11:34:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624635146;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R6vqFh3euA4lluHZrjH7C0VB/8jbPFxvQZcd2X8+z8A=;
+        b=iuwxKmoxsZlYJYeSVYR97hotoccR8adagS5QovQhoXjOkETqbrXq9d2IQFp41Fd2KNOuE+
+        xwdLqGjKQ01lukySyR75jiLD8YLX+b0SlAljt8EuMrRIr3YjztvanDFblCycF/jmasmE+O
+        HTfDst/7Cz/DrF5Bs9nEwdVa06kJbkw=
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
+ [209.85.166.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-97-v9vMb0H2OI-l58YmD6qY8g-1; Fri, 25 Jun 2021 11:32:25 -0400
+X-MC-Unique: v9vMb0H2OI-l58YmD6qY8g-1
+Received: by mail-io1-f69.google.com with SMTP id e24-20020a5d8e180000b02904dd8a55bbd7so7252895iod.12
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:32:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=mFzT6pv8CC87cHK04Jv1CeT+CD9fTxFZC5Ewe+N2u6w=;
-        b=r+Sj9jMX0tu78NeP+3gj5VxUeDnVQSVA27ruCNGwZT+H79Yv96ulNJiPUFQjHVyxIo
-         aG4rv0WutujL+nsWb9rpgWDBUSlECfmc7rkmwpC5xb5qAzj35O98O/Y0JsoejO2KiaG7
-         fUKhqvPZJXC8hhg0rV2bKZ+3WBm0gyYYapYbaeVAvrEFH9azxumOtQc+go+EHw2eh2PU
-         e9IsRT59IFtBGsM0e+aamXfkd29hVk9rnKYiWExVpMAmChlzD3YxEG/vn6+8foo29Y5D
-         w0N6RSpAu0A74BnJirFoW0nk0EMHfTmxrNAY34BUEfpwsQZJRZ6v2dmpRIBp9Ec2R3/0
-         2KsQ==
-X-Gm-Message-State: AOAM5316B7bdCD0EkdiCZJ5Q5wBOLOh0aOjHfYXTsKpmHrbVaND8dI9D
-        r87SU/6MNnSd0PCYXxeFS6JTCQ==
-X-Google-Smtp-Source: ABdhPJz/6Upyz/UC5eot3d9nnDv9G36yvRoecBp+33QVzZIe9nLdoe2QUFh8lE3k63kot9hiyufr+g==
-X-Received: by 2002:a05:600c:1d1a:: with SMTP id l26mr11249715wms.21.1624635129852;
-        Fri, 25 Jun 2021 08:32:09 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:410:bb00:78f3:e334:978:3783? ([2a01:e0a:410:bb00:78f3:e334:978:3783])
-        by smtp.gmail.com with ESMTPSA id p13sm4865079wrx.30.2021.06.25.08.32.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 08:32:09 -0700 (PDT)
-Reply-To: nicolas.dichtel@6wind.com
-Subject: Re: Issues during assigning addresses on point to point interfaces
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-Cc:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Phil Sutter <phil@nwl.cc>
-References: <20210606151008.7dwx5ukrlvxt4t3k@pali>
- <20210624124545.2b170258@dellmb>
- <d3995a21-d9fe-9393-a10e-8eddccec2f47@6wind.com>
- <20210625084031.c33yovvximtabmf4@pali>
- <d3dd210c-bf0f-7b48-6562-23e87c2ad55a@6wind.com>
- <20210625152737.6gslduccvguyrr77@pali>
-From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Organization: 6WIND
-Message-ID: <c4b854ef-6646-7ae8-b4a7-cb04b7b73222@6wind.com>
-Date:   Fri, 25 Jun 2021 17:32:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=R6vqFh3euA4lluHZrjH7C0VB/8jbPFxvQZcd2X8+z8A=;
+        b=DZTtV/CKXoHHWL7zIgMGYzsHd66vh8uOwd/uYVrCSuWhGVy2SESWpR9KnytYeWPQeQ
+         exCroAzvswajp+6kM/Lw0hyPNS3HuB5Ek7yhsOmEDvhkmJEenkGMmrxNEXZWbUwOkuLx
+         BrwIf6FwjtI2rPaSYy+sabh5tPSZC6WU6IQ0Jw6P5iRtZLMkeSd1Op5hePRsC9R6rebH
+         mJ+2665ApC+vk27qUBcWpsQAw5+M0UepeBnbE3sjSm+xq6Mxwx+MrbpEio6VqTkWCIio
+         5bpZEisb4nxGhkKDck5MIQbvrODAZu0jP2pOeunI4g1Ws8Yz8OeNx/wgydv7BS24xtEG
+         Npjg==
+X-Gm-Message-State: AOAM531nh+EHMuYdzUmuevNkyZhl/0Nz+8PprcvwOdl+UKnBpbRX4+au
+        3sCyOCvf/s/EvNHijmcWr4iE1AQE9Y1GIEHq6ZwCaFqCJ7Bwh1tBHBHogI77GFpKVS6B6sLRzRI
+        M3B9ouvSZEKR8szbKEybed2ogDhbioCzwq2ILWkxpk5M7lALYGb3j+4gZ6nxhA66YTvc2ygTNPg
+        ==
+X-Received: by 2002:a92:ddce:: with SMTP id d14mr8010930ilr.279.1624635143858;
+        Fri, 25 Jun 2021 08:32:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxiQrN5psgZSp7PJvYOwSrLNB9dXZdC9/rSyism8PuiJvzWVvPfNV/3BaOd5802wgskCbtFHg==
+X-Received: by 2002:a92:ddce:: with SMTP id d14mr8010912ilr.279.1624635143672;
+        Fri, 25 Jun 2021 08:32:23 -0700 (PDT)
+Received: from t490s.redhat.com (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
+        by smtp.gmail.com with ESMTPSA id s8sm3668772ilj.51.2021.06.25.08.32.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 08:32:23 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, peterx@redhat.com,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH v2 4/9] KVM: X86: Introduce pte_list_count() helper
+Date:   Fri, 25 Jun 2021 11:32:09 -0400
+Message-Id: <20210625153214.43106-5-peterx@redhat.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210625153214.43106-1-peterx@redhat.com>
+References: <20210625153214.43106-1-peterx@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210625152737.6gslduccvguyrr77@pali>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 25/06/2021 à 17:27, Pali Rohár a écrit :
-[snip]
->>> Hello Nicolas!
->>>
->>> See my original email where I put also rtnetlink packets (how strace see
->>> them). Seems that there is a bug in handling them (or bug in iproute2)
->>> as setting just peer (remote) IPv6 address is ignored:
->>> https://lore.kernel.org/netdev/20210606151008.7dwx5ukrlvxt4t3k@pali/
->>>
->>> Do you have any idea if this is affected by that "issue in the uAPI"?
->>> And what is the way how to fix it?
->> What about forcing IFA_LOCAL address to :: in your case?
-> 
-> It does not work. ip address returns error:
-> 
->     $ sudo ip address add :: peer fe80::8 dev ppp0
->     RTNETLINK answers: Cannot assign requested address
-So this trick could probably be used to handle your case, without breaking
-anything, as it's not a valid command today.
+This helper is used to count the number of rmap entries in the rmap list
+pointed by the kvm_rmap_head.
 
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ arch/x86/kvm/mmu/mmu.c          | 21 +++++++++++++++++++++
+ arch/x86/kvm/mmu/mmu_internal.h |  1 +
+ 2 files changed, 22 insertions(+)
 
-Regards,
-Nicolas
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index eb16c1dbbb32..b3f738a7c05e 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -990,6 +990,27 @@ static void pte_list_remove(struct kvm_rmap_head *rmap_head, u64 *sptep)
+ 	__pte_list_remove(sptep, rmap_head);
+ }
+ 
++unsigned int pte_list_count(struct kvm_rmap_head *rmap_head)
++{
++	struct pte_list_desc *desc;
++	unsigned int i, count = 0;
++
++	if (!rmap_head->val)
++		return 0;
++	else if (!(rmap_head->val & 1))
++		return 1;
++
++	desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
++
++	while (desc) {
++		for (i = 0; (i < PTE_LIST_EXT) && desc->sptes[i]; i++)
++			count++;
++		desc = desc->more;
++	}
++
++	return count;
++}
++
+ static struct kvm_rmap_head *__gfn_to_rmap(gfn_t gfn, int level,
+ 					   struct kvm_memory_slot *slot)
+ {
+diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+index 35567293c1fd..325b4242deed 100644
+--- a/arch/x86/kvm/mmu/mmu_internal.h
++++ b/arch/x86/kvm/mmu/mmu_internal.h
+@@ -131,6 +131,7 @@ bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm,
+ 				    int min_level);
+ void kvm_flush_remote_tlbs_with_address(struct kvm *kvm,
+ 					u64 start_gfn, u64 pages);
++unsigned int pte_list_count(struct kvm_rmap_head *rmap_head);
+ 
+ /*
+  * Return values of handle_mmio_page_fault, mmu.page_fault, and fast_page_fault().
+-- 
+2.31.1
+
