@@ -2,121 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640093B4572
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8DB3B4575
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbhFYOXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:23:31 -0400
-Received: from mail-eopbgr1410128.outbound.protection.outlook.com ([40.107.141.128]:28111
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229700AbhFYOX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:23:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ao6aNbCcIx94XYaGDRgI4YgsKJPL19s2xYKFzygWB5PkZuLX4PASjFXxGKj2MR9uEf2nJh+Z3mNfzK7OSY728OANG0ZiwxvhMWcxPTyhYGu/ph3qdCa/jRyks5Y0/nOWmfyLGlvv4wliOmtHTouPF5Z7yAFadnSo8CovxUEgPFce3AbskxhbOBR+rkPehUY63bLqIEwvh0FFXf4jAn7x6Et8KLi/O+PMdh0ZzDZ2gLnyrShdzL8UsnPZOLFfaKer23ubwJbqAT+d9V9+n2dvI06DTPblBN3i9jc0WK5kOv9dD/77pmS0a0fohlr7q3Tf/87CYztNqyhZ0nWPCQi9kA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RosX2/L2oPRypuZqL2hxk0j4aZ6L4GenKqR+SaNI87M=;
- b=lliGrMDJ1lHcIXbjagVlCpwEtD4wNt1/FVXh2d/zvEMrwQj7YxzsC79fnoQJN9PZSXAOAVYDyQnlYYSFgnGmbSbPaoSYvrOS22rQYZNiAXZVkjAqGJZ54sXPvG8PEeQ2pqtlxq3vv/KUloDaplSbevZbPWMup6ul1BPSyyF37Q6qDFX7771iRprINVyXRhTEAOZzdtif+S8TSdnCggtEMnN+d4zN+QLQQMnGsHl3d+qu7YjdiFQGaK9ogcS3+TkeeZMoEnQR6C8Tasp2CDP+snZe8X3l7CZUXAl1VEp2H0wv3a40dkp/LSci6+8m3h1IE6bf2/6hnDkk02GiXy5XUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RosX2/L2oPRypuZqL2hxk0j4aZ6L4GenKqR+SaNI87M=;
- b=XqkosJthFAcU7PLWYY8mldnXaVmnYVdHcfwww/RMmLlHk+enMRsJCjdDk5m3VlCBVI64qa/bLXzpzwsgNMZB4/3XNcM2VuLa++8LpN0v68mAic4izASutzGVDO+vQjW02vA9WhRwK7sjM6I0bOKSWXjxb29/f0GISHX26Lep+ts=
-Received: from OS3PR01MB6593.jpnprd01.prod.outlook.com (2603:1096:604:101::7)
- by OS3PR01MB5990.jpnprd01.prod.outlook.com (2603:1096:604:d3::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19; Fri, 25 Jun
- 2021 14:21:04 +0000
-Received: from OS3PR01MB6593.jpnprd01.prod.outlook.com
- ([fe80::a53c:198f:9145:903b]) by OS3PR01MB6593.jpnprd01.prod.outlook.com
- ([fe80::a53c:198f:9145:903b%8]) with mapi id 15.20.4264.023; Fri, 25 Jun 2021
- 14:21:04 +0000
-From:   Min Li <min.li.xe@renesas.com>
-To:     Min Li <min.li.xe@renesas.com>,
-        "sameo@linux.intel.com" <sameo@linux.intel.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "grant.likely@linaro.org" <grant.likely@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCH mfd v3] mfd: Add Renesas Synchronization Management Unit
- (SMU) support
-Thread-Topic: [PATCH mfd v3] mfd: Add Renesas Synchronization Management Unit
- (SMU) support
-Thread-Index: AQHXZGBI73dhrC6Hl0qCeqEere9Wyask0ZCw
-Date:   Fri, 25 Jun 2021 14:21:03 +0000
-Message-ID: <OS3PR01MB659309124542B0D712FC9DEBBA069@OS3PR01MB6593.jpnprd01.prod.outlook.com>
-References: <1624034232-7952-1-git-send-email-min.li.xe@renesas.com>
-In-Reply-To: <1624034232-7952-1-git-send-email-min.li.xe@renesas.com>
-Accept-Language: en-CA, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: renesas.com; dkim=none (message not signed)
- header.d=none;renesas.com; dmarc=none action=none header.from=renesas.com;
-x-originating-ip: [72.140.114.230]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8c774beb-75d7-45f8-cb56-08d937e47734
-x-ms-traffictypediagnostic: OS3PR01MB5990:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <OS3PR01MB5990046CCC9399CD1204FBDFBA069@OS3PR01MB5990.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2512;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: D0MVwmEjZXEMEyiu6r7AblGrcZcbY0UQ+cMYRbhCW8y3bGxV4aYnPiXtHWOT1pVim1qTQSLBAccylosphW9ms7xDGtWczXG2CAsXXaZJxuHVvG2rPX6a3oi9WINOXAS6oNX+fIIJEHwDt2tbF7z/RvGNyJuBmY1bifaVks2XEmS64YHDw3RncosgXw8K1MDlgVBO9qoOx6wdHYZIWZGaO14lsPXWx0o5Xo+0wN76cequ/UG+W70rFvc0IFTokkxzWu5FeSvpwx5t6/vQu7g/wrpH85eMRzsNPUPnK1Bj8+a1tcoKtp8EUoVtBD8F26ZoPhC6eg2+Ejn6UDYfL5GbLaS/dNFAeVNv/Dj6Xq4jxvpABKAD/RqaFVLwYrDmQ3I97iXWVkHWOrzECRSDYY81/654G/GZ/VxbVenqqIxFDxEzCxNq+UgdM+8lAHwIVdEerDCtKeEijscU6d4Ig/KuSL79VgGoZnVwGn0U1xk6qwgNHpNFicbbovZTIsk1O6g4vrJHuN8s+xKmt7lVXiv+CF0ND7bcJkzgMnOzOWb7xIzjRKtwGf7H+PXOkNjkgfbnfvOs0uzKWhDMbx+jg+RXfrxjBMtheGnda2D+1P6MRVU=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB6593.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(39860400002)(346002)(136003)(110136005)(6506007)(64756008)(66446008)(66476007)(54906003)(38100700002)(2906002)(8676002)(33656002)(122000001)(66556008)(558084003)(86362001)(76116006)(71200400001)(8936002)(66946007)(5660300002)(55016002)(83380400001)(26005)(316002)(478600001)(52536014)(4326008)(186003)(7696005)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?irLVtjl7XxVcwIm+bc3wl/mqJAELDgYE9WEUi4F9Pzo7G4lPfaaiylNPZvkp?=
- =?us-ascii?Q?L3g/F0lHMK+ZD6VisuB5RkXIFHQBPFl/RSujAwQWYqrzu2KlLbuNyek245Yt?=
- =?us-ascii?Q?1VJzsEolRyMwODZXBNSN4JydxT6aMo1r60GjQ4i0vhk4xOvEYHTY46kSFZob?=
- =?us-ascii?Q?8ZJorBLC3p5rKoGEe3/xfgC+o7QBbbM5XHYQTZDYc6oQEtcu6BJLZWIrxMPR?=
- =?us-ascii?Q?nZjp4A1UszY7DqcD+Id9b4NqU1TrLZ0Ar7rwL3ZzWR8/QAFpis9TD7HQ9y2j?=
- =?us-ascii?Q?rCjjJwTpBtz+xIdAhqBDDZTdrBGZ2PYapNYLtL0cNMBIC4Am5Ouah66e984T?=
- =?us-ascii?Q?5RYi8a3z6xrdgMfMadUlaN681UiBtfZJaq9cCDXwcHIspZ/fzBVYR9qOihpS?=
- =?us-ascii?Q?P3cyZoYtWnfbVyZERDWCWqwnqe/soPIY0jFVcRr5tuRtrcohW4BpTh4ovviy?=
- =?us-ascii?Q?gMVa1JqGLphC39BG4Fb4jpgGA/+97kY98F3/D8QcA/HA1l3CAPY+X0aD6mL7?=
- =?us-ascii?Q?D4F5bNpCV4KfWwDwPObhM7maMZSzd/YBcK4LqNMHh0Wenw2cMUtoxDQ7r9dS?=
- =?us-ascii?Q?UGeNNkJGK5+Sd2wN/ZpYoGxiiMc/kcjdh9kdzZQN5/KD8PjKhqmvfpm8lnSV?=
- =?us-ascii?Q?yPN6Y/m7bVsHXi4l4MhYcHej+zxVy6y++DjHg33ZYFcQSSNRM4OQVd+1322f?=
- =?us-ascii?Q?QHSDgJHLuyzq3aeFi3mhbyPUJ3MyRHIVanwWPmHYhwkV8E09xD0i4aJ9bpGG?=
- =?us-ascii?Q?XD6MaAaLVt5tOapYnfrI9eRjnnAt12S/OTnB79QXzczzvGCTJ0l55ovOv7UT?=
- =?us-ascii?Q?afclEUPzQpR61I21pdY+l/YdO7J7s0BR1Eqt+1Mryd7UBF402krpAncteTcr?=
- =?us-ascii?Q?84gt3hiNwi1+n94GXzsbGrCZGg+0urQXkkxkD2U4R1AGg9aYw8qsRN+YeITQ?=
- =?us-ascii?Q?RXnGth7sK7xRBU6rzlfLpj/PTIqVdrsfnwi6U6rr+S8dPQKTHwU82IwuGAAc?=
- =?us-ascii?Q?SLepraOy5/qPp6tWRrdbxzWvRtQFS2l44dxhFwafE5tn4OFX2hV26n9zZo45?=
- =?us-ascii?Q?Ez6Vhb/KTsuiB6+cA6Srae3ws0StX387t91vHeAnPWjJau5cViBFGG2NAS28?=
- =?us-ascii?Q?rRqnKIq/ZeL1sGmFUbzn5Rq1jrMKFYvUIOHYigpyESnbhVqu4DPUJao6Yz78?=
- =?us-ascii?Q?JhPYDmut97TvxHmw6JBBlOp4kFvL7rXh47L4avc7B/QOfI3XiZ+dImi412Um?=
- =?us-ascii?Q?kb0v5A3/Hg+nqXZbGRUyAmSSPndLp3eBO7AffsiTJU2en0+V/WrJjfqaDB5g?=
- =?us-ascii?Q?4sBrLSJxC0DzH5WgWlXRO0gt?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S231681AbhFYOYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:24:18 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:44133 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230270AbhFYOYR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 10:24:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624630917; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=83UyH9Qs5yJ2r6Ldt+01EcWvxTzdlYtJ796VDTb+pCo=;
+ b=O1qIcRHEA/wbiMDDYnoKfbfzzmVk1HYqvjqqVx+CtWWmZFAelYmd/iEVgK3OFlN+gWWBGi5P
+ ykZpq/JH2Rjw+aUBgPg8dSVhhU8YKkfdeKEmc880hjXb5gooMtS3VLrwsDtcymCIPqXbFmbB
+ qnvJnQTrFT+SOBHtFnrfv7/tk48=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60d5e6754ca9face34408ae3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 25 Jun 2021 14:21:41
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BE61BC43143; Fri, 25 Jun 2021 14:21:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 96F63C4338A;
+        Fri, 25 Jun 2021 14:21:38 +0000 (UTC)
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB6593.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c774beb-75d7-45f8-cb56-08d937e47734
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jun 2021 14:21:03.8947
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lm+wydwZbLJC5R9vbit5BW4h1VuuhTNAdKe1HNgby9RMXqnET/Rhp+4Ft2q72wmOuxTe7Ayw9D3U0gOo5sqVEg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB5990
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 25 Jun 2021 19:51:38 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org, will@kernel.org,
+        saiprakash.ranjan@codeaurora.org, ohad@wizery.com,
+        agross@kernel.org, mathieu.poirier@linaro.org,
+        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
+        dianders@chromium.org, swboyd@chromium.org
+Subject: Re: [PATCH 5/9] remoteproc: mss: q6v5-mss: Add modem support on
+ SC7280
+In-Reply-To: <YNUkw5GDrHwTVcC5@google.com>
+References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
+ <1624564058-24095-6-git-send-email-sibis@codeaurora.org>
+ <YNUkw5GDrHwTVcC5@google.com>
+Message-ID: <73f9814fb4f3aa2abeee0ece3aa26312@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee
+Hey Matthias,
+Thanks for taking time to review the patch
+series.
 
-This is Min. I am wondering if you have had a chance to review my latest pa=
-tch?
+On 2021-06-25 06:05, Matthias Kaehlcke wrote:
+> Hi Sibi,
+> 
+> On Fri, Jun 25, 2021 at 01:17:34AM +0530, Sibi Sankar wrote:
+>> Add out of reset sequence support for modem sub-system on SC7280 SoCs.
+>> It requires access to an additional set of qaccept registers, external
+>> power/clk control registers and halt vq6 register to put the modem 
+>> back
+>> into reset.
+>> 
+>> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+>> ---
+>>  drivers/remoteproc/qcom_q6v5_mss.c | 245 
+>> ++++++++++++++++++++++++++++++++++++-
+>>  1 file changed, 241 insertions(+), 4 deletions(-)
+>> 
+>> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c 
+>> b/drivers/remoteproc/qcom_q6v5_mss.c
+>> index 5d21084004cb..4e32811e0025 100644
+>> --- a/drivers/remoteproc/qcom_q6v5_mss.c
+>> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
+>> @@ -77,6 +77,14 @@
+>> 
+>>  #define HALT_ACK_TIMEOUT_US		100000
+>> 
+>> +/* QACCEPT Register Offsets */
+>> +#define QACCEPT_ACCEPT_REG		0x0
+>> +#define QACCEPT_ACTIVE_REG		0x4
+>> +#define QACCEPT_DENY_REG		0x8
+>> +#define QACCEPT_REQ_REG			0xC
+>> +
+>> +#define QACCEPT_TIMEOUT_US		50
+>> +
+>>  /* QDSP6SS_RESET */
+>>  #define Q6SS_STOP_CORE			BIT(0)
+>>  #define Q6SS_CORE_ARES			BIT(1)
+>> @@ -143,6 +151,9 @@ struct rproc_hexagon_res {
+>>  	bool has_alt_reset;
+>>  	bool has_mba_logs;
+>>  	bool has_spare_reg;
+>> +	bool has_qaccept_regs;
+>> +	bool has_ext_cntl_regs;
+>> +	bool has_vq6;
+>>  };
+>> 
+>>  struct q6v5 {
+>> @@ -158,8 +169,18 @@ struct q6v5 {
+>>  	u32 halt_q6;
+>>  	u32 halt_modem;
+>>  	u32 halt_nc;
+>> +	u32 halt_vq6;
+>>  	u32 conn_box;
+>> 
+>> +	u32 qaccept_mdm;
+>> +	u32 qaccept_cx;
+>> +	u32 qaccept_axi;
+>> +
+>> +	u32 axim1_clk_off;
+>> +	u32 crypto_clk_off;
+>> +	u32 force_clk_on;
+>> +	u32 rscc_disable;
+>> +
+>>  	struct reset_control *mss_restart;
+>>  	struct reset_control *pdc_reset;
+>> 
+>> @@ -201,6 +222,9 @@ struct q6v5 {
+>>  	bool has_alt_reset;
+>>  	bool has_mba_logs;
+>>  	bool has_spare_reg;
+>> +	bool has_qaccept_regs;
+>> +	bool has_ext_cntl_regs;
+>> +	bool has_vq6;
+>>  	int mpss_perm;
+>>  	int mba_perm;
+>>  	const char *hexagon_mdt_image;
+>> @@ -213,6 +237,7 @@ enum {
+>>  	MSS_MSM8996,
+>>  	MSS_MSM8998,
+>>  	MSS_SC7180,
+>> +	MSS_SC7280,
+>>  	MSS_SDM845,
+>>  };
+>> 
+>> @@ -473,6 +498,12 @@ static int q6v5_reset_assert(struct q6v5 *qproc)
+>>  		regmap_update_bits(qproc->conn_map, qproc->conn_box,
+>>  				   AXI_GATING_VALID_OVERRIDE, 0);
+>>  		ret = reset_control_deassert(qproc->mss_restart);
+>> +	} else if (qproc->has_ext_cntl_regs) {
+>> +		regmap_write(qproc->conn_map, qproc->rscc_disable, 0);
+>> +		reset_control_assert(qproc->pdc_reset);
+>> +		reset_control_assert(qproc->mss_restart);
+>> +		reset_control_deassert(qproc->pdc_reset);
+>> +		ret = reset_control_deassert(qproc->mss_restart);
+>>  	} else {
+>>  		ret = reset_control_assert(qproc->mss_restart);
+>>  	}
+>> @@ -490,7 +521,7 @@ static int q6v5_reset_deassert(struct q6v5 *qproc)
+>>  		ret = reset_control_reset(qproc->mss_restart);
+>>  		writel(0, qproc->rmb_base + RMB_MBA_ALT_RESET);
+>>  		reset_control_deassert(qproc->pdc_reset);
+>> -	} else if (qproc->has_spare_reg) {
+>> +	} else if (qproc->has_spare_reg || qproc->has_ext_cntl_regs) {
+>>  		ret = reset_control_reset(qproc->mss_restart);
+>>  	} else {
+>>  		ret = reset_control_deassert(qproc->mss_restart);
+>> @@ -604,7 +635,7 @@ static int q6v5proc_reset(struct q6v5 *qproc)
+>>  		}
+>> 
+>>  		goto pbl_wait;
+>> -	} else if (qproc->version == MSS_SC7180) {
+>> +	} else if (qproc->version == MSS_SC7180 || qproc->version == 
+>> MSS_SC7280) {
+>>  		val = readl(qproc->reg_base + QDSP6SS_SLEEP);
+>>  		val |= Q6SS_CBCR_CLKEN;
+>>  		writel(val, qproc->reg_base + QDSP6SS_SLEEP);
+>> @@ -787,6 +818,82 @@ static int q6v5proc_reset(struct q6v5 *qproc)
+>>  	return ret;
+>>  }
+>> 
+>> +static int q6v5proc_enable_qchannel(struct q6v5 *qproc, struct regmap 
+>> *map, u32 offset)
+>> +{
+>> +	unsigned int val;
+>> +	int ret;
+>> +
+>> +	if (!qproc->has_qaccept_regs)
+>> +		return 0;
+>> +
+>> +	if (qproc->has_ext_cntl_regs) {
+>> +		regmap_write(qproc->conn_map, qproc->rscc_disable, 0);
+>> +		regmap_write(qproc->conn_map, qproc->force_clk_on, 1);
+>> +
+>> +		ret = regmap_read_poll_timeout(qproc->halt_map, 
+>> qproc->axim1_clk_off, val,
+>> +					       !val, 1, Q6SS_CBCR_TIMEOUT_US);
+>> +		if (ret) {
+>> +			dev_err(qproc->dev, "failed to enable axim1 clock\n");
+>> +			return -ETIMEDOUT;
+>> +		}
+>> +	}
+>> +
+>> +	regmap_write(map, offset + QACCEPT_REQ_REG, 1);
+>> +
+>> +	/* Wait for accept */
+>> +	ret = regmap_read_poll_timeout(map, offset + QACCEPT_ACCEPT_REG, 
+>> val, val, 5,
+>> +				       QACCEPT_TIMEOUT_US);
+>> +	if (ret) {
+>> +		dev_err(qproc->dev, "qchannel enable failed\n");
+>> +		return -ETIMEDOUT;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void q6v5proc_disable_qchannel(struct q6v5 *qproc, struct 
+>> regmap *map, u32 offset)
+>> +{
+>> +	int ret;
+>> +	unsigned int val, retry;
+>> +	unsigned int nretry = 10;
+>> +	bool takedown_complete = false;
+>> +
+>> +	if (!qproc->has_qaccept_regs)
+>> +		return;
+>> +
+>> +	while (!takedown_complete && nretry) {
+>> +		nretry--;
+>> +
+>> +		regmap_read_poll_timeout(map, offset + QACCEPT_ACTIVE_REG, val, 
+>> !val, 5,
+>> +					 QACCEPT_TIMEOUT_US);
+>> +
+>> +		regmap_write(map, offset + QACCEPT_REQ_REG, 0);
 
-Thanks
+Sure I'll add more comments to this func.
+After lowering the request ^^ we wait
+for deny to go high or accept to go low.
+If it's the former then we do a request
+high and repeat the entire process again.
+If it's the latter then its considered
+that the takedown is success. Let me know
+if you feel any other parts of the patch
+requires more comments as well.
 
-Min
+>> +
+>> +		retry = 10;
+>> +		while (retry) {
+>> +			usleep_range(5, 10);
+>> +			retry--;
+>> +			ret = regmap_read(map, offset + QACCEPT_DENY_REG, &val);
+>> +			if (!ret && val) {
+>> +				regmap_write(map, offset + QACCEPT_REQ_REG, 1);
+>> +				break;
+>> +			}
+>> +
+>> +			ret = regmap_read(map, offset + QACCEPT_ACCEPT_REG, &val);
+>> +			if (!ret && !val) {
+>> +				takedown_complete = true;
+>> +				break;
+>> +			}
+> 
+> A bit of commentary in this branch would do no harm. From the code flow
+> I can guess that disabling the channel failed when QACCEPT_DENY_REG != 
+> 0,
+> and hence the channel is re-enabled (?) for the next try, and 
+> apparently
+> things are fine when QACCEPT_ACCEPT_REG is 0 after disabling the 
+> channel.
+> Would be good to be a bit more explicit about what all that actually
+> means.
+
+
+
+
+
+> 
+>> +		}
+>> +
+>> +		if (!retry)
+>> +			break;
+>> +	}
+>> +
+>> +	if (!takedown_complete)
+>> +		dev_err(qproc->dev, "qchannel takedown failed\n");
+>> +}
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
