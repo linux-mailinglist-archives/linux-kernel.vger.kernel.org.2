@@ -2,108 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7C13B47B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE543B47BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbhFYQ7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 12:59:06 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:49765 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229671AbhFYQ66 (ORCPT
+        id S229812AbhFYQ73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 12:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230136AbhFYQ7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 12:58:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1624640198; x=1656176198;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=ZXtRMQWNJI+ejJwk7tELGIlfquZy8wE7UmEjYspURGY=;
-  b=QZ+N/dWZGHjxCkW99sC0aR027XjDI4sdeUUXOppXfYDItedMTWCewdtR
-   gsMBiSzI2fuELizIYF9YLxQd2VOtPWJ0/8oj9QTjSHdrHs6gmialfSBej
-   aXYj345MKc88xI2SxRvfb0jsz0rzXR+4+3d5KZ32eMaruJU+yn0fHjby7
-   0=;
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 25 Jun 2021 09:56:37 -0700
-X-QCInternal: smtphost
-Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
-  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 25 Jun 2021 09:56:34 -0700
-Received: from [10.111.161.13] (10.80.80.8) by nasanexm03e.na.qualcomm.com
- (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 25 Jun
- 2021 09:56:32 -0700
-Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
- invariance
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-CC:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-References: <cover.1624266901.git.viresh.kumar@linaro.org>
- <09a39f5c-b47b-a931-bf23-dc43229fb2dd@quicinc.com>
- <20210623041613.v2lo3nidpgw37abl@vireshk-i7>
- <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
- <20210624025414.4iszkovggk6lg6hj@vireshk-i7>
- <CAKfTPtAXMYYrG1w-iwSWXb428FkwFArEwXQgHnjShoCEMjdYcw@mail.gmail.com>
- <20210624104734.GA11487@arm.com>
- <daf1ddf5-6f57-84a8-2ada-90590c0c94b5@quicinc.com>
- <20210625102113.GB15540@arm.com>
- <1f83d787-a796-0db3-3c2f-1ca616eb1979@quicinc.com>
- <20210625143713.GA7092@arm.com>
-From:   Qian Cai <quic_qiancai@quicinc.com>
-Message-ID: <6b86e8cb-6088-12f1-863e-c5e4062bef8e@quicinc.com>
-Date:   Fri, 25 Jun 2021 12:56:31 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 25 Jun 2021 12:59:09 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB40C0617A6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 09:56:48 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lwp8G-0008Sy-IH; Fri, 25 Jun 2021 18:56:44 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lwp8E-0003Jw-Rq; Fri, 25 Jun 2021 18:56:42 +0200
+Date:   Fri, 25 Jun 2021 18:56:42 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, michal.simek@xilinx.com,
+        Alvaro Gamez <alvaro.gamez@hazent.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 3/3] pwm: Add support for Xilinx AXI Timer
+Message-ID: <20210625165642.5iuorl5guuq5c7gc@pengutronix.de>
+References: <20210528214522.617435-1-sean.anderson@seco.com>
+ <20210528214522.617435-3-sean.anderson@seco.com>
+ <20210625061958.yeaxjltuq7q2t7i7@pengutronix.de>
+ <a748143d-f157-562e-795d-dcd9a0cf9d85@seco.com>
 MIME-Version: 1.0
-In-Reply-To: <20210625143713.GA7092@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanexm03b.na.qualcomm.com (10.85.0.98) To
- nasanexm03e.na.qualcomm.com (10.85.0.48)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3zxyysw7boxvafm5"
+Content-Disposition: inline
+In-Reply-To: <a748143d-f157-562e-795d-dcd9a0cf9d85@seco.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--3zxyysw7boxvafm5
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 6/25/2021 10:37 AM, Ionela Voinescu wrote:
-> Quick questions for you:
-> 
-> 1. When you say you tried a 5.4 kernel, did you try it with these
-> patches backported? They also have some dependencies with the recent
-> changes in the arch topology driver and cpufreq so they would not be
-> straight forward to backport.
+Hello Sean,
 
-No. It turned out that this 5.4-based kernel has "ondemand" governor by default which works fine which could even scale down to the lowest_perf (1000 MHz). Once switched the governor to "schedutil", it could keep the freq to the lowest. While on the latest kernel, it also works fine by using "ondemand" first and then switch to "schedutil". Even though it can only scale down to lowest_nonlinear_perf (2000 MHz). It is more of that using "schedutil" by default would not work. Also, on the latest kernel, even "userspace" governor only allows to scale down to 2000 MHz.
+On Fri, Jun 25, 2021 at 11:13:33AM -0400, Sean Anderson wrote:
+> On 6/25/21 2:19 AM, Uwe Kleine-K=F6nig wrote:
+> > On Fri, May 28, 2021 at 05:45:22PM -0400, Sean Anderson wrote:
+> >> + * Hardware limitations:
 
-> If the 5.4 kernel you tried did not have these patches, it might be best
-> to try next/master that has these patches, but with
-> CONFIG_ACPI_CPPC_CPUFREQ_FIE=n, just to eliminate the possibility that
-> an incorrect frequency scale factor here would affect utilization that
-> would then affect the schedutil frequency selection. I would not expect
-> this behavior even if the scale factor was wrong, but it would be good
-> to rule out.
+Please make this "* Limitations:" to match what the other drivers do and
+so ease grepping for this info.
 
-I'll try that at least see if CONFIG_ACPI_CPPC_CPUFREQ_FIE=n would make the latest kernel to be able to scale down to 1000 MHz.
+> >> + * - When changing both duty cycle and period, we may end up with one=
+ cycle
+> >> + *   with the old duty cycle and the new period.
+> >
+> > That means it doesn't reset the counter when a new period is set, right?
+>=20
+> Correct. The only way to write to the counter is to stop the timer and
+> restart it.
 
-> 2. Is your platform booting with all CPUs? Are any hotplug operations
-> done in your scenario?
+ok.
 
-Yes, booting with all CPUs. No additional hotplug there.
+> >> + * - Cannot produce 100% duty cycle.
+> >
+> > Can it produce a 0% duty cycle? Below you're calling
+> > xilinx_timer_tlr_period(..., ..., ..., 0) then which returns -ERANGE.
+>=20
+> Yes. This is what you get when you try to specify 100% duty cycle (e.g.
+> TLR0 =3D=3D TLR1).
+
+OK, so the hardware can do it, but your driver doesn't make use of it,
+right?
+
+> >> + * - Only produces "normal" output.
+> >
+> > Does the output emit a low level when it's disabled?
+>=20
+> I believe so.
+
+Is there a possibility to be sure? I'd like to know that to complete my
+picture about the behaviour of the supported PWMs.
+
+> >> + */
+> >> +
+> >> [...]
+> >> +static int xilinx_pwm_apply(struct pwm_chip *chip, struct pwm_device =
+*unused,
+> >> +			    const struct pwm_state *state)
+> >> +{
+> >> +	int ret;
+> >> +	struct xilinx_timer_priv *priv =3D xilinx_pwm_chip_to_priv(chip);
+> >> +	u32 tlr0, tlr1;
+> >> +	u32 tcsr0 =3D xilinx_timer_read(priv, TCSR0);
+> >> +	u32 tcsr1 =3D xilinx_timer_read(priv, TCSR1);
+> >> +	bool enabled =3D xilinx_timer_pwm_enabled(tcsr0, tcsr1);
+> >> +
+> >> +	if (state->polarity !=3D PWM_POLARITY_NORMAL)
+> >> +		return -EINVAL;
+> >> +
+> >> +	ret =3D xilinx_timer_tlr_period(priv, &tlr0, tcsr0, state->period);
+> >> +	if (ret)
+> >> +		return ret;
+> >
+> > The implementation of xilinx_timer_tlr_period (in patch 2/3) returns
+> > -ERANGE for big periods. The good behaviour to implement is to cap to
+> > the biggest period possible in this case.
+>=20
+> Ok. Is this documented anywhere?
+
+I tried but Thierry didn't like the result and I didn't retry. The
+problem is also that many drivers we already have in the tree don't
+behave like this (because for a long time nobody cared). That new
+drivers should behave this way is my effort to get some consistent
+behaviour.
+
+> And wouldn't this result in the wrong duty cycle? E.g. say the max
+> value is 100 and I try to apply a period of 150 and a duty_cycle of 75
+> (for a 50% duty cycle). If we cap at 100, then I will instead have a
+> 75% duty cycle, and there will be no error.
+
+Yes that is right. That there is no feedback is a problem that we have
+for a long time. I have a prototype patch that implements a
+pwm_round_state() function that lets a consumer know the result of
+applying a certain pwm_state in advance. But we're not there yet.
+
+> So I will silently get the wrong duty cycle, even when that duty cycle
+> is probably more important than the period.
+
+It depends on the use case and every policy is wrong for some cases. So
+I picked the policy I already explained because it is a) easy to
+implement for lowlevel drivers and b) it's easy to work with for
+consumers once we have pwm_round_state().
+
+> > Also note that state->period is an u64 but it is casted to unsigned int
+> > as this is the type of the forth parameter of xilinx_timer_tlr_period.
+>=20
+> Hm, it looks like I immediately cast period to a u64. I will change the
+> signature for this function next revision.
+
+Then note that period * clk_get_rate(priv->clk) might overflow.
+=20
+> >> +	ret =3D xilinx_timer_tlr_period(priv, &tlr1, tcsr1, state->duty_cycl=
+e);
+> >> +	if (ret)
+> >> +		return ret;
+> >> +
+> >> +	xilinx_timer_write(priv, tlr0, TLR0);
+> >> +	xilinx_timer_write(priv, tlr1, TLR1);
+> >> +
+> >> +	if (state->enabled) {
+> >> +		/* Only touch the TCSRs if we aren't already running */
+> >> +		if (!enabled) {
+> >> +			/* Load TLR into TCR */
+> >> +			xilinx_timer_write(priv, tcsr0 | TCSR_LOAD, TCSR0);
+> >> +			xilinx_timer_write(priv, tcsr1 | TCSR_LOAD, TCSR1);
+> >> +			/* Enable timers all at once with ENALL */
+> >> +			tcsr0 =3D (TCSR_PWM_SET & ~TCSR_ENT) | (tcsr0 & TCSR_UDT);
+> >> +			tcsr1 =3D TCSR_PWM_SET | TCSR_ENALL | (tcsr1 & TCSR_UDT);
+> >> +			xilinx_timer_write(priv, tcsr0, TCSR0);
+> >> +			xilinx_timer_write(priv, tcsr1, TCSR1);
+> >> +		}
+> >> +	} else {
+> >> +		xilinx_timer_write(priv, 0, TCSR0);
+> >> +		xilinx_timer_write(priv, 0, TCSR1);
+> >> +	}
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +static void xilinx_pwm_get_state(struct pwm_chip *chip,
+> >> +				 struct pwm_device *unused,
+> >> +				 struct pwm_state *state)
+> >> +{
+> >> +	struct xilinx_timer_priv *priv =3D xilinx_pwm_chip_to_priv(chip);
+> >> +	u32 tlr0 =3D xilinx_timer_read(priv, TLR0);
+> >> +	u32 tlr1 =3D xilinx_timer_read(priv, TLR1);
+> >> +	u32 tcsr0 =3D xilinx_timer_read(priv, TCSR0);
+> >> +	u32 tcsr1 =3D xilinx_timer_read(priv, TCSR1);
+> >> +
+> >> +	state->period =3D xilinx_timer_get_period(priv, tlr0, tcsr0);
+> >> +	state->duty_cycle =3D xilinx_timer_get_period(priv, tlr1, tcsr1);
+> >> +	state->enabled =3D xilinx_timer_pwm_enabled(tcsr0, tcsr1);
+> >> +	state->polarity =3D PWM_POLARITY_NORMAL;
+> >
+> > Are the values returned here sensible if the hardware isn't in PWM mode?
+>=20
+> Yes. If the hardware isn't in PWM mode, then state->enabled will be
+> false.
+
+Ah right. Good enough.
+
+> >> +	else if (pwm_cells)
+> >> +		return dev_err_probe(dev, -EINVAL, "#pwm-cells must be 0\n");
+> >
+> > What is the rationale here to not support #pwm-cells =3D <2>?
+>=20
+> Only one PWM is supported. But otherwise there is no particular
+> reason.
+
+The usual binding is to have 3 additional parameters.
+ 1) chip-local pwm number (which can only be 0 for a pwmchip having
+    .npwm =3D 1)
+ 2) the "typical" period
+ 3) some flags (like PWM_POLARITY_*)
+
+I don't care much if you implement it with or without 1), but 2) and 3)
+should IMHO be here. If you don't want 1),
+http://patchwork.ozlabs.org/project/linux-pwm/patch/20210622030948.966748-1=
+-bjorn.andersson@linaro.org/
+might be interesting for you. (But note, Thierry didn't give feedback to
+this yet, it might be possible he wants 1)-3) for new drivers.)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--3zxyysw7boxvafm5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDWCscACgkQwfwUeK3K
+7AkDIQf/TV7EB3dZy+PUjYdTIhuIgqUzB/j6cxlnHCfHMehLbF3hPzo4ONQSKMqo
+lQaZUgbbEu1WIXOz3CgrpiL8GA9z6+d+xFWQynPJrkfwhBMYWA/MKTr/iPJ1lvvG
+W3Lb0V3Wtz461AEhYF9KRiqyKFHbfxuEKSoudxOaTac5RTQvxxoy0cW0XpnnbYLk
+8UqFXTjFVdCCcqLDfoB9mjiD6hkhu15saaAK5ykOH2R82fG2+NTRv3aYEkfuAg2y
+wwsdYYvPhTZaT5gISXAYvbe3Df9ufnxuCh4CReVI3txtYUfLquMw/o3TAkwtQPS5
+B+iukDSUGDOFKwYfDbEug70vYXlBgg==
+=weBO
+-----END PGP SIGNATURE-----
+
+--3zxyysw7boxvafm5--
