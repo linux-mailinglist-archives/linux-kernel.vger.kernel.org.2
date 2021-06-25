@@ -2,241 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02233B44E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53793B4537
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbhFYN6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 09:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49946 "EHLO
+        id S231491AbhFYOEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbhFYN62 (ORCPT
+        with ESMTP id S229573AbhFYOEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 09:58:28 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17C8C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 06:56:07 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id g22so12660602iom.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 06:56:07 -0700 (PDT)
+        Fri, 25 Jun 2021 10:04:22 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8DBDC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:02:00 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id s15so13501633edt.13
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:02:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=81n+GTbzc4AbJWlslSC8YP9E9oQstMauU2nWKw3pJ48=;
-        b=C07lXPGcgLjNS5ptvUVl4aP6RXrfXrW/QrTdytAQHQ8nV0L6nBltmmnYnVpROwsfFc
-         tinKHD2qufaHNTg7fiRQFhNPl8NTFhdxWSAcjllSlxyLhvaFxueRyP+Ow34iRQug1Ymx
-         mrRPq11+rdnuXs0/y4mVuz9p7TMp8UiI4Ij6g=
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z+KMbze32Ri6x52TPJK4QM4wxVfroiCmkS67qVQBUE4=;
+        b=YGYUui9WFUDmI+j+Sb9qMHMQ20BKewTTNR3O6qy3UpLr6U7t0zXQUoYKyteFgXhgkb
+         1AUaxQpsD1E0OCYS7eIFg3vhok2ubkg2YWOfMA8NSQ3apMJ/enCVdyPFrr9Zc9EDPlcQ
+         3s5qQCPQWkRifKuTCcBBL1hcjerEm4JG0gymiPbLST+SiOyc+LqtNpyOHgi8EB/j9Xgm
+         pWj7TcKoEzDR+BszEw0Z5UJbzOUGANWcjHqBSOOctrQU1gX+jfBW6C5BYYKW5wXPw5xU
+         xITMLa+1dWni/ccYBJaC4wikE+2UOqFkku6bk05Newy7ncXXbsn6fm5fehRFtQVRcqQ5
+         X/sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=81n+GTbzc4AbJWlslSC8YP9E9oQstMauU2nWKw3pJ48=;
-        b=de9y35QEAFHQKyTE2wrw3nKZe09m738UUFclDcUk1IIW2Jc7eaDSdochvlDX6TbInQ
-         Or/tB/d5iZYJ9Rcysc+PWah5R42A/haFeWMDGx3R8UYvOBaOWi1cUPnrBJhxH+M0oTK8
-         50U5O9qA65hi0ntGFZOXbkudhpCBnGHvAKdecGfMwd6OmYketMeTw4cOX2QfjwLu/722
-         8gFBaJXVefFjW2VNcdpeNAsqD+bRFOk/Hq3dxtk/QdiFKNQ1M5YDtT6sjIO92jP9beTe
-         seltOgsKIc4Yz/TAmSiRx7iU8Rv/PHtPV71g5FXhNGyKDbEDS/r3L9EN2hnvYrh/7DDP
-         5r6g==
-X-Gm-Message-State: AOAM5308qtzz/tPVfdUb4jY4gB/fYXAq5dvLqbHw9WQTKy3JKL1T4EC8
-        gWWF/81CbU050V0/qoF5Qfz2+PcXKWL+iw==
-X-Google-Smtp-Source: ABdhPJwwsAiGDL/cohjvTg0pxKyggFtGXXkqjlR2RaIIpnRvpOInAqc6Q//3/GJKgkNxJ8Q/uD5F1g==
-X-Received: by 2002:a6b:4905:: with SMTP id u5mr8525288iob.55.1624629367131;
-        Fri, 25 Jun 2021 06:56:07 -0700 (PDT)
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com. [209.85.166.170])
-        by smtp.gmail.com with ESMTPSA id a6sm3471738ili.21.2021.06.25.06.56.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 06:56:06 -0700 (PDT)
-Received: by mail-il1-f170.google.com with SMTP id s19so9780901ilj.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 06:56:06 -0700 (PDT)
-X-Received: by 2002:a92:2a05:: with SMTP id r5mr7197734ile.69.1624629365800;
- Fri, 25 Jun 2021 06:56:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z+KMbze32Ri6x52TPJK4QM4wxVfroiCmkS67qVQBUE4=;
+        b=T9gDDcXXG1av1ULwu6GprZmilSVfYNqOBEmwizgBwFEC05GaGNKqri2qjDbgUiqW4w
+         Ic6LmZEaMB+kpSlyQEJNYzBoOGZ62WNM7HY67mMR+1uchokU9clCkOyC56z/CPsoBnEc
+         BX4fnAkvO4z+cuvAL9ddbeWKJCcqViEyHaMTLaW4xz7TTlx167YQjeXys53jCTmrj+dT
+         Lc4Rtrc9SGQzcR2AJniEt9ZcEP4S4sh0au3D0qJtWf0dPLpdOP07Q/EY19rIhPUQl1mU
+         dMRj6mGk1NRJiSiTsEuNzl993PNNi4uA09+wY3MwJnHb2k3vD/xjlzXlnA5dQzJWMT/v
+         Hs6g==
+X-Gm-Message-State: AOAM533eUEqhF3HazN1iTWb2lzQhLB6UXACyrEL/LGqAueuiRpSIdy1f
+        SH/Znr2T/FXekgVP5hoNXXtbHA==
+X-Google-Smtp-Source: ABdhPJyxNVPSI5D8gDTcai9x/u0+YfMQvhIDVqYK+Mo8+2uvN7ZVL43Lyx5ntksPcwk66ZPxVbveiw==
+X-Received: by 2002:a05:6402:849:: with SMTP id b9mr6663053edz.270.1624629719342;
+        Fri, 25 Jun 2021 07:01:59 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id g23sm2767853ejh.116.2021.06.25.07.01.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 07:01:58 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH 1/2] iio: accel: bma220: convert probe to device-managed functions
+Date:   Fri, 25 Jun 2021 17:01:36 +0300
+Message-Id: <20210625140137.362282-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210618122923.385938-1-ribalda@chromium.org> <20210618122923.385938-22-ribalda@chromium.org>
- <CANiDSCvNvJ_xyuqgvvFv6aZGSm=H-9=SeV6wp5C_0-acm+wC=A@mail.gmail.com> <820809c2-a564-8a79-c279-7570c3bcc801@xs4all.nl>
-In-Reply-To: <820809c2-a564-8a79-c279-7570c3bcc801@xs4all.nl>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Fri, 25 Jun 2021 15:55:54 +0200
-X-Gmail-Original-Message-ID: <CANiDSCvwQvDYKNqxAZjtAKY6CGNrnn21LMoNnsg7FrrDiooi-A@mail.gmail.com>
-Message-ID: <CANiDSCvwQvDYKNqxAZjtAKY6CGNrnn21LMoNnsg7FrrDiooi-A@mail.gmail.com>
-Subject: Re: [PATCH v10 21/21] media: uvcvideo: Return -EACCES to inactive controls
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, tfiga@chromium.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans
+This change converts the driver to use devm_iio_triggered_buffer_setup()
+and devm_iio_device_register() for initializing and registering the IIO
+device.
 
-On Fri, 25 Jun 2021 at 13:07, Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
->
-> On 25/06/2021 12:29, Ricardo Ribalda wrote:
-> > Hi Hans
-> >
-> > Did you have some hardware that did not work fine without this patch?
-> > Am I remembering correctly?
->
-> Yes, that's correct. It's one of my webcams, but I can't remember which one
-> it is. You probably want me to test this v10?
->
-> Regards,
+The bma220_deinit() is converted into a callback for a
+devm_add_action_or_reset() hook, so that the device is put in stand-by when
+the driver gets uninitialized.
+The return value of the bma220_deinit() function isn't used as it does not
+add any value. On the error path of the probe function, this can just
+override the actual error with -EBUSY, or can even return 0 (no error), on
+the error path.
 
-That would be awesome. Thanks!
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/iio/accel/bma220_spi.c | 44 +++++++++-------------------------
+ 1 file changed, 11 insertions(+), 33 deletions(-)
 
->
->         Hans
->
-> >
-> > Thanks!
-> >
-> > On Fri, 18 Jun 2021 at 14:29, Ricardo Ribalda <ribalda@chromium.org> wrote:
-> >>
-> >> If a control is inactive return -EACCES to let the userspace know that
-> >> the value will not be applied automatically when the control is active
-> >> again.
-> >>
-> >> Also make sure that query_v4l2_ctrl doesn't return an error.
-> >>
-> >> Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> >> Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> >> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> >> ---
-> >>  drivers/media/usb/uvc/uvc_ctrl.c | 73 +++++++++++++++++++++-----------
-> >>  1 file changed, 49 insertions(+), 24 deletions(-)
-> >>
-> >> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> >> index da44d5c0b9ad..4f80c06d3c43 100644
-> >> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> >> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> >> @@ -1104,13 +1104,36 @@ static const char *uvc_map_get_name(const struct uvc_control_mapping *map)
-> >>         return "Unknown Control";
-> >>  }
-> >>
-> >> +static bool uvc_ctrl_is_inactive(struct uvc_video_chain *chain,
-> >> +                                struct uvc_control *ctrl,
-> >> +                                struct uvc_control_mapping *mapping)
-> >> +{
-> >> +       struct uvc_control_mapping *master_map = NULL;
-> >> +       struct uvc_control *master_ctrl = NULL;
-> >> +       s32 val;
-> >> +       int ret;
-> >> +
-> >> +       if (!mapping->master_id)
-> >> +               return false;
-> >> +
-> >> +       __uvc_find_control(ctrl->entity, mapping->master_id, &master_map,
-> >> +                          &master_ctrl, 0);
-> >> +
-> >> +       if (!master_ctrl || !(master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR))
-> >> +               return false;
-> >> +
-> >> +       ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
-> >> +       if (ret < 0 || val == mapping->master_manual)
-> >> +               return false;
-> >> +
-> >> +       return true;
-> >> +}
-> >> +
-> >>  static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
-> >>         struct uvc_control *ctrl,
-> >>         struct uvc_control_mapping *mapping,
-> >>         struct v4l2_queryctrl *v4l2_ctrl)
-> >>  {
-> >> -       struct uvc_control_mapping *master_map = NULL;
-> >> -       struct uvc_control *master_ctrl = NULL;
-> >>         const struct uvc_menu_info *menu;
-> >>         unsigned int i;
-> >>
-> >> @@ -1126,18 +1149,8 @@ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
-> >>         if (!(ctrl->info.flags & UVC_CTRL_FLAG_SET_CUR))
-> >>                 v4l2_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
-> >>
-> >> -       if (mapping->master_id)
-> >> -               __uvc_find_control(ctrl->entity, mapping->master_id,
-> >> -                                  &master_map, &master_ctrl, 0);
-> >> -       if (master_ctrl && (master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR)) {
-> >> -               s32 val;
-> >> -               int ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
-> >> -               if (ret < 0)
-> >> -                       return ret;
-> >> -
-> >> -               if (val != mapping->master_manual)
-> >> -                               v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
-> >> -       }
-> >> +       if (uvc_ctrl_is_inactive(chain, ctrl, mapping))
-> >> +               v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
-> >>
-> >>         if (!ctrl->cached) {
-> >>                 int ret = uvc_ctrl_populate_cache(chain, ctrl);
-> >> @@ -1660,25 +1673,37 @@ static int uvc_ctrl_commit_entity(struct uvc_device *dev,
-> >>         return 0;
-> >>  }
-> >>
-> >> -static int uvc_ctrl_find_ctrl_idx(struct uvc_entity *entity,
-> >> -                                 struct v4l2_ext_controls *ctrls,
-> >> -                                 struct uvc_control *uvc_control)
-> >> +static int uvc_ctrl_commit_error(struct uvc_video_chain *chain,
-> >> +                                struct uvc_entity *entity,
-> >> +                                struct v4l2_ext_controls *ctrls,
-> >> +                                struct uvc_control *err_control,
-> >> +                                int ret)
-> >>  {
-> >>         struct uvc_control_mapping *mapping;
-> >>         struct uvc_control *ctrl_found;
-> >>         unsigned int i;
-> >>
-> >> -       if (!entity)
-> >> -               return ctrls->count;
-> >> +       if (!entity) {
-> >> +               ctrls->error_idx = ctrls->count;
-> >> +               return ret;
-> >> +       }
-> >>
-> >>         for (i = 0; i < ctrls->count; i++) {
-> >>                 __uvc_find_control(entity, ctrls->controls[i].id, &mapping,
-> >>                                    &ctrl_found, 0);
-> >> -               if (uvc_control == ctrl_found)
-> >> -                       return i;
-> >> +               if (err_control == ctrl_found)
-> >> +                       break;
-> >>         }
-> >> +       ctrls->error_idx = i;
-> >> +
-> >> +       /* We could not find the control that failed. */
-> >> +       if (i == ctrls->count)
-> >> +               return ret;
-> >> +
-> >> +       if (uvc_ctrl_is_inactive(chain, err_control, mapping))
-> >> +               return -EACCES;
-> >>
-> >> -       return ctrls->count;
-> >> +       return ret;
-> >>  }
-> >>
-> >>  int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
-> >> @@ -1701,8 +1726,8 @@ int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
-> >>                 uvc_ctrl_send_events(handle, ctrls->controls, ctrls->count);
-> >>  done:
-> >>         if (ret < 0 && ctrls)
-> >> -               ctrls->error_idx = uvc_ctrl_find_ctrl_idx(entity, ctrls,
-> >> -                                                         err_ctrl);
-> >> +               ret = uvc_ctrl_commit_error(chain, entity, ctrls, err_ctrl,
-> >> +                                           ret);
-> >>         mutex_unlock(&chain->ctrl_mutex);
-> >>         return ret;
-> >>  }
-> >> --
-> >> 2.32.0.288.g62a8d224e6-goog
-> >>
-> >
-> >
->
-
-
+diff --git a/drivers/iio/accel/bma220_spi.c b/drivers/iio/accel/bma220_spi.c
+index 0622c7936499..0095931a11f8 100644
+--- a/drivers/iio/accel/bma220_spi.c
++++ b/drivers/iio/accel/bma220_spi.c
+@@ -218,20 +218,14 @@ static int bma220_init(struct spi_device *spi)
+ 	return 0;
+ }
+ 
+-static int bma220_deinit(struct spi_device *spi)
++static void bma220_deinit(void *spi)
+ {
+ 	int ret;
+ 
+ 	/* Make sure the chip is powered off */
+ 	ret = bma220_read_reg(spi, BMA220_REG_SUSPEND);
+ 	if (ret == BMA220_SUSPEND_SLEEP)
+-		ret = bma220_read_reg(spi, BMA220_REG_SUSPEND);
+-	if (ret < 0)
+-		return ret;
+-	if (ret == BMA220_SUSPEND_SLEEP)
+-		return -EBUSY;
+-
+-	return 0;
++		bma220_read_reg(spi, BMA220_REG_SUSPEND);
+ }
+ 
+ static int bma220_probe(struct spi_device *spi)
+@@ -262,34 +256,19 @@ static int bma220_probe(struct spi_device *spi)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = iio_triggered_buffer_setup(indio_dev, iio_pollfunc_store_time,
+-					 bma220_trigger_handler, NULL);
+-	if (ret < 0) {
+-		dev_err(&spi->dev, "iio triggered buffer setup failed\n");
+-		goto err_suspend;
+-	}
++	ret = devm_add_action_or_reset(&spi->dev, bma220_deinit, spi);
++	if (ret)
++		return ret;
+ 
+-	ret = iio_device_register(indio_dev);
++	ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev,
++					      iio_pollfunc_store_time,
++					      bma220_trigger_handler, NULL);
+ 	if (ret < 0) {
+-		dev_err(&spi->dev, "iio_device_register failed\n");
+-		iio_triggered_buffer_cleanup(indio_dev);
+-		goto err_suspend;
++		dev_err(&spi->dev, "iio triggered buffer setup failed\n");
++		return ret;
+ 	}
+ 
+-	return 0;
+-
+-err_suspend:
+-	return bma220_deinit(spi);
+-}
+-
+-static int bma220_remove(struct spi_device *spi)
+-{
+-	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+-
+-	iio_device_unregister(indio_dev);
+-	iio_triggered_buffer_cleanup(indio_dev);
+-
+-	return bma220_deinit(spi);
++	return devm_iio_device_register(&spi->dev, indio_dev);
+ }
+ 
+ static __maybe_unused int bma220_suspend(struct device *dev)
+@@ -326,7 +305,6 @@ static struct spi_driver bma220_driver = {
+ 		.acpi_match_table = bma220_acpi_id,
+ 	},
+ 	.probe =            bma220_probe,
+-	.remove =           bma220_remove,
+ 	.id_table =         bma220_spi_id,
+ };
+ module_spi_driver(bma220_driver);
 -- 
-Ricardo Ribalda
+2.31.1
+
