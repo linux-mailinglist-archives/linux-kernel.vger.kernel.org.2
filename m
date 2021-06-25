@@ -2,125 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F5A3B4A35
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 23:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D643B4A3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 23:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhFYVbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 17:31:36 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:61796 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229950AbhFYVbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 17:31:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624656544; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=pJQVTKLxIe0Fn9msKrGPa7GRTW4HbzJ0ouMJuFmUpVs=; b=Hezfe6OFSiPruat+yRqmxTFgYphvshlMku8HxHLOgFnd6nWePHEZc/0PhmLTOijpZG7z3bMO
- Ccjo4vqIy+Ox8+u6VCACC2sGbHGtBW5qJ/ZrGpC7VM/KhUfgOZ4uDo49phi/qWqmNTmJ2m9E
- tiJN4/k64nEDXqsMgDBgFd17QIk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60d64a9d7e5ba0fdc07460ef (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 25 Jun 2021 21:29:01
- GMT
-Sender: mdtipton=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 48FA0C43217; Fri, 25 Jun 2021 21:29:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-mdtipton-lv.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mdtipton)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 19461C433F1;
-        Fri, 25 Jun 2021 21:29:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 19461C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mdtipton@codeaurora.org
-From:   Mike Tipton <mdtipton@codeaurora.org>
-To:     djakov@kernel.org
-Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
-        saravanak@google.com, okukatla@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mike Tipton <mdtipton@codeaurora.org>
-Subject: [PATCH 4/4] interconnect: qcom: icc-rpmh: Add BCMs to commit list in pre_aggregate
-Date:   Fri, 25 Jun 2021 14:28:39 -0700
-Message-Id: <20210625212839.24155-5-mdtipton@codeaurora.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210625212839.24155-1-mdtipton@codeaurora.org>
-References: <20210625212839.24155-1-mdtipton@codeaurora.org>
+        id S229948AbhFYVde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 17:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229776AbhFYVd3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 17:33:29 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B22A9C061767
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 14:31:07 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id d12so9230286pgd.9
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 14:31:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CWYLOtSzf07pukGettLZc50AWqNx35k04qNjXA3uUb4=;
+        b=i0XNMOQ4uz9CRdX9PQgd4duTYbpQRdBwZWydro5l1CSxhwXKjbM8rAQN7sOKGQ4oEn
+         69Ea1kKbbeKN/sLulWYIDJbZPgOcM4CrDJbcAIUqD1AVR2PMQpIk95xy7p4WH9uywCKZ
+         fMMINtS3sNFk67sVOjORHGjV6X+v1ecqDcHGQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CWYLOtSzf07pukGettLZc50AWqNx35k04qNjXA3uUb4=;
+        b=pFGlSCdCuEMSJjl9ooEB8o/xjFpxpBdwfsue7AQGOrrkBglA+bUVFbBD98YHaVf65c
+         XpQRaxpSdYAZNo6qEz7jAUUdRy3GflmNIiz6WD5putGm+sHJUrFWtVwZqL4NGyU5OfSf
+         2TXy29qfyuvPIsfIqDumqWk7hLFJnN13LrWorwpdP4DlK9TkcsrY0bKv5IiTnZar3I5i
+         KLySkPNJEppOkCQfitcN+6ig12DbMwP9tH0vleUXn/hjLsyUG0vyzWPba5rG90dsjZRu
+         WVSBZNkph1KeJPE632vmiLQSRDNu9+ytShdw8t88Fdk21QODl+T5xwwTASf8cnbDyfr0
+         xiUw==
+X-Gm-Message-State: AOAM533D5a2GLKjp+DuHXBCOlWQnRgnQxHc1juixIlq9Sbjs9RCPoiz+
+        tKfr4XE0nVpKRsUSUfcZfiqqvg==
+X-Google-Smtp-Source: ABdhPJzSvBxJcV+ygLJWWnosjmUXSs4/lr7r94utpED/5DLwIo9VOQtTr5OTKEq2/LLDJ0XHGYZZPQ==
+X-Received: by 2002:a05:6a00:26cc:b029:308:a51b:8077 with SMTP id p12-20020a056a0026ccb0290308a51b8077mr8615356pfw.11.1624656667204;
+        Fri, 25 Jun 2021 14:31:07 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:cc13:a7dd:f4b5:2160])
+        by smtp.gmail.com with UTF8SMTPSA id p4sm6754839pff.148.2021.06.25.14.31.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jun 2021 14:31:06 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 14:31:05 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        swboyd@chromium.org, ulf.hansson@linaro.org, rjw@rjwysocki.net,
+        agross@kernel.org, ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rishabhb@codeaurora.org,
+        sidgup@codeaurora.org
+Subject: Re: [PATCH v3 01/13] dt-bindings: soc: qcom: aoss: Drop power-domain
+ bindings
+Message-ID: <YNZLGf1uqSqQ8zR8@google.com>
+References: <1624560727-6870-1-git-send-email-sibis@codeaurora.org>
+ <1624560727-6870-2-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1624560727-6870-2-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We're only adding BCMs to the commit list in aggregate(), but there are
-cases where pre_aggregate() is called without subsequently calling
-aggregate(). In particular, in icc_sync_state() when a node with initial
-BW has zero requests. Since BCMs aren't added to the commit list in
-these cases, we don't actually send the zero BW request to HW. So the
-resources remain on unnecessarily.
+On Fri, Jun 25, 2021 at 12:21:55AM +0530, Sibi Sankar wrote:
+> The power-domains exposed by AOSS QMP node are used to notify the Always
+> on Subsystem (AOSS) that a particular co-processor is up/down. These
+> co-processors enter low-power modes independent to that of the application
+> processor and their states are expected to remain unaltered across system
+> suspend/resume cycles. To achieve this behavior let's drop the power-domain
+> bindings and replace them with generic qmp_send interface instead.
+> 
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Add BCMs to the commit list in pre_aggregate() instead, which is always
-called even when there are no requests.
+FWIW:
 
-Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
-Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
----
- drivers/interconnect/qcom/icc-rpmh.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/interconnect/qcom/icc-rpmh.c b/drivers/interconnect/qcom/icc-rpmh.c
-index f118f57eae37..b26fda0588e0 100644
---- a/drivers/interconnect/qcom/icc-rpmh.c
-+++ b/drivers/interconnect/qcom/icc-rpmh.c
-@@ -20,13 +20,18 @@ void qcom_icc_pre_aggregate(struct icc_node *node)
- {
- 	size_t i;
- 	struct qcom_icc_node *qn;
-+	struct qcom_icc_provider *qp;
- 
- 	qn = node->data;
-+	qp = to_qcom_provider(node->provider);
- 
- 	for (i = 0; i < QCOM_ICC_NUM_BUCKETS; i++) {
- 		qn->sum_avg[i] = 0;
- 		qn->max_peak[i] = 0;
- 	}
-+
-+	for (i = 0; i < qn->num_bcms; i++)
-+		qcom_icc_bcm_voter_add(qp->voter, qn->bcms[i]);
- }
- EXPORT_SYMBOL_GPL(qcom_icc_pre_aggregate);
- 
-@@ -44,10 +49,8 @@ int qcom_icc_aggregate(struct icc_node *node, u32 tag, u32 avg_bw,
- {
- 	size_t i;
- 	struct qcom_icc_node *qn;
--	struct qcom_icc_provider *qp;
- 
- 	qn = node->data;
--	qp = to_qcom_provider(node->provider);
- 
- 	if (!tag)
- 		tag = QCOM_ICC_TAG_ALWAYS;
-@@ -67,9 +70,6 @@ int qcom_icc_aggregate(struct icc_node *node, u32 tag, u32 avg_bw,
- 	*agg_avg += avg_bw;
- 	*agg_peak = max_t(u32, *agg_peak, peak_bw);
- 
--	for (i = 0; i < qn->num_bcms; i++)
--		qcom_icc_bcm_voter_add(qp->voter, qn->bcms[i]);
--
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(qcom_icc_aggregate);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
