@@ -2,87 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CD93B3AF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 04:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C72723B3AFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 04:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233028AbhFYClT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 22:41:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232917AbhFYClR (ORCPT
+        id S233038AbhFYC50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 22:57:26 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:14263 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232973AbhFYC5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 22:41:17 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1390EC061574;
-        Thu, 24 Jun 2021 19:38:56 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id e20so6415469pgg.0;
-        Thu, 24 Jun 2021 19:38:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Cd4QsvztevPYCvOOxkfeUvwdXq5/dlPeOoAMC74Y2Ew=;
-        b=pZkRQ1VnztC4lb+ASJL0ewmH5iouWMhXVcWy0o20wygETPXSq+uuqhWgLNe8HIo8eS
-         mhxqRvrjPRZkEw3VJoMzkjHQ2ZQ/Vm4uodPrK1nXDEuh10J1moim030LgkXVAHUGmHKW
-         Uu8kh8A5QBu/mZWH2jCp88UAT8tQPx3Z9FhksXDnUpCkuwiC14toCWcs+swlmtQrJugA
-         hNOyItoJJC24k2lnkOJ+p46vCfd029UEhaQtkYohisSSY4hacqWi2RCc/oDB78yVcNdV
-         J5slpYG58a6V+MCKmdxuQlbIaC08kjOOtL5z3us9jJ+RCjanU9FF5zX97YfsHdKayMQT
-         f9IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Cd4QsvztevPYCvOOxkfeUvwdXq5/dlPeOoAMC74Y2Ew=;
-        b=eyq7aky7VsQHdhQkeXiapZ/l1k2HCpBsokgldII0c2B4ellDtRD46ZG2+nEI6qxkkZ
-         bKVP5/hvfa8SgXKvY9y0s2K524dGMFkkvB/Q6t1NtCFNvYZAvDx7bVvLVE7bcZp96Qke
-         UoHLDwmtSAF+KgtiU9aA9AeH1ydETgx0bk/wjAqypmr9hXZf/D8r2zKe7khKaLpuDlWX
-         6R/MGtjD+CZZW8DT7EmHAdshVuQ2v/LgyVrV8EnbAlsz88klZDD7wanUMFYipbFCA0se
-         g6yRnp1yhdrpTGmBn1LDRKkbZfurHBy02f+qTUAiP0z2MLIza3O0+AIzuSSsM0HLVhXk
-         +bhg==
-X-Gm-Message-State: AOAM533IJKdcdJhR1Yq7fu2baPY4Yo98zWcxYCndcRHOjeJmqXeTK/Ds
-        TWNuUU6iyExeOR7fCmYxBL7AlSR9h4g=
-X-Google-Smtp-Source: ABdhPJyAsJjf/ZCfJJUJdaJg2YIW/O5BHI6tn1t5Q6AxVXcWJULg9Z8qjkOOE2UEUIs+3X3jFJEJBA==
-X-Received: by 2002:a63:7985:: with SMTP id u127mr7522014pgc.228.1624588735083;
-        Thu, 24 Jun 2021 19:38:55 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id b25sm3970390pft.76.2021.06.24.19.38.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 19:38:54 -0700 (PDT)
-Subject: Re: [PATCH v2] pinctrl: bcm2835: Replace BUG with WARN_ON
-To:     Jason Wang <wangborong@cdjrlc.com>,
-        "linus.walleij" <linus.walleij@linaro.org>
-Cc:     nsaenz <nsaenz@kernel.org>, "f.fainelli" <f.fainelli@gmail.com>,
-        rjui <rjui@broadcom.com>, sbranden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        phil <phil@raspberrypi.com>, iivanov <iivanov@suse.de>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210624235122.24772-1-wangborong@cdjrlc.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <0b7f68ff-f437-ff7d-9eca-d220ca897192@gmail.com>
-Date:   Thu, 24 Jun 2021 19:38:45 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210624235122.24772-1-wangborong@cdjrlc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Thu, 24 Jun 2021 22:57:24 -0400
+Received: from epcas3p3.samsung.com (unknown [182.195.41.21])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210625025502epoutp02ee45f006d169594492a0878c99070b76~Ls7oRsE_G0045600456epoutp020
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:55:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210625025502epoutp02ee45f006d169594492a0878c99070b76~Ls7oRsE_G0045600456epoutp020
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1624589702;
+        bh=DPiBchNmpbOw5Sq1Tqs2itJVDCXaLTb9mJUrRA353v0=;
+        h=Subject:Reply-To:From:To:In-Reply-To:Date:References:From;
+        b=WvAksahSh3mRkwxIc3w9OmMiRPx7TTbB8YCreVSveYgmWxS432RBT3K4bq2NhmHdx
+         eiN3JtPzxJ7XAVrQFjPqYvXPwBuEmuYX3pGORFi1no7+qgoKSFDSPCmKW4JVT+A7XL
+         kVNpO1G0MfWRXfgwisyJiSbcZJzIbse6b3l6claw=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas3p4.samsung.com (KnoxPortal) with ESMTP id
+        20210625025501epcas3p414beb364bcb4cea839d3834e3c301cd5~Ls7nrJ_Mo1935119351epcas3p46;
+        Fri, 25 Jun 2021 02:55:01 +0000 (GMT)
+Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp4.localdomain
+        (Postfix) with ESMTP id 4GB1nd4c2Zz4x9Q6; Fri, 25 Jun 2021 02:55:01 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH] scsi: ufs: Refactor ufshcd_is_intr_aggr_allowed()
+Reply-To: keosung.park@samsung.com
+Sender: Keoseong Park <keosung.park@samsung.com>
+From:   Keoseong Park <keosung.park@samsung.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        "joe@perches.com" <joe@perches.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        "satyat@google.com" <satyat@google.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Joao Pinto <jpinto@synopsys.com>,
+        Pedro Sousa <sousa@synopsys.com>,
+        Pedro Sousa <pedrom.sousa@synopsys.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <abd587ed-6666-34b8-b545-8ea97bcf0515@intel.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1891546521.01624589701638.JavaMail.epsvc@epcpadp3>
+Date:   Fri, 25 Jun 2021 11:38:47 +0900
+X-CMS-MailID: 20210625023847epcms2p1bd03c89ef4a22865053e673a895b62b7
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210621085158epcms2p46170ba48174547df00b9720dbc843110
+References: <abd587ed-6666-34b8-b545-8ea97bcf0515@intel.com>
+        <42c2978f-f0ca-3efb-7762-cac813a0a5fe@intel.com>
+        <ed6d8c44-295e-aaa7-4b5f-7929c1c797d1@intel.com>
+        <1891546521.01624267081897.JavaMail.epsvc@epcpadp4>
+        <37380050.31624517282371.JavaMail.epsvc@epcpadp4>
+        <1891546521.01624533302400.JavaMail.epsvc@epcpadp3>
+        <CGME20210621085158epcms2p46170ba48174547df00b9720dbc843110@epcms2p1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+>On 24/06/21 1:44 pm, Keoseong Park wrote:
+>>> On 24/06/21 9:41 am, Keoseong Park wrote:
+>>>>> On 21/06/21 11:51 am, Keoseong Park wrote:
+>>>>>> Change conditional compilation to IS_ENABLED macro,
+>>>>>> and simplify if else statement to return statement.
+>>>>>> No functional change.
+>>>>>>
+>>>>>> Signed-off-by: Keoseong Park <keosung.park@samsung.com>
+>>>>>> ---
+>>>>>>  drivers/scsi/ufs/ufshcd.h | 17 ++++++++---------
+>>>>>>  1 file changed, 8 insertions(+), 9 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+>>>>>> index c98d540ac044..6d239a855753 100644
+>>>>>> --- a/drivers/scsi/ufs/ufshcd.h
+>>>>>> +++ b/drivers/scsi/ufs/ufshcd.h
+>>>>>> @@ -893,16 +893,15 @@ static inline bool ufshcd_is_rpm_autosuspend_allowed(struct ufs_hba *hba)
+>>>>>>  
+>>>>>>  static inline bool ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
+>>>>>>  {
+>>>>>> -/* DWC UFS Core has the Interrupt aggregation feature but is not detectable*/
+>>>>>> -#ifndef CONFIG_SCSI_UFS_DWC
+>>>>>> -	if ((hba->caps & UFSHCD_CAP_INTR_AGGR) &&
+>>>>>> -	    !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR))
+>>>>>> +	/*
+>>>>>> +	 * DWC UFS Core has the Interrupt aggregation feature
+>>>>>> +	 * but is not detectable.
+>>>>>> +	 */
+>>>>>> +	if (IS_ENABLED(CONFIG_SCSI_UFS_DWC))
+>>>>>
+>>>>> Why is this needed?  It seems like you could just set UFSHCD_CAP_INTR_AGGR
+>>>>> and clear UFSHCD_QUIRK_BROKEN_INTR_AGGR instead?
+>>>>
+>>>> Hello Adrian,
+>>>> Sorry for late reply.
+>>>>
+>>>> The code that returns true when CONFIG_SCSI_UFS_DWC is set in the original code 
+>>>> is only changed using the IS_ENABLED macro.
+>>>> (Linux kernel coding style, 21) Conditional Compilation)
+>>>>
+>>>> When CONFIG_SCSI_UFS_DWC is not defined, the code for checking quirk 
+>>>> and caps has been moved to the newly added return statement below.
+>>>
+>>> Looking closer I cannot find CONFIG_SCSI_UFS_DWC at all.  It seems like it
+>>> never existed.
+>>>
+>>> Why should we not remove the code related to CONFIG_SCSI_UFS_DWC entirely?
+>> 
+>> You're right. What do you think of deleting the code related to CONFIG_SCSI_UFS_DWC 
+>> and changing it to the patch below?
+>
+>Yes, but cc Joao Pinto <jpinto@synopsys.com> who introduced the code
 
+Thanks for your advice. I will upload next version patch by adding cc.
 
-On 6/24/2021 4:51 PM, Jason Wang wrote:
-> The if condition followed by BUG can be replaced to WARN_ON which is
-> more compact and formal in linux source.
-> 
-> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+Thanks,
+Keoseong
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+>
+>> 
+>> ---
+>> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+>> index c98d540ac044..c9faca237290 100644
+>> --- a/drivers/scsi/ufs/ufshcd.h
+>> +++ b/drivers/scsi/ufs/ufshcd.h
+>> @@ -893,16 +893,8 @@ static inline bool ufshcd_is_rpm_autosuspend_allowed(struct ufs_hba *hba)
+>> 
+>>  static inline bool ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
+>>  {
+>> -/* DWC UFS Core has the Interrupt aggregation feature but is not detectable*/
+>> -#ifndef CONFIG_SCSI_UFS_DWC
+>> -       if ((hba->caps & UFSHCD_CAP_INTR_AGGR) &&
+>> -           !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR))
+>> -               return true;
+>> -       else
+>> -               return false;
+>> -#else
+>> -return true;
+>> -#endif
+>> +       return (hba->caps & UFSHCD_CAP_INTR_AGGR) &&
+>> +               !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR);
+>>  }
+>> 
+>>>
+>>>
+>>>>
+>>>> Thanks,
+>>>> Keoseong
+>>>>
+>>>>>
+>>>>>>  		return true;
+>>>>>> -	else
+>>>>>> -		return false;
+>>>>>> -#else
+>>>>>> -return true;
+>>>>>> -#endif
+>>>>>> +
+>>>>>> +	return (hba->caps & UFSHCD_CAP_INTR_AGGR) &&
+>>>>>> +		!(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR);
+>>>>>>  }
+>>>>>>  
+>>>>>>  static inline bool ufshcd_can_aggressive_pc(struct ufs_hba *hba)
+>>>>>>
+>>>>>
+>>>
+>
