@@ -2,123 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790DA3B3D02
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EDEE3B3D04
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229776AbhFYHJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 03:09:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27127 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229448AbhFYHJW (ORCPT
+        id S229844AbhFYHKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 03:10:30 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5425 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229448AbhFYHK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 03:09:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624604822;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pbp23JlztCvQMDGSzMZ1vEk44RnDqxHLzKF7l4kjbo8=;
-        b=FyukX7w2i/F3f1kqZX+5YL8eBYc0UUCqIdRMRPIChHb8CMG9dXT+rCvmOSfchqDctSBo1G
-        JCOzeTgj+11h8p/31vC9the4OSgt6GiiLqCne3YjF09iKohKNwnTQR1i4LKULYUXtf24IP
-        8yzn5ACBgj35LVQxf2CaIrxbD8OesQE=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-153-_FWv4OPeNxm2lGx0kRf8Zw-1; Fri, 25 Jun 2021 03:07:00 -0400
-X-MC-Unique: _FWv4OPeNxm2lGx0kRf8Zw-1
-Received: by mail-ed1-f72.google.com with SMTP id t11-20020a056402524bb029038ffacf1cafso4692258edd.5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 00:07:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pbp23JlztCvQMDGSzMZ1vEk44RnDqxHLzKF7l4kjbo8=;
-        b=ToIGvfDSOVQJve6wn/sXrRMEzaXZUblzTqDJ1F2P5P4cCrW3Me1hltzw0c7BPdZNI4
-         e3zY8FnlFGGqiLrBqD7UcPWUqo+vlBwEbheb8mxGc3XtkuaKS+7kjamuJrooUUewrqY7
-         37C2C916OSy0kZMZQzU4/6geAQJlHzxruTMuWHIlTedvyQjr77jmquE9Mtd6QZtSBf0a
-         +EeBvbpaqAODzcgx+lGquI5FXboyYzsExoa9rlGXJNiPQoAYnYFBr1cX9P3A5N9fmrnV
-         bP+d+KV1Szzlnmz98C6ku2t73AWUJx9AY7GK+gWAQ6V6V6WjgpNHBSdrorMFdYzEvXI3
-         KZ/w==
-X-Gm-Message-State: AOAM533kHRiyN3yJGAve976TOUSwBFrxphfvGNDbSuEvNfEmHspgoNl0
-        4YERZOUHLmGzpE6V7FMy3E6tk2tp2em3vpfZGeKAStuF14qU262/oNGngf2E19exHmQWMhb/7du
-        OrJIyEwqb2KK4LN86iUInZKsU
-X-Received: by 2002:a17:906:22c6:: with SMTP id q6mr9248399eja.275.1624604819189;
-        Fri, 25 Jun 2021 00:06:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzyaw4UrNydP6rJ+aMKvQTiKfg4uzK7jEe1lT6tuybSH8BIUV+HiOjSEMQXmQAWrdq0eFca0A==
-X-Received: by 2002:a17:906:22c6:: with SMTP id q6mr9248372eja.275.1624604818971;
-        Fri, 25 Jun 2021 00:06:58 -0700 (PDT)
-Received: from gator (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
-        by smtp.gmail.com with ESMTPSA id e28sm3333482edc.24.2021.06.25.00.06.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 00:06:58 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 09:06:56 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org, robh+dt@kernel.org, shan.gavin@gmail.com
-Subject: Re: [PATCH v4] Documentation, dt, numa: Add note to empty NUMA node
-Message-ID: <20210625070656.j373hveemf5cdch4@gator>
-References: <20210625052338.4875-1-gshan@redhat.com>
- <20210625070217.4ffmfe7nwlusbbjc@gator>
+        Fri, 25 Jun 2021 03:10:27 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GB7Kp1wf8z7410;
+        Fri, 25 Jun 2021 15:04:46 +0800 (CST)
+Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 25 Jun 2021 15:08:03 +0800
+Received: from [10.67.102.67] (10.67.102.67) by dggemi759-chm.china.huawei.com
+ (10.1.198.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 25
+ Jun 2021 15:08:02 +0800
+Subject: Re: [PATCH net-next 3/3] net: hns3: add support for link diagnosis
+ info in debugfs
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <salil.mehta@huawei.com>,
+        <lipeng321@huawei.com>
+References: <1624545405-37050-1-git-send-email-huangguangbin2@huawei.com>
+ <1624545405-37050-4-git-send-email-huangguangbin2@huawei.com>
+ <20210624122517.7c8cb329@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   "huangguangbin (A)" <huangguangbin2@huawei.com>
+Message-ID: <ce1e61d6-546e-2856-17cc-04419e30eaca@huawei.com>
+Date:   Fri, 25 Jun 2021 15:08:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625070217.4ffmfe7nwlusbbjc@gator>
+In-Reply-To: <20210624122517.7c8cb329@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.67]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggemi759-chm.china.huawei.com (10.1.198.145)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 09:02:17AM +0200, Andrew Jones wrote:
-> On Fri, Jun 25, 2021 at 01:23:38PM +0800, Gavin Shan wrote:
-> > The empty memory nodes, where no memory resides in, are allowed.
-> > For these empty memory nodes, the 'len' of 'reg' property is zero.
-> > The NUMA node IDs are still valid and parsed, but memory can be
-> > added to them through hotplug afterwards. I finds difficulty to
-> > get where it's properly documented.
-> > 
-> > So lets add note to empty memory nodes in the NUMA binding doc.
-> > 
-> > Signed-off-by: Gavin Shan <gshan@redhat.com>
-> > ---
-> >  Documentation/devicetree/bindings/numa.txt | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/numa.txt b/Documentation/devicetree/bindings/numa.txt
-> > index 21b35053ca5a..0fc882e44270 100644
-> > --- a/Documentation/devicetree/bindings/numa.txt
-> > +++ b/Documentation/devicetree/bindings/numa.txt
-> > @@ -109,6 +109,10 @@ Example:
-> >  Dual socket system consists of 2 boards connected through ccn bus and
-> >  each board having one socket/soc of 8 cpus, memory and pci bus.
-> >  
-> > +Note that empty memory nodes, which no memory resides in, are allowed.
-> > +The NUMA node IDs in these empty memory nodes are still valid, but
-> > +memory can be added into them through hotplug afterwards.
-> 
-> Please change the second sentence to:
-> 
->   The NUMA node IDs in these empty memory nodes are still valid and
->   memory may be added into them through hotplug afterwards.
-> 
-> But, this doesn't look like the right place for this paragraph. You're
-> adding the paragraph to the example section, but the example doesn't have
-> any empty memory nodes.
-> 
-> I think the paragraph should be added to section "2 - numa-node-id" and an
 
-Or maybe even create a new section for it.
 
-> example empty memory node should be provided. Also, the commit message
-> talks about the length of 'reg' being zero, which is an important
-> distinction which should also be documented.
+On 2021/6/25 3:25, Jakub Kicinski wrote:
+> On Thu, 24 Jun 2021 22:36:45 +0800 Guangbin Huang wrote:
+>> In order to know reason why link down, add a debugfs file
+>> "link_diagnosis_info" to get link faults from firmware, and each bit
+>> represents one kind of fault.
+>>
+>> usage example:
+>> $ cat link_diagnosis_info
+>> Reference clock lost
 > 
-> Thanks,
-> drew
+> Please use ethtool->get_link_ext_state instead.
+> .
 > 
-> > +
-> >  	memory@c00000 {
-> >  		device_type = "memory";
-> >  		reg = <0x0 0xc00000 0x0 0x80000000>;
-> > -- 
-> > 2.23.0
-> > 
-
+Ok, thanks.
