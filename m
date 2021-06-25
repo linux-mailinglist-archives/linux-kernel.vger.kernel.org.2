@@ -2,105 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10373B3F8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 070983B3F92
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhFYInA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:43:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230429AbhFYImy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:42:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12E656141C;
-        Fri, 25 Jun 2021 08:40:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624610434;
-        bh=n6h3R95LqX+8GLA4EZmuxl5Sr6QOvpWtabNxKYHYWQU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QjYPdUy6RjL8uaS0wlohRpfshi1T8fyA0waHU8ARaRCzf5n+8PTWOg+svHkChWdsR
-         L/GriZrF+J+lr+CVOya7j05PhWuaCe4usXMzV9MUs89DhOT/FNW4cYbQ1sCzfW83yP
-         pC90kjuADyZHCRBtjlYVr0ubGRexDl/tlsb6An3PmS/kYVGdgKCpmO7Mv7VnMcNU0/
-         DEX4ASGlOfhNMleXwV/381vBGJNR5c+CqWoMrxpqLaMbbl5ZU2f6I4qzNYshc6LQtg
-         bKk1Swzbke/4nOQndh7e+9xIdjp2+G5jzhkU2twT5yvbNd/7Ly0lJTMcz60h1xlows
-         FF6hrLLXTD25g==
-Received: by pali.im (Postfix)
-        id B749260E; Fri, 25 Jun 2021 10:40:31 +0200 (CEST)
-Date:   Fri, 25 Jun 2021 10:40:31 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Cc:     Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Phil Sutter <phil@nwl.cc>
-Subject: Re: Issues during assigning addresses on point to point interfaces
-Message-ID: <20210625084031.c33yovvximtabmf4@pali>
-References: <20210606151008.7dwx5ukrlvxt4t3k@pali>
- <20210624124545.2b170258@dellmb>
- <d3995a21-d9fe-9393-a10e-8eddccec2f47@6wind.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d3995a21-d9fe-9393-a10e-8eddccec2f47@6wind.com>
-User-Agent: NeoMutt/20180716
+        id S230351AbhFYInO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:43:14 -0400
+Received: from lucky1.263xmail.com ([211.157.147.130]:38716 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230273AbhFYInM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 04:43:12 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id B94C7D574E;
+        Fri, 25 Jun 2021 16:40:49 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P5175T139828543985408S1624610437940294_;
+        Fri, 25 Jun 2021 16:40:49 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <4e4fc8ddf5921e95c8a8b234f923b740>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 20
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     linux-spi@vger.kernel.org
+Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
+Subject: [RFC PATCH v9 05/10] clk: rockchip:  add dt-binding for hclk_sfc on rk3036
+Date:   Fri, 25 Jun 2021 16:40:31 +0800
+Message-Id: <20210625084036.13464-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210625084000.13192-1-jon.lin@rock-chips.com>
+References: <20210625084000.13192-1-jon.lin@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 24 June 2021 14:57:41 Nicolas Dichtel wrote:
-> Le 24/06/2021 à 12:45, Marek Behún a écrit :
-> > On Sun, 6 Jun 2021 17:10:08 +0200
-> > Pali Rohár <pali@kernel.org> wrote:
-> > 
-> >> Hello!
-> >>
-> >> Seems that there is a bug during assigning IP addresses on point to
-> >> point interfaces.
-> >>
-> >> Assigning just one local address works fine:
-> >>
-> >>     ip address add fe80::6 dev ppp1 --> inet6 fe80::6/128 scope link
-> >>
-> >> Assigning both local and remote peer address also works fine:
-> >>
-> >>     ip address add fe80::7 peer fe80::8 dev ppp1 ---> inet6 fe80::7
-> >> peer fe80::8/128 scope link
-> >>
-> >> But trying to assign just remote peer address does not work. Moreover
-> >> "ip address" call does not fail, it returns zero but instead of
-> >> setting remote peer address, it sets local address:
-> >>
-> >>     ip address add peer fe80::5 dev ppp1 --> inet6 fe80::5/128 scope
-> >> link
-> >>
-> > 
-> > Adding some other people to Cc in order to get their opinions.
-> > 
-> > It seems this bug is there from the beginning, from commit
-> > caeaba79009c2 ("ipv6: add support of peer address")
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=caeaba79009c2
-> > 
-> > Maybe some older user-space utilities use IFA_ADDRESS instead of
-> > IFA_LOCAL, and this was done in order to be compatible with them?
-> If I remember well, there was an issue in the uAPI.
-> IFA_LOCAL is supposed to be the address of the interface and IFA_ADDRESS is
-> supposed to be the endpoint of a point-to-point interface.
-> However, in case of IPv6, it was not the case. In netlink messages generated by
-> the kernel, IFA_ADDRESS was used instead of IFA_LOCAL.
-> The patch tried to keep the backward compatibility and the symmetry between msg
-> from userland and notification from the kernel.
+From: Chris Morgan <macromorgan@hotmail.com>
 
-Hello Nicolas!
+Add dt-binding for hclk_sfc on rk3036
 
-See my original email where I put also rtnetlink packets (how strace see
-them). Seems that there is a bug in handling them (or bug in iproute2)
-as setting just peer (remote) IPv6 address is ignored:
-https://lore.kernel.org/netdev/20210606151008.7dwx5ukrlvxt4t3k@pali/
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+---
 
-Do you have any idea if this is affected by that "issue in the uAPI"?
-And what is the way how to fix it?
+Changes in v9:
+- Seperate FDT binding docs and includes from rk3036 sfc_hclk patch
+
+Changes in v8: None
+Changes in v7: None
+Changes in v6: None
+Changes in v5: None
+Changes in v4: None
+Changes in v3: None
+Changes in v2: None
+Changes in v1: None
+
+ include/dt-bindings/clock/rk3036-cru.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/dt-bindings/clock/rk3036-cru.h b/include/dt-bindings/clock/rk3036-cru.h
+index 35a5a01f9697..a96a9870ad59 100644
+--- a/include/dt-bindings/clock/rk3036-cru.h
++++ b/include/dt-bindings/clock/rk3036-cru.h
+@@ -81,6 +81,7 @@
+ #define HCLK_OTG0		449
+ #define HCLK_OTG1		450
+ #define HCLK_NANDC		453
++#define HCLK_SFC		454
+ #define HCLK_SDMMC		456
+ #define HCLK_SDIO		457
+ #define HCLK_EMMC		459
+-- 
+2.17.1
+
+
+
