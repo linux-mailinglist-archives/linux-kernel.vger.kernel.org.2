@@ -2,123 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897E03B4157
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 270843B415E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbhFYKUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 06:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbhFYKTc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 06:19:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B350C061787;
-        Fri, 25 Jun 2021 03:17:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wDQXb0b+JpxtflRteJ/ZXAm5n+oQckfOfxFaEPzX3d0=; b=kXPUlU2H9vzWAwVh0T2wqxOCx1
-        lOcpMyvsK0Pl8Ao1d4v2gfWrc0Nwb0T7Vahflk+dcFWCnsLwYrkC/r7NUuY7YqpQFIZS9srFwQQiN
-        AvEi9XE1GR9ucHXeyTTCuVVpALouAkeRGuwLJKDMOqNcfprqT7v+6kTUEal+L1A7UlAnst6utMhHa
-        Lms0BF77SDLRUoNVMUg0HQTX5EgzVCG+BZNNXuA+ESVfBhryzFVRCsqEc2+qBc2WcmH5NuRG2FURa
-        Y57J9axgTfZmNszVbocy6VneLvFx1WZum1Pp/yJyueEdGf9AftpZuBTdUaIx7WJDRC/b6Q4kzOvii
-        LnmBAxeg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwitJ-00HYGQ-Ay; Fri, 25 Jun 2021 10:16:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D3D6E300233;
-        Fri, 25 Jun 2021 12:16:52 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id ADFB22019DA0B; Fri, 25 Jun 2021 12:16:52 +0200 (CEST)
-Date:   Fri, 25 Jun 2021 12:16:52 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Bharata B Rao <bharata@linux.ibm.com>
-Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        linux-next@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: PowerPC guest getting "BUG: scheduling while atomic" on
- linux-next-20210623 during secondary CPUs bringup
-Message-ID: <YNWtFKdSuoYTfSon@hirez.programming.kicks-ass.net>
-References: <YNSq3UQTjm6HWELA@in.ibm.com>
- <20210625054608.fmwt7lxuhp7inkjx@linux.vnet.ibm.com>
- <YNWFiZii+MINhUC3@hirez.programming.kicks-ass.net>
- <YNWZfKK+KBQSUdG5@in.ibm.com>
+        id S231451AbhFYKUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 06:20:52 -0400
+Received: from phobos.denx.de ([85.214.62.61]:41910 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231193AbhFYKUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 06:20:51 -0400
+Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id D160D82BED;
+        Fri, 25 Jun 2021 12:18:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1624616309;
+        bh=IzUjC8qtz0wz/5DU4735vakKqG89fReInmoUKyyPtt4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jykOLrjt4ZP857/BG5+9ZyQfu2yVaz9nAlUsaXEUSZHxnP8EcSTRQKsnVbZ9E1trt
+         1h/ky/7I9b7Az04GnthhJwFJf5pM9Uqai1wwBZ/gNNRy3ApT88QKc2cFWOFZGxTqEf
+         bfDEB5SIygBmHmD5DueWOmhvw5gp2KIIfQQnP0EetxTmdU1p7F7g3QMq+VApwOjtM3
+         YcIIxfPs7cumvG97MftnC8plfclrjHAYItFGD14L6NMLQFsf7PV8bOJ0hj5W3PcJPB
+         MvoUsbTlXFn4Ue5Oo2Sdf+ceNUAJMoTx6mb2U/lzzq+zGHfWHJsMQe6oNtRVC+rAIC
+         poCQ8ESRAj/fA==
+Date:   Fri, 25 Jun 2021 12:18:17 +0200
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Madalin Bucur (OSS)" <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Einon <mark.einon@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC 1/3] ARM: dts: imx28: Add description for L2 switch on XEA
+ board
+Message-ID: <20210625121817.77643fe0@ktm>
+In-Reply-To: <DB8PR04MB6795CDCD1DC16B3F55F97753E6069@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <20210622144111.19647-1-lukma@denx.de>
+        <20210622144111.19647-2-lukma@denx.de>
+        <YNH3mb9fyBjLf0fj@lunn.ch>
+        <20210622225134.4811b88f@ktm>
+        <YNM0Wz1wb4dnCg5/@lunn.ch>
+        <20210623172631.0b547fcd@ktm>
+        <76159e5c-6986-3877-c0a1-47b5a17bf0f1@gmail.com>
+        <DB8PR04MB679567B66A45FBD1C23E7371E6079@DB8PR04MB6795.eurprd04.prod.outlook.com>
+        <20210624132129.1ade0614@ktm>
+        <DB8PR04MB6795CDCD1DC16B3F55F97753E6069@DB8PR04MB6795.eurprd04.prod.outlook.com>
+Organization: denx.de
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNWZfKK+KBQSUdG5@in.ibm.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/2mc=ShYF09lsy_uW76bivdq"; protocol="application/pgp-signature"
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 02:23:16PM +0530, Bharata B Rao wrote:
-> On Fri, Jun 25, 2021 at 09:28:09AM +0200, Peter Zijlstra wrote:
-> > On Fri, Jun 25, 2021 at 11:16:08AM +0530, Srikar Dronamraju wrote:
-> > > * Bharata B Rao <bharata@linux.ibm.com> [2021-06-24 21:25:09]:
-> > > 
-> > > > A PowerPC KVM guest gets the following BUG message when booting
-> > > > linux-next-20210623:
-> > > > 
-> > > > smp: Bringing up secondary CPUs ...
-> > > > BUG: scheduling while atomic: swapper/1/0/0x00000000
-> > 
-> > 'funny', your preempt_count is actually too low. The check here is for
-> > preempt_count() == DISABLE_OFFSET (aka. 1 when PREEMPT=y), but you have
-> > 0.
-> > 
-> > > > no locks held by swapper/1/0.
-> > > > Modules linked in:
-> > > > CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.13.0-rc7-next-20210623
-> > > > Call Trace:
-> > > > [c00000000ae5bc20] [c000000000badc64] dump_stack_lvl+0x98/0xe0 (unreliable)
-> > > > [c00000000ae5bc60] [c000000000210200] __schedule_bug+0xb0/0xe0
-> > > > [c00000000ae5bcd0] [c000000001609e28] __schedule+0x1788/0x1c70
-> > > > [c00000000ae5be20] [c00000000160a8cc] schedule_idle+0x3c/0x70
-> > > > [c00000000ae5be50] [c00000000022984c] do_idle+0x2bc/0x420
-> > > > [c00000000ae5bf00] [c000000000229d88] cpu_startup_entry+0x38/0x40
-> > > > [c00000000ae5bf30] [c0000000000666c0] start_secondary+0x290/0x2a0
-> > > > [c00000000ae5bf90] [c00000000000be54] start_secondary_prolog+0x10/0x14
-> > > > 
-> > > > <The above repeats for all the secondary CPUs>
-> > > > 
-> > > > smp: Brought up 2 nodes, 16 CPUs
-> > > > numa: Node 0 CPUs: 0-7
-> > > > numa: Node 1 CPUs: 8-15
-> > > > 
-> > > > This seems to have started from next-20210521 and isn't seen on
-> > > > next-20210511.
-> > > > 
-> > > 
-> > > Bharata,
-> > > 
-> > > I think the regression is due to Commit f1a0a376ca0c ("sched/core:
-> > > Initialize the idle task with preemption disabled")
-> > 
-> > So that extra preempt_disable() that got removed would've incremented it
-> > to 1 and then things would've been fine.
-> > 
-> > Except.. Valentin changed things such that preempt_count() should've
-> > been inittialized to 1, instead of 0, but for some raisin that didn't
-> > stick.. what gives.
-> > 
-> > So we have init_idle(p) -> init_idle_preempt_count(p) ->
-> > task_thread_info(p)->preempt_count = PREEMPT_DISABLED;
-> > 
-> > But somehow, by the time you're running start_secondary(), that's gotten
-> > to be 0 again. Does DEBUG_PREEMPT give more clues?
-> 
-> PREEMPTION is off here.
+--Sig_/2mc=ShYF09lsy_uW76bivdq
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-You mean: CONFIG_PREEMPTION=n, what about CONFIG_PREEMPT_COUNT?
+Hi Joakim, Andrew,
 
-Because if both are =n, then I don't see how that warning could trigger.
-in_atomic_preempt_off() would then result in prempt_count() == 0, and
-per the print above, it *is* 0.
+> Hi Lukasz,
+>=20
+> > -----Original Message-----
+> > From: Lukasz Majewski <lukma@denx.de>
+> > Sent: 2021=E5=B9=B46=E6=9C=8824=E6=97=A5 19:21
+> > To: Joakim Zhang <qiangqing.zhang@nxp.com>; Florian Fainelli
+> > <f.fainelli@gmail.com>; Andrew Lunn <andrew@lunn.ch>
+> > Cc: David S . Miller <davem@davemloft.net>; Jakub Kicinski
+> > <kuba@kernel.org>; Madalin Bucur (OSS) <madalin.bucur@oss.nxp.com>;
+> > Nicolas Ferre <nicolas.ferre@microchip.com>; Vladimir Oltean
+> > <olteanv@gmail.com>; netdev@vger.kernel.org; Arnd Bergmann
+> > <arnd@arndb.de>; Mark Einon <mark.einon@gmail.com>; dl-linux-imx
+> > <linux-imx@nxp.com>; linux-kernel@vger.kernel.org
+> > Subject: Re: [RFC 1/3] ARM: dts: imx28: Add description for L2
+> > switch on XEA board
+> >=20
+> > Hi Joakim,
+> >  =20
+> > > Hi Lukasz, Florian, Andrew,
+> > > =20
+> > > > > Maybe somebody from NXP can provide input to this discussion
+> > > > > - for example to sched some light on FEC driver (near)
+> > > > > future. =20
+> > > >
+> > > > Seems like some folks at NXP are focusing on the STMMAC
+> > > > controller these days (dwmac from Synopsys), so maybe they have
+> > > > given up on having their own Ethernet MAC for lower end
+> > > > products. =20
+> > >
+> > > I am very happy to take participate into this topic, but now I
+> > > have no experience to DSA and i.MX28 MAC, so I may need some time
+> > > to increase these knowledge, limited insight could be put to now.
+> > > =20
+> >=20
+> > Ok. No problem :-)
+> >  =20
+> > >
+> > > Florian, Andrew could comment more and I also can learn from it
+> > > :-), they are all very experienced expert. =20
+> >=20
+> > The main purpose of several RFCs for the L2 switch drivers (for DSA
+> > [1] and switchdev [2]) was to gain feedback from community as soon
+> > as possible (despite that the driver lacks some features - like
+> > VLAN, FDB, etc).=20
+> > >
+> > > We also want to maintain FEC driver since many SoCs implemented
+> > > this IP, and as I know we would also use it for future SoCs.
+> > > =20
+> >=20
+> > Florian, Andrew, please correct me if I'm wrong, but my impression
+> > is that upstreaming the support for L2 switch on iMX depends on FEC
+> > driver being rewritten to support switchdev?
+> >=20
+> > If yes, then unfortunately, I don't have time and resources to
+> > perform that task
+> > - that is why I have asked if NXP has any plans to update the FEC
+> > (fec_main.c) driver.
+> >=20
+> >=20
+> > Joakim, do you have any plans to re-factor the legacy FEC driver
+> > (fec_main.c) and introduce new one, which would support the
+> > switchdev?
+> >=20
+> > If NXP is not planning to update the driver, then maybe it would be
+> > worth to consider adding driver from [2] to mainline? Then I could
+> > finish it and provide all required features. =20
+>=20
+> I don't have such plan now, and have no confidence to re-factor the
+> legacy FEC driver and introduce new one, which to support switchdev
+> in a short time.=20
+
+Thanks for the clear statement, appreciated.
+
+> I am not very experienced for FEC driver, since I
+> have just maintained it for half a year.=20
+
+Ok. No problem.
+
+> To be honest, I have no idea
+> in my head right now, we even don't have i.MX28 boards.
+
+As fair as I remember there is still imx28-dev board available for
+purchase. You can also use vf610 based board.
+
+> I'm so sorry
+> about this, but I am also interested in it, I am finding time to
+> increase related knowledge.
+
+Ok.
+
+To sum up:
+
+- The FEC driver (legacy one) will not be rewritten anytime soon
+  (maybe any other community member will work on this sooner...)
+
+- Considering the above, support for L2 switch on imx28, vf610 is
+  blocked [*]. As a result some essential functionality for still
+  actively used SoCs is going to be maintained out of tree (for example
+  [1][2]).=20
+
+[*] - as I've stated in the other mail - what's about the situation
+where FEC legacy driver is not going to be excessively modified (just
+changes from this patch set)?
+
+Links:
+
+[1] -
+https://source.denx.de/linux/linux-imx28-l2switch/-/commits/imx28-v5.12-L2-=
+upstream-switchdev-RFC_v1
+
+[2] -
+https://source.denx.de/linux/linux-imx28-l2switch/-/commits/imx28-v5.12-L2-=
+upstream-DSA-RFC_v1
+
+>=20
+> Best Regards,
+> Joakim Zhang
+> >=20
+> > Links:
+> > [1] -
+> > https://source.denx.de/linux/linux-imx28-l2switch/-/commits/imx28-v5.12=
+-L2-u
+> > pstream-DSA-RFC_v1
+> > [2] -
+> > https://source.denx.de/linux/linux-imx28-l2switch/-/commits/imx28-v5.12=
+-L2-u
+> > pstream-switchdev-RFC_v1
+> >  =20
+> > > Best Regards,
+> > > Joakim Zhang =20
+> >=20
+> >=20
+> >=20
+> >=20
+> > Best regards,
+> >=20
+> > Lukasz Majewski
+> >=20
+> > --
+> >=20
+> > DENX Software Engineering GmbH,      Managing Director: Wolfgang
+> > Denk HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell,
+> > Germany Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email:
+> > lukma@denx.de =20
+
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/2mc=ShYF09lsy_uW76bivdq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmDVrWkACgkQAR8vZIA0
+zr08+QgA52HulydPpTba/n5izK1UKGy7ReuvNvsu7nuykMp9QYcNY+SzRL7rPmx9
+TPQKsNm/YTR5zrr1ziOglojDRjztl+H4MUUyYGbXkcImylYJA0iYf2xqN5ciMjtQ
+d1TqRKxmEhSyLfi1grqRLDiNDDhVbLD51F47Kad95cg0aBvioCBNunOcwsI4hywC
+vrNL2iEcGbQTsLtLGhdnY+z6geMDXOhKfVH95ZWvr6fX41E6hqeYtZ1AQk6eG0CR
+FFUFVhJLq8ToqX6nqV96lfL4QqPZ4aaWBPq564DX3YVv/vTSg8VMGw87ih69FfC+
+y08gO5b/dQ3zeg0qM+4qh2GjM2yYhw==
+=Zk3/
+-----END PGP SIGNATURE-----
+
+--Sig_/2mc=ShYF09lsy_uW76bivdq--
