@@ -2,82 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE4B3B42F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521643B42FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbhFYMQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 08:16:23 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:36135 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhFYMQU (ORCPT
+        id S231313AbhFYMQd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Jun 2021 08:16:33 -0400
+Received: from out28-99.mail.aliyun.com ([115.124.28.99]:51152 "EHLO
+        out28-99.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231266AbhFYMQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 08:16:20 -0400
-Received: (Authenticated sender: maxime.chevallier@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 8348F40004;
-        Fri, 25 Jun 2021 12:13:57 +0000 (UTC)
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        thomas.petazzoni@bootlin.com, herve.codina@bootlin.com,
-        devicetree@vger.kernel.org
-Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ARM: dts: imx6qdl-sr-som: Increase the PHY reset duration to 10ms
-Date:   Fri, 25 Jun 2021 14:13:53 +0200
-Message-Id: <20210625121353.3698240-1-maxime.chevallier@bootlin.com>
-X-Mailer: git-send-email 2.25.4
+        Fri, 25 Jun 2021 08:16:31 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07444078|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.157598-0.00389005-0.838512;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.KXvfCQt_1624623247;
+Received: from zhouyanjie-virtual-machine(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KXvfCQt_1624623247)
+          by smtp.aliyun-inc.com(10.147.42.198);
+          Fri, 25 Jun 2021 20:14:08 +0800
+Date:   Fri, 25 Jun 2021 20:14:06 +0800
+From:   =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
+        sboyd@kernel.org, robh+dt@kernel.org, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com
+Subject: Re: [PATCH v3 4/4] MIPS: CI20: Add second percpu timer for SMP.
+Message-ID: <20210625201406.1373aff5@zhouyanjie-virtual-machine>
+In-Reply-To: <5C99VQ.EJKI9MPO7XXO1@crapouillou.net>
+References: <1624547189-61079-1-git-send-email-zhouyanjie@wanyeetech.com>
+        <1624547189-61079-5-git-send-email-zhouyanjie@wanyeetech.com>
+        <5C99VQ.EJKI9MPO7XXO1@crapouillou.net>
+X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AR803x PHY used on this modules seems to require the reset line to
-be asserted for around 10ms in order to avoid rare cases where the PHY
-gets stuck in an incoherent state that prevents it to function
-correctly.
+于 Fri, 25 Jun 2021 12:31:17 +0100
+Paul Cercueil <paul@crapouillou.net> 写道:
 
-The previous value of 2ms was found to be problematic on some setups,
-causing intermittent issues where the PHY would be unresponsive
-every once in a while on some sytems, with a low occurrence (it typically
-took around 30 consecutive reboots to encounter the issue).
+> Hi Zhou,
+> 
+> Le jeu., juin 24 2021 at 23:06:29 +0800, 周琰杰 (Zhou Yanjie) 
+> <zhouyanjie@wanyeetech.com> a écrit :
+> > 1.Add a new TCU channel as the percpu timer of core1, this is to
+> >   prepare for the subsequent SMP support. The newly added channel
+> >   will not adversely affect the current single-core state.
+> > 2.Adjust the position of TCU node to make it consistent with the
+> >   order in jz4780.dtsi file.  
+> 
+> That's a bit superfluous, the order matters when adding new nodes,
+> but once they are added, moving them around only cause annoyance.
+> 
+> > 
+> > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> > ---
+> > 
+> > Notes:
+> >     v2:
+> >     New patch.
+> > 
+> >     v2->v3:
+> >     No change.
+> > 
+> >  arch/mips/boot/dts/ingenic/ci20.dts | 21 +++++++++++----------
+> >  1 file changed, 11 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/arch/mips/boot/dts/ingenic/ci20.dts 
+> > b/arch/mips/boot/dts/ingenic/ci20.dts
+> > index 8877c62..70005cc 100644
+> > --- a/arch/mips/boot/dts/ingenic/ci20.dts
+> > +++ b/arch/mips/boot/dts/ingenic/ci20.dts
+> > @@ -118,6 +118,17 @@
+> >  	assigned-clock-rates = <48000000>;
+> >  };
+> > 
+> > +&tcu {
+> > +	/*
+> > +	 * 750 kHz for the system timers and 3 MHz for the
+> > clocksources,
+> > +	 * use channel #0 and #1 for the per cpu system timers,
+> > and use
+> > +	 * channel #2 for the clocksource.
+> > +	 */
+> > +	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu
+> > TCU_CLK_TIMER1>,
+> > +					  <&tcu TCU_CLK_TIMER2>,
+> > <&tcu TCU_CLK_OST>;
+> > +	assigned-clock-rates = <750000>, <750000>, <3000000>,
+> > <3000000>;  
+> 
+> Ideally you'd set TIMER1 to 3 MHz and TIMER2 to 750 kHz, otherwise it 
+> kind of breaks support for older kernels (they would still boot, but 
+> with a very slow clocksource). So in the new DTS you could use the 
+> timer0 clock for CPU #0, timer1 for the clocksource, and timer2+ for 
+> cpus > 0.
 
-Bumping the delay to the 10ms makes the issue dissapear, with more than
-2500 consecutive reboots performed without the issue showing-up.
+Sure, I will change it in v4.
 
-Fixes: 208d7baf8085 ("ARM: imx: initial SolidRun HummingBoard support")
-Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Tested-by: Hervé Codina <herve.codina@bootlin.com>
----
-This V2 was quickly resent, since the commit-log was incorrect.
+Thanks and best regards!
 
-v2 : Reworded the commit-log to remove an incorrect mention of the
-datasheet. Add a comment to the DT to explicitly explain the issue.
-
- arch/arm/boot/dts/imx6qdl-sr-som.dtsi | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/imx6qdl-sr-som.dtsi b/arch/arm/boot/dts/imx6qdl-sr-som.dtsi
-index 0ad8ccde0cf8..f86efd0ccc40 100644
---- a/arch/arm/boot/dts/imx6qdl-sr-som.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-sr-som.dtsi
-@@ -54,7 +54,13 @@ &fec {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_microsom_enet_ar8035>;
- 	phy-mode = "rgmii-id";
--	phy-reset-duration = <2>;
-+
-+	/*
-+	 * The PHY seems to require a long-enough reset duration to avoid
-+	 * some rare issues where the PHY gets stuck in an inconsistent and
-+	 * non-functional state at boot-up. 10ms proved to be fine .
-+	 */
-+	phy-reset-duration = <10>;
- 	phy-reset-gpios = <&gpio4 15 GPIO_ACTIVE_LOW>;
- 	status = "okay";
- 
--- 
-2.25.4
+> 
+> Cheers,
+> -Paul
+> 
+> > +};
+> > +
+> >  &mmc0 {
+> >  	status = "okay";
+> > 
+> > @@ -522,13 +533,3 @@
+> >  		bias-disable;
+> >  	};
+> >  };
+> > -
+> > -&tcu {
+> > -	/*
+> > -	 * 750 kHz for the system timer and 3 MHz for the
+> > clocksource,
+> > -	 * use channel #0 for the system timer, #1 for the
+> > clocksource.
+> > -	 */
+> > -	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu
+> > TCU_CLK_TIMER1>,
+> > -					  <&tcu TCU_CLK_OST>;
+> > -	assigned-clock-rates = <750000>, <3000000>, <3000000>;
+> > -};
+> > --
+> > 2.7.4
+> >   
+> 
 
