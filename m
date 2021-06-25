@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F4A3B4C74
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 06:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9267B3B4CB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 06:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbhFZEPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 00:15:49 -0400
-Received: from angie.orcam.me.uk ([78.133.224.34]:60094 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbhFZEPs (ORCPT
+        id S229923AbhFZEtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 00:49:17 -0400
+Received: from smtp.silvertouch.com ([14.143.90.230]:47596 "EHLO
+        smtp.silvertouch.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229451AbhFZEtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 00:15:48 -0400
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 4C46892009C; Sat, 26 Jun 2021 06:13:26 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 4546392009B;
-        Sat, 26 Jun 2021 06:13:26 +0200 (CEST)
-Date:   Sat, 26 Jun 2021 06:13:26 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     David Laight <David.Laight@ACULAB.COM>
-cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 0/4] serial: 8250: Fixes for Oxford Semiconductor 950
- UARTs
-In-Reply-To: <aff02581e694421eba04afc2fc3644df@AcuMS.aculab.com>
-Message-ID: <alpine.DEB.2.21.2106260055211.37803@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2106071700090.1601@angie.orcam.me.uk> <YMiX7LAEtL0uQuVl@kroah.com> <alpine.DEB.2.21.2106151602120.61948@angie.orcam.me.uk> <YMjMpQtLeP3xceYR@kroah.com> <alpine.DEB.2.21.2106151805460.61948@angie.orcam.me.uk>
- <aff02581e694421eba04afc2fc3644df@AcuMS.aculab.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Sat, 26 Jun 2021 00:49:16 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by smtp.silvertouch.com (Postfix) with ESMTP id 01D9E4991EB1B;
+        Sat, 26 Jun 2021 06:02:40 +0530 (IST)
+Received: from smtp.silvertouch.com ([127.0.0.1])
+        by localhost (smtp.silvertouch.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 0tbv8uBaRNN5; Sat, 26 Jun 2021 06:02:39 +0530 (IST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by smtp.silvertouch.com (Postfix) with ESMTP id B463D494DEBC3;
+        Sat, 26 Jun 2021 05:23:57 +0530 (IST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 smtp.silvertouch.com B463D494DEBC3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=silvertouch.com;
+        s=65E9FDA4-B454-11E5-BE3F-174CD9C10EBF; t=1624665237;
+        bh=+1RIjGRd3S4Fd5oMp1V5Uhq2v8p00t2MUjhJVU9hTxo=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=2Fj9G7m8BfkmjvHbeKdCOsnrLQtVrSdqX5zqBeNja5PsmRtmX2pVGejAo1yZYss9V
+         mu6HxbX8yh21NLdJr1XLW/2baky5xHJVhHeY6TajGzjCbZich3X/Eva7bcU7KTwSCN
+         Tfeluhzw4LZSa20RLVKu9442ZqOv0/WwQV8wHD9s=
+X-Virus-Scanned: amavisd-new at smtp.silvertouch.com
+Received: from smtp.silvertouch.com ([127.0.0.1])
+        by localhost (smtp.silvertouch.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id MsE2gRHKSOFN; Sat, 26 Jun 2021 05:23:57 +0530 (IST)
+Received: from [172.20.10.8] (unknown [45.130.83.98])
+        (Authenticated sender: kunal_shah@silvertouch.com)
+        by smtp.silvertouch.com (Postfix) with ESMTPSA id E815A491625DF;
+        Sat, 26 Jun 2021 04:52:57 +0530 (IST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?q?Covid-19-Bargeldhilfe_f=C3=BCr_Sie_Covid-19_support_for_you?=
+To:     Recipients <kunal_shah@silvertouch.com>
+From:   "Sittler Wolfgang " <kunal_shah@silvertouch.com>
+Date:   Sat, 26 Jun 2021 07:22:35 +0800
+Reply-To: Sittlerwolfgang107@gmail.com
+Message-Id: <20210625232257.E815A491625DF@smtp.silvertouch.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021, David Laight wrote:
+Hallo, aufgrund des Ausbruchs des Convid-19-Virus wurden Sie von Herrn Sitt=
+ler Wolfgang f=C3=BCr eine Spende in H=C3=B6he von 520.000 =E2=82=AC ausgew=
+=C3=A4hlt. Wenden Sie sich an Ihre pers=C3=B6nliche E-Mail-Adresse, um Rich=
+tlinien zum Erhalt Ihrer Spende zu erhalten. Sittlerwolfgang107@gmail.com
+Freundliche Gr=C3=BC=C3=9Fe
 
-> >  As I have noted above there is a data type signedness difference between
-> > `mcr_mask' and UART_MCR_CLKSEL.  So we have the value of 0x80 (128).
-> > Once bitwise-complemented it becomes 0xffffff7f (-129).  Once assigned to
-> > `mcr_mask' however it becomes 0x7f (127), which is considered an unsafe
-> > conversion between signed and unsigned integers by GCC, which is why the
-> > compiler complains about it.
-> 
-> Blame the iso C standards committee for making integer promotions
-> 'value preserving' instead of 'sign preserving' as they were in K&R C.
-> 
-> Try using ^ 0xffu instead of ~.
 
- Hmm, this is probably the least horrible way to paper it over, thanks.  
-Even using a temporary variable (let alone a cast) does not help as GCC 
-sees through it, and I've given up on converting <linux/serial_reg.h> to 
-have e.g.:
 
-#define UART_MCR_CLKSEL		_UL(0x80) /* Divide clock by 4 (TI16C752, EFR[4]=1) */
-
-as I find that too messy with many of the comments wrapping up.  And using 
-a GCC pragma would require a messy compiler version check.
-
- I have posted an update with a path-of-least-resistance fix then along 
-with the 4/4 as v2 of this series.
-
-  Maciej
+Covid-19 cash assistance for you
+Hello, due to the outbreak of the Convid-19 virus, you have been selected b=
+y Mr. Sittler Wolfgang for a donation of =E2=82=AC 520,000. Contact your pe=
+rsonal email address for guidelines on how to receive your donation. Sittle=
+rwolfgang107@gmail.com
+Best regards
