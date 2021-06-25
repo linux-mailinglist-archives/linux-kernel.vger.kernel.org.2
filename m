@@ -2,142 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 089033B3BBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 06:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E05E3B3BC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 06:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbhFYEuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 00:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhFYEuC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 00:50:02 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88846C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 21:47:41 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id a127so7044004pfa.10
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 21:47:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=AtTk+6QGKLof6Gu7Ev3cepmH8O53Op63rhLICrg+Eb8=;
-        b=Ypvg0mxaCTrsJqr5D08KpxEGYnjPnrEGE5Lh4jwDezc7RcM4boEj6VNfkBWXT6s2RG
-         cjVNCpIWtse8LclIVCXFHfO2ti1XDt1uetqT5HrM7mGwNdWweyQLrMh7YcG3i/W2581W
-         6FbDNYtQnoNtDWink9Se4Uyk8MeRqzmTWaavQx4XGEYLgXBbPhTVyDerI9rk26H7X3zC
-         wMEq9P7FRsayfNklJM1ThVWFB9eArF6yf57HXFgd6fE3NrKmhPyAoJ3Hez0/Lh4w8u8l
-         bZ9GNhZYZ8wDl45+l9hZExGj6jg1lLcFLjRW9VVKXkIuUmPJ39vMdQmEk2Y5CAHb3e9M
-         n5YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=AtTk+6QGKLof6Gu7Ev3cepmH8O53Op63rhLICrg+Eb8=;
-        b=XXNmNKmNWUQip4/16jgkMXa96fc1H4wv0kDjG+pH9L3a5EU/uGQPNauNCFEa5aTD9l
-         LS+RMd1EU7WPXeoLuabimYm50hpbqYxG5y/kwOYyrRz5vOfTlWRedOVkpnOWXBUozOWN
-         SA96Ffo/KyvnOGQAX75J8cY+6DsyMFwgUpNmcvIakw20fRoQ7km7AhTDWnrhZHgh0x9V
-         bQpEdLq7vVv+wUqKrqat4xmLIRVlvLkvoY5bHPG9/X86Fd0YP2BIPXPIbfG18JSkqXco
-         9abxBGNqfo/6EZqPWB+WMtHYPCeP4UZu/UoY2D8bEl2/JDkabjqr7ABBsr1/tFNr9Irw
-         QwUQ==
-X-Gm-Message-State: AOAM530pUzAcQsfVPkDhEueshqE3Xx+bmT6iemU/PcQn3gixf0DNOe/h
-        Ixrd6Q2VctHZu7mW/C4NyzTy
-X-Google-Smtp-Source: ABdhPJwUiAiC28y9PI+2/abF+jcevjyqTqZv/OpN1QqH+yTCJOdS3d6tJgjgTSSUsBqDDHj0sKZVPA==
-X-Received: by 2002:a63:5d66:: with SMTP id o38mr7961955pgm.444.1624596460826;
-        Thu, 24 Jun 2021 21:47:40 -0700 (PDT)
-Received: from workstation ([120.138.13.204])
-        by smtp.gmail.com with ESMTPSA id y7sm4487159pfy.153.2021.06.24.21.47.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 24 Jun 2021 21:47:40 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 10:17:36 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] remoteproc: qcom: pas: Add SC8180X adsp, cdsp and
- mpss
-Message-ID: <20210625044736.GA4974@workstation>
-References: <20210608174944.2045215-1-bjorn.andersson@linaro.org>
- <20210608174944.2045215-2-bjorn.andersson@linaro.org>
+        id S230412AbhFYEvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 00:51:14 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:40247 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230097AbhFYEvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 00:51:12 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GB4Jy5cWKz9sW8;
+        Fri, 25 Jun 2021 14:48:50 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1624596531;
+        bh=evdxRnSExFq6oxHHe+2dinIsiEOvUVA/6ZGnVd+6V34=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ToLl98U+R454WxT6SH5FhHsQjdJC68UzUIDPYrbmzPKLEpBbvQ7Kc2Rfwc2thm2jP
+         i5Xu7V3A0X/o9FaOuCpqINXXmW3Qcqf+3qtZl+OJ3jUlFvuHLz/9dTXzeQK7or+xot
+         HksDartu9Z1zhzjUnRo94tQTZBi52qc1b30P0+X1HSM6jRnW6vuFt1Z3NHy3F4sSxD
+         LXPIKtIIVYonXiBfVqDv69rs5OhCyprkPS1QTyVXlnqEPdbQcXbPVJ9F5weY61YqF+
+         o+PAJaERpPIaggpFofCuphLL73ZpWV77Lx82L+mUH2s753xp+PsSw9dp2nQR6I+DHK
+         L6QCTeM/AooMg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2] powerpc/kprobes: Fix Oops by passing ppc_inst as a
+ pointer to emulate_step() on ppc32
+In-Reply-To: <b44b66f4-3e46-425b-3c8e-d5a7a180494a@csgroup.eu>
+References: <5bdc8cbc9a95d0779e27c9ddbf42b40f51f883c0.1624425798.git.christophe.leroy@csgroup.eu>
+ <1624531892.3vdz8ibfty.naveen@linux.ibm.com>
+ <b44b66f4-3e46-425b-3c8e-d5a7a180494a@csgroup.eu>
+Date:   Fri, 25 Jun 2021 14:48:50 +1000
+Message-ID: <871r8q1rd9.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608174944.2045215-2-bjorn.andersson@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 10:49:44AM -0700, Bjorn Andersson wrote:
-> The Qualcomm SC8180X has the typical ADSP, CDSP and MPSS remote
-> processors operated using the PAS interface, add support for these.
-> 
-> Attempts to configuring mss.lvl is failing, so a new adsp_data is
-> provided that skips this resource, for now.
-> 
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> Le 24/06/2021 =C3=A0 12:59, Naveen N. Rao a =C3=A9crit=C2=A0:
+>> Christophe Leroy wrote:
+>>> From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+>>>
+>>> Trying to use a kprobe on ppc32 results in the below splat:
+>>> =C2=A0=C2=A0=C2=A0 BUG: Unable to handle kernel data access on read at =
+0x7c0802a6
+>>> =C2=A0=C2=A0=C2=A0 Faulting instruction address: 0xc002e9f0
+>>> =C2=A0=C2=A0=C2=A0 Oops: Kernel access of bad area, sig: 11 [#1]
+>>> =C2=A0=C2=A0=C2=A0 BE PAGE_SIZE=3D4K PowerPC 44x Platform
+>>> =C2=A0=C2=A0=C2=A0 Modules linked in:
+>>> =C2=A0=C2=A0=C2=A0 CPU: 0 PID: 89 Comm: sh Not tainted 5.13.0-rc1-01824=
+-g3a81c0495fdb #7
+>>> =C2=A0=C2=A0=C2=A0 NIP:=C2=A0 c002e9f0 LR: c0011858 CTR: 00008a47
+>>> =C2=A0=C2=A0=C2=A0 REGS: c292fd50 TRAP: 0300=C2=A0=C2=A0 Not tainted=C2=
+=A0 (5.13.0-rc1-01824-g3a81c0495fdb)
+>>> =C2=A0=C2=A0=C2=A0 MSR:=C2=A0 00009000 <EE,ME>=C2=A0 CR: 24002002=C2=A0=
+ XER: 20000000
+>>> =C2=A0=C2=A0=C2=A0 DEAR: 7c0802a6 ESR: 00000000
+>>> =C2=A0=C2=A0=C2=A0 <snip>
+>>> =C2=A0=C2=A0=C2=A0 NIP [c002e9f0] emulate_step+0x28/0x324
+>>> =C2=A0=C2=A0=C2=A0 LR [c0011858] optinsn_slot+0x128/0x10000
+>>> =C2=A0=C2=A0=C2=A0 Call Trace:
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 opt_pre_handler+0x7c/0xb4 (unreliable)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 optinsn_slot+0x128/0x10000
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 ret_from_syscall+0x0/0x28
+>>>
+>>> The offending instruction is:
+>>> =C2=A0=C2=A0=C2=A0 81 24 00 00=C2=A0=C2=A0=C2=A0=C2=A0 lwz=C2=A0=C2=A0=
+=C2=A0=C2=A0 r9,0(r4)
+>>>
+>>> Here, we are trying to load the second argument to emulate_step():
+>>> struct ppc_inst, which is the instruction to be emulated. On ppc64,
+>>> structures are passed in registers when passed by value. However, per
+>>> the ppc32 ABI, structures are always passed to functions as pointers.
+>>> This isn't being adhered to when setting up the call to emulate_step()
+>>> in the optprobe trampoline. Fix the same.
+>>>
+>>> Fixes: eacf4c0202654a ("powerpc: Enable OPTPROBES on PPC32")
+>>> Cc: stable@vger.kernel.org
+>>> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+>>> ---
+>>> v2: Rebased on powerpc/merge 7f030e9d57b8
+>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>=20
+>> Thanks for rebasing this!
+>>=20
+>> I think git am drops everything after three dashes, so applying this pat=
+ch will drop your SOB. The=20
+>> recommended style (*) for adding a changelog is to include it within [] =
+before the second SOB.
+>
+> Yes, I saw that after sending the mail. Usually I add a signed-off-by wit=
+h 'git --amend -s' when I=20
+> add the history, so it goes before the '---' I'm adding.
+>
+> This time I must have forgotten the '-s' so it was added by the 'git form=
+at-patch -s' which is in my=20
+> submit script, and so it was added at the end.
+>
+> It's not really a big deal, up to Michael to either move it at the right =
+place or discard it, I=20
+> don't really mind. Do the easiest for you.
 
-What is the impact of this skipped resource? I guess it is enabled by
-the bootloader so we can't change it in runtime?
+I just added Christophe's SoB.
 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Given that adsp remoteproc works without configuring mss power domain,
-
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-Thanks,
-Mani
-
-> ---
-> 
-> Changes since v1:
-> - None
-> 
->  drivers/remoteproc/qcom_q6v5_pas.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-> index b921fc26cd04..a79bee901e9b 100644
-> --- a/drivers/remoteproc/qcom_q6v5_pas.c
-> +++ b/drivers/remoteproc/qcom_q6v5_pas.c
-> @@ -689,6 +689,25 @@ static const struct adsp_data mpss_resource_init = {
->  	.ssctl_id = 0x12,
->  };
->  
-> +static const struct adsp_data sc8180x_mpss_resource = {
-> +	.crash_reason_smem = 421,
-> +	.firmware_name = "modem.mdt",
-> +	.pas_id = 4,
-> +	.has_aggre2_clk = false,
-> +	.auto_boot = false,
-> +	.active_pd_names = (char*[]){
-> +		"load_state",
-> +		NULL
-> +	},
-> +	.proxy_pd_names = (char*[]){
-> +		"cx",
-> +		NULL
-> +	},
-> +	.ssr_name = "mpss",
-> +	.sysmon_name = "modem",
-> +	.ssctl_id = 0x12,
-> +};
-> +
->  static const struct adsp_data slpi_resource_init = {
->  		.crash_reason_smem = 424,
->  		.firmware_name = "slpi.mdt",
-> @@ -811,6 +830,9 @@ static const struct of_device_id adsp_of_match[] = {
->  	{ .compatible = "qcom,qcs404-cdsp-pas", .data = &cdsp_resource_init },
->  	{ .compatible = "qcom,qcs404-wcss-pas", .data = &wcss_resource_init },
->  	{ .compatible = "qcom,sc7180-mpss-pas", .data = &mpss_resource_init},
-> +	{ .compatible = "qcom,sc8180x-adsp-pas", .data = &sm8150_adsp_resource},
-> +	{ .compatible = "qcom,sc8180x-cdsp-pas", .data = &sm8150_cdsp_resource},
-> +	{ .compatible = "qcom,sc8180x-mpss-pas", .data = &sc8180x_mpss_resource},
->  	{ .compatible = "qcom,sdm845-adsp-pas", .data = &adsp_resource_init},
->  	{ .compatible = "qcom,sdm845-cdsp-pas", .data = &cdsp_resource_init},
->  	{ .compatible = "qcom,sdx55-mpss-pas", .data = &sdx55_mpss_resource},
-> -- 
-> 2.29.2
-> 
+cheers
