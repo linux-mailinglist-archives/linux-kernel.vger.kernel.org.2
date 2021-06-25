@@ -2,124 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57DC3B3C67
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA5B3B3C69
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233150AbhFYGBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 02:01:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36609 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230097AbhFYGBW (ORCPT
+        id S233161AbhFYGBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 02:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230097AbhFYGBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 02:01:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624600741;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=d4K9nQTvedmwdvXMvLbqggOtPVmYLvoAes83xgcBXlc=;
-        b=Djd7MDhEejirfUuy1MyUbHNqieP6J9jvB2L3sB1f9NV0dGUMH0MPTRn4S9yw7Wd42eYjCX
-        506NrOCI6ESXJn2l2vfPLyUswCkPMzZ81OAUNdQatFqVkv0uIQkVjqOe+4flZYbTlD+v48
-        lxZ9YVtQpQ9FgK7FCIeQmCHnuMBYNJk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-4_k3vBZENTe9BWuqYS-s2Q-1; Fri, 25 Jun 2021 01:58:56 -0400
-X-MC-Unique: 4_k3vBZENTe9BWuqYS-s2Q-1
-Received: by mail-wm1-f69.google.com with SMTP id k16-20020a7bc3100000b02901d849b41038so3735605wmj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 22:58:56 -0700 (PDT)
+        Fri, 25 Jun 2021 02:01:47 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBECC061574;
+        Thu, 24 Jun 2021 22:59:27 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id h1so4189635plt.1;
+        Thu, 24 Jun 2021 22:59:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uCGH/FcGgZLZwVutQlRor27jtENZPQC1aKykMVpoemk=;
+        b=OEzVWHvUS6gW+qon/kkUu1yvA4imVktVgaU4D96/MpUVvA6Uss8Kvf00EtQRFxRlKG
+         fOBQrhJYOjmBXfV2yFT62LOs5Wqni/RSoW6FyFkGxd6EQZjFhoxJ0VilOzrwVNQRtrHB
+         FuEj7GqmGvt9hJD2GWSTAWl59BjVSyskP6pNEBp+wtIRXM66UL6EG0RHqdfFIcRg4xR6
+         YevCkWxrbji3ZTttLa7DatTjJvJwWaZ5s4AU/y5gIqflHGqYwKjlFMvDp5LB0XWeonnG
+         IcuS6bwV1iURPl8WBOdctFdsNAjRcDtM9Rwca2JVy5xrsmh1RS2uQx9CgSAfLsUfp3dK
+         Qd5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=d4K9nQTvedmwdvXMvLbqggOtPVmYLvoAes83xgcBXlc=;
-        b=h3NRbu8ciAsCJ3gCFzEsEBlIEp57yQcR0S7KmNixpj4juGgU6vD1dmDjN/WporIUgP
-         aOYo2P3615fnDW0M2NF4UXg9k+4bTbYC0L43rSV2zFj4fTsw4cZebtj0FU3YYVF7IRJc
-         dX6h6PqLi4cVzKmSPqiH5tO0rVaCzPnq+f+8W7ppq9ynpCAisX9AGjSlEEHln8Huw7wJ
-         Xycd3+gT8Qd32Ch5+RIOHXDaSloVyLKajlnqxRVjE0vyTYgroFIJUz3+0c6kW7zjVpKw
-         DqVMI4ywl52yvR2advY0AUw/WwxkvCCS+srm3gxesypBlKXEfidDtSK1LIsdtoOCjJXo
-         Vx9w==
-X-Gm-Message-State: AOAM530G0lr0SEES64a4ihCIs32S620djG9BSJM7+MKx2kzL7YNJGpEC
-        I2j45LFw7JKFPDtyM2/WFKPreuQuox3fiH2s+ji+BrhgirbUikiZZ/pEM3gJhRIL1vtdvLXHzdG
-        tA1HilZjadKd8zSKdXw8kFkfY
-X-Received: by 2002:adf:f689:: with SMTP id v9mr8681112wrp.314.1624600735604;
-        Thu, 24 Jun 2021 22:58:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwrE/C9IiJiiBZmtHnh5vRytdM8UZc8yuEPiya4jPaIkUYlRVxGTi7ahSp4MkMavGo37f8Tqw==
-X-Received: by 2002:adf:f689:: with SMTP id v9mr8681093wrp.314.1624600735412;
-        Thu, 24 Jun 2021 22:58:55 -0700 (PDT)
-Received: from redhat.com ([77.124.79.210])
-        by smtp.gmail.com with ESMTPSA id w8sm4915282wre.70.2021.06.24.22.58.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uCGH/FcGgZLZwVutQlRor27jtENZPQC1aKykMVpoemk=;
+        b=m+ioX0OaKQnVlx921Ddr2kf0GF0K08qw16pAGpIuYWJZD2Svo+y7IayF5MJNSFTJoT
+         zbL3m10PCF8EyKhXZ5zKw2TXWDaBbYGuzyC6oIunyxs2/NrRyeatwj+n7T0HqZe/NY7G
+         RFx64CxwfRrdXu916fSgtsDYv9P7CeD8ididiiRgpQEs/UOZV4HSnAPJT9VkZM8uvkhH
+         00j0Lj0wyosDtC0oaBj9PrQZW5iQVyUO2XuVcWr2GwB+y3xdInF42AY15uFhWbnR2KCY
+         UHdw3t5tBwn9raDRgnjBY/V/CakcOwb7uJgKqSnJ/d5c2SDB1netJPUuwZ28yRAQUpzi
+         lYCA==
+X-Gm-Message-State: AOAM531PQf1n6iIZkCzDKKdj40Z69qB5mbaJAio8ULRxUQbvQogFFUyT
+        3jf/RzHwStGaZDgtxCTVI/w=
+X-Google-Smtp-Source: ABdhPJy6Nte3fkvc6dkBlMIVdqVnXq/sd4XEW0wR5kI0TM+EOekgWURVRFLMhhWvyIbVVBZeAuhBiQ==
+X-Received: by 2002:a17:903:208a:b029:125:8b69:53a1 with SMTP id d10-20020a170903208ab02901258b6953a1mr7865880plc.17.1624600767361;
+        Thu, 24 Jun 2021 22:59:27 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.130])
+        by smtp.gmail.com with ESMTPSA id m3sm4621649pfa.70.2021.06.24.22.59.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 22:58:54 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 01:58:51 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        alexander.duyck@gmail.com, david@redhat.com,
-        akpm@linux-foundation.org, anshuman.khandual@arm.com,
-        catalin.marinas@arm.com, will@kernel.org, shan.gavin@gmail.com
-Subject: Re: [PATCH v5 0/4] mm/page_reporting: Make page reporting work on
- arm64 with 64KB page size
-Message-ID: <20210625015826-mutt-send-email-mst@kernel.org>
-References: <20210625042150.46964-1-gshan@redhat.com>
+        Thu, 24 Jun 2021 22:59:26 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: dvb-usb: fix uninit-value in vp702x_read_mac_addr
+Date:   Fri, 25 Jun 2021 13:59:04 +0800
+Message-Id: <20210625055908.467220-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625042150.46964-1-gshan@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 12:21:46PM +0800, Gavin Shan wrote:
-> The page reporting threshold is currently equal to @pageblock_order, which
-> is 13 and 512MB on arm64 with 64KB base page size selected. The page
-> reporting won't be triggered if the freeing page can't come up with a free
-> area like that huge. The condition is hard to be met, especially when the
-> system memory becomes fragmented.
-> 
-> This series intends to solve the issue by having page reporting threshold
-> as 5 (2MB) on arm64 with 64KB base page size. The patches are organized as:
-> 
->    PATCH[1/4] Fix some coding style in __page_reporting_request().
->    PATCH[2/4] Represents page reporting order with variable so that it can
->               be exported as module parameter.
->    PATCH[3/4] Allows the device driver (e.g. virtio_balloon) to specify
->               the page reporting order when the device info is registered.
->    PATCH[4/4] Specifies the page reporting order to 5, corresponding to
->               2MB in size on ARM64 when 64KB base page size is used.
+If vp702x_usb_in_op fails, the mac address is not initialized.
+And vp702x_read_mac_addr does not handle this failure, which leads to
+the uninit-value in dvb_usb_adapter_dvb_init.
 
-I sent comments on v4. They still apply I think. Want me to repeat them
-here?
+Fix this by handling the failure of vp702x_usb_in_op.
 
-> Changelog
-> =========
-> v5:
->    * Restore @page_reporting_order to @pageblock_order when
->      device is registered in PATCH[2/4] to keep "git bisect"
->      friendly at least.                                           (Alex)
-> v4:
->    * Set @page_reporting_order to MAX_ORDER. Its value is
->      specified by the driver or falls back to @pageblock_order
->      when page reporting device is registered.                    (Alex)
->    * Include "module.h" in page_reporting.c                       (Andrew)
-> v3:
->    * Avoid overhead introduced by function all                    (Alex)
->    * Export page reporting order as module parameter              (Gavin)
-> v2:
->    * Rewrite the patches as Alex suggested                        (Alex)
-> 
-> Gavin Shan (4):
->   mm/page_reporting: Fix code style in __page_reporting_request()
->   mm/page_reporting: Export reporting order as module parameter
->   mm/page_reporting: Allow driver to specify reporting
->   virtio_balloon: Specify page reporting order if needed
-> 
->  .../admin-guide/kernel-parameters.txt         |  6 +++++
->  drivers/virtio/virtio_balloon.c               | 17 ++++++++++++++
->  include/linux/page_reporting.h                |  3 +++
->  mm/page_reporting.c                           | 22 +++++++++++++++----
->  mm/page_reporting.h                           |  5 ++---
->  5 files changed, 46 insertions(+), 7 deletions(-)
-> 
-> -- 
-> 2.23.0
+Fixes: 786baecfe78f ("[media] dvb-usb: move it to drivers/media/usb/dvb-usb")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ drivers/media/usb/dvb-usb/vp702x.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/usb/dvb-usb/vp702x.c b/drivers/media/usb/dvb-usb/vp702x.c
+index bf54747e2e01..4aed6f807f25 100644
+--- a/drivers/media/usb/dvb-usb/vp702x.c
++++ b/drivers/media/usb/dvb-usb/vp702x.c
+@@ -291,16 +291,21 @@ static int vp702x_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
+ static int vp702x_read_mac_addr(struct dvb_usb_device *d,u8 mac[6])
+ {
+ 	u8 i, *buf;
++	int ret;
+ 	struct vp702x_device_state *st = d->priv;
+ 
+ 	mutex_lock(&st->buf_mutex);
+ 	buf = st->buf;
+-	for (i = 6; i < 12; i++)
+-		vp702x_usb_in_op(d, READ_EEPROM_REQ, i, 1, &buf[i - 6], 1);
++	for (i = 6; i < 12; i++) {
++		ret = vp702x_usb_in_op(d, READ_EEPROM_REQ, i, 1,
++				       &buf[i - 6], 1);
++		if (ret < 0) goto err;
++	}
+ 
+ 	memcpy(mac, buf, 6);
++err:
+ 	mutex_unlock(&st->buf_mutex);
+-	return 0;
++	return ret;
+ }
+ 
+ static int vp702x_frontend_attach(struct dvb_usb_adapter *adap)
+-- 
+2.25.1
 
