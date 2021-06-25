@@ -2,96 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C56573B463A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15743B463D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbhFYPED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 11:04:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33022 "EHLO mail.kernel.org"
+        id S231882AbhFYPEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 11:04:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231858AbhFYPD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 11:03:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C42CA6197D;
-        Fri, 25 Jun 2021 15:01:35 +0000 (UTC)
-Date:   Fri, 25 Jun 2021 16:01:33 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Rustam Kovhaev <rkovhaev@gmail.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: kmemleak memory scanning
-Message-ID: <20210625150132.GF20835@arm.com>
-References: <YMe8ktUsdtwFKHuF@nuc10>
- <CACT4Y+ZjSbioNS8oPwUcyOrLhB6-Sf-WZmadAoAm0H-JYRLo1g@mail.gmail.com>
- <YMpCEu9yM5Ppj5jj@nuc10>
- <YNTCsqQUaYnlXGbO@nuc10>
+        id S231680AbhFYPEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 11:04:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EEA56197B;
+        Fri, 25 Jun 2021 15:02:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624633341;
+        bh=+nC2189eKCU6T28/hcgTvLONm44gotEpXOHRDCHlrOs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q8YzMdkakrr+6yUHSuakRSX6dve5Mt0T++6DuB0We2J28fogIsOo9FQ11MXaOVy2u
+         rMUydL3PCwwARSXaHl8pAA7iOIwtiBSx/3lJhrsDlT18J00aw03AkGPXCKWYYHn22c
+         6x8x0KYIP+Rb18j/gcfQtkoTocm2zRF7nf/1glRBNHgDJwkOlZmOLG0/9g7w4UqlKO
+         wxMSaeyFhVjQpGqSdpoLNLurW/2P4e4IEX8KG1GvlUu9S74GoSaRbFQEfYfYZfuzLG
+         FaVEaVw+r0cBBB+ROFDPC6JXDaskPV1CI5+PhiaB1ieS6y8YtbbfDjtSzEy+ObKl92
+         v37ZiTceM2Ppw==
+Date:   Fri, 25 Jun 2021 17:02:19 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Quan Nguyen <quan@os.amperecomputing.com>
+Cc:     Corey Minyard <minyard@acm.org>, Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        openipmi-developer@lists.sourceforge.net,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>,
+        openbmc@lists.ozlabs.org
+Subject: Re: [PATCH v3 1/7] i2c: i2c-core-smbus: Expose PEC calculate
+ function for generic use
+Message-ID: <YNXv+2SpsTLStsIE@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Quan Nguyen <quan@os.amperecomputing.com>,
+        Corey Minyard <minyard@acm.org>, Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        openipmi-developer@lists.sourceforge.net,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>,
+        openbmc@lists.ozlabs.org
+References: <20210519074934.20712-1-quan@os.amperecomputing.com>
+ <20210519074934.20712-2-quan@os.amperecomputing.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+2nERxd5au+gK8PN"
 Content-Disposition: inline
-In-Reply-To: <YNTCsqQUaYnlXGbO@nuc10>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210519074934.20712-2-quan@os.amperecomputing.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 10:36:50AM -0700, Rustam Kovhaev wrote:
-> On Wed, Jun 16, 2021 at 11:25:22AM -0700, Rustam Kovhaev wrote:
-> > On Tue, Jun 15, 2021 at 07:15:24AM +0200, Dmitry Vyukov wrote:
-> > > On Mon, Jun 14, 2021 at 10:31 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
-> > > >
-> > > > hello Catalin, Andrew!
-> > > >
-> > > > while troubleshooting a false positive syzbot kmemleak report i have
-> > > > noticed an interesting behavior in kmemleak and i wonder whether it is
-> > > > behavior by design and should be documented, or maybe something to
-> > > > improve.
-> > > > apologies if some of the questions do not make sense, i am still going
-> > > > through kmemleak code..
-> > > >
-> > > > a) kmemleak scans struct page (kmemleak.c:1462), but it does not scan
-> > > > the actual contents (page_address(page)) of the page.
-> > > > if we allocate an object with kmalloc(), then allocate page with
-> > > > alloc_page(), and if we put kmalloc pointer somewhere inside that page,
-> > > > kmemleak will report kmalloc pointer as a false positive.
-> > > > should we improve kmemleak and make it scan page contents?
-> > > > or will this bring too many false negatives?
-> > > 
-> > > Hi Rustam,
-> > > 
-> > > Nice debugging!
-> > > I assume lots of pages are allocated for slab and we don't want to
-> > > scan the whole page if only a few slab objects are alive on the page.
-> > > However alloc_pages() can be called by end kernel code as well.
-> > > I grepped for any kmemleak annotations around existing calls to
-> > > alloc_pages, but did not find any...
-> > > Does it require an explicit kmemleak_alloc() after allocating the page
-> > > and kmemleak_free () before freeing the page?
-> > 
-> > hi Dmitry, thank you!
-> > yes, as Catalin has pointed out, there are a few places where we call
-> > kmemleak_alloc()/kmemleak_free() explicitly in order for the pages to be
-> > scanned, like in blk_mq_alloc_rqs()
-> > 
-> > > If there are more than one use case for this, I guess we could add
-> > > some GFP flag for this maybe.
-> > 
-> > and this way kernel users won't have to use kmemleak fuctions mentioned
-> > above including some or most kmemleak_not_leak() calls and basically
-> > kmemleak will be kind of "transparent" to them? and they will only need
-> > to use the GFP flag to instruct kmemleak to scan the page contents?
-> > it sounds like a good idea to me..
-> > 
-> 
-> i've been thinking about this and it seems like in the scenario where we
-> want kmemleak to scan only some part of the page, we will have to either
-> do separate alloc_page() calls with different flags or use 
-> kmemleak_scan_area() to limit the memory scan area. maybe this approach
-> won't simplify things and will produce more code instead of reducing it
 
-Since page allocation is not tracked by kmemleak, you can always do an
-explicit kmemleak_alloc() call with a smaller size than a full page.
+--+2nERxd5au+gK8PN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Catalin
+On Wed, May 19, 2021 at 02:49:28PM +0700, Quan Nguyen wrote:
+> Expose the PEC calculation i2c_smbus_pec() for generic use.
+>=20
+> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+
+You are the second one who wanted this exported. I agree it makes sense
+for slave drivers. So, I'll skip the required user because two are in
+flight. Applied to for-next, thanks!
+
+
+--+2nERxd5au+gK8PN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDV7/oACgkQFA3kzBSg
+KbZ8xg//dLfzMR1eQtBMxT1tUHLNopwRIXCsraVBzK+s0nbpuIDwP7mxiTLlLnQ9
+vp/mzzur/NvhOqJ7uBrc1tPIyo6fcNtH9sq1S1hGQcV6kFR/fZ920TvGo/uE1AvN
+GHU8vUz2TBjYvctu9fiBIYecfDB0KAkYPHTV6zpANUn2CnifvIdBJ7E38IVUk5n/
+b0cZEsjj1HV7Hnp+GHw5CPsHYOV3LP9Nlbu+z++AzcYhhbEXxUEFaiMUS4LQ58Px
+idn6ndXW8L5r69OH7Y+YR2EvEKm4rwqs21rnh0Iql1U+eQVYrL9cafa1/uXdah3r
+OKWrcFEhyomnHAI8QQ1aK6fIyDB9ms93asIwhKdy9oKO7ZDTXH5gsUvE35L+mhoZ
+tv5IiOfNoI6stXCotmaqAWXIP5/B/ucuyEMiA5Dyjfa+uutIHgT+l4tGvchnpe3T
+jKbmr7SlGW410XhyVc+No8zD0yug7YpC6IQ+AEWHMsSXR4dIU87ZTxcGRXZKeKv5
+agJ5M0eRWRKjJpatkK/7mOumtaIcnT4jyGfXiwKOlsS8XIYzeq6WsT08EpVXQIKR
+eQVYbm3Y1d8rI3AYts1le1VqEv69PShYBXuvbm4FG9H6fKkAVX9i2dLGwiS8GiWM
+lskRRpMa6GpsLn0t+uurUWkgXzK+c06NBejGsWTs9nq5s41Y1bU=
+=X8AV
+-----END PGP SIGNATURE-----
+
+--+2nERxd5au+gK8PN--
