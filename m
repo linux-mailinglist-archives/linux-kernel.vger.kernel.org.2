@@ -2,254 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1BF3B47FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B9E3B4804
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhFYRIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 13:08:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229812AbhFYRIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 13:08:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3248C61965;
-        Fri, 25 Jun 2021 17:06:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624640778;
-        bh=3wkeS6LjECniYU0Q4Rka5Hwi5+LM8FaepjAduPS6+SM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uTSeExqsIj3cVqs5t3UCfUgI90w8pzAGfv5Iywcv/A0ExP4HbuuW9yH7a45lLjYNJ
-         xt4Mn0DJmoXw+H+Xwny64SmEfju+DYeqITiwhhoC52QK6oQspT4l8NVjENIE4Upnrk
-         oSeIunowFT07WPZc6dbZSVaTY3xM3hDaDCm7zMYWS8q+CzNT56J2MJy1q8btwHv1ky
-         xig0prx4AZ6DwQpXtymjHdblN1M2yjDeHeKaUpIk8DL6UA5AOEVHR3DHyCXfIhxZUa
-         ldK/PrEQ1VWCD/nCGJ46DuX5SnxxQMz1yEbeOp+fJSvJ4B+/GFLFlgkknVMVx7V7dA
-         Rm3FmmtUTVaKQ==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lwpHU-004mvy-8S; Fri, 25 Jun 2021 19:06:16 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Lee Jones" <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v9 5/5] dts: hisilicon: add support for USB3 on Hikey 970
-Date:   Fri, 25 Jun 2021 19:06:14 +0200
-Message-Id: <fb5bbfaae6276024dd86e43843b045d90ae60173.1624640087.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1624640087.git.mchehab+huawei@kernel.org>
-References: <cover.1624640087.git.mchehab+huawei@kernel.org>
+        id S229958AbhFYRKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 13:10:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhFYRKv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 13:10:51 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F42C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 10:08:30 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id s19so13303244ioc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 10:08:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BAeKdqZ59vL1Zbwsx1VHL+yJw2gaJxpfVIkCy9lIIDI=;
+        b=v2hF/rN8oc5jKd1ALzPWk2TqOGe7FSqh+ichwcaElu6TvqiyWhiT4zV2KMjbDQkBAy
+         uwz0094OrW3Y8TenuJLLSsVxlFswLB1DFhqBR8qk8UtVOuU7RAprdwhEwrW5XaWn6Zfx
+         6KfusyDZXfJtjP2BDG61Cw8yEjdl6xTUahNe4L+v9Cuttm418J5E1hdBysgqgLuTi9zL
+         q9GSO3W7MK8nR3yupHB1FGQFP6H+kKn5cpYFOdxkwuJELj3kkeVFvvWEZeQheb1h8ujp
+         UAxcvjRgF72WF40kJzjCE0+Z1Uxt+qKrmYvgrVYDRFfwM23Ngws4ne+gHVBuHk95LuuF
+         5uXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BAeKdqZ59vL1Zbwsx1VHL+yJw2gaJxpfVIkCy9lIIDI=;
+        b=jpMEP8AvdlDdtJhvtPTvWk27mA5RxHcifNKaUPOL/byViJeJiDGPHV9rPrIojMnApa
+         qZd8OzLDfVXpJoHCevNN7GIvMcoYmc6sWf4E/evXA/sV+QKGvwQRUjCJke0QrCSjbnF8
+         YhNIqX24JRt9x9M5Qkh2NsnYxmgNHY0L+6Lk8ULVsBd9GgxHrj9LxWjVqP153teRBj9v
+         AzO4YMNvnMNxassJOT1VCwWk7R3VgeNZfghKedZ76vU92jV1J/ukTOl9r/uNmFXZ35zZ
+         d7XAv5fa3T51hh53y3yx11hCWrsV8w7/sevStHILuEPpf185EeZ1baji1sKygCh0GvMy
+         ZI4g==
+X-Gm-Message-State: AOAM532Jlmlh+Et0LndCugd9v8KWstHzjC2Df2o/wiUHTKts9rZN6dh+
+        KvrBu4lPc7HrR32UOvwFz0U9dyU3YLNAz7kXIopmvw==
+X-Google-Smtp-Source: ABdhPJz8mi1eUDrZtCpfq6twQvh+DMXZW+fiAz3Rb1m6GEIwRkHIn+RG6CZH6YT8nl+vaVFkIkUDuJ94CAPpbFadYos=
+X-Received: by 2002:a05:6638:110e:: with SMTP id n14mr10388327jal.4.1624640909410;
+ Fri, 25 Jun 2021 10:08:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20210625111603.358518-1-davidgow@google.com> <99c2564c-4175-7e3e-84c3-3bcb6d4f9d58@linuxfoundation.org>
+In-Reply-To: <99c2564c-4175-7e3e-84c3-3bcb6d4f9d58@linuxfoundation.org>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Fri, 25 Jun 2021 10:08:17 -0700
+Message-ID: <CAGS_qxqCBZy+b1-pFc4Eh9AExc7XRkB2LZ2b776bX=oY2C4qfw@mail.gmail.com>
+Subject: Re: [PATCH] kunit: Fix merge issue in suite filtering test
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     David Gow <davidgow@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the USB3 bindings for Kirin 970 phy and Hikey 970 board.
+On Fri, Jun 25, 2021 at 9:11 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>
+> On 6/25/21 5:16 AM, David Gow wrote:
+> > There were a couple of errors introuced when
+> > "kunit: add unit test for filtering suites by names"[1] was merged in
+> > c9d80ffc5a.
+> >
+> > An erroneous '+' was introduced in executor.c, and the executor_test.c
+> > file went missing. This causes the kernel to fail to compile if
+> > CONFIG_KUNIT is enabled, as reported in [2,3].
+> >
+> > As with the original, I've tested by running just the new tests using
+> > itself:
+> > $ ./tools/testing/kunit/kunit.py run '*exec*'
+> >
+> > [1]: https://lore.kernel.org/linux-kselftest/20210421020427.2384721-1-dlatypov@google.com/
+> > [2]: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/6IKQX5JXZF7I3NFH4IAWUMHXEQSCPNDP/
+> > [3]: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/EKY7ZH5YDCCTSJF2G7XFPMGIXQSUVD3Y/
+> >
+> > Fixes: c9d80ffc5a ("kunit: add unit test for filtering suites by names")
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: David Gow <davidgow@google.com>
+> > ---
+> >
+> > This is another fix for the kunit-fixes branch, where there seems to
+> > have been an issue merging the "kunit: add unit test for filtering
+> > suites by names" patch here:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit-fixes&id=c9d80ffc5a0a30955de0b8c5c46a05906d417800
+> >
+> > Again, feel free to squash this into the original patch if that works
+> > better.
+> >
+>
+> Thank you. My bad. Applied to kunit-fixes now.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../boot/dts/hisilicon/hi3670-hikey970.dts    | 107 ++++++++++++++++++
- arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  56 +++++++++
- 2 files changed, 163 insertions(+)
+Hmm, it looks like executor_test.c might not have made it into kunit-fixes.
+I believe this is the applied version of this patch:
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-index 5e6d7b329771..9e3dfe877ebe 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-@@ -53,6 +53,30 @@ wlan_en: wlan-en-1-8v {
- 		startup-delay-us = <70000>;
- 		enable-active-high;
- 	};
-+
-+	hikey_usbhub: hikey_usbhub {
-+		compatible = "hisilicon,kirin970_hikey_usbhub";
-+
-+		typec-vbus-gpios = <&gpio26 1 0>;
-+		otg-switch-gpios = <&gpio4 2 0>;
-+		hub_reset_en_gpio = <&gpio0 3 0>;
-+		hub-vdd-supply = <&ldo17>;
-+		usb-role-switch;
-+
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			hikey_usb_ep0: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&dwc3_role_switch>;
-+			};
-+			hikey_usb_ep1: endpoint@1 {
-+				reg = <1>;
-+				remote-endpoint = <&rt1711h_ep>;
-+			};
-+		};
-+	};
- };
- 
- /*
-@@ -430,3 +454,86 @@ &uart6 {
- 	label = "LS-UART1";
- 	status = "okay";
- };
-+
-+&usb_phy {
-+	phy-supply = <&ldo17>;
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+
-+	rt1711h: rt1711h@4e {
-+		compatible = "richtek,rt1711h";
-+		reg = <0x4e>;
-+		status = "okay";
-+		interrupt-parent = <&gpio27>;
-+		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&usb_cfg_func>;
-+
-+		usb_con: connector {
-+			compatible = "usb-c-connector";
-+			label = "USB-C";
-+			data-role = "dual";
-+			power-role = "dual";
-+			try-power-role = "sink";
-+			source-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)>;
-+			sink-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)
-+				PDO_VAR(5000, 5000, 1000)>;
-+			op-sink-microwatt = <10000000>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				port@1 {
-+					reg = <1>;
-+					usb_con_ss: endpoint {
-+						remote-endpoint = <&dwc3_ss>;
-+					};
-+				};
-+			};
-+		};
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			rt1711h_ep: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&hikey_usb_ep1>;
-+			};
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	/* USB HUB is on this bus at address 0x44 */
-+	status = "okay";
-+};
-+
-+&dwc3 { /* USB */
-+	dr_mode = "otg";
-+	maximum-speed = "super-speed";
-+	phy_type = "utmi";
-+	snps,dis-del-phy-power-chg-quirk;
-+	snps,dis_u2_susphy_quirk;
-+	snps,dis_u3_susphy_quirk;
-+	snps,tx_de_emphasis_quirk;
-+	snps,tx_de_emphasis = <1>;
-+	snps,dis-split-quirk;
-+	snps,gctl-reset-quirk;
-+	usb-role-switch;
-+	role-switch-default-mode = "host";
-+	port {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		dwc3_role_switch: endpoint@0 {
-+			reg = <0>;
-+			remote-endpoint = <&hikey_usb_ep0>;
-+		};
-+
-+		dwc3_ss: endpoint@1 {
-+			reg = <1>;
-+			remote-endpoint = <&usb_con_ss>;
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-index 8830795c8efc..6476149d99e3 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-@@ -8,6 +8,7 @@
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/clock/hi3670-clock.h>
-+#include <dt-bindings/usb/pd.h>
- 
- / {
- 	compatible = "hisilicon,hi3670";
-@@ -785,5 +786,60 @@ i2c4: i2c@fdf0d000 {
- 			pinctrl-0 = <&i2c4_pmx_func &i2c4_cfg_func>;
- 			status = "disabled";
- 		};
-+
-+		usb3_otg_bc: usb3_otg_bc@ff200000 {
-+			compatible = "syscon", "simple-mfd";
-+			reg = <0x0 0xff200000 0x0 0x1000>;
-+
-+			usb_phy: usbphy {
-+				compatible = "hisilicon,hi3670-usb-phy";
-+				#phy-cells = <0>;
-+				hisilicon,pericrg-syscon = <&crg_ctrl>;
-+				hisilicon,pctrl-syscon = <&pctrl>;
-+				hisilicon,sctrl-syscon = <&sctrl>;
-+				hisilicon,eye-diagram-param = <0xFDFEE4>;
-+				hisilicon,tx-vboost-lvl = <0x5>;
-+			};
-+		};
-+
-+		usb31_misc_rst: usb31_misc_rst_controller {
-+			compatible = "hisilicon,hi3660-reset";
-+			#reset-cells = <2>;
-+			hisi,rst-syscon = <&usb3_otg_bc>;
-+		};
-+
-+		usb3: hisi_dwc3 {
-+			compatible = "hisilicon,hi3670-dwc3";
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			ranges;
-+
-+			clocks = <&crg_ctrl HI3670_CLK_GATE_ABB_USB>,
-+				  <&crg_ctrl HI3670_HCLK_GATE_USB3OTG>,
-+				  <&crg_ctrl HI3670_CLK_GATE_USB3OTG_REF>,
-+				  <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
-+			clock-names = "clk_gate_abb_usb",
-+				      "hclk_gate_usb3otg",
-+				      "clk_gate_usb3otg_ref",
-+				      "aclk_gate_usb3dvfs";
-+
-+			assigned-clocks = <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
-+			assigned-clock-rates = <238000000>;
-+			resets = <&crg_rst 0x90 6>,
-+				 <&crg_rst 0x90 7>,
-+				 <&usb31_misc_rst 0xA0 8>,
-+				 <&usb31_misc_rst 0xA0 9>;
-+
-+			dwc3: usb@ff100000 {
-+				compatible = "snps,dwc3";
-+				reg = <0x0 0xff100000 0x0 0x100000>;
-+
-+				interrupts = <0 159 IRQ_TYPE_LEVEL_HIGH>,
-+					    <0 161 IRQ_TYPE_LEVEL_HIGH>;
-+
-+				phys = <&usb_phy>;
-+				phy-names = "usb3-phy";
-+			};
-+		};
- 	};
- };
--- 
-2.31.1
+$ git show d833ce7480864d4d7eb2dbb04320858be3578b2a --stat
+commit d833ce7480864d4d7eb2dbb04320858be3578b2a
+Author: David Gow <davidgow@google.com>
+Date:   Fri Jun 25 04:16:03 2021 -0700
 
+    kunit: Fix merge issue in suite filtering test
+...
+ lib/kunit/executor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+The result looks like this:
+$ ./tools/testing/kunit/kunit.py run
+...
+$ make ARCH=um --jobs=8 O=.kunit
+ERROR:root:../lib/kunit/executor.c:140:10: fatal error:
+executor_test.c: No such file or directory
+  140 | #include "executor_test.c"
+      |          ^~~~~~~~~~~~~~~~~
+
+
+I just `git am` or something just really doesn't like executor_test.c :)
+
+
+
+
+>
+>
+>
+> thanks,
+>
+> -- Shuah
+>
+> --
+> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/99c2564c-4175-7e3e-84c3-3bcb6d4f9d58%40linuxfoundation.org.
