@@ -2,156 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F163B4249
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885E33B424D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbhFYLQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 07:16:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229974AbhFYLQW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 07:16:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6544661469;
-        Fri, 25 Jun 2021 11:13:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624619641;
-        bh=CeF7W3ZxfcmQOVYbFaxDuNkkKFqDV/crzaldiTiFwNA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=V2nuX61lH+7IUK4AWeskGiJMpx1dXiqViwnSs+t9XwMiBuX3dx8PdLlqMOtFGTlkN
-         3sp/zadb/tEBJ45lsuycgZq9rVZXJfP0voWwQMLFwYBrreG5znr22SG3uKOdawJXj2
-         3O6dxTlrUOzOpucTr3nEhu6yYekmNF3tpOB9v7uETt+A+HM9Op93rAx1+zwBTE/k/I
-         lC0mphnxlZMTEZGPBTzxR1AkTBjDWtPRoQiVSziBciw+ta/DwIJMWJFVmKZxTNqmVS
-         Mn0NeR5p8UtKmClyeY0GXr+FoQ0JAg2RDSZdkZHa3UaBQ5j/utRSznADCPoYtnxUas
-         LbjRHpNjpx7qw==
-Date:   Fri, 25 Jun 2021 13:13:56 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH RESEND v6 6/8] mfd: hi6421-spmi-pmic: move driver from
- staging
-Message-ID: <20210625131356.55ffd067@coco.lan>
-In-Reply-To: <YNSRwIMr8+m9Sxk3@dell>
-References: <cover.1624525118.git.mchehab+huawei@kernel.org>
-        <1ad2cbbd182d18ba2cae716fb5f1497b1cabbdbe.1624525118.git.mchehab+huawei@kernel.org>
-        <YNRrISOGujxcJAGR@dell>
-        <20210624143605.153e1e34@coco.lan>
-        <YNSRwIMr8+m9Sxk3@dell>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S231186AbhFYLRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:17:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59741 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229671AbhFYLRS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 07:17:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624619696;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=k8Djt+b0xv8pO9YwqZbIftkuFTYoJ1ew6IVmNBm5p1Y=;
+        b=a7e/nAPvKTvTuEStAxIMVtzqNgjzJ23Tsj7wWzJE1gcyNVu0eLEChsmVvQ8bwsu9BO7CN0
+        VQvb1pbmZc6UPKXrRM601adzsu0YakZ75E37j6qmGL68aJQWfxRE/Uy5cIgIgBIE55eeOj
+        a3jfKrYNj3FA0PcZj25dvvcKuiz6puw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-406-ERUVSFW3PIC6SQbi-2op3g-1; Fri, 25 Jun 2021 07:14:55 -0400
+X-MC-Unique: ERUVSFW3PIC6SQbi-2op3g-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 141C2804144;
+        Fri, 25 Jun 2021 11:14:54 +0000 (UTC)
+Received: from [10.64.54.233] (vpn2-54-233.bne.redhat.com [10.64.54.233])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EB2C0100164A;
+        Fri, 25 Jun 2021 11:14:51 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH v4] Documentation, dt, numa: Add note to empty NUMA node
+To:     Andrew Jones <drjones@redhat.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org, robh+dt@kernel.org, shan.gavin@gmail.com
+References: <20210625052338.4875-1-gshan@redhat.com>
+ <20210625070217.4ffmfe7nwlusbbjc@gator>
+ <20210625070656.j373hveemf5cdch4@gator>
+ <41643136-798b-a0f3-aee7-b6af94a2fc67@redhat.com>
+ <20210625101821.3t3vgj2pnw3hqpzm@gator>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <62d04903-e4f3-2302-d530-5942e33ae116@redhat.com>
+Date:   Fri, 25 Jun 2021 21:14:49 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210625101821.3t3vgj2pnw3hqpzm@gator>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 24 Jun 2021 15:08:00 +0100
-Lee Jones <lee.jones@linaro.org> escreveu:
+On 6/25/21 8:18 PM, Andrew Jones wrote:
+> On Fri, Jun 25, 2021 at 06:36:48PM +1000, Gavin Shan wrote:
+>> On 6/25/21 5:06 PM, Andrew Jones wrote:
+>>> On Fri, Jun 25, 2021 at 09:02:17AM +0200, Andrew Jones wrote:
+>>>> On Fri, Jun 25, 2021 at 01:23:38PM +0800, Gavin Shan wrote:
+>>>>> The empty memory nodes, where no memory resides in, are allowed.
+>>>>> For these empty memory nodes, the 'len' of 'reg' property is zero.
+>>>>> The NUMA node IDs are still valid and parsed, but memory can be
+>>>>> added to them through hotplug afterwards. I finds difficulty to
+>>>>> get where it's properly documented.
+>>>>>
+>>>>> So lets add note to empty memory nodes in the NUMA binding doc.
+>>>>>
+>>>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>>>>> ---
+>>>>>    Documentation/devicetree/bindings/numa.txt | 4 ++++
+>>>>>    1 file changed, 4 insertions(+)
+>>>>>
+>>>>> diff --git a/Documentation/devicetree/bindings/numa.txt b/Documentation/devicetree/bindings/numa.txt
+>>>>> index 21b35053ca5a..0fc882e44270 100644
+>>>>> --- a/Documentation/devicetree/bindings/numa.txt
+>>>>> +++ b/Documentation/devicetree/bindings/numa.txt
+>>>>> @@ -109,6 +109,10 @@ Example:
+>>>>>    Dual socket system consists of 2 boards connected through ccn bus and
+>>>>>    each board having one socket/soc of 8 cpus, memory and pci bus.
+>>>>> +Note that empty memory nodes, which no memory resides in, are allowed.
+>>>>> +The NUMA node IDs in these empty memory nodes are still valid, but
+>>>>> +memory can be added into them through hotplug afterwards.
+>>>>
+>>>> Please change the second sentence to:
+>>>>
+>>>>     The NUMA node IDs in these empty memory nodes are still valid and
+>>>>     memory may be added into them through hotplug afterwards.
+>>>>
+>>>> But, this doesn't look like the right place for this paragraph. You're
+>>>> adding the paragraph to the example section, but the example doesn't have
+>>>> any empty memory nodes.
+>>>>
+>>>> I think the paragraph should be added to section "2 - numa-node-id" and an
+>>>
+>>> Or maybe even create a new section for it.
+>>>
+>>>> example empty memory node should be provided. Also, the commit message
+>>>> talks about the length of 'reg' being zero, which is an important
+>>>> distinction which should also be documented.
+>>>>
+>>
+>> Drew, thanks for your comments. Yeah, it sounds sensible to create
+>> a new section for it and an example would be more helpful. Please
+>> check if below changes are fine to you. I probably need Randy's review
+>> again.
+>>
+>> I'm trying to avoid too many revisions for this sort of trivial patch,
+>> even though I already had. However, it's time frame for v5.14 and I'm
+>> pushing this to be merged during the cycle.
+> 
+> We must revise until we're satisfied... Also, I wouldn't call writing
+> specifications trivial.
+> 
 
-> > > > +/*
-> > > > + * The IRQs are mapped as:
-> > > > + *
-> > > > + *	======================  =============   ============	=====
-> > > > + *	IRQ			MASK REGISTER	IRQ REGISTER	BIT
-> > > > + *	======================  =============   ============	=====
-> > > > + *	OTMP			0x0202		0x212		bit 0
-> > > > + *	VBUS_CONNECT		0x0202		0x212		bit 1
-> > > > + *	VBUS_DISCONNECT		0x0202		0x212		bit 2
-> > > > + *	ALARMON_R		0x0202		0x212		bit 3
-> > > > + *	HOLD_6S			0x0202		0x212		bit 4
-> > > > + *	HOLD_1S			0x0202		0x212		bit 5
-> > > > + *	POWERKEY_UP		0x0202		0x212		bit 6
-> > > > + *	POWERKEY_DOWN		0x0202		0x212		bit 7
-> > > > + *
-> > > > + *	OCP_SCP_R		0x0203		0x213		bit 0
-> > > > + *	COUL_R			0x0203		0x213		bit 1
-> > > > + *	SIM0_HPD_R		0x0203		0x213		bit 2
-> > > > + *	SIM0_HPD_F		0x0203		0x213		bit 3
-> > > > + *	SIM1_HPD_R		0x0203		0x213		bit 4
-> > > > + *	SIM1_HPD_F		0x0203		0x213		bit 5
-> > > > + *	======================  =============   ============	=====
-> > > > + *
-> > > > + * Each mask register contains 8 bits. The ancillary macros below
-> > > > + * convert a number from 0 to 14 into a register address and a bit mask
-> > > > + */
-> > > > +#define HISI_IRQ_MASK_REG(irq_data)	(SOC_PMIC_IRQ_MASK_0_ADDR + \
-> > > > +					 (irqd_to_hwirq(irq_data) / BITS_PER_BYTE))
-> > > > +#define HISI_IRQ_MASK_BIT(irq_data)	BIT(irqd_to_hwirq(irq_data) & (BITS_PER_BYTE - 1))
-> > > > +#define HISI_8BITS_MASK			GENMASK(BITS_PER_BYTE - 1, 0)    
-> > > 
-> > > Are these lines up in real code?  Looks like they're not in the diff.  
-> > 
-> > Weird. The changes to use those are at patch 3/8. All the above
-> > macros are used at the patch.  
-> 
-> Sorry, that made no sense - it's been a long few days!
-> 
-> I meant to say "do these (the tabs) line up?"
+[...]
 
-Yes, they line up (and aligned with the parenthesis, in the case of
-HISI_IRQ_MASK_REG).
+> I'll just rewrite it:
+> 
+>   Empty memory nodes, which no memory resides in, are allowed. The 'length'
+>   field of the 'reg' property is zero, but the 'base-address' is a dummy
+>   address and invalid. However, the NUMA node IDs and distance maps are
+>   still valid and memory may be added into them through hotplug afterwards.
+> 
 
-> > > > +static const struct mfd_cell hi6421v600_devs[] = {
-> > > > +	{ .name = "hi6421v600-regulator", },
-> > > > +};    
-> > > 
-> > > Where are the other devices?  
-> > 
-> > While this is a MFD device, as it has regulators, ADC and other
-> > stuff, right now, only the regulator and the IRQs are implemented. 
-> > 
-> > The IRQs are at the core of this driver, while the regulator 
-> > is at the separate regulator driver.  
-> 
-> The rule usually goes:
-> 
->  Drivers don't qualify as MFDs until you register >1 device.
+[...]
 
-Do you mean that, in order for this to be accepted, should
-I move the irq code to a separate driver?
+> 
+> You should write how you've selected the dummy addresses for the empty
+> memory nodes, perhaps here in the /* Empty memory node */ comments or
+> above in the paragraph or both.
+> 
+>> +	memory@0x100000000 {
+>> +		device_type = "memory";
+>> +		reg = <0x1 0x0 0x0 0x0>;
+>> +		numa-node-id = <2>;
+>> +	};
+>> +
+>> +	/* Empty memory node */
+>> +	memory@0x180000000 {
+>> +		device_type = "memory";
+>> +		reg = <0x1 0x80000000 0x0 0x0>;
+>> +		numa-node-id = <3>;
+>> +	};
+>> +
 
-> > > > +	for (i = 0; i < PMIC_IRQ_LIST_MAX; i++) {
-> > > > +		virq = irq_create_mapping(ddata->domain, i);
-> > > > +		if (!virq) {
-> > > > +			dev_err(dev, "Failed to map H/W IRQ\n");
-> > > > +			return -ENOSPC;    
-> > > 
-> > > -ENOSPC doesn't seem right here.
-> > > 
-> > > Can't find any other uses of it for irq_create_mapping() either.  
-> > 
-> > There are two drivers returning -ENOSPC:
-> > 
-> > 	arch/powerpc/platforms/pseries/msi.c
-> > 	arch/powerpc/sysdev/mpic_u3msi.c  
-> 
-> I only looked in drivers/
-> 
-> > But others return -EIO, -EINVAL, -ENOMEM, -ENODEV, -ENXIO.
-> > 
-> > I think that -ENODEV would fit better here.  
-> 
-> I think -ENXIO is the most common, followed by -EINVAL.
-> 
-> This doesn't have anything to do with devices per say.
+[...]
 
-Ok. I'll change it to -ENXIO.
+Thanks, Drew. As 'base-address' is dummy address and invalid. So we
+would note it as suggestion. With your suggestion integrated, how about
+something like this?
 
-> > > > +static void hi6421_spmi_pmic_remove(struct spmi_device *pdev)
-> > > > +{
-> > > > +	struct hi6421_spmi_pmic *ddata = dev_get_drvdata(&pdev->dev);
-> > > > +
-> > > > +	free_irq(ddata->irq, ddata);    
-> > > 
-> > > No devm_* version?  
-> > 
-> > Are there a devm_* variant for gpio_to_irq()?  
-> 
-> Please refer to Dan's response.
+==============================================================================
+4 - Empty memory nodes
+==============================================================================
 
-Ok.
+Empty memory nodes, which no memory resides in, are allowed. The 'length'
+field of the 'reg' property is zero, but the 'base-address' is a dummy
+address and invalid. The 'base-address' could be the summation of highest
+memory address plus the NUMA node ID. However, the NUMA node IDs and
+distance maps are still valid and memory may be added into them through
+hotplug afterwards.
+
+        :
+
+        memory@0 {
+                 device_type = "memory";
+                 reg = <0x0 0x0 0x0 0x80000000>;
+                 numa-node-id = <0>;
+         };
+
+         memory@0x80000000 {
+                 device_type = "memory";
+                 reg = <0x0 0x80000000 0x0 0x80000000>;
+                 numa-node-id = <1>;
+         };
+
+         /* Empty memory node */
+         memory@0x100000002 {
+                 device_type = "memory";
+                 reg = <0x1 0x2 0x0 0x0>;
+                 numa-node-id = <2>;
+         };
+
+         /* Empty memory node */
+         memory@0x100000003 {
+                 device_type = "memory";
+                 reg = <0x1 0x3 0x0 0x0>;
+                 numa-node-id = <3>;
+         };
+
+         :
 
 Thanks,
-Mauro
+Gavin
+
+
