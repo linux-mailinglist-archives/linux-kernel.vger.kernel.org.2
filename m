@@ -2,320 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403553B441D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1693B442E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231630AbhFYNMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 09:12:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59819 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231405AbhFYNMY (ORCPT
+        id S231654AbhFYNOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 09:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230151AbhFYNOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 09:12:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624626603;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PNAp2KzVwp2HJpAICzqzoywufhnCYAR1xRg0ncSjjzQ=;
-        b=Cxr+PajpZ3WcMH4GvPDJF+jlC+qNQ3vTfp7T2rUjY1PW7XuNg+tPS5xMTvkvy+ZQ34WOfD
-        EXYUICf1SeP7Q0MCmCf7c/tAoQ1amBbCNLQcVGgz8NxAeRWfdvFkYrJLGSkKNwC6j5Vnmf
-        1FUNlXCwxpIWJmzCy+4Mn5NNvoojv5U=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-453-9ZipjU_1MBavZko2Av6VbQ-1; Fri, 25 Jun 2021 09:10:02 -0400
-X-MC-Unique: 9ZipjU_1MBavZko2Av6VbQ-1
-Received: by mail-wm1-f72.google.com with SMTP id j38-20020a05600c1c26b02901dbf7d18ff8so4170366wms.8
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 06:10:01 -0700 (PDT)
+        Fri, 25 Jun 2021 09:14:53 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2F4C061574;
+        Fri, 25 Jun 2021 06:12:32 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id c23so18952509qkc.10;
+        Fri, 25 Jun 2021 06:12:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EtH+YaguYetgfT8kdoojx9dl0VFAOn0Yx63g1VXsJew=;
+        b=ibebuR7OhuuvKztdC31VfGhCLFYwF5mP1pV/+hJ3huZCAhmuaKBvXpB1tjgs9IIMr9
+         kTpQ++d8sLN88ao1wBevONYfKDcD/mCLTqaTEEQhvwrAgQ6MhQJ66epchgndDQjHyVh5
+         Z+Jmv6umAuv435h93xu44fqA9IkyadeNoFp9G+XwLX2Yjil+8Y+IY3CRxsEvxggMxW7D
+         JyeF3c2fUUFPtgYf0vfL3g18kIHJRNdH+wSRaileVeU715wrAIbj7N50gz5J9LsMHEPJ
+         IYYVngXW/9d46V1Zn8Uqe1SSGNgswJ0er2+QI/NfBav9egxI0h+kZ3RgR2yGNCxjQPDt
+         w3DA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PNAp2KzVwp2HJpAICzqzoywufhnCYAR1xRg0ncSjjzQ=;
-        b=jQ2cf0JuSXNxElZjMmn8iF0orSCmyaqmlZZJrDy3u55sCmeITbdGYMLioLqJ1FhBJy
-         mAGrSx2YUHREwqVgheAUcF7m/VKeVHNiHBmrx1WLW3FhP1QYIYbPMGwta7gUa5sSMGEk
-         dcGsgy5duVgaCgIqwejqUwAWU7HI/iLKHURK2sOIxO1WMoUbei0KG7bYJ+PVoHXdPbsV
-         zBGsvH6wIxqJT5dDMia3AxPYciUL7hlKp13cNLBoaQmHK9PtECGKS1HIMNdktx9He4NR
-         5FrNBqO4pcnY5BpC4eEcZHqjc+/Sc4hZxkgn2UqxUEeAUHjn46yrZIoLKQT7AMWsCLNR
-         ZBmw==
-X-Gm-Message-State: AOAM530qX65rmB+yPXeokRE8ZIHZmj6iZs33qsSFQ/vPKepsd5JWQmeh
-        K4y5MBSMYNcEfKvAfRS4Ahq95+5OBYLpbQ/KokGMdXhuPbw5pci9jLj2V3lschjjFya7roDwokC
-        nsHOAcDMW7wy12eYBFfhrOZp1tUcCVNx+Xsf3xyFi/VdEyYWv3uG8/igfK6vu+pfsNGZbuG/I7P
-        w=
-X-Received: by 2002:adf:de87:: with SMTP id w7mr10991066wrl.333.1624626600843;
-        Fri, 25 Jun 2021 06:10:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw9JlLTp3gkSgmXVuuBEZlbTpm3s98JJq7htgnfMTMY1BcxRHZ+aAzUeYOQaLnz1g/268OaWQ==
-X-Received: by 2002:adf:de87:: with SMTP id w7mr10990996wrl.333.1624626600479;
-        Fri, 25 Jun 2021 06:10:00 -0700 (PDT)
-Received: from minerva.redhat.com ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id x7sm5995864wre.8.2021.06.25.06.09.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 06:10:00 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-efi@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv@lists.infradead.org, Borislav Petkov <bp@suse.de>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        David Airlie <airlied@linux.ie>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Javier Martinez Canillas <javierm@redhat.com>
-Subject: [PATCH v3 1/2] drivers/firmware: move x86 Generic System Framebuffers support
-Date:   Fri, 25 Jun 2021 15:09:46 +0200
-Message-Id: <20210625130947.1803678-2-javierm@redhat.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210625130947.1803678-1-javierm@redhat.com>
-References: <20210625130947.1803678-1-javierm@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EtH+YaguYetgfT8kdoojx9dl0VFAOn0Yx63g1VXsJew=;
+        b=U6s6QHm0iM95vfCwde4UlhuLxEAgr20xrNVk+aTStvskBk03xe7Y7t4OhhwIyX7BYk
+         0q7FL+TWFYwJ6EylRJ0Uq7eMwzPXZezi9AOoBoMe2RDDpFfvrozpnROLt1+OvSOzNIoV
+         MTjCaFs5m2ZsNkdYJ7I12lZdhicbSZ+3s974Hk37g70coQS+laG5+ClW6cmzqhgWcItW
+         N9p/Tufvf2C+iqFXAD3pBiIs+t15SNSBmSlKZvYmNoCyFP8QmKht6Bx16+3vpDtX7k5f
+         4aDoYklSfSUfVSYJBPquwco+z/gBeavrNLyWOrEK8x0XOk91NYfF7b5+GkVwijSKAQh1
+         k6yA==
+X-Gm-Message-State: AOAM532riY9QBMDTOnE/JXVi1h29bbBVfBR7ISSWXjlaPiZKASiFFeET
+        FJiXs1HoyX7jRIWXJAscgImxEm2uP2po1uv7sFQ=
+X-Google-Smtp-Source: ABdhPJwtcJBfZh6+UIt9Kg9D23mEveqk6UdDJLrv+I1aDYiyVGB7RwiNeAuD+xRyfZcD0pFjoPQMpri+pbEPlM5lJ0o=
+X-Received: by 2002:a37:e110:: with SMTP id c16mr11117736qkm.237.1624626751519;
+ Fri, 25 Jun 2021 06:12:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210614201620.30451-1-richard@nod.at> <20210614201620.30451-2-richard@nod.at>
+ <CAFLxGvyyybqsgXOQ2f2BmpTCnC=7UdWhwnCpGfZMxYuK-AQ-_w@mail.gmail.com> <20210625122848.GA26048@gondor.apana.org.au>
+In-Reply-To: <20210625122848.GA26048@gondor.apana.org.au>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Fri, 25 Jun 2021 15:12:20 +0200
+Message-ID: <CAFLxGvyFy-BWjLF5z2=TaQ+MPEh+Djj3-PSAMArMoquekLWgBQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] crypto: mxs-dcp: Add support for hardware provided keys
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     keyrings@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        David Howells <dhowells@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Fabio Estevam <festevam@gmail.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        James Morris <jmorris@namei.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The x86 architecture has generic support to register a system framebuffer
-platform device. It either registers a "simple-framebuffer" if the config
-option CONFIG_X86_SYSFB is enabled, or a legacy VGA/VBE/EFI FB device.
+Herbert,
 
-But the code is generic enough to be reused by other architectures and can
-be moved out of the arch/x86 directory.
+On Fri, Jun 25, 2021 at 2:29 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
+> > This patch was judged as not applicable in your patchwork.
+> > Is something missing? How can we proceed?
+>
+> I'm happy to take this patch.  I marked it as not applicable
+> mainly because the other two patches didn't have acks and I'm
+> not sure if they were meant for the crypto tree or not.
 
-This will allow to also support the simple{fb,drm} drivers on non-x86 EFI
-platforms, such as aarch64 where these drivers are only supported with DT.
+Maybe we have a chicken/egg situation and integrity folks wait for you. ;-)
 
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-Acked-by: Borislav Petkov <bp@suse.de>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
+> Would you like me to take just the first patch?
 
-Changes in v3:
-- Add Borislav and Greg Acked-by tags.
+IMHO all three patches should go through the integrity tree.
+Given that you're fine with the first patch, can you please ack it?
 
-Changes in v2:
-- Use default y and depends on X86 instead doing a select in arch/x86/Kconfig.
-- Also enable the SYSFB Kconfig option when COMPILE_TEST.
-- Improve commit message to explain why is useful for other arches to use this.
-
- arch/x86/Kconfig                              | 26 ---------------
- arch/x86/kernel/Makefile                      |  3 --
- drivers/firmware/Kconfig                      | 32 +++++++++++++++++++
- drivers/firmware/Makefile                     |  2 ++
- drivers/firmware/efi/Makefile                 |  2 ++
- .../firmware/efi}/sysfb_efi.c                 |  2 +-
- {arch/x86/kernel => drivers/firmware}/sysfb.c |  2 +-
- .../firmware}/sysfb_simplefb.c                |  2 +-
- .../x86/include/asm => include/linux}/sysfb.h |  6 ++--
- 9 files changed, 42 insertions(+), 35 deletions(-)
- rename {arch/x86/kernel => drivers/firmware/efi}/sysfb_efi.c (99%)
- rename {arch/x86/kernel => drivers/firmware}/sysfb.c (98%)
- rename {arch/x86/kernel => drivers/firmware}/sysfb_simplefb.c (99%)
- rename {arch/x86/include/asm => include/linux}/sysfb.h (95%)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 0ae3eccfec52..f169a30db768 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2766,32 +2766,6 @@ config AMD_NB
- 	def_bool y
- 	depends on CPU_SUP_AMD && PCI
- 
--config X86_SYSFB
--	bool "Mark VGA/VBE/EFI FB as generic system framebuffer"
--	help
--	  Firmwares often provide initial graphics framebuffers so the BIOS,
--	  bootloader or kernel can show basic video-output during boot for
--	  user-guidance and debugging. Historically, x86 used the VESA BIOS
--	  Extensions and EFI-framebuffers for this, which are mostly limited
--	  to x86.
--	  This option, if enabled, marks VGA/VBE/EFI framebuffers as generic
--	  framebuffers so the new generic system-framebuffer drivers can be
--	  used on x86. If the framebuffer is not compatible with the generic
--	  modes, it is advertised as fallback platform framebuffer so legacy
--	  drivers like efifb, vesafb and uvesafb can pick it up.
--	  If this option is not selected, all system framebuffers are always
--	  marked as fallback platform framebuffers as usual.
--
--	  Note: Legacy fbdev drivers, including vesafb, efifb, uvesafb, will
--	  not be able to pick up generic system framebuffers if this option
--	  is selected. You are highly encouraged to enable simplefb as
--	  replacement if you select this option. simplefb can correctly deal
--	  with generic system framebuffers. But you should still keep vesafb
--	  and others enabled as fallback if a system framebuffer is
--	  incompatible with simplefb.
--
--	  If unsure, say Y.
--
- endmenu
- 
- 
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 0f66682ac02a..4114ea47def2 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -135,9 +135,6 @@ obj-$(CONFIG_X86_CHECK_BIOS_CORRUPTION) += check.o
- obj-$(CONFIG_SWIOTLB)			+= pci-swiotlb.o
- obj-$(CONFIG_OF)			+= devicetree.o
- obj-$(CONFIG_UPROBES)			+= uprobes.o
--obj-y					+= sysfb.o
--obj-$(CONFIG_X86_SYSFB)			+= sysfb_simplefb.o
--obj-$(CONFIG_EFI)			+= sysfb_efi.o
- 
- obj-$(CONFIG_PERF_EVENTS)		+= perf_regs.o
- obj-$(CONFIG_TRACING)			+= tracepoint.o
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index 1db738d5b301..5991071e9d7f 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -251,6 +251,38 @@ config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
- 
- 	  Say Y here to enable "download mode" by default.
- 
-+config SYSFB
-+	bool
-+	default y
-+	depends on X86 || COMPILE_TEST
-+
-+config X86_SYSFB
-+	bool "Mark VGA/VBE/EFI FB as generic system framebuffer"
-+	depends on SYSFB
-+	help
-+	  Firmwares often provide initial graphics framebuffers so the BIOS,
-+	  bootloader or kernel can show basic video-output during boot for
-+	  user-guidance and debugging. Historically, x86 used the VESA BIOS
-+	  Extensions and EFI-framebuffers for this, which are mostly limited
-+	  to x86.
-+	  This option, if enabled, marks VGA/VBE/EFI framebuffers as generic
-+	  framebuffers so the new generic system-framebuffer drivers can be
-+	  used on x86. If the framebuffer is not compatible with the generic
-+	  modes, it is advertised as fallback platform framebuffer so legacy
-+	  drivers like efifb, vesafb and uvesafb can pick it up.
-+	  If this option is not selected, all system framebuffers are always
-+	  marked as fallback platform framebuffers as usual.
-+
-+	  Note: Legacy fbdev drivers, including vesafb, efifb, uvesafb, will
-+	  not be able to pick up generic system framebuffers if this option
-+	  is selected. You are highly encouraged to enable simplefb as
-+	  replacement if you select this option. simplefb can correctly deal
-+	  with generic system framebuffers. But you should still keep vesafb
-+	  and others enabled as fallback if a system framebuffer is
-+	  incompatible with simplefb.
-+
-+	  If unsure, say Y.
-+
- config TI_SCI_PROTOCOL
- 	tristate "TI System Control Interface (TISCI) Message Protocol"
- 	depends on TI_MESSAGE_MANAGER
-diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
-index 546ac8e7f6d0..946dda07443d 100644
---- a/drivers/firmware/Makefile
-+++ b/drivers/firmware/Makefile
-@@ -18,6 +18,8 @@ obj-$(CONFIG_FIRMWARE_MEMMAP)	+= memmap.o
- obj-$(CONFIG_RASPBERRYPI_FIRMWARE) += raspberrypi.o
- obj-$(CONFIG_FW_CFG_SYSFS)	+= qemu_fw_cfg.o
- obj-$(CONFIG_QCOM_SCM)		+= qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
-+obj-$(CONFIG_SYSFB)		+= sysfb.o
-+obj-$(CONFIG_X86_SYSFB)		+= sysfb_simplefb.o
- obj-$(CONFIG_TI_SCI_PROTOCOL)	+= ti_sci.o
- obj-$(CONFIG_TRUSTED_FOUNDATIONS) += trusted_foundations.o
- obj-$(CONFIG_TURRIS_MOX_RWTM)	+= turris-mox-rwtm.o
-diff --git a/drivers/firmware/efi/Makefile b/drivers/firmware/efi/Makefile
-index 467e94259679..c02ff25dd477 100644
---- a/drivers/firmware/efi/Makefile
-+++ b/drivers/firmware/efi/Makefile
-@@ -36,6 +36,8 @@ obj-$(CONFIG_LOAD_UEFI_KEYS)		+= mokvar-table.o
- fake_map-y				+= fake_mem.o
- fake_map-$(CONFIG_X86)			+= x86_fake_mem.o
- 
-+obj-$(CONFIG_SYSFB)			+= sysfb_efi.o
-+
- arm-obj-$(CONFIG_EFI)			:= efi-init.o arm-runtime.o
- obj-$(CONFIG_ARM)			+= $(arm-obj-y)
- obj-$(CONFIG_ARM64)			+= $(arm-obj-y)
-diff --git a/arch/x86/kernel/sysfb_efi.c b/drivers/firmware/efi/sysfb_efi.c
-similarity index 99%
-rename from arch/x86/kernel/sysfb_efi.c
-rename to drivers/firmware/efi/sysfb_efi.c
-index 8a56a6d80098..9f035b15501c 100644
---- a/arch/x86/kernel/sysfb_efi.c
-+++ b/drivers/firmware/efi/sysfb_efi.c
-@@ -21,10 +21,10 @@
- #include <linux/mm.h>
- #include <linux/pci.h>
- #include <linux/screen_info.h>
-+#include <linux/sysfb.h>
- #include <video/vga.h>
- 
- #include <asm/efi.h>
--#include <asm/sysfb.h>
- 
- enum {
- 	OVERRIDE_NONE = 0x0,
-diff --git a/arch/x86/kernel/sysfb.c b/drivers/firmware/sysfb.c
-similarity index 98%
-rename from arch/x86/kernel/sysfb.c
-rename to drivers/firmware/sysfb.c
-index 014ebd8ca869..1337515963d5 100644
---- a/arch/x86/kernel/sysfb.c
-+++ b/drivers/firmware/sysfb.c
-@@ -32,7 +32,7 @@
- #include <linux/platform_data/simplefb.h>
- #include <linux/platform_device.h>
- #include <linux/screen_info.h>
--#include <asm/sysfb.h>
-+#include <linux/sysfb.h>
- 
- static __init int sysfb_init(void)
- {
-diff --git a/arch/x86/kernel/sysfb_simplefb.c b/drivers/firmware/sysfb_simplefb.c
-similarity index 99%
-rename from arch/x86/kernel/sysfb_simplefb.c
-rename to drivers/firmware/sysfb_simplefb.c
-index 298fc1edd9c9..df892444ea17 100644
---- a/arch/x86/kernel/sysfb_simplefb.c
-+++ b/drivers/firmware/sysfb_simplefb.c
-@@ -18,7 +18,7 @@
- #include <linux/platform_data/simplefb.h>
- #include <linux/platform_device.h>
- #include <linux/screen_info.h>
--#include <asm/sysfb.h>
-+#include <linux/sysfb.h>
- 
- static const char simplefb_resname[] = "BOOTFB";
- static const struct simplefb_format formats[] = SIMPLEFB_FORMATS;
-diff --git a/arch/x86/include/asm/sysfb.h b/include/linux/sysfb.h
-similarity index 95%
-rename from arch/x86/include/asm/sysfb.h
-rename to include/linux/sysfb.h
-index 9834eef7f034..3e5355769dc3 100644
---- a/arch/x86/include/asm/sysfb.h
-+++ b/include/linux/sysfb.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0-or-later */
--#ifndef _ARCH_X86_KERNEL_SYSFB_H
--#define _ARCH_X86_KERNEL_SYSFB_H
-+#ifndef _LINUX_SYSFB_H
-+#define _LINUX_SYSFB_H
- 
- /*
-  * Generic System Framebuffers on x86
-@@ -91,4 +91,4 @@ static inline int create_simplefb(const struct screen_info *si,
- 
- #endif /* CONFIG_X86_SYSFB */
- 
--#endif /* _ARCH_X86_KERNEL_SYSFB_H */
-+#endif /* _LINUX_SYSFB_H */
 -- 
-2.31.1
-
+Thanks,
+//richard
