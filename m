@@ -2,233 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCB73B42B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 651F23B42BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbhFYLuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 07:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49392 "EHLO
+        id S230082AbhFYLzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhFYLuV (ORCPT
+        with ESMTP id S229498AbhFYLzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 07:50:21 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848B8C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 04:48:00 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id i94so10291783wri.4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 04:48:00 -0700 (PDT)
+        Fri, 25 Jun 2021 07:55:35 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863C1C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 04:53:13 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 8so4205322ybn.9
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 04:53:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Kwcx9otKeRLrPfoujiGcv2pQL5iszSvQBvkikrZdgJ8=;
-        b=qRWLJiX0JpHuLPVS/tsP1icZ/nNWiBpH/TQJnwa4S+y4rHPQTSSfRG7guZURO3rhRe
-         ZNDaECZcynKUwMfpHkIzWWTjrdVlJlgr7u9dm9WpSpIwkcUK9LZdDvB+/lL1QWGFnhSE
-         KQICngDxp8tDRBm81R43MzQO/eFrRrPdtav4Kuc91QxyxvlMk9LCqGNqXmfX/EjYx3MY
-         ARdKNXoLuL2Yf2XywcbGcPWFn/lzZB+IR1I1LOZw0ih1iquHvTd8cIPnfwnXGoqqOBhP
-         cRjTYmq12qjZY59gB3Pc8kr645aisuwJw4m8va8rIEaEaGITqBurUuz1hfdcV7m9YV9o
-         gvzQ==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pP+uL+ZWPlylJuCwLYmeBf3hd9pchiAlxhNsWG9VKd8=;
+        b=KI1MeyBQ0OBl6ysBQsjxlAlxN4+16jJsj7oFhcxexxNLciNx5K1id+8qbdz2CR8k0C
+         6XSMZcbErWcn4eulyTJN0ThuR3PGvZJj+LpHm4TvQr3GdEgipVR5RpPJl8bCK4VhgsFs
+         Zw02nmI1syIpkpD2cyLE377l02EmeILnZHiSSCW+FZRM2pFPU2+pofD964HNnNaz33ky
+         4nszfUbJIPjew2Xl2yv7JVrNDFK/TRIA02un2DHDi6msZ4tqufjQ2U6M+vRgRPWcmtp1
+         97TcafseGaFThhUAMjvn6R/xZ0ic0eTWeDbNRRNGvqaxHjd6aKTK/m18uVm7gbyz0A3o
+         YpWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Kwcx9otKeRLrPfoujiGcv2pQL5iszSvQBvkikrZdgJ8=;
-        b=o7yTFAtreyohTQRopxye/zqiYh/prU85owTsDKVgqD/Y2Jp9iSbFuxwbyolUx+Qxbu
-         t3T/oYNlwlFrfJ3mnUuG2zniFE0fhwfRAR5VQQT1ndxMNKxkMdcbkAyh1S+3QBx07EOl
-         dBU5Ue6zon6G5N1l7XEekHzrFfahPl5OVq7NBR1fJsd/QK005h/Anz1e7rkCcNijRXGh
-         k0+daod/xIM7kQW94Olf6WCy+0TP0qKWyF06P3YHe2OqlEr85q4THMR6YfFAoREqkZnj
-         aG/MF8Ne1nak+hgTssQRD3eV1ayxTEzQVDMD/+VHHQ5VqRPkrLc3bilGL7t0w33SQl6n
-         opVw==
-X-Gm-Message-State: AOAM532NzfTyKiFugi5f08H93SvnlVIYIDJd0MCu6npOqieRqtQ2fkLb
-        S/7O7H+SMfWUppJydDRiHhTlJQ==
-X-Google-Smtp-Source: ABdhPJy5Gp4yNbeL/MczZpciQZE1+Pu7WBKPslzvha7jWE7uLGxGLe067X+TbgN8DO7YaMaJ9DInJw==
-X-Received: by 2002:a05:6000:128b:: with SMTP id f11mr10668163wrx.171.1624621678949;
-        Fri, 25 Jun 2021 04:47:58 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:c52d:3cc5:c823:ade0? ([2a01:e34:ed2f:f020:c52d:3cc5:c823:ade0])
-        by smtp.googlemail.com with ESMTPSA id s23sm5862861wmh.5.2021.06.25.04.47.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 04:47:58 -0700 (PDT)
-Subject: Re: Aw: Re: Re: [PATCH] Fix mt7622.dtsi thermal cpu
-To:     Frank Wunderlich <frank-w@public-files.de>
-Cc:     Eric Woudstra <ericwouds@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sean Wang <sean.wang@mediatek.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Daniel Golle <daniel@makrotopia.org>
-References: <20210619121927.32699-1-ericwouds@gmail.com>
- <e30a2d01-a200-80cb-88d9-6aea62dd49f1@linaro.org>
- <56fb5540-fb86-4e6a-a596-1276026b37e5@gmail.com>
- <a4e41929-6ab4-fabb-741e-f25a5fd14e3b@linaro.org>
- <47261865-00e3-41eb-bb36-2b939f81f1e8@gmail.com>
- <fb633034-96e5-6165-b43f-290ae1a65cfd@linaro.org>
- <189b52d5-b103-43e1-a64f-1e627fbc75af@gmail.com>
- <173e6bab-9d21-eb28-9b91-a5f80c01fd03@linaro.org>
- <3dd22cf2-1186-4870-aa49-e5cddc18c6e9@gmail.com>
- <trinity-7580d955-3187-41e5-9297-1ac8f628a9d5-1624609003739@3c-app-gmx-bs66>
- <8b27246b-721e-fa0e-5c2b-b1b4b4d6fdd3@linaro.org>
- <trinity-2eb7c0ac-d9dc-446c-8907-69b5f4df6838-1624618996538@3c-app-gmx-bs66>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <915b101a-6bea-ae96-78ed-d27fa5bfce3a@linaro.org>
-Date:   Fri, 25 Jun 2021 13:47:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pP+uL+ZWPlylJuCwLYmeBf3hd9pchiAlxhNsWG9VKd8=;
+        b=OjvjWqjqR/TiR8oYfLAaVPGiSaFTRXIqQCG6Owq9Y2ybWxmSZBzWbxUFk4DrbQDNeC
+         6KlNCtk/rexPFEflyt3Xe0xOJVfG9bxjr0I376M+4KEd/5BcADFl1tY68T5x/SSvJXtW
+         IUvlkH1jAa437dzNbJWYVwYiA1qdqQ8Zf8z//QauDVFCEkcNbH7XDKjzmeKUrw6s7jau
+         l41bbyZConUh7g+xzr6NBw+Lj56BViSfq+uhdNsj7ge5+uJOsXXsPzxsgEm1PKvhOQvJ
+         O3Zv6xxlorpsFFvdmKjikeORQy+SyGEt472B9zr8wrbx6SvdMipy54iUN5wMYj2zdaBI
+         cMpA==
+X-Gm-Message-State: AOAM532AB0mbg4TymnSepvCWiRzmDqOwKL0rwDFa4smgIwMBsN9c7eIo
+        mgyxGkbHI7WlYYRXHNhRtjn0tx71cPC0udG+gCvBOA==
+X-Google-Smtp-Source: ABdhPJyKERDk5E8TZFH2G2z8aCTJEgSAzS0YG0S+bfy5QafnCuqsvZrWraIDdIfxtKwzxBh8Bn9i+JhnOXKELMvtlJ0=
+X-Received: by 2002:a25:d68e:: with SMTP id n136mr11794028ybg.302.1624621992612;
+ Fri, 25 Jun 2021 04:53:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <trinity-2eb7c0ac-d9dc-446c-8907-69b5f4df6838-1624618996538@3c-app-gmx-bs66>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210619073551.13703-1-sergio.paracuellos@gmail.com>
+In-Reply-To: <20210619073551.13703-1-sergio.paracuellos@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 25 Jun 2021 13:53:01 +0200
+Message-ID: <CAMpxmJUvMTevyhkvq0YXg5d=G5qBzhi0mz0w0TjUuWCCvnnRCQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: mt7621: support gpio-line-names property
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        git@johnthomson.fastmail.com.au,
+        LKML <linux-kernel@vger.kernel.org>, neil@brown.name,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+        Nicholas Mc Guire <hofrat@osadl.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/06/2021 13:03, Frank Wunderlich wrote:
-> Hi
-> 
->> Gesendet: Freitag, 25. Juni 2021 um 11:57 Uhr
->> Von: "Daniel Lezcano" <daniel.lezcano@linaro.org>
-> 
->> You should not add the fan in the mt7622.dtsi itself but in the board
->> specific file where there is a fan output on it. mt7622.dtsi is supposed
->> to be the SoC itself AFAICT.
->>
->> For instance:
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git/tree/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi#n39
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git/tree/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi#n164
-> 
->>> @@ -170,14 +177,12 @@
->>>  			cooling-maps {
->>>  				map0 {
->>>  					trip = <&cpu_passive>;
->>> -					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
->>> -							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
->>> +					cooling-device = <&fan0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
->>>  				};
->>
->> fan == active trip point
->>
->> This is referring to the passive trip point. So it should point to the
->> CPU as it is now. Note the order of mitigation is inverted regarding the
->> proposal description.
-> 
-> but we need to disable the passive trip as cpu-trotteling starts there...the higher temperature trips are currently not reached
-
-Sorry, can you rephrase it ? I'm not getting the point.
-
-
-> summary
-> 
-> moving fan and cpu_thermal-override to bananapi-r64.dts
-> 
-> passive-trip: cooling-device = <&cpu0/1 0 0> as in erics Patch
-> active trip: cooling-device = <&fan0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> the other 2 unchanged
-> 
-> but i suggest changing the temperature points in mt7622 dtsi as this is SoC specific
-> 
-> so basicly:
-> 
-> --- a/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-> @@ -143,13 +143,13 @@ cpu_thermal: cpu-thermal {
-> 
->                         trips {
->                                 cpu_passive: cpu-passive {
-> -                                       temperature = <47000>;
-> +                                       temperature = <70000>;
-
-May be increase the passive temp to 75°C.
-
->                                         hysteresis = <2000>;
->                                         type = "passive";
->                                 };
-> 
->                                 cpu_active: cpu-active {
-> -                                       temperature = <67000>;
-> +                                       temperature = <80000>;
->                                         hysteresis = <2000>;
->                                         type = "active";
->                                 };
-
-Move the active trip 'cpu_active' to mt7622-bananapi-bpi-r64.dts. and
-set it to 70°C in the mt7622-bananapi-bpi-r64.dts, so the fan will act
-before the cpu throttling.
-
-The behavior should be the following: The temperature reaches 70°C, the
-fan will start, if the temperature continues to increase, it will
-increase the speed. If the temperature reaches 75°C, the fan is still
-rotating at full speed but the cpu begins to be throttled.
-
-AFAIU, it is a Cortex-A53 running @1.35GH, so except the board is in a
-black metal box under the sun, I don't see how we can reach this thermal
-limits.
-
-> @@ -170,8 +170,8 @@ cpu-crit {
->                         cooling-maps {
->                                 map0 {
->                                         trip = <&cpu_passive>;
-> -                                       cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> -                                                        <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +                                       cooling-device = <&cpu0 0 0>,
-> +                                                        <&cpu1 0 0>;
-
-You should keep it untouched.
-
->                                 };
-> 
->                                 map1 {
-> @@ -428,6 +428,7 @@ uart3: serial@11005000 {
->         pwm: pwm@11006000 {
->                 compatible = "mediatek,mt7622-pwm";
->                 reg = <0 0x11006000 0 0x1000>;
-> +               #pwm-cells = <3>;
->                 interrupts = <GIC_SPI 77 IRQ_TYPE_LEVEL_LOW>;
->                 clocks = <&topckgen CLK_TOP_PWM_SEL>,
->                          <&pericfg CLK_PERI_PWM_PD>,
-> 
-> --- a/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
-> +++ b/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
-> @@ -37,6 +37,13 @@ cpu@1 {
->                 };
->         };
-> 
-> +       fan0: pwm-fan {
-> +               compatible = "pwm-fan";
-> +               #cooling-cells = <2>;
-> +               pwms = <&pwm 2 10000 0>;
-> +               cooling-levels = <0 102 170 230>;
-> +       };
+On Sat, Jun 19, 2021 at 9:35 AM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+>
+> The default handling of the gpio-line-names property by the
+> gpiolib-of implementation does not work with the multiple
+> gpiochip banks per device structure used by the gpio-mt7621
+> driver.
+>
+> This commit adds driver level support for the device tree
+> property so that GPIO lines can be assigned friendly names.
+>
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> ---
+> Hi,
+>
+> This driver has three gpiochips with 32 gpios each. Core implmentation
+> got gpio's repeated along each gpio chip if chip.names is not assigned.
+> To avoid this behaviour driver will set this names as empty or
+> with desired friendly line names. Consider the following sample with
+> minimal entries for the first chip with this patch changes applied:
+>
+> &gpio {
+>     gpio-line-names = "", "", "", "",
+>                       "", "", "SFP LOS", "extcon port5 PoE compat",
+>                       "SFP module def0", "LED blue SFP", "SFP tx disable", "",
+>                       "switch USB power", "mode", "", "buzzer",
+>                       "LED blue pwr", "switch port5 PoE out", "reset";
+> };
+>
+> gpioinfo
+> gpiochip0 - 32 lines:
+>   line   0:      unnamed       unused  output  active-high
+>   line   1:      unnamed       unused   input  active-high
+>   line   2:      unnamed       unused   input  active-high
+>   line   3:      unnamed       unused   input  active-high
+>   line   4:      unnamed       unused   input  active-high
+>   line   5:      unnamed       unused   input  active-high
+>   line   6:    "SFP LOS"        "los"   input  active-high [used]
+>   line   7: "extcon port5 PoE compat" unused input active-high
+>   line   8: "SFP module def0" "mod-def0" input active-low [used]
+>   line   9: "LED blue SFP" "blue:sfp" output active-high [used]
+>   line  10: "SFP tx disable" "tx-disable" output active-high [used]
+>   line  11:      unnamed       unused  output  active-high
+>   line  12: "switch USB power" "usb_power" output active-high [used]
+>   line  13:       "mode"       "mode"   input  active-high [used]
+>   line  14:      unnamed       unused   input  active-high
+>   line  15:     "buzzer"     "buzzer"  output  active-high [used]
+>   line  16: "LED blue pwr" "blue:pwr" output active-high [used]
+>   line  17: "switch port5 PoE out" "sysfs" input active-high [used]
+>   line  18:      "reset"      "reset"   input  active-high [used]
+>   line  19:      unnamed       unused   input  active-high
+>   line  20:      unnamed       unused   input  active-high
+>   line  21:      unnamed       unused   input  active-high
+>   line  22:      unnamed       unused   input  active-high
+>   line  23:      unnamed       unused   input  active-high
+>   line  24:      unnamed       unused   input  active-high
+>   line  25:      unnamed       unused   input  active-high
+>   line  26:      unnamed       unused   input  active-high
+>   line  27:      unnamed       unused   input  active-high
+>   line  28:      unnamed       unused   input  active-high
+>   line  29:      unnamed       unused   input  active-high
+>   line  30:      unnamed       unused   input  active-high
+>   line  31:      unnamed       unused   input  active-high
+> gpiochip1 - 32 lines:
+>   line   0:      unnamed       unused   input  active-high
+>   line   1:      unnamed       unused   input  active-high
+>   ...
+>   line  31:      unnamed       unused   input  active-high
+> gpiochip2 - 32 lines:
+>   line   0:      unnamed       unused   input  active-high
+>   line   1:      unnamed       unused   input  active-high
+>   ...
+>   line  31:      unnamed       unused   input  active-high
+>
+> To avoid gpiochip1 and gpiochip2 entries repeated with this
+> minimal lines definition change, we assign empty reserved
+> 'names' in driver code.
+>
+> Note that we also don't want to to prevent the driver from
+> succeeding at probe due to an error in the gpio-line-names
+> property and the ENODATA error is considered a valid result
+> to terminate any further labeling so there is no need for
+> an error message in that case. Other error results are
+> unexpected so an error message indicating the consequence
+> of the error is appropriate here.
+>
+> Thanks in advance for your time.
+>
+> Best regards,
+>     Sergio Paracuellos
+>
+>  drivers/gpio/gpio-mt7621.c | 41 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>
+> diff --git a/drivers/gpio/gpio-mt7621.c b/drivers/gpio/gpio-mt7621.c
+> index 82fb20dca53a..b5f8fd8e928a 100644
+> --- a/drivers/gpio/gpio-mt7621.c
+> +++ b/drivers/gpio/gpio-mt7621.c
+> @@ -206,6 +206,45 @@ mediatek_gpio_xlate(struct gpio_chip *chip,
+>         return gpio % MTK_BANK_WIDTH;
+>  }
+>
+> +static void
+> +mediatek_gpio_set_names(struct device *dev, struct mtk_gc *rg)
+> +{
+> +       struct device_node *np = dev->of_node;
+> +       const char **names;
+> +       int nstrings, base;
+> +       unsigned int i;
 > +
->         gpio-keys {
->                 compatible = "gpio-keys";
-> 
-> @@ -582,6 +589,29 @@ &u3phy {
->         status = "okay";
->  };
-> 
-> +&cpu_thermal {
-> +       cooling-maps {
-> +               map1 {
-> +                       trip = <&cpu_active>;
-> +                       cooling-device = <&fan0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +               };
-> +       };
-> +};
+> +       names = devm_kcalloc(dev, MTK_BANK_WIDTH, sizeof(*names),
+> +                            GFP_KERNEL);
+> +       if (!names)
+> +               return;
+
+While the ENODATA bit makes sense, not failing after an OOM in a
+driver is wrong. Please return the error code here.
+
+Bartosz
+
 > +
->  &uart0 {
->         pinctrl-names = "default";
->         pinctrl-0 = <&uart0_pins>;
-> 
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+> +       base = rg->bank * MTK_BANK_WIDTH;
+> +       nstrings = of_property_count_strings(np, "gpio-line-names");
+> +       if (nstrings <= base)
+> +               goto assign_names;
+> +
+> +       for (i = 0; i < MTK_BANK_WIDTH; i++) {
+> +               const char *name;
+> +               int ret;
+> +
+> +               ret = of_property_read_string_index(np, "gpio-line-names",
+> +                                                   base + i, &name);
+> +               if (ret) {
+> +                       if (ret != -ENODATA)
+> +                               dev_err(dev, "unable to name line %d: %d\n",
+> +                                       base + i, ret);
+> +                       break;
+> +               }
+> +
+> +               if (*name)
+> +                       names[i] = name;
+> +       }
+> +
+> +assign_names:
+> +       rg->chip.names = names;
+> +}
+> +
+>  static int
+>  mediatek_gpio_bank_probe(struct device *dev,
+>                          struct device_node *node, int bank)
+> @@ -241,6 +280,8 @@ mediatek_gpio_bank_probe(struct device *dev,
+>         if (!rg->chip.label)
+>                 return -ENOMEM;
+>
+> +       mediatek_gpio_set_names(dev, rg);
+> +
+>         rg->irq_chip.name = dev_name(dev);
+>         rg->irq_chip.parent_device = dev;
+>         rg->irq_chip.irq_unmask = mediatek_gpio_irq_unmask;
+> --
+> 2.25.1
+>
