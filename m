@@ -2,75 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA013B429C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6A43B42A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhFYLhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 07:37:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhFYLhr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 07:37:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5A8C061574;
-        Fri, 25 Jun 2021 04:35:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nInXZSuW2VLfsBmz2fvP4M1dxeak9S+ryROuH8Jszc4=; b=Y0XxGn8e4SplEkW7jopbVQALv5
-        1t+SwOsekhUmI/ryMnx0OphVPVg6076gaBBUSwUJwzZnwZB2ezzy8IS57OMOSMxejtwLD231MKtVs
-        Oke91rzIc51yQ2QKC4V4tc0QGbUECmpttnfNjucrotZQGwf5wjcxfQpGcudBoMTxee2vIqDj+o06A
-        fvklr4nPbhc1FNg172LrcWqNHWQ/HeMZrSg1r8OUVgxYhhK1VhGHRmrYYzLGBPol6o/5YlwhQn3lt
-        SPzQyFr4tWoq4/F8WBAH9njdgnOdgym9WEtjovPZBqIrRNJ3a4FIMdzD+Qee3Q9nFojgalEHY8lt5
-        PhK+5Odg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwk6q-0002AW-0u; Fri, 25 Jun 2021 11:35:04 +0000
-Date:   Fri, 25 Jun 2021 12:34:55 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 14/46] mm/memcg: Add folio_charge_cgroup()
-Message-ID: <YNW/Xxv74VlxTm6M@casper.infradead.org>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-15-willy@infradead.org>
- <YNLtmC9qd8Xxkxsc@infradead.org>
- <YNS2EvYub46WdVaq@casper.infradead.org>
- <YNWSS/FvuyCpRxej@dhcp22.suse.cz>
+        id S230063AbhFYLl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:41:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229458AbhFYLlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 07:41:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF0C161581;
+        Fri, 25 Jun 2021 11:39:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624621144;
+        bh=JGnEWaUyjgGCu2eYR28hbPglosr5/9B3AT1Cb7ByNaQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YpJU1fGRXPl1aoSGFS9JRNEcVNQKTVDnSKitshbSzxbxk0bh/qXw44EITET3ZvS8I
+         MxhQoLimsjNLU7/ONgF8n87pvkdSnso5Fs/hcntVPn5YgZVsfWTwitM9JxFm5JAsM5
+         ZT9QTEVj9NI4OvlQG5Q+iOsNq8fKRL24AzkAn49VSJdKBRy7Op8Q1SEmRUbG+7nmFS
+         d7cWhHjw8i+gKc6R8NPYl78HaGEpeFM7XE3nA+LCF6VU9kkDsRJxc+zsSiE/h/h6vv
+         k5MmV3Tn3EKXPpMHfdnbmPrZjYMh+lE9oaUCLs5grxPXfzj8wyHu+FEYgzB85frEW1
+         J2jNzN9BzgSSA==
+Date:   Fri, 25 Jun 2021 13:38:58 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Johan Hovold <johan@kernel.org>, Lee Jones <lee.jones@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH RESEND v6 6/8] mfd: hi6421-spmi-pmic: move driver from
+ staging
+Message-ID: <20210625133858.3bf1835f@coco.lan>
+In-Reply-To: <YNSV+N0h7NoRpo/w@hovoldconsulting.com>
+References: <cover.1624525118.git.mchehab+huawei@kernel.org>
+        <1ad2cbbd182d18ba2cae716fb5f1497b1cabbdbe.1624525118.git.mchehab+huawei@kernel.org>
+        <YNRrISOGujxcJAGR@dell>
+        <20210624143605.153e1e34@coco.lan>
+        <YNSRwIMr8+m9Sxk3@dell>
+        <YNSV+N0h7NoRpo/w@hovoldconsulting.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNWSS/FvuyCpRxej@dhcp22.suse.cz>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 10:22:35AM +0200, Michal Hocko wrote:
-> On Thu 24-06-21 17:42:58, Matthew Wilcox wrote:
-> > On Wed, Jun 23, 2021 at 10:15:20AM +0200, Christoph Hellwig wrote:
-> > > On Tue, Jun 22, 2021 at 01:15:19PM +0100, Matthew Wilcox (Oracle) wrote:
-> > > > mem_cgroup_charge() already assumed it was being passed a non-tail
-> > > > page (and looking at the callers, that's true; it's called for freshly
-> > > > allocated pages).  The only real change here is that folio_nr_pages()
-> > > > doesn't compile away like thp_nr_pages() does as folio support
-> > > > is not conditional on transparent hugepage support.  Reimplement
-> > > > mem_cgroup_charge() as a wrapper around folio_charge_cgroup().
-> > > 
-> > > Maybe rename __mem_cgroup_charge to __folio_charge_cgroup as well?
-> > 
-> > Oh, yeah, should have done that.  Thanks.
-> 
-> I would stick with __mem_cgroup_charge here. Not that I would insist but the
-> folio nature is quite obvious from the parameter already.
-> 
-> Btw. memcg_check_events doesn't really need the page argument. A nid
-> should be sufficient and your earlier patch is already touching the
-> softlimit code so maybe it would be worth changing this page -> folio ->
-> page back and forth.
+Em Thu, 24 Jun 2021 16:26:00 +0200
+Johan Hovold <johan@kernel.org> escreveu:
 
-I'm not a huge fan of that 'dummy_page' component of uncharge_gather,
-so replacing that with nid makes sense.  I'll juggle these patches a bit
-and work that in.  Thanks!
+> On Thu, Jun 24, 2021 at 03:08:00PM +0100, Lee Jones wrote:
+> > On Thu, 24 Jun 2021, Mauro Carvalho Chehab wrote:
+> >   
+> > > Em Thu, 24 Jun 2021 12:33:28 +0100
+> > > Lee Jones <lee.jones@linaro.org> escreveu:  
+> 
+> > > > > --- /dev/null
+> > > > > +++ b/drivers/mfd/hi6421-spmi-pmic.c
+> > > > > @@ -0,0 +1,316 @@
+> > > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > > +/*
+> > > > > + * Device driver for regulators in HISI PMIC IC
+> > > > > + *
+> > > > > + * Copyright (c) 2013 Linaro Ltd.
+> > > > > + * Copyright (c) 2011 Hisilicon.
+> > > > > + * Copyright (c) 2020-2021 Huawei Technologies Co., Ltd    
+> > > > 
+> > > > Can this be updated?  
+> > > 
+> > > Do you mean updating the copyrights to cover this year? E.g.
+> > > something like this:
+> > > 
+> > > 	 * Copyright (c) 2013-2021 Linaro Ltd.
+> > > 	 * Copyright (c) 2011-2021 Hisilicon.
+> > > 	 * Copyright (c) 2020-2021 Huawei Technologies Co., Ltd  
+> > > 
+> > > Right? Or are you meaning something else?  
+> > 
+> > Yes, that's it.  I know this is just a move, but to MFD, it's new.  
+> 
+> That's not how copyright works. Unless Linaro and Hisilicon made
+> nontrivial changes every year from 2011/2013 to 2021 you should not
+> change those lines like this.
+
+Only Linaro can answer what happened up to 2018, as this driver 
+originally came from a Linaro tree, which has exactly one commit
+for this driver:
+
+	https://github.com/96boards-hikey/linux/commit/08464419fba2417aa849fce976fac9c5f51b3ada#diff-604ef8563dcd9ace6e3e58aac38337c72924b0889f6972d7ee9e15e2335ba964
+
+After merged upstream at staging, all changes are covered by the
+Huawei's copyright (2020-2021).
+
+So, I'll just drop this patch. If the information is not accurate,
+someone from the original copyright holders can send followup
+patches.
+
+Thanks,
+Mauro
