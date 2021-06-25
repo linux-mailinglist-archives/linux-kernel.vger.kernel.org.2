@@ -2,128 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AEA3B4814
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482CF3B4817
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhFYRRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 13:17:33 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:40915 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbhFYRRc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 13:17:32 -0400
-Received: by mail-oi1-f174.google.com with SMTP id d19so12047252oic.7;
-        Fri, 25 Jun 2021 10:15:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tFasrYsFKAvywn6faqXn2vvEdZnYR9YwEezboB1Quws=;
-        b=nLNcX1yv1zFEZQ++DYZdUsquyeDnRQ+PcLmYoKwwMdkDl/M6GPqHBp6f7pmGqI/rLb
-         3MDSascO7qZa91YXQuX0OfteWFyqnnwUQjUVrdv3gXrumOPkXyDK212zJz7q0SsxOHul
-         abgfGHrbM5oSjcSasrVhbYN1qTRdsjZE2EPjOb6PNOapUJoUfo8zgZcwxi/mbiOtSARH
-         0cj33wCTqwhmuu+0PqATxrTi785O2xWbvylL45HK+O0oeBy+3aFbnj2oy36SimijqMNL
-         lPd5JnDuf5Dxa+GSUbH0nFjBfrYN88SFJQi67ZCVTTd3KRetr9DMvtJ775O4f/D5CEYG
-         glxg==
-X-Gm-Message-State: AOAM530RH5SpKXrL3c0o+juuXbsIuupJ/AcsAWAZMu/0ftG4d0Z/otXa
-        z1dOp0j/Un7tQUfbNlQcOAoIA/ipUxXdiY6KR+8=
-X-Google-Smtp-Source: ABdhPJz3e/ZIkYVsF8SpYOwSc4i3w+5rC/iXH4mm2ml86brcbnPkozeJHRAx9+ZLF19XEDJ4ayGXz11eAWOVMZJIxVg=
-X-Received: by 2002:aca:d11:: with SMTP id 17mr1504892oin.69.1624641311276;
- Fri, 25 Jun 2021 10:15:11 -0700 (PDT)
+        id S229916AbhFYRUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 13:20:16 -0400
+Received: from m32-153.88.com ([43.250.32.153]:53551 "EHLO email.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229630AbhFYRUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 13:20:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=Date:From:To; bh=gAQcYyYOZgA8snHnTQ9W804vBE1CSX6RvN2TW
+        zUm50c=; b=VG6aM9kgK6LSFTxXwMHG1WxBSWBJYBHLfginN7HcWsRjbos5nl5T5
+        suX5fPXI2aD2aeLm88emP6poRRbtpqqyuvLONA6scR5Wsx061HguNtrpr5wiKqg1
+        H54l2vgnqAP4ZYpJr7Ey6P3ajiQpWC0Iag7Go1yA/Yywfu0jcj09UI=
+Received: from bobwxc.top (unknown [112.96.165.31])
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgDHnfy9D9ZgnV0rAA--.26199S2;
+        Sat, 26 Jun 2021 01:17:51 +0800 (CST)
+Date:   Sat, 26 Jun 2021 01:17:48 +0800
+From:   "Wu X.C." <bobwxc@email.cn>
+To:     Akira Yokosawa <akiyks@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        SeongJae Park <sj38.park@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/3] docs: pdfdocs: Improve alignment of CJK ascii-art
+Message-ID: <20210625171748.GA27602@bobwxc.top>
+References: <386938dc-6290-239c-4b4f-c6153f3d98c5@gmail.com>
+ <20210625065524.GA11219@bobwxc.top>
+ <20210625095059.7f97fd62@coco.lan>
+ <ae0a7623-7ec4-937b-4b93-8435f2e94eb9@gmail.com>
+ <20210625122423.4435c5e9@coco.lan>
+ <b6ea891e-b6f3-318a-1b40-268f436c6860@gmail.com>
 MIME-Version: 1.0
-References: <CGME20210625110341epcas1p32171bda25f6020b090537e15e763d5eb@epcas1p3.samsung.com>
- <b020c243-3175-3e31-8b7c-e1b30572e6d9@samsung.com>
-In-Reply-To: <b020c243-3175-3e31-8b7c-e1b30572e6d9@samsung.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 25 Jun 2021 19:15:00 +0200
-Message-ID: <CAJZ5v0jqMXzcMdZx-P5_xp7_rJL1H_4FG+2HJRrG25+mWuv7BA@mail.gmail.com>
-Subject: Re: [GIT PULL] devfreq next for v5.14
-To:     Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     "Rafael J. Wysocki <rjw@rjwysocki.net>" <rjw@rjwysocki.net>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Chanwoo Choi (chanwoo@kernel.org)" <chanwoo@kernel.org>,
-        =?UTF-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <b6ea891e-b6f3-318a-1b40-268f436c6860@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CM-TRANSID: GiKnCgDHnfy9D9ZgnV0rAA--.26199S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Gr1xJrWkZF4kZFy8JryxXwb_yoW8Jr45pF
+        4kXa47Jan5Kw1vyrZF9w4Ig34Syr4fJryUJ3W5JryFyFy5WF12vryxXa1akFZrWr1kCa4j
+        9FyDXF4ku3y5CaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUgYb7Iv0xC_tr1lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
+        v20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j6r4UM28EF7xvwVC2
+        z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r4UJwAS0I0E0xvYzx
+        vE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VCjz48v1sIEY20_Cr1U
+        Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkIecxEwVAFwVW8MxAIw28Icx
+        kI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l
+        x2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14
+        v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IY
+        x2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87
+        Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZF
+        pf9x07UTxRDUUUUU=
+X-Originating-IP: [112.96.165.31]
+X-CM-SenderInfo: pere453f6hztlloou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 1:03 PM Chanwoo Choi <cw00.choi@samsung.com> wrote:
->
-> Dear Rafael,
->
-> This is devfreq-next pull request for v5.14-rc1. I add detailed description of
-> this pull request on the following tag. Please pull devfreq with following updates.
+On Fri, Jun 25, 2021 at 08:32:47PM +0900, Akira Yokosawa wrote:
+> On Fri, 25 Jun 2021 12:24:23 +0200, Mauro Carvalho Chehab wrote:
+> > Em Fri, 25 Jun 2021 18:22:26 +0900
+> > Akira Yokosawa <akiyks@gmail.com> escreveu:
+> > 
+> >> On Fri, 25 Jun 2021 09:50:59 +0200, Mauro Carvalho Chehab wrote:
+> [...]
+> >>
+> >> One minor problem might be that the Sarasa font needs manual
+> >> download (and install).
 
-Pulled, thanks!
+It is officially releasing on Github:
+<https://github.com/be5invis/Sarasa-Gothic>
+Under OFL-1.1 License and provide both ttf and ttc format.
+Then install 'sarasa-mono-sc-regular.ttf/c' in the compressed pack.
 
+Above could be a part of tip message.
 
-> The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
->
->   Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
->
-> are available in the Git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git tags/devfreq-next-for-5.14
->
-> for you to fetch changes up to 8c37d01e1a86073d15ea7084390fba58d9a1665f:
->
->   PM / devfreq: passive: Fix get_target_freq when not using required-opp (2021-06-24 10:37:35 +0900)
->
-> ----------------------------------------------------------------
-> Detailed description for this pull request:
->
-> 1. Update devfreq core
-> - Use DEVICE_ATTR_RW macro for devfreq userspace governor
->
-> - Add missing error code in devfreq_add_device()
->
-> - Fix get_target_freq when not using required-opp
->
-> - The 86ad9a24f21e ("PM / devfreq: Add required OPPs support to passive governor")
-> supported the required-opp property for using devfreq passive governor.
-> But, 86ad9a24f21e has caused the problem on use-case when required-opp
-> is not used. So that fix the passive governor for supporting the case of when
-> required-opp is not used.
->
-> 2. Update devfreq driver
-> - Remove unneeded get_dev_status and polling_ms from imx-bus.c because
-> imx-bus.c doesn't support simple_ondemand.
->
-> - Remove unneeded DEVFREQ_GOV_SIMPLE_ONDEMAND dependecy from imx8m-ddrc.c
-> because it doesn't support simple_ondemand governor.
->
-> - Use tegra30-devfreq.c as thermal cooling device
-> - Convert dt-binding doc style to yaml and add cooling-cells property
-> information to dt-binding doc for tegra30-devfreq.c
-> ----------------------------------------------------------------
->
-> Chanwoo Choi (1):
->       PM / devfreq: passive: Fix get_target_freq when not using required-opp
->
-> Dmitry Osipenko (3):
->       PM / devfreq: tegra30: Support thermal cooling
->       dt-bindings: devfreq: tegra30-actmon: Convert to schema
->       dt-bindings: devfreq: tegra30-actmon: Add cooling-cells
->
-> Dong Aisheng (2):
->       PM / devfreq: imx-bus: Remove imx_bus_get_dev_status
->       PM / devfreq: imx8m-ddrc: Remove DEVFREQ_GOV_SIMPLE_ONDEMAND dependency
->
-> YueHaibing (2):
->       PM / devfreq: Add missing error code in devfreq_add_device()
->       PM / devfreq: userspace: Use DEVICE_ATTR_RW macro
->
->  .../bindings/arm/tegra/nvidia,tegra30-actmon.txt   |  57 ----------
->  .../bindings/devfreq/nvidia,tegra30-actmon.yaml    | 126 +++++++++++++++++++++
->  drivers/devfreq/Kconfig                            |   1 -
->  drivers/devfreq/devfreq.c                          |   1 +
->  drivers/devfreq/governor_passive.c                 |   3 +-
->  drivers/devfreq/governor_userspace.c               |  10 +-
->  drivers/devfreq/imx-bus.c                          |  14 ---
->  drivers/devfreq/tegra30-devfreq.c                  |   1 +
->  8 files changed, 135 insertions(+), 78 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/arm/tegra/nvidia,tegra30-actmon.txt
->  create mode 100644 Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml
+Thanks,
+	Wu
+> >>
+> >>         Thanks, Akira
+> > 
+> > If this is not yet packaged as part of texlive packages
+> > on distros, this won't be a minor issue, as we'll need
+> > to find procedures and test it for all distros supported
+> > by the script.
+> 
+> Existence of "Sarasa Mono SC" can be checked by the command:
+> 
+>     fc-list | grep "Sarasa Mono SC," | grep "style=Regular" | wc -l
+> 
+> If the result is *not* "0", you have the font somewhere in your
+> fontconfig path.
+> 
+> I think this is portable across distros.
+> Wouldn't this suffice for sphinx-pre-install?
+> 
+>         Thanks, Akira
+> > 
+> > Thanks,
+> > Mauro
+> > 
+
