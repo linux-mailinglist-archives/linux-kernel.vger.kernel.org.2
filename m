@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF293B4751
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131FA3B4752
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhFYQUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 12:20:34 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:54731 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229615AbhFYQUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 12:20:33 -0400
-Received: from [IPv6:2601:646:8602:8be1:493a:1894:bb79:383b] ([IPv6:2601:646:8602:8be1:493a:1894:bb79:383b])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 15PGHlpw2433485
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Fri, 25 Jun 2021 09:17:49 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 15PGHlpw2433485
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021052901; t=1624637869;
-        bh=o04MLK9yGLA91PjsTYSeSl4Z+P8FWRubaxv247wpYzE=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=KmSsBcjFUJ5KzU2FQD23Pns9dlirB1BA1whGPg1iw/nG7pSf22ephHLVaCOQva+0/
-         8/BZertootOCsOUgu3Cxqn4dR60KnSQcHew4sNguJb27++gN/Sqvdh3OcOAVUDixmM
-         nAiJIpATP6M6+L11iGqMyG66XqgOYiVeY3o1F44Wia/aENgaIwsPn3fhDfc53uOBBk
-         V08ZFMzWxC053uul6r7+6CbQb+pQJ4ApLTu3O2a28Jua4GFkfbXUx9+TEuco6RYrFq
-         C+kGrRLmC71KE6A7idetzt7d9ioZwsqYTtwnyt5vOKp39Sv6q17JW+b7HDLeH0tsJK
-         TO1FGM/APUZ9Q==
-Date:   Fri, 25 Jun 2021 09:17:40 -0700
-User-Agent: K-9 Mail for Android
-In-Reply-To: <YNSaMnRDwan+aYT4@kroah.com>
-References: <YNRzSy3NuwBDYWwr@kroah.com> <YNR7aw+C+7AJnBIG@zn.tnic> <YNSaMnRDwan+aYT4@kroah.com>
+        id S229940AbhFYQUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 12:20:52 -0400
+Received: from mga05.intel.com ([192.55.52.43]:3083 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229445AbhFYQUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 12:20:51 -0400
+IronPort-SDR: LJ3/kmBeNYtBxvNPJxipEv/uejtkR0GbmpWu4MQnUE4aeGnLt8Sd9246dLXi5+OwQ7NQL4j9lk
+ T/hVDSF3LA3A==
+X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="293334646"
+X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; 
+   d="scan'208";a="293334646"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 09:18:30 -0700
+IronPort-SDR: RY9/tckYGDaQjbLmr+ko/K0n7McmAgYGkcNaqEQWqmyRiGuzx12JMhajkMA8K4ESy1KkFn6yrQ
+ 80c54OQ+D2Jw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; 
+   d="scan'208";a="557742457"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga001.fm.intel.com with ESMTP; 25 Jun 2021 09:18:30 -0700
+Received: from [10.212.190.24] (kliang2-MOBL.ccr.corp.intel.com [10.212.190.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 7813B58060A;
+        Fri, 25 Jun 2021 09:18:29 -0700 (PDT)
+Subject: Re: [PATCH 2/7] perf: Create a symlink for a PMU
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+To:     Andi Kleen <ak@linux.intel.com>, Greg KH <greg@kroah.com>
+Cc:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, eranian@google.com,
+        namhyung@kernel.org, acme@kernel.org, jolsa@redhat.com
+References: <1624497729-158864-1-git-send-email-kan.liang@linux.intel.com>
+ <1624497729-158864-3-git-send-email-kan.liang@linux.intel.com>
+ <YNQckpOuw80uCUa1@kroah.com>
+ <d25a0556-325f-9af0-a495-b9f222d63e10@linux.intel.com>
+ <YNSWtCSjJy8CytOL@kroah.com>
+ <1e536604-cf93-0f09-401e-2073924c5582@linux.intel.com>
+ <YNSlVPcjHInk4un6@kroah.com>
+ <29d5f315-578f-103c-9523-ae890e29c7e7@linux.intel.com>
+ <YNVneO6exCS4ETRt@kroah.com>
+ <540d8a38-da12-56c8-8306-8d3d61ae1d6b@linux.intel.com>
+ <YNXqXwq1+o09eHox@kroah.com>
+ <e670abe2-67b9-a602-410a-0c4170796ec7@linux.intel.com>
+ <c3ffcdd4-fabb-38fd-6ccd-3497389f94ec@linux.intel.com>
+ <6f2941a4-4a32-ea09-bbc6-5a8e4836411b@linux.intel.com>
+ <82fe02c8-2ac6-fc53-490c-382df3e07dc4@linux.intel.com>
+Message-ID: <1edc6666-c4b3-ebf5-964a-e5ffc97d8563@linux.intel.com>
+Date:   Fri, 25 Jun 2021 12:18:28 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [RESEND PATCH] x86/tools/relocs: add __printf attribute to die()
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Borislav Petkov <bp@alien8.de>
-CC:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <58B9D76E-306C-4CE5-BAAA-E5D38832BE23@zytor.com>
+In-Reply-To: <82fe02c8-2ac6-fc53-490c-382df3e07dc4@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-%zu wouldn't DTRT for cross build=2E
 
-On June 24, 2021 7:44:02 AM PDT, Greg Kroah-Hartman <gregkh@linuxfoundatio=
-n=2Eorg> wrote:
->On Thu, Jun 24, 2021 at 02:32:43PM +0200, Borislav Petkov wrote:
->> On Thu, Jun 24, 2021 at 01:58:03PM +0200, Greg Kroah-Hartman wrote:
->> > There are a number of printf "mismatches" in the use of die() in
->> > x86/tools/relocs=2Ec=2E  Fix them up and add the printf attribute to
->the
->> > reloc=2Eh header file to prevent them from ever coming back=2E
->> >=20
->> > Cc: Thomas Gleixner <tglx@linutronix=2Ede>
->> > Cc: Ingo Molnar <mingo@redhat=2Ecom>
->> > Cc: Borislav Petkov <bp@alien8=2Ede>
->> > Cc: "H=2E Peter Anvin" <hpa@zytor=2Ecom>
->> > Cc: linux-kernel@vger=2Ekernel=2Eorg
->> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation=2Eorg>
->> > ---
->> >  arch/x86/tools/relocs=2Ec | 21 +++++++++++----------
->> >  arch/x86/tools/relocs=2Eh |  1 +
->> >  2 files changed, 12 insertions(+), 10 deletions(-)
->> >=20
->> > Originally sent back in Feb, but it seems to have been missed:
->> >
->	https://lore=2Ekernel=2Eorg/r/20210227095356=2E603513-1-gregkh@linuxfoun=
-dation=2Eorg
->> >=20
->> >=20
->> > diff --git a/arch/x86/tools/relocs=2Ec b/arch/x86/tools/relocs=2Ec
->> > index ce7188cbdae5=2E=2Ec3105a8c6cde 100644
->> > --- a/arch/x86/tools/relocs=2Ec
->> > +++ b/arch/x86/tools/relocs=2Ec
->> > @@ -389,7 +389,8 @@ static void read_ehdr(FILE *fp)
->> >  		Elf_Shdr shdr;
->> > =20
->> >  		if (fseek(fp, ehdr=2Ee_shoff, SEEK_SET) < 0)
->> > -			die("Seek to %d failed: %s\n", ehdr=2Ee_shoff, strerror(errno));
->> > +			die("Seek to %d failed: %s\n",
->> > +			    (int)ehdr=2Ee_shoff, strerror(errno));
->>=20
->> Instead of casting all those, I think you should use %zu as,
->apparently,
->> we're using unsigned types for Elf{32,64}_Off and Elf{32,64}_Xword,
->etc=2E
->
->Odd, I thought I tried that and something did not work=2E  Let me try it
->again=2E=2E=2E
 
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+On 6/25/2021 11:57 AM, Liang, Kan wrote:
+> 
+> 
+> On 6/25/2021 11:44 AM, Andi Kleen wrote:
+>>
+>>> We have an attribute "caps/pmu_name" for the core PMU. Maybe we 
+>>> should add it for uncore PMU as well. For example,
+>>>
+>>> $ cat /sys/devices/uncore_type_0_0/caps/pmu_name
+>>> cha_0
+>>>
+>>> Userspace tool can get clues about what type_0_0 is.
+>>
+>> It would break all the old tools, but I suppose it could work for 
+>> updated tools.
+>>
+> 
+> Right, users have to update their perf tool to use the new name, 
+> uncore_cha_0.
+
+I think the above example is misleading. Let me rephrase.
+Here is what I'm planing to do in V2.
+
+With the V2 platform-specific patch, uncore driver will only create a 
+meaningful uncore name, e.g., uncore_cha_0.
+
+An attribute "caps/pmu_name" is also created to indicate the previous 
+name. For example,
+
+$ cat /sys/devices/uncore_cha_0/caps/pmu_name
+type_0_0
+
+If any users use the old numeric name, they have to update either their 
+script or a perf tool which supports "caps/pmu_name".
+
+In the future, if the users already use a perf tool which supports 
+"caps/pmu_name", nothing needs to be updated. The old numeric name 
+should just work.
+
+Thanks,
+Kan
