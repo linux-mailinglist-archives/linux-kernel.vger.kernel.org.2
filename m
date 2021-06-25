@@ -2,104 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD64D3B3D7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0A93B3D81
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbhFYHib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 03:38:31 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34614 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbhFYHia (ORCPT
+        id S229818AbhFYHjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 03:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhFYHjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 03:38:30 -0400
-Received: from mail-wm1-f72.google.com ([209.85.128.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lwgNk-0003je-Vh
-        for linux-kernel@vger.kernel.org; Fri, 25 Jun 2021 07:36:09 +0000
-Received: by mail-wm1-f72.google.com with SMTP id p22-20020a7bcc960000b02901de8f2ae18aso2374143wma.8
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 00:36:08 -0700 (PDT)
+        Fri, 25 Jun 2021 03:39:39 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD68C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 00:37:18 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id bv7-20020a17090af187b029016fb18e04cfso6859605pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 00:37:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=arS0mKVzVlqtqVfiVwhtHqUqhLwMsArq/fcDdatjRgU=;
+        b=dHO26QDY5LUMI+Tc2XZzsgpXZDpORNAX7YyZkCQ5xy7oSytr1O3oUF01CG9gH6yL5q
+         Y3La01kqEVPP9WWTMrMPMSLK8aydIT/ocZATNuL06J51ec4Okfq4Nv5ekqNB14ZWBhjL
+         tL88LfPKWlydh9eprQr48AASmItpc0PiVGEJE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=nbaaKHR5ZpYe85F3BN+ohVLxdeR5Xvy5GBXCZuo0Jew=;
-        b=oz2oKoqyYw2PU5jVkscOCpmF4959gnuzfYrXjfdFZx5Qh7lM/c03TvzA50HnQtGOvq
-         aDb64LzyJPdPpBVGN40QDTWKc0gY8qAJotd3xuADdDefbcJ2k21a30VIAkTjv5rCp6Ye
-         U67YCCS9+BpSa93v2pN6MtFRoA+U/5LqDGY8sKl0aCWwRbchH+d+TG1Y3NXLz08CtqYy
-         OVJKvDlTZAPIgHDX9uTZyEWMXW5H3f9iFM5HinrD9t6kbdgDsbb9fqXVRMCbVtB9fYP6
-         UWlg8Jq23Ms0ehK37xwPiZSHqjzmgO0K20eY0+gqpUxUoSmdcEjdmWTTBfkzb7jgMO6e
-         yFbg==
-X-Gm-Message-State: AOAM532LwKwaXZ+833R6f5b9dQ2LEMQeZLQPY61CZyM6pPo935WGDnyI
-        XW+ucSQyw3WfVruvZfP0zOIyMyMFz/4pItUBs5SV8SnrkpYo15EuovCmDzKjhc+JT905cSIGVSe
-        v9o3UyjPR8R9WQE/EzZjb0ytPDX/TejNE6SdsBINwFg==
-X-Received: by 2002:adf:f48c:: with SMTP id l12mr9338953wro.194.1624606568269;
-        Fri, 25 Jun 2021 00:36:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz3dKrCURHFg3PIpYiy6kcKs/cc8ALeRf55hqXv9kAgRiaHVuodNNseBYhflvBvEBS/f5ZiPg==
-X-Received: by 2002:adf:f48c:: with SMTP id l12mr9338931wro.194.1624606568114;
-        Fri, 25 Jun 2021 00:36:08 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id d3sm5343681wrx.28.2021.06.25.00.36.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 00:36:07 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm@kernel.org, soc@kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Thierry Reding <treding@nvidia.com>
-Subject: [GIT PULL] memory: tegra for v5.14, late fixes
-Date:   Fri, 25 Jun 2021 09:36:04 +0200
-Message-Id: <20210625073604.13562-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        bh=arS0mKVzVlqtqVfiVwhtHqUqhLwMsArq/fcDdatjRgU=;
+        b=Fq0cqLXFW83OQvLbA1G6Tr3cFzJFa9tR5CQvB6A4/WW7z0/vwpY+1K9vBu0OS3LoBO
+         RbwMLGFPeeXyCs+5usopZb0ixC084I9Bu3che3Pl7CwdWaclt3Av1vbgI7oCZwksLaoI
+         JAIq2Zleq6HfDvKvOCO4q8z2yqIe0Luq4NX/Ti4xSp4YsJJjHkKmdV4PpRm3XXvJ3PC5
+         mcCXIfOWWBF1nagFKoHwXvO1oBs31FoMy9e0chP0/t4jYHJUCAokBSYvOeR9J1oDOaQ8
+         VNVWJNwd2iN6nKx18SvewINFiaV0WQYRjtBzRx6iwU9vaEmjgziIkBi87a4mFBDK2pni
+         NE3Q==
+X-Gm-Message-State: AOAM533+W1Ab7CtAAG3JauLhLPxBZGykqNVAD+Zw9vB60SJxYu2CLB3H
+        PER11qEf0XrVN18meWTLU6RN5w==
+X-Google-Smtp-Source: ABdhPJzJyYhoE1B9Fk5Wy7zlre5sRlAATH1Tds+i1SalCyUSMMBey0lep4anSoEg3on5gb5KkCMm2Q==
+X-Received: by 2002:a17:902:c947:b029:125:34d4:249d with SMTP id i7-20020a170902c947b029012534d4249dmr7925026pla.3.1624606637340;
+        Fri, 25 Jun 2021 00:37:17 -0700 (PDT)
+Received: from localhost ([2401:fa00:8f:203:1492:9d4f:19fa:df61])
+        by smtp.gmail.com with UTF8SMTPSA id a9sm9986991pjm.51.2021.06.25.00.37.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jun 2021 00:37:16 -0700 (PDT)
+From:   David Stevens <stevensd@chromium.org>
+X-Google-Original-From: David Stevens <stevensd@google.com>
+To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Nick Piggin <npiggin@gmail.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        kvm@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        David Stevens <stevensd@google.com>
+Subject: [PATCH v2 0/5] Remove uses of struct page from x86 and arm64 MMU
+Date:   Fri, 25 Jun 2021 16:36:11 +0900
+Message-Id: <20210625073616.2184426-1-stevensd@google.com>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+KVM supports mapping VM_IO and VM_PFNMAP memory into the guest by using
+follow_pte in gfn_to_pfn. However, the resolved pfns may not have
+assoicated struct pages, so they should not be passed to pfn_to_page.
+This series removes such calls from the x86 and arm64 secondary MMU. To
+do this, this series introduces gfn_to_pfn_page functions that parallel
+the gfn_to_pfn functions. These functions take an extra out parameter
+which  contains the page if the hva was resovled by gup. This allows the
+caller to call put_page only when necessated by gup.
 
-Late fixes for Tegra memory controllers drivers for issues introduced in this
-branch in previous tags.
+The gfn_to_pfn functions are depreciated. For now the functions remain
+with identical behavior to before, but callers should be migrated to the
+new gfn_to_pfn_page functions. I added new functions instead of simply
+adding another parameter to the existing functions to make it easier to
+track down users of the deprecated functions.
 
-On top of previous pull (memory-controller-drv-tegra-5.14-2).
+I have migrated the x86 and arm64 secondary MMUs to the new
+gfn_to_pfn_page functions.
 
-If it is too late, I can send as fixes after merge window, but maybe better to
-get these into merge windows earlier.
+This addresses CVE-2021-22543 on x86 and arm64.
 
-Best regards,
-Krzysztof
+v1 -> v2:
+ - Introduce new gfn_to_pfn_page functions instead of modifying the
+   behavior of existing gfn_to_pfn functions, to make the change less
+   invasive.
+ - Drop changes to mmu_audit.c
+ - Include Nicholas Piggin's patch to avoid corrupting refcount in the
+   follow_pte case, and use it in depreciated gfn_to_pfn functions.
+ - Rebase on kvm/next
 
+David Stevens (4):
+  KVM: mmu: introduce new gfn_to_pfn_page functions
+  KVM: x86/mmu: use gfn_to_pfn_page
+  KVM: arm64/mmu: use gfn_to_pfn_page
+  KVM: mmu: remove over-aggressive warnings
 
-The following changes since commit 2c1bc371268862a991a6498e1dddc8971b9076b8:
+Nicholas Piggin (1):
+  KVM: do not allow mapping valid but non-refcounted pages
 
-  iommu/arm-smmu: Use Tegra implementation on Tegra186 (2021-06-11 08:44:53 +0200)
+ arch/arm64/kvm/mmu.c            |  26 +++--
+ arch/x86/kvm/mmu/mmu.c          |  50 ++++-----
+ arch/x86/kvm/mmu/mmu_internal.h |   3 +-
+ arch/x86/kvm/mmu/paging_tmpl.h  |  23 +++--
+ arch/x86/kvm/mmu/tdp_mmu.c      |   6 +-
+ arch/x86/kvm/mmu/tdp_mmu.h      |   4 +-
+ arch/x86/kvm/x86.c              |   6 +-
+ include/linux/kvm_host.h        |  17 +++
+ virt/kvm/kvm_main.c             | 177 +++++++++++++++++++++++++-------
+ 9 files changed, 222 insertions(+), 90 deletions(-)
 
-are available in the Git repository at:
+-- 
+2.32.0.93.g670b81a890-goog
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git tags/memory-controller-drv-tegra-5.14-3
-
-for you to fetch changes up to bf3ec9deaa33889630722c47f7bb86ba58872ea7:
-
-  dt-bindings: arm-smmu: Fix json-schema syntax (2021-06-23 07:55:10 +0200)
-
-----------------------------------------------------------------
-Memory controller drivers for v5.14 - Tegra SoC, late fixes
-
-Two fixes for recent series of changfesi n Tegra SoC memory controller
-drivers:
-1. Add a stub for tegra_mc_probe_device() to fix compile testing of
-   arm-smmu without TEGRA_MC.
-2. Fix arm-smmu dtschema syntax.
-
-----------------------------------------------------------------
-Thierry Reding (2):
-      memory: tegra: Add compile-test stub for tegra_mc_probe_device()
-      dt-bindings: arm-smmu: Fix json-schema syntax
-
- Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 6 ++----
- include/soc/tegra/mc.h                                | 9 +++++++--
- 2 files changed, 9 insertions(+), 6 deletions(-)
