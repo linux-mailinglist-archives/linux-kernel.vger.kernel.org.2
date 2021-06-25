@@ -2,251 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C2E3B41D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBEE3B41D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbhFYKl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 06:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbhFYKlz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 06:41:55 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D797C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:39:34 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id q16so1346602lfr.4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:39:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1JLbEN1TKhcX6p1OYtPD1Zi9vVkvH8zkhA8ECcL2ejY=;
-        b=DKf/xYNZ2nh5nqt4QzVC4uXOqBWlKYDEY+ltNsaqEpEP9l+kOCUkfSH0HyZmse3q92
-         aCzhzis54jooC+1QzM/ooR50X75/DtXvTjeD8fw+71ZdHxenG/L3pcFhl8AMO8I1Xm8i
-         xZwOIZUji5yGV/S5hDkdpEn5SPoawuM2wxwlb16+xVuSjP2psVZXgYSbYyxxV/6dkOtB
-         vnGZVHQa94IH6xOIXchx3vah6k+W3jpLT6JobcZ1fOcDgyMcf97vJbMYhQhK4TakF1Ag
-         Tfp24EtceRbh+NEytKcZpYO9oJopRdzlIEtH07Z0L92lwlMvflXWp+kpyfWvxdkNE4sv
-         nZgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1JLbEN1TKhcX6p1OYtPD1Zi9vVkvH8zkhA8ECcL2ejY=;
-        b=a41qWZzB/yucRUvMOTs+6f+SFfyxjAkIwnqZJ7hf4Rv89wBQQ2ile7pUaIZjmCqcqU
-         bzWoXwHH60WbOIWFmE519NzdnzDbEXb1G3dM0boXbd+hL/J3WR+TglrxBz6/6xXGhkh9
-         WZdrjgCVDkot37wjwvi07My8fWvdEwt2KgOZPj8VOlMnQyYCgzSOEJXJHQgjzOc0b4dC
-         dqXiMvtCqi61inCsbh6cA8OmNJhAxcchm733mWqqkmjw8tl/sVIXoru8M8fJNGZjKO6W
-         w/9E0RzcrEgG3/PfcjihYO3Le8I2mPGdr1g0RTWWBJ4E63FZBKjgDLn2rrfZt6QsJDgc
-         2QJA==
-X-Gm-Message-State: AOAM530Uxhaom3VsZQjz0iu7x1JoeTFrE/qsQZrqp3+Qy8xT62MgJ7mP
-        8d53X+u4fBV8WDkLPxs9tSUW1zppi8WdrA==
-X-Google-Smtp-Source: ABdhPJyiBoBGGeHRTJdLmgIaGdr9qWi+4S5VWMPTU24b2f9ktoe2IGiWy+Ip1Pxk0RreYXfSJoSC2w==
-X-Received: by 2002:a05:6512:15a2:: with SMTP id bp34mr7257061lfb.40.1624617572852;
-        Fri, 25 Jun 2021 03:39:32 -0700 (PDT)
-Received: from gilgamesh.lab.semihalf.net ([83.142.187.85])
-        by smtp.gmail.com with ESMTPSA id f17sm479884lfl.161.2021.06.25.03.39.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 03:39:32 -0700 (PDT)
-From:   Marcin Wojtas <mw@semihalf.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, jon@solid-run.com,
-        tn@semihalf.com, jaz@semihalf.com, hkallweit1@gmail.com,
-        andrew@lunn.ch, nathan@kernel.org, sfr@canb.auug.org.au,
-        Marcin Wojtas <mw@semihalf.com>
-Subject: [net-next: PATCH] net: mdiobus: withdraw fwnode_mdbiobus_register
-Date:   Fri, 25 Jun 2021 12:38:53 +0200
-Message-Id: <20210625103853.459277-1-mw@semihalf.com>
-X-Mailer: git-send-email 2.29.0
+        id S231478AbhFYKlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 06:41:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230436AbhFYKlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 06:41:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C745E61443;
+        Fri, 25 Jun 2021 10:39:08 +0000 (UTC)
+Date:   Fri, 25 Jun 2021 11:39:06 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Chen Huang <chenhuang5@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
+Message-ID: <20210625103905.GA20835@arm.com>
+References: <da9c2fa9-a545-0c48-4490-d6134cc31425@huawei.com>
+ <20210623132223.GA96264@C02TD0UTHF1T.local>
+ <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
+ <YNP6/p/yJzLLr8M8@casper.infradead.org>
+ <YNQuZ8ykN7aR+1MP@infradead.org>
+ <YNRpYli/5/GWvaTT@casper.infradead.org>
+ <27fbb8c1-2a65-738f-6bec-13f450395ab7@arm.com>
+ <YNSyZaZtPTmTa5P8@zeniv-ca.linux.org.uk>
+ <20210624185554.GC25097@arm.com>
+ <e8e87aba-22f7-d039-ceaa-a93591b04b1e@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e8e87aba-22f7-d039-ceaa-a93591b04b1e@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The newly implemented fwnode_mdbiobus_register turned out to be
-problematic - in case the fwnode_/of_/acpi_mdio are built as
-modules, a dependency cycle can be observed during the depmod phase of
-modules_install, eg.:
+On Thu, Jun 24, 2021 at 09:36:54PM +0100, Robin Murphy wrote:
+> On 2021-06-24 19:55, Catalin Marinas wrote:
+> > On Thu, Jun 24, 2021 at 04:27:17PM +0000, Al Viro wrote:
+> > > On Thu, Jun 24, 2021 at 02:22:27PM +0100, Robin Murphy wrote:
+> > > > FWIW I think the only way to make the kernel behaviour any more robust here
+> > > > would be to make the whole uaccess API more expressive, such that rather
+> > > > than simply saying "I only got this far" it could actually differentiate
+> > > > between stopping due to a fault which may be recoverable and worth retrying,
+> > > > and one which definitely isn't.
+> > > 
+> > > ... and propagate that "more expressive" information through what, 3 or 4
+> > > levels in the call chain?
+> > > 
+> > >  From include/linux/uaccess.h:
+> > > 
+> > >   * If raw_copy_{to,from}_user(to, from, size) returns N, size - N bytes starting
+> > >   * at to must become equal to the bytes fetched from the corresponding area
+> > >   * starting at from.  All data past to + size - N must be left unmodified.
+> > >   *
+> > >   * If copying succeeds, the return value must be 0.  If some data cannot be
+> > >   * fetched, it is permitted to copy less than had been fetched; the only
+> > >   * hard requirement is that not storing anything at all (i.e. returning size)
+> > >   * should happen only when nothing could be copied.  In other words, you don't
+> > >   * have to squeeze as much as possible - it is allowed, but not necessary.
+> > > 
+> > > arm64 instances violate the aforementioned hard requirement.
+> > 
+> > After reading the above a few more times, I think I get it. The key
+> > sentence is: not storing anything at all should happen only when nothing
+> > could be copied. In the MTE case, something can still be copied.
+> > 
+> > > Please, fix
+> > > it there; it's not hard.  All you need is an exception handler in .Ltiny15
+> > > that would fall back to (short) byte-by-byte copy if the faulting address
+> > > happened to be unaligned.  Or just do one-byte copy, not that it had been
+> > > considerably cheaper than a loop.  Will be cheaper than propagating that extra
+> > > information up the call chain, let alone paying for extra ->write_begin()
+> > > and ->write_end() for single byte in generic_perform_write().
+> > 
+> > Yeah, it's definitely fixable in the arch code. I misread the above
+> > requirements and thought it could be fixed in the core code.
+> > 
+> > Quick hack, though I think in the actual exception handling path in .S
+> > more sense (and it needs the copy_to_user for symmetry):
+> 
+> Hmm, if anything the asm version might be even more straightforward; I think
+> it's pretty much just this (untested):
 
-depmod: ERROR: Cycle detected: fwnode_mdio -> of_mdio -> fwnode_mdio
-depmod: ERROR: Found 2 modules in dependency cycles!
+That's what I thought but it was too late in the day to think in asm.
 
-OR:
+> diff --git a/arch/arm64/lib/copy_to_user.S b/arch/arm64/lib/copy_to_user.S
+> index 043da90f5dd7..632bf1f9540d 100644
+> --- a/arch/arm64/lib/copy_to_user.S
+> +++ b/arch/arm64/lib/copy_to_user.S
+> @@ -62,6 +62,9 @@ EXPORT_SYMBOL(__arch_copy_to_user)
+> 
+>         .section .fixup,"ax"
+>         .align  2
+> -9998:  sub     x0, end, dst                    // bytes not copied
+> +9998:  ldrb    w7, [x1]
+> +USER(9997f,    sttrb   w7, [x0])
+> +       add     x0, x0, #1
+> +9997:  sub     x0, end, dst                    // bytes not copied
+>         ret
+>         .previous
+> 
+> If we can get away without trying to finish the whole copy bytewise, (i.e.
+> we don't cause any faults of our own by knowingly over-reading in the
+> routine itself), I'm more than happy with that.
 
-depmod: ERROR: Cycle detected: acpi_mdio -> fwnode_mdio -> acpi_mdio
-depmod: ERROR: Found 2 modules in dependency cycles!
+I don't think we over-read/write in the routine itself as this is based
+on the user memcpy() which can't handle faults. And since we got a fault
+before the end of the copy, we have at least one byte left in the
+buffer (which may or may not trigger a fault).
 
-A possible solution could be to rework fwnode_mdiobus_register,
-so that to merge the contents of acpi_mdiobus_register and
-of_mdiobus_register. However feasible, such change would
-be very intrusive and affect huge amount of the of_mdiobus_register
-users.
+I wonder whether we should skip the extra byte copy if something was
+copied, i.e. start the exception handler with:
 
-Since there are currently 2 users of ACPI and MDIO
-(xgmac_mdio and mvmdio), withdraw the fwnode_mdbiobus_register
-and roll back to a simple 'if' condition in affected drivers.
+	cmp	dstin, dst
+	b.ne	9997f
 
-Fixes: 62a6ef6a996f ("net: mdiobus: Introduce fwnode_mdbiobus_register()")
-Signed-off-by: Marcin Wojtas <mw@semihalf.com>
----
- drivers/net/ethernet/freescale/Kconfig      |  4 +++-
- drivers/net/ethernet/freescale/xgmac_mdio.c | 11 +++++++++--
- drivers/net/ethernet/marvell/mvmdio.c       | 10 ++++++++--
- drivers/net/mdio/fwnode_mdio.c              | 22 ---------------------
- include/linux/fwnode_mdio.h                 | 12 -----------
- 5 files changed, 20 insertions(+), 39 deletions(-)
+That said, the fall-back to bytewise copying may have some advantage. I
+think we still have the issue where we copy some data to user but report
+less (STP failing on the second 8-byte when the first had been already
+written first 8). A byte copy loop would solve this, unless we pass the
+fault address to the exception handler (I thought you had some patch for
+this at some point).
 
-diff --git a/drivers/net/ethernet/freescale/Kconfig b/drivers/net/ethernet/freescale/Kconfig
-index 92a390576b88..2d1abdd58fab 100644
---- a/drivers/net/ethernet/freescale/Kconfig
-+++ b/drivers/net/ethernet/freescale/Kconfig
-@@ -67,7 +67,9 @@ config FSL_PQ_MDIO
- 
- config FSL_XGMAC_MDIO
- 	tristate "Freescale XGMAC MDIO"
--	depends on FWNODE_MDIO
-+	select PHYLIB
-+	depends on OF
-+	select OF_MDIO
- 	help
- 	  This driver supports the MDIO bus on the Fman 10G Ethernet MACs, and
- 	  on the FMan mEMAC (which supports both Clauses 22 and 45)
-diff --git a/drivers/net/ethernet/freescale/xgmac_mdio.c b/drivers/net/ethernet/freescale/xgmac_mdio.c
-index 2d99edc8a647..0b68852379da 100644
---- a/drivers/net/ethernet/freescale/xgmac_mdio.c
-+++ b/drivers/net/ethernet/freescale/xgmac_mdio.c
-@@ -13,7 +13,7 @@
-  */
- 
- #include <linux/acpi.h>
--#include <linux/fwnode_mdio.h>
-+#include <linux/acpi_mdio.h>
- #include <linux/interrupt.h>
- #include <linux/kernel.h>
- #include <linux/mdio.h>
-@@ -246,6 +246,7 @@ static int xgmac_mdio_read(struct mii_bus *bus, int phy_id, int regnum)
- 
- static int xgmac_mdio_probe(struct platform_device *pdev)
- {
-+	struct fwnode_handle *fwnode;
- 	struct mdio_fsl_priv *priv;
- 	struct resource *res;
- 	struct mii_bus *bus;
-@@ -290,7 +291,13 @@ static int xgmac_mdio_probe(struct platform_device *pdev)
- 	priv->has_a011043 = device_property_read_bool(&pdev->dev,
- 						      "fsl,erratum-a011043");
- 
--	ret = fwnode_mdiobus_register(bus, pdev->dev.fwnode);
-+	fwnode = pdev->dev.fwnode;
-+	if (is_of_node(fwnode))
-+		ret = of_mdiobus_register(bus, to_of_node(fwnode));
-+	else if (is_acpi_node(fwnode))
-+		ret = acpi_mdiobus_register(bus, fwnode);
-+	else
-+		ret = -EINVAL;
- 	if (ret) {
- 		dev_err(&pdev->dev, "cannot register MDIO bus\n");
- 		goto err_registration;
-diff --git a/drivers/net/ethernet/marvell/mvmdio.c b/drivers/net/ethernet/marvell/mvmdio.c
-index 7537ee3f6622..62a97c46fba0 100644
---- a/drivers/net/ethernet/marvell/mvmdio.c
-+++ b/drivers/net/ethernet/marvell/mvmdio.c
-@@ -18,9 +18,9 @@
-  */
- 
- #include <linux/acpi.h>
-+#include <linux/acpi_mdio.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
--#include <linux/fwnode_mdio.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
-@@ -371,7 +371,13 @@ static int orion_mdio_probe(struct platform_device *pdev)
- 		goto out_mdio;
- 	}
- 
--	ret = fwnode_mdiobus_register(bus, pdev->dev.fwnode);
-+	/* For the platforms not supporting DT/ACPI fall-back
-+	 * to mdiobus_register via of_mdiobus_register.
-+	 */
-+	if (is_acpi_node(pdev->dev.fwnode))
-+		ret = acpi_mdiobus_register(bus, pdev->dev.fwnode);
-+	else
-+		ret = of_mdiobus_register(bus, pdev->dev.of_node);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Cannot register MDIO bus (%d)\n", ret);
- 		goto out_mdio;
-diff --git a/drivers/net/mdio/fwnode_mdio.c b/drivers/net/mdio/fwnode_mdio.c
-index ae0bf71a9932..1becb1a731f6 100644
---- a/drivers/net/mdio/fwnode_mdio.c
-+++ b/drivers/net/mdio/fwnode_mdio.c
-@@ -7,10 +7,8 @@
-  */
- 
- #include <linux/acpi.h>
--#include <linux/acpi_mdio.h>
- #include <linux/fwnode_mdio.h>
- #include <linux/of.h>
--#include <linux/of_mdio.h>
- #include <linux/phy.h>
- 
- MODULE_AUTHOR("Calvin Johnson <calvin.johnson@oss.nxp.com>");
-@@ -144,23 +142,3 @@ int fwnode_mdiobus_register_phy(struct mii_bus *bus,
- 	return 0;
- }
- EXPORT_SYMBOL(fwnode_mdiobus_register_phy);
--
--/**
-- * fwnode_mdiobus_register - bring up all the PHYs on a given MDIO bus and
-- *	attach them to it.
-- * @bus: Target MDIO bus.
-- * @fwnode: Pointer to fwnode of the MDIO controller.
-- *
-- * Return values are determined accordingly to acpi_/of_ mdiobus_register()
-- * operation.
-- */
--int fwnode_mdiobus_register(struct mii_bus *bus, struct fwnode_handle *fwnode)
--{
--	if (is_acpi_node(fwnode))
--		return acpi_mdiobus_register(bus, fwnode);
--	else if (is_of_node(fwnode))
--		return of_mdiobus_register(bus, to_of_node(fwnode));
--	else
--		return -EINVAL;
--}
--EXPORT_SYMBOL(fwnode_mdiobus_register);
-diff --git a/include/linux/fwnode_mdio.h b/include/linux/fwnode_mdio.h
-index f62817c23137..faf603c48c86 100644
---- a/include/linux/fwnode_mdio.h
-+++ b/include/linux/fwnode_mdio.h
-@@ -16,7 +16,6 @@ int fwnode_mdiobus_phy_device_register(struct mii_bus *mdio,
- int fwnode_mdiobus_register_phy(struct mii_bus *bus,
- 				struct fwnode_handle *child, u32 addr);
- 
--int fwnode_mdiobus_register(struct mii_bus *bus, struct fwnode_handle *fwnode);
- #else /* CONFIG_FWNODE_MDIO */
- int fwnode_mdiobus_phy_device_register(struct mii_bus *mdio,
- 				       struct phy_device *phy,
-@@ -31,17 +30,6 @@ static inline int fwnode_mdiobus_register_phy(struct mii_bus *bus,
- {
- 	return -EINVAL;
- }
--
--static inline int fwnode_mdiobus_register(struct mii_bus *bus,
--					  struct fwnode_handle *fwnode)
--{
--	/*
--	 * Fall back to mdiobus_register() function to register a bus.
--	 * This way, we don't have to keep compat bits around in drivers.
--	 */
--
--	return mdiobus_register(bus);
--}
- #endif
- 
- #endif /* __LINUX_FWNODE_MDIO_H */
 -- 
-2.29.0
-
+Catalin
