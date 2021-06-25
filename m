@@ -2,92 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E440E3B3C10
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E103B3C12
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233109AbhFYFVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 01:21:14 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:60739 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230139AbhFYFVN (ORCPT
+        id S233121AbhFYFVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 01:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230139AbhFYFVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 01:21:13 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id D161658059A;
-        Fri, 25 Jun 2021 01:18:52 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 25 Jun 2021 01:18:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=UZD/VyZdsWSMg11/7IlDtFb+rfd
-        /ChEceRSlzJvuiVg=; b=pcuFc/UY4mBK9U/Y2YkTjXNktERZZfxSj7jcIZecq1+
-        yHjJv3eO2gdpGyQ2+mim3SC9wV9yfenhOBpcP2y1TLQ6efpa/Y93PVMN4kQHEeTW
-        aCDp006d/Ay0XeP706r6wRTBbOppWF5nW1/ipDXjr7UstNLJ4WJI+O1giqFzlsbN
-        L1pKJmWtg1t6wBrGqRybWYGG2rNaQwS8jh548qO4HFjDPzCY/eNZYKaeMo73nTqc
-        NrTm5l3+1WXcHost7KB6WHSq4xxGhNk1ExnHfZFyjWV0xlcjlbUZ7sMdEkWDrhgK
-        3Hgcms82cTtOC0rPNRcYOv4PtlrFsjeu+bA9/cZZOXg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=UZD/Vy
-        ZdsWSMg11/7IlDtFb+rfd/ChEceRSlzJvuiVg=; b=JSbMJXu+yUACrkn0SH9eys
-        AC75aAgw3Py8kVJbnPoXDw2cp3wFigG5zVEtkOkxG9InUV+Jd/CNCKKv2Xd7ASvc
-        q3S+afWrtYgv9mLBypPzgsfOYJYcmsGtKmCl6cMYqvUnK1/eI3wUiLebnnhyoWbq
-        sZLHp6UnUvjeAVewthMNHv5RCU5ekPsENbMqPLqWzk8h2z6N/zeuacs8zzIrLU3n
-        e2mZJ4iiYUiTqkR6sOBznsziHDUtZ1IQhMoFdoE+MfVsyRQOaA1Iln2/RdFWqYpe
-        yBEhV7OOzGhMhOyeP4kddTmlGUw4NEhLEQypvCdPCMiOtnWmaEt7EWPtzJXbVflQ
-        ==
-X-ME-Sender: <xms:PGfVYAV16TyPGc9y3VK9dZtJfW2Wbv2lBzVNFKrLlS9Q6LeHo0MqcQ>
-    <xme:PGfVYEltGy3f8ZH2w2_K0KtTxfNedFBC53BA1am_x5SH5X5e1aU8rv_bx9x0s1n3J
-    n9epLr5DttbzQ>
-X-ME-Received: <xmr:PGfVYEZ2id0tP31IGKrJIVVPmBP2ydBYeVQMsb_u6Oc_y9Ka8Rqh4gUz8VyRE1Vm3MdOn-8sZRXt79RYm4wJkfJ2Jngw9iKp>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeegiedgleehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
-    drtghomh
-X-ME-Proxy: <xmx:PGfVYPWrNdU-Eby8YAZlzDD5JWLij0r4PzoUcpkVCgfCogUAin9Wcw>
-    <xmx:PGfVYKkZeDgQDLrnCXVQ9ZZH5UHKoMuZphiHIDrw6XRnqvVGxePDeA>
-    <xmx:PGfVYEdf46i32AJ9toq1LIfywAu3ns4uDJ5s5nJRspVzxlp9HiU2Xw>
-    <xmx:PGfVYE3iqsdR3M-OakiUSfGl3QeT4YoBt0Mo2QOO_PXLxF06WGQ6tw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 25 Jun 2021 01:18:51 -0400 (EDT)
-Date:   Fri, 25 Jun 2021 07:18:48 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     "Liang, Kan" <kan.liang@linux.intel.com>, peterz@infradead.org,
-        mingo@redhat.com, linux-kernel@vger.kernel.org, eranian@google.com,
-        namhyung@kernel.org, acme@kernel.org, jolsa@redhat.com
-Subject: Re: [PATCH 2/7] perf: Create a symlink for a PMU
-Message-ID: <YNVnOAdaxlJb0CcF@kroah.com>
-References: <1624497729-158864-1-git-send-email-kan.liang@linux.intel.com>
- <1624497729-158864-3-git-send-email-kan.liang@linux.intel.com>
- <YNQckpOuw80uCUa1@kroah.com>
- <d25a0556-325f-9af0-a495-b9f222d63e10@linux.intel.com>
- <YNSWtCSjJy8CytOL@kroah.com>
- <1e536604-cf93-0f09-401e-2073924c5582@linux.intel.com>
- <YNSlVPcjHInk4un6@kroah.com>
- <33bccec9-c4c4-d52b-9ee4-9a09e7353812@linux.intel.com>
- <YNTCa5QO1YMy8fJ0@kroah.com>
- <1d77c148-7ea6-4631-d799-e8ec3d31f347@linux.intel.com>
+        Fri, 25 Jun 2021 01:21:40 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B64C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 22:19:20 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id gd24-20020a17090b0fd8b02901702bcb0d90so538030pjb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 22:19:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bqFBYc/xObbq483RY+fZ3Gnp/+Sv4viuXp+H41ftTX8=;
+        b=pd9pN770pA8g/OrKrsUDVvoNaOrmOB6py/BKw9jw0kq98STnHWnTUgBv3NTLWLOMkr
+         J0xvrCMgWyI3Lz1CdAm87lVWrTcPcVVbboQCrhKyK6gI/K5Q8grsCp6ME18n+3HakZrP
+         pIQ4tahNn5/b+/UuJqYaDmAgSOsqY+cUiN8/dxN+KfVeE6BklQN6x8u0Pmj7AMLqZVb9
+         QDLoBuf42LWcLM7RZxwIg7+MYwnXw67VIGXtH1pFhSNYu6EDOJpuy7/ehRRf87Kx58K/
+         RHJlQGqJBhYO3+QWyEnxYNTLZOS5cwyzW8MjKtwTzkBXXHfg47Qg7gw8hBHGqD63vizY
+         qa3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bqFBYc/xObbq483RY+fZ3Gnp/+Sv4viuXp+H41ftTX8=;
+        b=MmMhSnusP7CWxtiJ6JSJPU6TFMMbmE7iF6PCsBitDN9ugtZrU0Xu6PGzFzmFCKXejq
+         Nl/neL7oFK4vbUk6LmPMj4orHz3CxYkTZFm966ohmys/h7fES0MtFkrsOuEPIL+QcyPc
+         LS1BrpPih+2amseox8lLSINroa+peUyyM3yPrnJEjuJcKB+WiUvj8aOFZI72urJdi8Oo
+         AJf/Yg+VdYoI6vm2UuWHjvW9OG9kdsHGxfRb+cCGp0qKaFC/vaBqQsAlhlbnadeBJe3/
+         YuAV+4+2ci2SAQmq8cQj8h8g+6tpd+gWWliDW+wgF5a19jAaqO8HvhHooCrxbl6GKQzS
+         I+Aw==
+X-Gm-Message-State: AOAM533yP/esD6XwuKOACaMhgQgY7LNieSc5zPNabFGo7zstSfiQAQBJ
+        DSOswq9FJ0I5rztDHSdTQgDT
+X-Google-Smtp-Source: ABdhPJyFHjg8jzG51xOwXgV9nNGrkGEUP/VUDPgDoPwoA4OBUXU9E/YVBcTRrGPfEVmkh+NyBs7FUA==
+X-Received: by 2002:a17:90b:4905:: with SMTP id kr5mr9197852pjb.161.1624598360237;
+        Thu, 24 Jun 2021 22:19:20 -0700 (PDT)
+Received: from workstation ([120.138.13.204])
+        by smtp.gmail.com with ESMTPSA id j16sm4246938pgh.69.2021.06.24.22.19.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 24 Jun 2021 22:19:19 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 10:49:16 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bus: mhi: pci_generic: Apply no-op for wake using
+ sideband wake boolean
+Message-ID: <20210625051916.GD4974@workstation>
+References: <1624560809-30610-1-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1d77c148-7ea6-4631-d799-e8ec3d31f347@linux.intel.com>
+In-Reply-To: <1624560809-30610-1-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 10:49:42AM -0700, Andi Kleen wrote:
-> Are you proposing to break every perf script on a kernel update? Doesn't
-> seem acceptable to me.
+On Thu, Jun 24, 2021 at 11:53:29AM -0700, Bhaumik Bhatt wrote:
+> Devices such as SDX24 do not have the provision for inband wake
+> doorbell in the form of channel 127 and instead have a sideband
+> GPIO for it. Newer devices such as SDX55 or SDX65 support inband
+> wake method by default. Ensure the functionality is used based on
+> this such that device wake stays held when a client driver uses
+> mhi_device_get() API or the equivalent debugfs entry.
+> 
+> Fixes: e3e5e6508fc1 ("bus: mhi: pci_generic: No-Op for device_wake operations")
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Link: https://lore.kernel.org/r/1624053302-22470-1-git-send-email-bbhatt@codeaurora.org
 
-I'm suggesting that you not submit kernel code that breaks the device
-names of things that you previously stated would never change.
+Removed "Link" and applied to mhi-next!
 
-thanks,
+Thanks,
+Mani
 
-greg k-h
+> ---
+>  drivers/bus/mhi/pci_generic.c | 27 +++++++++++++++++++--------
+>  1 file changed, 19 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
+> index d84b743..26a14b3 100644
+> --- a/drivers/bus/mhi/pci_generic.c
+> +++ b/drivers/bus/mhi/pci_generic.c
+> @@ -32,6 +32,8 @@
+>   * @edl: emergency download mode firmware path (if any)
+>   * @bar_num: PCI base address register to use for MHI MMIO register space
+>   * @dma_data_width: DMA transfer word size (32 or 64 bits)
+> + * @sideband_wake: Devices using dedicated sideband GPIO for wakeup instead
+> + * 		   of inband wake support (such as sdx24)
+>   */
+>  struct mhi_pci_dev_info {
+>  	const struct mhi_controller_config *config;
+> @@ -40,6 +42,7 @@ struct mhi_pci_dev_info {
+>  	const char *edl;
+>  	unsigned int bar_num;
+>  	unsigned int dma_data_width;
+> +	bool sideband_wake;
+>  };
+>  
+>  #define MHI_CHANNEL_CONFIG_UL(ch_num, ch_name, el_count, ev_ring) \
+> @@ -242,7 +245,8 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx65_info = {
+>  	.edl = "qcom/sdx65m/edl.mbn",
+>  	.config = &modem_qcom_v1_mhiv_config,
+>  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+> -	.dma_data_width = 32
+> +	.dma_data_width = 32,
+> +	.sideband_wake = false,
+>  };
+>  
+>  static const struct mhi_pci_dev_info mhi_qcom_sdx55_info = {
+> @@ -251,7 +255,8 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx55_info = {
+>  	.edl = "qcom/sdx55m/edl.mbn",
+>  	.config = &modem_qcom_v1_mhiv_config,
+>  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+> -	.dma_data_width = 32
+> +	.dma_data_width = 32,
+> +	.sideband_wake = false,
+>  };
+>  
+>  static const struct mhi_pci_dev_info mhi_qcom_sdx24_info = {
+> @@ -259,7 +264,8 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx24_info = {
+>  	.edl = "qcom/prog_firehose_sdx24.mbn",
+>  	.config = &modem_qcom_v1_mhiv_config,
+>  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+> -	.dma_data_width = 32
+> +	.dma_data_width = 32,
+> +	.sideband_wake = true,
+>  };
+>  
+>  static const struct mhi_channel_config mhi_quectel_em1xx_channels[] = {
+> @@ -301,7 +307,8 @@ static const struct mhi_pci_dev_info mhi_quectel_em1xx_info = {
+>  	.edl = "qcom/prog_firehose_sdx24.mbn",
+>  	.config = &modem_quectel_em1xx_config,
+>  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+> -	.dma_data_width = 32
+> +	.dma_data_width = 32,
+> +	.sideband_wake = true,
+>  };
+>  
+>  static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
+> @@ -339,7 +346,8 @@ static const struct mhi_pci_dev_info mhi_foxconn_sdx55_info = {
+>  	.edl = "qcom/sdx55m/edl.mbn",
+>  	.config = &modem_foxconn_sdx55_config,
+>  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+> -	.dma_data_width = 32
+> +	.dma_data_width = 32,
+> +	.sideband_wake = false,
+>  };
+>  
+>  static const struct pci_device_id mhi_pci_id_table[] = {
+> @@ -640,9 +648,12 @@ static int mhi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	mhi_cntrl->status_cb = mhi_pci_status_cb;
+>  	mhi_cntrl->runtime_get = mhi_pci_runtime_get;
+>  	mhi_cntrl->runtime_put = mhi_pci_runtime_put;
+> -	mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
+> -	mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
+> -	mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
+> +
+> +	if (info->sideband_wake) {
+> +		mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
+> +		mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
+> +		mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
+> +	}
+>  
+>  	err = mhi_pci_claim(mhi_cntrl, info->bar_num, DMA_BIT_MASK(info->dma_data_width));
+>  	if (err)
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
