@@ -2,80 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB4C3B4696
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8E93B469A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhFYP3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 11:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbhFYP3S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 11:29:18 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73AB5C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:26:57 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d1so4250361plg.6
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:26:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EBU3GLAC+a45xt1yxWQOeqLDSsSmayxggpNRfZ40lAk=;
-        b=S0wxwt84pNgekCQbFSoavTEgRtyZ6KZkDtvugyJNNmYSg/QGUSbKsoeMKSAC071Rzu
-         3OlPOyjt22AcDFzEypkvtzSriXD9cRGUdgwVzPe1EacwxDZsSd/7w0saOKVzblZNWMEK
-         mFTGe7qSS/LA16E+SVeSa97hDRLU5a7JvW0r8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EBU3GLAC+a45xt1yxWQOeqLDSsSmayxggpNRfZ40lAk=;
-        b=UEBAN7r1U/dJq5G+IGENjhaYhWHoEa5IoV57U299ABG+nJ+yfnAsgHs+rXksezz7UO
-         gwdcV6DthjtzV738Dd0gkXu4toAIZufp8P7UDeLGU0hQUnVUT7PEhryA+TQnfNqTJf4p
-         skMRYcT6wNriivLd/IYDm4lHFG89HX7hoUgxlvESVePmIXP6Rvx74eQkqFEPC3yhpEf9
-         olQwpuLUhvPoGV47IRkMYnNgGcz5Li9S8orAoJjOSn013aP5QxIJ7inLBQCMs+X/+IMm
-         ALmhpfb/VuQrchclyOOP00XtMMSpD7vBXE9inivObNdmJqEis+EUS6HvZrpzej5rScQo
-         9CAQ==
-X-Gm-Message-State: AOAM531nUwn6LSrm2ZWNi52vcPXuaQGDnxspmDiYxcvPhPGewCjcL4yJ
-        Vjn7unJOEnSUPGSU7fCEoLCnYA==
-X-Google-Smtp-Source: ABdhPJyW6iBUqYLEGCxq+VaEpd8j8/5xQuB+q1+7bPRZWeCnpkKIMs2kPLymnkrotgdqg3SR7s2Sjw==
-X-Received: by 2002:a17:90b:4b07:: with SMTP id lx7mr12131737pjb.158.1624634817024;
-        Fri, 25 Jun 2021 08:26:57 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:cc13:a7dd:f4b5:2160])
-        by smtp.gmail.com with UTF8SMTPSA id g8sm6031069pja.14.2021.06.25.08.26.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 08:26:56 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 08:26:54 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Judy Hsiao <judyhsiao@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        dianders@chromium.org, dgreid@chromium.org, cychiang@google.com,
-        judyhsiao@google.com, tzungbi@chromium.org, swboyd@chromium.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: sc7180: trogdor: Update audio codec to
- Max98360A
-Message-ID: <YNX1vvwHfCkZHyaY@google.com>
-References: <20210625045010.2914289-1-judyhsiao@chromium.org>
+        id S229991AbhFYPaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 11:30:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34292 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229586AbhFYPaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 11:30:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA5116193F;
+        Fri, 25 Jun 2021 15:27:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624634861;
+        bh=lwR2g6gRk+aJ4xVmniL5GuaewpPGjDCLk9yE/FrMrt8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BTsUejnuJPzvuMHBjXJuP3F/q+Vl24rM4YE4aW0cU8bcpBo+uxdMY+JzNyfJhPjV5
+         OSjMNQ6dyGuNYCJHeWOxWyScxTD90ynDFjAX3hI2/cJ3xjt+XraKFhUDf6e1mg9M1C
+         cb5+2sm6RVG4/smYydQWBfnZVXKu2LM/tJ5WkJMLcfVRvz2QgwHTzgL1XFi/ZE/HXy
+         7XMztvarBt0LrP1xL5aRgd0RxHXB7wiGjHorXggBS6LWOZD/WGVn/q5RPjV0Rqno9r
+         isK02Y1xwzHhG959IYkj/DsqiOzZZCbRFcO/ej0vf76hmHQEeNmtzookjoxNHR2D8t
+         MKex1lkplbZ4A==
+Received: by pali.im (Postfix)
+        id 9D34FA7D; Fri, 25 Jun 2021 17:27:37 +0200 (CEST)
+Date:   Fri, 25 Jun 2021 17:27:37 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Cc:     Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Phil Sutter <phil@nwl.cc>
+Subject: Re: Issues during assigning addresses on point to point interfaces
+Message-ID: <20210625152737.6gslduccvguyrr77@pali>
+References: <20210606151008.7dwx5ukrlvxt4t3k@pali>
+ <20210624124545.2b170258@dellmb>
+ <d3995a21-d9fe-9393-a10e-8eddccec2f47@6wind.com>
+ <20210625084031.c33yovvximtabmf4@pali>
+ <d3dd210c-bf0f-7b48-6562-23e87c2ad55a@6wind.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210625045010.2914289-1-judyhsiao@chromium.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d3dd210c-bf0f-7b48-6562-23e87c2ad55a@6wind.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 12:50:10PM +0800, Judy Hsiao wrote:
-> Use max98360a dts node to correctly describe the hardware.
-> 
-> Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
+On Friday 25 June 2021 17:06:21 Nicolas Dichtel wrote:
+> Le 25/06/2021 à 10:40, Pali Rohár a écrit :
+> > On Thursday 24 June 2021 14:57:41 Nicolas Dichtel wrote:
+> >> Le 24/06/2021 à 12:45, Marek Behún a écrit :
+> >>> On Sun, 6 Jun 2021 17:10:08 +0200
+> >>> Pali Rohár <pali@kernel.org> wrote:
+> >>>
+> >>>> Hello!
+> >>>>
+> >>>> Seems that there is a bug during assigning IP addresses on point to
+> >>>> point interfaces.
+> >>>>
+> >>>> Assigning just one local address works fine:
+> >>>>
+> >>>>     ip address add fe80::6 dev ppp1 --> inet6 fe80::6/128 scope link
+> >>>>
+> >>>> Assigning both local and remote peer address also works fine:
+> >>>>
+> >>>>     ip address add fe80::7 peer fe80::8 dev ppp1 ---> inet6 fe80::7
+> >>>> peer fe80::8/128 scope link
+> >>>>
+> >>>> But trying to assign just remote peer address does not work. Moreover
+> >>>> "ip address" call does not fail, it returns zero but instead of
+> >>>> setting remote peer address, it sets local address:
+> >>>>
+> >>>>     ip address add peer fe80::5 dev ppp1 --> inet6 fe80::5/128 scope
+> >>>> link
+> >>>>
+> >>>
+> >>> Adding some other people to Cc in order to get their opinions.
+> >>>
+> >>> It seems this bug is there from the beginning, from commit
+> >>> caeaba79009c2 ("ipv6: add support of peer address")
+> >>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=caeaba79009c2
+> >>>
+> >>> Maybe some older user-space utilities use IFA_ADDRESS instead of
+> >>> IFA_LOCAL, and this was done in order to be compatible with them?
+> >> If I remember well, there was an issue in the uAPI.
+> >> IFA_LOCAL is supposed to be the address of the interface and IFA_ADDRESS is
+> >> supposed to be the endpoint of a point-to-point interface.
+> >> However, in case of IPv6, it was not the case. In netlink messages generated by
+> >> the kernel, IFA_ADDRESS was used instead of IFA_LOCAL.
+> >> The patch tried to keep the backward compatibility and the symmetry between msg
+> >> from userland and notification from the kernel.
+> > 
+> > Hello Nicolas!
+> > 
+> > See my original email where I put also rtnetlink packets (how strace see
+> > them). Seems that there is a bug in handling them (or bug in iproute2)
+> > as setting just peer (remote) IPv6 address is ignored:
+> > https://lore.kernel.org/netdev/20210606151008.7dwx5ukrlvxt4t3k@pali/
+> > 
+> > Do you have any idea if this is affected by that "issue in the uAPI"?
+> > And what is the way how to fix it?
+> What about forcing IFA_LOCAL address to :: in your case?
 
-Confirmed that this matches the schematics. Apparently 'max98357a' was
-used initially because 'max98360a' wasn't supported yet in the kernel
-that was used for development and ships on trogdor devices (v5.4).
+It does not work. ip address returns error:
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+    $ sudo ip address add :: peer fe80::8 dev ppp0
+    RTNETLINK answers: Cannot assign requested address
+
+Here is strace output:
+
+    sendmsg(3, {
+        msg_name={
+            sa_family=AF_NETLINK,
+            nl_pid=0,
+            nl_groups=00000000
+        },
+        msg_namelen=12,
+        msg_iov=[{
+            iov_base={
+                {
+                    len=64,
+                    type=RTM_NEWADDR,
+                    flags=NLM_F_REQUEST|NLM_F_ACK|NLM_F_EXCL|NLM_F_CREATE,
+                    seq=1624633811,
+                    pid=0
+                },
+                {
+                    ifa_family=AF_INET6,
+                    ifa_prefixlen=128,
+                    ifa_flags=0,
+                    ifa_scope=RT_SCOPE_UNIVERSE,
+                    ifa_index=if_nametoindex("ppp0")
+                },
+                [
+                    {
+                        {
+                            nla_len=20,
+                            nla_type=IFA_LOCAL
+                        },
+                        inet_pton(AF_INET6, "::")
+                    },
+                    {
+                        {
+                            nla_len=20,
+                            nla_type=IFA_ADDRESS
+                        },
+                        inet_pton(AF_INET6, "fe80::8")
+                    }
+                ]
+            },
+            iov_len=64
+        }],
+        msg_iovlen=1,
+        msg_controllen=0,
+        msg_flags=0
+    }, 0) = 64
+
+    recvmsg(3, {
+        msg_name={
+            sa_family=AF_NETLINK,
+            nl_pid=0,
+            nl_groups=00000000
+        },
+        msg_namelen=12,
+        msg_iov=[{
+            iov_base=NULL,
+            iov_len=0
+        }],
+        msg_iovlen=1,
+        msg_controllen=0,
+        msg_flags=MSG_TRUNC
+    }, MSG_PEEK|MSG_TRUNC) = 84
+
+    recvmsg(3, {
+        msg_name={
+            sa_family=AF_NETLINK,
+            nl_pid=0, nl_groups=00000000
+        },
+        msg_namelen=12,
+        msg_iov=[{
+            iov_base={
+                {
+                    len=84,
+                    type=NLMSG_ERROR,
+                    flags=0,
+                    seq=1624633811,
+                    pid=3698
+                },
+                {
+                    error=-EADDRNOTAVAIL,
+                    msg={
+                        {
+                            len=64,
+                            type=RTM_NEWADDR,
+                            flags=NLM_F_REQUEST|NLM_F_ACK|NLM_F_EXCL|NLM_F_CREATE,
+                            seq=1624633811,
+                            pid=0
+                        },
+                        {
+                            ifa_family=AF_INET6,
+                            ifa_prefixlen=128,
+                            ifa_flags=0,
+                            ifa_scope=RT_SCOPE_UNIVERSE,
+                            ifa_index=if_nametoindex("ppp0")
+                        },
+                        [
+                            {
+                                {
+                                    nla_len=20,
+                                    nla_type=IFA_LOCAL
+                                },
+                                inet_pton(AF_INET6, "::")
+                            },
+                            {
+                                {
+                                    nla_len=20,
+                                    nla_type=IFA_ADDRESS
+                                },
+                                inet_pton(AF_INET6, "fe80::8")
+                            }
+                        ]
+                    }
+                }
+            },
+            iov_len=84
+        }],
+        msg_iovlen=1,
+        msg_controllen=0,
+        msg_flags=0
+    }, 0) = 84
