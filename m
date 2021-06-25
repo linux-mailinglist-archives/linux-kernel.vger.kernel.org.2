@@ -2,88 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE6A3B4596
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C933B459E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhFYOeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:34:12 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:2655 "EHLO pegase1.c-s.fr"
+        id S231693AbhFYOe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:34:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229958AbhFYOeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:34:09 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4GBKFb71t6z9tTY;
-        Fri, 25 Jun 2021 16:31:47 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id MZKXEZKOzaUZ; Fri, 25 Jun 2021 16:31:47 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4GBKFZ68RWz9sxY;
-        Fri, 25 Jun 2021 16:31:46 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C59AF8B80C;
-        Fri, 25 Jun 2021 16:31:46 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id qbNbyz1k0DR5; Fri, 25 Jun 2021 16:31:46 +0200 (CEST)
-Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8BB438B7FF;
-        Fri, 25 Jun 2021 16:31:46 +0200 (CEST)
-Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 5EFE06635D; Fri, 25 Jun 2021 14:31:46 +0000 (UTC)
-Message-Id: <52531029563c1fc823b790058e799d0ca71b028c.1624631463.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/interrupt: Also use exit_must_hard_disable() on PPC32
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Fri, 25 Jun 2021 14:31:46 +0000 (UTC)
+        id S229958AbhFYOe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 10:34:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6DCB61953;
+        Fri, 25 Jun 2021 14:32:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624631556;
+        bh=2Rsr+frvlcCR/IKRspsnz6sq84iOA0m+JQ4nu1bYRWY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=JFEbQu3OYlq7C7dwQ8IB+5DV/KhwM33GLo/pQSDGvu69txLQYrnZWwANbYWJ002R+
+         0nk7eSMXPs+nDjIVwzqAMvV8Os6cy99lHC0D9QG6JZyJI1w5iE+WCoMpgxTImv4RHH
+         FlmXeTju1AUiQ87JOtSNEfio7CmstAtjC23VHFzP0jDWVZGcOlHJ/CS4w9ViC8CZs9
+         86rCNNOqeHhULLa1ak4Nb+2GX8qnfiFZlz/VvcQjr7w2XAaO+oQS9Cw+0ojazRbMMt
+         W1BLmXGbTStGPUJA9iHlZ2kFXbHpJdse1vwiGCwCKEW2LT6goSl07skkmVTPafRRy5
+         rrcRgt1Mu/G6A==
+Date:   Fri, 25 Jun 2021 09:32:35 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        rfi@lists.rocketboards.org, Jingoo Han <jingoohan1@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
+ clocks gated
+Message-ID: <20210625143235.GA3624355@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5bee3702-595b-f57b-f962-28644b7e646f@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reduce #ifdefs a bit by making exit_must_hard_disable() return
-true on PPC32.
+On Fri, Jun 25, 2021 at 09:09:36AM +0200, Javier Martinez Canillas wrote:
+> On 6/25/21 12:40 AM, Bjorn Helgaas wrote:
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/interrupt.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+> > I think this is also an issue with the following other drivers.  They all
+> > set the handler to something that uses an IRQ domain before they
+> > actually initialize the domain:
+> 
+> Yes, I agreed with your assessment and also noticed that others drivers have
+> similar issues. I just don't have any of those platforms to try to reproduce
+> the bugs and test a fix.
 
-diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
-index cee12f2fd459..1b4a99ecb7e5 100644
---- a/arch/powerpc/kernel/interrupt.c
-+++ b/arch/powerpc/kernel/interrupt.c
-@@ -33,10 +33,10 @@ static inline bool exit_must_hard_disable(void)
- {
- 	return static_branch_unlikely(&interrupt_exit_not_reentrant);
- }
--#elif defined(CONFIG_PPC64)
-+#else
- static inline bool exit_must_hard_disable(void)
- {
--	return false;
-+	return IS_ENABLED(CONFIG_PPC32);
- }
- #endif
- 
-@@ -56,12 +56,10 @@ static notrace __always_inline bool prep_irq_for_enabled_exit(bool restartable)
- 	/* This must be done with RI=1 because tracing may touch vmaps */
- 	trace_hardirqs_on();
- 
--#ifdef CONFIG_PPC32
--	__hard_EE_RI_disable();
--#else
- 	if (exit_must_hard_disable() || !restartable)
- 		__hard_EE_RI_disable();
- 
-+#ifdef CONFIG_PPC64
- 	/* This pattern matches prep_irq_for_idle */
- 	if (unlikely(lazy_irq_pending_nocheck())) {
- 		if (exit_must_hard_disable() || !restartable) {
--- 
-2.25.0
+Even if you don't have other platforms for testing, I'm thrilled when
+folks point out issues with them and (given time and inclination) post
+patches for them.
 
+I'd much rather fix *all* instances of the problem than just one, even
+if we can't test them all.  Frequently driver maintainers will review
+and test patches for their hardware even if we can't.
+
+Bjorn
