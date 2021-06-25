@@ -2,105 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55B93B3E0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA6E3B3E0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhFYHxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 03:53:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42024 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229721AbhFYHxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 03:53:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63869613C0;
-        Fri, 25 Jun 2021 07:51:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624607463;
-        bh=fWOl8kOxGDI5CuY7kq4vwX6NEbElX6xB1jGZ6mixVWQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZZCY5hCC8e5vBdtM1Ne0h1kgUEJBANRnVPnVJ16qyouvywbO8yjtWsck0Je/d7618
-         gRHASzILhvU/FmisBYT9ZPctn6mQ45gqiJf8SR2hfc7ezMv5sZcIBzCHF3CRc5wBur
-         IffL976PL8fdkxbyT3efimpMf7peKpPHnyOy38Jd0PNrN6PB/6pzBtHKKCl35lKFwX
-         Y+lhS/Rzp6CV6yc2dfsqJuYUvdxBt/04vo+02b+SGD3TevudclEjjcbhBdgA7fpMj5
-         NNmgMgUspy/tD5wvnQejdWWnNW3sXqEf0ehbFEqB3jkSJAxC56TBZTrUwXiS3+g3fd
-         yDQT0Q5txZsbg==
-Date:   Fri, 25 Jun 2021 09:50:59 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     "Wu X.C." <bobwxc@email.cn>
-Cc:     Akira Yokosawa <akiyks@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        SeongJae Park <sj38.park@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/3] docs: pdfdocs: Improve alignment of CJK
- ascii-art
-Message-ID: <20210625095059.7f97fd62@coco.lan>
-In-Reply-To: <20210625065524.GA11219@bobwxc.top>
-References: <386938dc-6290-239c-4b4f-c6153f3d98c5@gmail.com>
-        <20210625065524.GA11219@bobwxc.top>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S229959AbhFYHyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 03:54:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229474AbhFYHyj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 03:54:39 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53360C061574;
+        Fri, 25 Jun 2021 00:52:19 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id k6so7363490pfk.12;
+        Fri, 25 Jun 2021 00:52:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fmnMOH13s9fHpp424cL+5TDyRw9czufBkKSD0sxgjcg=;
+        b=IES7naOlxzpgwuI/xJPxIJOesXyQiZ7O4ibSZkj96clDB/0dvvZYHKbhQxLb58ih7p
+         m0ijuQCxyDRy9YhoiZvFujgC2viTikR3BYL/Is5ahOy9hl0Z1QGzXS/pmZZb9GKtSwPu
+         pUkHZf6vItsRKhz4ZoR80QAwR7tVVJf+wa4E2izzYWc7971UsgRNeJd/yJprLwmEMOjw
+         +qRWJfpwd3h896Dz/ENDZm1oJYdBxxbf+P2ZNYTsHkhnA7KY1QjkFRA+owZP36X1564Q
+         SBg35fSXF7vIS8ndS6bflCBXUK1GCcz4nLJXhR4UNnfiAJqY0w7lxjUiFuK/tIKdRYVS
+         ie2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fmnMOH13s9fHpp424cL+5TDyRw9czufBkKSD0sxgjcg=;
+        b=q1X3NqhGyIY3I+uknrJ2lfko7fuCrwFZ5ZiDf4pBPxZT4wozfSoZ/sa5q0Ul+GmtHX
+         a3ANF0/DRRGHZ78+1nLvrpQGqmF6qfkesLOvhEAaVopOQpovosOq8ZOUVHUJ3Sr0JZ2d
+         VtscRBxWqEYeue0yNq5qCJ5mDBsc0NguEdSJZh8kVa6XQyk7iB6jPkcZ+AwTj3/Ujx/Z
+         bj0Wierv2Bf5Uwu4beeAmpg/Pt9ti3SmlGY+0xXh0CLF3K9farkH9UQSrlCk2esH6c9s
+         yKHclGS5XL6q2RYh8RLyOQVNHocdBODRvwyTSHh+WJSBRHWzQvR50+PJzeUHDtPr1bzE
+         v4uA==
+X-Gm-Message-State: AOAM533DPoC5Cv78l8Tb54uWWD1sfluiIowQ+FWGSOhL2UBqtdiSZWJ2
+        L7Qbqeqa/JnTC4/Nat2PErs=
+X-Google-Smtp-Source: ABdhPJxMcBZ7FY3IvPyG2MonIOQe818xdSVSqXg0UYxMc9UlT2SD7Ue8J/ixZoaWuiFuPm9WTpakHA==
+X-Received: by 2002:a65:5c4a:: with SMTP id v10mr8400622pgr.142.1624607538832;
+        Fri, 25 Jun 2021 00:52:18 -0700 (PDT)
+Received: from [192.168.0.118] ([103.242.196.10])
+        by smtp.gmail.com with ESMTPSA id 195sm5041416pfw.133.2021.06.25.00.52.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jun 2021 00:52:17 -0700 (PDT)
+Subject: Re: [PATCH] tty: serial: owl: Fix data race in owl_uart_remove
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org, andrianov@ispras.ru
+References: <20210617110443.6526-1-saubhik.mukherjee@gmail.com>
+ <YMswdqNpjb9n1pdW@kroah.com> <ceebf511-9971-6deb-a6dd-458d69de2bbd@gmail.com>
+ <YNLfxMZZ0a80qKLg@hovoldconsulting.com>
+ <a9d43126-acd7-efb0-bf1a-86b06965f0e2@gmail.com>
+ <YNR6uEbCJOa9s3hG@hovoldconsulting.com>
+From:   Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+Message-ID: <ff208383-aefa-17d0-891c-ee5a10edd1fe@gmail.com>
+Date:   Fri, 25 Jun 2021 13:22:11 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YNR6uEbCJOa9s3hG@hovoldconsulting.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 25 Jun 2021 14:55:24 +0800
-"Wu X.C." <bobwxc@email.cn> escreveu:
+On 6/24/21 5:59 PM, Johan Hovold wrote:
+> On Thu, Jun 24, 2021 at 05:37:38PM +0530, Saubhik Mukherjee wrote:
+>> On 6/23/21 12:46 PM, Johan Hovold wrote:
+>>> On Wed, Jun 23, 2021 at 11:06:53AM +0530, Saubhik Mukherjee wrote:
+>>>> On 6/17/21 4:52 PM, Greg KH wrote:
+>>>>> On Thu, Jun 17, 2021 at 04:34:43PM +0530, Saubhik Mukherjee wrote:
+>>>>>> Suppose the driver is registered and a UART port is added. Once an
+>>>>>> application opens the port, owl_uart_startup is called which registers
+>>>>>> the interrupt handler owl_uart_irq.
+>>>>>>
+>>>>>> We could have the following race condition:
+>>>>>>
+>>>>>> When device is removed, owl_uart_remove is called, which calls
+>>>>>> uart_remove_one_port, which calls owl_uart_release_port, which writes
+>>>>>> NULL to port->membase. At this point parallely, an interrupt could be
+>>>>>> handled by owl_uart_irq which reads port->membase.
+>>>>>>
+>>>>>> This is because it is possible to remove device without closing a port.
+>>>>>> Thus, we need to check it and call owl_uart_shutdown in owl_uart_remove.
+>>>
+>>> No, this makes no sense at all. The port is deregistered and hung up by
+>>> uart_remove_one_port() (and the interrupt line is consequently disabled
+>>> by the driver) before it is released so this can never happen.
+>>
+>> Thanks for the reply. I am not sure I understand. I could not find any
+>> interrupt disabling in owl_uart_remove. Could you point out where/how is
+>> the interrupt line is disabled before releasing the port?
+> 
+> The interrupt line is disabled by owl_uart_shutdown(), which is called
+> when uart_remove_one_port() hangs up an open tty. And as I mentioned
+> this happens after deregistering the port (so no new opens) and before
+> releasing the port.
+> 
+> Johan
+> 
 
-> On Thu, Jun 24, 2021 at 09:06:59PM +0900, Akira Yokosawa wrote:
-> > Subject: [RFC PATCH 0/3] docs: pdfdocs: Improve alignment of CJK ascii-=
-art
-> >=20
-> > Hi all, =20
->=20
-> Hi Akira,
->=20
-> >=20
-> > This is another attempt to improve translations' pdf output.
-> > I see there is a mismatch in the font choice for CJK documents, which
-> > causes poor-looking ascii-art where CJK characters and Latin letters
-> > are mixed used.
-> >=20
-> > One of noticeable examples of such ascii-art can be found in
-> > Korean translation of memory-barriers.txt.
-> >=20
-> > Hence the author of Korean translation of memory-barriers.txt is
-> > in the CC list.
-> >=20
-> > At first, I thought the issue could be fixed by simply selecting
-> > "Noto Sans Mono CJK SC" as both of monofont and CJKmonofont.
-> > It fixed the mis-alignment in the Chinese translation, but failed
-> > in the Korean translation.
-> >=20
-> > It turns out that Hangul characters in "Noto Sans Mono CJK SC"
-> > are slightly narrower than Chinese and Japanese counterparts.
-> > I have no idea why the so-called "mono" font has non-uniform
-> > character widths.
-> >=20
-> > GNU Unifont is an alternative monospace font which covers
-> > almost all Unicode codepoints.
-> > However, due to its bitmap-font nature, the resulting document
-> > might not be acceptable to Korean readers, I guess. =20
->=20
-> OK, it works.
->=20
-> But I still want to say that the display effect of Unifont is really
-> not good. Unifont's lattice is too small, and only one size.
-> http://fars.ee/QA1k.jpg	    http://fars.ee/GAAv.jpg
-> Looks like computers 20 years ago, LOL :)
->=20
-> It there any chance to use other fonts, like *Sarasa Mono* ?
->                                               =E7=AD=89=E8=B7=9D=E6=9B=B4=
-=E7=B4=97=E9=BB=91=E9=AB=94
-> Looks more beautifull http://fars.ee/DTT6.jpg
-> But I guess not many people installed it.
-
-Does Sarasa mono looks nice for Japanese, Chinese and Korean
-(plus latin)?
-
-If so, I guess it shouldn't be a problem to use it, as the
-./scripts/sphinx-pre-install can be patched to recommend
-its install.
-
-Thanks,
-Mauro
+Thank you very much for the explanation. So, indeed shutdown is called 
+before releasing port. There is no need for a patch.
