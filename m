@@ -2,286 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85FB3B402F
+	by mail.lfdr.de (Postfix) with ESMTP id 41E3B3B402E
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbhFYJVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:21:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231158AbhFYJVC (ORCPT
+        id S231260AbhFYJVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:21:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24751 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231134AbhFYJVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:21:02 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E0CC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:18:42 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id b14so11712882iow.13
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:18:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LBMCAr9OKqALolsPvG/hgiqJf+IHkCzRrkHtVCzFpxE=;
-        b=ob50Ex0HjQCoOkMNVmluHAgAaQH9NhdOoxgXaIDEsZdgEj7hY/1X11UkiuHjGffdxk
-         UP13uAbtMSWwmFK1P0n0L4uXFzeez19ofKRm0p6d5YI7/wV/Whk8PZPQFO8d5eZYu14C
-         9SAox7Kb/sy+kEsApd65BjGP5Ib6vlXhRsgLNTCM+ifOxdmWgSWujpy9laQRpODdbQSD
-         SXOiAl3qc674P5MV4pgtxMnkl3p1q0B/uQukjrX0EEJHWS9O6TWx1LYPR/g/aIh4UId9
-         HA9LGwivz2oJZoXaRmNJF8oLWjdfhmVkM0c7n9IlSSMppDE2IJvr6KNq2ZiZ+Bf3O1AM
-         P3Og==
+        Fri, 25 Jun 2021 05:21:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624612719;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gf/AeSAoKtyKCgPiJUJSX6Cy8giuz8iiX2hwDNCu8IY=;
+        b=K52sJHjCFxVxM8pEWQZmIEarFr/+0EJVeiPt0/QzftJNBaUQpGl5MvMJXzdhIKathE4KzX
+        9CMc4KcVfPxAHqcDPF822elFuEVwWiCkc1w7trImHwpwNWCHY5Vwy5cyJUpVWeC1FWxWXS
+        CLeklOYf6et2i8prsROCPdMQ1RwpdyM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-154-Gey-O0EGNX2tGAIMOjsLWw-1; Fri, 25 Jun 2021 05:18:38 -0400
+X-MC-Unique: Gey-O0EGNX2tGAIMOjsLWw-1
+Received: by mail-ed1-f69.google.com with SMTP id da21-20020a0564021775b0290395165c6cefso1567154edb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:18:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LBMCAr9OKqALolsPvG/hgiqJf+IHkCzRrkHtVCzFpxE=;
-        b=UzlVO1FBQvWHS2+Hcq+op37TuFE6edzWPzHMtWGxSnUb8WVkaKiBCxcBuyNm3V7Ulh
-         m1knmqmvsSCZM4pvtC8iK0M5sEXpKIl1xthNeC/ZA4nZqwuFky/SlTbB6DYkGpSl90OO
-         HjqsLuL8Bi/O01y5lrSGjLxifUu6IVNhWmnRWIqG4CCX349hKYVcGLD2nC3KjafSdCgE
-         mhu9Ygy71LRt861pXwmnvtuNxHEmdcoZUZ7Oc8yilvH5SoJHs3CqgpDGK0aExxAJotM2
-         2fmuNDPLWgRiWRfgovW1A9I5kQzAFK+Or/ZB5sFuo4I6ncR+BaTyIVT1xfqfho6BnL4G
-         BBKA==
-X-Gm-Message-State: AOAM5300O8fdIArkf+kvtmDgUIiQTVgcGT8MtdC0ElK6XAm2R+N6QyL9
-        dL7QT5hWvfK5KFc4OxcZRPhFg1Nw/NFRcsJeae28QQ==
-X-Google-Smtp-Source: ABdhPJzXQKU1EzX4BFVg8dVoXcM3fiNW3KrSUfOxXlDn19TSDuB4Lacx66wn42utjbq8sAVkmPvRuUGazUTUoMbdXsg=
-X-Received: by 2002:a6b:6209:: with SMTP id f9mr7971317iog.109.1624612721478;
- Fri, 25 Jun 2021 02:18:41 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gf/AeSAoKtyKCgPiJUJSX6Cy8giuz8iiX2hwDNCu8IY=;
+        b=KLT+AKaFu3J5jKuTvL0CY2xIOaBYccSSsSATz1eTm+x8N6N8s5MXrVaJCYUgb2iVY3
+         UQfFOcq0HiIWhiF9MzC9WUZrF+oeBYECSZCE2bztrhD0nVpRTWfrARDN7tqiaVwRXfPJ
+         P8zbzbY4krBHIKoyF8zW8ViLEAYqshAgit1dVpEGibk2zhtBOXckWzM/wmUvPtatw4w3
+         ySI8zwSn5+phXJyQPs/xa9WcwIBsXoDtmSa1kEbtjnh224Etmhq7M7KYJAnTpFk1oczh
+         PQS5vPlhmFSUTEyvPtuk+54DiZH88nI1Dj5WNe7U2+4y+YhPKPt+RdBtQcNLU6ZM+gKy
+         cVRQ==
+X-Gm-Message-State: AOAM53151ZWMkIFXOyuqGdYx+mwgp0Jru0EgXQ/buiGVwoC8TuOHPAtb
+        zQjGLJaiHxup8BEoGD5XkWGL2ul1hlxx+L/dZIFsdQy/r7WSHoeirVvBSNrkwl+FG8RsPsSfrz3
+        1i5PdsM2EqeH+XtttDYly+VoBUm/JtbIuNHX444U2sMEX/hOxNOHMyBWGxK8EZBO+h5bGiphpFP
+        d3
+X-Received: by 2002:a17:906:b55:: with SMTP id v21mr9857262ejg.88.1624612717394;
+        Fri, 25 Jun 2021 02:18:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwh7EVIsP2CNobqkk7E06ElkvSjU/XKuwVJtF3n4RNaDTw5EmbEh6fSRptX6AttOApksLE7Eg==
+X-Received: by 2002:a17:906:b55:: with SMTP id v21mr9857240ejg.88.1624612717144;
+        Fri, 25 Jun 2021 02:18:37 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id gv10sm2456585ejc.46.2021.06.25.02.18.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jun 2021 02:18:36 -0700 (PDT)
+Subject: Re: LEDs with hardware-accelerated patterns, suspend indication
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Jafar Akhondali <gigelaknak@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        mauro.chehab@huawei.com,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210526153040.GA4537@amd>
+ <5fbbab4f-3e22-5a4a-eea8-2531ee165cc4@redhat.com>
+ <CAMW3L+19tP_9=+8j8LLjqCGDaaVZ86UMm9NwLbbpA77zOYnr1Q@mail.gmail.com>
+ <79988fe2-7b3d-7485-131c-4f654ec6d8b8@redhat.com>
+ <CAMW3L+13O4jXyp1LVtuxhpXP_fkfWXi9JoNS8FYUAMHaJBGKZg@mail.gmail.com>
+ <17ec2040-24e9-4090-e64b-8048f0b4005b@redhat.com> <20210623203925.GI8540@amd>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <59ac4a5b-7dc5-bb9d-e161-c0a7ceb9f399@redhat.com>
+Date:   Fri, 25 Jun 2021 11:18:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <1624428350-1424-1-git-send-email-kyrie.wu@mediatek.com> <1624428350-1424-3-git-send-email-kyrie.wu@mediatek.com>
-In-Reply-To: <1624428350-1424-3-git-send-email-kyrie.wu@mediatek.com>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 25 Jun 2021 17:18:30 +0800
-Message-ID: <CA+Px+wW89v3micrkgNDvxGAad4P+JfRHKnLdPN__qVrV3i-j+w@mail.gmail.com>
-Subject: Re: [PATCH 2/3] media: mtk-jpegenc: use component framework to manage
- jpg HW
-To:     "kyrie.wu" <kyrie.wu@mediatek.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Rick Chang <rick.chang@mediatek.com>,
-        Bin Liu <bin.liu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Tomasz Figa <tfiga@chromium.org>, xia.jiang@mediatek.com,
-        maoguang.meng@mediatek.com, srv_heupstream@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210623203925.GI8540@amd>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 2:06 PM kyrie.wu <kyrie.wu@mediatek.com> wrote:
-> Mtk jpeg encoder has several hardware, one HW may register a device
-> node; use component framework to manage jpg HW device node,
-> in this case, one device node could represent all jpg HW.
-Can roughly understand.  But could you rephrase your sentences?
+Hi,
 
->  #include <media/videobuf2-core.h>
->  #include <media/videobuf2-dma-contig.h>
->  #include <soc/mediatek/smi.h>
-> +#include <linux/component.h>
-Maintain the alphabetical order.
+On 6/23/21 10:39 PM, Pavel Machek wrote:
+> Hi!
+> 
+>>> Sorry for the late reply.
+>>> there are two categories of keyboard lighting modes:
+>>> 1. static
+>>> 2. dynamic
+>>>
+>>> In static mode, any of 4 zones can be configured to show specific color,
+>>> independently.
+>>>
+>>> In dynamic mode, there is no control over specific zones.
+>>> It's only possible to set some: color, speed, direction
+>>> and: [R]ed,[G]reen, [B]lue
+>>>
+>>> so in dynamic mode, the user can't control zones,
+>>> the dynamic effects take care of that.
+>>
+>> So we have 4 zones, which are individual controllable, so which should
+>> probably be modeled as individual LED class devices. But when we enable
+>> the hardware effects, then the individual addressing goes away and we
+>> set one effect which applies to all zones.
+>>
+>> Jafar, do I understand this correctly?
+>>
+>> Pavel, how should this be mapped to the led-class API?
+> 
+> Fun :-).
+> 
+>> Some ideas:
+>>
+>> a) Only add the new lpattern to the main zone?
+>> 2) Add the new lpattern to all zones, but only make it
+>> writable in the main zone ?
+> 
+> Require lpattern in all zones to be same and active before actually
+> enabling the pattern?
 
-> +void mtk_jpeg_put_buf(struct mtk_jpeg_dev *jpeg)
-> +{
-> +       struct mtk_jpeg_ctx *ctx = NULL;
-> +       struct vb2_v4l2_buffer *dst_buffer = NULL;
-> +       struct list_head *temp_entry = NULL;
-> +       struct list_head *pos = NULL;
-> +       struct mtk_jpeg_src_buf *dst_done_buf = NULL, *tmp_dst_done_buf = NULL;
-Remove the initialization if they don't need to.
+That seems less user friendly / a cumbersome interface I prefer
+one of my 2 initial ideas.
 
-> +       unsigned long flags;
-> +
-> +       ctx = jpeg->hw_param.curr_ctx;
-> +       if (!ctx) {
-> +               pr_err("%s : %d, comp_jpeg ctx fail !!!\n", __func__, __LINE__);
-Use dev_err().
+Or maybe add lpattern symlinks to the other zones to the main zone,
+I think that is actually best because it clearly shows how things
+work, all 4 LED (zones) support a lpattern, but it is a single
+shared lpattern.
 
-> +               return;
-> +       }
-> +
-> +       dst_buffer = jpeg->hw_param.dst_buffer;
-> +       if (!dst_buffer) {
-> +               pr_err("%s : %d, comp_jpeg dst_buffer fail !!!\n",
-> +                      __func__, __LINE__);
-Use dev_err().
+> Decide lpattern is not suitable for this and figure out what to with
+> multi-LED triggers? Someone wanted them for "meters" (CPU load 25% 50%
+> 75% 100% LED bar)...
 
-> +       if (!(irq_status & JPEG_ENC_INT_STATUS_DONE)) {
-> +               pr_err("%s : %d, jpeg encode failed\n", __func__, __LINE__);
-Use dev_err().
+I think true multi-led triggers are overkill here, in essence this
+is just a standard lpattern, except that it is shared between the
+zones. 
 
-> +void mtk_jpegenc_timeout_work(struct work_struct *work)
-> +{
-> +       struct mtk_jpeg_dev *jpeg = container_of(work, struct mtk_jpeg_dev,
-> +               job_timeout_work.work);
-> +       struct mtk_jpeg_ctx *ctx = NULL;
-It doesn't need to initialize.
+> Skip this hardware feature for now. We don't have to support
+> everything?
 
-> +static  const struct of_device_id mtk_jpegenc_drv_ids[] = {
-Remove the extra space between "static" and "const".
+Although it is true that we don't have to support everything not
+supporting this would give Linux a feature disparity with the
+Windows utility for controlling the keyboard which IMHO is
+undesirable.
 
-> +       {
-> +               .compatible = "mediatek,mt8195-jpgenc0",
-> +               .data = (void *)MTK_JPEGENC_HW0,
-> +       },
-> +       {
-> +               .compatible = "mediatek,mt8195-jpgenc1",
-> +               .data = (void *)MTK_JPEGENC_HW1,
-> +       },
-Using compatible strings to separate them doesn't sound like a scalable method.
+Regards,
 
->  #include <linux/kernel.h>
->  #include <media/videobuf2-core.h>
->  #include <media/videobuf2-dma-contig.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/irq.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
-> +#include <linux/slab.h>
-> +#include <linux/component.h>
-> +#include <linux/clk.h>
-> +#include <linux/pm_runtime.h>
-Maintain the alphabetical order.
-
->  #include "mtk_jpeg_enc_hw.h"
-> +#include "mtk_jpeg_core.h"
-Maintain the alphabetical order.
-
-> +int mtk_jpegenc_init_pm(struct mtk_jpeg_dev *mtkdev)
-> +{
-> +       struct platform_device *pdev;
-> +       struct mtk_jpegenc_pm *pm;
-> +       struct mtk_jpegenc_clk *jpegenc_clk;
-> +       struct mtk_jpegenc_clk_info *clk_info;
-> +       int i = 0, ret = 0;
-They don't need to initialize.
-
-> +       pdev = mtkdev->plat_dev;
-> +       pm = &mtkdev->pm;
-To be concise, can inline to above when declaring the variables.
-
-> +       jpegenc_clk->clk_num =
-> +               of_property_count_strings(pdev->dev.of_node, "clock-names");
-> +       if (jpegenc_clk->clk_num > 0) {
-> +               jpegenc_clk->clk_info = devm_kcalloc(&pdev->dev,
-> +                                                    jpegenc_clk->clk_num,
-> +                                                    sizeof(*clk_info),
-> +                                                    GFP_KERNEL);
-> +               if (!jpegenc_clk->clk_info)
-> +                       return -ENOMEM;
-> +       } else {
-> +               pr_err("Failed to get jpegenc clock count\n");
-Use dev_err().
-> +               return -EINVAL;
-> +       }
-Would prefer the block turn to be:
-
-if (... <= 0) {
-    ...
-    return -EINVAL;
-}
-
-... = devm_kcalloc(...);
-if (!...)
-    return -ENOMEM;
-
-> +       for (i = 0; i < jpegenc_clk->clk_num; i++) {
-> +               clk_info = &jpegenc_clk->clk_info[i];
-> +               ret = of_property_read_string_index(pdev->dev.of_node,
-> +                                                   "clock-names", i,
-> +                                                   &clk_info->clk_name);
-> +               if (ret) {
-> +                       pr_err("Failed to get jpegenc clock name id = %d", i);
-Use dev_err().
-
-> +                       return ret;
-> +               }
-> +
-> +               clk_info->jpegenc_clk = devm_clk_get(&pdev->dev,
-> +                                                    clk_info->clk_name);
-> +               if (IS_ERR(clk_info->jpegenc_clk)) {
-> +                       pr_err("devm_clk_get (%d)%s fail",
-> +                              i, clk_info->clk_name);
-Use dev_err().
-
-> +       pm_runtime_enable(&pdev->dev);
-> +       return ret;
-return 0;
-
-> +void mtk_jpegenc_release_pm(struct mtk_jpeg_dev *dev)
-> +{
-> +       pm_runtime_disable(dev->pm.dev);
-> +}
-Would prefer this function to be more "symmetric" to mtk_jpegenc_init_pm().
-
-For example:
-
-void mtk_jpegenc_release_pm(struct mtk_jpeg_dev *mtkdev)
-{
-    struct platform_device *pdev = mtkdev->plat_dev;
-    pm_runtime_disable(&pdev->dev);
-}
-
-That way, it doesn't rely on whether mtkdev->pm is set or not.
-
-> +       ret = devm_request_irq(&pdev->dev, dev->jpegenc_irq,
-> +                              irq_handler, 0, pdev->name, dev);
-> +       if (ret) {
-> +               dev_err(&pdev->dev, "Failed to install dev->jpegenc_irq %d (%d)",
-> +                       dev->jpegenc_irq, ret);
-> +
-> +               return -ENOENT;
-How about just returning ret?
-
-> +       }
-> +
-> +       //disable_irq(dev->jpegenc_irq);
-Remove it.
-
-> +       ret = component_add(&pdev->dev, &mtk_jpegenc_hw_component_ops);
-> +       if (ret) {
-> +               dev_err(&pdev->dev, "Failed to component_add: %d\n", ret);
-> +               goto err;
-> +       }
-How about just returning component_add(...)?
-
-> +err:
-> +       mtk_jpegenc_release_pm(dev);
-Would expect the platform driver to have a .remove() callback and
-invoke the mtk_jpegenc_release_pm() too.
-
-> +static const struct of_device_id mtk_jpegenc_hw_ids[] = {
-> +       {
-> +               .compatible = "mediatek,mt8195-jpgenc0",
-> +               .data = mtk_jpegenc_hw_irq_handler,
-> +       },
-> +       {       .compatible = "mediatek,mt8195-jpgenc1",
-> +               .data = mtk_jpegenc_hw_irq_handler,
-> +       },
-> +       {},
-> +};
-> +MODULE_DEVICE_TABLE(of, mtk_jpegenc_hw_ids);
-Had the same concern in dt-bindings patch.  Does it really need
-multiple compatible strings to separate?
-
-Also, the block should guard by using CONFIG_OF.
-
-> +struct platform_driver mtk_jpegenc_hw_driver = {
-> +       .probe  = mtk_jpegenc_hw_probe,
-> +       .driver = {
-> +               .name   = "mtk-jpegenc-hw",
-> +               .of_match_table = mtk_jpegenc_hw_ids,
-Should guard by using of_match_ptr().
+Hans
 
 
-Hi, after reading the patch for a while, I realized it is way too big
-to me so that I didn't go through too much detail (especially the
-component framework part).  Could you further divide the series into
-smaller pieces?  For example:
-- part i. refactor to make modifying code easier
-- part ii. leverage component framework
-- part iii. add new code for MT8195
-I would expect part i and ii don't change the original behavior.
+
