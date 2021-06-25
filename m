@@ -2,109 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4013B4388
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8473B438A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhFYMpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 08:45:11 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33180 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhFYMpK (ORCPT
+        id S230056AbhFYMqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 08:46:33 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:32900 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229470AbhFYMqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 08:45:10 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624624968;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kUvHNoaJ8hCHdVSooVihvRmjh1gPNArcPRW12xQl1mg=;
-        b=wE8ezas2TzVU1H2UhFE2Qqluhh4R0PTGEDvLHCOLfcRKKkYieNL6kUqFABsgS5f4EHK1zn
-        uC6Dc5WymQYokWHBTcQ7vf1nHgivxUMx3MUK8qNxxXYiKhX4fN8cZcZ22L+ci4srGoE++t
-        Cfol40KPMcXP9wqkZEedvJaVZS72WRmr1OjJRWD0k5yLXogloXgfks2oOZLF/kYlSwpkjg
-        398u/kH2ZY5BlU7n2MuHxv2DzPSczvIGQb4mn4qTJyDTSMw5H7sbfci6fXpvzvWN8U78yS
-        5xSOzMhEoEMYxpBxjgI38RARtNkGfSGE+3hUrlsDAYNe+gwwR6zNiEuyzHG7UA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624624968;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kUvHNoaJ8hCHdVSooVihvRmjh1gPNArcPRW12xQl1mg=;
-        b=fxzpnqDLxdWf/HUlsC3sYIU73rs4RLRvicSCFfizzTYMn/oKBBJAb5U77/sulc9bMlCoHc
-        NgfQdpgeg1qmR/BA==
-To:     "Tian\, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Dey\, Megha" <megha.dey@intel.com>,
-        "Raj\, Ashok" <ashok.raj@intel.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Lu\, Baolu" <baolu.lu@intel.com>,
-        "Williams\, Dan J" <dan.j.williams@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, KVM <kvm@vger.kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Subject: RE: Virtualizing MSI-X on IMS via VFIO
-In-Reply-To: <87o8buuyfy.ffs@nanos.tec.linutronix.de>
-References: <MWHPR11MB1886E14C57689A253D9B40C08C079@MWHPR11MB1886.namprd11.prod.outlook.com> <8735t7wazk.ffs@nanos.tec.linutronix.de> <20210624154434.11809b8f.alex.williamson@redhat.com> <BN9PR11MB5433063F826F5CEC93BCE0E38C069@BN9PR11MB5433.namprd11.prod.outlook.com> <87o8buuyfy.ffs@nanos.tec.linutronix.de>
-Date:   Fri, 25 Jun 2021 14:42:48 +0200
-Message-ID: <87im22uncn.ffs@nanos.tec.linutronix.de>
+        Fri, 25 Jun 2021 08:46:31 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15PCaaTK013370;
+        Fri, 25 Jun 2021 12:44:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=q239hJZG+3xusjjBHEwLJoFljzdGc4ysmifaTAXDUws=;
+ b=dBcblZceGskReFASeX5ba2VkBQMWqeWzKLljAelF/fTWzipHQoT7NLwOjq3t5QLondUz
+ ePL7G7yiPu9GPqwV0qJYUgjs+3rjBFsDiyO2fw5scEgHcWuYf5XB1k1JrPjKOqRUaitq
+ GbgSZPmLceLH4ah98zFVGyh+O6fv7Xr8EdPDlbk3jNRpWzstpd7SrF/Pd+gZ9aL6+fES
+ k8Qe5T3Y9/uqw4JqQr/kZ8aCKEZaiH1GC02n0FQKdLuROtoV41R2GBt0jOiAOaqluVxW
+ zGvZ0nrHtTvfgHYtpSGmobydt3mki9r5p/HL4MpAV8A45YUbpxT/yRHEyB+xvDkju/4p NQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39d27es8s4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Jun 2021 12:44:06 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15PCZbID149254;
+        Fri, 25 Jun 2021 12:44:05 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 39d243ewda-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Jun 2021 12:44:05 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15PCeNWC161160;
+        Fri, 25 Jun 2021 12:44:04 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 39d243ewcr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Jun 2021 12:44:04 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15PCi3A3017546;
+        Fri, 25 Jun 2021 12:44:03 GMT
+Received: from kadam (/102.222.70.252)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 25 Jun 2021 12:44:03 +0000
+Date:   Fri, 25 Jun 2021 15:43:56 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH 00/23] staging: rtl8188eu: remove include/rtw_debug.h
+Message-ID: <20210625124356.GJ2040@kadam>
+References: <20210625000756.6313-1-phil@philpotter.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210625000756.6313-1-phil@philpotter.co.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: YTRnOzOuSGkjMlNifZcsDgOhhpe4bv-L
+X-Proofpoint-ORIG-GUID: YTRnOzOuSGkjMlNifZcsDgOhhpe4bv-L
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25 2021 at 10:43, Thomas Gleixner wrote:
-> On Fri, Jun 25 2021 at 05:21, Kevin Tian wrote:
->> p.s. one question to Thomas. As Alex cited above, software must 
->> not modify the Address, Data, or Steering Tag fields of an MSI-X
->> entry while it is unmasked. However this rule might be violated
->> today in below flow:
->>
->> request_irq()
->>     __setup_irq()
->>         irq_startup()
->>             __irq_startup()
->>                 irq_enable()
->>                     unmask_irq() <<<<<<<<<<<<<
->>         irq_setup_affinity()
->>             irq_do_set_affinity()
->>                 msi_set_affinity() // when IR is disabled
->>                     irq_msi_update_msg()
->>                         pci_msi_domain_write_msg() <<<<<<<<<<<<<<
->>
->> Isn't above have msi-x entry updated after it's unmasked? 
->
-> Dammit, I could swear that we had masking at the core or PCI level at
-> some point. Let me dig into this.
+Looks good.
 
-Indeed, that code path does not check irq_can_move_pcntxt(). It doesn't
-blow up in our face by chance because of this:
+I feel like the kbuild warnings could be addressed in later patches.
 
-     __setup_irq()
-        irq_activate()
-        unmask()
-        irq_setup_affinity()
+It seems as if some of the error handling in this driver is "pretend to
+print an error message (but it's actually dead code)".  Which is
+probably not the correct way to handle errors...  :/  But that's not
+something introduced by this patch.
 
-irq_activate() assigns a vector based on the affinity mask so
-irq_setup_affinity() ends up writing the same data again pointlessly.
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-For some stupid reason the ordering of startup/setup_affinity is the way
-it is for historical reasons. I tried to reorder it at some point but
-that caused failure on !x86 so I went back to the status quo.
+regards,
+dan carpenter
 
-All other affinity settings happen with the interrupt masked because we
-do that from actual interrupt context via irq_move_masked_irq() which
-does the right thing.
-
-Let me fix that proper for the startup case.
-
-Thanks,
-
-        tglx
