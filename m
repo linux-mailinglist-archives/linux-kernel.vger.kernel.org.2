@@ -2,75 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841803B4469
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEDFC3B445C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231802AbhFYN15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 09:27:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38208 "EHLO mail.kernel.org"
+        id S231667AbhFYN1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 09:27:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:55846 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231723AbhFYN1u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 09:27:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62D6661962;
-        Fri, 25 Jun 2021 13:25:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624627529;
-        bh=tap7YRggbHIdkEpjJ/bP0UQLC1WqPENH/gRQwTG/qbA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uOpKh/DMAdoOJqUA2DY4RJ3byCu44ZOLlBbc6plAGQssiYWKKWs+MsZB2UGZ1rlP3
-         0a4pnrOmT91DqFwnmnuY8rDw4EbOYnraCidGM1hdJReLlUVIILFxOXlEaLMJuWnFZv
-         eb/0r1pDLOVvaX37ZBNDkveSCMJKNVNEyBxU8xqiAFZBswTyNVGIbVgeU/AZcwuqry
-         Uau1OOvd+OQxMFf3TAjvSZAQmI/7w+6sH295NdLKdlKkjxYdfOp+GZYV0kL/pDYXGr
-         qrPvH7D6MYO2AODGXiGvfID5zsUSqpvRh9PRePaRfVFjtZPo7oce3HW3cgddTl40Li
-         1tb3Ac2AjwgMQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        lgirdwood@gmail.com, Marek Szyprowski <m.szyprowski@samsung.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: qcom: lpass-cpu: mark IRQ_CLEAR register as volatile and readable
-Date:   Fri, 25 Jun 2021 14:24:57 +0100
-Message-Id: <162462667882.45385.4252603231977049463.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210624092153.5771-1-srinivas.kandagatla@linaro.org>
-References: <20210624092153.5771-1-srinivas.kandagatla@linaro.org>
+        id S229934AbhFYN1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 09:27:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5A5B031B;
+        Fri, 25 Jun 2021 06:25:19 -0700 (PDT)
+Received: from [10.57.8.165] (unknown [10.57.8.165])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 391E73F694;
+        Fri, 25 Jun 2021 06:25:17 -0700 (PDT)
+Subject: Re: [PATCH v5 5/5] perf arm-spe: Don't wait for PERF_RECORD_EXIT
+ event
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>, Al Grant <Al.Grant@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210519071939.1598923-1-leo.yan@linaro.org>
+ <20210519071939.1598923-6-leo.yan@linaro.org>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <369fd454-d94d-daa1-ead4-b42645ec4282@arm.com>
+Date:   Fri, 25 Jun 2021 14:25:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210519071939.1598923-6-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 10:21:53 +0100, Srinivas Kandagatla wrote:
-> Currently IRQ_CLEAR register is marked as write-only, however using
-> regmap_update_bits on this register will have some side effects.
-> so mark IRQ_CLEAR register appropriately as readable and volatile.
 
-Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On 19/05/2021 08:19, Leo Yan wrote:
+> When decode Arm SPE trace, it waits for PERF_RECORD_EXIT event (the last
+> perf event) for processing trace data, which is needless and even might
+> cause logic error, e.g. it might fail to correlate perf events with Arm
+> SPE events correctly.
+> 
+> So this patch removes the condition checking for PERF_RECORD_EXIT event.
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  tools/perf/util/arm-spe.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
+> index 5c5b438584c4..58b7069c5a5f 100644
+> --- a/tools/perf/util/arm-spe.c
+> +++ b/tools/perf/util/arm-spe.c
+> @@ -717,11 +717,7 @@ static int arm_spe_process_event(struct perf_session *session,
+>  					sample->time);
+>  		}
+>  	} else if (timestamp) {
+> -		if (event->header.type == PERF_RECORD_EXIT) {
+> -			err = arm_spe_process_queues(spe, timestamp);
+> -			if (err)
+> -				return err;
+> -		}
+> +		err = arm_spe_process_queues(spe, timestamp);
+>  	}
+>  
+>  	return err;
+> 
 
-Thanks!
+For the whole set:
+Reviewed-by: James Clark <james.clark@arm.com>
+Tested-by: James Clark <james.clark@arm.com>
 
-[1/1] ASoC: qcom: lpass-cpu: mark IRQ_CLEAR register as volatile and readable
-      commit: 6a7f5bd6185e1c86256d5e52c3bb7a4d390d6e19
+I see a big improvement in decoding involving multiple processes because the timestamps are now
+correlated with the comm and mmap events.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+For example perf-exec samples are visible right before the exec is done, and on an
+application that forks, samples are visible from all processes. For example:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+   perf record -e arm_spe// -- bash -c "stress -c 1"
+   perf script
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+   perf-exec  4502 [003] 259755.050409:          1    l1d-access:  ffff80001014b840 sched_clock+0x40 ([kernel.kallsyms])
+   perf-exec  4502 [003] 259755.050409:          1    tlb-access:  ffff80001014b840 sched_clock+0x40 ([kernel.kallsyms])
+   perf-exec  4502 [003] 259755.050409:          1        memory:  ffff80001014b840 sched_clock+0x40 ([kernel.kallsyms])
+   perf-exec  4502 [003] 259755.050411:          1    tlb-access:  ffff800010120fb8 __rcu_read_lock+0x0 ([kernel.kallsyms])
+   bash  4502 [003] 259755.050411:          1   branch-miss:  ffff8000105b2a40 memcpy+0x80 ([kernel.kallsyms])
+   bash  4502 [003] 259755.050411:          1    tlb-access:                 0 [unknown] ([unknown])
+   ...
+   stress  4502 [003] 259755.051468:          1    l1d-access:  ffff800010259a24 __vma_adjust+0x1f4 ([kernel.kallsyms])
+   stress  4502 [003] 259755.051468:          1    tlb-access:  ffff800010259a24 __vma_adjust+0x1f4 ([kernel.kallsyms])
+   stress  4502 [003] 259755.051468:          1        memory:  ffff800010259a24 __vma_adjust+0x1f4 ([kernel.kallsyms])
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Previously samples were only attributed to 'stress', which was obviously wrong.
 
-Thanks,
-Mark
+James
+
