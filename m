@@ -2,117 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755733B3A08
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0F93B3A2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232950AbhFYAMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 20:12:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22886 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233006AbhFYAL2 (ORCPT
+        id S232931AbhFYAhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 20:37:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229585AbhFYAhi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 20:11:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624579748;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4knyT9IBjuCK4Ns9ef27jgboQNJ/fxEGqbQX/vpuCbo=;
-        b=hnRCEkvWMu2AFIU2L/PUZ0IwoyeV+p1YkcRwXJIMRfNGUYzfwUw+rkYV/9YBjmjwF3HtSa
-        VvIn7rW02EnkvEGbvifbf8UXLHVkj3X9XbPuRCA4kDDYAJdpLwRWUpn759ITSa8X3IT+Ow
-        X9bjFCsOBewvYfjjTe0rrvKQeHFa+BA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-106-H3pyIl-1Oxm8F1_kpSxkFw-1; Thu, 24 Jun 2021 20:09:06 -0400
-X-MC-Unique: H3pyIl-1Oxm8F1_kpSxkFw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C142E8042A8;
-        Fri, 25 Jun 2021 00:09:05 +0000 (UTC)
-Received: from [10.64.54.70] (vpn2-54-70.bne.redhat.com [10.64.54.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1F94810023B5;
-        Fri, 25 Jun 2021 00:09:03 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH] Documentation, dt, numa: Add note to empty NUMA node
-From:   Gavin Shan <gshan@redhat.com>
-To:     Randy Dunlap <rdunlap@infradead.org>, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        drjones@redhat.com, shan.gavin@gmail.com
-References: <20210624033740.20862-1-gshan@redhat.com>
- <a6cdc518-3bd7-2b66-acd0-c4d53d360eae@infradead.org>
- <435d4707-3871-26fe-e0e4-df93931ba49d@redhat.com>
- <cfba8d64-810d-675b-8727-66c84106883c@infradead.org>
- <0e6e80a8-23f9-d0e7-a486-3b9affc02555@redhat.com>
-Message-ID: <0592a04c-c526-101b-2ca2-caf4fc9e7587@redhat.com>
-Date:   Fri, 25 Jun 2021 12:10:33 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Thu, 24 Jun 2021 20:37:38 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23011C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:35:18 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id v13so3836140ple.9
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:35:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vzM/YuYA5HAl0qi6INvSLkDVGXJszfsmpGFUTovFkMs=;
+        b=N5nqq3T71OFF0YBFKrcJfFbV+tFsUjM0Mq0UUDv0V01C2hBShUbkIAEUhjcHZ4g1Zw
+         P0GsUrH4Od58QXj8ihKsJUHXS7xrd7IjgM15oTxHMgGqvuiJhbgaiS/TZUkxQj65raVq
+         9YU//ze+BqQhyVmNCjK+I5hvgTacdJlkwq77s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vzM/YuYA5HAl0qi6INvSLkDVGXJszfsmpGFUTovFkMs=;
+        b=fBuzzSGBuGlf+sZgBIrZkUBi6mOxwV9JQhya6Wkxlpm7qlOOLeQMd6vASKPl4M/DYY
+         yUIH7ymUGt9auYAt/w8myD1TuQR1KsoVyXcCKQu/mlO0B/4ipACN8Dv49JEh7cjUReNG
+         L1EQp9codMDoMnfukNkVKtL8dRpLPnp9nfHwubnpl/4Ddi4tJhfS5zOCjoT0J0CLWSKE
+         ZcThAGi1swx6r/irVjokIUepGlmKulYgP8vQTXAtl9Ex1wrAy85rxpXqA85ZhI7UWN+Q
+         XxqL3s17e4jvg15+chaVlL6aWOHDDKVR+t5ow5E5JtwNUHxLNydgflayJokFGgECI6TI
+         gdUQ==
+X-Gm-Message-State: AOAM532YKgOzLDggTDKPgtJEw96gad4Dc55Nsv9zTugFlNunyxA4E7dL
+        ZaybxoEsRBJj2K3UGTTjCSc/gA==
+X-Google-Smtp-Source: ABdhPJwbnLLhX48jzgpepOpjf4kZ0Kx3ZHfqES5ET8h16Kzt7XY1cPjXRIo5YxgqxU9zcQdX5n22mQ==
+X-Received: by 2002:a17:90a:b795:: with SMTP id m21mr8132565pjr.143.1624581317514;
+        Thu, 24 Jun 2021 17:35:17 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:dda9:4015:5d1f:23fe])
+        by smtp.gmail.com with UTF8SMTPSA id i128sm3957660pfc.142.2021.06.24.17.35.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 17:35:17 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 17:35:15 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org, will@kernel.org,
+        saiprakash.ranjan@codeaurora.org, ohad@wizery.com,
+        agross@kernel.org, mathieu.poirier@linaro.org,
+        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
+        dianders@chromium.org, swboyd@chromium.org
+Subject: Re: [PATCH 5/9] remoteproc: mss: q6v5-mss: Add modem support on
+ SC7280
+Message-ID: <YNUkw5GDrHwTVcC5@google.com>
+References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
+ <1624564058-24095-6-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <0e6e80a8-23f9-d0e7-a486-3b9affc02555@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1624564058-24095-6-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/24/21 5:44 PM, Gavin Shan wrote:
-> On 6/24/21 3:37 PM, Randy Dunlap wrote:
->> On 6/23/21 9:58 PM, Gavin Shan wrote:
->>> On 6/24/21 12:14 PM, Randy Dunlap wrote:
->>>> On 6/23/21 8:37 PM, Gavin Shan wrote:
->>>>> The empty NUMA nodes, where no memory resides in, are allowed. For
->>>>> these empty NUMA nodes, the 'len' of 'reg' property is zero. These
->>>>> empty NUMA node IDs are still valid and parsed. I finds difficulty
->>>>> to get where it's properly documented.
->>>>>
->>>>> So lets add note to empty NUMA nodes in the NUMA binding doc.
->>>>>
->>>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
->>>>> ---
->>>>>    Documentation/devicetree/bindings/numa.txt | 4 ++++
->>>>>    1 file changed, 4 insertions(+)
->>>>>
->>>>> diff --git a/Documentation/devicetree/bindings/numa.txt b/Documentation/devicetree/bindings/numa.txt
->>>>> index 21b35053ca5a..c564705c0eac 100644
->>>>> --- a/Documentation/devicetree/bindings/numa.txt
->>>>> +++ b/Documentation/devicetree/bindings/numa.txt
->>>>> @@ -109,6 +109,10 @@ Example:
->>>>>    Dual socket system consists of 2 boards connected through ccn bus and
->>>>>    each board having one socket/soc of 8 cpus, memory and pci bus.
->>>>>    +Note that the empty NUMA nodes, which no memory resides in, are allowed
->>>>
->>>> Missing period at end of the sentence above.
->>>>
->>>
->>> Oh, Yes. Thanks, Randy. I will replace "resides in" with "resides in period"
->>> in v2.
->>
->> Cute. Would it help if I replaced "period" with Missing "full stop" or '.' at the end
->> of the sentence?
->>
+Hi Sibi,
+
+On Fri, Jun 25, 2021 at 01:17:34AM +0530, Sibi Sankar wrote:
+> Add out of reset sequence support for modem sub-system on SC7280 SoCs.
+> It requires access to an additional set of qaccept registers, external
+> power/clk control registers and halt vq6 register to put the modem back
+> into reset.
 > 
-> Ah, yes, '.' is needed either. Do you want me to post a new revision or you
-> modify it right away? I don't know how device-tree patches get merged :)
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
+>  drivers/remoteproc/qcom_q6v5_mss.c | 245 ++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 241 insertions(+), 4 deletions(-)
 > 
+> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
+> index 5d21084004cb..4e32811e0025 100644
+> --- a/drivers/remoteproc/qcom_q6v5_mss.c
+> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
+> @@ -77,6 +77,14 @@
+>  
+>  #define HALT_ACK_TIMEOUT_US		100000
+>  
+> +/* QACCEPT Register Offsets */
+> +#define QACCEPT_ACCEPT_REG		0x0
+> +#define QACCEPT_ACTIVE_REG		0x4
+> +#define QACCEPT_DENY_REG		0x8
+> +#define QACCEPT_REQ_REG			0xC
+> +
+> +#define QACCEPT_TIMEOUT_US		50
+> +
+>  /* QDSP6SS_RESET */
+>  #define Q6SS_STOP_CORE			BIT(0)
+>  #define Q6SS_CORE_ARES			BIT(1)
+> @@ -143,6 +151,9 @@ struct rproc_hexagon_res {
+>  	bool has_alt_reset;
+>  	bool has_mba_logs;
+>  	bool has_spare_reg;
+> +	bool has_qaccept_regs;
+> +	bool has_ext_cntl_regs;
+> +	bool has_vq6;
+>  };
+>  
+>  struct q6v5 {
+> @@ -158,8 +169,18 @@ struct q6v5 {
+>  	u32 halt_q6;
+>  	u32 halt_modem;
+>  	u32 halt_nc;
+> +	u32 halt_vq6;
+>  	u32 conn_box;
+>  
+> +	u32 qaccept_mdm;
+> +	u32 qaccept_cx;
+> +	u32 qaccept_axi;
+> +
+> +	u32 axim1_clk_off;
+> +	u32 crypto_clk_off;
+> +	u32 force_clk_on;
+> +	u32 rscc_disable;
+> +
+>  	struct reset_control *mss_restart;
+>  	struct reset_control *pdc_reset;
+>  
+> @@ -201,6 +222,9 @@ struct q6v5 {
+>  	bool has_alt_reset;
+>  	bool has_mba_logs;
+>  	bool has_spare_reg;
+> +	bool has_qaccept_regs;
+> +	bool has_ext_cntl_regs;
+> +	bool has_vq6;
+>  	int mpss_perm;
+>  	int mba_perm;
+>  	const char *hexagon_mdt_image;
+> @@ -213,6 +237,7 @@ enum {
+>  	MSS_MSM8996,
+>  	MSS_MSM8998,
+>  	MSS_SC7180,
+> +	MSS_SC7280,
+>  	MSS_SDM845,
+>  };
+>  
+> @@ -473,6 +498,12 @@ static int q6v5_reset_assert(struct q6v5 *qproc)
+>  		regmap_update_bits(qproc->conn_map, qproc->conn_box,
+>  				   AXI_GATING_VALID_OVERRIDE, 0);
+>  		ret = reset_control_deassert(qproc->mss_restart);
+> +	} else if (qproc->has_ext_cntl_regs) {
+> +		regmap_write(qproc->conn_map, qproc->rscc_disable, 0);
+> +		reset_control_assert(qproc->pdc_reset);
+> +		reset_control_assert(qproc->mss_restart);
+> +		reset_control_deassert(qproc->pdc_reset);
+> +		ret = reset_control_deassert(qproc->mss_restart);
+>  	} else {
+>  		ret = reset_control_assert(qproc->mss_restart);
+>  	}
+> @@ -490,7 +521,7 @@ static int q6v5_reset_deassert(struct q6v5 *qproc)
+>  		ret = reset_control_reset(qproc->mss_restart);
+>  		writel(0, qproc->rmb_base + RMB_MBA_ALT_RESET);
+>  		reset_control_deassert(qproc->pdc_reset);
+> -	} else if (qproc->has_spare_reg) {
+> +	} else if (qproc->has_spare_reg || qproc->has_ext_cntl_regs) {
+>  		ret = reset_control_reset(qproc->mss_restart);
+>  	} else {
+>  		ret = reset_control_deassert(qproc->mss_restart);
+> @@ -604,7 +635,7 @@ static int q6v5proc_reset(struct q6v5 *qproc)
+>  		}
+>  
+>  		goto pbl_wait;
+> -	} else if (qproc->version == MSS_SC7180) {
+> +	} else if (qproc->version == MSS_SC7180 || qproc->version == MSS_SC7280) {
+>  		val = readl(qproc->reg_base + QDSP6SS_SLEEP);
+>  		val |= Q6SS_CBCR_CLKEN;
+>  		writel(val, qproc->reg_base + QDSP6SS_SLEEP);
+> @@ -787,6 +818,82 @@ static int q6v5proc_reset(struct q6v5 *qproc)
+>  	return ret;
+>  }
+>  
+> +static int q6v5proc_enable_qchannel(struct q6v5 *qproc, struct regmap *map, u32 offset)
+> +{
+> +	unsigned int val;
+> +	int ret;
+> +
+> +	if (!qproc->has_qaccept_regs)
+> +		return 0;
+> +
+> +	if (qproc->has_ext_cntl_regs) {
+> +		regmap_write(qproc->conn_map, qproc->rscc_disable, 0);
+> +		regmap_write(qproc->conn_map, qproc->force_clk_on, 1);
+> +
+> +		ret = regmap_read_poll_timeout(qproc->halt_map, qproc->axim1_clk_off, val,
+> +					       !val, 1, Q6SS_CBCR_TIMEOUT_US);
+> +		if (ret) {
+> +			dev_err(qproc->dev, "failed to enable axim1 clock\n");
+> +			return -ETIMEDOUT;
+> +		}
+> +	}
+> +
+> +	regmap_write(map, offset + QACCEPT_REQ_REG, 1);
+> +
+> +	/* Wait for accept */
+> +	ret = regmap_read_poll_timeout(map, offset + QACCEPT_ACCEPT_REG, val, val, 5,
+> +				       QACCEPT_TIMEOUT_US);
+> +	if (ret) {
+> +		dev_err(qproc->dev, "qchannel enable failed\n");
+> +		return -ETIMEDOUT;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void q6v5proc_disable_qchannel(struct q6v5 *qproc, struct regmap *map, u32 offset)
+> +{
+> +	int ret;
+> +	unsigned int val, retry;
+> +	unsigned int nretry = 10;
+> +	bool takedown_complete = false;
+> +
+> +	if (!qproc->has_qaccept_regs)
+> +		return;
+> +
+> +	while (!takedown_complete && nretry) {
+> +		nretry--;
+> +
+> +		regmap_read_poll_timeout(map, offset + QACCEPT_ACTIVE_REG, val, !val, 5,
+> +					 QACCEPT_TIMEOUT_US);
+> +
+> +		regmap_write(map, offset + QACCEPT_REQ_REG, 0);
+> +
+> +		retry = 10;
+> +		while (retry) {
+> +			usleep_range(5, 10);
+> +			retry--;
+> +			ret = regmap_read(map, offset + QACCEPT_DENY_REG, &val);
+> +			if (!ret && val) {
+> +				regmap_write(map, offset + QACCEPT_REQ_REG, 1);
+> +				break;
+> +			}
+> +
+> +			ret = regmap_read(map, offset + QACCEPT_ACCEPT_REG, &val);
+> +			if (!ret && !val) {
+> +				takedown_complete = true;
+> +				break;
+> +			}
 
-Randy, I just posted v2 to include changes suggested by you. Could
-you help to have a quick check when getting a chance?
+A bit of commentary in this branch would do no harm. From the code flow
+I can guess that disabling the channel failed when QACCEPT_DENY_REG != 0,
+and hence the channel is re-enabled (?) for the next try, and apparently
+things are fine when QACCEPT_ACCEPT_REG is 0 after disabling the channel.
+Would be good to be a bit more explicit about what all that actually
+means.
 
->>>>> +Their NUMA node IDs are still valid so that memory can be added into these
->>>>> +NUMA nodes through hotplug afterwards.
->>>>> +
->>>>>        memory@c00000 {
->>>>>            device_type = "memory";
->>>>>            reg = <0x0 0xc00000 0x0 0x80000000>;
->>>
-
-[...]
-
-Thanks,
-Gavin
-
+> +		}
+> +
+> +		if (!retry)
+> +			break;
+> +	}
+> +
+> +	if (!takedown_complete)
+> +		dev_err(qproc->dev, "qchannel takedown failed\n");
+> +}
