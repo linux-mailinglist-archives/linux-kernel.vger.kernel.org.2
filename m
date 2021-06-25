@@ -2,108 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F62E3B3BE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16BC73B3BEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233110AbhFYFE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 01:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42284 "EHLO
+        id S233113AbhFYFJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 01:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233080AbhFYFE4 (ORCPT
+        with ESMTP id S230173AbhFYFJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 01:04:56 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4436C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 22:02:36 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id y13so4110528plc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 22:02:36 -0700 (PDT)
+        Fri, 25 Jun 2021 01:09:14 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6707CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 22:06:53 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id k5so4799029pjj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 22:06:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5r9y0DuPKIkFXl5HZacGmA+FHZr5TguPZuuivsw9axA=;
-        b=fuQDLirew2DROVEKhVG07H1CT9vGGgdcQSbx4lECRGyyaP5bgiifTAzxWJ5P2nf/mw
-         z48BgZG1R7uPtDmrrrxs25+zVyzIIWfk0UHF1r43+1FcA2ktAzKxQulx8m4y864I8KX2
-         bR1fFOoZvdw7BPZODmSS08Lhmr7e0igQjkEYm1ZZzaF3bjvpaE4uIcXb/b3tCdeJCF1O
-         wNipujLgsYrbszeFZskZNnAX4+Brf1A4uqacrspKi6m72p8I9g9OIcG2ZzkRowUEyC9/
-         W/NeQ5qZ18vDxEfxh03TvyXPDp6MTbcR6+1xk8/9I6qpC9+KGy/6gzN8HoKnYQ3M4Iks
-         sNdw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=sDBSHxpMJSy8nk14ftLNC6ka6M5l3hZIgvMObo4TxUY=;
+        b=FAtP8fnEkwB5JO4QtXWzLe+zu3KU8PRys/0kvTyWzIUk2QRbbtoZsB4Vz/8NsUWWp/
+         fMXMYq+oGmQ6A4gTc9qSkxwtYKP3WEeJyoO6qGvToVM0WoENaa2lQeImYsIoMpLAfc0h
+         bBo00zHKttVCPycj8oVSSU3cdFDgmE+rJUbu+XduofiELPUH8odDf9PdkMIcmcCHWWCi
+         QXFY+gp7VBMmXApifsDSgV1Q8f8nk6zA1wta1fafAh+uX9YQ+WYQvHQPPSngafYL/Clv
+         DJOdbDzJdAdMTFqVyPCyA01Pt17T4RwGNBEbykeBNRWjV4yy1hN6MGcIrmbqIwVqKLzW
+         lVCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5r9y0DuPKIkFXl5HZacGmA+FHZr5TguPZuuivsw9axA=;
-        b=HlrDSQDJ6G8l40t7euvHuhE2nflk9wtnzMN+nq44gK8VrkAmjFa1nzK75thLNkUM+D
-         bdFvkZC+tJ7uDBuknGQeQlaF5qTFivnY0IoLF42OIw5v9Qs/CWGiJzYmqv+vlx7h7gRb
-         64u0gBju9kMQFhEYW33Nn7R7h/JC4tG3/eYRvOl9jloIyEkWVRPQp68czhD82x9qIPvt
-         DaKlBgsizlf9AUKbrskW4eVGH0AjNcpf5/ehHWiTBv9a2RzAP32Mh8z+SO2CauMr3ErQ
-         IkOGLKhQvYFsweYmmbMyBq6cgBFYcU2TwXsWdU2fxQnfzcnA0mRjRr6/oopgBU5Lst7R
-         KgDA==
-X-Gm-Message-State: AOAM532DDwHS4aFbRuREFRm79KCmv+o+eWROMiUUDMblCkpSGjRrAR07
-        ZeyaN/QXX1oK9bXOnmVnlKofCDTzlal0C1/QXLkutQ==
-X-Google-Smtp-Source: ABdhPJxETDHcgLBIFXu00r/zhM7WdGEx7akqu9B5kK/m2vplDtGR6sW7EOilwwcpTb74C9VYycebasMwyL63SXvAKiM=
-X-Received: by 2002:a17:90a:14a4:: with SMTP id k33mr6617767pja.13.1624597356423;
- Thu, 24 Jun 2021 22:02:36 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=sDBSHxpMJSy8nk14ftLNC6ka6M5l3hZIgvMObo4TxUY=;
+        b=Rf9IDONNPBMz8Q52ECqzuVSwl8tpvmYIKAANNeDYy7GSFoIdzUKySKV0g7IYx0vo+S
+         FVHWw1De4drQ7Yh6pUOl4I9R724h71oA8OH4h2ndyZhayvbJDPZlXt8r5BF0O2ewXKrl
+         FTVP/Zux9Bf0M1ZjhpHZ6BMRxOBc4p2ybOOayML00b0I9L9sp16MsQQfXwBtuQanT2jV
+         7gaMNenvuIm9Rl1rbVulZYmUFjf+QCPek+21tSc82g0HfksJ5WpaQCHWPbOFYX1SKrxb
+         r7vD0mo/QxuU6UfIH4GfdabNIr5dDto6TBhRSchspGaW/bnbd9tRefpDkcxBvW8mSpoR
+         pV/Q==
+X-Gm-Message-State: AOAM533zadIZ9Kys+wrfDwDB3BU+8JiFSfZc6Dylam95XpBpC9+KTCLv
+        a2Ah1VdBx+CAWZq2pEIfB/J9
+X-Google-Smtp-Source: ABdhPJxYgv/rEp1/VHEa6jG6NcQRVNeZGdvx4f372wEEFIpzUMROXXL8/NEKlBiuqJtGTHiDkW7hOw==
+X-Received: by 2002:a17:902:6b82:b029:120:3404:ce99 with SMTP id p2-20020a1709026b82b02901203404ce99mr7319660plk.49.1624597612787;
+        Thu, 24 Jun 2021 22:06:52 -0700 (PDT)
+Received: from workstation ([120.138.13.204])
+        by smtp.gmail.com with ESMTPSA id s12sm3956623pjz.37.2021.06.24.22.06.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 24 Jun 2021 22:06:52 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 10:36:49 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] bus: mhi: core: Add support for processing priority
+ of event ring
+Message-ID: <20210625050649.GB4974@workstation>
+References: <1624590379-12319-1-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-References: <20210624123930.1769093-1-linmiaohe@huawei.com> <20210624123930.1769093-3-linmiaohe@huawei.com>
-In-Reply-To: <20210624123930.1769093-3-linmiaohe@huawei.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 25 Jun 2021 13:01:53 +0800
-Message-ID: <CAMZfGtUNtR3ZPv4m5bBCGdE5GuMR5Bw18_n7YzqB4s6QHyV+Pg@mail.gmail.com>
-Subject: Re: [Phishing Risk] [External] [PATCH 2/3] mm/zsmalloc.c: combine two
- atomic ops in zs_pool_dec_isolated()
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>, ngupta@vflare.org,
-        senozhatsky@chromium.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1624590379-12319-1-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 8:40 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
->
-> atomic_long_dec_and_test() is equivalent to atomic_long_dec() and
-> atomic_long_read() == 0. Use it to make code more succinct.
+On Thu, Jun 24, 2021 at 08:06:19PM -0700, Bhaumik Bhatt wrote:
+> From: Hemant Kumar <hemantk@codeaurora.org>
+> 
+> Event ring priorities are currently set to 1 and are unused.
+> Default processing priority for event rings is set to regular
+> tasklet. Controllers can choose to use high priority tasklet
+> scheduling for certain event rings critical for processing such
+> as ones transporting control information if they wish to avoid
+> system scheduling delays for those packets. In order to support
+> these use cases, allow controllers to set event ring priority to
+> high. This patch only adds support and does not enable usage of
+> these priorities.
+> 
+> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-Actually, they are not equal. atomic_long_dec_and_test implies a
-full memory barrier around it but atomic_long_dec and atomic_long_read
-don't.
+Please add the controller driver changes in this patch itself.
 
-That RMW operations that have a return value is equal to the following.
+Couple of nits below...
 
-smp_mb__before_atomic()
-non-RMW operations or RMW operations that have no return value
-smp_mb__after_atomic()
+Thanks,
+Mani
 
-Thanks.
-
->
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 > ---
->  mm/zsmalloc.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-> index 1476289b619f..0b4b23740d78 100644
-> --- a/mm/zsmalloc.c
-> +++ b/mm/zsmalloc.c
-> @@ -1828,13 +1828,12 @@ static void putback_zspage_deferred(struct zs_pool *pool,
->  static inline void zs_pool_dec_isolated(struct zs_pool *pool)
->  {
->         VM_BUG_ON(atomic_long_read(&pool->isolated_pages) <= 0);
-> -       atomic_long_dec(&pool->isolated_pages);
->         /*
->          * There's no possibility of racing, since wait_for_isolated_drain()
->          * checks the isolated count under &class->lock after enqueuing
->          * on migration_wait.
->          */
-> -       if (atomic_long_read(&pool->isolated_pages) == 0 && pool->destroying)
-> +       if (atomic_long_dec_and_test(&pool->isolated_pages) && pool->destroying)
->                 wake_up_all(&pool->migration_wait);
+> v4:
+> -Update fixed priority for all events to default to fix bug in v3
+> -Supply changelog
+> 
+> v3:
+> -Revert to enum approach
+> -Use 0 as default and 1 as high in enum
+> -Do not use config values for event rings
+> 
+> v2:
+> -Use boolean approach for easy maintenance as controllers do not need updates
+> 
+>  drivers/bus/mhi/core/init.c     |  4 ++--
+>  drivers/bus/mhi/core/internal.h |  2 +-
+>  drivers/bus/mhi/core/main.c     | 19 ++++++++++++++++---
+>  include/linux/mhi.h             | 14 ++++++++++++--
+>  4 files changed, 31 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index c81b377..23386b8 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -673,8 +673,8 @@ static int parse_ev_cfg(struct mhi_controller *mhi_cntrl,
+>  				&mhi_cntrl->mhi_chan[mhi_event->chan];
+>  		}
+>  
+> -		/* Priority is fixed to 1 for now */
+> -		mhi_event->priority = 1;
+> +		/* Priority is fixed to deafult for now */
+
+default
+
+> +		mhi_event->priority = MHI_ER_PRIORITY_DEFAULT;
+>  
+>  		mhi_event->db_cfg.brstmode = event_cfg->mode;
+>  		if (MHI_INVALID_BRSTMODE(mhi_event->db_cfg.brstmode))
+> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+> index 672052f..666e102 100644
+> --- a/drivers/bus/mhi/core/internal.h
+> +++ b/drivers/bus/mhi/core/internal.h
+> @@ -535,7 +535,7 @@ struct mhi_event {
+>  	u32 intmod;
+>  	u32 irq;
+>  	int chan; /* this event ring is dedicated to a channel (optional) */
+> -	u32 priority;
+> +	enum mhi_er_priority priority;
+>  	enum mhi_er_data_type data_type;
+>  	struct mhi_ring ring;
+>  	struct db_cfg db_cfg;
+> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> index 8ac73f9..bfc9776 100644
+> --- a/drivers/bus/mhi/core/main.c
+> +++ b/drivers/bus/mhi/core/main.c
+> @@ -425,10 +425,11 @@ void mhi_create_devices(struct mhi_controller *mhi_cntrl)
+>  	}
 >  }
->
-> --
-> 2.23.0
->
+>  
+> -irqreturn_t mhi_irq_handler(int irq_number, void *dev)
+> +irqreturn_t mhi_irq_handler(int irq_number, void *priv)
+>  {
+> -	struct mhi_event *mhi_event = dev;
+> +	struct mhi_event *mhi_event = priv;
+>  	struct mhi_controller *mhi_cntrl = mhi_event->mhi_cntrl;
+> +	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>  	struct mhi_event_ctxt *er_ctxt =
+>  		&mhi_cntrl->mhi_ctxt->er_ctxt[mhi_event->er_index];
+>  	struct mhi_ring *ev_ring = &mhi_event->ring;
+> @@ -454,8 +455,20 @@ irqreturn_t mhi_irq_handler(int irq_number, void *dev)
+>  
+>  		if (mhi_dev)
+>  			mhi_notify(mhi_dev, MHI_CB_PENDING_DATA);
+> -	} else {
+> +
+> +		return IRQ_HANDLED;
+> +	}
+> +
+> +	switch (mhi_event->priority) {
+> +	case MHI_ER_PRIORITY_HI:
+> +		tasklet_hi_schedule(&mhi_event->task);
+> +		break;
+> +	case MHI_ER_PRIORITY_DEFAULT:
+>  		tasklet_schedule(&mhi_event->task);
+> +		break;
+> +	default:
+> +		dev_err(dev, "Skip event of unknown priority\n");
+> +		break;
+>  	}
+>  
+>  	return IRQ_HANDLED;
+> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> index 86cea52..62ddead 100644
+> --- a/include/linux/mhi.h
+> +++ b/include/linux/mhi.h
+> @@ -198,6 +198,16 @@ enum mhi_er_data_type {
+>  };
+>  
+>  /**
+> + * enum mhi_er_priority - Event ring processing priority
+> + * @MHI_ER_PRIORITY_DEFAULT: processed by regular tasklet
+> + * @MHI_ER_PRIORITY_HI: processed by hi-priority tasklet
+
+s/hi/high
+
+> + */
+> +enum mhi_er_priority {
+> +	MHI_ER_PRIORITY_DEFAULT,
+> +	MHI_ER_PRIORITY_HI,
+> +};
+> +
+> +/**
+>   * enum mhi_db_brst_mode - Doorbell mode
+>   * @MHI_DB_BRST_DISABLE: Burst mode disable
+>   * @MHI_DB_BRST_ENABLE: Burst mode enable
+> @@ -250,7 +260,7 @@ struct mhi_channel_config {
+>   * @irq_moderation_ms: Delay irq for additional events to be aggregated
+>   * @irq: IRQ associated with this ring
+>   * @channel: Dedicated channel number. U32_MAX indicates a non-dedicated ring
+> - * @priority: Priority of this ring. Use 1 for now
+> + * @priority: Processing priority of this ring.
+>   * @mode: Doorbell mode
+>   * @data_type: Type of data this ring will process
+>   * @hardware_event: This ring is associated with hardware channels
+> @@ -262,7 +272,7 @@ struct mhi_event_config {
+>  	u32 irq_moderation_ms;
+>  	u32 irq;
+>  	u32 channel;
+> -	u32 priority;
+> +	enum mhi_er_priority priority;
+>  	enum mhi_db_brst_mode mode;
+>  	enum mhi_er_data_type data_type;
+>  	bool hardware_event;
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
