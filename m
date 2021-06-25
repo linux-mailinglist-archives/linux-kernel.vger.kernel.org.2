@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5FB73B45BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2E83B45CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbhFYOjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:39:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60250 "EHLO mail.kernel.org"
+        id S231931AbhFYOj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:39:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229940AbhFYOjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:39:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B46361963;
-        Fri, 25 Jun 2021 14:36:57 +0000 (UTC)
+        id S231738AbhFYOjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 10:39:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D6156197D;
+        Fri, 25 Jun 2021 14:36:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624631817;
-        bh=P00gi1Wtx+KpLLM7s98I0ogOiO2aXZ3GHASm7R/VtvA=;
+        s=k20201202; t=1624631818;
+        bh=TY3iBQKER6Z5ph8zWEWZU/pK1GZsZOyt08z1Cvndgwk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mKseQSOcV9prIj+yP/LdEb+uUHmS2u2OaqMWk6fyxO6U+yWF2mhF/f4BDak86EIqS
-         YRkTBuDSkPC5WBwlUMgGLqtEhxj6ziLQ35yzgo8KTxe15BitQI7NqEo0R6t5xczww/
-         bAgwl4TW6uGHYPUOB2FZolH+kjDbeXmH4TgXf+mU23Lq85xJmh4YsQjA7vPEtyuTp/
-         lMcnUC2QAJ73Oo6q3ZXd7tWkeO+mi1ZcIdFYDG9YeQNZBnhWTeNxVP8ZTUVHyzGVzL
-         gEVrQo+D3gPC+PJRgwGYN0Q9k+pUxH39e9cY+yPdwG2NZBTaSJbMA6LlNjh8hHMI1J
-         79KXONpAwsP1Q==
+        b=tFH2krxAUdnVo2o1eH28xZYBc+sPvoHTPUDNA/jnWE6HQ3sGHzClSguGJVlf4gFnh
+         7cT6uTLphBArfn1ryGI2KxEyFbTTvtmSAp04YCzckbv0oxSeawYzYq9GWWx3Ku9RY2
+         NitMEtgrlzzP3mLKe2RGhgy5+x10fMLInO6J8i4NFY+aWcS9SnvbBbu+UxSHAtVDU4
+         jGtsVy3ZWf+2VX9TCAFJL7vzw54U/rHXou84km2DrwGygTCtDQgO6p+DrWfA9v07Ln
+         GZrpJTnnsmWFrHQ3hOjhcEKQGDMPe5bOk638elEkePEHtUO06NCnRKXMxfNNcGl4ho
+         Rc5G3vV5XmFOA==
 Received: by pali.im (Postfix)
-        id 5ACC9A7D; Fri, 25 Jun 2021 16:36:55 +0200 (CEST)
+        id 64A02A89; Fri, 25 Jun 2021 16:36:56 +0200 (CEST)
 From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -38,9 +38,9 @@ Cc:     Andrew Lunn <andrew@lunn.ch>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 01/11] serial: mvebu-uart: fix calculation of clock divisor
-Date:   Fri, 25 Jun 2021 16:36:07 +0200
-Message-Id: <20210625143617.12826-2-pali@kernel.org>
+Subject: [PATCH v2 02/11] serial: mvebu-uart: do not allow changing baudrate when uartclk is not available
+Date:   Fri, 25 Jun 2021 16:36:08 +0200
+Message-Id: <20210625143617.12826-3-pali@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210625143617.12826-1-pali@kernel.org>
 References: <20210624224909.6350-1-pali@kernel.org>
@@ -52,28 +52,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clock divisor should be rounded to the closest value.
+Testing mvuart->clk for non-error is not enough as mvuart->clk may contain
+valid clk pointer but when clk_prepare_enable(mvuart->clk) failed then
+port->uartclk is zero.
+
+When mvuart->clk is not available then port->uartclk is zero too.
+
+Parent clock rate port->uartclk is needed to calculate UART clock divisor
+and without it is not possible to change baudrate.
+
+So fix test condition when it is possible to change baudrate.
 
 Signed-off-by: Pali Rohár <pali@kernel.org>
 Fixes: 68a0db1d7da2 ("serial: mvebu-uart: add function to change baudrate")
-Cc: stable@vger.kernel.org # 0e4cf69ede87 ("serial: mvebu-uart: clarify the baud rate derivation")
 ---
- drivers/tty/serial/mvebu-uart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/mvebu-uart.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
-index e0c00a1b0763..f81bfdaa608c 100644
+index f81bfdaa608c..dc0c26824ddb 100644
 --- a/drivers/tty/serial/mvebu-uart.c
 +++ b/drivers/tty/serial/mvebu-uart.c
-@@ -463,7 +463,7 @@ static int mvebu_uart_baud_rate_set(struct uart_port *port, unsigned int baud)
- 	 * makes use of D to configure the desired baudrate.
- 	 */
- 	m_divisor = OSAMP_DEFAULT_DIVISOR;
--	d_divisor = DIV_ROUND_UP(port->uartclk, baud * m_divisor);
-+	d_divisor = DIV_ROUND_CLOSEST(port->uartclk, baud * m_divisor);
+@@ -445,12 +445,11 @@ static void mvebu_uart_shutdown(struct uart_port *port)
  
- 	brdv = readl(port->membase + UART_BRDV);
- 	brdv &= ~BRDV_BAUD_MASK;
+ static int mvebu_uart_baud_rate_set(struct uart_port *port, unsigned int baud)
+ {
+-	struct mvebu_uart *mvuart = to_mvuart(port);
+ 	unsigned int d_divisor, m_divisor;
+ 	u32 brdv, osamp;
+ 
+-	if (IS_ERR(mvuart->clk))
+-		return -PTR_ERR(mvuart->clk);
++	if (!port->uartclk)
++		return -EOPNOTSUPP;
+ 
+ 	/*
+ 	 * The baudrate is derived from the UART clock thanks to two divisors:
 -- 
 2.20.1
 
