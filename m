@@ -2,141 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4944F3B44DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 906213B44DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbhFYNyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 09:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231627AbhFYNyH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 09:54:07 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382FCC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 06:51:46 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id g3so3226128qth.11
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 06:51:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GbSbNNqFKiu9Mctgx4Wsj99Xj0cOSJ9rf4uWMxWFhVY=;
-        b=d/E1my5NgFegXWc2dnxbA8ZlWYIYgsn0cmMwOo+xHc07acGEwbKUi0EyZn3gld9PYh
-         4YJvV7MjBv+PXeBsn3yTvZoShM8LqsEuAd/iUDNYFgRF43ei5iiyv3RtEA1MCS+c5qBM
-         LnhqE06g6w0uQnhHQO4jrYPBHluD2MEah70tPTH7QwoH9rCtj24r6RYo3BjSA3FQAozf
-         H6LUxpfPBtC0QroTZx7/p4x/DtlZz7qGSE+4uuZECZqlxq1tMJRZ/s9Ro65b7v1UE+wf
-         NmxaPh2j/bSq0lO90lXu2OQW6guR3iJkMyo8K0VLGhCyIqBnYWgakujEDC85IDmCYSBJ
-         G5+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GbSbNNqFKiu9Mctgx4Wsj99Xj0cOSJ9rf4uWMxWFhVY=;
-        b=JhKDng6N53eQ0lctZB7ARnLTgu6aYiheqKxRAJ4POrwUR/CFaW4IRbARlAvTMNErJG
-         +m32WrXRbxI0bIG9ThpBdeZ5M6qqg1oVqmb91jpXMVcOrlTn6+vA9wuyoCINSPTvbSFm
-         ZL2+T0RTNWFc/MKjX1edGUOiKg5yhdExa1ix9nwxdfg6cO4DAVfloGtzpFFTa3pQTGzu
-         hdBuo2KmFc8T71AN9AfXCenU1qwVkjLgEgppUZNZBTKxEejp+QuJquOLWBPHHeZW+5Y/
-         lr1Fgurp4SumJHdGOOHmBCKJOnCEqTuGAmiFZgOHt58ztPIJbRrIcLNMbS1o8eNEikv/
-         ckIw==
-X-Gm-Message-State: AOAM532YSbhwTN4ZSIFrfZzBGSYoR49RZpr2HSIZmmAj4k//HBDdVOQU
-        qWegRFslba9BiVfL4ZvFPxZpdgCS779636zpKviojw==
-X-Google-Smtp-Source: ABdhPJzWIBGCrYgEsbZ2B7WYA3Nw2NgDvJvNE6RynWDcDD9/I3Lwrg2cwUNGChWnr9VjFdeLmbuwhBkOKWvUm6whJ3E=
-X-Received: by 2002:a05:622a:1011:: with SMTP id d17mr9795664qte.66.1624629105091;
- Fri, 25 Jun 2021 06:51:45 -0700 (PDT)
+        id S231436AbhFYNzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 09:55:01 -0400
+Received: from mga14.intel.com ([192.55.52.115]:29387 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229890AbhFYNy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 09:54:57 -0400
+IronPort-SDR: qqy+VWQhRkfLY9fvtTniSx6SgOipaPVnNmABhGqyrf2u2BZ0R7fvGGck2jmrzSfUc7swPydZnD
+ 3lUPVRJ3DFOQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="207489521"
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="207489521"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 06:52:01 -0700
+IronPort-SDR: zJ8jjHkgffaE9VvGtYOLv9i2Tk48Nh1XO1VzC+VGEYaz6HAiWkz8CBUFhjp9+fQTKc0F0MRglv
+ uaM+KxnCzu5Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="488190669"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 25 Jun 2021 06:51:59 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lwmFS-0007BZ-N8; Fri, 25 Jun 2021 13:51:58 +0000
+Date:   Fri, 25 Jun 2021 21:51:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2021.06.22a] BUILD SUCCESS
+ 14bf352718c90d9097b36bdab8a5d7c1ffcdd802
+Message-ID: <60d5df67.VbHnzJpTtImLZmP9%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <000000000000e61e2105c58fea48@google.com> <20210625085140.1735-1-hdanton@sina.com>
- <CACT4Y+YzgaZjLCOjvhcDC5YRjjF2OBp1XE-vS5+AZOmwmneg0Q@mail.gmail.com>
- <20210625094638.1791-1-hdanton@sina.com> <CACT4Y+amrcRo=1KuKHoN7L6JoCH0Bakt5dveZt7iZDhqpSu4nA@mail.gmail.com>
- <20210625130813.84-1-hdanton@sina.com>
-In-Reply-To: <20210625130813.84-1-hdanton@sina.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 25 Jun 2021 15:51:32 +0200
-Message-ID: <CACT4Y+b_OAYhGD01k2Kct0t_jccj_OK_stQ4eLObGAiFoJE8Rg@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in v4l2_ioctl (2)
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     syzbot <syzbot+19c5a4b75931e8d63aab@syzkaller.appspotmail.com>,
-        ezequiel@collabora.com, hverkuil-cisco@xs4all.nl,
-        lijian@yulong.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, mchehab@kernel.org,
-        sakari.ailus@linux.intel.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 3:08 PM Hillf Danton <hdanton@sina.com> wrote:
-> >> >> Given the uaf in the ioctl path, open count is needed and should be
-> >> >> maintained by stk and is implemented in the diff below with mutex - it
-> >> >> is locked at file open time, released at file release time and aquired
-> >> >> at disconnect time.
-> >> >>
-> >> >> This can be a quick fix to the uaf, though, lights on why the video_get(vdev)
-> >> >> in v4l2_open() fails to prevent stk camera from going home too early are
-> >> >> welcome. Is it the fault on the driver side without an eye on open count?
-> >> >>
-> >> >> +++ x/drivers/media/usb/stkwebcam/stk-webcam.c
-> >> >> @@ -624,8 +624,10 @@ static int v4l_stk_open(struct file *fp)
-> >> >>                 dev->first_init = 0;
-> >> >>
-> >> >>         err = v4l2_fh_open(fp);
-> >> >> -       if (!err)
-> >> >> +       if (!err) {
-> >> >>                 usb_autopm_get_interface(dev->interface);
-> >> >> +               mutex_trylock(&dev->free_mutex);
-> >> >
-> >> >I haven't read all of it, but doing mutex_trylock w/o checking the
-> >> >return value looks very fishy. Can it ever be the right thing to
-> >> >do?... E.g. the next line we unconditionally do mutex_unlock, are we
-> >> >potentially unlocking a non-locked mutex?
-> >>
-> >> I am having difficulty understanding your point until I see next line...
-> >
-> >Right, the next line unlocks a different mutex, so ignore the part
-> >about the next line.
-> >
-> >But I am still confused about the intention of trylock w/o using the
-> >return value. I fail to imagine any scenarios where it's the right
-> >thing to do.
->
-> Let me explain. The whole point of the added mutex is solely to prevent
-> the disconnector from freeing the stk camera while there are still
-> openers of the video device, and trylock is used to walk around deadlock
-> because multiple openers are allowed. In function it is equivelant to the
-> usual method on top of open count and waitqueue, something like
->
->         mutex_lock;
->         stk_cam->open_cnt++;    // mutex_trylock(&stk_cam->free_mutex);
->         mutex_unlock;
->
-> at file open time, and
->
->         mutex_lock;
->         stk_cam->open_cnt = 0;
->         wake_up(&stk_cam->waitq); // mutex_unlock(&stk_cam->free_mutex);
->         mutex_unlock;
->
-> at file release time, and
->
->         wait_event(stk_cam->waitq,
->                 stk_cam->open_cnt == 0); // mutex_lock(&stk_cam->free_mutex);
->                                         // mutex_unlock(&stk_cam->free_mutex);
->         kfree(stk_cam);
->
-> at disconnect time, but has fewer lines of code to type.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.06.22a
+branch HEAD: 14bf352718c90d9097b36bdab8a5d7c1ffcdd802  scftorture: Add RPC-like IPI tests
 
-But if trylock has failed, then the file release will still unlock the
-mutex and unlocking a mutex without a prior lock is not permitted.
+elapsed time: 726m
 
-Or, I assume disconnect needs to wait for all files to be released.
-This won't be the case with a mutex, because when the first file is
-released, mutex is unlocked and disconnect can proceed.
+configs tested: 157
+configs skipped: 3
 
-But maybe I am still missing something.
-Are you sure your use of mutex complies with the rules?
-https://elixir.bootlin.com/linux/v5.13-rc7/source/include/linux/mutex.h#L31
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                           ip28_defconfig
+powerpc                 mpc832x_mds_defconfig
+arm                      pxa255-idp_defconfig
+sh                              ul2_defconfig
+arm                        neponset_defconfig
+sh                           se7721_defconfig
+s390                          debug_defconfig
+powerpc                    amigaone_defconfig
+powerpc                     kmeter1_defconfig
+powerpc64                        alldefconfig
+sh                          lboxre2_defconfig
+powerpc                      tqm8xx_defconfig
+ia64                        generic_defconfig
+arm                         mv78xx0_defconfig
+mips                  maltasmvp_eva_defconfig
+arm                        spear6xx_defconfig
+sh                             espt_defconfig
+mips                        qi_lb60_defconfig
+h8300                            alldefconfig
+powerpc                 xes_mpc85xx_defconfig
+m68k                       m5249evb_defconfig
+mips                        omega2p_defconfig
+arm                        keystone_defconfig
+arm                       multi_v4t_defconfig
+arm                           sama5_defconfig
+arm                        vexpress_defconfig
+arm                        cerfcube_defconfig
+arm                           h5000_defconfig
+mips                      pistachio_defconfig
+arm                          lpd270_defconfig
+sh                          rsk7269_defconfig
+powerpc                     rainier_defconfig
+powerpc                      bamboo_defconfig
+sh                   sh7770_generic_defconfig
+powerpc                      pasemi_defconfig
+sh                     sh7710voipgw_defconfig
+um                            kunit_defconfig
+sh                        edosk7760_defconfig
+powerpc                      katmai_defconfig
+arc                        nsimosci_defconfig
+xtensa                    xip_kc705_defconfig
+sh                           se7751_defconfig
+mips                       capcella_defconfig
+arm                      footbridge_defconfig
+mips                             allmodconfig
+powerpc                 mpc8315_rdb_defconfig
+sh                        sh7763rdp_defconfig
+powerpc                     tqm8555_defconfig
+xtensa                  audio_kc705_defconfig
+mips                      maltaaprp_defconfig
+riscv                            allyesconfig
+arm                         bcm2835_defconfig
+sh                          sdk7786_defconfig
+mips                            gpr_defconfig
+powerpc               mpc834x_itxgp_defconfig
+powerpc                 mpc8313_rdb_defconfig
+arm                   milbeaut_m10v_defconfig
+arm                           tegra_defconfig
+sh                               alldefconfig
+mips                     loongson1c_defconfig
+h8300                               defconfig
+mips                 decstation_r4k_defconfig
+m68k                        stmark2_defconfig
+arm                             pxa_defconfig
+powerpc                      walnut_defconfig
+mips                     cu1000-neo_defconfig
+s390                             alldefconfig
+xtensa                  cadence_csp_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20210625
+x86_64               randconfig-a001-20210625
+x86_64               randconfig-a005-20210625
+x86_64               randconfig-a003-20210625
+x86_64               randconfig-a004-20210625
+x86_64               randconfig-a006-20210625
+i386                 randconfig-a002-20210625
+i386                 randconfig-a001-20210625
+i386                 randconfig-a003-20210625
+i386                 randconfig-a006-20210625
+i386                 randconfig-a005-20210625
+i386                 randconfig-a004-20210625
+x86_64               randconfig-a012-20210622
+x86_64               randconfig-a016-20210622
+x86_64               randconfig-a015-20210622
+x86_64               randconfig-a014-20210622
+x86_64               randconfig-a013-20210622
+x86_64               randconfig-a011-20210622
+i386                 randconfig-a011-20210622
+i386                 randconfig-a014-20210622
+i386                 randconfig-a013-20210622
+i386                 randconfig-a015-20210622
+i386                 randconfig-a012-20210622
+i386                 randconfig-a016-20210622
+i386                 randconfig-a011-20210625
+i386                 randconfig-a014-20210625
+i386                 randconfig-a013-20210625
+i386                 randconfig-a015-20210625
+i386                 randconfig-a012-20210625
+i386                 randconfig-a016-20210625
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-> What is more crucial however is why the mechanisms in video core are
-> failing to prevent uaf like this one from coming true. Lets wait for
-> lights from the video folks.
+clang tested configs:
+x86_64               randconfig-b001-20210622
+x86_64               randconfig-b001-20210625
+x86_64               randconfig-a002-20210622
+x86_64               randconfig-a001-20210622
+x86_64               randconfig-a005-20210622
+x86_64               randconfig-a003-20210622
+x86_64               randconfig-a004-20210622
+x86_64               randconfig-a006-20210622
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
