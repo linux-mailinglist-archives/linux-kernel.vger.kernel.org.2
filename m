@@ -2,63 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED773B4AEF
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 01:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE433B4AF4
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 01:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhFYXdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 19:33:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49868 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229884AbhFYXdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 19:33:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2D306194F;
-        Fri, 25 Jun 2021 23:31:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624663874;
-        bh=gx4z69JK8B1m24jj5p5HkcPmeM5Zoi7oy/pqkyg5PL4=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=bW1wwQttYOmlwa2rjEEnr0Mp8iZGp75nskWzdpChMTN2VWb0sp1T+Ia8aJXaXGhGY
-         un7RUgy+mm97xnWOF65Q4B6RqdFm6a+394mzULPtJhAxxj04zW5roHFwrh7VvXoq3B
-         TTLLCk3WIf0Amk0Tg7MBdWszPXbREWQ06DwAVqGhLysupAg1zAP8Eu42RZ6Vd6VqrV
-         Z1r8ejjjmIdN9PiQZGCBAue/YW41Yu3xVWeTmugS8/IfxgArHlzkWfq1LuoFDGRTZm
-         LYtn3JUrAMp48yw45ZmVwm0B/dlrAw50GtLhXlz9TC776zq7Fl2orM1bjoZXp1tp8K
-         sJ8EuysqygPBg==
-Content-Type: text/plain; charset="utf-8"
+        id S229913AbhFYXgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 19:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229844AbhFYXgi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 19:36:38 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C273C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 16:34:14 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id c11so14714972ljd.6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 16:34:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=nbwN286/f2tgx7HnIyRwNiSzfszBKdsaXIOOZleXegQ=;
+        b=COTO6xK6XXzLj7QCuClwaJRAPiK+9eCHV3HNL+Y/ld2D3Xd90IgfXqbGgcrtNT+rsJ
+         rkAIzNNivnFrLIXiydzLgrU/h86zq0d3C8XeMW2xwTrG26BUCfvPtLPlw2xmRuhwZslq
+         Bjvy5/bUip9gjz2NDuU7EBpBoF0R3+mRdz2MKs/g3GK7zkhLZ1f0ayS9jQdyas2I8lMs
+         WvudoOTIZ1UQLuRtBOJktFORJlW9emVliYMLHmjNPbq27/CxzIOFz6JMY8x1jbRieMkf
+         eK8y1jsHyxLI7Qq8P/4agetfSATt+W+s21Vo313vskFd6FlSMSAiNdEaeP9NEdnmd0YO
+         S59g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=nbwN286/f2tgx7HnIyRwNiSzfszBKdsaXIOOZleXegQ=;
+        b=SOQ9i5MCFwuT3oNF3uE3xndgM8GwcO89gM8spBSUIkUUxEt9O7UYAvNRnVQ4jyc3/3
+         BXvF1P60RcJ9/LmRgw5XnR/001YcCKr000+E1JjsUwdccNt5GmtQXCeHNLRExH79vL6A
+         S1SLTMPs5ASfS77k+89aOcAWLlLgNgI5DCk5OHnN+Cm0ssfRoiQVXhw0Nn5iNinCrGso
+         jPKrsVUY7NdPacXnRlG+qt5ngoYGUeivsmI+nv/HRx9PwX7hjrWdRyUSz0AbvXesFtz9
+         UQijy+9zFxYk5oA4yBmfvAlDP7YYmfQDAqZbaLAm59SdkiEuKitHGwMNvphKnyKUFMBr
+         Ek2Q==
+X-Gm-Message-State: AOAM5314T+SIfc4Sk3XfPCEsZPbnHAokN9NvKYIGk0+TfgVb6H6IUPFV
+        0ewl5RrqLg7Zg3ByALwB2FmHi2LITHuIFkwN8FjRJw==
+X-Google-Smtp-Source: ABdhPJxcM7kT2apTAfxoGcZV8wqZQjXu4w+udp8r9dPXO/OseyIYAyQI7Ri4AMx8mrA3H0WE27jDQtxukgjXXcy+uKc=
+X-Received: by 2002:a2e:9003:: with SMTP id h3mr10034672ljg.467.1624664052021;
+ Fri, 25 Jun 2021 16:34:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210617082759.1008-1-thunder.leizhen@huawei.com>
-References: <20210617082759.1008-1-thunder.leizhen@huawei.com>
-Subject: Re: [PATCH 1/1] clk: tegra: tegra124-emc: Fix possible memory leak
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Date:   Fri, 25 Jun 2021 16:31:13 -0700
-Message-ID: <162466387362.3259633.2364843071785127818@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 26 Jun 2021 01:34:01 +0200
+Message-ID: <CACRpkdaVqdFPKTxOuhFt=auFYjxCivRmRz7mQ7ank6rbcVQsQw@mail.gmail.com>
+Subject: [GIT PULL] Last pin control fixes for v5.13
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Fabien Dessenne <fabien.dessenne@foss.st.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Zhen Lei (2021-06-17 01:27:59)
-> When krealloc() fails to expand the memory and returns NULL, the original
-> memory is not released. In this case, the original "timings" scale should
-> be maintained.
->=20
-> Fixes: 888ca40e2843 ("clk: tegra: emc: Support multiple RAM codes")
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
+Hi Linus,
 
-Looks correct, but when does krealloc() return NULL? My read of the
-kerneldoc is that it would return the original memory if the new
-allocation "failed".
+some last minute pin control fixes. A bit late because
+I have some vacation and midsommar. Two driver fixes,
+details in the signed tag.
 
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+Please pull them in!
+
+Yours,
+Linus Walleij
+
+The following changes since commit 009c9aa5be652675a06d5211e1640e02bbb1c33d:
+
+  Linux 5.13-rc6 (2021-06-13 14:43:10 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
+tags/pinctrl-v5.13-3
+
+for you to fetch changes up to 67e2996f72c71ebe4ac2fcbcf77e54479bb7aa11:
+
+  pinctrl: stm32: fix the reported number of GPIO lines per bank
+(2021-06-18 14:56:54 +0200)
+
+----------------------------------------------------------------
+Two fixes in the last minute:
+
+- Put an fwnode in the errorpath in the SGPIO driver
+
+- Fix the number of GPIO lines per bank in the STM32 driver
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      pinctrl: microchip-sgpio: Put fwnode in error case during ->probe()
+
+Fabien Dessenne (1):
+      pinctrl: stm32: fix the reported number of GPIO lines per bank
+
+ drivers/pinctrl/pinctrl-microchip-sgpio.c | 4 +++-
+ drivers/pinctrl/stm32/pinctrl-stm32.c     | 9 +++++++--
+ 2 files changed, 10 insertions(+), 3 deletions(-)
