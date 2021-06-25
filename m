@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752473B440A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CE13B4400
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231476AbhFYNI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 09:08:58 -0400
-Received: from newton.telenet-ops.be ([195.130.132.45]:39144 "EHLO
-        newton.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231354AbhFYNI5 (ORCPT
+        id S231386AbhFYNGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 09:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229712AbhFYNGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 09:08:57 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by newton.telenet-ops.be (Postfix) with ESMTPS id 4GBHBp1kbhzMr22n
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 14:59:14 +0200 (CEST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:1476:ce84:e216:add8])
-        by baptiste.telenet-ops.be with bizsmtp
-        id MQzC2500j2B1U9901QzD7X; Fri, 25 Jun 2021 14:59:14 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lwlQO-003TMO-G5; Fri, 25 Jun 2021 14:59:12 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lwlQN-004sRH-Nc; Fri, 25 Jun 2021 14:59:11 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Robin van der Gracht <robin@protonic.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>
-Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 12/18] auxdisplay: ht16k33: Convert to simple i2c probe function
-Date:   Fri, 25 Jun 2021 14:58:56 +0200
-Message-Id: <20210625125902.1162428-13-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210625125902.1162428-1-geert@linux-m68k.org>
-References: <20210625125902.1162428-1-geert@linux-m68k.org>
+        Fri, 25 Jun 2021 09:06:12 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9719BC061767
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 06:03:51 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id h4so7532387pgp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 06:03:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Rtsnu8VD33EKMaZf3cpQ8efCBZxp+xhAKR5JoGpX5Eo=;
+        b=QyicnVxC5A1fEGp5XtFu3wD2OgDufaG+KE0JJ9KpzGa7lNZMm/POMik2AXOxX1zkTG
+         3J1IUFt9eeLSs/W1TxbtnzkxWiHFHRoseNrxBhaRZHMOz6MBCT6fQt7ROrqIOUqttUZw
+         QU8itF6xaMwH0rMf7sAxh58f2tTPEKeert6XLTeTlx+kPxk4jBP6NSAlQUCkl/f4Rl/o
+         tvN7rnm43Rwy6RxxZbZnRGq2tHOSGNX4NtjwUxcvJixa4Efap/fpKanlZ1kQGKEU1pLX
+         z1blAIpYshe2WZpwUDCgSw2TaFR3hgGkF+y0iIHjiodOYRZzn+PQyEuiGu3LF/YpNVya
+         xC6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Rtsnu8VD33EKMaZf3cpQ8efCBZxp+xhAKR5JoGpX5Eo=;
+        b=W1g80D/zyjinI6P/btPGn+/126jk137LYS/0U0fWkQ7mxnpdXmdLgYnKaYqLJZJL81
+         /1f01fdmBDxaBi13RiAkg+YgC7hocmmnYrEwdLPzCrdDrrY1sqgbstDp6KaMqzQ8XemT
+         C9MnbITUYhsUutuS8HC82oQzDbQW0vFPFcKAaUTEEef1GRsxgbP5uM6oYjoAmvSoTm0z
+         D01qJYcVojN0sKFLfIa3RN6hUnqyoq63ywe0HsRS98x//YTWD5S5RxY7atSWvEe795E5
+         V9AOXzws+ebumWJAxrmEIwdsBj5tnU6mcne/MoLA3HS1elxDRxRDbju0EKAy/TZ3WHlC
+         aneA==
+X-Gm-Message-State: AOAM532f4G/e2F7h5Jr08mn3a9Cg2HU0JcRv/w7GEGxO7e/KWeG8N+v7
+        BqzRZPxWGZbKjlvXUfE34rQ2t9NpY0op
+X-Google-Smtp-Source: ABdhPJwUAHDHJd41dGZtRGQ/ranfWCHDBM1qzYWPFiEQHKE+umUBbxrpcg2Kbl/SsPWdegV92WZ1kg==
+X-Received: by 2002:a63:185b:: with SMTP id 27mr9809644pgy.164.1624626231083;
+        Fri, 25 Jun 2021 06:03:51 -0700 (PDT)
+Received: from thinkpad ([2409:4072:600b:2a0:ed5d:53e7:c64e:1bac])
+        by smtp.gmail.com with ESMTPSA id e4sm5903958pfa.29.2021.06.25.06.03.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 06:03:50 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 18:33:43 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        kvalo@codeaurora.org, ath11k@lists.infradead.org,
+        stable@vger.kernel.org, Jeffrey Hugo <quic_jhugo@quicinc.com>
+Subject: Re: [PATCH 06/10] bus: mhi: core: Set BHI and BHIe pointers to NULL
+ in clean-up
+Message-ID: <20210625130343.GA13833@thinkpad>
+References: <20210625123355.11578-1-manivannan.sadhasivam@linaro.org>
+ <20210625123355.11578-7-manivannan.sadhasivam@linaro.org>
+ <YNXOYkj9TWZgYAG3@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNXOYkj9TWZgYAG3@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ht16k33_probe() does not use the passed i2c_device_id, so the driver can
-be converted trivially to the new-style of i2c probing.
+On Fri, Jun 25, 2021 at 02:38:58PM +0200, Greg KH wrote:
+> On Fri, Jun 25, 2021 at 06:03:51PM +0530, Manivannan Sadhasivam wrote:
+> > From: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> > 
+> > Set the BHI and BHIe pointers to NULL as part of clean-up. This
+> > makes sure that stale pointers are not accessed after powering
+> > MHI down.
+> > 
+> > Cc: stable@vger.kernel.org
+> 
+> Why is this needed for stable, but patch 5/10 is not?
+> 
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Robin van der Gracht <robin@protonic.nl>
----
-v2:
-  - Add Acked-by.
----
- drivers/auxdisplay/ht16k33.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Shoot! This one relies on 5/10 and fixes a corner case where the BHI/BHIe
+pointers might be used after MHI powerdown. But this requires backporting
+the patches 5-10 cleanly (a series).
 
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index 8c9acc4800bc94e0..8c1689b77db95676 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -381,8 +381,7 @@ static int ht16k33_keypad_probe(struct i2c_client *client,
- 	return input_register_device(keypad->dev);
- }
- 
--static int ht16k33_probe(struct i2c_client *client,
--				  const struct i2c_device_id *id)
-+static int ht16k33_probe(struct i2c_client *client)
- {
- 	int err;
- 	uint32_t dft_brightness;
-@@ -523,7 +522,7 @@ static const struct of_device_id ht16k33_of_match[] = {
- MODULE_DEVICE_TABLE(of, ht16k33_of_match);
- 
- static struct i2c_driver ht16k33_driver = {
--	.probe		= ht16k33_probe,
-+	.probe_new	= ht16k33_probe,
- 	.remove		= ht16k33_remove,
- 	.driver		= {
- 		.name		= DRIVER_NAME,
--- 
-2.25.1
+So I guess the stable tag should be removed for this patch. We will test this
+series on stable kernels (on how far) and make sure this doesn't break anything.
+Then we can share the commit IDs to be backported with details?
 
+Thanks,
+Mani 
+
+> And what commit does this fix?  How far back should it go?
+> 
+> And is this really fixing anything?
+> 
+> thanks,
+> 
+> greg k-h
