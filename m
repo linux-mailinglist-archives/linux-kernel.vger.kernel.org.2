@@ -2,74 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0A33B407B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C40B23B407E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhFYJaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbhFYJaY (ORCPT
+        id S231201AbhFYJbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:31:03 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:59729 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230217AbhFYJbC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:30:24 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B36C061574;
-        Fri, 25 Jun 2021 02:28:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SjGReaSfzObkIWIE+f3KhQydIkcR4mgV8ncU1I+OXTA=; b=lzUYzwAIFt/4HG1YZ4dIeB4K6f
-        bWX04mCHTlBWwpaRSo9a2Nnqh5y/qkumSHRObxoczpC1ed73q9SASR1ThuyVochZ5MsTuijoHVVvi
-        LYak5+l4irUfbxbaOX1vaJkc4ds5eGOhlqWpU9E6GjKDgNYediiXfCYyt1xyJIIVJndOaBErHnIaH
-        S2BdR6xNvEuf8lzapqysvw6gYRt86p9EZlNJSX2jyOZ53fIBEchfwCjFTpb584I/vqog7VwKefiET
-        z95aKo/tOshe+cp0HVj5FHwSLeXcKtVgPi7+TOPi9sj1qV/EwydrZrJVdDW9AqUqSfIIGxOlwlZtk
-        8Mwy7W6Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwi7R-00BWrn-Cj; Fri, 25 Jun 2021 09:27:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5F8BA300233;
-        Fri, 25 Jun 2021 11:27:31 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3FFA6200B392D; Fri, 25 Jun 2021 11:27:31 +0200 (CEST)
-Date:   Fri, 25 Jun 2021 11:27:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, Phil Auld <pauld@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Kate Carcia <kcarcia@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Clark Willaims <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V5 12/14] trace: Protect tr->tracing_cpumask with
- get/put_online_cpus
-Message-ID: <YNWhg2lpYaqGC0RD@hirez.programming.kicks-ass.net>
-References: <cover.1624372313.git.bristot@redhat.com>
- <38d2ef13b33c42fcf424a6213a27c8b5246548e0.1624372313.git.bristot@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <38d2ef13b33c42fcf424a6213a27c8b5246548e0.1624372313.git.bristot@redhat.com>
+        Fri, 25 Jun 2021 05:31:02 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R511e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UdcBifd_1624613309;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UdcBifd_1624613309)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 25 Jun 2021 17:28:39 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     paul.walmsley@sifive.com
+Cc:     palmer@dabbelt.com, aou@eecs.berkeley.edu,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] riscv: xip: Fix duplicate included asm/pgtable.h
+Date:   Fri, 25 Jun 2021 17:28:24 +0800
+Message-Id: <1624613304-119429-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 04:42:30PM +0200, Daniel Bristot de Oliveira wrote:
-> +	get_online_cpus();
->  	cpumask_copy(tr->tracing_cpumask, tracing_cpumask_new);
-> +	put_online_cpus();
+Clean up the following includecheck warning:
 
-I'm aware this patch will go the way of the Dodo; but for future
-reference, these should be spelled: cpus_read_{,un}lock(). The old names
-are still around, but I suppose we should do a cleanup of that some day.
+./arch/riscv/kernel/vmlinux-xip.lds.S: asm/pgtable.h is included more
+than once.
+
+No functional change.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ arch/riscv/kernel/vmlinux-xip.lds.S | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/riscv/kernel/vmlinux-xip.lds.S b/arch/riscv/kernel/vmlinux-xip.lds.S
+index a3ff09c..af776555 100644
+--- a/arch/riscv/kernel/vmlinux-xip.lds.S
++++ b/arch/riscv/kernel/vmlinux-xip.lds.S
+@@ -12,7 +12,6 @@
+ 
+ #include <asm/vmlinux.lds.h>
+ #include <asm/page.h>
+-#include <asm/pgtable.h>
+ #include <asm/cache.h>
+ #include <asm/thread_info.h>
+ 
+-- 
+1.8.3.1
+
