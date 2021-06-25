@@ -2,60 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6323B4AB3
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 00:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 906DA3B4ABA
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 00:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbhFYWrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 18:47:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229816AbhFYWrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 18:47:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE3D361942;
-        Fri, 25 Jun 2021 22:44:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624661078;
-        bh=MhhKjdtEyP6HKkMxYA8rEKdABGIn2lGWQrzheH0guDM=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=hk7zp+7B+r23LLcTAUbuIGWhEqRFCTvfPcoLMnRyMBeiwMKea1A/FtqkRvm4TBV7r
-         Iu50yYqAOSNUrEVUehzDShTdIzkUH48Fh5/AS87kCxAX8fWx9n5Pf3kpq/+A+PV0xk
-         dMGM/kK5p5PCZOHhhfbqvyZI+M5v5MDeflDBPZPz1gb3RJHO786YGCqIWPsV8BxqRL
-         qHxiBql+ghLPpniKISgisvzIAOcqy/reYHO+OAq03cG/ZISvqh2NJs+4lr36eVGezH
-         OrqUsVGg12AhjVQl216Sizo2O5n0rRirJpaeZgflClqe1ZIGMhEOkfK5bNUUwAR11s
-         XvsMTCKQ65DAQ==
-Content-Type: text/plain; charset="utf-8"
+        id S229900AbhFYWui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 18:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229776AbhFYWuf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 18:50:35 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 214FAC061574;
+        Fri, 25 Jun 2021 15:48:13 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id i5so15560127eds.1;
+        Fri, 25 Jun 2021 15:48:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GwvHh55LcSYnXzmmGuQCH1MSG36L8iCah28pi91QZyE=;
+        b=FJHKZ/Abwa6ukbLeMQeNKroNgDPdPBIcURidXDyRCQoEoxRGVebx4/13mw+kkGKaFo
+         1UeXom62Vsb51xnsP123yZONrQbxKW71JyQ1s3uYS+N1N+iVmtECmTgF0Uv8nqO9V27Z
+         3pjTkwp8k5ZqVBx02CHSAUlehshRO1oQyozNDmMRCjJIbAwC85eP+1NXavkvNPNojWqj
+         zT3rF0cpnutggsicdDoz+b6nqBkJ9bxTXM5YYJ7iLHhLUpBbdSQjncKVlccYefkAK3tI
+         0cjdwWSRBU4uMWfZdXJcqbrAVwJpeVxAnWcP7AHT3GLQ64CVAZ3BRvdYFkgpwDgRWCSH
+         Tysg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=GwvHh55LcSYnXzmmGuQCH1MSG36L8iCah28pi91QZyE=;
+        b=GhrfCcmucCFwRmQLpR1br7fp+KebwnkZU3X8i2f6Filunupejk2/W7TWm1/pogEDqT
+         6bkEKCY0DE6NINHNQuR4843Ygak8RCh1Sw7K+SuzcuO64eT68VL4dP8FV+ORYFdMy0dw
+         L4KOebOSuoup69E9M9UuL4wUVLcl2zoGRTws1vohr+ro/idMOtkD7IbZX3ra4/HyaSiP
+         BqNOeo3qkjNIVczEXsI7ZX1GDb0TDfFJJTvh4bVtIm17S4StC3vu8b/pX/qlvzSa5+ok
+         63/qU6lSCZ+E1lQx6tRGTjHpDHqL1vKS8IE39ajDCDM4s75dN0muoS2eCcnocOn6XHRN
+         RWAQ==
+X-Gm-Message-State: AOAM5318RKHPl+eWcM6q4iXuG6BX9AWiG9xpSJoMCwvTQMcpm9JW8rF/
+        tok1ZmanXH9SOgQRmfitoSU=
+X-Google-Smtp-Source: ABdhPJy+T78o4HjFa2vn6tfrdxhsAcbPhpemEzM0Ex0MiUE7jhOjAc3gvDtwoyuMq/cn9PmdUyd/kQ==
+X-Received: by 2002:a05:6402:487:: with SMTP id k7mr17660625edv.315.1624661290121;
+        Fri, 25 Jun 2021 15:48:10 -0700 (PDT)
+Received: from stitch.. (80.71.140.73.ipv4.parknet.dk. [80.71.140.73])
+        by smtp.gmail.com with ESMTPSA id w1sm4719399edr.62.2021.06.25.15.48.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 15:48:09 -0700 (PDT)
+Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        "Andrew F. Davis" <afd@ti.com>
+Cc:     Emil Renner Berthing <kernel@esmil.dk>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/3] BeagleV Starlight reset support
+Date:   Sat, 26 Jun 2021 00:47:41 +0200
+Message-Id: <20210625224744.1020108-1-kernel@esmil.dk>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <46310530171886c6ccf4046518e07510274a506c.1623308843.git.geert+renesas@glider.be>
-References: <46310530171886c6ccf4046518e07510274a506c.1623308843.git.geert+renesas@glider.be>
-Subject: Re: [PATCH v6] dt-bindings: clk: versaclock5: Miscellaneous fixes and improvements:
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Adam Ford <aford173@gmail.com>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh@kernel.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 25 Jun 2021 15:44:37 -0700
-Message-ID: <162466107751.3259633.17069845339624475647@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Geert Uytterhoeven (2021-06-10 00:09:40)
->   - Add missing "additionalProperties: false" for subnodes, to catch
->     typos in properties,
->   - Fix property names in example.
->=20
-> Fixes: 45c940184b501fc6 ("dt-bindings: clk: versaclock5: convert to yaml")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Acked-by: Stephen Boyd <sboyd@kernel.org>
-> ---
+This series adds reset support to the BeagleV Starlight board[1], and
+converts the TPS65086 PMIC device tree binding to YAML while at it.
 
-Actually looks like Rob picked something similar up, so dropped it.
+Support for the StarFive JH7100 RISC-V SoC on there is not yet
+upstreamed, but early feedback on this part would be very welcome.
+
+[1] https://github.com/beagleboard/beaglev-starlight
+
+Emil Renner Berthing (3):
+  dt-bindings: mfd: convert tps65086.txt to YAML
+  mfd: tps65086: Make interrupt line optional
+  power: reset: Add TPS65086 restart driver
+
+ .../devicetree/bindings/mfd/ti,tps65086.yaml  | 124 ++++++++++++++++++
+ .../devicetree/bindings/mfd/tps65086.txt      |  54 --------
+ drivers/mfd/tps65086.c                        |  22 ++--
+ drivers/power/reset/Kconfig                   |   6 +
+ drivers/power/reset/Makefile                  |   1 +
+ drivers/power/reset/tps65086-restart.c        |  99 ++++++++++++++
+ 6 files changed, 242 insertions(+), 64 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/ti,tps65086.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mfd/tps65086.txt
+ create mode 100644 drivers/power/reset/tps65086-restart.c
+
+-- 
+2.32.0
+
