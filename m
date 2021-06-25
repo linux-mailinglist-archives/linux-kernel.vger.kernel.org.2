@@ -2,74 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A623B44A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35CC3B44AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhFYNlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 09:41:55 -0400
-Received: from elvis.franken.de ([193.175.24.41]:49749 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhFYNlw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 09:41:52 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lwm3G-0005Tx-00; Fri, 25 Jun 2021 15:39:22 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 93769C071C; Fri, 25 Jun 2021 15:39:09 +0200 (CEST)
-Date:   Fri, 25 Jun 2021 15:39:09 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     zhanglianjie <zhanglianjie@uniontech.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        tangyouling@loongson.cn
-Subject: Re: [PATCH] mm: Fix the problem of mips architecture Oops
-Message-ID: <20210625133909.GA2565@alpha.franken.de>
-References: <20210624032212.24769-1-zhanglianjie@uniontech.com>
+        id S230274AbhFYNoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 09:44:14 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:40834 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229498AbhFYNoM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 09:44:12 -0400
+X-UUID: 23ea012c1ad045c08f9b12ad6cce49c5-20210625
+X-UUID: 23ea012c1ad045c08f9b12ad6cce49c5-20210625
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <tung-chen.shih@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 798672426; Fri, 25 Jun 2021 21:41:48 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 25 Jun 2021 21:41:46 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 25 Jun 2021 21:41:46 +0800
+From:   TungChen Shih <tung-chen.shih@mediatek.com>
+To:     <rjw@rjwysocki.net>, <viresh.kumar@linaro.org>,
+        <matthias.bgg@gmail.com>
+CC:     <wsd_upstream@mediatek.com>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        TungChen Shih <tung-chen.shih@mediatek.com>
+Subject: [PATCH v1 1/1] cpufreq: fix the target freq not in the range of policy->min & max
+Date:   Fri, 25 Jun 2021 21:41:30 +0800
+Message-ID: <20210625134129.11885-1-tung-chen.shih@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624032212.24769-1-zhanglianjie@uniontech.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 11:22:12AM +0800, zhanglianjie wrote:
-> The cause of the problem is as follows:
-> 1. when cat /sys/devices/system/memory/memory0/valid_zones,
->    test_pages_in_a_zone() will be called.
-> 2. test_pages_in_a_zone() finds the zone according to stat_pfn = 0.
->    The smallest pfn of the numa node in the mips architecture is 128,
->    and the page corresponding to the previous 0~127 pfn is not
->    initialized (page->flags is 0xFFFFFFFF)
-> 3. The nid and zonenum obtained using page_zone(pfn_to_page(0)) are out
->    of bounds in the corresponding array,
->    &NODE_DATA(page_to_nid(page))->node_zones[page_zonenum(page)],
->    access to the out-of-bounds zone member variables appear abnormal,
->    resulting in Oops.
-> Therefore, it is necessary to keep the page between 0 and the minimum
-> pfn to prevent Oops from appearing.
-> 
-> Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
-> ---
->  arch/mips/kernel/setup.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-> index 23a140327a0b..f1da2b2ba5e9 100644
-> --- a/arch/mips/kernel/setup.c
-> +++ b/arch/mips/kernel/setup.c
-> @@ -653,6 +653,8 @@ static void __init arch_mem_init(char **cmdline_p)
->  	 */
->  	memblock_set_current_limit(PFN_PHYS(max_low_pfn));
-> 
-> +	memblock_reserve(0, PAGE_SIZE * NODE_DATA(0)->node_start_pfn);
-> +
+    In cpufreq_frequency_table_target(), this function will try to find
+an index for @target_freq in freq_table, and the frequency of selected
+index should be in the range [policy->min, policy->max], which means:
 
-which platform needs this ? This look it should be better fixed in
-the platform memory registration code.
+    policy->min <= policy->freq_table[idx].frequency <= policy->max
 
-Thomas.
+    Though "clamp_val(target_freq, policy->min, policy->max);" would
+have been called to check this condition, when policy->max or min is
+not exactly one of the frequency in the frequency table,
+policy->freq_table[idx].frequency may still go out of the range
 
+    For example, if our sorted freq_table is [3000, 2000, 1000], and
+suppose we have:
+
+    @target_freq = 2500
+    @policy->min = 2000
+    @policy->max = 2200
+    @relation = CPUFREQ_RELATION_L
+
+1. After clamp_val(target_freq, policy->min, policy->max); @target_freq
+becomes 2200
+2. Since we use CPUFREQ_REALTION_L, final selected freq will be 3000 which
+beyonds policy->max
+
+Signed-off-by: TungChen Shih <tung-chen.shih@mediatek.com>
+---
+ include/linux/cpufreq.h | 25 ++++++++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+index 353969c7acd3..60cb15740fdf 100644
+--- a/include/linux/cpufreq.h
++++ b/include/linux/cpufreq.h
+@@ -975,21 +975,40 @@ static inline int cpufreq_frequency_table_target(struct cpufreq_policy *policy,
+ 						 unsigned int target_freq,
+ 						 unsigned int relation)
+ {
++	int idx = 0;
+ 	if (unlikely(policy->freq_table_sorted == CPUFREQ_TABLE_UNSORTED))
+ 		return cpufreq_table_index_unsorted(policy, target_freq,
+ 						    relation);
+ 
+ 	switch (relation) {
+ 	case CPUFREQ_RELATION_L:
+-		return cpufreq_table_find_index_l(policy, target_freq);
++		idx = cpufreq_table_find_index_l(policy, target_freq);
++		break;
+ 	case CPUFREQ_RELATION_H:
+-		return cpufreq_table_find_index_h(policy, target_freq);
++		idx = cpufreq_table_find_index_h(policy, target_freq);
++		break;
+ 	case CPUFREQ_RELATION_C:
+-		return cpufreq_table_find_index_c(policy, target_freq);
++		idx = cpufreq_table_find_index_c(policy, target_freq);
++		break;
+ 	default:
+ 		WARN_ON_ONCE(1);
+ 		return 0;
+ 	}
++
++	/* target index verification */
++	if (policy->freq_table[idx].frequency > policy->max) {
++		if (policy->freq_table_sorted == CPUFREQ_TABLE_SORTED_ASCENDING)
++			idx--;
++		else
++			idx++;
++	} else if (policy->freq_table[idx].frequency < policy->min) {
++		if (policy->freq_table_sorted == CPUFREQ_TABLE_SORTED_ASCENDING)
++			idx++;
++		else
++			idx--;
++	}
++
++	return idx;
+ }
+ 
+ static inline int cpufreq_table_count_valid_entries(const struct cpufreq_policy *policy)
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.18.0
+
