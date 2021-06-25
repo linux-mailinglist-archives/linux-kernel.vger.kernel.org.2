@@ -2,105 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287A63B4297
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA013B429C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhFYLfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 07:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46048 "EHLO
+        id S230439AbhFYLhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:37:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhFYLfN (ORCPT
+        with ESMTP id S229458AbhFYLhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 07:35:13 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A18C061574;
-        Fri, 25 Jun 2021 04:32:51 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id a127so7782940pfa.10;
-        Fri, 25 Jun 2021 04:32:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=F1FYj5t4XYoxvLoXBqTjudiXE+LHqymCGK2OtEnIdlM=;
-        b=Vug1MX4WgKzGeIKZiGV5dxk5+sQypFDvIqvNce+do+Xf1qJI5YDIW5x+EkBUMKbFZv
-         061HMvrNuq2wndVfN9CQuQF33iB4BmdWea+nTuChqpiQgKd7EsXGWHy2nBgydestG4El
-         +lXae4pXaHOS5LBVFJcIMtnDiRN5AquOufxLJ4U597XCdmPUvfmxqJIeoTABhhB4aZlM
-         lOSgROHM9u/ewbFS3Pz/JGILAWewkl0Gtct8bJs0WBhgsseUQwFQkKEhWaYBGQH2KWAJ
-         BTG/+8SvHSZ1Ct82Z0RdQ50KtUuaQNUPcSJwcqYGFaeNUl9irWFRDv4086PzBdiJQkB3
-         ULjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=F1FYj5t4XYoxvLoXBqTjudiXE+LHqymCGK2OtEnIdlM=;
-        b=rxe41zgyDujC5eO7PNriJrTdil11Bi+oIl7XOilgd1Lw6hcIiGPU0RTM2GnHBYXYGT
-         nYY2ZLHkemy7Q9pvAJeq8/d9zMRFrjp66njXtDpETi+5bFp3neLQExWk0gkQxW7HDaKS
-         zcGQbpvcDOcZHpVJvzrTwGi6vbboBHljGm/kf1LMJoGAYZe81PwM3w7PN0YnwvDZ3Ktw
-         GqY8+2Ih76tR8qVYn0YKwuJ/tIGZF2beuzpYWN6DGVt/+/8oPL+3cBbjOIfh97bLy5ci
-         DhpZPu2+D1z0s6aCfgs8cmCxGNyYgp9hwk/8H5bsYuvXzIomaqMg4bsjDITjFVwq+nyb
-         2z4A==
-X-Gm-Message-State: AOAM532WeNWSJ/cdjy3M+Q92S9jPTBGVIGufBqBVD7iKdbjrNQZo/JGj
-        LC4HtuEpCt0CDWKovrqYb3WBAor74EE=
-X-Google-Smtp-Source: ABdhPJyCNRv0sPV9O1TfxSLrNyApdRWlKjaBdFiSvyJknsyaKQa3mPDUVQAcCZlLu7/LKuopSdCBOA==
-X-Received: by 2002:a63:3d8a:: with SMTP id k132mr9302612pga.7.1624620771620;
-        Fri, 25 Jun 2021 04:32:51 -0700 (PDT)
-Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id j20sm4999136pfc.85.2021.06.25.04.32.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 04:32:51 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/3] docs: pdfdocs: Improve alignment of CJK ascii-art
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     "Wu X.C." <bobwxc@email.cn>, Jonathan Corbet <corbet@lwn.net>,
-        SeongJae Park <sj38.park@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
-References: <386938dc-6290-239c-4b4f-c6153f3d98c5@gmail.com>
- <20210625065524.GA11219@bobwxc.top> <20210625095059.7f97fd62@coco.lan>
- <ae0a7623-7ec4-937b-4b93-8435f2e94eb9@gmail.com>
- <20210625122423.4435c5e9@coco.lan>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <b6ea891e-b6f3-318a-1b40-268f436c6860@gmail.com>
-Date:   Fri, 25 Jun 2021 20:32:47 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 25 Jun 2021 07:37:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5A8C061574;
+        Fri, 25 Jun 2021 04:35:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nInXZSuW2VLfsBmz2fvP4M1dxeak9S+ryROuH8Jszc4=; b=Y0XxGn8e4SplEkW7jopbVQALv5
+        1t+SwOsekhUmI/ryMnx0OphVPVg6076gaBBUSwUJwzZnwZB2ezzy8IS57OMOSMxejtwLD231MKtVs
+        Oke91rzIc51yQ2QKC4V4tc0QGbUECmpttnfNjucrotZQGwf5wjcxfQpGcudBoMTxee2vIqDj+o06A
+        fvklr4nPbhc1FNg172LrcWqNHWQ/HeMZrSg1r8OUVgxYhhK1VhGHRmrYYzLGBPol6o/5YlwhQn3lt
+        SPzQyFr4tWoq4/F8WBAH9njdgnOdgym9WEtjovPZBqIrRNJ3a4FIMdzD+Qee3Q9nFojgalEHY8lt5
+        PhK+5Odg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwk6q-0002AW-0u; Fri, 25 Jun 2021 11:35:04 +0000
+Date:   Fri, 25 Jun 2021 12:34:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, akpm@linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 14/46] mm/memcg: Add folio_charge_cgroup()
+Message-ID: <YNW/Xxv74VlxTm6M@casper.infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-15-willy@infradead.org>
+ <YNLtmC9qd8Xxkxsc@infradead.org>
+ <YNS2EvYub46WdVaq@casper.infradead.org>
+ <YNWSS/FvuyCpRxej@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20210625122423.4435c5e9@coco.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNWSS/FvuyCpRxej@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Jun 2021 12:24:23 +0200, Mauro Carvalho Chehab wrote:
-> Em Fri, 25 Jun 2021 18:22:26 +0900
-> Akira Yokosawa <akiyks@gmail.com> escreveu:
+On Fri, Jun 25, 2021 at 10:22:35AM +0200, Michal Hocko wrote:
+> On Thu 24-06-21 17:42:58, Matthew Wilcox wrote:
+> > On Wed, Jun 23, 2021 at 10:15:20AM +0200, Christoph Hellwig wrote:
+> > > On Tue, Jun 22, 2021 at 01:15:19PM +0100, Matthew Wilcox (Oracle) wrote:
+> > > > mem_cgroup_charge() already assumed it was being passed a non-tail
+> > > > page (and looking at the callers, that's true; it's called for freshly
+> > > > allocated pages).  The only real change here is that folio_nr_pages()
+> > > > doesn't compile away like thp_nr_pages() does as folio support
+> > > > is not conditional on transparent hugepage support.  Reimplement
+> > > > mem_cgroup_charge() as a wrapper around folio_charge_cgroup().
+> > > 
+> > > Maybe rename __mem_cgroup_charge to __folio_charge_cgroup as well?
+> > 
+> > Oh, yeah, should have done that.  Thanks.
 > 
->> On Fri, 25 Jun 2021 09:50:59 +0200, Mauro Carvalho Chehab wrote:
-[...]
->>
->> One minor problem might be that the Sarasa font needs manual
->> download (and install).
->>
->>         Thanks, Akira
+> I would stick with __mem_cgroup_charge here. Not that I would insist but the
+> folio nature is quite obvious from the parameter already.
 > 
-> If this is not yet packaged as part of texlive packages
-> on distros, this won't be a minor issue, as we'll need
-> to find procedures and test it for all distros supported
-> by the script.
+> Btw. memcg_check_events doesn't really need the page argument. A nid
+> should be sufficient and your earlier patch is already touching the
+> softlimit code so maybe it would be worth changing this page -> folio ->
+> page back and forth.
 
-Existence of "Sarasa Mono SC" can be checked by the command:
-
-    fc-list | grep "Sarasa Mono SC," | grep "style=Regular" | wc -l
-
-If the result is *not* "0", you have the font somewhere in your
-fontconfig path.
-
-I think this is portable across distros.
-Wouldn't this suffice for sphinx-pre-install?
-
-        Thanks, Akira
-> 
-> Thanks,
-> Mauro
-> 
+I'm not a huge fan of that 'dummy_page' component of uncharge_gather,
+so replacing that with nid makes sense.  I'll juggle these patches a bit
+and work that in.  Thanks!
