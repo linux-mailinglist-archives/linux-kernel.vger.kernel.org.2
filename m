@@ -2,65 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3F73B42D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFD63B42DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhFYMHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 08:07:19 -0400
-Received: from mga11.intel.com ([192.55.52.93]:4690 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229712AbhFYMHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 08:07:18 -0400
-IronPort-SDR: cGhrQqWhXZU/jHcopf1DyjVet2n0rREfNBrUSfcw4UUW1GL4HYYyNx0J6YAj43q2uOgL+nT//g
- UN5VLTB32LtA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="204648585"
-X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
-   d="scan'208";a="204648585"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 05:04:57 -0700
-IronPort-SDR: DAF6+CR1DyvSP2HVwrs3aLS+hehpzfNDtjJdkT3sXpO7rqNd6CetVsZctJdgsOuPgm1McTpVfY
- 1e6VMHejvUfg==
-X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
-   d="scan'208";a="455419730"
-Received: from slahiri1-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.213.179.195])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 05:04:55 -0700
-Message-ID: <6df0600b755ca067a6c4ff82af47297feafa088a.camel@intel.com>
-Subject: Re: [PATCH v2] x86/sgx: Add missing xa_destroy() when virtual EPC
- is destroyed
-From:   Kai Huang <kai.huang@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, seanjc@google.com,
-        dave.hansen@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        Yang Zhong <yang.zhong@intel.com>
-Date:   Sat, 26 Jun 2021 00:04:53 +1200
-In-Reply-To: <YNWR+oSGfulOWziI@zn.tnic>
-References: <20210616003634.320206-1-kai.huang@intel.com>
-         <20210623132844.heleuoxogrpz3cpm@kernel.org>
-         <925090f035b8e749ea7aca8c857690c8afba7349.camel@intel.com>
-         <YNWR+oSGfulOWziI@zn.tnic>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+        id S230292AbhFYMIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 08:08:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230132AbhFYMIe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 08:08:34 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB9DC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 05:06:13 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lwkav-00082P-Tq; Fri, 25 Jun 2021 14:06:01 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lwkav-0007Xd-3u; Fri, 25 Jun 2021 14:06:01 +0200
+Date:   Fri, 25 Jun 2021 14:06:01 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/7] i2c: imx: : use proper DMAENGINE API for termination
+Message-ID: <20210625120601.vmwn4ct7mrnusijb@pengutronix.de>
+References: <20210623095942.3325-1-wsa+renesas@sang-engineering.com>
+ <20210623095942.3325-3-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210623095942.3325-3-wsa+renesas@sang-engineering.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 14:03:03 up 205 days,  2:09, 48 users,  load average: 0.18, 0.21,
+ 0.09
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-06-25 at 10:22 +0200, Borislav Petkov wrote:
-> On Fri, Jun 25, 2021 at 01:45:35PM +1200, Kai Huang wrote:
-> > Should we consider to get this into 5.13, since it is a fix?
+Hello Wolfram,
+
+On Wed, Jun 23, 2021 at 11:59:36AM +0200, Wolfram Sang wrote:
+> dmaengine_terminate_all() is deprecated in favor of explicitly saying if
+> it should be sync or async. Here, we want dmaengine_terminate_sync()
+> because there is no other synchronization code in the driver to handle
+> an async case.
 > 
-> We have considered it, have queued it, you're on Cc on the tip-bot
-> notification:
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+
+Reviewed-by: Oleksij Rempel <o.rempel@pengutronix.de
+
+Thank you!
+
+> ---
+>  drivers/i2c/busses/i2c-imx.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> https://lkml.kernel.org/r/162377378414.19906.6678244614782222506.tip-bot2@tip-bot2
+> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
+> index dc5ca71906db..b224e82924d2 100644
+> --- a/drivers/i2c/busses/i2c-imx.c
+> +++ b/drivers/i2c/busses/i2c-imx.c
+> @@ -423,7 +423,7 @@ static int i2c_imx_dma_xfer(struct imx_i2c_struct *i2c_imx,
+>  	return 0;
+>  
+>  err_submit:
+> -	dmaengine_terminate_all(dma->chan_using);
+> +	dmaengine_terminate_sync(dma->chan_using);
+>  err_desc:
+>  	dma_unmap_single(chan_dev, dma->dma_buf,
+>  			dma->dma_len, dma->dma_data_dir);
+> @@ -899,7 +899,7 @@ static int i2c_imx_dma_write(struct imx_i2c_struct *i2c_imx,
+>  				&i2c_imx->dma->cmd_complete,
+>  				msecs_to_jiffies(DMA_TIMEOUT));
+>  	if (time_left == 0) {
+> -		dmaengine_terminate_all(dma->chan_using);
+> +		dmaengine_terminate_sync(dma->chan_using);
+>  		return -ETIMEDOUT;
+>  	}
+>  
+> @@ -954,7 +954,7 @@ static int i2c_imx_dma_read(struct imx_i2c_struct *i2c_imx,
+>  				&i2c_imx->dma->cmd_complete,
+>  				msecs_to_jiffies(DMA_TIMEOUT));
+>  	if (time_left == 0) {
+> -		dmaengine_terminate_all(dma->chan_using);
+> +		dmaengine_terminate_sync(dma->chan_using);
+>  		return -ETIMEDOUT;
+>  	}
+>  
+> -- 
+> 2.30.2
 > 
-> In the meantime, that fix landed upstream and will be in 5.13:
-> 
-> 4692bc775d21 ("x86/sgx: Add missing xa_destroy() when virtual EPC is destroyed")
 > 
 
-Oh sorry I thought the patch would go via x86/sgx branch, and I didn't monitor
-the tip-bot2 mail which was moved to my local x86 folder.  Thanks!
-
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
