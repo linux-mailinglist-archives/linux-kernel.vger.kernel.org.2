@@ -2,248 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983793B3FBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56643B3FC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhFYIuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:50:54 -0400
-Received: from srv6.fidu.org ([159.69.62.71]:53130 "EHLO srv6.fidu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229839AbhFYIuw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:50:52 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id E2BBCC800B1;
-        Fri, 25 Jun 2021 10:48:30 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id SxXtFunNQB1e; Fri, 25 Jun 2021 10:48:30 +0200 (CEST)
-Received: from [IPv6:2003:e3:7f39:4900:70a0:333d:a81d:761b] (p200300e37f39490070a0333DA81D761B.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:4900:70a0:333d:a81d:761b])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPSA id 52A1EC800AF;
-        Fri, 25 Jun 2021 10:48:30 +0200 (CEST)
-Subject: Re: [PATCH v4 15/17] drm/uAPI: Move "Broadcast RGB" property from
- driver specific to general context
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-Cc:     sunpeng.li@amd.com, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        tzimmermann@suse.de, rodrigo.vivi@intel.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com
-References: <20210618091116.14428-1-wse@tuxedocomputers.com>
- <20210618091116.14428-16-wse@tuxedocomputers.com>
- <20210622102529.5266e87b@eldfell>
- <70d89fe2-4e45-7ea9-2509-15257ef222f8@tuxedocomputers.com>
- <20210623104836.77734bad@eldfell>
- <2fc0547c-2968-1f52-4c07-82be58a41ef8@tuxedocomputers.com>
- <20210623142659.16672192@eldfell>
-From:   Werner Sembach <wse@tuxedocomputers.com>
-Message-ID: <62df9501-1ac5-8e1f-b0e2-c9cbfd534395@tuxedocomputers.com>
-Date:   Fri, 25 Jun 2021 10:48:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230147AbhFYIwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229839AbhFYIwt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 04:52:49 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D82C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 01:50:25 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id r16so11497619ljk.9
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 01:50:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FpCOlWk3vKWnUnsPZTBmvx+1pyqIKsgkj5HKTtcGYP0=;
+        b=dLvIKi7/XUStuXGU0YbkzxykAcFpHdqB2wSAOdfJTPIqRO+Csa/GF5sHMyTU4RQwx1
+         sDqdCqsWA1rKGDtUnrmHvrGzknRnjJC5NrrKAUiKaIhOYcLL1lWqDfF0/lCen7gB+jFH
+         pDUIkTB0Pemz1E7uP5aePPv+3jBqgr4ml/Do0j1pV5Bw94019cPDHEHhLZHIVDzq70B0
+         RjN3xYe6sPmejKNYzOl+D80R1Jt34K767Q8irxmuNrtQL++X9NzHV4lypZAqq7gwEOv+
+         b3Fd+++yd43rvvJMwXgY95YBor1476h6P+AdVDDt/q74GfQVDJwtGwNNrCsdh/ICiD0/
+         h0jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FpCOlWk3vKWnUnsPZTBmvx+1pyqIKsgkj5HKTtcGYP0=;
+        b=Gs38iINfZn2LCNWOdpQTrr2QTnkeGbU/6B0sLi+RXDtwMrhbO6nqPIcChMz7t2Zm/J
+         RGQfCExGGmXIm4IrDhHkEfxROSwXEad3FpyeWn3UqBVkh/M0vNVvlwTfabVdz3/QeCd6
+         XhCSg69WBqACUm1m/SQFkK/VA7lZxSBAGbqGtzEs1gICvwBjf7hyr82CL4J9awODescg
+         45DPE4e5g55LBd2ueCSWg6fqVenaVbjgG63rR17cuYzPJL7+EBKFLcGbDor/CN0QAbmn
+         iGmb7jaCRwyDPDQhQjVqj3l2BXebhGht9WuJhct9F98Fat+AsYPYnrtuNqD10yjIX3zJ
+         nkRA==
+X-Gm-Message-State: AOAM533UfogvRrfihU94zaGbdCVu5fXGcdtr34EwSKQ8BeqXSUZ6LjfI
+        tbsx4DwmG6a3U26mIF0jMA9GBHmKW1XFEWfi70wJLA==
+X-Google-Smtp-Source: ABdhPJwTRBmiR0FvqO0X6rrlb/CZlN18HS8p4BRLy4c5OSXbfE8aldbtagWqzj3SnsS/Dd2qxqHMILG7WvSAMsJdN4Y=
+X-Received: by 2002:a2e:8941:: with SMTP id b1mr7486483ljk.284.1624611024055;
+ Fri, 25 Jun 2021 01:50:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210623142659.16672192@eldfell>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <efad4771-c9d1-5103-de9c-0ec5fa78ee24@linux.intel.com>
+ <CAKfTPtDsya_zdUB1ARmoxQs5xWS8o-XrrzyNx5R1iSNrchUXtg@mail.gmail.com>
+ <fc0efe4e-0a81-03b8-08cb-029468c57782@linux.intel.com> <CAKfTPtCKavGWja42NdTmb+95ppG-WxYzoTJMmtgkCQcA-btfBw@mail.gmail.com>
+ <4aa674d9-db49-83d5-356f-a20f9e2a7935@linux.intel.com> <CAKfTPtDJaTr_HR2t=9CQ-9x6keu-qzx6okci92AdW5cJG8J9zg@mail.gmail.com>
+ <2d2294ce-f1d1-f827-754b-4541c1b43be8@linux.intel.com> <ade18978-cd67-6215-28f0-4857c66a99fb@linux.intel.com>
+ <CAKfTPtA8nr-fgt4Nw6XqQyT_TEx4uL3nK-ba0xGfkONO+BPG3Q@mail.gmail.com>
+ <577b0aae-0111-97aa-0c99-c2a2fcfb5e2e@linux.intel.com> <20210512135955.suzvxxfilvwg33y2@e107158-lin.cambridge.arm.com>
+ <729718fd-bd2c-2e0e-46f5-8027281e5821@linux.intel.com> <CAKfTPtCYU2AW3sJ-=QJ=hE+tFHS8wUBZ9vSsZp8q2AozxeA5mQ@mail.gmail.com>
+ <366aa93b-ecbf-ac0f-cd9e-3376b20d4929@linux.intel.com>
+In-Reply-To: <366aa93b-ecbf-ac0f-cd9e-3376b20d4929@linux.intel.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 25 Jun 2021 10:50:12 +0200
+Message-ID: <CAKfTPtC157Z2vsnW3MLqKcMBYB-0D255rYr1Y-vD5xYDLBNoVQ@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Rate limit calls to update_blocked_averages()
+ for NOHZ
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Qais Yousef <qais.yousef@arm.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Dietmar Eggeman <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 18 Jun 2021 at 18:14, Tim Chen <tim.c.chen@linux.intel.com> wrote:
+>
+>
+>
+> On 6/18/21 3:28 AM, Vincent Guittot wrote:
+>
+> >>
+> >> The current logic is when a CPU becomes idle, next_balance occur very
+> >> shortly (usually in the next jiffie) as get_sd_balance_interval returns
+> >> the next_balance in the next jiffie if the CPU is idle.  However, in
+> >> reality, I saw most CPUs are 95% busy on average for my workload and
+> >> a task will wake up on an idle CPU shortly.  So having frequent idle
+> >> balancing towards shortly idle CPUs is counter productive and simply
+> >> increase overhead and does not improve performance.
+> >
+> > Just to make sure that I understand your problem correctly:  Your problem is:
+> > - that we have an ilb happening on the idle CPU and consume cycle
+>
+> That's right.  The cycles are consumed heavily in update_blocked_averages()
+> when cgroup is enabled.
 
-Am 23.06.21 um 13:26 schrieb Pekka Paalanen:
-> On Wed, 23 Jun 2021 12:10:14 +0200
-> Werner Sembach <wse@tuxedocomputers.com> wrote:
+But they are normally consumed on an idle CPU and the ILB checks
+need_resched()  before running load balance for the next idle CPU.
+
+Does it mean that your problem is coming from update_blocked_average()
+spending a long time with rq_lock_irqsave and increasing the wakeup
+latency of your short running task ?
+
 >
->> Am 23.06.21 um 09:48 schrieb Pekka Paalanen:
->>> On Tue, 22 Jun 2021 11:57:53 +0200
->>> Werner Sembach <wse@tuxedocomputers.com> wrote:
->>>  
->>>> Am 22.06.21 um 09:25 schrieb Pekka Paalanen:  
->>>>> On Fri, 18 Jun 2021 11:11:14 +0200
->>>>> Werner Sembach <wse@tuxedocomputers.com> wrote:
->>>>>    
->>>>>> Add "Broadcast RGB" to general drm context so that more drivers besides
->>>>>> i915 and gma500 can implement it without duplicating code.
->>>>>>
->>>>>> Userspace can use this property to tell the graphic driver to use full or
->>>>>> limited color range for a given connector, overwriting the default
->>>>>> behaviour/automatic detection.
->>>>>>
->>>>>> Possible options are:
->>>>>>     - Automatic (default/current behaviour)
->>>>>>     - Full
->>>>>>     - Limited 16:235
->>>>>>
->>>>>> In theory the driver should be able to automatically detect the monitors
->>>>>> capabilities, but because of flawed standard implementations in Monitors,
->>>>>> this might fail. In this case a manual overwrite is required to not have
->>>>>> washed out colors or lose details in very dark or bright scenes.
->>>>>>
->>>>>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
->>>>>> ---
->>>>>>  drivers/gpu/drm/drm_atomic_helper.c |  4 +++
->>>>>>  drivers/gpu/drm/drm_atomic_uapi.c   |  4 +++
->>>>>>  drivers/gpu/drm/drm_connector.c     | 43 +++++++++++++++++++++++++++++
->>>>>>  include/drm/drm_connector.h         | 16 +++++++++++
->>>>>>  4 files changed, 67 insertions(+)
->>>>>>
->>>>>> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
->>>>>> index 90d62f305257..0c89d32efbd0 100644
->>>>>> --- a/drivers/gpu/drm/drm_atomic_helper.c
->>>>>> +++ b/drivers/gpu/drm/drm_atomic_helper.c
->>>>>> @@ -691,6 +691,10 @@ drm_atomic_helper_check_modeset(struct drm_device *dev,
->>>>>>  			if (old_connector_state->preferred_color_format !=
->>>>>>  			    new_connector_state->preferred_color_format)
->>>>>>  				new_crtc_state->connectors_changed = true;
->>>>>> +
->>>>>> +			if (old_connector_state->preferred_color_range !=
->>>>>> +			    new_connector_state->preferred_color_range)
->>>>>> +				new_crtc_state->connectors_changed = true;
->>>>>>  		}
->>>>>>  
->>>>>>  		if (funcs->atomic_check)
->>>>>> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
->>>>>> index c536f5e22016..c589bb1a8163 100644
->>>>>> --- a/drivers/gpu/drm/drm_atomic_uapi.c
->>>>>> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
->>>>>> @@ -798,6 +798,8 @@ static int drm_atomic_connector_set_property(struct drm_connector *connector,
->>>>>>  		state->max_requested_bpc = val;
->>>>>>  	} else if (property == connector->preferred_color_format_property) {
->>>>>>  		state->preferred_color_format = val;
->>>>>> +	} else if (property == connector->preferred_color_range_property) {
->>>>>> +		state->preferred_color_range = val;
->>>>>>  	} else if (connector->funcs->atomic_set_property) {
->>>>>>  		return connector->funcs->atomic_set_property(connector,
->>>>>>  				state, property, val);
->>>>>> @@ -877,6 +879,8 @@ drm_atomic_connector_get_property(struct drm_connector *connector,
->>>>>>  		*val = state->max_requested_bpc;
->>>>>>  	} else if (property == connector->preferred_color_format_property) {
->>>>>>  		*val = state->preferred_color_format;
->>>>>> +	} else if (property == connector->preferred_color_range_property) {
->>>>>> +		*val = state->preferred_color_range;
->>>>>>  	} else if (connector->funcs->atomic_get_property) {
->>>>>>  		return connector->funcs->atomic_get_property(connector,
->>>>>>  				state, property, val);
->>>>>> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
->>>>>> index aea03dd02e33..9bc596638613 100644
->>>>>> --- a/drivers/gpu/drm/drm_connector.c
->>>>>> +++ b/drivers/gpu/drm/drm_connector.c
->>>>>> @@ -905,6 +905,12 @@ static const struct drm_prop_enum_list drm_active_color_format_enum_list[] = {
->>>>>>  	{ DRM_COLOR_FORMAT_YCRCB420, "ycbcr420" },
->>>>>>  };
->>>>>>  
->>>>>> +static const struct drm_prop_enum_list drm_preferred_color_range_enum_list[] = {
->>>>>> +	{ DRM_MODE_COLOR_RANGE_UNSET, "Automatic" },
->>>>>> +	{ DRM_MODE_COLOR_RANGE_FULL, "Full" },
->>>>>> +	{ DRM_MODE_COLOR_RANGE_LIMITED_16_235, "Limited 16:235" },    
->>>>> Hi,
->>>>>
->>>>> the same question here about these numbers as I asked on the "active
->>>>> color range" property.
->>>>>    
->>>>>> +};
->>>>>> +
->>>>>>  static const struct drm_prop_enum_list drm_active_color_range_enum_list[] = {
->>>>>>  	{ DRM_MODE_COLOR_RANGE_UNSET, "Unknown" },
->>>>>>  	{ DRM_MODE_COLOR_RANGE_FULL, "Full" },
->>>>>> @@ -1243,6 +1249,13 @@ static const struct drm_prop_enum_list dp_colorspaces[] = {
->>>>>>   *	drm_connector_attach_active_color_format_property() to install this
->>>>>>   *	property.
->>>>>>   *
->>>>>> + * Broadcast RGB:
->>>>>> + *	This property is used by userspace to change the used color range. When
->>>>>> + *	used the driver will use the selected range if valid for the current
->>>>>> + *	color format. Drivers to use the function
->>>>>> + *	drm_connector_attach_preferred_color_format_property() to create and
->>>>>> + *	attach the property to the connector during initialization.    
->>>>> An important detail to document here is: does userspace need to
->>>>> take care that pixel data at the connector will already match the set
->>>>> range, or will the driver program the hardware to produce the set range?    
->>>> Since until now, the userspace didn't even know for sure if RGB or YCbCr and therefore which full/limited format was
->>>> used I guess it's all kernel space conversion.  
->>>>> If the former, then I'm afraid the preference/active property pair
->>>>> design does not work. Userspace needs to make sure the content is in
->>>>> the right range, so the driver cannot second-guess that afterwards.
->>>>>
->>>>> If the latter, then what does the driver assume about color range just
->>>>> before the automatic conversion to the final color range, and does the
->>>>> range conversion happen as the final step in the color pipeline?
->>>>>
->>>>> If I remember the discussion about Intel right, then the driver does
->>>>> the latter and assume that userspace programs KMS to always produce
->>>>> full range pixels. There is no provision for userspace to produce
->>>>> limited range pixels, IIRC.    
->>>> I think I remember this too from an answer to one of the revisions of this patchset.  
->>> As long as you keep the old KMS property as is, just moving code so it
->>> is used by more drivers, this is fine and one can't do otherwise anyway.
->>>
->>> (The rest of this email is merely pondering the future, so not about
->>> this patch in particular.)
->>>
->>>
->>> But if we had a new, more general property for the range reported to
->>> monitors via infoframes, then it would be worth to re-visit the design.
->>> The HDR properties only set the infoframe and expect userspace to make
->>> sure that the pixels actually correspond to what the infoframes tell
->>> the monitor. One can't do HDR tone mapping automatically in the kernel,
->>> so in that sense the HDR property behaviour is obvious. But which
->>> behaviour would fit range property or others better, I'm not sure.
->>>
->>> Generally there seems to be two approaches to designing KMS properties:
->>>
->>> - Let userspace describe what data it has and what data should be sent
->>>   to a monitor, and let the kernel driver magically come up with a
->>>   conversion.
->>>
->>> - Only userspace understands how the pixel data is encoded, and
->>>   programs the transformations (DEGAMMA/CTM/GAMMA etc.) such, that the
->>>   result is what a monitor expects based on e.g. infoframes.  
->> Why not both?
-> Because "both" means you have overlapping sets of properties that might
-> contradict each other. Or then you need a switch between the two models.
+> > - or that the ilb will pull a task on an idle CPU on which a task will
+> > shortly wakeup which ends to 2 tasks competing for the same CPU.
+> >
 >
->> This patchset is thought to control what's happening "on the cable",
->> so if the input data is in a different format, the kernel has to
->> convert it.
-> Right, if that is the desired semantics.
+> Because for the OLTP workload I'm looking at, we have tasks that sleep
+> for a short while and wake again very shortly (i.e. the CPU actually
+> is ~95% busy on average), pulling tasks to such a CPU is really not
+> helpful to improve overall CPU utilization in the system.  So my
+> intuition is for such almost fully busy CPU, we should defer load
+> balancing to it (see prototype patch 3).
+
+Note that this is at the opposite of what you said earlier:
+"
+Though in our test environment, sysctl_sched_migration_cost was kept
+much lower (25000) compared to the default (500000), to encourage
+migrations to idle cpu
+and reduce latency.
+"
+
+But, it will be quite hard to find a value that fits to requirements
+for everybody and some will have UCs for which they want to pull tasks
+even if the CPU is 95% busy; You can have 2ms of idle time but having
+a utilization above 95% and an ILB inside a Core or at LLC is somewhat
+cheap and would take advantage of those 2ms
+
 >
-> That's not how the HDR property works. Kernel does not convert there.
-> The HDR property only sets infoframes that the monitor interprets.
+> Tim
 >
->> Maybe in the future there could be an additional set of "input-"
->> properties. aka "input bpc", "input color format", and "input color
->> range". With an additional constraint that if "input-" property ==
->> "active-" property the kernel is not allowed to do any conversion
->> regarding this aspect, giving userspace full control if wanted.
-> If by "input" you mean "the result from userspace provided content
-> going through the configured KMS pixel pipeline", then yes. But it's
-> hard to put it into words accurately.
 >
-> The FB could contain whatever which userspace then programs DEGAMMA and
-> CTM to produce what would be the "input" pixels for example.
 >
-> This is getting closer to the "abstract KMS pipeline" idea which has
-> been predicted to fall apart in the email thread linked below.
-Ok, I'm not deep enough in the topic. For this patchset anyways I try to stick to the preexisting behavior of "max bpc"
-and "Broadcast RGB", which I believe is the "on the cable/kernel does the conversion" discussed. I will double check on
-that before I submit the next revision.
 >
->>> Doing the former requires policy in the kernel. If there is a
->>> specification that uniquely defines what the conversion is, this is
->>> good. But if not or if there are artistic decisions to be made, like
->>> with HDR tone mapping, then it doesn't work.
->>>
->>> OTOH, the former approach allows the driver to use any and all hardware
->>> features it has to realize the conversion, perhaps taking advantage of
->>> even fixed-function hardware blocks. The latter approach is much harder
->>> to map to hardware features.
->>>
->>> This dilemma has been discussed in length in
->>> https://lists.freedesktop.org/archives/dri-devel/2021-June/311689.html
->>>
-> Thanks,
-> pq
