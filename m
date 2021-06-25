@@ -2,178 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF7C3B4773
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FD93B4778
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbhFYQfS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Jun 2021 12:35:18 -0400
-Received: from out28-171.mail.aliyun.com ([115.124.28.171]:33674 "EHLO
-        out28-171.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbhFYQfR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 12:35:17 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436534|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.252999-0.00360188-0.743399;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047212;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.KY.h8bx_1624638772;
-Received: from zhouyanjie-virtual-machine(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KY.h8bx_1624638772)
-          by smtp.aliyun-inc.com(10.147.41.231);
-          Sat, 26 Jun 2021 00:32:53 +0800
-Date:   Sat, 26 Jun 2021 00:32:51 +0800
-From:   =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com
-Subject: Re: [PATCH v3 4/4] MIPS: CI20: Add second percpu timer for SMP.
-Message-ID: <20210626003251.02312e1e@zhouyanjie-virtual-machine>
-In-Reply-To: <67L9VQ.H1SRDC272GKW@crapouillou.net>
-References: <1624547189-61079-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1624547189-61079-5-git-send-email-zhouyanjie@wanyeetech.com>
-        <5C99VQ.EJKI9MPO7XXO1@crapouillou.net>
-        <20210625231942.32945490@zhouyanjie-virtual-machine>
-        <67L9VQ.H1SRDC272GKW@crapouillou.net>
-X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S229922AbhFYQin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 12:38:43 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:56096 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229630AbhFYQim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 12:38:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=T+2AZqZ/2b1WKu9bOF0NlpVpI3gvGrzpNuubkbB7csA=; b=rfl06C/1fRVC7umAQcMO/zyfMt
+        JRgQ4p3iSfBEidWiJvjmq7mEzPgywhhOceNMNfCMF7v8ObeISZDO6f4nQLqY0rDWFIBKQQwZX5I9L
+        feMPq1iMNKdTANKS9d0xc4WIsyXVoHAoPOPV4a5daIExejy2S5qimdxYyRye1GJTJu0A=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lwoo9-00B7fE-8y; Fri, 25 Jun 2021 18:35:57 +0200
+Date:   Fri, 25 Jun 2021 18:35:57 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Voon, Weifeng" <weifeng.voon@intel.com>
+Cc:     "Ling, Pei Lee" <pei.lee.ling@intel.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        Wong Vee Khee <vee.khee.wong@linux.intel.com>,
+        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
+        "Tan, Tee Min" <tee.min.tan@intel.com>,
+        "Sit, Michael Wei Hong" <michael.wei.hong.sit@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next V1 3/4] net: stmmac: Reconfigure the PHY WOL
+ settings in stmmac_resume()
+Message-ID: <YNYF7XCyCIuwT0mT@lunn.ch>
+References: <20210621094536.387442-1-pei.lee.ling@intel.com>
+ <20210621094536.387442-4-pei.lee.ling@intel.com>
+ <YNCOqGCDgSOy/yTP@lunn.ch>
+ <CH0PR11MB53806E2DC74B2B9BE8F84D7088089@CH0PR11MB5380.namprd11.prod.outlook.com>
+ <YNONPZAfmdyBMoL5@lunn.ch>
+ <CH0PR11MB538084AFEA548F4B453C624F88079@CH0PR11MB5380.namprd11.prod.outlook.com>
+ <YNSLQpNsNhLkK8an@lunn.ch>
+ <CH0PR11MB53806D16AF301F16A298C70C88069@CH0PR11MB5380.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CH0PR11MB53806D16AF301F16A298C70C88069@CH0PR11MB5380.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-
-于 Fri, 25 Jun 2021 16:47:30 +0100
-Paul Cercueil <paul@crapouillou.net> 写道:
-
-> Hi Zhou,
+> I would like to rephase the commit message to make things clear:
 > 
-> Le ven., juin 25 2021 at 23:19:42 +0800, 周琰杰 
-> <zhouyanjie@wanyeetech.com> a écrit :
-> > Hi Paul,
-> > 
-> > 于 Fri, 25 Jun 2021 12:31:17 +0100
-> > Paul Cercueil <paul@crapouillou.net> 写道:
-> >   
-> >>  Hi Zhou,
-> >> 
-> >>  Le jeu., juin 24 2021 at 23:06:29 +0800, 周琰杰 (Zhou Yanjie)
-> >>  <zhouyanjie@wanyeetech.com> a écrit :  
-> >>  > 1.Add a new TCU channel as the percpu timer of core1, this is to
-> >>  >   prepare for the subsequent SMP support. The newly added
-> >>  > channel will not adversely affect the current single-core state.
-> >>  > 2.Adjust the position of TCU node to make it consistent with the
-> >>  >   order in jz4780.dtsi file.  
-> >> 
-> >>  That's a bit superfluous, the order matters when adding new nodes,
-> >>  but once they are added, moving them around only cause annoyance.
-> >>   
-> >>  >
-> >>  > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> >>  > ---
-> >>  >
-> >>  > Notes:
-> >>  >     v2:
-> >>  >     New patch.
-> >>  >
-> >>  >     v2->v3:
-> >>  >     No change.
-> >>  >
-> >>  >  arch/mips/boot/dts/ingenic/ci20.dts | 21 +++++++++++----------
-> >>  >  1 file changed, 11 insertions(+), 10 deletions(-)
-> >>  >
-> >>  > diff --git a/arch/mips/boot/dts/ingenic/ci20.dts
-> >>  > b/arch/mips/boot/dts/ingenic/ci20.dts
-> >>  > index 8877c62..70005cc 100644
-> >>  > --- a/arch/mips/boot/dts/ingenic/ci20.dts
-> >>  > +++ b/arch/mips/boot/dts/ingenic/ci20.dts
-> >>  > @@ -118,6 +118,17 @@
-> >>  >  	assigned-clock-rates = <48000000>;
-> >>  >  };
-> >>  >
-> >>  > +&tcu {
-> >>  > +	/*
-> >>  > +	 * 750 kHz for the system timers and 3 MHz for the
-> >>  > clocksources,
-> >>  > +	 * use channel #0 and #1 for the per cpu system timers,
-> >>  > and use
-> >>  > +	 * channel #2 for the clocksource.
-> >>  > +	 */
-> >>  > +	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu  
-> >>  > TCU_CLK_TIMER1>,  
-> >>  > +					  <&tcu
-> >>  > TCU_CLK_TIMER2>, <&tcu TCU_CLK_OST>;
-> >>  > +	assigned-clock-rates = <750000>, <750000>, <3000000>,
-> >>  > <3000000>;  
-> >> 
-> >>  Ideally you'd set TIMER1 to 3 MHz and TIMER2 to 750 kHz,
-> >> otherwise it
-> >>  kind of breaks support for older kernels (they would still boot,
-> >> but with a very slow clocksource). So in the new DTS you could use
-> >> the timer0 clock for CPU #0, timer1 for the clocksource, and
-> >> timer2+ for cpus > 0.  
-> > 
-> > I checked the ingenic-timer driver, and it seems that the last TCU
-> > channel is always used as the clocksource in the driver, so it seems
-> > that we can only use timer2 as the clocksource in smp mode. Maybe we
-> > should add a note for smp is closed in the comment. And I found
-> > that I missed a problem, Nikolaus Schaller once reported that
-> > because the frequency of the tcu timer (only 16bit) used to provide
-> > the clocksource
-> > is too high, there will be a chance that the system will get stuck
-> > before the clocksource is switched to ost. And reducing the 
-> > clocksource
-> > to 750kz can prevent it from happening. I will add this part to v4.
-> > When this part is added, both clockevent and clocksource will be
-> > 750kHz, but the 750kHz clocksource is only temporary, because it
-> > will then switch to the clocksource provided by ost, and ost works
-> > at 3MHz.  
+> After PHY received a magic packet, the PHY WOL event will be
+> triggered. At the same time, the "Magic Packet Match Detected" bit
+> is set. In order for the PHY WOL event to be triggered again, the 
+> WOL event status of "Magic Packet Match Detected" bit needs to be 
+> cleared. When the PHY is in polling mode, the WOL event status needs
+> to be manually cleared.
 > 
-> Ok, then first change the clocksource to 750 kHz, then update it with 
-> timer2.
+> Ethtool settings will remain with WOL enabled after a S3/S4
+> suspend resume cycle as expected. Hence, the driver should
+> reconfigure the PHY settings to reenable/disable WOL
+> depending on the ethtool WOL settings in the MAC resume flow.
+> The PHY set_wol flow would clear the WOL event status.
 
-Sure, I will do it in v4.
+I would still argue that making use of a WoL interrupts and PHY
+polling is just wrong. But i assume you cannot fix this? You have a
+hardware design error?
 
-Thanks and best regards!
+The problem with this solution is you need to modify every MAC driver
+using the Marvell PHY. It does not scale.
 
-> 
-> Cheers,
-> -Paul
-> 
-> > 
-> > Thanks and best regards!
-> >   
-> >> 
-> >>  Cheers,
-> >>  -Paul
-> >>   
-> >>  > +};
-> >>  > +
-> >>  >  &mmc0 {
-> >>  >  	status = "okay";
-> >>  >
-> >>  > @@ -522,13 +533,3 @@
-> >>  >  		bias-disable;
-> >>  >  	};
-> >>  >  };
-> >>  > -
-> >>  > -&tcu {
-> >>  > -	/*
-> >>  > -	 * 750 kHz for the system timer and 3 MHz for the
-> >>  > clocksource,
-> >>  > -	 * use channel #0 for the system timer, #1 for the
-> >>  > clocksource.
-> >>  > -	 */
-> >>  > -	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu  
-> >>  > TCU_CLK_TIMER1>,  
-> >>  > -					  <&tcu TCU_CLK_OST>;
-> >>  > -	assigned-clock-rates = <750000>, <3000000>, <3000000>;
-> >>  > -};
-> >>  > --
-> >>  > 2.7.4
-> >>  >  
-> >>   
-> >   
-> 
+Please try to find a solution within phylib or the marvell
+driver. Something which will work for any broken setup which is using
+WoL interrupts combined with polling.
 
+    Andrew
