@@ -2,160 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347AE3B40F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D953B40F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhFYJ4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
+        id S231194AbhFYJ5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbhFYJ4d (ORCPT
+        with ESMTP id S229940AbhFYJ5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:56:33 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10165C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:54:12 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id w21so18379601qkb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:54:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5ysOTdnWB+3PCxVRgIJekXfDDaWu9A++3czkxH4rPKQ=;
-        b=qhApkcmL8RA1knZoI1WXcQEBOKedcnK9s46D+i4D4othZbJ4zY6NkWC4g2QZs7AttZ
-         0ANmpfp06zP6l/LSXS/W+2Lx8CZd40+uv1F7/kPHCGc8FKNsS5Jh7SQnPp5lJMYuMmsH
-         65An5AarVssHqDizqgDqdIEL89sM1M1n0CSk0CaVTlxg9q3w0e0QTs096yTWjYspsip/
-         DJONJwUJpjYBvPt8wch4HvWA4ekqvoPlZ/92BdPqiHdflOU1W2SbZTA7TLMTF1hTK6Yf
-         Tx9en6VaiAlNLVatdqjHM3WqxMbqTVJ0GDeVidYZyOM45l5801Jyqb3Td+IAfxL+EwdI
-         KOPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5ysOTdnWB+3PCxVRgIJekXfDDaWu9A++3czkxH4rPKQ=;
-        b=XJB4HUvUcp47/883YB1FG1/1IZNdBRnmD44ROd9rZhD8VHKojwhSSt1J65EXHdr03x
-         HLKY4IzjFjnuDvzDuhtzFPaaKpvDRusHxA9qRyygfj3qXNabaTFD4O2OYiCkxA1LZEi2
-         WnGPP7CmlJq0tblROXnhyO69Cz9x0rEXBI//r+L1742Qwyhj8btfK7Lb6I7FBVHK2uaq
-         Ylle5CpLGD6/xa/xIsTCaUd1x/cI3/PjydhAsPo/lvywM3MOT36nYLFr7zenSzAlkz8g
-         PhSGSOu/2aMOUNZ0Dn0IfkEgMh5AOMYFH2CNg/nkk6GFcacq2ez6EXvB5CYNZ1t8OYSr
-         f26A==
-X-Gm-Message-State: AOAM5318t/s62/nP+Cs9AdSnHVgkOY6fXyQPKfWa4/BtgMEb+V72DowJ
-        3L/k5tkn6DAePsxf4lMV7NmVlxTwjSSlIxfekBc1yiSZc7c=
-X-Google-Smtp-Source: ABdhPJyVl8ZdxXr8z7xkfs2ag+GwdcePtI6ZoyNQcCfAV2qdGq0di2N35Dj6mVVFN3tkT+fmPId/mr5nmtTetOlcWmI=
-X-Received: by 2002:a37:8081:: with SMTP id b123mr10671108qkd.231.1624614850950;
- Fri, 25 Jun 2021 02:54:10 -0700 (PDT)
+        Fri, 25 Jun 2021 05:57:33 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975B4C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:55:12 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lwiYI-0000ds-Ik; Fri, 25 Jun 2021 11:55:10 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lwiYI-00028u-9I; Fri, 25 Jun 2021 11:55:10 +0200
+Date:   Fri, 25 Jun 2021 11:55:10 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Sven Van Asbroeck <TheSven73@gmail.com>,
+        Clemens Gruber <clemens.gruber@pqgruber.com>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        linux-pwm@vger.kernel.org
+Subject: Re: PWM-Patches for next merge window
+Message-ID: <20210625095510.gnlzgzx24gotnace@pengutronix.de>
+References: <YJVhLrkeNXBp6M1p@workstation.tuxnet>
+ <20210507231831.zmvyspcq7xhm25y4@pengutronix.de>
+ <YLUK8GXHaBYyVe1R@workstation.tuxnet>
+ <YLn3MZ+6HJM/UrRT@orome.fritz.box>
+ <20210607060827.vxdihsfqtw3otyco@pengutronix.de>
+ <YL4vzvznTzqih0pA@orome.fritz.box>
+ <20210607185158.jweahkoa3cxwl2nh@pengutronix.de>
+ <20210609204144.nkksqjovs2yqfiyo@pengutronix.de>
+ <YMIPjGtYfby6ZXKl@orome.fritz.box>
+ <20210621064745.v7ndjlybjav7ai6y@pengutronix.de>
 MIME-Version: 1.0
-References: <000000000000e61e2105c58fea48@google.com> <20210625085140.1735-1-hdanton@sina.com>
- <CACT4Y+YzgaZjLCOjvhcDC5YRjjF2OBp1XE-vS5+AZOmwmneg0Q@mail.gmail.com> <20210625094638.1791-1-hdanton@sina.com>
-In-Reply-To: <20210625094638.1791-1-hdanton@sina.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 25 Jun 2021 11:53:59 +0200
-Message-ID: <CACT4Y+amrcRo=1KuKHoN7L6JoCH0Bakt5dveZt7iZDhqpSu4nA@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in v4l2_ioctl (2)
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     syzbot <syzbot+19c5a4b75931e8d63aab@syzkaller.appspotmail.com>,
-        ezequiel@collabora.com, hverkuil-cisco@xs4all.nl,
-        lijian@yulong.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, mchehab@kernel.org,
-        sakari.ailus@linux.intel.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="njva6pmtarrgfmyi"
+Content-Disposition: inline
+In-Reply-To: <20210621064745.v7ndjlybjav7ai6y@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 11:46 AM Hillf Danton <hdanton@sina.com> wrote:
->
-> On Fri, 25 Jun 2021 11:08:57 +0200 Dmitry Vyukov wrote:
-> >On Fri, Jun 25, 2021 at 10:52 AM Hillf Danton wrote:
-> >>
-> >> Given the uaf in the ioctl path, open count is needed and should be
-> >> maintained by stk and is implemented in the diff below with mutex - it
-> >> is locked at file open time, released at file release time and aquired
-> >> at disconnect time.
-> >>
-> >> This can be a quick fix to the uaf, though, lights on why the video_get(vdev)
-> >> in v4l2_open() fails to prevent stk camera from going home too early are
-> >> welcome. Is it the fault on the driver side without an eye on open count?
-> >>
-> >> +++ x/drivers/media/usb/stkwebcam/stk-webcam.c
-> >> @@ -624,8 +624,10 @@ static int v4l_stk_open(struct file *fp)
-> >>                 dev->first_init = 0;
-> >>
-> >>         err = v4l2_fh_open(fp);
-> >> -       if (!err)
-> >> +       if (!err) {
-> >>                 usb_autopm_get_interface(dev->interface);
-> >> +               mutex_trylock(&dev->free_mutex);
-> >
-> >I haven't read all of it, but doing mutex_trylock w/o checking the
-> >return value looks very fishy. Can it ever be the right thing to
-> >do?... E.g. the next line we unconditionally do mutex_unlock, are we
-> >potentially unlocking a non-locked mutex?
->
-> I am having difficulty understanding your point until I see next line...
 
-Right, the next line unlocks a different mutex, so ignore the part
-about the next line.
+--njva6pmtarrgfmyi
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-But I am still confused about the intention of trylock w/o using the
-return value. I fail to imagine any scenarios where it's the right
-thing to do.
+Hello Thierry,
 
+On Mon, Jun 21, 2021 at 08:47:45AM +0200, Uwe Kleine-K=F6nig wrote:
+> On Thu, Jun 10, 2021 at 03:11:40PM +0200, Thierry Reding wrote:
+> > Small fixes and cleanups are less likely to break things, so I'm going
+> > to apply them after.
+>=20
+> I wonder what's the ideal delay for fixes and cleanups in your book.
+> We're two weeks after merging that high-impact patch series and Linus
+> just released -rc7.
 
-> we have the same habit in regard to replying mails that deliver fix out
-> of our boxes.
->
-> What is your local time now? Wakeup without downing a pint of black tea?
-> Or still working in the late night?
+I don't know Linus' release plan but after reading his -rc7 announcement
+=66rom last weekend and looking what happend in his tree since then, I
+wouldn't be surprised if he cuts v5.13 this weekend.  Even for small
+fixes and cleanups I'd prefer to have them in next before the merge
+window opens.
 
-It's 11:53am, so I am properly caffeinated already :)
+Also if you find an issue for a patch, it's quite demotivating to get
+feedback when the merge window is already about to open because it's too
+late then to discuss and rework. The devm_pwmchip_add patch is about to
+miss its second merge window already ... :-\
 
-> Thanks for taking a look at it.
->
-> Hillf
-> >
-> >
-> >> +       }
-> >>         mutex_unlock(&dev->lock);
-> >>         return err;
-> >>  }
-> >> @@ -633,6 +635,7 @@ static int v4l_stk_open(struct file *fp)
-> >>  static int v4l_stk_release(struct file *fp)
-> >>  {
-> >>         struct stk_camera *dev = video_drvdata(fp);
-> >> +       int rc;
-> >>
-> >>         mutex_lock(&dev->lock);
-> >>         if (dev->owner == fp) {
-> >> @@ -645,7 +648,9 @@ static int v4l_stk_release(struct file *
-> >>
-> >>         usb_autopm_put_interface(dev->interface);
-> >>         mutex_unlock(&dev->lock);
-> >> -       return v4l2_fh_release(fp);
-> >> +       rc = v4l2_fh_release(fp);
-> >> +       mutex_unlock(&dev->free_mutex);
-> >> +       return rc;
-> >>  }
-> >>
-> >>  static ssize_t stk_read(struct file *fp, char __user *buf,
-> >> @@ -1306,6 +1311,7 @@ static int stk_camera_probe(struct usb_i
-> >>
-> >>         spin_lock_init(&dev->spinlock);
-> >>         mutex_init(&dev->lock);
-> >> +       mutex_init(&dev->free_mutex);
-> >>         init_waitqueue_head(&dev->wait_frame);
-> >>         dev->first_init = 1; /* webcam LED management */
-> >>
-> >> @@ -1385,6 +1391,8 @@ static void stk_camera_disconnect(struct
-> >>         video_unregister_device(&dev->vdev);
-> >>         v4l2_ctrl_handler_free(&dev->hdl);
-> >>         v4l2_device_unregister(&dev->v4l2_dev);
-> >> +       mutex_lock(&dev->free_mutex);
-> >> +       mutex_unlock(&dev->free_mutex);
-> >>         kfree(dev);
-> >>  }
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/20210625094638.1791-1-hdanton%40sina.com.
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--njva6pmtarrgfmyi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDVp/oACgkQwfwUeK3K
+7AnS2gf/aneV5IGvEYopKfoURF0lxNext2R3pGtddDRR9p6CQEKHzUxppF/02AF/
+1COwBPN+ej1S7h6WeBMoqWG4jAF07jVKxWuMJSR0KZY9YAWtIqA5U6VAAGo4Nseq
+zy0otv46xWcdmwuSkSTNNzLglu5BRcgZz10qiHa4c0VEpeeOWlp3IsZ+n4Zg2t0/
+NyG2Z2FMkvzp5drJ3CxPGLojLB8MHEhooXpjxnlV367rvpu2wvKWUgT9jFNOi7Wg
+RT+jMqvf40sW9iR+t/nzF/0vFKWHYg+hA6FhxuRtlO+zYbbzu4nqoG0sDqS8qQQR
+Sp2wDTgOVg0jzF9tvRic17/kyDWudw==
+=qAZ2
+-----END PGP SIGNATURE-----
+
+--njva6pmtarrgfmyi--
