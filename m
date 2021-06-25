@@ -2,126 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD243B4798
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6003B479D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhFYQ4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 12:56:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbhFYQ4o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 12:56:44 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A138C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 09:54:22 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id u2so5025818plf.3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 09:54:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=l7dX5dgpmPFuySJbZwA/qhXdydYfRA2CAHeZv6VJOdk=;
-        b=iqLixdZ4UQzIfrMpWEvBZKk5Fvm5nRLt8h9LHj6PsJATVMPi7t0AV1zK5ok8y6mRpP
-         +M8ZOCK/fdssvSFI6zERVDwSO0CDJKSow466MIVRQOMvAPt/3YvcZMXzOmooS3BsNUz8
-         aZsOdhZi6YjFTNoNOv1FnZgYDkyYti0HOxNk6ztUJX2NweNGCSJ8iJE762SgA7Loi333
-         S0LK6OC2LSk9yFqBz/NtkI0obfj2RJSGpHwnYt3uFzpzz5dFzr+CKvb95L5lGFpMROQn
-         Nqw/9cNf3YHkpLw0oADqyiPOY42p4HIc0IHJMdkevGMH5NNE0TklGkeGQNzXcUxWFWBy
-         5Hfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=l7dX5dgpmPFuySJbZwA/qhXdydYfRA2CAHeZv6VJOdk=;
-        b=CP374hbK4hOIkMkh5acw7ECZteRsLxGf+l4peq1NdLwY9I/IUXvS65XcB6TzRYyIHa
-         PvhxHe8LJxL02FkcZBbHCGIe7/Amqx/OQ0o5GV58gj/msSFRMmfjVzNOhbrzl/sa8VT3
-         NlMzduHGzryuctVbrT7t20p18+cp7plPqVCTmX6o480udw8kDF9MpsMQ4qD3Oc+hHG2z
-         csIi8k/qDLCzMCaYIZQAJEiGbAuK5IcXnL6FniCOMoWqMX+sxF3aMvH2qJdavVfAruDN
-         SigS+RgoYvqB7+Bq7hl9RB63gW5u49PXA6rTGo2d64pTYNVeOkZVYMLMCZaQwwtmOgnQ
-         9cRA==
-X-Gm-Message-State: AOAM531K9ZMdO7zj3QG7JA0cIA14voa+1FqenoD8OA3I4kTcBSYGYww6
-        jrWM+NB0sG6J3EyXJ0dgMVz0lQ==
-X-Google-Smtp-Source: ABdhPJxoBHY6Quyfae50dLrV3dw6N6ydOo0cfw07RcLuzRCsFLfKsBPoKFLzrHhyox7gDhH1l8Cn4w==
-X-Received: by 2002:a17:90b:1809:: with SMTP id lw9mr12225978pjb.128.1624640061688;
-        Fri, 25 Jun 2021 09:54:21 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id b9sm5826453pfm.124.2021.06.25.09.54.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 09:54:21 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 22:24:18 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-pm@vger.kernel.org, Qian Cai <quic_qiancai@quicinc.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 4/4] cpufreq: CPPC: Add support for frequency
- invariance
-Message-ID: <20210625165418.shi3gkebumqllxma@vireshk-i7>
-References: <cover.1624266901.git.viresh.kumar@linaro.org>
- <f963d09e57115969dae32827ade5558b0467d3a0.1624266901.git.viresh.kumar@linaro.org>
- <20210624094812.GA6095@arm.com>
- <20210624130418.poiy4ph66mbv3y67@vireshk-i7>
- <20210625085454.GA15540@arm.com>
+        id S230087AbhFYQ5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 12:57:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230037AbhFYQ5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 12:57:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6F206193F;
+        Fri, 25 Jun 2021 16:54:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624640086;
+        bh=sEkPgxqfk0VrpshYLRmOVtcvJwj/6++q9U6NcXl8Xug=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=VGzSbCsBsKJxTZsiJ6Ug20dJFEb5OndynFvYA0troZL60sa7Uh8DxWK8wYz4roeEK
+         xnW0cQL4YRDaA0va9cJza66CI/kCFHAfhl5cB4eWh7nhi04GCUjSms7/i4mVQULNYH
+         FY/xxZvBUaHVGF3FW1U/fSjaeHrLnc0j2AVjkts5lmTetTmqRXUkcPPjr/v/5Fxrmo
+         ag9fHA44Oy7i2f7QwXjHxjUDqwVsJ9rVT8mPGBGlfExQAkD1i4MxaDEc1dYFffHdNu
+         wbeSMWQz7gp3EvoJ9frBoEfV2WJEjhDNDxckg1HU9wRocr2HSxBQP7HM+peFxVE75+
+         j8XB3NCviidLw==
+Message-ID: <e427c4e5877e0b036c36eedbe40020047b02a85b.camel@kernel.org>
+Subject: Re: [RFC PATCH] ceph: reduce contention in ceph_check_delayed_caps()
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Luis Henriques <lhenriques@suse.de>,
+        Ilya Dryomov <idryomov@gmail.com>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Date:   Fri, 25 Jun 2021 12:54:44 -0400
+In-Reply-To: <20210625154559.8148-1-lhenriques@suse.de>
+References: <20210625154559.8148-1-lhenriques@suse.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625085454.GA15540@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-06-21, 09:54, Ionela Voinescu wrote:
-> Hey,
+On Fri, 2021-06-25 at 16:45 +0100, Luis Henriques wrote:
+> Function ceph_check_delayed_caps() is called from the mdsc->delayed_work
+> workqueue and it can be kept looping for quite some time if caps keep being
+> added back to the mdsc->cap_delay_list.  This may result in the watchdog
+> tainting the kernel with the softlockup flag.
 > 
-> On Thursday 24 Jun 2021 at 18:34:18 (+0530), Viresh Kumar wrote:
-> > On 24-06-21, 10:48, Ionela Voinescu wrote:
-> > > On Monday 21 Jun 2021 at 14:49:37 (+0530), Viresh Kumar wrote:
-> > > > The Frequency Invariance Engine (FIE) is providing a frequency scaling
-> > > > correction factor that helps achieve more accurate load-tracking.
-> > > [..]
-> > > > +static void cppc_cpufreq_cpu_fie_exit(struct cpufreq_policy *policy)
-> > > > +{
-> > > > +	struct cppc_freq_invariance *cppc_fi;
-> > > > +	int cpu;
-> > > > +
-> > > > +	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-> > > > +		return;
-> > > > +
-> > > > +	/* policy->cpus will be empty here, use related_cpus instead */
-> > > > +	topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_CPPC, policy->related_cpus);
-> > > > +
-> > > > +	for_each_cpu(cpu, policy->related_cpus) {
-> > > > +		cppc_fi = &per_cpu(cppc_freq_inv, cpu);
-> > > 
-> > > Do you think it might be worth having here something like:
-> > > 
-> > > 		if (!cppc_fi->cpu_data)
-> > > 			continue;
-> > > 
-> > > This would be to protect against cases where the platform does not boot
-> > > with all CPUs or the module is loaded after some have already been
-> > > offlined. Unlikely, but..
-> > 
-> > Even in that case policy->cpus will contain all offline+online CPUs (at ->init()
-> > time), isn't it ?
-> > 
+> This patch re-arranges the loop through the caps list so that it initially
+> removes all the caps from list, adding them to a temporary list.  And then, with
+> less locking contention, it will eventually call the ceph_check_caps() for each
+> inode.  Any caps added to the list in the meantime will be handled in the next
+> run.
 > 
-> Right, my bad. I missed cpumask_and(policy->cpus, policy->cpus,
-> cpu_online_mask) being done after init(). It logically seems a bit
-> wrong, but drivers are in control of setting policy->cpus and acting on
-> it, and in this case the driver does the right thing.
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> ---
+> Hi Jeff!
+> 
+> So, I've not based this patch on top of your patchset that gets rid of
+> ceph_async_iput() so that it will make it easier to backport it for stable
+> kernels.  Of course I'm not 100% this classifies as stable material.
+> 
+> Other than that, I've been testing this patch and I couldn't see anything
+> breaking.  Let me know what you think.
+> 
+> (I *think* I've seen a tracker bug for this in the past but I couldn't
+> find it.  I guess it could be added as a 'Link:' tag.)
+> 
+> Cheers,
+> --
+> Luis
+> 
+>  fs/ceph/caps.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+> index a5e93b185515..727e41e3b939 100644
+> --- a/fs/ceph/caps.c
+> +++ b/fs/ceph/caps.c
+> @@ -4229,6 +4229,7 @@ void ceph_check_delayed_caps(struct ceph_mds_client *mdsc)
+>  {
+>  	struct inode *inode;
+>  	struct ceph_inode_info *ci;
+> +	LIST_HEAD(caps_list);
+>  
+>  	dout("check_delayed_caps\n");
+>  	spin_lock(&mdsc->cap_delay_lock);
+> @@ -4239,19 +4240,23 @@ void ceph_check_delayed_caps(struct ceph_mds_client *mdsc)
+>  		if ((ci->i_ceph_flags & CEPH_I_FLUSH) == 0 &&
+>  		    time_before(jiffies, ci->i_hold_caps_max))
+>  			break;
+> -		list_del_init(&ci->i_cap_delay_list);
+> +		list_move_tail(&ci->i_cap_delay_list, &caps_list);
+> +	}
+> +	spin_unlock(&mdsc->cap_delay_lock);
+>  
+> +	while (!list_empty(&caps_list)) {
+> +		ci = list_first_entry(&caps_list,
+> +				      struct ceph_inode_info,
+> +				      i_cap_delay_list);
+> +		list_del_init(&ci->i_cap_delay_list);
+>  		inode = igrab(&ci->vfs_inode);
+>  		if (inode) {
+> -			spin_unlock(&mdsc->cap_delay_lock);
+>  			dout("check_delayed_caps on %p\n", inode);
+>  			ceph_check_caps(ci, 0, NULL);
+>  			/* avoid calling iput_final() in tick thread */
+>  			ceph_async_iput(inode);
+> -			spin_lock(&mdsc->cap_delay_lock);
+>  		}
+>  	}
+> -	spin_unlock(&mdsc->cap_delay_lock);
+>  }
+>  
+>  /*
 
-Do you want me to re-add your Reviewed-by here ?
+I'm not sure this approach is viable, unfortunately. Once you've dropped
+the cap_delay_lock, then nothing protects the i_cap_delay_list head
+anymore.
 
+So you could detach these objects and put them on the private list, and
+then once you drop the spinlock another task could find one of them and
+(e.g.) call __cap_delay_requeue on it, potentially corrupting your list.
+
+I think we'll need to come up with a different way to do this...
 -- 
-viresh
+Jeff Layton <jlayton@kernel.org>
+
