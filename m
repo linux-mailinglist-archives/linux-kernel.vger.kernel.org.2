@@ -2,107 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D633B473B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82BBB3B4741
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhFYQNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 12:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52484 "EHLO
+        id S229818AbhFYQQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 12:16:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbhFYQNw (ORCPT
+        with ESMTP id S229586AbhFYQQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 12:13:52 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC66C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 09:11:31 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id g22so13180424iom.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 09:11:31 -0700 (PDT)
+        Fri, 25 Jun 2021 12:16:09 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01942C061767
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 09:13:48 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id g19-20020a9d12930000b0290457fde18ad0so9799855otg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 09:13:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JtgY0n59q1tx+fNR/p97CokvvcooLuw5v54/bKgT7rw=;
-        b=fAtADPy5FgOFszhL67dMa3mnew1zEdsDxhzn/677t100TxxAfifwQAP1vEZASjeROI
-         zRCJHe2tg4SqNKjzLAQUvmSgVWGLahxHbds+MCRctu1CF+ZjRbjzfURdfFg46RD5YJSa
-         cBQrnRUvvairhk/FRMD0+a2izP1keM8X7X+ic=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MWWpxotgdBre27isI3DwZKQ334uPd/zecV0Lcyc3n7Q=;
+        b=N7zn6P76h5T81mOnWCupIHAcZvozSOjxZGTu/yWBXAFYQ7KtjfLycqT4XiBEFUrId1
+         xuFky7NkApH6BPvpnPP0zRNbC/4HgA3jtVvNGI+RUnb24WxoZeD9R+pzeMjUpHHNOo64
+         tHsRlMmWYgu6iwZ5Y1+vzK6RUg+S1UytBwSb/jEKBmT4hkrEWavEbxCZoV8vrmNjpV+R
+         WjDZQspCHpjwecQvvyvEw3rK09fdE1nXSzAmX3hc1Mn/MId88dV7sZ6g6dO+M1Eg6b/+
+         aznWTPJMenw99Iu2z8iwu/CLCOCmax7ptRtYD5oxbeGmSDu4wg2B69pO0hmJ5I5xAQrT
+         VxUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JtgY0n59q1tx+fNR/p97CokvvcooLuw5v54/bKgT7rw=;
-        b=ZWb75uV/W9SUohF6X4IU9dBFlxJoPovCI5C5e8VWQ7mgN5M1J/oBM+cASvuevoPkAj
-         s4Ytj+D05rGFmbT2H/p6LZF1G2f5WP9Moa4vtVlQwTBFiXX+/JaqGAfW3bEZxrKdmMkV
-         KXoQOZriWlzcNekHX6g3kDMWsC2MusJU/ec21N5pkZYq958SvbGW9ZrX2HUwNv2p3GUy
-         Gh9MokJPHp98nL8UO4fPj69EOwB8avY89FMjkwaB6kfE0Z/8Q6/5+RR1VkVVlZpcA9JX
-         onBZkcq94Cfk2QEdyI1hQQgtraKYAZmStn/GqFb3Nop9VE4eU2udjqq78ZOgP981LntM
-         NF+Q==
-X-Gm-Message-State: AOAM530lXbkRgAMz/7/tXTJW9UuNKMQIZ17ZEGcrjK0Ur8APrtKRfIH7
-        FDzt4HCeGJEkKu3TxzH8K7iqX8NhjdK0Cw==
-X-Google-Smtp-Source: ABdhPJz2xxRRobusj36f4+k4VDOmedqH/Sce+3lN0J/PPd28HDi27zCwx183pTyNvjqKKDnoof+qpw==
-X-Received: by 2002:a02:ccab:: with SMTP id t11mr10239274jap.1.1624637490553;
-        Fri, 25 Jun 2021 09:11:30 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c10sm1546469ild.72.2021.06.25.09.11.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 09:11:30 -0700 (PDT)
-Subject: Re: [PATCH] kunit: Fix merge issue in suite filtering test
-To:     David Gow <davidgow@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>
-Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210625111603.358518-1-davidgow@google.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <99c2564c-4175-7e3e-84c3-3bcb6d4f9d58@linuxfoundation.org>
-Date:   Fri, 25 Jun 2021 10:11:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MWWpxotgdBre27isI3DwZKQ334uPd/zecV0Lcyc3n7Q=;
+        b=IsD2JWuQWkj4m7t6OZAz/37FuSlS+GQ7nekkOtdYnLgyocBZklaVz+Clducaf9X646
+         4vTB1uFCH2/OWuUWwwumyV6a8T2pR+vEibPuJv/U0uT2I+BQFq6X7nLYMr25NIJvd6ou
+         UDltZ6DXh3fxFVhF7nAptxxwAUpmJHvWAj8Tcaax4+lgbGbBer/2RMJT56ISE/B3OwcJ
+         pgmjW3g5RysWA5A/C985WhUHVdvny6zzAZHvczhZQnvp/3q5mD9g+/0kGPUlh/Ey1vwY
+         3cQmeCuJF3i7DJZ65ps7f29oFfdlDAX5X35mvLxGQUr5gfOwa7/D6uWOXydkED2Xqh49
+         yY9A==
+X-Gm-Message-State: AOAM5331S4wK/XfvVN5pfbNCWCtrPtSckmO/ZMY6+oGFN5epdSymMIlA
+        0InqsiZn7epzYEgkQD6kdDlvpA==
+X-Google-Smtp-Source: ABdhPJxTOT8pJDLAz3xdWNJ/+53maozvDLTDh1AQoHyWbRZamb70O7ND1oumpz1JDJMQrWT5GODECg==
+X-Received: by 2002:a05:6830:1309:: with SMTP id p9mr10338163otq.209.1624637628209;
+        Fri, 25 Jun 2021 09:13:48 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id q9sm1509884ots.1.2021.06.25.09.13.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 09:13:47 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 11:13:45 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Kuogee Hsieh <khsieh@codeaurora.org>
+Cc:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, agross@kernel.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] arm64: dts: qcom: sc7180: Add DisplayPort node
+Message-ID: <YNYAuaBrGgdtToph@builder.lan>
+References: <1622758940-13485-1-git-send-email-khsieh@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210625111603.358518-1-davidgow@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1622758940-13485-1-git-send-email-khsieh@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/25/21 5:16 AM, David Gow wrote:
-> There were a couple of errors introuced when
-> "kunit: add unit test for filtering suites by names"[1] was merged in
-> c9d80ffc5a.
+On Thu 03 Jun 17:22 CDT 2021, Kuogee Hsieh wrote:
+
+> Add DP device node on sc7180.
 > 
-> An erroneous '+' was introduced in executor.c, and the executor_test.c
-> file went missing. This causes the kernel to fail to compile if
-> CONFIG_KUNIT is enabled, as reported in [2,3].
-> 
-> As with the original, I've tested by running just the new tests using
-> itself:
-> $ ./tools/testing/kunit/kunit.py run '*exec*'
-> 
-> [1]: https://lore.kernel.org/linux-kselftest/20210421020427.2384721-1-dlatypov@google.com/
-> [2]: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/6IKQX5JXZF7I3NFH4IAWUMHXEQSCPNDP/
-> [3]: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/EKY7ZH5YDCCTSJF2G7XFPMGIXQSUVD3Y/
-> 
-> Fixes: c9d80ffc5a ("kunit: add unit test for filtering suites by names")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: David Gow <davidgow@google.com>
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
 > ---
+> Changes in v2:
+> -- replace msm_dp with dp
+> -- replace dp_opp_table with opp_table
 > 
-> This is another fix for the kunit-fixes branch, where there seems to
-> have been an issue merging the "kunit: add unit test for filtering
-> suites by names" patch here:
-> https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit-fixes&id=c9d80ffc5a0a30955de0b8c5c46a05906d417800
+> Changes in v3:
+> -- correct text of commit title
 > 
-> Again, feel free to squash this into the original patch if that works
-> better.
+> Changes in v4:
+> -- replace dp with mdss_dp
+> -- replace opp_table with dp_opp_table
 > 
+> 
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi |  9 ++++
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi         | 78 ++++++++++++++++++++++++++++
+>  2 files changed, 87 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> index 24d293e..051fb40 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> @@ -786,6 +786,15 @@ hp_i2c: &i2c9 {
+>  	status = "okay";
+>  };
+>  
+> +&mdss_dp {
+> +        status = "okay";
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&dp_hot_plug_det>;
+> +        data-lanes = <0 1>;
+> +        vdda-1p2-supply = <&vdda_usb_ss_dp_1p2>;
+> +        vdda-0p9-supply = <&vdda_usb_ss_dp_core>;
+> +};
+> +
+>  &pm6150_adc {
+>  	charger-thermistor@4f {
+>  		reg = <ADC5_AMUX_THM3_100K_PU>;
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> index 6228ba2..c779ad3 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -3032,6 +3032,13 @@
+>  							remote-endpoint = <&dsi0_in>;
+>  						};
+>  					};
+> +
+> +					port@2 {
+> +						reg = <2>;
+> +						dpu_intf0_out: endpoint {
+> +							remote-endpoint = <&dp_in>;
+> +						};
+> +					};
+>  				};
+>  
+>  				mdp_opp_table: mdp-opp-table {
+> @@ -3148,6 +3155,77 @@
+>  
+>  				status = "disabled";
+>  			};
+> +
+> +			mdss_dp: displayport-controller@ae90000 {
+> +				compatible = "qcom,sc7180-dp";
+> +				status = "disabled";
+> +
+> +				reg = <0 0x0ae90000 0 0x1400>;
+> +
+> +				interrupt-parent = <&mdss>;
+> +				interrupts = <12>;
+> +
+> +				clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
+> +					 <&dispcc DISP_CC_MDSS_DP_AUX_CLK>,
+> +					 <&dispcc DISP_CC_MDSS_DP_LINK_CLK>,
+> +					 <&dispcc DISP_CC_MDSS_DP_LINK_INTF_CLK>,
+> +					 <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK>;
+> +				clock-names = "core_iface", "core_aux", "ctrl_link",
+> +					      "ctrl_link_iface", "stream_pixel";
+> +				#clock-cells = <1>;
+> +				assigned-clocks = <&dispcc DISP_CC_MDSS_DP_LINK_CLK_SRC>,
+> +						  <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK_SRC>;
+> +				assigned-clock-parents = <&dp_phy 0>, <&dp_phy 1>;
+> +				phys = <&dp_phy>;
+> +				phy-names = "dp";
+> +
+> +				operating-points-v2 = <&dp_opp_table>;
+> +				power-domains = <&rpmhpd SC7180_CX>;
+> +
+> +				#sound-dai-cells = <0>;
+> +
+> +				ports {
+> +					#address-cells = <1>;
+> +					#size-cells = <0>;
+> +					port@0 {
+> +						reg = <0>;
+> +						dp_in: endpoint {
+> +							remote-endpoint = <&dpu_intf0_out>;
+> +						};
+> +					};
+> +
+> +					port@1 {
+> +						reg = <1>;
+> +						dp_out: endpoint { };
+> +					};
+> +				};
+> +
+> +				dp_opp_table: dp-opp-table {
 
-Thank you. My bad. Applied to kunit-fixes now.
+I forgot that our discussion about the node name here was on the
+previous revision, _this_ is the patch I will drop the "dp-" from and
+apply.
 
+And as I've looked at this quite a bit now:
 
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-thanks,
+Thanks for following up on the other feedback!
 
--- Shuah
+Regards,
+Bjorn
+
+> +					compatible = "operating-points-v2";
+> +
+> +					opp-160000000 {
+> +						opp-hz = /bits/ 64 <160000000>;
+> +						required-opps = <&rpmhpd_opp_low_svs>;
+> +					};
+> +
+> +					opp-270000000 {
+> +						opp-hz = /bits/ 64 <270000000>;
+> +						required-opps = <&rpmhpd_opp_svs>;
+> +					};
+> +
+> +					opp-540000000 {
+> +						opp-hz = /bits/ 64 <540000000>;
+> +						required-opps = <&rpmhpd_opp_svs_l1>;
+> +					};
+> +
+> +					opp-810000000 {
+> +						opp-hz = /bits/ 64 <810000000>;
+> +						required-opps = <&rpmhpd_opp_nom>;
+> +					};
+> +				};
+> +			};
+> +
+> +
+>  		};
+>  
+>  		dispcc: clock-controller@af00000 {
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
