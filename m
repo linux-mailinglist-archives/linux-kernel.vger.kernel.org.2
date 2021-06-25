@@ -2,128 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698133B4819
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0943B481C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhFYRUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 13:20:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbhFYRUk (ORCPT
+        id S230098AbhFYRVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 13:21:04 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:41730 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230073AbhFYRVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 13:20:40 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234D0C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 10:18:19 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id c2so5566509qvs.6
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 10:18:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=siE1epn+L3LEogU7I1mjth/qAGMeZkKTvnoymSTcs6c=;
-        b=t9Hr2wERvksnNIIXbbNLYC8013rau1+cspy+iLOaqOjLrwLyX5f9cKWMtjCkkcsBcE
-         QAYhLBYKt+1lMLRxRd0LPsdPE49lU8jFeWAhAq8qEy/19GHgTCdEftmZDgfG5pWoMQvC
-         Q/3fW4qY8mom/IcoXAUGpC0k0cv3iaHjBKVMbFT4zTfTxuyqCB0rpwvJQEOzFRg/vBBB
-         ntsdEEBAe7qF8w305bdxSezi+/CO1kFTlUZTiaWXkz3kNMvXWwokwncN1eTtfRbvwcaq
-         ZUBvhfo4EsS5N0ZMo9yloBnlOiRF9g3ukEzCOsRRsmcKvjletpv9PF93qFrXIu+kgB/F
-         EKSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=siE1epn+L3LEogU7I1mjth/qAGMeZkKTvnoymSTcs6c=;
-        b=INBjdXjUFtjsckMMr8Y7Pn8JVqcIKUY1nPXohV+QmhjZ8EhiH5n1iLVAUjasXifVT0
-         8UUGdJAV3ruUwv9EUZ/D1CqdjvgB1IFKIQEYz4MAPU4xrqLMrsd1ZVbKUukPZjjNj5zo
-         izHCU5a1nRPBELNNnSwC59nsoelr1gOPhG5XoesYpUsdJsLWagTqakpDtMVMG7J2Ut2R
-         QUf+0SBruBkl1JxdIHFr//6NWBzlj+x1l6/C7+ny65IIqHWg90swOQTOMAk+fzbyCB/N
-         j5q8ruMJSM7GC0ov1zeqjt2Zk0tujUKE031RB10UAm5sU0zGBPbn2kCchn47srF9HSNj
-         BlyA==
-X-Gm-Message-State: AOAM531KjJNRcjEbBnorj1QqdRdorbAqgPyeyZijg+I3CObjeSLRhRfW
-        w3Z3Z3ZIVTuiuQbVfomxeBrlFbHYK/dOHiAHIfi+eqUF9e8=
-X-Google-Smtp-Source: ABdhPJyDrxwptFBzZu95ukspWmOhoRNz2DCZa+4AlwV4VvfZDJcQW7QHwfm5Ct/4sT82zwYNmNDhOQWKHBwQPyYaiJU=
-X-Received: by 2002:a05:6214:c89:: with SMTP id r9mr3466579qvr.40.1624641498324;
- Fri, 25 Jun 2021 10:18:18 -0700 (PDT)
+        Fri, 25 Jun 2021 13:21:01 -0400
+Received: from [192.168.254.32] (unknown [47.187.214.213])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 9BC9120B6C50;
+        Fri, 25 Jun 2021 10:18:39 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9BC9120B6C50
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1624641520;
+        bh=TlJDbyWbcxv6yECiCA1Zh3uMErfRQhw+ASy5p2fTu3I=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=CrdADwVSyqNrwBJyv8xrm6v9X6wDmgq6i2q8xRuFvz+Gc63/wsCWoB+33Npfd8vbT
+         QU4fMD5jev7u/irVerfR8KSrwo1sVUUnKf6AbQGRKkfFJY95WFh3FtToYj/euqj8Zl
+         UFoNtcjom/Aoi25ErD+v8uoGo5yK4awkmthZ6bHw=
+Subject: Re: [RFC PATCH v5 1/2] arm64: Introduce stack trace reliability
+ checks in the unwinder
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, jpoimboe@redhat.com,
+        ardb@kernel.org, nobuta.keiya@fujitsu.com, catalin.marinas@arm.com,
+        will@kernel.org, jmorris@namei.org, pasha.tatashin@soleen.com,
+        jthierry@redhat.com, linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <ea0ef9ed6eb34618bcf468fbbf8bdba99e15df7d>
+ <20210526214917.20099-1-madvenka@linux.microsoft.com>
+ <20210526214917.20099-2-madvenka@linux.microsoft.com>
+ <20210624144021.GA17937@C02TD0UTHF1T.local>
+ <da0a2d95-a8cd-7b39-7bba-41cfa8782eaa@linux.microsoft.com>
+ <20210625155127.GC4492@sirena.org.uk>
+ <d9451984-d3fe-405f-f2e6-6571acd518e9@linux.microsoft.com>
+Message-ID: <2877744f-83ab-3f18-71e3-d406cfdd793d@linux.microsoft.com>
+Date:   Fri, 25 Jun 2021 12:18:38 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210621200459.3558199-1-mw@semihalf.com> <CAPv3WKctDU7WOxHzeHc49-G_h42qX-pUpinJN2CVHNoRH86QHw@mail.gmail.com>
-In-Reply-To: <CAPv3WKctDU7WOxHzeHc49-G_h42qX-pUpinJN2CVHNoRH86QHw@mail.gmail.com>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Fri, 25 Jun 2021 19:18:06 +0200
-Message-ID: <CAPv3WKf=ufj-RbqOKm3cjOQcG1PDAEAkVLdLQUkRK94=_vtj9w@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: SPCR: Add new 16550-compatible Serial Port Subtype
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        devel@acpica.org
-Cc:     Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
-        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
-        Jon Nettleton <jon@solid-run.com>,
-        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
-        lenb@kernel.org, erik.kaneda@intel.com, robert.moore@intel.com,
-        Marcin Wojtas <mw@semihalf.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <d9451984-d3fe-405f-f2e6-6571acd518e9@linux.microsoft.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-pon., 21 cze 2021 o 22:06 Marcin Wojtas <mw@semihalf.com> napisa=C5=82(a):
->
-> Apologies for the patch prefix, of course it's a first version and
-> unrelated to the networking subsystem.
->
-> Best regards,
-> Marcin
->
->
-> pon., 21 cze 2021 o 22:05 Marcin Wojtas <mw@semihalf.com> napisa=C5=82(a)=
-:
-> >
-> > The Microsoft Debug Port Table 2 (DBG2) specification revision
-> > May 31, 2017 adds support for 16550-compatible Serial Port
-> > Subtype with parameters defined in Generic Address Structure (GAS) [1]
-> >
-> > Add its support in SPCR parsing routine.
-> >
-> > [1] https://docs.microsoft.com/en-us/windows-hardware/drivers/bringup/a=
-cpi-debug-port-table
-> >
-> > Signed-off-by: Marcin Wojtas <mw@semihalf.com>
-> > ---
-> >  include/acpi/actbl1.h | 1 +
-> >  drivers/acpi/spcr.c   | 1 +
-> >  2 files changed, 2 insertions(+)
-> >
-> > diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
-> > index ce59903c2695..f746012eba8d 100644
-> > --- a/include/acpi/actbl1.h
-> > +++ b/include/acpi/actbl1.h
-> > @@ -498,6 +498,7 @@ struct acpi_dbg2_device {
-> >  #define ACPI_DBG2_ARM_SBSA_GENERIC  0x000E
-> >  #define ACPI_DBG2_ARM_DCC           0x000F
-> >  #define ACPI_DBG2_BCM2835           0x0010
-> > +#define ACPI_DBG2_16550_WITH_GAS    0x0012
-> >
-> >  #define ACPI_DBG2_1394_STANDARD     0x0000
-> >
-> > diff --git a/drivers/acpi/spcr.c b/drivers/acpi/spcr.c
-> > index 88460bacd5ae..25c2d0be953e 100644
-> > --- a/drivers/acpi/spcr.c
-> > +++ b/drivers/acpi/spcr.c
-> > @@ -136,6 +136,7 @@ int __init acpi_parse_spcr(bool enable_earlycon, bo=
-ol enable_console)
-> >                 break;
-> >         case ACPI_DBG2_16550_COMPATIBLE:
-> >         case ACPI_DBG2_16550_SUBSET:
-> > +       case ACPI_DBG2_16550_WITH_GAS:
-> >                 uart =3D "uart";
-> >                 break;
-> >         default:
-> > --
 
-Do you have any comments / remarks to the patch?
+On 6/25/21 12:05 PM, Madhavan T. Venkataraman wrote:
+> 
+> 
+> On 6/25/21 10:51 AM, Mark Brown wrote:
+>> On Fri, Jun 25, 2021 at 10:39:57AM -0500, Madhavan T. Venkataraman wrote:
+>>> On 6/24/21 9:40 AM, Mark Rutland wrote:
+>>
+>>>> At a high-level, I'm on-board with keeping track of this per unwind
+>>>> step, but if we do that then I want to be abel to use this during
+>>>> regular unwinds (e.g. so that we can have a backtrace idicate when a
+>>>> step is not reliable, like x86 does with '?'), and to do that we need to
+>>>> be a little more accurate.
+>>
+>>> The only consumer of frame->reliable is livepatch. So, in retrospect, my
+>>> original per-frame reliability flag was an overkill. I was just trying to
+>>> provide extra per-frame debug information which is not really a requirement
+>>> for livepatch.
+>>
+>> It's not a requirement for livepatch but if it's there a per frame
+>> reliability flag would have other uses - for example Mark has mentioned
+>> the way x86 prints a ? next to unreliable entries in oops output for
+>> example, that'd be handy for people debugging issues and would have the
+>> added bonus of ensuring that there's more constant and widespread
+>> exercising of the reliability stuff than if it's just used for livepatch
+>> which is a bit niche.
+>>
+> 
+> I agree. That is why I introduced the per-frame flag.
+> 
+> So, let us try a different approach.
+> 
+> First, let us get rid of the frame->reliable flag from this patch series. That flag
+> can be implemented when all of the pieces are in place for per-frame debug and tracking.
+> 
+> For consumers such as livepatch that don't really care about per-frame stuff, let us
+> solve it more cleanly via the return value of unwind_frame().
+> 
+> Currently, the return value from unwind_frame() is a tri-state return value which is
+> somewhat confusing.
+> 
+> 	0	means continue unwinding
+> 	-error	means stop unwinding. However,
+> 			-ENOENT means successful termination
+> 			Other values mean an error has happened.
+> 
+> Instead, let unwind_frame() return one of 3 values:
+> 
+> enum {
+> 	UNWIND_CONTINUE,
+> 	UNWIND_CONTINUE_WITH_ERRORS,
+> 	UNWIND_STOP,
+> };
+> 
 
-Best regards,
-Marcin
+Sorry. I need to add one more value to this. So, the enum will be:
+
+enum {
+	UNWIND_CONTINUE,
+	UNWIND_CONTINUE_WITH_ERRORS,
+	UNWIND_STOP,
+	UNWIND_STOP_WITH_ERRORS,
+};
+
+UNWIND_CONTINUE (what used to be a return value of 0)
+	Continue with the unwind.
+
+UNWIND_CONTINUE_WITH_ERRORS (new return value)
+	Errors encountered. But the errors are not fatal errors like stack corruption.
+
+UNWIND_STOP (what used to be -ENOENT)
+	Successful termination of unwind.
+
+UNWIND_STOP_WITH_ERRORS (what used to be -EINVAL, etc)
+	Unsuccessful termination.
+
+Sorry I missed this the last time.
+
+So, to reiterate:
+
+All consumers will stop unwinding when they see UNWIND_STOP and UNWIND_STOP_WITH_ERRORS.
+
+Debug type consumers can choose to continue when they see UNWIND_CONTINUE_WITH_ERRORS.
+
+Livepatch type consumers will only continue on UNWIND_CONTINUE.
+
+This way, my patch series does not have a dependency on the per-frame enhancements.
+
+Thanks!
+
+Madhavan
+
