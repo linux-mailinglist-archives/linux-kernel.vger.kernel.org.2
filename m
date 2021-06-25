@@ -2,140 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBEE3B41D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32EC63B41DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231478AbhFYKlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 06:41:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230436AbhFYKlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 06:41:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C745E61443;
-        Fri, 25 Jun 2021 10:39:08 +0000 (UTC)
-Date:   Fri, 25 Jun 2021 11:39:06 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Chen Huang <chenhuang5@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mm <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
-Message-ID: <20210625103905.GA20835@arm.com>
-References: <da9c2fa9-a545-0c48-4490-d6134cc31425@huawei.com>
- <20210623132223.GA96264@C02TD0UTHF1T.local>
- <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
- <YNP6/p/yJzLLr8M8@casper.infradead.org>
- <YNQuZ8ykN7aR+1MP@infradead.org>
- <YNRpYli/5/GWvaTT@casper.infradead.org>
- <27fbb8c1-2a65-738f-6bec-13f450395ab7@arm.com>
- <YNSyZaZtPTmTa5P8@zeniv-ca.linux.org.uk>
- <20210624185554.GC25097@arm.com>
- <e8e87aba-22f7-d039-ceaa-a93591b04b1e@arm.com>
+        id S231416AbhFYKnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 06:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229956AbhFYKn3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 06:43:29 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A644C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:41:09 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id 21so7723875pfp.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:41:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mHJbYA6bbS+Rn1vMcZPcer89nM3y6eLuvzQ4DpVNe4g=;
+        b=DbOMbmrTXCIGPSyTPRlDQ2Gt4wxvzQ+PuqZoZ3l24O2N+LCxnScqPt/uqSTF4pE1KC
+         Bb4Zr/TwkdJL/G2vjrZhJWKAinpmz1Tjo0UwkKEfyiZ0cEGtf9Cj2LURFUi0Hr3Xbfqv
+         +T/hezLmZ5GFlq2Hu8nmoyKsaNx1+MOTEt0D0S6td0XqTuO3wQjBPER8JyJb/EujFrWN
+         pdI5Q7TwWRIf5k9kN64WRgTbHXx/BdMXJVDX3FS6eE+f97rq5yAyYcB9KC9Ha6QGWPc0
+         wpz0fa8WbWHXG26tNmbDi/D8ztAXaJFhgXacuN++7hwWwjtTh/efYf76NssAiZR0CO6i
+         MKlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mHJbYA6bbS+Rn1vMcZPcer89nM3y6eLuvzQ4DpVNe4g=;
+        b=SU6OJCa7NZJunf6ASw4od9uY2/bcsn3QC3o8c0ZbjxJhEefLSxrJinVob+Ptld9Hcf
+         SfQ8vJ40BK9FmP09t1c4KPbRJr+46vazfZFrv0fokr5e9gro2292O1nhyzEjjxLYJZTv
+         zUoi88oUmHYQRqxesG56I0QvXyjj60HzD8mGcMb08DF2Q35x7NmDCxiGJKLahU2/pNIT
+         eQ6G/kU+Euo5+2bMv0+mFQiTdqwpo3BgBR5YOgolg6Rg0GfgoiavSyP4ZUAfnuEyzqxz
+         WslN5PrZcT7g/12u0Y7qrTw+0Y8V2dlYARM0ayNE+owLgXvfCLH4dyR87dC7kdba5hMx
+         pE2g==
+X-Gm-Message-State: AOAM532Sv8RlLsWDjCAQt1u9Xs4nCsJqA+762i4tsxGVJG8A/4pYrWyA
+        /fWzIxgtmNr31s8CPIo7LmptgXmvcwlqUd7uA6iIXw==
+X-Google-Smtp-Source: ABdhPJzNFdimxcH+hedzqw2q/ehH4P2k1STjQ7cFSMt7KGDcDuAx8yYqyWBJx4FP/SSvlHfuSow3ThQjEVe5500M7jM=
+X-Received: by 2002:a05:6a00:2162:b029:308:9346:2f55 with SMTP id
+ r2-20020a056a002162b029030893462f55mr6289438pff.49.1624617668717; Fri, 25 Jun
+ 2021 03:41:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e8e87aba-22f7-d039-ceaa-a93591b04b1e@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210624123930.1769093-1-linmiaohe@huawei.com>
+ <20210624123930.1769093-3-linmiaohe@huawei.com> <CAMZfGtUNtR3ZPv4m5bBCGdE5GuMR5Bw18_n7YzqB4s6QHyV+Pg@mail.gmail.com>
+ <1b38b33f-316e-1816-216f-9923f612ceb6@huawei.com> <CAMZfGtXnYxumuNau2rvk+ivPEa-ows0KD4EWFBjCiM6e_iagtg@mail.gmail.com>
+ <01117bc0-53b1-d81a-a4d8-2a1dbe5dcd94@huawei.com> <97fdc2f3-6757-7ca1-6323-02b618b85894@huawei.com>
+In-Reply-To: <97fdc2f3-6757-7ca1-6323-02b618b85894@huawei.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 25 Jun 2021 18:40:30 +0800
+Message-ID: <CAMZfGtUq72KULin=9onhf=7o5XwzR79E7QBdgg+ny1gYQGRvzw@mail.gmail.com>
+Subject: Re: [Phishing Risk] [External] [PATCH 2/3] mm/zsmalloc.c: combine two
+ atomic ops in zs_pool_dec_isolated()
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>, ngupta@vflare.org,
+        senozhatsky@chromium.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 09:36:54PM +0100, Robin Murphy wrote:
-> On 2021-06-24 19:55, Catalin Marinas wrote:
-> > On Thu, Jun 24, 2021 at 04:27:17PM +0000, Al Viro wrote:
-> > > On Thu, Jun 24, 2021 at 02:22:27PM +0100, Robin Murphy wrote:
-> > > > FWIW I think the only way to make the kernel behaviour any more robust here
-> > > > would be to make the whole uaccess API more expressive, such that rather
-> > > > than simply saying "I only got this far" it could actually differentiate
-> > > > between stopping due to a fault which may be recoverable and worth retrying,
-> > > > and one which definitely isn't.
-> > > 
-> > > ... and propagate that "more expressive" information through what, 3 or 4
-> > > levels in the call chain?
-> > > 
-> > >  From include/linux/uaccess.h:
-> > > 
-> > >   * If raw_copy_{to,from}_user(to, from, size) returns N, size - N bytes starting
-> > >   * at to must become equal to the bytes fetched from the corresponding area
-> > >   * starting at from.  All data past to + size - N must be left unmodified.
-> > >   *
-> > >   * If copying succeeds, the return value must be 0.  If some data cannot be
-> > >   * fetched, it is permitted to copy less than had been fetched; the only
-> > >   * hard requirement is that not storing anything at all (i.e. returning size)
-> > >   * should happen only when nothing could be copied.  In other words, you don't
-> > >   * have to squeeze as much as possible - it is allowed, but not necessary.
-> > > 
-> > > arm64 instances violate the aforementioned hard requirement.
-> > 
-> > After reading the above a few more times, I think I get it. The key
-> > sentence is: not storing anything at all should happen only when nothing
-> > could be copied. In the MTE case, something can still be copied.
-> > 
-> > > Please, fix
-> > > it there; it's not hard.  All you need is an exception handler in .Ltiny15
-> > > that would fall back to (short) byte-by-byte copy if the faulting address
-> > > happened to be unaligned.  Or just do one-byte copy, not that it had been
-> > > considerably cheaper than a loop.  Will be cheaper than propagating that extra
-> > > information up the call chain, let alone paying for extra ->write_begin()
-> > > and ->write_end() for single byte in generic_perform_write().
-> > 
-> > Yeah, it's definitely fixable in the arch code. I misread the above
-> > requirements and thought it could be fixed in the core code.
-> > 
-> > Quick hack, though I think in the actual exception handling path in .S
-> > more sense (and it needs the copy_to_user for symmetry):
-> 
-> Hmm, if anything the asm version might be even more straightforward; I think
-> it's pretty much just this (untested):
+On Fri, Jun 25, 2021 at 5:32 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>
+> On 2021/6/25 16:46, Miaohe Lin wrote:
+> > On 2021/6/25 15:29, Muchun Song wrote:
+> >> On Fri, Jun 25, 2021 at 2:32 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
+> >>>
+> >>> On 2021/6/25 13:01, Muchun Song wrote:
+> >>>> On Thu, Jun 24, 2021 at 8:40 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
+> >>>>>
+> >>>>> atomic_long_dec_and_test() is equivalent to atomic_long_dec() and
+> >>>>> atomic_long_read() == 0. Use it to make code more succinct.
+> >>>>
+> >>>> Actually, they are not equal. atomic_long_dec_and_test implies a
+> >>>> full memory barrier around it but atomic_long_dec and atomic_long_read
+> >>>> don't.
+> >>>>
+> >>>
+> >>> Many thanks for comment. They are indeed not completely equal as you said.
+> >>> What I mean is they can do the same things we want in this specified context.
+> >>> Thanks again.
+> >>
+> >> I don't think so. Using individual operations can eliminate memory barriers.
+> >> We will pay for the barrier if we use atomic_long_dec_and_test here.
+> >
+> > The combination of atomic_long_dec and atomic_long_read usecase is rare and looks somehow
+> > weird. I think it's worth to do this with the cost of barrier.
+> >
+>
+> It seems there is race between zs_pool_dec_isolated and zs_unregister_migration if pool->destroying
+> is reordered before the atomic_long_dec and atomic_long_read ops. So this memory barrier is necessary:
+>
+> zs_pool_dec_isolated                            zs_unregister_migration
+>   pool->destroying != true
+>                                                   pool->destroying = true;
+>                                                   smp_mb();
+>                                                   wait_for_isolated_drain
+>                                                     wait_event with atomic_long_read(&pool->isolated_pages) != 0
+>   atomic_long_dec(&pool->isolated_pages);
+>   atomic_long_read(&pool->isolated_pages) == 0
 
-That's what I thought but it was too late in the day to think in asm.
+I am not familiar with zsmalloc. So I do not know whether the race
+that you mentioned above exists. But If it exists, the fix also does
+not make sense to me. If there should be inserted a smp_mb between
+atomic_long_dec and atomic_long_read, you should insert
+smp_mb__after_atomic instead of using atomic_long_dec_and_test.
+Because smp_mb__after_atomic can be optimized on certain architecture
+(e.g. x86_64).
 
-> diff --git a/arch/arm64/lib/copy_to_user.S b/arch/arm64/lib/copy_to_user.S
-> index 043da90f5dd7..632bf1f9540d 100644
-> --- a/arch/arm64/lib/copy_to_user.S
-> +++ b/arch/arm64/lib/copy_to_user.S
-> @@ -62,6 +62,9 @@ EXPORT_SYMBOL(__arch_copy_to_user)
-> 
->         .section .fixup,"ax"
->         .align  2
-> -9998:  sub     x0, end, dst                    // bytes not copied
-> +9998:  ldrb    w7, [x1]
-> +USER(9997f,    sttrb   w7, [x0])
-> +       add     x0, x0, #1
-> +9997:  sub     x0, end, dst                    // bytes not copied
->         ret
->         .previous
-> 
-> If we can get away without trying to finish the whole copy bytewise, (i.e.
-> we don't cause any faults of our own by knowingly over-reading in the
-> routine itself), I'm more than happy with that.
+Thanks.
 
-I don't think we over-read/write in the routine itself as this is based
-on the user memcpy() which can't handle faults. And since we got a fault
-before the end of the copy, we have at least one byte left in the
-buffer (which may or may not trigger a fault).
-
-I wonder whether we should skip the extra byte copy if something was
-copied, i.e. start the exception handler with:
-
-	cmp	dstin, dst
-	b.ne	9997f
-
-That said, the fall-back to bytewise copying may have some advantage. I
-think we still have the issue where we copy some data to user but report
-less (STP failing on the second 8-byte when the first had been already
-written first 8). A byte copy loop would solve this, unless we pass the
-fault address to the exception handler (I thought you had some patch for
-this at some point).
-
--- 
-Catalin
+>
+> Thus wake_up_all is missed.
+> And the comment in zs_pool_dec_isolated() said:
+> /*
+>  * There's no possibility of racing, since wait_for_isolated_drain()
+>  * checks the isolated count under &class->lock after enqueuing
+>  * on migration_wait.
+>  */
+>
+> But I found &class->lock is indeed not acquired for wait_for_isolated_drain(). So I think the above race
+> is possible. Does this make senses for you ?
+> Thanks.
+>
+> >>
+> >>>
+> >>>> That RMW operations that have a return value is equal to the following.
+> >>>>
+> >>>> smp_mb__before_atomic()
+> >>>> non-RMW operations or RMW operations that have no return value
+> >>>> smp_mb__after_atomic()
+> >>>>
+> >>>> Thanks.
+> >>>>
+> >>>>>
+> >>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> >>>>> ---
+> >>>>>  mm/zsmalloc.c | 3 +--
+> >>>>>  1 file changed, 1 insertion(+), 2 deletions(-)
+> >>>>>
+> >>>>> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+> >>>>> index 1476289b619f..0b4b23740d78 100644
+> >>>>> --- a/mm/zsmalloc.c
+> >>>>> +++ b/mm/zsmalloc.c
+> >>>>> @@ -1828,13 +1828,12 @@ static void putback_zspage_deferred(struct zs_pool *pool,
+> >>>>>  static inline void zs_pool_dec_isolated(struct zs_pool *pool)
+> >>>>>  {
+> >>>>>         VM_BUG_ON(atomic_long_read(&pool->isolated_pages) <= 0);
+> >>>>> -       atomic_long_dec(&pool->isolated_pages);
+> >>>>>         /*
+> >>>>>          * There's no possibility of racing, since wait_for_isolated_drain()
+> >>>>>          * checks the isolated count under &class->lock after enqueuing
+> >>>>>          * on migration_wait.
+> >>>>>          */
+> >>>>> -       if (atomic_long_read(&pool->isolated_pages) == 0 && pool->destroying)
+> >>>>> +       if (atomic_long_dec_and_test(&pool->isolated_pages) && pool->destroying)
+> >>>>>                 wake_up_all(&pool->migration_wait);
+> >>>>>  }
+> >>>>>
+> >>>>> --
+> >>>>> 2.23.0
+> >>>>>
+> >>>> .
+> >>>>
+> >>>
+> >> .
+> >>
+> >
+>
