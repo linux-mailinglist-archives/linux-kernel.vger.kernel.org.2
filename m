@@ -2,118 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C27C3B3E19
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 814883B3E23
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhFYIBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:01:20 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:37546 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhFYIBR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:01:17 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2751121C12;
-        Fri, 25 Jun 2021 07:58:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624607936; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qSzuM8LtK7m5H6T2smtw4LRb8ekj+mhdxEL6qx2sV5A=;
-        b=Ki3jau646Mv+YtF00epTZkVw0GdibYD508xlDZP4IEcQ/va23dYPqq0pZNigFlJf0rPibU
-        Tz3UI80uMHooNd7ok87KYdM0tAPYKGCYEWAoQVeScZd6kroJNuNXDe2Okrqt6lc6X0X9H+
-        R2J3GayBEZxwi7kNxWum2OgtW2kSKT8=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id E8A26A3BF2;
-        Fri, 25 Jun 2021 07:58:55 +0000 (UTC)
-Date:   Fri, 25 Jun 2021 09:58:55 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 11/46] mm/memcg: Remove 'page' parameter to
- mem_cgroup_charge_statistics()
-Message-ID: <YNWMv48TaZWWIa0d@dhcp22.suse.cz>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-12-willy@infradead.org>
+        id S230013AbhFYIDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:03:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229878AbhFYIDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 04:03:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9186E613C0;
+        Fri, 25 Jun 2021 08:01:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624608072;
+        bh=wA4i+6GMymdNLboi240ADpbTr3hVSPhdCcHusOPcKBE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2XPBxQChSxECHWaZSD6hQaxV5A4fvwmpqgN6v2nYD/FlWGWTDeAL7sstzjmBZ8xRj
+         DxaGeZr9F4cVbIDD1yHqV4PU1l/Dmk3cFrwKoKdb3JDwCnF9B99qtMZM0glYnu1HfA
+         NGfqGHFzck6+WpOx3fpa3W1PwYND/i1kIID2BbWE=
+Date:   Fri, 25 Jun 2021 10:01:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v8 04/12] staging: hi6421-spmi-pmic: update copyright's
+ year
+Message-ID: <YNWNRaipBawAs2YD@kroah.com>
+References: <cover.1624606660.git.mchehab+huawei@kernel.org>
+ <af023af1f7a0371a838cb336a29ef05780e4dff8.1624606660.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210622121551.3398730-12-willy@infradead.org>
+In-Reply-To: <af023af1f7a0371a838cb336a29ef05780e4dff8.1624606660.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 22-06-21 13:15:16, Matthew Wilcox wrote:
-> The last use of 'page' was removed by commit 468c398233da ("mm:
-> memcontrol: switch to native NR_ANON_THPS counter"), so we can now remove
-> the parameter from the function.
+On Fri, Jun 25, 2021 at 09:45:56AM +0200, Mauro Carvalho Chehab wrote:
+> Update the copyright to reflect the current year.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-Thanks!
-
+> Suggested-by: Lee Jones <lee.jones@linaro.org>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  mm/memcontrol.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
+>  drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 64ada9e650a5..1204c6a0c671 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -814,7 +814,6 @@ static unsigned long memcg_events_local(struct mem_cgroup *memcg, int event)
->  }
->  
->  static void mem_cgroup_charge_statistics(struct mem_cgroup *memcg,
-> -					 struct page *page,
->  					 int nr_pages)
->  {
->  	/* pagein of a big page is an event. So, ignore page size */
-> @@ -5504,9 +5503,9 @@ static int mem_cgroup_move_account(struct page *page,
->  	ret = 0;
->  
->  	local_irq_disable();
-> -	mem_cgroup_charge_statistics(to, page, nr_pages);
-> +	mem_cgroup_charge_statistics(to, nr_pages);
->  	memcg_check_events(to, page);
-> -	mem_cgroup_charge_statistics(from, page, -nr_pages);
-> +	mem_cgroup_charge_statistics(from, -nr_pages);
->  	memcg_check_events(from, page);
->  	local_irq_enable();
->  out_unlock:
-> @@ -6527,7 +6526,7 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
->  	commit_charge(page, memcg);
->  
->  	local_irq_disable();
-> -	mem_cgroup_charge_statistics(memcg, page, nr_pages);
-> +	mem_cgroup_charge_statistics(memcg, nr_pages);
->  	memcg_check_events(memcg, page);
->  	local_irq_enable();
->  out:
-> @@ -6814,7 +6813,7 @@ void mem_cgroup_migrate(struct page *oldpage, struct page *newpage)
->  	commit_charge(newpage, memcg);
->  
->  	local_irq_save(flags);
-> -	mem_cgroup_charge_statistics(memcg, newpage, nr_pages);
-> +	mem_cgroup_charge_statistics(memcg, nr_pages);
->  	memcg_check_events(memcg, newpage);
->  	local_irq_restore(flags);
->  }
-> @@ -7044,7 +7043,7 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
->  	 * only synchronisation we have for updating the per-CPU variables.
->  	 */
->  	VM_BUG_ON(!irqs_disabled());
-> -	mem_cgroup_charge_statistics(memcg, page, -nr_entries);
-> +	mem_cgroup_charge_statistics(memcg, -nr_entries);
->  	memcg_check_events(memcg, page);
->  
->  	css_put(&memcg->css);
-> -- 
-> 2.30.2
+> diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+> index 626140cb96f2..29ac53684ad2 100644
+> --- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+> +++ b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+> @@ -2,8 +2,8 @@
+>  /*
+>   * Device driver for regulators in HISI PMIC IC
+>   *
+> - * Copyright (c) 2013 Linaro Ltd.
+> - * Copyright (c) 2011 Hisilicon.
+> + * Copyright (c) 2013-2021 Linaro Ltd.
 
--- 
-Michal Hocko
-SUSE Labs
+I see no record of Linaro touching this every year from 2013-2021.
+Where was that record?  I would feel more comfortable taking such a
+change from a Linaro developer, not anyone else.
+
+> + * Copyright (c) 2011-2021 HiSilicon Technologies Co., Ltd.
+
+Same here, it was modified for 10 years continuously?  Where?
+
+thanks,
+
+greg k-h
