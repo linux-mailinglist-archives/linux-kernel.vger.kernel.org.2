@@ -2,173 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC583B492E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 21:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C393B4930
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 21:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhFYTT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 15:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37202 "EHLO
+        id S229712AbhFYTUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 15:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhFYTTZ (ORCPT
+        with ESMTP id S229697AbhFYTUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 15:19:25 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D26EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 12:17:04 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id fq1so5266245qvb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 12:17:04 -0700 (PDT)
+        Fri, 25 Jun 2021 15:20:39 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF49DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 12:18:17 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id w26so8262388qto.13
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 12:18:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tjRJr+e18S6nikGnuoS3L8XMimjCLVhD37WeToZEo9Y=;
-        b=03aTi0PFKc0Prlcrtf7XgUk/8cP0a5fdNM3jqPHAET4pSpH2q3WSunAQTScKepcy51
-         qSxkoB/sfhiiOoSUA4dgXP5uMxJPxylUkCw8TbtBs4bKmUNSsKQku+Wjqm6PkFuhw1LB
-         mloxdPn+tPwHAIPdsylmpyNZXGECz43XgB+JtmqfKeF56TQer/gcA7QSX4S2yvjkzrPM
-         toj3kDI/PNFd2qKzx97ooPSobdhb6WouxIM5MZnAleKzNIx1a4jNxRetqdXoplDdECAo
-         V0hZPNkXgN1zXpJ08mQw0sjuniBZWGwESg99US6/akweD9JjkQigl1uZH/gR3uxyy9lc
-         oEsw==
+        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=8+KjGlQXDp1DON4loL8+NNiLFcog4PhK3R6OgOdGdTI=;
+        b=wE9u87UEdrnhb7k9MI0rUCRn4ce3qpkqOIiCj8Y4WetGAi1hxWd9u9teRhilyoHer7
+         zPpfiWsLu7xz6Ut6xP96iyi4k+TNMdw7t6DIzkUs4WVHB7pJ/6hlKjxZzhenLibjrrQT
+         xU9ei8NNvhyYrHuA9PXfSmuKqLXs7PeuI1iAaV15W858V7FjP/Qses/LVcSwcmaehCs1
+         4D0bXjhu6SHXPFB+mLnELih13rdOHuBiTvbvxUFhtFd8HoAgu4NWbCNT0PhF05uylJ9u
+         yyUZ3XLlgVkiomxVzdkylr9Z/iW9/m6c+KVmBldK+dLrYH5BWLKS6pwQI6jU7xl10eOw
+         l44A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tjRJr+e18S6nikGnuoS3L8XMimjCLVhD37WeToZEo9Y=;
-        b=Bd8OFRT3rWUoG8TeWNcIdw5Rn3uoA7q7f1xn/fZppBTTw+4DTcbiEYiGziGfxu0Ztq
-         +1qkPAkI7llRKYIah4GdVdlFCfTIyfQnVRaRBGSrXaGhwoCEvXeiqvqvu/DOL29x2Uym
-         +FBtO4vzO0lgE8qsV7gPMaQ/2egsU8zxhB5o3jGm1OLC1IooQ5wwi4kWp+AsNrDQY5fC
-         x38kEFXx8LJcsGkjH9KTRZHc8GN5neVYlrzh/HBwV2uwW6ZKR50+8JS/mMbKb63p5XB/
-         4EuSn4c+6hjW3iUfjI5XbfvDIpccYBxRSAqGWzfI01NwKJA1qYM2k8CAxa7dxEoIOC9Z
-         S3QQ==
-X-Gm-Message-State: AOAM530E0nlxAE6IY/q4Cqur0BoDTSlRJVlbsDZQmxgGve8DZOuzPugo
-        bB1I7hAZ6ZOVIpHUfN+JPMXJVw==
-X-Google-Smtp-Source: ABdhPJzdngKbtkYLE1qQ9oCYAiAZfdjlHeHYU71eVFro4uQIuUY/CVSCQvRKrqrG77G8aqigBhXLVg==
-X-Received: by 2002:a0c:ba05:: with SMTP id w5mr12968041qvf.60.1624648623121;
-        Fri, 25 Jun 2021 12:17:03 -0700 (PDT)
-Received: from kerneldevvm.. (5.6.a.8.a.a.b.f.c.9.4.c.a.9.a.a.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0:aa9a:c49c:fbaa:8a65])
-        by smtp.gmail.com with ESMTPSA id 126sm5777917qkd.115.2021.06.25.12.17.01
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=8+KjGlQXDp1DON4loL8+NNiLFcog4PhK3R6OgOdGdTI=;
+        b=Km9792zMEuF4DARtmKfG72hNRZEmyxVjkz83/LvuAMNs3QWSC4Pew3i5weQpxxNP7t
+         Bcgc4pQn9KLb6+W1GwKoAXzk4ghub6IWGLIyYcUyWwvcYA9dlR2uznwUQNod55unfsRX
+         6gUakJyP4ZQIkK+k8AnsvBYgkfIKIMonRBxUaGycu3TyUL9vGm8CaZIPb24zGE5MoN4R
+         awW6qAf+8+brP45IIYcGwj3FpRjnTiyp1UZnm1RdZ7NCo5mPE+G6yyULCP9wCzXtxlkY
+         upvEEFRcTCuv0V13K2PVakwaeII39i9StFR8fjOh/FC6s5q3Xu44UGejx9c7aYaxSY8E
+         Ljtg==
+X-Gm-Message-State: AOAM532sx9H4gkvnqAzOyKsK3m+szU4bwwqyq5xU1OHsMBXuu0gp5De+
+        zP/Yv5bcA9u8qG8bMKpqpaPiVA==
+X-Google-Smtp-Source: ABdhPJxEG0jYjwnY1ZlD7YyTkCNd5N6niMHGfTQPn4XxvEkkXLg8nIyzd5U3eq0qaui6Vv1twpNlug==
+X-Received: by 2002:a05:622a:11cd:: with SMTP id n13mr11010873qtk.233.1624648696968;
+        Fri, 25 Jun 2021 12:18:16 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
+        by smtp.gmail.com with ESMTPSA id 202sm4030603qki.83.2021.06.25.12.18.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 12:17:02 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, dan.carpenter@oracle.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: [PATCH] staging: rtl8188eu: remove rtw_wx_set_rate handler function
-Date:   Fri, 25 Jun 2021 20:16:58 +0100
-Message-Id: <20210625191658.1299-1-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.31.1
+        Fri, 25 Jun 2021 12:18:16 -0700 (PDT)
+Message-ID: <0d5ce46a81ca02a9cf2a01175818846fba802194.camel@ndufresne.ca>
+Subject: Re: [PATCH] media: uvc: limit max bandwidth for HDMI capture
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 25 Jun 2021 15:18:15 -0400
+In-Reply-To: <20210622102948.47b86fbe@coco.lan>
+References: <b791d5874c83663505cbd4f74907ac38d00bb727.1612206534.git.mchehab+huawei@kernel.org>
+         <YNDY4iesZGF+7Cr0@pendragon.ideasonboard.com>
+         <20210622102948.47b86fbe@coco.lan>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove rtw_wx_set_rate handler function, which currently handles the
-SIOCSIWRATE wext ioctl. This function (although containing a lot of
-code) set nothing outside its own local variables, and did nothing other
-than call a now removed debugging statement repeatedly. Removing it and
-leaving its associated entry in rtw_handlers as NULL is therefore the
-better option. Removing this function also fixes a kernel test robot
-warning.
+Le mardi 22 juin 2021 à 10:29 +0200, Mauro Carvalho Chehab a écrit :
+> Em Mon, 21 Jun 2021 21:22:26 +0300
+> Laurent Pinchart <laurent.pinchart@ideasonboard.com> escreveu:
+> 
+> > Hi Mauro,
+> > 
+> > Thank you for the patch.
+> 
+> Thanks for reviewing it!
+> 
+> > 
+> > On Mon, Feb 01, 2021 at 08:08:59PM +0100, Mauro Carvalho Chehab wrote:
+> > > This device:
+> > >         534d:2109 MacroSilicon
+> > > 
+> > > Announces that it supports several frame intervals for
+> > > their resolutions for MJPEG compression:
+> > > 
+> > >         VideoStreaming Interface Descriptor:
+> > >         bLength                            46
+> > >         bDescriptorType                    36
+> > >         bDescriptorSubtype                  7 (FRAME_MJPEG)
+> > >         bFrameIndex                         1
+> > >         bmCapabilities                   0x00
+> > >           Still image unsupported
+> > >         wWidth                           1920
+> > >         wHeight                          1080
+> > >         dwMinBitRate                   768000
+> > >         dwMaxBitRate                196608000
+> > >         dwMaxVideoFrameBufferSize     4147200
+> > >         dwDefaultFrameInterval         166666
+> > >         bFrameIntervalType                  5
+> > >         dwFrameInterval( 0)            166666
+> > >         dwFrameInterval( 1)            333333
+> > >         dwFrameInterval( 2)            400000
+> > >         dwFrameInterval( 3)            500000
+> > >         dwFrameInterval( 4)           1000000
+> > > 
+> > > However, the highest frame interval (166666), which means 60 fps
+> > > is not supported. For such resolution, the maximum interval
+> > > is, instead 333333 (30 fps).  
+> > 
+> > What happens if you try to select it ?
+> 
+> Basically, URBs get lost: they cause apps like qv4l2 to crash
+> sometimes, with:
+> 
+> 	v4l-convert: libjpeg error: Corrupt JPEG data: premature end of data segment
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- .../staging/rtl8188eu/os_dep/ioctl_linux.c    | 75 -------------------
- 1 file changed, 75 deletions(-)
+This is the emulated format handler that decodes jpeg behind application back
+that is broken. The converter should implement this in a nicer way. E.g. it
+could return ERROR buffer with payload = 0 in that case.
 
-diff --git a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-index b958a8d882b0..d4dce8ef0322 100644
---- a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-@@ -1262,80 +1262,6 @@ static int rtw_wx_get_essid(struct net_device *dev,
- 	return 0;
- }
- 
--static int rtw_wx_set_rate(struct net_device *dev,
--			   struct iw_request_info *a,
--			   union iwreq_data *wrqu, char *extra)
--{
--	int i;
--	u8 datarates[NumRates];
--	u32	target_rate = wrqu->bitrate.value;
--	u32	fixed = wrqu->bitrate.fixed;
--	u32	ratevalue = 0;
--	u8 mpdatarate[NumRates] = {11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0xff};
--
--	if (target_rate == -1) {
--		ratevalue = 11;
--		goto set_rate;
--	}
--	target_rate /= 100000;
--
--	switch (target_rate) {
--	case 10:
--		ratevalue = 0;
--		break;
--	case 20:
--		ratevalue = 1;
--		break;
--	case 55:
--		ratevalue = 2;
--		break;
--	case 60:
--		ratevalue = 3;
--		break;
--	case 90:
--		ratevalue = 4;
--		break;
--	case 110:
--		ratevalue = 5;
--		break;
--	case 120:
--		ratevalue = 6;
--		break;
--	case 180:
--		ratevalue = 7;
--		break;
--	case 240:
--		ratevalue = 8;
--		break;
--	case 360:
--		ratevalue = 9;
--		break;
--	case 480:
--		ratevalue = 10;
--		break;
--	case 540:
--		ratevalue = 11;
--		break;
--	default:
--		ratevalue = 11;
--		break;
--	}
--
--set_rate:
--
--	for (i = 0; i < NumRates; i++) {
--		if (ratevalue == mpdatarate[i]) {
--			datarates[i] = mpdatarate[i];
--			if (fixed == 0)
--				break;
--		} else {
--			datarates[i] = 0xff;
--		}
--	}
--
--	return 0;
--}
--
- static int rtw_wx_get_rate(struct net_device *dev,
- 			   struct iw_request_info *info,
- 			   union iwreq_data *wrqu, char *extra)
-@@ -2715,7 +2641,6 @@ static iw_handler rtw_handlers[] = {
- 	IW_HANDLER(SIOCSIWESSID, rtw_wx_set_essid),
- 	IW_HANDLER(SIOCGIWESSID, rtw_wx_get_essid),
- 	IW_HANDLER(SIOCGIWNICKN, rtw_wx_get_nick),
--	IW_HANDLER(SIOCSIWRATE, rtw_wx_set_rate),
- 	IW_HANDLER(SIOCGIWRATE, rtw_wx_get_rate),
- 	IW_HANDLER(SIOCSIWRTS, rtw_wx_set_rts),
- 	IW_HANDLER(SIOCGIWRTS, rtw_wx_get_rts),
--- 
-2.31.1
+> 
+> The image keeps blinking, and part of the image is replaced by
+> white noise.
+> 
+> Clearly, it tries to send more data than the maximum available bandwidth
+> on this chipset.
+> 
+> 
+> Sent a v2 addressing the issues you pointed.
+> 
+> 
+> Thanks,
+> Mauro
+
 
