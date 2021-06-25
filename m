@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81EE93B458F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A52ED3B459F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhFYObR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:31:17 -0400
-Received: from mga09.intel.com ([134.134.136.24]:65243 "EHLO mga09.intel.com"
+        id S231712AbhFYOfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:35:33 -0400
+Received: from m12-12.163.com ([220.181.12.12]:58208 "EHLO m12-12.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230088AbhFYObQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:31:16 -0400
-IronPort-SDR: qlC6po9CBhwhhMKA4xt9NFOi6eKkP41mNd5IVNs6VsVWdm50Wu5efUce2OvLyBtQiw9l0or+//
- n5hnhEkDtNwg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="207613937"
-X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; 
-   d="scan'208";a="207613937"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 07:28:54 -0700
-IronPort-SDR: WNAtepcf9idkm4AAbzyigIodSHEissUxezIBiZis8HmDzBHjtSpRVQgtbeTpSiZxAJtAeFwJDR
- OkO2lcDW3iGQ==
-X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; 
-   d="scan'208";a="642645656"
-Received: from sye-mobl.amr.corp.intel.com ([10.212.236.130])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 07:28:53 -0700
-Message-ID: <5069e4c3d8f88d4a72155bf3d15282cbba8e7429.camel@linux.intel.com>
-Subject: Re: [PATCH] HID: intel-ish-hid: use async resume function
-From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Jiri Kosina <jikos@kernel.org>, Ye Xiang <xiang.ye@intel.com>
-Cc:     jic23@kernel.org, linux-input@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 25 Jun 2021 07:28:52 -0700
-In-Reply-To: <nycvar.YFH.7.76.2106251412250.18969@cbobk.fhfr.pm>
-References: <20210613032507.7474-1-xiang.ye@intel.com>
-         <nycvar.YFH.7.76.2106251412250.18969@cbobk.fhfr.pm>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S229782AbhFYOfc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 10:35:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Sq+56
+        LG+NYg1RczZk7C9+MOdW8UjSsGo6o/mWqUjXM4=; b=KAYyZfaIFWEbMQGKzRuoF
+        rPFODj0SucRjgXu9+SCwbWhx4tkdiCJd1C543/9V54n5TfCYWcjiOdTLlfDmX6XS
+        PiEjaK+slahVL+Pg0SB0oNJM01VccB208a1lyTr2J/jAvmmmQxbFGhYc7QD9jUVw
+        hGRpa/fNwr4P5KIOAHjPT0=
+Received: from ubuntu.localdomain (unknown [218.17.89.92])
+        by smtp8 (Coremail) with SMTP id DMCowABXKSroxNVgmrXxLg--.60396S2;
+        Fri, 25 Jun 2021 19:58:33 +0800 (CST)
+From:   13145886936@163.com
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>
+Subject: [PATCH] ASoC: fsl: fsl_easrc: remove unnecessary print function dev_err()
+Date:   Fri, 25 Jun 2021 04:58:31 -0700
+Message-Id: <20210625115831.416152-1-13145886936@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DMCowABXKSroxNVgmrXxLg--.60396S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZFWUCF45ur1kKr1ktw4UCFg_yoW3Cwb_t3
+        48C34fX3y8JFyI9a4UJa13Zr47WFs7CF4jvr4DKFnFq34UJw4ruayUJr4kuFWFgr4IvrZ7
+        W34Y9rWFkr1ayjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5XjjPUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiGgm8g1aD+PLDDgAAs+
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-06-25 at 14:12 +0200, Jiri Kosina wrote:
-> On Sun, 13 Jun 2021, Ye Xiang wrote:
-> 
-> > ISH IPC driver uses asynchronous workqueue to do resume now, but
-> > there is
-> > a potential timing issue: when child devices resume before bus
-> > driver, it
-> > will cause child devices resume failed and cannot be recovered
-> > until
-> > reboot. The current implementation in this case do wait for IPC to
-> > resume
-> > but fail to accommodate for a case when there is no ISH reboot and
-> > soft
-> > resume is taking time. This issue is apparent on Tiger Lake
-> > platform with
-> > 5.11.13 kernel when doing suspend to idle then resume(s0ix) test.
-> > To
-> > resolve this issue, we change ISHTP HID client to use asynchronous
-> > resume
-> > callback too. In the asynchronous resume callback, it waits for the
-> > ISHTP
-> > resume done event, and then notify ISHTP HID client link ready.
-> > 
-> > Signed-off-by: Ye Xiang <xiang.ye@intel.com>
-> 
-> Srinivas, can I please get your Ack for this one?
-Done.
+From: gushengxian <gushengxian@yulong.com>
 
-Thanks,
-Srinivas
+The print function dev_err() is redundant because
+platform_get_irq() already prints an error.
 
-> 
-> Thanks,
-> 
+Signed-off-by: gushengxian <gushengxian@yulong.com>
+---
+ sound/soc/fsl/fsl_easrc.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
+index b1765c7d3bcd..25747433916e 100644
+--- a/sound/soc/fsl/fsl_easrc.c
++++ b/sound/soc/fsl/fsl_easrc.c
+@@ -1901,10 +1901,8 @@ static int fsl_easrc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0) {
+-		dev_err(dev, "no irq for node %pOF\n", np);
++	if (irq < 0)
+ 		return irq;
+-	}
+ 
+ 	ret = devm_request_irq(&pdev->dev, irq, fsl_easrc_isr, 0,
+ 			       dev_name(dev), easrc);
+-- 
+2.25.1
 
 
