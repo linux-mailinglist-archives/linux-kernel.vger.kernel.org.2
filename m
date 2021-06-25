@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 920BA3B3A1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB0D3B3A1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232930AbhFYAUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 20:20:25 -0400
-Received: from mout.gmx.net ([212.227.15.18]:50913 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229521AbhFYAUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 20:20:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1624580280;
-        bh=swjWUhJ7ti4wOo9q/TLpVinRb1Z0wsQCkXa7GXKM7Pw=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=lJEtIVn2kqP8E9SR2FEf8KnQz+6kcxjydfyBSBl5xwXyp6QQBoLYZ+PILl6DcnHN5
-         0uTyxsbqc/b3LEyPjeXntZHBygYQ5QxHMXIX0skcJ0SDgbgMKhN5llODFQ/uct+5aw
-         WuHgBBRdbwd9ZOhvmIhJLKTj+6uprrSjrlFv/5wc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.51] ([149.172.234.120]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MeU4s-1lMPqN3yJI-00aTzd; Fri, 25
- Jun 2021 02:18:00 +0200
-Subject: Re: [PATCH v2] tpm, tpm_tis_spi: Allow to sleep in the interrupt
- handler
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linus.walleij@linaro.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20210620023444.14684-1-LinoSanfilippo@gmx.de>
- <20210623133420.gw2lziue5nkvjtps@kernel.org>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <5fbe3f44-8c0d-f185-45fd-fcaa7af3657d@gmx.de>
-Date:   Fri, 25 Jun 2021 02:17:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210623133420.gw2lziue5nkvjtps@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:BpmE95Wz/wro0J6PeKv1BJFP5+cb7QlgHSxV6ggbmZlD8k8/pHD
- Br7wsTabWG4goyqNdHv7ZvKp/NvmJcAYXmO2MyFwPom4FEU0Bk5F7nMolL1XAV+Rfnm+9ZY
- U/nZuSW+0VZQ2HHwlb6ohwjNImWP/nmY4R5CfrExzGZKPLeJmgBohVXu+WCbjUcgDku9DSd
- ao0W+BTrtUI+Brz6/2XyQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3PmWfYZqWHQ=:Eei6EZGPIT8eAOSXRj5g6l
- M03hkwEZ/08UCZi7364D+HUcqz3E1PakHXJd4UXmEWhiOwY+/PJCGpg6GoYrF2I4pT6ckRAL8
- r+HwblBj+IIeacDMKuYO0T24HTukehNe7pgsYEq+wHIFk3lfDhfSR+dgpkdMGPOKIMxDeMqd1
- jt6WN6ZD0r+Ht4TTMq34yafywK0vngLgsIR4HywaHdazNFdSYMRQ2IKjz/xz3cYYvTNu2WXOA
- gxxHvW4mj3AKMc4Bt3AXcti/0L8jvJyy7oWNUUXYoR30iYBAhUyUUeKLYAhQnfoARmS8PNQ55
- p4aqjBACmzKkgzWeWRe67BoVjF14GL3U8kJuAUPl6TR1nA7aHY0UVQN07E8vrllh55oDTrcBn
- 8dcT4PE1ZAtrU1If2LRp50Ad2XHGYmduS3gUEWmuPekOleuUHy3nocX0sRAZcysL7erDqDZbg
- XaNZteoA7/gkSiDx2z9BFjgxEad/6nutRmzezUKVcpk7dCr8+05Uko8mQgZsQxJIn8PoRhPjZ
- J40GuhGHDrxpXrElo8bYhaZEUio0kekoAXE7YeWNPu1SftC0ST+QY5gL8D0rYzZsKIXLTWDnD
- JfjoGyyKa8RUoTe5Imguu/OmdiRq949SouT/diThJRhNKWXLJkkvKtKSCqT1knBHKRWoMsNZC
- WbqmhrY8VEBh0sTXCqBL88rL0qYtfwjIJ+tWMXAC8AiQ0zv0WvHeiGyo9wjt4gepes2I6sxSo
- C/BAJuQzqCiG4etmYFX+F7HmVt9gvtql+6csfVtKaJQyBlIc0GTdG9axBjR63Pwefnw4TwXF9
- WTXL+UomFRf8hneWDw6LP1R4FOhdq9aXB7rWqQGjkN53Gi5ULQfvfsdxnHOlCSwqkEboupcI4
- yz9m6aiwS18p5VzJ4n2W1ErjpXGu7XjEk5ESUkps/ruVfxsjCtkoKxXAPAb6E5Qa1DjeiGE5B
- 3Kfv82EZUGEff7w8jDMCCQAZbIXvYGh+/mlF40EcJlaqyfGGZb0UpC7E6vpPplueNI03gS962
- hZ4lelosdoDyf6R+toP83B34dRE9ntn/RNeNwXrhM60iPrjoJE+4/oYuLNu5brc0WQVfntnbS
- hMQrIwDKGaW1KvWOhcZ3503kQmjF/0WZaPkI3qRgdcOotx02Us55+yh3A==
+        id S232938AbhFYAVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 20:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229585AbhFYAVT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 20:21:19 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C2F5C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:18:59 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id x187-20020a25e0c40000b029052a5f0bf9acso1697082ybg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:18:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=6fjzUtku/PtRujaCxglb2g16yONAmo5V2De3zOjXjoc=;
+        b=qpcFFW0RGwSColAnhc/3Iy3uEck2HZTjVCBNLgz4JdCOAAd/9YXF7I2xAPgKIazivh
+         4AJPvqK51r9HiW1ZqGa/sHvXsLYOoerJv7r0D33alsqvPpjqtMIJfLgDiTSOa1leGXSy
+         BcjwmikeAthbKD6Mwe9T/XGoPNDeWXWg3jwqFfVpta6+1b0cQpwJsVGAhT5+bk8z+gpt
+         sczX8FKOW044HHSuLV9VdbfjjE8Qw3xVIne4RypNx5bRpbF+2mJUbUWXq1fojtEPOL4l
+         a8B1JTKN4F4bEbkUiByeI+c05DTMgIuI/01b+5vEn/9I24QLogLql9GqAFYaxMll/CcL
+         GcFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=6fjzUtku/PtRujaCxglb2g16yONAmo5V2De3zOjXjoc=;
+        b=iNWbEUmpq8swtC5f5jbgAnhePca7TzBrh9XCSCNnsA8AavBEjzByeI+/8UU4FSQNEL
+         YLhf1Au8xm56YBx0LBRp8oXttx+FUSCSXAp0ie5d5dTVkG4AeD9g1tHqS4gb3vCOS+Cg
+         U8IoWCXZGYsshwGcBVVd/3hVr4ivnu+AfKR4tlRQsTnelnOCCkgDsKSj1JulsHpkMJXZ
+         ICzS73yiQjQOOMMfEVhbtMYTdZNGsaG5jt+XdaJl4Xgmr17/E77GHofeYIOB4vcNKiBJ
+         Qj0vg/qw7vRiJZ3znTckIYb9maEqhreAOdSZ6/D/4wghpbd8ZxBP+moQ1RNkxe1B6HB0
+         M+lA==
+X-Gm-Message-State: AOAM533vlvYpxkTYe5if3xNcIhSK84yQj3eebp3DAxY6HtTUb44MY5uY
+        1sob8p4MAnigtsTRucEI7ybmput8mqk=
+X-Google-Smtp-Source: ABdhPJymk4k2ITDoivLr/PI7hmMnTloV0UNdYLa/stFT1YkFD9JtUH1c4jIUTrrEu0OrsZQOJWxIjbc4PAI=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:7c83:7704:b3b6:754c])
+ (user=seanjc job=sendgmr) by 2002:a25:74cc:: with SMTP id p195mr9042062ybc.109.1624580338507;
+ Thu, 24 Jun 2021 17:18:58 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu, 24 Jun 2021 17:18:53 -0700
+Message-Id: <20210625001853.318148-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH] Revert "KVM: x86: WARN and reject loading KVM if NX is
+ supported but not enabled"
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Let KVM load if EFER.NX=0 even if NX is supported, the analysis and
+testing (or lack thereof) for the non-PAE host case was garbage.
 
-On 23.06.21 at 15:34, Jarkko Sakkinen wrote:
-> On Sun, Jun 20, 2021 at 04:34:44AM +0200, Lino Sanfilippo wrote:
->> Interrupt handling at least includes reading and writing the interrupt
->> status register within the interrupt routine. For accesses over SPI a m=
-utex
->> is used in the concerning functions. Since this requires a sleepable
->> context request a threaded interrupt handler for this case.
->>
->> Cc: stable@vger.kernel.org
->> Fixes: 1a339b658d9d ("tpm_tis_spi: Pass the SPI IRQ down to the driver"=
-)
->> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
->
-> I'll test this after rc1 PR (I have one NUC which uses tpm_tis_spi).
->
-> /Jarkko
->
+If the kernel won't be using PAE paging, .Ldefault_entry in head_32.S
+skips over the entire EFER sequence.  Hopefully that can be changed in
+the future to allow KVM to require EFER.NX, but the motivation behind
+KVM's requirement isn't yet merged.  Reverting and revisiting the mess
+at a later date is by far the safest approach.
 
-Sounds great, thank you!
+This reverts commit 8bbed95d2cb6e5de8a342d761a89b0a04faed7be.
 
-Regards,
-Lino
+Fixes: 8bbed95d2cb6 ("KVM: x86: WARN and reject loading KVM if NX is supported but not enabled")
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+
+Hopefully it's not too late to just drop the original patch...
+
+ arch/x86/kvm/x86.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 4a597aafe637..1cc02a3685d0 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -10981,9 +10981,6 @@ int kvm_arch_hardware_setup(void *opaque)
+ 	int r;
+ 
+ 	rdmsrl_safe(MSR_EFER, &host_efer);
+-	if (WARN_ON_ONCE(boot_cpu_has(X86_FEATURE_NX) &&
+-			 !(host_efer & EFER_NX)))
+-		return -EIO;
+ 
+ 	if (boot_cpu_has(X86_FEATURE_XSAVES))
+ 		rdmsrl(MSR_IA32_XSS, host_xss);
+-- 
+2.32.0.93.g670b81a890-goog
+
