@@ -2,64 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CB93B3EB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D7B3B3F1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhFYIZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:25:12 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:45564 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230288AbhFYIZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:25:11 -0400
-Received: from zn.tnic (p200300ec2f0dae006074d507cc15d98f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:ae00:6074:d507:cc15:d98f])
+        id S230078AbhFYI2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:28:07 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:43090 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhFYI2G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 04:28:06 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0FDE821C23;
+        Fri, 25 Jun 2021 08:25:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624609545; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cUgka/jsXYIFlXbsTn7ZrQFiKrwsVaDLpTN3DoUyc8s=;
+        b=ngqGKScsP6EcFXD7BqS3u6wNiM2QXjXyEZDAsYJIz/N7snZjq9Cs7k8OHMGrubkvk2h/j/
+        4Xic9S+liB6jhxJwCZ5tZ/DdGOudRwgv7f6T7Uhisv9N2FYzvZ4Aq5Xfg/zTkVzNE/M+9l
+        cDwui4toG+ThcADmQ1NlVfaDQhhR+9g=
+Received: from suse.cz (unknown [10.100.201.86])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 03A561EC0595;
-        Fri, 25 Jun 2021 10:22:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1624609370;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=ngS9/xaOq2j9sm1ukqlh8eLbQuE4QtBlvWHyCPVz8dI=;
-        b=iX4RN6cZLg7J2WFIMFVdMsLrQoyzrM/Ee5qR4P2+kPelgQhM7p3KbaT2Bx+Nd1lhfEQLu3
-        BAeTPvFAuZByhchV4/7TJQ2Y+Vdnf7ZtHxZU/lt2YtVNrX+Wh/Dzovb8isWjCd+0xaxTxy
-        Q17KzUD+CBDOQ3z3KitW1UXlqRbk4bY=
-Date:   Fri, 25 Jun 2021 10:22:44 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, seanjc@google.com,
-        dave.hansen@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        Yang Zhong <yang.zhong@intel.com>
-Subject: Re: [PATCH v2] x86/sgx: Add missing xa_destroy() when virtual EPC is
- destroyed
-Message-ID: <YNWR+oSGfulOWziI@zn.tnic>
-References: <20210616003634.320206-1-kai.huang@intel.com>
- <20210623132844.heleuoxogrpz3cpm@kernel.org>
- <925090f035b8e749ea7aca8c857690c8afba7349.camel@intel.com>
+        by relay2.suse.de (Postfix) with ESMTPS id D5AC4A3BB4;
+        Fri, 25 Jun 2021 08:25:44 +0000 (UTC)
+Date:   Fri, 25 Jun 2021 10:25:44 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 15/46] mm/memcg: Add folio_uncharge_cgroup()
+Message-ID: <YNWTCG3s910H3to2@dhcp22.suse.cz>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-16-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <925090f035b8e749ea7aca8c857690c8afba7349.camel@intel.com>
+In-Reply-To: <20210622121551.3398730-16-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 01:45:35PM +1200, Kai Huang wrote:
-> Should we consider to get this into 5.13, since it is a fix?
+On Tue 22-06-21 13:15:20, Matthew Wilcox wrote:
+> Reimplement mem_cgroup_uncharge() as a wrapper around
+> folio_uncharge_cgroup().
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-We have considered it, have queued it, you're on Cc on the tip-bot
-notification:
+Similar to the previous patch. Is there any reason why we cannot simply
+stick with mem_cgroup_{un}charge and only change the parameter to folio?
 
-https://lkml.kernel.org/r/162377378414.19906.6678244614782222506.tip-bot2@tip-bot2
-
-In the meantime, that fix landed upstream and will be in 5.13:
-
-4692bc775d21 ("x86/sgx: Add missing xa_destroy() when virtual EPC is destroyed")
+> ---
+>  include/linux/memcontrol.h |  5 +++++
+>  mm/folio-compat.c          |  5 +++++
+>  mm/memcontrol.c            | 14 +++++++-------
+>  3 files changed, 17 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index a50e5cee6d2c..d4b2bc939eee 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -705,6 +705,7 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
+>  }
+>  
+>  int folio_charge_cgroup(struct folio *, struct mm_struct *, gfp_t);
+> +void folio_uncharge_cgroup(struct folio *);
+>  
+>  int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask);
+>  int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
+> @@ -1224,6 +1225,10 @@ static inline int folio_charge_cgroup(struct folio *folio,
+>  	return 0;
+>  }
+>  
+> +static inline void folio_uncharge_cgroup(struct folio *folio)
+> +{
+> +}
+> +
+>  static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
+>  				    gfp_t gfp_mask)
+>  {
+> diff --git a/mm/folio-compat.c b/mm/folio-compat.c
+> index 1d71b8b587f8..d229b979b00d 100644
+> --- a/mm/folio-compat.c
+> +++ b/mm/folio-compat.c
+> @@ -54,4 +54,9 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp)
+>  {
+>  	return folio_charge_cgroup(page_folio(page), mm, gfp);
+>  }
+> +
+> +void mem_cgroup_uncharge(struct page *page)
+> +{
+> +	folio_uncharge_cgroup(page_folio(page));
+> +}
+>  #endif
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 69638f84d11b..a6befc0843e7 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6717,24 +6717,24 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+>  }
+>  
+>  /**
+> - * mem_cgroup_uncharge - uncharge a page
+> - * @page: page to uncharge
+> + * folio_uncharge_cgroup - Uncharge a folio.
+> + * @folio: Folio to uncharge.
+>   *
+> - * Uncharge a page previously charged with mem_cgroup_charge().
+> + * Uncharge a folio previously charged with folio_charge_cgroup().
+>   */
+> -void mem_cgroup_uncharge(struct page *page)
+> +void folio_uncharge_cgroup(struct folio *folio)
+>  {
+>  	struct uncharge_gather ug;
+>  
+>  	if (mem_cgroup_disabled())
+>  		return;
+>  
+> -	/* Don't touch page->lru of any random page, pre-check: */
+> -	if (!page_memcg(page))
+> +	/* Don't touch folio->lru of any random page, pre-check: */
+> +	if (!folio_memcg(folio))
+>  		return;
+>  
+>  	uncharge_gather_clear(&ug);
+> -	uncharge_page(page, &ug);
+> +	uncharge_page(&folio->page, &ug);
+>  	uncharge_batch(&ug);
+>  }
+>  
+> -- 
+> 2.30.2
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Michal Hocko
+SUSE Labs
