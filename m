@@ -2,74 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03603B4081
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0EC3B4051
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbhFYJba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:31:30 -0400
-Received: from mga18.intel.com ([134.134.136.126]:45141 "EHLO mga18.intel.com"
+        id S231352AbhFYJ0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:26:54 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:60564 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230217AbhFYJb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:31:29 -0400
-IronPort-SDR: dleT7UTL/dM7xS07NuxzoiRt2oHlrE9bYL3svqXyE8xdDrTxtj4F0f0J2tvXukUK62z9cAiMPa
- jNtI/t4t3gtQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="194934721"
-X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
-   d="scan'208";a="194934721"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 02:29:08 -0700
-IronPort-SDR: kUTDCduX01Qi/Pr7H1QfMHw8nhF3ptuEP/84jT1JJGZHNzgDfKJ09QrWcrh3dX7gW3kdWHQjyy
- j4g9oyjw/VAQ==
-X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
-   d="scan'208";a="453751946"
-Received: from junyuton-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.170.209])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 02:29:05 -0700
-Date:   Fri, 25 Jun 2021 17:29:02 +0800
-From:   Yu Zhang <yu.c.zhang@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH 05/54] Revert "KVM: x86/mmu: Drop
- kvm_mmu_extended_role.cr4_la57 hack"
-Message-ID: <20210625092902.o4kqx67zvvbudggh@linux.intel.com>
-References: <20210622175739.3610207-1-seanjc@google.com>
- <20210622175739.3610207-6-seanjc@google.com>
- <20210625084644.ort4oojvd27oy4ca@linux.intel.com>
- <09a49caf-6ff5-295b-d1ab-023549f6a23b@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <09a49caf-6ff5-295b-d1ab-023549f6a23b@redhat.com>
-User-Agent: NeoMutt/20171215
+        id S230217AbhFYJ0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 05:26:53 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 879CA1A16CF;
+        Fri, 25 Jun 2021 11:24:29 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 201EA1A04A8;
+        Fri, 25 Jun 2021 11:24:29 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id C8D19183ACDC;
+        Fri, 25 Jun 2021 17:24:26 +0800 (+08)
+From:   Yangbo Lu <yangbo.lu@nxp.com>
+To:     netdev@vger.kernel.org
+Cc:     Yangbo Lu <yangbo.lu@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, mptcp@lists.linux.dev,
+        Richard Cochran <richardcochran@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Rui Sousa <rui.sousa@nxp.com>,
+        Sebastien Laveze <sebastien.laveze@nxp.com>
+Subject: [net-next, v4, 00/11] ptp: support virtual clocks and timestamping
+Date:   Fri, 25 Jun 2021 17:35:02 +0800
+Message-Id: <20210625093513.38524-1-yangbo.lu@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 10:57:51AM +0200, Paolo Bonzini wrote:
-> On 25/06/21 10:47, Yu Zhang wrote:
-> > > But if L1 is crafty, it can load a new CR4 on VM-Exit and toggle LA57
-> > > without having to bounce through an unpaged section.  L1 can also load a
-> > 
-> > May I ask how this is done by the guest? Thanks!
-> 
-> It can set HOST_CR3 and HOST_CR4 to a value that is different from the one
-> on vmentry.
+Current PTP driver exposes one PTP device to user which binds network
+interface/interfaces to provide timestamping. Actually we have a way
+utilizing timecounter/cyclecounter to virtualize any number of PTP
+clocks based on a same free running physical clock for using.
+The purpose of having multiple PTP virtual clocks is for user space
+to directly/easily use them for multiple domains synchronization.
 
-Thanks, Paolo.
+user
+space:     ^                                  ^
+           | SO_TIMESTAMPING new flag:        | Packets with
+           | SOF_TIMESTAMPING_BIND_PHC        | TX/RX HW timestamps
+           v                                  v
+         +--------------------------------------------+
+sock:    |     sock (new member sk_bind_phc)          |
+         +--------------------------------------------+
+           ^                                  ^
+           | ethtool_get_phc_vclocks          | Convert HW timestamps
+           |                                  | to sk_bind_phc
+           v                                  v
+         +--------------+--------------+--------------+
+vclock:  | ptp1         | ptp2         | ptpN         |
+         +--------------+--------------+--------------+
+pclock:  |             ptp0 free running              |
+         +--------------------------------------------+
 
-Do you mean the L1 can modify its paging mode by setting HOST_CR3 as root of
-a PML5 table in VMCS12 and HOST_CR4 with LA57 flipped in VMCS12, causing the
-GUEST_CR3/4 being changed in VMCS01, and eventually updating the CR3/4 when 
-L0 is injecting a VM Exit from L2? 
+The block diagram may explain how it works. Besides the PTP virtual
+clocks, the packet HW timestamp converting to the bound PHC is also
+done in sock driver. For user space, PTP virtual clocks can be
+created via sysfs, and extended SO_TIMESTAMPING API (new flag
+SOF_TIMESTAMPING_BIND_PHC) can be used to bind one PTP virtual clock
+for timestamping.
 
-B.R.
-Yu
+The test tool timestamping.c (together with linuxptp phc_ctl tool) can
+be used to verify:
 
-  
+  # echo 4 > /sys/class/ptp/ptp0/n_vclocks
+  [  129.399472] ptp ptp0: new virtual clock ptp2
+  [  129.404234] ptp ptp0: new virtual clock ptp3
+  [  129.409532] ptp ptp0: new virtual clock ptp4
+  [  129.413942] ptp ptp0: new virtual clock ptp5
+  [  129.418257] ptp ptp0: guarantee physical clock free running
+  #
+  # phc_ctl /dev/ptp2 set 10000
+  # phc_ctl /dev/ptp3 set 20000
+  #
+  # timestamping eno0 2 SOF_TIMESTAMPING_TX_HARDWARE SOF_TIMESTAMPING_RAW_HARDWARE SOF_TIMESTAMPING_BIND_PHC
+  # timestamping eno0 2 SOF_TIMESTAMPING_RX_HARDWARE SOF_TIMESTAMPING_RAW_HARDWARE SOF_TIMESTAMPING_BIND_PHC
+  # timestamping eno0 3 SOF_TIMESTAMPING_TX_HARDWARE SOF_TIMESTAMPING_RAW_HARDWARE SOF_TIMESTAMPING_BIND_PHC
+  # timestamping eno0 3 SOF_TIMESTAMPING_RX_HARDWARE SOF_TIMESTAMPING_RAW_HARDWARE SOF_TIMESTAMPING_BIND_PHC
 
-> Paolo
-> 
+Changes for v2:
+	- Converted to num_vclocks for creating virtual clocks.
+	- Guranteed physical clock free running when using virtual
+	  clocks.
+	- Fixed build warning.
+	- Updated copyright.
+Changes for v3:
+	- Supported PTP virtual clock in default in PTP driver.
+	- Protected concurrency of ptp->num_vclocks accessing.
+	- Supported PHC vclocks query via ethtool.
+	- Extended SO_TIMESTAMPING API for PHC binding.
+	- Converted HW timestamps to PHC bound, instead of previous
+	  binding domain value to PHC idea.
+	- Other minor fixes.
+Changes for v4:
+	- Used do_aux_work callback for vclock refreshing instead.
+	- Used unsigned int for vclocks number, and max_vclocks
+	  for limitiation.
+	- Fixed mutex locking.
+	- Dynamically allocated memory for vclock index storage.
+	- Removed ethtool ioctl command for vclocks getting.
+	- Updated doc for ethtool phc vclocks get.
+	- Converted to mptcp_setsockopt_sol_socket_timestamping().
+	- Passed so_timestamping for sock_set_timestamping.
+	- Fixed checkpatch/build.
+	- Other minor fixed.
+
+Yangbo Lu (11):
+  ptp: add ptp virtual clock driver framework
+  ptp: support ptp physical/virtual clocks conversion
+  ptp: track available ptp vclocks information
+  ptp: add kernel API ptp_get_vclocks_index()
+  ethtool: add a new command for getting PHC virtual clocks
+  ptp: add kernel API ptp_convert_timestamp()
+  mptcp: setsockopt: convert to
+    mptcp_setsockopt_sol_socket_timestamping()
+  net: sock: extend SO_TIMESTAMPING for PHC binding
+  net: socket: support hardware timestamp conversion to PHC bound
+  selftests/net: timestamping: support binding PHC
+  MAINTAINERS: add entry for PTP virtual clock driver
+
+ Documentation/ABI/testing/sysfs-ptp          |  20 ++
+ Documentation/networking/ethtool-netlink.rst |  22 ++
+ MAINTAINERS                                  |   7 +
+ drivers/ptp/Makefile                         |   2 +-
+ drivers/ptp/ptp_clock.c                      |  41 +++-
+ drivers/ptp/ptp_private.h                    |  39 ++++
+ drivers/ptp/ptp_sysfs.c                      | 160 ++++++++++++++
+ drivers/ptp/ptp_vclock.c                     | 219 +++++++++++++++++++
+ include/linux/ethtool.h                      |  10 +
+ include/linux/ptp_clock_kernel.h             |  31 ++-
+ include/net/sock.h                           |   8 +-
+ include/uapi/linux/ethtool_netlink.h         |  15 ++
+ include/uapi/linux/net_tstamp.h              |  17 +-
+ net/core/sock.c                              |  65 +++++-
+ net/ethtool/Makefile                         |   2 +-
+ net/ethtool/common.c                         |  14 ++
+ net/ethtool/netlink.c                        |  10 +
+ net/ethtool/netlink.h                        |   2 +
+ net/ethtool/phc_vclocks.c                    |  94 ++++++++
+ net/mptcp/sockopt.c                          |  69 ++++--
+ net/socket.c                                 |  19 +-
+ tools/testing/selftests/net/timestamping.c   |  62 ++++--
+ 22 files changed, 875 insertions(+), 53 deletions(-)
+ create mode 100644 drivers/ptp/ptp_vclock.c
+ create mode 100644 net/ethtool/phc_vclocks.c
+
+
+base-commit: 19938bafa7ae8fc0a4a2c1c1430abb1a04668da1
+-- 
+2.25.1
+
