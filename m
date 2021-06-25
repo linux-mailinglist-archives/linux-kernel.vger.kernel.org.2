@@ -2,199 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8729D3B3CB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0523B3CBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233207AbhFYGex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 02:34:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23296 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233199AbhFYGew (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 02:34:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624602751;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dADiFgcXa4r/30YVc717dGwDJQ0AW/eVDuxFNmSHG1A=;
-        b=O7kA5DTcd6rBqPpwdX1NLEmFABJGJbwaQFsmAyFS6p/0s2bjjj851w811ph8v7BziVT6Kv
-        8ou7Nc1/I+/yQ/0WtLCJ62f94OqX//wUL38CuSRl2D5rt9E9EOxEWYpzHqcupxUnQi/MXL
-        UgN9oDSJIY4vYWR0Q4tUL56kO15imkk=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-326-MOGEQk3aNmS2vU94jtCyYQ-1; Fri, 25 Jun 2021 02:32:27 -0400
-X-MC-Unique: MOGEQk3aNmS2vU94jtCyYQ-1
-Received: by mail-wr1-f70.google.com with SMTP id k3-20020a5d62830000b029011a69a4d069so3108931wru.21
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 23:32:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dADiFgcXa4r/30YVc717dGwDJQ0AW/eVDuxFNmSHG1A=;
-        b=YeGlYtLyCO3ToY3UDRpXPPopMropuz1v9ElgauwiussoWytSPW/Ao/e4GUcrfy0fdf
-         dLm+k768NrnTiK8n6JrIn7soWLIsXGTt+/zsRvZr9dVap2ufgQk+6PWYnTUJNkT/naKt
-         IIji7mw/cQ5TS2UTIHlaArP3CAiKPf2WAugP0+/dQ36Jd4ubG+X4uOLnkVVKMT1HNYvd
-         eabiFzjyCV2rhOYwfdB00NMrIpBOMv84RyZB0tLXvrxhzyXeH6VleVGKTABUhLnhVWIw
-         q+DB+fPHlWgomdTjZrVsOjWEp0shu6YwijwI8yoKSjUKsfxoatsZBzvIMti+7M3p6Q04
-         m5Sw==
-X-Gm-Message-State: AOAM531BJwW0o6M/s0pQhz7kN3K+5ty9JyN7QMrXy6Hrd5FkcEMsmbgZ
-        Erjn4DFwotaNTmhBbhwrfe9G9Q8VFTRx0MJCWC/12nnYGqXgudt2zrtIkpItPU7tF0vqxjWGUXm
-        ytxjtuvLr1ZpTVfCR9qujQDWc
-X-Received: by 2002:a05:600c:198f:: with SMTP id t15mr8745045wmq.27.1624602746802;
-        Thu, 24 Jun 2021 23:32:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzblmcYdLQ+0WpUsYPYtWzDLkJrZbxNg+n/ZbamaCoqfpz8Q7AbqWYWLo4IhalIfmQpSr+JXw==
-X-Received: by 2002:a05:600c:198f:: with SMTP id t15mr8745031wmq.27.1624602746619;
-        Thu, 24 Jun 2021 23:32:26 -0700 (PDT)
-Received: from redhat.com ([77.124.79.210])
-        by smtp.gmail.com with ESMTPSA id o203sm5427481wmo.36.2021.06.24.23.32.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 23:32:25 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 02:32:22 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, jasowang@redhat.com,
-        brouer@redhat.com, paulmck@kernel.org, peterz@infradead.org,
-        will@kernel.org, shuah@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linuxarm@openeuler.org
-Subject: Re: [PATCH net-next v2 2/2] ptr_ring: make __ptr_ring_empty()
- checking more reliable
-Message-ID: <20210625022128-mutt-send-email-mst@kernel.org>
-References: <1624591136-6647-1-git-send-email-linyunsheng@huawei.com>
- <1624591136-6647-3-git-send-email-linyunsheng@huawei.com>
+        id S233162AbhFYGhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 02:37:06 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:50321 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230097AbhFYGhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 02:37:05 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GB6g74Tk1z9sTD;
+        Fri, 25 Jun 2021 16:34:43 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624602884;
+        bh=IIl6x8j2ZhmvAAB4VBYoC6SU7LYFxneW+C5kK69f0/0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KHwJkvCfaZlcdAL2zWEUujVIQ/WZfZ4LXQ4n9BaIl1VnGeLYj6Ysgd7IBOtirPEuw
+         qEStWgx16Wj4EUA49/6SDDXdNSL5jYeNwy5ZgLuxmajvM5/95SIQ98nLpBqrlUMMIE
+         6zsFoGzn6U2/uye0GcI9Ai1lVFprdh55NAPu+u3tYaeUS7waPz1Gu31MRrgVuKsj7Y
+         3+RlVHe3yhEGdVdxnaPiy30e6rzElKwU5BS0gSlU1v1ogvxNxyZ4aqVRSwN8EmPAkc
+         X9YoGt25OTJd9jc58DPBrV+vvNuzP2iYfmqP9a+RsJZaEnQ5jo5NoqmCzDrFFxgjBY
+         p6HmO0JNXNRDQ==
+Date:   Fri, 25 Jun 2021 16:34:42 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Gavin Shan <gshan@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the akpm-current tree
+Message-ID: <20210625163442.185b8cb0@canb.auug.org.au>
+In-Reply-To: <0b1d5003-830e-b284-0fca-cc62d9192b65@redhat.com>
+References: <20210624194301.7474ce76@canb.auug.org.au>
+        <0b1d5003-830e-b284-0fca-cc62d9192b65@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1624591136-6647-3-git-send-email-linyunsheng@huawei.com>
+Content-Type: multipart/signed; boundary="Sig_/Kw91FsTD=1lQWw1cgnnpnUJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 11:18:56AM +0800, Yunsheng Lin wrote:
-> Currently r->queue[] is cleared after r->consumer_head is moved
-> forward, which makes the __ptr_ring_empty() checking called in
-> page_pool_refill_alloc_cache() unreliable if the checking is done
-> after the r->queue clearing and before the consumer_head moving
-> forward.
+--Sig_/Kw91FsTD=1lQWw1cgnnpnUJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi Andrew,
 
-Well the documentation for __ptr_ring_empty clearly states is
-is not guaranteed to be reliable.
+On Fri, 25 Jun 2021 16:28:15 +1000 Gavin Shan <gshan@redhat.com> wrote:
+>
+> On 6/24/21 7:43 PM, Stephen Rothwell wrote:
+> > Hi all,
+> >=20
+> > After merging the akpm-current tree, today's linux-next build (powerpc
+> > ppc64_defconfig) failed like this:
+> >=20
+> > mm/page_reporting.c:14:37: error: initializer element is not constant
+> >     14 | unsigned int page_reporting_order =3D pageblock_order;
+> >        |                                     ^~~~~~~~~~~~~~~
+> >=20
+> > Caused by commit
+> >=20
+> >    223f64d9e679 ("mm/page_reporting: export reporting order as module p=
+arameter")
+> >=20
+> > pageblock_order is defined to be various things depending on CONFIG_
+> > symbols.
+> >=20
+> > I have reverted that commit (and the following three) for today.
+> >  =20
+>=20
+> Yes, Please drop this series for now.
+>=20
+> The v3 was applied and caused the build error. Actually, we need
+> v5, which was posted couple of hours ago.
+>=20
+>     v5: https://lkml.org/lkml/2021/6/24/1137
 
- *
- * NB: This is only safe to call if ring is never resized.
- *
- * However, if some other CPU consumes ring entries at the same time, the value
- * returned is not guaranteed to be correct.
- *
- * In this case - to avoid incorrectly detecting the ring
- * as empty - the CPU consuming the ring entries is responsible
- * for either consuming all ring entries until the ring is empty,
- * or synchronizing with some other CPU and causing it to
- * re-test __ptr_ring_empty and/or consume the ring enteries
- * after the synchronization point.
- *
+Which version is in today's mmotm?
 
-Is it then the case that page_pool_refill_alloc_cache violates
-this requirement? How?
+--=20
+Cheers,
+Stephen Rothwell
 
-It looks like you are trying to make the guarantee stronger and ensure
-no false positives.
+--Sig_/Kw91FsTD=1lQWw1cgnnpnUJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-If yes please document this as such, update the comment so all
-code can be evaluated with the eye towards whether the new stronger
-guarantee is maintained. In particular I think I see at least one
-issue with this immediately.
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDVeQIACgkQAVBC80lX
+0Gwd1QgAlpNPHbE0X+XSj/+sPtMPZIaBNoMgTv397VTW0/cbAIcO+o2ZWCVIMYB1
+j4sGvILX0ziSaEZnnwGiLjy9qmpPvArrovUpWdtnWvIUBUxaChqvXpAIrWYizzsq
+N6hZ3cy8i4NN7/dwSCmWexr9f3aOjXRdZ8u8I/EZ/HcR5MvzoJ30bHE3JQAKBOuH
+HDuu3YoyY4lGz1bkRUd9ILOFpBdM4VNcdycGS/E23BGvvvagYuTrVM12z0JrCqy7
+rai4qrpDV0nXVXjVkPIVf9DqrVCsv/MH03YKTVENGA7s50qw80PKSgt0kSFfmjzj
+6UyyGq48gORFtNAB3VTlZcLe7CypHg==
+=yI67
+-----END PGP SIGNATURE-----
 
-> Move the r->queue[] clearing after consumer_head moving forward
-> to make __ptr_ring_empty() checking more reliable.
-> 
-> As a side effect of above change, a consumer_head checking is
-> avoided for the likely case, and it has noticeable performance
-> improvement when it is tested using the ptr_ring_test selftest
-> added in the previous patch.
-> 
-> Using "taskset -c 1 ./ptr_ring_test -s 1000 -m 0 -N 100000000"
-> to test the case of single thread doing both the enqueuing and
-> dequeuing:
-> 
->  arch     unpatched           patched       delta
-> arm64      4648 ms            4464 ms       +3.9%
->  X86       2562 ms            2401 ms       +6.2%
-> 
-> Using "taskset -c 1-2 ./ptr_ring_test -s 1000 -m 1 -N 100000000"
-> to test the case of one thread doing enqueuing and another thread
-> doing dequeuing concurrently, also known as single-producer/single-
-> consumer:
-> 
->  arch      unpatched             patched         delta
-> arm64   3624 ms + 3624 ms   3462 ms + 3462 ms    +4.4%
->  x86    2758 ms + 2758 ms   2547 ms + 2547 ms    +7.6%
-> 
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
-> V2: Add performance data.
-> ---
->  include/linux/ptr_ring.h | 25 ++++++++++++++++---------
->  1 file changed, 16 insertions(+), 9 deletions(-)
-> 
-> diff --git a/include/linux/ptr_ring.h b/include/linux/ptr_ring.h
-> index 808f9d3..db9c282 100644
-> --- a/include/linux/ptr_ring.h
-> +++ b/include/linux/ptr_ring.h
-> @@ -261,8 +261,7 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
->  	/* Note: we must keep consumer_head valid at all times for __ptr_ring_empty
->  	 * to work correctly.
->  	 */
-> -	int consumer_head = r->consumer_head;
-> -	int head = consumer_head++;
-> +	int consumer_head = r->consumer_head + 1;
->  
->  	/* Once we have processed enough entries invalidate them in
->  	 * the ring all at once so producer can reuse their space in the ring.
-> @@ -271,19 +270,27 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
->  	 */
->  	if (unlikely(consumer_head - r->consumer_tail >= r->batch ||
->  		     consumer_head >= r->size)) {
-> +		int tail = r->consumer_tail;
-> +
-> +		if (unlikely(consumer_head >= r->size)) {
-> +			r->consumer_tail = 0;
-> +			WRITE_ONCE(r->consumer_head, 0);
-> +		} else {
-> +			r->consumer_tail = consumer_head;
-> +			WRITE_ONCE(r->consumer_head, consumer_head);
-> +		}
-> +
->  		/* Zero out entries in the reverse order: this way we touch the
->  		 * cache line that producer might currently be reading the last;
->  		 * producer won't make progress and touch other cache lines
->  		 * besides the first one until we write out all entries.
->  		 */
-> -		while (likely(head >= r->consumer_tail))
-> -			r->queue[head--] = NULL;
-> -		r->consumer_tail = consumer_head;
-> -	}
-> -	if (unlikely(consumer_head >= r->size)) {
-> -		consumer_head = 0;
-> -		r->consumer_tail = 0;
-> +		while (likely(--consumer_head >= tail))
-> +			r->queue[consumer_head] = NULL;
-> +
-> +		return;
-
-
-So if now we need this to be reliable then
-we also need smp_wmb before writing r->queue[consumer_head],
-there could be other gotchas.
-
->  	}
-> +
->  	/* matching READ_ONCE in __ptr_ring_empty for lockless tests */
->  	WRITE_ONCE(r->consumer_head, consumer_head);
->  }
-> -- 
-> 2.7.4
-
+--Sig_/Kw91FsTD=1lQWw1cgnnpnUJ--
