@@ -2,245 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8943D3B3D66
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 904B23B3D6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhFYHdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 03:33:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29328 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229616AbhFYHc7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 03:32:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624606239;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xKK7eRDQG8UvZ5Oc1h4Ez07d1ItOKlaqb/2D9MQmVZg=;
-        b=B2mav+43OnW6Ls92qdULP44ZIb4eH2lvBgoMy/fJ3Fgpm5s61vdJxZK2cVFLqwS2s3pBDF
-        gkbCrNNWOXK6oobO7jDBsQhWfzfxfPhOErITaRCm62TsCQMic+OJU6uI8s9MVTu/SV3PRy
-        lqtLfpOrWJBzAEKz3s4Xu8DgfkORGUk=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-400-ukdc3ZZnMTikVrDMT9UMGA-1; Fri, 25 Jun 2021 03:30:38 -0400
-X-MC-Unique: ukdc3ZZnMTikVrDMT9UMGA-1
-Received: by mail-wm1-f72.google.com with SMTP id v25-20020a1cf7190000b0290197a4be97b7so2367953wmh.9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 00:30:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xKK7eRDQG8UvZ5Oc1h4Ez07d1ItOKlaqb/2D9MQmVZg=;
-        b=qa0O5p1ZtRnou7izDGSehPWtMrxJsAlWrwgVWZTF8uFUCPyapMu/6jWOnbOJzoftW6
-         8i1TRuI/Ylgd7uAgxnIagRI1bd9sYVL0PIDU11JUyNsbm3sRMk9g68RwpC/jcVDZg3fY
-         74jJSFJDi1W+bv49O0k4uN0whpvTo/9hta+PEyHkNfaWFmiMoZt2RAZEE1flgouU6/9B
-         nfqFw1us3pKZfRla6h27p8bdT+kSxSNyDLGOyzmdFUjhSe32Up7Di0DB7dCyNT7bSovN
-         9rA/Gze35wpxSTz/ADNRGSMQew+9oJD/od16gr7Ac/C3op080KQMT6IHuBbv61Nwkbnt
-         JGmQ==
-X-Gm-Message-State: AOAM533Zvi438kD9yD6TlzN6zOHNzKdax8J7eA5I4bxulJmB913aVJS/
-        cbDHm5bui/QKLE3WEWjeO4WriWJ+7YoaklYADGuUHObcfOfwysfH5f1Z6oJkjRPi8uVXYjK36/8
-        V9xyOljDZyWDfV4rWF5sVusPG
-X-Received: by 2002:a5d:488a:: with SMTP id g10mr9127108wrq.180.1624606236839;
-        Fri, 25 Jun 2021 00:30:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxChax3iiltDo2FH1RlQu7D+c01evM49Qx+uLUiAexGJ9cd0DZ2+IV6/hqze/k243BsL1jmEA==
-X-Received: by 2002:a5d:488a:: with SMTP id g10mr9127084wrq.180.1624606236654;
-        Fri, 25 Jun 2021 00:30:36 -0700 (PDT)
-Received: from redhat.com ([77.124.79.210])
-        by smtp.gmail.com with ESMTPSA id d15sm5375468wrb.42.2021.06.25.00.30.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 00:30:35 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 03:30:32 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, jasowang@redhat.com,
-        brouer@redhat.com, paulmck@kernel.org, peterz@infradead.org,
-        will@kernel.org, shuah@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linuxarm@openeuler.org
-Subject: Re: [PATCH net-next v2 2/2] ptr_ring: make __ptr_ring_empty()
- checking more reliable
-Message-ID: <20210625032508-mutt-send-email-mst@kernel.org>
-References: <1624591136-6647-1-git-send-email-linyunsheng@huawei.com>
- <1624591136-6647-3-git-send-email-linyunsheng@huawei.com>
- <20210625022128-mutt-send-email-mst@kernel.org>
- <c6975b2d-2b4a-5b3f-418c-1a59607b9864@huawei.com>
+        id S229915AbhFYHfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 03:35:16 -0400
+Received: from mga09.intel.com ([134.134.136.24]:29591 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229616AbhFYHfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 03:35:12 -0400
+IronPort-SDR: sBxSL6YiXLtB6CNxhldcXCn+GAYU5IU3Um+P4Vap4E8lwuiCDf6jlobPq32x0WwdxRKnNTP2KW
+ oKbAp0M15W5w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="207562646"
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="207562646"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 00:32:51 -0700
+IronPort-SDR: qGS64tHnwuYbvVOOx/54ZukzYe1TvsMOw0VBQy6DpmSvGu0AheD6muo1i9N4JIZ3wG5n2zm0Xo
+ 5/JV9g1Co5Gw==
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="488085674"
+Received: from msun2-mobl1.ccr.corp.intel.com (HELO yhuang6-mobl1.ccr.corp.intel.com) ([10.254.215.50])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 00:32:44 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        yang.shi@linux.alibaba.com, rientjes@google.com,
+        ying.huang@intel.com, dan.j.williams@intel.com, david@redhat.com,
+        osalvador@suse.de, weixugc@google.com,
+        Michal Hocko <mhocko@suse.com>, Yang Shi <shy828301@gmail.com>,
+        Zi Yan <ziy@nvidia.com>
+Subject: [PATCH -V9 0/9] Migrate Pages in lieu of discard
+Date:   Fri, 25 Jun 2021 15:31:55 +0800
+Message-Id: <20210625073204.1005986-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c6975b2d-2b4a-5b3f-418c-1a59607b9864@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 03:21:33PM +0800, Yunsheng Lin wrote:
-> On 2021/6/25 14:32, Michael S. Tsirkin wrote:
-> > On Fri, Jun 25, 2021 at 11:18:56AM +0800, Yunsheng Lin wrote:
-> >> Currently r->queue[] is cleared after r->consumer_head is moved
-> >> forward, which makes the __ptr_ring_empty() checking called in
-> >> page_pool_refill_alloc_cache() unreliable if the checking is done
-> >> after the r->queue clearing and before the consumer_head moving
-> >> forward.
-> > 
-> > 
-> > Well the documentation for __ptr_ring_empty clearly states is
-> > is not guaranteed to be reliable.
-> 
-> Yes, this patch does not make __ptr_ring_empty() strictly reliable
-> without taking the r->consumer_lock, as the disscuission in [1].
-> 
-> 1. https://patchwork.kernel.org/project/netdevbpf/patch/1622032173-11883-1-git-send-email-linyunsheng@huawei.com/#24207011
-> 
-> > 
-> >  *
-> >  * NB: This is only safe to call if ring is never resized.
-> >  *
-> >  * However, if some other CPU consumes ring entries at the same time, the value
-> >  * returned is not guaranteed to be correct.
-> >  *
-> >  * In this case - to avoid incorrectly detecting the ring
-> >  * as empty - the CPU consuming the ring entries is responsible
-> >  * for either consuming all ring entries until the ring is empty,
-> >  * or synchronizing with some other CPU and causing it to
-> >  * re-test __ptr_ring_empty and/or consume the ring enteries
-> >  * after the synchronization point.
-> >  *
-> > 
-> > Is it then the case that page_pool_refill_alloc_cache violates
-> > this requirement? How?
-> 
-> As my understanding:
-> page_pool_refill_alloc_cache() uses __ptr_ring_empty() to avoid
-> taking r->consumer_lock, when the above data race happens, it will
-> exit out and allocate page from the page allocator instead of reusing
-> the page in ptr_ring, which *may* not be happening if __ptr_ring_empty()
-> is more reliable.
+The full series is also available here:
 
-Question is how do we know it's more reliable?
-It would be nice if we did actually made it more reliable,
-as it is we are just shifting races around.
+	https://github.com/hying-caritas/linux/tree/automigrate-20210625
 
+The changes since the last post are as follows,
 
-> > 
-> > It looks like you are trying to make the guarantee stronger and ensure
-> > no false positives.
-> > 
-> > If yes please document this as such, update the comment so all
-> > code can be evaluated with the eye towards whether the new stronger
-> > guarantee is maintained. In particular I think I see at least one
-> > issue with this immediately.
-> > 
-> > 
-> >> Move the r->queue[] clearing after consumer_head moving forward
-> >> to make __ptr_ring_empty() checking more reliable.
-> >>
-> >> As a side effect of above change, a consumer_head checking is
-> >> avoided for the likely case, and it has noticeable performance
-> >> improvement when it is tested using the ptr_ring_test selftest
-> >> added in the previous patch.
-> >>
-> >> Using "taskset -c 1 ./ptr_ring_test -s 1000 -m 0 -N 100000000"
-> >> to test the case of single thread doing both the enqueuing and
-> >> dequeuing:
-> >>
-> >>  arch     unpatched           patched       delta
-> >> arm64      4648 ms            4464 ms       +3.9%
-> >>  X86       2562 ms            2401 ms       +6.2%
-> >>
-> >> Using "taskset -c 1-2 ./ptr_ring_test -s 1000 -m 1 -N 100000000"
-> >> to test the case of one thread doing enqueuing and another thread
-> >> doing dequeuing concurrently, also known as single-producer/single-
-> >> consumer:
-> >>
-> >>  arch      unpatched             patched         delta
-> >> arm64   3624 ms + 3624 ms   3462 ms + 3462 ms    +4.4%
-> >>  x86    2758 ms + 2758 ms   2547 ms + 2547 ms    +7.6%
-> >>
-> >> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> >> ---
-> >> V2: Add performance data.
-> >> ---
-> >>  include/linux/ptr_ring.h | 25 ++++++++++++++++---------
-> >>  1 file changed, 16 insertions(+), 9 deletions(-)
-> >>
-> >> diff --git a/include/linux/ptr_ring.h b/include/linux/ptr_ring.h
-> >> index 808f9d3..db9c282 100644
-> >> --- a/include/linux/ptr_ring.h
-> >> +++ b/include/linux/ptr_ring.h
-> >> @@ -261,8 +261,7 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
-> >>  	/* Note: we must keep consumer_head valid at all times for __ptr_ring_empty
-> >>  	 * to work correctly.
-> >>  	 */
-> >> -	int consumer_head = r->consumer_head;
-> >> -	int head = consumer_head++;
-> >> +	int consumer_head = r->consumer_head + 1;
-> >>  
-> >>  	/* Once we have processed enough entries invalidate them in
-> >>  	 * the ring all at once so producer can reuse their space in the ring.
-> >> @@ -271,19 +270,27 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
-> >>  	 */
-> >>  	if (unlikely(consumer_head - r->consumer_tail >= r->batch ||
-> >>  		     consumer_head >= r->size)) {
-> >> +		int tail = r->consumer_tail;
-> >> +
-> >> +		if (unlikely(consumer_head >= r->size)) {
-> >> +			r->consumer_tail = 0;
-> >> +			WRITE_ONCE(r->consumer_head, 0);
-> >> +		} else {
-> >> +			r->consumer_tail = consumer_head;
-> >> +			WRITE_ONCE(r->consumer_head, consumer_head);
-> >> +		}
-> >> +
-> >>  		/* Zero out entries in the reverse order: this way we touch the
-> >>  		 * cache line that producer might currently be reading the last;
-> >>  		 * producer won't make progress and touch other cache lines
-> >>  		 * besides the first one until we write out all entries.
-> >>  		 */
-> >> -		while (likely(head >= r->consumer_tail))
-> >> -			r->queue[head--] = NULL;
-> >> -		r->consumer_tail = consumer_head;
-> >> -	}
-> >> -	if (unlikely(consumer_head >= r->size)) {
-> >> -		consumer_head = 0;
-> >> -		r->consumer_tail = 0;
-> >> +		while (likely(--consumer_head >= tail))
-> >> +			r->queue[consumer_head] = NULL;
-> >> +
-> >> +		return;
-> > 
-> > 
-> > So if now we need this to be reliable then
-> > we also need smp_wmb before writing r->queue[consumer_head],
-> > there could be other gotchas.
-> 
-> Yes, This patch does not make it strictly reliable.
-> T think I could mention that in the commit log?
+ * Squash the original 01/10 and 02/10 and move the RCU protection
+   from the original 03/10 to the squashed 1/9.
+ * Make the newly added migrate_pages() parameter optional per Oscar's
+   comments.
+ * Restore the original behavior of MADV_PAGEOUT per Zi's comments.
+ * Guard next_demotion_node() with numa_demotion_enabled per Wei's
+   comments.
 
-OK so it's not that it makes it more reliable - this patch simply makes
-a possible false positive less likely while making  a false negative
-more likely. Our assumption is that a false negative is cheaper then?
+--
 
-How do we know that it is?
+We're starting to see systems with more and more kinds of memory such
+as Intel's implementation of persistent memory.
 
-And even if we prove the ptr_ring itself is faster now,
-how do we know what affects callers in a better way a
-false positive or a false negative?
+Let's say you have a system with some DRAM and some persistent memory.
+Today, once DRAM fills up, reclaim will start and some of the DRAM
+contents will be thrown out.  Allocations will, at some point, start
+falling over to the slower persistent memory.
 
-I would rather we worked on actually making it reliable
-e.g. if we can guarantee no false positives, that would be
-a net win.
+That has two nasty properties.  First, the newer allocations can end
+up in the slower persistent memory.  Second, reclaimed data in DRAM
+are just discarded even if there are gobs of space in persistent
+memory that could be used.
 
-> 
-> > 
-> >>  	}
-> >> +
-> >>  	/* matching READ_ONCE in __ptr_ring_empty for lockless tests */
-> >>  	WRITE_ONCE(r->consumer_head, consumer_head);
-> >>  }
-> >> -- 
-> >> 2.7.4
-> > 
-> > 
-> > .
-> > 
+This set implements a solution to these problems.  At the end of the
+reclaim process in shrink_page_list() just before the last page
+refcount is dropped, the page is migrated to persistent memory instead
+of being dropped.
 
+While I've talked about a DRAM/PMEM pairing, this approach would
+function in any environment where memory tiers exist.
+
+This is not perfect.  It "strands" pages in slower memory and never
+brings them back to fast DRAM.  Huang Ying has follow-on work which
+repurposes autonuma to promote hot pages back to DRAM.
+
+This is also all based on an upstream mechanism that allows
+persistent memory to be onlined and used as if it were volatile:
+
+	http://lkml.kernel.org/r/20190124231441.37A4A305@viggo.jf.intel.com
+
+We have tested the patchset with the postgresql and pgbench.  On a
+2-socket server machine with DRAM and PMEM, the kernel with the
+patchset can improve the score of pgbench up to 22.1% compared with
+that of the DRAM only + disk case.  This comes from the reduced disk
+read throughput (which reduces up to 70.8%).
+
+== Open Issues ==
+
+ * Memory policies and cpusets that, for instance, restrict allocations
+   to DRAM can be demoted to PMEM whenever they opt in to this
+   new mechanism.  A cgroup-level API to opt-in or opt-out of
+   these migrations will likely be required as a follow-on.
+ * Could be more aggressive about where anon LRU scanning occurs
+   since it no longer necessarily involves I/O.  get_scan_count()
+   for instance says: "If we have no swap space, do not bother
+   scanning anon pages"
+
+--
+
+Changes since (automigrate-20210618):
+ * Squash the original 01/10 and 02/10 and move the RCU protection
+   from the original 03/10 to the squashed 1/9.
+ * Make the newly added migrate_pages() parameter optional per Oscar's
+   comments.
+ * Restore the original behavior of MADV_PAGEOUT per Zi's comments.
+ * Guard next_demotion_node() with numa_demotion_enabled per Wei's
+   comments.
+
+Changes since (automigrate-20210331):
+ * Change the page allocation flags per Michal's comments.
+ * Change the user interface to enable the feature.
+
+Changes since (automigrate-20210304):
+ * Add ack/review tags
+ * Remove duplicate synchronize_rcu() call
+
+Changes since (automigrate-20210122):
+ * move from GFP_HIGHUSER -> GFP_HIGHUSER_MOVABLE since pages *are*
+   movable.
+ * Separate out helpers that check for being able to relaim anonymous
+   pages versus being able to meaningfully scan the anon LRU.
+
+Changes since (automigrate-20200818):
+ * Fall back to normal reclaim when demotion fails
+ * Fix some compile issues, when page migration and NUMA are off
+
+Changes since (automigrate-20201007):
+ * separate out checks for "can scan anon LRU" from "can actually
+   swap anon pages right now".  Previous series conflated them
+   and may have been overly aggressive scanning LRU
+ * add MR_DEMOTION to tracepoint header
+ * remove unnecessary hugetlb page check
+
+Changes since (https://lwn.net/Articles/824830/):
+ * Use higher-level migrate_pages() API approach from Yang Shi's
+   earlier patches.
+ * made sure to actually check node_reclaim_mode's new bit
+ * disabled migration entirely before introducing RECLAIM_MIGRATE
+ * Replace GFP_NOWAIT with explicit __GFP_KSWAPD_RECLAIM and
+   comment why we want that.
+ * Comment on effects of that keep multiple source nodes from
+   sharing target nodes
+
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: osalvador <osalvador@suse.de>
+Cc: Wei Xu <weixugc@google.com>
+Cc: Zi Yan <ziy@nvidia.com>
