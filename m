@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273C23B46A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F5D3B46A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbhFYPer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 11:34:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50647 "EHLO
+        id S229996AbhFYPeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 11:34:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37576 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229873AbhFYPel (ORCPT
+        by vger.kernel.org with ESMTP id S229959AbhFYPen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 11:34:41 -0400
+        Fri, 25 Jun 2021 11:34:43 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624635140;
+        s=mimecast20190719; t=1624635142;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=INi7/NQmQ1q6t1hySvPoVbZhD1CFSoMp7ejAC0hIDQg=;
-        b=OUGK4cXxdX+eavEabksLCKN1z8QRL9QoiHCu+8/hTHV1NiiDrfUa31k49ZF3WTsaEFLCgj
-        tK3YivKrFjmTg70VHlAExTTl+T236cbNa+2HJFnRLRO7QlUSoyaNa9kww970Pj1k+frPpG
-        SaeiPbyaWoK7LHD2D2OCmwq3pjt8o7c=
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-114-_ObaF1VBPnaj103FmUGGOQ-1; Fri, 25 Jun 2021 11:32:19 -0400
-X-MC-Unique: _ObaF1VBPnaj103FmUGGOQ-1
-Received: by mail-io1-f71.google.com with SMTP id n41-20020a0566023429b02904f14fe3958cso1354778ioz.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:32:19 -0700 (PDT)
+        bh=Tm+fvqcK0gMUF4HiB0nRTnFiIWjA8jvrus1t7f0ofxA=;
+        b=XMv4slkdysVkdpBngxodZb2/88tqa+YRdPhOgNwY8ukYiEhvtx87m2XYVUvgchbcDR1HmV
+        K8smNx5+vl0D2+n3WNO4r/zHrFQWLRaQYZ2MrzxgbPQWeQcXh4c1Ypwfv02m+ZwcHK9NGl
+        y7j2zavdonEXDvGcCyFSZSrxS76XdK0=
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-263-eepHLwg1OMioJrVJtgXJAA-1; Fri, 25 Jun 2021 11:32:21 -0400
+X-MC-Unique: eepHLwg1OMioJrVJtgXJAA-1
+Received: by mail-il1-f198.google.com with SMTP id d17-20020a9236110000b02901cf25fcfdcdso6397625ila.9
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:32:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=INi7/NQmQ1q6t1hySvPoVbZhD1CFSoMp7ejAC0hIDQg=;
-        b=f2MYglhzHpPOg/axhiwjdqE0aWYfp24MpJs0uu5HWJgdSfb8kSKf9OGRBy34xOPoLO
-         n6e4thXa8MpCr2QopL2WVuDRBO6W+a9/+YfjO0Osr1FCmu365KxellJnFZUmwCYMH1uU
-         ZUh1nDOryzxL/ir2TKhlvQXyjHVUfUC7TbvFr4X1QgMNDJZAebDfASmkXpJ77YeD5HSl
-         CTHPoa6TtDNBYDZDKP0/jZeeSqQUIRBAKj1/iSffrCzV9ZiLM3PgLDxkWo3fZCzCCMgw
-         5pCSHD6Xf2kFd4q1tGJ+/OkY7jY0GhIpz+QzZSJRgXmVmKZRn8UuL4dyny6AEsZj2d3m
-         4DWA==
-X-Gm-Message-State: AOAM533KN2mcD74g0u6DTvzBsQys1LhCCKfYUZNgb3O79RepjClFFEwY
-        JDoQDirJI8qTeI7o2GpIBJWn5KU184g/z+4ASvhrFQbn/WWOVGgOTPKswIxxfOelScjYDFl5khE
-        FFL7Twx4dBm9n+6sU5Ypg1Ojzh4SeomAbDqRgAsaS54VkXKcRrD4ByyW5cJMfVt/lHfjcQ/DiMQ
+        bh=Tm+fvqcK0gMUF4HiB0nRTnFiIWjA8jvrus1t7f0ofxA=;
+        b=Srq33lttt4X0w1LqQIB7pwIAMOYOFced3T9yvaI7Mu3iiUCDLOKAKzRm+4xA6W0UQ5
+         0E4bFwinExJFjwiRHws4WOaPBLBp4TsxT2jZFRnpdN7rbAHAbwH0fuFMKhRWpkKkrBJg
+         Rsz/N/TiegOubKWxhdavxDFT+vpapV75HNi62Do4sn395V9Ue7ZKS+jW13fgBCEpago+
+         ED0mjNZ5G+ev/d+6zZK7N7RIIFx49FjrWRWyWMPIHgOmd/PTjSRHifGMqjBv8ivZfGJh
+         kfVAta/xbSu+KJHfR6DOEWLoyz+TQdSflPyLnOMfFG9TJzDuBJpkMFaRzZp2k7s+p/pS
+         kJsw==
+X-Gm-Message-State: AOAM531jFUgmnzndpzY3JepSMPJ3wfyYXstLFO2c4XKpsMM6MnfpI3Hz
+        F8NjgjyzSW/ngZcYGiMiWxKR+utvn5SV2h1pC5nE/QjTCP6iBgYpMHrhT+w0i5VqqV+LnoQybr7
+        mTUunmt/1pH70PjxZ2dQwWhZ0LJ8Cviwu0jRRZOVgqsvH3QDMVOjyT2Vn+F18dx1PiMbMQIUrCg
         ==
-X-Received: by 2002:a05:6638:3fa:: with SMTP id s26mr10138684jaq.16.1624635138345;
-        Fri, 25 Jun 2021 08:32:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzGLqINrVZS5FKrdcEe4KyJJCkXQZcmXAZYbOxtJXj3K1ST9f/AyKv8aClT53i5y2FrxTEjdA==
-X-Received: by 2002:a05:6638:3fa:: with SMTP id s26mr10138658jaq.16.1624635138108;
-        Fri, 25 Jun 2021 08:32:18 -0700 (PDT)
+X-Received: by 2002:a02:942e:: with SMTP id a43mr10393271jai.74.1624635140354;
+        Fri, 25 Jun 2021 08:32:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwoOys8GtsgCTOdC7HU1OSYsX1Y5M+rHwqiqWpxEhcIMrFYq9NjwR0UauN7xWhdPtQoSa3ovg==
+X-Received: by 2002:a02:942e:: with SMTP id a43mr10393241jai.74.1624635140109;
+        Fri, 25 Jun 2021 08:32:20 -0700 (PDT)
 Received: from t490s.redhat.com (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
-        by smtp.gmail.com with ESMTPSA id s8sm3668772ilj.51.2021.06.25.08.32.16
+        by smtp.gmail.com with ESMTPSA id s8sm3668772ilj.51.2021.06.25.08.32.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 08:32:17 -0700 (PDT)
+        Fri, 25 Jun 2021 08:32:19 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Sean Christopherson <seanjc@google.com>, peterx@redhat.com,
         Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH v2 1/9] KVM: X86: Add per-vm stat for max rmap list size
-Date:   Fri, 25 Jun 2021 11:32:06 -0400
-Message-Id: <20210625153214.43106-2-peterx@redhat.com>
+Subject: [PATCH v2 2/9] KVM: Introduce kvm_get_kvm_safe()
+Date:   Fri, 25 Jun 2021 11:32:07 -0400
+Message-Id: <20210625153214.43106-3-peterx@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210625153214.43106-1-peterx@redhat.com>
 References: <20210625153214.43106-1-peterx@redhat.com>
@@ -70,53 +70,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new statistic max_mmu_rmap_size, which stores the maximum size of rmap
-for the vm.
+Introduce this safe version of kvm_get_kvm() so that it can be called even
+during vm destruction.  Use it in kvm_debugfs_open() and remove the verbose
+comment.  Prepare to be used elsewhere.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- arch/x86/include/asm/kvm_host.h | 1 +
- arch/x86/kvm/mmu/mmu.c          | 2 ++
- arch/x86/kvm/x86.c              | 1 +
- 3 files changed, 4 insertions(+)
+ include/linux/kvm_host.h |  1 +
+ virt/kvm/kvm_main.c      | 17 +++++++++++------
+ 2 files changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 974cbfb1eefe..d798650ad793 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1209,6 +1209,7 @@ struct kvm_vm_stat {
- 	u64 lpages;
- 	u64 nx_lpage_splits;
- 	u64 max_mmu_page_hash_collisions;
-+	u64 max_mmu_rmap_size;
- };
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index ae7735b490b4..c6fcd75dd8b9 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -720,6 +720,7 @@ int kvm_init(void *opaque, unsigned vcpu_size, unsigned vcpu_align,
+ void kvm_exit(void);
  
- struct kvm_vcpu_stat {
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index b888385d1933..eb16c1dbbb32 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2696,6 +2696,8 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
- 	if (is_shadow_present_pte(*sptep)) {
- 		if (!was_rmapped) {
- 			rmap_count = rmap_add(vcpu, sptep, gfn);
-+			if (rmap_count > vcpu->kvm->stat.max_mmu_rmap_size)
-+				vcpu->kvm->stat.max_mmu_rmap_size = rmap_count;
- 			if (rmap_count > RMAP_RECYCLE_THRESHOLD)
- 				rmap_recycle(vcpu, sptep, gfn);
- 		}
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 8166ad113fb2..d83ccf35ce99 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -237,6 +237,7 @@ const struct _kvm_stats_desc kvm_vm_stats_desc[] = {
- 	STATS_DESC_ICOUNTER(VM, mmu_unsync),
- 	STATS_DESC_ICOUNTER(VM, lpages),
- 	STATS_DESC_ICOUNTER(VM, nx_lpage_splits),
-+	STATS_DESC_PCOUNTER(VM, max_mmu_rmap_size),
- 	STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions)
- };
- static_assert(ARRAY_SIZE(kvm_vm_stats_desc) ==
+ void kvm_get_kvm(struct kvm *kvm);
++bool kvm_get_kvm_safe(struct kvm *kvm);
+ void kvm_put_kvm(struct kvm *kvm);
+ bool file_is_kvm(struct file *file);
+ void kvm_put_kvm_no_destroy(struct kvm *kvm);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 3dcc2abbfc60..79b0c1b7b284 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1120,6 +1120,16 @@ void kvm_get_kvm(struct kvm *kvm)
+ }
+ EXPORT_SYMBOL_GPL(kvm_get_kvm);
+ 
++/*
++ * Make sure the vm is not during destruction, which is a safe version of
++ * kvm_get_kvm().  Return true if kvm referenced successfully, false otherwise.
++ */
++bool kvm_get_kvm_safe(struct kvm *kvm)
++{
++	return refcount_inc_not_zero(&kvm->users_count);
++}
++EXPORT_SYMBOL_GPL(kvm_get_kvm_safe);
++
+ void kvm_put_kvm(struct kvm *kvm)
+ {
+ 	if (refcount_dec_and_test(&kvm->users_count))
+@@ -4925,12 +4935,7 @@ static int kvm_debugfs_open(struct inode *inode, struct file *file,
+ 	struct kvm_stat_data *stat_data = (struct kvm_stat_data *)
+ 					  inode->i_private;
+ 
+-	/* The debugfs files are a reference to the kvm struct which
+-	 * is still valid when kvm_destroy_vm is called.
+-	 * To avoid the race between open and the removal of the debugfs
+-	 * directory we test against the users count.
+-	 */
+-	if (!refcount_inc_not_zero(&stat_data->kvm->users_count))
++	if (!kvm_get_kvm_safe(stat_data->kvm))
+ 		return -ENOENT;
+ 
+ 	if (simple_attr_open(inode, file, get,
 -- 
 2.31.1
 
