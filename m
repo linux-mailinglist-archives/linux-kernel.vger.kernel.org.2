@@ -2,73 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075E33B42F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82423B42F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbhFYMPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 08:15:46 -0400
-Received: from m12-16.163.com ([220.181.12.16]:46281 "EHLO m12-16.163.com"
+        id S230480AbhFYMPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 08:15:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229712AbhFYMPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 08:15:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=nnXPQ
-        EEagZ9bRbPniD+fpcr7i2CjXp63TKYIyfs2KEo=; b=jG50EBM+9w+lRebnqzM5C
-        fTADl8SbOU4X3hotTjBZS7u0ETG9xRUY3hLB1wfclfiFq3GHM+c5eZ09C6MrTC7S
-        iSuo6i08ugon6QZF49BRpT1eR8FuiygWyc4sTustumaNyXnh60ncK++mHFosAxl+
-        iY437RHG24QHYyHCqHH6LM=
-Received: from ubuntu.localdomain (unknown [218.17.89.92])
-        by smtp12 (Coremail) with SMTP id EMCowADHFTEoyNVgsUmszA--.56053S2;
-        Fri, 25 Jun 2021 20:12:25 +0800 (CST)
-From:   13145886936@163.com
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>
-Subject: [PATCH] ASoC: fsl_spdif: remove unnecessary print function dev_err()
-Date:   Fri, 25 Jun 2021 05:12:22 -0700
-Message-Id: <20210625121222.434746-1-13145886936@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S229712AbhFYMPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 08:15:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E13646162A;
+        Fri, 25 Jun 2021 12:12:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624623163;
+        bh=QJxnAfgsv7H0MV05wG2ckfEIc7HWo8yYqaLFkp2QqyM=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=UGgB6fyM4242VjL09luaOMZ7Q6mBrU/5I3WODVWo645g9gDCp6p+e0orNtfE+kOWi
+         zHB8fDAcz0BzbWXADlI8ei+aADZ3XBzXGD4jj3AHtS4HKPRMR1r+bpgQBTgeThi9vO
+         3qU4g0DkV5o5ITprv0Mu+HttzPJaDTZ8tMqIq1i/U1wFVhk+y6Dbav1BepN7uynyXh
+         RgsAwWBvGegijylkgiKQjvtCHiy/CxospUeqnZOpWyz1pw0bj6d/9u2EGwDWN8neto
+         jJ4g6ZrDgUd7txGyooK7vMvhqKdkOjMHHXU1pojn94GmsWsMHApXMTyCwp8ZCEcj+x
+         O0nlP2VktwFOw==
+Date:   Fri, 25 Jun 2021 14:12:39 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Ye Xiang <xiang.ye@intel.com>
+cc:     jic23@kernel.org, srinivas.pandruvada@linux.intel.com,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: intel-ish-hid: use async resume function
+In-Reply-To: <20210613032507.7474-1-xiang.ye@intel.com>
+Message-ID: <nycvar.YFH.7.76.2106251412250.18969@cbobk.fhfr.pm>
+References: <20210613032507.7474-1-xiang.ye@intel.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EMCowADHFTEoyNVgsUmszA--.56053S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZFWUCF45ur1kKr4UGF13CFg_yoWfXrc_Kw
-        1kC39Yq3yxJryIvas8Aw4avr17Ww4DGF4UXF4DKF1Sq345Jrs5Z3yUJr4kuFs5Zr48K34r
-        W3yY9rZ3Ar1SyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5JMa5UUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiGgm8g1aD+PLeIAAAsN
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
+On Sun, 13 Jun 2021, Ye Xiang wrote:
 
-The print function dev_err() is redundant because
-platform_get_irq() already prints an error.
+> ISH IPC driver uses asynchronous workqueue to do resume now, but there is
+> a potential timing issue: when child devices resume before bus driver, it
+> will cause child devices resume failed and cannot be recovered until
+> reboot. The current implementation in this case do wait for IPC to resume
+> but fail to accommodate for a case when there is no ISH reboot and soft
+> resume is taking time. This issue is apparent on Tiger Lake platform with
+> 5.11.13 kernel when doing suspend to idle then resume(s0ix) test. To
+> resolve this issue, we change ISHTP HID client to use asynchronous resume
+> callback too. In the asynchronous resume callback, it waits for the ISHTP
+> resume done event, and then notify ISHTP HID client link ready.
+> 
+> Signed-off-by: Ye Xiang <xiang.ye@intel.com>
 
-Signed-off-by: gushengxian <gushengxian@yulong.com>
----
- sound/soc/fsl/fsl_spdif.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Srinivas, can I please get your Ack for this one?
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index c631de325a6e..02b750fc32d8 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1302,10 +1302,8 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 
- 	for (i = 0; i < spdif_priv->soc->interrupts; i++) {
- 		irq = platform_get_irq(pdev, i);
--		if (irq < 0) {
--			dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
-+		if (irq < 0)
- 			return irq;
--		}
- 
- 		ret = devm_request_irq(&pdev->dev, irq, spdif_isr, 0,
- 				       dev_name(&pdev->dev), spdif_priv);
+Thanks,
+
 -- 
-2.25.1
-
+Jiri Kosina
+SUSE Labs
 
