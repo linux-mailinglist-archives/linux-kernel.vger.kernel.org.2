@@ -2,113 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796D23B4A5E
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 00:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A05B43B4A62
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 00:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhFYWEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 18:04:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
+        id S229916AbhFYWFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 18:05:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbhFYWDx (ORCPT
+        with ESMTP id S229776AbhFYWFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 18:03:53 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC99C061768
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 15:01:31 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id y13so5400837plc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 15:01:31 -0700 (PDT)
+        Fri, 25 Jun 2021 18:05:47 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F901C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 15:03:25 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id t19-20020a17090ae513b029016f66a73701so8773311pjy.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 15:03:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SMD41VYFXQVqp0cPLtj6+yt8JTpkYNMg+rAFqmHCirw=;
-        b=VP/Vzb6qs7JTdj4hwNxwy0c1Khz5Xixvj0w2gKxikp8MlWvpEBFrNb+Wvd6Zd7GXSq
-         5ItkFoUcGwTO6nJ79jj1ZzRqnAkM4TK6e5YWwgMbx1ZwYva+O8wcpVqFRkNfrZ7nWB6g
-         DzPC4/6Bhw4+olLR5/pm/3T9PvccSH8pGjcqk=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l1RnRkRZpqgaaMNcuAwV2p52P2QAGdOgzYxbw1QRorI=;
+        b=GZcaTHtQ5jxsRPK9zYSwUL0Uy6N2XwFBwgoXb4ILppc6/R+0Sh7hVs/xdf4ULlHQrb
+         AD7U+jZSjUyi1TpGAoucCU6uFdj3tgVejRn7LpaJEcWlHknZeG8unRMOcGYsB0O/0eSb
+         tml0eoRiuePCAmFpXy/cytYZSR6oQJmKdHudP4EpV3xNe4/ZvG8thpOTpgHQ0p2LdOJw
+         WXl0CcSY2w1fAtwVP/mX4WhEhyww0C0qmv3itNc8Xz9vfqzQNvVmorNXQD1sQ5EPnOnK
+         lu8Sn3ZL2l0eU149E2Ud7d0ZMwve9qxOiL4fUDgeR1zgGLqh1t8m8TtJKIutxT6h/5y9
+         hXNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SMD41VYFXQVqp0cPLtj6+yt8JTpkYNMg+rAFqmHCirw=;
-        b=LKnqmDiRkrMJCP/QZAlSIMZmGq4S//gZC5vH4CX5sTQjS2i4KXmOrABV2HFltBlUmO
-         fYvwc+75aMxuj5iVqZZBsR4aieFkmKC6O2gQBLPGNeC/3f2alAw0aHl273xtaUVCgP15
-         sO5UzrV1/zH7b0Li+eOSBmADeu4VPZbQNhYwpmHrwqoFaVeEYd6pRJBiFWWVW51vFqo4
-         VnPDiC43xSVXjr/D/AxiXh6t+mT/UoNbteCVLEhnqbzet2y2xb0ER2FK/iR18BPqHPAm
-         juWNW1dE6UbKLfVRjCZMEUJ4QdcHsybUfV+SSBvgn/ZoLJEXmM+WHOZ18KLIHcUt66Wr
-         MgOQ==
-X-Gm-Message-State: AOAM533Sq+Dgm9V9/ePtFvOOtQfCIM/g6dHzSfZwcKQ7EdVsmF6/Iu9A
-        bzsPTn/yohkCHeFMjV0DFn9k2g==
-X-Google-Smtp-Source: ABdhPJzParOOHJNvX2jGfbfqx7imK+dVIIvvB890LsT4DrwRRGE0klwbfmo7d7J5Jpcf4y/1b+CJPw==
-X-Received: by 2002:a17:90a:194a:: with SMTP id 10mr22962696pjh.188.1624658490746;
-        Fri, 25 Jun 2021 15:01:30 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:cc13:a7dd:f4b5:2160])
-        by smtp.gmail.com with UTF8SMTPSA id c5sm6823468pfn.144.2021.06.25.15.01.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 15:01:30 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 15:01:27 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        swboyd@chromium.org, ulf.hansson@linaro.org, rjw@rjwysocki.net,
-        agross@kernel.org, ohad@wizery.com, mathieu.poirier@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, rishabhb@codeaurora.org,
-        sidgup@codeaurora.org
-Subject: Re: [PATCH v3 11/13] soc: qcom: aoss: Drop power domain support
-Message-ID: <YNZSN2wXomiZHsz4@google.com>
-References: <1624560727-6870-1-git-send-email-sibis@codeaurora.org>
- <1624560727-6870-12-git-send-email-sibis@codeaurora.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l1RnRkRZpqgaaMNcuAwV2p52P2QAGdOgzYxbw1QRorI=;
+        b=L0/DW4t0ALp4SB4Dpa06eCyw7DAJD9DiXVOLa537xAiJa1mPZi/9oGYFxDdPLOYRF6
+         AWGAWLF7eas2hhsy79c8UkL9pZSwo8PMigm5MDgi+zcrQO10w1PKyQw5AYfcue9CBNnZ
+         GOl20OomZ1BiPyJYUWmR8yNVMPe+axhzEbfnlYGY023LhxOxv/y4vm9tpEZoexk/CPSR
+         TqkRMbYQo0EwKg3eaEqtFWR/AVw16xJvDYHNkBdlzykB0DEUeZBj8ZZaMLqePyoyQ9al
+         O7gBAQWQm6GQhHCWWxL1j3tjE+pN4uUgS9llgFArh6BdyTywbEfkk2nZ8GPU4YAK6sZm
+         /qkA==
+X-Gm-Message-State: AOAM533SwSJ3jJqcg2hvy13O82vSZsIrI18yDKBkbthhmzhyq1bDHa9W
+        YtnAk4XTFLFAEg0vT3eWvcTHig==
+X-Google-Smtp-Source: ABdhPJy/yIkRxBX8RRlakoK1p3LDTXdw84kxPUgI7I+XCC/0U/NrsRbOEGZJLb9I9D6U0hPWp5xt9Q==
+X-Received: by 2002:a17:90a:7e18:: with SMTP id i24mr12939843pjl.130.1624658604920;
+        Fri, 25 Jun 2021 15:03:24 -0700 (PDT)
+Received: from localhost.name ([122.177.20.255])
+        by smtp.gmail.com with ESMTPSA id d9sm6374040pjx.13.2021.06.25.15.03.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 15:03:24 -0700 (PDT)
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
+        balbi@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH 0/2] arm64: dts: qcom: Fix usb entries for SA8155p-adp board
+Date:   Sat, 26 Jun 2021 03:33:09 +0530
+Message-Id: <20210625220311.527549-1-bhupesh.sharma@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1624560727-6870-12-git-send-email-sibis@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 12:22:05AM +0530, Sibi Sankar wrote:
-> The load state resources are expected to follow the life cycle of the
-> remote processor it tracks. However, modeling load state resources as
-> power-domains result in them getting turned off during system suspend
-> and thereby falling out of sync with the remote processors that are still
-> on. Fix this by replacing load state resource control through the generic
-> qmp message send interface instead.
+This series enables the support for two USB ports (named portB and
+portC) found on the SA8155p-adp board which are connected to USB Type A
+connectors.
 
-nit: the above sounds as if this patch does all of that, when it only
-removes power domain support. Instead you could start with saying what
-the patch actually does (remove power domain support), followed by why
-PD support isn't needed anymore (now done by sending QMP messages directly).
+It also contains a minor naming related fix for dwc3 usb nodes found
+on sm8150 SoC.
 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
->  drivers/soc/qcom/qcom_aoss.c | 109 ++-----------------------------------------
->  1 file changed, 3 insertions(+), 106 deletions(-)
-> 
-> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-> index 998ee7605eb2..f0c3726e8c46 100644
-> --- a/drivers/soc/qcom/qcom_aoss.c
-> +++ b/drivers/soc/qcom/qcom_aoss.c
->
-> ...
->
-> @@ -650,13 +550,11 @@ static int qmp_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto err_close_qmp;
->  
-> -	ret = qmp_pd_add(qmp);
-> -	if (ret)
-> -		goto err_remove_qdss_clk;
-> -
->  	ret = qmp_cooling_devices_register(qmp);
-> -	if (ret)
-> +	if (ret) {
->  		dev_err(&pdev->dev, "failed to register aoss cooling devices\n");
-> +		goto err_remove_qdss_clk;
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-This isn't really related with the PD removal, right? I wonder if it was
-intentional to have _probe() succeed even when the cooling device
-registration failed, since the cooling devices aren't essential.
+Bhupesh Sharma (2):
+  arm64: dts: qcom: Use consistent naming for dwc3 usb nodes for sm8150
+  arm64: dts: qcom: Fix usb entries for SA8155p adp board
 
-If it is still desirable to fail the change should be done in a separate
-patch, unless it is actually related with removing PD support.
+ arch/arm64/boot/dts/qcom/sa8155p-adp.dts | 60 ++++++++++++++++++++----
+ arch/arm64/boot/dts/qcom/sm8150.dtsi     | 30 ++++++------
+ 2 files changed, 66 insertions(+), 24 deletions(-)
+
+-- 
+2.31.1
+
