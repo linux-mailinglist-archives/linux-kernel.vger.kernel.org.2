@@ -2,81 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3376B3B4A6E
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 00:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C41A3B4A70
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 00:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhFYWHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 18:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45966 "EHLO
+        id S229940AbhFYWJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 18:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbhFYWHk (ORCPT
+        with ESMTP id S229531AbhFYWJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 18:07:40 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C90C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 15:05:18 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id 11so4827768oid.3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 15:05:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=zhc4sNO4YwZX3YH/Z2Pm1GDok8umxrWhReSIgmRsWUw=;
-        b=verEXwOFSSeUwU3iEhgyEu+YTxcZl7OLtxU5FX3DrzAe4ALVz6ecQianVYix6ZikBF
-         dQd6A6FNydJLiiEyj3OllJrXJTbijnsYF0hfIwaOLKVMMGY1B9Ifz//XeeD7XZqmV022
-         BZJn7S61DX2j4/Se7wV8GPHBUqF9mq2BcLVHdK2IJfrhcpKRX5NvLqcHSrVyLvEAkf5V
-         B085Nzvl57SQFsrbTn3WjSMcClR2OjykDoov2xQLuINsTCSb96yJ8PAoI1C3hP3pDsm1
-         Bf9B0Zq50/HyM+8gGOaxExnnRnqzUFQrF//H+MtgEKx2j1fDz4+5Rn1jOks25KdhnFPD
-         173Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=zhc4sNO4YwZX3YH/Z2Pm1GDok8umxrWhReSIgmRsWUw=;
-        b=qqUs2kSlsr2ZhsSo6qMdMO5bnq4FxMUfrOGZ6l6BA+B+f37OMtLvF0qXVTG1WdF7gX
-         H95YqotH4+oCdgSOq4W8wRlLNm/CTu+UhVBD/vkbuDLFmkESu7PPPSQOGFtGl1xu8x+R
-         srRfZ/CRlKwfTw+v7RAJ390+DdG1Z/9Z/FO7XbaDSB049/C31fQMOEJ8II2MdwP8qBF2
-         s1Ql6WY9mmxFEz7/WoBiDbbIsFvusBzw0y5Tl5TgXrZrkJCePVtodS/xDW38fIbEYYQj
-         etHLRtBCcy+BpbgWEuojqgOrR/AbGGF5Imuc8B68V9hGrD/WzEaL75sM4Vc4InMPSqMc
-         zBrQ==
-X-Gm-Message-State: AOAM533um8uhgLM+3aL3j0ekn8TH3q/hnbythOBxdwAQv7XsGzn6iXXw
-        GsOnR+FPIvCcTmgcNUclgKq7+1opFP81uFSQDDM=
-X-Google-Smtp-Source: ABdhPJyJHoM0G/20ioRdIv4ItqfXcRZ1z/kLOjD/rh1+Sc2pfNbOCjal9iLPxrbK3PZIAILSWqYyQfzcEmyA2pLouRc=
-X-Received: by 2002:aca:6743:: with SMTP id b3mr9956375oiy.8.1624658717983;
- Fri, 25 Jun 2021 15:05:17 -0700 (PDT)
-MIME-Version: 1.0
-Sender: davidscott0989@gmail.com
-Received: by 2002:ac9:1103:0:0:0:0:0 with HTTP; Fri, 25 Jun 2021 15:05:17
- -0700 (PDT)
-From:   "Mr. Mustafa Ali." <mustafaliali85@gmail.com>
-Date:   Fri, 25 Jun 2021 23:05:17 +0100
-X-Google-Sender-Auth: J8W5NkeAU5Ynds7Kc_GsS1g5PIk
-Message-ID: <CAKvOKyDQbaWgKy-agrECewfX+7odJqmgFrz-4R4LCjeH83=oXQ@mail.gmail.com>
-Subject: Greetings Dear Friend
-To:     undisclosed-recipients:;
+        Fri, 25 Jun 2021 18:09:13 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97589C061574;
+        Fri, 25 Jun 2021 15:06:52 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 55CC21280D3A;
+        Fri, 25 Jun 2021 15:06:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1624658812;
+        bh=BnPQkEERp43ZgwOYOogE0QsNBC0J/ou2Eh0RJEdP93k=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=ZHXQHurICrVapp/kdW6trPdO4AjMJ80m7t0Q2KANtPR195ISaIn3ekCUa+Jp7QlYO
+         5cduABdLdcB6+X7TrFBLxX1z5UTpiyIhZGtBXRI0l6lmUS6hM298ItMgzUpKn02ndL
+         XD7D4hlBBwq9qWLYIj1STaF8zW2VbUlVt0mg8K1o=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 9MyRSz2Ys3pj; Fri, 25 Jun 2021 15:06:52 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id E56D91280D37;
+        Fri, 25 Jun 2021 15:06:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1624658812;
+        bh=BnPQkEERp43ZgwOYOogE0QsNBC0J/ou2Eh0RJEdP93k=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=ZHXQHurICrVapp/kdW6trPdO4AjMJ80m7t0Q2KANtPR195ISaIn3ekCUa+Jp7QlYO
+         5cduABdLdcB6+X7TrFBLxX1z5UTpiyIhZGtBXRI0l6lmUS6hM298ItMgzUpKn02ndL
+         XD7D4hlBBwq9qWLYIj1STaF8zW2VbUlVt0mg8K1o=
+Message-ID: <85a6f026d0ed9dddcdddcc03a59968c46b09b94f.camel@HansenPartnership.com>
+Subject: [GIT PULL] SCSI fixes for 5.13-rc7
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Fri, 25 Jun 2021 15:06:51 -0700
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Friend,
+Two small fixes, both in upper layer drivers (scsi disk and cdrom). 
+The sd one is fixing a commit changing revalidation that came from the
+block tree a while ago (5.10) and the sr one adds handling of a
+condition we didn't previously handle for manually removed media.
 
-This message might meet you in utmost surprise. However, It's just my
-urgent needed for a foreign partner that made me contact you for this
-transaction. I assured you of honesty and reliability to champion this
-business opportunity. I am a banker by profession in Turkey, and
-currently holding the post of Auditor in Standard Chartered Bank.
+The patch is available here:
 
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-I have the opportunity of transferring the leftover funds ($15 Million
-Dollars) of one of my clients who died along with his entire family in
-crisis in Myanmar Asia. I am inviting you for a business deal where
-this money can be shared between us if you agree to my business
-proposal.
+The short changelog is:
 
+Christoph Hellwig (1):
+      scsi: sd: Call sd_revalidate_disk() for ioctl(BLKRRPART)
 
-Further details of the transfer will be forwarded to you immediately
-after I receive your return letter.
+ManYi Li (1):
+      scsi: sr: Return appropriate error code when disk is ejected
 
+And the diffstat:
 
-Best Regards,
-Mr. Mustafa Ali.
+ drivers/scsi/sd.c | 22 ++++++++++++++++++----
+ drivers/scsi/sr.c |  2 ++
+ 2 files changed, 20 insertions(+), 4 deletions(-)
+
+With full diff below.
+
+James
+
+---
+
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index cb3c37d1e009..a2c3d9ad9ee4 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -1387,6 +1387,22 @@ static void sd_uninit_command(struct scsi_cmnd *SCpnt)
+ 	}
+ }
+ 
++static bool sd_need_revalidate(struct block_device *bdev,
++		struct scsi_disk *sdkp)
++{
++	if (sdkp->device->removable || sdkp->write_prot) {
++		if (bdev_check_media_change(bdev))
++			return true;
++	}
++
++	/*
++	 * Force a full rescan after ioctl(BLKRRPART).  While the disk state has
++	 * nothing to do with partitions, BLKRRPART is used to force a full
++	 * revalidate after things like a format for historical reasons.
++	 */
++	return test_bit(GD_NEED_PART_SCAN, &bdev->bd_disk->state);
++}
++
+ /**
+  *	sd_open - open a scsi disk device
+  *	@bdev: Block device of the scsi disk to open
+@@ -1423,10 +1439,8 @@ static int sd_open(struct block_device *bdev, fmode_t mode)
+ 	if (!scsi_block_when_processing_errors(sdev))
+ 		goto error_out;
+ 
+-	if (sdev->removable || sdkp->write_prot) {
+-		if (bdev_check_media_change(bdev))
+-			sd_revalidate_disk(bdev->bd_disk);
+-	}
++	if (sd_need_revalidate(bdev, sdkp))
++		sd_revalidate_disk(bdev->bd_disk);
+ 
+ 	/*
+ 	 * If the drive is empty, just let the open fail.
+diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
+index e4633b84c556..7815ed642d43 100644
+--- a/drivers/scsi/sr.c
++++ b/drivers/scsi/sr.c
+@@ -220,6 +220,8 @@ static unsigned int sr_get_events(struct scsi_device *sdev)
+ 		return DISK_EVENT_EJECT_REQUEST;
+ 	else if (med->media_event_code == 2)
+ 		return DISK_EVENT_MEDIA_CHANGE;
++	else if (med->media_event_code == 3)
++		return DISK_EVENT_EJECT_REQUEST;
+ 	return 0;
+ }
+ 
+
