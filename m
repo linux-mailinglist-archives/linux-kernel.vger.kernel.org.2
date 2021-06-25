@@ -2,101 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861193B4A20
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 23:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9C53B4A22
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 23:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbhFYV2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 17:28:31 -0400
-Received: from mga04.intel.com ([192.55.52.120]:47814 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229531AbhFYV2b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 17:28:31 -0400
-IronPort-SDR: xIEHgWMoVnXINFQM7I2gxD6nQsSZhC1L/18GYwSctBZCOadoTItBTDyenuBA9vRj59Hu8DtKJo
- y3VvEwJIs4Sg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="205919399"
-X-IronPort-AV: E=Sophos;i="5.83,300,1616482800"; 
-   d="scan'208";a="205919399"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 14:26:09 -0700
-IronPort-SDR: E7NeyZWlo+oG2/9YeHGVoiw1Igcek2+UnZWqb4erPmHcAYdnuQnROWFLFodT0O932pwxqyE6K9
- 7Sl/agd/w2oQ==
-X-IronPort-AV: E=Sophos;i="5.83,300,1616482800"; 
-   d="scan'208";a="488331356"
-Received: from dakateri-mobl1.amr.corp.intel.com (HELO [10.212.144.220]) ([10.212.144.220])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 14:26:08 -0700
-Subject: Re: [PATCH -V9 2/9] mm/migrate: update node demotion order during on
- hotplug events
-To:     Huang Ying <ying.huang@intel.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Wei Xu <weixugc@google.com>, Zi Yan <ziy@nvidia.com>,
-        osalvador <osalvador@suse.de>,
-        David Rientjes <rientjes@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>
-References: <20210625073204.1005986-1-ying.huang@intel.com>
- <20210625073204.1005986-3-ying.huang@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <baa3a6c9-7aa2-74d9-93ad-68e861afafcd@intel.com>
-Date:   Fri, 25 Jun 2021 14:26:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229952AbhFYV3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 17:29:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50056 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229940AbhFYV3B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 17:29:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624656400;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=U5JMFqwvnJzjcO6eOQllRPvApgbp6PzTgwXB8WE2yLw=;
+        b=ebqzdPwag8vBmrcfHLNO2zPv9XOaiFDo7eb1uNzCBdbX9tWs1PCnhR/e/ruPJbTwtvffgR
+        C/PO07qyS4BdFeqEE9bUDkUtt6vdGGkwaNnh/CPjq1HIH43DUjPfaiP7jUHzkqXjIaroAF
+        N9bei+txGcnCH45RGvYn4SJidoNATD8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-206-QZHdCQNiNXuqdRC_v7fxhQ-1; Fri, 25 Jun 2021 17:26:38 -0400
+X-MC-Unique: QZHdCQNiNXuqdRC_v7fxhQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B735618A0765;
+        Fri, 25 Jun 2021 21:26:37 +0000 (UTC)
+Received: from [172.30.41.16] (ovpn-112-106.phx2.redhat.com [10.3.112.106])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EA68869290;
+        Fri, 25 Jun 2021 21:26:11 +0000 (UTC)
+Subject: [PATCH] vfio/mtty: Enforce available_instances
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     alex.williamson@redhat.com
+Cc:     kwankhede@nvidia.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cohuck@redhat.com, jgg@nvidia.com
+Date:   Fri, 25 Jun 2021 15:26:11 -0600
+Message-ID: <162465624894.3338367.12935940647049917981.stgit@omen>
+User-Agent: StGit/1.0-8-g6af9-dirty
 MIME-Version: 1.0
-In-Reply-To: <20210625073204.1005986-3-ying.huang@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/25/21 12:31 AM, Huang Ying wrote:
-> Changes since 20210618:
->  * moved RCU part to the prev patch in series.
+The sample mtty mdev driver doesn't actually enforce the number of
+device instances it claims are available.  Implement this properly.
 
-The changes look great to me.  I think it ends up making the series more
-clear.  Thanks, Ying!
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+---
+
+Applies to vfio next branch + Jason's atomic conversion
+
+ samples/vfio-mdev/mtty.c |   22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
+
+diff --git a/samples/vfio-mdev/mtty.c b/samples/vfio-mdev/mtty.c
+index ffbaf07a17ea..8b26fecc4afe 100644
+--- a/samples/vfio-mdev/mtty.c
++++ b/samples/vfio-mdev/mtty.c
+@@ -144,7 +144,7 @@ struct mdev_state {
+ 	int nr_ports;
+ };
+ 
+-static atomic_t mdev_used_ports;
++static atomic_t mdev_avail_ports = ATOMIC_INIT(MAX_MTTYS);
+ 
+ static const struct file_operations vd_fops = {
+ 	.owner          = THIS_MODULE,
+@@ -707,11 +707,20 @@ static int mtty_probe(struct mdev_device *mdev)
+ {
+ 	struct mdev_state *mdev_state;
+ 	int nr_ports = mdev_get_type_group_id(mdev) + 1;
++	int avail_ports = atomic_read(&mdev_avail_ports);
+ 	int ret;
+ 
++	do {
++		if (avail_ports < nr_ports)
++			return -ENOSPC;
++	} while (!atomic_try_cmpxchg(&mdev_avail_ports,
++				     &avail_ports, avail_ports - nr_ports));
++
+ 	mdev_state = kzalloc(sizeof(struct mdev_state), GFP_KERNEL);
+-	if (mdev_state == NULL)
++	if (mdev_state == NULL) {
++		atomic_add(nr_ports, &mdev_avail_ports);
+ 		return -ENOMEM;
++	}
+ 
+ 	vfio_init_group_dev(&mdev_state->vdev, &mdev->dev, &mtty_dev_ops);
+ 
+@@ -724,6 +733,7 @@ static int mtty_probe(struct mdev_device *mdev)
+ 
+ 	if (mdev_state->vconfig == NULL) {
+ 		kfree(mdev_state);
++		atomic_add(nr_ports, &mdev_avail_ports);
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -735,9 +745,9 @@ static int mtty_probe(struct mdev_device *mdev)
+ 	ret = vfio_register_group_dev(&mdev_state->vdev);
+ 	if (ret) {
+ 		kfree(mdev_state);
++		atomic_add(nr_ports, &mdev_avail_ports);
+ 		return ret;
+ 	}
+-	atomic_add(mdev_state->nr_ports, &mdev_used_ports);
+ 
+ 	dev_set_drvdata(&mdev->dev, mdev_state);
+ 	return 0;
+@@ -746,12 +756,13 @@ static int mtty_probe(struct mdev_device *mdev)
+ static void mtty_remove(struct mdev_device *mdev)
+ {
+ 	struct mdev_state *mdev_state = dev_get_drvdata(&mdev->dev);
++	int nr_ports = mdev_state->nr_ports;
+ 
+-	atomic_sub(mdev_state->nr_ports, &mdev_used_ports);
+ 	vfio_unregister_group_dev(&mdev_state->vdev);
+ 
+ 	kfree(mdev_state->vconfig);
+ 	kfree(mdev_state);
++	atomic_add(nr_ports, &mdev_avail_ports);
+ }
+ 
+ static int mtty_reset(struct mdev_state *mdev_state)
+@@ -1271,8 +1282,7 @@ static ssize_t available_instances_show(struct mdev_type *mtype,
+ {
+ 	unsigned int ports = mtype_get_type_group_id(mtype) + 1;
+ 
+-	return sprintf(buf, "%d\n",
+-		       (MAX_MTTYS - atomic_read(&mdev_used_ports)) / ports);
++	return sprintf(buf, "%d\n", atomic_read(&mdev_avail_ports) / ports);
+ }
+ 
+ static MDEV_TYPE_ATTR_RO(available_instances);
+
+
