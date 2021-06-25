@@ -2,108 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131FA3B4752
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 546BF3B4753
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbhFYQUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 12:20:52 -0400
-Received: from mga05.intel.com ([192.55.52.43]:3083 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229445AbhFYQUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 12:20:51 -0400
-IronPort-SDR: LJ3/kmBeNYtBxvNPJxipEv/uejtkR0GbmpWu4MQnUE4aeGnLt8Sd9246dLXi5+OwQ7NQL4j9lk
- T/hVDSF3LA3A==
-X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="293334646"
-X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; 
-   d="scan'208";a="293334646"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 09:18:30 -0700
-IronPort-SDR: RY9/tckYGDaQjbLmr+ko/K0n7McmAgYGkcNaqEQWqmyRiGuzx12JMhajkMA8K4ESy1KkFn6yrQ
- 80c54OQ+D2Jw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; 
-   d="scan'208";a="557742457"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga001.fm.intel.com with ESMTP; 25 Jun 2021 09:18:30 -0700
-Received: from [10.212.190.24] (kliang2-MOBL.ccr.corp.intel.com [10.212.190.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 7813B58060A;
-        Fri, 25 Jun 2021 09:18:29 -0700 (PDT)
-Subject: Re: [PATCH 2/7] perf: Create a symlink for a PMU
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-To:     Andi Kleen <ak@linux.intel.com>, Greg KH <greg@kroah.com>
-Cc:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, eranian@google.com,
-        namhyung@kernel.org, acme@kernel.org, jolsa@redhat.com
-References: <1624497729-158864-1-git-send-email-kan.liang@linux.intel.com>
- <1624497729-158864-3-git-send-email-kan.liang@linux.intel.com>
- <YNQckpOuw80uCUa1@kroah.com>
- <d25a0556-325f-9af0-a495-b9f222d63e10@linux.intel.com>
- <YNSWtCSjJy8CytOL@kroah.com>
- <1e536604-cf93-0f09-401e-2073924c5582@linux.intel.com>
- <YNSlVPcjHInk4un6@kroah.com>
- <29d5f315-578f-103c-9523-ae890e29c7e7@linux.intel.com>
- <YNVneO6exCS4ETRt@kroah.com>
- <540d8a38-da12-56c8-8306-8d3d61ae1d6b@linux.intel.com>
- <YNXqXwq1+o09eHox@kroah.com>
- <e670abe2-67b9-a602-410a-0c4170796ec7@linux.intel.com>
- <c3ffcdd4-fabb-38fd-6ccd-3497389f94ec@linux.intel.com>
- <6f2941a4-4a32-ea09-bbc6-5a8e4836411b@linux.intel.com>
- <82fe02c8-2ac6-fc53-490c-382df3e07dc4@linux.intel.com>
-Message-ID: <1edc6666-c4b3-ebf5-964a-e5ffc97d8563@linux.intel.com>
-Date:   Fri, 25 Jun 2021 12:18:28 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229950AbhFYQWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 12:22:17 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:37927 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229445AbhFYQWP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 12:22:15 -0400
+Received: from [IPv6:2601:646:8602:8be1:493a:1894:bb79:383b] ([IPv6:2601:646:8602:8be1:493a:1894:bb79:383b])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 15PGJkkS2433945
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Fri, 25 Jun 2021 09:19:46 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 15PGJkkS2433945
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021052901; t=1624637986;
+        bh=GXwzMqahWVrY5lhUBS+Ylk89C/7XJ7PWpUAttwGCH8E=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=K+ku9mTCiqHwOcY97VZvMVkuSiTtKg1CfvYWLA35kU8IwV1b6fZZzdlVpV/j2dxKn
+         Ae6XrSiPR9AwIstna17qrlcQUmlqhLEeRe7x3mjUebr04DkXq7XsYGMRBrLWsnKbS7
+         tJgJOfybN0OIykf71Jlt3c6p1m11bzHN/03vXyQp0zo2NtQ5FtGHlOap4OiLSGMqLk
+         pL7E5+3y+B/aoMr/buAKSgTCv0MNYY1/h1EaXajLEAlfWp/AiI3V7blqTtbx71hQ+m
+         S4TOcEA8Q9ceECBKaR7yN+hITgBV/fwUx+n8+mfMBR64Vh5Mwdw40MZuedLLszYqNk
+         WIGc+aUmp5RMA==
+Date:   Fri, 25 Jun 2021 09:19:38 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <YNXkVBcmBvZL7khv@zn.tnic>
+References: <YNRzSy3NuwBDYWwr@kroah.com> <YNR7aw+C+7AJnBIG@zn.tnic> <YNXG472lXPHlbuCF@kroah.com> <YNXkVBcmBvZL7khv@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <82fe02c8-2ac6-fc53-490c-382df3e07dc4@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RESEND PATCH] x86/tools/relocs: add __printf attribute to die()
+To:     Borislav Petkov <bp@alien8.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <F8B4FDC6-851F-4EC5-A308-BBAB52A75EF3@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a user space build time tool=2E
 
+You can use PRIu32/64 or cast to unsigned long long; it's not like the per=
+formance for this case is going to matter one iota=2E
 
-On 6/25/2021 11:57 AM, Liang, Kan wrote:
-> 
-> 
-> On 6/25/2021 11:44 AM, Andi Kleen wrote:
->>
->>> We have an attribute "caps/pmu_name" for the core PMU. Maybe we 
->>> should add it for uncore PMU as well. For example,
->>>
->>> $ cat /sys/devices/uncore_type_0_0/caps/pmu_name
->>> cha_0
->>>
->>> Userspace tool can get clues about what type_0_0 is.
->>
->> It would break all the old tools, but I suppose it could work for 
->> updated tools.
->>
-> 
-> Right, users have to update their perf tool to use the new name, 
-> uncore_cha_0.
+On June 25, 2021 7:12:36 AM PDT, Borislav Petkov <bp@alien8=2Ede> wrote:
+>On Fri, Jun 25, 2021 at 02:06:59PM +0200, Greg Kroah-Hartman wrote:
+>> Casting seems to be the only way to make this "quiet" that I can
+>tell=2E
+>>=20
+>> Unless someone else has a good idea?
+>
+>Hmm, so in Documentation/core-api/printk-formats=2Erst we say that for
+>printk() with different size types, we should "use a format specifier
+>of
+>its largest possible type and explicitly cast to it=2E"
+>
+>And that kinda sounds ok to me because we don't potentially lose
+>through
+>the casting=2E
+>
+>IOW, I guess something like this below=2E
+>
+>---
+>diff --git a/arch/x86/tools/relocs=2Ec b/arch/x86/tools/relocs=2Ec
+>index 04c5a44b9682=2E=2E42b0f425a2c7 100644
+>--- a/arch/x86/tools/relocs=2Ec
+>+++ b/arch/x86/tools/relocs=2Ec
+>@@ -389,7 +389,7 @@ static void read_ehdr(FILE *fp)
+> 		Elf_Shdr shdr;
+>=20
+> 		if (fseek(fp, ehdr=2Ee_shoff, SEEK_SET) < 0)
+>-			die("Seek to %d failed: %s\n", ehdr=2Ee_shoff, strerror(errno));
+>+			die("Seek to %lu failed: %s\n", (unsigned long)ehdr=2Ee_shoff,
+>strerror(errno));
+>=20
+> 		if (fread(&shdr, sizeof(shdr), 1, fp) !=3D 1)
+>			die("Cannot read initial ELF section header: %s\n",
+>strerror(errno));
+>@@ -412,17 +412,17 @@ static void read_shdrs(FILE *fp)
+>=20
+> 	secs =3D calloc(shnum, sizeof(struct section));
+> 	if (!secs) {
+>-		die("Unable to allocate %d section headers\n",
+>+		die("Unable to allocate %ld section headers\n",
+> 		    shnum);
+> 	}
+> 	if (fseek(fp, ehdr=2Ee_shoff, SEEK_SET) < 0) {
+>-		die("Seek to %d failed: %s\n",
+>-			ehdr=2Ee_shoff, strerror(errno));
+>+		die("Seek to %lu failed: %s\n",
+>+		    (unsigned long)ehdr=2Ee_shoff, strerror(errno));
+> 	}
+> 	for (i =3D 0; i < shnum; i++) {
+> 		struct section *sec =3D &secs[i];
+> 		if (fread(&shdr, sizeof(shdr), 1, fp) !=3D 1)
+>-			die("Cannot read ELF section headers %d/%d: %s\n",
+>+			die("Cannot read ELF section headers %d/%ld: %s\n",
+> 			    i, shnum, strerror(errno));
+> 		sec->shdr=2Esh_name      =3D elf_word_to_cpu(shdr=2Esh_name);
+> 		sec->shdr=2Esh_type      =3D elf_word_to_cpu(shdr=2Esh_type);
+>@@ -450,12 +450,12 @@ static void read_strtabs(FILE *fp)
+> 		}
+> 		sec->strtab =3D malloc(sec->shdr=2Esh_size);
+> 		if (!sec->strtab) {
+>-			die("malloc of %d bytes for strtab failed\n",
+>-				sec->shdr=2Esh_size);
+>+			die("malloc of %lu bytes for strtab failed\n",
+>+			    (unsigned long)sec->shdr=2Esh_size);
+> 		}
+> 		if (fseek(fp, sec->shdr=2Esh_offset, SEEK_SET) < 0) {
+>-			die("Seek to %d failed: %s\n",
+>-				sec->shdr=2Esh_offset, strerror(errno));
+>+			die("Seek to %lu failed: %s\n",
+>+			    (unsigned long)sec->shdr=2Esh_offset, strerror(errno));
+> 		}
+> 		if (fread(sec->strtab, 1, sec->shdr=2Esh_size, fp)
+> 		    !=3D sec->shdr=2Esh_size) {
+>@@ -475,12 +475,12 @@ static void read_symtabs(FILE *fp)
+> 		}
+> 		sec->symtab =3D malloc(sec->shdr=2Esh_size);
+> 		if (!sec->symtab) {
+>-			die("malloc of %d bytes for symtab failed\n",
+>-				sec->shdr=2Esh_size);
+>+			die("malloc of %lu bytes for symtab failed\n",
+>+			    (unsigned long)sec->shdr=2Esh_size);
+> 		}
+> 		if (fseek(fp, sec->shdr=2Esh_offset, SEEK_SET) < 0) {
+>-			die("Seek to %d failed: %s\n",
+>-				sec->shdr=2Esh_offset, strerror(errno));
+>+			die("Seek to %lu failed: %s\n",
+>+			    (unsigned long)sec->shdr=2Esh_offset, strerror(errno));
+> 		}
+> 		if (fread(sec->symtab, 1, sec->shdr=2Esh_size, fp)
+> 		    !=3D sec->shdr=2Esh_size) {
+>@@ -508,12 +508,12 @@ static void read_relocs(FILE *fp)
+> 		}
+> 		sec->reltab =3D malloc(sec->shdr=2Esh_size);
+> 		if (!sec->reltab) {
+>-			die("malloc of %d bytes for relocs failed\n",
+>-				sec->shdr=2Esh_size);
+>+			die("malloc of %lu bytes for relocs failed\n",
+>+			    (unsigned long)sec->shdr=2Esh_size);
+> 		}
+> 		if (fseek(fp, sec->shdr=2Esh_offset, SEEK_SET) < 0) {
+>-			die("Seek to %d failed: %s\n",
+>-				sec->shdr=2Esh_offset, strerror(errno));
+>+			die("Seek to %lu failed: %s\n",
+>+			    (unsigned long)sec->shdr=2Esh_offset, strerror(errno));
+> 		}
+> 		if (fread(sec->reltab, 1, sec->shdr=2Esh_size, fp)
+> 		    !=3D sec->shdr=2Esh_size) {
+>diff --git a/arch/x86/tools/relocs=2Eh b/arch/x86/tools/relocs=2Eh
+>index 43c83c0fd22c=2E=2E4c49c82446eb 100644
+>--- a/arch/x86/tools/relocs=2Eh
+>+++ b/arch/x86/tools/relocs=2Eh
+>@@ -17,6 +17,7 @@
+> #include <regex=2Eh>
+> #include <tools/le_byteshift=2Eh>
+>=20
+>+__attribute__((__format__(printf, 1, 2)))
+> void die(char *fmt, =2E=2E=2E) __attribute__((noreturn));
+>=20
+> #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
-I think the above example is misleading. Let me rephrase.
-Here is what I'm planing to do in V2.
-
-With the V2 platform-specific patch, uncore driver will only create a 
-meaningful uncore name, e.g., uncore_cha_0.
-
-An attribute "caps/pmu_name" is also created to indicate the previous 
-name. For example,
-
-$ cat /sys/devices/uncore_cha_0/caps/pmu_name
-type_0_0
-
-If any users use the old numeric name, they have to update either their 
-script or a perf tool which supports "caps/pmu_name".
-
-In the future, if the users already use a perf tool which supports 
-"caps/pmu_name", nothing needs to be updated. The old numeric name 
-should just work.
-
-Thanks,
-Kan
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
