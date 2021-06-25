@@ -2,98 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 749723B48CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 20:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09BFE3B48D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 20:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbhFYSce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 14:32:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhFYScd (ORCPT
+        id S229922AbhFYShF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 14:37:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44202 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229671AbhFYShE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 14:32:33 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A505EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 11:30:11 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id g4so20196030qkl.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 11:30:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ahjwf9HqwEUWxfT27RhcaX1vAqu39xvQmFxCmdymgYk=;
-        b=bcJmnLILLrzdC40glkAg3vuavgVVrwsOURCkguA1DaLF+T+a8GL3UNaz8hq0BiHr4Z
-         8EtWMIOGbouieDhHgj2gB+A2jWssbCAz7y/BuZT3gSxxzMIyrDtfu4gdP4N/D2ETMSN1
-         nxoMA4BLlmOPprt4k6b7PaeJLZgiUInRZq6v0DyB8lUozh4pQrBPfmFWefCkYrivekv5
-         xCfCBEycYSQ4yjxtthonW/rGCTB1lHysVh8O8hYIA+qaVfGu1pQPOwRYe6pTZ3axggdU
-         VrzNwuS6CQqDGQMK40TbKn2xOfGufayiZBj6CxAfE+uaBduxRkmFaDbduq4Pu7/UljyK
-         L6dA==
+        Fri, 25 Jun 2021 14:37:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624646083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w3d5QmgQTedbMfqNV9W2ZCvpWHRikHJ8lDKHWRxFQVI=;
+        b=ieQ+zzjZKMgmop+ZWl2j7wJFBnQg9dJJHj3uKVxKebPWk7mWWsQErCb1nkGpXCMz+PnT5L
+        j7G+l8prXgDj/NKcodgB2/IlQHtTZPGLdGy5fMWrl8vwKFcCt9DN+NdtmowDPo0QNN5jHo
+        XoIPZ5+WP0IGPztZ6+UIQI9igb5Kkw0=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-415-ufrsX-4FM82U9wzxTP6nCQ-1; Fri, 25 Jun 2021 14:34:41 -0400
+X-MC-Unique: ufrsX-4FM82U9wzxTP6nCQ-1
+Received: by mail-wm1-f69.google.com with SMTP id s15-20020a7bc38f0000b02901dbb76fabe9so3022185wmj.4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 11:34:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Ahjwf9HqwEUWxfT27RhcaX1vAqu39xvQmFxCmdymgYk=;
-        b=K2KWQAVd1lKsZG1daGcfAoxQEjaSH6OSt1OJvaNNLPr8Rvf3ZU9azVM/9N+8poQIJm
-         JIG+CqRbzDioRimoUUHdMnR7ZNMzmw5ujvh96LVQYkhSO2DonPBQrGrnAWCOSMU+A5zW
-         0foLgY7xIE6wBxbG5YpAblDZ/+rXanaDQMeXPcjW/xfjO8yF7eo15xIlqdqos5Dcmrq/
-         O44YXNVW3Wc+vI3xPzPFxy/aW7ayHimKadic04oTaIhOIhpimRS4STNTiuvVSlQchEAE
-         EcjF5+AO4kz3gcT+qGNViprTd6dwOdUtyl9epITlqc4JVdmaUcanep/O6rIYQobbZMfb
-         UsSg==
-X-Gm-Message-State: AOAM530PgWslfQG/jM7DQxKP5Z4/T94K/U3L5PtylrgLga/ctUbGNls6
-        Lk9AWU2T3Od8kpidJNeDgMyFbg==
-X-Google-Smtp-Source: ABdhPJx447qGBHdeQmiSJ8K60QjlehV4Ec4hD8sNWp3QYYcv21yKlryC3Z9/n8ORV/uPsantb0hF5Q==
-X-Received: by 2002:a37:44f:: with SMTP id 76mr13025187qke.161.1624645810318;
-        Fri, 25 Jun 2021 11:30:10 -0700 (PDT)
-Received: from kerneldevvm.. (5.6.a.8.a.a.b.f.c.9.4.c.a.9.a.a.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0:aa9a:c49c:fbaa:8a65])
-        by smtp.gmail.com with ESMTPSA id l1sm974449qkc.93.2021.06.25.11.30.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 11:30:09 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, dan.carpenter@oracle.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: [PATCH] staging: rtl8188eu: remove set but unused variable from rtw_get_sec_ie
-Date:   Fri, 25 Jun 2021 19:30:07 +0100
-Message-Id: <20210625183007.7065-1-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.31.1
+        bh=w3d5QmgQTedbMfqNV9W2ZCvpWHRikHJ8lDKHWRxFQVI=;
+        b=uSb8o8rWzQoClUsgCQtCk+fYYyPfzlKRUTXdyZMmRwWMEeT0xZfwgm2M/epRHMpWg3
+         bApdW8mcCWJPdLYwVGklYa1lH+81pfmY8sdyqoX5AWCT6tywoX8aB7LvrwXaZemmj9+j
+         o5ncFLBpv3cIXIuSMgGLXqc3c/pd0oKon0kv2qj/MIt5vrMpPauxpR2q+1ryykVbjPWl
+         00cWxReajk29s6tf+uD26hwDTs8Sa5Z/pgnKqWBgsD0stJHm2am8bvLygzUSwmGr0L/G
+         Xgs67yQly+99HawdSf90fQYDFA3NcvtabbYxYUsdZ5xRPZlxav4OKUN3P4vhkObkPylN
+         apsA==
+X-Gm-Message-State: AOAM5325eDTAg71ICNZ6+aElg9rTNMoeAXqBHJ+3PloaGkNAOvzUwpGB
+        9OMUwqNwQCHom6H/U2zBJInFWOWngap33C5ppnqSt4OPenM/Bq49JixBKbjxR2gKepbwiqTzDAy
+        h1klyZgNizgrGxEjzLbSCdHgu
+X-Received: by 2002:a5d:6646:: with SMTP id f6mr12558754wrw.399.1624646080360;
+        Fri, 25 Jun 2021 11:34:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyxv71Y5qNrtRBtagkA7o6lXh3Ty2kHfWVl115v2RJg/5J5ugMGjArkWAQ76YYJB8G51G3pgA==
+X-Received: by 2002:a5d:6646:: with SMTP id f6mr12558747wrw.399.1624646080189;
+        Fri, 25 Jun 2021 11:34:40 -0700 (PDT)
+Received: from [192.168.1.101] ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id z4sm6834597wrs.56.2021.06.25.11.34.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jun 2021 11:34:39 -0700 (PDT)
+Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
+ clocks gated
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        rfi@lists.rocketboards.org, Jingoo Han <jingoohan1@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org
+References: <20210625143235.GA3624355@bjorn-Precision-5520>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+Message-ID: <fa7ee574-89a7-330c-40ae-717142924cfa@redhat.com>
+Date:   Fri, 25 Jun 2021 20:34:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210625143235.GA3624355@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove set but unused variable 'sec_idx' from the rtw_get_sec_ie
-function inside core/rtw_ieee80211.c, to fix a kernel test robot warning
-introduced by recent removal of erroneous debug statements.
+On 6/25/21 4:32 PM, Bjorn Helgaas wrote:
+> On Fri, Jun 25, 2021 at 09:09:36AM +0200, Javier Martinez Canillas wrote:
+>> On 6/25/21 12:40 AM, Bjorn Helgaas wrote:
+> 
+>>> I think this is also an issue with the following other drivers.  They all
+>>> set the handler to something that uses an IRQ domain before they
+>>> actually initialize the domain:
+>>
+>> Yes, I agreed with your assessment and also noticed that others drivers have
+>> similar issues. I just don't have any of those platforms to try to reproduce
+>> the bugs and test a fix.
+> 
+> Even if you don't have other platforms for testing, I'm thrilled when
+> folks point out issues with them and (given time and inclination) post
+> patches for them.
+> 
+> I'd much rather fix *all* instances of the problem than just one, even
+> if we can't test them all.  Frequently driver maintainers will review
+> and test patches for their hardware even if we can't.
+>
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- drivers/staging/rtl8188eu/core/rtw_ieee80211.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Ok. I'll try to make some time next week to look at these drivers then
+and post at least RFC/RFT patches for people with available hardware to
+test the changes.
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_ieee80211.c b/drivers/staging/rtl8188eu/core/rtw_ieee80211.c
-index e431914db008..ce82b866c633 100644
---- a/drivers/staging/rtl8188eu/core/rtw_ieee80211.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_ieee80211.c
-@@ -465,7 +465,7 @@ int rtw_parse_wpa2_ie(u8 *rsn_ie, int rsn_ie_len, int *group_cipher, int *pairwi
- 
- void rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie, u16 *wpa_len)
- {
--	u8 authmode, sec_idx;
-+	u8 authmode;
- 	u8 wpa_oui[4] = {0x0, 0x50, 0xf2, 0x01};
- 	uint cnt;
- 
-@@ -473,8 +473,6 @@ void rtw_get_sec_ie(u8 *in_ie, uint in_len, u8 *rsn_ie, u16 *rsn_len, u8 *wpa_ie
- 
- 	cnt = _TIMESTAMP_ + _BEACON_ITERVAL_ + _CAPABILITY_;
- 
--	sec_idx = 0;
--
- 	while (cnt < in_len) {
- 		authmode = in_ie[cnt];
- 
+Best regards,
 -- 
-2.31.1
+Javier Martinez Canillas
+Software Engineer
+New Platform Technologies Enablement team
+RHEL Engineering
 
