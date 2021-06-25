@@ -2,116 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABE53B4331
+	by mail.lfdr.de (Postfix) with ESMTP id 941F73B4332
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbhFYMbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 08:31:55 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26800 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231266AbhFYMbn (ORCPT
+        id S231440AbhFYMb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 08:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231273AbhFYMbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 08:31:43 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15PCSbxq076036;
-        Fri, 25 Jun 2021 08:29:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=LgyT2UuERz+HsfYh6EJHEvZy771wAlhJKm1SJL+zg1c=;
- b=L9ix6Dego4ie/wIyEvDsfWYna4BTt5sBtvKac+Ciqmxinmb7YqGuRGQg2F2ijtpxHhvH
- qiyUVbeinXs1pm4cX8Afx/iR5IRvXTvI5MePQBonD5dzQXtzE4n10a4N8/b+czYpkxpx
- RJm9CmBXgcFBuYwAqWi2wxpwfCCClFYftKnOpyc06PvHs61rE/O1xxrCG4b08FklhaEZ
- EDRuRIK6Pyo+Kvaw9T54Yiey0lYABWf3JDkx8zUXJa8wpB9rtBOswszqgj3zsoY7WM1o
- MIlhhUGdQm3JblS1AIajs5ZO4OwtmAcx6EQfByRac3gD+byh3392GKc5N94i9WSS3OIX Cw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39dd1mvp35-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Jun 2021 08:29:15 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15PCTEDl078551;
-        Fri, 25 Jun 2021 08:29:14 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39dd1mvp2e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Jun 2021 08:29:14 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15PCSh4K012512;
-        Fri, 25 Jun 2021 12:29:13 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma03wdc.us.ibm.com with ESMTP id 39987a1qac-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Jun 2021 12:29:13 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15PCTCaA10486284
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Jun 2021 12:29:12 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E701C6A054;
-        Fri, 25 Jun 2021 12:29:11 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 359066A047;
-        Fri, 25 Jun 2021 12:29:11 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.47.158.152])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 25 Jun 2021 12:29:11 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
-To:     keyrings@vger.kernel.org, jarkko@kernel.org
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zohar@linux.ibm.com,
-        nayna@linux.ibm.com, jeyu@kernel.org, dhowells@redhat.com,
-        dwmw2@infradead.org, Stefan Berger <stefanb@linux.ibm.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] certs: Redirect openssl error message to null device
-Date:   Fri, 25 Jun 2021 08:29:02 -0400
-Message-Id: <20210625122902.4058783-1-stefanb@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 25 Jun 2021 08:31:44 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF8BC061574;
+        Fri, 25 Jun 2021 05:29:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=sz0HFy97Sa2PQlVcns192PnKYImMp6PXF6QClznrDck=; b=b+RwXfLs/rhAp4aY2Yvho2UYh
+        luH0JJMHXYuV8C+3Cc1/n3catAqX99bs1kmRHn32KOUwPttIV1B+kBTCkaZJjmrPD9+oQKB4EQJSQ
+        zEpk1iEptToEkIHAf7+e2iH2G9QCFabjjBe9x7bmxgdkzn2rRbpVmH34ByaxZEH+B9+cQ4DNr07t+
+        KbPThT0j70AIka2yJ6PIBdzdKv3WZNSGbq5X/f5H4XxJb3l7Qk5y/hVxcRahKxAucx9FDoXHzEPnj
+        IlHWtghAB9Wd+DLa3PJjdYLdoRR/4rI68V/HJ/gn07YoUOmDd2oL5XcFOMmJYRBuAwuqUtTZeU8I9
+        edjy7OVqA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45348)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lwkxR-0000hV-Pn; Fri, 25 Jun 2021 13:29:17 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lwkxR-0006fu-A3; Fri, 25 Jun 2021 13:29:17 +0100
+Date:   Fri, 25 Jun 2021 13:29:17 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>, thomas.petazzoni@bootlin.com,
+        herve.codina@bootlin.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ARM: dts: imx6qdl-sr-som: Increase the PHY reset
+ duration to 10ms
+Message-ID: <20210625122917.GW22278@shell.armlinux.org.uk>
+References: <20210625121353.3698240-1-maxime.chevallier@bootlin.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: VcgJQX-aW_DkG0U2fP9QLrHKiAN8uoZg
-X-Proofpoint-ORIG-GUID: HB9c8oRq-miZzOpg4R1fG1GMsaoGnoUr
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-25_04:2021-06-25,2021-06-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 clxscore=1011
- lowpriorityscore=0 spamscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106250069
+In-Reply-To: <20210625121353.3698240-1-maxime.chevallier@bootlin.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
+On Fri, Jun 25, 2021 at 02:13:53PM +0200, Maxime Chevallier wrote:
+> The AR803x PHY used on this modules seems to require the reset line to
+> be asserted for around 10ms in order to avoid rare cases where the PHY
+> gets stuck in an incoherent state that prevents it to function
+> correctly.
+> 
+> The previous value of 2ms was found to be problematic on some setups,
+> causing intermittent issues where the PHY would be unresponsive
+> every once in a while on some sytems, with a low occurrence (it typically
+> took around 30 consecutive reboots to encounter the issue).
+> 
+> Bumping the delay to the 10ms makes the issue dissapear, with more than
+> 2500 consecutive reboots performed without the issue showing-up.
+> 
+> Fixes: 208d7baf8085 ("ARM: imx: initial SolidRun HummingBoard support")
+> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+> Tested-by: Hervé Codina <herve.codina@bootlin.com>
 
-Address the following issue detected by the kernel test robot when
-there's no certificate file at the time when checking for the type
-of key in the cert:
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-Can't open certs/signing_key.pem for reading, No such file or directory
+Thanks!
 
-The simplest solution is to redirect openssl's stderr output to /dev/null.
-
-Fixes: 28d62d945ded ("certs: Trigger creation of RSA module signing key if it's not an RSA key")
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
- certs/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/certs/Makefile b/certs/Makefile
-index 72758684d254..e7ae3bd3be4a 100644
---- a/certs/Makefile
-+++ b/certs/Makefile
-@@ -65,7 +65,7 @@ openssl_available       = $(shell openssl help 2>/dev/null && echo yes)
- ifeq ($(CONFIG_MODULE_SIG_KEY),"certs/signing_key.pem")
- 
- ifeq ($(openssl_available),yes)
--X509TEXT=$(shell openssl x509 -in $(CONFIG_MODULE_SIG_KEY) -text)
-+X509TEXT=$(shell openssl x509 -in $(CONFIG_MODULE_SIG_KEY) -text 2>/dev/null)
- 
- $(if $(findstring rsaEncryption,$(X509TEXT)),,$(shell rm -f $(CONFIG_MODULE_SIG_KEY)))
- endif
 -- 
-2.31.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
