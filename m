@@ -2,136 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFE43B40C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9333B40CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhFYJry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:47:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbhFYJrw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:47:52 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEDECC061574;
-        Fri, 25 Jun 2021 02:45:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=RM4Laxk4DlI2gmOx6X9srWjn3weJq33pQVfhRa0PR8I=; b=u0/E42Gkz2SDXRS9Frb65PciU
-        RZViFaAoKBvGJq1fV1O6/WIvw60jVHUJjN6u/lI5WIwgFYeQaWSSc7UL6MlqrjsThErEtzkjrAX1d
-        /WUuIu58TxlQK9xw0BhT8dPzD7fiIbbGaOHNlO+Vbiw+digrvi8W8O00zUDxzpRg6vjpTB1pfUPMI
-        2lqFxsS+rS7/6sOIU0C6S28ZqM9D6heSYcwe65MJDwqZgaNFXHSnVgFkT1TOfPqahoQ0SABfo3Z7R
-        Y3aKf5eUUdi6aKvNavkA5L2UdThHXmT1c2kW7InVWQ0LWV9/28gCmdYFwQjGA3r4g0LrpG1aGALT9
-        gogCz90tw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45340)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lwiOu-0000Tt-VG; Fri, 25 Jun 2021 10:45:28 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lwiOu-0006a8-MM; Fri, 25 Jun 2021 10:45:28 +0100
-Date:   Fri, 25 Jun 2021 10:45:28 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>, thomas.petazzoni@bootlin.com,
-        herve.codina@bootlin.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: imx6qdl-sr-som: Increase the PHY reset
- duration to 10ms
-Message-ID: <20210625094528.GU22278@shell.armlinux.org.uk>
-References: <20210625083051.3691737-1-maxime.chevallier@bootlin.com>
- <20210625083840.GS22278@shell.armlinux.org.uk>
- <20210625113550.7a135e69@bootlin.com>
+        id S231144AbhFYJsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:48:45 -0400
+Received: from mga12.intel.com ([192.55.52.136]:48795 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230436AbhFYJsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 05:48:41 -0400
+IronPort-SDR: eO5CyTfrnZEsObQcmigS6sRp8Pn5kxuslsPxJmgh6jxfnvgGh1DX7w+LTM1KMntUW0tPmMb5aZ
+ P8IxRTBa6ZFw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="187330514"
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="187330514"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 02:46:20 -0700
+IronPort-SDR: 95R/ahI4YnD5Nvebk0q4CHVFLsQO2IWiU84mQG/LCG5+NgWkXeiJ4uPdbBppEtn+F4H/5fsaBH
+ n4mkpGGv6OUQ==
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="488123034"
+Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.255.28.148]) ([10.255.28.148])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 02:46:14 -0700
+Subject: Re: [PATCH V7 00/18] KVM: x86/pmu: Add *basic* support to enable
+ guest PEBS via DS
+To:     Liuxiangdong <liuxiangdong5@huawei.com>, peterz@infradead.org,
+        pbonzini@redhat.com
+Cc:     bp@alien8.de, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        weijiang.yang@intel.com, kan.liang@linux.intel.com,
+        ak@linux.intel.com, wei.w.wang@intel.com, eranian@google.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        like.xu.linux@gmail.com, "Fangyi (Eric)" <eric.fangyi@huawei.com>,
+        Xiexiangyou <xiexiangyou@huawei.com>
+References: <20210622094306.8336-1-lingshan.zhu@intel.com>
+ <60D5A487.8020507@huawei.com>
+From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
+Message-ID: <37832cc0-788d-91b9-dc95-147eca133842@intel.com>
+Date:   Fri, 25 Jun 2021 17:46:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625113550.7a135e69@bootlin.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <60D5A487.8020507@huawei.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 11:35:50AM +0200, Maxime Chevallier wrote:
-> Hi Russell,
-> 
-> On Fri, 25 Jun 2021 09:38:40 +0100
-> "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
-> 
-> >On Fri, Jun 25, 2021 at 10:30:51AM +0200, Maxime Chevallier wrote:
-> >> The datasheet for the AR803x PHY present on this SoM recommends that the
-> >> reset line is asserted low for 10ms, so that the PHY has time to
-> >> properly reset the internal blocks.
-> >> 
-> >> The previous value of 2ms was found to be problematic on some setups,
-> >> causing intermittent issues where the PHY would be unresponsive
-> >> every once in a while on some sytems, with a low occurence (it typically
-> >> took around 30 consecutive reboots to encounter the issue).
-> >> 
-> >> Bumping the delay to the 10ms recommended value makes the issue
-> >> dissapear, with more than 2500 consecutive reboots performed without the
-> >> issue showing-up.  
-> >
-> >This isn't actually what the datasheet says, which is:
-> >
-> >  Input clock including the crystal and external input clock should be
-> >  stable for at least 1ms before RESET can be deasserted.
-> >
-> >  When using crystal, the clock is generated internally after power is
-> >  stable. For a reliable power on reset, suggest to keep asserting the
-> >  reset low long enough (10ms) to ensure the clock is stable and
-> >  clock-to-reset 1ms requirement is satisfied.
-> >
-> >The 10ms duration you quote is the _power on reset_ duration, and in
-> >those circumstances, there is a delay before the required clocks will
-> >be stable.
-> >
-> >This is not a power on reset scenario - the power was applied long ago
-> >by the time the kernel starts booting, and XI clock would have been
-> >running.
-> >
-> >So, I think the commit message which seems to be claiming that the reset
-> >line always needs to be asserted for 10ms is not entirely accurate.
-> 
-> You're correct, indeed, I guess we read that a bit too fast.
-> 
-> However, we do see that bumping the reset duration fixes the issue that
-> was encountered.
-> 
-> To give you more details about this issue, in that scenario the PHY
-> would fail the autoneg process, no matter how many times we
-> enable/disable the link and restart autoneg.
-> 
-> The low duration of the reset might put the internal blocks in an
-> unknown state, but I don't actually have the real hardware-side
-> explanation for what is actually happening.
-> 
-> Further testing showed, for example, that decreasing the time of reset
-> assertion to 1ms made the issue appear everytime, whereas bumping it to
-> 10 ms fixed it entirely.
-> 
-> In the absence of any other indication about how long should that reset
-> be asserted, and after thourough testing, 10ms seems like a good enough
-> value.
-> 
-> I'll send a V2 with the commit log fixed.
-> 
-> Thanks for the quick review,
 
-Thanks. For the record, I don't have an issue with bumping it to 10ms,
-only that the above would be useful information in the commit long.
 
-I wonder if we should be recording these kinds of behaviours somewhere,
-so e.g. we recommend that all AR803x should use a reset duration of
-10ms with the above explanation. Just a thought to save others needing
-to do the same research.
+On 6/25/2021 5:40 PM, Liuxiangdong wrote:
+>
+>
+> On 2021/6/22 17:42, Zhu Lingshan wrote:
+>> The guest Precise Event Based Sampling (PEBS) feature can provide an 
+>> architectural state of the instruction executed after the guest 
+>> instruction that exactly caused the event. It needs new hardware 
+>> facility only available on Intel Ice Lake Server platforms. This 
+>> patch set enables the basic PEBS feature for KVM guests on ICX.
+>>
+>> We can use PEBS feature on the Linux guest like native:
+>>
+>>     # echo 0 > /proc/sys/kernel/watchdog (on the host)
+>
+> Only on the host?
+> I cannot use pebs unless try with "echo 0 > /proc/sys/kernel/watchdog" 
+> both on the host and guest on ICX.
+Hi Xiangdong
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+I guess you may run into the "cross-map" case(slow path below), so I 
+think you can disable them both in host and guest to make PEBS work.
+
+Thanks
+>
+>>     # perf record -e instructions:ppp ./br_instr a
+>>     # perf record -c 100000 -e instructions:pp ./br_instr a
+>>
+>> To emulate guest PEBS facility for the above perf usages, we need to 
+>> implement 2 code paths:
+>>
+>> 1) Fast path
+>>
+>> This is when the host assigned physical PMC has an identical index as 
+>> the virtual PMC (e.g. using physical PMC0 to emulate virtual PMC0).
+>> This path is used in most common use cases.
+>>
+>> 2) Slow path
+>>
+>> This is when the host assigned physical PMC has a different index 
+>> from the virtual PMC (e.g. using physical PMC1 to emulate virtual 
+>> PMC0) In this case, KVM needs to rewrite the PEBS records to change 
+>> the applicable counter indexes to the virtual PMC indexes, which 
+>> would otherwise contain the physical counter index written by PEBS 
+>> facility, and switch the counter reset values to the offset 
+>> corresponding to the physical counter indexes in the DS data structure.
+>>
+>> The previous version [0] enables both fast path and slow path, which 
+>> seems a bit more complex as the first step. In this patchset, we want 
+>> to start with the fast path to get the basic guest PEBS enabled while 
+>> keeping the slow path disabled. More focused discussion on the slow 
+>> path [1] is planned to be put to another patchset in the next step.
+>>
+>> Compared to later versions in subsequent steps, the functionality to 
+>> support host-guest PEBS both enabled and the functionality to emulate 
+>> guest PEBS when the counter is cross-mapped are missing in this patch 
+>> set (neither of these are typical scenarios).
+>>
+>> With the basic support, the guest can retrieve the correct PEBS 
+>> information from its own PEBS records on the Ice Lake servers.
+>> And we expect it should work when migrating to another Ice Lake and 
+>> no regression about host perf is expected.
+>>
+>> Here are the results of pebs test from guest/host for same workload:
+>>
+>> perf report on guest:
+>> # Samples: 2K of event 'instructions:ppp', # Event count (approx.): 
+>> 1473377250 # Overhead  Command   Shared Object Symbol
+>>     57.74%  br_instr  br_instr           [.] lfsr_cond
+>>     41.40%  br_instr  br_instr           [.] cmp_end
+>>      0.21%  br_instr  [kernel.kallsyms]  [k] __lock_acquire
+>>
+>> perf report on host:
+>> # Samples: 2K of event 'instructions:ppp', # Event count (approx.): 
+>> 1462721386 # Overhead  Command   Shared Object Symbol
+>>     57.90%  br_instr  br_instr          [.] lfsr_cond
+>>     41.95%  br_instr  br_instr          [.] cmp_end
+>>      0.05%  br_instr  [kernel.vmlinux]  [k] lock_acquire
+>>      Conclusion: the profiling results on the guest are similar 
+>> tothat on the host.
+>>
+>> A minimum guest kernel version may be v5.4 or a backport version 
+>> support Icelake server PEBS.
+>>
+>> Please check more details in each commit and feel free to comment.
+>>
+>> Previous:
+>> https://lore.kernel.org/kvm/20210511024214.280733-1-like.xu@linux.intel.com/ 
+>>
+>>
+>> [0]
+>> https://lore.kernel.org/kvm/20210104131542.495413-1-like.xu@linux.intel.com/ 
+>>
+>> [1]
+>> https://lore.kernel.org/kvm/20210115191113.nktlnmivc3edstiv@two.firstfloor.org/ 
+>>
+>>
+>> V6 -> V7 Changelog:
+>> - Fix conditions order and call x86_pmu_handle_guest_pebs() 
+>> unconditionally; (PeterZ)
+>> - Add a new patch to make all that perf_guest_cbs stuff suck less; 
+>> (PeterZ)
+>> - Document IA32_MISC_ENABLE[7] that that behavior matches bare metal; 
+>> (Sean & Venkatesh)
+>> - Update commit message for fixed counter mask refactoring;(PeterZ)
+>> - Clarifying comments about {.host and .guest} for 
+>> intel_guest_get_msrs(); (PeterZ)
+>> - Add pebs_capable to store valid PEBS_COUNTER_MASK value; (PeterZ)
+>> - Add more comments for perf's precise_ip field; (Andi & PeterZ)
+>> - Refactor perf_overflow_handler_t and make it more legible; (PeterZ)
+>> - Use "(unsigned long)cpuc->ds" instead of 
+>> __this_cpu_read(cpu_hw_events.ds); (PeterZ)
+>> - Keep using "(struct kvm_pmu *)data" to follow K&R; (Andi)
+>>
+>> Like Xu (17):
+>>    perf/core: Use static_call to optimize perf_guest_info_callbacks
+>>    perf/x86/intel: Add EPT-Friendly PEBS for Ice Lake Server
+>>    perf/x86/intel: Handle guest PEBS overflow PMI for KVM guest
+>>    perf/x86/core: Pass "struct kvm_pmu *" to determine the guest values
+>>    KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit when vPMU is enabled
+>>    KVM: x86/pmu: Introduce the ctrl_mask value for fixed counter
+>>    KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR emulation for extended PEBS
+>>    KVM: x86/pmu: Reprogram PEBS event to emulate guest PEBS counter
+>>    KVM: x86/pmu: Adjust precise_ip to emulate Ice Lake guest PDIR 
+>> counter
+>>    KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to support guest DS
+>>    KVM: x86/pmu: Add PEBS_DATA_CFG MSR emulation to support adaptive 
+>> PEBS
+>>    KVM: x86: Set PEBS_UNAVAIL in IA32_MISC_ENABLE when PEBS is enabled
+>>    KVM: x86/pmu: Move pmc_speculative_in_use() to arch/x86/kvm/pmu.h
+>>    KVM: x86/pmu: Disable guest PEBS temporarily in two rare situations
+>>    KVM: x86/pmu: Add kvm_pmu_cap to optimize perf_get_x86_pmu_capability
+>>    KVM: x86/cpuid: Refactor host/guest CPU model consistency check
+>>    KVM: x86/pmu: Expose CPUIDs feature bits PDCM, DS, DTES64
+>>
+>> Peter Zijlstra (Intel) (1):
+>>    x86/perf/core: Add pebs_capable to store valid PEBS_COUNTER_MASK 
+>> value
+>>
+>>   arch/arm/kernel/perf_callchain.c   |  16 +--
+>>   arch/arm64/kernel/perf_callchain.c |  29 +++--
+>>   arch/arm64/kvm/perf.c              |  22 ++--
+>>   arch/csky/kernel/perf_callchain.c  |   4 +-
+>>   arch/nds32/kernel/perf_event_cpu.c |  16 +--
+>>   arch/riscv/kernel/perf_callchain.c |   4 +-
+>>   arch/x86/events/core.c             |  43 ++++++--
+>>   arch/x86/events/intel/core.c       | 165 +++++++++++++++++++++++------
+>>   arch/x86/events/perf_event.h       |   6 +-
+>>   arch/x86/include/asm/kvm_host.h    |  18 +++-
+>>   arch/x86/include/asm/msr-index.h   |   6 ++
+>>   arch/x86/include/asm/perf_event.h  |   5 +-
+>>   arch/x86/kvm/cpuid.c               |  24 ++---
+>>   arch/x86/kvm/cpuid.h               |   5 +
+>>   arch/x86/kvm/pmu.c                 |  60 ++++++++---
+>>   arch/x86/kvm/pmu.h                 |  38 +++++++
+>>   arch/x86/kvm/vmx/capabilities.h    |  26 +++--
+>>   arch/x86/kvm/vmx/pmu_intel.c       | 115 ++++++++++++++++----
+>>   arch/x86/kvm/vmx/vmx.c             |  24 ++++-
+>>   arch/x86/kvm/vmx/vmx.h             |   2 +-
+>>   arch/x86/kvm/x86.c                 |  51 +++++----
+>>   arch/x86/xen/pmu.c                 |  33 +++---
+>>   include/linux/perf_event.h         |  12 ++-
+>>   kernel/events/core.c               |   9 ++
+>>   24 files changed, 544 insertions(+), 189 deletions(-)
+>>
+>
+
