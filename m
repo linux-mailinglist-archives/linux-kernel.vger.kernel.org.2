@@ -2,78 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317483B4383
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4013B4388
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbhFYMnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 08:43:42 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47536 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbhFYMnl (ORCPT
+        id S231133AbhFYMpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 08:45:11 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33180 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhFYMpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 08:43:41 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id F380721C9E;
-        Fri, 25 Jun 2021 12:41:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624624880; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Fri, 25 Jun 2021 08:45:10 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624624968;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=qyekXbX9w6Di6vsO5Ddzy8rXUYEEnJBBjaX2GPnG/rU=;
-        b=RfDkXzJMjHyA/bFtP3z6+V93ECyMtvSDg7nx7uSPyypYBEX0MHoRQCHxXj0dnxNGnopvzR
-        9ly87wZG/tp2E7X5yNidPwn/l6Mlq2k3+2vdjQqNsO/je3P6r/Bjenu7jn9mRIMtaxXDOx
-        HISaM4TZOFlwtdqWn9R0AmMbGqev0lI=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id DAB7FA3BEC;
-        Fri, 25 Jun 2021 12:41:16 +0000 (UTC)
-Date:   Fri, 25 Jun 2021 14:41:16 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Yue Hu <huyue2@yulong.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, kexec@lists.infradead.org
-Subject: Re: [PATCH printk v3 3/6] printk: remove safe buffers
-Message-ID: <YNXO7LUc9L1j+rDx@alley>
-References: <20210624111148.5190-1-john.ogness@linutronix.de>
- <20210624111148.5190-4-john.ogness@linutronix.de>
- <YNSbd68YJ+0wxayx@alley>
- <8735t7mg0z.fsf@jogness.linutronix.de>
+        bh=kUvHNoaJ8hCHdVSooVihvRmjh1gPNArcPRW12xQl1mg=;
+        b=wE8ezas2TzVU1H2UhFE2Qqluhh4R0PTGEDvLHCOLfcRKKkYieNL6kUqFABsgS5f4EHK1zn
+        uC6Dc5WymQYokWHBTcQ7vf1nHgivxUMx3MUK8qNxxXYiKhX4fN8cZcZ22L+ci4srGoE++t
+        Cfol40KPMcXP9wqkZEedvJaVZS72WRmr1OjJRWD0k5yLXogloXgfks2oOZLF/kYlSwpkjg
+        398u/kH2ZY5BlU7n2MuHxv2DzPSczvIGQb4mn4qTJyDTSMw5H7sbfci6fXpvzvWN8U78yS
+        5xSOzMhEoEMYxpBxjgI38RARtNkGfSGE+3hUrlsDAYNe+gwwR6zNiEuyzHG7UA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624624968;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kUvHNoaJ8hCHdVSooVihvRmjh1gPNArcPRW12xQl1mg=;
+        b=fxzpnqDLxdWf/HUlsC3sYIU73rs4RLRvicSCFfizzTYMn/oKBBJAb5U77/sulc9bMlCoHc
+        NgfQdpgeg1qmR/BA==
+To:     "Tian\, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Dey\, Megha" <megha.dey@intel.com>,
+        "Raj\, Ashok" <ashok.raj@intel.com>,
+        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Jiang\, Dave" <dave.jiang@intel.com>,
+        "Liu\, Yi L" <yi.l.liu@intel.com>,
+        "Lu\, Baolu" <baolu.lu@intel.com>,
+        "Williams\, Dan J" <dan.j.williams@intel.com>,
+        "Luck\, Tony" <tony.luck@intel.com>,
+        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, KVM <kvm@vger.kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Subject: RE: Virtualizing MSI-X on IMS via VFIO
+In-Reply-To: <87o8buuyfy.ffs@nanos.tec.linutronix.de>
+References: <MWHPR11MB1886E14C57689A253D9B40C08C079@MWHPR11MB1886.namprd11.prod.outlook.com> <8735t7wazk.ffs@nanos.tec.linutronix.de> <20210624154434.11809b8f.alex.williamson@redhat.com> <BN9PR11MB5433063F826F5CEC93BCE0E38C069@BN9PR11MB5433.namprd11.prod.outlook.com> <87o8buuyfy.ffs@nanos.tec.linutronix.de>
+Date:   Fri, 25 Jun 2021 14:42:48 +0200
+Message-ID: <87im22uncn.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8735t7mg0z.fsf@jogness.linutronix.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-06-24 17:41:56, John Ogness wrote:
-> I would prefer a v4 with these fixes:
-> 
-> - wrap @console_owner_lock with printk_safe usage
-> 
-> - remove unnecessary printk_safe usage from printk_safe.c
-> 
-> - update commit message to say that safe context tracking is left in
->   place for both the console and console_owner locks
+On Fri, Jun 25 2021 at 10:43, Thomas Gleixner wrote:
+> On Fri, Jun 25 2021 at 05:21, Kevin Tian wrote:
+>> p.s. one question to Thomas. As Alex cited above, software must 
+>> not modify the Address, Data, or Steering Tag fields of an MSI-X
+>> entry while it is unmasked. However this rule might be violated
+>> today in below flow:
+>>
+>> request_irq()
+>>     __setup_irq()
+>>         irq_startup()
+>>             __irq_startup()
+>>                 irq_enable()
+>>                     unmask_irq() <<<<<<<<<<<<<
+>>         irq_setup_affinity()
+>>             irq_do_set_affinity()
+>>                 msi_set_affinity() // when IR is disabled
+>>                     irq_msi_update_msg()
+>>                         pci_msi_domain_write_msg() <<<<<<<<<<<<<<
+>>
+>> Isn't above have msi-x entry updated after it's unmasked? 
+>
+> Dammit, I could swear that we had masking at the core or PCI level at
+> some point. Let me dig into this.
 
-Sounds good to me.
+Indeed, that code path does not check irq_can_move_pcntxt(). It doesn't
+blow up in our face by chance because of this:
 
-Best Regards,
-Petr
+     __setup_irq()
+        irq_activate()
+        unmask()
+        irq_setup_affinity()
+
+irq_activate() assigns a vector based on the affinity mask so
+irq_setup_affinity() ends up writing the same data again pointlessly.
+
+For some stupid reason the ordering of startup/setup_affinity is the way
+it is for historical reasons. I tried to reorder it at some point but
+that caused failure on !x86 so I went back to the status quo.
+
+All other affinity settings happen with the interrupt masked because we
+do that from actual interrupt context via irq_move_masked_irq() which
+does the right thing.
+
+Let me fix that proper for the startup case.
+
+Thanks,
+
+        tglx
