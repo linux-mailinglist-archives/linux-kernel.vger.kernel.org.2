@@ -2,65 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4A13B488D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5594C3B4898
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 20:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbhFYSAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 14:00:50 -0400
-Received: from mail-pj1-f48.google.com ([209.85.216.48]:35834 "EHLO
-        mail-pj1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhFYSAq (ORCPT
+        id S230198AbhFYSCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 14:02:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhFYSCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 14:00:46 -0400
-Received: by mail-pj1-f48.google.com with SMTP id pf4-20020a17090b1d84b029016f6699c3f2so8444545pjb.0;
-        Fri, 25 Jun 2021 10:58:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=A8lzyNP92yQOj05rtJwPYcsUcTXO2TeyGOg3/Sz2qAA=;
-        b=br4+PAVU9Dzoii6k3WiHKIWZMUSZ08eqBV3wr8t29LBx8Q9HE57biug8SxYQJw1HPf
-         8OAU0UU+aSvi9qm1VwRgd24fnc78oBWZ34eK/seyJuz0154K+9x60dlPoa9dgoC2TWAY
-         uxMU1IlJryf/9c+boTeUlOy5v2ayTVAa6wLO9CPgPq1PrudJRHHc9L8L2ZqwuUBgxDUa
-         BW8KN71Xqxqh9Rin6t89UaMtoj6mX7LgKt5TQ9vVA6EseYajdkUJWqfCtQS2Ex2PuCMc
-         aB9bRxMkL1yaEqt/UPrE9nmxtCfcAB3E5td5446EDemAUqW0AaJ54UOHtg4Vjy7uMBrv
-         rHdQ==
-X-Gm-Message-State: AOAM532toLcqN17ErWBPnDbWLbAFlf9jbiYxWgxVOD6S6Yx0AtzPsm+X
-        oi+rb0ghPjxVbc+r/cvdFOQ=
-X-Google-Smtp-Source: ABdhPJyYQ1n98hAMKI0uVr+taxoOii2LJBzlAr08gmpaXwER0Wz4Yh3b+ykSZyJkiBJonCxXZ/pelg==
-X-Received: by 2002:a17:90a:ae15:: with SMTP id t21mr22657448pjq.55.1624643904506;
-        Fri, 25 Jun 2021 10:58:24 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id p1sm6162352pfp.137.2021.06.25.10.58.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 10:58:23 -0700 (PDT)
-Subject: Re: [PATCH] scsi: Delete scsi_{get,free}_host_dev()
-To:     John Garry <john.garry@huawei.com>, martin.petersen@oracle.com,
-        jejb@linux.ibm.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hch@lst.de, hare@suse.de, ming.lei@redhat.com
-References: <1624640314-93055-1-git-send-email-john.garry@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <d6a49a67-b1b9-a6eb-b322-ef1f168a94c1@acm.org>
-Date:   Fri, 25 Jun 2021 10:58:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 25 Jun 2021 14:02:41 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2EE4C061574;
+        Fri, 25 Jun 2021 11:00:20 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwq69-00CB0n-0a; Fri, 25 Jun 2021 17:58:37 +0000
+Date:   Fri, 25 Jun 2021 17:58:36 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Justin He <Justin.He@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 13/14] d_path: prepend_path() is unlikely to return
+ non-zero
+Message-ID: <YNYZTIP+anazsz/U@zeniv-ca.linux.org.uk>
+References: <YKRfI29BBnC255Vp@zeniv-ca.linux.org.uk>
+ <20210519004901.3829541-1-viro@zeniv.linux.org.uk>
+ <20210519004901.3829541-13-viro@zeniv.linux.org.uk>
+ <AM6PR08MB43762B63D11A43FE84849748F7069@AM6PR08MB4376.eurprd08.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <1624640314-93055-1-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM6PR08MB43762B63D11A43FE84849748F7069@AM6PR08MB4376.eurprd08.prod.outlook.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/25/21 9:58 AM, John Garry wrote:
-> Functions scsi_{get,free}_host_dev() no longer have any in-tree users, so
-> delete them.
+On Fri, Jun 25, 2021 at 08:00:49AM +0000, Justin He wrote:
+> --- a/fs/d_path.c
+> +++ b/fs/d_path.c
+> @@ -210,6 +210,7 @@ static int prepend_path(const struct path *path,
+>         b = *p;
+>         read_seqbegin_or_lock(&rename_lock, &seq);
+>         error = __prepend_path(path->dentry, real_mount(path->mnt), root, &b);
+> +       printk("prepend=%d",error);
+>         if (!(seq & 1))
+>                 rcu_read_unlock();
+>         if (need_seqretry(&rename_lock, seq)) {
+> 
+> Then the result seems a little different:
+> root@entos-ampere-02:~# dmesg |grep prepend=1 |wc -l
+> 7417
+> root@entos-ampere-02:~# dmesg |grep prepend=0 |wc -l
+> 772
+> 
+> The kernel is 5.13.0-rc2+ + this series + my '%pD' series
+> 
+> Any thoughts?
 
-It may be a good idea to add a reference to commit 0653c358d2dc ("scsi:
-Drop gdth driver") since the gdth driver was the only driver that ever
-used these functions. Anyway:
-
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+On which loads?  1 here is "mount/dentry pair is in somebody
+else's namespace or outside of the subtree we are chrooted
+into".  IOW, what's calling d_path() on your setup?
