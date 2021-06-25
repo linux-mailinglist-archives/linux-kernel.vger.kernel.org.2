@@ -2,122 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0773B3AB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 04:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A957E3B3ABC
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 04:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233087AbhFYCGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 22:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233054AbhFYCGY (ORCPT
+        id S233043AbhFYCHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 22:07:47 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:51724 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232942AbhFYCHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 22:06:24 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55265C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 19:04:03 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id q20-20020a0cf5d40000b029027498137223so8730542qvm.15
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 19:04:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=t8s+pvbQrz2/tW+ZtZ3QelMWNeVBiBz16haIl2b1ZgQ=;
-        b=XNmWmkIwJcknizUuHkmw1N7P5TY3heXjyvMuLh8IlO58WeWbDr1u8xezH8S6bwsMwt
-         OzN5dIDEiLml4byCrkkHhtwC1c3bVYevVxALruzXL6faQa9m1JKEzM0U13d1AWOAyoba
-         s5wLOkhBXqUGWB4o+4JbnqdePfU6GLaioszQ3l/gGFlE6Ga4s3l9nBoY0kpTFQP3xEL/
-         XZaxSmTYBmD2+n+UELtZT6MIBEPMZoWNxYFpXZAO7cf6cyBiSPrbRDXRBccJV/wQV7bW
-         Jz5U1/nVHpbCjEB8Ld/VBN4SdnToAQVlhWR93gtOBNMTXY0kGUDzRr9aZlWqNb4HVWvd
-         VK6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=t8s+pvbQrz2/tW+ZtZ3QelMWNeVBiBz16haIl2b1ZgQ=;
-        b=unwPKP1UkKdVeJL2Ej+JjVIcrUlFzzS7RSkbEkw2vz7e70GmI6zb+QmMsgqv/xvc3M
-         /l+m5xLyI/EL0msfdPf+3l++xsDIntWnMmRFRtuaNap/3W85wqohRUCCzJH/BYaJOAd4
-         KfOokOsLFH525tUVgx+iw5pvHHhkt7qksL4yXjg1zZuxVkS/I0H4szRKDuDM8pf/8NEe
-         M5ORPoygDagt6qnlDOVxnz04a67luChwiNSA6ivZDe+L+q32Jpuc8uwnGuJPMi4jTMZE
-         C1viQ36mmWN4XdI69BBDibeBeQN2QhoBsta8gEYHiTtivyUEc6p0VRMGhIDWJAua3APf
-         DgpQ==
-X-Gm-Message-State: AOAM532iZtngj3H3YWEmuVa56of4VRYWzmpi1YKH+32nJOaRzc0XuZJ+
-        lU8NZPfZ/EMMVcEyNHo+nOFDAJP41tc=
-X-Google-Smtp-Source: ABdhPJzeVRHboZb5US4kKmefBAR/OKLFvqKUwvXLHO58v6La8hPwvJJnRDcKi5tqwbkHYjYcZLHfXLWJVUc=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:7c83:7704:b3b6:754c])
- (user=seanjc job=sendgmr) by 2002:a05:6214:966:: with SMTP id
- do6mr8576844qvb.57.1624586642404; Thu, 24 Jun 2021 19:04:02 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 24 Jun 2021 19:03:54 -0700
-In-Reply-To: <20210625020354.431829-1-seanjc@google.com>
-Message-Id: <20210625020354.431829-3-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210625020354.431829-1-seanjc@google.com>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH 2/2] KVM: SVM: Revert clearing of C-bit on GPA in #NPF handler
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 24 Jun 2021 22:07:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=chengshuyi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0UdZHJqO_1624586721;
+Received: from B-39YZML7H-2200.local(mailfrom:chengshuyi@linux.alibaba.com fp:SMTPD_---0UdZHJqO_1624586721)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 25 Jun 2021 10:05:22 +0800
+Subject: Re: [PATCH bpf-next] libbpf: Introduce 'custom_btf_path' to
+ 'bpf_obj_open_opts'.
+To:     Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <1624507409-114522-1-git-send-email-chengshuyi@linux.alibaba.com>
+ <8ca15bab-ec66-657d-570a-278deff0b1a3@iogearbox.net>
+From:   Shuyi Cheng <chengshuyi@linux.alibaba.com>
+Message-ID: <e8a17455-e3e7-d259-b7ae-154cfa6f1a0a@linux.alibaba.com>
+Date:   Fri, 25 Jun 2021 10:05:19 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <8ca15bab-ec66-657d-570a-278deff0b1a3@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't clear the C-bit in the #NPF handler, as it is a legal GPA bit for
-non-SEV guests, and for SEV guests the C-bit is dropped before the GPA
-hits the NPT in hardware.  Clearing the bit for non-SEV guests causes KVM
-to mishandle #NPFs with that collide with the host's C-bit.
 
-Although the APM doesn't explicitly state that the C-bit is not reserved
-for non-SEV, Tom Lendacky confirmed that the following snippet about the
-effective reduction due to the C-bit does indeed apply only to SEV guests.
 
-  Note that because guest physical addresses are always translated
-  through the nested page tables, the size of the guest physical address
-  space is not impacted by any physical address space reduction indicated
-  in CPUID 8000_001F[EBX]. If the C-bit is a physical address bit however,
-  the guest physical address space is effectively reduced by 1 bit.
+On 6/24/21 11:06 PM, Daniel Borkmann wrote:
+> On 6/24/21 6:03 AM, Shuyi Cheng wrote:
+>> In order to enable the older kernel to use the CO-RE feature, load the
+>> vmlinux btf of the specified path.
+>>
+>> Learn from Andrii's comments in [0], add the custom_btf_path parameter
+>> to bpf_obj_open_opts, you can directly use the skeleton's
+>> <objname>_bpf__open_opts function to pass in the custom_btf_path
+>> parameter.
+>>
+>> Prior to this, there was also a developer who provided a patch with
+>> similar functions. It is a pity that the follow-up did not continue to
+>> advance. See [1].
+>>
+>>     [0]https://lore.kernel.org/bpf/CAEf4BzbJZLjNoiK8_VfeVg_Vrg=9iYFv+po-38SMe=UzwDKJ=Q@mail.gmail.com/#t 
+>>
+>>     [1]https://yhbt.net/lore/all/CAEf4Bzbgw49w2PtowsrzKQNcxD4fZRE6AKByX-5-dMo-+oWHHA@mail.gmail.com/ 
+>>
+>>
+>> Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
+>> ---
+>>   tools/lib/bpf/libbpf.c | 23 ++++++++++++++++++++---
+>>   tools/lib/bpf/libbpf.h |  6 +++++-
+>>   2 files changed, 25 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 1e04ce7..518b19f 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -509,6 +509,8 @@ struct bpf_object {
+>>       void *priv;
+>>       bpf_object_clear_priv_t clear_priv;
+>> +    char *custom_btf_path;
+>> +
+> 
+> nit: This should rather go to the 'Parse and load BTF vmlinux if any of 
+> [...]'
+> section of struct bpf_object, and for consistency, I'd keep the btf_ 
+> prefix,
+> like: char *btf_custom_path
+> 
 
-And for SEV guests, the APM clearly states that the bit is dropped before
-walking the nested page tables.
+Thank you very much for your reply.
 
-  If the C-bit is an address bit, this bit is masked from the guest
-  physical address when it is translated through the nested page tables.
-  Consequently, the hypervisor does not need to be aware of which pages
-  the guest has chosen to mark private.
+Agree.
 
-Note, the bogus C-bit clearing was removed from legacy #PF handler in
-commit 6d1b867d0456 ("KVM: SVM: Don't strip the C-bit from CR2 on #PF
-interception").
 
-Fixes: 0ede79e13224 ("KVM: SVM: Clear C-bit from the page fault address")
-Cc: Peter Gonda <pgonda@google.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/svm/svm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>>       char path[];
+>>   };
+>>   #define obj_elf_valid(o)    ((o)->efile.elf)
+>> @@ -2679,8 +2681,15 @@ static int bpf_object__load_vmlinux_btf(struct 
+>> bpf_object *obj, bool force)
+>>       if (!force && !obj_needs_vmlinux_btf(obj))
+>>           return 0;
+>> -    obj->btf_vmlinux = libbpf_find_kernel_btf();
+>> -    err = libbpf_get_error(obj->btf_vmlinux);
+>> +    if (obj->custom_btf_path) {
+>> +        obj->btf_vmlinux = btf__parse(obj->custom_btf_path, NULL);
+>> +        err = libbpf_get_error(obj->btf_vmlinux);
+>> +        pr_debug("loading custom vmlinux BTF '%s': %d\n", 
+>> obj->custom_btf_path, err);
+>> +    } else {
+>> +        obj->btf_vmlinux = libbpf_find_kernel_btf();
+>> +        err = libbpf_get_error(obj->btf_vmlinux);
+>> +    }
+> 
+> Couldn't we do something like (only compile-tested):
+> 
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 8834822c00cd..ca5614a48b21 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1923,7 +1923,7 @@ static int npf_interception(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 
--	u64 fault_address = __sme_clr(svm->vmcb->control.exit_info_2);
-+	u64 fault_address = svm->vmcb->control.exit_info_2;
- 	u64 error_code = svm->vmcb->control.exit_info_1;
- 
- 	trace_kvm_page_fault(fault_address, error_code);
--- 
-2.32.0.93.g670b81a890-goog
+Your approach is very inspiring to me. But I did it for two reasons.
+
+1. When the developer specifies btf_custom_path, btf should only be 
+loaded from btf_custom_path;
+2. Now pahole supports saving vmlinux's btf in raw format, so the old 
+kernel can provide btf in elf format or raw format. see [0].
+
+	[0] 
+https://git.kernel.org/pub/scm/devel/pahole/pahole.git/tree/pahole.c#n1157
+
+What do you think?
+	
+Regards,
+Shuyi
+
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index b46760b93bb4..5b88ce3e483c 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -4394,7 +4394,7 @@ static int btf_dedup_remap_types(struct btf_dedup *d)
+>    * Probe few well-known locations for vmlinux kernel image and try to 
+> load BTF
+>    * data out of it to use for target BTF.
+>    */
+> -struct btf *libbpf_find_kernel_btf(void)
+> +static struct btf *__libbpf_find_kernel_btf(char *btf_custom_path)
+>   {
+>       struct {
+>           const char *path_fmt;
+> @@ -4402,6 +4402,8 @@ struct btf *libbpf_find_kernel_btf(void)
+>       } locations[] = {
+>           /* try canonical vmlinux BTF through sysfs first */
+>           { "/sys/kernel/btf/vmlinux", true /* raw BTF */ },
+> +        /* try user defined vmlinux ELF if a path was specified */
+> +        { btf_custom_path },
+>           /* fall back to trying to find vmlinux ELF on disk otherwise */
+>           { "/boot/vmlinux-%1$s" },
+>           { "/lib/modules/%1$s/vmlinux-%1$s" },
+> @@ -4419,11 +4421,11 @@ struct btf *libbpf_find_kernel_btf(void)
+>       uname(&buf);
+> 
+>       for (i = 0; i < ARRAY_SIZE(locations); i++) {
+> +        if (!locations[i].path_fmt)
+> +            continue;
+>           snprintf(path, PATH_MAX, locations[i].path_fmt, buf.release);
+> -
+>           if (access(path, R_OK))
+>               continue;
+> -
+>           if (locations[i].raw_btf)
+>               btf = btf__parse_raw(path);
+>           else
+> @@ -4440,6 +4442,11 @@ struct btf *libbpf_find_kernel_btf(void)
+>       return libbpf_err_ptr(-ESRCH);
+>   }
+> 
+> +struct btf *libbpf_find_kernel_btf(void)
+> +{
+> +    return __libbpf_find_kernel_btf(NULL);
+> +}
+> +
+>   int btf_type_visit_type_ids(struct btf_type *t, type_id_visit_fn 
+> visit, void *ctx)
+>   {
+>       int i, n, err;
+> 
+> And then you just call it as:
+> 
+>      obj->btf_vmlinux = __libbpf_find_kernel_btf(obj->btf_custom_path);
+>      err = libbpf_get_error(obj->btf_vmlinux);
+> 
+>>       if (err) {
+>>           pr_warn("Error loading vmlinux BTF: %d\n", err);
+>>           obj->btf_vmlinux = NULL;
 
