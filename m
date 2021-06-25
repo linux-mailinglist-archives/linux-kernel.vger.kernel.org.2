@@ -2,439 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FAA33B45E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE7E3B45E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhFYOkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232008AbhFYOkI (ORCPT
+        id S231649AbhFYOlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:41:01 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:48243 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231720AbhFYOku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:40:08 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B15AC061787
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:37:29 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id o33-20020a05600c5121b02901e360c98c08so6871010wms.5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:37:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a54s3kRK1gHHJoxRicx7YBCMCuENKO69Im5EEaH+1gY=;
-        b=dA+hY/x1Xv9luzyQaNIYrP6U5eJlSwyGhcldIe7t/9hAHb0m5bZN5vUsjusd5La4cx
-         X5W/vD90qAsX013Ab8TZg+0HfHHynvfOBC1uXN0daDGwDHYqwI33WHReBDz7G0ZYHbVN
-         DO4RE0Ry5CsPJWncr7425hZYtecOO9fccS8Zd9DJ2g1ZdMS/xz0ngN1+jhvQdYGbnPCp
-         d7kOOdCjrSUgijN/8lkpnZ4a88Y84GrRohbgrVqRR5WBdUjvoLyb/719kDH5AdMKJLy7
-         l37qOid6j7FqfbBNunlA0bTb6HPF1XOX2wGsDJGnpKnVfvURwIk/YOfucbry/YsSH90A
-         xkXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a54s3kRK1gHHJoxRicx7YBCMCuENKO69Im5EEaH+1gY=;
-        b=hJxoO0wm19xUHblMkPZvAEyWTkE33bxT73giOCtufT7GSp5FNCCnE+g6Mgn3D5CbvU
-         I01EfS/2Kj2g1hBQTL3ETVNSrqE2jxplx38CNZ5lWmhD6vs+3fn4PR7pzstLf9cfEQKo
-         27ypDCnDoxRQqroAmJvquh8MoJ9Ye2eMPoCc6e5SpCMxLVZLrF7+Izj5YMca8JpnCSZz
-         NJGX9BxYQrgIHbv57zMo5rjsNxSo1SXGtY1w5q3KTE/9JrBxiG4yXjawq5k8suk2u+2W
-         bo3Nfv1gztxGWRSMq7ieW9TkUp7xo6wIUPcsdlrHQ2esT5+P9rE5zsU8ETFMj7UDqecV
-         yXew==
-X-Gm-Message-State: AOAM533rPTEAd+UPM933JU188DIVAhN9u/iB5a8akhZZUuW60NW1XhN3
-        3VrVFRKvpcxsKCbCcop1cblLGDhAT6EDft/ckbeWKQ==
-X-Google-Smtp-Source: ABdhPJyNP4YeTS0oe1EjcgKWFOK1ApDpR9FFSXM3A+7vflvNYUJ6CoMpDaHkDCGLwNbEh+dtD5Do6V2p95ehjRokhKc=
-X-Received: by 2002:a05:600c:218c:: with SMTP id e12mr11086109wme.92.1624631847643;
- Fri, 25 Jun 2021 07:37:27 -0700 (PDT)
+        Fri, 25 Jun 2021 10:40:50 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.west.internal (Postfix) with ESMTP id DB5672B00B1C;
+        Fri, 25 Jun 2021 10:38:27 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Fri, 25 Jun 2021 10:38:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=GpArqP1e/0nk1yUO/CK1bfXcmbJ
+        DmDt6zrZYry34CYg=; b=laRCk6YGSWR+NltLSDAJJORGewwhgzptyaZL5oNt+R3
+        wfoLMGQo8IN0Ok5LKL+fKI63BIWNxcnZdUN9Dxi1vbXgmYX8XC0LpjLnwEVo5D2u
+        HU0FJtJnmh7e/+PpTZqRLj0Hrs8bHUbgyWnejUbT7vGIltTdGl/woIkjNDYs8q1W
+        Cvut3UNvyo/PGAptO6SZeAbZ1HkFLckoSjbv123KznNzq3VO3hohwxbamY2c+nSw
+        NXBgwUWCDpEhyu7RDVoo/xoawRY6sB+/U7SEHWNJ8SJf9xOJTbKqZVgLcRYG5XIB
+        y4fTHtqUOoioxzhYyRj/Y+xaD/6/cvUdu2aYiEoTMAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=GpArqP
+        1e/0nk1yUO/CK1bfXcmbJDmDt6zrZYry34CYg=; b=u59MrQSJbB0JOaU+UgLtZL
+        Num87Gm8S4YlxGZjycbmbHz+k0M+QGj02s9kTvseUGuqkjr48aNDci1bqBpvN5e9
+        +HQjSB+97sl2uVnMLucTe2xb1TPx+fJ0jQ3pAg1gr+LQKG0K2pDe4T3XphUZ5mjT
+        IjDTfHP1If5rLwdkCqX2f3zuSKv43g7XlwIyMHEsr8sJarXlIyFEmghZr//SMniQ
+        lq+BjkJ9Wa/H88CF3vpjaMQsEVeKD70gOVyz51i9gvxdq+ZL9aYUznfnyNj0o1wa
+        /rQ7y93XIL/Mf1c+CC99OdyjeOKXC7BM9W+09U8lCZbH4Gse9N+q/aYr5QnyFoiA
+        ==
+X-ME-Sender: <xms:YurVYB_kCDMQrLNK-wU45PtTftfWcjlfQcW4d0Q2-1cMfb_VvqyayA>
+    <xme:YurVYFsXRy4s1r4xfzHwk1dhqLGAHiMHoVRXetJTDAbmQclOOHM6tV8XbrzSG8Bvy
+    m81xOWn3kIi-g>
+X-ME-Received: <xmr:YurVYPALhfx3dLb5K3u0IMXHJgQztMYo0eP3mZ7TN6NI4PF5705TNx6Nsg96bHqUmmEMdzQpaB7B0sozX-lGvoRFGw5nD9LX>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeegjedgjeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:YurVYFchg3PoVdm69aGlVbVvjXD0k4jZe57idWbWVZJ65LmQ39mA5w>
+    <xmx:YurVYGMgQWlHNnn1cD6IrlAMczEfjITKdmN0lDDLhN58_jay5ssveQ>
+    <xmx:YurVYHlY_okKvMJTf-_FdYNBDfZxtPP5kzNijaSY4O69imPbOxt3Lg>
+    <xmx:Y-rVYLfRodD1wgQ4j8E82wWsrE16bbadJ7sNniLp_FphSNU_R51v2LHGyRg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 25 Jun 2021 10:38:26 -0400 (EDT)
+Date:   Fri, 25 Jun 2021 16:38:23 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     kan.liang@linux.intel.com, peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, eranian@google.com,
+        namhyung@kernel.org, acme@kernel.org, jolsa@redhat.com
+Subject: Re: [PATCH 2/7] perf: Create a symlink for a PMU
+Message-ID: <YNXqXwq1+o09eHox@kroah.com>
+References: <1624497729-158864-1-git-send-email-kan.liang@linux.intel.com>
+ <1624497729-158864-3-git-send-email-kan.liang@linux.intel.com>
+ <YNQckpOuw80uCUa1@kroah.com>
+ <d25a0556-325f-9af0-a495-b9f222d63e10@linux.intel.com>
+ <YNSWtCSjJy8CytOL@kroah.com>
+ <1e536604-cf93-0f09-401e-2073924c5582@linux.intel.com>
+ <YNSlVPcjHInk4un6@kroah.com>
+ <29d5f315-578f-103c-9523-ae890e29c7e7@linux.intel.com>
+ <YNVneO6exCS4ETRt@kroah.com>
+ <540d8a38-da12-56c8-8306-8d3d61ae1d6b@linux.intel.com>
 MIME-Version: 1.0
-References: <20210414191903.18349-1-mike.leach@linaro.org> <20210414191903.18349-6-mike.leach@linaro.org>
- <dfbb1acf-b174-1990-33d3-39e2ab746959@arm.com> <CANLsYkyR-kUO7CiK4vuw+DNFMxCCsLN24s3mZ2Uw4vAq5aPD3g@mail.gmail.com>
-In-Reply-To: <CANLsYkyR-kUO7CiK4vuw+DNFMxCCsLN24s3mZ2Uw4vAq5aPD3g@mail.gmail.com>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Fri, 25 Jun 2021 15:37:16 +0100
-Message-ID: <CAJ9a7Vjsmu88ZY1h11o13VMu9C9gaBr_8HEmSa5iAH3NvwM=NA@mail.gmail.com>
-Subject: Re: [PATCH v7 05/10] coresight: syscfg: Add API to activate and
- enable configurations
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Branislav Rankov <branislav.rankov@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Yabin Cui <yabinc@google.com>, Jon Corbet <corbet@lwn.net>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Tingwei Zhang <tingwei@codeaurora.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        nd <nd@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <540d8a38-da12-56c8-8306-8d3d61ae1d6b@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Branislav, Mathieu,
+On Fri, Jun 25, 2021 at 07:22:08AM -0700, Andi Kleen wrote:
+> 
+> On 6/24/2021 10:19 PM, Greg KH wrote:
+> > On Thu, Jun 24, 2021 at 10:28:36AM -0700, Andi Kleen wrote:
+> > > > But a driver does not caer.  And if perf does not care, who cares?
+> > > The users who write scripts that specify the perf events on the perf command
+> > > line.
+> > Great, then as you have deemed the device name part of your documented
+> > api, then keep it stable as that is what you decided to do a long time
+> > ago when it was created.
+> 
+> The fully supported driver keeps it stable, but the driver in fallback mode
+> (as in running on a yet unknown system) can't because it doesn't have enough
+> information. It has to fall back to the numeric identifiers.
+> 
+> Supporting yet unknown systems is a big advantage, missing full kernel
+> support is the number one reason people can't use uncore monitoring today.
+> 
+> The symlink keeps some degree of compatibility between the two.
 
-I have started to look into this as a top priority.
+But it creates something that is not needed at the moment, and then
+userspace will rely on it.  Don't make userspace rely on it today and
+all should be fine.
 
-However, when I enable the CONFIG_DEBUG_ option my board fails to boot
-at all. (Dragonboard DB410c), so the resolution make take a little
-time.
+Device names will change, that's always a given, as the kernel can never
+always make them the same.  That's why userspace needs to scan the bus
+for all devices and then pick out the one that it wants to look at.
+Don't hard-encode device names into userspace tools, that way lies
+madness.
 
-At this point I am assuming that the mutex will need to be replaced by
-a spinlock - so a re-design + v8 set may well be required.
+> Anyways thinking about it if Greg doesn't want symlinks (even though sysfs
+> already has symlinks elsewhere), maybe we could just create two devices
+> without symlinks. Kan, do you think that would work?
 
-Regards
+Do not have 2 different structures represent the same hardware device,
+that too is a shortcut to madness.
 
-Mike
+What prevents userspace from handling device names changing today?  Why
+are you forcing userspace to pick a specific device name at all?
 
-On Mon, 14 Jun 2021 at 18:03, Mathieu Poirier
-<mathieu.poirier@linaro.org> wrote:
->
-> Hi Branislav,
->
-> On Thu, 10 Jun 2021 at 05:05, Branislav Rankov <branislav.rankov@arm.com> wrote:
-> >
-> >
-> > On 4/14/21 8:18 PM, Mike Leach wrote:
-> > > Configurations are first activated, then when any coresight device is
-> > > enabled, the active configurations are checked and any matching
-> > > one is enabled.
-> > >
-> > > This patch provides the activation / enable API.
-> > >
-> > > Signed-off-by: Mike Leach <mike.leach@linaro.org>
-> > > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > > ---
-> > >   .../hwtracing/coresight/coresight-config.h    |   2 +
-> > >   .../hwtracing/coresight/coresight-syscfg.c    | 172 ++++++++++++++++++
-> > >   .../hwtracing/coresight/coresight-syscfg.h    |   8 +
-> > >   include/linux/coresight.h                     |   2 +
-> > >   4 files changed, 184 insertions(+)
-> > >
-> > > diff --git a/drivers/hwtracing/coresight/coresight-config.h b/drivers/hwtracing/coresight/coresight-config.h
-> > > index 0667581822c1..25eb6c632692 100644
-> > > --- a/drivers/hwtracing/coresight/coresight-config.h
-> > > +++ b/drivers/hwtracing/coresight/coresight-config.h
-> > > @@ -127,6 +127,7 @@ struct cscfg_feature_desc {
-> > >    * @nr_total_params:        Sum of all parameters declared by used features
-> > >    * @presets:                Array of preset values.
-> > >    * @event_ea:               Extended attribute for perf event value
-> > > + * @active_cnt:              ref count for activate on this configuration.
-> > >    *
-> > >    */
-> > >   struct cscfg_config_desc {
-> > > @@ -139,6 +140,7 @@ struct cscfg_config_desc {
-> > >       int nr_total_params;
-> > >       const u64 *presets; /* nr_presets * nr_total_params */
-> > >       struct dev_ext_attribute *event_ea;
-> > > +     atomic_t active_cnt;
-> > >   };
-> > >
-> > >   /**
-> > > diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
-> > > index e35f8c0ac2f8..b234e45c153f 100644
-> > > --- a/drivers/hwtracing/coresight/coresight-syscfg.c
-> > > +++ b/drivers/hwtracing/coresight/coresight-syscfg.c
-> > > @@ -283,6 +283,7 @@ static int cscfg_load_config(struct cscfg_config_desc *config_desc)
-> > >               return err;
-> > >
-> > >       list_add(&config_desc->item, &cscfg_mgr->config_desc_list);
-> > > +     atomic_set(&config_desc->active_cnt, 0);
-> > >       return 0;
-> > >   }
-> > >
-> > > @@ -468,6 +469,176 @@ void cscfg_unregister_csdev(struct coresight_device *csdev)
-> > >   }
-> > >   EXPORT_SYMBOL_GPL(cscfg_unregister_csdev);
-> > >
-> > > +/**
-> > > + * cscfg_csdev_reset_feats - reset features for a CoreSight device.
-> > > + *
-> > > + * Resets all parameters and register values for any features loaded
-> > > + * into @csdev to their default values.
-> > > + *
-> > > + * @csdev: The CoreSight device.
-> > > + */
-> > > +void cscfg_csdev_reset_feats(struct coresight_device *csdev)
-> > > +{
-> > > +     struct cscfg_feature_csdev *feat_csdev;
-> > > +
-> > > +     mutex_lock(&cscfg_csdev_mutex);
-> > > +     if (list_empty(&csdev->feature_csdev_list))
-> > > +             goto unlock_exit;
-> > > +
-> > > +     list_for_each_entry(feat_csdev, &csdev->feature_csdev_list, node)
-> > > +             cscfg_reset_feat(feat_csdev);
-> > > +
-> > > +unlock_exit:
-> > > +     mutex_unlock(&cscfg_csdev_mutex);
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(cscfg_csdev_reset_feats);
-> > > +
-> > > +/**
-> > > + * cscfg_activate_config -  Mark a configuration descriptor as active.
-> > > + *
-> > > + * This will be seen when csdev devices are enabled in the system.
-> > > + * Only activated configurations can be enabled on individual devices.
-> > > + * Activation protects the configuration from alteration or removal while
-> > > + * active.
-> > > + *
-> > > + * Selection by hash value - generated from the configuration name when it
-> > > + * was loaded and added to the cs_etm/configurations file system for selection
-> > > + * by perf.
-> > > + *
-> > > + * Increments the configuration descriptor active count and the global active
-> > > + * count.
-> > > + *
-> > > + * @cfg_hash: Hash value of the selected configuration name.
-> > > + */
-> > > +int cscfg_activate_config(unsigned long cfg_hash)
-> > > +{
-> > > +     struct cscfg_config_desc *config_desc;
-> > > +     int err = -EINVAL;
-> > > +
-> > > +     mutex_lock(&cscfg_mutex);
-> > > +
-> > > +     list_for_each_entry(config_desc, &cscfg_mgr->config_desc_list, item) {
-> > > +             if ((unsigned long)config_desc->event_ea->var == cfg_hash) {
-> > > +                     /*
-> > > +                      * increment the global active count - control changes to
-> > > +                      * active configurations
-> > > +                      */
-> > > +                     atomic_inc(&cscfg_mgr->sys_active_cnt);
-> > > +
-> > > +                     /*
-> > > +                      * mark the descriptor as active so enable config on a
-> > > +                      * device instance will use it
-> > > +                      */
-> > > +                     atomic_inc(&config_desc->active_cnt);
-> > > +
-> > > +                     err = 0;
-> > > +                     dev_dbg(cscfg_device(), "Activate config %s.\n", config_desc->name);
-> > > +                     break;
-> > > +             }
-> > > +     }
-> > > +     mutex_unlock(&cscfg_mutex);
-> > > +
-> > > +     return err;
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(cscfg_activate_config);
-> > > +
-> > > +/**
-> > > + * cscfg_deactivate_config -  Mark a config descriptor as inactive.
-> > > + *
-> > > + * Decrement the configuration and global active counts.
-> > > + *
-> > > + * @cfg_hash: Hash value of the selected configuration name.
-> > > + */
-> > > +void cscfg_deactivate_config(unsigned long cfg_hash)
-> > > +{
-> > > +     struct cscfg_config_desc *config_desc;
-> > > +
-> > > +     mutex_lock(&cscfg_mutex);
-> > > +
-> > > +     list_for_each_entry(config_desc, &cscfg_mgr->config_desc_list, item) {
-> > > +             if ((unsigned long)config_desc->event_ea->var == cfg_hash) {
-> > > +                     atomic_dec(&config_desc->active_cnt);
-> > > +                     atomic_dec(&cscfg_mgr->sys_active_cnt);
-> > > +                     dev_dbg(cscfg_device(), "Deactivate config %s.\n", config_desc->name);
-> > > +                     break;
-> > > +             }
-> > > +     }
-> > > +     mutex_unlock(&cscfg_mutex);
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(cscfg_deactivate_config);
-> > > +
-> > > +/**
-> > > + * cscfg_csdev_enable_active_config - Enable matching active configuration for device.
-> > > + *
-> > > + * Enables the configuration selected by @cfg_hash if the configuration is supported
-> > > + * on the device and has been activated.
-> > > + *
-> > > + * If active and supported the CoreSight device @csdev will be programmed with the
-> > > + * configuration, using @preset parameters.
-> > > + *
-> > > + * Should be called before driver hardware enable for the requested device, prior to
-> > > + * programming and enabling the physical hardware.
-> > > + *
-> > > + * @csdev:   CoreSight device to program.
-> > > + * @cfg_hash:        Selector for the configuration.
-> > > + * @preset:  Preset parameter values to use, 0 for current / default values.
-> > > + */
-> > > +int cscfg_csdev_enable_active_config(struct coresight_device *csdev,
-> > > +                                  unsigned long cfg_hash, int preset)
-> > > +{
-> > > +     struct cscfg_config_csdev *config_csdev_active = NULL, *config_csdev_item;
-> > > +     const struct cscfg_config_desc *config_desc;
-> > > +     int err = 0;
-> > > +
-> > > +     /* quickly check global count */
-> > > +     if (!atomic_read(&cscfg_mgr->sys_active_cnt))
-> > > +             return 0;
-> > > +
-> > > +     mutex_lock(&cscfg_csdev_mutex);
-> > > +     list_for_each_entry(config_csdev_item, &csdev->config_csdev_list, node) {
-> > > +             config_desc = config_csdev_item->config_desc;
-> > > +             if ((atomic_read(&config_desc->active_cnt)) &&
-> > > +                 ((unsigned long)config_desc->event_ea->var == cfg_hash)) {
-> > > +                     config_csdev_active = config_csdev_item;
-> > > +                     break;
-> > > +             }
-> > > +     }
-> > > +     if (config_csdev_active) {
-> > > +             err = cscfg_csdev_enable_config(config_csdev_active, preset);
-> > > +             if (!err)
-> > > +                     csdev->active_cscfg_ctxt = (void *)config_csdev_active;
-> > > +     }
-> > > +     mutex_unlock(&cscfg_csdev_mutex);
-> > > +     return err;
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(cscfg_csdev_enable_active_config);
-> > > +
-> > > +/**
-> > > + * cscfg_csdev_disable_active_config - disable an active config on the device.
-> > > + *
-> > > + * Disables the active configuration on the CoreSight device @csdev.
-> > > + * Disable will save the values of any registers marked in the configurations
-> > > + * as save on disable.
-> > > + *
-> > > + * Should be called after driver hardware disable for the requested device,
-> > > + * after disabling the physical hardware and reading back registers.
-> > > + *
-> > > + * @csdev: The CoreSight device.
-> > > + */
-> > > +void cscfg_csdev_disable_active_config(struct coresight_device *csdev)
-> > > +{
-> > > +     struct cscfg_config_csdev *config_csdev;
-> > > +
-> > > +     mutex_lock(&cscfg_csdev_mutex);
-> >
-> > This line seems to cause a bug report when the kernel is compiled with CONFIG_DEBUG_ATOMIC_SLEEP=y
-> >
-> > I have tested this by applying the series to 5.10 kernel on Dragonboard 845c.
-> >
-> > It only happens when strobing is used.
->
-> Thanks for reporting this.  Unfortunately Mike is away and likely
-> won't be able to look at this in time for the merge window.  As such I
-> backed out the complex configuration feature from the next branch but
-> that code is still available on next-complex-configuration.
->
-> Thanks,
-> Mathieu
->
-> >
-> > The report is this:
-> >
-> > [13431.885395] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:283
-> > [13431.893919] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 3525, name: perf
-> > [13431.901882] CPU: 0 PID: 3525 Comm: perf Tainted: G        W         5.10.0-rc5-17282-g923b456a55fb #124
-> > [13431.911436] Hardware name: Thundercomm Dragonboard 845c (DT)
-> > [13431.917450] Call trace:
-> > [13431.919938]  dump_backtrace+0x0/0x1a0
-> > [13431.923644]  show_stack+0x18/0x68
-> > [13431.927008]  dump_stack+0xd0/0x12c
-> > [13431.930444]  ___might_sleep+0xf0/0x130
-> > [13431.934228]  __might_sleep+0x54/0x90
-> > [13431.937945]  mutex_lock+0x28/0x80
-> > [13431.941468]  cscfg_csdev_disable_active_config+0x24/0x50
-> > [13431.946952]  etm4_disable+0xf0/0x100
-> > [13431.950571]  etm_event_stop+0xb8/0x130
-> > [13431.954380]  etm_event_del+0x14/0x20
-> > [13431.958008]  event_sched_out.isra.0+0x84/0x1c8
-> > [13431.962496]  group_sched_out.part.0+0x44/0xc8
-> > [13431.967010]  __perf_event_disable+0xe4/0x198
-> > [13431.971549]  event_function+0x8c/0xe8
-> > [13431.975256]  remote_function+0x64/0x78
-> > [13431.979161]  generic_exec_single+0xa0/0x100
-> > [13431.983876]  smp_call_function_single+0x158/0x1d8
-> > [13431.988629]  event_function_call+0x128/0x138
-> > [13431.992942]  _perf_event_disable+0x48/0x70
-> > [13431.997082]  perf_event_for_each_child+0x3c/0x90
-> > [13432.001751]  _perf_ioctl+0x198/0x4a8
-> > [13432.005359]  perf_ioctl+0x4c/0x78
-> > [13432.008715]  __arm64_sys_ioctl+0xa8/0xf0
-> > [13432.012835]  el0_svc_common.constprop.0+0x78/0x1a0
-> > [13432.017767]  do_el0_svc+0x24/0x90
-> > [13432.021616]  el0_sync_handler+0x160/0x168
-> > [13432.025670]  el0_sync+0x174/0x180
-> >
-> >
-> > > +     config_csdev = (struct cscfg_config_csdev *)csdev->active_cscfg_ctxt;
-> > > +     if (config_csdev) {
-> > > +             cscfg_csdev_disable_config(config_csdev);
-> > > +             csdev->active_cscfg_ctxt = NULL;
-> > > +     }
-> > > +     mutex_unlock(&cscfg_csdev_mutex);
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(cscfg_csdev_disable_active_config);
-> > > +
-> > >   /* Initialise system configuration management device. */
-> > >
-> > >   struct device *cscfg_device(void)
-> > > @@ -536,6 +707,7 @@ int __init cscfg_init(void)
-> > >       INIT_LIST_HEAD(&cscfg_mgr->csdev_desc_list);
-> > >       INIT_LIST_HEAD(&cscfg_mgr->feat_desc_list);
-> > >       INIT_LIST_HEAD(&cscfg_mgr->config_desc_list);
-> > > +     atomic_set(&cscfg_mgr->sys_active_cnt, 0);
-> > >
-> > >       dev_info(cscfg_device(), "CoreSight Configuration manager initialised");
-> > >       return 0;
-> > > diff --git a/drivers/hwtracing/coresight/coresight-syscfg.h b/drivers/hwtracing/coresight/coresight-syscfg.h
-> > > index 5bcae3b374c6..a52775890670 100644
-> > > --- a/drivers/hwtracing/coresight/coresight-syscfg.h
-> > > +++ b/drivers/hwtracing/coresight/coresight-syscfg.h
-> > > @@ -24,12 +24,14 @@
-> > >    * @csdev_desc_list:        List of coresight devices registered with the configuration manager.
-> > >    * @feat_desc_list: List of feature descriptors to load into registered devices.
-> > >    * @config_desc_list:       List of system configuration descriptors to load into registered devices.
-> > > + * @sys_active_cnt:  Total number of active config descriptor references.
-> > >    */
-> > >   struct cscfg_manager {
-> > >       struct device dev;
-> > >       struct list_head csdev_desc_list;
-> > >       struct list_head feat_desc_list;
-> > >       struct list_head config_desc_list;
-> > > +     atomic_t sys_active_cnt;
-> > >   };
-> > >
-> > >   /* get reference to dev in cscfg_manager */
-> > > @@ -61,5 +63,11 @@ int cscfg_load_config_sets(struct cscfg_config_desc **cfg_descs,
-> > >   int cscfg_register_csdev(struct coresight_device *csdev, u32 match_flags,
-> > >                        struct cscfg_csdev_feat_ops *ops);
-> > >   void cscfg_unregister_csdev(struct coresight_device *csdev);
-> > > +int cscfg_activate_config(unsigned long cfg_hash);
-> > > +void cscfg_deactivate_config(unsigned long cfg_hash);
-> > > +void cscfg_csdev_reset_feats(struct coresight_device *csdev);
-> > > +int cscfg_csdev_enable_active_config(struct coresight_device *csdev,
-> > > +                                  unsigned long cfg_hash, int preset);
-> > > +void cscfg_csdev_disable_active_config(struct coresight_device *csdev);
-> > >
-> > >   #endif /* CORESIGHT_SYSCFG_H */
-> > > diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-> > > index 6fb516e1b22e..a348049ee08b 100644
-> > > --- a/include/linux/coresight.h
-> > > +++ b/include/linux/coresight.h
-> > > @@ -222,6 +222,7 @@ struct coresight_sysfs_link {
-> > >    * @has_conns_grp: Have added a "connections" group for sysfs links.
-> > >    * @feature_csdev_list: List of complex feature programming added to the device.
-> > >    * @config_csdev_list:  List of system configurations added to the device.
-> > > + * @active_cscfg_ctxt:  Context information for current active system configuration.
-> > >    */
-> > >   struct coresight_device {
-> > >       struct coresight_platform_data *pdata;
-> > > @@ -246,6 +247,7 @@ struct coresight_device {
-> > >       /* system configuration and feature lists */
-> > >       struct list_head feature_csdev_list;
-> > >       struct list_head config_csdev_list;
-> > > +     void *active_cscfg_ctxt;
-> > >   };
-> > >
-> > >   /*
-> > >
+thanks,
 
-
-
--- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+greg k-h
