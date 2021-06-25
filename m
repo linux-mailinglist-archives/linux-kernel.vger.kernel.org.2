@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2053B486A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF513B4870
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbhFYRv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 13:51:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36286 "EHLO mail.kernel.org"
+        id S230412AbhFYRve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 13:51:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230180AbhFYRvW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 13:51:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 83676616EA;
-        Fri, 25 Jun 2021 17:49:01 +0000 (UTC)
+        id S230283AbhFYRv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 13:51:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id CD5AC61954;
+        Fri, 25 Jun 2021 17:49:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624643341;
-        bh=q1IXRZ38qk3iRDF+4a0s9gUKtrwRwjE4zvG25cKiv/U=;
+        s=k20201202; t=1624643347;
+        bh=LW2oYkCClhr/lsFYGmI2Mp2i2CqNF/l21PFMxQAgpf8=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=YRKCKRsAAh/RarveQLlHQqHm2y/0MCbv/VOirSm3pzsUj/shWEp4Gajt5LsV0i0XE
-         8kvMlTjm1jURNIH7ilXuEx1ZzJd/b86udxX0mtYhluH+OfCA8Zh/Jw1R1dqVT+Gqla
-         XGmye5FLRwQvINggVz0TyS2khVLVeQCGPcBhm0LBUE8FCYh+MU2Jsp71bu4EFCN8jU
-         wds24sF1YVCfO6GoOzN8b8o8+z0oIAVuIxPz2kxr/hPVT9eEuOzSDlk7S1OUW0iUzZ
-         kWvPoeQfeJAv+aTjpLj7HtixdcHTBMhvn6iAnjvOa0VQK0ruk62dIOzsPKHAzJhPj6
-         XBFS7zTF1F9xA==
+        b=Ml7kcFQqXQ1AXIPtXNg8M4/St5SjO1K76Q1JWFUw3gCiSUovzumbTux02dr76egOz
+         5zapa7w52sutLmEH3P26SBcJUlrxc+xxquCnSXAOwGUzObJDrDGR/0geGDYq5q0ShP
+         NBb5ioVgf+5M93rC5XLi1UDuUfX4hRoleWv8SMuyYiaSUtJwSKoqctQizpLyNzE1mv
+         IfM1LM5oOZiLQzJwlCDOO+E3/o36gijek7tvSzFpbVthkmmn8GrZB+EmhPsRhbRvGS
+         M9wybDGsP3rCX7XoD2pHIdPr6HCBZcce+JdC/FeAlLZXRtwL7rG9bQfIm6s7dLqIA1
+         T/pTuZVwgbK3w==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7DCE860A37;
-        Fri, 25 Jun 2021 17:49:01 +0000 (UTC)
-Subject: Re: [GIT PULL] xen: branch for v5.13-rc8
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C75BD60A37;
+        Fri, 25 Jun 2021 17:49:07 +0000 (UTC)
+Subject: Re: [GIT PULL] sound fixes for 5.13-rc8 or final
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210625144832.20839-1-jgross@suse.com>
-References: <20210625144832.20839-1-jgross@suse.com>
-X-PR-Tracked-List-Id: Xen developer discussion <xen-devel.lists.xenproject.org>
-X-PR-Tracked-Message-Id: <20210625144832.20839-1-jgross@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.13b-rc8-tag
-X-PR-Tracked-Commit-Id: 3de218ff39b9e3f0d453fe3154f12a174de44b25
+In-Reply-To: <s5h7diil5nt.wl-tiwai@suse.de>
+References: <s5h7diil5nt.wl-tiwai@suse.de>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <s5h7diil5nt.wl-tiwai@suse.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.13-rc8
+X-PR-Tracked-Commit-Id: 5c6d4f97267f02f47acea8a652265348ec12de51
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b960e0147451915b5d4cd208b7abd3b07ceaf1a2
-Message-Id: <162464334150.2214.18063317640641616641.pr-tracker-bot@kernel.org>
-Date:   Fri, 25 Jun 2021 17:49:01 +0000
-To:     Juergen Gross <jgross@suse.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com
+X-PR-Merge-Commit-Id: e41fc7c8e275ddb292556698c7b60a1bf1199920
+Message-Id: <162464334780.2214.1299557263139665459.pr-tracker-bot@kernel.org>
+Date:   Fri, 25 Jun 2021 17:49:07 +0000
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 25 Jun 2021 16:48:32 +0200:
+The pull request you sent on Fri, 25 Jun 2021 10:17:26 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.13b-rc8-tag
+> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.13-rc8
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b960e0147451915b5d4cd208b7abd3b07ceaf1a2
+https://git.kernel.org/torvalds/c/e41fc7c8e275ddb292556698c7b60a1bf1199920
 
 Thank you!
 
