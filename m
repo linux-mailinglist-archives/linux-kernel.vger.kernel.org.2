@@ -2,240 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44673B42BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577573B42BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhFYL41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 07:56:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhFYL4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 07:56:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAC7D61464;
-        Fri, 25 Jun 2021 11:54:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624622045;
-        bh=eKwvSIEBtV9yZ29mPOO8grGRX6O2AyCWp0i7Tkuc/eM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QFSo0RtCEX5GX6dxNXbQPazYaVXnToZoTw5wAT9kzABmT8tlQbNsI1XLHqgD94n8i
-         OVyd/zpV1wDiEjb7Jjf72vfpx/tR91Omxa/B+VTUci7uCDvoBLoSVJBGVtVAY8T8Pp
-         XuOMj1cBGeeONi3D8PXntWB+tqzF2qXfZlO4Kr139M4Qy1rHg0LgR5KPQNBM+pA8Ye
-         85iPWTiuNn3Z6kAPZ0q8vwytmfGfK62g+9swaY+lqTUxR/n858VD7ckLYkLXAn7Fz7
-         OV/EBGLBwEMvY3YXZvFdRAIyYB6y5ALIJLwKYxRNSI4YCEgz4/jOuHJpOpyAqCJXA4
-         yrlT5YcDA1j1A==
-Received: by pali.im (Postfix)
-        id 7061360E; Fri, 25 Jun 2021 13:54:02 +0200 (CEST)
-Date:   Fri, 25 Jun 2021 13:54:02 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Koen Vandeputte <koen.vandeputte@citymesh.com>
-Cc:     Petr =?utf-8?Q?=C5=A0tetiar?= <ynezz@true.cz>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Yinghai Lu <yinghai@kernel.org>
-Subject: Re: PCI: Race condition in pci_create_sysfs_dev_files
-Message-ID: <20210625115402.jwga35xmknmo4vdk@pali>
-References: <20200909112850.hbtgkvwqy2rlixst@pali>
- <20201006222222.GA3221382@bjorn-Precision-5520>
- <20201007081227.d6f6otfsnmlgvegi@pali>
- <20210407142538.GA12387@meh.true.cz>
- <20210407145147.bvtubdmz4k6nulf7@pali>
- <20210407153041.GA17046@meh.true.cz>
- <cd4812f0-1de3-0582-936c-ba30906595af@citymesh.com>
+        id S230334AbhFYL4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:56:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20739 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230235AbhFYL4d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 07:56:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624622052;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DuhrZWYgsHGEDzFkorHdrzg1wXdLu2i4a836EtfS2mY=;
+        b=Or1DtRB7rtGU/Hi4ZOh0pVPql9pTJoBlX2kRokBYVZw7wN4eJDPsdMGCRfEbRlm+VHoMHq
+        WSU0P/1LeSwmHqSIfmhfObTTQzvNbqssh61ngquW//WSPod7/Leov6WTIn6tYH6NIOH0OR
+        Ay9X6JIhcj9/1obSB2qAw0Ptr/rm2tk=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-475-nv-ZmkPQOl6NvsLEKL8D5w-1; Fri, 25 Jun 2021 07:54:08 -0400
+X-MC-Unique: nv-ZmkPQOl6NvsLEKL8D5w-1
+Received: by mail-ed1-f70.google.com with SMTP id y18-20020a0564022712b029038ffac1995eso5074808edd.12
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 04:54:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DuhrZWYgsHGEDzFkorHdrzg1wXdLu2i4a836EtfS2mY=;
+        b=b67LSG/CB0DW88Wtjw/iB2SPjtLwarpiW0S84i/HOuFw7kUa/v1au/0DsLsnyf3jbC
+         0wFcN+PNhuD5tOtadDAV8Q1F5FQyJ1LFrMn2ktvbpvnIxBEHmgvxla/Yn7MxypDHp6nX
+         Q27KAmXuWy8VZ6QbPbdNp8m5jEpBSl4zCj6/WUOIj4ZlGa1KOP6Rk/A+Pn8Ntlhz5b0P
+         rSalH70roC9f9FtdF1vH6jKTkJtR6WHWDs919jV3DHIb41RjZFg1rCr5fpE16TNv+Ase
+         T5H491xl1GUhM88xerzrZO6rVrK8BqgPPdx0UuI5LQfvwvX2idH8Lwp4V/Z2EXOnzsN7
+         qPiw==
+X-Gm-Message-State: AOAM531ABO3cb6Sx6rwIXyOacOOJxCRf/BlZ+2CJVbki9D2GZaA6uewg
+        p0s3SDpGMplyjsUqynAjW/OWWD2OY9qScaCWwACbSFVsqNdzFwP4G3qaj1VUM9lX06cf1akIvkr
+        Dps2+wiU9CkkdE3OOYP3Fw9KN
+X-Received: by 2002:a17:906:9bd5:: with SMTP id de21mr10234126ejc.554.1624622046964;
+        Fri, 25 Jun 2021 04:54:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxF9XnW4/tmgAqs4EjmvNpAiZqVLOokVqJ8Ax/ECJWRnDscvPiygYW2Y2pB9HNMmkM+gNHEIg==
+X-Received: by 2002:a17:906:9bd5:: with SMTP id de21mr10234102ejc.554.1624622046705;
+        Fri, 25 Jun 2021 04:54:06 -0700 (PDT)
+Received: from krava ([5.170.249.192])
+        by smtp.gmail.com with ESMTPSA id i6sm2600777ejr.68.2021.06.25.04.54.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 04:54:06 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 13:54:03 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Riccardo Mancini <rickyman7@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] perf session: add missing evlist__delete when
+ deleting a session
+Message-ID: <YNXD2xN2wrZgdbwO@krava>
+References: <20210624231926.212208-1-rickyman7@gmail.com>
+ <CAP-5=fVbGZbV3qp27DPD_7r0z-v9hr2m34H294angaEsssKB0Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cd4812f0-1de3-0582-936c-ba30906595af@citymesh.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <CAP-5=fVbGZbV3qp27DPD_7r0z-v9hr2m34H294angaEsssKB0Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Thu, Jun 24, 2021 at 10:39:34PM -0700, Ian Rogers wrote:
+> On Thu, Jun 24, 2021 at 4:20 PM Riccardo Mancini <rickyman7@gmail.com> wrote:
+> >
+> > ASan reports a memory leak caused by evlist not being deleted on exit in
+> > perf-report, perf-script and perf-data.
+> > The problem is caused by evlist->session not being deleted, which is
+> > allocated in perf_session__read_header, called in perf_session__new if
+> > perf_data is in read mode.
+> > In case of write mode, the session->evlist is filled by the caller.
+> > This patch solves the problem by calling evlist__delete in
+> > perf_session__delete if perf_data is in read mode.
 
-On Friday 25 June 2021 13:29:00 Koen Vandeputte wrote:
-> Hi all,
-> 
-> 
-> Adding some more info regarding this issue:
-> 
-> I've cooked up this simple patch to get some more info:
-> 
-> 
-> Index: linux-5.10.44/drivers/pci/pci-sysfs.c
-> ===================================================================
-> --- linux-5.10.44.orig/drivers/pci/pci-sysfs.c
-> +++ linux-5.10.44/drivers/pci/pci-sysfs.c
-> @@ -1335,6 +1335,8 @@ int __must_check pci_create_sysfs_dev_fi
->      int rom_size;
->      struct bin_attribute *attr;
-> 
-> +    dump_stack();
-> +
->      if (!sysfs_initialized)
->          return -EACCES;
-> 
-> 
-> Which shows this:
-> 
-> 
-> [    1.847384] Key type .fscrypt registered
-> [    1.854288] pci 0000:01:00.0: PCI bridge to [bus 02-05]
-> [    1.859242] Key type fscrypt-provisioning registered
-> [    1.863252] pci 0000:01:00.0:   bridge window [mem 0x01100000-0x011fffff]
-> [    1.874096] Key type encrypted registered
-> [    1.879290] pci 0000:00:00.0: PCI bridge to [bus 01-ff]
-> [    1.879306] pci 0000:00:00.0:   bridge window [mem 0x01100000-0x012fffff]
-> 
-> --> patch kicking in here showing first creation now
-> 
-> [    1.879346] CPU: 1 PID: 7 Comm: kworker/u4:0 Not tainted 5.10.44 #0
-> [    1.913354] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-> [    1.919908] Workqueue: events_unbound async_run_entry_fn
-> [    1.925255] [<8010d5e0>] (unwind_backtrace) from [<801099f0>]
-> (show_stack+0x10/0x14)
-> [    1.933008] [<801099f0>] (show_stack) from [<804ab92c>]
-> (dump_stack+0x94/0xa8)
-> [    1.940249] [<804ab92c>] (dump_stack) from [<804ea96c>]
-> (pci_create_sysfs_dev_files+0x10/0x28c)
-> [    1.948969] [<804ea96c>] (pci_create_sysfs_dev_files) from [<804dc648>]
-> (pci_bus_add_device+0x20/0x84)
-> [    1.958287] [<804dc648>] (pci_bus_add_device) from [<804dc6d8>]
-> (pci_bus_add_devices+0x2c/0x70)
-> [    1.966996] [<804dc6d8>] (pci_bus_add_devices) from [<804dffc8>]
-> (pci_host_probe+0x40/0x94)
-> [    1.975362] [<804dffc8>] (pci_host_probe) from [<804fd5f0>]
-> (dw_pcie_host_init+0x1c0/0x3fc)
-> [    1.983720] [<804fd5f0>] (dw_pcie_host_init) from [<804fdcb0>]
-> (imx6_pcie_probe+0x358/0x63c)
-> [    1.992179] [<804fdcb0>] (imx6_pcie_probe) from [<8054c79c>]
-> (platform_drv_probe+0x48/0x98)
-> [    2.000542] [<8054c79c>] (platform_drv_probe) from [<8054a9fc>]
-> (really_probe+0xfc/0x4dc)
-> [    2.008732] [<8054a9fc>] (really_probe) from [<8054b0bc>]
-> (driver_probe_device+0x5c/0xb4)
-> [    2.016916] [<8054b0bc>] (driver_probe_device) from [<8054b1bc>]
-> (__driver_attach_async_helper+0xa8/0xac)
-> [    2.026497] [<8054b1bc>] (__driver_attach_async_helper) from [<8014beec>]
-> (async_run_entry_fn+0x44/0x108)
-> [    2.036082] [<8014beec>] (async_run_entry_fn) from [<80141b64>]
-> (process_one_work+0x1d8/0x43c)
-> [    2.044704] [<80141b64>] (process_one_work) from [<80141e2c>]
-> (worker_thread+0x64/0x5b0)
-> [    2.052802] [<80141e2c>] (worker_thread) from [<80147698>]
-> (kthread+0x148/0x14c)
-> [    2.060207] [<80147698>] (kthread) from [<80100148>]
-> (ret_from_fork+0x14/0x2c)
-> [    2.067433] Exception stack(0x81075fb0 to 0x81075ff8)
-> [    2.072493] 5fa0:                                     00000000 00000000
-> 00000000 00000000
-> [    2.080678] 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000
-> 00000000 00000000
-> [    2.088864] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-> 
-> --> getting called again ..  different caller this time .. seems unimportant
-> ?
-> 
-> [    2.095490] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.44 #0
-> [    2.095924] pcieport 0000:00:00.0: PME: Signaling with IRQ 307
-> [    2.101510] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-> [    2.113883] [<8010d5e0>] (unwind_backtrace) from [<801099f0>]
-> (show_stack+0x10/0x14)
-> [    2.121638] [<801099f0>] (show_stack) from [<804ab92c>]
-> (dump_stack+0x94/0xa8)
-> [    2.128875] [<804ab92c>] (dump_stack) from [<804ea96c>]
-> (pci_create_sysfs_dev_files+0x10/0x28c)
-> [    2.137588] [<804ea96c>] (pci_create_sysfs_dev_files) from [<80b1b920>]
-> (pci_sysfs_init+0x34/0x54)
-> [    2.146559] [<80b1b920>] (pci_sysfs_init) from [<80101820>]
-> (do_one_initcall+0x54/0x1e8)
-> [    2.154667] [<80101820>] (do_one_initcall) from [<80b01108>]
-> (kernel_init_freeable+0x23c/0x290)
-> [    2.163386] [<80b01108>] (kernel_init_freeable) from [<80837e3c>]
-> (kernel_init+0x8/0x118)
-> [    2.171578] [<80837e3c>] (kernel_init) from [<80100148>]
-> (ret_from_fork+0x14/0x2c)
-> [    2.179151] Exception stack(0x81053fb0 to 0x81053ff8)
-> [    2.184210] 3fa0:                                     00000000 00000000
-> 00000000 00000000
-> [    2.192393] 3fc0: 00000000 00000000 00000000 00000000 00000000 00000000
-> 00000000 00000000
-> [    2.200575] 3fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-> 
-> --> And then finally, the error occurs as it's already been added before. 
-> same cpu and same PID trying to add the same stuff again to sysfs
+ugh, I'm surprised we did not free that.. and can't find
+in git log we ever did ;-) I briefly check commands using
+sessions and looks like it's correct
 
-This just proves that you have hit this race condition.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-> [    2.207200] CPU: 1 PID: 7 Comm: kworker/u4:0 Not tainted 5.10.44 #0
-> [    2.207263] sysfs: cannot create duplicate filename
-> '/devices/platform/soc/1ffc000.pcie/pci0000:00/0000:00:00.0/config' <------
-> [    2.213478] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-> [    2.230798] Workqueue: events_unbound async_run_entry_fn
-> [    2.236129] [<8010d5e0>] (unwind_backtrace) from [<801099f0>]
-> (show_stack+0x10/0x14)
-> [    2.243882] [<801099f0>] (show_stack) from [<804ab92c>]
-> (dump_stack+0x94/0xa8)
-> [    2.251118] [<804ab92c>] (dump_stack) from [<804ea96c>]
-> (pci_create_sysfs_dev_files+0x10/0x28c)
-> [    2.259837] [<804ea96c>] (pci_create_sysfs_dev_files) from [<804dc648>]
-> (pci_bus_add_device+0x20/0x84)
-> [    2.269153] [<804dc648>] (pci_bus_add_device) from [<804dc6d8>]
-> (pci_bus_add_devices+0x2c/0x70)
-> [    2.277861] [<804dc6d8>] (pci_bus_add_devices) from [<804dc70c>]
-> (pci_bus_add_devices+0x60/0x70)
-> [    2.286656] [<804dc70c>] (pci_bus_add_devices) from [<804dffc8>]
-> (pci_host_probe+0x40/0x94)
-> [    2.295018] [<804dffc8>] (pci_host_probe) from [<804fd5f0>]
-> (dw_pcie_host_init+0x1c0/0x3fc)
-> [    2.303377] [<804fd5f0>] (dw_pcie_host_init) from [<804fdcb0>]
-> (imx6_pcie_probe+0x358/0x63c)
-> [    2.311832] [<804fdcb0>] (imx6_pcie_probe) from [<8054c79c>]
-> (platform_drv_probe+0x48/0x98)
-> [    2.320196] [<8054c79c>] (platform_drv_probe) from [<8054a9fc>]
-> (really_probe+0xfc/0x4dc)
-> [    2.328382] [<8054a9fc>] (really_probe) from [<8054b0bc>]
-> (driver_probe_device+0x5c/0xb4)
-> [    2.336567] [<8054b0bc>] (driver_probe_device) from [<8054b1bc>]
-> (__driver_attach_async_helper+0xa8/0xac)
-> [    2.346145] [<8054b1bc>] (__driver_attach_async_helper) from [<8014beec>]
-> (async_run_entry_fn+0x44/0x108)
-> [    2.355727] [<8014beec>] (async_run_entry_fn) from [<80141b64>]
-> (process_one_work+0x1d8/0x43c)
-> [    2.364350] [<80141b64>] (process_one_work) from [<80141e2c>]
-> (worker_thread+0x64/0x5b0)
-> [    2.372449] [<80141e2c>] (worker_thread) from [<80147698>]
-> (kthread+0x148/0x14c)
-> [    2.379853] [<80147698>] (kthread) from [<80100148>]
-> (ret_from_fork+0x14/0x2c)
-> [    2.387077] Exception stack(0x81075fb0 to 0x81075ff8)
-> [    2.392134] 5fa0:                                     00000000 00000000
-> 00000000 00000000
-> [    2.400317] 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000
-> 00000000 00000000
-> [    2.408498] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
 > 
+> Acked-by: Ian Rogers <irogers@google.com>
 > 
-> 
-> Any idea?
+> It is messy that in read mode the session owns the evlist, but
+> otherwise not. Imo, it'd be nice to make the ownership unconditional.
+
+yep, would be nice
+
+thanks,
+jirka
+
 > 
 > Thanks,
+> Ian
 > 
-> Koen
+> > Changes in v2:
+> >  - call evlist__delete from within perf_session__delete
+> >
+> > v1: https://lore.kernel.org/lkml/20210621234317.235545-1-rickyman7@gmail.com/
+> >
+> > ASan report follows:
+> >
+> > $ ./perf script report flamegraph
+> > =================================================================
+> > ==227640==ERROR: LeakSanitizer: detected memory leaks
+> >
+> > <SNIP unrelated>
+> >
+> > Indirect leak of 2704 byte(s) in 1 object(s) allocated from:
+> >     #0 0x4f4137 in calloc (/home/user/linux/tools/perf/perf+0x4f4137)
+> >     #1 0xbe3d56 in zalloc /home/user/linux/tools/lib/perf/../../lib/zalloc.c:8:9
+> >     #2 0x7f999e in evlist__new /home/user/linux/tools/perf/util/evlist.c:77:26
+> >     #3 0x8ad938 in perf_session__read_header /home/user/linux/tools/perf/util/header.c:3797:20
+> >     #4 0x8ec714 in perf_session__open /home/user/linux/tools/perf/util/session.c:109:6
+> >     #5 0x8ebe83 in perf_session__new /home/user/linux/tools/perf/util/session.c:213:10
+> >     #6 0x60c6de in cmd_script /home/user/linux/tools/perf/builtin-script.c:3856:12
+> >     #7 0x7b2930 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
+> >     #8 0x7b120f in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
+> >     #9 0x7b2493 in run_argv /home/user/linux/tools/perf/perf.c:409:2
+> >     #10 0x7b0c89 in main /home/user/linux/tools/perf/perf.c:539:3
+> >     #11 0x7f5260654b74  (/lib64/libc.so.6+0x27b74)
+> >
+> > Indirect leak of 568 byte(s) in 1 object(s) allocated from:
+> >     #0 0x4f4137 in calloc (/home/user/linux/tools/perf/perf+0x4f4137)
+> >     #1 0xbe3d56 in zalloc /home/user/linux/tools/lib/perf/../../lib/zalloc.c:8:9
+> >     #2 0x80ce88 in evsel__new_idx /home/user/linux/tools/perf/util/evsel.c:268:24
+> >     #3 0x8aed93 in evsel__new /home/user/linux/tools/perf/util/evsel.h:210:9
+> >     #4 0x8ae07e in perf_session__read_header /home/user/linux/tools/perf/util/header.c:3853:11
+> >     #5 0x8ec714 in perf_session__open /home/user/linux/tools/perf/util/session.c:109:6
+> >     #6 0x8ebe83 in perf_session__new /home/user/linux/tools/perf/util/session.c:213:10
+> >     #7 0x60c6de in cmd_script /home/user/linux/tools/perf/builtin-script.c:3856:12
+> >     #8 0x7b2930 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
+> >     #9 0x7b120f in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
+> >     #10 0x7b2493 in run_argv /home/user/linux/tools/perf/perf.c:409:2
+> >     #11 0x7b0c89 in main /home/user/linux/tools/perf/perf.c:539:3
+> >     #12 0x7f5260654b74  (/lib64/libc.so.6+0x27b74)
+> >
+> > Indirect leak of 264 byte(s) in 1 object(s) allocated from:
+> >     #0 0x4f4137 in calloc (/home/user/linux/tools/perf/perf+0x4f4137)
+> >     #1 0xbe3d56 in zalloc /home/user/linux/tools/lib/perf/../../lib/zalloc.c:8:9
+> >     #2 0xbe3e70 in xyarray__new /home/user/linux/tools/lib/perf/xyarray.c:10:23
+> >     #3 0xbd7754 in perf_evsel__alloc_id /home/user/linux/tools/lib/perf/evsel.c:361:21
+> >     #4 0x8ae201 in perf_session__read_header /home/user/linux/tools/perf/util/header.c:3871:7
+> >     #5 0x8ec714 in perf_session__open /home/user/linux/tools/perf/util/session.c:109:6
+> >     #6 0x8ebe83 in perf_session__new /home/user/linux/tools/perf/util/session.c:213:10
+> >     #7 0x60c6de in cmd_script /home/user/linux/tools/perf/builtin-script.c:3856:12
+> >     #8 0x7b2930 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
+> >     #9 0x7b120f in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
+> >     #10 0x7b2493 in run_argv /home/user/linux/tools/perf/perf.c:409:2
+> >     #11 0x7b0c89 in main /home/user/linux/tools/perf/perf.c:539:3
+> >     #12 0x7f5260654b74  (/lib64/libc.so.6+0x27b74)
+> >
+> > Indirect leak of 32 byte(s) in 1 object(s) allocated from:
+> >     #0 0x4f4137 in calloc (/home/user/linux/tools/perf/perf+0x4f4137)
+> >     #1 0xbe3d56 in zalloc /home/user/linux/tools/lib/perf/../../lib/zalloc.c:8:9
+> >     #2 0xbd77e0 in perf_evsel__alloc_id /home/user/linux/tools/lib/perf/evsel.c:365:14
+> >     #3 0x8ae201 in perf_session__read_header /home/user/linux/tools/perf/util/header.c:3871:7
+> >     #4 0x8ec714 in perf_session__open /home/user/linux/tools/perf/util/session.c:109:6
+> >     #5 0x8ebe83 in perf_session__new /home/user/linux/tools/perf/util/session.c:213:10
+> >     #6 0x60c6de in cmd_script /home/user/linux/tools/perf/builtin-script.c:3856:12
+> >     #7 0x7b2930 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
+> >     #8 0x7b120f in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
+> >     #9 0x7b2493 in run_argv /home/user/linux/tools/perf/perf.c:409:2
+> >     #10 0x7b0c89 in main /home/user/linux/tools/perf/perf.c:539:3
+> >     #11 0x7f5260654b74  (/lib64/libc.so.6+0x27b74)
+> >
+> > Indirect leak of 7 byte(s) in 1 object(s) allocated from:
+> >     #0 0x4b8207 in strdup (/home/user/linux/tools/perf/perf+0x4b8207)
+> >     #1 0x8b4459 in evlist__set_event_name /home/user/linux/tools/perf/util/header.c:2292:16
+> >     #2 0x89d862 in process_event_desc /home/user/linux/tools/perf/util/header.c:2313:3
+> >     #3 0x8af319 in perf_file_section__process /home/user/linux/tools/perf/util/header.c:3651:9
+> >     #4 0x8aa6e9 in perf_header__process_sections /home/user/linux/tools/perf/util/header.c:3427:9
+> >     #5 0x8ae3e7 in perf_session__read_header /home/user/linux/tools/perf/util/header.c:3886:2
+> >     #6 0x8ec714 in perf_session__open /home/user/linux/tools/perf/util/session.c:109:6
+> >     #7 0x8ebe83 in perf_session__new /home/user/linux/tools/perf/util/session.c:213:10
+> >     #8 0x60c6de in cmd_script /home/user/linux/tools/perf/builtin-script.c:3856:12
+> >     #9 0x7b2930 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
+> >     #10 0x7b120f in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
+> >     #11 0x7b2493 in run_argv /home/user/linux/tools/perf/perf.c:409:2
+> >     #12 0x7b0c89 in main /home/user/linux/tools/perf/perf.c:539:3
+> >     #13 0x7f5260654b74  (/lib64/libc.so.6+0x27b74)
+> >
+> > SUMMARY: AddressSanitizer: 3728 byte(s) leaked in 7 allocation(s).
+> >
+> > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> > ---
+> >  tools/perf/util/session.c | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+> > index e59242c361ce..c36464d94387 100644
+> > --- a/tools/perf/util/session.c
+> > +++ b/tools/perf/util/session.c
+> > @@ -301,8 +301,11 @@ void perf_session__delete(struct perf_session *session)
+> >         perf_session__release_decomp_events(session);
+> >         perf_env__exit(&session->header.env);
+> >         machines__exit(&session->machines);
+> > -       if (session->data)
+> > +       if (session->data) {
+> > +               if (perf_data__is_read(session->data))
+> > +                       evlist__delete(session->evlist);
+> >                 perf_data__close(session->data);
+> > +       }
+> >         free(session);
+> >  }
+> >
+> > --
+> > 2.31.1
+> >
 > 
 
-It is same race condition which I described in the first email of this
-email thread. I described exactly when it happens. I'm not able to
-trigger it with new kernels but as we know race conditions are hard to
-trigger...
-
-So result is that we know about it, just fix is not ready yet as it is
-not easy to fix it.
-
-Krzysztof has been working on fixing it, so maybe can provide an
-update...
