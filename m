@@ -2,99 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227723B3F8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10373B3F8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhFYIms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:42:48 -0400
-Received: from lucky1.263xmail.com ([211.157.147.130]:37896 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbhFYIme (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:42:34 -0400
-Received: from localhost (unknown [192.168.167.139])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 47579D541D;
-        Fri, 25 Jun 2021 16:40:11 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P1474T139765070423808S1624610401400336_;
-        Fri, 25 Jun 2021 16:40:09 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <9cc6c374784eb84fce4b9c2259df64a1>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: linux-spi@vger.kernel.org
-X-RCPT-COUNT: 20
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     linux-spi@vger.kernel.org
-Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
-        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
-        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
-        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
-        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-clk@vger.kernel.org, Elaine Zhang <zhangqing@rock-chips.com>
-Subject: [RFC PATCH v9 04/10] clk: rockchip: rk3036: fix up the sclk_sfc parent error
-Date:   Fri, 25 Jun 2021 16:39:54 +0800
-Message-Id: <20210625084000.13192-5-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210625084000.13192-1-jon.lin@rock-chips.com>
-References: <20210625084000.13192-1-jon.lin@rock-chips.com>
+        id S229906AbhFYInA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:43:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230429AbhFYImy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 04:42:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12E656141C;
+        Fri, 25 Jun 2021 08:40:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624610434;
+        bh=n6h3R95LqX+8GLA4EZmuxl5Sr6QOvpWtabNxKYHYWQU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QjYPdUy6RjL8uaS0wlohRpfshi1T8fyA0waHU8ARaRCzf5n+8PTWOg+svHkChWdsR
+         L/GriZrF+J+lr+CVOya7j05PhWuaCe4usXMzV9MUs89DhOT/FNW4cYbQ1sCzfW83yP
+         pC90kjuADyZHCRBtjlYVr0ubGRexDl/tlsb6An3PmS/kYVGdgKCpmO7Mv7VnMcNU0/
+         DEX4ASGlOfhNMleXwV/381vBGJNR5c+CqWoMrxpqLaMbbl5ZU2f6I4qzNYshc6LQtg
+         bKk1Swzbke/4nOQndh7e+9xIdjp2+G5jzhkU2twT5yvbNd/7Ly0lJTMcz60h1xlows
+         FF6hrLLXTD25g==
+Received: by pali.im (Postfix)
+        id B749260E; Fri, 25 Jun 2021 10:40:31 +0200 (CEST)
+Date:   Fri, 25 Jun 2021 10:40:31 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Cc:     Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Phil Sutter <phil@nwl.cc>
+Subject: Re: Issues during assigning addresses on point to point interfaces
+Message-ID: <20210625084031.c33yovvximtabmf4@pali>
+References: <20210606151008.7dwx5ukrlvxt4t3k@pali>
+ <20210624124545.2b170258@dellmb>
+ <d3995a21-d9fe-9393-a10e-8eddccec2f47@6wind.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d3995a21-d9fe-9393-a10e-8eddccec2f47@6wind.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Choose the correct pll
+On Thursday 24 June 2021 14:57:41 Nicolas Dichtel wrote:
+> Le 24/06/2021 à 12:45, Marek Behún a écrit :
+> > On Sun, 6 Jun 2021 17:10:08 +0200
+> > Pali Rohár <pali@kernel.org> wrote:
+> > 
+> >> Hello!
+> >>
+> >> Seems that there is a bug during assigning IP addresses on point to
+> >> point interfaces.
+> >>
+> >> Assigning just one local address works fine:
+> >>
+> >>     ip address add fe80::6 dev ppp1 --> inet6 fe80::6/128 scope link
+> >>
+> >> Assigning both local and remote peer address also works fine:
+> >>
+> >>     ip address add fe80::7 peer fe80::8 dev ppp1 ---> inet6 fe80::7
+> >> peer fe80::8/128 scope link
+> >>
+> >> But trying to assign just remote peer address does not work. Moreover
+> >> "ip address" call does not fail, it returns zero but instead of
+> >> setting remote peer address, it sets local address:
+> >>
+> >>     ip address add peer fe80::5 dev ppp1 --> inet6 fe80::5/128 scope
+> >> link
+> >>
+> > 
+> > Adding some other people to Cc in order to get their opinions.
+> > 
+> > It seems this bug is there from the beginning, from commit
+> > caeaba79009c2 ("ipv6: add support of peer address")
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=caeaba79009c2
+> > 
+> > Maybe some older user-space utilities use IFA_ADDRESS instead of
+> > IFA_LOCAL, and this was done in order to be compatible with them?
+> If I remember well, there was an issue in the uAPI.
+> IFA_LOCAL is supposed to be the address of the interface and IFA_ADDRESS is
+> supposed to be the endpoint of a point-to-point interface.
+> However, in case of IPv6, it was not the case. In netlink messages generated by
+> the kernel, IFA_ADDRESS was used instead of IFA_LOCAL.
+> The patch tried to keep the backward compatibility and the symmetry between msg
+> from userland and notification from the kernel.
 
-Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
----
+Hello Nicolas!
 
-Changes in v9: None
-Changes in v8: None
-Changes in v7: None
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-Changes in v1: None
+See my original email where I put also rtnetlink packets (how strace see
+them). Seems that there is a bug in handling them (or bug in iproute2)
+as setting just peer (remote) IPv6 address is ignored:
+https://lore.kernel.org/netdev/20210606151008.7dwx5ukrlvxt4t3k@pali/
 
- drivers/clk/rockchip/clk-rk3036.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/clk/rockchip/clk-rk3036.c b/drivers/clk/rockchip/clk-rk3036.c
-index 91d56ad45817..1986856d94b2 100644
---- a/drivers/clk/rockchip/clk-rk3036.c
-+++ b/drivers/clk/rockchip/clk-rk3036.c
-@@ -121,6 +121,7 @@ PNAME(mux_pll_src_3plls_p)	= { "apll", "dpll", "gpll" };
- PNAME(mux_timer_p)		= { "xin24m", "pclk_peri_src" };
- 
- PNAME(mux_pll_src_apll_dpll_gpll_usb480m_p)	= { "apll", "dpll", "gpll", "usb480m" };
-+PNAME(mux_pll_src_dmyapll_dpll_gpll_xin24_p)   = { "dummy_apll", "dpll", "gpll", "xin24m" };
- 
- PNAME(mux_mmc_src_p)	= { "apll", "dpll", "gpll", "xin24m" };
- PNAME(mux_i2s_pre_p)	= { "i2s_src", "i2s_frac", "ext_i2s", "xin12m" };
-@@ -340,7 +341,7 @@ static struct rockchip_clk_branch rk3036_clk_branches[] __initdata = {
- 			RK2928_CLKSEL_CON(16), 8, 2, MFLAGS, 10, 5, DFLAGS,
- 			RK2928_CLKGATE_CON(10), 4, GFLAGS),
- 
--	COMPOSITE(SCLK_SFC, "sclk_sfc", mux_pll_src_apll_dpll_gpll_usb480m_p, 0,
-+	COMPOSITE(SCLK_SFC, "sclk_sfc", mux_pll_src_dmyapll_dpll_gpll_xin24_p, 0,
- 			RK2928_CLKSEL_CON(16), 0, 2, MFLAGS, 2, 5, DFLAGS,
- 			RK2928_CLKGATE_CON(10), 5, GFLAGS),
- 
--- 
-2.17.1
-
-
-
+Do you have any idea if this is affected by that "issue in the uAPI"?
+And what is the way how to fix it?
