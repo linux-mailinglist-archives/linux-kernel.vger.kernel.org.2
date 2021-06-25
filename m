@@ -2,160 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3813B4227
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A41D3B4220
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbhFYLHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 07:07:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230309AbhFYLHA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 07:07:00 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8B4C061574;
-        Fri, 25 Jun 2021 04:04:39 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id he7so14424978ejc.13;
-        Fri, 25 Jun 2021 04:04:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Cev1/kJRTJEP57IBoDUiQhmbUfhTf5In9xOSIwYWmq0=;
-        b=o1IalEDk5B4n7IDiqeW+q/YfcIeXbWaJju5k4IFCaFuoZQMFVHt3BhwVm0aniMz5Uu
-         nDpBFr7E9mVJhlLJgLHqC1SRbTovu5f9T4XQBUKOVSUOCtUSpVyqqCmDciBU/d/bhynV
-         ZmBcdmAYyg52AQ8wgqjBH8bX/fhEiy+LdTXCWTpI1sYOZ1iP8OmVMnPjOtTdnNK6GZvM
-         SP3Osh3zsTRVBALc6Dx94RYZz7IX6mLZNxqawnQNEaUzUuJpOSekNokYa8rKOkToRHZu
-         Z+HL6etigqMDeBIx26ByDx3xfLe0m7EbVpkLw8oVYA2R8VSWmzJESvg8SFGtElzjC2HD
-         kjKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Cev1/kJRTJEP57IBoDUiQhmbUfhTf5In9xOSIwYWmq0=;
-        b=t4FBnozGTWrPow7FWv9A+q5grsV7pPVVZOzS4qauSwYjW5pF3L0CytBnAgCtXvNB+H
-         CceuzfK/03hBI5CBW0HjpzPCZbKzz6KuwAuEc8NgfFeVPl9oCkU633DCps+phz2X5oMX
-         mvnUOHl3rb00lguavwWQFUnqH8ivjVBJ0xJ4jdKPtReMI4osuDOp8i8MG69qmTEsJ+o3
-         yF4+irWiJb/760LT6ekU80Sww2C0LsCfeMVtzzbfXKgO1uEzFqTI9we4NHhjpMB+0yAI
-         Y/8Yvq0ztOi0DGdKfMDV3QiraOGMSc2kR+vzlagXig9QRP66n2HNZr28hLUY8nPuPifs
-         eGDA==
-X-Gm-Message-State: AOAM530sTK6vhxQOVcOpT8ObKUm4mwyPwtb5npjQwPW+Q3R/brdKxpTj
-        jA4V8UMWsA/ffpM9j8ITWIc=
-X-Google-Smtp-Source: ABdhPJxJtc7RXWDHb3170KbvHync51Xd1cBiikKYJJiMRnjrRNNDwDSqV/S1EQM9Ud5bxQOSJp5XcA==
-X-Received: by 2002:a17:906:744:: with SMTP id z4mr10351982ejb.347.1624619078111;
-        Fri, 25 Jun 2021 04:04:38 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:3852:f400:9496:6480:6c8a:4419])
-        by smtp.gmail.com with ESMTPSA id v28sm2659665ejk.84.2021.06.25.04.04.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 04:04:37 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Cc:     "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>, Willy Tarreau <w@1wt.eu>,
-        linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH v2 3/3] arch: mips: remove dead references
-Date:   Fri, 25 Jun 2021 13:04:19 +0200
-Message-Id: <20210625110419.24503-4-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210625110419.24503-1-lukas.bulwahn@gmail.com>
-References: <20210625110419.24503-1-lukas.bulwahn@gmail.com>
+        id S231293AbhFYLHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:07:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:53246 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230020AbhFYLG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 07:06:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A208CED1;
+        Fri, 25 Jun 2021 04:04:35 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC2183F694;
+        Fri, 25 Jun 2021 04:04:34 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 12:04:29 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH 2/3] PCI: aardvark: Fix checking for PIO status
+Message-ID: <20210625110429.GA17337@lpieralisi>
+References: <20210624213345.3617-1-pali@kernel.org>
+ <20210624213345.3617-3-pali@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210624213345.3617-3-pali@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The domain lookup for linux-mips.org fails for quite some time now.
-Further, the two links:
+On Thu, Jun 24, 2021 at 11:33:44PM +0200, Pali Rohár wrote:
 
-  http://decstation.unix-ag.org/
-  http://www.computer-refuge.org/classiccmp/ftp.digital.com/pub/DEC/TriAdd/
+[...]
 
-refer to old webpages or contain no further technical information.
+> -static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
+> +static int advk_pcie_check_pio_status(struct advk_pcie *pcie, u32 *val)
+>  {
+>  	struct device *dev = &pcie->pdev->dev;
+>  	u32 reg;
+> @@ -472,15 +476,50 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
+>  	status = (reg & PIO_COMPLETION_STATUS_MASK) >>
+>  		PIO_COMPLETION_STATUS_SHIFT;
+>  
+> -	if (!status)
+> -		return;
+> -
+> +	/*
+> +	 * According to HW spec, the PIO status check sequence as below:
+> +	 * 1) even if COMPLETION_STATUS(bit9:7) indicates successful,
+> +	 *    it still needs to check Error Status(bit11), only when this bit
+> +	 *    indicates no error happen, the operation is successful.
+> +	 * 2) value Unsupported Request(1) of COMPLETION_STATUS(bit9:7) only
+> +	 *    means a PIO write error, and for PIO read it is successful with
+> +	 *    a read value of 0xFFFFFFFF.
+> +	 * 3) value Completion Retry Status(CRS) of COMPLETION_STATUS(bit9:7)
+> +	 *    only means a PIO write error, and for PIO read it is successful
+> +	 *    with a read value of 0xFFFF0001.
+> +	 * 4) value Completer Abort (CA) of COMPLETION_STATUS(bit9:7) means
+> +	 *    error for both PIO read and PIO write operation.
+> +	 * 5) other errors are indicated as 'unknown'.
+> +	 */
+>  	switch (status) {
+> +	case PIO_COMPLETION_STATUS_OK:
+> +		if (reg & PIO_ERR_STATUS) {
+> +			strcomp_status = "COMP_ERR";
+> +			break;
+> +		}
+> +		/* Get the read result */
+> +		if (val)
+> +			*val = advk_readl(pcie, PIO_RD_DATA);
+> +		/* No error */
+> +		strcomp_status = NULL;
+> +		break;
+>  	case PIO_COMPLETION_STATUS_UR:
+> -		strcomp_status = "UR";
+> +		if (val) {
+> +			/* For reading, UR is not an error status */
+> +			*val = CFG_RD_UR_VAL;
+> +			strcomp_status = NULL;
+> +		} else {
+> +			strcomp_status = "UR";
+> +		}
+>  		break;
+>  	case PIO_COMPLETION_STATUS_CRS:
+> -		strcomp_status = "CRS";
+> +		if (val) {
+> +			/* For reading, CRS is not an error status */
+> +			*val = CFG_RD_CRS_VAL;
 
-Remove all those dead references.
+Need Bjorn's input on this. I don't think this is what is expected from
+from a root complex according to the PCI specifications (depending on
+whether CSR software visibility is supported or not).
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- arch/mips/Kconfig             |  8 +-------
- arch/mips/jazz/Kconfig        | 12 +++---------
- tools/include/nolibc/nolibc.h |  3 +--
- 3 files changed, 5 insertions(+), 18 deletions(-)
+Here we are fabricating a CRS completion value for all PCI config read
+transactions that are hitting a CRS completion status (and that's not
+the expected behaviour according to the PCI specifications and I don't
+think that's correct).
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index cee6087cd686..1bebf7fa2882 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -379,9 +379,7 @@ config MACH_DECSTATION
- 	select SYS_SUPPORTS_1024HZ
- 	select MIPS_L1_CACHE_SHIFT_4
- 	help
--	  This enables support for DEC's MIPS based workstations.  For details
--	  see the Linux/MIPS FAQ on <http://www.linux-mips.org/> and the
--	  DECstation porting pages on <http://decstation.unix-ag.org/>.
-+	  This enables support for DEC's MIPS based workstations.
- 
- 	  If you have one of the following DECstation Models you definitely
- 	  want to choose R4xx0 for the CPU Type:
-@@ -3246,10 +3244,6 @@ config TC
- 	  processors.  TURBOchannel programming specifications are available
- 	  at:
- 	  <ftp://ftp.hp.com/pub/alphaserver/archive/triadd/>
--	  and:
--	  <http://www.computer-refuge.org/classiccmp/ftp.digital.com/pub/DEC/TriAdd/>
--	  Linux driver support status is documented at:
--	  <http://www.linux-mips.org/wiki/DECstation>
- 
- config MMU
- 	bool
-diff --git a/arch/mips/jazz/Kconfig b/arch/mips/jazz/Kconfig
-index 42932ca98db9..162d11670c75 100644
---- a/arch/mips/jazz/Kconfig
-+++ b/arch/mips/jazz/Kconfig
-@@ -5,9 +5,7 @@ config ACER_PICA_61
- 	select DMA_NONCOHERENT
- 	help
- 	  This is a machine with a R4400 133/150 MHz CPU. To compile a Linux
--	  kernel that runs on these, say Y here. For details about Linux on
--	  the MIPS architecture, check out the Linux/MIPS FAQ on the WWW at
--	  <http://www.linux-mips.org/>.
-+	  kernel that runs on these, say Y here.
- 
- config MIPS_MAGNUM_4000
- 	bool "Support for MIPS Magnum 4000"
-@@ -16,9 +14,7 @@ config MIPS_MAGNUM_4000
- 	select SYS_SUPPORTS_BIG_ENDIAN
- 	help
- 	  This is a machine with a R4000 100 MHz CPU. To compile a Linux
--	  kernel that runs on these, say Y here. For details about Linux on
--	  the MIPS architecture, check out the Linux/MIPS FAQ on the WWW at
--	  <http://www.linux-mips.org/>.
-+	  kernel that runs on these, say Y here.
- 
- config OLIVETTI_M700
- 	bool "Support for Olivetti M700-10"
-@@ -26,6 +22,4 @@ config OLIVETTI_M700
- 	select DMA_NONCOHERENT
- 	help
- 	  This is a machine with a R4000 100 MHz CPU. To compile a Linux
--	  kernel that runs on these, say Y here. For details about Linux on
--	  the MIPS architecture, check out the Linux/MIPS FAQ on the WWW at
--	  <http://www.linux-mips.org/>.
-+	  kernel that runs on these, say Y here.
-diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
-index 8b7a9830dd22..754e64c4a1d1 100644
---- a/tools/include/nolibc/nolibc.h
-+++ b/tools/include/nolibc/nolibc.h
-@@ -1027,8 +1027,7 @@ struct sys_stat_struct {
-  *   - arguments are in a0, a1, a2, a3, then the stack. The caller needs to
-  *     leave some room in the stack for the callee to save a0..a3 if needed.
-  *   - Many registers are clobbered, in fact only a0..a2 and s0..s8 are
-- *     preserved. See: https://www.linux-mips.org/wiki/Syscall as well as
-- *     scall32-o32.S in the kernel sources.
-+ *     preserved. See: scall32-o32.S in the kernel sources.
-  *   - the system call is performed by calling "syscall"
-  *   - syscall return comes in v0, and register a3 needs to be checked to know
-  *     if an error occured, in which case errno is in v0.
--- 
-2.17.1
+> +			strcomp_status = NULL;
+> +		} else {
+> +			strcomp_status = "CRS";
+> +		}
+>  		break;
+>  	case PIO_COMPLETION_STATUS_CA:
+>  		strcomp_status = "CA";
+> @@ -490,6 +529,9 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
+>  		break;
+>  	}
+>  
+> +	if (!strcomp_status)
+> +		return 0;
+> +
+>  	if (reg & PIO_NON_POSTED_REQ)
+>  		str_posted = "Non-posted";
+>  	else
+> @@ -497,6 +539,8 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
+>  
+>  	dev_err(dev, "%s PIO Response Status: %s, %#x @ %#x\n",
+>  		str_posted, strcomp_status, reg, advk_readl(pcie, PIO_ADDR_LS));
+> +
+> +	return -EFAULT;
+>  }
+>  
+>  static int advk_pcie_wait_pio(struct advk_pcie *pcie)
+> @@ -703,8 +747,17 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
+>  						 size, val);
+>  
+>  	if (advk_pcie_pio_is_running(pcie)) {
+> -		*val = 0xffffffff;
+> -		return PCIBIOS_SET_FAILED;
+> +		/*
+> +		 * For PCI_VENDOR_ID register, return Completion Retry Status
+> +		 * so caller tries to issue the request again insted of failing
+> +		 */
+> +		if (where == PCI_VENDOR_ID) {
+> +			*val = CFG_RD_CRS_VAL;
+> +			return PCIBIOS_SUCCESSFUL;
 
+Mmmm..here we are faking a CRS completion value to coerce the kernel
+into believing a CRS completion was received (which is not necessarily
+true) ?
+
+if advk_pcie_pio_is_running(pcie) == true, is that an HW error ?
+
+Lorenzo
+
+> +		} else {
+> +			*val = 0xffffffff;
+> +			return PCIBIOS_SET_FAILED;
+> +		}
+>  	}
+>  
+>  	/* Program the control register */
+> @@ -729,15 +782,27 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
+>  	advk_writel(pcie, 1, PIO_START);
+>  
+>  	ret = advk_pcie_wait_pio(pcie);
+> +	if (ret < 0) {
+> +		/*
+> +		 * For PCI_VENDOR_ID register, return Completion Retry Status
+> +		 * so caller tries to issue the request again instead of failing
+> +		 */
+> +		if (where == PCI_VENDOR_ID) {
+> +			*val = CFG_RD_CRS_VAL;
+> +			return PCIBIOS_SUCCESSFUL;
+> +		} else {
+> +			*val = 0xffffffff;
+> +			return PCIBIOS_SET_FAILED;
+> +		}
+> +	}
+> +
+> +	/* Check PIO status and get the read result */
+> +	ret = advk_pcie_check_pio_status(pcie, val);
+>  	if (ret < 0) {
+>  		*val = 0xffffffff;
+>  		return PCIBIOS_SET_FAILED;
+>  	}
+>  
+> -	advk_pcie_check_pio_status(pcie);
+> -
+> -	/* Get the read result */
+> -	*val = advk_readl(pcie, PIO_RD_DATA);
+>  	if (size == 1)
+>  		*val = (*val >> (8 * (where & 3))) & 0xff;
+>  	else if (size == 2)
+> @@ -801,7 +866,9 @@ static int advk_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
+>  	if (ret < 0)
+>  		return PCIBIOS_SET_FAILED;
+>  
+> -	advk_pcie_check_pio_status(pcie);
+> +	ret = advk_pcie_check_pio_status(pcie, NULL);
+> +	if (ret < 0)
+> +		return PCIBIOS_SET_FAILED;
+>  
+>  	return PCIBIOS_SUCCESSFUL;
+>  }
+> -- 
+> 2.20.1
+> 
