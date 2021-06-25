@@ -2,104 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207B43B3C45
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E0D3B3C47
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232996AbhFYFgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 01:36:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49420 "EHLO
+        id S233090AbhFYFjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 01:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhFYFgO (ORCPT
+        with ESMTP id S229458AbhFYFjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 01:36:14 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A88FC061574;
-        Thu, 24 Jun 2021 22:33:54 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id g24so4810691pji.4;
-        Thu, 24 Jun 2021 22:33:54 -0700 (PDT)
+        Fri, 25 Jun 2021 01:39:39 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A709C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 22:37:18 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id u20so258647wmq.4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 22:37:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VQoN7+7QargeetsXxpA8OHPMu1/ktlz7NWRsGKdKNks=;
-        b=nx6MokHwnQzz6LZVX6pkU7VOZNuGvAGmX3H+HeWsFUdFoyzNhct2Qf3Zg2XuR82Iys
-         MZBni6BR7UFS3wIgfsXbcR6j00TwISBVzd1NxacKnxhXioMqc3ohwQfgHpeWVIoAtfSb
-         TF65R+ihL/RzvJhJrDLg97r7w/CI6NQ65juyJmZeJ17+EgRrFQ5/2spnORKS2FHGb58F
-         IJ9f7yxEPU1Hv0ZXbzLvaFDXP9TRF7Z/s5gTq/V/DjABMZj2iSpEmLkI/uKwPW1Qk9PC
-         ewDLn659KgUDVKJQ4gMvI9Ars3yK6ORb67cF6BdX8e+mfKjkq7S10xx+PiM2yszoydJQ
-         pqpw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gaKEOLKP9BIjbEgBwhONJmuxzHCabnKfYmr62NuhX/A=;
+        b=pGgT0FyQzjpw3KLSuy26od9PVVACl7X+mw/wpk5dua6WV4O4fyMBgoKliC/GD2tHSV
+         sF/vzEBRNoIA/YzBmmL9pem9FQ/ojkUxCeEtWj+DLK6kvmNsh9HmuvbrqKMk3LJ+wMnq
+         4nvknpT/oAxU+gxxFQFKg4j6eRbLrZxYQIJiKWcmu/GzOwSgjTKIYQiOLGRmUHLKsIEh
+         sBIGI35RJ2sT8aUCailJwG0SuSu/dkfNmNHqD9xXumNl2+khW6txjXVzjzdLIMvBb7iz
+         x9hsOyXlPgPhWykNR7Kh6ZT5yTUV70/8b6qNHJkxUK9N61uOUBDhU5oaqzsP30XbEsnj
+         PXeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VQoN7+7QargeetsXxpA8OHPMu1/ktlz7NWRsGKdKNks=;
-        b=ciPsGpUysUXcTdxgIxgZ90Kdr02wjJtxRW9tzc6vfhEoo4P+8L04TR9Nc2CesFTR3Q
-         W+UGlAHANb583NHtXsIG/cIFsIZW2gcK0PMk8U+Yh6iKMZQcP1T+SpBTD7SShV8budbJ
-         sJVSgPItE0Q2OJ2rCdVD4ykFEINCQpo2LQRkGah4u9HA33PNOTeYTQnn1JpBoyoTpjRL
-         CXCdKcenZYG5jy+z0JrX9eThJZXbDKbhggL5trRURW3m3TJjLArhgIHLANO3BA62NyWY
-         325I267aYOwMzw68XdMr9jAFS9mLbjR3WY2yO4BtY5xeqcRsn2IIz/sSy7+6w9p91jrN
-         Ex5Q==
-X-Gm-Message-State: AOAM533uzILT3pLw2YEpesCob9gJn5QO/m3NajuWY8vT2S9p+s7xJIKA
-        Rv5rFDfTgcb/RLUbIR0B1ck=
-X-Google-Smtp-Source: ABdhPJxApS8W7KWk7eF40vYnGjkm69GxpeZIw7ZJJ/Ed0bYqTzt3c/R7TvUQsvQ1ul3TZwPQgASO2w==
-X-Received: by 2002:a17:90b:1809:: with SMTP id lw9mr9378757pjb.128.1624599233471;
-        Thu, 24 Jun 2021 22:33:53 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.130])
-        by smtp.gmail.com with ESMTPSA id v13sm4802883pja.44.2021.06.24.22.33.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 22:33:52 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: dvb-usb: fix uninit-value in dvb_usb_adapter_dvb_init
-Date:   Fri, 25 Jun 2021 13:33:27 +0800
-Message-Id: <20210625053335.466325-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gaKEOLKP9BIjbEgBwhONJmuxzHCabnKfYmr62NuhX/A=;
+        b=iVbodyZ2YbFYxzu62zOIuooITTmB5MFaMwk00uv/PqEqBbzpsxu8MqjDrrSOaQQLLk
+         jl4bLLvMwPLLKiuuzafjf2qwItvvYVEFo0whX76m/gPKblNlKOFBeHDqcnpUQlm0VyFE
+         eDetiVXkldxlEH5pYFS9/fjRHocqCY7CuBayZFAagLL8rJDOMUZjTwrspWAVbtFMe8h2
+         J88Ic4lYd2Rgu7FOrherZRZkpPTP6DpGjo9Uv6SA18Yehcxby9ROCRUxsmUvM2HP2rbT
+         1ODuqa4bVfemUSMQ8jl2WI10LAjclyVnxldopU8CgYdacIoQAfWDcZwqjmMprFqLCpuW
+         1C6w==
+X-Gm-Message-State: AOAM5327uAoyjuxFG7Yy6TRv7Z7HJ9i9g4O+VH1NTZE9bnvdbzAqJMMv
+        b35oVv/M7rB5dPOcf5HHyMgw1u4MMJrfUBzGEQGniA==
+X-Google-Smtp-Source: ABdhPJywhwOUfZ6IrK731NmCUA8weP65uaJQNUOxN0vMtchNBm7MIFnqzF2m7xHkWzPKIm9+Jc977tqhbobm0OxF5bs=
+X-Received: by 2002:a05:600c:a01:: with SMTP id z1mr8541210wmp.77.1624599436434;
+ Thu, 24 Jun 2021 22:37:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210624223423.189550-1-rickyman7@gmail.com>
+In-Reply-To: <20210624223423.189550-1-rickyman7@gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 24 Jun 2021 22:37:04 -0700
+Message-ID: <CAP-5=fXWFvcvNOA+wJMSCp2Qz7EVruufvFBLWEXfdezeEJGUTA@mail.gmail.com>
+Subject: Re: [PATCH v2] perf annotate: allow 's' on source code lines
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Martin Liska <mliska@suse.cz>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If dibusb_read_eeprom_byte fails, the mac address is not initialized.
-And nova_t_read_mac_address does not handle this failure, which leads to
-the uninit-value in dvb_usb_adapter_dvb_init.
+On Thu, Jun 24, 2021 at 3:37 PM Riccardo Mancini <rickyman7@gmail.com> wrote:
+>
+> In perf annotate, when 's' is pressed on a line containing
+> source code, it shows the message "Only available for assembly
+> lines".
+> This patch gets rid of the error, moving the cursr to the next
+> available asm line (or the closest previous one if no asm line
+> is found moving forwards), before hiding source code lines.
+>
+> Changes in v2:
+>  - handle case of no asm line found in
+>    annotate_browser__find_next_asm_line by returning NULL and
+>    handling error in caller.
+>
+> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
 
-Fix this by handling the failure of dibusb_read_eeprom_byte.
+Acked-by: Ian Rogers <irogers@google.com>
 
-Reported-by: syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com
-Fixes: 786baecfe78f ("[media] dvb-usb: move it to drivers/media/usb/dvb-usb")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
- drivers/media/usb/dvb-usb/nova-t-usb2.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+> ---
+>  tools/perf/ui/browsers/annotate.c | 32 ++++++++++++++++++++++++++++---
+>  1 file changed, 29 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+> index ad0a70f0edaf..f5509a958e38 100644
+> --- a/tools/perf/ui/browsers/annotate.c
+> +++ b/tools/perf/ui/browsers/annotate.c
+> @@ -343,6 +343,29 @@ static void annotate_browser__calc_percent(struct annotate_browser *browser,
+>         browser->curr_hot = rb_last(&browser->entries);
+>  }
+>
+> +static struct annotation_line *annotate_browser__find_next_asm_line(
+> +                                       struct annotate_browser *browser,
+> +                                       struct annotation_line *al)
+> +{
+> +       struct annotation_line *it = al;
+> +
+> +       /* find next asm line */
+> +       list_for_each_entry_continue(it, browser->b.top, node) {
+> +               if (it->idx_asm >= 0)
+> +                       return it;
+> +       }
+> +
+> +       /* no asm line found forwards, try backwards */
+> +       it = al;
+> +       list_for_each_entry_continue_reverse(it, browser->b.top, node) {
+> +               if (it->idx_asm >= 0)
+> +                       return it;
+> +       }
+> +
+> +       /* There are no asm lines */
+> +       return NULL;
+> +}
+> +
+>  static bool annotate_browser__toggle_source(struct annotate_browser *browser)
+>  {
+>         struct annotation *notes = browser__annotation(&browser->b);
+> @@ -363,9 +386,12 @@ static bool annotate_browser__toggle_source(struct annotate_browser *browser)
+>                 browser->b.index = al->idx;
+>         } else {
+>                 if (al->idx_asm < 0) {
+> -                       ui_helpline__puts("Only available for assembly lines.");
+> -                       browser->b.seek(&browser->b, -offset, SEEK_CUR);
+> -                       return false;
+> +                       /* move cursor to next asm line */
 
-diff --git a/drivers/media/usb/dvb-usb/nova-t-usb2.c b/drivers/media/usb/dvb-usb/nova-t-usb2.c
-index e7b290552b66..07d3d68612e7 100644
---- a/drivers/media/usb/dvb-usb/nova-t-usb2.c
-+++ b/drivers/media/usb/dvb-usb/nova-t-usb2.c
-@@ -130,7 +130,7 @@ static int nova_t_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
- 
- static int nova_t_read_mac_address (struct dvb_usb_device *d, u8 mac[6])
- {
--	int i;
-+	int i, ret;
- 	u8 b;
- 
- 	mac[0] = 0x00;
-@@ -139,7 +139,9 @@ static int nova_t_read_mac_address (struct dvb_usb_device *d, u8 mac[6])
- 
- 	/* this is a complete guess, but works for my box */
- 	for (i = 136; i < 139; i++) {
--		dibusb_read_eeprom_byte(d,i, &b);
-+		ret = dibusb_read_eeprom_byte(d,i, &b);
-+		if (ret)
-+			return ret;
- 
- 		mac[5 - (i - 136)] = b;
- 	}
--- 
-2.25.1
+comment nit, perhaps prefer "closest" rather than "next" due to
+searching backward.
 
+Thanks,
+Ian
+
+> +                       al = annotate_browser__find_next_asm_line(browser, al);
+> +                       if (!al) {
+> +                               browser->b.seek(&browser->b, -offset, SEEK_CUR);
+> +                               return false;
+> +                       }
+>                 }
+>
+>                 if (al->idx_asm < offset)
+> --
+> 2.31.1
+>
