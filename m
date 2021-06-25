@@ -2,137 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0343B40A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 371B23B40A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhFYJiR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Jun 2021 05:38:17 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:34251 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbhFYJiQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:38:16 -0400
-Received: (Authenticated sender: maxime.chevallier@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 340181BF208;
-        Fri, 25 Jun 2021 09:35:52 +0000 (UTC)
-Date:   Fri, 25 Jun 2021 11:35:50 +0200
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>, thomas.petazzoni@bootlin.com,
-        herve.codina@bootlin.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: imx6qdl-sr-som: Increase the PHY reset
- duration to 10ms
-Message-ID: <20210625113550.7a135e69@bootlin.com>
-In-Reply-To: <20210625083840.GS22278@shell.armlinux.org.uk>
-References: <20210625083051.3691737-1-maxime.chevallier@bootlin.com>
-        <20210625083840.GS22278@shell.armlinux.org.uk>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S230273AbhFYJjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:39:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229902AbhFYJjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 05:39:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C58C861425;
+        Fri, 25 Jun 2021 09:36:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624613816;
+        bh=rjTIVdyU5rFZOcik48MjPrsebuMYXppqSnLyN/IABYM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MshUjwKOT62gO2mSHcqmE1PbjXoHxrMXua+cjabK4Q7zwczCJ9QUb0q/0LpOrrS5C
+         ZXLwlS1srXOTBB5Mf2PRHoGhgpSzcDUNpP0pErGEUbcwYhbwpgcJeBXLU5g2xlo8Wk
+         ZmqzfvwbsHGaLBTQTRCPInIMSJvdYzxG9rr9B0mV5QFd99c+OlOktpP4irvf9fyGRK
+         jlwvaZhP5CefSPNOFx+OrsDcf1NqnSvfeyOHVaCakVM9ixANy6+zCI1FZOiWwUTU5o
+         4qHkwWdkhNoOvhwOiQGzX+WG22o1xPSEaT0dbrA/8RPfi5SFB0SaIfL+zm6dgsOUih
+         cm/8eeztHa8Yg==
+Date:   Fri, 25 Jun 2021 10:36:49 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>, kernel-team@android.com
+Subject: Re: [PATCH v10 13/16] arm64: Advertise CPUs capable of running
+ 32-bit applications in sysfs
+Message-ID: <20210625093648.GB2782@willie-the-truck>
+References: <20210623173848.318-1-will@kernel.org>
+ <20210623173848.318-14-will@kernel.org>
+ <YNWX64TIVkGyNsbs@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNWX64TIVkGyNsbs@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russell,
+Hi Greg,
 
-On Fri, 25 Jun 2021 09:38:40 +0100
-"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+On Fri, Jun 25, 2021 at 10:46:35AM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Jun 23, 2021 at 06:38:45PM +0100, Will Deacon wrote:
+> > Since 32-bit applications will be killed if they are caught trying to
+> > execute on a 64-bit-only CPU in a mismatched system, advertise the set
+> > of 32-bit capable CPUs to userspace in sysfs.
+> > 
+> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> > Signed-off-by: Will Deacon <will@kernel.org>
+> > ---
+> >  .../ABI/testing/sysfs-devices-system-cpu      |  9 +++++++++
+> >  arch/arm64/kernel/cpufeature.c                | 19 +++++++++++++++++++
+> >  2 files changed, 28 insertions(+)
+> > 
+> > diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
+> > index fe13baa53c59..899377b2715a 100644
+> > --- a/Documentation/ABI/testing/sysfs-devices-system-cpu
+> > +++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
+> > @@ -494,6 +494,15 @@ Description:	AArch64 CPU registers
+> >  		'identification' directory exposes the CPU ID registers for
+> >  		identifying model and revision of the CPU.
+> >  
+> > +What:		/sys/devices/system/cpu/aarch32_el0
+> > +Date:		May 2021
+> > +Contact:	Linux ARM Kernel Mailing list <linux-arm-kernel@lists.infradead.org>
+> > +Description:	Identifies the subset of CPUs in the system that can execute
+> > +		AArch32 (32-bit ARM) applications. If present, the same format as
+> > +		/sys/devices/system/cpu/{offline,online,possible,present} is used.
+> > +		If absent, then all or none of the CPUs can execute AArch32
+> > +		applications and execve() will behave accordingly.
+> > +
+> >  What:		/sys/devices/system/cpu/cpu#/cpu_capacity
+> >  Date:		December 2016
+> >  Contact:	Linux kernel mailing list <linux-kernel@vger.kernel.org>
+> > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> > index 2f9fe57ead97..23eaa7f06f76 100644
+> > --- a/arch/arm64/kernel/cpufeature.c
+> > +++ b/arch/arm64/kernel/cpufeature.c
+> > @@ -67,6 +67,7 @@
+> >  #include <linux/crash_dump.h>
+> >  #include <linux/sort.h>
+> >  #include <linux/stop_machine.h>
+> > +#include <linux/sysfs.h>
+> >  #include <linux/types.h>
+> >  #include <linux/minmax.h>
+> >  #include <linux/mm.h>
+> > @@ -1319,6 +1320,24 @@ const struct cpumask *system_32bit_el0_cpumask(void)
+> >  	return cpu_possible_mask;
+> >  }
+> >  
+> > +static ssize_t aarch32_el0_show(struct device *dev,
+> > +				struct device_attribute *attr, char *buf)
+> > +{
+> > +	const struct cpumask *mask = system_32bit_el0_cpumask();
+> > +
+> > +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(mask));
+> > +}
+> > +static const DEVICE_ATTR_RO(aarch32_el0);
+> 
+> I just realized that we have a problem with this type of representation
+> overflowing PAGE_SIZE on larger systems.  There is ongoing work to fix
+> this up but that requires converting these to binary sysfs files, which
+> is a pain to preserve the original format here.
 
->On Fri, Jun 25, 2021 at 10:30:51AM +0200, Maxime Chevallier wrote:
->> The datasheet for the AR803x PHY present on this SoM recommends that the
->> reset line is asserted low for 10ms, so that the PHY has time to
->> properly reset the internal blocks.
->> 
->> The previous value of 2ms was found to be problematic on some setups,
->> causing intermittent issues where the PHY would be unresponsive
->> every once in a while on some sytems, with a low occurence (it typically
->> took around 30 consecutive reboots to encounter the issue).
->> 
->> Bumping the delay to the 10ms recommended value makes the issue
->> dissapear, with more than 2500 consecutive reboots performed without the
->> issue showing-up.  
->
->This isn't actually what the datasheet says, which is:
->
->  Input clock including the crystal and external input clock should be
->  stable for at least 1ms before RESET can be deasserted.
->
->  When using crystal, the clock is generated internally after power is
->  stable. For a reliable power on reset, suggest to keep asserting the
->  reset low long enough (10ms) to ensure the clock is stable and
->  clock-to-reset 1ms requirement is satisfied.
->
->The 10ms duration you quote is the _power on reset_ duration, and in
->those circumstances, there is a delay before the required clocks will
->be stable.
->
->This is not a power on reset scenario - the power was applied long ago
->by the time the kernel starts booting, and XI clock would have been
->running.
->
->So, I think the commit message which seems to be claiming that the reset
->line always needs to be asserted for 10ms is not entirely accurate.
+Urgh. Do you have a link to the work trying to fix this for the other sysfs
+files which are affected by this problem, please?
 
-You're correct, indeed, I guess we read that a bit too fast.
+> Yes, for now you will be fine on these arm32 systems, but in the future
+> this will have to be changed.  Because of that, should you just make
+> this an individual cpu attribute (one file per cpu) and not a single
+> file that lists all cpus?
 
-However, we do see that bumping the reset duration fixes the issue that
-was encountered.
+Practically, I don't see this will ever be an issue for this case:
 
-To give you more details about this issue, in that scenario the PHY
-would fail the autoneg process, no matter how many times we
-enable/disable the link and restart autoneg.
+  1. 32-bit support is going to go away from the hardware, so this file
+     will simply be empty in the future.
 
-The low duration of the reset might put the internal blocks in an
-unknown state, but I don't actually have the real hardware-side
-explanation for what is actually happening.
+  2. The 32-bit-capable CPUs aren't dotted around randomly, but rather
+     exist as contiguous ranges, so the format is reasonably compact.
 
-Further testing showed, for example, that decreasing the time of reset
-assertion to 1ms made the issue appear everytime, whereas bumping it to
-10 ms fixed it entirely.
+> what tool is going to read this and why can't they just pick it up from
+> the individual cpu files instead?
 
-In the absence of any other indication about how long should that reset
-be asserted, and after thourough testing, 10ms seems like a good enough
-value.
+The idea is that controlling the affinity of 32-bit applications explicitly
+in userspace can be done by either creating cpusets where all CPUs are
+32-bit capable, or simply setting their affinity to include only
+32-bit-capable CPUs. The really nice properties about the way this is
+currently exposed are that it is the same as the
+/sys/devices/system/cpu/{offline,online,possible,present} files and is
+readibly usable by scripts. Moving the information into a per-cpu file gets
+rid of both of those advantages :(
 
-I'll send a V2 with the commit log fixed.
+A middle ground would be to expose it as a mask (i.e. "%*pb") and use one
+bit per CPU. NR_CPUS is capped to 4k on arm64 so that would be sufficient,
+although then the format is weirdly different to the other masks in the same
+directory.
 
-Thanks for the quick review,
-
-Maxime
-
->> 
->> Fixes: 208d7baf8085 ("ARM: imx: initial SolidRun HummingBoard support")
->> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
->> Tested-by: Hervé Codina <herve.codina@bootlin.com>
->> ---
->>  arch/arm/boot/dts/imx6qdl-sr-som.dtsi | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/arch/arm/boot/dts/imx6qdl-sr-som.dtsi b/arch/arm/boot/dts/imx6qdl-sr-som.dtsi
->> index 0ad8ccde0cf8..a54dafce025b 100644
->> --- a/arch/arm/boot/dts/imx6qdl-sr-som.dtsi
->> +++ b/arch/arm/boot/dts/imx6qdl-sr-som.dtsi
->> @@ -54,7 +54,7 @@ &fec {
->>  	pinctrl-names = "default";
->>  	pinctrl-0 = <&pinctrl_microsom_enet_ar8035>;
->>  	phy-mode = "rgmii-id";
->> -	phy-reset-duration = <2>;
->> +	phy-reset-duration = <10>;
->>  	phy-reset-gpios = <&gpio4 15 GPIO_ACTIVE_LOW>;
->>  	status = "okay";
->>  
->> -- 
->> 2.25.4
->> 
->>   
->
-
-
-
--- 
-Maxime Chevallier, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Will
