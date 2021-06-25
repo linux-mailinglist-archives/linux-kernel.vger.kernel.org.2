@@ -2,203 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885E33B424D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E550C3B424F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhFYLRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 07:17:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59741 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229671AbhFYLRS (ORCPT
+        id S230210AbhFYLSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhFYLSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 07:17:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624619696;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k8Djt+b0xv8pO9YwqZbIftkuFTYoJ1ew6IVmNBm5p1Y=;
-        b=a7e/nAPvKTvTuEStAxIMVtzqNgjzJ23Tsj7wWzJE1gcyNVu0eLEChsmVvQ8bwsu9BO7CN0
-        VQvb1pbmZc6UPKXrRM601adzsu0YakZ75E37j6qmGL68aJQWfxRE/Uy5cIgIgBIE55eeOj
-        a3jfKrYNj3FA0PcZj25dvvcKuiz6puw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-406-ERUVSFW3PIC6SQbi-2op3g-1; Fri, 25 Jun 2021 07:14:55 -0400
-X-MC-Unique: ERUVSFW3PIC6SQbi-2op3g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 141C2804144;
-        Fri, 25 Jun 2021 11:14:54 +0000 (UTC)
-Received: from [10.64.54.233] (vpn2-54-233.bne.redhat.com [10.64.54.233])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EB2C0100164A;
-        Fri, 25 Jun 2021 11:14:51 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH v4] Documentation, dt, numa: Add note to empty NUMA node
-To:     Andrew Jones <drjones@redhat.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org, robh+dt@kernel.org, shan.gavin@gmail.com
-References: <20210625052338.4875-1-gshan@redhat.com>
- <20210625070217.4ffmfe7nwlusbbjc@gator>
- <20210625070656.j373hveemf5cdch4@gator>
- <41643136-798b-a0f3-aee7-b6af94a2fc67@redhat.com>
- <20210625101821.3t3vgj2pnw3hqpzm@gator>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <62d04903-e4f3-2302-d530-5942e33ae116@redhat.com>
-Date:   Fri, 25 Jun 2021 21:14:49 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
-MIME-Version: 1.0
-In-Reply-To: <20210625101821.3t3vgj2pnw3hqpzm@gator>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Fri, 25 Jun 2021 07:18:38 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80062C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 04:16:17 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id l132-20020a25258a0000b029054fc079d46eso3787008ybl.20
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 04:16:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=NaD3eWAKNT95Z3ftTE0FSmd29ZM9wJJVehskxEyh6Bs=;
+        b=rh2DRYsOnyU4K66JbmFmfersLcB3CH5kFw/V2x3WyHocDAqN9QlOQ+pBemdFkzs10t
+         qdPiIlTUZonkVe0TkjkwRjG5D5gxFtAyQ3Q7Dwdyt+yM5mxIDkXbJnAkP9APJBFks+Bn
+         vKF5AafrGLNRLVOXWAaBYV759rEd5ggvrBzDlMkRsQaCnhE0PFTsjiKSCA9XeNYT679A
+         xCbdE3anO8qW+tKtFNG3iVJic/mRHbZwlRCqPyQbWCbgy3l8I7xokOs0ZnTn01dqvMEC
+         T3Zdp7NQoZ6PmEtdq2CWHkJre+Cx9eAYQokbMycsNZQpDKWoQY/3RASP3huSYX25V5cY
+         hMUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=NaD3eWAKNT95Z3ftTE0FSmd29ZM9wJJVehskxEyh6Bs=;
+        b=Y/Rr21QCy83lzG0h2lBz+epGLRsob6g8ngmFRGlPNogSoWQ/TUO4bHSwR4Tb4hOCzj
+         s+pucnHjRoAPeR1xii5piV0xb/Du7fkgjk7UIk6tZR8jNuSTit2ZOHV9RmJwpkxcuvyL
+         cQKhYj53CeCKupceUlGE15QMlyr+uzLny1NjrrBOPx6cFNBPpaOSBSVo16BW6ePThOX1
+         AoZowlVOHQFAbWQDcowdoIYCnJ51m+p/vd1hSx69b3k0jkrmZ3q0Ute29PochkgCrIUm
+         RdnjnbC8DxmXIAPT8dD4rheigO2o+89ZRPR7UXgtH6Dn69zbJZq4i3vgq7b18V41uxJq
+         y6ZQ==
+X-Gm-Message-State: AOAM532zrbFh09P7K4juMSBCusAQypGVofyo1b4aGNhL8B5jW+FyRjC9
+        aJVK0msDqGRLpW2QLpyC60vR6cGrcwJjjA==
+X-Google-Smtp-Source: ABdhPJyU4em87MWziADvMkZfNrxMozNiRF7+SKP/C5pjjZZarOlkRu1c18768x/NpxmRf0Wof/4UkIb9ZdbQDw==
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:2dbe:56d6:eac0:60b0])
+ (user=davidgow job=sendgmr) by 2002:a25:1885:: with SMTP id
+ 127mr11480239yby.199.1624619776669; Fri, 25 Jun 2021 04:16:16 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 04:16:03 -0700
+Message-Id: <20210625111603.358518-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH] kunit: Fix merge issue in suite filtering test
+From:   David Gow <davidgow@google.com>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Daniel Latypov <dlatypov@google.com>
+Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Gow <davidgow@google.com>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/25/21 8:18 PM, Andrew Jones wrote:
-> On Fri, Jun 25, 2021 at 06:36:48PM +1000, Gavin Shan wrote:
->> On 6/25/21 5:06 PM, Andrew Jones wrote:
->>> On Fri, Jun 25, 2021 at 09:02:17AM +0200, Andrew Jones wrote:
->>>> On Fri, Jun 25, 2021 at 01:23:38PM +0800, Gavin Shan wrote:
->>>>> The empty memory nodes, where no memory resides in, are allowed.
->>>>> For these empty memory nodes, the 'len' of 'reg' property is zero.
->>>>> The NUMA node IDs are still valid and parsed, but memory can be
->>>>> added to them through hotplug afterwards. I finds difficulty to
->>>>> get where it's properly documented.
->>>>>
->>>>> So lets add note to empty memory nodes in the NUMA binding doc.
->>>>>
->>>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
->>>>> ---
->>>>>    Documentation/devicetree/bindings/numa.txt | 4 ++++
->>>>>    1 file changed, 4 insertions(+)
->>>>>
->>>>> diff --git a/Documentation/devicetree/bindings/numa.txt b/Documentation/devicetree/bindings/numa.txt
->>>>> index 21b35053ca5a..0fc882e44270 100644
->>>>> --- a/Documentation/devicetree/bindings/numa.txt
->>>>> +++ b/Documentation/devicetree/bindings/numa.txt
->>>>> @@ -109,6 +109,10 @@ Example:
->>>>>    Dual socket system consists of 2 boards connected through ccn bus and
->>>>>    each board having one socket/soc of 8 cpus, memory and pci bus.
->>>>> +Note that empty memory nodes, which no memory resides in, are allowed.
->>>>> +The NUMA node IDs in these empty memory nodes are still valid, but
->>>>> +memory can be added into them through hotplug afterwards.
->>>>
->>>> Please change the second sentence to:
->>>>
->>>>     The NUMA node IDs in these empty memory nodes are still valid and
->>>>     memory may be added into them through hotplug afterwards.
->>>>
->>>> But, this doesn't look like the right place for this paragraph. You're
->>>> adding the paragraph to the example section, but the example doesn't have
->>>> any empty memory nodes.
->>>>
->>>> I think the paragraph should be added to section "2 - numa-node-id" and an
->>>
->>> Or maybe even create a new section for it.
->>>
->>>> example empty memory node should be provided. Also, the commit message
->>>> talks about the length of 'reg' being zero, which is an important
->>>> distinction which should also be documented.
->>>>
->>
->> Drew, thanks for your comments. Yeah, it sounds sensible to create
->> a new section for it and an example would be more helpful. Please
->> check if below changes are fine to you. I probably need Randy's review
->> again.
->>
->> I'm trying to avoid too many revisions for this sort of trivial patch,
->> even though I already had. However, it's time frame for v5.14 and I'm
->> pushing this to be merged during the cycle.
-> 
-> We must revise until we're satisfied... Also, I wouldn't call writing
-> specifications trivial.
-> 
+There were a couple of errors introuced when
+"kunit: add unit test for filtering suites by names"[1] was merged in
+c9d80ffc5a.
 
-[...]
+An erroneous '+' was introduced in executor.c, and the executor_test.c
+file went missing. This causes the kernel to fail to compile if
+CONFIG_KUNIT is enabled, as reported in [2,3].
 
-> I'll just rewrite it:
-> 
->   Empty memory nodes, which no memory resides in, are allowed. The 'length'
->   field of the 'reg' property is zero, but the 'base-address' is a dummy
->   address and invalid. However, the NUMA node IDs and distance maps are
->   still valid and memory may be added into them through hotplug afterwards.
-> 
+As with the original, I've tested by running just the new tests using
+itself:
+$ ./tools/testing/kunit/kunit.py run '*exec*'
 
-[...]
+[1]: https://lore.kernel.org/linux-kselftest/20210421020427.2384721-1-dlatypov@google.com/
+[2]: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/6IKQX5JXZF7I3NFH4IAWUMHXEQSCPNDP/
+[3]: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/EKY7ZH5YDCCTSJF2G7XFPMGIXQSUVD3Y/
 
-> 
-> You should write how you've selected the dummy addresses for the empty
-> memory nodes, perhaps here in the /* Empty memory node */ comments or
-> above in the paragraph or both.
-> 
->> +	memory@0x100000000 {
->> +		device_type = "memory";
->> +		reg = <0x1 0x0 0x0 0x0>;
->> +		numa-node-id = <2>;
->> +	};
->> +
->> +	/* Empty memory node */
->> +	memory@0x180000000 {
->> +		device_type = "memory";
->> +		reg = <0x1 0x80000000 0x0 0x0>;
->> +		numa-node-id = <3>;
->> +	};
->> +
+Fixes: c9d80ffc5a ("kunit: add unit test for filtering suites by names")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: David Gow <davidgow@google.com>
+---
 
-[...]
+This is another fix for the kunit-fixes branch, where there seems to
+have been an issue merging the "kunit: add unit test for filtering
+suites by names" patch here:
+https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit-fixes&id=c9d80ffc5a0a30955de0b8c5c46a05906d417800
 
-Thanks, Drew. As 'base-address' is dummy address and invalid. So we
-would note it as suggestion. With your suggestion integrated, how about
-something like this?
+Again, feel free to squash this into the original patch if that works
+better.
 
-==============================================================================
-4 - Empty memory nodes
-==============================================================================
+Cheers,
+-- David
 
-Empty memory nodes, which no memory resides in, are allowed. The 'length'
-field of the 'reg' property is zero, but the 'base-address' is a dummy
-address and invalid. The 'base-address' could be the summation of highest
-memory address plus the NUMA node ID. However, the NUMA node IDs and
-distance maps are still valid and memory may be added into them through
-hotplug afterwards.
+ lib/kunit/executor.c      |   2 +-
+ lib/kunit/executor_test.c | 133 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 134 insertions(+), 1 deletion(-)
+ create mode 100644 lib/kunit/executor_test.c
 
-        :
-
-        memory@0 {
-                 device_type = "memory";
-                 reg = <0x0 0x0 0x0 0x80000000>;
-                 numa-node-id = <0>;
-         };
-
-         memory@0x80000000 {
-                 device_type = "memory";
-                 reg = <0x0 0x80000000 0x0 0x80000000>;
-                 numa-node-id = <1>;
-         };
-
-         /* Empty memory node */
-         memory@0x100000002 {
-                 device_type = "memory";
-                 reg = <0x1 0x2 0x0 0x0>;
-                 numa-node-id = <2>;
-         };
-
-         /* Empty memory node */
-         memory@0x100000003 {
-                 device_type = "memory";
-                 reg = <0x1 0x3 0x0 0x0>;
-                 numa-node-id = <3>;
-         };
-
-         :
-
-Thanks,
-Gavin
-
+diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+index 672f91486d23..acd1de436f59 100644
+--- a/lib/kunit/executor.c
++++ b/lib/kunit/executor.c
+@@ -23,7 +23,7 @@ static char *kunit_shutdown;
+ core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
+ 
+ static struct kunit_suite * const *
+-+kunit_filter_subsuite(struct kunit_suite * const * const subsuite,
++kunit_filter_subsuite(struct kunit_suite * const * const subsuite,
+ 			const char *filter_glob)
+ {
+ 	int i, n = 0;
+diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
+new file mode 100644
+index 000000000000..cdbe54b16501
+--- /dev/null
++++ b/lib/kunit/executor_test.c
+@@ -0,0 +1,133 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit test for the KUnit executor.
++ *
++ * Copyright (C) 2021, Google LLC.
++ * Author: Daniel Latypov <dlatypov@google.com>
++ */
++
++#include <kunit/test.h>
++
++static void kfree_at_end(struct kunit *test, const void *to_free);
++static struct kunit_suite *alloc_fake_suite(struct kunit *test,
++					    const char *suite_name);
++
++static void filter_subsuite_test(struct kunit *test)
++{
++	struct kunit_suite *subsuite[3] = {NULL, NULL, NULL};
++	struct kunit_suite * const *filtered;
++
++	subsuite[0] = alloc_fake_suite(test, "suite1");
++	subsuite[1] = alloc_fake_suite(test, "suite2");
++
++	/* Want: suite1, suite2, NULL -> suite2, NULL */
++	filtered = kunit_filter_subsuite(subsuite, "suite2*");
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered);
++	kfree_at_end(test, filtered);
++
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered[0]);
++	KUNIT_EXPECT_STREQ(test, (const char *)filtered[0]->name, "suite2");
++
++	KUNIT_EXPECT_FALSE(test, filtered[1]);
++}
++
++static void filter_subsuite_to_empty_test(struct kunit *test)
++{
++	struct kunit_suite *subsuite[3] = {NULL, NULL, NULL};
++	struct kunit_suite * const *filtered;
++
++	subsuite[0] = alloc_fake_suite(test, "suite1");
++	subsuite[1] = alloc_fake_suite(test, "suite2");
++
++	filtered = kunit_filter_subsuite(subsuite, "not_found");
++	kfree_at_end(test, filtered); /* just in case */
++
++	KUNIT_EXPECT_FALSE_MSG(test, filtered,
++			       "should be NULL to indicate no match");
++}
++
++static void kfree_subsuites_at_end(struct kunit *test, struct suite_set *suite_set)
++{
++	struct kunit_suite * const * const *suites;
++
++	kfree_at_end(test, suite_set->start);
++	for (suites = suite_set->start; suites < suite_set->end; suites++)
++		kfree_at_end(test, *suites);
++}
++
++static void filter_suites_test(struct kunit *test)
++{
++	/* Suites per-file are stored as a NULL terminated array */
++	struct kunit_suite *subsuites[2][2] = {
++		{NULL, NULL},
++		{NULL, NULL},
++	};
++	/* Match the memory layout of suite_set */
++	struct kunit_suite * const * const suites[2] = {
++		subsuites[0], subsuites[1],
++	};
++
++	const struct suite_set suite_set = {
++		.start = suites,
++		.end = suites + 2,
++	};
++	struct suite_set filtered = {.start = NULL, .end = NULL};
++
++	/* Emulate two files, each having one suite */
++	subsuites[0][0] = alloc_fake_suite(test, "suite0");
++	subsuites[1][0] = alloc_fake_suite(test, "suite1");
++
++	/* Filter out suite1 */
++	filtered = kunit_filter_suites(&suite_set, "suite0");
++	kfree_subsuites_at_end(test, &filtered); /* let us use ASSERTs without leaking */
++	KUNIT_ASSERT_EQ(test, filtered.end - filtered.start, (ptrdiff_t)1);
++
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered.start);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered.start[0]);
++	KUNIT_EXPECT_STREQ(test, (const char *)filtered.start[0][0]->name, "suite0");
++}
++
++static struct kunit_case executor_test_cases[] = {
++	KUNIT_CASE(filter_subsuite_test),
++	KUNIT_CASE(filter_subsuite_to_empty_test),
++	KUNIT_CASE(filter_suites_test),
++	{}
++};
++
++static struct kunit_suite executor_test_suite = {
++	.name = "kunit_executor_test",
++	.test_cases = executor_test_cases,
++};
++
++kunit_test_suites(&executor_test_suite);
++
++/* Test helpers */
++
++static void kfree_res_free(struct kunit_resource *res)
++{
++	kfree(res->data);
++}
++
++/* Use the resource API to register a call to kfree(to_free).
++ * Since we never actually use the resource, it's safe to use on const data.
++ */
++static void kfree_at_end(struct kunit *test, const void *to_free)
++{
++	/* kfree() handles NULL already, but avoid allocating a no-op cleanup. */
++	if (IS_ERR_OR_NULL(to_free))
++		return;
++	kunit_alloc_and_get_resource(test, NULL, kfree_res_free, GFP_KERNEL,
++				     (void *)to_free);
++}
++
++static struct kunit_suite *alloc_fake_suite(struct kunit *test,
++					    const char *suite_name)
++{
++	struct kunit_suite *suite;
++
++	/* We normally never expect to allocate suites, hence the non-const cast. */
++	suite = kunit_kzalloc(test, sizeof(*suite), GFP_KERNEL);
++	strncpy((char *)suite->name, suite_name, sizeof(suite->name) - 1);
++
++	return suite;
++}
+-- 
+2.32.0.93.g670b81a890-goog
 
