@@ -2,125 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F443B3F53
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8638B3B3F56
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbhFYIcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:32:50 -0400
-Received: from m12-16.163.com ([220.181.12.16]:59200 "EHLO m12-16.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229839AbhFYIcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:32:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=iEG0H
-        ZrfdsRExiS31Jv9b2U7w7zkg1w6bByu3vwJ0YQ=; b=pzEzBc5Tk/lomC97EBWbW
-        GVXFUZ7KyVq6p4mjFSN+/FWSp/aNbY8gbiuukp0zmsxFl+T5+j6rvwo4SBgAtsUP
-        z2LoB93QwCrfjmNV8LcvXTnO8D7DIaGVfsdWUYj8PbY1WyTP+CnskAxqeADZWm1m
-        b70U4IxpfR/nZDpjKlwDgQ=
-Received: from ubuntu.localdomain (unknown [218.17.89.92])
-        by smtp12 (Coremail) with SMTP id EMCowAAntI0HlNVgXvyPzA--.36169S2;
-        Fri, 25 Jun 2021 16:30:00 +0800 (CST)
-From:   13145886936@163.com
-To:     shuah@kernel.org, john.stultz@linaro.org, tglx@linutronix.de,
-        sboyd@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>
-Subject: [PATCH] tools: timers: remove unneeded semicolons
-Date:   Fri, 25 Jun 2021 01:29:57 -0700
-Message-Id: <20210625082957.23908-1-13145886936@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S230107AbhFYId1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:33:27 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:33861 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229772AbhFYId0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 04:33:26 -0400
+Received: (Authenticated sender: maxime.chevallier@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 5ADA71BF218;
+        Fri, 25 Jun 2021 08:31:02 +0000 (UTC)
+From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
+To:     Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        thomas.petazzoni@bootlin.com, herve.codina@bootlin.com,
+        devicetree@vger.kernel.org
+Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: imx6qdl-sr-som: Increase the PHY reset duration to 10ms
+Date:   Fri, 25 Jun 2021 10:30:51 +0200
+Message-Id: <20210625083051.3691737-1-maxime.chevallier@bootlin.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EMCowAAntI0HlNVgXvyPzA--.36169S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxGF4xGw4DXF45Gw17Zw4ruFg_yoW5Wry5p3
-        W8A3sIkr4xKF13JF18tr4qgFWrWF9rKrW8JF15A34DZw4fJFyfXF47tFy7JFZ3u3y5X393
-        Aas7WF45uw4UCw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07b1byZUUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/xtbBzh68g1QHNBBrawACsa
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
+The datasheet for the AR803x PHY present on this SoM recommends that the
+reset line is asserted low for 10ms, so that the PHY has time to
+properly reset the internal blocks.
 
-Remove unneeded semicolons.
+The previous value of 2ms was found to be problematic on some setups,
+causing intermittent issues where the PHY would be unresponsive
+every once in a while on some sytems, with a low occurence (it typically
+took around 30 consecutive reboots to encounter the issue).
 
-Signed-off-by: gushengxian <gushengxian@yulong.com>
+Bumping the delay to the 10ms recommended value makes the issue
+dissapear, with more than 2500 consecutive reboots performed without the
+issue showing-up.
+
+Fixes: 208d7baf8085 ("ARM: imx: initial SolidRun HummingBoard support")
+Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Tested-by: Hervé Codina <herve.codina@bootlin.com>
 ---
- tools/testing/selftests/timers/alarmtimer-suspend.c  | 2 +-
- tools/testing/selftests/timers/inconsistency-check.c | 2 +-
- tools/testing/selftests/timers/nanosleep.c           | 2 +-
- tools/testing/selftests/timers/nsleep-lat.c          | 2 +-
- tools/testing/selftests/timers/set-timer-lat.c       | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+ arch/arm/boot/dts/imx6qdl-sr-som.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/timers/alarmtimer-suspend.c b/tools/testing/selftests/timers/alarmtimer-suspend.c
-index 4da09dbf83ba..54da4b088f4c 100644
---- a/tools/testing/selftests/timers/alarmtimer-suspend.c
-+++ b/tools/testing/selftests/timers/alarmtimer-suspend.c
-@@ -79,7 +79,7 @@ char *clockstring(int clockid)
- 		return "CLOCK_BOOTTIME_ALARM";
- 	case CLOCK_TAI:
- 		return "CLOCK_TAI";
--	};
-+	}
- 	return "UNKNOWN_CLOCKID";
- }
- 
-diff --git a/tools/testing/selftests/timers/inconsistency-check.c b/tools/testing/selftests/timers/inconsistency-check.c
-index 022d3ffe3fbf..e6756d9c60a7 100644
---- a/tools/testing/selftests/timers/inconsistency-check.c
-+++ b/tools/testing/selftests/timers/inconsistency-check.c
-@@ -72,7 +72,7 @@ char *clockstring(int clockid)
- 		return "CLOCK_BOOTTIME_ALARM";
- 	case CLOCK_TAI:
- 		return "CLOCK_TAI";
--	};
-+	}
- 	return "UNKNOWN_CLOCKID";
- }
- 
-diff --git a/tools/testing/selftests/timers/nanosleep.c b/tools/testing/selftests/timers/nanosleep.c
-index 71b5441c2fd9..433a09676aeb 100644
---- a/tools/testing/selftests/timers/nanosleep.c
-+++ b/tools/testing/selftests/timers/nanosleep.c
-@@ -72,7 +72,7 @@ char *clockstring(int clockid)
- 		return "CLOCK_BOOTTIME_ALARM";
- 	case CLOCK_TAI:
- 		return "CLOCK_TAI";
--	};
-+	}
- 	return "UNKNOWN_CLOCKID";
- }
- 
-diff --git a/tools/testing/selftests/timers/nsleep-lat.c b/tools/testing/selftests/timers/nsleep-lat.c
-index eb3e79ed7b4a..a7ca9825e106 100644
---- a/tools/testing/selftests/timers/nsleep-lat.c
-+++ b/tools/testing/selftests/timers/nsleep-lat.c
-@@ -72,7 +72,7 @@ char *clockstring(int clockid)
- 		return "CLOCK_BOOTTIME_ALARM";
- 	case CLOCK_TAI:
- 		return "CLOCK_TAI";
--	};
-+	}
- 	return "UNKNOWN_CLOCKID";
- }
- 
-diff --git a/tools/testing/selftests/timers/set-timer-lat.c b/tools/testing/selftests/timers/set-timer-lat.c
-index 50da45437daa..d60bbcad487f 100644
---- a/tools/testing/selftests/timers/set-timer-lat.c
-+++ b/tools/testing/selftests/timers/set-timer-lat.c
-@@ -80,7 +80,7 @@ char *clockstring(int clockid)
- 		return "CLOCK_BOOTTIME_ALARM";
- 	case CLOCK_TAI:
- 		return "CLOCK_TAI";
--	};
-+	}
- 	return "UNKNOWN_CLOCKID";
- }
+diff --git a/arch/arm/boot/dts/imx6qdl-sr-som.dtsi b/arch/arm/boot/dts/imx6qdl-sr-som.dtsi
+index 0ad8ccde0cf8..a54dafce025b 100644
+--- a/arch/arm/boot/dts/imx6qdl-sr-som.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-sr-som.dtsi
+@@ -54,7 +54,7 @@ &fec {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_microsom_enet_ar8035>;
+ 	phy-mode = "rgmii-id";
+-	phy-reset-duration = <2>;
++	phy-reset-duration = <10>;
+ 	phy-reset-gpios = <&gpio4 15 GPIO_ACTIVE_LOW>;
+ 	status = "okay";
  
 -- 
-2.25.1
-
+2.25.4
 
