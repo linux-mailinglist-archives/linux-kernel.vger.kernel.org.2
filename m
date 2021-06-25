@@ -2,107 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1923B39D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 01:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E053B39EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232979AbhFXXtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 19:49:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37051 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232968AbhFXXtV (ORCPT
+        id S232913AbhFYAFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 20:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhFYAFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 19:49:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624578421;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Ur+3f6ByoCtX7yhFwFNR3bC9UT9UhNVvdQagfYQi4Q=;
-        b=fz5BBlskziw10XEJmuFlfT0zXkd7FvJEaZHf3AGSOpJAM+qb6VBLK8jpIqBxnY3+D8W/8a
-        PqfwB93RTqDJCoTIMpfHc62pP1YMWW1fLwYwIA0PIBFJJt+fVvVozkhjRIx1ul6q4moGdG
-        6Ap9YOt1drQ63/fPnr9rhIpvHezOq5c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-479-4qo-28SxN9qoCiIivXw5sQ-1; Thu, 24 Jun 2021 19:46:57 -0400
-X-MC-Unique: 4qo-28SxN9qoCiIivXw5sQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 36EB818414A1;
-        Thu, 24 Jun 2021 23:46:56 +0000 (UTC)
-Received: from gshan.redhat.com (vpn2-54-70.bne.redhat.com [10.64.54.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EF71760871;
-        Thu, 24 Jun 2021 23:46:45 +0000 (UTC)
-From:   Gavin Shan <gshan@redhat.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, alexander.duyck@gmail.com,
-        david@redhat.com, mst@redhat.com, akpm@linux-foundation.org,
-        anshuman.khandual@arm.com, catalin.marinas@arm.com,
-        will@kernel.org, shan.gavin@gmail.com
-Subject: [PATCH v4 4/4] virtio_balloon: Specify page reporting order if needed
-Date:   Fri, 25 Jun 2021 09:47:10 +0800
-Message-Id: <20210625014710.42954-5-gshan@redhat.com>
-In-Reply-To: <20210625014710.42954-1-gshan@redhat.com>
-References: <20210625014710.42954-1-gshan@redhat.com>
+        Thu, 24 Jun 2021 20:05:08 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5856FC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:02:48 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so7514474oth.9
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:02:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bF01hBVUbua6rxe/NO/VbUhjq8aqFR4Q3DHqf+MoijU=;
+        b=xBdo4W1x6y65z8YFSmxubuT+E3psR48/xCimbLK7uDOLU3KHBBLzWH5xaavRSecJZd
+         R/j9KGTjC8GNNcgvuzVPiSCfotO776mQPgJgtjapj184dy0pDrugPgn1izFcJbzlZppZ
+         dA14h0IusDnBpW3C6sJD9ZdXy3QBC+Nme8GVfB+Ov/LOAUAXMRMMQGyUaewouK5JgQJP
+         Wpy8isLvNL0GaAdBm2KbgHM6qtO5Glp8T+k+WuEmiRi7NNYG4B3BfIwN77GzSI/NXAsl
+         dPTzFA+P0T6mxIW/ZsRkgtMAfz9qw0XDRTww/w9af1sXbJO27WEQBc/mnEytrO76kD28
+         s6EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bF01hBVUbua6rxe/NO/VbUhjq8aqFR4Q3DHqf+MoijU=;
+        b=eNUz1qGatPGQSQox3fO0Z01o0oQr0ViQOMQrLW7Vi8+ApzJVscc27n4iBUQ45N4zoi
+         FgjczeRhsH0sQlkBOKDickillEH/MP6Id6EyyM1lY4WLEys9TdrqDQKz3ydIuRcYlOda
+         YdoG/I3IszRv+H6stEABsXCJ5I6cE4ugXvn8VpDlZI6wlc35RoFVdViMOAiCEs0Lw4Gc
+         MmxmrqJVkYKtaS/sAT67k/ALarJNqqXSkXwi+0/rM8xn5hDqezo9dl4C4fv2govNl8Wd
+         yj0cqkdimeeGhjj2NYX4LdXnSeSB37tOPPreBDl5knVUNrx06/u5k4bn1pZ/Zubu3Uva
+         yHIg==
+X-Gm-Message-State: AOAM530439UyV2FHSIxgF7KaIEPLLMhoxENHZ8D3lif2K7Ab1DeYrC8x
+        aRqjkFMd3H9aGuk+pn/QRvbpE6FfCRuWaA==
+X-Google-Smtp-Source: ABdhPJw4ScjEMbY6bXVtDZoUUUZod40SM3yRKVyull+VqTCNZWVHQPfWNBtQi2KKd49EoWSsJ4cQxA==
+X-Received: by 2002:a05:6830:88:: with SMTP id a8mr7197095oto.14.1624579367592;
+        Thu, 24 Jun 2021 17:02:47 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id f12sm1011320ooh.38.2021.06.24.17.02.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 17:02:47 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 19:02:44 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V3 3/3] mailbox: qcom-apcs: Add SM6125 compatible
+Message-ID: <YNUdJC1y8lWHg114@yoga>
+References: <CABb+yY0sdSinTm788pMFrqEZ6QMC2OwCP7Kkto+pG9h1aGMzwQ@mail.gmail.com>
+ <CAL_JsqKdoMwpL_tYC7VQRAG2AC5nR4diShMQCgDseObcgU+egQ@mail.gmail.com>
+ <YNEiUMBqGAx1zLVX@yoga>
+ <CABb+yY2wy4iSKjn+SihQ=FE=YwcEzUNOpGw_CV22Anzgbba8hA@mail.gmail.com>
+ <YNFKpvhXyZbs8RE1@yoga>
+ <CABb+yY3RpQYvNBHvpwZearpBPph0uj8YQwX2qu=TX=QAO6OFBw@mail.gmail.com>
+ <YNFegmmCzk6JUTN+@yoga>
+ <9aae3092-2e2b-9261-f4e7-864b873eb2d4@somainline.org>
+ <YNT0HPOJEoJYipyE@yoga>
+ <b0ed9294-e4e1-3185-d81f-63e6e8d45692@somainline.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b0ed9294-e4e1-3185-d81f-63e6e8d45692@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The page reporting won't be triggered if the freeing page can't come
-up with a free area, whose size is equal or bigger than the threshold
-(page reporting order). The default page reporting order, equal to
-@pageblock_order, is too huge on some architectures to trigger page
-reporting. One example is ARM64 when 64KB base page size is used.
+On Thu 24 Jun 17:59 CDT 2021, AngeloGioacchino Del Regno wrote:
 
-      PAGE_SIZE:          64KB
-      pageblock_order:    13       (512MB)
-      MAX_ORDER:          14
+> Il 24/06/21 23:07, Bjorn Andersson ha scritto:
+> > On Tue 22 Jun 09:36 CDT 2021, AngeloGioacchino Del Regno wrote:
+[..]
+> > > Hello Jassi, Bjorn
+> > > 
+> > > I've read the entire thread and I can't say that Jassi is entirely wrong
+> > > but I also agree with Bjorn on this matter.
+> > > 
+> > > This driver is here to "simply" manage the register offset in the APCS
+> > > IP, which is a pretty straightforward operation.
+> > > If you check in this driver, you will see that there's not much
+> > > duplication between the various qcom_apcs_ipc_data that we have for
+> > > all the different SoCs.
+> > > 
+> > > Checking further, we can effectively reduce the amount of compatibles
+> > > in this driver by simply removing some "duplicated" instances and in
+> > > particular:
+> > > ipq6018, ipq8074, msm8916, msm8994, msm8998, sdm660
+> > > 
+> > > and eventually replacing them with either of:
+> > > - 8bits_apcs_data    qcom,apcs-apps-global-8bit
+> > >                       qcom,apcs-kpss-global-8bit
+> > 
+> > I don't like those compatibles, simply because the binding is supposed
+> > to describe the hardware block, not the fact that Linux _currently_ only
+> > pokes this one register.
+> > 
+> 
+> Since you've immediately misunderstood my naming, yeah, that wouldn't be
+> the best thing to use as a compatible.
+> 
 
-This specifies the page reporting order to 5 (2MB) for this specific
-case so that page reporting can be triggered.
+Sorry, that was certainly not my intention.
 
-Cc: Michael S. Tsirkin <mst@redhat.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: virtualization@lists.linux-foundation.org
-Signed-off-by: Gavin Shan <gshan@redhat.com>
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
----
- drivers/virtio/virtio_balloon.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+> > We could probably "qcom,apss-global" as a catch-all for at least sc7180,
+> > sc7280, sdm845, sm8150, sm8250 and sm8350.
+> > 
+> 
+> Doesn't look like a bad idea, but if we want to *enforce* writing also
+> the platform-specific compatible, I can see patch series going back
+> and forth and getting refused because this will not be really understood
+> by everyone, I think.
+> In this case, if writing the platform compatible is something mandatory,
+> the only way to really make sure to avoid losing time with reviews like
+> "[...] here you have to write also the platform compatible", is to just
+> keep the thing as it is.
+> 
 
-diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-index 510e9318854d..47dce91f788c 100644
---- a/drivers/virtio/virtio_balloon.c
-+++ b/drivers/virtio/virtio_balloon.c
-@@ -993,6 +993,23 @@ static int virtballoon_probe(struct virtio_device *vdev)
- 			goto out_unregister_oom;
- 		}
- 
-+		/*
-+		 * The default page reporting order is @pageblock_order, which
-+		 * corresponds to 512MB in size on ARM64 when 64KB base page
-+		 * size is used. The page reporting won't be triggered if the
-+		 * freeing page can't come up with a free area like that huge.
-+		 * So we specify the page reporting order to 5, corresponding
-+		 * to 2MB. It helps to avoid THP splitting if 4KB base page
-+		 * size is used by host.
-+		 *
-+		 * Ideally, the page reporting order is selected based on the
-+		 * host's base page size. However, it needs more work to report
-+		 * that value. The hard-coded order would be fine currently.
-+		 */
-+#if defined(CONFIG_ARM64) && defined(CONFIG_ARM64_64K_PAGES)
-+		vb->pr_dev_info.order = 5;
-+#endif
-+
- 		err = page_reporting_register(&vb->pr_dev_info);
- 		if (err)
- 			goto out_unregister_oom;
--- 
-2.23.0
+My understanding from the DT maintainers is that the dts would be
+checked by the schema, but I suspect that you're right in that we might
+have some back and forth on the DT binding, but I don't think that's a
+big deal.
 
+> > But look at 8996 and 8998, both named "something-hmss-something", with
+> > different register layout. And a quick glance seems to indicate that
+> > sdm660 isn't a hmss after all :/
+> > 
+> 
+> Starting from the fact that I don't clearly remember what-when-why of
+> my research done more than one year ago, I do remember that conclusion
+> was that, in this regard, SDM630/660 were "mostly the same" as MSM8998.
+> In any case, this is something that, at this point, is better get
+> verified, maybe.
+> 
+
+Yeah, I presume that someone with the documentation would need to go
+through each one of these and see what kind of grouping there might be.
+
+And I also presume that there might be cases where the CPU clocks has
+moved into the secure world, so that even though the hardware block is
+the same the presence of a in-kernel clock driver in the implementation
+might differ.
+
+
+But just to clarify, I find it annoying having to sprinkle compatibles
+all over the place every time I try to get a new board up. So I am not
+against us trying to figure this out.
+
+Regards,
+Bjorn
