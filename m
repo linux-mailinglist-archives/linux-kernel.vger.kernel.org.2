@@ -2,80 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE1E3B3C33
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 389483B3C35
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233030AbhFYF0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 01:26:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44750 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230172AbhFYF0M (ORCPT
+        id S233129AbhFYF0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 01:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233086AbhFYF0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 01:26:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624598631;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=JEzA3/KcHqjV1NTgdCCaV4I2K2xF2kBaxzJKUrI7KNU=;
-        b=YY9H2maviywsYbXtPGTiTgJyfmyTWscx08YR2RGDkKt89EaQBOLIisW49GKtPcfvjORH6Q
-        Qx83G8FXaOBA8iULU1oyNsXiOHz72kgPaxieZGgUFwhv8r49R7K0tE0K824QqS4+ry3HmL
-        r4Un2Ukha+GETEaMOPk9emGB0HfQRA4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-487-gp0CA3GcNw-ynVpkfZy3kA-1; Fri, 25 Jun 2021 01:23:49 -0400
-X-MC-Unique: gp0CA3GcNw-ynVpkfZy3kA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 79FC3802C89;
-        Fri, 25 Jun 2021 05:23:48 +0000 (UTC)
-Received: from gshan.redhat.com (vpn2-54-233.bne.redhat.com [10.64.54.233])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3503760C05;
-        Fri, 25 Jun 2021 05:23:45 +0000 (UTC)
-From:   Gavin Shan <gshan@redhat.com>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, rdunlap@infradead.org,
-        robh+dt@kernel.org, drjones@redhat.com, shan.gavin@gmail.com
-Subject: [PATCH v4] Documentation, dt, numa: Add note to empty NUMA node
-Date:   Fri, 25 Jun 2021 13:23:38 +0800
-Message-Id: <20210625052338.4875-1-gshan@redhat.com>
+        Fri, 25 Jun 2021 01:26:18 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6819C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 22:23:56 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id c5so7124586pfv.8
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 22:23:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Cyj6s4sHpfppPnMBo26sZU6xwfPH65HatOyxjgawFg8=;
+        b=Lq6ougXAljr42lvCyI2Q9QGuGZ4AncpOqWBJU9/JTotbO/aIG8iOmjyDIlUKs07jxX
+         1JeoCX1rpvzkMe+wRAgy31z04xPK2dapXcdg+/qxX24jAf9Ow+Y5k78KNS0Jkbs9dN3X
+         SGBHxy66+aLpk5g+yFxhcnvibo0OJbkR4to+hWI55+vf4zb7Sq91m3DRJ7StSYkoqlJm
+         5njn9CCyjmh3n/jX74aahHEPZagzi2LbAhd89BXWGBrmssxzFwr6bnUMYNVe1MJdvrSu
+         qaAvizXLmEkHJC4a/xS8QrU9MUfNW+jrKHI8ax2gh4b76Qu4VpSpR8lPwLXNYO116Qik
+         jjog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Cyj6s4sHpfppPnMBo26sZU6xwfPH65HatOyxjgawFg8=;
+        b=cJOgRhouv8NGvrnuSq3VbvdEwovCJh34CbGyIh6r6EfRV2km3BwGeYAFCU1GV1kaOX
+         k9c78n7/2bPSQPCkAaWcwLXpcqUNpxrpGQyOy+oI7f6kUwp+kEAktWYNzZIxzZ5g61+m
+         iv/b7sTqyVIuRmV/qrmJmwcZvLFUiHrHX9g4CT34pfPF3A9DHuVAKBtiIOcU3BBlYuZ3
+         XgYoLmjofdxNvbGh21K3Z/6qpSk0l2wyzYvfmm9bnTWb8ltstw4mW1U6fRM0t8FlLtfr
+         FrPRHsIFVPNzwNNTpJGytrr8/66ugAza64avum4VVuouXloSJWElLNeSbiG6fW+YK2yJ
+         Xq2A==
+X-Gm-Message-State: AOAM533XtA628rv7I0hGtCnLCE15YcS3BfdYCcI1aJu787EEhgxIXP10
+        wrZQMV8nuSPeTq4kN0Y5KgfK
+X-Google-Smtp-Source: ABdhPJzJ1yRbMvgaboJE8dC85pliGYUKfTef4n9w2IGaujc/g7tQK4qYZpZ6s0FZH+GwstEj4TxXAQ==
+X-Received: by 2002:a63:5446:: with SMTP id e6mr8017440pgm.73.1624598636294;
+        Thu, 24 Jun 2021 22:23:56 -0700 (PDT)
+Received: from workstation ([120.138.13.204])
+        by smtp.gmail.com with ESMTPSA id k35sm4021764pgi.21.2021.06.24.22.23.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 24 Jun 2021 22:23:55 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 10:53:53 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bus: mhi: core: Validate channel ID when processing
+ command completions
+Message-ID: <20210625052353.GE4974@workstation>
+References: <1624558141-11045-1-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1624558141-11045-1-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The empty memory nodes, where no memory resides in, are allowed.
-For these empty memory nodes, the 'len' of 'reg' property is zero.
-The NUMA node IDs are still valid and parsed, but memory can be
-added to them through hotplug afterwards. I finds difficulty to
-get where it's properly documented.
+On Thu, Jun 24, 2021 at 11:09:01AM -0700, Bhaumik Bhatt wrote:
+> MHI reads the channel ID from the event ring element sent by the
+> device which can be any value between 0 and 255. In order to
+> prevent any out of bound accesses, add a check against the maximum
+> number of channels supported by the controller and those channels
+> not configured yet so as to skip processing of that event ring
+> element.
+> 
+> Fixes: 1d3173a3bae7 ("bus: mhi: core: Add support for processing events from client device")
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+> Link: https://lore.kernel.org/r/1619481538-4435-1-git-send-email-bbhatt@codeaurora.org
 
-So lets add note to empty memory nodes in the NUMA binding doc.
+Removed "Link" and applied to mhi-next!
 
-Signed-off-by: Gavin Shan <gshan@redhat.com>
----
- Documentation/devicetree/bindings/numa.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+Thanks,
+Mani
 
-diff --git a/Documentation/devicetree/bindings/numa.txt b/Documentation/devicetree/bindings/numa.txt
-index 21b35053ca5a..0fc882e44270 100644
---- a/Documentation/devicetree/bindings/numa.txt
-+++ b/Documentation/devicetree/bindings/numa.txt
-@@ -109,6 +109,10 @@ Example:
- Dual socket system consists of 2 boards connected through ccn bus and
- each board having one socket/soc of 8 cpus, memory and pci bus.
- 
-+Note that empty memory nodes, which no memory resides in, are allowed.
-+The NUMA node IDs in these empty memory nodes are still valid, but
-+memory can be added into them through hotplug afterwards.
-+
- 	memory@c00000 {
- 		device_type = "memory";
- 		reg = <0x0 0xc00000 0x0 0x80000000>;
--- 
-2.23.0
-
+> ---
+>  drivers/bus/mhi/core/main.c | 17 ++++++++++++-----
+>  1 file changed, 12 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> index 22acde1..fc9196f 100644
+> --- a/drivers/bus/mhi/core/main.c
+> +++ b/drivers/bus/mhi/core/main.c
+> @@ -773,11 +773,18 @@ static void mhi_process_cmd_completion(struct mhi_controller *mhi_cntrl,
+>  	cmd_pkt = mhi_to_virtual(mhi_ring, ptr);
+>  
+>  	chan = MHI_TRE_GET_CMD_CHID(cmd_pkt);
+> -	mhi_chan = &mhi_cntrl->mhi_chan[chan];
+> -	write_lock_bh(&mhi_chan->lock);
+> -	mhi_chan->ccs = MHI_TRE_GET_EV_CODE(tre);
+> -	complete(&mhi_chan->completion);
+> -	write_unlock_bh(&mhi_chan->lock);
+> +
+> +	if (chan < mhi_cntrl->max_chan &&
+> +	    mhi_cntrl->mhi_chan[chan].configured) {
+> +		mhi_chan = &mhi_cntrl->mhi_chan[chan];
+> +		write_lock_bh(&mhi_chan->lock);
+> +		mhi_chan->ccs = MHI_TRE_GET_EV_CODE(tre);
+> +		complete(&mhi_chan->completion);
+> +		write_unlock_bh(&mhi_chan->lock);
+> +	} else {
+> +		dev_err(&mhi_cntrl->mhi_dev->dev,
+> +			"Completion packet for invalid channel ID: %d\n", chan);
+> +	}
+>  
+>  	mhi_del_ring_element(mhi_cntrl, mhi_ring);
+>  }
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
