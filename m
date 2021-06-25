@@ -2,106 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2403B434B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0AEF3B4351
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbhFYMf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 08:35:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59484 "EHLO
+        id S231379AbhFYMge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 08:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbhFYMfq (ORCPT
+        with ESMTP id S229712AbhFYMgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 08:35:46 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00287C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 05:33:24 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id j2so10393694wrs.12
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 05:33:24 -0700 (PDT)
+        Fri, 25 Jun 2021 08:36:32 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1A0C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 05:34:11 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id f10so4670982plg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 05:34:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Q49iOsqrIpUBUkgsVkFNfQxjuRrZYZfy83eTo9eH/GA=;
-        b=A6hWL8jLKRzThhYA1kxqVHiAf8Os+awuEcjGrxjpm9u2A9YG2ULePe0KsUHocFUsAg
-         jr6Gesd0NJG6AaTjyITS4djjh84uaIZITB8tx0JQKdM4cT5IdeosomJe89d/O9e9/t0a
-         joRhYvylONhowLWv6wCwQXVNymRg5n1EEvAkG3vW37VGiX57AtcO0l+tgX9bpZEX1lFW
-         DHZYfqKdOY9ywkuoGCYfMOj1pfHCTxkyyWNO9wsPCTCb/ikcZL9+cieCIIWS+f1h6b+S
-         xT1TPsZAP/N3ZDBYP3PAg8g0uG8J0JJ1FS/CQpkdwJWBg177mFn4XjiwX31zjeI4wlWu
-         U41w==
+        bh=yqbRAsIckLoW6b0dakH7bBbGKt7Cg1eluPqhcnN57gw=;
+        b=dhVlsc/ljuoucKFQObIMvGi4N9BRypj7rd1h270vPPAsjKdaiEyd8CKk8YfONdCo5/
+         ta1VsI7c3apQblocoZVo65P+H/IOi4qSYUOepqsvSsqS0MTdr46ICANapmtnLtfmJcLA
+         yDriRu6c6tkrcLIfjj+qiWprpTC5fTnR/kB3yxpFBT29pwtyZ9eQZuZRVHfgz/4veg2K
+         mX4oXr9ASyfS0CgztLWeT3QCm8Jkp684KHQxoCEIjDOavyE0dxa+DMxa8RjdB8qt575+
+         JGPUI71OEyzz9igMk6xNL1iS73ynRAb8NPsYM3X1+5I68zDFoBT+r25+8JJqs8U8EYZg
+         u3bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Q49iOsqrIpUBUkgsVkFNfQxjuRrZYZfy83eTo9eH/GA=;
-        b=aRzcAAH/Ps+xCcg/rOl0Ei4Qx2JMWs08Uk+ljxUpqLUZ02cIgQRthGkmuftdFXO5q0
-         N1vXKxUFekWV0YrSN3gq2whKk0sCrc/5sRNmEokxmWjuo/ZFAlrwumOjG3na9Tn6b2iM
-         ir2UrCtC6q/pzw8U/MKAv5vd6Dxk1eT0bxabkQoW3dEZbzQiJbsgBoDlG9QXJqSXfIWa
-         eKIa0v+sOsYmEjQ7/zGlNl/OS8McaSA0d36rMAS1TKedo0f6+ClX30iT5tOfn1SYRt/o
-         vDG2lBUlvuWGtFGkDoAjBg5FTNiORNklrptVITRLhJ4xV5ELt+kw66n6ensUmCyavYgg
-         mCkQ==
-X-Gm-Message-State: AOAM530XqOoUR4VoSa6R+2YFDuSrh4FBn/T7eBYfm52idyDT7Gafi+kJ
-        DHwmn51bzZmXmPm9vOtnjkTBZA==
-X-Google-Smtp-Source: ABdhPJzNlGzXWZdhV3OKMQn9TOLkqGWfab72DykFnaoKAdswvA2htySYb8On20siho5VTFQTEXPIOg==
-X-Received: by 2002:adf:d0ca:: with SMTP id z10mr10370532wrh.376.1624624403604;
-        Fri, 25 Jun 2021 05:33:23 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-146-78.w2-15.abo.wanadoo.fr. [2.15.229.78])
-        by smtp.gmail.com with ESMTPSA id h15sm5951120wrq.88.2021.06.25.05.33.23
+        bh=yqbRAsIckLoW6b0dakH7bBbGKt7Cg1eluPqhcnN57gw=;
+        b=llwdsNdYtQSX7GbvIgWJgz/UesM7MBg+UldE1qZaEnCLytBiXcmxRFtPFSGuBzo8Fd
+         eiLWZu6JkJ7ommlynZrN68rNeVwHEzOK6BCIpr/06D07OjIyBiwkh7mq3j1kinUuy7Y8
+         Nk5F7Mb7mv0nPbKDUVjxca0x4Bk3ivExaxUlPU9HXOw5XDLgQFYfdG788ane/VrPqLXv
+         bW+Q3NaJjNcY/fzlrFfwklqnT/Vivz4jPPNnQfu0YlDKwZbMneiu9Ax6hDyLoMDHUX4A
+         WkJPeXEa61mQ6Ax7BEwVMyieyY36YDNEBbcltlAGCeVzdg1lWVIW/JiUTqCUcEcskswx
+         8b5g==
+X-Gm-Message-State: AOAM532l3YyG+RQRzudEZ0x5Q+G9yLErwlpp+/vYyoflbK653axIlAab
+        dvj+BEAMsjmhe4vfY4CNCwfM
+X-Google-Smtp-Source: ABdhPJw+l8JSNeta/sJi33j+3wIJXKfqmlNJoPARSzZG5wE2/iYdIu5ndavbgjRwIEDjBM/T85YTLw==
+X-Received: by 2002:a17:90a:16cf:: with SMTP id y15mr3106911pje.219.1624624450861;
+        Fri, 25 Jun 2021 05:34:10 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:600b:2a0:ed5d:53e7:c64e:1bac])
+        by smtp.gmail.com with ESMTPSA id y7sm6077780pfy.153.2021.06.25.05.34.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 05:33:23 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [GIT PULL] gpio: fixes for v5.13
-Date:   Fri, 25 Jun 2021 14:33:20 +0200
-Message-Id: <20210625123320.26510-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.30.1
+        Fri, 25 Jun 2021 05:34:09 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        kvalo@codeaurora.org, ath11k@lists.infradead.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 00/10] MHI patches for v5.14 - Take 2
+Date:   Fri, 25 Jun 2021 18:03:45 +0530
+Message-Id: <20210625123355.11578-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hi Greg,
 
-Please pull the following late fixes for the GPIO subsystem.
+Please find the remaining MHI patches for v5.14. This series has the left over
+patches from the previous patchset and one new series that was reviewed a
+while ago and put on hold for Ack from Kalle Valo for ath11k.
 
-Best regards,
-Bartosz Golaszewski
+Summary:
 
-The following changes since commit dbec64b11c65d74f31427e2b9d5746fbf17bf840:
+1. Added validation for the channel ID read from event ring. If we get events
+from an invalid channel, we throw an error message and skip the event.
 
-  gpio: wcd934x: Fix shift-out-of-bounds error (2021-05-27 09:51:35 +0200)
+2. Fixed the MHI wake routines used for the newer modems such as SDX55 and
+SDX65 by using no-op routines only for the older modems and then relying on
+the default routines provided by MHI stack for newer ones.
 
-are available in the Git repository at:
+3. Added support for processing the events based on the priorities. Earlier
+a fixed priority was used for all events.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.13
+4. Added a dedicated flag to the MHI client transfer APIs for inbound
+buffer allocation by the MHI stack. Since this patch modifies the MHI
+client drivers under "net/", Ack has been collected from the netdev
+maintainer.
 
-for you to fetch changes up to c6414e1a2bd26b0071e2b9d6034621f705dfd4c0:
+5. Added support for Cinterion MV31-W modem in pci_generic controller:
+https://www.thalesgroup.com/en/markets/digital-identity-and-security/iot/iot-connectivity/products/iot-products/mv31-w-ultra-high
 
-  gpio: AMD8111 and TQMX86 require HAS_IOPORT_MAP (2021-06-25 12:13:53 +0200)
+6. Rearranged the setting of BHI/BHIe offsets for better validation of the
+register values read from MMIO
 
-----------------------------------------------------------------
-gpio fixes for v5.13
+7. Cleanup of the BHI/BHIe pointers by setting them to NULL to prevent access
+after power down.
 
-- fix wake-up interrupt support on gpio-mxc
-- zero the padding bytes in a structure passed to user-space in the GPIO
-  character device
-- select HAS_IOPORT_MAP in two drivers that need it to fix a Kbuild issue
+8. Added support for getting the MMIO register length from the controller
+drivers. This helps in validation of the read offsets from MMIO registers.
+Since this patch touches ath11k, Ack has been collected from Kalle Valo.
 
-----------------------------------------------------------------
-Gabriel Knezek (1):
-      gpiolib: cdev: zero padding during conversion to gpioline_info_changed
+9. With the help of above register length, added check for BHI/BHIe offsets.
 
-Johannes Berg (1):
-      gpio: AMD8111 and TQMX86 require HAS_IOPORT_MAP
+Thanks,
+Mani
+
+Bhaumik Bhatt (8):
+  bus: mhi: pci_generic: Apply no-op for wake using sideband wake
+    boolean
+  bus: mhi: core: Validate channel ID when processing command
+    completions
+  bus: mhi: core: Set BHI/BHIe offsets on power up preparation
+  bus: mhi: core: Set BHI and BHIe pointers to NULL in clean-up
+  bus: mhi: Add MMIO region length to controller structure
+  ath11k: set register access length for MHI driver
+  bus: mhi: pci_generic: Set register access length for MHI driver
+  bus: mhi: core: Add range checks for BHI and BHIe
 
 Loic Poulain (1):
-      gpio: mxc: Fix disabled interrupt wake-up support
+  bus: mhi: Add inbound buffers allocation flag
 
- drivers/gpio/Kconfig        | 2 ++
- drivers/gpio/gpio-mxc.c     | 2 +-
- drivers/gpio/gpiolib-cdev.c | 1 +
- 3 files changed, 4 insertions(+), 1 deletion(-)
+ULRICH Thomas (1):
+  bus: mhi: pci_generic: Add Cinterion MV31-W PCIe to MHI
+
+ drivers/bus/mhi/core/init.c           | 61 +++++++++++++++++--------
+ drivers/bus/mhi/core/internal.h       |  2 +-
+ drivers/bus/mhi/core/main.c           | 26 +++++++----
+ drivers/bus/mhi/core/pm.c             | 28 ++----------
+ drivers/bus/mhi/pci_generic.c         | 65 +++++++++++++++++++++++----
+ drivers/net/mhi/net.c                 |  2 +-
+ drivers/net/wireless/ath/ath11k/mhi.c |  1 +
+ drivers/net/wwan/mhi_wwan_ctrl.c      |  2 +-
+ include/linux/mhi.h                   |  9 +++-
+ net/qrtr/mhi.c                        |  2 +-
+ 10 files changed, 134 insertions(+), 64 deletions(-)
+
+-- 
+2.25.1
+
