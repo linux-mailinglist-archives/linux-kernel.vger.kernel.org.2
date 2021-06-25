@@ -2,188 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF963B3DD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DF63B3DDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhFYHq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 03:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbhFYHqZ (ORCPT
+        id S229994AbhFYHr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 03:47:58 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16826 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229454AbhFYHr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 03:46:25 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1063C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 00:44:03 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id w13so6171208edc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 00:44:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0oSVleYVjbJ0iAd6D04N2IadYoidHNoFrcmT8l8IGEo=;
-        b=IgOpAYl4F5RE1hLnxr9LfWgzygYiRzQBELuycEavw1ixs6p97ue1GFZT/FxYEzVgnZ
-         OTsIuRuGjw+007BDnex5YYxdiaEC0DfkoELnJWqGOUf3/CRtOC1JiJvwk5+Gw6GLjKPa
-         hB9ZolGEptFiB2gGRkLyu79fBFwDHemb7FlU4jEWVDxIW+pOSFN5rfvV23bI5QXzmO3d
-         y2Krzh9QYLPX7Vw3NocUywZv6hSIYOJVoolAinGp8OEcgIYS7nSfPUhgRG+d7lbz8buF
-         dc4Crl+vYALtYWx3Fqtoyz0K2liU6xh6BA5ScqFpfuT9hBihSeGYJa1NIRvqVBM1uSYN
-         UPNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0oSVleYVjbJ0iAd6D04N2IadYoidHNoFrcmT8l8IGEo=;
-        b=dQZdaosYBlXQQo8kke0+c6X+lhzfze9gzrjSeCSPt0Q5P19wkTf4w8NDKNeRL0fkPC
-         wCNcep5t3zlcjznqDq+RHTOblOlYjFXx6+P0sKJQV/ktbbfjf623IkGmKWVofKrsu3WT
-         /rZipLduuWl6gwX2aaCPweFMiLsskNM9/T0s7GJpmgEKinx3s+U6t1JpX8Oi+SwfXfBx
-         HuT5bS1dtcDsC6u+jmwBZK7EU5OYx+khLz1Anv1s8xNmF7DQqtRmMe4qm7iGbWM83P/W
-         c/fCEWaFPENKhrPvYIxfAiJV1gsoQnvKuznQhY43xp5wPLsNQGplhOnrV19iA/qEwTWR
-         dRuA==
-X-Gm-Message-State: AOAM530a91A2LPq9TyWnbKgmOtsa1DaYvuf4kHwSPd61weqr/8dox8y5
-        WSpBOYfAFHf0ijBJxCDcWRryPA==
-X-Google-Smtp-Source: ABdhPJyYrBWE8qukWNfXA7mG/1kJPWEPVuNcDjy9Vqsju5EwUDJS9aU+F2sWtVIhyKHPk6mtpjdkOg==
-X-Received: by 2002:a05:6402:120b:: with SMTP id c11mr12832968edw.209.1624607042538;
-        Fri, 25 Jun 2021 00:44:02 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id x17sm3472471edr.88.2021.06.25.00.44.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 00:44:02 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jic23@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH] iio: adc: fsl-imx25-gcq: initialize regulators as needed
-Date:   Fri, 25 Jun 2021 10:43:25 +0300
-Message-Id: <20210625074325.9237-1-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 25 Jun 2021 03:47:56 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15P7YTqX061945;
+        Fri, 25 Jun 2021 03:44:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=1RqvYvHqS+g8GAhL7EUAfBHKQHRxaUMGXuw/IwCXA00=;
+ b=Nmb11u4f/JhMKk+ivMs7oA1Ku85DovZ4LdaLOgwfNrDLH0a/wz5mI0aLrLO3Altwv4N4
+ LMTZyz/WDveZjxrU5tD5PPo68pDirAd4Gfrex52xiqR0TujC5LdTRYi0ri1ge/eDHmSN
+ JQJ8rK/jOMjr3THp/ok9RkvIdn/4KtjecaWiJfeTOER6nglHE+EZicixc1c1BnhsB+1Y
+ g5DWwvan20xvxygDIi3MEZQ7H/GwZDVcHzVEGz2iIjsiJgKnoZ7U+TUpyPDhD5O2Zekw
+ xJiAEI7Z0lyxcZgGi3MCDrgB0acHr+cDdUAyjJoQ4I+2kOZz0Z9ex/2nv4xilwCqOw4H ZA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39d8cn51sy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Jun 2021 03:44:39 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15P7YRo0061765;
+        Fri, 25 Jun 2021 03:44:38 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39d8cn51s5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Jun 2021 03:44:38 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15P7g5SF017198;
+        Fri, 25 Jun 2021 07:44:36 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3997uhaw6x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Jun 2021 07:44:35 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15P7h6UA14352728
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Jun 2021 07:43:06 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6193DAE056;
+        Fri, 25 Jun 2021 07:44:33 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9D274AE051;
+        Fri, 25 Jun 2021 07:44:31 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.31.44])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 25 Jun 2021 07:44:31 +0000 (GMT)
+Subject: Re: [PATCH 0/6] KVM: Remove uses of struct page from x86 and arm64
+ MMU
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Stevens <stevensd@chromium.org>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        James Morse <james.morse@arm.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvmarm@lists.cs.columbia.edu,
+        kvm-ppc@vger.kernel.org, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Sean Christopherson <seanjc@google.com>,
+        David Stevens <stevensd@google.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Will Deacon <will@kernel.org>
+References: <20210624035749.4054934-1-stevensd@google.com>
+ <1624530624.8jff1f4u11.astroid@bobo.none>
+ <1624534759.nj0ylor2eh.astroid@bobo.none>
+ <0d3a699a-15eb-9f1b-0735-79d14736f38c@redhat.com>
+ <1624539354.6zggpdrdbw.astroid@bobo.none>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <19c4e392-fbab-ee2c-7039-c88d1ae5775d@de.ibm.com>
+Date:   Fri, 25 Jun 2021 09:44:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1624539354.6zggpdrdbw.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Xd2p2n2e6jxdPlNvwSbyIgmg3LPAQMfs
+X-Proofpoint-ORIG-GUID: 6q0X_bUItmYJaGkAxPmmRfj9zzu6NsL2
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-25_02:2021-06-24,2021-06-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
+ malwarescore=0 lowpriorityscore=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 bulkscore=0 priorityscore=1501 clxscore=1011 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106250043
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver tries to initialize all possible regulators from the DT, then
-match the external regulators with each channel and then release all unused
-regulators.
 
-We can change the logic a bit to initialize regulators only when at least
-one channel needs them.
 
-This change creates a mx25_gcq_ext_regulator_setup() function that is
-called only for the external regulators. If there's already a reference to
-an external regulator, the function will just exit early with no error.
+On 24.06.21 14:57, Nicholas Piggin wrote:
+> Excerpts from Paolo Bonzini's message of June 24, 2021 10:41 pm:
+>> On 24/06/21 13:42, Nicholas Piggin wrote:
+>>> Excerpts from Nicholas Piggin's message of June 24, 2021 8:34 pm:
+>>>> Excerpts from David Stevens's message of June 24, 2021 1:57 pm:
+>>>>> KVM supports mapping VM_IO and VM_PFNMAP memory into the guest by using
+>>>>> follow_pte in gfn_to_pfn. However, the resolved pfns may not have
+>>>>> assoicated struct pages, so they should not be passed to pfn_to_page.
+>>>>> This series removes such calls from the x86 and arm64 secondary MMU. To
+>>>>> do this, this series modifies gfn_to_pfn to return a struct page in
+>>>>> addition to a pfn, if the hva was resolved by gup. This allows the
+>>>>> caller to call put_page only when necessated by gup.
+>>>>>
+>>>>> This series provides a helper function that unwraps the new return type
+>>>>> of gfn_to_pfn to provide behavior identical to the old behavior. As I
+>>>>> have no hardware to test powerpc/mips changes, the function is used
+>>>>> there for minimally invasive changes. Additionally, as gfn_to_page and
+>>>>> gfn_to_pfn_cache are not integrated with mmu notifier, they cannot be
+>>>>> easily changed over to only use pfns.
+>>>>>
+>>>>> This addresses CVE-2021-22543 on x86 and arm64.
+>>>>
+>>>> Does this fix the problem? (untested I don't have a POC setup at hand,
+>>>> but at least in concept)
+>>>
+>>> This one actually compiles at least. Unfortunately I don't have much
+>>> time in the near future to test, and I only just found out about this
+>>> CVE a few hours ago.
+>>
+>> And it also works (the reproducer gets an infinite stream of userspace
+>> exits and especially does not crash).  We can still go for David's
+>> solution later since MMU notifiers are able to deal with this pages, but
+>> it's a very nice patch for stable kernels.
+> 
+> Oh nice, thanks for testing. How's this?
+> 
+> Thanks,
+> Nick
+> 
+> ---
+> 
+> KVM: Fix page ref underflow for regions with valid but non-refcounted pages
+> 
+> It's possible to create a region which maps valid but non-refcounted
+> pages (e.g., tail pages of non-compound higher order allocations). These
+> host pages can then be returned by gfn_to_page, gfn_to_pfn, etc., family
+> of APIs, which take a reference to the page, which takes it from 0 to 1.
+> When the reference is dropped, this will free the page incorrectly.
+> 
+> Fix this by only taking a reference on the page if it was non-zero,
+> which indicates it is participating in normal refcounting (and can be
+> released with put_page).
+> 
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> ---
+>   virt/kvm/kvm_main.c | 19 +++++++++++++++++--
+>   1 file changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 6a6bc7af0e28..46fb042837d2 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -2055,6 +2055,13 @@ static bool vma_is_valid(struct vm_area_struct *vma, bool write_fault)
+>   	return true;
+>   }
+>   
+> +static int kvm_try_get_pfn(kvm_pfn_t pfn)
+> +{
+> +	if (kvm_is_reserved_pfn(pfn))
+> +		return 1;
+> +	return get_page_unless_zero(pfn_to_page(pfn));
+> +}
+> +
+>   static int hva_to_pfn_remapped(struct vm_area_struct *vma,
+>   			       unsigned long addr, bool *async,
+>   			       bool write_fault, bool *writable,
+> @@ -2104,13 +2111,21 @@ static int hva_to_pfn_remapped(struct vm_area_struct *vma,
+>   	 * Whoever called remap_pfn_range is also going to call e.g.
+>   	 * unmap_mapping_range before the underlying pages are freed,
+>   	 * causing a call to our MMU notifier.
+> +	 *
+> +	 * Certain IO or PFNMAP mappings can be backed with valid
+> +	 * struct pages, but be allocated without refcounting e.g.,
+> +	 * tail pages of non-compound higher order allocations, which
+> +	 * would then underflow the refcount when the caller does the
+> +	 * required put_page. Don't allow those pages here.
+>   	 */
+> -	kvm_get_pfn(pfn);
+> +	if (!kvm_try_get_pfn(pfn))
+> +		r = -EFAULT;
+>   
 
-This way, the driver doesn't need to keep any track of these regulators
-during init.
+Right. That should also take care of s390 (pin_guest_page in vsie.c
+which calls gfn_to_page).
+FWIW, the current API is really hard to follow as it does not tell
+which functions take a reference and which dont.
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/iio/adc/fsl-imx25-gcq.c | 57 ++++++++++++++++-----------------
- 1 file changed, 28 insertions(+), 29 deletions(-)
+Anyway, this patch (with cc stable?)
 
-diff --git a/drivers/iio/adc/fsl-imx25-gcq.c b/drivers/iio/adc/fsl-imx25-gcq.c
-index ab5139e911c3..31776f80f847 100644
---- a/drivers/iio/adc/fsl-imx25-gcq.c
-+++ b/drivers/iio/adc/fsl-imx25-gcq.c
-@@ -172,13 +172,37 @@ static const struct regmap_config mx25_gcq_regconfig = {
- 	.reg_stride = 4,
- };
- 
-+static int mx25_gcq_ext_regulator_setup(struct device *dev,
-+					struct mx25_gcq_priv *priv, u32 refp)
-+{
-+	char reg_name[12];
-+	int ret;
-+
-+	if (priv->vref[refp])
-+		return 0;
-+
-+	ret = snprintf(reg_name, sizeof(reg_name), "vref-%s",
-+		       mx25_gcq_refp_names[refp]);
-+	if (ret < 0)
-+		return ret;
-+
-+	priv->vref[refp] = devm_regulator_get_optional(dev, reg_name);
-+	if (IS_ERR(priv->vref[refp])) {
-+		dev_err(dev,
-+			"Error, trying to use external voltage reference without a %s regulator.",
-+			reg_name);
-+		return PTR_ERR(priv->vref[refp]);
-+	}
-+
-+	return 0;
-+}
-+
- static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
- 			       struct mx25_gcq_priv *priv)
- {
- 	struct device_node *np = pdev->dev.of_node;
- 	struct device_node *child;
- 	struct device *dev = &pdev->dev;
--	unsigned int refp_used[4] = {};
- 	int ret, i;
- 
- 	/*
-@@ -194,19 +218,6 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
- 			     MX25_ADCQ_CFG_IN(i) |
- 			     MX25_ADCQ_CFG_REFN_NGND2);
- 
--	/*
--	 * First get all regulators to store them in channel_vref_mv if
--	 * necessary. Later we use that information for proper IIO scale
--	 * information.
--	 */
--	priv->vref[MX25_ADC_REFP_INT] = NULL;
--	priv->vref[MX25_ADC_REFP_EXT] =
--		devm_regulator_get_optional(&pdev->dev, "vref-ext");
--	priv->vref[MX25_ADC_REFP_XP] =
--		devm_regulator_get_optional(&pdev->dev, "vref-xp");
--	priv->vref[MX25_ADC_REFP_YP] =
--		devm_regulator_get_optional(&pdev->dev, "vref-yp");
--
- 	for_each_child_of_node(np, child) {
- 		u32 reg;
- 		u32 refp = MX25_ADCQ_CFG_REFP_INT;
-@@ -233,11 +244,10 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
- 		case MX25_ADC_REFP_EXT:
- 		case MX25_ADC_REFP_XP:
- 		case MX25_ADC_REFP_YP:
--			if (IS_ERR(priv->vref[refp])) {
--				dev_err(dev, "Error, trying to use external voltage reference without a vref-%s regulator.",
--					mx25_gcq_refp_names[refp]);
-+			ret = mx25_gcq_ext_regulator_setup(&pdev->dev, priv, refp);
-+			if (ret) {
- 				of_node_put(child);
--				return PTR_ERR(priv->vref[refp]);
-+				return ret;
- 			}
- 			priv->channel_vref_mv[reg] =
- 				regulator_get_voltage(priv->vref[refp]);
-@@ -253,8 +263,6 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
- 			return -EINVAL;
- 		}
- 
--		++refp_used[refp];
--
- 		/*
- 		 * Shift the read values to the correct positions within the
- 		 * register.
-@@ -285,15 +293,6 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
- 	regmap_write(priv->regs, MX25_ADCQ_CR,
- 		     MX25_ADCQ_CR_PDMSK | MX25_ADCQ_CR_QSM_FQS);
- 
--	/* Remove unused regulators */
--	for (i = 0; i != 4; ++i) {
--		if (!refp_used[i]) {
--			if (!IS_ERR_OR_NULL(priv->vref[i]))
--				devm_regulator_put(priv->vref[i]);
--			priv->vref[i] = NULL;
--		}
--	}
--
- 	return 0;
- }
- 
--- 
-2.31.1
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
 
+>   out:
+>   	pte_unmap_unlock(ptep, ptl);
+>   	*p_pfn = pfn;
+> -	return 0;
+> +
+> +	return r;
+>   }
+>   
+>   /*
+> 
