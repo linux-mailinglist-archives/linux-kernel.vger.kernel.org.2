@@ -2,118 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB56A3B4683
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 904373B4687
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhFYPXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 11:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbhFYPXf (ORCPT
+        id S229884AbhFYPZE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Jun 2021 11:25:04 -0400
+Received: from mail-ua1-f51.google.com ([209.85.222.51]:33382 "EHLO
+        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbhFYPZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 11:23:35 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B5DC061574;
-        Fri, 25 Jun 2021 08:21:14 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0dae005eaeb42c95705db7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:ae00:5eae:b42c:9570:5db7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5DD221EC03F0;
-        Fri, 25 Jun 2021 17:21:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1624634473;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=0PTZ7p2IQbsEzDy2yLK9UqDrnt3n2Qm1Q8c2B02Mvy0=;
-        b=XSoxFJvgTaxVEiF2XchzNvwpVOCDNMxyVszXEwiNrQR5EpxoNKSbR4WJVX0rJXubFfbhzK
-        3BRJZLMKgK0RztHACYj65TUCZ147cPDcWcNAqyMCpaGiwvAe+RBcwbh+1abRetmqNshme1
-        QPU7nU2J5Iku3q9c+nKMnd4z/6EvyX4=
-Date:   Fri, 25 Jun 2021 17:21:08 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yazen Ghannam <yazen.ghannam@amd.com>
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mchehab@kernel.org, tony.luck@intel.com,
-        Smita.KoralahalliChannabasappa@amd.com
-Subject: Re: [PATCH v2 03/31] EDAC/amd64: Don't use naked values for DF
- registers
-Message-ID: <YNX0ZLRSLgmm2LiA@zn.tnic>
-References: <20210623192002.3671647-1-yazen.ghannam@amd.com>
- <20210623192002.3671647-4-yazen.ghannam@amd.com>
+        Fri, 25 Jun 2021 11:25:03 -0400
+Received: by mail-ua1-f51.google.com with SMTP id x22so3706629uap.0;
+        Fri, 25 Jun 2021 08:22:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dckc1Y5oArfmqGf9uhmcW+nVHTA44z1zSQ9JQ8A7cx0=;
+        b=OdFz68Ss39x1a3x9wewTT1eEq+Owq4P92wZJSjxYbRsN75VneRc0R979vQnEjDAQ3R
+         htxICHBUvvcrZFGud10IQS4rrn8vYVa4wFpP3DIl13JpwVUQGPUCyFwsFJUhki7Wgo3m
+         7YixqNtyUdyxLHfsmCb+4gDlAq6Ypa79BCavSC/trjPtPh/PRfUJlqFli/H9uPN7U3vO
+         BIOmCwpaWHNm9oIZJBm2RuLy1rXDNMT9p9Zdyz0tzAz9wcj7dqdPHPoPCnU4Ggk5KZS3
+         4bZ+z/9uyhU/NuoA7FrmfDNDJs94lBn4zPEc9X9Xzpkz75ITXKKUqH/bPoOJPdOqXug+
+         x6eQ==
+X-Gm-Message-State: AOAM532Ra1lXQYquyWN0TEMxj6/hNrCks/8V24AZjnBn+G54EKPX7JFL
+        aT3P2UCKMGzOidvWfkaGtj7lYawUqooo9M6jTlc=
+X-Google-Smtp-Source: ABdhPJxwYqp45mNSYBwJKHtWJ8GFH7IJzuCBQqhfVtE1/NiRa0Ja4ZkGaTYr8Tie+8VSPZCAVrVmqKI1uLm5wnTFnqw=
+X-Received: by 2002:ab0:647:: with SMTP id f65mr11970038uaf.4.1624634562204;
+ Fri, 25 Jun 2021 08:22:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210623192002.3671647-4-yazen.ghannam@amd.com>
+References: <20210624224909.6350-1-pali@kernel.org> <20210625143617.12826-1-pali@kernel.org>
+ <20210625143617.12826-8-pali@kernel.org>
+In-Reply-To: <20210625143617.12826-8-pali@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 25 Jun 2021 17:22:31 +0200
+Message-ID: <CAMuHMdUCEHtqNk-nGJhPK_=NrgSoRhmC99J9pdGqQxcWpoFqGg@mail.gmail.com>
+Subject: Re: [PATCH v2 07/11] math64: New DIV_U64_ROUND_CLOSEST helper
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 07:19:34PM +0000, Yazen Ghannam wrote:
-> +static struct df_reg df_regs[] = {
-> +	/* D18F0x50 (FabricBlockInstanceInformation3_CS) */
-> +	[FAB_BLK_INST_INFO_3]	=	{0, 0x50},
-> +	/* D18F0x104 (DramHoleControl) */
-> +	[DRAM_HOLE_CTL]		=	{0, 0x104},
-> +	/* D18F0x110 (DramBaseAddress) */
-> +	[DRAM_BASE_ADDR]	=	{0, 0x110},
-> +	/* D18F0x114 (DramLimitAddress) */
-> +	[DRAM_LIMIT_ADDR]	=	{0, 0x114},
-> +	/* D18F0x1B4 (DramOffset) */
-> +	[DRAM_OFFSET]		=	{0, 0x1B4},
-> +	/* D18F1x208 (SystemFabricIdMask) */
-> +	[SYS_FAB_ID_MASK]	=	{1, 0x208},
-> +};
+Hi Pali,
+
+On Fri, Jun 25, 2021 at 4:37 PM Pali Rohár <pali@kernel.org> wrote:
+> Provide DIV_U64_ROUND_CLOSEST helper which uses div_u64 to perform
+> division rounded to the closest integer using unsigned 64bit
+> dividend and unsigned 32bit divisor.
+>
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+
+Thanks for your patch!
+
+> --- a/include/linux/math64.h
+> +++ b/include/linux/math64.h
+> @@ -281,6 +281,19 @@ u64 mul_u64_u64_div_u64(u64 a, u64 mul, u64 div);
+>  #define DIV64_U64_ROUND_CLOSEST(dividend, divisor)     \
+>         ({ u64 _tmp = (divisor); div64_u64((dividend) + _tmp / 2, _tmp); })
+>
+> +/*
+> + * DIV_U64_ROUND_CLOSEST - unsigned 64bit divide with 32bit divisor rounded to nearest integer
+> + * @dividend: unsigned 64bit dividend
+> + * @divisor: unsigned 32bit divisor
+> + *
+> + * Divide unsigned 64bit dividend by unsigned 32bit divisor
+> + * and round to closest integer.
+> + *
+> + * Return: dividend / divisor rounded to nearest integer
+> + */
+> +#define DIV_U64_ROUND_CLOSEST(dividend, divisor)       \
+> +       ({ u32 _tmp = (divisor); div_u64((u64)(dividend) + _tmp / 2, _tmp); })
+
+Given "dividend" should already be an unsigned 64-bit value, I don't
+think the cast to "u64" is needed. Similar macros in this file also
+don't have the cast.
+
 > +
->  static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr)
->  {
->  	u64 dram_base_addr, dram_limit_addr, dram_hole_base;
-> @@ -1059,8 +1091,9 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
->  	u8 cs_mask, cs_id = 0;
->  	bool hash_enabled = false;
->  
-> -	/* Read D18F0x1B4 (DramOffset), check if base 1 is used. */
-> -	if (amd_df_indirect_read(nid, 0, 0x1B4, umc, &tmp))
-> +	struct df_reg reg;
-> +
-> +	if (amd_df_indirect_read(nid, df_regs[DRAM_OFFSET], umc, &tmp))
->  		goto out_err;
->  
->  	/* Remove HiAddrOffset from normalized address, if enabled: */
-> @@ -1073,8 +1106,9 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
->  		}
->  	}
->  
-> -	/* Read D18F0x110 (DramBaseAddress). */
-> -	if (amd_df_indirect_read(nid, 0, 0x110 + (8 * base), umc, &tmp))
-> +	reg = df_regs[DRAM_BASE_ADDR];
-> +	reg.offset += base * 8;
+>  /*
+>   * DIV_S64_ROUND_CLOSEST - signed 64bit divide with 32bit divisor rounded to nearest integer
+>   * @dividend: signed 64bit dividend
 
-So this looks weird: you have a df_regs[] array of all those different
-DF registers which I'd assume is a read-only thing because, well, those
-func and offset things are immutable, i.e., hw registers offsets etc.
+With the above nit fixed:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-But then here you go and and modify the offset.
+Gr{oetje,eeting}s,
 
-And that df_regs array is globally visible in the driver and if some
-later functionality decides to use it, it'll see the modified offset.
-
-IOW, I'd make that array read only (const) and use local vars instead to
-pass down to amd_df_indirect_read().
-
-And I'm also questioning what the point is for that df_reg thing?
-
-You have them defined but then you have to change them.
-
-I.e., you can just as well pass in func and offset separately and be
-done with it.
-
-But maybe there's something else happening in the patches which comes
-later and which will make me go, ahaa.
-
-Thx.
+                        Geert
 
 -- 
-Regards/Gruss,
-    Boris.
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-https://people.kernel.org/tglx/notes-about-netiquette
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
