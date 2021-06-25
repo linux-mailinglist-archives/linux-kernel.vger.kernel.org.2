@@ -2,136 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B9E3B4804
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1BDC3B4806
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhFYRKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 13:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37106 "EHLO
+        id S229994AbhFYRLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 13:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhFYRKv (ORCPT
+        with ESMTP id S230004AbhFYRLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 13:10:51 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F42C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 10:08:30 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id s19so13303244ioc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 10:08:30 -0700 (PDT)
+        Fri, 25 Jun 2021 13:11:01 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1CDC061574;
+        Fri, 25 Jun 2021 10:08:39 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id l12so10626005wrt.3;
+        Fri, 25 Jun 2021 10:08:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BAeKdqZ59vL1Zbwsx1VHL+yJw2gaJxpfVIkCy9lIIDI=;
-        b=v2hF/rN8oc5jKd1ALzPWk2TqOGe7FSqh+ichwcaElu6TvqiyWhiT4zV2KMjbDQkBAy
-         uwz0094OrW3Y8TenuJLLSsVxlFswLB1DFhqBR8qk8UtVOuU7RAprdwhEwrW5XaWn6Zfx
-         6KfusyDZXfJtjP2BDG61Cw8yEjdl6xTUahNe4L+v9Cuttm418J5E1hdBysgqgLuTi9zL
-         q9GSO3W7MK8nR3yupHB1FGQFP6H+kKn5cpYFOdxkwuJELj3kkeVFvvWEZeQheb1h8ujp
-         UAxcvjRgF72WF40kJzjCE0+Z1Uxt+qKrmYvgrVYDRFfwM23Ngws4ne+gHVBuHk95LuuF
-         5uXg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Okz6kNod9vG3qCnnewbfMIkpGKwd7jxjMWkNhMCHPqY=;
+        b=HLBfzuYSzWwrvVnxKDqGXHc7b+9fblc/NT4YP4wdLJoXl5bc2dAUmT3BhgMYV+b4F+
+         QJRJnlW0kbU2q08Vt/cCoVR1l8DwlTeQEfEes+iMKoumur7+Y64SItQ/7VhSes0Zx4nA
+         e65415eoXQ4qA5xbbZNvvHOxbXzC3h9UDVwQTvo9xK9IqyvwYrirsAUUkmswSkFDB/4s
+         P22jKqZb51xsc8jAw6x84UYyktvibYs2ANeVrTsb5QswyDavzoI25T+/P2YDq7TpVXC+
+         41+4SW5twGhn6IQXmvr+IZZmJDG9z5tPGew7qE8+vEgS3DrK/8IdpU8pzBIb+7SvZO4q
+         HJig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BAeKdqZ59vL1Zbwsx1VHL+yJw2gaJxpfVIkCy9lIIDI=;
-        b=jpMEP8AvdlDdtJhvtPTvWk27mA5RxHcifNKaUPOL/byViJeJiDGPHV9rPrIojMnApa
-         qZd8OzLDfVXpJoHCevNN7GIvMcoYmc6sWf4E/evXA/sV+QKGvwQRUjCJke0QrCSjbnF8
-         YhNIqX24JRt9x9M5Qkh2NsnYxmgNHY0L+6Lk8ULVsBd9GgxHrj9LxWjVqP153teRBj9v
-         AzO4YMNvnMNxassJOT1VCwWk7R3VgeNZfghKedZ76vU92jV1J/ukTOl9r/uNmFXZ35zZ
-         d7XAv5fa3T51hh53y3yx11hCWrsV8w7/sevStHILuEPpf185EeZ1baji1sKygCh0GvMy
-         ZI4g==
-X-Gm-Message-State: AOAM532Jlmlh+Et0LndCugd9v8KWstHzjC2Df2o/wiUHTKts9rZN6dh+
-        KvrBu4lPc7HrR32UOvwFz0U9dyU3YLNAz7kXIopmvw==
-X-Google-Smtp-Source: ABdhPJz8mi1eUDrZtCpfq6twQvh+DMXZW+fiAz3Rb1m6GEIwRkHIn+RG6CZH6YT8nl+vaVFkIkUDuJ94CAPpbFadYos=
-X-Received: by 2002:a05:6638:110e:: with SMTP id n14mr10388327jal.4.1624640909410;
- Fri, 25 Jun 2021 10:08:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Okz6kNod9vG3qCnnewbfMIkpGKwd7jxjMWkNhMCHPqY=;
+        b=DdRMwij+QLZMt+FUadQLfJAK9PVHMkzlqtIkze0IsPy1Bc2o55hTjxK0PS7Ipx/q+j
+         vUVvn9W9rt/GQipZ0A0W6Lv75z3WVOKenuvaHDUKQJE6D9rplYqSW2SMt67Mn4zjt+rn
+         JQC/AQjn9/7xshfdgMq1MkvTbbeGmdPvmcbTU2kFxQ/in5bdNUVts0N3p47U/pM3A/LC
+         lrdz+MDejN948s8JJR1m2S/gydDEtLrfrKLT1juwkV8aYYcwcDbtMMr7E8u0FwZ+X+WQ
+         aOZ4zPnAb7QTTBWb2VzjjLgPr2fE8KyxC2tjaAkF+A4DcpzEIfdbfl5MhU5TRe2zajUo
+         CkHg==
+X-Gm-Message-State: AOAM530WErMGv1Pjln5vUQwV74icyQr1fdlkhobTzdcskxarl5LsOO/s
+        2Fp6fqol6dxNch3SUBP0hoE=
+X-Google-Smtp-Source: ABdhPJyWyl+t9LPZsLg++3OKuGUGpkr9ii2kpDNJfNpv054GvY3G2fWpYJyS/AX4Q5Uhwx611bakgQ==
+X-Received: by 2002:adf:b34c:: with SMTP id k12mr12037483wrd.272.1624640917671;
+        Fri, 25 Jun 2021 10:08:37 -0700 (PDT)
+Received: from elementary-os.localdomain ([94.73.35.64])
+        by smtp.gmail.com with ESMTPSA id o20sm11972339wms.3.2021.06.25.10.08.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 10:08:37 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 19:08:34 +0200
+From:   =?iso-8859-1?Q?Jos=E9_Exp=F3sito?= <jose.exposito89@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] HID: magicmouse: register power supply
+Message-ID: <20210625170834.GA9573@elementary-os.localdomain>
+References: <20210522180611.314300-1-jose.exposito89@gmail.com>
+ <nycvar.YFH.7.76.2106241532511.18969@cbobk.fhfr.pm>
 MIME-Version: 1.0
-References: <20210625111603.358518-1-davidgow@google.com> <99c2564c-4175-7e3e-84c3-3bcb6d4f9d58@linuxfoundation.org>
-In-Reply-To: <99c2564c-4175-7e3e-84c3-3bcb6d4f9d58@linuxfoundation.org>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Fri, 25 Jun 2021 10:08:17 -0700
-Message-ID: <CAGS_qxqCBZy+b1-pFc4Eh9AExc7XRkB2LZ2b776bX=oY2C4qfw@mail.gmail.com>
-Subject: Re: [PATCH] kunit: Fix merge issue in suite filtering test
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     David Gow <davidgow@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <nycvar.YFH.7.76.2106241532511.18969@cbobk.fhfr.pm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 9:11 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
->
-> On 6/25/21 5:16 AM, David Gow wrote:
-> > There were a couple of errors introuced when
-> > "kunit: add unit test for filtering suites by names"[1] was merged in
-> > c9d80ffc5a.
-> >
-> > An erroneous '+' was introduced in executor.c, and the executor_test.c
-> > file went missing. This causes the kernel to fail to compile if
-> > CONFIG_KUNIT is enabled, as reported in [2,3].
-> >
-> > As with the original, I've tested by running just the new tests using
-> > itself:
-> > $ ./tools/testing/kunit/kunit.py run '*exec*'
-> >
-> > [1]: https://lore.kernel.org/linux-kselftest/20210421020427.2384721-1-dlatypov@google.com/
-> > [2]: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/6IKQX5JXZF7I3NFH4IAWUMHXEQSCPNDP/
-> > [3]: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/EKY7ZH5YDCCTSJF2G7XFPMGIXQSUVD3Y/
-> >
-> > Fixes: c9d80ffc5a ("kunit: add unit test for filtering suites by names")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: David Gow <davidgow@google.com>
-> > ---
-> >
-> > This is another fix for the kunit-fixes branch, where there seems to
-> > have been an issue merging the "kunit: add unit test for filtering
-> > suites by names" patch here:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit-fixes&id=c9d80ffc5a0a30955de0b8c5c46a05906d417800
-> >
-> > Again, feel free to squash this into the original patch if that works
-> > better.
-> >
->
-> Thank you. My bad. Applied to kunit-fixes now.
+Hi Jiri,
 
-Hmm, it looks like executor_test.c might not have made it into kunit-fixes.
-I believe this is the applied version of this patch:
+First of all, thank you for taking the time to review my patches.
 
-$ git show d833ce7480864d4d7eb2dbb04320858be3578b2a --stat
-commit d833ce7480864d4d7eb2dbb04320858be3578b2a
-Author: David Gow <davidgow@google.com>
-Date:   Fri Jun 25 04:16:03 2021 -0700
+On Thu, Jun 24, 2021 at 03:33:39PM +0200, Jiri Kosina wrote:
+> On Sat, 22 May 2021, José Expósito wrote:
+> 
+> > [...]
+> > v2: Add depends on USB_HID to Kconfig
+> 
+> Hmm, why is this dependency needed in the first place, please? I think 
+> trying to keep the drivers independent on transport drivers (especially in 
+> cases like this, where more variants of physical transports actually 
+> really do exist) is worth trying.
 
-    kunit: Fix merge issue in suite filtering test
-...
- lib/kunit/executor.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sorry, that's something I should have explained in the changelog.
 
-The result looks like this:
-$ ./tools/testing/kunit/kunit.py run
-...
-$ make ARCH=um --jobs=8 O=.kunit
-ERROR:root:../lib/kunit/executor.c:140:10: fatal error:
-executor_test.c: No such file or directory
-  140 | #include "executor_test.c"
-      |          ^~~~~~~~~~~~~~~~~
+Intel's test bot reported compilation errors on the first version of the patch
+when USB support wasn't configured:
+https://lore.kernel.org/patchwork/patch/1425313/
 
+I was kindly pointed to a similar error and its fix, but, maybe in this case this
+is not the right fix?
+Maybe there is a macro that I can use to wrap the USB related code in an #ifdef?
 
-I just `git am` or something just really doesn't like executor_test.c :)
-
-
-
-
->
->
->
-> thanks,
->
-> -- Shuah
->
-> --
-> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/99c2564c-4175-7e3e-84c3-3bcb6d4f9d58%40linuxfoundation.org.
+Thanks,
+Jose
