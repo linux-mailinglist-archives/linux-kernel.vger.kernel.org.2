@@ -2,76 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A7F3B3E63
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15C73B3E71
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbhFYIYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58746 "EHLO
+        id S230099AbhFYIYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhFYIYJ (ORCPT
+        with ESMTP id S230031AbhFYIYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:24:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFCE8C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 01:21:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jIhYZf/q/ceFYrntsKFSdR8KTn/qUTHv3/eT0mVybbQ=; b=Fie/cVmq4pzfFKzyg4ceGWYqWo
-        uP+JzVa2no0BsAdW0CcdTkCX72yTOogwpCkQwKF+unMBfwlj51xRj8I0PiBhNtw2XzwAXEy1Q4pB+
-        Z6RYSWKlQmFim4XbJAxfv/ZeKYkpJtwiqPe0JM5GDnD8BOt3sy/dQarKIMYB5ao2V9MJIswHEZvEk
-        /6GRnmhs32EJJKBwsvvNkjI3EVQ6qqg6HwB09jx0M3lujdZ0EZxuivu7Z3THjYTCI8DTg7ozs4mbK
-        BqEIkclC5M7pIs8NZYGBRJQSVecBTH7B3cTZudijClVp/saptujS4Fa8M4VEk/iMY7tzQrRpf1AYT
-        qzcHVz6g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwh55-00HSLe-Hg; Fri, 25 Jun 2021 08:20:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Fri, 25 Jun 2021 04:24:46 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C34BC061574;
+        Fri, 25 Jun 2021 01:22:24 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0A26F300252;
-        Fri, 25 Jun 2021 10:20:55 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D93F520171CE8; Fri, 25 Jun 2021 10:20:54 +0200 (CEST)
-Date:   Fri, 25 Jun 2021 10:20:54 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Don <joshdon@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Paul Turner <pjt@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Steve Sistare <steven.sistare@oracle.com>,
-        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched: cgroup SCHED_IDLE support
-Message-ID: <YNWR5qgkAxzLtUKK@hirez.programming.kicks-ass.net>
-References: <20210608231132.32012-1-joshdon@google.com>
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GB93K25Dqz9sPf;
+        Fri, 25 Jun 2021 18:22:20 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624609341;
+        bh=XfPUf0UJaWJc7scMGFSQjJzUICE14CEgBK5nOTa6c2w=;
+        h=Date:From:To:Cc:Subject:From;
+        b=mw69xt5ehjL7agZJmZnFg2rh6dU7dFdFiFsX6KEqjfPdVDt5i2C5C9U1hrqMFvOqg
+         4VCS5vtKRYqdevzmCHZFW0E1diEA2/9jFZ4C7hHtfz1j86bJ739A8yvXv/hUbdW9Q1
+         K5pS4hGbqUIs4nPrElmL7u0zOO4vHdzmk95e3OJE2PEMDqSo4NzwP04a81inosUqsh
+         WBxq/9dncGnZZjHGR6gQXc5+wlfoe8mbOdj7qu371tcLXuA+lJ7AhT4Bgi3Kn9oUwA
+         4Se3iFbYHYOvceOmlbf+uSCP4GuXSu7O6eqCBj/dfffHZ9UM1gJxfAKkzdaPcQBvsx
+         gi6LF32ZC4+Sg==
+Date:   Fri, 25 Jun 2021 18:22:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: linux-next: manual merge of the userns tree with Linus' tree
+Message-ID: <20210625182219.1a2ae36e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608231132.32012-1-joshdon@google.com>
+Content-Type: multipart/signed; boundary="Sig_/QX=Z=kr2XP8ixxKSptgUIkq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 04:11:32PM -0700, Josh Don wrote:
-> +static int se_is_idle(struct sched_entity *se)
-> +{
-> +	if (entity_is_task(se))
-> +		return task_has_idle_policy(task_of(se));
-> +	return cfs_rq_is_idle(group_cfs_rq(se));
-> +}
+--Sig_/QX=Z=kr2XP8ixxKSptgUIkq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I'm conflicted on this, on the one hand, since we want 'idle' to be a
-sched_entity propery, I'd say, make it a sched_entity field, OTOH,
-that's probably going to be a mess too :/
+Hi all,
 
-Let me read more..
+Today's linux-next merge of the userns tree got a conflict in:
+
+  kernel/signal.c
+
+between commits:
+
+  69995ebbb9d3 ("signal: Hand SIGQUEUE_PREALLOC flag to __sigqueue_alloc()")
+  4bad58ebc8bc ("signal: Allow tasks to cache one sigqueue struct")
+  399f8dd9a866 ("signal: Prevent sigqueue caching after task got released")
+
+from Linus' tree and commit:
+
+  d64696905554 ("Reimplement RLIMIT_SIGPENDING on top of ucounts")
+
+from the userns tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc kernel/signal.c
+index 782951c06660,9a6dab712123..000000000000
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@@ -408,12 -410,11 +408,12 @@@ void task_join_group_stop(struct task_s
+   *   appropriate lock must be held to stop the target task from exiting
+   */
+  static struct sigqueue *
+ -__sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags, int overrid=
+e_rlimit)
+ +__sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
+ +		 int override_rlimit, const unsigned int sigqueue_flags)
+  {
+  	struct sigqueue *q =3D NULL;
+- 	struct user_struct *user;
+- 	int sigpending;
++ 	struct ucounts *ucounts =3D NULL;
++ 	long sigpending;
+ =20
+  	/*
+  	 * Protect access to @t credentials. This can go away when all
+@@@ -424,42 -425,26 +424,41 @@@
+  	 * changes from/to zero.
+  	 */
+  	rcu_read_lock();
+- 	user =3D __task_cred(t)->user;
+- 	sigpending =3D atomic_inc_return(&user->sigpending);
++ 	ucounts =3D task_ucounts(t);
++ 	sigpending =3D inc_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
+  	if (sigpending =3D=3D 1)
+- 		get_uid(user);
++ 		ucounts =3D get_ucounts(ucounts);
+  	rcu_read_unlock();
+ =20
+- 	if (override_rlimit || likely(sigpending <=3D task_rlimit(t, RLIMIT_SIGP=
+ENDING))) {
++ 	if (override_rlimit || (sigpending < LONG_MAX && sigpending <=3D task_rl=
+imit(t, RLIMIT_SIGPENDING))) {
+ -		q =3D kmem_cache_alloc(sigqueue_cachep, flags);
+ +		/*
+ +		 * Preallocation does not hold sighand::siglock so it can't
+ +		 * use the cache. The lockless caching requires that only
+ +		 * one consumer and only one producer run at a time.
+ +		 *
+ +		 * For the regular allocation case it is sufficient to
+ +		 * check @q for NULL because this code can only be called
+ +		 * if the target task @t has not been reaped yet; which
+ +		 * means this code can never observe the error pointer which is
+ +		 * written to @t->sigqueue_cache in exit_task_sigqueue_cache().
+ +		 */
+ +		q =3D READ_ONCE(t->sigqueue_cache);
+ +		if (!q || sigqueue_flags)
+ +			q =3D kmem_cache_alloc(sigqueue_cachep, gfp_flags);
+ +		else
+ +			WRITE_ONCE(t->sigqueue_cache, NULL);
+  	} else {
+  		print_dropped_signal(sig);
+  	}
+ =20
+  	if (unlikely(q =3D=3D NULL)) {
+- 		if (atomic_dec_and_test(&user->sigpending))
+- 			free_uid(user);
++ 		if (ucounts && dec_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1))
++ 			put_ucounts(ucounts);
+  	} else {
+  		INIT_LIST_HEAD(&q->list);
+ -		q->flags =3D 0;
+ +		q->flags =3D sigqueue_flags;
+- 		q->user =3D user;
++ 		q->ucounts =3D ucounts;
+  	}
+-=20
+  	return q;
+  }
+ =20
+@@@ -507,9 -452,11 +506,11 @@@ static void __sigqueue_free(struct sigq
+  {
+  	if (q->flags & SIGQUEUE_PREALLOC)
+  		return;
+- 	if (atomic_dec_and_test(&q->user->sigpending))
+- 		free_uid(q->user);
++ 	if (q->ucounts && dec_rlimit_ucounts(q->ucounts, UCOUNT_RLIMIT_SIGPENDIN=
+G, 1)) {
++ 		put_ucounts(q->ucounts);
++ 		q->ucounts =3D NULL;
++ 	}
+ -	kmem_cache_free(sigqueue_cachep, q);
+ +	sigqueue_cache_or_free(q);
+  }
+ =20
+  void flush_sigqueue(struct sigpending *queue)
+
+--Sig_/QX=Z=kr2XP8ixxKSptgUIkq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDVkjsACgkQAVBC80lX
+0GzODwf/dV28rqQzfH5h+jDKz2rxfS5moEN9YyDsoD9z/VdFNdrnpxFefNLAIG0f
+Ik8nYi4tznqmEhrieu0/mFX20AV6oGIcaVHFRXLeeg2v3JatxJ+xK3YeGQqO0pYi
+3AzvgNfjDRatp/LLXZ9qaTY0ry3e/XiA+R2JCb9vpoAUfJ6WywwIhlP2y7BqNCRn
+uw1CHXmj4tKO+bE3nfRS3/aHQMWfV81V92Iwqi8vAdF1dRfVSXTpJJgbO7DFVnOy
+smKXeKyRIBWUVs4/fL8wZiF+1TiqYczztDsrI9z/wtc/RaSQGjLPId2V3uMwrEZm
+p6GASjanpQ3Vtva+ktAjF01pAJlUOw==
+=FY31
+-----END PGP SIGNATURE-----
+
+--Sig_/QX=Z=kr2XP8ixxKSptgUIkq--
