@@ -2,141 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B673B3A71
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 03:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0089E3B3A78
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 03:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232977AbhFYBVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 21:21:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhFYBVx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 21:21:53 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C02DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 18:19:33 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id r7so11148498edv.12
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 18:19:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zoLS3ADa/+8BAi3YAB3Uh9nOJE8VWVnz5sgYqPDWI3Q=;
-        b=osrVvp6raQnfu6B6Xb+kb2NfDcSkW7H9HQ//hPmZ08tpQ8rhJd+Rnvos2qnMtq8Elp
-         G1ZHBf2T80eRu8QIrJRLO1CETd59CO8WX/UIDwGjpLGjbkAyjQd1R+lWjjDCxQnOznGT
-         PEvmlBQYRlJlPsdtv0Kp5CXY0RvLiQeCuVJ+FIGEKFTF8p9Z7ox+m/Ax0/EvTi0V8Hl4
-         SxvoqQEsDXaGCQe7yWKB0mF6xUxaFtxHUgZXnsrhvuoxqXNUzGhQVA0l810CydI+z00H
-         x4PiBiKWcZmQVKYAwEPeK2Wbaqm1+iBGiCRpvCln1St4oX8hmlceakZFYri1CQd7HO4t
-         Uv7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zoLS3ADa/+8BAi3YAB3Uh9nOJE8VWVnz5sgYqPDWI3Q=;
-        b=C2HIVVOtdehJwKi9c2Ikc+dEfGeOWi8q2SVmp4APDH+A9oRJ9WF5mtiiJS2GUe1Pd7
-         ffCBmyKl3Da+ZdriVRRWkzcsJyWS+u2IrZqMybnWN06sYb2Siyy7t2FXBBCzNmmA/qZW
-         do03pJObggEbXoQ7cihDj7otlKMAQXeZvZS+IluGlHEQc0Bn7zgzcVI+16qwSc6ZwY32
-         cFyorZDvztBgCA+wVhtwH8h6KLCJgXO00b/3blMgNUsJrMiucfPIEH4vSfRBAyDMKK78
-         f6W0W88EzvMo1iT/ejmQQEufkeuU6mVfn/mYojnS7B8AxT7HdHlanaUA+2FFq02YT9Xl
-         aMzA==
-X-Gm-Message-State: AOAM532hAw5eHBkKP845QpIHOWcAKZ/ZMIxc69DTZ6rAZsmmKanxCQE8
-        V1Weoq8+mb2sHuQRk1mq5S4pKNCKEmhfT+vdZ6A=
-X-Google-Smtp-Source: ABdhPJw3kPMl04utqvKIwFBtMwYhSeLvZjFw6BOEbZWCAAFgPCjQjMjnPOoWW40lFnKjboDmM2pE8VrCwcyKlPCYSxI=
-X-Received: by 2002:a05:6402:268f:: with SMTP id w15mr7413359edd.228.1624583972016;
- Thu, 24 Jun 2021 18:19:32 -0700 (PDT)
+        id S232968AbhFYBgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 21:36:33 -0400
+Received: from mail-dm6nam10on2046.outbound.protection.outlook.com ([40.107.93.46]:64609
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232873AbhFYBga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Jun 2021 21:36:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ITur0Ue1SzW/Xa2yCxBV7vtVXDPfIzwq81qoZFAZzVN+qULGKTzBSHnYyHCqDu8CrQodegoqhv13j9Gi+ZcKiHgtP7MPpXQcbsm+ZimprGahsMuKjl0C66/o0LHQ3dT4Av+J3nT0BU0Rn/qXC1/MoXfY2H8y1HhoQ+0X+R/au0NfPqpJlfHP4liaIPcUJ/Gawjxpa7UZ0cIaKgVUfwXP/mal7vPGmlPV31+wCPdIqlHTGsYpYqIbxsTZjtR4Vk5NEhjolG9azYCYGwkoYIQR49qkIdgIkLn+gVcSNNPkIvg5dhVXiocHAOpczoEy6GGnDxZgB8cPqNNXBEqj1f6s3g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EHq31s24uvdvx1wL2rphO01OIupDEV7F2nX+nFTLmQI=;
+ b=ODXZaPlu8eEz5h5xom2zs5s+6h/WBz8QKdaI01Q1BBvXaKuPr6lbi+db6w4/eCqEoXLbkk9CL7F++hSsO9DVrDyjiegW2LjSay5CXOH/3+F4j2U+u/R8Wo00SHPvj8/xcd7XWxTV0mQsSA7gO2ldOFPmQ4+0Du1Rfr+xtYYMKgsy37NcJ5mNL+N8UkWcNZrHm8vXjik1JUO2twDdfVv6y4pG5Fy3yJ5F1IGAceVU4VSiuMLRda3R7jLFj4G0Sds3jyTbzll/UCpdWKaR/rTKv4WvhIFd+0FvRiH0WPoXkhrPfPMTixGGiIO+7I4iraplQQrdz1Q32J2fp6r48S0PMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EHq31s24uvdvx1wL2rphO01OIupDEV7F2nX+nFTLmQI=;
+ b=W0VrdH/smjrLoLW/BrQCAzOGl6lJMt+g1iST/IdBNDlfCE6MPh7jTSkV+jUVd2woxe7LQ4yLuuat88txpbmp4gC8IdkLhgEyJONsozHtAdKHN7c2GWJNeDzSNI1KFaFhK6Xhkces9GQh2txy7SyvqSZsplFp3Z0yud1Wpo7Hfyw=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2685.namprd12.prod.outlook.com (2603:10b6:805:67::33)
+ by SA0PR12MB4525.namprd12.prod.outlook.com (2603:10b6:806:92::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Fri, 25 Jun
+ 2021 01:34:09 +0000
+Received: from SN6PR12MB2685.namprd12.prod.outlook.com
+ ([fe80::c8f:eff7:df51:c837]) by SN6PR12MB2685.namprd12.prod.outlook.com
+ ([fe80::c8f:eff7:df51:c837%6]) with mapi id 15.20.4242.024; Fri, 25 Jun 2021
+ 01:34:08 +0000
+From:   Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org
+Cc:     Tony Luck <tony.luck@intel.com>, "H . Peter Anvin" <hpa@zytor.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Muralidhara M K <muralimk@amd.com>,
+        Akshay Gupta <Akshay.Gupta@amd.com>,
+        Youquan Song <youquan.song@intel.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Subject: [PATCH 1/2] x86/mce: Define function to extract ErrorAddr from MCA_ADDR
+Date:   Thu, 24 Jun 2021 20:33:40 -0500
+Message-Id: <20210625013341.231442-1-Smita.KoralahalliChannabasappa@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [165.204.184.1]
+X-ClientProxiedBy: BLAPR03CA0138.namprd03.prod.outlook.com
+ (2603:10b6:208:32e::23) To SN6PR12MB2685.namprd12.prod.outlook.com
+ (2603:10b6:805:67::33)
 MIME-Version: 1.0
-References: <20210625014710.42954-1-gshan@redhat.com> <20210625014710.42954-4-gshan@redhat.com>
-In-Reply-To: <20210625014710.42954-4-gshan@redhat.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Thu, 24 Jun 2021 18:19:21 -0700
-Message-ID: <CAKgT0UebcvDrkL8J=oZAt-N2Lg3AG0vfekw6Lknmiho00vam4g@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] mm/page_reporting: Allow driver to specify
- reporting order
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, shan.gavin@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ethanolx50f7host.amd.com (165.204.184.1) by BLAPR03CA0138.namprd03.prod.outlook.com (2603:10b6:208:32e::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Fri, 25 Jun 2021 01:34:07 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3b8f7ad1-259e-4e27-0173-08d9377953cb
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4525:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4525B8E11D809F5E625B1D9A90069@SA0PR12MB4525.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7L0fimJqSzIzNQKo4LhN0Vye8Q3L4gHknUssJUTLrjhwDwEBoKAVfs0D7au2VcKZy0wLnrAkc02HFeEfTyO+2+oxO6UqUS0YHZ/AYhAg+CoNOeVBbjQyXw5mnjtczEy4vV3tRIQ46+fPUUvOR69MWS5LGGvYpInvUwFI++DdVbw8J5vhajKYd9kEnJlM4LDy6sX8+aj3XBcxHFwmWwTGpb5cisoV4XCmY6M8QLzMqYHnoLY51dHYan++/zokOwL6KZSiwEGljeCJcX2NtWnYrGMjUG/mf1QorWtxQyOhr2qT1tNc0SKSucX76oprxnbLiOEawGtLEjhZRPbxIkKIKhxQe5MEdTeRAJ3szTtWhWPEh2TSFmRPQdl+m2nXdpBntJ5/Xu9Eir0tfgllnO14jDK+5JDn88H5cEPtlXpMS7u15gNI3EzeOueqry5S5yhmfXLeNCCLcfJBJRxxStdq+nBHAtZqHwThNkS7RyVifz7V30G/0qcZb0+ubsOf+YLtFNsrudRkEbQnGhvQ9Or8nFY+8EVy2a38wQpcWYHPJt+FLJv9FcGRsc6LkhPhl/oyPr60yrmSnDqYe+QahLDy2w3IiTRm0LS0EQxmsQpdISaaCAYRPfkbbIj8qrqum3/K+R61HVKogM7KKB6o8x9WDQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(396003)(346002)(136003)(366004)(478600001)(2616005)(956004)(8676002)(86362001)(8936002)(4326008)(38350700002)(38100700002)(36756003)(2906002)(52116002)(66556008)(66476007)(66946007)(7696005)(83380400001)(5660300002)(6666004)(1076003)(26005)(54906003)(6486002)(316002)(16526019)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2/gRi5Hmb1560ajglTt62VtOJvntFgb6q6fYhElJ0HJ/mbwUd8t/cROTdbq4?=
+ =?us-ascii?Q?QtVTO+MDV7nMUOCIG6dKfWWw/76HBgwnCm9N8+rTORpwD9AznU/Y/6EKR5mB?=
+ =?us-ascii?Q?K+hMdVudIrKvZPbz/t6O7Tm3ZRpZFCCw0DEuzy298yXVvzFmlgS7L7RCK9oX?=
+ =?us-ascii?Q?aGjlPetsdbPERggutXp5Jr7Q6ARdOAr6Wp4p0jRgNRPponcFV8p+A3g94UgM?=
+ =?us-ascii?Q?UY1KZl1ckfk5ffUR4s/y0l8lmaPAlAZP5UV28fuWG9Cw3jakax0Xpvhji4ge?=
+ =?us-ascii?Q?sIF0qsYhji7FkAHtcaNQ9yQ2po3SL7a68fT+dxcninLEnT8tlAGNIUGmLloT?=
+ =?us-ascii?Q?TUUtrvVLS1BVoI8th2VhhjKV/qgbDBpAeHXxri+rO3zhv4WM4QvRtm68sxHO?=
+ =?us-ascii?Q?SB2224R0hs9B/64cvWW2xN5dSOed/882GbBz+fEtk0ltDdqs27aFciRspsaK?=
+ =?us-ascii?Q?dx8d25A2IXt5rQTK8vkkcLkCXdNLYmlNVIGxXykbFA5alaOB6QC6Lr4aPUJO?=
+ =?us-ascii?Q?fM4L4h5vkSNfe1ei154kq4tLy/rIS73QO/z5pRUI6Sg/cIQeRuPQHk3VZiP3?=
+ =?us-ascii?Q?CMp5wzj2RhMqtTuZUZq27xy5pjSe0sHD/7c3hFBp1/46DjE7NGCXO2giBsUt?=
+ =?us-ascii?Q?KEGIMdkP9NTjYa7ZVpn/HzV3WhflviK3jspDIhnF6T6V5kUV+KNZt2rKtekh?=
+ =?us-ascii?Q?GamcG6QH/Fqi6QpQbp5OklZQVq+n1SQzXPU4SSqJkjdcBD9DpYYa0x2to5Mq?=
+ =?us-ascii?Q?HdlxqNRpOvwK0OOXH1hjuUs7Ba2v2c4bTIcAqCoDGiqim14/XVl1Jo3yGXo6?=
+ =?us-ascii?Q?0SIgDpIVIpSljIuUhlpAuLGpJfwW6mk4AumUatxfOhQ6wUnAVxv7LO88IJHK?=
+ =?us-ascii?Q?w6HIsHev99lx2o/X+EnTEXPrDleP0QZM9veVNermrwCFEN5GFt7a3IIf494e?=
+ =?us-ascii?Q?FBi6fFWrjfF2FSSzOUEQJMmOzGUWdN/ABpPWbYdP9dNCTc3VaPRdoSNS9wm4?=
+ =?us-ascii?Q?moB0d6NBmELUGeTzsaPzlNuDpHo4fr1Hwj7SWLA+FI/6aHjXTYw/gFk4LPNH?=
+ =?us-ascii?Q?QDB9wC5SYcwxzVEzAUE3RsaE23+DGbsy5XoUaC73fNEu8/hAEuqvxyAf+5h5?=
+ =?us-ascii?Q?eiQvuoimOR3IrMAfhLgoNZsU1FzLX4NWgWfk+xO1OhHufI4lAPc8j3fF1js2?=
+ =?us-ascii?Q?WQXddnvTQFbOrJdoNwxxbHDxTisCcZKvg8/JFu/NfevrGWBLLPRXzXzUgVaH?=
+ =?us-ascii?Q?oDBxi/eCZIh48TaiVlJ66vSxqn/Nbhmc7hxUDOS89Ts5xHbNObkbOtR7gX47?=
+ =?us-ascii?Q?Ia5q30l5tvhlV3OQRa0Nxv/O?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b8f7ad1-259e-4e27-0173-08d9377953cb
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jun 2021 01:34:08.9133
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 07PcyVsT5j8YH7ZhCSvRfKISYPqPtssFvVibziisjWbET3cydtFbOrgzpBUAkUdPPLqVUiJPV/Y/+CirVAr5uw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4525
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 4:46 PM Gavin Shan <gshan@redhat.com> wrote:
->
-> The page reporting order (threshold) is sticky to @pageblock_order
-> by default. The page reporting can never be triggered because the
-> freeing page can't come up with a free area like that huge. The
-> situation becomes worse when the system memory becomes heavily
-> fragmented.
->
-> For example, the following configurations are used on ARM64 when 64KB
-> base page size is enabled. In this specific case, the page reporting
-> won't be triggered until the freeing page comes up with a 512MB free
-> area. That's hard to be met, especially when the system memory becomes
-> heavily fragmented.
->
->    PAGE_SIZE:          64KB
->    HPAGE_SIZE:         512MB
->    pageblock_order:    13       (512MB)
->    MAX_ORDER:          14
->
-> This allows the drivers to specify the page reporting order when the
-> page reporting device is registered. It falls back to @pageblock_order
-> if it's not specified by the driver. The existing users (hv_balloon
-> and virtio_balloon) don't specify it and @pageblock_order is still
-> taken as their page reporting order. So this shouldn't introduce any
-> functional changes.
->
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
-> ---
->  include/linux/page_reporting.h | 3 +++
->  mm/page_reporting.c            | 6 ++++++
->  2 files changed, 9 insertions(+)
->
-> diff --git a/include/linux/page_reporting.h b/include/linux/page_reporting.h
-> index 3b99e0ec24f2..fe648dfa3a7c 100644
-> --- a/include/linux/page_reporting.h
-> +++ b/include/linux/page_reporting.h
-> @@ -18,6 +18,9 @@ struct page_reporting_dev_info {
->
->         /* Current state of page reporting */
->         atomic_t state;
-> +
-> +       /* Minimal order of page reporting */
-> +       unsigned int order;
->  };
->
->  /* Tear-down and bring-up for page reporting devices */
-> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
-> index 34bf4d26c2c4..382958eef8a9 100644
-> --- a/mm/page_reporting.c
-> +++ b/mm/page_reporting.c
-> @@ -329,6 +329,12 @@ int page_reporting_register(struct page_reporting_dev_info *prdev)
->                 goto err_out;
->         }
->
-> +       /*
-> +        * Update the page reporting order if it's specified by driver.
-> +        * Otherwise, it falls back to @pageblock_order.
-> +        */
-> +       page_reporting_order = prdev->order ? : pageblock_order;
-> +
+Move MCA_ADDR[ErrorAddr] extraction into a separate helper function. This
+will be further refactored in the next patch.
 
-An alternative to this would be to look at setting up some
-comparisons. I might add another variable and do something like:
-order = prdev->order ? : pageblock_order;
-if (order < page_reporting_order)
-    page_reporting_order = order;
+Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+---
+v2:
+	- No change.
+---
+ arch/x86/include/asm/mce.h     |  2 ++
+ arch/x86/kernel/cpu/mce/amd.c  | 14 +++++++++-----
+ arch/x86/kernel/cpu/mce/core.c |  7 ++-----
+ 3 files changed, 13 insertions(+), 10 deletions(-)
 
-You could essentially do something similar in the previous patch but
-just use pageblock_order directly rather than having to add a local
-variable.
+diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
+index 0607ec4f5091..0a1c7224a582 100644
+--- a/arch/x86/include/asm/mce.h
++++ b/arch/x86/include/asm/mce.h
+@@ -357,6 +357,7 @@ extern int mce_threshold_remove_device(unsigned int cpu);
+ 
+ void mce_amd_feature_init(struct cpuinfo_x86 *c);
+ int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr);
++void smca_extract_err_addr(struct mce *m);
+ 
+ #else
+ 
+@@ -366,6 +367,7 @@ static inline bool amd_mce_is_memory_error(struct mce *m)		{ return false; };
+ static inline void mce_amd_feature_init(struct cpuinfo_x86 *c)		{ }
+ static inline int
+ umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr)	{ return -EINVAL; };
++static inline void smca_extract_err_addr(struct mce *m)			{ }
+ #endif
+ 
+ static inline void mce_hygon_feature_init(struct cpuinfo_x86 *c)	{ return mce_amd_feature_init(c); }
+diff --git a/arch/x86/kernel/cpu/mce/amd.c b/arch/x86/kernel/cpu/mce/amd.c
+index 08831acc1d03..f71435e53cdb 100644
+--- a/arch/x86/kernel/cpu/mce/amd.c
++++ b/arch/x86/kernel/cpu/mce/amd.c
+@@ -899,6 +899,13 @@ bool amd_mce_is_memory_error(struct mce *m)
+ 	return m->bank == 4 && xec == 0x8;
+ }
+ 
++void smca_extract_err_addr(struct mce *m)
++{
++	u8 lsb = (m->addr >> 56) & 0x3f;
++
++	m->addr &= GENMASK_ULL(55, lsb);
++}
++
+ static void __log_error(unsigned int bank, u64 status, u64 addr, u64 misc)
+ {
+ 	struct mce m;
+@@ -917,11 +924,8 @@ static void __log_error(unsigned int bank, u64 status, u64 addr, u64 misc)
+ 		 * Extract [55:<lsb>] where lsb is the least significant
+ 		 * *valid* bit of the address bits.
+ 		 */
+-		if (mce_flags.smca) {
+-			u8 lsb = (m.addr >> 56) & 0x3f;
+-
+-			m.addr &= GENMASK_ULL(55, lsb);
+-		}
++		if (mce_flags.smca)
++			smca_extract_err_addr(&m);
+ 	}
+ 
+ 	if (mce_flags.smca) {
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index bf7fe87a7e88..2c09c1eec50a 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -703,11 +703,8 @@ static void mce_read_aux(struct mce *m, int i)
+ 		 * Extract [55:<lsb>] where lsb is the least significant
+ 		 * *valid* bit of the address bits.
+ 		 */
+-		if (mce_flags.smca) {
+-			u8 lsb = (m->addr >> 56) & 0x3f;
+-
+-			m->addr &= GENMASK_ULL(55, lsb);
+-		}
++		if (mce_flags.smca)
++			smca_extract_err_addr(m);
+ 	}
+ 
+ 	if (mce_flags.smca) {
+-- 
+2.17.1
 
-That way if you need to still pull down the page reporting order you
-can do so without prdev->order or pageblock_order overwriting the
-value and pushing it back up.
