@@ -2,247 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270843B415E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A043B415A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbhFYKUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 06:20:52 -0400
-Received: from phobos.denx.de ([85.214.62.61]:41910 "EHLO phobos.denx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231193AbhFYKUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 06:20:51 -0400
-Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id D160D82BED;
-        Fri, 25 Jun 2021 12:18:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1624616309;
-        bh=IzUjC8qtz0wz/5DU4735vakKqG89fReInmoUKyyPtt4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jykOLrjt4ZP857/BG5+9ZyQfu2yVaz9nAlUsaXEUSZHxnP8EcSTRQKsnVbZ9E1trt
-         1h/ky/7I9b7Az04GnthhJwFJf5pM9Uqai1wwBZ/gNNRy3ApT88QKc2cFWOFZGxTqEf
-         bfDEB5SIygBmHmD5DueWOmhvw5gp2KIIfQQnP0EetxTmdU1p7F7g3QMq+VApwOjtM3
-         YcIIxfPs7cumvG97MftnC8plfclrjHAYItFGD14L6NMLQFsf7PV8bOJ0hj5W3PcJPB
-         MvoUsbTlXFn4Ue5Oo2Sdf+ceNUAJMoTx6mb2U/lzzq+zGHfWHJsMQe6oNtRVC+rAIC
-         poCQ8ESRAj/fA==
-Date:   Fri, 25 Jun 2021 12:18:17 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Madalin Bucur (OSS)" <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Einon <mark.einon@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC 1/3] ARM: dts: imx28: Add description for L2 switch on XEA
- board
-Message-ID: <20210625121817.77643fe0@ktm>
-In-Reply-To: <DB8PR04MB6795CDCD1DC16B3F55F97753E6069@DB8PR04MB6795.eurprd04.prod.outlook.com>
-References: <20210622144111.19647-1-lukma@denx.de>
-        <20210622144111.19647-2-lukma@denx.de>
-        <YNH3mb9fyBjLf0fj@lunn.ch>
-        <20210622225134.4811b88f@ktm>
-        <YNM0Wz1wb4dnCg5/@lunn.ch>
-        <20210623172631.0b547fcd@ktm>
-        <76159e5c-6986-3877-c0a1-47b5a17bf0f1@gmail.com>
-        <DB8PR04MB679567B66A45FBD1C23E7371E6079@DB8PR04MB6795.eurprd04.prod.outlook.com>
-        <20210624132129.1ade0614@ktm>
-        <DB8PR04MB6795CDCD1DC16B3F55F97753E6069@DB8PR04MB6795.eurprd04.prod.outlook.com>
-Organization: denx.de
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S231251AbhFYKUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 06:20:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38640 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229956AbhFYKUr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 06:20:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624616306;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=j4JjaRWxUDx5AdOtHK4Ew9qGgb8hCuqA6q+y3PqBTgY=;
+        b=D4dZP871d4DkvI4FcGvb2j9zIArTDYNH4+bEMTsCF4vVaKiN7CmilwaEJJIte2YkidjUqo
+        27pUP6zFLPbZD8JdSg4xjJtihoN2+a2PIyklMXkkFvcMwt3lBbk+kwu5AKBFEx5chKoQ1u
+        lNyAKBkULQL8DXpNugNZmG9wP8zU4r4=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-58-vtwYtqmQNBe-h-5nibvurw-1; Fri, 25 Jun 2021 06:18:24 -0400
+X-MC-Unique: vtwYtqmQNBe-h-5nibvurw-1
+Received: by mail-ed1-f71.google.com with SMTP id o16-20020aa7c7d00000b02903951279f8f3so2121398eds.11
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:18:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j4JjaRWxUDx5AdOtHK4Ew9qGgb8hCuqA6q+y3PqBTgY=;
+        b=PI2khcGFPsQIb/Ze4uiI/irfyv5v6rXld6UfuMXryu4Y0eV2BfhXZkTObz7T83xThA
+         bhlvCVmZwCcMEe08kralahdsBPDD5JmCJPsTjiqX+vyP7rxuhLu6B5htfZbiM4Dq2i/g
+         ZfhrzBXainSlEL/baoLOtAUqysUqmENqBjWW1+8erR83mpHSUQCSjoB8JysaG4o3poeH
+         rU6eSZ9y8otwbMt/y6h8YwZ1UPlUbNzNbX8SAVCTN6p4HxJF6pPlLKBd5hbuwwsy0dnC
+         VmUrs/nZv0baU6ufNZ/IaUJaaDgkKW23Iz0awMLONLl1sSXl8Y/x4VCuNzqZ8Mvby/Jp
+         K0Dw==
+X-Gm-Message-State: AOAM533EMWv7G0dk97W29NheiX2ZqT4cUuJNBm3hfJ6hk1M9jwe9dadA
+        f+HQCuh4QAEE7YZR3u6o9U/QVcwsL5wT/fJ/vHRfCnHP5e29lpIZMiv/QFs4+uljmLkS5UvWULV
+        QhgAEIyneuK+54NZoJ5QSKO/l
+X-Received: by 2002:a05:6402:1205:: with SMTP id c5mr825484edw.68.1624616303497;
+        Fri, 25 Jun 2021 03:18:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzZ2VSyWKHxXfWjdEbJqwFfP1+cB72b3Qml5NrsRAiLAiJuSsz8pxPlIKRyTD4YB8/ZhtdlSg==
+X-Received: by 2002:a05:6402:1205:: with SMTP id c5mr825463edw.68.1624616303266;
+        Fri, 25 Jun 2021 03:18:23 -0700 (PDT)
+Received: from gator (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
+        by smtp.gmail.com with ESMTPSA id s18sm2526921ejh.12.2021.06.25.03.18.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 03:18:22 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 12:18:21 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org, robh+dt@kernel.org, shan.gavin@gmail.com
+Subject: Re: [PATCH v4] Documentation, dt, numa: Add note to empty NUMA node
+Message-ID: <20210625101821.3t3vgj2pnw3hqpzm@gator>
+References: <20210625052338.4875-1-gshan@redhat.com>
+ <20210625070217.4ffmfe7nwlusbbjc@gator>
+ <20210625070656.j373hveemf5cdch4@gator>
+ <41643136-798b-a0f3-aee7-b6af94a2fc67@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/2mc=ShYF09lsy_uW76bivdq"; protocol="application/pgp-signature"
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <41643136-798b-a0f3-aee7-b6af94a2fc67@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/2mc=ShYF09lsy_uW76bivdq
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jun 25, 2021 at 06:36:48PM +1000, Gavin Shan wrote:
+> On 6/25/21 5:06 PM, Andrew Jones wrote:
+> > On Fri, Jun 25, 2021 at 09:02:17AM +0200, Andrew Jones wrote:
+> > > On Fri, Jun 25, 2021 at 01:23:38PM +0800, Gavin Shan wrote:
+> > > > The empty memory nodes, where no memory resides in, are allowed.
+> > > > For these empty memory nodes, the 'len' of 'reg' property is zero.
+> > > > The NUMA node IDs are still valid and parsed, but memory can be
+> > > > added to them through hotplug afterwards. I finds difficulty to
+> > > > get where it's properly documented.
+> > > > 
+> > > > So lets add note to empty memory nodes in the NUMA binding doc.
+> > > > 
+> > > > Signed-off-by: Gavin Shan <gshan@redhat.com>
+> > > > ---
+> > > >   Documentation/devicetree/bindings/numa.txt | 4 ++++
+> > > >   1 file changed, 4 insertions(+)
+> > > > 
+> > > > diff --git a/Documentation/devicetree/bindings/numa.txt b/Documentation/devicetree/bindings/numa.txt
+> > > > index 21b35053ca5a..0fc882e44270 100644
+> > > > --- a/Documentation/devicetree/bindings/numa.txt
+> > > > +++ b/Documentation/devicetree/bindings/numa.txt
+> > > > @@ -109,6 +109,10 @@ Example:
+> > > >   Dual socket system consists of 2 boards connected through ccn bus and
+> > > >   each board having one socket/soc of 8 cpus, memory and pci bus.
+> > > > +Note that empty memory nodes, which no memory resides in, are allowed.
+> > > > +The NUMA node IDs in these empty memory nodes are still valid, but
+> > > > +memory can be added into them through hotplug afterwards.
+> > > 
+> > > Please change the second sentence to:
+> > > 
+> > >    The NUMA node IDs in these empty memory nodes are still valid and
+> > >    memory may be added into them through hotplug afterwards.
+> > > 
+> > > But, this doesn't look like the right place for this paragraph. You're
+> > > adding the paragraph to the example section, but the example doesn't have
+> > > any empty memory nodes.
+> > > 
+> > > I think the paragraph should be added to section "2 - numa-node-id" and an
+> > 
+> > Or maybe even create a new section for it.
+> > 
+> > > example empty memory node should be provided. Also, the commit message
+> > > talks about the length of 'reg' being zero, which is an important
+> > > distinction which should also be documented.
+> > > 
+> 
+> Drew, thanks for your comments. Yeah, it sounds sensible to create
+> a new section for it and an example would be more helpful. Please
+> check if below changes are fine to you. I probably need Randy's review
+> again.
+> 
+> I'm trying to avoid too many revisions for this sort of trivial patch,
+> even though I already had. However, it's time frame for v5.14 and I'm
+> pushing this to be merged during the cycle.
 
-Hi Joakim, Andrew,
+We must revise until we're satisfied... Also, I wouldn't call writing
+specifications trivial.
 
-> Hi Lukasz,
->=20
-> > -----Original Message-----
-> > From: Lukasz Majewski <lukma@denx.de>
-> > Sent: 2021=E5=B9=B46=E6=9C=8824=E6=97=A5 19:21
-> > To: Joakim Zhang <qiangqing.zhang@nxp.com>; Florian Fainelli
-> > <f.fainelli@gmail.com>; Andrew Lunn <andrew@lunn.ch>
-> > Cc: David S . Miller <davem@davemloft.net>; Jakub Kicinski
-> > <kuba@kernel.org>; Madalin Bucur (OSS) <madalin.bucur@oss.nxp.com>;
-> > Nicolas Ferre <nicolas.ferre@microchip.com>; Vladimir Oltean
-> > <olteanv@gmail.com>; netdev@vger.kernel.org; Arnd Bergmann
-> > <arnd@arndb.de>; Mark Einon <mark.einon@gmail.com>; dl-linux-imx
-> > <linux-imx@nxp.com>; linux-kernel@vger.kernel.org
-> > Subject: Re: [RFC 1/3] ARM: dts: imx28: Add description for L2
-> > switch on XEA board
-> >=20
-> > Hi Joakim,
-> >  =20
-> > > Hi Lukasz, Florian, Andrew,
-> > > =20
-> > > > > Maybe somebody from NXP can provide input to this discussion
-> > > > > - for example to sched some light on FEC driver (near)
-> > > > > future. =20
-> > > >
-> > > > Seems like some folks at NXP are focusing on the STMMAC
-> > > > controller these days (dwmac from Synopsys), so maybe they have
-> > > > given up on having their own Ethernet MAC for lower end
-> > > > products. =20
-> > >
-> > > I am very happy to take participate into this topic, but now I
-> > > have no experience to DSA and i.MX28 MAC, so I may need some time
-> > > to increase these knowledge, limited insight could be put to now.
-> > > =20
-> >=20
-> > Ok. No problem :-)
-> >  =20
-> > >
-> > > Florian, Andrew could comment more and I also can learn from it
-> > > :-), they are all very experienced expert. =20
-> >=20
-> > The main purpose of several RFCs for the L2 switch drivers (for DSA
-> > [1] and switchdev [2]) was to gain feedback from community as soon
-> > as possible (despite that the driver lacks some features - like
-> > VLAN, FDB, etc).=20
-> > >
-> > > We also want to maintain FEC driver since many SoCs implemented
-> > > this IP, and as I know we would also use it for future SoCs.
-> > > =20
-> >=20
-> > Florian, Andrew, please correct me if I'm wrong, but my impression
-> > is that upstreaming the support for L2 switch on iMX depends on FEC
-> > driver being rewritten to support switchdev?
-> >=20
-> > If yes, then unfortunately, I don't have time and resources to
-> > perform that task
-> > - that is why I have asked if NXP has any plans to update the FEC
-> > (fec_main.c) driver.
-> >=20
-> >=20
-> > Joakim, do you have any plans to re-factor the legacy FEC driver
-> > (fec_main.c) and introduce new one, which would support the
-> > switchdev?
-> >=20
-> > If NXP is not planning to update the driver, then maybe it would be
-> > worth to consider adding driver from [2] to mainline? Then I could
-> > finish it and provide all required features. =20
->=20
-> I don't have such plan now, and have no confidence to re-factor the
-> legacy FEC driver and introduce new one, which to support switchdev
-> in a short time.=20
+> 
+> --- a/Documentation/devicetree/bindings/numa.txt
+> +++ b/Documentation/devicetree/bindings/numa.txt
+> @@ -103,7 +103,65 @@ Example:
+>  		};
+>  ==============================================================================
+> -4 - Example dts
+> +4 - Empty memory node
 
-Thanks for the clear statement, appreciated.
+nodes
 
-> I am not very experienced for FEC driver, since I
-> have just maintained it for half a year.=20
+> +==============================================================================
+> +
+> +Empty memory nodes, which no memory resides in, are allowed. The 'length'
+> +field of 'reg' property is zero, but 'base-address' is dummy and invalid
 
-Ok. No problem.
+ is a dummy address and is invalid.
 
-> To be honest, I have no idea
-> in my head right now, we even don't have i.MX28 boards.
+> +for these empty memory nodes.
 
-As fair as I remember there is still imx28-dev board available for
-purchase. You can also use vf610 based board.
+Can drop this "for these empty memory nodes" that's clear from the
+context.
 
-> I'm so sorry
-> about this, but I am also interested in it, I am finding time to
-> increase related knowledge.
+> However, the NUMA node IDs and distance maps
+> +for them are still valid, but memory may be added into them through hotplug
+   ^ drop 'for them'         ^ Again, this should be "and". "but" is a
+contrastive conjunction. We want to express that the nodes are valid *and*
+may have memory hotplugged later.
 
-Ok.
+> +afterwards.
 
-To sum up:
+I'll just rewrite it:
 
-- The FEC driver (legacy one) will not be rewritten anytime soon
-  (maybe any other community member will work on this sooner...)
+ Empty memory nodes, which no memory resides in, are allowed. The 'length'
+ field of the 'reg' property is zero, but the 'base-address' is a dummy
+ address and invalid. However, the NUMA node IDs and distance maps are
+ still valid and memory may be added into them through hotplug afterwards.
 
-- Considering the above, support for L2 switch on imx28, vf610 is
-  blocked [*]. As a result some essential functionality for still
-  actively used SoCs is going to be maintained out of tree (for example
-  [1][2]).=20
+> +
+> +Example:
+> +
+> +	memory@0 {
+> +		device_type = "memory";
+> +		reg = <0x0 0x0 0x0 0x80000000>;
+> +		numa-node-id = <0>;
+> +	};
+> +
+> +	memory@0x80000000 {
+> +		device_type = "memory";
+> +		reg = <0x0 0x80000000 0x0 0x80000000>;
+> +		numa-node-id = <1>;
+> +	};
+> +
+> +	/* Empty memory node */
 
-[*] - as I've stated in the other mail - what's about the situation
-where FEC legacy driver is not going to be excessively modified (just
-changes from this patch set)?
+You should write how you've selected the dummy addresses for the empty
+memory nodes, perhaps here in the /* Empty memory node */ comments or
+above in the paragraph or both.
 
-Links:
+> +	memory@0x100000000 {
+> +		device_type = "memory";
+> +		reg = <0x1 0x0 0x0 0x0>;
+> +		numa-node-id = <2>;
+> +	};
+> +
+> +	/* Empty memory node */
+> +	memory@0x180000000 {
+> +		device_type = "memory";
+> +		reg = <0x1 0x80000000 0x0 0x0>;
+> +		numa-node-id = <3>;
+> +	};
+> +
+> +	distance-map {
+> +		compatible = "numa-distance-map-v1";
+> +		distance-matrix = <0 0  10>,
+> +				  <0 1  20>,
+> +				  <0 2  40>,
+> +				  <0 3  20>,
+> +				  <1 0  20>,
+> +				  <1 1  10>,
+> +				  <1 2  20>,
+> +				  <1 3  40>,
+> +				  <2 0  40>,
+> +				  <2 1  20>,
+> +				  <2 2  10>,
+> +				  <2 3  20>,
+> +				  <3 0  20>,
+> +				  <3 1  40>,
+> +				  <3 2  20>,
+> +				  <3 3  10>;
+> +	};
+> +
+> +==============================================================================
+> +5 - Example dts
+>  ==============================================================================
+>  Dual socket system consists of 2 boards connected through ccn bus and
+> 
+> 
+> Thanks,
+> Gavin
+> 
+>
 
-[1] -
-https://source.denx.de/linux/linux-imx28-l2switch/-/commits/imx28-v5.12-L2-=
-upstream-switchdev-RFC_v1
+Thanks,
+drew
 
-[2] -
-https://source.denx.de/linux/linux-imx28-l2switch/-/commits/imx28-v5.12-L2-=
-upstream-DSA-RFC_v1
-
->=20
-> Best Regards,
-> Joakim Zhang
-> >=20
-> > Links:
-> > [1] -
-> > https://source.denx.de/linux/linux-imx28-l2switch/-/commits/imx28-v5.12=
--L2-u
-> > pstream-DSA-RFC_v1
-> > [2] -
-> > https://source.denx.de/linux/linux-imx28-l2switch/-/commits/imx28-v5.12=
--L2-u
-> > pstream-switchdev-RFC_v1
-> >  =20
-> > > Best Regards,
-> > > Joakim Zhang =20
-> >=20
-> >=20
-> >=20
-> >=20
-> > Best regards,
-> >=20
-> > Lukasz Majewski
-> >=20
-> > --
-> >=20
-> > DENX Software Engineering GmbH,      Managing Director: Wolfgang
-> > Denk HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell,
-> > Germany Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email:
-> > lukma@denx.de =20
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/2mc=ShYF09lsy_uW76bivdq
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmDVrWkACgkQAR8vZIA0
-zr08+QgA52HulydPpTba/n5izK1UKGy7ReuvNvsu7nuykMp9QYcNY+SzRL7rPmx9
-TPQKsNm/YTR5zrr1ziOglojDRjztl+H4MUUyYGbXkcImylYJA0iYf2xqN5ciMjtQ
-d1TqRKxmEhSyLfi1grqRLDiNDDhVbLD51F47Kad95cg0aBvioCBNunOcwsI4hywC
-vrNL2iEcGbQTsLtLGhdnY+z6geMDXOhKfVH95ZWvr6fX41E6hqeYtZ1AQk6eG0CR
-FFUFVhJLq8ToqX6nqV96lfL4QqPZ4aaWBPq564DX3YVv/vTSg8VMGw87ih69FfC+
-y08gO5b/dQ3zeg0qM+4qh2GjM2yYhw==
-=Zk3/
------END PGP SIGNATURE-----
-
---Sig_/2mc=ShYF09lsy_uW76bivdq--
