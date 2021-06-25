@@ -2,212 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 135F43B45DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2C63B45DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232072AbhFYOju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:39:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33360 "EHLO mail.kernel.org"
+        id S231983AbhFYOkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:40:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:57492 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231891AbhFYOj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:39:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A15FE6197D;
-        Fri, 25 Jun 2021 14:37:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624631827;
-        bh=YCFy1J2Y2QsNsPSVYSAN99rjizBKWXJw6JQNinsDlbo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W7gkOocIkjqHIS7bOBvE6IU+Xd8ZVog5RlsKujSH4ELi35tr9xWk80XQtewBEgB1z
-         L7bkuusacRwdeYb9bPTu+xaqe953nXvInZCEw+2qLZmW9XVlcUpPBvtYX9+L9mHLVk
-         5iId85VZz7GKsKd3ThPTLkoV9SSiHwJAXtjUAxulJCiFmynhg8pQOpgey5nzeLuZgV
-         tuQ3zkFPGIfVvA1BNaJQnF2Ucdh7c9VN+lFbworfdt8jVoyy4DgjLfGl4zRpKU+/vW
-         Yl6MG3yoKpeRDxORNXHdO8+WPCEbTLmg8YaPdGG693VhZ2VpKoGR3vgDtZSPVf1ccW
-         Bwf0vzPmeKYDA==
-Received: by pali.im (Postfix)
-        id 604D660E; Fri, 25 Jun 2021 16:37:06 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 11/11] serial: mvebu-uart: implement support for baudrates higher than 230400
-Date:   Fri, 25 Jun 2021 16:36:17 +0200
-Message-Id: <20210625143617.12826-12-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210625143617.12826-1-pali@kernel.org>
-References: <20210624224909.6350-1-pali@kernel.org>
- <20210625143617.12826-1-pali@kernel.org>
+        id S232000AbhFYOjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 10:39:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E6D61042;
+        Fri, 25 Jun 2021 07:37:15 -0700 (PDT)
+Received: from localhost (e108754-lin.cambridge.arm.com [10.1.195.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F26903F694;
+        Fri, 25 Jun 2021 07:37:14 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 15:37:13 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
+ invariance
+Message-ID: <20210625143713.GA7092@arm.com>
+References: <cover.1624266901.git.viresh.kumar@linaro.org>
+ <09a39f5c-b47b-a931-bf23-dc43229fb2dd@quicinc.com>
+ <20210623041613.v2lo3nidpgw37abl@vireshk-i7>
+ <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
+ <20210624025414.4iszkovggk6lg6hj@vireshk-i7>
+ <CAKfTPtAXMYYrG1w-iwSWXb428FkwFArEwXQgHnjShoCEMjdYcw@mail.gmail.com>
+ <20210624104734.GA11487@arm.com>
+ <daf1ddf5-6f57-84a8-2ada-90590c0c94b5@quicinc.com>
+ <20210625102113.GB15540@arm.com>
+ <1f83d787-a796-0db3-3c2f-1ca616eb1979@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f83d787-a796-0db3-3c2f-1ca616eb1979@quicinc.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change implements simple usage of fractional divisor. When main
-divisor D is too large to represent requested baudrate then use divisor M
-from fractional divisor feature. All the M prescalers are set to same and
-maximal value 63, so fractional part is not used at all.
+Hey,
 
-Tests showed that UART at 1500000 baudrate via this configuration is stable
-and usable. So there is no need to implement complicated calculation of
-fractional coefficients yet.
+On Friday 25 Jun 2021 at 09:31:58 (-0400), Qian Cai wrote:
+> 
+> 
+> On 6/25/2021 6:21 AM, Ionela Voinescu wrote:
+> >> scaling_driver: acpi_cppc
+> >                   ^^^^^^^^^
+> > I suppose you mean "cppc-cpufreq"?
+> > 
+> > "acpi_cppc" is not a scaling driver option.
+> 
+> Ionela, yes. Sorry about that.
+> 
+> > So your CPUs run at frequencies between 200MHz and 280MHz?
+> 
+> 2000 to 2800 MHz.
+> 
 
-To use this feature with higher baudrates, it is required to use UART clock
-provided by UART clock driver. Default boot xtal clock is not capable of
-higher baudrates and this change also contains code for determining upper
-limit of possible baudrate.
+Thank you for the clarification.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
----
- drivers/tty/serial/mvebu-uart.c | 79 ++++++++++++++++++++++++++-------
- 1 file changed, 62 insertions(+), 17 deletions(-)
+> > Based on your acpi_cppc information below I would have assumed 2GHz as
+> > lowest nonlinear and 2.8GHz as nominal. The reason for this is that
+> > according to the ACPI spec the frequency values in the _CPC objects are
+> > supposed to be in MHz, so 2800 MHz for nominal frequency would be
+> > 2.8GHz.
+> > 
+> > When you try more governors, make sure to check out the difference
+> > between scaling_cur_freq and cpuinfo_cur_freq at [2]. The first gives
+> > you the frequency that the governor (schedutil) is asking for, while the
+> > second is giving you the current frequency obtained from the counters.
+> > 
+> > So to check the actual frequency the cores are running at, please check
+> > cpuinfo_cur_freq.
+> 
+> The problem is that all CPUs are never scaling down. "cpuinfo_cur_freq"
+> and "scaling_cur_freq" are always the 2800 MHz on all CPUs on this idle
+> system. This looks like a regression somewhere as in 5.4-based kernel,
+> I can see "cpuinfo_cur_freq" can go down to 2000 MHz in the same
+> scenario. I'll bisect a bit unless you have better ideas?
 
-diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
-index a31235add99f..0fe251b8627b 100644
---- a/drivers/tty/serial/mvebu-uart.c
-+++ b/drivers/tty/serial/mvebu-uart.c
-@@ -99,6 +99,7 @@
- #define UART_OSAMP		0x14
- #define  OSAMP_DEFAULT_DIVISOR	16
- #define  OSAMP_DIVISORS_MASK	0x3F3F3F3F
-+#define  OSAMP_MAX_DIVISOR	63
- 
- #define MVEBU_NR_UARTS		2
- 
-@@ -479,18 +480,59 @@ static int mvebu_uart_baud_rate_set(struct uart_port *port, unsigned int baud)
- 		return -EOPNOTSUPP;
- 
- 	/*
--	 * The baudrate is derived from the UART clock thanks to two divisors:
--	 *   > D ("baud generator"): can divide the clock from 2 to 2^10 - 1.
--	 *   > M ("fractional divisor"): allows a better accuracy for
--	 *     baudrates higher than 230400.
-+	 * The baudrate is derived from the UART clock thanks to divisors:
-+	 *   > d1 * d2 ("TBG divisors"): can divide only TBG clock from 1 to 6
-+	 *   > D ("baud generator"): can divide the clock from 1 to 1023
-+	 *   > M ("fractional divisor"): allows a better accuracy (from 1 to 63)
- 	 *
--	 * As the derivation of M is rather complicated, the code sticks to its
--	 * default value (x16) when all the prescalers are zeroed, and only
--	 * makes use of D to configure the desired baudrate.
-+	 * Exact formulas for calculating baudrate:
-+	 *
-+	 * with default x16 scheme:
-+	 *   baudrate = xtal / (d * 16)
-+	 *   baudrate = tbg / (d1 * d2 * d * 16)
-+	 *
-+	 * with fractional divisor:
-+	 *   baudrate = 10 * xtal / (d * (3 * (m1 + m2) + 2 * (m3 + m4)))
-+	 *   baudrate = 10 * tbg / (d1*d2 * d * (3 * (m1 + m2) + 2 * (m3 + m4)))
-+	 *
-+	 * Oversampling value:
-+	 *   osamp = (m1 << 0) | (m2 << 8) | (m3 << 16) | (m4 << 24);
-+	 *
-+	 * Where m1 controls number of clock cycles per bit for bits 1,2,3;
-+	 * m2 for bits 4,5,6; m3 for bits 7,8 and m4 for bits 9,10.
-+	 *
-+	 * To simplify baudrate setup set all the M prescalers to same value.
-+	 * For 9600 baudrate and higher it is enough to use just default (x16)
-+	 * divisor or fractional divisor with M = 63, so there is no need to
-+	 * use real fractional support (when the M prescalers are not equal).
-+	 *
-+	 * When all the M prescalers are zeroed then default (x16) divisor is
-+	 * used. Default x16 scheme is more stable than M (fractional divisor),
-+	 * so use M only when D divisor is not enough to derivate baudrate.
-+	 *
-+	 * Member port->uartclk is either xtal clock rate or TBG clock rate
-+	 * divided by (d1 * d2). So UART clock driver already sets d1 and d2
-+	 * divisors and UART driver cannot change them. Moreover they are
-+	 * shared with both UARTs.
- 	 */
-+
- 	m_divisor = OSAMP_DEFAULT_DIVISOR;
- 	d_divisor = DIV_ROUND_CLOSEST(port->uartclk, baud * m_divisor);
- 
-+	if (d_divisor > BRDV_BAUD_MAX) {
-+		/*
-+		 * Experiments showed that small M divisors are unstable.
-+		 * So use maximal possible M = 63 and calculate D divisor.
-+		 */
-+		m_divisor = OSAMP_MAX_DIVISOR;
-+		d_divisor = DIV_ROUND_CLOSEST(port->uartclk, baud * m_divisor);
-+	}
-+
-+	if (d_divisor < 1)
-+		d_divisor = 1;
-+	else if (d_divisor > BRDV_BAUD_MAX)
-+		d_divisor = BRDV_BAUD_MAX;
-+
- 	spin_lock_irqsave(&mvebu_uart_lock, flags);
- 	brdv = readl(port->membase + UART_BRDV);
- 	brdv &= ~BRDV_BAUD_MASK;
-@@ -500,6 +542,9 @@ static int mvebu_uart_baud_rate_set(struct uart_port *port, unsigned int baud)
- 
- 	osamp = readl(port->membase + UART_OSAMP);
- 	osamp &= ~OSAMP_DIVISORS_MASK;
-+	if (m_divisor != OSAMP_DEFAULT_DIVISOR)
-+		osamp |= (m_divisor << 0) | (m_divisor << 8) |
-+			(m_divisor << 16) | (m_divisor << 24);
- 	writel(osamp, port->membase + UART_OSAMP);
- 
- 	return 0;
-@@ -529,14 +574,14 @@ static void mvebu_uart_set_termios(struct uart_port *port,
- 		port->ignore_status_mask |= STAT_RX_RDY(port) | STAT_BRK_ERR;
- 
- 	/*
--	 * Maximal divisor is 1023 * 16 when using default (x16) scheme.
--	 * Maximum achievable frequency with simple baudrate divisor is 230400.
--	 * Since the error per bit frame would be of more than 15%, achieving
--	 * higher frequencies would require to implement the fractional divisor
--	 * feature.
-+	 * Maximal divisor is 1023 and maximal fractional divisor is 63. And
-+	 * experiments showed that baudrates above 1/80 of base clock are not
-+	 * stable and usable. So disallow baudrate above 1/80 of the base clock.
-+	 * When port->uartclk is not available then mvebu_uart_baud_rate_set()
-+	 * fails so values min_baud and max_baud in this case does not matter.
- 	 */
--	min_baud = DIV_ROUND_UP(port->uartclk, 1023 * 16);
--	max_baud = 230400;
-+	min_baud = DIV_ROUND_UP(port->uartclk, BRDV_BAUD_MAX*OSAMP_MAX_DIVISOR);
-+	max_baud = port->uartclk / 80;
- 
- 	baud = uart_get_baud_rate(port, termios, old, min_baud, max_baud);
- 	if (mvebu_uart_baud_rate_set(port, baud)) {
-@@ -1397,14 +1442,14 @@ static int mvebu_uart_clock_probe(struct platform_device *pdev)
- 			 * Calculate the smallest TBG d1 and d2 divisors that
- 			 * still can provide 9600 baudrate.
- 			 */
--			d1 = DIV_ROUND_UP(rate, 9600 * OSAMP_DEFAULT_DIVISOR *
-+			d1 = DIV_ROUND_UP(rate, 9600 * OSAMP_MAX_DIVISOR *
- 						BRDV_BAUD_MAX);
- 			if (d1 < 1)
- 				d1 = 1;
- 			else if (d1 > CLK_TBG_DIV1_MAX)
- 				d1 = CLK_TBG_DIV1_MAX;
- 
--			d2 = DIV_ROUND_UP(rate, 9600 * OSAMP_DEFAULT_DIVISOR *
-+			d2 = DIV_ROUND_UP(rate, 9600 * OSAMP_MAX_DIVISOR *
- 						BRDV_BAUD_MAX * d1);
- 			if (d2 < 1)
- 				d2 = 1;
-@@ -1419,7 +1464,7 @@ static int mvebu_uart_clock_probe(struct platform_device *pdev)
- 		}
- 
- 		/* Skip clock source which cannot provide 9600 baudrate */
--		if (rate > 9600 * OSAMP_DEFAULT_DIVISOR * BRDV_BAUD_MAX * d1 * d2)
-+		if (rate > 9600 * OSAMP_MAX_DIVISOR * BRDV_BAUD_MAX * d1 * d2)
- 			continue;
- 
- 		/*
--- 
-2.20.1
+Quick questions for you:
 
+1. When you say you tried a 5.4 kernel, did you try it with these
+patches backported? They also have some dependencies with the recent
+changes in the arch topology driver and cpufreq so they would not be
+straight forward to backport.
+
+If the 5.4 kernel you tried did not have these patches, it might be best
+to try next/master that has these patches, but with
+CONFIG_ACPI_CPPC_CPUFREQ_FIE=n, just to eliminate the possibility that
+an incorrect frequency scale factor here would affect utilization that
+would then affect the schedutil frequency selection. I would not expect
+this behavior even if the scale factor was wrong, but it would be good
+to rule out.
+
+2. Is your platform booting with all CPUs? Are any hotplug operations
+done in your scenario?
+
+Thanks,
+Ionela.
