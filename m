@@ -2,61 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610183B42AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542903B42AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbhFYLqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 07:46:42 -0400
-Received: from foss.arm.com ([217.140.110.172]:54034 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229458AbhFYLql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 07:46:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8C291063;
-        Fri, 25 Jun 2021 04:44:20 -0700 (PDT)
-Received: from e123427-lin.arm.com (unknown [10.57.47.118])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D98E13F694;
-        Fri, 25 Jun 2021 04:44:18 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        linux-pci@vger.kernel.org
-Subject: Re: [RESEND PATCH 0/3] PCI: aardvark: PIO fixes
-Date:   Fri, 25 Jun 2021 12:44:10 +0100
-Message-Id: <162462127436.16453.17392450814114184768.b4-ty@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20210624213345.3617-1-pali@kernel.org>
-References: <20210624213345.3617-1-pali@kernel.org>
+        id S230091AbhFYLsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhFYLsk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 07:48:40 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA8EC061767
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 04:46:20 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id w11so794860ilm.10
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 04:46:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tgDi0FCKsZnwX7VsEbSy0smaMpEVsSOVOBoh4nlMGXs=;
+        b=03M16gCQh193nryv5d4WNf74IV+IJgJIPDtE7SeiPN3RlDHUVdB1/BH6LBnMJVBe7a
+         Xeu2k0EB3oFvuA3070Mzg0skVcFzdyY1b1QUUB/z3V1zKkUW+Ag3yL9XX4zCHMpbIkTX
+         JDURYYR8waDrYDLa+Hh+uhkma8FJdQ+y022bFT5EGZ8ErRb59FQNcFmCCW8gXs/j7152
+         NHkMeu9uzkq5AS3Jx50pGeW0hZAfUNxoU23dlmJK78xE+TTWJxM6NaILwXDCiZjzL9zt
+         9wUAiLh/Zljpgmc2Wg9Lfnq69HYLY5S0w1t/bMR3dRWsykvSYYt4nH9cBfmhXDl4WupD
+         1WdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tgDi0FCKsZnwX7VsEbSy0smaMpEVsSOVOBoh4nlMGXs=;
+        b=TBCbx/jGk5MauPQlnaZhTjXHh/1ALOCvzs+82d7EfdMnNPFBYfIVgKvNaD3n0CjZPN
+         r2tBYoaL4Pm7JWG1iC+pxCHqjNcYdfni2olhlfNZtqmOnlYgJuvJbx8tcUWFfiPXF76/
+         QBPJHUdFgm+ivdWqIJTbUVPv+9Q0ceEdrzIjuxls+1FFWy30c5cz8KiWf7DxYTX3i4C8
+         iXRbV4ClFd6T8HV3AvkEBGabE8mgfuXtpt0sI14r9WHaNJhwTSPGbw6FOzQYShzg5N23
+         ocG2DNwwHpKaz9AZ4SOLZRLhY3E4mgggveYLXNtjG7/WxMXytDhRiMXokVeCIA/55gM1
+         sLsw==
+X-Gm-Message-State: AOAM532Lce6ikWbuvOjncf7XqXmN0ZsvdwNrJI68u9r/HKxoLh6Z88Xl
+        OWVgCEsFYUUnOa4rLJFS7BGJbHYr/CqaSUeAkAHs6Q==
+X-Google-Smtp-Source: ABdhPJwfX8xjOUkxO91ZcEJg9NpMZfuHjfbio/a600BrQVKMg+GSP0qU27UWh2vlLA+FnNta6XP8f+nFJZyhFTktiBY=
+X-Received: by 2002:a92:dcc4:: with SMTP id b4mr7083720ilr.183.1624621579349;
+ Fri, 25 Jun 2021 04:46:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210607123317.3242031-1-robert.marko@sartura.hr> <20210607123317.3242031-5-robert.marko@sartura.hr>
+In-Reply-To: <20210607123317.3242031-5-robert.marko@sartura.hr>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Fri, 25 Jun 2021 13:46:08 +0200
+Message-ID: <CA+HBbNH7wcpfQOX2=vZmW78GoWy_WL3Pz-dMKe0N0ebZDp+oUw@mail.gmail.com>
+Subject: Re: [PATCH v6 5/6] dt-bindings: mfd: Add Delta TN48M CPLD drivers bindings
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 23:33:42 +0200, Pali Rohár wrote:
-> Per Lorenzo's request [1] I'm resending PCI aardvark patches from big
-> patch series [2] which fixes just one small thing - aardvark PIO code.
-> 
-> [1] - https://lore.kernel.org/linux-pci/20210603151605.GA18917@lpieralisi/
-> [2] - https://lore.kernel.org/linux-pci/20210506153153.30454-1-pali@kernel.org/
-> 
-> Evan Wang (1):
->   PCI: aardvark: Fix checking for PIO status
-> 
-> [...]
+On Mon, Jun 7, 2021 at 2:33 PM Robert Marko <robert.marko@sartura.hr> wrote:
+>
+> Add binding documents for the Delta TN48M CPLD drivers.
+>
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> ---
+> Changes in v3:
+> * Include bindings for reset driver
+>
+> Changes in v2:
+> * Implement MFD as a simple I2C MFD
+> * Add GPIO bindings as separate
+>
+>  .../bindings/gpio/delta,tn48m-gpio.yaml       | 42 +++++++++
+>  .../bindings/mfd/delta,tn48m-cpld.yaml        | 90 +++++++++++++++++++
+>  .../bindings/reset/delta,tn48m-reset.yaml     | 35 ++++++++
+>  3 files changed, 167 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
+>  create mode 100644 Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
+>  create mode 100644 Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml b/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
+> new file mode 100644
+> index 000000000000..aca646aecb12
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
+> @@ -0,0 +1,42 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/gpio/delta,tn48m-gpio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Delta Networks TN48M CPLD GPIO controller
+> +
+> +maintainers:
+> +  - Robert Marko <robert.marko@sartura.hr>
+> +
+> +description: |
+> +  This module is part of the Delta TN48M multi-function device. For more
+> +  details see ../mfd/delta,tn48m-cpld.yaml.
+> +
+> +  GPIO controller module provides GPIO-s for the SFP slots.
+> +  It is split into 3 controllers, one output only for the SFP TX disable
+> +  pins, one input only for the SFP present pins and one input only for
+> +  the SFP LOS pins.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - delta,tn48m-gpio-sfp-tx-disable
+> +      - delta,tn48m-gpio-sfp-present
+> +      - delta,tn48m-gpio-sfp-los
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  "#gpio-cells":
+> +    const: 2
+> +
+> +  gpio-controller: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#gpio-cells"
+> +  - gpio-controller
+> +
+> +additionalProperties: false
+> diff --git a/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml b/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
+> new file mode 100644
+> index 000000000000..2c6e2adf73ca
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
+> @@ -0,0 +1,90 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/delta,tn48m-cpld.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Delta Networks TN48M CPLD controller
+> +
+> +maintainers:
+> +  - Robert Marko <robert.marko@sartura.hr>
+> +
+> +description: |
+> +  Lattice CPLD onboard the TN48M switches is used for system
+> +  management.
+> +
+> +  It provides information about the hardware model, revision,
+> +  PSU status etc.
+> +
+> +  It is also being used as a GPIO expander for the SFP slots and
+> +  reset controller for the switch MAC-s and other peripherals.
+> +
+> +properties:
+> +  compatible:
+> +    const: delta,tn48m-cpld
+> +
+> +  reg:
+> +    description:
+> +      I2C device address.
+> +    maxItems: 1
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +
+> +patternProperties:
+> +  "^gpio(@[0-9a-f]+)?$":
+> +    $ref: ../gpio/delta,tn48m-gpio.yaml
+> +
+> +  "^reset-controller?$":
+> +    $ref: ../reset/delta,tn48m-reset.yaml
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        cpld@41 {
+> +            compatible = "delta,tn48m-cpld";
+> +            reg = <0x41>;
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            gpio@31 {
+> +                compatible = "delta,tn48m-gpio-sfp-tx-disable";
+> +                reg = <0x31>;
+> +                gpio-controller;
+> +                #gpio-cells = <2>;
+> +            };
+> +
+> +            gpio@3a {
+> +                compatible = "delta,tn48m-gpio-sfp-present";
+> +                reg = <0x3a>;
+> +                gpio-controller;
+> +                #gpio-cells = <2>;
+> +            };
+> +
+> +            gpio@40 {
+> +                compatible = "delta,tn48m-gpio-sfp-los";
+> +                reg = <0x40>;
+> +                gpio-controller;
+> +                #gpio-cells = <2>;
+> +            };
+> +
+> +            reset-controller {
+> +              compatible = "delta,tn48m-reset";
+> +              #reset-cells = <1>;
+> +            };
+> +        };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml b/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
+> new file mode 100644
+> index 000000000000..0e5ee8decc0d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
+> @@ -0,0 +1,35 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/reset/delta,tn48m-reset.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Delta Networks TN48M CPLD reset controller
+> +
+> +maintainers:
+> +  - Robert Marko <robert.marko@sartura.hr>
+> +
+> +description: |
+> +  This module is part of the Delta TN48M multi-function device. For more
+> +  details see ../mfd/delta,tn48m-cpld.yaml.
+> +
+> +  Reset controller modules provides resets for the following:
+> +  * 88F7040 SoC
+> +  * 88F6820 SoC
+> +  * 98DX3265 switch MAC-s
+> +  * 88E1680 PHY-s
+> +  * 88E1512 PHY
+> +  * PoE PSE controller
+> +
+> +properties:
+> +  compatible:
+> +    const: delta,tn48m-reset
+> +
+> +  "#reset-cells":
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - "#reset-cells"
+> +
+> +additionalProperties: false
+> --
+> 2.31.1
+>
 
-Given that we are close to a release, I am trying to cherry-pick
-some aardvark patches to cut the current delta.
+Are there any issues with the bindings?
+The patch series is depending on this as the rest has been reviewed.
 
-Applied to pci/aardvark:
-
-[1/1] PCI: aardvark: Fix checking for PIO Non-posted Request
-      https://git.kernel.org/lpieralisi/pci/c/8ceeac307a
-
-Thanks,
-Lorenzo
+Regards,
+Robert
+-- 
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
