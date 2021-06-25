@@ -2,224 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82BBB3B4741
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7B53B4746
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhFYQQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 12:16:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhFYQQJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 12:16:09 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01942C061767
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 09:13:48 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id g19-20020a9d12930000b0290457fde18ad0so9799855otg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 09:13:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MWWpxotgdBre27isI3DwZKQ334uPd/zecV0Lcyc3n7Q=;
-        b=N7zn6P76h5T81mOnWCupIHAcZvozSOjxZGTu/yWBXAFYQ7KtjfLycqT4XiBEFUrId1
-         xuFky7NkApH6BPvpnPP0zRNbC/4HgA3jtVvNGI+RUnb24WxoZeD9R+pzeMjUpHHNOo64
-         tHsRlMmWYgu6iwZ5Y1+vzK6RUg+S1UytBwSb/jEKBmT4hkrEWavEbxCZoV8vrmNjpV+R
-         WjDZQspCHpjwecQvvyvEw3rK09fdE1nXSzAmX3hc1Mn/MId88dV7sZ6g6dO+M1Eg6b/+
-         aznWTPJMenw99Iu2z8iwu/CLCOCmax7ptRtYD5oxbeGmSDu4wg2B69pO0hmJ5I5xAQrT
-         VxUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MWWpxotgdBre27isI3DwZKQ334uPd/zecV0Lcyc3n7Q=;
-        b=IsD2JWuQWkj4m7t6OZAz/37FuSlS+GQ7nekkOtdYnLgyocBZklaVz+Clducaf9X646
-         4vTB1uFCH2/OWuUWwwumyV6a8T2pR+vEibPuJv/U0uT2I+BQFq6X7nLYMr25NIJvd6ou
-         UDltZ6DXh3fxFVhF7nAptxxwAUpmJHvWAj8Tcaax4+lgbGbBer/2RMJT56ISE/B3OwcJ
-         pgmjW3g5RysWA5A/C985WhUHVdvny6zzAZHvczhZQnvp/3q5mD9g+/0kGPUlh/Ey1vwY
-         3cQmeCuJF3i7DJZ65ps7f29oFfdlDAX5X35mvLxGQUr5gfOwa7/D6uWOXydkED2Xqh49
-         yY9A==
-X-Gm-Message-State: AOAM5331S4wK/XfvVN5pfbNCWCtrPtSckmO/ZMY6+oGFN5epdSymMIlA
-        0InqsiZn7epzYEgkQD6kdDlvpA==
-X-Google-Smtp-Source: ABdhPJxTOT8pJDLAz3xdWNJ/+53maozvDLTDh1AQoHyWbRZamb70O7ND1oumpz1JDJMQrWT5GODECg==
-X-Received: by 2002:a05:6830:1309:: with SMTP id p9mr10338163otq.209.1624637628209;
-        Fri, 25 Jun 2021 09:13:48 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id q9sm1509884ots.1.2021.06.25.09.13.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 09:13:47 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 11:13:45 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Kuogee Hsieh <khsieh@codeaurora.org>
-Cc:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] arm64: dts: qcom: sc7180: Add DisplayPort node
-Message-ID: <YNYAuaBrGgdtToph@builder.lan>
-References: <1622758940-13485-1-git-send-email-khsieh@codeaurora.org>
+        id S229873AbhFYQR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 12:17:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:59834 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229445AbhFYQR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 12:17:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CE74D1063;
+        Fri, 25 Jun 2021 09:15:35 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2FEFA3F719;
+        Fri, 25 Jun 2021 09:15:33 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 17:15:28 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [PATCH v6 0/7] Add SR-IOV support in PCIe Endpoint Core
+Message-ID: <20210625161528.GA21595@lpieralisi>
+References: <20210616211630.GA3007203@bjorn-Precision-5520>
+ <0fd19e28-e0a6-fd79-672a-b588fb2763ba@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1622758940-13485-1-git-send-email-khsieh@codeaurora.org>
+In-Reply-To: <0fd19e28-e0a6-fd79-672a-b588fb2763ba@ti.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 03 Jun 17:22 CDT 2021, Kuogee Hsieh wrote:
-
-> Add DP device node on sc7180.
+On Thu, Jun 24, 2021 at 08:30:09PM +0530, Kishon Vijay Abraham I wrote:
+> Hi Lorenzo,
 > 
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
-> Changes in v2:
-> -- replace msm_dp with dp
-> -- replace dp_opp_table with opp_table
+> On 17/06/21 2:46 am, Bjorn Helgaas wrote:
+> > On Wed, Jun 16, 2021 at 07:35:33PM +0530, Kishon Vijay Abraham I wrote:
+> >> Hi Lorenzo, Bjorn,
+> >>
+> >> On 17/05/21 1:17 pm, Kishon Vijay Abraham I wrote:
+> >>> Patch series
+> >>> *) Adds support to add virtual functions to enable endpoint controller
+> >>>    which supports SR-IOV capability
+> >>> *) Add support in Cadence endpoint driver to configure virtual functions
+> >>> *) Enable pci_endpoint_test driver to create pci_device for virtual
+> >>>    functions
+> >>>
+> >>> v1 of the patch series can be found at [1]
+> >>> v2 of the patch series can be found at [2]
+> >>> v3 of the patch series can be found at [3]
+> >>> v4 of the patch series can be found at [4]
+> >>> v5 of the patch series can be found at [5]
+> >>>
+> >>> Here both physical functions and virtual functions use the same
+> >>> pci_endpoint_test driver and existing pcitest utility can be used
+> >>> to test virtual functions as well.
+> >>>
+> >>> Changes from v5:
+> >>> *) Rebased to 5.13-rc1
+> >>>
+> >>> Changes from v4:
+> >>> *) Added a fix in Cadence driver which was overwriting BAR configuration
+> >>>    of physical function.
+> >>> *) Didn't include Tom's Acked-by since Cadence driver is modified in
+> >>>    this revision.
+> >>>
+> >>> Changes from v3:
+> >>> *) Fixed Rob's comment and added his Reviewed-by as suggested by him.
+> >>>
+> >>> Changes from v2:
+> >>> *) Fixed DT binding documentation comment by Rob
+> >>> *) Fixed the error check in pci-epc-core.c
+> >>>
+> >>> Changes from v1:
+> >>> *) Re-based and Re-worked to latest kernel 5.10.0-rc2+ (now has generic
+> >>>    binding for EP)
+> >>>
+> >>> [1] -> http://lore.kernel.org/r/20191231113534.30405-1-kishon@ti.com
+> >>> [2] -> http://lore.kernel.org/r/20201112175358.2653-1-kishon@ti.com
+> >>> [3] -> https://lore.kernel.org/r/20210305050410.9201-1-kishon@ti.com
+> >>> [4] -> http://lore.kernel.org/r/20210310160943.7606-1-kishon@ti.com
+> >>> [5] -> https://lore.kernel.org/r/20210419083401.31628-1-kishon@ti.com
+> >>
+> >> Can this series be merged for 5.14? It already includes Ack from Rob for
+> >> dt-binding changes and Ack from Tom for Cadence driver changes.
+> > 
+> > Sorry, I think this was assigned to me in patchwork, but Lorenzo
+> > usually takes care of the endpoint stuff.  He's away this week, but no
+> > doubt will look at it when he returns.
 > 
-> Changes in v3:
-> -- correct text of commit title
-> 
-> Changes in v4:
-> -- replace dp with mdss_dp
-> -- replace opp_table with dp_opp_table
-> 
-> 
->  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi |  9 ++++
->  arch/arm64/boot/dts/qcom/sc7180.dtsi         | 78 ++++++++++++++++++++++++++++
->  2 files changed, 87 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> index 24d293e..051fb40 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> @@ -786,6 +786,15 @@ hp_i2c: &i2c9 {
->  	status = "okay";
->  };
->  
-> +&mdss_dp {
-> +        status = "okay";
-> +        pinctrl-names = "default";
-> +        pinctrl-0 = <&dp_hot_plug_det>;
-> +        data-lanes = <0 1>;
-> +        vdda-1p2-supply = <&vdda_usb_ss_dp_1p2>;
-> +        vdda-0p9-supply = <&vdda_usb_ss_dp_core>;
-> +};
-> +
->  &pm6150_adc {
->  	charger-thermistor@4f {
->  		reg = <ADC5_AMUX_THM3_100K_PU>;
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> index 6228ba2..c779ad3 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> @@ -3032,6 +3032,13 @@
->  							remote-endpoint = <&dsi0_in>;
->  						};
->  					};
-> +
-> +					port@2 {
-> +						reg = <2>;
-> +						dpu_intf0_out: endpoint {
-> +							remote-endpoint = <&dp_in>;
-> +						};
-> +					};
->  				};
->  
->  				mdp_opp_table: mdp-opp-table {
-> @@ -3148,6 +3155,77 @@
->  
->  				status = "disabled";
->  			};
-> +
-> +			mdss_dp: displayport-controller@ae90000 {
-> +				compatible = "qcom,sc7180-dp";
-> +				status = "disabled";
-> +
-> +				reg = <0 0x0ae90000 0 0x1400>;
-> +
-> +				interrupt-parent = <&mdss>;
-> +				interrupts = <12>;
-> +
-> +				clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_DP_AUX_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_DP_LINK_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_DP_LINK_INTF_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK>;
-> +				clock-names = "core_iface", "core_aux", "ctrl_link",
-> +					      "ctrl_link_iface", "stream_pixel";
-> +				#clock-cells = <1>;
-> +				assigned-clocks = <&dispcc DISP_CC_MDSS_DP_LINK_CLK_SRC>,
-> +						  <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK_SRC>;
-> +				assigned-clock-parents = <&dp_phy 0>, <&dp_phy 1>;
-> +				phys = <&dp_phy>;
-> +				phy-names = "dp";
-> +
-> +				operating-points-v2 = <&dp_opp_table>;
-> +				power-domains = <&rpmhpd SC7180_CX>;
-> +
-> +				#sound-dai-cells = <0>;
-> +
-> +				ports {
-> +					#address-cells = <1>;
-> +					#size-cells = <0>;
-> +					port@0 {
-> +						reg = <0>;
-> +						dp_in: endpoint {
-> +							remote-endpoint = <&dpu_intf0_out>;
-> +						};
-> +					};
-> +
-> +					port@1 {
-> +						reg = <1>;
-> +						dp_out: endpoint { };
-> +					};
-> +				};
-> +
-> +				dp_opp_table: dp-opp-table {
+> Can you consider merging this series for 5.14?
 
-I forgot that our discussion about the node name here was on the
-previous revision, _this_ is the patch I will drop the "dp-" from and
-apply.
+I am running late this cycle on reviews and the merge window is about
+to open, I will review it and queue it first thing for the next cycle.
 
-And as I've looked at this quite a bit now:
+Apologies.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Thanks for following up on the other feedback!
-
-Regards,
-Bjorn
-
-> +					compatible = "operating-points-v2";
-> +
-> +					opp-160000000 {
-> +						opp-hz = /bits/ 64 <160000000>;
-> +						required-opps = <&rpmhpd_opp_low_svs>;
-> +					};
-> +
-> +					opp-270000000 {
-> +						opp-hz = /bits/ 64 <270000000>;
-> +						required-opps = <&rpmhpd_opp_svs>;
-> +					};
-> +
-> +					opp-540000000 {
-> +						opp-hz = /bits/ 64 <540000000>;
-> +						required-opps = <&rpmhpd_opp_svs_l1>;
-> +					};
-> +
-> +					opp-810000000 {
-> +						opp-hz = /bits/ 64 <810000000>;
-> +						required-opps = <&rpmhpd_opp_nom>;
-> +					};
-> +				};
-> +			};
-> +
-> +
->  		};
->  
->  		dispcc: clock-controller@af00000 {
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Lorenzo
