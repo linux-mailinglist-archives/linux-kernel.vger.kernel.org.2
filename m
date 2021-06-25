@@ -2,351 +2,617 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E1D3B46C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8589F3B46CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhFYPmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 11:42:21 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:57740 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbhFYPmT (ORCPT
+        id S229818AbhFYPpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 11:45:06 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17222 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229630AbhFYPpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 11:42:19 -0400
-Received: from [192.168.254.32] (unknown [47.187.214.213])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 04A4520B6AEE;
-        Fri, 25 Jun 2021 08:39:57 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 04A4520B6AEE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1624635598;
-        bh=Y3MPpZKtv1ipxwuJAGpm6jZtoc/HHzFRO8RXYkmPXUE=;
-        h=From:Subject:To:Cc:References:Date:In-Reply-To:From;
-        b=dm5UQHUsLdzrzZLstgnq8fr1wp0xc+OmmRs7iInjHqf/lX2OwqYGBrTuaq465RNR7
-         AXerbkOlqMB79WC5yWxH87e5YifqcF5x4aeitz3NRk8gyYyKlfTFMc3u9inAhpQhwV
-         8oMeUMC+eXR19PigHuAU55J3hTpDkCzxJV2WvsRw=
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Subject: Re: [RFC PATCH v5 1/2] arm64: Introduce stack trace reliability
- checks in the unwinder
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, catalin.marinas@arm.com, will@kernel.org,
-        jmorris@namei.org, pasha.tatashin@soleen.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <ea0ef9ed6eb34618bcf468fbbf8bdba99e15df7d>
- <20210526214917.20099-1-madvenka@linux.microsoft.com>
- <20210526214917.20099-2-madvenka@linux.microsoft.com>
- <20210624144021.GA17937@C02TD0UTHF1T.local>
-Message-ID: <da0a2d95-a8cd-7b39-7bba-41cfa8782eaa@linux.microsoft.com>
-Date:   Fri, 25 Jun 2021 10:39:57 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 25 Jun 2021 11:45:05 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15PFY5Uf084958;
+        Fri, 25 Jun 2021 11:42:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=wdMPc13LG1nQ5x4ldpPhP+BjcpqhcjPX6vhPYW5n1To=;
+ b=VM6fPR32TsLVi+QqLtCarLgk/enefL8TSgoRdLBr4UbCTb2MFfJXcrP7/EO2+9HqQ010
+ GUnEUvhIBrIYicllVSAZqa/wntatD7GrWsjAQKbd6W46H8Qd1EYMLEtgARJMdCoesG6z
+ yPFLeqSrRMTTth/ykNSu3kgM/YIg85GqXtratado404Nnpurgz4NETBbV5r8yAckKplV
+ VDPzpErSqHobJ3P3SnJUGhbQvtgLUBMNBfaray12ckE9qpWWB/Om4u8gbAgsXkxWjwEv
+ Nf7R2L38UDaTVil4rJZwqdYywlJoYSxHqs9+hqUtp3JcwWsvxYkugww1utP/2owzCno+ yg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39dgt03ahq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Jun 2021 11:42:39 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15PFY6Kj085078;
+        Fri, 25 Jun 2021 11:42:39 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39dgt03ag6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Jun 2021 11:42:39 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15PFg6N2022875;
+        Fri, 25 Jun 2021 15:42:36 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 399878b4f6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Jun 2021 15:42:36 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15PFgXsU30671246
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Jun 2021 15:42:33 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 701614C058;
+        Fri, 25 Jun 2021 15:42:33 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AE67A4C052;
+        Fri, 25 Jun 2021 15:42:30 +0000 (GMT)
+Received: from Nageswaras-MacBook-Pro-2.local (unknown [9.85.92.6])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri, 25 Jun 2021 15:42:30 +0000 (GMT)
+Subject: Re: [PATCH] perf vendor events power10: Adds 24x7 nest metric events
+ for power10 platform
+To:     Kajol Jain <kjain@linux.ibm.com>, acme@kernel.org
+Cc:     maddy@linux.vnet.ibm.com, atrajeev@linux.vnet.ibm.com,
+        pc@us.ibm.com, linux-kernel@vger.kernel.org, jolsa@redhat.com,
+        ravi.bangoria@linux.ibm.com, linux-perf-users@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210625115948.99579-1-kjain@linux.ibm.com>
+From:   Nageswara Sastry <rnsastry@linux.ibm.com>
+Message-ID: <9044a3c3-c4ce-c516-9da7-95dce6b31e1f@linux.ibm.com>
+Date:   Fri, 25 Jun 2021 21:12:29 +0530
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210624144021.GA17937@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210625115948.99579-1-kjain@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: vlXPL2k9V0z9Cujn5A89dB5djCliX0Jk
+X-Proofpoint-ORIG-GUID: Ph4UK3fXSDgN8oIaJwAe-YAdiOLY7zh_
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-25_05:2021-06-25,2021-06-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 lowpriorityscore=0 suspectscore=0 malwarescore=0
+ adultscore=0 phishscore=0 impostorscore=0 mlxscore=0 clxscore=1015
+ mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106250090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Test scenarios:
+1. With 'perf list metric' and 'perf list metricgroup'  - can see metrics
+2. Run all the metrics with perf stat with -M option and --metric-only 
+-M option
+
+The above test scenarios automated with avocado framework, pull request 
+title: perf_metric.py: Add perf metric test case
+
+Output from automated test script run:
+  (1/2) perf_metric.py:perf_metric.test_all_metric_events_with_M: PASS 
+(89.83 s)
+  (2/2) perf_metric.py:perf_metric.test_all_metric_events_with_metric: 
+PASS (89.34 s)
+
+Tested-by: Nageswara R Sastry <rnsastry@linux.ibm.com>
 
 
-On 6/24/21 9:40 AM, Mark Rutland wrote:
-> Hi Madhavan,
+
+On 25/06/21 5:29 pm, Kajol Jain wrote:
+> Patch adds 24x7 nest metric events for POWER10.
 > 
-> On Wed, May 26, 2021 at 04:49:16PM -0500, madvenka@linux.microsoft.com wrote:
->> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->>
->> The unwinder should check for the presence of various features and
->> conditions that can render the stack trace unreliable and mark the
->> the stack trace as unreliable for the benefit of the caller.
->>
->> Introduce the first reliability check - If a return PC is not a valid
->> kernel text address, consider the stack trace unreliable. It could be
->> some generated code.
->>
->> Other reliability checks will be added in the future.
->>
->> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
+> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+> ---
+>   .../arch/powerpc/power10/nest_metrics.json    | 491 ++++++++++++++++++
+>   1 file changed, 491 insertions(+)
+>   create mode 100644 tools/perf/pmu-events/arch/powerpc/power10/nest_metrics.json
 > 
-> At a high-level, I'm on-board with keeping track of this per unwind
-> step, but if we do that then I want to be abel to use this during
-> regular unwinds (e.g. so that we can have a backtrace idicate when a
-> step is not reliable, like x86 does with '?'), and to do that we need to
-> be a little more accurate.
+> diff --git a/tools/perf/pmu-events/arch/powerpc/power10/nest_metrics.json b/tools/perf/pmu-events/arch/powerpc/power10/nest_metrics.json
+> new file mode 100644
+> index 000000000000..b79046cd8b09
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/powerpc/power10/nest_metrics.json
+> @@ -0,0 +1,491 @@
+> +[
+> +    {
+> +      "MetricName": "VEC_GROUP_PUMP_RETRY_RATIO_P01",
+> +      "BriefDescription": "VEC_GROUP_PUMP_RETRY_RATIO_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_VG_PUMP01\\,chip\\=?@ / hv_24x7@PM_PB_VG_PUMP01\\,chip\\=?@) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "VEC_GROUP_PUMP_RETRY_RATIO_P23",
+> +      "BriefDescription": "VEC_GROUP_PUMP_RETRY_RATIO_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_VG_PUMP23\\,chip\\=?@ / hv_24x7@PM_PB_VG_PUMP23\\,chip\\=?@) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "LOCAL_NODE_PUMP_RETRY_RATIO_P01",
+> +      "BriefDescription": "LOCAL_NODE_PUMP_RETRY_RATIO_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_LNS_PUMP01\\,chip\\=?@ / hv_24x7@PM_PB_LNS_PUMP01\\,chip\\=?@) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "LOCAL_NODE_PUMP_RETRY_RATIO_P23",
+> +      "BriefDescription": "LOCAL_NODE_PUMP_RETRY_RATIO_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_LNS_PUMP23\\,chip\\=?@ / hv_24x7@PM_PB_LNS_PUMP23\\,chip\\=?@) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "GROUP_PUMP_RETRY_RATIO_P01",
+> +      "BriefDescription": "GROUP_PUMP_RETRY_RATIO_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_GROUP_PUMP01\\,chip\\=?@ / hv_24x7@PM_PB_GROUP_PUMP01\\,chip\\=?@) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "GROUP_PUMP_RETRY_RATIO_P23",
+> +      "BriefDescription": "GROUP_PUMP_RETRY_RATIO_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_GROUP_PUMP23\\,chip\\=?@ / hv_24x7@PM_PB_GROUP_PUMP23\\,chip\\=?@) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_GROUP_PUMPS_P01",
+> +      "BriefDescription": "TOTAL_GROUP_PUMPS_P01(PER-CYC)",
+> +      "MetricExpr": "(hv_24x7@PM_PB_GROUP_PUMP01\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_GROUP_PUMPS_P23",
+> +      "BriefDescription": "TOTAL_GROUP_PUMPS_P23(PER-CYC)",
+> +      "MetricExpr": "(hv_24x7@PM_PB_GROUP_PUMP23\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_GROUP_PUMPS_RETRIES_P01",
+> +      "BriefDescription": "TOTAL_GROUP_PUMPS_RETRIES_P01(PER-CYC)",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_GROUP_PUMP01\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_GROUP_PUMPS_RETRIES_P23",
+> +      "BriefDescription": "TOTAL_GROUP_PUMPS_RETRIES_P23(PER-CYC)",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_GROUP_PUMP23\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "REMOTE_NODE_PUMPS_RETRIES_RATIO_P01",
+> +      "BriefDescription": "REMOTE_NODE_PUMPS_RETRIES_RATIO_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_RNS_PUMP01\\,chip\\=?@ / hv_24x7@PM_PB_RNS_PUMP01\\,chip\\=?@) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "REMOTE_NODE_PUMPS_RETRIES_RATIO_P23",
+> +      "BriefDescription": "REMOTE_NODE_PUMPS_RETRIES_RATIO_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_RNS_PUMP23\\,chip\\=?@ / hv_24x7@PM_PB_RNS_PUMP23\\,chip\\=?@) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_VECTOR_GROUP_PUMPS_P01",
+> +      "BriefDescription": "TOTAL_VECTOR_GROUP_PUMPS_P01(PER-CYC)",
+> +      "MetricExpr": "(hv_24x7@PM_PB_VG_PUMP01\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_VECTOR_GROUP_PUMPS_P23",
+> +      "BriefDescription": "TOTAL_VECTOR_GROUP_PUMPS_P23(PER-CYC)",
+> +      "MetricExpr": "(hv_24x7@PM_PB_VG_PUMP23\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_LOCAL_NODE_PUMPS_P01",
+> +      "BriefDescription": "TOTAL_LOCAL_NODE_PUMPS_P01(PER-CYC)",
+> +      "MetricExpr": "(hv_24x7@PM_PB_LNS_PUMP01\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_LOCAL_NODE_PUMPS_P23",
+> +      "BriefDescription": "TOTAL_LOCAL_NODE_PUMPS_P23(PER-CYC)",
+> +      "MetricExpr": "(hv_24x7@PM_PB_LNS_PUMP23\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_VECTOR_GROUP_PUMPS_RETRIES_P01",
+> +      "BriefDescription": "TOTAL_VECTOR_GROUP_PUMPS_RETRIES_P01(PER-CYC)",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_VG_PUMP01\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_VECTOR_GROUP_PUMPS_RETRIES_P23",
+> +      "BriefDescription": "TOTAL_VECTOR_GROUP_PUMPS_RETRIES_P23(PER-CYC)",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_VG_PUMP23\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_LOCAL_NODE_PUMPS_RETRIES_P01",
+> +      "BriefDescription": "TOTAL_LOCAL_NODE_PUMPS_RETRIES_P01(PER-CYC)",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_LNS_PUMP01\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_LOCAL_NODE_PUMPS_RETRIES_P23",
+> +      "BriefDescription": "TOTAL_LOCAL_NODE_PUMPS_RETRIES_P23(PER-CYC)",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_LNS_PUMP23\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_REMOTE_NODE_PUMPS_P01",
+> +      "BriefDescription": "TOTAL_REMOTE_NODE_PUMPS_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RNS_PUMP01\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_REMOTE_NODE_PUMPS_P23",
+> +      "BriefDescription": "TOTAL_REMOTE_NODE_PUMPS_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RNS_PUMP23\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_NEAR_NODE_PUMPS_P01",
+> +      "BriefDescription": "TOTAL_NEAR_NODE_PUMPS_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_NNS_PUMP01\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_NEAR_NODE_PUMPS_P23",
+> +      "BriefDescription": "TOTAL_NEAR_NODE_PUMPS_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_NNS_PUMP23\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_INT_PB_BW",
+> +      "BriefDescription": "TOTAL_INT_PB_BW",
+> +      "MetricExpr": "(hv_24x7@PM_PB_INT_DATA_XFER\\,chip\\=?@)",
+> +      "ScaleUnit": "2.09MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK0_OUT_TOTAL_UTILIZATION",
+> +      "BriefDescription": "XLINK0_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK0_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_XLINK0_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_XLINK0_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK0_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK1_OUT_TOTAL_UTILIZATION",
+> +      "BriefDescription": "XLINK1_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK1_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_XLINK1_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_XLINK1_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK1_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK2_OUT_TOTAL_UTILIZATION",
+> +      "BriefDescription": "XLINK2_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK2_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_XLINK2_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_XLINK2_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK2_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK3_OUT_TOTAL_UTILIZATION",
+> +      "BriefDescription": "XLINK3_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK3_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_XLINK3_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_XLINK3_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK3_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK4_OUT_TOTAL_UTILIZATION",
+> +      "BriefDescription": "XLINK4_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK4_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_XLINK4_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_XLINK4_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK4_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK5_OUT_TOTAL_UTILIZATION",
+> +      "BriefDescription": "XLINK5_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK5_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_XLINK5_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_XLINK5_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK5_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK6_OUT_TOTAL_UTILIZATION",
+> +      "BriefDescription": "XLINK6_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK6_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_XLINK6_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_XLINK6_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK6_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK7_OUT_TOTAL_UTILIZATION",
+> +      "BriefDescription": "XLINK7_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK7_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_XLINK7_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_XLINK7_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK7_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK0_OUT_DATA_UTILIZATION",
+> +      "BriefDescription": "XLINK0_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK0_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_XLINK0_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_XLINK0_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK0_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK1_OUT_DATA_UTILIZATION",
+> +      "BriefDescription": "XLINK1_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK1_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_XLINK1_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_XLINK1_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK1_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK2_OUT_DATA_UTILIZATION",
+> +      "BriefDescription": "XLINK2_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK2_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_XLINK2_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_XLINK2_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK2_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK3_OUT_DATA_UTILIZATION",
+> +      "BriefDescription": "XLINK3_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK3_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_XLINK3_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_XLINK3_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK3_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK4_OUT_DATA_UTILIZATION",
+> +      "BriefDescription": "XLINK4_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK4_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_XLINK4_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_XLINK4_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK4_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK5_OUT_DATA_UTILIZATION",
+> +      "BriefDescription": "XLINK5_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK5_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_XLINK5_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_XLINK5_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK5_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK6_OUT_DATA_UTILIZATION",
+> +      "BriefDescription": "XLINK6_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK6_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_XLINK6_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_XLINK6_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK6_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK7_OUT_DATA_UTILIZATION",
+> +      "BriefDescription": "XLINK7_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK7_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_XLINK7_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_XLINK7_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK7_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK0_OUT_TOTAL_UTILIZATION",
+> +      "BriefDescription": "ALINK0_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK0_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_ALINK0_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_ALINK0_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK0_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK1_OUT_TOTAL_UTILIZATION",
+> +      "BriefDescription": "ALINK1_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK1_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_ALINK1_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_ALINK1_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK1_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK2_OUT_TOTAL_UTILIZATION",
+> +      "BriefDescription": "ALINK2_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK2_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_ALINK2_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_ALINK2_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK2_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK3_OUT_TOTAL_UTILIZATION",
+> +      "BriefDescription": "ALINK3_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK3_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_ALINK3_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_ALINK3_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK3_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK4_OUT_TOTAL_UTILIZATION",
+> +      "BriefDescription": "ALINK4_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK4_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_ALINK4_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_ALINK4_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK4_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK5_OUT_TOTAL_UTILIZATION",
+> +      "BriefDescription": "ALINK5_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK5_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_ALINK5_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_ALINK5_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK5_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK6_OUT_TOTAL_UTILIZATION",
+> +      "BriefDescription": "ALINK6_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK6_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_ALINK6_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_ALINK6_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK6_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK7_OUT_TOTAL_UTILIZATION",
+> +      "BriefDescription": "ALINK7_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK7_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_ALINK7_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_ALINK7_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK7_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK0_OUT_DATA_UTILIZATION",
+> +      "BriefDescription": "ALINK0_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK0_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_ALINK0_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_ALINK0_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK0_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK1_OUT_DATA_UTILIZATION",
+> +      "BriefDescription": "ALINK1_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK1_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_ALINK1_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_ALINK1_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK1_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK2_OUT_DATA_UTILIZATION",
+> +      "BriefDescription": "ALINK2_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK2_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_ALINK2_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_ALINK2_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK2_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK3_OUT_DATA_UTILIZATION",
+> +      "BriefDescription": "ALINK3_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK3_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_ALINK3_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_ALINK3_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK3_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK4_OUT_DATA_UTILIZATION",
+> +      "BriefDescription": "ALINK4_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK4_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_ALINK4_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_ALINK4_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK4_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK5_OUT_DATA_UTILIZATION",
+> +      "BriefDescription": "ALINK5_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK5_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_ALINK5_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_ALINK5_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK5_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK6_OUT_DATA_UTILIZATION",
+> +      "BriefDescription": "ALINK6_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK6_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_ALINK6_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_ALINK6_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK6_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK7_OUT_DATA_UTILIZATION",
+> +      "BriefDescription": "ALINK7_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK7_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_ALINK7_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_ALINK7_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK7_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_DATA_BANDWIDTH_TRANSFERRED_OVER_PB_PCI1",
+> +      "BriefDescription": "TOTAL_DATA_BANDWIDTH_TRANSFERRED_OVER_PB_PCI1",
+> +      "MetricExpr": "(hv_24x7@PM_PCI1_32B_INOUT\\,chip\\=?@)",
+> +      "ScaleUnit": "3.28e-2MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_DATA_BANDWIDTH_TRANSFERRED_OVER_PB_PCI0",
+> +      "BriefDescription": "TOTAL_DATA_BANDWIDTH_TRANSFERRED_OVER_PB_PCI0",
+> +      "MetricExpr": "(hv_24x7@PM_PCI0_32B_INOUT\\,chip\\=?@)",
+> +      "ScaleUnit": "3.28e-2MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_MCS_READ_BW_MC0_CHAN01",
+> +      "BriefDescription": "TOTAL_MCS_READ_BW_MC0_CHAN01",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_128B_RD_DATA_BLOCKS_MC0_CHAN01\\,chip\\=?@)",
+> +      "ScaleUnit": "5.24e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_MCS_READ_BW_MC1_CHAN01",
+> +      "BriefDescription": "TOTAL_MCS_READ_BW_MC1_CHAN01",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_128B_RD_DATA_BLOCKS_MC1_CHAN01\\,chip\\=?@)",
+> +      "ScaleUnit": "5.24e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_MCS_READ_BW_MC2_CHAN01",
+> +      "BriefDescription": "TOTAL_MCS_READ_BW_MC2_CHAN01",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_128B_RD_DATA_BLOCKS_MC2_CHAN01\\,chip\\=?@)",
+> +      "ScaleUnit": "5.24e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_MCS_READ_BW_MC3_CHAN01",
+> +      "BriefDescription": "TOTAL_MCS_READ_BW_MC3_CHAN01",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_128B_RD_DATA_BLOCKS_MC3_CHAN01\\,chip\\=?@)",
+> +      "ScaleUnit": "5.24e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_MCS_WRITE_BW_MC0_CHAN01",
+> +      "BriefDescription": "TOTAL_MCS_WRITE_BW_MC0_CHAN01",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_64B_WR_DATA_BLOCKS_MC0_CHAN01\\,chip\\=?@)",
+> +      "ScaleUnit": "2.6e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_MCS_WRITE_BW_MC1_CHAN01",
+> +      "BriefDescription": "TOTAL_MCS_WRITE_BW_MC1_CHAN01",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_64B_WR_DATA_BLOCKS_MC1_CHAN01\\,chip\\=?@)",
+> +      "ScaleUnit": "2.6e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_MCS_WRITE_BW_MC2_CHAN01",
+> +      "BriefDescription": "TOTAL_MCS_WRITE_BW_MC2_CHAN01",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_64B_WR_DATA_BLOCKS_MC2_CHAN01\\,chip\\=?@)",
+> +      "ScaleUnit": "2.6e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_MCS_WRITE_BW_MC3_CHAN01",
+> +      "BriefDescription": "TOTAL_MCS_WRITE_BW_MC3_CHAN01",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_64B_WR_DATA_BLOCKS_MC3_CHAN01\\,chip\\=?@)",
+> +      "ScaleUnit": "2.6e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricExpr": "(hv_24x7@PM_MCS_128B_RD_DATA_BLOCKS_MC0_CHAN01\\,chip\\=?@ + hv_24x7@PM_MCS_128B_RD_DATA_BLOCKS_MC1_CHAN01\\,chip\\=?@ + hv_24x7@PM_MCS_128B_RD_DATA_BLOCKS_MC2_CHAN01\\,chip\\=?@ + hv_24x7@PM_MCS_128B_RD_DATA_BLOCKS_MC3_CHAN01\\,chip\\=?@)",
+> +      "MetricName": "Memory_RD_BW_Chip",
+> +      "MetricGroup": "Memory_BW",
+> +      "ScaleUnit": "5.24e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricExpr": "(hv_24x7@PM_MCS_64B_WR_DATA_BLOCKS_MC0_CHAN01\\,chip\\=?@ + hv_24x7@PM_MCS_64B_WR_DATA_BLOCKS_MC1_CHAN01\\,chip\\=?@ + hv_24x7@PM_MCS_64B_WR_DATA_BLOCKS_MC2_CHAN01\\,chip\\=?@ + hv_24x7@PM_MCS_64B_WR_DATA_BLOCKS_MC3_CHAN01\\,chip\\=?@ )",
+> +      "MetricName": "Memory_WR_BW_Chip",
+> +      "MetricGroup": "Memory_BW",
+> +      "ScaleUnit": "2.6e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricExpr": "(hv_24x7@PM_PAU_CYC\\,chip\\=?@ )",
+> +      "MetricName": "PowerBUS_Frequency",
+> +      "ScaleUnit": "2.56e-7GHz",
+> +      "AggregationMode": "PerChip"
+> +    }
+> +]
 > 
 
-The only consumer of frame->reliable is livepatch. So, in retrospect, my
-original per-frame reliability flag was an overkill. I was just trying to
-provide extra per-frame debug information which is not really a requirement
-for livepatch.
-
-So, let us separate the two. I will rename frame->reliable to frame->livepatch_safe.
-This will apply to the whole stacktrace and not to every frame.
-
-Pass a livepatch_safe flag to start_backtrace(). This will be the initial value
-of frame->livepatch_safe. So, if the caller knows that the starting frame is
-unreliable, he can pass "false" to start_backtrace().
-
-Whenever a reliability check fails, frame->livepatch_safe = false. After that
-point, it will remain false till the end of the stacktrace. This keeps it simple.
-
-Also, once livepatch_safe is set to false, further reliability checks will not
-be performed (what would be the point?).
-
-Finally, it might be a good idea to perform reliability checks even in
-start_backtrace() so we don't assume that the starting frame is reliable even
-if the caller passes livepatch_safe=true. What do you think?
-
-> I think we first need to do some more preparatory work for that, but
-> regardless, I have some comments below.
-> 
-
-I agree that some more work is required to provide per-frame debug information
-and tracking. That can be done later. It is not a requirement for livepatch.
-
->> ---
->>  arch/arm64/include/asm/stacktrace.h |  9 +++++++
->>  arch/arm64/kernel/stacktrace.c      | 38 +++++++++++++++++++++++++----
->>  2 files changed, 42 insertions(+), 5 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
->> index eb29b1fe8255..4c822ef7f588 100644
->> --- a/arch/arm64/include/asm/stacktrace.h
->> +++ b/arch/arm64/include/asm/stacktrace.h
->> @@ -49,6 +49,13 @@ struct stack_info {
->>   *
->>   * @graph:       When FUNCTION_GRAPH_TRACER is selected, holds the index of a
->>   *               replacement lr value in the ftrace graph stack.
->> + *
->> + * @reliable:	Is this stack frame reliable? There are several checks that
->> + *              need to be performed in unwind_frame() before a stack frame
->> + *              is truly reliable. Until all the checks are present, this flag
->> + *              is just a place holder. Once all the checks are implemented,
->> + *              this comment will be updated and the flag can be used by the
->> + *              caller of unwind_frame().
-> 
-> I'd prefer that we state the high-level semantic first, then drill down
-> into detail, e.g.
-> 
-> | @reliable: Indicates whether this frame is beleived to be a reliable
-> |            unwinding from the parent stackframe. This may be set
-> |            regardless of whether the parent stackframe was reliable.
-> |            
-> |            This is set only if all the following are true:
-> | 
-> |            * @pc is a valid text address.
-> | 
-> |            Note: this is currently incomplete.
-> 
-
-I will change the name of the flag. I will change the comment accordingly.
-
->>   */
->>  struct stackframe {
->>  	unsigned long fp;
->> @@ -59,6 +66,7 @@ struct stackframe {
->>  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
->>  	int graph;
->>  #endif
->> +	bool reliable;
->>  };
->>  
->>  extern int unwind_frame(struct task_struct *tsk, struct stackframe *frame);
->> @@ -169,6 +177,7 @@ static inline void start_backtrace(struct stackframe *frame,
->>  	bitmap_zero(frame->stacks_done, __NR_STACK_TYPES);
->>  	frame->prev_fp = 0;
->>  	frame->prev_type = STACK_TYPE_UNKNOWN;
->> +	frame->reliable = true;
->>  }
-> 
-> I think we need more data than this to be accurate.
-> 
-> Consider arch_stack_walk() starting from a pt_regs -- the initial state
-> (the PC from the regs) is accurate, but the first unwind from that will
-> not be, and we don't account for that at all.
-> 
-> I think we need to capture an unwind type in struct stackframe, which we
-> can pass into start_backtrace(), e.g.
-> 
-
-> | enum unwind_type {
-> |         /*
-> |          * The next frame is indicated by the frame pointer.
-> |          * The next unwind may or may not be reliable.
-> |          */
-> |         UNWIND_TYPE_FP,
-> | 
-> |         /*
-> |          * The next frame is indicated by the LR in pt_regs.
-> |          * The next unwind is not reliable.
-> |          */
-> |         UNWIND_TYPE_REGS_LR,
-> | 
-> |         /*
-> |          * We do not know how to unwind to the next frame.
-> |          * The next unwind is not reliable.
-> |          */
-> |         UNWIND_TYPE_UNKNOWN
-> | };
-> 
-> That should be simple enough to set up around start_backtrace(), but
-> we'll need further rework to make that simple at exception boundaries.
-> With the entry rework I have queued for v5.14, we're *almost* down to a
-> single asm<->c transition point for all vectors, and I'm hoping to
-> factor the remainder out to C for v5.15, whereupon we can annotate that
-> BL with some metadata for unwinding (with something similar to x86's
-> UNWIND_HINT, but retained for runtime).
-> 
-
-I understood UNWIND_TYPE_FP and UNWIND_TYPE_REGS_LR. When would UNWIND_TYPE_UNKNOWN
-be passed to start_backtrace? Could you elaborate?
-
-Regardless, the above comment applies only to per-frame tracking when it is eventually
-implemented. For livepatch, it is not needed. At exception boundaries, if stack metadata
-is available, then use that to unwind safely. Else, livepatch_safe = false. The latter
-is what is being done in my patch series. So, we can go with that until stack metadata
-becomes available.
-
-For the UNWIND_TYPE_REGS_LR and UNWIND_TYPE_UNKNOWN cases, the caller will
-pass livepatch_safe=false to start_backtrace(). For UNWIND_TYPE_FP, the caller will
-pass livepatch_safe=true. So, only UNWIND_TYPE_FP matters for livepatch.
-
->>  
->>  #endif	/* __ASM_STACKTRACE_H */
->> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
->> index d55bdfb7789c..9061375c8785 100644
->> --- a/arch/arm64/kernel/stacktrace.c
->> +++ b/arch/arm64/kernel/stacktrace.c
->> @@ -44,21 +44,29 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
->>  	unsigned long fp = frame->fp;
->>  	struct stack_info info;
->>  
->> +	frame->reliable = true;
-> 
-> I'd prefer to do this the other way around, e.g. here do:
-> 
-> |        /*
-> |         * Assume that an unwind step is unreliable until it has passed
-> |         * all relevant checks.
-> |         */
-> |        frame->reliable = false;
-> 
-> ... then only set this to true once we're certain the step is reliable.
-> 
-> That requires fewer changes below, and would also be more robust as if
-> we forget to update this we'd accidentally mark an entry as unreliable
-> rather than accidentally marking it as reliable.
-> 
-
-For livepatch_safe, the initial statement setting it to true at the
-beginning of unwind_frame() goes away. But whenever a reliability check fails,
-livepatch_safe has to be set to false.
-
->> +
->>  	/* Terminal record; nothing to unwind */
->>  	if (!fp)
->>  		return -ENOENT;
->>  
->> -	if (fp & 0xf)
->> +	if (fp & 0xf) {
->> +		frame->reliable = false;
->>  		return -EINVAL;
->> +	}
->>  
->>  	if (!tsk)
->>  		tsk = current;
->>  
->> -	if (!on_accessible_stack(tsk, fp, &info))
->> +	if (!on_accessible_stack(tsk, fp, &info)) {
->> +		frame->reliable = false;
->>  		return -EINVAL;
->> +	}
->>  
->> -	if (test_bit(info.type, frame->stacks_done))
->> +	if (test_bit(info.type, frame->stacks_done)) {
->> +		frame->reliable = false;
->>  		return -EINVAL;
->> +	}
->>  
->>  	/*
->>  	 * As stacks grow downward, any valid record on the same stack must be
->> @@ -74,8 +82,10 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
->>  	 * stack.
->>  	 */
->>  	if (info.type == frame->prev_type) {
->> -		if (fp <= frame->prev_fp)
->> +		if (fp <= frame->prev_fp) {
->> +			frame->reliable = false;
->>  			return -EINVAL;
->> +		}
->>  	} else {
->>  		set_bit(frame->prev_type, frame->stacks_done);
->>  	}
->> @@ -100,14 +110,32 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
->>  		 * So replace it to an original value.
->>  		 */
->>  		ret_stack = ftrace_graph_get_ret_stack(tsk, frame->graph++);
->> -		if (WARN_ON_ONCE(!ret_stack))
->> +		if (WARN_ON_ONCE(!ret_stack)) {
->> +			frame->reliable = false;
->>  			return -EINVAL;
->> +		}
->>  		frame->pc = ret_stack->ret;
->>  	}
->>  #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
->>  
->>  	frame->pc = ptrauth_strip_insn_pac(frame->pc);
->>  
->> +	/*
->> +	 * Check the return PC for conditions that make unwinding unreliable.
->> +	 * In each case, mark the stack trace as such.
->> +	 */
->> +
->> +	/*
->> +	 * Make sure that the return address is a proper kernel text address.
->> +	 * A NULL or invalid return address could mean:
->> +	 *
->> +	 *	- generated code such as eBPF and optprobe trampolines
->> +	 *	- Foreign code (e.g. EFI runtime services)
->> +	 *	- Procedure Linkage Table (PLT) entries and veneer functions
->> +	 */
->> +	if (!__kernel_text_address(frame->pc))
->> +		frame->reliable = false;
-> 
-> I don't think we should mention PLTs here. They appear in regular kernel
-> text, and on arm64 they are generally not problematic for unwinding. The
-> case in which they are problematic are where they interpose an
-> trampoline call that isn't following the AAPCS (e.g. ftrace calls from a
-> module, or calls to __hwasan_tag_mismatch generally), and we'll have to
-> catch those explciitly (or forbid RELIABLE_STACKTRACE with HWASAN).
-> 
-
-I will remove the mention of PLTs.
-
->>From a backtrace perspective, the PC itself *is* reliable, but the next
-> unwind from this frame will not be, so I'd like to mark this as
-> reliable and the next unwind as unreliable. We can do that with the
-> UNWIND_TYPE_UNKNOWN suggestion above.
-> 
-
-In the livepatch_safe approach, it can be set to false as soon as the unwinder
-realizes that there is unreliability, even if the unreliability is in the next
-frame. Actually, this would avoid one extra unwind step for livepatch.
-
-> For the comment here, how about:
-> 
-> |	/*
-> |	 * If the PC is not a known kernel text address, then we cannot
-> |	 * be sure that a subsequent unwind will be reliable, as we
-> |	 * don't know that the code follows our unwind requirements.
-> |	 */
-> |	if (!__kernel_text_address(frame-pc))
-> |		frame->unwind = UNWIND_TYPE_UNKNOWN;
-> 
-
-OK. I can change the comment.
-
-Thanks!
-
-Madhavan
+-- 
+Thanks and Regards
+R.Nageswara Sastry
