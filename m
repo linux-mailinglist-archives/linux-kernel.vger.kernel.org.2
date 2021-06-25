@@ -2,100 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84AA3B40A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0343B40A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhFYJh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:37:29 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:47436 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230461AbhFYJh2 (ORCPT
+        id S231150AbhFYJiR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Jun 2021 05:38:17 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:34251 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229902AbhFYJiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:37:28 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 9F7761FE67;
-        Fri, 25 Jun 2021 09:35:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624613706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=o42d1dGuPFyadZRMsGPu1xZA6lvdaKH30P8L794IIbc=;
-        b=DzD2yZNyqUYsGHrdRAiDWXkohQXam7Xm3vb+WkS4Wstc36qQrZzyJLukyI401GGw7sQ8Qg
-        d6WXNfGkiVq1sIk0XZlahiyx474QbERdSkJ+/Y6tXvrAsYj8sZ4frmtTsmOyhr/8LrOIGV
-        j8S3RavrHQNXlvhLbB+73wBRhBHPIvU=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 52DB6A3BF8;
-        Fri, 25 Jun 2021 09:35:06 +0000 (UTC)
-Date:   Fri, 25 Jun 2021 11:35:06 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chris Down <chris@chrisdown.name>, linux-kernel@vger.kernel.org,
-        Jessica Yu <jeyu@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>, kernel-team@fb.com
-Subject: Re: [PATCH v7 0/5] printk: Userspace format indexing support
-Message-ID: <YNWjSkJa6y7G+fNj@alley>
-References: <cover.1623775748.git.chris@chrisdown.name>
- <YMsfo3/b1LvOoiM0@alley>
- <YNBTrhErZsp0jKYG@alley>
- <20210623140847.6c548197dd03c6137a2b1a53@linux-foundation.org>
+        Fri, 25 Jun 2021 05:38:16 -0400
+Received: (Authenticated sender: maxime.chevallier@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 340181BF208;
+        Fri, 25 Jun 2021 09:35:52 +0000 (UTC)
+Date:   Fri, 25 Jun 2021 11:35:50 +0200
+From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>, thomas.petazzoni@bootlin.com,
+        herve.codina@bootlin.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: imx6qdl-sr-som: Increase the PHY reset
+ duration to 10ms
+Message-ID: <20210625113550.7a135e69@bootlin.com>
+In-Reply-To: <20210625083840.GS22278@shell.armlinux.org.uk>
+References: <20210625083051.3691737-1-maxime.chevallier@bootlin.com>
+        <20210625083840.GS22278@shell.armlinux.org.uk>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210623140847.6c548197dd03c6137a2b1a53@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-06-23 14:08:47, Andrew Morton wrote:
-> On Mon, 21 Jun 2021 10:54:06 +0200 Petr Mladek <pmladek@suse.com> wrote:
-> 
-> > > Well, I would still like to get acks from:
-> > > 
-> > >    + Andy for the 1st patch
-> > >    + Jessica for the changes in the module loader code in 4th patch.
-> > 
-> > They provided the Acks, so that we could push it.
-> > 
-> > Andrew, this patchset depends on seq_file and string_helpers changes
-> > that are in -mm tree:
-> > 
-> > lib-string_helpers-switch-to-use-bit-macro.patch
-> > lib-string_helpers-move-escape_np-check-inside-else-branch-in-a-loop.patch
-> > lib-string_helpers-drop-indentation-level-in-string_escape_mem.patch
-> > lib-string_helpers-introduce-escape_na-for-escaping-non-ascii.patch
-> > lib-string_helpers-introduce-escape_nap-to-escape-non-ascii-and-non-printable.patch
-> > lib-string_helpers-allow-to-append-additional-characters-to-be-escaped.patch
-> > lib-test-string_helpers-print-flags-in-hexadecimal-format.patch
-> > lib-test-string_helpers-get-rid-of-trailing-comma-in-terminators.patch
-> > lib-test-string_helpers-add-test-cases-for-new-features.patch
-> > maintainers-add-myself-as-designated-reviewer-for-generic-string-library.patch
-> > seq_file-introduce-seq_escape_mem.patch
-> > seq_file-add-seq_escape_str-as-replica-of-string_escape_str.patch
-> > seq_file-convert-seq_escape-to-use-seq_escape_str.patch
-> > nfsd-avoid-non-flexible-api-in-seq_quote_mem.patch
-> > seq_file-drop-unused-_escape_mem_ascii.patch
-> > 
-> > 
-> > Would you mind to take this patchset via -mm tree as well, please?
-> > 
-> > You were not in CC. Should Chris send v8 with all the Acks and
-> > you in CC?
-> 
-> We're at -rc7, so I wouldn't be inclined to merge significant feature
-> work at this time.  I suggest a resend after -rc1, at which time the
-> above changes will be in mainline.
+Hi Russell,
 
-Fair enough. Let's postpone this patchset for 5.15. I am going to
-push it into the printk tree after the 5.14 merge window.
+On Fri, 25 Jun 2021 09:38:40 +0100
+"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
 
-Best Regards,
-Petr
+>On Fri, Jun 25, 2021 at 10:30:51AM +0200, Maxime Chevallier wrote:
+>> The datasheet for the AR803x PHY present on this SoM recommends that the
+>> reset line is asserted low for 10ms, so that the PHY has time to
+>> properly reset the internal blocks.
+>> 
+>> The previous value of 2ms was found to be problematic on some setups,
+>> causing intermittent issues where the PHY would be unresponsive
+>> every once in a while on some sytems, with a low occurence (it typically
+>> took around 30 consecutive reboots to encounter the issue).
+>> 
+>> Bumping the delay to the 10ms recommended value makes the issue
+>> dissapear, with more than 2500 consecutive reboots performed without the
+>> issue showing-up.  
+>
+>This isn't actually what the datasheet says, which is:
+>
+>  Input clock including the crystal and external input clock should be
+>  stable for at least 1ms before RESET can be deasserted.
+>
+>  When using crystal, the clock is generated internally after power is
+>  stable. For a reliable power on reset, suggest to keep asserting the
+>  reset low long enough (10ms) to ensure the clock is stable and
+>  clock-to-reset 1ms requirement is satisfied.
+>
+>The 10ms duration you quote is the _power on reset_ duration, and in
+>those circumstances, there is a delay before the required clocks will
+>be stable.
+>
+>This is not a power on reset scenario - the power was applied long ago
+>by the time the kernel starts booting, and XI clock would have been
+>running.
+>
+>So, I think the commit message which seems to be claiming that the reset
+>line always needs to be asserted for 10ms is not entirely accurate.
+
+You're correct, indeed, I guess we read that a bit too fast.
+
+However, we do see that bumping the reset duration fixes the issue that
+was encountered.
+
+To give you more details about this issue, in that scenario the PHY
+would fail the autoneg process, no matter how many times we
+enable/disable the link and restart autoneg.
+
+The low duration of the reset might put the internal blocks in an
+unknown state, but I don't actually have the real hardware-side
+explanation for what is actually happening.
+
+Further testing showed, for example, that decreasing the time of reset
+assertion to 1ms made the issue appear everytime, whereas bumping it to
+10 ms fixed it entirely.
+
+In the absence of any other indication about how long should that reset
+be asserted, and after thourough testing, 10ms seems like a good enough
+value.
+
+I'll send a V2 with the commit log fixed.
+
+Thanks for the quick review,
+
+Maxime
+
+>> 
+>> Fixes: 208d7baf8085 ("ARM: imx: initial SolidRun HummingBoard support")
+>> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+>> Tested-by: Hervé Codina <herve.codina@bootlin.com>
+>> ---
+>>  arch/arm/boot/dts/imx6qdl-sr-som.dtsi | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/arch/arm/boot/dts/imx6qdl-sr-som.dtsi b/arch/arm/boot/dts/imx6qdl-sr-som.dtsi
+>> index 0ad8ccde0cf8..a54dafce025b 100644
+>> --- a/arch/arm/boot/dts/imx6qdl-sr-som.dtsi
+>> +++ b/arch/arm/boot/dts/imx6qdl-sr-som.dtsi
+>> @@ -54,7 +54,7 @@ &fec {
+>>  	pinctrl-names = "default";
+>>  	pinctrl-0 = <&pinctrl_microsom_enet_ar8035>;
+>>  	phy-mode = "rgmii-id";
+>> -	phy-reset-duration = <2>;
+>> +	phy-reset-duration = <10>;
+>>  	phy-reset-gpios = <&gpio4 15 GPIO_ACTIVE_LOW>;
+>>  	status = "okay";
+>>  
+>> -- 
+>> 2.25.4
+>> 
+>>   
+>
+
+
+
+-- 
+Maxime Chevallier, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
