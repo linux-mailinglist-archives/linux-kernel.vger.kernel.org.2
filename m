@@ -2,253 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E550C3B424F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AEB3B425F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhFYLSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 07:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhFYLSi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 07:18:38 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80062C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 04:16:17 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id l132-20020a25258a0000b029054fc079d46eso3787008ybl.20
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 04:16:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=NaD3eWAKNT95Z3ftTE0FSmd29ZM9wJJVehskxEyh6Bs=;
-        b=rh2DRYsOnyU4K66JbmFmfersLcB3CH5kFw/V2x3WyHocDAqN9QlOQ+pBemdFkzs10t
-         qdPiIlTUZonkVe0TkjkwRjG5D5gxFtAyQ3Q7Dwdyt+yM5mxIDkXbJnAkP9APJBFks+Bn
-         vKF5AafrGLNRLVOXWAaBYV759rEd5ggvrBzDlMkRsQaCnhE0PFTsjiKSCA9XeNYT679A
-         xCbdE3anO8qW+tKtFNG3iVJic/mRHbZwlRCqPyQbWCbgy3l8I7xokOs0ZnTn01dqvMEC
-         T3Zdp7NQoZ6PmEtdq2CWHkJre+Cx9eAYQokbMycsNZQpDKWoQY/3RASP3huSYX25V5cY
-         hMUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=NaD3eWAKNT95Z3ftTE0FSmd29ZM9wJJVehskxEyh6Bs=;
-        b=Y/Rr21QCy83lzG0h2lBz+epGLRsob6g8ngmFRGlPNogSoWQ/TUO4bHSwR4Tb4hOCzj
-         s+pucnHjRoAPeR1xii5piV0xb/Du7fkgjk7UIk6tZR8jNuSTit2ZOHV9RmJwpkxcuvyL
-         cQKhYj53CeCKupceUlGE15QMlyr+uzLny1NjrrBOPx6cFNBPpaOSBSVo16BW6ePThOX1
-         AoZowlVOHQFAbWQDcowdoIYCnJ51m+p/vd1hSx69b3k0jkrmZ3q0Ute29PochkgCrIUm
-         RdnjnbC8DxmXIAPT8dD4rheigO2o+89ZRPR7UXgtH6Dn69zbJZq4i3vgq7b18V41uxJq
-         y6ZQ==
-X-Gm-Message-State: AOAM532zrbFh09P7K4juMSBCusAQypGVofyo1b4aGNhL8B5jW+FyRjC9
-        aJVK0msDqGRLpW2QLpyC60vR6cGrcwJjjA==
-X-Google-Smtp-Source: ABdhPJyU4em87MWziADvMkZfNrxMozNiRF7+SKP/C5pjjZZarOlkRu1c18768x/NpxmRf0Wof/4UkIb9ZdbQDw==
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:2dbe:56d6:eac0:60b0])
- (user=davidgow job=sendgmr) by 2002:a25:1885:: with SMTP id
- 127mr11480239yby.199.1624619776669; Fri, 25 Jun 2021 04:16:16 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 04:16:03 -0700
-Message-Id: <20210625111603.358518-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH] kunit: Fix merge issue in suite filtering test
-From:   David Gow <davidgow@google.com>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Daniel Latypov <dlatypov@google.com>
-Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Gow <davidgow@google.com>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S231339AbhFYLUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:20:46 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:51605 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231240AbhFYLUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 07:20:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624619900; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=EiawOXeRsWAsggfGbA3DPuPoX2C49B6CHTKpGCLXz5U=; b=tCWoR8l9oJdmd5KnBhCZN07CylLXqfqd5JWcxdYiOhhnoTP5s7sTXKTxij+hQaMmImQf+XYJ
+ GoeyIRcPdBw1f+BwdwhmxnPQmn3BPLFH/zRvHlMnniBCja+h9b5D6BBPB0wHoOAQeQBk++hS
+ M7KVE2/4tgN4wYpaQkft78hKZKc=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60d5bb663a8b6d0a45a48ae7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 25 Jun 2021 11:17:58
+ GMT
+Sender: mojha=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E3BF7C4323A; Fri, 25 Jun 2021 11:17:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from mojha-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mojha)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BE875C433F1;
+        Fri, 25 Jun 2021 11:17:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BE875C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mojha@codeaurora.org
+From:   Mukesh Ojha <mojha@codeaurora.org>
+To:     keescook@chromium.org, anton@enomsg.org, ccross@android.com,
+        tony.luck@intel.com, linux-kernel@vger.kernel.org
+Cc:     "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        Mukesh Ojha <mojha@codeaurora.org>
+Subject: [PATCH] pstore/ram: Rework logic for detecting ramoops reserved memory region
+Date:   Fri, 25 Jun 2021 16:47:18 +0530
+Message-Id: <1624619838-2578-1-git-send-email-mojha@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There were a couple of errors introuced when
-"kunit: add unit test for filtering suites by names"[1] was merged in
-c9d80ffc5a.
+From: "Isaac J. Manjarres" <isaacm@codeaurora.org>
 
-An erroneous '+' was introduced in executor.c, and the executor_test.c
-file went missing. This causes the kernel to fail to compile if
-CONFIG_KUNIT is enabled, as reported in [2,3].
+The reserved memory region for ramoops is assumed to be at a fixed
+and known location when read from the devicetree. This is not desirable
+in environments where it is preferred for the region to be dynamically
+allocated at runtime, as opposed to it being fixed at compile time.
 
-As with the original, I've tested by running just the new tests using
-itself:
-$ ./tools/testing/kunit/kunit.py run '*exec*'
+Change the logic for detecting the start and size of the ramoops
+memory region by looking up the reserved memory region instead of
+using platform_get_resource(), which assumes that the location
+of the memory is known ahead of time.
 
-[1]: https://lore.kernel.org/linux-kselftest/20210421020427.2384721-1-dlatypov@google.com/
-[2]: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/6IKQX5JXZF7I3NFH4IAWUMHXEQSCPNDP/
-[3]: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/EKY7ZH5YDCCTSJF2G7XFPMGIXQSUVD3Y/
-
-Fixes: c9d80ffc5a ("kunit: add unit test for filtering suites by names")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: David Gow <davidgow@google.com>
+Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+Signed-off-by: Mukesh Ojha <mojha@codeaurora.org>
 ---
+ fs/pstore/ram.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-This is another fix for the kunit-fixes branch, where there seems to
-have been an issue merging the "kunit: add unit test for filtering
-suites by names" patch here:
-https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit-fixes&id=c9d80ffc5a0a30955de0b8c5c46a05906d417800
-
-Again, feel free to squash this into the original patch if that works
-better.
-
-Cheers,
--- David
-
- lib/kunit/executor.c      |   2 +-
- lib/kunit/executor_test.c | 133 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 134 insertions(+), 1 deletion(-)
- create mode 100644 lib/kunit/executor_test.c
-
-diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-index 672f91486d23..acd1de436f59 100644
---- a/lib/kunit/executor.c
-+++ b/lib/kunit/executor.c
-@@ -23,7 +23,7 @@ static char *kunit_shutdown;
- core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
+diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
+index fefe3d3..5f90455 100644
+--- a/fs/pstore/ram.c
++++ b/fs/pstore/ram.c
+@@ -21,6 +21,7 @@
+ #include <linux/pstore_ram.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
++#include <linux/of_reserved_mem.h>
+ #include "internal.h"
  
- static struct kunit_suite * const *
--+kunit_filter_subsuite(struct kunit_suite * const * const subsuite,
-+kunit_filter_subsuite(struct kunit_suite * const * const subsuite,
- 			const char *filter_glob)
+ #define RAMOOPS_KERNMSG_HDR "===="
+@@ -633,21 +634,21 @@ static int ramoops_parse_dt(struct platform_device *pdev,
  {
- 	int i, n = 0;
-diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
-new file mode 100644
-index 000000000000..cdbe54b16501
---- /dev/null
-+++ b/lib/kunit/executor_test.c
-@@ -0,0 +1,133 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit test for the KUnit executor.
-+ *
-+ * Copyright (C) 2021, Google LLC.
-+ * Author: Daniel Latypov <dlatypov@google.com>
-+ */
-+
-+#include <kunit/test.h>
-+
-+static void kfree_at_end(struct kunit *test, const void *to_free);
-+static struct kunit_suite *alloc_fake_suite(struct kunit *test,
-+					    const char *suite_name);
-+
-+static void filter_subsuite_test(struct kunit *test)
-+{
-+	struct kunit_suite *subsuite[3] = {NULL, NULL, NULL};
-+	struct kunit_suite * const *filtered;
-+
-+	subsuite[0] = alloc_fake_suite(test, "suite1");
-+	subsuite[1] = alloc_fake_suite(test, "suite2");
-+
-+	/* Want: suite1, suite2, NULL -> suite2, NULL */
-+	filtered = kunit_filter_subsuite(subsuite, "suite2*");
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered);
-+	kfree_at_end(test, filtered);
-+
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered[0]);
-+	KUNIT_EXPECT_STREQ(test, (const char *)filtered[0]->name, "suite2");
-+
-+	KUNIT_EXPECT_FALSE(test, filtered[1]);
-+}
-+
-+static void filter_subsuite_to_empty_test(struct kunit *test)
-+{
-+	struct kunit_suite *subsuite[3] = {NULL, NULL, NULL};
-+	struct kunit_suite * const *filtered;
-+
-+	subsuite[0] = alloc_fake_suite(test, "suite1");
-+	subsuite[1] = alloc_fake_suite(test, "suite2");
-+
-+	filtered = kunit_filter_subsuite(subsuite, "not_found");
-+	kfree_at_end(test, filtered); /* just in case */
-+
-+	KUNIT_EXPECT_FALSE_MSG(test, filtered,
-+			       "should be NULL to indicate no match");
-+}
-+
-+static void kfree_subsuites_at_end(struct kunit *test, struct suite_set *suite_set)
-+{
-+	struct kunit_suite * const * const *suites;
-+
-+	kfree_at_end(test, suite_set->start);
-+	for (suites = suite_set->start; suites < suite_set->end; suites++)
-+		kfree_at_end(test, *suites);
-+}
-+
-+static void filter_suites_test(struct kunit *test)
-+{
-+	/* Suites per-file are stored as a NULL terminated array */
-+	struct kunit_suite *subsuites[2][2] = {
-+		{NULL, NULL},
-+		{NULL, NULL},
-+	};
-+	/* Match the memory layout of suite_set */
-+	struct kunit_suite * const * const suites[2] = {
-+		subsuites[0], subsuites[1],
-+	};
-+
-+	const struct suite_set suite_set = {
-+		.start = suites,
-+		.end = suites + 2,
-+	};
-+	struct suite_set filtered = {.start = NULL, .end = NULL};
-+
-+	/* Emulate two files, each having one suite */
-+	subsuites[0][0] = alloc_fake_suite(test, "suite0");
-+	subsuites[1][0] = alloc_fake_suite(test, "suite1");
-+
-+	/* Filter out suite1 */
-+	filtered = kunit_filter_suites(&suite_set, "suite0");
-+	kfree_subsuites_at_end(test, &filtered); /* let us use ASSERTs without leaking */
-+	KUNIT_ASSERT_EQ(test, filtered.end - filtered.start, (ptrdiff_t)1);
-+
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered.start);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered.start[0]);
-+	KUNIT_EXPECT_STREQ(test, (const char *)filtered.start[0][0]->name, "suite0");
-+}
-+
-+static struct kunit_case executor_test_cases[] = {
-+	KUNIT_CASE(filter_subsuite_test),
-+	KUNIT_CASE(filter_subsuite_to_empty_test),
-+	KUNIT_CASE(filter_suites_test),
-+	{}
-+};
-+
-+static struct kunit_suite executor_test_suite = {
-+	.name = "kunit_executor_test",
-+	.test_cases = executor_test_cases,
-+};
-+
-+kunit_test_suites(&executor_test_suite);
-+
-+/* Test helpers */
-+
-+static void kfree_res_free(struct kunit_resource *res)
-+{
-+	kfree(res->data);
-+}
-+
-+/* Use the resource API to register a call to kfree(to_free).
-+ * Since we never actually use the resource, it's safe to use on const data.
-+ */
-+static void kfree_at_end(struct kunit *test, const void *to_free)
-+{
-+	/* kfree() handles NULL already, but avoid allocating a no-op cleanup. */
-+	if (IS_ERR_OR_NULL(to_free))
-+		return;
-+	kunit_alloc_and_get_resource(test, NULL, kfree_res_free, GFP_KERNEL,
-+				     (void *)to_free);
-+}
-+
-+static struct kunit_suite *alloc_fake_suite(struct kunit *test,
-+					    const char *suite_name)
-+{
-+	struct kunit_suite *suite;
-+
-+	/* We normally never expect to allocate suites, hence the non-const cast. */
-+	suite = kunit_kzalloc(test, sizeof(*suite), GFP_KERNEL);
-+	strncpy((char *)suite->name, suite_name, sizeof(suite->name) - 1);
-+
-+	return suite;
-+}
+ 	struct device_node *of_node = pdev->dev.of_node;
+ 	struct device_node *parent_node;
+-	struct resource *res;
++	struct reserved_mem *rmem;
+ 	u32 value;
+ 	int ret;
+ 
+ 	dev_dbg(&pdev->dev, "using Device Tree\n");
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!res) {
++	rmem = of_reserved_mem_lookup(of_node);
++	if (!rmem) {
+ 		dev_err(&pdev->dev,
+ 			"failed to locate DT /reserved-memory resource\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	pdata->mem_size = resource_size(res);
+-	pdata->mem_address = res->start;
++	pdata->mem_size = rmem->size;
++	pdata->mem_address = rmem->base;
+ 	/*
+ 	 * Setting "unbuffered" is deprecated and will be ignored if
+ 	 * "mem_type" is also specified.
 -- 
-2.32.0.93.g670b81a890-goog
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
+Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
 
