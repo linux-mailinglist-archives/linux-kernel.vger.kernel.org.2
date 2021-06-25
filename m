@@ -2,201 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3213B493C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 21:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6823B4941
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 21:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhFYT3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 15:29:13 -0400
-Received: from mail-pg1-f181.google.com ([209.85.215.181]:42635 "EHLO
-        mail-pg1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhFYT3L (ORCPT
+        id S229813AbhFYTfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 15:35:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhFYTf3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 15:29:11 -0400
-Received: by mail-pg1-f181.google.com with SMTP id d12so8770845pgd.9;
-        Fri, 25 Jun 2021 12:26:50 -0700 (PDT)
+        Fri, 25 Jun 2021 15:35:29 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FD1C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 12:33:08 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id k8so13936257lja.4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 12:33:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
+        b=VhUTWyjSuwHvUHT5dbCIyUY7F1ohgmzbYOdh6/utD+x0WConvvYZNW40q9x9zTg3yz
+         mpPJsP1Kfmc8zJTrpfxz8S1W48fxyEFQLgNNsLcQU2phU4Fns8amJDbT5XT+CfJwGopU
+         kw04/J8K9RVXZ4bqRCxrtHycD1Kefkal1KHOdQuYbhgiufeuYNtHEdQzpGOjNIdcZ7+g
+         Y5hWPuF768NhEQuJna2083ZQlVo4MglsTNswCHtYmHOlE6rE4y0Cvg7yt2rF5VBV5tXP
+         7B/ypjcfp2E6PRT89U3/Wf0uSfrAgPDNLaZQPRKJqGdhiHTiaAUgM5aIuZwd1UgO0Q9x
+         NJCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=h1GdoT+CpTe+GaIuEBpH8gMshMEuLSCbkgQ3nh1A9HQ=;
-        b=jjzJSgpcpLZRT2zsaBKgw8AOLGnmAKDA1G/SyEEPDcwxbAM8NUjjtSnmGMoO/9cqFs
-         7lnGBeXKN8xPAQVgj/zrcZ7XldqU3hmRbEp8gUQ9T+EPmwsjraNEHjRAzeu69b3KfxNl
-         hpQcjyIEKDO0NFI4+DSc9iCk0hkqpoqyWz+GFSJaVytZAbslrFzDPAJED7fCfKDOlAjJ
-         HDaHGmZbwk626LMccW0xiIxb7nTp/CS9678K8rlmaQWMwlBrah7qEq+6lIlg0x7vu7pM
-         YsgavzRcCIcyqga+Qzge8qh1hsyMPKd+Ep1qibUz231lqSR5uYtyaRCrpyiAalGSI0qw
-         trhQ==
-X-Gm-Message-State: AOAM533gZvITPeDkOkmmjczH9k/+pYmwaziwog2O0wD+GR14gtku4nFW
-        FD9vAKaPMSUf+FXYWeAbJSo=
-X-Google-Smtp-Source: ABdhPJwTEEzENLi2KqgrCM7qoAwDS8vgHBE3F82EOEjnj7s+DoBBdlOy15DkQ0bU5Jj9FxbxmBMcAw==
-X-Received: by 2002:a63:e958:: with SMTP id q24mr10982182pgj.438.1624649210126;
-        Fri, 25 Jun 2021 12:26:50 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id a15sm6507385pff.128.2021.06.25.12.26.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 12:26:49 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 12:26:48 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>
-Cc:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] fpga: dfl: expose feature revision from struct
- dfl_device
-Message-ID: <YNYt+Dl43zhkjIhI@epycbox.lan>
-References: <20210625074213.654274-1-martin@geanix.com>
- <20210625074213.654274-3-martin@geanix.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
+        b=g6l1fkQ/ptvs4Ky/LiU663NOxK/3q1QN4TzBiLoeRXhE+Rk+3aDxE6NO9nX8RT/LU4
+         mvsqudEb8ATwOKfcxWj/G6OeEgOpN5L3D5C9GRcGTSNTHQ00SyVZ8e6gJQVPtWPnDX8s
+         pj8eDaL7gX3DaztvN2ZJIzhv8ow/8slVGg4sQ3HmakTYPqN/r0yY6ZCKQR/El+w8QZSq
+         q73pB9LrEJQ+m21p9s1mfmmYPEf/an63e9Oti+tyjC4fxSo2DbMMKaxCHvrQc/oCCQ4X
+         lTybmV83PdbViMxWZ3CgM6kPqam1zscJYGnIddH8MEmYyGTzaCmnxGHgwf4rJsTrdwkk
+         OqoQ==
+X-Gm-Message-State: AOAM533Slzsj6F51UpBpUrUnbuS7y64BED/8qFs8KSye7q0FW354U/4t
+        d4U0/W2rlp/0s8J8hYd1YdDRP974pGDLufRnaU8=
+X-Google-Smtp-Source: ABdhPJxIXzsFAL2uSkrxqJWtHm/VUQP8HinGiLwF/+OUb0XG7UQpjYhVogtkOX7HR1VjSGTYFiMu0dfcdXG9szty37A=
+X-Received: by 2002:a2e:b5b9:: with SMTP id f25mr9471436ljn.317.1624649586830;
+ Fri, 25 Jun 2021 12:33:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210625074213.654274-3-martin@geanix.com>
+Received: by 2002:ac2:5f8b:0:0:0:0:0 with HTTP; Fri, 25 Jun 2021 12:33:06
+ -0700 (PDT)
+Reply-To: sarahkoffi389@yahoo.co.jp
+From:   Sarah Koffi <paulwiliam782@gmail.com>
+Date:   Fri, 25 Jun 2021 20:33:06 +0100
+Message-ID: <CAHqcnY3Kq0xP0vB3fLpUhGT_ZTreR87OwC=M9yJoMSLKAy345g@mail.gmail.com>
+Subject: Greetings From Mrs. Sarah Koffi
+To:     sarahkoffi389@yahoo.co.jp
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 09:42:10AM +0200, Martin Hundebøll wrote:
-> From: Martin Hundebøll <mhu@silicom.dk>
-> 
-> Drivers can make use of the feature field from the DFL header, but
-> shouldn't know about the header structure. To avoid exposing such info,
-> and to reduce the number of reads from the io-mem, the revision is added
-> to struct dfl_device.
-> 
-> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
-> ---
-> 
-> Changes since v1:
->  * This patch replaces the previous patch 2 and exposes the feature
->    revision through struct dfl_device instead of a helper reading from
->    io-mem
-> 
->  drivers/fpga/dfl.c  | 27 +++++++++++++++++----------
->  drivers/fpga/dfl.h  |  1 +
->  include/linux/dfl.h |  1 +
->  3 files changed, 19 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
-> index 511b20ff35a3..9381c579d1cd 100644
-> --- a/drivers/fpga/dfl.c
-> +++ b/drivers/fpga/dfl.c
-> @@ -381,6 +381,7 @@ dfl_dev_add(struct dfl_feature_platform_data *pdata,
->  
->  	ddev->type = feature_dev_id_type(pdev);
->  	ddev->feature_id = feature->id;
-> +	ddev->revision = feature->revision;
->  	ddev->cdev = pdata->dfl_cdev;
->  
->  	/* add mmio resource */
-> @@ -717,6 +718,7 @@ struct build_feature_devs_info {
->   */
->  struct dfl_feature_info {
->  	u16 fid;
-> +	u8 rev;
->  	struct resource mmio_res;
->  	void __iomem *ioaddr;
->  	struct list_head node;
-> @@ -796,6 +798,7 @@ static int build_info_commit_dev(struct build_feature_devs_info *binfo)
->  		/* save resource information for each feature */
->  		feature->dev = fdev;
->  		feature->id = finfo->fid;
-> +		feature->revision = finfo->rev;
->  
->  		/*
->  		 * the FIU header feature has some fundamental functions (sriov
-> @@ -910,19 +913,17 @@ static void build_info_free(struct build_feature_devs_info *binfo)
->  	devm_kfree(binfo->dev, binfo);
->  }
->  
-> -static inline u32 feature_size(void __iomem *start)
-> +static inline u32 feature_size(u64 value)
->  {
-> -	u64 v = readq(start + DFH);
-> -	u32 ofst = FIELD_GET(DFH_NEXT_HDR_OFST, v);
-> +	u32 ofst = FIELD_GET(DFH_NEXT_HDR_OFST, value);
->  	/* workaround for private features with invalid size, use 4K instead */
->  	return ofst ? ofst : 4096;
->  }
->  
-> -static u16 feature_id(void __iomem *start)
-> +static u16 feature_id(u64 value)
->  {
-> -	u64 v = readq(start + DFH);
-> -	u16 id = FIELD_GET(DFH_ID, v);
-> -	u8 type = FIELD_GET(DFH_TYPE, v);
-> +	u16 id = FIELD_GET(DFH_ID, value);
-> +	u8 type = FIELD_GET(DFH_TYPE, value);
->  
->  	if (type == DFH_TYPE_FIU)
->  		return FEATURE_ID_FIU_HEADER;
-> @@ -1021,10 +1022,15 @@ create_feature_instance(struct build_feature_devs_info *binfo,
->  	unsigned int irq_base, nr_irqs;
->  	struct dfl_feature_info *finfo;
->  	int ret;
-> +	u8 rev;
-> +	u64 v;
-> +
-> +	v = readq(binfo->ioaddr + ofst);
-> +	rev = FIELD_GET(DFH_REVISION, v);
->  
->  	/* read feature size and id if inputs are invalid */
-> -	size = size ? size : feature_size(binfo->ioaddr + ofst);
-> -	fid = fid ? fid : feature_id(binfo->ioaddr + ofst);
-> +	size = size ? size : feature_size(v);
-> +	fid = fid ? fid : feature_id(v);
->  
->  	if (binfo->len - ofst < size)
->  		return -EINVAL;
-> @@ -1038,6 +1044,7 @@ create_feature_instance(struct build_feature_devs_info *binfo,
->  		return -ENOMEM;
->  
->  	finfo->fid = fid;
-> +	finfo->rev = rev;
->  	finfo->mmio_res.start = binfo->start + ofst;
->  	finfo->mmio_res.end = finfo->mmio_res.start + size - 1;
->  	finfo->mmio_res.flags = IORESOURCE_MEM;
-> @@ -1166,7 +1173,7 @@ static int parse_feature_private(struct build_feature_devs_info *binfo,
->  {
->  	if (!is_feature_dev_detected(binfo)) {
->  		dev_err(binfo->dev, "the private feature 0x%x does not belong to any AFU.\n",
-> -			feature_id(binfo->ioaddr + ofst));
-> +			feature_id(readq(binfo->ioaddr + ofst)));
->  		return -EINVAL;
->  	}
->  
-> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
-> index 2b82c96ba56c..422157cfd742 100644
-> --- a/drivers/fpga/dfl.h
-> +++ b/drivers/fpga/dfl.h
-> @@ -243,6 +243,7 @@ struct dfl_feature_irq_ctx {
->  struct dfl_feature {
->  	struct platform_device *dev;
->  	u16 id;
-> +	u8 revision;
->  	int resource_index;
->  	void __iomem *ioaddr;
->  	struct dfl_feature_irq_ctx *irq_ctx;
-> diff --git a/include/linux/dfl.h b/include/linux/dfl.h
-> index 6cc10982351a..431636a0dc78 100644
-> --- a/include/linux/dfl.h
-> +++ b/include/linux/dfl.h
-> @@ -38,6 +38,7 @@ struct dfl_device {
->  	int id;
->  	u16 type;
->  	u16 feature_id;
-> +	u8 revision;
->  	struct resource mmio_res;
->  	int *irqs;
->  	unsigned int num_irqs;
-> -- 
-> 2.31.0
-> 
-Looks good to me, any concerns from Intel folks?
+Greetings From Mrs. Sarah Koffi
 
-- Moritz
+I'm contacting you based on your good profiles I read and for a good
+reasons, I am in search of a property to buy in your country as I
+intended to come over to your
+country for investment, Though I have not meet with you before but I
+believe that one has to risk confiding in someone to succeed sometimes
+in life.
+
+My name is Mrs. Sarah Koffi. My late husband deals on Crude Oil with
+Federal Government of Sudan and he has a personal Oil firm in Bentiu
+Oil zone town and Upper
+Nile city. What I have experience physically, I don't wish to
+experience it again in my life due to the recent civil Ethnic war
+cause by our President Mr. Salva Kiir
+and the rebel leader Mr Riek Machar, I have been Under United Nation
+refuge camp in chad to save my life and that of my little daughter.
+
+Though, I do not know how you will feel to my proposal, but the truth
+is that I sneaked into Chad our neighboring country where I am living
+now as a refugee.
+I escaped with my little daughter when the rebels bust into our house
+and killed my husband as one of the big oil dealers in the country,
+ever since then, I have being on the run.
+
+I left my country and move to Chad our neighboring country with the
+little ceasefire we had, due to the face to face peace meeting accord
+coordinated by the US Secretary of State, Mr John Kerry and United
+Nations in Ethiopia (Addis Ababa) between our President Mr Salva Kiir
+and the rebel leader Mr Riek Machar to stop this war.
+
+I want to solicit for your partnership with trust to invest the $8
+million dollars deposited by my late husband in Bank because my life
+is no longer safe in our country, since the rebels are looking for the
+families of all the oil business men in the country to kill, saying
+that they are they one that is milking the country dry.
+
+I will offer you 20% of the total fund for your help while I will
+partner with you for the investment in your country.
+If I get your reply.
+
+I will wait to hear from you so as to give you details.With love from
+
+ i need you to contact me here sarahkoffi389@yahoo.co.jp
+
+Mrs. Sarah Koffi
