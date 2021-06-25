@@ -2,137 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8343B3FFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6E33B3FEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231432AbhFYJID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:08:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231225AbhFYJHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:07:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A98B261430;
-        Fri, 25 Jun 2021 09:05:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624611917;
-        bh=7rRm/q8fAPvDNEHFrOmUDFjPtfaxc24KmQZoezmDFow=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R2h482+ZytKgB/HtcV8UAiWzwa434koKn+f4CPYtzLkKWiQ7NbNtDBemoDOyZcIWF
-         bFdAfdGK9NyQEtZQstUYaOksg8oX0Iv/UOD0K8cin8XNDIRCqa2YjQF8YiG1HtzCwM
-         Hr+3n6nFm1+26b2Sn0OC9EGekJxkxZ2mvtqgR25ig0G18TBgyZqt97JdhN0kdebDyB
-         MWl4jzfAMVlVokdmQtMEK1bzvAWyFrLiEv9N9rZi5O7lIocpe7fwNPvHLDbGW0nILz
-         NcUriVVQKcEpSz+vmZuehuTE2giU9yxFShDtB/eynaICXcUf/TM+1KSfx2+ag/7Bn0
-         Oa2+MaRbwAgdg==
-Received: by pali.im (Postfix)
-        id 6A80360E; Fri, 25 Jun 2021 11:05:16 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        id S230450AbhFYJH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:07:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30180 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230152AbhFYJHZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 05:07:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624611904;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3Vf7eQafJpn+Km6dnUrld2h7erdnsGXaWtmQA8sYWrM=;
+        b=Aoj9BUx2FCuRk+aJSz3/D/T543r5cNAvIof5kHXFgixW2CPDabjyrcF7Y2gGE2USpUwtGn
+        d7nOfKcMK99h8QS1dQa8IPA04PCSm0uIGk7z780SzGvDLk2LbHVdotTWXo/RMgbFma10K/
+        ejGAEwSYOO96aPrEdd/KDTDo3V5ViP0=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-200-WCqn1PINOeCdUIZnp-fqYA-1; Fri, 25 Jun 2021 05:05:03 -0400
+X-MC-Unique: WCqn1PINOeCdUIZnp-fqYA-1
+Received: by mail-ej1-f70.google.com with SMTP id ci22-20020a170906c356b0290492ca430d87so2866604ejb.14
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:05:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3Vf7eQafJpn+Km6dnUrld2h7erdnsGXaWtmQA8sYWrM=;
+        b=hzsm/kZHi65gA+6YWz/mFyGH1OQolTSBO7eTp6uFCe2IywfDD7BMXpNM+z15EYkFA5
+         QKMxUos35e3/KPk0vehG/vPbGbrIKRgXuFwfbWyWlY3celhvYQ9+cVF54XCdbTvU99kf
+         UFU6lpCT01o2+4Nfwzio+1lcSePLWbWTxv2dwMWfGLpMk8wgFGvFOZDAwACdxH0HB4It
+         WPe2eHpSeQAKkY21mMEdo+gDaOIfNiW1NJ6UqgcFH8tbgg7yK3QvTYafw72gsuo2Co1z
+         u9iPgGxi4Gd6B3KNE/O8UJ90/Tp+iuQbmhtLVrjW4kU69Jx+oiwkU1hqgf/vVyZQtBQa
+         VKqg==
+X-Gm-Message-State: AOAM531dXDYVvTfqmDktkwnEsh32/o/a4eNYh0YVeiI5qvj2DcAY8gEq
+        4gMzHDiiLEoZab7HuzF18e8sr8WitTCW8m7eofiz2FHrotS4m3dkCm6T3+5r3mJ8Rc5Hc08dq5g
+        bVpzsRJivmFv+j6pCrCgbP7NpStzx1GFhj24Wx39wajuKEHlLFvfv7jqQYAkAn3Ww9lI9aOxqFj
+        Jv
+X-Received: by 2002:a17:906:b215:: with SMTP id p21mr10141817ejz.237.1624611901640;
+        Fri, 25 Jun 2021 02:05:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzfEt+Mcicq18UzSdQy2+ca/CS9XiyaFqrwUOm+ZVOjBEnrIF6U+hhzb0ccOUQ+FYXzVWitZQ==
+X-Received: by 2002:a17:906:b215:: with SMTP id p21mr10141785ejz.237.1624611901306;
+        Fri, 25 Jun 2021 02:05:01 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id jl21sm2423410ejc.42.2021.06.25.02.05.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jun 2021 02:05:00 -0700 (PDT)
+Subject: Re: [PATCH 3/4] KVM: x86: WARN and reject loading KVM if NX is
+ supported but not enabled
+To:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] PCI: aardvark: Fix setting MSI address
-Date:   Fri, 25 Jun 2021 11:03:19 +0200
-Message-Id: <20210625090319.10220-8-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210625090319.10220-1-pali@kernel.org>
-References: <20210625090319.10220-1-pali@kernel.org>
+References: <20210615164535.2146172-1-seanjc@google.com>
+ <20210615164535.2146172-4-seanjc@google.com> <YNUITW5fsaQe4JSo@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <ad85c5db-c780-bd13-c6ce-e3478838acbe@redhat.com>
+Date:   Fri, 25 Jun 2021 11:04:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YNUITW5fsaQe4JSo@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MSI address for receiving MSI interrupts needs to be correctly set before
-enabling processing of MSI interrupts.
+On 25/06/21 00:33, Sean Christopherson wrote:
+> On Tue, Jun 15, 2021, Sean Christopherson wrote:
+>> WARN if NX is reported as supported but not enabled in EFER.  All flavors
+>> of the kernel, including non-PAE 32-bit kernels, set EFER.NX=1 if NX is
+>> supported, even if NX usage is disable via kernel command line.
+> 
+> Ugh, I misread .Ldefault_entry in head_32.S, it skips over the entire EFER code
+> if PAE=0.  Apparently I didn't test this with non-PAE paging and EPT?
+> 
+> Paolo, I'll send a revert since it's in kvm/next, but even better would be if
+> you can drop the patch :-)  Lucky for me you didn't pick up patch 4/4 that
+> depends on this...
+> 
+> I'll revisit this mess in a few weeks.
 
-Move code for setting PCIE_MSI_ADDR_LOW_REG and PCIE_MSI_ADDR_HIGH_REG
-registers with MSI address from advk_pcie_init_msi_irq_domain() function to
-advk_pcie_setup_hw() function before enabling PCIE_CORE_CTRL2_MSI_ENABLE.
+Rather, let's keep this, see if anyone complains and possibly add a 
+"depends on X86_PAE || X86_64" to KVM.
 
-As part of this change, also remove unused variable msi_msg, which was used
-only for MSI doorbell address. MSI address can be any address which cannot
-be used to DMA to. So change it to the address of the main struct advk_pcie
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Acked-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org # f21a8b1b6837 ("PCI: aardvark: Move to MSI handling using generic MSI support")
----
- drivers/pci/controller/pci-aardvark.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-index 7cad6d989f6c..84ecc418e6be 100644
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -244,7 +244,6 @@ struct advk_pcie {
- 	struct msi_domain_info msi_domain_info;
- 	DECLARE_BITMAP(msi_used, MSI_IRQ_NUM);
- 	struct mutex msi_used_lock;
--	u16 msi_msg;
- 	int link_gen;
- 	struct pci_bridge_emul bridge;
- 	struct gpio_desc *reset_gpio;
-@@ -403,6 +402,7 @@ static void advk_pcie_disable_ob_win(struct advk_pcie *pcie, u8 win_num)
- 
- static void advk_pcie_setup_hw(struct advk_pcie *pcie)
- {
-+	phys_addr_t msi_addr;
- 	u32 reg;
- 	int i;
- 
-@@ -465,6 +465,11 @@ static void advk_pcie_setup_hw(struct advk_pcie *pcie)
- 	reg |= LANE_COUNT_1;
- 	advk_writel(pcie, reg, PCIE_CORE_CTRL0_REG);
- 
-+	/* Set MSI address */
-+	msi_addr = virt_to_phys(pcie);
-+	advk_writel(pcie, lower_32_bits(msi_addr), PCIE_MSI_ADDR_LOW_REG);
-+	advk_writel(pcie, upper_32_bits(msi_addr), PCIE_MSI_ADDR_HIGH_REG);
-+
- 	/* Enable MSI */
- 	reg = advk_readl(pcie, PCIE_CORE_CTRL2_REG);
- 	reg |= PCIE_CORE_CTRL2_MSI_ENABLE;
-@@ -982,10 +987,10 @@ static void advk_msi_irq_compose_msi_msg(struct irq_data *data,
- 					 struct msi_msg *msg)
- {
- 	struct advk_pcie *pcie = irq_data_get_irq_chip_data(data);
--	phys_addr_t msi_msg = virt_to_phys(&pcie->msi_msg);
-+	phys_addr_t msi_addr = virt_to_phys(pcie);
- 
--	msg->address_lo = lower_32_bits(msi_msg);
--	msg->address_hi = upper_32_bits(msi_msg);
-+	msg->address_lo = lower_32_bits(msi_addr);
-+	msg->address_hi = upper_32_bits(msi_addr);
- 	msg->data = data->hwirq;
- }
- 
-@@ -1080,7 +1085,6 @@ static int advk_pcie_init_msi_irq_domain(struct advk_pcie *pcie)
- 	struct device_node *node = dev->of_node;
- 	struct irq_chip *bottom_ic, *msi_ic;
- 	struct msi_domain_info *msi_di;
--	phys_addr_t msi_msg_phys;
- 
- 	mutex_init(&pcie->msi_used_lock);
- 
-@@ -1098,13 +1102,6 @@ static int advk_pcie_init_msi_irq_domain(struct advk_pcie *pcie)
- 		MSI_FLAG_MULTI_PCI_MSI;
- 	msi_di->chip = msi_ic;
- 
--	msi_msg_phys = virt_to_phys(&pcie->msi_msg);
--
--	advk_writel(pcie, lower_32_bits(msi_msg_phys),
--		    PCIE_MSI_ADDR_LOW_REG);
--	advk_writel(pcie, upper_32_bits(msi_msg_phys),
--		    PCIE_MSI_ADDR_HIGH_REG);
--
- 	pcie->msi_inner_domain =
- 		irq_domain_add_linear(NULL, MSI_IRQ_NUM,
- 				      &advk_msi_domain_ops, pcie);
--- 
-2.20.1
+Paolo
 
