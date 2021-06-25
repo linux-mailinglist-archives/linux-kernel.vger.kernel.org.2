@@ -2,152 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E3B3B402E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8307F3B4034
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhFYJVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:21:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24751 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231134AbhFYJVB (ORCPT
+        id S231247AbhFYJWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:22:36 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:11096 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230326AbhFYJWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:21:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624612719;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gf/AeSAoKtyKCgPiJUJSX6Cy8giuz8iiX2hwDNCu8IY=;
-        b=K52sJHjCFxVxM8pEWQZmIEarFr/+0EJVeiPt0/QzftJNBaUQpGl5MvMJXzdhIKathE4KzX
-        9CMc4KcVfPxAHqcDPF822elFuEVwWiCkc1w7trImHwpwNWCHY5Vwy5cyJUpVWeC1FWxWXS
-        CLeklOYf6et2i8prsROCPdMQ1RwpdyM=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-154-Gey-O0EGNX2tGAIMOjsLWw-1; Fri, 25 Jun 2021 05:18:38 -0400
-X-MC-Unique: Gey-O0EGNX2tGAIMOjsLWw-1
-Received: by mail-ed1-f69.google.com with SMTP id da21-20020a0564021775b0290395165c6cefso1567154edb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:18:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gf/AeSAoKtyKCgPiJUJSX6Cy8giuz8iiX2hwDNCu8IY=;
-        b=KLT+AKaFu3J5jKuTvL0CY2xIOaBYccSSsSATz1eTm+x8N6N8s5MXrVaJCYUgb2iVY3
-         UQfFOcq0HiIWhiF9MzC9WUZrF+oeBYECSZCE2bztrhD0nVpRTWfrARDN7tqiaVwRXfPJ
-         P8zbzbY4krBHIKoyF8zW8ViLEAYqshAgit1dVpEGibk2zhtBOXckWzM/wmUvPtatw4w3
-         ySI8zwSn5+phXJyQPs/xa9WcwIBsXoDtmSa1kEbtjnh224Etmhq7M7KYJAnTpFk1oczh
-         PQS5vPlhmFSUTEyvPtuk+54DiZH88nI1Dj5WNe7U2+4y+YhPKPt+RdBtQcNLU6ZM+gKy
-         cVRQ==
-X-Gm-Message-State: AOAM53151ZWMkIFXOyuqGdYx+mwgp0Jru0EgXQ/buiGVwoC8TuOHPAtb
-        zQjGLJaiHxup8BEoGD5XkWGL2ul1hlxx+L/dZIFsdQy/r7WSHoeirVvBSNrkwl+FG8RsPsSfrz3
-        1i5PdsM2EqeH+XtttDYly+VoBUm/JtbIuNHX444U2sMEX/hOxNOHMyBWGxK8EZBO+h5bGiphpFP
-        d3
-X-Received: by 2002:a17:906:b55:: with SMTP id v21mr9857262ejg.88.1624612717394;
-        Fri, 25 Jun 2021 02:18:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwh7EVIsP2CNobqkk7E06ElkvSjU/XKuwVJtF3n4RNaDTw5EmbEh6fSRptX6AttOApksLE7Eg==
-X-Received: by 2002:a17:906:b55:: with SMTP id v21mr9857240ejg.88.1624612717144;
-        Fri, 25 Jun 2021 02:18:37 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id gv10sm2456585ejc.46.2021.06.25.02.18.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 02:18:36 -0700 (PDT)
-Subject: Re: LEDs with hardware-accelerated patterns, suspend indication
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Jafar Akhondali <gigelaknak@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        mauro.chehab@huawei.com,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210526153040.GA4537@amd>
- <5fbbab4f-3e22-5a4a-eea8-2531ee165cc4@redhat.com>
- <CAMW3L+19tP_9=+8j8LLjqCGDaaVZ86UMm9NwLbbpA77zOYnr1Q@mail.gmail.com>
- <79988fe2-7b3d-7485-131c-4f654ec6d8b8@redhat.com>
- <CAMW3L+13O4jXyp1LVtuxhpXP_fkfWXi9JoNS8FYUAMHaJBGKZg@mail.gmail.com>
- <17ec2040-24e9-4090-e64b-8048f0b4005b@redhat.com> <20210623203925.GI8540@amd>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <59ac4a5b-7dc5-bb9d-e161-c0a7ceb9f399@redhat.com>
-Date:   Fri, 25 Jun 2021 11:18:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Fri, 25 Jun 2021 05:22:34 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GBBGY2K64zZjCd;
+        Fri, 25 Jun 2021 17:17:09 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 25 Jun 2021 17:20:11 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 25 Jun
+ 2021 17:20:11 +0800
+Subject: Re: [PATCH net-next v2 2/2] ptr_ring: make __ptr_ring_empty()
+ checking more reliable
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <jasowang@redhat.com>,
+        <brouer@redhat.com>, <paulmck@kernel.org>, <peterz@infradead.org>,
+        <will@kernel.org>, <shuah@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linuxarm@openeuler.org>
+References: <1624591136-6647-1-git-send-email-linyunsheng@huawei.com>
+ <1624591136-6647-3-git-send-email-linyunsheng@huawei.com>
+ <20210625023749-mutt-send-email-mst@kernel.org>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <77615160-6f4f-64bf-7de9-b0adaddd5f06@huawei.com>
+Date:   Fri, 25 Jun 2021 17:20:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-In-Reply-To: <20210623203925.GI8540@amd>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20210625023749-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 6/23/21 10:39 PM, Pavel Machek wrote:
-> Hi!
-> 
->>> Sorry for the late reply.
->>> there are two categories of keyboard lighting modes:
->>> 1. static
->>> 2. dynamic
->>>
->>> In static mode, any of 4 zones can be configured to show specific color,
->>> independently.
->>>
->>> In dynamic mode, there is no control over specific zones.
->>> It's only possible to set some: color, speed, direction
->>> and: [R]ed,[G]reen, [B]lue
->>>
->>> so in dynamic mode, the user can't control zones,
->>> the dynamic effects take care of that.
+On 2021/6/25 14:39, Michael S. Tsirkin wrote:
+> On Fri, Jun 25, 2021 at 11:18:56AM +0800, Yunsheng Lin wrote:
+>> Currently r->queue[] is cleared after r->consumer_head is moved
+>> forward, which makes the __ptr_ring_empty() checking called in
+>> page_pool_refill_alloc_cache() unreliable if the checking is done
+>> after the r->queue clearing and before the consumer_head moving
+>> forward.
 >>
->> So we have 4 zones, which are individual controllable, so which should
->> probably be modeled as individual LED class devices. But when we enable
->> the hardware effects, then the individual addressing goes away and we
->> set one effect which applies to all zones.
+>> Move the r->queue[] clearing after consumer_head moving forward
+>> to make __ptr_ring_empty() checking more reliable.
 >>
->> Jafar, do I understand this correctly?
+>> As a side effect of above change, a consumer_head checking is
+>> avoided for the likely case, and it has noticeable performance
+>> improvement when it is tested using the ptr_ring_test selftest
+>> added in the previous patch.
 >>
->> Pavel, how should this be mapped to the led-class API?
-> 
-> Fun :-).
-> 
->> Some ideas:
+>> Using "taskset -c 1 ./ptr_ring_test -s 1000 -m 0 -N 100000000"
+>> to test the case of single thread doing both the enqueuing and
+>> dequeuing:
 >>
->> a) Only add the new lpattern to the main zone?
->> 2) Add the new lpattern to all zones, but only make it
->> writable in the main zone ?
+>>  arch     unpatched           patched       delta
+>> arm64      4648 ms            4464 ms       +3.9%
+>>  X86       2562 ms            2401 ms       +6.2%
+>>
+>> Using "taskset -c 1-2 ./ptr_ring_test -s 1000 -m 1 -N 100000000"
+>> to test the case of one thread doing enqueuing and another thread
+>> doing dequeuing concurrently, also known as single-producer/single-
+>> consumer:
+>>
+>>  arch      unpatched             patched         delta
+>> arm64   3624 ms + 3624 ms   3462 ms + 3462 ms    +4.4%
+>>  x86    2758 ms + 2758 ms   2547 ms + 2547 ms    +7.6%
 > 
-> Require lpattern in all zones to be same and active before actually
-> enabling the pattern?
+> Nice but it's small - could be a fluke.
+> How many tests did you run? What is the variance?
+> Did you try pinning to different CPUs to observe numa effects?
+> Please use perf or some other modern tool for this kind
+> of benchmark. Thanks!
 
-That seems less user friendly / a cumbersome interface I prefer
-one of my 2 initial ideas.
+The result is quite stable, and retest using perf stat：
 
-Or maybe add lpattern symlinks to the other zones to the main zone,
-I think that is actually best because it clearly shows how things
-work, all 4 LED (zones) support a lpattern, but it is a single
-shared lpattern.
+---------------unpatched ptr_ring.c begin----------------------------------
 
-> Decide lpattern is not suitable for this and figure out what to with
-> multi-LED triggers? Someone wanted them for "meters" (CPU load 25% 50%
-> 75% 100% LED bar)...
+perf stat ./ptr_ring_test -s 1000 -m 0 -N 100000000
+ptr_ring(size:1000) perf simple test for 100000000 times, took 2385198 us
 
-I think true multi-led triggers are overkill here, in essence this
-is just a standard lpattern, except that it is shared between the
-zones. 
+ Performance counter stats for './ptr_ring_test -s 1000 -m 0 -N 100000000':
 
-> Skip this hardware feature for now. We don't have to support
-> everything?
+           2385.49 msec task-clock                #    1.000 CPUs utilized
+                26      context-switches          #    0.011 K/sec
+                 0      cpu-migrations            #    0.000 K/sec
+                57      page-faults               #    0.024 K/sec
+        6202023521      cycles                    #    2.600 GHz
+       17424187640      instructions              #    2.81  insn per cycle
+   <not supported>      branches
+           6506477      branch-misses
 
-Although it is true that we don't have to support everything not
-supporting this would give Linux a feature disparity with the
-Windows utility for controlling the keyboard which IMHO is
-undesirable.
+       2.385785170 seconds time elapsed
 
-Regards,
+       2.384014000 seconds user
+       0.000000000 seconds sys
 
-Hans
 
+root@(none):~# perf stat ./ptr_ring_test -s 1000 -m 0 -N 100000000
+ptr_ring(size:1000) perf simple test for 100000000 times, took 2383385 us
+
+ Performance counter stats for './ptr_ring_test -s 1000 -m 0 -N 100000000':
+
+           2383.67 msec task-clock                #    1.000 CPUs utilized
+                26      context-switches          #    0.011 K/sec
+                 0      cpu-migrations            #    0.000 K/sec
+                57      page-faults               #    0.024 K/sec
+        6197278066      cycles                    #    2.600 GHz
+       17424207772      instructions              #    2.81  insn per cycle
+   <not supported>      branches
+           6495766      branch-misses
+
+       2.383941170 seconds time elapsed
+
+       2.382215000 seconds user
+       0.000000000 seconds sys
+
+
+root@(none):~# perf stat ./ptr_ring_test -s 1000 -m 0 -N 100000000
+ptr_ring(size:1000) perf simple test for 100000000 times, took 2390858 us
+
+ Performance counter stats for './ptr_ring_test -s 1000 -m 0 -N 100000000':
+
+           2391.16 msec task-clock                #    1.000 CPUs utilized
+                25      context-switches          #    0.010 K/sec
+                 0      cpu-migrations            #    0.000 K/sec
+                57      page-faults               #    0.024 K/sec
+        6216704120      cycles                    #    2.600 GHz
+       17424243041      instructions              #    2.80  insn per cycle
+   <not supported>      branches
+           6483886      branch-misses
+
+       2.391420440 seconds time elapsed
+
+       2.389647000 seconds user
+       0.000000000 seconds sys
+
+
+root@(none):~# perf stat ./ptr_ring_test -s 1000 -m 0 -N 100000000
+ptr_ring(size:1000) perf simple test for 100000000 times, took 2389810 us
+
+ Performance counter stats for './ptr_ring_test -s 1000 -m 0 -N 100000000':
+
+           2390.10 msec task-clock                #    1.000 CPUs utilized
+                26      context-switches          #    0.011 K/sec
+                 0      cpu-migrations            #    0.000 K/sec
+                58      page-faults               #    0.024 K/sec
+        6213995715      cycles                    #    2.600 GHz
+       17424227499      instructions              #    2.80  insn per cycle
+   <not supported>      branches
+           6474069      branch-misses
+
+       2.390367070 seconds time elapsed
+
+       2.388644000 seconds user
+       0.000000000 seconds sys
+
+---------------unpatched ptr_ring.c end----------------------------------
+
+
+
+---------------patched ptr_ring.c begin----------------------------------
+root@(none):~# perf stat ./ptr_ring_test_opt -s 1000 -m 0 -N 100000000
+ptr_ring(size:1000) perf simple test for 100000000 times, took 2198894 us
+
+ Performance counter stats for './ptr_ring_test_opt -s 1000 -m 0 -N 100000000':
+
+           2199.18 msec task-clock                #    1.000 CPUs utilized
+                23      context-switches          #    0.010 K/sec
+                 0      cpu-migrations            #    0.000 K/sec
+                56      page-faults               #    0.025 K/sec
+        5717671859      cycles                    #    2.600 GHz
+       16124164124      instructions              #    2.82  insn per cycle
+   <not supported>      branches
+           6564829      branch-misses
+
+       2.199445990 seconds time elapsed
+
+       2.197859000 seconds user
+       0.000000000 seconds sys
+
+
+root@(none):~# perf stat ./ptr_ring_test_opt -s 1000 -m 0 -N 100000000
+ptr_ring(size:1000) perf simple test for 100000000 times, took 2222337 us
+
+ Performance counter stats for './ptr_ring_test_opt -s 1000 -m 0 -N 100000000':
+
+           2222.63 msec task-clock                #    1.000 CPUs utilized
+                23      context-switches          #    0.010 K/sec
+                 0      cpu-migrations            #    0.000 K/sec
+                57      page-faults               #    0.026 K/sec
+        5778632853      cycles                    #    2.600 GHz
+       16124210769      instructions              #    2.79  insn per cycle
+   <not supported>      branches
+           6603904      branch-misses
+
+       2.222901020 seconds time elapsed
+
+       2.221312000 seconds user
+       0.000000000 seconds sys
+
+
+root@(none):~# perf stat ./ptr_ring_test_opt -s 1000 -m 0 -N 100000000
+ptr_ring(size:1000) perf simple test for 100000000 times, took 2251980 us
+
+ Performance counter stats for './ptr_ring_test_opt -s 1000 -m 0 -N 100000000':
+
+           2252.28 msec task-clock                #    1.000 CPUs utilized
+                25      context-switches          #    0.011 K/sec
+                 0      cpu-migrations            #    0.000 K/sec
+                57      page-faults               #    0.025 K/sec
+        5855668335      cycles                    #    2.600 GHz
+       16124310588      instructions              #    2.75  insn per cycle
+   <not supported>      branches
+           6777279      branch-misses
+
+       2.252543340 seconds time elapsed
+
+       2.250897000 seconds user
+       0.000000000 seconds sys
+
+
+root@(none):~#
+root@(none):~# perf stat ./ptr_ring_test_opt -s 1000 -m 0 -N 100000000
+ptr_ring(size:1000) perf simple test for 100000000 times, took 2209415 us
+
+ Performance counter stats for './ptr_ring_test_opt -s 1000 -m 0 -N 100000000':
+
+           2209.70 msec task-clock                #    1.000 CPUs utilized
+                24      context-switches          #    0.011 K/sec
+                 0      cpu-migrations            #    0.000 K/sec
+                58      page-faults               #    0.026 K/sec
+        5745003772      cycles                    #    2.600 GHz
+       16124198886      instructions              #    2.81  insn per cycle
+   <not supported>      branches
+           6508414      branch-misses
+
+       2.209973960 seconds time elapsed
+
+       2.208354000 seconds user
+       0.000000000 seconds sys
+
+
+root@(none):~# perf stat ./ptr_ring_test_opt -s 1000 -m 0 -N 100000000
+ptr_ring(size:1000) perf simple test for 100000000 times, took 2211409 us
+
+ Performance counter stats for './ptr_ring_test_opt -s 1000 -m 0 -N 100000000':
+
+           2211.70 msec task-clock                #    1.000 CPUs utilized
+                24      context-switches          #    0.011 K/sec
+                 0      cpu-migrations            #    0.000 K/sec
+                57      page-faults               #    0.026 K/sec
+        5750136694      cycles                    #    2.600 GHz
+       16124176577      instructions              #    2.80  insn per cycle
+   <not supported>      branches
+           6553023      branch-misses
+
+       2.211968470 seconds time elapsed
+
+       2.210303000 seconds user
+       0.000000000 seconds sys
+
+---------------patched ptr_ring.c end----------------------------------
+
+> 
+>>
 
 
