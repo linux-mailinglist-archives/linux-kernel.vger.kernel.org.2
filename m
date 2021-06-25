@@ -2,65 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FFC03B3FE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764FD3B3FEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbhFYJEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:04:25 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:55047 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbhFYJEX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:04:23 -0400
-Received: (Authenticated sender: clement.leger@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 930A510000E;
-        Fri, 25 Jun 2021 09:02:01 +0000 (UTC)
-From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <clement.leger@bootlin.com>
-To:     Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <clement.leger@bootlin.com>,
-        linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dmaengine: at_xdmac: use module_platform_driver
-Date:   Fri, 25 Jun 2021 11:00:42 +0200
-Message-Id: <20210625090042.17085-1-clement.leger@bootlin.com>
-X-Mailer: git-send-email 2.32.0
+        id S230343AbhFYJFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:05:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:50704 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229839AbhFYJFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 05:05:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA2A731B;
+        Fri, 25 Jun 2021 02:02:51 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C6DE63F719;
+        Fri, 25 Jun 2021 02:02:50 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Bharata B Rao <bharata@linux.ibm.com>, linux-next@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: PowerPC guest getting "BUG: scheduling while atomic" on linux-next-20210623 during secondary CPUs bringup
+In-Reply-To: <YNWFiZii+MINhUC3@hirez.programming.kicks-ass.net>
+References: <YNSq3UQTjm6HWELA@in.ibm.com> <20210625054608.fmwt7lxuhp7inkjx@linux.vnet.ibm.com> <YNWFiZii+MINhUC3@hirez.programming.kicks-ass.net>
+Date:   Fri, 25 Jun 2021 10:02:45 +0100
+Message-ID: <87k0mi8gga.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver was previously probed with platform_driver_probe. This does
-not allow the driver to be probed again later if probe function
-returns -EPROBE_DEFER. This patch replace the use of
-platform_driver_probe with module_platform_driver which allows that.
+On 25/06/21 09:28, Peter Zijlstra wrote:
+> On Fri, Jun 25, 2021 at 11:16:08AM +0530, Srikar Dronamraju wrote:
+>> Bharata,
+>>
+>> I think the regression is due to Commit f1a0a376ca0c ("sched/core:
+>> Initialize the idle task with preemption disabled")
+>
+> So that extra preempt_disable() that got removed would've incremented it
+> to 1 and then things would've been fine.
+>
+> Except.. Valentin changed things such that preempt_count() should've
+> been inittialized to 1, instead of 0, but for some raisin that didn't
+> stick.. what gives.
+>
+> So we have init_idle(p) -> init_idle_preempt_count(p) ->
+> task_thread_info(p)->preempt_count = PREEMPT_DISABLED;
+>
+> But somehow, by the time you're running start_secondary(), that's gotten
+> to be 0 again. Does DEBUG_PREEMPT give more clues?
 
-Signed-off-by: Clément Léger <clement.leger@bootlin.com>
----
- drivers/dma/at_xdmac.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Given the preempt_count isn't reset between hotplugs anymore, you might be
+able to find the culprit with a hotplug cycle and ftrace with
+trace_prempt_off and trace_preempt_on events (requires PREEMPT_TRACER
+IIRC).
 
-diff --git a/drivers/dma/at_xdmac.c b/drivers/dma/at_xdmac.c
-index 64a52bf4d737..109a4c0895f4 100644
---- a/drivers/dma/at_xdmac.c
-+++ b/drivers/dma/at_xdmac.c
-@@ -2238,11 +2238,7 @@ static struct platform_driver at_xdmac_driver = {
- 	}
- };
- 
--static int __init at_xdmac_init(void)
--{
--	return platform_driver_probe(&at_xdmac_driver, at_xdmac_probe);
--}
--subsys_initcall(at_xdmac_init);
-+module_platform_driver(at_xdmac_driver);
- 
- MODULE_DESCRIPTION("Atmel Extended DMA Controller driver");
- MODULE_AUTHOR("Ludovic Desroches <ludovic.desroches@atmel.com>");
--- 
-2.32.0
-
+It's doable at boot time too, but that will mean sifting through many more
+events than you'd like...
