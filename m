@@ -2,157 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979C13B4626
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF22E3B4628
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbhFYOzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:55:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhFYOzn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:55:43 -0400
-Received: from smtp-8faa.mail.infomaniak.ch (smtp-8faa.mail.infomaniak.ch [IPv6:2001:1600:4:17::8faa])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41863C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:53:22 -0700 (PDT)
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4GBKkP0Fn6zMpnhh;
-        Fri, 25 Jun 2021 16:53:17 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4GBKkF6p13zlh8TS;
-        Fri, 25 Jun 2021 16:53:09 +0200 (CEST)
-Subject: Re: [PATCH v1] crypto: Make the DRBG compliant with NIST SP800-90A
- rev1
-To:     =?UTF-8?Q?Stephan_M=c3=bcller?= <smueller@chronox.de>,
-        James Morris <jamorris@linux.microsoft.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Haxby <john.haxby@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Simo Sorce <simo@redhat.com>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
-        hpa@zytor.com, tytso@mit.edu
-References: <20210623120751.3033390-1-mic@digikod.net>
- <9590fe0e9482e212f2a3223ffae872104659cc4b.camel@chronox.de>
- <248b1aae-effc-f511-03af-65a71f176cf1@digikod.net>
- <3789849.nkhAASfZ5y@positron.chronox.de>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <43710a75-bd5d-2e23-7783-299470490ff0@digikod.net>
-Date:   Fri, 25 Jun 2021 16:53:27 +0200
-User-Agent: 
+        id S231738AbhFYO4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:56:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39052 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229653AbhFYO4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 10:56:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E4EF6196C
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 14:54:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624632861;
+        bh=4E0gJHmVQf3DAdKTz9RRWsCyT2UriHYgkJuXFju6qwk=;
+        h=References:In-Reply-To:Reply-To:From:Date:Subject:To:Cc:From;
+        b=sog8FFB9PdbR5HbctvZVXYwWmuL0bq1kf0vf5igVUFJuRuhpCuluyFbUnjj57529Y
+         JeGX7GkW+J4AHjNR0RtLMEDgj9aJ5nn4HIVKqXHgsH2KfDrtJK/v2nArF68jsAPA3M
+         ZQEXQhC1MrwC58VW2TkZPjrDck4qpDE3Quy6Y9urdBFakjrdQLUftI5HpG+3gbXhm5
+         LeFozQ/YdTTq8QJcNa8Rck21UfabXDKK1n9uohFE/PK4On6GPLTMZnzj3VJZn1uZNp
+         dXWhfx6co6BT/9O4AAwd4bGAd17Qpc7iwD2t4PB6r7eDVglq6sHNUbtpbuaRlMAgRV
+         wYNkJFshDxH9Q==
+Received: by mail-lj1-f173.google.com with SMTP id q4so4494856ljp.13
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:54:21 -0700 (PDT)
+X-Gm-Message-State: AOAM532haIkE+c/RGrJ7bAXwyePllRanHcSj1M5omytsXMD7ZiFz63cE
+        PbEr92QQSRGLN6BQn9CMnfe7MKsmu4zZgQyBDSE=
+X-Google-Smtp-Source: ABdhPJxrHnBWtk/8r5JziuSDB7JQedMAzgB4dDImce2eOUZ634eYmmPW1uIOpI7KWR41HQn91xgscPrMR2ghq94rJwY=
+X-Received: by 2002:a2e:9ac3:: with SMTP id p3mr8915246ljj.94.1624632859618;
+ Fri, 25 Jun 2021 07:54:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3789849.nkhAASfZ5y@positron.chronox.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1604317487-14543-1-git-send-email-sumit.garg@linaro.org> <1604317487-14543-8-git-send-email-sumit.garg@linaro.org>
+In-Reply-To: <1604317487-14543-8-git-send-email-sumit.garg@linaro.org>
+Reply-To: wens@kernel.org
+From:   Chen-Yu Tsai <wens@kernel.org>
+Date:   Fri, 25 Jun 2021 22:54:08 +0800
+X-Gmail-Original-Message-ID: <CAGb2v67yfWbRA4MNa2f+pAJAyiEqeCaREziaPjvGcDzTw5Za=A@mail.gmail.com>
+Message-ID: <CAGb2v67yfWbRA4MNa2f+pAJAyiEqeCaREziaPjvGcDzTw5Za=A@mail.gmail.com>
+Subject: Re: [PATCH v7 7/7] arm64: kgdb: Roundup cpus using IPI as NMI
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>, will@kernel.org,
+        daniel.thompson@linaro.org, Mark Rutland <mark.rutland@arm.com>,
+        tsbogend@alpha.franken.de,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>, ito-yuichi@fujitsu.com,
+        mpe@ellerman.id.au, x86@kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Douglas Anderson <dianders@chromium.org>, mingo@redhat.com,
+        bp@alien8.de, julien.thierry.kdev@gmail.com,
+        jason.wessel@windriver.com, kgdb-bugreport@lists.sourceforge.net,
+        Thomas Gleixner <tglx@linutronix.de>, msys.mizuma@gmail.com,
+        David Miller <davem@davemloft.net>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 25/06/2021 15:50, Stephan Müller wrote:
-> Am Freitag, 25. Juni 2021, 13:09:26 CEST schrieb Mickaël Salaün:
-> 
-> Hi Mickaël,
-> 
-> [...]
->>
->>> - applies an entropy_input len of 512 bits during initial seeding
->>>
->>> - applies a nonce of 128 bits during initial seeding
->>>
->>> entropy_input == <384 bits get_random_bytes> || <256 bits Jitter RNG>
->>
->> We think that using "<384 bits get_random_bytes> || " makes this DRBG
->> non-compliant with SP800-90A rev1 because get_random_bytes doesn't use a
->> vetted conditioning component (but ChaCha20 instead):
->>
->> SP800-90Ar1, section 8.6.5 says "A DRBG mechanism requires an approved
->> randomness source during instantiation and reseeding [...]. An approved
->> randomness source is an entropy source that conforms to [SP 800-90B], or
->> an RBG that conforms to [SP 800-90C] − either a DRBG or an NRBG".
->> The FIPS 140-2 Implementation Guidance
->> (https://csrc.nist.gov/csrc/media/projects/cryptographic-module-validation-p
->> rogram/documents/fips140-2/fips1402ig.pdf), section 7.19 says "As of
->> November 7, 2020, all newly submitted modules requiring an entropy
->> evaluation must demonstrate compliance to SP 800-90B". In resolution 3 it
->> says "all processing of the raw data output from the noise sources that
->> happens before it is ultimately output from the entropy source *shall*
->> occur within a conditioning chain". Data from get_random_bytes may come
->> from multiple noise sources, but they are hashed with ChaCha20.
->> In resolution 6 it says "a vetted conditioning component may optionally
->> take a finite amount of supplemental data [...] in addition to the data
->> from the primary noise source", which would be OK if get_random_bytes
->> used a vetted algorithm, but it is not the case for now.
-> 
-> You cite the right references, I think the interpretation is too strict.
-> 
-> The specifications require that
-> 
-> a) The DRBG must be seeded by a 90B entropy source
-> 
-> b) The DRBG must be initially seeded with 256 bits of entropy plus some 128 
-> bit nonce
-> 
-> We cover a) with the Jitter RNG and b) by pulling 384 bits from it.
-> 
-> The standard does not forbit:
-> 
-> c) the entropy string may contain data from another origin or it contains a 
-> larger buffer
-> 
-> d) the actual entropy distribution in the entropy string being not an 
-> equidistribution over the entire entropy string
-> 
-> Bullet d) implies that it is perfectly fine to have entropy distribution begin 
-> loopsided in the entropy string.
-> 
-> Bullet c) implies that other data can be provided with the entropy string.
-> 
-> With that, to be 90A/B compliant, you interpret that the Jitter RNG provides 
-> all entropy you need and credit the entropy from get_random_bytes with zero 
-> bits of entropy.
-> 
-> 
-> Note, if you look into the implementation of the DRBG seeding, the different 
-> input strings like entropy string or data without entropy like personalization 
-> string are simply concatenated and handed to the DRBG. As the Jitter RNG and 
-> get_random_bytes data is also concatenated, it follows the concepts of 90A.
-> 
-> If you look into the draft 90C standard, it explicitly allows concatenation of 
-> data from an entropy source that you credit with entropy and data without 
-> entropy - see the crediting of entropy of multiple entropy sources defined 
-> with "Method 1" and "Method 2" in the current 90C draft.
-> 
-> This ultimately allows us to have an entropy string that is concatenated from 
-> different entropy sources. If you have an entropy source that is not 90B 
-> compliant, you have to credit it with zero bits of entropy in the entropy 
-> analysis. Thus, only the entropy source(s) compliant to 90B must provide the 
-> entire entropy as mandated by 90A.
+On Mon, Nov 2, 2020 at 7:47 PM Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> arm64 platforms with GICv3 or later supports pseudo NMIs which can be
+> leveraged to roundup CPUs which are stuck in hard lockup state with
+> interrupts disabled that wouldn't be possible with a normal IPI.
+>
+> So instead switch to roundup CPUs using IPI turned as NMI. And in
+> case a particular arm64 platform doesn't supports pseudo NMIs,
+> it will switch back to default kgdb CPUs roundup mechanism.
+>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>  arch/arm64/kernel/ipi_nmi.c |  5 +++++
+>  arch/arm64/kernel/kgdb.c    | 18 ++++++++++++++++++
+>  2 files changed, 23 insertions(+)
+>
+> diff --git a/arch/arm64/kernel/ipi_nmi.c b/arch/arm64/kernel/ipi_nmi.c
+> index 597dcf7..898d69c 100644
+> --- a/arch/arm64/kernel/ipi_nmi.c
+> +++ b/arch/arm64/kernel/ipi_nmi.c
+> @@ -8,6 +8,7 @@
+>
+>  #include <linux/interrupt.h>
+>  #include <linux/irq.h>
+> +#include <linux/kgdb.h>
+>  #include <linux/nmi.h>
+>  #include <linux/smp.h>
+>
+> @@ -45,10 +46,14 @@ bool arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
+>  static irqreturn_t ipi_nmi_handler(int irq, void *data)
+>  {
+>         irqreturn_t ret = IRQ_NONE;
+> +       unsigned int cpu = smp_processor_id();
+>
+>         if (nmi_cpu_backtrace(get_irq_regs()))
+>                 ret = IRQ_HANDLED;
+>
+> +       if (!kgdb_nmicallback(cpu, get_irq_regs()))
 
-Thanks for your detailed explanation Stephan. We agree that data from
-get_random_bytes is not accounted as entropy, but the question is: is it
-still in line with the specification because it uses an algorithm not
-compliant to SP800-90B (i.e. ChaCha20 is not a vetted conditioning
-component)? Cf. IG 7.19 resolution 6 from 08/28/2020 and IG 7.20 from
-05/04/2021.
+This fails to compile if CONFIG_KGDB isn't enabled.
 
-> 
-> After having several discussions with the Entropy Working group sponsored by 
-> NIST that included also representatives from the NIST crypto technology group, 
-> there was no concern regarding such approach.
-> 
-> This approach you see in the current DRBG seeding code is now taken for 
-> different FIPS validations including FIPS validations that I work on as a FIPS 
-> tester as part of my duties working for a FIPS lab. My colleagues have 
-> reviewed the current kernel DRBG seeding strategy and approved of it for other 
-> FIPS validations.
 
-Good to know. We are worried that a new FIPS validation (started after
-November 7, 2020) could failed because of the new SP800-90B requirement.
-This issue was pointed out by a lab. It seems that the specification is
-still open to different interpretations.
+ChenYu
 
-Regards,
- Mickaël
+
+> +               ret = IRQ_HANDLED;
+> +
+>         return ret;
+>  }
+>
+> diff --git a/arch/arm64/kernel/kgdb.c b/arch/arm64/kernel/kgdb.c
+> index 1a157ca3..371b176 100644
+> --- a/arch/arm64/kernel/kgdb.c
+> +++ b/arch/arm64/kernel/kgdb.c
+> @@ -17,6 +17,7 @@
+>
+>  #include <asm/debug-monitors.h>
+>  #include <asm/insn.h>
+> +#include <asm/nmi.h>
+>  #include <asm/traps.h>
+>
+>  struct dbg_reg_def_t dbg_reg_def[DBG_MAX_REG_NUM] = {
+> @@ -353,3 +354,20 @@ int kgdb_arch_remove_breakpoint(struct kgdb_bkpt *bpt)
+>         return aarch64_insn_write((void *)bpt->bpt_addr,
+>                         *(u32 *)bpt->saved_instr);
+>  }
+> +
+> +void kgdb_roundup_cpus(void)
+> +{
+> +       struct cpumask mask;
+> +
+> +       if (!arm64_supports_nmi()) {
+> +               kgdb_smp_call_nmi_hook();
+> +               return;
+> +       }
+> +
+> +       cpumask_copy(&mask, cpu_online_mask);
+> +       cpumask_clear_cpu(raw_smp_processor_id(), &mask);
+> +       if (cpumask_empty(&mask))
+> +               return;
+> +
+> +       arm64_send_nmi(&mask);
+> +}
+> --
+> 2.7.4
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
