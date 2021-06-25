@@ -2,221 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1AB3B41B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EC33B41B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbhFYKcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 06:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230436AbhFYKcS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 06:32:18 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E75C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:29:58 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id g3so381281ilj.7
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:29:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8l+zzvIF6XiRoW9cSAlQ5A0vVNKEKZTujABMITdBz4c=;
-        b=fNyJoKzV7kOp3jDzZ+via62uRAgL1/8nX362jkWvMj4LrlrwHCRUog8+n0Ep8OTWDJ
-         7tKKs+8RfjRgoCRor1pqIgf3SPrdIZadaWoeqS2jasd0OvZXVDeu5jDuY1eOx3KjiwnA
-         eK/db2nOUBYf+XwrUBwtKsyWiN0JSbW703krw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8l+zzvIF6XiRoW9cSAlQ5A0vVNKEKZTujABMITdBz4c=;
-        b=mFeMNLaI1GuYgGphltTijHxeUtGENzMFTZauqxui87kyZUdrv8/84JOv434Ke6o7SY
-         s4cQtaPS0Su5ykx9W1Ly3l9UEU9ALtpt1jgDkqBflcYn+ZbHeGiLe/H6YTFE1+e6U8YF
-         99R1utqmCtorxIbWqbiYeDifX+QMGxMDOGLHKxrt8K0SgpUkkP4U1OlYjVpsfZiS8AjT
-         UDXzH9DXLp83BnWBJMpBmRBETvdi2GNt13aRfzjM0DM4VHJuIOutAat2VdQJfbTqMK1P
-         ZR19/AseEKK5y/bPjNoMXbpzbVmdzmks9lzazSLMle3H9bmBTyMCKd6aWryYCmUXoF0O
-         zmpw==
-X-Gm-Message-State: AOAM531Xn4mJqm1EApJTMXaY+CMQlvOfDfxF8mTQEEv01QBQL00dbu6k
-        TlJKpPBF4SPl+CESZtku0d1IyMz30jiIMQ==
-X-Google-Smtp-Source: ABdhPJwb8Q4EYUiS/xsPQ1jhz/qSiECNI/wtk+Uj5sQoyfmnQyOSMlfyywS8ecbb5JKkKkFNzW3IoA==
-X-Received: by 2002:a92:d8ce:: with SMTP id l14mr796152ilo.283.1624616997775;
-        Fri, 25 Jun 2021 03:29:57 -0700 (PDT)
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com. [209.85.166.174])
-        by smtp.gmail.com with ESMTPSA id 67sm2687959iob.15.2021.06.25.03.29.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 03:29:57 -0700 (PDT)
-Received: by mail-il1-f174.google.com with SMTP id k5so9251916ilv.8
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:29:56 -0700 (PDT)
-X-Received: by 2002:a92:6d0b:: with SMTP id i11mr6974931ilc.160.1624616996319;
- Fri, 25 Jun 2021 03:29:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210618122923.385938-1-ribalda@chromium.org> <20210618122923.385938-22-ribalda@chromium.org>
-In-Reply-To: <20210618122923.385938-22-ribalda@chromium.org>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Fri, 25 Jun 2021 12:29:44 +0200
-X-Gmail-Original-Message-ID: <CANiDSCvNvJ_xyuqgvvFv6aZGSm=H-9=SeV6wp5C_0-acm+wC=A@mail.gmail.com>
-Message-ID: <CANiDSCvNvJ_xyuqgvvFv6aZGSm=H-9=SeV6wp5C_0-acm+wC=A@mail.gmail.com>
-Subject: Re: [PATCH v10 21/21] media: uvcvideo: Return -EACCES to inactive controls
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, tfiga@chromium.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        id S231422AbhFYKdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 06:33:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:52532 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229956AbhFYKdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 06:33:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9E888ED1;
+        Fri, 25 Jun 2021 03:31:00 -0700 (PDT)
+Received: from localhost (unknown [10.1.195.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3E8BB3F719;
+        Fri, 25 Jun 2021 03:31:00 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 11:30:58 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Qian Cai <quic_qiancai@quicinc.com>,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH V3 2/4] cpufreq: cppc: Pass structure instance by
+ reference
+Message-ID: <20210625103058.GC15540@arm.com>
+References: <cover.1624266901.git.viresh.kumar@linaro.org>
+ <b910f89cf11f6916319f9a2fb48d9146005318b1.1624266901.git.viresh.kumar@linaro.org>
+ <20210623134533.GB12411@arm.com>
+ <20210624022252.zrxsftrvcd43eqra@vireshk-i7>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624022252.zrxsftrvcd43eqra@vireshk-i7>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans
+Hey,
 
-Did you have some hardware that did not work fine without this patch?
-Am I remembering correctly?
+On Thursday 24 Jun 2021 at 07:52:52 (+0530), Viresh Kumar wrote:
+> On 23-06-21, 14:45, Ionela Voinescu wrote:
+> > On Monday 21 Jun 2021 at 14:49:35 (+0530), Viresh Kumar wrote:
+> > > Don't pass structure instance by value, pass it by reference instead.
+> > >
+> > 
+> > Might be best to justify the change a bit :)
+> 
+> I had it and removed later as I thought it would be obvious :)
+> 
+> > For me this is a judgement call, and I don't really see the reasons for
+> > changing it: we don't care if the structure is modified or not, as we're
+> > not reusing the data after the call to cppc_get_rate_from_fbctrs().
+> > More so, in this scenario we might not even want for the called function
+> > to modify the counter values. Also there is no further call to a function
+> > in cppc_get_rate_from_fbctrs(), that might require references to the
+> > fb_ctrs.
+> > 
+> > So what is the reason behind this change?
+> 
+> How about this commit log then:
+> 
+> Theoretically speaking, call by reference is cheaper/faster than call by value
+> for structures as the later requires the compiler to make a new copy of the
+> whole structure (which has four u64 values here), to be used by the called
+> function, while with call by reference we just need to pass a single pointer
+> (u64 on 64-bit architectures) to the existing structure.
+> 
+> Yes, on modern architectures, the compilers will likely end up using the
+> processor registers for passing this structure as it isn't doesn't have lot of
+> fields and it shouldn't be bad eventually, but nevertheless the code should do
+> the right thing without assuming about the compiler's or architecture's
+> optimizations.
+> 
 
-Thanks!
+Yes, that's why "judgement call", which I'll let you make. The code is
+sane and I like the longer commit message.
 
-On Fri, 18 Jun 2021 at 14:29, Ricardo Ribalda <ribalda@chromium.org> wrote:
->
-> If a control is inactive return -EACCES to let the userspace know that
-> the value will not be applied automatically when the control is active
-> again.
->
-> Also make sure that query_v4l2_ctrl doesn't return an error.
->
-> Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_ctrl.c | 73 +++++++++++++++++++++-----------
->  1 file changed, 49 insertions(+), 24 deletions(-)
->
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> index da44d5c0b9ad..4f80c06d3c43 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -1104,13 +1104,36 @@ static const char *uvc_map_get_name(const struct uvc_control_mapping *map)
->         return "Unknown Control";
->  }
->
-> +static bool uvc_ctrl_is_inactive(struct uvc_video_chain *chain,
-> +                                struct uvc_control *ctrl,
-> +                                struct uvc_control_mapping *mapping)
-> +{
-> +       struct uvc_control_mapping *master_map = NULL;
-> +       struct uvc_control *master_ctrl = NULL;
-> +       s32 val;
-> +       int ret;
-> +
-> +       if (!mapping->master_id)
-> +               return false;
-> +
-> +       __uvc_find_control(ctrl->entity, mapping->master_id, &master_map,
-> +                          &master_ctrl, 0);
-> +
-> +       if (!master_ctrl || !(master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR))
-> +               return false;
-> +
-> +       ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
-> +       if (ret < 0 || val == mapping->master_manual)
-> +               return false;
-> +
-> +       return true;
-> +}
-> +
->  static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
->         struct uvc_control *ctrl,
->         struct uvc_control_mapping *mapping,
->         struct v4l2_queryctrl *v4l2_ctrl)
->  {
-> -       struct uvc_control_mapping *master_map = NULL;
-> -       struct uvc_control *master_ctrl = NULL;
->         const struct uvc_menu_info *menu;
->         unsigned int i;
->
-> @@ -1126,18 +1149,8 @@ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
->         if (!(ctrl->info.flags & UVC_CTRL_FLAG_SET_CUR))
->                 v4l2_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
->
-> -       if (mapping->master_id)
-> -               __uvc_find_control(ctrl->entity, mapping->master_id,
-> -                                  &master_map, &master_ctrl, 0);
-> -       if (master_ctrl && (master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR)) {
-> -               s32 val;
-> -               int ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
-> -               if (ret < 0)
-> -                       return ret;
-> -
-> -               if (val != mapping->master_manual)
-> -                               v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
-> -       }
-> +       if (uvc_ctrl_is_inactive(chain, ctrl, mapping))
-> +               v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
->
->         if (!ctrl->cached) {
->                 int ret = uvc_ctrl_populate_cache(chain, ctrl);
-> @@ -1660,25 +1673,37 @@ static int uvc_ctrl_commit_entity(struct uvc_device *dev,
->         return 0;
->  }
->
-> -static int uvc_ctrl_find_ctrl_idx(struct uvc_entity *entity,
-> -                                 struct v4l2_ext_controls *ctrls,
-> -                                 struct uvc_control *uvc_control)
-> +static int uvc_ctrl_commit_error(struct uvc_video_chain *chain,
-> +                                struct uvc_entity *entity,
-> +                                struct v4l2_ext_controls *ctrls,
-> +                                struct uvc_control *err_control,
-> +                                int ret)
->  {
->         struct uvc_control_mapping *mapping;
->         struct uvc_control *ctrl_found;
->         unsigned int i;
->
-> -       if (!entity)
-> -               return ctrls->count;
-> +       if (!entity) {
-> +               ctrls->error_idx = ctrls->count;
-> +               return ret;
-> +       }
->
->         for (i = 0; i < ctrls->count; i++) {
->                 __uvc_find_control(entity, ctrls->controls[i].id, &mapping,
->                                    &ctrl_found, 0);
-> -               if (uvc_control == ctrl_found)
-> -                       return i;
-> +               if (err_control == ctrl_found)
-> +                       break;
->         }
-> +       ctrls->error_idx = i;
-> +
-> +       /* We could not find the control that failed. */
-> +       if (i == ctrls->count)
-> +               return ret;
-> +
-> +       if (uvc_ctrl_is_inactive(chain, err_control, mapping))
-> +               return -EACCES;
->
-> -       return ctrls->count;
-> +       return ret;
->  }
->
->  int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
-> @@ -1701,8 +1726,8 @@ int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
->                 uvc_ctrl_send_events(handle, ctrls->controls, ctrls->count);
->  done:
->         if (ret < 0 && ctrls)
-> -               ctrls->error_idx = uvc_ctrl_find_ctrl_idx(entity, ctrls,
-> -                                                         err_ctrl);
-> +               ret = uvc_ctrl_commit_error(chain, entity, ctrls, err_ctrl,
-> +                                           ret);
->         mutex_unlock(&chain->ctrl_mutex);
->         return ret;
->  }
-> --
-> 2.32.0.288.g62a8d224e6-goog
->
+Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
 
-
--- 
-Ricardo Ribalda
+> Don't pass structure instance by value, pass it by reference instead.
+> 
+> -- 
+> viresh
