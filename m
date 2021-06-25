@@ -2,105 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9B23B3C91
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F5D3B3C99
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbhFYGUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 02:20:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59142 "EHLO
+        id S233189AbhFYGW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 02:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233181AbhFYGUS (ORCPT
+        with ESMTP id S233130AbhFYGWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 02:20:18 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0ADFC061574;
-        Thu, 24 Jun 2021 23:17:57 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id h17so11863000edw.11;
-        Thu, 24 Jun 2021 23:17:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OXD1nFT9T+bpMKYpL0JBavvAN5ulnBIHUSuyvaKQlW4=;
-        b=vaba2H5cgu7Xx1X891XBNDFnQvnWJYGck060oiXxaYazK/YHpzqwgP1LYoCTfCAeNw
-         7UtONnqYBEINag7wsvSxStQv5m1ddN4HGe6bb8YWxmqGyBdOrucxwklcqvBssiz6nivm
-         fK3Tk6HHiP7IN9uTggiXVmCasW0kz+8jk8U7RZBUKxWuG72ugNB+dZNQ4ecVVsV4+LvE
-         p7cMco9vtZ8brMozZ1B8u7/ms1uxmQAdDI/kqw8QvR4WnjjcJ7ZRPKGgm87YYBKoiTgL
-         HyCtkUJC1Fq/7d09yNBirSGTzaV8HWb1Dpjh9YePoDj/OEWjFO88rWYkLeQXZPjUtOra
-         hCYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OXD1nFT9T+bpMKYpL0JBavvAN5ulnBIHUSuyvaKQlW4=;
-        b=YHEDEnfV3JFOr3kPMY2upzIXQrIyFlek89vmHHLWyG5vygmtwv/BZUM/nd1HIXg65Q
-         XWTa0uaH+NbX1f2oYRiAC7wANj8gPLcXNQEgolaRt1N8Flv65hg0nyE19tr5E3TIbDNF
-         vtXyMUcCT5kNJgjpJdpdSfcnEFnsRaWb+QIAS6vaqfKAZJourEc7/ruN1+5oVoQnwT99
-         9g1VIERPn85MDczUclmnMezbuY9C+sEwISlQF56eSDX87QdHWFppMOsYyLjG6zfZVRN0
-         AIEI1JDFmYgD8UtfczWenrUracWaTbypTJUhKuYxN4DaYpEUvrLclJwHeHBgw52uuYUy
-         jtQA==
-X-Gm-Message-State: AOAM5325IqGi/VnQYDQrBwN/S3iubRfNCQtGiWPzQ2AEeCZg59s4thbU
-        S7COyNGrEOeRQGCBSJCoYsI=
-X-Google-Smtp-Source: ABdhPJyfn1or367EG02dA6X/MR5ebjFu64dBDvYaOl9nk6hXypF6iHMOvw6uA2AR/FOJOPIFHMFBwQ==
-X-Received: by 2002:a05:6402:2210:: with SMTP id cq16mr12295912edb.261.1624601876248;
-        Thu, 24 Jun 2021 23:17:56 -0700 (PDT)
-Received: from [192.168.74.106] (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
-        by smtp.gmail.com with ESMTPSA id hy5sm2259429ejc.72.2021.06.24.23.17.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 23:17:55 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] Add Pinctrl for SM4250 and SM6115
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-References: <20210625051138.2997854-1-iskren.chernev@gmail.com>
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-Message-ID: <e1e447f5-b0a2-e8a1-5d84-28dc29c50824@gmail.com>
-Date:   Fri, 25 Jun 2021 09:17:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 25 Jun 2021 02:22:25 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD436C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 23:20:04 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lwfC4-0003Rw-82; Fri, 25 Jun 2021 08:20:00 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lwfC2-0006p8-G6; Fri, 25 Jun 2021 08:19:58 +0200
+Date:   Fri, 25 Jun 2021 08:19:58 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        michal.simek@xilinx.com, linux-kernel@vger.kernel.org,
+        Alvaro Gamez <alvaro.gamez@hazent.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        kernel@pengutronix.de
+Subject: Re: [PATCH v4 3/3] pwm: Add support for Xilinx AXI Timer
+Message-ID: <20210625061958.yeaxjltuq7q2t7i7@pengutronix.de>
+References: <20210528214522.617435-1-sean.anderson@seco.com>
+ <20210528214522.617435-3-sean.anderson@seco.com>
 MIME-Version: 1.0
-In-Reply-To: <20210625051138.2997854-1-iskren.chernev@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rbhfpghprvkbfljx"
+Content-Disposition: inline
+In-Reply-To: <20210528214522.617435-3-sean.anderson@seco.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please discard this version, there is v3 addressing all points from Rob and Bjorn.
 
-On 6/25/21 8:11 AM, Iskren Chernev wrote:
-> This patch adds support for the TLMM block on QCom SM4250 and SM6115, codename
-> bengal. The code is taken from OnePlus repo [1], and the keyword bengal
-> corresponds to sm4250 and sm6115, so I'm adding both compat strings.
-> 
-> [1]: https://github.com/OnePlusOSS/android_kernel_oneplus_sm4250
-> 
-> v1: https://lkml.org/lkml/2021/6/22/1163
-> 
-> Changes from v1:
-> - fix binding example
-> - fix cover letter text
-> 
-> Iskren Chernev (2):
->   dt-bindings: pinctrl: qcom: Add SM6115 pinctrl bindings
->   drivers: qcom: pinctrl: Add pinctrl driver for sm6115
-> 
->  .../bindings/pinctrl/qcom,sm6115-pinctrl.yaml |  172 ++
->  drivers/pinctrl/qcom/Kconfig                  |    9 +
->  drivers/pinctrl/qcom/Makefile                 |    1 +
->  drivers/pinctrl/qcom/pinctrl-sm6115.c         | 1482 +++++++++++++++++
->  4 files changed, 1664 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm6115-pinctrl.yaml
->  create mode 100644 drivers/pinctrl/qcom/pinctrl-sm6115.c
-> 
-> 
-> base-commit: e71e3a48a7e89fa71fb70bf4602367528864d2ff
-> --
-> 2.32.0
-> 
+--rbhfpghprvkbfljx
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, May 28, 2021 at 05:45:22PM -0400, Sean Anderson wrote:
+> This adds PWM support for Xilinx LogiCORE IP AXI soft timers commonly
+> found on Xilinx FPGAs.  At the moment clock control is very basic: we
+> just enable the clock during probe and pin the frequency. In the future,
+> someone could add support for disabling the clock when not in use.
+>=20
+> This driver was written with reference to Xilinx DS764 for v1.03.a [1].
+>=20
+> [1] https://www.xilinx.com/support/documentation/ip_documentation/axi_tim=
+er/v1_03_a/axi_timer_ds764.pdf
+>=20
+> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+> ---
+>=20
+> Changes in v4:
+> - Remove references to properties which are not good enough for Linux.
+> - Don't use volatile in read/write replacements. Some arches have it and
+>   some don't.
+> - Put common timer properties into their own struct to better reuse
+>   code.
+>=20
+> Changes in v3:
+> - Add clockevent and clocksource support
+> - Rewrite probe to only use a device_node, since timers may need to be
+>   initialized before we have proper devices. This does bloat the code a b=
+it
+>   since we can no longer rely on helpers such as dev_err_probe. We also
+>   cannot rely on device resources being free'd on failure, so we must free
+>   them manually.
+> - We now access registers through xilinx_timer_(read|write). This allows =
+us
+>   to deal with endianness issues, as originally seen in the microblaze
+>   driver. CAVEAT EMPTOR: I have not tested this on big-endian!
+> - Remove old microblaze driver
+>=20
+> Changes in v2:
+> - Don't compile this module by default for arm64
+> - Add dependencies on COMMON_CLK and HAS_IOMEM
+> - Add comment explaining why we depend on !MICROBLAZE
+> - Add comment describing device
+> - Rename TCSR_(SET|CLEAR) to TCSR_RUN_(SET|CLEAR)
+> - Use NSEC_TO_SEC instead of defining our own
+> - Use TCSR_RUN_MASK to check if the PWM is enabled, as suggested by Uwe
+> - Cast dividends to u64 to avoid overflow
+> - Check for over- and underflow when calculating TLR
+> - Set xilinx_pwm_ops.owner
+> - Don't set pwmchip.base to -1
+> - Check range of xlnx,count-width
+> - Ensure the clock is always running when the pwm is registered
+> - Remove debugfs file :l
+> - Report errors with dev_error_probe
+>=20
+>  drivers/mfd/Makefile     |   2 +-
+>  drivers/pwm/Kconfig      |  12 +++
+>  drivers/pwm/Makefile     |   1 +
+>  drivers/pwm/pwm-xilinx.c | 219 +++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 233 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/pwm/pwm-xilinx.c
+>=20
+> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> index f0f9fbdde7dc..89769affe251 100644
+> --- a/drivers/mfd/Makefile
+> +++ b/drivers/mfd/Makefile
+> @@ -269,6 +269,6 @@ obj-$(CONFIG_SGI_MFD_IOC3)	+=3D ioc3.o
+>  obj-$(CONFIG_MFD_SIMPLE_MFD_I2C)	+=3D simple-mfd-i2c.o
+>  obj-$(CONFIG_MFD_INTEL_M10_BMC)   +=3D intel-m10-bmc.o
+> =20
+> -ifneq ($(CONFIG_XILINX_TIMER),)
+> +ifneq ($(CONFIG_PWM_XILINX)$(CONFIG_XILINX_TIMER),)
+>  obj-y				+=3D xilinx-timer.o
+>  endif
+> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> index 8ae68d6203fb..ebf8d9014758 100644
+> --- a/drivers/pwm/Kconfig
+> +++ b/drivers/pwm/Kconfig
+> @@ -620,4 +620,16 @@ config PWM_VT8500
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called pwm-vt8500.
+> =20
+> +config PWM_XILINX
+> +	tristate "Xilinx AXI Timer PWM support"
+> +	depends on HAS_IOMEM && COMMON_CLK
+> +	help
+> +	  PWM driver for Xilinx LogiCORE IP AXI timers. This timer is
+> +	  typically a soft core which may be present in Xilinx FPGAs.
+> +	  This device may also be present in Microblaze soft processors.
+> +	  If you don't have this IP in your design, choose N.
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called pwm-xilinx.
+> +
+>  endif
+> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+> index d43b1e17e8e1..655df169b895 100644
+> --- a/drivers/pwm/Makefile
+> +++ b/drivers/pwm/Makefile
+> @@ -58,3 +58,4 @@ obj-$(CONFIG_PWM_TWL)		+=3D pwm-twl.o
+>  obj-$(CONFIG_PWM_TWL_LED)	+=3D pwm-twl-led.o
+>  obj-$(CONFIG_PWM_VISCONTI)	+=3D pwm-visconti.o
+>  obj-$(CONFIG_PWM_VT8500)	+=3D pwm-vt8500.o
+> +obj-$(CONFIG_PWM_XILINX)	+=3D pwm-xilinx.o
+> diff --git a/drivers/pwm/pwm-xilinx.c b/drivers/pwm/pwm-xilinx.c
+> new file mode 100644
+> index 000000000000..f05321496717
+> --- /dev/null
+> +++ b/drivers/pwm/pwm-xilinx.c
+> @@ -0,0 +1,219 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Copyright (C) 2021 Sean Anderson <sean.anderson@seco.com>
+> + *
+> + * Hardware limitations:
+> + * - When changing both duty cycle and period, we may end up with one cy=
+cle
+> + *   with the old duty cycle and the new period.
+
+That means it doesn't reset the counter when a new period is set, right?
+
+> + * - Cannot produce 100% duty cycle.
+
+Can it produce a 0% duty cycle? Below you're calling
+xilinx_timer_tlr_period(..., ..., ..., 0) then which returns -ERANGE.
+
+> + * - Only produces "normal" output.
+
+Does the output emit a low level when it's disabled?
+
+> + */
+> +
+> [...]
+> +static int xilinx_pwm_apply(struct pwm_chip *chip, struct pwm_device *un=
+used,
+> +			    const struct pwm_state *state)
+> +{
+> +	int ret;
+> +	struct xilinx_timer_priv *priv =3D xilinx_pwm_chip_to_priv(chip);
+> +	u32 tlr0, tlr1;
+> +	u32 tcsr0 =3D xilinx_timer_read(priv, TCSR0);
+> +	u32 tcsr1 =3D xilinx_timer_read(priv, TCSR1);
+> +	bool enabled =3D xilinx_timer_pwm_enabled(tcsr0, tcsr1);
+> +
+> +	if (state->polarity !=3D PWM_POLARITY_NORMAL)
+> +		return -EINVAL;
+> +
+> +	ret =3D xilinx_timer_tlr_period(priv, &tlr0, tcsr0, state->period);
+> +	if (ret)
+> +		return ret;
+
+The implementation of xilinx_timer_tlr_period (in patch 2/3) returns
+-ERANGE for big periods. The good behaviour to implement is to cap to
+the biggest period possible in this case.
+
+Also note that state->period is an u64 but it is casted to unsigned int
+as this is the type of the forth parameter of xilinx_timer_tlr_period.
+
+> +	ret =3D xilinx_timer_tlr_period(priv, &tlr1, tcsr1, state->duty_cycle);
+> +	if (ret)
+> +		return ret;
+> +
+> +	xilinx_timer_write(priv, tlr0, TLR0);
+> +	xilinx_timer_write(priv, tlr1, TLR1);
+> +
+> +	if (state->enabled) {
+> +		/* Only touch the TCSRs if we aren't already running */
+> +		if (!enabled) {
+> +			/* Load TLR into TCR */
+> +			xilinx_timer_write(priv, tcsr0 | TCSR_LOAD, TCSR0);
+> +			xilinx_timer_write(priv, tcsr1 | TCSR_LOAD, TCSR1);
+> +			/* Enable timers all at once with ENALL */
+> +			tcsr0 =3D (TCSR_PWM_SET & ~TCSR_ENT) | (tcsr0 & TCSR_UDT);
+> +			tcsr1 =3D TCSR_PWM_SET | TCSR_ENALL | (tcsr1 & TCSR_UDT);
+> +			xilinx_timer_write(priv, tcsr0, TCSR0);
+> +			xilinx_timer_write(priv, tcsr1, TCSR1);
+> +		}
+> +	} else {
+> +		xilinx_timer_write(priv, 0, TCSR0);
+> +		xilinx_timer_write(priv, 0, TCSR1);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void xilinx_pwm_get_state(struct pwm_chip *chip,
+> +				 struct pwm_device *unused,
+> +				 struct pwm_state *state)
+> +{
+> +	struct xilinx_timer_priv *priv =3D xilinx_pwm_chip_to_priv(chip);
+> +	u32 tlr0 =3D xilinx_timer_read(priv, TLR0);
+> +	u32 tlr1 =3D xilinx_timer_read(priv, TLR1);
+> +	u32 tcsr0 =3D xilinx_timer_read(priv, TCSR0);
+> +	u32 tcsr1 =3D xilinx_timer_read(priv, TCSR1);
+> +
+> +	state->period =3D xilinx_timer_get_period(priv, tlr0, tcsr0);
+> +	state->duty_cycle =3D xilinx_timer_get_period(priv, tlr1, tcsr1);
+> +	state->enabled =3D xilinx_timer_pwm_enabled(tcsr0, tcsr1);
+> +	state->polarity =3D PWM_POLARITY_NORMAL;
+
+Are the values returned here sensible if the hardware isn't in PWM mode?
+
+> +}
+> +
+> +static const struct pwm_ops xilinx_pwm_ops =3D {
+> +	.apply =3D xilinx_pwm_apply,
+> +	.get_state =3D xilinx_pwm_get_state,
+> +	.owner =3D THIS_MODULE,
+> +};
+> +
+> +static int xilinx_timer_probe(struct platform_device *pdev)
+> +{
+> +	int ret;
+> +	struct device *dev =3D &pdev->dev;
+> +	struct device_node *np =3D dev->of_node;
+> +	struct xilinx_timer_priv *priv;
+> +	struct xilinx_pwm_device *pwm;
+> +	u32 pwm_cells, one_timer;
+> +
+> +	ret =3D of_property_read_u32(np, "#pwm-cells", &pwm_cells);
+> +	if (ret =3D=3D -EINVAL)
+> +		return -ENODEV;
+> +	else if (ret)
+> +		return dev_err_probe(dev, ret, "#pwm-cells\n");
+
+Very sparse error message.
+
+> +	else if (pwm_cells)
+> +		return dev_err_probe(dev, -EINVAL, "#pwm-cells must be 0\n");
+
+What is the rationale here to not support #pwm-cells =3D <2>?
+
+> +	pwm =3D devm_kzalloc(dev, sizeof(*pwm), GFP_KERNEL);
+> +	if (!pwm)
+> +		return -ENOMEM;
+> +	platform_set_drvdata(pdev, pwm);
+> +	priv =3D &pwm->priv;
+> +
+> +	priv->regs =3D devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(priv->regs))
+> +		return PTR_ERR(priv->regs);
+> +
+> +	ret =3D xilinx_timer_common_init(np, priv, &one_timer);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (one_timer)
+> +		return dev_err_probe(dev, -EINVAL,
+> +				     "two timers required for PWM mode\n");
+> +
+> +	/*
+> +	 * The polarity of the generate outputs must be active high for PWM
+> +	 * mode to work. We could determine this from the device tree, but
+> +	 * alas, such properties are not allowed to be used.
+> +	 */
+> +
+> +	priv->clk =3D devm_clk_get(dev, "s_axi_aclk");
+> +	if (IS_ERR(priv->clk))
+> +		return dev_err_probe(dev, PTR_ERR(priv->clk), "clock\n");
+
+again a sparse error message.
+
+> +
+> +	ret =3D clk_prepare_enable(priv->clk);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "clock enable failed\n");
+> +	clk_rate_exclusive_get(priv->clk);
+> +
+> +	pwm->chip.dev =3D dev;
+> +	pwm->chip.ops =3D &xilinx_pwm_ops;
+> +	pwm->chip.npwm =3D 1;
+> +	ret =3D pwmchip_add(&pwm->chip);
+> +	if (ret) {
+> +		clk_rate_exclusive_put(priv->clk);
+> +		clk_disable_unprepare(priv->clk);
+> +		return dev_err_probe(dev, ret, "could not register pwm chip\n");
+> +	}
+> +
+> +	return 0;
+> +}
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--rbhfpghprvkbfljx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDVdYsACgkQwfwUeK3K
+7AlWnQf3ZlYhJXorv5Nb4kpOg34gLmAxusT52V/nYhh5hTJlJU4NRw0MDHDnfSYR
+K7fMFY0U9GqtJ8YWqtW1lg1DlUDEsAhBuMSrMuj5SLV6I6nqM3/h6GH5T5bspELy
+q98lsHV76nTpiN1LN4Jglqr7W0PFehk6M7WYKDxmrgAPKgsDemfdyLJ4rinmoCaF
+hH/QnRDpVhKK8tV9PLtQ5U4GgJ1B6Y7erfMVFiaWL8DWpkNrnnYtgxyKSWn9oUti
+ZGGfjakJBYcaAMV7w1s7Ak2Q6ItInEOobbIvJ+UJsllSm59Pg0AZI679i1uzqcdl
+lfrBE3XAPIIjKHkhcZL2vZS9qto2
+=eqoZ
+-----END PGP SIGNATURE-----
+
+--rbhfpghprvkbfljx--
