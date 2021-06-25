@@ -2,88 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41CD23B40EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347AE3B40F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhFYJy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:54:59 -0400
-Received: from ozlabs.org ([203.11.71.1]:54543 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230112AbhFYJy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:54:56 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GBC3P5fVkz9sTD;
-        Fri, 25 Jun 2021 19:52:33 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624614754;
-        bh=q+L2fxim45gbte/rCqUGreg6lMtkcnRAINZG0qnlTTs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=EHrc9/ZXUlHPR5KboRdMTuwDJ3IpvzZfjYZIOu6zc2osvMwGMxRPC4el/q0z6jxcU
-         QeZO5n0COScifHL9DisX2s6BCNJTLFIJIQjI3Ek+z93712BexlBkDz28d6I4cJkcBC
-         ZIIGWBJNCLOuEmaM3naHFEmpGWjQh7Ppv4IEr49VzGo0IPOF57mb3Q8kzbcCIjqf6y
-         jLGH5WQ8Cv5whgLFnYRP6exybdUecwoditCnjhewCpnVKMxlAjYLSilUMAOOcLw4ox
-         baCn/IQJrmCA8G1yD5qkl3SArEhTq8TYIX+j2L0SsGR3EqGhUl5encOT6odWCkUNDU
-         NndA0B11nxGHQ==
-Date:   Fri, 25 Jun 2021 19:52:32 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>
-Cc:     Daniel Latypov <dlatypov@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the kunit-fixes tree
-Message-ID: <20210625195232.3a307e53@canb.auug.org.au>
+        id S230490AbhFYJ4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229940AbhFYJ4d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 05:56:33 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10165C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:54:12 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id w21so18379601qkb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:54:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5ysOTdnWB+3PCxVRgIJekXfDDaWu9A++3czkxH4rPKQ=;
+        b=qhApkcmL8RA1knZoI1WXcQEBOKedcnK9s46D+i4D4othZbJ4zY6NkWC4g2QZs7AttZ
+         0ANmpfp06zP6l/LSXS/W+2Lx8CZd40+uv1F7/kPHCGc8FKNsS5Jh7SQnPp5lJMYuMmsH
+         65An5AarVssHqDizqgDqdIEL89sM1M1n0CSk0CaVTlxg9q3w0e0QTs096yTWjYspsip/
+         DJONJwUJpjYBvPt8wch4HvWA4ekqvoPlZ/92BdPqiHdflOU1W2SbZTA7TLMTF1hTK6Yf
+         Tx9en6VaiAlNLVatdqjHM3WqxMbqTVJ0GDeVidYZyOM45l5801Jyqb3Td+IAfxL+EwdI
+         KOPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5ysOTdnWB+3PCxVRgIJekXfDDaWu9A++3czkxH4rPKQ=;
+        b=XJB4HUvUcp47/883YB1FG1/1IZNdBRnmD44ROd9rZhD8VHKojwhSSt1J65EXHdr03x
+         HLKY4IzjFjnuDvzDuhtzFPaaKpvDRusHxA9qRyygfj3qXNabaTFD4O2OYiCkxA1LZEi2
+         WnGPP7CmlJq0tblROXnhyO69Cz9x0rEXBI//r+L1742Qwyhj8btfK7Lb6I7FBVHK2uaq
+         Ylle5CpLGD6/xa/xIsTCaUd1x/cI3/PjydhAsPo/lvywM3MOT36nYLFr7zenSzAlkz8g
+         PhSGSOu/2aMOUNZ0Dn0IfkEgMh5AOMYFH2CNg/nkk6GFcacq2ez6EXvB5CYNZ1t8OYSr
+         f26A==
+X-Gm-Message-State: AOAM5318t/s62/nP+Cs9AdSnHVgkOY6fXyQPKfWa4/BtgMEb+V72DowJ
+        3L/k5tkn6DAePsxf4lMV7NmVlxTwjSSlIxfekBc1yiSZc7c=
+X-Google-Smtp-Source: ABdhPJyVl8ZdxXr8z7xkfs2ag+GwdcePtI6ZoyNQcCfAV2qdGq0di2N35Dj6mVVFN3tkT+fmPId/mr5nmtTetOlcWmI=
+X-Received: by 2002:a37:8081:: with SMTP id b123mr10671108qkd.231.1624614850950;
+ Fri, 25 Jun 2021 02:54:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/_bBY5QRfKm3oFvRtoxV/BXN";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <000000000000e61e2105c58fea48@google.com> <20210625085140.1735-1-hdanton@sina.com>
+ <CACT4Y+YzgaZjLCOjvhcDC5YRjjF2OBp1XE-vS5+AZOmwmneg0Q@mail.gmail.com> <20210625094638.1791-1-hdanton@sina.com>
+In-Reply-To: <20210625094638.1791-1-hdanton@sina.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 25 Jun 2021 11:53:59 +0200
+Message-ID: <CACT4Y+amrcRo=1KuKHoN7L6JoCH0Bakt5dveZt7iZDhqpSu4nA@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in v4l2_ioctl (2)
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     syzbot <syzbot+19c5a4b75931e8d63aab@syzkaller.appspotmail.com>,
+        ezequiel@collabora.com, hverkuil-cisco@xs4all.nl,
+        lijian@yulong.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, mchehab@kernel.org,
+        sakari.ailus@linux.intel.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/_bBY5QRfKm3oFvRtoxV/BXN
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jun 25, 2021 at 11:46 AM Hillf Danton <hdanton@sina.com> wrote:
+>
+> On Fri, 25 Jun 2021 11:08:57 +0200 Dmitry Vyukov wrote:
+> >On Fri, Jun 25, 2021 at 10:52 AM Hillf Danton wrote:
+> >>
+> >> Given the uaf in the ioctl path, open count is needed and should be
+> >> maintained by stk and is implemented in the diff below with mutex - it
+> >> is locked at file open time, released at file release time and aquired
+> >> at disconnect time.
+> >>
+> >> This can be a quick fix to the uaf, though, lights on why the video_get(vdev)
+> >> in v4l2_open() fails to prevent stk camera from going home too early are
+> >> welcome. Is it the fault on the driver side without an eye on open count?
+> >>
+> >> +++ x/drivers/media/usb/stkwebcam/stk-webcam.c
+> >> @@ -624,8 +624,10 @@ static int v4l_stk_open(struct file *fp)
+> >>                 dev->first_init = 0;
+> >>
+> >>         err = v4l2_fh_open(fp);
+> >> -       if (!err)
+> >> +       if (!err) {
+> >>                 usb_autopm_get_interface(dev->interface);
+> >> +               mutex_trylock(&dev->free_mutex);
+> >
+> >I haven't read all of it, but doing mutex_trylock w/o checking the
+> >return value looks very fishy. Can it ever be the right thing to
+> >do?... E.g. the next line we unconditionally do mutex_unlock, are we
+> >potentially unlocking a non-locked mutex?
+>
+> I am having difficulty understanding your point until I see next line...
 
-Hi all,
+Right, the next line unlocks a different mutex, so ignore the part
+about the next line.
 
-After merging the kunit-fixes tree, today's linux-next build (powerpc
-allyesconfig) failed like this:
+But I am still confused about the intention of trylock w/o using the
+return value. I fail to imagine any scenarios where it's the right
+thing to do.
 
-lib/kunit/executor.c:26:1: error: expected identifier or '(' before '+' tok=
-en
-   26 | +kunit_filter_subsuite(struct kunit_suite * const * const subsuite,
-      | ^
-lib/kunit/executor.c: At top level:
-lib/kunit/executor.c:140:10: fatal error: executor_test.c: No such file or =
-directory
-  140 | #include "executor_test.c"
-      |          ^~~~~~~~~~~~~~~~~
 
-Caused by commit
+> we have the same habit in regard to replying mails that deliver fix out
+> of our boxes.
+>
+> What is your local time now? Wakeup without downing a pint of black tea?
+> Or still working in the late night?
 
-  c9d80ffc5a0a ("kunit: add unit test for filtering suites by names")
+It's 11:53am, so I am properly caffeinated already :)
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/_bBY5QRfKm3oFvRtoxV/BXN
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDVp2AACgkQAVBC80lX
-0GzTnwf7B2OUW9LvXbFpX13iUUYzS8Wmt64qtMPqO3thh0OyUriux4mzfZpHyO9b
-ZRPMqK0NuLvO6O6fHB4Q+FTcmhA+X76i3jAAgFYPZHZDoZYYUBFcCaXMQ2v+6802
-AYJFtA6U58bqVY5GCTFj+vSkCCNMFIN4f8DmXZMkKYMGk2Bez+DRnZo1Uxh5VYtA
-IadOJhLzSBETAh8uwBuTqX7TTxJIdyBbY0FTmkCrPvOc/N5auGmKRNFZk1swQTpP
-yACfMLcbpMPX8gub2sVwmaLDM3LdvECTIee3WXgARX/VIZYnbeJuk2F4eCK3A55C
-5T/vn39z53F7qV2IzRCqIztE0hJ3Fw==
-=1hOx
------END PGP SIGNATURE-----
-
---Sig_/_bBY5QRfKm3oFvRtoxV/BXN--
+> Thanks for taking a look at it.
+>
+> Hillf
+> >
+> >
+> >> +       }
+> >>         mutex_unlock(&dev->lock);
+> >>         return err;
+> >>  }
+> >> @@ -633,6 +635,7 @@ static int v4l_stk_open(struct file *fp)
+> >>  static int v4l_stk_release(struct file *fp)
+> >>  {
+> >>         struct stk_camera *dev = video_drvdata(fp);
+> >> +       int rc;
+> >>
+> >>         mutex_lock(&dev->lock);
+> >>         if (dev->owner == fp) {
+> >> @@ -645,7 +648,9 @@ static int v4l_stk_release(struct file *
+> >>
+> >>         usb_autopm_put_interface(dev->interface);
+> >>         mutex_unlock(&dev->lock);
+> >> -       return v4l2_fh_release(fp);
+> >> +       rc = v4l2_fh_release(fp);
+> >> +       mutex_unlock(&dev->free_mutex);
+> >> +       return rc;
+> >>  }
+> >>
+> >>  static ssize_t stk_read(struct file *fp, char __user *buf,
+> >> @@ -1306,6 +1311,7 @@ static int stk_camera_probe(struct usb_i
+> >>
+> >>         spin_lock_init(&dev->spinlock);
+> >>         mutex_init(&dev->lock);
+> >> +       mutex_init(&dev->free_mutex);
+> >>         init_waitqueue_head(&dev->wait_frame);
+> >>         dev->first_init = 1; /* webcam LED management */
+> >>
+> >> @@ -1385,6 +1391,8 @@ static void stk_camera_disconnect(struct
+> >>         video_unregister_device(&dev->vdev);
+> >>         v4l2_ctrl_handler_free(&dev->hdl);
+> >>         v4l2_device_unregister(&dev->v4l2_dev);
+> >> +       mutex_lock(&dev->free_mutex);
+> >> +       mutex_unlock(&dev->free_mutex);
+> >>         kfree(dev);
+> >>  }
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/20210625094638.1791-1-hdanton%40sina.com.
