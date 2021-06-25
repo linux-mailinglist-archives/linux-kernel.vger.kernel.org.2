@@ -2,73 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C933B459E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B783B45BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbhFYOe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:34:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57400 "EHLO mail.kernel.org"
+        id S231742AbhFYOjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:39:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229958AbhFYOe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:34:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6DCB61953;
-        Fri, 25 Jun 2021 14:32:36 +0000 (UTC)
+        id S229782AbhFYOjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 10:39:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAAD86195F;
+        Fri, 25 Jun 2021 14:36:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624631556;
-        bh=2Rsr+frvlcCR/IKRspsnz6sq84iOA0m+JQ4nu1bYRWY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=JFEbQu3OYlq7C7dwQ8IB+5DV/KhwM33GLo/pQSDGvu69txLQYrnZWwANbYWJ002R+
-         0nk7eSMXPs+nDjIVwzqAMvV8Os6cy99lHC0D9QG6JZyJI1w5iE+WCoMpgxTImv4RHH
-         FlmXeTju1AUiQ87JOtSNEfio7CmstAtjC23VHFzP0jDWVZGcOlHJ/CS4w9ViC8CZs9
-         86rCNNOqeHhULLa1ak4Nb+2GX8qnfiFZlz/VvcQjr7w2XAaO+oQS9Cw+0ojazRbMMt
-         W1BLmXGbTStGPUJA9iHlZ2kFXbHpJdse1vwiGCwCKEW2LT6goSl07skkmVTPafRRy5
-         rrcRgt1Mu/G6A==
-Date:   Fri, 25 Jun 2021 09:32:35 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        rfi@lists.rocketboards.org, Jingoo Han <jingoohan1@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
- clocks gated
-Message-ID: <20210625143235.GA3624355@bjorn-Precision-5520>
+        s=k20201202; t=1624631817;
+        bh=x4F6s4pMzEp3ZbRURx1AquHX+ONtsSBHXaOwkV+FOi4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ZTtFjp+HxQX+CAvlZhTJTrRvkGf+tza6yZ1zVxif1Un1aP9z0xvjAvs6mzuOCGOlO
+         Iim0J9nRCa+NWmqizEZtK/WTYnQlYJL0ab20YzNLIRXi/1aJ1dSbA2NHSHzRWrT0cD
+         XLd5LUWuyHOFHKP97RouT9KP36Q+CjUtRToTuqeZIHXJ6SUZtdhb/YFDu24pkfM2Il
+         JMjpfvh15S82RqGEDas9BHlryGRZBMUpzN7G2519D3zsCVEeYMyAMI/uANO1SWFmzN
+         LfXuDt6MtNe+xhvtVFsaTdjsMpB6XosJpacT7u2lT1M5GZDxw/JbCNttLyhhwkTTeg
+         dsuwJPvs3pujQ==
+Received: by pali.im (Postfix)
+        id 46A5D60E; Fri, 25 Jun 2021 16:36:54 +0200 (CEST)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2 00/11] serial: mvebu-uart: Fixes and new support for higher baudrates
+Date:   Fri, 25 Jun 2021 16:36:06 +0200
+Message-Id: <20210625143617.12826-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210624224909.6350-1-pali@kernel.org>
+References: <20210624224909.6350-1-pali@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5bee3702-595b-f57b-f962-28644b7e646f@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 09:09:36AM +0200, Javier Martinez Canillas wrote:
-> On 6/25/21 12:40 AM, Bjorn Helgaas wrote:
+This patch series fixes mvebu-uart driver used on Marvell Armada 37xx
+boards and add support for baudrates higher than 230400.
 
-> > I think this is also an issue with the following other drivers.  They all
-> > set the handler to something that uses an IRQ domain before they
-> > actually initialize the domain:
-> 
-> Yes, I agreed with your assessment and also noticed that others drivers have
-> similar issues. I just don't have any of those platforms to try to reproduce
-> the bugs and test a fix.
+In v2 was added patch with DIV_U64_ROUND_CLOSEST helper and changed
+patch "implement UART clock driver for configuring UART base clock" to
+fix compile errors on 32-bit archs, including usage of new math helper.
 
-Even if you don't have other platforms for testing, I'm thrilled when
-folks point out issues with them and (given time and inclination) post
-patches for them.
+Pali Rohár (11):
+  serial: mvebu-uart: fix calculation of clock divisor
+  serial: mvebu-uart: do not allow changing baudrate when uartclk is not
+    available
+  serial: mvebu-uart: correctly calculate minimal possible baudrate
+  dt-bindings: mvebu-uart: fix documentation
+  arm64: dts: marvell: armada-37xx: Fix reg for standard variant of UART
+  serial: mvebu-uart: remove unused member nb from struct mvebu_uart
+  math64: New DIV_U64_ROUND_CLOSEST helper
+  serial: mvebu-uart: implement UART clock driver for configuring UART
+    base clock
+  dt-bindings: mvebu-uart: document DT bindings for
+    marvell,armada-3700-uart-clock
+  arm64: dts: marvell: armada-37xx: add device node for UART clock and
+    use it
+  serial: mvebu-uart: implement support for baudrates higher than 230400
 
-I'd much rather fix *all* instances of the problem than just one, even
-if we can't test them all.  Frequently driver maintainers will review
-and test patches for their hardware even if we can't.
+ .../bindings/clock/armada3700-uart-clock.txt  |  24 +
+ .../devicetree/bindings/serial/mvebu-uart.txt |  15 +-
+ .../arm64/boot/dts/marvell/armada-3720-db.dts |   4 +
+ .../dts/marvell/armada-3720-espressobin.dtsi  |   4 +
+ .../dts/marvell/armada-3720-turris-mox.dts    |   4 +
+ .../boot/dts/marvell/armada-3720-uDPU.dts     |   4 +
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi  |  17 +-
+ drivers/tty/serial/Kconfig                    |   1 +
+ drivers/tty/serial/mvebu-uart.c               | 605 +++++++++++++++++-
+ include/linux/math64.h                        |  13 +
+ 10 files changed, 661 insertions(+), 30 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/armada3700-uart-clock.txt
 
-Bjorn
+-- 
+2.20.1
+
