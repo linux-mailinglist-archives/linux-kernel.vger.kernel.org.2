@@ -2,235 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203053B40D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397A43B40D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231225AbhFYJwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:52:51 -0400
-Received: from m12-17.163.com ([220.181.12.17]:51592 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231153AbhFYJws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:52:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=qjjsf
-        gloB4/v4yj1HQPeRzBiJ9WcKqP2RzWYePynLac=; b=hf14gdLyBmRfc8LbWvWrb
-        00NxoZ9zzomWKYh90L71pTD8Z9vD77xRIJtH/kawAEDZjPAwFZaNlqp7E21PnSoU
-        ok1bipAazWZpJH3ATyAevDaOqQPoaUTtm0sWlYBYtUZDw2DnI8uBAm4VutA9Ryf6
-        de0958ssDQZvlvJ9H+FsVQ=
-Received: from localhost (unknown [218.17.89.111])
-        by smtp13 (Coremail) with SMTP id EcCowAD3ApOxptVganLw9Q--.18008S2;
-        Fri, 25 Jun 2021 17:49:39 +0800 (CST)
-Date:   Fri, 25 Jun 2021 17:49:37 +0800
-From:   Chunyou Tang <tangchunyou@163.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     tomeu.vizoso@collabora.com, airlied@linux.ie,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        alyssa.rosenzweig@collabora.com,
-        ChunyouTang <tangchunyou@icubecorp.cn>
-Subject: Re: [PATCH v2] drm/panfrost:report the full raw fault information
- instead
-Message-ID: <20210625174937.0000183f@163.com>
-In-Reply-To: <04bc1306-f8a3-2e3c-b55d-030d1448fad2@arm.com>
-References: <20210617062054.1864-1-tangchunyou@163.com>
-        <2dcbb36a-b550-4c9d-cff8-73ca4b5abb11@arm.com>
-        <20210619111852.00003e52@163.com>
-        <23f675e9-698d-840d-104f-33aa594dcb96@arm.com>
-        <20210622094000.00004f7e@163.com>
-        <04bc1306-f8a3-2e3c-b55d-030d1448fad2@arm.com>
-Organization: icube
-X-Mailer: Claws Mail 3.10.1 (GTK+ 2.16.6; i586-pc-mingw32msvc)
+        id S231151AbhFYJwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:52:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230010AbhFYJwn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 05:52:43 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73E9AC061574;
+        Fri, 25 Jun 2021 02:50:22 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id r3so1330443wmq.1;
+        Fri, 25 Jun 2021 02:50:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Tk63MWA3f9dFxhlNMaBiHIPiARPvGls3NNYaj8uPzuo=;
+        b=W617F5MNj8GzYcPPuxkiY6uO+pbEmBbGYxhQf2nmY2tGJ+1gJfy13cq1CmZ5veTYRP
+         0GoljXHBBkVbQQIQhK0+WEIYQnu2R/VFndkoh2FNbY+R3hkq0GYD1DMKNUiMIoRspDl2
+         UrcCgmu4K2qFvxULsTAiM/2jT7eWjWJFSa+vq//9HpSfgsOTS85VcsPBvdp/qYwYhx63
+         ulXN86huebx6FKiMUKlTsQiHAyRISYYzzOw2ovBSHo7pd2wTU8Y3BjkpJYl5goWAVmSY
+         O0zJqEFgkxMc6/Vzkfmq8dl4ITOme8NYNDPWAetORFclbvAZXYIIGjxbs4WOPNSPMe8d
+         NSvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Tk63MWA3f9dFxhlNMaBiHIPiARPvGls3NNYaj8uPzuo=;
+        b=FkfDucnpe11RD5iQhmkl5uVOHCvxkq7OGP8VF18nqvEKC8gjf5sGhwejUPbwoxfU4e
+         mj1r5Wak33t+3QTcexhH5T7iu1NFb7L+CtiZ83B4tt+RrjBfI6ev2NgKO0cNpldO4hq1
+         DiscU6jNiWYTa2ng+I3xF2TL2VCiIcqYOdKX8nyw1ieDvtuFNLT/3WlfhjhXVqEA6R/b
+         tI9V6ZuXcIhMpiQXBnAqJ+RHlWQ02wmGU5FMpLqzPTuOGxJUc2sl/epV43mYHi4hZJ9x
+         DIQGvfVW2d14bfhkxPihUolTQ3MZK+Kv2jJ3DMQoegA+0r4CriTZdZmN30zSOs1VpY8Z
+         A+7Q==
+X-Gm-Message-State: AOAM530A1xoxkSMKoySvzJr9UpFa/OoCcEeAz+i1mUnPD81oeezKvCFh
+        W+SW5MKnvX+itksXqtfl2rU=
+X-Google-Smtp-Source: ABdhPJzyh7ak7zZsEwpmdhaabinEz/GJVtk55QFnkR2sDdlizSiL5ByTNHy2rcUkfIhnc35D3MHWcA==
+X-Received: by 2002:a1c:a597:: with SMTP id o145mr9500498wme.53.1624614621082;
+        Fri, 25 Jun 2021 02:50:21 -0700 (PDT)
+Received: from cluster5 ([80.76.206.81])
+        by smtp.gmail.com with ESMTPSA id q19sm10803405wmc.44.2021.06.25.02.50.20
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Fri, 25 Jun 2021 02:50:20 -0700 (PDT)
+From:   Matthew Hagan <mnhagan88@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Matthew Hagan <mnhagan88@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v4 0/4] ARM: dts: NSP: add Meraki MX64/MX65 series
+Date:   Fri, 25 Jun 2021 10:49:47 +0100
+Message-Id: <20210625095000.3358973-1-mnhagan88@gmail.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=GB18030
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowAD3ApOxptVganLw9Q--.18008S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3Jw4UXrW3urW7trWUJw1fZwb_yoWxCr4fpr
-        yUGayakrWktry7twnF9w4DGFyYyw4UtFykWFnrCr15tFsFvF17W3yktFyjka4DXr1UCa12
-        vw4qy3yI9a4UZw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jNa9-UUUUU=
-X-Originating-IP: [218.17.89.111]
-X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbiHhe8UVSIvboW-QAAsU
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
-	Thinks for your reply.
-	When I only set the pte |= ARM_LPAE_PTE_SH_NS;there have no "GPU
-Fault",When I set the pte |= ARM_LPAE_PTE_SH_IS(or
-ARM_LPAE_PTE_SH_OS);there have "GPU Fault".I don't know how the pte
-effect this issue?
-	Can you give me some suggestions again?
+Changes from v2:
+ - Introduce boards to Makefile in same patch as the board dts is added
+   (Vladimir Oltean)
+ - Use alphabetical ordering for labels (Vladimir Oltean)
+ - Remove address-cells and size-cells in qca8337 switch nodes (Vladimir
+   Oltean)
+ - Remove "cpu" labels from switch nodes' CPU ports (Vladimir Oltean)
+ - Various LED fixes, utilising dt-bindings/leds/common.h and correctly
+   specifying LEDs in the form "led-N" and with the color/function/
+   function-enumerator properties.
+ - Fix PWM LEDs and corresponding pinctrl bindings. (Vladimir Oltean)
 
-Thinks.
+The following changes were submitted as a separate series:
+ - Introduce patches to disable QSPI by default and enable where used
+   (Vladimir Oltean)
+ - Move mdio@18032000 node from board related file to SoC (Vladimir
+   Oltean)
+ - In addition to above, relocate mdio-mux to bcm-nsp.dtsi and fix
+   the resulting usb3_phy issues
 
-Chunyou
+Changes from v3:
+ - Sort labels on mx64 a0 dts files into alphabetical order as well
+ - move include directives for input/input.h and leds/common.h to
+   bcm958625-mx6x-common.dtsi
+ - Whitespace fixes in bcm958625-mx6x-common.dtsi
+ - rename "senao_nvram" partition to "nvram"
 
-于 Thu, 24 Jun 2021 14:22:04 +0100
-Steven Price <steven.price@arm.com> 写道:
+Matthew Hagan (4):
+  ARM: dts: NSP: Add common bindings for MX64/MX65
+  ARM: dts: NSP: Add DT files for Meraki MX64 series
+  ARM: dts: NSP: Add DT files for Meraki MX65 series
+  dt-bindings: arm: bcm: NSP: add Meraki MX64/MX65
 
-> On 22/06/2021 02:40, Chunyou Tang wrote:
-> > Hi Steve,
-> > 	I will send a new patch with suitable subject/commit
-> > message. But I send a V3 or a new patch?
-> 
-> Send a V3 - it is a new version of this patch.
-> 
-> > 	I met a bug about the GPU,I have no idea about how to fix
-> > it, If you can give me some suggestion,it is perfect.
-> > 
-> > You can see such kernel log:
-> > 
-> > Jun 20 10:20:13 icube kernel: [  774.566760] mvp_gpu 0000:05:00.0:
-> > GPU Fault 0x00000088 (SHAREABILITY_FAULT) at 0x000000000310fd00 Jun
-> > 20 10:20:13 icube kernel: [  774.566764] mvp_gpu 0000:05:00.0:
-> > There were multiple GPU faults - some have not been reported Jun 20
-> > 10:20:13 icube kernel: [  774.667542] mvp_gpu 0000:05:00.0:
-> > AS_ACTIVE bit stuck Jun 20 10:20:13 icube kernel: [  774.767900]
-> > mvp_gpu 0000:05:00.0: AS_ACTIVE bit stuck Jun 20 10:20:13 icube
-> > kernel: [  774.868546] mvp_gpu 0000:05:00.0: AS_ACTIVE bit stuck
-> > Jun 20 10:20:13 icube kernel: [  774.968910] mvp_gpu 0000:05:00.0:
-> > AS_ACTIVE bit stuck Jun 20 10:20:13 icube kernel: [  775.069251]
-> > mvp_gpu 0000:05:00.0: AS_ACTIVE bit stuck Jun 20 10:20:22 icube
-> > kernel: [  783.693971] mvp_gpu 0000:05:00.0: gpu sched timeout,
-> > js=1, config=0x7300, status=0x8, head=0x362c900, tail=0x362c100,
-> > sched_job=000000003252fb84
-> > 
-> > In
-> > https://lore.kernel.org/dri-devel/20200510165538.19720-1-peron.clem@gmail.com/
-> > there had a same bug like mine,and I found you at the mail list,I
-> > don't know how it fixed?
-> 
-> The GPU_SHAREABILITY_FAULT error means that a cache line has been
-> accessed both as shareable and non-shareable and therefore coherency
-> cannot be guaranteed. Although the "multiple GPU faults" means that
-> this may not be the underlying cause.
-> 
-> The fact that your dmesg log has PCI style identifiers
-> ("0000:05:00.0") suggests this is an unusual platform - I've not
-> previously been aware of a Mali device behind PCI. Is this device
-> working with the kbase/DDK proprietary driver? It would be worth
-> looking at the kbase kernel code for the platform to see if there is
-> anything special done for the platform.
-> 
-> From the dmesg logs all I can really tell is that the GPU seems
-> unhappy about the memory system.
-> 
-> Steve
-> 
-> > I need your help!
-> > 
-> > thinks very much!
-> > 
-> > Chunyou
-> > 
-> > 于 Mon, 21 Jun 2021 11:45:20 +0100
-> > Steven Price <steven.price@arm.com> 写道:
-> > 
-> >> On 19/06/2021 04:18, Chunyou Tang wrote:
-> >>> Hi Steve,
-> >>> 	1,Now I know how to write the subject
-> >>> 	2,the low 8 bits is the exception type in spec.
-> >>>
-> >>> and you can see prnfrost_exception_name()
-> >>>
-> >>> switch (exception_code) {
-> >>>                 /* Non-Fault Status code */
-> >>> case 0x00: return "NOT_STARTED/IDLE/OK";
-> >>> case 0x01: return "DONE";
-> >>> case 0x02: return "INTERRUPTED";
-> >>> case 0x03: return "STOPPED";
-> >>> case 0x04: return "TERMINATED";
-> >>> case 0x08: return "ACTIVE";
-> >>> ........
-> >>> ........
-> >>> case 0xD8: return "ACCESS_FLAG";
-> >>> case 0xD9 ... 0xDF: return "ACCESS_FLAG";
-> >>> case 0xE0 ... 0xE7: return "ADDRESS_SIZE_FAULT";
-> >>> case 0xE8 ... 0xEF: return "MEMORY_ATTRIBUTES_FAULT";
-> >>> }
-> >>> return "UNKNOWN";
-> >>> }
-> >>>
-> >>> the exception_code in case is only 8 bits,so if fault_status
-> >>> in panfrost_gpu_irq_handler() don't & 0xFF,it can't get correct
-> >>> exception reason,it will be always UNKNOWN.
-> >>
-> >> Yes, I'm happy with the change - I just need a patch that I can
-> >> apply. At the moment this patch only changes the first '0x%08x'
-> >> output rather than the call to panfrost_exception_name() as well.
-> >> So we just need a patch which does:
-> >>
-> >> - fault_status & 0xFF, panfrost_exception_name(pfdev,
-> >> fault_status),
-> >> + fault_status, panfrost_exception_name(pfdev, fault_status &
-> >> 0xFF),
-> >>
-> >> along with a suitable subject/commit message describing the
-> >> change. If you can send me that I can apply it.
-> >>
-> >> Thanks,
-> >>
-> >> Steve
-> >>
-> >> PS. Sorry for going round in circles here - I'm trying to help you
-> >> get setup so you'll be able to contribute patches easily in
-> >> future. An important part of that is ensuring you can send a
-> >> properly formatted patch to the list.
-> >>
-> >> PPS. I'm still not receiving your emails directly. I don't think
-> >> it's a problem at my end because I'm receiving other emails, but
-> >> if you can somehow fix the problem you're likely to receive a
-> >> faster response.
-> >>
-> >>> 于 Fri, 18 Jun 2021 13:43:24 +0100
-> >>> Steven Price <steven.price@arm.com> 写道:
-> >>>
-> >>>> On 17/06/2021 07:20, ChunyouTang wrote:
-> >>>>> From: ChunyouTang <tangchunyou@icubecorp.cn>
-> >>>>>
-> >>>>> of the low 8 bits.
-> >>>>
-> >>>> Please don't split the subject like this. The first line of the
-> >>>> commit should be a (very short) summary of the patch. Then a
-> >>>> blank line and then a longer description of what the purpose of
-> >>>> the patch is and why it's needed.
-> >>>>
-> >>>> Also you previously had this as part of a series (the first part
-> >>>> adding the "& 0xFF" in the panfrost_exception_name() call). I'm
-> >>>> not sure we need two patches for the single line, but as it
-> >>>> stands this patch doesn't apply.
-> >>>>
-> >>>> Also I'm still not receiving any emails from you directly (only
-> >>>> via the list), so it's possible I might have missed something
-> >>>> you sent.
-> >>>>
-> >>>> Steve
-> >>>>
-> >>>>>
-> >>>>> Signed-off-by: ChunyouTang <tangchunyou@icubecorp.cn>
-> >>>>> ---
-> >>>>>  drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
-> >>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>>>
-> >>>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> >>>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c index
-> >>>>> 1fffb6a0b24f..d2d287bbf4e7 100644 ---
-> >>>>> a/drivers/gpu/drm/panfrost/panfrost_gpu.c +++
-> >>>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c @@ -33,7 +33,7 @@
-> >>>>> static irqreturn_t panfrost_gpu_irq_handler(int irq, void
-> >>>>> *data) address |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO); 
-> >>>>>  		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
-> >>>>> 0x%016llx\n",
-> >>>>> -			 fault_status & 0xFF,
-> >>>>> panfrost_exception_name(pfdev, fault_status & 0xFF),
-> >>>>> +			 fault_status,
-> >>>>> panfrost_exception_name(pfdev, fault_status & 0xFF), address);
-> >>>>>  
-> >>>>>  		if (state & GPU_IRQ_MULTIPLE_FAULT)
-> >>>>>
-> >>>
-> >>>
-> > 
-> > 
+ .../devicetree/bindings/arm/bcm/brcm,nsp.yaml |   6 +
+ arch/arm/boot/dts/Makefile                    |   6 +
+ arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi | 279 ++++++++++++++++++
+ .../boot/dts/bcm958625-meraki-kingpin.dtsi    | 163 ++++++++++
+ .../arm/boot/dts/bcm958625-meraki-mx64-a0.dts |  45 +++
+ arch/arm/boot/dts/bcm958625-meraki-mx64.dts   |  15 +
+ .../boot/dts/bcm958625-meraki-mx64w-a0.dts    |  55 ++++
+ arch/arm/boot/dts/bcm958625-meraki-mx64w.dts  |  23 ++
+ arch/arm/boot/dts/bcm958625-meraki-mx65.dts   |  15 +
+ arch/arm/boot/dts/bcm958625-meraki-mx65w.dts  |  23 ++
+ .../dts/bcm958625-meraki-mx6x-common.dtsi     | 143 +++++++++
+ 11 files changed, 773 insertions(+)
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-kingpin.dtsi
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx64-a0.dts
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx64.dts
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx64w-a0.dts
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx64w.dts
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx65.dts
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx65w.dts
+ create mode 100644 arch/arm/boot/dts/bcm958625-meraki-mx6x-common.dtsi
 
+-- 
+2.26.3
 
