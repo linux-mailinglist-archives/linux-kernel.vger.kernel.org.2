@@ -2,120 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DCB3B3C5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC643B3C5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233137AbhFYFvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 01:51:40 -0400
-Received: from mail-mw2nam12on2062.outbound.protection.outlook.com ([40.107.244.62]:41377
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230097AbhFYFvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 01:51:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LwAac1KT+UlK2EEnmHss44KsQssWgrv76oc2tA4ERvKapzyueMGDTQLr3UUXRIWzi+9g4qMvaskCwBekU3GosdbmWIW2Xr/qG+4UQcecf3XBgZIVwhBu+gi6Qf3f6xImuYCuI5nZyTc8fBiOgpHzbRJVQZIzJCOYFYAGjz/wgUoJvduvWBczYmNmknQrgmmAmFgkO2zf1yTLvf58VVHXl/l5TeV9T+GOOSct9T1br1SOkC04NwujVS6KS9JKG2l7Bc8+NhIQmvNCWouHK0hKeoApKCyefEPvTDGX4yZTK68axa/htJG014CjrJPA25eucUJvEr8+tIsG68f/WvznTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=glQBqfFn5e0hJMren1onhreOyLiWZ38qVt3L81oo7RQ=;
- b=Ou4G8puOqZDUEfyyYSQDrIrNq8UjVKj+v0LWFyUPxha64vTNqbjUuj/16D7CGBog5zjTGyUh3H6Fzo7tUPo1HfRWTmVfAlG0Dy4V4ohWtxyy5qLuo0gZjIj0IJW20noREI6pAsTamKg7lsL5u+4I2xlxiMTkS1Nb2cqTwJW0IHTY5t4FqZJwvI3lh5af6IaIW01We16XWHW4iq78nlGs0kEOyDLZQu5aNUf8NpdrIKo7SWw0NiP/IlgBCx1h937IXrgCV0dbN5DvL06A3pBhHZc/qs6EO2GO12r8h0hEkwJLwlksqT0xEGd6j+vGW6HiJn/4YCOAt+AmKqZVw4TvGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=glQBqfFn5e0hJMren1onhreOyLiWZ38qVt3L81oo7RQ=;
- b=WIzh7tAJ83QEfwg64vjc6ZrOnbaCmghyEtT4+nFQqwUow0Ic3ifsTGEa0KPsYF+/1SJBBULZ9nO2yzrcBHUVg6RPkVPeruZgXdWJy6PXSer4OiZ/k84ubaNLY3Y2raemh63GEmSAYflliGnbRkTmzliK1YhLk4sS/kseB7MVMOs7Ee+8qkWunCoQDcViPDOEgrTocVXJvtJXacPyyXdfiXwsC+O2SKlqXaRybMNut/RSzy9GeRNJojzSXZEliqZrhHqAXckFFisUygimaPMj08H1/rsdPs0dN2u2ZWK9R8Mywa7BXZMjYD5KjDt2eE09NqyE22u6a6H/UPzFNyAEww==
-Received: from MW4P223CA0004.NAMP223.PROD.OUTLOOK.COM (2603:10b6:303:80::9) by
- DM8PR12MB5429.namprd12.prod.outlook.com (2603:10b6:8:29::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4264.20; Fri, 25 Jun 2021 05:49:16 +0000
-Received: from CO1NAM11FT050.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:80:cafe::e7) by MW4P223CA0004.outlook.office365.com
- (2603:10b6:303:80::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend
- Transport; Fri, 25 Jun 2021 05:49:16 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT050.mail.protection.outlook.com (10.13.174.79) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4264.18 via Frontend Transport; Fri, 25 Jun 2021 05:49:15 +0000
-Received: from [172.27.8.104] (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 25 Jun
- 2021 05:49:13 +0000
-Subject: Re: [PATCH 1/1] RDMA/cma: Fix rdma_resolve_route memory leak
-To:     Gerd Rausch <gerd.rausch@oracle.com>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-References: <f6662b7b-bdb7-2706-1e12-47c61d3474b6@oracle.com>
-From:   Mark Zhang <markzhang@nvidia.com>
-Message-ID: <27a35a75-813d-ef1e-c9ca-d4ecbc5a95d2@nvidia.com>
-Date:   Fri, 25 Jun 2021 13:49:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233142AbhFYFwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 01:52:50 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7082 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230097AbhFYFwt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 01:52:49 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15P5j6eH118498;
+        Fri, 25 Jun 2021 01:50:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=HxbJJArdxQqEJfa3XAkD4jiouEa0fm+K5xZwxjTLTTo=;
+ b=Bw/p3P0n5m5WCpOnT0mtTDEiD2HS5iIldUE81bp6zIJySph70ciyJT7MvexR/IuFZpds
+ 7e/TW30J8jM+i5EkgxXfv8Id9x2jqZ6wWOydiF5wO73LUU9GHPHm2R1PHskwcErtTNLl
+ Dqquu7NscS7IFwjkTMAKWi/kvELaBsz5nhlltoLIdJKT236nx1Jlr70Io3cSyhHW8wYf
+ q5yPsVtTVhhyGawja0vgvSClFKSt6RngJ19XjsrKpjQI2HMrEXLMz6CF9VeTfqz1adW9
+ UsSgogEPopaIW0Sqy3SyuHr24UN33KkIY3RiCfpcqgElHiyM2F+qcPafke+0mSXtB5iW eg== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39d98s84my-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Jun 2021 01:50:18 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15P5oFD1015646;
+        Fri, 25 Jun 2021 05:50:15 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06fra.de.ibm.com with ESMTP id 3997uhhkaf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Jun 2021 05:50:15 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15P5oD4M32375074
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Jun 2021 05:50:13 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1FBBA11C050;
+        Fri, 25 Jun 2021 05:50:13 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 96E7D11C064;
+        Fri, 25 Jun 2021 05:50:11 +0000 (GMT)
+Received: from in.ibm.com (unknown [9.85.119.88])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri, 25 Jun 2021 05:50:11 +0000 (GMT)
+Date:   Fri, 25 Jun 2021 11:20:09 +0530
+From:   Bharata B Rao <bharata@linux.ibm.com>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     linux-next@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: PowerPC guest getting "BUG: scheduling while atomic" on
+ linux-next-20210623 during secondary CPUs bringup
+Message-ID: <YNVukVCgPjCksagq@in.ibm.com>
+Reply-To: bharata@linux.ibm.com
+References: <YNSq3UQTjm6HWELA@in.ibm.com>
+ <20210625054608.fmwt7lxuhp7inkjx@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <f6662b7b-bdb7-2706-1e12-47c61d3474b6@oracle.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8f7d3e5e-fb4d-4335-62b9-08d9379cf7a7
-X-MS-TrafficTypeDiagnostic: DM8PR12MB5429:
-X-Microsoft-Antispam-PRVS: <DM8PR12MB5429B8E6524E1D3094CA44CAC7069@DM8PR12MB5429.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:820;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2zlCxEhiezojSA+8nfXEg0kFWo5QrgDL8HefavOTPuJgFeSYICpb8d9g3QWVpTV0azYOI76MKizWKHTudd66XnU9aZbK9NZLgg/2gibbas9mwbn7b3ngQjJfEGZY7xh1lE5lZPrAvMP0u7lFWf1vYvW478xe1eGsYYX7F4tzDWc+8HPKaTyZCe3W3YpEHdzIrBaz29UxDJtbsFMM7piAD0405m/YWIiQurVS4QPttPo0K1mn5YwkzLTADlji3BnckkDW0ARW4MOCzCfD9mB3uiwPjDKAii6+qUEvMMo3a7M3lZ1e0HydD8G+o/6x9syTyMAs+ejoba/Y8x+z6R2qJS09vEFXq9ybwCJvwHuxch5VYwTDyzWYCrZ7qLqtgCnVHdZC8eWFwYdUlTb/IOay4xPeev+1lSWPs7R6qMMKF9ko8U/kQizRj1udz53dPO9Rg5n4TwQhYlapzLJ8TOYcDhVg604l13yUp+dTVvtsa1+SKX0iXMqJaYdz3VkJqXH3etjYxShb9jYgWxFf8YlszYX7/qjEk9i1HH0jUb9mYkp0qZaWxnIbMBQ6hgG654dbkrkC/dH1t2JH5wPn4Xe2zTkIYXo4CJbheUQGchvMfLfsztaaQouPK8uauzewHdRuR3lprBCKpbSZCpnbagQ33Zrf1qje/ogwkKoXUFXzxq4E4z9tLIpor9bDtPismYvx
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(39860400002)(376002)(46966006)(36840700001)(2616005)(16576012)(47076005)(7636003)(82740400003)(316002)(426003)(356005)(336012)(478600001)(36756003)(4744005)(5660300002)(36860700001)(86362001)(26005)(8936002)(82310400003)(31686004)(110136005)(31696002)(8676002)(70586007)(53546011)(186003)(70206006)(83380400001)(16526019)(2906002)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jun 2021 05:49:15.7584
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f7d3e5e-fb4d-4335-62b9-08d9379cf7a7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT050.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5429
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210625054608.fmwt7lxuhp7inkjx@linux.vnet.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: fego09511Jl2BHF_EjJlLB_hSs1T0pDr
+X-Proofpoint-GUID: fego09511Jl2BHF_EjJlLB_hSs1T0pDr
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-25_01:2021-06-24,2021-06-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ spamscore=0 malwarescore=0 clxscore=1011 lowpriorityscore=0 suspectscore=0
+ bulkscore=0 adultscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106250030
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/25/2021 2:55 AM, Gerd Rausch wrote:
-> Fix a memory leak when "rmda_resolve_route" is called
-> more than once on the same "rdma_cm_id".
+On Fri, Jun 25, 2021 at 11:16:08AM +0530, Srikar Dronamraju wrote:
+> * Bharata B Rao <bharata@linux.ibm.com> [2021-06-24 21:25:09]:
 > 
-> Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
-> ---
->   drivers/infiniband/core/cma.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+> > A PowerPC KVM guest gets the following BUG message when booting
+> > linux-next-20210623:
+> > 
+> > smp: Bringing up secondary CPUs ...
+> > BUG: scheduling while atomic: swapper/1/0/0x00000000
+> > no locks held by swapper/1/0.
+> > Modules linked in:
+> > CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.13.0-rc7-next-20210623
+> > Call Trace:
+> > [c00000000ae5bc20] [c000000000badc64] dump_stack_lvl+0x98/0xe0 (unreliable)
+> > [c00000000ae5bc60] [c000000000210200] __schedule_bug+0xb0/0xe0
+> > [c00000000ae5bcd0] [c000000001609e28] __schedule+0x1788/0x1c70
+> > [c00000000ae5be20] [c00000000160a8cc] schedule_idle+0x3c/0x70
+> > [c00000000ae5be50] [c00000000022984c] do_idle+0x2bc/0x420
+> > [c00000000ae5bf00] [c000000000229d88] cpu_startup_entry+0x38/0x40
+> > [c00000000ae5bf30] [c0000000000666c0] start_secondary+0x290/0x2a0
+> > [c00000000ae5bf90] [c00000000000be54] start_secondary_prolog+0x10/0x14
+> > 
+> > <The above repeats for all the secondary CPUs>
+> > 
+> > smp: Brought up 2 nodes, 16 CPUs
+> > numa: Node 0 CPUs: 0-7
+> > numa: Node 1 CPUs: 8-15
+> > 
+> > This seems to have started from next-20210521 and isn't seen on
+> > next-20210511.
+> > 
 > 
-> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-> index ab148a696c0c..4a76d5b4163e 100644
-> --- a/drivers/infiniband/core/cma.c
-> +++ b/drivers/infiniband/core/cma.c
-> @@ -2819,7 +2819,8 @@ static int cma_resolve_ib_route(struct rdma_id_private *id_priv,
->   
->   	cma_init_resolve_route_work(work, id_priv);
->   
-> -	route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
-> +	if (!route->path_rec)
-> +		route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
->   	if (!route->path_rec) {
->   		ret = -ENOMEM;
->   		goto err1;
+> Bharata,
+> 
+> I think the regression is due to Commit f1a0a376ca0c ("sched/core:
+> Initialize the idle task with preemption disabled")
+> 
+> Can you please try with the above commit reverted?
 
-If route->path_rec does exist (meaning this is not the first time 
-called), then it would be freed if cma_query_ib_route() below is failed, 
-is it good?
+Yes, reverting that commit helps.
+
+Regards,
+Bharata.
