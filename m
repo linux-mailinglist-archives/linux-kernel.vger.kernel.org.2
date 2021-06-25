@@ -2,181 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0603B4108
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4FD3B4110
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbhFYKCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 06:02:06 -0400
-Received: from phobos.denx.de ([85.214.62.61]:53410 "EHLO phobos.denx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229902AbhFYKCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 06:02:05 -0400
-Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 30403829BE;
-        Fri, 25 Jun 2021 11:59:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1624615183;
-        bh=gdYanvGSzDRlcAUO0Yh0FR9zxuzSoEjpPYMgRTCkuzM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rROYKipvUS77ZhVzTbUUNl4HhKLxOEBEXuptOhgUBstC7UG4iZ8Kn+c/w2QSbhAHN
-         XoVOln/4jK5nbYOOUxsja/OUW2x6iXosolkm9k8QnsYh9z3vO+NLiFavz17DOhwqNZ
-         oNrS+YiO0FxFGRB96/OCgimwGYCSk9Oa4WljFILBAPZCdHVLo/MTfbg7L4mH+kVswx
-         R40OiLGz7+9FuvfqaN7XtoKDn5ay3ECFcmFErZQifKk2kqWi1F65KApHJhedteEnFl
-         LE4k+tV0C/OMSjAHMNFoYUwC4jduP+AKk+0kTO9RawYgWu/6m5r/1/63ZrCOBLuanq
-         x2nksAQ/LT/jw==
-Date:   Fri, 25 Jun 2021 11:59:35 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Einon <mark.einon@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/3] net: Provide switchdev driver for NXP's More Than IP
- L2 switch
-Message-ID: <20210625115935.132922ff@ktm>
-In-Reply-To: <YNSuvJsD0HSSshOJ@lunn.ch>
-References: <20210622144111.19647-1-lukma@denx.de>
-        <20210622144111.19647-3-lukma@denx.de>
-        <YNH7vS9FgvEhz2fZ@lunn.ch>
-        <20210623133704.334a84df@ktm>
-        <YNOTKl7ZKk8vhcMR@lunn.ch>
-        <20210624125304.36636a44@ktm>
-        <YNSJyf5vN4YuTUGb@lunn.ch>
-        <20210624163542.5b6d87ee@ktm>
-        <YNSuvJsD0HSSshOJ@lunn.ch>
-Organization: denx.de
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S231250AbhFYKEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 06:04:02 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:34331 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230072AbhFYKDz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 06:03:55 -0400
+Received: from mail-wm1-f44.google.com ([209.85.128.44]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MAwsT-1m7Oom25ft-00BOEN; Fri, 25 Jun 2021 12:01:33 +0200
+Received: by mail-wm1-f44.google.com with SMTP id j11-20020a05600c1c0bb02901e23d4c0977so7454231wms.0;
+        Fri, 25 Jun 2021 03:01:33 -0700 (PDT)
+X-Gm-Message-State: AOAM530fqcPGyhm5ElcwnuJ28aGPwk3gP2KIEDObl0U1wgVVYKTT/N0D
+        UysqdouorJcwylwU7qQui56OggFtQSD6fcFxQSo=
+X-Google-Smtp-Source: ABdhPJyRRakIybOAARLEqgqFsAKTsqLCItavkxySt7puA/r0GJ3aVYwMKoJP0QL2cw8hz9fbIr1BZHd9ZDHu2XJ9KFw=
+X-Received: by 2002:a1c:c90f:: with SMTP id f15mr9700348wmb.142.1624615293093;
+ Fri, 25 Jun 2021 03:01:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/HH17enIFFxd8w1TzOqPbMaA"; protocol="application/pgp-signature"
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+References: <20210625095000.3358973-1-mnhagan88@gmail.com> <20210625095000.3358973-3-mnhagan88@gmail.com>
+In-Reply-To: <20210625095000.3358973-3-mnhagan88@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 25 Jun 2021 11:59:08 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3NAOgBa1j+Zsm6FwSm2ux49rFcnTEYJJsmSF8TggRnYA@mail.gmail.com>
+Message-ID: <CAK8P3a3NAOgBa1j+Zsm6FwSm2ux49rFcnTEYJJsmSF8TggRnYA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/4] ARM: dts: NSP: Add DT files for Meraki MX64 series
+To:     Matthew Hagan <mnhagan88@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Olof Johansson <olof@lixom.net>, SoC Team <soc@kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:cPZZH1H8tLkJZhzYVyg54dlhPrzq22n2d6a2s0M2uflfJSYFDxj
+ 8NO4E2VzN4gP0vhm7WVIIx06T/iI44gy0cIldB0ENBNcx/BUkHGScDNXtM7f3pPiAZHrwC8
+ AXRThtPcrGn538z/EE+K7B7gVnbeZsTYRk2M7xzDiBHuaoGcp2ZkJZEDFGhmnrJstrr9s8q
+ U5rKXEvk5LkNOEkAt8olA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fdZn1ST4yvo=:43VghYItvo8WWSMEG/1RpZ
+ xifz/d9vVILF7xi7WX6uv3vbTXMQ6dYmKehEHVeeNu+gOhJbjBn9S9F/6hi/s5Ks0MqSjUNDZ
+ dfaoj/8JFnhKyOF6oa4obXkLcDK93EUUxy+MtJ4foFLR3MR8uBxKwlYpq5vvRriFd5+QP7mlG
+ +4hyAamO5VKqItVCCsvL5MnkrjR57tZn4COWaVFbyoAPpQTR52+nkBpFme75q+nLZWcK1EMtu
+ 79D0WrJRX80CgzYQTLymng5xPWv6yjguvIphcKUYQRrdudFlmF4yKCBCuGsCf1E0CgnquF6xW
+ 0jk6grm7UlA/F5o3oq+0K26bBvSUjusN0r750C599fyDMiZrwWsmJpANsWXTsXwnthmHcEWdY
+ ebiDt78AzV1q8G8k5alVVoYIb37FzUnQFcpIFY0T4nFyOancc3otpnaO39UDAG6kUI7yYA2pX
+ NrMm+XOS3oX4/Q650JZDbP9inf9G9VajQBGw7OPxuk2hmOG0JxC6RHcByJkspRSX/CChaNmjS
+ qFxjqps9FgQAmVrmQLWpmxLdykLFGLYb3GBd0elJnbyGP9BVG9q80rBsGsMZi2nUFTDogBtmw
+ Q1N+cWUqHibyHWhqbqWVpeAX03C9nLYzPpi59tXqrXX++Sbse+AZCZ1rILRSU3U1l8+lc441u
+ 9UcU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/HH17enIFFxd8w1TzOqPbMaA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jun 25, 2021 at 11:52 AM Matthew Hagan <mnhagan88@gmail.com> wrote:
+>
+> MX64 & MX64W Hardware info:
+>   - CPU: Broadcom BCM58625 Cortex A9 @ 1200Mhz
+>   - RAM: 2 GB (4 x 4Gb SK Hynix H5TC4G83CFR)
+>   - Storage: 1 GB (Micron MT29F8G08ABACA)
+>   - Networking: BCM58625 internal switch (5x 1GbE ports)
+>   - USB: 1x USB2.0
+>   - Serial: Internal header
+>   - WLAN(MX64W only): 2x Broadcom BCM43520KMLG on the PCI bus
+>
+> This patch adds the Meraki MX64 series-specific bindings. Since some
+> devices make use of the older A0 SoC, changes need to be made to
+> accommodate this case, including removal of coherency options and
+> modification to the secondary-boot-reg.
+>
+> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
 
-Hi Andrew,
+Removing the dma-coherent flags in the dts file seemed really odd until
+I read the text above. It would seem more logical to me to have a .dtsi file
+that has all the a0 revision specific changes, and include that from the
+dts file.
 
-> On Thu, Jun 24, 2021 at 04:35:42PM +0200, Lukasz Majewski wrote:
-> > Hi Andrew,
-> >  =20
-> > > > I'm not sure if the imx28 switch is similar to one from TI
-> > > > (cpsw-3g)
-> > > > - it looks to me that the bypass mode for both seems to be very
-> > > > different. For example, on NXP when switch is disabled we need
-> > > > to handle two DMA[01]. When it is enabled, only one is used. The
-> > > > approach with two DMAs is best handled with FEC driver
-> > > > instantiation.   =20
-> > >=20
-> > > I don't know if it applies to the FEC, but switches often have
-> > > registers which control which egress port an ingress port can send
-> > > packets to. So by default, you allow CPU to port0, CPU to port1,
-> > > but block between port0 to port1. This would give you two
-> > > independent interface, the switch enabled, and using one DMA.
-> > > When the bridge is configured, you simply allow port0 and
-> > > send/receive packets to/from port1. No change to the DMA setup,
-> > > etc. =20
-> >=20
-> > Please correct me if I misunderstood this concept - but it seems
-> > like you refer to the use case where the switch is enabled, and by
-> > changing it's "allowed internal port's" mapping it decides if
-> > frames are passed between engress ports (port1 and port2). =20
->=20
-> Correct.
->=20
->=20
-> > 	----------
-> > DMA0 ->	|P0    P1| -> ENET-MAC (PHY control) -> eth0 (lan1)
-> > 	|L2 SW	 |
-> > 	|      P2| -> ENET-MAC (PHY control) -> eth1 (lan2)
-> > 	----------
-> >=20
-> > DMA1 (not used)
-> >=20
-> > We can use this approach when we keep always enabled L2 switch.
-> >=20
-> > However now in FEC we use the "bypass" mode, where:
-> > DMA0 -> ENET-MAC (FEC instance driver 1) -> eth0
-> > DMA1 -> ENET-MAC (FEC instance driver 2) -> eth1
-> >=20
-> > And the "bypass" mode is the default one. =20
->=20
-> Which is not a problem, when you refactor the FEC into a library and a
-> driver, plus add a new switch driver. When the FEC loads, it uses
-> bypass mode, the switch disabled. When the new switch driver loads, it
-> always enables the switch, but disables communication between the two
-> ports until they both join the same bridge.
+On the other hand, the /chosen, /aliases and  /memory nodes that you have
+in the .dtsi file should probably get moved into the .dts files, as these tend
+to be board specific settings, even if the examples you have are all
+the same.
 
-Ok, the proposed idea would be to use FEC (refactored) on devices which
-are not equipped with the switch.
-
-On devices, which have this IP block (like vf610, imx287) we would use
-the driver with switch enabled and then in switch either bridge or
-separate the traffic?
-
->=20
-> But i doubt we are actually getting anywhere. You say you don't have
-> time to write a new driver.
-
-Yes, I believe that this would be a very time consuming task. Joakim
-also pointed out that the rewrite from NXP will not happen anytime soon.
-
-> I'm not convinced you can hack the FEC
-> like you are suggesting=20
-
-I do believe that I can just extend the L2 switch driver (fec_mtip.c
-file to be precise) to provide full blown L2 switch functionality
-without touching the legacy FEC more than in this patch set.
-
-Would you consider applying this patch series then?
-
-> and not end up in the mess the cpsw had,
-> before they wrote a new driver.
-
-I do see some conceptual differences between those two drivers.
-
->=20
->        Andrew
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/HH17enIFFxd8w1TzOqPbMaA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmDVqQcACgkQAR8vZIA0
-zr0u0Qf9HhUfM14c/5OoAaQ5tMLlAthPnr4oaFv+IzjgvQSUSzmsPeme/gZsj8Hq
-anDl1KWQ+leqH3iA7dmgWZz8uu5mYC3nNQ4GZYrK/5sV6kWBPlL/67chlf+WD/dv
-aj1hmrivLCAAt20WFB0GYQgUH/IKPLdpIMnwO+ztyj1bBx26CqMC+12B68Rgh51l
-fiZrL09UYiGlnvJG3Nt+1RzbHLumXClphxhQH8oRCBcVMWaTPJQqetyrnszDlCDK
-SnuBoEuc80ym8s0Nw19ruuZhitWPjz/tzdPoK2Ue0s39kOhV5OK4leaIMwvcqcDN
-gnb/ErF82xM6pij+8VHG/xuA1UNBCA==
-=4WKs
------END PGP SIGNATURE-----
-
---Sig_/HH17enIFFxd8w1TzOqPbMaA--
+       Arnd
