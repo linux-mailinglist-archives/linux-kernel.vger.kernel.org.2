@@ -2,119 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7853B3A5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 03:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83FBE3B3A63
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 03:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233035AbhFYBE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 21:04:59 -0400
-Received: from mail-ej1-f42.google.com ([209.85.218.42]:42820 "EHLO
-        mail-ej1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232996AbhFYBEw (ORCPT
+        id S233001AbhFYBJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 21:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232918AbhFYBJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 21:04:52 -0400
-Received: by mail-ej1-f42.google.com with SMTP id bg14so12382911ejb.9;
-        Thu, 24 Jun 2021 18:02:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PTl2a45oK7ererAoqlIPpBJuapGCJZ6anTugsk9TTSQ=;
-        b=hm5wTy3q6g0A2cHvPxRyPMBk9cnkqHfwIev5BnRaTkWNMTY9sZHTmKirIrIEwJ0Gm8
-         atrr1l5gcmQGbT35CBN06ZtptMGFRlVren+VP0hn13Nob258EDbouRMdqqWMPTIC6uZi
-         G0vlhubmn240wZnsJlSpId87tUgw9K5Ng1oDdvIefstxEuJRxZv6X9HN7tlcACKSGOnK
-         5T8zrULsGEvcbxyYXIRWCNX6+S7uKJJ69HqwdDkaGCZvaK1aRdazfkOWAFlym2Dl4sF/
-         +Ab7cFzCT/Nz9MqeGWxPtGkYmqWeudQK2Y35XUKiVMj4Lb6h5IlixoeAG0MbNibiJYqb
-         t62g==
-X-Gm-Message-State: AOAM5314HeSdM5lhAX1g6etMYYIcri50hZzDbMD3Ca3HILNKD9/KjYPC
-        m4vpvn2O49SgQux4JdmuMAkg/VZuVweb7Q==
-X-Google-Smtp-Source: ABdhPJxVCiXfkPACT3+y9E9wzhTSnrJLbSJnilSAXh81SgJREFTyL7yrttPSEAYBAPGeBAxl1Ro+MQ==
-X-Received: by 2002:a17:906:c1d0:: with SMTP id bw16mr8146696ejb.146.1624582950900;
-        Thu, 24 Jun 2021 18:02:30 -0700 (PDT)
-Received: from msft-t490s.home (host-95-251-17-240.retail.telecomitalia.it. [95.251.17.240])
-        by smtp.gmail.com with ESMTPSA id yc29sm1921909ejb.106.2021.06.24.18.02.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 18:02:30 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     linux-kernel@vger.kernel.org, Nick Kossifidis <mick@ics.forth.gr>,
-        Guo Ren <guoren@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Laight <David.Laight@aculab.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Drew Fustini <drew@beagleboard.org>
-Cc:     linux-arch@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH 3/3] lib/string: optimized memset
-Date:   Fri, 25 Jun 2021 03:02:00 +0200
-Message-Id: <20210625010200.362755-4-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210625010200.362755-1-mcroce@linux.microsoft.com>
-References: <20210625010200.362755-1-mcroce@linux.microsoft.com>
+        Thu, 24 Jun 2021 21:09:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07795C061574;
+        Thu, 24 Jun 2021 18:06:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=75x3o/LLpUmcnmMdiNuX/QqKwobp8pWOsJCf5zrhlJU=; b=V3NapWBDw5+ExN0SrnGlwzNJMp
+        FvRPSyqytvp2zXlNo/qeWnX0y+4G4m2/Be/1J5TXmb+v/4175Jzfuy1jDaezkwb62TXHxdo1dE4K1
+        BiQePoFmNsofJo1J6Vy65rliAa4wvbrz5M3M1NULBKM4xCkKRKUekXNJhdj6qkiFQ7nMMrZIKJM07
+        DQVHrhT6cNqc6ywnsEwRZTtji/3vF9UwJ+PIGn2usuRg9w40/Cy9SA3u2RZdV25rqMrpAb7nWpUaY
+        GU5MaFTBxmG0dTRe7PowRjiFO+ouVJNgXWagdgZse7t9/qe03nqEhyYKcejIVTgiVDz90h+koM66I
+        7Us6Rorw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lwaIP-00HBIq-Dq; Fri, 25 Jun 2021 01:06:23 +0000
+Date:   Fri, 25 Jun 2021 02:06:13 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 41/46] mm/page_alloc: Add folio allocation functions
+Message-ID: <YNUsBapCxhEr3/iL@casper.infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-42-willy@infradead.org>
+ <YNMFqhRS+GK2YK8h@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNMFqhRS+GK2YK8h@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+On Wed, Jun 23, 2021 at 11:58:02AM +0200, Christoph Hellwig wrote:
+> On Tue, Jun 22, 2021 at 01:15:46PM +0100, Matthew Wilcox (Oracle) wrote:
+> > +static inline
+> > +struct folio *__alloc_folio_node(gfp_t gfp, unsigned int order, int nid)
+> 
+> Weirdo prototype formatting.
+> 
+> Otherwise looks good (assuming we grow callers):
 
-The generic memset is defined as a byte at time write. This is always
-safe, but it's slower than a 4 byte or even 8 byte write.
+The next patch adds filemap_alloc_folio() which uses these.  That then
+gets used in "mm/filemap: Add filemap_get_folio", which is the patch
+after that.
 
-Write a generic memset which fills the data one byte at time until the
-destination is aligned, then fills using the largest size allowed,
-and finally fills the remaining data one byte at time.
+Now that I look at this patch again, I wonder if this shouldn't be
+folio_alloc(), __folio_alloc() and __folio_alloc_node.  And even though
+I have no users yet, completing the set with folio_alloc_node() might
+be a good idea.
 
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- lib/string.c | 30 ++++++++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
-
-diff --git a/lib/string.c b/lib/string.c
-index 69adec252597..598ece5434e9 100644
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -811,10 +811,36 @@ EXPORT_SYMBOL(__sysfs_match_string);
-  */
- void *memset(void *s, int c, size_t count)
- {
--	char *xs = s;
-+	union types dest = { .as_u8 = s };
- 
-+	if (count >= MIN_THRESHOLD) {
-+		unsigned long cu = (unsigned long)c;
-+
-+		/* Compose an ulong with 'c' repeated 4/8 times */
-+		cu |= cu << 8;
-+		cu |= cu << 16;
-+#if BITS_PER_LONG == 64
-+		cu |= cu << 32;
-+#endif
-+
-+		if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS)) {
-+			/*
-+			 * Fill the buffer one byte at time until
-+			 * the destination is word aligned.
-+			 */
-+			for (; count && dest.as_uptr & word_mask; count--)
-+				*dest.as_u8++ = c;
-+		}
-+
-+		/* Copy using the largest size allowed */
-+		for (; count >= bytes_long; count -= bytes_long)
-+			*dest.as_ulong++ = cu;
-+	}
-+
-+	/* copy the remainder */
- 	while (count--)
--		*xs++ = c;
-+		*dest.as_u8++ = c;
-+
- 	return s;
- }
- EXPORT_SYMBOL(memset);
--- 
-2.31.1
-
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
